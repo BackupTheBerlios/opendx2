@@ -17,11 +17,22 @@ if [ ! -z "$x" ]; then
     done
 fi
 
+
 if [ -z "$DXROOT" ]; then
   prefix=@prefix@
   DXROOT=$prefix/dx
 fi
 export DXROOT
+
+if [ -z "$DXDATA" ]; then
+  DXDATA=$DXROOT/samples/data
+  export DXDATA
+fi
+
+if [ -z "$DXMACROS" ]; then
+  DXMACROS=$DXROOT/samples/macros
+  export DXMACROS
+fi
 
 if [ -f $DXROOT/bin/dxworker ]; then
   exec $DXROOT/bin/dxworker $ARGS 
