@@ -261,7 +261,7 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
 	    ;;
 	macos)
 	    DXUI_LDFLAGS='-force_flat_namespace -framework CoreFoundation -framework ApplicationServices'
-	    AC_DEFINE_UNQUOTED(DXUI_LDFLAGS, $DXUI_LDFLAGS);
+	    AC_DEFINE_UNQUOTED(DXUI_LDFLAGS, $DXUI_LDFLAGS)
 	    ;;
     esac
     AC_MSG_RESULT(done)
