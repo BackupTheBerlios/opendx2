@@ -62,6 +62,13 @@ dnl
 
 dnl Since building the libs for all the formats and DX stuff takes so long
 dnl this allows you to disable it while developing/extending dx.
+AC_ARG_ENABLE(ddx,
+	      [  --enable-ddx     build exec, libs for ddx compatibility (default is no)],
+	      [with_ddx=$enableval],
+	      [with_ddx='no'])
+
+dnl Since building the libs for all the formats and DX stuff takes so long
+dnl this allows you to disable it while developing/extending dx.
 AC_ARG_ENABLE(buildlibdx,
 	      [  --enable-buildlibdx     enable building libDX.a (default is yes)],
 	      [with_buildlibdx=$enableval],
@@ -1175,6 +1182,12 @@ dnl since we statically link the hw-dependent renderer dxexec links need GL
 DX_GL_LINK_LIBS=" -lGL "
 
 LOCALMAKE="include local.mk"
+
+if test "$with_ddx" = 'yes' ; then
+    AC_DEFINE(DDX, 1)
+else
+    AC_DEFINE(DDX, 0)
+fi
 
 AC_OUTPUT(
 	Makefile \

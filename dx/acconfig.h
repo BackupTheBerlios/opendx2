@@ -19,6 +19,7 @@
 #define HAS__sys_errlist	0
 #undef  REQUIRES_GETHOSTNAME_DECLARATION
 #undef  REQUIRES_BZERO_DECLARATION
+#define DDX			0
 
 #undef ibm6000
 #undef intelnt
