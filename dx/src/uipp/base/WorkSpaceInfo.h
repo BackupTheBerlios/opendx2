@@ -26,6 +26,7 @@
 
 class WorkSpaceRoot;
 class WorkSpace;
+class UndoGrid;
 
 //
 // WorkSpaceInfo class definition:
@@ -64,6 +65,9 @@ class WorkSpaceInfo : public Base
     void disassociateWorkSpace() { this->workSpace = NULL; }
 
     void setDefaultConfiguration();
+
+    // ouch, what a hack
+    friend class UndoGrid;
 
   public:
     //

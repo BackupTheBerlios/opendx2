@@ -211,6 +211,7 @@ HDRS4 = \
 	UndoableAction.h \
 	UndoAddArk.h \
 	UndoDeletion.h \
+	UndoGrid.h \
 	UndoMove.h \
 	UndoNode.h \
 	UndoRepeatableTab.h \
@@ -397,6 +398,7 @@ SRCS5 = \
 	TransferAccelerator.c \
 	UndoAddArk.C \
 	UndoDeletion.C \
+	UndoGrid.C \
 	UndoMove.C \
 	UndoNode.C \
 	UndoRepeatableTab.C \

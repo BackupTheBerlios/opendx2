@@ -27,6 +27,7 @@ extern "C" Boolean VPERoot_ShowWindowWP (XtPointer);
 #define ClassVPERoot	"VPERoot"
 
 class PageSelector;
+class UndoGrid;
 
 //
 // EditorWorkSpace class definition:
@@ -84,6 +85,7 @@ class VPERoot : public EditorWorkSpace, public WorkSpaceRoot
 
     friend Boolean VPERoot_MoveWindowWP (XtPointer);
     friend Boolean VPERoot_ShowWindowWP (XtPointer);
+    friend class UndoGrid;
 
   public:
 
@@ -127,10 +129,7 @@ class VPERoot : public EditorWorkSpace, public WorkSpaceRoot
 	this->WorkSpaceRoot::showWorkSpace(ws); 
     }
 
-    virtual void installInfo (WorkSpaceInfo* info) {
-	this->EditorWorkSpace::installInfo(info);
-	this->WorkSpaceRoot::installPageInfo(info);
-    }
+    virtual void installInfo (WorkSpaceInfo* info);
 
     virtual void beginManyPlacements () {
 	this->EditorWorkSpace::beginManyPlacements();

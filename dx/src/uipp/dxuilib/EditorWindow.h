@@ -84,6 +84,7 @@ class TransmitterNode;
 class GraphLayout;
 class VPEAnnotator;
 class XHandler;
+class UndoableAction;
 
 #if WORKSPACE_PAGES
 class GroupManager;
@@ -952,6 +953,7 @@ class EditorWindow : public DXWindow
     // register undo information
     //
     void  saveLocationForUndo (UIComponent* uic, boolean mouse=FALSE, boolean same_event=FALSE);
+    void  saveAllLocationsForUndo (UndoableAction* gridding);
     void  beginMultipleCanvasMovements();
     void  endMultipleCanvasMovements() { this->moving_many_standins = FALSE; }
 

@@ -511,3 +511,4 @@ void EditorWorkSpace::doPosChangeAction (Widget ww, XtPointer callData)
     }
     this->editor->saveLocationForUndo(uic, mouse_type, same_event);
 }
+

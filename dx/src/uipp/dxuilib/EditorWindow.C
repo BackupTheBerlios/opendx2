@@ -630,7 +630,7 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
 	new NoUndoEditorCommand 
 	    ("grid", this->commandScope, TRUE, 
 		this, NoUndoEditorCommand::OpenGrid,
-		NoUndoEditorCommand::Ignore);
+		NoUndoEditorCommand::Ignore); 
 
     this->deferrableCommandActivation = new DeferrableAction(
 				EditorWindow::SetCommandActivation,
@@ -6254,8 +6254,11 @@ char msg[128];
     //
     char net_file_name[256];
     char cfg_file_name[256];
-    // FIXME:  We need a DXApplication::getTmpFile().  The code
-    // to form tmp file names off the tmp directory is used in several places.
+    //
+    // It's good that this file name is formed using getTmpDirectory()
+    // because later we're going to check to see if the file name
+    // begins with the tmp directory and if so, leave it out of
+    // the list of recently-referenced files.
     //
     const char *tmpdir = theDXApplication->getTmpDirectory();
     int tmpdirlen = STRLEN(tmpdir);
@@ -7586,3 +7589,30 @@ boolean EditorWindow::keyHandler(XEvent* event)
     return FALSE;
 }
 
+void  EditorWindow::saveAllLocationsForUndo (UndoableAction* gridding)
+{
+    this->undo_list.push(new UndoSeparator(this));
+    Node* n;
+    ListIterator iterator;
+    FOR_EACH_NETWORK_NODE(this->network, n, iterator) {
+	StandIn* si = n->getStandIn();
+	if (!si) continue;
+
+	this->undo_list.push ( new UndoStandInMove (
+		this, si, n->getNameString(), n->getInstanceNumber()
+	    )
+	);
+    }
+
+    Decorator* dec;
+    FOR_EACH_NETWORK_DECORATOR(this->network, dec, iterator) {
+	if (dec->getRootWidget())
+	    this->undo_list.push (new UndoDecoratorMove (this, (VPEAnnotator*)dec));
+    }
+    this->undo_list.push(gridding);
+ 
+    // this->setCommandActivation() doesn't run often enough to deal
+    // with accelerators.
+    if (!this->undoCmd->isActive())
+	this->setUndoActivation();
+}

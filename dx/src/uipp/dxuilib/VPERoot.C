@@ -16,6 +16,7 @@
 #include "VPEPage.h"
 #include "PageSelector.h"
 #include "EditorWindow.h"
+#include "UndoGrid.h"
 
 VPERoot::~VPERoot()
 {
@@ -38,6 +39,31 @@ VPERoot::newPage (int width, int height)
     ews->setHeight(height);
     ews->initializeRootWidget();
     return ews;
+}
+
+//
+// undo processing:  If we're changing gridding, then checkpoint the
+// grid options and the location of every standIn (not just the ones
+// in the current page).
+//
+void VPERoot::installInfo (WorkSpaceInfo* info) 
+{
+
+    if ((info) || (info==this->getInfo())) {
+	//
+	// This case is not called from GridDialog::ok() so
+	// we don't need to provide any undo processing
+	//
+	this->EditorWorkSpace::installInfo(info);
+	this->WorkSpaceRoot::installPageInfo(info);
+	return ;
+    }
+
+    UndoGrid* undoGrid = new UndoGrid(this->editor, this);
+    this->editor->saveAllLocationsForUndo(undoGrid);
+
+    this->EditorWorkSpace::installInfo(info);
+    this->WorkSpaceRoot::installPageInfo(info);
 }
 
 void VPERoot::showWorkSpace (int page)
