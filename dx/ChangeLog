@@ -6,6 +6,8 @@ Microsoft .NET world.
 
 Outboard modules working again.
 
+Have eliminated the Red cache bug (Bug Id#90)
+
 Added a fix to eliminate the socket lock problem (Bug Id#147)
 
 Added "column chart" feature to Plot.
