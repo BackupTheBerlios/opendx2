@@ -14,7 +14,7 @@
 
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.6 2000/10/06 05:04:37 davidt Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.7 2002/03/29 14:42:56 davidt Exp $
 \*---------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <math.h>
@@ -35,7 +35,7 @@ $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/e
 #include <sys/ldr.h>
 #endif
 
-#if defined(HAVE_SYS_STRING_H)
+#if defined(HAVE_STRING_H)
 #include <string.h>
 #endif
 

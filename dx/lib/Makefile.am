@@ -1,5 +1,5 @@
 
-libdir = $(prefix)/dx/lib
+libsdir = $(prefix)/dx/lib
 
-EXTRA_DIST = mdf2c.awk messages colors.txt dxfSaveCurrentImage.net dxrc dxexec.exp outboard.c
-lib_DATA = $(EXTRA_DIST)
+libs_DATA = mdf2c.awk messages colors.txt dxfSaveCurrentImage.net dxrc dxexec.exp outboard.c
+EXTRA_DIST = $(libs_DATA)

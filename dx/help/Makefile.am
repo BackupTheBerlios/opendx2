@@ -251,7 +251,7 @@ helpfiles22 = \
 help_DATA = $(EXTRA_DIST)
 
 
-install-data-local:
+install-data-hook:
 	@sh -c ' ln -sf $(helpdir)/hlpalhtl  $(helpdir)/mbidx ; 	\
 	       	 ln -sf $(helpdir)/hlpalhtl  $(helpdir)/quikidx ; 	\
 	       	 ln -sf $(helpdir)/hlpalhtl  $(helpdir)/svsmstrh ; 	\

@@ -50,12 +50,13 @@ AM_CONFIG_HEADER(include/dxconfig.h)
 AM_INIT_AUTOMAKE(dx, 4.1.3)
 
 VERSION_STRING="04.1.0003"
-AC_DEFINE(DXD_VERSION_STRING, "04.1.0003")
+AC_DEFINE(DXD_VERSION_STRING, "04.1.0003", [Version String Number])
 AC_DEFINE(DXD_COPYRIGHT_STRING,
-  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.1.3"])
-AC_DEFINE_UNQUOTED(DXD_VERSION, 4)
-AC_DEFINE_UNQUOTED(DXD_RELEASE, 1)
-AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 3)
+  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.1.3"], 
+  [Copyright string placed on splash screen startup.])
+AC_DEFINE_UNQUOTED(DXD_VERSION, 4, [Version Number])
+AC_DEFINE_UNQUOTED(DXD_RELEASE, 1, [Release Number])
+AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 3, [Modification Number])
 
 
 dnl First set up all the possible configure command line options
@@ -182,7 +183,7 @@ AC_ARG_WITH(rsh,
                 AC_PATH_PROG(rsh_path, rsh)
         ]
 )
-AC_DEFINE_UNQUOTED(RSH, "$rsh_path")
+AC_DEFINE_UNQUOTED(RSH, "$rsh_path", [Path to the system's remote shell.])
 
 AC_ARG_WITH(bsh,
         [  --with-bsh=PATH         Specify path to system bourne shell program ],
@@ -195,7 +196,7 @@ AC_ARG_WITH(bsh,
                 AC_PATH_PROG(bsh_path, sh)
         ]
 )
-AC_DEFINE_UNQUOTED(BSH, "$bsh_path")
+AC_DEFINE_UNQUOTED(BSH, "$bsh_path", [Path to the system's Bourne shell.])
 
 dnl End of command line options configuration
 
@@ -251,6 +252,7 @@ fi
 
 AC_PROG_INSTALL
 
+
 dnl Checks for programs.
 AC_PROG_RANLIB
 AC_PROG_CXX
@@ -270,7 +272,7 @@ fi
 DX_OBJEXT
 
 if test "$ARCH" = "intelnt" ; then
-	DX_CHECK_HEADERS(windows.h)
+	AC_CHECK_HEADERS(windows.h)
 else
 	ac_cv_header_windows_h="no"
 fi
@@ -287,7 +289,7 @@ xyzz
 #endif
 ], 
 [AC_MSG_RESULT("-64")
- AC_DEFINE(SGI_ABI,-64)
+ AC_DEFINE(SGI_ABI, -64, [SGI specific ABI])
 ], 
 [AC_TRY_COMPILE([],
 [
@@ -317,7 +319,7 @@ fi
 AC_MSG_CHECKING(whether to enable large arenas ...)
 if test "$with_large_arenas" != 'no' -a \
    "$ARCH" = "sgi" -a "$SGI_ABI" = "-64"; then
-  AC_DEFINE(ENABLE_LARGE_ARENAS)
+  AC_DEFINE(ENABLE_LARGE_ARENAS, 1, [Define to 1 if you need large arenas on SGI])
   AC_MSG_RESULT("yes")
 else
   AC_MSG_RESULT("no")
@@ -476,9 +478,13 @@ if test "$xm_libraries" != "" ; then
 fi
 AC_CHECK_LIB(Xp, XpSetImageResolution)
 AC_CHECK_LIB(Xm, XmGetDestination)
-AC_TRY_LINK_FUNC(_XmMapKeyEvents, AC_DEFINE(HAVE_XMMAPKEYEVENTS))
-AC_TRY_LINK_FUNC(HCLXmInit, AC_DEFINE(HAVE_HCLXMINIT))
-AC_TRY_LINK_FUNC(HCLXtInit, AC_DEFINE(HAVE_HCLXTINIT))
+AC_TRY_LINK_FUNC(_XmMapKeyEvents, 
+	AC_DEFINE(HAVE_XMMAPKEYEVENTS, 1,
+		[Define to 1 if your Motif can use _XmMapKeyEvents]))
+AC_TRY_LINK_FUNC(HCLXmInit, AC_DEFINE(HAVE_HCLXMINIT, 1, 
+	[Define to 1 if Windows has XmInit fnct]))
+AC_TRY_LINK_FUNC(HCLXtInit, AC_DEFINE(HAVE_HCLXTINIT, 1, 
+	[Define to 1 if Windows has XtInit fnct]))
 
 dnl want to put the Xmu tests in before here!!
 DX_X_LINK_LIBS="$LIBS"
@@ -494,7 +500,7 @@ p->att[0].type;
 ],
 ,
 [
-    AC_DEFINE_UNQUOTED(OLD_LESSTIF, 1)
+    AC_DEFINE_UNQUOTED(OLD_LESSTIF, 1, [Define to 1 if Using old version of lesstif])
     echo "using old version of  LESSTIF"
 ])
 
@@ -509,11 +515,8 @@ if test "$ARCH" = "solaris" ; then
 fi
 
 dnl A couple libs for cygwin
-AC_CHECK_LIB(ICE, IceConnectionNumber)
-AC_CHECK_LIB(SM, SmcSetProperties)
 AC_CHECK_LIB(REXP, regcomp)
 DX_CHECK_TGMATH
-AC_CHECK_LIB(m, sqrt)
 
 dnl If buildlibdx off then pass this down to the Makefile
 AM_CONDITIONAL(WITH_BUILDLIBDX, test $with_buildlibdx = 'yes') 
@@ -529,7 +532,8 @@ AC_CHECK_LIB(dl, main)
 dnl Set the CXXFLAG for new keylayout
 if test "$with_new_keylayout" != 'no'
 then
-    CXXFLAGS="$CXXFLAGS -DDX_NEW_KEYLAYOUT"
+    AC_DEFINE_UNQUOTED(DX_NEW_KEYLAYOUT, 1, 
+	[Define to 1 if you want the new accelerator keys.])
 fi
 
 dnl Leave the TIFF check for now incase we want to rewrite the ReadImage
@@ -559,7 +563,7 @@ then
 	LIB_TIFF='-ltiff'
 	LIBS="$LIB_TIFF $LIBS"
 	FMT_LIBS="$FMT_LIBS libtiff.a"
-	AC_DEFINE(HAVE_LIBTIFF)
+	AC_DEFINE(HAVE_LIBTIFF, 1, [Define to 1 if you have the TIFF libraries])
 	AC_MSG_RESULT(yes)
 	have_tiff='yes'
     fi
@@ -594,7 +598,7 @@ then
     else
 	LIB_XPM='-lXpm'
 	LIBS="$LIB_XPM $LIBS"
-	AC_DEFINE(HAVE_LIBXPM)
+	AC_DEFINE(HAVE_LIBXPM, 1, [Define to 1 if you have the xpm libraries])
 	AC_MSG_RESULT(yes)
 	have_xpm='yes'
     fi
@@ -633,7 +637,7 @@ if test "$ARCH" = "intelnt" ; then
 	LIB_HDF='-lhd414'
 	LIBS="$LIB_HDF $LIBS"
 	FMT_LIBS="$FMT_LIBS hd414.lib"
-	AC_DEFINE(HAVE_LIBDF)
+	AC_DEFINE(HAVE_LIBDF, 1, [Define to 1 if you have the HDF libraries])
 	AC_MSG_RESULT(yes)
 	have_hdf='yes'
     fi
@@ -654,7 +658,7 @@ else
 	LIB_HDF='-ldf'
 	LIBS="$LIB_HDF $LIBS"
 	FMT_LIBS="$FMT_LIBS libdf.a"
-	AC_DEFINE(HAVE_LIBDF)
+	AC_DEFINE(HAVE_LIBDF, 1, [Define to 1 if you have the HDF libraries])
 	AC_MSG_RESULT(yes)
 	have_hdf='yes'
     fi
@@ -689,7 +693,7 @@ if test "$ARCH" = "intelnt" ; then
 	LIB_HDF='-ldllcdf'
 	LIBS="$LIB_HDF $LIBS"
 	FMT_LIBS="$FMT_LIBS dllcdf.lib"
-	AC_DEFINE(HAVE_LIBCDF)
+	AC_DEFINE(HAVE_LIBCDF, 1, [Define to 1 if you have the CDF libraries])
 	AC_MSG_RESULT(yes)
 	have_cdf='yes'
     fi
@@ -710,7 +714,7 @@ else
 	LIB_CDF='-lcdf'
 	LIBS="$LIB_CDF $LIBS"
 	FMT_LIBS="$FMT_LIBS libcdf.a"
-	AC_DEFINE(HAVE_LIBCDF)
+	AC_DEFINE(HAVE_LIBCDF, 1, [Define to 1 if you have the CDF libraries])
 	AC_MSG_RESULT(yes)
         have_cdf='yes'
     fi
@@ -744,7 +748,7 @@ then
 	LIB_NETCDF='-lnetcdf'
 	LIBS="$LIB_NETCDF $LIBS"
 	FMT_LIBS="$FMT_LIBS libnetcdf.a"
-	AC_DEFINE(HAVE_LIBNETCDF)
+	AC_DEFINE(HAVE_LIBNETCDF, 1, [Define to 1 if you have the NetCDF libraries])
 	AC_MSG_RESULT(yes)
         have_netcdf='yes'
     fi
@@ -780,7 +784,7 @@ if test "$ARCH" = "intelnt" ; then
 	LIB_MAGICK='-lCORE_RL_magick_'
 	LIBS="$LIB_MAGICK $LIBS"
 	FMT_LIBS="$FMT_LIBS CORE_RL_magick_.lib"
-	AC_DEFINE(HAVE_LIBMAGICK)
+	AC_DEFINE(HAVE_LIBMAGICK, 1, [Define to 1 if you have the ImageMagick libraries])
 	AC_MSG_RESULT(yes)
 	have_magick='yes'
     fi
@@ -814,7 +818,7 @@ dnl	FMT_LIBS="`Magick-config --ldflags` $FMT_LIBS"
 dnl UNIQUIFY will remove duplicate library tokens leaving the last instance.
 	AC_UTILS_UNIQUIFY($LIB_MAGICK, LIBS)
 	FMT_LIBS="$FMT_LIBS libMagick.a"
-	AC_DEFINE(HAVE_LIBMAGICK)
+	AC_DEFINE(HAVE_LIBMAGICK, 1, [Define to 1 if you have the ImageMagick libraries])
 	AC_MSG_RESULT(yes)
         have_magick='yes'
     fi
@@ -830,20 +834,20 @@ fi
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
 AC_TRY_COMPILE([], [int a = true;],
-		[AC_DEFINE(CXX_HAS_TRUE, 1)],
+		[AC_DEFINE(CXX_HAS_TRUE, 1, [Define to 1 if c++ compiler defines true])],
 		[AC_DEFINE(CXX_HAS_TRUE, 0)])
 AC_TRY_COMPILE([], [int a = false;],
-		[AC_DEFINE(CXX_HAS_FALSE, 1)],
+		[AC_DEFINE(CXX_HAS_FALSE, 1, [Define to 1 if c++ compiler defines false])],
 		[AC_DEFINE(CXX_HAS_FALSE, 0)])
 AC_CHECK_FUNCS(getdtablesize)
 AC_LANG_RESTORE
 
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
 	putenv re_comp regcmp select socket strcspn strdup strerror \
-	strspn strstr strtod strtol strtoul uname popen vfork trunc \
-        _Errno _popen spawnvp _spawnvp regcomp sysmp sysconf \
+	strspn strstr strtod strtol strtoul uname trunc \
+        _Errno spawnvp _spawnvp regcomp sysmp sysconf \
         pipe _pipe _popen popen _pclose pclose random rand srandom \
-	shmat getopt srand opendir fork _findfirst strrstr strcasecmp \
+	shmat getopt srand opendir _findfirst strrstr strcasecmp \
 	stricmp getpid _getpid unlink _unlink getlogin isatty _isatty \
 	setsockopt )
 
@@ -853,7 +857,7 @@ AC_EGREP_CPP(xyzzy,
 #if defined(SIGBUS)
 xyzzy
 #endif
-], AC_DEFINE(HAVE_SIGBUS))
+], AC_DEFINE(HAVE_SIGBUS, 1, [Define to 1 if signal defines SIGBUS]))
 
 AC_EGREP_CPP(xyzzy, 
 [
@@ -861,7 +865,7 @@ AC_EGREP_CPP(xyzzy,
 #if defined(SIGKILL)
 xyzzy
 #endif
-], AC_DEFINE(HAVE_SIGKILL))
+], AC_DEFINE(HAVE_SIGKILL, 1, [Define to 1 if signal defines SIGKILL]))
 
 AC_EGREP_CPP(xyzzy, 
 [
@@ -869,7 +873,7 @@ AC_EGREP_CPP(xyzzy,
 #if defined(SIGDANGER)
 xyzzy
 #endif
-], AC_DEFINE(HAVE_SIGDANGER))
+], AC_DEFINE(HAVE_SIGDANGER, 1, [Define to 1 if signal defines SIGDANGER]))
 
 AC_EGREP_CPP(xyzzy, 
 [
@@ -877,7 +881,7 @@ AC_EGREP_CPP(xyzzy,
 #if defined(SIGPIPE)
 xyzzy
 #endif
-], AC_DEFINE(HAVE_SIGPIPE))
+], AC_DEFINE(HAVE_SIGPIPE, 1, [Define to 1 if signal defines SIGPIPE]))
 
 AC_EGREP_CPP(xyzzy, 
 [
@@ -885,12 +889,12 @@ AC_EGREP_CPP(xyzzy,
 #if defined(SIGQUIT)
 xyzzy
 #endif
-], AC_DEFINE(HAVE_SIGQUIT))
+], AC_DEFINE(HAVE_SIGQUIT, 1, [Define to 1 if signal defines SIGQUIT]))
 
 AC_TRY_COMPILE(
 [],
 [extern char *getenv(const char *);],
-AC_DEFINE_UNQUOTED(GETENV_ARG, const char *),
+AC_DEFINE_UNQUOTED(GETENV_ARG, const char *, [getenv argument requires const]),
 AC_DEFINE_UNQUOTED(GETENV_ARG, char *))
 
 AC_TRY_LINK(
@@ -901,13 +905,16 @@ AC_TRY_LINK(
 int n = _system_configuration.ncpus;
 ],
 [
-AC_DEFINE_UNQUOTED(HAVE_SYSCONFIG_NCPUS)
+AC_DEFINE_UNQUOTED(HAVE_SYSCONFIG_NCPUS, 1, 
+	[Define to 1 if you have systemcfg to check for  ncpus])
 ])
 
-AC_EGREP_HEADER(sys_errlist, sys/errno.h,  AC_DEFINE(HAVE_SYS_ERRLIST))
+AC_EGREP_HEADER(sys_errlist, sys/errno.h,  
+	AC_DEFINE(HAVE_SYS_ERRLIST, 1, [Define to 1 if errno.h defines sys_errlist]))
 AC_EGREP_HEADER(sys_errlist, errno.h,      AC_DEFINE(HAVE_SYS_ERRLIST))
 AC_EGREP_HEADER(sys_errlist, stdio.h,      AC_DEFINE(HAVE_SYS_ERRLIST))
-AC_EGREP_HEADER(_sys_errlist, sys/errno.h, AC_DEFINE(HAVE__SYS_ERRLIST))
+AC_EGREP_HEADER(_sys_errlist, sys/errno.h, 
+	AC_DEFINE(HAVE__SYS_ERRLIST, 1, [Define to 1 if errno.h defines _sys_errlist]))
 AC_EGREP_HEADER(_sys_errlist, errno.h,     AC_DEFINE(HAVE__SYS_ERRLIST))
 AC_EGREP_HEADER(_sys_errlist, stdio.h,     AC_DEFINE(HAVE__SYS_ERRLIST))
 
@@ -919,7 +926,7 @@ dnl Check yaccer.  Don't use standard AQC_PROG_YACC... We're going
 dnl to create an -D as well as the make variable
 AC_CHECK_PROG(yakker, bison, "bison", "yacc")
 if test "$yakker" = "bison" ; then
-    AC_DEFINE(USING_BISON)
+    AC_DEFINE(USING_BISON, 1, [Define to 1 if using bison])
     YACC="bison -y"
 else
     YACC=yacc
@@ -927,39 +934,43 @@ fi
 
 
 AC_LANG_C
-DX_CHECK_HEADERS(DPS/XDPSlib.h DPS/dpsXclient.h \
-    DPS/psops.h GL/gl.h GL/glx.h Mrm/MrmPublic.h X11/Composite.h \
-    X11/CompositeP.h X11/Constraint.h X11/CoreP.h X11/Intrinsic.h \
-    X11/IntrinsicI.h X11/IntrinsicP.h X11/Protocols.h X11/Shell.h \
-    X11/StringDefs.h X11/X.h X11/XHPlib.h X11/Xatom.h X11/Xlib.h \
-    X11/XlibXtra.h X11/Xmu/Editres.h X11/Xos.h X11/Xutil.h X11/cursorfont.h \
-    X11/keysym.h X11/keysymdef.h Xm/ArrowB.h Xm/ArrowBG.h Xm/AtomMgr.h \
-    Xm/BulletinB.h Xm/BulletinBP.h Xm/CascadeB.h Xm/CascadeBG.h Xm/Command.h \
-    Xm/CutPaste.h Xm/DialogS.h Xm/DragC.h Xm/DragDrop.h Xm/DrawingA.h \
-    Xm/DrawingAP.h Xm/DrawnB.h Xm/FileSB.h Xm/Form.h Xm/FormP.h Xm/Frame.h \
-    Xm/FrameP.h Xm/GadgetP.h Xm/Label.h Xm/LabelG.h Xm/LabelGP.h Xm/LabelP.h \
-    Xm/List.h Xm/MainW.h Xm/ManagerP.h Xm/MenuShell.h Xm/MessageB.h \
-    Xm/MwmUtil.h Xm/PanedW.h Xm/PrimitiveP.h Xm/Protocols.h Xm/PushB.h \
-    Xm/PushBG.h Xm/PushBP.h Xm/RepType.h Xm/RowColumn.h Xm/Scale.h \
-    Xm/ScrollBar.h Xm/ScrolledW.h Xm/ScrolledWP.h Xm/SelectioB.h Xm/SeparatoG.h \
-    Xm/SeparatoGP.h Xm/Separator.h Xm/Text.h Xm/TextF.h Xm/ToggleB.h \
-    Xm/ToggleBG.h Xm/Xm.h Xm/XmP.h Xm/XmStrDefs.h alloca.h arpa/inet.h \
-    bstring.h cdf.h conio.h crypt.h ctype.h cygwin/socket.h dfsd.h \
-    direct.h dirent.h dl.h dlfcn.h errno.h fcntl.h float.h fstream.h \
-    get.h gl.h gl/device.h gl/gl.h invent.h io.h iop/afb.h iop/mov.h \
-    iop/pfs.h iostream.h license.h limits.h malloc.h math.h memory.h \
-    mingw32/dir.h mon.h net/if.h net/if_arp.h net/route.h netcdf.h netdb.h \
-    netinet/in.h os2.h process.h pwd.h regexp.h regex.h setjmp.h signal.h \
-    starbase.c.h stdarg.h stddef.h stdio.h stdlib.h stream.h string.h \
-    strings.h synch.h sys/access.h sys/bsd_types.h \
-    sys/file.h sys/filio.h sys/ioctl.h sys/ipc.h sys/ldr.h sys/m88kbcs.h \
-    sys/m_wait.h sys/mman.h sys/mode.h sys/param.h sys/pstat.h sys/resource.h \
-    sys/select.h sys/shm.h sys/signal.h sys/socket.h sys/stat.h sys/svs.h \
-    sys/syslimits.h sys/sysmacros.h sys/sysmp.h sys/sysconfig.h \
-    sys/errno.h sys/systemcfg.h sys/shm.h \
-    sys/systeminfo.h sys/time.h sys/timeb.h sys/times.h sys/types.h sys/un.h \
-    sys/utsname.h sys/wait.h sysent.h time.h types.h ulocks.h unistd.h \
-    values.h wait.h x11/xlibxtra.h xgl/xgl.h linux/kernel.h linux/sys.h)
+
+dnl Just need to check if we have them.
+
+DX_CHECK_HEADERS( \
+  DPS/XDPSlib.h DPS/dpsXclient.h DPS/psops.h GL/gl.h GL/glx.h Mrm/MrmPublic.h \
+  X11/Composite.h X11/CompositeP.h X11/Constraint.h X11/CoreP.h X11/Intrinsic.h \
+  X11/IntrinsicI.h X11/IntrinsicP.h X11/Protocols.h X11/Shell.h X11/StringDefs.h \
+  X11/X.h X11/XHPlib.h X11/Xatom.h X11/Xlib.h X11/XlibXtra.h X11/Xmu/Editres.h \
+  X11/Xos.h X11/Xutil.h X11/cursorfont.h X11/keysym.h X11/keysymdef.h Xm/ArrowB.h \
+  Xm/ArrowBG.h Xm/AtomMgr.h Xm/BulletinB.h Xm/BulletinBP.h Xm/CascadeB.h \
+  Xm/CascadeBG.h Xm/Command.h Xm/CutPaste.h Xm/DialogS.h Xm/DragC.h Xm/DragDrop.h \
+  Xm/DrawingA.h Xm/DrawingAP.h Xm/DrawnB.h Xm/FileSB.h Xm/Form.h Xm/FormP.h \
+  Xm/Frame.h Xm/FrameP.h Xm/GadgetP.h Xm/Label.h Xm/LabelG.h Xm/LabelGP.h \
+  Xm/LabelP.h Xm/List.h Xm/MainW.h Xm/ManagerP.h Xm/MenuShell.h Xm/MessageB.h \
+  Xm/MwmUtil.h Xm/PanedW.h Xm/PrimitiveP.h Xm/Protocols.h Xm/PushB.h Xm/PushBG.h \
+  Xm/PushBP.h Xm/RepType.h Xm/RowColumn.h Xm/Scale.h Xm/ScrollBar.h Xm/ScrolledW.h \
+  Xm/ScrolledWP.h Xm/SelectioB.h Xm/SeparatoG.h Xm/SeparatoGP.h Xm/Separator.h \
+  Xm/Text.h Xm/TextF.h Xm/ToggleB.h Xm/ToggleBG.h Xm/Xm.h Xm/XmP.h Xm/XmStrDefs.h \
+  gl.h gl/device.h gl/gl.h invent.h iop/afb.h iop/mov.h iop/pfs.h license.h \
+  linux/kernel.h linux/sys.h math.h mingw32/dir.h mon.h net/if_arp.h net/route.h \
+  os2.h setjmp.h starbase.c.h stddef.h stdio.h synch.h sys/access.h \
+  sys/ipc.h sys/m88kbcs.h sys/mman.h sys/mode.h sys/pstat.h sys/resource.h \
+  sys/svs.h sys/sysconfig.h sys/syslimits.h sys/sysmacros.h ulocks.h x11/xlibxtra.h \
+  xgl/xgl.h )
+
+dnl Need these to define themselves in dxconfig.h
+
+AC_CHECK_HEADERS(arpa/inet.h CC/osfcn.h conio.h crypt.h ctype.h cygwin/socket.h)
+AC_CHECK_HEADERS(dlfcn.h errno.h fcntl.h get.h io.h limits.h malloc.h netdb.h)
+AC_CHECK_HEADERS(netinet/in.h net/if.h process.h pwd.h signal.h strings.h)
+AC_CHECK_HEADERS(sys/bsd_types.h sys/errno.h sys/file.h sys/filio.h)
+AC_CHECK_HEADERS(sys/ioctl.h sys/ldr.h sys/m_wait.h sys/param.h sys/select.h)
+AC_CHECK_HEADERS(sys/shm.h sys/signal.h sys/socket.h sys/stat.h sys/sysmp.h)
+AC_CHECK_HEADERS(sys/systemcfg.h sys/systeminfo.h sys/timeb.h sys/times.h sys/time.h)
+AC_CHECK_HEADERS(sys/types.h sys/un.h sys/un.h sys/utsname.h time.h)
+AC_CHECK_HEADERS(types.h unistd.h values.h wait.h)
+
 
 AC_TRY_COMPILE([
 #if defined(HAVE_FCNTL_H)
@@ -974,17 +985,22 @@ echo O_RDONLY IS defined by default
 ],
 [
 echo O_RDONLY IS NOT defined by default
-AC_DEFINE_UNQUOTED(O_RDONLY, _O_RDONLY, O_RDONLY is defined somewhere)
+AC_DEFINE_UNQUOTED(O_RDONLY, _O_RDONLY, [O_RDONLY is defined somewhere])
 ])
 
 if test "$ARCH" = "intelnt" ; then
-    DX_CHECK_HEADERS(winbase.h wingdi.h winioctl.h winsock.h)
+    AC_CHECK_HEADERS(winbase.h wingdi.h winioctl.h winsock.h)
 fi
 
 DX_CHECK_STAT
 
 AC_LANG_CPLUSPLUS
-DX_CHECK_HEADERS(CC/libc.h CC/osfcn.h strstrea.h strstream.h)
+
+dnl Need these to define themselves for C++
+
+AC_CHECK_HEADERS(CC/libc.h direct.h dirent.h iostream.h regexp.h regex.h stream.h)
+AC_CHECK_HEADERS(strstream.h strstrea.h sysent.h)
+
 
 AC_LANG_C
 
@@ -1004,7 +1020,8 @@ AC_TRY_LINK([
 char buf[32];
 gethostname(buf, 32);
 ],
-AC_DEFINE_UNQUOTED(REQUIRES_GETHOSTNAME_DECLARATION, 0),
+AC_DEFINE_UNQUOTED(REQUIRES_GETHOSTNAME_DECLARATION, 0, 
+	[Define to 1 if gethostname needs declared]),
 AC_DEFINE_UNQUOTED(REQUIRES_GETHOSTNAME_DECLARATION, 1))
 
 AC_TRY_LINK([
@@ -1013,7 +1030,7 @@ AC_TRY_LINK([
 char buf[32];
 bzero(buf, (size_t)32);
 ],
-AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 0),
+AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 0, [Define to 1 if bzero needs declared]),
 AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 1))
 
 dnl The following DX_HEADER... check changes the ext to .C so must be C++
@@ -1069,7 +1086,8 @@ signal(SIGBUS, foo);
 ],
 [
 echo Using alternate signal argument list in C++
-AC_DEFINE_UNQUOTED(ALTERNATE_CXX_SIGNAL)
+AC_DEFINE_UNQUOTED(ALTERNATE_CXX_SIGNAL, 1, 
+	[Define to 1 to use alternate signal argument list in C++])
 ],
 [
 echo Using standard signal argument list in C++
@@ -1088,11 +1106,11 @@ DX_GL_LINK_LIBS=" -lGL "
 LOCALMAKE="include local.mk"
 
 if test "$with_ddx" = 'yes' ; then
-    AC_DEFINE(DDX, 1)
+    AC_DEFINE(DDX, 1, [Define to 1 to enable distributed DX])
 fi
 
 if test "$with_smp_linux" = 'yes' ; then
-    AC_DEFINE(ENABLE_SMP_LINUX, 1)
+    AC_DEFINE(ENABLE_SMP_LINUX, 1, [Define to 1 to enable SMP Linux version])
 else
     AC_DEFINE(ENABLE_SMP_LINUX, 0)
 fi

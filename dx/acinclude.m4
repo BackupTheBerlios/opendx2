@@ -226,7 +226,7 @@ AC_DEFUN(DX_ARCHITECTURE,
     AC_MSG_RESULT($ARCH)
     AC_SUBST(ARCH)
     AC_DEFINE_UNQUOTED($ARCH)
-    AC_DEFINE_UNQUOTED(DXD_ARCHNAME, "$ARCH")
+    AC_DEFINE_UNQUOTED(DXD_ARCHNAME, "$ARCH", [define architecture name])
 ])
 
 
@@ -243,8 +243,8 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
 	    if test "$CC" != "gcc" ; then
 		DXEXEC_EXP='-bE:$(EXP)'
 		DXEXEC_IMP='-bI:$(EXP)'
-		AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
-		AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP)
+		AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP, [Architecture exports])
+		AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP, [Architecture imports])
 	    fi
 	    ;;
 	intelnt)
@@ -261,7 +261,7 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
 	    ;;
 	macos)
 	    DXUI_ALDFLAGS='-force_flat_namespace -framework CoreFoundation -framework ApplicationServices'
-	    AC_DEFINE_UNQUOTED(DXUI_ALDFLAGS, $DXUI_ALDFLAGS)
+	    AC_DEFINE_UNQUOTED(DXUI_ALDFLAGS, $DXUI_ALDFLAGS, [Added arch specific LDFLAGS])
 	    ;;
     esac
     AC_MSG_RESULT(done)
@@ -318,7 +318,7 @@ AC_DEFUN(DX_HEADER_HAS_SYMBOL,
 	done
     fi
     if test $found = "yes" ; then 
-	AC_DEFINE_UNQUOTED(HAS_$2)
+	AC_DEFINE_UNQUOTED(HAS_$2, 1, [Define to 1 if have symbol $2])
 	AC_MSG_RESULT("yes")
     else
 	AC_MSG_RESULT("no")
@@ -481,8 +481,8 @@ if test "$fnc" = "X" -o "$str" = "X" ; then
     echo could not find working combination of stat function and structure
     exit
 fi
-AC_DEFINE_UNQUOTED(STATFUNC, $fnc)
-AC_DEFINE_UNQUOTED(STATSTRUCT, $str)
+AC_DEFINE_UNQUOTED(STATFUNC, $fnc, [What is the defined stat func])
+AC_DEFINE_UNQUOTED(STATSTRUCT, $str, [What is the stat struct])
 echo stat function is: $fnc
 echo stat structure is: $str
 AC_LANG_RESTORE
@@ -516,7 +516,7 @@ int i = select(1, ($try *)NULL, ($try *)NULL, ($try *)NULL, (struct timeval *)NU
 ],
 [
 select_argtype=$try 
-AC_DEFINE_UNQUOTED(SELECT_ARG_TYPE, $try)
+AC_DEFINE_UNQUOTED(SELECT_ARG_TYPE, $try, [Arguments for select])
 ])
 if test ! -z "$select_argtype" ; then
     break
@@ -558,7 +558,7 @@ int i = getsockname(1, (struct sockaddr *)NULL, foo);
 ],
 [
 socket_argtype=$try 
-AC_DEFINE_UNQUOTED(SOCK_LENGTH_TYPE, $try)
+AC_DEFINE_UNQUOTED(SOCK_LENGTH_TYPE, $try, [socket length type])
 ])
 if test ! -z "$socket_argtype" ; then
     break
@@ -645,7 +645,7 @@ changequote([,]),
     ])
     AC_MSG_RESULT($ac_cv_type_$1)
     if test $ac_cv_type_$1 = no; then
-        AC_DEFINE($1, $2)
+        AC_DEFINE($1, $2, [Define to 1 if have type $1])
     fi
 ])
 

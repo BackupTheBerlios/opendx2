@@ -18,15 +18,8 @@ if WITH_INSTALLHTML
 
 html_DATA = $(EXTRA_DIST)
 
-install-data-local:
-	sh -c 'f=`pwd` ; 					\
-	       if test ! -d $(htmldir) ; then 			\
-		   mkdir $(htmldir) ; 				\
-	       fi ; 						\
-	       chmod 755 $(htmldir) ;				\
-	       cd $(htmldir) ; 					\
-	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.htm ; \
-	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.html ; \
-	       cd $$f ; 						\
+install-data-hook:
+	sh -c 'ln -sf $(htmldir)/allguide.htm $(htmldir)/index.htm ; \
+	       ln -sf $(htmldir)/allguide.htm $(htmldir)/index.html ; \
 	      '
 endif # WITH_INSTALLHTML

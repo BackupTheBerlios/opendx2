@@ -104,8 +104,8 @@ extern "C" {
 #include <time.h>
 #endif
 
-#if defined(HAVE_TIMEB_H)
-#include <timeb.h>
+#if defined(HAVE_SYS_TIMEB_H)
+#include <sys/timeb.h>
 #endif
 
 #if defined(HAVE_SYS_TIME_H)

@@ -21,10 +21,11 @@ javasrv_DATA = server.jar
 EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java exports.awk
 javalibdir = $(prefix)/dx/java/server/lib_@ARCH@
 
-javalib_PROGRAMS = @ANYDX@
-EXTRA_PROGRAMS = libAnyDX.so AnyDX.dll
-libAnyDX_so_SOURCES =
-AnyDX_dll_SOURCES =
+javalib_LIBRARIES = @ANYDX@
+# EXTRA_PROGRAMS = libAnyDX.so AnyDX.dll
+EXTRA_LIBRARIES = libAnyDX.so AnyDX.dll
+# libAnyDX_so_SOURCES =
+# AnyDX_dll_SOURCES =
 SUBDIRS = server dx
 
 ##
@@ -72,7 +73,7 @@ libAnyDX.so: DXLink.o
 	elif test "$(ARCH)" = "macos" ; then \
 		( $(MAKE) macos_shared_object ) \
 	elif test "$(ARCH)" = "intelnt" ; then \
-		( $(MAKE) AnyDX.dll ) \
+		( $(MAKE) windows_shared_object ) \
 	fi
 
 usual_shared_object:
@@ -89,14 +90,14 @@ macos_shared_object:
 	ld -dylib -o libAnyDX.dylib tmpAnyDX.a -L/usr/X11R6/lib -lXt -lX11 -lc
 	rm -f tmpAnyDX.*
 
-#AnyDX.dll: DXLink.o
-#	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
-#	echo EXPORTS > tmpAnyDX.exp
-#	nm --demangle --defined-only tmpAnyDX.a | sed -n 's/^.* T //p' >> tmpAnyDX.exp
-#	dllwrap -s --export-all-symbols --image-base 0x6620000 --def tmpAnyDX.exp --driver-name gcc -o libAnyDX.dll DXLink.o -L../dxl -lDXL -L/usr/X11R6/lib -lXt -lSM -lICE -lX11
-#	rm -f tmpAnyDX.*
-
 AnyDX.dll: DXLink.o
+	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
+	echo EXPORTS > tmpAnyDX.exp
+	nm --demangle --defined-only tmpAnyDX.a | sed -n 's/^.* T //p' >> tmpAnyDX.exp
+	dllwrap -s --export-all-symbols --image-base 0x6620000 --def tmpAnyDX.exp --driver-name gcc -o libAnyDX.dll DXLink.o -L../dxl -lDXL -L/usr/X11R6/lib -lXt -lSM -lICE -lX11
+	rm -f tmpAnyDX.*
+
+windows_shared_object: DXLink.o
 	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
 	cc /LD -o AnyDX.dll DXLink.o -L../dxl libDXL.a $(LIBS)
 	rm -f tmpAnyDX.*
