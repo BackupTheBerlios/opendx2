@@ -19,6 +19,7 @@
   Defines
 \*---------------------------------------------------------------------------*/
 
+#include <X11/Xlib.h>
 #include "hwObject.h"
 
 
@@ -78,7 +79,6 @@ typedef struct translationS		*hwTranslationP;
 typedef void				*SortList;
 
 
-#include <X11/Xlib.h>
 #include "hwFlags.h"
 #include "hwPortLayer.h"
 #include "hwInteractor.h"
