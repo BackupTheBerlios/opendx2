@@ -35,8 +35,8 @@ AC_PROG_RANLIB
 DX_PROG_CXX(-g)
 DX_PROG_CC
 DX_PROG_CPP
-DX_CYGWIN
-DX_EXEEXT
+AC_CYGWIN
+AC_EXEEXT
 
 AC_PATH_X
 if test "$x_includes" != "" ; then
