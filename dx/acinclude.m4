@@ -789,7 +789,7 @@ AC_DEFUN(DX_CHECK_TYPE,
 	 if test "$ac_cv_header_windows_h" = "yes" ; then
 	    AC_EGREP_CPP(dnl
 changequote(<<,>>)dnl
-<<typedef.*[^a-zA-Z_0-9]$1[\\t]*;>>dnl
+<<typedef.*[^a-zA-Z_0-9]$1[ \\t;];>>dnl
 changequote([,]),
 	    [
 		#include <sys/types.h>
@@ -803,7 +803,7 @@ changequote([,]),
 	else
 	    AC_EGREP_CPP(dnl
 changequote(<<,>>)dnl
-<<typedef.*[^a-zA-Z_0-9]$1[\\t]*>>dnl
+<<typedef.*[^a-zA-Z_0-9]$1[ \\t;]>>dnl
 changequote([,]),
 	    [
 		#include <sys/types.h>
