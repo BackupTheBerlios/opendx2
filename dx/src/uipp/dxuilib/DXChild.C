@@ -26,12 +26,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-#if defined(HAVE_SYS_WAIT_H)
-#include <sys/wait.h>
-#endif
-
 #if defined(HAVE_FCNTL_H)
+
 #include <fcntl.h>
 #endif
 
@@ -88,6 +84,10 @@ extern "C" {
 #include <sys/select.h>
 #endif
 
+#if defined(HAVE_SYS_WAIT_H)
+#include <sys/wait.h>
+#endif
+
 #if defined(HAVE_SYSENT_H)
 #include <sysent.h>
 #endif
@@ -98,10 +98,6 @@ extern "C" {
 #endif
 #if HAVE_CC_LIBC_H
 #include <CC/libc.h>
-#endif
-
-#ifdef sgi
-extern "C" int getdtablesize();
 #endif
 
 #if defined(HAVE_TIME_H)
@@ -122,27 +118,6 @@ extern "C" int getdtablesize();
 
 #if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
-#endif
-
-#ifdef alphax
-extern "C" int getdtablesize ( void );
-extern "C"   int select(
-          int nfds,
-          fd_set *readfds,
-          fd_set *writefds,
-          fd_set *exceptfds,
-          struct timeval *timeout) ;
-#endif
-
-
-#if 0
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#elif defined(HAVE_SYS_SOCKET_H)
-#include <sys/socket.h>
-#endif
 #endif
 
 #if defined(HAVE_SYS_UN_H)
@@ -300,9 +275,6 @@ DXChild::ConnectTo(const char *host,
 #else
     int in[2], out[2], err[2];
 #endif
-#ifdef DXD_HAS_WINSOCKETS
-    int  width = FD_SETSIZE;
-#endif
     char **rep;
     char **fargv = NULL;
     int child;
@@ -315,20 +287,12 @@ DXChild::ConnectTo(const char *host,
     int  j;
     char *dnum;
 #if defined(HAVE_SYS_UTSNAME_H)
-
-#ifdef hp700
-    int  width = MAXFUPLIM;
-#else
-#ifdef aviion
-    int  width = NOFILE;
-#else
-#ifdef solaris
-    int  width = FD_SETSIZE;
-#else
+#if defined(HAVE_GETDTABLESIZE)
+    extern int getdtablesize();
     int  width = getdtablesize();
-#endif   // if solarif
-#endif   // aviion
-#endif   // if hp700
+#else
+    int  width = FD_SETSIZE;
+#endif
     struct utsname Uts_Name;
 
     /*
@@ -1189,15 +1153,11 @@ DXChild::~DXChild()
     }
     
     if (this->child > 1) {
-#if !defined(DXD_OS_NON_UNIX)
+#if defined(DXD_WIN)
+	TerminateProcess((HANDLE)this->child,-1);
+#else
 	kill(this->child, SIGTERM);
 	wait(0);
-#endif
-#ifdef DXD_WIN
-    TerminateProcess((HANDLE)this->child,-1);
-#endif
-#ifdef OS2
-    DosKillProcess(DKP_PROCESSTREE, (PID)this->child);
 #endif
     }
 
@@ -1298,20 +1258,13 @@ DXChild::waitForConnection()
     rstring[0] = '\0';
 #if defined(HAVE_SYS_UTSNAME_H)
     fd_set fds;
-#ifdef hp700
-    int  width = MAXFUPLIM;
-#else
-#ifdef aviion
-    int  width = NOFILE;
-#else
-#ifdef solaris
-    int  width = FD_SETSIZE;
-#else
+#if defined(HAVE_GETDTABLESIZE)
+    extern int getdtablesize();
     int  width = getdtablesize();
+#else
+    int  width = FD_SETSIZE;
 #endif
 #endif
-#endif
-#endif  //  ifndef DXD_LACKS_UTS
 
     /* Until we get port = ..., read from stdout and error.  Close the
      * port down and fail if we get an eof on either.

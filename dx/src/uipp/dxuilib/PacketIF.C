@@ -75,10 +75,6 @@ extern "C" {
 #include <arpa/inet.h>
 #endif
 
-#ifdef sun4
-extern "C" int getdtablesize();
-#endif
-
 #if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
@@ -133,7 +129,6 @@ static short sTimeLoop = 1;
 
 #ifdef alphax
 extern "C"   unsigned short htons (unsigned short hostshort) ;
-extern "C" int getdtablesize ( void );
 extern "C" int select(
 	   int nfds,
 	   fd_set *readfds,
@@ -1380,24 +1375,11 @@ void PacketIF::connectAsServer(int pport)
 #endif
     int tries;
     fd_set fds;
-#ifdef hp700
-    int  width = MAXFUPLIM;
-#else
-#ifdef aviion
-    int  width = NOFILE;
-#else
-#ifdef solaris
-    int  width = FD_SETSIZE;
-#else
-#ifdef  USING_WINSOCKS
-    int  width = FD_SETSIZE;
-#else
-#ifndef OS2
+#if defined(HAVE_GETDTABLESIZE)
+    extern int getdtablesize();
     int  width = getdtablesize();
-#endif
-#endif
-#endif
-#endif
+#else
+    int  width = FD_SETSIZE;
 #endif
     struct timeval to;
 
