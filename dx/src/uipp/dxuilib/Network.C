@@ -662,6 +662,14 @@ void Network::changeExistanceWork(Node *n, boolean adding)
     ListIterator iter;
     boolean hasCfg = FALSE;
 
+    //
+    // If this isn't the 'main' network in dxui, then don't modify
+    // the commands of DXApplication.  We arrive at this point in the
+    // code whenever temporary networks are modified.  That shouldn't
+    // change activation of application commands.  ...bug106
+    //
+    boolean modify_application_commands = (this == theDXApplication->network);
+
     if (adding) {
 	List dummy;
 	if (n) {
@@ -674,9 +682,11 @@ void Network::changeExistanceWork(Node *n, boolean adding)
 	    if (!this->sequencer && n->isA(ClassSequencerNode))	
 		this->sequencer = (SequencerNode*)n;	
 	    n->initializeAfterNetworkMember();
-	    if (!theDXApplication->openAllColormapCmd->isActive() &&
-    		n->isA(ClassColormapNode))
-		theDXApplication->openAllColormapCmd->activate();	
+	    if (modify_application_commands) {
+		if (!theDXApplication->openAllColormapCmd->isActive() &&
+		    n->isA(ClassColormapNode))
+		    theDXApplication->openAllColormapCmd->activate();	
+	    }
 	    if (!hasCfg && n->hasCfgState())
 		hasCfg = TRUE;
 	}
@@ -699,12 +709,16 @@ void Network::changeExistanceWork(Node *n, boolean adding)
 		this->sequencer = NULL;
 	    if (theDXApplication->openAllColormapCmd->isActive() &&
 		n->isA(ClassColormapNode))
-		if (!this->containsClassOfNode(ClassColormapNode))
-		    theDXApplication->openAllColormapCmd->deactivate();
+		if (modify_application_commands) {
+		    if (!this->containsClassOfNode(ClassColormapNode))
+			theDXApplication->openAllColormapCmd->deactivate();
+		}
 	} else {
-	    if (theDXApplication->openAllColormapCmd->isActive() &&
-		!this->containsClassOfNode(ClassColormapNode))
-		theDXApplication->openAllColormapCmd->deactivate();
+	    if (modify_application_commands) {
+		if (theDXApplication->openAllColormapCmd->isActive() &&
+		    !this->containsClassOfNode(ClassColormapNode))
+		    theDXApplication->openAllColormapCmd->deactivate();
+	    }
 	    if (this->sequencer && 
 	 	!this->containsClassOfNode(ClassSequencerNode))
 		this->sequencer = NULL;	
