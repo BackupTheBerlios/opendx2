@@ -2,11 +2,11 @@
 
 helpdir = $(prefix)/dx/help
 
-EXTRA_DIST = helpfiles1 helpfiles2 helpfiles3 helpfiles4 helpfiles5  \
-	helpfiles6 helpfiles7 helpfiles8 helpfiles9 helpfiles10  \
-	helpfiles11 helpfiles12 helpfiles13 helpfiles14 helpfiles15  \
-	helpfiles16 helpfiles17 helpfiles18 helpfiles19 helpfiles20  \
-	helpfiles21 helpfiles22 
+EXTRA_DIST = $(helpfiles1) $(helpfiles2) $(helpfiles3) $(helpfiles4) $(helpfiles5)  \
+	$(helpfiles6) $(helpfiles7) $(helpfiles8) $(helpfiles9) $(helpfiles10)  \
+	$(helpfiles11) $(helpfiles12) $(helpfiles13) $(helpfiles14) $(helpfiles15)  \
+	$(helpfiles16) $(helpfiles17) $(helpfiles18) $(helpfiles19) $(helpfiles20)  \
+	$(helpfiles21) $(helpfiles22) 
 helpfiles1 = \
 	HelpDir HelpNotAvailable dxall1 dxall10 dxall100 dxall1000 \
 	dxall1001 dxall1002 dxall1003 dxall1004 dxall1005 dxall1006 \
