@@ -295,7 +295,11 @@ int putenvstr(char *name, char *value)
 #ifdef CHECK_ENV
     printf("%s\n", s);
 #endif
-    rc = putenv(s);
+
+    p = malloc(strlen(s) + 1);
+    strcpy(p, s);
+    
+    rc = putenv(p);
     if (echo)
 	printf("%s\n", s);
     return (!rc ? 1 :0);
