@@ -77,14 +77,14 @@ String ColormapEditor::DefaultResources[] =
     "*cmeSaveAsOption.mnemonic:                 S",
     "*cmeCloseOption.labelString:               Close",
     "*cmeCloseOption.mnemonic:                  C",
-    "*cmeCloseOption.accelerator:               Ctrl<Key>Q:",
+    "*cmeCloseOption.accelerator:               Ctrl<Key>Q",
     "*cmeCloseOption.acceleratorText:           Ctrl+Q",
 
     "*editMenu.labelString:                     Edit",
     "*editMenu.mnemonic:                     	E",
     "*cmeUndoOption.labelString: 		Undo",
     "*cmeUndoOption.mnemonic:       		U",
-    "*cmeUndoOption.accelerator:                Ctrl<Key>U:",
+    "*cmeUndoOption.accelerator:                Ctrl<Key>U",
     "*cmeUndoOption.acceleratorText:            Ctrl+U",
     "*cmeResetCascade.labelString:              Use Application Default",
     "*cmeResetCascade.mnemonic:                 R",
@@ -126,7 +126,7 @@ String ColormapEditor::DefaultResources[] =
 #endif
     "*cmeSelectAllOption.labelString:    	Select All Control Points",
     "*cmeSelectAllOption.mnemonic:     		S",
-    "*cmeSelectAllOption.accelerator:           Ctrl<Key>A:",
+    "*cmeSelectAllOption.accelerator:           Ctrl<Key>A",
     "*cmeSelectAllOption.acceleratorText:       Ctrl+A",
 
     "*optionsMenu.labelString:                  Options",

@@ -128,7 +128,7 @@ String ControlPanel::DefaultResources[] =
     "*panelsMenu.mnemonic:                        P",
     "*panelOpenAllControlPanelsOption.labelString:     Open All Control Panels",
     "*panelOpenAllControlPanelsOption.mnemonic:        A",
-    "*panelOpenAllControlPanelsOption.accelerator:     Ctrl<Key>P:",
+    "*panelOpenAllControlPanelsOption.accelerator:     Ctrl<Key>P",
     "*panelOpenAllControlPanelsOption.acceleratorText: Ctrl+P",
     "*panelOpenControlPanelByNameOption.labelString:   Open Control Panel by Name",
     "*panelPanelCascade.labelString:   		  Open Control Panel by Name",
