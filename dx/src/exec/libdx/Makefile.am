@@ -2,7 +2,10 @@
 
 INCLUDES = -I../../../include  -D@ARCH@
 
+dxlibdir = $(prefix)/dx/lib_@ARCH@
+
 noinst_LIBRARIES = libLIBDX.a
+dxlib_LIBRARIES = libDXlite.a libcallm.a
 
 noinst_HEADERS = \
 	binSort.h triangles.h internals.h diskio.h zclip.h edf.h render.h \
@@ -40,6 +43,33 @@ built_headers = \
 	fle2DClass.h linesII1DClass.h linesRR1DClass.h linesRI1DClass.h \
 	trisRI2DClass.h quadsRR2DClass.h cubesIIClass.h cubesRRClass.h \
 	tetrasClass.h quadsII2DClass.h  
+
+libDXlite_a_LIBADD = \
+	arrayClass.o cameraClass.o clippedClass.o fieldClass.o \
+        groupClass.o lightClass.o objectClass.o stringClass.o \
+        xformClass.o screenClass.o privateClass.o
+
+dxlite_sources0 = \
+        object.c string.c camera.c clipped.c field.c group.c \
+        series.c composite.c multigrid.c light.c array.c \
+        regulararray.c cstarray.c patharray.c productarray.c \
+        mesharray.c xform.c screen.c private.c message.c  \
+        timing.c lock.c stringtable.c client.c basic.c vector.c
+
+dxlite_sources1 = \
+        matrix.c init.c grid.c box.c helper.c neighbors.c \
+        print.c hash.c color.c extract.c component.c edflex.c \
+        edfparse.c edfobj.c edfdata.c edfdict.c edfio.c edfprint.c \
+        fileio.c rwobject.c renderstubs.c memorystubs.c qmessage.c \
+        task.c cache.c version.c outglue.c invalid.c seglist.c \
+        notify.c
+
+libDXlite_a_SOURCES = $(dxlite_sources0) $(dxlite_sources1)
+
+libcallm_a_SOURCES =  \
+        qmessage.c outglue.c task.c cache.c memorystubs.c \
+	callm_xinit.c callm_init.c 
+
 
 libLIBDX_a_LIBADD =  \
 	arrayClass.o cameraClass.o clippedClass.o fieldClass.o groupClass.o \
@@ -93,7 +123,7 @@ $(built_sources) : $(built_headers)
 
 BUILT_SOURCES =  $(built_sources) $(built_headers)
 
-$(libLIBDX_a_SOURCES): $(built_headers)
+$(libDXlite_a_SOURCES) $(libLIBDX_a_SOURCES): $(built_headers)
 
 $(InputName).c: $(InputName).X class class.awk
 	sh ./class -c $*.X > $*.c
