@@ -162,7 +162,7 @@ if test $compile = 1 ; then
 
     if test $link = 1 ; then
 	cmd="cl -nologo $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $deflibs $libs $dlllib $map $binmode" 
-	args=`echo $args |sed 's?/Z7?/DEBUG?g'`
+	# args=`echo $args |sed 's?/Z7?/DEBUG?g'`
 	# cmd="link -nologo $args $cfiles $libpath $deflibs $libs $dlllib $map $binmode" 
     else
 	cmd="cl $dllflag -nologo $incpath $defs $undefs $args $cfiles"

@@ -177,7 +177,7 @@ if test $compile = 1
 then
 
     if test $link = 1 ; then
-	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles $libpath /link $deflibs $libs $dlllib $map $binmode" 
+	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles /link $libpath $deflibs $libs $dlllib $map $binmode" 
 	# cmd="link -nologo $args $cfiles $libpath $deflibs $libs $dlllib $map $binmode" 
     else
 	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles"
