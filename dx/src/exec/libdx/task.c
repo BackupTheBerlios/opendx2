@@ -300,10 +300,13 @@ one_task(int block)
     if (ti->ntasks) {			/* are there more sorted tasks? */
 	ti->ntasks -= 1;		/* yes, remove it */
 	t = &(ti->tasks[ti->ntasks]);	/* get the next task */
+        delete = 0;			/* master tasks do not get deleted */
     } else if (ti->first) {		/* are there more extra tasks */
 	DXlock(&ti->extra_lock, 0);	/* DXlock the queue */
 	t = ti->first;			/* get the next one */
 	ti->first = t->next;		/* remove from queue */
+	if (ti->last == t)
+	   ti->last = NULL;
 	DXunlock(&ti->extra_lock, 0);	/* DXunlock the queue */
 	delete = 1;			/* remember to delete it */
     }
@@ -317,6 +320,8 @@ one_task(int block)
 
     if (t->size)			/* if we allocated the arg block, */
 	DXFree(t->arg);			/* free it */
+    if (delete)				/* if we allocated the task block, */
+        DXFree(t);			/* free it */
     DXsyncmem();				/* make sure we're in sync */
 
     DXlock(&(ti->undone_lock), id);	/* DXlock the undone count */
