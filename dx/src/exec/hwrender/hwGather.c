@@ -661,6 +661,7 @@ _gatherField(Field f,
   xfieldP	xf;
   hwFlags	attFlags;
   hwFlags	servicesFlags;
+  int           alphaTexture;
 
   ENTRY(("_gatherField(0x%x, 0x%x, 0x%x, 0x%x, 0x%x)",
 	 f, newObject, gather, attributes, globals));
@@ -740,7 +741,8 @@ _gatherField(Field f,
 
   attFlags = _dxf_attributeFlags(_dxf_xfieldAttributes(xf));
 
-  if (!(_dxf_isFlagsSet(attFlags,(CONTAINS_TRANSPARENT | CONTAINS_VOLUME))))
+  if (!(_dxf_isFlagsSet(attFlags,(CONTAINS_TRANSPARENT | CONTAINS_VOLUME |
+                                  CONTAINS_TRANSPARENT_TEXTURE ))))
   {
     EXIT(("OK: neither transparent nor volume field"));
     return OK;
@@ -760,61 +762,70 @@ _gatherField(Field f,
   _dxf_setFlags(attFlags,CONTAINS_TRANSPARENT);
   */
 
-  switch (xf->opacitiesDep)
-  {
-      case dep_field:
-      {
-	  int	 i;
-	  float  fscratch[1];
-	  int    iscratch;
+  alphaTexture = _dxf_isFlagsSet(attFlags,CONTAINS_TRANSPARENT_TEXTURE);
+  if ( alphaTexture ) {
+      int	 i;
+      for (i = 0; i < xf->nconnections; i++)
+          if (!xf->invCntns || !DXIsElementInvalid(xf->invCntns,i))
+              _dxf_Insert_Translucent(SORTLIST, (void *)xf, i);
+  }
 
-	  if (OPACITY(0))
+  else /* opacities */
+      switch (xf->opacitiesDep)
+      {
+	  case dep_field:
+	  {
+	      int	 i;
+	      float  fscratch[1];
+	      int    iscratch;
+
+	      if (OPACITY(0))
+		  for (i = 0; i < xf->nconnections; i++)
+		      if (!xf->invCntns || !DXIsElementInvalid(xf->invCntns,i))
+			  _dxf_Insert_Translucent(SORTLIST, (void *)xf, i);
+	      break;
+	  }
+
+	  case dep_connections:
+	  {
+	      int	 i;
+	      float  fscratch[1];
+	      int    iscratch;
+
 	      for (i = 0; i < xf->nconnections; i++)
 		  if (!xf->invCntns || !DXIsElementInvalid(xf->invCntns,i))
-		      _dxf_Insert_Translucent(SORTLIST, (void *)xf, i);
-	  break;
-      }
-
-      case dep_connections:
-      {
-	  int	 i;
-	  float  fscratch[1];
-	  int    iscratch;
-
-	  for (i = 0; i < xf->nconnections; i++)
- 	      if (!xf->invCntns || !DXIsElementInvalid(xf->invCntns,i))
-		  if (OPACITY(i))
-		      _dxf_Insert_Translucent(SORTLIST, (void *)xf, i);
-	  break;
-      }
-
-      case dep_positions:
-      {
-	  int	 i, j;
-	  float  fscratch[1];
-	  int    iscratch;
-	  int	 *c, cscr[8];
-
-	  for (i = 0; i < xf->nconnections; i++)
-	  {
- 	      if (!xf->invCntns || !DXIsElementInvalid(xf->invCntns,i))
-	      {
-		  c = (int*)DXGetArrayEntry(xf->connections,i,cscr);
-		  for (j = 0; j < xf->posPerConn; j++)
-		      if (OPACITY(c[j]))
-		      {
+		      if (OPACITY(i))
 			  _dxf_Insert_Translucent(SORTLIST, (void *)xf, i);
-			  break;
-		      }
-	      }
+	      break;
 	  }
-	  break;
-      }
 
-      case dep_none:
-      default:
-	  break;
-  }
+	  case dep_positions:
+	  {
+	      int	 i, j;
+	      float  fscratch[1];
+	      int    iscratch;
+	      int	 *c, cscr[8];
+
+	      for (i = 0; i < xf->nconnections; i++)
+	      {
+		  if (!xf->invCntns || !DXIsElementInvalid(xf->invCntns,i))
+		  {
+		      c = (int*)DXGetArrayEntry(xf->connections,i,cscr);
+		      for (j = 0; j < xf->posPerConn; j++)
+			  if (OPACITY(c[j]))
+			  {
+			      _dxf_Insert_Translucent(SORTLIST, (void *)xf, i);
+			      break;
+			  }
+		  }
+	      }
+	      break;
+	  }
+
+	  case dep_none:
+	  default:
+	      break;
+      }
 
   EXIT(("OK"));
   return OK;

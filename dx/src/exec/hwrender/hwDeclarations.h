@@ -33,13 +33,14 @@
 /*
  * Values for the attribute & gather 'flags' parameter
  */
-#define CONTAINS_TRANSPARENT	(1<<0)
-#define	CONTAINS_VOLUME		(1<<1)
-#define CONTAINS_CLIP_OBJECT	(1<<2)
-#define CONTAINS_NORMALS	(1<<3)
-#define CONTAINS_LIGHT		(1<<4)
-#define CONTAINS_SCREEN		(1<<5)
-#define CONTAINS_IMAGE_ONLY    	(1<<6)
+#define CONTAINS_TRANSPARENT         (1<<0)
+#define CONTAINS_VOLUME              (1<<1)
+#define CONTAINS_CLIP_OBJECT         (1<<2)
+#define CONTAINS_NORMALS             (1<<3)
+#define CONTAINS_LIGHT               (1<<4)
+#define CONTAINS_SCREEN              (1<<5)
+#define CONTAINS_IMAGE_ONLY          (1<<6)
+#define CONTAINS_TRANSPARENT_TEXTURE (1<<7)
 
 #define IGNORE_PARAMS		(1<<16)
 #define IN_SCREEN_OBJECT	(1<<17)

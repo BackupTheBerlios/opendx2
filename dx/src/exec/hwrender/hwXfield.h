@@ -184,6 +184,7 @@ typedef struct xfieldS {
   Array uv_array;
   ArrayHandle uv;
   int   textureWidth, textureHeight;
+  int   textureIsRGBA;
 			     
   Array		polylines_array, edges_array;
   int *polylines, npolylines; /* polylines are handled separately since */

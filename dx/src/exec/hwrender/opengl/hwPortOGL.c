@@ -526,8 +526,6 @@ _dxf_INIT_RENDER_MODULE (void *globals)
    *  `first time' initialization of the graphics window.
    */
 
-  int i ;
-  char * ch;
   DEFGLOBALDATA(globals) ;
 
   ENTRY(("_dxf_INIT_RENDER_MODULE (0x%x)",globals));
@@ -1111,7 +1109,7 @@ static int _dxf_DEFINE_LIGHT (void *win, int n, Light light)
   RGBColor color ;
   Vector direction ;
   float gamma;
-  float M[4][4], new[4] ;
+  float new[4] ;
   int	lightNumber = GL_LIGHT0 + (n - 1);
 
   ENTRY(("_dxf_DEFINE_LIGHT (0x%x, %d, 0x%x)",

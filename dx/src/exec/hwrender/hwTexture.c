@@ -34,12 +34,16 @@
 
 #include "hwDebug.h"
 
+#define FLOAT_TO_UBYTE(val)  ((val)<=0.0 ? (ubyte)0.f   : \
+			      (val)>=1.0 ? (ubyte)255.f : (ubyte)((val)*255.0f))
+
 typedef struct _texture
 {
     int       width, height;
     ubyte     *pixels;
     dxObject  textureObj;
     int       myPixels;
+    int       isRGBA;
 } *Texture;
 
 static Error _getTexture_Field(Texture);
@@ -102,8 +106,7 @@ _XTexture(Field f, xfieldT* xf, void *globals)
 {
     DEFGLOBALDATA(globals);
     Type  type;
-    Category cat;
-    int   n, rank, shape[32], counts[2];
+    int   rank, shape[32];
     dxObject attr, texture = _dxf_xfieldAttributes(xf)->texture;
     dxObject txo;
 
@@ -162,9 +165,15 @@ _XTexture(Field f, xfieldT* xf, void *globals)
 	xf->texture_field = DXReference(txo);
 	txp = (Texture)DXGetPrivateData((Private)txo);
 
-	xf->textureWidth  = txp->width;
-	xf->textureHeight = txp->height;
-	xf->texture       = txp->pixels;
+	xf->textureWidth    = txp->width;
+	xf->textureHeight   = txp->height;
+	xf->texture         = txp->pixels;
+	xf->textureIsRGBA   = txp->isRGBA;
+
+        if ( xf->textureIsRGBA )
+            /*  Set flag so primitives will be added to transparent SORTLIST  */
+            _dxf_setFlags(_dxf_attributeFlags(_dxf_xfieldAttributes(xf)),
+                          CONTAINS_TRANSPARENT_TEXTURE);
     }
     else
     {
@@ -193,12 +202,12 @@ error:
 static Error
 _getTexture_Field(Texture t)
 {
-    Type  type;
-    Category cat;
-    int   n, rank, shape[32], counts[2];
-    Array tmp;
-    int i, sizeError = 0, s0, s1;
-    dxObject attr;
+    Type     type, o_type;
+    Category cat , o_cat;
+    int   n, o_n, rank, o_rank, shape[32], o_shape[32];
+    int   counts[2];
+    Array tmp,colors,opac;
+    int i;
     Field tf = (Field)t->textureObj;
 
     tmp = (Array)DXGetComponentValue(tf, "connections");
@@ -226,53 +235,117 @@ _getTexture_Field(Texture t)
     t->width  = counts[1];
     t->height = counts[0];
 
-    tmp = (Array)DXGetComponentValue(tf, "colors");
-    if (! tmp)
-	tmp = (Array)DXGetComponentValue(tf, "data");
-    if (! tmp)
+    colors = (Array)DXGetComponentValue(tf, "colors");
+    if (! colors)
+	colors = (Array)DXGetComponentValue(tf, "data");
+    if (! colors)
     {
 	DXSetError(ERROR_DATA_INVALID, 
 	    "texture has neither colors nor data");
 	return ERROR;
     }
+    DXGetArrayInfo(colors, &n, &type, &cat, &rank, shape);
 
-    DXGetArrayInfo(tmp, &n, &type, &cat, &rank, shape);
+    opac = (Array)DXGetComponentValue(tf, "opacities");
+    if ( opac ) {
+        DXGetArrayInfo(opac, &o_n, &o_type, &o_cat, &o_rank, o_shape);
+        if ( o_n != n ) {
+	    DXSetError(ERROR_MISSING_DATA, 
+	        "length of color and opacity components do not match");
+	    goto error;
+        }
+    }
 
+    /*  Handle ubyte[3] colors (w/ optional float opacities)  */
     if (type == TYPE_UBYTE && rank == 1 && shape[0] == 3)
     {
-	t->pixels = (ubyte *)DXGetArrayData(tmp);
-	t->myPixels = 0;
+	if ( !opac ) {
+	    t->pixels = (ubyte *)DXGetArrayData(colors);
+	    t->isRGBA   = 0;
+	    t->myPixels = 0;
+	}
+	else {
+    	    if (! (o_type == TYPE_FLOAT &&
+    	          (o_rank == 0 || o_rank == 1 && o_shape[0] == 1)) ) {
+		DXSetError(ERROR_MISSING_DATA, 
+		    "opacities for a direct color texture map must be float");
+		goto error;
+	    }
+	    {
+		ubyte *dst, *c_src;
+		float *o_src;
+	        t->pixels = (ubyte *)tdmAllocate(4*n*sizeof(ubyte));
+	        dst   = t->pixels;
+	        o_src = (float *)DXGetArrayData(opac);
+	        c_src = (ubyte *)DXGetArrayData(colors);
+
+	        for (i = 0; i < n; i++) {
+		    float opacity = *(o_src++);
+		    *(dst++) = *(c_src++);
+		    *(dst++) = *(c_src++);
+		    *(dst++) = *(c_src++);
+		    *(dst++) = FLOAT_TO_UBYTE(opacity);
+                }
+	        t->isRGBA   = 1;
+	        t->myPixels = 1;
+	    }
+	}
     }
     else
     {
-	t->pixels = (ubyte *)tdmAllocate(3*n*sizeof(ubyte));
+	int Bpp = opac ? 4 : 3;
+	t->pixels = (ubyte *)tdmAllocate(Bpp*n*sizeof(ubyte));
 	if (! t->pixels)
-	    goto error;
-	t->myPixels = 1;
+		goto error;
+	t->myPixels = 1;	
     
+	/*  Handle float[3] colors (w/ optional float opacities)  */
 	if (type == TYPE_FLOAT && rank == 1 && shape[0] == 3)
 	{
 	    int i;
 	    ubyte *dst = t->pixels;
-	    float *src = (float *)DXGetArrayData(tmp);
-	    for (i = 0; i < 3*n; i++)
+	    float *c_src = (float *)DXGetArrayData(colors);
+	    float *o_src;
+	    
+	    if ( opac ) {
+	        o_src = (float *)DXGetArrayData(opac);
+		if ( ! (o_type == TYPE_FLOAT &&
+			(o_rank == 0 || o_rank == 1 && o_shape[0] == 1)) ) {
+		    DXSetError(ERROR_MISSING_DATA, 
+		     "opacities for a direct color texture map must be float");
+		    goto error;
+		}
+		Bpp = 4;
+	    }
+    
+	    t->isRGBA = opac != NULL;
+
+	    for (i = 0; i < n; i++)
 	    {
-		float c = *src++;
-		if (c < 0)        *dst++ = 0;
-		else if (c > 1.0) *dst++ = 255;
-		else              *dst++ = (ubyte)(c * 255);
+		float c, o;
+		c = *c_src++, *dst++ = FLOAT_TO_UBYTE(c);
+		c = *c_src++, *dst++ = FLOAT_TO_UBYTE(c);
+		c = *c_src++, *dst++ = FLOAT_TO_UBYTE(c);
+		if ( opac )
+		  o = *o_src++, *dst++ = FLOAT_TO_UBYTE(o);
 	    }
 	}
-	else if (type == TYPE_UBYTE &&
-	    (rank == 0 || rank == 1 && shape[0] == 1))
+
+	/*  Handle ubyte colors w/ float[3] or ubyte[3] colormap    */
+	/*    (w/ optional ubyte opacities with float opacity map)  */
+        else if (type == TYPE_UBYTE &&
+                 (rank == 0 || rank == 1 && shape[0] == 1))
 	{
 	    int i, m;
 	    ubyte *dst = t->pixels;
-	    ubyte *src = (ubyte *)DXGetArrayData(tmp);
-	    Array cmap_array;
-	    ubyte map_array[768];
-	    ubyte *map;
+	    ubyte *c_src = (ubyte *)DXGetArrayData(colors);
+	    ubyte *o_src = (ubyte *)DXGetArrayData(opac);
+	    Array cmap_array, omap_array;
+	    ubyte cmap_data[768], omap_data[256];
 
+	    ubyte *cmap, *omap;
+
+	    /*  Extract the color map and convert to ubyte[3] format  */
 	    cmap_array = (Array)DXGetComponentValue(tf, "color map");
 	    if (! cmap_array)
 	    {   
@@ -290,15 +363,13 @@ _getTexture_Field(Texture t)
 		for (i = 0; i < 3*m; i++)
 		{
 		    float c = *map_src++;
-		    if      (c < 0.0) map_array[i] = 0;
-		    else if (c > 1.0) map_array[i] = 255;
-		    else 	      map_array[i] = (ubyte)(c * 255);
+		    cmap_data[i] = FLOAT_TO_UBYTE(c);
 		}
-		map = map_array;
+		cmap = cmap_data;
 	    }
 	    else if (type == TYPE_UBYTE && rank == 1 && shape[0] == 3)
 	    {
-		map = (ubyte *)DXGetArrayData(cmap_array);
+		cmap = (ubyte *)DXGetArrayData(cmap_array);
 	    }
 	    else
 	    {
@@ -307,19 +378,63 @@ _getTexture_Field(Texture t)
 		goto error;
 	    }
 
+	    /*  Extract any opacity map and convert to ubyte format  */
+	    if ( opac ) {
+		if ( !(o_type == TYPE_UBYTE &&
+		       (o_rank == 0 || o_rank == 1 && o_shape[0] == 1)) ) {
+		    DXSetError(ERROR_MISSING_DATA, 
+		        "indirect texture map opacities must be scalar ubytes");
+		    goto error;
+		}
+		
+		omap_array = (Array)DXGetComponentValue(tf, "opacity map");
+		if (! omap_array)
+		{   
+		    DXSetError(ERROR_MISSING_DATA, 
+			"indirect texture map missing opacity map component");
+			goto error;
+		}
+
+		DXGetArrayInfo(omap_array, &m, &type, NULL, &rank, shape);
+
+		if ( (o_type == TYPE_FLOAT &&
+		      (o_rank == 0 || o_rank == 1 && o_shape[0] == 1)) )
+		{
+		    float *map_src = (float *)DXGetArrayData(omap_array);
+
+		    for (i = 0; i < m; i++)
+		    {
+			float o = *map_src++;
+			omap_data[i] = FLOAT_TO_UBYTE(o);
+		    }
+		    omap = omap_data;
+		}
+		else
+		{
+		    DXSetError(ERROR_DATA_INVALID,
+			"invalid opacity map type in texture");
+		    goto error;
+		}
+	    }
+
 	    for (i = 0; i < n; i++)
 	    {
-		ubyte *c = map + 3 * *src++;
+		ubyte *c = cmap + 3 * *c_src++;
 		*dst++ = *c++;
 		*dst++ = *c++;
 		*dst++ = *c++;
+		if ( opac )
+		   *dst++ = omap[ *o_src++ ];
 	    }
+	    t->isRGBA = opac != NULL;
 	}
 	else
 	{ 
 	    DXSetError(ERROR_DATA_INVALID,
-		"texture must be float or ubyte 3-vectors or %s",
-		"contain scalar ubytes and have a color map");
+		"Bad texture found.  Texture must contain float or ubyte "
+		"3-vector colors (with optional float opacities), OR contain "
+		"scalar ubyte colors with a float or ubyte 3-vector color map "
+		"(with optional ubyte opacities and a float opacity map)");
 	    goto error;
 	}
     }
@@ -336,8 +451,7 @@ _getTexture_CompositeField(Texture t)
     Type  type;
     Category cat;
     int   n, rank, shape[32], counts[2];
-    int i, sizeError = 0, s0, s1;
-    dxObject attr;
+    int i;
     Group cf = (Group)t->textureObj;
     int nMembers;
 
@@ -345,6 +459,7 @@ _getTexture_CompositeField(Texture t)
 
     counts[0] = counts[1] = 0;
 
+    /*  FIXME:  Support alph textures in composite fields too  */
     for (i = 0; i < nMembers; i++)
     {
 	Field member;
@@ -373,8 +488,8 @@ _getTexture_CompositeField(Texture t)
 
 	if ((cnt = memberOffsets[1] + memberCounts[1]) > counts[1])
 	    counts[1] = cnt;
-    }
-
+    
+}
     t->width  = counts[1];
     t->height = counts[0];
 
@@ -384,13 +499,14 @@ _getTexture_CompositeField(Texture t)
     if (! t->pixels)
 	goto error;
     t->myPixels = 1;
+    t->isRGBA   = 0;
 
     for (i = 0; i < nMembers; i++)
     {
 	Field member;
 	Array texture;
 	Array grid;
-	int memberCounts[2], memberOffsets[2], nDim, cnt;
+	int memberCounts[2], memberOffsets[2];
 
 	member = (Field)DXGetEnumeratedMember(cf, i, NULL);
 	grid = (Array)DXGetComponentValue(member, "connections");
@@ -412,7 +528,7 @@ _getTexture_CompositeField(Texture t)
 
 	if (type == TYPE_UBYTE && rank == 1 && shape[0] == 3)
 	{
-	    int j, k;
+	    int j;
 	    ubyte *src = (ubyte *)DXGetArrayData(texture);
 	    ubyte *dst = t->pixels + 3*((memberOffsets[0]*counts[1])
 					     + memberOffsets[1]);
@@ -441,9 +557,7 @@ _getTexture_CompositeField(Texture t)
 		for (k = 0; k < memberCounts[1]; k++)
 		{
 		    float c = *src++;
-		    if (c < 0)        *dst++ = 0;
-		    else if (c > 1.0) *dst++ = 255;
-		    else              *dst++ = (ubyte)(c * 255);
+		    *dst++ = FLOAT_TO_UBYTE(c);
 		}
 		dst += dst_stride;
 	    }
@@ -477,9 +591,7 @@ _getTexture_CompositeField(Texture t)
 		for (j = 0; j < 3*m; j++)
 		{
 		    float c = *map_src++;
-		    if      (c < 0.0) map_array[j] = 0;
-		    else if (c > 1.0) map_array[j] = 255;
-		    else 	      map_array[j] = (ubyte)(c * 255);
+		    map_array[j] = FLOAT_TO_UBYTE(c);
 		}
 		map = map_array;
 	    }

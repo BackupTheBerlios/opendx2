@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.7 2002/01/15 02:36:30 rhh Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.8 2002/01/25 01:19:15 rhh Exp $
 
 Author:  Ellen Ball
 
@@ -47,6 +47,7 @@ Based on hwrender/gl/hwPortUtil.c
 #endif
 
 #include <GL/gl.h>
+#include <GL/glu.h>
 
 static void loadTexture(xfieldP);
 static void startTexture(xfieldP);
@@ -728,8 +729,7 @@ static Error polygons (xfieldP xf, helperFunc helper,
    static int	iscratch;
    register int	c;
    register int	c1, translu = 0;
-   dependencyT   odep;
-
+   dependencyT  odep;
 
    ENTRY(("polygons(0x%x, 0x%x, %d, %d, %d, %d, %d)",
 	  xf, helper, firstConnection, lastConnection, face, approx, skip));
@@ -891,6 +891,11 @@ static int _drawTranslucentPrimitives(tdmPortHandleP portHandle, xfieldP xf,
          translucentPolygons(xf,helper,list,n,8,approx,density) ;
          translucentPolygons(xf,helper,list,n,9,approx,density) ;
          TIMER("< cubes") ;
+         break;
+      case ct_tmesh:
+      case ct_qmesh:
+         /*  Note: we don't mesh translucent prims, so we'll never get here  */
+         goto error;
          break;
       default:
          goto error;
@@ -1669,21 +1674,24 @@ Error _dxf_DrawTranslucentOGL(void *globals,
   Light		newLight;
   float 	fscratch[3];
   int   	iscratch;
+  dxObject      dlist = NULL;
 
   ENTRY(("_dxf_DrawTranslucentOGL(0x%x, 0x%x, 0x%x, 0x%x)",
          PORT_HANDLE, xf, ambientColor, buttonUp));
-
-  Cull(xf);
-  LightModel(xf);
 
   glEnable(GL_BLEND);
   OGL_FAIL_ON_ERROR(glEnableBlend);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   OGL_FAIL_ON_ERROR(glBlendFunc);
+  glAlphaFunc(GL_GREATER, 0.0);
+  OGL_FAIL_ON_ERROR(glAlphaFunc);
 
   for (i = 0; i < nSorted; i = j)
   {
     xf = (xfieldP)sorted[i].xfp;
+
+    Cull(xf);
+    LightModel(xf);
 
     if(xf->normalsDep != dep_none &&
         xf->attributes.buttonUp.approx == approx_none)
@@ -1724,11 +1732,35 @@ Error _dxf_DrawTranslucentOGL(void *globals,
 				   (float)xf->attributes.front.shininess);
     } /* end normals & no approximation */
 
-    if(xf->texture)
+    if (xf->texture)
     {
-       loadTexture(xf);
-       startTexture(xf);
+	if (DXGetObjectTag((dxObject)xf->texture_field) != CURTEX)
+	{
+	    CURTEX = DXGetObjectTag((dxObject)xf->texture_field);
+
+	    if (DO_DISPLAY_LISTS)
+	    {
+		dlist = _dxf_QueryObject(TEXTURE_HASH, (dxObject)xf->texture_field);
+		if (dlist)
+		    _dxf_callDisplayListOGL(dlist);
+		else
+		{
+		    dlist = _dxf_openDisplayListOGL();
+		    loadTexture(xf);
+		    _dxf_endDisplayListOGL();
+		    _dxf_InsertObject(TEXTURE_HASH, (dxObject)xf->texture_field, dlist);
+		    dlist = NULL;
+		}
+	    }
+	    else
+		loadTexture(xf);
+	}
+
+	startTexture(xf);
     }
+    else
+	endTexture();
+
 
     if (xf->nClips)
       if (! _dxf_ADD_CLIP_PLANES(LWIN, xf->clipPts, xf->clipVecs, xf->nClips))
@@ -1808,9 +1840,19 @@ Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf,
   Light		newLight;
   dxObject      dlist = NULL;
   DEFPORT(portHandle) ;
+  hwFlags attFlags = _dxf_attributeFlags(_dxf_xfieldAttributes(xf));
+  int alphaTexture = (int) _dxf_isFlagsSet(attFlags,
+					   CONTAINS_TRANSPARENT_TEXTURE);
 
   ENTRY(("_dxf_DrawOpaqueOGL(0x%x, 0x%x, 0x%x, 0x%x)",
 	 portHandle, xf, ambientColor, buttonUp));
+
+  /*  Alpha texture translucency is trapped out here.  Opacities           */
+  /*     translucencycaught in the primitive rendering funcs per element.  */
+  if (alphaTexture) {
+    EXIT(("OK"));
+    return OK;
+  }
 
   doesTrans = _dxf_isFlagsSet(_dxf_SERVICES_FLAGS(), SF_DOES_TRANS);
 
@@ -1970,6 +2012,7 @@ Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf,
   _dxf_POP_MATRIX(PORT_CTX) ;
 
   OGL_FAIL_ON_ERROR(_dxf_DrawOpaqueOGL);
+
   EXIT(("OK"));
   return OK;
 
@@ -2183,9 +2226,12 @@ WriteToFile(char *s, xfieldP xf, int type, float mat[4][4])
 static void
 loadTexture(xfieldP xf)
 {
-    // Set texture
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, xf->textureWidth,
-                 xf->textureHeight, GL_RGB, GL_UNSIGNED_BYTE,
+    /*  Set texture  */
+    GLenum type    = xf->textureIsRGBA ? GL_RGBA : GL_RGB;
+    GLint  int_fmt = xf->textureIsRGBA ? 4 : 3;
+    DXWarning( "Texture type set to %d", type );
+    gluBuild2DMipmaps(GL_TEXTURE_2D, int_fmt, xf->textureWidth,
+                 xf->textureHeight, type, GL_UNSIGNED_BYTE,
                  (GLubyte *)xf->texture);
 
     glMatrixMode(GL_TEXTURE);
@@ -2216,13 +2262,13 @@ startTexture(xfieldP xf)
     int i;
     GLint wrap_s, wrap_t, min_filter, mag_filter, function;
 
-    // Set texture wrap modes
+    /*  Set texture wrap modes  */
     wrap_s = ( attr->texture_wrap_s == tw_clamp ? GL_CLAMP : GL_REPEAT );
     wrap_t = ( attr->texture_wrap_t == tw_clamp ? GL_CLAMP : GL_REPEAT );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
 
-    // Set texture filters
+    /*  Set texture filters  */
     min_filter = GL_NEAREST, mag_filter = GL_NEAREST;
     for ( i = 0; i < sizeof(filter_to_gl)/sizeof(*filter_to_gl); i++ ) {
       if ( attr->texture_min_filter == filter_to_gl[i].dx )
@@ -2233,14 +2279,14 @@ startTexture(xfieldP xf)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
 
-    // Set texture function
+    /*  Set texture function  */
     function = GL_MODULATE;
     for ( i = 0; i < sizeof(function_to_gl)/sizeof(*function_to_gl); i++ )
       if ( attr->texture_function == function_to_gl[i].dx )
         function = function_to_gl[i].gl;
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, function);
 
-    // And activate texuring
+    /*  And activate texuring  */
     glEnable(GL_TEXTURE_2D);
 }
 
@@ -2405,4 +2451,3 @@ main()
 		
 		
 #endif
-

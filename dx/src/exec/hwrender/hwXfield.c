@@ -436,6 +436,8 @@ _XColors(Field f, xfieldT* xf,
     int n;
     DXGetArrayInfo(xf->fcolors_array, NULL, &type, NULL, NULL, NULL);
     if (type==TYPE_UBYTE) {
+      /*  FIXME:  Software rendering knows how to deal with ubyte[3] colors  */
+      /*      but hardware rendering doesn't.  See also back colors below.   */
       check(fcolors, "colors", TYPE_UBYTE, 1);
       array(cmap_array, "color map", 1);
       check(cmap, "color map", TYPE_FLOAT, 3);
@@ -901,9 +903,11 @@ on an MP machine.
     }
 #endif
 
+    /*  Don't mesh translucent primitives; they're depth sorted for rendering */
     if(
        (_dxf_isFlagsSet(servicesFlags, SF_DOES_TRANS) &&
-	(xf->opacitiesDep == dep_none))
+        (xf->opacitiesDep == dep_none) && 
+	!(xf->texture && xf->textureIsRGBA))
        ||
        (!_dxf_isFlagsSet(servicesFlags, SF_DOES_TRANS))
       )
