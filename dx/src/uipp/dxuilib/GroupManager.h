@@ -60,7 +60,7 @@ class GroupRecord
 
     const   char    *getName() { return this->name; }
 
-    ~GroupRecord() { 
+    virtual ~GroupRecord() { 
 	if (this->name) delete this->name;
     }
 };

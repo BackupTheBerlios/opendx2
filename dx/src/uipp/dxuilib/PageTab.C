@@ -320,7 +320,6 @@ boolean PageTab::decodeDropType
 (int tag, char *type, XtPointer value, unsigned long len, int, int)
 {
 boolean retVal;
-const char* gname;
 int x,y;
 int width,height;
 EditorWorkSpace* ews = (EditorWorkSpace*)this->getWorkSpace();

@@ -105,7 +105,7 @@ DynamicResource *dr;
       
     if (this->setResourceList) {
 	  ListIterator it(*this->setResourceList);
-	  while (dr = (DynamicResource*)it.getNext()) {
+	  while ( (dr = (DynamicResource*)it.getNext()) ) {
 	      // don't bother checking return value from setRootWidget because it will
 	      // always return FALSE for resources belonging to xmLabelWidgetClass if
 	      // there is no XmLabel widget already in its list.  Not a problem.

@@ -418,13 +418,13 @@ ControlPanel::~ControlPanel()
     // Throw out decorators
     ListIterator it(this->addingDecoratorList);
     Decorator *dec;
-    while (dec = (Decorator *)it.getNext()) {
+    while ( (dec = (Decorator *)it.getNext()) ) {
 	delete dec;
     }
     this->addingDecoratorList.clear();
 
     it.setList(this->componentList);
-    while (dec = (Decorator *)it.getNext()) {
+    while ( (dec = (Decorator *)it.getNext()) ) {
 	delete dec;
     }
     this->componentList.clear();
@@ -606,12 +606,12 @@ void ControlPanel::getNextInteractorPosition(int *x, int *y)
     //
     cnt = this->instanceList.getSize();
     if (cnt > 0) {
-	int max_width = 0, last_x, last_y, last_width, last_height;
+	int max_width = 0, last_x, last_y = 0, last_width, last_height;
 	InteractorInstance *ii;
 	ListIterator iterator(this->instanceList);
 
 	last_x = 0;
-	while (ii = (InteractorInstance*)iterator.getNext()) {
+	while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 	    int xx, yy;
 	    ii->getXYPosition(&xx,&yy);
 	    if (xx >= last_x) {
@@ -629,7 +629,7 @@ void ControlPanel::getNextInteractorPosition(int *x, int *y)
 	    }
 	}
 	iterator.setList(this->instanceList);
-	while (ii = (InteractorInstance*)iterator.getNext()) {
+	while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 	    int xx, yy;
 	    ii->getXYPosition(&xx,&yy);
 	    if (xx == last_x) {
@@ -677,7 +677,7 @@ void ControlPanel::addSelectedInteractorNodes()
     if (l) {
 	ListIterator iterator;
 	InteractorNode *n;
-        int	max_width = 0, next_x,next_y, ws_width, ws_height;
+        int next_x,next_y, ws_width, ws_height;
 	//
 	// Now place all of the rest in the control panel. 
 	// Interactors are placed in columns from top to bottom and when
@@ -687,10 +687,9 @@ void ControlPanel::addSelectedInteractorNodes()
 	iterator.setList(*l);
 	this->getWorkSpace()->getXYSize(&ws_width,&ws_height);
 	next_x = next_y = -1;
-	while (n = (InteractorNode*)iterator.getNext()) {
+	while ( (n = (InteractorNode*)iterator.getNext()) ) {
 	    this->getNextInteractorPosition(&next_x, &next_y);
-	    InteractorInstance *ii = this->createAndPlaceInteractor(n,
-							next_x,next_y);
+	    this->createAndPlaceInteractor(n, next_x, next_y);
 	}
  	delete l;	
     }
@@ -737,7 +736,7 @@ void ControlPanel::manage()
     // Display all the interactors that sit in this control panel. 
     //
     ListIterator iterator(this->instanceList);
-    while (ii = (InteractorInstance*)iterator.getNext()) 
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) 
 	ii->createInteractor();
 
     //
@@ -746,7 +745,7 @@ void ControlPanel::manage()
     //
     iterator.setList(this->componentList);
     Decorator *dec;
-    while (dec = (Decorator*)iterator.getNext()) 
+    while ( (dec = (Decorator*)iterator.getNext()) ) 
 	dec->manage(this->workSpace);
 
     //
@@ -1095,7 +1094,7 @@ void ControlPanel::createEditMenu(Widget parent)
 	Dictionary *dict = DecoratorStyle::GetDecoratorStyleDictionary();
 	Dictionary *subdict;
 	DictionaryIterator di(*dict);
-	while (subdict = (Dictionary*)di.getNextDefinition()) {
+	while ( (subdict = (Dictionary*)di.getNextDefinition()) ) {
 	    Arg args[4];
 	    DictionaryIterator subdi(*subdict);
 	    DecoratorStyle *ds = (DecoratorStyle*)subdi.getNextDefinition();
@@ -1350,7 +1349,7 @@ extern "C" void ControlPanel_OptionsMenuMapCB(Widget ,
     ControlPanel *cp = (ControlPanel*)clientdata;
     Command *cmd;
 
-    if (cmd = cp->togglePanelStyleCmd) {
+    if ( (cmd = cp->togglePanelStyleCmd) ) {
 	if (cp->allowDeveloperStyleChange()) 
 	    cmd->activate();
 	else
@@ -1408,7 +1407,7 @@ extern "C" void ControlPanel_EditMenuMapCB(Widget w,
 	if(cp->styleList.getSize())
 	{
 	    ListIterator li(cp->styleList);
-	    while(btn = (Widget)li.getNext())
+	    while( (btn = (Widget)li.getNext()) )
 		 XtDestroyWidget(btn);
 	    cp->styleList.clear();
 	}
@@ -1434,7 +1433,7 @@ extern "C" void ControlPanel_EditMenuMapCB(Widget w,
 		const char *current_style = ii->getStyle()->getNameString();
 		XmString label;
 
-		while (is = (InteractorStyle*)di.getNextDefinition())
+		while ( (is = (InteractorStyle*)di.getNextDefinition()) )
 		{
 		    stylename = (char*)is->getNameString();
 		    label = XmStringCreateSimple(stylename);
@@ -1476,7 +1475,7 @@ extern "C" void ControlPanel_EditMenuMapCB(Widget w,
 		sensitive = True;
 		int i=0, current_dim = inode->getComponentCount();
 		ListIterator iterator(cp->dimensionalityList); 
-		while (w = (Widget)iterator.getNext()) {
+		while ( (w = (Widget)iterator.getNext()) ) {
 		    if (++i == current_dim)
 			XtSetSensitive(w,False);
 		    else
@@ -1537,7 +1536,7 @@ DecoratorStyle *ds;
     if (cp->addingDecoratorList.getSize()) {
 	Decorator *dec;
 	ListIterator it(cp->addingDecoratorList);
-	while (dec = (Decorator *)it.getNext()) {
+	while ( (dec = (Decorator *)it.getNext()) ) {
 	    delete dec;
 	}
 	cp->addingDecoratorList.clear();
@@ -1638,7 +1637,7 @@ Decorator *dec;
 	return FALSE;
 
     ListIterator it(this->componentList);
-    while (dec = (Decorator *)it.getNext()) {
+    while ( (dec = (Decorator *)it.getNext()) ) {
 	if (dest!=PrintCPBuffer) {
 	    if (!dec->printComment(f)) return FALSE;
 	} else if (dec->isSelected()) {
@@ -1712,7 +1711,7 @@ char stylename[128];
 	    return FALSE;
 	}
 	DictionaryIterator di(*dict);
-	while (ds = (DecoratorStyle*)di.getNextDefinition()) {
+	while ( (ds = (DecoratorStyle*)di.getNextDefinition()) ) {
 	    if (EqualString(stylename, ds->getNameString())) break;
 	}
 	if (!ds) {
@@ -1821,10 +1820,10 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
     if ((items_parsed == 6)||(items_parsed == 7)) {
 	int display_xsize = DisplayWidth(theApplication->getDisplay(),0);
 	int display_ysize = DisplayHeight(theApplication->getDisplay(),0);
-	x = display_xsize * norm_x+ .5;
-        y = display_ysize * norm_y+ .5;
-        width = display_xsize * norm_width  + .5;
-        height = display_ysize * norm_height + .5;
+	x = (int) (display_xsize * norm_x+ .5);
+        y = (int) (display_ysize * norm_y+ .5);
+        width = (int) (display_xsize * norm_width  + .5);
+        height = (int) (display_ysize * norm_height + .5);
 	if (items_parsed == 7) this->developerStyle = devstyle; // initialized elsewhere
     } else {
 
@@ -2052,7 +2051,7 @@ int ControlPanel::getInteractorSelectionCount()
     // Look through the list of interactor instances for ones that are
     // currently selected. 
     //
-    while (ii = (InteractorInstance*)iterator.getNext()) {
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 	if (ii->isSelected()) 
 	   selected++;
     }
@@ -2069,7 +2068,7 @@ int ControlPanel::getComponentSelectionCount()
     // Look through the list of interactor instances for ones that are
     // currently selected. 
     //
-    while (wsc = (WorkSpaceComponent*)iterator.getNext()) {
+    while ( (wsc = (WorkSpaceComponent*)iterator.getNext()) ) {
 	if (wsc->isSelected()) 
 	   selected++;
     }
@@ -2153,7 +2152,7 @@ void ControlPanel::setActivationOfEditingCommands()
 	// selected.
 	// 
 	boolean disableLayout = FALSE;
-	boolean layouts, first = TRUE;
+	boolean layouts = TRUE, first = TRUE;
 	ListIterator it(this->componentList);
 	while ((!disableLayout)&&(wsc = (WorkSpaceComponent *)it.getNext())) {
 	    if (wsc->isSelected()) {
@@ -2228,7 +2227,7 @@ void ControlPanel::setActivationOfEditingCommands()
 	// selected.
 	// 
 	boolean disableLayout = FALSE;
-	boolean layouts, first = TRUE;
+	boolean layouts = TRUE, first = TRUE;
 	ListIterator it(this->componentList);
 	WorkSpaceComponent *wsc;
 	while ((!disableLayout)&&(wsc = (WorkSpaceComponent *)it.getNext())) {
@@ -2369,7 +2368,7 @@ void ControlPanel::setVerticalLayout(boolean vertical)
     //
     // Change the layout of all selected interactors.
     //
-    while (ii = (InteractorInstance*)iterator.getNext()) {
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
         if (ii->isSelected()) 
 	    ii->setVerticalLayout(vertical);
     }
@@ -2379,7 +2378,7 @@ void ControlPanel::setVerticalLayout(boolean vertical)
     //
     WorkSpaceComponent *wsc;
     iterator.setList (this->componentList);
-    while (wsc = (WorkSpaceComponent *)iterator.getNext()) {
+    while ( (wsc = (WorkSpaceComponent *)iterator.getNext()) ) {
 	if (wsc->isSelected()) {
 	    wsc->setVerticalLayout(vertical);
 	}
@@ -2505,7 +2504,7 @@ void ControlPanel::showSelectedStandIns()
     ListIterator instanceIterator(this->instanceList);
     InteractorInstance *ii;
     boolean first = TRUE;
-    while (ii = (InteractorInstance*) instanceIterator.getNext())  {
+    while ( (ii = (InteractorInstance*) instanceIterator.getNext()) )  {
 	if (ii->isSelected())  {
 	    Node *n = ii->getNode();
 	    editor->selectNode(n,first);
@@ -2528,7 +2527,7 @@ void ControlPanel::showSelectedInteractors()
     //
     // Deselect all other interactors in this panel. 
     //
-    while (ii = (InteractorInstance*) instanceIterator.getNext()) {
+    while ( (ii = (InteractorInstance*) instanceIterator.getNext()) ) {
 	ii->setSelected(FALSE);
     }
 
@@ -2541,13 +2540,13 @@ void ControlPanel::showSelectedInteractors()
     if (!selected)
 	return;
     ListIterator nodeIterator(*selected);
-    while (inode = (InteractorNode*) nodeIterator.getNext()) {
+    while ( (inode = (InteractorNode*) nodeIterator.getNext()) ) {
 	ASSERT(((Node*)inode)->isA(ClassInteractorNode));
         ListIterator instanceIterator(inode->instanceList);
 	//
 	// Look at each InteractorInstance of the current node.
 	//
-        while (ii = (InteractorInstance*) instanceIterator.getNext()) {
+        while ( (ii = (InteractorInstance*) instanceIterator.getNext()) ) {
 	    //
 	    // If the instance belongs to this control panel then highlight it.
 	    //
@@ -2563,7 +2562,7 @@ void ControlPanel::clearInstances()
     InteractorInstance *ii;
     InteractorNode *inode;
 
-    while(ii = (InteractorInstance*)this->instanceList.getElement(1))
+    while( (ii = (InteractorInstance*)this->instanceList.getElement(1)) )
     {
     	inode = (InteractorNode*)ii->getNode();	
     	inode->deleteInstance(ii);
@@ -2585,7 +2584,7 @@ void ControlPanel::mergePanels (ControlPanel *cp, int x, int y)
    int firstx, firsty, newx, newy, offx, offy;
    Boolean first = TRUE;
 
-    while (ii = (InteractorInstance*)iterator.getNext()) {
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 
 	// uncreate the interactor?  During dnd, if in image mode, then
 	// Network::readNetwork() would have managed the tmppanel and created the
@@ -2615,7 +2614,7 @@ void ControlPanel::mergePanels (ControlPanel *cp, int x, int y)
     }
 
     iterator.setList(toDelete);
-    while (ii = (InteractorInstance*)iterator.getNext()) {
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 	cp->removeInteractorInstance (ii);
     }
     toDelete.clear();
@@ -2623,7 +2622,7 @@ void ControlPanel::mergePanels (ControlPanel *cp, int x, int y)
     // Now move the decorators
     iterator.setList (cp->componentList);
     Decorator *dd;
-    while (dd = (Decorator*)iterator.getNext()) {
+    while ( (dd = (Decorator*)iterator.getNext()) ) {
 	toDelete.appendElement((void*)dd);
 	this->addComponentToList((void*)dd);
 	dd->setAppearance (this->isDeveloperStyle());
@@ -2645,7 +2644,7 @@ void ControlPanel::mergePanels (ControlPanel *cp, int x, int y)
 	dd->manage(this->workSpace);
     }
     iterator.setList(toDelete);
-    while (dd = (Decorator*)iterator.getNext()) {
+    while ( (dd = (Decorator*)iterator.getNext())) {
 	cp->componentList.removeElement((void *)dd);
     }
     toDelete.clear();
@@ -2668,7 +2667,7 @@ void ControlPanel::deleteSelectedInteractors()
     // the node from the list.  This causes problems with
     // the list iterator pointing to released memory.
     //
-    while (ii = (InteractorInstance*)iterator.getNext()) {
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 	if (ii->isSelected()) 
 	    toDelete.appendElement((void*)ii);
     }
@@ -2678,7 +2677,7 @@ void ControlPanel::deleteSelectedInteractors()
     //  Now delete the instances.
     //
     iterator.setList(toDelete);
-    while (ii = (InteractorInstance*)iterator.getNext()) {
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 	    inode = (InteractorNode*)ii->getNode();	
 	    inode->deleteInstance(ii);
     }
@@ -2687,7 +2686,7 @@ void ControlPanel::deleteSelectedInteractors()
     //  Now gather up the decorators.
     //
     iterator.setList(this->componentList);
-    while (dd = (WorkSpaceComponent *)iterator.getNext()) {
+    while ( (dd = (WorkSpaceComponent *)iterator.getNext()) ) {
 	if (dd->isSelected()) {
 	    this->componentList.removeElement((void*)dd);
 	    delete dd;
@@ -2865,7 +2864,7 @@ boolean isWsManaged;
     InteractorInstance *ii; 
     Interactor *ntr;
     ListIterator iterator(this->instanceList);
-    while (ii = (InteractorInstance*)iterator.getNext()) {
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 	ii->setSelected(FALSE);
 	ntr = ii->getInteractor();
 	ntr->setAppearance(this->developerStyle);
@@ -2876,7 +2875,7 @@ boolean isWsManaged;
     //
     WorkSpaceComponent *d;
     iterator.setList(this->componentList);
-    while (d = (WorkSpaceComponent*)iterator.getNext()) {
+    while ( (d = (WorkSpaceComponent*)iterator.getNext()) ) {
 	d->setSelected(FALSE);
 	d->setAppearance(this->developerStyle);
     }
@@ -3214,7 +3213,7 @@ void ControlPanel::initiateInteractorPlacement()
 
     const void *v;
     ListIterator i(*selected);
-    while (v = i.getNext())
+    while ( (v = i.getNext()) )
 	this->addingNodes->appendElement(v);
 
     delete selected;
@@ -3245,7 +3244,7 @@ boolean first_loop;
     // return FALSE in order to reject the drop.
     ListIterator i(*selected);
     selects = 0;
-    while (node = (Node*)i.getNext()) {
+    while ( (node = (Node*)i.getNext()) ) {
 	if (node->isA(ClassInteractorNode) == FALSE) continue;
 	selects++;
     }
@@ -3254,11 +3253,11 @@ boolean first_loop;
     // Deselect all other interactors and decorators.
     ListIterator it(this->instanceList);
     InteractorInstance *ii;
-    while (ii = (InteractorInstance*)it.getNext()) 
+    while ( (ii = (InteractorInstance*)it.getNext()) ) 
 	ii->setSelected(FALSE);
     it.setList(this->componentList);
     WorkSpaceComponent *wsc;
-    while (wsc = (WorkSpaceComponent *)it.getNext())
+    while ( (wsc = (WorkSpaceComponent *)it.getNext()) )
 	wsc->setSelected(FALSE);
 
 
@@ -3267,7 +3266,7 @@ boolean first_loop;
     placex = x; placey = y;
     prev_height = prev_width = 0;
     max_right_edge = vert_cnt = 0;
-    while (node = (Node*)i.getNext()) {
+    while ( (node = (Node*)i.getNext()) ) {
 	// If it's not an InteractorNode then skip over it.
 	ASSERT(node);
 
@@ -3295,7 +3294,7 @@ boolean first_loop;
 	Decorator *dec;
 	Symbol s = theSymbolManager->registerSymbol(ClassLabelDecorator);
 
-	while (dec = (Decorator*)i.getNext()) {
+	while ( (dec = (Decorator*)i.getNext()) ) {
 	    if (dec->isA(s) == FALSE) continue;
 
 	    placey+= prev_height;
@@ -3391,14 +3390,14 @@ void ControlPanel::placeSelectedInteractorCallback(Widget w, XtPointer cb)
     //
     ListIterator iterator(this->instanceList);
     InteractorInstance *ii;
-    while (ii = (InteractorInstance*)iterator.getNext()) 
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) 
 	    ii->setSelected(FALSE);
     //
     // Deselect all other decorators.
     //
     iterator.setList(this->componentList);
     WorkSpaceComponent *wsc;
-    while(wsc = (WorkSpaceComponent *)iterator.getNext())
+    while( (wsc = (WorkSpaceComponent *)iterator.getNext()) )
 	wsc->setSelected(FALSE);
     
 
@@ -3415,7 +3414,7 @@ void ControlPanel::placeSelectedInteractorCallback(Widget w, XtPointer cb)
     if (deccnt) {
 	ListIterator it(this->addingDecoratorList);
 	Decorator *dec;
-	while (dec = (Decorator *)it.getNext()) {
+	while ( (dec = (Decorator *)it.getNext()) ) {
 	    dec->setXYPosition (wscb->event->xbutton.x, wscb->event->xbutton.y);
 	    this->addComponentToList ((void *)dec);
 	    dec->manage(this->workSpace);
@@ -3596,7 +3595,7 @@ void ControlPanel::selectAllInstances(boolean select)
     ListIterator li(this->instanceList);
     InteractorInstance *ii;
 
-    while (ii = (InteractorInstance*)li.getNext())
+    while ( (ii = (InteractorInstance*)li.getNext()) )
 	 ii->setSelected(select);
 }
 void ControlPanel::switchNetwork(Network *, Network *to)
@@ -3620,7 +3619,7 @@ boolean ControlPanel::nodeIsInInstanceList (Node *n)
     ListIterator li(this->instanceList);
     InteractorInstance *ii;
 
-    while (ii = (InteractorInstance*)li.getNext())
+    while ( (ii = (InteractorInstance*)li.getNext()) )
 	 if (n == ii->getNode()) return TRUE;
 
     return FALSE;
@@ -3725,7 +3724,7 @@ void ControlPanel::getMinSelectedXY(int *minx, int *miny)
     //
     it.setList(this->instanceList);
     InteractorInstance *ii;
-    while (ii = (InteractorInstance*)it.getNext()) {
+    while ( (ii = (InteractorInstance*)it.getNext()) ) {
 	if (ii->isSelected()) {
 	    Interactor *i = ii->getInteractor();
 	    if (!i) continue;
@@ -3740,7 +3739,7 @@ void ControlPanel::getMinSelectedXY(int *minx, int *miny)
     //
     WorkSpaceComponent *dd;
     it.setList(this->componentList);
-    while (dd = (WorkSpaceComponent *)it.getNext()) {
+    while ( (dd = (WorkSpaceComponent *)it.getNext()) ) {
 	if (dd->isSelected()) {
 	    dd->getXYPosition (&x, &y);
 	    mx = MIN(mx,x);
@@ -3834,7 +3833,7 @@ void ControlPanel::getWorkSpaceSize(int *width, int *height)
     //
     it.setList(this->instanceList);
     InteractorInstance *ii;
-    while (ii = (InteractorInstance*)it.getNext()) {
+    while ( (ii = (InteractorInstance*)it.getNext()) ) {
 	ii->getXYPosition (&x, &y);
 	ii->getXYSize (&w, &h);
 	maxw = MAX(maxw,(x+w));
@@ -3846,7 +3845,7 @@ void ControlPanel::getWorkSpaceSize(int *width, int *height)
     //
     WorkSpaceComponent *dd;
     it.setList(this->componentList);
-    while (dd = (WorkSpaceComponent *)it.getNext()) {
+    while ( (dd = (WorkSpaceComponent *)it.getNext()) ) {
 	dd->getXYPosition (&x, &y);
 	dd->getXYSize (&w, &h);
 	maxw = MAX(maxw,(x+w));

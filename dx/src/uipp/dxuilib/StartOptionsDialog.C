@@ -74,7 +74,6 @@ extern "C" void StartOptionsDialog_NumberTextCB(Widget w,
 				      XtPointer clientData,
 				      XtPointer callData)
 {
-    StartOptionsDialog *d = (StartOptionsDialog *)clientData;
     XmTextVerifyCallbackStruct *cs = (XmTextVerifyCallbackStruct*)callData;
 
     char *s = XmTextGetString(w);

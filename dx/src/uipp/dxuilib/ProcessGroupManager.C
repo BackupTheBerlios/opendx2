@@ -233,7 +233,7 @@ void  ProcessGroupManager::clearArgument()
 {
     ProcessHostRecord *record;
 
-    while (record = (ProcessHostRecord*) this->arguments.getDefinition(1))
+    while ( (record = (ProcessHostRecord*) this->arguments.getDefinition(1)) )
     {
         this->arguments.removeDefinition((const void*)record);
         delete record;
@@ -261,7 +261,7 @@ Dictionary *ProcessGroupManager::createAssignment()
 	
 	group = DuplicateString((char*)this->groups.getStringKey(i));
 
-	if(list = (List*)dic->findDefinition(host))
+	if( (list = (List*)dic->findDefinition(host)) )
         {
 	    list->appendElement((void*)group);
 	}   
@@ -295,7 +295,7 @@ void ProcessGroupManager::clearAssignment()
 	list = (List*)this->assignment->getDefinition(i);
 	li.setList(*list);
 	
-	while(group = (char*)li.getNext())
+	while( (group = (char*)li.getNext()) )
 	     delete group;
 
 	list->clear();
@@ -320,7 +320,7 @@ void ProcessGroupManager::sendAssignment(int function)
     ListIterator li;
     int i;
     boolean first;
-    char *func, *host, *grouplist,*group, *cmd;
+    char *func = NULL, *host, *grouplist,*group, *cmd;
 
 	switch(function)
 	{
@@ -350,14 +350,14 @@ void ProcessGroupManager::sendAssignment(int function)
 	    /* figure out how much, and allocate space for all group names */
 	    int grouplistSize = 0;
 	    li.setList(*list);
-	    while(group = (char*)li.getNext())
+	    while( (group = (char*)li.getNext()) )
 		grouplistSize += STRLEN(group);
 	    grouplist = new char[grouplistSize + 20 * list->getSize()];
 	    grouplist[0] = '\0';
 
             first = TRUE;
             li.setList(*list);
-            while(group = (char*)li.getNext())
+            while( (group = (char*)li.getNext()) )
 	    {
 	    	this->clearGroupHostDirty(group);
                 if(first)
@@ -424,7 +424,7 @@ void   ProcessGroupManager::updateAssignment()
     ListIterator li, oldLi;
     int i;
     boolean first, argsDirty;
-    char *host, *oldHost, *grouplist,*group,*oldGroup, *cmd;
+    char *host, *grouplist,*group,*oldGroup, *cmd;
 
     //
     // Detach groups that changed their assignment.
@@ -436,7 +436,7 @@ void   ProcessGroupManager::updateAssignment()
 	argsDirty = this->getArgumentDirty(host);
 
         li.setList(*list);
-        while(group = (char*)li.getNext())
+        while( (group = (char*)li.getNext()) )
 	    if(argsDirty OR this->getGroupHostDirty(group))
 		this->detachGroup(host,group);       
     }
@@ -463,7 +463,7 @@ void   ProcessGroupManager::updateAssignment()
 	/* figure out how much, and allocate space for all group names */
 	int grouplistSize = 0;
 	li.setList(*list);
-	while(group = (char*)li.getNext())
+	while( (group = (char*)li.getNext()) )
 	    grouplistSize += STRLEN(group);
 	grouplist = new char[grouplistSize + 20 * list->getSize()];
 	grouplist[0] = '\0';
@@ -478,12 +478,12 @@ void   ProcessGroupManager::updateAssignment()
 
         first = TRUE;
         li.setList(*list);
-        while(group = (char*)li.getNext())
+        while( (group = (char*)li.getNext()) )
 	{
 	    if(oldList)
 	    {
 		oldLi.setList(*oldList);
-		while(oldGroup  = (char*)oldLi.getNext())
+		while( (oldGroup  = (char*)oldLi.getNext()) )
 		    if(EqualString(oldGroup, group)
 			AND NOT this->getGroupHostDirty(group))
 			break;
@@ -615,7 +615,7 @@ boolean ProcessGroupManager::removeGroupAssignment(const char *group)
     	list = (List*)this->assignment->getDefinition(i);
 	found = FALSE;
 	li.setList(*list);
-	while(name = (char*)li.getNext())
+	while( (name = (char*)li.getNext()) )
 	    if(EqualString(name, group))
 	    {
 		found = TRUE;
@@ -644,7 +644,7 @@ boolean ProcessGroupManager::removeGroupAssignment(const char *group)
 boolean ProcessGroupManager::printComment(FILE *f)
 {
 
-    int	  i, inst;
+    int	  i;
     List  *list;
     ListIterator li;
     const char  *host, *args, *group;
@@ -678,7 +678,7 @@ boolean ProcessGroupManager::printComment(FILE *f)
 	if (fprintf(f, "%s", group) <= 0)
             return FALSE;
 
-    	while(group = (char*)li.getNext())
+    	while( (group = (char*)li.getNext()) )
 	    if (fprintf(f, ", %s", group) <= 0)
 		return FALSE;
 
@@ -714,7 +714,7 @@ boolean ProcessGroupManager::printAssignment(FILE *f)
 	    /* figure out how much, and allocate space for all group names */
 	    int grouplistSize = 0;
 	    li.setList(*list);
-	    while(group = (char*)li.getNext())
+	    while( (group = (char*)li.getNext()) )
 		grouplistSize += STRLEN(group);
 	    grouplist = new char[grouplistSize + 20 * list->getSize()];
 	    grouplist[0] = '\0';
@@ -722,7 +722,7 @@ boolean ProcessGroupManager::printAssignment(FILE *f)
 
             first = TRUE;
             li.setList(*list);
-            while(group = (char*)li.getNext())
+            while( (group = (char*)li.getNext()) )
 	    {
                 if(first)
                 {
@@ -770,7 +770,6 @@ boolean ProcessGroupManager::parseComment(const char *comment,
 {
 
     char *p, *c, *host, *args;
-    int  inst;
 
     if (strncmp(comment," pgroup assignment",STRLEN(" pgroup assignment")))
         return FALSE;

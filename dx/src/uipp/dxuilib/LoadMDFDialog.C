@@ -58,7 +58,6 @@ void LoadMDFDialog::installDefaultResources(Widget  baseWidget)
 
 void LoadMDFDialog::helpCallback(Dialog* dialog)
 {
-    LoadMDFDialog *loadMacroDialog = (LoadMDFDialog *) dialog;
     printf("help callback \n");
 }
 

@@ -147,7 +147,7 @@ ImageFormatDialog::~ImageFormatDialog()
 
     ListIterator it(*this->image_formats);
     ImageFormat *imgfmt;
-    while (imgfmt = (ImageFormat*)it.getNext()) {
+    while ( (imgfmt = (ImageFormat*)it.getNext()) ) {
 	imgfmt->unmanage();
 	delete imgfmt;
     }
@@ -269,7 +269,7 @@ Widget ImageFormatDialog::createDialog(Widget parent)
 
     ListIterator it(*this->image_formats);
     ImageFormat *imgfmt;
-    while (imgfmt = (ImageFormat*)it.getNext()) {
+    while ( (imgfmt = (ImageFormat*)it.getNext()) ) {
 	Widget but = XtVaCreateManagedWidget (imgfmt->menuString(),
 	    xmPushButtonWidgetClass,	this->format_pd,
 	    XmNuserData,	imgfmt,
@@ -373,7 +373,7 @@ Widget ImageFormatDialog::createDialog(Widget parent)
     //
     it.setList(*this->image_formats);
     imgfmt = NUL(ImageFormat*);
-    while (imgfmt = (ImageFormat*)it.getNext()) {
+    while ( (imgfmt = (ImageFormat*)it.getNext()) ) {
 	Widget body = imgfmt->createBody(form_diag);
 	XtVaSetValues (body,
 	    XmNtopAttachment,		XmATTACH_WIDGET,
@@ -687,7 +687,7 @@ void ImageFormatDialog::setCommandActivation()
 	}
 	ListIterator it (*this->image_formats);
 	ImageFormat *imgfmt;
-	while (imgfmt = (ImageFormat*)it.getNext()) {
+	while ( (imgfmt = (ImageFormat*)it.getNext()) ) {
 	    const char *cp = imgfmt->paramString();
 	    if (EqualSubstring (fmt_name, cp, strlen(cp))) {
 		XtVaSetValues (this->format_om, 

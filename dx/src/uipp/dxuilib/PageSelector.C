@@ -171,7 +171,7 @@ void PageSelector::clear()
     if (this->page_buttons) {
 	ListIterator it (*this->page_buttons);
 	PageTab* page_button;
-	while (page_button = (PageTab*)it.getNext()) {
+	while ( (page_button = (PageTab*)it.getNext()) ) {
 	    delete page_button;
 	}
 	delete this->page_buttons;
@@ -430,7 +430,7 @@ void PageSelector::appendButton (PageTab *button)
 	int bpos = button->getDesiredPosition();
 	ListIterator it(*this->page_buttons);
 	PageTab* pbut;
-	while (pbut = (PageTab*)it.getNext()) {
+	while ( (pbut = (PageTab*)it.getNext()) ) {
 	    if (pbut == button) continue;
 	    int rove_pos = (pbut->hasDesiredPosition()?
 		pbut->getDesiredPosition():pbut->getPosition());
@@ -458,7 +458,7 @@ void PageSelector::removeButton (const char* name)
     // Search for the button to throw out, and then adjust attachments
     // of trailing buttons.
     //
-    while (pbut = (PageTab*)it.getNext()) {
+    while ( (pbut = (PageTab*)it.getNext()) ) {
 	if (destroy_me) {
 	    XtVaSetValues (pbut->getRootWidget(), 
 		XmNleftAttachment,	(prev?XmATTACH_WIDGET:XmATTACH_FORM),
@@ -498,7 +498,7 @@ void PageSelector::selectPage (Widget toggleBut)
 {
     PageTab* pt= NUL(PageTab*);
     ListIterator it(*this->page_buttons);
-    while (pt = (PageTab*)it.getNext())
+    while ( (pt = (PageTab*)it.getNext()) )
 	if (pt->getRootWidget() == toggleBut) {
 	    this->selectPage (pt);
 	    break;
@@ -530,7 +530,7 @@ void PageSelector::selectPage (PageTab* tab)
 	ASSERT(this->page_buttons);
 	ListIterator it(*this->page_buttons);
 	PageTab* pbut;
-	while (pbut = (PageTab*)it.getNext()) {
+	while ( (pbut = (PageTab*)it.getNext()) ) {
 	    if (pbut != tab) {
 		pbut->setState(FALSE);
 	    }
@@ -554,9 +554,8 @@ void PageSelector::selectPage (EditorWorkSpace* ews)
 	this->clear();
 
     ListIterator it(*this->page_buttons);
-    EditorWorkSpace* page = NUL(EditorWorkSpace*);
     PageTab* pbut;
-    while (pbut = (PageTab*)it.getNext()) {
+    while ( (pbut = (PageTab*)it.getNext()) ) {
 	if (pbut->getState() == (pbut->getWorkSpace() == ews)) continue;
 	if (pbut->getWorkSpace() == ews) {
 	    pbut->setState(TRUE);
@@ -577,7 +576,7 @@ void PageSelector::updatePageNameDialog()
 	ListIterator it(*this->page_buttons);
 	PageTab* pt;
 	int pos = 1;
-	while (pt = (PageTab*)it.getNext()) {
+	while ( (pt = (PageTab*)it.getNext()) ) {
 	    if (pt->getState()) {
 		break;
 	    }
@@ -605,7 +604,7 @@ void PageSelector::updateMoveNodesDialog()
 	ListIterator it(*this->page_buttons);
 	PageTab* pt;
 	int pos = 1;
-	while (pt = (PageTab*)it.getNext()) {
+	while ( (pt = (PageTab*)it.getNext()) ) {
 	    if (pt->getState()) {
 		break;
 	    }
@@ -616,9 +615,8 @@ void PageSelector::updateMoveNodesDialog()
 	// was pushed in.
 	//
 	if (pt) {
-	    EditorWorkSpace* ews = (EditorWorkSpace*)pt->getWorkSpace();
+	    // EditorWorkSpace* ews = (EditorWorkSpace*)pt->getWorkSpace();
 	    const char* name = pt->getGroupName();
-	    int count = this->page_buttons->getSize();
 	    this->move_dialog->setWorkSpace (name);
 	} else {
 	    this->move_dialog->setWorkSpace(NUL(char*));
@@ -749,7 +747,7 @@ void PageSelector::highlightTab (EditorWorkSpace* ews, int flag)
     ListIterator it(*this->page_buttons);
     PageTab* pbut;
     PageTab* found_but = NUL(PageTab*);
-    while (pbut = (PageTab*)it.getNext()) {
+    while ( (pbut = (PageTab*)it.getNext()) ) {
 	EditorWorkSpace* page = (EditorWorkSpace*)pbut->getWorkSpace();
 	if ((page == NUL(EditorWorkSpace*)) && (is_root)) {
 	    found_but = pbut;
@@ -809,7 +807,7 @@ void PageSelector::changePageName(EditorWorkSpace* ews, const char* new_name)
 {
     Dictionary* dict = this->net->getGroupManagers();
     GroupManager* page_mgr = (GroupManager*)dict->findDefinition(PAGE_GROUP);
-    const char* old_name;
+    const char* old_name=NULL;
     Symbol gsym = page_mgr->getManagerSymbol();
     EditorWorkSpace* def;
     int dsize = this->getSize();
@@ -840,7 +838,7 @@ void PageSelector::changePageName(EditorWorkSpace* ews, const char* new_name)
 	ListIterator it(*this->page_buttons);
 	PageTab* pbut;
 	found = FALSE;
-	while (pbut = (PageTab*)it.getNext()) {
+	while ( (pbut = (PageTab*)it.getNext()) ) {
 	    if (ews == pbut->getWorkSpace()) {
 		pbut->setGroup ((PageGroupRecord*)grec);
 		found = TRUE;
@@ -858,7 +856,7 @@ PageTab* PageSelector::getPageTabOf(const char* name)
     ListIterator it(*this->page_buttons);
     PageTab* pt;
     boolean found = FALSE;
-    while (pt = (PageTab*)it.getNext()) {
+    while ( (pt = (PageTab*)it.getNext()) ) {
 	if (EqualString(name, pt->getGroupName())) {
 	    found = TRUE;
 	    break;
@@ -898,7 +896,7 @@ PageSelector::changeOrdering (PageTab* fixed, const char* move_name, boolean dnd
 
 	ListIterator it(*this->page_buttons);
 	int position = 1;
-	while (pt = (PageTab*)it.getNext())
+	while ( (pt = (PageTab*)it.getNext()) )
 	    pt->setPosition (position++, ((pt==fixed)||(pt==mover)));
     }
 
@@ -1003,7 +1001,7 @@ void PageSelector::updateList()
     ListIterator it(*this->page_buttons);
     PageTab* pt;
     int select_this_item = 0;
-    while (pt = (PageTab*)it.getNext()) {
+    while ( (pt = (PageTab*)it.getNext()) ) {
 	const char* name = pt->getGroupName();
 	if (!name) continue;
 	strTable[next++] = XmStringCreateLtoR ((char*)name, "small_bold");
@@ -1102,7 +1100,7 @@ EditorWorkSpace* PageSelector::getInitialWorkSpace()
 {
     ListIterator it(*this->page_buttons);
     PageTab* pt;
-    while (pt = (PageTab*)it.getNext()) {
+    while ( (pt = (PageTab*)it.getNext()) ) {
 	if (pt->getDesiredShowing())
 	    return (EditorWorkSpace*)pt->getWorkSpace();
     }
@@ -1118,7 +1116,7 @@ List* PageSelector::getSortedPages()
 
     ListIterator it(*this->page_buttons);
     PageTab* pt;
-    while (pt = (PageTab*)it.getNext()) {
+    while ( (pt = (PageTab*)it.getNext()) ) {
 	l->appendElement((void*)pt->getWorkSpace());
     }
     return l;

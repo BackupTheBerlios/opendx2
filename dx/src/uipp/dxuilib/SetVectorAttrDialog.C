@@ -59,7 +59,7 @@ extern "C" void SetVectorAttrDialog_ComponentOptionCB(Widget  w,
                          XtPointer callData)
 {
     SetVectorAttrDialog *svad  = (SetVectorAttrDialog*)clientData;
-    Boolean sensitive;
+    Boolean sensitive = False;
 
     if (w == svad->allComponents) {
 	XmAnyCallbackStruct *cb = (XmAnyCallbackStruct*)callData;

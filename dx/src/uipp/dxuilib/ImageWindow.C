@@ -1344,7 +1344,6 @@ void ImageWindow::createWindowsMenu(Widget parent)
     ASSERT(parent);
 
     Widget            pulldown;
-    CommandInterface* option;
 
     if (!theDXApplication->appAllowsWindowsMenus())
 	return;	
@@ -1446,10 +1445,6 @@ void ImageWindow::createOptionsMenu(Widget parent)
     ASSERT(parent);
 
     Widget            pulldown;
-    Widget            separator;
-    CommandInterface* option;
-    Arg		      wargs[10];
-    int		      n;
 
     //
     // Create "Options" menu and options.
@@ -1679,15 +1674,12 @@ char *ImageWindow::getDisplayString()
                 char    nodename[HOST_NAMELEN];
               } name;
 #endif   
-    Widget    canvas;
     Window    window;
     Window    child;
-    int       param_index;
     boolean   frame_buffer;
     int       x;
     int       y;
     char*     display;
-    Arg       arg[4];
     char      host[64];
     char      unit[16];
     static char      string[512];
@@ -1823,7 +1815,7 @@ char *ImageWindow::getDisplayString()
      */
     if (!frame_buffer)
     {
-	SPRINTF(string, "X%d,%s,##%d", 
+	SPRINTF(string, "X%d,%s,##%ld", 
 	    in->getDepth(), display, window);
     }
     else
@@ -1850,7 +1842,7 @@ char *ImageWindow::getDisplayString()
 		flag);
 #endif
 	SPRINTF(string,
-		"FB,%s,%d,%d,##%d",
+		"FB,%s,%d,%d,##%ld",
 		display,
 		(in->isLastImage() ? x : -(1 + x)),
 		y,
@@ -1966,7 +1958,6 @@ extern "C" void ImageWindow_ZoomCB(Widget	 	drawingArea,
 
 void ImageWindow::zoomImage(XmPictureCallbackStruct* pictureData)
 {
-    XEvent		       *event = pictureData->event;
     boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
 
 
@@ -2015,10 +2006,6 @@ extern "C" void ImageWindow_RoamCB(Widget	 	drawingArea,
 
 void ImageWindow::roamImage(XmPictureCallbackStruct* calldata)
 {
-    Widget         widget;
-    double         dir_x;
-    double         dir_y;
-    double         dir_z;
     double 	   v[3];
     ViewControlDialog	       *viewCtl = this->viewControlDialog;
     ImageCamera    	       *camera = &this->state.hardwareCamera;
@@ -2072,10 +2059,6 @@ extern "C" void ImageWindow_NavigateCB(Widget	drawingArea,
 
 void ImageWindow::navigateImage(XmPictureCallbackStruct* pictureData)
 {
-    XEvent		       *event = pictureData->event;
-    boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
-
-
     ImageNode *in = (ImageNode *)this->node;
 
     if (pictureData->reason == XmPCR_SELECT)
@@ -2149,7 +2132,6 @@ extern "C" void ImageWindow_RotationCB(Widget	drawingArea,
 
 void ImageWindow::rotateImage(XmPictureCallbackStruct* pictureData)
 {
-    XEvent		       *event = pictureData->event;
     boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
 
     /*
@@ -2227,8 +2209,6 @@ void ImageWindow::handleCursor(int reason, int cursor_num,
 
     Parameter* param = probe->getOutput();
     long       l[5];
-    double     v[3];
-
 
     ImageNode *in = (ImageNode*)this->node;
 
@@ -2304,7 +2284,6 @@ extern "C" void ImageWindow_PickCB(Widget	drawingArea,
 			   XtPointer	callData)
 {
     XmPictureCallbackStruct    *pictureData =(XmPictureCallbackStruct*)callData;
-    XEvent		       *event = pictureData->event;
     ImageWindow		       *image = (ImageWindow*) clientData;
 
     image->pickImage(pictureData->x, pictureData->y);
@@ -2415,8 +2394,6 @@ extern "C" void ImageWindow_UndoCB(Widget	 	drawingArea,
 		         XtPointer	clientData,
 		         XtPointer	callData)
 {
-    XmPictureCallbackStruct    *pictureData =(XmPictureCallbackStruct*)callData;
-    XEvent		       *event = pictureData->event;
     ImageWindow		       *obj = (ImageWindow*) clientData;
 
     obj->undoCamera();
@@ -2493,7 +2470,6 @@ XmPictureCallbackStruct *pictureData =(XmPictureCallbackStruct*)callData;
 XEvent			*event = pictureData->event;
 XEvent			e;
 ImageWindow		*obj = (ImageWindow*) clientData;
-ImageNode		*in = (ImageNode*)obj->node;
 Atom			required_type;
 Atom			actual_type;
 int			actual_format;
@@ -2901,9 +2877,9 @@ void ImageWindow_ClientMessageCB(Widget    imageWindow,
 	obj->state.hardwareCamera.viewAngle = temp;
 	obj->state.hardwareCamera.projection = event->xclient.data.l[4];
 
-	obj->state.hardwareCamera.windowHeight = 
-	    obj->state.hardwareCamera.aspect *
-	    obj->state.hardwareCamera.windowWidth;
+	obj->state.hardwareCamera.windowHeight = (int)
+	  ( obj->state.hardwareCamera.aspect *
+	    obj->state.hardwareCamera.windowWidth );
 
 	//
 	// Seems like we should keep these in sync.
@@ -3330,7 +3306,6 @@ boolean ImageWindow::associateNode(Node *n)
 
 	    if (n->isA(ClassImageNode))
 	    {
-		ImageNode* ino = (ImageNode*)n;
 		if (this->changeImageNameCmd &&
 				((ImageNode*)n)->isImageNameInputSet())
 		    this->changeImageNameCmd->activate();
@@ -5186,7 +5161,7 @@ boolean ImageWindow::setView(ViewDirection dir)
     if (!this->directInteractionAllowed())
 	return FALSE;
 
-    long widgetsDirection;
+    long widgetsDirection = TOP;
 
     switch (dir) {
     case VIEW_NONE:
@@ -5275,7 +5250,7 @@ boolean ImageWindow::setLook(LookDirection dir)
 {
     if (!this->directInteractionAllowed())
 	return FALSE;
-    int mdir;
+    int mdir = XmLOOK_FORWARD;
     double angle = 0;
     const double OurPI = 3.14159;
 
@@ -5378,8 +5353,8 @@ boolean ImageWindow::setConstraint(ConstraintDirection dir)
 {
     if (!this->directInteractionAllowed())
 	return FALSE;
-    int hwconstraint;	// Hardware constraint
-    int pwconstraint;	// picture widget constraint
+    int hwconstraint = 0;	// Hardware constraint
+    int pwconstraint = 0;	// picture widget constraint
 
     switch (dir) {
     case CONSTRAINT_NONE:
@@ -5414,7 +5389,7 @@ boolean ImageWindow::setConstraint(ConstraintDirection dir)
 
 ConstraintDirection ImageWindow::getConstraint()
 {
-    ConstraintDirection dir;
+    ConstraintDirection dir = CONSTRAINT_NONE;
     int pwconstraint;
 
     XtVaGetValues(this->getCanvas(),
@@ -5621,10 +5596,9 @@ void ImageWindow::wait4GLAcknowledge()
 
     XEvent e;
 
-    e.xclient.message_type = -1;
+    e.xclient.message_type = ((Atom) None); // Undefined atom
     while(e.xclient.message_type != this->atoms.gl_shutdown)
     {
-	Boolean ret = 
 	XCheckTypedWindowEvent(theApplication->getDisplay(), 
 			       XtWindow(this->getCanvas()),
 			       ClientMessage, 
@@ -5767,7 +5741,6 @@ boolean ImageWindow::selectProbeByInstance(int i)
     double     *darray;	
     double     **vlist;	
     const char *strValue;
-    int	       num;
     int	       tuple;
     ProbeNode  *probe;
 
@@ -5818,7 +5791,6 @@ boolean ImageWindow::selectProbeByInstance(int i)
     {
 	int	  i;
 	int	  j;
-	const char *tmp;
 
 	strValue = probe->getOutputValueString(1);
 
@@ -5931,9 +5903,9 @@ Node *ImageWindow::getNodeByInstance(const char *classname, const char *name,
 	List *l = this->network->makeClassifiedNodeList(classname, FALSE);
 	if (l) {
 	    int mininst = 0;
-	    Node *first;
+	    Node *first=NULL;
 	    ListIterator iter(*l);
-	    while (node = (Node*)iter.getNext()) {
+	    while ( (node = (Node*)iter.getNext()) ) {
 		int newinst = node->getInstanceNumber();
 		if ((mininst == 0) || (newinst < mininst)) {
 		    mininst = newinst;
@@ -5965,7 +5937,7 @@ boolean ImageWindow::selectPickByInstance(int i)
 
     ListIterator images(*this->network->getImageList());
     ImageWindow *w;
-    while (w = (ImageWindow*)images.getNext())
+    while ( (w = (ImageWindow*)images.getNext()) )
 	if (w != this && w->getInteractionMode() == PICK &&
 			 w->getCurrentPickNode() == pick)
 	    w->setInteractionMode(NONE);
@@ -6130,7 +6102,7 @@ void ImageWindow::newCanvasImage()
 	    this->modeZoomCmd->activate();
 	}
     }
-    this->state.pixmap = -1;
+    this->state.pixmap = XtUnspecifiedPixmap;
     Position x;
     Position y;
     if (this->state.frameBuffer)
@@ -6723,7 +6695,7 @@ void ImageWindow::toggleWindowStartup()
     ImageWindow *iw;
     ListIterator iterator(*images);
 
-    while (iw = (ImageWindow*)iterator.getNext())  {
+    while ( (iw = (ImageWindow*)iterator.getNext()) )  {
 	if ((iw != this) && iw->isStartup())  {
 	    doit = TRUE;
 	    break;

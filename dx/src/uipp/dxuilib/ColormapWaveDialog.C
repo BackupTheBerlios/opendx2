@@ -380,8 +380,6 @@ extern "C" void ColormapWaveDialog_PopdownCB(Widget    widget,
                                 XtPointer callData)
 {
     ASSERT(clientData);
-
-    ColormapWaveDialog *data = (ColormapWaveDialog*) clientData;
 }
 extern "C" void ColormapWaveDialog_RangeCB(Widget    widget,
                                  XtPointer clientData,

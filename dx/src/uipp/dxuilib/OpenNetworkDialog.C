@@ -89,7 +89,7 @@ void OpenNetworkDialog::helpCallback(Dialog* dialog)
     char *f = this->getSelectedFileName();
     char buffer[BUFSIZE];
     boolean parsing = FALSE, done = FALSE;
-    char *pc, *comment = NULL, *netfile = NULL; 
+    char *pc = NULL, *comment = NULL, *netfile = NULL; 
     int comment_len=0, maxlen=0;
     FILE *fp = NULL;
     char *errmsg = "";

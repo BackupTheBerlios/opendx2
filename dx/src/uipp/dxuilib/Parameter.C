@@ -62,7 +62,7 @@ void Parameter::disconnectArks()
     // element in the list.
     //
     Ark  *a;
-    while (a = (Ark*) this->arcs.getElement(1)) 
+    while ( (a = (Ark*) this->arcs.getElement(1)) ) 
        delete a;
 
 }
@@ -161,7 +161,7 @@ boolean Parameter::setValue(const char *value, Type type, boolean coerce)
 	ListIterator li(*pd->getTypes());
 	DXType *dxt;
 	boolean typeMatch = FALSE;
-	while(dxt = (DXType*)li.getNext())
+	while( (dxt = (DXType*)li.getNext()) )
 	    if (dxt->MatchType(type, dxt->getType()))
 	    {
 		typeMatch = TRUE;
@@ -213,7 +213,7 @@ boolean Parameter::setSetValue(const char *value, Type type)
 //
 int Parameter::getComponentCount()
 {
-    int ret;
+    int ret = 0;
 
     switch (this->getValueType()) {
         case DXType::IntegerListType:
@@ -242,7 +242,7 @@ int Parameter::getComponentCount()
 //
 double Parameter::getComponentValue(int component)
 {
-    double ret;
+    double ret = 0;
     ASSERT(component > 0);
 
     switch (this->getValueType()) {
@@ -276,7 +276,7 @@ boolean Parameter::setComponentValue(int component, double val)
 {
     ASSERT(component > 0);
     DXValue *v = this->value;
-    boolean r;
+    boolean r = true;
 
     ASSERT(v);
 

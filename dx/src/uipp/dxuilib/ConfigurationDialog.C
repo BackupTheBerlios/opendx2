@@ -506,12 +506,10 @@ extern "C" void ConfigurationDialog_ValueChangedInputHideCB(Widget widget,
 
 void ConfigurationDialog::expandCallback(Dialog *clientData)
 {
-    ConfigurationDialog *dialog = (ConfigurationDialog*)clientData;
     this->remanageInputs(TRUE);
 }
 void ConfigurationDialog::collapseCallback(Dialog *clientData)
 {
-    ConfigurationDialog *dialog = (ConfigurationDialog*)clientData;
     this->remanageInputs(FALSE);
 }
 
@@ -533,7 +531,6 @@ ConfigurationDialog *dialog = (ConfigurationDialog*)clientData;
 void ConfigurationDialog::resizeCallback()
 {
 Dimension dw;
-boolean scrollbar_visible = FALSE;
 
     if ((!this->getRootWidget()) || (!this->scrolledInputForm)) return ;
     XtVaGetValues (this->getRootWidget(), XmNwidth, &dw, NULL);
@@ -1023,7 +1020,6 @@ void ConfigurationDialog::post()
     ListIterator li(this->inputList);
     int i;
     CDBInput *input;
-    Node     *n = this->node;
 
     for (i = 1; NULL != (input = (CDBInput*)li.getNext()); ++i)
     {
@@ -1850,8 +1846,6 @@ void ConfigurationDialog::newOutput(int i)
 
 void ConfigurationDialog::deleteInput(int i)
 {
-    Node *n = this->node;
-
     CDBInput *input = (CDBInput*)this->inputList.getElement(i);
     if (input == NULL)
 	return;
@@ -1870,7 +1864,7 @@ void ConfigurationDialog::deleteInput(int i)
 
     CDBInput *prevVisible;
     int j;
-    for (j = i-1; prevVisible = (CDBInput*)this->inputList.getElement(j); --j)
+    for (j = i-1; (prevVisible = (CDBInput*)this->inputList.getElement(j)); --j)
 	if (!prevVisible->lineIsHidden)
 	    break;
     Widget prevWidget;
@@ -1880,7 +1874,7 @@ void ConfigurationDialog::deleteInput(int i)
 	prevWidget = NULL;
 
     CDBInput *nextVisible;
-    for (j = i+1; nextVisible = (CDBInput*)this->inputList.getElement(j); ++j)
+    for (j = i+1; (nextVisible = (CDBInput*)this->inputList.getElement(j)); ++j)
 	if (!nextVisible->lineIsHidden)
 	    break;
     if (nextVisible)
@@ -1925,13 +1919,11 @@ void ConfigurationDialog::deleteInput(int i)
 }
 void ConfigurationDialog::deleteOutput(int i)
 {
-    Node *n = this->node;
-
     CDBOutput *output = (CDBOutput*)this->outputList.getElement(i);
     if (output == NULL)
 	return;
 
-    Widget prevNameWidget;
+    Widget prevNameWidget=NULL;
     int j;
     for (j = i - 1; j > 0; --j)
     {

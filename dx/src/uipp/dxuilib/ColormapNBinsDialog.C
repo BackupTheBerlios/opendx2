@@ -165,7 +165,6 @@ void ColormapNBinsDialog::post()
 void ColormapNBinsDialog::setStepper()
 {
     ColormapNode* node;
-    char          str[100];
 
     node = this->editor->getColormapNode();
 
@@ -180,8 +179,6 @@ boolean ColormapNBinsDialog::okCallback(Dialog *dialog)
 {
     int	nbins;
     ColormapNode* node;
-
-    ColormapNBinsDialog *cnbDialog = (ColormapNBinsDialog*) dialog;
 
     node = this->editor->getColormapNode();
 

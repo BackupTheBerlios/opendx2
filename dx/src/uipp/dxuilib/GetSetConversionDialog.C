@@ -529,7 +529,7 @@ GetSetConversionDialog::update()
 
     ListIterator it(*maclist);
     MacroDefinition *md;
-    while (md = (MacroDefinition*)it.getNext()) {
+    while ( (md = (MacroDefinition*)it.getNext()) ) {
 	Network *net = md->getNetwork();
 	ASSERT (net);
 	this->referenced_macros->appendElement((const void*)md);
@@ -634,7 +634,7 @@ GetSetConversionDialog::GetSetPlacements
     topnet->getReferencedMacros(maclist, NULL);
     ListIterator it(*maclist);
     MacroDefinition *md;
-    while (md = (MacroDefinition*)it.getNext()) {
+    while ( (md = (MacroDefinition*)it.getNext()) ) {
         Network *net = md->getNetwork();
         ASSERT(net);
         List *mgets =  net->makeNamedNodeList ("Get");
@@ -679,14 +679,14 @@ GlobalLocalNode *gln;
 
     if (gets) {
 	it.setList(*gets);
-	while (gln = (GlobalLocalNode*)it.getNext())
+	while ( (gln = (GlobalLocalNode*)it.getNext()) )
 	    e->selectNode("Get", gln->getInstanceNumber(), TRUE);
 	delete gets;
 	gets = NULL;
     }
     if (sets) {
 	it.setList(*sets);
-	while (gln = (GlobalLocalNode*)it.getNext())
+	while ( (gln = (GlobalLocalNode*)it.getNext()) )
 	    e->selectNode("Set", gln->getInstanceNumber(), TRUE);
 	delete sets;
 	sets = NULL;
@@ -747,7 +747,7 @@ ListIterator it;
     if (gets) {
 	it.setList(*gets);
 	search_instance = 9999999;
-	while (gln = (GlobalLocalNode*)it.getNext()) {
+	while ( (gln = (GlobalLocalNode*)it.getNext()) ) {
 	    int instance = gln->getInstanceNumber();
 	    if (instance < this->next_get_instance) continue;
 	    else if (instance == this->next_get_instance) {
@@ -773,7 +773,7 @@ ListIterator it;
 	if (sets) {
 	    search_instance = 9999999;
 	    it.setList(*sets);
-	    while (gln = (GlobalLocalNode*)it.getNext()) {
+	    while ( (gln = (GlobalLocalNode*)it.getNext()) ) {
 		int instance = gln->getInstanceNumber();
 		if (instance < this->next_set_instance) continue;
 		else if (instance == this->next_set_instance) {
@@ -822,7 +822,7 @@ int dummy=0;
 	    List *arcs = (List *)node->getOutputArks(2);
 	    ListIterator li(*arcs);
 	    Ark *a;
-	    while (a = (Ark*)li.getNext()) {
+	    while ( (a = (Ark*)li.getNext()) ) {
 		Node *dest = a->getDestinationNode(dummy);
 		const char *dest_name = dest->getNameString();
 		if (EqualString(dest_name, "Set")) {

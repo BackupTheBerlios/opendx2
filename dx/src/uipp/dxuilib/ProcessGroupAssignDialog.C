@@ -283,7 +283,6 @@ extern "C" void ProcessGroupAssignDialog_TextCB(Widget    widget,
 #else
     ProcessGroupManager *pgm = theDXApplication->PGManager;
 #endif
-    char *arg;
 
     if(dialog->lastIndex == 0)
     {
@@ -354,7 +353,6 @@ extern "C" void ProcessGroupAssignDialog_DefaultActionCB(Widget    widget,
 				  XtPointer callData)
 {
     ProcessGroupAssignDialog *dialog = (ProcessGroupAssignDialog*)clientData;
-    XmListCallbackStruct* cs = (XmListCallbackStruct*)callData;
 
     if(dialog->lastIndex == 0)
 	XmListDeselectAllItems((widget == dialog->grouplist) ?
@@ -505,7 +503,6 @@ void ProcessGroupAssignDialog::makeList(int item)
 
 boolean ProcessGroupAssignDialog::okCallback(Dialog* dialog)
 {
-    DXPacketIF *p = this->app->getPacketIF();
 #if WORKSPACE_PAGES
     ProcessGroupManager *pgm = theDXApplication->getProcessGroupManager();
 #else
@@ -514,7 +511,8 @@ boolean ProcessGroupAssignDialog::okCallback(Dialog* dialog)
 
     if(NOT this->dirty)
 	return FALSE;
-   
+	
+//    DXPacketIF *p = this->app->getPacketIF();   
 // Do we need this warning ?
 //    if (NOT p)
 //	WarningMessage("No connection to the server.");

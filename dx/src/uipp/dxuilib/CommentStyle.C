@@ -87,7 +87,7 @@ char end_stmnt[64];
 
     if ((cp) && (cp[0])) {
 
-	if (fprintf (f, "    // annotation %s: %d\n", begin_stmnt, strlen(cp)) < 0)
+	if (fprintf (f, "    // annotation %s: %ld\n", begin_stmnt, strlen(cp)) < 0)
 	    return FALSE;
 
 	char* line_to_print = DuplicateString(cp);
@@ -167,8 +167,6 @@ char end_stmnt[64];
 boolean CommentStyle::parseComment (const char *comment, const char *file, int l)
 {
 int items_parsed;
-char text[1024];
-char font[64];
 boolean retVal = FALSE;
 
 char begin_stmnt[64];

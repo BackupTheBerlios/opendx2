@@ -115,7 +115,6 @@ void Decorator::manage(WorkSpace *workSpace)
     if (this->customPart) {
 	this->WorkSpaceComponent::manage();
     } else {
-	Widget parent = workSpace->getRootWidget();
 	ASSERT(!this->workSpace);
 	ASSERT(workSpace);
 	this->workSpace = workSpace;
@@ -193,7 +192,7 @@ void Decorator::createDecorator()
     if (this->setResourceList) {
 	ListIterator it(*this->setResourceList);
 	DynamicResource* dr;
-	while (dr = (DynamicResource*)it.getNext()) {
+	while ( (dr = (DynamicResource*)it.getNext()) ) {
 	    // don't bother checking return value from setRootWidget because it will
 	    // always return FALSE for resources belonging to xmLabelWidgetClass if
 	    // there is no XmLabel widget already in its list.  Not a problem.
@@ -465,7 +464,7 @@ DynamicResource *dr=NUL(DynamicResource*);
     }
  
     it.setList (*this->setResourceList);
-    while (dr = (DynamicResource *)it.getNext()) {
+    while ( (dr = (DynamicResource *)it.getNext()) ) {
 	if (!strcmp (dr->getResourceName(), res)) {
 	    break;
 	}
@@ -545,7 +544,7 @@ boolean Decorator::printJavaResources (FILE* jf, const char* indent, const char*
     if (this->setResourceList) {
 	ListIterator it(*this->setResourceList);
 	DynamicResource* dr;
-	while (dr = (DynamicResource*)it.getNext()) {
+	while ( (dr = (DynamicResource*)it.getNext()) ) {
 	    if ((EqualString(dr->getResourceName(), XmNforeground)) ||
 		(EqualString(dr->getResourceName(), XmNbackground))) {
 		boolean ok_to_set = FALSE;

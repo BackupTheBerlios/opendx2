@@ -77,16 +77,12 @@ void ColormapAddCtlDialog::installDefaultResources(Widget  baseWidget)
 Widget ColormapAddCtlDialog::createDialog(Widget parent)
 {
     Arg arg[10];
-    Widget shell,sep;
+    Widget sep;
     double  min = 0.0;
     double  max = 1.0;
     double  inc = 0.05;
     double  min_level = 0.0;
-    double  max_level = 100.0;
-    double  min_value = 0.0;
-    double  max_value = 0.66666666;
     int     n = 0;
-    XtArgVal dx_l1, dx_l2, dx_l3, dx_l4;
 
     XtSetArg(arg[n], XmNdialogStyle,	  XmDIALOG_MODELESS); n++;
     XtSetArg(arg[n], XmNwidth,            450);   n++;
@@ -95,6 +91,9 @@ Widget ColormapAddCtlDialog::createDialog(Widget parent)
     XtSetArg(arg[n], XmNautoUnmanage,     False);   n++;
 
     Widget form = this->CreateMainForm(parent, this->name, arg, n);
+#if defined(alphax)
+	XtArgVal dx_l1, dx_l2, dx_l3, dx_l4;
+#endif
 
     this->levellabel = 	
 	XtVaCreateManagedWidget("dataValueLabel", 
@@ -227,7 +226,6 @@ void ColormapAddCtlDialog::setStepper()
     double        step, min, max;
     ColormapNode* node;
     char          str[100];
-    XtArgVal	  dx_l1, dx_l2, dx_l3;
 
     node = this->editor->getColormapNode();
 
@@ -235,6 +233,10 @@ void ColormapAddCtlDialog::setStepper()
     min = node->getMinimumValue();
 
     step = (max - min)/100;
+
+#if defined(alphax)
+	XtArgVal dx_l1, dx_l2, dx_l3;
+#endif
 
     XtVaSetValues(this->levelstepper,
 		  XmNdMinimum, DoubleVal(min, dx_l1),
@@ -250,7 +252,7 @@ void ColormapAddCtlDialog::setStepper()
 
 void ColormapAddCtlDialog::setFieldLabel(int selected_area)
 {
-    XmString xmstr;
+    XmString xmstr = NULL;
 
     switch(selected_area)
     {
@@ -277,7 +279,6 @@ extern "C" void ColormapAddCtlDialog_AddCB(Widget    widget,
                                  XtPointer clientData,
                                  XtPointer callData)
 {
-    Arg		wargs[2];
     double	level;
     double	value;
 

@@ -83,7 +83,7 @@ WorkSpaceComponent::~WorkSpaceComponent()
     if (this->setResourceList) {
 	ListIterator it(*this->setResourceList);
 	DynamicResource *dynres;
-	while (dynres = (DynamicResource *)it.getNext()) {
+	while ( (dynres = (DynamicResource *)it.getNext()) ) {
 	    delete dynres;
 	}
 	this->setResourceList->clear();
@@ -290,7 +290,7 @@ Widget root;
     if (this->setResourceList) {
 	ListIterator it(*this->setResourceList);
 	DynamicResource *dr;
-	while (dr = (DynamicResource*)it.getNext()) {
+	while ( (dr = (DynamicResource*)it.getNext()) ) {
 	    dr->setData();
 	}
     }
@@ -500,7 +500,7 @@ DynamicResource *dr;
     if (!this->setResourceList) return NUL(const char *);
 
     it.setList (*this->setResourceList);
-    while (dr = (DynamicResource *)it.getNext()) {
+    while ( (dr = (DynamicResource *)it.getNext()) ) {
         if (!strcmp (dr->getResourceName(), res)) {
             break;
         }
@@ -518,7 +518,7 @@ DynamicResource *dr;
     if (!this->setResourceList) return FALSE;
 
     it.setList (*this->setResourceList);
-    while (dr = (DynamicResource *)it.getNext()) {
+    while ( (dr = (DynamicResource *)it.getNext()) ) {
         if (!strcmp (dr->getResourceName(), res)) {
 	    return TRUE;
         }
@@ -537,7 +537,7 @@ void WorkSpaceComponent::transferResources (WorkSpaceComponent *wsc)
 
     ListIterator it (*this->setResourceList);
     DynamicResource *dr;
-    while (dr = (DynamicResource*)it.getNext()) {
+    while ( (dr = (DynamicResource*)it.getNext()) ) {
 	wsc->setResourceList->appendElement((void*)dr);
 	if (this->customPart) dr->setRootWidget(this->getRootWidget());
 	else dr->setRootWidget(NUL(Widget));
@@ -550,7 +550,7 @@ void WorkSpaceComponent::widgetDestroyed ()
     if (this->setResourceList) {
 	ListIterator it (*this->setResourceList);
 	DynamicResource *dr;
-	while (dr = (DynamicResource*)it.getNext()) 
+	while ( (dr = (DynamicResource*)it.getNext()) ) 
 	    dr->setRootWidget(NUL(Widget));
     }
     this->UIComponent::widgetDestroyed ();

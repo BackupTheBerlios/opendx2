@@ -105,7 +105,7 @@ TickLabelList::~TickLabelList()
     ListIterator it(this->ticks);
     TickLabel *tl;
 
-    while (tl = (TickLabel*)it.getNext()) 
+    while ( (tl = (TickLabel*)it.getNext()) ) 
 	delete tl;
     this->ticks.clear();
 
@@ -292,7 +292,7 @@ Arg args[25];
 
     ListIterator it(this->ticks);
     TickLabel *tl;
-    while (tl = (TickLabel*)it.getNext()) 
+    while ( (tl = (TickLabel*)it.getNext()) ) 
 	tl->createLine (this->listRC);
 }
 
@@ -327,7 +327,7 @@ TickLabelList::SelectCB (TickLabel* tlab, void* clientData)
 
     ListIterator it(tll->ticks);
     TickLabel *nextTL;
-    while (nextTL = (TickLabel*)it.getNext()) {
+    while ( (nextTL = (TickLabel*)it.getNext()) ) {
 	if ((nextTL != tlab) && (nextTL->isSelected())) {
 	    nextTL->setSelected (FALSE, FALSE);
 	}
@@ -345,7 +345,7 @@ TickLabelList::isModified()
     TickLabel *tl;
     ListIterator it(this->ticks);
 
-    while (tl = (TickLabel*)it.getNext())
+    while ( (tl = (TickLabel*)it.getNext()) )
 	if (tl->isModified()) return TRUE;
     return FALSE;
 }
@@ -358,7 +358,7 @@ TickLabelList::isNumberModified()
     TickLabel *tl;
     ListIterator it(this->ticks);
 
-    while (tl = (TickLabel*)it.getNext())
+    while ( (tl = (TickLabel*)it.getNext()) )
 	if (tl->isNumberModified()) return TRUE;
     return FALSE;
 }
@@ -371,7 +371,7 @@ TickLabelList::isTextModified()
     TickLabel *tl;
     ListIterator it(this->ticks);
 
-    while (tl = (TickLabel*)it.getNext())
+    while ( (tl = (TickLabel*)it.getNext()) )
 	if (tl->isTextModified()) return TRUE;
     return FALSE;
 }
@@ -394,7 +394,7 @@ TickLabelList::getTickNumbers()
     double *dvals = new double[this->ticks.getSize()];
 
     int i = 0;
-    while (tl = (TickLabel*)it.getNext()) 
+    while ( (tl = (TickLabel*)it.getNext()) ) 
 	dvals[i++] = tl->getNumber();
 
     return (this->oldDvals = dvals);
@@ -423,7 +423,7 @@ TickLabelList::getTickTextString()
     TickLabel *tl;
     int len = 0;
     const char *cp;
-    while (tl = (TickLabel*)it.getNext()) {
+    while ( (tl = (TickLabel*)it.getNext()) ) {
 	cp = tl->getText();
 	if (!cp) continue;
 	len+= strlen(cp);
@@ -443,7 +443,7 @@ TickLabelList::getTickTextString()
     boolean add_quotes;
     
     it.setList(this->ticks);
-    while (tl = (TickLabel*)it.getNext()) {
+    while ( (tl = (TickLabel*)it.getNext()) ) {
 	if (!first_loop) {
 	    strcpy (&buf[bufLen], ", "); bufLen+= 2;
 	}
@@ -470,7 +470,7 @@ TickLabelList::markClean()
     TickLabel *tl;
     ListIterator it(this->ticks);
 
-    while (tl = (TickLabel*)it.getNext()) {
+    while ( (tl = (TickLabel*)it.getNext()) ) {
 	tl->setText();
 	tl->setNumber();
     }
@@ -482,7 +482,7 @@ TickLabelList::markNumbersClean()
     TickLabel *tl;
     ListIterator it(this->ticks);
 
-    while (tl = (TickLabel*)it.getNext()) {
+    while ( (tl = (TickLabel*)it.getNext()) ) {
 	tl->setNumber();
     }
 }
@@ -493,7 +493,7 @@ TickLabelList::markTextClean()
     TickLabel *tl;
     ListIterator it(this->ticks);
 
-    while (tl = (TickLabel*)it.getNext()) {
+    while ( (tl = (TickLabel*)it.getNext()) ) {
 	tl->setText();
     }
 }
@@ -503,7 +503,7 @@ TickLabelList::clear()
 {
     ListIterator it(this->ticks);
     TickLabel *tl;
-    while (tl = (TickLabel*)it.getNext()) 
+    while ( (tl = (TickLabel*)it.getNext()) ) 
 	delete tl;
     this->ticks.clear();
 
@@ -557,7 +557,7 @@ TickLabel *tl;
 	    tmpList.appendElement((void*)tl);
 	}
 	ListIterator it(tmpList);
-	while (tl = (TickLabel*)it.getNext()) {
+	while ( (tl = (TickLabel*)it.getNext()) ) {
 	    this->ticks.removeElement((void*)tl);
 	    delete tl;
 	}
@@ -746,7 +746,7 @@ int newPos;
     ListIterator it(tll->ticks);
     sel = NULL;
     newPos = 1;
-    while (tl = (TickLabel*)it.getNext()) {
+    while ( (tl = (TickLabel*)it.getNext()) ) {
 	if (tl->isSelected()) {
 	    sel = tl;
 	    break;
@@ -769,7 +769,7 @@ int newPos;
     ListIterator it(tll->ticks);
     sel = NULL;
     newPos = 1;
-    while (tl = (TickLabel*)it.getNext()) {
+    while ( (tl = (TickLabel*)it.getNext()) ) {
 	if (tl->isSelected()) {
 	    sel = tl;
 	    break;
@@ -789,7 +789,7 @@ void TickLabelList_DeleteSelCB(Widget , XtPointer clientData, XtPointer)
     TickLabel *tl, *sel;
     ListIterator it(tll->ticks);
     sel = NULL;
-    while (tl = (TickLabel*)it.getNext()) {
+    while ( (tl = (TickLabel*)it.getNext()) ) {
 	if (tl->isSelected()) {
 	    sel = tl;
 	    break;

@@ -35,7 +35,7 @@ class DXValue;
 class Ark;
 
 #define FOR_EACH_PARAMETER_ARC(p,a,iterator) \
-    for (iterator.setList(p->arcs) ; a = (Parameter*)iterator.getNext() ; )
+    for (iterator.setList(p->arcs) ; (a = (Parameter*)iterator.getNext()) ; )
 
 //
 // Parameter class definition:

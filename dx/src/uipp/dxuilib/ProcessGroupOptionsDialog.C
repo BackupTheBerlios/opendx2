@@ -75,7 +75,6 @@ extern "C" void ProcessGroupOptionsDialog_NumberTextCB(Widget w,
 				      XtPointer clientData,
 				      XtPointer callData)
 {
-    ProcessGroupOptionsDialog *d = (ProcessGroupOptionsDialog *)clientData;
     XmTextVerifyCallbackStruct *cs = (XmTextVerifyCallbackStruct*)callData;
 
     char *s = XmTextGetString(w);
@@ -325,12 +324,6 @@ ProcessGroupOptionsDialog::ProcessGroupOptionsDialog(
 
 void ProcessGroupOptionsDialog::manage()
 {
-    int 	 autoStart;
-    const char    *server;
-    const char    *executive;
-    const char    *workingDirectory;
-    const char    *executiveFlags;
-
     this->Dialog::manage();
 }
 

@@ -161,11 +161,11 @@ void ControlPanelAccessDialog::makeToggles()
 
      if(this->toggleList[0].getSize() > 0)
      {
-        while(widget = (Widget)li.getNext())
+        while( (widget = (Widget)li.getNext()) )
              XtDestroyWidget(widget);
 
 	li.setList(this->toggleList[1]);
-        while(widget = (Widget)li.getNext())
+        while( (widget = (Widget)li.getNext()) )
              XtDestroyWidget(widget);
 
         this->toggleList[0].clear();
@@ -181,7 +181,7 @@ void ControlPanelAccessDialog::makeToggles()
      if(this->toggleList[2].getSize() > 0)
      {
 	li.setList(this->toggleList[2]);
-        while(widget = (Widget)li.getNext())
+        while( (widget = (Widget)li.getNext()) )
              XtDestroyWidget(widget);
 
         this->toggleList[2].clear();

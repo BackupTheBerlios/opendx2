@@ -342,7 +342,7 @@ boolean _ParseParameterAttributes(ParameterDefinition *pd , const char *attr)
     } 
 
     if (GetIntegerAttribute(attr,"visible",&val)) {
-	boolean visible, viewable;
+	boolean visible=FALSE, viewable=FALSE;
 	if (val == 0) {
 	    viewable = TRUE;
 	    visible = FALSE;
@@ -380,11 +380,9 @@ boolean _ParseOutboardLine(NodeDefinition* module,
 			   int        lineNumber,
 			   int        start)
 {
-    Symbol	symbol;
     int       current;
     int       temp;
     int       i;
-    char*     p;
     char*     substring[2];
 
     ASSERT(module != NUL(NodeDefinition*));
@@ -478,11 +476,9 @@ boolean _ParseLoadableLine(NodeDefinition* module,
 			   int        lineNumber,
 			   int        start)
 {
-    Symbol	symbol;
     int       current;
     int       temp;
     int       i;
-    char*     p;
     char*     substring;
 
     ASSERT(module != NUL(NodeDefinition*));
@@ -896,9 +892,6 @@ boolean _ParseOptionsLine(Dictionary*    mdf,
 			      int        lineNumber,
 			      int        start)
 {
-    int temp;
-    int i, cnt;
-
     ASSERT(mdf != NUL(Dictionary*));
     ASSERT(module != NUL(NodeDefinition*));
     ASSERT(line);
@@ -965,7 +958,7 @@ boolean _ParseRepeatLine(Dictionary*    mdf,
     int current;
     int temp;
     int value;
-    int i, cnt;
+    int cnt;
     char *ioname;
 
     ASSERT(mdf != NUL(Dictionary*));
@@ -1074,19 +1067,16 @@ boolean _FinishNodeDefinition(Dictionary*    mdf,
 boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 {
     NodeDefinition *module;
-    int        module_index;
     int        state;
     int        start;
     int        end;
-    int        temp;
     Symbol	category;
     int        line_number;
-    int        i;
-    boolean    parsed_flags, checked_flags, finished;
+    boolean    parsed_flags, checked_flags=FALSE, finished;
     boolean    parsed_category,  parsed_description, parsed_outboard;
-    boolean    checked_category, checked_description, checked_outboard; 
-    boolean	parsed_loadable, checked_loadable;
-    boolean	checked_repeat, parsed_repeat;
+    boolean    checked_category=FALSE, checked_description=FALSE, checked_outboard=FALSE; 
+    boolean	parsed_loadable, checked_loadable=FALSE;
+    boolean	checked_repeat=FALSE, parsed_repeat;
     boolean    get_another_line;
     char*      p;
     char       line[2048];
@@ -1239,7 +1229,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 	     * Add the module index to the module index list.
 	     */
 
-	    if (module = _ParseModuleLine(mdf, line, line_number, start))
+	    if ( (module = _ParseModuleLine(mdf, line, line_number, start)) )
 	    {
 		/*
 		 * Next, parse category line.

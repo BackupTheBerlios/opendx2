@@ -186,7 +186,7 @@ SetScalarAttrDialog::SetScalarAttrDialog(const char *name,
 void SetScalarAttrDialog::initInstanceData(ScalarInstance *si)
 {
     ScalarNode *sinode = ( ScalarNode*)si->getNode();
-    int i, ncomp;
+    int ncomp;
     // FIXME: should we assert that we have a ScalarNode?
 
     this->maxLabel = this->maxNumber = NULL;	
@@ -227,7 +227,6 @@ void SetScalarAttrDialog::setAttributeSensitivity()
 {
     ScalarInstance *si = (ScalarInstance*) this->interactorInstance;
     ScalarNode *snode = (ScalarNode*)si->getNode();
-    boolean sensitive = !snode->isDataDriven();
 
     Boolean s = (snode->isMaximumVisuallyWriteable() ? True : False);
     XtSetSensitive(this->maxNumber,s);
@@ -316,10 +315,7 @@ void SetScalarAttrDialog::updateAllAttributes(int component_index)
 //
 boolean SetScalarAttrDialog::storeAttributes()
 {
-    double delta;
-    Boolean continuous, set;
-    Widget w;
-    int decimals, component_index, i, ncomp = this->numComponents;
+    int component_index, ncomp = this->numComponents;
     ScalarNode *sinode; 
     ScalarInstance *si = (ScalarInstance*) this->interactorInstance;
     double *mins = NULL;
@@ -466,7 +462,9 @@ void SetScalarAttrDialog::updateDisplayedComponentAttributes(
 					     NULL);
 
     } else {
+#if defined(alphax)
 	XtArgVal dx_l;
+#endif
         XtVaSetValues(this->maxNumber,       XmNdataType, DOUBLE, 
         				     XmNdValue,   DoubleVal(max, dx_l), 
         				     XmNdecimalPlaces,  decimals, 
@@ -670,7 +668,6 @@ extern "C" void SetScalarAttrDialog_UpdateOptionsCB(Widget w, XtPointer clientDa
 {
     SetScalarAttrDialog *sad = (SetScalarAttrDialog*)clientData;
     Boolean  currentValue, nextValue;
-    Widget current_selection;
 
     ASSERT((w == sad->globalUpdate) || (w == sad->localUpdate));
 
@@ -795,7 +792,6 @@ Widget SetScalarAttrDialog::createUpdatePulldown(Widget parent,
 
 void SetScalarAttrDialog::createAttributesPart(Widget mainForm)
 {
-    Arg arg[10];
     ScalarInstance *si = (ScalarInstance*) this->interactorInstance;
 
     /////////////////////////////////////////////////////////////

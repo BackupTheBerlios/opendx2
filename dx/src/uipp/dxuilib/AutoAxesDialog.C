@@ -591,7 +591,7 @@ void AutoAxesDialog::layoutLabels (Widget parent)
 	XmNtopOffset,		0,
     NULL);
 
-    Widget sep = XtVaCreateManagedWidget ("sep",
+    XtVaCreateManagedWidget ("sep",
 	xmSeparatorWidgetClass,	parent,
 	XmNleftAttachment,	XmATTACH_FORM,
 	XmNrightAttachment,	XmATTACH_FORM,
@@ -1245,9 +1245,6 @@ char *ticks_label_name[3];
     XtArgVal    dx_l1, dx_l2, dx_l3, dx_l4;
 #endif
     double inc = 0.1;
-    double min = 0.0;
-    double max = 1000000.0;
-    double value = 1.0;
     for(i = 0; i < 6; i++)
     {
 	this->corners_number[i] = XtVaCreateManagedWidget("cornerStepper",
@@ -2217,7 +2214,7 @@ void AutoAxesDialog::setAutoAxesDialogFont()
     if (!this->image->isAutoAxesFontSet ()) {
 	this->fontSelection->setText("");
     } else {
-	int n = this->image->getAutoAxesFont (sv);
+	this->image->getAutoAxesFont(sv);
 	this->fontSelection->setText(sv);
     }
     this->setFontSensitivity();
@@ -2461,7 +2458,6 @@ void AutoAxesDialog::installValues()
     if (this->isDirty(DIRTY_XTICK_LABELS)) this->dirtyBits|= DIRTY_XTICK_LABELS;
     if (this->isDirty(DIRTY_YTICK_LABELS)) this->dirtyBits|= DIRTY_YTICK_LABELS;
     if (this->isDirty(DIRTY_ZTICK_LABELS)) this->dirtyBits|= DIRTY_ZTICK_LABELS;
-    int	original_dirt = this->dirtyBits;
 
     //
     // Ticks om
@@ -2540,8 +2536,8 @@ void AutoAxesDialog::installValues()
     for (i=XTICK_LIST; i<=ZTICK_LIST; i++) {
 	tll = this->tickList[i];
 
-	int dirty_flag;
-	boolean iscon;
+	int dirty_flag=0;
+	boolean iscon=false;
 	switch (i) {
 	    case XTICK_LIST: 
 		dirty_flag = DIRTY_XTICK_LABELS; 
@@ -2607,8 +2603,8 @@ void AutoAxesDialog::installValues()
     for (i=XTICK_LIST; i<=ZTICK_LIST; i++) {
 	tll = this->tickList[i];
 
-	int dirty_flag;
-	boolean iscon;
+	int dirty_flag=0;
+	boolean iscon=false;
 	switch (i) {
 	    case XTICK_LIST: 
 		dirty_flag = DIRTY_XTICK_LOCS; 
@@ -3526,7 +3522,6 @@ void
 AutoAxesDialog_DirtyTextCB(Widget w, XtPointer clientData, XtPointer cbs)
 {
 XmTextVerifyCallbackStruct *tvcs = (XmTextVerifyCallbackStruct*)cbs;
-XmTextBlockRec *tb = tvcs->text;
 XtPointer flag;
 
     ASSERT(clientData);

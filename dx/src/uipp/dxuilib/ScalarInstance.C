@@ -39,7 +39,7 @@ ScalarInstance::~ScalarInstance()
 {
     LocalAttributes *la;
     int pos=1;
-    while (la = (LocalAttributes*) this->localAttributes.getElement(pos++))
+    while ( (la = (LocalAttributes*) this->localAttributes.getElement(pos++)) )
 	delete la;
 }
 

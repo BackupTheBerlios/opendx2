@@ -570,8 +570,6 @@ void ColormapEditor::manage()
 
 void ColormapEditor::setDrawMode()
 {
-    ColormapNode *node = this->colormapNode;
-
     // Handle the case where we are not completely initialized
     if(!this->ticksOption)
     {
@@ -867,8 +865,6 @@ Widget ColormapEditor::createWorkArea(Widget parent)
 {
     Arg    arg[8];
     int    n;
-    ColormapNode* node = this->colormapNode;
-    boolean not_found = FALSE;
 
     ASSERT(parent);
 

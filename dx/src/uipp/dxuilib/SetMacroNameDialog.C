@@ -122,7 +122,7 @@ boolean SetMacroNameDialog::verifyMacroName(const char *name, boolean realMacro)
     NodeDefinition *nd;
     DictionaryIterator di(*theNodeDefinitionDictionary);
     Symbol nameSym = theSymbolManager->registerSymbol(name);
-    while (nd = (NodeDefinition*)di.getNextDefinition())
+    while ( (nd = (NodeDefinition*)di.getNextDefinition()) )
     {
 	if (nd->getNameSymbol() == nameSym)
 	{ 
@@ -176,7 +176,6 @@ char *SetMacroNameDialog::GetTextWidgetToken(Widget textWidget)
 
 boolean SetMacroNameDialog::okCallback(Dialog *d)
 {
-    SetMacroNameDialog *dialog = (SetMacroNameDialog*)d;
     char *name = SetMacroNameDialog::GetTextWidgetToken(this->macroName);
 
     //

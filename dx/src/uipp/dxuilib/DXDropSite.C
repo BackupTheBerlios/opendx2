@@ -57,7 +57,6 @@ FILE            *netf;
 FILE            *cfgf;
 char            netfilename[1024];
 char            cfgfilename[1024];
-char            syscmd[1024];
 int             header_len;
 int             net_len;
 int             cfg_len;

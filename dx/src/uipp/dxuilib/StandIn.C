@@ -229,11 +229,11 @@ StandIn::~StandIn()
     ListIterator iterator;
 
     iterator.setList(this->inputTabList);
-    while (tab = (Tab*)iterator.getNext()) 
+    while ( (tab = (Tab*)iterator.getNext()) ) 
         delete tab;
 
     iterator.setList(this->outputTabList);
-    while (tab = (Tab*)iterator.getNext()) 
+    while ( (tab = (Tab*)iterator.getNext()) ) 
         delete tab;
 
     this->node->standin = NULL;
@@ -359,6 +359,7 @@ void StandIn::drawTab(int         paramIndex,
     }
 }
 
+#if 0
 static
 Pixel getColor(Widget widget,
                 char*  color)
@@ -379,6 +380,7 @@ Pixel getColor(Widget widget,
     } else
 	return 0;
 }
+#endif
 
 //
 // Provide tabs with their width and height
@@ -1075,7 +1077,7 @@ void StandIn::armInput(Widget widget, XtPointer cdata)
 
 
     iterator.setList(this->inputTabList);
-    for (i = 1; tab = (Tab*)iterator.getNext() ; i++) {
+    for (i = 1; (tab = (Tab*)iterator.getNext()) ; i++) {
         if (tab->getRootWidget() == widget) {
             break;
         }
@@ -1312,7 +1314,7 @@ void StandIn::armOutput(Widget widget, XtPointer cdata)
      */
 
     ListIterator iterator(this->outputTabList);
-    for (i = 1; tab = (Tab*)iterator.getNext() ; i++) {
+    for (i = 1; (tab = (Tab*)iterator.getNext()) ; i++) {
         if (tab->getRootWidget() == widget) {
             break;
         }
@@ -1416,7 +1418,7 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
     Node*          nodePtr = NULL;
     EditorWorkSpace*     workspace;
     EditorWindow*  editor;
-    StandIn	   *standIn;
+    StandIn	   *standIn = NULL;
     int            icnt;
     ListIterator   iterator;
     Node*          node2;
@@ -1429,7 +1431,7 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
     int         y;
     int         ocnt;
     Widget      n_widget;
-    Widget      t_widget;
+    Widget      t_widget = (Widget)None;
     Window      n_window;
     Window      t_window;
     boolean     notified;
@@ -1918,7 +1920,6 @@ void StandIn::adjustParameterLocations(int width)
 {
     int             vi, vo, i, x, n, j;
     int             icnt, ocnt;
-    Arg             arg[10];
     List            *arcs;
     Ark             *a;
     ArkStandIn      *asi;
@@ -2827,8 +2828,8 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
     int i, standin_xpos, standin_ypos, standin_ysize, standin_xsize;;
     ListIterator iterator;
     Tab *t;
-    Network *network = this->node->getNetwork();
-    EditorWindow *editor = network->getEditor();
+    // Network *network = this->node->getNetwork();
+    // EditorWindow *editor = network->getEditor();
     Widget workspace = this->workSpace->getRootWidget();
     float red,green,blue;
     Pixel pixel;
@@ -2871,7 +2872,7 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	esc_label = new char[2 * STRLEN(label) + 1];
 	const char *src = label;
 	char c, *dest = esc_label;
-	for (src = label, dest = esc_label ; c = *src ; src++, dest++) {
+	for (src = label, dest = esc_label ; (c = *src) ; src++, dest++) {
 	    if ((c == ')' || c == '(')) {
 		*dest = '\\';
 		dest++;
@@ -2910,7 +2911,7 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
     //
     iterator.setList(this->inputTabList);
     i = 0;
-    while (t = (Tab*)iterator.getNext()) {
+    while ( (t = (Tab*)iterator.getNext()) ) {
 	i++;
 	if (t->isManaged()) {
 	    Node *tnode = this->node;
@@ -2926,15 +2927,15 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 		return FALSE;
 
 	    if (tnode->isInputConnected(i)) {
-		int x =  xpos + tab_xpos + xsize/2.0;
+		int x =  (int) (xpos + tab_xpos + xsize/2.0);
 		int y =  ypos + tab_ypos - ysize;
 		if (fprintf(f,"%d %d moveto %d %d lineto stroke\n", 
 			    x, y, x, y+ysize) < 0)
 		    return FALSE;
 		
 	    } else if (label_parameters && !tnode->isInputDefaulting(i)) {
-		int x =  xpos + tab_xpos + .50*xsize;
-		int y =  ypos + tab_ypos - .20*ysize;
+		int x =  (int) (xpos + tab_xpos + .50*xsize);
+		int y =  (int) (ypos + tab_ypos - .20*ysize);
 		// Input is set 
 		if (!param_font_set) {
 		    param_font_set = TRUE;
@@ -3006,7 +3007,7 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
     //
     iterator.setList(this->outputTabList) ;
     i = 0;
-    while (t = (Tab*)iterator.getNext()) {
+    while ( (t = (Tab*)iterator.getNext()) ) {
 	i++;
 	if (t->isManaged()) {
 	    t->getXYSize(&xsize, &ysize);
@@ -3019,7 +3020,7 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 			xpos + tab_xpos,ypos + tab_ypos, xsize, ysize) < 0)
 		return FALSE;
 	    if (this->node->isOutputConnected(i)) {
-		int x =  xpos + tab_xpos + xsize/2.0;
+		int x =  (int) (xpos + tab_xpos + xsize/2.0);
 		int y =  ypos + tab_ypos + ysize;
 		if (fprintf(f,"%d %d moveto %d %d lineto stroke\n", 
 			    x, y, x, y+ysize) < 0)
@@ -3056,7 +3057,7 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	int i = 1;
 	iterator.setList(this->outputTabList) ;
 	Tab* t;
-	while (t = (Tab*)iterator.getNext()) {
+	while ( (t = (Tab*)iterator.getNext()) ) {
 	    if (!t->isManaged()) continue;
 	    boolean iscon = this->node->isOutputConnected(i);
 	    if (iscon) inside_box = FALSE;
@@ -3076,12 +3077,11 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	    //
 	    // If the label has left/right parens, then we must escape them.
 	    //
-	    char *esc_text;
 	    if (strchr(extra_text,'(') || strchr(extra_text,')')) {
 		esc_label = new char[2 * STRLEN(extra_text) + 6];
 		const char *src = extra_text;
 		char c, *dest = esc_label;
-		for (src = extra_text, dest = esc_label ; c = *src ; src++, dest++) {
+		for (src = extra_text, dest = esc_label ; (c = *src) ; src++, dest++) {
 		    if ((c == ')' || c == '(')) {
 			*dest = '\\';
 			dest++;
@@ -3101,9 +3101,9 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	    int mgd_i_tab_cnt = 0;
 	    int mgd_o_tab_cnt = 0;
 	    iterator.setList(this->inputTabList) ;
-	    while (t = (Tab*)iterator.getNext()) if (t->isManaged()) mgd_i_tab_cnt++;
+	    while ( (t = (Tab*)iterator.getNext()) ) if (t->isManaged()) mgd_i_tab_cnt++;
 	    iterator.setList(this->outputTabList) ;
-	    while (t = (Tab*)iterator.getNext()) if (t->isManaged()) mgd_o_tab_cnt++;
+	    while ( (t = (Tab*)iterator.getNext()) ) if (t->isManaged()) mgd_o_tab_cnt++;
 
 	    int tab_cnt = MAX(mgd_i_tab_cnt, mgd_o_tab_cnt);
 	    int diff = tab_cnt - 2;
@@ -3228,8 +3228,8 @@ int StandIn::decideToDrag(XEvent *xev)
 { 
     if (!this->selected) return DragSource::Abort;
 
-    Node *node = this->node; 
-    Network *network = node->getNetwork();
+    // Node *node = this->node; 
+    // Network *network = node->getNetwork();
     ListIterator it;
 
     Display *d = XtDisplay(this->getRootWidget());

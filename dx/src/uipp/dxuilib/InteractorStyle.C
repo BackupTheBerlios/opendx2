@@ -42,8 +42,6 @@ static Dictionary *theInteractorStyleDictionary =  NULL;
 
 void BuildtheInteractorStyleDictionary()
 {
-   InteractorStyle *is; 
-   
    theInteractorStyleDictionary = new Dictionary;
  
    //
@@ -222,7 +220,7 @@ void InteractorStyle::SetDefaultStyle(const char* interactor,
 
     DictionaryIterator iterator(*styledict);
 
-    while (is = (InteractorStyle *) iterator.getNextDefinition() ) 
+    while ( (is = (InteractorStyle *) iterator.getNextDefinition()) ) 
 	is->isDefault = is->style == style; 
 }
 
@@ -243,7 +241,7 @@ InteractorStyle *InteractorStyle::GetInteractorStyle(const char* interactor,
 
     DictionaryIterator iterator(*styledict);
 
-    while (is = (InteractorStyle *) iterator.getNextDefinition() ) {
+    while ( (is = (InteractorStyle *) iterator.getNextDefinition()) ) {
 	if (firstIs == NULL)
 	    firstIs = is;
 	if ((is->style == style)  

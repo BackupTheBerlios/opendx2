@@ -1093,7 +1093,6 @@ void EditorWindow::setCommandActivation()
 
     int decors = 0;
     int dselected = 0;
-    int pselected = 0; // count of selected pages;
     decors = this->getNetwork()->decoratorList.getSize();
     ListIterator it;
     Decorator *decor;
@@ -1331,7 +1330,7 @@ void EditorWindow::setCommandActivation()
   	if (l) {
 	    ListIterator  iterator(*l);
 	    Node *n;
-	    while (n = (Node*)iterator.getNext()) {
+	    while ( (n = (Node*)iterator.getNext()) ) {
 		if (!selected_colormap && n->isA(ClassColormapNode))
 		    selected_colormap = TRUE;
 		if (!selected_macro && n->isA(ClassMacroNode))
@@ -1615,10 +1614,10 @@ void EditorWindow::createFileMenu(Widget parent)
 	new ButtonInterface(pulldown, 
                             "vpeOpenOption", theDXApplication->openFileCmd);
 
-    if (cmd = this->network->getSaveCommand()) 
+    if ( (cmd = this->network->getSaveCommand()) ) 
 	this->saveOption = new ButtonInterface(pulldown, "vpeSaveOption", cmd);
 
-    if (cmd = this->network->getSaveAsCommand()) 
+    if ( (cmd = this->network->getSaveAsCommand()) ) 
 	this->saveAsOption = new ButtonInterface(pulldown, 
 						"vpeSaveAsOption", cmd);
 
@@ -1983,8 +1982,7 @@ void EditorWindow::createWindowsMenu(Widget parent)
 {
     ASSERT(parent);
 
-    Widget            pulldown, cascade;
-    CommandInterface* option;
+    Widget            pulldown;
 
     //
     // Create "Windows" menu and options.
@@ -2067,8 +2065,7 @@ void EditorWindow::createOptionsMenu(Widget parent)
     ASSERT(parent);
 
     Widget            pulldown;
-    Widget            separator;
-
+    
     //
     // Create "Options" menu and options.
     //
@@ -2280,7 +2277,7 @@ void EditorWindow::openSelectedINodes()
 
      ListIterator li(*snlist);
 
-     while(node = (Node*)li.getNext())
+     while( (node = (Node*)li.getNext()) )
 	if(node->isA(ClassInteractorNode))
 	    ((InteractorNode*)node)->openControlPanels(this->getRootWidget());
 
@@ -2335,7 +2332,7 @@ void EditorWindow::newNode(Node *n, EditorWorkSpace *where)
 #endif
 	}
 #if WORKSPACE_PAGES
-	else if (cp = n->getGroupName(theSymbolManager->getSymbol(PAGE_GROUP))) {
+	else if ( (cp = n->getGroupName(theSymbolManager->getSymbol(PAGE_GROUP))) ) {
 	    EditorWorkSpace *page = this->getPage(cp);
 	    ASSERT(page);
 	    //
@@ -2368,7 +2365,7 @@ void EditorWindow::newNode(Node *n, EditorWorkSpace *where)
 	    icnt = n->getInputCount();
 	    for (i=1 ; i<=icnt ; i++) {
 		arcs = (List *)n->getInputArks(i);
-		for (j = 1; a = (Ark*) arcs->getElement(j); j++) 
+		for (j = 1; (a = (Ark*) arcs->getElement(j)); j++) 
 		    this->notifyArk(a);
 		si->drawTab(i, FALSE);     
 	    }
@@ -2421,7 +2418,7 @@ void EditorWindow::manage()
 #if WORKSPACE_PAGES
 	const char* cp;
 	VPEAnnotator *vpea = (VPEAnnotator*)dec;
-	if (cp = vpea->getGroupName(theSymbolManager->getSymbol(PAGE_GROUP))) {
+	if ( (cp = vpea->getGroupName(theSymbolManager->getSymbol(PAGE_GROUP))) ) {
 	    EditorWorkSpace *page = this->getPage(cp);
 	    ASSERT(page);
 	} else
@@ -2476,7 +2473,7 @@ boolean EditorWindow::editSelectedNodeTabs(boolean adding, boolean input)
     boolean r = TRUE;
     ListIterator li(*l);
 
-    while (node = (Node*)li.getNext())
+    while ( (node = (Node*)li.getNext()) )
     {
 	if (adding) {
 	    if (input && node->isInputRepeatable())
@@ -2513,7 +2510,7 @@ boolean EditorWindow::setSelectedNodeTabVisibility(boolean v)
 #else
     this->beginNetworkChange();
 #endif
-    while(node = (Node*)li.getNext())
+    while( (node = (Node*)li.getNext()) )
     {
 	node->setAllInputsVisibility(v);
 	node->setAllOutputsVisibility(v);
@@ -2776,7 +2773,7 @@ List *EditorWindow::makeSelectedNodeList(const char *classname)
     if (l) {
 	ListIterator iterator(*l);
         Node *node;
-  	while (node = (Node*)iterator.getNext()) {
+  	while ( (node = (Node*)iterator.getNext()) ) {
             StandIn *standIn = node->getStandIn();
 	    if (standIn && standIn->isSelected()) {
 		if (!selected)
@@ -2827,7 +2824,7 @@ List *EditorWindow::makeModuleList()
 	name = (char*)node->getNameString();
 	li.setList(*l);
 	i = 1; r = 1;
-	while(module = (char*)li.getNext())
+	while( (module = (char*)li.getNext()) )
 	{
 	    r = strcmp(module, name);
 	    if(r >= 0)	break;
@@ -2926,8 +2923,6 @@ void EditorWindow::getWorkspaceWindowPos(int *x, int *y)
     XmScrolledWindowWidget scrollWindow;
     int         value;
     int         size;
-    int         max;
-    int         min;
     int         delta;
     int         pdelta;
 
@@ -2968,7 +2963,7 @@ void EditorWindow::moveWorkspaceWindow(StandIn* si)
     if (page_parent != this->workSpace->getRootWidget()) {
 	DictionaryIterator di(*this->pageSelector);
 	EditorWorkSpace* ews;
-	while (ews = (EditorWorkSpace*)di.getNextDefinition()) {
+	while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) {
 	    if (ews->getRootWidget() == page_parent) {
 		ews->unsetRecordedScrollPos();
 		this->workSpace->showWorkSpace(ews);
@@ -3124,10 +3119,9 @@ void EditorWindow::addCurrentNode(int x, int y, EditorWorkSpace *where)
 	// Deselect all currently selected nodes
 	this->deselectAllNodes();
 
-	int deccnt = this->addingDecorators->getSize();
 	ListIterator it(*this->addingDecorators);
 	VPEAnnotator *dec;
-	while (dec = (VPEAnnotator*)it.getNext()) {
+	while ( (dec = (VPEAnnotator*)it.getNext()) ) {
 	    dec->setXYPosition(x,y);
 	    dec->manage(where);
 	    dec->setSelected(TRUE);
@@ -3371,7 +3365,7 @@ void EditorWindow::highlightNodes(int h, List *l)
 	l = &this->network->nodeList;
 
     ListIterator li(*l);
-    while (n = (Node*)li.getNext()) 
+    while ( (n = (Node*)li.getNext()) ) 
 	this->highlightNode(n,h);
 }
 
@@ -3601,7 +3595,7 @@ void EditorWindow::serverDisconnected()
     // For each node, if the standin's forground color is "execute", reset it.
     Node *n;
     ListIterator li(this->network->nodeList);
-    while (n = (Node*)li.getNext()) {
+    while ( (n = (Node*)li.getNext()) ) {
 	StandIn *si = n->getStandIn();
 #if WORKSPACE_PAGES
 	if (!si) continue;
@@ -3668,7 +3662,7 @@ void EditorWindow::setGroup(GroupRecord *grec, Symbol groupID)
 	ListIterator li(*nlist);
 	Node *node;
 
-	while(node = (Node*)li.getNext())
+	while( (node = (Node*)li.getNext()) )
 	    node->setGroupName(grec, groupID);
 
 	delete nlist;
@@ -3681,7 +3675,7 @@ void EditorWindow::setGroup(GroupRecord *grec, Symbol groupID)
     if (seldec) {
 	ListIterator li(*seldec);
 	VPEAnnotator *vpea;
-	while (vpea = (VPEAnnotator*)li.getNext())
+	while ( (vpea = (VPEAnnotator*)li.getNext()) )
 	    vpea->setGroupName(grec, groupID);
 
 	delete seldec;
@@ -4048,7 +4042,7 @@ void EditorWindow::prepareForNewNetwork()
 #if WORKSPACE_PAGES
     ListIterator it(this->network->decoratorList);
     Decorator* dec;
-    while (dec = (Decorator*)it.getNext()) {
+    while ( (dec = (Decorator*)it.getNext()) ) {
 	if ((dec->getRootWidget()) && (dec->isManaged())) {
 	    dec->unmanage();
 	    dec->uncreateDecorator();
@@ -4057,10 +4051,8 @@ void EditorWindow::prepareForNewNetwork()
     this->destroyStandIns(&this->network->nodeList);
     if (this->pageSelector) {
 	int i, pcnt = this->pageSelector->getSize();
-	GroupManager *page_mgr = (GroupManager*)
 	    this->network->getGroupManagers()->findDefinition(PAGE_GROUP);
 	for (i=1; i<=pcnt; i++) {
-	    const char *page_name = this->pageSelector->getStringKey(i);
 	    EditorWorkSpace *ews = (EditorWorkSpace*)
 		this->pageSelector->getDefinition(i);
 	    if (ews != this->workSpace) {
@@ -4252,7 +4244,7 @@ void EditorWindow::openSelectedMacros()
     ListIterator li(*l);
 
     MacroNode *n;
-    while(n = (MacroNode *)li.getNext())
+    while( (n = (MacroNode *)li.getNext()) )
         n->openMacro();
     delete l;
 }
@@ -4264,7 +4256,7 @@ void EditorWindow::openSelectedImageWindows()
     ListIterator li(*l);
 
     DisplayNode *n;
-    while(n = (DisplayNode *)li.getNext())
+    while( (n = (DisplayNode *)li.getNext()) )
         n->openImageWindow(TRUE);
     delete l;
 }
@@ -4308,7 +4300,7 @@ boolean EditorWindow::printVisualProgramAsPS(const char *filename,
     int pages_to_print = 0;
     int page_num = 1;
 
-    while (ews = (EditorWorkSpace*)li.getNext()) 
+    while ( (ews = (EditorWorkSpace*)li.getNext()) ) 
 	if (ews->getPostscriptInclusion()) pages_to_print++;
 
     if (pages_to_print == 0) {
@@ -4322,7 +4314,7 @@ boolean EditorWindow::printVisualProgramAsPS(const char *filename,
 
     boolean current_ews_changed = FALSE;
     li.setList(*sorted_pages);
-    while (ews = (EditorWorkSpace*)li.getNext()) {
+    while ( (ews = (EditorWorkSpace*)li.getNext()) ) {
 	if (ews->getPostscriptInclusion()) {
 	    if (ews->membersInitialized() == FALSE) {
 		this->workSpace->showWorkSpace(ews);
@@ -4364,7 +4356,7 @@ boolean EditorWindow::printVisualProgramAsPS(FILE* fout, const char* filename,
     StandIn *standIn;
     int i, icnt;
     int xpos, ypos, width, height;
-    int xmin=1e6,xmax=0,ymin=1e6,ymax=0; 
+    int xmin=1000000,xmax=0,ymin=1000000,ymax=0; 
     Ark *a;
     // We allocate these ourselves because the hp gives the following message
     // sorry, not implemented: label in block with destructors (2048)
@@ -4418,10 +4410,10 @@ boolean EditorWindow::printVisualProgramAsPS(FILE* fout, const char* filename,
 	if (fprintf(fout, "%%%%Pages: %d\n", of_howmany) <= 0) goto error;
 
 	/* Put a Bounding Box specification, required for EPSF-3.0  */
-	begx = (x_pagesize * border_percent) * 72;
-	begy = (y_pagesize * border_percent) * 72;
-	endx = (x_pagesize * 72) - begx;
-	endy = (y_pagesize * 72) - begy;
+	begx = (int) ((x_pagesize * border_percent) * 72);
+	begy = (int) ((y_pagesize * border_percent) * 72);
+	endx = (int) ((x_pagesize * 72) - begx);
+	endy = (int) ((y_pagesize * 72) - begy);
 	if (fprintf(fout, "%%%%BoundingBox: %d %d %d %d\n",
 			    begx, begy, endx,endy) <= 0) 
 	    goto error;
@@ -4530,7 +4522,7 @@ boolean EditorWindow::printVisualProgramAsPS(FILE* fout, const char* filename,
 		arcs = (List*)n->getInputArks(i);
 		ASSERT(arcs);
 		iter2->setList(*arcs);
-		while (a = (Ark*)iter2->getNext()) 
+		while ( (a = (Ark*)iter2->getNext()) ) 
 		    a->getArkStandIn()->printAsPostScript(fout);
 	    }
 	}
@@ -4618,7 +4610,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
     int bboxXmin = x;
     int bboxYmin = y;
     int bboxYmax = y;
-    for (li.setList(*l); node = (Node*)li.getNext();)
+    for (li.setList(*l); (node = (Node*)li.getNext()); )
     {
 
 	node->getVpePosition(&x, &y);
@@ -4670,7 +4662,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
     List newInputs;
     List newOutputs;
     connection *con;
-    for (li.setList(*l); node = (Node*)li.getNext();)
+    for (li.setList(*l); (node = (Node*)li.getNext()); )
     {
  	List *orig;
 	int i;
@@ -4680,7 +4672,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 	    List *inputs = orig->dup();
 	    ListIterator li(*inputs);
 	    Ark *a;
-	    while (a = (Ark*)li.getNext())
+	    while ( (a = (Ark*)li.getNext()) )
 	    {
 		int param;
 		Node *source = a->getSourceNode(param);
@@ -4690,7 +4682,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 
 		if (!si->isSelected()) {
 		    ListIterator connections(newInputs);
-		    while (con = (connection *)connections.getNext()) {
+		    while ( (con = (connection *)connections.getNext()) ) {
 			if (source == con->n && param == con->param)
 			    break;
 		    }
@@ -4722,7 +4714,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 	    List *outputs = orig->dup();
 	    ListIterator li(*outputs);
 	    Ark *a;
-	    while (a = (Ark*)li.getNext())
+	    while ( (a = (Ark*)li.getNext()) )
 	    {
 		int param;
 		Node *dest = a->getDestinationNode(param);
@@ -4732,7 +4724,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 
 		if (!si->isSelected()) {
 		    ListIterator connections(newOutputs);
-		    while (con = (connection*)connections.getNext()) {
+		    while ( (con = (connection*)connections.getNext()) ) {
 			if (dest == con->n && param == con->param)
 			    break;
 		    }
@@ -4774,7 +4766,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
     // Move the nodes to the upper right hand corner after switching them
     // to the new net.  This is the last use of "l".
     //
-    for (li.setList(*l); node = (Node*)li.getNext();)
+    for (li.setList(*l); (node = (Node*)li.getNext()); )
     {
 	node->getVpePosition(&x,&y);
 	node->setVpePosition(x-bboxXmin, y-bboxYmin+80);
@@ -4795,13 +4787,13 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 
 
     int i;
-    for (i = 1; con = (connection*)newInputs.getElement(1); ++i) {
+    for (i = 1; (con = (connection*)newInputs.getElement(1)); ++i) {
 	node->getStandIn()->addArk(this, new Ark(con->n, con->param, node, i));
 	delete con;
 	newInputs.deleteElement(1);
     }
     newInputs.clear();
-    for (i = 1; con = (connection*)newOutputs.getElement(1); ++i) {
+    for (i = 1; (con = (connection*)newOutputs.getElement(1)); ++i) {
 	node->getStandIn()->addArk(this, new Ark(node, i, con->n, con->param));
 	delete con;
 	newOutputs.deleteElement(1);
@@ -4885,7 +4877,7 @@ void EditorWindow::setSelectedNodesOutputCacheability(Cacheability c)
      // if it is writeable. 
      //
      ListIterator li(*snlist);
-     while (node = (Node*)li.getNext()) {
+     while ( (node = (Node*)li.getNext()) ) {
 	int i, cnt =  node->getOutputCount();
 	for (i=1 ; i<=cnt ; i++)  {
 	    if (node->isOutputCacheabilityWriteable(i)) {
@@ -4907,7 +4899,7 @@ void EditorWindow::setSelectedNodesOutputCacheability(Cacheability c)
 	tools[0] = '\0';
 	p = tools;	
 	DictionaryIterator di(ignored);
-	for (i=0 ; name = (char*)di.getNextDefinition(); i++, p+=STRLEN(p)) {
+	for (i=0 ; (name = (char*)di.getNextDefinition()); i++, p+=STRLEN(p)) {
 	    sprintf(p,"%s  ",name);
 	    if ((i != 0) && ((i & 3) == 0)) 
 		strcat(p,"\n");	// 4 tool names per line of text.
@@ -4958,7 +4950,7 @@ boolean EditorWindow::isSelectedNodeDownstream(Node *srcNode,
         {
             Ark *a;
             List *arcs = (List *)srcNode->getOutputArks(i);
-            for (j = 1; a = (Ark*)arcs->getElement(j); ++j)
+            for (j = 1; (a = (Ark*)arcs->getElement(j)); ++j)
             {
                 int paramInd;
                 Node *destNode = a->getDestinationNode(paramInd);
@@ -5014,7 +5006,7 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
         return TRUE;
 
     iterator.setList(network->nodeList);
-    for (i=0 ; n = (Node*)iterator.getNext() ; i++)
+    for (i=0 ; (n = (Node*)iterator.getNext()) ; i++)
         n->clearMarked();
 
 //
@@ -5027,7 +5019,7 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
 			return FALSE;
 
     iterator.setList(network->nodeList);
-    while (n = (Node*)iterator.getNext()) {
+    while ( (n = (Node*)iterator.getNext()) ) {
         StandIn *si = n->getStandIn();
         if (si && si->isSelected()) {
 	    if (this->isSelectedNodeDownstream(n,TRUE)) {
@@ -5055,7 +5047,7 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
 		    ListIterator iter(*rcvrs);
 		    const char *tlabel = n->getLabelString();
 		    Node *r;
-		    while (r = (Node*)iter.getNext()) {
+		    while ( (r = (Node*)iter.getNext()) ) {
 			StandIn *rsi = r->getStandIn();
 			if (rsi && !rsi->isSelected() && 
 				    EqualString(r->getLabelString(),tlabel)) {
@@ -5078,7 +5070,7 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
 		    ListIterator iter(*tmtrs);
 		    const char *rlabel = n->getLabelString();
 		    Node *t;
-		    while (t = (Node*)iter.getNext()) {
+		    while ( (t = (Node*)iter.getNext()) ) {
 			StandIn *tsi = t->getStandIn();
 			if (tsi && !tsi->isSelected() && 
 				    EqualString(t->getLabelString(),rlabel)) {
@@ -5125,7 +5117,7 @@ EditorWindow::convertToGlobal(boolean global)
     ListIterator it(*glnlist);
     GlobalLocalNode *gln;
 
-    while (gln = (GlobalLocalNode*)it.getNext()) {
+    while ( (gln = (GlobalLocalNode*)it.getNext()) ) {
 	ASSERT (((Node*)gln)->isA(ClassGlobalLocalNode));
 	// Both of the following return FALSE if the node has never been set
 	// Taken together, these 3 ASSERTS mean that everything in the list
@@ -5217,7 +5209,6 @@ char page_name[64];
 	//
 	// prepare to turn off/on line drawing  if moving standins
 	//
-	int junk;
 	EditorWorkSpace *selectedWS = NUL(EditorWorkSpace*);
 	if ((l) && (l->getSize())) {
 	    Node* n = (Node*)l->getElement(1);
@@ -5302,7 +5293,7 @@ EditorWindow::deletePage(const char* to_delete)
     this->deleteNodes(&nodeList);
     nodeList.clear();
     ListIterator it(decorList);
-    while (decor = (Decorator*)it.getNext()) {
+    while ( (decor = (Decorator*)it.getNext()) ) {
 	this->network->decoratorList.removeElement((void*)decor);
 	delete decor;
     }
@@ -5363,7 +5354,7 @@ EditorWindow::deletePage(const char* to_delete)
 	int member_count = 9999999;
 	EditorWorkSpace* contains_few_members = NUL(EditorWorkSpace*);
 	boolean contains_root = FALSE;
-	while (ews = (EditorWorkSpace*)di.getNextDefinition()) {
+	while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) {
 	    if (ews->membersInitialized()) {
 		found = TRUE;
 		this->pageSelector->selectPage(ews);
@@ -5415,7 +5406,7 @@ EditorWindow::getNodesBBox(int *minx, int *miny, int *maxx, int *maxy, List *l, 
     if (l) {
 	li.setList(*l);
 	Node *node;
-	while (node = (Node*)li.getNext()) {
+	while ( (node = (Node*)li.getNext()) ) {
 	    node->getVpePosition(&x, &y);
 	    if (first) {
 		bboxXmin = x;
@@ -5450,7 +5441,7 @@ EditorWindow::getNodesBBox(int *minx, int *miny, int *maxx, int *maxy, List *l, 
     if (dl) {
 	li.setList(*dl);
 	Decorator *dec = NULL;
-	while (dec = (Decorator*)li.getNext()) {
+	while ( (dec = (Decorator*)li.getNext()) ) {
 	    dec->getXYPosition (&x, &y);
 	    if (first) {
 		bboxXmin = x;
@@ -5492,7 +5483,7 @@ int i;
 ListIterator li(*selectedNodes);
 Node *node;
 
-    while (node = (Node*)li.getNext()) {
+    while ( (node = (Node*)li.getNext()) ) {
 	//
 	// Destroy the input arcs
 	//
@@ -5502,7 +5493,7 @@ Node *node;
 	    List *orig = (List*)node->getInputArks(i);
 	    List *conns = orig->dup();
 	    ListIterator ai(*conns);
-	    while (a = (Ark*)ai.getNext()) {
+	    while ( (a = (Ark*)ai.getNext()) ) {
 		ArkStandIn *asi = a->getArkStandIn();
 		a->setArkStandIn(NULL);
 		delete asi;
@@ -5519,7 +5510,7 @@ Node *node;
 	    List *orig = (List*)node->getOutputArks(i);
 	    List *conns = orig->dup();
 	    ListIterator ai(*conns);
-	    while (a = (Ark*)ai.getNext()) {
+	    while ( (a = (Ark*)ai.getNext()) ) {
 		ArkStandIn *asi = a->getArkStandIn();
 		a->setArkStandIn(NULL);
 		delete asi;
@@ -5558,7 +5549,7 @@ int minx, miny, maxx, maxy;
 
     Node *node;
     ListIterator li(*selectedNodes);
-    while (node = (Node*)li.getNext()) {
+    while ( (node = (Node*)li.getNext()) ) {
 	int x,y;
 	//
 	// Record bbox relative position, incoming, outgoing arcs
@@ -5592,7 +5583,7 @@ int x,y;
     Window page_wnd = (page_w?XtWindow(page_w):NUL(Window));
 
     ListIterator it(*seldec);
-    while (dec = (Decorator*)it.getNext()) {
+    while ( (dec = (Decorator*)it.getNext()) ) {
 	dec->getXYPosition (&x, &y);
 	dec->unmanage();
 	dec->uncreateDecorator();
@@ -5614,8 +5605,6 @@ int x,y;
 boolean
 EditorWindow::areSelectedNodesPagifiable(boolean report)
 {
-List *nlist = &this->network->nodeList;
-int nsize = nlist->getSize();
 boolean retVal = TRUE;
 EditorWorkSpace *ws = NULL;
 
@@ -5629,7 +5618,6 @@ EditorWorkSpace *ws = NULL;
     ListIterator snl(*l);
     Node *node;
     while ((retVal) && (node = (Node*)snl.getNext())) {
-        StandIn *si = node->getStandIn();
 	int i,count = node->getInputCount();
 	List *conns = NULL;
 
@@ -5638,7 +5626,7 @@ EditorWorkSpace *ws = NULL;
 	    List *orig = (List*)node->getInputArks(i);
 	    conns = orig->dup();
 	    ListIterator ai(*conns);
-	    while (a = (Ark*)ai.getNext()) {
+	    while ( (a = (Ark*)ai.getNext()) ) {
 		int fromParam, toParam;
 		Node *source = a->getSourceNode (fromParam);
 		Node *dest = a->getDestinationNode (toParam);
@@ -5683,7 +5671,7 @@ EditorWorkSpace *ws = NULL;
 	    List *orig = (List*)node->getOutputArks(i);
 	    conns = orig->dup();
 	    ListIterator ai(*conns);
-	    while (a = (Ark*)ai.getNext()) {
+	    while ( (a = (Ark*)ai.getNext()) ) {
 		int fromParam, toParam;
 		Node *source = a->getSourceNode (fromParam);
 		Node *dest = a->getDestinationNode (toParam);
@@ -5788,7 +5776,7 @@ void EditorWindow::setDecoratorStyle (List *decors, DecoratorStyle *ds)
     ListIterator it(*decors);
     Decorator *dec;
     Symbol s = theSymbolManager->registerSymbol(ClassLabelDecorator);
-    while (dec = (Decorator*)it.getNext()) {
+    while ( (dec = (Decorator*)it.getNext()) ) {
 	if (!dec->isA(s)) continue;
 
 	LabelDecorator *oldlab = (LabelDecorator*)dec;
@@ -5859,7 +5847,6 @@ FILE *netf;
 Display *d = XtDisplay(this->getRootWidget());
 Atom file_atom = XmInternAtom (d, NET_ATOM, False);
 Atom delete_atom = XmInternAtom (d, "DELETE", False);
-Atom cfg_atom = XmInternAtom (d, CFG_ATOM, False);
 Screen *screen = XtScreen(this->getRootWidget());
 Window root = RootWindowOfScreen(screen);
 
@@ -6202,8 +6189,6 @@ Atom cfg_atom = XmInternAtom (d, CFG_ATOM, False);
 Screen *screen = XtScreen(editor->getRootWidget());
 Window root = RootWindowOfScreen(screen);
 unsigned long bytes_after;
-int read_so_far = 0;
-int num_reads = 0;
 char *net_buffer;
 Atom actual_type;
 int actual_format;
@@ -6269,7 +6254,7 @@ char msg[128];
     if (editor->addingDecorators) {
 	ListIterator it(*editor->addingDecorators);
 	Decorator *dec;
-	while (dec = (Decorator*)it.getNext())  delete dec;
+	while ( (dec = (Decorator*)it.getNext()) )  delete dec;
 	editor->addingDecorators->clear();
 	delete editor->addingDecorators;
 	editor->addingDecorators = NULL;
@@ -6333,7 +6318,7 @@ TransmitterNode *EditorWindow::getMostRecentTransmitterNode()
     //   2) the one with the highest instance number.
     //
     if (l) {
-        Node *last;
+        Node *last=NULL;
         ListIterator iter(*l);
 
 	//
@@ -6342,7 +6327,7 @@ TransmitterNode *EditorWindow::getMostRecentTransmitterNode()
 	// in the network.
 	//
 	if (this->lastSelectedTransmitter) {
-	    while (last = (Node*)iter.getNext()) {
+	    while ( (last = (Node*)iter.getNext()) ) {
 		if (last == this->lastSelectedTransmitter) {
 		    node = last;
 		    break;	
@@ -6352,7 +6337,7 @@ TransmitterNode *EditorWindow::getMostRecentTransmitterNode()
 	if (!node) {	// If none found that match lastSelectedTransmitter
 	    int maxinst = 0;
 	    iter.setList(*l);
-	    while (node = (Node*)iter.getNext()) {
+	    while ( (node = (Node*)iter.getNext()) ) {
 		    int newinst = node->getInstanceNumber();
 		    if ((maxinst == 0) || (newinst > maxinst)) {
 			maxinst = newinst;
@@ -6454,19 +6439,19 @@ boolean EditorWindow::showExecutedNodes()
 	if (first_time) it.setList(*this->executed_nodes);
 	else it.setList(recent1);
 
-	while (n = (Node*)it.getNext()) {
+	while ( (n = (Node*)it.getNext()) ) {
 	    int numParam = n->getInputCount();
 	    for (i = 1; i <= numParam; ++i) {
 		if (n->isInputConnected(i)) {
 		    Ark *a;
 		    List *arcs = (List *)n->getInputArks(i);
-		    for (j = 1; a = (Ark*)arcs->getElement(j); ++j) {
+		    for (j = 1; (a = (Ark*)arcs->getElement(j)); ++j) {
 			int paramInd;
 			Node *srcNode = a->getSourceNode(paramInd);
 			boolean moduleless_node = FALSE;
 
 			ListIterator mit(modless);
-			while (sym = (Symbol)mit.getNext()) {
+			while ( (sym = (Symbol)mit.getNext()) ) {
 			    if (srcNode->isA(sym)) {
 				if (sym == interactor_sym) {
 				    InteractorNode* in = (InteractorNode*)srcNode;
@@ -6494,18 +6479,18 @@ boolean EditorWindow::showExecutedNodes()
 	}
 	recent1.clear();
 	it.setList(recent2);
-	while (n = (Node*)it.getNext()) 
+	while ( (n = (Node*)it.getNext()) ) 
 	    recent1.appendElement((void*)n);
 	recent2.clear();
 	first_time = FALSE;
     }
     it.setList(appendables);
-    while (n = (Node*)it.getNext())
+    while ( (n = (Node*)it.getNext()) )
 	this->executed_nodes->appendElement((void*)n);
     this->transmitters_added = TRUE;
 
     it.setList(*this->executed_nodes);
-    while (n = (Node*)it.getNext()) 
+    while ( (n = (Node*)it.getNext()) ) 
 	this->selectNode(n, TRUE, FALSE);
 
     return TRUE;
@@ -6520,7 +6505,7 @@ void EditorWindow::newDecorator (Decorator* dec, EditorWorkSpace* where)
 #if WORKSPACE_PAGES
     const char* cp;
     VPEAnnotator *vpea = (VPEAnnotator*)dec;
-    if (cp = vpea->getGroupName(theSymbolManager->getSymbol(PAGE_GROUP))) {
+    if ( (cp = vpea->getGroupName(theSymbolManager->getSymbol(PAGE_GROUP))) ) {
 	EditorWorkSpace *page = this->getPage(cp);
 	ASSERT(page);
 	//
@@ -6593,7 +6578,7 @@ void EditorWindow::resetErrorList(boolean reset_all)
     if (this->errored_standins) {
 	ListIterator it(*this->errored_standins);
 	StandIn* si;
-	while (si = (StandIn*)it.getNext()) {
+	while ( (si = (StandIn*)it.getNext()) ) {
 	    WorkSpace* page = si->getWorkSpace();
 	    yellow_tabs.appendElement((void*)page);
 	}
@@ -6601,7 +6586,7 @@ void EditorWindow::resetErrorList(boolean reset_all)
 
     DictionaryIterator di(*this->pageSelector);
     EditorWorkSpace* ews;
-    while (ews = (EditorWorkSpace*)di.getNextDefinition()) 
+    while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) 
 	if (yellow_tabs.isMember((void*)ews) == FALSE)
 	    this->pageSelector->highlightTab (ews, EditorWindow::REMOVEHIGHLIGHT);
 }
@@ -6728,7 +6713,7 @@ void EditorWindow::populatePage(EditorWorkSpace* ews)
 		    List* arcs = (List *)node->getInputArks(i);
 		    Ark* a;
 		    int j;
-		    for (j = 1; a = (Ark*) arcs->getElement(j); j++) {
+		    for (j = 1; (a = (Ark*) arcs->getElement(j)); j++) {
 			int dummy;
 			Node* tn = a->getSourceNode(dummy);
 			ASSERT(tn);
@@ -6836,14 +6821,14 @@ boolean EditorWindow::pagifySelectedNodes(EditorWorkSpace* ews)
     if (seldec) {
 	ListIterator it(*seldec);
 	VPEAnnotator* dec;
-	while (dec = (VPEAnnotator*)it.getNext()) 
+	while ( (dec = (VPEAnnotator*)it.getNext()) ) 
 	    dec->setGroupName(grec, groupID);
 	this->moveDecorators (ews, seldec, 20, 20, selno);
     }
     if (selno) {
 	ListIterator it(*selno);
 	Node* n;
-	while (n = (Node*)it.getNext()) 
+	while ( (n = (Node*)it.getNext()) ) 
 	    n->setGroupName(grec, groupID);
 	this->moveStandIns (ews, selno, 20, 20, seldec);
     }
@@ -6884,13 +6869,13 @@ boolean EditorWindow::autoChopSelectedNodes()
 
     DictionaryIterator di(rcvrs);
     Node* n;
-    while (n = (Node*)di.getNextDefinition()) {
+    while ( (n = (Node*)di.getNextDefinition()) ) {
         StandIn* si = n->getStandIn();
 	if (si) {
 	    List* arcs = (List *)n->getOutputArks(1);
 	    int j;
 	    Ark* a;
-	    for (j = 1; a = (Ark*) arcs->getElement(j); j++) 
+	    for (j = 1; (a = (Ark*) arcs->getElement(j)) ; j++) 
 		this->notifyArk(a);
 	    si->drawTab(1, FALSE);     
 	}
@@ -6917,7 +6902,7 @@ int dummy;
     Network* net = this->getNetwork();
 
     it.setList(*sellist);
-    while (n = (Node*)it.getNext())
+    while ( (n = (Node*)it.getNext()) )
 	if (n->isA(ClassReceiverNode))
 	    rcvrs.appendElement((void*)n);
 
@@ -6929,13 +6914,13 @@ int dummy;
     //
     if (rcvrs.getSize() == 0) {
 	it.setList(*sellist);
-	while (n = (Node*)it.getNext()) {
+	while ( (n = (Node*)it.getNext()) ) {
 	    if (n->isA(ClassTransmitterNode) == FALSE) continue;
 	    List* orig = (List*)n->getOutputArks(1);
 	    if ((!orig) || (orig->getSize() == 0)) continue;
 	    ListIterator ai(*orig);
 	    Ark* a;
-	    while (a = (Ark*)ai.getNext()) {
+	    while ( (a = (Ark*)ai.getNext()) ) {
 		Node* rcvr = a->getDestinationNode(dummy);
 		ASSERT(rcvr->isA(ClassReceiverNode));
 		rcvrs.appendElement((void*)rcvr);
@@ -6949,7 +6934,7 @@ int dummy;
     // receiver node inputs, then add all its receiver node inputs.
     //
     it.setList(*sellist);
-    while (n = (Node*)it.getNext()) {
+    while ( (n = (Node*)it.getNext()) ) {
 	if (n->isA(ClassTransmitterNode)) continue;
 	if (n->isA(ClassReceiverNode)) continue;
 	int icnt = n->getInputCount();
@@ -6971,7 +6956,7 @@ int dummy;
 		    ListIterator oi(*oa);
 		    Ark* a;
 		    boolean included = TRUE;
-		    while (a = (Ark*)oi.getNext()) {
+		    while ( (a = (Ark*)oi.getNext()) ) {
 			Node* dest = a->getDestinationNode(dummy);
 			if (sellist->isMember((void*)dest) == FALSE) {
 			    included = FALSE;
@@ -6989,7 +6974,7 @@ int dummy;
 	if (unusable_receiver == FALSE) {
 	    ListIterator ta(toadd);
 	    Node* add;
-	    while (add = (Node*)ta.getNext()) {
+	    while ( (add = (Node*)ta.getNext()) ) {
 		if (rcvrs.isMember(add) == FALSE);
 		    rcvrs.appendElement((void*)add);
 	    }
@@ -7029,7 +7014,7 @@ boolean EditorWindow::unjavifyNetwork()
 	List to_delete;
 	ListIterator it(*rlist);
 	Node* n;
-	while (n = (Node*)it.getNext()) {
+	while ( (n = (Node*)it.getNext()) ) {
 	    if (EqualString(n->getLabelString(), JAVA_SEQUENCE))
 		to_delete.appendElement((void*)n);
 	}
@@ -7061,7 +7046,7 @@ boolean EditorWindow::unjavifyNetwork()
     if (rlist) {
 	ListIterator it(*rlist);
 	ImageNode* n;
-	while (n = (ImageNode*)it.getNext()) 
+	while ( (n = (ImageNode*)it.getNext()) ) 
 	    n->unjavifyNode();
 	delete rlist;
 	rlist = NUL(List*);
@@ -7161,7 +7146,7 @@ boolean EditorWindow::javifyNetwork()
 	PageGroupRecord *grec = (PageGroupRecord*)page_mgr->getGroup (page_name);
 	grec->setComponents (NUL(UIComponent*), page);
 	this->workSpace->showWorkSpace(page);
-	Symbol gmgr_sym = page_mgr->getManagerSymbol();
+	gmgr_sym = page_mgr->getManagerSymbol();
 
 	this->network->mergeNetworks(tmpnet, NUL(List*), TRUE);
 	delete tmpnet;
@@ -7180,7 +7165,7 @@ boolean EditorWindow::javifyNetwork()
 
 	ListIterator it(*imgs);
 	ImageNode* bn;
-	while (bn = (ImageNode*)it.getNext()) {
+	while ( (bn = (ImageNode*)it.getNext()) ) {
 	    Node* rcvr = NUL(Node*);
 	    Node* wopt = NUL(Node*);
 	    boolean adding_rcvr = TRUE;
@@ -7192,7 +7177,7 @@ boolean EditorWindow::javifyNetwork()
 		    const char* current_page_name = bn->getGroupName(gmgr_sym);
 		    ListIterator it(*rlist);
 		    Node* n;
-		    while (n = (Node*)it.getNext()) {
+		    while ( (n = (Node*)it.getNext()) ) {
 			boolean same_page = FALSE;
 			if (EqualString(JAVA_SEQUENCE, n->getLabelString())) {
 			    const char* page_name = n->getGroupName(gmgr_sym);

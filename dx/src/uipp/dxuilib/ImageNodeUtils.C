@@ -614,7 +614,7 @@ int ImageNode::getAutoAxesStringList (int index, char *sval[])
     Parameter *p = this->getInputParameter(index);
     ASSERT(p);
 
-    int count;
+    int count = 0;
     if (!p->hasValue())
 	count = 0;
     else if (p->getValueType() & DXType::ListType)
@@ -733,7 +733,6 @@ void ImageNode::getAutoAxesTicks (int *t1, int *t2, int *t3)
 void ImageNode::getAutoAxesTicks (int *t)
 {
     if (!this->isAutoAxesTicksSet()) return ;
-    const char *v = this->getInputValueString(AATICKS);
 
     ASSERT(t);
     Parameter *p = this->getInputParameter(AATICKS);

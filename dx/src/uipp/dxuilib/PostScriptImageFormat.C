@@ -45,7 +45,7 @@ boolean PostScriptImageFormat::FmtConnectionWarning = FALSE;
 //
 // How to print out the image dims in inches/cms
 //
-#define SIZE_FMT 		"%.1lfx%.1lf"
+#define SIZE_FMT 		"%.1fx%.1f"
 //#define SIZE_FMT 		"%.3lgx%.3lg"
 #define PAGE_SIZE_FMT 		SIZE_FMT
 
@@ -729,7 +729,6 @@ void PostScriptImageFormat::parseImageSize(const char *str)
     if ((!str) || (!str[0])) return ;
 
     char *dimstr = DuplicateString(str);
-    int len = strlen(dimstr);
 
     boolean width_parsed = FALSE;
     boolean height_parsed = FALSE;
@@ -842,7 +841,6 @@ void PostScriptImageFormat::parsePictureSize(const char *str)
     }
 
     char *dimstr = DuplicateString(str);
-    int len = strlen(dimstr);
 
     boolean width_parsed = FALSE;
     boolean height_parsed = FALSE;
@@ -883,7 +881,6 @@ void PostScriptImageFormat::parsePictureSize(const char *str)
 
     if ((!width_parsed) && (!height_parsed)) return ;
 
-    int height;
     //
     // Scale the numbers in case we're metric
     //
@@ -959,7 +956,7 @@ void PostScriptImageFormat::parsePictureSize(const char *str)
 
     if ((node->isRecordFormatConnected() == TRUE) && (width_parsed)) {
 	this->dirty|= PostScriptImageFormat::DirtyResolution;
-	this->width = dwidth * this->dpi;
+	this->width = (int)(dwidth * this->dpi);
     }
 
     if (this->entered_dims_valid)
@@ -971,7 +968,6 @@ void PostScriptImageFormat::parsePageSize(const char *str)
     if ((!str) || (!str[0])) return ;
 
     char *dimstr = DuplicateString(str);
-    int len = strlen(dimstr);
 
     boolean width_parsed = FALSE;
     boolean height_parsed = FALSE;

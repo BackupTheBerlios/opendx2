@@ -61,7 +61,7 @@ class GroupedObject
     //
     // Destructor:
     //
-    ~GroupedObject(); 
+    virtual ~GroupedObject(); 
 
     virtual	void	setGroupName(GroupRecord *, Symbol groupID);
     const char *	getGroupName(Symbol groupID);

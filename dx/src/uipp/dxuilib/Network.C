@@ -397,7 +397,7 @@ Network::~Network()
 
     ListIterator it(this->decoratorList);
     Decorator *dec;
-    while (dec = (Decorator*)it.getNext()) {
+    while ( (dec = (Decorator*)it.getNext()) ) {
 	this->decoratorList.removeElement((void*)dec);
         delete dec;
     }
@@ -408,7 +408,7 @@ Network::~Network()
     //
     GroupManager *gmgr;
     DictionaryIterator di(*this->groupManagers);
-    while (gmgr = (GroupManager*)di.getNextDefinition())
+    while ( (gmgr = (GroupManager*)di.getNextDefinition()) )
 	delete gmgr;
     delete this->groupManagers;
 #endif
@@ -416,7 +416,7 @@ Network::~Network()
     if (this->editorMessages) {
 	ListIterator ml(*this->editorMessages);
 	char *msg;
-	while (msg = (char*)ml.getNext()) 
+	while ( (msg = (char*)ml.getNext()) ) 
 	    delete msg;
 	delete this->editorMessages;
     }
@@ -429,7 +429,7 @@ Network::~Network()
 void Network::clearCfgInformation(boolean destroyPanelsNow)
 {
     ControlPanel *p;
-    while (p = (ControlPanel*) this->panelList.getElement(1)) 
+    while ( (p = (ControlPanel*) this->panelList.getElement(1)) ) 
 	this->deletePanel(p, destroyPanelsNow);
     this->resetPanelInstanceNumber();
     this->panelGroupManager->clear();
@@ -478,11 +478,11 @@ boolean Network::clear(boolean destroyPanelsNow)
     // subsequent node deletions.
     //
     Node *n;
-    while (n = (Node*) this->nodeList.getElement(1)) {
+    while ( (n = (Node*) this->nodeList.getElement(1)) ) {
 	this->deleteNode(n);
     }
     Decorator *dec;
-    while (dec = (Decorator*)this->decoratorList.getElement(1)) {
+    while ( (dec = (Decorator*)this->decoratorList.getElement(1)) ) {
 	this->decoratorList.removeElement((void*)dec);
 	delete dec;
     }
@@ -496,7 +496,7 @@ boolean Network::clear(boolean destroyPanelsNow)
     // Delete all the image windows except the anchor.
     //
     ImageWindow *iw, *anchor = NULL;
-    while(iw = (ImageWindow*)imageList.getElement(1)) {
+    while( (iw = (ImageWindow*)imageList.getElement(1)) ) {
 	this->imageList.deleteElement(1);
 	if (iw->isAnchor()) {	
 	    ASSERT(anchor == NULL);
@@ -522,7 +522,7 @@ boolean Network::clear(boolean destroyPanelsNow)
 #if WORKSPACE_PAGES
     GroupManager *gmgr;
     DictionaryIterator di(*this->groupManagers);
-    while (gmgr = (GroupManager*)di.getNextDefinition())
+    while ( (gmgr = (GroupManager*)di.getNextDefinition()) )
 	gmgr->clear();
 #else
     if (this == theDXApplication->network)
@@ -667,7 +667,7 @@ void Network::changeExistanceWork(Node *n, boolean adding)
 	} else {
 	    iter.setList(this->nodeList);
 	}
-	while (n = (Node*)iter.getNext()) {
+	while ( (n = (Node*)iter.getNext()) ) {
 	    if (!this->sequencer && n->isA(ClassSequencerNode))	
 		this->sequencer = (SequencerNode*)n;	
 	    n->initializeAfterNetworkMember();
@@ -716,7 +716,7 @@ void Network::changeExistanceWork(Node *n, boolean adding)
 	int groupCnt = 0;
 	GroupManager *gmgr;
 	DictionaryIterator di(*this->groupManagers);
-	while (gmgr = (GroupManager*)di.getNextDefinition())
+	while ( (gmgr = (GroupManager*)di.getNextDefinition()) )
 	    groupCnt+= gmgr->getGroupCount();
 	if ((count == 0) && (decorCount == 0) && (groupCnt == 0)) {
 	    this->newCmd->deactivate();
@@ -740,7 +740,7 @@ void Network::changeExistanceWork(Node *n, boolean adding)
 	ListIterator li(*l);
 	Node        *node;
 
-	while (node = (Node*)li.getNext() )
+	while ( (node = (Node*)li.getNext()) )
 	{
 	    // If this is not the last DisplayNode...
 	    if(li.getPosition()-1 != l->getSize())
@@ -827,7 +827,7 @@ ControlPanel *Network::getPanelByInstance(int instance)
     ListIterator iterator(this->panelList);
     ControlPanel *cp;
 
-    while (cp = (ControlPanel*)iterator.getNext()) {
+    while ( (cp = (ControlPanel*)iterator.getNext()) ) {
         if (cp->getInstanceNumber() == instance)
             return cp;
     }
@@ -893,12 +893,12 @@ boolean Network::deletePanel(ControlPanel* panel, boolean destroyPanelsNow)
 
     ASSERT(panel);
 
-    if (position = this->panelList.getPosition(panel))
+    if ( (position = this->panelList.getPosition(panel)) )
     {
 	//
 	// Delete the panel from the list.
 	//
-	if (result = this->panelList.deleteElement(position))
+	if ( (result = this->panelList.deleteElement(position)) )
 	{
 	    if (this->panelList.getSize() == 0)
 	    {
@@ -963,7 +963,7 @@ boolean Network::removeImage(ImageWindow* image)
 {
     int position;
 
-    if (position = this->imageList.getPosition(image))
+    if ( (position = this->imageList.getPosition(image)) )
     {
 	return this->imageList.deleteElement(position);
     }
@@ -1116,7 +1116,7 @@ void Network::closeControlPanel(int panelInstance, boolean do_unmanage)
     List	   toDelete, toUnmanage;
     ControlPanel* panel;
 
-    while (panel = (ControlPanel*)iterator.getNext()) {
+    while ( (panel = (ControlPanel*)iterator.getNext()) ) {
 	if ((panelInstance == 0) || 
 	    (panel->getInstanceNumber() == panelInstance)) {
 	    // getComponentCount is InstanceCount + DecoratorCount
@@ -1132,10 +1132,10 @@ void Network::closeControlPanel(int panelInstance, boolean do_unmanage)
     // this->deletePanel() and panel->unmanage(). 
     //
     iterator.setList(toDelete);
-    while (panel = (ControlPanel*)iterator.getNext())
+    while ( (panel = (ControlPanel*)iterator.getNext()) )
 	this->deletePanel(panel);
     iterator.setList(toUnmanage);
-    while (panel = (ControlPanel*)iterator.getNext())
+    while ( (panel = (ControlPanel*)iterator.getNext()) )
 	panel->unmanage();
     
 }
@@ -1150,13 +1150,13 @@ void Network::openControlPanel(int panelInstance)
 
     if (panelInstance < 0) {
 	ListIterator iterator(this->panelList);
-	while (panel = (ControlPanel*) iterator.getNext()) {
+	while ( (panel = (ControlPanel*) iterator.getNext()) ) {
 	    if (panel->isStartup())
 	        panel->manage();
 	}
     } else if (panelInstance == 0 ) {
         ListIterator  iterator(this->panelList);
-    	while (panel = (ControlPanel*)iterator.getNext())
+    	while ( (panel = (ControlPanel*)iterator.getNext()) )
 		panel->manage();
     } else {
 	panel = this->getPanelByInstance(panelInstance);
@@ -1175,7 +1175,7 @@ void Network::openControlPanelGroup(int groupIndex)
 
     if (this->panelGroupManager->getPanelGroup(groupIndex,&plist)) {
     	ListIterator  iterator(plist);
-    	while (panelInstance = (int)iterator.getNext()) 
+    	while ( (panelInstance = (int)iterator.getNext()) ) 
 	    this->openControlPanel(panelInstance);
     }
 }
@@ -1264,8 +1264,6 @@ int _output_index;		/* current output param index	  */
 boolean Network::readNetwork(const char *netFile, const char *cfgFile,
 			     boolean ignoreUndefinedModules)
 {
-    EditorWindow *ew = this->editor;
-    EditorWorkSpace *ews = (ew?ew->getWorkSpace():NUL(EditorWorkSpace*));
     Decorator *dec;
     ListIterator it;
 
@@ -1487,8 +1485,8 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
 			(dx_version > VERSION_NUMBER(2,0,2))) {
         int net_major = this->getNetMajorVersion();
 	int net_minor = this->getNetMinorVersion();
-	int net_micro = this->getNetMicroVersion();
-        int net_version =   VERSION_NUMBER( net_major, net_minor, net_micro); 
+	// int net_micro = this->getNetMicroVersion();
+        // int net_version =   VERSION_NUMBER( net_major, net_minor, net_micro); 
 	if (VERSION_NUMBER(net_major, net_minor,0) > 
 	    VERSION_NUMBER(NETFILE_MAJOR_VERSION,NETFILE_MINOR_VERSION,0)) {
 	    const char *name = theDXApplication->getInformalName();
@@ -1535,7 +1533,7 @@ boolean anchor_reset = FALSE;
 
     ListIterator li(this->imageList);
     ImageWindow *iw;
-    while(iw = (ImageWindow*)li.getNext()) {
+    while( (iw = (ImageWindow*)li.getNext()) ) {
 	if (iw == anchor) anchor_reset = TRUE;
 	iw->resetWindowTitle();
     }
@@ -2727,7 +2725,7 @@ void Network::parseArgument(char* name, const boolean isVarname)
 	if (n->getNameSymbol() == s_of_out && 
 	    n->getInstanceNumber() == instance)
 #else
-	if (n = this->findNode(s_of_out, instance))
+	if ( (n = this->findNode(s_of_out, instance)) )
 #endif
 	{
 	    if (n->getOutputCount() < parameter)
@@ -2783,9 +2781,6 @@ void ParseLValue(char* name)
 
 void Network::parseLValue(char* name)
 {
-    char       type[128];
-    char       string[256];
-
     if (this->parseState.stop_parsing)
 	return;
 
@@ -2970,7 +2965,7 @@ void Network::parseRValue(char* name)
 	if (n->getNameSymbol() == s_of_out && 
 	    n->getInstanceNumber() == instance)
 #else
-	if (n = this->findNode(s_of_out, instance))
+	if ( (n = this->findNode(s_of_out, instance)) )
 #endif
 	{
 	    if (n->getOutputCount() < parameter)
@@ -3355,8 +3350,9 @@ boolean Network::netPrintNetwork(const char *filename)
 #endif	// HAS_RENAME
     }
     
-
+#if HAS_RENAME
 out:
+#endif
     if (netfile) delete netfile;
     if (tmpfile) delete tmpfile;
 
@@ -3612,7 +3608,7 @@ boolean Network::printNetwork(FILE *f, PrintType dest)
     if((dest == PrintFile)||(dest == PrintExec)) {
 	DictionaryIterator di(*this->groupManagers);
 	GroupManager *gmgr;
-	while (gmgr = (GroupManager*)di.getNextDefinition()) {
+	while ( (gmgr = (GroupManager*)di.getNextDefinition()) ) {
 	    if (!gmgr->printAssignment(f))
 		return FALSE;
 	}
@@ -3874,7 +3870,7 @@ boolean Network::printHeader(FILE *f,
 	DictionaryIterator di(*this->groupManagers);
 	GroupManager *gmgr;
 	Symbol psym = theSymbolManager->getSymbol(PROCESS_GROUP);
-	while (gmgr = (GroupManager*)di.getNextDefinition()) {
+	while ( (gmgr = (GroupManager*)di.getNextDefinition()) ) {
 	    if (psym == gmgr->getManagerSymbol()) {
 		if ((dest == PrintExec) || (dest == PrintFile)) 
 		    if (!this->isMacro()) 
@@ -4207,7 +4203,7 @@ boolean Network::markAndCheckForCycle(Node *srcNode, Node *dstNode)
             Ark *a;
 	    int j;
             List *arcs = (List *)dstNode->getOutputArks(i);
-            for (j = 1; a = (Ark*)arcs->getElement(j); ++j)
+            for (j = 1; (a = (Ark*)arcs->getElement(j)); ++j)
             {
                 int paramInd;
                 Node *dstPtr = a->getDestinationNode(paramInd);
@@ -4225,7 +4221,6 @@ boolean Network::markAndCheckForCycle(Node *srcNode, Node *dstNode)
 int
 Network::connectedNodes(boolean *marked, int ind, int d)
 {
-    int		numNodes = this->nodeList.getSize();
     int		markedNodes = 0;
     int		i;
     Node       *n;
@@ -4247,7 +4242,7 @@ Network::connectedNodes(boolean *marked, int ind, int d)
 	    {
 		Ark *a;
 		List *arcs = (List *)n->getInputArks(i);
-		for (j = 1; a = (Ark*)arcs->getElement(j); ++j)
+		for (j = 1; (a = (Ark*)arcs->getElement(j)); ++j)
 		{
 		    int paramInd;
 		    Node *n2 = a->getSourceNode(paramInd);
@@ -4268,7 +4263,7 @@ Network::connectedNodes(boolean *marked, int ind, int d)
 	    {
 		Ark *a;
 		List *arcs = (List *)n->getOutputArks(i);
-		for (j = 1; a = (Ark*)arcs->getElement(j); ++j)
+		for (j = 1; (a = (Ark*)arcs->getElement(j)); ++j)
 		{
 		    int paramInd;
 		    Node *n2 = a->getDestinationNode(paramInd);
@@ -4286,7 +4281,7 @@ Network::connectedNodes(boolean *marked, int ind, int d)
 
 int Network::visitNodes(Node *n)
 {
-    int		i, j;
+    int		i;
 
     int numParam = n->getInputCount();
 
@@ -4303,7 +4298,7 @@ int Network::visitNodes(Node *n)
 	    Ark *a;
 	    List *arcs = (List *)n->getInputArks(i);
 	    ListIterator iter(*arcs);
-	    while (a = (Ark*)iter.getNext()) 
+	    while ( (a = (Ark*)iter.getNext()) ) 
 	    {
 		int paramInd;
 		Node *n2 = a->getSourceNode(paramInd);
@@ -4355,7 +4350,7 @@ void Network::sortNetwork()
     this->nodeList.sort(CompareNodeName);    
     List tmpNodeList;
     iterator.setList(this->nodeList);
-    for (i=0 ; n = (Node*)iterator.getNext() ; i++) {
+    for (i=0 ; (n = (Node*)iterator.getNext()) ; i++) {
 	tmpNodeList.appendElement((void*)n);
         n->clearMarked();
     }
@@ -4365,7 +4360,7 @@ void Network::sortNetwork()
     // Now that we have a copy of the sorted list, visit all the nodes.
     //
     iterator.setList(tmpNodeList);
-    while (n = (Node*)iterator.getNext()) {
+    while ( (n = (Node*)iterator.getNext()) ) {
 	if (!n->isMarked())
 	    this->visitNodes(n);
     }
@@ -4689,7 +4684,7 @@ boolean Network::moveInputPosition(MacroParameterNode *n, int index)
 	if (l)
 	{
 	    ListIterator li(*l);
-	    while(mpn = (MacroParameterNode*)li.getNext())
+	    while( (mpn = (MacroParameterNode*)li.getNext()) )
 	    {
 		if (mpn->getIndex() == index)
 		    break;
@@ -4786,7 +4781,7 @@ boolean Network::moveOutputPosition(MacroParameterNode *n, int index)
 	if (l)
 	{
 	    ListIterator li(*l);
-	    while(mpn = (MacroParameterNode*)li.getNext())
+	    while( (mpn = (MacroParameterNode*)li.getNext()) )
 	    {
 		if (mpn->getIndex() == index)
 		    break;
@@ -4892,7 +4887,7 @@ void Network::openColormap(boolean openAll)
     }
     li.setList(*cmaps);
 
-    while(n = (ColormapNode*)li.getNext())
+    while( (n = (ColormapNode*)li.getNext()) )
         n->openDefaultWindow(theDXApplication->getRootWidget());
 
     delete cmaps;
@@ -5020,7 +5015,7 @@ boolean Network::redefineNodes(Dictionary *newdefs, Dictionary *olddefs)
 {
     Node *node;
     ListIterator l;
-    EditorWindow *editor = this->getEditor();
+    // EditorWindow *editor = this->getEditor();
  
     FOR_EACH_NETWORK_NODE(this, node, l) {
 	const char *name = node->getNameString();
@@ -5160,7 +5155,7 @@ boolean Network::saveToFileRequired()
 #if WORKSPACE_PAGES
     DictionaryIterator di(*this->groupManagers);
     GroupManager* gmgr;
-    while (gmgr = (GroupManager*)di.getNextDefinition()) 
+    while ( (gmgr = (GroupManager*)di.getNextDefinition()) ) 
 	count+= gmgr->getGroupCount();
 #endif
     return this->isFileDirty() && (count > 0) && 
@@ -5200,7 +5195,7 @@ List		removedDecs;
     // They are re-created in DisplayNode::switchNetwork()
     //
     ImageWindow *iw;
-    while (iw = (ImageWindow *)new_net->imageList.getElement(1))
+    while ( (iw = (ImageWindow *)new_net->imageList.getElement(1)) )
 	delete iw;
 
     FOR_EACH_NETWORK_NODE(new_net, new_node, new_l) 
@@ -5217,7 +5212,7 @@ List		removedDecs;
 	    removedDecs.appendElement(new_dec);
     }
 
-    for (new_l.setList(removedNodes); new_node = (Node*)new_l.getNext();)
+    for (new_l.setList(removedNodes); (new_node = (Node*)new_l.getNext()); )
     {
 	Symbol new_name = new_node->getNameSymbol();
 	int    new_inst = new_node->getInstanceNumber();
@@ -5242,7 +5237,7 @@ List		removedDecs;
     // Check to see if there are any problems with moving things over.  If
     // there are, abort the whole process.
     //
-    for (new_l.setList(removedNodes); new_node = (Node*)new_l.getNext();)
+    for (new_l.setList(removedNodes); (new_node = (Node*)new_l.getNext()); )
     {
 	if (!new_node->canSwitchNetwork(new_net,this))
 	{
@@ -5271,7 +5266,7 @@ List		removedDecs;
     Dictionary* mergingGroup = new_net->getGroupManagers();
     DictionaryIterator di(*mergingGroup);
     GroupManager* gmgr;
-    while (gmgr = (GroupManager*)di.getNextDefinition()) {
+    while ( (gmgr = (GroupManager*)di.getNextDefinition()) ) {
 	Symbol gmgr_sym = gmgr->getManagerSymbol();
 	const char* first_group = NUL(char*);
 	//
@@ -5279,13 +5274,13 @@ List		removedDecs;
 	// originated in a single page.  See EditorWindow::macroify...
 	//
 	if ((gmgr->survivesMerging() == FALSE) || (allNodes == FALSE)) {
-	    for (new_l.setList(removedNodes); new_node = (Node*)new_l.getNext();) {
+	    for (new_l.setList(removedNodes); (new_node = (Node*)new_l.getNext()); ) {
 		const char* group_name = new_node->getGroupName(gmgr_sym);
 		if (group_name) {
 		    new_node->setGroupName(NUL(GroupRecord*), gmgr_sym);
 		}
 	    }
-	    for (new_l.setList(removedDecs); new_dec = (Decorator*)new_l.getNext();) {
+	    for (new_l.setList(removedDecs); (new_dec = (Decorator*)new_l.getNext()); ) {
 		VPEAnnotator* vpea = (VPEAnnotator*)new_dec;
 		const char* group_name = vpea->getGroupName(gmgr_sym);
 		if (group_name) {
@@ -5295,7 +5290,7 @@ List		removedDecs;
 	} else {
 	    GroupManager* local_gmgr = (GroupManager*)
 		this->groupManagers->findDefinition(gmgr_sym);
-	    for (new_l.setList(removedNodes); new_node = (Node*)new_l.getNext();) {
+	    for (new_l.setList(removedNodes); (new_node = (Node*)new_l.getNext()); ) {
 		GroupRecord* grec = NUL(GroupRecord*);
 		const char* group_name = new_node->getGroupName(gmgr_sym);
 		if (group_name) {
@@ -5323,7 +5318,7 @@ List		removedDecs;
 		    }
 		}
 	    }
-	    for (new_l.setList(removedDecs); new_dec = (Decorator*)new_l.getNext();) {
+	    for (new_l.setList(removedDecs); (new_dec = (Decorator*)new_l.getNext()); ) {
 		VPEAnnotator* vpea = (VPEAnnotator*)new_dec;
 		const char* group_name = vpea->getGroupName(gmgr_sym);
 		GroupRecord* grec = NUL(GroupRecord*);
@@ -5360,7 +5355,7 @@ List		removedDecs;
     // Move them over to the current network
     //
     this->deferrableAddNode->deferAction();
-    for (new_l.setList(removedNodes); new_node = (Node*)new_l.getNext();)
+    for (new_l.setList(removedNodes); (new_node = (Node*)new_l.getNext()); )
     {
 	new_node->switchNetwork(new_net,this);
 	new_net->nodeList.removeElement(new_node);
@@ -5374,7 +5369,7 @@ List		removedDecs;
 	// Resolve any instance number collisions among control panels
 	//
 	for (new_cp_l.setList(*panels);
-		new_cp = (ControlPanel*)new_cp_l.getNext();)
+		(new_cp = (ControlPanel*)new_cp_l.getNext()); )
 	{	
 	    new_cp->switchNetwork(new_net,this);
 	    new_net->panelList.removeElement(new_cp);
@@ -5385,7 +5380,7 @@ List		removedDecs;
     //
     // FIXME: Please write a switchNetworks() method for Decorators.
     //
-    for (new_l.setList(removedDecs); new_dec = (Decorator*)new_l.getNext();)
+    for (new_l.setList(removedDecs); (new_dec = (Decorator*)new_l.getNext());)
     {
 	DecoratorInfo* dnd = new DecoratorInfo (this, (void*)this,
 	    (DragInfoFuncPtr)Network::SetOwner,
@@ -5550,6 +5545,7 @@ List *Network::makeLabelledNodeList(const char *label)
 // conditions that might indicate someone is trying to break the
 // security mechanisms of encoded networks.
 //
+#if DXD_HAS_CRYPT             //CRYPTKEY
 static FILE *OpenForDecoding(const char *netfile, const char *key)
 {
     char buf[1024];
@@ -5576,7 +5572,7 @@ static FILE *OpenForDecoding(const char *netfile, const char *key)
 
     putenv("__=");
     code = atoi(fgets(buf,80,f)); //check my pid is first thing in mesg
-    if ( (getpid()^1234) != code ){
+    if ( ((unsigned int)(getpid()^1234)) != code ){
         fprintf(stderr,"Invalid data from %s, exiting\n", decoder);
         exit(1);
     }
@@ -5595,6 +5591,7 @@ static FILE *OpenForDecoding(const char *netfile, const char *key)
 
     return f;
 }
+#endif // DXD_HAS_CRYPT
 #endif // DXD_LACKS_POPEN
 
 //
@@ -5860,7 +5857,7 @@ List *Network::GetDestinationNodes(Node *src, int output_index,
     List *arcs = (List *)src->getOutputArks(output_index);
 
     ListIterator iter(*arcs);
-    while (a = (Ark*)iter.getNext()) {
+    while ( (a = (Ark*)iter.getNext()) ) {
 	int paramInd;
 	Node *dest = a->getDestinationNode(paramInd);
 	const char *destClassName = dest->getClassName();
@@ -5875,7 +5872,7 @@ List *Network::GetDestinationNodes(Node *src, int output_index,
 		//
 		ListIterator iter(*recvrs);
 		Node *rcvr;
-		while (rcvr = (Node*)iter.getNext()) {
+		while ( (rcvr = (Node*)iter.getNext()) ) {
 		    ASSERT(EqualString(rcvr->getClassName(),ClassReceiverNode));
 		    Network::GetDestinationNodes(rcvr,1,destList);	
 		}
@@ -5908,7 +5905,7 @@ void Network::optimizeNodeOutputCacheability()
 	theSymbolManager->registerSymbol(ClassDrivenNode);
 
     iterator.setList(this->nodeList);
-    while (src = (Node*)iterator.getNext()) {
+    while ( (src = (Node*)iterator.getNext()) ) {
 	int i, ocnt = src->getOutputCount();
  	if (editor)
 	    editor->selectNode(src,FALSE,FALSE);
@@ -5989,7 +5986,7 @@ void Network::optimizeNodeOutputCacheability()
 			Ark *a2;
 			List *dest_in_arcs = (List*)dest->getInputArks(k);
 			ListIterator iter(*dest_in_arcs);
-			while (a2 = (Ark*)iter.getNext()) {
+			while ( (a2 = (Ark*)iter.getNext()) ) {
 		    	    int paramInd;
 			    Node *inode = a2->getSourceNode(paramInd);
 			    if (src != inode) { 
@@ -6135,7 +6132,7 @@ char stylename[128];
 		return FALSE;
 	    }
 	} else {
-	    while (ds = (DecoratorStyle*)di.getNextDefinition()) {
+	    while ( (ds = (DecoratorStyle*)di.getNextDefinition()) ) {
 		if (EqualString (decoType, ds->getNameString())) {
 		    break;
 		}
@@ -6212,7 +6209,7 @@ void Network::getReferencedMacros(List *macros, List *visited)
 	    wasVisitNull = FALSE;  
 
 	ListIterator iter(*l);
-	while (mn = (MacroNode*)iter.getNext()) {
+	while ( (mn = (MacroNode*)iter.getNext()) ) {
 	    MacroDefinition *md = (MacroDefinition*)mn->getDefinition();
 	    //
 	    // Search all unvisited macros for other macros
@@ -6263,7 +6260,7 @@ boolean Network::printMacroReferences(FILE *f, boolean inline_define,
 	ListIterator iter(*l);	
 	List topLevelMacros;
 	MacroDefinition *md; 
-	while (mn = (MacroNode*)iter.getNext() )  {
+	while ( (mn = (MacroNode*)iter.getNext()) )  {
 	    md = (MacroDefinition*)mn->getDefinition();
 	    topLevelMacros.appendElement((void*)md);
 	}
@@ -6272,7 +6269,7 @@ boolean Network::printMacroReferences(FILE *f, boolean inline_define,
 	this->getReferencedMacros(&refMacros);
 
 	iter.setList(refMacros);	
-	while (md = (MacroDefinition*)iter.getNext() ) {
+	while ( (md = (MacroDefinition*)iter.getNext()) ) {
 	    boolean top;
     	    char s[1024];
 	    md->loadNetworkBody();
@@ -6348,7 +6345,7 @@ const char * Network::nameConflictExists (UniqueNameNode *passed_in, const char 
     if (cnl) {
 	ListIterator it(*cnl);
 	UniqueNameNode* existing;
-	while (existing = (UniqueNameNode*)it.getNext()) {
+	while ( (existing = (UniqueNameNode*)it.getNext()) ) {
 	    if ((passed_in != existing) && 
 		(passed_in->namesConflict
 		    (existing->getUniqueName(), label, existing->getClassName()))) {
@@ -6367,7 +6364,7 @@ const char * Network::nameConflictExists (UniqueNameNode *passed_in, const char 
     if (cnl) {
 	ListIterator it(*cnl);
 	Node* existing;
-	while (existing = (Node*)it.getNext()) {
+	while ( (existing = (Node*)it.getNext()) ) {
 	    if (passed_in->namesConflict
 		(existing->getLabelString(), label, existing->getClassName())) {
 		delete cnl;
@@ -6387,7 +6384,7 @@ const char * Network::nameConflictExists (const char *label)
     if (cnl) {
 	ListIterator it(*cnl);
 	UniqueNameNode* existing;
-	while (existing = (UniqueNameNode*)it.getNext()) {
+	while ( (existing = (UniqueNameNode*)it.getNext()) ) {
 	    if (existing->namesConflict
 		    (existing->getUniqueName(), label, ClassDXLOutputNode)) {
 		delete cnl;
@@ -6446,7 +6443,7 @@ void Network::renameTransmitters()
 
     ListIterator it(*Network::RenameTransmitterList);
     TransmitterNode* tn;
-    while (tn = (TransmitterNode*)it.getNext()) {
+    while ( (tn = (TransmitterNode*)it.getNext()) ) {
 	char new_name[128];
 	sprintf (new_name, "%s_xcvr", tn->getLabelString());
 	if (size == 1) {
@@ -6494,7 +6491,7 @@ void Network::showEditorMessages ()
 
     ListIterator it(*this->editorMessages);
     char* msg;
-    while (msg = (char*)it.getNext()) {
+    while ( (msg = (char*)it.getNext()) ) {
 	if (notify) InfoMessage (msg);
 	delete msg;
     }
@@ -6529,12 +6526,12 @@ void Network::copyGroupInfo (Node* src, List* destList)
     DictionaryIterator di(*group_mgrs);
     GroupManager* gmgr = NUL(GroupManager*);
     GroupRecord* grec = NUL(GroupRecord*);
-    while (gmgr = (GroupManager*)di.getNextDefinition()) {
+    while ( (gmgr = (GroupManager*)di.getNextDefinition()) ) {
 	Symbol gmgr_sym = gmgr->getManagerSymbol();
 	const char* group_name = src->getGroupName(gmgr_sym);
 	ListIterator it(*destList);
 	Node* n;
-	while (n = (Node*)it.getNext()) {
+	while ( (n = (Node*)it.getNext()) ) {
 	    grec = gmgr->getGroup(group_name);
 	    n->setGroupName(grec, gmgr_sym);
 	}
@@ -6552,7 +6549,7 @@ int i,j;
 
     ListIterator it(*selected);
     Node* seln;
-    while (seln = (Node*)it.getNext()) {
+    while ( (seln = (Node*)it.getNext()) ) {
 	//
 	// Chop input arcs
 	//
@@ -6593,7 +6590,7 @@ int i,j;
     Node* n;
     DictionaryIterator di;
     di.setList(*rcvrs);
-    while (n = (Node*)di.getNextDefinition())
+    while ( (n = (Node*)di.getNextDefinition()) )
        this->addNode(n);
 
     return TRUE;
@@ -6601,7 +6598,7 @@ int i,j;
 
 boolean Network::chopInputArk (Node* n, int pno, Dictionary* tmits, Dictionary* rcvrs)
 {
-int vpex_src, vpey_src, vpex, vpey;
+int vpex_src, vpey_src;
 int vpex_dest, vpey_dest;
 char newname[64];
 char tmp[64];
@@ -6655,7 +6652,7 @@ int dummy;
 	if ((orig) && (orig->getSize())) {
 	    ListIterator oi(*orig);
 	    Ark* a;
-	    while (a = (Ark*)oi.getNext()) {
+	    while ( (a = (Ark*)oi.getNext()) ) {
 		Node* dest = a->getDestinationNode(dummy);
 		if (dest->isA(ClassTransmitterNode) == FALSE) continue;
 		tmit = dest;
@@ -6728,7 +6725,7 @@ List nodes_to_delete;
 
     ListIterator it(*selected);
     Node* no;
-    while (no = (Node*)it.getNext()) {
+    while ( (no = (Node*)it.getNext()) ) {
 	//
 	// Pay attention only to Receiver nodes
 	//
@@ -6748,7 +6745,7 @@ List nodes_to_delete;
 	// because ultimate source might be null or on a different page
 	// in which case we'll use immediate source.
 	//
-	int ipno,pno;
+	int pno;
 	Node* ultimate_src = rcvr->getUltimateSourceNode(&pno);
 	const char* src_page = NUL(char*);
 	const char* rcvr_page = rcvr->getGroupName(gmgr_sym);
@@ -6811,11 +6808,10 @@ List nodes_to_delete;
 	//
 	ListIterator it(delete_arcs);
 	Ark* a;
-	while (a=(Ark*)it.getNext()) {
+	while ( (a=(Ark*)it.getNext()) ) {
 	    int out_pno = 0;
-	    int in_pno = 0;
 	    Node* dest = a->getDestinationNode(out_pno);
-	    Node* src = a->getSourceNode(in_pno);
+	    //Node* src = a->getSourceNode(in_pno);
 	    delete a;
 	    ASSERT (ultimate_src->isA(ClassTransmitterNode) == FALSE);
 	    ASSERT (dest->isA(ClassReceiverNode) == FALSE);
@@ -6840,7 +6836,7 @@ List nodes_to_delete;
 	else {
 	    ListIterator it(nodes_to_delete);
 	    Node* n;
-	    while (n=(Node*)it.getNext()) this->deleteNode(n);
+	    while ( (n=(Node*)it.getNext()) ) this->deleteNode(n);
 	}
 	nodes_to_delete.clear();
     }
@@ -6860,7 +6856,7 @@ List nodes_to_delete;
 	    const char* key = erased_rcvrs.getStringKey(i);
 	    it.setList(*tmits);
 	    Node* tmit;
-	    while (tmit = (Node*)it.getNext()) {
+	    while ( (tmit = (Node*)it.getNext()) ) {
 		const char* label = tmit->getLabelString();
 		if (EqualString(label, key)) {
 		    List* orig = (List*)tmit->getOutputArks(1);
@@ -6880,7 +6876,7 @@ List nodes_to_delete;
 	else {
 	    ListIterator it(nodes_to_delete);
 	    Node* n;
-	    while (n=(Node*)it.getNext()) this->deleteNode(n);
+	    while ( (n=(Node*)it.getNext()) ) this->deleteNode(n);
 	}
 	nodes_to_delete.clear();
     }

@@ -34,7 +34,7 @@ void *operator new(size_t l)
     void *r = (void *)MALLOC(l);
 
     if (!r) {
-	printf("Can't allocate %d bytes...aborting!\n",l);
+	printf("Can't allocate %ld bytes...aborting!\n",l);
 	fflush(stdout);
 	abort();
     }

@@ -289,13 +289,8 @@ static int pif_count = 0;
 
 PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
 {
-    struct sockaddr_in server;
-#if defined(HAVE_SYS_UN_H)
-    struct sockaddr_un userver;
-#endif
-    struct hostent*    hostp;
-
     ASSERT(host);
+
 #if defined(HAVE_SYS_UN_H)
     ASSERT(port > 0);
 #endif
@@ -386,7 +381,7 @@ PacketIF::~PacketIF()
 	delete this->linkHandler;
     
     PacketHandler *h; 
-    while (h = (PacketHandler*)this->handlers.getElement(1)) {
+    while ( (h = (PacketHandler*)this->handlers.getElement(1)) ) {
 	this->handlers.deleteElement(1);
 	delete h;
     }
@@ -626,7 +621,7 @@ PacketIF::setHandler(int                     type,
      * See if the handler is already in the queue.
      */
     ListIterator li(this->handlers);
-    for ( ; p = (PacketHandler*)li.getNext(); )
+    for ( ; (p = (PacketHandler*)li.getNext()); )
 	if (p->getType() == type && p->match(matchString))
 	    break;
     if (callback == NULL)
@@ -743,13 +738,11 @@ PacketIF::parsePacket()
     int               id;
     int               type;
     int               data_length;
-    int               i;
+    int               i=0;
     int               j;
     int               k;
     char              token[4096];
-    int		      dumpList = 0;
-
-    i = 0;
+    
     /*
      * Skip past the first vertical bar.
      */
@@ -880,7 +873,7 @@ PacketIF::parsePacket()
     // exact match.)
     //
     for (ListIterator li(this->handlers);
-	 h = (PacketHandler*)li.getNext(); )
+	 (h = (PacketHandler*)li.getNext()); )
     {
 #if 111
         int hnumber = h->getNumber();
@@ -913,7 +906,7 @@ PacketIF::parsePacket()
 	int longest_match_so_far = 0;
 	PacketHandler*  best_handler = NUL(PacketHandler*);
 	for (ListIterator li(this->handlers);
-	     h = (PacketHandler*)li.getNext(); )
+	     (h = (PacketHandler*)li.getNext()); )
 	{
 	    int hnumber = h->getNumber();
 	    int htype = h->getType();
@@ -938,7 +931,7 @@ PacketIF::parsePacket()
     //
     if (!h) {
 	for (ListIterator li(this->handlers);
-	     h = (PacketHandler*)li.getNext(); )
+	     (h = (PacketHandler*)li.getNext()); )
 	{
 	    int hnumber = h->getNumber();
 	    int htype = h->getType();
@@ -1157,27 +1150,27 @@ void PacketIF::executeLinkCommand(const char *c, int id)
 
 void PacketIF::ProcessMessage(void *, int, void *p)
 {
-    char *line = (char *)p;
+    // char *line = (char *)p;
 }
 
 void PacketIF::ProcessInformation(void *, int, void *p)
 {
-    char *line = (char *)p;
+    // char *line = (char *)p;
 }
 
 void PacketIF::ProcessError(void *, int, void *p)
 {
-    char *line = (char *)p;
+    // char *line = (char *)p;
 }
 
 void PacketIF::ProcessErrorERROR(void *clientData, int id, void *p)
 {
-    char *line = (char *)p;
+    // char *line = (char *)p;
 }
 
 void PacketIF::ProcessErrorWARNING(void *, int, void *p)
 {
-    char *line = (char *)p, *s;
+    // char *line = (char *)p, *s;
 }
 
 void PacketIF::ProcessCompletion(void *, int , void *)
@@ -1186,22 +1179,22 @@ void PacketIF::ProcessCompletion(void *, int , void *)
 
 void PacketIF::ProcessInterrupt(void *clientData, int id, void *p)
 {
-    char *line = (char *)p;
+    // char *line = (char *)p;
 }
 
 void PacketIF::ProcessBeginExecNode(void *clientData, int id, void *p)
 {
-    char *line = (char *)p;
+    // char *line = (char *)p;
 }
 
 void PacketIF::ProcessEndExecNode(void *clientData, int id, void *p)
 {
-    char *line = (char *)p;
+    // char *line = (char *)p;
 }
 
 void PacketIF::ProcessLinkCommand(void *clientData, int id, void *p)
 {
-    char *line = (char *)p;
+    // char *line = (char *)p;
 }
 
 void PacketIF::HandleError(void *clientData, char *message)

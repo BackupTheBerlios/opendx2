@@ -91,8 +91,6 @@ void ControlPanelWorkSpace::doSelectionAction(Widget widget, XtPointer callData)
 //
 void ControlPanelWorkSpace::doBackgroundAction(Widget w, XtPointer callData)
 {
-    XmWorkspaceCallbackStruct *call = (XmWorkspaceCallbackStruct*) callData;
-
     this->controlPanel->placeSelectedInteractorCallback(w, callData);
 }
 

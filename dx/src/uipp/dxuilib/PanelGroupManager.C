@@ -39,7 +39,7 @@ void PanelGroupManager::clear()
 {
     List *l;
 
-    while (l = (List*) this->panelGroups.getDefinition(1)) {
+    while ( (l = (List*) this->panelGroups.getDefinition(1)) ) {
 	this->panelGroups.removeDefinition((const void*)l);
 	delete l;
     }
@@ -171,10 +171,10 @@ void PanelGroupManager::buildPanelList(List *src, List *dest)
 
     ListIterator i(*src);
     int instance;
-    while (instance = (int) i.getNext()) {
+    while ( (instance = (int) i.getNext()) ) {
 	ControlPanel *cp;
 	// Make sure the panel has not been deleted from the network.
-	if (cp = this->network->getPanelByInstance(instance))
+	if ( (cp = this->network->getPanelByInstance(instance)) )
 	    dest->appendElement((const void*)instance);
     }
 }
@@ -188,14 +188,14 @@ boolean PanelGroupManager::cfgPrintComment(FILE *f)
     ListIterator li;
     char  *name;
 
-    for(i=1; name = (char*)this->getPanelGroup(i, &plist); i++)
+    for(i=1; (name = (char*)this->getPanelGroup(i, &plist)); i++)
     {
     	if (fprintf(f, "// panel group: \"%s\"", name) < 0)
 	    return FALSE;
 
     	li.setList(plist);
 
-    	while(inst = (int)li.getNext())
+    	while( (inst = (int)li.getNext()) )
 	    if (fprintf(f, " %d", inst-1) < 0)
 		return FALSE;
 

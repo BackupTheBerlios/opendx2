@@ -103,7 +103,7 @@ void DecoratorStyle::SetDefaultStyle(const char* decorator,
 
     DictionaryIterator iterator(*styledict);
 
-    while (is = (DecoratorStyle *) iterator.getNextDefinition() ) 
+    while ( (is = (DecoratorStyle *) iterator.getNextDefinition()) ) 
 	is->isDefault = is->style == style; 
 }
 
@@ -124,7 +124,7 @@ DecoratorStyle *DecoratorStyle::GetDecoratorStyle(const char* decorator,
 
     DictionaryIterator iterator(*styledict);
 
-    while (is = (DecoratorStyle *) iterator.getNextDefinition() ) {
+    while ( (is = (DecoratorStyle *) iterator.getNextDefinition()) ) {
 	if (firstIs == NULL)
 	    firstIs = is;
 	if ((is->style == style)  

@@ -280,7 +280,6 @@ boolean EditorWorkSpace::decodeDropType (int tag,
 	char *type, XtPointer value, unsigned long len, int x, int y)
 {
 boolean retVal;
-int pos;
 ToolSelector *ts;
 char *category, *toolname;
 NodeDefinition *nd;

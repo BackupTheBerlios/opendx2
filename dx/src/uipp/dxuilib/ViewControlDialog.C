@@ -441,12 +441,11 @@ void ViewControlDialog::createProbePulldown()
     DictionaryIterator  di;
     Widget        w;
     Node	 *p;
-    XmString     label;
 
     if(this->probeWidgetList.getSize() > 0)
     {
 	di.setList(this->probeWidgetList);
-	while(w = (Widget)di.getNextDefinition())
+	while( (w = (Widget)di.getNextDefinition()) )
 	    XtDestroyWidget(w);
 	this->probeWidgetList.clear();			
     }
@@ -471,7 +470,7 @@ void ViewControlDialog::createProbePulldown()
     li.setList(*l);
     Node *currentProbe = (Node*)this->imageWindow->getCurrentProbeNode();
     Widget menuHistory = NULL;
-    while(p = (Node*)li.getNext())
+    while( (p = (Node*)li.getNext()) )
     {
 	const char *label = p->getLabelString();
 	if (!this->probeWidgetList.findDefinition(label)) {
@@ -509,12 +508,11 @@ void ViewControlDialog::createPickPulldown()
     DictionaryIterator  di;
     Widget        w;
     Node	 *p;
-    XmString     label;
 
     if(this->pickWidgetList.getSize() > 0)
     {
 	di.setList(this->pickWidgetList);
-	while(w = (Widget)di.getNextDefinition()) {
+	while( (w = (Widget)di.getNextDefinition()) ) {
 	    XtDestroyWidget(w);
 	}
 	this->pickWidgetList.clear();			
@@ -539,7 +537,7 @@ void ViewControlDialog::createPickPulldown()
     Widget menuHistory = NULL;
     ListIterator li;
     li.setList(*l);
-    while(p = (Node*)li.getNext())
+    while( (p = (Node*)li.getNext()) )
     {
 	const char *label = p->getLabelString();
 	if (!this->pickWidgetList.findDefinition(label)) {
@@ -644,6 +642,10 @@ Widget ViewControlDialog::createDialog(Widget parent)
     XtSetArg(arg[0], XmNautoUnmanage, False);
 //    Widget dialog = XmCreateFormDialog( parent, this->name, arg, 1);
     Widget dialog = this->CreateMainForm( parent, this->name, arg, 1);
+
+#if defined(alphax)
+	XtArgVal dx_l1, dx_l2;
+#endif
 
     XtVaSetValues(XtParent(dialog),
 	XmNtitle, "View Control...",
@@ -794,7 +796,6 @@ Widget ViewControlDialog::createDialog(Widget parent)
 	NULL);
     double vamin = 0.001;
     double vamax = 179.0;
-    XtArgVal dx_l1, dx_l2;
     Widget viewAngleStepper = this->viewAngleStepper = XtVaCreateManagedWidget(
 	"viewAngleStepper", xmStepperWidgetClass, mainForm,
 	XmNtopAttachment   , XmATTACH_WIDGET,
@@ -1494,6 +1495,9 @@ boolean ViewControlDialog::isExpanding()
         case NAVIGATE:
         case ROAM:
              return TRUE;
+             break;
+	default:
+	     break;
     }
 
     return FALSE;
@@ -1501,7 +1505,8 @@ boolean ViewControlDialog::isExpanding()
 
 void ViewControlDialog::resetMode()
 {
-    Widget w;
+    Widget w = ((Widget) None);
+
     switch (this->imageWindow->getInteractionMode()) {
     case NONE:
 	w = this->modeNone->getRootWidget();
@@ -1552,7 +1557,9 @@ void ViewControlDialog::resetSetView()
 void ViewControlDialog::resetProjection()
 {
     double viewAngle;
+#if defined(alphax)
     XtArgVal dx_l;
+#endif
 
     this->imageWindow->getViewAngle(viewAngle);
     XtVaSetValues(this->viewAngleStepper, 
@@ -1596,7 +1603,9 @@ void ViewControlDialog::newCamera(double *from, double *to, double *up,
 	int image_width, int image_height, double width,
 	boolean perspective, double viewAngle)
 {
+#if defined(alphax)
     XtArgVal dx_l1, dx_l2, dx_l3;
+#endif
     this->resetProjection();
 
     XtVaSetValues(this->cameraWindowWidthNumber, XmNiValue, image_width, NULL);
@@ -1661,7 +1670,9 @@ void ViewControlDialog::setWhichCameraVector()
     {
 	this->imageWindow->getUp(v);
     }
+#if defined(alphax)
     XtArgVal dx_l1, dx_l2, dx_l3;
+#endif
     XtVaSetValues(this->cameraXNumber, XmNdValue, DoubleVal(v[0], dx_l1), NULL);
     XtVaSetValues(this->cameraYNumber, XmNdValue, DoubleVal(v[1], dx_l2), NULL);
     XtVaSetValues(this->cameraZNumber, XmNdValue, DoubleVal(v[2], dx_l3), NULL);
@@ -1780,7 +1791,7 @@ extern "C" void ViewControlDialog_SelectProbeCB(Widget button,
 
     Widget w;
     int    i;
-    for(i = 1; w = (Widget)vc->probeWidgetList.getDefinition(i); ++i)
+    for(i = 1; (w = (Widget)vc->probeWidgetList.getDefinition(i)); ++i)
     {
 	if (w == button)
 	{
@@ -1802,7 +1813,7 @@ extern "C" void ViewControlDialog_SelectPickCB(Widget button,
 
     Widget w;
     int    i;
-    for(i = 1; w = (Widget)vc->pickWidgetList.getDefinition(i); ++i)
+    for(i = 1; (w = (Widget)vc->pickWidgetList.getDefinition(i)) ; ++i)
     {
 	if (w == button)
 	{

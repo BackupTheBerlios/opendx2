@@ -1018,7 +1018,7 @@ short cols;
 
     nxt = 0;
     int copied_in_row = 0;
-    int most_recent_space;
+    int most_recent_space = 0;
     for (i=0; i<len; i++) {
 	if (copied_in_row == 0) most_recent_space = -1;
 	boolean line_break = (copied_in_row == cols);
@@ -1258,7 +1258,6 @@ boolean SetDecoratorTextDialog::measureLines(XmString srcString, char* font)
 XmStringContext cxt;
 char *text, *tag;
 XmStringDirection dir;
-Boolean sep;
 int i;
 
     if (!srcString) return FALSE;

@@ -398,7 +398,6 @@ void DXWindow::createExecuteMenu(Widget parent)
 {
     ASSERT(parent);
     Widget            pulldown;
-    CommandInterface* option;
 
     if (!theDXApplication->appAllowsExecuteMenus())
 	return;
@@ -480,7 +479,6 @@ void DXWindow::createConnectionMenu(Widget parent)
     ASSERT(this->menuBar);
 
     Widget            pulldown;
-    CommandInterface* option;
 
     if (!theDXApplication->appAllowsConnectionMenus())
 	return;
@@ -595,10 +593,9 @@ boolean DXWindow::printComment(FILE *f)
 boolean DXWindow::parseComment(const char *line, const char *file,
 				int lineno) 
 { 
-    const char *p = line;
-    int items, xsize, ysize, xpos, ypos;
+    int items, xsize=0, ysize=0, xpos=0, ypos=0;
     float norm_xsize, norm_ysize, norm_xpos, norm_ypos;
-    int display_xsize, display_ysize, flags;
+    int display_xsize, display_ysize;
 
 	
     if (!EqualSubstring(line," window: position =",19)) {
@@ -615,6 +612,7 @@ boolean DXWindow::parseComment(const char *line, const char *file,
     }
 
 #if INCLUDE_FLAGS_COMMENT	// Not used as of version 2.1
+    int flags;
     items = sscanf(line," window: position = (%f,%f), size = %fx%f, "
 		   "flags = 0x%x\n", 
 		&norm_xpos,&norm_ypos,&norm_xsize,&norm_ysize, &flags);
@@ -629,10 +627,10 @@ boolean DXWindow::parseComment(const char *line, const char *file,
 	if ((norm_xsize < 3) && (norm_ysize < 3)) {
 	    display_xsize = DisplayWidth(theApplication->getDisplay(),0); 
 	    display_ysize = DisplayHeight(theApplication->getDisplay(),0); 
-	    xpos  = display_xsize * norm_xpos  + .5;
-	    ypos  = display_ysize * norm_ypos  + .5;
-	    xsize = display_xsize * norm_xsize + .5;
-	    ysize = display_ysize * norm_ysize + .5;
+	    xpos  = (int) (display_xsize * norm_xpos  + .5);
+	    ypos  = (int) (display_ysize * norm_ypos  + .5);
+	    xsize = (int) (display_xsize * norm_xsize + .5);
+	    ysize = (int) (display_ysize * norm_ysize + .5);
 	}
 #if INCLUDE_FLAGS_COMMENT	// Not used as of version 2.1
 	if (flags & 1)

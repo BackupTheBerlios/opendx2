@@ -41,7 +41,7 @@ void InteractorStandIn::handleSelectionChange(boolean selected)
     // Tell all the network's control panel's that the selection
     // has changed.
     //
-    for (i=1 ; cp = net->getPanelByIndex(i) ; i++) {
+    for (i=1 ; (cp = net->getPanelByIndex(i)) ; i++) {
 	cp->handleNodeStatusChange(node, selected ? 
 				Interactor::InteractorSelected : 
 				Interactor::InteractorDeselected);

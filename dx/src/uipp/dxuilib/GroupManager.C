@@ -42,7 +42,7 @@ void GroupManager::clear()
 {
     GroupRecord *record;
 
-    while (record = (GroupRecord*) this->groups.getDefinition(1)) 
+    while ( (record = (GroupRecord*) this->groups.getDefinition(1)) ) 
     {
 	this->groups.removeDefinition((const void*)record);
 	delete record;

@@ -80,7 +80,7 @@ ToolSelector::~ToolSelector()
 {
     ActiveItemDictionary *d;
     DictionaryIterator iterator(this->categoryDictionary);
-    while (d = (ActiveItemDictionary*)iterator.getNextDefinition())
+    while ( (d = (ActiveItemDictionary*)iterator.getNextDefinition()) )
         delete d;
 
     AllToolSelectors.removeElement((void*)this);
@@ -189,7 +189,7 @@ boolean ToolSelector::augmentLists(Dictionary *d)
     // Look at all the node definitions and insert their category:name
     // pairs in the categories member.
     //
-    while (nd = (NodeDefinition*)iterator.getNextDefinition()) {
+    while ( (nd = (NodeDefinition*)iterator.getNextDefinition()) ) {
         c = nd->getCategorySymbol();
         t = nd->getNameSymbol();
         if (!this->addTool(c, t, (void*)nd))
@@ -419,7 +419,6 @@ boolean ToolSelector::updateToolListWidget()
     const char *str;
     XmString *xmstrings;
     Arg arg[3];
-    Dimension   width;
 
     toollist = (ActiveItemDictionary*)
                         this->categoryDictionary.getActiveDefinition();
@@ -433,7 +432,7 @@ boolean ToolSelector::updateToolListWidget()
     {
         xmstrings = new XmString[n_items];
 	n=0;
-	while (tool = iterator.getNextSymbol()) {
+	while ( (tool = iterator.getNextSymbol()) ) {
 	    str = theSymbolManager->getSymbolString(tool);
 	    xmstrings[n] = XmStringCreateLtoR((char*)str,"bold");
 	    n++;
@@ -484,7 +483,7 @@ boolean ToolSelector::updateCategoryListWidget()
 
     int i;
     Symbol first_cat = 0;
-    for (i = 0; cat = iterator.getNextSymbol(); ++i) {
+    for (i = 0; (cat = iterator.getNextSymbol()) ; ++i) {
 	const char *str;
 	if (i==0)
 	    first_cat = cat;	
@@ -730,7 +729,7 @@ boolean ToolSelector::AddTool(Symbol cat, Symbol tool, void *ptr)
     if (!cat)
 	return TRUE;
 
-    while(ts = (ToolSelector*)li.getNext())
+    while( (ts = (ToolSelector*)li.getNext()) )
     {
 	if (!ts->addTool(cat, tool, ptr))
 	    result = FALSE;
@@ -762,7 +761,7 @@ boolean ToolSelector::RemoveTool(Symbol cat, Symbol tool)
     ListIterator li(ToolSelector::AllToolSelectors);
     ToolSelector *ts;
     boolean result = TRUE;
-    while(ts = (ToolSelector*)li.getNext())
+    while( (ts = (ToolSelector*)li.getNext()) )
     {
 	if (!ts->removeTool(cat, tool))
 	    result = FALSE;
@@ -788,7 +787,7 @@ boolean ToolSelector::UpdateCategoryListWidget()
     ListIterator li(ToolSelector::AllToolSelectors);
     ToolSelector *ts;
     boolean result = TRUE;
-    while(ts = (ToolSelector*)li.getNext())
+    while( (ts = (ToolSelector*)li.getNext()) )
     {
 	if (!ts->updateCategoryListWidget())
 	    result = FALSE;
@@ -801,7 +800,7 @@ boolean ToolSelector::UpdateToolListWidget()
     ListIterator li(ToolSelector::AllToolSelectors);
     ToolSelector *ts;
     boolean result = TRUE;
-    while(ts = (ToolSelector*)li.getNext())
+    while( (ts = (ToolSelector*)li.getNext()) )
     {
 	if (!ts->updateToolListWidget())
 	    result = FALSE;
@@ -818,7 +817,7 @@ boolean ToolSelector::MergeNewTools(Dictionary *d)
     ListIterator li(ToolSelector::AllToolSelectors);
     ToolSelector *ts;
 
-    while(ts = (ToolSelector*)li.getNext())
+    while( (ts = (ToolSelector*)li.getNext()) )
     {
 	if (!ts->augmentLists(d) 	|| 
 	    !ts->updateToolListWidget() || 

@@ -58,7 +58,7 @@ void ImageFormatYUV::eraseOutputFile(const char *fname)
     char *cp;
     char *srcfile = DuplicateString(fname);
     char *file_to_delete = new char[strlen(fname) + 8];
-    if (cp = strstr (srcfile, ".yuv")) cp[0] = '\0';
+    if ( (cp = strstr (srcfile, ".yuv")) ) cp[0] = '\0';
     sprintf (file_to_delete, "%s.yuv", srcfile);
     unlink (file_to_delete);
     sprintf (file_to_delete, "%s.size", srcfile);

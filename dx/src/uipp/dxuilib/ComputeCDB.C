@@ -330,9 +330,6 @@ void ComputeCDB::changeInput(int i)
 	CDBInput *input = (CDBInput*) this->inputList.getElement(i - 1);
 	if (input->nameWidget != NULL)
 	{
-	    boolean connected  = n->isInputConnected(i);
-	    boolean defaulting = n->isInputDefaulting(i);
-
 	    XmTextSetString(input->nameWidget, (char *)n->getName(i - 1));
 	    
 	    const char *sourceString;
@@ -374,7 +371,6 @@ void ComputeCDB::newInput(int i)
 	return;
 
     const char *pname = n->getName(i - 1);
-    Boolean	setting = n->isInputConnected(i);
 
     Widget inputs = XtParent(this->expressionLabel);
     Widget prevNameWidget = NULL;
@@ -478,8 +474,6 @@ void ComputeCDB::newInput(int i)
 
 void ComputeCDB::deleteInput(int i)
 {
-    ComputeNode *n = (ComputeNode*)this->node;
-
     // Set i to be the index in the inputList corresponding with the input.
     --i;
     CDBInput *input = (CDBInput*)this->inputList.getElement(i);

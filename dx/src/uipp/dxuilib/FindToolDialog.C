@@ -93,7 +93,7 @@ FindToolDialog::~FindToolDialog()
     if(this->moduleList)
     {
 	li.setList(*this->moduleList);
-	while(module = (char*)li.getNext())
+	while( (module = (char*)li.getNext()) )
 	    delete module;
 	this->moduleList->clear();
 	delete this->moduleList;
@@ -351,7 +351,7 @@ void FindToolDialog::changeList()
     if(this->moduleList)
     {
 	li.setList(*this->moduleList);
-	while(module = (char*)li.getNext())
+	while( (module = (char*)li.getNext()) )
 	    delete module;
 	this->moduleList->clear();
 	delete this->moduleList;
@@ -633,12 +633,8 @@ extern "C" void FindToolDialog_FindCB(Widget    widget,
                                 XtPointer callData)
 {
     char*  	name;
-    boolean     found = False;
-    boolean     wireless = False;
-    boolean     bad_name = True;
     int         instance;
     int         nextInstance = INT_MAX;
-    int         maxInstance = INT_MAX;
     int		startPos = 1;
     Node	*node, *theNode = NULL;
 
@@ -662,7 +658,7 @@ extern "C" void FindToolDialog_FindCB(Widget    widget,
 	data->lastPos = 1;
     }
 
-    while (node=(data->editor->getNetwork())->findNode(name,&startPos))
+    while ( (node=(data->editor->getNetwork())->findNode(name,&startPos)) )
     {
 	instance = node->getInstanceNumber();
 	if (instance > data->lastInstance AND instance < nextInstance)

@@ -260,7 +260,6 @@ char *SelectionAttrDialog::getValueEditorValue()
 	if (!accept_any && 
 	    (type == DXType::VectorType || type == DXType::TensorType)) {
 	    DXTensor first, proposed;
-	    boolean r;
 	    char first_value[1024], label[1024],*text = this->getListItem(1);
 	    ASSERT(text);
 	    ParseListItem(text, first_value, label);
@@ -376,8 +375,6 @@ void SelectionAttrDialog::updateDisplayedAttributes()
 {
     SelectionInstance *si = (SelectionInstance*)this->interactorInstance;
     int options,i;
-    Arg arg[4];
-
 
     ASSERT(si);
 

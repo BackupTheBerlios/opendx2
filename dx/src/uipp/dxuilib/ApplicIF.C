@@ -60,23 +60,23 @@ void ApplicIF::initializePacketIO()
 
 void ApplicIF::ApplicationMessage(void *clientData, int id, void *line)
 {
-    char *l = (char *)line;
+    //char *l = (char *)line;
 }
 void ApplicIF::ApplicationInformation(void *clientData, int id, void *line)
 {
-    char *l = (char *)line;
+    //char *l = (char *)line;
 }
 void ApplicIF::ApplicationError(void *clientData, int id, void *line)
 {
-    char *l = (char *)line;
+    //char *l = (char *)line;
 }
 void ApplicIF::ApplicationCompletion(void *clientData, int id, void *line)
 {
-    char *l = (char *)line;
+    //char *l = (char *)line;
 }
 void ApplicIF::ApplicationQuery(void *clientData, int id, void *line)
 {
-    char *l = (char *)line;
+    //char *l = (char *)line;
 }
 
 void ApplicIF::PassThruDXL(void *clientData, int id, void *line)
@@ -100,7 +100,7 @@ void ApplicIF::HandleApplicationError(void *clientData, char *message)
 
 void ApplicIF::ApplicationForeground(void *clientData, int id, void *line)
 {
-    char *l = (char *)line;
+    //char *l = (char *)line;
 }
 
 void ApplicIF::ApplicationLink(void *clientData, int id, void *p)

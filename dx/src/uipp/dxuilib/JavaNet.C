@@ -241,7 +241,7 @@ ListIterator it;
 	msglen+= strlen(tbuf);
 	ListIterator it(*unsup_list);
 	const char* cp;
-	while (cp = (char*)it.getNext()) {
+	while ( (cp = (char*)it.getNext()) ) {
 	    sprintf (tbuf, "\t%s\n", cp);
 	    strcpy (&msg[msglen], tbuf);
 	    msglen+= strlen(tbuf);
@@ -313,7 +313,7 @@ ListIterator it;
 	ControlPanel* cp;
 	ListIterator it(*cps);
 	int w,h;
-	while (cp = (ControlPanel*)it.getNext()) {
+	while ( (cp = (ControlPanel*)it.getNext()) ) {
 	    cp->getWorkSpaceSize(&w,&h);
 	    applet_width = MAX(applet_width, w+14);
 	    applet_height = MAX(applet_height, h);
@@ -447,7 +447,6 @@ ListIterator it;
 		    "\t<param name=OPEN_IN_ORBIT_MODE value=\"true\">\n"
 		);
 	    }
-	    boolean imgId_typed_in_cdb = (n->isWebOptionsImgIdConnected() == FALSE);
 	    fprintf (this->html_f, "</applet>\n");
        }
        if (head) delete head;
@@ -475,7 +474,7 @@ ListIterator it;
 
 	ListIterator it(*dxlos);
 	Node* don;
-	while (don = (Node*)it.getNext()) {
+	while ( (don = (Node*)it.getNext()) ) {
 	    fprintf (this->html_f, "<applet\n"
 		"\tcode=\"CaptionLabels.class\" width = 250 height = 20\n"
 		"\tcodebase=../\n"
@@ -510,7 +509,6 @@ ListIterator it;
 	return FALSE;
     }
 
-    char* cname = NUL(char*);
     const char* uiroot = NULL;
     const char* resource = NULL;
     fprintf (this->make_f,
@@ -684,7 +682,7 @@ ListIterator it;
 	int len = 0;
 	if (pathn) len = strlen(pathn);
 	char *fname = new char[len + strlen(this->base_name) + 4];
-	while (bn = (ImageNode*)it.getNext()) {
+	while ( (bn = (ImageNode*)it.getNext()) ) {
 	    int f = bn->getInstanceNumber();
 	    if (IsBlankString(pathn))
 		sprintf (fname, "%s%d", this->base_name, f); 
@@ -699,7 +697,7 @@ ListIterator it;
 	dxc->executeOnce();
 
 	it.setList(*imgnodes);
-	while (bn = (ImageNode*)it.getNext()) 
+	while ( (bn = (ImageNode*)it.getNext()) ) 
 	    bn->disableJava(TRUE);
 	delete imgnodes;
     }
@@ -780,7 +778,7 @@ boolean JavaNet::netToApplet()
     if (cps) {
 	ControlPanel* cp;
 	it.setList(*cps);
-	while (cp = (ControlPanel*)it.getNext()) {
+	while ( (cp = (ControlPanel*)it.getNext()) ) {
 	    if (cp->printAsJava(this->applet_f) == FALSE) {
 		fclose(this->applet_f);
 		this->applet_f = NUL(FILE*);

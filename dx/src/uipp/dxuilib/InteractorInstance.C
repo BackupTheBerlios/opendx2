@@ -307,7 +307,7 @@ boolean InteractorInstance::setAndVerifyOutput(int index, const char *val,
     boolean r = FALSE;
     if (reason)
 	*reason = NULL;
-    if (type = n->setOutputValue(index,val,type,FALSE)) {
+    if ( (type = n->setOutputValue(index,val,type,FALSE)) ) {
 	const char *coerced = n->getOutputValueString(index);
 	if (this->verifyValueAgainstAttributes(index, coerced, type, reason)) {
 	    if (send)

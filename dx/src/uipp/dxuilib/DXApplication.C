@@ -160,8 +160,6 @@ extern "C" void InstallShutdownTimer(Widget w,
 boolean    DXApplication::DXApplicationClassInitialized = FALSE;
 DXResource DXApplication::resource;
 
-static void LicenseMessage(void *, int, void *p);
-
 Symbol DXApplication::MsgExecute = NULL;
 Symbol DXApplication::MsgStandBy = NULL;
 Symbol DXApplication::MsgExecuteDone = NULL;
@@ -2029,7 +2027,7 @@ void DXApplication::loadMDF()
     //
     NodeDefinition *nd;
     DictionaryIterator di(newdefs);
-    while (nd = (NodeDefinition*)di.getNextDefinition()) {
+    while ( (nd = (NodeDefinition*)di.getNextDefinition()) ) {
         Symbol s = nd->getNameSymbol();
         theNodeDefinitionDictionary->addDefinition(s,(const void*)nd);
         nd->setUserTool(FALSE);
@@ -2070,7 +2068,7 @@ void DXApplication::loadIDF()
     //
     NodeDefinition *nd;
     DictionaryIterator di(newdefs);
-    while (nd = (NodeDefinition*)di.getNextDefinition()) {
+    while ( (nd = (NodeDefinition*)di.getNextDefinition()) ) {
         Symbol s = nd->getNameSymbol();
         theNodeDefinitionDictionary->addDefinition(s,(const void*)nd);
         nd->setUserTool(FALSE);
@@ -2119,7 +2117,7 @@ void DXApplication::loadUDF(const char *fileName, Dictionary *dict,
 	this->network->redefineNodes(dict,&olddefs);
 	ListIterator li(this->macroList);
 	Network *net;
-	while (net = (Network*)li.getNext()) 
+	while ( (net = (Network*)li.getNext()) ) 
 	    net->redefineNodes(dict,&olddefs);
 
 	//
@@ -2127,7 +2125,7 @@ void DXApplication::loadUDF(const char *fileName, Dictionary *dict,
 	//
 	DictionaryIterator di(olddefs);
 	NodeDefinition *nd;
-	while (nd = (NodeDefinition*)di.getNextDefinition()) 
+	while ( (nd = (NodeDefinition*)di.getNextDefinition()) ) 
 	    delete nd;
 	
     }
@@ -2282,7 +2280,7 @@ boolean wasSetBusy = FALSE;
     }
     // Remove the port number if it exists (i.e DXHOST=slope,1920)
     char *p;
-    if (p = strrchr(DXApplication::resource.server,','))
+    if ( (p = strrchr(DXApplication::resource.server,',')) )
         *p = '\0';
 
 
@@ -2535,7 +2533,7 @@ boolean wasSetBusy = FALSE;
 	this->appLicenseType = FullyLicensed; 
 	this->funcLicenseType = ViewerLicense;
 	char *s;
-	if (s = getenv("DXVIEWERNET")) {
+	if ( (s = getenv("DXVIEWERNET")) ) {
 	    this->resource.program = s; 
 	} else {	
 	    char *buf = new char[1024];
@@ -2857,9 +2855,7 @@ printEvent (Widget w, XtPointer, String actname, XEvent *xev, String *, Cardinal
 
 void DXApplication::handleEvents()
 {
-    XEvent event;
-    Widget focus_widget = NUL(Widget);
-    
+    XEvent event;    
     
 #if NEED_TO_WATCH_EVENTS
     XtAppAddActionHook (this->applicationContext, (XtActionHookProc)printEvent, NULL);
@@ -3116,7 +3112,7 @@ static char* GetErrorNode(char* path, char* name, int*  instance)
 	 AND (strncmp(nameptr,"_Image",6)==0))
 		strcpy(name, "Image");
 
-     if (path = strchr(path,'/'))
+     if ( (path = strchr(path,'/')) )
 	path++;
 
      return (path);
@@ -3133,7 +3129,7 @@ void DXApplication::highlightNodes(char* path, int highlightType)
     path = GetErrorNode(path,name,&instance);
 
     network = this->network;
-    if (editor = network->getEditor())
+    if ( (editor = network->getEditor()) )
         editor->highlightNode(name,instance,highlightType);
 
     while (path)
@@ -3163,7 +3159,7 @@ void DXApplication::refreshErrorIndicators()
 
 
     iterator.setList(this->errorList);
-    while (s = (const char *)iterator.getNext())  {
+    while ( (s = (const char *)iterator.getNext()) )  {
 	this->highlightNodes((char*)s,EditorWindow::ERRORHIGHLIGHT);
     }
 
@@ -3202,7 +3198,7 @@ void DXApplication::addErrorList(char *line)
     //{
     //j  this->errorList.appendElement((void*)DuplicateString(line));
     //}
-    else if (p = strstr(line,"PEER ABORT - ")) {
+    else if ( (p = strstr(line,"PEER ABORT - ")) ) {
 	//	
 	// One of the distributed peers aborted abnormally.
 	// Unhighlight all the modules.
@@ -3232,7 +3228,7 @@ void DXApplication::clearErrorList()
 {
     char *s;
     ListIterator li(this->errorList);
-    while (s = (char*)li.getNext())
+    while ((s = (char*)li.getNext()))
     {
 	this->highlightNodes(s, EditorWindow::REMOVEHIGHLIGHT);
 	delete s;
@@ -3779,7 +3775,7 @@ void DXApplication::destroyDumpedObjects()
      Base *object;
      ListIterator li(this->dumpedObjects);
 
-     while(object = (Base*)li.getNext())
+     while( (object = (Base*)li.getNext()) )
 	delete object;
 
      this->dumpedObjects.clear();
@@ -3825,7 +3821,7 @@ void DXApplication::sendNewMDFToServer(Dictionary *newdefs, Dictionary *current)
     ASSERT(newdefs);
     NodeDefinition *nd;
     DictionaryIterator di(*newdefs);
-    while (nd = (NodeDefinition*)di.getNextDefinition()) {
+    while ( (nd = (NodeDefinition*)di.getNextDefinition()) ) {
 	char *mdf;
 	int  buflen = 0;
 	boolean outboard = nd->isOutboard();
@@ -3902,7 +3898,7 @@ void DXApplication::sendNewMDFToServer(Dictionary *newdefs, Dictionary *current)
     const char *file;
     int i;
     for (i=1 ; 
-	 file = (const char*)theDynamicPackageDictionary->getStringKey(i) ;
+	 (file = (const char*)theDynamicPackageDictionary->getStringKey(i)) ;
 	 i++) {
 	char sbuf[1024];
 	sprintf(sbuf,"Executive(\"package\",\"%s\");\n",file);
@@ -4141,7 +4137,6 @@ boolean DXApplication::appAllowsConfirmedQuit()
 boolean DXApplication::verifyOEMLicenseCode(LicenseTypeEnum *func)
 {
     char cryptbuf[1024];
-    char salt[8];
     boolean r;
 
     ASSERT(func);
@@ -4173,7 +4168,6 @@ boolean DXApplication::verifyOEMLicenseCode(LicenseTypeEnum *func)
 const char *DXApplication::getOEMApplicationName()
 {
     char cryptbuf[1024];
-    char salt[8];
 
     if (!this->resource.oemApplicationName || 
 	!this->resource.oemApplicationNameCode)
@@ -4371,7 +4365,6 @@ void DXApplication::scheduleServerDisconnect()
 //
 // Manage the software licenses
 //
-static void LostLicense(XtPointer clientData, int *fid, XtInputId *id);
 extern "C" void ShutdownTimeout(XtPointer clientData, XtIntervalId *id);
 extern "C" void InstallShutdownTimer(Widget w, 
 				XtPointer clientData, XtPointer calldata);
@@ -4566,7 +4559,7 @@ extern "C" void ShutdownTimeout(XtPointer clientData, XtIntervalId *id)
 
 	if (!save_files) {
 	    li.setList(theDXApplication->macroList);
-	    while (n = (Network*)li.getNext())
+	    while ( (n = (Network*)li.getNext()) )
 		if (n->saveToFileRequired() || (n->getNodeCount() > 0))
 		    save_files = TRUE;
 	}
@@ -4655,6 +4648,7 @@ extern "C" void InstallShutdownTimer(Widget w,
 // that when the user enters ok, a timer is installed so that the
 // system issues more warnings until if finally shuts down. 
 //
+#if 0
 static void LostLicense(XtPointer clientData, int *fid, XtInputId *id)
 {
     XtRemoveInput(*id);
@@ -4688,6 +4682,7 @@ static void LostLicense(XtPointer clientData, int *fid, XtInputId *id)
 	XtAddCallback(w,XmNpopdownCallback, 
 			InstallShutdownTimer, (XtPointer)MAX_INTERVAL);
 }
+#endif
 
 //
 // Shutdown the application (typically, after the user has hit OK on
@@ -4818,7 +4813,6 @@ boolean DXApplication::appForcesNetFileEncryption()
 void DXApplication::emergencySave (char *msg)
 {
 int i;
-boolean save_files = FALSE;
 boolean write_error = TRUE;
 
 #ifdef DXD_OS_NON_UNIX

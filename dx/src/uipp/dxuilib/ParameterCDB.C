@@ -65,8 +65,6 @@ ParameterCDB::AllocateConfigurationDialog(Widget parent,
 
 boolean ParameterCDB::applyCallback(Dialog *)
 {
-    MacroParameterNode     *n = (MacroParameterNode*)this->node;
-
     if (!this->applyValues()) {
         this->saveInitialValues();
 	return FALSE;
@@ -683,7 +681,7 @@ boolean ParameterCDB::applyValues()
 		{
 		    DXType *dxtype;
 		    ListIterator li(*pd->getTypes());
-		    while (dxtype = (DXType*)li.getNext())
+		    while ( (dxtype = (DXType*)li.getNext()) )
 		    {
 			Type type = dxtype->getType();
 			char *newVal = DXValue::CoerceValue(value, type);

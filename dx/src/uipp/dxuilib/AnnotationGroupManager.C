@@ -46,7 +46,6 @@ boolean AnnotationGroupManager::printComment(FILE* f)
 boolean AnnotationGroupManager::parseComment(const char *comment,
                                 const char *filename, int lineno,Network *net)
 {
-    int order, windowed, showing;
     char name[128];
     char *cp = " annotation assignment:";
 

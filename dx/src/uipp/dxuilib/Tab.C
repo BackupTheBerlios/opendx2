@@ -38,8 +38,6 @@ void Tab::createTab(Widget parent, boolean createManaged)
     int      n = 0;
     Widget w;
 
-    XmString string;
-
     if (!nullXmString)
         nullXmString = XmStringCreate("", XmSTRING_DEFAULT_CHARSET);
 
@@ -79,7 +77,7 @@ void Tab::setBackground(Pixel  background)
     /*
      * If the background value is invalid, go no further...
      */
-    if (background == -1)
+    if (background == ((Pixel) -1))
         return;
 
     /*

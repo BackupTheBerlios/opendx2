@@ -101,7 +101,7 @@ Widget GridDialog::createDialog(Widget parent)
 {
     Arg arg[20];
     int n = 0;
-    Widget form,frame;
+    Widget form;
 
     XtSetArg(arg[n], XmNheight,              400);  n++;
     XtSetArg(arg[n], XmNdialogStyle,         XmDIALOG_APPLICATION_MODAL);  n++;
@@ -740,7 +740,7 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 boolean GridDialog::okCallback(Dialog *d)
 {
     int   width, height;
-    Boolean  upper_left, upper_right, center, lower_left, lower_right, snap;
+    Boolean  upper_left, upper_right, center, lower_left, lower_right;
     Boolean  upper, lower, right, left;
     unsigned int x_align; 
     unsigned int y_align;

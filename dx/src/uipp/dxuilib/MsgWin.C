@@ -738,7 +738,7 @@ void MsgWin::clearSelectableLines()
 {
     ListIterator li(this->selectableLines);
     SelectableLine *l;
-    while(l = (SelectableLine*)li.getNext())
+    while( (l = (SelectableLine*)li.getNext()) )
     {
 	delete l->line;
 	delete l;
@@ -999,7 +999,7 @@ void MsgWin::selectLine(int pos, boolean promptUser)
     SelectableLine *l;
     boolean questionPosted = FALSE;
 
-    while(l = (SelectableLine*)li.getNext())
+    while( (l = (SelectableLine*)li.getNext()) )
     {
 	if (l->position == pos)
 	{
@@ -1047,7 +1047,7 @@ void MsgWin::selectLine(int pos, boolean promptUser)
 	    net = NULL;
 	    Network *macro;
 	    li.setList(theDXApplication->macroList);
-	    while(macro = (Network*)li.getNext())
+	    while( (macro = (Network*)li.getNext()) )
 		if (EqualString(netName, macro->getNameString()))
 		    net = macro;
 	    if (net == NULL)
@@ -1238,7 +1238,7 @@ void MsgWin::findNextError(boolean activateSameSelection)
     ListIterator li(this->selectableLines);
     SelectableLine *s;
     boolean found = FALSE;
-    while(s = (SelectableLine*)li.getNext())
+    while( (s = (SelectableLine*)li.getNext()) )
     {
 	if (s->position > pos)
 	{
@@ -1253,7 +1253,7 @@ void MsgWin::findNextError(boolean activateSameSelection)
     {
 	li.setPosition(1);
 	pos = 0;
-	while(s = (SelectableLine*)li.getNext())
+	while( (s = (SelectableLine*)li.getNext()) )
 	{
 	    if (s->position > pos)
 	    {

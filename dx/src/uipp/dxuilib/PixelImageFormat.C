@@ -230,7 +230,6 @@ void PixelImageFormat::parseImageSize(const char *str)
     if ((!str) || (!str[0])) return ;
 
     char *dimstr = DuplicateString(str);
-    int len = strlen(dimstr);
 
     boolean width_parsed = FALSE;
     boolean height_parsed = FALSE;

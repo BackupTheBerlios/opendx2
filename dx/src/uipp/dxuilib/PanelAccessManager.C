@@ -70,7 +70,7 @@ boolean     PanelAccessManager::isAccessibleGroup(const char *name)
 
     ListIterator li(this->inaccessibleGroups);
     char *gname;
-    while (gname = (char*)li.getNext())
+    while ( (gname = (char*)li.getNext()) )
         if (EqualString(gname, name))
             return FALSE;
 
@@ -85,7 +85,7 @@ ControlPanel *PanelAccessManager::getInaccessiblePanel(int index)
     List	obsolete;
     Network	*net = this->network;
     int		instance;
-    ControlPanel *cp, *p, *found = NULL;
+    ControlPanel *p, *found = NULL;
 
     ASSERT(index > 0); 
 
@@ -109,7 +109,7 @@ ControlPanel *PanelAccessManager::getInaccessiblePanel(int index)
     //
     if (obsolete.getSize() > 0) {
 	iterator.setList(obsolete);
-	while (instance = (int)iterator.getNext()) {
+	while ( (instance = (int)iterator.getNext()) ) {
 	    this->inaccessiblePanels.removeElement((void*)instance);
 	}
     }
@@ -149,7 +149,7 @@ const char *PanelAccessManager::getInaccessibleGroup(int index)
     //
     if (obsolete.getSize() > 0) {
         ListIterator iterator(obsolete);
-        while (name = (char*)iterator.getNext()) {
+        while ( (name = (char*)iterator.getNext()) ) {
 	    char gname[64];
 	    strcpy(gname,name);
             this->inaccessibleGroups.removeElement(name);
@@ -180,7 +180,7 @@ void        PanelAccessManager::allowAllGroupAccess()
 	char *name;
 	ListIterator li(this->inaccessibleGroups);
 
-	while(name = (char*)li.getNext())
+	while( (name = (char*)li.getNext()) )
 	    delete name;
 
 	this->inaccessibleGroups.clear();
@@ -236,7 +236,7 @@ boolean PanelAccessManager::hasCfgComment()
 boolean PanelAccessManager::cfgPrintInaccessibleComment(FILE *f)
 {
     ControlPanel *cp;
-    int	i, first;
+    int	i;
     const char *name;
 
     if (!this->isActivated())
@@ -249,7 +249,7 @@ boolean PanelAccessManager::cfgPrintInaccessibleComment(FILE *f)
     if (fprintf(f, "// inaccessible panels:") < 0)
 	return FALSE;
     cp = this->getInaccessiblePanel(1); 
-    for (i=1 ; cp=this->getInaccessiblePanel(i) ; i++)  
+    for (i=1 ; (cp=this->getInaccessiblePanel(i)) ; i++)  
     { 
     	if (fprintf(f, " %d",cp->getInstanceNumber()-1) < 0)
 	   return FALSE; 
@@ -264,7 +264,7 @@ boolean PanelAccessManager::cfgPrintInaccessibleComment(FILE *f)
     if (fprintf(f, "// inaccessible groups:") < 0)
 	return FALSE;
 
-    for (i=1 ; name = this->getInaccessibleGroup(i) ; i++) 
+    for (i=1 ; (name = this->getInaccessibleGroup(i)) ; i++) 
     {
 	if (fprintf(f, " \"%s\"",name) < 0)
 	    return FALSE; 
@@ -283,9 +283,7 @@ boolean PanelAccessManager::cfgPrintInaccessibleComment(FILE *f)
 boolean PanelAccessManager::cfgParseInaccessibleComment(const char *comment,
                                 const char *filename, int lineno)
 {
-    ControlPanel *cp;
-    int	i;
-    char *tmp, gname[64], name[32];
+    char gname[64], name[32];
 
     if (strncmp(comment," inaccessible",STRLEN(" inaccessible"))) 
 	return FALSE;

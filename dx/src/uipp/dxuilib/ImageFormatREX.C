@@ -58,7 +58,7 @@ void ImageFormatREX::eraseOutputFile(const char *fname)
     char *cp;
     char *srcfile = DuplicateString(fname);
     char *file_to_delete = new char[strlen(fname) + 8];
-    if (cp = strstr (srcfile, ".r")) cp[0] = '\0';
+    if ( (cp = strstr (srcfile, ".r")) ) cp[0] = '\0';
     sprintf (file_to_delete, "%s.r", srcfile);
     unlink (file_to_delete);
     sprintf (file_to_delete, "%s.g", srcfile);

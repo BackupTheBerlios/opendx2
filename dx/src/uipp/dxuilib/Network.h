@@ -71,12 +71,12 @@ class Decorator;
 class UniqueNameNode;
 
 #define FOR_EACH_NETWORK_NODE(network, node, iterator) \
- for (iterator.setList(network->nodeList) ; node = (Node*)iterator.getNext() ; )
+ for (iterator.setList(network->nodeList) ; (node = (Node*)iterator.getNext()) ; )
 #define FOR_EACH_NETWORK_PANEL(network, cp, iterator) \
  for (iterator.setList(network->panelList) ; \
-	cp = (ControlPanel*)iterator.getNext() ; )
+	(cp = (ControlPanel*)iterator.getNext()) ; )
 #define FOR_EACH_NETWORK_DECORATOR(network, decor, iterator) \
- for (iterator.setList(network->decoratorList); decor = (Decorator*)iterator.getNext(); )
+ for (iterator.setList(network->decoratorList); (decor = (Decorator*)iterator.getNext()); )
 
 
 //

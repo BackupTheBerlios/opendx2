@@ -258,7 +258,7 @@ DXChild::ConnectTo(const char *host,
 		   char *errstr)
 {
     char s[BUFSIZ];
-    char wd[BUFSIZ],script_name[500],cmd[1000];
+    char script_name[500],cmd[1000];
     FILE *fp;
     int i;
 #if defined(DXD_WIN) || defined(OS2)
@@ -270,11 +270,8 @@ DXChild::ConnectTo(const char *host,
     char **fargv = NULL;
     int child;
     struct hostent *he;
-    char *home;
     int findx;
     char *pathEnv;
-    char *is;
-    char *os;
     int  j;
     char *dnum;
 #if defined(HAVE_SYS_UTSNAME_H)
@@ -461,7 +458,7 @@ DXChild::ConnectTo(const char *host,
 			evar[j] = ep[i][j];
 		evar[j] = '\0';
 		k = j + 1;	/* Skip the '=' sign */
-		for (j=0 ; c = ep[i][k] ; k++, j++) {
+		for (j=0 ; (c = ep[i][k]) ; k++, j++) {
 			if (c == '\'') {		/* ' -> '\'' */
 				/* Value contains a double quote */
 				eval[j++] = '\'';
@@ -815,11 +812,10 @@ DXChild::StartExecutive(const char* host,
 		      char **rstringParam)
 {
     extern char **environ;
-    char *var;
     char **av = NULL;
     char **t;
     int	 ac = 0;
-    int  i, j;
+    int  i;
     int result;
     static char rstring[RSIZE];
 

@@ -78,7 +78,7 @@ void ControlPanelGroupDialog::installDefaultResources(Widget  baseWidget)
 
 Widget ControlPanelGroupDialog::createDialog(Widget parent)
 {
-    Widget frame1, frame2, sw1, sw2, separator1, separator2;
+    Widget frame1, frame2, sw1, sw2, separator1;
     Widget nameLabel, groupLabel, panelLabel;
     Arg    arg[5];
     int    n = 0;
@@ -355,11 +355,11 @@ void ControlPanelGroupDialog::makeToggles()
 
      if(this->toggleList[0].getSize() > 0)
      {
-        while(widget = (Widget)li.getNext())
+        while( (widget = (Widget)li.getNext()) )
              XtDestroyWidget(widget);
 
 	li.setList(this->toggleList[1]);
-        while(widget = (Widget)li.getNext())
+        while( (widget = (Widget)li.getNext()) )
              XtDestroyWidget(widget);
 
         this->toggleList[0].clear();
@@ -459,7 +459,7 @@ void ControlPanelGroupDialog::setToggles()
      Widget   	widget;
      List	plist;
      int	i, size = this->toggleList[0].getSize(); 
-     boolean	state, set = this->lastIndex;
+     boolean	state=false, set = this->lastIndex;
      ControlPanel *cp;
 
      if(set)
@@ -508,7 +508,6 @@ extern "C" void ControlPanelGroupDialog_ChangeCB(Widget widget,
                                            XtPointer clientData,
                                            XtPointer callData)
 {
-    char *name;
     ControlPanelGroupDialog* pgd = (ControlPanelGroupDialog*)clientData;
     ASSERT(pgd->lastIndex);
 

@@ -68,7 +68,7 @@ void FindStack::clear()
 {
     FindStackElement *element;
 
-    while (element = (FindStackElement *)this->Stack::pop())
+    while ( (element = (FindStackElement *)this->Stack::pop()) )
        delete element;
 
     this->Stack::clear();

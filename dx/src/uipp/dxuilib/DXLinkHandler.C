@@ -57,7 +57,7 @@ static List *MakeQualifiedNodeList(const char *classname, char *p,
 					boolean includeSubclasses)
 {
     int   qualifierType;
-    char *qualifier;
+    char *qualifier=NULL;
     List *result = NUL(List *);
 
     if (!p || !*p)
@@ -112,7 +112,7 @@ static List *MakeQualifiedNodeList(const char *classname, char *p,
 	if (list)
 	{
 	    ListIterator it(*list);
-	    while (node = (Node *)it.getNext())
+	    while ( (node = (Node *)it.getNext()) )
 		if (EqualString(node->getLabelString(),qualifier)) {
 		    if (!result)
 			result = new List;
@@ -686,7 +686,6 @@ boolean DXLinkHandler::SetGlobalValue(const char *c, int id, void *va)
 {
     Network *n = theDXApplication->network;
     Node *node = NULL;
-    DXLinkHandler *a = (DXLinkHandler*)va;
     char label[128];
     int length;
 
@@ -698,9 +697,9 @@ boolean DXLinkHandler::SetGlobalValue(const char *c, int id, void *va)
     // then set its 1st input (which is passed to its output).
     //
     List *l;
-    if (l = n->makeClassifiedNodeList(ClassDXLInputNode,FALSE)) {
+    if ( (l = n->makeClassifiedNodeList(ClassDXLInputNode,FALSE)) ) {
         ListIterator iter(*l);
-	while (node = (Node*)iter.getNext()) {
+	while ( (node = (Node*)iter.getNext()) ) {
 	    if (EqualString(node->getLabelString(),label)) {
 		node->setInputValue(1,value);
 		break;
@@ -735,6 +734,7 @@ boolean DXLinkHandler::SetGlobalValue(const char *c, int id, void *va)
     // lets be sure to wait until it is completed, before handling 
     // packets from the dxlink application.
     //
+    DXLinkHandler *a = (DXLinkHandler*)va;
     if (theDXApplication->getExecCtl()->inExecOnChange())
 	a->stallForExecutionIfRequired();
 #endif
@@ -827,9 +827,10 @@ boolean DXLinkHandler::QueryValue(const char *c, int id, void *va)
     int  inst;
     int  paramInd;
     DXLinkHandler *a = (DXLinkHandler*)va;
-    PacketIF *packetIF = a->getPacketIF(); 
     char inout[10];
     char buffer[1024];
+    // unused variable but does side effect need to happen?
+    // PacketIF *packetIF = a->getPacketIF(); 
 
     sscanf(c, "%[^_]_%[^_]_%d_%[^_]_%d",
 	    macro, module, &inst, inout, &paramInd);
@@ -1065,7 +1066,7 @@ boolean DXLinkHandler::SelectProbe(const char *c, int id, void *va)
     List *images = NUL(List *);
     List *probes = NUL(List *);
     char arg0[256], arg1[256];
-    int n, found = 0;
+    int n;
     DXLinkHandler *a = (DXLinkHandler*)va;
 
     n = sscanf(c, "%s %s", arg0, arg1);
@@ -1191,7 +1192,6 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
     }
 
     ListIterator it(*l);
-    ImageWindow *iw;
     ImageNode *in;
     DirectInteractionMode dim;
 

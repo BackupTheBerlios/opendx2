@@ -154,7 +154,7 @@ LabelDecorator::~LabelDecorator()
     if (this->otherStrings) {
 	DictionaryIterator di(*this->otherStrings);
 	char* other_string;
-	while (other_string = (char*)di.getNextDefinition())
+	while ( (other_string = (char*)di.getNextDefinition()) )
 	    delete other_string;
 	delete this->otherStrings;
 	this->otherStrings = NUL(Dictionary*);
@@ -283,7 +283,7 @@ char font[64];
 	    Dictionary* csty_dict = this->getCommentStyleDictionary();
 	    DictionaryIterator di(*csty_dict);
 	    CommentStyle* csty;
-	    while (csty = (CommentStyle*)di.getNextDefinition()) {
+	    while ( (csty = (CommentStyle*)di.getNextDefinition()) ) {
 		if (csty->parseComment(this, comment, file, l)) {
 		    parsed = TRUE;
 		    break;
@@ -546,7 +546,6 @@ LabelDecorator::getLabelValue()
 XmStringContext cxt;
 char *text, *tag;
 XmStringDirection dir;
-Boolean sep;
 int os;
 
 static char *label_buf = NUL(char*);
@@ -598,7 +597,6 @@ static int label_max_size = 0;
     // Add an extra \ before instances of '\' 'n' or the like
     // UnFilter returns NUL(char*) if no change was needed.
     //
-    int size;
     char *re_escaped_label_buf = 
 	LabelDecorator::UnFilterString(label_buf, &required_space);
     if (re_escaped_label_buf) {
@@ -911,7 +909,7 @@ boolean LabelDecorator::printJavaResources(FILE* jf, const char* indent, const c
     if (this->setResourceList) {
 	ListIterator it(*this->setResourceList);
 	DynamicResource* dr;
-	while (dr = (DynamicResource*)it.getNext()) {
+	while ( (dr = (DynamicResource*)it.getNext()) ) {
 	    if (EqualString(dr->getResourceName(), XmNalignment))  {
 		const char* clr = dr->getStringRepresentation();
 		if (!clr) continue;

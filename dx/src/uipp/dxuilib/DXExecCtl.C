@@ -665,8 +665,6 @@ void DXExecCtl::beginSingleExecution(boolean update)
     if (update && this->inExecOnChange() && !this->isExecOnChangeSuspended())
 	this->suspendExecOnChange();
 
-    SequencerNode* sequencer = theDXApplication->network->sequencer;
-
     theDXApplication->clearErrorList(); 
 
     if (update) 
