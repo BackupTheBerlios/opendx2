@@ -268,6 +268,7 @@ int initrun()
 #if defined(USE_REGISTRY)
     int keydata;
 
+    namestr	xenvvar = "";
     namestr 	dxrootreg =	"";
     namestr	dxdatareg =	"";
     namestr	dxmacroreg = 	"";
@@ -282,8 +283,8 @@ int initrun()
     	       "machine. Execution will be attempted anyway, and if it fails, please try\n"
     	       "reinstalling the software.\n");
 
-	getenvstr("XSRVR", xparms);
-	if(strcmp(xparms, "xwin32")!=0 || strcmp(xparms, "winaxe")!=0) {
+	getenvstr("XSRVR", xenvvar);
+	if(strlen(xenvvar)==0 || strcmp(xenvvar, "exceed")==0) {
             if(regval(CHECK, "Default", HUMMBIRD_ID3, exceeddir, sizeof(exceeddir), &keydata)) {
     	        strcpy(xservername, "Exceed 7"); whichX = EXCEED7;
                 if(!(regval(GET, "HomeDir", HUMMBIRD_ID3, exceeddir, sizeof(exceeddir), &keydata) &&
@@ -306,19 +307,21 @@ int initrun()
 	                "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
             } 
 	}
-	if (whichX == UNKNOWN && 
-	    regval(CHECK, "Default", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata)) {
-    	       strcpy(xservername, "X-Win32"); whichX = XWIN32;
-    	       if(!regval(GET, "Pathname", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata))
-	             printf("If X-Win32 is installed on this machine, please make sure it is available\n"
-	             "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+	if((strlen(xenvvar)==0 || strcmp(xenvvar, "xwin32")==0) && whichX == UNKNOWN) {
+	    if (regval(CHECK, "Default", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata)) {
+    	           strcpy(xservername, "X-Win32"); whichX = XWIN32;
+    	           if(!regval(GET, "Pathname", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata))
+	                 printf("If X-Win32 is installed on this machine, please make sure it is available\n"
+	                 "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+	    }
 	}
-	if (whichX == UNKNOWN &&
-	    regval(CHECK, "Default", LABF_ID, winaxedir, sizeof(winaxedir), &keydata)) {
+	if((strlen(xenvvar)==0 || strcmp(xenvvar, "winaxe")==0) && whichX == UNKNOWN) {
+	    if(regval(CHECK, "Default", LABF_ID, winaxedir, sizeof(winaxedir), &keydata)) {
 		strcpy(xservername, "WinaXe"); whichX = WINAXE;
 		if(!regval(GET, "App Path", LABF_ID, winaxedir, sizeof(winaxedir), &keydata))
 		    printf("If WinaXe is installed on this machine, please make sure it is available\n"
 		    "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+	    }
 	}
 #endif (USE_REGISTRY)
 
