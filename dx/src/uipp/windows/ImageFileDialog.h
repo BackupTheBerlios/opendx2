@@ -41,7 +41,7 @@ class ImageFileDialog : public FileDialog
     //
     // Protected member data:
     //
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     virtual void okFileWork(const char *string);
     virtual void cancelCallback(Dialog* );
@@ -51,16 +51,16 @@ class ImageFileDialog : public FileDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
-    virtual Widget createDialog (Widget parent);
+    virtual void createDialog ();
 
   public:
 
     //
     // Constructor: protected since this is an abstract class
     //
-    ImageFileDialog(Widget parent, SaveImageDialog *sid);
+    ImageFileDialog(SaveImageDialog *sid);
 
     //
     // Destructor:

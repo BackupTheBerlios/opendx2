@@ -7,18 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 #include "DXStrings.h"
 #include "DXChild.h"
-
-#ifdef OS2
-#define INCL_DOSPROCESS
-#define INCL_DOSDATETIME
-#define INCL_DOSFILEMGR
-#define INCL_DOSQUEUES
-#include <os2.h>
-#endif
 
 #include "DXApplication.h"
 #include "ErrorDialogManager.h"
@@ -129,32 +121,10 @@ extern "C"
 #include <sys/utsname.h>
 #endif
 
-#ifdef ibm6000
-extern "C"
-{
-    void herror(const char *);
-}
-#endif
-
-#if 0
-#if (REQUIRES_BZERO_DECLARATION == 1)
-extern "C" void bzero(char *, int);
-#endif
-#endif
-
 
 #define verbose 0
 
-#ifdef  DXD_WIN
-#if defined(XtInputReadMask)
-#undef XtInputReadMask
-#endif
-
-#define     XtInputReadMask     XtInputReadWinsock
-
 void	ClearExecMessages(void *arg);
-
-#endif
 
 int
 DXChild::HostIsLocal(const char *host)
@@ -688,8 +658,8 @@ DXChild::ConnectTo(const char *host,
     sa.lpSecurityDescriptor = NULL;		// default descriptor
     sa.bInheritHandle = TRUE;			// inheritable
 
-    bTest = CreatePipe( &this->hpipeRead,	// reading handle
-                        &this->hpipeWrite,	// writing handle
+    bTest = CreatePipe( &(this->hpipeRead),	// reading handle
+                        &(this->hpipeWrite),	// writing handle
                         &sa,			// lets handles be inherited
                         0 );			// default buffer size
 
@@ -892,150 +862,150 @@ error_return:
     return (result);
 }
 
-extern "C" void DXChild_OutQueuedInputHandler(XtPointer  clientData,
-            int       *socket,
-            XtInputId *id)
-{
-    char buffer[1000];
-    DXChild *obj = (DXChild *)clientData;
-    if (obj->input_handlers_stalled)
-        return ;
-    int sts = 0;
-
-    if ((sts = read(*socket, buffer, 1000)) < 0) {
-        ErrorMessage("Unable to read from executive, read() error: %s",
-                     strerror(errno));
-    } else if (sts == 0)
-        obj->closeOutput();
-    else {
-        int i = 0;
-        int j = STRLEN(obj->outLine);
-        for (i = 0; i < sts; ++i, ++j) {
-            if (buffer[i] == '\n' || j == obj->lineSize) {
-                char *s = obj->outLine;
-                int port;
-                obj->outLine[j] = '\n';
-                obj->outLine[j+1] = '\0';
-                theDXApplication->getMessageWindow()->addInformation(
-                    obj->outLine);
-                if ((s = strstr(obj->outLine, "host = ")) != NULL) {
-                    char buf[256];
-                    sscanf(s, "host = %s", buf);
-                    theDXApplication->setServer(buf);
-                    obj->setServer(buf);
-                }
-                if ((s = strstr(obj->outLine, "port = ")) != NULL) {
-                    sscanf(obj->outLine, "port = %d\n", &port);
-                    theDXApplication->connectToServer(port, obj);
-                }
-                obj->outLine[0] = '\0';
-                j = -1;
-            } else {
-                obj->outLine[j] = buffer[i];
-                obj->outLine[j+1] = '\0';
-            }
-        }
-    }
-}
-extern "C" void DXChild_ErrQueuedInputHandler(XtPointer  clientData,
-            int       *socket,
-            XtInputId *id)
-{
-    char buffer[1000];
-    DXChild *obj = (DXChild *)clientData;
-    if (obj->input_handlers_stalled)
-        return ;
-    int sts = 0;
-
-    if ((sts = read(*socket, buffer, 1000)) < 0) {
-        ErrorMessage("Unable to read from executive, read() error: %s",
-                     strerror(errno));
-    } else if (sts == 0)
-        obj->closeError();
-    else {
-        int i = 0;
-        int j = STRLEN(obj->errLine);
-        for (i = 0; i < sts; ++i, ++j) {
-            if (buffer[i] == '\n' || j == obj->lineSize) {
-                obj->errLine[j] = '\0';
-                //		write(2, obj->errLine, j + 1);
-                theDXApplication->getMessageWindow()->addError(obj->errLine);
-                obj->errLine[0] = '\0';
-                j = -1;
-            } else {
-                obj->errLine[j] = buffer[i];
-                obj->errLine[j+1] = '\0';
-            }
-        }
-    }
-}
-extern "C" void DXChild_OutInputHandler(XtPointer  clientData,
-                                            int       *socket,
-                                            XtInputId *id)
-{
-    char buffer[1000];
-    DXChild *obj = (DXChild *)clientData;
-    if (obj->input_handlers_stalled)
-        return ;
-    int sts = 0;
-
-    if ((sts = read(*socket, buffer, 1000)) < 0) {
-        ErrorMessage("Unable to read from executive, read() error: %s",
-                     strerror(errno));
-    } else if (sts == 0)
-        obj->closeOutput();
-    else {
-        int i = 0;
-        int j = STRLEN(obj->outLine);
-        for (i = 0; i < sts; ++i, ++j) {
-            if (buffer[i] == '\n' || j == obj->lineSize) {
-                obj->outLine[j] = '\n';
-                obj->outLine[j+1] = '\0';
-                theDXApplication->getMessageWindow()->addInformation(
-                    obj->outLine);
-                // write(1, obj->outLine, j + 1);
-                obj->outLine[0] = '\0';
-                j = -1;
-            } else {
-                obj->outLine[j] = buffer[i];
-                obj->outLine[j+1] = '\0';
-            }
-        }
-    }
-}
-extern "C" void DXChild_ErrInputHandler(XtPointer  clientData,
-                                            int       *socket,
-                                            XtInputId *id)
-{
-    char buffer[1000];
-    DXChild *obj = (DXChild *)clientData;
-    if (obj->input_handlers_stalled)
-        return ;
-    int sts = 0;
-
-    if ((sts = read(*socket, buffer, 1000)) < 0) {
-        ErrorMessage("Unable to read from executive, read() error: %s",
-                     strerror(errno));
-    } else if (sts == 0)
-        obj->closeError();
-    else {
-        int i = 0;
-        int j = STRLEN(obj->errLine);
-        for (i = 0; i < sts; ++i, ++j) {
-            if (buffer[i] == '\n' || j == obj->lineSize) {
-                obj->errLine[j] = '\0';
-                theDXApplication->getMessageWindow()->addError(
-                    obj->errLine);
-                //		write(2, obj->errLine, j+1);
-                obj->errLine[0] = '\0';
-                j = -1;
-            } else {
-                obj->errLine[j] = buffer[i];
-                obj->errLine[j+1] = '\0';
-            }
-        }
-    }
-}
+//extern "C" void DXChild_OutQueuedInputHandler(XtPointer  clientData,
+//            int       *socket,
+//            XtInputId *id)
+//{
+//    char buffer[1000];
+//    DXChild *obj = (DXChild *)clientData;
+//    if (obj->input_handlers_stalled)
+//        return ;
+//    int sts = 0;
+//
+//    if ((sts = read(*socket, buffer, 1000)) < 0) {
+//        ErrorMessage("Unable to read from executive, read() error: %s",
+//                     strerror(errno));
+//    } else if (sts == 0)
+//        obj->closeOutput();
+//    else {
+//        int i = 0;
+//        int j = STRLEN(obj->outLine);
+//        for (i = 0; i < sts; ++i, ++j) {
+//            if (buffer[i] == '\n' || j == obj->lineSize) {
+//                char *s = obj->outLine;
+//                int port;
+//                obj->outLine[j] = '\n';
+//                obj->outLine[j+1] = '\0';
+//                theDXApplication->getMessageWindow()->addInformation(
+//                    obj->outLine);
+//                if ((s = strstr(obj->outLine, "host = ")) != NULL) {
+//                    char buf[256];
+//                    sscanf(s, "host = %s", buf);
+//                    theDXApplication->setServer(buf);
+//                    obj->setServer(buf);
+//                }
+//                if ((s = strstr(obj->outLine, "port = ")) != NULL) {
+//                    sscanf(obj->outLine, "port = %d\n", &port);
+//                    theDXApplication->connectToServer(port, obj);
+//                }
+//                obj->outLine[0] = '\0';
+//                j = -1;
+//            } else {
+//                obj->outLine[j] = buffer[i];
+//                obj->outLine[j+1] = '\0';
+//            }
+//        }
+//    }
+//}
+//extern "C" void DXChild_ErrQueuedInputHandler(XtPointer  clientData,
+//            int       *socket,
+//            XtInputId *id)
+//{
+//    char buffer[1000];
+//    DXChild *obj = (DXChild *)clientData;
+//    if (obj->input_handlers_stalled)
+//        return ;
+//    int sts = 0;
+//
+//    if ((sts = read(*socket, buffer, 1000)) < 0) {
+//        ErrorMessage("Unable to read from executive, read() error: %s",
+//                     strerror(errno));
+//    } else if (sts == 0)
+//        obj->closeError();
+//    else {
+//        int i = 0;
+//        int j = STRLEN(obj->errLine);
+//        for (i = 0; i < sts; ++i, ++j) {
+//            if (buffer[i] == '\n' || j == obj->lineSize) {
+//                obj->errLine[j] = '\0';
+//                //		write(2, obj->errLine, j + 1);
+//                theDXApplication->getMessageWindow()->addError(obj->errLine);
+//                obj->errLine[0] = '\0';
+//                j = -1;
+//            } else {
+//                obj->errLine[j] = buffer[i];
+//                obj->errLine[j+1] = '\0';
+//            }
+//        }
+//    }
+//}
+//extern "C" void DXChild_OutInputHandler(XtPointer  clientData,
+//                                            int       *socket,
+//                                            XtInputId *id)
+//{
+//    char buffer[1000];
+//    DXChild *obj = (DXChild *)clientData;
+//    if (obj->input_handlers_stalled)
+//        return ;
+//    int sts = 0;
+//
+//    if ((sts = read(*socket, buffer, 1000)) < 0) {
+//        ErrorMessage("Unable to read from executive, read() error: %s",
+//                     strerror(errno));
+//    } else if (sts == 0)
+//        obj->closeOutput();
+//    else {
+//        int i = 0;
+//        int j = STRLEN(obj->outLine);
+//        for (i = 0; i < sts; ++i, ++j) {
+//            if (buffer[i] == '\n' || j == obj->lineSize) {
+//                obj->outLine[j] = '\n';
+//                obj->outLine[j+1] = '\0';
+//                theDXApplication->getMessageWindow()->addInformation(
+//                    obj->outLine);
+//                // write(1, obj->outLine, j + 1);
+//                obj->outLine[0] = '\0';
+//                j = -1;
+//            } else {
+//                obj->outLine[j] = buffer[i];
+//                obj->outLine[j+1] = '\0';
+//            }
+//        }
+//    }
+//}
+//extern "C" void DXChild_ErrInputHandler(XtPointer  clientData,
+//                                            int       *socket,
+//                                            XtInputId *id)
+//{
+//    char buffer[1000];
+//    DXChild *obj = (DXChild *)clientData;
+//    if (obj->input_handlers_stalled)
+//        return ;
+//    int sts = 0;
+//
+//    if ((sts = read(*socket, buffer, 1000)) < 0) {
+//        ErrorMessage("Unable to read from executive, read() error: %s",
+//                     strerror(errno));
+//    } else if (sts == 0)
+//        obj->closeError();
+//    else {
+//        int i = 0;
+//        int j = STRLEN(obj->errLine);
+//        for (i = 0; i < sts; ++i, ++j) {
+//            if (buffer[i] == '\n' || j == obj->lineSize) {
+//                obj->errLine[j] = '\0';
+//                theDXApplication->getMessageWindow()->addError(
+//                    obj->errLine);
+//                //		write(2, obj->errLine, j+1);
+//                obj->errLine[0] = '\0';
+//                j = -1;
+//            } else {
+//                obj->errLine[j] = buffer[i];
+//                obj->errLine[j+1] = '\0';
+//            }
+//        }
+//    }
+//}
 
 DXChild::DXChild(char *host,
                  char *cmd,
@@ -1051,7 +1021,7 @@ DXChild::DXChild(char *host,
     this->errLine = new char[this->lineSize + 2];
     *this->outLine = '\0';
     *this->errLine = '\0';
-    this->deletion_wpid = NUL(XtWorkProcId);
+    //this->deletion_wpid = NUL(XtWorkProcId);
     this->input_handlers_stalled = FALSE;
 
     this->server = DuplicateString(host);
@@ -1161,15 +1131,15 @@ DXChild::closeOutput(boolean closeConnection)
 {
     if (this->out >= 0) {
         close (this->out);
-        XtRemoveInput(this->outId);
+        //XtRemoveInput(this->outId);
     }
     this->out = -1;
     if (closeConnection && this->err == -1) {
         theDXApplication->closeConnection(this);
-        if (this->deletion_wpid == NUL(XtWorkProcId))
-            this->deletion_wpid =
-                XtAppAddWorkProc (theDXApplication->getApplicationContext(),
-                                  (XtWorkProc) DXChild_DeleteObjectWP, (XtPointer)this);
+    //    if (this->deletion_wpid == NUL(XtWorkProcId))
+    //        this->deletion_wpid =
+    //            XtAppAddWorkProc (theDXApplication->getApplicationContext(),
+    //                              (XtWorkProc) DXChild_DeleteObjectWP, (XtPointer)this);
     }
 }
 
@@ -1187,31 +1157,31 @@ DXChild::closeError(boolean closeConnection)
     this->err = -1;
     if (closeConnection && this->out == -1) {
         theDXApplication->closeConnection(this);
-        if (this->deletion_wpid == NUL(XtWorkProcId))
-            this->deletion_wpid =
-                XtAppAddWorkProc (theDXApplication->getApplicationContext(),
-                                  (XtWorkProc) DXChild_DeleteObjectWP, (XtPointer)this);
+    //    if (this->deletion_wpid == NUL(XtWorkProcId))
+    //        this->deletion_wpid =
+    //            XtAppAddWorkProc (theDXApplication->getApplicationContext(),
+    //                              (XtWorkProc) DXChild_DeleteObjectWP, (XtPointer)this);
     }
 }
 
-extern "C" Boolean DXChild_DeleteObjectWP (XtPointer clientData)
-{
-    DXChild* c = (DXChild*)clientData;
-    ASSERT(c);
-    delete c;
-    return TRUE;
-}
+//extern "C" Boolean DXChild_DeleteObjectWP (XtPointer clientData)
+//{
+//    DXChild* c = (DXChild*)clientData;
+//    ASSERT(c);
+//    delete c;
+//    return TRUE;
+//}
 
 void
 DXChild::unQueue()
 {
     if (this->out >= 0) {
-        XtRemoveInput(this->outId);
-        this->outId = XtAppAddInput(theApplication->getApplicationContext(),
-                                    this->out,
-                                    (XtPointer)XtInputReadMask,
-                                    DXChild_OutInputHandler,
-                                    (XtPointer)this);
+        //XtRemoveInput(this->outId);
+        //this->outId = XtAppAddInput(theApplication->getApplicationContext(),
+        //                            this->out,
+        //                            (XtPointer)XtInputReadMask,
+        //                            DXChild_OutInputHandler,
+        //                            (XtPointer)this);
     }
     if (this->err >= 0) {
 #ifndef  DXD_WIN

@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 
@@ -27,55 +27,44 @@
 #include <unistd.h>
 #endif
 #include <sys/stat.h>
-#include <Xm/PushB.h>
-#include <Xm/Form.h>
-#include <Xm/RowColumn.h>
-#include <Xm/Scale.h>
-#include <Xm/TextF.h>
-#include <Xm/Separator.h>
-#include <Xm/SeparatoG.h>
-#include <Xm/ToggleB.h>
-#include <Xm/Label.h>
-#include <X11/StringDefs.h>
-#include "../widgets/Number.h"
 
 boolean ImageFormatDialog::ClassInitialized = FALSE;
 
 extern void BuildTheImageFormatDictionary();
 extern Dictionary* theImageFormatDictionary;
 
-Cursor ImageFormatDialog::WatchCursor = 0;
+//Cursor ImageFormatDialog::WatchCursor = 0;
 
-String ImageFormatDialog::DefaultResources[] = {
-    "*rerenderOption.shadowThickness:	0",
-    "*rerenderOption.labelString:	Allow Rerendering",
-    "*delayedOption.shadowThickness:	0",
-    "*delayedOption.labelString:	Delayed Colors",
-    "*applyButton.labelString:		Apply",
-    "*cancelButton.labelString:		Close",
-    "*restoreButton.labelString:	Restore",
-    "*applyButton.width:		70",
-    "*cancelButton.width:		70",
-    "*restoreButton.width:		70",
-    "*formats.labelString:		Format:",
-    "*units.labelString:		Units:",
-    "*gammaLabel.labelString:          	Gamma Correction:",
-    "*accelerators:             	#augment\n"
-    "<Key>Return:                   	BulletinBoardReturn()",
+//String ImageFormatDialog::DefaultResources[] = {
+//    "*rerenderOption.shadowThickness:	0",
+//    "*rerenderOption.labelString:	Allow Rerendering",
+//    "*delayedOption.shadowThickness:	0",
+//    "*delayedOption.labelString:	Delayed Colors",
+//    "*applyButton.labelString:		Apply",
+//    "*cancelButton.labelString:		Close",
+//    "*restoreButton.labelString:	Restore",
+//    "*applyButton.width:		70",
+//    "*cancelButton.width:		70",
+//    "*restoreButton.width:		70",
+//    "*formats.labelString:		Format:",
+//    "*units.labelString:		Units:",
+//    "*gammaLabel.labelString:          	Gamma Correction:",
+//    "*accelerators:             	#augment\n"
+//    "<Key>Return:                   	BulletinBoardReturn()",
+//
+//    NUL(char*)
+//};
 
-    NUL(char*)
-};
 
-
-ImageFormatDialog::ImageFormatDialog (char *name,Widget parent,ImageNode *node, 
+ImageFormatDialog::ImageFormatDialog (char *name,ImageNode *node, 
     CommandScope* commandScope) : 
-	Dialog(name, parent), NoOpCommand(name, theDXApplication->getCommandScope(), TRUE)
+	Dialog(name), NoOpCommand(name, theDXApplication->getCommandScope(), TRUE)
 {
 
     this->choice 	= NUL(ImageFormat*);
     this->node 		= node;
     //this->units 	= NUL(Widget);
-    this->parent 	= parent;
+    //this->parent 	= parent;
     this->dirty 	= 0;
     this->busyCursors	= 0;
     this->commandScope 	= commandScope;
@@ -108,11 +97,11 @@ ImageFormatDialog::ImageFormatDialog (char *name,Widget parent,ImageNode *node,
     theDXApplication->executingCmd->autoDeactivate(this);
 }
 
-void ImageFormatDialog::installDefaultResources (Widget baseWidget)
-{
-    this->setDefaultResources (baseWidget, ImageFormatDialog::DefaultResources);
-    this->Dialog::installDefaultResources (baseWidget);
-}
+//void ImageFormatDialog::installDefaultResources (Widget baseWidget)
+//{
+//    this->setDefaultResources (baseWidget, ImageFormatDialog::DefaultResources);
+//    this->Dialog::installDefaultResources (baseWidget);
+//}
 
 
 //
@@ -159,247 +148,247 @@ boolean ImageFormatDialog::getDelayedColors()
     return this->delayedOption->getState();
 }
 
-Widget ImageFormatDialog::createDialog(Widget parent)
+void ImageFormatDialog::createDialog()
 {
-    Arg args[20];
-    int n = 0;
-    Widget form_diag = this->CreateMainForm (parent, this->UIComponent::name, args, n);
-
-    //
-    // topDiagForm will contain filename, image format, allow rerender,
-    // units(inch/cm) option menu, button to get a fsdialog
-    //
-    Widget topDiagForm = XtVaCreateManagedWidget ("diagTop",
-	xmFormWidgetClass,	form_diag,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNtopOffset,		2,
-	XmNleftOffset,		2,
-	XmNrightOffset,		2,
-    NULL);
-
-    this->rerenderOption = new ToggleButtonInterface (topDiagForm, "rerenderOption",
-	this->rerenderCmd, FALSE);
-    XtVaSetValues (this->rerenderOption->getRootWidget(),
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		2,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNtopOffset,		5,
-    NULL);
-
-    //
-    // D E L A Y E D      C O L O R S             D E L A Y E D      C O L O R S  
-    // D E L A Y E D      C O L O R S             D E L A Y E D      C O L O R S  
-    // D E L A Y E D      C O L O R S             D E L A Y E D      C O L O R S  
-    //
-    this->delayedOption = new ToggleButtonInterface (topDiagForm, "delayedOption",
-	this->delayedCmd, FALSE);
-    XtVaSetValues (this->delayedOption->getRootWidget(),
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		2,
-	XmNtopAttachment,	XmATTACH_WIDGET,
-	XmNtopWidget,		this->rerenderOption->getRootWidget(),
-	XmNtopOffset,		5,
-    NULL);
-
-
-    //
-    // G A M M A      G A M M A      G A M M A      G A M M A      G A M M A
-    // G A M M A      G A M M A      G A M M A      G A M M A      G A M M A
-    // G A M M A      G A M M A      G A M M A      G A M M A      G A M M A
-    //
-#ifdef PASSDOUBLEVALUE
-    XtArgVal    dx_l1, dx_l2, dx_l3, dx_l4;
-#endif
-    double inc = 0.1;
-    double value = DEFAULT_GAMMA;
-    double min = -1000.0;
-    double max = 1000.0;
-    this->gamma_number = XtVaCreateManagedWidget ("gammaNumber",
-	xmNumberWidgetClass,    topDiagForm,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNtopOffset,		5,
-	XmNrightAttachment,	XmATTACH_WIDGET,
-	XmNrightOffset,		6,
-	XmNdataType,            DOUBLE,
-	XmNdValueStep,          DoubleVal(inc, dx_l2),
-	XmNdValue,		DoubleVal(value, dx_l1),
-	XmNdMinimum,		DoubleVal(min, dx_l3),
-	XmNdMaximum,		DoubleVal(max, dx_l3),
-	XmNdecimalPlaces,       2,
-	XmNfixedNotation,       False,
-	XmNeditable,		True,
-	XmNcharPlaces,		7,
-	XmNrecomputeSize,	False,
-    NULL);
-    XtAddCallback (this->gamma_number, XmNactivateCallback,
-	(XtCallbackProc)ImageFormatDialog_DirtyGammaCB, (XtPointer)this);
-    XtVaCreateManagedWidget ("gammaLabel",
-	xmLabelWidgetClass,	topDiagForm,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNtopOffset,		8,
-	XmNrightAttachment,	XmATTACH_WIDGET,
-	XmNrightWidget,		this->gamma_number,
-	XmNrightOffset,		4,
-	XmNleftAttachment,	XmATTACH_WIDGET,
-	XmNleftWidget,		this->rerenderOption->getRootWidget(),
-	XmNleftOffset,		4,
-	XmNalignment,		XmALIGNMENT_END,
-    NULL);
-
-
-    //
-    // F O R M A T     M E N U                F O R M A T     M E N U 
-    // F O R M A T     M E N U                F O R M A T     M E N U 
-    // F O R M A T     M E N U                F O R M A T     M E N U 
-    //
-    n = 0;
-    XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNrightOffset,	  2); n++;
-    XtSetArg (args[n], XmNtopAttachment,  XmATTACH_WIDGET); n++;
-    XtSetArg (args[n], XmNtopWidget,      this->gamma_number); n++;
-    XtSetArg (args[n], XmNtopOffset,	  2); n++;
-    this->format_om = XmCreateOptionMenu (topDiagForm, "formats", args, n);
-    XtManageChild (this->format_om);
-    n = 0;
-    XtSetArg (args[n], XmNentryAlignment, XmALIGNMENT_CENTER); n++;
-    this->format_pd = XmCreatePulldownMenu (this->format_om, "formats_pd", args, n);
-    XtVaSetValues (this->format_om, XmNsubMenuId, this->format_pd, NULL);
-
-    ListIterator it(*this->image_formats);
-    ImageFormat *imgfmt;
-    while ( (imgfmt = (ImageFormat*)it.getNext()) ) {
-	Widget but = XtVaCreateManagedWidget (imgfmt->menuString(),
-	    xmPushButtonWidgetClass,	this->format_pd,
-	    XmNuserData,	imgfmt,
-	    XmNsensitive, 	(this->isPrinting()?imgfmt->supportsPrinting():TRUE),
-	NULL);
-	if (imgfmt == this->choice) {
-	    XtVaSetValues (this->format_om, XmNmenuHistory, but, NULL);
-	}
-	imgfmt->setMenuButton(but);
-	XtAddCallback (but, XmNactivateCallback, (XtCallbackProc)
-	    ImageFormatDialog_ChoiceCB, (XtPointer)this);
-    }
-
-
-    //
-    // aboveBody and belowBody are 2 separators which surround the widgets
-    // needed by the image format.
-    //
-    this->aboveBody = XtVaCreateManagedWidget ("aboveBody",
-	xmSeparatorWidgetClass,	form_diag,
-	XmNtopAttachment,	XmATTACH_WIDGET,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNtopWidget,		topDiagForm,
-	XmNtopOffset,		2,
-	XmNleftOffset,		0,
-	XmNrightOffset,		0,
-    NULL);
-
-    //
-    // Create the buttons at the bottom
-    //
-    Widget button_form = XtVaCreateManagedWidget ("buttonForm",
-	xmFormWidgetClass,	form_diag,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNbottomAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		2,
-	XmNrightOffset,		2,
-	XmNbottomOffset,	6,
-    NULL);
-
-    this->ok = XtVaCreateManagedWidget ("applyButton",
-	xmPushButtonWidgetClass,	button_form,
-	XmNtopAttachment,		XmATTACH_FORM,
-	XmNtopOffset,			4,
-	XmNleftAttachment,		XmATTACH_FORM,
-	XmNleftOffset,			10,
-    NULL);
-    this->cancel = XtVaCreateManagedWidget ("cancelButton",
-	xmPushButtonWidgetClass,	button_form,
-	XmNtopAttachment,		XmATTACH_FORM,
-	XmNtopOffset,			4,
-	XmNrightAttachment,		XmATTACH_FORM,
-	XmNrightOffset,			10,
-    NULL);
-    this->restore = XtVaCreateManagedWidget ("restoreButton",
-	xmPushButtonWidgetClass,	button_form,
-	XmNtopAttachment,		XmATTACH_FORM,
-	XmNtopOffset,			4,
-	XmNrightAttachment,		XmATTACH_WIDGET,
-	XmNrightWidget,			this->cancel,
-	XmNrightOffset,			20,
-    NULL);
-    XtAddCallback (this->restore, XmNactivateCallback, (XtCallbackProc)
-	ImageFormatDialog_RestoreCB, (XtPointer)this);
-
-    Widget sep = XtVaCreateManagedWidget ("sep",
-	xmSeparatorWidgetClass,	form_diag,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		0,
-	XmNrightOffset,		0,
-	XmNbottomAttachment,	XmATTACH_WIDGET,
-	XmNbottomWidget,	button_form,
-	XmNbottomOffset,	2,
-    NULL);
-
-    Widget controls_form = this->createControls(form_diag);
-    ASSERT(controls_form);
-    XtVaSetValues (controls_form,
-	XmNbottomAttachment,	XmATTACH_WIDGET,
-	XmNbottomWidget,	sep,
-	XmNbottomOffset,	2,
-    NULL);
-
-    this->belowBody = XtVaCreateManagedWidget ("belowBody",
-	xmSeparatorWidgetClass,	form_diag,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		0,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNrightOffset,		0,
-	XmNbottomAttachment,	XmATTACH_WIDGET,
-	XmNbottomWidget,	controls_form,
-	XmNbottomOffset,	4,
-    NULL);
-
-    //
-    // Loop over the image formats.  For each one create its container of
-    // special settings.
-    //
-    it.setList(*this->image_formats);
-    imgfmt = NUL(ImageFormat*);
-    while ( (imgfmt = (ImageFormat*)it.getNext()) ) {
-	Widget body = imgfmt->createBody(form_diag);
-	XtVaSetValues (body,
-	    XmNtopAttachment,		XmATTACH_WIDGET,
-	    XmNtopWidget,		this->aboveBody,
-	    XmNtopOffset,		4,
-	    XmNbottomAttachment,	XmATTACH_WIDGET,
-	    XmNbottomWidget,		this->belowBody,
-	    XmNbottomOffset,		8,
-	    XmNleftAttachment,		XmATTACH_FORM,
-	    XmNrightAttachment,		XmATTACH_FORM,
-	    XmNleftOffset,		2,
-	    XmNrightOffset,		2,
-	    XmNmappedWhenManaged, 	False,
-	NULL);
-    }
-    // because rootWidget is still unset...
-    imgfmt = (ImageFormat*)this->image_formats->getElement(1);
-    this->setChoice(imgfmt);
-    XtVaSetValues (imgfmt->getRootWidget(), XmNmappedWhenManaged, True, NULL);
-    imgfmt->setCommandActivation();
-
-    if (!ImageFormatDialog::WatchCursor) 
-	ImageFormatDialog::WatchCursor = 
-	    XCreateFontCursor (XtDisplay(parent), XC_watch);
-
-    return form_diag;
+//    Arg args[20];
+//    int n = 0;
+//    Widget form_diag = this->CreateMainForm (parent, this->UIComponent::name, args, n);
+//
+//    //
+//    // topDiagForm will contain filename, image format, allow rerender,
+//    // units(inch/cm) option menu, button to get a fsdialog
+//    //
+//    Widget topDiagForm = XtVaCreateManagedWidget ("diagTop",
+//	xmFormWidgetClass,	form_diag,
+//	XmNtopAttachment,	XmATTACH_FORM,
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNrightAttachment,	XmATTACH_FORM,
+//	XmNtopOffset,		2,
+//	XmNleftOffset,		2,
+//	XmNrightOffset,		2,
+//    NULL);
+//
+//    this->rerenderOption = new ToggleButtonInterface (topDiagForm, "rerenderOption",
+//	this->rerenderCmd, FALSE);
+//    XtVaSetValues (this->rerenderOption->getRootWidget(),
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNleftOffset,		2,
+//	XmNtopAttachment,	XmATTACH_FORM,
+//	XmNtopOffset,		5,
+//    NULL);
+//
+//    //
+//    // D E L A Y E D      C O L O R S             D E L A Y E D      C O L O R S  
+//    // D E L A Y E D      C O L O R S             D E L A Y E D      C O L O R S  
+//    // D E L A Y E D      C O L O R S             D E L A Y E D      C O L O R S  
+//    //
+//    this->delayedOption = new ToggleButtonInterface (topDiagForm, "delayedOption",
+//	this->delayedCmd, FALSE);
+//    XtVaSetValues (this->delayedOption->getRootWidget(),
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNleftOffset,		2,
+//	XmNtopAttachment,	XmATTACH_WIDGET,
+//	XmNtopWidget,		this->rerenderOption->getRootWidget(),
+//	XmNtopOffset,		5,
+//    NULL);
+//
+//
+//    //
+//    // G A M M A      G A M M A      G A M M A      G A M M A      G A M M A
+//    // G A M M A      G A M M A      G A M M A      G A M M A      G A M M A
+//    // G A M M A      G A M M A      G A M M A      G A M M A      G A M M A
+//    //
+//#ifdef PASSDOUBLEVALUE
+//    XtArgVal    dx_l1, dx_l2, dx_l3, dx_l4;
+//#endif
+//    double inc = 0.1;
+//    double value = DEFAULT_GAMMA;
+//    double min = -1000.0;
+//    double max = 1000.0;
+//    this->gamma_number = XtVaCreateManagedWidget ("gammaNumber",
+//	xmNumberWidgetClass,    topDiagForm,
+//	XmNtopAttachment,	XmATTACH_FORM,
+//	XmNtopOffset,		5,
+//	XmNrightAttachment,	XmATTACH_WIDGET,
+//	XmNrightOffset,		6,
+//	XmNdataType,            DOUBLE,
+//	XmNdValueStep,          DoubleVal(inc, dx_l2),
+//	XmNdValue,		DoubleVal(value, dx_l1),
+//	XmNdMinimum,		DoubleVal(min, dx_l3),
+//	XmNdMaximum,		DoubleVal(max, dx_l3),
+//	XmNdecimalPlaces,       2,
+//	XmNfixedNotation,       False,
+//	XmNeditable,		True,
+//	XmNcharPlaces,		7,
+//	XmNrecomputeSize,	False,
+//    NULL);
+//    XtAddCallback (this->gamma_number, XmNactivateCallback,
+//	(XtCallbackProc)ImageFormatDialog_DirtyGammaCB, (XtPointer)this);
+//    XtVaCreateManagedWidget ("gammaLabel",
+//	xmLabelWidgetClass,	topDiagForm,
+//	XmNtopAttachment,	XmATTACH_FORM,
+//	XmNtopOffset,		8,
+//	XmNrightAttachment,	XmATTACH_WIDGET,
+//	XmNrightWidget,		this->gamma_number,
+//	XmNrightOffset,		4,
+//	XmNleftAttachment,	XmATTACH_WIDGET,
+//	XmNleftWidget,		this->rerenderOption->getRootWidget(),
+//	XmNleftOffset,		4,
+//	XmNalignment,		XmALIGNMENT_END,
+//    NULL);
+//
+//
+//    //
+//    // F O R M A T     M E N U                F O R M A T     M E N U 
+//    // F O R M A T     M E N U                F O R M A T     M E N U 
+//    // F O R M A T     M E N U                F O R M A T     M E N U 
+//    //
+//    n = 0;
+//    XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+//    XtSetArg (args[n], XmNrightOffset,	  2); n++;
+//    XtSetArg (args[n], XmNtopAttachment,  XmATTACH_WIDGET); n++;
+//    XtSetArg (args[n], XmNtopWidget,      this->gamma_number); n++;
+//    XtSetArg (args[n], XmNtopOffset,	  2); n++;
+//    this->format_om = XmCreateOptionMenu (topDiagForm, "formats", args, n);
+//    XtManageChild (this->format_om);
+//    n = 0;
+//    XtSetArg (args[n], XmNentryAlignment, XmALIGNMENT_CENTER); n++;
+//    this->format_pd = XmCreatePulldownMenu (this->format_om, "formats_pd", args, n);
+//    XtVaSetValues (this->format_om, XmNsubMenuId, this->format_pd, NULL);
+//
+//    ListIterator it(*this->image_formats);
+//    ImageFormat *imgfmt;
+//    while ( (imgfmt = (ImageFormat*)it.getNext()) ) {
+//	Widget but = XtVaCreateManagedWidget (imgfmt->menuString(),
+//	    xmPushButtonWidgetClass,	this->format_pd,
+//	    XmNuserData,	imgfmt,
+//	    XmNsensitive, 	(this->isPrinting()?imgfmt->supportsPrinting():TRUE),
+//	NULL);
+//	if (imgfmt == this->choice) {
+//	    XtVaSetValues (this->format_om, XmNmenuHistory, but, NULL);
+//	}
+//	imgfmt->setMenuButton(but);
+//	XtAddCallback (but, XmNactivateCallback, (XtCallbackProc)
+//	    ImageFormatDialog_ChoiceCB, (XtPointer)this);
+//    }
+//
+//
+//    //
+//    // aboveBody and belowBody are 2 separators which surround the widgets
+//    // needed by the image format.
+//    //
+//    this->aboveBody = XtVaCreateManagedWidget ("aboveBody",
+//	xmSeparatorWidgetClass,	form_diag,
+//	XmNtopAttachment,	XmATTACH_WIDGET,
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNrightAttachment,	XmATTACH_FORM,
+//	XmNtopWidget,		topDiagForm,
+//	XmNtopOffset,		2,
+//	XmNleftOffset,		0,
+//	XmNrightOffset,		0,
+//    NULL);
+//
+//    //
+//    // Create the buttons at the bottom
+//    //
+//    Widget button_form = XtVaCreateManagedWidget ("buttonForm",
+//	xmFormWidgetClass,	form_diag,
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNrightAttachment,	XmATTACH_FORM,
+//	XmNbottomAttachment,	XmATTACH_FORM,
+//	XmNleftOffset,		2,
+//	XmNrightOffset,		2,
+//	XmNbottomOffset,	6,
+//    NULL);
+//
+//    this->ok = XtVaCreateManagedWidget ("applyButton",
+//	xmPushButtonWidgetClass,	button_form,
+//	XmNtopAttachment,		XmATTACH_FORM,
+//	XmNtopOffset,			4,
+//	XmNleftAttachment,		XmATTACH_FORM,
+//	XmNleftOffset,			10,
+//    NULL);
+//    this->cancel = XtVaCreateManagedWidget ("cancelButton",
+//	xmPushButtonWidgetClass,	button_form,
+//	XmNtopAttachment,		XmATTACH_FORM,
+//	XmNtopOffset,			4,
+//	XmNrightAttachment,		XmATTACH_FORM,
+//	XmNrightOffset,			10,
+//    NULL);
+//    this->restore = XtVaCreateManagedWidget ("restoreButton",
+//	xmPushButtonWidgetClass,	button_form,
+//	XmNtopAttachment,		XmATTACH_FORM,
+//	XmNtopOffset,			4,
+//	XmNrightAttachment,		XmATTACH_WIDGET,
+//	XmNrightWidget,			this->cancel,
+//	XmNrightOffset,			20,
+//    NULL);
+//    XtAddCallback (this->restore, XmNactivateCallback, (XtCallbackProc)
+//	ImageFormatDialog_RestoreCB, (XtPointer)this);
+//
+//    Widget sep = XtVaCreateManagedWidget ("sep",
+//	xmSeparatorWidgetClass,	form_diag,
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNrightAttachment,	XmATTACH_FORM,
+//	XmNleftOffset,		0,
+//	XmNrightOffset,		0,
+//	XmNbottomAttachment,	XmATTACH_WIDGET,
+//	XmNbottomWidget,	button_form,
+//	XmNbottomOffset,	2,
+//    NULL);
+//
+//    Widget controls_form = this->createControls(form_diag);
+//    ASSERT(controls_form);
+//    XtVaSetValues (controls_form,
+//	XmNbottomAttachment,	XmATTACH_WIDGET,
+//	XmNbottomWidget,	sep,
+//	XmNbottomOffset,	2,
+//    NULL);
+//
+//    this->belowBody = XtVaCreateManagedWidget ("belowBody",
+//	xmSeparatorWidgetClass,	form_diag,
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNleftOffset,		0,
+//	XmNrightAttachment,	XmATTACH_FORM,
+//	XmNrightOffset,		0,
+//	XmNbottomAttachment,	XmATTACH_WIDGET,
+//	XmNbottomWidget,	controls_form,
+//	XmNbottomOffset,	4,
+//    NULL);
+//
+//    //
+//    // Loop over the image formats.  For each one create its container of
+//    // special settings.
+//    //
+//    it.setList(*this->image_formats);
+//    imgfmt = NUL(ImageFormat*);
+//    while ( (imgfmt = (ImageFormat*)it.getNext()) ) {
+//	Widget body = imgfmt->createBody(form_diag);
+//	XtVaSetValues (body,
+//	    XmNtopAttachment,		XmATTACH_WIDGET,
+//	    XmNtopWidget,		this->aboveBody,
+//	    XmNtopOffset,		4,
+//	    XmNbottomAttachment,	XmATTACH_WIDGET,
+//	    XmNbottomWidget,		this->belowBody,
+//	    XmNbottomOffset,		8,
+//	    XmNleftAttachment,		XmATTACH_FORM,
+//	    XmNrightAttachment,		XmATTACH_FORM,
+//	    XmNleftOffset,		2,
+//	    XmNrightOffset,		2,
+//	    XmNmappedWhenManaged, 	False,
+//	NULL);
+//    }
+//    // because rootWidget is still unset...
+//    imgfmt = (ImageFormat*)this->image_formats->getElement(1);
+//    this->setChoice(imgfmt);
+//    XtVaSetValues (imgfmt->getRootWidget(), XmNmappedWhenManaged, True, NULL);
+//    imgfmt->setCommandActivation();
+//
+//    if (!ImageFormatDialog::WatchCursor) 
+//	ImageFormatDialog::WatchCursor = 
+//	    XCreateFontCursor (XtDisplay(parent), XC_watch);
+//
+//    return form_diag;
 }
 
 boolean ImageFormatDialog::okCallback(Dialog *)
@@ -449,26 +438,26 @@ boolean ImageFormatDialog::isMetric()
 //
 void ImageFormatDialog::manage()
 {
-    Dimension dialogWidth;
-    if (!XtIsRealized(this->getRootWidget()))
-	XtRealizeWidget(this->getRootWidget());
+    //Dimension dialogWidth;
+ //   if (!XtIsRealized(this->getRootWidget()))
+	//XtRealizeWidget(this->getRootWidget());
     
     if (this->isManaged() == FALSE) {
-	XtVaGetValues(this->getRootWidget(), XmNwidth, &dialogWidth, NULL);
+	//XtVaGetValues(this->getRootWidget(), XmNwidth, &dialogWidth, NULL);
 
-	Position x;
-	Position y;
-	Dimension width;
-	XtVaGetValues(parent, XmNx, &x, XmNy, &y, XmNwidth, &width, NULL);
+	//Position x;
+	//Position y;
+	//Dimension width;
+	//XtVaGetValues(parent, XmNx, &x, XmNy, &y, XmNwidth, &width, NULL);
 
-	if (x > dialogWidth + 25) x -= dialogWidth + 25;
-	else x += width + 25;
+	//if (x > dialogWidth + 25) x -= dialogWidth + 25;
+	//else x += width + 25;
 
-	Display *dpy = XtDisplay(this->getRootWidget());
-	if (x > WidthOfScreen(DefaultScreenOfDisplay(dpy)) - dialogWidth)
-	    x = WidthOfScreen(DefaultScreenOfDisplay(dpy)) - dialogWidth;
-	XtVaSetValues(this->getRootWidget(), XmNdefaultPosition, False, NULL);
-	XtVaSetValues(XtParent(this->getRootWidget()), XmNx, x, XmNy, y, NULL);
+	//Display *dpy = XtDisplay(this->getRootWidget());
+	//if (x > WidthOfScreen(DefaultScreenOfDisplay(dpy)) - dialogWidth)
+	//    x = WidthOfScreen(DefaultScreenOfDisplay(dpy)) - dialogWidth;
+	//XtVaSetValues(this->getRootWidget(), XmNdefaultPosition, False, NULL);
+	//XtVaSetValues(XtParent(this->getRootWidget()), XmNx, x, XmNy, y, NULL);
     }
 
     this->dirty = 0;
@@ -487,16 +476,16 @@ void ImageFormatDialog::manage()
     //
     // Give the dialog sufficient room.
     //
-    Widget diag = this->getRootWidget();
-    while ((diag) && (!XtIsShell(diag)))
-	diag = XtParent(diag);
-    ASSERT(diag);
-    int height = this->getRequiredHeight() + this->choice->getRequiredHeight();
-    XtVaSetValues (diag,
-	XmNminHeight, height,
-	XmNheight, height,
-	XmNminWidth, this->getRequiredWidth(),
-    NULL);
+ //   Widget diag = this->getRootWidget();
+ //   while ((diag) && (!XtIsShell(diag)))
+	//diag = XtParent(diag);
+ //   ASSERT(diag);
+ //   int height = this->getRequiredHeight() + this->choice->getRequiredHeight();
+ //   XtVaSetValues (diag,
+	//XmNminHeight, height,
+	//XmNheight, height,
+	//XmNminWidth, this->getRequiredWidth(),
+ //   NULL);
 }
 
 void ImageFormatDialog::update()
@@ -627,13 +616,13 @@ void ImageFormatDialog::setCommandActivation()
     boolean setFormat = FALSE;
     if (this->node->isRecordFormatConnected()) {
 	setFormat = TRUE;
-	XtSetSensitive (this->format_om, False);
-	XtSetSensitive (this->gamma_number, False);
+	//XtSetSensitive (this->format_om, False);
+	//XtSetSensitive (this->gamma_number, False);
 	this->dirty&= ~ImageFormatDialog::DirtyGamma;
 	this->dirty&= ~ImageFormatDialog::DirtyDelayed;
     } else {
-	XtSetSensitive (this->format_om, True);
-	XtSetSensitive (this->gamma_number, True);
+	//XtSetSensitive (this->format_om, True);
+	//XtSetSensitive (this->gamma_number, True);
 	if ((this->dirty & ImageFormatDialog::DirtyFormat) == 0)
 	    setFormat = TRUE;
     }
@@ -690,9 +679,9 @@ void ImageFormatDialog::setCommandActivation()
 	while ( (imgfmt = (ImageFormat*)it.getNext()) ) {
 	    const char *cp = imgfmt->paramString();
 	    if (EqualSubstring (fmt_name, cp, strlen(cp))) {
-		XtVaSetValues (this->format_om, 
-		    XmNmenuHistory, imgfmt->getMenuButton(), 
-		NULL);
+		//XtVaSetValues (this->format_om, 
+		//    XmNmenuHistory, imgfmt->getMenuButton(), 
+		//NULL);
 		imgfmt->parseRecordFormat(value);
 		this->setChoice(imgfmt);
 	    } 
@@ -759,16 +748,16 @@ void ImageFormatDialog::parseRecordFormat(const char* value)
 
 void ImageFormatDialog::deactivate(const char *msg)
 {
-    if(this->ok) XtSetSensitive(this->ok, False);
-    if(this->restore) XtSetSensitive(this->restore, False);
-    this->NoOpCommand::deactivate(msg);
+    //if(this->ok) XtSetSensitive(this->ok, False);
+    //if(this->restore) XtSetSensitive(this->restore, False);
+    //this->NoOpCommand::deactivate(msg);
 }
 
 void ImageFormatDialog::activate()
 {
-    if (this->ok) XtSetSensitive(this->ok, True);
-    if (this->restore) XtSetSensitive(this->restore, True);
-    this->NoOpCommand::activate();
+    //if (this->ok) XtSetSensitive(this->ok, True);
+    //if (this->restore) XtSetSensitive(this->restore, True);
+    //this->NoOpCommand::activate();
 }
 
 
@@ -780,18 +769,18 @@ ImageFormat* old_choice = this->choice;
 	this->choice->setCommandActivation();
 	return ;
     }
-    if (this->getRootWidget() == NUL(Widget)) {
-	this->choice = selected;
-	return ;
-    }
+ //   if (this->getRootWidget() == NUL(Widget)) {
+	//this->choice = selected;
+	//return ;
+ //   }
 
     //
     // Hide the box of the current selection.
     //
     if (this->choice) {
-	XtVaSetValues (this->choice->getRootWidget(),
-	    XmNmappedWhenManaged, 	FALSE,
-	NULL);
+	//XtVaSetValues (this->choice->getRootWidget(),
+	//    XmNmappedWhenManaged, 	FALSE,
+	//NULL);
     }
     this->choice = selected;
 
@@ -799,29 +788,29 @@ ImageFormat* old_choice = this->choice;
     // Show the box of the new selection.
     //
     ASSERT(selected);
-    XtVaSetValues (selected->getRootWidget(),
-	XmNmappedWhenManaged,	TRUE,
-    NULL);
+ //   XtVaSetValues (selected->getRootWidget(),
+	//XmNmappedWhenManaged,	TRUE,
+ //   NULL);
 
     //
     // Set up the option menu selector.
     //
-    XtVaSetValues (this->format_om, XmNmenuHistory, selected->getMenuButton(), NULL);
+    //XtVaSetValues (this->format_om, XmNmenuHistory, selected->getMenuButton(), NULL);
     this->choice->shareSettings(old_choice);
     this->choice->setCommandActivation();
 
     //
     // Give the dialog sufficient room.
     //
-    Widget diag = this->getRootWidget();
-    while ((diag) && (!XtIsShell(diag)))
-	diag = XtParent(diag);
-    ASSERT(diag);
-    int height = this->getRequiredHeight() + this->choice->getRequiredHeight();
-    XtVaSetValues (diag,
-	XmNminHeight, height,
-	XmNheight, height,
-    NULL);
+    //Widget diag = this->getRootWidget();
+ //   while ((diag) && (!XtIsShell(diag)))
+	//diag = XtParent(diag);
+ //   ASSERT(diag);
+ //   int height = this->getRequiredHeight() + this->choice->getRequiredHeight();
+ //   XtVaSetValues (diag,
+	//XmNminHeight, height,
+	//XmNheight, height,
+ //   NULL);
 
     if (this->choice->supportsDelayedColors())
 	this->delayedCmd->activate();
@@ -849,19 +838,19 @@ boolean ImageFormatDialog::isRerenderAllowed()
 
 void ImageFormatDialog::setGamma(double gamma)
 {
-#ifdef PASSDOUBLEVALUE
-    XtArgVal    dx_l1; 
-#endif
-    XtVaSetValues (this->gamma_number, 
-	XmNdValue, DoubleVal(gamma, dx_l1),
-    NULL);
+//#ifdef PASSDOUBLEVALUE
+//    XtArgVal    dx_l1; 
+//#endif
+//    XtVaSetValues (this->gamma_number, 
+//	XmNdValue, DoubleVal(gamma, dx_l1),
+//    NULL);
 }
 
 double ImageFormatDialog::getGamma()
 {
 double gamma;
 
-    XtVaGetValues (this->gamma_number, XmNdValue, &gamma, NULL);
+    //XtVaGetValues (this->gamma_number, XmNdValue, &gamma, NULL);
     return gamma;
 }
 
@@ -920,18 +909,18 @@ void ImageFormatDialog::restoreCallback()
 
 void ImageFormatDialog::setBusyCursor(boolean busy)
 {
-    Widget root = this->getRootWidget();
+ //   Widget root = this->getRootWidget();
 
-    if (busy) this->busyCursors++;
-    else this->busyCursors--;
-    boolean on = (boolean)this->busyCursors;
-    if (on) {
-	XDefineCursor (XtDisplay(root), XtWindow(root),
-	    ImageFormatDialog::WatchCursor);
-	XSync (XtDisplay(root), False);
-    } else {
-	XUndefineCursor (XtDisplay(root), XtWindow(root));
-    }
+ //   if (busy) this->busyCursors++;
+ //   else this->busyCursors--;
+ //   boolean on = (boolean)this->busyCursors;
+ //   if (on) {
+	//XDefineCursor (XtDisplay(root), XtWindow(root),
+	//    ImageFormatDialog::WatchCursor);
+	//XSync (XtDisplay(root), False);
+ //   } else {
+	//XUndefineCursor (XtDisplay(root), XtWindow(root));
+ //   }
 }
 
 boolean ImageFormatDialog::delayedColors()
@@ -940,41 +929,41 @@ boolean ImageFormatDialog::delayedColors()
     return TRUE;
 }
 
-extern "C" {
-
-#if 0
-void ImageFormatDialog_UnitsCB(Widget w, XtPointer clientData, XtPointer)
-{
-    ImageFormatDialog *ifd = (ImageFormatDialog*)clientData;
-    ASSERT(ifd);
-    ifd->units = w;
-    ifd->choice->changeUnits();
-}
-#endif
-
-void ImageFormatDialog_ChoiceCB(Widget w, XtPointer clientData, XtPointer)
-{
-    ImageFormatDialog *ifd = (ImageFormatDialog*)clientData;
-    ASSERT(ifd);
-    ifd->dirty|= ImageFormatDialog::DirtyFormat;
-    ImageFormat *imgfmt = NUL(ImageFormat*);
-    XtVaGetValues (w, XmNuserData, &imgfmt, NULL);
-    ifd->setChoice(imgfmt);
-}
-
-void ImageFormatDialog_RestoreCB (Widget , XtPointer clientData, XtPointer)
-{
-    ImageFormatDialog* ifd = (ImageFormatDialog*)clientData;
-    ASSERT(ifd);
-    ifd->restoreCallback();
-}
-
-void ImageFormatDialog_DirtyGammaCB (Widget , XtPointer clientData, XtPointer)
-{
-    ImageFormatDialog* ifd = (ImageFormatDialog*)clientData;
-    ASSERT(ifd);
-    ifd->dirty|= ImageFormatDialog::DirtyGamma;
-}
-
-} // end extern C
-
+//extern "C" {
+//
+//#if 0
+//void ImageFormatDialog_UnitsCB(Widget w, XtPointer clientData, XtPointer)
+//{
+//    ImageFormatDialog *ifd = (ImageFormatDialog*)clientData;
+//    ASSERT(ifd);
+//    ifd->units = w;
+//    ifd->choice->changeUnits();
+//}
+//#endif
+//
+//void ImageFormatDialog_ChoiceCB(Widget w, XtPointer clientData, XtPointer)
+//{
+//    ImageFormatDialog *ifd = (ImageFormatDialog*)clientData;
+//    ASSERT(ifd);
+//    ifd->dirty|= ImageFormatDialog::DirtyFormat;
+//    ImageFormat *imgfmt = NUL(ImageFormat*);
+//    XtVaGetValues (w, XmNuserData, &imgfmt, NULL);
+//    ifd->setChoice(imgfmt);
+//}
+//
+//void ImageFormatDialog_RestoreCB (Widget , XtPointer clientData, XtPointer)
+//{
+//    ImageFormatDialog* ifd = (ImageFormatDialog*)clientData;
+//    ASSERT(ifd);
+//    ifd->restoreCallback();
+//}
+//
+//void ImageFormatDialog_DirtyGammaCB (Widget , XtPointer clientData, XtPointer)
+//{
+//    ImageFormatDialog* ifd = (ImageFormatDialog*)clientData;
+//    ASSERT(ifd);
+//    ifd->dirty|= ImageFormatDialog::DirtyGamma;
+//}
+//
+//} // end extern C
+//

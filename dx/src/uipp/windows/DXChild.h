@@ -67,12 +67,8 @@ class DXChild : public Base
     //XtWorkProcId deletion_wpid;
     boolean    input_handlers_stalled;
 
-#if defined(intelnt)
 	HANDLE	hpipeRead, hpipeWrite;
 #define DX_STATIC
-#else
-#define DX_STATIC  static
-#endif
 
     DX_STATIC int  ConnectTo(const char *host,
 			  const char *user,

@@ -345,11 +345,11 @@ boolean WorkSpaceComponent::isA(Symbol classname)
 //    *width = wdim; *height = hdim;
 //}
 
-//void WorkSpaceComponent::installResizeHandler()
-//{
+void WorkSpaceComponent::installResizeHandler()
+{
 //    XmWorkspaceAddCallback(this->getRootWidget(), XmNresizingCallback, 
 //	(XtCallbackProc)Component_ResizeCB, (XtPointer)this);
-//}
+}
 
 //extern "C" void Component_ResizeCB(Widget , XtPointer clientdata, XtPointer)
 //{

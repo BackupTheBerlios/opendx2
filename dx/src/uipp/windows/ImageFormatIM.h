@@ -27,7 +27,7 @@ class ImageFormatIM : public PixelImageFormat
 {
   private:
 
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
     static boolean ClassInitialized;
 
   protected:

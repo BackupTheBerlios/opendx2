@@ -27,8 +27,8 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void GridDialog_DimensionCB(Widget, XtPointer, XtPointer);
-extern "C" void GridDialog_AlignmentCB(Widget, XtPointer, XtPointer);
+//extern "C" void GridDialog_DimensionCB(Widget, XtPointer, XtPointer);
+//extern "C" void GridDialog_AlignmentCB(Widget, XtPointer, XtPointer);
 
 class WorkSpace;
 
@@ -45,28 +45,28 @@ class GridDialog : public Dialog
     //
     static boolean ClassInitialized;
 
-    Widget toplevel_form;
-    Widget separator1, separator2, separator3;
-    Widget hLabel;
-    Widget vLabel;
-    Widget align_form;
-    Widget ulbtn;
-    Widget urbtn;
-    Widget llbtn;
-    Widget lrbtn;
-    Widget ctbtn;
-    Widget leftbtn;
-    Widget rightbtn;
-    Widget upperbtn;
-    Widget lowerbtn;
-    Widget vspacing;
-    Widget hspacing;
-    Widget alignLabel, spaceLabel;
-    Widget gc_rc;
-    Widget noneTButton;
-    Widget oneDhTButton;
-    Widget oneDvTButton;
-    Widget twoDTButton;
+    //Widget toplevel_form;
+    //Widget separator1, separator2, separator3;
+    //Widget hLabel;
+    //Widget vLabel;
+    //Widget align_form;
+    //Widget ulbtn;
+    //Widget urbtn;
+    //Widget llbtn;
+    //Widget lrbtn;
+    //Widget ctbtn;
+    //Widget leftbtn;
+    //Widget rightbtn;
+    //Widget upperbtn;
+    //Widget lowerbtn;
+    //Widget vspacing;
+    //Widget hspacing;
+    //Widget alignLabel, spaceLabel;
+    //Widget gc_rc;
+    //Widget noneTButton;
+    //Widget oneDhTButton;
+    //Widget oneDvTButton;
+    //Widget twoDTButton;
 
     WorkSpace     *workSpace;
 
@@ -74,17 +74,17 @@ class GridDialog : public Dialog
     //
     // Protected member data:
     //
-    static String  DefaultResources[];
-    friend void GridDialog_AlignmentCB(Widget, XtPointer , XtPointer);
-    friend void GridDialog_DimensionCB(Widget, XtPointer , XtPointer);
+    //static String  DefaultResources[];
+    //friend void GridDialog_AlignmentCB(Widget, XtPointer , XtPointer);
+    //friend void GridDialog_DimensionCB(Widget, XtPointer , XtPointer);
 
     //
     // Constructor:
     //
-    GridDialog(char *name, Widget parent, WorkSpace*);
+    GridDialog(char *name, WorkSpace*);
 
     virtual void manage();
-    virtual Widget createDialog(Widget);
+    virtual void createDialog();
     virtual boolean okCallback(Dialog * /* clientData */);
     void   resetToggleBtn();
 
@@ -93,14 +93,14 @@ class GridDialog : public Dialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
 
     //
     // Public Constructor that uses a static widget name:
     //
-    GridDialog(Widget parent, WorkSpace*);
+    GridDialog(WorkSpace*);
 
     //
     // Destructor:

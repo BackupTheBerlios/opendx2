@@ -7,20 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-
-#include <X11/StringDefs.h>
-
-#include <Xm/DialogS.h>
-#include <Xm/Form.h>
-#include <Xm/PushB.h>
-#include <Xm/Separator.h>
-#include <Xm/Label.h>
-#include <Xm/List.h>
-#include <Xm/Frame.h>
+#include "defines.h"
 
 #include "DXStrings.h"
 #include "GetSetConversionDialog.h"
@@ -44,42 +31,42 @@
 
 boolean GetSetConversionDialog::ClassInitialized = FALSE;
 
-Cursor GetSetConversionDialog::WatchCursor = 0;
+//Cursor GetSetConversionDialog::WatchCursor = 0;
 
-String  GetSetConversionDialog::DefaultResources[] = {
-    "*dialogTitle:		  Convert Get/Set Modules",
-
-    "*buttonForm.?.width:	  80",
-    "*buttonForm.?.recomputeSize: False",
-
-    "*globalOption.labelString:	  Global",
-    "*globalOption.width:	  80",
-    "*globalOption.recomputeSize: False",
-
-    "*localOption.labelString:	  Local",
-    "*localOption.width:	  80",
-    "*localOption.recomputeSize:  False",
-
-    "*gsHeader.labelString:	  Files containing Get/Set modules:",
-    "*gsHeader.foreground:	  SteelBlue",
-    NULL
-};
+//String  GetSetConversionDialog::DefaultResources[] = {
+//    "*dialogTitle:		  Convert Get/Set Modules",
+//
+//    "*buttonForm.?.width:	  80",
+//    "*buttonForm.?.recomputeSize: False",
+//
+//    "*globalOption.labelString:	  Global",
+//    "*globalOption.width:	  80",
+//    "*globalOption.recomputeSize: False",
+//
+//    "*localOption.labelString:	  Local",
+//    "*localOption.width:	  80",
+//    "*localOption.recomputeSize:  False",
+//
+//    "*gsHeader.labelString:	  Files containing Get/Set modules:",
+//    "*gsHeader.foreground:	  SteelBlue",
+//    NULL
+//};
 
 //
 // C O N S T R U C T O R    C O N S T R U C T O R    C O N S T R U C T O R    
 // C O N S T R U C T O R    C O N S T R U C T O R    C O N S T R U C T O R    
 //
 GetSetConversionDialog::GetSetConversionDialog() :
-    Dialog("getSetConversionDialog", theDXApplication->getRootWidget())
+    Dialog("getSetConversionDialog")
 {
     if (NOT GetSetConversionDialog::ClassInitialized)
     {
         GetSetConversionDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
     this->referenced_macros = NULL;
-    this->list = NULL;
+    //this->list = NULL;
 
     this->global_option = NULL;
     this->local_option = NULL;
@@ -106,69 +93,69 @@ GetSetConversionDialog::~GetSetConversionDialog()
 // L A Y O U T   T H E   D I A L O G       L A Y O U T   T H E   D I A L O G
 // L A Y O U T   T H E   D I A L O G       L A Y O U T   T H E   D I A L O G
 //
-Widget GetSetConversionDialog::createDialog(Widget parent)
+void GetSetConversionDialog::createDialog()
 {
-    int 	n;
-    Arg		args[25];
+ //   int 	n;
+ //   Arg		args[25];
 
-    n = 0;
-    XtSetArg(args[n], XmNautoUnmanage,  False); n++;
-    Widget toplevelform = this->CreateMainForm(parent, this->name, args, n);
+ //   n = 0;
+ //   XtSetArg(args[n], XmNautoUnmanage,  False); n++;
+ //   Widget toplevelform = this->CreateMainForm(parent, this->name, args, n);
 
-    Widget buttonform = XtVaCreateManagedWidget("buttonForm",
-	xmFormWidgetClass, 	toplevelform,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNbottomAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		2,
-	XmNrightOffset,		2,
-	XmNbottomOffset,	8,
-	XmNwidth,		350,
-    NULL);
-    this->layoutButtons (buttonform);
+ //   Widget buttonform = XtVaCreateManagedWidget("buttonForm",
+	//xmFormWidgetClass, 	toplevelform,
+	//XmNleftAttachment,	XmATTACH_FORM,
+	//XmNrightAttachment,	XmATTACH_FORM,
+	//XmNbottomAttachment,	XmATTACH_FORM,
+	//XmNleftOffset,		2,
+	//XmNrightOffset,		2,
+	//XmNbottomOffset,	8,
+	//XmNwidth,		350,
+ //   NULL);
+ //   this->layoutButtons (buttonform);
 
-    Widget controlsform = XtVaCreateManagedWidget("controlsForm",
-	xmFormWidgetClass, 	toplevelform,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNbottomAttachment,	XmATTACH_WIDGET,
-	XmNbottomWidget,	buttonform,
-	XmNleftOffset,		2,
-	XmNrightOffset,		2,
-	XmNbottomOffset,	6,
-    NULL);
-    this->layoutControls(controlsform);
+ //   Widget controlsform = XtVaCreateManagedWidget("controlsForm",
+	//xmFormWidgetClass, 	toplevelform,
+	//XmNleftAttachment,	XmATTACH_FORM,
+	//XmNrightAttachment,	XmATTACH_FORM,
+	//XmNbottomAttachment,	XmATTACH_WIDGET,
+	//XmNbottomWidget,	buttonform,
+	//XmNleftOffset,		2,
+	//XmNrightOffset,		2,
+	//XmNbottomOffset,	6,
+ //   NULL);
+ //   this->layoutControls(controlsform);
 
-    Widget mainform = XtVaCreateManagedWidget("mainForm",
-	xmFormWidgetClass, 	toplevelform,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNbottomAttachment, 	XmATTACH_WIDGET, 
-	XmNbottomWidget, 	controlsform,
-	XmNtopOffset,		2,
-	XmNleftOffset,		2,
-	XmNrightOffset,		2,
-	XmNbottomOffset,	4,
-    NULL);
-    this->layoutChooser(mainform);
+ //   Widget mainform = XtVaCreateManagedWidget("mainForm",
+	//xmFormWidgetClass, 	toplevelform,
+	//XmNtopAttachment,	XmATTACH_FORM,
+	//XmNleftAttachment,	XmATTACH_FORM,
+	//XmNrightAttachment,	XmATTACH_FORM,
+	//XmNbottomAttachment, 	XmATTACH_WIDGET, 
+	//XmNbottomWidget, 	controlsform,
+	//XmNtopOffset,		2,
+	//XmNleftOffset,		2,
+	//XmNrightOffset,		2,
+	//XmNbottomOffset,	4,
+ //   NULL);
+ //   this->layoutChooser(mainform);
 
-    XtVaCreateManagedWidget ("sep",
-	xmSeparatorWidgetClass,	toplevelform,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNbottomAttachment,	XmATTACH_WIDGET,
-	XmNbottomWidget,	buttonform,
-	XmNleftOffset,		0,
-	XmNrightOffset,		0,
-	XmNbottomOffset,	2,
-    NULL);
+ //   XtVaCreateManagedWidget ("sep",
+	//xmSeparatorWidgetClass,	toplevelform,
+	//XmNleftAttachment,	XmATTACH_FORM,
+	//XmNrightAttachment,	XmATTACH_FORM,
+	//XmNbottomAttachment,	XmATTACH_WIDGET,
+	//XmNbottomWidget,	buttonform,
+	//XmNleftOffset,		0,
+	//XmNrightOffset,		0,
+	//XmNbottomOffset,	2,
+ //   NULL);
 
-    if (!GetSetConversionDialog::WatchCursor)
-	GetSetConversionDialog::WatchCursor = 
-	    XCreateFontCursor (XtDisplay(parent), XC_watch);
+ //   if (!GetSetConversionDialog::WatchCursor)
+	//GetSetConversionDialog::WatchCursor = 
+	//    XCreateFontCursor (XtDisplay(parent), XC_watch);
 
-    return toplevelform; 
+ //   return toplevelform; 
 }
 
 
@@ -176,150 +163,150 @@ Widget GetSetConversionDialog::createDialog(Widget parent)
 // L A Y O U T   T H E    L I S T        L A Y O U T   T H E    L I S T 
 // L A Y O U T   T H E    L I S T        L A Y O U T   T H E    L I S T 
 //
-void GetSetConversionDialog::layoutControls (Widget parent)
-{
+//void GetSetConversionDialog::layoutControls ()
+//{
     //
     // A label showing the name of the active net and a count
     // of its unconverted Set/Get modules.
     //
-    Widget frame = XtVaCreateManagedWidget ("net_name_frame",
-	xmFrameWidgetClass,	parent,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNtopOffset,		2,
-	XmNleftOffset,		80,
-	XmNrightOffset,		4,
-	XmNshadowThickness,	2,
-	XmNmarginHeight,	3,
-	XmNmarginWidth,		3,
-    NULL);
+ //   Widget frame = XtVaCreateManagedWidget ("net_name_frame",
+	//xmFrameWidgetClass,	parent,
+	//XmNtopAttachment,	XmATTACH_FORM,
+	//XmNleftAttachment,	XmATTACH_FORM,
+	//XmNrightAttachment,	XmATTACH_FORM,
+	//XmNtopOffset,		2,
+	//XmNleftOffset,		80,
+	//XmNrightOffset,		4,
+	//XmNshadowThickness,	2,
+	//XmNmarginHeight,	3,
+	//XmNmarginWidth,		3,
+ //   NULL);
 
-    this->net_name = XtVaCreateManagedWidget("net_name",
-	xmLabelWidgetClass,	frame,
-	XmNalignment,		XmALIGNMENT_BEGINNING,
-    NULL);
+ //   this->net_name = XtVaCreateManagedWidget("net_name",
+	//xmLabelWidgetClass,	frame,
+	//XmNalignment,		XmALIGNMENT_BEGINNING,
+ //   NULL);
 
-    XtVaCreateManagedWidget ("Selection:",
-	xmLabelWidgetClass,	parent,
-	XmNrightAttachment,	XmATTACH_WIDGET,
-	XmNtopAttachment,	XmATTACH_OPPOSITE_WIDGET,
-	XmNbottomAttachment,	XmATTACH_OPPOSITE_WIDGET,
-	XmNrightWidget,		frame,
-	XmNtopWidget,		frame,
-	XmNbottomWidget,	frame,
-	XmNrightOffset,		4,
-	XmNtopOffset,		0,
-	XmNbottomOffset,	0,
-    NULL);
+ //   XtVaCreateManagedWidget ("Selection:",
+	//xmLabelWidgetClass,	parent,
+	//XmNrightAttachment,	XmATTACH_WIDGET,
+	//XmNtopAttachment,	XmATTACH_OPPOSITE_WIDGET,
+	//XmNbottomAttachment,	XmATTACH_OPPOSITE_WIDGET,
+	//XmNrightWidget,		frame,
+	//XmNtopWidget,		frame,
+	//XmNbottomWidget,	frame,
+	//XmNrightOffset,		4,
+	//XmNtopOffset,		0,
+	//XmNbottomOffset,	0,
+ //   NULL);
 
-    Widget sep = XtVaCreateManagedWidget ("sep",
-	xmSeparatorWidgetClass, parent,
-	XmNtopWidget,		frame,
-	XmNtopAttachment,	XmATTACH_WIDGET,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		0,
-	XmNrightOffset,		0,
-	XmNtopOffset,		6,
-    NULL);
+ //   Widget sep = XtVaCreateManagedWidget ("sep",
+	//xmSeparatorWidgetClass, parent,
+	//XmNtopWidget,		frame,
+	//XmNtopAttachment,	XmATTACH_WIDGET,
+	//XmNleftAttachment,	XmATTACH_FORM,
+	//XmNrightAttachment,	XmATTACH_FORM,
+	//XmNleftOffset,		0,
+	//XmNrightOffset,		0,
+	//XmNtopOffset,		6,
+ //   NULL);
 
 
-    this->net_name_label = 
-	XtVaCreateManagedWidget ("network contains:\n   0 Get(s)\n    0 Set(s)",
-	xmLabelWidgetClass,	parent,
-	XmNtopAttachment,	XmATTACH_WIDGET,
-	XmNtopWidget,		sep,
-	XmNtopOffset,		4,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNbottomAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		10,
-	XmNbottomOffset,	4,
-	XmNalignment,		XmALIGNMENT_BEGINNING,
-    NULL);
+ //   this->net_name_label = 
+	//XtVaCreateManagedWidget ("network contains:\n   0 Get(s)\n    0 Set(s)",
+	//xmLabelWidgetClass,	parent,
+	//XmNtopAttachment,	XmATTACH_WIDGET,
+	//XmNtopWidget,		sep,
+	//XmNtopOffset,		4,
+	//XmNleftAttachment,	XmATTACH_FORM,
+	//XmNbottomAttachment,	XmATTACH_FORM,
+	//XmNleftOffset,		10,
+	//XmNbottomOffset,	4,
+	//XmNalignment,		XmALIGNMENT_BEGINNING,
+ //   NULL);
 
-    //
-    // Convert to {Global,Local} button
-    //
-    Command *cmd = EditorWindow::GetGlobalCmd();
-    ASSERT(cmd);
-    this->global_option = 
-	new ButtonInterface (parent, "globalOption", cmd);
-    XtVaSetValues (this->global_option->getRootWidget(),
-	XmNtopAttachment,	XmATTACH_WIDGET,
-	XmNtopWidget,		sep,
-	XmNtopOffset,		28,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNrightOffset,		10,
-    NULL);
+ //   //
+ //   // Convert to {Global,Local} button
+ //   //
+ //   Command *cmd = EditorWindow::GetGlobalCmd();
+ //   ASSERT(cmd);
+ //   this->global_option = 
+	//new ButtonInterface (parent, "globalOption", cmd);
+ //   XtVaSetValues (this->global_option->getRootWidget(),
+	//XmNtopAttachment,	XmATTACH_WIDGET,
+	//XmNtopWidget,		sep,
+	//XmNtopOffset,		28,
+	//XmNrightAttachment,	XmATTACH_FORM,
+	//XmNrightOffset,		10,
+ //   NULL);
+	//
+
+ //   cmd = EditorWindow::GetLocalCmd();
+ //   ASSERT(cmd);
+ //   this->local_option = 
+	//new ButtonInterface (parent, "localOption", cmd);
+ //   XtVaSetValues (this->local_option->getRootWidget(),
+	//XmNtopAttachment,	XmATTACH_WIDGET,
+	//XmNtopWidget,		sep,
+	//XmNtopOffset,		28,
+	//XmNrightAttachment,	XmATTACH_WIDGET,
+	//XmNrightWidget,		this->global_option->getRootWidget(),
+	//XmNrightOffset,		10,
+ //   NULL);
+
+ //   XtVaCreateManagedWidget("Convert to:",
+	//xmLabelWidgetClass,	parent,
+	//XmNbottomAttachment,	XmATTACH_WIDGET,
+	//XmNbottomWidget,	this->local_option->getRootWidget(),
+	//XmNbottomOffset,	2,
+	//XmNleftAttachment,	XmATTACH_OPPOSITE_WIDGET,
+	//XmNleftWidget,		this->local_option->getRootWidget(),
+	//XmNleftOffset,		0,
+ //   NULL);
+//}
 	
 
-    cmd = EditorWindow::GetLocalCmd();
-    ASSERT(cmd);
-    this->local_option = 
-	new ButtonInterface (parent, "localOption", cmd);
-    XtVaSetValues (this->local_option->getRootWidget(),
-	XmNtopAttachment,	XmATTACH_WIDGET,
-	XmNtopWidget,		sep,
-	XmNtopOffset,		28,
-	XmNrightAttachment,	XmATTACH_WIDGET,
-	XmNrightWidget,		this->global_option->getRootWidget(),
-	XmNrightOffset,		10,
-    NULL);
-
-    XtVaCreateManagedWidget("Convert to:",
-	xmLabelWidgetClass,	parent,
-	XmNbottomAttachment,	XmATTACH_WIDGET,
-	XmNbottomWidget,	this->local_option->getRootWidget(),
-	XmNbottomOffset,	2,
-	XmNleftAttachment,	XmATTACH_OPPOSITE_WIDGET,
-	XmNleftWidget,		this->local_option->getRootWidget(),
-	XmNleftOffset,		0,
-    NULL);
-}
-	
-
-void
-GetSetConversionDialog::layoutChooser(Widget parent)
-{
-Arg args[10];
-
-    //
-    // A list containing filenames of referenced macros.
-    //
-    XtVaCreateManagedWidget ("gsHeader",
-	xmLabelWidgetClass,	parent,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		22,
-	XmNtopOffset,		6,
-    NULL);
-    Widget sw_frame = XtVaCreateManagedWidget ("sw_frame",
-	xmFrameWidgetClass,	parent,
-    	XmNtopAttachment, XmATTACH_FORM,
-    	XmNleftAttachment, XmATTACH_FORM,
-    	XmNrightAttachment, XmATTACH_FORM,
-    	XmNbottomAttachment, XmATTACH_FORM,
-    	XmNtopOffset, 21,
-    	XmNleftOffset, 4,
-    	XmNrightOffset, 4,
-    	XmNbottomOffset, 0,
-	XmNmarginWidth,   3,
-	XmNmarginHeight,   3,
-	XmNshadowThickness, 2,
-    NULL);
-
-
-    int n = 0;
-    XtSetArg (args[n], XmNvisibleItemCount, 10); n++;
-    XtSetArg (args[n], XmNselectionPolicy, XmSINGLE_SELECT); n++;
-    this->list = XmCreateScrolledList (sw_frame, "chooser", args, n);
-    XtManageChild (this->list);
-    XtAddCallback (this->list, XmNsingleSelectionCallback,
-	(XtCallbackProc)GetSetConversionDialog_SelectCB, (XtPointer)this);
-    XtAddCallback (this->list, XmNdefaultActionCallback,
-	(XtCallbackProc)GetSetConversionDialog_SelectCB, (XtPointer)this);
-}
+//void
+//GetSetConversionDialog::layoutChooser()
+//{
+//Arg args[10];
+//
+//    //
+//    // A list containing filenames of referenced macros.
+//    //
+//    XtVaCreateManagedWidget ("gsHeader",
+//	xmLabelWidgetClass,	parent,
+//	XmNtopAttachment,	XmATTACH_FORM,
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNleftOffset,		22,
+//	XmNtopOffset,		6,
+//    NULL);
+//    Widget sw_frame = XtVaCreateManagedWidget ("sw_frame",
+//	xmFrameWidgetClass,	parent,
+//    	XmNtopAttachment, XmATTACH_FORM,
+//    	XmNleftAttachment, XmATTACH_FORM,
+//    	XmNrightAttachment, XmATTACH_FORM,
+//    	XmNbottomAttachment, XmATTACH_FORM,
+//    	XmNtopOffset, 21,
+//    	XmNleftOffset, 4,
+//    	XmNrightOffset, 4,
+//    	XmNbottomOffset, 0,
+//	XmNmarginWidth,   3,
+//	XmNmarginHeight,   3,
+//	XmNshadowThickness, 2,
+//    NULL);
+//
+//
+//    int n = 0;
+//    XtSetArg (args[n], XmNvisibleItemCount, 10); n++;
+//    XtSetArg (args[n], XmNselectionPolicy, XmSINGLE_SELECT); n++;
+//    this->list = XmCreateScrolledList (sw_frame, "chooser", args, n);
+//    XtManageChild (this->list);
+//    XtAddCallback (this->list, XmNsingleSelectionCallback,
+//	(XtCallbackProc)GetSetConversionDialog_SelectCB, (XtPointer)this);
+//    XtAddCallback (this->list, XmNdefaultActionCallback,
+//	(XtCallbackProc)GetSetConversionDialog_SelectCB, (XtPointer)this);
+//}
 
 char *
 GetSetConversionDialog::GetFileName(Network *net)
@@ -338,10 +325,10 @@ GetSetConversionDialog::GetFileName(Network *net)
 void
 GetSetConversionDialog::setActiveEditor(EditorWindow *ew)
 {
-    if (!this->list) return ;
+    //if (!this->list) return ;
 
     if (!ew) {
-	XmListDeselectAllItems (this->list);
+	//XmListDeselectAllItems (this->list);
 	this->unhinge();
 	return ;
     }
@@ -355,25 +342,25 @@ GetSetConversionDialog::setActiveEditor(EditorWindow *ew)
 	return ;
     }
 
-    XmString xmstr = XmStringCreateLtoR (cp, "bold");
-    delete cp;
-    if (!XmListItemExists(this->list, xmstr))
-	this->update();
-    XmListSelectItem (this->list, xmstr, True);
-    XmStringFree(xmstr);
+    //XmString xmstr = XmStringCreateLtoR (cp, "bold");
+    //delete cp;
+    //if (!XmListItemExists(this->list, xmstr))
+	//this->update();
+ //   XmListSelectItem (this->list, xmstr, True);
+ //   XmStringFree(xmstr);
 }
 
 EditorWindow *
 GetSetConversionDialog::getActiveEditor ()
 {
-    if (!this->getRootWidget())
-	return NULL;
+ //   if (!this->getRootWidget())
+	//return NULL;
 
     int cnt, *posList;
-    Boolean memory_allocated;
+    //boolean memory_allocated;
     EditorWindow *e = NULL;
 
-    memory_allocated = XmListGetSelectedPos (list, &posList, &cnt);
+    //memory_allocated = XmListGetSelectedPos (list, &posList, &cnt);
 
     // 
     //  Fetch the text of the selected item and pop open the editor window.
@@ -398,7 +385,7 @@ GetSetConversionDialog::getActiveEditor ()
 	    e = theDXApplication->newNetworkEditor(net);
 	}
     }
-    if (memory_allocated) XtFree ((char*)posList);
+    //if (memory_allocated) XtFree ((char*)posList);
 
     return e;
 }
@@ -410,10 +397,10 @@ GetSetConversionDialog::getActiveEditor ()
 void
 GetSetConversionDialog::unhinge(boolean select_next_editor)
 {
-    Widget dshell = this->getRootWidget();
-    while ((dshell) && (XtClass(dshell) != xmDialogShellWidgetClass))
-	dshell = XtParent(dshell);
-    if (!dshell) return ;
+    //Widget dshell = this->getRootWidget();
+ //   while ((dshell) && (XtClass(dshell) != xmDialogShellWidgetClass))
+	//dshell = XtParent(dshell);
+ //   if (!dshell) return ;
 
     EditorWindow *e = NULL;
 
@@ -449,11 +436,11 @@ GetSetConversionDialog::unhinge(boolean select_next_editor)
 	DXWindow *new_hinge;
 	if (found_managed_editor) new_hinge = (DXWindow*)e;
 	else new_hinge = (DXWindow*)theDXApplication->getAnchor();
-	XtVaSetValues (dshell, 
-	    XmNtransientFor, new_hinge->getRootWidget(),
-	    XmNwindowGroup, XtWindow(new_hinge->getRootWidget()),
-	NULL);
-	XSync (XtDisplay(dshell), False);
+	//XtVaSetValues (dshell, 
+	//    XmNtransientFor, new_hinge->getRootWidget(),
+	//    XmNwindowGroup, XtWindow(new_hinge->getRootWidget()),
+	//NULL);
+	//XSync (XtDisplay(dshell), False);
     }
 }
 
@@ -462,7 +449,7 @@ GetSetConversionDialog::post()
 {
     this->unhinge();
     boolean ism = this->isManaged();
-    if (this->list) XmListDeselectAllItems (this->list);
+    //if (this->list) XmListDeselectAllItems (this->list);
     this->Dialog::post();
     if (!ism) this->update();
 }
@@ -472,83 +459,83 @@ GetSetConversionDialog::update()
 {
     if (this->quiet_mode) return ;
 
-    if ((!this->getRootWidget()) || (!this->isManaged())) 
-	return ;
+ //   if ((!this->getRootWidget()) || (!this->isManaged())) 
+	//return ;
 
     //
     // Hang onto selections because they might still be around after the 
     // list is refreshed.
     //
-    int cnt = 0;
-    XmStringTable xmstrs = NULL;
-    XtVaGetValues (this->list, 
-	XmNselectedItems, &xmstrs, 
-	XmNselectedItemCount, &cnt,
-    NULL);
-    XmString selected_xmstr = NULL; 
-    if (cnt) {
-	ASSERT ((xmstrs)&&(xmstrs[0]));
-	selected_xmstr = XmStringCopy (xmstrs[0]);
-    }
+ //   int cnt = 0;
+ //   XmStringTable xmstrs = NULL;
+ //   XtVaGetValues (this->list, 
+	//XmNselectedItems, &xmstrs, 
+	//XmNselectedItemCount, &cnt,
+ //   NULL);
+ //   XmString selected_xmstr = NULL; 
+ //   if (cnt) {
+	//ASSERT ((xmstrs)&&(xmstrs[0]));
+	//selected_xmstr = XmStringCopy (xmstrs[0]);
+ //   }
 
-    XmListDeleteAllItems (this->list);
-    if (this->referenced_macros) {
-	delete this->referenced_macros;
-	this->referenced_macros = NULL;
-    }
+ //   XmListDeleteAllItems (this->list);
+ //   if (this->referenced_macros) {
+	//delete this->referenced_macros;
+	//this->referenced_macros = NULL;
+ //   }
 
-    List *maclist = new List;
-    List *gets = NULL; List *sets = NULL;
-    if (theDXApplication->network) {
-	Widget root = this->getRootWidget();
-	XDefineCursor (XtDisplay(root), XtWindow(root), 
-	    GetSetConversionDialog::WatchCursor);
-	XSync (XtDisplay(root), False);
+ //   List *maclist = new List;
+ //   List *gets = NULL; List *sets = NULL;
+ //   if (theDXApplication->network) {
+	//Widget root = this->getRootWidget();
+	//XDefineCursor (XtDisplay(root), XtWindow(root), 
+	//    GetSetConversionDialog::WatchCursor);
+	//XSync (XtDisplay(root), False);
 
-	GetSetConversionDialog::GetSetPlacements 
-	    (theDXApplication->network, maclist, &gets, &sets);
+	//GetSetConversionDialog::GetSetPlacements 
+	//    (theDXApplication->network, maclist, &gets, &sets);
 
-	XUndefineCursor (XtDisplay(root), XtWindow(root));
-    } else
-	return ;
-    this->referenced_macros = new List;
+	//XUndefineCursor (XtDisplay(root), XtWindow(root));
+ //   } else
+	//return ;
+ //   this->referenced_macros = new List;
 
 
-    if ((gets) || (sets)) {
-	char *cp = GetSetConversionDialog::GetFileName(theDXApplication->network);
-	XmString xmstr = XmStringCreateLtoR (cp, "bold");
-	delete cp;
-	XmListAddItem (this->list, xmstr, 1);
-	XmStringFree(xmstr);
-	this->list_includes_main = TRUE;
-	if (gets) delete gets;
-	if (sets) delete sets;
-	sets = gets = NULL;
-    } else
-	this->list_includes_main = FALSE;
+ //   if ((gets) || (sets)) {
+	//char *cp = GetSetConversionDialog::GetFileName(theDXApplication->network);
+	//XmString xmstr = XmStringCreateLtoR (cp, "bold");
+	//delete cp;
+	//XmListAddItem (this->list, xmstr, 1);
+	//XmStringFree(xmstr);
+	//this->list_includes_main = TRUE;
+	//if (gets) delete gets;
+	//if (sets) delete sets;
+	//sets = gets = NULL;
+ //   } else
+	//this->list_includes_main = FALSE;
 
-    ListIterator it(*maclist);
-    MacroDefinition *md;
-    while ( (md = (MacroDefinition*)it.getNext()) ) {
-	Network *net = md->getNetwork();
-	ASSERT (net);
-	this->referenced_macros->appendElement((const void*)md);
-	char *cp = GetSetConversionDialog::GetFileName (net);
-	XmString xmstr = XmStringCreateLtoR (cp, "bold");
-	delete cp;
-	XmListAddItemUnselected (this->list, xmstr, 0);
-	XmStringFree(xmstr);
-    }
-    delete maclist;
+ //   ListIterator it(*maclist);
+ //   MacroDefinition *md;
+ //   while ( (md = (MacroDefinition*)it.getNext()) ) {
+	//Network *net = md->getNetwork();
+	//ASSERT (net);
+	//this->referenced_macros->appendElement((const void*)md);
+	//char *cp = GetSetConversionDialog::GetFileName (net);
+	//XmString xmstr = XmStringCreateLtoR (cp, "bold");
+	//delete cp;
+	//XmListAddItemUnselected (this->list, xmstr, 0);
+	//XmStringFree(xmstr);
+ //   }
+ //   delete maclist;
 
-    if ((selected_xmstr) && (XmListItemExists(this->list, selected_xmstr))) 
-	XmListSelectItem (this->list, selected_xmstr, True);
-    else {
-	this->updateNetName (NULL);
-	this->unhinge(TRUE);
-    }
-    if (selected_xmstr)
-	XmStringFree(selected_xmstr);
+ //   if ((selected_xmstr) && (XmListItemExists(this->list, selected_xmstr))) 
+	//XmListSelectItem (this->list, selected_xmstr, True);
+ //   else {
+	//this->updateNetName (NULL);
+	//this->unhinge(TRUE);
+ //   }
+ //   if (selected_xmstr)
+	//XmStringFree(selected_xmstr);
 }
 
 
@@ -568,27 +555,27 @@ GetSetConversionDialog::updateNetName(Network *net)
     // If the new name is shorter than the old one, then turn off recomputeSize
     // This disables the icky display when the dialog keeps resizing itself
     //
-    XmFontList xmfl;
-    Boolean oldRecomp;
-    Dimension old_width;
-    XtVaGetValues (this->net_name, 
-	XmNwidth, &old_width,
-	XmNfontList, &xmfl, 
-	XmNrecomputeSize, &oldRecomp,
-    NULL);
+ //   XmFontList xmfl;
+ //   Boolean oldRecomp;
+ //   Dimension old_width;
+ //   XtVaGetValues (this->net_name, 
+	//XmNwidth, &old_width,
+	//XmNfontList, &xmfl, 
+	//XmNrecomputeSize, &oldRecomp,
+ //   NULL);
 
-    XmString xmstr = XmStringCreateLtoR (cp, "bold");
-    delete cp;
+ //   XmString xmstr = XmStringCreateLtoR (cp, "bold");
+ //   delete cp;
 
-    Boolean recomp = True;
-    Dimension neww = XmStringWidth (xmfl, xmstr);
-    recomp = ((neww + 8) > old_width);
-    if (recomp != oldRecomp) {
-	XtVaSetValues (this->net_name, XmNrecomputeSize, recomp, NULL);
-    }
+ //   Boolean recomp = True;
+ //   Dimension neww = XmStringWidth (xmfl, xmstr);
+ //   recomp = ((neww + 8) > old_width);
+ //   if (recomp != oldRecomp) {
+	//XtVaSetValues (this->net_name, XmNrecomputeSize, recomp, NULL);
+ //   }
 
-    XtVaSetValues  (this->net_name, XmNlabelString, xmstr, NULL);
-    XmStringFree(xmstr);
+ //   XtVaSetValues  (this->net_name, XmNlabelString, xmstr, NULL);
+ //   XmStringFree(xmstr);
 
     //
     // Print the count of Get/Set modules
@@ -607,15 +594,15 @@ GetSetConversionDialog::updateNetName(Network *net)
 	sprintf (msg, "  macro contains:\n%4d Get(s)\n%4d Set(s)", gcnt, scnt);
     else
 	sprintf (msg, "network contains:\n%4d Get(s)\n%4d Set(s)", gcnt, scnt);
-    xmstr = XmStringCreateLtoR (msg, "bold");
+    //xmstr = XmStringCreateLtoR (msg, "bold");
 
-    XtVaSetValues (this->net_name_label, 
-	XmNlabelString, xmstr, 
-    NULL);
-    XtVaSetValues (this->net_name_label, 
-	XmNrecomputeSize, False, 
-    NULL);
-    XmStringFree(xmstr);
+ //   XtVaSetValues (this->net_name_label, 
+	//XmNlabelString, xmstr, 
+ //   NULL);
+ //   XtVaSetValues (this->net_name_label, 
+	//XmNrecomputeSize, False, 
+ //   NULL);
+ //   XmStringFree(xmstr);
 
     if (gets) delete gets;
     if (sets) delete sets;
@@ -850,22 +837,22 @@ int dummy=0;
 void
 GetSetConversionDialog::setFindButton (boolean first, boolean done)
 {
-char *cp;
-
-    if (first) cp = "Find First";
-    else cp = "Find Next";
-
-    XmString xmstr = XmStringCreateLtoR (cp, "bold");
-    XtVaSetValues (this->find_next_btn, 
-	XmNuserData,  (first?FIND_FIRST: FIND_NEXT),
-	XmNlabelString, xmstr, 
-	XmNsensitive, !done,
-    NULL);
-    XmStringFree(xmstr);
-
-    XtVaSetValues (this->find_all_btn,
-	XmNsensitive, !done,
-    NULL);
+//char *cp;
+//
+//    if (first) cp = "Find First";
+//    else cp = "Find Next";
+//
+//    XmString xmstr = XmStringCreateLtoR (cp, "bold");
+//    XtVaSetValues (this->find_next_btn, 
+//	XmNuserData,  (first?FIND_FIRST: FIND_NEXT),
+//	XmNlabelString, xmstr, 
+//	XmNsensitive, !done,
+//    NULL);
+//    XmStringFree(xmstr);
+//
+//    XtVaSetValues (this->find_all_btn,
+//	XmNsensitive, !done,
+//    NULL);
 }
 
 
@@ -873,146 +860,146 @@ char *cp;
 // L A Y O U T   T H E    B U T T O N S       L A Y O U T   T H E    B U T T O N S 
 // L A Y O U T   T H E    B U T T O N S       L A Y O U T   T H E    B U T T O N S 
 //
-void GetSetConversionDialog::layoutButtons (Widget parent)
-{
-    this->find_next_btn = XtVaCreateManagedWidget("Find",
-	xmPushButtonWidgetClass, parent,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		10,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNtopOffset,		10,
-	XmNsensitive,		False,
-	XmNuserData,		FIND_NEXT,
-        NULL);
+//void GetSetConversionDialog::layoutButtons ()
+//{
+ //   this->find_next_btn = XtVaCreateManagedWidget("Find",
+	//xmPushButtonWidgetClass, parent,
+	//XmNleftAttachment,	XmATTACH_FORM,
+	//XmNleftOffset,		10,
+	//XmNtopAttachment,	XmATTACH_FORM,
+	//XmNtopOffset,		10,
+	//XmNsensitive,		False,
+	//XmNuserData,		FIND_NEXT,
+ //       NULL);
 
-    this->find_all_btn = XtVaCreateManagedWidget("Find All",
-	xmPushButtonWidgetClass, parent,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNtopOffset,		10,
-	XmNleftAttachment,	XmATTACH_WIDGET,
-	XmNleftWidget,		this->find_next_btn,
-	XmNleftOffset,		10,
-	XmNsensitive,		False,
-	XmNuserData,		FIND_ALL,
-        NULL);
+ //   this->find_all_btn = XtVaCreateManagedWidget("Find All",
+	//xmPushButtonWidgetClass, parent,
+	//XmNtopAttachment,	XmATTACH_FORM,
+	//XmNtopOffset,		10,
+	//XmNleftAttachment,	XmATTACH_WIDGET,
+	//XmNleftWidget,		this->find_next_btn,
+	//XmNleftOffset,		10,
+	//XmNsensitive,		False,
+	//XmNuserData,		FIND_ALL,
+ //       NULL);
 
-    Widget button = XtVaCreateManagedWidget("Close",
-	xmPushButtonWidgetClass, parent,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNtopOffset,		10,
-        XmNrightAttachment,	XmATTACH_FORM,
-        XmNrightOffset,		10,
-	XmNuserData,		DONE,
-        NULL);
+ //   Widget button = XtVaCreateManagedWidget("Close",
+	//xmPushButtonWidgetClass, parent,
+	//XmNtopAttachment,	XmATTACH_FORM,
+	//XmNtopOffset,		10,
+ //       XmNrightAttachment,	XmATTACH_FORM,
+ //       XmNrightOffset,		10,
+	//XmNuserData,		DONE,
+ //       NULL);
 
-    XtAddCallback(this->find_next_btn, 
-		  XmNactivateCallback, 
-		  (XtCallbackProc)GetSetConversionDialog_PushbuttonCB, 
-		  (XtPointer)this);
+ //   XtAddCallback(this->find_next_btn, 
+	//	  XmNactivateCallback, 
+	//	  (XtCallbackProc)GetSetConversionDialog_PushbuttonCB, 
+	//	  (XtPointer)this);
 
-    XtAddCallback(this->find_all_btn, 
-		  XmNactivateCallback, 
-		  (XtCallbackProc)GetSetConversionDialog_PushbuttonCB, 
-		  (XtPointer)this);
+ //   XtAddCallback(this->find_all_btn, 
+	//	  XmNactivateCallback, 
+	//	  (XtCallbackProc)GetSetConversionDialog_PushbuttonCB, 
+	//	  (XtPointer)this);
 
-    XtAddCallback(button, 
-		  XmNactivateCallback, 
-		  (XtCallbackProc)GetSetConversionDialog_PushbuttonCB, 
-		  (XtPointer)this);
+ //   XtAddCallback(button, 
+	//	  XmNactivateCallback, 
+	//	  (XtCallbackProc)GetSetConversionDialog_PushbuttonCB, 
+	//	  (XtPointer)this);
 
-}
+//}
 
-extern "C" void GetSetConversionDialog_SelectCB(Widget    ,
-				  XtPointer clientData,
-				  XtPointer cbs)
-{
-    ASSERT(clientData);
-    GetSetConversionDialog *dialog = (GetSetConversionDialog*) clientData;
-    XmListCallbackStruct *lcs = (XmListCallbackStruct*)cbs;
-    Widget root = dialog->getRootWidget();
-    Widget dshell = root;
-    while ((dshell) && (XtClass(dshell) != xmDialogShellWidgetClass))
-	dshell = XtParent(dshell);
-
-    if (lcs->selected_item_count == 0) {
-	dialog->setFindButton (TRUE, TRUE);
-	Command *cmd = EditorWindow::GetGlobalCmd();
-	if (cmd) cmd->deactivate();
-	cmd = EditorWindow::GetLocalCmd();
-	if (cmd) cmd->deactivate();
-	dialog->unhinge();
-	return ;
-    }
-
-    //
-    // Manage the associated vpe 
-    //
-    XDefineCursor (XtDisplay(root), XtWindow(root), 
-	GetSetConversionDialog::WatchCursor);
-    XSync (XtDisplay(root), False);
-    dialog->quiet_mode = TRUE;
-    EditorWindow *e = dialog->getActiveEditor();
-    ASSERT(e);
-    if ((!e->isManaged()) || (lcs->reason == XmCR_DEFAULT_ACTION))
-	e->manage(); 
-
-    if (dshell) 
-	XtVaSetValues (dshell, 
-	    XmNtransientFor, e->getRootWidget(), 
-	NULL);
-
-    dialog->quiet_mode = FALSE;
-
-    dialog->setFindButton (TRUE, FALSE);
-    dialog->updateNetName (e->getNetwork());
-    XUndefineCursor (XtDisplay(root), XtWindow(root));
-}
-
-
-extern "C" void GetSetConversionDialog_PushbuttonCB(Widget    widget,
-				  XtPointer clientData,
-				  XtPointer )
-{
-    ASSERT(clientData);
-    GetSetConversionDialog *dialog = (GetSetConversionDialog*) clientData;
-    XtPointer data;
-    XtVaGetValues(widget, XmNuserData, &data, NULL);
-
-    switch((int)(long)data)
-    {
-      case HELP:
-	break;
-      case FIND_ALL:
-	dialog->selectAllNodes();
-	break;
-      case FIND_NEXT:
-	dialog->selectNextNode();
-	break;
-      case FIND_FIRST:
-	dialog->next_get_instance = 0;
-	dialog->next_set_instance = 0;
-	dialog->selectNextNode();
-	break;
-      case DONE:
-	dialog->unmanage();
-	break;
-      default:
-	ASSERT(FALSE);
-	break;
-    }
-}
-
-
-
-
+//extern "C" void GetSetConversionDialog_SelectCB(Widget    ,
+//				  XtPointer clientData,
+//				  XtPointer cbs)
+//{
+//    ASSERT(clientData);
+//    GetSetConversionDialog *dialog = (GetSetConversionDialog*) clientData;
+//    XmListCallbackStruct *lcs = (XmListCallbackStruct*)cbs;
+//    Widget root = dialog->getRootWidget();
+//    Widget dshell = root;
+//    while ((dshell) && (XtClass(dshell) != xmDialogShellWidgetClass))
+//	dshell = XtParent(dshell);
 //
-// Install the default resources for this class.
+//    if (lcs->selected_item_count == 0) {
+//	dialog->setFindButton (TRUE, TRUE);
+//	Command *cmd = EditorWindow::GetGlobalCmd();
+//	if (cmd) cmd->deactivate();
+//	cmd = EditorWindow::GetLocalCmd();
+//	if (cmd) cmd->deactivate();
+//	dialog->unhinge();
+//	return ;
+//    }
 //
-void GetSetConversionDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, GetSetConversionDialog::DefaultResources);
-    this->Dialog::installDefaultResources( baseWidget);
-}
+//    //
+//    // Manage the associated vpe 
+//    //
+//    XDefineCursor (XtDisplay(root), XtWindow(root), 
+//	GetSetConversionDialog::WatchCursor);
+//    XSync (XtDisplay(root), False);
+//    dialog->quiet_mode = TRUE;
+//    EditorWindow *e = dialog->getActiveEditor();
+//    ASSERT(e);
+//    if ((!e->isManaged()) || (lcs->reason == XmCR_DEFAULT_ACTION))
+//	e->manage(); 
+//
+//    if (dshell) 
+//	XtVaSetValues (dshell, 
+//	    XmNtransientFor, e->getRootWidget(), 
+//	NULL);
+//
+//    dialog->quiet_mode = FALSE;
+//
+//    dialog->setFindButton (TRUE, FALSE);
+//    dialog->updateNetName (e->getNetwork());
+//    XUndefineCursor (XtDisplay(root), XtWindow(root));
+//}
+//
+//
+//extern "C" void GetSetConversionDialog_PushbuttonCB(Widget    widget,
+//				  XtPointer clientData,
+//				  XtPointer )
+//{
+//    ASSERT(clientData);
+//    GetSetConversionDialog *dialog = (GetSetConversionDialog*) clientData;
+//    XtPointer data;
+//    XtVaGetValues(widget, XmNuserData, &data, NULL);
+//
+//    switch((int)(long)data)
+//    {
+//      case HELP:
+//	break;
+//      case FIND_ALL:
+//	dialog->selectAllNodes();
+//	break;
+//      case FIND_NEXT:
+//	dialog->selectNextNode();
+//	break;
+//      case FIND_FIRST:
+//	dialog->next_get_instance = 0;
+//	dialog->next_set_instance = 0;
+//	dialog->selectNextNode();
+//	break;
+//      case DONE:
+//	dialog->unmanage();
+//	break;
+//      default:
+//	ASSERT(FALSE);
+//	break;
+//    }
+//}
+//
+//
+//
+//
+////
+//// Install the default resources for this class.
+////
+//void GetSetConversionDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, GetSetConversionDialog::DefaultResources);
+//    this->Dialog::installDefaultResources( baseWidget);
+//}
 
 
 //

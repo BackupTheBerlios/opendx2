@@ -20,7 +20,7 @@
 //
 #define ClassSaveImageDialog	"SaveImageDialog"
 
-extern "C" void SaveImageDialog_ModifyCB (Widget, XtPointer, XtPointer);
+//extern "C" void SaveImageDialog_ModifyCB (Widget, XtPointer, XtPointer);
 
 class Dialog;
 class ImageNode;
@@ -39,9 +39,9 @@ class SaveImageDialog : public ImageFormatDialog
   private:
 
     static boolean ClassInitialized;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
-    Widget			file_name;
+    //Widget			file_name;
     char*			file;
     ImageFileDialog*		fsb;
     int				sid_dirty;
@@ -56,7 +56,7 @@ class SaveImageDialog : public ImageFormatDialog
     Command*			saveContinuousCmd;
     Command*			fileSelectCmd;
 
-    virtual Widget 		createControls(Widget parent );
+    //virtual Widget 		createControls(Widget parent );
 
     virtual boolean 		okCallback(Dialog *);
     virtual void		restoreCallback();
@@ -67,7 +67,7 @@ class SaveImageDialog : public ImageFormatDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
 
     enum {
@@ -77,7 +77,7 @@ class SaveImageDialog : public ImageFormatDialog
 	DirtyRecordEnabled	= 512
     };
 
-    friend void SaveImageDialog_ModifyCB (Widget, XtPointer, XtPointer);
+    //friend void SaveImageDialog_ModifyCB (Widget, XtPointer, XtPointer);
 
   public:
 
@@ -95,7 +95,7 @@ class SaveImageDialog : public ImageFormatDialog
     //
     // Constructor:
     //
-    SaveImageDialog(Widget parent, ImageNode* node, CommandScope* commandScope);
+    SaveImageDialog(ImageNode* node, CommandScope* commandScope);
 
     //
     // Destructor:

@@ -42,9 +42,9 @@ class SetMacroNameDialog : public Dialog
     //
     // Protected member data:
     //
-    Widget macroName;
-    Widget category;
-    Widget description;
+    //Widget macroName;
+    //Widget category;
+    //Widget description;
 
 
     //
@@ -52,24 +52,24 @@ class SetMacroNameDialog : public Dialog
     // trailing white space.
     // The return string must be deleted by the caller.
     //
-    static char *GetTextWidgetToken(Widget textWidget);
+    //static char *GetTextWidgetToken(Widget textWidget);
 
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
     virtual boolean okCallback(Dialog *d);
-    virtual Widget createDialog(Widget parent);
+    virtual void createDialog();
 
     //
     // Constructor for the subclasses:
     //
-    SetMacroNameDialog(const char *name, Widget parent, Network *n);
+    SetMacroNameDialog(const char *name, Network *n);
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
     //
     // Check the given name to see if it is a valid macro name.
@@ -83,7 +83,7 @@ class SetMacroNameDialog : public Dialog
     //
     // Constructor:
     //
-    SetMacroNameDialog(Widget parent, Network *n);
+    SetMacroNameDialog(Network *n);
 
     //
     // Destructor:

@@ -44,7 +44,7 @@ class SetColormapNameDialog : public SetNameDialog
     // Protected member data:
     //
 
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
     virtual const char *getText();
     virtual boolean saveText(const char *s);
@@ -54,13 +54,13 @@ class SetColormapNameDialog : public SetNameDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    SetColormapNameDialog(Widget parent, ColormapNode *cn);
+    SetColormapNameDialog(ColormapNode *cn);
 
     //
     // Destructor:

@@ -19,9 +19,6 @@
 #include "DXStrings.h"
 #include "DXApplication.h" 
 
-#include "ntractor.bm"
-#include "ntractormask.bm"
-
 boolean Interactor::InteractorClassInitialized = FALSE;
 //Widget  Interactor::DragIcon;
 

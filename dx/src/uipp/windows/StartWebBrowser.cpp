@@ -62,7 +62,6 @@ int ExecuteCommand(char *cmd,int nCmdShow)
     int processStarted;
     unsigned long result;
     PROCESS_INFORMATION pi;
-    char msgbuf[4096];
 
     memset(&startInfo, 0, sizeof(STARTUPINFO));
     startInfo.cb = sizeof(STARTUPINFO);

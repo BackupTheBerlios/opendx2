@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 #if defined(_AIX41)
 #include <strings.h>
@@ -224,9 +224,9 @@ void PacketIF::sendPacket(int type, int packetId, const char *data, int length)
 	void* item = new QueuedPacket(type, packetId, data, length);
 	this->output_queue.appendElement (item);
 	if (this->output_queue_wpid == 0)
-	    this->output_queue_wpid = XtAppAddWorkProc (
-		theApplication->getApplicationContext(),
-		(XtWorkProc)PacketIF_QueuedPacketWP, this);
+	    //this->output_queue_wpid = XtAppAddWorkProc (
+		//theApplication->getApplicationContext(),
+		//(XtWorkProc)PacketIF_QueuedPacketWP, this);
 	return ;
     }
     this->_sendPacket(type, packetId, data, length);
@@ -328,9 +328,9 @@ PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
     this->error = FALSE;
     this->deferPacketHandling = FALSE;
     this->stream = NULL;
-    this->inputHandlerId = 0;
-    this->workProcTimerId = 0;  
-    this->workProcId = 0;  
+//    this->inputHandlerId = 0;
+//    this->workProcTimerId = 0;  
+//    this->workProcId = 0;  
     this->line = (char *)MALLOC(this->alloc_line_length = 2000);
     this->line[0] = '\0';
     this->line_length = 0;
@@ -387,8 +387,8 @@ PacketIF::~PacketIF()
 	fclose(this->stream);
 #endif
     close(this->socket);
-    if (this->inputHandlerId != 0)
-	this->removeInputHandler();
+ //   if (this->inputHandlerId != 0)
+	//this->removeInputHandler();
 
     /*
      * Reset the socket info.
@@ -431,11 +431,11 @@ PacketIF::~PacketIF()
 #endif
 
     if (this->output_queue_wpid)
-	XtRemoveWorkProc(this->output_queue_wpid);
+	//XtRemoveWorkProc(this->output_queue_wpid);
     ListIterator li(this->output_queue);
     QueuedPacket* qp;
-    while (qp = (QueuedPacket*)li.getNext()) 
-	delete qp;
+ //   while (qp = (QueuedPacket*)li.getNext()) 
+	//delete qp;
 }
 
 void PacketIF::initializePacketIO()
@@ -478,52 +478,52 @@ void PacketIF::initializePacketIO()
 
 void PacketIF::installWorkProcTimer()
 {
-    if (this->workProcTimerId)
-        return;
+    //if (this->workProcTimerId)
+    //    return;
 
-    this->workProcTimerId = XtAppAddTimeOut(
-            theApplication->getApplicationContext(),
-            1000,       // 1 second
-            (XtTimerCallbackProc)PacketIF_InputIdleTimerTCP,
-            (XtPointer)this->wpClientData);
+    //this->workProcTimerId = XtAppAddTimeOut(
+    //        theApplication->getApplicationContext(),
+    //        1000,       // 1 second
+    //        (XtTimerCallbackProc)PacketIF_InputIdleTimerTCP,
+    //        (XtPointer)this->wpClientData);
 }
 void PacketIF::removeWorkProcTimer()
 {
-    if (this->workProcTimerId) {
-        XtRemoveTimeOut(this->workProcTimerId);
-        this->workProcTimerId = 0;
-    }
+    //if (this->workProcTimerId) {
+    //    XtRemoveTimeOut(this->workProcTimerId);
+    //    this->workProcTimerId = 0;
+    //}
 }
-extern "C" void PacketIF_InputIdleTimerTCP(XtPointer clientData,
-                                                XtIntervalId *id)
-{
-    PacketIF *p = *(PacketIF**)clientData;
-    if (! p)
-	return;
-
-    p->workProcTimerId = 0;  // Xt uninstalls this automatically
-    if (p->deferPacketHandling)
-        PacketIF_InputIdleWP(clientData);
-}
+//extern "C" void PacketIF_InputIdleTimerTCP(XtPointer clientData,
+//                                                XtIntervalId *id)
+//{
+//    PacketIF *p = *(PacketIF**)clientData;
+//    if (! p)
+//	return;
+//
+//    p->workProcTimerId = 0;  // Xt uninstalls this automatically
+//    if (p->deferPacketHandling)
+//        PacketIF_InputIdleWP(clientData);
+//}
 void PacketIF::installWorkProc()
 {
-    if (this->workProcId)
-        return;
+    //if (this->workProcId)
+    //    return;
 
-    this->workProcId = XtAppAddWorkProc(
-            theApplication->getApplicationContext(),
-            (XtWorkProc)PacketIF_InputIdleWP,
-            (XtPointer)this->wpClientData);
+    //this->workProcId = XtAppAddWorkProc(
+    //        theApplication->getApplicationContext(),
+    //        (XtWorkProc)PacketIF_InputIdleWP,
+    //        (XtPointer)this->wpClientData);
 
 }
 void PacketIF::removeWorkProc()
 {
-    if (this->workProcId) {
-        XtRemoveWorkProc(this->workProcId);
-        this->workProcId = 0;
-    }
+    //if (this->workProcId) {
+    //    XtRemoveWorkProc(this->workProcId);
+    //    this->workProcId = 0;
+    //}
 }
-Boolean PacketIF::sendQueuedPackets()
+boolean PacketIF::sendQueuedPackets()
 {
     if (this->output_queue.getSize() == 0) {
 	this->output_queue_wpid = 0;
@@ -538,67 +538,67 @@ Boolean PacketIF::sendQueuedPackets()
     return FALSE; //No, don't remove me.  Keep on calling me.
 }
 
-Boolean PacketIF_QueuedPacketWP(XtPointer clientData)
-{
-    PacketIF *p = (PacketIF*)clientData;
-    return p->sendQueuedPackets();
-}
+//Boolean PacketIF_QueuedPacketWP(XtPointer clientData)
+//{
+//    PacketIF *p = (PacketIF*)clientData;
+//    return p->sendQueuedPackets();
+//}
 
-Boolean PacketIF_InputIdleWP(XtPointer clientData)
-{
-    PacketIF *p = *(PacketIF**)clientData;
-    if (! p)
-	return True;
-
-    //
-    // Check to see if message handling is stalled.  If so, then
-    //
-    //
-    if (p->isPacketHandlingStalled()) {
-	ASSERT(p->stallingWorker);
-	ASSERT(p->deferPacketHandling);
-	if (p->stallingWorker(p->stallingWorkerData)) {
-	    p->stallingWorker = NULL;
-	    p->deferPacketHandling = FALSE;
-	    p->packetReceive(FALSE); // Process read()'d but unhandled packets 
-	} 
-    } else
-	p->deferPacketHandling = FALSE;
-
-    boolean r = !p->deferPacketHandling;
-
-    if (r)
-        p->workProcId = 0;   // Xt will be removing it.
-
-    //
-    // We have one workProc for the queued packets that we want
-    // to send to the exec.  We have another workProc for a
-    // DXLink connection.  The DXLink workProc busy-waits
-    // until it finds out that an execution has completed.  If
-    // we have queued output for the exec, then we better make
-    // sure that it gets sent before we busy-wait.  Otherwise,
-    // we might actually be sitting on the command we want to
-    // send to the exec to make it start executing in the first
-    // place.
-    //
-    // Here, pif might/might not be the same as p.  But since we
-    // have 2 workProcs installed at the same time, we can't be
-    // sure which will be called and which will be starved.  Another
-    // way to handle this case would be to force a call to 
-    // other workProcs also, but I don't think there is a way to
-    // do that.  So, really what I'm doing here is to ensure that
-    // if this workProc gets called, then the effect is the about
-    // the same as if both workProcs were called.  The "normal"
-    // Xt behavior for workProcs is to keep calling one until
-    // it removes itself, and only then start calling the other.
-    //
-    PacketIF* pif = (PacketIF*)theDXApplication->getPacketIF();
-    if (pif->output_queue.getSize() != 0) {
-	pif->sendQueuedPackets();
-    }
-    
-    return r;
-}
+//Boolean PacketIF_InputIdleWP(XtPointer clientData)
+//{
+//    PacketIF *p = *(PacketIF**)clientData;
+//    if (! p)
+//	return True;
+//
+//    //
+//    // Check to see if message handling is stalled.  If so, then
+//    //
+//    //
+//    if (p->isPacketHandlingStalled()) {
+//	ASSERT(p->stallingWorker);
+//	ASSERT(p->deferPacketHandling);
+//	if (p->stallingWorker(p->stallingWorkerData)) {
+//	    p->stallingWorker = NULL;
+//	    p->deferPacketHandling = FALSE;
+//	    p->packetReceive(FALSE); // Process read()'d but unhandled packets 
+//	} 
+//    } else
+//	p->deferPacketHandling = FALSE;
+//
+//    boolean r = !p->deferPacketHandling;
+//
+//    if (r)
+//        p->workProcId = 0;   // Xt will be removing it.
+//
+//    //
+//    // We have one workProc for the queued packets that we want
+//    // to send to the exec.  We have another workProc for a
+//    // DXLink connection.  The DXLink workProc busy-waits
+//    // until it finds out that an execution has completed.  If
+//    // we have queued output for the exec, then we better make
+//    // sure that it gets sent before we busy-wait.  Otherwise,
+//    // we might actually be sitting on the command we want to
+//    // send to the exec to make it start executing in the first
+//    // place.
+//    //
+//    // Here, pif might/might not be the same as p.  But since we
+//    // have 2 workProcs installed at the same time, we can't be
+//    // sure which will be called and which will be starved.  Another
+//    // way to handle this case would be to force a call to 
+//    // other workProcs also, but I don't think there is a way to
+//    // do that.  So, really what I'm doing here is to ensure that
+//    // if this workProc gets called, then the effect is the about
+//    // the same as if both workProcs were called.  The "normal"
+//    // Xt behavior for workProcs is to keep calling one until
+//    // it removes itself, and only then start calling the other.
+//    //
+//    PacketIF* pif = (PacketIF*)theDXApplication->getPacketIF();
+//    if (pif->output_queue.getSize() != 0) {
+//	pif->sendQueuedPackets();
+//    }
+//    
+//    return r;
+//}
 
 
 //
@@ -625,47 +625,47 @@ Boolean PacketIF_InputIdleWP(XtPointer clientData)
 // thereby forcing the input handler to periodically handle packets,
 // regardless of the event stream..
 //
-extern "C" void PacketIF_ProcessSocketInputICB(XtPointer    clientData,
-				    int*       /* socket */,
-				    XtInputId* /* id */)
-{
-    PacketIF *p = (PacketIF *)clientData;
-
-    ASSERT(p);
-
-    if (p->deferPacketHandling) {
-        if (!p->workProcTimerId)
-            p->installWorkProcTimer();
-        return;
-    }
-
-    if (p->stream == NULL)
-	return;
-
-    /*
-     * Basically, we hand over the the processing of the socket input
-     * completely over to the packet handling routine....
-     */
-    p->packetReceive();
-
-    /*
-     * If the connection has been severed, handle the error.  If someone else
-     * handled the error, we're done.
-     */
-    if (p->stream == NULL)
-	return;
-    if (p->error)
-    {
-	p->handleStreamError(errno,"(XtInputCallbackProc)PacketIF_ProcessSocketInputICB"); 
-	p->deferPacketHandling = FALSE;
-    }
-    else
-    {
-	p->deferPacketHandling = TRUE;
-	p->installWorkProc();
-    }
-}
-
+//extern "C" void PacketIF_ProcessSocketInputICB(XtPointer    clientData,
+//				    int*       /* socket */,
+//				    XtInputId* /* id */)
+//{
+//    PacketIF *p = (PacketIF *)clientData;
+//
+//    ASSERT(p);
+//
+//    if (p->deferPacketHandling) {
+//        if (!p->workProcTimerId)
+//            p->installWorkProcTimer();
+//        return;
+//    }
+//
+//    if (p->stream == NULL)
+//	return;
+//
+//    /*
+//     * Basically, we hand over the the processing of the socket input
+//     * completely over to the packet handling routine....
+//     */
+//    p->packetReceive();
+//
+//    /*
+//     * If the connection has been severed, handle the error.  If someone else
+//     * handled the error, we're done.
+//     */
+//    if (p->stream == NULL)
+//	return;
+//    if (p->error)
+//    {
+//	p->handleStreamError(errno,"(XtInputCallbackProc)PacketIF_ProcessSocketInputICB"); 
+//	p->deferPacketHandling = FALSE;
+//    }
+//    else
+//    {
+//	p->deferPacketHandling = TRUE;
+//	p->installWorkProc();
+//    }
+//}
+//
 
 
 
@@ -760,9 +760,9 @@ void PacketIF::sendBytes(const char *string)
 	void* item = new QueuedBytes(string, STRLEN(string));
 	this->output_queue.appendElement (item);
 	if (this->output_queue_wpid == 0)
-	    this->output_queue_wpid = XtAppAddWorkProc (
-		theApplication->getApplicationContext(),
-		(XtWorkProc)PacketIF_QueuedPacketWP, this);
+	 //   this->output_queue_wpid = XtAppAddWorkProc (
+		//theApplication->getApplicationContext(),
+		//(XtWorkProc)PacketIF_QueuedPacketWP, this);
 	return ;
     }
     this->_sendBytes(string);
@@ -804,9 +804,9 @@ void PacketIF::sendImmediate(const char *string)
 	void* item = new QueuedImmediate(string, STRLEN(string));
 	this->output_queue.appendElement (item);
 	if (this->output_queue_wpid == 0)
-	    this->output_queue_wpid = XtAppAddWorkProc (
-		theApplication->getApplicationContext(),
-		(XtWorkProc)PacketIF_QueuedPacketWP, this);
+	 //   this->output_queue_wpid = XtAppAddWorkProc (
+		//theApplication->getApplicationContext(),
+		//(XtWorkProc)PacketIF_QueuedPacketWP, this);
 	return ;
     }
     this->_sendImmediate(string);
@@ -880,8 +880,8 @@ void PacketIF::handleStreamError(int errnum, const char *msg)
     this->stream = NULL;
 #endif
     close(this->socket);
-    if (this->inputHandlerId != 0)
-	this->removeInputHandler();
+ //   if (this->inputHandlerId != 0)
+	//this->removeInputHandler();
 }
 
 /*****************************************************************************/
@@ -1804,24 +1804,24 @@ error:
 
 void PacketIF::installInputHandler()
 {
-    ASSERT(this->inputHandlerId == 0);
+    //ASSERT(this->inputHandlerId == 0);
     ASSERT(this->socket >= 0);
-    this->inputHandlerId =
-            XtAppAddInput(theApplication->getApplicationContext(),
-                      this->socket,
-#if		defined(DXD_WIN)
-			  (XtPointer)XtInputReadWinsock,
-#else
-		      (XtPointer)XtInputReadMask,
-#endif
-                      (XtInputCallbackProc)PacketIF_ProcessSocketInputICB,
-                      (XtPointer) this);
+//    this->inputHandlerId =
+//            XtAppAddInput(theApplication->getApplicationContext(),
+//                      this->socket,
+//#if		defined(DXD_WIN)
+//			  (XtPointer)XtInputReadWinsock,
+//#else
+//		      (XtPointer)XtInputReadMask,
+//#endif
+//                      (XtInputCallbackProc)PacketIF_ProcessSocketInputICB,
+//                      (XtPointer) this);
 }
 void PacketIF::removeInputHandler()
 {
-    ASSERT(this->inputHandlerId != 0);
-    XtRemoveInput(this->inputHandlerId);
-    this->inputHandlerId = 0;
+    //ASSERT(this->inputHandlerId != 0);
+    //XtRemoveInput(this->inputHandlerId);
+    //this->inputHandlerId = 0;
 }
 //
 // Return true if packet handling is currently stalled.

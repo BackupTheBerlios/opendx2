@@ -45,7 +45,7 @@ class VPEPage : public EditorWorkSpace, public WorkSpacePage
 
   public:
 
-    VPEPage(const char *name, Widget parent, WorkSpaceInfo *info, 
+    VPEPage(const char *name, WorkSpaceInfo *info, 
 			EditorWindow *editor, WorkSpaceRoot* root);
  
     ~VPEPage(){

@@ -33,7 +33,6 @@
 #include "ControlPanelAccessDialog.h"
 #include "ErrorDialogManager.h"
 #include "NoUndoDXWindowCommand.h"
-#include "anchor.bm"
 #include "OpenFileCommand.h"
 #include "ListIterator.h"
 //#include "CascadeMenu.h"

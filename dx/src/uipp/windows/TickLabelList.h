@@ -23,19 +23,19 @@
 //
 #define ClassTickLabelList "TickLabelList"
 
-extern "C" void TickLabelList_ButtonEH(Widget, XtPointer, XEvent*, Boolean*);
-extern "C" void TickLabelList_DeleteAllCB(Widget, XtPointer, XtPointer);
-extern "C" void TickLabelList_AppendCB(Widget, XtPointer, XtPointer);
-extern "C" void TickLabelList_ResizeTicksCB(Widget, XtPointer, XtPointer);
-
-extern "C" void TickLabelList_AppendAfterSelCB(Widget, XtPointer, XtPointer);
-extern "C" void TickLabelList_InsertAboveSelCB(Widget, XtPointer, XtPointer);
-extern "C" void TickLabelList_DeleteSelCB(Widget, XtPointer, XtPointer);
-
-extern "C" void TickLabelList_SortUpCB(Widget, XtPointer, XtPointer);
-extern "C" void TickLabelList_SortDownCB(Widget, XtPointer, XtPointer);
-
-extern "C" int TickLabelList_SortFunc (const void* e1, const void* e2);
+//extern "C" void TickLabelList_ButtonEH(Widget, XtPointer, XEvent*, Boolean*);
+//extern "C" void TickLabelList_DeleteAllCB(Widget, XtPointer, XtPointer);
+//extern "C" void TickLabelList_AppendCB(Widget, XtPointer, XtPointer);
+//extern "C" void TickLabelList_ResizeTicksCB(Widget, XtPointer, XtPointer);
+//
+//extern "C" void TickLabelList_AppendAfterSelCB(Widget, XtPointer, XtPointer);
+//extern "C" void TickLabelList_InsertAboveSelCB(Widget, XtPointer, XtPointer);
+//extern "C" void TickLabelList_DeleteSelCB(Widget, XtPointer, XtPointer);
+//
+//extern "C" void TickLabelList_SortUpCB(Widget, XtPointer, XtPointer);
+//extern "C" void TickLabelList_SortDownCB(Widget, XtPointer, XtPointer);
+//
+//extern "C" int TickLabelList_SortFunc (const void* e1, const void* e2);
 
 class TickLabel;
 class TickLabelList;
@@ -46,25 +46,25 @@ class TickLabelList : public UIComponent
   private:
 
     static boolean ClassInitialized;
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
     char *header;
 
-    Widget header_label;
-    Widget header_button;
-    Widget listRC;
-
-    Widget popupMenu;
-    Widget aasButton; // append after selection
-    Widget iasButton; // insert above selection
-    Widget dsButton;  // delete selection
-    Widget ntiButton; // new top item
-    Widget daButton;  // delete all
-#if UI_SHOULD_SORT_TICKS
-    Widget suButton;  // sort in ascending order
-    Widget sdButton;  // sort in descending order
-#endif
-    Widget labelLabel;
+//    Widget header_label;
+//    Widget header_button;
+//    Widget listRC;
+//
+//    Widget popupMenu;
+//    Widget aasButton; // append after selection
+//    Widget iasButton; // insert above selection
+//    Widget dsButton;  // delete selection
+//    Widget ntiButton; // new top item
+//    Widget daButton;  // delete all
+//#if UI_SHOULD_SORT_TICKS
+//    Widget suButton;  // sort in ascending order
+//    Widget sdButton;  // sort in descending order
+//#endif
+    //Widget labelLabel;
 
     List ticks;
 
@@ -73,7 +73,7 @@ class TickLabelList : public UIComponent
     int dirty;
 
     double *oldDvals;
-    String oldString;
+    char* oldString;
 
     static void SelectCB (TickLabel*, void*);
     TickListModifyCB  tlmcb;
@@ -82,18 +82,18 @@ class TickLabelList : public UIComponent
     void resizeCallback();
 
   protected:
-    friend void TickLabelList_ButtonEH(Widget, XtPointer, XEvent*, Boolean*);
-    friend void TickLabelList_DeleteAllCB(Widget, XtPointer, XtPointer);
-    friend void TickLabelList_AppendCB(Widget, XtPointer, XtPointer);
-    friend void TickLabelList_ResizeTicksCB(Widget, XtPointer, XtPointer);
+    //friend void TickLabelList_ButtonEH(Widget, XtPointer, XEvent*, Boolean*);
+    //friend void TickLabelList_DeleteAllCB(Widget, XtPointer, XtPointer);
+    //friend void TickLabelList_AppendCB(Widget, XtPointer, XtPointer);
+    //friend void TickLabelList_ResizeTicksCB(Widget, XtPointer, XtPointer);
 
-    friend void TickLabelList_AppendAfterSelCB(Widget, XtPointer, XtPointer);
-    friend void TickLabelList_InsertAboveSelCB(Widget, XtPointer, XtPointer);
-    friend void TickLabelList_DeleteSelCB(Widget, XtPointer, XtPointer);
-    friend void TickLabelList_SortUpCB(Widget, XtPointer, XtPointer);
-    friend void TickLabelList_SortDownCB(Widget, XtPointer, XtPointer);
+    //friend void TickLabelList_AppendAfterSelCB(Widget, XtPointer, XtPointer);
+    //friend void TickLabelList_InsertAboveSelCB(Widget, XtPointer, XtPointer);
+    //friend void TickLabelList_DeleteSelCB(Widget, XtPointer, XtPointer);
+    //friend void TickLabelList_SortUpCB(Widget, XtPointer, XtPointer);
+    //friend void TickLabelList_SortDownCB(Widget, XtPointer, XtPointer);
 
-    friend int TickLabelList_SortFunc (const void* e1, const void* e2);
+    //friend int TickLabelList_SortFunc (const void* e1, const void* e2);
 
     void sortList(boolean up);
 
@@ -105,7 +105,7 @@ class TickLabelList : public UIComponent
     void setText (int pos, char *str);
     void setListSize (int size);
 
-    void createList (Widget parent);
+    void createList (void);
     void createLine (double dval, const char *str, int pos);
 
     void clear();

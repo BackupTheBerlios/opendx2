@@ -27,16 +27,16 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void FindToolDialog_TextVerifyCB(Widget, XtPointer, XtPointer);
-extern "C" void FindToolDialog_DefaultCB(Widget, XtPointer, XtPointer);
-extern "C" void FindToolDialog_SelectCB(Widget, XtPointer, XtPointer);
-extern "C" void FindToolDialog_TextChangeCB(Widget, XtPointer, XtPointer);
-extern "C" void FindToolDialog_RestoreCB(Widget, XtPointer, XtPointer);
-extern "C" void FindToolDialog_CloseCB(Widget, XtPointer, XtPointer);
-extern "C" void FindToolDialog_UndoCB(Widget, XtPointer, XtPointer);
-extern "C" void FindToolDialog_RedoCB(Widget, XtPointer, XtPointer);
-extern "C" void FindToolDialog_FindCB(Widget, XtPointer, XtPointer);
-extern "C" void FindToolDialog_PopdownCB(Widget, XtPointer, XtPointer);
+//extern "C" void FindToolDialog_TextVerifyCB(Widget, XtPointer, XtPointer);
+//extern "C" void FindToolDialog_DefaultCB(Widget, XtPointer, XtPointer);
+//extern "C" void FindToolDialog_SelectCB(Widget, XtPointer, XtPointer);
+//extern "C" void FindToolDialog_TextChangeCB(Widget, XtPointer, XtPointer);
+//extern "C" void FindToolDialog_RestoreCB(Widget, XtPointer, XtPointer);
+//extern "C" void FindToolDialog_CloseCB(Widget, XtPointer, XtPointer);
+//extern "C" void FindToolDialog_UndoCB(Widget, XtPointer, XtPointer);
+//extern "C" void FindToolDialog_RedoCB(Widget, XtPointer, XtPointer);
+//extern "C" void FindToolDialog_FindCB(Widget, XtPointer, XtPointer);
+//extern "C" void FindToolDialog_PopdownCB(Widget, XtPointer, XtPointer);
 
 class ButtonInterface;
 class CommandInterface;
@@ -57,7 +57,7 @@ class FindToolDialog : public Dialog
     // Private member data:
     //
     static boolean ClassInitialized;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     List   *moduleList;
     char   lastName[40];
@@ -68,13 +68,13 @@ class FindToolDialog : public Dialog
     boolean complete;
     FindStack *redoStack, *undoStack;
 
-    Widget closebtn;
-    Widget undobtn;
-    Widget redobtn;
-    Widget restorebtn;
-    Widget findbtn;
-    Widget text;
-    Widget list;
+    //Widget closebtn;
+    //Widget undobtn;
+    //Widget redobtn;
+    //Widget restorebtn;
+    //Widget findbtn;
+    //Widget text;
+    //Widget list;
 
     EditorWindow* editor;
     WarningDialogManager* warningDialog;
@@ -84,19 +84,19 @@ class FindToolDialog : public Dialog
     // Protected member data:
     //
 
-    friend void FindToolDialog_PopdownCB(Widget, XtPointer , XtPointer);
-    friend void FindToolDialog_FindCB(Widget, XtPointer , XtPointer);
-    friend void FindToolDialog_RedoCB(Widget, XtPointer , XtPointer);
-    friend void FindToolDialog_UndoCB(Widget, XtPointer , XtPointer);
-    friend void FindToolDialog_CloseCB(Widget, XtPointer , XtPointer);
-    friend void FindToolDialog_RestoreCB(Widget, XtPointer , XtPointer);
-    friend void FindToolDialog_TextChangeCB(Widget, XtPointer , XtPointer);
-    friend void FindToolDialog_SelectCB(Widget, XtPointer , XtPointer);
-    friend void FindToolDialog_DefaultCB(Widget, XtPointer , XtPointer);
-    friend void FindToolDialog_TextVerifyCB(Widget, XtPointer , XtPointer);
+    //friend void FindToolDialog_PopdownCB(Widget, XtPointer , XtPointer);
+    //friend void FindToolDialog_FindCB(Widget, XtPointer , XtPointer);
+    //friend void FindToolDialog_RedoCB(Widget, XtPointer , XtPointer);
+    //friend void FindToolDialog_UndoCB(Widget, XtPointer , XtPointer);
+    //friend void FindToolDialog_CloseCB(Widget, XtPointer , XtPointer);
+    //friend void FindToolDialog_RestoreCB(Widget, XtPointer , XtPointer);
+    //friend void FindToolDialog_TextChangeCB(Widget, XtPointer , XtPointer);
+    //friend void FindToolDialog_SelectCB(Widget, XtPointer , XtPointer);
+    //friend void FindToolDialog_DefaultCB(Widget, XtPointer , XtPointer);
+    //friend void FindToolDialog_TextVerifyCB(Widget, XtPointer , XtPointer);
 
     int selectNode(char* name, int instance, boolean newNode = TRUE);
-    Widget createDialog(Widget);
+    void createDialog(void);
 
     void	restoreSens(boolean);
     void	redoSens(boolean);
@@ -107,7 +107,7 @@ class FindToolDialog : public Dialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
 

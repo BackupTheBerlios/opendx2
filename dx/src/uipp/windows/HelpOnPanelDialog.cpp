@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #include "DXStrings.h"
@@ -17,20 +17,19 @@
 
 boolean HelpOnPanelDialog::ClassInitialized = FALSE;
 
-String HelpOnPanelDialog::DefaultResources[] =
-{
-        "*dialogTitle:     		Help on Control Panel...",
-        NULL
-};
+//String HelpOnPanelDialog::DefaultResources[] =
+//{
+//        "*dialogTitle:     		Help on Control Panel...",
+//        NULL
+//};
 
-HelpOnPanelDialog::HelpOnPanelDialog(Widget parent, ControlPanel *cp) : 
-				SetPanelCommentDialog("helpOnPanel",
-				parent, TRUE, cp)
+HelpOnPanelDialog::HelpOnPanelDialog(ControlPanel *cp) : 
+				SetPanelCommentDialog("helpOnPanel", TRUE, cp)
 {
     if (NOT HelpOnPanelDialog::ClassInitialized)
     {
         HelpOnPanelDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
@@ -54,8 +53,8 @@ char *HelpOnPanelDialog::getDialogTitle()
 //
 // Install the default resources for this class.
 //
-void HelpOnPanelDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, HelpOnPanelDialog::DefaultResources);
-    this->SetPanelCommentDialog::installDefaultResources( baseWidget);
-}
+//void HelpOnPanelDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, HelpOnPanelDialog::DefaultResources);
+//    this->SetPanelCommentDialog::installDefaultResources( baseWidget);
+//}

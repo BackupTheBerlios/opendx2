@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 
@@ -19,21 +19,21 @@
 #include "Application.h"
 
 boolean SetBGColorDialog::ClassInitialized = FALSE;
-String  SetBGColorDialog::DefaultResources[] =
-{
-    "*dialogTitle:                      Change Background Color...",
-    "*nameLabel.labelString:            Background Color:",
-    NULL
-};
+//String  SetBGColorDialog::DefaultResources[] =
+//{
+//    "*dialogTitle:                      Change Background Color...",
+//    "*nameLabel.labelString:            Background Color:",
+//    NULL
+//};
 SetBGColorDialog::SetBGColorDialog(ImageWindow *image) :
-    SetNameDialog("setBGColorDialog", image->getRootWidget())
+    SetNameDialog("setBGColorDialog")
 {
     this->imageWindow = image;
 
     if (NOT SetBGColorDialog::ClassInitialized)
     {
         SetBGColorDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
@@ -45,11 +45,11 @@ SetBGColorDialog::~SetBGColorDialog()
 //
 // Install the default resources for this class.
 //
-void SetBGColorDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, SetBGColorDialog::DefaultResources);
-    this->SetNameDialog::installDefaultResources( baseWidget);
-}
+//void SetBGColorDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, SetBGColorDialog::DefaultResources);
+//    this->SetNameDialog::installDefaultResources( baseWidget);
+//}
 boolean SetBGColorDialog::saveText(const char *s)
 {
     if (s && !IsBlankString(s))

@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #include "ImageFormatYUV.h"
@@ -23,9 +23,9 @@
 
 boolean ImageFormatYUV::ClassInitialized = FALSE;
 
-String ImageFormatYUV::DefaultResources[] = {
-    NUL(char*)
-};
+//String ImageFormatYUV::DefaultResources[] = {
+//    NUL(char*)
+//};
 
 
 ImageFormatYUV::ImageFormatYUV (ImageFormatDialog* dialog) : 
@@ -42,12 +42,12 @@ ImageFormatYUV::~ImageFormatYUV()
 void ImageFormatYUV::initialize()
 {
     if (!ImageFormatYUV::ClassInitialized) {
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    PixelImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormatYUV::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    PixelImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormatYUV::DefaultResources);
 	ImageFormatYUV::ClassInitialized = TRUE;
     }
 }

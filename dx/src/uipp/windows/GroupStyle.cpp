@@ -8,8 +8,6 @@
 
 #include <dxconfig.h>
 
-
-
 #include "Network.h"
 #include "PageGroupManager.h"
 #include "ProcessGroupManager.h"

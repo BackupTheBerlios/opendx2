@@ -488,8 +488,8 @@ boolean ImageNode::sendValues(boolean ignoreDirty)
     if (sendMacro && (ignoreDirty || this->macroDirty))
     {
 	DXPacketIF *pif = theDXApplication->getPacketIF();
-	if (pif == NULL || !this->sendMacro(pif))
-	    return FALSE;
+	//if (pif == NULL || !this->sendMacro(pif))
+	//    return FALSE;
 	this->macroDirty = FALSE;
     }
     return this->DisplayNode::sendValues(ignoreDirty);
@@ -518,8 +518,8 @@ boolean ImageNode::printValues(FILE *f, const char *prefix, PrintType dest)
 	    break;
 	}
     if (sendMacro)
-	if (!this->printMacro(f))
-	    return FALSE;
+	//if (!this->printMacro(f))
+	//    return FALSE;
    return DisplayNode::printValues(f, prefix, dest);
 }
 

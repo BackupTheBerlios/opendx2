@@ -35,8 +35,8 @@ class SetInteractorNameDialog : public SetNameDialog
     //
     // Private member data:
     //
-    static Boolean ClassInitialized;
-    static String  DefaultResources[];
+    static boolean ClassInitialized;
+    //static String  DefaultResources[];
 
     ControlPanel *panel;
 
@@ -53,9 +53,9 @@ class SetInteractorNameDialog : public SetNameDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
-    virtual Widget createDialog (Widget parent);
+    virtual void createDialog ();
 
   public:
     //

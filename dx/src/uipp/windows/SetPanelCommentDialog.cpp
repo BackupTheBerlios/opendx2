@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #include "DXStrings.h"
@@ -17,26 +17,26 @@
 
 boolean SetPanelCommentDialog::ClassInitialized = FALSE;
 
-String SetPanelCommentDialog::DefaultResources[] =
-{
-        "*dialogTitle:     		Control Panel Comment...",
-	"*nameLabel.labelString:	Panel Comment:",
-        NULL
-};
+//String SetPanelCommentDialog::DefaultResources[] =
+//{
+//        "*dialogTitle:     		Control Panel Comment...",
+//	"*nameLabel.labelString:	Panel Comment:",
+//        NULL
+//};
 
 SetPanelCommentDialog::SetPanelCommentDialog(
-				const char *name, Widget parent,
+				const char *name,
 				boolean readonly, ControlPanel *cp) : 
-				TextEditDialog(name, parent, readonly)
+				TextEditDialog(name, readonly)
 {
     // Any initializations here, need to go in the other constructor also.
     this->controlPanel = cp;
 }
 
-SetPanelCommentDialog::SetPanelCommentDialog(Widget parent,
+SetPanelCommentDialog::SetPanelCommentDialog(
 				boolean readonly, ControlPanel *cp) : 
 				TextEditDialog("setPanelComment",
-				parent, readonly)
+				readonly)
 {
     // Any initializations here, need to go in the other constructor also.
     this->controlPanel = cp;
@@ -44,7 +44,7 @@ SetPanelCommentDialog::SetPanelCommentDialog(Widget parent,
     if (NOT SetPanelCommentDialog::ClassInitialized)
     {
         SetPanelCommentDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
@@ -67,12 +67,12 @@ char *SetPanelCommentDialog::getDialogTitle()
 //
 // Install the default resources for this class.
 //
-void SetPanelCommentDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget,
-				SetPanelCommentDialog::DefaultResources);
-    this->TextEditDialog::installDefaultResources( baseWidget);
-}
+//void SetPanelCommentDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget,
+//				SetPanelCommentDialog::DefaultResources);
+//    this->TextEditDialog::installDefaultResources( baseWidget);
+//}
 //
 // Get the the text that is to be edited. 
 //

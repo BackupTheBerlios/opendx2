@@ -10,8 +10,6 @@
 #include "defines.h"
 
 
-
-
 #ifndef _CreateMacroDialog_h
 #define _CreateMacroDialog_h
 
@@ -27,9 +25,9 @@
 
 class EditorWindow;
 
-extern "C" void CreateMacroDialog_fsdButtonCB(Widget w,
-					   XtPointer clientData,
-					   XtPointer callData);
+//extern "C" void CreateMacroDialog_fsdButtonCB(Widget w,
+//					   XtPointer clientData,
+//					   XtPointer callData);
 
 //
 // CreateMacroDialog class definition:
@@ -49,29 +47,29 @@ class CreateMacroDialog : public SetMacroNameDialog
     //
     // Protected member data:
     //
-    static String DefaultResources[];
+    //static String DefaultResources[];
     
-    Widget filename;
+    //Widget filename;
     TextFile *textFile;
 
     virtual boolean okCallback(Dialog *d);
     
     virtual boolean createMacro();
 
-    virtual Widget createDialog(Widget parent);
+    virtual void createDialog();
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    CreateMacroDialog(Widget parent, EditorWindow *e);
+    CreateMacroDialog(EditorWindow *e);
 
     //
     // Destructor:

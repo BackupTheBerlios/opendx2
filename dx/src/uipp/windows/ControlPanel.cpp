@@ -7,22 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
-#include <Xm/CascadeB.h>
-#include <Xm/DrawingA.h>
-#include <Xm/Frame.h>
-#include <Xm/Form.h>
-#include <Xm/Label.h>
-#include <Xm/List.h>
-#include <Xm/RowColumn.h>
-#include <Xm/ScrolledW.h>
-#include <Xm/Separator.h>
-#include <Xm/PushB.h>
-#include <Xm/PushBG.h>
 
 #include "ControlPanel.h"
 #include "ControlPanelWorkSpace.h"
@@ -40,8 +29,6 @@
 #include "Interactor.h"
 #include "EditorWindow.h"
 #include "WorkSpace.h"
-#include "../widgets/XmDX.h"
-#include "../widgets/WorkspaceW.h"
 #include "StandIn.h"
 #include "SetPanelNameDialog.h"
 #include "SetPanelCommentDialog.h"
@@ -61,8 +48,6 @@
 #include "QuestionDialogManager.h"
 
 #define ICON_NAME	"Control Panel"
-
-#include "CPDefaultResources.h"
 
 //
 // Matting
@@ -85,15 +70,15 @@ ControlPanel::ControlPanel(Network* network) :
     //
     // Initialize member data.
     //
-    this->fileMenu    = NUL(Widget);
-    this->editMenu    = NUL(Widget);
-    this->panelsMenu  = NUL(Widget);
-    this->optionsMenu = NUL(Widget);
+    //this->fileMenu    = NUL(Widget);
+    //this->editMenu    = NUL(Widget);
+    //this->panelsMenu  = NUL(Widget);
+    //this->optionsMenu = NUL(Widget);
 
-    this->fileMenuPulldown    = NUL(Widget);
-    this->editMenuPulldown    = NUL(Widget);
-    this->panelsMenuPulldown  = NUL(Widget);
-    this->optionsMenuPulldown = NUL(Widget);
+    //this->fileMenuPulldown    = NUL(Widget);
+    //this->editMenuPulldown    = NUL(Widget);
+    //this->panelsMenuPulldown  = NUL(Widget);
+    //this->optionsMenuPulldown = NUL(Widget);
 	
     this->closeOption        = NUL(CommandInterface*);
     this->closeAllOption     = NUL(CommandInterface*);
@@ -273,17 +258,17 @@ ControlPanel::ControlPanel(Network* network) :
     this->setNameDialog = NULL;
     this->setCommentDialog = NULL;
     this->helpOnPanelDialog = NULL;
-    this->setLayoutButton = NULL;
+//    this->setLayoutButton = NULL;
     this->gridDialog   = NULL;
     this->setLabelDialog = NULL;
-    this->stylePulldown = NULL;
-    this->setStyleButton = NULL;
-    this->setDimensionalityButton = NULL;
-    this->addButton = NULL;
+//    this->stylePulldown = NULL;
+//    this->setStyleButton = NULL;
+//    this->setDimensionalityButton = NULL;
+//    this->addButton = NULL;
 
     this->developerStyle = TRUE;
     this->displayedStyle = NeverSet;
-    this->develModeDiagWidth = this->develModeDiagHeight = 0;
+//    this->develModeDiagWidth = this->develModeDiagHeight = 0;
     this->develModeGridding = FALSE;
     this->lastObjectParsed = NUL(WorkSpaceComponent*);
     // this->updated = TRUE;
@@ -295,7 +280,7 @@ ControlPanel::ControlPanel(Network* network) :
     {
 	ASSERT(theApplication);
         ControlPanel::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
     //
@@ -455,11 +440,11 @@ ControlPanel::~ControlPanel()
 //
 // Install the default resources for this class.
 //
-void ControlPanel::installDefaultResources(Widget baseWidget)
-{
-    this->setDefaultResources(baseWidget, ControlPanel::DefaultResources);
-    this->DXWindow::installDefaultResources(baseWidget);
-}
+//void ControlPanel::installDefaultResources(Widget baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, ControlPanel::DefaultResources);
+//    this->DXWindow::installDefaultResources(baseWidget);
+//}
 
 void ControlPanel::initialize()
 {
@@ -473,8 +458,8 @@ void ControlPanel::initialize()
 	// The Menubar and the CommandArea have both been added at
 	// this point and managed; however for an initial CP
 	// we don't want the command area initialized--so unmanage it.
-	Widget w = this->getCommandArea();
-	if (w) XtUnmanageChild(w);
+	//Widget w = this->getCommandArea();
+	//if (w) XtUnmanageChild(w);
     }
     //
     // FIXME: should this be done in manage() and then we could get
@@ -520,8 +505,8 @@ void ControlPanel::getNextInteractorPosition(int *x, int *y)
 		// future for interactors that have never been touched.
 		if ((last_width==0) && (last_height==0)) {
 		    Interactor *ntr = ii->getInteractor();
-		    if (ntr)
-			ntr->GetDimensions(ntr->getRootWidget(),&last_height,&last_width);
+		 //   if (ntr)
+			//ntr->GetDimensions(ntr->getRootWidget(),&last_height,&last_width);
 		}
 	    }
 	}
@@ -552,7 +537,7 @@ void ControlPanel::getNextInteractorPosition(int *x, int *y)
 	// of the dimensions of the Workspace which are always >= c.p. dimensions
 	//
 	this->manage();
-	this->getWorkSpace()->getXYSize(&ws_width,&ws_height);
+	//this->getWorkSpace()->getXYSize(&ws_width,&ws_height);
     }
 
     *x = next_x;
@@ -574,7 +559,8 @@ void ControlPanel::addSelectedInteractorNodes()
     if (l) {
 	ListIterator iterator;
 	InteractorNode *n;
-        int next_x,next_y, ws_width, ws_height;
+        int next_x,next_y;
+		//int ws_width, ws_height;
 	//
 	// Now place all of the rest in the control panel. 
 	// Interactors are placed in columns from top to bottom and when
@@ -582,7 +568,7 @@ void ControlPanel::addSelectedInteractorNodes()
 	// right, starting at the top again.
 	//
 	iterator.setList(*l);
-	this->getWorkSpace()->getXYSize(&ws_width,&ws_height);
+	//this->getWorkSpace()->getXYSize(&ws_width,&ws_height);
 	next_x = next_y = -1;
 	while ( (n = (InteractorNode*)iterator.getNext()) ) {
 	    this->getNextInteractorPosition(&next_x, &next_y);
@@ -618,17 +604,17 @@ void ControlPanel::manage()
     // If they always use values from the .cfg file, then they look goofy reading
     // in 2.1.5 files with huge interactors.
     //
-    if ((!XtIsRealized(this->getRootWidget())) && (!this->developerStyle)) {
-	XtRealizeWidget(this->getRootWidget());
-    }
+ //   if ((!XtIsRealized(this->getRootWidget())) && (!this->developerStyle)) {
+	//XtRealizeWidget(this->getRootWidget());
+ //   }
    
     //
     // Turn off Workspace space wars while adding interactors, if enabled
     //
-    Boolean overlap;
-    XtVaGetValues(this->getWorkSpaceWidget(), XmNallowOverlap, &overlap, NULL);
-    if(!overlap)
-	XtVaSetValues(this->getWorkSpaceWidget(), XmNallowOverlap, True, NULL);
+ //   Boolean overlap;
+ //   XtVaGetValues(this->getWorkSpaceWidget(), XmNallowOverlap, &overlap, NULL);
+ //   if(!overlap)
+	//XtVaSetValues(this->getWorkSpaceWidget(), XmNallowOverlap, True, NULL);
     //
     // Display all the interactors that sit in this control panel. 
     //
@@ -648,11 +634,11 @@ void ControlPanel::manage()
     //
     // Restore Workspace space wars state, if neccessary
     //
-    if(!overlap)
-	XtVaSetValues(this->getWorkSpaceWidget(), XmNallowOverlap, False,NULL);
+    //if(!overlap)
+	//XtVaSetValues(this->getWorkSpaceWidget(), XmNallowOverlap, False,NULL);
 
 
-    XtManageChild(this->getWorkSpaceWidget());
+ //   XtManageChild(this->getWorkSpaceWidget());
 
     //
     // Things get created using developerStyle==TRUE.  Reason: don't want to
@@ -677,10 +663,10 @@ void ControlPanel::manage()
 	// I call mwm on the rs6000 broken because you can't unset min{Width,Height}
 	// if they were set prior to manage().
 	//
-	Widget diag = this->getRootWidget();
-	Dimension width, height;
-	XtVaGetValues (diag, XmNwidth, &width, XmNheight, &height, NULL);
-	XtVaSetValues (diag, XmNminWidth, width, XmNminHeight, height, NULL);
+	//Widget diag = this->getRootWidget();
+	//Dimension width, height;
+	//XtVaGetValues (diag, XmNwidth, &width, XmNheight, &height, NULL);
+	//XtVaSetValues (diag, XmNminWidth, width, XmNminHeight, height, NULL);
     }
 #   endif
 
@@ -693,12 +679,12 @@ void ControlPanel::manage()
 void ControlPanel::unmanage()
 {
 #ifndef AIX312_MWM_IS_FIXED
-    Widget diag = this->getRootWidget();
-    XtVaSetValues (diag, 
-	XmNminWidth, XtUnspecifiedShellInt, 
-	XmNminHeight, XtUnspecifiedShellInt, 
-    NULL);
-    XSync(XtDisplay(diag), False);
+ //   Widget diag = this->getRootWidget();
+ //   XtVaSetValues (diag, 
+	//XmNminWidth, XtUnspecifiedShellInt, 
+	//XmNminHeight, XtUnspecifiedShellInt, 
+ //   NULL);
+ //   XSync(XtDisplay(diag), False);
 #endif
     this->DXWindow::unmanage();
 
@@ -707,758 +693,758 @@ void ControlPanel::unmanage()
     theDXApplication->notifyPanelChanged();
 }
 
-Widget ControlPanel::createWorkArea(Widget parent)
-{
-    Widget    frame;
-    Widget    hBar;
-    Widget    vBar;
-    Dimension height;
-    Dimension width;
-    Dimension thickness;
-
-    ASSERT(parent);
-
-    //
-    // Create the outer frame and form.
-    //
-    this->scrolledWindowFrame = frame =
-	XtVaCreateManagedWidget
-	    ("scrolledWindowFrame",
-	     xmFrameWidgetClass,
-	     parent,
-	     XmNshadowType,   XmSHADOW_OUT,
-	     XmNmarginHeight, SCRWF_MARGIN,
-	     XmNmarginWidth,  SCRWF_MARGIN,
-	     NULL);
-
-    //
-    // Create the scrolled window.
-    //
-    this->scrolledWindow =
-	XtVaCreateManagedWidget
-	    ("scrolledWindow",
-	     xmScrolledWindowWidgetClass,
-	     frame,
-	     XmNscrollBarDisplayPolicy, XmAS_NEEDED,
-	     XmNscrollingPolicy,        XmAUTOMATIC,
-	     XmNvisualPolicy,           XmVARIABLE,
-	     NULL);
-
-    //
-    // Create the canvas.
-    //
-    this->workSpace = new ControlPanelWorkSpace("panelCanvas", 
-					this->scrolledWindow,  
-					&this->workSpaceInfo, 
-					this);
-
-    this->workSpace->initializeRootWidget();	
-    Boolean overlap;
-    XtVaGetValues(this->getWorkSpaceWidget(), XmNallowOverlap, &overlap, NULL);
-    this->allowOverlap = (boolean)overlap;
-
-    XtVaSetValues(this->scrolledWindow, XmNworkWindow, 
-				this->workSpace->getRootWidget(), NULL);
-
-    //
-    // Adjust the horizontal/vertical scrollbars to get rid of
-    // highlighting feature.
-    //
-    XtVaGetValues(this->scrolledWindow,
-		  XmNhorizontalScrollBar, &hBar,
-		  XmNverticalScrollBar,   &vBar,
-		  NULL);
-
-    XtVaGetValues(hBar,
-		  XmNhighlightThickness, &thickness,
-		  XmNheight,             &height,
-		  NULL);
-    height -= thickness * 2;
-    XtVaSetValues(hBar,
-		  XmNhighlightThickness, 0,
-		  XmNheight,             height,
-		  NULL);
-
-    XtVaGetValues(vBar,
-		  XmNhighlightThickness, &thickness,
-		  XmNwidth,              &width,
-		  NULL);
-    width -= thickness * 2;
-    XtVaSetValues(vBar,
-		  XmNhighlightThickness, 0,
-		  XmNwidth,              width,
-		  NULL);
-
-    //
-    // Return the topmost widget of the work area.
-    //
-    return frame;
-}
-
-
-void ControlPanel::createFileMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget pulldown;
-    int    buttons = 0;
-
-    if (!theDXApplication->appAllowsPanelAccess())
-	return;	// The File menu is empty
-
-    //
-    // Create "File" menu and options.
-    //
-    pulldown =
-	this->fileMenuPulldown =
-	    XmCreatePulldownMenu(parent, "fileMenuPulldown", NUL(ArgList), 0);
-    this->fileMenu =
-	XtVaCreateManagedWidget
-	    ("fileMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    if (buttons)
-	XtVaCreateManagedWidget
-	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    //
-    // If the application does not allow panel access from the pulldown 
-    // menus (and requires that they are popped up at startup), then
-    // be sure that the user can't close the window.  
-    //
-    if (theDXApplication->appAllowsPanelAccess()) {
-	this->closeOption =
-	    new ButtonInterface(pulldown, "panelCloseOption", this->closeCmd);
-
-	this->closeAllOption =
-	    new ButtonInterface(pulldown, "panelCloseAllOption", 
-			    this->network->getCloseAllPanelsCommand());
-    }
-}
-
-
-void ControlPanel::createEditMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget pulldown, layoutPulldown;
-    int    i, buttons;
-    
-
-
-    //
-    // Create "Edit" menu and options.
-    //
-    pulldown =
-	this->editMenuPulldown =
-	    XmCreatePulldownMenu(parent, "editMenuPulldown", NUL(ArgList), 0);
-    this->editMenu =
-	XtVaCreateManagedWidget
-	    ("editMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    //
-    // 'Set the style of an interactor' pulldown option. 
-    //
-    if (theDXApplication->appAllowsInteractorEdits()) {
-	//
-	// Style 
-	//
-	this->stylePulldown =
-		XmCreatePulldownMenu
-		    (pulldown, "stylePulldown", NUL(ArgList), 0);
-
-	this->setStyleButton =
-	    XtVaCreateManagedWidget
-		("panelSetStyleButton",
-		 xmCascadeButtonWidgetClass,
-		 pulldown,
-		 XmNsubMenuId, this->stylePulldown,
-		 XmNsensitive, TRUE,
-		 NULL);
-
-	XtAddCallback(pulldown,
-		  XmNmapCallback,
-		  (XtCallbackProc)ControlPanel_EditMenuMapCB,
-		  (XtPointer)this);
-
-	//
-	// Dimensionality 
-	//
-	Widget dimensionalityPulldown =
-		XmCreatePulldownMenu
-		    (pulldown, "dimensionalityPulldown", NUL(ArgList), 0);
-
-	this->setDimensionalityButton =
-	    XtVaCreateManagedWidget
-		("panelSetDimensionalityButton",
-		 xmCascadeButtonWidgetClass,
-		 pulldown,
-		 XmNsubMenuId, dimensionalityPulldown,
-		 XmNsensitive, TRUE,
-		 NULL);
-
-	for (i=1 ; i<=3 ; i++) {
-	    char buf[32];
-	    sprintf(buf,"set%dDOption",i);
-	    Widget btn = XmCreatePushButton(dimensionalityPulldown, 
-						buf, NULL, 0);
-	    XtVaSetValues(btn, XmNuserData, i, NULL);
-	    XtAddCallback(btn,
-		      XmNactivateCallback,
-		      (XtCallbackProc)ControlPanel_SetDimensionsCB,
-		      (XtPointer)this);
-	    this->dimensionalityList.appendElement((void*)btn);
-	    XtManageChild(btn);
-	}
-
-#if 0
-	// Don't install this twice?
-	// I would just take it out, but we are just before release 3.1
-	XtAddCallback(pulldown,
-		  XmNmapCallback,
-		  (XtCallbackProc)ControlPanel_EditMenuMapCB,
-		  (XtPointer)this);
-#endif
-
-
-	//
-	// Layout (horizontal/vertical)
-	//
-	layoutPulldown =
-		XmCreatePulldownMenu
-		    (pulldown, "layoutPulldown", NUL(ArgList), 0);
-
-	ASSERT(this->verticalLayoutCmd);
-	this->verticalLayoutOption = new ButtonInterface(layoutPulldown, 
-			    "panelVerticalOption", this->verticalLayoutCmd);
-
-	ASSERT(this->horizontalLayoutCmd);
-	this->horizontalLayoutOption = new ButtonInterface(layoutPulldown, 
-			    "panelHorizontalOption", this->horizontalLayoutCmd);
-
-	this->setLayoutButton =
-	    XtVaCreateManagedWidget
-		("panelSetLayoutButton",
-		 xmCascadeButtonWidgetClass,
-		 pulldown,
-		 XmNsubMenuId, layoutPulldown,
-		 XmNsensitive, False,
-		 NULL);
-    } 
-
-    //
-    // 
-    //
-    buttons = 0;
-    if (this->setSelectedInteractorAttributesCmd) {
-	this->setAttributesOption =
-	    new ButtonInterface(pulldown, "panelSetAttributesOption", 
-			    this->setSelectedInteractorAttributesCmd);
-  	buttons = 1;
-    }
-
-    if (this->setSelectedInteractorLabelCmd) {
-	this->setInteractorLabelOption =
-	    new ButtonInterface
-	    (pulldown, "panelSetInteractorLabelOption", 
-			this->setSelectedInteractorLabelCmd);
-  	buttons = 1;
-    }
-
-    if (this->deleteSelectedInteractorsCmd) {
-	this->deleteOption =
-	    new ButtonInterface(pulldown, "panelDeleteOption", 
-			    this->deleteSelectedInteractorsCmd);
-  	buttons = 1;
-    }
-
-    if (theDXApplication->appAllowsInteractorEdits()) {
-	if (buttons)
-	    XtVaCreateManagedWidget
-		    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-	//
-	// Add Decorators
-	//
-	Widget addPulldown =
-		XmCreatePulldownMenu
-		    (pulldown, "addPulldown", NUL(ArgList), 0);
-
-	Dictionary *dict = DecoratorStyle::GetDecoratorStyleDictionary();
-	Dictionary *subdict;
-	DictionaryIterator di(*dict);
-	while ( (subdict = (Dictionary*)di.getNextDefinition()) ) {
-	    Arg args[4];
-	    DictionaryIterator subdi(*subdict);
-	    DecoratorStyle *ds = (DecoratorStyle*)subdi.getNextDefinition();
-	    ASSERT(ds);
-	    if (ds->allowedInVPE()) continue;
-	    char *stylename = (char*)ds->getNameString();
-	    XmString label = XmStringCreateSimple(stylename);
-	    int n = 0;
-	    XtSetArg (args[n], XmNlabelString, label); n++;
-	    XtSetArg (args[n], XmNuserData, ds); n++;
-	    Widget btn = XmCreatePushButton(addPulldown, "stylename", args, n);
-	    XtAddCallback(btn, XmNactivateCallback,
-		(XtCallbackProc)ControlPanel_PlaceDecoratorCB,
-		(XtPointer)this);
-	    XtManageChild(btn);
-	    XmStringFree(label);
-	}
-
-	this->addButton =
-	    XtVaCreateManagedWidget
-		("panelAddButton",
-		 xmCascadeButtonWidgetClass,
-		 pulldown,
-		 XmNsubMenuId, addPulldown,
-		 NULL);
-
-	XtVaCreateManagedWidget
-		("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-	buttons = 0;
-    }
-
-    if (buttons &&
-	(this->addSelectedInteractorsCmd || 
-	 this->showSelectedInteractorsCmd)) {
-	XtVaCreateManagedWidget
-		("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-    }
-
-    buttons = 0;
-    if (this->addSelectedInteractorsCmd) {
-	this->addSelectedInteractorsOption =
-	    new ButtonInterface
-		(pulldown, "panelAddSelectedInteractorsOption", 
-			    this->addSelectedInteractorsCmd);
-  	buttons = 1;
-    }
-
-
-
-    if (this->showSelectedInteractorsCmd) {
-	this->showSelectedInteractorsOption =
-	    new ButtonInterface 
-		(pulldown, "panelShowSelectedInteractorsOption", 
-			    this->showSelectedInteractorsCmd);
-  	buttons = 1;
-    }
-
-    if (this->showSelectedStandInsCmd) {
-	this->showSelectedStandInsOption =
-	    new ButtonInterface 
-		(pulldown, "panelShowSelectedStandInsOption", 
-			    this->showSelectedStandInsCmd);
-  	buttons = 1; 
-    }
-
-    if (buttons && this->setPanelCommentCmd)
-	XtVaCreateManagedWidget
-		("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    //
-    // Add a comment option pull down
-    //
-    if (this->setPanelCommentCmd)
-	this->commentOption =
-	    new ButtonInterface(pulldown, "panelCommentOption",
-					this->setPanelCommentCmd);
-}
-
-
-void ControlPanel::createPanelsMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget            pulldown;
-
-    //
-    // Create "Panels" menu and options.
-    //
-    pulldown =
-	this->panelsMenuPulldown =
-	    XmCreatePulldownMenu
-		(parent, "panelsMenuPulldown", NUL(ArgList), 0);
-    this->panelsMenu =
-	XtVaCreateManagedWidget
-	    ("panelsMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    if (theDXApplication->appAllowsOpenAllPanels()) 
-	this->openAllControlPanelsOption =
-	    new ButtonInterface
-		(pulldown,
-		 "panelOpenAllControlPanelsOption",
-		 this->network->getOpenAllPanelsCommand());
-
-   this->openControlPanelByNameMenu =
-                new CascadeMenu("panelPanelCascade",pulldown);
-
-    XtAddCallback(pulldown,
-                  XmNmapCallback,
-                  (XtCallbackProc)ControlPanel_PanelMenuMapCB,
-                  (XtPointer)this);
-
-}
-
-
-void ControlPanel::createOptionsMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget            pulldown;
-    int		      buttons = 0;
-
-    //
-    // Create "Options" menu and options.
-    //
-    pulldown =
-	this->optionsMenuPulldown =
-	    XmCreatePulldownMenu
-		(parent, "optionsMenuPulldown", NUL(ArgList), 0);
-    this->optionsMenu =
-	XtVaCreateManagedWidget
-	    ("optionsMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    if (this->hitDetectionCmd) {
-	this->hitDetectionOption =
-	    new ToggleButtonInterface(pulldown, "hitDetectionOption", 
-			    this->hitDetectionCmd, this->hit_detection);
-	buttons++;
-    }
-
-    if (this->setPanelNameCmd) {
-	this->changeControlPanelNameOption =
-	    new ButtonInterface
-		(pulldown, "panelChangeControlPanelNameOption", 
-			    this->setPanelNameCmd);
-	buttons++;
-    }
-
-    if (this->setPanelAccessCmd) {
-	this->setAccessOption =
-	    new ButtonInterface(pulldown, "panelSetAccessOption", 
-			    this->setPanelAccessCmd);
-	buttons++;
-    }
-
-    if (this->setPanelGridCmd) {
-	this->gridOption =
-	    new ButtonInterface(pulldown, "panelGridOption", 
-			    this->setPanelGridCmd);
-	buttons++;
-    }
-
-    if (this->togglePanelStyleCmd) {
-	this->styleOption =
-	    new ButtonInterface(pulldown, "panelStyleOption", 
-			    this->togglePanelStyleCmd);
-	buttons++;
-	XtAddCallback(pulldown,
-		  XmNmapCallback,
-		  (XtCallbackProc)ControlPanel_OptionsMenuMapCB,
-		  (XtPointer)this);
-    }
-
-    if (theDXApplication->appAllowsPanelOptions())  {
-	if (buttons) 
-	    XtVaCreateManagedWidget
-		    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-	this->addStartupToggleOption(pulldown);
-    }
-
-}
-
-
-void ControlPanel::createHelpMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    this->DXWindow::createHelpMenu(parent);
-
-    XtVaCreateManagedWidget("separator", xmSeparatorWidgetClass,
-                                        this->helpMenuPulldown,
-                                        NULL);
-
-    this->onVisualProgramOption = 
-	new ButtonInterface(this->helpMenuPulldown, 
-				"panelOnVisualProgramOption", 
-				this->network->getHelpOnNetworkCommand());
-    this->onControlPanelOption =
-	new ButtonInterface(this->helpMenuPulldown, 
-				"panelOnControlPanelOption", 
-				this->helpOnPanelCmd);
-}
-
-
-void ControlPanel::createMenus(Widget parent)
-{
-    ASSERT(parent);
-
-    //
-    // Create the menus.
-    //
-    this->createFileMenu(parent);
-    if (theDXApplication->appAllowsPanelEdit())
-        this->createEditMenu(parent);
-    this->createExecuteMenu(parent);
-    if (theDXApplication->appAllowsPanelAccess())
-	this->createPanelsMenu(parent);
-    if (theDXApplication->appAllowsPanelOptions())
-        this->createOptionsMenu(parent);
-    this->createHelpMenu(parent);
-
-    //
-    // Right justify the help menu (if it exists).
-    //
-    if (this->helpMenu)
-    {
-	XtVaSetValues(parent, XmNmenuHelpWidget, this->helpMenu, NULL);
-    }
-}
-
-extern "C" void ControlPanel_PanelMenuMapCB(Widget ,
-                                 XtPointer clientdata,
-                                 XtPointer )
-{
-    ControlPanel *cp = (ControlPanel*)clientdata;
-    Network *network = cp->network;
-    CascadeMenu *menu = cp->openControlPanelByNameMenu;
-    PanelAccessManager *panelMgr = cp->panelAccessManager;
-    network->fillPanelCascade(menu, panelMgr);
-}
-extern "C" void ControlPanel_OptionsMenuMapCB(Widget ,
-                                 XtPointer clientdata,
-                                 XtPointer )
-{
-    ControlPanel *cp = (ControlPanel*)clientdata;
-    Command *cmd;
-
-    if ( (cmd = cp->togglePanelStyleCmd) ) {
-	if (cp->allowDeveloperStyleChange()) 
-	    cmd->activate();
-	else
-	    cmd->deactivate();
-    }
-    
-}
-
-extern "C" void ControlPanel_SetDimensionsCB(Widget w, XtPointer clientdata,
-                               XtPointer )
-{
-    ControlPanel *cp = (ControlPanel*)clientdata;
-    cp->setDimensionsCallback(w, clientdata);
-
-}
-void ControlPanel::setDimensionsCallback(Widget w, XtPointer )
-{
-    int dim;
-    InteractorInstance *ii = NULL;
-    boolean only_one_selected =  this->findTheSelectedInteractorInstance(&ii);
-    ASSERT(only_one_selected);
-    InteractorNode *inode;
-
-    ASSERT(ii);
-    inode = (InteractorNode*)ii->getNode();
-    ASSERT(inode);
-
-    XtPointer ptr;
-    XtVaGetValues(w,XmNuserData,&ptr,0);
-    dim = (int)(long)ptr;
-    ASSERT(dim>0);
-    inode->changeDimensionality(dim);
-}
-
-extern "C" void ControlPanel_EditMenuMapCB(Widget w,
-                                 XtPointer clientdata,
-                                 XtPointer calldata)
-{
-    ControlPanel *cp = (ControlPanel*)clientdata;
-    Dictionary *dict;
-    char  *stylename;
-    InteractorInstance *ii;
-    InteractorNode *inode = NULL;
-    Widget    btn;
-
-    boolean only_one_selected =  cp->findTheSelectedInteractorInstance(&ii);
-
-
-    if (ii) 
-	inode = (InteractorNode*)ii->getNode();
-
-    if (cp->setStyleButton) {
-	ASSERT(cp->stylePulldown);
-
-	if(cp->styleList.getSize())
-	{
-	    ListIterator li(cp->styleList);
-	    while( (btn = (Widget)li.getNext()) )
-		 XtDestroyWidget(btn);
-	    cp->styleList.clear();
-	}
-
-	if (!only_one_selected) {	
-	    XtVaSetValues(cp->setStyleButton, XmNsensitive, False, NULL);
-	} else { 
-
-	    ASSERT(inode);
-	    dict = InteractorStyle::GetInteractorStyleDictionary(
-						inode->getNameString());
-
-	    ASSERT(dict);
-	    if (dict->getSize() <= 1 && cp->setStyleButton) {
-		XtVaSetValues(cp->setStyleButton, XmNsensitive, False, NULL);
-	    } else {
-
-		XtVaSetValues(cp->setStyleButton, XmNsensitive, True, NULL);
-
-		DictionaryIterator di(*dict);
-		InteractorStyle *is;
-
-		const char *current_style = ii->getStyle()->getNameString();
-		XmString label;
-
-		while ( (is = (InteractorStyle*)di.getNextDefinition()) )
-		{
-		    stylename = (char*)is->getNameString();
-		    label = XmStringCreateSimple(stylename);
-		    btn = XmCreatePushButton(cp->stylePulldown,
-					     "stylename",
-					     NULL,
-					     0);
-		    XtVaSetValues(btn,
-				  XmNlabelString, label,
-				  NULL);
-		    if (strcmp(stylename,current_style)) {
-			XtVaSetValues(btn,
-				      XmNuserData, is,
-				      NULL);
-			XtAddCallback(btn,
-				      XmNactivateCallback,
-				      (XtCallbackProc)ControlPanel_SetStyleCB,
-				      (XtPointer)ii);
-		    } else {
-			XtVaSetValues(btn, XmNsensitive, False, NULL);
-		    }
-		    cp->styleList.appendElement((void*)btn);
-		    XtManageChild(btn);
-		    XmStringFree(label);
-		}
-	    }
-   	}
-    }   // End of setStyleButton and stylePulldown configuration
-
-    if (cp->setDimensionalityButton) {
-
-	Boolean sensitive;
-	if (only_one_selected) {
-	    ASSERT(inode);
-	    boolean dyno_dim = inode->hasDynamicDimensionality();
-	    if (!dyno_dim) {
-		sensitive = False;
-	    } else {
-		sensitive = True;
-		int i=0, current_dim = inode->getComponentCount();
-		ListIterator iterator(cp->dimensionalityList); 
-		while ( (w = (Widget)iterator.getNext()) ) {
-		    if (++i == current_dim)
-			XtSetSensitive(w,False);
-		    else
-			XtSetSensitive(w,True);
-		}
-	    }
-	} else { 
-	    sensitive = False;
-	}
-	XtVaSetValues(cp->setDimensionalityButton, XmNsensitive, 
-						sensitive, NULL);
-    }   // End of setDimensionalityButton and DimensionalityPulldown 
- 	// configuration
-}
-
-extern "C" void ControlPanel_SetStyleCB(Widget w,
-                                 XtPointer clientdata,
-                                 XtPointer calldata)
-{
-    InteractorInstance *ii = (InteractorInstance*)clientdata;
-    InteractorStyle    *is;
-
-    XtVaGetValues(w, XmNuserData, &is, NULL);
-    ASSERT(is AND ii);
-
-    ii->changeStyle(is);
-
-}
-
+//Widget ControlPanel::createWorkArea(Widget parent)
+//{
+//    Widget    frame;
+//    Widget    hBar;
+//    Widget    vBar;
+//    Dimension height;
+//    Dimension width;
+//    Dimension thickness;
 //
-// Create a decorator, add it to the addingDecoratorList , 
-// its defaultWindow will be opened by the guy who manages it.
-// There will be a callback in ControlPanelWorkSpace for the button
-// click which places the decorator.  That code is tied to ControlPanel::
-// placeSelectedInteractorCallback.  That cp func now checks the
-// addingDecoratorList for decorators to add.
+//    ASSERT(parent);
 //
-extern "C" void ControlPanel_PlaceDecoratorCB(Widget w, 
-	XtPointer clientdata, XtPointer )
-{
-ControlPanel *cp = (ControlPanel*)clientdata;
-DecoratorStyle *ds;
+//    //
+//    // Create the outer frame and form.
+//    //
+//    this->scrolledWindowFrame = frame =
+//	XtVaCreateManagedWidget
+//	    ("scrolledWindowFrame",
+//	     xmFrameWidgetClass,
+//	     parent,
+//	     XmNshadowType,   XmSHADOW_OUT,
+//	     XmNmarginHeight, SCRWF_MARGIN,
+//	     XmNmarginWidth,  SCRWF_MARGIN,
+//	     NULL);
+//
+//    //
+//    // Create the scrolled window.
+//    //
+//    this->scrolledWindow =
+//	XtVaCreateManagedWidget
+//	    ("scrolledWindow",
+//	     xmScrolledWindowWidgetClass,
+//	     frame,
+//	     XmNscrollBarDisplayPolicy, XmAS_NEEDED,
+//	     XmNscrollingPolicy,        XmAUTOMATIC,
+//	     XmNvisualPolicy,           XmVARIABLE,
+//	     NULL);
+//
+//    //
+//    // Create the canvas.
+//    //
+//    this->workSpace = new ControlPanelWorkSpace("panelCanvas", 
+//					this->scrolledWindow,  
+//					&this->workSpaceInfo, 
+//					this);
+//
+//    this->workSpace->initializeRootWidget();	
+//    Boolean overlap;
+//    XtVaGetValues(this->getWorkSpaceWidget(), XmNallowOverlap, &overlap, NULL);
+//    this->allowOverlap = (boolean)overlap;
+//
+//    XtVaSetValues(this->scrolledWindow, XmNworkWindow, 
+//				this->workSpace->getRootWidget(), NULL);
+//
+//    //
+//    // Adjust the horizontal/vertical scrollbars to get rid of
+//    // highlighting feature.
+//    //
+//    XtVaGetValues(this->scrolledWindow,
+//		  XmNhorizontalScrollBar, &hBar,
+//		  XmNverticalScrollBar,   &vBar,
+//		  NULL);
+//
+//    XtVaGetValues(hBar,
+//		  XmNhighlightThickness, &thickness,
+//		  XmNheight,             &height,
+//		  NULL);
+//    height -= thickness * 2;
+//    XtVaSetValues(hBar,
+//		  XmNhighlightThickness, 0,
+//		  XmNheight,             height,
+//		  NULL);
+//
+//    XtVaGetValues(vBar,
+//		  XmNhighlightThickness, &thickness,
+//		  XmNwidth,              &width,
+//		  NULL);
+//    width -= thickness * 2;
+//    XtVaSetValues(vBar,
+//		  XmNhighlightThickness, 0,
+//		  XmNwidth,              width,
+//		  NULL);
+//
+//    //
+//    // Return the topmost widget of the work area.
+//    //
+//    return frame;
+//}
+//
+//
+//void ControlPanel::createFileMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget pulldown;
+//    int    buttons = 0;
+//
+//    if (!theDXApplication->appAllowsPanelAccess())
+//	return;	// The File menu is empty
+//
+//    //
+//    // Create "File" menu and options.
+//    //
+//    pulldown =
+//	this->fileMenuPulldown =
+//	    XmCreatePulldownMenu(parent, "fileMenuPulldown", NUL(ArgList), 0);
+//    this->fileMenu =
+//	XtVaCreateManagedWidget
+//	    ("fileMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    if (buttons)
+//	XtVaCreateManagedWidget
+//	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    //
+//    // If the application does not allow panel access from the pulldown 
+//    // menus (and requires that they are popped up at startup), then
+//    // be sure that the user can't close the window.  
+//    //
+//    if (theDXApplication->appAllowsPanelAccess()) {
+//	this->closeOption =
+//	    new ButtonInterface(pulldown, "panelCloseOption", this->closeCmd);
+//
+//	this->closeAllOption =
+//	    new ButtonInterface(pulldown, "panelCloseAllOption", 
+//			    this->network->getCloseAllPanelsCommand());
+//    }
+//}
 
-    ASSERT(cp);
-    XtVaGetValues (w, XmNuserData, &ds, NULL);
-    ASSERT(ds);
 
-    Decorator *d = ds->createDecorator(cp->developerStyle);
-    ASSERT(d);
-    d->setStyle (ds);
-    DecoratorInfo* dnd = new DecoratorInfo (cp->getNetwork(), (void*)cp, 
-	(DragInfoFuncPtr)ControlPanel::SetOwner,
-	(DragInfoFuncPtr)ControlPanel::DeleteSelections);
-    d->setDecoratorInfo (dnd);
-    cp->getNetwork()->setFileDirty();
-
-    // want to do this?
-    if (cp->addingDecoratorList.getSize()) {
-	Decorator *dec;
-	ListIterator it(cp->addingDecoratorList);
-	while ( (dec = (Decorator *)it.getNext()) ) {
-	    delete dec;
-	}
-	cp->addingDecoratorList.clear();
-    }
-    cp->addingDecoratorList.appendElement((void *)d);
-
-    //
-    // Set the cursor to indicate placement
-    //
-    ASSERT(cp->workSpace);
-    cp->workSpace->setCursor(UPPER_LEFT);
-
-    //
-    // Not necessary, but be less confusing
-    //
-    if (cp->addingNodes)
-        cp->addingNodes->clear();
-
-    //
-    // Adding a decorator requires new info in the .cfg file 
-    //
-    cp->getNetwork()->setFileDirty();
-}
+//void ControlPanel::createEditMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget pulldown, layoutPulldown;
+//    int    i, buttons;
+//    
+//
+//
+//    //
+//    // Create "Edit" menu and options.
+//    //
+//    pulldown =
+//	this->editMenuPulldown =
+//	    XmCreatePulldownMenu(parent, "editMenuPulldown", NUL(ArgList), 0);
+//    this->editMenu =
+//	XtVaCreateManagedWidget
+//	    ("editMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    //
+//    // 'Set the style of an interactor' pulldown option. 
+//    //
+//    if (theDXApplication->appAllowsInteractorEdits()) {
+//	//
+//	// Style 
+//	//
+//	this->stylePulldown =
+//		XmCreatePulldownMenu
+//		    (pulldown, "stylePulldown", NUL(ArgList), 0);
+//
+//	this->setStyleButton =
+//	    XtVaCreateManagedWidget
+//		("panelSetStyleButton",
+//		 xmCascadeButtonWidgetClass,
+//		 pulldown,
+//		 XmNsubMenuId, this->stylePulldown,
+//		 XmNsensitive, TRUE,
+//		 NULL);
+//
+//	XtAddCallback(pulldown,
+//		  XmNmapCallback,
+//		  (XtCallbackProc)ControlPanel_EditMenuMapCB,
+//		  (XtPointer)this);
+//
+//	//
+//	// Dimensionality 
+//	//
+//	Widget dimensionalityPulldown =
+//		XmCreatePulldownMenu
+//		    (pulldown, "dimensionalityPulldown", NUL(ArgList), 0);
+//
+//	this->setDimensionalityButton =
+//	    XtVaCreateManagedWidget
+//		("panelSetDimensionalityButton",
+//		 xmCascadeButtonWidgetClass,
+//		 pulldown,
+//		 XmNsubMenuId, dimensionalityPulldown,
+//		 XmNsensitive, TRUE,
+//		 NULL);
+//
+//	for (i=1 ; i<=3 ; i++) {
+//	    char buf[32];
+//	    sprintf(buf,"set%dDOption",i);
+//	    Widget btn = XmCreatePushButton(dimensionalityPulldown, 
+//						buf, NULL, 0);
+//	    XtVaSetValues(btn, XmNuserData, i, NULL);
+//	    XtAddCallback(btn,
+//		      XmNactivateCallback,
+//		      (XtCallbackProc)ControlPanel_SetDimensionsCB,
+//		      (XtPointer)this);
+//	    this->dimensionalityList.appendElement((void*)btn);
+//	    XtManageChild(btn);
+//	}
+//
+//#if 0
+//	// Don't install this twice?
+//	// I would just take it out, but we are just before release 3.1
+//	XtAddCallback(pulldown,
+//		  XmNmapCallback,
+//		  (XtCallbackProc)ControlPanel_EditMenuMapCB,
+//		  (XtPointer)this);
+//#endif
+//
+//
+//	//
+//	// Layout (horizontal/vertical)
+//	//
+//	layoutPulldown =
+//		XmCreatePulldownMenu
+//		    (pulldown, "layoutPulldown", NUL(ArgList), 0);
+//
+//	ASSERT(this->verticalLayoutCmd);
+//	this->verticalLayoutOption = new ButtonInterface(layoutPulldown, 
+//			    "panelVerticalOption", this->verticalLayoutCmd);
+//
+//	ASSERT(this->horizontalLayoutCmd);
+//	this->horizontalLayoutOption = new ButtonInterface(layoutPulldown, 
+//			    "panelHorizontalOption", this->horizontalLayoutCmd);
+//
+//	this->setLayoutButton =
+//	    XtVaCreateManagedWidget
+//		("panelSetLayoutButton",
+//		 xmCascadeButtonWidgetClass,
+//		 pulldown,
+//		 XmNsubMenuId, layoutPulldown,
+//		 XmNsensitive, False,
+//		 NULL);
+//    } 
+//
+//    //
+//    // 
+//    //
+//    buttons = 0;
+//    if (this->setSelectedInteractorAttributesCmd) {
+//	this->setAttributesOption =
+//	    new ButtonInterface(pulldown, "panelSetAttributesOption", 
+//			    this->setSelectedInteractorAttributesCmd);
+//  	buttons = 1;
+//    }
+//
+//    if (this->setSelectedInteractorLabelCmd) {
+//	this->setInteractorLabelOption =
+//	    new ButtonInterface
+//	    (pulldown, "panelSetInteractorLabelOption", 
+//			this->setSelectedInteractorLabelCmd);
+//  	buttons = 1;
+//    }
+//
+//    if (this->deleteSelectedInteractorsCmd) {
+//	this->deleteOption =
+//	    new ButtonInterface(pulldown, "panelDeleteOption", 
+//			    this->deleteSelectedInteractorsCmd);
+//  	buttons = 1;
+//    }
+//
+//    if (theDXApplication->appAllowsInteractorEdits()) {
+//	if (buttons)
+//	    XtVaCreateManagedWidget
+//		    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//	//
+//	// Add Decorators
+//	//
+//	Widget addPulldown =
+//		XmCreatePulldownMenu
+//		    (pulldown, "addPulldown", NUL(ArgList), 0);
+//
+//	Dictionary *dict = DecoratorStyle::GetDecoratorStyleDictionary();
+//	Dictionary *subdict;
+//	DictionaryIterator di(*dict);
+//	while ( (subdict = (Dictionary*)di.getNextDefinition()) ) {
+//	    Arg args[4];
+//	    DictionaryIterator subdi(*subdict);
+//	    DecoratorStyle *ds = (DecoratorStyle*)subdi.getNextDefinition();
+//	    ASSERT(ds);
+//	    if (ds->allowedInVPE()) continue;
+//	    char *stylename = (char*)ds->getNameString();
+//	    XmString label = XmStringCreateSimple(stylename);
+//	    int n = 0;
+//	    XtSetArg (args[n], XmNlabelString, label); n++;
+//	    XtSetArg (args[n], XmNuserData, ds); n++;
+//	    Widget btn = XmCreatePushButton(addPulldown, "stylename", args, n);
+//	    XtAddCallback(btn, XmNactivateCallback,
+//		(XtCallbackProc)ControlPanel_PlaceDecoratorCB,
+//		(XtPointer)this);
+//	    XtManageChild(btn);
+//	    XmStringFree(label);
+//	}
+//
+//	this->addButton =
+//	    XtVaCreateManagedWidget
+//		("panelAddButton",
+//		 xmCascadeButtonWidgetClass,
+//		 pulldown,
+//		 XmNsubMenuId, addPulldown,
+//		 NULL);
+//
+//	XtVaCreateManagedWidget
+//		("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//	buttons = 0;
+//    }
+//
+//    if (buttons &&
+//	(this->addSelectedInteractorsCmd || 
+//	 this->showSelectedInteractorsCmd)) {
+//	XtVaCreateManagedWidget
+//		("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//    }
+//
+//    buttons = 0;
+//    if (this->addSelectedInteractorsCmd) {
+//	this->addSelectedInteractorsOption =
+//	    new ButtonInterface
+//		(pulldown, "panelAddSelectedInteractorsOption", 
+//			    this->addSelectedInteractorsCmd);
+//  	buttons = 1;
+//    }
+//
+//
+//
+//    if (this->showSelectedInteractorsCmd) {
+//	this->showSelectedInteractorsOption =
+//	    new ButtonInterface 
+//		(pulldown, "panelShowSelectedInteractorsOption", 
+//			    this->showSelectedInteractorsCmd);
+//  	buttons = 1;
+//    }
+//
+//    if (this->showSelectedStandInsCmd) {
+//	this->showSelectedStandInsOption =
+//	    new ButtonInterface 
+//		(pulldown, "panelShowSelectedStandInsOption", 
+//			    this->showSelectedStandInsCmd);
+//  	buttons = 1; 
+//    }
+//
+//    if (buttons && this->setPanelCommentCmd)
+//	XtVaCreateManagedWidget
+//		("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    //
+//    // Add a comment option pull down
+//    //
+//    if (this->setPanelCommentCmd)
+//	this->commentOption =
+//	    new ButtonInterface(pulldown, "panelCommentOption",
+//					this->setPanelCommentCmd);
+//}
+//
+//
+//void ControlPanel::createPanelsMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget            pulldown;
+//
+//    //
+//    // Create "Panels" menu and options.
+//    //
+//    pulldown =
+//	this->panelsMenuPulldown =
+//	    XmCreatePulldownMenu
+//		(parent, "panelsMenuPulldown", NUL(ArgList), 0);
+//    this->panelsMenu =
+//	XtVaCreateManagedWidget
+//	    ("panelsMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    if (theDXApplication->appAllowsOpenAllPanels()) 
+//	this->openAllControlPanelsOption =
+//	    new ButtonInterface
+//		(pulldown,
+//		 "panelOpenAllControlPanelsOption",
+//		 this->network->getOpenAllPanelsCommand());
+//
+//   this->openControlPanelByNameMenu =
+//                new CascadeMenu("panelPanelCascade",pulldown);
+//
+//    XtAddCallback(pulldown,
+//                  XmNmapCallback,
+//                  (XtCallbackProc)ControlPanel_PanelMenuMapCB,
+//                  (XtPointer)this);
+//
+//}
+//
+//
+//void ControlPanel::createOptionsMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget            pulldown;
+//    int		      buttons = 0;
+//
+//    //
+//    // Create "Options" menu and options.
+//    //
+//    pulldown =
+//	this->optionsMenuPulldown =
+//	    XmCreatePulldownMenu
+//		(parent, "optionsMenuPulldown", NUL(ArgList), 0);
+//    this->optionsMenu =
+//	XtVaCreateManagedWidget
+//	    ("optionsMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    if (this->hitDetectionCmd) {
+//	this->hitDetectionOption =
+//	    new ToggleButtonInterface(pulldown, "hitDetectionOption", 
+//			    this->hitDetectionCmd, this->hit_detection);
+//	buttons++;
+//    }
+//
+//    if (this->setPanelNameCmd) {
+//	this->changeControlPanelNameOption =
+//	    new ButtonInterface
+//		(pulldown, "panelChangeControlPanelNameOption", 
+//			    this->setPanelNameCmd);
+//	buttons++;
+//    }
+//
+//    if (this->setPanelAccessCmd) {
+//	this->setAccessOption =
+//	    new ButtonInterface(pulldown, "panelSetAccessOption", 
+//			    this->setPanelAccessCmd);
+//	buttons++;
+//    }
+//
+//    if (this->setPanelGridCmd) {
+//	this->gridOption =
+//	    new ButtonInterface(pulldown, "panelGridOption", 
+//			    this->setPanelGridCmd);
+//	buttons++;
+//    }
+//
+//    if (this->togglePanelStyleCmd) {
+//	this->styleOption =
+//	    new ButtonInterface(pulldown, "panelStyleOption", 
+//			    this->togglePanelStyleCmd);
+//	buttons++;
+//	XtAddCallback(pulldown,
+//		  XmNmapCallback,
+//		  (XtCallbackProc)ControlPanel_OptionsMenuMapCB,
+//		  (XtPointer)this);
+//    }
+//
+//    if (theDXApplication->appAllowsPanelOptions())  {
+//	if (buttons) 
+//	    XtVaCreateManagedWidget
+//		    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//	this->addStartupToggleOption(pulldown);
+//    }
+//
+//}
+//
+//
+//void ControlPanel::createHelpMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    this->DXWindow::createHelpMenu(parent);
+//
+//    XtVaCreateManagedWidget("separator", xmSeparatorWidgetClass,
+//                                        this->helpMenuPulldown,
+//                                        NULL);
+//
+//    this->onVisualProgramOption = 
+//	new ButtonInterface(this->helpMenuPulldown, 
+//				"panelOnVisualProgramOption", 
+//				this->network->getHelpOnNetworkCommand());
+//    this->onControlPanelOption =
+//	new ButtonInterface(this->helpMenuPulldown, 
+//				"panelOnControlPanelOption", 
+//				this->helpOnPanelCmd);
+//}
+//
+//
+//void ControlPanel::createMenus(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    //
+//    // Create the menus.
+//    //
+//    this->createFileMenu(parent);
+//    if (theDXApplication->appAllowsPanelEdit())
+//        this->createEditMenu(parent);
+//    this->createExecuteMenu(parent);
+//    if (theDXApplication->appAllowsPanelAccess())
+//	this->createPanelsMenu(parent);
+//    if (theDXApplication->appAllowsPanelOptions())
+//        this->createOptionsMenu(parent);
+//    this->createHelpMenu(parent);
+//
+//    //
+//    // Right justify the help menu (if it exists).
+//    //
+//    if (this->helpMenu)
+//    {
+//	XtVaSetValues(parent, XmNmenuHelpWidget, this->helpMenu, NULL);
+//    }
+//}
+//
+//extern "C" void ControlPanel_PanelMenuMapCB(Widget ,
+//                                 XtPointer clientdata,
+//                                 XtPointer )
+//{
+//    ControlPanel *cp = (ControlPanel*)clientdata;
+//    Network *network = cp->network;
+//    CascadeMenu *menu = cp->openControlPanelByNameMenu;
+//    PanelAccessManager *panelMgr = cp->panelAccessManager;
+//    network->fillPanelCascade(menu, panelMgr);
+//}
+//extern "C" void ControlPanel_OptionsMenuMapCB(Widget ,
+//                                 XtPointer clientdata,
+//                                 XtPointer )
+//{
+//    ControlPanel *cp = (ControlPanel*)clientdata;
+//    Command *cmd;
+//
+//    if ( (cmd = cp->togglePanelStyleCmd) ) {
+//	if (cp->allowDeveloperStyleChange()) 
+//	    cmd->activate();
+//	else
+//	    cmd->deactivate();
+//    }
+//    
+//}
+//
+//extern "C" void ControlPanel_SetDimensionsCB(Widget w, XtPointer clientdata,
+//                               XtPointer )
+//{
+//    ControlPanel *cp = (ControlPanel*)clientdata;
+//    cp->setDimensionsCallback(w, clientdata);
+//
+//}
+//void ControlPanel::setDimensionsCallback(Widget w, XtPointer )
+//{
+//    int dim;
+//    InteractorInstance *ii = NULL;
+//    boolean only_one_selected =  this->findTheSelectedInteractorInstance(&ii);
+//    ASSERT(only_one_selected);
+//    InteractorNode *inode;
+//
+//    ASSERT(ii);
+//    inode = (InteractorNode*)ii->getNode();
+//    ASSERT(inode);
+//
+//    XtPointer ptr;
+//    XtVaGetValues(w,XmNuserData,&ptr,0);
+//    dim = (int)(long)ptr;
+//    ASSERT(dim>0);
+//    inode->changeDimensionality(dim);
+//}
+//
+//extern "C" void ControlPanel_EditMenuMapCB(Widget w,
+//                                 XtPointer clientdata,
+//                                 XtPointer calldata)
+//{
+//    ControlPanel *cp = (ControlPanel*)clientdata;
+//    Dictionary *dict;
+//    char  *stylename;
+//    InteractorInstance *ii;
+//    InteractorNode *inode = NULL;
+//    Widget    btn;
+//
+//    boolean only_one_selected =  cp->findTheSelectedInteractorInstance(&ii);
+//
+//
+//    if (ii) 
+//	inode = (InteractorNode*)ii->getNode();
+//
+//    if (cp->setStyleButton) {
+//	ASSERT(cp->stylePulldown);
+//
+//	if(cp->styleList.getSize())
+//	{
+//	    ListIterator li(cp->styleList);
+//	    while( (btn = (Widget)li.getNext()) )
+//		 XtDestroyWidget(btn);
+//	    cp->styleList.clear();
+//	}
+//
+//	if (!only_one_selected) {	
+//	    XtVaSetValues(cp->setStyleButton, XmNsensitive, False, NULL);
+//	} else { 
+//
+//	    ASSERT(inode);
+//	    dict = InteractorStyle::GetInteractorStyleDictionary(
+//						inode->getNameString());
+//
+//	    ASSERT(dict);
+//	    if (dict->getSize() <= 1 && cp->setStyleButton) {
+//		XtVaSetValues(cp->setStyleButton, XmNsensitive, False, NULL);
+//	    } else {
+//
+//		XtVaSetValues(cp->setStyleButton, XmNsensitive, True, NULL);
+//
+//		DictionaryIterator di(*dict);
+//		InteractorStyle *is;
+//
+//		const char *current_style = ii->getStyle()->getNameString();
+//		XmString label;
+//
+//		while ( (is = (InteractorStyle*)di.getNextDefinition()) )
+//		{
+//		    stylename = (char*)is->getNameString();
+//		    label = XmStringCreateSimple(stylename);
+//		    btn = XmCreatePushButton(cp->stylePulldown,
+//					     "stylename",
+//					     NULL,
+//					     0);
+//		    XtVaSetValues(btn,
+//				  XmNlabelString, label,
+//				  NULL);
+//		    if (strcmp(stylename,current_style)) {
+//			XtVaSetValues(btn,
+//				      XmNuserData, is,
+//				      NULL);
+//			XtAddCallback(btn,
+//				      XmNactivateCallback,
+//				      (XtCallbackProc)ControlPanel_SetStyleCB,
+//				      (XtPointer)ii);
+//		    } else {
+//			XtVaSetValues(btn, XmNsensitive, False, NULL);
+//		    }
+//		    cp->styleList.appendElement((void*)btn);
+//		    XtManageChild(btn);
+//		    XmStringFree(label);
+//		}
+//	    }
+//   	}
+//    }   // End of setStyleButton and stylePulldown configuration
+//
+//    if (cp->setDimensionalityButton) {
+//
+//	Boolean sensitive;
+//	if (only_one_selected) {
+//	    ASSERT(inode);
+//	    boolean dyno_dim = inode->hasDynamicDimensionality();
+//	    if (!dyno_dim) {
+//		sensitive = False;
+//	    } else {
+//		sensitive = True;
+//		int i=0, current_dim = inode->getComponentCount();
+//		ListIterator iterator(cp->dimensionalityList); 
+//		while ( (w = (Widget)iterator.getNext()) ) {
+//		    if (++i == current_dim)
+//			XtSetSensitive(w,False);
+//		    else
+//			XtSetSensitive(w,True);
+//		}
+//	    }
+//	} else { 
+//	    sensitive = False;
+//	}
+//	XtVaSetValues(cp->setDimensionalityButton, XmNsensitive, 
+//						sensitive, NULL);
+//    }   // End of setDimensionalityButton and DimensionalityPulldown 
+// 	// configuration
+//}
+//
+//extern "C" void ControlPanel_SetStyleCB(Widget w,
+//                                 XtPointer clientdata,
+//                                 XtPointer calldata)
+//{
+//    InteractorInstance *ii = (InteractorInstance*)clientdata;
+//    InteractorStyle    *is;
+//
+//    XtVaGetValues(w, XmNuserData, &is, NULL);
+//    ASSERT(is AND ii);
+//
+//    ii->changeStyle(is);
+//
+//}
+//
+////
+//// Create a decorator, add it to the addingDecoratorList , 
+//// its defaultWindow will be opened by the guy who manages it.
+//// There will be a callback in ControlPanelWorkSpace for the button
+//// click which places the decorator.  That code is tied to ControlPanel::
+//// placeSelectedInteractorCallback.  That cp func now checks the
+//// addingDecoratorList for decorators to add.
+////
+//extern "C" void ControlPanel_PlaceDecoratorCB(Widget w, 
+//	XtPointer clientdata, XtPointer )
+//{
+//ControlPanel *cp = (ControlPanel*)clientdata;
+//DecoratorStyle *ds;
+//
+//    ASSERT(cp);
+//    XtVaGetValues (w, XmNuserData, &ds, NULL);
+//    ASSERT(ds);
+//
+//    Decorator *d = ds->createDecorator(cp->developerStyle);
+//    ASSERT(d);
+//    d->setStyle (ds);
+//    DecoratorInfo* dnd = new DecoratorInfo (cp->getNetwork(), (void*)cp, 
+//	(DragInfoFuncPtr)ControlPanel::SetOwner,
+//	(DragInfoFuncPtr)ControlPanel::DeleteSelections);
+//    d->setDecoratorInfo (dnd);
+//    cp->getNetwork()->setFileDirty();
+//
+//    // want to do this?
+//    if (cp->addingDecoratorList.getSize()) {
+//	Decorator *dec;
+//	ListIterator it(cp->addingDecoratorList);
+//	while ( (dec = (Decorator *)it.getNext()) ) {
+//	    delete dec;
+//	}
+//	cp->addingDecoratorList.clear();
+//    }
+//    cp->addingDecoratorList.appendElement((void *)d);
+//
+//    //
+//    // Set the cursor to indicate placement
+//    //
+//    ASSERT(cp->workSpace);
+//    cp->workSpace->setCursor(UPPER_LEFT);
+//
+//    //
+//    // Not necessary, but be less confusing
+//    //
+//    if (cp->addingNodes)
+//        cp->addingNodes->clear();
+//
+//    //
+//    // Adding a decorator requires new info in the .cfg file 
+//    //
+//    cp->getNetwork()->setFileDirty();
+//}
 
 //
 // Print the information about the control panel in the .cfg file. 
@@ -1660,13 +1646,13 @@ boolean ControlPanel::cfgPrintPanelComment(FILE *f, PrintType ptype)
 	y = this->ypos;
     } 
 
-    int display_xsize = DisplayWidth(theApplication->getDisplay(),0);
-    int display_ysize = DisplayHeight(theApplication->getDisplay(),0);
+    //int display_xsize = DisplayWidth(theApplication->getDisplay(),0);
+    //int display_ysize = DisplayHeight(theApplication->getDisplay(),0);
 
-    float norm_xsize = (float)width/display_xsize;
-    float norm_ysize = (float)height/display_ysize;
-    float norm_xpos  = (float)x/display_xsize;
-    float norm_ypos  = (float)y/display_ysize;
+    //float norm_xsize = (float)width/display_xsize;
+    //float norm_ysize = (float)height/display_ysize;
+    //float norm_xpos  = (float)x/display_xsize;
+    //float norm_ypos  = (float)y/display_ysize;
 
     //
     // Be sure to print 0 for startup if ptype == PrintCPBuffer. (Dnd within
@@ -1674,15 +1660,17 @@ boolean ControlPanel::cfgPrintPanelComment(FILE *f, PrintType ptype)
     // and it looks stupid.
     //
 
-    return fprintf(f, "// panel[%d]: position = (%6.4f,%6.4f), "
-		"size = %6.4fx%6.4f, startup = %d, devstyle = %d\n",
-	       this->getInstanceNumber() - 1, // 0 indexed in file
-	       norm_xpos,
-	       norm_ypos,
-	       norm_xsize,
-	       norm_ysize,
-	       ((ptype == PrintCPBuffer)?0:this->startup),
-	       this->developerStyle) >= 0;
+  //  return fprintf(f, "// panel[%d]: position = (%6.4f,%6.4f), "
+		//"size = %6.4fx%6.4f, startup = %d, devstyle = %d\n",
+	 //      this->getInstanceNumber() - 1, // 0 indexed in file
+	 //      norm_xpos,
+	 //      norm_ypos,
+	 //      norm_xsize,
+	 //      norm_ysize,
+	 //      ((ptype == PrintCPBuffer)?0:this->startup),
+	 //      this->developerStyle) >= 0;
+
+	return false;
 }
 //
 // Parse the 'panel' comment in the .cfg file. 
@@ -1717,12 +1705,12 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
 	       &devstyle);
 
     if ((items_parsed == 6)||(items_parsed == 7)) {
-	int display_xsize = DisplayWidth(theApplication->getDisplay(),0);
-	int display_ysize = DisplayHeight(theApplication->getDisplay(),0);
-	x = (int) (display_xsize * norm_x+ .5);
-        y = (int) (display_ysize * norm_y+ .5);
-        width = (int) (display_xsize * norm_width  + .5);
-        height = (int) (display_ysize * norm_height + .5);
+	//int display_xsize = DisplayWidth(theApplication->getDisplay(),0);
+	//int display_ysize = DisplayHeight(theApplication->getDisplay(),0);
+	//x = (int) (display_xsize * norm_x+ .5);
+ //       y = (int) (display_ysize * norm_y+ .5);
+ //       width = (int) (display_xsize * norm_width  + .5);
+ //       height = (int) (display_ysize * norm_height + .5);
 	if (items_parsed == 7) this->developerStyle = devstyle; // initialized elsewhere
     } else {
 
@@ -2012,28 +2000,28 @@ void ControlPanel::setActivationOfEditingCommands()
 	    this->deleteSelectedInteractorsCmd->deactivate();
 	if (this->showSelectedStandInsCmd)
 	    this->showSelectedStandInsCmd->deactivate();
-	if (this->setLayoutButton)
-	    XtSetSensitive(this->setLayoutButton, FALSE);
-    } else if (nselected==0) {
-	WorkSpaceComponent *wsc;
-	if (wscselected == 1) {
-	    boolean hasWindow = FALSE;
-	    this->findTheSelectedComponent(&wsc);
-	    ASSERT(wsc);
-	    if (wsc->isA(ClassDecorator)) {
-		Decorator *dd = (Decorator*)wsc;
-		hasWindow = dd->hasDefaultWindow();
-	    }
-	    if (this->setSelectedInteractorAttributesCmd) {
-		if (hasWindow)
-		    this->setSelectedInteractorAttributesCmd->activate();
-		else
-		    this->setSelectedInteractorAttributesCmd->deactivate();
-	    }
-	} else {
-	    if (this->setSelectedInteractorAttributesCmd)
-		this->setSelectedInteractorAttributesCmd->deactivate();
-	}
+	//if (this->setLayoutButton)
+	//    XtSetSensitive(this->setLayoutButton, FALSE);
+ //   } else if (nselected==0) {
+	//WorkSpaceComponent *wsc;
+	//if (wscselected == 1) {
+	//    boolean hasWindow = FALSE;
+	//    this->findTheSelectedComponent(&wsc);
+	//    ASSERT(wsc);
+	//    if (wsc->isA(ClassDecorator)) {
+	//	Decorator *dd = (Decorator*)wsc;
+	//	hasWindow = dd->hasDefaultWindow();
+	//    }
+	//    if (this->setSelectedInteractorAttributesCmd) {
+	//	if (hasWindow)
+	//	    this->setSelectedInteractorAttributesCmd->activate();
+	//	else
+	//	    this->setSelectedInteractorAttributesCmd->deactivate();
+	//    }
+	//} else {
+	//    if (this->setSelectedInteractorAttributesCmd)
+	//	this->setSelectedInteractorAttributesCmd->deactivate();
+	//}
 
 	if (this->setSelectedInteractorLabelCmd) 
 	    this->setSelectedInteractorLabelCmd->deactivate();
@@ -2053,35 +2041,35 @@ void ControlPanel::setActivationOfEditingCommands()
 	boolean disableLayout = FALSE;
 	boolean layouts = TRUE, first = TRUE;
 	ListIterator it(this->componentList);
-	while ((!disableLayout)&&(wsc = (WorkSpaceComponent *)it.getNext())) {
-	    if (wsc->isSelected()) {
-		if (!wsc->acceptsLayoutChanges())
-		    disableLayout = TRUE;
-		else {
-		    if (first) {
-			layouts = wsc->verticallyLaidOut();
-		    } else if (layouts != wsc->verticallyLaidOut()) {
-			disableLayout = TRUE;
-		    }
-		}
-	    }
-	}
-	if (this->setLayoutButton) {
-	    if (disableLayout) {
-		XtSetSensitive (this->setLayoutButton, False);
-		this->verticalLayoutCmd->deactivate();
-		this->horizontalLayoutCmd->deactivate();
-	    } else {
-		XtSetSensitive (this->setLayoutButton, True);
-		if (layouts) {
-		    this->verticalLayoutCmd->deactivate();
-		    this->horizontalLayoutCmd->activate();
-		} else {
-		    this->verticalLayoutCmd->activate();
-		    this->horizontalLayoutCmd->deactivate();
-		}
-	    }
-	}
+	//while ((!disableLayout)&&(wsc = (WorkSpaceComponent *)it.getNext())) {
+	//    if (wsc->isSelected()) {
+	//	if (!wsc->acceptsLayoutChanges())
+	//	    disableLayout = TRUE;
+	//	else {
+	//	    if (first) {
+	//		layouts = wsc->verticallyLaidOut();
+	//	    } else if (layouts != wsc->verticallyLaidOut()) {
+	//		disableLayout = TRUE;
+	//	    }
+	//	}
+	//    }
+	//}
+	//if (this->setLayoutButton) {
+	//    if (disableLayout) {
+	//	XtSetSensitive (this->setLayoutButton, False);
+	//	this->verticalLayoutCmd->deactivate();
+	//	this->horizontalLayoutCmd->deactivate();
+	//    } else {
+	//	XtSetSensitive (this->setLayoutButton, True);
+	//	if (layouts) {
+	//	    this->verticalLayoutCmd->deactivate();
+	//	    this->horizontalLayoutCmd->activate();
+	//	} else {
+	//	    this->verticalLayoutCmd->activate();
+	//	    this->horizontalLayoutCmd->deactivate();
+	//	}
+	//    }
+	//}
     } else {
 	//
 	// Commands that depend on only one interactor being selected
@@ -2160,22 +2148,22 @@ void ControlPanel::setActivationOfEditingCommands()
 		}
 	    }
 	}
-	if (this->setLayoutButton) {
-	    if (disableLayout) {
-		XtSetSensitive (this->setLayoutButton, False);
-		this->verticalLayoutCmd->deactivate();
-		this->horizontalLayoutCmd->deactivate();
-	    } else {
-		XtSetSensitive (this->setLayoutButton, True);
-		if (layouts) {
-		    this->verticalLayoutCmd->deactivate();
-		    this->horizontalLayoutCmd->activate();
-		} else {
-		    this->verticalLayoutCmd->activate();
-		    this->horizontalLayoutCmd->deactivate();
-		}
-	    }
-	}
+	//if (this->setLayoutButton) {
+	//    if (disableLayout) {
+	//	XtSetSensitive (this->setLayoutButton, False);
+	//	this->verticalLayoutCmd->deactivate();
+	//	this->horizontalLayoutCmd->deactivate();
+	//    } else {
+	//	XtSetSensitive (this->setLayoutButton, True);
+	//	if (layouts) {
+	//	    this->verticalLayoutCmd->deactivate();
+	//	    this->horizontalLayoutCmd->activate();
+	//	} else {
+	//	    this->verticalLayoutCmd->activate();
+	//	    this->horizontalLayoutCmd->deactivate();
+	//	}
+	//    }
+	//}
     }
 
     //
@@ -2481,7 +2469,7 @@ void ControlPanel::mergePanels (ControlPanel *cp, int x, int y)
    InteractorInstance *ii;
    List toDelete;
    int firstx, firsty, newx, newy, offx, offy;
-   Boolean first = TRUE;
+   boolean first = TRUE;
 
     while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 
@@ -2626,7 +2614,7 @@ void ControlPanel::editPanelComment()
 {
      if (!this->setCommentDialog)
      	this->setCommentDialog = new SetPanelCommentDialog(
-					this->getRootWidget(), FALSE, this);
+					FALSE, this);
      this->setCommentDialog->post();
 
 }
@@ -2636,7 +2624,7 @@ void ControlPanel::editPanelComment()
 void ControlPanel::postHelpOnPanel()
 {
      if (!this->helpOnPanelDialog)
-     	this->helpOnPanelDialog = new HelpOnPanelDialog(this->getRootWidget(), 
+     	this->helpOnPanelDialog = new HelpOnPanelDialog(
 							this);
      this->helpOnPanelDialog->post();
 }
@@ -2648,7 +2636,7 @@ void ControlPanel::editPanelName()
 {
      if (!this->setNameDialog)
      	this->setNameDialog = new SetPanelNameDialog(
-					this->getRootWidget(), this);
+					this);
      this->setNameDialog->post();
 
 }
@@ -2660,8 +2648,8 @@ void ControlPanel::setPanelGrid()
 {
      if (NOT this->gridDialog )
      {
-        this->gridDialog = new GridDialog(this->getRootWidget(),
-                                          (WorkSpace*)this->getWorkSpace());
+        //this->gridDialog = new GridDialog(
+        //                                  (WorkSpace*)this->getWorkSpace());
      }
      this->gridDialog->post();
 
@@ -2733,13 +2721,13 @@ void ControlPanel::setPanelGrid()
 //
 void ControlPanel::setPanelStyle(boolean developerStyle)
 {
-Widget ws = this->getWorkSpaceWidget();
-Widget diag = this->getRootWidget();
-ControlPanelWorkSpace *wsObj = this->getWorkSpace();
-boolean isWsManaged;
+//Widget ws = this->getWorkSpaceWidget();
+//Widget diag = this->getRootWidget();
+//ControlPanelWorkSpace *wsObj = this->getWorkSpace();
+//boolean isWsManaged;
 
-    ASSERT (XtIsShell(diag));
-    ASSERT(ws);
+    //ASSERT (XtIsShell(diag));
+    //ASSERT(ws);
 
     //
     // Abort if there isn't going to be a style change.  Set the file dirty
@@ -2754,8 +2742,8 @@ boolean isWsManaged;
 	this->getNetwork()->setFileDirty();
     }
 
-    isWsManaged = XtIsManaged (ws);
-    if (isWsManaged) wsObj->unmanage();
+    //isWsManaged = XtIsManaged (ws);
+    //if (isWsManaged) wsObj->unmanage();
 
     //
     // Change the appearance of all the interactors
@@ -2782,16 +2770,16 @@ boolean isWsManaged;
     //
     // (Un)Manage the menubar and the buttons at the bottom.
     //
-    Widget w = this->getCommandArea();
+    //Widget w = this->getCommandArea();
     if (this->developerStyle) 
     {
-	XtManageChild (this->getMenuBar());
-	if (w) XtUnmanageChild (w);
+	//XtManageChild (this->getMenuBar());
+	//if (w) XtUnmanageChild (w);
     } 
     else 
     {
-	XtUnmanageChild (this->getMenuBar());
-	if (w) XtManageChild (w);
+	//XtUnmanageChild (this->getMenuBar());
+	//if (w) XtManageChild (w);
     }
 
 
@@ -2800,9 +2788,9 @@ boolean isWsManaged;
     // Don't need to turn off dnd in the Interactors because it is now
     // impossible to select an interactor.
     //
-    wsObj->dropsPermitted(this->developerStyle);
+    //wsObj->dropsPermitted(this->developerStyle);
 
-    Widget hBar, vBar;
+    //Widget hBar, vBar;
     if (!this->developerStyle) 
     {
 
@@ -2817,39 +2805,39 @@ boolean isWsManaged;
 	    this->workSpace->installInfo(NULL);
 	}
 
-	Dimension maxR, maxB;
-	Dimension diffW, diffH;
+	//Dimension maxR, maxB;
+	//Dimension diffW, diffH;
 
-	XtVaSetValues (this->scrolledWindow, 
-	    XmNshadowThickness, 0, 
-	    NULL);
-	XtVaSetValues (this->scrolledWindowFrame, 
-	    XmNmarginWidth, 0, 
-	    XmNmarginHeight, 0, 
-	    NULL);
+	//XtVaSetValues (this->scrolledWindow, 
+	//    XmNshadowThickness, 0, 
+	//    NULL);
+	//XtVaSetValues (this->scrolledWindowFrame, 
+	//    XmNmarginWidth, 0, 
+	//    XmNmarginHeight, 0, 
+	//    NULL);
 
 	//
 	// If I call XtUnmanage on the scrollbars of the scrolledwindow,
 	// then no matter what happens, the user will not see them.
 	//
-	XtVaGetValues (this->scrolledWindow, 
-	    XmNhorizontalScrollBar, &hBar,
-	    XmNverticalScrollBar, &vBar, 
-	    NULL);
-	XtUnmanageChild (hBar); XtUnmanageChild (vBar);
+	//XtVaGetValues (this->scrolledWindow, 
+	//    XmNhorizontalScrollBar, &hBar,
+	//    XmNverticalScrollBar, &vBar, 
+	//    NULL);
+	//XtUnmanageChild (hBar); XtUnmanageChild (vBar);
 
-	int gmw, gmh;
-	XmWorkspaceGetMaxWidthHeight (ws, &gmw, &gmh);
-	maxB = MAX(100,gmh);// Start with a reasonable smallest case size;
-	maxR = MAX(200,gmw); 
+	//int gmw, gmh;
+	//XmWorkspaceGetMaxWidthHeight (ws, &gmw, &gmh);
+	//maxB = MAX(100,gmh);// Start with a reasonable smallest case size;
+	//maxR = MAX(200,gmw); 
 
 	//
 	// develModeDiag{Width,Height} will be used when returning to developer style
 	//
-	XtVaGetValues(diag, 
-	    XmNwidth, &this->develModeDiagWidth, 
-	    XmNheight, &this->develModeDiagHeight, 
-	    NULL);
+	//XtVaGetValues(diag, 
+	//    XmNwidth, &this->develModeDiagWidth, 
+	//    XmNheight, &this->develModeDiagHeight, 
+	//    NULL);
 
 	//
 	// Need to set dims for both Workspace widget and dialog box.  They're
@@ -2858,19 +2846,19 @@ boolean isWsManaged;
 	// of Close,Help buttons vertically.  I obtained diffH from observation
 	// using editres and flash active widget.
 	//
-	diffW = 2;
-	diffH = 40;
+	//diffW = 2;
+	//diffH = 40;
 
 	//
 	// newW,newH will be the size of the panel.  The Motif widgets need to  
 	// recalc their sizes becuase of (un)managing menubar/buttons, so 
 	// don't allow new size == old size
 	//
-	Dimension newW = maxR+diffW;
-	Dimension newH = maxB+diffH;
-	boolean needTickle = 
-	    ((newW==this->develModeDiagWidth)&&(newH==this->develModeDiagHeight)); 
-	if (needTickle) newW++;
+	//Dimension newW = maxR+diffW;
+	//Dimension newH = maxB+diffH;
+	//boolean needTickle = 
+	//    ((newW==this->develModeDiagWidth)&&(newH==this->develModeDiagHeight)); 
+	//if (needTickle) newW++;
 
 	//
 	// There are side effects from the following XtSetValues.  The Workspace
@@ -2883,14 +2871,14 @@ boolean isWsManaged;
 	// *before* going into XmForm mode.  That requires 2 separate calls to
 	// XtSetValues.
 	//
-	XtVaSetValues (ws, 
-	    XmNallowOverlap, True, 
-	    NULL);
-	XtVaSetValues (ws, 
-	    XmNwidth, maxR, 
-	    XmNheight, maxB, 
-	    XmNautoArrange, True, 
-	    NULL);
+	//XtVaSetValues (ws, 
+	//    XmNallowOverlap, True, 
+	//    NULL);
+	//XtVaSetValues (ws, 
+	//    XmNwidth, maxR, 
+	//    XmNheight, maxB, 
+	//    XmNautoArrange, True, 
+	//    NULL);
 
 	//
 	// FIXME
@@ -2899,63 +2887,63 @@ boolean isWsManaged;
 	// 325 isn't supported||broken then remove some of this stuff and set
 	// min{Width,Height} and {width,height} together all the time.
 	//
-	if (this->isManaged()) 
-	{
-	    XtVaSetValues (diag, 
-		XmNminWidth, newW, 
-		XmNminHeight, newH, 
-		NULL);
-#	if !defined(AIX312_MWM_IS_FIXED)
-	    XSync (XtDisplay(diag), False);
-#	endif
-	    XtVaSetValues (diag, 
-		XmNwidth, newW, 
-		XmNheight, newH, 
-		NULL);
-	} 
-	else 
-	{
-	    XtVaSetValues (diag, 
-		XmNwidth, newW, 
-		XmNheight, newH, 
-		NULL);
-	}
-
-	wsObj->setSizeDeltas (diffW, diffH);
+//	if (this->isManaged()) 
+//	{
+//	    XtVaSetValues (diag, 
+//		XmNminWidth, newW, 
+//		XmNminHeight, newH, 
+//		NULL);
+//#	if !defined(AIX312_MWM_IS_FIXED)
+//	    XSync (XtDisplay(diag), False);
+//#	endif
+//	    XtVaSetValues (diag, 
+//		XmNwidth, newW, 
+//		XmNheight, newH, 
+//		NULL);
+//	} 
+//	else 
+//	{
+//	    XtVaSetValues (diag, 
+//		XmNwidth, newW, 
+//		XmNheight, newH, 
+//		NULL);
+//	}
+//
+	//wsObj->setSizeDeltas (diffW, diffH);
 
 	this->displayedStyle = User;
 
-	if (needTickle)
-	    XtVaSetValues (diag, XmNwidth, newW-1, NULL);
+	//if (needTickle)
+	//    XtVaSetValues (diag, XmNwidth, newW-1, NULL);
 
     } 
     else 
     {
-	ASSERT (this->develModeDiagWidth && this->develModeDiagHeight);
+	//ASSERT (this->develModeDiagWidth && this->develModeDiagHeight);
 	//
 	// Side effects here:  Setting autoArrange==False changes the XmForm back
 	// into a Workspace.  Make sure that allowOverlap is set to False *after*
 	// and not at the same time.  Otherwise you can get space wars during the
 	// conversion process.
 	//
-	XtVaSetValues(ws, XmNautoArrange, False, NULL);
-	if (!this->allowOverlap)
-	    XtVaSetValues(ws, XmNallowOverlap, False, NULL);
+	//XtVaSetValues(ws, XmNautoArrange, False, NULL);
+	//if (!this->allowOverlap)
+	//    XtVaSetValues(ws, XmNallowOverlap, False, NULL);
 
 
-	XtVaGetValues (this->scrolledWindow, 
-	    XmNhorizontalScrollBar, &hBar,
-	    XmNverticalScrollBar, &vBar, 
-	    NULL);
-	XtManageChild (hBar); XtManageChild (vBar);
+	//XtVaGetValues (this->scrolledWindow, 
+	//    XmNhorizontalScrollBar, &hBar,
+	//    XmNverticalScrollBar, &vBar, 
+	//    NULL);
+	//XtManageChild (hBar); XtManageChild (vBar);
 
-	XtVaSetValues (this->scrolledWindow, 
-	    XmNshadowThickness, 1, 
-	    NULL);
-	XtVaSetValues (this->scrolledWindowFrame, 
-	    XmNmarginWidth, SCRWF_MARGIN, 
-	    XmNmarginHeight, SCRWF_MARGIN, 
-	    NULL);
+	//XtVaSetValues (this->scrolledWindow, 
+	//    XmNshadowThickness, 1, 
+	//    NULL);
+	//XtVaSetValues (this->scrolledWindowFrame, 
+	//    XmNmarginWidth, SCRWF_MARGIN, 
+	//    XmNmarginHeight, SCRWF_MARGIN, 
+	//    NULL);
 
 	//
 	// The Motif MainWindow widget wants a chance to recalc sizes, so
@@ -2963,26 +2951,26 @@ boolean isWsManaged;
 	// incrementing width by 1 does no good if it's still less than minWidth
 	// on an rs6000 where unsetting minWidth is unreliable.
 	//
-	Dimension oldW, oldH;
-	XtVaGetValues (diag, XmNwidth, &oldW, XmNheight, &oldH, NULL);
-	if ((oldW >= this->develModeDiagWidth)&&
-	    (oldH >= this->develModeDiagHeight))  this->develModeDiagWidth = oldW+1;
-
-	XtVaSetValues (diag, 
-	    XmNminWidth, XtUnspecifiedShellInt,
-	    XmNminHeight, XtUnspecifiedShellInt,
-	    NULL);
-#ifndef AIX312_MWM_IS_FIXED
-	XSync(XtDisplay(diag), False);
-#endif
-	XtVaSetValues (diag, 
-	    XmNwidth, this->develModeDiagWidth, 
-	    XmNheight, this->develModeDiagHeight, 
-	    NULL);
-	this->develModeDiagWidth = this->develModeDiagHeight = 0;
-
-	this->displayedStyle = Developer;
-
+//	Dimension oldW, oldH;
+//	XtVaGetValues (diag, XmNwidth, &oldW, XmNheight, &oldH, NULL);
+//	if ((oldW >= this->develModeDiagWidth)&&
+//	    (oldH >= this->develModeDiagHeight))  this->develModeDiagWidth = oldW+1;
+//
+//	XtVaSetValues (diag, 
+//	    XmNminWidth, XtUnspecifiedShellInt,
+//	    XmNminHeight, XtUnspecifiedShellInt,
+//	    NULL);
+//#ifndef AIX312_MWM_IS_FIXED
+//	XSync(XtDisplay(diag), False);
+//#endif
+//	XtVaSetValues (diag, 
+//	    XmNwidth, this->develModeDiagWidth, 
+//	    XmNheight, this->develModeDiagHeight, 
+//	    NULL);
+//	this->develModeDiagWidth = this->develModeDiagHeight = 0;
+//
+//	this->displayedStyle = Developer;
+//
 	//
 	// Turn Gridding back on if it was in use before the switch.
 	//
@@ -2993,7 +2981,7 @@ boolean isWsManaged;
 	    this->workSpace->installInfo(NULL);
 	}
     }
-    if (isWsManaged) wsObj->manage();
+    //if (isWsManaged) wsObj->manage();
 
     this->getNetwork()->setFileDirty();
 }
@@ -3002,80 +2990,80 @@ boolean isWsManaged;
 // These 2 callbacks {ControlPanel_DialogHelpCB and ControlPanel_DialogCancelCB} are
 // used by the 2 buttons at the bottom of the control panel when in user style.
 //
-extern "C" { 
-void ControlPanel_DialogHelpCB (Widget w, XtPointer clientdata, XtPointer )
-{
-ControlPanel *cp = (ControlPanel *)clientdata;
-    cp->postHelpOnPanel();
-}
+//extern "C" { 
+//void ControlPanel_DialogHelpCB (Widget w, XtPointer clientdata, XtPointer )
+//{
+//ControlPanel *cp = (ControlPanel *)clientdata;
+//    cp->postHelpOnPanel();
+//}
+//
+//void ControlPanel_DialogCancelCB (Widget , XtPointer clientdata, XtPointer calldata)
+//{
+//ControlPanel *cp = (ControlPanel *)clientdata;
+//XmPushButtonCallbackStruct *pbcbs = (XmPushButtonCallbackStruct*)calldata;
+//XEvent *xev = pbcbs->event;
+//boolean mustAsk = TRUE;
+//boolean mustRevert = FALSE;
+//
+//    // The button can be pressed only when this->developerStyle == FALSE
+//#if 00
+//    if (theDXApplication->inEditMode()) {
+//#else
+//    if (cp->allowDeveloperStyleChange()) {
+//#endif
+//	if ((xev->type == KeyPress) || (xev->type == KeyRelease)) {
+//	    mustAsk = FALSE;
+//	    mustRevert = FALSE;
+//	} else if ((xev->type == ButtonPress) || (xev->type == ButtonRelease)) {
+//	    XButtonEvent *xbe = (XButtonEvent*)xev;
+//	    if (xbe->state & ShiftMask) {
+//		mustRevert = TRUE;
+//		mustAsk = FALSE;
+//	    } else if (xbe->state & ControlMask) {
+//		mustRevert = FALSE;
+//		mustAsk = FALSE;
+//	    } else {
+//		mustRevert = FALSE;
+//		mustAsk = TRUE;
+//	    }
+//	}
+//
+//	if (mustRevert) {
+//	    cp->setPanelStyle(TRUE);
+//	} else if (mustAsk) {
+//	    char *message = 
+//	    "Revert to developer style?\n\n"
+////	    "(Shift+Close direct to dev. style)\n"
+//	    "(Ctrl+Close avoids this dialog and closes the control panel.\n"
+//	    "This dialog only appears when the VPE is the anchor window.)";
+//	    theQuestionDialogManager->modalPost (
+//		cp->getRootWidget(), message, "Confirm Style Change", (void*)cp,
+//		(DialogCallback)ControlPanel::ToDevStyle, 
+//		(DialogCallback)ControlPanel::Unmanage, 
+//		NULL,
+//		"Yes", "No", NULL, 
+//		XmDIALOG_PRIMARY_APPLICATION_MODAL
+//	    );
+//	} else {
+//	    cp->unmanage();
+//	}
+//    } else {
+//	cp->unmanage();
+//    }
+//}
+//} // extern "C"
+//
+//void ControlPanel::ToDevStyle (XtPointer clientdata)
+//{
+//ControlPanel *cp = (ControlPanel *)clientdata;
+//    cp->setPanelStyle (TRUE);
+//}
 
-void ControlPanel_DialogCancelCB (Widget , XtPointer clientdata, XtPointer calldata)
-{
-ControlPanel *cp = (ControlPanel *)clientdata;
-XmPushButtonCallbackStruct *pbcbs = (XmPushButtonCallbackStruct*)calldata;
-XEvent *xev = pbcbs->event;
-boolean mustAsk = TRUE;
-boolean mustRevert = FALSE;
-
-    // The button can be pressed only when this->developerStyle == FALSE
-#if 00
-    if (theDXApplication->inEditMode()) {
-#else
-    if (cp->allowDeveloperStyleChange()) {
-#endif
-	if ((xev->type == KeyPress) || (xev->type == KeyRelease)) {
-	    mustAsk = FALSE;
-	    mustRevert = FALSE;
-	} else if ((xev->type == ButtonPress) || (xev->type == ButtonRelease)) {
-	    XButtonEvent *xbe = (XButtonEvent*)xev;
-	    if (xbe->state & ShiftMask) {
-		mustRevert = TRUE;
-		mustAsk = FALSE;
-	    } else if (xbe->state & ControlMask) {
-		mustRevert = FALSE;
-		mustAsk = FALSE;
-	    } else {
-		mustRevert = FALSE;
-		mustAsk = TRUE;
-	    }
-	}
-
-	if (mustRevert) {
-	    cp->setPanelStyle(TRUE);
-	} else if (mustAsk) {
-	    char *message = 
-	    "Revert to developer style?\n\n"
-//	    "(Shift+Close direct to dev. style)\n"
-	    "(Ctrl+Close avoids this dialog and closes the control panel.\n"
-	    "This dialog only appears when the VPE is the anchor window.)";
-	    theQuestionDialogManager->modalPost (
-		cp->getRootWidget(), message, "Confirm Style Change", (void*)cp,
-		(DialogCallback)ControlPanel::ToDevStyle, 
-		(DialogCallback)ControlPanel::Unmanage, 
-		NULL,
-		"Yes", "No", NULL, 
-		XmDIALOG_PRIMARY_APPLICATION_MODAL
-	    );
-	} else {
-	    cp->unmanage();
-	}
-    } else {
-	cp->unmanage();
-    }
-}
-} // extern "C"
-
-void ControlPanel::ToDevStyle (XtPointer clientdata)
-{
-ControlPanel *cp = (ControlPanel *)clientdata;
-    cp->setPanelStyle (TRUE);
-}
-
-void ControlPanel::Unmanage (XtPointer clientdata)
-{
-ControlPanel *cp = (ControlPanel *)clientdata;
-    cp->unmanage ();
-}
+//void ControlPanel::Unmanage (XtPointer clientdata)
+//{
+//ControlPanel *cp = (ControlPanel *)clientdata;
+//    cp->unmanage ();
+//}
 
 
 //
@@ -3263,82 +3251,82 @@ void ControlPanel::concludeInteractorPlacement()
 // We get this callback even when the list is empty, so be sure we
 // do the right thing when it is empty.
 //
-void ControlPanel::placeSelectedInteractorCallback(Widget w, XtPointer cb)
-{
-    InteractorNode *node; 
-    XmWorkspaceCallbackStruct *wscb = (XmWorkspaceCallbackStruct*) cb;
-
-    //
-    // If there are no selected Nodes, then there is nothing to do.
-    //
-    int deccnt = this->addingDecoratorList.getSize();
-    int intcnt = 0;
-    if (this->addingNodes) intcnt = this->addingNodes->getSize();
-    if (!intcnt && !deccnt) return ;
-    if (intcnt && deccnt) {
-	this->addingDecoratorList.clear();
-	deccnt = 0;
-    }
-
-    ASSERT(w == this->workSpace->getRootWidget());
-
-    //
-    // Deselect all other interactors.
-    //
-    ListIterator iterator(this->instanceList);
-    InteractorInstance *ii;
-    while ( (ii = (InteractorInstance*)iterator.getNext()) ) 
-	    ii->setSelected(FALSE);
-    //
-    // Deselect all other decorators.
-    //
-    iterator.setList(this->componentList);
-    WorkSpaceComponent *wsc;
-    while( (wsc = (WorkSpaceComponent *)iterator.getNext()) )
-	wsc->setSelected(FALSE);
-    
-
-    //
-    // If there are decorators to add...
-    // 		If it has a default Window, then open it.
-    //		else just manage it.
-    // The decorators were created when the menu button was clicked.
-    // Now, they're sitting in a list waiting to be added.  Currently
-    // the list is cleared before adding new elements (so why a list?).
-    // ...because I copied the coding style from the treatment for
-    // adding selected interactors.  Add decorators could work the same way.
-    // 
-    if (deccnt) {
-	ListIterator it(this->addingDecoratorList);
-	Decorator *dec;
-	while ( (dec = (Decorator *)it.getNext()) ) {
-	    dec->setXYPosition (wscb->event->xbutton.x, wscb->event->xbutton.y);
-	    this->addComponentToList ((void *)dec);
-	    dec->manage(this->workSpace);
-	    dec->setSelected(TRUE);
-	}
-	this->addingDecoratorList.clear();
-
-	// intcnt was 0 in order to get here but it need not be.
-	if (intcnt == 0) this->concludeInteractorPlacement();
-	return ;
-    }
-
-    node = (InteractorNode*) this->addingNodes->getElement(1);
-    this->addingNodes->deleteElement(1);
-    ASSERT(node);
-  
-    this->createAndPlaceInteractor(node,
-                        wscb->event->xbutton.x,wscb->event->xbutton.y);
-    //
-    // If there are no more InteractorInstances to place, then end
-    // the operation.
-    //
-    if (this->addingNodes->getSize() == 0)
-        this->concludeInteractorPlacement();
-   
-   
-}
+//void ControlPanel::placeSelectedInteractorCallback(Widget w, XtPointer cb)
+//{
+//    InteractorNode *node; 
+//    XmWorkspaceCallbackStruct *wscb = (XmWorkspaceCallbackStruct*) cb;
+//
+//    //
+//    // If there are no selected Nodes, then there is nothing to do.
+//    //
+//    int deccnt = this->addingDecoratorList.getSize();
+//    int intcnt = 0;
+//    if (this->addingNodes) intcnt = this->addingNodes->getSize();
+//    if (!intcnt && !deccnt) return ;
+//    if (intcnt && deccnt) {
+//	this->addingDecoratorList.clear();
+//	deccnt = 0;
+//    }
+//
+//    ASSERT(w == this->workSpace->getRootWidget());
+//
+//    //
+//    // Deselect all other interactors.
+//    //
+//    ListIterator iterator(this->instanceList);
+//    InteractorInstance *ii;
+//    while ( (ii = (InteractorInstance*)iterator.getNext()) ) 
+//	    ii->setSelected(FALSE);
+//    //
+//    // Deselect all other decorators.
+//    //
+//    iterator.setList(this->componentList);
+//    WorkSpaceComponent *wsc;
+//    while( (wsc = (WorkSpaceComponent *)iterator.getNext()) )
+//	wsc->setSelected(FALSE);
+//    
+//
+//    //
+//    // If there are decorators to add...
+//    // 		If it has a default Window, then open it.
+//    //		else just manage it.
+//    // The decorators were created when the menu button was clicked.
+//    // Now, they're sitting in a list waiting to be added.  Currently
+//    // the list is cleared before adding new elements (so why a list?).
+//    // ...because I copied the coding style from the treatment for
+//    // adding selected interactors.  Add decorators could work the same way.
+//    // 
+//    if (deccnt) {
+//	ListIterator it(this->addingDecoratorList);
+//	Decorator *dec;
+//	while ( (dec = (Decorator *)it.getNext()) ) {
+//	    dec->setXYPosition (wscb->event->xbutton.x, wscb->event->xbutton.y);
+//	    this->addComponentToList ((void *)dec);
+//	    dec->manage(this->workSpace);
+//	    dec->setSelected(TRUE);
+//	}
+//	this->addingDecoratorList.clear();
+//
+//	// intcnt was 0 in order to get here but it need not be.
+//	if (intcnt == 0) this->concludeInteractorPlacement();
+//	return ;
+//    }
+//
+//    node = (InteractorNode*) this->addingNodes->getElement(1);
+//    this->addingNodes->deleteElement(1);
+//    ASSERT(node);
+//  
+//    this->createAndPlaceInteractor(node,
+//                        wscb->event->xbutton.x,wscb->event->xbutton.y);
+//    //
+//    // If there are no more InteractorInstances to place, then end
+//    // the operation.
+//    //
+//    if (this->addingNodes->getSize() == 0)
+//        this->concludeInteractorPlacement();
+//   
+//   
+//}
 
 //
 // Create the default style of interactor for the given node and place it
@@ -3376,11 +3364,11 @@ InteractorInstance *ControlPanel::createAndPlaceInteractor(
 }
 
 
-Widget ControlPanel::getWorkSpaceWidget()
-{ 
-    ASSERT(this->workSpace); 
-    return workSpace->getRootWidget();
-}
+//Widget ControlPanel::getWorkSpaceWidget()
+//{ 
+//    ASSERT(this->workSpace); 
+//    return workSpace->getRootWidget();
+//}
 
 //
 // Set the name/title of this panel.
@@ -3521,72 +3509,72 @@ boolean ControlPanel::nodeIsInInstanceList (Node *n)
 //
 // These are the buttons that go at the bottom of the control panel in user style
 //
-Widget 
-ControlPanel::createCommandArea(Widget parent)
-{
-Arg args[20];
-int n;
-
-    ASSERT(parent);
-
-    n = 0;
-    XtSetArg (args[n], XmNshadowThickness, 1); n++;
-    XtSetArg (args[n], XmNshadowType, XmSHADOW_OUT); n++;
-    Widget form = XmCreateForm (parent, "cpForm", args, n);
-
-// Override the standard Motif translations so that we can use the control
-// button press. 
-
-    n = 0;
-    XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
-    XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION); n++;
-    XtSetArg (args[n], XmNleftPosition, 10); n++;
-    XtSetArg (args[n], XmNrightPosition, 40); n++;
-    XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNbottomOffset, 8); n++;
-    XtSetArg (args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNtopOffset, 6); n++;
-    Widget pbCancel = XmCreatePushButton (form, "panelCancel", args, n);
-    // Now override default.
-    char *pbCancelTransStr = "\
-	<EnterWindow>: 		Enter()\n\
-	<LeaveWindow>: 		Leave()\n\
-	<Btn1Down>: 		Arm()\n\
-	<Btn1Down>,<Btn1Up>: 	Activate() Disarm()\n\
-	<Btn1Down>(2+):		MultiArm()\n\
-	<Btn1Up>:		Activate() Disarm()\n\
-	:<Key>osfActivate:	PrimitiveParentActivate()\n\
-	:<Key>osfCancel:	PrimitiveParentCancel()\n\
-	:<Key>osfSelect:	ArmAndActivate()\n\
-	:<Key>osfHelp:		Help()\n\
-	~s ~m ~a <Key>Return:	PrimitiveParentActivate()\n\
-	~s ~m ~a <Key>space:	ArmAndActivate()";
-    XtTranslations pbCancelTrans = XtParseTranslationTable(pbCancelTransStr);
-    XtVaSetValues (pbCancel, XtNtranslations, pbCancelTrans, NULL);
-    XtManageChild (pbCancel);
-
-    Widget pbHelp;
-    n = 0;
-    XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
-    XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION); n++;
-    XtSetArg (args[n], XmNleftPosition, 60); n++;
-    XtSetArg (args[n], XmNrightPosition, 90); n++;
-    XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNbottomOffset, 8); n++;
-    XtSetArg (args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNtopOffset, 6); n++;
-
-    ASSERT(this->helpOnPanelCmd);
-    this->userHelpOption = new ButtonInterface(form, 
-	"userHelpOption", this->helpOnPanelCmd);
-    pbHelp = this->userHelpOption->getRootWidget();
-    XtSetValues (pbHelp, args, n);
-
-    XtAddCallback (pbCancel, XmNactivateCallback, 
-	(XtCallbackProc)ControlPanel_DialogCancelCB, (XtPointer)this);
-
-    return form;
-}
+//Widget 
+//ControlPanel::createCommandArea(Widget parent)
+//{
+//Arg args[20];
+//int n;
+//
+//    ASSERT(parent);
+//
+//    n = 0;
+//    XtSetArg (args[n], XmNshadowThickness, 1); n++;
+//    XtSetArg (args[n], XmNshadowType, XmSHADOW_OUT); n++;
+//    Widget form = XmCreateForm (parent, "cpForm", args, n);
+//
+//// Override the standard Motif translations so that we can use the control
+//// button press. 
+//
+//    n = 0;
+//    XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
+//    XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION); n++;
+//    XtSetArg (args[n], XmNleftPosition, 10); n++;
+//    XtSetArg (args[n], XmNrightPosition, 40); n++;
+//    XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
+//    XtSetArg (args[n], XmNbottomOffset, 8); n++;
+//    XtSetArg (args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+//    XtSetArg (args[n], XmNtopOffset, 6); n++;
+//    Widget pbCancel = XmCreatePushButton (form, "panelCancel", args, n);
+//    // Now override default.
+//    char *pbCancelTransStr = "\
+//	<EnterWindow>: 		Enter()\n\
+//	<LeaveWindow>: 		Leave()\n\
+//	<Btn1Down>: 		Arm()\n\
+//	<Btn1Down>,<Btn1Up>: 	Activate() Disarm()\n\
+//	<Btn1Down>(2+):		MultiArm()\n\
+//	<Btn1Up>:		Activate() Disarm()\n\
+//	:<Key>osfActivate:	PrimitiveParentActivate()\n\
+//	:<Key>osfCancel:	PrimitiveParentCancel()\n\
+//	:<Key>osfSelect:	ArmAndActivate()\n\
+//	:<Key>osfHelp:		Help()\n\
+//	~s ~m ~a <Key>Return:	PrimitiveParentActivate()\n\
+//	~s ~m ~a <Key>space:	ArmAndActivate()";
+//    XtTranslations pbCancelTrans = XtParseTranslationTable(pbCancelTransStr);
+//    XtVaSetValues (pbCancel, XtNtranslations, pbCancelTrans, NULL);
+//    XtManageChild (pbCancel);
+//
+//    Widget pbHelp;
+//    n = 0;
+//    XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
+//    XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION); n++;
+//    XtSetArg (args[n], XmNleftPosition, 60); n++;
+//    XtSetArg (args[n], XmNrightPosition, 90); n++;
+//    XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
+//    XtSetArg (args[n], XmNbottomOffset, 8); n++;
+//    XtSetArg (args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+//    XtSetArg (args[n], XmNtopOffset, 6); n++;
+//
+//    ASSERT(this->helpOnPanelCmd);
+//    this->userHelpOption = new ButtonInterface(form, 
+//	"userHelpOption", this->helpOnPanelCmd);
+//    pbHelp = this->userHelpOption->getRootWidget();
+//    XtSetValues (pbHelp, args, n);
+//
+//    XtAddCallback (pbCancel, XmNactivateCallback, 
+//	(XtCallbackProc)ControlPanel_DialogCancelCB, (XtPointer)this);
+//
+//    return form;
+//}
 
 void ControlPanel::SetOwner(void *b)
 {
@@ -3716,7 +3704,7 @@ boolean ControlPanel::toggleHitDetection()
     return TRUE;
 }
 
-void ControlPanel::getGeometryAlternateNames(String* names, int* count, int max) 
+void ControlPanel::getGeometryAlternateNames(char** names, int* count, int max) 
 { 
     int cnt = *count;
     if (cnt < (max-1)) {

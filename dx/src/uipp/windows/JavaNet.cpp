@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #include "JavaNet.h"
@@ -59,7 +59,7 @@
 #define DXVIEW_CABFILE_ID "CLASSID=\"CLSID:983F4461-A4B0-11D1-BABA-000629685A02\""
 #define DXVIEW_CABFILE_BASE "CODEBASE=\"DXView.cab#version=1,0,0,4\""
 
-String JavaNet::UnsupportedTools[] = { 
+char* JavaNet::UnsupportedTools[] = { 
 	"Colormap", "Probe", "ProbeList", "WriteImage", 
 	"ManageColormapEditor", "Message",
 	"ManageControlPanel", "ManageImageWindow", "ManageSequencer", 

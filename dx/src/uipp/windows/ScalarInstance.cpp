@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 
@@ -85,8 +85,8 @@ boolean ScalarInstance::handleNewDimensionality()
 	delete this->interactor;
 	this->interactor = NULL;  
     }
-    if (this->controlPanel->getRootWidget())
-        this->createInteractor();
+    //if (this->controlPanel->getRootWidget())
+    //    this->createInteractor();
     return TRUE;
 }
 //
@@ -159,16 +159,16 @@ boolean ScalarInstance::hasSetAttrDialog()
 //
 // Create the default set attributes dialog box for this type of interactor.
 //
-SetAttrDialog *ScalarInstance::newSetAttrDialog(Widget parent)
+SetAttrDialog *ScalarInstance::newSetAttrDialog()
 {
     ScalarNode *sinode = (ScalarNode*)this->getNode();
 
     SetScalarAttrDialog *d = NULL;
 
     if (sinode->getComponentCount() > 1) {
-        d = new SetVectorAttrDialog(parent, "Set Attributes...", this);
+        d = new SetVectorAttrDialog("Set Attributes...", this);
     } else {
-        d = new SetScalarAttrDialog(parent, "Set Attributes...", this);
+        d = new SetScalarAttrDialog("Set Attributes...", this);
     }
     return (SetAttrDialog*)d;
 }

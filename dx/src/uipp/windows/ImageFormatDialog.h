@@ -15,7 +15,6 @@
 
 #include "Dialog.h"
 #include "NoOpCommand.h"
-#include <X11/cursorfont.h>
 
 //
 // Class name definition:
@@ -23,10 +22,10 @@
 #define ClassImageFormatDialog	"ImageFormatDialog"
 #define CM_PER_INCH     2.54
 
-extern "C" void ImageFormatDialog_ChoiceCB(Widget, XtPointer, XtPointer);
-//extern "C" void ImageFormatDialog_UnitsCB(Widget, XtPointer, XtPointer);
-extern "C" void ImageFormatDialog_DirtyGammaCB(Widget, XtPointer, XtPointer);
-extern "C" void ImageFormatDialog_RestoreCB(Widget, XtPointer, XtPointer);
+//extern "C" void ImageFormatDialog_ChoiceCB(Widget, XtPointer, XtPointer);
+////extern "C" void ImageFormatDialog_UnitsCB(Widget, XtPointer, XtPointer);
+//extern "C" void ImageFormatDialog_DirtyGammaCB(Widget, XtPointer, XtPointer);
+//extern "C" void ImageFormatDialog_RestoreCB(Widget, XtPointer, XtPointer);
 
 class ImageNode;
 class ImageFormat;
@@ -43,8 +42,8 @@ class ImageFormatDialog : public Dialog, public NoOpCommand
   private:
 
     static boolean ClassInitialized;
-    static String  DefaultResources[];
-    static Cursor  WatchCursor;
+    //static String  DefaultResources[];
+    //static Cursor  WatchCursor;
 
     static void ImageOutputCompletePH (void* , int, void* );
 
@@ -53,22 +52,22 @@ class ImageFormatDialog : public Dialog, public NoOpCommand
     List*		image_formats;
     CommandScope*	commandScope;
 
-    Widget		format_om;
-    Widget		format_pd;
-#if 0
-    Widget		units;
-    Widget		units_om;
-    Widget		units_pd;
-    Widget		pixels_button;
-    Widget		inches_button;
-    Widget		cms_button;
-    Widget		chosen_units;
-#endif
-    Widget		aboveBody;
-    Widget		belowBody;
-    Widget		gamma_number;
-    Widget		restore;
-
+//    Widget		format_om;
+//    Widget		format_pd;
+//#if 0
+//    Widget		units;
+//    Widget		units_om;
+//    Widget		units_pd;
+//    Widget		pixels_button;
+//    Widget		inches_button;
+//    Widget		cms_button;
+//    Widget		chosen_units;
+//#endif
+//    Widget		aboveBody;
+//    Widget		belowBody;
+//    Widget		gamma_number;
+//    Widget		restore;
+//
     int 		dirty;
     int			busyCursors;
     boolean		resetting;
@@ -84,7 +83,7 @@ class ImageFormatDialog : public Dialog, public NoOpCommand
     Command*			rerenderCmd;
     Command*			delayedCmd;
 
-    virtual Widget createDialog(Widget parent);
+    virtual void createDialog();
 
     virtual boolean 		okCallback(Dialog *);
     virtual void 		cancelCallback(Dialog *);
@@ -94,25 +93,25 @@ class ImageFormatDialog : public Dialog, public NoOpCommand
 
 
     virtual boolean		isPrinting() = 0;
-    virtual Widget		createControls(Widget parent) = 0;
+    //virtual Widget		createControls(Widget parent) = 0;
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
     //
     // Constructor:
     //
-    ImageFormatDialog(char* name, Widget parent, ImageNode* node, 
+    ImageFormatDialog(char* name, ImageNode* node, 
 	CommandScope* commandScope);
 
-    friend void ImageFormatDialog_ChoiceCB(Widget, XtPointer, XtPointer);
-    //friend void ImageFormatDialog_UnitsCB(Widget, XtPointer, XtPointer);
-    friend void ImageFormatDialog_DirtyGammaCB(Widget, XtPointer, XtPointer);
-    friend void ImageFormatDialog_RestoreCB(Widget, XtPointer, XtPointer);
+    //friend void ImageFormatDialog_ChoiceCB(Widget, XtPointer, XtPointer);
+    ////friend void ImageFormatDialog_UnitsCB(Widget, XtPointer, XtPointer);
+    //friend void ImageFormatDialog_DirtyGammaCB(Widget, XtPointer, XtPointer);
+    //friend void ImageFormatDialog_RestoreCB(Widget, XtPointer, XtPointer);
 
     enum {
 	DirtyFormat     = 1,

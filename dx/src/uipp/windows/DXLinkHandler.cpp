@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #include "ErrorDialogManager.h"
@@ -166,7 +166,7 @@ boolean DXLinkHandler::OpenColormapEditor(const char *c, int id, void *va)
     while (NULL != (cnode = (ColormapNode *)it.getNext())) {
 	DXWindow *win = cnode->getDXWindow();;
 	if (!win) 
-	    cnode->openDefaultWindow(NULL);
+	    cnode->openDefaultWindow();
 	else if (!win->isManaged())
 	    win->manage(); 
     }
@@ -321,7 +321,7 @@ boolean DXLinkHandler::OpenSequencer(const char *c, int id, void *va)
     if (seq) {
 	DXWindow *win = seq->getDXWindow();
 	if (!win) 
-	    seq->openDefaultWindow(theDXApplication->getRootWidget());
+	    seq->openDefaultWindow();
 	else if (!win->isManaged())
 	    win->manage();
     }
@@ -362,8 +362,8 @@ boolean DXLinkHandler::OpenVPE(const char *c, int id, void *va)
     if (!editor->isManaged()) {
 	editor->manage();
 
-	XMapRaised(XtDisplay(editor->getRootWidget()),
-		   XtWindow(editor->getRootWidget()));
+	//XMapRaised(XtDisplay(editor->getRootWidget()),
+	//	   XtWindow(editor->getRootWidget()));
     }
 
     return TRUE;
@@ -963,23 +963,23 @@ boolean DXLinkHandler::OpenControlPanel(const char *c, int id, void *va)
 
 boolean DXLinkHandler::CloseControlPanel(const char *c, int id, void *va)
 {
-    List *l;
+	List *l;
 
-    l = theDXApplication->network->makeNamedControlPanelList(c);
+	l = theDXApplication->network->makeNamedControlPanelList(c);
 
-    if (l)
-    {
-	ControlPanel *cp;
-	ListIterator it(*l);
+	if (l)
+	{
+		ControlPanel *cp;
+		ListIterator it(*l);
 
-	while (NULL != (cp = (ControlPanel *)it.getNext()))
-	    if (cp->getRootWidget())
-		cp->unmanage();
-    }
-    
-    delete l;
+		while (NULL != (cp = (ControlPanel *)it.getNext()))
+			//if (cp->getRootWidget())
+				cp->unmanage();
+	}
 
-    return TRUE;
+	delete l;
+
+	return TRUE;
 }
 
 boolean DXLinkHandler::ResetServer(const char *c, int id, void *va)

@@ -10,8 +10,6 @@
 #include "defines.h"
 
 
-
-
 #ifndef _SetPanelNameDialog_h
 #define _SetPanelNameDialog_h
 
@@ -43,7 +41,7 @@ class SetPanelNameDialog : public SetNameDialog
     // Protected member data:
     //
 
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
     virtual const char *getText();
     virtual boolean saveText(const char *s);
@@ -53,13 +51,13 @@ class SetPanelNameDialog : public SetNameDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    SetPanelNameDialog(Widget parent, ControlPanel *cp);
+    SetPanelNameDialog(ControlPanel *cp);
 
     //
     // Destructor:

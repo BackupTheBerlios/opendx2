@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #include "DXStrings.h"
@@ -21,7 +21,6 @@
 #include "SequencerNode.h"
 #include "ErrorDialogManager.h"
 #include "ProcessGroupManager.h"
-#include "../widgets/VCRControl.h"
 
 
 DXExecCtl::DXExecCtl()
@@ -336,12 +335,12 @@ void DXExecCtl::vcrCommand(int action, boolean pressed)
     char  command[30];
     DXPacketIF *p = theDXApplication->getPacketIF();
     SequencerNode* sequencer = theDXApplication->network->sequencer;
-    Widget vcr = NULL;
+    //Widget vcr = NULL;
     boolean doEnd = FALSE;
 
     if (action == VCR_STOP) {
 	ASSERT(sequencer);
-	vcr = sequencer->getVCRWidget();
+	//vcr = sequencer->getVCRWidget();
     }
 
     if (p == NULL)
@@ -351,7 +350,7 @@ void DXExecCtl::vcrCommand(int action, boolean pressed)
         sequencer->setPlayDirection(SequencerNode::Directionless);
 
 	if (action == VCR_STOP)
-	    XtVaSetValues(vcr, XmNnext, sequencer->next, NULL);
+	    //XtVaSetValues(vcr, XmNnext, sequencer->next, NULL);
 
    	return;
     }
@@ -422,10 +421,10 @@ void DXExecCtl::ResetVcrNextFrame(void *clientData, int id, void *p)
     DXExecCtl *ctl = theDXApplication->getExecCtl();
     SequencerNode* sequencer = theDXApplication->network->sequencer;
     ASSERT(sequencer);
-    Widget vcr = sequencer->getVCRWidget();
+    //Widget vcr = sequencer->getVCRWidget();
 
     sequencer->next = sequencer->getStartValue();
-    XtVaSetValues(vcr, XmNnext, sequencer->next, NULL);
+    //XtVaSetValues(vcr, XmNnext, sequencer->next, NULL);
 
     if(ctl->isExecOnChangeSuspended())
 	ctl->resumeExecOnChange();

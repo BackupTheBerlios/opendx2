@@ -9,16 +9,11 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
 #ifndef _ArkStandIn_h
 #define _ArkStandIn_h
 
 
 #include "Base.h"
-#include <../widgets/WorkspaceW.h>
-
 
 //
 // Class name definition:
@@ -38,8 +33,8 @@ class ArkStandIn : public Base
     //
     // Private member data:
     //
-    XmWorkspaceWidget parent;
-    XmWorkspaceLine line;
+    //XmWorkspaceWidget parent;
+    //XmWorkspaceLine line;
 
   protected:
     //
@@ -51,10 +46,10 @@ class ArkStandIn : public Base
     //
     // Constructor:
     //
-    ArkStandIn(XmWorkspaceWidget w, XmWorkspaceLine l)
+    ArkStandIn()
     {
-       this->line = l;
-       this->parent = w;
+       //this->line = l;
+       //this->parent = w;
     }
 
     //
@@ -62,17 +57,17 @@ class ArkStandIn : public Base
     //
     ~ArkStandIn()
     {
-        XmDestroyWorkspaceLine((XmWorkspaceWidget) this->parent, 
-                               this->line, FALSE);
+        //XmDestroyWorkspaceLine((XmWorkspaceWidget) this->parent, 
+        //                       this->line, FALSE);
     }
-    void setWorkSpaceLine(XmWorkspaceLine l)
+    void setWorkSpaceLine()
     {
-        this->line = l;
+        //this->line = l;
     }
-    XmWorkspaceLine getWorkSpaceLine()
-    {
-        return this->line;
-    }
+    //XmWorkspaceLine getWorkSpaceLine()
+    //{
+    //    return this->line;
+    //}
 
     //
     // Print a representation of the stand in on a PostScript device.  We

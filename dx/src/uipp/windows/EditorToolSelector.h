@@ -37,7 +37,7 @@ class EditorToolSelector : public ToolSelector
     EditorWindow *editor;
 
     virtual void toolSelect(Symbol s);
-    virtual Widget layoutWidgets(Widget parent);
+    //virtual Widget layoutWidgets(Widget parent);
 
     Notebook* notebook;
 

@@ -10,8 +10,6 @@
 #include "defines.h"
 
 
-
-
 #ifndef _ColormapWaveDialog_h
 #define _ColormapWaveDialog_h
 
@@ -30,10 +28,10 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void ColormapWaveDialog_AddCB(Widget, XtPointer, XtPointer);
-extern "C" void ColormapWaveDialog_CloseCB(Widget, XtPointer, XtPointer);
-extern "C" void ColormapWaveDialog_PopdownCB(Widget, XtPointer, XtPointer);
-extern "C" void ColormapWaveDialog_RangeCB(Widget, XtPointer, XtPointer);
+//extern "C" void ColormapWaveDialog_AddCB(Widget, XtPointer, XtPointer);
+//extern "C" void ColormapWaveDialog_CloseCB(Widget, XtPointer, XtPointer);
+//extern "C" void ColormapWaveDialog_PopdownCB(Widget, XtPointer, XtPointer);
+//extern "C" void ColormapWaveDialog_RangeCB(Widget, XtPointer, XtPointer);
 
 class ColormapEditor;
 
@@ -53,48 +51,48 @@ class ColormapWaveDialog : public Dialog
 
     ColormapEditor* editor;
 
-    Widget waveoption;
-    Widget rangeoption;
-    Widget rangefull;
-    Widget rangeselected;
-    Widget nstep;
-    Widget step;
-    Widget square_sol;
-    Widget square_sor;
-    Widget saw_sol;
-    Widget saw_sor;
-    Widget closebtn;
-    Widget applybtn;
+    //Widget waveoption;
+    //Widget rangeoption;
+    //Widget rangefull;
+    //Widget rangeselected;
+    //Widget nstep;
+    //Widget step;
+    //Widget square_sol;
+    //Widget square_sor;
+    //Widget saw_sol;
+    //Widget saw_sor;
+    //Widget closebtn;
+    //Widget applybtn;
 
   protected:
     //
     // Protected member data:
     //
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
 
-    friend void ColormapWaveDialog_RangeCB(Widget, XtPointer, XtPointer);
-    friend void ColormapWaveDialog_PopdownCB(Widget, XtPointer , XtPointer);
-    friend void ColormapWaveDialog_CloseCB(Widget, XtPointer , XtPointer);
-    friend void ColormapWaveDialog_AddCB(Widget, XtPointer , XtPointer);
-    void rangeCallback(Widget    widget);
+    //friend void ColormapWaveDialog_RangeCB(Widget, XtPointer, XtPointer);
+    //friend void ColormapWaveDialog_PopdownCB(Widget, XtPointer , XtPointer);
+    //friend void ColormapWaveDialog_CloseCB(Widget, XtPointer , XtPointer);
+    //friend void ColormapWaveDialog_AddCB(Widget, XtPointer , XtPointer);
+    //void rangeCallback(Widget    widget);
 
 
-    virtual Widget createDialog(Widget);
+    virtual void createDialog(void);
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
 
     //
     // Constructor:
     //
-    ColormapWaveDialog(Widget parent,ColormapEditor* editor);
+    ColormapWaveDialog(ColormapEditor* editor);
 
     //
     // Destructor:

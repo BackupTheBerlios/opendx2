@@ -9,16 +9,9 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-// 
-//
-//
-
 #ifndef _Decorator_h
 #define _Decorator_h
 
-#include <X11/Intrinsic.h>
 
 #include "WorkSpaceComponent.h"
 #include "DynamicResource.h"
@@ -40,7 +33,7 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
   // P R I V A T E   P R I V A T E   P R I V A T E
   // P R I V A T E   P R I V A T E   P R I V A T E
   private:
-    WidgetClass	widgetClass;
+    //WidgetClass	widgetClass;
 
     // 
     // When the decorator is in a c.p. there is a requirement for it to know its
@@ -58,11 +51,11 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   protected:
     // S H A R E W A R E
-    static  String 	   DefaultResources[]; 
+    //static  String 	   DefaultResources[]; 
     static  int		   HiLites;
 
     virtual void 	   createDecorator();
-    Dimension 	x,y,width, height;
+    //Dimension 	x,y,width, height;
     DecoratorStyle *style;
 
     // add late breaking news - just like interactors, but not required
@@ -71,7 +64,7 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
 
     // D R A G - N - D R O P   R E L A T E D   S T U F F
     // D R A G - N - D R O P   R E L A T E D   S T U F F
-    static Widget DragIcon;
+    //static Widget DragIcon;
  
     // 1 enum for each type of Drag data we can supply.  Pass these to addSupportedType
     // and decode them in decodeDragType.  These replace the use of func pointers.
@@ -83,15 +76,15 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
 	Text
     };
 
-    virtual int decideToDrag(XEvent *);
+    //virtual int decideToDrag(XEvent *);
     virtual void    dropFinish (long, int, unsigned char);
     //
     // Providing these 2 means that subclasses don't have to provide dnd
     // functionality.  This makes sense for placing arbitrary widgets 
     // which may/may not provide a hunk of data.
     //
-    virtual boolean decodeDragType (int, char *, XtPointer *, unsigned long *, long )
-	{ return FALSE; }
+ //   virtual boolean decodeDragType (int, char *, XtPointer *, unsigned long *, long )
+	//{ return FALSE; }
     virtual Dictionary* getDragDictionary() { return NUL(Dictionary*); }
  
     //

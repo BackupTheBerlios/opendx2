@@ -35,14 +35,14 @@ class PrintImageDialog : public ImageFormatDialog
   private:
 
     static boolean ClassInitialized;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
-    Widget		command;
+    //Widget		command;
     char*		command_str;
 
   protected:
 
-    virtual Widget createControls(Widget parent );
+    //virtual Widget createControls(Widget parent );
 
     virtual boolean okCallback(Dialog *);
     virtual void    restoreCallback();
@@ -52,7 +52,7 @@ class PrintImageDialog : public ImageFormatDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
     virtual int  getRequiredHeight() { return 160; }
 
@@ -69,7 +69,7 @@ class PrintImageDialog : public ImageFormatDialog
     //
     // Constructor:
     //
-    PrintImageDialog(Widget parent, ImageNode* node, CommandScope* commandScope);
+    PrintImageDialog(ImageNode* node, CommandScope* commandScope);
 
     //
     // Destructor:

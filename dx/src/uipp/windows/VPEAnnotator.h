@@ -9,16 +9,9 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-// 
-//
-//
-
 #ifndef _VPEAnnotator_h
 #define _VPEAnnotator_h
 
-#include <X11/Intrinsic.h>
 
 #include "LabelDecorator.h"
 #if WORKSPACE_PAGES
@@ -48,10 +41,10 @@ class VPEAnnotator : public LabelDecorator
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   protected:
-    static String 	   DefaultResources[]; 
-    static Widget          DragIcon;
+    //static String 	   DefaultResources[]; 
+    //static Widget          DragIcon;
     static boolean         DragDictionaryInitialized;
-    static  void           PixelToRGB(Widget, Pixel, float *, float *, float *);
+    //static  void           PixelToRGB(Widget, Pixel, float *, float *, float *);
 
     virtual void           completeDecorativePart();
 

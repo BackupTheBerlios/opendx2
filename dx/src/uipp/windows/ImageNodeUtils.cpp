@@ -7,31 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-#ifdef OS2
-#include <stdlib.h>
-#include <types.h>
-#endif
-
-#if defined(DXD_WIN) || defined(OS2)          //SMH get socket calls
-
-#if 0
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#elif defined(HAVE_SYS_SOCKET_H)
-#include <sys/socket.h>
-#endif
-#endif
-
-#undef send
-#undef FLOAT
-#undef PFLOAT
-#endif
+#include "defines.h"
 
 #include "ImageNode.h"
 #include "StandIn.h"
@@ -60,16 +36,16 @@
 # undef abs
 #endif
 
-String ImageNode::ImageMacroTxt[] = {
+char* ImageNode::ImageMacroTxt[] = {
 #   include "imagemac.h"
 };
-String ImageNode::DXMacroTxt[] = {
+char* ImageNode::DXMacroTxt[] = {
 #   include "dxmac.h"
 };
-String ImageNode::VrmlMacroTxt[] = {
+char* ImageNode::VrmlMacroTxt[] = {
 #   include "vrmlmac.h"
 };
-String ImageNode::GifMacroTxt[] = {
+char* ImageNode::GifMacroTxt[] = {
 #   include "gifmac.h"
 };
 
@@ -1273,7 +1249,7 @@ boolean ImageNode::SendString(void* callbackData, PacketIFCallback cb, FILE* f, 
     return TRUE;
 }
 
-void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac[], boolean viasocket)
+void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, char* mac[], boolean viasocket)
 {
     int i = 0;
 #   define FMBUFSIZE 90

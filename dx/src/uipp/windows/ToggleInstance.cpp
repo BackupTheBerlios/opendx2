@@ -7,9 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
+#include "defines.h"
 
 
 #include "ToggleInstance.h"
@@ -38,9 +36,9 @@ boolean ToggleInstance::hasSetAttrDialog()
 //
 // Create the default set attributes dialog box for this type of interactor.
 //
-SetAttrDialog *ToggleInstance::newSetAttrDialog(Widget parent)
+SetAttrDialog *ToggleInstance::newSetAttrDialog()
 {
-    ToggleAttrDialog *d = new ToggleAttrDialog(parent,
+    ToggleAttrDialog *d = new ToggleAttrDialog(
                                         "Set Attributes...", this);
     return (SetAttrDialog*)d;
 }

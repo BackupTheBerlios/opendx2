@@ -7,23 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include <defines.h>
+#include "defines.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-
-#include <Xm/CascadeB.h>
-#include <Xm/DrawingA.h>
-#include <Xm/Frame.h>
-#include <Xm/Form.h>
-#include <Xm/Label.h>
-#include <Xm/List.h>
-#include <Xm/RowColumn.h>
-#include <Xm/ScrolledW.h>
-#include <Xm/Separator.h>
-
 
 #include "DXType.h"
 #include "DXValue.h"
@@ -45,9 +32,7 @@
 #include "SetColormapNameDialog.h"
 #include "ColormapFileCommand.h"
 #include "Network.h"
-#include "../base/CascadeMenu.h"
-
-#include "../widgets/ColorMapEditor.h"
+#include "CascadeMenu.h"
 
 #ifdef ABS_IN_MATH_H
 # define abs __Dont_define_abs
@@ -56,8 +41,6 @@
 #ifdef ABS_IN_MATH_H
 # undef abs
 #endif
-
-#include "CMDefaultResources.h"
 
 boolean ColormapEditor::ClassInitialized = FALSE;
 
@@ -69,14 +52,14 @@ ColormapEditor::ColormapEditor(ColormapNode*    cmnode) :
     //
     // Initialize member data.
     //
-    this->fileMenu       = NUL(Widget);
-    this->editMenu       = NUL(Widget);
-    this->optionsMenu    = NUL(Widget);
+    //this->fileMenu       = NUL(Widget);
+    //this->editMenu       = NUL(Widget);
+    //this->optionsMenu    = NUL(Widget);
 
-    this->fileMenuPulldown       = NUL(Widget);
-    this->editMenuPulldown       = NUL(Widget);
-    this->optionsMenuPulldown    = NUL(Widget);
-    this->colormapEditor = NUL(Widget);
+    //this->fileMenuPulldown       = NUL(Widget);
+    //this->editMenuPulldown       = NUL(Widget);
+    //this->optionsMenuPulldown    = NUL(Widget);
+    //this->colormapEditor = NUL(Widget);
 
     this->newOption          = NUL(CommandInterface*);
     this->openOption         = NUL(CommandInterface*);
@@ -321,7 +304,7 @@ ColormapEditor::ColormapEditor(ColormapNode*    cmnode) :
     {
 	ASSERT(theApplication);
         ColormapEditor::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
@@ -410,11 +393,11 @@ ColormapEditor::~ColormapEditor()
 //
 // Install the default resources for this class.
 //
-void ColormapEditor::installDefaultResources(Widget baseWidget)
-{
-    this->setDefaultResources(baseWidget, ColormapEditor::DefaultResources);
-    this->DXWindow::installDefaultResources(baseWidget);
-}
+//void ColormapEditor::installDefaultResources(Widget baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, ColormapEditor::DefaultResources);
+//    this->DXWindow::installDefaultResources(baseWidget);
+//}
 
 void ColormapEditor::initialize()
 {
@@ -447,12 +430,12 @@ void ColormapEditor::manage()
 	(name = this->colormapNode->getNetSavedCMFilename())) {
         struct STATSTRUCT statbuf;
 
-        if (STATFUNC(name,&statbuf) == 0) {         // File exists
-	    XmColorMapEditorRead(this->colormapEditor,(char*)name);
-        } else {
-           WarningMessage("Can't locate color map file '%s', "
-                          "using default map",name);
-        }
+     //   if (STATFUNC(name,&statbuf) == 0) {         // File exists
+	    //XmColorMapEditorRead(this->colormapEditor,(char*)name);
+     //   } else {
+     //      WarningMessage("Can't locate color map file '%s', "
+     //                     "using default map",name);
+     //   }
     } 
 
     this->handleStateChange();
@@ -471,18 +454,18 @@ void ColormapEditor::setDrawMode()
 	    this->draw_mode = CME_GRID;
 
 	    // "Remove" the existing histogram, since it is no longer valid
-	    XmColorMapEditorLoadHistogram(this->colormapEditor, NULL, 0);
+	    //XmColorMapEditorLoadHistogram(this->colormapEditor, NULL, 0);
 	}
 
 	// Set the sensitivity  based on whether or not it is data driven
-	if(this->colormapNode->isDataDriven() &&
-	   XmColorMapEditorHasHistogram(this->colormapEditor))
-	{
-	    this->ticksCmd->activate();
-	    this->histogramCmd->activate();
-	    this->logHistogramCmd->activate();
-	}
-	else
+	//if(this->colormapNode->isDataDriven() &&
+	//   XmColorMapEditorHasHistogram(this->colormapEditor))
+	//{
+	//    this->ticksCmd->activate();
+	//    this->histogramCmd->activate();
+	//    this->logHistogramCmd->activate();
+	//}
+	//else
 	{
 	    if(this->ticksOption)
 		((ToggleButtonInterface *)(this->ticksOption))->setState(TRUE);
@@ -499,24 +482,24 @@ void ColormapEditor::setDrawMode()
     }
 
 
-    if(!this->colormapNode->isDataDriven() || 
-       !XmColorMapEditorHasHistogram(this->colormapEditor))
-    {
-	this->draw_mode = CME_GRID;
+ //   if(!this->colormapNode->isDataDriven() || 
+ //      !XmColorMapEditorHasHistogram(this->colormapEditor))
+ //   {
+	//this->draw_mode = CME_GRID;
 
-	// "Remove" the existing histogram, since it is no longer valid
-	XmColorMapEditorLoadHistogram(this->colormapEditor, NULL, 0);
-    }
+	//// "Remove" the existing histogram, since it is no longer valid
+	//XmColorMapEditorLoadHistogram(this->colormapEditor, NULL, 0);
+ //   }
 
     // Set the sensitivity  based on whether or not it is data driven
-    if(this->colormapNode->isDataDriven() &&
-       XmColorMapEditorHasHistogram(this->colormapEditor))
-	{
-	    this->ticksCmd->activate();
-	    this->histogramCmd->activate();
-	    this->logHistogramCmd->activate();
-	}
-	else
+ //   if(this->colormapNode->isDataDriven() &&
+ //      XmColorMapEditorHasHistogram(this->colormapEditor))
+	//{
+	//    this->ticksCmd->activate();
+	//    this->histogramCmd->activate();
+	//    this->logHistogramCmd->activate();
+	//}
+	//else
 	{
 	    if(this->ticksOption)
 		((ToggleButtonInterface *)(this->ticksOption))->setState(TRUE);
@@ -529,7 +512,7 @@ void ColormapEditor::setDrawMode()
 	    this->logHistogramCmd->deactivate();
 	}
 
-    XtVaSetValues(this->colormapEditor, XmNdrawMode, this->draw_mode, NULL);
+    //XtVaSetValues(this->colormapEditor, XmNdrawMode, this->draw_mode, NULL);
 
 }
 //
@@ -545,7 +528,7 @@ void ColormapEditor::handleStateChange()
 	return;
 
     int *hist = node->getHistogram(&nhist);
-    XmColorMapEditorLoadHistogram(this->colormapEditor,hist,nhist);
+    //XmColorMapEditorLoadHistogram(this->colormapEditor,hist,nhist);
     if (hist)
 	delete hist;
 
@@ -607,11 +590,11 @@ void ColormapEditor::handleStateChange()
 					&opmap, &tuple);
 
 
-    XmColorMapEditorLoad(this->colormapEditor, min, max,
-					huecnt, huemap,
-					satcnt, satmap,
-					valcnt, valmap,
-					opcnt,  opmap);
+    //XmColorMapEditorLoad(this->colormapEditor, min, max,
+				//	huecnt, huemap,
+				//	satcnt, satmap,
+				//	valcnt, valmap,
+				//	opcnt,  opmap);
 
     if (huemap) delete huemap;
     if (satmap) delete satmap;
@@ -621,461 +604,460 @@ void ColormapEditor::handleStateChange()
 
 }
 
-extern "C" void ColormapEditor_ActiveCB(Widget    widget,
-                           XtPointer    clientData,
-                           XtPointer    callData)
-{
-
-    ASSERT(widget);
-    ColormapEditor* editor = (ColormapEditor*)clientData;
-    editor->activeCallback(callData);
-
-}
-void ColormapEditor::activeCallback(XtPointer callData)
-{
-    XmColorMapEditorCallbackStruct* data =
-                                (XmColorMapEditorCallbackStruct*)callData;
-
-
-    ColormapNode* colormap = this->colormapNode;
-    Widget range_widget;
-
-    this->doingActivateCallback = TRUE;
-
-
-    if(this->waveformDialog)
-    {
-	XtVaGetValues(this->waveformDialog->rangeoption, 
-		    XmNmenuHistory, &range_widget, NULL);
-	
-	if(range_widget == this->waveformDialog->rangeselected)
-	{
-	    if( (data->hue_selected < 2) &&
-		(data->sat_selected < 2) &&
-		(data->val_selected < 2) &&
-		(data->op_selected  < 2) )
-		XtSetSensitive(this->waveformDialog->applybtn, False);
-	    else
-		XtSetSensitive(this->waveformDialog->applybtn, True);
-	}
-    }
-    if (this->addCtlDialog)
-    {
-	if(data->selected_area != this->selected_area)
-	    this->addCtlDialog->setFieldLabel(data->selected_area);
-    }
-
-    this->hue_selected   = data->hue_selected;
-    this->sat_selected   = data->sat_selected;
-    this->val_selected   = data->val_selected;
-    this->op_selected    = data->op_selected;
-    this->selected_area  = data->selected_area;
-
-    if(data->reason == XmCR_MODIFIED)
-    {
-	int hcnt = data->num_hue_points;
-	int scnt = data->num_sat_points;
-	int vcnt = data->num_val_points;
-	int opcnt = data->num_op_points;
-
-	//
-	// Since we may be updating many of the values in the the
-	// attribute parameter, don't keep it up to date until after
- 	// we're done here.  See undeferAction() below.
-	//
-	colormap->updateMinMaxAttr->deferAction();
-
-	// 
-	//  Sync the parameter values with the values set in the color map 
-	//  window.
-	// 
-	colormap->setMaximumValue(data->max_value);
-	colormap->setMinimumValue(data->min_value);
-	//
-	// Since we may be updating many of the values in the the
-	// attribute parameter, don't keep it up to date until after
- 	// we're done here, but do it before the values are sent which
-  	// may cause an execution.  See deferAction() above.
-	//
-	colormap->updateMinMaxAttr->undeferAction();
-
-
-	colormap->installNewMaps(
-	    	hcnt, data->hue_values, data->hue_values + hcnt,
-	    	scnt, data->sat_values, data->sat_values + scnt,
-	    	vcnt, data->val_values, data->val_values + vcnt,
-	    	opcnt, data->op_values, data->op_values + opcnt,
-		TRUE);	
-
-  
-	//
-	// Note: addCtlDialog->setStepper depends on the node's min/max
-	//       having been set before hand.
-	//
-	if (this->addCtlDialog)
-	    this->addCtlDialog->setStepper();
-
-    }
-
-    this->doingActivateCallback = FALSE;
-
-}
-
-extern "C" void ColormapEditor_EditMenuMapCB(Widget    widget,
-                           XtPointer    clientData,
-                           XtPointer    callData)
-{
-    ColormapEditor* editor = (ColormapEditor*)clientData;
-    ASSERT(widget);
-    ASSERT(callData);
-    editor->editMenuMapCallback();
-}
-void ColormapEditor::editMenuMapCallback()
-{
-    (this->sat_selected == 0 AND this->val_selected == 0 AND
-     this->hue_selected == 0 AND this->op_selected == 0) 
-			   ? this->delSelectedCmd->deactivate() 
-			   : this->delSelectedCmd->activate(); 
-
-    (this->sat_selected == 0 AND this->val_selected == 0 AND
-     this->hue_selected == 0 AND this->op_selected == 0) 
-			   ? this->copyCmd->deactivate() 
-			   : this->copyCmd->activate(); 
-    if(XmColorMapPastable())
-	this->pasteCmd->activate();
-    else
-	this->pasteCmd->deactivate();
-
-    if(XmColorMapUndoable(this->colormapEditor))
-	this->undoCmd->activate();
-    else
-	this->undoCmd->deactivate();
-
-}
-
-Widget ColormapEditor::createWorkArea(Widget parent)
-{
-    Arg    arg[8];
-    int    n;
-
-    ASSERT(parent);
-
-    //
-    // Create the outer and inner frame.
-    //
-    n = 0;
-    XtSetArg(arg[n], XmNresizePolicy,    XmRESIZE_NONE); n++;
-    this->colormapEditor = XtCreateWidget("editor", xmColorMapEditorWidgetClass,
-				parent, arg, n);
-
-    //
-    // Make sure context sensitive help works.
-    //
-    this->installComponentHelpCallback(this->colormapEditor);
-
-
-    XtAddCallback(this->colormapEditor,
-                  XmNactivateCallback,
-                  (XtCallbackProc)ColormapEditor_ActiveCB,
-                  (XtPointer)this);
-
-    //
-    // Return the topmost widget of the work area.
-    //
-    return this->colormapEditor;
-}
-
-
-void ColormapEditor::createFileMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget pulldown;
-
-    //
-    // Create "File" menu and options.
-    //
-    pulldown =
-	this->fileMenuPulldown =
-	    XmCreatePulldownMenu(parent, "fileMenuPulldown", NUL(ArgList), 0);
-    this->fileMenu =
-	XtVaCreateManagedWidget
-	    ("fileMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    this->newOption =
-       new ButtonInterface(pulldown, "cmeNewOption",this->newCmd);
-
-
-    boolean buttons = FALSE;
-    if (this->openFileCmd) {
-	this->openOption =
-	   new ButtonInterface(pulldown, "cmeOpenOption",this->openFileCmd);
-	buttons = TRUE;
-    }
-
-    if (this->saveFileCmd) {
-	this->saveAsOption =
-	    new ButtonInterface(pulldown, "cmeSaveAsOption", this->saveFileCmd);
-	buttons = TRUE;
-    }
-
-    if (buttons)
-	XtVaCreateManagedWidget
-	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    this->closeOption =
-	new ButtonInterface(pulldown, "cmeCloseOption", this->closeCmd);
-
-
-}
-
-
-void ColormapEditor::createEditMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget            pulldown;
-
-    //
-    // Create "Execute" menu and options.
-    //
-    pulldown =
-	this->editMenuPulldown =
-	    XmCreatePulldownMenu
-		(parent, "editMenuPulldown", NUL(ArgList), 0);
-    this->editMenu =
-	XtVaCreateManagedWidget
-	    ("editMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    XtAddCallback(pulldown,
-                  XmNmapCallback,
-                  (XtCallbackProc)ColormapEditor_EditMenuMapCB,
-                  (XtPointer)this);
-
-    //
-    // Begin edit menu options 
-    //
-    this->undoOption =
-	new ButtonInterface(pulldown, "cmeUndoOption", this->undoCmd);
-
-    this->copyOption =
-	new ButtonInterface(pulldown, "cmeCopyOption", this->copyCmd);
-
-    this->pasteOption =
-	new ButtonInterface(pulldown, "cmePasteOption", this->pasteCmd);
-
-    //
-    // Reset maps cascade menu 
-    //
-    CascadeMenu *cascade_menu = this->resetMapCascade = 
-			new CascadeMenu("cmeResetCascade",pulldown); 
-    Widget menu_parent = this->resetMapCascade->getMenuItemParent();
-
-    CommandInterface *ci = new ButtonInterface(menu_parent,
-				"cmeResetHSVOption",this->resetHSVCmd);
-    cascade_menu->appendComponent(ci);
-    ci = new ButtonInterface(menu_parent,
-				"cmeResetOpacityOption",this->resetOpacityCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent,
-				"cmeResetMinOption",this->resetMinCmd);
-    cascade_menu->appendComponent(ci);
-    ci = new ButtonInterface(menu_parent,
-				"cmeResetMaxOption",this->resetMaxCmd);
-    cascade_menu->appendComponent(ci);
-    
-    XtVaCreateManagedWidget
-	    ("resetSeparator", xmSeparatorWidgetClass, menu_parent, NULL);
-
-    ci = new ButtonInterface(menu_parent,
-				"cmeResetAllOption",this->resetAllCmd);
-    cascade_menu->appendComponent(ci);
-    ci = new ButtonInterface(menu_parent,
-				"cmeResetMinMaxOption",this->resetMinMaxCmd);
-    cascade_menu->appendComponent(ci);
-
-    //
-    // More options
-    //
-    this->addControlOption =
-	new ButtonInterface(pulldown, "cmeAddControlOption", this->addCtlCmd);
-
-    this->horizontalOption =
-	new ToggleButtonInterface(pulldown, "cmeHorizontalOption", 
-				  this->consHCmd, False);
-
-    this->verticalOption =
-	new ToggleButtonInterface(pulldown, "cmeVerticalOption", 
-				  this->consVCmd, False);
-
-    this->waveformOption =
-	new ButtonInterface(pulldown, "cmeWaveformOption", this->waveformCmd);
-
-    XtVaCreateManagedWidget
-	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    this->deleteSelectedOption =
-	new ButtonInterface(pulldown, "cmeDeleteSelectedOption", 
-	    this->delSelectedCmd);
-
-    this->selectAllOption =
-	new ButtonInterface(pulldown, "cmeSelectAllOption", 
-	    this->selectAllCmd);
-
-}
-
-
-void ColormapEditor::createOptionsMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget      pulldown;
-    int		n;
-    Arg		wargs[20];
-
-    //
-    // Create "Options" menu and options.
-    //
-    pulldown =
-	this->optionsMenuPulldown =
-	    XmCreatePulldownMenu
-		(parent, "optionsMenuPulldown", NUL(ArgList), 0);
-    this->optionsMenu =
-	XtVaCreateManagedWidget
-	    ("optionsMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-
-    this->setBackgroundOption =
-	new ButtonInterface(pulldown, "cmeSetBackgroundOption", this->setBkgdCmd);
-
-    n = 0;
-    XtSetArg(wargs[n], XmNradioBehavior, True); n++;
-    this->drawModePulldown =
-            XmCreatePulldownMenu
-                (pulldown, "drawModePulldown", wargs, n);
-
-    this->drawModeButton =
-        XtVaCreateManagedWidget
-            ("cmeSetDrawModeOption",
-             xmCascadeButtonWidgetClass,
-             pulldown,
-             XmNsubMenuId, this->drawModePulldown,
-             XmNsensitive, TRUE,
-             NULL);
-
-    this->ticksOption = 
-	new ToggleButtonInterface(this->drawModePulldown,
-	    "cmeTicksOption", this->ticksCmd, TRUE);
-
-    this->histogramOption = 
-	new ToggleButtonInterface(this->drawModePulldown,
-	    "cmeHistogramOption", this->histogramCmd, FALSE);
-
-    this->logHistogramOption = 
-	new ToggleButtonInterface(this->drawModePulldown,
-	    "cmeLogHistogramOption", this->logHistogramCmd, FALSE);
-
-    this->nBinsOption =
-	new ButtonInterface(pulldown, "cmeNBinsOption", this->nBinsCmd);
-
-    XtVaCreateManagedWidget
-	("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    n = 0;
-    XtSetArg(wargs[n], XmNradioBehavior, True); n++;
-    this->displayCPPulldown =
-            XmCreatePulldownMenu
-                (pulldown, "displayCPPulldown", wargs, n);
-
-    this->displayCPButton =
-        XtVaCreateManagedWidget
-            ("displayCPButton",
-             xmCascadeButtonWidgetClass,
-             pulldown,
-             XmNsubMenuId, this->displayCPPulldown,
-             XmNsensitive, TRUE,
-             NULL);
-
-    this->displayCPOffOption = 
-	new ToggleButtonInterface(this->displayCPPulldown,
-	    "displayCPOffOption", this->displayCPOffCmd, FALSE);
-
-    this->displayCPAllOption = 
-	new ToggleButtonInterface(this->displayCPPulldown,
-	    "displayCPAllOption", this->displayCPAllCmd, TRUE);
-
-    this->displayCPSelectedOption = 
-	new ToggleButtonInterface(this->displayCPPulldown,
-	    "displayCPSelectedOption", this->displayCPSelectedCmd, FALSE);
-
-    if (this->setColormapNameCmd)  {
-	XtVaCreateManagedWidget
-	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-	this->setColormapNameOption =
-	    new ButtonInterface(pulldown, "setColormapNameOption", 
-			this->setColormapNameCmd);
-    } else
-	this->setColormapNameOption = NULL;
-	
-}
-
-
-void ColormapEditor::createMenus(Widget parent)
-{
-    ASSERT(parent);
-
-    //
-    // Create the menus.
-    //
-    this->createFileMenu(parent);
-    this->createEditMenu(parent);
-    this->createExecuteMenu(parent);
-    this->createOptionsMenu(parent);
-    this->createHelpMenu(parent);
-
-    //
-    // Right justify the help menu (if it exists).
-    //
-    if (this->helpMenu)
-    {
-	XtVaSetValues(parent, XmNmenuHelpWidget, this->helpMenu, NULL);
-    }
-}
-
-void ColormapEditor::createHelpMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    this->DXWindow::createHelpMenu(parent);
-
-    XtVaCreateManagedWidget("separator", xmSeparatorWidgetClass,
-                                        this->helpMenuPulldown,
-                                        NULL);
-    this->onVisualProgramOption =
-        new ButtonInterface(this->helpMenuPulldown, "cmapOnVisualProgramOption",
- 		this->colormapNode->getNetwork()->getHelpOnNetworkCommand());
-}
-
+//extern "C" void ColormapEditor_ActiveCB(Widget    widget,
+//                           XtPointer    clientData,
+//                           XtPointer    callData)
+//{
+//
+//    ASSERT(widget);
+//    ColormapEditor* editor = (ColormapEditor*)clientData;
+//    editor->activeCallback(callData);
+//
+//}
+//void ColormapEditor::activeCallback(XtPointer callData)
+//{
+//    XmColorMapEditorCallbackStruct* data =
+//                                (XmColorMapEditorCallbackStruct*)callData;
+//
+//
+//    ColormapNode* colormap = this->colormapNode;
+//    Widget range_widget;
+//
+//    this->doingActivateCallback = TRUE;
+//
+//
+//    if(this->waveformDialog)
+//    {
+//	XtVaGetValues(this->waveformDialog->rangeoption, 
+//		    XmNmenuHistory, &range_widget, NULL);
+//	
+//	if(range_widget == this->waveformDialog->rangeselected)
+//	{
+//	    if( (data->hue_selected < 2) &&
+//		(data->sat_selected < 2) &&
+//		(data->val_selected < 2) &&
+//		(data->op_selected  < 2) )
+//		XtSetSensitive(this->waveformDialog->applybtn, False);
+//	    else
+//		XtSetSensitive(this->waveformDialog->applybtn, True);
+//	}
+//    }
+//    if (this->addCtlDialog)
+//    {
+//	if(data->selected_area != this->selected_area)
+//	    this->addCtlDialog->setFieldLabel(data->selected_area);
+//    }
+//
+//    this->hue_selected   = data->hue_selected;
+//    this->sat_selected   = data->sat_selected;
+//    this->val_selected   = data->val_selected;
+//    this->op_selected    = data->op_selected;
+//    this->selected_area  = data->selected_area;
+//
+//    if(data->reason == XmCR_MODIFIED)
+//    {
+//	int hcnt = data->num_hue_points;
+//	int scnt = data->num_sat_points;
+//	int vcnt = data->num_val_points;
+//	int opcnt = data->num_op_points;
+//
+//	//
+//	// Since we may be updating many of the values in the the
+//	// attribute parameter, don't keep it up to date until after
+// 	// we're done here.  See undeferAction() below.
+//	//
+//	colormap->updateMinMaxAttr->deferAction();
+//
+//	// 
+//	//  Sync the parameter values with the values set in the color map 
+//	//  window.
+//	// 
+//	colormap->setMaximumValue(data->max_value);
+//	colormap->setMinimumValue(data->min_value);
+//	//
+//	// Since we may be updating many of the values in the the
+//	// attribute parameter, don't keep it up to date until after
+// 	// we're done here, but do it before the values are sent which
+//  	// may cause an execution.  See deferAction() above.
+//	//
+//	colormap->updateMinMaxAttr->undeferAction();
+//
+//
+//	colormap->installNewMaps(
+//	    	hcnt, data->hue_values, data->hue_values + hcnt,
+//	    	scnt, data->sat_values, data->sat_values + scnt,
+//	    	vcnt, data->val_values, data->val_values + vcnt,
+//	    	opcnt, data->op_values, data->op_values + opcnt,
+//		TRUE);	
+//
+//  
+//	//
+//	// Note: addCtlDialog->setStepper depends on the node's min/max
+//	//       having been set before hand.
+//	//
+//	if (this->addCtlDialog)
+//	    this->addCtlDialog->setStepper();
+//
+//    }
+//
+//    this->doingActivateCallback = FALSE;
+//
+//}
+//
+//extern "C" void ColormapEditor_EditMenuMapCB(Widget    widget,
+//                           XtPointer    clientData,
+//                           XtPointer    callData)
+//{
+//    ColormapEditor* editor = (ColormapEditor*)clientData;
+//    ASSERT(widget);
+//    ASSERT(callData);
+//    editor->editMenuMapCallback();
+//}
+//void ColormapEditor::editMenuMapCallback()
+//{
+//    (this->sat_selected == 0 AND this->val_selected == 0 AND
+//     this->hue_selected == 0 AND this->op_selected == 0) 
+//			   ? this->delSelectedCmd->deactivate() 
+//			   : this->delSelectedCmd->activate(); 
+//
+//    (this->sat_selected == 0 AND this->val_selected == 0 AND
+//     this->hue_selected == 0 AND this->op_selected == 0) 
+//			   ? this->copyCmd->deactivate() 
+//			   : this->copyCmd->activate(); 
+//    if(XmColorMapPastable())
+//	this->pasteCmd->activate();
+//    else
+//	this->pasteCmd->deactivate();
+//
+//    if(XmColorMapUndoable(this->colormapEditor))
+//	this->undoCmd->activate();
+//    else
+//	this->undoCmd->deactivate();
+//
+//}
+//
+//Widget ColormapEditor::createWorkArea(Widget parent)
+//{
+//    Arg    arg[8];
+//    int    n;
+//
+//    ASSERT(parent);
+//
+//    //
+//    // Create the outer and inner frame.
+//    //
+//    n = 0;
+//    XtSetArg(arg[n], XmNresizePolicy,    XmRESIZE_NONE); n++;
+//    this->colormapEditor = XtCreateWidget("editor", xmColorMapEditorWidgetClass,
+//				parent, arg, n);
+//
+//    //
+//    // Make sure context sensitive help works.
+//    //
+//    this->installComponentHelpCallback(this->colormapEditor);
+//
+//
+//    XtAddCallback(this->colormapEditor,
+//                  XmNactivateCallback,
+//                  (XtCallbackProc)ColormapEditor_ActiveCB,
+//                  (XtPointer)this);
+//
+//    //
+//    // Return the topmost widget of the work area.
+//    //
+//    return this->colormapEditor;
+//}
+//
+//
+//void ColormapEditor::createFileMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget pulldown;
+//
+//    //
+//    // Create "File" menu and options.
+//    //
+//    pulldown =
+//	this->fileMenuPulldown =
+//	    XmCreatePulldownMenu(parent, "fileMenuPulldown", NUL(ArgList), 0);
+//    this->fileMenu =
+//	XtVaCreateManagedWidget
+//	    ("fileMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    this->newOption =
+//       new ButtonInterface(pulldown, "cmeNewOption",this->newCmd);
+//
+//
+//    boolean buttons = FALSE;
+//    if (this->openFileCmd) {
+//	this->openOption =
+//	   new ButtonInterface(pulldown, "cmeOpenOption",this->openFileCmd);
+//	buttons = TRUE;
+//    }
+//
+//    if (this->saveFileCmd) {
+//	this->saveAsOption =
+//	    new ButtonInterface(pulldown, "cmeSaveAsOption", this->saveFileCmd);
+//	buttons = TRUE;
+//    }
+//
+//    if (buttons)
+//	XtVaCreateManagedWidget
+//	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    this->closeOption =
+//	new ButtonInterface(pulldown, "cmeCloseOption", this->closeCmd);
+//
+//
+//}
+//
+//
+//void ColormapEditor::createEditMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget            pulldown;
+//
+//    //
+//    // Create "Execute" menu and options.
+//    //
+//    pulldown =
+//	this->editMenuPulldown =
+//	    XmCreatePulldownMenu
+//		(parent, "editMenuPulldown", NUL(ArgList), 0);
+//    this->editMenu =
+//	XtVaCreateManagedWidget
+//	    ("editMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    XtAddCallback(pulldown,
+//                  XmNmapCallback,
+//                  (XtCallbackProc)ColormapEditor_EditMenuMapCB,
+//                  (XtPointer)this);
+//
+//    //
+//    // Begin edit menu options 
+//    //
+//    this->undoOption =
+//	new ButtonInterface(pulldown, "cmeUndoOption", this->undoCmd);
+//
+//    this->copyOption =
+//	new ButtonInterface(pulldown, "cmeCopyOption", this->copyCmd);
+//
+//    this->pasteOption =
+//	new ButtonInterface(pulldown, "cmePasteOption", this->pasteCmd);
+//
+//    //
+//    // Reset maps cascade menu 
+//    //
+//    CascadeMenu *cascade_menu = this->resetMapCascade = 
+//			new CascadeMenu("cmeResetCascade",pulldown); 
+//    Widget menu_parent = this->resetMapCascade->getMenuItemParent();
+//
+//    CommandInterface *ci = new ButtonInterface(menu_parent,
+//				"cmeResetHSVOption",this->resetHSVCmd);
+//    cascade_menu->appendComponent(ci);
+//    ci = new ButtonInterface(menu_parent,
+//				"cmeResetOpacityOption",this->resetOpacityCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent,
+//				"cmeResetMinOption",this->resetMinCmd);
+//    cascade_menu->appendComponent(ci);
+//    ci = new ButtonInterface(menu_parent,
+//				"cmeResetMaxOption",this->resetMaxCmd);
+//    cascade_menu->appendComponent(ci);
+//    
+//    XtVaCreateManagedWidget
+//	    ("resetSeparator", xmSeparatorWidgetClass, menu_parent, NULL);
+//
+//    ci = new ButtonInterface(menu_parent,
+//				"cmeResetAllOption",this->resetAllCmd);
+//    cascade_menu->appendComponent(ci);
+//    ci = new ButtonInterface(menu_parent,
+//				"cmeResetMinMaxOption",this->resetMinMaxCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    //
+//    // More options
+//    //
+//    this->addControlOption =
+//	new ButtonInterface(pulldown, "cmeAddControlOption", this->addCtlCmd);
+//
+//    this->horizontalOption =
+//	new ToggleButtonInterface(pulldown, "cmeHorizontalOption", 
+//				  this->consHCmd, False);
+//
+//    this->verticalOption =
+//	new ToggleButtonInterface(pulldown, "cmeVerticalOption", 
+//				  this->consVCmd, False);
+//
+//    this->waveformOption =
+//	new ButtonInterface(pulldown, "cmeWaveformOption", this->waveformCmd);
+//
+//    XtVaCreateManagedWidget
+//	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    this->deleteSelectedOption =
+//	new ButtonInterface(pulldown, "cmeDeleteSelectedOption", 
+//	    this->delSelectedCmd);
+//
+//    this->selectAllOption =
+//	new ButtonInterface(pulldown, "cmeSelectAllOption", 
+//	    this->selectAllCmd);
+//
+//}
+//
+//
+//void ColormapEditor::createOptionsMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget      pulldown;
+//    int		n;
+//    Arg		wargs[20];
+//
+//    //
+//    // Create "Options" menu and options.
+//    //
+//    pulldown =
+//	this->optionsMenuPulldown =
+//	    XmCreatePulldownMenu
+//		(parent, "optionsMenuPulldown", NUL(ArgList), 0);
+//    this->optionsMenu =
+//	XtVaCreateManagedWidget
+//	    ("optionsMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//
+//    this->setBackgroundOption =
+//	new ButtonInterface(pulldown, "cmeSetBackgroundOption", this->setBkgdCmd);
+//
+//    n = 0;
+//    XtSetArg(wargs[n], XmNradioBehavior, True); n++;
+//    this->drawModePulldown =
+//            XmCreatePulldownMenu
+//                (pulldown, "drawModePulldown", wargs, n);
+//
+//    this->drawModeButton =
+//        XtVaCreateManagedWidget
+//            ("cmeSetDrawModeOption",
+//             xmCascadeButtonWidgetClass,
+//             pulldown,
+//             XmNsubMenuId, this->drawModePulldown,
+//             XmNsensitive, TRUE,
+//             NULL);
+//
+//    this->ticksOption = 
+//	new ToggleButtonInterface(this->drawModePulldown,
+//	    "cmeTicksOption", this->ticksCmd, TRUE);
+//
+//    this->histogramOption = 
+//	new ToggleButtonInterface(this->drawModePulldown,
+//	    "cmeHistogramOption", this->histogramCmd, FALSE);
+//
+//    this->logHistogramOption = 
+//	new ToggleButtonInterface(this->drawModePulldown,
+//	    "cmeLogHistogramOption", this->logHistogramCmd, FALSE);
+//
+//    this->nBinsOption =
+//	new ButtonInterface(pulldown, "cmeNBinsOption", this->nBinsCmd);
+//
+//    XtVaCreateManagedWidget
+//	("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    n = 0;
+//    XtSetArg(wargs[n], XmNradioBehavior, True); n++;
+//    this->displayCPPulldown =
+//            XmCreatePulldownMenu
+//                (pulldown, "displayCPPulldown", wargs, n);
+//
+//    this->displayCPButton =
+//        XtVaCreateManagedWidget
+//            ("displayCPButton",
+//             xmCascadeButtonWidgetClass,
+//             pulldown,
+//             XmNsubMenuId, this->displayCPPulldown,
+//             XmNsensitive, TRUE,
+//             NULL);
+//
+//    this->displayCPOffOption = 
+//	new ToggleButtonInterface(this->displayCPPulldown,
+//	    "displayCPOffOption", this->displayCPOffCmd, FALSE);
+//
+//    this->displayCPAllOption = 
+//	new ToggleButtonInterface(this->displayCPPulldown,
+//	    "displayCPAllOption", this->displayCPAllCmd, TRUE);
+//
+//    this->displayCPSelectedOption = 
+//	new ToggleButtonInterface(this->displayCPPulldown,
+//	    "displayCPSelectedOption", this->displayCPSelectedCmd, FALSE);
+//
+//    if (this->setColormapNameCmd)  {
+//	XtVaCreateManagedWidget
+//	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//	this->setColormapNameOption =
+//	    new ButtonInterface(pulldown, "setColormapNameOption", 
+//			this->setColormapNameCmd);
+//    } else
+//	this->setColormapNameOption = NULL;
+//	
+//}
+//
+//
+//void ColormapEditor::createMenus(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    //
+//    // Create the menus.
+//    //
+//    this->createFileMenu(parent);
+//    this->createEditMenu(parent);
+//    this->createExecuteMenu(parent);
+//    this->createOptionsMenu(parent);
+//    this->createHelpMenu(parent);
+//
+//    //
+//    // Right justify the help menu (if it exists).
+//    //
+//    if (this->helpMenu)
+//    {
+//	XtVaSetValues(parent, XmNmenuHelpWidget, this->helpMenu, NULL);
+//    }
+//}
+//
+//void ColormapEditor::createHelpMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    this->DXWindow::createHelpMenu(parent);
+//
+//    XtVaCreateManagedWidget("separator", xmSeparatorWidgetClass,
+//                                        this->helpMenuPulldown,
+//                                        NULL);
+//    this->onVisualProgramOption =
+//        new ButtonInterface(this->helpMenuPulldown, "cmapOnVisualProgramOption",
+// 		this->colormapNode->getNetwork()->getHelpOnNetworkCommand());
+//}
+//
 
 
 void ColormapEditor::openAddCtlDialog()
 {
     if (!this->addCtlDialog)
-	this->addCtlDialog = new ColormapAddCtlDialog(this->getRootWidget(),
-						      this);
+	this->addCtlDialog = new ColormapAddCtlDialog(this);
     this->addCtlDialog->post();
     this->addCtlDialog->setFieldLabel(this->selected_area);
 
@@ -1083,17 +1065,14 @@ void ColormapEditor::openAddCtlDialog()
 void ColormapEditor::openNBinsDialog()
 {
     if (!this->nBinsDialog)
-	this->nBinsDialog = new ColormapNBinsDialog(this->getRootWidget(),
-						     this);
+	this->nBinsDialog = new ColormapNBinsDialog(this);
     this->nBinsDialog->post();
 
 }
 void ColormapEditor::openWaveformDialog()
 {
     if (!this->waveformDialog)
-	this->waveformDialog = new ColormapWaveDialog(
-					    this->getRootWidget(),
-					    this);
+	this->waveformDialog = new ColormapWaveDialog(this);
     this->waveformDialog->post();
 }
 
@@ -1110,9 +1089,7 @@ boolean ColormapEditor::cmSaveFile(const char* string)
 void ColormapEditor::postOpenColormapDialog(boolean opening)
 {
     if (this->openColormapDialog == NULL) {
-        this->openColormapDialog = new OpenColormapDialog( 
-                                            this->getRootWidget(), 
-					    this,
+        this->openColormapDialog = new OpenColormapDialog(this,
                                             opening);
     }
     this->openColormapDialog->setMode(opening);
@@ -1134,7 +1111,7 @@ void ColormapEditor::editColormapName()
 {
      if (!this->setNameDialog)
         this->setNameDialog = new SetColormapNameDialog(
-                                this->getRootWidget(), this->colormapNode);
+                                this->colormapNode);
      this->setNameDialog->post();
 }
 
@@ -1187,7 +1164,7 @@ void ColormapEditor::adjustSensitivities()
 }
 
 
-void ColormapEditor::getGeometryAlternateNames(String* names, int* count, int max)
+void ColormapEditor::getGeometryAlternateNames(char** names, int* count, int max)
 {
     int cnt = *count;
     if (cnt < (max-1)) {

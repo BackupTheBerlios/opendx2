@@ -7,9 +7,9 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-#include "../base/DXStrings.h"
-#include "../base/ErrorDialogManager.h"
+#include "defines.h"
+#include "DXStrings.h"
+#include "ErrorDialogManager.h"
 #include "oem.h"
 
 char *ScrambleString(const char *str, const char *hash)

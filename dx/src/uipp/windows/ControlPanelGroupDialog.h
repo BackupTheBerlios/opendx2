@@ -28,13 +28,13 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void ControlPanelGroupDialog_TextVerifyCB(Widget, XtPointer, XtPointer);
-extern "C" void ControlPanelGroupDialog_OpenPanelCB(Widget, XtPointer, XtPointer);
-extern "C" void ControlPanelGroupDialog_SelectCB(Widget, XtPointer, XtPointer);
-extern "C" void ControlPanelGroupDialog_CloseCB(Widget, XtPointer, XtPointer);
-extern "C" void ControlPanelGroupDialog_ChangeCB(Widget, XtPointer, XtPointer);
-extern "C" void ControlPanelGroupDialog_DeleteCB(Widget, XtPointer, XtPointer);
-extern "C" void ControlPanelGroupDialog_AddCB(Widget, XtPointer, XtPointer);
+//extern "C" void ControlPanelGroupDialog_TextVerifyCB(Widget, XtPointer, XtPointer);
+//extern "C" void ControlPanelGroupDialog_OpenPanelCB(Widget, XtPointer, XtPointer);
+//extern "C" void ControlPanelGroupDialog_SelectCB(Widget, XtPointer, XtPointer);
+//extern "C" void ControlPanelGroupDialog_CloseCB(Widget, XtPointer, XtPointer);
+//extern "C" void ControlPanelGroupDialog_ChangeCB(Widget, XtPointer, XtPointer);
+//extern "C" void ControlPanelGroupDialog_DeleteCB(Widget, XtPointer, XtPointer);
+//extern "C" void ControlPanelGroupDialog_AddCB(Widget, XtPointer, XtPointer);
 
 class PanelGroupManager;
 
@@ -50,16 +50,16 @@ class ControlPanelGroupDialog : public Dialog
     // Private member data:
     //
     static boolean ClassInitialized;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     int    lastIndex;
 
-    Widget sform;
-    Widget addbtn;
-    Widget deletebtn;
-    Widget changebtn;
-    Widget text;
-    Widget list;
+    //Widget sform;
+    //Widget addbtn;
+    //Widget deletebtn;
+    //Widget changebtn;
+    //Widget text;
+    //Widget list;
 
     List   toggleList[2];
 
@@ -69,15 +69,15 @@ class ControlPanelGroupDialog : public Dialog
     //
     // Protected member data:
     //
-    friend void ControlPanelGroupDialog_AddCB(Widget, XtPointer , XtPointer);
-    friend void ControlPanelGroupDialog_DeleteCB(Widget, XtPointer , XtPointer);
-    friend void ControlPanelGroupDialog_ChangeCB(Widget, XtPointer , XtPointer);
-    friend void ControlPanelGroupDialog_CloseCB(Widget, XtPointer , XtPointer);
-    friend void ControlPanelGroupDialog_SelectCB(Widget, XtPointer , XtPointer);
-    friend void ControlPanelGroupDialog_OpenPanelCB(Widget, XtPointer , XtPointer);
-    friend void ControlPanelGroupDialog_TextVerifyCB(Widget, XtPointer , XtPointer);
+    //friend void ControlPanelGroupDialog_AddCB(Widget, XtPointer , XtPointer);
+    //friend void ControlPanelGroupDialog_DeleteCB(Widget, XtPointer , XtPointer);
+    //friend void ControlPanelGroupDialog_ChangeCB(Widget, XtPointer , XtPointer);
+    //friend void ControlPanelGroupDialog_CloseCB(Widget, XtPointer , XtPointer);
+    //friend void ControlPanelGroupDialog_SelectCB(Widget, XtPointer , XtPointer);
+    //friend void ControlPanelGroupDialog_OpenPanelCB(Widget, XtPointer , XtPointer);
+    //friend void ControlPanelGroupDialog_TextVerifyCB(Widget, XtPointer , XtPointer);
 
-    Widget createDialog(Widget);
+    void createDialog();
     void   makeToggles();
     void   setToggles();
     void   makeGroupList(int item = 0);
@@ -87,14 +87,14 @@ class ControlPanelGroupDialog : public Dialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
 
     //
     // Constructor:
     //
-    ControlPanelGroupDialog(Widget parent);
+    ControlPanelGroupDialog();
     //
     // Destructor:
     //

@@ -16,7 +16,6 @@
 
 
 #include "Dialog.h"
-#include <X11/cursorfont.h>
 
 //
 // Class name definition:
@@ -25,10 +24,10 @@
 
 //
 //
-extern "C" void GetSetConversionDialog_PushbuttonCB(Widget, XtPointer, XtPointer);
-extern "C" void GetSetConversionDialog_SelectCB(Widget, XtPointer, XtPointer);
-extern "C" void GetSetConversionDialog_BrowseCB(Widget, XtPointer, XtPointer);
-extern "C" Boolean EditorWindow_GetSetWP(XtPointer);
+//extern "C" void GetSetConversionDialog_PushbuttonCB(Widget, XtPointer, XtPointer);
+//extern "C" void GetSetConversionDialog_SelectCB(Widget, XtPointer, XtPointer);
+//extern "C" void GetSetConversionDialog_BrowseCB(Widget, XtPointer, XtPointer);
+//extern "C" Boolean EditorWindow_GetSetWP(XtPointer);
 
 class List;
 class Network;
@@ -51,18 +50,18 @@ class GetSetConversionDialog : public Dialog
     // Private member data:
     //
     static boolean ClassInitialized;
-    static String  DefaultResources[];
-    static Cursor  WatchCursor;
+    //static String  DefaultResources[];
+    //static Cursor  WatchCursor;
 
     List *referenced_macros;
 
-    Widget list; 
-    Widget find_next_btn, find_all_btn;
-    Widget net_name, net_name_label;
+    //Widget list; 
+    //Widget find_next_btn, find_all_btn;
+    //Widget net_name, net_name_label;
 
-    void layoutButtons (Widget parent);
-    void layoutChooser (Widget parent);
-    void layoutControls (Widget parent);
+    //void layoutButtons (Widget parent);
+    //void layoutChooser (Widget parent);
+    //void layoutControls (Widget parent);
 
     ButtonInterface *global_option;
     ButtonInterface *local_option;
@@ -81,19 +80,19 @@ class GetSetConversionDialog : public Dialog
     //
     // Protected member data:
     //
-    Widget createDialog(Widget);
+    void createDialog();
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
-    friend void GetSetConversionDialog_PushbuttonCB(Widget, XtPointer, XtPointer);
-    friend void GetSetConversionDialog_SelectCB(Widget, XtPointer, XtPointer);
-    friend void GetSetConversionDialog_BrowseCB(Widget, XtPointer, XtPointer);
-    friend Boolean EditorWindow_GetSetWP(XtPointer);
+    //friend void GetSetConversionDialog_PushbuttonCB(Widget, XtPointer, XtPointer);
+    //friend void GetSetConversionDialog_SelectCB(Widget, XtPointer, XtPointer);
+    //friend void GetSetConversionDialog_BrowseCB(Widget, XtPointer, XtPointer);
+    //friend Boolean EditorWindow_GetSetWP(XtPointer);
 
     void update();
     void unhinge(boolean select_next_editor = FALSE);

@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 
@@ -51,7 +51,7 @@ void PanelGroupManager::clear()
 boolean     PanelGroupManager::createPanelGroup(const char *name)
 {
     List *l;
-    Boolean result;
+    boolean result;
 
     if (IsBlankString(name))
 	return FALSE;
@@ -78,7 +78,7 @@ boolean     PanelGroupManager::addGroupMember(const char *name,
 					int panelInstance)
 {
     List *l;
-    Boolean result;
+    boolean result;
 
     ASSERT(panelInstance > 0);
     l = (List*)this->panelGroups.findDefinition(name); 
@@ -101,7 +101,7 @@ boolean     PanelGroupManager::removeGroupMember(const char *name,
 					int panelInstance)
 {
     List *l;
-    Boolean result;
+    boolean result;
 
     ASSERT(panelInstance > 0);
     l = (List*)this->panelGroups.findDefinition(name); 

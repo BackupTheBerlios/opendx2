@@ -42,7 +42,7 @@ class SetBGColorDialog : public SetNameDialog
     // Protected member data:
     //
     ImageWindow *imageWindow;
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
     virtual boolean saveText(const char *s);
     virtual const char *getText();
@@ -53,7 +53,7 @@ class SetBGColorDialog : public SetNameDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //

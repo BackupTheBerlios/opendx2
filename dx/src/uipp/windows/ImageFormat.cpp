@@ -7,31 +7,28 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #include "ImageFormat.h"
 #include "ImageNode.h"
 #include "ImageFormatDialog.h"
 #include "SymbolManager.h"
-#include "XmUtility.h"
 #if defined(DXD_WIN) || defined(OS2)
 #define unlink _unlink
 #endif
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
-#include <Xm/Text.h>
-#include <Xm/TextF.h>
 
-String ImageFormat::DefaultResources[] = {
-    NUL(char*)
-};
+//String ImageFormat::DefaultResources[] = {
+//    NUL(char*)
+//};
 
 
 ImageFormat::ImageFormat (const char *name, ImageFormatDialog *dialog) : UIComponent(name)
 {
-    this->menuButton = NUL(Widget);
+    //this->menuButton = NUL(Widget);
     this->dialog = dialog;
     ImageNode *node = this->dialog->getNode();
     int junk;
@@ -81,20 +78,20 @@ ImageNode *node = this->dialog->getNode();
 //
 // This only works for widgets whose normal foreground color is black.
 //
-void ImageFormat::setTextSensitive (Widget w, boolean sens)
+void ImageFormat::setTextSensitive (boolean sens)
 {
-    ASSERT ((XtClass(w) == xmTextWidgetClass) || (XtClass(w) == xmTextFieldWidgetClass));
-    if (sens) {
-	XtVaSetValues (w, 
-	    XmNeditable, True,
-	    RES_CONVERT(XmNforeground, "black"),
-	NULL);
-    } else {
-	XtVaSetValues (w, 
-	    XmNeditable, False,
-	    RES_CONVERT(XmNforeground, "grey40"),
-	NULL);
-    }
+ //   ASSERT ((XtClass(w) == xmTextWidgetClass) || (XtClass(w) == xmTextFieldWidgetClass));
+ //   if (sens) {
+	//XtVaSetValues (w, 
+	//    XmNeditable, True,
+	//    RES_CONVERT(XmNforeground, "black"),
+	//NULL);
+ //   } else {
+	//XtVaSetValues (w, 
+	//    XmNeditable, False,
+	//    RES_CONVERT(XmNforeground, "grey40"),
+	//NULL);
+ //   }
 }
 
 void ImageFormat::eraseOutputFile (const char *fname)

@@ -27,7 +27,7 @@ class ImageFormatPSColor : public PostScriptImageFormat
 {
   private:
 
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
     static boolean ClassInitialized;
 
   protected:

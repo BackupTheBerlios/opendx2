@@ -14,9 +14,9 @@
 
 boolean ImageFormatPSColor::ClassInitialized = FALSE;
 
-String ImageFormatPSColor::DefaultResources[] = {
-    NUL(char*)
-};
+//String ImageFormatPSColor::DefaultResources[] = {
+//    NUL(char*)
+//};
 
 
 ImageFormatPSColor::ImageFormatPSColor (ImageFormatDialog* dialog) : 
@@ -33,12 +33,12 @@ ImageFormatPSColor::~ImageFormatPSColor()
 void ImageFormatPSColor::initialize()
 {
     if (!ImageFormatPSColor::ClassInitialized) {
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    PostScriptImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormatPSColor::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    PostScriptImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormatPSColor::DefaultResources);
 	ImageFormatPSColor::ClassInitialized = TRUE;
     }
 }

@@ -14,9 +14,9 @@
 
 boolean ImageFormatIM::ClassInitialized = FALSE;
 
-String ImageFormatIM::DefaultResources[] = {
-    NUL(char*)
-};
+//String ImageFormatIM::DefaultResources[] = {
+//    NUL(char*)
+//};
 
 
 ImageFormatIM::ImageFormatIM (ImageFormatDialog* dialog) : 
@@ -33,12 +33,12 @@ ImageFormatIM::~ImageFormatIM()
 void ImageFormatIM::initialize()
 {
     if (!ImageFormatIM::ClassInitialized) {
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    PixelImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormatIM::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    PixelImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormatIM::DefaultResources);
 	ImageFormatIM::ClassInitialized = TRUE;
     }
 }

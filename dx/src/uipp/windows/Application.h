@@ -38,7 +38,7 @@ class Application : public UIComponent, public Server
     // Private class data:
     //
     static boolean ApplicationClassInitialized;
-    friend void Application_XtWarningHandler(char *message);
+    //friend void Application_XtWarningHandler(char *message);
     //friend int  Application_XErrorHandler(Display *display, XErrorEvent *event);
 
 
@@ -93,7 +93,7 @@ class Application : public UIComponent, public Server
     // Handle Xt Warnings (called by Application_XtWarningHandler, static, above)
     // Handle X Errors (called by XErrorHandler, static, above)
     //
-    virtual void handleXtWarning(char *message);
+    //virtual void handleXtWarning(char *message);
     //virtual int  handleXError(Display *display, XErrorEvent *event);
 
     //

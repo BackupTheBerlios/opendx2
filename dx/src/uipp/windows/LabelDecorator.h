@@ -10,15 +10,9 @@
 #include "defines.h"
 
 
-
-// 
-//
-//
-
 #ifndef _Label_Decorator_h
 #define _Label_Decorator_h
 
-#include <X11/Intrinsic.h>
 
 #include "Decorator.h"
 
@@ -38,7 +32,7 @@ class LabelDecorator : public Decorator
     // D R A G - N - D R O P
     // D R A G - N - D R O P
     static Dictionary *DragTypeDictionary;
-    static Widget      DragIcon;
+    //static Widget      DragIcon;
 
     //
     // stores various techniques for printing/parsing text
@@ -48,9 +42,9 @@ class LabelDecorator : public Decorator
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   protected:
-    XmString      	   labelString;
+    //XmString      	   labelString;
+    //static  String 	   DefaultResources[]; 
     char 		   font[20];
-    static  String 	   DefaultResources[]; 
     Dictionary*		   otherStrings;
 
     virtual void 	   completeDecorativePart();
@@ -88,11 +82,11 @@ class LabelDecorator : public Decorator
     virtual   void 	     setLabel(const char *newStr, boolean re_layout = TRUE);
     virtual   void	     setFont(const char *);
 	      const char *   getFont() { return this->font; }
-    virtual   void	     setArgs (Arg *args, int *n);
+    //virtual   void	     setArgs (Arg *args, int *n);
 	      const char *   getLabelValue();
 	      const char *   getLabel();
 	      boolean	     acceptsLayoutChanges() { return FALSE; }
-	      XmFontList     getFontList();
+	      //XmFontList     getFontList();
 
     // C O N T R O L   P A N E L   C O M M E N T   F U N C T I O N S
     // C O N T R O L   P A N E L   C O M M E N T   F U N C T I O N S
@@ -120,7 +114,7 @@ class LabelDecorator : public Decorator
     // D R A G - N - D R O P
     // D R A G - N - D R O P
     virtual Dictionary* getDragDictionary() { return LabelDecorator::DragTypeDictionary; }
-    virtual boolean     decodeDragType (int, char *, XtPointer *, unsigned long *, long);
+    //virtual boolean     decodeDragType (int, char *, XtPointer *, unsigned long *, long);
 
     // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
     // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E

@@ -45,20 +45,20 @@ class MWFileDialog : public FileDialog
     virtual void cancelCallback(Dialog *d);
 
     boolean log;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    MWFileDialog(Widget parent, MsgWin *messageWindow);
+    MWFileDialog(MsgWin *messageWindow);
 
     
     //

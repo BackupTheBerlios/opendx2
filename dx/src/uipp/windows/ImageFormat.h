@@ -42,11 +42,11 @@ class ImageFormat : public UIComponent
 {
   private:
 
-    Widget		menuButton;
+    //Widget		menuButton;
 
   protected:
 
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     int				width;
     double			aspect;
@@ -56,7 +56,7 @@ class ImageFormat : public UIComponent
 
     boolean isMetric();
 
-    void			setTextSensitive (Widget , boolean );
+    void			setTextSensitive (boolean );
 
     //
     // Constructor:
@@ -91,11 +91,11 @@ class ImageFormat : public UIComponent
     virtual int			getRecordResolution() = 0;
     virtual double		getRecordAspect() = 0;
     virtual void		parseRecordFormat(const char *){}
-    virtual Widget 		createBody(Widget) = 0;
+    //virtual Widget 		createBody(Widget) = 0;
     virtual int			getRequiredHeight() = 0;
 
-    void			setMenuButton(Widget button) { this->menuButton = button;}
-    Widget			getMenuButton() { return this->menuButton;}
+    //void			setMenuButton(Widget button) { this->menuButton = button;}
+    //Widget			getMenuButton() { return this->menuButton;}
 
     const char* getClassName() { return ClassImageFormat; }
     virtual boolean isA(Symbol classname);

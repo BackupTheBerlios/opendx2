@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 
@@ -55,10 +55,10 @@ Ark::~Ark()
          delete this->arcStandIn;
          srcStandIn = sourceNode->getStandIn();
 	 if (srcStandIn)
-             srcStandIn->drawTab(sourceIndex, True);
+             srcStandIn->drawTab(sourceIndex, true);
          destStandIn = destNode->getStandIn();
 	 if (destStandIn)
-             destStandIn->drawTab(destIndex, False);
+             destStandIn->drawTab(destIndex, false);
      }
 
     

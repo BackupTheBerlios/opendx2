@@ -29,7 +29,7 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void RenderingOptionsDialog_NumberCB(Widget, XtPointer, XtPointer);
+//extern "C" void RenderingOptionsDialog_NumberCB(Widget, XtPointer, XtPointer);
 
 //
 // Referenced Classes
@@ -51,50 +51,50 @@ class RenderingOptionsDialog : public Dialog
     // Private member data:
     //
     static boolean ClassInitialized;
-    friend void RenderingOptionsDialog_NumberCB(Widget	 widget,
-		         XtPointer clientData,
-		         XtPointer callData);
+    //friend void RenderingOptionsDialog_NumberCB(Widget	 widget,
+		  //       XtPointer clientData,
+		  //       XtPointer callData);
   protected:
     //
     // Protected member data:
     //
     ImageWindow *imageWindow;
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
     ToggleButtonInterface	*hardwareButton;
     ToggleButtonInterface	*softwareButton;
 
-    Widget buttonUpOptionMenu;
+    //Widget buttonUpOptionMenu;
     ButtonInterface	*upNone;
     ButtonInterface	*upWireframe;
     ButtonInterface	*upDots;
     ButtonInterface	*upBox;
-    Widget upEveryNumber;
+    //Widget upEveryNumber;
 
-    Widget buttonDownOptionMenu;
+    //Widget buttonDownOptionMenu;
     ButtonInterface	*downNone;
     ButtonInterface	*downWireframe;
     ButtonInterface	*downDots;
     ButtonInterface	*downBox;
-    Widget downEveryNumber;
+    //Widget downEveryNumber;
 
 
-    virtual Widget createDialog(Widget parent);
-    virtual Widget createUpPulldown(Widget parent);
-    virtual Widget createDownPulldown(Widget parent);
+    virtual void createDialog(void);
+    //virtual Widget createUpPulldown(Widget parent);
+    //virtual Widget createDownPulldown(Widget parent);
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    RenderingOptionsDialog(Widget parent, ImageWindow *w);
+    RenderingOptionsDialog(ImageWindow *w);
 
     //
     // Destructor:

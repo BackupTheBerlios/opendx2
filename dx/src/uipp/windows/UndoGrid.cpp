@@ -7,38 +7,37 @@
 /***********************************************************************/
 #include "UndoGrid.h"
 #include "EditorWorkSpace.h"
-#include "../widgets/XmDX.h"
 
 char UndoGrid::OperationName[] = "grid";
 
 UndoGrid::UndoGrid (EditorWindow* editor, EditorWorkSpace* workSpace) :
     UndoableAction(editor)
 {
-    this->workSpace = workSpace;
-    Widget ww = workSpace->getRootWidget();
+ //   this->workSpace = workSpace;
+ //   Widget ww = workSpace->getRootWidget();
 
-    //
-    // At this point the new info has been stored into the 
-    // info object but it hasn't been stored into the widget.
-    // In order to provide undo, we fetch information from the
-    // workspace object (the this).
-    //
-    Dimension gridWidth,gridHeight;
-    unsigned char snap;
-    unsigned char horizAlign,vertAlign;
-    Boolean preventOverlap;
-    XtVaGetValues (ww,
-	XmNgridWidth, &gridWidth,
-	XmNgridHeight, &gridHeight,
-	XmNsnapToGrid, &snap,
-	XmNverticalAlignment, &vertAlign,
-	XmNhorizontalAlignment, &horizAlign,
-	XmNpreventOverlap, &preventOverlap,
-    NULL);
-    this->info.setGridActive(snap);
-    this->info.setGridSpacing(gridWidth, gridHeight);
-    this->info.setGridAlignment(horizAlign, vertAlign);
-    this->info.setPreventOverlap(preventOverlap);
+ //   //
+ //   // At this point the new info has been stored into the 
+ //   // info object but it hasn't been stored into the widget.
+ //   // In order to provide undo, we fetch information from the
+ //   // workspace object (the this).
+ //   //
+ //   Dimension gridWidth,gridHeight;
+ //   unsigned char snap;
+ //   unsigned char horizAlign,vertAlign;
+ //   Boolean preventOverlap;
+ //   XtVaGetValues (ww,
+	//XmNgridWidth, &gridWidth,
+	//XmNgridHeight, &gridHeight,
+	//XmNsnapToGrid, &snap,
+	//XmNverticalAlignment, &vertAlign,
+	//XmNhorizontalAlignment, &horizAlign,
+	//XmNpreventOverlap, &preventOverlap,
+ //   NULL);
+    //this->info.setGridActive(snap);
+    //this->info.setGridSpacing(gridWidth, gridHeight);
+    //this->info.setGridAlignment(horizAlign, vertAlign);
+    //this->info.setPreventOverlap(preventOverlap);
 }
 
 UndoGrid::~UndoGrid()

@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 #include <sys/types.h>
 #include <time.h>
@@ -17,32 +17,7 @@
 #endif
 #include <string.h> // for strerror
 #include <errno.h> // for errno
-#include <Xm/CascadeB.h>
-#include <Xm/DrawingA.h>
-#include <Xm/Frame.h>
-#include <Xm/Form.h>
-#include <Xm/Label.h>
-#include <Xm/List.h>
-#include <Xm/PushB.h>
-#include <Xm/RowColumn.h>
-#include <Xm/ScrolledW.h>
-#include <Xm/Separator.h>
-#include <Xm/AtomMgr.h>
-#if !defined(ibm6000)
-#define class ____class
-#define new ____new
-#endif
-#include <Xm/ScrolledWP.h>
-#if !defined(ibm6000)
-#undef class
-#undef new
-#endif
-#include <Xm/ScrollBar.h>
 
-#include <X11/cursorfont.h>
-
-
-#include "../widgets/WorkspaceW.h"
 #include "EditorWindow.h"
 #include "Ark.h"
 #include "ButtonInterface.h"
@@ -96,7 +71,6 @@
 #include "DecoratorStyle.h"
 #include "DecoratorInfo.h"
 #include "PrintProgramDialog.h"
-#include "TransferAccelerator.h"
 #if WORKSPACE_PAGES
 #include "PageGroupManager.h"
 #include "AnnotationGroupManager.h"
@@ -118,7 +92,6 @@
 #include "UndoRepeatableTab.h"
 #include "UndoAddArk.h"
 #include "Stack.h"
-#include "XHandler.h"
 
 #ifndef FORGET_GETSET
 #include "GetSetConversionDialog.h"
@@ -137,8 +110,6 @@ GetSetConversionDialog *EditorWindow::GetSetDialog = NULL;
 
 // If you change this, you break existing nets
 #define JAVA_SEQ_PAGE "java tools"
-
-#include "EWDefaultResources.h"
 
 #define NET_ATOM "NET_CONTENTS"
 #define CFG_ATOM "CFG_CONTENTS"
@@ -193,15 +164,15 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     //
     this->currentPanel   = NUL(ControlPanel*);
 
-    this->fileMenu       = NUL(Widget);
-    this->editMenu       = NUL(Widget);
-    this->windowsMenu    = NUL(Widget);
-    this->optionsMenu    = NUL(Widget);
+    //this->fileMenu       = NUL(Widget);
+    //this->editMenu       = NUL(Widget);
+    //this->windowsMenu    = NUL(Widget);
+    //this->optionsMenu    = NUL(Widget);
 
-    this->fileMenuPulldown       = NUL(Widget);
-    this->editMenuPulldown       = NUL(Widget);
-    this->windowsMenuPulldown    = NUL(Widget);
-    this->optionsMenuPulldown    = NUL(Widget);
+    //this->fileMenuPulldown       = NUL(Widget);
+    //this->editMenuPulldown       = NUL(Widget);
+    //this->windowsMenuPulldown    = NUL(Widget);
+    //this->optionsMenuPulldown    = NUL(Widget);
 	
     this->newOption          = NUL(CommandInterface*);
     this->openOption         = NUL(CommandInterface*);
@@ -664,7 +635,7 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->creating_new_network = FALSE;
 
     // work around for a motif bug
-    this->pgKeyHandler = NUL(XHandler*);
+    //this->pgKeyHandler = NUL(XHandler*);
 
     //
     // Install the default resources for THIS class (not the derived classes)
@@ -673,7 +644,7 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     {
 	ASSERT(theApplication);
         EditorWindow::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
@@ -867,17 +838,17 @@ EditorWindow::~EditorWindow()
 
     if (this->find_restore_page) delete this->find_restore_page;
 
-    if (this->pgKeyHandler) delete this->pgKeyHandler;;
+    //if (this->pgKeyHandler) delete this->pgKeyHandler;;
 }
 
 //
 // Install the default resources for this class.
 //
-void EditorWindow::installDefaultResources(Widget baseWidget)
-{
-    this->setDefaultResources(baseWidget, EditorWindow::DefaultResources);
-    this->DXWindow::installDefaultResources(baseWidget);
-}
+//void EditorWindow::installDefaultResources(Widget baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, EditorWindow::DefaultResources);
+//    this->DXWindow::installDefaultResources(baseWidget);
+//}
 
 void EditorWindow::SetCommandActivation(void *editor, void *requestData)
 {
@@ -1272,854 +1243,854 @@ void EditorWindow::handleNodeStatusChange(Node *n, NodeStatusChange status)
     }
     
 }
-Widget EditorWindow::createWorkArea(Widget parent)
-{
-    Widget    form;
-    Widget    hBar;
-    Widget    vBar;
-    Dimension height;
-    Dimension width;
-    Dimension thickness;
-
-    ASSERT(parent);
-
-    Widget outer_form = XtVaCreateManagedWidget ("workAreaFrame", xmFormWidgetClass, 
-	    parent, 
-	XmNshadowType, XmSHADOW_OUT,
-	XmNshadowThickness, 1,
-    NULL);
-
-    form = XtVaCreateManagedWidget ("workArea", xmFormWidgetClass, outer_form, 
-	XmNtopAttachment, XmATTACH_FORM,
-	XmNleftAttachment, XmATTACH_FORM,
-	XmNrightAttachment, XmATTACH_FORM,
-	XmNbottomAttachment, XmATTACH_FORM,
-	XmNtopOffset, 6,
-	XmNleftOffset, 6,
-	XmNrightOffset, 6,
-	XmNbottomOffset, 6,
-	XmNshadowThickness, 0,
-    NULL);
-
-
-    //
-    // Create the category/tool lists as a child of the above form. 
-    //
-
-    this->toolSelector = new EditorToolSelector("toolSelector", this);
-    if (!this->toolSelector->initialize(form,theNodeDefinitionDictionary))
-	ASSERT(0);
-
-    XtVaSetValues (this->toolSelector->getRootWidget(),
-        XmNtopAttachment,    XmATTACH_FORM,
-        XmNleftAttachment,   XmATTACH_FORM,
-        XmNbottomAttachment, XmATTACH_FORM,
-	XmNtopOffset, 0,
-	XmNleftOffset, 0,
-	XmNbottomOffset, 0,
-    NULL);
-
-#if WORKSPACE_PAGES
-    this->pageSelector = new PageSelector (this, form, this->network);
-    XtVaSetValues (this->pageSelector->getRootWidget(),
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNleftAttachment,      XmATTACH_WIDGET,
-	XmNleftWidget,          this->toolSelector->getRootWidget(),
-	XmNleftOffset,          5,
-	XmNrightAttachment,     XmATTACH_FORM,
-	XmNrightOffset,		20,
-    NULL);
-#endif
-
-    //
-    // Create the scrolled window.
-    //
-    this->scrolledWindow =
-	XtVaCreateManagedWidget
-	    ("scrolledWindow",
-	     xmScrolledWindowWidgetClass,
-	     form,
-#if WORKSPACE_PAGES
-	     XmNtopAttachment,          XmATTACH_WIDGET,
-	     XmNtopWidget,          	this->pageSelector->getRootWidget(),
-	     XmNtopOffset,		-1,
-#else
-	    XmNtopAttachment,	XmATTACH_FORM,
-#endif
-	     XmNleftAttachment,         XmATTACH_WIDGET,
-	     XmNleftWidget,             this->toolSelector->getRootWidget(),
-	     XmNleftOffset,             5,
-	     XmNrightAttachment,        XmATTACH_FORM,
-	     XmNbottomAttachment,       XmATTACH_FORM,
-	     XmNscrollingPolicy,        XmAUTOMATIC,
-	     XmNvisualPolicy,           XmVARIABLE,
-	     XmNscrollBarDisplayPolicy, XmAS_NEEDED,
-	     NULL);
-    //
-    // Create the workspace object.
-    //
-
-    this->workSpace = new VPERoot("vpeCanvas", this->scrolledWindow, 
-				this->network->getWorkSpaceInfo(),
-				this, this->pageSelector);
-    this->workSpace->initializeRootWidget();
-    this->workSpace->manage();
-    this->pageSelector->setRootPage((VPERoot*)this->workSpace);
-
-    XtVaSetValues(this->scrolledWindow, XmNworkWindow, 
-	  this->workSpace->getRootWidget(), NULL);
-
-    //
-    // Adjust the horizontal/vertical scrollbars to get rid of
-    // highlighting feature.
-    //
-    XtVaGetValues(this->scrolledWindow,
-		  XmNhorizontalScrollBar, &hBar,
-		  XmNverticalScrollBar,   &vBar,
-		  NULL);
-
-    XtVaGetValues(hBar,
-		  XmNhighlightThickness, &thickness,
-		  XmNheight,             &height,
-		  NULL);
-    height -= thickness * 2;
-    XtVaSetValues(hBar,
-		  XmNhighlightThickness, 0,
-		  XmNheight,             height,
-		  NULL);
-
-    XtVaGetValues(vBar,
-		  XmNhighlightThickness, &thickness,
-		  XmNwidth,              &width,
-		  NULL);
-    width -= thickness * 2;
-    XtVaSetValues(vBar,
-		  XmNhighlightThickness, 0,
-		  XmNwidth,              width,
-		  NULL);
-
-#if ((XmVERSION==2)&&(XmREVISION>=2))
-    //
-    // Pg {Up,Down} is crashing the vpe.  If this bug goes away
-    // then remove this code.  Finding a bug fix for Motif isn't good
-    // enough since we build with shared libraries.  Another way
-    // to fix this might have been to make a translation table
-    // entry.  I did try that but when I invoked the widget's
-    // action routine, I got the same crash.
-    // 
-    // Event handling in libXt is more complex than I what I can write
-    // code for at this level.  The 0 passed to this constructor is 
-    // supposed to be a window id. 0 means wildcard i.e. we match any
-    // event.  In KeyPress() we'll try to figure out if the widget
-    // that belongs to this event is in the hierarchy of this window.
-    // 
-    if (!this->pgKeyHandler) {
-	this->pgKeyHandler = new XHandler(KeyPress, 0, KeyHandler, (void*)this);
-    }
-#endif
-    //
-    // Return the topmost widget of the work area.
-    //
-    return outer_form;
-}
-
-
-void EditorWindow::createFileMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget pulldown;
-    Command *cmd;
-
-    //
-    // Create "File" menu and options.
-    //
-    pulldown =
-	this->fileMenuPulldown =
-	    XmCreatePulldownMenu(parent, "fileMenuPulldown", NUL(ArgList), 0);
-    this->fileMenu =
-	XtVaCreateManagedWidget
-	    ("fileMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    this->newOption =
-	new ButtonInterface(pulldown,
-			    "vpeNewOption",
-			    this->network->getNewCommand());
-
-    this->openOption =
-	new ButtonInterface(pulldown, 
-                            "vpeOpenOption", theDXApplication->openFileCmd);
-
-    this->createFileHistoryMenu(pulldown);
-
-    if ( (cmd = this->network->getSaveCommand()) ) {
-    	if(this->network->isMacro() == FALSE) 
-	    this->saveOption = new ButtonInterface(pulldown, "vpeSaveOption", cmd);
-	else
-	    this->saveOption = new ButtonInterface(pulldown, "vpeSaveMacroOption", cmd);
-    }
-
-    if ( (cmd = this->network->getSaveAsCommand()) ) {
-        if(this->network->isMacro() == FALSE)
-	    this->saveAsOption = new ButtonInterface(pulldown, 
-						"vpeSaveAsOption", cmd);
-	else
-	    this->saveAsOption = new ButtonInterface(pulldown, 
-						"vpeSaveMacroAsOption", cmd);
-    }
-
-   
-    Command *openCfgCmd = this->network->getOpenCfgCommand();
-    Command *saveCfgCmd = this->network->getSaveCfgCommand();
-    if (openCfgCmd && saveCfgCmd) {
-        this->settingsCascade = new CascadeMenu("vpeSettingsCascade",pulldown);
-	Widget menu_parent = this->settingsCascade->getMenuItemParent();
-	this->saveCfgOption = new ButtonInterface(menu_parent, 
-						"vpeSaveCfgOption", saveCfgCmd);
-	this->openCfgOption = new ButtonInterface(menu_parent, 
-						"vpeOpenCfgOption", openCfgCmd);
-    } else if (openCfgCmd) {
-	this->openCfgOption = new ButtonInterface(pulldown, 
-						"vpeOpenCfgOption", openCfgCmd);
-    } else if (saveCfgCmd) {
-	this->saveCfgOption = new ButtonInterface(pulldown, 
-						"vpeSaveCfgOption", saveCfgCmd);
-    } 
-
-
-    XtVaCreateManagedWidget
-	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    this->loadMacroOption =
-	new ButtonInterface(pulldown, 
-                            "vpeLoadMacroOption", theDXApplication->loadMacroCmd);
-    this->loadMDFOption =
-	new ButtonInterface(pulldown, 
-                            "vpeLoadMDFOption", theDXApplication->loadMDFCmd);
-
-    XtVaCreateManagedWidget
-	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    this->printProgramOption = new ButtonInterface(pulldown, 
-                                             "vpePrintProgramOption", 
-                                             this->printProgramCmd);
-    if (this->saveAsCCodeCmd)
-	this->saveAsCCodeOption = new ButtonInterface(pulldown, 
-                                             "vpeSaveAsCCodeOption", 
-                                             this->saveAsCCodeCmd);
-    XtVaCreateManagedWidget
-	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    if (this->isAnchor() && theDXApplication->appAllowsExitOptions())
-    	this->quitOption =
-	   new ButtonInterface(pulldown,"quitOption",theDXApplication->exitCmd);
-    else 
-    	this->closeOption =
-	   new ButtonInterface(pulldown,"vpeCloseOption",this->closeCmd);
-
-    XtAddCallback(pulldown,
-                  XmNmapCallback,
-                  (XtCallbackProc)EditorWindow_FileMenuMapCB,
-                  (XtPointer)this);
-}
-
-
-void EditorWindow::createEditMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget pulldown;
-    CascadeMenu *cascade_menu;
-    Widget menu_parent;
-    CommandInterface *ci;
-
-    //
-    // Create "Edit" menu and options.
-    //
-    pulldown =
-	this->editMenuPulldown =
-	    XmCreatePulldownMenu(parent, "editMenuPulldown", NUL(ArgList), 0);
-    this->editMenu =
-	XtVaCreateManagedWidget
-	    ("editMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    this->undoOption = new ButtonInterface (pulldown, "vpeUndoOption", this->undoCmd);
-    XtVaCreateManagedWidget ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    //
-    // Module level functions 
-    //
-    this->valuesOption =
-	new ButtonInterface(pulldown, "vpeValuesOption", this->valuesCmd);
-
-    this->findToolOption =
-	new ButtonInterface(pulldown, "vpeFindToolOption", this->findToolCmd);
-
-
-    //
-    // Add/removing tabs 
-    //
-#if 0
-    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, 
-						pulldown, NULL);
-#endif
-    cascade_menu = this->editTabsCascade = 
-		new CascadeMenu("vpeEditTabsCascade",pulldown);
-    menu_parent = cascade_menu->getMenuItemParent();
-
-
-    this->addInputTabOption = new ButtonInterface(menu_parent, "vpeAddInputTabOption",
-					this->addInputTabCmd);
-    cascade_menu->appendComponent(this->addInputTabOption);
-
-    this->removeInputTabOption = new ButtonInterface(menu_parent, "vpeRemoveInputTabOption", 
-					this->removeInputTabCmd);
-    cascade_menu->appendComponent(this->removeInputTabOption);
-    ci = new ButtonInterface(menu_parent, "vpeAddOutputTabOption",
-					this->addOutputTabCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeRemoveOutputTabOption", 
-					this->removeOutputTabCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeRevealAllTabsOption",
-					this->revealAllTabsCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeHideAllTabsOption",
-					this->hideAllTabsCmd);
-    cascade_menu->appendComponent(ci);
-
-#ifndef FORGET_GETSET
-    //
-    // GetSet Conversion operation
-    //
-    cascade_menu = this->programVerifyCascade = 
-		new CascadeMenu("programVerifyCascade",pulldown);
-    menu_parent = cascade_menu->getMenuItemParent();
-
-    ci = new ButtonInterface (menu_parent, "getSetConversion", this->postGetSetCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface (menu_parent, "setToLocal", this->toLocalCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface (menu_parent, "setToGlobal", this->toGlobalCmd);
-    cascade_menu->appendComponent(ci);
-#endif
-
-    //
-    // Module selection methods 
-    //
-#if 0
-    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, 
-						pulldown, NULL);
-#endif
-
-    this->editSelectCascade = 
-    cascade_menu = new CascadeMenu("vpeEditSelectCascade",pulldown);
-    menu_parent = cascade_menu->getMenuItemParent();
-
-    ci = new ButtonInterface(menu_parent, "vpeSelectAllOption", 
-						this->selectAllNodeCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeSelectConnectedOption", 
-					this->selectConnectedNodeCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeSelectUnconnectedOption", 
-					this->selectUnconnectedNodeCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeSelectUpwardOption", 
-					this->selectUpwardNodeCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeSelectDownwardOption", 
-					this->selectDownwardNodeCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeDeselectAllOption", 
-					this->deselectAllNodeCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeSelectUnselectedOption", 
-					this->selectUnselectedNodeCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface (menu_parent, "vpeShowExecutedOption", 
-					this->showExecutedCmd);
-    cascade_menu->appendComponent(ci);
-
-    //
-    // Output Cacheability (two cascade menus) 
-    //
-    this->outputCacheabilityCascade = 
-    cascade_menu = new CascadeMenu("vpeOutputCacheabilityCascade",pulldown);
-    menu_parent = cascade_menu->getMenuItemParent();
-
-    ci =  new ButtonInterface(menu_parent, "vpeOptimizeCacheability",
-					this->optimizeCacheabilityCmd);
-    cascade_menu->appendComponent(ci);
-
-    // Set 
-    this->editOutputCacheabilityCascade = 
-    cascade_menu = new CascadeMenu("vpeEditOutputCacheabilityCascade",
-							menu_parent);
-    menu_parent = cascade_menu->getMenuItemParent();
-
-    ci = new ButtonInterface(menu_parent, "vpeCacheAllOutputsOption", 
-						this->cacheAllOutputsCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeCacheLastOutputsOption", 
-						this->cacheLastOutputsCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeCacheNoOutputsOption", 
-						this->cacheNoOutputsCmd);
-    cascade_menu->appendComponent(ci);
-    // Show 
-    menu_parent = this->outputCacheabilityCascade->getMenuItemParent();
-    cascade_menu = new CascadeMenu("vpeShowOutputCacheabilityCascade",
-							menu_parent);
-    this->outputCacheabilityCascade->appendComponent(cascade_menu); 
-    menu_parent = cascade_menu->getMenuItemParent();
-
-    ci = new ButtonInterface(menu_parent, "vpeShowCacheAllOutputsOption", 
-						this->showCacheAllOutputsCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeShowCacheLastOutputsOption", 
-						this->showCacheLastOutputsCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeShowCacheNoOutputsOption", 
-						this->showCacheNoOutputsCmd);
-    cascade_menu->appendComponent(ci);
-
-    //
-    // Delete, Cut, Copy, Paste
-    //
-    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, 
-						pulldown, NULL);
-    this->deleteOption =
-	new ButtonInterface(pulldown, "vpeDeleteOption", this->deleteNodeCmd);
-
-    if ((theDXApplication->appAllowsSavingNetFile()) &&
-	(theDXApplication->appAllowsSavingCfgFile()) &&
-	(theDXApplication->appAllowsEditorAccess())) {
-	this->copyOption =
-	    new ButtonInterface(pulldown, "vpeCopyOption", this->copyNodeCmd);
-
-	this->cutOption =
-	    new ButtonInterface(pulldown, "vpeCutOption", this->cutNodeCmd);
-
-	this->pasteOption =
-	    new ButtonInterface(pulldown, "vpePasteOption", this->pasteNodeCmd);
-    }
-
-    //
-    // Annotation
-    //
-    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, 
-						pulldown, NULL);
-
-    this->addAnnotationOption = new ButtonInterface(pulldown, "vpeAddDecorator",
-	this->addAnnotationCmd);
-
-    //
-    // Miscellaneous 
-    //
-    this->insertNetworkOption =
-	new ButtonInterface(pulldown, "vpeInsertNetOption",
-			    this->insertNetCmd);
-
-    this->createMacroOption =
-	new ButtonInterface(pulldown, "vpeCreateMacroOption",
-			    this->macroifyCmd);
-
-#if WORKSPACE_PAGES
-    this->pageCascade = cascade_menu = new CascadeMenu("vpePageCascade", pulldown);
-    menu_parent = cascade_menu->getMenuItemParent();
-
-    ci = new ButtonInterface(menu_parent, "vpeCreatePageOption", this->pagifyCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci=new ButtonInterface(menu_parent, "vpeSelectedPageOption", this->pagifySelectedCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeDeletePageOption", this->deletePageCmd);
-    cascade_menu->appendComponent(ci);
-
-    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, menu_parent, NULL);
-
-    ci=new ButtonInterface(menu_parent, "vpeChopPageOption", this->autoChopSelectedCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci=new ButtonInterface(menu_parent, "vpeFusePageOption", this->autoFuseSelectedCmd);
-    cascade_menu->appendComponent(ci);
-
-    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, menu_parent, NULL);
-
-    ci = new ButtonInterface(menu_parent,"vpeConfigurePageOption",this->configurePageCmd);
-    cascade_menu->appendComponent(ci);
-
-    ci = new ButtonInterface(menu_parent, "vpeMoveToPageOption", this->moveSelectedCmd);
-    cascade_menu->appendComponent(ci);
-#endif
-
-    if (this->javifyNetCmd) {
-	this->javaCascade = cascade_menu = new CascadeMenu("vpeJavaCascade", pulldown);
-	menu_parent = cascade_menu->getMenuItemParent();
-
-	ci = new ButtonInterface(menu_parent, 
-	    "vpeJavifyNetOption", this->javifyNetCmd);
-	cascade_menu->appendComponent(ci);
-
-	ci = new ButtonInterface(menu_parent, 
-	    "vpeUnjavifyNetOption", this->unjavifyNetCmd);
-	cascade_menu->appendComponent(ci);
-
-	Command* cmd = NUL(Command*);
-	cmd = this->network->getSaveWebPageCommand();
-	if (cmd) {
-	    XtVaCreateManagedWidget("optionSeparator", 
-		xmSeparatorWidgetClass, menu_parent, NULL);
-	    ci = new ButtonInterface(menu_parent, "vpeSaveWebPageOption", cmd);
-	    cascade_menu->appendComponent(ci);
-	}
-
-	cmd = this->network->getSaveAppletCommand();
-	if (cmd) {
-	    ci = new ButtonInterface(menu_parent, "vpeSaveAppletOption", cmd);
-	    cascade_menu->appendComponent(ci);
-	}
-
-	cmd = this->network->getSaveBeanCommand();
-	if (cmd) {
-	    ci = new ButtonInterface(menu_parent, "vpeSaveBeanOption", cmd);
-	    cascade_menu->appendComponent(ci);
-	}
-
-    }
-
-    this->macroNameOption =
-	new ButtonInterface(pulldown, "vpeMacroNameOption",
-			    this->network->getSetNameCommand());
-
-    this->reflowGraphOption =
-	new ButtonInterface(pulldown, "vpeReflowGraphOption",
-			    this->reflowGraphCmd);
-
-    this->createProcessGroupOption =
-	new ButtonInterface(pulldown, "vpeCreateProcessGroupOption", 
-			    this->createProcessGroupCmd);
-
-    this->commentOption =
-	new ButtonInterface(pulldown, "vpeCommentOption", this->editCommentCmd);
-
-    XtAddCallback(pulldown,
-                  XmNmapCallback,
-                  (XtCallbackProc)EditorWindow_EditMenuMapCB,
-                  (XtPointer)this);
-}
-
-
-void EditorWindow::createWindowsMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget            pulldown;
-
-    //
-    // Create "Windows" menu and options.
-    //
-    pulldown =
-	this->windowsMenuPulldown =
-	    XmCreatePulldownMenu
-		(parent, "windowsMenuPulldown", NUL(ArgList), 0);
-    this->windowsMenu =
-	XtVaCreateManagedWidget
-	    ("windowsMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    this->newControlPanelOption =
-	new ButtonInterface
-	    (pulldown, "vpeNewControlPanelOption", this->newControlPanelCmd);
-
-    this->openControlPanelOption =
-	new ButtonInterface(pulldown, "vpeOpenControlPanelOption", 
-		this->openControlPanelCmd);
-
-    this->openAllControlPanelsOption =
-        new ButtonInterface
-            (pulldown,
-             "vpeOpenAllControlPanelsOption",
-             this->network->getOpenAllPanelsCommand());
-
-    this->openControlPanelByNameMenu =
-                new CascadeMenu("vpePanelCascade",pulldown);
-	
-    XtAddCallback(pulldown,
-                  XmNmapCallback,
-                  (XtCallbackProc)EditorWindow_WindowMenuMapCB,
-                  (XtPointer)this);
-
-#ifdef PANEL_GROUP_SEPARATED
-    this->panelGroupPulldown =
-            XmCreatePulldownMenu
-                (pulldown, "panelGroupPulldown", NUL(ArgList), 0);
-
-    this->panelGroupCascade =
-    cascade =  XtVaCreateManagedWidget
-            ("vpePanelGroupCascade",
-             xmCascadeButtonWidgetClass,
-             pulldown,
-             XmNsubMenuId, this->panelGroupPulldown,
-	     XmNsensitive, TRUE,
-             NULL);
-#endif
-
-    XtVaCreateManagedWidget("optionSeparator", 
-				xmSeparatorWidgetClass, pulldown, NULL);
-
-    this->openMacroOption =
-	new ButtonInterface(pulldown, "vpeOpenMacroOption",
-			    this->openMacroCmd);
-
-    this->openImageOption =
-	new ButtonInterface(pulldown, "vpeOpenImageOption",
-			    this->openImageCmd);
-
-    this->openColormapEditorOption =
-	new ButtonInterface
-	    (pulldown, "vpeOpenColormapEditorOption", this->openColormapCmd);
-
-    this->messageWindowOption =
-        new ButtonInterface
-            (pulldown, "vpeMessageWindowOption",
-	     theDXApplication->messageWindowCmd);
-
-
-}
-
-
-void EditorWindow::createOptionsMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    Widget            pulldown;
-    
-    //
-    // Create "Options" menu and options.
-    //
-    pulldown =
-	this->optionsMenuPulldown =
-	    XmCreatePulldownMenu
-		(parent, "optionsMenuPulldown", NUL(ArgList), 0);
-    this->optionsMenu =
-	XtVaCreateManagedWidget
-	    ("optionsMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    this->toolPalettesOption =
-	new ToggleButtonInterface
-	    (pulldown,
-	     "vpeToolPalettesOption",
-	     this->toolPanelCmd,
-	     this->panelVisible);
-
-    this->hitDetectionOption =
-	new ToggleButtonInterface
-	    (pulldown,
-	     "vpeHitDetectionOption",
-	     this->hitDetectionCmd,
-	     this->hit_detection);
-
-    this->panelAccessOption =
-	new ButtonInterface(pulldown, "vpePanelAccessOption", this->setPanelAccessCmd);
-
-    this->panelGroupOption =
-	new ButtonInterface(pulldown, "vpePanelGroupOption", this->setPanelGroupCmd);
-
-    this->gridOption =
-	new ButtonInterface(pulldown, "vpeGridOption", this->gridCmd);
-
-    XtAddCallback(pulldown, XmNmapCallback, (XtCallbackProc)
-	EditorWindow_OptionsMenuMapCB, (XtPointer)this);
-}
-
-void EditorWindow::createHelpMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    this->DXWindow::createHelpMenu(parent);
-
-    XtVaCreateManagedWidget("separator", xmSeparatorWidgetClass, 
-                                        this->helpMenuPulldown,
-                                        NULL);
-
-    this->onVisualProgramOption =
-        new ButtonInterface(this->helpMenuPulldown, "vpeOnVisualProgramOption", 
-				this->network->getHelpOnNetworkCommand());
-}
-
-
-void EditorWindow::createMenus(Widget parent)
-{
-    ASSERT(parent);
-
-    //
-    // Create the menus.
-    //
-    this->createFileMenu(parent);
-    this->createEditMenu(parent);
-    this->createExecuteMenu(parent);
-    this->createWindowsMenu(parent);
-    this->createConnectionMenu(parent);
-    this->createOptionsMenu(parent);
-    this->createHelpMenu(parent);
-
-    //
-    // Right justify the help menu (if it exists).
-    //
-    if (this->helpMenu)
-    {
-	XtVaSetValues(parent, XmNmenuHelpWidget, this->helpMenu, NULL);
-    }
-}
+//Widget EditorWindow::createWorkArea(Widget parent)
+//{
+//    Widget    form;
+//    Widget    hBar;
+//    Widget    vBar;
+//    Dimension height;
+//    Dimension width;
+//    Dimension thickness;
+//
+//    ASSERT(parent);
+//
+//    Widget outer_form = XtVaCreateManagedWidget ("workAreaFrame", xmFormWidgetClass, 
+//	    parent, 
+//	XmNshadowType, XmSHADOW_OUT,
+//	XmNshadowThickness, 1,
+//    NULL);
+//
+//    form = XtVaCreateManagedWidget ("workArea", xmFormWidgetClass, outer_form, 
+//	XmNtopAttachment, XmATTACH_FORM,
+//	XmNleftAttachment, XmATTACH_FORM,
+//	XmNrightAttachment, XmATTACH_FORM,
+//	XmNbottomAttachment, XmATTACH_FORM,
+//	XmNtopOffset, 6,
+//	XmNleftOffset, 6,
+//	XmNrightOffset, 6,
+//	XmNbottomOffset, 6,
+//	XmNshadowThickness, 0,
+//    NULL);
+//
+//
+//    //
+//    // Create the category/tool lists as a child of the above form. 
+//    //
+//
+//    this->toolSelector = new EditorToolSelector("toolSelector", this);
+//    if (!this->toolSelector->initialize(form,theNodeDefinitionDictionary))
+//	ASSERT(0);
+//
+//    XtVaSetValues (this->toolSelector->getRootWidget(),
+//        XmNtopAttachment,    XmATTACH_FORM,
+//        XmNleftAttachment,   XmATTACH_FORM,
+//        XmNbottomAttachment, XmATTACH_FORM,
+//	XmNtopOffset, 0,
+//	XmNleftOffset, 0,
+//	XmNbottomOffset, 0,
+//    NULL);
+//
+//#if WORKSPACE_PAGES
+//    this->pageSelector = new PageSelector (this, form, this->network);
+//    XtVaSetValues (this->pageSelector->getRootWidget(),
+//	XmNtopAttachment,	XmATTACH_FORM,
+//	XmNleftAttachment,      XmATTACH_WIDGET,
+//	XmNleftWidget,          this->toolSelector->getRootWidget(),
+//	XmNleftOffset,          5,
+//	XmNrightAttachment,     XmATTACH_FORM,
+//	XmNrightOffset,		20,
+//    NULL);
+//#endif
+//
+//    //
+//    // Create the scrolled window.
+//    //
+//    this->scrolledWindow =
+//	XtVaCreateManagedWidget
+//	    ("scrolledWindow",
+//	     xmScrolledWindowWidgetClass,
+//	     form,
+//#if WORKSPACE_PAGES
+//	     XmNtopAttachment,          XmATTACH_WIDGET,
+//	     XmNtopWidget,          	this->pageSelector->getRootWidget(),
+//	     XmNtopOffset,		-1,
+//#else
+//	    XmNtopAttachment,	XmATTACH_FORM,
+//#endif
+//	     XmNleftAttachment,         XmATTACH_WIDGET,
+//	     XmNleftWidget,             this->toolSelector->getRootWidget(),
+//	     XmNleftOffset,             5,
+//	     XmNrightAttachment,        XmATTACH_FORM,
+//	     XmNbottomAttachment,       XmATTACH_FORM,
+//	     XmNscrollingPolicy,        XmAUTOMATIC,
+//	     XmNvisualPolicy,           XmVARIABLE,
+//	     XmNscrollBarDisplayPolicy, XmAS_NEEDED,
+//	     NULL);
+//    //
+//    // Create the workspace object.
+//    //
+//
+//    this->workSpace = new VPERoot("vpeCanvas", this->scrolledWindow, 
+//				this->network->getWorkSpaceInfo(),
+//				this, this->pageSelector);
+//    this->workSpace->initializeRootWidget();
+//    this->workSpace->manage();
+//    this->pageSelector->setRootPage((VPERoot*)this->workSpace);
+//
+//    XtVaSetValues(this->scrolledWindow, XmNworkWindow, 
+//	  this->workSpace->getRootWidget(), NULL);
+//
+//    //
+//    // Adjust the horizontal/vertical scrollbars to get rid of
+//    // highlighting feature.
+//    //
+//    XtVaGetValues(this->scrolledWindow,
+//		  XmNhorizontalScrollBar, &hBar,
+//		  XmNverticalScrollBar,   &vBar,
+//		  NULL);
+//
+//    XtVaGetValues(hBar,
+//		  XmNhighlightThickness, &thickness,
+//		  XmNheight,             &height,
+//		  NULL);
+//    height -= thickness * 2;
+//    XtVaSetValues(hBar,
+//		  XmNhighlightThickness, 0,
+//		  XmNheight,             height,
+//		  NULL);
+//
+//    XtVaGetValues(vBar,
+//		  XmNhighlightThickness, &thickness,
+//		  XmNwidth,              &width,
+//		  NULL);
+//    width -= thickness * 2;
+//    XtVaSetValues(vBar,
+//		  XmNhighlightThickness, 0,
+//		  XmNwidth,              width,
+//		  NULL);
+//
+//#if ((XmVERSION==2)&&(XmREVISION>=2))
+//    //
+//    // Pg {Up,Down} is crashing the vpe.  If this bug goes away
+//    // then remove this code.  Finding a bug fix for Motif isn't good
+//    // enough since we build with shared libraries.  Another way
+//    // to fix this might have been to make a translation table
+//    // entry.  I did try that but when I invoked the widget's
+//    // action routine, I got the same crash.
+//    // 
+//    // Event handling in libXt is more complex than I what I can write
+//    // code for at this level.  The 0 passed to this constructor is 
+//    // supposed to be a window id. 0 means wildcard i.e. we match any
+//    // event.  In KeyPress() we'll try to figure out if the widget
+//    // that belongs to this event is in the hierarchy of this window.
+//    // 
+//    if (!this->pgKeyHandler) {
+//	this->pgKeyHandler = new XHandler(KeyPress, 0, KeyHandler, (void*)this);
+//    }
+//#endif
+//    //
+//    // Return the topmost widget of the work area.
+//    //
+//    return outer_form;
+//}
+
+
+//void EditorWindow::createFileMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget pulldown;
+//    Command *cmd;
+//
+//    //
+//    // Create "File" menu and options.
+//    //
+//    pulldown =
+//	this->fileMenuPulldown =
+//	    XmCreatePulldownMenu(parent, "fileMenuPulldown", NUL(ArgList), 0);
+//    this->fileMenu =
+//	XtVaCreateManagedWidget
+//	    ("fileMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    this->newOption =
+//	new ButtonInterface(pulldown,
+//			    "vpeNewOption",
+//			    this->network->getNewCommand());
+//
+//    this->openOption =
+//	new ButtonInterface(pulldown, 
+//                            "vpeOpenOption", theDXApplication->openFileCmd);
+//
+//    this->createFileHistoryMenu(pulldown);
+//
+//    if ( (cmd = this->network->getSaveCommand()) ) {
+//    	if(this->network->isMacro() == FALSE) 
+//	    this->saveOption = new ButtonInterface(pulldown, "vpeSaveOption", cmd);
+//	else
+//	    this->saveOption = new ButtonInterface(pulldown, "vpeSaveMacroOption", cmd);
+//    }
+//
+//    if ( (cmd = this->network->getSaveAsCommand()) ) {
+//        if(this->network->isMacro() == FALSE)
+//	    this->saveAsOption = new ButtonInterface(pulldown, 
+//						"vpeSaveAsOption", cmd);
+//	else
+//	    this->saveAsOption = new ButtonInterface(pulldown, 
+//						"vpeSaveMacroAsOption", cmd);
+//    }
+//
+//   
+//    Command *openCfgCmd = this->network->getOpenCfgCommand();
+//    Command *saveCfgCmd = this->network->getSaveCfgCommand();
+//    if (openCfgCmd && saveCfgCmd) {
+//        this->settingsCascade = new CascadeMenu("vpeSettingsCascade",pulldown);
+//	Widget menu_parent = this->settingsCascade->getMenuItemParent();
+//	this->saveCfgOption = new ButtonInterface(menu_parent, 
+//						"vpeSaveCfgOption", saveCfgCmd);
+//	this->openCfgOption = new ButtonInterface(menu_parent, 
+//						"vpeOpenCfgOption", openCfgCmd);
+//    } else if (openCfgCmd) {
+//	this->openCfgOption = new ButtonInterface(pulldown, 
+//						"vpeOpenCfgOption", openCfgCmd);
+//    } else if (saveCfgCmd) {
+//	this->saveCfgOption = new ButtonInterface(pulldown, 
+//						"vpeSaveCfgOption", saveCfgCmd);
+//    } 
+//
+//
+//    XtVaCreateManagedWidget
+//	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    this->loadMacroOption =
+//	new ButtonInterface(pulldown, 
+//                            "vpeLoadMacroOption", theDXApplication->loadMacroCmd);
+//    this->loadMDFOption =
+//	new ButtonInterface(pulldown, 
+//                            "vpeLoadMDFOption", theDXApplication->loadMDFCmd);
+//
+//    XtVaCreateManagedWidget
+//	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    this->printProgramOption = new ButtonInterface(pulldown, 
+//                                             "vpePrintProgramOption", 
+//                                             this->printProgramCmd);
+//    if (this->saveAsCCodeCmd)
+//	this->saveAsCCodeOption = new ButtonInterface(pulldown, 
+//                                             "vpeSaveAsCCodeOption", 
+//                                             this->saveAsCCodeCmd);
+//    XtVaCreateManagedWidget
+//	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    if (this->isAnchor() && theDXApplication->appAllowsExitOptions())
+//    	this->quitOption =
+//	   new ButtonInterface(pulldown,"quitOption",theDXApplication->exitCmd);
+//    else 
+//    	this->closeOption =
+//	   new ButtonInterface(pulldown,"vpeCloseOption",this->closeCmd);
+//
+//    XtAddCallback(pulldown,
+//                  XmNmapCallback,
+//                  (XtCallbackProc)EditorWindow_FileMenuMapCB,
+//                  (XtPointer)this);
+//}
+
+
+//void EditorWindow::createEditMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget pulldown;
+//    CascadeMenu *cascade_menu;
+//    Widget menu_parent;
+//    CommandInterface *ci;
+//
+//    //
+//    // Create "Edit" menu and options.
+//    //
+//    pulldown =
+//	this->editMenuPulldown =
+//	    XmCreatePulldownMenu(parent, "editMenuPulldown", NUL(ArgList), 0);
+//    this->editMenu =
+//	XtVaCreateManagedWidget
+//	    ("editMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    this->undoOption = new ButtonInterface (pulldown, "vpeUndoOption", this->undoCmd);
+//    XtVaCreateManagedWidget ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    //
+//    // Module level functions 
+//    //
+//    this->valuesOption =
+//	new ButtonInterface(pulldown, "vpeValuesOption", this->valuesCmd);
+//
+//    this->findToolOption =
+//	new ButtonInterface(pulldown, "vpeFindToolOption", this->findToolCmd);
+//
+//
+//    //
+//    // Add/removing tabs 
+//    //
+//#if 0
+//    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, 
+//						pulldown, NULL);
+//#endif
+//    cascade_menu = this->editTabsCascade = 
+//		new CascadeMenu("vpeEditTabsCascade",pulldown);
+//    menu_parent = cascade_menu->getMenuItemParent();
+//
+//
+//    this->addInputTabOption = new ButtonInterface(menu_parent, "vpeAddInputTabOption",
+//					this->addInputTabCmd);
+//    cascade_menu->appendComponent(this->addInputTabOption);
+//
+//    this->removeInputTabOption = new ButtonInterface(menu_parent, "vpeRemoveInputTabOption", 
+//					this->removeInputTabCmd);
+//    cascade_menu->appendComponent(this->removeInputTabOption);
+//    ci = new ButtonInterface(menu_parent, "vpeAddOutputTabOption",
+//					this->addOutputTabCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeRemoveOutputTabOption", 
+//					this->removeOutputTabCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeRevealAllTabsOption",
+//					this->revealAllTabsCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeHideAllTabsOption",
+//					this->hideAllTabsCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//#ifndef FORGET_GETSET
+//    //
+//    // GetSet Conversion operation
+//    //
+//    cascade_menu = this->programVerifyCascade = 
+//		new CascadeMenu("programVerifyCascade",pulldown);
+//    menu_parent = cascade_menu->getMenuItemParent();
+//
+//    ci = new ButtonInterface (menu_parent, "getSetConversion", this->postGetSetCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface (menu_parent, "setToLocal", this->toLocalCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface (menu_parent, "setToGlobal", this->toGlobalCmd);
+//    cascade_menu->appendComponent(ci);
+//#endif
+//
+//    //
+//    // Module selection methods 
+//    //
+//#if 0
+//    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, 
+//						pulldown, NULL);
+//#endif
+//
+//    this->editSelectCascade = 
+//    cascade_menu = new CascadeMenu("vpeEditSelectCascade",pulldown);
+//    menu_parent = cascade_menu->getMenuItemParent();
+//
+//    ci = new ButtonInterface(menu_parent, "vpeSelectAllOption", 
+//						this->selectAllNodeCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeSelectConnectedOption", 
+//					this->selectConnectedNodeCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeSelectUnconnectedOption", 
+//					this->selectUnconnectedNodeCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeSelectUpwardOption", 
+//					this->selectUpwardNodeCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeSelectDownwardOption", 
+//					this->selectDownwardNodeCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeDeselectAllOption", 
+//					this->deselectAllNodeCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeSelectUnselectedOption", 
+//					this->selectUnselectedNodeCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface (menu_parent, "vpeShowExecutedOption", 
+//					this->showExecutedCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    //
+//    // Output Cacheability (two cascade menus) 
+//    //
+//    this->outputCacheabilityCascade = 
+//    cascade_menu = new CascadeMenu("vpeOutputCacheabilityCascade",pulldown);
+//    menu_parent = cascade_menu->getMenuItemParent();
+//
+//    ci =  new ButtonInterface(menu_parent, "vpeOptimizeCacheability",
+//					this->optimizeCacheabilityCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    // Set 
+//    this->editOutputCacheabilityCascade = 
+//    cascade_menu = new CascadeMenu("vpeEditOutputCacheabilityCascade",
+//							menu_parent);
+//    menu_parent = cascade_menu->getMenuItemParent();
+//
+//    ci = new ButtonInterface(menu_parent, "vpeCacheAllOutputsOption", 
+//						this->cacheAllOutputsCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeCacheLastOutputsOption", 
+//						this->cacheLastOutputsCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeCacheNoOutputsOption", 
+//						this->cacheNoOutputsCmd);
+//    cascade_menu->appendComponent(ci);
+//    // Show 
+//    menu_parent = this->outputCacheabilityCascade->getMenuItemParent();
+//    cascade_menu = new CascadeMenu("vpeShowOutputCacheabilityCascade",
+//							menu_parent);
+//    this->outputCacheabilityCascade->appendComponent(cascade_menu); 
+//    menu_parent = cascade_menu->getMenuItemParent();
+//
+//    ci = new ButtonInterface(menu_parent, "vpeShowCacheAllOutputsOption", 
+//						this->showCacheAllOutputsCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeShowCacheLastOutputsOption", 
+//						this->showCacheLastOutputsCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeShowCacheNoOutputsOption", 
+//						this->showCacheNoOutputsCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    //
+//    // Delete, Cut, Copy, Paste
+//    //
+//    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, 
+//						pulldown, NULL);
+//    this->deleteOption =
+//	new ButtonInterface(pulldown, "vpeDeleteOption", this->deleteNodeCmd);
+//
+//    if ((theDXApplication->appAllowsSavingNetFile()) &&
+//	(theDXApplication->appAllowsSavingCfgFile()) &&
+//	(theDXApplication->appAllowsEditorAccess())) {
+//	this->copyOption =
+//	    new ButtonInterface(pulldown, "vpeCopyOption", this->copyNodeCmd);
+//
+//	this->cutOption =
+//	    new ButtonInterface(pulldown, "vpeCutOption", this->cutNodeCmd);
+//
+//	this->pasteOption =
+//	    new ButtonInterface(pulldown, "vpePasteOption", this->pasteNodeCmd);
+//    }
+//
+//    //
+//    // Annotation
+//    //
+//    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, 
+//						pulldown, NULL);
+//
+//    this->addAnnotationOption = new ButtonInterface(pulldown, "vpeAddDecorator",
+//	this->addAnnotationCmd);
+//
+//    //
+//    // Miscellaneous 
+//    //
+//    this->insertNetworkOption =
+//	new ButtonInterface(pulldown, "vpeInsertNetOption",
+//			    this->insertNetCmd);
+//
+//    this->createMacroOption =
+//	new ButtonInterface(pulldown, "vpeCreateMacroOption",
+//			    this->macroifyCmd);
+//
+//#if WORKSPACE_PAGES
+//    this->pageCascade = cascade_menu = new CascadeMenu("vpePageCascade", pulldown);
+//    menu_parent = cascade_menu->getMenuItemParent();
+//
+//    ci = new ButtonInterface(menu_parent, "vpeCreatePageOption", this->pagifyCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci=new ButtonInterface(menu_parent, "vpeSelectedPageOption", this->pagifySelectedCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeDeletePageOption", this->deletePageCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, menu_parent, NULL);
+//
+//    ci=new ButtonInterface(menu_parent, "vpeChopPageOption", this->autoChopSelectedCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci=new ButtonInterface(menu_parent, "vpeFusePageOption", this->autoFuseSelectedCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    XtVaCreateManagedWidget("optionSeparator", xmSeparatorWidgetClass, menu_parent, NULL);
+//
+//    ci = new ButtonInterface(menu_parent,"vpeConfigurePageOption",this->configurePageCmd);
+//    cascade_menu->appendComponent(ci);
+//
+//    ci = new ButtonInterface(menu_parent, "vpeMoveToPageOption", this->moveSelectedCmd);
+//    cascade_menu->appendComponent(ci);
+//#endif
+//
+//    if (this->javifyNetCmd) {
+//	this->javaCascade = cascade_menu = new CascadeMenu("vpeJavaCascade", pulldown);
+//	menu_parent = cascade_menu->getMenuItemParent();
+//
+//	ci = new ButtonInterface(menu_parent, 
+//	    "vpeJavifyNetOption", this->javifyNetCmd);
+//	cascade_menu->appendComponent(ci);
+//
+//	ci = new ButtonInterface(menu_parent, 
+//	    "vpeUnjavifyNetOption", this->unjavifyNetCmd);
+//	cascade_menu->appendComponent(ci);
+//
+//	Command* cmd = NUL(Command*);
+//	cmd = this->network->getSaveWebPageCommand();
+//	if (cmd) {
+//	    XtVaCreateManagedWidget("optionSeparator", 
+//		xmSeparatorWidgetClass, menu_parent, NULL);
+//	    ci = new ButtonInterface(menu_parent, "vpeSaveWebPageOption", cmd);
+//	    cascade_menu->appendComponent(ci);
+//	}
+//
+//	cmd = this->network->getSaveAppletCommand();
+//	if (cmd) {
+//	    ci = new ButtonInterface(menu_parent, "vpeSaveAppletOption", cmd);
+//	    cascade_menu->appendComponent(ci);
+//	}
+//
+//	cmd = this->network->getSaveBeanCommand();
+//	if (cmd) {
+//	    ci = new ButtonInterface(menu_parent, "vpeSaveBeanOption", cmd);
+//	    cascade_menu->appendComponent(ci);
+//	}
+//
+//    }
+//
+//    this->macroNameOption =
+//	new ButtonInterface(pulldown, "vpeMacroNameOption",
+//			    this->network->getSetNameCommand());
+//
+//    this->reflowGraphOption =
+//	new ButtonInterface(pulldown, "vpeReflowGraphOption",
+//			    this->reflowGraphCmd);
+//
+//    this->createProcessGroupOption =
+//	new ButtonInterface(pulldown, "vpeCreateProcessGroupOption", 
+//			    this->createProcessGroupCmd);
+//
+//    this->commentOption =
+//	new ButtonInterface(pulldown, "vpeCommentOption", this->editCommentCmd);
+//
+//    XtAddCallback(pulldown,
+//                  XmNmapCallback,
+//                  (XtCallbackProc)EditorWindow_EditMenuMapCB,
+//                  (XtPointer)this);
+//}
+//
+
+//void EditorWindow::createWindowsMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget            pulldown;
+//
+//    //
+//    // Create "Windows" menu and options.
+//    //
+//    pulldown =
+//	this->windowsMenuPulldown =
+//	    XmCreatePulldownMenu
+//		(parent, "windowsMenuPulldown", NUL(ArgList), 0);
+//    this->windowsMenu =
+//	XtVaCreateManagedWidget
+//	    ("windowsMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    this->newControlPanelOption =
+//	new ButtonInterface
+//	    (pulldown, "vpeNewControlPanelOption", this->newControlPanelCmd);
+//
+//    this->openControlPanelOption =
+//	new ButtonInterface(pulldown, "vpeOpenControlPanelOption", 
+//		this->openControlPanelCmd);
+//
+//    this->openAllControlPanelsOption =
+//        new ButtonInterface
+//            (pulldown,
+//             "vpeOpenAllControlPanelsOption",
+//             this->network->getOpenAllPanelsCommand());
+//
+//    this->openControlPanelByNameMenu =
+//                new CascadeMenu("vpePanelCascade",pulldown);
+//	
+//    XtAddCallback(pulldown,
+//                  XmNmapCallback,
+//                  (XtCallbackProc)EditorWindow_WindowMenuMapCB,
+//                  (XtPointer)this);
+//
+//#ifdef PANEL_GROUP_SEPARATED
+//    this->panelGroupPulldown =
+//            XmCreatePulldownMenu
+//                (pulldown, "panelGroupPulldown", NUL(ArgList), 0);
+//
+//    this->panelGroupCascade =
+//    cascade =  XtVaCreateManagedWidget
+//            ("vpePanelGroupCascade",
+//             xmCascadeButtonWidgetClass,
+//             pulldown,
+//             XmNsubMenuId, this->panelGroupPulldown,
+//	     XmNsensitive, TRUE,
+//             NULL);
+//#endif
+//
+//    XtVaCreateManagedWidget("optionSeparator", 
+//				xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    this->openMacroOption =
+//	new ButtonInterface(pulldown, "vpeOpenMacroOption",
+//			    this->openMacroCmd);
+//
+//    this->openImageOption =
+//	new ButtonInterface(pulldown, "vpeOpenImageOption",
+//			    this->openImageCmd);
+//
+//    this->openColormapEditorOption =
+//	new ButtonInterface
+//	    (pulldown, "vpeOpenColormapEditorOption", this->openColormapCmd);
+//
+//    this->messageWindowOption =
+//        new ButtonInterface
+//            (pulldown, "vpeMessageWindowOption",
+//	     theDXApplication->messageWindowCmd);
+//
+//
+//}
+//
+//
+//void EditorWindow::createOptionsMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    Widget            pulldown;
+//    
+//    //
+//    // Create "Options" menu and options.
+//    //
+//    pulldown =
+//	this->optionsMenuPulldown =
+//	    XmCreatePulldownMenu
+//		(parent, "optionsMenuPulldown", NUL(ArgList), 0);
+//    this->optionsMenu =
+//	XtVaCreateManagedWidget
+//	    ("optionsMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    this->toolPalettesOption =
+//	new ToggleButtonInterface
+//	    (pulldown,
+//	     "vpeToolPalettesOption",
+//	     this->toolPanelCmd,
+//	     this->panelVisible);
+//
+//    this->hitDetectionOption =
+//	new ToggleButtonInterface
+//	    (pulldown,
+//	     "vpeHitDetectionOption",
+//	     this->hitDetectionCmd,
+//	     this->hit_detection);
+//
+//    this->panelAccessOption =
+//	new ButtonInterface(pulldown, "vpePanelAccessOption", this->setPanelAccessCmd);
+//
+//    this->panelGroupOption =
+//	new ButtonInterface(pulldown, "vpePanelGroupOption", this->setPanelGroupCmd);
+//
+//    this->gridOption =
+//	new ButtonInterface(pulldown, "vpeGridOption", this->gridCmd);
+//
+//    XtAddCallback(pulldown, XmNmapCallback, (XtCallbackProc)
+//	EditorWindow_OptionsMenuMapCB, (XtPointer)this);
+//}
+//
+//void EditorWindow::createHelpMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    this->DXWindow::createHelpMenu(parent);
+//
+//    XtVaCreateManagedWidget("separator", xmSeparatorWidgetClass, 
+//                                        this->helpMenuPulldown,
+//                                        NULL);
+//
+//    this->onVisualProgramOption =
+//        new ButtonInterface(this->helpMenuPulldown, "vpeOnVisualProgramOption", 
+//				this->network->getHelpOnNetworkCommand());
+//}
+//
+//
+//void EditorWindow::createMenus(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    //
+//    // Create the menus.
+//    //
+//    this->createFileMenu(parent);
+//    this->createEditMenu(parent);
+//    this->createExecuteMenu(parent);
+//    this->createWindowsMenu(parent);
+//    this->createConnectionMenu(parent);
+//    this->createOptionsMenu(parent);
+//    this->createHelpMenu(parent);
+//
+//    //
+//    // Right justify the help menu (if it exists).
+//    //
+//    if (this->helpMenu)
+//    {
+//	XtVaSetValues(parent, XmNmenuHelpWidget, this->helpMenu, NULL);
+//    }
+//}
 
 
 void EditorWindow::toggleToolPanel()
 {
-    Widget toolpanel = this->toolSelector->getRootWidget();
+    //Widget toolpanel = this->toolSelector->getRootWidget();
 
     this->panelVisible = NOT this->panelVisible;
     if (!this->panelVisible) {
 	//
 	// Unmanage the control panel.
 	//
-	XtUnmanageChild(toolpanel);
-	XtVaSetValues (this->scrolledWindow,
-	     XmNleftAttachment, XmATTACH_FORM,
-	     XmNleftOffset,     0,
-	NULL);
-#if WORKSPACE_PAGES
-	XtVaSetValues (this->pageSelector->getRootWidget(),
-	    XmNleftAttachment, XmATTACH_FORM, XmNleftOffset, 0, NULL);
-#endif
+	//XtUnmanageChild(toolpanel);
+	//XtVaSetValues (this->scrolledWindow,
+	//     XmNleftAttachment, XmATTACH_FORM,
+	//     XmNleftOffset,     0,
+	//NULL);
+//#if WORKSPACE_PAGES
+//	XtVaSetValues (this->pageSelector->getRootWidget(),
+//	    XmNleftAttachment, XmATTACH_FORM, XmNleftOffset, 0, NULL);
+//#endif
     } else {
 	//
 	// Manage the control panel.
 	//
-	XtVaSetValues (this->scrolledWindow,
-	     XmNleftAttachment, XmATTACH_WIDGET,
-	     XmNleftWidget,     toolpanel,
-	     XmNleftOffset,     5,
-	     NULL);
-	XtManageChild(toolpanel);
-#if WORKSPACE_PAGES
-	XtVaSetValues (this->pageSelector->getRootWidget(),
-	    XmNleftAttachment, XmATTACH_WIDGET, XmNleftOffset, 5,
-	    XmNleftWidget, toolpanel, NULL);
-#endif
+//	XtVaSetValues (this->scrolledWindow,
+//	     XmNleftAttachment, XmATTACH_WIDGET,
+//	     XmNleftWidget,     toolpanel,
+//	     XmNleftOffset,     5,
+//	     NULL);
+//	XtManageChild(toolpanel);
+//#if WORKSPACE_PAGES
+//	XtVaSetValues (this->pageSelector->getRootWidget(),
+//	    XmNleftAttachment, XmATTACH_WIDGET, XmNleftOffset, 5,
+//	    XmNleftWidget, toolpanel, NULL);
+//#endif
     }
 }
 
-extern "C" void EditorWindow_EditMenuMapCB(Widget widget,
-                                   XtPointer clientdata,
-                                   XtPointer calldata)
-{
-
-    // 
-    // We do this here, because the editor does not get notified
-    // when a node has the number repeatable inputs reduced to zero
-    // and so can't grey out the 'Remove input' option.  This same argument
-    // works for other add/remove repeatable input/output options.
-    // 
-    EditorWindow *editor = (EditorWindow*)clientdata;
-    editor->deferrableCommandActivation->requestAction(NULL); 
-
-    //
-    // {de}activate the paste option based on selection ownership.
-    // setCommandActivation() isn't really the right place for these
-    // because there is no event or notification received when some other
-    // vpe establishes or loses selection ownership.
-    //
-    Display *d = XtDisplay(widget);
-    Atom file_atom = XmInternAtom (d, NET_ATOM, True);
-    if (file_atom) {
-	Window win = XGetSelectionOwner (d, file_atom);
-	if (win == None) editor->pasteNodeCmd->deactivate();
-	else editor->pasteNodeCmd->activate();
-    } else 
-	editor->pasteNodeCmd->deactivate();
-}
-extern "C" void EditorWindow_FileMenuMapCB(Widget widget,
-                                   XtPointer clientdata,
-                                   XtPointer calldata)
-{
-    EditorWindow *editor = (EditorWindow*)clientdata;
-
-    if(editor->isAnchor() )
-    {
-	if (editor->quitOption) {
-	    if(editor->network->saveToFileRequired())
-		((ButtonInterface*)editor->quitOption)->setLabel("Quit...");
-	    else
-		((ButtonInterface*)editor->quitOption)->setLabel("Quit");
- 	}
-    }
-    else
-    {
-        editor->newOption->deactivate();
-        editor->openOption->deactivate();
-        editor->loadMDFOption->deactivate();
-        editor->loadMacroOption->deactivate();
-    }
-
-}
-
-extern "C" void EditorWindow_WindowMenuMapCB(Widget widget,
-                                   XtPointer clientdata,
-                                   XtPointer calldata)
-{
-     EditorWindow *editor = (EditorWindow*)clientdata;
-
-    Network *network = editor->network;
-    CascadeMenu *menu = editor->openControlPanelByNameMenu;
-    PanelAccessManager *panelMgr = network->getPanelAccessManager();
-    network->fillPanelCascade(menu, panelMgr);
-}
-
-extern "C" 
-void EditorWindow_OptionsMenuMapCB(Widget widget, XtPointer clientdata, XtPointer )
-{
-    EditorWindow *editor = (EditorWindow*)clientdata;
-    EditorWorkSpace* ews = editor->workSpace;
-    WorkSpaceInfo* info = ews->getInfo();
-    ToggleButtonInterface* tbi = (ToggleButtonInterface*)
-	editor->hitDetectionOption;
-    editor->hit_detection = info->getPreventOverlap();
-    tbi->setState(editor->hit_detection);
-}
+//extern "C" void EditorWindow_EditMenuMapCB(Widget widget,
+//                                   XtPointer clientdata,
+//                                   XtPointer calldata)
+//{
+//
+//    // 
+//    // We do this here, because the editor does not get notified
+//    // when a node has the number repeatable inputs reduced to zero
+//    // and so can't grey out the 'Remove input' option.  This same argument
+//    // works for other add/remove repeatable input/output options.
+//    // 
+//    EditorWindow *editor = (EditorWindow*)clientdata;
+//    editor->deferrableCommandActivation->requestAction(NULL); 
+//
+//    //
+//    // {de}activate the paste option based on selection ownership.
+//    // setCommandActivation() isn't really the right place for these
+//    // because there is no event or notification received when some other
+//    // vpe establishes or loses selection ownership.
+//    //
+//    Display *d = XtDisplay(widget);
+//    Atom file_atom = XmInternAtom (d, NET_ATOM, True);
+//    if (file_atom) {
+//	Window win = XGetSelectionOwner (d, file_atom);
+//	if (win == None) editor->pasteNodeCmd->deactivate();
+//	else editor->pasteNodeCmd->activate();
+//    } else 
+//	editor->pasteNodeCmd->deactivate();
+//}
+//extern "C" void EditorWindow_FileMenuMapCB(Widget widget,
+//                                   XtPointer clientdata,
+//                                   XtPointer calldata)
+//{
+//    EditorWindow *editor = (EditorWindow*)clientdata;
+//
+//    if(editor->isAnchor() )
+//    {
+//	if (editor->quitOption) {
+//	    if(editor->network->saveToFileRequired())
+//		((ButtonInterface*)editor->quitOption)->setLabel("Quit...");
+//	    else
+//		((ButtonInterface*)editor->quitOption)->setLabel("Quit");
+// 	}
+//    }
+//    else
+//    {
+//        editor->newOption->deactivate();
+//        editor->openOption->deactivate();
+//        editor->loadMDFOption->deactivate();
+//        editor->loadMacroOption->deactivate();
+//    }
+//
+//}
+//
+//extern "C" void EditorWindow_WindowMenuMapCB(Widget widget,
+//                                   XtPointer clientdata,
+//                                   XtPointer calldata)
+//{
+//     EditorWindow *editor = (EditorWindow*)clientdata;
+//
+//    Network *network = editor->network;
+//    CascadeMenu *menu = editor->openControlPanelByNameMenu;
+//    PanelAccessManager *panelMgr = network->getPanelAccessManager();
+//    network->fillPanelCascade(menu, panelMgr);
+//}
+//
+//extern "C" 
+//void EditorWindow_OptionsMenuMapCB(Widget widget, XtPointer clientdata, XtPointer )
+//{
+//    EditorWindow *editor = (EditorWindow*)clientdata;
+//    EditorWorkSpace* ews = editor->workSpace;
+//    WorkSpaceInfo* info = ews->getInfo();
+//    ToggleButtonInterface* tbi = (ToggleButtonInterface*)
+//	editor->hitDetectionOption;
+//    editor->hit_detection = info->getPreventOverlap();
+//    tbi->setState(editor->hit_detection);
+//}
 
 void EditorWindow::openSelectedINodes()
 {
@@ -2133,7 +2104,7 @@ void EditorWindow::openSelectedINodes()
 
      while( (node = (Node*)li.getNext()) )
 	if(node->isA(ClassInteractorNode))
-	    ((InteractorNode*)node)->openControlPanels(this->getRootWidget());
+	    ((InteractorNode*)node)->openControlPanels();
 
      delete snlist;
 }
@@ -2507,7 +2478,7 @@ void EditorWindow::openSelectedNodesCDB()
     if (selected_count > MAX_SANE_CDBS) {
 	char msg[128];
 	sprintf (msg, "Really open %d configuration dialogs?", selected_count);
-	int response = theQuestionDialogManager->userQuery(this->getRootWidget(),
+	int response = theQuestionDialogManager->userQuery(
 	    msg, "Confirm Open CDB", "Yes", "No", NULL, 2
 	);
 	if (response != QuestionDialogManager::OK) return ;
@@ -2519,7 +2490,7 @@ void EditorWindow::openSelectedNodesCDB()
 	if (!standIn) continue;
 #endif
         if (standIn->isSelected()) 
-	    node->openConfigurationDialog(this->getRootWidget()); 
+	    node->openConfigurationDialog(); 
         
     }
 
@@ -2554,7 +2525,7 @@ void EditorWindow::doSelectedNodesDefaultAction()
     if (cdb_count > MAX_SANE_CDBS) {
 	char msg[128];
 	sprintf (msg, "Really open %d configuration dialogs?", cdb_count);
-	int response = theQuestionDialogManager->userQuery(this->getRootWidget(),
+	int response = theQuestionDialogManager->userQuery(
 	    msg, "Confirm Open CDB", "Yes", "No", NULL, 2
 	);
 	if (response != QuestionDialogManager::OK) return ;
@@ -2593,25 +2564,25 @@ void EditorWindow::doSelectedNodesDefaultAction()
 	if (!standIn) continue;
 #endif
         if (standIn->isSelected())  {
-	    node->openDefaultWindow(this->getRootWidget()); 
+	    //node->openDefaultWindow(this->getRootWidget()); 
 	    ConfigurationDialog *cdb = node->getConfigurationDialog();
 	    if (cdb) {
-	    	Widget cdbWidget = cdb->getRootWidget();
-	    	if (cdbWidget) {
+	    	//Widget cdbWidget = cdb->getRootWidget();
+	    	//if (cdbWidget) {
 	    		// Transfer Accelerations
-	    		TransferAccelerator(cdbWidget, 
-	    			this->saveOption->getRootWidget(), "ArmAndActivate");
-	    		TransferAccelerator(cdbWidget, 
-	    			this->addInputTabOption->getRootWidget(), "ArmAndActivate");
-	    		TransferAccelerator(cdbWidget, 
-	    			this->removeInputTabOption->getRootWidget(), "ArmAndActivate");
-	    		TransferAccelerator(cdbWidget, 
-	    			this->executeOnceOption->getRootWidget(), "ArmAndActivate");
-	    		TransferAccelerator(cdbWidget, 
-	    			this->executeOnChangeOption->getRootWidget(), "ArmAndActivate");
-	    		TransferAccelerator(cdbWidget, 
-	    			this->endExecutionOption->getRootWidget(), "ArmAndActivate");
-	    	}
+	    		//TransferAccelerator(cdbWidget, 
+	    		//	this->saveOption->getRootWidget(), "ArmAndActivate");
+	    		//TransferAccelerator(cdbWidget, 
+	    		//	this->addInputTabOption->getRootWidget(), "ArmAndActivate");
+	    		//TransferAccelerator(cdbWidget, 
+	    		//	this->removeInputTabOption->getRootWidget(), "ArmAndActivate");
+	    		//TransferAccelerator(cdbWidget, 
+	    		//	this->executeOnceOption->getRootWidget(), "ArmAndActivate");
+	    		//TransferAccelerator(cdbWidget, 
+	    		//	this->executeOnChangeOption->getRootWidget(), "ArmAndActivate");
+	    		//TransferAccelerator(cdbWidget, 
+	    		//	this->endExecutionOption->getRootWidget(), "ArmAndActivate");
+	    	//}
 	    }
 	}
     }
@@ -2769,19 +2740,19 @@ void EditorWindow::moveWorkspaceWindow(int x, int y, boolean centered)
 {
     ASSERT(!centered);// Not implemented yet.
 
-    XmScrolledWindowWidget scrollWindow;
-    int         value;
-    int         size;
-    int         max;
-    int         min;
-    int         delta;
-    int         pdelta;
-    int		newValue;
+    //XmScrolledWindowWidget scrollWindow;
+    //int         value;
+    //int         size;
+    //int         max;
+    //int         min;
+    //int         delta;
+    //int         pdelta;
+    //int		newValue;
 
     /*
      * Convert scrolled window widget to its internal form.
      */
-    scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
+    //scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
 
     //
     // Set ScrollBar's value.
@@ -2789,51 +2760,51 @@ void EditorWindow::moveWorkspaceWindow(int x, int y, boolean centered)
     // adjustments.  That way callers (like InsertNetworkDialog) don't 
     // need carnal knowledge of the scrollbars to1 change screen positioning.  
     //
-    XmScrollBarGetValues((Widget)scrollWindow->swindow.hScrollBar,
-                         &value, &size, &delta, &pdelta);
-    XtVaGetValues ((Widget)scrollWindow->swindow.hScrollBar, 
-	XmNmaximum, &max, XmNminimum, &min, NULL);
+ //   XmScrollBarGetValues((Widget)scrollWindow->swindow.hScrollBar,
+ //                        &value, &size, &delta, &pdelta);
+ //   XtVaGetValues ((Widget)scrollWindow->swindow.hScrollBar, 
+	//XmNmaximum, &max, XmNminimum, &min, NULL);
 
-    if (x>= (max-size))
-	newValue = max-(size+1);
-    else
-	newValue = x;
-    newValue = MAX(min,newValue);
+ //   if (x>= (max-size))
+	//newValue = max-(size+1);
+ //   else
+	//newValue = x;
+ //   newValue = MAX(min,newValue);
 
 
-    XmScrollBarSetValues((Widget)scrollWindow->swindow.hScrollBar,
-	newValue, size, delta, pdelta, True);
+ //   XmScrollBarSetValues((Widget)scrollWindow->swindow.hScrollBar,
+	//newValue, size, delta, pdelta, True);
 
-    XmScrollBarGetValues((Widget)scrollWindow->swindow.vScrollBar,
-                         &value, &size, &delta, &pdelta);
-    XtVaGetValues ((Widget)scrollWindow->swindow.vScrollBar, 
-	XmNmaximum, &max, XmNminimum, &min, NULL);
+ //   XmScrollBarGetValues((Widget)scrollWindow->swindow.vScrollBar,
+ //                        &value, &size, &delta, &pdelta);
+ //   XtVaGetValues ((Widget)scrollWindow->swindow.vScrollBar, 
+	//XmNmaximum, &max, XmNminimum, &min, NULL);
 
-    if (y>= (max-size))
-	newValue = max-(size+1);
-    else
-	newValue = y;
-    newValue = MAX(min,newValue);
+ //   if (y>= (max-size))
+	//newValue = max-(size+1);
+ //   else
+	//newValue = y;
+ //   newValue = MAX(min,newValue);
 
-    XmScrollBarSetValues((Widget)scrollWindow->swindow.vScrollBar,
-	newValue, size, delta, pdelta, True);
+ //   XmScrollBarSetValues((Widget)scrollWindow->swindow.vScrollBar,
+	//newValue, size, delta, pdelta, True);
 }
 
 void EditorWindow::getWorkspaceWindowPos(int *x, int *y)
 {
-    XmScrolledWindowWidget scrollWindow;
-    int         value;
-    int         size;
-    int         delta;
-    int         pdelta;
+    //XmScrolledWindowWidget scrollWindow;
+    //int         value;
+    //int         size;
+    //int         delta;
+    //int         pdelta;
 
-    scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
-    XmScrollBarGetValues((Widget)scrollWindow->swindow.hScrollBar,
-			 &value, &size, &delta, &pdelta);
-    *x = value;
-    XmScrollBarGetValues((Widget)scrollWindow->swindow.vScrollBar,
-			 &value, &size, &delta, &pdelta);
-    *y = value;
+    //scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
+    //XmScrollBarGetValues((Widget)scrollWindow->swindow.hScrollBar,
+			 //&value, &size, &delta, &pdelta);
+    //*x = value;
+    //XmScrollBarGetValues((Widget)scrollWindow->swindow.vScrollBar,
+			 //&value, &size, &delta, &pdelta);
+    //*y = value;
     return ;
 }
 
@@ -2845,9 +2816,9 @@ void EditorWindow::getWorkspaceWindowPos(int *x, int *y)
 //
 void EditorWindow::checkPointForFindDialog(FindToolDialog* dialog)
 {
-    XmScrolledWindowWidget scrollWindow;
-    Arg                    arg[8];
-    Cardinal               n;
+    //XmScrolledWindowWidget scrollWindow;
+    //Arg                    arg[8];
+    //Cardinal               n;
     int                    hScrollValue;
     int                    vScrollValue;
 
@@ -2867,17 +2838,17 @@ void EditorWindow::checkPointForFindDialog(FindToolDialog* dialog)
     /*
      * Convert scrolled window widget to its internal form.
      */
-    scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
+    //scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
     /*
      * Get drawing window resources.
      */
-    n = 0;
-    XtSetArg(arg[n], XmNvalue, &hScrollValue); n++;
-    XtGetValues((Widget)scrollWindow->swindow.hScrollBar, arg, n);
+    //n = 0;
+    //XtSetArg(arg[n], XmNvalue, &hScrollValue); n++;
+    //XtGetValues((Widget)scrollWindow->swindow.hScrollBar, arg, n);
 
-    n = 0;
-    XtSetArg(arg[n], XmNvalue, &vScrollValue); n++;
-    XtGetValues((Widget)scrollWindow->swindow.vScrollBar, arg, n);
+    //n = 0;
+    //XtSetArg(arg[n], XmNvalue, &vScrollValue); n++;
+    //XtGetValues((Widget)scrollWindow->swindow.vScrollBar, arg, n);
 
     /*
      * Store the original position.  The original vpe page
@@ -2890,133 +2861,133 @@ void EditorWindow::checkPointForFindDialog(FindToolDialog* dialog)
 
 void EditorWindow::moveWorkspaceWindow(UIComponent* si)
 {
-    XmScrolledWindowWidget scrollWindow;
-    Arg                    arg[8];
-    Cardinal               n;
-    int                    hSliderSize;
-    int                    vSliderSize;
-    int                    hScrollValue;
-    int                    vScrollValue;
-    int                    hScrollMax;
-    int                    vScrollMax;
-    int                    newOx;
-    int                    newOy;
+	//XmScrolledWindowWidget scrollWindow;
+	//Arg                    arg[8];
+	//Cardinal               n;
+	int                    hSliderSize;
+	int                    vSliderSize;
+	int                    hScrollValue;
+	int                    vScrollValue;
+	int                    hScrollMax;
+	int                    vScrollMax;
+	int                    newOx;
+	int                    newOy;
 
 
 #if WORKSPACE_PAGES
-    //
-    // Present the proper page for this standin
-    //
-    // It's also possible to find the proper page using Node methods but we
-    // don't ordinarily know the node behind a standin because that's protected info.
-    //
-    if (si) {
-	Widget page_parent = XtParent(si->getRootWidget());
-	if (page_parent != this->workSpace->getRootWidget()) {
-	    DictionaryIterator di(*this->pageSelector);
-	    EditorWorkSpace* ews;
-	    while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) {
-		if (ews->getRootWidget() == page_parent) {
-		    ews->unsetRecordedScrollPos();
-		    this->workSpace->showWorkSpace(ews);
-		    break;
-		}
-	    }
+	//
+	// Present the proper page for this standin
+	//
+	// It's also possible to find the proper page using Node methods but we
+	// don't ordinarily know the node behind a standin because that's protected info.
+	//
+	if (si) {
+		//Widget page_parent = XtParent(si->getRootWidget());
+		//if (page_parent != this->workSpace->getRootWidget()) {
+		//    DictionaryIterator di(*this->pageSelector);
+		//    EditorWorkSpace* ews;
+		//    while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) {
+		//if (ews->getRootWidget() == page_parent) {
+		//    ews->unsetRecordedScrollPos();
+		//    this->workSpace->showWorkSpace(ews);
+		//    break;
+		//}
+		//}
+		//}
 	}
-    }
 #endif
 
-    /*
-     * Convert scrolled window widget to its internal form.
-     */
-    scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
-    /*
-     * Get drawing window resources.
-     */
-    n = 0;
-    XtSetArg(arg[n], XmNvalue, &hScrollValue); n++;
-    XtSetArg(arg[n], XmNsliderSize, &hSliderSize); n++;
-    XtSetArg(arg[n], XmNmaximum, &hScrollMax); n++;
-    XtGetValues((Widget)scrollWindow->swindow.hScrollBar, arg, n);
+	/*
+	* Convert scrolled window widget to its internal form.
+	*/
+	//scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
+	/*
+	* Get drawing window resources.
+	*/
+	//n = 0;
+	//XtSetArg(arg[n], XmNvalue, &hScrollValue); n++;
+	//XtSetArg(arg[n], XmNsliderSize, &hSliderSize); n++;
+	//XtSetArg(arg[n], XmNmaximum, &hScrollMax); n++;
+	//XtGetValues((Widget)scrollWindow->swindow.hScrollBar, arg, n);
 
-    n = 0;
-    XtSetArg(arg[n], XmNvalue, &vScrollValue); n++;
-    XtSetArg(arg[n], XmNsliderSize, &vSliderSize); n++;
-    XtSetArg(arg[n], XmNmaximum, &vScrollMax); n++;
-    XtGetValues((Widget)scrollWindow->swindow.vScrollBar, arg, n);
+	//n = 0;
+	//XtSetArg(arg[n], XmNvalue, &vScrollValue); n++;
+	//XtSetArg(arg[n], XmNsliderSize, &vSliderSize); n++;
+	//XtSetArg(arg[n], XmNmaximum, &vScrollMax); n++;
+	//XtGetValues((Widget)scrollWindow->swindow.vScrollBar, arg, n);
 
-    /*
-     * Check if the module is already in the clip window.
-     */
-     
-     int xpos, ypos, width, height;
-     if (si) {
-	 si->getXYSize(&width, &height);
-	 si->getXYPosition(&xpos, &ypos);
-	 if ( (xpos + width < hSliderSize + hScrollValue) && 
-              (ypos + height< vSliderSize + vScrollValue) &&
-              (xpos > hScrollValue) &&
-              (ypos > vScrollValue))
-             return;
-    }
+	/*
+	* Check if the module is already in the clip window.
+	*/
 
-    /*
-     * Calculate new origin.
-     */
-    if (!si)                 /* RESTORE */
-    {
-        newOx = this->Ox;
-        newOy = this->Oy;
-        this->Ox = -1;
-	if (this->find_restore_page) {
-	    EditorWorkSpace* ews = (EditorWorkSpace*)
-		this->pageSelector->findDefinition (this->find_restore_page);
-	    if (ews) this->workSpace->showWorkSpace(ews);
-	} else {
-	    // It could be that the original was the "Untitled" page in
-	    // which case find_restore_page would legitimatly be NUL.
-	    // In that situation we can show the root workspace but only
-	    // if we first ensure that the user hasn't deleted it.
-	    // Anytime the user has deleted the page we're looking for, we
-	    // just silently ignore the problem.
-	    EditorWorkSpace* ews = (EditorWorkSpace*)
-		this->pageSelector->findDefinition ("Untitled");
-	    if (ews) this->workSpace->showWorkSpace(ews);
+	int xpos, ypos, width, height;
+	if (si) {
+		si->getXYSize(&width, &height);
+		si->getXYPosition(&xpos, &ypos);
+		if ( (xpos + width < hSliderSize + hScrollValue) && 
+			(ypos + height< vSliderSize + vScrollValue) &&
+			(xpos > hScrollValue) &&
+			(ypos > vScrollValue))
+			return;
 	}
-    	this->find_restore_page = NUL(char*);
-    }
-    else                       /* FIND */
-    {
-        if ((newOx = xpos + width/2-hSliderSize/2) < 0)
-                newOx = 0;
-        if ((newOy = ypos + height/2-vSliderSize/2) < 0)
-                newOy = 0;
-    }
 
-    if (newOx + hSliderSize > hScrollMax)
-                newOx = hScrollMax - hSliderSize;
+	/*
+	* Calculate new origin.
+	*/
+	if (!si)                 /* RESTORE */
+	{
+		newOx = this->Ox;
+		newOy = this->Oy;
+		this->Ox = -1;
+		if (this->find_restore_page) {
+			EditorWorkSpace* ews = (EditorWorkSpace*)
+				this->pageSelector->findDefinition (this->find_restore_page);
+			if (ews) this->workSpace->showWorkSpace(ews);
+		} else {
+			// It could be that the original was the "Untitled" page in
+			// which case find_restore_page would legitimatly be NUL.
+			// In that situation we can show the root workspace but only
+			// if we first ensure that the user hasn't deleted it.
+			// Anytime the user has deleted the page we're looking for, we
+			// just silently ignore the problem.
+			EditorWorkSpace* ews = (EditorWorkSpace*)
+				this->pageSelector->findDefinition ("Untitled");
+			if (ews) this->workSpace->showWorkSpace(ews);
+		}
+		this->find_restore_page = NUL(char*);
+	}
+	else                       /* FIND */
+	{
+		if ((newOx = xpos + width/2-hSliderSize/2) < 0)
+			newOx = 0;
+		if ((newOy = ypos + height/2-vSliderSize/2) < 0)
+			newOy = 0;
+	}
 
-    if (newOy + vSliderSize > vScrollMax)
-                newOy = vScrollMax - vSliderSize;
+	if (newOx + hSliderSize > hScrollMax)
+		newOx = hScrollMax - hSliderSize;
 
-    /*
-     * Reset the scrolled window's (x,y) origin.(??????????????)
-     */
-    scrollWindow->swindow.hOrigin = newOx;
-    scrollWindow->swindow.vOrigin = newOy;
+	if (newOy + vSliderSize > vScrollMax)
+		newOy = vScrollMax - vSliderSize;
 
-    /*
-     * Reset the scrolled bars physically.
-     */
-    XtSetArg(arg[0], XmNvalue, newOx);
-    XtSetValues((Widget)scrollWindow->swindow.hScrollBar, arg, 1);
-    XtSetArg(arg[0], XmNvalue, newOy);
-    XtSetValues((Widget)scrollWindow->swindow.vScrollBar, arg, 1);
+	/*
+	* Reset the scrolled window's (x,y) origin.(??????????????)
+	*/
+	//scrollWindow->swindow.hOrigin = newOx;
+	//scrollWindow->swindow.vOrigin = newOy;
 
-    /*
-     * Move the work window to reflect the new state.
-     */
-    XtMoveWidget(scrollWindow->swindow.WorkWindow,-newOx,-newOy);
+	/*
+	* Reset the scrolled bars physically.
+	*/
+	//XtSetArg(arg[0], XmNvalue, newOx);
+	//XtSetValues((Widget)scrollWindow->swindow.hScrollBar, arg, 1);
+	//XtSetArg(arg[0], XmNvalue, newOy);
+	//XtSetValues((Widget)scrollWindow->swindow.vScrollBar, arg, 1);
+
+	/*
+	* Move the work window to reflect the new state.
+	*/
+	//XtMoveWidget(scrollWindow->swindow.WorkWindow,-newOx,-newOy);
 
 }
 
@@ -3388,21 +3359,21 @@ void EditorWindow::highlightNode(const char* name, int instance, int flag)
  
 void EditorWindow::highlightNode(Node *n, int flag)
 {
-    Pixel       color;
+    //Pixel       color;
 
     this->executing_node = NUL(Node*);
     StandIn* si = n->getStandIn();
     switch (flag)
     {
 	case EditorWindow::ERRORHIGHLIGHT :
-	 	color = theDXApplication->getErrorNodeForeground();
+	 	//color = theDXApplication->getErrorNodeForeground();
 		if (!this->errored_standins) this->errored_standins = new List;
 		if ((si) && (this->errored_standins->isMember((void*)si) == FALSE))
 		    this->errored_standins->appendElement((void*)si);
 		break;
 
 	case EditorWindow::EXECUTEHIGHLIGHT :
-	 	color = theDXApplication->getExecutionHighlightForeground();
+	 	//color = theDXApplication->getExecutionHighlightForeground();
 		if (this->executed_nodes == NUL(List*)) 
 		    this->executed_nodes = new List;
 		if (!this->executed_nodes->isMember((const void*)n))
@@ -3412,7 +3383,7 @@ void EditorWindow::highlightNode(Node *n, int flag)
 		break;
 
 	case EditorWindow::REMOVEHIGHLIGHT :
-	 	color = standInGetDefaultForeground();
+	 	//color = standInGetDefaultForeground();
 		break;
 
         default:
@@ -3450,9 +3421,9 @@ void EditorWindow::highlightNode(Node *n, int flag)
 		this->errored_standins->appendElement((void*)si);
 	}
     }
-    if (si) 
+//    if (si) 
 #endif
-	si->setLabelColor(color);
+	//si->setLabelColor(color);
 }
 
 boolean EditorWindow::selectDecorator (VPEAnnotator* dec, boolean select, boolean warp)
@@ -3642,8 +3613,8 @@ void EditorWindow::selectNodes(int how)
 
 void EditorWindow::serverDisconnected()
 {
-    Pixel runColor = theDXApplication->getExecutionHighlightForeground();
-    Pixel defaultColor = standInGetDefaultForeground();
+    //Pixel runColor = theDXApplication->getExecutionHighlightForeground();
+    //Pixel defaultColor = standInGetDefaultForeground();
 
     // For each node, if the standin's forground color is "execute", reset it.
     Node *n;
@@ -3653,8 +3624,8 @@ void EditorWindow::serverDisconnected()
 #if WORKSPACE_PAGES
 	if (!si) continue;
 #endif
-	if (si->getLabelColor() == runColor)
-	    si->setLabelColor(defaultColor);
+	//if (si->getLabelColor() == runColor)
+	//    si->setLabelColor(defaultColor);
     }
 
 
@@ -3667,7 +3638,7 @@ void EditorWindow::postPanelGroupDialog()
 {
     if(NOT this->panelGroupDialog)
 	this->panelGroupDialog
-	    = new ControlPanelGroupDialog(this->getRootWidget());
+	    = new ControlPanelGroupDialog();
     this->panelGroupDialog->setData(this->network->getPanelGroupManager());
 
     this->panelGroupDialog->post();
@@ -4096,10 +4067,10 @@ void EditorWindow::prepareForNewNetwork()
     ListIterator it(this->network->decoratorList);
     Decorator* dec;
     while ( (dec = (Decorator*)it.getNext()) ) {
-	if ((dec->getRootWidget()) && (dec->isManaged())) {
-	    dec->unmanage();
-	    dec->uncreateDecorator();
-	}
+	//if ((dec->getRootWidget()) && (dec->isManaged())) {
+	//    dec->unmanage();
+	//    dec->uncreateDecorator();
+	//}
     }
     this->destroyStandIns(&this->network->nodeList);
     if (this->pageSelector) {
@@ -4159,7 +4130,7 @@ EditorWindow::postGetSetConversionDialog()
 void EditorWindow::postGridDialog()
 {
     if (NOT this->gridDialog )
-	this->gridDialog = new GridDialog(this->getRootWidget(),
+	this->gridDialog = new GridDialog(
 				(WorkSpace*)this->workSpace);
     this->gridDialog->post();
 }
@@ -4820,7 +4791,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 	return FALSE;
     }
 
-    XmUpdateDisplay(this->getRootWidget());
+    //XmUpdateDisplay(this->getRootWidget());
 
     //
     // Move the nodes to the upper right hand corner after switching them
@@ -4874,14 +4845,13 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 void EditorWindow::postInsertNetworkDialog()
 {
     if (this->insertNetworkDialog == NULL)
-	this->insertNetworkDialog = new InsertNetworkDialog(this->getRootWidget());
+	this->insertNetworkDialog = new InsertNetworkDialog();
     this->insertNetworkDialog->post();
 }
 void EditorWindow::postCreateMacroDialog()
 {
     if (this->createMacroDialog == NULL)
 	this->createMacroDialog = new CreateMacroDialog(
-					    this->getRootWidget(),
 					    this);
     this->createMacroDialog->post();
 }
@@ -5638,8 +5608,8 @@ int x,y;
 
     this->getNodesBBox (&minx, &miny, &maxx, &maxy, nl, seldec);
 
-    Widget page_w = page->getRootWidget();
-    Window page_wnd = (page_w?XtWindow(page_w):NUL(Window));
+    //Widget page_w = page->getRootWidget();
+    //Window page_wnd = (page_w?XtWindow(page_w):NUL(Window));
 
     ListIterator it(*seldec);
     while ( (dec = (Decorator*)it.getNext()) ) {
@@ -5647,10 +5617,10 @@ int x,y;
 	dec->unmanage();
 	dec->uncreateDecorator();
 	dec->setXYPosition (xoff + x - minx, yoff + y - miny);
-	if ((page_w) && (page_wnd))
-	    dec->manage(page);
-	else
-	    page->setMembersInitialized(FALSE);
+	//if ((page_w) && (page_wnd))
+	//    dec->manage(page);
+	//else
+	//    page->setMembersInitialized(FALSE);
     }
 }
 
@@ -5810,17 +5780,17 @@ boolean EditorWindow::placeDecorator()
 //
 // Change the style of the selected decorator(s)
 //
-extern "C" void 
-EditorWindow_SetDecoratorStyleCB (Widget w, XtPointer clientData, XtPointer)
-{
-EditorWindow *editor = (EditorWindow*)clientData;
-List *decors = editor->makeSelectedDecoratorList();
-long ud;
-
-    XtVaGetValues (w, XmNuserData, &ud, NULL);
-    editor->setDecoratorStyle (decors, (DecoratorStyle*)ud);
-    if (decors) delete decors;
-}
+//extern "C" void 
+//EditorWindow_SetDecoratorStyleCB (Widget w, XtPointer clientData, XtPointer)
+//{
+//EditorWindow *editor = (EditorWindow*)clientData;
+//List *decors = editor->makeSelectedDecoratorList();
+//long ud;
+//
+//    XtVaGetValues (w, XmNuserData, &ud, NULL);
+//    editor->setDecoratorStyle (decors, (DecoratorStyle*)ud);
+//    if (decors) delete decors;
+//}
 
 void EditorWindow::setDecoratorStyle (List *decors, DecoratorStyle *ds)
 {
@@ -5901,12 +5871,12 @@ boolean EditorWindow::cutSelectedNodes()
 
 boolean EditorWindow::copySelectedNodes(boolean delete_property)
 {
-char msg[128];
-Display *d = XtDisplay(this->getRootWidget());
-Atom file_atom = XmInternAtom (d, NET_ATOM, False);
-Atom delete_atom = XmInternAtom (d, "DELETE", False);
-Screen *screen = XtScreen(this->getRootWidget());
-Window root = RootWindowOfScreen(screen);
+//char msg[128];
+//Display *d = XtDisplay(this->getRootWidget());
+//Atom file_atom = XmInternAtom (d, NET_ATOM, False);
+//Atom delete_atom = XmInternAtom (d, "DELETE", False);
+//Screen *screen = XtScreen(this->getRootWidget());
+//Window root = RootWindowOfScreen(screen);
 
     int net_len, cfg_len;
     char* cfg_buffer;
@@ -5919,19 +5889,19 @@ Window root = RootWindowOfScreen(screen);
     // Maybe libXt will tell me I lost the selection because someone took it?
     // So, I'll disown the selection before reasserting ownership.
     //
-    Widget w = XtNameToWidget (this->getRootWidget(), "*optionSeparator");
-    ASSERT (w);
-    XtVaSetValues (w, XmNuserData, this, NULL);
-    Time tstamp = XtLastTimestampProcessed(d);
-    Window win = XGetSelectionOwner (d, file_atom);
-    if ((win != None) && (XtWindow(w) == win)) 
-	XtDisownSelection (w, file_atom, tstamp);
+ //   Widget w = XtNameToWidget (this->getRootWidget(), "*optionSeparator");
+ //   ASSERT (w);
+ //   XtVaSetValues (w, XmNuserData, this, NULL);
+ //   Time tstamp = XtLastTimestampProcessed(d);
+ //   Window win = XGetSelectionOwner (d, file_atom);
+ //   if ((win != None) && (XtWindow(w) == win)) 
+	//XtDisownSelection (w, file_atom, tstamp);
 
     unsigned char del_buf[16];
     if (delete_property) strcpy ((char*)del_buf, "TRUE");
     else strcpy ((char*)del_buf, "FALSE");
-    XChangeProperty (d, root, delete_atom, XA_STRING, 8, PropModeReplace,
-	del_buf, strlen((char*)del_buf));
+ //   XChangeProperty (d, root, delete_atom, XA_STRING, 8, PropModeReplace,
+	//del_buf, strlen((char*)del_buf));
 
     //
     // XtOwnSelection registers 3 callbacks but there is no clientData to pass.
@@ -5940,17 +5910,17 @@ Window root = RootWindowOfScreen(screen);
     // I picked such an obscure widget because I suspect that if the widget is the
     // root of some UIComponent, the XmNuserData slot will already be in use.
     //
-    boolean retVal;
-    if (XtOwnSelection (w, file_atom, tstamp,
-	(XtConvertSelectionProc)EditorWindow_ConvertSelectionCB,
-	(XtLoseSelectionProc)EditorWindow_LoseSelectionCB,
-	(XtSelectionDoneProc)EditorWindow_SelectionDoneCB)) {
-	this->pasteNodeCmd->activate();
-	retVal = TRUE;
-    } else {
-	this->pasteNodeCmd->deactivate();
-	retVal = FALSE;
-    }
+//    boolean retVal;
+ //   if (XtOwnSelection (w, file_atom, tstamp,
+	//(XtConvertSelectionProc)EditorWindow_ConvertSelectionCB,
+	//(XtLoseSelectionProc)EditorWindow_LoseSelectionCB,
+	//(XtSelectionDoneProc)EditorWindow_SelectionDoneCB)) {
+	//this->pasteNodeCmd->activate();
+	//retVal = TRUE;
+ //   } else {
+	//this->pasteNodeCmd->deactivate();
+	//retVal = FALSE;
+ //   }
 
     //
     // Assign to copied{Net,Cfg} after owning the selection in case owning also
@@ -5961,7 +5931,8 @@ Window root = RootWindowOfScreen(screen);
     if (this->copiedCfg) delete this->copiedCfg;
     this->copiedCfg = (char *)cfg_buffer;
 
-    return retVal;
+    //return retVal;
+	return false;
 }
 
 //
@@ -6092,29 +6063,29 @@ char msg[128];
 //
 boolean EditorWindow::pasteCopiedNodes()
 {
-Display *d = XtDisplay(this->getRootWidget());
-Atom file_atom = XmInternAtom (d, NET_ATOM, False);
-boolean proceed = TRUE;
+//Display *d = XtDisplay(this->getRootWidget());
+//Atom file_atom = XmInternAtom (d, NET_ATOM, False);
+boolean proceed = true;
 
     //
     // command activation is handled clumsily for cut/copy/paste because
     // there is no notification when someone gains/loses selection ownership.
     //
-    if (file_atom) {
-	Window win = XGetSelectionOwner (d, file_atom);
-	if (win == None) proceed = FALSE;
-    } else
-	proceed = FALSE;
+    //if (file_atom) {
+	//Window win = XGetSelectionOwner (d, file_atom);
+	//if (win == None) proceed = FALSE;
+ //   } else
+	//proceed = false;
 
     if (!proceed) {
 	this->pasteNodeCmd->deactivate();
-	return FALSE;
+	return false;
     }
 
-    XtGetSelectionValue (this->getRootWidget(), file_atom, XA_STRING,
-	(XtSelectionCallbackProc)EditorWindow_SelectionReadyCB, (XtPointer)this,
-	XtLastTimestampProcessed(d));
-    return TRUE;
+ //   XtGetSelectionValue (this->getRootWidget(), file_atom, XA_STRING,
+	//(XtSelectionCallbackProc)EditorWindow_SelectionReadyCB, (XtPointer)this,
+	//XtLastTimestampProcessed(d));
+    return true;
 }
 void EditorWindow::SetOwner(void *b)
 {
@@ -6182,184 +6153,184 @@ Time tstamp = XtLastTimestampProcessed(d);
 }
 #endif
 
-boolean EditorWindow_ConvertSelectionCB(Widget w, Atom *selection, Atom *target, 
-    Atom *type, XtPointer *value, unsigned long *length, int *format)
-{ 
-Display *d = XtDisplay(w);
-Atom file_atom = XmInternAtom (d, NET_ATOM, False);
-Atom cfg_atom = XmInternAtom (d, CFG_ATOM, False);
-Screen *screen = XtScreen(w);
-Window root = RootWindowOfScreen(screen);
+//boolean EditorWindow_ConvertSelectionCB(Widget w, Atom *selection, Atom *target, 
+//    Atom *type, XtPointer *value, unsigned long *length, int *format)
+//{ 
+//Display *d = XtDisplay(w);
+//Atom file_atom = XmInternAtom (d, NET_ATOM, False);
+//Atom cfg_atom = XmInternAtom (d, CFG_ATOM, False);
+//Screen *screen = XtScreen(w);
+//Window root = RootWindowOfScreen(screen);
+//
+//    //
+//    // The this pointer was supposed to be in userData.  If anyone else is using
+//    // userData on the widget, then this scheme won't work
+//    // because these callbacks lack a clientData argument.
+//    //
+//    XtPointer ud;
+//    XtVaGetValues (w, XmNuserData, &ud, NULL);
+//    EditorWindow *editor = (EditorWindow*)ud;
+//    ASSERT(editor);
+//
+//    //
+//    // FIXME:  there was an ASSERT in place of this if but the ASSERT often failed.
+//    // It's meaning was:  If this editor received a request for the selection,
+//    // then it must have asserted ownership of the selection.  If it did that, then
+//    // it must have stored copiedNet.  I don't understand how that can fail.
+//    // Maybe I'm doing something wrong in LoseSelectionCB, I don't know.
+//    //
+//    // I may have fixed it by disowning the selection prior to owning it.  It turned
+//    // out that asking to own the selection if I already owned it, would produce
+//    // a call to my LoseSelection callback which would throw out selection data.
+//    //
+//    ASSERT (*selection == file_atom);
+//    if (editor->copiedNet) {
+//
+//
+//	*value = editor->copiedNet;
+//	*length = strlen(editor->copiedNet);
+//	*format = 8;
+//	*type = XA_STRING;
+//
+//	if (editor->copiedCfg)
+//	    XChangeProperty (d, root, cfg_atom, XA_STRING, 8, PropModeReplace,
+//		(unsigned char*)editor->copiedCfg, strlen(editor->copiedCfg));
+//
+//	return TRUE;
+//    } else {
+//	XtDisownSelection (w, *selection, XtLastTimestampProcessed(XtDisplay(w)));
+//	editor->pasteNodeCmd->deactivate();
+//	return FALSE;
+//    }
+//}
 
-    //
-    // The this pointer was supposed to be in userData.  If anyone else is using
-    // userData on the widget, then this scheme won't work
-    // because these callbacks lack a clientData argument.
-    //
-    XtPointer ud;
-    XtVaGetValues (w, XmNuserData, &ud, NULL);
-    EditorWindow *editor = (EditorWindow*)ud;
-    ASSERT(editor);
+//void EditorWindow_LoseSelectionCB(Widget w, Atom *)
+//{
+//    //
+//    // The this pointer was supposed to be in userData.  If anyone else is using
+//    // userData on the widget, then this scheme won't work
+//    // because these callbacks lack a clientData argument.
+//    //
+//    XtPointer ud;
+//    XtVaGetValues (w, XmNuserData, &ud, NULL);
+//    EditorWindow *editor = (EditorWindow*)ud;
+//    ASSERT(editor);
+//
+//    if (editor->copiedNet) {
+//	delete editor->copiedNet;
+//	editor->copiedNet = NUL(char*);
+//    }
+//    if (editor->copiedCfg) {
+//	delete editor->copiedCfg;
+//	editor->copiedCfg = NUL(char*);
+//    }
+//    editor->pasteNodeCmd->deactivate();
+//}
 
-    //
-    // FIXME:  there was an ASSERT in place of this if but the ASSERT often failed.
-    // It's meaning was:  If this editor received a request for the selection,
-    // then it must have asserted ownership of the selection.  If it did that, then
-    // it must have stored copiedNet.  I don't understand how that can fail.
-    // Maybe I'm doing something wrong in LoseSelectionCB, I don't know.
-    //
-    // I may have fixed it by disowning the selection prior to owning it.  It turned
-    // out that asking to own the selection if I already owned it, would produce
-    // a call to my LoseSelection callback which would throw out selection data.
-    //
-    ASSERT (*selection == file_atom);
-    if (editor->copiedNet) {
+//void EditorWindow_SelectionDoneCB(Widget w, Atom *, Atom *) {}
 
-
-	*value = editor->copiedNet;
-	*length = strlen(editor->copiedNet);
-	*format = 8;
-	*type = XA_STRING;
-
-	if (editor->copiedCfg)
-	    XChangeProperty (d, root, cfg_atom, XA_STRING, 8, PropModeReplace,
-		(unsigned char*)editor->copiedCfg, strlen(editor->copiedCfg));
-
-	return TRUE;
-    } else {
-	XtDisownSelection (w, *selection, XtLastTimestampProcessed(XtDisplay(w)));
-	editor->pasteNodeCmd->deactivate();
-	return FALSE;
-    }
-}
-
-void EditorWindow_LoseSelectionCB(Widget w, Atom *)
-{
-    //
-    // The this pointer was supposed to be in userData.  If anyone else is using
-    // userData on the widget, then this scheme won't work
-    // because these callbacks lack a clientData argument.
-    //
-    XtPointer ud;
-    XtVaGetValues (w, XmNuserData, &ud, NULL);
-    EditorWindow *editor = (EditorWindow*)ud;
-    ASSERT(editor);
-
-    if (editor->copiedNet) {
-	delete editor->copiedNet;
-	editor->copiedNet = NUL(char*);
-    }
-    if (editor->copiedCfg) {
-	delete editor->copiedCfg;
-	editor->copiedCfg = NUL(char*);
-    }
-    editor->pasteNodeCmd->deactivate();
-}
-
-void EditorWindow_SelectionDoneCB(Widget w, Atom *, Atom *) {}
-
-void EditorWindow_SelectionReadyCB (Widget w, XtPointer clientData, Atom *selection,
-    Atom *type, XtPointer value, unsigned long *length, int *format)
-{
-EditorWindow *editor = (EditorWindow*)clientData;
-int status;
-FILE *netf;
-Display *d = XtDisplay(editor->getRootWidget());
-Atom file_atom = XmInternAtom (d, NET_ATOM, False);
-Atom cfg_atom = XmInternAtom (d, CFG_ATOM, False);
-Screen *screen = XtScreen(editor->getRootWidget());
-Window root = RootWindowOfScreen(screen);
-unsigned long bytes_after;
-char *net_buffer;
-Atom actual_type;
-int actual_format;
-unsigned long n_items;
-char msg[128];
-
-    //
-    // Get temp file names
-    //
-    char net_file_name[256];
-    char cfg_file_name[256];
-    //
-    // It's good that this file name is formed using getTmpDirectory()
-    // because later we're going to check to see if the file name
-    // begins with the tmp directory and if so, leave it out of
-    // the list of recently-referenced files.
-    //
-    const char *tmpdir = theDXApplication->getTmpDirectory();
-    int tmpdirlen = STRLEN(tmpdir);
-    if (!tmpdirlen) return ;
-    if (tmpdir[tmpdirlen-1] == '/') {
-	sprintf(net_file_name, "%sdx%d.net", tmpdir, getpid());
-	sprintf(cfg_file_name, "%sdx%d.cfg", tmpdir, getpid());
-    } else {
-	sprintf(net_file_name, "%s/dx%d.net", tmpdir, getpid());
-	sprintf(cfg_file_name, "%s/dx%d.cfg", tmpdir, getpid());
-    }
-    unlink (net_file_name);
-    unlink (cfg_file_name);
-
-
-    //
-    // Put the file contents into the files
-    //
-    if ((netf = fopen(net_file_name, "w")) == NULL) {
-	sprintf (msg, "Paste failed (fopen): %s", strerror(errno));
-	WarningMessage(msg);
-	return ;
-    }
-    fwrite ((char*)value, sizeof(char), *length, netf);
-    fclose(netf);
-    XtFree((char*)value);
-
-    status = XGetWindowProperty (d, root, cfg_atom, 0,
-	    63000>>2, False, XA_STRING, &actual_type, 
-	    &actual_format, &n_items, &bytes_after, 
-	    (unsigned char **)&net_buffer);
-
-    if ((status == Success) && (net_buffer)) {
-	if ((netf = fopen(cfg_file_name, "w")) == NULL) {
-	    sprintf (msg, "Paste failed (fopen): %s", strerror(errno));
-	    WarningMessage(msg);
-	    unlink (cfg_file_name);
-	    return ;
-	}
-	fwrite (net_buffer, sizeof(char), n_items, netf);
-	fclose(netf);
-	XFree(net_buffer);
-	unlink (cfg_file_name);
-    }
-
-
-    editor->setPendingPaste (net_file_name, NUL(char*), TRUE);
-
-    unlink (net_file_name);
-
-    unsigned char *del_buf;
-    Atom delete_atom = XmInternAtom (d, "DELETE", False);
-    status = XGetWindowProperty (d, root, delete_atom, 0, 4, False, XA_STRING,
-	&actual_type, &actual_format, &n_items, &bytes_after, &del_buf);
-    if ((status == Success) && (del_buf) && (!strcmp((char*)del_buf, "FALSE"))) {
-    } else {
-	XDeleteProperty (d, root, file_atom);
-	XDeleteProperty (d, root, cfg_atom);
-	//
-	// Force no one to own the selection.  XtDisown ought to be superfluous,
-	// but I'm not sure how/if the intrinsics find out about things like this
-	// done thru Xlib.  We're trying to make sure nobody has the selection,
-	// and also to let our own intrinsics know we don't.
-	//
-	Time tstamp = XtLastTimestampProcessed(d);
-	XtDisownSelection (w, file_atom, tstamp);
-	XSetSelectionOwner (d, file_atom, None, CurrentTime);
-	editor->pasteNodeCmd->deactivate();
-    }
-    if (del_buf) XFree(del_buf);
-
-
-    editor->workSpace->setCursor(UPPER_LEFT);
-}
+//void EditorWindow_SelectionReadyCB (Widget w, XtPointer clientData, Atom *selection,
+//    Atom *type, XtPointer value, unsigned long *length, int *format)
+//{
+//EditorWindow *editor = (EditorWindow*)clientData;
+//int status;
+//FILE *netf;
+////Display *d = XtDisplay(editor->getRootWidget());
+////Atom file_atom = XmInternAtom (d, NET_ATOM, False);
+////Atom cfg_atom = XmInternAtom (d, CFG_ATOM, False);
+////Screen *screen = XtScreen(editor->getRootWidget());
+////Window root = RootWindowOfScreen(screen);
+//unsigned long bytes_after;
+//char *net_buffer;
+////Atom actual_type;
+//int actual_format;
+//unsigned long n_items;
+//char msg[128];
+//
+//    //
+//    // Get temp file names
+//    //
+//    char net_file_name[256];
+//    char cfg_file_name[256];
+//    //
+//    // It's good that this file name is formed using getTmpDirectory()
+//    // because later we're going to check to see if the file name
+//    // begins with the tmp directory and if so, leave it out of
+//    // the list of recently-referenced files.
+//    //
+//    const char *tmpdir = theDXApplication->getTmpDirectory();
+//    int tmpdirlen = STRLEN(tmpdir);
+//    if (!tmpdirlen) return ;
+//    if (tmpdir[tmpdirlen-1] == '/') {
+//	sprintf(net_file_name, "%sdx%d.net", tmpdir, getpid());
+//	sprintf(cfg_file_name, "%sdx%d.cfg", tmpdir, getpid());
+//    } else {
+//	sprintf(net_file_name, "%s/dx%d.net", tmpdir, getpid());
+//	sprintf(cfg_file_name, "%s/dx%d.cfg", tmpdir, getpid());
+//    }
+//    unlink (net_file_name);
+//    unlink (cfg_file_name);
+//
+//
+//    //
+//    // Put the file contents into the files
+//    //
+//    if ((netf = fopen(net_file_name, "w")) == NULL) {
+//	sprintf (msg, "Paste failed (fopen): %s", strerror(errno));
+//	WarningMessage(msg);
+//	return ;
+//    }
+//    fwrite ((char*)value, sizeof(char), *length, netf);
+//    fclose(netf);
+//    XtFree((char*)value);
+//
+//    status = XGetWindowProperty (d, root, cfg_atom, 0,
+//	    63000>>2, False, XA_STRING, &actual_type, 
+//	    &actual_format, &n_items, &bytes_after, 
+//	    (unsigned char **)&net_buffer);
+//
+//    if ((status == Success) && (net_buffer)) {
+//	if ((netf = fopen(cfg_file_name, "w")) == NULL) {
+//	    sprintf (msg, "Paste failed (fopen): %s", strerror(errno));
+//	    WarningMessage(msg);
+//	    unlink (cfg_file_name);
+//	    return ;
+//	}
+//	fwrite (net_buffer, sizeof(char), n_items, netf);
+//	fclose(netf);
+//	XFree(net_buffer);
+//	unlink (cfg_file_name);
+//    }
+//
+//
+//    editor->setPendingPaste (net_file_name, NUL(char*), TRUE);
+//
+//    unlink (net_file_name);
+//
+//    unsigned char *del_buf;
+//    Atom delete_atom = XmInternAtom (d, "DELETE", False);
+//    status = XGetWindowProperty (d, root, delete_atom, 0, 4, False, XA_STRING,
+//	&actual_type, &actual_format, &n_items, &bytes_after, &del_buf);
+//    if ((status == Success) && (del_buf) && (!strcmp((char*)del_buf, "FALSE"))) {
+//    } else {
+//	XDeleteProperty (d, root, file_atom);
+//	XDeleteProperty (d, root, cfg_atom);
+//	//
+//	// Force no one to own the selection.  XtDisown ought to be superfluous,
+//	// but I'm not sure how/if the intrinsics find out about things like this
+//	// done thru Xlib.  We're trying to make sure nobody has the selection,
+//	// and also to let our own intrinsics know we don't.
+//	//
+//	Time tstamp = XtLastTimestampProcessed(d);
+//	XtDisownSelection (w, file_atom, tstamp);
+//	XSetSelectionOwner (d, file_atom, None, CurrentTime);
+//	editor->pasteNodeCmd->deactivate();
+//    }
+//    if (del_buf) XFree(del_buf);
+//
+//
+//    editor->workSpace->setCursor(UPPER_LEFT);
+//}
 
 //
 // Broken out of SelectionReadyCB so that it can be reused by UndoDeletion
@@ -6627,10 +6598,10 @@ void EditorWindow::newDecorator (Decorator* dec, EditorWorkSpace* where)
 	GroupRecord* grec = this->getGroupOfWorkSpace(current_page);
 	Symbol page_sym = theSymbolManager->getSymbol(PAGE_GROUP);
 	if (grec) vpea->setGroupName (grec, page_sym);
-	if (current_page->getRootWidget())
-	    vpea->manage(current_page);
-	else
-	    current_page->setMembersInitialized(FALSE);
+	//if (current_page->getRootWidget())
+	//    vpea->manage(current_page);
+	//else
+	//    current_page->setMembersInitialized(FALSE);
     }
 #else
     if ((where) && (where->getRootWidget()))
@@ -6786,7 +6757,7 @@ void EditorWindow::populatePage(EditorWorkSpace* ews)
 	// only decorators.  Good?
 	//
 	FOR_EACH_NETWORK_DECORATOR(this->network,dec,it) {
-	    if (dec->getRootWidget()) continue;
+	    //if (dec->getRootWidget()) continue;
 	    VPEAnnotator* vpea = (VPEAnnotator*)dec;
 	    const char* cp = vpea->getGroupName(psym);
 	    if (((cp == NUL(char*)) && (page_name == NUL(char*))) || 
@@ -7102,7 +7073,7 @@ boolean EditorWindow::toggleHitDetection()
     return TRUE;
 }
 
-String EditorWindow::SequenceNet[] = {
+char* EditorWindow::SequenceNet[] = {
 #include "sequence.h"
 };
 
@@ -7542,79 +7513,79 @@ void EditorWindow::setUndoActivation()
     } else {
 	this->undoCmd->deactivate();
     }
-    XmString xmstr = XmStringCreateLtoR (button_label, "bold");
-    XtVaSetValues (this->undoOption->getRootWidget(), XmNlabelString, xmstr, NULL);
-    XmStringFree(xmstr);
+    //XmString xmstr = XmStringCreateLtoR (button_label, "bold");
+    //XtVaSetValues (this->undoOption->getRootWidget(), XmNlabelString, xmstr, NULL);
+    //XmStringFree(xmstr);
 }
 
-boolean EditorWindow::KeyHandler(XEvent *event, void *clientData)
-{
-    EditorWindow *ew = (EditorWindow*)clientData;
-    return ew->keyHandler(event);
-}
-
-#if !defined(XK_MISCELLANY)
-#define XK_MISCELLANY
-#endif
-#include <X11/keysym.h>
-boolean EditorWindow::keyHandler(XEvent* event)
-{
-    if (event->type != KeyPress) return TRUE;
-
-    KeySym lookedup = XLookupKeysym(((XKeyEvent*)event), 0);
-    if ((lookedup!=XK_End) && (lookedup!=XK_Page_Up) && (lookedup!=XK_Page_Down)) 
-	return TRUE;
-
-    Widget ww = XtWindowToWidget(XtDisplay(this->getRootWidget()), event->xany.window);
-    boolean is_descendant = FALSE;
-    //
-    // Choice of window is significant.  By using workArea, we're grabbing any
-    // event that is in the vpe or tool selector.  I thought it would be OK
-    // to get only the events inside the scrolledWindow however, the tool selector
-    // crashes when given pg-up/pg-down also.  It would be nice if there were
-    // a better way of computing ancestory.
-    //
-    // Window win = XtWindow(this->scrolledWindow);
-    //
-    Window win = XtWindow(this->workArea);
-    while ((ww) && (!XtIsShell(ww))) {
-	if (XtWindow(ww) == win) {
-	    is_descendant = TRUE;
-	    break;
-	}
-	ww = XtParent(ww);
-    }
-    if (!is_descendant) return TRUE;
-
-    XmScrolledWindowWidget scrollWindow;
-    int xsize,xdelta,xpdelta,x;
-    int ysize,ydelta,ypdelta,y;
-
-    //
-    // Here, it would be nice to fetch the vertical scrollbar's max value
-    // and use that in the XK_End calculation, but that causes a core dump
-    // inside  Motif the same way Page-Up/Page-Down do.
-    //
-    //int max;
-    //XtVaGetValues ((Widget)scrollWindow->swindow.vScrollBar, XmNmaximum, &max, NULL);
-
-    scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
-    XmScrollBarGetValues((Widget)scrollWindow->swindow.hScrollBar,
-			 &x, &xsize, &xdelta, &xpdelta);
-    XmScrollBarGetValues((Widget)scrollWindow->swindow.vScrollBar,
-			 &y, &ysize, &ydelta, &ypdelta);
-    if (lookedup == XK_Page_Up) {
-	y-=ypdelta;
-	y=MAX(y,0);
-    } else if (lookedup == XK_Page_Down) {
-	y+=ypdelta;
-    } else if (lookedup == XK_End) {
-	//y = max-(ysize+1);
-	y+=2*ypdelta;
-    }
-    this->moveWorkspaceWindow(x,y,FALSE);
-    return FALSE;
-}
+//boolean EditorWindow::KeyHandler(XEvent *event, void *clientData)
+//{
+//    EditorWindow *ew = (EditorWindow*)clientData;
+//    return ew->keyHandler(event);
+//}
+//
+//#if !defined(XK_MISCELLANY)
+//#define XK_MISCELLANY
+//#endif
+//#include <X11/keysym.h>
+//boolean EditorWindow::keyHandler(XEvent* event)
+//{
+//    if (event->type != KeyPress) return TRUE;
+//
+//    KeySym lookedup = XLookupKeysym(((XKeyEvent*)event), 0);
+//    if ((lookedup!=XK_End) && (lookedup!=XK_Page_Up) && (lookedup!=XK_Page_Down)) 
+//	return TRUE;
+//
+//    Widget ww = XtWindowToWidget(XtDisplay(this->getRootWidget()), event->xany.window);
+//    boolean is_descendant = FALSE;
+//    //
+//    // Choice of window is significant.  By using workArea, we're grabbing any
+//    // event that is in the vpe or tool selector.  I thought it would be OK
+//    // to get only the events inside the scrolledWindow however, the tool selector
+//    // crashes when given pg-up/pg-down also.  It would be nice if there were
+//    // a better way of computing ancestory.
+//    //
+//    // Window win = XtWindow(this->scrolledWindow);
+//    //
+//    Window win = XtWindow(this->workArea);
+//    while ((ww) && (!XtIsShell(ww))) {
+//	if (XtWindow(ww) == win) {
+//	    is_descendant = TRUE;
+//	    break;
+//	}
+//	ww = XtParent(ww);
+//    }
+//    if (!is_descendant) return TRUE;
+//
+//    XmScrolledWindowWidget scrollWindow;
+//    int xsize,xdelta,xpdelta,x;
+//    int ysize,ydelta,ypdelta,y;
+//
+//    //
+//    // Here, it would be nice to fetch the vertical scrollbar's max value
+//    // and use that in the XK_End calculation, but that causes a core dump
+//    // inside  Motif the same way Page-Up/Page-Down do.
+//    //
+//    //int max;
+//    //XtVaGetValues ((Widget)scrollWindow->swindow.vScrollBar, XmNmaximum, &max, NULL);
+//
+//    scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
+//    XmScrollBarGetValues((Widget)scrollWindow->swindow.hScrollBar,
+//			 &x, &xsize, &xdelta, &xpdelta);
+//    XmScrollBarGetValues((Widget)scrollWindow->swindow.vScrollBar,
+//			 &y, &ysize, &ydelta, &ypdelta);
+//    if (lookedup == XK_Page_Up) {
+//	y-=ypdelta;
+//	y=MAX(y,0);
+//    } else if (lookedup == XK_Page_Down) {
+//	y+=ypdelta;
+//    } else if (lookedup == XK_End) {
+//	//y = max-(ysize+1);
+//	y+=2*ypdelta;
+//    }
+//    this->moveWorkspaceWindow(x,y,FALSE);
+//    return FALSE;
+//}
 
 void  EditorWindow::saveAllLocationsForUndo (UndoableAction* gridding)
 {
@@ -7633,8 +7604,8 @@ void  EditorWindow::saveAllLocationsForUndo (UndoableAction* gridding)
 
     Decorator* dec;
     FOR_EACH_NETWORK_DECORATOR(this->network, dec, iterator) {
-	if (dec->getRootWidget())
-	    this->undo_list.push (new UndoDecoratorMove (this, (VPEAnnotator*)dec));
+	//if (dec->getRootWidget())
+	//    this->undo_list.push (new UndoDecoratorMove (this, (VPEAnnotator*)dec));
     }
     this->undo_list.push(gridding);
  

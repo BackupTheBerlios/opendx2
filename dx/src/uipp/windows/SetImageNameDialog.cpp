@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 
@@ -22,23 +22,23 @@
 #include "ErrorDialogManager.h"
 
 boolean SetImageNameDialog::ClassInitialized = FALSE;
-String SetImageNameDialog::DefaultResources[] =
-{
-    "*dialogTitle:               	Change Image Name...", 
-    "*nameLabel.labelString:            Image Name:", 
-    NULL
-};
+//String SetImageNameDialog::DefaultResources[] =
+//{
+//    "*dialogTitle:               	Change Image Name...", 
+//    "*nameLabel.labelString:            Image Name:", 
+//    NULL
+//};
 
 
 SetImageNameDialog::SetImageNameDialog(ImageWindow *iw) :
-    SetNameDialog("setImageNameDialog", iw->getRootWidget())
+    SetNameDialog("setImageNameDialog")
 {
     this->imageWindow = iw;
 
     if (NOT SetImageNameDialog::ClassInitialized)
     {
         SetImageNameDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
@@ -49,11 +49,11 @@ SetImageNameDialog::~SetImageNameDialog()
 //
 // Install the default resources for this class.
 //
-void SetImageNameDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, SetImageNameDialog::DefaultResources);
-    this->SetNameDialog::installDefaultResources( baseWidget);
-}
+//void SetImageNameDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, SetImageNameDialog::DefaultResources);
+//    this->SetNameDialog::installDefaultResources( baseWidget);
+//}
 
 const char *SetImageNameDialog::getText()
 {

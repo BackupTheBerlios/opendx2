@@ -127,49 +127,49 @@ enum ConstraintDirection
     CONSTRAINT_Z
 };
 
-//struct ImageAtoms
-//{
-//    Atom                pick_point;        // Atoms for GL client  */
-//    Atom                start_pick;        // Atoms for GL client  */
-//    Atom                set_view;          // Atoms for GL client  */
-//    Atom                start_rotate;      // Atoms for GL client  */
-//    Atom                stop;              // Atoms for GL client  */
-//    Atom                start_zoom;        // Atoms for GL client  */
-//    Atom                start_panzoom;     // Atoms for GL client  */
-//    Atom                start_cursor;      // Atoms for GL client  */
-//    Atom                start_roam;        // Atoms for GL client  */
-//    Atom                start_navigate;    // Atoms for GL client  */
-//    Atom                from_vector;       // Atoms for GL client  */
-//    Atom                up_vector;         // Atoms for GL client  */
-//    Atom                zoom1;             // Atoms for GL client  */
-//    Atom                zoom2;             // Atoms for GL client  */
-//    Atom                roam;              // Atoms for GL client  */
-//    Atom                cursor_change;     // Atoms for GL client  */
-//    Atom                cursor_constraint; // Atoms for GL client  */
-//    Atom                cursor_speed;      // Atoms for GL client  */
-//    Atom                gl_window0;        // Atoms for GL server  */
-//    Atom                gl_window1;        // Atoms for GL server  */
-//    Atom                gl_window2;        // Atoms for GL server  */
-//    Atom                gl_window2_execute;// Atoms for GL server  */
-//    Atom                execute_on_change; // Atoms for GL server  */
-//    Atom                gl_destroy_window; // Atoms for GL server  */
-//    Atom                gl_shutdown;       // Atoms for GL server  */
-//    Atom                image_reset;       // Atoms for DX server  */
-//    Atom                dx_pixmap_id;      // Atoms for DX server  */
-//    Atom                dx_flag;           // Atoms for DX server  */
-//    Atom                display_globe;     // Atoms for DX server  */
-//    Atom                motion;            // Atoms for DX server  */
-//    Atom                pivot;             // Atoms for DX server  */
-//    Atom                undoable;          // Atoms for DX server  */
-//    Atom                redoable;          // Atoms for DX server  */
-//    Atom                undo_camera;       // Atoms for DX server  */
-//    Atom                redo_camera;       // Atoms for DX server  */
-//    Atom                push_camera;       // Atoms for DX server  */
-//    Atom                button_mapping1;   // Atoms for DX server  */
-//    Atom                button_mapping2;   // Atoms for DX server  */
-//    Atom                button_mapping3;   // Atoms for DX server  */
-//    Atom                navigate_look_at;  // Atoms for DX server  */
-//};
+struct ImageAtoms
+{
+    unsigned long                pick_point;        // unsigned longs for GL client  */
+    unsigned long                start_pick;        // unsigned longs for GL client  */
+    unsigned long                set_view;          // unsigned longs for GL client  */
+    unsigned long                start_rotate;      // unsigned longs for GL client  */
+    unsigned long                stop;              // unsigned longs for GL client  */
+    unsigned long                start_zoom;        // unsigned longs for GL client  */
+    unsigned long                start_panzoom;     // unsigned longs for GL client  */
+    unsigned long                start_cursor;      // unsigned longs for GL client  */
+    unsigned long                start_roam;        // unsigned longs for GL client  */
+    unsigned long                start_navigate;    // unsigned longs for GL client  */
+    unsigned long                from_vector;       // unsigned longs for GL client  */
+    unsigned long                up_vector;         // unsigned longs for GL client  */
+    unsigned long                zoom1;             // unsigned longs for GL client  */
+    unsigned long                zoom2;             // unsigned longs for GL client  */
+    unsigned long                roam;              // unsigned longs for GL client  */
+    unsigned long                cursor_change;     // unsigned longs for GL client  */
+    unsigned long                cursor_constraint; // unsigned longs for GL client  */
+    unsigned long                cursor_speed;      // unsigned longs for GL client  */
+    unsigned long                gl_window0;        // unsigned longs for GL server  */
+    unsigned long                gl_window1;        // unsigned longs for GL server  */
+    unsigned long                gl_window2;        // unsigned longs for GL server  */
+    unsigned long                gl_window2_execute;// unsigned longs for GL server  */
+    unsigned long                execute_on_change; // unsigned longs for GL server  */
+    unsigned long                gl_destroy_window; // unsigned longs for GL server  */
+    unsigned long                gl_shutdown;       // unsigned longs for GL server  */
+    unsigned long                image_reset;       // unsigned longs for DX server  */
+    unsigned long                dx_pixmap_id;      // unsigned longs for DX server  */
+    unsigned long                dx_flag;           // unsigned longs for DX server  */
+    unsigned long                display_globe;     // unsigned longs for DX server  */
+    unsigned long                motion;            // unsigned longs for DX server  */
+    unsigned long                pivot;             // unsigned longs for DX server  */
+    unsigned long                undoable;          // unsigned longs for DX server  */
+    unsigned long                redoable;          // unsigned longs for DX server  */
+    unsigned long                undo_camera;       // unsigned longs for DX server  */
+    unsigned long                redo_camera;       // unsigned longs for DX server  */
+    unsigned long                push_camera;       // unsigned longs for DX server  */
+    unsigned long                button_mapping1;   // unsigned longs for DX server  */
+    unsigned long                button_mapping2;   // unsigned longs for DX server  */
+    unsigned long                button_mapping3;   // unsigned longs for DX server  */
+    unsigned long                navigate_look_at;  // unsigned longs for DX server  */
+};
 
 struct ImageCamera {
     double  to[3];
@@ -321,7 +321,7 @@ class ImageWindow : public DXWindow
     // Image state 
     //
     boolean		directInteraction;
-    //ImageAtoms		atoms;
+    ImageAtoms		atoms;
     ImageState		state;
     Stack*		managed_state;
 
@@ -562,22 +562,22 @@ class ImageWindow : public DXWindow
     //
     // These routines send messages to the gl rendering portion of the
     // server software.
- //   void sendClientMessage(Atom atom, int num, long  *longs);
- //   void sendClientMessage(Atom atom, long oneLong)
- //   {
-	//this->sendClientMessage(atom, 1, &oneLong);
- //   }
- //   void sendClientMessage(Atom atom) 
- //   {
-	//this->sendClientMessage(atom, 0, (long*)NULL);
- //   }
- //   void sendClientMessage(Atom atom, int num, short *shorts);
- //   void sendClientMessage(Atom atom, int num, char  *chars);
- //   void sendClientMessage(Atom atom, int num, float *floats);
- //   void sendClientMessage(Atom atom, float oneFloat)
- //   {
-	//this->sendClientMessage(atom, 1, &oneFloat);
- //   }
+    void sendClientMessage(unsigned long atom, int num, long  *longs);
+    void sendClientMessage(unsigned long atom, long oneLong)
+    {
+	this->sendClientMessage(atom, 1, &oneLong);
+    }
+    void sendClientMessage(unsigned long atom) 
+    {
+	this->sendClientMessage(atom, 0, (long*)NULL);
+    }
+    void sendClientMessage(unsigned long atom, int num, short *shorts);
+    void sendClientMessage(unsigned long atom, int num, char  *chars);
+    void sendClientMessage(unsigned long atom, int num, float *floats);
+    void sendClientMessage(unsigned long atom, float oneFloat)
+    {
+	this->sendClientMessage(atom, 1, &oneFloat);
+    }
 
     void wait4GLAcknowledge();
 

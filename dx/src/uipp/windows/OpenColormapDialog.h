@@ -10,9 +10,6 @@
 #include "defines.h"
 
 
-
-
-
 #ifndef _OpenColormapDialog_h
 #define _OpenColormapDialog_h
 
@@ -37,7 +34,7 @@ class OpenColormapDialog : public FileDialog
   private:
 
     static boolean ClassInitialized;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
     ColormapEditor *editor;
     boolean	   opening;
 
@@ -49,13 +46,13 @@ class OpenColormapDialog : public FileDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    OpenColormapDialog( Widget          parent,
+    OpenColormapDialog(
 		       ColormapEditor* editor,
 		       int             mode);
 

@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #include "ImageFormatREX.h"
@@ -23,9 +23,9 @@
 
 boolean ImageFormatREX::ClassInitialized = FALSE;
 
-String ImageFormatREX::DefaultResources[] = {
-    NUL(char*)
-};
+//String ImageFormatREX::DefaultResources[] = {
+//    NUL(char*)
+//};
 
 
 ImageFormatREX::ImageFormatREX (ImageFormatDialog* dialog) : 
@@ -42,12 +42,12 @@ ImageFormatREX::~ImageFormatREX()
 void ImageFormatREX::initialize()
 {
     if (!ImageFormatREX::ClassInitialized) {
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    PixelImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormatREX::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    PixelImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormatREX::DefaultResources);
 	ImageFormatREX::ClassInitialized = TRUE;
     }
 }

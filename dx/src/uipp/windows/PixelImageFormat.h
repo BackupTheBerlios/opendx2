@@ -20,10 +20,10 @@
 //
 #define ClassPixelImageFormat	"PixelImageFormat"
 
-extern "C" void PixelImageFormat_SizeTO (XtPointer, XtIntervalId*);
-extern "C" void PixelImageFormat_ModifyCB (Widget, XtPointer, XtPointer);
-extern "C" void PixelImageFormat_ParseSizeCB (Widget, XtPointer, XtPointer);
-extern "C" void PixelImageFormat_ParseSizeEH (Widget, XtPointer, XEvent*, Boolean*);
+//extern "C" void PixelImageFormat_SizeTO (XtPointer, XtIntervalId*);
+//extern "C" void PixelImageFormat_ModifyCB (Widget, XtPointer, XtPointer);
+//extern "C" void PixelImageFormat_ParseSizeCB (Widget, XtPointer, XtPointer);
+//extern "C" void PixelImageFormat_ParseSizeEH (Widget, XtPointer, XEvent*, Boolean*);
 
 //
 // SaveImageDialog class definition:
@@ -37,16 +37,16 @@ class PixelImageFormat : public ImageFormat
     boolean		use_nodes_resolution;
     boolean		use_nodes_aspect;
     char*		size_val;
-    Widget		size_text;
-    XtIntervalId 	size_timer;
+    //Widget		size_text;
+    //XtIntervalId 	size_timer;
 
   protected:
 
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     void			parseImageSize(const char*);
 
-    virtual Widget 		createBody(Widget parent);
+    //virtual Widget 		createBody(Widget parent);
     virtual void 		setCommandActivation();
     virtual void		shareSettings (ImageFormat*);
     virtual boolean		supportsPrinting() { return FALSE; }
@@ -62,10 +62,10 @@ class PixelImageFormat : public ImageFormat
     };
 
 
-    friend void PixelImageFormat_SizeTO (XtPointer, XtIntervalId*);
-    friend void PixelImageFormat_ModifyCB (Widget, XtPointer, XtPointer);
-    friend void PixelImageFormat_ParseSizeCB (Widget, XtPointer, XtPointer);
-    friend void PixelImageFormat_ParseSizeEH (Widget, XtPointer, XEvent*, Boolean*);
+    //friend void PixelImageFormat_SizeTO (XtPointer, XtIntervalId*);
+    //friend void PixelImageFormat_ModifyCB (Widget, XtPointer, XtPointer);
+    //friend void PixelImageFormat_ParseSizeCB (Widget, XtPointer, XtPointer);
+    //friend void PixelImageFormat_ParseSizeEH (Widget, XtPointer, XEvent*, Boolean*);
 
   public:
     //

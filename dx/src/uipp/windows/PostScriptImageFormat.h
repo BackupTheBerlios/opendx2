@@ -23,17 +23,17 @@ class DirtyQueue;
 //
 #define ClassPostScriptImageFormat	"PostScriptImageFormat"
 
-extern "C" void PostScriptImageFormat_SizeTO (XtPointer, XtIntervalId*);
-extern "C" void PostScriptImageFormat_PixelSizeTO (XtPointer, XtIntervalId*);
-extern "C" void PostScriptImageFormat_ModifyCB (Widget, XtPointer, XtPointer);
-extern "C" void PostScriptImageFormat_ParseSizeCB (Widget, XtPointer, XtPointer);
-extern "C" void PostScriptImageFormat_ParseSizeEH (Widget, XtPointer, XEvent*, Boolean*);
-extern "C" void PostScriptImageFormat_PageSizeTO (XtPointer, XtIntervalId*);
-extern "C" void PostScriptImageFormat_PageModifyCB (Widget, XtPointer, XtPointer);
-extern "C" void PostScriptImageFormat_ParsePageSizeCB (Widget, XtPointer, XtPointer);
-extern "C" void PostScriptImageFormat_DpiCB (Widget, XtPointer, XtPointer);
-extern "C" void PostScriptImageFormat_OrientCB (Widget, XtPointer, XtPointer);
-extern "C" void PostScriptImageFormat_MarginCB (Widget, XtPointer, XtPointer);
+//extern "C" void PostScriptImageFormat_SizeTO (XtPointer, XtIntervalId*);
+//extern "C" void PostScriptImageFormat_PixelSizeTO (XtPointer, XtIntervalId*);
+//extern "C" void PostScriptImageFormat_ModifyCB (Widget, XtPointer, XtPointer);
+//extern "C" void PostScriptImageFormat_ParseSizeCB (Widget, XtPointer, XtPointer);
+//extern "C" void PostScriptImageFormat_ParseSizeEH (Widget, XtPointer, XEvent*, Boolean*);
+//extern "C" void PostScriptImageFormat_PageSizeTO (XtPointer, XtIntervalId*);
+//extern "C" void PostScriptImageFormat_PageModifyCB (Widget, XtPointer, XtPointer);
+//extern "C" void PostScriptImageFormat_ParsePageSizeCB (Widget, XtPointer, XtPointer);
+//extern "C" void PostScriptImageFormat_DpiCB (Widget, XtPointer, XtPointer);
+//extern "C" void PostScriptImageFormat_OrientCB (Widget, XtPointer, XtPointer);
+//extern "C" void PostScriptImageFormat_MarginCB (Widget, XtPointer, XtPointer);
 
 
 class DirtyQueue {
@@ -43,8 +43,8 @@ class DirtyQueue {
 
     protected:
 	friend class PostScriptImageFormat;
-	friend void PostScriptImageFormat_DpiCB (Widget, XtPointer, XtPointer);
-	friend void PostScriptImageFormat_ParseSizeCB (Widget, XtPointer, XtPointer);
+	//friend void PostScriptImageFormat_DpiCB (Widget, XtPointer, XtPointer);
+	//friend void PostScriptImageFormat_ParseSizeCB (Widget, XtPointer, XtPointer);
 	void push(int dirty, int* all_flags) {
 	    if (dirty <= 0) return ;
 	    if (this->data == NUL(List*)) this->data = new List;
@@ -89,22 +89,22 @@ class PostScriptImageFormat : public ImageFormat
     double		entered_printout_width;
     double		entered_printout_height;
     boolean		entered_dims_valid;
-    Widget		size_text;
-    Widget		pixel_size_text;
-    Widget		page_size_text;
-    Widget		dpi_number;
-    Widget		margin_width;
-    Widget		autoorient_button;
-    Widget		portrait_button;
-    Widget		landscape_button;
-    Widget		chosen_layout;
-    Widget		page_layout_om;
-    Widget		dirty_text_widget;
-    XtIntervalId 	size_timer;
-    XtIntervalId 	page_size_timer;
+    //Widget		size_text;
+    //Widget		pixel_size_text;
+    //Widget		page_size_text;
+    //Widget		dpi_number;
+    //Widget		margin_width;
+    //Widget		autoorient_button;
+    //Widget		portrait_button;
+    //Widget		landscape_button;
+    //Widget		chosen_layout;
+    //Widget		page_layout_om;
+    //Widget		dirty_text_widget;
+    //XtIntervalId 	size_timer;
+    //XtIntervalId 	page_size_timer;
 
-    void		setTextString (Widget, char *, void*);
-    void		setSizeTextString (Widget, char *);
+    //void		setTextString (Widget, char *, void*);
+    //void		setSizeTextString (Widget, char *);
     boolean		setVerifiedSizeTextString (double, double);
 
     //
@@ -119,13 +119,13 @@ class PostScriptImageFormat : public ImageFormat
 
   protected:
 
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     void			parseImageSize(const char* );
     void			parsePictureSize(const char* );
     void			parsePageSize(const char*);
 
-    virtual Widget 		createBody(Widget parent);
+    //virtual Widget 		createBody(Widget parent);
     virtual void 		setCommandActivation();
     virtual void 		shareSettings(ImageFormat*);
 
@@ -143,17 +143,17 @@ class PostScriptImageFormat : public ImageFormat
 	DirtyImageSize		= 1<<10
     };
 
-    friend void PostScriptImageFormat_SizeTO (XtPointer, XtIntervalId*);
-    friend void PostScriptImageFormat_PixelSizeTO (XtPointer, XtIntervalId*);
-    friend void PostScriptImageFormat_ModifyCB (Widget, XtPointer, XtPointer);
-    friend void PostScriptImageFormat_ParseSizeCB (Widget, XtPointer, XtPointer);
-    friend void PostScriptImageFormat_ParseSizeEH (Widget, XtPointer, XEvent*, Boolean*);
-    friend void PostScriptImageFormat_PageSizeTO (XtPointer, XtIntervalId*);
-    friend void PostScriptImageFormat_PageModifyCB (Widget, XtPointer, XtPointer);
-    friend void PostScriptImageFormat_ParsePageSizeCB (Widget, XtPointer, XtPointer);
-    friend void PostScriptImageFormat_DpiCB (Widget, XtPointer, XtPointer);
-    friend void PostScriptImageFormat_OrientCB (Widget, XtPointer, XtPointer);
-    friend void PostScriptImageFormat_MarginCB (Widget, XtPointer, XtPointer);
+    //friend void PostScriptImageFormat_SizeTO (XtPointer, XtIntervalId*);
+    //friend void PostScriptImageFormat_PixelSizeTO (XtPointer, XtIntervalId*);
+    //friend void PostScriptImageFormat_ModifyCB (Widget, XtPointer, XtPointer);
+    //friend void PostScriptImageFormat_ParseSizeCB (Widget, XtPointer, XtPointer);
+    //friend void PostScriptImageFormat_ParseSizeEH (Widget, XtPointer, XEvent*, Boolean*);
+    //friend void PostScriptImageFormat_PageSizeTO (XtPointer, XtIntervalId*);
+    //friend void PostScriptImageFormat_PageModifyCB (Widget, XtPointer, XtPointer);
+    //friend void PostScriptImageFormat_ParsePageSizeCB (Widget, XtPointer, XtPointer);
+    //friend void PostScriptImageFormat_DpiCB (Widget, XtPointer, XtPointer);
+    //friend void PostScriptImageFormat_OrientCB (Widget, XtPointer, XtPointer);
+    //friend void PostScriptImageFormat_MarginCB (Widget, XtPointer, XtPointer);
 
   public:
     //

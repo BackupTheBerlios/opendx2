@@ -14,9 +14,9 @@
 
 boolean ImageFormatTIF::ClassInitialized = FALSE;
 
-String ImageFormatTIF::DefaultResources[] = {
-    NUL(char*)
-};
+//String ImageFormatTIF::DefaultResources[] = {
+//    NUL(char*)
+//};
 
 
 ImageFormatTIF::ImageFormatTIF (ImageFormatDialog* dialog) : 
@@ -33,12 +33,12 @@ ImageFormatTIF::~ImageFormatTIF()
 void ImageFormatTIF::initialize()
 {
     if (!ImageFormatTIF::ClassInitialized) {
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    PixelImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormatTIF::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    PixelImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormatTIF::DefaultResources);
 	ImageFormatTIF::ClassInitialized = TRUE;
     }
 }

@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #include "ImageFormatRGB.h"
@@ -23,9 +23,9 @@
 
 boolean ImageFormatRGB::ClassInitialized = FALSE;
 
-String ImageFormatRGB::DefaultResources[] = {
-    NUL(char*)
-};
+//String ImageFormatRGB::DefaultResources[] = {
+//    NUL(char*)
+//};
 
 
 ImageFormatRGB::ImageFormatRGB (ImageFormatDialog* dialog) : 
@@ -42,12 +42,12 @@ ImageFormatRGB::~ImageFormatRGB()
 void ImageFormatRGB::initialize()
 {
     if (!ImageFormatRGB::ClassInitialized) {
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    PixelImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormatRGB::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    PixelImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormatRGB::DefaultResources);
 	ImageFormatRGB::ClassInitialized = TRUE;
     }
 }

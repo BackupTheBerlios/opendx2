@@ -51,9 +51,9 @@ class SelectionAttrDialog : protected ListEditor, public SetAttrDialog
     //
     // Protected member data:
     //
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
-    Widget	valueText, labelText;
+    //Widget	valueText, labelText;
 
     //
     // The current type of the values in the value list. 
@@ -63,13 +63,13 @@ class SelectionAttrDialog : protected ListEditor, public SetAttrDialog
     //
     // Build the interactive set attributes widgets that sit in the dialog.
     //
-    virtual void createAttributesPart(Widget parentDialog);
+    virtual void createAttributesPart();
 
     //
     // Build the interacive value editing part.
     // This probably called by createEditingPart().
     //
-    virtual Widget createValueEditor(Widget mainForm);
+    virtual void createValueEditor();
 
     //
     // Called by this->listCallback() when a new item is selected in the list.
@@ -97,13 +97,13 @@ class SelectionAttrDialog : protected ListEditor, public SetAttrDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    SelectionAttrDialog(Widget parent, const char *title, 
+    SelectionAttrDialog(const char *title, 
 				SelectionInstance *si);
 
     //

@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 
@@ -116,7 +116,7 @@ boolean     GroupManager::createGroup(const char *name, Network *net)
 {
     ASSERT (net == this->network);
 
-    Boolean result;
+    boolean result;
 
     if (IsBlankString(name))
 	return FALSE;

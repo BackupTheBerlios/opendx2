@@ -27,9 +27,9 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void ColormapAddCtlDialog_LevelRangeCB(Widget, XtPointer, XtPointer);
-extern "C" void ColormapAddCtlDialog_ValueRangeCB(Widget, XtPointer, XtPointer);
-extern "C" void ColormapAddCtlDialog_AddCB(Widget, XtPointer, XtPointer);
+//extern "C" void ColormapAddCtlDialog_LevelRangeCB(Widget, XtPointer, XtPointer);
+//extern "C" void ColormapAddCtlDialog_ValueRangeCB(Widget, XtPointer, XtPointer);
+//extern "C" void ColormapAddCtlDialog_AddCB(Widget, XtPointer, XtPointer);
 
 class ColormapEditor;
 
@@ -43,40 +43,40 @@ class ColormapAddCtlDialog : public Dialog
     //
     // Private member data:
     //
-    static Boolean ClassInitialized;
+    static boolean ClassInitialized;
 
   protected:
     //
     // Protected member data:
     //
-    static String  DefaultResources[];
-    friend void ColormapAddCtlDialog_AddCB(Widget, XtPointer , XtPointer);
-    friend void ColormapAddCtlDialog_ValueRangeCB(Widget, XtPointer , XtPointer);
-    friend void ColormapAddCtlDialog_LevelRangeCB(Widget, XtPointer , XtPointer);
+    //static String  DefaultResources[];
+    //friend void ColormapAddCtlDialog_AddCB(Widget, XtPointer , XtPointer);
+    //friend void ColormapAddCtlDialog_ValueRangeCB(Widget, XtPointer , XtPointer);
+    //friend void ColormapAddCtlDialog_LevelRangeCB(Widget, XtPointer , XtPointer);
 
     ColormapEditor* editor;
 
-    Widget valuestepper;
-    Widget valuelabel;
-    Widget levelstepper;
-    Widget levellabel;
-    Widget addbtn;
+    //Widget valuestepper;
+    //Widget valuelabel;
+    //Widget levelstepper;
+    //Widget levellabel;
+    //Widget addbtn;
 
-    Widget createDialog(Widget);
+    void createDialog();
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
 
     //
     // Constructor:
     //
-    ColormapAddCtlDialog(Widget parent,ColormapEditor* editor);
+    ColormapAddCtlDialog(ColormapEditor* editor);
 
     //
     // Destructor:

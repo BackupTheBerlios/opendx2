@@ -27,8 +27,8 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void ThrottleDialog_DoAllCB(Widget, XtPointer, XtPointer);
-
+//extern "C" void ThrottleDialog_DoAllCB(Widget, XtPointer, XtPointer);
+//
 class ImageWindow;
 
 //
@@ -43,9 +43,9 @@ class ThrottleDialog : public Dialog
     //
     static boolean ClassInitialized;
 
-    Widget closebtn;
-    Widget seconds;
-    Widget label;
+    //Widget closebtn;
+    //Widget seconds;
+    //Widget label;
 
     ImageWindow* image;
  
@@ -53,10 +53,10 @@ class ThrottleDialog : public Dialog
     //
     // Protected member data:
     //
-    static String  DefaultResources[];
-    friend void ThrottleDialog_DoAllCB(Widget, XtPointer , XtPointer);
+    //static String  DefaultResources[];
+    //friend void ThrottleDialog_DoAllCB(Widget, XtPointer , XtPointer);
 
-    virtual Widget createDialog(Widget);
+    virtual void createDialog();
 
   public:
 

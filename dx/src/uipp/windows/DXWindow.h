@@ -151,12 +151,12 @@ class DXWindow : public IBMMainWindow
     // Update any visual state or anything else that is required.  At this
     // level we handle the anchor pixmap if initialized.
     //
-    virtual void setAnchor(boolean isAnchor);
+    //virtual void setAnchor(boolean isAnchor);
     //
     // Create the anchor button widget and add the pixmap if desired and not
     // already present
     //
-    void createAnchor(boolean addPixmap);
+    //void createAnchor(boolean addPixmap);
 
     //
     // Constructor for the subclasses:

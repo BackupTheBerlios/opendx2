@@ -40,7 +40,7 @@ class HelpOnPanelDialog : public SetPanelCommentDialog
     //
     // Protected member data:
     //
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     //
     // The title to be applied the newly managed dialog.
@@ -53,14 +53,14 @@ class HelpOnPanelDialog : public SetPanelCommentDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
 
     //
     // Constructor:
     //
-    HelpOnPanelDialog(Widget parent, ControlPanel *cp);
+    HelpOnPanelDialog(ControlPanel *cp);
 
     //
     // Destructor:

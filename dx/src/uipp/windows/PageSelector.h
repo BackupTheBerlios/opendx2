@@ -17,25 +17,25 @@
 
 #define ClassPageSelector "PageSelector"
 
-extern "C" void PageSelector_CommitNameChangeCB(Widget, XtPointer, XtPointer);
-extern "C" void PageSelector_ModifyNameCB(Widget, XtPointer, XtPointer);
-extern "C" void PageSelector_SelectCB(Widget, XtPointer, XtPointer);
-extern "C" void PageSelector_ResizeHandlerEH(Widget, XtPointer, XEvent*, Boolean*);
-extern "C" void PageSelector_RemoveGrabEH(Widget, XtPointer, XEvent*, Boolean*);
-extern "C" void PageSelector_EllipsisEH(Widget, XtPointer, XEvent*, Boolean*);
-extern "C" void PageSelector_ProcessOldEventEH(Widget , XtPointer , XEvent *, Boolean *);
-extern "C" void PageSelector_UndrawTO(XtPointer , XtIntervalId* );
-extern "C" void PageSelector_RedrawTO(XtPointer , XtIntervalId* );
-extern "C" void PageSelector_GrabReleaseTO(XtPointer , XtIntervalId* );
-extern "C" void PageSelector_PopupListAH 
-    (Widget , XtPointer , String, XEvent*, String*, Cardinal*);
-
-extern "C" void PageSelector_UngrabAP (Widget, XEvent*, String*, Cardinal* );
-extern "C" void PageSelector_KeepingAP (Widget, XEvent*, String*, Cardinal* );
-extern "C" void PageSelector_LosingAP (Widget, XEvent*, String*, Cardinal* );
-extern "C" void PageSelector_MonitoringAP (Widget, XEvent*, String*, Cardinal* );
-extern "C" Boolean PageSelector_PostNamePromptWP (XtPointer clientData);
-extern "C" Boolean PageSelector_RemoveHookWP (XtPointer clientData);
+//extern "C" void PageSelector_CommitNameChangeCB(Widget, XtPointer, XtPointer);
+//extern "C" void PageSelector_ModifyNameCB(Widget, XtPointer, XtPointer);
+//extern "C" void PageSelector_SelectCB(Widget, XtPointer, XtPointer);
+//extern "C" void PageSelector_ResizeHandlerEH(Widget, XtPointer, XEvent*, Boolean*);
+//extern "C" void PageSelector_RemoveGrabEH(Widget, XtPointer, XEvent*, Boolean*);
+//extern "C" void PageSelector_EllipsisEH(Widget, XtPointer, XEvent*, Boolean*);
+//extern "C" void PageSelector_ProcessOldEventEH(Widget , XtPointer , XEvent *, Boolean *);
+//extern "C" void PageSelector_UndrawTO(XtPointer , XtIntervalId* );
+//extern "C" void PageSelector_RedrawTO(XtPointer , XtIntervalId* );
+//extern "C" void PageSelector_GrabReleaseTO(XtPointer , XtIntervalId* );
+//extern "C" void PageSelector_PopupListAH 
+//    (Widget , XtPointer , String, XEvent*, String*, Cardinal*);
+//
+//extern "C" void PageSelector_UngrabAP (Widget, XEvent*, String*, Cardinal* );
+//extern "C" void PageSelector_KeepingAP (Widget, XEvent*, String*, Cardinal* );
+//extern "C" void PageSelector_LosingAP (Widget, XEvent*, String*, Cardinal* );
+//extern "C" void PageSelector_MonitoringAP (Widget, XEvent*, String*, Cardinal* );
+//extern "C" Boolean PageSelector_PostNamePromptWP (XtPointer clientData);
+//extern "C" Boolean PageSelector_RemoveHookWP (XtPointer clientData);
 
 
 
@@ -60,33 +60,33 @@ class PageSelector: public UIComponent, public Dictionary {
     Network*		net;
     VPERoot*		root;
     List*		page_buttons;
-    Widget		parent;
+    //Widget		parent;
     void		buildSelector();
     void		buildPageMenu();
     boolean		selecting_page;
     int			num_pages_when_empty;
-    XtIntervalId	button_release_timer;
-    Widget		page_name_prompt;
-    Widget		diag_button;
-    Widget		popupMenu;
-    Widget		popupList;
+    //XtIntervalId	button_release_timer;
+    //Widget		page_name_prompt;
+    //Widget		diag_button;
+    //Widget		popupMenu;
+    //Widget		popupList;
     boolean		is_grabbed;
-    XtActionHookId	action_hook;
+    //XtActionHookId	action_hook;
     int			starting_button;
-    Widget		vsb, hsb;
+    //Widget		vsb, hsb;
     boolean		is_button_release_grabbed;
-    XEvent*		old_event;
+    //XEvent*		old_event;
     boolean		mouse_inside_name_prompt;
     EditorWorkSpace*	name_change_in_progress;
     SetPageNameDialog*  page_dialog;
     MoveNodesDialog*    move_dialog;
-    XtWorkProcId	remove_hook_wpid;
+    //XtWorkProcId	remove_hook_wpid;
 
-    static 	String		DefaultResources[];
+    //static 	String		DefaultResources[];
     static	boolean		ClassInitialized;
-    static	String		PnpTranslationText;
-    static	XtTranslations	PnpTranslations;
-    static	XtActionsRec	PnpActions[];
+    //static	String		PnpTranslationText;
+    //static	XtTranslations	PnpTranslations;
+    //static	XtActionsRec	PnpActions[];
 
 
     //
@@ -98,7 +98,7 @@ class PageSelector: public UIComponent, public Dictionary {
     //
     // The the special menu-style list under the ... button (diag_button)
     //
-    void grab(XEvent*);
+    //void grab(XEvent*);
     void ungrab();
 
     void postPageNamePrompt();
@@ -111,24 +111,24 @@ class PageSelector: public UIComponent, public Dictionary {
     virtual void addButton (const char* name, const void* );
     virtual void removeButton (const char* name);
 
-    friend  void PageSelector_ResizeHandlerEH(Widget, XtPointer, XEvent*, Boolean*);
-    friend  void PageSelector_CommitNameChangeCB(Widget, XtPointer, XtPointer);
-    friend  void PageSelector_ModifyNameCB(Widget, XtPointer, XtPointer);
-    friend  void PageSelector_SelectCB(Widget, XtPointer, XtPointer);
-    friend  void PageSelector_EllipsisEH(Widget, XtPointer, XEvent*, Boolean*);
-    friend  void PageSelector_RemoveGrabEH(Widget, XtPointer, XEvent*, Boolean*);
-    friend  void PageSelector_ProcessOldEventEH(Widget , XtPointer , XEvent *, Boolean *);
-    friend  void PageSelector_GrabReleaseTO(XtPointer , XtIntervalId* );
-    friend  void PageSelector_PopupListAH 
-	(Widget , XtPointer , String, XEvent*, String*, Cardinal*);
-    friend void PageSelector_UngrabAP (Widget, XEvent*, String*, Cardinal* );
-    friend void PageSelector_KeepingAP (Widget, XEvent*, String*, Cardinal* );
-    friend void PageSelector_LosingAP (Widget, XEvent*, String*, Cardinal* );
-    friend void PageSelector_MonitoringAP (Widget, XEvent*, String*, Cardinal* );
-    friend Boolean PageSelector_PostNamePromptWP (XtPointer clientData);
-    friend Boolean PageSelector_RemoveHookWP (XtPointer clientData);
+ //   friend  void PageSelector_ResizeHandlerEH(Widget, XtPointer, XEvent*, Boolean*);
+ //   friend  void PageSelector_CommitNameChangeCB(Widget, XtPointer, XtPointer);
+ //   friend  void PageSelector_ModifyNameCB(Widget, XtPointer, XtPointer);
+ //   friend  void PageSelector_SelectCB(Widget, XtPointer, XtPointer);
+ //   friend  void PageSelector_EllipsisEH(Widget, XtPointer, XEvent*, Boolean*);
+ //   friend  void PageSelector_RemoveGrabEH(Widget, XtPointer, XEvent*, Boolean*);
+ //   friend  void PageSelector_ProcessOldEventEH(Widget , XtPointer , XEvent *, Boolean *);
+ //   friend  void PageSelector_GrabReleaseTO(XtPointer , XtIntervalId* );
+ //   friend  void PageSelector_PopupListAH 
+	//(Widget , XtPointer , String, XEvent*, String*, Cardinal*);
+ //   friend void PageSelector_UngrabAP (Widget, XEvent*, String*, Cardinal* );
+ //   friend void PageSelector_KeepingAP (Widget, XEvent*, String*, Cardinal* );
+ //   friend void PageSelector_LosingAP (Widget, XEvent*, String*, Cardinal* );
+ //   friend void PageSelector_MonitoringAP (Widget, XEvent*, String*, Cardinal* );
+ //   friend Boolean PageSelector_PostNamePromptWP (XtPointer clientData);
+ //   friend Boolean PageSelector_RemoveHookWP (XtPointer clientData);
 
-    void selectPage (Widget );
+    void selectPage ( );
     void selectPage (PageTab* );
 
     virtual boolean verifyPageName(const char* , char* errMsg);
@@ -137,25 +137,25 @@ class PageSelector: public UIComponent, public Dictionary {
 
     virtual void updateList();
 
-    static Cursor GrabCursor;
+    //static Cursor GrabCursor;
 
     //
     // Get the text from a text widget and clip off the leading and
     // trailing white space.
     // The return string must be deleted by the caller.
     //
-    static char *GetTextWidgetToken(Widget textWidget);
+    //static char *GetTextWidgetToken(Widget textWidget);
 
     void updatePageNameDialog();
     void updateMoveNodesDialog();
 
   public:
 
-    PageSelector (EditorWindow* , Widget, Network*);
+    PageSelector (EditorWindow*, Network*);
 
     ~PageSelector();
 
-    void setRootPage(VPERoot* root) { this->root = root; }
+    //void setRootPage(VPERoot* root) { this->root = root; }
 
     void postPageNamePrompt(PageTab* );
     void postPageNameDialog();

@@ -33,7 +33,7 @@ class Network;
 class OpenCFGDialog : public FileDialog
 {
     static boolean ClassInitialized;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     Network 	*network;
 
@@ -45,13 +45,13 @@ class OpenCFGDialog : public FileDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    OpenCFGDialog(Widget parent, Network* net);
+    OpenCFGDialog(Network* net);
 
 
     //

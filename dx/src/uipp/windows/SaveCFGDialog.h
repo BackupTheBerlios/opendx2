@@ -35,7 +35,7 @@ class Network;
 class SaveCFGDialog : public SaveFileDialog
 {
     static boolean ClassInitialized;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     Network	*network;
 
@@ -49,13 +49,13 @@ class SaveCFGDialog : public SaveFileDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    SaveCFGDialog(Widget parent, Network *net);
+    SaveCFGDialog(Network *net);
 
 
     //

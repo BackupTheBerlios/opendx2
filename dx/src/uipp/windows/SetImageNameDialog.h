@@ -43,7 +43,7 @@ class SetImageNameDialog : public SetNameDialog
     // Protected member data:
     //
 
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
     virtual const char *getText();
     virtual boolean saveText(const char *s);
@@ -53,7 +53,7 @@ class SetImageNameDialog : public SetNameDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //

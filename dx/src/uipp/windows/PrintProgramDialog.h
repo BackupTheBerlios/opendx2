@@ -28,12 +28,12 @@
 class EditorWindow;
 class Dialog;
 
-extern "C" void PrintProgramDialog_ButtonCB(Widget w,
-				    XtPointer clientData,
-				    XtPointer callData);
-extern "C" void PrintProgramDialog_ToFileToggleCB(Widget w,
-				    XtPointer clientData,
-				    XtPointer callData);
+//extern "C" void PrintProgramDialog_ButtonCB(Widget w,
+//				    XtPointer clientData,
+//				    XtPointer callData);
+//extern "C" void PrintProgramDialog_ToFileToggleCB(Widget w,
+//				    XtPointer clientData,
+//				    XtPointer callData);
 //
 // PrintProgramDialog class definition:
 //				
@@ -49,29 +49,29 @@ class PrintProgramDialog : public Dialog
     //
     // Handle this->toFileToggle value changes.
     //
-    friend void PrintProgramDialog_ToFileToggleCB(Widget w,
-				    XtPointer clientData,
-				    XtPointer callData);
+    //friend void PrintProgramDialog_ToFileToggleCB(Widget w,
+				//    XtPointer clientData,
+				//    XtPointer callData);
     //
     // Handles the fileSelectButton callbacks and causes the 
     // printProgramFileDialog  to be created if necessary and then posted.
     //
-    friend void PrintProgramDialog_ButtonCB(Widget w,
-				    XtPointer clientData,
-				    XtPointer callData);
+    //friend void PrintProgramDialog_ButtonCB(Widget w,
+				//    XtPointer clientData,
+				//    XtPointer callData);
 
   protected:
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     EditorWindow *editor;
     Dialog	*printProgramFileDialog; 
-    Widget	printerName;
-    Widget	labelParamsToggle;
-    Widget	toFileToggle;
-    Widget	fileName;
-    Widget	fileSelectButton;
+    //Widget	printerName;
+    //Widget	labelParamsToggle;
+    //Widget	toFileToggle;
+    //Widget	fileName;
+    //Widget	fileSelectButton;
 
-    virtual Widget createDialog(Widget parent);
+    virtual void createDialog( );
     virtual boolean okCallback(Dialog *d);
 
     //
@@ -92,7 +92,7 @@ class PrintProgramDialog : public Dialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //

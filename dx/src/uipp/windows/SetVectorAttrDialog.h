@@ -29,8 +29,8 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void SetVectorAttrDialog_ComponentOptionCB(Widget, XtPointer, XtPointer);
-extern "C" void SetVectorAttrDialog_StepperCB(Widget, XtPointer, XtPointer);
+//extern "C" void SetVectorAttrDialog_ComponentOptionCB(Widget, XtPointer, XtPointer);
+//extern "C" void SetVectorAttrDialog_StepperCB(Widget, XtPointer, XtPointer);
 
 
 //
@@ -42,32 +42,32 @@ class SetVectorAttrDialog : public SetScalarAttrDialog
     //
     // Private member data:
     //
-    friend void SetVectorAttrDialog_StepperCB(Widget  widget, 
-			XtPointer clientData, 
-			XtPointer callData);
-    friend void SetVectorAttrDialog_ComponentOptionCB(Widget  widget, 
-			XtPointer clientData, 
-			XtPointer callData);
+   // friend void SetVectorAttrDialog_StepperCB(Widget  widget, 
+			//XtPointer clientData, 
+			//XtPointer callData);
+   // friend void SetVectorAttrDialog_ComponentOptionCB(Widget  widget, 
+			//XtPointer clientData, 
+			//XtPointer callData);
 
     static boolean ClassInitialized;
 
-    Widget createComponentPulldown(Widget parent, const char *name);
+    void createComponentPulldown(const char *name);
 
   protected:
     //
     // Protected member data:
     //
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
-    Widget	allComponents;
-    Widget	selectedComponent;
-    Widget 	componentOptions; 
-    Widget 	componentStepper; 
+    //Widget	allComponents;
+    //Widget	selectedComponent;
+    //Widget 	componentOptions; 
+    //Widget 	componentStepper; 
 
     //
     // Build the interactive set attributes widgets that sit in the dialog.
     //
-    virtual void createAttributesPart(Widget parentDialog);
+    virtual void createAttributesPart();
 
     // 
     // Get the current component number.
@@ -85,13 +85,13 @@ class SetVectorAttrDialog : public SetScalarAttrDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    SetVectorAttrDialog(Widget parent, const char *title, ScalarInstance *si); 
+    SetVectorAttrDialog(const char *title, ScalarInstance *si); 
 
 
     //

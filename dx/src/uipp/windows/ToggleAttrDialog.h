@@ -51,9 +51,9 @@ class ToggleAttrDialog : public SetAttrDialog
     //
     // Protected member data:
     //
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
-    Widget	setText, resetText;
+    //Widget	setText, resetText;
     
     //
     // The current type of the values in the value list. 
@@ -63,7 +63,7 @@ class ToggleAttrDialog : public SetAttrDialog
     //
     // Build the interactive set attributes widgets that sit in the dialog.
     //
-    virtual void createAttributesPart(Widget parentDialog);
+    //virtual void createAttributesPart(Widget parentDialog);
 
     //
     // Desensitize the data-driven attributes in the dialog.
@@ -79,13 +79,13 @@ class ToggleAttrDialog : public SetAttrDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    ToggleAttrDialog(Widget parent, const char *title, ToggleInstance *si);
+    ToggleAttrDialog(const char *title, ToggleInstance *si);
 
     //
     // Destructor:

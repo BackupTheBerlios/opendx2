@@ -13,16 +13,12 @@
 #include "ImageNode.h"
 #include "ImageFormatDialog.h"
 #include "Application.h"
-#include <Xm/Form.h>
-#include <Xm/Label.h>
-#include <Xm/Text.h>
 #include "SymbolManager.h"
-#include "../widgets/Number.h"
 
-String PixelImageFormat::DefaultResources[] = {
-    "*sizeLabel.labelString:		Image Size:",
-    NUL(char*)
-};
+//String PixelImageFormat::DefaultResources[] = {
+//    "*sizeLabel.labelString:		Image Size:",
+//    NUL(char*)
+//};
 
 
 PixelImageFormat::PixelImageFormat (const char *name, ImageFormatDialog *dialog) : 
@@ -30,61 +26,61 @@ PixelImageFormat::PixelImageFormat (const char *name, ImageFormatDialog *dialog)
 {
     this->dirty = 0;
     this->size_val = NUL(char*);
-    this->size_text = NUL(Widget);
+    //this->size_text = NUL(Widget);
     this->use_nodes_resolution = TRUE;
     this->use_nodes_aspect = TRUE;
-    this->size_timer = 0;
+    //this->size_timer = 0;
 }
 
 PixelImageFormat::~PixelImageFormat()
 {
     if (this->size_val) delete this->size_val;
-    if (this->size_timer) XtRemoveTimeOut (this->size_timer);
+    //if (this->size_timer) XtRemoveTimeOut (this->size_timer);
 }
 
-Widget PixelImageFormat::createBody (Widget parent)
-{
-    this->initialize();
-
-    //
-    // Widgets for typing in the widthXheight of the image
-    //
-    Widget body = XtVaCreateManagedWidget (this->name,
-	xmFormWidgetClass,	parent,
-	XmNmappedWhenManaged,	False,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		2,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNrightOffset,		2,
-    NULL);
-
-    Widget lab = XtVaCreateManagedWidget ("sizeLabel",
-	xmLabelWidgetClass,	body,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		2,
-	XmNtopOffset,		7,
-    NULL);
-
-    this->size_text = XtVaCreateManagedWidget ("sizeText",
-	xmTextWidgetClass,	body,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNtopOffset,		2,
-	XmNleftAttachment,	XmATTACH_WIDGET,
-	XmNleftWidget,		lab,
-	XmNleftOffset,		2,
-	XmNcolumns,		10,
-    NULL);	
-    XtAddCallback (this->size_text, XmNactivateCallback, (XtCallbackProc)
-	PixelImageFormat_ParseSizeCB, (XtPointer)this);
-    XtAddCallback (this->size_text, XmNmodifyVerifyCallback, (XtCallbackProc)
-	PixelImageFormat_ModifyCB, (XtPointer)this);
-    XtAddEventHandler (this->size_text, LeaveWindowMask, False,
-	(XtEventHandler)PixelImageFormat_ParseSizeEH, (XtPointer)this);
-
-    this->setRootWidget(body);
-    return body;
-}
+//Widget PixelImageFormat::createBody (Widget parent)
+//{
+//    this->initialize();
+//
+//    //
+//    // Widgets for typing in the widthXheight of the image
+//    //
+//    Widget body = XtVaCreateManagedWidget (this->name,
+//	xmFormWidgetClass,	parent,
+//	XmNmappedWhenManaged,	False,
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNleftOffset,		2,
+//	XmNrightAttachment,	XmATTACH_FORM,
+//	XmNrightOffset,		2,
+//    NULL);
+//
+//    Widget lab = XtVaCreateManagedWidget ("sizeLabel",
+//	xmLabelWidgetClass,	body,
+//	XmNtopAttachment,	XmATTACH_FORM,
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNleftOffset,		2,
+//	XmNtopOffset,		7,
+//    NULL);
+//
+//    this->size_text = XtVaCreateManagedWidget ("sizeText",
+//	xmTextWidgetClass,	body,
+//	XmNtopAttachment,	XmATTACH_FORM,
+//	XmNtopOffset,		2,
+//	XmNleftAttachment,	XmATTACH_WIDGET,
+//	XmNleftWidget,		lab,
+//	XmNleftOffset,		2,
+//	XmNcolumns,		10,
+//    NULL);	
+//    XtAddCallback (this->size_text, XmNactivateCallback, (XtCallbackProc)
+//	PixelImageFormat_ParseSizeCB, (XtPointer)this);
+//    XtAddCallback (this->size_text, XmNmodifyVerifyCallback, (XtCallbackProc)
+//	PixelImageFormat_ModifyCB, (XtPointer)this);
+//    XtAddEventHandler (this->size_text, LeaveWindowMask, False,
+//	(XtEventHandler)PixelImageFormat_ParseSizeEH, (XtPointer)this);
+//
+//    this->setRootWidget(body);
+//    return body;
+//}
 
 boolean PixelImageFormat::useLocalResolution()
 {
@@ -160,12 +156,12 @@ ImageNode *node = this->dialog->getNode();
     // If we know we're using the node's value, then disable the text widget so
     // that the user sees she can't enter her own value.
     //
-    if (this->size_text) {
-	if (((rescon) && (aspcon)) || (!rerender))
-	    this->setTextSensitive (this->size_text, False);
-	else
-	    this->setTextSensitive (this->size_text, True);
-    }
+ //   if (this->size_text) {
+	//if (((rescon) && (aspcon)) || (!rerender))
+	//    this->setTextSensitive (this->size_text, False);
+	//else
+	//    this->setTextSensitive (this->size_text, True);
+ //   }
 
     //
     // Based on what we already know, lets put a value into the text widget.
@@ -213,16 +209,16 @@ ImageNode *node = this->dialog->getNode();
     sprintf (size_val, "%dx%d", this->width, height);
     if (this->size_val) delete this->size_val;
     this->size_val = DuplicateString(size_val);
-    if (this->size_text) {
-	if (this->size_timer)
-	    XtRemoveTimeOut (this->size_timer);
-	this->size_timer = 0;
-	XtRemoveCallback (this->size_text, XmNmodifyVerifyCallback,
-	    (XtCallbackProc)PixelImageFormat_ModifyCB, (XtPointer)this);
-	XmTextSetString (this->size_text, this->size_val);
-	XtAddCallback (this->size_text, XmNmodifyVerifyCallback,
-	    (XtCallbackProc)PixelImageFormat_ModifyCB, (XtPointer)this);
-    }
+ //   if (this->size_text) {
+	//if (this->size_timer)
+	//    XtRemoveTimeOut (this->size_timer);
+	//this->size_timer = 0;
+	//XtRemoveCallback (this->size_text, XmNmodifyVerifyCallback,
+	//    (XtCallbackProc)PixelImageFormat_ModifyCB, (XtPointer)this);
+	//XmTextSetString (this->size_text, this->size_val);
+	//XtAddCallback (this->size_text, XmNmodifyVerifyCallback,
+	//    (XtCallbackProc)PixelImageFormat_ModifyCB, (XtPointer)this);
+ //   }
 }
 
 void PixelImageFormat::parseImageSize(const char *str)
@@ -322,52 +318,52 @@ boolean PixelImageFormat::isA(Symbol classname)
 	return this->ImageFormat::isA(classname);
 }
 
-extern "C" {
+//extern "C" {
 
-void PixelImageFormat_ModifyCB (Widget , XtPointer clientData, XtPointer)
-{
-    PixelImageFormat* pif = (PixelImageFormat*)clientData;
-    ASSERT(pif);
-    if (pif->size_timer)
-	XtRemoveTimeOut (pif->size_timer);
-    pif->size_timer = 0;
-    pif->size_timer = XtAppAddTimeOut (theApplication->getApplicationContext(),
-	5000, (XtTimerCallbackProc)PixelImageFormat_SizeTO, (XtPointer)pif);
-}
-
-void PixelImageFormat_ParseSizeCB (Widget w, XtPointer clientData, XtPointer)
-{
-    PixelImageFormat* pif = (PixelImageFormat*)clientData;
-    ASSERT(pif);
-    if (pif->size_timer)
-	XtRemoveTimeOut (pif->size_timer);
-    pif->size_timer = 0;
-    char *str = XmTextGetString(w);
-    pif->parseImageSize (str);
-    pif->setCommandActivation();
-    if (str) XtFree(str);
-}
-
-void PixelImageFormat_SizeTO (XtPointer clientData, XtIntervalId* )
-{
-    PixelImageFormat* pif = (PixelImageFormat*)clientData;
-    ASSERT(pif);
-    char *str = XmTextGetString(pif->size_text);
-    pif->size_timer = 0;
-    pif->parseImageSize (str);
-    pif->setCommandActivation();
-    if (str) XtFree(str);
-}
-
-void PixelImageFormat_ParseSizeEH (Widget w, XtPointer clientData, XEvent*, Boolean*)
-{
-    PixelImageFormat* pif = (PixelImageFormat*)clientData;
-    ASSERT(pif);
-    if (!pif->size_timer) return;
-    PixelImageFormat_ParseSizeCB(w, clientData, (XtPointer)NULL);
-}
-
-
-} // end extern C
-
-
+//void PixelImageFormat_ModifyCB (Widget , XtPointer clientData, XtPointer)
+//{
+//    PixelImageFormat* pif = (PixelImageFormat*)clientData;
+//    ASSERT(pif);
+//    if (pif->size_timer)
+//	XtRemoveTimeOut (pif->size_timer);
+//    pif->size_timer = 0;
+//    pif->size_timer = XtAppAddTimeOut (theApplication->getApplicationContext(),
+//	5000, (XtTimerCallbackProc)PixelImageFormat_SizeTO, (XtPointer)pif);
+//}
+//
+//void PixelImageFormat_ParseSizeCB (Widget w, XtPointer clientData, XtPointer)
+//{
+//    PixelImageFormat* pif = (PixelImageFormat*)clientData;
+//    ASSERT(pif);
+//    if (pif->size_timer)
+//	XtRemoveTimeOut (pif->size_timer);
+//    pif->size_timer = 0;
+//    char *str = XmTextGetString(w);
+//    pif->parseImageSize (str);
+//    pif->setCommandActivation();
+//    if (str) XtFree(str);
+//}
+//
+//void PixelImageFormat_SizeTO (XtPointer clientData, XtIntervalId* )
+//{
+//    PixelImageFormat* pif = (PixelImageFormat*)clientData;
+//    ASSERT(pif);
+//    char *str = XmTextGetString(pif->size_text);
+//    pif->size_timer = 0;
+//    pif->parseImageSize (str);
+//    pif->setCommandActivation();
+//    if (str) XtFree(str);
+//}
+//
+//void PixelImageFormat_ParseSizeEH (Widget w, XtPointer clientData, XEvent*, Boolean*)
+//{
+//    PixelImageFormat* pif = (PixelImageFormat*)clientData;
+//    ASSERT(pif);
+//    if (!pif->size_timer) return;
+//    PixelImageFormat_ParseSizeCB(w, clientData, (XtPointer)NULL);
+//}
+//
+//
+//} // end extern C
+//
+//

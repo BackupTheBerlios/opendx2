@@ -14,9 +14,9 @@
 
 boolean ImageFormatPSGreyEnc::ClassInitialized = FALSE;
 
-String ImageFormatPSGreyEnc::DefaultResources[] = {
-    NUL(char*)
-};
+//String ImageFormatPSGreyEnc::DefaultResources[] = {
+//    NUL(char*)
+//};
 
 
 ImageFormatPSGreyEnc::ImageFormatPSGreyEnc (ImageFormatDialog* dialog) : 
@@ -33,12 +33,12 @@ ImageFormatPSGreyEnc::~ImageFormatPSGreyEnc()
 void ImageFormatPSGreyEnc::initialize()
 {
     if (!ImageFormatPSGreyEnc::ClassInitialized) {
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    PostScriptImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormatPSGreyEnc::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    PostScriptImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormatPSGreyEnc::DefaultResources);
 	ImageFormatPSGreyEnc::ClassInitialized = TRUE;
     }
 }

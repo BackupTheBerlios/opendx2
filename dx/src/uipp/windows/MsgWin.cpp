@@ -7,22 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
+#include "defines.h"
 
 
 #include <ctype.h>
 #include <errno.h>
 #include <string.h>
-
-#include <Xm/CascadeB.h>
-#include <Xm/Form.h>
-#include <Xm/Frame.h>
-#include <Xm/List.h>
-#include <Xm/RowColumn.h>
-#include <Xm/Separator.h>
 
 #include "DXStrings.h"
 #include "MsgWin.h"
@@ -42,8 +32,6 @@
 #include "RepeatingToggle.h"
 #include "DXPacketIF.h"
 
-#include "MWDefaultResources.h"
-
 boolean MsgWin::ClassInitialized = FALSE;
 
 //
@@ -52,11 +40,11 @@ boolean MsgWin::ClassInitialized = FALSE;
 MsgWin::MsgWin(): DXWindow("messageWindow", FALSE)
 {
 
-    this->fileMenu = NULL;
-    this->editMenu = NULL;
-    this->executeMenu = NULL;
-    this->optionsMenu = NULL;
-    this->helpMenu = NULL;
+    //this->fileMenu = NULL;
+    //this->editMenu = NULL;
+    //this->executeMenu = NULL;
+    //this->optionsMenu = NULL;
+    //this->helpMenu = NULL;
 
     this->nextErrorOption =  NULL;
     this->prevErrorOption =  NULL;
@@ -105,7 +93,7 @@ MsgWin::MsgWin(): DXWindow("messageWindow", FALSE)
 	this->memoryCmd = NUL(Command*);
     }
 
-    this->intervalId = 0;
+    //this->intervalId = 0;
     this->firstMsg   = FALSE;
     this->executing  = FALSE;
     this->beenManaged= FALSE;
@@ -123,7 +111,7 @@ MsgWin::MsgWin(): DXWindow("messageWindow", FALSE)
     {
 	ASSERT(theApplication);
         MsgWin::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 //
@@ -182,11 +170,11 @@ MsgWin::~MsgWin()
 //
 // Install the default resources for this class.
 //
-void MsgWin::installDefaultResources(Widget baseWidget)
-{
-    this->setDefaultResources(baseWidget, MsgWin::DefaultResources);
-    this->DXWindow::installDefaultResources(baseWidget);
-}
+//void MsgWin::installDefaultResources(Widget baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, MsgWin::DefaultResources);
+//    this->DXWindow::installDefaultResources(baseWidget);
+//}
 
 void MsgWin::manage()
 {
@@ -194,260 +182,260 @@ void MsgWin::manage()
     this->DXWindow::manage();
 }
 
-void MsgWin::createMenus(Widget parent)
-{
-    this->createFileMenu(parent);
-    this->createEditMenu(parent);
-    this->createExecuteMenu(parent);
-    if (theDXApplication->appAllowsScriptCommands()) 
-	this->createCommandsMenu(parent);
-    this->createOptionsMenu(parent);
-    this->createHelpMenu(parent);
-
-    //
-    // Right justify the help menu (if it exists).
-    //
-    if (this->helpMenu)
-    {
-        XtVaSetValues(parent, XmNmenuHelpWidget, this->helpMenu, NULL);
-    }
-}
-void MsgWin::createFileMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    //
-    // Create "File" menu and options.
-    //
-    Widget pulldown =
-	this->fileMenuPulldown =
-	    XmCreatePulldownMenu(parent, "fileMenuPulldown", NUL(ArgList), 0);
-    this->fileMenu =
-	XtVaCreateManagedWidget
-	    ("fileMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    this->logOption = new ToggleButtonInterface(pulldown, "msgLogOption",
-	this->logCmd, this->logFile != NULL);
-    this->saveOption = new ButtonInterface(pulldown, "msgSaveOption",
-	this->saveCmd);
-
-    XtVaCreateManagedWidget
-	    ("fileSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    this->closeOption = new ButtonInterface(pulldown, "msgCloseOption",
-	this->closeCmd);
-}
-
-void MsgWin::createEditMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    //
-    // Create "File" menu and options.
-    //
-    Widget pulldown =
-	this->editMenuPulldown =
-	    XmCreatePulldownMenu(parent, "editMenuPulldown", NUL(ArgList), 0);
-    this->editMenu =
-	XtVaCreateManagedWidget
-	    ("editMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    this->nextErrorOption = 
-		new ButtonInterface(pulldown, 
-			"msgNextErrorOption", this->nextErrorCmd);
-    this->prevErrorOption = 
-		new ButtonInterface(pulldown, 
-			"msgPrevErrorOption", this->prevErrorCmd);
-
-    XtVaCreateManagedWidget
-	    ("editSeparator", xmSeparatorWidgetClass, pulldown, NULL);
-
-    this->clearOption = new ButtonInterface(pulldown, "msgClearOption",
-	this->clearCmd);
-
-}
-
-void MsgWin::createCommandsMenu(Widget parent)
-{
-    ASSERT(parent);
-    if ((!this->traceCmd) && (!this->execScriptCmd) && (!this->memoryCmd)) return ;
-
-    Widget pulldown = this->optionsMenuPulldown =
-	XmCreatePulldownMenu(parent, "commandsMenuPulldown", NUL(ArgList), 0);
-    this->commandsMenu =
-	XtVaCreateManagedWidget
-	    ("commandsMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    if (this->traceCmd) 
-	this->traceOption = new RepeatingToggle (pulldown, "msgTraceOption",
-	    this->traceCmd, theDXApplication->showInstanceNumbers());
-
-    if (this->execScriptCmd) 
-	this->execScriptOption = new ButtonInterface(pulldown, 
-	    "msgExecScriptOption", this->execScriptCmd);
-
-    if (this->memoryCmd)
-	this->memoryOption = new ButtonInterface (pulldown,
-	    "msgShowMemoryOption", this->memoryCmd);
-}
-
-void MsgWin::createOptionsMenu(Widget parent)
-{
-    ASSERT(parent);
-
-    //
-    // Create "File" menu and options.
-    //
-    Widget pulldown = this->optionsMenuPulldown =
-	XmCreatePulldownMenu(parent, "optionsMenuPulldown", NUL(ArgList), 0);
-    this->optionsMenu =
-	XtVaCreateManagedWidget
-	    ("optionsMenu",
-	     xmCascadeButtonWidgetClass,
-	     parent,
-	     XmNsubMenuId, pulldown,
-	     NULL);
-
-    if (theDXApplication->appAllowsMessageInfoOption())
-	this->infoOption = new ToggleButtonInterface(pulldown, 
-		"msgInfoOption", theDXApplication->toggleInfoEnable,
-		theDXApplication->isInfoEnabled());
-
-    if (theDXApplication->appAllowsMessageWarningOption())
-	this->warningOption = new ToggleButtonInterface(pulldown, 
-		"msgWarningOption", theDXApplication->toggleWarningEnable,
-		theDXApplication->isWarningEnabled());
-
-    this->errorOption = new ToggleButtonInterface(pulldown, "msgErrorOption",
-	theDXApplication->toggleErrorEnable, theDXApplication->isErrorEnabled());
-}
-
-Widget MsgWin::createWorkArea(Widget parent)
-{
-    Widget top = XtVaCreateManagedWidget(
-	"workAreaFrame", xmFrameWidgetClass, parent,
-	XmNshadowType,		XmSHADOW_OUT,
-	XmNmarginWidth,		5,
-	XmNmarginHeight,	5,
-	NULL);
-
-    Widget form = XtVaCreateManagedWidget(
-	"workArea", xmFormWidgetClass, top,
-	NULL);
-
-    Widget frame = XtVaCreateManagedWidget(
-	"msgFrame", xmFrameWidgetClass, form,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNbottomAttachment,	XmATTACH_FORM,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNrightAttachment,	XmATTACH_FORM,
-	NULL);
-
-    Arg arg[10];
-    XtSetArg(arg[0], XmNlistSizePolicy, XmCONSTANT);
-    XtSetArg(arg[1], XmNselectionPolicy, XmSINGLE_SELECT);
-    this->list = XmCreateScrolledList(frame, "msgList", arg, 2);
-    this->installComponentHelpCallback(this->list);
-    XtAddCallback(this->list,
-		  XmNsingleSelectionCallback,
-		  (XtCallbackProc)MsgWin_SelectCB,
-		  (XtPointer)this);
-
-    XtManageChild(this->list);
-
-    return top;
-}
+//void MsgWin::createMenus(Widget parent)
+//{
+//    this->createFileMenu(parent);
+//    this->createEditMenu(parent);
+//    this->createExecuteMenu(parent);
+//    if (theDXApplication->appAllowsScriptCommands()) 
+//	this->createCommandsMenu(parent);
+//    this->createOptionsMenu(parent);
+//    this->createHelpMenu(parent);
+//
+//    //
+//    // Right justify the help menu (if it exists).
+//    //
+//    if (this->helpMenu)
+//    {
+//        XtVaSetValues(parent, XmNmenuHelpWidget, this->helpMenu, NULL);
+//    }
+//}
+//void MsgWin::createFileMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    //
+//    // Create "File" menu and options.
+//    //
+//    Widget pulldown =
+//	this->fileMenuPulldown =
+//	    XmCreatePulldownMenu(parent, "fileMenuPulldown", NUL(ArgList), 0);
+//    this->fileMenu =
+//	XtVaCreateManagedWidget
+//	    ("fileMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    this->logOption = new ToggleButtonInterface(pulldown, "msgLogOption",
+//	this->logCmd, this->logFile != NULL);
+//    this->saveOption = new ButtonInterface(pulldown, "msgSaveOption",
+//	this->saveCmd);
+//
+//    XtVaCreateManagedWidget
+//	    ("fileSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    this->closeOption = new ButtonInterface(pulldown, "msgCloseOption",
+//	this->closeCmd);
+//}
+//
+//void MsgWin::createEditMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    //
+//    // Create "File" menu and options.
+//    //
+//    Widget pulldown =
+//	this->editMenuPulldown =
+//	    XmCreatePulldownMenu(parent, "editMenuPulldown", NUL(ArgList), 0);
+//    this->editMenu =
+//	XtVaCreateManagedWidget
+//	    ("editMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    this->nextErrorOption = 
+//		new ButtonInterface(pulldown, 
+//			"msgNextErrorOption", this->nextErrorCmd);
+//    this->prevErrorOption = 
+//		new ButtonInterface(pulldown, 
+//			"msgPrevErrorOption", this->prevErrorCmd);
+//
+//    XtVaCreateManagedWidget
+//	    ("editSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+//
+//    this->clearOption = new ButtonInterface(pulldown, "msgClearOption",
+//	this->clearCmd);
+//
+//}
+//
+//void MsgWin::createCommandsMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//    if ((!this->traceCmd) && (!this->execScriptCmd) && (!this->memoryCmd)) return ;
+//
+//    Widget pulldown = this->optionsMenuPulldown =
+//	XmCreatePulldownMenu(parent, "commandsMenuPulldown", NUL(ArgList), 0);
+//    this->commandsMenu =
+//	XtVaCreateManagedWidget
+//	    ("commandsMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    if (this->traceCmd) 
+//	this->traceOption = new RepeatingToggle (pulldown, "msgTraceOption",
+//	    this->traceCmd, theDXApplication->showInstanceNumbers());
+//
+//    if (this->execScriptCmd) 
+//	this->execScriptOption = new ButtonInterface(pulldown, 
+//	    "msgExecScriptOption", this->execScriptCmd);
+//
+//    if (this->memoryCmd)
+//	this->memoryOption = new ButtonInterface (pulldown,
+//	    "msgShowMemoryOption", this->memoryCmd);
+//}
+//
+//void MsgWin::createOptionsMenu(Widget parent)
+//{
+//    ASSERT(parent);
+//
+//    //
+//    // Create "File" menu and options.
+//    //
+//    Widget pulldown = this->optionsMenuPulldown =
+//	XmCreatePulldownMenu(parent, "optionsMenuPulldown", NUL(ArgList), 0);
+//    this->optionsMenu =
+//	XtVaCreateManagedWidget
+//	    ("optionsMenu",
+//	     xmCascadeButtonWidgetClass,
+//	     parent,
+//	     XmNsubMenuId, pulldown,
+//	     NULL);
+//
+//    if (theDXApplication->appAllowsMessageInfoOption())
+//	this->infoOption = new ToggleButtonInterface(pulldown, 
+//		"msgInfoOption", theDXApplication->toggleInfoEnable,
+//		theDXApplication->isInfoEnabled());
+//
+//    if (theDXApplication->appAllowsMessageWarningOption())
+//	this->warningOption = new ToggleButtonInterface(pulldown, 
+//		"msgWarningOption", theDXApplication->toggleWarningEnable,
+//		theDXApplication->isWarningEnabled());
+//
+//    this->errorOption = new ToggleButtonInterface(pulldown, "msgErrorOption",
+//	theDXApplication->toggleErrorEnable, theDXApplication->isErrorEnabled());
+//}
+//
+//Widget MsgWin::createWorkArea(Widget parent)
+//{
+//    Widget top = XtVaCreateManagedWidget(
+//	"workAreaFrame", xmFrameWidgetClass, parent,
+//	XmNshadowType,		XmSHADOW_OUT,
+//	XmNmarginWidth,		5,
+//	XmNmarginHeight,	5,
+//	NULL);
+//
+//    Widget form = XtVaCreateManagedWidget(
+//	"workArea", xmFormWidgetClass, top,
+//	NULL);
+//
+//    Widget frame = XtVaCreateManagedWidget(
+//	"msgFrame", xmFrameWidgetClass, form,
+//	XmNtopAttachment,	XmATTACH_FORM,
+//	XmNbottomAttachment,	XmATTACH_FORM,
+//	XmNleftAttachment,	XmATTACH_FORM,
+//	XmNrightAttachment,	XmATTACH_FORM,
+//	NULL);
+//
+//    Arg arg[10];
+//    XtSetArg(arg[0], XmNlistSizePolicy, XmCONSTANT);
+//    XtSetArg(arg[1], XmNselectionPolicy, XmSINGLE_SELECT);
+//    this->list = XmCreateScrolledList(frame, "msgList", arg, 2);
+//    this->installComponentHelpCallback(this->list);
+//    XtAddCallback(this->list,
+//		  XmNsingleSelectionCallback,
+//		  (XtCallbackProc)MsgWin_SelectCB,
+//		  (XtPointer)this);
+//
+//    XtManageChild(this->list);
+//
+//    return top;
+//}
 
 void MsgWin::addInformation(const char *info)
 {
-    ASSERT(info);
-    if (!this->isInitialized())
-	this->initialize();
-    if (!theDXApplication->isInfoEnabled())
-	return;
+	ASSERT(info);
+	if (!this->isInitialized())
+		this->initialize();
+	if (!theDXApplication->isInfoEnabled())
+		return;
 
-    if (!info)
-	return;
+	if (!info)
+		return;
 
-    const char *newLine = strchr(info, '\n');
-    char *s = NULL;
-    if (newLine)
-    {
-	s = DuplicateString(info);
-	s[newLine - info] = '\0';
-	info = s;
-    }
-
-
-    if (executing)
-    {
-	if (this->intervalId == 0)
-	    this->intervalId = XtAppAddTimeOut(
-		theApplication->getApplicationContext(),
-		5000,
-		(XtTimerCallbackProc)MsgWin_FlushTimeoutTO,
-		(XtPointer)this);
-	if (this->firstMsg)
+	const char *newLine = strchr(info, '\n');
+	char *s = NULL;
+	if (newLine)
 	{
-	    this->firstMsg = FALSE;
-	    if (this->logFile)
-	    {
-		fputs("Begin Execution\n", this->logFile);
-		fflush(this->logFile);
-	    }
-	    XmString s = XmStringCreate("Begin Execution", "oblique");
-	    XmListAddItemUnselected(this->list, s, 0);
-	    XmStringFree(s);
-	    int itemCount;
-	    XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-	    XmListSetBottomPos(this->list, itemCount);
-
-	    this->clearCmd->activate();
+		s = DuplicateString(info);
+		s[newLine - info] = '\0';
+		info = s;
 	}
-	int vic;
-	XtVaGetValues(this->list, XmNvisibleItemCount, &vic, NULL);
-	this->batchedLines.appendElement((void*)DuplicateString(info));
-	if (vic <= this->batchedLines.getSize())
-	    this->flushBuffer();
-    }
-    else
-    {
-	if (this->logFile)
+
+
+	if (executing)
 	{
-	    fputs(info, this->logFile);
-	    fputc('\n', this->logFile);
-	    fflush(this->logFile);
+		//if (this->intervalId == 0)
+		//	this->intervalId = XtAppAddTimeOut(
+		//	theApplication->getApplicationContext(),
+		//	5000,
+		//	(XtTimerCallbackProc)MsgWin_FlushTimeoutTO,
+		//	(XtPointer)this);
+		if (this->firstMsg)
+		{
+			this->firstMsg = FALSE;
+			if (this->logFile)
+			{
+				fputs("Begin Execution\n", this->logFile);
+				fflush(this->logFile);
+			}
+			//XmString s = XmStringCreate("Begin Execution", "oblique");
+			//XmListAddItemUnselected(this->list, s, 0);
+			//XmStringFree(s);
+			//int itemCount;
+			//XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+			//XmListSetBottomPos(this->list, itemCount);
+
+			this->clearCmd->activate();
+		}
+		int vic;
+		//XtVaGetValues(this->list, XmNvisibleItemCount, &vic, NULL);
+		//this->batchedLines.appendElement((void*)DuplicateString(info));
+		if (vic <= this->batchedLines.getSize())
+			this->flushBuffer();
 	}
-	XmString s = XmStringCreate((char*)info, "normal");
-	XmListAddItemUnselected(this->list, s, 0);
-	XmStringFree(s);
-	int itemCount;
-	XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-	XmListSetBottomPos(this->list, itemCount);
+	else
+	{
+		if (this->logFile)
+		{
+			fputs(info, this->logFile);
+			fputc('\n', this->logFile);
+			fflush(this->logFile);
+		}
+		//XmString s = XmStringCreate((char*)info, "normal");
+		//XmListAddItemUnselected(this->list, s, 0);
+		//XmStringFree(s);
+		//int itemCount;
+		//XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+		//XmListSetBottomPos(this->list, itemCount);
 
-	this->clearCmd->activate();
-    }
+		this->clearCmd->activate();
+	}
 
-    if (s != NULL)
-	delete[] s;
+	if (s != NULL)
+		delete[] s;
 
-    if (theDXApplication->doesInfoOpenMessage())
-    {
-	if (!this->isManaged())
-	    this->manage();
-    }
+	if (theDXApplication->doesInfoOpenMessage())
+	{
+		if (!this->isManaged())
+			this->manage();
+	}
 }
 
 void MsgWin::infoOpen()
@@ -481,12 +469,12 @@ void MsgWin::addError(const char *error)
 	    fputs("Begin Execution\n", this->logFile);
 	    fflush(this->logFile);
 	}
-	XmString s = XmStringCreate("Begin Execution", "oblique");
-	XmListAddItemUnselected(this->list, s, 0);
-	XmStringFree(s);
-	int itemCount;
-	XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-	XmListSetBottomPos(this->list, itemCount);
+	//XmString s = XmStringCreate("Begin Execution", "oblique");
+	//XmListAddItemUnselected(this->list, s, 0);
+	//XmStringFree(s);
+	//int itemCount;
+	//XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+	//XmListSetBottomPos(this->list, itemCount);
 
 	this->clearCmd->activate();
     }
@@ -575,44 +563,44 @@ void MsgWin::addError(const char *error)
 	    fputs(o, this->logFile);
 	    fputc('\n', this->logFile);
 	}
-	XmString errorString = XmStringCreate("ERROR: ", "bold");
-	XmString nameString = XmStringCreate((char*)line, "bold");
-	XmString text = XmStringCreate((char*)o, "oblique");
-	XmString firstHalf = XmStringConcat(errorString, nameString);
-	XmString s = XmStringConcat(firstHalf, text);
-	XmStringFree(errorString);
-	XmStringFree(nameString);
-	XmStringFree(firstHalf);
-	XmStringFree(text);
-	delete[] line;
+	//XmString errorString = XmStringCreate("ERROR: ", "bold");
+	//XmString nameString = XmStringCreate((char*)line, "bold");
+	//XmString text = XmStringCreate((char*)o, "oblique");
+	//XmString firstHalf = XmStringConcat(errorString, nameString);
+	//XmString s = XmStringConcat(firstHalf, text);
+	//XmStringFree(errorString);
+	//XmStringFree(nameString);
+	//XmStringFree(firstHalf);
+	//XmStringFree(text);
+	//delete[] line;
 
-	XmListAddItemUnselected(this->list, s, 0);
-	XmStringFree(s);
-	int itemCount;
-	XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-	XmListSetBottomPos(this->list, itemCount);
+	//XmListAddItemUnselected(this->list, s, 0);
+	//XmStringFree(s);
+	//int itemCount;
+	//XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+	//XmListSetBottomPos(this->list, itemCount);
 
-	this->clearCmd->activate();
+	//this->clearCmd->activate();
 
-	SelectableLine *l = new SelectableLine;
-	XtVaGetValues(this->list, XmNitemCount, &l->position, NULL);
-	l->line = DuplicateString(error);
-	this->selectableLines.appendElement((void*)l);
-    }
-    else
-    {
-	if (this->logFile)
-	{
-	    fputs(error, this->logFile);
-	    fputc('\n', this->logFile);
-	}
-	XmString s = XmStringCreate((char*)error, "bold");
+	//SelectableLine *l = new SelectableLine;
+	//XtVaGetValues(this->list, XmNitemCount, &l->position, NULL);
+	//l->line = DuplicateString(error);
+	//this->selectableLines.appendElement((void*)l);
+ //   }
+ //   else
+ //   {
+	//if (this->logFile)
+	//{
+	//    fputs(error, this->logFile);
+	//    fputc('\n', this->logFile);
+	//}
+	//XmString s = XmStringCreate((char*)error, "bold");
 
-	XmListAddItemUnselected(this->list, s, 0);
-	XmStringFree(s);
-	int itemCount;
-	XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-	XmListSetBottomPos(this->list, itemCount);
+	//XmListAddItemUnselected(this->list, s, 0);
+	//XmStringFree(s);
+	//int itemCount;
+	//XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+	//XmListSetBottomPos(this->list, itemCount);
 
 	this->clearCmd->activate();
     }
@@ -620,69 +608,69 @@ void MsgWin::addError(const char *error)
     {
 	if (!this->beenBeeped)
 	{
-	    XBell(XtDisplay(this->getRootWidget()), 0);
-	    XFlush(XtDisplay(this->getRootWidget()));
+	    //XBell(XtDisplay(this->getRootWidget()), 0);
+	    //XFlush(XtDisplay(this->getRootWidget()));
 	    this->beenBeeped = TRUE;
 	}
 	if (!this->isManaged())
 	    this->manage();
-	else
-	    XRaiseWindow(XtDisplay(this->getRootWidget()),
-		   XtWindow(this->getRootWidget()));
+	//else
+	//    XRaiseWindow(XtDisplay(this->getRootWidget()),
+	//	   XtWindow(this->getRootWidget()));
     }
 
 }
 void MsgWin::addWarning(const char *warning)
 {
-    ASSERT(warning);
-    if (!theDXApplication->isWarningEnabled())
-	return;
-    if (!this->isInitialized())
-	this->initialize();
-    if (!warning)
-	return;
+	ASSERT(warning);
+	if (!theDXApplication->isWarningEnabled())
+		return;
+	if (!this->isInitialized())
+		this->initialize();
+	if (!warning)
+		return;
 
-    this->flushBuffer();
+	this->flushBuffer();
 
-    if (this->firstMsg)
-    {
-	this->firstMsg = FALSE;
+	if (this->firstMsg)
+	{
+		this->firstMsg = FALSE;
+		if (this->logFile)
+		{
+			fputs("Begin Execution\n", this->logFile);
+			fflush(this->logFile);
+		}
+		//XmString s = XmStringCreate("Begin Execution", "oblique");
+		//XmListAddItemUnselected(this->list, s, 0);
+		//XmStringFree(s);
+		//int itemCount;
+		//XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+		//XmListSetBottomPos(this->list, itemCount);
+
+		this->clearCmd->activate();
+	}
+
 	if (this->logFile)
 	{
-	    fputs("Begin Execution\n", this->logFile);
-	    fflush(this->logFile);
+		fputs(warning, this->logFile);
+		fputc('\n', this->logFile);
+		fflush(this->logFile);
 	}
-	XmString s = XmStringCreate("Begin Execution", "oblique");
-	XmListAddItemUnselected(this->list, s, 0);
-	XmStringFree(s);
-	int itemCount;
-	XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-	XmListSetBottomPos(this->list, itemCount);
+	//XmString s = XmStringCreate((char*)warning, "normal");
+	//XmListAddItemUnselected(this->list, s, 0);
+	//XmStringFree(s);
+	//int itemCount;
+	//XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+	//XmListSetBottomPos(this->list, itemCount);
 
-	this->clearCmd->activate();
-    }
-
-    if (this->logFile)
-    {
-	fputs(warning, this->logFile);
-	fputc('\n', this->logFile);
-	fflush(this->logFile);
-    }
-    XmString s = XmStringCreate((char*)warning, "normal");
-    XmListAddItemUnselected(this->list, s, 0);
-    XmStringFree(s);
-    int itemCount;
-    XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-    XmListSetBottomPos(this->list, itemCount);
-
-    if (theDXApplication->doesWarningOpenMessage())
-    {
-	if (!this->isManaged())
-	    this->manage();
-	else
-	    XRaiseWindow(XtDisplay(this->getRootWidget()),
-		   XtWindow(this->getRootWidget()));
-    }
+	if (theDXApplication->doesWarningOpenMessage())
+	{
+		if (!this->isManaged())
+			this->manage();
+		//else
+		//    XRaiseWindow(XtDisplay(this->getRootWidget()),
+		//	   XtWindow(this->getRootWidget()));
+	}
 }
 
 void MsgWin::beginExecution()
@@ -749,82 +737,83 @@ void MsgWin::standBy()
     }
 }
 
-extern "C" void MsgWin_FlushTimeoutTO(XtPointer closure, XtIntervalId*)
-{
-    MsgWin *mw = (MsgWin*) closure;
+//extern "C" void MsgWin_FlushTimeoutTO(XtPointer closure, XtIntervalId*)
+//{
+//    MsgWin *mw = (MsgWin*) closure;
+//
+//    mw->intervalId = 0;
+//    mw->flushBuffer();
+//}
 
-    mw->intervalId = 0;
-    mw->flushBuffer();
-}
 void MsgWin::flushBuffer()
 {
-    int nItems = this->batchedLines.getSize();
-    if (nItems == 0)
-	return;
+	int nItems = this->batchedLines.getSize();
+	if (nItems == 0)
+		return;
 
-    XmString *items = new XmString[nItems];
-    ListIterator li(this->batchedLines);
-    char *s;
-    int i;
-    for (i = 0; i < nItems && (s = (char*)li.getNext()); ++i)
-    {
-	if (this->logFile)
+	//XmString *items = new XmString[nItems];
+	ListIterator li(this->batchedLines);
+	char *s;
+	int i;
+	for (i = 0; i < nItems && (s = (char*)li.getNext()); ++i)
 	{
-	    fputs(s, this->logFile);
-	    fputc('\n', this->logFile);
+		if (this->logFile)
+		{
+			fputs(s, this->logFile);
+			fputc('\n', this->logFile);
+		}
+		//items[i] = XmStringCreate(s, "normal");
+		delete[] s;
 	}
-	items[i] = XmStringCreate(s, "normal");
-	delete[] s;
-    }
 
-    XmListAddItems(this->list, items, nItems, 0);
+	//XmListAddItems(this->list, items, nItems, 0);
 
-    if (this->logFile)
-	fflush(this->logFile);
+	if (this->logFile)
+		fflush(this->logFile);
 
-    int itemCount;
-    XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-    XmListSetBottomPos(this->list, itemCount);
+	//int itemCount;
+	//XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+	//XmListSetBottomPos(this->list, itemCount);
 
-    for (i = 0; i < nItems; ++i)
-	XmStringFree(items[i]);
-    delete[] items;
+	//for (i = 0; i < nItems; ++i)
+	//	XmStringFree(items[i]);
+	//delete[] items;
 
-    this->batchedLines.clear();
+	this->batchedLines.clear();
 
-    if (this->intervalId)
-    {
-	XtRemoveTimeOut(this->intervalId);
-	this->intervalId = 0;
-    }
+	//if (this->intervalId)
+	//{
+	//	XtRemoveTimeOut(this->intervalId);
+	//	this->intervalId = 0;
+	//}
 
-    this->clearCmd->activate();
+	this->clearCmd->activate();
 }
 
 boolean MsgWin::clear()
 {
-    this->flushBuffer();
-    if (this->intervalId)
-    {
-	XtRemoveTimeOut(this->intervalId);
-	this->intervalId = 0;
-    }
+	this->flushBuffer();
+	//if (this->intervalId)
+	//{
+	//	XtRemoveTimeOut(this->intervalId);
+	//	this->intervalId = 0;
+	//}
 
-    int nItems = this->batchedLines.getSize();
-    char *s;
-    ListIterator li(this->batchedLines);
-    for (int i = 0; i < nItems && (s = (char*)li.getNext()); ++i)
-	delete[] s;
-    this->batchedLines.clear();
+	int nItems = this->batchedLines.getSize();
+	char *s;
+	ListIterator li(this->batchedLines);
+	for (int i = 0; i < nItems && (s = (char*)li.getNext()); ++i)
+		delete[] s;
+	this->batchedLines.clear();
 
-    this->clearSelectableLines();
+	this->clearSelectableLines();
 
-    XmListDeleteAllItems(this->list);
+	//XmListDeleteAllItems(this->list);
 
-    this->clearCmd->deactivate();
-    this->beenBeeped = FALSE;
+	this->clearCmd->deactivate();
+	this->beenBeeped = FALSE;
 
-    return TRUE;
+	return TRUE;
 }
 
 boolean MsgWin::log(const char *file)
@@ -862,49 +851,49 @@ boolean MsgWin::log(const char *file)
 
 boolean MsgWin::save(const char *file)
 {
-    if (file)
-    {
-	FILE *f = fopen(file, "w");
-	if (f == NULL)
+	if (file)
 	{
-	    ErrorMessage("Failed to open %s: %s", file, strerror(errno));
-	    return FALSE;
+		FILE *f = fopen(file, "w");
+		if (f == NULL)
+		{
+			ErrorMessage("Failed to open %s: %s", file, strerror(errno));
+			return FALSE;
+		}
+		//int itemCount;
+		//XmStringTable items;
+		//XtVaGetValues(this->list,
+		//	XmNitemCount, &itemCount,
+		//	XmNitems, &items,
+		//	NULL);
+
+		//for (int i = 0; i < itemCount; ++i)
+		//{
+		//	XmStringContext context;
+		//	if (!XmStringInitContext(&context, items[i]))
+		//		continue;
+		//	XmStringCharSet tag;
+		//	XmStringDirection dir;
+		//	Boolean separator;
+		//	char *s;
+		//	while (XmStringGetNextSegment(context, &s, &tag, &dir, &separator))
+		//	{
+		//		fputs(s, f);
+		//		XtFree(s);
+		//	}
+		//	fputc('\n', f);
+		//}
+
+		fclose(f);
 	}
-	int itemCount;
-	XmStringTable items;
-	XtVaGetValues(this->list,
-	    XmNitemCount, &itemCount,
-	    XmNitems, &items,
-	    NULL);
 
-	for (int i = 0; i < itemCount; ++i)
-	{
-	    XmStringContext context;
-	    if (!XmStringInitContext(&context, items[i]))
-		continue;
-	    XmStringCharSet tag;
-	    XmStringDirection dir;
-	    Boolean separator;
-	    char *s;
-	    while (XmStringGetNextSegment(context, &s, &tag, &dir, &separator))
-	    {
-		fputs(s, f);
-		XtFree(s);
-	    }
-	    fputc('\n', f);
-	}
-
-	fclose(f);
-    }
-
-    return TRUE;
+	return TRUE;
 }
 
 void MsgWin::postExecCommandDialog()
 {
     if (!this->execCommandDialog)
 	this->execCommandDialog = 
-	    new ExecCommandDialog(this->getRootWidget());
+	    new ExecCommandDialog();
     this->execCommandDialog->post();
 }
 
@@ -912,7 +901,7 @@ void MsgWin::postLogDialog()
 {
     if (!this->logDialog)
 	this->logDialog = this->saveDialog =
-	    new MWFileDialog(this->getRootWidget(), this);
+	    new MWFileDialog(this);
     this->logDialog->postAs(TRUE);
 }
 
@@ -920,40 +909,40 @@ void MsgWin::postSaveDialog()
 {
     if (!this->logDialog)
 	this->logDialog = this->saveDialog =
-	    new MWFileDialog(this->getRootWidget(), this);
+	    new MWFileDialog(this);
     this->logDialog->postAs(FALSE);
 }
 
-extern "C" void MsgWin_SelectCB(Widget w, XtPointer closure, XtPointer callData)
-{
-    MsgWin *mw = (MsgWin*)closure;
-    XmListCallbackStruct *l = (XmListCallbackStruct*)callData;
-
-    ASSERT(l->reason == XmCR_SINGLE_SELECT);
-
-
-    //
-    // An attempt to avoid nagging the user...   if doesErrorOpenVpe() ==
-    // DXApplication::MayOpenVpe then selectLine() will check this extra
-    // param to see if it should prompt the user.  I would like to prompt only
-    // in certain circumstances to avoid nagging.
-    //
-    boolean prompt = TRUE;
-#if 0
-    if (l->event) {
-	if ((l->event->type == ButtonPress) ||
-	    (l->event->type == ButtonRelease) ||
-	    (l->event->type == KeyPress) ||
-	    (l->event->type == KeyRelease)) {
-	    if (l->event->xany.window == XtWindow(w)) {
-		prompt = FALSE;
-	    }
-	}
-    } 
-#endif
-    mw->selectLine(l->item_position, prompt);
-}
-
+//extern "C" void MsgWin_SelectCB(Widget w, XtPointer closure, XtPointer callData)
+//{
+//    MsgWin *mw = (MsgWin*)closure;
+//    XmListCallbackStruct *l = (XmListCallbackStruct*)callData;
+//
+//    ASSERT(l->reason == XmCR_SINGLE_SELECT);
+//
+//
+//    //
+//    // An attempt to avoid nagging the user...   if doesErrorOpenVpe() ==
+//    // DXApplication::MayOpenVpe then selectLine() will check this extra
+//    // param to see if it should prompt the user.  I would like to prompt only
+//    // in certain circumstances to avoid nagging.
+//    //
+//    boolean prompt = TRUE;
+//#if 0
+//    if (l->event) {
+//	if ((l->event->type == ButtonPress) ||
+//	    (l->event->type == ButtonRelease) ||
+//	    (l->event->type == KeyPress) ||
+//	    (l->event->type == KeyRelease)) {
+//	    if (l->event->xany.window == XtWindow(w)) {
+//		prompt = FALSE;
+//	    }
+//	}
+//    } 
+//#endif
+//    mw->selectLine(l->item_position, prompt);
+//}
+//
 
 void MsgWin::selectLine(int pos, boolean promptUser)
 {
@@ -1048,9 +1037,9 @@ void MsgWin::selectLine(int pos, boolean promptUser)
             // If we have put a question dialog, then it might be nice to 
 	    // leave it on top instead of the MsgWin.
             //
-        else if (!questionPosted)
-            XRaiseWindow(XtDisplay(this->getRootWidget()),
-               XtWindow(this->getRootWidget()));
+        //else if (!questionPosted)
+        //    XRaiseWindow(XtDisplay(this->getRootWidget()),
+        //       XtWindow(this->getRootWidget()));
     }
 
 }
@@ -1094,76 +1083,76 @@ class EdInfo {
 // the window.
 //
 boolean MsgWin::openEditorIfNecessary(Network *net, 
-				const char *nodeName, int inst, 
-				boolean promptUser)
+									  const char *nodeName, int inst, 
+									  boolean promptUser)
 {
-    EditorWindow *e = net->getEditor();
-    EdInfo *edinfo = new EdInfo (nodeName, net, e, inst);
-    int show_status = theDXApplication->doesErrorOpenVpe(net);
-    boolean questionPosted = FALSE;
+	EditorWindow *e = net->getEditor();
+	EdInfo *edinfo = new EdInfo (nodeName, net, e, inst);
+	int show_status = theDXApplication->doesErrorOpenVpe(net);
+	boolean questionPosted = FALSE;
 
-    if (show_status == DXApplication::MustOpenVpe) {
-	MsgWin::ShowEditor((XtPointer)edinfo);
-    } else if (show_status == DXApplication::DontOpenVpe) {
-	if (e && e->isManaged()) 
-	    MsgWin::ShowEditor((XtPointer)edinfo);
-	else
-	    MsgWin::NoShowEditor((XtPointer)edinfo);
-    } else if (show_status == DXApplication::MayOpenVpe) {
-	if (e && e->isManaged()) 
-	    MsgWin::ShowEditor((XtPointer)edinfo);
-	else if (promptUser) { 
-	    //
-	    // Must be FULL_APPLICATION_MODAL so that the user can't do 
-	    // File/Open while the question dialog is on the screen.  
-	    // Must also be a child of theDXApplication and not of 
-	    // this becuase if you mwm dismiss the MsgWin then the 
-	    // entire ui is hosed.
-	    //
-	    const char *macro = net->getNameString();
-	    const char *file = net->getFileName();
-	    char *confMsg = new char[32 + STRLEN(file) + STRLEN(macro)];
-	    sprintf (confMsg, "Open editor on %s (%s)?", macro, file);
-	    theQuestionDialogManager->modalPost(
-		theDXApplication->getAnchor()->getRootWidget(), 
-		confMsg, "Open Editor Confirmation",
-		(void*)edinfo,
-		MsgWin::ShowEditor, MsgWin::NoShowEditor, NULL,
-		"Yes", "No", NULL,
-		XmDIALOG_FULL_APPLICATION_MODAL
-	    );
-	    delete[] confMsg;
-	    questionPosted = TRUE;
+	if (show_status == DXApplication::MustOpenVpe) {
+		//MsgWin::ShowEditor((XtPointer)edinfo);
+	} else if (show_status == DXApplication::DontOpenVpe) {
+		//if (e && e->isManaged()) 
+		//	MsgWin::ShowEditor((XtPointer)edinfo);
+		//else
+		//	MsgWin::NoShowEditor((XtPointer)edinfo);
+	} else if (show_status == DXApplication::MayOpenVpe) {
+		if (e && e->isManaged()) {
+			//MsgWin::ShowEditor((XtPointer)edinfo);
+		}
+		else if (promptUser) { 
+			//
+			// Must be FULL_APPLICATION_MODAL so that the user can't do 
+			// File/Open while the question dialog is on the screen.  
+			// Must also be a child of theDXApplication and not of 
+			// this becuase if you mwm dismiss the MsgWin then the 
+			// entire ui is hosed.
+			//
+			const char *macro = net->getNameString();
+			const char *file = net->getFileName();
+			char *confMsg = new char[32 + STRLEN(file) + STRLEN(macro)];
+			sprintf (confMsg, "Open editor on %s (%s)?", macro, file);
+			//theQuestionDialogManager->modalPost( 
+			//	confMsg, "Open Editor Confirmation",
+			//	(void*)edinfo,
+			//	MsgWin::ShowEditor, MsgWin::NoShowEditor, NULL,
+			//	"Yes", "No", NULL,
+			//	XmDIALOG_FULL_APPLICATION_MODAL
+			//	);
+			delete[] confMsg;
+			questionPosted = TRUE;
+		} 
 	} 
-    } 
 
-    return questionPosted;
+	return questionPosted;
 }
 
-void MsgWin::ShowEditor (XtPointer cdata)
-{
-    EdInfo *ei = (EdInfo*)cdata;
-
-    if (ei->editor == NULL)
-	ei->editor = theDXApplication->newNetworkEditor(ei->net);
-    // 
-    //  On the last tool, we open up containing editor for the user.
-    // 
-    if (ei->editor) {
-	ei->editor->manage();
-	ei->editor->deselectAllNodes();
-	ei->editor->selectNode (ei->nodeName, ei->inst, TRUE);
-    }
-    delete ei;
-}
-void MsgWin::NoShowEditor (XtPointer cdata)
-{
-    EdInfo *ei = (EdInfo*)cdata;
-
-    delete ei;
-    Widget w = theQuestionDialogManager->getRootWidget();
-    if ((w) && (XtIsManaged(w))) XtUnmanageChild (w);
-}
+//void MsgWin::ShowEditor (XtPointer cdata)
+//{
+//    EdInfo *ei = (EdInfo*)cdata;
+//
+//    if (ei->editor == NULL)
+//	ei->editor = theDXApplication->newNetworkEditor(ei->net);
+//    // 
+//    //  On the last tool, we open up containing editor for the user.
+//    // 
+//    if (ei->editor) {
+//	ei->editor->manage();
+//	ei->editor->deselectAllNodes();
+//	ei->editor->selectNode (ei->nodeName, ei->inst, TRUE);
+//    }
+//    delete ei;
+//}
+//void MsgWin::NoShowEditor (XtPointer cdata)
+//{
+//    EdInfo *ei = (EdInfo*)cdata;
+//
+//    delete ei;
+//    Widget w = theQuestionDialogManager->getRootWidget();
+//    if ((w) && (XtIsManaged(w))) XtUnmanageChild (w);
+//}
 
 //
 // callers are: a menu bar button, and endExecution (which happens quite often
@@ -1174,119 +1163,119 @@ void MsgWin::NoShowEditor (XtPointer cdata)
 //
 void MsgWin::findNextError(boolean activateSameSelection)
 {
-    int *positions;
-    int npos;
-    int pos;
-    int itemCount;
-    int topItem;
-    int visibleItems;
+	int *positions;
+	int npos;
+	int pos;
+	int itemCount;
+	int topItem;
+	int visibleItems;
 
-    XtVaGetValues(this->list,
-	XmNitemCount, &itemCount,
-	XmNtopItemPosition, &topItem,
-	XmNvisibleItemCount, &visibleItems,
-	NULL);
+	//XtVaGetValues(this->list,
+	//	XmNitemCount, &itemCount,
+	//	XmNtopItemPosition, &topItem,
+	//	XmNvisibleItemCount, &visibleItems,
+	//	NULL);
 
-    if (XmListGetSelectedPos(this->list, &positions, &npos))
-    {
-	pos = positions[npos-1];
-	XtFree((char*)positions);
-    }
-    else
-    {
-	pos = 0;
-    }
-
-    ListIterator li(this->selectableLines);
-    SelectableLine *s;
-    boolean found = FALSE;
-    while( (s = (SelectableLine*)li.getNext()) )
-    {
-	if (s->position > pos)
+	//if (XmListGetSelectedPos(this->list, &positions, &npos))
+	//{
+	//	pos = positions[npos-1];
+	//	XtFree((char*)positions);
+	//}
+	//else
 	{
-	    found = TRUE;
-	    XmListSelectPos(this->list, s->position, True);
-	    if (s->position < topItem || s->position >= topItem + visibleItems)
-		XmListSetBottomPos(this->list, s->position);
-	    break;
+		pos = 0;
 	}
-    }
-    if ((!found) && (activateSameSelection))
-    {
-	li.setPosition(1);
-	pos = 0;
+
+	ListIterator li(this->selectableLines);
+	SelectableLine *s;
+	boolean found = FALSE;
 	while( (s = (SelectableLine*)li.getNext()) )
 	{
-	    if (s->position > pos)
-	    {
-		found = TRUE;
-		XmListSelectPos(this->list, s->position, True);
-		if (s->position < topItem ||
-			s->position >= topItem + visibleItems)
-		    XmListSetBottomPos(this->list, s->position);
-		break;
-	    }
+		if (s->position > pos)
+		{
+			found = TRUE;
+			//XmListSelectPos(this->list, s->position, True);
+			//if (s->position < topItem || s->position >= topItem + visibleItems)
+			//	XmListSetBottomPos(this->list, s->position);
+			break;
+		}
 	}
-    }
+	if ((!found) && (activateSameSelection))
+	{
+		li.setPosition(1);
+		pos = 0;
+		while( (s = (SelectableLine*)li.getNext()) )
+		{
+			if (s->position > pos)
+			{
+				found = TRUE;
+				//XmListSelectPos(this->list, s->position, True);
+				//if (s->position < topItem ||
+				//	s->position >= topItem + visibleItems)
+				//	XmListSetBottomPos(this->list, s->position);
+				break;
+			}
+		}
+	}
 }
 
 void MsgWin::findPrevError()
 {
-    int *positions;
-    int npos;
-    int pos;
-    int itemCount;
-    int topItem;
-    int visibleItems;
-    XtVaGetValues(this->list,
-	XmNitemCount, &itemCount,
-	XmNtopItemPosition, &topItem,
-	XmNvisibleItemCount, &visibleItems,
-	NULL);
-    if (XmListGetSelectedPos(this->list, &positions, &npos))
-    {
-	pos = positions[npos-1];
-	XtFree((char*)positions);
-    }
-    else
-    {
-	pos = itemCount + 1;
-    }
+	int *positions;
+	int npos;
+	int pos;
+	int itemCount;
+	int topItem;
+	int visibleItems;
+	//XtVaGetValues(this->list,
+	//	XmNitemCount, &itemCount,
+	//	XmNtopItemPosition, &topItem,
+	//	XmNvisibleItemCount, &visibleItems,
+	//	NULL);
+	//if (XmListGetSelectedPos(this->list, &positions, &npos))
+	//{
+	//	pos = positions[npos-1];
+	//	XtFree((char*)positions);
+	//}
+	//else
+	//{
+	//	pos = itemCount + 1;
+	//}
 
-    int i = this->selectableLines.getSize();
-    SelectableLine *s;
-    boolean found = FALSE;
-    for (; i > 0 && (s = (SelectableLine*)this->selectableLines.getElement(i));
-	 --i)
-    {
-	if (s->position < pos)
+	int i = this->selectableLines.getSize();
+	SelectableLine *s;
+	boolean found = FALSE;
+	for (; i > 0 && (s = (SelectableLine*)this->selectableLines.getElement(i));
+		--i)
 	{
-	    found = TRUE;
-	    XmListSelectPos(this->list, s->position, True);
-	    if (s->position < topItem || s->position >= topItem + visibleItems)
-		XmListSetBottomPos(this->list, s->position);
-	    break;
+		if (s->position < pos)
+		{
+			found = TRUE;
+			//XmListSelectPos(this->list, s->position, True);
+			//if (s->position < topItem || s->position >= topItem + visibleItems)
+			//	XmListSetBottomPos(this->list, s->position);
+			break;
+		}
 	}
-    }
-    if (!found)
-    {
-	i = this->selectableLines.getSize();
-	pos = itemCount + 1;
-	for (; i > 0 && 
-		(s = (SelectableLine*)this->selectableLines.getElement(i));
-	     --i)
+	if (!found)
 	{
-	    if (s->position < pos)
-	    {
-		found = TRUE;
-		XmListSelectPos(this->list, s->position, True);
-		if (s->position < topItem || 
-			s->position >= topItem + visibleItems)
-		    XmListSetBottomPos(this->list, s->position);
-		break;
-	    }
+		i = this->selectableLines.getSize();
+		pos = itemCount + 1;
+		for (; i > 0 && 
+			(s = (SelectableLine*)this->selectableLines.getElement(i));
+			--i)
+		{
+			if (s->position < pos)
+			{
+				found = TRUE;
+				//XmListSelectPos(this->list, s->position, True);
+				//if (s->position < topItem || 
+				//	s->position >= topItem + visibleItems)
+				//	XmListSetBottomPos(this->list, s->position);
+				break;
+			}
+		}
 	}
-    }
 }
 
 

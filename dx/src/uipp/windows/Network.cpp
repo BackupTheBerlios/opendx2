@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #ifdef OS2
@@ -279,8 +279,7 @@ Network::Network()
 		this, AccessNetworkPanelsCommand::CloseAllPanels);
 
     this->newCmd =
-	new NewCommand ("new", this->commandScope, FALSE, this,
-			NULL /* We don't have an anchor window yet */);
+	new NewCommand ("new", this->commandScope, FALSE, this);
 
     this->saveAsCmd =
         new NoUndoNetworkCommand("saveAsCommand", this->commandScope, 
@@ -854,7 +853,7 @@ void Network::postSequencer()
 {
     ASSERT(this->sequencer);
 
-    this->sequencer->openDefaultWindow(NUL(Widget));
+    this->sequencer->openDefaultWindow();
 
 }
 
@@ -1206,11 +1205,7 @@ extern "C"
 extern
 FILE* yyin;			/* parser input stream	  */
 
-#if !defined(YYLINENO_DEFINED)
-int yylineno;			/* flex line number */
-#else
 extern int yylineno;			/* lexer line number      */
-#endif
 
 extern int yylexerstate;
 
@@ -1826,7 +1821,6 @@ int response;
 			this->dxVersion.minor,
 			this->dxVersion.micro);
 		response = theQuestionDialogManager->userQuery (
-		    theDXApplication->getRootWidget(), 
 		    (char *)buf, (char *)"Version Mismatch",
 		    (char *)"Yes", (char *)"No", (char *)NULL);
 		switch (response) {
@@ -1847,8 +1841,7 @@ int response;
 			DX_MAJOR_VERSION,
 			DX_MINOR_VERSION,
 			DX_MICRO_VERSION);
-		response = theQuestionDialogManager->userQuery (
-		    theDXApplication->getRootWidget(), buf, "Version Mismatch",
+		response = theQuestionDialogManager->userQuery (buf, "Version Mismatch",
 		    "Yes", "No", NULL);
 		switch (response) {
 		    case QuestionDialogManager::OK:
@@ -4517,24 +4510,24 @@ Node *Network::findNode(const char* name, int* startPos, boolean byLabel)
 //
 
 
-void Network::postSaveCfgDialog(Widget parent)
+void Network::postSaveCfgDialog()
 {
     if (this->saveCfgDialog == NULL) 
-        this->saveCfgDialog = new SaveCFGDialog(parent, this);
+        this->saveCfgDialog = new SaveCFGDialog(this);
 
     this->saveCfgDialog->post();
 }
-void Network::postOpenCfgDialog(Widget parent)
+void Network::postOpenCfgDialog()
 {
     if (this->openCfgDialog == NULL) 
-        this->openCfgDialog = new OpenCFGDialog(parent, this);
+        this->openCfgDialog = new OpenCFGDialog(this);
 
     this->openCfgDialog->post();
 }
-void Network::postSaveAsDialog(Widget parent, Command *cmd)
+void Network::postSaveAsDialog(Command *cmd)
 {
     if (this->saveAsDialog == NULL) {
-        this->saveAsDialog = new SaveAsDialog(parent, this);
+        this->saveAsDialog = new SaveAsDialog(this);
     }
 
     this->saveAsDialog->setPostCommand(cmd);
@@ -4908,7 +4901,7 @@ void Network::openColormap(boolean openAll)
     li.setList(*cmaps);
 
     while( (n = (ColormapNode*)li.getNext()) )
-        n->openDefaultWindow(theDXApplication->getRootWidget());
+        n->openDefaultWindow();
 
     delete cmaps;
 }
@@ -4943,12 +4936,7 @@ boolean Network::postNameDialog()
     {
 	// FIXME: should this be an editor command.
         EditorWindow *editor = this->getEditor();
-	Widget parent;
-	if (editor)
-	    parent = editor->getRootWidget();
-	else
-	    parent = theDXApplication->getAnchor()->getRootWidget();
-	this->setNameDialog = new SetMacroNameDialog(parent,this);
+	this->setNameDialog = new SetMacroNameDialog(this);
     }
     this->setNameDialog->post();
     return TRUE;
@@ -4965,7 +4953,6 @@ void Network::editNetworkComment()
 {
      if (!this->setCommentDialog) {
         this->setCommentDialog = new SetNetworkCommentDialog(
-                                this->getEditor()->getRootWidget(),
                                 FALSE, this);
      }
      this->setCommentDialog->post();
@@ -4973,9 +4960,7 @@ void Network::editNetworkComment()
 void Network::postHelpOnNetworkDialog()
 {
      if (!this->helpOnNetworkDialog) {
-	Widget parent = theDXApplication->getRootWidget();
-        this->helpOnNetworkDialog = new HelpOnNetworkDialog(
-				parent, this);
+        this->helpOnNetworkDialog = new HelpOnNetworkDialog(this);
      }
      this->helpOnNetworkDialog->post();
 }
@@ -5070,7 +5055,7 @@ int Network::getNodeCount()
 void Network::fillPanelCascade(CascadeMenu *menu, PanelAccessManager *pam)
 {
     ButtonInterface *bi;
-    Widget parent;
+    //Widget parent;
     char *name;
     char buttonName[32];
     int i, size;
@@ -5081,7 +5066,7 @@ void Network::fillPanelCascade(CascadeMenu *menu, PanelAccessManager *pam)
 
         menu->clearComponents();
 
-        parent = menu->getMenuItemParent();
+        //parent = menu->getMenuItemParent();
 
         ASSERT(pam);
 
@@ -5101,7 +5086,7 @@ void Network::fillPanelCascade(CascadeMenu *menu, PanelAccessManager *pam)
 
 
 	    sprintf(buttonName,"panel%d",inst);
-            ButtonInterface *bi = new ButtonInterface(parent, buttonName,
+            ButtonInterface *bi = new ButtonInterface(buttonName,
                                         this->openPanelByInstanceCmd);
 
             name = (char*)cp->getPanelNameString();
@@ -5124,7 +5109,7 @@ void Network::fillPanelCascade(CascadeMenu *menu, PanelAccessManager *pam)
                 if (pam && pam->isAccessibleGroup(name)) {
                     hasChildren = TRUE;
 	    	    sprintf(buttonName,"group%d",i);
-                    bi = new ButtonInterface(parent, buttonName,
+                    bi = new ButtonInterface(buttonName,
                                         this->openPanelGroupByIndexCmd);
 
                     bi->setLabel(name);
@@ -5541,10 +5526,10 @@ List		swapToNodes;	  // transferred to this network.
 	EditorWindow *ew = this->editor;
 
 #if WORKSPACE_PAGES
-	if (new_dec->getRootWidget()) {
-	    new_dec->unmanage();
-	    new_dec->uncreateDecorator();
-	}
+	//if (new_dec->getRootWidget()) {
+	//    new_dec->unmanage();
+	//    new_dec->uncreateDecorator();
+	//}
 	if (ew) ew->newDecorator(new_dec);
 #else
 	EditorWorkSpace *ews = ew->getWorkSpace();

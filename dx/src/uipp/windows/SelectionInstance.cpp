@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 
@@ -57,7 +57,7 @@ boolean SelectionInstance::hasSetAttrDialog()
 // Create the default  set attributes dialog box for this class of
 // Interactor.
 //
-SetAttrDialog *SelectionInstance::newSetAttrDialog(Widget parent)
+SetAttrDialog *SelectionInstance::newSetAttrDialog()
 {
     Node *n = this->getNode();
     char *name = (char*)n->getClassName();
@@ -68,7 +68,7 @@ SetAttrDialog *SelectionInstance::newSetAttrDialog(Widget parent)
 	*p = '\0';
     char title[128];
     sprintf(title,"Set %s Attributes...",name);
-    SetAttrDialog *d = new SelectionAttrDialog(parent, title, this);
+    SetAttrDialog *d = new SelectionAttrDialog(title, this);
     delete name;
     return d;
 }

@@ -35,7 +35,7 @@ class ColormapNBinsDialog : public Dialog
     //
     // Private member data:
     //
-    static Boolean ClassInitialized;
+    static boolean ClassInitialized;
 
     boolean okCallback(Dialog *dialog);
 
@@ -43,21 +43,21 @@ class ColormapNBinsDialog : public Dialog
     //
     // Protected member data:
     //
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     ColormapEditor* editor;
 
-    Widget label;
-    Widget nbinsstepper;
+    //Widget label;
+    //Widget nbinsstepper;
 
-    Widget createDialog(Widget);
+    void createDialog(void);
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
 
@@ -66,7 +66,7 @@ class ColormapNBinsDialog : public Dialog
     //
     // Constructor:
     //
-    ColormapNBinsDialog(Widget parent,ColormapEditor* editor);
+    ColormapNBinsDialog(ColormapEditor* editor);
 
     //
     // Destructor:

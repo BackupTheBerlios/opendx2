@@ -14,9 +14,9 @@
 
 boolean ImageFormatMIF::ClassInitialized = FALSE;
 
-String ImageFormatMIF::DefaultResources[] = {
-    NUL(char*)
-};
+//String ImageFormatMIF::DefaultResources[] = {
+//    NUL(char*)
+//};
 
 
 ImageFormatMIF::ImageFormatMIF (ImageFormatDialog* dialog) : 
@@ -33,12 +33,12 @@ ImageFormatMIF::~ImageFormatMIF()
 void ImageFormatMIF::initialize()
 {
     if (!ImageFormatMIF::ClassInitialized) {
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    PixelImageFormat::DefaultResources);
-	this->setDefaultResources (theApplication->getRootWidget(),
-	    ImageFormatMIF::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    PixelImageFormat::DefaultResources);
+	//this->setDefaultResources (theApplication->getRootWidget(),
+	//    ImageFormatMIF::DefaultResources);
 	ImageFormatMIF::ClassInitialized = TRUE;
     }
 }

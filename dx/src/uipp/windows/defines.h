@@ -244,3 +244,22 @@ boolean true = (boolean)1;
 #endif
 
 #endif
+
+#define VCR_FORWARD     0
+#define VCR_BACKWARD    1
+#define VCR_LOOP        2
+#define VCR_PALINDROME  3
+#define VCR_STEP        4
+#define VCR_COUNT       5
+#define VCR_STOP        6
+#define VCR_PAUSE       7
+#define VCR_FORWARD_STEP  8
+#define VCR_BACKWARD_STEP 9
+
+#define CME_GRID 0
+#define CME_HISTOGRAM 1
+#define CME_LOGHISTOGRAM 2
+
+#define STRIPES 0
+
+
