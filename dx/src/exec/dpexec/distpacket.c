@@ -36,6 +36,9 @@
 #ifndef DXD_HAS_WINSOCKETS
 #include <netdb.h>
 #endif
+#if HAVE_SYS_FILIO_H
+#include <sys/filio.h>
+#endif
 #include "graph.h"
 #include "exobject.h"
 #include "d.h"
