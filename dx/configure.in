@@ -403,6 +403,7 @@ AC_CHECK_LIB(xmstatxt, XtVaGetValues)
 AC_CHECK_LIB(xmstatic, XmStringFree)
 AC_CHECK_LIB(xm, XmStringFree)
 AC_CHECK_LIB(hclglx, glXGetConfig)
+AC_CHECK_LIB(hclglu, gluBuild2DMipmaps)
 AC_CHECK_LIB(glwstati, glAccum)
 
 AC_CHECK_LIB(X11, XCreateGC)
