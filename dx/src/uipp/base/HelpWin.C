@@ -418,7 +418,10 @@ void HelpWin::loadTopicFile(const char *topic, const char *file)
     	strcat(url, GetHTMLDirectory());
     	strcat(url, "/");
     	strcat(url, file);
-    	_dxf_StartWebBrowserWithURL(url);
+    	if(!_dxf_StartWebBrowserWithURL(url)) {
+		// Couldn't start browser
+	    HelpOn(this->multiText, LINK, (char*)file, (char*)topic, 0);
+	}
     } else /* !UseWebBrowser */
 	HelpOn(this->multiText, LINK, (char*)file, (char*)topic, 0);
 }
