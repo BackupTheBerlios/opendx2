@@ -71,16 +71,14 @@ switch ( $thissys )
       if ( ! $?LD_LIBRARY_PATH ) then
         setenv LD_LIBRARY_PATH ""
       endif
-      setenv LD_LIBRARY_PATH $LD_LIBRARY_PATH":/usr/openwin/lib:/opt/SUNWits/Gra
-phics-sw/xgl-3.0/lib:/usr/ucblib:/usr/local/lib"
+      setenv LD_LIBRARY_PATH $LD_LIBRARY_PATH":/usr/openwin/lib:/opt/SUNWits/Graphics-sw/xgl-3.0/lib:/usr/ucblib:/usr/local/lib"
       #
       # in Solaris 7 and higher, the inclusion of /usr/ucblib causes problems
       # with dx launching the exec programatically (probably similar to
       # the problem in SunOS4 below.
       #
       if ( $minorver >= 7 ) then
-         setenv LD_LIBRARY_PATH `echo "$LD_LIBRARY_PATH" | sed -e 's?/usr/ucblib
-??g' -e 's?:[:]*?:?g'`
+         setenv LD_LIBRARY_PATH `echo "$LD_LIBRARY_PATH" | sed -e 's?/usr/ucblib??g' -e 's?:[:]*?:?g'`
       endif
     else
       set exarch=sun4
