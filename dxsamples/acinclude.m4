@@ -4,7 +4,6 @@ dnl  go with a default install of OpenDX.
 dnl
 AC_DEFUN(DX_INSTALL_PATH,
 [
-
 DX_DEFAULT_INST=/usr/local/dx
 
 if test "x${prefix}" = "xNONE" ; then
@@ -36,7 +35,7 @@ if test "x${prefix}" = "xNONE" ; then
     if test -r "/usr/local/bin/dx" ; then
 	DXINST=`/usr/local/bin/dx -whereami | grep "installed in" | sed -e "s/installed in //"`
 	if test -z "$DXINST" ; then
-   		DXINST=$DX_DEFAULT_INST
+   	 	DXINST=$DX_DEFAULT_INST
    		AC_MSG_RESULT([old version of dx script, setting to $DXINST])
 	else
    		AC_MSG_RESULT([installed in $DXINST])	
@@ -51,6 +50,9 @@ else
   DXINST=$prefix
   AC_MSG_RESULT(using --prefix value $DXINST)
 fi
+
+dnl Don't forget to set it once found!
+prefix=$DXINST
 ])
 
 dnl
