@@ -50,7 +50,7 @@ XPoint NotebookTab::RightCorner[] = {
     { 0, 1 },
 };
 
-NotebookTab::NotebookTab(const char* name) : UIComponent(name)
+NotebookTab::NotebookTab(const char* name) : UIComponent("notebookTab")
 {
     if (!NotebookTab::ClassInitialized) {
 	NotebookTab::ClassInitialized = TRUE;
@@ -155,6 +155,7 @@ void NotebookTab::setLabel(const char* str)
     } else {
 	this->label = 0;
     }
+    this->setDirty(TRUE,TRUE);
 }
 
 void NotebookTab::setState(boolean s)
