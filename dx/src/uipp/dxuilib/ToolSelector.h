@@ -110,10 +110,11 @@ class ToolSelector : public UIComponent
 	    friend class ToolSelector;
 	    void adjustVisibility(int, int, int, int);
 	    void getSearchableNodes (List& nodes_to_search);
-	    void componentHelp() { this->toolSelector->componentHelp(); }
 	    ToolView (Widget parent, ToolSelector* t) : TreeView(parent) {
 		this->toolSelector = t;
 	    }
+	public:
+	    void componentHelp() { this->toolSelector->componentHelp(); }
     };
 
   protected:
@@ -157,7 +158,6 @@ class ToolSelector : public UIComponent
     virtual void adjustVisibility(int, int, int, int){}
 
     virtual void help();
-    virtual void componentHelp() { this->help(); }
 
   public:
     //
@@ -213,6 +213,8 @@ class ToolSelector : public UIComponent
     // of windows.  EditorToolSelector has this knowledge.
     //
     virtual boolean inAnchor(){ return TRUE; }
+
+    virtual void componentHelp() { this->help(); }
 
     //
     // Returns a pointer to the class name.
