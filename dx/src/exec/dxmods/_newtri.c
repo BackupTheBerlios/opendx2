@@ -455,9 +455,9 @@ _dxf__TriangulateFLEP (FLEP *in, Vector *normal, Triangle *tris, int *ntri,
 	    loops[l - ls - skips].vids  = lin.edges + es;
 	}
 
-	if (getenv("DX_NESTED_LOOPS"))
+	if (getenv("DX_SIMPLE_LOOPS"))
 	{
-	    if (! TriangulateNestedLoops (le - ls - skips, loops, lin.points,
+	    if (! TriangulateLoops (le - ls - skips, loops, lin.points,
 		    (normal) ? normal + f : NULL, lin.npoints, ltris, &ftri, lin.nDim))
 	    {
 #if TRIANGULATE_ALWAYS
@@ -470,7 +470,7 @@ _dxf__TriangulateFLEP (FLEP *in, Vector *normal, Triangle *tris, int *ntri,
 	}
 	else
 	{
-	    if (! TriangulateLoops (le - ls - skips, loops, lin.points,
+	    if (! TriangulateNestedLoops (le - ls - skips, loops, lin.points,
 		    (normal) ? normal + f : NULL, lin.npoints, ltris, &ftri, lin.nDim))
 	    {
 #if TRIANGULATE_ALWAYS
