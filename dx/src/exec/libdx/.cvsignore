@@ -57,6 +57,7 @@ cubesIIClass.h
 cubesRRClass.h
 tetrasClass.h
 quadsII2DClass.h
+local.mk
 .libs
 *.la
 *.lo
