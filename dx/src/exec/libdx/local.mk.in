@@ -1,5 +1,3 @@
-.SUFFIXES: .X .c .h
-
 .X.h: class.awk $*.X
 	rm -f $*.h
 	sh ./class -h $*.X >$*.h
@@ -61,7 +59,7 @@ quad.c: quad.Z
 		      -e 's/DEFINE3/#define/' \
 		      -e 's/INCLUDE3/#include/' \
 		      -e 's/[^#]pragma/#pragma/' > quad.c
-	rm quad1.c quad2.c __quad.c
+	rm -f quad1.c quad2.c __quad.c
 
 plane.c: plane.Z
 	cp plane.Z _plane.c
@@ -70,5 +68,5 @@ plane.c: plane.Z
 	        | sed -e '/^#/d' \
 		      -e 's/INCLUDE2/#include/' \
 	              -e 's/[^#]pragma/#pragma/' > plane.c
-	rm _plane.c
+	rm -f _plane.c
 
