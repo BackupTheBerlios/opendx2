@@ -267,7 +267,7 @@ Widget StartOptionsDialog::createDialog(Widget parent)
 	XmNtopWidget,		separator1,
 	XmNleftAttachment,	XmATTACH_FORM,
 	XmNleftOffset,		5,
-	XmNindicatorType,	XmONE_OF_MANY,
+	XmNindicatorType,	XmN_OF_MANY,
 	XmNshadowThickness,	0,
 	XmNset,			0,
 	NULL);
