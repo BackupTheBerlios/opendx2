@@ -315,8 +315,8 @@ void ToolSelector::toolSelect(Symbol ts)
 	    tv->select (tn, TRUE);
     } else {
 	this->activeData = NULL;
-	this->lockedData = FALSE;
     }
+    this->lockedData = FALSE;
 }
 
 void ToolSelector::lockSelect(Symbol ts)
@@ -454,6 +454,7 @@ void ToolView::select(TreeNode* node, boolean repaint)
 	} else {
 	    CategoryNode* cn = (CategoryNode*)node;
 	    this->toolSelector->categorySelect(cn->getDefinition());
+	    toolSelector->toolSelect(0);
 	}
     } else {
 	toolSelector->toolSelect(0);
