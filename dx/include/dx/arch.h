@@ -83,9 +83,6 @@
 /* supports xwindows status display? */
 #define DXD_EXEC_STATUS_DISPLAY 1
 
-/* program to run for remote shell */
-#define RSH  "/usr/bsd/rsh"
-
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
 
 #ifdef HAVE_UNISTD
@@ -102,6 +99,9 @@
 #define DXD_NO_MP_RUNTIME 1
 
 #define F_CHAR_READY(fp) ((fp)->_cnt > 0)
+
+/* program to run for remote shell */
+#define RSH "/usr/bin/rsh"
 
 #ifdef linux86
 
@@ -182,9 +182,6 @@ typedef int * SelectPtr;
 /* can use the crypt system call for data encryption */
 #define DXD_HAS_CRYPT  1
 
-/* program to run for remote shell */
-#define RSH "/usr/bin/remsh"
-
 /* system includes are in /usr/include/sys and /usr/include/unistd.h exists */
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
 #define DXD_HAS_UNISTD_H 1
@@ -262,9 +259,6 @@ typedef int * SelectPtr;
 /* can use the crypt system call for data encryption */
 #define DXD_HAS_CRYPT  1
 
-/* program to run for remote shell */
-#define RSH "/usr/bin/rsh"
-
 /* system includes are in /usr/include/sys and /usr/include/unistd.h exists */
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
 #define DXD_HAS_UNISTD_H 1
@@ -312,9 +306,6 @@ typedef int * SelectPtr;
 
 /* the system routine herror() doesn't exist on this architecture */
 #define herror perror
-
-/* program to run for remote shell */
-#define RSH "/usr/ucb/rsh"
 
 /* system includes are in /usr/include/sys and /usr/include/unistd.h exists */
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
@@ -376,8 +367,6 @@ typedef int * SelectPtr;
 /* the system routine herror() doesn't exist on this architecture */
 #define herror perror
 
-/* program to run for remote shell */
-#define RSH "/usr/bin/rsh"
 
 /* wait(int *) for solaris */
 union wait{
@@ -447,9 +436,6 @@ union wait{
 
 /* the system routine herror() doesn't exist on this architecture */
 #define herror perror
-
-/* program to run for remote shell */
-#define RSH "/usr/bin/remsh"
 
 /* system includes are in /usr/include/sys and /usr/include/unistd.h exists */
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
