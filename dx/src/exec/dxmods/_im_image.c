@@ -12,9 +12,8 @@
 /*
 * _IM_image.c : calls ImageMagick API to write files, especially useful for those files
 *  whose formats DX does not support natively. 
+* FIXED!:  does not write intermediate miff file if the miff does not exist (i.e. is not to be appended).
 * FIXME:  needs read modifications too!
-* FIXME:  needs to avail itself of newly added IM 4.2.8  blob support rather than write
-*         intermediate miff file.  requires dx be able to read/write miff from/to memory image.
 *FIXME: dx does not know all extensions that IM supports, can dx query IM API for the
 *	supported extensions and thereby alleviate the tedious supplying of both format and extension?
 */
@@ -55,6 +54,9 @@
 */
 #define ImageInfo DXImageInfo
 #define ImageType DXImageType
+#define IM_UCHAR_COLORS 0
+#define IM_FLOAT_COLORS 3
+
 #include <dxconfig.h>
 
 
@@ -104,10 +106,6 @@ _dxf_write_im(RWImageArgs *iargs)
 */
 
     return write_im(iargs);
-/*
-  error:
-    return ERROR;
- */
 }
 
 static Error write_im(RWImageArgs *iargs)
@@ -120,7 +118,7 @@ static Error write_im(RWImageArgs *iargs)
 
 #ifdef MAGICK5
 	ExceptionInfo
-	   dxd_exception_info;
+	   exception_info;
 	ImageInfo
            * image_info;
 #else
@@ -212,6 +210,15 @@ static Error write_im(RWImageArgs *iargs)
 		} else {
 			miff_exists_flag=0;
 		}
+#ifdef MAGICK5
+      GetExceptionInfo(&exception_info); 
+      image_info=CloneImageInfo((ImageInfo *) NULL);
+#else
+      GetImageInfo(&image_info);
+#endif
+
+/* if the file exists it is intended that we append to the file, we do this the "old way" by dx-writing the appendable miff, then converting... this is dumb but what else can we do? */
+    if(miff_exists_flag) {
 	
 	DEBUGMESSAGE("starting miff conversion");
 	DEBUGMESSAGE(iargs->basename);
@@ -220,12 +227,6 @@ static Error write_im(RWImageArgs *iargs)
       /*
         Initialize the image info structure and read an image.
       */
-#ifdef MAGICK5
-      GetExceptionInfo(&dxd_exception_info); 
-      image_info=CloneImageInfo((ImageInfo *) NULL);
-#else
-      GetImageInfo(&image_info);
-#endif
 	
 #ifdef MAGICK5
       (void) strcpy(image_info->filename,iargs->basename);
@@ -241,7 +242,7 @@ static Error write_im(RWImageArgs *iargs)
 	DEBUGMESSAGE(image_info.filename);
 #endif
 #ifdef MAGICK5
-      image=ReadImage(image_info,&dxd_exception_info); 
+      image=ReadImage(image_info,&exception_info); 
 #else
       image=ReadImage(&image_info);
 #endif
@@ -276,8 +277,79 @@ static Error write_im(RWImageArgs *iargs)
 		remove(miff_filename);
 		DEBUGMESSAGE(miff_filename);
 	   }
+   } else { /* miff does not exist, do this the new way by ConstituteImage */
+	
+	int pixelsize;
+	int linesize;
+	Field field;
+	Array array;
+	int i;
+	int dim[3], ndim;
+	int nx, ny;
+	int dxcolortype;
+	int imcolortype;
+	char *p1, *p2;
+	void* colors;
+	void* copycolors=NULL;
+
+	field=iargs->image;
+	array=DXGetComponentValue(field,"colors");
+	DXGetArrayInfo(array,NULL,&dxcolortype,NULL,NULL,NULL);
+	if (dxcolortype == TYPE_FLOAT) {
+		imcolortype = IM_FLOAT_COLORS;
+		pixelsize = 3*sizeof(float);
+		} else {
+		imcolortype = IM_UCHAR_COLORS;
+		pixelsize = 3;
+		}
+	colors=(void*)DXGetArrayData(array);
+	array=(Array)DXGetComponentValue(field,"connections");
+	DXQueryGridConnections(array,&ndim,dim);
+	nx=dim[1];
+	ny=dim[0];
+	copycolors = (void*) DXAllocate(nx*ny*pixelsize);
+	if(!copycolors) {
+		DXErrorGoto( ERROR_INTERNAL , "out of memory allocating copycolors _im_image.c");
+	}
+	linesize= nx*pixelsize;
+	p1=(char*)colors;
+	p2=(char*)copycolors;
+	p1+=(ny-1)*linesize;
+	for (i=0; i<ny; ++i) {
+		memcpy(p2,p1,linesize);
+		p1-=linesize;
+		p2+=linesize;
+	}
+	GetExceptionInfo(&exception_info);
+	image=ConstituteImage(nx,ny,"RGB",imcolortype,(void*)copycolors,&exception_info);
+	
+      /*
+        Write the image with ImageMagick
+      */
+      strcpy(image->filename,iargs->basename);
+    if(iargs->extension)
+	{
+      strcat(image->filename,".");
+      strcat(image->filename,iargs->extension);
+	}
+	
+	DEBUGMESSAGE(image->filename);
+#ifdef MAGICK5
+      WriteImage(image_info,image);
+#else
+      WriteImage(&image_info,image);
+#endif
+	
+
+	DXFree(copycolors);
+	DestroyImage(image);
+	DestroyImageInfo(image_info);
+   }
 	DXFree((Pointer)miff_filename);
    return (OK);
+error:
+	DXFree((Pointer)miff_filename);
+   return (ERROR);
 #else /* ndef HAVE_LIBMAGICK */
 	/* FIXME ERROR_BAD_PARAMETER is poor choice of error to throw */
 	  DXErrorReturn(ERROR_BAD_PARAMETER,"Image Magick not included in build");
