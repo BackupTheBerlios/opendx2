@@ -1167,6 +1167,38 @@ static struct arena *small = NULL;
 static struct arena *large = NULL;
 static struct arena *local = NULL;
 
+#if linux
+
+static int
+getProcMemInfo()
+{
+    long int memsize = 0;
+    FILE *fp = NULL;
+
+    fp = fopen("/proc/meminfo", "r");
+    if (fp)
+    {
+	char str[256];
+
+	while (memsize <= 0 && fscanf(fp, "%s", str) == 1)
+	    if (! strcmp(str, "MemTotal:"))
+	    {
+		fscanf(fp, "%lu", &memsize);
+		fscanf(fp, "%s", str);
+		if (!strcmp(str, "kB"))
+		    memsize >>= 10;
+		else
+		    memsize = 0;
+	    }
+
+	    fclose(fp);
+    }
+
+    return memsize;
+}
+
+#endif
+
 
 int _dxf_initmemory(void)
 {
@@ -1351,10 +1383,13 @@ int _dxf_initmemory(void)
 #endif
 
 #if linux
-	struct sysinfo si;
-	int err = sysinfo(&si);
-	if(!err)
+	if ((physmem = getProcMemInfo()) <= 0)
+	{
+	    struct sysinfo si;
+	    int err = sysinfo(&si);
+	    if(!err)
 		physmem = si.totalram/(1024*1024);
+	}
 #endif
 
 #if freebsd
