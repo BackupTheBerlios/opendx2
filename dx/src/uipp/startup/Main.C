@@ -27,7 +27,7 @@
 #include "../base/defines.h"
 #include "StartupApplication.h"
 
-void main(unsigned int argc,
+int main(unsigned int argc,
 	  char**       argv)
 {
 #ifdef	DXD_WIN
@@ -50,4 +50,6 @@ void main(unsigned int argc,
     theApplication->handleEvents();
 
     delete theApplication;
+
+    return 0;
 }

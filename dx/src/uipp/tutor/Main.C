@@ -39,7 +39,7 @@
 //
 const char *AssertMsgString = "Internal error detected at \"%s\":%d.\n";
  
-void main(unsigned int argc,
+int main(unsigned int argc,
 	  char**       argv)
 {
 #ifdef	DXD_WIN
@@ -79,5 +79,5 @@ void main(unsigned int argc,
     WSACleanup();
 #endif
 
-    exit(0);
+    return 0;
 }
