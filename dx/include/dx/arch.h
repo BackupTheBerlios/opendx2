@@ -367,9 +367,6 @@ typedef int * SelectPtr;
 /* can use the crypt system call for data encryption */
 #define DXD_HAS_CRYPT  1
 
-/* the system routine herror() doesn't exist on this architecture */
-#define herror perror
-
 /* system includes are in /usr/include/sys and /usr/include/unistd.h exists */
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
 #define DXD_HAS_UNISTD_H 1
