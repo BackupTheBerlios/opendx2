@@ -192,7 +192,7 @@ dnl Start DX configuration
 DX_ARCHITECTURE
 DX_ARCH_SPECIFIC
 
-if test "$DXARCH" = "sgi" ; then
+if test "$ARCH" = "sgi" ; then
     if test "$DXABI" = "" ; then
 	DXABI=" -n32 -L/usr/lib32"
     fi
