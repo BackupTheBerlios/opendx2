@@ -393,7 +393,11 @@ static void MyInsertChild( Widget w);
 static void MyDeleteChild( Widget w);
 extern void MarkCommonLines(XmWorkspaceWidget ww);
 
+#if (USING_LESSTIF == 1)
+#define GetFormConstraint(w) (&((XmFormConstraints) (w)->core.constraints)->form)
+#else
 #define GetFormConstraint(w) (&((XmFormConstraintPtr) (w)->core.constraints)->form)
+#endif
 
 static XtResource defaultResources[] =
 {
@@ -1530,7 +1534,11 @@ static Boolean SetValues( XmWorkspaceWidget current,
 	     * personality has been asleep and needs to be roused carefully.
 	     */
 	    for (i=0; i<current->composite.num_children; i++) {
+#if (USING_LESSTIF == 1)
+		XmFormConstraintPart* formcons;
+#else
 		XmFormConstraint formcons;
+#endif
 		rangle[i].x = current->composite.children[i]->core.x;
 		rangle[i].y = current->composite.children[i]->core.y;
 		rangle[i].width = current->composite.children[i]->core.width;
@@ -1885,7 +1893,11 @@ static void ChangeManaged( XmWorkspaceWidget ww )
     Boolean resolve_overlap = FALSE;
     Boolean new_node = FALSE;
     int max;
+#if (USING_LESSTIF == 1)
+    XmFormConstraintPart formcon;
+#else
     XmFormConstraint formcon;
+#endif
 
     if (ww->workspace.auto_arrange)
 	(*superclass->composite_class.change_managed) ((Widget)ww);
