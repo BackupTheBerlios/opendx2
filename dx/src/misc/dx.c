@@ -10,6 +10,7 @@
 /* #define USE_REGISTRY 1 */
 
 #include <dxconfig.h>
+#include <dx/dx.h>
 #if !defined(DXD_WIN)
 #include <stdio.h>
 main(){fprintf(stderr, "dx.c shouldn't be being used\n");}
