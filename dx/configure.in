@@ -382,7 +382,8 @@ dnl A couple libs for cygwin
 AC_CHECK_LIB(ICE, IceConnectionNumber)
 AC_CHECK_LIB(SM, SmcSetProperties)
 AC_CHECK_LIB(REXP, regcomp)
-dnl is this obsolete? DX_CHECK_TGMATH
+dnl I guess this is not obsolete ;)
+DX_CHECK_TGMATH
 AC_CHECK_LIB(m, sqrt)
 
 dnl If buildlibdx off then pass this down to the Makefile
