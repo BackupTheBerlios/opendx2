@@ -107,7 +107,7 @@ _dxf_ExInitServer(int pport)
     int oldUmask;
 #endif
     struct linger sl;
-    socklen_t length;
+    SOCK_LENGTH_TYPE length;
     ushort port;
     int fd;
     int sts;
