@@ -300,41 +300,52 @@ AC_DEFUN(DX_ARCHITECTURE,
 	ARCH=unknown
 	if test $unameS = "FreeBSD" ; then
 	    ARCH=freebsd
-	    JAVA_ARCH=fixme
 	fi
 	if test `echo $unameS | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"` = "yes" ; then
 	    ARCH=cygwin
-	    JAVA_ARCH=fixme
 	fi
 	if test $unameS = "Linux" ; then
 	    ARCH=linux 
-	    JAVA_ARCH=genunix
 	fi
 	if test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
 	    ARCH=sgi
-	    JAVA_ARCH=irix
 	fi
 	if test $unameS = "AIX" ; then
 	    ARCH=ibm6000
-	    JAVA_ARCH=aix
 	fi
 	if test $unameM = "alpha" ; then
 	    ARCH=alphax
-	    JAVA_ARCH=alpha
 	fi
 	if test $unameS = "HP-UX" ; then
 	    ARCH=hp700
-	    JAVA_ARCH=hp-ux
 	fi
 	if test $unameS = "SunOS" ; then
 	    ARCH=solaris
-	    JAVA_ARCH=solaris
 	fi
     fi
     AC_MSG_RESULT($ARCH)
     AC_SUBST(ARCH)
     AC_DEFINE_UNQUOTED($ARCH)
     AC_DEFINE_UNQUOTED(DXD_ARCHNAME, "$ARCH")
+])
+
+AC_DEFUN(DX_JAVA_ARCHITECTURE,
+[
+    AC_MSG_CHECKING(java architecture type)
+    if test "$JAVA_ARCH" = "" ; then
+	lc=`uname -s | tr "A-Z" "a-z"`
+        case $lc in
+	    linux)   JAVA_ARCH=genunix ;;
+	    irix*)   JAVA_ARCH=irix ;;
+	    aix)     JAVA_ARCH=aix ;;
+	    alpha)   JAVA_ARCH=alpha ;;
+	    hp-ux)   JAVA_ARCH=hp-ux ;;
+	    sunos)   JAVA_ARCH=solaris ;;
+	    *)       JAVA_ARCH=$lc ;;
+	esac
+    fi
+    AC_MSG_RESULT($JAVA_ARCH)
+    AC_SUBST(JAVA_ARCH)
 ])
 
 AC_DEFUN(DX_STREAM_O2,
@@ -565,7 +576,7 @@ AC_LANG_RESTORE
 AC_DEFUN(DX_CYGWIN_MOUNTS,
 [
     changequote(<<,>>)dnl
-    AC_MSG_CHECKING("if intelnt on cygwin, check for mounts")
+    AC_MSG_CHECKING(if intelnt on cygwin, check for mounts)
     mnts="none"
     if test "$ARCH" = "intelnt" ; then
 	    tt=`uname -s  | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"`
@@ -650,7 +661,7 @@ dnl
 JBASE=`echo $JDK_CLASSES | sed -e "s&/lib/$dx_jdk_trailing&&"`
 AC_MSG_RESULT(${JBASE})
 JAVABRANCH=
-if ! test -z "$JBASE" ; then 
+if test ! -z "$JBASE" ; then 
 	JAVABRANCH=java 
 else
 	echo "java explorer portion of compile has been disabled due to unexpected behavior of javac.  is it really kaffe? try setting KAFFE_CLASSPATH"
@@ -658,23 +669,23 @@ fi
 JDKBIN=
 AC_MSG_CHECKING([for jar not in path])
 dnl
-echo > mywhich << EOF
-#! sh
+cat > findjar << XYZZY
+#! /bin/sh
 IFS=":"
-for i in $PATH; do
-    j="`echo $i | sed 's?/$??'`/"
-    t=$j$i
-    if test -x $t ; then
-    	echo $t
+for i in \$PATH; do
+    j="\`echo \$i | sed 's?/\$??'\`"
+    t=\$j/jar
+    if test -x \$t ; then
+	echo \$t
 	exit 0
     fi
 done
 exit 1
-EOF
-chmod a+x mywhich
+XYZZY
+chmod a+x findjar
 dnl which output should not have a space if jar is found (syntax varies from "no jar in")
 dnl
-if test -z "`mywhich jar | grep -v ' '`" ; then
+if test -z "`findjar | grep -v ' '`" ; then
 	JDKBIN=$JBASE/bin/
 	AC_MSG_RESULT(using ${JDKBIN})
 else
@@ -682,7 +693,7 @@ else
 
 fi
 rm -f jdkpath.*
-rm mywhich
+rm findjar
 dnl
 dnl determine the existence of netscape/cosmo for building WRLApplication and dependent samples
 dnl   don't know how to do this yet, so just use default.  non-default installations must edit the line below:
@@ -691,3 +702,41 @@ WRL_CLASSPATH=$JDK_CLASSES:/usr/lib/netscape/java/classes/npcosmop211.jar:./:/us
 
 ])
 dnl
+
+AC_DEFUN(DX_NEEDS_STDCXX,
+[
+    AC_MSG_CHECKING(whether -lstdc++ is needed)
+    tmpLIBS=$LIBS
+    AC_CACHE_VAL(ac_cv_requires_lstdcxx,
+    [
+	AC_LANG_SAVE
+	AC_LANG_CPLUSPLUS
+	AC_TRY_LINK(
+	    [
+		#include <stream.h>
+	    ],
+	    [
+		cout << "foo";
+	    ],
+	    ac_cv_requires_lstdcxx="no",
+	    [
+		LIBS="$LIBS -lstdc++"
+		AC_TRY_LINK(
+		    [
+			#include <stream.h>
+		    ],
+		    [
+			cout << "foo";
+		    ],
+		    ac_cv_requires_lstdcxx="yes",
+		    [
+			AC_MSG_RESULT(failed even with lstdc++)
+			exit 1
+		    ]
+		)
+	    ]
+	)
+	AC_LANG_RESTORE
+    ])
+    AC_MSG_RESULT(${ac_cv_requires_lstdcxx})
+])
