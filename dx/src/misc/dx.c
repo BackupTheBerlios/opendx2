@@ -170,11 +170,11 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 	char key2[500];
 	int valtype;
 	int sizegot = size;
-	HKEY hkey;
-	long rc;
+	HKEY hkey_m;
+	HKEY hkey_u;
+	long rc, rc_m, rc_u;
 	int i;
 	DWORD options;
-	HKEY regLoc = HKEY_CURRENT_USER;
 	DWORD dwDisp;
 	REGSAM access = KEY_READ;
 	const char *regpath;
@@ -199,32 +199,45 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 	else if (co == HUMMBIRD_ID3) {
 		regpath = "SOFTWARE\\Hummingbird\\Connectivity\\7.10\\Exceed";
 	}
-	/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
-	/* Check there first if not found then search in CURRENT_USER   */
-	rc = RegOpenKeyEx(regLoc, __TEXT(regpath), 0, access, &hkey);
 
-	if(rc != ERROR_SUCCESS) {
-		regLoc = HKEY_LOCAL_MACHINE;
-		rc = RegOpenKeyEx(regLoc, __TEXT(regpath), 0, access, &hkey);
-	}
+	/* What a pain--some systems store some info in HKEY_LOCAL_MACHINE */
+	/* whereas others store it in HKEY_CURRENT_USER. It also depends   */
+	/* on the type of info and how it was installed. Thus we'll have   */
+	/* to always look at both to make sure we do this right and then   */
+	/* return the result if in either. */
 
-	if(rc != ERROR_SUCCESS && get == CHECK) return 0;
+	rc_m = RegOpenKeyEx(HKEY_LOCAL_MACHINE, __TEXT(regpath), 0, access, &hkey_m);
+	rc_u = RegOpenKeyEx(HKEY_CURRENT_USER, __TEXT(regpath), 0, access, &hkey_u);
+
+	if(rc_m != ERROR_SUCCESS && rc_u != ERROR_SUCCESS && get == CHECK) return 0;
 	else if (get == CHECK) {
-		RegCloseKey(hkey);
+		RegCloseKey(hkey_m);
+		RegCloseKey(hkey_u);
 		return 1;
 	}
 	/* hkey now pointing in the proper reg entry area */
 
 	if (get == GET) {
-		rc = RegQueryValueEx(hkey, __TEXT(name), (LPDWORD) 0, 
+		rc_u =  RegQueryValueEx(hkey_u, __TEXT(name), (LPDWORD) 0,
 		(LPDWORD) &valtype, (LPBYTE) value, &sizegot);
-		IfError2("Query value failed on registry value", name, "");
 
-		rc = RegCloseKey(hkey);
-		IfError2("CloseKey failed on registry value", name, "");
+	    if(rc_u != ERROR_SUCCESS)
+		rc_m = RegQueryValueEx(hkey_m, __TEXT(name), (LPDWORD) 0, 
+		(LPDWORD) &valtype, (LPBYTE) value, &sizegot);
 
-		/* Now check to see if it is a DWORD entry if so, pass it back through word
-										not as a string through name. */
+	    if( rc_u != ERROR_SUCCESS && rc_m != ERROR_SUCCESS) 
+	    {
+		rc = rc_u;
+		sprintf(errstr, "%s %s %s", 
+			"Query value failed on registry value", name, "");
+		goto error;
+	    }
+
+	    RegCloseKey(hkey_u);
+	    RegCloseKey(hkey_m);
+
+	    /* Now check to see if it is a DWORD entry if so, pass it back through word
+		not as a string through name. */
 		switch(valtype) {
 		case REG_DWORD:
 			*word = *((int *)value); 
