@@ -10,6 +10,7 @@ AC_SUBST(MAKE_WRL)
 AC_SUBST(DOLLAR_OPEN_BANANA)
 AC_SUBST(CLOSE_BANANA)
 
+SHELL=/bin/sh
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(configure.in)
