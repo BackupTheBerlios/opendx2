@@ -1057,7 +1057,7 @@ void ToolList_TypeAhead(Widget wid, XEvent *event, String *params,
     input_length = XLookupString(xk, input_string, MOST_TYPED, &kr, 0);
 
     curKbd = lw->list.CurrentKbdItem<1?1:
-	(lw->list.CurrentKbdItem>lw->list.itemCount?lw->list.itemCount:1);
+	(lw->list.CurrentKbdItem>lw->list.itemCount?0:lw->list.CurrentKbdItem);
 
     if(kr == XK_Up) {
 	int pos = curKbd;
@@ -1067,8 +1067,8 @@ void ToolList_TypeAhead(Widget wid, XEvent *event, String *params,
     }
 
     if(kr == XK_Down) {
-	int pos = curKbd;
-	if (pos > lw->list.itemCount) pos = 1;
+	int pos = curKbd + 2;
+	if (pos > lw->list.itemCount) pos = 0;
 	last = 0;
     	XmListSetKbdItemPos(wid, pos);
     	XmListSelectPos(wid, pos, True);
