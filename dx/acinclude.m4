@@ -288,7 +288,7 @@ AC_DEFUN(DX_ARCHITECTURE,
     if test $unameM = "alpha" ; then
         ARCH=alphax
     fi
-    if test $unameS = "HP_UX" ; then
+    if test $unameS = "HP-UX" ; then
         ARCH=hp700
     fi
     if test $unameS = "SunOS" ; then
