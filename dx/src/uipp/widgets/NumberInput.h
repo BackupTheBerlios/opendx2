@@ -11,8 +11,7 @@
 #include <ctype.h>	/*  issspace(), isdigit(), isalnum()  */
 #include <stdlib.h>	/*  strtod()  */
 #include <errno.h>	/*  errno, ERANGE  */
-#define XK_MISCELLANY 1
-#include <X11/keysymdef.h>
+#include <X11/keysym.h>
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
