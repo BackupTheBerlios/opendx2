@@ -34,7 +34,6 @@
 #undef intelnt
 
 #undef SGI_ABI
-#undef ENABLE_LARGE_ARENAS
 
 #undef OLD_LESSTIF
 
