@@ -110,7 +110,7 @@ static Error AddCellTask(Pointer p)
   
   /* In this example, the data must be dependent on the connections */
   if (strcmp(attribute,"connections")) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "data must be dependent on connections");
     goto error;
   }
@@ -118,7 +118,7 @@ static Error AddCellTask(Pointer p)
   
   /* for this example, the data is required to be floating point scalar */
   if (!DXTypeCheck(data, TYPE_FLOAT, CATEGORY_REAL, 0, NULL)) {
-    DXSetError(ERROR_INVALID_DATA, "data must be floating point scalar");
+    DXSetError(ERROR_DATA_INVALID, "data must be floating point scalar");
     goto error;
   }
   
@@ -177,7 +177,7 @@ static Error AddCellTask(Pointer p)
      */
     
     if (dim != 2) {
-      DXSetError(ERROR_INVALID_DATA,"connections must be 2-dimensional");
+      DXSetError(ERROR_DATA_INVALID,"connections must be 2-dimensional");
       goto error;
     }
     

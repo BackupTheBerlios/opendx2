@@ -116,7 +116,7 @@ traverse(Object *in, Object *out)
              DXGetGroupClass((Group)in[1])  != groupClass  ||
              !DXGetMemberCount((Group)in[1], &i) || i != memknt))
 	      {
-  		DXSetError(ERROR_INVALID_DATA,
+  		DXSetError(ERROR_DATA_INVALID,
 	            "structure of \"field2\" doesn't match that of \"field1\"");
   	         return ERROR;
          }
@@ -185,7 +185,7 @@ traverse(Object *in, Object *out)
        */
       if (in[1] && DXGetObjectClass(in[1]) != CLASS_XFORM)
       {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
 	            "structure of \"field2\" doesn't match that of \"field1\"");
         return ERROR;
       }
@@ -246,7 +246,7 @@ traverse(Object *in, Object *out)
 
        if (in[1] && DXGetObjectClass(in[1]) != CLASS_SCREEN)
        {
-           DXSetError(ERROR_INVALID_DATA,
+           DXSetError(ERROR_DATA_INVALID,
 	            "structure of \"field2\" doesn't match that of \"field1\"");
            return ERROR;
        }
@@ -308,7 +308,7 @@ traverse(Object *in, Object *out)
 
        if (in[1] && DXGetObjectClass(in[1]) != CLASS_CLIPPED)
        {
-           DXSetError(ERROR_INVALID_DATA,
+           DXSetError(ERROR_DATA_INVALID,
                "mismatching Field/Group objects");
            return ERROR;
        }
@@ -420,7 +420,7 @@ doLeaf(Object *in, Object *out)
   {
     array = NULL;
     in_data[0] = NULL;
-    in_knt[0] = NULL;
+    in_knt[0] = 0;
   }
   else
   {
@@ -471,7 +471,7 @@ doLeaf(Object *in, Object *out)
     if (type != TYPE_FLOAT || category != CATEGORY_REAL ||
         rank != 0)
     {
-      DXSetError(ERROR_INVALID_DATA, "input \"field1\"");
+      DXSetError(ERROR_DATA_INVALID, "input \"field1\"");
       goto error;
     }
 
@@ -489,7 +489,7 @@ doLeaf(Object *in, Object *out)
   {
     array = NULL;
     in_data[1] = NULL;
-    in_knt[1] = NULL;
+    in_knt[1] = 0;
   }
   else
   {
@@ -540,7 +540,7 @@ doLeaf(Object *in, Object *out)
    */
     if (strcmp(src_dependency, DXGetString((String)attr)))
     {
-      DXSetError(ERROR_INVALID_DATA, "data dependency of \"field2\" must match \"field1\"");
+      DXSetError(ERROR_DATA_INVALID, "data dependency of \"field2\" must match \"field1\"");
       goto error;
     }
 
@@ -548,7 +548,7 @@ doLeaf(Object *in, Object *out)
     if (type != TYPE_FLOAT || category != CATEGORY_REAL ||
         rank != 0)
     {
-      DXSetError(ERROR_INVALID_DATA, "input \"field2\"");
+      DXSetError(ERROR_DATA_INVALID, "input \"field2\"");
       goto error;
     }
 
@@ -671,7 +671,7 @@ Add2_worker(
     */
  
    if (field1_knt != field2_knt) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
                  "number of items in field1 and field2 do not match");
       return ERROR;
    }

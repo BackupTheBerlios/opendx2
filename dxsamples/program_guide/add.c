@@ -356,7 +356,7 @@ doLeaf(Object *in, Object *out)
   {
     array = NULL;
     in_data[0] = NULL;
-    in_knt[0] = NULL;
+    in_knt[0] = 0;
   }
   else
   {
@@ -407,7 +407,7 @@ doLeaf(Object *in, Object *out)
     if (type != TYPE_FLOAT || category != CATEGORY_REAL ||
         rank != 0)
     {
-      DXSetError(ERROR_INVALID_DATA, "input \"data\"");
+      DXSetError(ERROR_DATA_INVALID, "input \"data\"");
       goto error;
     }
 
@@ -425,7 +425,7 @@ doLeaf(Object *in, Object *out)
   {
     array = NULL;
     in_data[1] = NULL;
-    in_knt[1] = NULL;
+    in_knt[1] = 0;
   }
   else
   {
@@ -460,7 +460,7 @@ doLeaf(Object *in, Object *out)
     if (type != TYPE_FLOAT || category != CATEGORY_REAL ||
         rank != 0)
     {
-      DXSetError(ERROR_INVALID_DATA, "input \"addend\"");
+      DXSetError(ERROR_DATA_INVALID, "input \"addend\"");
       goto error;
     }
 

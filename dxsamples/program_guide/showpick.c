@@ -182,8 +182,13 @@ Error m_ShowPick(Object *in, Object *out)
   return ERROR;
 }
 
-
-
+static Matrix Identity = {
+    {
+	{ 1.0, 0.0, 0.0 },
+	{ 0.0, 1.0, 0.0 },
+	{ 0.0, 0.0, 1.0 }
+    }
+};
 
 /* 
  * The DoPick routine traverses  the picked object 
@@ -212,7 +217,7 @@ static
    */
 
   if (!(DXGetObjectClass(pickfield)==CLASS_FIELD)) {
-    DXSetError(ERROR_INVALID_DATA,"pickfield must be a field");
+    DXSetError(ERROR_DATA_INVALID,"pickfield must be a field");
     goto error;
   }
   
@@ -384,7 +389,7 @@ static
 	   */
 	  
 	  if (index >= numitems) {
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		       "pick structure does not correspond to picked object");
 	    goto error;
 	  }

@@ -310,7 +310,7 @@ doLeaf(Object *in, Object *out)
    */
   if (DXGetObjectClass(in[0]) != CLASS_FIELD)
   {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
            "positions and/or connections unavailable in array object");
       goto error;
   }
@@ -362,21 +362,21 @@ doLeaf(Object *in, Object *out)
     element_type_attr = DXGetAttribute((Object)array, "element type");
     if (! element_type_attr)
     {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
             "input \"input\" has no element type attribute");
         goto error;
     }
 
     if (DXGetObjectClass(element_type_attr) != CLASS_STRING)
     {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
             "input \"input\" element type attribute is not a string");
         goto error;
     }
 
     if (strcmp(DXGetString((String)element_type_attr), "quads"))
     {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
             "input \"input\" invalid element type");
         goto error;
     }
@@ -413,7 +413,7 @@ doLeaf(Object *in, Object *out)
   {
     array = NULL;
     in_data[0] = NULL;
-    in_knt[0] = NULL;
+    in_knt[0] = 0;
   }
   else
   {
@@ -464,7 +464,7 @@ doLeaf(Object *in, Object *out)
    */
     if (strcmp("connections", DXGetString((String)attr)))
     {
-      DXSetError(ERROR_INVALID_DATA, "data dependency of \"input\" must be connections");
+      DXSetError(ERROR_DATA_INVALID, "data dependency of \"input\" must be connections");
       goto error;
     }
 
@@ -472,7 +472,7 @@ doLeaf(Object *in, Object *out)
     if (type != TYPE_FLOAT || category != CATEGORY_REAL ||
         rank != 0)
     {
-      DXSetError(ERROR_INVALID_DATA, "input \"input\"");
+      DXSetError(ERROR_DATA_INVALID, "input \"input\"");
       goto error;
     }
 
@@ -495,7 +495,7 @@ doLeaf(Object *in, Object *out)
    */
   if (c_knt == -1)
   {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
       "cannot make output \"output\" dep on connections because no connections were found in input \"input\"");
     goto error;
   }

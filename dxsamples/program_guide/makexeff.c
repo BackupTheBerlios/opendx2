@@ -329,7 +329,7 @@ doLeaf(Object *in, Object *out)
    */
   if (DXGetObjectClass(in[0]) != CLASS_FIELD)
   {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
            "positions and/or connections unavailable in array object");
       goto error;
   }
@@ -391,7 +391,7 @@ doLeaf(Object *in, Object *out)
 
 /* Check that the positions are three dimensional: */
    if (p_dim != 3) {
-      DXSetError(ERROR_INVALID_DATA,"input positions must be 3-dimensional");
+      DXSetError(ERROR_DATA_INVALID,"input positions must be 3-dimensional");
       goto error;
    }
 /* Allocate space in the new positions array */
