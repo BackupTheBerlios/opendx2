@@ -28,7 +28,7 @@ HEADERS2 =  \
 	eigen.h glyph_PNT.h glyph_SPHR42.h vectors.h \
 	genimp.h glyph_RCKT12.h glyph_SPHR62.h
 
-noinst_HEADERS = $HEADERS1 $HEADERS2
+noinst_HEADERS = $(HEADERS1) $(HEADERS2)
 
 SOURCES1 = \
 	ambientlight.c append.c arrange.c attribute.c \
