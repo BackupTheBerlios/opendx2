@@ -10,7 +10,7 @@ html_DATA = README.htm README_SMP.htm README_alphax.htm \
 EXTRA_DIST = pages.tar images.tar $(html_DATA)
 
 install-data-local:
-	sh -c 'f= pwd` ; \
+	sh -c `f=pwd` ; \
 	       $(INSTALL) -d $htmldir ; \
 	       tar xf $$f/pages.tar ; \
 	       tar xf $$f/images.tar ; \
