@@ -29,7 +29,7 @@ cleanup() {
 
 	for i in $delfiles foo ; do
 		if test -f $i ; then
-			rm $i
+			rm -f $i
 		fi
 	done
 
