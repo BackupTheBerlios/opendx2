@@ -284,21 +284,10 @@ SFILEGetChar(SFILE *sf)
 #endif
 	if (ssf->type == SFILE_FPTR)
 	{
-#if defined(intelnt)
-		if (ssf->file == stdin)
-			return ';';
-		else
-#endif
-			ssf->count = read(ssf->fd, ssf->buffer, BUFSIZ);
 		ssf->buffer[ssf->count] = '\0';
 	}
 	else if (ssf->type == SFILE_FDESC)
 	{
-#if defined(intelnt)
-		if (ssf->fd == fileno(stdin))
-			return _getche();
-		else
-#endif
 	    ssf->count = read(ssf->fd, ssf->buffer, BUFSIZ);
   	    ssf->buffer[ssf->count] = '\0';
 	}
@@ -323,5 +312,9 @@ SFILEIoctl(SFILE *sf, int cmd, void *argp)
 	return ioctlsocket(ssf->socket, cmd, argp);
     else
 #endif
+#if defined(HAVE_IOCTL)
     return ioctl(ssf->fd, cmd, argp);
+#else
+    return 1;
+#endif
 }
