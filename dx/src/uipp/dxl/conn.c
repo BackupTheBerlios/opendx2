@@ -619,7 +619,7 @@ ConnectTo(const char *host,
     struct hostent *he;
     int findx;
     char *pathEnv;
-    char *defaultPath = "PATH=/usr/bin:/usr/local/dx/bin"
+    char *defaultPath = "PATH=/usr/bin:/usr/local/dx/bin";
     int  j;
 #ifdef hp700
     int  width = MAXFUPLIM;
