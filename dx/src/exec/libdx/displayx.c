@@ -4915,7 +4915,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
  */
 #define REALLOCATE_COLOR(index, dst)				 \
 {				 				 \
-    XColor c, *src = colors + (sizeof(XColor)*(index));		 \
+    XColor c, *src = colors + index;				 \
 				 				 \
     c.red   = src->red;				 		 \
     c.green = src->green;				 	 \
