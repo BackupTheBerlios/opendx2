@@ -604,7 +604,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	}
 
 #if defined(HAVE_OPENDIR) && defined(HAVE_DIRENT_H)
-        DIR *d = opendir(nsptr);
+        DIR* d = opendir(nsptr);
 	if (!d)
 #elif defined(HAVE_SYS_STAT_H)
 	char *srch_string = new char[STRLEN(nsptr) + 6];
@@ -757,6 +757,8 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 #elif defined(HAVE_REGCOMP) && defined(HAVE_REGEX_H)
 		}
 	    }
+	    closedir(d);
+	    regfree(&net_file);
 #elif defined(HAVE_REGCOMP) && defined(HAVE_REGEXP_H)
 		}
 	    }
