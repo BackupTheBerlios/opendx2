@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 /* Revision 9.1  1997/05/22 18:48:46  svs
  * Copy of release 3.1.4 code
  *

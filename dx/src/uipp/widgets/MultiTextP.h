@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _MultiTextP_h
 #define _MultiTextP_h
 #include <Xm/Xm.h>

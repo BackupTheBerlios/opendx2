@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _PixelImageFormat_h
 #define _PixelImageFormat_h
 

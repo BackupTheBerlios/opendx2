@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _DeleteNodeCommand_h
 #define _DeleteNodeCommand_h
 

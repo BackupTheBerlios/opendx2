@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _VectorDefinition_h
 #define _VectorDefinition_h
 

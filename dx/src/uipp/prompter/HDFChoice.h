@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _HDF_CHOICE_H
 #define _HDF_CHOICE_H
 

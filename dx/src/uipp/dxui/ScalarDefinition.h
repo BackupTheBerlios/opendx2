@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ScalarDefinition_h
 #define _ScalarDefinition_h
 

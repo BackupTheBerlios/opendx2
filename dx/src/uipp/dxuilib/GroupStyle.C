@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #include "Network.h"
 #include "PageGroupManager.h"

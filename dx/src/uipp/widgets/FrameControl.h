@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 /*	Construct and manage the "frame sequencer guide" to be used as a
  *	popup of the "equence controller" (alias VCR control)
  *
@@ -10,8 +13,11 @@
 
 /*
  * $Log: FrameControl.h,v $
- * Revision 1.3  1999/04/30 13:10:06  gda
- * After re-snapshotting, ripping out headers and adding linux changes
+ * Revision 1.4  1999/05/03 14:09:01  gda
+ * dxconfig.h, plus other post-new-shapshot fixes
+ *
+ * Revision 1.4  1999/05/03 14:09:01  gda
+ * dxconfig.h, plus other post-new-shapshot fixes
  *
  * Revision 1.3  1999/04/30 13:10:06  gda
  * After re-snapshotting, ripping out headers and adding linux changes

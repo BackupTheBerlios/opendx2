@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 /*	Widget that will display that final ADX images.  The widget will
  *	detect the depth of the display and, if depth == 24, it will assume
  *	that we have a HIPPI frame buffer.  There is a standard colormap 
@@ -62,6 +65,7 @@ static  struct visualLookupS  {
 /*{ 12, PseudoColor },*/
   { 12, TrueColor   },
   { 12, DirectColor },
+  { 16, TrueColor   },
   { 24, TrueColor   },
   { 24, DirectColor },
 };
@@ -152,6 +156,11 @@ static XtResource resources[] =
     {
       XmN12supported, XmCSupported, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.supported12),
+      XmRImmediate, (caddr_t) False
+    },
+    {
+      XmN16supported, XmCSupported, XmRBoolean, sizeof(Boolean),
+      XtOffset(XmImageWidget, image.supported16),
       XmRImmediate, (caddr_t) False
     },
     {
@@ -266,6 +275,10 @@ int    screen = XScreenNumberOfScreen(XtScreen(request));
     depth = 12;
     vis = getBestVisual(XtDisplay(new), &depth, screen);
     if(depth == 12) new->image.supported12 = True;
+
+    depth = 16;
+    vis = getBestVisual(XtDisplay(new), &depth, screen);
+    if(depth == 16) new->image.supported16 = True;
 
     depth = 24;
     vis = getBestVisual(XtDisplay(new), &depth, screen);

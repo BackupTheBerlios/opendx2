@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _ReceiverDefinition_h
 #define _ReceiverDefinition_h

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _MacroNode_h
 #define _MacroNode_h

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _RecordSeparator_h
 #define _RecordSeparator_h

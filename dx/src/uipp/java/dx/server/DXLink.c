@@ -2,9 +2,12 @@
 /*                            DX  SOURCEFILE                                */
 /****************************************************************************/
 
+#include <dxconfig.h>
+
+
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/server/Attic/DXLink.c,v 1.2 1999/04/30 15:57:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/server/Attic/DXLink.c,v 1.3 1999/05/03 14:08:57 gda Exp $
  */
 
 #include <string.h>

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _SetNetworkCommentDialog_h
 #define _SetNetworkCommentDialog_h

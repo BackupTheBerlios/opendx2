@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _ShadowedOutputDefinition_h
 #define _ShadowedOutputDefinition_h

@@ -1,8 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES =  -I../base -I../../../include -I../dxui
-MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+INCLUDES =  -I../base -I../../../include -I../dxui -D@ARCH@
 
 noinst_LIBRARIES = libDXUI.a
 

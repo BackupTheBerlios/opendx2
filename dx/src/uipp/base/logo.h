@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #define LOGO_WIDTH 119
 #define LOGO_HEIGHT 86
 #define LUT_SIZE 140

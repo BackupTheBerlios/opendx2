@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 // ScalarInteractor.h -							    //
 //                                                                          //
 // Definition for the ScalarInteractor class.				    //

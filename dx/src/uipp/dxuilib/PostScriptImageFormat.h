@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _PostScriptImageFormat_h
 #define _PostScriptImageFormat_h
 

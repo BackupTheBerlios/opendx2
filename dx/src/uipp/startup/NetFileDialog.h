@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _NET_FILE_DIALOG_H
 #define _NET_FILE_DIALOG_H
 

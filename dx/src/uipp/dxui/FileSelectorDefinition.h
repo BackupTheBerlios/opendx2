@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _FileSelectorDefinition_h
 #define _FileSelectorDefinition_h
 

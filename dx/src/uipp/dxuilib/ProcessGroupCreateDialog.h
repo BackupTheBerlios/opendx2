@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ProcessGroupCreateDialog_h
 #define _ProcessGroupCreateDialog_h
 

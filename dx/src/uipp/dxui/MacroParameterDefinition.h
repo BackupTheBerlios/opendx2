@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _MacroParameterDefinition_h
 #define _MacroParameterDefinition_h

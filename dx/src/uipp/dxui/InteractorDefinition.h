@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _InteractorDefinition_h
 #define _InteractorDefinition_h
 

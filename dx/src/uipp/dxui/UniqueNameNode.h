@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _UniqueNameNode_h
 #define _UniqueNameNode_h
 

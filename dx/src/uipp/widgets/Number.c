@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 /*  Similar to a text widget, but only allows strings representing
  *  numerical values (base 10).
  *  (supports integer, fixed point, or floating point | scientific)

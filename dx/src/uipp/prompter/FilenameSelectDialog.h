@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _FilenameSelectDialog_h
 #define _FilenameSelectDialog_h

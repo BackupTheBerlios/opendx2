@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _SetDecoratorTextDialog_h
 #define _SetDecoratorTextDialog_h

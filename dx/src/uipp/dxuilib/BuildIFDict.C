@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "ImageFormatRGB.h"
 #include "ImageFormatREX.h"
 #include "ImageFormatTIF.h"

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _GetSetConversionDialog_h
 #define _GetSetConversionDialog_h

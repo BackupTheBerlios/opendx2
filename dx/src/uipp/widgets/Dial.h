@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 /******************************************************
  * Dial.h: Public header file for Dial Widget Class.

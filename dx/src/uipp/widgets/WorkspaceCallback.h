@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _WorkspaceCallback_h
 #define _WorkspaceCallback_h
 

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #include "UIConfig.h"
 #include "defines.h"
@@ -564,6 +567,18 @@ boolean IsWhere (const char* string, int& index)
 	    index++;
 	    retVal = TRUE;
 	}
+    } else if (strncmp (dupstring, "X16,,", 5) == 0) {
+      index = 6;
+      if (dupstring[index] == '"') {
+          index++;
+          retVal = TRUE;
+      }
+    } else if (strncmp (dupstring, "x16,,", 5) == 0) {
+      index = 6;
+      if (dupstring[index] == '"') {
+          index++;
+          retVal = TRUE;
+      }
     } else if (strncmp (dupstring, "X24,,", 5) == 0) {
 	index = 6;
 	if (dupstring[index] == '"') {
@@ -598,7 +613,7 @@ boolean IsWhere (const char* string, int& index)
 		    &depth, dispstr, &xwid);
 
 	if (items_parsed == 3) {
-	    if ((depth == 8) || (depth == 12) || (depth == 24)) {
+	    if ((depth == 8) || (depth == 12) || (depth == 16) || (depth == 24)) {
 		index = strlen(string);
 		retVal = TRUE;
 	    }

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ColormapFileCommand_h
 #define _ColormapFileCommand_h
 

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _DXLinkHandler_h
 #define _DXLinkHandler_h
 

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _CDF_CHOICE_H
 #define _CDF_CHOICE_H
 

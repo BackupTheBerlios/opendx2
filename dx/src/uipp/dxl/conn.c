@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include <stdio.h>
 #include <ctype.h>
 #ifndef DXD_HAS_WINSOCKETS

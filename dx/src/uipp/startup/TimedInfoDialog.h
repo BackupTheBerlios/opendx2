@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _TimedInfoDialog_h
 #define _TimedInfoDialog_h
 

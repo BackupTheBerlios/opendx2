@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _DXLOutputDefinition_h
 #define _DXLOutputDefinition_h

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ImageFormatYUV_h
 #define _ImageFormatYUV_h
 

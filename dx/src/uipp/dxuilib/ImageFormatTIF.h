@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ImageFormatTIF_h
 #define _ImageFormatTIF_h
 

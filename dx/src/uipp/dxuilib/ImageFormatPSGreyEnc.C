@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "ImageFormatPSGreyEnc.h"
 #include "Application.h"
 

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "NetFileDialog.h"
 #include "Application.h"
 #include "StartupWindow.h"

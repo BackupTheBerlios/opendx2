@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "UIConfig.h" 
 
 #include <Xm/Xm.h>
@@ -4260,7 +4263,7 @@ void DXApplication::notifyPanelChanged()
 //
 boolean DXApplication::verifyServerLicense()
 {
-#ifndef DXD_OS_NON_UNIX
+#if defined(DXD_LICENSED_VERSION)
     DXPacketIF *pif = this->getPacketIF();
     if (!pif)
 	return FALSE;

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include <Xm/PushB.h>
 #include <Xm/Text.h>
 #include <Xm/List.h>

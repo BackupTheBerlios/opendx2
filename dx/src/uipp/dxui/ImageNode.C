@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifdef OS2
 #include <stdlib.h>
@@ -781,6 +784,8 @@ void ImageNode::getBox(double box[4][3])
 void ImageNode::getProjection(boolean &persp)
 {
     const char *s;
+    int ii;
+
     if (this->isInputDefaulting(PROJECTION))
 	s = this->getInputDefaultValueString(PROJECTION);
     else
@@ -789,7 +794,9 @@ void ImageNode::getProjection(boolean &persp)
     if(!s || EqualString(s,"NULL"))
 	persp = 0;
     else
-	sscanf(s, "%d", &persp);
+	sscanf(s, "%d", &ii);
+
+    persp = ii != 0;
 }
 void ImageNode::getViewAngle(double &angle)
 {

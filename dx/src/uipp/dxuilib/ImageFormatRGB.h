@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ImageFormatRGB_h
 #define _ImageFormatRGB_h
 

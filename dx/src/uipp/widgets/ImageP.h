@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 
 #ifndef _Image_h
@@ -38,6 +41,7 @@ typedef struct _XmImagePart
     Boolean		frame_buffer;
     Boolean		supported8;
     Boolean		supported12;
+    Boolean		supported16;
     Boolean		supported24;
     /*  Private (local use)  */
 } XmImagePart;

@@ -1,8 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include -I../base -I../widgets
-MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+INCLUDES = -I../../../include -I../base -I../widgets -D@ARCH@
 
 dxbindir = $(prefix)/dx/bin_@ARCH@
 

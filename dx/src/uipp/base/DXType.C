@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 
 #if defined(DXD_WIN) || defined(OS2)                  //SMH get correct hdr

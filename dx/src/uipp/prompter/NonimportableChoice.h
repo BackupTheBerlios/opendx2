@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _NON_IMP_CHOICE_H
 #define _NON_IMP_CHOICE_H
 

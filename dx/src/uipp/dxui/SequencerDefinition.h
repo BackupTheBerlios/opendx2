@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _SequencerDefinition_h
 #define _SequencerDefinition_h
 

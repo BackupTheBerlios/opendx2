@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _NetCDF_CHOICE_H
 #define _NetCDF_CHOICE_H
 

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "SpreadSheetChoice.h"
 #include "DXChoice.h"
 #include "GridChoice.h"

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ImageFormatGIF_h
 #define _ImageFormatGIF_h
 

@@ -1,8 +1,6 @@
 
 
-INCLUDES = -I../base -I../../../include -I../dxuilib
-MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+INCLUDES = -I../base -I../../../include -I../dxuilib -D@ARCH@
 
 dxbindir = $(prefix)/dx/bin_@ARCH@
 dxbin_PROGRAMS = dxui

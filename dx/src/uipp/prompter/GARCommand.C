@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #include <Xm/Xm.h>
 #if !defined(OS2)  && !defined(DXD_WIN)

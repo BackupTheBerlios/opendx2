@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 
 #ifndef _NoUndoImageCommand_h
@@ -67,7 +70,8 @@ class NoUndoImageCommand : public NoUndoCommand
 	SetCPAccess		= 12,   // Set the Control Panel access
 	SaveImage		= 13,   // Save image 
 	SaveAsImage		= 14,   // Post the SaveAsImageDialog...
-	PrintImage		= 15    // Post the PrintImageDialog...
+	PrintImage		= 15,   // Post the PrintImageDialog...
+	Depth16			= 16    // Set the image depth to 16
     };
     //
     // Returns a pointer to the class name.

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _GRID_CHOICE_H
 #define _GRID_CHOICE_H
 

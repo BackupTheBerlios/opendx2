@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "UniqueNameNode.h"
 #include "SymbolManager.h"
 

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include <malloc.h>
 #include <stdio.h>
 #include <ctype.h>

@@ -1,6 +1,9 @@
 /*  Open Visualization Data Explorer Source File */
 #include "UIConfig.h"
 
+#include <dxconfig.h>
+
+
 #include <Xm/Xm.h>
 #include <Xm/FileSB.h>
 #include <Xm/SelectioB.h>

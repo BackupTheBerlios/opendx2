@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _IMPORTABLE_CHOICE_H
 #define _IMPORTABLE_CHOICE_H
 

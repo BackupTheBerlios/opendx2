@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _ConfirmedQCommand_h
 #define _ConfirmedQCommand_h

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _XmDX_H
 #define _XmDX_H
@@ -108,6 +111,7 @@
 #define XmCSendMotion		"SendMotion"
 #define XmN8supported		"8supported"
 #define XmN12supported		"12supported"
+#define XmN16supported		"16supported"
 #define XmN24supported		"24supported"
 #define XmCSupported		"Supported"
 

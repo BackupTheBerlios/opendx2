@@ -2,6 +2,9 @@
 #ifndef _EchoNode_h
 #define _EchoNode_h
 
+#include <dxconfig.h>
+
+
 
 #include "defines.h"
 #include "ModuleMessagingNode.h"

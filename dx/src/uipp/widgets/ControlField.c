@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #include "ControlField.h"
 #include <X11/keysym.h>		/* Define XK_Left, XK_Right */

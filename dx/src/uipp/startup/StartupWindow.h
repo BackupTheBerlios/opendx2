@@ -2,6 +2,9 @@
 #ifndef _StartupWindow_h
 #define _StartupWindow_h
 
+#include <dxconfig.h>
+
+
 
 #include "UIConfig.h"
 #include <dxl.h>

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ModuleMessagingNode_h
 #define _ModuleMessagingNode_h
 

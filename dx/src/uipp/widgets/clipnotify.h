@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _CLIPNOTIFY_H_
 #define _CLIPNOTIFY_H_
 #if defined(__cplusplus) || defined(c_plusplus)

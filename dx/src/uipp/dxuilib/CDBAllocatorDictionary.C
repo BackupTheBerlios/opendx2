@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 //
 // This is the dictionary of ConfigurationDialog allocating functions.

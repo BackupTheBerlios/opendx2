@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ImageWindow_h
 #define _ImageWindow_h
 
@@ -186,7 +189,7 @@ struct ImageState {
     boolean		hardwareRenderExists;
     boolean		resizeFromServer;
     boolean		frameBuffer;
-    boolean		hardwareWindow;
+    long		hardwareWindow;
     ImageCamera		hardwareCamera;
     boolean		globeDisplayed;
     boolean		degenerateBox;
@@ -420,6 +423,7 @@ class ImageWindow : public DXWindow
     CascadeMenu		*imageDepthCascade;
     Command             *imageDepth8Cmd;
     Command             *imageDepth12Cmd;
+    Command             *imageDepth16Cmd;
     Command             *imageDepth24Cmd;
     Command		*closeCmd;
     Command		*setPanelAccessCmd;
@@ -484,6 +488,7 @@ class ImageWindow : public DXWindow
     CommandInterface*	displayRotationGlobeOption;
     ToggleButtonInterface*	imageDepth8Option;
     ToggleButtonInterface*	imageDepth12Option;
+    ToggleButtonInterface*	imageDepth16Option;
     ToggleButtonInterface*	imageDepth24Option;
     CommandInterface*	setPanelAccessOption;
 

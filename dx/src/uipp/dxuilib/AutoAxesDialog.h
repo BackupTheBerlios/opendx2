@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _AutoAxesDialog_h
 #define _AutoAxesDialog_h
 

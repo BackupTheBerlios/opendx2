@@ -1,5 +1,8 @@
 #include <string.h>
 
+#include <dxconfig.h>
+
+
 int
 STRLEN(char *a)
 {

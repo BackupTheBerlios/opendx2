@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #define FieldCursor_width 19
 #define FieldCursor_height 19
 #define FieldCursor_x_hot 9

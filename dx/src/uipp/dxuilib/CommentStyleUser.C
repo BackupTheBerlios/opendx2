@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #define NO_TEXT_SYMBOL "<NULL>"
 #include "CommentStyleUser.h"

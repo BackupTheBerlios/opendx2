@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "defines.h"
 #include "ErrorDialogManager.h"
 #include "DXApplication.h"

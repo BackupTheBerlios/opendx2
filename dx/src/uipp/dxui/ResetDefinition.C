@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "UIConfig.h"
 #include "defines.h"
 #include "ResetDefinition.h"

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _XmColorMapEditorP_H
 #define _XmColorMapEditorP_H

@@ -1,4 +1,7 @@
 /*  Open Visualization Data Explorer Source File */
+
+#include <dxconfig.h>
+
  
  
 #ifndef _TickLabelList_h

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _ImageSetModeCommand_h
 #define _ImageSetModeCommand_h

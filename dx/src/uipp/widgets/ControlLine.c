@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 /*
  *  The graph is drawn within the framework of the top of a bar graph

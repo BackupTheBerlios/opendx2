@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "TimedDialog.h"
 #include "Application.h"
 boolean TimedDialog::ClassInitialized = FALSE;

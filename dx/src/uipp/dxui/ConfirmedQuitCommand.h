@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ConfirmedQuitCommand_h
 #define _ConfirmedQuitCommand_h
 

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 
 #include "defines.h"
@@ -61,6 +64,10 @@ boolean NoUndoImageCommand::doIt(CommandInterface *ci)
     case NoUndoImageCommand::Depth12:
 	if( in && image->imageDepth12Option->getState() )
 	    image->changeDepth(12);
+	break;
+    case NoUndoImageCommand::Depth16:
+	if( in && image->imageDepth12Option->getState() )
+	    image->changeDepth(16);
 	break;
     case NoUndoImageCommand::Depth24:
 	if( in && image->imageDepth24Option->getState() )

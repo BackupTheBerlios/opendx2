@@ -1,8 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../widgets -I../../../include
-MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+INCLUDES = -I../widgets -I../../../include -D@ARCH@
 
 noinst_LIBRARIES = libBASE.a
 

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _ImageHardwareCommand_h
 #define _ImageHardwareCommand_h

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 /*	Construct and manage the "frame sequencer guide" to be used as a
  *	popup of the "sequence controller" (alias VCR control)
  *

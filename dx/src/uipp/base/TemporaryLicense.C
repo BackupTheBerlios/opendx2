@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #if !defined(DXD_OS_NON_UNIX)
 
 #include <stdio.h>

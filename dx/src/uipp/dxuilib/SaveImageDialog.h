@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _SaveImageDialog_h
 #define _SaveImageDialog_h
 

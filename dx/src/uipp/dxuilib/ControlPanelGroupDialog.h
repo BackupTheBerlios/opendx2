@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _ControlPanelGroupDialog_h
 #define _ControlPanelGroupDialog_h

@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 
 #ifndef _SetPanelCommentDialog_h
 #define _SetPanelCommentDialog_h

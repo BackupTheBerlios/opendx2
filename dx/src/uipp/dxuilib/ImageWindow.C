@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "defines.h"
 #include <iostream.h>
 #include <sys/types.h>
@@ -314,6 +317,7 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
     this->imageDepthCascade = NULL;
     this->imageDepth8Option	     = NUL(ToggleButtonInterface*); 
     this->imageDepth12Option	     = NUL(ToggleButtonInterface*);
+    this->imageDepth16Option	     = NUL(ToggleButtonInterface*);
     this->imageDepth24Option	     = NUL(ToggleButtonInterface*);
     this->setPanelAccessOption	     = NUL(CommandInterface*);
     this->onVisualProgramOption	     = NUL(CommandInterface*);
@@ -549,6 +553,10 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 	    new NoUndoImageCommand("imageDepth12", this->commandScope,
 	       FALSE, this, NoUndoImageCommand::Depth12);
 
+	this->imageDepth16Cmd =
+	    new NoUndoImageCommand("imageDepth16", this->commandScope,
+	       FALSE, this, NoUndoImageCommand::Depth16);
+
 	this->imageDepth24Cmd =
 	    new NoUndoImageCommand("imageDepth24", this->commandScope,
 	       FALSE, this, NoUndoImageCommand::Depth24);
@@ -565,6 +573,7 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 	this->setPanelAccessCmd = NULL;
 	this->imageDepth8Cmd = NULL;
 	this->imageDepth12Cmd = NULL;
+	this->imageDepth16Cmd = NULL;
 	this->imageDepth24Cmd = NULL;
     }
 
@@ -744,6 +753,7 @@ ImageWindow::~ImageWindow()
     delete this->throttleCmd;
     if (this->imageDepth8Cmd)   delete this->imageDepth8Cmd;
     if (this->imageDepth12Cmd)  delete this->imageDepth12Cmd;
+    if (this->imageDepth16Cmd)  delete this->imageDepth16Cmd;
     if (this->imageDepth24Cmd)  delete this->imageDepth24Cmd;
     if (this->setPanelAccessCmd) delete this->setPanelAccessCmd;
     delete this->viewControlCmd;
@@ -1491,6 +1501,11 @@ void ImageWindow::createOptionsMenu(Widget parent)
 	ASSERT(this->imageDepth12Cmd);
 	this->imageDepth12Option = tbi = new ToggleButtonInterface(item_parent,
 		"12", this->imageDepth12Cmd, FALSE);
+	cm->appendComponent(tbi);
+
+	ASSERT(this->imageDepth16Cmd);
+	this->imageDepth16Option = tbi = new ToggleButtonInterface(item_parent,
+		"16", this->imageDepth16Cmd, FALSE);
 	cm->appendComponent(tbi);
 
 	ASSERT(this->imageDepth24Cmd);
@@ -4783,6 +4798,7 @@ void ImageWindow::beginExecution()
     // and in standBy (for eoc mode).
     if (this->imageDepth8Cmd) this->imageDepth8Cmd->deactivate();
     if (this->imageDepth12Cmd) this->imageDepth12Cmd->deactivate();
+    if (this->imageDepth16Cmd) this->imageDepth16Cmd->deactivate();
     if (this->imageDepth24Cmd) this->imageDepth24Cmd->deactivate();
 }
 void ImageWindow::standBy()
@@ -6479,10 +6495,11 @@ boolean sw;
     if(canvas_depth != depth)
     {
 #if 0
-	Boolean sup8, sup12, sup24;
+	Boolean sup8, sup12, sup16, sup24;
 	XtVaGetValues(this->getCanvas(),
 		      XmN8supported,  &sup8,
 		      XmN12supported, &sup12,
+		      XmN16supported, &sup16,
 		      XmN24supported, &sup24,
 		      NULL);
 #endif
@@ -6680,12 +6697,14 @@ void ImageWindow::configureImageDepthMenu()
     if (this->imageDepthCascade) {
 	ASSERT(this->imageDepth8Option);
 	ASSERT(this->imageDepth12Option);
+	ASSERT(this->imageDepth16Option);
 	ASSERT(this->imageDepth24Option);
 
 	if (!this->node) {
 	    this->imageDepthCascade->deactivate();
 	    this->imageDepth8Cmd->deactivate();
 	    this->imageDepth12Cmd->deactivate();
+	    this->imageDepth16Cmd->deactivate();
 	    this->imageDepth24Cmd->deactivate();
 	} else {
 	    boolean sw;
@@ -6696,13 +6715,14 @@ void ImageWindow::configureImageDepthMenu()
 		this->imageDepthCascade->deactivate();
 	    }
 
-	    Boolean sup8, sup12, sup24, frame_buffer;
+	    Boolean sup8, sup12, sup16,  sup24, frame_buffer;
 	    int canvas_depth;
 	    XtVaGetValues(this->getCanvas(),
 		      XmNdepth, 	&canvas_depth, 
 		      XmNframeBuffer,  &frame_buffer,
 		      XmN8supported,  &sup8,
 		      XmN12supported, &sup12,
+		      XmN16supported, &sup16,
 		      XmN24supported, &sup24,
 		      NULL);
 
@@ -6714,6 +6734,7 @@ void ImageWindow::configureImageDepthMenu()
 		    canvas_depth = 24;
 		this->imageDepth8Cmd->deactivate();
 		this->imageDepth12Cmd->deactivate();
+		this->imageDepth16Cmd->deactivate();
 		this->imageDepth24Cmd->deactivate();
 	    } else { 
 		if (sup8 && canvas_depth != 8) 
@@ -6724,6 +6745,10 @@ void ImageWindow::configureImageDepthMenu()
 		    this->imageDepth12Cmd->activate();
 		else
 		    this->imageDepth12Cmd->deactivate();
+		if (sup16 && canvas_depth != 16) 
+		    this->imageDepth16Cmd->activate();
+		else
+		    this->imageDepth16Cmd->deactivate();
 		if (sup24 && canvas_depth != 24) 
 		    this->imageDepth24Cmd->activate();
 		else
@@ -6732,6 +6757,7 @@ void ImageWindow::configureImageDepthMenu()
 		
 	    this->imageDepth8Option->setState(canvas_depth == 8);
 	    this->imageDepth12Option->setState(canvas_depth == 12);
+	    this->imageDepth16Option->setState(canvas_depth == 16);
 	    this->imageDepth24Option->setState(canvas_depth == 24);
 	}
     }

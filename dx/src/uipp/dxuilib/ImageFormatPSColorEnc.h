@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef _ImageFormatPSColorEnc_h
 #define _ImageFormatPSColorEnc_h
 

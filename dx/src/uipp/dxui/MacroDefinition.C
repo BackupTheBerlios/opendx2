@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifdef OS2
 #   define INCL_DOSFILEMGR
 #   include <os2.h>

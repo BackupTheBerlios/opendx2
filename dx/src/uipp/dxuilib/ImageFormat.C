@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "ImageFormat.h"
 #include "ImageNode.h"
 #include "ImageFormatDialog.h"

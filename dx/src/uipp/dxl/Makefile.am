@@ -1,8 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include 
-MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+INCLUDES = -I../../../include  -D@ARCH@
 
 dxlibdir = $(prefix)/dx/lib_@ARCH@
 

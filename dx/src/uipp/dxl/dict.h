@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #ifndef DictionaryH
 #define DictionaryH
 typedef struct _dictitem_t DictItem;

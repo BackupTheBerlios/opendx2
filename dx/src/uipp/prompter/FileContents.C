@@ -1,5 +1,8 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <dxconfig.h>
+
+
 #include "FileContents.h"
 #include "IBMApplication.h"
 #include "ListIterator.h"
