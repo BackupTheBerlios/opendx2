@@ -1,3 +1,17 @@
+4.2.0
+===============
+
+Fix to update multiple DrawingArea windgets with the same size during
+expose event.
+
+On a multiple image display windows application, the key value computation
+on hash() function on libdx/notify.c is too simple. Two different input
+parameters will return same key value. The result is the system runs out
+of memory. For example: "CACHED_OBJECT_X24,:0,#X205520899" and 
+"CACHED_OBJECT_X24,:0,#X184549379" generate same l value 73. Adding one
+more factor "s" the sum of character string will reduce the probability
+of same key value return.
+
 Added the ability to use a web browser and the html documentation
 as the DX help viewer. To enable, under UNIX set the environment 
 variable DX_WEB_BROWSER to your web browser. Under Windows and MacOS X
