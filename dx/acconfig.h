@@ -44,6 +44,12 @@
 #undef HAVE_SYS_FILIO_H
 #undef HAVE_CC_OSFCN_H
 #undef HAVE_CC_LIBC_H
+#undef HAVE_SYS_SOCKET_H
+#undef HAVE_SYS_WAIT_H
+#undef HAVE_SYS_PARAM_H
+#undef HAVE_SYS_SELECT_H
+#undef HAVE_ASM_SOCKET_H
+
 #undef uint
 #undef byte
 #undef float32
