@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_HELPER_H_
+#define _DXI_HELPER_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -240,6 +243,8 @@ for which the attribute's value is "positional" are transformed by the
 matrix, while those for which the attribute's value is "vector" are
 transformed by the adjoint transpose.
 **/
+
+#endif /* _DXI_HELPER_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

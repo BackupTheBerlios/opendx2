@@ -10,6 +10,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_USERINTERACTORS_H_
+#define _DXI_USERINTERACTORS_H_
+
 /*
  *  ROTXY creates a matrix which rotates about a unit vector [x y 0].
  *  This matrix can be composed from a rotation about Z to align the
@@ -136,6 +139,8 @@ typedef struct _userInteractor UserInteractor;
 	((((DXAnyEvent *)e)->event) == DXEVENT_LEFT ? LEFTBUTTON :				\
 	    (((DXAnyEvent *)e)->event) == DXEVENT_MIDDLE ? MIDDLEBUTTON :			\
 		(((DXAnyEvent *)e)->event) == DXEVENT_RIGHT ? RIGHTBUTTON : NO_BUTTON)
+
+#endif /* _DXI_USERINTERACTORS_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

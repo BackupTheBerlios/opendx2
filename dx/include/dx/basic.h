@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_BASIC_H_
+#define _DXI_BASIC_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -237,6 +240,8 @@ Vector DXApply(Vector v, Matrix t);
 Forms the product of vector {\tt v} (interpreted as a row vector) with
 the matrix~{\tt t}.
 **/
+
+#endif /* _DXI_BASIC_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

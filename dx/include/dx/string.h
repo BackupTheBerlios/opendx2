@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_STRING_H_
+#define _DXI_STRING_H_
+
 /* TeX starts here.  Do not remove this comment. */
 
 String DXNewString(char *s);
@@ -28,6 +31,8 @@ an error.
 **/
 
 String DXMakeString(char *s);
+
+#endif /* _DXI_STRING_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_COMPONENT_H_
+#define _DXI_COMPONENT_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -97,6 +100,8 @@ If any field in object {\tt o} contains a component of name {\tt name},
 this routine returns {\tt o}, otherwise it returns null but does not
 set the error code.
 **/
+
+#endif /* _DXI_COMPONENT_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

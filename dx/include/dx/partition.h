@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_PARTITION_H_
+#define _DXI_PARTITION_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -52,6 +55,8 @@ Divides {\tt f} into at most {\tt n} spatially local pieces with at least
 criteria, or returns a new group that contains {\tt f} partitioned, or
 returns null and sets the error code to indicate an error.
 **/
+
+#endif /* _DXI_PARTITION_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

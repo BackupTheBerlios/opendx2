@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_SCREEN_H_
+#define _DXI_SCREEN_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -73,6 +76,8 @@ This routine sets the object to which the screen transform is applied
 to {\tt o}.  Returns {\tt s}, or returns null and sets the error code
 to indicate an error.
 **/
+
+#endif /* _DXI_SCREEN_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

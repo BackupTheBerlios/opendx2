@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_TASK_H_
+#define _DXI_TASK_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -147,6 +150,8 @@ Error DXRegisterInputHandlerWithCheckProc (Error (*proc) (int, Pointer),
 	int (*check)(int, Pointer), int fd, Pointer arg);
 
 int DXCheckRIH(int block);
+
+#endif /* _DXI_TASK_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

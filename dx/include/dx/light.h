@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_LIGHT_H_
+#define _DXI_LIGHT_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -56,6 +59,8 @@ information specified when the light was created in {\tt *color}.
 Returns {\tt l}, or returns null but does not set the error code if
 {\tt l} is not a ambient light.
 **/
+
+#endif /* _DXI_LIGHT_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

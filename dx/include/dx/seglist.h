@@ -10,6 +10,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_SEGLIST_H_
+#define _DXI_SEGLIST_H_
+
 typedef struct slbuf
 {
     struct slbuf   *next;
@@ -40,6 +43,8 @@ Error	        DXInitGetNextSegListSegment(SegList *);
 SegListSegment *DXGetNextSegListSegment(SegList *);
 Pointer	        DXGetSegListSegmentPointer(SegListSegment *);
 int    	        DXGetSegListSegmentItemCount(SegListSegment *);
+
+#endif /* _DXI_SEGLIST_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

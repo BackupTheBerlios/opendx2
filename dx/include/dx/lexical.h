@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_LEXICAL_H_
+#define _DXI_LEXICAL_H_
+
 /*
  * Lexical vector operations
  */
@@ -139,6 +142,8 @@ extern "C" {
     X(A,g) = X(B,g),		\
     X(A,b) = X(B,b),		\
     X(A,o) = X(B,o))
+
+#endif /* _DXI_LEXICAL_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

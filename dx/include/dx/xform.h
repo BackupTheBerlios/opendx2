@@ -12,6 +12,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_XFORM_H_
+#define _DXI_XFORM_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -50,6 +53,8 @@ Xform DXSetXformMatrix(Xform x, Matrix m);
 Sets the object to which the transform is applied to {\tt o}.  Returns
 {\tt x}, or returns null and sets the error code to indicate an error.
 **/
+
+#endif /* _DXI_XFORM_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

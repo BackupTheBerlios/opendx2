@@ -12,6 +12,9 @@ extern "C" {
 #define class __class__
 #endif
 
+#ifndef _DXI_GROUP_H_
+#define _DXI_GROUP_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -278,6 +281,8 @@ primarily for prototyping or in cases where their convenience
 outweighs efficiency concerns.  The {\tt DXProcessParts()} routine can
 often be used for the same purposes with better efficiency.
 */
+
+#endif /* _DXI_GROUP_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 #undef class

@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_ERROR_H_
+#define _DXI_ERROR_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -263,6 +266,8 @@ Prints an error message describing the last error(s) that occurred.
 This should only be used by standalone programs, not by modules that
 are included as part of the Data Explorer application.
 **/
+
+#endif /* _DXI_ERROR_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

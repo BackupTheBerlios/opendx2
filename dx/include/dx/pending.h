@@ -10,8 +10,13 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_PENDING_H_
+#define _DXI_PENDING_H_
+
 Error
 DXSetPendingCmd(char *, char *, int (*)(Private), Private);
+
+#endif /* _DXI_PENDING_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

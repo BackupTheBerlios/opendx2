@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_CAMERA_H_
+#define _DXI_CAMERA_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -105,6 +108,8 @@ Camera DXGetPerspective(Camera c, float *fov, float *aspect);
 
 Camera DXGetBackgroundColor(Camera camera, RGBColor *background);
 Camera DXSetBackgroundColor(Camera camera, RGBColor background);
+
+#endif /* _DXI_CAMERA_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

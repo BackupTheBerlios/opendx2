@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_RENDER_H_
+#define _DXI_RENDER_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -268,6 +271,8 @@ for example, a fuzz value of one pixel is able to compensate for the
 half-pixel line inaccuracy described above when the line is displayed
 against a surface with a slope of two.
 */
+
+#endif /* _DXI_RENDER_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

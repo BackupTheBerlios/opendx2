@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_ARRAY_H_
+#define _DXI_ARRAY_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -483,6 +486,9 @@ an array with TYPE_STRING, rank 1, shape length_of_longest_string. **/
 
 Array DXMakeInteger(int n);
 Array DXMakeFloat(float f);
+
+#endif /* _DXI_ARRAY_H_ */
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

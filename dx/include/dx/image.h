@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_IMAGE_H_
+#define _DXI_IMAGE_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -80,6 +83,7 @@ specified by {\tt i} in the window.  Returns {\tt i}, or returns null
 and sets the error code to indicate an error.
 **/
 
+#endif /* _DXI_IMAGE_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_GEOMETRY_H_
+#define _DXI_GEOMETRY_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -148,7 +151,7 @@ Creates a vector glyph at {\tt p} with direction and length specified by
 by {\tt c}.  Returns an object or null to indicate an error.
 **/
 
-
+#endif /* _DXI_GEOMETRY_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

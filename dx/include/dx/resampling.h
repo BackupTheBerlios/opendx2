@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_RESAMPLING_H_
+#define _DXI_RESAMPLING_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 
@@ -185,6 +188,8 @@ Returns the {\tt input} argument if {\tt input} and {\tt map} are
 valid for mapping, otherwise returns null but does not set the error
 code.\marginpar{Is this true?}
 **/
+
+#endif /* _DXI_RESAMPLING_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -12,6 +12,9 @@ extern "C" {
 #define private __private__
 #endif
 
+#ifndef _DXI_OBJECT_H_
+#define _DXI_OBJECT_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -333,6 +336,8 @@ DXPrintV()}.  If no components are specified or if {\tt components} is
 null, all components are printed.  Returns {\tt OK} on success, or
 returns null and sets the error code to indicate an error.
 **/
+
+#endif /* _DXI_OBJECT_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 #undef private

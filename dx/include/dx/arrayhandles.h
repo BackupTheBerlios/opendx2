@@ -11,6 +11,9 @@ extern "C" {
 #define class __class__
 #endif
 
+#ifndef _DXI_ARRAYHANDLES_H_
+#define _DXI_ARRAYHANDLES_H_
+
 struct arrayHandle 
 {
     /*
@@ -86,6 +89,8 @@ do {									  \
 	(__scr) += (_h)->itemSize;					  \
     }									  \
 } while(0);
+
+#endif /* _DXI_ARRAYHANDLES_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 #undef class

@@ -13,6 +13,9 @@ extern "C" {
 #define delete __delete__
 #endif
 
+#ifndef _DXI_PRIVATE_H_
+#define _DXI_PRIVATE_H_
+
 /*
 \section{Private class}
 \label{privatesec}
@@ -45,6 +48,8 @@ DXGetPrivateData(Private p);
 \index{DXGetPrivateData}
 Returns the private data pointer specified when {\tt p} was created.
 **/
+
+#endif /* _DXI_PRIVATE_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 #undef delete

@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_FIELD_H_
+#define _DXI_FIELD_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -142,6 +145,8 @@ component,  while the next two statements check and retrieve an optional
 the program must then subsequently check if {\tt colors} is null to 
 determine whether the colors were present.
 */
+
+#endif /* _DXI_FIELD_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -12,6 +12,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_TIMING_H_
+#define _DXI_TIMING_H_
+
 /*
 \section{Timing}
 This section describes routines that can be used to measure the
@@ -83,6 +86,8 @@ void DXWaitTime(double seconds);
 \index{DXWaitTime}
 Returns after the requested number of seconds has elapsed.
 **/
+
+#endif /* _DXI_TIMING_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

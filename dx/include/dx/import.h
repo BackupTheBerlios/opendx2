@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_IMPORT_H_
+#define _DXI_IMPORT_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -87,6 +90,8 @@ Object DXImportCDF(char *filename, char **fieldlist, int *start,
 		int *end, int *delta);
 
 Object DXImportCM(char *filename,char **fieldlist);
+
+#endif /* _DXI_IMPORT_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

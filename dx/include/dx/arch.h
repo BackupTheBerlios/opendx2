@@ -439,11 +439,9 @@ union wait{
 
 /* bcopy,bcmp,bzero these are in /usr/ucb/libucb.a on solaris
  * this is the BSD compatibilty section and may not be there in future */
-#if !defined(HAVE_STRINGS_H)
 #define bcopy(s,d,n)	memcpy((void *)(d),(void *)(s),(int)(n))
 #define bzero(s,n)	memset((void *)(s),0,(int)(n))
 #define bcmp(s1,s2,n)	memcmp((void *)(s1),(void *)(s2),(int)(n))
-#endif
 
 /* Use sun mutex type locks unless we are using Purify which gets upset
  * about the threads library

@@ -10,6 +10,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_HASH_H_
+#define _DXI_HASH_H_
+
 /*
 \section{Hashing}
 This section describes support for hashing.  This is an implementation
@@ -125,6 +128,8 @@ Element DXGetNextHashElement(HashTable hashTable);
 Returns the next element in the iteration.  Returns NULL when the
 entire contents of {\tt hashTable} have been passed.
 */
+
+#endif /* _DXI_HASH_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

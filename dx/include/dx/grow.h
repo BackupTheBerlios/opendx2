@@ -10,6 +10,9 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
+#ifndef _DXI_GROW_H_
+#define _DXI_GROW_H_
  
 /* TeX starts here. Do not remove this comment. */
 
@@ -169,6 +172,8 @@ this call is useful when routines need to do pointwise operations on
 partitioned fields and don't want to process the same point multiple
 times (like when computing statistics).
 **/
+
+#endif /* _DXI_GROW_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -11,6 +11,8 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_PICK_H_
+#define _DXI_PICK_H_
 
 /*
  * Given a field containing pick information, this routine returns
@@ -107,6 +109,8 @@ DXTraversePickPath(Object current, int index, Matrix *matrix);
  *         }
  *     }
  */
+
+#endif /* _DXI_PICK_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

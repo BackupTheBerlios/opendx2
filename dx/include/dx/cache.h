@@ -10,6 +10,8 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_CACHE_H_
+#define _DXI_CACHE_H_
 
 /* TeX starts here. Do not remove this comment. */
 
@@ -114,6 +116,8 @@ delete the object when you are finished with it.  Returns the cached
 output object, or returns null but does not set the error code if no
 such cache entry exists.
 **/
+
+#endif /* _DXI_CACHE_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_EXTRACT_H_
+#define _DXI_EXTRACT_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -136,6 +139,7 @@ category, rank and shape, returns a new array of that form containing the
 converted data.  sets an error code and returns ERROR if the data can't be
 converted **/
 
+#endif /* _DXI_EXTRACT_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

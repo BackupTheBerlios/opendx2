@@ -15,6 +15,8 @@
  * the same bits. pmodflags.h is a private internal use only file.
  */
 
+#ifndef _DXI_MODFLAGS_H_
+#define _DXI_MODFLAGS_H_
 
 #define __BIT(x) (1<<(x))
 #define MODULE_PIN	   __BIT(3)  /* pin module to a single processor */
@@ -29,3 +31,5 @@
 #define MODULE_LOOP        __BIT(13) /* special module for looping */
 #define MODULE_ASYNCLOCAL  __BIT(14) /* can generate local outputs asynchronously */
 #define MODULE_CHANGES_STATE __BIT(16) /* internal use only */
+
+#endif /* _DXI_MODFLAGS_H_ */

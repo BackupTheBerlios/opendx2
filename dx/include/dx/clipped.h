@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_CLIPPED_H_
+#define _DXI_CLIPPED_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -57,6 +60,8 @@ rendered to {\tt render}.  If {\tt clipping} is not null, this routine
 sets the clipping object to {\tt clipping}.  Returns {\tt c}, or
 returns null and sets the error code to indicate an error.
 **/
+
+#endif /* _DXI_CLIPPED_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

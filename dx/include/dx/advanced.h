@@ -11,6 +11,8 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_ADVANCED_H_
+#define _DXI_ADVANCED_H_
 
 /* TeX starts here. Do not remove this comment. */
 
@@ -191,6 +193,8 @@ be flushed when DXqflush() is called.  DXqwrite() may do a DXqflush() and
 directly output the message if this message is being produced by the
 memory allocator; this is considered an emergency situation.
 **/
+
+#endif /* _DXI_ADVANCED_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

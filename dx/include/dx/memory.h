@@ -13,6 +13,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_MEMORY_H_
+#define _DXI_MEMORY_H_
+
 /*
 \section{Storage allocation}
 The Data Explorer provides its own storage allocation routines, which provide
@@ -182,6 +185,8 @@ available in the debuggable version of the library.
 If n == 0, the arenas are checked for consistency, but subsequent tracing
 is not enabled, or if it was previously enabled it is now disabled.
 **/
+
+#endif /* _DXI_MEMORY_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

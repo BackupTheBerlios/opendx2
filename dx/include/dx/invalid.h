@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#ifndef _DXI_INVALID_H_
+#define _DXI_INVALID_H_
+
 /* TeX starts here. Do not remove this comment. */
 
 /*
@@ -165,6 +168,8 @@ Error DXInitGetNextValidElementIndex(InvalidComponentHandle);
 int   DXGetNextValidElementIndex(InvalidComponentHandle);
 int   DXGetNextInvalidElementIndex(InvalidComponentHandle);
 Array DXForceInvalidArrayDependent(Array, Array);
+
+#endif /* _DXI_INVALID_H_ */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
