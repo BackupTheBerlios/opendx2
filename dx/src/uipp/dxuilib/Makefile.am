@@ -22,7 +22,10 @@ BUILT_SOURCES = \
 
 EXTRA_DIST = \
 	sequence.net \
-	imagemac.net 
+	imagemac.net \
+	net.lex \
+	net.yacc \
+	netyacc.awk
 
 noinst_HEADERS = \
 	AccessNetworkPanelsCommand.h \
@@ -643,9 +646,9 @@ imagemac.txt: imagemac.net
 		sed -e 's/^/"/' | \
 		sed -e 's/$$/",/' > imagemac.txt
 
-netlex.h: net.lex
+netlex.c: net.lex
 	$(LEX) net.lex
-	mv lex.yy.c netlex.h
+	mv lex.yy.c netlex.c
 
 netyacc.c: net.yacc netlex.c netyacc.awk
 	$(YACC) net.yacc
