@@ -220,7 +220,7 @@ then
     
     if test $mkdll = 1 ; then
 	if test ! X"$deffile" = X"" ; then
-	    echo "cannot specify both a def file and a DLL entry point
+	    echo "cannot specify both a def file and a DLL entry point"
 	    exit 1
 	fi
 	echo EXPORTS > tmp.def$$
