@@ -4,7 +4,7 @@ INCLUDES = -D$(ARCH) -I../../../include
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxlibdir = $(prefix)/dx/lib
+dxlibdir = $(prefix)/dx/lib_$(ARCH)
 incdir = $(prefix)/dx/include/dx
 
 inc_HEADERS = dxl.h
