@@ -791,6 +791,12 @@ void DXWindow::buildFileHistoryMenu()
     theDXApplication->getRecentNets(recent_nets);
     if (recent_nets.getSize()==0) {
 	this->file_history_cascade->deactivate();
+
+	//
+	// make a 1 button menu if there is no content available.
+	// I don't think this necessary, but it won't hurt.  No one
+	// will see it.
+	//
 	const char* cp = "(null)";
 	Symbol s = theSymbolManager->registerSymbol(cp);
 	cmd = new OpenFileCommand(s);
@@ -800,18 +806,46 @@ void DXWindow::buildFileHistoryMenu()
 	cmd->deactivate();
     } else {
 	this->file_history_cascade->activate();
+	//
+	// Stick each button's label into this list, then before making
+	// new buttons, ensure that the button's label is unique.  If
+	// it isn't unique, then use the file's full path instead of
+	// just the base name. This list actually serves 2 purposes.
+	// It also records allocated memory so that we free it before
+	// finishing.
+	//
+	List baseNames;
 	iter.setList(recent_nets);
 	Symbol s;
 	while (s=(Symbol)iter.getNext()) {
 	    cmd = new OpenFileCommand(s);
-	    char* cp = GetFileBaseName(theSymbolManager->getSymbolString(s),0);
 	    bi = new ButtonInterface(menu_parent, "openFile", cmd);
-	    bi->setLabel(cp);
-	    delete cp;
 	    this->file_history_buttons.appendElement(bi);
+
+	    const char* fullpath = theSymbolManager->getSymbolString(s);
+	    char* cp = GetFileBaseName(fullpath,0);
+	    baseNames.appendElement(cp);
+	    boolean unique = TRUE;
+	    ListIterator biter(baseNames);
+	    const char* cmprtr;
+	    while (cmprtr = (const char*)biter.getNext()) {
+		if ((cmprtr!=cp) && (EqualString(cmprtr, cp))) {
+		    unique = FALSE;
+		    break;
+		}
+	    }
+	    if (!unique) {
+		cp = DuplicateString(fullpath);
+		baseNames.appendElement(cp);
+	    }
+	    bi->setLabel(cp);
 	}
+	iter.setList(baseNames);
+	char* cp;
+	while (cp=(char*)iter.getNext()) delete cp;
     }
 }
+
 extern "C" void DXWindow_FileHistoryMenuMapCB(Widget , XtPointer clientdata, XtPointer )
 {
     DXWindow* dxw = (DXWindow*)clientdata;
