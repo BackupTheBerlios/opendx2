@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "defines.h"
 
 
 
@@ -29,7 +30,6 @@
 #include <sys/socket.h>
 #endif
 
-#include "defines.h"
 #include "ImageNode.h"
 #include "StandIn.h"
 #include "Arc.h"
