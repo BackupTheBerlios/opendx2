@@ -31,7 +31,7 @@ AM_INIT_AUTOMAKE(dx, 4.0.7)
 VERSION_STRING="04.0.0007"
 AC_DEFINE(DXD_VERSION_STRING, "04.0.0007")
 AC_DEFINE_UNQUOTED(DXD_VERSION, 4)
-AC_DEFINE_UNQUOTED(DXD_RELEASE, 1)
+AC_DEFINE_UNQUOTED(DXD_RELEASE, 0)
 AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 7)
 
 DX_ARCHITECTURE
@@ -214,6 +214,13 @@ AC_CHECK_LIB(netcdf, free_NC_attr,
     LIBS="-lnetcdf $LIBS"
     FMT_LIBS="$FMT_LIBS libnetcdf.a"
 ])
+
+AC_CHECK_LIB(Magick, GetImageInfo,
+[
+    AC_DEFINE(HAVE_LIBMAGICK)
+    PREMAGICK_LIBS="$LIBS"
+    LIBS="-lMagick -lpng -ltiff $LIBS -lm"
+], ,[ -lpng -ltiff -lm  -lXext -lX11 ])
 
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, inet_addr)
