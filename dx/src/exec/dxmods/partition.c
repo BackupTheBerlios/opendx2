@@ -12,7 +12,7 @@
 
 #include <dx/dx.h>
 
-static Object ObjectPartition(Object, int, int); 
+Object DXObjectPartition(Object, int, int); 
 
 /* default number of partitions if number of processors > 1
  */
@@ -62,7 +62,7 @@ m_Partition(Object *in, Object *out)
     if (maxnum == 1)
 	out[0] = in[0];
     else
-	out[0] = ObjectPartition(in[0], maxnum, mincount);
+	out[0] = DXObjectPartition(in[0], maxnum, mincount);
 
 
     return(out[0] ? OK : ERROR);
@@ -94,8 +94,8 @@ typedef struct
     int		   unpart;	/* fields which return unpartitioned */
 } HElement;
 
-static Object
-ObjectPartition(Object o, int n, int size)
+Object
+DXObjectPartition(Object o, int n, int size)
 {
     HashTable hTable = NULL;
     HElement *elt;
