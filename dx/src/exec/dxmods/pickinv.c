@@ -5,9 +5,15 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-#include <dx/dx.h>
 
+#include <dx/dx.h>
 #include <dxconfig.h>
+
+static Matrix Identity = {
+  {{ 1.0, 0.0, 0.0 },
+   { 0.0, 1.0, 0.0 },
+   { 0.0, 0.0, 1.0 }}
+};
 
 
 static Error DoPick(Object, Field, int, int, int, int, Object *);

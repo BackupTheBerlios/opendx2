@@ -7,10 +7,15 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
-
 #include <dx/dx.h>
+
+static Matrix Identity = {
+  {{ 1.0, 0.0, 0.0 },
+   { 0.0, 1.0, 0.0 },
+   { 0.0, 0.0, 1.0 }
+  }
+};
+
 #include <math.h>
 #include <string.h>
 #include "eigen.h"
