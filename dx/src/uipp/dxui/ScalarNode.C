@@ -215,7 +215,7 @@ boolean ScalarNode::adjustAttributeDimensions(int old_dim, int new_dim)
 boolean ScalarNode::setDefaultAttributes()
 {
     const char *id;
-    char *min, *max, *incr, *decimals;
+    const char *min, *max, *incr, *decimals;
     boolean r;
  
 // FIXME: these strings should be build from DEFAULT_*_STR
@@ -225,12 +225,12 @@ boolean ScalarNode::setDefaultAttributes()
 		min     = "[ -1000000 ]";
 		max     = "[ 1000000 ]";
 		incr    = "[ 1 ]";
-		decimals = (this->isIntegerTypeComponent() ? (char *)"[0]" : (char *)"[5]");
+		decimals = (this->isIntegerTypeComponent() ? "[0]" : "[5]");
 	    } else {
 		min     = "-1000000";
 		max     = "1000000";
 		incr    = "1";
-		decimals = (this->isIntegerTypeComponent() ? (char *)"0" : (char *)"5");
+		decimals = (this->isIntegerTypeComponent() ? "0" : "5");
 	    }
 	    break;
 	case 2:
