@@ -533,6 +533,11 @@ boolean _ParseLoadableLine(NodeDefinition* module,
     {
 	goto error;	
     }
+    
+#ifdef DXD_NON_UNIX_DIR_SEPARATOR
+    for (i=0; i<strlen(substring); i++)
+    	if(substring[i] == '\\') substring[i] = '/';
+#endif
 
     module->setDynamicLoadFile(substring);
     return TRUE;
