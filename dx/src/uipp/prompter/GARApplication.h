@@ -20,8 +20,10 @@
 #include <strstrea.h>
 #endif
 
+#if 0
 #if defined(cygwin)
 #include <g++/iostream.h>
+#endif
 #endif
 
 #include <Xm/Xm.h>
