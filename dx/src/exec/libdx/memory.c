@@ -1279,7 +1279,7 @@ int _dxf_initmemory(void)
 	/* includes crimson, indigo and onyx */
 	inventory_t *inv;
 
-#if defined(_SYSTYPE_SVR4) || defined(SYSTYPE_SVR4)
+#  if defined(_SYSTYPE_SVR4) || defined(SYSTYPE_SVR4)
 	uint physmem2 = 0;
 
 	while (inv=getinvent()) {
@@ -1293,15 +1293,25 @@ int _dxf_initmemory(void)
 	}
 	if ( physmem == 0 )
 	  physmem = physmem2;   /*  If no MEM/MAIN_MB, fall back to MEM/MAIN  */
-#else
+#  else
 	while (inv=getinvent()) {
 	    if (inv->class==INV_MEMORY && inv->type==INV_MAIN) {
 		physmem = (uint)((double)inv->inv_state / 1024. / 1024.);
 		break;
 	    }
 	}
-#endif  /* SVR4 */
-	
+#  endif  /* SVR4 */
+
+#  ifndef ENABLE_LARGE_ARENAS
+	/*  If not running with large arena support, tell DX to forget about */
+	/*    any physmem it sees about 2GB.  With an n32 dxexec, you can    */
+	/*    only grab ~1.5GB of shared mem, and the default size computat. */
+	/*    below will fall beneath this threshold if given 2GB physmem.   */
+	if ( physmem > 2 K /* 2GB */ )
+	    physmem = 2 K;
+#  endif
+
+
 #endif  /* sgi */
 	
 #if ibmpvs
