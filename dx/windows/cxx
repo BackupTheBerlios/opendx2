@@ -20,7 +20,7 @@ optdefs='/Oispb1 /D "NDEBUG"'
 optlinkopts="/incremental:no"
 
 #defs for debugged
-debugdefs='/GX- /Gi /Od /Zi /D "_DEBUG"'
+debugdefs='/Zi /Gi /Od /D "_DEBUG"'
 debuglinkopts="/DEBUG /incremental:yes"
 
 undefs=
@@ -34,6 +34,7 @@ prelibs="$prelibs wsock32.lib"
 deflibs="$deflibs $LIBPATH kernel32.lib"
 deflibs="$deflibs $LIBPATH user32.lib"
 deflibs="$deflibs $LIBPATH Advapi32.lib"
+deflibs="$deflibs $LIBPATH Shell32.lib"
 deflibs="$deflibs /NODEFAULTLIB:LIBC"
 
 #deflibs="$deflibs user32.lib gdi32.lib winspool.lib"
