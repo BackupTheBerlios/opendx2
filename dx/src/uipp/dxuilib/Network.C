@@ -3184,7 +3184,6 @@ boolean Network::saveNetwork(const char *name, boolean force)
     if (!this->versionMismatchQuery (TRUE, fullName))
 	return FALSE;
 
-    if (this->fileName) delete this->fileName;
     this->fileName = fullName;
 
     //
