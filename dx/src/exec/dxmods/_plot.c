@@ -1274,21 +1274,19 @@ Object _dxfAxes2D(Pointer p)
 
 
    if (dofixedfontsize) {
-      fs = ABS(scale.x)*fixedfontsize;
-   }
-
-   else {
+      fs = fixedfontsize;
+   } else {
    /* If we're just doing the right hand side, then use the size already
       decided on by the left hand side */
-   if (!justright) {
-     if ((*tx !=0)||(*ty != 0))
-        fs = FS*MIN(ABS(dx),ABS(dy));
-     else
-        fs = FS*MIN(ABS(scale.y), ABS(scale.x));
-        first_axes_fs = fs;
-   }
-   else 
-      fs = first_axes_fs;
+     if (!justright) {
+       if ((*tx !=0)||(*ty != 0))
+          fs = FS*MIN(ABS(dx),ABS(dy));
+       else {
+          fs = FS*MIN(ABS(scale.y), ABS(scale.x));
+          first_axes_fs = fs;
+       }
+     } else 
+         fs = first_axes_fs;
    }
 
 

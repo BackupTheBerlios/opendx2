@@ -484,12 +484,17 @@ Color module before passing them to Plot.
 
 <P>
 <H5><A NAME="HDRSCATPLT">Scatter Plots</A></H5>
+		
 To create a scatter plot (with no line drawn between markers), set the
 "scatter" attribute on the line to 1 (one).
 (The default is a line between markers.)
-<P>
 
-<P><B>Notes: </B><OL>
+		<P></P>
+		<H5><A NAME="HDRSCATPLT">Column Charts</A></H5>
+		<P>To create a column chart with positions connection data, set the &quot;column&quot; attribute on the field or group to 1 (one).
+		<P> </P>
+		<P><B>Notes: </B>
+		<OL>
 <P><LI>If <TT><STRONG>corners</STRONG></TT> is more restrictive than the
 <TT><STRONG>ticklocations</STRONG></TT>, then the given locations outside the
 corners are not shown.
@@ -498,23 +503,26 @@ corners are not shown.
 is
 not specified, then all given tick locations are shown, whether or not
 there is data there.
-<P><LI>If <TT><STRONG>ticklocations</STRONG></TT> is specified, then the data
+<P>
+			<LI>If <TT><STRONG>ticklocations</STRONG></TT> is specified, then the data
 range determines the extent of the axes, unless
 <TT><STRONG>corners</STRONG></TT> is specified, in which case the given
 corners are used.
-</OL>
 
-<P><STRONG>Bar Charts</STRONG>
-<P>
+		</OL>
+		<P><STRONG>Bar Charts</STRONG>
+		<P>
 If the input to Plot has a "data" component that is dependent on
 "connections" rather than "positions," a bar chart
 is created.
-<P><STRONG>Components</STRONG>
+
+		<P><STRONG>Components</STRONG>
 <P>
 Creates "positions," "connections," and "colors"
 components.
 <P><STRONG>Example Visual Programs</STRONG>
 <PRE>
+PlotColumn.net
 PlotLine.net
 PlotLine2.net
 PlotTwoLines.net
