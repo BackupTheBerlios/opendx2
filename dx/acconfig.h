@@ -23,6 +23,7 @@
 #define HAS_sysmp		0
 #undef HAVE_REGCMP
 #define USING_LESSTIF 0
+#define HAVE_SYS_ERRLIST 0
 #undef HAVE_FCNTL_H
 #undef HAVE_LIMITS_H
 #undef HAVE_MALLOC_H
