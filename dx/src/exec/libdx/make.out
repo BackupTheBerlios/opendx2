@@ -1,0 +1,1403 @@
+gcc -DPACKAGE=\"dx\" -DVERSION=\"1.0\" -DHAVE_DIRENT_H=1 -DSTDC_HEADERS=1 -DHAVE_SYS_WAIT_H=1 -DHAVE_FCNTL_H=1 -DHAVE_LIMITS_H=1 -DHAVE_MALLOC_H=1 -DHAVE_STRINGS_H=1 -DHAVE_SYS_FILE_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_UNISTD_H=1 -DTIME_WITH_SYS_TIME=1 -DRETSIGTYPE=void -DHAVE_VPRINTF=1 -DHAVE_WAIT3=1 -DHAVE_GETCWD=1 -DHAVE_GETHOSTNAME=1 -DHAVE_GETTIMEOFDAY=1 -DHAVE_MKDIR=1 -DHAVE_MKFIFO=1 -DHAVE_MKTIME=1 -DHAVE_PUTENV=1 -DHAVE_RE_COMP=1 -DHAVE_SELECT=1 -DHAVE_SOCKET=1 -DHAVE_STRCSPN=1 -DHAVE_STRDUP=1 -DHAVE_STRERROR=1 -DHAVE_STRSPN=1 -DHAVE_STRSTR=1 -DHAVE_STRTOD=1 -DHAVE_STRTOL=1 -DHAVE_STRTOUL=1 -DHAVE_UNAME=1  -I. -I.  -Dlinux86 -I/home/gda/dx/include  -g -O2 -g -O2 -c shade_.c
+shade_.c:938: parse error before `Class'
+shade_.c:938: warning: no semicolon at end of struct or union
+shade_.c:940: parse error before `}'
+shade_.c:942: parse error before `_dxfDelete'
+shade_.c:942: warning: parameter names (without types) in function declaration
+shade_.c:942: warning: data definition has no type or storage class
+shade_.c:943: parse error before `_dxfno_Delete'
+shade_.c:943: warning: parameter names (without types) in function declaration
+shade_.c:943: warning: data definition has no type or storage class
+shade_.c:944: parse error before `_dxfShade'
+shade_.c:944: parse error before `struct'
+shade_.c:944: warning: data definition has no type or storage class
+shade_.c:945: parse error before `_dxfno_Shade'
+shade_.c:945: parse error before `struct'
+shade_.c:945: warning: data definition has no type or storage class
+shade_.c:946: parse error before `_dxfBoundingBox'
+shade_.c:946: parse error before `*'
+shade_.c:946: warning: data definition has no type or storage class
+shade_.c:947: parse error before `_dxfno_BoundingBox'
+shade_.c:947: parse error before `*'
+shade_.c:947: warning: data definition has no type or storage class
+shade_.c:948: parse error before `_dxfPaint'
+shade_.c:948: parse error before `struct'
+shade_.c:948: warning: data definition has no type or storage class
+shade_.c:949: parse error before `_dxfno_Paint'
+shade_.c:949: parse error before `struct'
+shade_.c:949: warning: data definition has no type or storage class
+shade_.c:950: parse error before `_dxfGather'
+shade_.c:950: parse error before `struct'
+shade_.c:950: warning: data definition has no type or storage class
+shade_.c:951: parse error before `_dxfno_Gather'
+shade_.c:951: parse error before `struct'
+shade_.c:951: warning: data definition has no type or storage class
+shade_.c:952: parse error before `_dxfPartition'
+shade_.c:952: parse error before `int'
+shade_.c:952: warning: data definition has no type or storage class
+shade_.c:953: parse error before `_dxfno_Partition'
+shade_.c:953: parse error before `int'
+shade_.c:953: warning: data definition has no type or storage class
+shade_.c:954: parse error before `_dxfGetType'
+shade_.c:954: parse error before `*'
+shade_.c:954: warning: data definition has no type or storage class
+shade_.c:955: parse error before `_dxfno_GetType'
+shade_.c:955: parse error before `*'
+shade_.c:955: warning: data definition has no type or storage class
+shade_.c:956: parse error before `_dxfCopy'
+shade_.c:956: parse error before `enum'
+shade_.c:956: warning: data definition has no type or storage class
+shade_.c:957: parse error before `_dxfno_Copy'
+shade_.c:957: parse error before `enum'
+shade_.c:957: warning: data definition has no type or storage class
+shade_.c:958: parse error before `_dxfObject_Delete'
+shade_.c:958: warning: parameter names (without types) in function declaration
+shade_.c:958: warning: data definition has no type or storage class
+shade_.c:959: parse error before `_dxfObject_BoundingBox'
+shade_.c:959: parse error before `*'
+shade_.c:959: warning: data definition has no type or storage class
+shade_.c:960: parse error before `_dxfObject_Shade'
+shade_.c:960: parse error before `struct'
+shade_.c:960: warning: data definition has no type or storage class
+shade_.c:963: parse error before `Class'
+shade_.c:963: warning: no semicolon at end of struct or union
+shade_.c:964: warning: data definition has no type or storage class
+shade_.c:969: parse error before `Object'
+shade_.c:969: warning: no semicolon at end of struct or union
+shade_.c:970: warning: data definition has no type or storage class
+shade_.c:973: parse error before `}'
+shade_.c:975: parse error before `_dxf_NewObject'
+shade_.c:975: warning: data definition has no type or storage class
+shade_.c:977: parse error before `_dxf_CopyObject'
+shade_.c:977: parse error before `new'
+shade_.c:977: warning: data definition has no type or storage class
+shade_.c:981: parse error before `_dxfLight_Delete'
+shade_.c:981: warning: parameter names (without types) in function declaration
+shade_.c:981: warning: data definition has no type or storage class
+shade_.c:982: parse error before `_dxfLight_Gather'
+shade_.c:982: parse error before `struct'
+shade_.c:982: warning: data definition has no type or storage class
+shade_.c:983: parse error before `_dxfLight_Paint'
+shade_.c:983: parse error before `struct'
+shade_.c:983: warning: data definition has no type or storage class
+shade_.c:984: parse error before `_dxfLight_Shade'
+shade_.c:984: parse error before `struct'
+shade_.c:984: warning: data definition has no type or storage class
+shade_.c:985: parse error before `_dxfLight_Copy'
+shade_.c:985: parse error before `enum'
+shade_.c:985: warning: data definition has no type or storage class
+shade_.c:987: field `object' has incomplete type
+shade_.c:992: parse error before `Point'
+shade_.c:992: warning: no semicolon at end of struct or union
+shade_.c:993: warning: data definition has no type or storage class
+shade_.c:994: parse error before `color'
+shade_.c:994: warning: data definition has no type or storage class
+shade_.c:1028: parse error before `_dxf_approx'
+shade_.c:1028: parse error before `o'
+shade_.c:1028: warning: data definition has no type or storage class
+shade_.c:1033: parse error before `RGBColor'
+shade_.c:1033: warning: no semicolon at end of struct or union
+shade_.c:1034: warning: data definition has no type or storage class
+shade_.c:1035: parse error before `h'
+shade_.c:1035: warning: data definition has no type or storage class
+shade_.c:1036: parse error before `}'
+shade_.c:1044: parse error before `Point'
+shade_.c:1044: warning: no semicolon at end of struct or union
+shade_.c:1048: parse error before `*'
+shade_.c:1048: warning: data definition has no type or storage class
+shade_.c:1049: parse error before `fcolors'
+shade_.c:1049: warning: data definition has no type or storage class
+shade_.c:1050: parse error before `*'
+shade_.c:1050: warning: data definition has no type or storage class
+shade_.c:1051: parse error before `opacities'
+shade_.c:1051: warning: data definition has no type or storage class
+shade_.c:1053: parse error before `*'
+shade_.c:1053: warning: data definition has no type or storage class
+shade_.c:1070: parse error before `Line'
+shade_.c:1070: warning: no semicolon at end of struct or union
+shade_.c:1071: warning: data definition has no type or storage class
+shade_.c:1072: parse error before `*'
+shade_.c:1072: warning: data definition has no type or storage class
+shade_.c:1073: parse error before `*'
+shade_.c:1073: warning: data definition has no type or storage class
+shade_.c:1074: parse error before `*'
+shade_.c:1074: warning: data definition has no type or storage class
+shade_.c:1076: parse error before `}'
+shade_.c:1076: warning: data definition has no type or storage class
+shade_.c:1079: parse error before `neighbors'
+shade_.c:1079: warning: data definition has no type or storage class
+shade_.c:1084: parse error before `o'
+shade_.c:1084: warning: data definition has no type or storage class
+shade_.c:1085: parse error before `d'
+shade_.c:1085: warning: data definition has no type or storage class
+shade_.c:1093: parse error before `box_array'
+shade_.c:1093: warning: data definition has no type or storage class
+shade_.c:1094: parse error before `positions_array'
+shade_.c:1094: warning: data definition has no type or storage class
+shade_.c:1095: parse error before `neighbors_array'
+shade_.c:1095: warning: data definition has no type or storage class
+shade_.c:1096: parse error before `fcolors_array'
+shade_.c:1096: warning: data definition has no type or storage class
+shade_.c:1097: parse error before `bcolors_array'
+shade_.c:1097: warning: data definition has no type or storage class
+shade_.c:1098: parse error before `opacities_array'
+shade_.c:1098: warning: data definition has no type or storage class
+shade_.c:1099: parse error before `normals_array'
+shade_.c:1099: warning: data definition has no type or storage class
+shade_.c:1100: parse error before `faces_array'
+shade_.c:1100: warning: data definition has no type or storage class
+shade_.c:1101: parse error before `polylines_array'
+shade_.c:1101: warning: data definition has no type or storage class
+shade_.c:1102: parse error before `loops_array'
+shade_.c:1102: warning: data definition has no type or storage class
+shade_.c:1103: parse error before `edges_array'
+shade_.c:1103: warning: data definition has no type or storage class
+shade_.c:1104: parse error before `inner_array'
+shade_.c:1104: warning: data definition has no type or storage class
+shade_.c:1105: parse error before `connections_array'
+shade_.c:1105: warning: data definition has no type or storage class
+shade_.c:1106: parse error before `cmap_array'
+shade_.c:1106: warning: data definition has no type or storage class
+shade_.c:1107: parse error before `omap_array'
+shade_.c:1107: warning: data definition has no type or storage class
+shade_.c:1125: parse error before `iElts'
+shade_.c:1125: warning: data definition has no type or storage class
+shade_.c:1127: conflicting types for `lights'
+shade_.c:1034: previous declaration of `lights'
+shade_.c:1134: parse error before `nbuf'
+shade_.c:1134: warning: data definition has no type or storage class
+shade_.c:1135: parse error before `fbuf'
+shade_.c:1135: warning: data definition has no type or storage class
+shade_.c:1139: parse error before `}'
+shade_.c:1156: parse error before `_dxf_XBox'
+shade_.c:1156: parse error before `f'
+shade_.c:1156: warning: data definition has no type or storage class
+shade_.c:1157: parse error before `_dxf_XPositions'
+shade_.c:1157: parse error before `f'
+shade_.c:1157: warning: data definition has no type or storage class
+shade_.c:1158: parse error before `_dxf_XConnections'
+shade_.c:1158: parse error before `f'
+shade_.c:1158: warning: data definition has no type or storage class
+shade_.c:1159: parse error before `_dxf_XNeighbors'
+shade_.c:1159: parse error before `f'
+shade_.c:1159: warning: data definition has no type or storage class
+shade_.c:1160: parse error before `_dxf_XColors'
+shade_.c:1160: parse error before `f'
+shade_.c:1160: warning: data definition has no type or storage class
+shade_.c:1161: parse error before `_dxf_XNormals'
+shade_.c:1161: parse error before `f'
+shade_.c:1161: warning: data definition has no type or storage class
+shade_.c:1162: parse error before `_dxf_XOpacities'
+shade_.c:1162: parse error before `f'
+shade_.c:1162: warning: data definition has no type or storage class
+shade_.c:1163: parse error before `_dxf_XSurface'
+shade_.c:1163: parse error before `f'
+shade_.c:1163: warning: data definition has no type or storage class
+shade_.c:1164: parse error before `_dxf_XInner'
+shade_.c:1164: parse error before `f'
+shade_.c:1164: warning: data definition has no type or storage class
+shade_.c:1165: parse error before `_dxf_XLighting'
+shade_.c:1165: parse error before `f'
+shade_.c:1165: warning: data definition has no type or storage class
+shade_.c:1167: parse error before `_dxf_XFreeLocal'
+shade_.c:1167: warning: data definition has no type or storage class
+shade_.c:1177: parse error before `Point'
+shade_.c:1177: warning: no semicolon at end of struct or union
+shade_.c:1178: warning: data definition has no type or storage class
+shade_.c:1179: parse error before `fmin'
+shade_.c:1179: warning: data definition has no type or storage class
+shade_.c:1182: parse error before `RGBColor'
+shade_.c:1182: warning: no semicolon at end of struct or union
+shade_.c:1182: warning: no semicolon at end of struct or union
+shade_.c:1187: parse error before `}'
+shade_.c:1187: warning: data definition has no type or storage class
+shade_.c:1189: parse error before `RGBColor'
+shade_.c:1189: warning: no semicolon at end of struct or union
+shade_.c:1191: parse error before `}'
+shade_.c:1191: warning: data definition has no type or storage class
+shade_.c:1195: parse error before `}'
+shade_.c:1195: warning: data definition has no type or storage class
+shade_.c:1201: parse error before `buffer'
+shade_.c:1201: warning: data definition has no type or storage class
+shade_.c:1221: conflicting types for `triangles'
+shade_.c:1071: previous declaration of `triangles'
+shade_.c:1223: parse error before `}'
+shade_.c:1224: parse error before `_dxf_InitBuffer'
+shade_.c:1225: parse error before `RGBColor'
+shade_.c:1225: warning: data definition has no type or storage class
+shade_.c:1227: parse error before `_dxf_CopyBufferToImage'
+shade_.c:1227: parse error before `Field'
+shade_.c:1227: warning: data definition has no type or storage class
+shade_.c:1228: parse error before `_dxf_CopyBufferToFBImage'
+shade_.c:1228: parse error before `Field'
+shade_.c:1228: warning: data definition has no type or storage class
+shade_.c:1229: parse error before `_dxf_CopyBufferToXImage'
+shade_.c:1229: parse error before `Field'
+shade_.c:1229: warning: data definition has no type or storage class
+shade_.c:1231: parse error before `_dxf_BeginClipping'
+shade_.c:1231: warning: data definition has no type or storage class
+shade_.c:1233: parse error before `_dxf_EndClipping'
+shade_.c:1233: warning: data definition has no type or storage class
+shade_.c:1235: parse error before `_dxfCapClipping'
+shade_.c:1235: warning: data definition has no type or storage class
+shade_.c:1237: parse error before `_dxf_Triangle'
+shade_.c:1238: parse error before `Triangle'
+shade_.c:1239: warning: data definition has no type or storage class
+shade_.c:1240: parse error before `_dxf_Quad'
+shade_.c:1241: parse error before `Quadrilateral'
+shade_.c:1242: warning: data definition has no type or storage class
+shade_.c:1244: parse error before `_dxf_TriangleFlat'
+shade_.c:1245: parse error before `Triangle'
+shade_.c:1247: warning: data definition has no type or storage class
+shade_.c:1248: parse error before `_dxf_QuadFlat'
+shade_.c:1249: parse error before `Quadrilateral'
+shade_.c:1251: warning: data definition has no type or storage class
+shade_.c:1253: parse error before `_dxf_TriangleClipping'
+shade_.c:1254: parse error before `Triangle'
+shade_.c:1254: warning: data definition has no type or storage class
+shade_.c:1255: parse error before `_dxf_QuadClipping'
+shade_.c:1256: parse error before `Quadrilateral'
+shade_.c:1256: warning: data definition has no type or storage class
+shade_.c:1258: parse error before `_dxf_TriangleComposite'
+shade_.c:1259: parse error before `Triangle'
+shade_.c:1260: warning: data definition has no type or storage class
+shade_.c:1261: parse error before `_dxf_QuadComposite'
+shade_.c:1262: parse error before `Quadrilateral'
+shade_.c:1263: warning: data definition has no type or storage class
+shade_.c:1265: parse error before `_dxf_TriangleCompositeFlat'
+shade_.c:1266: parse error before `Triangle'
+shade_.c:1267: warning: data definition has no type or storage class
+shade_.c:1268: parse error before `_dxf_QuadCompositeFlat'
+shade_.c:1269: parse error before `Quadrilateral'
+shade_.c:1270: warning: data definition has no type or storage class
+shade_.c:1271: parse error before `_dxf_Polyline'
+shade_.c:1272: warning: data definition has no type or storage class
+shade_.c:1273: parse error before `_dxf_PolylineFlat'
+shade_.c:1275: parse error before `Pointer'
+shade_.c:1275: warning: data definition has no type or storage class
+shade_.c:1276: parse error before `_dxf_Line'
+shade_.c:1276: parse error before `Line'
+shade_.c:1277: warning: data definition has no type or storage class
+shade_.c:1278: parse error before `_dxf_LineFlat'
+shade_.c:1278: parse error before `Line'
+shade_.c:1280: warning: data definition has no type or storage class
+shade_.c:1281: parse error before `_dxf_Points'
+shade_.c:1281: warning: data definition has no type or storage class
+shade_.c:1282: parse error before `_dxf_Point'
+shade_.c:1282: warning: data definition has no type or storage class
+shade_.c:1286: parse error before `_dxfPaint'
+shade_.c:1286: parse error before `o'
+shade_.c:1286: warning: data definition has no type or storage class
+shade_.c:1289: parse error before `lock_type'
+shade_.c:1289: warning: no semicolon at end of struct or union
+shade_.c:1295: conflicting types for `fast'
+shade_.c:1191: previous declaration of `fast'
+shade_.c:1301: parse error before `}'
+shade_.c:1314: parse error before `Point'
+shade_.c:1314: warning: no semicolon at end of struct or union
+shade_.c:1320: parse error before `clipping'
+shade_.c:1320: warning: data definition has no type or storage class
+shade_.c:1322: parse error before `_dxfGather'
+shade_.c:1322: parse error before `o'
+shade_.c:1322: warning: data definition has no type or storage class
+shade_.c:1324: parse error before `_dxf_VolumeIrregular'
+shade_.c:1324: warning: data definition has no type or storage class
+shade_.c:1326: parse error before `_dxf_VolumeRegular'
+shade_.c:1326: warning: data definition has no type or storage class
+shade_.c:1329: parse error before `_dxf_CompositePlane'
+shade_.c:1331: parse error before `Pointer'
+shade_.c:1334: warning: data definition has no type or storage class
+shade_.c:1337: parse error before `_dxf_MergeBackIntoZ'
+shade_.c:1337: warning: data definition has no type or storage class
+shade_.c:1339: parse error before `_dxf_CopyFace'
+shade_.c:1339: warning: data definition has no type or storage class
+shade_.c:1340: parse error before `_dxf_InterferenceObject'
+shade_.c:1340: warning: data definition has no type or storage class
+shade_.c:1341: parse error before `_dxfGetLights'
+shade_.c:1341: warning: parameter names (without types) in function declaration
+shade_.c:1341: warning: data definition has no type or storage class
+shade_.c:1342: parse error before `_dxfFreeLightList'
+shade_.c:1342: warning: data definition has no type or storage class
+shade_.c:1343: parse error before `_dxfInitApplyLights'
+shade_.c:1345: parse error before `Pointer'
+shade_.c:1348: warning: data definition has no type or storage class
+shade_.c:1349: parse error before `_dxfApplyLights'
+shade_.c:1349: warning: data definition has no type or storage class
+shade_.c:1367: parse error before `_dxfstringobject'
+shade_.c:1367: warning: data definition has no type or storage class
+shade_.c:1369: parse error before `_dxf_SetPermanent'
+shade_.c:1369: parse error before `o'
+shade_.c:1369: warning: data definition has no type or storage class
+shade_.c:1371: parse error before `_dxf_SetType'
+shade_.c:1371: parse error before `g'
+shade_.c:1371: warning: data definition has no type or storage class
+shade_.c:1373: parse error before `_dxf_TransformArray'
+shade_.c:1373: parse error before `*'
+shade_.c:1374: warning: data definition has no type or storage class
+shade_.c:1375: parse error before `_dxf_TransformBox'
+shade_.c:1375: parse error before `*'
+shade_.c:1376: warning: data definition has no type or storage class
+shade_.c:1377: parse error before `_dxf_TransformNormals'
+shade_.c:1377: parse error before `*'
+shade_.c:1377: warning: data definition has no type or storage class
+shade_.c:1389: parse error before `_dxf_MakeFBImage'
+shade_.c:1389: warning: data definition has no type or storage class
+shade_.c:1390: parse error before `i'
+shade_.c:1391: parse error before `_dxf_ZeroFBPixels'
+shade_.c:1391: parse error before `image'
+shade_.c:1392: warning: data definition has no type or storage class
+shade_.c:1419: parse error before `Private'
+shade_.c:1419: warning: no semicolon at end of struct or union
+shade_.c:1423: parse error before `}'
+shade_.c:1423: warning: data definition has no type or storage class
+shade_.c:1431: parse error before `_dxf_MakeXImage'
+shade_.c:1431: warning: data definition has no type or storage class
+shade_.c:1432: parse error before `_dxf_translateImage'
+shade_.c:1432: parse error before `int'
+shade_.c:1433: warning: data definition has no type or storage class
+shade_.c:1434: parse error before `i'
+shade_.c:1435: parse error before `_dxf_GetXTranslation'
+shade_.c:1435: parse error before `o'
+shade_.c:1435: warning: data definition has no type or storage class
+shade_.c:1436: parse error before `translation'
+shade_.c:1437: parse error before `_dxf_ZeroXPixels'
+shade_.c:1437: parse error before `image'
+shade_.c:1438: warning: data definition has no type or storage class
+shade_.c:1439: parse error before `_dxf_XServer'
+shade_.c:1439: warning: data definition has no type or storage class
+shade_.c:1441: parse error before `_dxd_o_back_colors'
+shade_.c:1441: warning: data definition has no type or storage class
+shade_.c:1442: parse error before `_dxd_o_binormals'
+shade_.c:1442: warning: data definition has no type or storage class
+shade_.c:1443: parse error before `_dxd_o_both_colors'
+shade_.c:1443: warning: data definition has no type or storage class
+shade_.c:1444: parse error before `_dxd_o_box'
+shade_.c:1444: warning: data definition has no type or storage class
+shade_.c:1445: parse error before `_dxd_o_colors'
+shade_.c:1445: warning: data definition has no type or storage class
+shade_.c:1446: parse error before `_dxd_o_color_map'
+shade_.c:1446: warning: data definition has no type or storage class
+shade_.c:1447: parse error before `_dxd_o_color_multiplier'
+shade_.c:1447: warning: data definition has no type or storage class
+shade_.c:1448: parse error before `_dxd_o_connections'
+shade_.c:1448: warning: data definition has no type or storage class
+shade_.c:1449: parse error before `_dxd_o_cubes'
+shade_.c:1449: warning: data definition has no type or storage class
+shade_.c:1450: parse error before `_dxd_o_data'
+shade_.c:1450: warning: data definition has no type or storage class
+shade_.c:1451: parse error before `_dxd_o_dep'
+shade_.c:1451: warning: data definition has no type or storage class
+shade_.c:1452: parse error before `_dxd_o_der'
+shade_.c:1452: warning: data definition has no type or storage class
+shade_.c:1453: parse error before `_dxd_o_element_type'
+shade_.c:1453: warning: data definition has no type or storage class
+shade_.c:1454: parse error before `_dxd_o_faces'
+shade_.c:1454: warning: data definition has no type or storage class
+shade_.c:1455: parse error before `_dxd_o_fb_image'
+shade_.c:1455: warning: data definition has no type or storage class
+shade_.c:1456: parse error before `_dxd_o_fontwidth'
+shade_.c:1456: warning: data definition has no type or storage class
+shade_.c:1457: parse error before `_dxd_o_front_colors'
+shade_.c:1457: warning: data definition has no type or storage class
+shade_.c:1458: parse error before `_dxd_o_image'
+shade_.c:1458: warning: data definition has no type or storage class
+shade_.c:1459: parse error before `_dxd_o_image_type'
+shade_.c:1459: warning: data definition has no type or storage class
+shade_.c:1460: parse error before `_dxd_o_inner'
+shade_.c:1460: warning: data definition has no type or storage class
+shade_.c:1461: parse error before `_dxd_o_invalid_positions'
+shade_.c:1461: warning: data definition has no type or storage class
+shade_.c:1462: parse error before `_dxd_o_invalid_connections'
+shade_.c:1462: warning: data definition has no type or storage class
+shade_.c:1463: parse error before `_dxd_o_lines'
+shade_.c:1463: warning: data definition has no type or storage class
+shade_.c:1464: parse error before `_dxd_o_neighbors'
+shade_.c:1464: warning: data definition has no type or storage class
+shade_.c:1465: parse error before `_dxd_o_normals'
+shade_.c:1465: warning: data definition has no type or storage class
+shade_.c:1466: parse error before `_dxd_o_opacities'
+shade_.c:1466: warning: data definition has no type or storage class
+shade_.c:1467: parse error before `_dxd_o_opacity_map'
+shade_.c:1467: warning: data definition has no type or storage class
+shade_.c:1468: parse error before `_dxd_o_opacity_multiplier'
+shade_.c:1468: warning: data definition has no type or storage class
+shade_.c:1469: parse error before `_dxd_o_points'
+shade_.c:1469: warning: data definition has no type or storage class
+shade_.c:1470: parse error before `_dxd_o_polylines'
+shade_.c:1470: warning: data definition has no type or storage class
+shade_.c:1471: parse error before `_dxd_o_positions'
+shade_.c:1471: warning: data definition has no type or storage class
+shade_.c:1472: parse error before `_dxd_o_quads'
+shade_.c:1472: warning: data definition has no type or storage class
+shade_.c:1473: parse error before `_dxd_o_ref'
+shade_.c:1473: warning: data definition has no type or storage class
+shade_.c:1474: parse error before `_dxd_o_surface'
+shade_.c:1474: warning: data definition has no type or storage class
+shade_.c:1475: parse error before `_dxd_o_tangents'
+shade_.c:1475: warning: data definition has no type or storage class
+shade_.c:1476: parse error before `_dxd_o_tetrahedra'
+shade_.c:1476: warning: data definition has no type or storage class
+shade_.c:1477: parse error before `_dxd_o_time'
+shade_.c:1477: warning: data definition has no type or storage class
+shade_.c:1478: parse error before `_dxd_o_tri'
+shade_.c:1478: warning: data definition has no type or storage class
+shade_.c:1479: parse error before `_dxd_o_triangles'
+shade_.c:1479: warning: data definition has no type or storage class
+shade_.c:1480: parse error before `_dxd_o_vbox'
+shade_.c:1480: warning: data definition has no type or storage class
+shade_.c:1481: parse error before `_dxd_o_vol'
+shade_.c:1481: warning: data definition has no type or storage class
+shade_.c:1482: parse error before `_dxd_o_x_image'
+shade_.c:1482: warning: data definition has no type or storage class
+shade_.c:1483: parse error before `_dxd_o_x_server'
+shade_.c:1483: warning: data definition has no type or storage class
+shade_.c:1485: parse error before `work'
+shade_.c:1485: parse error before `Array'
+shade_.c:1485: warning: data definition has no type or storage class
+shade_.c:1488: parse error before `Object'
+shade_.c:1488: warning: no semicolon at end of struct or union
+shade_.c:1489: warning: data definition has no type or storage class
+shade_.c:1490: parse error before `f'
+shade_.c:1490: warning: data definition has no type or storage class
+shade_.c:1491: parse error before `c'
+shade_.c:1491: warning: data definition has no type or storage class
+shade_.c:1492: parse error before `m'
+shade_.c:1492: warning: data definition has no type or storage class
+shade_.c:1501: conflicting types for `count'
+shade_.c:965: previous declaration of `count'
+shade_.c:1502: conflicting types for `i'
+shade_.c:1075: previous declaration of `i'
+shade_.c:1505: parse error before `RGBColor'
+shade_.c:1505: warning: no semicolon at end of struct or union
+shade_.c:1507: parse error before `lights'
+shade_.c:1507: conflicting types for `lights'
+shade_.c:1127: previous declaration of `lights'
+shade_.c:1507: warning: data definition has no type or storage class
+shade_.c:1508: parse error before `}'
+shade_.c:1508: warning: data definition has no type or storage class
+shade_.c:1514: conflicting types for `front'
+shade_.c:1185: previous declaration of `front'
+shade_.c:1514: conflicting types for `back'
+shade_.c:1185: previous declaration of `back'
+shade_.c:1518: parse error before `lightList'
+shade_.c:1518: warning: data definition has no type or storage class
+shade_.c:1529: parse error before `_dxf_approx'
+shade_.c:1529: parse error before `o'
+shade_.c: In function `_dxf_approx':
+shade_.c:1531: `Object' undeclared (first use in this function)
+shade_.c:1531: (Each undeclared identifier is reported only once
+shade_.c:1531: for each function it appears in.)
+shade_.c:1531: parse error before `oo'
+shade_.c:1533: `oo' undeclared (first use in this function)
+shade_.c:1535: `ERROR_BAD_PARAMETER' undeclared (first use in this function)
+shade_.c:1538: invalid type argument of `unary *'
+shade_.c:1540: invalid type argument of `unary *'
+shade_.c:1542: `OK' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:1545: parse error before `parameters'
+shade_.c:1545: parse error before `o'
+shade_.c: In function `parameters':
+shade_.c:1547: `Object' undeclared (first use in this function)
+shade_.c:1547: parse error before `a'
+shade_.c:1548: `new' undeclared (first use in this function)
+shade_.c:1548: `old' undeclared (first use in this function)
+shade_.c:1553: parse error before `a'
+shade_.c:1554: `a' undeclared (first use in this function)
+shade_.c:1557: `ERROR_BAD_PARAMETER' undeclared (first use in this function)
+shade_.c:1571: parse error before `a'
+shade_.c:1589: parse error before `a'
+shade_.c:1607: parse error before `a'
+shade_.c:1629: `ERROR' undeclared (first use in this function)
+shade_.c:1639: `OK' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:1643: parse error before `_dxfXShade'
+shade_.c:1643: parse error before `o'
+shade_.c: In function `_dxfXShade':
+shade_.c:1645: storage size of `shade' isn't known
+shade_.c:1646: `Light' undeclared (first use in this function)
+shade_.c:1646: parse error before `distant_light'
+shade_.c:1662: sizeof applied to an incomplete type
+shade_.c:1676: `Object' undeclared (first use in this function)
+shade_.c:1676: parse error before `shade'
+shade_.c:1683: `Point' undeclared (first use in this function)
+shade_.c:1683: parse error before `from'
+shade_.c:1684: `Vector' undeclared (first use in this function)
+shade_.c:1685: `from' undeclared (first use in this function)
+shade_.c:1685: `to' undeclared (first use in this function)
+shade_.c:1685: `up' undeclared (first use in this function)
+shade_.c:1686: `eye' undeclared (first use in this function)
+shade_.c:1687: `left' undeclared (first use in this function)
+shade_.c:1688: `dir' undeclared (first use in this function)
+shade_.c:1689: `distant_light' undeclared (first use in this function)
+shade_.c:1691: warning: return makes integer from pointer without a cast
+shade_.c:1700: `Pointer' undeclared (first use in this function)
+shade_.c:1700: parse error before `dcl'
+shade_.c:1704: parse error before `shade'
+shade_.c:1705: parse error before `shade'
+shade_.c:1707: parse error before `shade'
+shade_.c:1707: parse error before `)'
+shade_.c:1708: parse error before `shade'
+shade_.c:1712: parse error before `shade'
+shade_.c:1713: parse error before `shade'
+shade_.c:1716: parse error before `shade'
+shade_.c:1716: parse error before `)'
+shade_.c:1718: parse error before `shade'
+shade_.c:1718: parse error before `)'
+shade_.c:1719: warning: return makes integer from pointer without a cast
+shade_.c: At top level:
+shade_.c:1723: parse error before `DXTransform'
+shade_.c:1723: parse error before `o'
+shade_.c: In function `DXTransform':
+shade_.c:1725: storage size of `shade' isn't known
+shade_.c:1728: `mp' undeclared (first use in this function)
+shade_.c:1736: warning: return makes integer from pointer without a cast
+shade_.c:1737: warning: return makes integer from pointer without a cast
+shade_.c:1738: `Object' undeclared (first use in this function)
+shade_.c:1738: parse error before `shade'
+shade_.c:1739: parse error before `shade'
+shade_.c: At top level:
+shade_.c:1752: parse error before `count'
+shade_.c:1752: parse error before `Point'
+shade_.c:1752: `count' redeclared as different kind of symbol
+shade_.c:1501: previous declaration of `count'
+shade_.c:1752: warning: data definition has no type or storage class
+shade_.c:1754: parse error before `task'
+shade_.c: In function `task':
+shade_.c:1757: `RGBColor' undeclared (first use in this function)
+shade_.c:1757: invalid type argument of `unary *'
+shade_.c:1758: parse error before `static'
+shade_.c:1759: `Array' undeclared (first use in this function)
+shade_.c:1760: `Vector' undeclared (first use in this function)
+shade_.c:1761: parse error before `struct'
+shade_.c:1763: `Matrix' undeclared (first use in this function)
+shade_.c:1763: `mp' undeclared (first use in this function)
+shade_.c:1763: dereferencing pointer to incomplete type
+shade_.c:1763: dereferencing pointer to incomplete type
+shade_.c:1764: parse error before `o'
+shade_.c:1767: dereferencing pointer to incomplete type
+shade_.c:1768: `OK' undeclared (first use in this function)
+shade_.c:1770: `Field' undeclared (first use in this function)
+shade_.c:1770: parse error before `DXCopy'
+shade_.c:1776: `xf' undeclared (first use in this function)
+shade_.c:1777: dereferencing pointer to incomplete type
+shade_.c:1779: dereferencing pointer to incomplete type
+shade_.c:1783: dereferencing pointer to incomplete type
+shade_.c:1796: `ERROR_BAD_PARAMETER' undeclared (first use in this function)
+shade_.c:1808: `Object' undeclared (first use in this function)
+shade_.c:1808: parse error before `f'
+shade_.c:1811: dereferencing pointer to incomplete type
+shade_.c:1820: `a' undeclared (first use in this function)
+shade_.c:1820: dereferencing pointer to incomplete type
+shade_.c:1821: dereferencing pointer to incomplete type
+shade_.c:1821: `box' undeclared (first use in this function)
+shade_.c:1822: `behind' undeclared (first use in this function)
+shade_.c:1822: dereferencing pointer to incomplete type
+shade_.c:1825: parse error before `a'
+shade_.c:1827: parse error before `DXGetComponentValue'
+shade_.c:1828: dereferencing pointer to incomplete type
+shade_.c:1828: dereferencing pointer to incomplete type
+shade_.c:1831: parse error before `box'
+shade_.c:1833: parse error before `f'
+shade_.c:1845: parse error before `f'
+shade_.c:1847: parse error before `f'
+shade_.c:1848: parse error before `f'
+shade_.c:1850: parse error before `f'
+shade_.c:1855: dereferencing pointer to incomplete type
+shade_.c:1856: parse error before `f'
+shade_.c:1860: `Point' undeclared (first use in this function)
+shade_.c:1860: parse error before `)'
+shade_.c:1865: dereferencing pointer to incomplete type
+shade_.c:1865: parse error before `f'
+shade_.c:1871: dereferencing pointer to incomplete type
+shade_.c:1872: syntax error before `color'
+shade_.c:1876: parse error before `a'
+shade_.c:1878: parse error before `a'
+shade_.c:1772: label `error' used but not defined
+shade_.c: At top level:
+shade_.c:1886: parse error before `if'
+shade_.c:1890: parse error before `&'
+shade_.c:1890: warning: data definition has no type or storage class
+shade_.c:1895: `mp' undeclared here (not in a function)
+shade_.c:1895: `xf' undeclared here (not in a function)
+shade_.c:1895: initializer element is not constant
+shade_.c:1895: warning: data definition has no type or storage class
+shade_.c:1896: parse error before `if'
+shade_.c:1903: redefinition of `normals_array'
+shade_.c:1895: `normals_array' previously defined here
+shade_.c:1903: warning: initialization makes integer from pointer without a cast
+shade_.c:1903: warning: data definition has no type or storage class
+shade_.c:1904: parse error before `if'
+shade_.c:1916: warning: initialization makes integer from pointer without a cast
+shade_.c:1916: warning: initialization makes integer from pointer without a cast
+shade_.c:1916: warning: data definition has no type or storage class
+shade_.c:1917: conflicting types for `normals'
+shade_.c:1053: previous declaration of `normals'
+shade_.c:1917: `Vector' undeclared here (not in a function)
+shade_.c:1917: parse error before `)'
+shade_.c:1921: warning: parameter names (without types) in function declaration
+shade_.c:1921: warning: data definition has no type or storage class
+shade_.c:1922: warning: parameter names (without types) in function declaration
+shade_.c:1922: warning: data definition has no type or storage class
+shade_.c:1923: warning: parameter names (without types) in function declaration
+shade_.c:1923: warning: data definition has no type or storage class
+shade_.c:1924: warning: parameter names (without types) in function declaration
+shade_.c:1924: warning: data definition has no type or storage class
+shade_.c:1925: parse error before `if'
+shade_.c:1950: warning: initialization makes integer from pointer without a cast
+shade_.c:1950: warning: data definition has no type or storage class
+shade_.c:1951: parse error before `&'
+shade_.c:1951: warning: data definition has no type or storage class
+shade_.c:1957: parse error before `&'
+shade_.c:1957: warning: data definition has no type or storage class
+shade_.c:1960: parse error before `box_approx'
+shade_.c:1960: parse error before `o'
+shade_.c:1960: warning: data definition has no type or storage class
+shade_.c:1962: parse error before `o'
+shade_.c: In function `IsInvisible':
+shade_.c:1964: `Object' undeclared (first use in this function)
+shade_.c:1964: parse error before `attr'
+shade_.c:1966: `attr' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:1974: parse error before `_dxfField_Shade'
+shade_.c:1974: parse error before `f'
+shade_.c: In function `_dxfField_Shade':
+shade_.c:1976: storage size of `new' isn't known
+shade_.c:1977: `Array' undeclared (first use in this function)
+shade_.c:1977: parse error before `a'
+shade_.c:1979: `Object' undeclared (first use in this function)
+shade_.c:1979: parse error before `f'
+shade_.c:1980: parse error before `f'
+shade_.c:1982: parse error before `f'
+shade_.c:1982: parse error before `)'
+shade_.c:1983: `a' undeclared (first use in this function)
+shade_.c:1983: parse error before `DXGetComponentValue'
+shade_.c:1987: parse error before `)'
+shade_.c:1987: `Pointer' undeclared (first use in this function)
+shade_.c:1987: parse error before `task'
+shade_.c:1987: parse error before `)'
+shade_.c:1988: `OK' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:1991: parse error before `box_approx'
+shade_.c:1991: parse error before `o'
+shade_.c: In function `box_approx':
+shade_.c:1994: parse error before `f'
+shade_.c:1995: `Point' undeclared (first use in this function)
+shade_.c:1996: `RGBColor' undeclared (first use in this function)
+shade_.c:1997: syntax error before `lines'
+shade_.c: At top level:
+shade_.c:2008: redefinition of `f'
+shade_.c:1950: `f' previously defined here
+shade_.c:2008: initializer element is not constant
+shade_.c:2008: warning: data definition has no type or storage class
+shade_.c:2009: parse error before `if'
+shade_.c:2020: parse error before `x'
+shade_.c: In function `_dxfXform_Shade':
+shade_.c:2022: storage size of `new' isn't known
+shade_.c:2023: parse error before `o'
+shade_.c:2024: `Object' undeclared (first use in this function)
+shade_.c:2024: parse error before `x'
+shade_.c:2025: parse error before `x'
+shade_.c:2027: parse error before `x'
+shade_.c:2027: `x' undeclared (first use in this function)
+shade_.c:2027: parse error before `)'
+shade_.c:2029: `old' undeclared (first use in this function)
+shade_.c:2034: parse error before `new'
+shade_.c:2036: parse error before `new'
+shade_.c:2037: `OK' undeclared (first use in this function)
+shade_.c:2039: parse error before `new'
+shade_.c:2040: `ERROR' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:2043: parse error before `_dxfScreen_Shade'
+shade_.c:2043: parse error before `s'
+shade_.c: In function `_dxfScreen_Shade':
+shade_.c:2045: `Object' undeclared (first use in this function)
+shade_.c:2045: parse error before `ns'
+shade_.c:2046: storage size of `new' isn't known
+shade_.c:2048: parse error before `s'
+shade_.c:2049: parse error before `s'
+shade_.c:2051: parse error before `s'
+shade_.c:2051: parse error before `)'
+shade_.c:2052: `ERROR' undeclared (first use in this function)
+shade_.c:2053: `old' undeclared (first use in this function)
+shade_.c:2055: `SCREEN_VIEWPORT' undeclared (first use in this function)
+shade_.c:2060: `SCREEN_PIXEL' undeclared (first use in this function)
+shade_.c:2065: `SCREEN_WORLD' undeclared (first use in this function)
+shade_.c:2067: `Matrix' undeclared (first use in this function)
+shade_.c:2067: parse error before `cm'
+shade_.c:2068: `cm' undeclared (first use in this function)
+shade_.c:2082: `SCREEN_STATIONARY' undeclared (first use in this function)
+shade_.c:2088: `DXD_MAX_FLOAT' undeclared (first use in this function)
+shade_.c:2105: parse error before `new'
+shade_.c:2108: `oo' undeclared (first use in this function)
+shade_.c:2108: parse error before `DXNewScreen'
+shade_.c:2110: `OK' undeclared (first use in this function)
+shade_.c:2112: parse error before `new'
+shade_.c:2113: parse error before `ns'
+shade_.c: At top level:
+shade_.c:2118: parse error before `_dxfGroup_Shade'
+shade_.c:2118: parse error before `g'
+shade_.c: In function `_dxfGroup_Shade':
+shade_.c:2121: parse error before `m'
+shade_.c:2122: storage size of `new' isn't known
+shade_.c:2123: `Class' undeclared (first use in this function)
+shade_.c:2123: parse error before `class'
+shade_.c:2124: `Object' undeclared (first use in this function)
+shade_.c:2124: parse error before `g'
+shade_.c:2125: parse error before `g'
+shade_.c:2127: parse error before `g'
+shade_.c:2127: parse error before `)'
+shade_.c:2128: `Group' undeclared (first use in this function)
+shade_.c:2128: parse error before `DXCopy'
+shade_.c:2130: `CLASS_COMPOSITEFIELD' undeclared (first use in this function)
+shade_.c:2139: `ERROR' undeclared (first use in this function)
+shade_.c:2141: `old' undeclared (first use in this function)
+shade_.c:2141: parse error before `new'
+shade_.c:2142: `OK' undeclared (first use in this function)
+shade_.c:2144: parse error before `new'
+shade_.c: At top level:
+shade_.c:2148: parse error before `_dxfLight_Shade'
+shade_.c:2148: parse error before `l'
+shade_.c: In function `_dxfLight_Shade':
+shade_.c:2150: `shade' undeclared (first use in this function)
+shade_.c:2151: `OK' undeclared (first use in this function)
+shade_.c:2152: request for member `kind' in something not a structure or union
+shade_.c:2153: request for member `color' in something not a structure or union
+shade_.c:2154: request for member `color' in something not a structure or union
+shade_.c:2155: request for member `color' in something not a structure or union
+shade_.c:2157: request for member `kind' in something not a structure or union
+shade_.c:2158: request for member `relative' in something not a structure or union
+shade_.c:2160: parse error before `m'
+shade_.c:2162: request for member `b' in something not a structure or union
+shade_.c:2162: request for member `b' in something not a structure or union
+shade_.c:2162: request for member `b' in something not a structure or union
+shade_.c:2164: request for member `direction' in something not a structure or union
+shade_.c:2164: request for member `color' in something not a structure or union
+shade_.c:2168: `Light' undeclared (first use in this function)
+shade_.c:2168: parse error before `DXReference'
+shade_.c:2171: request for member `relative' in something not a structure or union
+shade_.c:2173: `Vector' undeclared (first use in this function)
+shade_.c:2173: parse error before `from'
+shade_.c:2174: `from' undeclared (first use in this function)
+shade_.c:2174: `to' undeclared (first use in this function)
+shade_.c:2174: `y' undeclared (first use in this function)
+shade_.c:2177: `x' undeclared (first use in this function)
+shade_.c:2178: `where' undeclared (first use in this function)
+shade_.c:2178: request for member `direction' in something not a structure or union
+shade_.c:2179: request for member `direction' in something not a structure or union
+shade_.c:2180: request for member `direction' in something not a structure or union
+shade_.c:2182: request for member `color' in something not a structure or union
+shade_.c:2184: `ERROR_INTERNAL' undeclared (first use in this function)
+shade_.c:2187: `ERROR_INVALID_DATA' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:2193: parse error before `_dxfClipped_Shade'
+shade_.c:2193: parse error before `c'
+shade_.c: In function `_dxfClipped_Shade':
+shade_.c:2195: `Object' undeclared (first use in this function)
+shade_.c:2195: parse error before `nc'
+shade_.c:2196: `Group' undeclared (first use in this function)
+shade_.c:2197: storage size of `new' isn't known
+shade_.c:2198: `render' undeclared (first use in this function)
+shade_.c:2199: parse error before `c'
+shade_.c:2202: `old' undeclared (first use in this function)
+shade_.c:2203: parse error before `c'
+shade_.c:2205: parse error before `c'
+shade_.c:2205: parse error before `)'
+shade_.c:2207: `nrender' undeclared (first use in this function)
+shade_.c:2210: `nclipping' undeclared (first use in this function)
+shade_.c:2214: `nc' undeclared (first use in this function)
+shade_.c:2214: parse error before `DXNewClipped'
+shade_.c:2216: parse error before `nc'
+shade_.c:2217: parse error before `nc'
+shade_.c:2218: `OK' undeclared (first use in this function)
+shade_.c:2220: parse error before `nrender'
+shade_.c:2221: parse error before `nclipping'
+shade_.c:2222: parse error before `nc'
+shade_.c:2223: `ERROR' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:2228: parse error before `count'
+shade_.c:2228: parse error before `Point'
+shade_.c: In function `count':
+shade_.c:2230: `Point' undeclared (first use in this function)
+shade_.c:2230: parse error before `min'
+shade_.c:2236: `shade' undeclared (first use in this function)
+shade_.c:2238: `xf' undeclared (first use in this function)
+shade_.c:2242: `min' undeclared (first use in this function)
+shade_.c:2242: `DXD_MAX_FLOAT' undeclared (first use in this function)
+shade_.c:2243: `max' undeclared (first use in this function)
+shade_.c:2245: `box' undeclared (first use in this function)
+shade_.c:2254: dereferencing pointer to incomplete type
+shade_.c:2254: dereferencing pointer to incomplete type
+shade_.c:2255: dereferencing pointer to incomplete type
+shade_.c:2255: dereferencing pointer to incomplete type
+shade_.c:2268: dereferencing pointer to incomplete type
+shade_.c:2268: dereferencing pointer to incomplete type
+shade_.c:2270: dereferencing pointer to incomplete type
+shade_.c:2270: dereferencing pointer to incomplete type
+shade_.c:2274: dereferencing pointer to incomplete type
+shade_.c:2297: dereferencing pointer to incomplete type
+shade_.c:2313: dereferencing pointer to incomplete type
+shade_.c:2317: dereferencing pointer to incomplete type
+shade_.c:2318: dereferencing pointer to incomplete type
+shade_.c:2319: dereferencing pointer to incomplete type
+shade_.c:2325: dereferencing pointer to incomplete type
+shade_.c:2325: dereferencing pointer to incomplete type
+shade_.c:2333: dereferencing pointer to incomplete type
+shade_.c:2334: `OK' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:2343: parse error before `work'
+shade_.c:2344: parse error before `Array'
+shade_.c: In function `work':
+shade_.c:2346: `shade' undeclared (first use in this function)
+shade_.c:2347: dereferencing pointer to incomplete type
+shade_.c:2348: `Array' undeclared (first use in this function)
+shade_.c:2348: parse error before `result'
+shade_.c:2349: dereferencing pointer to incomplete type
+shade_.c:2350: dereferencing pointer to incomplete type
+shade_.c:2351: dereferencing pointer to incomplete type
+shade_.c:2352: dereferencing pointer to incomplete type
+shade_.c:2353: dereferencing pointer to incomplete type
+shade_.c:2354: dereferencing pointer to incomplete type
+shade_.c:2361: `xf' undeclared (first use in this function)
+shade_.c:2362: `RGBColor' undeclared (first use in this function)
+shade_.c:2362: `ofc' undeclared (first use in this function)
+shade_.c:2362: `obc' undeclared (first use in this function)
+shade_.c:2362: `col' undeclared (first use in this function)
+shade_.c:2363: `Pointer' undeclared (first use in this function)
+shade_.c:2363: parse error before `ifc'
+shade_.c:2364: `Point' undeclared (first use in this function)
+shade_.c:2365: `Vector' undeclared (first use in this function)
+shade_.c:2365: `norm' undeclared (first use in this function)
+shade_.c:2365: invalid type argument of `unary *'
+shade_.c:2366: parse error before `float'
+shade_.c:2372: `InvalidComponentHandle' undeclared (first use in this function)
+shade_.c:2376: invalid type argument of `unary *'
+shade_.c:2377: parse error before `int'
+shade_.c:2386: `front_colors' undeclared (first use in this function)
+shade_.c:2387: `back_colors' undeclared (first use in this function)
+shade_.c:2389: `from' undeclared (first use in this function)
+shade_.c:2389: `to' undeclared (first use in this function)
+shade_.c:2390: `eye' undeclared (first use in this function)
+shade_.c:2391: `ex' undeclared (first use in this function)
+shade_.c:2391: `ey' undeclared (first use in this function)
+shade_.c:2391: `ez' undeclared (first use in this function)
+shade_.c:2394: `ERROR_BAD_PARAMETER' undeclared (first use in this function)
+shade_.c:2397: `ich' undeclared (first use in this function)
+shade_.c:2402: `cstnormal' undeclared (first use in this function)
+shade_.c:2404: parse error before `)'
+shade_.c:2407: parse error before `fout'
+shade_.c:2413: `fout' undeclared (first use in this function)
+shade_.c:2420: `fin' undeclared (first use in this function)
+shade_.c:2422: parse error before `)'
+shade_.c:2433: `bout' undeclared (first use in this function)
+shade_.c:2439: `bin' undeclared (first use in this function)
+shade_.c:2441: parse error before `)'
+shade_.c:2449: `Light' undeclared (first use in this function)
+shade_.c:2449: parse error before `light'
+shade_.c:2450: `lr' undeclared (first use in this function)
+shade_.c:2450: `light' undeclared (first use in this function)
+shade_.c:2451: `lg' undeclared (first use in this function)
+shade_.c:2452: `lb' undeclared (first use in this function)
+shade_.c:2453: `lx' undeclared (first use in this function)
+shade_.c:2454: `ly' undeclared (first use in this function)
+shade_.c:2455: `lz' undeclared (first use in this function)
+shade_.c:2456: `hx' undeclared (first use in this function)
+shade_.c:2456: `hy' undeclared (first use in this function)
+shade_.c:2456: `hz' undeclared (first use in this function)
+shade_.c:2458: invalid operands to binary !=
+shade_.c:2459: incompatible type for argument 1 of `sqrt'
+shade_.c:2459: incompatible types in assignment
+shade_.c:2466: `nz' undeclared (first use in this function)
+shade_.c:2471: incompatible type for argument 1 of `ipow'
+shade_.c:2471: incompatible types in assignment
+shade_.c:2472: `fspecr' undeclared (first use in this function)
+shade_.c:2472: `fspecg' undeclared (first use in this function)
+shade_.c:2472: `fspecb' undeclared (first use in this function)
+shade_.c:2473: `bspecr' undeclared (first use in this function)
+shade_.c:2473: `bspecg' undeclared (first use in this function)
+shade_.c:2473: `bspecb' undeclared (first use in this function)
+shade_.c:2475: wrong type argument to unary minus
+shade_.c:2475: incompatible types in assignment
+shade_.c:2483: invalid operands to binary *
+shade_.c:2484: `fdiffr' undeclared (first use in this function)
+shade_.c:2484: `fdiffg' undeclared (first use in this function)
+shade_.c:2484: `fdiffb' undeclared (first use in this function)
+shade_.c:2485: `bdiffr' undeclared (first use in this function)
+shade_.c:2485: `bdiffg' undeclared (first use in this function)
+shade_.c:2485: `bdiffb' undeclared (first use in this function)
+shade_.c:2487: wrong type argument to unary minus
+shade_.c:2503: parse error before `)'
+shade_.c:2520: parse error before `)'
+shade_.c:2533: parse error before `DXNewConstantArray'
+shade_.c:2543: parse error before `DXNewConstantArray'
+shade_.c:2553: parse error before `)'
+shade_.c:2558: `TYPE_FLOAT' undeclared (first use in this function)
+shade_.c:2558: `CATEGORY_REAL' undeclared (first use in this function)
+shade_.c:2563: parse error before `)'
+shade_.c:2568: warning: assignment makes integer from pointer without a cast
+shade_.c:2577: parse error before `)'
+shade_.c:2582: warning: assignment makes integer from pointer without a cast
+shade_.c:2585: `ifc' undeclared (first use in this function)
+shade_.c:2586: `ibc' undeclared (first use in this function)
+shade_.c:2592: invalid type argument of `->'
+shade_.c:2593: invalid type argument of `->'
+shade_.c:2594: invalid type argument of `->'
+shade_.c:2596: invalid type argument of `unary *'
+shade_.c:2614: invalid type argument of `->'
+shade_.c:2615: invalid type argument of `->'
+shade_.c:2616: invalid type argument of `->'
+shade_.c:2618: invalid type argument of `unary *'
+shade_.c:2638: invalid type argument of `->'
+shade_.c:2639: invalid type argument of `->'
+shade_.c:2640: invalid type argument of `->'
+shade_.c:2644: invalid type argument of `->'
+shade_.c:2644: parse error before `)'
+shade_.c:2645: invalid type argument of `->'
+shade_.c:2645: parse error before `)'
+shade_.c:2646: invalid type argument of `->'
+shade_.c:2646: parse error before `)'
+shade_.c:2649: invalid type argument of `unary *'
+shade_.c:2667: parse error before `)'
+shade_.c:2668: parse error before `)'
+shade_.c:2669: parse error before `)'
+shade_.c:2670: parse error before `)'
+shade_.c:2680: invalid type argument of `->'
+shade_.c:2681: invalid type argument of `->'
+shade_.c:2682: invalid type argument of `->'
+shade_.c:2686: invalid type argument of `->'
+shade_.c:2686: parse error before `)'
+shade_.c:2687: invalid type argument of `->'
+shade_.c:2687: parse error before `)'
+shade_.c:2688: invalid type argument of `->'
+shade_.c:2688: parse error before `)'
+shade_.c:2691: invalid type argument of `unary *'
+shade_.c:2709: parse error before `)'
+shade_.c:2710: parse error before `)'
+shade_.c:2711: parse error before `)'
+shade_.c:2712: parse error before `)'
+shade_.c:2721: parse error before `light'
+shade_.c:2733: invalid operands to binary !=
+shade_.c:2734: incompatible type for argument 1 of `sqrt'
+shade_.c:2734: incompatible types in assignment
+shade_.c:2753: incompatible type for argument 1 of `ipow'
+shade_.c:2753: incompatible types in assignment
+shade_.c:2757: wrong type argument to unary minus
+shade_.c:2757: incompatible types in assignment
+shade_.c:2765: invalid operands to binary *
+shade_.c:2769: wrong type argument to unary minus
+shade_.c:2803: incompatible type for argument 1 of `ipow'
+shade_.c:2803: incompatible types in assignment
+shade_.c:2807: wrong type argument to unary minus
+shade_.c:2807: incompatible types in assignment
+shade_.c:2815: invalid operands to binary *
+shade_.c:2819: wrong type argument to unary minus
+shade_.c:2846: incompatible type for argument 1 of `ipow'
+shade_.c:2846: incompatible types in assignment
+shade_.c:2850: wrong type argument to unary minus
+shade_.c:2850: incompatible types in assignment
+shade_.c:2858: invalid operands to binary *
+shade_.c:2862: wrong type argument to unary minus
+shade_.c:2890: incompatible type for argument 1 of `ipow'
+shade_.c:2890: incompatible types in assignment
+shade_.c:2894: wrong type argument to unary minus
+shade_.c:2894: incompatible types in assignment
+shade_.c:2902: invalid operands to binary *
+shade_.c:2906: wrong type argument to unary minus
+shade_.c:2938: incompatible type for argument 1 of `ipow'
+shade_.c:2938: incompatible types in assignment
+shade_.c:2942: wrong type argument to unary minus
+shade_.c:2942: incompatible types in assignment
+shade_.c:2950: invalid operands to binary *
+shade_.c:2954: wrong type argument to unary minus
+shade_.c:2979: incompatible type for argument 1 of `ipow'
+shade_.c:2979: incompatible types in assignment
+shade_.c:2983: wrong type argument to unary minus
+shade_.c:2983: incompatible types in assignment
+shade_.c:2991: invalid operands to binary *
+shade_.c:2995: wrong type argument to unary minus
+shade_.c:3027: incompatible type for argument 1 of `ipow'
+shade_.c:3027: incompatible types in assignment
+shade_.c:3031: wrong type argument to unary minus
+shade_.c:3031: incompatible types in assignment
+shade_.c:3039: invalid operands to binary *
+shade_.c:3043: wrong type argument to unary minus
+shade_.c:3077: incompatible type for argument 1 of `ipow'
+shade_.c:3077: incompatible types in assignment
+shade_.c:3081: wrong type argument to unary minus
+shade_.c:3081: incompatible types in assignment
+shade_.c:3089: invalid operands to binary *
+shade_.c:3093: wrong type argument to unary minus
+shade_.c:3120: incompatible type for argument 1 of `ipow'
+shade_.c:3120: incompatible types in assignment
+shade_.c:3124: wrong type argument to unary minus
+shade_.c:3124: incompatible types in assignment
+shade_.c:3132: invalid operands to binary *
+shade_.c:3136: wrong type argument to unary minus
+shade_.c:3164: incompatible type for argument 1 of `ipow'
+shade_.c:3164: incompatible types in assignment
+shade_.c:3168: wrong type argument to unary minus
+shade_.c:3168: incompatible types in assignment
+shade_.c:3176: invalid operands to binary *
+shade_.c:3180: wrong type argument to unary minus
+shade_.c:3212: incompatible type for argument 1 of `ipow'
+shade_.c:3212: incompatible types in assignment
+shade_.c:3216: wrong type argument to unary minus
+shade_.c:3216: incompatible types in assignment
+shade_.c:3224: invalid operands to binary *
+shade_.c:3228: wrong type argument to unary minus
+shade_.c:3253: incompatible type for argument 1 of `ipow'
+shade_.c:3253: incompatible types in assignment
+shade_.c:3257: wrong type argument to unary minus
+shade_.c:3257: incompatible types in assignment
+shade_.c:3265: invalid operands to binary *
+shade_.c:3269: wrong type argument to unary minus
+shade_.c:3304: incompatible type for argument 1 of `ipow'
+shade_.c:3304: incompatible types in assignment
+shade_.c:3308: wrong type argument to unary minus
+shade_.c:3308: incompatible types in assignment
+shade_.c:3316: invalid operands to binary *
+shade_.c:3320: wrong type argument to unary minus
+shade_.c:3336: parse error before `)'
+shade_.c:3337: parse error before `)'
+shade_.c:3338: parse error before `)'
+shade_.c:3352: parse error before `)'
+shade_.c:3353: parse error before `)'
+shade_.c:3354: parse error before `)'
+shade_.c:3363: parse error before `)'
+shade_.c:3371: parse error before `)'
+shade_.c:3388: incompatible type for argument 1 of `ipow'
+shade_.c:3388: incompatible types in assignment
+shade_.c:3392: wrong type argument to unary minus
+shade_.c:3392: incompatible types in assignment
+shade_.c:3400: invalid operands to binary *
+shade_.c:3404: wrong type argument to unary minus
+shade_.c:3420: parse error before `)'
+shade_.c:3421: parse error before `)'
+shade_.c:3422: parse error before `)'
+shade_.c:3431: parse error before `)'
+shade_.c:3448: incompatible type for argument 1 of `ipow'
+shade_.c:3448: incompatible types in assignment
+shade_.c:3452: wrong type argument to unary minus
+shade_.c:3452: incompatible types in assignment
+shade_.c:3460: invalid operands to binary *
+shade_.c:3464: wrong type argument to unary minus
+shade_.c:3480: parse error before `)'
+shade_.c:3481: parse error before `)'
+shade_.c:3482: parse error before `)'
+shade_.c:3491: parse error before `)'
+shade_.c:3509: incompatible type for argument 1 of `ipow'
+shade_.c:3509: incompatible types in assignment
+shade_.c:3513: wrong type argument to unary minus
+shade_.c:3513: incompatible types in assignment
+shade_.c:3521: invalid operands to binary *
+shade_.c:3525: wrong type argument to unary minus
+shade_.c:3541: parse error before `)'
+shade_.c:3542: parse error before `)'
+shade_.c:3543: parse error before `)'
+shade_.c:3557: parse error before `)'
+shade_.c:3558: parse error before `)'
+shade_.c:3559: parse error before `)'
+shade_.c:3567: parse error before `)'
+shade_.c:3575: parse error before `)'
+shade_.c:3591: incompatible type for argument 1 of `ipow'
+shade_.c:3591: incompatible types in assignment
+shade_.c:3595: wrong type argument to unary minus
+shade_.c:3595: incompatible types in assignment
+shade_.c:3603: invalid operands to binary *
+shade_.c:3607: wrong type argument to unary minus
+shade_.c:3623: parse error before `)'
+shade_.c:3624: parse error before `)'
+shade_.c:3625: parse error before `)'
+shade_.c:3633: parse error before `)'
+shade_.c:3649: incompatible type for argument 1 of `ipow'
+shade_.c:3649: incompatible types in assignment
+shade_.c:3653: wrong type argument to unary minus
+shade_.c:3653: incompatible types in assignment
+shade_.c:3661: invalid operands to binary *
+shade_.c:3665: wrong type argument to unary minus
+shade_.c:3681: parse error before `)'
+shade_.c:3682: parse error before `)'
+shade_.c:3683: parse error before `)'
+shade_.c:3691: parse error before `)'
+shade_.c:3714: incompatible type for argument 1 of `ipow'
+shade_.c:3714: incompatible types in assignment
+shade_.c:3718: wrong type argument to unary minus
+shade_.c:3718: incompatible types in assignment
+shade_.c:3726: invalid operands to binary *
+shade_.c:3730: wrong type argument to unary minus
+shade_.c:3743: parse error before `)'
+shade_.c:3744: parse error before `)'
+shade_.c:3745: parse error before `)'
+shade_.c:3756: parse error before `)'
+shade_.c:3757: parse error before `)'
+shade_.c:3758: parse error before `)'
+shade_.c:3767: parse error before `)'
+shade_.c:3775: parse error before `)'
+shade_.c:3792: incompatible type for argument 1 of `ipow'
+shade_.c:3792: incompatible types in assignment
+shade_.c:3796: wrong type argument to unary minus
+shade_.c:3796: incompatible types in assignment
+shade_.c:3804: invalid operands to binary *
+shade_.c:3808: wrong type argument to unary minus
+shade_.c:3821: parse error before `)'
+shade_.c:3822: parse error before `)'
+shade_.c:3823: parse error before `)'
+shade_.c:3832: parse error before `)'
+shade_.c:3849: incompatible type for argument 1 of `ipow'
+shade_.c:3849: incompatible types in assignment
+shade_.c:3853: wrong type argument to unary minus
+shade_.c:3853: incompatible types in assignment
+shade_.c:3861: invalid operands to binary *
+shade_.c:3865: wrong type argument to unary minus
+shade_.c:3878: parse error before `)'
+shade_.c:3879: parse error before `)'
+shade_.c:3880: parse error before `)'
+shade_.c:3889: parse error before `)'
+shade_.c:3907: incompatible type for argument 1 of `ipow'
+shade_.c:3907: incompatible types in assignment
+shade_.c:3911: wrong type argument to unary minus
+shade_.c:3911: incompatible types in assignment
+shade_.c:3919: invalid operands to binary *
+shade_.c:3923: wrong type argument to unary minus
+shade_.c:3936: parse error before `)'
+shade_.c:3937: parse error before `)'
+shade_.c:3938: parse error before `)'
+shade_.c:3949: parse error before `)'
+shade_.c:3950: parse error before `)'
+shade_.c:3951: parse error before `)'
+shade_.c:3959: parse error before `)'
+shade_.c:3967: parse error before `)'
+shade_.c:3983: incompatible type for argument 1 of `ipow'
+shade_.c:3983: incompatible types in assignment
+shade_.c:3987: wrong type argument to unary minus
+shade_.c:3987: incompatible types in assignment
+shade_.c:3995: invalid operands to binary *
+shade_.c:3999: wrong type argument to unary minus
+shade_.c:4012: parse error before `)'
+shade_.c:4013: parse error before `)'
+shade_.c:4014: parse error before `)'
+shade_.c:4022: parse error before `)'
+shade_.c:4038: incompatible type for argument 1 of `ipow'
+shade_.c:4038: incompatible types in assignment
+shade_.c:4042: wrong type argument to unary minus
+shade_.c:4042: incompatible types in assignment
+shade_.c:4050: invalid operands to binary *
+shade_.c:4054: wrong type argument to unary minus
+shade_.c:4067: parse error before `)'
+shade_.c:4068: parse error before `)'
+shade_.c:4069: parse error before `)'
+shade_.c:4077: parse error before `)'
+shade_.c:4136: `OK' undeclared (first use in this function)
+shade_.c:4138: `Object' undeclared (first use in this function)
+shade_.c:4140: `ERROR' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:4143: parse error before `_GatherLights'
+shade_.c:4143: parse error before `Object'
+shade_.c: In function `_GatherLights':
+shade_.c:4145: `Class' undeclared (first use in this function)
+shade_.c:4145: parse error before `class'
+shade_.c:4146: `class' undeclared (first use in this function)
+shade_.c:4146: `CLASS_GROUP' undeclared (first use in this function)
+shade_.c:4147: `Group' undeclared (first use in this function)
+shade_.c:4147: parse error before `obj'
+shade_.c:4147: `obj' undeclared (first use in this function)
+shade_.c:4150: `CLASS_LIGHT' undeclared (first use in this function)
+shade_.c:4152: parse error before `l'
+shade_.c:4153: request for member `kind' in something not a structure or union
+shade_.c:4155: `lightlist' undeclared (first use in this function)
+shade_.c:4155: request for member `color' in something not a structure or union
+shade_.c:4156: request for member `color' in something not a structure or union
+shade_.c:4157: request for member `color' in something not a structure or union
+shade_.c:4160: request for member `kind' in something not a structure or union
+shade_.c:4162: request for member `relative' in something not a structure or union
+shade_.c:4164: `stack' undeclared (first use in this function)
+shade_.c:4166: parse error before `m'
+shade_.c:4167: request for member `b' in something not a structure or union
+shade_.c:4167: request for member `b' in something not a structure or union
+shade_.c:4167: request for member `b' in something not a structure or union
+shade_.c:4169: request for member `direction' in something not a structure or union
+shade_.c:4170: request for member `color' in something not a structure or union
+shade_.c:4175: `Object' undeclared (first use in this function)
+shade_.c:4175: parse error before `lightlist'
+shade_.c:4177: request for member `relative' in something not a structure or union
+shade_.c:4179: `Vector' undeclared (first use in this function)
+shade_.c:4179: parse error before `from'
+shade_.c:4180: `cam' undeclared (first use in this function)
+shade_.c:4180: `from' undeclared (first use in this function)
+shade_.c:4180: `to' undeclared (first use in this function)
+shade_.c:4180: `y' undeclared (first use in this function)
+shade_.c:4183: `x' undeclared (first use in this function)
+shade_.c:4184: `where' undeclared (first use in this function)
+shade_.c:4184: request for member `direction' in something not a structure or union
+shade_.c:4185: request for member `direction' in something not a structure or union
+shade_.c:4186: request for member `direction' in something not a structure or union
+shade_.c:4188: request for member `color' in something not a structure or union
+shade_.c:4189: parse error before `lightlist'
+shade_.c:4193: `ERROR_INTERNAL' undeclared (first use in this function)
+shade_.c:4200: `ERROR_INVALID_DATA' undeclared (first use in this function)
+shade_.c:4203: `OK' undeclared (first use in this function)
+shade_.c:4205: `CLASS_XFORM' undeclared (first use in this function)
+shade_.c:4207: `Xform' undeclared (first use in this function)
+shade_.c:4207: parse error before `x'
+shade_.c:4210: `child' undeclared (first use in this function)
+shade_.c:4211: `ERROR' undeclared (first use in this function)
+shade_.c:4215: `Matrix' undeclared (first use in this function)
+shade_.c:4215: parse error before `product'
+shade_.c:4217: `product' undeclared (first use in this function)
+shade_.c:4223: `CLASS_CLIPPED' undeclared (first use in this function)
+shade_.c:4225: parse error before `c'
+shade_.c:4232: `CLASS_SERIES' undeclared (first use in this function)
+shade_.c:4235: parse error before `g'
+shade_.c: At top level:
+shade_.c:4249: parse error before `_dxfFreeLightListPrivate'
+shade_.c:4249: parse error before `p'
+shade_.c: In function `_dxfFreeLightListPrivate':
+shade_.c:4251: `p' undeclared (first use in this function)
+shade_.c:4252: `OK' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:4255: parse error before `_dxfGetLights'
+shade_.c:4255: parse error before `obj'
+shade_.c: In function `_dxfGetLights':
+shade_.c:4258: `Private' undeclared (first use in this function)
+shade_.c:4258: parse error before `p'
+shade_.c:4259: `Point' undeclared (first use in this function)
+shade_.c:4260: sizeof applied to an incomplete type
+shade_.c:4262: warning: return makes integer from pointer without a cast
+shade_.c:4264: dereferencing pointer to incomplete type
+shade_.c:4264: dereferencing pointer to incomplete type
+shade_.c:4265: `obj' undeclared (first use in this function)
+shade_.c:4265: `cam' undeclared (first use in this function)
+shade_.c:4267: `from' undeclared (first use in this function)
+shade_.c:4267: `to' undeclared (first use in this function)
+shade_.c:4267: `up' undeclared (first use in this function)
+shade_.c:4268: `eye' undeclared (first use in this function)
+shade_.c:4269: dereferencing pointer to incomplete type
+shade_.c:4269: dereferencing pointer to incomplete type
+shade_.c:4271: `Vector' undeclared (first use in this function)
+shade_.c:4271: parse error before `left'
+shade_.c:4273: `left' undeclared (first use in this function)
+shade_.c:4274: `dir' undeclared (first use in this function)
+shade_.c:4275: dereferencing pointer to incomplete type
+shade_.c:4276: dereferencing pointer to incomplete type
+shade_.c:4277: warning: return makes integer from pointer without a cast
+shade_.c:4278: dereferencing pointer to incomplete type
+shade_.c:4280: dereferencing pointer to incomplete type
+shade_.c:4281: dereferencing pointer to incomplete type
+shade_.c:4282: dereferencing pointer to incomplete type
+shade_.c:4284: parse error before `l'
+shade_.c:4285: request for member `direction' in something not a structure or union
+shade_.c:4286: request for member `direction' in something not a structure or union
+shade_.c:4287: request for member `direction' in something not a structure or union
+shade_.c:4291: dereferencing pointer to incomplete type
+shade_.c:4293: `p' undeclared (first use in this function)
+shade_.c:4293: `Pointer' undeclared (first use in this function)
+shade_.c:4293: parse error before `lightlist'
+shade_.c:4299: warning: return makes integer from pointer without a cast
+shade_.c: At top level:
+shade_.c:4302: parse error before `_dxfFreeLightList'
+shade_.c: In function `_dxfFreeLightList':
+shade_.c:4307: dereferencing pointer to incomplete type
+shade_.c:4308: `Object' undeclared (first use in this function)
+shade_.c:4308: dereferencing pointer to incomplete type
+shade_.c:4309: `Pointer' undeclared (first use in this function)
+shade_.c:4309: parse error before `lightlist'
+shade_.c:4311: `OK' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:4317: parse error before `_fc'
+shade_.c:4317: warning: data definition has no type or storage class
+shade_.c:4318: parse error before `*'
+shade_.c:4318: warning: data definition has no type or storage class
+shade_.c:4319: parse error before `*'
+shade_.c:4319: warning: data definition has no type or storage class
+shade_.c:4322: parse error before `*'
+shade_.c:4322: warning: data definition has no type or storage class
+shade_.c:4323: parse error before `*'
+shade_.c:4323: warning: data definition has no type or storage class
+shade_.c:4327: parse error before `_ffltcolor'
+shade_.c:4327: warning: data definition has no type or storage class
+shade_.c:4328: parse error before `_bfltcolor'
+shade_.c:4328: warning: data definition has no type or storage class
+shade_.c:4330: parse error before `_dxfInitApplyLights'
+shade_.c:4332: parse error before `Pointer'
+shade_.c: In function `_dxfInitApplyLights':
+shade_.c:4341: `map' undeclared (first use in this function)
+shade_.c:4341: warning: assignment from incompatible pointer type
+shade_.c:4342: warning: assignment makes pointer from integer without a cast
+shade_.c:4342: `cdep' undeclared (first use in this function)
+shade_.c:4342: `ndep' undeclared (first use in this function)
+shade_.c:4343: warning: assignment makes pointer from integer without a cast
+shade_.c:4343: warning: assignment makes pointer from integer without a cast
+shade_.c:4343: `vPerE' undeclared (first use in this function)
+shade_.c:4346: `fc' undeclared (first use in this function)
+shade_.c:4347: `bc' undeclared (first use in this function)
+shade_.c:4350: `OK' undeclared (first use in this function)
+shade_.c: At top level:
+shade_.c:4360: parse error before `_dxfApplyLights'
+shade_.c: In function `_dxfApplyLights':
+shade_.c:4364: `RGBColor' undeclared (first use in this function)
+shade_.c:4364: `b' undeclared (first use in this function)
+shade_.c:4365: `Vector' undeclared (first use in this function)
+shade_.c:4365: `normal' undeclared (first use in this function)
+shade_.c:4366: parse error before `fbuf'
+shade_.c:4395: dereferencing pointer to incomplete type
+shade_.c:4397: parse error before `l'
+shade_.c:4398: dereferencing pointer to incomplete type
+shade_.c:4399: parse error before `float'
+shade_.c:4402: incompatible type for argument 1 of `ipow'
+shade_.c:4402: incompatible types in assignment
+shade_.c:4403: structure has no member named `color'
+shade_.c:4404: structure has no member named `color'
+shade_.c:4405: structure has no member named `color'
+shade_.c:4409: wrong type argument to unary minus
+shade_.c:4410: incompatible type for argument 1 of `ipow'
+shade_.c:4410: incompatible types in assignment
+shade_.c:4411: structure has no member named `color'
+shade_.c:4412: structure has no member named `color'
+shade_.c:4413: structure has no member named `color'
+shade_.c:4415: structure has no member named `direction'
+shade_.c:4416: structure has no member named `direction'
+shade_.c:4417: structure has no member named `direction'
+shade_.c:4421: invalid operands to binary *
+shade_.c:4422: structure has no member named `color'
+shade_.c:4423: structure has no member named `color'
+shade_.c:4424: structure has no member named `color'
+shade_.c:4428: wrong type argument to unary minus
+shade_.c:4429: invalid operands to binary *
+shade_.c:4430: structure has no member named `color'
+shade_.c:4431: structure has no member named `color'
+shade_.c:4432: structure has no member named `color'
+shade_.c:4454: warning: assignment makes integer from pointer without a cast
+shade_.c:4458: request for member `r' in something not a structure or union
+shade_.c:4459: request for member `g' in something not a structure or union
+shade_.c:4460: request for member `b' in something not a structure or union
+shade_.c:4461: warning: assignment makes integer from pointer without a cast
+shade_.c:4471: request for member `r' in something not a structure or union
+shade_.c:4472: request for member `g' in something not a structure or union
+shade_.c:4473: request for member `b' in something not a structure or union
+shade_.c:4487: warning: assignment makes integer from pointer without a cast
+shade_.c:4498: request for member `r' in something not a structure or union
+shade_.c:4499: request for member `g' in something not a structure or union
+shade_.c:4500: request for member `b' in something not a structure or union
+shade_.c:4501: warning: assignment makes integer from pointer without a cast
+shade_.c:4504: parse error before `)'
+shade_.c:4511: request for member `r' in something not a structure or union
+shade_.c:4512: request for member `g' in something not a structure or union
+shade_.c:4513: request for member `b' in something not a structure or union
+shade_.c:4517: parse error before `)'
+shade_.c:4523: request for member `r' in something not a structure or union
+shade_.c:4523: invalid type argument of `->'
+shade_.c:4523: dereferencing pointer to incomplete type
+shade_.c:4524: request for member `g' in something not a structure or union
+shade_.c:4524: invalid type argument of `->'
+shade_.c:4524: dereferencing pointer to incomplete type
+shade_.c:4525: request for member `b' in something not a structure or union
+shade_.c:4525: invalid type argument of `->'
+shade_.c:4525: dereferencing pointer to incomplete type
+shade_.c:4529: request for member `r' in something not a structure or union
+shade_.c:4529: dereferencing pointer to incomplete type
+shade_.c:4530: request for member `g' in something not a structure or union
+shade_.c:4530: dereferencing pointer to incomplete type
+shade_.c:4531: request for member `b' in something not a structure or union
+shade_.c:4531: dereferencing pointer to incomplete type
+shade_.c:4541: `OK' undeclared (first use in this function)
+shade_.c:4545: `ERROR' undeclared (first use in this function)
+make: *** [shade.o] Error 1

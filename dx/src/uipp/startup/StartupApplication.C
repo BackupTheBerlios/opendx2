@@ -1,0 +1,256 @@
+//////////////////////////////////////////////////////////////////////////////
+//                            DX  SOURCEFILE                                //
+//                                                                          //
+//                                                                          //
+// StartupApplication.C -						    //
+//                                                                          //
+// StartupApplication Class methods and other related functions/procedures. //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+/*
+ */
+
+#include "UIConfig.h"
+
+#include <Xm/Xm.h>
+#include <Xm/Label.h>
+#include <X11/cursorfont.h>
+#ifdef DXD_WIN
+#include <iostream.h>
+#else
+#include <stream.h>
+#endif
+
+#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#include <unistd.h>
+#endif
+#include <signal.h>
+#include <errno.h>
+#include <stdlib.h>
+
+#include "defines.h"
+#include "Strings.h"
+#include "MainWindow.h"
+#include "HelpWin.h"
+#include "StartupApplication.h"
+#include "StartupWindow.h"
+#include "ListIterator.h"
+
+#include "../base/CommandScope.h"
+
+StartupApplication* theStartupApplication = NUL(StartupApplication*);
+
+boolean    StartupApplication::StartupApplicationClassInitialized = FALSE;
+
+//
+// A set of resources which will be ignored.  Reason:  don't want to accidentally
+// pass on something like -tutorial when the intent is to start an editor.
+//
+static
+XrmOptionDescRec OptionList[] = {
+    { "-edit", 		"*edit", 	XrmoptionNoArg, "" },
+    { "-startup", 	"*startup", 	XrmoptionNoArg, "" },
+    { "-tutorial", 	"*tutorial", 	XrmoptionNoArg, "" },
+    { "-image", 	"*anchorMode", 	XrmoptionNoArg, "" },
+    { "-prompter", 	"*prompter", 	XrmoptionNoArg, "" },
+    { "-kiosk"	, 	"*anchorMode", 	XrmoptionNoArg, "" },
+    { "-menuBar", 	"*anchorMode", 	XrmoptionNoArg, "" },
+};
+
+static
+const String _defaultStartupResources[] =
+{
+    "*background:              #b4b4b4b4b4b4",
+    "*foreground:              black",
+
+    NULL
+};
+
+
+StartupApplication::StartupApplication(char* className): IBMApplication(className)
+{
+    //
+    // Set the global application pointer.
+    //
+    theStartupApplication = this;
+    this->mainWindow = NULL;
+
+}
+
+
+StartupApplication::~StartupApplication()
+{
+    //
+    // Set the flag to terminate the event processing loop.
+    //
+
+#ifdef __PURIFY__
+    if (this->mainWindow)
+      delete this->mainWindow;
+#endif
+
+
+    theStartupApplication = NULL;
+}
+
+
+#if defined (SIGDANGER)
+extern "C" {
+static void
+SigDangerHandler(int dummy)
+{
+    char *msg = 
+#if defined(ibm6000)
+    "AIX has notified Data Explorer that the User Interface\nis in"
+    " danger of being killed due to insufficient page space.\n";
+#else        
+    "The operating system has issued a SIGDANGER to the User Interface\n";
+#endif       
+    write(2, msg, strlen(msg));
+    signal(SIGDANGER, SigDangerHandler);
+}            
+}
+#endif
+ 
+static void 
+InitializeSignals(void)
+{            
+#if defined(SIGDANGER)
+    signal(SIGDANGER, SigDangerHandler);
+#endif       
+}            
+
+boolean StartupApplication::initialize(unsigned int* argcp,
+			       char**        argv)
+{
+    ASSERT(argcp);
+    ASSERT(argv);
+
+    if (!this->IBMApplication::initializeWindowSystem(argcp,argv))
+	return FALSE;
+
+    if (!this->IBMApplication::initialize(argcp,argv))
+	return FALSE;
+
+    InitializeSignals();
+
+    this->parseCommand (argcp, argv, OptionList, XtNumber(OptionList));
+
+    //
+    // Copy all command line arguments in order to pass them to children
+    //
+    int i;
+    this->argList.clear();
+    int n = *argcp;
+    for (i=1; i<n; i++) {
+	char *cp = DuplicateString (argv[i]);
+	this->argList.appendElement((void*)cp);
+    }
+
+    //
+    // Add Application specific actions.
+    //
+    this->addActions();
+
+    //
+    // Center the shell and make sure it is not visible.
+    //
+    XtVaSetValues
+	(this->getRootWidget(),
+	 XmNmappedWhenManaged, FALSE,
+	 XmNx,                 DisplayWidth(this->display, 0) / 2,
+	 XmNy,                 DisplayHeight(this->display, 0) / 2,
+	 XmNwidth,             1,
+	 XmNheight,            1,
+	 NULL);
+
+    //
+    // Since the instance name of this object was set in the UIComponent
+    // constructor before the name of the program was visible, delete the
+    // old name and set it to argv[0].
+    //
+    delete this->name;
+    this->name = DuplicateString(argv[0]);
+
+    //
+    //
+    // Force the initial shell window to exist so dialogs popped up
+    // from this shell behave correctly.
+    //
+    XtRealizeWidget(this->getRootWidget());
+
+    // Create the busy status indicator cursor.
+    //
+    Application::BusyCursor = XCreateFontCursor(this->display, XC_watch);
+
+    this->setDefaultResources(this->getRootWidget(), 
+				_defaultStartupResources);	
+    this->setDefaultResources(this->getRootWidget(), 
+				IBMApplication::DefaultResources);	
+
+    //
+    // Get application resources.
+    //
+    if (NOT StartupApplication::StartupApplicationClassInitialized)
+    {
+	StartupApplication::StartupApplicationClassInitialized = TRUE;
+    }
+
+    this->postStartupWindow();
+
+    this->setBusyCursor(TRUE);
+
+    //
+    // Refresh the screen.
+    //
+    XmUpdateDisplay(this->getRootWidget());
+
+    //
+    // Post the copyright message.
+    //
+    this->postCopyrightNotice();
+
+    this->setBusyCursor(FALSE);
+
+#if !defined(DXD_OS_NON_UNIX)
+    if (this->mainWindow) this->mainWindow->deactivate();
+    this->TemporaryLicense::initialize();
+    if (this->mainWindow) this->mainWindow->activate();
+#endif
+
+    return TRUE;
+}
+
+void StartupApplication::postStartupWindow()
+{
+
+    this->mainWindow = new StartupWindow;
+    this->mainWindow->manage();
+
+}
+
+//
+// Get the applications copyright notice, for example...
+// "Copyright International Business Machines Corporation 1991-1993
+// All rights reserved"
+//
+const char *StartupApplication::getCopyrightNotice()
+{
+    return "Copyright International Business Machines Corporation "
+            "1993-1997.  All rights reserved.";
+}
+
+
+void StartupApplication::destroyDumpedObjects()
+{
+     Base *object;
+     ListIterator li(this->dumpedObjects);
+
+     while(object = (Base*)li.getNext())
+        delete object;
+
+     this->dumpedObjects.clear();
+}
+
+

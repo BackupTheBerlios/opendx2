@@ -1,0 +1,192 @@
+//////////////////////////////////////////////////////////////////////////////
+//                            DX  SOURCEFILE                                //
+//                                                                          //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+// ThrottleDialog.C -                                                       //
+//                                                                          //
+// Definition for the ThrottleDialog class.                                 //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+/*
+ * $Header: /a/spline/homes/spline/danz/ui++/base/RCS/ThrottleDialog.C,v 1.1 93/
+02/03 16:45:33 danz Exp Locker: danz $
+ *
+ */
+
+#include <X11/StringDefs.h>
+
+#include <Xm/Xm.h>
+#include <Xm/DialogS.h>
+#include <Xm/Form.h>
+#include <Xm/PushB.h>
+#include <Xm/SeparatoG.h>
+#include <Xm/Label.h>
+#include <Xm/BulletinB.h>
+
+#include "defines.h"
+#include "ThrottleDialog.h"
+#include "ImageWindow.h"
+#include "../widgets/Number.h"
+
+boolean ThrottleDialog::ClassInitialized = FALSE;
+
+String  ThrottleDialog::DefaultResources[] = {
+	"*dialogTitle:			Throttle...",
+        "*accelerators:              	#augment\n"
+          "<Key>Return:                 BulletinBoardReturn()",
+	"*closeButton.labelString:	Close",
+	"*closeButton.width:		60",
+	"*closeButton.height:		30",
+	".width:			280",
+	".height:			100",
+	"*label.labelString:		Seconds per Frame:",
+        NULL
+};
+
+ThrottleDialog::ThrottleDialog(char *name, ImageWindow* image) 
+                       		: Dialog(name, image->getRootWidget())
+{
+    this->image = image;
+}
+
+ThrottleDialog::~ThrottleDialog()
+{
+}
+
+void ThrottleDialog::initialize()
+{
+    if (!ThrottleDialog::ClassInitialized) {
+	ThrottleDialog::ClassInitialized = TRUE;
+        this->setDefaultResources(image->getRootWidget(), 
+			ThrottleDialog::DefaultResources);
+    }
+
+}
+
+Widget ThrottleDialog::createDialog(Widget parent)
+{
+    int n;
+    Arg arg[4];
+    Widget separator;
+
+    n = 0;
+    XtSetArg(arg[n],XmNautoUnmanage,    True); n++;
+    XtSetArg(arg[n],XmNnoResize,        True); n++;
+//    Widget dialog = XmCreateFormDialog(parent, this->name, arg, n);
+    Widget dialog = this->CreateMainForm(parent, this->name, arg, n);
+
+
+    this->closebtn = XtVaCreateManagedWidget("closeButton",
+	xmPushButtonWidgetClass, dialog, 
+        XmNleftAttachment,   XmATTACH_FORM,
+        XmNleftOffset,        5,
+        XmNbottomAttachment,  XmATTACH_FORM,
+        XmNbottomOffset,      10,
+        NULL);
+
+    separator = XtVaCreateManagedWidget("separator",
+	xmSeparatorGadgetClass, dialog, 
+        XmNleftAttachment,    XmATTACH_FORM,
+        XmNleftOffset,        2,
+        XmNrightAttachment,   XmATTACH_FORM,
+        XmNrightOffset,       2,
+        XmNbottomAttachment,  XmATTACH_WIDGET,
+        XmNbottomWidget,      this->closebtn,
+        XmNbottomOffset,      10,
+        NULL);
+
+
+    this->label = XtVaCreateManagedWidget("label",
+	xmLabelWidgetClass, dialog,
+	XmNbottomAttachment,  XmATTACH_WIDGET,
+	XmNbottomWidget,      separator,
+	XmNbottomOffset,      10,
+	XmNleftAttachment,    XmATTACH_FORM,
+	XmNleftOffset,        5,
+	XmNtopAttachment,     XmATTACH_FORM,
+	XmNtopOffset,         10,
+	NULL);
+
+    double min=0.0, max = 100.0;
+    XtArgVal dx_l1, dx_l2;
+    this->seconds = XtVaCreateManagedWidget("seconds",
+	xmNumberWidgetClass, dialog,
+        XmNbottomAttachment, XmATTACH_WIDGET,
+	XmNbottomWidget,     separator, 
+	XmNbottomOffset,     10,
+	XmNrightAttachment,  XmATTACH_FORM,
+	XmNrightOffset,      5,
+	XmNtopAttachment,    XmATTACH_FORM,
+	XmNtopOffset,        10,
+	XmNdataType,         DOUBLE,
+	XmNdecimalPlaces,    3,
+	XmNcharPlaces,       5,
+	XmNeditable,         True,
+        XmNfixedNotation,    False,
+	XmNdMinimum,         DoubleVal(min, dx_l1),
+	XmNdMaximum,         DoubleVal(max, dx_l2),
+	NULL);
+
+#if 0
+    XtAddCallback(dialog,
+		      XmNmapCallback,
+		      (XtCallbackProc)ThrottleDialog_DoAllCB,
+		      (XtPointer)this);
+#endif
+
+    XtAddCallback(this->seconds,
+		      XmNactivateCallback,
+		      (XtCallbackProc)ThrottleDialog_DoAllCB,
+		      (XtPointer)this);
+    return dialog;
+}
+
+
+
+void ThrottleDialog::manage()
+{
+    this->Dialog::manage();
+    double	value;
+    this->image->getThrottle(value);
+    XmChangeNumberValue((XmNumberWidget)this->seconds, value);
+ 
+}
+
+void ThrottleDialog::installThrottleValue(double value)
+{
+    XmChangeNumberValue((XmNumberWidget)this->seconds, value);
+}
+
+extern "C" void ThrottleDialog_DoAllCB(Widget    widget,
+                                XtPointer clientData,
+                                XtPointer callData)
+{
+
+    ASSERT(clientData);
+    ThrottleDialog *dialog = (ThrottleDialog*) clientData;
+    XmAnyCallbackStruct* cbs = (XmAnyCallbackStruct*) callData;
+    double	value;
+
+    switch(cbs->reason)
+    {
+#if 0
+	case XmCR_MAP:
+
+	     dialog->image->getThrottle(value);
+	     XmChangeNumberValue((XmNumberWidget)dialog->seconds, value);
+ 
+	     break;
+#endif
+
+	default:
+
+	     XtVaGetValues(dialog->seconds, XmNdValue, &value, NULL);
+	     dialog->image->setThrottle(value);      
+	
+	     break;
+
+    }
+
+}

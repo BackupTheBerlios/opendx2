@@ -1,0 +1,73 @@
+//////////////////////////////////////////////////////////////////////////////
+//                            DX  SOURCEFILE                                //
+//                                                                          //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/InteractorStandIn.h,v 1.1 1999/03/24 15:17:43 gda Exp $
+ */
+
+
+#ifndef _InteractorStandIn_h
+#define _InteractorStandIn_h
+
+
+#include "defines.h"
+#include "StandIn.h"
+
+
+//
+// Class name definition:
+//
+#define ClassInteractorStandIn	"InteractorStandIn"
+
+
+//
+// InteractorStandIn class definition:
+//				
+class InteractorStandIn : public StandIn
+{
+  private:
+    //
+    // Private member data:
+    //
+
+  protected:
+    //
+    // Protected member data:
+    //
+
+    //
+    // Constructor:
+    //
+    InteractorStandIn(WorkSpace *w, Node *n) : StandIn(w,n) {}
+
+  public:
+
+    //
+    // Allocate a instance of this class. Used by the SIAllocatorDictionary. 
+    //
+    static StandIn *AllocateStandIn(WorkSpace *w, Node *n);
+
+    //
+    // Destructor:
+    //
+    ~InteractorStandIn(){}
+
+    //
+    // Called when the StandIn has been selected by the Editor. 
+    //
+    virtual void handleSelectionChange(boolean select);
+
+    //
+    // Returns a pointer to the class name.
+    //
+    const char* getClassName()
+    {
+	return ClassInteractorStandIn;
+    }
+};
+
+
+#endif // _InteractorStandIn_h

@@ -1,0 +1,73 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:578: checking for a BSD compatible install
+configure:628: checking whether build environment is sane
+configure:685: checking whether make sets ${MAKE}
+configure:731: checking for working aclocal
+configure:744: checking for working autoconf
+configure:757: checking for working automake
+configure:770: checking for working autoheader
+configure:783: checking for working makeinfo
+configure:800: checking for ranlib
+configure:829: checking for gcc
+configure:906: checking whether the C compiler (gcc  ) works
+configure:920: gcc -o conftest    conftest.c  1>&5
+configure:940: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:945: checking whether we are using GNU C
+configure:969: checking whether gcc accepts -g
+configure:1001: checking for c++
+configure:1032: checking whether the C++ compiler (gcc  ) works
+configure:1046: gcc -o conftest    conftest.C  1>&5
+configure:1072: checking whether the C++ compiler (gcc  ) is a cross-compiler
+configure:1077: checking whether we are using GNU C++
+configure:1101: checking whether gcc accepts -g
+configure:1131: checking how to run the C preprocessor
+configure:1196: checking for X
+configure:1430: checking for dirent.h that defines DIR
+configure:1468: checking for opendir in -ldir
+configure:1551: checking for ANSI C header files
+configure:1655: checking for sys/wait.h that is POSIX.1 compatible
+configure:1700: checking for fcntl.h
+configure:1700: checking for limits.h
+configure:1700: checking for malloc.h
+configure:1700: checking for strings.h
+configure:1700: checking for sys/file.h
+configure:1700: checking for sys/ioctl.h
+configure:1700: checking for sys/time.h
+configure:1700: checking for unistd.h
+configure:1738: checking for working const
+configure:1813: checking for inline
+configure:1853: checking for mode_t
+configure:1886: checking for pid_t
+configure:1919: checking for size_t
+configure:1952: checking whether time.h and sys/time.h may both be included
+configure:1987: checking whether struct tm is in sys/time.h or time.h
+configure:2023: checking whether gcc needs -traditional
+configure:2069: checking for 8-bit clean memcmp
+configure:2105: checking whether setvbuf arguments are reversed
+configure:2151: checking return type of signal handlers
+configure:2193: checking for vfork.h
+configure:2228: checking for working vfork
+configure:2401: checking for vprintf
+configure:2506: checking for wait3 that fills in rusage
+configure:2570: checking for getcwd
+configure:2570: checking for gethostname
+configure:2570: checking for gettimeofday
+configure:2570: checking for mkdir
+configure:2570: checking for mkfifo
+configure:2570: checking for mktime
+configure:2570: checking for putenv
+configure:2570: checking for re_comp
+configure:2570: checking for regcmp
+configure:2570: checking for select
+configure:2570: checking for socket
+configure:2570: checking for strcspn
+configure:2570: checking for strdup
+configure:2570: checking for strerror
+configure:2570: checking for strspn
+configure:2570: checking for strstr
+configure:2570: checking for strtod
+configure:2570: checking for strtol
+configure:2570: checking for strtoul
+configure:2570: checking for uname

@@ -1,0 +1,17 @@
+## Process this file with automake to produce Makefile.in
+
+INCLUDES = -D$(ARCH) -I$(DXROOT)/include -I.. -I../../libdx
+MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+
+dxdir = $(DXROOT)
+dxincludedir = $(DXROOT)/include/dx
+noinst_LIBRARIES = libOPENGL.a
+
+SUFFIXES = .m .y .c .s .h .o .a 
+
+libOPENGL_a_SOURCES = \
+	hwPortUtilOGL.c			\
+	hwInteractorEchoOGL.c		\
+	hwDisplayListsOGL.c		\
+	hwPortOGL.c			\
+	hwLoadOGL.c			\

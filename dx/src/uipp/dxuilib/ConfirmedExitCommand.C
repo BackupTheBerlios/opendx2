@@ -1,0 +1,95 @@
+/////////////////////////////////////////////////////////////////////////////
+//                            DX  SOURCEFILE                                //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+//                                                                          //
+// ConfirmedExitCommand.C -						    //
+//                                                                          //
+// ConfirmedExitCommand Class methods and other related functions/procedures.//
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Attic/ConfirmedExitCommand.C,v 1.1 1999/03/24 15:17:38 gda Exp $
+ *
+ */
+
+#include "UIConfig.h"
+
+#include <Xm/Xm.h>
+#include <Xm/FileSB.h>
+#include <Xm/SelectioB.h>
+
+#include "ConfirmedExitCommand.h"
+#include "DXApplication.h"
+#include "DXWindow.h"
+#include "Network.h"
+#include "QuitCommand.h"
+#include "ListIterator.h"
+#include "MacroDefinition.h"
+#include "SaveMacroCommand.h"
+
+ConfirmedExitCommand::ConfirmedExitCommand(const char*   name,
+                         CommandScope* scope,
+                         boolean       active,
+			 DXApplication *app) :
+    OptionalPreActionCommand(name, scope, active,
+                             "Save Confirmation",
+                             "Do you want to save the macro(s)?")
+{
+    this->application = app;
+
+}
+
+//
+// Pop up the confirmation dialog to ask the user to save the macro
+// if it's modified.  Execute the quitCmd after all macros are done.
+//
+void   ConfirmedExitCommand::doPreAction()
+{
+    DXApplication *app = this->application;
+    ListIterator  li(app->macroList);
+    Network       *net;
+    SaveMacroCommand *cmd = NULL, *first = NULL,*last = NULL;
+
+    while (net = (Network*)li.getNext())
+    	if (net->isMacro() AND net->saveToFileRequired())
+	{
+	    cmd = (SaveMacroCommand*)net->getDefinition()->getSaveCmd();
+	    if (NOT first)
+		first = cmd;
+	    if (last)
+		last->setNext(cmd);
+	    last = cmd;
+	}
+
+    if (last)
+    {
+	last->setNext(this->application->quitCmd);
+	first->execute();
+    }
+}
+
+boolean ConfirmedExitCommand::doIt(CommandInterface *ci)
+{
+   this->application->quitCmd->execute(ci);
+
+   return TRUE;
+}
+
+//
+// Return TRUE if any macro is modified.
+//
+boolean ConfirmedExitCommand::needsConfirmation()
+{
+    DXApplication *app = this->application;
+    ListIterator  li(app->macroList);
+    Network       *net;
+
+    while (net = (Network*)li.getNext())
+    	if (net->isMacro() AND net->saveToFileRequired())
+	    return TRUE;
+     
+    return FALSE;
+}
+

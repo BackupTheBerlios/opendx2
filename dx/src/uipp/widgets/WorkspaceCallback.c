@@ -1,0 +1,75 @@
+/*****************************************************************************/
+/*                            DX  SOURCEFILE                                 */
+/*****************************************************************************/
+
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/WorkspaceCallback.c,v 1.1 1999/03/24 15:17:37 gda Exp $
+ */
+
+#ifdef OS2
+#include <stdlib.h>
+#include <types.h>
+#endif
+#include <X11/Xlib.h>
+#include <X11/StringDefs.h>
+#include <X11/Intrinsic.h>
+#include <Xm/Xm.h>
+
+#include "WorkspaceCallback.h"
+
+
+void AddConstraintCallback( Widget widget, register WsCallbackList *callbacks,
+			    XtCallbackProc callback, caddr_t closure )
+{
+    register WsCallbackRec *new;
+
+    new = XtNew(WsCallbackRec);
+    new->next = NULL;
+    new->widget = widget;
+    new->closure = closure;
+    new->callback = callback; 
+
+    /*  Put it on the end of the list  */
+    if (*callbacks) {
+	WsCallbackRec *next = *callbacks;
+	while (next->next)
+	    next = next->next;
+	next->next = new;
+    } else {
+	*callbacks = new;
+    }
+}
+  
+
+/*  Subroutine:	RemoveConstraintCallbacks
+ *  Purpose:	Clear out child constraint callback list
+ *		(Routine is just like Xt's _XtRemoveAllCallbacks)
+ */
+void RemoveConstraintCallbacks( WsCallbackList *callbacks )
+{
+    register WsCallbackRec *cl, *next;
+    
+    cl = *callbacks;
+    while( cl != NULL )
+    {
+	next = cl->next;
+	XtFree((char *)cl);
+	cl = next;
+    }
+    (*callbacks) = NULL;
+}
+
+
+/*  Subroutine:	CallConstraintCallbacks
+ *  Purpose:	Call callbacks in a child's constraint callback list
+ */
+void CallConstraintCallbacks( Widget widget, WsCallbackList callbacks,
+			      XmAnyCallbackStruct *call_data )
+{
+    /*  Put it on the end of the list  */
+    while( callbacks != NULL )
+    {
+	(*callbacks->callback)(widget, callbacks->closure, call_data);
+	callbacks = callbacks->next;
+    }
+}

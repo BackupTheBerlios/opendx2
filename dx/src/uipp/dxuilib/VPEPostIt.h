@@ -1,0 +1,67 @@
+//////////////////////////////////////////////////////////////////////////////
+//                           DX  SOURCEFILE                                 //
+//                                                                          //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+ 
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/VPEPostIt.h,v 1.1 1999/03/24 15:17:48 gda Exp $
+ */
+
+// 
+//
+//
+
+#ifndef _VPEPostIt_h
+#define _VPEPostIt_h
+
+#include <X11/Intrinsic.h>
+#include <Xm/Xm.h>
+
+#include "defines.h"
+#include "VPEAnnotator.h"
+
+class Dictionary;
+
+#define ClassVPEPostIt	"VPEPostIt"
+
+class VPEPostIt : public VPEAnnotator
+{
+
+  // P R I V A T E   P R I V A T E   P R I V A T E
+  // P R I V A T E   P R I V A T E   P R I V A T E
+  private:
+    static boolean VPEPostIt::VPEPostItClassInitialized;
+    Pixmap         bg_pixmap;
+    void	   makePixmap();
+
+  // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
+  // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
+  protected:
+    static  String 	   VPEPostIt::DefaultResources[]; 
+    virtual void           completeDecorativePart();
+
+    virtual boolean requiresLineReroutingOnResize() { return FALSE; }
+
+  // P U B L I C   P U B L I C   P U B L I C
+  // P U B L I C   P U B L I C   P U B L I C
+  public:
+    static    Decorator*     AllocateDecorator (boolean devStyle);
+
+    virtual   void	     setLabel(const char *newStr, boolean);
+    virtual   void           setFont(const char *);
+    virtual   boolean        printPostScriptPage(FILE *f);
+    virtual   void           setResource (const char *, const char *);
+
+    // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
+    // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
+    // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
+    virtual  void  initialize();
+    	  	   VPEPostIt(boolean developerStyle =TRUE);
+    	  	  ~VPEPostIt(); 
+    const    char* getClassName() { return ClassVPEPostIt; }
+    virtual  boolean isA(Symbol classname);
+};
+
+
+#endif // _VPEPostIt_h

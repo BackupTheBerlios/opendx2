@@ -1,0 +1,1664 @@
+#!/bin/csh -f
+
+#
+# shell script to start DX.  normally called indirectly from /usr/bin/dx
+#  so that $DXROOT can be interpreted if dx isn't installed in the default
+#  directory.
+#
+
+# Name as reported with -version option 
+set version_name="IBM Visualization Data Explorer Script"
+
+# machine type, hostname, version etc
+# current machine hostname & version
+set thissys=`/bin/uname  -s | sed -e 's/ ..*$//'`
+set thismach=`/bin/uname  -m`
+set thishost=`hostname | sed -e 's/\..*$//'` 
+set thisver=`/bin/uname  -r`
+set remote=/usr/bin/rsh
+set showversion=0
+
+
+# determine the machine type, and set uiarch, exarch and thisver defaults
+switch ( $thissys )
+  case AIX*:
+    set exarch=ibm6000
+    set uiarch=ibm6000
+
+    set thisver=`/bin/uname  -v`
+    set thisver2=`/bin/uname  -v`.`/bin/uname  -r`
+
+    #
+    # The following is a work-around for a problem involved with NLS support
+    # and .net file reading on AIX.
+    #
+    setenv LANG C
+    setenv LC_ALL C
+
+    # this is for AIX 3.2.3e, so we get the right libs at run time
+    setenv LIBPATH /usr/lib:/lib
+
+    breaksw
+
+  case IRIX*:
+    set exarch=sgi
+    set uiarch=sgi    
+
+    set remote=/usr/bsd/rsh
+
+    if ( $thisver == 5.1.1.1 ) setenv __SGI_NO_REMOTE_GL
+
+    unsetenv XUSERFILESEARCHPATH
+
+    breaksw
+
+  case SunOS*:
+    # the version comes out as A.B.C - we want just A
+    set majorver=$thisver:r
+    set majorver=$majorver:r
+    if ( $majorver >= 5 ) then
+      set exarch=solaris
+      set uiarch=solaris
+
+      setenv LD_LIBRARY_PATH /usr/openwin/lib:/opt/SUNWits/Graphics-sw/xgl-3.0/lib:/usr/ucblib
+
+    else
+      set exarch=sun4
+      set uiarch=sun4
+      set remote=/usr/ucb/rsh
+
+      #
+      # This is to work around a problem on SunOS4, in which a reference 
+      # to a directory that is included by default causes
+      # 'dlopen:stub interception failed' messages to appear when attempting
+      # hw rendering.
+      #
+      if ( ! $?LD_LIBRARY_PATH ) then
+        setenv LD_LIBRARY_PATH ""
+      endif
+      setenv LD_LIBRARY_PATH `echo "$LD_LIBRARY_PATH" | sed -e 's?/usr/ucblib??g' -e 's?/usr/lib??g' -e 's?:[:]*?:?g'`
+      endif
+
+    endif
+
+    # make sure we don't use openwin files
+    unsetenv XFILESEARCHPATH
+
+    breaksw
+
+  case HP-UX*:
+    set exarch=hp700
+    set uiarch=hp700
+
+    set thisver=`/bin/uname  -m | cut -c1-6`
+    set remote=/usr/bin/remsh
+
+    breaksw
+
+  case dgux:
+    set exarch=aviion
+    set uiarch=aviion
+
+    set remote=/usr/bin/remsh
+
+    breaksw
+
+  case OSF1*:
+    set exarch=alphax
+    set uiarch=alphax
+
+    breaksw
+
+  case Linux:
+    set exarch=linux86
+    set uiarch=linux86
+
+    set remote=/usr/bin/rsh
+
+    breaksw
+
+  default:
+    echo unknown machine type
+    exit 1
+
+    breaksw
+
+endsw
+    
+
+# default to running locally, from /usr/lpp/dx  
+set exhost=$thishost
+set dxroot=/usr/lpp/dx
+set startup=1   # run the startup window by default
+
+
+# initialize these so later they can be used, even the first time.
+set xparms=
+set dxargs=""
+set envargs=""
+set uiflags=""
+set prompterflags=""
+set exmdf=""
+set uimdf=""
+set errmsg=""
+set FileName=""        # Name of filename given on command line w/o option
+set uirestrict=""
+set echoparms=
+set seecomline=
+set exlic=
+set motifcmd=
+set motifbind=
+
+#
+# if DXARGS defined, use them as the default args to this command.
+#  append any other command line args afterwards
+#
+if ($?DXARGS) then 
+  set dxargs="$DXARGS"
+endif
+
+
+# have to use all env variables here to set parms, because if we use rsh
+#  to start dx on another machine, environment vars don't get propagated.
+# 
+if ($?DXHOST) then 
+  set envargs="$envargs -host $DXHOST"
+endif
+if ($?DXPROCESSORS) then 
+  set envargs="$envargs -processors $DXPROCESSORS"
+endif
+if ($?DXMEMORY) then 
+  set envargs="$envargs -memory $DXMEMORY"
+endif
+if ($?DXEXEC) then 
+  set envargs="$envargs -exec $DXEXEC"
+endif
+if ($?DXMDF) then 
+  set envargs="$envargs -mdf $DXMDF"
+endif
+if ($?DXUI) then 
+  set envargs="$envargs -ui $DXUI"
+endif
+if ($?DXMACROS) then
+  set envargs="$envargs -macros $DXMACROS"
+endif
+if ($?DXMODULES) then
+  set envargs="$envargs -modules $DXMODULES"
+endif
+if ($?DXDATA) then 
+  set envargs="$envargs -data $DXDATA"
+endif
+if ($?DXINCLUDE) then 
+  set envargs="$envargs -include $DXINCLUDE"
+endif
+if ($?DXCOLORS) then 
+  set envargs="$envargs -colors $DXCOLORS"
+endif
+if ($?DX8BITCMAP) then 
+  set envargs="$envargs -8bitcmap $DX8BITCMAP"
+endif
+if ($?DXROOT) then 
+  set envargs="$envargs -dxroot $DXROOT"
+endif
+if ($?DXEXECROOT) then
+ set envargs="$envargs -execroot $DXEXECROOT"
+endif
+if ($?DXUIROOT) then 
+  set envargs="$envargs -uiroot $DXUIROOT"
+endif
+
+
+
+
+set arglist=($dxargs $envargs $argv)
+#
+# parse input parameters here
+#
+while ($#arglist > 0)
+
+  switch ($arglist[1])  
+
+  case -host:       # start the executive on this machine
+    if ($#arglist < 2) then
+      set errmsg="-host: missing hostname"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-host: missing hostname"
+      goto out
+    endif
+
+    set exhost=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -local:       # ignore DXHOST and run local
+    set exhost=$thishost
+    breaksw
+
+  case -directory:    # cd here before starting exec
+    if ($#arglist < 2) then
+      set errmsg="-directory: missing directory name"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-directory: missing directory name"
+      goto out
+    endif
+
+    set cdto="$arglist[2]"
+    shift arglist
+    breaksw
+
+  case -memory:       # how much memory to use
+    if ($#arglist < 2) then
+      set errmsg="-memory: missing parameter, must give number of Megabytes"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-memory: missing parameter, must give number of Megabytes"
+      goto out
+    endif
+
+    set exmem="-M$arglist[2]"
+    set uimem="-memory $arglist[2]"
+    shift arglist
+    breaksw
+
+  case -processors:   # how many processors to use (for MP)
+    if ($#arglist < 2) then
+      set errmsg="-processors: missing number of processors to use"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-processors: missing number of processors to use"
+      goto out
+    endif
+
+    set exproc="-p$arglist[2]"
+    set uiproc="-processors $arglist[2]"
+    shift arglist
+    breaksw
+
+  case -port:       # what socket number to use
+    if ($#arglist < 2) then
+      set errmsg="-port: missing port number"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-port: missing port number"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case [0-9]*:
+        set port=$arglist[2]
+    breaksw
+    default:
+        set errmsg="-port: port must be specified as a number"
+        goto out
+    endsw
+    shift arglist
+    breaksw
+
+  case -image:       # start UI in image mode
+  case -edit:        # start UI in edit mode
+  case -kiosk:       # start UI in kiosk/menubar mode
+    set uimode=$arglist[1]
+    set exonly=0
+    set exmode=-r
+    unset startup
+    breaksw
+
+  case -wizard:
+    set wizard=1
+    breaksw
+
+  case -menubar:      # start UI in kiosk/menubar mode
+    set uimode=-kiosk
+    set exonly=0
+    set exmode=-r
+    unset startup
+    breaksw
+
+  case -encode:       # Encode a .net file
+    set encoder=1
+    unset startup
+    breaksw
+
+  case -key:          # the key for encoding .net files
+    if ($#arglist < 2) then
+      set errmsg="-key: missing number"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case [A-Fa-f0-9]*:
+        set key=$arglist[2]
+    breaksw
+    default:
+        set errmsg="-key: key must be specified as a number"
+        goto out
+    endsw
+    set uiflags="$uiflags -cryptKey $key" 
+    shift arglist
+    breaksw
+
+  case -execute:     # in image mode, execute once automatically
+    set uiflags="$uiflags -execute"
+    breaksw
+
+  case -execute_on_change:     # in image mode, stay in exec-on-change mode
+    set uiflags="$uiflags -execute_on_change"
+    breaksw
+
+  case -suppress:    # in image mode, don't automatically open control panels
+    set uiflags="$uiflags -suppress"
+    breaksw
+
+  case -display:       # explicitly set output device
+    if ($#arglist < 2) then
+      set errmsg="-display: missing X name"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-display: missing X name"
+      goto out
+    endif
+
+    setenv DISPLAY $arglist[2]
+    shift arglist
+    breaksw
+
+  case -log:       # executive logging: on or off
+    if ($#arglist < 2) then
+      set errmsg="-log: missing parameter, must be on or off"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case on:
+      set exlog=-l
+      set uilog="-log on"
+      breaksw
+    case off:
+      set exlog=
+      set uilog="-log off"
+      breaksw
+    default:
+      set errmsg="-log: bad parameter, must be on or off"
+      goto out
+    endsw
+    shift arglist
+    breaksw
+
+  case -cache:       # executive cache: on or off
+    if ($#arglist < 2) then
+      set errmsg="-cache: missing parameter, must be on or off"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case on:
+      set excache=
+      set uicache="-cache on"
+      breaksw
+    case off:
+      set excache=-c
+      set uicache="-cache off"
+      breaksw
+    default:
+      set errmsg="-cache: bad parameter, must be on or off"
+      goto out
+    endsw
+    shift arglist
+    breaksw
+
+  case -trace:       # executive trace: on or off
+    if ($#arglist < 2) then
+      set errmsg="-trace: missing parameter, must be on or off"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case on:
+      set extrace=-T
+      set uitrace="-trace on"
+      breaksw
+    case off:
+      set extrace=
+      set uitrace="-trace off"
+      breaksw
+    default:
+      set errmsg="-trace: bad parameter, must be on or off"
+      goto out
+    endsw
+    shift arglist
+    breaksw
+
+  case -readahead:       # executive readahead: on or off
+    if ($#arglist < 2) then
+      set errmsg="-readahead: missing parameter, must be on or off"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case off:
+      set exread=-u
+      set uiread="-readahead off"
+      breaksw
+    case on:
+      set exread=
+      set uiread="-readahead on"
+      breaksw
+    default:
+      set errmsg="-readahead: bad parameter, must be on or off"
+      goto out
+    endsw
+    shift arglist
+    breaksw
+
+  case -timing:       # executive module timing: on or off
+    if ($#arglist < 2) then
+      set errmsg="-timing: missing parameter, must be on or off"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case on:
+      set extime=-m
+      set uitime="-timing on"
+      breaksw
+    case off:
+      set extime=
+      set uitime="-timing off"
+      breaksw
+    default:
+      set errmsg="-timing: bad parameter, must be on or off"
+      goto out
+    endsw
+    shift arglist
+    breaksw
+
+  case -highlight:       # executive highlight: on or off
+    if ($#arglist < 2) then
+      set errmsg="-highlight: missing parameter, must be on or off"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case on:
+      set exhilite=-B
+      set uihilite="-highlight on"
+      breaksw
+    case off:
+      set exhilite=
+      set uihilite="-highlight off"
+      breaksw
+    default:
+      set errmsg="-highlight: bad parameter, must be on or off"
+      goto out
+    endsw
+    shift arglist
+    breaksw
+
+  case -license :       
+    if ($#arglist < 2) then
+      set errmsg="-license : missing parameter"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case runtime:      # Force a runtime licese
+      set exlic="-Lruntime"
+      set uiflags="$uiflags -forceLicense runtime"
+      breaksw
+    case develop:      # Force a development license 
+      set exlic="-Ldevelop"
+      set uiflags="$uiflags -forceLicense develop"
+      breaksw
+    case timed:       # Force a timed license (implemented by the ui only)
+      set uiflags="$uiflags -forceLicense timed"
+      breaksw
+    case self:       # Force the exec to license itself (even in remote mode) 
+      set exlic="-Lself"
+      breaksw
+    default:
+      set errmsg="-license: $arglist[2] bad parameter"
+      goto out
+    endsw
+    shift arglist
+    breaksw
+
+  case -nodeid:
+    exec $DXROOT/bin/NodeID
+    # not reached
+    breaksw
+
+  case -trialkey:
+    exec $DXROOT/bin/NodeID trial
+    # not reached
+    breaksw
+
+  case -optimize:       
+    if ($#arglist < 2) then
+      set errmsg="-optimize: missing parameter"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case memory:      # Use delayed colors and use 24bit colors
+      setenv DXPIXELTYPE DXByte 
+      setenv DXDELAYEDCOLORS 1
+      breaksw
+    case precision:
+      setenv DXPIXELTYPE DXFloat 
+      unsetenv DXDELAYEDCOLORS
+      breaksw
+    default:
+      set errmsg="-optimize: $arglist[2] bad parameter"
+      goto out
+    endsw
+    shift arglist
+    breaksw
+
+  case -script:       # exec input script, if next parm != -something
+    set exonly=1
+    set exmode=-R
+    unset startup
+
+    if ($#arglist < 2) then
+      breaksw
+    endif
+
+    switch ($arglist[2])  
+    case -*:
+      breaksw
+    case *:
+      set FileName=$arglist[2]
+      shift arglist
+      breaksw
+    endsw
+    breaksw
+
+  case -connect:       # start the distributed exec 
+    set exonly=1
+    set exmode=-R
+    unset startup
+
+    if ($#arglist < 2) then
+      set errmsg="-connect: missing host:portnum"
+      goto out
+    endif
+
+    set exconnect=$arglist[2]
+    set chost=`echo $exconnect | sed -e 's/^\(.*\):.*$/\1/'`
+    set cnum=`echo $exconnect | sed -e 's/^.*:\([0-9.]*\)$/\1/'`
+
+    set exdist="-s -C $cnum -H $chost"
+    shift arglist 
+    breaksw
+
+  case -program:       # filename of network
+    if ($#arglist < 2) then
+      set errmsg="-program: missing program name"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-program: missing program name"
+      goto out
+    endif
+
+    unset startup
+    set FileName=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -cfg:       # configuration file to use with .net given by -program 
+    if ($#arglist < 2) then
+      set errmsg="-cfg: missing configuration file name"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-cfg: missing configuration file name"
+      goto out
+    endif
+
+    set uiflags="$uiflags -cfg $arglist[2]"
+    shift arglist
+    breaksw
+
+  case -uionly:        # startup the ui only
+    set uionly=1
+    unset startup
+    breaksw
+
+  case -exonly:        # startup the executable only
+  case -execonly:
+    set exonly=1
+    unset startup
+    breaksw
+
+  case -dxroot:        # override root directory for all dx files
+    if ($#arglist < 2) then
+      set errmsg="-dxroot: missing directory name"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-dxroot: missing directory name"
+      goto out
+    endif
+
+    set dxroot=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -execroot:      # override root directory for all exec files
+  case -exroot:
+    if ($#arglist < 2) then
+      set errmsg="-execroot: missing directory name"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-execroot: missing directory name"
+      goto out
+    endif
+
+    set dxexroot=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -uiroot:        # override root directory for all ui files
+    if ($#arglist < 2) then
+      set errmsg="-uiroot: missing directory name"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-uiroot: missing directory name"
+      goto out
+    endif
+
+    set dxuiroot=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -exec:          # specific name of exec to use
+    if ($#arglist < 2) then
+      set errmsg="-exec: missing filename"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-exec: missing filename"
+      goto out
+    endif
+
+    set dxexec=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -mdf:           # name of local mdf to use
+    if ($#arglist < 2) then
+      set errmsg="-mdf: missing filename"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-mdf: missing filename"
+      goto out
+    endif
+
+    set dxmdf=$arglist[2]
+    set exmdf="$exmdf -F $arglist[2]"
+    set uimdf="$uimdf -mdf $arglist[2]"
+    shift arglist
+    breaksw
+
+  case -dxmdf:           # name of overriding dx.mdf file to use
+    if ($#arglist < 2) then
+      set errmsg="-dxmdf: missing filename"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-dxmdf: missing filename"
+      goto out
+    endif
+
+    set uimdf="$uimdf -dxmdf $arglist[2]"
+    shift arglist
+    breaksw
+
+  case -uimdf:           # name of overriding ui.mdf file to use
+    if ($#arglist < 2) then
+      set errmsg="-uimdf: missing filename"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-uimdf: missing filename"
+      goto out
+    endif
+
+    set uimdf="$uimdf -uimdf $arglist[2]"
+    shift arglist
+    breaksw
+
+  case -ui:            # name of ui executable to use
+    if ($#arglist < 2) then
+      set errmsg="-ui: missing filename"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-ui: missing filename"
+      goto out
+    endif
+
+    set dxui=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -data:           # pathlist of directories to search for data files
+    if ($#arglist < 2) then
+      set errmsg="-data: missing directory list"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-data: missing directory list"
+      goto out
+    endif
+
+    set dxdata=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -macros:         # pathlist of dirs to search for UI macros
+    if ($#arglist < 2) then
+      set errmsg="-macros: missing directory list"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-macros: missing directory list"
+      goto out
+    endif
+
+    set dxmacros=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -modules:         # pathlist of directories to search for outboards
+    if ($#arglist < 2) then
+      set errmsg="-modules: missing directory list"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-modules: missing directory list"
+      goto out
+    endif
+
+    set dxmodules=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -include:        # pathlist of directories to search for script files
+    if ($#arglist < 2) then
+      set errmsg="-include: missing directory list"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-include: missing directory list"
+      goto out
+    endif
+
+    set dxinclude=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -colors:           # filename of replacement colors file
+    if ($#arglist < 2) then
+      set errmsg="-colors: missing filename"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-colors: missing filename"
+      goto out
+    endif
+
+    set dxcolors=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -8bitcmap:         # set tolerance for colormap match
+    if ($#arglist < 2) then
+      set errmsg="-8bitcmap: missing threshold"
+      goto out
+    endif
+
+    set dx8bitcmap=$arglist[2]
+    if ( "$dx8bitcmap" == "private" ) then
+      set dx8bitcmap=-1.0
+    else if ( "$dx8bitcmap" == "shared" ) then
+      set dx8bitcmap=1.0
+    endif
+    shift arglist
+    breaksw
+
+  case -hwrender:       # force which hardware rendering lib to use
+    if ($#arglist < 2) then
+      set errmsg="-hwrender: missing parameter, must be gl or opengl"
+      goto out
+    endif
+
+    switch ($arglist[2])
+    case gl:
+      setenv DXHWMOD DXhwdd.o
+      breaksw
+    case opengl:
+      setenv DXHWMOD DXhwddOGL.o
+      breaksw
+    default:
+      set errmsg="-hwrender: missing parameter, must be gl or opengl"
+      goto out
+    endsw
+    shift arglist
+    breaksw
+
+  case -xrm:           # explicitly set an X resource name
+    if ($#arglist < 2) then
+      set errmsg="-xrm: missing parameter"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-xrm: missing parameter"
+      goto out
+    endif
+
+    set xparms="$xparms -xrm $arglist[2]"
+    shift arglist
+    breaksw
+
+  case -verbose:       # echo stuff
+    set seecomline=1
+    breaksw
+
+  case -uidebug:       # private flag - enable ui debugging messages
+    set uidebug=-uidebug
+    breaksw
+
+  case -outboarddebug: # the exec will ask the user to start the outboard
+    set exoutdb="-D"
+    set uioutdb="-outboarddebug"
+    breaksw
+
+  case -echo:          # debug this file - only echos command line
+    set echoparms=echo
+    breaksw
+
+  case -remoteecho:    # debug this file - echos the remote command line
+    set envargs="$envargs -echo"
+    breaksw
+
+  case -help:          # print short help message
+  case -shorthelp:
+  case -h:
+    goto shorthelp
+    breaksw
+
+  case -morehelp:      # print long help message
+  case -longhelp:
+    goto longhelp
+    breaksw
+
+  case -server:        # obsolete options which took an arg
+  case -arch:
+  case -uiarch:
+  case -minprocessors:
+  case -maxprocessors:
+  case -minmemory:
+  case -maxmemory:
+    # echo $arglist[1] obsolete, ignored
+    if ($#arglist >= 2) then
+      switch ($arglist[2])
+      case -*:        # Ignore incorrect usage too.
+        breaksw
+      default:
+        shift arglist
+        breaksw
+      endsw
+    endif
+    breaksw
+
+  case -wait:          # obsolete options w/o args
+  case -queue:
+  case -ibm6000:
+    # echo $arglist[1] obsolete, ignored
+    breaksw
+
+  case -version:       # print the exec and ui versions 
+    set showversion=1
+    breaksw
+
+  case -prompter:      # don't start DX, start the Data Prompter instead
+    set prompter=1
+    unset startup
+    breaksw
+
+  case -startup:      # don't start DX, start the Startup window instead
+    set startup=1
+    breaksw
+
+  case -tutor:         # don't start DX, start the tutorial instead
+  case -tutorial:
+    set tutor=1
+    unset startup
+    breaksw
+
+  case -builder:       # don't start DX, start the Module Builder instead
+    set builder=1
+    unset startup
+    breaksw
+
+  case -no*:           # ui restriction flags
+  case -limitImageOptions:
+    set uirestrict="$uirestrict $arglist[1]"
+    breaksw
+
+  case -metric:        # make default units metric in postscript printing
+    set uiflags="$uiflags -metric"
+    breaksw
+
+  case -restrictionLevel:
+    if ($#arglist < 2) then
+      set errmsg="-restrictionLevel: missing level"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-restrictionLevel: missing level"
+      goto out
+    endif
+
+    set uirestrict="$uirestrict -restrictionLevel $arglist[2]"
+    shift arglist
+    breaksw
+
+  case -appHost:
+    if ($#arglist < 2) then
+      set errmsg="-appHost: missing host"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-appHost: missing host"
+      goto out
+    endif
+
+    set uiflags="$uiflags -appHost $arglist[2]"
+    shift arglist
+    breaksw
+
+  case -appPort:
+    if ($#arglist < 2) then
+      set errmsg="-appPort: missing port"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-appPort: missing port"
+      goto out
+    endif
+
+    set uiflags="$uiflags -appPort $arglist[2]"
+    shift arglist
+    breaksw
+
+  case -file:
+    if ($#arglist < 2) then
+      set errmsg="-file: missing input filename"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-file: missing input filename"
+      goto out
+    endif
+
+    set FileName=$arglist[2]
+    shift arglist
+    breaksw
+
+  case -full:
+    set prompterflags="$prompterflags -full"
+    breaksw
+
+  case -view:
+    if ($#arglist < 2) then
+      set errmsg="-view: missing object filename"
+      goto out
+    endif
+    if ("$arglist[2]" =~ -* ) then
+      set errmsg="-view: missing input filename"
+      goto out
+    endif
+
+    set uiflags="$uiflags -view $arglist[2]" 
+    shift arglist
+    breaksw
+
+  case -*:             # -anything else
+    set errmsg="unrecognized parameter:  $arglist[1]"
+    goto out
+
+  default:             # filename of network
+    if ( $FileName != "" ) then 
+      set errmsg="input filename already set to '$FileName'; '$arglist[1]' unrecognized"
+      goto out
+    endif
+    set FileName=$arglist[1]
+    breaksw
+
+  endsw   
+
+  shift arglist
+end
+
+#
+# supply any variable values not set yet
+#
+
+if (! $?dxexroot) set dxexroot=$dxroot # root directory for exec
+set dxexecdef=$dxexroot/bin_${exarch}/dxexec
+if (! $?dxexec)   set dxexec=$dxexecdef
+if (! $?exonly)   set exonly=0         # start exec only? yes (1) or no (0)
+if (! $?exmode)   set exmode=-r        # ui (-r) or standalone ()
+if (! $?excache)  set excache=         # on () or off (-c)
+if (! $?exread)   set exread=          # on () or off (-u)
+if (! $?exlog)    set exlog=           # on (-l) or off ()
+if (! $?exmem)    set exmem=           # unlimited () or # Mbytes (-M#)
+if (! $?exproc)   set exproc=          # unlimited () or # of processors (-p#)
+if (! $?exerrlvl) set exerrlvl=        # off () or verbose (-E#)
+if (! $?extrace)  set extrace=         # on (-T) or off ()
+if (! $?extime)   set extime=          # on (-m) or off ()
+if (! $?exoutdb)  set exoutdb=         # off () or on (-D)
+if (! $?exhilite) set exhilite=-B      # on (-B) or off ()
+if (! $?exdist) set exdist=            # flags for distributed 
+
+if (! $?dxuiroot) set dxuiroot=$dxroot # root directory for ui
+if (! $?dxui) then
+  set dxui=$dxuiroot/bin_${uiarch}/dxui
+endif
+if (! $?uionly)   set uionly=0         # start ui only? yes (1) or no (0)
+if (! $?wizard)   set wizard=0         # dxui wizard windows
+if (! $?uimode)   set uimode=-edit     # vse (-edit) or image (-image)
+if (! $?uidepth)  set uidepth=         # 24bit or 8bit
+if (! $?uidebug)  set uidebug=         # off () or on (-uidebug)
+if (! $?uimem)    set uimem=           # -memory flag (ui sends to exec)
+if (! $?uiproc)   set uiproc=          # -processors flag (ui sends to exec)
+if (! $?uilog)    set uilog=           # ui logging on or off
+if (! $?uicache)  set uicache=         # exec cache on or off
+if (! $?uiread)   set uiread=          # exec readahead on or off
+if (! $?uitrace)  set uitrace=         # exec tracing on or off
+if (! $?uitime)   set uitime=          # exec timing on or off
+if (! $?uioutdb)  set uioutdb=         # off () or on (-outboarddebug)
+if (! $?uihilite) set uihilite=        # module highlighting on or off
+
+if (! $?port)     set port=1900        # default socket
+if (! $?cdto)     set cdto=`pwd`       # default current dir for exec
+
+if (! $?dxdata)   set dxdata="/usr/lpp/dx/samples/data"
+
+
+#
+# set the env variables which the executables will read with getenv()
+#  (the following lines can't be single line if statements because
+#   evidently the cshell reads and tries to parse the whole line
+#   before it looks at the results of the test.  this provokes 'undefined
+#   variable' error messages.
+#
+if ($?dxmacros) then
+  setenv DXMACROS $dxmacros
+endif
+if ($?dxmodules) then
+  setenv DXMODULES $dxmodules
+endif
+if ($?dxdata) then
+  setenv DXDATA $dxdata
+endif
+if ($?dxinclude) then
+  setenv DXINCLUDE $dxinclude
+endif
+if ($?dxmdf) then
+  setenv DXMDF $dxmdf
+endif
+if ($?dxcolors) then
+  setenv DXCOLORS $dxcolors
+endif
+if ($?dx8bitcmap) then
+  setenv DX8BITCMAP $dx8bitcmap
+endif
+
+#
+# guarenteed to be have values
+#
+setenv DXROOT $dxroot
+if ($dxroot != $dxexroot) setenv DXEXECROOT $dxexroot
+if ($dxroot != $dxuiroot) setenv DXUIROOT $dxuiroot
+
+# the old syntax was host,port.  disabled for now.
+# setenv DXHOST "$exhost,$port"
+setenv DXHOST "$exhost"
+
+
+#
+# Now that the environment is set up we can test the version if requested
+#
+if  ($showversion) then
+  $dxexec -v 
+  $dxui -version 
+  echo $version_name, 03.01.0004B
+  exit 0
+endif
+
+ 
+#
+# set the DISPLAY var, if not already set (and if local, unix:0 is faster)
+#
+if (! $?DISPLAY) then
+  if ( $exhost != $thishost ) then
+    setenv DISPLAY "${thishost}:0"
+  else
+    setenv DISPLAY unix:0
+  endif
+endif
+
+#
+# Set some special motif bindings for the various user interfaces
+#
+switch ( $uiarch )
+    case aviion:
+	set motifcmd="-xrm"
+        set motifbind="*defaultVirtualBindings: osfDelete : <Key>Delete \n osfBackSpace: <Key>BackSpace \n osfLeft : <Key>Left \n osfRight : <Key>Right \n osfUp : <Key>Up \n osfDown : <Key>Down \n osfPageUp : <Key>Prior \n osfPageDown : <Key>Next \n osfInsert : <Key>Insert"
+
+
+        breaksw
+    case alphax:
+	setenv XNLSPATH $dxroot/lib_alphax/nls
+        #set motifbind="DX*officialmascot: fred"
+	breaksw
+    default:
+        #set motifbind="DX*officialmascot: fred"
+        breaksw
+endsw
+
+#
+# start programs here.  by default, this script prepares the parameters
+#  for both the exec and the ui, and passes them all to the ui, which
+#  starts the exec.  if the 'exonly' flag is set, then this script only
+#  starts the exec.
+#
+
+if ( $exonly ) then
+    if ( $uionly ) then
+     set errmsg="-uionly and -execonly are mutually exclusive."
+     goto out
+    endif
+endif
+
+
+
+
+# 
+# starting the tutorial instead of starting DX
+#
+if ($?tutor) then
+  
+  set cmd="$DXROOT/bin_${uiarch}/tutor"
+  if ($seecomline) then
+    env
+    echo $echoparms exec $cmd $xparms
+  endif
+
+  $echoparms exec $cmd $xparms
+  exit 1
+
+endif
+
+# 
+# starting the Data Prompter instead of starting DX
+#
+if ($?prompter) then
+  
+  if ("$FileName" != "") set prompterflags="$prompterflags -file $FileName"
+
+  set cmd="$DXROOT/bin_${uiarch}/prompter $prompterflags"
+  if ($seecomline) then
+    env
+    echo $echoparms exec $cmd $xparms
+  endif
+  $echoparms exec $cmd $xparms
+
+  exit 1
+
+endif
+
+
+# 
+# starting the Startup Window instead of starting DX
+#
+if ($?startup) then
+  
+  set cmd="$DXROOT/bin_${uiarch}/startupui $*"
+  if ($seecomline) then
+    env
+    echo $echoparms exec $cmd $xparms
+  endif
+  $echoparms exec $cmd $xparms
+
+  exit 1
+
+endif
+
+
+# 
+# starting the Module Builder instead of starting DX
+#
+if ($?builder) then
+
+  if ($seecomline) then
+    env
+    echo exec $DXROOT/bin_${uiarch}/builder $xparms $motifcmd "$motifbind" $FileName
+  endif
+  $echoparms exec $DXROOT/bin_${uiarch}/builder $xparms $motifcmd "$motifbind" $FileName
+
+  exit 1
+endif
+
+# 
+# starting the network encoder instead of starting DX
+#
+if ($?encoder) then
+  if (! $?key) then
+    echo Encoding requires a key be specified with the -key option 
+    exit 1
+  endif
+
+  set Base=`echo $FileName | sed -e 's/\.net//'`
+  set CfgName="${Base}.cfg"
+  set FileBase=`basename $Base` 
+  set EncodedBase="${Base}-e"
+
+  echo "Creating encoded version of $FileName in ${EncodedBase}.net "
+  set cmd1="$DXROOT/bin_${uiarch}/dxencode -p $key $FileName" 
+  if ( -f $CfgName ) then
+    echo "Copying $CfgName to ${EncodedBase}.cfg"
+    set cmd2="cp $CfgName ${EncodedBase}.cfg"
+  else
+    set cmd2=""
+  endif
+   
+  if ("$seecomline" || "$echoparms" == "echo" ) then
+    if ($seecomline) then
+	env
+    endif 
+    echo $cmd1 \> ${EncodedBase}.net
+    echo $cmd2
+  endif
+  if ("$echoparms" != "echo") then
+    $cmd1 > ${EncodedBase}.net
+    $cmd2
+  endif
+  exit 1
+endif
+
+
+
+#
+# start executive
+#
+if ($exonly) then
+
+  #
+  # do any system specific things 
+  #
+  switch ( $exarch )
+    case ibm6000:
+      # this is so we can find our dummy gl lib if necessary
+      if ($?DXEXECROOT) then
+        setenv LIBPATH "$LIBPATH"":$DXEXECROOT/lib_ibm6000"
+      else
+        setenv LIBPATH "$LIBPATH"":$DXROOT/lib_ibm6000"
+      endif
+      breaksw
+    default:
+      breaksw 
+  endsw
+
+  #
+  # parse the DISPLAY environment variable to pick out the machine name
+  # and display number.  also, if the local host and the execution host are
+  # different strings, use the host command or scan the /etc/hosts file to 
+  # try to decide if perhaps they are simply aliases for the same machine.
+  # if you don't recognize they are the same machine, you will loop forever.
+  #
+  set dhost=`echo $DISPLAY | sed -e 's/^\(.*\):.*$/\1/'`
+  set dnum=`echo $DISPLAY | sed -e 's/^.*:\([0-9.]*\)$/\1/'`
+  if ( "$thishost" != "$exhost" ) then
+    if ( -x /bin/host ) then
+      set myent=`host $thishost`
+      set exent=`host $exhost`
+    else
+      set myent=`sed 's/#.*$//' /etc/hosts | egrep '(^| |	)'"$thishost"'( |	|$)'`
+      set exent=`sed 's/#.*$//' /etc/hosts | egrep '(^| |	)'"$exhost"'( |	|$)'`
+    endif
+  else 
+    set myent=$thishost
+    set exent=$thishost
+  endif
+
+  #
+  # if the hostname isn't localhost or unix, look closer to see if it
+  # is just another alias for the local machine, or if it really is a
+  # different machine.  if a different machine, reset the display variable
+  # back to this machine, if necessary, and then execute a remote shell
+  #
+  if ( "$exhost" != "localhost" && "$exhost" != "unix" ) then
+    if ( "$exent" != "$myent" ) then
+      if ( "$dhost" == "unix" ) then
+        echo resetting DISPLAY variable from $DISPLAY to "${thishost}:$dnum"
+        setenv DISPLAY "${thishost}:$dnum"
+      endif
+  
+      set dxcom="$remote $exhost $0 -directory $cdto -display $DISPLAY $envargs $*"
+      echo "Starting remote command on $exhost"
+      $echoparms exec $dxcom
+    endif
+  endif
+
+  set dxmsg="Starting DX executive"
+  echo $dxmsg
+
+  set dxcom=$dxexec
+
+  set exflags="$exmode $excache $exlog $exread $exmem $exproc $exerrlvl $extrace $exhilite $extime $exdist $exoutdb $exlic $exmdf"
+
+  if ($seecomline) then
+    env
+    echo $dxcom $exflags
+  endif
+
+  if ( `pwd` != "$cdto" ) then
+    if ( ! -d "$cdto") then
+      echo directory $cdto not found, current directory `pwd`
+    else
+      cd $cdto
+      if ( $status == 0 ) then
+        echo current directory now `pwd`
+      else
+        set errmsg="cannot change to directory $cdto"
+        goto out
+      endif
+    endif
+  endif
+
+  if ( $FileName != "" ) then
+    if ( "$echoparms" != "" ) then
+      $echoparms $dxcom $exflags "< $FileName"
+    else
+      $dxcom $exflags < $FileName
+    endif
+    set exstatus = $status
+  else
+    $echoparms $dxcom $exflags
+    set exstatus = $status
+  endif
+
+  exit $exstatus
+endif
+
+
+#
+# start UI
+#
+set dxmsg="Starting DX user interface"
+
+
+#
+# check system version
+#
+switch ( $uiarch )
+  case ibm6000:
+    if ( ("$thisver2" != "3.2") && ("$thisver" != "4") ) then
+
+      echo "WARNING!  AIX Version seems to be other than 3.2 or 4.x"
+      echo "Continuing, but unexpected errors may result."
+    endif
+    breaksw
+  case sgi:
+    # add version check here?
+    breaksw
+  case hp700:
+    if ( ("$thisver" != "9000/7") && ("$thisver" != "9000/8") ) then
+      echo "WARNING!  This machine appears to NOT be a model 7xx/8xx"
+      echo "Continuing, but unexpected errors may result."
+    endif
+    breaksw
+  case sun4:
+  case solaris:
+  case aviion:
+  case alphax:
+  case linux86:
+    breaksw
+  
+  default:
+    echo "DX user interface does not run on this architecture"
+    echo "to start the executive, use the -execonly flag"
+    goto out
+    breaksw
+endsw
+
+
+set dxcom="$dxui"
+
+# add all UI flags here
+set uiflags="$uimode $uidepth $uidebug $uimem $uiproc $uilog $uicache $uiread $uitrace $uitime $uioutdb $uihilite $uimdf $xparms $uirestrict $uiflags"
+if ("$FileName" != "") set uiflags="$uiflags -program $FileName"
+if ($uionly) set uiflags="$uiflags -uionly"
+if ($wizard) set uiflags="$uiflags -wizard"
+if ("$cdto" != "") set uiflags="$uiflags -directory $cdto"
+if ($dxexec != $dxexecdef) set uiflags="$uiflags -exec $dxexec"
+
+echo $dxmsg
+
+if ($seecomline) then
+  env
+  echo exec $dxcom $uiflags $motifcmd "$motifbind"
+endif
+
+$echoparms exec $dxcom $uiflags $motifcmd "$motifbind"
+
+# does not normally get here -- only if echo is set
+exit $status
+
+# 
+# simple help section
+#
+shorthelp:
+cat << EOFshorthelp
+command line parameters:
+ -program filename    start UI with this network
+ -image               start DX with an image window as the anchor window 
+ -edit                start DX with an editor window as the anchor window 
+ -menubar             start DX with a small menubar as the anchor window 
+ -startup             start DX with an initial startup panel (default) 
+
+ -uionly              start the UI only (no exec)
+ -script filename     start the exec only, in script mode, running this script
+ -script              start the exec only, in script mode
+
+ -host hostname       start executive on this machine
+ -memory #Mbytes      set the amount of memory the exec uses
+
+ -macros pathlist     directory list to search for UI macros
+ -data pathlist       directory list to search for data files
+
+ -prompter            start the DX Data Prompter
+ -builder             start the DX Module Builder
+ -tutor               start the DX Tutorial
+
+ -morehelp            print man page with information about other options
+ 
+EOFshorthelp
+ exit 1
+
+#
+# complete help section
+#
+longhelp:
+
+if ( -f $dxroot/man/catl/dx.l ) then
+    more $dxroot/man/catl/dx.l
+else
+    echo cannot find $dxroot/man/catl/dx.l
+    echo set the DXROOT environment variable to the root of the
+    echo dx installation tree and try again.
+endif
+exit 1
+
+cat << EOFlonghelp
+command line parameters:
+ -host hostname       start executive on this machine               
+ -local               start executive on the current machine (default)
+
+ -program filename    start UI with this network
+ -script filename     run exec only, in script mode, with this script
+ -script              run exec only, in script mode
+
+ -image               start DX with an image window as the anchor window 
+ -edit                start DX with the VP Editor as the anchor 
+ -menubar             start DX with a small menubar as the anchor window 
+ -startup             start DX with an initial dialog (default) 
+
+ -uionly              start the UI only (no exec)
+ -execonly            start the exec only (no UI) in remote mode
+ -connect host:port   start a distributed exec only (no UI)
+
+ -prompter            start the DX Data Prompter
+ -full                start the Full Data Prompter
+ -file filename       start the Data Prompter with this header file
+
+ -builder             start the DX Module Builder
+ -tutor               start the DX Tutorial
+
+ -suppress            do not open control panels at startup in image mode
+ -execute             execute the program automatically at startup
+ -execute_on_change   go into execute_on_change mode at startup
+
+ -optimize [memory|precision]
+                      select whether to minimize memory usage or to produce 
+                      more color-accurate images.  When memory is optimized, 
+                      image objects are generated with 24 bits/pixel instead 
+                      of 96, and ReadImage will produce delayed color images 
+                      if supported by the format. (default = precision)
+
+ -memory #Mbytes      set the amount of memory the exec uses
+ -processors #proc    set the number of processors the exec uses 
+                      (SMP versions only)
+ -log [on|off]        executive and ui logging: (default = off)
+ -cache [on|off]      executive cache: (default = on)
+ -trace [on|off]      executive trace: (default = off)
+ -readahead [on|off]  executive readahead: (default = on)
+ -timing [on|off]     module timing: (default = off)
+ -highlight [on|off]  node execution highlighting: (default = on)
+ -directory dirname   cd to this directory before starting exec
+ -display hostname:0  set X display destination
+ -metric              have the UI use metric units when possible
+
+ -exec filename       execute this user executive
+ -mdf filename        use this user .mdf file
+
+ -key <64bit hex>     16 character hexidecimal (64 bit) number that is used
+		      to encode and decode .net files.
+ -encode              Encode a .net file into a binary format with a key 
+                      that must be specified with the -key option.   
+                      For example, 
+                        dx -encode -key 193495946952abed foo.net 
+                      The resulting file can only be decoded by the DX
+                      user interface when using the same -key option.
+                      For example, 
+                        dx -key 193495946952abed bar.net 
+
+ -dxroot dirname      dx root directory; defaults to /usr/lpp/dx
+
+ -macros pathlist     directory list to search for UI macros
+ -data pathlist       directory list to search for data files
+ -include pathlist    directory list to search for script files
+ -modules pathlist    directory list to search for outboard modules
+
+ -colors filename     replace default color names/RGB values file
+ -8bitcmap [private|shared|0-1|-1]
+                      private/shared colormap error threshold (default=0.1)
+                      -1 is equivalent to private.
+ -hwrender [gl|opengl]  
+                      override default hardware rendering library on platforms
+                      where both are supported.  (default = opengl).
+
+ -license <type>      force a specific license for either the UI or executive.
+                      type should be one of:
+    runtime           force a run-time license (UI or executive)
+    timed             force a timed (limited function) license (UI only)
+    develop           force a developer license (UI or executive) (default)
+
+ -nodeid              print out the node id which is used for licensing
+
+ -verbose             echo command lines before executing
+ -echo                echo the command lines without executing them
+ -outboarddebug       let user start outboard modules by hand
+ -version             show version numbers of the dxexec and dxui
+
+ -help                print a short help message
+ -morehelp            print this help message
+
+environment variables:
+ DXHOST               sets hostname for -host
+
+ DXPROCESSORS         sets number of processors for multiprocessor DX
+ DXMEMORY             sets memory limit in megabytes
+
+ DXEXEC               sets filename for -exec
+ DXMDF                sets filename for -mdf
+
+ DXMACROS             sets pathlist for -macros
+ DXDATA               sets pathlist for -data
+ DXINCLUDE            sets pathlist for -include
+ DXMODULES            sets pathlist for -modules
+
+ DXCOLORS             sets filename for -colors
+ DX8BITCMAP           sets threshold for -8bitcmap
+
+ DXGAMMA              sets gamma correction for displayed images. Default is 2.
+ DXGAMMA_8BIT
+ DXGAMMA_12BIT
+ DXGAMMA_24BIT        sets the gamma correction factor for the windows with 
+                      the indicated window depth.  Overrides the value set 
+                      by DXGAMMA.
+
+ DXHWMOD              specifies the name of the hardware rendering library 
+                      to use when more than one is supported. Should be
+                      either DXhwdd.o or DXhwddOGL.o
+
+ DXTRIALKEY           specifies the trial license key, and overrides the
+                      trial license file.
+ DXTRIALKEYFILE       specifies the name of the expiration file containing
+                      the trial license key. 
+                      (default = $DXROOT/expiration)
+
+ DXROOT               sets directory for -dxroot
+
+ DXARGS               prepends these args to the command line
+
+command line parameters override environment variables.
+If conflicting parameters are given, the last one has precedence.
+Also, there are some other less frequently used command line options
+that are not documented here.  See the User's Guide for a complete
+list of options.
+
+EOFlonghelp
+ exit 1
+
+out:
+ echo $0 : $errmsg
+ echo \(use -help to get usage information\)
+ exit 1
+

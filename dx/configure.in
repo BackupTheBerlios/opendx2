@@ -1,0 +1,45 @@
+#include "aclocal.m4"
+
+AC_SUBST(SHELL)
+AC_SUBST(YACC)
+YACC=yacc
+
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(include/dx/arch.h)
+AM_INIT_AUTOMAKE(dx, 1.0)
+
+dnl Checks for programs.
+AC_PROG_RANLIB
+AC_PROG_CC
+AC_PROG_CXX
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+AC_PATH_X
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h sys/file.h sys/ioctl.h sys/time.h unistd.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_MODE_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+AC_STRUCT_TM
+
+dnl Checks for library functions.
+AC_PROG_GCC_TRADITIONAL
+AC_FUNC_MEMCMP
+AC_FUNC_SETVBUF_REVERSED
+AC_TYPE_SIGNAL
+AC_FUNC_VFORK
+AC_FUNC_VPRINTF
+AC_FUNC_WAIT3
+AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime putenv re_comp regcmp select socket strcspn strdup strerror strspn strstr strtod strtol strtoul uname)
+
+
+AC_OUTPUT( src/ui++/dxuilib/Makefile src/ui++/ui/Makefile src/exec/Makefile src/exec/dxexec/Makefile include/dx/Makefile src/exec/libdx/Makefile src/Makefile src/exec/dpexec/Makefile src/exec/dxmods/Makefile src/ui++/base/Makefile src/ui++/Makefile src/ui++/dxl/Makefile src/ui++/dxui/Makefile src/ui++/gar/Makefile src/ui++/mb/Makefile src/ui++/widgets/Makefile src/ui++/startup/Makefile src/ui++/tutor/Makefile src/ui++/java/dx/protocol/server/Makefile src/ui++/java/dx/protocol/Makefile src/ui++/java/dx/Makefile src/ui++/java/dx/runtime/Makefile src/ui++/java/dx/client/Makefile src/ui++/java/dx/net/Makefile src/ui++/java/dx/applets/Makefile src/ui++/java/dx/server/Makefile src/ui++/java/Makefile src/exec/hwrender/opengl/Makefile src/exec/hwrender/Makefile Makefile )

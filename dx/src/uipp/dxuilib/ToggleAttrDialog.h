@@ -1,0 +1,103 @@
+//////////////////////////////////////////////////////////////////////////////
+//                            DX  SOURCEFILE                                //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ToggleAttrDialog.h,v 1.1 1999/03/24 15:17:48 gda Exp $
+ */
+
+
+#ifndef _ToggleAttrDialog_h
+#define _ToggleAttrDialog_h
+
+
+#include <Xm/Xm.h>
+
+#include "defines.h"
+#include "SetAttrDialog.h"
+
+
+//
+// Class name definition:
+//
+#define ClassToggleAttrDialog	"ToggleAttrDialog"
+
+//
+// Referenced Classes
+//
+class InteractorInstance;
+class ComponentAttributes;
+class LocalAttributes;
+class ToggleInstance;
+
+typedef long Type;	// From DXType.h
+
+//
+// ToggleAttrDialog class definition:
+//				
+class ToggleAttrDialog : public SetAttrDialog
+{
+  private:
+    //
+    // Private member data:
+    //
+    static boolean ClassInitialized;
+
+
+  protected:
+    //
+    // Protected member data:
+    //
+    static String DefaultResources[];
+
+    Widget	setText, resetText;
+    
+    //
+    // The current type of the values in the value list. 
+    //
+    Type	valueType;	
+
+    //
+    // Build the interactive set attributes widgets that sit in the dialog.
+    //
+    virtual void createAttributesPart(Widget parentDialog);
+
+    //
+    // Desensitize the data-driven attributes in the dialog.
+    //
+    virtual void setAttributeSensitivity();
+
+    virtual void loadAttributes();
+    virtual boolean storeAttributes();
+    virtual void updateDisplayedAttributes();
+
+    //
+    // Install the default resources for this class and then call the
+    // same super class method to get the default resources from the
+    // super classes.
+    //
+    virtual void installDefaultResources(Widget baseWidget);
+
+  public:
+    //
+    // Constructor:
+    //
+    ToggleAttrDialog(Widget parent, const char *title, ToggleInstance *si);
+
+    //
+    // Destructor:
+    //
+    ~ToggleAttrDialog();
+
+    //
+    // Returns a pointer to the class name.
+    //
+    const char* getClassName()
+    {
+	return ClassToggleAttrDialog;
+    }
+};
+
+
+#endif // _ToggleAttrDialog_h

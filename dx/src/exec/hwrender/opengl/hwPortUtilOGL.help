@@ -1,0 +1,1018 @@
+static int
+depToInt(dependencyT d)
+{
+  switch(d) {
+    case dep_none:        return 0;
+    case dep_field:       return 1;
+    case dep_positions:   return 2;
+    case dep_connections: return 3;
+    default:              return -1;
+  }
+}
+
+static int
+getIndex(dependencyT c, dependencyT n, dependencyT o)
+{
+  int ci = depToInt(c);
+  int ni = depToInt(n);
+  int oi = depToInt(o);
+  if (ci == -1 || ni == -1 || oi == -1)
+    return -1;
+  else return ((ci*4)+ni)*4+oi;
+}
+
+static void
+CnoneNnoneOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNnoneOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNnoneOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNnoneOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNpfOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNpfOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNpfOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNpfOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNppOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNppOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNppOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNppOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNpcOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNpcOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNpcOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CnoneNpcOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNnoneOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNnoneOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNnoneOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNnoneOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNpfOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNpfOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNpfOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNpfOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNppOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNppOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNppOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNppOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNpcOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNpcOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNpcOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpfNpcOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNnoneOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    SENDCOLOR;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNnoneOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNnoneOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    GETCOLOR(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNnoneOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNpfOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOR;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNpfOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNpfOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNpfOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNppOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOR;
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNppOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOROPACITY;
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNppOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOROPACITY;
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNppOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOROPACITY;
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNpcOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOR;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNpcOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNpcOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CppNpcOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETCOLOR(trans[p]);
+    APPLY_LIGHTING;
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNnoneOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  SENDCOLOR;
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNnoneOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  SENDCOLOROPACITY
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNnoneOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNnoneOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+  GETCOLOR(ci);
+  SENDCOLOROPACITY
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNpfOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+  SENDCOLOR;
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNpfOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+  SENDCOLOROPACITY
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNpfOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNpfOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+  SENDCOLOROPACITY
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNppOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+  SENDCOLOR;
+
+  for (p = 0; p < ppc; p++) {
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNppOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+  SENDCOLOROPACITY
+
+  for (p = 0; p < ppc; p++) {
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNppOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNppOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+  SENDCOLOROPACITY
+
+  for (p = 0; p < ppc; p++) {
+    SENDNORMAL(trans[p]);
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNpcOnone(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+  SENDCOLOR;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNpcOpf(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+  SENDCOLOROPACITY
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNpcOpp(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    GETOPACITY(trans[p]);
+    SENDCOLOROPACITY;
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static void
+CpcNpcOpc(xfieldP xf, int ppc, int ci, int *trans)
+{
+  static float  fscratch[3];
+  static int    iscratch;
+  static int    p;
+  GETOPACITY(ci);
+  GETCOLOR(ci);
+  APPLY_LIGHTING;
+  SENDCOLOROPACITY
+  SENDNORMAL(ci);
+
+  for (p = 0; p < ppc; p++) {
+    SENDPOSITION(trans[p]);
+  }
+}
+
+static helperFunc helperTable[] = {
+    CnoneNnoneOnone,
+    CnoneNnoneOpf,
+    CnoneNnoneOpp,
+    CnoneNnoneOpc,
+    CnoneNpfOnone,
+    CnoneNpfOpf,
+    CnoneNpfOpp,
+    CnoneNpfOpc,
+    CnoneNppOnone,
+    CnoneNppOpf,
+    CnoneNppOpp,
+    CnoneNppOpc,
+    CnoneNpcOnone,
+    CnoneNpcOpf,
+    CnoneNpcOpp,
+    CnoneNpcOpc,
+    CpfNnoneOnone,
+    CpfNnoneOpf,
+    CpfNnoneOpp,
+    CpfNnoneOpc,
+    CpfNpfOnone,
+    CpfNpfOpf,
+    CpfNpfOpp,
+    CpfNpfOpc,
+    CpfNppOnone,
+    CpfNppOpf,
+    CpfNppOpp,
+    CpfNppOpc,
+    CpfNpcOnone,
+    CpfNpcOpf,
+    CpfNpcOpp,
+    CpfNpcOpc,
+    CppNnoneOnone,
+    CppNnoneOpf,
+    CppNnoneOpp,
+    CppNnoneOpc,
+    CppNpfOnone,
+    CppNpfOpf,
+    CppNpfOpp,
+    CppNpfOpc,
+    CppNppOnone,
+    CppNppOpf,
+    CppNppOpp,
+    CppNppOpc,
+    CppNpcOnone,
+    CppNpcOpf,
+    CppNpcOpp,
+    CppNpcOpc,
+    CpcNnoneOnone,
+    CpcNnoneOpf,
+    CpcNnoneOpp,
+    CpcNnoneOpc,
+    CpcNpfOnone,
+    CpcNpfOpf,
+    CpcNpfOpp,
+    CpcNpfOpc,
+    CpcNppOnone,
+    CpcNppOpf,
+    CpcNppOpp,
+    CpcNppOpc,
+    CpcNpcOnone,
+    CpcNpcOpf,
+    CpcNpcOpp,
+    CpcNpcOpc 
+};
+

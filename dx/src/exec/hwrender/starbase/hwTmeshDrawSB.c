@@ -1,0 +1,35 @@
+/*********************************************************************/
+/*                     I.B.M. CONFIENTIAL                           */
+/*********************************************************************/
+
+/*---------------------------------------------------------------------------*\
+ $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/starbase/hwTmeshDrawSB.c,v $
+  Author: Mark Hood
+
+\*---------------------------------------------------------------------------*/
+
+#define _HP_FAST_MACROS 1
+#include <starbase.c.h>
+#include "hwDeclarations.h"
+#include "hwPortSB.h"
+#include "hwXfield.h"
+#include "hwCacheUtilSB.h"
+#include "hwPortLayer.h"
+#include "hwMemory.h"
+#include "hwTmesh.h"
+
+#include "hwDebug.h"
+
+#define tdmMeshDraw      _dxfTmeshDraw
+#define tdmPolygonDraw   _dxfTriDraw
+#define tdm_get_mesh     _dxf_get_tmesh
+#define Mesh             Tmesh
+#define mesh             tmesh
+#define CpfMsh          "CpfTmsh"
+#define CpcMsh          "CpcTmsh"
+#define CpvMsh          "CpvTmsh"
+#define Strip            Tstrip
+#define strip            tstrip
+#define strips           tstrips
+
+#include "hwMeshDrawSB.c.h"

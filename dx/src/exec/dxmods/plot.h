@@ -1,0 +1,1 @@
+#define ZERO_HEIGHT_FRACTION 0.2

@@ -1,0 +1,124 @@
+//////////////////////////////////////////////////////////////////////////////
+//                           DX  SOURCEFILE                                 //
+//                                                                          //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+// MBApplication.h -							    //
+//                                                                          //
+// Definition for the MBApplication class.				    //
+//                                                                          //
+// This subclass of Application class encapsulates all the MB-specific      //
+// application information and functions.  The functions are implemented    //
+// as various command class objects.					    //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/mb/MBApplication.h,v 1.1 1999/03/24 15:17:33 gda Exp $
+ */
+
+#ifndef _MBApplication_h
+#define _MBApplication_h
+
+#include <Xm/Xm.h>
+
+#include "MainWindow.h"
+#include "IBMApplication.h"
+#include "List.h"
+
+
+//
+// Class name definition:
+//
+#define ClassMBApplication	"MBApplication"
+
+
+typedef struct
+{
+    Pixel	insensitiveColor;
+} MBResource;
+
+class MBApplication : public IBMApplication
+{
+
+  private:
+    //
+    // Private class data:
+    //
+    static boolean    MBApplicationClassInitialized; // class initialized?
+
+    void shutdownApplication() {};
+
+    MainWindow		*mainWindow;
+
+    boolean		is_dirty;
+
+  protected:
+    //
+    // Overrides the Application class version:
+    //   Initializes Xt Intrinsics with option list (switches).
+    //
+    virtual boolean initialize(unsigned int* argcp,
+			    char**        argv);
+
+    static MBResource	resource;
+
+  public:
+
+    boolean isDirty(){return this->is_dirty;}
+    void setDirty(){this->is_dirty = TRUE;}
+    void setClean(){this->is_dirty = FALSE;}
+
+    Pixel getInsensitiveColor()
+    {
+	return this->resource.insensitiveColor;
+    }
+    //
+    // Constructor:
+    //
+    MBApplication(char* className);
+
+    //
+    // Destructor:
+    //
+    ~MBApplication();
+
+    //
+    // Return the name of the application (i.e. 'Data Explorer',
+    // 'Data Prompter', 'Medical Visualizer'...).
+    //
+    virtual const char *getInformalName();
+
+    //
+    // Return the formal name of the application (i.e.
+    // 'IBM Visualization Data Explorer', 'IBM Visualization Data Prompter'...)
+    //
+    virtual const char *getFormalName();
+
+    //
+    // Get the applications copyright notice, for example...
+    // "Copyright International Business Machines Corporation 1991-1993
+    // All rights reserved"
+    //
+    virtual const char *getCopyrightNotice();
+
+    virtual const char *getHelpDirFileName();
+
+    virtual const char *getStartTutorialCommandString();
+
+    //
+    // Returns a pointer to the class name.
+    //
+    const char* getClassName()
+    {
+        return ClassMBApplication;
+    }
+};
+
+
+extern MBApplication* theMBApplication;
+
+#endif /*  _MBApplication_h */
+

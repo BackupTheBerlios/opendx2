@@ -1,0 +1,55 @@
+//////////////////////////////////////////////////////////////////////////////
+//                            DX  SOURCEFILE                                //
+//                                                                          //
+//                                                                          //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/XHandler.C,v 1.1 1999/03/24 15:17:25 gda Exp $
+ */
+
+
+#include "defines.h"
+#include "XHandler.h"
+#include "ListIterator.h"
+
+
+List XHandler::Handlers;
+
+XHandler::XHandler(int eventName,
+		   Window window,
+		   XHandlerCallback cb,
+		   void *clientData)
+{
+    XHandler::Handlers.insertElement(this, 1);
+
+    this->eventName  = eventName;
+    this->window     = window;
+    this->callback   = cb;
+    this->clientData = clientData;
+}
+
+XHandler::~XHandler()
+{
+}
+
+//
+// Routine to process events.
+//
+boolean XHandler::ProcessEvent(XEvent *event)
+{
+    ListIterator li(XHandler::Handlers);
+    XHandler *h;
+    while(h = (XHandler*)li.getNext())
+    {
+	if ((h->window == 0 || h->window == event->xany.window) &&
+	    h->eventName == event->xany.type)
+	{
+	    if (!(*h->callback)(event, h->clientData))
+		return FALSE;
+	}
+    }
+
+    return TRUE;
+}

@@ -1,0 +1,89 @@
+//////////////////////////////////////////////////////////////////////////////
+// ThrottleDialog.h -			        		 	    //
+//                                                                          //
+// Definition for the ThrottleDialog class.				    //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ThrottleDialog.h,v 1.1 1999/03/24 15:17:48 gda Exp $
+ *
+ */
+
+
+#ifndef _ThrottleDialog_h
+#define _ThrottleDialog_h
+
+
+#include "defines.h"
+#include "Dialog.h"
+
+//
+// Class name definition:
+//
+#define ClassThrottleDialog	"ThrottleDialog"
+
+//
+// XtCallbackProc (*CB), XtEventHandler (*EH) and XtActionProc (*AP)
+// DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
+// functions for this and derived classes
+//
+extern "C" void ThrottleDialog_DoAllCB(Widget, XtPointer, XtPointer);
+
+class ImageWindow;
+
+//
+// ThrottleDialog class definition:
+//				
+
+class ThrottleDialog : public Dialog
+{
+  private:
+    //
+    // Private member data:
+    //
+    static boolean ClassInitialized;
+
+    Widget closebtn;
+    Widget seconds;
+    Widget label;
+
+    ImageWindow* image;
+ 
+  protected:
+    //
+    // Protected member data:
+    //
+    static String  DefaultResources[];
+    friend void ThrottleDialog_DoAllCB(Widget, XtPointer , XtPointer);
+
+    virtual Widget createDialog(Widget);
+
+  public:
+
+    //
+    // Constructor:
+    //
+    ThrottleDialog(char *name, ImageWindow*);
+
+    //
+    // Destructor:
+    //
+    ~ThrottleDialog();
+
+    virtual void    	manage();
+    virtual void    	initialize();
+
+    void installThrottleValue(double value);
+
+    //
+    // Returns a pointer to the class name.
+    //
+    const char* getClassName()
+    {
+	return ClassThrottleDialog;
+    }
+};
+
+
+#endif // _ThrottleDialog_h

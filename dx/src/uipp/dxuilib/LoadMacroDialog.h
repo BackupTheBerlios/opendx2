@@ -1,0 +1,93 @@
+//////////////////////////////////////////////////////////////////////////////
+//                            DX  SOURCEFILE                                //
+//                                                                          //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/LoadMacroDialog.h,v 1.1 1999/03/24 15:17:43 gda Exp $
+ */
+
+
+
+#ifndef _LoadMacroDialog_h
+#define _LoadMacroDialog_h
+
+#include "UIConfig.h"
+
+#include <Xm/Xm.h>
+
+#include "defines.h"
+#include "OpenNetworkDialog.h"
+#include "Application.h"
+
+
+//
+// Class name definition:
+//
+#define ClassLoadMacroDialog	"LoadMacroDialog"
+
+//
+// XtCallbackProc (*CB), XtEventHandler (*EH) and XtActionProc (*AP)
+// DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
+// functions for this and derived classes
+//
+extern "C" void LoadMacroDialog_LoadDirectoryCB(Widget, XtPointer, XtPointer);
+
+class Dialog;
+
+//
+// LoadMacroDialog class definition:
+//				
+class LoadMacroDialog : public OpenNetworkDialog
+{
+    static boolean ClassInitialized;
+
+    friend void LoadMacroDialog_LoadDirectoryCB(Widget widget, 
+					XtPointer clientData,
+                                     	XtPointer callData);
+    boolean doingOk;
+
+  protected:
+
+    static String  DefaultResources[];
+    virtual boolean okCallback(Dialog *d);
+    virtual void okFileWork(const char *string);
+    virtual Widget createDialog(Widget p);
+
+    //
+    // For sub-classes of this dialog
+    //
+    LoadMacroDialog(const char*   name, Widget        parent);
+
+    //
+    // Install the default resources for this class and then call the
+    // same super class method to get the default resources from the
+    // super classes.
+    //
+    virtual void installDefaultResources(Widget baseWidget);
+
+  public:
+    //
+    // Constructor:
+    //
+    LoadMacroDialog(Widget        parent);
+
+    //
+    // Destructor:
+    //
+    ~LoadMacroDialog(){}
+
+    virtual void unmanage();
+
+    //
+    // Returns a pointer to the class name.
+    //
+    const char* getClassName()
+    {
+	return ClassLoadMacroDialog;
+    }
+};
+
+
+#endif // _LoadMacroDialog_h
