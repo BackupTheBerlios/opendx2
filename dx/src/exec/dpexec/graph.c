@@ -2897,7 +2897,8 @@ static char *_dxf_ExCacheStrPrepend( Program *program,
 {
   static char str[ MAX_PATH_STR_LEN ];
   static char tmp[ MAX_PATH_STR_LEN ];
-  char       *p = str, *colon;
+  char        *p = str, *colon;
+  char 	      *s;
 
   /*  This oddball cache-string hacking rtn is only used in one place.  */
 
@@ -2907,15 +2908,20 @@ static char *_dxf_ExCacheStrPrepend( Program *program,
 
   strcpy(tmp, path);
   if (tmp[0] != '/')
-      fprintf(stderr,
-      	"error in _dxf_ExCacheStrPrepend: name doesn\'t begin with /\n");
+      s = tmp;
+  else
+      s = tmp + 1;
+
   colon = strchr(tmp, ':');
-  if (! colon)
-      fprintf(stderr,
-      	"error in _dxf_ExCacheStrPrepend: name doesn\'t have a :\n");
-  *colon = '\0';
+  if (colon)
+      *colon = '\0';
+
   p = int16tohex( p, _dxf_ExGraphInsertAndLookupName( program, tmp+1 ));
-  p = int16tohex( p, atoi(colon+1));
+
+  if (colon)
+      p = int16tohex( p, atoi(colon+1));
+  else
+      p = int16tohex( p, 0);
 
   /*
   strcpy( p, path );
