@@ -211,9 +211,13 @@ writeToSFILE(SFILE *sf, char *buf, int n)
 #endif
         rtn = write(ssf->fd, buf, n);
 
-    if (rtn < 0)
+    if (rtn < 0) {
+
+#if defined(_DEBUG) && defined(intelnt)
+		int err = WSAGetLastError();
+#endif
 		ExQuit();
-    
+    }
     return rtn;
 }
 
