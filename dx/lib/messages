@@ -641,7 +641,12 @@
 #13360 'render every' attribute must be greater than 0
 #13370 could not allocate render pass options
 #13380 unknown rendering option %s
-#13380 unknown antialiasing option
+#13382 unknown antialiasing option
+#13384 unknown texture wrap option
+#13386 unknown texture filter option
+#13387 unknown light model option
+#13388 unknown texture function option
+#13389 unknown cull face option
 #13390 cannot allocate render option table
 #13400 cannot allocate hostName
 #13410 cannot allocate type string
