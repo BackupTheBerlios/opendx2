@@ -416,31 +416,31 @@ execCommandDialog 	pages/usrgu045.htm#HDRMSGWCM
 sequencerWindow 	pages/usrgu039.htm#HDRSEQUEN
  
 ! ----- Data Prompter
-helpPB dxall157
-helpGAFormatOption dxall110
-SMDName dxall157
-OptionButton dxall166
-GARMWName dxall157
-mainWindow dxall157
-fileMenu dxall162
-editMenu dxall163
-optionMenu dxall164
-helpMenu dxall165
+helpPB 			pages/qikgu030.htm
+GARMWName 		pages/qikgu030.htm
+mainWindow 		pages/qikgu030.htm
+SMDName 		pages/qikgu030.htm
+helpGAFormatOption 	pages/qikgu027.htm#HDRGAI
+OptionButton 		pages/qikgu030.htm#HDRFULLDPR
+fileMenu 		pages/qikgu030.htm#HDRDPFLEMN
+editMenu 		pages/qikgu030.htm#HDRDPEDTMN
+optionMenu 		pages/qikgu030.htm#HDRDPOPTMN
+helpMenu 		pages/qikgu030.htm#HDRDPHLPMN
  
-newOption dxall162
-openOption dxall443
-openFileDialog dxall443
-saveAsFileDialog dxall443
-saveOption dxall443
-saveAsOption dxall443
-optionSeparator dxall162
-quitOption dxall443
-commentOption dxall163
-fullOption dxall163
-simplifyOption dxall163
+newOption 		pages/qikgu030.htm#HDRDPFLEMN
+openOption 		pages/qikgu030.htm#HDRDPFLEMN
+openFileDialog 		pages/qikgu030.htm#HDRDPFLEMN
+saveAsFileDialog 	pages/qikgu030.htm#HDRDPFLEMN
+saveOption 		pages/qikgu030.htm#HDRDPFLEMN
+saveAsOption 		pages/qikgu030.htm#HDRDPFLEMN
+optionSeparator 	pages/qikgu030.htm#HDRDPFLEMN
+quitOption 		pages/qikgu030.htm#HDRDPFLEMN
+commentOption 		pages/qikgu030.htm#HDRDPEDTMN
+fullOption 		pages/qikgu030.htm#HDRDPEDTMN
+simplifyOption 		pages/qikgu030.htm#HDRDPEDTMN
  
-topform dxall160
-filenameSelectDialog dxall167
+topform 			pages/qikgu030.htm#HDRINITDB
+filenameSelectDialog 		pages/qikgu030.htm#HDRDFNDINF
 generalform 			pages/qikgu030.htm#HDRFULLDPR
 fieldform 			pages/qikgu030.htm#HDRFULLDPR
 file_label 			pages/qikgu030.htm#HDRFULLDPR
@@ -507,62 +507,59 @@ record_sep_text 		pages/qikgu030.htm#HDRFULLDPR
 om_cascadeBtn 			pages/qikgu030.htm#HDRFULLDPR
  
 ! ----- Browser tags
-GARBrowser dxall170
-browForm dxall170
+GARBrowser 		pages/qikgu031.htm#HDRSTRTBRS
+browForm 		pages/qikgu031.htm#HDRSTRTBRS
  
-browFileMenu dxall172
-browMarkMenu dxall173
-browPageMenu dxall174
-browSearchMenu dxall175
+browFileMenu 		pages/qikgu031.htm#HDRBRFLEMN
+browMarkMenu 		pages/qikgu031.htm#HDRBRMRKMN
+browPageMenu 		pages/qikgu031.htm#HDRBRPGEMN
+browSearchMenu 		pages/qikgu031.htm#HDRBRSRCMN
  
-browCloseOption dxall172
-browPlaceMarkOption dxall173
-browClearMarkOption dxall173
-browGotoMarkOption dxall173
-browFirstPageOption dxall174
-browLastPageOption dxall174
-browSearchOption dxall175
+browCloseOption 	pages/qikgu031.htm#HDRBRFLEMN
+browPlaceMarkOption 	pages/qikgu031.htm#HDRBRMRKMN
+browClearMarkOption 	pages/qikgu031.htm#HDRBRMRKMN
+browGotoMarkOption 	pages/qikgu031.htm#HDRBRMRKMN
+browFirstPageOption 	pages/qikgu031.htm#HDRBRPGEMN
+browLastPageOption 	pages/qikgu031.htm#HDRBRPGEMN
+browSearchOption 	pages/qikgu031.htm#HDRBRSRCMN
  
-Btext dxall176
-browByteOffsets dxall177
-browLineOffsets dxall177
-browFromMark dxall177
-browFromTopOfFile dxall177
-browFromStartOfLine dxall177
-byte_mark_offset dxall177
-line_mark_offset dxall177
-byte_start_offset dxall177
-byte_top_offset dxall177
-line_top_offset dxall177
+Btext 			pages/qikgu031.htm#HDRBRSWIND
+browByteOffsets 	pages/qikgu031.htm#HDRBRSOFFA
+browLineOffsets 	pages/qikgu031.htm#HDRBRSOFFA
+browFromMark 		pages/qikgu031.htm#HDRBRSOFFA
+browFromTopOfFile 	pages/qikgu031.htm#HDRBRSOFFA
+browFromStartOfLine 	pages/qikgu031.htm#HDRBRSOFFA
+byte_mark_offset 	pages/qikgu031.htm#HDRBRSOFFA
+line_mark_offset 	pages/qikgu031.htm#HDRBRSOFFA
+byte_start_offset 	pages/qikgu031.htm#HDRBRSOFFA
+byte_top_offset 	pages/qikgu031.htm#HDRBRSOFFA
+line_top_offset 	pages/qikgu031.htm#HDRBRSOFFA
  
 ! ----- Module Builder
-openFileDialog dxall443
-MBMWName dxall1003
-openFileDialog dxall443
-saveAsFileDialog dxall443
+MBMWName 		pages/progu015.htm
 
 ! ----- File menu
-newOption dxall162
-openOption dxall443
-saveOption dxall443
-saveAsOption dxall443
-quitOption dxall443
-openFileDialog dxall443
-saveAsFileDialog dxall443
+buildNewOption 		pages/progu018.htm#HDRBLDFILE
+buildOpenOption 	pages/progu018.htm#HDRBLDFILE
+buildSaveOption 	pages/progu018.htm#HDRBLDFILE
+buildSaveAsOption 	pages/progu018.htm#HDRBLDFILE
+buildQuitOption 	pages/progu018.htm#HDRBLDFILE
+!openFileDialog 		pages/progu018.htm#HDRBLDFILE
+!saveAsFileDialog 	pages/progu018.htm#HDRBLDFILE
 
 ! ----- Edit menu
-commentOption dxall163
-optionsOption dxall1009
-commentD dxall1009
-optionsD dxall1009
+commentOption 		pages/progu018.htm#HDRBLDEDIT
+optionsOption 		pages/progu018.htm#HDRBLDEDIT
+commentD 		pages/progu018.htm#HDRBLDEDIT
+optionsD 		pages/progu018.htm#HDRBLDEDIT
 
 ! ----- Build menu
-buildMDFOption dxall1010
-buildCOption dxall1010
-buildMakefileOption dxall1010
-buildAllOption dxall1010
-buildExecutableOption dxall1010
-buildRunOption dxall1010
+buildMDFOption 		pages/progu018.htm#HDRBLDOPTS
+buildCOption 		pages/progu018.htm#HDRBLDOPTS
+buildMakefileOption 	pages/progu018.htm#HDRBLDOPTS
+buildAllOption 		pages/progu018.htm#HDRBLDOPTS
+buildExecutableOption 	pages/progu018.htm#HDRBLDOPTS
+buildRunOption 		pages/progu018.htm#HDRBLDOPTS
  
  
 ! ----- Man page entries (modules)
