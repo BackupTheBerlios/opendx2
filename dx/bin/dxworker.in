@@ -192,7 +192,9 @@ if ($?DXUI) then
   set envargs="$envargs -ui $DXUI"
 endif
 if ($?DXMACROS) then
-  set envargs="$envargs -macros $DXMACROS"
+  if ( "$DXMACROS" != "" ) then
+    set envargs="$envargs -macros $DXMACROS"
+  endif
 endif
 if ($?DXMODULES) then
   set envargs="$envargs -modules $DXMODULES"
