@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_connectgrids.h,v 1.1 2000/08/24 20:04:10 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_connectgrids.h,v 1.2 2001/04/27 04:25:52 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -19,6 +19,6 @@
 
 Error _dxfConnectNearestObject(Object, Object, int, float *, float, Array);
 Error _dxfConnectRadiusObject(Object, Object, float, float, Array);
+Error _dxfConnectScatterObject(Object, Object, Array);
 
 #endif /* __CONNECTGRIDS_H_ */
-

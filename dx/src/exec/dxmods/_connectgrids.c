@@ -34,6 +34,12 @@ struct arg_nearest {
   Array missing;
 };
 
+struct arg_scatter {
+  Object ino;
+  Field base;
+  Array missing;
+};
+
 
 typedef struct matrix2D {
   float A[2][2];
@@ -151,15 +157,21 @@ typedef struct vector2D {
 
 #define CHECK_AND_ALLOCATE_MISSING(missing,size,type,type_enum,shape,ptr) \
 {                                                                      \
-        ptr = (type *)DXAllocateLocal(size);                            \
-        if (!ptr)                                                      \
+       ptr = (type *)DXAllocateLocal(size);                            \
+       if (!ptr)                                                      \
           goto error;                                                  \
+       if(missing){                                                    \
         if (!DXExtractParameter((Object)missing, type_enum,            \
                                shape, 1, (Pointer)ptr)) {              \
           DXSetError(ERROR_DATA_INVALID,                               \
                     "missing must match all position-dependent components; does not match %s", name);      \
-           goto error;                                                 \
+          goto error;                                                 \
         }                                                              \
+       }                                                               \
+       else{                                                           \
+        DXWarning("Grid missing values assigned to 0 and marked invalid");  \
+        for(i=0;i<shape;i++) ptr[i]=0;                                 \
+       }                                                               \
 }                                                                      \
 
 static Error ConnectNearest(Group, Field, int, float *, float, float, Array); 
@@ -170,6 +182,8 @@ static Error FillDataArray(Type, Array, Array, ubyte *, float *,
                            int, int, int, float, Array, char *); 
 static Error ConnectRadiusField(Pointer);
 static Error ConnectNearestField(Pointer);
+static Error ConnectScatterField(Pointer);
+static Error ConnectScatter(Field, Field, Array);
 static Error ConnectRadius(Field, Field, float, float, Array);
 static Error ConnectRadiusRegular(Field, Field, float, float,  Array); 
 static Error ConnectRadiusIrregular(Field, Field, float, float, Array); 
@@ -630,8 +644,11 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
       goto error;
     }
     
-    if (strcmp(DXGetString((String)attr),"positions"))
-      goto component_done;
+    if (strcmp(DXGetString((String)attr),"positions")){
+      DXWarning("Component '%s' is not dependent on positions!",name); 
+      DXWarning("Regrid will remove '%s' and output the base grid 'data' component if it exists",name);
+      goto component_done; 
+    }
 
 
     /* if the component happens to be "invalid positions" ignore it */
@@ -1424,8 +1441,12 @@ static Error ConnectRadiusIrregular(Field ino, Field base, float radius,
       goto error;
     }
     
-    if (strcmp(DXGetString((String)attr),"positions"))
-      goto component_done;
+    if (strcmp(DXGetString((String)attr),"positions")){
+      DXWarning("Component '%s' is not dependent on positions!",name); 
+      DXWarning("Regrid will remove '%s' and output the base grid 'data' component if it exists",name);
+      goto component_done; 
+    }
+
 
     /* if the component happens to be "invalid positions" ignore it */
     if (!strcmp(name,"invalid positions"))
@@ -1698,8 +1719,12 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
       goto error;
     }
     
-    if (strcmp(DXGetString((String)attr),"positions"))
-      goto component_done;
+    if (strcmp(DXGetString((String)attr),"positions")){
+      DXWarning("Component '%s' is not dependent on positions!",name); 
+      DXWarning("Regrid will remove '%s' and output the base grid 'data' component if it exists",name);
+      goto component_done; 
+    }
+
 
     /* if the component happens to be "invalid positions" ignore it */
     if (!strcmp(name,"invalid positions"))
@@ -2857,3 +2882,608 @@ static Error FillBuffersIrreg(int numitemsbase, int numitemsino,
  error:
   return ERROR;
 }  
+
+
+/*Added by Jeff Braun to put scattered data on closest grid point*/
+
+Error _dxfConnectScatterObject(Object ino, Object base, Array missing) 
+{
+  struct arg_scatter arg;
+  Object subbase;
+  int i;
+  
+  switch (DXGetObjectClass(base)) {
+  case CLASS_FIELD:
+    /* create the task group */
+    arg.ino = ino;
+    arg.base = (Field)base;
+    arg.missing = missing;
+    if (!DXAddTask(ConnectScatterField,(Pointer)&arg, sizeof(arg),0.0))
+      goto error;
+    break;
+  case CLASS_GROUP:
+    for (i=0; (subbase=DXGetEnumeratedMember((Group)base, i, NULL)); i++) {
+      if (!(_dxfConnectScatterObject((Object)ino, (Object)subbase, missing))) 
+	goto error;
+    }
+    break;
+  default:
+    DXSetError(ERROR_DATA_INVALID,"base must be a field or a group");
+    goto error; 
+  }
+  return OK;
+  
+ error:
+  return ERROR;  
+  
+}
+
+static Error ConnectScatterField(Pointer p)
+{
+  struct arg_scatter *arg = (struct arg_scatter *)p;
+  Object ino, newino=NULL;
+  Field base;
+  Array missing;
+
+  ino = arg->ino;
+  newino = DXApplyTransform(ino,NULL);
+
+  switch (DXGetObjectClass(newino)) {
+
+    case CLASS_FIELD:
+       base = arg->base;
+       missing = arg->missing;
+       if (!ConnectScatter((Field)newino, base, missing))
+         goto error;
+      break;
+
+    case CLASS_GROUP:
+      DXSetError(ERROR_NOT_IMPLEMENTED,"input cannot be a group");
+      goto error;
+      break;
+
+    default:
+      DXSetError(ERROR_DATA_INVALID,"input must be a field");
+      goto error;
+  }
+  DXDelete((Object)newino);
+  return OK;
+
+error:
+  DXDelete((Object)newino);
+  return ERROR;
+
+}
+
+static Error ConnectScatter(Field ino, Field base, Array missing)
+{
+  Matrix matrix, inverse;
+  Matrix2D matrix2D, inverse2D;
+  Type type;
+  Category category;
+  Array positions_base, positions_ino, oldcomponent=NULL, newcomponent;
+  Field field;
+  InvalidComponentHandle out_invalidhandle=NULL, in_invalidhandle=NULL;
+
+  int rank, shape[8];
+  int counts[8], rank_base, shape_base[8], shape_ino[8], rank_ino;
+  int nitemsbase, nitemsino, nitems, compcount, componentsdone;
+  float *ino_positions;
+  float origin=0, delta=0;
+  char *name; 
+
+  int i,j,k, ijk[3], index, *count=NULL;
+  float xyz[3], sum, eps=.000001;
+
+ 
+  float    *old_data_f=NULL, *new_data_ptr_f=NULL, *missingval_f=NULL;
+  int      *old_data_i=NULL, *new_data_ptr_i=NULL, *missingval_i=NULL;
+  short    *old_data_s=NULL, *new_data_ptr_s=NULL, *missingval_s=NULL;
+  double   *old_data_d=NULL, *new_data_ptr_d=NULL, *missingval_d=NULL;
+  byte     *old_data_b=NULL, *new_data_ptr_b=NULL, *missingval_b=NULL;
+  ubyte    *old_data_ub=NULL, *new_data_ptr_ub=NULL, *missingval_ub=NULL;
+  ushort   *old_data_us=NULL, *new_data_ptr_us=NULL, *missingval_us=NULL;
+  uint     *old_data_ui=NULL, *new_data_ptr_ui=NULL, *missingval_ui=NULL;
+
+  if (DXEmptyField((Field)ino))
+     return OK;
+
+  positions_base = (Array)DXGetComponentValue((Field)base, "positions");
+  if (!positions_base) {
+    DXSetError(ERROR_MISSING_DATA,"base field has no positions");
+    goto error;
+  }
+  positions_ino = (Array)DXGetComponentValue((Field)ino, "positions");
+  if (!positions_ino) {
+    DXSetError(ERROR_MISSING_DATA,"input field has no positions");
+    goto error;
+  }
+
+ /*Grid Position Data*/
+  DXGetArrayInfo(positions_base, &nitemsbase, &type, &category,
+                 &rank_base, shape_base);
+  if ((DXQueryGridPositions((Array)positions_base,NULL,counts,
+                            (float *)&matrix.b,(float *)&matrix.A) )) {
+    if (shape_base[0]==2) {
+      matrix2D.A[0][0] = matrix.A[0][0];
+      matrix2D.A[1][0] = matrix.A[0][1];
+      matrix2D.A[0][1] = matrix.A[0][2];
+      matrix2D.A[1][1] = matrix.A[1][0];
+      matrix2D.b[0] = matrix.b[0];
+      matrix2D.b[1] = matrix.b[1];
+      inverse2D=Invert2D(matrix2D);
+      inverse.A[0][0]=inverse2D.A[0][0];
+      inverse.A[0][1]=inverse2D.A[0][1];
+      inverse.A[1][0]=inverse2D.A[1][0];
+      inverse.A[1][1]=inverse2D.A[1][1];
+    }
+    else if (shape_base[0]==1) {
+      origin = matrix.b[0];
+      delta = matrix.A[0][0];
+      DXSetError(ERROR_DATA_INVALID, "Only 2D and 3D grids supported");
+      goto error;
+    }
+  }
+  else {
+    /* irregular positions */
+    DXSetError(ERROR_DATA_INVALID, "irregular grids not currently supported for radius=0");
+    goto error;
+  }
+
+  if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
+    DXSetError(ERROR_DATA_INVALID,
+               "positions component must be type float, category real");
+    goto error;
+  }
+
+ /*Scatter Position Data*/
+  DXGetArrayInfo(positions_ino, &nitemsino, &type, &category, &rank_ino,
+                 shape_ino);
+
+  if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
+    DXSetError(ERROR_DATA_INVALID,
+               "positions component must be type float, category real");
+    goto error;
+  }
+
+  if (rank_base == 0)
+    shape_base[0] = 1;
+  if (rank_base > 1) {
+    DXSetError(ERROR_DATA_INVALID,
+               "rank of base positions cannot be greater than 1");
+    goto error;
+  }
+  if (rank_ino == 0)
+    shape_ino[0] = 1;
+  if (rank_ino > 1) {
+    DXSetError(ERROR_DATA_INVALID,
+               "rank of input positions cannot be greater than 1");
+    goto error;
+  }
+
+  if ((shape_base[0]<0)||(shape_base[0]>3)) {
+    DXSetError(ERROR_DATA_INVALID,
+               "only 1D, 2D, and 3D positions for base supported");
+    goto error;
+  }
+
+  if (shape_base[0] != shape_ino[0]) {
+    DXSetError(ERROR_DATA_INVALID,
+               "dimensionality of base (%dD) does not match dimensionality of input (%dD)",
+               shape_base[0], shape_ino[0]);
+    goto error;
+  }
+
+  /* first set the extra counts to one to simplify the code for handling
+     1, 2, and 3 dimensions */
+
+  if (shape_base[0]==1) {
+    counts[1]=1;
+    counts[2]=1;
+  }
+  else if (shape_base[0]==2) {
+    counts[2]=1;
+  }
+
+  /*Will mark as invalid if 'missing' not specified*/
+
+  if (!missing){
+    out_invalidhandle = DXCreateInvalidComponentHandle((Object)base, NULL,
+                                                     "positions");
+    if (!out_invalidhandle)
+      goto error;
+    DXSetAllInvalid(out_invalidhandle);
+  }
+  in_invalidhandle = DXCreateInvalidComponentHandle((Object)ino, NULL,
+                                                     "positions");
+  if (!in_invalidhandle)
+     return ERROR;
+
+  /* need to get the components we are going to copy into the new field */
+  /* copied portions from ConnectNearest -JAB */
+  compcount = 0;
+  componentsdone = 0;
+  while (NULL !=
+         (oldcomponent=(Array)DXGetEnumeratedComponentValue(ino, compcount,
+                                                            &name))) {
+    Object attr;
+
+    if (DXGetObjectClass((Object)oldcomponent) != CLASS_ARRAY)
+      goto component_done;
+   
+    if (!strcmp(name,"positions") ||
+        !strcmp(name,"connections") ||
+        !strcmp(name,"invalid positions"))
+      goto component_done;
+   
+    /* if the component refs anything, leave it */
+    if (DXGetComponentAttribute((Field)ino,name,"ref"))
+      goto component_done;
+
+    attr = DXGetComponentAttribute((Field)ino,name,"der");
+    if (attr)
+       goto component_done;
+
+    attr = DXGetComponentAttribute((Field)ino,name,"dep");
+    if (!attr) {
+      /* does it der? if so, throw it away */
+      attr = DXGetComponentAttribute((Field)ino,name,"der");
+      if (attr)
+        goto component_done;
+      /* it doesn't ref, doesn't dep and doesn't der.
+         Copy it to the output and quit */
+      if (!DXSetComponentValue((Field)base,name,(Object)oldcomponent))
+         goto error;
+      goto component_done;
+    }
+
+    if (DXGetObjectClass(attr) != CLASS_STRING) {
+      DXSetError(ERROR_DATA_INVALID, "dependency attribute not type string");
+      goto error;
+    }
+
+    if (strcmp(DXGetString((String)attr),"positions")){
+      DXWarning("Component '%s' is not dependent on positions!",name); 
+      DXWarning("Regrid will remove '%s' and output the base grid 'data' component if it exists",name);
+      goto component_done; 
+    }
+
+
+    /* if the component happens to be "invalid positions" ignore it */
+    if (!strcmp(name,"invalid positions"))
+      goto component_done;
+
+
+    componentsdone++;
+
+    DXGetArrayInfo((Array)oldcomponent,&nitems, &type,
+                   &category, &rank, shape);
+    if (rank==0) shape[0]=1;
+
+    /* check that the missing component, if present, matches the component
+       we're working on. If missing not present, 0 is used as default */
+      switch (type) {
+      case (TYPE_FLOAT):
+        CHECK_AND_ALLOCATE_MISSING(missing, DXGetItemSize(oldcomponent),
+                                   float, type, shape[0], missingval_f);
+        break;
+      case (TYPE_INT):
+        CHECK_AND_ALLOCATE_MISSING(missing, DXGetItemSize(oldcomponent),
+                                   int, type, shape[0], missingval_i);
+        break;
+      case (TYPE_DOUBLE):
+        CHECK_AND_ALLOCATE_MISSING(missing, DXGetItemSize(oldcomponent),
+                                   double, type, shape[0], missingval_d);
+        break;
+      case (TYPE_SHORT):
+        CHECK_AND_ALLOCATE_MISSING(missing, DXGetItemSize(oldcomponent),
+                                   short, type, shape[0], missingval_s);
+        break;
+      case (TYPE_BYTE):
+        CHECK_AND_ALLOCATE_MISSING(missing, DXGetItemSize(oldcomponent),
+                                   byte, type, shape[0], missingval_b);
+        break;
+      case (TYPE_UINT):
+        CHECK_AND_ALLOCATE_MISSING(missing, DXGetItemSize(oldcomponent),
+                                   uint, type, shape[0], missingval_ui);
+        break;
+      case (TYPE_USHORT):
+        CHECK_AND_ALLOCATE_MISSING(missing, DXGetItemSize(oldcomponent),
+                                   ushort, type, shape[0], missingval_us);
+        break;
+      case (TYPE_UBYTE):
+        CHECK_AND_ALLOCATE_MISSING(missing, DXGetItemSize(oldcomponent),
+                                   ubyte, type, shape[0], missingval_ub);
+        break;
+      default:
+        DXSetError(ERROR_DATA_INVALID,"unsupported data type");
+        goto error;
+      }
+
+    if (rank > 1) {
+      DXSetError(ERROR_NOT_IMPLEMENTED,"rank larger than 1 not implemented");
+      goto error;
+    }
+    if (nitems != nitemsino) {
+      DXSetError(ERROR_BAD_PARAMETER,
+                 "number of items in %s component not equal to number of positions",
+                 name);
+      goto error;
+    }
+
+
+   /*Intialize newcomponent with missing value*/
+    newcomponent = DXNewArrayV(type, category, rank, shape);
+    if (!DXAddArrayData(newcomponent, 0, nitemsbase, NULL))
+      goto error;
+   
+    switch (type) {
+    case (TYPE_FLOAT):
+      old_data_f = (float *)DXGetArrayData(oldcomponent);
+      new_data_ptr_f = (float *)DXGetArrayData(newcomponent);
+      for(i=0;i<nitemsbase;i++){
+        for(j=0;j<shape[0];j++){
+          new_data_ptr_f[i*shape[0]+j] = missingval_f[j];
+        }
+      }
+      break;
+    case (TYPE_INT):
+      old_data_i = (int *)DXGetArrayData(oldcomponent);
+      new_data_ptr_i = (int *)DXGetArrayData(newcomponent);
+      for(i=0;i<nitemsbase;i++){
+        for(j=0;j<shape[0];j++){
+          new_data_ptr_i[i*shape[0]+j] = missingval_i[j];
+        }
+      }
+      break;
+    case (TYPE_SHORT):
+      old_data_s = (short *)DXGetArrayData(oldcomponent);
+      new_data_ptr_s = (short *)DXGetArrayData(newcomponent);
+      for(i=0;i<nitemsbase;i++){
+        for(j=0;j<shape[0];j++){
+          new_data_ptr_s[i*shape[0]+j] = missingval_s[j];
+        }
+      }
+      break;
+    case (TYPE_BYTE):
+      old_data_b = (byte *)DXGetArrayData(oldcomponent);
+      new_data_ptr_b = (byte *)DXGetArrayData(newcomponent);
+      for(i=0;i<nitemsbase;i++){
+        for(j=0;j<shape[0];j++){
+          new_data_ptr_b[i*shape[0]+j] = missingval_b[j];
+        }
+      }
+      break;
+    case (TYPE_DOUBLE):
+      old_data_d = (double *)DXGetArrayData(oldcomponent);
+      new_data_ptr_d = (double *)DXGetArrayData(newcomponent);
+      for(i=0;i<nitemsbase;i++){
+        for(j=0;j<shape[0];j++){
+          new_data_ptr_d[i*shape[0]+j] = missingval_d[j];
+        }
+      }
+      break;
+    case (TYPE_UINT):
+      old_data_ui = (uint *)DXGetArrayData(oldcomponent);
+      new_data_ptr_ui = (uint *)DXGetArrayData(newcomponent);
+      for(i=0;i<nitemsbase;i++){
+        for(j=0;j<shape[0];j++){
+          new_data_ptr_ui[i*shape[0]+j] = missingval_ui[j];
+        }
+      }
+      break;
+    case (TYPE_UBYTE):
+      old_data_ub = (ubyte *)DXGetArrayData(oldcomponent);
+      new_data_ptr_ub = (ubyte *)DXGetArrayData(newcomponent);
+      for(i=0;i<nitemsbase;i++){
+        for(j=0;j<shape[0];j++){
+          new_data_ptr_ub[i*shape[0]+j] = missingval_ub[j];
+        }
+      }
+      break;
+    case (TYPE_USHORT):
+      old_data_us = (ushort *)DXGetArrayData(oldcomponent);
+      new_data_ptr_us = (ushort *)DXGetArrayData(newcomponent);
+      for(i=0;i<nitemsbase;i++){
+        for(j=0;j<shape[0];j++){
+          new_data_ptr_us[i*shape[0]+j] = missingval_us[j];
+        }
+      }
+      break;
+    default:
+      DXSetError(ERROR_DATA_INVALID,"unrecognized data type");
+      goto error;
+    }
+
+
+    /*Need to allocate count and compute inverse of grid matrix*/
+    count = (int *) DXAllocateLocalZero(sizeof(int)*nitemsbase);
+    if (! count)
+      goto error;
+    if(shape_base[0]==3){
+      inverse = DXInvert(matrix);
+    }
+
+    ino_positions = (float *)DXGetArrayData(positions_ino);
+
+    /*Put Scattered data into grid data array*/
+    for(i=0;i<nitemsino;i++){  /*loops through scatter data */
+     if(DXIsElementValid(in_invalidhandle,i)){ /*seems to work fine without this*/
+      index=0;
+      for(j=0;j<shape_base[0];j++){
+        xyz[j]=ino_positions[shape_base[0]*i+j]-matrix.b[j];
+      }
+      for(j=0;j<shape_base[0];j++){
+        sum=0;
+        for(k=0;k<shape_base[0];k++){
+          sum=sum+inverse.A[k][j]*xyz[k];
+        }
+        ijk[j]=rint(sum + eps);
+        if(ijk[j]<0 || ijk[j]>=counts[j]){
+          index=-1;
+        } 
+      }
+
+      /* Finds data array index number for grid position*/
+      if(index !=-1){
+        for(j=0;j<shape_base[0];j++){
+          for(k=shape_base[0]-1;k>j;k--){
+            ijk[j]=ijk[j]*counts[k];
+          }
+          index=index+ijk[j];
+        }
+      }
+
+
+      if(index >= 0 && index <nitemsbase){
+        if(!missing){
+          if(!DXSetElementValid(out_invalidhandle, index)) goto error;
+        }
+        switch (type){
+        case(TYPE_FLOAT):
+          for(j=0;j<shape[0];j++){
+            if(count[index] == 0)
+              new_data_ptr_f[shape[0]*index+j]=old_data_f[shape[0]*i+j];
+            else
+              new_data_ptr_f[shape[0]*index+j]=
+                        (new_data_ptr_f[shape[0]*index+j]*count[index]
+                         +old_data_f[shape[0]*i+j])/(count[index]+1);
+          }
+          break;
+        case (TYPE_INT):
+          for(j=0;j<shape[0];j++){
+            if(count[index] == 0)
+              new_data_ptr_i[shape[0]*index+j]=old_data_i[shape[0]*i+j];
+            else
+              new_data_ptr_i[shape[0]*index+j]=
+                        (new_data_ptr_i[shape[0]*index+j]*count[index]
+                         +old_data_i[shape[0]*i+j])/(count[index]+1);
+          }
+          break;
+        case (TYPE_SHORT):
+          for(j=0;j<shape[0];j++){
+            if(count[index] == 0)
+              new_data_ptr_s[shape[0]*index+j]=old_data_s[shape[0]*i+j];
+            else
+              new_data_ptr_s[shape[0]*index+j]=
+                        (new_data_ptr_s[shape[0]*index+j]*count[index]
+                         +old_data_s[shape[0]*i+j])/(count[index]+1);
+          }
+          break;
+        case (TYPE_DOUBLE):
+          for(j=0;j<shape[0];j++){
+            if(count[index] == 0)
+              new_data_ptr_d[shape[0]*index+j]=old_data_d[shape[0]*i+j];
+            else
+              new_data_ptr_d[shape[0]*index+j]=
+                        (new_data_ptr_d[shape[0]*index+j]*count[index]
+                         +old_data_d[shape[0]*i+j])/(count[index]+1);
+          }
+          break;
+        case (TYPE_BYTE):
+          for(j=0;j<shape[0];j++){
+            if(count[index] == 0)
+              new_data_ptr_b[shape[0]*index+j]=old_data_b[shape[0]*i+j];
+            else
+              new_data_ptr_b[shape[0]*index+j]=
+                        (new_data_ptr_b[shape[0]*index+j]*count[index]
+                         +old_data_b[shape[0]*i+j])/(count[index]+1);
+          }
+          break;
+        case (TYPE_UINT):
+          for(j=0;j<shape[0];j++){
+            if(count[index] == 0)
+              new_data_ptr_ui[shape[0]*index+j]=old_data_ui[shape[0]*i+j];
+            else
+              new_data_ptr_ui[shape[0]*index+j]=
+                        (new_data_ptr_ui[shape[0]*index+j]*count[index]
+                         +old_data_ui[shape[0]*i+j])/(count[index]+1);
+          }
+          break;
+        case (TYPE_USHORT):
+          for(j=0;j<shape[0];j++){
+            if(count[index] == 0)
+              new_data_ptr_us[shape[0]*index+j]=old_data_us[shape[0]*i+j];
+            else
+              new_data_ptr_us[shape[0]*index+j]=
+                        (new_data_ptr_us[shape[0]*index+j]*count[index]
+                         +old_data_us[shape[0]*i+j])/(count[index]+1);
+          }
+          break;
+        case (TYPE_UBYTE):
+          for(j=0;j<shape[0];j++){
+            if(count[index] == 0)
+              new_data_ptr_ub[shape[0]*index+j]=old_data_ub[shape[0]*i+j];
+            else
+              new_data_ptr_ub[shape[0]*index+j]=
+                        (new_data_ptr_ub[shape[0]*index+j]*count[index]
+                         +old_data_ub[shape[0]*i+j])/(count[index]+1);
+          }
+          break;
+        default:
+          DXSetError(ERROR_DATA_INVALID,"unrecognized data type");
+          goto error;
+        }
+        count[index]++;
+      }
+     }
+    }
+    if (!DXChangedComponentValues(base,name))
+      goto error;
+    if (!DXSetComponentValue(base,name,(Object)newcomponent))
+      goto error;
+    newcomponent = NULL;
+    if (!DXSetComponentAttribute((Field)base, name, "dep", 
+				 (Object)DXNewString("positions"))) 
+      goto error;
+
+  component_done:
+    compcount++;
+    DXFree((Pointer)missingval_f);
+    missingval_f=NULL;
+    DXFree((Pointer)missingval_s);
+    missingval_s=NULL;
+    DXFree((Pointer)missingval_i);
+    missingval_i=NULL;
+    DXFree((Pointer)missingval_d);
+    missingval_d=NULL;
+    DXFree((Pointer)missingval_b);
+    missingval_b=NULL;
+    DXFree((Pointer)missingval_ui);
+    missingval_ui=NULL;
+    DXFree((Pointer)missingval_ub);
+    missingval_ub=NULL;
+    DXFree((Pointer)missingval_us);
+    missingval_us=NULL;
+    DXFree((Pointer)count);
+    count=NULL;
+  }
+
+  if(!missing){
+    for(i=0;i<nitemsbase;i++){
+      if (DXIsElementInvalid(out_invalidhandle,i)) {
+        i=nitemsbase;
+        if(!DXSaveInvalidComponent(base, out_invalidhandle)) goto error;
+      }
+    }
+  }
+  DXFreeInvalidComponentHandle(out_invalidhandle);
+  DXFreeInvalidComponentHandle(in_invalidhandle);
+  if(!DXEndField(base)) goto error;
+  return OK;
+
+error:
+    DXFreeInvalidComponentHandle(out_invalidhandle);
+    DXFreeInvalidComponentHandle(in_invalidhandle);
+    DXFree((Pointer)missingval_f);
+    DXFree((Pointer)missingval_s);
+    DXFree((Pointer)missingval_i);
+    DXFree((Pointer)missingval_d);
+    DXFree((Pointer)missingval_b);
+    DXFree((Pointer)missingval_ui);
+    DXFree((Pointer)missingval_ub);
+    DXFree((Pointer)missingval_us);
+    DXFree((Pointer)count);
+  return ERROR;
+
+}

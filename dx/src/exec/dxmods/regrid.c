@@ -107,10 +107,14 @@ m_Regrid(Object *in, Object *out)
         *radius_ptr = -1;
      }
      else {
-        if (*radius_ptr <= 0) {
+        if (*radius_ptr < 0) {
            DXSetError(ERROR_BAD_PARAMETER, "#10370",
                 "radius", "a positive scalar value or the string `infinity`");
            goto error; 
+        }
+        else if (*radius_ptr == 0){
+           DXWarning("Regrid radius set to 0, data values assigned to nearest grid point");
+           numnearest=0;
         }
      }
   }
@@ -139,12 +143,7 @@ m_Regrid(Object *in, Object *out)
       missing = (Array)in[5];
   }
 
-
-  /* if nearest is infinity, we use the "radius" method. In all other cases
-     we use the "nearest" method" */
-
-  if (numnearest == -1) {
-    /* use the "radius" method */
+/*Moved common data prep steps outside of if/else statement --JAB*/
     class = DXGetObjectClass(in[0]);
     if (class == CLASS_ARRAY) {
       if (!DXGetArrayInfo((Array)in[0], &numitems, &type, &category, 
@@ -180,7 +179,6 @@ m_Regrid(Object *in, Object *out)
     ino = DXCull(ino);
 
 
-
     /* copy the field with positions and connections; we'll add 
      * data using the given input 0 */
     base = DXApplyTransform(in[1],NULL);
@@ -192,64 +190,33 @@ m_Regrid(Object *in, Object *out)
     if (!DXCreateTaskGroup())
       goto error;
 
+    /*Issue warning when base grid with invalid positions is used*/
+    if (DXExists(base, "invalid positions") && missing)
+      DXWarning("Regrid base grid contains invalid positions which are not removed when missing is set");
+
+/* if nearest is infinity, we use the "radius" method. 
+   if radius is 0, we assign data value to nearest grid point,
+   In all other cases we use the "nearest" method" */
+
+  if (numnearest == -1) {
+    /* use the "radius" method */
+
     if (!_dxfConnectRadiusObject((Object)ino, (Object)base, 
 				 radius, exponent, missing))
       goto error;
-
-    if (!DXExecuteTaskGroup())
-      goto error;
-
-    DXDelete((Object)ino);
-    out[0] = base;
   }
+  else if (numnearest == 0) {
+    /*assign value to nearest grid point - JAB*/
+  
+    /* remove invalid postions if missing does not exist*/ 
+    if (DXExists(base, "invalid positions") && !missing)
+     DXRemove(base,"invalid positions");
+   
+    if (!_dxfConnectScatterObject((Object)ino, (Object)base, missing))
+      goto error;
+  } 
   else {
     /* use the "nearest" method */
-    class = DXGetObjectClass(in[0]);
-    if (class == CLASS_ARRAY) {
-      if (!DXGetArrayInfo((Array)in[0], &numitems, &type, &category, 
-			  &rank, shape))
-        goto error;
-      if ((type != TYPE_FLOAT)||(rank != 1)) {
-        /* should also handle scalar I guess XXX */
-        DXSetError(ERROR_BAD_PARAMETER,"#10630","input");
-        goto error;
-      }
-      if (shape[0]<1 || shape[0]> 3) {
-        DXSetError(ERROR_BAD_PARAMETER,"#10370","input", 
-                   "1-, 2-, or 3-dimensional");
-        goto error;
-      }
-      /* just a list of positions; let's make it a field with positions*/
-      ino = (Object)DXNewField();
-      if (!ino)
-        goto error;
-      if (!DXSetComponentValue((Field)ino,"positions",in[0]))
-        goto error; 
-    }
-    else {
-      /* so I can safely delete it at the bottom, as well as modify it */
-      ino = DXCopy(in[0],COPY_STRUCTURE);
-    }
-
-    /* remove connections */
-    if (DXExists(ino, "connections"))
-     DXRemove(ino,"connections");
-   
-    /* cull */
-    ino = DXCull(ino);
-
-
-    /* copy the field with positions and connections; we'll add 
-     * data using the given input 0 */
-    base = DXApplyTransform(in[1], NULL);
-
-    /* copy the attributes of the input scattered points to the output grid*/
-    if (!DXCopyAttributes(base, ino)) 
-      goto error; 
-   
-    if (!DXCreateTaskGroup())
-       goto error;
-
     /* if radius was infinity... */
     if (*radius_ptr==-1)
        radius_ptr = NULL;
@@ -257,13 +224,13 @@ m_Regrid(Object *in, Object *out)
 			          exponent, missing))
       goto error;
 
-
-    if (!DXExecuteTaskGroup())
-      goto error;
-
-    DXDelete((Object)ino);
-    out[0] = base;
   }
+
+  if (!DXExecuteTaskGroup())
+    goto error;
+
+  DXDelete((Object)ino);
+  out[0] = base;
   
   return OK;
   
@@ -273,4 +240,3 @@ m_Regrid(Object *in, Object *out)
   return ERROR;
   
 }
-
