@@ -2056,7 +2056,7 @@ Tab *StandIn::createOutputTab(Widget, int ndx, int width)
                       (XtCallbackProc)StandIn_DisarmTabCB,
                       (XtPointer)this->node);
 
-#if USING_LESSTIF == 1
+#if OLD_LESSTIF == 1
     char *str = "\
     	<Btn1Down>: Arm() \n\
     	<Btn1Up>: Disarm()";
@@ -2110,7 +2110,7 @@ Tab *StandIn::createInputTab(Widget, int ndx, int width)
                       XmNdisarmCallback,
                       (XtCallbackProc)StandIn_DisarmTabCB,
                       (XtPointer)this->node);
-#if USING_LESSTIF == 1
+#if OLD_LESSTIF == 1
     char *str = "\
     	<Btn1Down>: Arm() \n\
     	<Btn1Up>: Disarm()";
@@ -2347,7 +2347,7 @@ void StandIn::createStandIn()
 			      (XtCallbackProc)StandIn_DisarmTabCB,
 			      (XtPointer)this->node);
 
-#if USING_LESSTIF == 1
+#if OLD_LESSTIF == 1
 	    char *str = "\
 		<Btn1Down>: Arm() \n\
 		<Btn1Up>: Disarm()";
@@ -2411,7 +2411,7 @@ void StandIn::createStandIn()
 			      (XtCallbackProc)StandIn_DisarmTabCB,
 			      (XtPointer)this->node);
 
-#if USING_LESSTIF == 1
+#if OLD_LESSTIF == 1
 	    char *str = "\
 		<Btn1Down>: Arm() \n\
 		<Btn1Up>: Disarm()";
