@@ -268,12 +268,16 @@ XFREECOLOR(Display *d, Colormap map, long c)
 /*
  * store the result.  Type dependent on output depth
  */
-#define STORE_BYTE							\
+#define STORE_INT8							\
     *(unsigned char *)t_dst = i;					
 
-#define STORE_SHORT							\
+#define STORE_INT16							\
     *(short *)t_dst = i;					
 
+#define STORE_INT24							\
+    ((unsigned char *)t_dst)[0] = i & 0xff;				\
+    ((unsigned char *)t_dst)[1] = (i >> 8) & 0xff;			\
+    ((unsigned char *)t_dst)[2] = (i >> 16) & 0xff;					
 #define STORE_INT32							\
     *(int32 *)t_dst = i;					
 
@@ -319,9 +323,10 @@ XFREECOLOR(Display *d, Colormap map, long c)
  *
  *     result:
  *       input is a pixel, output is display dependent
- *              STORE_BYTE
- *              STORE_SHORT
- *              STORE_LONE
+ *              STORE_INT8
+ *              STORE_INT16
+ *              STORE_INT24
+ *              STORE_INT32
  */
 
 #define LOOP(isz, osz, D, ext, cmap, gam, dith, x1, pix, x2, res)	\
@@ -369,9 +374,10 @@ struct arg {
 
 #define SGN(x) ((x)>0? 1 : (x)<0? -1 : 0)
 
-#define OUT_BYTE	1
-#define OUT_SHORT	2
-#define OUT_LONG	3
+#define OUT_INT8	1
+#define OUT_INT16	2
+#define OUT_INT24	4
+#define OUT_INT32	3
 
 static Error
 traverse(Object o, struct arg *arg)
@@ -573,11 +579,13 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
     left = ox;
 
     if (_dxf_GetXBytesPerPixel(translation) == 4)
-	outType = OUT_LONG;
+	outType = OUT_INT32;
+    else if (_dxf_GetXBytesPerPixel(translation) == 3)
+	outType = OUT_INT24;
     else if (_dxf_GetXBytesPerPixel(translation) == 2)
-	outType = OUT_SHORT;
+	outType = OUT_INT16;
     else
-	outType = OUT_BYTE;
+	outType = OUT_INT8;
 
 	
     if (inType == IN_BYTE_SCALAR)
@@ -587,14 +595,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
          */
         if (translation->translationType == NoTranslation)
         {
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(byte), 1, 0, BYTE_SCALAR_TO_INDEX, 
 		    NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE,
-		    DIRECT_PIXEL_1, NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		    DIRECT_PIXEL_1, NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(byte), 2, 0, BYTE_SCALAR_TO_INDEX,
 		    NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE,
-		    DIRECT_PIXEL_1, NO_XLATE, STORE_SHORT)
+		    DIRECT_PIXEL_1, NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(byte), 3, 0, BYTE_SCALAR_TO_INDEX,
+		    NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE,
+		    DIRECT_PIXEL_1, NO_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(byte), 4, 0, BYTE_SCALAR_TO_INDEX,
 		    NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE,
@@ -643,14 +655,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	        gg    = translation->greenRange;
 	        bb    = translation->blueRange;
       
-		if (outType == OUT_BYTE)
+		if (outType == OUT_INT8)
 		    LOOP(sizeof(byte), 1, 1, BYTE_SCALAR_TO_INDEX,
 		      COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1,
-		      ONE_XLATE, STORE_BYTE)
-		else if (1 == OUT_SHORT)
+		      ONE_XLATE, STORE_INT8)
+		else if (1 == OUT_INT16)
 		    LOOP(sizeof(byte), 2, 1, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1,
-		      ONE_XLATE, STORE_SHORT)
+		      ONE_XLATE, STORE_INT16)
+		else if (1 == OUT_INT24)
+		    LOOP(sizeof(byte), 3, 1, BYTE_SCALAR_TO_INDEX, 
+		      COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1,
+		      ONE_XLATE, STORE_INT24)
 		else
 		    LOOP(sizeof(byte), 4, 1, BYTE_SCALAR_TO_INDEX,
 		      COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1,
@@ -662,14 +678,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 		gtable = translation->gtable;
 		btable = translation->btable;
 
-		if (outType == OUT_BYTE)
+		if (outType == OUT_INT8)
 		    LOOP(sizeof(byte), 1, 1, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, 
-		      PIXEL_SUM, NO_XLATE, STORE_BYTE)
-		else if (outType == OUT_SHORT)
+		      PIXEL_SUM, NO_XLATE, STORE_INT8)
+		else if (outType == OUT_INT16)
 		    LOOP(sizeof(byte), 2, 1, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, 
-		      PIXEL_SUM, NO_XLATE, STORE_SHORT)
+		      PIXEL_SUM, NO_XLATE, STORE_INT16)
+		else if (outType == OUT_INT24)
+		    LOOP(sizeof(byte), 3, 1, BYTE_SCALAR_TO_INDEX, 
+		      COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, 
+		      PIXEL_SUM, NO_XLATE, STORE_INT24)
 		else
 		    LOOP(sizeof(byte), 4, 1, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, 
@@ -684,14 +704,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 		table = translation->table;
 		
 
-		if (outType == OUT_BYTE)
+		if (outType == OUT_INT8)
 		    LOOP(sizeof(byte), 1, 0, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, 
-		      PIXEL_SUM, ONE_XLATE, STORE_BYTE)
-		else if (outType == OUT_SHORT)
+		      PIXEL_SUM, ONE_XLATE, STORE_INT8)
+		else if (outType == OUT_INT16)
 		    LOOP(sizeof(byte), 2, 0, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, 
-		      PIXEL_SUM, ONE_XLATE, STORE_SHORT)
+		      PIXEL_SUM, ONE_XLATE, STORE_INT16)
+		else if (outType == OUT_INT24)
+		    LOOP(sizeof(byte), 3, 0, BYTE_SCALAR_TO_INDEX, 
+		      COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, 
+		      PIXEL_SUM, ONE_XLATE, STORE_INT24)
 		else
 		    LOOP(sizeof(byte), 4, 0, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, 
@@ -706,14 +730,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 		gg     = translation->greenRange;
 		bb     = translation->blueRange;
 
-		if (outType == OUT_BYTE)
+		if (outType == OUT_INT8)
 		    LOOP(sizeof(byte), 1, 1, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, DITHER, THREE_XLATE, 
-		      PIXEL_SUM, NO_XLATE, STORE_BYTE)
-		else if (outType == OUT_SHORT)
+		      PIXEL_SUM, NO_XLATE, STORE_INT8)
+		else if (outType == OUT_INT16)
 		    LOOP(sizeof(byte), 2, 1, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, DITHER, THREE_XLATE, 
-		      PIXEL_SUM, NO_XLATE, STORE_SHORT)
+		      PIXEL_SUM, NO_XLATE, STORE_INT16)
+		else if (outType == OUT_INT24)
+		    LOOP(sizeof(byte), 3, 1, BYTE_SCALAR_TO_INDEX, 
+		      COLORMAP, GAMMA, DITHER, THREE_XLATE, 
+		      PIXEL_SUM, NO_XLATE, STORE_INT24)
 		else
 		    LOOP(sizeof(byte), 4, 1, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, DITHER, THREE_XLATE, 
@@ -725,14 +753,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	        gtable = translation->gtable;
 	        btable = translation->btable;
     
-		if (outType == OUT_BYTE)
+		if (outType == OUT_INT8)
 		    LOOP(sizeof(byte), 1, 1, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, DITHER, THREE_XLATE, 
-		      PIXEL_3, NO_XLATE, STORE_BYTE)
-		else if (outType == OUT_SHORT)
+		      PIXEL_3, NO_XLATE, STORE_INT8)
+		else if (outType == OUT_INT16)
 		    LOOP(sizeof(byte), 2, 1, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, DITHER, THREE_XLATE, 
-		      PIXEL_3, NO_XLATE, STORE_SHORT)
+		      PIXEL_3, NO_XLATE, STORE_INT16)
+		else if (outType == OUT_INT24)
+		    LOOP(sizeof(byte), 3, 1, BYTE_SCALAR_TO_INDEX, 
+		      COLORMAP, GAMMA, DITHER, THREE_XLATE, 
+		      PIXEL_3, NO_XLATE, STORE_INT24)
 		else
 		    LOOP(sizeof(byte), 4, 1, BYTE_SCALAR_TO_INDEX, 
 		      COLORMAP, GAMMA, DITHER, THREE_XLATE, 
@@ -744,14 +776,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
     {
 	if (translation->translationType == NoTranslation)
 	{
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(float), 1, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3, 
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(float), 2, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3, 
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(float), 3, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3, 
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(float), 4, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3, 
@@ -763,14 +799,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gtable = translation->gtable;
 	    btable = translation->btable;
 	    
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(float), 1, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(float), 2, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM, 
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(float), 3, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM, 
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(float), 4, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
@@ -784,14 +824,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 
 	    table = translation->table;
 	    
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(float), 1, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  ONE_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  ONE_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(float), 2, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  ONE_XLATE, STORE_SHORT)
+		  ONE_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(float), 3, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
+		  ONE_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(float), 4, 0, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
@@ -806,14 +850,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gg     = translation->greenRange;
 	    bb     = translation->blueRange;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(float), 1, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(float), 2, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(float), 3, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(float), 4, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
@@ -826,14 +874,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gg    = translation->greenRange;
 	    bb    = translation->blueRange;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(float), 1, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
-		  ONE_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  ONE_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(float), 2, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
-		  ONE_XLATE, STORE_SHORT)
+		  ONE_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(float), 3, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
+		  ONE_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(float), 4, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
@@ -845,14 +897,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gtable = translation->gtable;
 	    btable = translation->btable;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(float), 1, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3,
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(float), 2, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(float), 3, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(float), 4, 1, FLOAT_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
@@ -863,14 +919,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
     {
 	if (translation->translationType == NoTranslation)
 	{
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct big), 1, 0, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct big), 2, 0, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct big), 3, 0, BIG_PIX_TO_INDEX_VECTOR,
+		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct big), 4, 0, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
@@ -882,14 +942,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gtable = translation->gtable;
 	    btable = translation->btable;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct big), 1, 0, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct big), 2, 0, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct big), 3, 0, BIG_PIX_TO_INDEX_VECTOR,
+		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct big), 4, 0, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
@@ -903,14 +967,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 
 	    table = translation->table;
 	    
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct big), 1, 0, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  ONE_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  ONE_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct big), 2, 0, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  ONE_XLATE, STORE_SHORT)
+		  ONE_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct big), 3, 0, BIG_PIX_TO_INDEX_VECTOR,
+		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
+		  ONE_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct big), 4, 0, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
@@ -925,14 +993,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gg     = translation->greenRange;
 	    bb     = translation->blueRange;
 	    
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct big), 1, 1, BIG_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct big), 2, 1, BIG_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct big), 3, 1, BIG_PIX_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct big), 4, 1, BIG_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
@@ -945,14 +1017,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gg    = translation->greenRange;
 	    bb    = translation->blueRange;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct big), 1, 1, BIG_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
-		  ONE_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  ONE_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct big), 2, 1, BIG_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
-		  ONE_XLATE, STORE_SHORT)
+		  ONE_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct big), 3, 1, BIG_PIX_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
+		  ONE_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct big), 4, 1, BIG_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1,
@@ -964,14 +1040,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gtable = translation->gtable;
 	    btable = translation->btable;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct big), 1, 1, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct big), 2, 1, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct big), 3, 1, BIG_PIX_TO_INDEX_VECTOR,
+		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct big), 4, 1, BIG_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
@@ -982,14 +1062,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
     {
 	if (translation->translationType == NoTranslation)
 	{
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct fast), 1, 0, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct fast), 2, 0, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct fast), 3, 0, FAST_PIX_TO_INDEX_VECTOR,
+		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct fast), 4, 0, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
@@ -1001,14 +1085,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gtable = translation->gtable;
 	    btable = translation->btable;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct fast), 1, 0, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct fast), 2, 0, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct fast), 3, 0, FAST_PIX_TO_INDEX_VECTOR,
+		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct fast), 4, 0, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
@@ -1022,14 +1110,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 
 	    table = translation->table;
 	    
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct fast), 1, 0, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  ONE_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  ONE_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct fast), 2, 0, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  ONE_XLATE, STORE_SHORT)
+		  ONE_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct fast), 3, 0, FAST_PIX_TO_INDEX_VECTOR,
+		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
+		  ONE_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct fast), 4, 0, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
@@ -1044,14 +1136,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gg     = translation->greenRange;
 	    bb     = translation->blueRange;
 	    
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct fast), 1, 1, FAST_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct fast), 2, 1, FAST_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct fast), 3, 1, FAST_PIX_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct fast), 4, 1, FAST_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
@@ -1064,14 +1160,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gg    = translation->greenRange;
 	    bb    = translation->blueRange;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct fast), 1, 1, FAST_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
-		  ONE_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  ONE_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct fast), 2, 1, FAST_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
-		  ONE_XLATE, STORE_SHORT)
+		  ONE_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct fast), 3, 1, FAST_PIX_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
+		  ONE_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct fast), 4, 1, FAST_PIX_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1,
@@ -1083,14 +1183,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gtable = translation->gtable;
 	    btable = translation->btable;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(sizeof(struct fast), 1, 1, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(sizeof(struct fast), 2, 1, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(sizeof(struct fast), 3, 1, FAST_PIX_TO_INDEX_VECTOR,
+		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(sizeof(struct fast), 4, 1, FAST_PIX_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
@@ -1101,14 +1205,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
     {
 	if (translation->translationType == NoTranslation)
 	{
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(byte), 1, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(byte), 2, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(byte), 3, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
+		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(byte), 4, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, NO_GAMMA, NO_DITHER, NO_XLATE, PIXEL_3,
@@ -1120,14 +1228,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gtable = translation->gtable;
 	    btable = translation->btable;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(byte), 1, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(byte), 2, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(byte), 3, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
+		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(byte), 4, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
@@ -1141,14 +1253,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 
 	    table = translation->table;
 	    
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(byte), 1, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  ONE_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  ONE_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(byte), 2, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
-		  ONE_XLATE, STORE_SHORT)
+		  ONE_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(byte), 3, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
+		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
+		  ONE_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(byte), 4, 0, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, NO_DITHER, THREE_XLATE, PIXEL_SUM,
@@ -1163,14 +1279,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gg     = translation->greenRange;
 	    bb     = translation->blueRange;
 	    
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(byte), 1, 1, BYTE_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(byte), 2, 1, BYTE_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(byte), 3, 1, BYTE_VECTOR_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(byte), 4, 1, BYTE_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_SUM, 
@@ -1183,14 +1303,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gg    = translation->greenRange;
 	    bb    = translation->blueRange;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(byte), 1, 1, BYTE_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
-		  ONE_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  ONE_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(byte), 2, 1, BYTE_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
-		  ONE_XLATE, STORE_SHORT)
+		  ONE_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(byte), 3, 1, BYTE_VECTOR_TO_INDEX_VECTOR, 
+		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1, 
+		  ONE_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(byte), 4, 1, BYTE_VECTOR_TO_INDEX_VECTOR, 
 		  NO_COLORMAP, NO_GAMMA, DITHER, NO_XLATE, PIXEL_1,
@@ -1202,14 +1326,18 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	    gtable = translation->gtable;
 	    btable = translation->btable;
 
-	    if (outType == OUT_BYTE)
+	    if (outType == OUT_INT8)
 		LOOP(3*sizeof(byte), 1, 1, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
-		  NO_XLATE, STORE_BYTE)
-	    else if (outType == OUT_SHORT)
+		  NO_XLATE, STORE_INT8)
+	    else if (outType == OUT_INT16)
 		LOOP(3*sizeof(byte), 2, 1, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
-		  NO_XLATE, STORE_SHORT)
+		  NO_XLATE, STORE_INT16)
+	    else if (outType == OUT_INT24)
+		LOOP(3*sizeof(byte), 3, 1, BYTE_VECTOR_TO_INDEX_VECTOR,
+		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
+		  NO_XLATE, STORE_INT24)
 	    else
 		LOOP(3*sizeof(byte), 4, 1, BYTE_VECTOR_TO_INDEX_VECTOR,
 		  NO_COLORMAP, GAMMA, DITHER, THREE_XLATE, PIXEL_3, 
@@ -1547,6 +1675,17 @@ display_either(Object image, int width, int height, int ox, int oy,
 	    
 		for(i=0;i<(width*height);i++)
 		    *pixels++ = pixel;
+	    }
+	    else if (_dxf_GetXBytesPerPixel(w->translation) == 3)
+	    {
+		unsigned char *pixels = (unsigned char *)w->pixels;
+
+		for(i=0;i<(width*height);i++) 
+		{
+		  *pixels++ = (pixel >>  0) & 0xff;
+		  *pixels++ = (pixel >>  8) & 0xff;
+		  *pixels++ = (pixel >> 16) & 0xff;
+		}
 	    }
 	    else if (_dxf_GetXBytesPerPixel(w->translation) == 2)
 	    {
@@ -3018,6 +3157,10 @@ Field _dxf_MakeXImage(int width, int height, int depth, char *where)
     {
       a = DXNewArray(TYPE_UINT, CATEGORY_REAL, 0);
     }
+    else if (_dxf_GetXBytesPerPixel(translation) == 3)
+    {
+      a = DXNewArray(TYPE_UBYTE, CATEGORY_REAL, 1, 3);
+    }
     else if (_dxf_GetXBytesPerPixel(translation) == 2)
     {
       a = DXNewArray(TYPE_USHORT, CATEGORY_REAL, 0);
@@ -3026,7 +3169,7 @@ Field _dxf_MakeXImage(int width, int height, int depth, char *where)
     {
       a = DXNewArray(TYPE_UBYTE, CATEGORY_REAL, 0);
     }
-    
+
     if (!a)
 	goto error;
 
@@ -3035,7 +3178,6 @@ Field _dxf_MakeXImage(int width, int height, int depth, char *where)
 	DXAddMessage("can't make %dx%d image", width, height);
 	goto error;
     }
-
     DXSetAttribute((Object)a, IMAGE_TYPE, O_X_IMAGE);
     DXSetAttribute((Object)a, X_SERVER, w->translation_owner);
     DXSetComponentValue(i, IMAGE, (Object)a);
@@ -3066,6 +3208,7 @@ _dxf_GetXPixels(Field i)
 	return NULL;
       }
     if (!DXTypeCheck(a, TYPE_UBYTE, CATEGORY_REAL, 0) &&
+        !DXTypeCheck(a, TYPE_UBYTE, CATEGORY_REAL, 1, 3) &&
         !DXTypeCheck(a, TYPE_USHORT, CATEGORY_REAL, 0) &&
 	!DXTypeCheck(a, TYPE_UINT, CATEGORY_REAL, 0)) {
 	DXSetError(ERROR_BAD_PARAMETER, "#11610");
@@ -3146,13 +3289,6 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
     bheight = top - bot;
     DXGetImageSize(image, &iwidth, &iheight);
 
-    if (_dxf_GetXBytesPerPixel(translation) == 4)
-	outType = OUT_LONG;
-    else if (_dxf_GetXBytesPerPixel(translation) == 2)
-	outType = OUT_SHORT;
-    else
-	outType = OUT_BYTE;
-	
     ir = (int)(255 * c.r);
     ir = (ir > 255) ? 255 : (ir < 0) ? 0 : ir;
     ig = (int)(255 * c.g);
@@ -3161,20 +3297,24 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
     ib = (ib > 255) ? 255 : (ib < 0) ? 0 : ib;
 
     if (_dxf_GetXBytesPerPixel(translation) == 4)
-	outType = OUT_LONG;
+	outType = OUT_INT32;
+    else if (_dxf_GetXBytesPerPixel(translation) == 3)
+	outType = OUT_INT24;
     else if (_dxf_GetXBytesPerPixel(translation) == 2)
-	outType = OUT_SHORT;
+	outType = OUT_INT16;
     else
-	outType = OUT_BYTE;
+	outType = OUT_INT8;
 
     if (translation->translationType == OneMap)
     {
 	unsigned long *table = translation->table;
 
-	if (outType == OUT_BYTE)
-	    ZERO_LOOP(1, 1, DITHER, NO_XLATE, PIXEL_1, ONE_XLATE, STORE_BYTE)
-	else if (outType == OUT_SHORT)
-	    ZERO_LOOP(2, 1, DITHER, NO_XLATE, PIXEL_1, ONE_XLATE, STORE_SHORT)
+	if (outType == OUT_INT8)
+	    ZERO_LOOP(1, 1, DITHER, NO_XLATE, PIXEL_1, ONE_XLATE, STORE_INT8)
+	else if (outType == OUT_INT16)
+	    ZERO_LOOP(2, 1, DITHER, NO_XLATE, PIXEL_1, ONE_XLATE, STORE_INT16)
+	else if (outType == OUT_INT24)
+	    ZERO_LOOP(3, 1, DITHER, NO_XLATE, PIXEL_1, ONE_XLATE, STORE_INT24)
 	else 
 	    ZERO_LOOP(4, 1, DITHER, NO_XLATE, PIXEL_1, ONE_XLATE, STORE_INT32);
     }
@@ -3188,12 +3328,15 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
 	THREE_XLATE;
 	PIXEL_SUM;
 
-	if (outType == OUT_BYTE)
+	if (outType == OUT_INT8)
 	    ZERO_LOOP(1, 0, NO_DITHER, NO_XLATE,
-		DIRECT_PIXEL_1, NO_XLATE, STORE_BYTE)
-	else if (outType == OUT_SHORT)
+		DIRECT_PIXEL_1, NO_XLATE, STORE_INT8)
+	else if (outType == OUT_INT16)
 	    ZERO_LOOP(2, 0, NO_DITHER, NO_XLATE,
-		DIRECT_PIXEL_1, NO_XLATE, STORE_SHORT)
+		DIRECT_PIXEL_1, NO_XLATE, STORE_INT16)
+	else if (outType == OUT_INT24)
+	    ZERO_LOOP(3, 0, NO_DITHER, NO_XLATE,
+		DIRECT_PIXEL_1, NO_XLATE, STORE_INT24)
 	else 
 	    ZERO_LOOP(4, 0, NO_DITHER, NO_XLATE,
 		DIRECT_PIXEL_1, NO_XLATE, STORE_INT32);
@@ -3210,12 +3353,15 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
 	PIXEL_SUM;
 	ONE_XLATE;
 
-	if (outType == OUT_BYTE)
+	if (outType == OUT_INT8)
 	    ZERO_LOOP(1, 0, NO_DITHER, NO_XLATE,
-		DIRECT_PIXEL_1, NO_XLATE, STORE_BYTE)
-	else if (outType == OUT_SHORT)
+		DIRECT_PIXEL_1, NO_XLATE, STORE_INT8)
+	else if (outType == OUT_INT24)
+	    ZERO_LOOP(3, 0, NO_DITHER, NO_XLATE,
+		DIRECT_PIXEL_1, NO_XLATE, STORE_INT24)
+	else if (outType == OUT_INT16)
 	    ZERO_LOOP(2, 0, NO_DITHER, NO_XLATE,
-		DIRECT_PIXEL_1, NO_XLATE, STORE_SHORT)
+		DIRECT_PIXEL_1, NO_XLATE, STORE_INT16)
 	else 
 	    ZERO_LOOP(4, 0, NO_DITHER, NO_XLATE,
 		DIRECT_PIXEL_1, NO_XLATE, STORE_INT32);
@@ -3228,12 +3374,15 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
 
 	GAMMA;
 
-	if (outType == OUT_BYTE)
+	if (outType == OUT_INT8)
 	    ZERO_LOOP(1, 1, DITHER, THREE_XLATE,
-		PIXEL_SUM, NO_XLATE, STORE_BYTE)
-	else if (outType == OUT_SHORT)
+		PIXEL_SUM, NO_XLATE, STORE_INT8)
+	else if (outType == OUT_INT16)
 	    ZERO_LOOP(2, 1, DITHER, THREE_XLATE,
-		PIXEL_SUM, NO_XLATE, STORE_SHORT)
+		PIXEL_SUM, NO_XLATE, STORE_INT16)
+	else if (outType == OUT_INT24)
+	    ZERO_LOOP(3, 1, DITHER, THREE_XLATE,
+		PIXEL_SUM, NO_XLATE, STORE_INT24)
 	else 
 	    ZERO_LOOP(4, 1, DITHER, THREE_XLATE,
 		PIXEL_SUM, NO_XLATE, STORE_INT32);
@@ -3245,19 +3394,25 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
 	unsigned long *btable = translation->btable;
 
 
-	if (outType == OUT_BYTE)
+	if (outType == OUT_INT8)
 	{
 	    GAMMA;
 	    ZERO_LOOP(1, 1, DITHER, THREE_XLATE,
-				    PIXEL_3, NO_XLATE, STORE_BYTE)
+				    PIXEL_3, NO_XLATE, STORE_INT8)
 	}
-	else if (outType == OUT_SHORT)
+	else if (outType == OUT_INT16)
 	{
 	    GAMMA;
 	    ZERO_LOOP(2, 1, DITHER, THREE_XLATE,
-				    PIXEL_3, NO_XLATE, STORE_SHORT)
+				    PIXEL_3, NO_XLATE, STORE_INT16)
 	}
-	else if (outType == OUT_LONG)
+	else if (outType == OUT_INT24)
+	{
+	    GAMMA;
+	    ZERO_LOOP(3, 1, DITHER, THREE_XLATE,
+				    PIXEL_3, NO_XLATE, STORE_INT24)
+	}
+	else if (outType == OUT_INT32)
 	{
 	    GAMMA;
 	    THREE_XLATE;
