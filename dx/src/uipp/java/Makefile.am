@@ -157,9 +157,11 @@ CLEANFILES = dx.jar server.jar javainfo libAnyDX.dll libAnyDX.so libAnyDX.dylib
 
 distclean-local:
 	rm -rf classes dxsc
+	find . -name '*.class' | xargs rm
 
 install-data-hook:
 	if test "$(ARCH)" = "intelnt" ; then \
 		$(INSTALL_DATA) AnyDX.lib $(javalibdir)/AnyDX.lib ; \
 		$(INSTALL_DATA) AnyDX.exp $(javalibdir)/AnyDX.exp ; \
 	fi
+	mkdir -p $(prefix)/dx/java/server/nets
