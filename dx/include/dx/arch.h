@@ -26,10 +26,6 @@
 #define DXD_LACKS_ANY_REGCMP
 #endif
 
-#ifdef WORDS_BIGENDIAN
-#define DXD_BIGENDIAN
-#endif
-
 #ifdef HAS_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -218,9 +214,6 @@ typedef int * SelectPtr;
 /* license manager active in this version */
 #undef DXD_LICENSED_VERSION
 
-/* defined for machines with msb byte order (all machines but ibmpvs) */
-#define DXD_BIGENDIAN 1
-
 /* supports full IEEE standard floating point, including under/overflow */
 #define DXD_STANDARD_IEEE 1
 
@@ -288,9 +281,6 @@ typedef int * SelectPtr;
 /* license manager active in this version */
 #undef DXD_LICENSED_VERSION
 
-/* defined for machines with msb byte order (all machines but ibmpvs) */
-#define DXD_BIGENDIAN 1
-
 /* supports full IEEE standard floating point, including under/overflow */
 #define DXD_STANDARD_IEEE 1
 
@@ -344,9 +334,6 @@ typedef int * SelectPtr;
 
 /* license manager active in this version */
 #undef DXD_LICENSED_VERSION
-
-/* defined for machines with msb byte order (all machines but ibmpvs) */
-#define DXD_BIGENDIAN 1
 
 /* supports full IEEE standard floating point, including under/overflow */
 #define DXD_STANDARD_IEEE 1
@@ -434,9 +421,6 @@ union wait{
 
 /* license manager active in this version */
 #undef DXD_LICENSED_VERSION
-
-/* defined for machines with msb byte order (all machines but ibmpvs) */
-#define DXD_BIGENDIAN 1
 
 /* supports full IEEE standard floating point, including under/overflow */
 #define DXD_STANDARD_IEEE 1
