@@ -1,3 +1,61 @@
+Added the ability to use a web browser and the html documentation
+as the DX help viewer. To enable, under UNIX set the environment 
+variable DX_WEB_BROWSER to your web browser. Under Windows and MacOS X
+set this environment variable to anything and the system default
+browser will launch. Due to bugs in Exceed XDK and MacOS X (Bug ID#2879972,
+#1951588) their may be some annoyances using this feature.
+
+Added a new keymapping scheme -- a new set of accelerators. This new
+set of accelerators follows the Windows, MacOS, KDE styles. This is
+enabled during compilation as a configure flag.
+
+Update to allow the user to specify their own object colors (via
+the "colors" component) to light and modulate a hardware rendered textured
+object, instead of accepting the hard-coded solid white.  "opacities" can
+now be defined and used as well.
+
+Activated linear interpolation and mipmaping texture filters.
+
+For OpenGL (hardware) rendering mode, adds the following field
+attributes that affect culling and lighting:
+     attribute "cull face" string ["off"|"front"|"back"|"front and back"]
+     attribute "light model" string ["one side"|"two side"]
+and the following field attributes that affect texturing (when the
+"texture" attribute and "uv" component are also correctly provided of course):
+     attribute "texture wrap s" string ["clamp"|"repeat"]
+     attribute "texture wrap t" string ["clamp"|"repeat"]
+     attribute "texture min filter" string \
+         ["nearest"|"linear"|"nearest_mipmap_nearest"|"nearest_mipmap_linear"|
+          "linear_mipmap_nearest"|"linear_mipmap_linear"]
+     attribute "texture mag filter" string ["nearest"|"linear"]
+     attribute "texture function" string ["decal"|"replace"|"modulate"|"blend"]
+Note that "light model = two side" is particularly useful when
+lighting polygonal models with no normals where the auto-computed normal
+may bear no resemblence to the "outside" of a rendered object (without it,
+only software rendering in DX is worthwhile).  The rest are useful when 3D
+polygonal models that require specific culling and texturing state for
+correct display are integrated into DX visualizations.
+--Note that the default OpenGL state when these attributes are not
+specified is the same as it was before.
+--Also, now that texture maps are registered via gluBuild2DMipmaps in
+the OpenGL back-end, the restrictions on supplied texture maps being powers
+of two and larger than >= 64x64 is no longer the case in general, so the
+checks have been removed.  Back-end specific checks can be added later if
+other back-ends are still used.
+
+Fix for expanding CDB boxes on LessTif systems.
+
+Much needed updates to some of the html documentation. It now includes
+a client side search engine provided using JavaScript.
+
+Support OpenGL 1.3's GL_CLAMP_TO_EDGE texture wrap mode in the OpenGL back
+end; support via extension for OpenGL 1.2.
+    To activate, set the "texture wrap s" and/or "texture wrap t" 
+    attributes on the field to be textured to "clamp to border" (instead 
+    of "clamp", "repeat", or "clamp to edge").
+
+Updates to allow compiling with SGI n64 ABI
+
 Corrected a problem with lex/parsing of programs from the UI after
 and error occurs when trying to open a network. A consecutive open
 now works correctly and does not give false error messages.
@@ -74,7 +132,13 @@ specify the size of the send and recieve buffers for the socket
 connection between the UI and the exec. This provides a fix until time
 permits to write the significant logic change to make the UI interlace
 reading data from the exec and writing data to the exec. This value
-is clamped to the max allowed by the system.
+is clamped to the max allowed by the system. This can fix a problem
+where the executive and UI hang involving a deadlock situation in the
+socket communication. The value assigned to it is passed as the parameter 
+to setsockopt for SOL_SNDBUF and SOL_RCVBUF.  I think the default is 
+32767, and the range is clamped to the max allowed by the system. The 
+value used is clamped to the max allowed by the system; see your sysadmin 
+if you need up this. A typcial value may be 262144.
 
 Fixes to to prevent hanging processes if the UI disconnects from the
 server while the server is running.
