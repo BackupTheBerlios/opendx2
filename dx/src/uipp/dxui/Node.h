@@ -294,6 +294,21 @@ private:
     //
     boolean hasHideableIO(List *io);
 
+    //
+    // On behalf of automatic graph layout we need to store information
+    // on a per-node basis.  No one outside of the layout class will
+    // ever access this information, but it's natural to keep in
+    // associated with the Node for fast lookup.
+    // Perhaps a better way to track this information would be to make
+    // Node multiply inherit from a class that represents the information.
+    // I like that way of doing it however that would require an additional
+    // #include inside Node.h.  Since the included .h file would be
+    // changing often, that would in turn require rebuilding the world
+    // very often.  Maybe after the code stabilizes I'll try that
+    // approach.
+    //
+    Base* layout_information;
+
   protected:
     //
     // Protected member data:
@@ -1111,6 +1126,18 @@ private:
     //
     virtual boolean printAsBean(FILE*) { return TRUE; }
     virtual boolean printAsBeanInitCall(FILE*) { return TRUE; }
+
+    //
+    // On behalf of GraphLayout we store layout information on a 
+    // per-node basis.  I would prefer not to have this public
+    // method here because no one outside GraphLayout should ever
+    // be touching the layout information.  I could declare a 
+    // GraphLayout method as a friend but then I would have to
+    // include another .h file here and that's really bad since
+    // it would require rebuilding the world quite often.
+    //
+    Base* getLayoutInformation() { return this->layout_information; }
+    void setLayoutInformation(Base* li);
 
     //
     // Returns a pointer to the class name.

@@ -466,3 +466,48 @@ void EditorWorkSpace::restorePosition ()
     this->getRecordedScrollPos (&x, &y);
     this->editor->moveWorkspaceWindow (x,y,False);
 }
+
+//
+// ww is the workspace widget.  The widget that moved is stored
+// in calldata.  That has to be translated into a EditorWorkSpaceComponent
+// object. The x,y values in the callback struct haven't been applied yet.
+//
+// Ignore the callback if it originated from a KeyEvent because we don't
+// need to undo the movement of canvas objects that started from arrow keys.
+//
+void EditorWorkSpace::doPosChangeAction (Widget ww, XtPointer callData)
+{
+    static int previous_time_stamp = 0;
+    this->WorkSpace::doPosChangeAction(ww,callData);
+    XmWorkspacePositionChangeCallbackStruct* cbs = 
+	(XmWorkspacePositionChangeCallbackStruct*)callData;
+    Widget child = cbs->child;
+    XtPointer udata;
+    XtVaGetValues (child, XmNuserData, &udata, NULL);
+    UIComponent* uic = (UIComponent*)udata;
+    boolean mouse_type = FALSE;
+    boolean same_event = FALSE;
+    if (cbs->event) {
+	switch (cbs->event->xany.type) {
+	    case ButtonPress:
+	    case ButtonRelease:
+		same_event = (cbs->event->xbutton.time == previous_time_stamp);
+		previous_time_stamp = cbs->event->xbutton.time;
+		mouse_type = TRUE;
+		break;
+	    case MotionNotify:
+		same_event = (cbs->event->xmotion.time == previous_time_stamp);
+		previous_time_stamp = cbs->event->xmotion.time;
+		mouse_type = TRUE;
+		break;
+	    case KeyPress:
+	    case KeyRelease:
+		same_event = (cbs->event->xkey.time == previous_time_stamp);
+		previous_time_stamp = cbs->event->xkey.time;
+		break;
+	    default:
+		break;
+	}
+    }
+    this->editor->saveLocationForUndo(uic, mouse_type, same_event);
+}

@@ -64,7 +64,6 @@ void Tab::createTab(Widget parent, boolean createManaged)
                  n);
 
     this->setRootWidget(w);
-
 }
 
 void Tab::setBackground(Pixel  background)
@@ -135,3 +134,4 @@ Tab::~Tab()
     if (this->lineWidget != NULL)
 	XtDestroyWidget(this->lineWidget);
 }
+

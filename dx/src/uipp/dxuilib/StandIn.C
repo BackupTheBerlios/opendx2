@@ -2022,6 +2022,8 @@ Tab *StandIn::createOutputTab(Widget, int ndx, int width)
 
 
     tab->createTab(this->getRootWidget());
+    XtAddEventHandler (tab->getRootWidget(), KeyPressMask, False,
+        (XtEventHandler)StandIn_TabKeyNavEH, (XtPointer)NULL);
 
     /*
      * Set background color.
@@ -2075,6 +2077,8 @@ Tab *StandIn::createInputTab(Widget, int ndx, int width)
 
 
     tab->createTab(this->getRootWidget());
+    XtAddEventHandler (tab->getRootWidget(), KeyPressMask, False,
+        (XtEventHandler)StandIn_TabKeyNavEH, (XtPointer)NULL);
 
     /*
      * Set background color.
@@ -2112,8 +2116,6 @@ void StandIn::createStandIn()
 {
     Network              *network;
     long                 mask;
-    XWindowAttributes    getatt;
-    XSetWindowAttributes setatt;
     ListIterator         iterator;
     Tab                  *tab;
     int                  n;
@@ -2276,7 +2278,6 @@ void StandIn::createStandIn()
 #endif
 
 
-
     icnt = node->getInputCount();
 
 
@@ -2287,33 +2288,12 @@ void StandIn::createStandIn()
     for(i=1; i<=icnt; i++)
     {
 
-#if 11
         tab = new Tab(this);
-        if (node->isInputViewable(i)) 
+        if (node->isInputViewable(i)) {
             tab->createTab(standInRoot,node->isInputVisible(i));
-#else
-        if (node->isInputVisible(i) == FALSE) 
-	{
-
-	    if(node->isInputViewable(i))
-	    {
-		tab = new Tab(this);
-// Commented out 5/24 because Quantify says this is taking ~10% of the time
-// required to createStandIn().
-//		tab->createTab(standInRoot);
-//		tab->unmanage();
-	    } 
-	    else 
-	    {
-		tab = new Tab(this);
-	    }
-	} 
-	else 
-	{
-	    tab = new Tab(this);
-	    tab->createTab(standInRoot);
+	    XtAddEventHandler (tab->getRootWidget(), KeyPressMask, False,
+		(XtEventHandler)StandIn_TabKeyNavEH, (XtPointer)NULL);
 	}
-#endif
 	tab->moveTabY(0, FALSE);
 	tab->setBackground(standInDefaults.io.background);
 	inputTabList.appendElement((void *) tab);
@@ -2337,7 +2317,6 @@ void StandIn::createStandIn()
 		<Btn1Up>: Disarm()";
 	    XtVaSetValues(tabRoot, XmNtranslations,  XtParseTranslationTable(str), NULL);
 #endif
-
 	}
     }
 
@@ -2351,32 +2330,12 @@ void StandIn::createStandIn()
 
 
     for (i=1; i<=ocnt; i++) {
-#if 11
         tab = new Tab(this);
-        if (node->isOutputViewable(i)) 
+        if (node->isOutputViewable(i)) {
             tab->createTab(standInRoot,node->isOutputVisible(i));
-#else
-        if (node->isOutputVisible(i) == FALSE) 
-	{
-	    if(node->isOutputViewable(i))
-	    {
-		tab = new Tab(this);
-// Commented out 5/24 because Quantify says this is taking ~10% of the time
-// required to createStandIn().
-//		tab->createTab(standInRoot);
-//		tab->unmanage();
-	    } 
-	    else 
-	    {
-		tab = new Tab(this);
-	    }
-	} 
-	else 
-	{
-	    tab = new Tab(this);
-	    tab->createTab(standInRoot);
+	    XtAddEventHandler (tab->getRootWidget(), KeyPressMask, False,
+		(XtEventHandler)StandIn_TabKeyNavEH, (XtPointer)NULL);
 	}
-#endif
 
 	tab->moveTabY(y, TRUE);
 	tab->setBackground(standInDefaults.io.background);
@@ -2401,7 +2360,6 @@ void StandIn::createStandIn()
 		<Btn1Up>: Disarm()";
 	    XtVaSetValues(tabRoot, XmNtranslations,  XtParseTranslationTable(str), NULL);
 #endif
-
 	}
     }
     this->setMinimumWidth(width);
@@ -2423,12 +2381,35 @@ void StandIn::createStandIn()
      */
     this->manage();
 
+    mask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | 
+	KeyPressMask | KeyReleaseMask;
+    StandIn::ModifyButtonWindowAttributes (button, mask);
+#if XmVersion >= 1001
+// FIXME
+//    XtAddEventHandler(this->getRootWidget(), ButtonPressMask,
+//                      FALSE, _uinHelpEventHandler, (XtPointer)NULL);
+#endif
 
+}
+
+//
+// Was part of ::createStandIn().  ...is now broken out so that it
+// can be used on the io tabs as well as the main part of the standin.
+// We want to pass thru kbd events on io tabs so that keyboard events
+// will work in the vpe.
+//
+void StandIn::ModifyButtonWindowAttributes (Widget button, int mask)
+{
     /*
      * Make sure button and motion events get passed through.
      */
     Window button_window = XtWindow(button);
-    Display *dsp = XtDisplay(workspace->getRootWidget());
+    if (!button_window) {
+	printf ("%s[%d] no window to modify\n", __FILE__,__LINE__);
+	return ;
+    }
+    Display *dsp = XtDisplay(button);
+    XWindowAttributes    getatt;
 
     //
     // Arrange to call XGetWindowAttributes only once.  It's too 
@@ -2440,13 +2421,12 @@ void StandIn::createStandIn()
 
     if (!getatt_initialized) {
 	XGetWindowAttributes(dsp, button_window, &getatt);
-	getatt_initialized = TRUE;
+	//getatt_initialized = TRUE;
 	your_event_mask = getatt.your_event_mask;
 	do_not_propagate_mask = getatt.do_not_propagate_mask;
     }
 
-    mask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask;
-
+    XSetWindowAttributes setatt;
     setatt.event_mask            = your_event_mask & ~mask;
     setatt.do_not_propagate_mask = do_not_propagate_mask & ~mask;
 
@@ -2454,12 +2434,6 @@ void StandIn::createStandIn()
                             button_window,
                             CWEventMask | CWDontPropagate,
                             &setatt);
-
-#if XmVersion >= 1001
-// FIXME
-//    XtAddEventHandler(this->getRootWidget(), ButtonPressMask,
-//                      FALSE, _uinHelpEventHandler, (XtPointer)NULL);
-#endif
 
 }
 
@@ -3289,6 +3263,21 @@ void StandIn_Button2PressEH
 }
 
 //
+// Pass keyboard events thru to the workspace.  This ought to be handled
+// either with translations or with the same mechanism used for standInRoot.
+//
+void StandIn_TabKeyNavEH
+(Widget w, XtPointer , XEvent *xev, Boolean *keep_going)
+{
+    // the meaning of False here, is that we have no need for <Key> events
+    // in the io tabs.  They have always been hooked up and working but
+    // for no purpose.  You could hit the space bar on a tab and watch
+    // it wiggle, but so what.
+    *keep_going = False;
+    XtCallActionProc (w, "child_nav", xev, NULL, 0);
+}
+
+//
 // Used during drag-n-drop operations that result in deletion of nodes.
 // The Command passed in is the EditorWindow's delete-selected-nodes
 // command.
@@ -3307,7 +3296,7 @@ Boolean StandIn_DragDropWP (XtPointer clientData)
 }
 } // extern C
 
-    //
+//
 // This function can be called to notify a standin that its label
 // has changed.  By default, this standin just calls setButtonLabel()
 // to reset the label.
@@ -3316,4 +3305,27 @@ void StandIn::notifyLabelChange()
     this->setButtonLabel();
 }
 
+//
+// In addition to superclass work, we'll need to create new workspace
+// lines since the start/end points of
+// In the case of StandIn, using the superclass doesn't do any good
+// since the widget is geometry-managed by the containing widget.  Setting
+// XmN{x,y} has no effect.
+//
+void StandIn::setXYPosition (int x, int y)
+{
+    this->UIComponent::setXYPosition (x,y);
+    if (this->isManaged())
+	XmWorkspaceSetLocation (this->getRootWidget(), x, y);
+}
+
+// 
+// Store the this pointer in the widget's XmNuserData so that we
+// can retrieve the Object in a callback in EditorWorkSpace.C
+// 
+void StandIn::setRootWidget(Widget root, boolean standardDestroy)
+{
+    this->UIComponent::setRootWidget(root, standardDestroy);
+    this->setLocalData(this);
+}
 

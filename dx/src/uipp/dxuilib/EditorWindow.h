@@ -55,6 +55,7 @@ class ControlPanel;
 class NodeDefinition;
 class ToolSelector;
 class EditorWorkSpace;
+class WorkSpaceComponent;
 class VPERoot;
 class Ark;
 class Node;
@@ -79,6 +80,7 @@ class Decorator;
 class DecoratorStyle;
 class GetSetConversionDialog;
 class TransmitterNode;
+class GraphLayout;
 
 #if WORKSPACE_PAGES
 class GroupManager;
@@ -242,6 +244,20 @@ class EditorWindow : public DXWindow
     void resetErrorList(boolean reset_all=TRUE);
     void resetColorList() { this->resetExecutionList(); this->resetErrorList(); }
 
+    //
+    // Automatic graph layout
+    //
+    GraphLayout* layout_controller;
+
+    //
+    // Record moved StandIns and decorators so that movement
+    // can be undone. ...on behalf of the new graph layout operation.
+    //
+    List undo_move_list;
+    boolean moving_many_standins;
+    boolean performing_undo;
+    void clearUndoList();
+
   protected:
     //
     // State information:
@@ -300,6 +316,8 @@ class EditorWindow : public DXWindow
 #endif
     Command*		javifyNetCmd;
     Command*		unjavifyNetCmd;
+    Command*		reflowGraphCmd;
+    Command*		straightenArcsCmd;
     Command*            gridCmd;
     Command*		setPanelGroupCmd;
     Command*		setPanelAccessCmd;
@@ -379,6 +397,9 @@ class EditorWindow : public DXWindow
     CommandInterface*	copyOption;
     CommandInterface*	pasteOption;
     CommandInterface*	macroNameOption;
+    CommandInterface*	reflowGraphOption;
+    CommandInterface*	undoOption;
+    CommandInterface*	straightenArcsOption;
     CommandInterface*	insertNetworkOption;
     CommandInterface*	addAnnotationOption;
     CommandInterface*	createMacroOption;
@@ -896,6 +917,23 @@ class EditorWindow : public DXWindow
     boolean javifyNetwork();
     boolean unjavifyNetwork();
 
+    //
+    // Use GraphLayout to modify the flow of the graph.
+    //
+    boolean applyArcStraightener();
+    boolean reflowEntireGraph();
+
+    //
+    // register undo information
+    //
+    void  saveLocationForUndo (UIComponent* uic, boolean mouse=FALSE, boolean same_event=FALSE);
+    void  beginMultipleCanvasMovements();
+    void  endMultipleCanvasMovements() { this->moving_many_standins = FALSE; }
+
+    //
+    // perform undo operation
+    //
+    boolean undo();
 
     //
     // Returns a pointer to the class name.

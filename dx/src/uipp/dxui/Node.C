@@ -94,6 +94,7 @@ Node::Node(NodeDefinition *nd, Network *net, int inst)
 #else
     this->groupNameSymbol = 0;
 #endif
+    this->layout_information = NULL;
 }
 
 
@@ -198,6 +199,8 @@ Node::~Node()
 	    // pif->sendImmediate("sync");
 	}
     }
+
+    if (this->layout_information) delete this->layout_information;
 }
 //
 // Determine if this node is a node of the given class
@@ -3612,4 +3615,11 @@ boolean Node::printAsJava(FILE* f)
     }
 
     return TRUE;
+}
+
+void Node::setLayoutInformation(Base* li)
+{
+    if (this->layout_information)
+	delete this->layout_information;
+    this->layout_information = li;
 }

@@ -112,6 +112,8 @@
 #include "ReceiverNode.h"
 #include "GlobalLocalNode.h"
 #include "DXLInputNode.h"
+#include "GraphLayout.h"
+#include "UndoMove.h"
 
 #ifndef FORGET_GETSET
 #include "GetSetConversionDialog.h"
@@ -210,6 +212,7 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->quitOption         = NUL(CommandInterface*);
     this->closeOption         = NUL(CommandInterface*);
 
+    this->undoOption              = NUL(CommandInterface*);
     this->valuesOption            = NUL(CommandInterface*);
     this->findToolOption          = NUL(CommandInterface*);
 #ifndef FORGET_GETSET
@@ -230,6 +233,8 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->copyOption              = NUL(CommandInterface*);
     this->pasteOption             = NUL(CommandInterface*);
     this->macroNameOption         = NUL(CommandInterface*);
+    this->reflowGraphOption       = NUL(CommandInterface*);
+    this->straightenArcsOption    = NUL(CommandInterface*);
     this->createMacroOption	  = NULL;
     this->insertNetworkOption     = NUL(CommandInterface*);
     this->addAnnotationOption     = NUL(CommandInterface*);
@@ -284,6 +289,10 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     //
     // Edit menu commands
     //
+    this->undoCmd = 
+	new NoUndoEditorCommand
+	    ("undo", this->commandScope, FALSE,
+	        this, NoUndoEditorCommand::Undo);
     this->valuesCmd =
 	new NoUndoEditorCommand 
 	    ("values", this->commandScope, FALSE, 
@@ -521,6 +530,17 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
 	this->javifyNetCmd = NUL(Command*);
 	this->unjavifyNetCmd = NUL(Command*);
     }
+    this->reflowGraphCmd = 
+	new NoUndoEditorCommand ("reflowGraph", this->commandScope, FALSE,
+		this, NoUndoEditorCommand::ReflowGraph);
+
+#if THIS_CODE_GETS_WRITTEN
+    this->straightenArcsCmd = 
+	new NoUndoEditorCommand ("straightenArcs", this->commandScope, FALSE,
+		this, NoUndoEditorCommand::StraightenArcs);
+#else
+    this->straightenArcsCmd = NUL(Command*);
+#endif
 
     //
     // Window's menu commands
@@ -597,6 +617,17 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->errored_standins = NUL(List*);
 
     //
+    // Graph layout
+    //
+    this->layout_controller = NULL;
+    
+    //
+    // Undo movement
+    //
+    this->moving_many_standins = FALSE;
+    this->performing_undo = FALSE;
+
+    //
     // Install the default resources for THIS class (not the derived classes)
     //
     if (NOT EditorWindow::ClassInitialized)
@@ -653,6 +684,7 @@ EditorWindow::~EditorWindow()
     //
     // Edit menu options
     //
+    if (this->undoOption) delete this->undoOption;
     if (this->valuesOption) delete this->valuesOption;
     if (this->findToolOption) delete this->findToolOption;
 #ifndef FORGET_GETSET
@@ -673,6 +705,8 @@ EditorWindow::~EditorWindow()
     if (this->copyOption) delete this->copyOption;
     if (this->pasteOption) delete this->pasteOption;
     if (this->macroNameOption) delete this->macroNameOption;
+    if (this->reflowGraphOption) delete this->reflowGraphOption;
+    if (this->straightenArcsOption) delete this->straightenArcsOption;
     if (this->createMacroOption) delete this->createMacroOption;
     if (this->insertNetworkOption) delete this->insertNetworkOption;
     if (this->addAnnotationOption) delete this->addAnnotationOption;
@@ -712,6 +746,7 @@ EditorWindow::~EditorWindow()
     delete this->showExecutedCmd;
     delete this->newControlPanelCmd;
     delete this->openControlPanelCmd;
+    delete this->undoCmd;
     delete this->valuesCmd;
     delete this->addInputTabCmd;
     delete this->removeInputTabCmd;
@@ -756,6 +791,8 @@ EditorWindow::~EditorWindow()
 #endif
     if (this->javifyNetCmd) delete this->javifyNetCmd;
     if (this->unjavifyNetCmd) delete this->unjavifyNetCmd;
+    delete this->reflowGraphCmd;
+    if (this->straightenArcsCmd) delete this->straightenArcsCmd;
     delete this->editMacroNameCmd;
     delete this->editCommentCmd;
     delete this->findToolCmd;
@@ -788,6 +825,8 @@ EditorWindow::~EditorWindow()
     if (this->copiedCfg) delete this->copiedCfg;
     if (this->executed_nodes) delete this->executed_nodes;
     if (this->errored_standins) delete this->errored_standins;
+    if (this->layout_controller) delete this->layout_controller;
+    this->clearUndoList();
 }
 
 //
@@ -872,6 +911,14 @@ void EditorWindow::setCommandActivation()
     }
 
     //
+    // Is undo available?
+    //
+    if (this->undo_move_list.getSize() >= 1)
+	this->undoCmd->activate();
+    else
+	this->undoCmd->deactivate();
+
+    //
     // Handle commands that depend on whether there are nodes 
     //
     if (nodes == 0) {
@@ -885,6 +932,8 @@ void EditorWindow::setCommandActivation()
 	    this->saveAsCCodeCmd->deactivate();
 	nselected = 0;
 	this->outputCacheabilityCascade->deactivate();
+	this->reflowGraphCmd->deactivate();
+	if (this->straightenArcsCmd) this->straightenArcsCmd->deactivate();
     } else {
 	this->selectAllNodeCmd->activate();
 	this->findToolCmd->activate();
@@ -893,6 +942,8 @@ void EditorWindow::setCommandActivation()
 	    this->saveAsCCodeCmd->activate();
 	nselected = this->getNodeSelectionCount();
 	this->outputCacheabilityCascade->activate();
+	this->reflowGraphCmd->activate();
+	if (this->straightenArcsCmd) this->straightenArcsCmd->activate();
     } 
 
     //
@@ -1471,6 +1522,9 @@ void EditorWindow::createEditMenu(Widget parent)
 	     XmNsubMenuId, pulldown,
 	     NULL);
 
+    this->undoOption = new ButtonInterface (pulldown, "vpeUndoOption", this->undoCmd);
+    XtVaCreateManagedWidget ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+
     //
     // Module level functions 
     //
@@ -1734,6 +1788,17 @@ void EditorWindow::createEditMenu(Widget parent)
     this->macroNameOption =
 	new ButtonInterface(pulldown, "vpeMacroNameOption",
 			    this->network->getSetNameCommand());
+
+    this->reflowGraphOption =
+	new ButtonInterface(pulldown, "vpeReflowGraphOption",
+			    this->reflowGraphCmd);
+#if THIS_CODE_GETS_WRITTEN
+    this->straightenArcsOption =
+	new ButtonInterface(pulldown, "vpeStraightenArcsOption",
+			    this->straightenArcsCmd);
+#else
+    this->straightenArcsOption = NUL(CommandInterface*);
+#endif
 
     this->createProcessGroupOption =
 	new ButtonInterface(pulldown, "vpeCreateProcessGroupOption", 
@@ -3125,6 +3190,12 @@ void EditorWindow::deleteNodes(List *toDelete)
 	    errored_node_deleted|= this->errored_standins->removeElement((void*)si);
         this->network->deleteNode(node);	
     }
+
+    //
+    // Destroy undo information so that we don't try to use a pointer
+    // to a deleted object
+    //
+    this->clearUndoList();
 
     //
     // restart line routing if necessary
@@ -5321,6 +5392,12 @@ Node *node;
 	}
     }
 
+    //
+    // Toss out information in the undo list.  It won't be usable
+    // following this type of change
+    //
+    this->clearUndoList();
+
     if (error_node)
 	this->resetErrorList(FALSE);
 }
@@ -7020,3 +7097,103 @@ boolean EditorWindow::javifyNetwork()
 
     return TRUE;
 }
+
+boolean EditorWindow::applyArcStraightener()
+{
+    WorkSpace *current_ws = this->workSpace;
+    int page = this->workSpace->getCurrentPage();
+    if (page) current_ws = this->workSpace->getElement(page);
+    if (!this->layout_controller)
+	this->layout_controller = new GraphLayout(this);
+    return this->layout_controller->arcStraightener(current_ws, this->network->nodeList);
+}
+
+boolean EditorWindow::reflowEntireGraph()
+{
+    WorkSpace *current_ws = this->workSpace;
+    int page = this->workSpace->getCurrentPage();
+    if (page) current_ws = this->workSpace->getElement(page);
+    if (!this->layout_controller)
+	this->layout_controller = new GraphLayout(this);
+    return this->layout_controller->entireGraph(current_ws, this->network->nodeList, this->network->decoratorList);
+}
+
+//
+// ewsc can be a StandIn or a VPEAnnotation.  A callback from the workspace
+// widget has told us that the component has been moved.  We fetch its
+// location (which is still the old location) and save it so that it can
+// be undone.
+//
+void EditorWindow::saveLocationForUndo (UIComponent* uic, boolean mouse, boolean same_event)
+{
+    if (this->performing_undo) return ;
+    if ((this->moving_many_standins) || (same_event)) {
+    } else {
+	this->clearUndoList();
+    }
+    if ((mouse)||(this->moving_many_standins)) {
+	ASSERT(uic);
+	boolean found_it = FALSE;
+	ListIterator iterator;
+	Node* n;
+	FOR_EACH_NETWORK_NODE(this->network, n, iterator) {
+	    if (n->getStandIn() == uic) {
+		StandIn* si = (StandIn*)uic;
+
+		// error check
+		WorkSpace *current_ws = this->workSpace;
+		int page = this->workSpace->getCurrentPage();
+		if (page) current_ws = this->workSpace->getElement(page);
+		ASSERT (current_ws == si->getWorkSpace());
+
+		this->undo_move_list.appendElement (
+		    new UndoStandInMove (this, n, (StandIn*)uic)
+		);
+		found_it = TRUE;
+		break;
+	    }
+	}
+	if (!found_it) this->undo_move_list.appendElement (new UndoMove (this, uic));
+    }
+    if (this->undo_move_list.getSize() > 0) this->undoCmd->activate();
+    else this->undoCmd->deactivate();
+}
+
+void EditorWindow::clearUndoList()
+{
+    ListIterator iter(this->undo_move_list);
+    UndoMove* undo_move;
+    while (undo_move = (UndoMove*)iter.getNext())
+	delete undo_move;
+    this->undo_move_list.clear();
+}
+
+void EditorWindow::beginMultipleCanvasMovements()
+{
+    this->clearUndoList();
+    this->moving_many_standins = TRUE;
+}
+
+boolean EditorWindow::undo()
+{
+    boolean many_placements = (this->undo_move_list.getSize() >= 2);
+    WorkSpace *current_ws = this->workSpace;
+    if (many_placements) {
+	int page = this->workSpace->getCurrentPage();
+	if (page) current_ws = this->workSpace->getElement(page);
+	current_ws->beginManyPlacements();
+    }
+    this->performing_undo = TRUE;
+    ListIterator iter(this->undo_move_list);
+    UndoMove* undo_move;
+    while (undo_move = (UndoMove*)iter.getNext()) {
+	undo_move->undo();
+    }
+    this->performing_undo = FALSE;
+    this->clearUndoList();
+    if (many_placements) {
+	current_ws->endManyPlacements();
+    }
+    return TRUE;
+}
+

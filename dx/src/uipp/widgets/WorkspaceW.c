@@ -30,6 +30,13 @@
 #include "WorkspaceP.h"
 #include "WorkspaceCallback.h"
 #include <string.h>
+//#if !defined(XK_MISCELLANY)
+#define XK_MISCELLANY 1
+#include <X11/keysymdef.h>
+//#undef XK_MISCELLANY
+//#else
+//#include <X11/keysymdef.h>
+//#endif
 
 
 /* External functions */
@@ -224,6 +231,8 @@ static void     Drag                    (XmWorkspaceWidget ww,
 	                                 XEvent* event);
 static void     Disarm                  (XmWorkspaceWidget ww,
 	                                 XEvent* event);
+static void     KeyboardNavigation      (XmWorkspaceWidget ww,
+	                                 XEvent* event);
 static void     ConstraintInitialize    (Widget req,
 	                                 Widget new);
 static Boolean  ConstraintSetValues     (Widget current,
@@ -237,6 +246,10 @@ static void     GrabSelections          (Widget w,
 	                                 String* params,
 	                                 Cardinal* num_params);
 static void     MoveResizeSelections     (Widget w,
+	                                 XEvent* event,
+	                                 String* params,
+	                                 Cardinal* num_params);
+static void     ChildNavigation         (Widget w,
 	                                 XEvent* event,
 	                                 String* params,
 	                                 Cardinal* num_params);
@@ -336,17 +349,20 @@ static void     ResizeSurrogate         (XmWorkspaceWidget ww,
 					 int width, 
 					 int height);
 static Boolean  PerformSpaceWars        (XmWorkspaceWidget ww,
-	                                 Boolean change_managed);
+	                                 Boolean change_managed,
+					 XEvent* event);
 static Boolean ResolveOverlaps         (XmWorkspaceWidget ww,
 	                                 struct SortRec* sortlist,
-	                                 Boolean* first_selected);
+	                                 Boolean* first_selected,
+					 XEvent* event);
 static Boolean  MoveIfDisplaced         (XmWorkspaceWidget ww,
 	                                 struct SortRec *list,
 	                                 int max_x,
 	                                 int max_y);
 static int      MoveAToRightOfB         (XmWorkspaceWidget ww,
 	                                 struct SortRec* movee,
-	                                 struct SortRec *mover);
+	                                 struct SortRec *mover,
+					 XEvent* event);
 static void  RepositionSelectedChildren (struct SortRec* current,
 	                                 short delta_x);
 static struct SortRec* GetSortList      (XmWorkspaceWidget ww,
@@ -378,6 +394,7 @@ void ReallocCollideLists(XmWorkspaceWidget ww);
 static void MyInsertChild( Widget w);
 static void MyDeleteChild( Widget w);
 extern void MarkCommonLines(XmWorkspaceWidget ww);
+static void dropResizedSurrogates (XmWorkspaceWidget ww, int delta_x, int delta_y, XEvent* event);
 
 #if (OLD_LESSTIF == 1)
 #define GetFormConstraint(w) (&((XmFormConstraints) (w)->core.constraints)->form)
@@ -678,6 +695,7 @@ static char defaultTranslations[] =
 	"<Btn1Down>:     arm() \n\
 	<Btn1Motion>:   drag()\n\
 	<Key>osfHelp:   ManagerGadgetHelp()\n\
+	<Key>:          kbd_nav()\n\
 	<Btn1Up>:       disarm()";
 
 /*  Translation table to be installed on the children for selection actions  */
@@ -685,6 +703,7 @@ static char acceleratorTranslations[] = "#override\n\
 	<Btn1Motion>:   move_w()\n\
         <Btn1Down>:     select_w()\n\
 	<Btn1Up>(2+):   select_w() release_w() select_w() release_w()\n\
+	<Key>:          child_nav()\n\
         <Btn1Up>:       release_w()";
 
 static char traversalTranslations[] =
@@ -698,8 +717,10 @@ XtActionsRec defaultActions[] = {
     {"arm",             (XtActionProc)Arm},
     {"drag",            (XtActionProc)Drag},
     {"disarm",          (XtActionProc)Disarm},
+    {"kbd_nav",         (XtActionProc)KeyboardNavigation},
     {"select_w",        (XtActionProc)GrabSelections },
     {"move_w",          (XtActionProc)MoveResizeSelections },
+    {"child_nav",       (XtActionProc)ChildNavigation},
 #if RESIZE_HANDLES
     {"grow_ne",         (XtActionProc)ResizeNE },
     {"grow_nw",         (XtActionProc)ResizeNW },
@@ -953,7 +974,8 @@ static void Initialize( XmWorkspaceWidget request, XmWorkspaceWidget new )
      
     trans_table = XtParseTranslationTable (defaultTranslations);
     XtSetArg (warg, XmNtranslations, trans_table);
-    XtSetValues ((Widget)new, &warg, 1);
+    // Don't check this in -MST
+    //XtSetValues ((Widget)new, &warg, 1);
 }
 
 
@@ -1465,7 +1487,7 @@ static Boolean SetValues( XmWorkspaceWidget current,
 	    nc = WORKSPACE_CONSTRAINT(child);
 	    nc->workspace.is_newly_managed = True;
 	    }
-	moved = PerformSpaceWars(new, TRUE);
+	moved = PerformSpaceWars(new, TRUE, NULL);
 	for( i=0; i<new->composite.num_children; i++ )
 	    {
 	    child = new->composite.children[i];
@@ -1981,7 +2003,7 @@ static void ChangeManaged( XmWorkspaceWidget ww )
 
     /*  If a child has been added, make sure it doesn't add any overlaps  */
     if ((resolve_overlap) && (!ww->workspace.auto_arrange))
-	(void)PerformSpaceWars(ww, TRUE);
+	(void)PerformSpaceWars(ww, TRUE, NULL);
     /* %% Check window size and extents for need to resize */
     if( ww->workspace.lines )
 	{
@@ -2014,6 +2036,42 @@ static XtGeometryResult
 GeometryManager( Widget w, XtWidgetGeometry *request, XtWidgetGeometry *reply )
 {
     return _GeometryManager (w, request, reply, True);
+}
+
+/*
+ * Expose the ability to move standins programatically.  Using
+ * XtSetValues() doesn't work for this because our GeometryManager
+ * is never called.  Using XtMakeGeometryRequest() almost does the job
+ * but that function is doc'ed as being only for widget writers
+ * to use and not for application programmers.  In addition to
+ * changing x,y location of standins, we need to ensure that
+ * line routing is handled at the same time.
+ */
+Boolean XmWorkspaceSetLocation (Widget w, Dimension x, Dimension y)
+{
+    XmWorkspaceWidget ww;
+    XtWidgetGeometry req;
+    XtGeometryResult result;
+
+    ww = (XmWorkspaceWidget)XtParent(w);
+    req.request_mode = 0;
+
+
+    /* Using 32767 is a hack.  I just happen to know that that it's
+     * what we use elsewhere in dxui to indicate no-change.
+     */
+    if (x != 32767) {
+	req.request_mode|= CWX;
+	req.x = x;
+    }
+    if (y != 32767) {
+	req.request_mode|= CWY;
+	req.y = y;
+    }
+
+    if (req.request_mode == 0) return TRUE;
+	result = XtMakeGeometryRequest (w, &req, NULL);
+    return (result == XtGeometryYes);
 }
 
 static XtGeometryResult 
@@ -2113,7 +2171,7 @@ XtGeometryResult retval;
         }
     if ((resolve_overlap) && (!ww->workspace.auto_arrange))
 	{
-	(void)PerformSpaceWars(ww, TRUE);
+	(void)PerformSpaceWars(ww, TRUE, NULL);
 	}
 
     if (!constraints->workspace.line_invisibility)
@@ -2293,7 +2351,102 @@ Boolean bool = True;
 	EndRubberband(ww, event);
 }
 
-
+/*
+ * Action for using the keyboard in the empty canvas
+ * Should move selected children if any
+ * Handling keysyms should not be done here.  The proper way is to write a
+ * translation table that ties specific key events to their operations.  This
+ * isn't working on my computer however.  The keyboard's arrow keys never 
+ * percolate this far if the translation table specifies them.
+ */
+static void KeyboardNavigation( XmWorkspaceWidget ww, XEvent* event )
+{
+    KeySym keysym;
+    int delta_x, delta_y;
+    int dx=1, dy=1;
+    int i;
+    int minx, miny;
+    short first = True;
+    XmWorkspaceConstraints constraints;
+    switch (event->type) {
+	case KeyPress:
+	    keysym = XLookupKeysym (&event->xkey, 0);
+	    if ((keysym == XK_Left) || (keysym == XK_Right) ||
+		(keysym == XK_Up) || (keysym == XK_Down)) {
+		if( ww->workspace.movement_is_allowed && (!ww->workspace.is_moving) &&
+		    !(event->xbutton.state & ControlMask) )
+		{
+		    /*  Prepare to move  */
+		    ww->workspace.grab_x = 0;
+		    ww->workspace.grab_y = 0;
+		    ww->workspace.is_moving = TRUE;
+		    ww->workspace.is_resizing = FALSE;
+		    /*  Use base variables to keep track of move applied so far  */
+		    ww->workspace.base_x = 0;
+		    ww->workspace.base_y = 0;
+		    /* loop over all selected */
+		    /* set min_x, min_y so that we know when to stop sliding left,up */
+		    for(i=0; i<ww->composite.num_children; i++)
+		    {
+			Widget child = ww->composite.children[i];
+			constraints = WORKSPACE_CONSTRAINT(child);
+			if(constraints->workspace.is_selected)
+			{
+			    if (first) {
+				minx = child->core.x;
+				miny = child->core.y;
+				first = 0;
+			    } else {
+				minx = MIN(minx, child->core.x);
+				miny = MIN(miny, child->core.y);
+			    }
+			}
+		    }
+		}
+	    }
+	    if (first) ww->workspace.is_moving = FALSE;
+	    delta_x = delta_y = 0;
+	    if (ww->workspace.snap_to_grid) {
+		dx = ww->workspace.grid_width;
+		dy = ww->workspace.grid_height;
+	    }
+	    switch (keysym) {
+		case XK_Left:
+		    if ((minx-dx)<0) ww->workspace.is_moving = FALSE;
+		    delta_x = -dx;
+		    break;
+		case XK_Right:
+		    delta_x = dx;
+		    break;
+		case XK_Up:
+		    if ((miny-dy)<0) ww->workspace.is_moving = FALSE;
+		    delta_y = -dy;
+		    break;
+		case XK_Down:
+		    delta_y = dy;
+		    break;
+		default:
+		    break;
+	    }
+	    /*
+	     * If check_overlap is turned on then we set up the surrogates
+	     * and run the check for overlapping before allow the move to
+	     * go ahead.
+	     */
+	    if ((ww->workspace.check_overlap) && (ww->workspace.is_moving)) {
+		SaveOutlines (ww);
+		if (Overlapping (ww, delta_x, delta_y ))
+		    ww->workspace.is_moving = FALSE;
+		DiscardSurrogate (ww);
+	    }
+	    if (ww->workspace.is_moving) {
+		dropResizedSurrogates (ww, delta_x, delta_y, event);
+	    }
+	    break;
+	default:
+	    break;
+    }
+}
 /*  Subroutine: Drag
  *  Purpose:    Action for when the mouse is dragged with button1 down
  */
@@ -2382,6 +2535,15 @@ XmWorkspaceWidget ww;
     return ww;
 }
 
+
+static void ChildNavigation (Widget w, XEvent* event, String* ignore, Cardinal* ignore2)
+{
+XmWorkspaceWidget ww;
+
+    if (!(ww = WorkspaceOfWidget(w))) return ;
+
+    KeyboardNavigation (ww, event);
+}
 
 
 /*  Subroutine: GrabSelections
@@ -2515,19 +2677,11 @@ XmWorkspaceWidget ww;
 	    ww->workspace.move_cursor_installed = TRUE;
 	}
 	delta_x = event->xbutton.x - ww->workspace.grab_x;
+	delta_y = event->xbutton.y - ww->workspace.grab_y;
 	if( delta_x < ww->workspace.min_x )
 	    delta_x = ww->workspace.min_x;
-	/*
-	else if( delta_x > ww->workspace.max_x )
-	    delta_x = ww->workspace.max_x;
-	*/
-	delta_y = event->xbutton.y - ww->workspace.grab_y;
 	if( delta_y < ww->workspace.min_y )
 	    delta_y = ww->workspace.min_y;
-	/*
-	else if( delta_y > ww->workspace.max_y )
-	    delta_y = ww->workspace.max_y;
-	*/
 	delta_x -= ww->workspace.base_x;
 	delta_y -= ww->workspace.base_y;
 	MoveSurrogate(ww, delta_x, delta_y);
@@ -2669,127 +2823,7 @@ static void DropSelections( Widget w, XEvent* event,
 		ReallocCollideLists(ww);
 		}
 	}
-	if( (delta_x != 0) || (delta_y != 0) )
-	{
-	    /* Go through all the children and see if they were selected.  If
-	     * they were, "hide" them in the collide lists, so they do not 
-	     * cause collisions with the ones that are moved first.  For the
-	     * lines, simply remove them from the lists.  They will be added
-	     * back in when they are re-reouted 
-	     */
-	    for( i=ww->composite.num_children-1; i>=0; i-- )
-	        {
-	        child = ww->composite.children[i];
-	        constraints = WORKSPACE_CONSTRAINT(child);
-	        if( constraints->workspace.is_selected == TRUE )
-	            {
-	            constraints->workspace.x_delta = delta_x;
-	            constraints->workspace.y_delta = delta_y;
-	            if( ww->workspace.snap_to_grid )
-	                SnapToGrid(ww, child, constraints, FALSE);
-		    if ( (constraints->workspace.x_delta != 0 ) ||
-			 (constraints->workspace.y_delta != 0) )
-			{
-			if (!constraints->workspace.line_invisibility)
-			    HideWidgetInCollideList(ww, child);
-			for( line = constraints->workspace.source_lines;
-			     line;
-			     line = line->src_next )
-			    {
-			    if( line->is_to_be_moved == FALSE )
-			        {
-        		        RemoveLineFromCollideList(ww, line);
-			        line->is_to_be_moved = TRUE;
-			        AugmentExposureAreaForLine(ww, line);
-		    	        }
-		            }
-		        for( line = constraints->workspace.destination_lines;
-		    	    line;
-			    line = line->dst_next )
-		            {
-		            if( line->is_to_be_moved == FALSE )
-			        {
-        		        RemoveLineFromCollideList(ww, line);
-			        line->is_to_be_moved = TRUE;
-			        AugmentExposureAreaForLine(ww, line);
-		    	        }
-		            }
-		        }
-	            }
-		}
-	    for( i=ww->composite.num_children-1; i>=0; i-- )
-	    {
-	        child = ww->composite.children[i];
-	        constraints = WORKSPACE_CONSTRAINT(child);
-	        if( constraints->workspace.is_selected == TRUE )
-	        {
-	            constraints->workspace.x_delta = delta_x;
-	            constraints->workspace.y_delta = delta_y;
-	            if( ww->workspace.snap_to_grid )
-	                SnapToGrid(ww, child, constraints, FALSE);
-		    if ( ((constraints->workspace.x_delta != 0) ||
-			 (constraints->workspace.y_delta != 0)) && 
-			  !ww->workspace.suppress_callbacks )
-			{
-			XmWorkspacePositionChangeCallbackStruct call_data;
-
-			call_data.child = child;
-			call_data.x = constraints->workspace.x_left + 
-			    constraints->workspace.x_delta;
-			call_data.y = constraints->workspace.y_upper + 
-			    constraints->workspace.y_delta;
-			call_data.event = event;
-			XtCallCallbacks((Widget)
-			    ww, XmNpositionChangeCallback, &call_data);
-			}
-	            if( ww->bulletin_board.allow_overlap )
-	                MoveChild(ww, child, constraints);
-	            else
-	            {
-	                if ((POLICY(ww) == XmSPACE_WARS_LEFT_MOST_STAYS)||
-	                    (POLICY(ww) == XmSPACE_WARS_SELECTED_MIGRATE))
-	                    /*  Register position where widget was dropped  */
-	                    constraints->workspace.x_index += delta_x;
-	                else
-	                    /*  Register position post-snap_to_grid  */
-	                    constraints->workspace.x_index +=
-	                      constraints->workspace.x_delta;
-	            }
-	        }
-	    }
-	}
-	/*  Deal with overlaps by movement or stacking  */
-	if( ww->bulletin_board.allow_overlap  )
-	    RestackSelectedChildren(ww);
-	else
-	    (void)PerformSpaceWars(ww, FALSE);
-	ww->workspace.is_moving = FALSE;
-	/*  Redraw any affected application lines  */
-	if( ww->workspace.lines )
-	{
-	    /*  Establish new routes for lines that were moved  */
-	    RerouteLines(ww, FALSE);
-	    if ( (delta_x != 0) || (delta_y != 0) )
-	    {
-		if( ww->workspace.expose_left < ww->workspace.expose_right )
-		{
-		    if (XtWindow(ww))
-			XClearArea(XtDisplay(ww), XtWindow(ww),
-			   ww->workspace.expose_left,
-			   ww->workspace.expose_upper,
-			   ww->workspace.expose_right - 
-			   ww->workspace.expose_left,
-			   ww->workspace.expose_lower - 
-			   ww->workspace.expose_upper, False);
-		}
-	    }
-	}
-	if( ww->workspace.move_cursor_installed )
-	{
-	    if (XtWindow(ww))
-		XUndefineCursor(XtDisplay(ww), XtWindow(ww));
-	    ww->workspace.move_cursor_installed = FALSE;
-	}
+	dropResizedSurrogates (ww, delta_x, delta_y, event);
     }
     if( ww->workspace.is_resizing)
     {
@@ -2862,10 +2896,142 @@ static void DropSelections( Widget w, XEvent* event,
 	if( ww->bulletin_board.allow_overlap  )
 	    RestackSelectedChildren(ww);
 	else
-	    PerformSpaceWars(ww, FALSE);
+	    PerformSpaceWars(ww, FALSE, event);
     }
 }
 
+/*
+ * Broken out of DropSelections so that the code can be called from a similar
+ * operation performed using the keyboard instead of the mouse
+ */
+static void dropResizedSurrogates (XmWorkspaceWidget ww, int delta_x, int delta_y, XEvent* event)
+{
+    XmWorkspaceChildCallbackStruct cb;
+    XmWorkspaceConstraints constraints;
+    XmWorkspaceLine line;
+    Widget child;
+    int i;
+    if( (delta_x != 0) || (delta_y != 0) ) {
+	/* Go through all the children and see if they were selected.  If
+	 * they were, "hide" them in the collide lists, so they do not 
+	 * cause collisions with the ones that are moved first.  For the
+	 * lines, simply remove them from the lists.  They will be added
+	 * back in when they are re-reouted 
+	 */
+	for( i=ww->composite.num_children-1; i>=0; i-- )
+	    {
+	    child = ww->composite.children[i];
+	    constraints = WORKSPACE_CONSTRAINT(child);
+	    if( constraints->workspace.is_selected == TRUE )
+		{
+		constraints->workspace.x_delta = delta_x;
+		constraints->workspace.y_delta = delta_y;
+		if( ww->workspace.snap_to_grid )
+		    SnapToGrid(ww, child, constraints, FALSE);
+		if ( (constraints->workspace.x_delta != 0 ) ||
+		     (constraints->workspace.y_delta != 0) )
+		    {
+		    if (!constraints->workspace.line_invisibility)
+			HideWidgetInCollideList(ww, child);
+		    for( line = constraints->workspace.source_lines;
+			 line;
+			 line = line->src_next )
+			{
+			if( line->is_to_be_moved == FALSE )
+			    {
+			    RemoveLineFromCollideList(ww, line);
+			    line->is_to_be_moved = TRUE;
+			    AugmentExposureAreaForLine(ww, line);
+			    }
+			}
+		    for( line = constraints->workspace.destination_lines;
+			line;
+			line = line->dst_next )
+			{
+			if( line->is_to_be_moved == FALSE )
+			    {
+			    RemoveLineFromCollideList(ww, line);
+			    line->is_to_be_moved = TRUE;
+			    AugmentExposureAreaForLine(ww, line);
+			    }
+			}
+		    }
+		}
+	    }
+	for( i=ww->composite.num_children-1; i>=0; i-- )
+	{
+	    child = ww->composite.children[i];
+	    constraints = WORKSPACE_CONSTRAINT(child);
+	    if( constraints->workspace.is_selected == TRUE )
+	    {
+		constraints->workspace.x_delta = delta_x;
+		constraints->workspace.y_delta = delta_y;
+		if( ww->workspace.snap_to_grid )
+		    SnapToGrid(ww, child, constraints, FALSE);
+		if ( ((constraints->workspace.x_delta != 0) ||
+		     (constraints->workspace.y_delta != 0)) && 
+		      !ww->workspace.suppress_callbacks )
+		    {
+		    XmWorkspacePositionChangeCallbackStruct call_data;
+
+		    call_data.child = child;
+		    call_data.x = constraints->workspace.x_left + 
+			constraints->workspace.x_delta;
+		    call_data.y = constraints->workspace.y_upper + 
+			constraints->workspace.y_delta;
+		    call_data.event = event;
+		    XtCallCallbacks((Widget)
+			ww, XmNpositionChangeCallback, &call_data);
+		    }
+		if( ww->bulletin_board.allow_overlap )
+		    MoveChild(ww, child, constraints);
+		else
+		{
+		    if ((POLICY(ww) == XmSPACE_WARS_LEFT_MOST_STAYS)||
+			(POLICY(ww) == XmSPACE_WARS_SELECTED_MIGRATE))
+			/*  Register position where widget was dropped  */
+			constraints->workspace.x_index += delta_x;
+		    else
+			/*  Register position post-snap_to_grid  */
+			constraints->workspace.x_index +=
+			  constraints->workspace.x_delta;
+		}
+	    }
+	}
+    }
+    /*  Deal with overlaps by movement or stacking  */
+    if( ww->bulletin_board.allow_overlap  )
+	RestackSelectedChildren(ww);
+    else
+	(void)PerformSpaceWars(ww, FALSE, event);
+    ww->workspace.is_moving = FALSE;
+    /*  Redraw any affected application lines  */
+    if( ww->workspace.lines )
+    {
+	/*  Establish new routes for lines that were moved  */
+	RerouteLines(ww, FALSE);
+	if ( (delta_x != 0) || (delta_y != 0) )
+	{
+	    if( ww->workspace.expose_left < ww->workspace.expose_right )
+	    {
+		if (XtWindow(ww))
+		    XClearArea(XtDisplay(ww), XtWindow(ww),
+		       ww->workspace.expose_left,
+		       ww->workspace.expose_upper,
+		       ww->workspace.expose_right - 
+		       ww->workspace.expose_left,
+		       ww->workspace.expose_lower - 
+		       ww->workspace.expose_upper, False);
+	    }
+	}
+    }
+    if( ww->workspace.move_cursor_installed )
+    {
+	if (XtWindow(ww))
+	    XUndefineCursor(XtDisplay(ww), XtWindow(ww));
+	ww->workspace.move_cursor_installed = FALSE;
+    }
+}
 
 /*  Subroutine: MoveChild
  *  Purpose:    Move child widget by given offsets and update constraints notes
@@ -4020,7 +4186,7 @@ static void ResizeSurrogate( XmWorkspaceWidget ww, int width, int height )
  *               1: First selected child on left maintains ordered position
  *               2: Selected widgets stay put, all others move right as needed
  */
-static Boolean PerformSpaceWars( XmWorkspaceWidget ww, Boolean change_managed)
+static Boolean PerformSpaceWars( XmWorkspaceWidget ww, Boolean change_managed, XEvent* event)
 {
     struct SortRec* sortlist;
     struct SortRec* current;
@@ -4035,7 +4201,7 @@ static Boolean PerformSpaceWars( XmWorkspaceWidget ww, Boolean change_managed)
     if (sortlist != NULL)
     {
 	/*  Call potentially recursive (but not) space resolution algorithm  */
-	moved = ResolveOverlaps(ww, sortlist, &first_selected);
+	moved = ResolveOverlaps(ww, sortlist, &first_selected, event);
 	/*  Perform insertion sort of linked list, by x_right  */
 	for( current = sortlist->next, sortlist->next = NULL;
 	     current != NULL;
@@ -4067,7 +4233,7 @@ static Boolean PerformSpaceWars( XmWorkspaceWidget ww, Boolean change_managed)
  *              overlap checks on sublists of widgets.
  */
 static Boolean ResolveOverlaps( XmWorkspaceWidget ww, struct SortRec* sortlist,
-	                     Boolean* first_selected )
+	                     Boolean* first_selected, XEvent* event )
 {
     struct SortRec* current;
     struct SortRec* current_next;
@@ -4105,7 +4271,7 @@ static Boolean ResolveOverlaps( XmWorkspaceWidget ww, struct SortRec* sortlist,
 	                   && current->is_selected) )
 	            {
 	                /*  Push overlapping widgets farther to right  */
-	                (void)MoveAToRightOfB(ww, other, current);
+	                (void)MoveAToRightOfB(ww, other, current, event);
 	                /*  Make resolution repeat from displaced widget  */
 	                if( current_next == current->next )
 	                    current_next = other;
@@ -4113,7 +4279,7 @@ static Boolean ResolveOverlaps( XmWorkspaceWidget ww, struct SortRec* sortlist,
 	            else
 	            {
 	                /*  Slide to right of overlapping widgets on left  */
-	                delta_x += MoveAToRightOfB(ww, current, other);
+	                delta_x += MoveAToRightOfB(ww, current, other, event);
 	                /*  Check list of widgets again for more conflict  */
 	                other_next = sortlist;
 	            }
@@ -4152,7 +4318,7 @@ static Boolean ResolveOverlaps( XmWorkspaceWidget ww, struct SortRec* sortlist,
 	               && (!current->is_selected) )
 	            {
 	                /*  Slide to right of overlapping widgets on right   */
-	                (void)MoveAToRightOfB(ww, current, other);
+	                (void)MoveAToRightOfB(ww, current, other, event);
 	                /*  Make resolution repeat with this widget  */
 	                if( current_next == current->next )
 	                    current_next = current;
@@ -4161,7 +4327,7 @@ static Boolean ResolveOverlaps( XmWorkspaceWidget ww, struct SortRec* sortlist,
 	            else
 	            {
 	                /*  Push overlapping widgets on right farther right  */
-	                (void)MoveAToRightOfB(ww, other, current);
+	                (void)MoveAToRightOfB(ww, other, current, event);
 	            }
 		    moved = True;
 	        }
@@ -4178,7 +4344,7 @@ static Boolean ResolveOverlaps( XmWorkspaceWidget ww, struct SortRec* sortlist,
  *  Purpose:    Move the x position of movee to right of mover.
  */
 static int MoveAToRightOfB( XmWorkspaceWidget ww,
-	                    struct SortRec* movee, struct SortRec *mover )
+	                    struct SortRec* movee, struct SortRec *mover, XEvent* event )
 {
     int delta_x;
     delta_x = 1 + mover->x_right - movee->x_left;
@@ -4211,7 +4377,7 @@ static int MoveAToRightOfB( XmWorkspaceWidget ww,
 		    movee->constraints->workspace.x_delta;
 	    call_data.y = movee->constraints->workspace.y_upper + 
 		    movee->constraints->workspace.y_delta;
-	    call_data.event = NULL;
+	    call_data.event = event;
 	    XtCallCallbacks((Widget)
 		    ww, XmNpositionChangeCallback, &call_data);
 	    }
@@ -4222,6 +4388,18 @@ static int MoveAToRightOfB( XmWorkspaceWidget ww,
 	delta = movee->constraints->workspace.y_delta;
 	movee->y_upper = movee->constraints->workspace.y_upper + delta;
 	movee->y_lower = movee->constraints->workspace.y_lower + delta;
+    } else 
+    {
+	XmWorkspacePositionChangeCallbackStruct call_data;
+
+	call_data.child = movee->child;
+	call_data.x = movee->constraints->workspace.x_left + 
+		movee->constraints->workspace.x_delta;
+	call_data.y = movee->constraints->workspace.y_upper + 
+		movee->constraints->workspace.y_delta;
+	call_data.event = event;
+	XtCallCallbacks((Widget)
+		ww, XmNpositionChangeCallback, &call_data);
     }
     movee->is_displaced = TRUE;
     return delta_x;

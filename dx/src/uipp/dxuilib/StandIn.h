@@ -17,6 +17,7 @@
 #include "UIComponent.h"
 #include "List.h"
 #include "DXDragSource.h"
+#include "Tab.h"
 
 
 //
@@ -32,6 +33,7 @@
 extern "C" void StandIn_TrackArkEH(Widget, XtPointer, XEvent*, Boolean*);
 extern "C" void StandIn_Button2PressEH(Widget, XtPointer, XEvent*, Boolean*);
 extern "C" void StandIn_Button2ReleaseEH(Widget, XtPointer, XEvent*, Boolean*);
+extern "C" void StandIn_TabKeyNavEH(Widget, XtPointer, XEvent*, Boolean*);
 extern "C" void StandIn_DisarmTabCB(Widget, XtPointer, XtPointer);
 extern "C" void StandIn_ArmOutputCB(Widget, XtPointer, XtPointer);
 extern "C" void StandIn_ArmInputCB(Widget, XtPointer, XtPointer);
@@ -111,6 +113,10 @@ class StandIn : public UIComponent, public DXDragSource
                 XtPointer clientData,
                 XEvent* event,
 		Boolean *cont);
+    friend void StandIn_TabKeyNavEH(Widget widget,
+                XtPointer ,
+                XEvent* event,
+		Boolean *keep_going);
     friend Boolean StandIn_DragDropWP(XtPointer);
 
     void trackArk(Widget widget, XEvent *event);
@@ -152,6 +158,13 @@ class StandIn : public UIComponent, public DXDragSource
     int drag_drop_wpid;
 
 
+    //
+    // In order to allow keyboard events to percolate up to the workspace,
+    // I'm breaking out low level window munging code from :createStandIn()
+    // into a separate method because the code needs to be applied to the
+    // io tabs as well.
+    //
+    static void ModifyButtonWindowAttributes(Widget button, int mask);
 
   protected:
     //
@@ -179,6 +192,12 @@ class StandIn : public UIComponent, public DXDragSource
     // Constructor:
     //
     StandIn(WorkSpace *w, Node *node);
+
+    //
+    // Set XmNuserData on the root widget so that we can track movement
+    // in the workspace for the purpose of implementing undo
+    //
+    virtual void setRootWidget(Widget root, boolean standardDestroy = TRUE);
 
   public:
 
@@ -279,6 +298,14 @@ class StandIn : public UIComponent, public DXDragSource
     // Now that StandIns can live in any WorkSpace, we need to query this.
     //
     WorkSpace *getWorkSpace() { return this->workSpace; }
+
+    //
+    // In addition to superclass work, also recreate an XmWorkspaceLine because
+    // the start/end locations of the lines are fixed when they're created.
+    // We need to do this on behalf of the new function that rearranges the
+    // contents of the vpe based on connectivity.
+    //
+    virtual void setXYPosition (int x, int y);
 
     //
     // Returns a pointer to the class name.

@@ -177,6 +177,14 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
     boolean recorded_positions;
     boolean record_positions;
 
+    //
+    // Track changes in the positions of things in the canvas so
+    // that we can provide an undo.  This is needed due to the new
+    // function that lays out the graph automatically.  The function
+    // might make a bad layout that the user would want to undo.
+    //
+    virtual void doPosChangeAction (Widget, XtPointer);
+
   public:
 
     //

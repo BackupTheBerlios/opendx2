@@ -556,6 +556,30 @@ void WorkSpaceComponent::widgetDestroyed ()
     this->UIComponent::widgetDestroyed ();
 }
 
+//
+// In addition to superclass work, we'll need to create new workspace
+// lines since the start/end points of
+// In the case of StandIn, using the superclass doesn't do any good
+// since the widget is geometry-managed by the containing widget.  Setting
+// XmN{x,y} has no effect.
+//
+void WorkSpaceComponent::setXYPosition (int x, int y)
+{
+    this->UIComponent::setXYPosition (x,y);
+    if (this->isManaged())
+	XmWorkspaceSetLocation (this->getRootWidget(), x, y);
+}
+
+// 
+// Store the this pointer in the widget's XmNuserData so that we
+// can retrieve the Object in a callback in EditorWorkSpace.C
+// 
+void WorkSpaceComponent::setRootWidget(Widget root, boolean standardDestroy)
+{
+    this->UIComponent::setRootWidget(root, standardDestroy);
+    this->setLocalData(this);
+}
+
 extern "C"  {
 void Component_motionEH 
 (Widget w, XtPointer , XEvent *xev, Boolean *keep_going)

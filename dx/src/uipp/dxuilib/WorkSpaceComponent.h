@@ -140,6 +140,12 @@ class WorkSpaceComponent : public UIComponent
     //
     virtual void widgetDestroyed();
 
+    //
+    // Set XmNuserData on the root widget so that we can track movement
+    // in the workspace for the purpose of implementing undo
+    //
+    virtual void setRootWidget(Widget root, boolean standardDestroy = TRUE);
+
   public:
     //
     // W I D T H   A N D   H E I G H T   I S S U E S
@@ -230,6 +236,14 @@ class WorkSpaceComponent : public UIComponent
     //
     virtual Network* getNetwork() = 0;
     WorkSpace *getWorkSpace() { return this->workSpace; }
+
+    //
+    // In addition to superclass work, also recreate an XmWorkspaceLine because
+    // the start/end locations of the lines are fixed when they're created.
+    // We need to do this on behalf of the new function that rearranges the
+    // contents of the vpe based on connectivity.
+    //
+    virtual void setXYPosition (int x, int y);
 
     // Destructor:
     ~WorkSpaceComponent(); 

@@ -224,6 +224,15 @@ boolean NoUndoEditorCommand::doIt(CommandInterface *ci)
 	case NoUndoEditorCommand::UnjavifyNetwork:
 	    editor->unjavifyNetwork();
 	    break;
+	case NoUndoEditorCommand::StraightenArcs:
+	    editor->applyArcStraightener();
+	    break;
+	case NoUndoEditorCommand::ReflowGraph:
+	    editor->reflowEntireGraph();
+	    break;
+	case NoUndoEditorCommand::Undo:
+	    editor->undo();
+	    break;
 	default:
 	    ASSERT(0);
     }

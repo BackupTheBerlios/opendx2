@@ -101,6 +101,7 @@ HDRS2 = \
 	FindStack.h \
 	FindToolDialog.h \
 	GetSetConversionDialog.h \
+	GraphLayout.h \
 	GridDialog.h \
 	GroupManager.h \
 	GroupStyle.h \
@@ -209,6 +210,7 @@ HDRS4 = \
 	ToggleAttrDialog.h \
 	ToggleInstance.h \
 	ToolSelector.h \
+	UndoMove.h \
 	VPEAnnotator.h \
 	VPEPage.h \
 	VPEPostIt.h \
@@ -279,6 +281,7 @@ SRCS1 = \
 
 SRCS2 = \
 	GridDialog.C \
+	GraphLayout.C \
 	GroupManager.C \
 	GroupStyle.C \
 	GroupedObject.C \
@@ -388,6 +391,7 @@ SRCS5 = \
 	ToggleInstance.C \
 	ToolSelector.C \
 	TransferAccelerator.c \
+	UndoMove.C \
 	VPEAnnotator.C \
 	VPEPage.C \
 	VPEPostIt.C \
