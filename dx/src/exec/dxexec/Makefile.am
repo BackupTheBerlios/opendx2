@@ -4,6 +4,7 @@ INCLUDES = -I${srcdir}/../dpexec -D@ARCH@
 
 EXPARG=@EXPARG@
 EXP=${top_srcdir}/lib/dxexec.exp
+WEXP=${top_srcdir}/lib/dxexec.def
 
 dxbindir = $(prefix)/dx/bin_@ARCH@
 dxbin_PROGRAMS = dxexec

@@ -247,6 +247,10 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
 		AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP)
 	    fi
 	    ;;
+	intelnt)
+		DXEXEC_EXP='-def$(WEXP)'
+		AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
+	    ;;
 	linux)
 	    DXEXEC_EXP='-Wl,-export-dynamic'
 	    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
@@ -1124,6 +1128,9 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
                 MDXLDFLAG="-Wl,"
         else
                 MDXLDFLAG=""
+        fi
+        if test $ARCH = "intelnt" ; then
+                DX_RTL_IMPORTS="-def:$(top_srcdir)/lib/dxexec.def"
         fi
         if test $ARCH = "cygwin" ; then
                 DX_RTL_CFLAGS="-DDXD_WIN -DWIN32 -D_X86_ -DNOMENUS -nologo -w -0d -LD -G5"
