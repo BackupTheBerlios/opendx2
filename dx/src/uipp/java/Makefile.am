@@ -22,7 +22,8 @@ javasrvdir = $(prefix)/dx/java/server/class
 javasrv_DATA = server.jar 
 EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java exports.awk
 javalibdir = $(prefix)/dx/java/server/lib_@ARCH@
-export CLASSPATH := .:$(CLASSPATH):@WRL_CLASSPATH@
+CLASSPATH := $(CLASSPATH):.:@WRL_CLASSPATH@
+export CLASSPATH
 
 javalib_PROGRAMS = @ANYDX@
 EXTRA_PROGRAMS = libAnyDX.so AnyDX.dll
@@ -39,7 +40,7 @@ SUBDIRS = server dx
 javainfo:
 	echo JINC @JINC@ >javainfo
 	echo WRL_CLASSPATH @WRL_CLASSPATH@ >>javainfo
-	echo CLASSPATH $(CLASSPATH) >>javainfo
+	echo "CLASSPATH $(CLASSPATH)" >>javainfo
 	
 dx.jar: javainfo
 	mkdir -p classes
