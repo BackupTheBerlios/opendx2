@@ -804,6 +804,7 @@ int launchit()
 	args[i] = NULL;
 	
 #if defined(DEBUG)
+	printf("DEBUG: %d\n", DEBUG);
 	for (i=0; args[i] != NULL; i++)
 		printf("arg[%d]: %s\n", i, args[i]);
 #endif
@@ -853,7 +854,6 @@ int getparms(int argc, char **argv)
 
     for (i=1; i<argc; i++) {
 	strcpy(parm[n], argv[i]);
-	printf("%s\n", parm[n]);
 	if (!strcmp(parm[n], "-pipeargs"))
 	    readpipe = 1;
 	else
