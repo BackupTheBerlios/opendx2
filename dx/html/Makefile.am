@@ -9,7 +9,7 @@ html_files = README.htm README_SMP.htm README_alphax.htm \
 	README_sgi.htm README_solaris.htm allguide.htm \
 	insguide.htm proguide.htm qikguide.htm refguide.htm usrguide.htm \
 	search.js srchhelp.htm srchidx.js srchindx.htm srchnav.htm \
-	Help.idx
+	Help.idx notfound.htm
 
 
 EXTRA_DIST = $(html_files)

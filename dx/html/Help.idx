@@ -727,3 +727,28 @@ VectorList 		pages/refgu170.htm
 Verify 			pages/refgu171.htm
 VisualObject 		pages/refgu172.htm
 WriteImage 		pages/refgu173.htm
+
+! ----- Man page entries (macros)
+dxexport		pages/usrgu059.htm#HDRJAVAMA
+imageexport		pages/usrgu059.htm#HDRJAVAMA
+vrmlexport		pages/usrgu059.htm#HDRJAVAMA
+WebOptions		pages/usrgu059.htm#HDRJAVAMA
+ArrangeMember		pages/qikgu026.htm
+AutoScale		pages/qikgu026.htm
+BandColors		pages/qikgu026.htm
+CappedIso		pages/qikgu026.htm
+ClipSurface		pages/qikgu026.htm
+ClipVolume		pages/qikgu026.htm
+ConvertColorNameList	pages/qikgu026.htm
+Drape			pages/qikgu026.htm
+Factorial		pages/qikgu026.htm
+FormatList		pages/qikgu026.htm
+Image2			pages/qikgu026.htm
+InsetImage		pages/qikgu026.htm
+InterpolatePositions	pages/qikgu026.htm
+MakeLine		pages/qikgu026.htm
+Make3DField		pages/qikgu026.htm
+MapOnStates		pages/qikgu026.htm
+Matte			pages/qikgu026.htm
+PickPlot		pages/qikgu026.htm
+UnsquishGlyph		pages/qikgu026.htm

@@ -409,15 +409,14 @@ void HelpWin::loadTopicFile(const char *topic, const char *file)
 {
     if(UseWebBrowser) {
     	//Start web browser with file
-	if(strcmp(topic, file) == 0) {
-	    fprintf(stderr, "Cannot find help on: %s\n", topic);
-	    return;
-	}
     	char url[520];
     	strcpy(url, "file://");
     	strcat(url, GetHTMLDirectory());
     	strcat(url, "/");
-    	strcat(url, file);
+	if(strcmp(topic, file) == 0)
+	    strcat(url, "notfound.htm");
+	else
+    	    strcat(url, file);
     	if(!_dxf_StartWebBrowserWithURL(url)) {
 		// Couldn't start browser
 	    HelpOn(this->multiText, LINK, (char*)file, (char*)topic, 0);
