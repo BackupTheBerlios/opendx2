@@ -47,7 +47,7 @@
  */
 
 #define SCALE (1<<10)	/* integer scaling */
-#define MAX (1<<20)	/* max coordinates before overflow */
+#define MAXC (1<<20)	/* max coordinates before overflow */
 
 #define CLIPZ      (z>pix->z && z<pix->front && z>pix->back)
 #define NOCLIPZ    (z>pix->z)
@@ -178,8 +178,8 @@ line(struct buffer *buf, struct xfield *xf, Line l,
 
 #if 0
     /* overflow check - XXX check performance impact */
-    if (p.x>=MAX || p.x<=-MAX || p.y>=MAX || p.y<=-MAX
-      || p1.x>=MAX || p1.x<=-MAX || p1.y>=MAX || p1.y<=-MAX)
+    if (p.x>=MAXC || p.x<=-MAXC || p.y>=MAXC || p.y<=-MAXC
+      || p1.x>=MAXC || p1.x<=-MAXC || p1.y>=MAXC || p1.y<=-MAXC)
 	DXErrorReturn(ERROR_BAD_PARAMETER, "camera causes numerical overflow");
 #endif
 

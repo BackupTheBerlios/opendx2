@@ -116,7 +116,6 @@ static Error  AddPoint(Array, int *, Array, int *, float, float, float,
 #define CEIL(x) (x)>0? (int)((x)+1) : (int)(x)  /* ceiling */
 
 
-#define MIN(a,b)    (a>b ? b : a)
 #define ABS(x)      (((x) < 0.0) ? (- (x)) : (x))
 
 static RGBColor DEFAULTCOLOR = {1.0, 1.0, 1.0};
