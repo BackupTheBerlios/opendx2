@@ -132,8 +132,10 @@ _dxfValidate(Field f)
     Array target = NULL;
     char *tname, *cname;
     int ncurrent, ntarget, *ip;
+    int index;
+    unsigned char *cp;
     int i, j, lim, nitems;
-    Type type;
+    Type type, ref_type;
     Category cat;
     String s = NULL;
     Object o = NULL;
@@ -208,10 +210,11 @@ _dxfValidate(Field f)
 	    if (!DXGetArrayInfo(current, &nitems, &type, &cat, &rank, shape))
 		return ERROR;
 	    
-	    if (type != TYPE_INT) {
+	    if ( !( type == TYPE_INT || type == TYPE_UBYTE ) ) {
 		DXSetError(ERROR_DATA_INVALID, Err_RefNotInt, cname);
 		return ERROR;
 	    }
+	    ref_type = type;
 	    
 	    ncurrent = nitems;
 	    for (j=0; j<rank; j++)
@@ -228,14 +231,18 @@ _dxfValidate(Field f)
                 if (DXGetArrayClass(current) == CLASS_ARRAY) {
                     if ((ip = (int *)DXGetArrayData(current)) == NULL)
                         return ERROR;
+		    cp = (unsigned char *) ip;
                     
 		    /* neighbors can have -1's as indicies */
                     lim = strcmp(cname, "neighbors") ? 0 : -1;
 
-		    for (j=0; j < ncurrent; j++, ip++) {
-			if (*ip < lim || *ip >= ntarget) {
+		    for (j=0; j < ncurrent; j++) {
+			if (ref_type == TYPE_INT) index = *(ip++);
+			else                      index = *(cp++);
+
+			if (index < lim || index >= ntarget) {
 			    DXSetError(ERROR_DATA_INVALID, Err_OutOfRange,
-				j+1, ending(j+1), cname, *ip, lim, ntarget-1);
+				j+1, ending(j+1), cname, index, lim, ntarget-1);
 			    return ERROR;
 			}
 		    }
