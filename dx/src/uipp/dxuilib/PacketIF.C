@@ -46,7 +46,7 @@ extern "C" {
 #include <netdb.h>
 #endif
 
-#if defined(HAVE_WINSOCK_H)
+#if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
 #endif
 
