@@ -2,10 +2,6 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
-#ifndef DXD_WIN
-#include <values.h>
-#endif
-
 #include "hwDeclarations.h"
 #include "hwWindow.h"
 #include "hwView.h"
