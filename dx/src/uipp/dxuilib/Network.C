@@ -1552,6 +1552,8 @@ boolean anchor_reset = FALSE;
 /*                                                                           */
 /*****************************************************************************/
 
+extern int yychar;
+
 //
 // Returns TRUE if the parse was prematurely terminated.
 //
@@ -1588,7 +1590,11 @@ boolean Network::parse(FILE*    input)
 
     result = TRUE;
 
+#if defined(USING_BISON)
+    for (;;)
+#else
     while (NOT feof(yyin))
+#endif
     {
 	/*
 	 * If parse failed...
@@ -1597,6 +1603,11 @@ boolean Network::parse(FILE*    input)
 	    result = FALSE;
 	    break;
 	}
+
+#if defined(USING_BISON)
+	if (yychar == 0)
+	    break;
+#endif
 
 	/*
 	 * If error found...
@@ -5686,6 +5697,8 @@ FILE *Network::OpenNetworkFILE(const char *netFileName,
 	goto error;
     } 
 
+    if (f)
+	yyrestart(f);
 
     delete netfile;
     return f;

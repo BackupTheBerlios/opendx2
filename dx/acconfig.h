@@ -23,6 +23,7 @@
 #define HAS_sysmp		0
 #undef HAVE_REGCMP
 #define USING_LESSTIF 0
+#undef USING_BISON
 #undef HAVE_SYS_ERRLIST
 #undef HAVE_SYSCONFIG_NCPUS
 #undef ALTERNATE_CXX_SIGNAL

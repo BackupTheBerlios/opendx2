@@ -99,7 +99,15 @@ echo no
 AC_EGREP_HEADER(sys_errlist, errno.h, AC_DEFINE(HAVE_SYS_ERRLIST))
 AC_EGREP_HEADER(sys_errlist, stdio.h, AC_DEFINE(HAVE_SYS_ERRLIST))
 
-AC_PROG_YACC
+dnl Check yaccer.  Don't use standard AQC_PROG_YACC... We're going
+dnl to create an -D as well as the make variable
+AC_CHECK_PROG(yakker, bison, "bison", "yacc")
+if test "$yakker" = "bison" ; then
+    AC_DEFINE(USING_BISON)
+    YACC="bison -y"
+else
+    YACC=yacc
+fi
 
 dnl Checks for libraries.
 AC_CHECK_LIB(g++, main)
