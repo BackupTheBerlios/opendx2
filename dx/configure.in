@@ -670,10 +670,10 @@ if test "$ARCH" = "intelnt" ; then
 	AC_MSG_RESULT(no -- some components failed test)
         have_magick='no (failed tests)'
     else
-	LIB_HDF='-ldllcdf'
-	LIBS="$LIB_HDF $LIBS"
-	FMT_LIBS="$FMT_LIBS dllcdf.lib"
-	AC_DEFINE(HAVE_LIBCDF)
+	LIB_MAGICK='-lCORE_RL_magick_'
+	LIBS="$LIB_MAGICK $LIBS"
+	FMT_LIBS="$FMT_LIBS CORE_RL_magick_.lib"
+	AC_DEFINE(HAVE_LIBMAGICK)
 	AC_MSG_RESULT(yes)
 	have_magick='yes'
     fi
