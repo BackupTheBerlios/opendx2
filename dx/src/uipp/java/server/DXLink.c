@@ -11,9 +11,10 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.1 1999/07/09 19:27:50 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.2 1999/09/01 17:00:54 daniel Exp $
  */
 
+#include "dxconfig.h"
 #include <string.h>
 #include <stdlib.h>
 /* 
