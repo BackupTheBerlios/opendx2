@@ -64,10 +64,8 @@ INPUT labelscale [visible:0]; scalar; 1.0; scale factor for labels
 INPUT font [visible:0]; string; (standard); font to use for labels
 OPTIONS area; cyril_d; fixed; gothiceng_t; gothicger_t; gothicit_t
 OPTIONS greek_d; greek_s; italic_d; italic_t; pitman; roman_d
-OPTIONS roman_dser; roman_s; roman_tser; roman_ext; script_d
-OPTIONS script_s; variable;
-OPTIONS swiss; swissbld; swissit; swissbldit; dutch; dutchit; 
-OPTIONS swisscnd; domcasual; symbol; monospace;
+OPTIONS roman_dser; roman_s; roman_tser; roman_ext; roman_sfix
+OPTIONS script_d; script_s; variable;
 INPUT xticklocations [visible:0]; scalar list; (appropriate); set of x tick locations
 INPUT yticklocations [visible:0]; scalar list; (appropriate); set of y tick locations
 INPUT zticklocations [visible:0]; scalar list; (appropriate); set of z tick locations
@@ -218,10 +216,8 @@ INPUT height [visible:0]; integer; 15; height of the caption in pixels
 INPUT font [visible:0]; string; "variable"; caption font
 OPTIONS area; cyril_d; fixed; gothiceng_t; gothicger_t; gothicit_t
 OPTIONS greek_d; greek_s; italic_d; italic_t; pitman; roman_d
-OPTIONS roman_dser; roman_s; roman_tser; roman_ext; script_d
-OPTIONS script_s; variable;
-OPTIONS swiss; swissbld; swissit; swissbldit; dutch; dutchit; 
-OPTIONS swisscnd; domcasual; symbol; monospace;
+OPTIONS roman_dser; roman_s; roman_tser; roman_ext; roman_sfix
+OPTIONS script_d; script_s; variable;
 INPUT direction [visible:0]; vector; [1 0]; direction of baseline
 OPTIONS [1 0] ; [0 1]
 INPUT up [visible:0]; vector; (perpendicular to baseline); direction of vertical strokes
@@ -348,10 +344,8 @@ INPUT labelscale [visible:0]; scalar; 1.0; scale factor for labels
 INPUT font [visible:0]; string; (standard); font to use for labels
 OPTIONS area; cyril_d; fixed; gothiceng_t; gothicger_t; gothicit_t
 OPTIONS greek_d; greek_s; italic_d; italic_t; pitman; roman_d
-OPTIONS roman_dser; roman_s; roman_tser; roman_ext; script_d
-OPTIONS script_s; variable;
-OPTIONS swiss; swissbld; swissit; swissbldit; dutch; dutchit; 
-OPTIONS swisscnd; domcasual; symbol; monospace;
+OPTIONS roman_dser; roman_s; roman_tser; roman_ext; roman_sfix
+OPTIONS script_d; script_s; variable;
 INPUT ticklocations [visible:0]; scalar list; (appropriate); tick locations
 INPUT ticklabels [visible:0]; string list; (appropriate); tick labels
 INPUT usefixedfontsize [visible:0]; flag; 0; use fixed font size for labels
@@ -819,10 +813,8 @@ INPUT labelscale [visible:0]; scalar; 1.0; scale factor for labels
 INPUT font [visible:0]; string; (standard); font to use for labels
 OPTIONS area; cyril_d; fixed; gothiceng_t; gothicger_t; gothicit_t
 OPTIONS greek_d; greek_s; italic_d; italic_t; pitman; roman_d
-OPTIONS roman_dser; roman_s; roman_tser; roman_ext; script_d
-OPTIONS script_s; variable;
-OPTIONS swiss; swissbld; swissit; swissbldit; dutch; dutchit; 
-OPTIONS swisscnd; domcasual; symbol; monospace;
+OPTIONS roman_dser; roman_s; roman_tser; roman_ext; roman_sfix
+OPTIONS script_d; script_s; variable;
 OUTPUT legend; color field; the legend 
 
 
@@ -1048,10 +1040,8 @@ INPUT labelscale [visible:0]; scalar; 1.0; scale factor for labels
 INPUT font [visible:0]; string; (standard); font to use for labels
 OPTIONS area; cyril_d; fixed; gothiceng_t; gothicger_t; gothicit_t
 OPTIONS greek_d; greek_s; italic_d; italic_t; pitman; roman_d
-OPTIONS roman_dser; roman_s; roman_tser; roman_ext; script_d
-OPTIONS script_s; variable;
-OPTIONS swiss; swissbld; swissit; swissbldit; dutch; dutchit; 
-OPTIONS swisscnd; domcasual; symbol; monospace;
+OPTIONS roman_dser; roman_s; roman_tser; roman_ext; roman_sfix
+OPTIONS script_d; script_s; variable;
 INPUT input2 [visible:0]; field or group; (no default); second set of data to plot
 INPUT label2 [visible:0]; string; {"y2"}; axis label for second y axis
 INPUT ticks2 [visible:0]; integer; (input dependent); approximate number of ticks on second y axis
@@ -1547,10 +1537,8 @@ INPUT height; scalar; 1; height of the text in world coordinates
 INPUT font; string; "variable"; text font
 OPTIONS area; cyril_d; fixed; gothiceng_t; gothicger_t; gothicit_t
 OPTIONS greek_d; greek_s; italic_d; italic_t; pitman; roman_d
-OPTIONS roman_dser; roman_s; roman_tser; roman_ext; script_d
-OPTIONS script_s; variable;
-OPTIONS swiss; swissbld; swissit; swissbldit; dutch; dutchit; 
-OPTIONS swisscnd; domcasual; symbol; monospace;
+OPTIONS roman_dser; roman_s; roman_tser; roman_ext; roman_sfix
+OPTIONS script_d; script_s; variable;
 INPUT direction [visible:0]; vector; [1 0 0]; direction of baseline
 OPTIONS [1 0 0]; [0 1 0]; [0 0 1]
 INPUT up [visible:0]; vector; (perpendicular to baseline); direction of vertical strokes
