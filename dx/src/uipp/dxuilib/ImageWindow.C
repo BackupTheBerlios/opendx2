@@ -625,6 +625,7 @@ ImageWindow::~ImageWindow()
     if (this->autoAxesOption) delete this->autoAxesOption;
     if (this->throttleOption) delete this->throttleOption;
     if (this->viewControlOption) delete this->viewControlOption;
+    if (this->modeOptionCascade) delete this->modeOptionCascade;
     if (this->undoOption) delete this->undoOption;
     if (this->redoOption) delete this->redoOption;
     if (this->resetOption) delete this->resetOption;
@@ -716,6 +717,7 @@ ImageWindow::~ImageWindow()
     if (this->saveImageCmd)  delete this->saveImageCmd;
     if (this->printImageCmd) delete this->printImageCmd;
     if (this->openVPECmd) delete this->openVPECmd;
+
 
     //
     // Remove self from the network image list.
@@ -2470,6 +2472,7 @@ Boolean			iconic;
     if(actual_type != required_type)
     {
         // This case happens when the property is destroyed.
+	XFree(window);
         return;
     }
 
@@ -2501,6 +2504,8 @@ Boolean			iconic;
 	(XtDisplay(imageWindow),
 	 event->xproperty.window,
 	 event->xproperty.atom);
+
+    XFree(window);
 }
 void ImageWindow_ClientMessageCB(Widget    imageWindow,
 			     XtPointer clientData,
