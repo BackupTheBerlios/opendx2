@@ -1,24 +1,50 @@
-@echo off
+@echo off 
+if %1x==-verbosex (set VERBOSE="ver") else set VERBOSE=
 
-if %JXDRIVE%x==x   set JXDRIVE=d:
-if %DXROOT%x==x    set DXROOT=d:\dx
-if %JDKPATH%x==x   set JDKPATH=d:\jdk1_1
-if %JXSVSPATH%x==x set JXSVSPATH=\java\server
+set CURDIR=%CD% 
+cd ..
+set JXSRVPATH=%CD%
+cd ..
+set JDXROOT=%CD%
+cd ..
+set FDXROOT=%CD%
+cd %CURDIR%
+
+if %DXROOT%x==x    set DXROOT=%FDXROOT%
+if %JXSVSPATH%x==x set JXSVSPATH=%JXSRVPATH%
 if %JXMEMORY%x==x  set JXMEMORY=64
 if %JXMDF%x==x     set JXMDF=all.mdf
 
-set CLASSPATH=
-set DXMACROS=%JXSVSPATH%/dxmacros;../usermacros
+set CLASSPATH=%JXSVSPATH%\class\server.jar
+set DXMACROS=%JXSVSPATH%\dxmacros;%JXSVSPATH%\usermacros
 set DXINCLUDE=%DXMACROS%
-set DXDATA=../userdata
+set DXDATA=%JXSVSPATH%\userdata
 set DXARGS=-execonly -highlight off -optimize memory
 
-set PATH=..\bin_intelnt;%PATH%;%DXROOT%\bin;..\lib_intelnt
+if %DXJAVASRV%x==x set PATH=%DXROOT%\bin_intelnt;%PATH%;%DXROOT%\bin;%DXROOT%\lib_intelnt;%JXSVSPATH%\lib_intelnt
 
-rem  the following line is essential since cd does not do a drive change
-%JXDRIVE%
+rem Now set this variable so PATH won't keep growing.
+set DXJAVASRV=RunOnceAlready
 
-cd %JXSVSPATH%\class
-echo ../pcnets>dxserver.paths
+echo %JXSVSPATH%\nets>dxserver.paths
 
-%JDKPATH%\bin\java -DDXServer.outUrl=output -DDXServer.outDir=../../output DXServer
+if %VERBOSE%x==x goto LAUNCH
+
+:VO
+echo DXROOT = %DXROOT%
+echo CLASSPATH = %CLASSPATH%
+echo DXMACROS = %DXMACROS%
+echo DXINCLUDE = %DXINCLUDE%
+echo DXDATA = %DXDATA%
+echo DXARGS = %DXARGS%
+echo\ 
+echo\
+echo PATH = %PATH%
+echo\
+echo java -classpath %CLASSPATH% -DDXServer.outUrl=output -DDXServer.outDir=%JDXROOT%\output DXServer
+goto END
+
+:LAUNCH
+java -classpath %CLASSPATH% -DDXServer.outUrl=output -DDXServer.outDir="../../output" DXServer
+
+:END

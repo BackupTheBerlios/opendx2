@@ -213,6 +213,8 @@ envstr		teststr = 	"";
 namestr		msgstr =	"";
 namestr		errstr =	"";
 envstr		argstr =	"";
+envstr		magickhomereg = "";
+envstr		magickhome =    "";
 
 int getenvstr(char *name, char *value);
 int putenvstr(char *name, char *value);
@@ -489,7 +491,8 @@ int initrun()
     if(regval(CHECK, "Default", OPENDX_ID, dxrootreg, sizeof(dxrootreg), &keydata)) {
     	if(regval(GET, "DXROOT", OPENDX_ID, dxrootreg, sizeof(dxrootreg), &keydata) +
     	regval(GET, "DXDATA", OPENDX_ID, dxdatareg, sizeof(dxdatareg), &keydata) +
-    	regval(GET, "DXMACROS", OPENDX_ID, dxmacroreg, sizeof(dxmacroreg), &keydata) < 3)
+    	regval(GET, "DXMACROS", OPENDX_ID, dxmacroreg, sizeof(dxmacroreg), &keydata) +
+	regval(GET, "IMHOME", OPENDX_ID, magickhomereg, sizeof(magickhome), &keydata) < 4)
     	    	printf("This version of OpenDX does not appear to be correctly installed on this\n"
     	       "machine. Execution will be attempted anyway, and if it fails, please try\n"
     	       "reinstalling the software.\n");
@@ -534,6 +537,7 @@ int initrun()
     getenvstr("DXEXEC", dxexec);
     getenvstr("DXUI", dxui);
     getenvstr("DISPLAY", display);
+    getenvstr("MAGICK_HOME", magickhome);
 
 #if defined(USE_REGISTRY)
     /* Try the registry for the variables */
@@ -543,6 +547,8 @@ int initrun()
     	strcpy(dxdata, dxdatareg);
     if(!*dxmacros)
     	strcpy(dxmacros, dxmacroreg);
+    if(!*magickhome)
+	strcpy(magickhome, magickhomereg);
 #endif
 
     /* If all else fails, set some defaults for OpenSource Unix layout */
@@ -557,7 +563,7 @@ int initrun()
 
     if (dxdata && *dxdata)
 	strcat(dxdata, ";");
-    strcpy(dxdata, dxroot);
+    strcat(dxdata, dxroot);
     if(dxroot[strlen(dxroot)-1] !='\\')
 	strcat(dxdata, "\\");
     strcat(dxdata,"samples\\data");
@@ -598,6 +604,7 @@ int initrun()
 
 void configure()
 {
+    int result=0;
     envstr path0;
 
     if(dxroot[strlen(dxroot)-1] == '\\') dxroot[strlen(dxroot)-1] = '\0';
@@ -617,33 +624,40 @@ void configure()
 
 #ifdef DXD_WIN
 
-//    GetEnvironmentVariable("Path", path0, sizeof(envstr));
     getenvstr("Path", path0);
     
     if (whichX == EXCEED6) {
-    	/* Set Exceed 6 env variables 
+    	/* Set Exceed 6 env variables */
     	sprintf(path, "%s;%s", exceeddir, path0);
-    	sprintf(xapplresdir, "%s", exceeduserdir);
-    	setenvpair(xapplresdir, "XAPPLRESDIR");
-    	sprintf(xnlspath, "%s\\lib", dxroot);
+    	//sprintf(xapplresdir, "%s", exceeduserdir);
+    	//setenvpair(xapplresdir, "XAPPLRESDIR");
+    	//sprintf(xnlspath, "%s\\lib", dxroot);
+    	//setenvpair(xnlspath, "XNLSPATH");
     	sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
-    	setenvpair(xnlspath, "XNLSPATH");
-        */
+	setenvpair(xkeysymdb, "XKEYSYMDB");
     }
 
     if (whichX == EXCEED7) {
     	/* Need to define Exceed Env Variables */
+    	sprintf(path, "%s;%s", exceeddir, path0);
     }
 
     if (whichX == XWIN32) {
     	/* Need to define X-Win32 env variables */
-    }
+	/* set DISPLAY to COMPUTERNAME:0 */
+	/* Start XWIN32 */
+	sprintf(path,"%s;%s", path0, starnetdir);
+	setenvpair(path, "Path");
+	result = _spawnlp(_P_WAIT, "xwin32", "xwin32", NULL);
+	if(result == -1)
+		printf( "Error spawning xwin32: %s\n", strerror( errno ) );
+   }
     
     sprintf(path, "%s\\bin_%s;%s", dxroot, DXD_ARCHNAME, path0);
     setenvpair("", "HOME");
 
     setenvpair(path, "Path");
-//    SetEnvironmentVariable("Path", path);
+    setenvpair(magickhome, "MAGICK_HOME");
 #endif
 
     /*  The following logic is specific to the PC, where the	*/
@@ -663,7 +677,12 @@ void configure()
 
 
     if (!*display || !strcasecmp(display, "localhost:0") || !strcasecmp(display, "localpc:0"))
-	strcpy(display, ":0.0");
+    {
+	if(whichX == EXCEED6 || whichX == EXCEED7)
+		strcpy(display, "localpc:0");
+	else
+		strcpy(display, "localhost:0");
+    }
     setenvpair(display,		"DISPLAY");
     setenvpair("1", "DXNO_BACKING_STORE");
     setenvpair("1", "DXFLING");

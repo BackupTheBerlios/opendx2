@@ -11,7 +11,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.3 1999/12/28 18:30:43 pdk Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.4 2001/04/26 22:17:52 davidt Exp $
  */
 #if defined(hp700) 
 #define _UINT64_T
@@ -223,13 +223,25 @@ JNIEXPORT jint JNICALL Java_server_DXServer_DXLSend
 JNIEXPORT jint JNICALL Java_server_DXServerThread_DXLLoadVisualProgram
   (JNIEnv *env, jobject jobj, jlong jdxl, jstring jnet)
 {
-int retval = 0;
+int retval = 0, i;
 DXLConnection* conn = (DXLConnection*)jdxl;
 
     if (DXLGetSocket(conn) > 0) {
+	char *str;
 	const char* net_file = (*env)->GetStringUTFChars(env, jnet, 0); 
-	retval = DXLLoadVisualProgram (conn, net_file) != ERROR; 
+	str = (char *) malloc (sizeof(char)* (strlen(net_file) + 1));
+	strcpy (str, net_file);
+
+#if defined(intelnt)
+	for(i=0; i<strlen(str); i++)
+		if(str[i] == '\\') str[i] = '/';
+#endif
+
+	printf("net_file: %s\n", str);
+
+	retval = DXLLoadVisualProgram (conn, str) != ERROR; 
 	(*env)->ReleaseStringUTFChars(env, jnet, net_file);
+	free(str);
     }
 
     return retval;
