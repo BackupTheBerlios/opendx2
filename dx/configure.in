@@ -127,6 +127,7 @@ AC_CHECK_LIB(g++, main)
 AC_CHECK_LIB(dl, main)
 AC_CHECK_LIB(z, compress)
 AC_CHECK_LIB(cdf, CDFlib)
+AC_CHECK_LIB(jpeg, jpeg_set_quality)
 AC_CHECK_LIB(df, Hopen)
 AC_CHECK_LIB(netcdf, free_NC_attr)
 
