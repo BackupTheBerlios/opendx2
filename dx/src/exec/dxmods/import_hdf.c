@@ -13,7 +13,11 @@
 #include <stdio.h>
 #include <dx/dx.h>
 
-#if defined(HAVE_LIBHDF)
+#if defined(HAVE_LIBDF)
+
+#if defined(linux86)
+#define UNIX386
+#endif
 
 #ifdef DXD_WIN
 #define F_OK	0
@@ -21,7 +25,7 @@
 #define INTEL86 
 #endif
 
-#include <df/dfsd.h>
+#include <hdf/dfsd.h>
 #include <ctype.h>
 
 /* special access: needs extra include file, and has different constants 
