@@ -8,5 +8,5 @@ uninstall-local:
 
 install-exec-local:
 	$(INSTALL) dx $(prefix)/bin
-	install -d $(prefix)/dx/bin
+	$(INSTALL) -d $(prefix)/dx/bin
 	$(INSTALL) dx.workerscript $(prefix)/dx/bin
