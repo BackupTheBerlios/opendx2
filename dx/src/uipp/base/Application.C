@@ -541,7 +541,7 @@ boolean Application::isUsableDefaultsFile(const char* res_file)
     int ro = S_IROTH;
     int reg = S_IFREG;
 #else
-    int ru = _S_READ;
+    int ru = _S_IREAD;
     int wu = _S_IWRITE;
     int rg = 0;
     int ro = 0;
