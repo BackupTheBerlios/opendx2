@@ -1678,6 +1678,9 @@ boolean LoadMDFFile(const char *file, const char *mdftype, Dictionary *mdf,
     FILE *input;
     boolean parsed;
 
+    if (!file || !*file)
+        return TRUE;
+
     input = fopen(file, "r");
     if (input != NUL(FILE*))
     {
