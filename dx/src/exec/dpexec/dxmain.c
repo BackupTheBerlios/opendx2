@@ -2390,6 +2390,20 @@ ExParallelMaster ()
 		set_status (PS_EXECUTIVE);
 	    }
 
+#if defined(DDX)
+	    {
+		extern Error SlaveBcastLoop(int, Pointer);
+		extern int GetMPINodeId();
+		if (GetMPINodeId() == 0)
+		    _dxf_ExCheckRIHBlock (SFILEfileno (yyin));
+		else
+		{
+		    SlaveBcastLoop(0, NULL);
+		    _dxf_ExCheckRIH ();
+		}
+	    }
+#endif
+
 	    limit += EX_INCREMENT;
 	    if (limit > EX_LIMIT)
 		limit = EX_LIMIT;
