@@ -88,6 +88,7 @@ AC_FUNC_VFORK
 AC_FUNC_VPRINTF
 AC_FUNC_WAIT3
 
+AC_CHECK_TYPE(uint, unsigned int)
 
 AC_CHECK_TYPE(byte, char)
 AC_CHECK_TYPE(ubyte, unsigned char)
