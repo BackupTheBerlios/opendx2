@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.6 2001/09/25 01:45:28 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.7 2001/10/11 22:32:00 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -750,7 +750,7 @@ m_ReadImage ( Object *in, Object *out )
 
     num_files = (imgtyp==img_typ_r_g_b)? 3 : 1;
 
-    // FIXME:  This is the logic that was here before, but it looks wrong
+    /* FIXME:  This is the logic that was here before, but it looks wrong */
     channels_in_one_file = ( imgtyp == img_typ_tiff || imgtyp == img_typ_gif || 
 		             imgtyp == img_typ_miff || imgtyp == img_typ_im );
 
