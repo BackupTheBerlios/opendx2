@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.4 1999/05/23 15:53:26 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.5 1999/06/04 18:09:58 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -573,8 +573,8 @@ error:
 static Error
 put_ps_header(FILE *fout, char *filename, int frames, struct ps_spec *spec)
 {
-   long t = time(0);
-   char *tod = ctime(&t);
+   const time_t t = time(0);
+   char *tod = ctime((const time_t *)&t);
    int major, minor, micro;
 
    if (spec->filetype == PS) {
@@ -1693,8 +1693,8 @@ error:
 static Error
 put_miff_header(FILE *fout, char *filename, int frame, struct ps_spec *spec, int imageType, int nframes)
 {
-   long t = time(0);
-   char *tod = ctime(&t);
+   const time_t t = time(0);
+   char *tod = ctime((const time_t *)&t);
    int major, minor, micro;
 
    if (fprintf(fout, "id=ImageMagick\n") <= 0) goto error;
@@ -1865,7 +1865,7 @@ SizeData * _dxf_ReadImageSizesMIFF(char *name,
 	goto error;
     if (ERROR == read_miff_header(fin, &startframe, &spec, &imgtype, &nframes))
 	goto error;
-    close(fin);
+    fclose(fin);
     data->height = spec.image_height;
     data->width = spec.image_width;
     *multiples = ((nframes>0)?1:0);
