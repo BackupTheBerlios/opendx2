@@ -35,7 +35,7 @@ String  ListEditor::DefaultResources[] =
 #endif
 
     // The following is good for most list interactors.
-    "*frame*listEditorList.height: 	85",
+    "*frame*listEditorList.visibleItemCount: 	7",
     "*frame.topOffset:			5", 
     "*frame.leftOffset:			5",
     "*frame.rightOffset:		5",
