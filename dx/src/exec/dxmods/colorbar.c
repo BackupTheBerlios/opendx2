@@ -1,3 +1,4 @@
+
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -376,6 +377,9 @@ m_ColorBar(Object *in, Object *out)
     if (!(a_newpositions = DXNewArray(TYPE_FLOAT,CATEGORY_REAL, 1, 2))) {
       goto error;
     }
+
+    if (! DXSetStringAttribute((Object)a_newpositions, "dep", "positions"))
+      goto error;
     
     if (!(a_newcolors = DXNewArray(TYPE_FLOAT,CATEGORY_REAL, 1, 3))) {
       goto error;
