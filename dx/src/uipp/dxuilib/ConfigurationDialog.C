@@ -123,7 +123,9 @@ String ConfigurationDialog::DefaultResources[] =
     "*configInputValueLabel.leftOffset:		560",
     "*inputForm.textPopup.leftOffset:		560",
 
-    //"*inputForm.resizePolicy:			XmRESIZE_NONE",
+#if !defined(LESSTIF_VERSION)
+    "*inputForm.resizePolicy:			XmRESIZE_NONE",
+#endif
 
     "*configOutputTitle.labelString:		Outputs:",
     "*configOutputTitle.foreground:		SteelBlue",
