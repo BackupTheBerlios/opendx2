@@ -1,2 +1,2 @@
 
-EXTRA_DIST = mdf2c.awk
+EXTRA_DIST = mdf2c.awk messages
