@@ -3,22 +3,35 @@
 #
 
 BEGIN {
-    printf("/* Automatically generated - do not edit! */\n");
+    printf("/* Automatically generated - may need to edit! */\n");
+    printf("\n");
+    printf("#include \"%s\"\n",config);
     printf("\n");
     printf("#include <dx/dx.h>\n");
     printf("#include <dx/modflags.h>\n");
+    printf("\n");
+    printf("#if defined(intelnt)\n");
+    printf("#include <windows.h>\n");
+    printf("#endif\n");
+    printf("\n");
+    printf("extern Error DXAddModule (char *, ...);\n");
     printf("\n");
     firsttime = 1
 }
 
 # for run-time loadable modules, dynamic is set to 1 by the calling script
 {   if (firsttime > 0) {
-	if (dynamic > 0) 
-	    printf("DXEntry()\n");
-	else 
-	    printf("void\n _dxf_user_modules()\n");
-	printf("{\n");    
-	firsttime = 0;
+        if (dynamic > 0) {
+        printf("#if defined(intelnt)\n");
+        printf("void FAR WINAPI DXEntry()\n");
+        printf("#else\n");
+        printf("void DXEntry()\n");
+        printf("#endif\n");
+        }
+        else
+            printf("void\n _dxf_user_modules()\n");
+        printf("{\n");
+        firsttime = 0;
     }
 }
 
