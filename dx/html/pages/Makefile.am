@@ -94,8 +94,9 @@ pages12 = \
 	qikgu016.htm qikgu017.htm qikgu018.htm qikgu019.htm qikgu020.htm \
 	qikgu021.htm qikgu022.htm qikgu023.htm qikgu024.htm qikgu025.htm \
 	qikgu026.htm qikgu027.htm qikgu028.htm qikgu029.htm qikgu030.htm \
-	qikgu031.htm qikgu032.htm qikgu033.htm qikgu034.htm refgu002.htm \
-	refgu003.htm refgu004.htm refgu005.htm refgu006.htm refgu007.htm 
+	qikgu031.htm qikgu032.htm qikgu033.htm qikgu034.htm qikgu035.htm \
+	refgu002.htm refgu003.htm refgu004.htm refgu005.htm refgu006.htm \
+	refgu007.htm 
 pages13 = \
 	refgu008.htm refgu009.htm refgu010.htm refgu011.htm refgu012.htm \
 	refgu013.htm refgu014.htm refgu015.htm refgu016.htm refgu017.htm \

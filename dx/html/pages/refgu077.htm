@@ -101,14 +101,18 @@ the appropriate subject of the query.
 For example, the "attribute" inquiry requires the name of the
 attribute.
 </TD></TR></TABLE>
-<P><B>Notes: </B><OL>
+<P><B>Notes: </B>
+		<OL>
 <A NAME="SPTINQUIRY"></A>
-<P><LI><A HREF="#TBLTAB1">Table 3</A> through <A HREF="#TBLTAB4">Table 6</A>
+<P>
+			<LI><A HREF="#TBLTAB1">Table 3</A> through <A HREF="#TBLTAB4">Table 6</A>
 list the "inquiries"
 that can be made, the type(s) of object appropriate
 to each, an explanatory version of each, and
 the answer or type of answer returned.
-<P><LI>Inquiries that start with "is" are true/false queries,
+<BR>
+				<BR>
+			<LI>Inquiries that start with "is" are true/false queries,
 returning 1 (one) for "yes" and 0 (zero) for "no."
 Such queries can be reversed, however, by inserting "not" after
 the initial "is"&#58;
@@ -117,24 +121,32 @@ for "no."
 For example, if the subject of the inquiry is a scalar field,
 "is scalar" returns 1 (one) and "is not scalar"
 returns 0 (zero).
-<P><LI>Any "is" query about a group whose members contain different
+<BR>
+				<BR>
+			<LI>Any "is" query about a group whose members contain different
 types of objects will return 0 (zero) unless all members have the
 characteristic specified in the query.
 For example, if a group is composed of two fields, one scalar and one
 vector, the answer to the question "is scalar"
 will be 0 (zero).
-<P><LI>Any inquiry that returns a scalar integer value can be made to
+<BR>
+				<BR>
+			<LI>Any inquiry that returns a scalar integer value can be made to
 return a value that is "1" higher or lower than that
 value.
 For example, "is array + 1" will return 2 (instead of 1) or
 1 (instead of 0).
-<P><LI>Capitalization of an inquiry is optional and its words may be
-separated or run together.
-</OL>
 <BR>
-<P><B><A NAME="TBLTAB1" HREF="refgu002.htm#FT_TBLTAB1">Table 3. Inquiries about
+				<BR>
+			
+			
+			<LI>Capitalization of an inquiry is optional and its words may be
+separated or run together.
+
+		</OL>
+		<P><B><A NAME="TBLTAB1" HREF="refgu002.htm#FT_TBLTAB1">Table 3. Inquiries about
 objects</A></B><BR>
-<TABLE BORDER>
+		<TABLE BORDER>
 <TR>
 <TH ALIGN="LEFT" VALIGN="TOP" WIDTH="27%"><TT><STRONG>Inquiry</STRONG></TT>
 </TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="18%"><TT><STRONG>Input
@@ -781,19 +793,31 @@ there?
 there?
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="18%">integer
 
-</TD></TR><TR>
+</TD></TR>
+			<TR>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="27%">&quot;apply transform&quot;</TD>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="18%">Any object</TD>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="36%">Not a question, but applies a transformation matrix to the positions components of an object then removes the Transform.</TD>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="18%">object</TD>
+			</TR>
+			<TR>
 <TD ALIGN="LEFT" VALIGN="TOP" COLSPAN="4"><B>Notes&#58; </B>
 <OL>
-<P><LI><A NAME="LIPOSSCAT"></A>Possible categories:
+						<LI><A NAME="LIPOSSCAT"></A>Possible categories:
 "real,"
 "complex."
-<P><LI><A NAME="LIPOSSTYP"></A>Possible types:
+<BR>
+							<BR>
+						
+						
+						<LI><A NAME="LIPOSSTYP"></A>Possible types:
 "signed byte," "unsigned byte,"
 "short," "unsigned short,"
 "integer," "unsigned integer,"
 "float," "double," and
 "string."
-</OL>
+
+					</OL>
 </TD></TR></TABLE>
 <P>&nbsp;
 <BR>
@@ -913,12 +937,14 @@ Inquiries</A></B><BR>
 </TH><TH ALIGN="LEFT" VALIGN="TOP"
 WIDTH="60%"><TT><STRONG>Question</STRONG></TT>
 </TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="13%"><TT><STRONG>Answer</STRONG></TT>
-</TH></TR><TR>
+</TH></TR>
+			<TR>
 <TD ALIGN="LEFT" VALIGN="TOP" WIDTH="27%">&quot;processors&quot;
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="60%">How many processors is Data
 Explorer Using?
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="13%">integer
-</TD></TR></TABLE>
+</TD></TR>
+		</TABLE>
 <P><STRONG>Example Visual Programs</STRONG>
 <PRE>
 MultipleDataSets.net
