@@ -4,6 +4,20 @@ Native Stereo Rendering for Windows added.
 
 Minor fixes to clean up errors from 4.3
 ---------------
+Put in a new fix for hdfi.h file compile conflicts.
+
+A little more fixup on the ExHostToFQDN for hosts with no
+reverse lookup.
+
+Fix a bug in DXLStartDX when the environment wasn't defined.
+
+Add some fixes to compile on the ia64 platform.
+
+Fix up the saving of dx-ad files so they are only created
+when need be.
+
+Fix a bug in WriteImage that could cause a core dump.
+
 Fix (bug #125) within the Module builder plus some memory leaks
 
 Added seq2c to correctly process net files into .h files for

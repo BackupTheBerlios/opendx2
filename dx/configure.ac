@@ -2,7 +2,7 @@
 
 AC_PREREQ(2.57)
 dnl Start of configuration ----
-AC_INIT([dx],[4.3.0])
+AC_INIT([dx],[4.3.2])
 
 dnl Process this file with autoconf to produce a configure script.
 AC_CONFIG_SRCDIR([include/dx/arch.h])
@@ -11,13 +11,13 @@ AM_INIT_AUTOMAKE
 AC_DISABLE_SHARED
 AC_PROG_LIBTOOL
 
-VERSION_STRING="04.3.0000"
+VERSION_STRING="04.3.2000"
 MAJOR_VERSION=4
 MINOR_VERSION=3
-MICRO_VERSION=0
-AC_DEFINE(DXD_VERSION_STRING, "04.3.3000", [Version String Number])
+MICRO_VERSION=2
+AC_DEFINE(DXD_VERSION_STRING, "04.3.2000", [Version String Number])
 AC_DEFINE(DXD_COPYRIGHT_STRING,
-  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.3.0"], 
+  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.3.2"], 
   [Copyright string placed on splash screen startup.])
 AC_DEFINE_UNQUOTED(DXD_VERSION, $MAJOR_VERSION, [Version Number])
 AC_DEFINE_UNQUOTED(DXD_RELEASE, $MINOR_VERSION, [Release Number])
@@ -483,8 +483,6 @@ AC_CHECK_LIB(X11, XCreateGC)
 AC_CHECK_LIB(Xt, XtMalloc)
 AC_CHECK_LIB(Xext, XextAddDisplay)
 AC_CHECK_LIB(m, sqrt)
-AC_CHECK_LIB(GL, glXGetConfig)
-AC_CHECK_LIB(GLU, gluBuild2DMipmaps)
 
 DX_PATH_XM
 if test "$xm_includes" != "" ; then
@@ -495,6 +493,10 @@ fi
 if test "$xm_libraries" != "" ; then
     LIBS="-L$xm_libraries $LIBS"
 fi
+
+AC_CHECK_LIB(GL, glXGetConfig)
+AC_CHECK_LIB(GLU, gluBuild2DMipmaps)
+
 AC_CHECK_LIB(Xp, XpSetImageResolution)
 AC_CHECK_LIB(Xm, XmGetDestination)
 AC_TRY_LINK_FUNC(_XmMapKeyEvents, 
