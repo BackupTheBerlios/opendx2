@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.3 1999/05/10 15:45:20 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.4 1999/05/23 15:53:26 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -1491,7 +1491,7 @@ parse_format(char *fmt, struct ps_spec *spec)
 {
     char *format_modifier;
     float width,height;
-    char *p, *strstr();
+    char *p;
     char format[1024];
     int i, len = strlen(fmt);
     int dpi_parsed = 0, width_parsed = 0;
