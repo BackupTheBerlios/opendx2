@@ -3540,6 +3540,9 @@ int n;
     XtSetArg (args[n], XmNshadowType, XmSHADOW_OUT); n++;
     Widget form = XmCreateForm (parent, "cpForm", args, n);
 
+// Override the standard Motif translations so that we can use the control
+// button press. 
+
     n = 0;
     XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION); n++;
     XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION); n++;
@@ -3549,7 +3552,23 @@ int n;
     XtSetArg (args[n], XmNbottomOffset, 8); n++;
     XtSetArg (args[n], XmNtopAttachment, XmATTACH_FORM); n++;
     XtSetArg (args[n], XmNtopOffset, 6); n++;
-    Widget pbCancel = XmCreatePushButtonGadget (form, "panelCancel", args, n);
+    Widget pbCancel = XmCreatePushButton (form, "panelCancel", args, n);
+    // Now override default.
+    char *pbCancelTransStr = "\
+	<EnterWindow>: 		Enter()\n\
+	<LeaveWindow>: 		Leave()\n\
+	<Btn1Down>: 		Arm()\n\
+	<Btn1Down>,<Btn1Up>: 	Activate() Disarm()\n\
+	<Btn1Down>(2+):		MultiArm()\n\
+	<Btn1Up>:		Activate() Disarm()\n\
+	:<Key>osfActivate:	PrimitiveParentActivate()\n\
+	:<Key>osfCancel:	PrimitiveParentCancel()\n\
+	:<Key>osfSelect:	ArmAndActivate()\n\
+	:<Key>osfHelp:		Help()\n\
+	~s ~m ~a <Key>Return:	PrimitiveParentActivate()\n\
+	~s ~m ~a <Key>space:	ArmAndActivate()";
+    XtTranslations pbCancelTrans = XtParseTranslationTable(pbCancelTransStr);
+    XtVaSetValues (pbCancel, XtNtranslations, pbCancelTrans, NULL);
     XtManageChild (pbCancel);
 
     Widget pbHelp;
