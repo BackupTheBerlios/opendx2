@@ -378,6 +378,10 @@ const char *SaveImageDialog::getOutputFile()
     if (this->file_name) {
 	if (this->file) delete this->file;
 	char *cp = XmTextGetString(this->file_name);
+#ifdef DXD_WIN
+	for(int i=0; i<strlen(cp); i++)
+		if(cp[i] == '\\') cp[i] = '/';
+#endif
 	this->file = DuplicateString(cp);
 	XtFree(cp);
     }
