@@ -1643,7 +1643,8 @@ Widget GARMainWindow::createWorkArea(Widget parent)
 
     XtSetArg(wargs[n], XmNvisibleItemCount, vlines); n++;
     XtSetArg(wargs[n], XmNselectionPolicy, XmSINGLE_SELECT); n++;
-    XtSetArg(wargs[n], XmNlistSizePolicy, XmRESIZE_IF_POSSIBLE); n++;
+//    XtSetArg(wargs[n], XmNlistSizePolicy, XmRESIZE_IF_POSSIBLE); n++;
+    XtSetArg(wargs[n], XmNlistSizePolicy, XmCONSTANT); n++;
     XtSetArg(wargs[n], XmNhighlightThickness, 2); n++;
     this->field_list = 
 	XmCreateScrolledList(this->fieldform, "fieldlist", wargs, n);

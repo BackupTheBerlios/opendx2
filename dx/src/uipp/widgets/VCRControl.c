@@ -446,9 +446,8 @@ static void Initialize( XmVCRControlWidget request, XmVCRControlWidget new )
     XtSetArg(wargs[2], XmNdeleteResponse, XmUNMAP);
     XtSetArg(wargs[3], XmNallowShellResize, True);
 
-    new->vcr_control.shell = XtCreatePopupShell("Frame Control", 
-                       transientShellWidgetClass,
-                       (Widget)new, wargs, 4);
+    new->vcr_control.shell = XmCreateDialogShell((Widget)new, "Frame Control", 
+                              wargs, 4);
    
     XtSetArg(wargs[2], XmNstart, new->vcr_control.start_value);
     XtSetArg(wargs[3], XmNnext, new->vcr_control.next_value);
@@ -465,7 +464,6 @@ static void Initialize( XmVCRControlWidget request, XmVCRControlWidget new )
 		(Widget)new->vcr_control.shell, "frame_control", wargs, 13);
     XtAddCallback((Widget)new->vcr_control.frame_control, XmNvalueCallback,
 			(XtCallbackProc)FrameControlCallback, new);
-    XtManageChild((Widget)new->vcr_control.frame_control);
     XtAddCallback((Widget)new->vcr_control.shell, XmNpopdownCallback,
 		  (XtCallbackProc)PopdownCallback, new);
     XtRealizeWidget((Widget)new->vcr_control.shell);
@@ -1165,7 +1163,9 @@ VCRCallbackStruct data;
 	        {
 		ReleaseVCRButton(vcr, VCR_COUNT);
 		if( vcr->vcr_control.frame_control_is_up )
-		    XtPopdown(vcr->vcr_control.shell);
+		{
+		    XtUnmanageChild(vcr->vcr_control.frame_control);
+		}
 		vcr->vcr_control.frame_control_is_up = False;
 		}
 	    else
@@ -1187,7 +1187,7 @@ VCRCallbackStruct data;
 		XtSetArg(wargs[0], XmNx, dest_x - 10);
 		XtSetArg(wargs[1], XmNy, dest_y);
 		XtSetValues(vcr->vcr_control.shell, wargs, 2);
-	        XtPopup(vcr->vcr_control.shell, XtGrabNone);
+		XtManageChild(vcr->vcr_control.frame_control);
 	        PushVCRButton(vcr, VCR_COUNT);
 		vcr->vcr_control.frame_control_is_up = True;
 	        ChangeVCRCurrentValue(vcr, vcr->vcr_control.current_value, 
