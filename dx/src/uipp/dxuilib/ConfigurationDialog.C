@@ -122,7 +122,7 @@ String ConfigurationDialog::DefaultResources[] =
     "*configInputValueLabel.leftOffset:		560",
     "*inputForm.textPopup.leftOffset:		560",
 
-    "*inputForm.resizePolicy:			XmRESIZE_NONE",
+    //"*inputForm.resizePolicy:			XmRESIZE_NONE",
 
     "*configOutputTitle.labelString:		Outputs:",
     "*configOutputTitle.foreground:		SteelBlue",
@@ -530,6 +530,8 @@ ConfigurationDialog *dialog = (ConfigurationDialog*)clientData;
 //
 void ConfigurationDialog::resizeCallback()
 {
+#if 0
+This was commented out to fix micro-scrolled window problem -- GDA
 Dimension dw;
 
     if ((!this->getRootWidget()) || (!this->scrolledInputForm)) return ;
@@ -559,7 +561,7 @@ Dimension dw;
 	NULL);
 	XtVaSetValues (this->scrolledInputForm, XmNwidth, dw-20, NULL);
     }
-
+#endif
 }
 
 Widget ConfigurationDialog::createInputs(Widget parent, Widget)
@@ -1089,10 +1091,10 @@ Node *n = this->node;
 	    (XtCallbackProc)ConfigurationDialog_ValueChangedInputHideCB, (XtPointer)this);
 
 
-	if (this->getRootWidget())
-	    XtVaSetValues(this->getRootWidget(),
-		XmNresizePolicy, XmRESIZE_NONE,
-		NULL);
+	//if (this->getRootWidget())
+	    //XtVaSetValues(this->getRootWidget(),
+		//XmNresizePolicy, XmRESIZE_NONE,
+		//NULL);
 
 	XmString name = XmStringCreate((char *)n->getInputNameString(i,pname),
 				       XmSTRING_DEFAULT_CHARSET);
@@ -1187,10 +1189,10 @@ Node *n = this->node;
 	else
 	    input->valueTextPopup->deactivate();
 
-	if (this->getRootWidget())
-	    XtVaSetValues(this->getRootWidget(),
-		XmNresizePolicy, XmRESIZE_ANY,
-		NULL);
+	//if (this->getRootWidget())
+	    //XtVaSetValues(this->getRootWidget(),
+		//XmNresizePolicy, XmRESIZE_ANY,
+		//NULL);
 
 	if (!XtIsManaged(input->nameWidget))
 	{
@@ -1301,10 +1303,10 @@ void ConfigurationDialog::changeOutput(int i)
     if (output->nameWidget != NULL)
     {
 	char pname[128];
-	if (this->getRootWidget())
-	    XtVaSetValues(this->getRootWidget(),
-		XmNresizePolicy, XmRESIZE_NONE,
-		NULL);
+	//if (this->getRootWidget())
+	    //XtVaSetValues(this->getRootWidget(),
+		//XmNresizePolicy, XmRESIZE_NONE,
+		//NULL);
 
 	XmString name = XmStringCreate((char *)n->getOutputNameString(i,pname),
 				       XmSTRING_DEFAULT_CHARSET);
@@ -1398,10 +1400,10 @@ void ConfigurationDialog::changeOutput(int i)
 	XtSetSensitive(output->cacheWidget, 
 			n->isOutputCacheabilityWriteable(i));
 
-	if (this->getRootWidget())
-	    XtVaSetValues(this->getRootWidget(),
-		XmNresizePolicy, XmRESIZE_ANY,
-		NULL);
+	//if (this->getRootWidget())
+	    //XtVaSetValues(this->getRootWidget(),
+		//XmNresizePolicy, XmRESIZE_ANY,
+		//NULL);
     }
 }
 void ConfigurationDialog::newInput(int i)
@@ -2091,7 +2093,6 @@ void ConfigurationDialog::remanageInputs(boolean force)
 	XtUnmanageChildren(unmanaged, nunmanaged); nunmanaged = 0;
     }
 
-
     //
     // too-small-dialog workaround for displaying on Sun4.
     //
@@ -2112,18 +2113,43 @@ void ConfigurationDialog::remanageInputs(boolean force)
     // Set the height of the scrolled window.
     //
     XtVaSetValues (this->scrolledInputForm, XmNheight, 5+(PIXELS_PER_LINE*visible), NULL);
-    if (visible) {
-	Dimension newHeight, oldHeight;
-	int vis = visible;
-	if (vis > MAX_INITIAL_BUTTONS) vis = MAX_INITIAL_BUTTONS;
-	if (vis <= 0) vis = visible = 1;
-	newHeight = 5+(vis*PIXELS_PER_LINE);
-	XtVaGetValues (this->inputScroller, XmNheight, &oldHeight, NULL);
-	if ((visible <= MAX_INITIAL_BUTTONS) || (newHeight > oldHeight)) {
-	    XtVaSetValues (this->inputScroller, 
-		XmNheight, newHeight,
+
+    Dimension oldHeight, newHeight;
+    int vis = visible > MAX_INITIAL_BUTTONS ? 
+		MAX_INITIAL_BUTTONS : visible < 1 ? 1 : visible;
+	
+    newHeight = 5+(vis*PIXELS_PER_LINE);
+    XtVaGetValues (this->inputScroller, XmNheight, &oldHeight, NULL);
+
+    Dimension ifh; 
+    int d = ((int)newHeight) - oldHeight;
+
+    XtVaGetValues(this->inputForm, XmNheight, &ifh, NULL);
+    XtVaSetValues(this->inputForm, XmNheight, ifh+d, NULL);
+    XtVaSetValues(this->inputScroller, XmNheight, newHeight, NULL);
+
+    Widget cw;
+    Dimension fWidth, isWidth, cwWidth;
+
+    XtVaGetValues(this->inputScroller,
+	    XmNwidth, &isWidth,
+	    XmNclipWindow, &cw,
 	    NULL);
-	}
+
+    XtVaGetValues(cw, XmNwidth, &cwWidth, NULL);
+    XtVaGetValues(this->scrolledInputForm, XmNwidth, &fWidth, NULL);
+
+    d = (fWidth - cwWidth) + 10;
+    if (d > 0)
+    {
+	Dimension iWidth;
+	XtVaGetValues(this->inputForm, XmNwidth, &iWidth, NULL);
+	XtVaSetValues(this->inputForm, XmNwidth, iWidth+d, NULL);
+	XtVaGetValues(this->inputForm, XmNwidth, &iWidth, NULL);
+	XtVaSetValues(cw, XmNwidth, cwWidth+d, NULL);
+	XtVaGetValues(cw, XmNwidth, &cwWidth, NULL);
+	XtVaSetValues(this->inputScroller, XmNwidth, isWidth+d, NULL);
+	XtVaGetValues(this->inputScroller, XmNwidth, &isWidth, NULL);
     }
 }
 
