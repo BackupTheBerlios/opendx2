@@ -160,6 +160,6 @@ distclean-local:
 
 install-data-hook:
 	if test "$(ARCH)" = "intelnt" ; then \
-		cp AnyDX.lib $(javalibdir)/. ; \
-		cp AnyDX.exp $(javalibdir)/. ; \
+		$(INSTALL_DATA) AnyDX.lib $(javalibdir)/AnyDX.lib ; \
+		$(INSTALL_DATA) AnyDX.exp $(javalibdir)/AnyDX.exp ; \
 	fi

@@ -5,3 +5,5 @@ Makefile.in
 startserver
 dxserver.paths
 README.output
+server_DXServer.h
+server_DXServerThread.h

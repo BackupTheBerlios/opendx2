@@ -2,7 +2,6 @@
 
 INCLUDES = -I${srcdir}/../dpexec -D@ARCH@
 
-EXPARG=@EXPARG@
 EXP=${top_srcdir}/lib/dxexec.exp
 WEXP=${top_srcdir}/lib/dxexec.def
 
@@ -23,3 +22,8 @@ dxexec_LDADD = \
 	../libdx/libLIBDX.a \
 	../hwrender/libHW.a \
 	../hwrender/opengl/libOPENGL.a 
+
+install-data-hook:
+	if test "$(ARCH)" = "intelnt" ; then \
+	$(INSTALL_DATA) dxexec.exp $(prefix)/dx/bin_intelnt/dxexec.exp ; \
+	fi

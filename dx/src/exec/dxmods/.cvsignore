@@ -11,3 +11,5 @@ user.c
 usercm.c
 tmp.c
 y.tab.c
+y.output
+local.mk

@@ -3,3 +3,8 @@ CVS
 Makefile
 Makefile.in
 dxsc
+dx.jar
+libAnyDX.dylib
+server.jar
+libAnyDX.so
+AnyDX.dll
