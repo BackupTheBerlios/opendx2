@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer QuickStart Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer QuickStart
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer QuickStart Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="qikgu030.htm">Previous Page</A> &#124; <A HREF="qikgu032.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu027.htm#PToC5">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H2><A NAME="HDRBROWSE" HREF="qikgu027.htm#PToC_179">5.5 Data Prompter
+Browser</A></H2>
+<A NAME="IDX376"></A>
+<P>
+The Browser is a file-viewing tool to help you determine details of
+the layout and organization of a data file.
+Specifically, the Browser can measure offsets from a particular point
+(the top of a file, the beginning of a line, or a marker) and
+display the results in bytes and lines.
+These results can be copied and pasted (with standard Motif Copy/Paste
+operations) into the appropriate sections of the Data Prompter.
+<P>
+<H3><A NAME="HDRSTRTBRS" HREF="qikgu027.htm#PToC_180">Starting the
+Browser</A></H3>
+<A NAME="IDX379"></A>
+<A NAME="IDX380"></A>
+<P>
+To browse a particular file:
+<OL>
+<P><LI>Enter the path name of the file in the <TT><STRONG>Data
+file</STRONG></TT>
+field of either the simplified or the full Data Prompter.
+<P>
+You can enter a name directly in the field or click on the ellipsis
+button (<TT><STRONG>...</STRONG></TT>) to the right and select a
+name from the <TT><STRONG>File Selection Dialog...</STRONG></TT>
+box.
+<P><LI>Click on the ellipsis button again and select
+<TT><STRONG>Browser...</STRONG></TT>.
+The File Browser window appears, displaying the selected file
+(<A HREF="#FIGDP6">Figure 18</A>).
+</OL>
+<A NAME="IDX381"></A>
+<P><B><A NAME="FIGDP6" HREF="../qikguide.htm#FT_FIGDP6">Figure 18. File Browser
+Window</A></B>. This window has just been opened and the cursor has not been
+moved from its initial position at the beginning of the file. No numbers will
+appear in the offset fields until the cursor is moved. The file displayed in the
+window is <TT>/usr/lpp/dx/samples/data/record_multiscalar</TT> (see Example 1 of
+<A HREF="qikgu028.htm#HDRMVARDAT">"Record Style: Multivariable Data"</A>).<BR>
+<B><BR><CENTER><IMG SRC="../images/brwswin.gif" ALT="Figure brwswin not
+displayed."></CENTER><BR></B><BR>
+The File Browser window consists of three areas:
+<UL COMPACT>
+<LI>The menu bar provides access to most of the Browser
+commands.
+<LI>The text window displays the contents of the selected
+data file.
+<LI>The offset area displays (in number of lines and bytes) the
+"distance" (or offset) between the cursor and a
+specified starting point.
+</UL>
+<P>
+<H3><A NAME="Header_181" HREF="qikgu027.htm#PToC_181">Browser Menu Bar</A></H3>
+<A NAME="IDX382"></A>
+<A NAME="IDX383"></A>
+<P>
+<H4><A NAME="HDRBRSFILE">Browser File Menu</A></H4>
+<A NAME="IDX384"></A>
+<A NAME="IDX385"></A>
+<A NAME="IDX386"></A>
+<A NAME="IDX387"></A>
+<P>
+The single command in this menu is <TT><STRONG>Close</STRONG></TT>, which
+removes the Browser from the screen.
+<P>
+<H4><A NAME="HDRBRSMARK">Browser Mark Menu</A></H4>
+<A NAME="IDX388"></A>
+<A NAME="IDX389"></A>
+<A NAME="IDX390"></A>
+<A NAME="IDX391"></A>
+<P>
+The commands in this menu control the placement of a "mark" in
+the selected file.
+The numbers displayed in the offset area are useful in specifying
+offset values for <TT><STRONG>header</STRONG></TT> (see
+<A HREF="qikgu030.htm#SPTDPRHDR">Header</A>), <TT><STRONG>layout</STRONG></TT>
+(see <A HREF="qikgu030.htm#SPTDPRLAYT">Layout</A>), and
+<TT><STRONG>block</STRONG></TT> (see
+<A HREF="qikgu030.htm#SPTDPRBLOK">Block</A>)
+in the Data Prompter.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B>Place mark
+</B></TD><TD><P>Replaces the character to the right of the cursor with a solid
+diamond-shaped mark.
+It will remain in place until moved to another position (with a new
+Place Mark command) or removed altogether.
+Note that the Browser allows only one mark at any time.
+</TD></TR><TR VALIGN="TOP"><TD><P><B>Clear mark
+</B></TD><TD><P>Removes a mark from the file.
+</TD></TR><TR VALIGN="TOP"><TD><P><B>Goto mark
+</B></TD><TD><P>Causes the Browser to display the text associated with a mark
+(if it is not already displayed in the file window).
+</TD></TR></TABLE>
+<P>
+<H4><A NAME="HDRBRSPAGE">Browser Page Menu</A></H4>
+<A NAME="IDX392"></A>
+<A NAME="IDX393"></A>
+<A NAME="IDX394"></A>
+<P>
+The two commands in this menu position the Browser at the beginning of
+the selected file (<TT><STRONG>First page</STRONG></TT>) or at the end of the
+file (<TT><STRONG>Last page</STRONG></TT>).
+<P>
+<H4><A NAME="HDRBRSSEAR">Browser Search Menu</A></H4>
+<A NAME="IDX396"></A>
+<A NAME="IDX397"></A>
+<A NAME="IDX398"></A>
+<A NAME="IDX399"></A>
+<P>
+The single command in this menu is <TT><STRONG>Search...</STRONG></TT>,
+which displays a search dialog box.
+Any string or regular expression can be entered in the <TT><STRONG>Search
+for</STRONG></TT> field.
+The search begins at the current position of the cursor and proceeds
+forward (the <TT><STRONG>Find Next</STRONG></TT> button) or back
+(the <TT><STRONG>Find Previous</STRONG></TT> button).
+Searches "wrap around" in either direction.
+The <TT><STRONG>Close</STRONG></TT> button closes the dialog box.
+<A NAME="IDX400"></A>
+<P>
+<H3><A NAME="HDRBRSWIND" HREF="qikgu027.htm#PToC_186">Browser Text
+Window</A></H3>
+<A NAME="IDX401"></A>
+<A NAME="IDX402"></A>
+<P>
+The File Browser window displays the contents of the file being
+browsed.
+The cursor can be positioned anywhere in the text (with the left mouse
+button).
+When the cursor is repositioned, the values in the offset area
+below the file window are updated.
+<TABLE BORDER WIDTH="100%"><TR><TH ALIGN="LEFT">Browsing Large Data
+Files</TH><TR><TD>
+<A NAME="IDX403"></A>
+<A NAME="IDX404"></A>
+<P>
+If the file in the text window exceeds a certain size, the Browser
+displays it in "chunks," the scroll bar controlling only the
+current chunk.
+When the slider is moved to the bottom of the scroll bar, the
+Browser reads in the next chunk; to top of the scroll bar,
+the preceding chunk.
+</TD></TR></TABLE>
+<P>
+<H3><A NAME="HDRBRSOFFA" HREF="qikgu027.htm#PToC_187">Browser Offset
+Area</A></H3>
+<A NAME="IDX405"></A>
+<A NAME="IDX406"></A>
+<P>
+Five text fields at the bottom of the Browser display the "offsets"
+(in bytes and lines) from the top of the file or from a "mark"
+to the current position of the cursor.
+When the cursor is repositioned, the offset values are updated.
+<P>
+The text fields can be used to reposition the cursor anywhere in the
+file: enter a new value in a text field and press the
+Enter key.
+The cursor moves to the position specified by the new offset.
+<TABLE BORDER WIDTH="100%"><TR><TH ALIGN="LEFT">Copying Offset Values to the
+Data Prompter</TH><TR><TD>
+<A NAME="IDX407"></A>
+<P>
+<OL COMPACT>
+<LI>Highlight an offset value by triple clicking on the value field
+or dragging the cursor over the value.
+<LI>Position the cursor in the target field in the Data Prompter and click
+once with the <I>middle</I>
+mouse button.
+The offset value appears in the target field.
+</OL>
+</TD></TR></TABLE>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="qikgu030.htm">Previous Page</A> &#124; <A HREF="qikgu032.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu027.htm#PToC5">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/qikguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

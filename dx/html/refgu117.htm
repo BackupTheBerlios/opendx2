@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu116.htm">Previous Page</A> &#124; <A HREF="refgu118.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRRENAME" HREF="refgu009.htm#PToC_170">Rename</A></H3>
+<A NAME="IDX651"></A>
+<A NAME="IDX652"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATSTR">Structuring</A>
+<P><STRONG>Function</STRONG>
+<P>
+Renames a component in a field.
+<P><STRONG>Syntax</STRONG>
+<PRE><STRONG>
+output</STRONG> = Rename(<STRONG>input, oldname, newname</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>input</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">the field containing the
+component to be renamed
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>oldname</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">the original name of the
+component
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>newname</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">&quot;data&quot;
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">the new name assigned to the
+component
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>output</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">field containing the renamed
+component
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module creates a field (<TT><STRONG>output</STRONG></TT>) in which
+all occurrences of a specified component
+(<TT><STRONG>oldname</STRONG></TT>) in
+<TT><STRONG>input</STRONG></TT> have
+been assigned a new name
+(<TT><STRONG>newname</STRONG></TT>).
+<P><STRONG>Components</STRONG>
+<P>
+All input components are propagated to the output.
+The component <TT><STRONG>oldname</STRONG></TT> is renamed to
+<TT><STRONG>newname</STRONG></TT>.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+AlternateVisualizations.net
+ReadImage.net
+UsingMorph.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu057.htm#HDREXTRACT">Extract</A>,
+&nbsp;<A HREF="refgu093.htm#HDRMARK">Mark</A>,
+&nbsp;<A HREF="refgu116.htm#HDRREMOVE">Remove</A>,
+&nbsp;<A HREF="refgu120.htm#HDRREPLACE">Replace</A>,
+&nbsp;<A HREF="refgu164.htm#HDRUNMARK">Unmark</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu116.htm">Previous Page</A> &#124; <A HREF="refgu118.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

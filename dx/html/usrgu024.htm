@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="usrgu023.htm">Previous Page</A> &#124; <A HREF="usrgu025.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu022.htm#PToC5">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H1><A NAME="HDRDATMOD" HREF="../usrguide.htm#ToC_49">Chapter 3. Understanding the
+Data Model</A></H1>
+<P><A NAME="PToC6" HREF="../usrguide.htm#ToC">Partial Table-of-Contents</A>
+<MENU>
+<LI><A NAME="PToC_50" HREF="#Header_50">3.1 Introduction to the Data Model</A>
+<LI><A NAME="PToC_51" HREF="usrgu025.htm#Header_51">3.2 Object Types</A>
+<MENU>
+<LI><A NAME="PToC_52" HREF="usrgu025.htm#Header_52">Fields</A>
+<LI><A NAME="PToC_83" HREF="usrgu025.htm#HDRARRAYS">Arrays</A>
+<LI><A NAME="PToC_90" HREF="usrgu025.htm#Header_90">Groups</A>
+</MENU></MENU><HR><P>
+<A NAME="IDX484"></A>
+<A NAME="IDX485"></A>
+<A NAME="IDX486"></A>
+<P>
+This chapter describes the concepts and terminology of the data
+model for data stored in the Data Explorer system, whether in memory
+or on disk.
+<P>
+A complete understanding of this chapter is not required for the
+effective use of Data Explorer, and the brief discussion of a Field
+in <A HREF="usrgu022.htm#HDRVIS">Chapter 2. "Introduction to Visualization"</A>
+should get you started.
+However, the more detailed information here is useful when you have
+specific questions about the data model.
+<HR>
+<H2><A NAME="Header_50" HREF="#PToC_50">3.1 Introduction to the Data
+Model</A></H2>
+<P>
+The Data Explorer data model supports various types of simulation
+and observational data.
+Data structures that can be represented include:
+<UL COMPACT>
+<A NAME="IDX487"></A>
+<LI>Data defined on a regular orthogonal grid
+<LI>Data defined on a deformed regular or curvilinear grid
+<LI>Data defined on various irregular grids,
+such as triangular, quadrilateral, and tetrahedral meshes
+<LI>Unstructured data with no connections between the data samples.
+</UL>
+The data samples can be defined over spaces of any dimensionality, and,
+independently, can also be connected by primitives of various
+dimensionalities (allowing, for example, triangular and
+quadrilateral meshes defined over 2- or
+3-dimensional points).
+The data values can be associated either with the sample points or with
+the connections between the sample points.
+Available data types include:
+<UL COMPACT>
+<LI>Real and complex data
+<LI>Scalar, vector and tensor data
+<LI>Byte, short, integer (signed and unsigned), and floating-point data
+</UL>
+<P>
+<A NAME="IDX488"></A>
+Data are stored in the form of <I>Objects</I> for use by Data Explorer
+modules.
+An Object is a data structure stored in memory that contains an
+indication of the Object&#39;s type, along with additional
+type-dependent information.
+The bulk of the data is encapsulated in <I>Array</I> Objects.
+<P>
+The data model centers on the notion of a <I>sampled field</I>.
+The next section describes the <I>Field, Array,</I> and
+<I>Group</I> Objects that implement sampled  fields
+in Data Explorer.
+In addition to these basic Object types, other types are used to
+construct models for rendering (e.g., Transforms, Clipped
+Objects, Lights, and Cameras).
+These are described in <A HREF="usrgu065.htm#HDREDF">B.2 , "Data Explorer Native
+Files"</A> and in <I>IBM Visualization Data Explorer Programmer&#39;s
+Reference</I>.
+<P>
+Data are also stored in permanent file storage in the form of the same
+Objects.
+Although Data Explorer supports the creation of Objects from data stored in
+other file formats (such as netCDF), the Data Explorer file format offers
+significant additional functionality and flexibility.
+<P>
+Note that the Data Explorer file format is versatile, allowing for future
+expansion of the capabilities of the system without requiring
+changes to the file format.
+It is possible to represent data types in a Data Explorer file that cannot be
+processed by the current version of Data Explorer.
+For example, in the current release of Data Explorer, only single-precision
+floating-point positions are universally supported.
+Also, most modules support only 1-, 2-, or 3-dimensional positions.
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="usrgu023.htm">Previous Page</A> &#124; <A HREF="usrgu025.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="#PToC6">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/usrguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

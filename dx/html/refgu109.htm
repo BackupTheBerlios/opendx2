@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu108.htm">Previous Page</A> &#124; <A HREF="refgu110.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+
+<H3><A NAME="HDRQANTIMG" HREF="refgu009.htm#PToC_162">QuantizeImage</A></H3>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATTRN">Transformation</A>
+<P><STRONG>Function</STRONG>
+<P>Converts an RGB image to a byte image with a colormap
+<P><STRONG>Syntax</STRONG>
+<PRE>
+<STRONG>images</STRONG> = QuantizeImage(<STRONG>Images, nColors</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>images</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">image, image series
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">(none)
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">image(s) to quantize
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>nColors</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">256
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">maximum number of colors to use
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>images</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">image, image series
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">resulting quantized image(s)
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+QuantizeImage converts an image from a format in which the "colors"
+component is a list of RGB (red, green, blue) vectors, with as
+many entries as there are pixels in the image, to a format
+in which the "colors" component is simply a list of unsigned bytes
+which are interpreted as pointers into a color table.
+<P>
+QuantizeImage sets a "direct color map" attribute of 1 on its
+output. When the output <TT><STRONG>images</STRONG></TT> is passed to
+Display, this will force Display to use the colormap specified by
+QuantizeImage, rather than a default colormap
+(see <A HREF="refgu048.htm#HDRUDCMPS">"Using Direct Color Maps"</A>). This will
+be the case even if you set the
+environment variable DX8BITCMAP to 1. You can use the Options module to
+set a "direct color map" attribute of 0 on the output of
+QuantizeImage to force Display to use a shared colormap.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>images</STRONG></TT>
+</B></TD><TD><P>is the image or series of images to be quantized.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>nColors</STRONG></TT>
+</B></TD><TD><P>is the maximum number of entries in the color table.
+</TD></TR></TABLE>
+<P>
+The output <TT><STRONG>images</STRONG></TT> will
+be a new image or series of images in which
+the color table is attached as a component called "color map".
+<P>
+The advantage of using QuantizeImage is that the image will consume
+much less memory.
+<P><STRONG>Components</STRONG>
+<P>
+Changes the "colors" component. Adds a "color map" component.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+SIMPLE/QuantizeImage.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+<A HREF="refgu118.htm#HDRRENDER">Render</A>,
+<A HREF="refgu110.htm#HDRREADIMA">ReadImage</A>,
+<A HREF="refgu173.htm#HDRWRITEIM">WriteImage</A>,
+<A HREF="refgu048.htm#HDRDISPLAY">Display</A>,
+<A HREF="refgu098.htm#HDROPTIONS">Options</A>
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu108.htm">Previous Page</A> &#124; <A HREF="refgu110.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

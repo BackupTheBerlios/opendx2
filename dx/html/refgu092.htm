@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu091.htm">Previous Page</A> &#124; <A HREF="refgu093.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRMAPTOPL" HREF="refgu009.htm#PToC_141">MapToPlane</A></H3>
+<A NAME="IDX584"></A>
+<A NAME="IDX585"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATREL">Realization</A>
+<A NAME="IDX586"></A>
+<P><STRONG>Function</STRONG>
+<P>
+Maps a 3-dimensional field onto a plane.
+<P><STRONG>Syntax</STRONG>
+<PRE><STRONG>
+plane</STRONG> = MapToPlane(<STRONG>data, point, normal</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>data</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">data to be mapped
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>point</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">vector
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">center of object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">a point on the map plane
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>normal</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">vector
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">&#91;0 0 1&#93;
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">normal to the map plane
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>plane</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">mapped plane
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module creates an arbitrary cutting plane through 3-dimensional
+space and interpolates data values onto it.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>data</STRONG></TT>
+</B></TD><TD><P>must be a field with 3-dimensional connections (i.e., cubes or
+tetrahedra).
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>point</STRONG></TT>
+</B></TD><TD><P>is a vector value specifying a point on the cutting plane.
+If this parameter is not specified, Data Explorer uses the center of the
+bounding box of <TT><STRONG>data</STRONG></TT>.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>normal</STRONG></TT>
+</B></TD><TD><P>is a vector value specifying the normal to the map plane and is
+interpreted as the end point of a vector from the origin (not
+from <TT><STRONG>point</STRONG></TT>).
+The parameter defaults to &#91;0 0 1&#93;.
+</TD></TR></TABLE>
+<P><B>Notes: </B><OL>
+<P><LI>To create a plane parallel to one of the axes along a connections
+boundary (for regular data) it is more efficient to use the Slab
+module with zero thickness,  because it performs no
+interpolation.
+<P><LI>MapToPlane (unlike Slab) adds a "normals" component to the
+plane, so that the result is shaded.
+To eliminate the shading, remove the "normals" component with the
+Remove module or turn off the shading with the Shade module.
+<P><LI>If the specified plane is precisely at the edge of the data, the
+output may or may not appear, depending on the direction of
+<TT><STRONG>normal</STRONG></TT>.
+</OL>
+
+<P><STRONG>Components</STRONG>
+<P>
+Creates new "positions," "connections," and "normals"
+components.
+New "components" of all other input components are created
+(e.g., the "data" component) and contain values
+interpolated from the originals.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+AlternateVisualizations.net
+ContoursAndCaption.net
+ThunderGlyphSheet.net
+SIMPLE/MapToPlane.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu016.htm#HDRAUTOCOL">AutoColor</A>,
+&nbsp;<A HREF="refgu091.htm#HDRMAP">Map</A>,
+&nbsp;<A HREF="refgu116.htm#HDRREMOVE">Remove</A>,
+&nbsp;<A HREF="refgu125.htm#HDRRUBBERS">RubberSheet</A>,
+&nbsp;<A HREF="refgu137.htm#HDRSHADE">Shade</A>,
+&nbsp;<A HREF="refgu143.htm#HDRSLAB">Slab</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu091.htm">Previous Page</A> &#124; <A HREF="refgu093.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu025.htm">Previous Page</A> &#124; <A HREF="refgu027.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+
+<H3><A NAME="HDRCHGGRTY" HREF="refgu009.htm#PToC_48">ChangeGroupType</A></H3>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATSTR">Structuring</A>
+<P><STRONG>Function</STRONG>
+<P>Changes the group type
+<P><STRONG>Syntax</STRONG>
+<PRE>
+<STRONG>changed</STRONG> = ChangeGroupType(<STRONG>data, newtype, idlist</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>data</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">group
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">(none)
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">input group object
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>newtype</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">(none)
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">type for output group
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>idlist</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar list or string list
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">input dependent
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">series positions or member names
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>name</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">type
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">description
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">changed
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">group
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">different type of group with same
+members as input
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+ChangeGroupType allows you to change the group type of an input object,
+for example, change a generic group to a series, or change a series to a
+multigrid. The output group <TT><STRONG>changed</STRONG></TT> will contain the
+same members as the input group <TT><STRONG>data</STRONG></TT>. You can also
+use this module to change the series positions of a Series group.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>data</STRONG></TT>
+</B></TD><TD><P>is the input group to be changed.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>newtype</STRONG></TT>
+</B></TD><TD><P>is the type for the output group. It must be one of "series",
+"multigrid", or "generic". Note that any combination of
+objects can be placed in a generic group, but there are restrictions on
+the objects which can be placed in a series or multigrid. In these
+cases, all the members must have the same data type and connection type.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>idlist</STRONG></TT>
+</B></TD><TD><P>is the list of series positions or list of member names. The
+number
+of items in this list, if given, must be the same as the number of
+members in <TT><STRONG>data</STRONG></TT>. This parameter is optional. If you
+are changing the group type to series and do not provide this parameter,
+the members of the series will automatically be given series positions
+0, 1, ..., n-1, where n is the number of members in
+<TT><STRONG>data</STRONG></TT>.
+</TD></TR></TABLE>
+<P><STRONG>Components</STRONG>
+<P>This module does not change any components of the input object. It
+changes only the group type.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+ManipulateGroups.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+<A HREF="refgu025.htm#HDRCHGGRME">ChangeGroupMember</A>,
+<A HREF="refgu029.htm#HDRCOLLECT">Collect</A>,
+<A HREF="refgu032.htm#HDRCOLLECS">CollectSeries</A>,
+<A HREF="refgu031.htm#HDRCOLLECN">CollectNamed</A>,
+<A HREF="refgu030.htm#HDRMULTIGR">CollectMultiGrid</A>
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu025.htm">Previous Page</A> &#124; <A HREF="refgu027.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

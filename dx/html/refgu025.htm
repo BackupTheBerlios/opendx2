@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu024.htm">Previous Page</A> &#124; <A HREF="refgu026.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+
+<H3><A NAME="HDRCHGGRME" HREF="refgu009.htm#PToC_47">ChangeGroupMember</A></H3>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATSTR">Structuring</A>
+<P><STRONG>Function</STRONG>
+<P>Insert, rename, or delete a member of an existing group
+<P><STRONG>Syntax</STRONG>
+<PRE>
+<STRONG>changed</STRONG> = ChangeGroupMember(<STRONG>data, operation, id, newmember, newtag</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>data</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">group
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">input group object
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>operation</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">how to alter the group member
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>id</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">index or name of existing group
+member
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>newmember</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">operation dependent
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">new or replacement group member
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>newtag</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar or string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">new series position or member
+name
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>changed</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">group
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">group with one member changed
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module allows you to replace or insert a member of an existing
+group.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>data</STRONG></TT>
+</B></TD><TD><P>is the group to be modified
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>operation</STRONG></TT>
+</B></TD><TD><P>is the operation to perform on the specified member of
+<TT><STRONG>data</STRONG></TT>.  If <TT><STRONG>data</STRONG></TT> is a series
+group, then <TT><STRONG>operation</STRONG></TT> must be one of "insert
+before", "replace", "insert after", or "delete". If
+<TT><STRONG>data</STRONG></TT> is any other kind of group, then
+<TT><STRONG>operation</STRONG></TT> must be one of "insert",
+"replace", "delete".
+Note that for most applications, the order of members in a group is not
+important, and the order of members in a group is not guaranteed to be
+maintained by modules in Data Explorer unless the group is a Series.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>id</STRONG></TT>
+</B></TD><TD><P>is the index (from 0 to n-1, where n is the number of members
+of <TT><STRONG>data</STRONG></TT>) or name of an existing member of
+<TT><STRONG>data</STRONG></TT>
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>newmember</STRONG></TT>
+</B></TD><TD><P>is the new or replacement object to be placed
+in <TT><STRONG>data</STRONG></TT>
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>newtag</STRONG></TT>
+</B></TD><TD><P>is the series position or member name for
+<TT><STRONG>newmember</STRONG></TT>. If <TT><STRONG>data</STRONG></TT> is a
+series,
+this parameter is required.
+</TD></TR></TABLE>
+<P><STRONG>Components</STRONG>
+<P>
+This module does not modify any components of the input
+<TT><STRONG>data</STRONG></TT>.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+ManipulateGroups.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+<A HREF="refgu026.htm#HDRCHGGRTY">ChangeGroupType</A>,
+<A HREF="refgu029.htm#HDRCOLLECT">Collect</A>,
+<A HREF="refgu032.htm#HDRCOLLECS">CollectSeries</A>,
+<A HREF="refgu031.htm#HDRCOLLECN">CollectNamed</A>,
+<A HREF="refgu030.htm#HDRMULTIGR">CollectMultiGrid</A>
+
+
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu024.htm">Previous Page</A> &#124; <A HREF="refgu026.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer QuickStart Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer QuickStart
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer QuickStart Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="qikgu009.htm">Previous Page</A> &#124; <A HREF="qikgu011.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu006.htm#PToC2">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H1><A NAME="HDRQUIKOV" HREF="../qikguide.htm#ToC_15">Chapter 1. A Very Quick
+Overview</A></H1>
+<A NAME="IDX1"></A>
+<P>
+Data Explorer is a system of tools and user interfaces for visualizing
+data.
+In general terms the visualization of data can be considered a 3-stage
+process:
+<A NAME="IDX2"></A>
+<A NAME="IDX3"></A>
+<OL COMPACT>
+<LI>Describing and importing data
+<LI>Processing the data through a visualization program
+<LI>Presenting the resulting image.
+</OL>
+The simple diagram below shows where the chief tools and interfaces of
+Data Explorer fit into this process.
+The numbered list that follows <A HREF="#FIGOVERDG">Figure 1</A> is keyed to the
+diagram.
+The list items briefly describe the roles of these features in Data Explorer
+visualization and give references to the relevant Data Explorer
+documentation.
+<P><B><A NAME="FIGOVERDG" HREF="../qikguide.htm#FT_FIGOVERDG">Figure 1. Main
+features of Data Explorer</A></B>. Tools and interfaces are positioned to show
+their general place in the visualization process. All those listed below the
+data-&gt;image sequence are interactive interfaces except for the "modules" (6
+and 10), which are directly accessible and manipulable in the Visual Program
+Editor (5). Numbers correspond to those in the accompanying list. Underlined
+features are discussed in this Guide. Features not underlined are discussed in
+other documentation, cited in the list.<BR>
+<TABLE BORDER  ><TR><TD><BR>
+<B><BR><CENTER><IMG SRC="../images/quikovx.gif" ALT="Figure quikovx not
+displayed."></CENTER><BR></B><BR>
+</TD></TR></TABLE>
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B>(1) Data Model
+<A NAME="IDX5"></A>
+<A NAME="IDX6"></A>
+<A NAME="IDX7"></A>
+<A NAME="IDX8"></A>
+</B></TD><TD><P>The set of definitions, rules, and conventions used to describe
+Data Explorer entities (including data fields, geometrical objects,
+and images).
+<P>
+See
+<A HREF="../usrguide.htm">
+<I>IBM Visualization Data Explorer User&#39;s Guide</I>.</A>
+</TD></TR><TR VALIGN="TOP"><TD><P><B>(2) Data Prompter
+<A NAME="IDX10"></A>
+</B></TD><TD><P>A user interface for describing data to be imported into Data
+Explorer.
+<P>
+See <A HREF="qikgu018.htm#HDRTIMPDAT">3.3 , "Importing Data"</A> and <A
+HREF="qikgu030.htm#HDRPROMPT">5.4 , "Data Prompter"</A>
+in this Guide.
+</TD></TR><TR VALIGN="TOP"><TD><P><B>(3) Data Browser
+<A NAME="IDX11"></A>
+</B></TD><TD><P>A user interface for viewing a data file, determining the layout
+and
+organization of the data it contains, and transferring this
+information to the Data Prompter (2).
+<P>
+See <A HREF="qikgu031.htm#HDRBROWSE">5.5 , "Data Prompter Browser"</A> in this
+Guide.
+</TD></TR><TR VALIGN="TOP"><TD><P><B>(4) Scripting Language
+<A NAME="IDX12"></A>
+<A NAME="IDX13"></A>
+</B></TD><TD><P>A simple, high-level language for creating visualization
+programs.
+It can also be used directly in a command mode to perform various
+tasks.
+Visual programs--i.e., the visualization programs displayed in
+the Visual Program Editor window (5) as "networks" of module
+icons--are also written in the scripting language.
+A visual program constructed in this window by the user is translated
+into the same language when it is saved to disk.
+<P>
+See
+<A HREF="../usrguide.htm">
+<I>IBM Visualization Data Explorer User&#39;s Guide</I>.</A>
+</TD></TR><TR VALIGN="TOP"><TD><P><B>(5) Visual Program Editor (VPE)
+<A NAME="IDX14"></A>
+<A NAME="IDX16"></A>
+</B></TD><TD><P>A graphical user interface for creating and modifying visual
+programs (networks).
+Programs created with this editor are translated into the scripting
+language (4) by Data Explorer and are stored in that form.
+<P>
+See <A HREF="qikgu016.htm#HDRTEDVP">3.1 , "Editing a Visual Program: The
+Basics"</A> in this Guide; see also
+<A HREF="../usrguide.htm">
+<I>IBM Visualization Data Explorer User&#39;s Guide</I>.</A>
+</TD></TR><TR VALIGN="TOP"><TD><P><B>(6) Modules
+<A NAME="IDX18"></A>
+</B></TD><TD><P>The "building blocks" (visualization "tools") that
+constitute a visual program network.
+They can be directly accessed and manipulated in the Visual Program Editor (5).
+<P>
+See
+<A HREF="../refguide.htm">
+<I>IBM Visualization Data Explorer User&#39;s Reference</I>.</A>
+</TD></TR><TR VALIGN="TOP"><TD><P><B>(7) Module Builder
+<A NAME="IDX20"></A>
+</B></TD><TD><P>A user interface for creating customized modules to be used in
+visual programs.
+<P>
+See
+<A HREF="../proguide.htm">
+<I>IBM Visualization Data Explorer Programmer&#39;s Reference</I>.</A>
+</TD></TR><TR VALIGN="TOP"><TD><P><B>(8) Image Window
+<A NAME="IDX21"></A>
+</B></TD><TD><P>An interactive window for viewing and modifying the
+presentation of the image produced by a visual program.
+<P>
+See <A HREF="qikgu015.htm#HDRTUTA5">2.5 , "Controlling the Appearance of an
+Object: The Image Window"</A> in this Guide.
+</TD></TR><TR VALIGN="TOP"><TD><P><B>(9) Control Panels
+<A NAME="IDX22"></A>
+</B></TD><TD><P>A user interface for changing the parameter values used by a
+visual program.
+<P>
+See <A HREF="qikgu015.htm#HDRCPAPA">"Using Control Panels"</A> in this Guide;
+see also
+<A HREF="../usrguide.htm">
+<I>IBM Visualization Data Explorer User&#39;s Guide</I>.</A>
+</TD></TR><TR VALIGN="TOP"><TD><P><B>(10) Display Module
+<A NAME="IDX23"></A>
+<A NAME="IDX24"></A>
+</B></TD><TD><P>An alternative to the Image window (8).
+<P>
+See
+<A HREF="../refguide.htm">
+<I>IBM Visualization Data Explorer User&#39;s Reference</I>.</A>
+</TD></TR></TABLE>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="qikgu009.htm">Previous Page</A> &#124; <A HREF="qikgu011.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu006.htm#PToC2">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/qikguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

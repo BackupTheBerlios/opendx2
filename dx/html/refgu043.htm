@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu042.htm">Previous Page</A> &#124; <A HREF="refgu044.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRDXLINPT" HREF="refgu009.htm#PToC_65">DXLInput</A></H3>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATDXL">DXLink</A>
+<A NAME="IDX444"></A>
+<P><STRONG>Function</STRONG>
+<P>
+Enables a remote DXLink application to set a parameter value in a
+visual program.
+<P><STRONG>Syntax</STRONG>
+Available only through the user interface.
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>default</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">value, string, object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">default value (overridden by the
+remote application)
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>output</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">the default value or the value
+sent from a remote application.
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This tool receives variable values from a remote application that uses
+the DXLink library of function calls (see <A
+HREF="progu084.htm#HDRDXLINK">Chapter 17. "DXLink Developer's Toolkit"</A>
+in <I>IBM Visualization Data Explorer Programmer&#39;s Reference</I>).
+The value received from the application is passed as output from the
+DXLInput tool.
+<P>
+The module&#39;s label (set in the <TT><STRONG>Notation</STRONG></TT>
+field of the Configuration dialog box) is used to establish a
+global variable, which is then set by the DXLSet...
+functions of the DXLink development library.
+One of the parameters of these functions is the global variable name,
+which must be the same as the label of the DXLInput tool that is
+intended to receive the value given in the function call.
+Changing the text of the <TT><STRONG>Notation</STRONG></TT> field in
+DXLInput&#39;s configuration dialog box changes the label
+displayed on the tool&#39;s VPE stand-in, just as it
+does for Receivers and Transmitters.
+<P>
+If there is no remote application setting the default values, DXLInput
+will output the value specified by <TT><STRONG>default</STRONG></TT>.
+If a remote application sets the value, that value overrides
+<TT><STRONG>default</STRONG></TT>.
+This parameter provides a mechanism that makes it easier to debug
+visual programs that are intended to be used and controlled
+by remote DXLink applications.
+<P><B>Note: </B>The <TT><STRONG>default</STRONG></TT> value must be set in the
+module&#39;s configuration dialog box.
+Any value set by a connection to the output of another tool will
+<I>not</I> be overridden by a value set by a remote
+application.
+<P><STRONG>See Also</STRONG>
+&nbsp;<A HREF="refgu045.htm#HDRDXLOUTP">DXLOutput</A>,
+
+&nbsp;<A HREF="refgu044.htm#HDRDXLINPN">DXLInputNamed</A>,
+&nbsp;<A HREF="refgu076.htm#HDRINPUT">Input</A>,
+&nbsp;<A HREF="refgu099.htm#HDROUTPUT">Output</A>
+
+<P>
+&nbsp;<A HREF="progu084.htm#HDRDXLINK">Chapter 17. "DXLink Developer's
+Toolkit"</A> in <I>IBM Visualization Data Explorer Programmer&#39;s
+Reference</I>.
+
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu042.htm">Previous Page</A> &#124; <A HREF="refgu044.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

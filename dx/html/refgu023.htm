@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu022.htm">Previous Page</A> &#124; <A HREF="refgu024.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+
+<H3><A NAME="HDRCATEGOR" HREF="refgu009.htm#PToC_45">Categorize</A></H3>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATTRN">Transformation</A>
+<P><STRONG>Function</STRONG>
+<P>
+Categorizes components of a field
+<P><STRONG>Syntax</STRONG>
+<PRE>
+<STRONG>output</STRONG> = Categorize(<STRONG>input, name</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>input</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">field to categorize
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>name</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string or string list
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">"data"
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">component to categorize
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>output</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">with additional lookup components
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>input</STRONG></TT>
+</B></TD><TD><P>is the field containing the components to categorize
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>name</STRONG></TT>
+</B></TD><TD><P>is the name or names of the components to categorize
+</TD></TR></TABLE>
+<P>
+The Categorize module converts a component of any type
+to an integer array that references
+a newly created "lookup" component, which is
+a sorted list of the unique values in the original component.
+This serves to
+<OL COMPACT>
+<LI>reduce the size of a component that contains
+duplicate values,
+<LI>allow conversion of string or vector data to
+"categorical" data,
+<LI>detect repeated values in a component, and
+<LI>create a sorted list of the unique values in a component
+for inspection.
+</OL>
+<P>
+Each component that is categorized will yield its own lookup
+component named "compname lookup", where compname is the
+name of the categorized component.
+<P>
+For example, if the component name is "state" and its values
+are &#123;"MO", "CA", "MO", "NH",
+"AK", "NH"&#125; then
+Categorize(field, "state") would convert component state to:
+&#123;2, 1, 2, 3, 0, 3&#125;
+and produce a new component, "state lookup"
+containing the values &#123;"AK", "CA", "MO",
+"NH"&#125;.
+<P>
+<P><B>Notes: </B><OL>
+<P><LI>Categorize works on scalar, string, or vectors of any type,
+with the lookup component sorted in order of x, y, z, ...
+If the lookup component has fewer items than the original
+component, then there are duplicate values in the original component.
+If the lookup component has 256 or fewer items,
+the categorized component will be of type unsigned byte;
+otherwise it will be of type int.
+<P><LI>Categorical data can be converted back to its original
+values using either the Lookup module or Map.
+If the lookup component is of type string, it can be input
+as the <TT><STRONG>labels</STRONG></TT> parameter of Plot, ColorBar, or
+AutoAxes to label the values 0, 1, .. n-1 with the corresponding strings.
+This helps automate the labelling of categorical plots. Data imported
+by ImportSpreadsheet can be categorized on import directly by
+specifying the components to categorize. Statistics on the
+categorized component, and another associated component,
+can be found with CategoryStatistics.
+Include can be used to remove data by category.
+</OL>
+<P><STRONG>Components</STRONG>
+<P>
+Modifies the components specified by <TT><STRONG>name</STRONG></TT>, replacing
+it by a list of indices. Adds a new component with the name
+"<TT><STRONG>name</STRONG></TT> lookup" which is a lookup table for component
+<TT><STRONG>name</STRONG></TT>.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+Duplicates.net
+Categorical.net          (Categorize is called on import by ImportSpreadsheet)
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+<A HREF="refgu024.htm#HDRCATEGST">CategoryStatistics</A>,
+<A HREF="refgu074.htm#HDRIMPSPSH">ImportSpreadsheet</A>
+
+
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu022.htm">Previous Page</A> &#124; <A HREF="refgu024.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

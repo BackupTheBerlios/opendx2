@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu165.htm">Previous Page</A> &#124; <A HREF="refgu167.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRUSAGE" HREF="refgu009.htm#PToC_222">Usage</A></H3>
+<A NAME="IDX763"></A>
+<A NAME="IDX764"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATDBG">Debugging</A>
+<A NAME="IDX765"></A>
+<P><STRONG>Function</STRONG>
+<P>
+Prints information about current use of resources.
+<P><STRONG>Syntax</STRONG>
+<PRE>
+Usage(<STRONG>what, how</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>what</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">the string to be printed
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>how</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">0
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">level of detail
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+The output of this module appears in the Message window of the user
+interface.
+Since, the module traverses the entire memory, it can be used
+to check for corruption of the memory area.
+<P>
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>what</STRONG></TT>
+</B></TD><TD><P>specifies what resource information is to be printed.
+Currently, the only allowed value for this parameter is "memory."
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>how</STRONG></TT>
+</B></TD><TD><P>specifies the level of detail of the printout.
+<TABLE CELLPADDING="3">
+
+<TR VALIGN="TOP"><TD><P><TT><STRONG>0</STRONG></TT>
+</TD><TD><P>Prints out a summary of the total
+current use of memory.
+A typical printout might look like:
+<PRE>
+0: 58720256 bytes total : 1379008 in use, 57341248 free
+</PRE>
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>1</STRONG></TT>
+</TD><TD><P>Prints out a summary of current use of memory, both in small
+and in large arenas. A typical printout might look like:
+<PRE>
+0: small: 4194304 = hdr 16472 + used 486864 +
+                    free 3920 + pool 3687048 (limit 4194304)
+0: large: 2097152 = hdr 16472 + used 494656 +
+                    free 29704 + pool 1558120 (limit 54525952)
+</PRE>
+
+where
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><TT><STRONG>small</STRONG></TT>
+</TD><TD><P>is the total number of bytes currently managed by the memory manager
+for the small arena.
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>large</STRONG></TT>
+</TD><TD><P>is the total number of bytes currently managed by the memory manager
+for the large arena.
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>hdr</STRONG></TT>
+</TD><TD><P>is the amount of memory space used by internal data structures.
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>used</STRONG></TT>
+</TD><TD><P>is the amount of memory space allocated for use.
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>free</STRONG></TT>
+</TD><TD><P>is the amount of memory previously used and available for reuse.
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>pool</STRONG></TT>
+</TD><TD><P>is the amount of memory space allocated to Data Explorer but not yet
+used.
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>limit</STRONG></TT>
+</TD><TD><P>is the largest amount of memory that can be managed by the memory
+manager.
+</TD></TR></TABLE>
+
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>2</STRONG></TT>
+</TD><TD><P>lists the number of blocks on each free list
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>3</STRONG></TT>
+</TD><TD><P>lists the number of blocks on each free list plus the actual
+blocks on each free list
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>4</STRONG></TT>
+</TD><TD><P>lists addresses of all allocated blocks
+(warning: very long)
+</TD></TR><TR VALIGN="TOP"><TD><P><TT><STRONG>5</STRONG></TT>
+</TD><TD><P>lists addresses of all allocated and all freed blocks (warning:
+very long)
+
+</TD></TR></TABLE>
+</TD></TR></TABLE>
+<P><B>Note: </B>
+
+You can easily specify Usage("memory", 0) by using the Show Memory
+Use button in the <TT><STRONG>Commands</STRONG></TT> menu of the Message
+window.
+
+The information provided by this module applies to memory use
+at the time of execution and should be interpreted with that
+restriction in mind.
+See <A HREF="progu267.htm#HDRDXPA">DXPrintAlloc</A> in <I>IBM Visualization Data
+Explorer Programmer&#39;s Reference</I> for more information.
+<P><STRONG>Script Language Example</STRONG>
+<P>
+This example shows the use of memory before and after the Isosurface
+module is printed.
+(For this example, Data Explorer should be started with the <TT>-readahead
+off</TT> option.)
+<PRE>
+electrondensity = Import("/usr/lpp/dx/samples/data/watermolecule");
+camera = AutoCamera(electrondensity,width=5);
+Usage("memory", 1);
+isosurface = Isosurface(electrondensity,0.3);
+Usage("memory", 1);
+Display(isosurface,camera);
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu158.htm#HDRTRACE">Trace</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu165.htm">Previous Page</A> &#124; <A HREF="refgu167.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

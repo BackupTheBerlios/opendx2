@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="usrgu010.htm">Previous Page</A> &#124; <A HREF="usrgu012.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu010.htm#PToC3">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+
+<HR>
+<H2><A NAME="HDRGETSET" HREF="usrgu010.htm#PToC_23">Changes to Get and Set
+modules</A></H2>
+<P>
+In this release, the Get and Set modules have been replaced by
+GetLocal/SetLocal and GetGlobal/SetGlobal. Briefly, the difference
+between these pairs of modules is that the Global pair maintains state
+between executions, while the Local pair do not. (Remember that a single
+loop in the visual program is considered a single execution). If you do
+not do anything to modify your visual program, any Get/Set pairs which
+you have will be replaced by GetGlobal and SetGlobal, and the visual
+program will run as it did before. However, in many cases you can
+replace your Get/Set pair by GetLocal and SetLocal for performance
+advantages. One way to know if you can do this is if you are using the
+First module to reset Get on each execution. If so, then you can
+certainly replace your Get and Set by GetLocal and SetLocal (and the
+First module is no longer necessary, as GetLocal automatically resets on
+each new execution).
+<P>
+See <A HREF="refgu067.htm#HDRGETLOC">GetLocal</A>, <A
+HREF="refgu136.htm#HDRSETLOC">SetLocal</A>, <A
+HREF="refgu066.htm#HDRGETGLO">GetGlobal</A>,
+and <A HREF="refgu135.htm#HDRSETGLO">SetGlobal</A> in <I>IBM Visualization Data
+Explorer User&#39;s Reference</I> for more detailed information.
+<P>
+<TT><STRONG>Assign Get/Set Scope -&gt; Convert All modules</STRONG></TT>
+under the Edit pulldown in
+the VPE is available for helping change Get/Set modules to the new
+GetGlobal/SetGlobal, GetLocal/SetLocal options.
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="usrgu010.htm">Previous Page</A> &#124; <A HREF="usrgu012.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu010.htm#PToC3">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/usrguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

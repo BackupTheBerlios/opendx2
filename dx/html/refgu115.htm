@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu114.htm">Previous Page</A> &#124; <A HREF="refgu116.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRREGRID" HREF="refgu009.htm#PToC_168">Regrid</A></H3>
+<A NAME="IDX647"></A>
+<A NAME="IDX648"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATREL">Realization</A>
+<P><STRONG>Function</STRONG>
+<P>
+Maps scattered points onto a grid.
+<P><STRONG>Syntax</STRONG>
+<PRE><STRONG>
+output</STRONG> = Regrid(<STRONG>input, grid, nearest, radius, exponent, missing</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>input</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">field or vector list
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">field with positions to regrid
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>grid</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">grid to be used as template
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>nearest</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer or string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">1
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">number of nearest neighbors to
+use
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>radius</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar or string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">&quot;infinity&quot;
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">radius from grid point
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>exponent</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">1.0
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">weighting exponent
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>missing</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">value
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">missing value to be inserted if
+necessary
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>output</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">regridded field
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module uses a specified set of scattered points
+(<TT><STRONG>input</STRONG></TT>) to assign data values to
+every position of a specified grid.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>input</STRONG></TT>
+</B></TD><TD><P>should be either (1) a field with a 1-, 2-, or 3-dimensional
+"positions" component or (2) a list of 1-, 2-, or
+3-dimensional vectors.
+In the second case, the vectors are interpreted as positions.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>grid</STRONG></TT>
+</B></TD><TD><P>is required.
+It specifies the grid to be used as a base for creating a
+"connections" component.
+The dimensionality of positions in this grid must match that of the
+positions in <TT><STRONG>input</STRONG></TT>.
+The specified <TT><STRONG>grid</STRONG></TT> could be created with the
+Construct module.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>nearest</STRONG></TT>
+</B></TD><TD><P>must be an integer or the string "infinity."
+An integer value specifies the number of nearest points (to each grid
+point) to be used in computing an average data value for that
+grid point.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>radius</STRONG></TT>
+</B></TD><TD><P>specifies the maximum radius (from the grid point) within which
+the
+nearest neighbors can be found.
+The parameter must specify a scalar value or the string "infinity."
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>exponent</STRONG></TT>
+</B></TD><TD><P>The averaging method is a weighted average.
+The expression for this average is
+1&#47;radius<SUP><TT><STRONG>(exponent)</STRONG></TT></SUP>.
+The default value is 1.0, reducing the expression to the reciprocal of
+the radius.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>missing</STRONG></TT>
+</B></TD><TD><P>is used when <TT><STRONG>radius</STRONG></TT> is set to a value
+other
+than "infinity."
+The parameter specifies how to treat those grid points for which no
+points in <TT><STRONG>input</STRONG></TT> occur within the specified
+radius.
+<P>
+If <TT><STRONG>missing</STRONG></TT> <I>is not set</I>, the module creates
+an "invalid positions" component, and grid points with no
+assigned data value are invalidated.
+If <TT><STRONG>missing</STRONG></TT> is set, the data value is inserted
+for the missing data values.
+It must match the data component of <TT><STRONG>input</STRONG></TT> in rank,
+type, and shape.
+<P>
+All components that are position-dependent are treated in the same way
+as the "data" component.
+</TD></TR></TABLE>
+<P><B>Note: </B>To remove invalidated positions, use the Include module.
+However, it is not necessary to remove invalidated positions in order to
+have them treated as invalid by other modules.
+<P><STRONG>Components</STRONG>
+<P>
+Adds a "connections" component.
+The "positions" and "connections" components are those of
+<TT><STRONG>grid</STRONG></TT> while all components in
+<TT><STRONG>input</STRONG></TT> that depend on
+"positions" will be present in the
+output, modified by averaging.
+<P><STRONG>Example Visual Program</STRONG>
+<PRE>
+
+SIMPLE/Regrid.net
+
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu038.htm#HDRCONNECT">Connect</A>,
+&nbsp;<A HREF="refgu039.htm#HDRCONSTRU">Construct</A>,
+&nbsp;<A HREF="refgu075.htm#HDRINCLUDE">Include</A>,
+
+&nbsp;<A HREF="refgu019.htm#HDRAUTGRID">AutoGrid</A>
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu114.htm">Previous Page</A> &#124; <A HREF="refgu116.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

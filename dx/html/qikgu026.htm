@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer QuickStart Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer QuickStart
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer QuickStart Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="qikgu025.htm">Previous Page</A> &#124; <A HREF="qikgu027.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu016.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H2><A NAME="HDRSAMPLMA"></A>4.2 Sample Macros</H2>
+<A NAME="IDX189"></A>
+<A NAME="IDX190"></A>
+<P>
+Found in directory
+<a href="../../samples/macros">
+<TT>&#36;DXROOT/samples/macros</TT>.
+</a>
+<P>
+<TT><STRONG>ArrangeMemberMacro.net</STRONG></TT>
+Allows you to independently arrange a number of interactive windows
+within a larger window.
+<P>
+<TT><STRONG>AutoScaleMacro.net</STRONG></TT>
+Automatically scales an object to a user-specified aspect ratio. It is
+used by the ScatterData example visual program.
+<P>
+<TT><STRONG>BandColorsMacro.net</STRONG></TT>
+"Bands" a 2-dimensional data set and applies a user-specified set
+of colors to the bands. It is used by the BandedColors example visual
+program.
+<P>
+<TT><STRONG>CappedIsoMacro.net</STRONG></TT>
+caps an isosurface by the boundary of the data. Used by CappedIso.net.
+<P>
+<TT><STRONG>ClipSurfaceMacro.net</STRONG></TT>
+clips a surface by a plane. Is used by the macro ClipVolumeMacro.net.
+<P>
+<TT><STRONG>ClipVolumeMacro</STRONG></TT>
+clips a surface in a volume by a plane, capping the hole with a plane
+from the volume. Can be nested. Is used by VolumeClip.net.
+<P>
+<TT><STRONG>ConvertColorNameListMacro.net</STRONG></TT>
+Converts a list of color names to a list of RGB vectors. It is used by
+the BandedColorsMacro macro.
+<P>
+<TT><STRONG>DrapeMacro.net</STRONG></TT>
+drapes one 2-dimensional field over another, using one of them to deform
+the surface.
+
+<P>
+<TT><STRONG>FactorialMacro.net</STRONG></TT>
+Used by Factorial.net to compute a factorial.
+<P>
+<TT><STRONG>FormatListMacro.net</STRONG></TT>
+Formats a list of values into a list of strings.
+<P><TT><STRONG>Image2Macro.net</STRONG></TT>
+Implements much of the functionality
+of the Image tool with SuperviseWindow, SuperviseState, and Display.
+Used by Image_wo_UI.net.
+<P>
+<TT><STRONG>InsetImageMacro.net</STRONG></TT>
+Allows you to inset an independently interactive window within a larger
+window.
+
+<P>
+<TT><STRONG>InterpolatePositionsMacro.net</STRONG></TT>
+Used by the FlyThrough example visual program (see <A
+HREF="qikgu025.htm#HDR3DDAT">"3-Dimensional Data"</A>).
+It interpolates data values within a list of 3-dimensional positions.
+<P>
+<TT><STRONG>MakeLineMacro.net</STRONG></TT>
+Used by the PlotLine2 example visual program (see <A
+HREF="qikgu025.htm#HDR3DDAT">"3-Dimensional Data"</A>).
+
+<P>
+The macro takes as input a data field, two points defining the start
+and end of a line, and the number of samples to be placed along
+the line.
+The macro has two outputs:
+
+
+<LI>a line that can be displayed in the Image
+window
+<LI>the data to be plotted, which has two components:
+
+<UL COMPACT>
+<LI>the
+"positions"
+component is the distance along the line
+<LI>the
+"data"
+component is the data value at each position.
+</UL>
+<P>
+
+<TT><STRONG>Make3DFieldMacro.net</STRONG></TT>
+Given three fields with scalar data components, creates an output field
+where the x's are the data components of the first field, the y's are the
+data components of the second field, and the z's are the date components
+of the third field. It is used by the ScatterData example visual program.
+
+<P>
+
+<TT><STRONG>MapOnStatesMacro.net</STRONG></TT>
+Allows you to map data onto a map of the United States. It is used by
+the CensusData and ZipCodes example visual programs.
+
+<P>
+<TT><STRONG>MatteMacro.net</STRONG></TT>
+Used by Bounce.net.
+It mattes two images together.
+<P><TT><STRONG>PickPlotMacro.net</STRONG></TT>
+Extracts the transformed x,y position from a picked point in a plot.
+<P>
+<TT><STRONG>UnsquishGlyphMacro.net</STRONG></TT>
+Provides a simple solution for the "squished glyph" syndrome, when
+data are scaled before rendering. It is used by the ScatterData example
+visual program.
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="qikgu025.htm">Previous Page</A> &#124; <A HREF="qikgu027.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu016.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/qikguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

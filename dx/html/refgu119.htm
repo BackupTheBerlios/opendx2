@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu118.htm">Previous Page</A> &#124; <A HREF="refgu120.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRREORENT" HREF="refgu009.htm#PToC_172">Reorient</A></H3>
+<A NAME="IDX655"></A>
+<A NAME="IDX656"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATREN">Rendering</A>
+<P><STRONG>Function</STRONG>
+<P>
+Changes the orientation of an image or group of images.
+<P><STRONG>Syntax</STRONG>
+<PRE>
+<STRONG>image</STRONG> = Reorient(<STRONG>image, how</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>image</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">field or group
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">image(s) to be reoriented
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>how</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">specific change of orientation
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>image</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">image
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">reoriented image
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module rotates or inverts an image.
+(Use Refine or Reduce to change the size of an image.)
+<P><B>Note: </B>This module is intended for images that will be displayed
+directly without rendering (i.e., using Display without
+a camera).
+So if you are rendering an object (using Image, Display with a camera,
+or Render), you should instead use Transpose, Rotate, Scale,
+and Translate to reorient that object before
+rendering it.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>image</STRONG></TT>
+</B></TD><TD><P>is an image or group of images.
+An image is (1) a regular 2-dimensional field <I>or</I> the
+output of Render or ReadImage and (2) must have the
+following characteristics.
+<UL COMPACT>
+<LI>regular 2-dimensional positions and quad connections
+<LI>position-dependent colors
+<LI>origin at &#91;0, 0&#93;.
+</UL>
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>how</STRONG></TT>
+</B></TD><TD><P>specifies one of several possible reorientations.
+Allowed values are 0-7 (see figure).
+</TD></TR></TABLE>
+<P><B><A NAME="FIGFRORNT" HREF="../refguide.htm#FT_FIGFRORNT">Figure 4.
+Reorientation of the letter F.</A></B><BR>
+<B><BR><CENTER><IMG SRC="../images/reorient.gif" ALT="Figure reorient not
+displayed."></CENTER><BR></B><BR>
+<P>
+If <TT><STRONG>how</STRONG></TT> is set to 0, the image&#39;s appearance
+does not change.
+However, if the origin or deltas are not in the preferred image order
+(i.e., origin at &#91;0, 0&#93; and x varying fastest), the
+internal layout is altered to the preferred order.
+The result is a more efficient display of the image.
+<P>
+Thus Reorient can be used to align images from two sources so that the
+pixels are in one-to-one correspondence.
+A tool like Compute can then operate on corresponding pixels from
+the two images.
+<P><STRONG>Components</STRONG>
+<P>
+Modifies the positions and connections components and reorders the
+position-dependent components.
+<P><STRONG>Example Visual Program</STRONG>
+<PRE>
+Topo.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu048.htm#HDRDISPLAY">Display</A>,
+&nbsp;<A HREF="refgu100.htm#HDROVERLAY">Overlay</A>,
+&nbsp;<A HREF="refgu110.htm#HDRREADIMA">ReadImage</A>,
+&nbsp;<A HREF="refgu113.htm#HDRREDUCE">Reduce</A>,
+&nbsp;<A HREF="refgu114.htm#HDRREFINE">Refine</A>,
+&nbsp;<A HREF="refgu118.htm#HDRRENDER">Render</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu118.htm">Previous Page</A> &#124; <A HREF="refgu120.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu129.htm">Previous Page</A> &#124; <A HREF="refgu131.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+
+<H3><A NAME="HDRSCALSCR" HREF="refgu009.htm#PToC_183">ScaleScreen</A></H3>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATREN">Rendering</A>
+<P><STRONG>Function</STRONG>
+<P>Increases or decreases size of all screen objects (e.g. captions and
+colorbars) by specified factor.
+<P><STRONG>Syntax</STRONG>
+<PRE>
+<STRONG>output, newcamera</STRONG> = ScaleScreen(<STRONG>object, scalefactor,
+                                finalres, currentcamera</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>object</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">object to scale
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>scalefactor</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">1
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">scale factor for screen objects
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>finalres</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">final (x) resolution of desired
+image
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP"
+WIDTH="20%"><TT><STRONG>currentcamera</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">camera
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">current camera used to view
+object
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>output</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">object with screen objects scaled
+as specified
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>newcamera</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">camera
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">current camera updated by
+specified scale factors
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+The ScaleScreen module is used to scale all the screen objects within
+<TT><STRONG>object</STRONG></TT> by a specified amount. It does not
+affect the size of any other
+objects in the input <TT><STRONG>object</STRONG></TT>. A typical use of
+ScaleScreen is when you
+have created an image for display using Render, and you wish to
+re-render it at a higher resolution for printing, for example. You would
+need to use ScaleScreen to increase the pixel size of any screen objects
+(such as captions and color bars) in the object before re-rendering. Note
+that ScaleScreen is called implicitly when you use the
+"Allow Rerendering"
+option of the Save/Print Image dialogs of the Image window, so you do
+not need to use it. You would only need to use ScaleScreen if you are
+doing the re-rendering yourself using Render or Display.
+<P>
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>object</STRONG></TT>
+</B></TD><TD><P>specifies the object containing screen objects to be scaled.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>scalefactor</STRONG></TT>
+</B></TD><TD><P>specifies the scale factor you intend to use on re-rendering;
+for
+example <TT><STRONG>scalefactor</STRONG></TT>
+should be set to 2 if you want the re-rendered
+image to be twice as large.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>finalres</STRONG></TT>
+</B></TD><TD><P>is used as an alternative to
+<TT><STRONG>scalefactor</STRONG></TT>,
+if, for example, you know that you want your final resolution of your
+image to be 1000 pixels. If you specify <TT><STRONG>final_res</STRONG></TT>,
+you must also provide the <TT><STRONG>currentcamera</STRONG></TT> input.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>currentcamera</STRONG></TT>
+</B></TD><TD><P>is the camera you are currently using to view your
+object.
+This can be the output of AutoCamera or Camera, or the
+<TT><STRONG>camera</STRONG></TT> output of Image.
+</TD></TR></TABLE>
+<P>
+The output <TT><STRONG>output</STRONG></TT> is the object with all screen
+objects scaled. If you specify <TT><STRONG>currentcamera</STRONG></TT>, then
+the module will, in addition, output <TT><STRONG>newcamera</STRONG></TT>, which
+is a new camera for you to use with Render or Display.
+<P><STRONG>Components</STRONG>
+<P>All components in the input are propagated to the output. Only
+screen objects are modified.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+SIMPLE/ScaleScreen.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+<A HREF="refgu118.htm#HDRRENDER">Render</A>,
+<A HREF="refgu015.htm#HDRAUTOCAM">AutoCamera</A>,
+<A HREF="refgu021.htm#HDRCAMERA">Camera</A>,
+<A HREF="refgu072.htm#HDRIMAGE">Image</A>
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu129.htm">Previous Page</A> &#124; <A HREF="refgu131.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

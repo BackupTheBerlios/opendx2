@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu136.htm">Previous Page</A> &#124; <A HREF="refgu138.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRSHADE" HREF="refgu009.htm#PToC_190">Shade</A></H3>
+<A NAME="IDX701"></A>
+<A NAME="IDX702"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATREN">Rendering</A>
+<A NAME="IDX703"></A>
+<P><STRONG>Function</STRONG>
+<P>
+Specifies the shading attributes of an object.
+<P><STRONG>Syntax</STRONG>
+<PRE><STRONG>
+output</STRONG> = Shade(<STRONG>input, shade, how, specular, shininess, diffuse,
+               ambient</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>input</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">object to be shaded
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>shade</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">flag
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">1
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">0: object not shaded
+<BR>
+1: object shaded
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>how</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">("smooth" or "faceted")
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>specular</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">specular coefficient
+<BR>
+(standard = 0.5)
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>shininess</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">shininess exponent
+<BR>
+(standard = 10)
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>diffuse</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">diffuse coefficient
+<BR>
+(standard = 0.7)
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>ambient</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">ambient coefficient
+<BR>
+(standard = 1.0)
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>output</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">shaded object
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module is applicable only to surface objects (i.e., objects with
+connections of type "triangle" or "quad").
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>input</STRONG></TT>
+</B></TD><TD><P>specifies the object whose shading attributes are to be
+modified.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>shade</STRONG></TT>
+</B></TD><TD><P>turns shading on or off.
+By default, the module turns shading on.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>how</STRONG></TT>
+</B></TD><TD><P>specifies whether the shading is to be smooth or faceted.
+If this parameter is not set, and:
+<UL COMPACT>
+<LI>if the input object is already shaded, the shading method is not
+changed.
+<LI>if the object is not shaded, the choice between smooth and faceted
+shading is determined by the dependency of the "data"
+component, if it has a data dependency:
+<DL>
+<DD><P>smooth shading is used for position-dependent data.
+<DD><P>faceted shading is used for connection-dependent data.
+</DL>
+<LI>if no data are present, smooth shading is used.
+</UL>
+<P>
+An explicit specification of "smooth" or "faceted" shading
+will apply to all objects.
+However, if a "normals" component of the requested type ("dep"
+"positions" or "dep" "connections") is already present,
+the normals are not recomputed.
+</TD></TR></TABLE>
+<P>
+The next four parameters specify the particular shading attributes of
+the object.
+If any of these parameters are not explicitly set, the corresponding
+attributes remain unchanged.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>specular</STRONG></TT>
+</B></TD><TD><P>specifies the amount of light reflected by the object (as from a
+very smooth, highly reflective surface).
+The specified value must be between 0 and 1.
+The default is 0.5.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>shininess</STRONG></TT>
+</B></TD><TD><P>specifies how sharp the specular highlight is.
+The specified value must be an integer.
+Larger numbers result in a smaller, sharper, specular highlight.
+The default is 10.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>diffuse</STRONG></TT>
+</B></TD><TD><P>specifies how much light is diffused by the object (as from a
+rough non-reflective surface).
+The specified value must be between 0 and 1.
+The default is 1 (one).
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>ambient</STRONG></TT>
+</B></TD><TD><P>specifies how much light is reflected equally in all directions.
+The specified value must be between 0 and 1.
+</TD></TR></TABLE>
+<P>
+
+<P><B>Notes: </B><OL>
+<P><LI>The Shade module will also check whether the orientation of the
+"connections" component is consistent with the directions of
+the "normals". If they are not consistent, it will modify the
+directions of the normals.
+<P><LI>Smooth shading is not supported for faces, loops, and edges data.
+However, faces, loops, and edges can be converted to triangles using
+Refine, and can then be smooth-shaded.
+</OL>
+
+<P><STRONG>Components</STRONG>
+<P>
+May add or modify the "normals" component.
+All other components are unchanged.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+AlternateVisualizations.net
+Imide&#95;potential.net
+UsingShade.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+
+&nbsp;<A HREF="refgu118.htm#HDRRENDER">Render</A>,
+&nbsp;<A HREF="refgu048.htm#HDRDISPLAY">Display</A>,
+&nbsp;<A HREF="refgu072.htm#HDRIMAGE">Image</A>
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu136.htm">Previous Page</A> &#124; <A HREF="refgu138.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="usrgu056.htm">Previous Page</A> &#124; <A HREF="usrgu058.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu050.htm#PToC13">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H2><A NAME="HDRSEM" HREF="usrgu050.htm#PToC_355">10.8 Understanding the Script
+Execution Model</A></H2>
+<P>
+An execution model is applied to the constructs defined by the Data Explorer
+scripting language.
+This model consists of the environment structure that is maintained
+during function calls, the behavior associated with macro
+expansions, the scope rules used for locating the value
+associated with a variable, and the semantics
+associated with assignment statements and
+function calls.
+<P>
+<P>
+<H3><A NAME="Header_356" HREF="usrgu050.htm#PToC_356">Top-level
+Environment</A></H3>
+<A NAME="IDX927"></A>
+<P>
+All <I>global</I> assignment statements and <I>initial</I>
+function invocations occur in the top-level environment.
+This environment is special in that all assignment statements and
+function invocations initiated in this environment are always
+executed.
+<P>
+<P>
+<H3><A NAME="Header_357" HREF="usrgu050.htm#PToC_357">Function
+Execution</A></H3>
+<A NAME="IDX928"></A>
+<P>
+When either a macro or a module function is executed, a new dynamically
+scoped environment specific to that function call is created.
+Variables that correspond to the function&#39;s input and output formal
+parameters are created in this new environment.
+The variables corresponding to the output formal parameters are
+initialized to <TT><STRONG>NULL</STRONG></TT>.
+Those variables corresponding to the input formal parameters are
+initialized in the manner described in the preceding section.
+If an input and an output formal parameter both have the same name, then
+they share a single parameter and are initialized to the value passed
+as input when the function is called.
+<P>
+<P>
+<H3><A NAME="Header_358" HREF="usrgu050.htm#PToC_358">Macro Expansion</A></H3>
+<A NAME="IDX929"></A>
+<A NAME="IDX930"></A>
+<P>
+When the function being called is a macro, the macro is effectively
+expanded in-line after first constructing the necessary
+environment for its input and output parameters.
+This guarantees that the partial orderings defined by macros are
+maintained.
+<P>
+<P>
+<H3><A NAME="HDRVUIM" HREF="usrgu050.htm#PToC_359">Variables Used in
+Macros</A></H3>
+<P>
+The Data Explorer allows you to use variables on both the left and right sides
+of a function assignment; that is, as both left-side and right-side.
+<A NAME="IDX931"></A>
+<P>
+<H4><A NAME="HDRVALSV">Variables as Left-Side Values</A></H4>
+<P>
+All assignments in a macro&#39;s environment affect variables that are
+local to the macro.
+These variables, if they do not already exist, are created in the
+macro&#39;s environment when they are first used on the
+left-hand side of an assignment expression.
+Thus, a variable outside of a macro cannot be modified with that macro.
+<P>
+The only way to make such a change is to propagate a new value out of
+the macro using its output formal parameters, and to use this
+returned value in an assignment statement in the
+enclosing environment.
+<P>
+Given these semantics, it is possible for a local version of a variable
+to come into existence and obscure a more global version of a
+variable, midway through a macro&#39;s execution.
+<P>
+<P>
+<H4><A NAME="HDRVARSV">Variables as Right-Side Values</A></H4>
+<P>
+The values of variables used in a macro in expressions and as function
+arguments are found according to standard dynamic scoping
+rules.
+If the variable exists in the macro&#39;s local environment, then its
+value is used.
+Otherwise, the enclosing environments, all the way to the top-level
+environment, are searched to locate the variable.
+The value used is the value associated with the first instance of the
+variable.
+If the variable is not found in any environment, then the value
+<TT><STRONG>NULL</STRONG></TT> is used.
+<P>
+<H4><A NAME="Header_362">Example</A></H4>
+<P>
+The following is a sample script that illustrates how variables
+are treated in macros:
+<PRE>
+// This is a complete sample script
+macro add(a, b) -&gt; (sum)
+{
+
+c = a + b;    // c is created and given the value a+b
+c = a + x;    // x is found in the top level, and used in this expression
+c = a + z;    // z does not exist anywhere; NULL is used
+sum = a + b;  // sum is created local to the macro, separate from the
+              //     version of sum in the top level
+}
+x = 7;
+sum = 10;
+total = add(4, 4);  // total = 8, sum stays at 10
+</PRE>
+<P>
+<H3><A NAME="Header_363" HREF="usrgu050.htm#PToC_363">Assignment and Function
+Call Semantics</A></H3>
+<P>
+As stated earlier, all assignment statements and function calls
+initiated at the top-level environment are executed.
+In a macro, the process is slightly different.
+When a macro is expanded, its statements are first analyzed to
+determine whether they need to be executed.
+The rule of thumb for determining if a statement will be executed is
+that it must contribute, either directly or indirectly, to:
+<UL COMPACT>
+<LI>One of the values passed into a module that has a side effect
+<LI>A value assigned to a top-level variable, using a macro&#39;s
+formal output parameters.
+</UL>
+<P>
+There are two kinds of "side effect" modules:
+<UL>
+<P><LI>Those that do not produce any Object outputs.
+Display and WriteImage are examples of this kind of module because
+they modify things such as monitors and files, which are outside
+of the language&#39;s domain and control.
+This type of module is represented in the graphical user interface
+as having no output tabs.
+<P><LI>Those that make use of internal executive features.
+These modules are specially marked in their <TT>.mdf</TT> (module
+description) files as ones that can cause side effects.
+</UL>
+Side effect modules are always executed.
+(For information on the SIDE_EFFECT flag, see <A
+HREF="progu037.htm#HDRMDFSEC">11.1 , "Module Description Files"</A>
+in <I>IBM Visualization Data Explorer Programmer&#39;s Reference</I>.)
+<P>
+<P>
+<H3><A NAME="Header_364" HREF="usrgu050.htm#PToC_364">Execution Example</A></H3>
+<A NAME="IDX932"></A>
+<P>
+The macro <TT><STRONG>sum3</STRONG></TT> in the following example computes
+both the sum of its first two arguments and the sum of all three
+of its arguments.
+When the top-level assignment statement on line 7 is executed, the
+statements in lines 3 and 4 are both executed, resulting in
+the values 11 and 111 being assigned to the top-level
+variables <VAR>x</VAR> and <VAR>y</VAR> respectively.
+When the top-level assignment statement on line 8 is executed, only
+the statement on line 3 is executed.
+Since the value in the output variable <VAR>e</VAR> is not assigned to
+anything in the calling environment, the statement on line 4 need
+not be executed.
+<P>
+<PRE>
+macro sum3 (a, b, c) -&gt; (d, e)                 // 1
+{                                               // 2
+    d = a + b;                                  // 3
+    e = d + c;                                  // 4
+}                                               // 5
+                                                // 6
+x, y = sum3 (1, 10, 100);                       // 7
+x    = sum3 (1, 10, 100);                       // 8
+</PRE>
+
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="usrgu056.htm">Previous Page</A> &#124; <A HREF="usrgu058.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu050.htm#PToC13">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/usrguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

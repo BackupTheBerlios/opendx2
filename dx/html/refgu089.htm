@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu088.htm">Previous Page</A> &#124; <A HREF="refgu090.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRMNGIMGW" HREF="refgu009.htm#PToC_138">ManageImageWindow</A></H3>
+<A NAME="IDX578"></A>
+<A NAME="IDX579"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATICTL">Interface Control</A>
+<P><STRONG>Function</STRONG>
+<P>
+Allows Image or Display
+windows to be opened and closed from within a visual
+program.
+<P><STRONG>Syntax</STRONG>
+<P>
+Available only in the user interface.
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>name</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string or string list
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">name of the windows to be opened
+or closed
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>open</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">flag, flag list, or string list
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">0
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">0: close the windows
+<BR>
+1: open the windows
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>how</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">&quot;title&quot;
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">open or close the Image or
+Display windows by title, label,
+
+or window
+
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>name</STRONG></TT>
+</B></TD><TD><P>specifies the windows to be opened.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>open</STRONG></TT>
+</B></TD><TD><P>determines whether the specified windows will be opened (1)
+or closed (0).
+The effect of this parameter depends on the type of argument supplied:
+<P>
+<UL COMPACT>
+<LI>If the argument is a <I>single integer</I>, all the specified
+windows will be opened or they will all be closed.
+<LI>If the argument is an <I>integer list</I>, it must have the
+same number of items as the list of strings given in
+<TT><STRONG>name</STRONG></TT>, and the flags are
+associated one-to-one with the named windows.
+<LI>If the argument is a <I>string list</I>, the windows listed in
+<TT><STRONG>open</STRONG></TT> will be opened, and those listed in
+<TT><STRONG>name</STRONG></TT> but not in <TT><STRONG>open</STRONG></TT>
+will be closed.
+</UL>
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>how</STRONG></TT>
+</B></TD><TD><P>if specified, determines how the <TT><STRONG>name</STRONG></TT>
+parameter
+is to be interpreted:
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P>&quot;title&quot;
+</TD><TD><P>the name specified is the title of the window (accessible
+through the <TT><STRONG>Image Name</STRONG></TT> option in the
+<TT><STRONG>Options</STRONG></TT> pull-down menu of the Image
+window, the <TT><STRONG>title</STRONG></TT> parameter of the
+Image tool or the <TT><STRONG>where</STRONG></TT>
+parameter of the Display module).
+</TD></TR><TR VALIGN="TOP"><TD><P>&quot;label&quot;
+</TD><TD><P>the name specified is the label of the window (accessible
+through the <TT><STRONG>Notation</STRONG></TT> field of the configuration
+dialog box of the Image or Display module).
+
+</TD></TR><TR VALIGN="TOP"><TD><P>&quot;window&quot;
+</TD><TD><P>the window identifier. If using SuperviseWindow and SuperviseState,
+then <TT><STRONG>name</STRONG></TT> should be the
+<TT><STRONG>where</STRONG></TT>
+output of SuperviseWindow.
+
+</TD></TR></TABLE>
+</TD></TR></TABLE>
+<P><B>Note: </B>If you use this module to close a window, you must also
+turn off rendering to that window, using the
+Route module.
+Otherwise the window will open and then immediately close.
+<P><STRONG>Example Visual Program</STRONG>
+
+InterfaceControl2.net
+
+<P><STRONG>See Also</STRONG>
+&nbsp;<A HREF="refgu054.htm#HDREXECUTE">Execute</A>,
+&nbsp;<A HREF="refgu087.htm#HDRMNGCMPE">ManageColormapEditor</A>,
+&nbsp;<A HREF="refgu088.htm#HDRMNGCNTP">ManageControlPanel</A>,
+&nbsp;<A HREF="refgu090.htm#HDRMNGSEQ">ManageSequencer</A>,
+&nbsp;<A HREF="refgu124.htm#HDRROUTE">Route</A>,
+
+<A HREF="refgu153.htm#HDRSUPWIND">SuperviseWindow</A>,
+<A HREF="refgu152.htm#HDRSUPSTAT">SuperviseState</A>
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu088.htm">Previous Page</A> &#124; <A HREF="refgu090.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

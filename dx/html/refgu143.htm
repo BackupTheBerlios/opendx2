@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu142.htm">Previous Page</A> &#124; <A HREF="refgu144.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRSLAB" HREF="refgu009.htm#PToC_197">Slab</A></H3>
+<A NAME="IDX712"></A>
+<A NAME="IDX713"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATIAE">Import and Export</A>
+<A NAME="IDX714"></A>
+<P><STRONG>Function</STRONG>
+<P>
+Creates a "slab" of data.
+<P><STRONG>Syntax</STRONG>
+<PRE><STRONG>
+output</STRONG> = Slab(<STRONG>input, dimension, position, thickness</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>input</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">object to be "slabbed"
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>dimension</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer or string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">0
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">spatial orientation of the slab
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>position</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer or integer list
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">all
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">starting position(s)
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>thickness</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">0 or 1
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">thickness of slab (in number of
+elements)
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>output</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">field or field series
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">slabbed data
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module creates a multidimensional object consisting of a selected
+subset of input data.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>data</STRONG></TT>
+</B></TD><TD><P>specifies the data field to be slabbed.
+This field must have regular connections.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>dimension</STRONG></TT>
+</B></TD><TD><P>specifies the dimension in which the slab should be oriented
+relative to the input object (the output slab will have the
+same orientation).
+The <I>n</I> dimensions of the object can be specified by number
+(from 0 to <I>n</I> &#45; 1).
+The first three dimensions can also be specified as <I>x</I>,
+<I>y</I>, and <I>z</I>, respectively.
+<P>
+The default for this parameter is dimension 0 (zero).
+<P><B>Notes: </B><OL>
+<P><LI>The <TT><STRONG>dimension</STRONG></TT> number refers to the ordering of
+positions in the "connections" component.
+Thus, <I>x</I> corresponds to 0 only if the positions have been
+specified as <I>x</I> varies slowest.
+<P><LI>Slab can also be used on deformed grids, in which case the
+connections do not align with any particular axis.
+<P><LI>Transposing the positions (i.e., with Transpose) does <I>not</I>
+change the order in the "connections" component.
+</OL>
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>position</STRONG></TT>
+</B></TD><TD><P>specifies the position from which the slab is generated.
+<P>
+If the specified value is a single integer, the module creates a single
+field, with the slab oriented in the specified dimension and
+containing the number of volume elements specified by
+<TT><STRONG>thickness</STRONG></TT> (see below).
+<P>
+If <TT><STRONG>position</STRONG></TT> is a list of integers, the module
+creates a series of specified slabs, and the default value
+of <TT><STRONG>thickness</STRONG></TT> is 1 (one).
+<P>
+If this parameter is not specified, the output is a series of slabs
+(<TT><STRONG>thickness</STRONG></TT> = 1) that begin at every
+grid position along <TT><STRONG>dimension</STRONG></TT>.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>thickness</STRONG></TT>
+</B></TD><TD><P>specifies the thickness of the slab (in volume elements).
+A specified value of 0 (the default when <TT><STRONG>position</STRONG></TT>
+is a single number) will produce a 2-dimensional slice in a
+3-dimensional object.
+</TD></TR></TABLE>
+<P><B>Notes: </B><OL>
+<P><LI>This module performs no interpolation, and only data with regular
+connections can be slabbed.
+<P><LI>If the input object is already colored, the colors are passed
+through unaltered.
+<P><LI>If the input object is a volume and the requested
+slab is much thinner than
+the input object, the colors for volume rendering
+may be dim.
+<P><LI>If the data are connection dependent, a request for a slab of
+<TT><STRONG>thickness</STRONG></TT> = 0 is ill-defined and the
+module returns an error.
+</OL>
+<P><STRONG>Components</STRONG>
+<P>
+All input components are propagated to the output.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+Imide&#95;potential.net
+RubberTube.net
+Streamline.net
+SIMPLE/Slab.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu092.htm#HDRMAPTOPL">MapToPlane</A>,
+&nbsp;<A HREF="refgu131.htm#HDRSELECT">Select</A>,
+&nbsp;<A HREF="refgu144.htm#HDRSLICE">Slice</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu142.htm">Previous Page</A> &#124; <A HREF="refgu144.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

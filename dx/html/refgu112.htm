@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu111.htm">Previous Page</A> &#124; <A HREF="refgu113.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRRECEIVE" HREF="refgu009.htm#PToC_165">Receiver</A></H3>
+<A NAME="IDX637"></A>
+<A NAME="IDX638"></A>
+<A NAME="IDX639"></A>
+<A NAME="IDX640"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATSPE">Special</A>
+<P><STRONG>Function</STRONG>
+<P>
+Receives an object from a Transmitter.
+<P><STRONG>Syntax</STRONG>
+<P>
+Available only through the user interface.
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>object</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">the object received
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+To maintain the modularity and readability of large programs, Data Explorer
+provides two tools that allow connections between input and output
+tabs of separate modules without the use of a visible
+connecting line.
+These tools, Transmitter and Receiver, allow you to separate visual
+programs into logical blocks.
+For example, the output of several logical blocks can be transmitted to
+another block that receives them, collects them, and produces
+an image.
+<P>
+
+Receivers and Transmitters can also be used to communicate information
+between pages in the Visual Program Editor (see <A
+HREF="usrgu041.htm#HDRVPEPAGE">"Creating pages in the VPE"</A> in
+<I>IBM Visualization Data Explorer User&#39;s Guide</I>). Pages are a valuable
+way of structuring complex visual
+programs into logical blocks.
+
+<P><B>Note: </B>Macros provide another way of structuring visual programs in
+logical blocks (see
+<A HREF="usrgu044.htm#HDRMACROS">7.2 , "Creating and Using Macros"</A> in <I>IBM
+Visualization Data Explorer User&#39;s Guide</I>).
+<P>
+To remotely connect input and output tabs&#58;
+<OL>
+<P><LI>Select a Transmitter tool (in the Special category in the tool
+palette) and place it near the output tab of the module that
+is to be "connected."
+<P><LI>Connect the module&#39;s output tab to the Transmitter&#39;s
+input tab.
+<P><LI>Select a Receiver tool (also in the Special category), and place
+it near the input tab of the other module that is to be
+"connected."
+<P><LI>Connect the Receiver&#39;s output tab to the second module&#39;s
+input tab.
+<P>
+The Transmitter and Receiver are now connected.
+</OL>
+<P>
+The Receiver automatically assumes the same name as the Transmitter.
+More than one Receiver can be connected to a single Transmitter and they
+assume the same name until a new Transmitter is placed on the
+VPE canvas.
+<P><B>Notes: </B><OL>
+<P><LI>To change the name of a Transmitter and Receiver, use the
+<TT><STRONG>Notation</STRONG></TT> field of the appropriate
+configuration dialog box (see
+<A HREF="usrgu041.htm#HDRUCB">"Entering Values in a Configuration Dialog
+Box"</A> in <I>IBM Visualization Data Explorer User&#39;s Guide</I>).
+Changing the name of a Transmitter changes the name of all the Receivers
+connected to it.
+Changing the name of a Receiver affects only that receiver.
+<P><LI>For more information see <A HREF="usrgu041.htm#HDRTNR">"Using
+Transmitters and Receivers"</A> in <I>IBM Visualization Data Explorer User&#39;s
+Guide</I>.
+</OL>
+<P><STRONG>Example Visual Programs</STRONG>
+<P>
+Many of the example visual programs use receivers and transmitters,
+including:
+<PRE>
+AlternateVisualizations.net
+Imide&#95;potential.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+&nbsp;<A HREF="refgu161.htm#HDRTRANSMI">Transmitter</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu111.htm">Previous Page</A> &#124; <A HREF="refgu113.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

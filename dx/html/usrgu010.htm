@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="usrgu009.htm">Previous Page</A> &#124; <A HREF="usrgu011.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu006.htm#PToC2">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+
+<HR>
+<H1><A NAME="HDRWHATNEW" HREF="../usrguide.htm#ToC_15">Summary of Changes in Data
+Explorer Version 3.1.4</A></H1>
+<P><A NAME="PToC3" HREF="../usrguide.htm#ToC">Partial Table-of-Contents</A>
+<MENU>
+<LI><A NAME="PToC_16" HREF="#Header_16">User Interface</A>
+<MENU>
+<LI><A NAME="PToC_17" HREF="#HDRNEWSTRT">New Startup Behavior</A>
+<LI><A NAME="PToC_18" HREF="#Header_18">New Save Image Dialog in Image
+Window</A>
+<LI><A NAME="PToC_19" HREF="#Header_19">New Data Prompter</A>
+<LI><A NAME="PToC_20" HREF="#Header_20">Pages</A>
+<LI><A NAME="PToC_21" HREF="#Header_21">Annotation</A>
+<LI><A NAME="PToC_22" HREF="#Header_22">Optimizing Caching</A>
+</MENU>
+<LI><A NAME="PToC_23" HREF="usrgu011.htm#HDRGETSET">Changes to Get and Set
+modules</A>
+<LI><A NAME="PToC_24" HREF="usrgu012.htm#Header_24">New Window Management
+Functionality</A>
+<LI><A NAME="PToC_25" HREF="usrgu013.htm#Header_25">Hardware Rendering</A>
+<LI><A NAME="PToC_26" HREF="usrgu014.htm#Header_26">DXLink</A>
+<LI><A NAME="PToC_27" HREF="usrgu015.htm#Header_27">Changed Modules</A>
+<LI><A NAME="PToC_28" HREF="usrgu016.htm#Header_28">New Modules</A>
+<LI><A NAME="PToC_29" HREF="usrgu017.htm#Header_29">Backward
+Incompatibilities</A>
+<LI><A NAME="PToC_30" HREF="usrgu018.htm#Header_30">HTML Documentation</A>
+<LI><A NAME="PToC_31" HREF="usrgu019.htm#Header_31">Fixes</A>
+</MENU><HR><P>
+<HR>
+<H2><A NAME="Header_16" HREF="#PToC_16">User Interface</A></H2>
+<P>
+<H3><A NAME="HDRNEWSTRT" HREF="#PToC_17">New Startup Behavior</A></H3>
+<P>With this release, when you type <TT>dx</TT>, a different initial
+panel will appear, giving you access to various parts of Data Explorer,
+such as the Data Prompter, the Tutorial, the Visual Program Editor, etc.
+<P>
+To bypass the Startup window and go directly to the Visual Program
+Editor (as in previous versions of Data Explorer) either type <TT>dx -edit</TT>
+at the prompt or set your <TT>DXARGS</TT> environment variable to
+<TT>-edit</TT>.
+<P>
+<H3><A NAME="Header_18" HREF="#PToC_18">New Save Image Dialog in Image
+Window</A></H3>
+<P>
+The Save Image dialog has been improved to make it easier for users to
+save images at a specific size on the printed page.
+<P>
+<H3><A NAME="Header_19" HREF="#PToC_19">New Data Prompter</A></H3>
+<P>
+The Data Prompter has a new initial window, which allows you to specify
+what kind of data you have (dx format, image format, ...). You can
+access the Data Browser from this window to view your data before
+attempting to import it. If you have "general array" format data, then
+choose the "Grid or Scattered file" button, which will lead to the
+interface which was called the Data Prompter in previous versions of
+Data Explorer.
+<P>
+Once your data has been imported, there is an option to either describe
+or visualize your data. If you choose the "Test Import" option, then the
+data will be imported and characteristics about it (such as
+dimensionality, number of points, ...) will be reported to you. If you
+choose the "Visualize Data" option, then a general purpose visual
+program will be run on your data. You can then inspect and modify this
+visual program.
+<P>
+<H3><A NAME="Header_20" HREF="#PToC_20">Pages</A></H3>
+<P>
+In the VPE, you can now segment your visual program into "pages", which
+are disconnected sets of modules. Modules in one page communicate with
+modules in other pages using transmitters and receivers. You can name
+pages and control the ordering of pages. See the Edit menu of the VPE.
+<P>
+<H3><A NAME="Header_21" HREF="#PToC_21">Annotation</A></H3>
+<P>
+You can add comments directly onto the canvas of the VPE. This option is
+available from the Edit menu of the VPE.
+<P>
+<H3><A NAME="Header_22" HREF="#PToC_22">Optimizing Caching</A></H3>
+<P>
+There is now an option in the Edit menu of the VPE called Output
+Cacheability -&gt; Optimize Cache. If you choose this option, Data
+Explorer will use a heuristic to optimally set the caching behavior of
+each tool in the visual program.
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="usrgu009.htm">Previous Page</A> &#124; <A HREF="usrgu011.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="#PToC3">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/usrguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

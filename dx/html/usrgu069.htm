@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="usrgu068.htm">Previous Page</A> &#124; <A HREF="usrgu070.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu064.htm#PToC15">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H2><A NAME="HDRHDF" HREF="usrgu064.htm#PToC_475">B.6 HDF Files</A></H2>
+<A NAME="IDX1029"></A>
+<P>
+HDF is a multiobject file structure that is designed to facilitate the
+transfer of data between machines.
+HDF was created at the National Center for Supercomputing Applications
+(NCSA).
+<P>
+Data Explorer provides support for importing HDF files that contain a Scientific
+DataSet (SDS).
+A Scientific DataSet is an HDF set that stores rectangular gridded
+Arrays of data, together with the information about the data.
+
+<P><B>Note: </B>Scientific Data Sets should be created using the DFSD API and
+not
+the SD API.
+
+<P>
+To import HDF files, specify the filename as the <TT><STRONG>name</STRONG></TT>
+parameter.
+By default, all the datasets will be imported and collected into a
+Group.
+To import a particular dataset specify a number corresponding to that
+dataset as the <TT><STRONG>variable</STRONG></TT> parameter (0 corresponds to
+the first dataset).
+The <TT><STRONG>format</STRONG></TT> parameter must be "hdf".
+<P>
+If dimension scales are specified, Data Explorer uses these to construct
+positions; otherwise positions have an origin of 0.0 and
+deltas of 1.0 along each dimension.
+Data Explorer automatically constructs regular connections for either case.
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="usrgu068.htm">Previous Page</A> &#124; <A HREF="usrgu070.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu064.htm#PToC15">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/usrguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

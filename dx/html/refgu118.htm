@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu117.htm">Previous Page</A> &#124; <A HREF="refgu119.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRRENDER" HREF="refgu009.htm#PToC_171">Render</A></H3>
+<A NAME="IDX653"></A>
+<A NAME="IDX654"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATREN">Rendering</A>
+<P><STRONG>Function</STRONG>
+<P>
+Renders an object.
+<P><STRONG>Syntax</STRONG>
+<PRE>
+<STRONG>image</STRONG> = Render(<STRONG>object, camera, format</STRONG>)&#59;
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>object</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">object to be rendered
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>camera</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">camera
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">camera to be used for rendering
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>format</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">standard
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">format of resulting image
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>image</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">image
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">resulting image
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module uses a specified camera to create an image of an
+object.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>object</STRONG></TT>
+</B></TD><TD><P>specifies the object to be rendered, which can contain surfaces,
+volumes, or combinations of surfaces and volumes.
+<P><B>Note: </B>The current algorithm does not support coincident volumes or
+volumes in perspective.
+(See <A HREF="refgu048.htm#HDRDISPLAY">Display</A> for a discussion of Data
+Explorer
+rendering capabilities.)
+<P>
+The specified object must contain a "colors," "front colors,"
+or "back colors"
+component.
+Many modules add a default color.
+In addition, volume rendering (i.e., of cubes or tetrahedra) requires
+an "opacities" component.
+For surfaces, the lack of an "opacities" component implies an
+opaque surface.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>camera</STRONG></TT>
+</B></TD><TD><P>is the camera used to create the image.
+<P><B>Note: </B>A transformed camera cannot be used for this parameter.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>format</STRONG></TT>
+</B></TD><TD><P>is reserved for future use.
+</TD></TR></TABLE>
+<P><B>Notes: </B><OL>
+<P><LI>The rendering properties of an object (e.g., shading) can be changed
+with the Options or Shade module (see
+<A HREF="refgu048.htm#HDRDISPLAY">Display</A>).
+Render always invokes the software renderer and so ignores the
+"render mode" attribute.
+<P><LI>Render creates 24-bit images if the DXPIXELTYPE environment variable
+is set to DXByte (the default is 96-bit images).
+<P><LI>If you use the Display or Image tool rather than the Render module,
+Data Explorer will automatically choose a hardware-appropriate format
+for you.
+It is generally preferable to use one of these tools unless you want to
+operate on the image itself.
+For example, filtering the image or arranging several images together
+requires the Render module.
+<P><LI>The interactive image-manipulation options provided by Data Explorer
+in the user interface require the Image tool.
+See <A HREF="usrgu040.htm#HDRCHAV">"Controlling the Image: View Control..."</A>
+in <I>IBM Visualization Data Explorer User&#39;s Guide</I>.
+<P>
+See <A HREF="refgu048.htm#HDRDISPLAY">Display</A> for information on:
+<DL COMPACT>
+<DD><A HREF="refgu048.htm#HDRCHRNDPR">"Changing Rendering Properties"</A>
+<DD><A HREF="refgu048.htm#HDRHARDSOF">"Differences between Hardware and Software
+Rendering"</A>
+
+<DD><A HREF="refgu048.htm#HDRSHADING">"Shading"</A>
+<DD><A HREF="refgu048.htm#HDROBJFUZZ">"Object fuzz"</A>
+<DD><A HREF="refgu048.htm#HDRCVOLRND">"Coloring Objects for Volume
+Rendering"</A>
+
+</DL>
+</OL>
+<P><STRONG>Components</STRONG>
+<P>
+Creates "positions," "connections," and "colors"
+components for the resulting image.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+PlotLine.net
+UsingCompute.net
+UsingMorph.net
+SIMPLE/Arrange.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu012.htm#HDRARRANGE">Arrange</A>,
+&nbsp;<A HREF="refgu036.htm#HDRCOMPUTE">Compute</A>,
+&nbsp;<A HREF="refgu048.htm#HDRDISPLAY">Display</A>,
+&nbsp;<A HREF="refgu061.htm#HDRFILTER">Filter</A>,
+&nbsp;<A HREF="refgu072.htm#HDRIMAGE">Image</A>,
+&nbsp;<A HREF="refgu098.htm#HDROPTIONS">Options</A>,
+&nbsp;<A HREF="refgu173.htm#HDRWRITEIM">WriteImage</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu117.htm">Previous Page</A> &#124; <A HREF="refgu119.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

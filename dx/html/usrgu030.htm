@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="usrgu029.htm">Previous Page</A> &#124; <A HREF="usrgu031.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu026.htm#PToC7">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H2><A NAME="HDRLOOP" HREF="usrgu026.htm#PToC_99">4.5 Iteration using
+Looping</A></H2>
+<A NAME="IDX600"></A>
+<A NAME="IDX601"></A>
+<P>
+The sequencer provides a basic loop; however it has some limitations.
+Only one sequencer per visual program is allowed, and, as it executes,
+everything in the visual program executes (subject to the
+optimization for deciding which modules need to be
+executed, discussed above).
+Additional functionality is provided using the
+ForEachN, ForEachMember, Done, and First modules.
+<P>
+ForEachN and ForEachMember
+essentially implement a standard programming-language "for" loop;
+in the case of ForEachN iterating over a specified list of integers,
+and in the case of ForEachMember iterating over the members in a
+group or the items in a list (or array).
+<A HREF="#FIGXMODX4">Figure 21</A> shows a simple loop that
+outputs the integers 0 to 10 and Echo's them (the
+<TT><STRONG>start</STRONG></TT> and <TT><STRONG>end</STRONG></TT>
+parameters to ForEachN have been set to 0 and 10 respectively). This
+is roughly equivalent to the C-language statements
+<PRE>
+ for (i=0; i&lt;=10; i++)
+    printf("%d", i);
+</PRE>
+<P><B><A NAME="FIGXMODX4" HREF="../usrguide.htm#FT_FIGXMODX4">Figure 21. Example
+4</A></B><BR>
+<B><BR><CENTER><IMG SRC="../images/xmodf4.gif" ALT="Figure xmodf4 not
+displayed."></CENTER><BR></B><BR>
+<P>
+Data Explorer provides you with two other tools for control looping,
+Done and First.
+Done enables you to exit a loop.
+Examples
+of its use can be found in "Advanced Loop Constructs" (see below).
+The First module provides
+a way to recognize the first pass through a loop; this is
+particularly useful, for example, as a way to reset the GetGlobal module
+if you are using GetGlobal and SetGlobal (see below) to store information
+during the execution of a loop.
+
+Note that First is not necessary if you are using GetLocal and SetLocal.
+
+<P>
+When a loop is present in a visual program, it causes the execution of
+all modules in the visual program containing the looping tool (ForEachN,
+ForEachMember, or Done), subject to optimization.
+For this reason it is strongly suggested that looping
+modules NOT be placed in the top level visual program, but rather
+be used only within macros. If used within a macro, the macro
+will not output any values until the loop is complete, when
+the ForEachN or ForEachMember list is exhausted or
+when the Done module causes an exit.
+<P>
+If a loop occurs inside a macro, and you reexecute a visual program
+calling this macro, the loop will not be reexecuted as long as the
+result of the macro remains in the cache.
+However, the presence of a
+side effect module (such as WriteImage or Print) inside of a loop will
+cause the loop to be reexecuted regardless of whether the output of
+the macro
+remains in the cache.
+If this is not the desired behavior,
+Route can be used to turn off the entire macro.
+<P>
+For efficiency you might find it desirable to set the caching option to
+<TT><STRONG>Last Result</STRONG></TT> for modules within the loop.
+In this way, multiple intermediate values within a loop will not use up
+valuable cache space.
+<P>
+Note that the full execution of a loop is considered to occur within
+a single execution of the graph (as would occur if you select
+Execute Once from the Execute menu). Thus if you change any interactor
+values DURING the execution of the loop, those interactor values will
+not take effect until the loop is complete. This is an important
+way in which looping differs from using the Sequencer; if you
+change the value of an interactor while the Sequencer is running,
+the value will be updated on the next frame of the sequence.
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="usrgu029.htm">Previous Page</A> &#124; <A HREF="usrgu031.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu026.htm#PToC7">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/usrguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

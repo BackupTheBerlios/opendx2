@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu124.htm">Previous Page</A> &#124; <A HREF="refgu126.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRRUBBERS" HREF="refgu009.htm#PToC_178">RubberSheet</A></H3>
+<A NAME="IDX667"></A>
+<A NAME="IDX668"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATREL">Realization</A>
+<P><STRONG>Function</STRONG>
+<P>
+Deforms a surface, using the data values of that surface.
+<P><STRONG>Syntax</STRONG>
+<PRE><STRONG>
+graph</STRONG> = RubberSheet(<STRONG>data, scale, min, max</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>data</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">the field defining the surface
+to be deformed.
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>scale</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">input dependent
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">displacement scaling
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>min</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar or field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">0.0
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">offset to be applied to the
+surface data values
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>max</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar or field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">maximum data value
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">value used for setting the
+maximum displacement
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">
+<TT><STRONG>graph</STRONG></TT>
+<BR></TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">scalar field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">the deformed field
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module takes a specified scalar surface or line field and
+displaces each point by an amount based on the data value
+at that point, as follows:
+<PRE>
+displacement = <TT><STRONG>scale</STRONG></TT> &times; (<TT><STRONG>data</STRONG></TT> &#45; <TT><STRONG>min</STRONG></TT>)
+</PRE>
+<P>
+(see parameter descriptions).
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>data</STRONG></TT>
+</B></TD><TD><P>specifies the surface to be deformed.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>scale</STRONG></TT>
+</B></TD><TD><P>is the scale factor used in calculating the displacement.
+<P>
+If this parameter is not specified, the module provides a scale factor
+calculated as follows:
+<PRE>
+scale =  (0.1 * diagonal of <STRONG>data</STRONG> boundary box) &divide; (<STRONG>max</STRONG> &#45; <STRONG>min</STRONG>)
+</PRE>
+If <TT><STRONG>min</STRONG></TT> is a field, the value used is the minimum
+data value of that field.
+<P>
+The resulting scale factor is attached to the output object as a
+"RubberSheet scale" attribute (which can be extracted
+with the Attribute module).
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>min</STRONG></TT>
+</B></TD><TD><P>is the offset applied to the data values before they are scaled.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>max</STRONG></TT>
+</B></TD><TD><P>is used to determine a scale factor according to the formula
+shown
+above, if <TT><STRONG>scale</STRONG></TT> is not specified.
+</TD></TR></TABLE>
+<P><B>Notes: </B><OL>
+<P><LI>If the input data have no "normals" component (e.g., the
+output of Slab), the perpendicular to the first element is
+used as the displacement direction.
+In that case, for a positive scale factor and a positive data value,
+the surface is displaced in the direction given by the right-hand
+rule applied to the connections at the surface
+(i.e., with the thumb representing the direction of displacement and
+the fingers following the order of points in the connections).
+<P><LI>If the input does have a "normals" component, the displacement
+at the surface is determined by the dependencies of the data and of
+the normals:
+<UL COMPACT>
+<LI>If both the data and the normals are position dependent, the surface
+is displaced in the direction of the normal at each point.
+<LI>If both are connection dependent, each face of the input is
+displaced as a whole in the direction indicated by the normal
+for that face.
+The amount of displacement is proportional to the data value for that
+face.
+Additional sides are added to each displaced face to complete the
+"box"; box sides are not shared between neighboring
+faces.
+<LI>If the data are position dependent and the normals are connection
+dependent, each face is displaced in the direction indicated by
+the normal for that face, but the amount of displacement varies
+across the face in proportion to the data value.
+Additional sides are added to each displaced face to complete the
+"box"; box sides are not shared between neighboring faces.
+<LI>If the data are dependent on connections and the normals are
+dependent on positions, the displaced faces will be parallel
+to the original faces, displaced by an amount proportional
+to the data value for that face.
+Additional sides are added to each displaced face to complete the
+"box"; box sides of neighboring faces are coincident.
+</UL>
+<P><LI>If the input data are 1- or 2-dimensional, an additional dimension
+is added in the resulting graph.
+<P><LI>If no colors are present, the module adds a default color.
+<P><LI>
+
+RubberSheet automatically adds shading to the output
+<TT><STRONG>graph</STRONG></TT>.
+
+</OL>
+<P><STRONG>Components</STRONG>
+<P>
+Creates new "positions" and "connections" components.
+All other components, with the exception of "normals,"
+are propagated to the output.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+AlternateVisualizations.net
+RubberTube.net
+ThunderGlyphSheet.net
+UsingSwitchAndRoute.net
+SIMPLE/Rubbersheet.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu059.htm#HDRFACENOR">FaceNormals</A>,
+&nbsp;<A HREF="refgu092.htm#HDRMAPTOPL">MapToPlane</A>,
+&nbsp;<A HREF="refgu097.htm#HDRNORMALS">Normals</A>,
+&nbsp;<A HREF="refgu143.htm#HDRSLAB">Slab</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu124.htm">Previous Page</A> &#124; <A HREF="refgu126.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

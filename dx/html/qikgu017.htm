@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer QuickStart Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer QuickStart
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer QuickStart Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="qikgu016.htm">Previous Page</A> &#124; <A HREF="qikgu018.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu016.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+
+<HR>
+<H2><A NAME="Header_44" HREF="qikgu016.htm#PToC_44">3.2 Creating a Visual
+Program: Two short examples</A></H2>
+<P>If necessary, review <A HREF="qikgu016.htm#HDRTEDVP">3.1 , "Editing a Visual
+Program: The Basics"</A>.
+<P>
+<H3><A NAME="Header_45" HREF="qikgu016.htm#PToC_45">A simple two-dimensional
+field</A></H3>
+<P>In this first example, we will import a two-dimensional field on
+a regular grid. The data describe the topography (elevation) of the
+southeastern United States.
+First start Data Explorer by typing
+<PRE>
+dx -edit
+</PRE>
+or choose <TT><STRONG>New Visual Program</STRONG></TT> from the Data Explorer
+Startup
+window.
+<P>
+From the Import and Export Category in the top left palette, choose
+the Import module. Place it on the large blank canvas area.
+<P>
+From the Realization Category choose the RubberSheet module.
+Place it below the Import module.
+From the Rendering Category choose the Image module. Place it
+below the RubberSheet module.
+<P>
+Now connect the output of Import to the first input of RubberSheet,
+and connect the output of Rubbersheet to the input of Image. Notice
+that the first tab of Import is colored differently than any other
+tabs visible. This is because this parameter is <I>required</I>.
+This is the file name of the data file to import.
+<P>
+Open the configuration dialog box for Import. Specify the first
+parameter (name) as <TT>/usr/lpp/dx/samples/data/southeastern_topo.dx</TT>.
+<P>
+Execute the visual program by selecting <TT><STRONG>Execute Once</STRONG></TT>
+from
+the <TT><STRONG>Execute</STRONG></TT> menu. You should see an image showing the
+topography as a deformed surface.
+<P>
+To add colors, insert an AutoColor module (Transformation Category)
+between RubberSheet and Image (or between Import and RubberSheet).
+<P>
+<H3><A NAME="Header_46" HREF="qikgu016.htm#PToC_46">A simple three-dimensional
+field</A></H3>
+<P>In this second example, we will import a three-dimensional field on
+a regular grid. The data describe the cloud water density
+in a simulation of a storm.
+<P>
+As before, place an Import tool from the Import and Export Category
+on the canvas. Place an Isosurface tool from the Realization Category
+below Import. Place an Image tool from the Rendering Category below
+Isosurface. Connect the output of Import to the first input of Isosurface,
+and connect the output of Isosurface to the input of Image.
+<P>
+Open the configuration dialog box for Import, and type in the
+<TT><STRONG>name</STRONG></TT> parameter as
+<TT>/usr/lpp/dx/samples/data/cloudwater</TT>.
+<P>
+Execute. You will see an isosurface (constant value surface)
+of the cloudwater density.
+Not that if you are using the same Image tool as in the previous example,
+you may need to "reset the camera" for the new data set.
+Choose <TT><STRONG>Reset</STRONG></TT> from the
+<TT><STRONG>Options</STRONG></TT>
+menu of the Image window.
+<P>
+Open the configuration dialog box for Isosurface. Notice that the
+default for the isovalue (the second input) is the data mean. Change
+it to the value 0.1 by typing over the <TT><STRONG>Value</STRONG></TT>
+field. Execute.
+<P>
+For more complex visualizations, continue with the examples in
+<A HREF="qikgu021.htm#HDRT2DDAT">3.6 , "Visualizing 2-Dimensional Data"</A>, <A
+HREF="qikgu022.htm#HDRT3DDAT">3.7 , "Visualizing 3-Dimensional Data"</A>, and <A
+HREF="qikgu023.htm#HDRTTANDT">3.8 , "Tasks and Tools"</A>. A
+short tutorial on importing data may be found in <A
+HREF="qikgu018.htm#HDRTIMPDAT">3.3 , "Importing Data"</A>
+and <A HREF="qikgu020.htm#HDRTYOD">3.5 , "Importing Your Own Data"</A>.
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="qikgu016.htm">Previous Page</A> &#124; <A HREF="qikgu018.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu016.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/qikguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

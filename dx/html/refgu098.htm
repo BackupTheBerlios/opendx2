@@ -1,0 +1,299 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu097.htm">Previous Page</A> &#124; <A HREF="refgu099.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDROPTIONS" HREF="refgu009.htm#PToC_147">Options</A></H3>
+<A NAME="IDX604"></A>
+<A NAME="IDX605"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATSTR">Structuring</A>
+<P><STRONG>Function</STRONG>
+<P>
+Associates one or more attributes with a specified object.
+<P><STRONG>Syntax</STRONG>
+<PRE><STRONG>
+output</STRONG> = Options(<STRONG>input, attribute, value, ...</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>input</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">object whose attributes are to be
+set
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>attribute</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">attribute to be added
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>value</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">value or string or object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">value of the attribute
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>...</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">
+<BR></TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">
+<BR></TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">additional attribute-value
+pair(s)
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>output</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">the object with attributes added
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module associates attributes with an object.
+(Attributes can be extracted from an object with the Attribute module.)
+
+Attributes are used by some modules to determine the behavior of a
+particular input object. For example, you can add attributes to objects
+to tell the Plot module how to draw markers on particular lines (see
+<A HREF="#TBLATTRIB">Table 8</A> and
+<A HREF="refgu104.htm#HDRPLOT">Plot</A>).
+While there is a set of attributes which Data Explorer modules understand, you
+can also add your own attributes to objects, to be interpreted by
+user-written modules.
+<P>
+You can remove an already present attribute by setting its value to null.
+
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>input</STRONG></TT>
+</B></TD><TD><P>names the object to which one or more attributes are to be
+added.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>attribute</STRONG></TT>
+</B></TD><TD><P>names the attribute to be added.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>value</STRONG></TT>
+</B></TD><TD><P>specifies the value of the attribute
+</TD></TR><TR VALIGN="TOP"><TD><P><B>...
+</B></TD><TD><P>One or more additional pairs of parameters, each specifying an
+<TT><STRONG>attribute</STRONG></TT> and a <TT><STRONG>value</STRONG></TT>
+to be associated with <TT><STRONG>input</STRONG></TT>.
+</TD></TR></TABLE>
+<P>
+A single Options module can specify a maximum of 21
+<TT><STRONG>attribute</STRONG></TT>-<TT><STRONG>object</STRONG></TT>
+pairs.
+In the user interface, the default number of enabled tab-pairs is two.
+(Tabs can be added to the module icon and removed with the appropriate
+<TT><STRONG>...Input Tab</STRONG></TT> options in the
+<TT><STRONG>Edit</STRONG></TT> pull-down menu of
+the VPE.)
+<P>
+<BR>
+<P><B><A NAME="TBLATTRIB" HREF="refgu002.htm#FT_TBLATTRIB">Table 8. Attributes
+which have predefined meanings in Data Explorer</A></B><BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Attribute name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Attribute values
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Relevant module
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">label
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">any user-supplied label
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Plot
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">scatter
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">1 or 0
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Plot
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">mark
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">"circle", "diamond",
+
+"dot",
+
+"square", "star",
+"triangle", "x"
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Plot
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">mark every
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">positive integer
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Plot
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">mark scale
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">positive scalar
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Plot
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">fuzz
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">integer
+
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Render, Image
+
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">ambient
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">positive scalar
+
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Render, Image
+
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">diffuse
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">positive scalar
+
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Render, Image
+
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">specular
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">positive scalar
+
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Render, Image
+
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">shininess
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">positive integer
+
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Render, Image
+
+
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">shade
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">0 or 1
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Render, Image
+
+
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">opacity multiplier
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">positive scalar
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Render, Image (for
+volume rendering)
+
+
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">color multiplier
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">positive scalar
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Render, Image (for
+volume rendering)
+
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">texture
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">a texture map
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Image
+
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">antialias
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">"lines"
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Image
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">line width
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">positive integer
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Image
+
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">direct color map
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">0 or 1
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">cache
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">0 or 1
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Image
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">rendering mode
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">software or hardware
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Image
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">rendering approximation
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">"none", "box", "dots", or
+"wireframe"
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Image
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">render every
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">positive integer
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Display, Image
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">pickable
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">0 or 1
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Pick
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">marked component
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="33%">Mark, Unmark
+</TD></TR></TABLE>
+<P>
+Attributes may also be added to arrays to add information which may be
+needed to interpret an array as a Data Explorer component.
+For example, you can add a "ref" attribute with
+a value of &quot;positions&quot; to an integer list which you intend to be
+used as a connections component in a field. This use of
+<B>Options</B> should be done only with a solid understanding of the
+Data Explorer data model. See <A HREF="usrgu025.htm#HDRSCA">"Standard
+Attributes"</A> in <I>IBM Visualization Data Explorer User&#39;s Guide</I>.
+<P><STRONG>Components</STRONG>
+<P>
+The output object is the same as the input object except for the
+added attributes.
+All input components are propagated to the output.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+PlotTwoLines.net
+
+FatLines.net
+
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu013.htm#HDRATTRIB">Attribute</A>,
+&nbsp;<A HREF="refgu014.htm#HDRAUTOAXE">AutoAxes</A>,
+&nbsp;<A HREF="refgu048.htm#HDRDISPLAY">Display</A>,
+&nbsp;<A HREF="refgu104.htm#HDRPLOT">Plot</A>,
+&nbsp;<A HREF="refgu118.htm#HDRRENDER">Render</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu097.htm">Previous Page</A> &#124; <A HREF="refgu099.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu044.htm">Previous Page</A> &#124; <A HREF="refgu046.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRDXLOUTP" HREF="refgu009.htm#PToC_67">DXLOutput</A></H3>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATDXL">DXLink</A>
+<A NAME="IDX445"></A>
+<P><STRONG>Function</STRONG>
+<P>
+Sends a value to a remote application.
+<P><STRONG>Syntax</STRONG>
+<PRE>
+DXLOutput(<STRONG>label</STRONG>, <STRONG>value</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>label</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">name associated with
+<TT><STRONG>value</STRONG></TT>
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>value</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">value list or string list
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">value sent to a DXLink
+application
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module sends variable values from a visual program to a remote
+application that uses the DXLink library of function calls
+(see <A HREF="progu084.htm#HDRDXLINK">Chapter 17. "DXLink Developer's
+Toolkit"</A> in <I>IBM Visualization Data Explorer Programmer&#39;s
+Reference</I>).
+Values are sent as strings and in the same format as that used by the
+Echo tool.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>label</STRONG></TT>
+</B></TD><TD><P>is similar in function to the label set in the DXLInput
+configuration dialog box in that it associates a name
+(i.e., a global variable name)
+with a value.
+This global variable name is used in the
+<TT><STRONG>DXLSetValueHandler()</STRONG></TT> routine
+of the DXLink library (see <A HREF="progu089.htm#HDRRCVMSG">"Receiving Messages
+from the Server"</A>
+in <I>IBM Visualization Data Explorer Programmer&#39;s Reference</I>).
+<P>
+The remote application should install a handler for the various
+<TT><STRONG>label</STRONG></TT>ed global variable names in a program
+(see DXLSetValueHandler in <A HREF="progu089.htm#HDRRCVMSG">"Receiving Messages
+from the Server"</A> in <I>IBM Visualization Data Explorer Programmer&#39;s
+Reference</I>).
+In general, <TT><STRONG>label</STRONG></TT> values should be unique within a
+program.
+<P><B>Note: </B>If you are using the Data Explorer user interface,
+<TT><STRONG>label</STRONG></TT> does not appear as
+an input parameter but is set in the
+<TT><STRONG>notation</STRONG></TT> field
+of the DXLOutput configuration
+dialog box.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>value</STRONG></TT>
+</B></TD><TD><P>is the value that is to be converted to a string and sent to
+a remote application.
+This value must be a Data Explorer value list or string (e.g., a scalar,
+integer list, matrix, etc.).
+It cannot be a Field or Group object.
+</TD></TR></TABLE>
+<P><STRONG>See Also</STRONG>
+&nbsp;<A HREF="refgu043.htm#HDRDXLINPT">DXLInput</A>,
+
+<A HREF="refgu076.htm#HDRINPUT">Input</A>,
+<A HREF="refgu099.htm#HDROUTPUT">Output</A>,
+<A HREF="refgu044.htm#HDRDXLINPN">DXLInputNamed</A>
+
+
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu044.htm">Previous Page</A> &#124; <A HREF="refgu046.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

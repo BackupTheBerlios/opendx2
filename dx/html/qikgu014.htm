@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer QuickStart Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer QuickStart
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer QuickStart Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="qikgu013.htm">Previous Page</A> &#124; <A HREF="qikgu015.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu011.htm#PToC3">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H2><A NAME="HDRTUTA2" HREF="qikgu011.htm#PToC_20">2.4 Opening and Executing a
+Visual Program</A></H2>
+<P>
+This section will show you how to:
+<UL COMPACT>
+<LI>Open a visual program.
+<LI>Execute that program to display an object in the Image window.
+</UL>
+<P>
+<H3><A NAME="HDRLOADVP" HREF="qikgu011.htm#PToC_21">Opening a Visual
+Program</A></H3>
+<A NAME="IDX40"></A>
+<A NAME="IDX41"></A>
+<P>
+A visual program must be opened before it can be executed:
+<OL>
+<P><LI>
+
+From the Data Explorer Startup window choose
+<TT><STRONG>Edit Visual Program</STRONG></TT>.
+A file selection dialog box appears (see <A
+HREF="qikgu011.htm#FIGFILESEL">Figure 3</A>).
+You can also get to the file selection dialog by choosing
+<TT><STRONG>Run Visual
+Program</STRONG></TT> in the Startup window or, once the visual program
+editor or image window has appeared, by selecting
+
+<TT><STRONG>File</STRONG></TT> in the menu bar of the window
+and then selecting <TT><STRONG>Open Program</STRONG></TT>.
+<P><LI><I>Double click</I> on any part of the
+<TT><STRONG>Filter</STRONG></TT> field at the
+top of the dialog box.
+Any text in that field will appear against the background of a black
+highlight bar.
+<P><LI>Type
+<P>
+<TT>/usr/lpp/dx/samples/tutorial/*&#46;net</TT>
+<P>
+(The cursor automatically moves to the beginning of the text line as
+soon as you start typing, and the highlighted text and
+highlight bar disappear.)
+<P><B>Note: </B>The file extension <TT>&#46;net</TT> (for network) is the
+default for Data Explorer visual programs.
+In Data Explorer, "network" is a term for visual
+program.
+<P><LI>Press <TT><STRONG>Enter</STRONG></TT> or click on the
+<TT><STRONG>Filter</STRONG></TT> pushbutton at the bottom
+of the dialog box.
+The <TT><STRONG>Selection</STRONG></TT> field just above this button now
+displays the directory path name.
+An alphabetized list of the <TT>&#46;net</TT> files in the
+directory appears in the <TT><STRONG>Files</STRONG></TT> field.
+<P><B>Note: </B>If the path name you typed is invalid (the wrong list or no list
+of files appears), you can edit it: position the mouse cursor at
+the point where you want to start editing and click
+<I>once</I> before beginning to type.
+<P>
+If the highlight bar reappears, retyping the entire path name is
+still unnecessary: again, position the cursor and click
+<I>once</I>.
+The highlight bar disappears, but the path name remains, with the
+cursor at the selected position.
+<P><LI>Use the scroll bar to move to the bottom of the list in the
+<TT><STRONG>Files</STRONG></TT> field.
+Click on <TT>example1&#46;net</TT> to highlight the file name.
+The <TT><STRONG>Selection</STRONG></TT> field now displays the file&#39;s
+full path name.
+<P><LI>Click on <TT><STRONG>OK</STRONG></TT> to open the
+<TT>example1&#46;net</TT>
+visual program:
+the dialog box closes; a "network" of modules and connecting lines
+appears in the "canvas" area of the VPE window; and the full
+path name of the program appears in the title bar of the
+window.
+Opening is completed.
+</OL>
+<P>
+For a short description of <TT>example1.net</TT>, click on
+<TT><STRONG>Help</STRONG></TT> at the right side of the menu
+bar and select <TT><STRONG>Application Comment</STRONG></TT>
+in the pull-down menu.
+<TABLE BORDER WIDTH="100%"><TR><TH ALIGN="LEFT">For Future
+Reference</TH><TR><TD>
+<UL COMPACT>
+<LI>Double clicking on a name in the <TT><STRONG>Files</STRONG></TT> field
+also opens a program.
+<LI>It is not necessary to clear the canvas of one program before
+opening another.
+Just open the new program.
+<LI>If for any reason you want to start over again with a clean
+canvas--without closing Data Explorer: click on <TT><STRONG>File</STRONG></TT>
+in the menu bar and select <TT><STRONG>New</STRONG></TT> in the
+pull-down menu.
+This sequence clears the canvas of the previous program network and any
+associated windows.
+</UL>
+</TD></TR></TABLE>
+<P>
+<H3><A NAME="Header_22" HREF="qikgu011.htm#PToC_22">Executing a Visual
+Program</A></H3>
+<A NAME="IDX42"></A>
+<A NAME="IDX43"></A>
+<P>
+To execute a visual program like <TT>example1&#46;net</TT>
+(once it has been opened):
+<OL>
+<P><LI>Click on <TT><STRONG>Execute</STRONG></TT> in the menu bar of the VPE
+window.
+<P><B>Note: </B>A visual program can be executed from any window that has
+<TT><STRONG>Execute</STRONG></TT> in its menu bar.
+<P><LI>Select <TT><STRONG>Execute Once</STRONG></TT> in the pull-down menu.
+Execution (which may take several seconds) is indicated by the
+highlighted <TT><STRONG>Execute</STRONG></TT> in the menu bar
+and the brief highlighting of various icons in the
+canvas area.
+The window that appears displays the image of a water molecule
+(<A HREF="#FIGIMWIN">Figure 5</A>).
+<P><B><A NAME="FIGIMWIN" HREF="../qikguide.htm#FT_FIGIMWIN">Figure 5. Image
+Window</A></B>. The window shown here displays the image generated by the visual
+program &nbsp;/usr/lpp/dx/samples/tutorial/example1.net&nbsp;.<BR>
+<B><BR><CENTER><IMG SRC="../images/imagwin.gif" ALT="Figure imagwin not
+displayed."></CENTER><BR></B><BR>
+<A NAME="IDX44"></A>
+<A NAME="IDX45"></A>
+<P>
+Once an object appears in the Image window, you can do a number of
+things with it, including:
+<UL COMPACT>
+<LI>Changing the view of the object (see <A HREF="qikgu015.htm#HDRTUTA5">2.5 ,
+"Controlling the Appearance of an Object: The Image Window"</A>).
+<LI>Editing the visual program that generates the image (see
+<A HREF="qikgu016.htm#HDRTEDVP">3.1 , "Editing a Visual Program: The
+Basics"</A>).
+<LI>Saving and Printing its image, using the <TT><STRONG>File</STRONG></TT>
+pull-down menu in the menu bar (see <A HREF="qikgu023.htm#HDRTSANDP">"Saving and
+Printing Images"</A>).
+</UL>
+</OL>
+<TABLE BORDER WIDTH="100%"><TR><TH ALIGN="LEFT">For Future
+Reference</TH><TR><TD>
+<P>
+<OL COMPACT>
+<LI>
+Many of the options in pull-down menus can be invoked by
+"accelerator" keyboard sequences.
+In the menus, these "shortcuts" appear next to the corresponding
+options.
+For a complete list, see <A HREF="usrgu075.htm#HDRAPD">Appendix G. "Accelerator
+Keys"</A> in <I>IBM Visualization Data Explorer User&#39;s Guide</I>.
+<LI>The
+
+editor
+
+window can be invoked directly with the command:
+<PRE>
+
+dx -edit &#91;<I>program path name</I>&#93;
+
+</PRE>
+</OL>
+</TD></TR></TABLE>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="qikgu013.htm">Previous Page</A> &#124; <A HREF="qikgu015.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu011.htm#PToC3">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/qikguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

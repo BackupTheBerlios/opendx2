@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="usrgu047.htm">Previous Page</A> &#124; <A HREF="usrgu049.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu047.htm#PToC12">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H2><A NAME="HDRVFM" HREF="usrgu047.htm#PToC_304">9.2 Loading and Using Outboard
+and Runtime-Loadable Modules</A></H2>
+<A NAME="IDX869"></A>
+<A NAME="IDX870"></A>
+<A NAME="IDX871"></A>
+<A NAME="IDX872"></A>
+<P>
+Data Explorer allows the following types of user-written module:
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>inboard</STRONG></TT>
+</B></TD><TD><P>modules are compiled and linked
+into the Data Explorer Executive.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>outboard</STRONG></TT>
+</B></TD><TD><P>modules are run as separate processes.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>runtime-loadable</STRONG></TT>
+</B></TD><TD><P>modules are loaded at runtime and effectively become inboard
+modules.
+</TD></TR></TABLE>
+<P>
+For an outboard or runtime-loadable to be available for use, its module
+description file must be loaded into the tool palette.
+To load a module description file&#58;
+<OL COMPACT>
+<LI>Select the <TT><STRONG>Load Modules Description(s)...</STRONG></TT>
+option from
+the <TT><STRONG>File</STRONG></TT> pull-down menu in the VPE.
+A file selection dialog box appears.
+For information about how to use the dialog box, see
+<A HREF="usrgu041.htm#HDRFSBOX">"File Selection Dialog Boxes"</A>.
+<LI>Use the dialog box to locate the description file for the
+module you want to load, and select the desired file.
+The module name appears on the tool palette under its assigned
+category.
+<TABLE><TR><TD ALIGN="LEFT" VALIGN="TOP"><B>Note:</B></TD><TD ALIGN="LEFT"
+VALIGN="TOP">If the module description you loaded has the same name as
+an module description loaded previously, the more
+recent description replaces the less recent,
+regardless of whether they were assigned to the
+same category.
+</td></tr></table>
+</OL>
+<P>
+When the new module is available for use, it is listed in the tool
+palette as a member of the category you assigned it to.
+<P>
+You can configure Data Explorer to automatically load module
+descriptions when you begin the Data Explorer program.
+To do this, use the <TT>-mdf <VAR>filename</VAR></TT> option when
+starting Data Explorer, where <TT><VAR>filename</VAR></TT> specifies
+one or more module definitions.
+Alternatively, you can use the <VAR>DXMDF</VAR> environment
+variable.
+For more information on how to do this, see <A
+HREF="usrgu036.htm#HDRENVAR">"Using Environment Variables"</A> and
+<A HREF="usrgu070.htm#HDRENVVAR">C.1 , "Environment Variables"</A>.
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="usrgu047.htm">Previous Page</A> &#124; <A HREF="usrgu049.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu047.htm#PToC12">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/usrguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

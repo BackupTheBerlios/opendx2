@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu131.htm">Previous Page</A> &#124; <A HREF="refgu133.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRSELECTO" HREF="refgu009.htm#PToC_185">Selector</A></H3>
+<A NAME="IDX683"></A>
+<A NAME="IDX684"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATINT">Interactor</A>
+<A NAME="IDX685"></A>
+<P><STRONG>Function</STRONG>
+<P>
+Generates a value and a string based on user input.
+<P><STRONG>Syntax</STRONG>
+<P>
+Available only through the user interface.
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>stringdata</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string list or group
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">specifies or derives a list of
+potential output strings
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>valuelist</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">integer or string list or value
+list
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">0-based list
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">list of potential output values
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>cull</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">flag
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">0
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">determines whether zero-length
+strings are removed (1) or not (0)
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>label</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">&quot;Selector&quot;
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">global name applied to interactor
+stand-ins
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>value</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">string or value
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">value
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>name</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">string name
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module allows the user to interactively select <I>one</I>
+item from a list.
+Through inputs to the module (outputs from other tools or values set
+in its configuration dialog box) the interactor can be
+"data driven."
+<P>
+If the interactor is not data driven, its attributes (e.g.,
+<TT><STRONG>stringdata</STRONG></TT> or <TT><STRONG>valuelist</STRONG></TT>)
+are taken from its <TT><STRONG>Set Attributes...</STRONG></TT> dialog
+box (accessed from the <TT><STRONG>Edit</STRONG></TT> pull-down menu
+in the Control Panel).
+<P>
+This interactor requires a list of strings and a list of values or
+strings that are then paired up one-to-one and used as
+selectable outputs.
+The inputs to Selector are used to generate both lists.
+If there are no inputs, the module uses the values in its
+<TT><STRONG>Set Attributes...</STRONG></TT> dialog box.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>stringdata</STRONG></TT>
+</B></TD><TD><P>controls the string values that appear as output in
+<TT><STRONG>name</STRONG></TT>.
+It is required if the interactor is data driven.
+<P>
+If the parameter value is:
+<UL COMPACT>
+<LI><I>a string list:</I> the individual strings are used as
+potential outputs.
+<LI><I>a group:</I> the names of the group members (or member1,
+member2, ...) are used as possible output names.
+<LI><I>a series group:</I>  the names are "position =
+<I>n</I>," (where <I>n</I> is the series
+position of each series member).
+</UL>
+<P>
+In every case, the items in the resulting string list are displayed in
+the list of selections in the corresponding Selector interactor.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>valuelist</STRONG></TT>
+</B></TD><TD><P>is a list of potential output values.
+<P>
+If this parameter is a value or string list, these values are mapped
+one-to-one onto the string list that results from
+<TT><STRONG>stringdata</STRONG></TT> input.
+<P>If the interactor is data-driven, the parameter value can also be a
+single integer used to generate a list of integers beginning with
+that one.
+<P>
+If the parameter is defaulted and the interactor is data-driven,
+the value list is a list of integers starting at 0 (zero).
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>cull</STRONG></TT>
+</B></TD><TD><P>is specified only when the interactor is data-driven.
+It determines whether or not empty strings are culled from the string
+list that results from <TT><STRONG>stringdata</STRONG></TT> input.
+If set to 1, empty strings are removed.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>label</STRONG></TT>
+</B></TD><TD><P>is the global label of all instances of the corresponding
+interactor
+stand-in.
+An interactor instance&#39;s local label (set from the Control Panel)
+overrides a global label.
+If not specified, the global label is set by the user interface.
+</TD></TR></TABLE>
+<P><STRONG>Example Visual Programs</STRONG>
+<P>
+Many example visual programs use the Selector interactor.
+Example programs that use a data-driven Selector interactor are&#58;
+<PRE>
+DataDrivenSelector.net
+UsingAttributes.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu078.htm#HDRINTEGER">Integer</A>,
+&nbsp;<A HREF="refgu079.htm#HDRINTEGEL">IntegerList</A>,
+&nbsp;<A HREF="refgu127.htm#HDRSCALAR">Scalar</A>,
+&nbsp;<A HREF="refgu128.htm#HDRSCALARL">ScalarList</A>,
+&nbsp;<A HREF="refgu169.htm#HDRVECTOR">Vector</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu131.htm">Previous Page</A> &#124; <A HREF="refgu133.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

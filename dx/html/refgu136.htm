@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu135.htm">Previous Page</A> &#124; <A HREF="refgu137.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+
+<H3><A NAME="HDRSETLOC" HREF="refgu009.htm#PToC_189">SetLocal</A></H3>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATFLOW">Flow Control</A>
+<A NAME="IDX697"></A>
+<A NAME="IDX698"></A>
+<A NAME="IDX699"></A>
+<A NAME="IDX700"></A>
+<P><STRONG>Function</STRONG>
+<P>
+Places an object in the cache.
+<P><STRONG>Syntax</STRONG>
+<PRE>
+SetLocal(<STRONG>object, link</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>object</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">object to be cached
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>link</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">no default
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">link to corresponding GetLocal
+module
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module works with GetLocal to place and retrieve objects from the
+cache:
+SetLocal places an <TT><STRONG>object</STRONG></TT> in the cache, where GetLocal
+can
+retrieve it.
+SetLocal should always be used with GetLocal, not with GetGlobal.
+<P><B>Note: </B>The corresponding GetLocal module must be executed on the same
+machine (i.e., it cannot be distributed to another machine).
+See <A HREF="refgu066.htm#HDRGETGLO">GetGlobal</A> and <A
+HREF="refgu067.htm#HDRGETLOC">GetLocal</A>
+for a discussion of the differences between
+the Global Get/Set pair and the Local Get/Set pair.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>object</STRONG></TT>
+</B></TD><TD><P>is the object to be placed in the cache.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>link</STRONG></TT>
+</B></TD><TD><P>specifies the GetLocal module that corresponds to the SetLocal
+module.
+In the VPE, this link would be created by dragging an arc from the
+<TT><STRONG>link</STRONG></TT> output of GetLocal to the
+<TT><STRONG>link</STRONG></TT> input of SetLocal.
+</TD></TR></TABLE>
+A detailed description of the behavior and use of the GetLocal,
+GetGlobal, SetLocal, and SetGlobal modules can be found in
+<A HREF="usrgu031.htm#HDRSTATES">4.6 , "Preserving Explicit State"</A> in <I>IBM
+Visualization Data Explorer User&#39;s Guide</I>.
+<P><STRONG>Example Visual Programs</STRONG>
+<PRE>
+Accumulate.net
+Bounce.net
+SimpleGetSetLoop.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu067.htm#HDRGETLOC">GetLocal</A>,
+&nbsp;<A HREF="refgu066.htm#HDRGETGLO">GetGlobal</A>,
+&nbsp;<A HREF="refgu135.htm#HDRSETGLO">SetGlobal</A>
+<P>
+&nbsp;<A HREF="usrgu026.htm#HDRXMOD">Chapter 4. "Data Explorer Execution
+Model"</A> in <I>IBM Visualization Data Explorer User&#39;s Guide</I>.
+
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu135.htm">Previous Page</A> &#124; <A HREF="refgu137.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

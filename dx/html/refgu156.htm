@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu155.htm">Previous Page</A> &#124; <A HREF="refgu157.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRTEXT" HREF="refgu009.htm#PToC_212">Text</A></H3>
+<A NAME="IDX738"></A>
+<A NAME="IDX739"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATANN">Annotation</A>
+<A NAME="IDX740"></A>
+<A NAME="IDX741"></A>
+<P><STRONG>Function</STRONG>
+<P>
+Displays text.
+<P><STRONG>Syntax</STRONG>
+<PRE><STRONG>
+text</STRONG> = Text(<STRONG>string, position, height, font, direction, up</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>string</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string or field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">none
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">text to be displayed
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>position</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">vector
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">&#91;0 0 0&#93;
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">placement of displayed text
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>height</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">1
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">height of the text (in world
+coordinates)
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>font</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">&quot;variable&quot;
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">text font
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>direction</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">vector
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">&#91;1 0 0&#93;
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">orientation of the baseline
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>up</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">vector
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">perpendicular to baseline
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">orientation of vertical strokes
+of text font
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>text</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">color field
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">renderable string object
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module produces text that is displayed in space.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>string</STRONG></TT>
+</B></TD><TD><P>specifies the text to be displayed.
+If the parameter value is a string, that string is
+displayed.
+If the parameter value is a field, its "data" component must be
+TYPE_STRING.
+The data may be position or connection dependent:
+<UL COMPACT>
+<LI>position dependent: each string in the "data" component is
+displayed at its corresponding position.
+<LI>connection dependent: each string is displayed at the center of its
+corresponding connection element.
+</UL>
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>position</STRONG></TT>
+</B></TD><TD><P>specifies in world units the placement of the displayed text.
+It is used only when <TT><STRONG>string</STRONG></TT> is
+not a field.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>height</STRONG></TT>
+</B></TD><TD><P>specifies the height of the text, in world units.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>font</STRONG></TT>
+</B></TD><TD><P>specifies the font used for displayed text.
+You can specify any of the defined fonts supplied with Data Explorer.
+These include a variable-width font ("variable," the default)
+and a fixed-width font ("fixed"):
+<PRE>
+area          gothicit_t       pitman                roman_ext
+cyril_d       greek_d          roman_d               script_d
+fixed         greek_s          roman_dser            script_s
+gothiceng_t   italic_d         roman_s               variable
+gothicger_t   italic_t         roman_tser
+</PRE>
+For more information,
+see <A HREF="usrgu073.htm#HDRAPC">Appendix E. "Data Explorer Fonts"</A> in
+<I>IBM Visualization Data Explorer User&#39;s Guide</I>.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>direction</STRONG></TT>
+</B></TD><TD><P>specifies the orientation of the baseline (see Note in next
+description).
+For example, a value of 10 for this parameter specifies that the text
+is aligned with the x-axis.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>up</STRONG></TT>
+</B></TD><TD><P>specifies the orientation of the vertical strokes of the font
+used
+for the displayed text.
+<P><B>Note: </B>For string data in a field, the orientation of baseline and
+text can specified by using "tangents" and "binormals"
+components.
+In that way, each string can be oriented individually.
+These components should have the same dependency as "data"
+The "tangents" component corresponds to
+<TT><STRONG>direction</STRONG></TT>
+and "binormals" to
+<TT><STRONG>up</STRONG></TT>.
+<P>
+The parameter specifications will override those of the field
+components.
+</TD></TR></TABLE>
+<P><STRONG>Components</STRONG>
+<P>
+Creates new "positions," "connections," and "colors"
+components.
+<P><STRONG>Example Visual Program</STRONG>
+<PRE>
+UsingTextAndTextGlyphs.net
+</PRE>
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu022.htm#HDRCAPTION">Caption</A>,
+&nbsp;<A HREF="refgu033.htm#HDRCOLOR">Color</A>,
+&nbsp;<A HREF="refgu065.htm#HDRFORMAT">Format</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu155.htm">Previous Page</A> &#124; <A HREF="refgu157.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

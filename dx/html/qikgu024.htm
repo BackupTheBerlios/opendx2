@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer QuickStart Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer QuickStart
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer QuickStart Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="qikgu023.htm">Previous Page</A> &#124; <A HREF="qikgu025.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu016.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H2><A NAME="HDRTSCLANG" HREF="qikgu016.htm#PToC_96">3.9 Scripting
+Language</A></H2>
+<A NAME="IDX186"></A>
+<P>
+Sometimes it may be more convenient to use the Data Explorer scripting language
+instead of the Visual Program Editor to create visualizations.
+A common instance is that of using Data Explorer scripts in overnight batch jobs
+to create visualizations and save them to disk for analysis the
+next day.
+<P>
+A simple script that computes a series of isosurfaces and exports them
+to disk is <TT>/usr/lpp/dx/samples/tutorial/batch_script</TT>
+(this is not a visual program, so you cannot read it into the Visual Program
+Editor):
+<PRE>
+data = Import("/usr/lpp/dx/samples/data/watermolecule");
+counter = 1;
+macro create_iso(isovalue,counter)-&gt;(counter)
+{
+  isosurface = Isosurface(data,isovalue);
+  filename = Format("iso%d", counter);
+  counter++;
+  Export(isosurface, filename);
+}
+</PRE>
+(continued on the next page)
+<PRE>
+counter=create_iso(0.1, counter);
+counter=create_iso(0.2, counter);
+counter=create_iso(0.3, counter);
+counter=create_iso(0.4, counter);
+counter=create_iso(0.5, counter);
+counter=create_iso(0.6, counter);
+# (end of script)
+</PRE>
+This script first imports data from a file called
+<TT>watermolecule</TT>.
+It then defines a macro that takes two parameters: an isovalue and a
+counter.
+The macro returns the counter as an output.
+It then computes an isosurface, creates a filename (using the counter
+as part of the name), and exports the isosurface to that
+filename.
+The counter is also incremented.
+Finally the macro is called six times, with six different isovalues.
+<P>
+To run this script, first copy
+<TT>/usr/lpp/dx/samples/tutorial/batch_script</TT> to the directory
+being used.
+Then enter the command:
+<PRE>
+    dx -script &lt; batch_script
+</PRE>
+<I>or</I>
+<PRE>
+    dx -script
+</PRE>
+and at the <TT>dx&gt;</TT> prompt:
+<PRE>
+    include "batch_script"
+</PRE>
+<P>
+If you want to view the exported isosurfaces, you can use visual program
+<TT>/usr/lpp/dx/samples/tutorial/view_isosurfaces.net</TT>.
+<P>
+<P><B>Note: </B>Visual programs are also scripts.
+However, if a visual program uses a macro, you must include that
+macro before including the visual program.
+For example:
+<PRE>
+dx&gt; include "my_macro.net"
+dx&gt; include "program.net"
+</PRE>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="qikgu023.htm">Previous Page</A> &#124; <A HREF="qikgu025.htm">Next
+Page</A> &#124; <A HREF="../qikguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="qikgu016.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="qikgu034.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/qikguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

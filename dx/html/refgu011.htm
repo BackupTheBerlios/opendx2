@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Reference</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Reference">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Reference</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="refgu010.htm">Previous Page</A> &#124; <A HREF="refgu012.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<H3><A NAME="HDRAPPEND" HREF="refgu009.htm#PToC_30">Append</A></H3>
+<A NAME="IDX356"></A>
+<A NAME="IDX357"></A>
+<P><STRONG>Category</STRONG>
+<P>
+<A HREF="refgu008.htm#HDRCATSTR">Structuring</A>
+<P><STRONG>Function</STRONG>
+<P>
+Adds one or more specified Objects to an existing Group.
+<P><STRONG>Syntax</STRONG>
+<PRE><STRONG>group</STRONG> = Append(<STRONG>input, object, id,...</STRONG>);
+</PRE>
+<P><STRONG>Inputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Default
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>input</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Group
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">(no default)
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">group to which an object is to be
+added
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>object</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">Object
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">(no default)
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Object to be added
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>id</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">scalar or string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">(no default)
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">series position or name of Object
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>...</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">...
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">...
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">additional object-id pair(s)
+</TD></TR></TABLE>
+<P><STRONG>Outputs</STRONG>
+<BR>
+<TABLE BORDER>
+<TR>
+<TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Name
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Type
+</TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">Description
+</TH></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%"><TT><STRONG>group</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">group
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="50%">the group with Objects added
+</TD></TR></TABLE>
+<P><STRONG>Functional Details</STRONG>
+<P>
+This module differs from Collect, CollectNamed, CollectMultiGrid,
+and CollectSeries, which create a new Group with the specified
+Objects as members.
+For example, if the input to the module is a series with four members,
+the output will be a series with four &#43; <I>n</I> members,
+where <I>n</I> is the number of objects specified.
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B><TT><STRONG>input</STRONG></TT>
+</B></TD><TD><P>must be a Group.
+The type of this Group determines the type of the output Group.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>object</STRONG></TT>
+</B></TD><TD><P>is an Object to be added as a member to the Group
+<TT><STRONG>input</STRONG></TT>.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>id</STRONG></TT>
+</B></TD><TD><P>specifies additional information to be associated with the
+appended
+Object.
+For a named Group, this could be the name of the member.
+For a Series, it is the series position value.
+If <TT><STRONG>input</STRONG></TT> is a series, then
+<TT><STRONG>id</STRONG></TT>
+is a required parameter.
+Otherwise, it is optional.
+</TD></TR></TABLE>
+A single Append module can specify a maximum of 21
+<TT><STRONG>object</STRONG></TT>-<TT><STRONG>id</STRONG></TT>
+pairs.
+In the user interface, the default number of enabled parameter tabs is two.
+(Tabs can be added to the module icon and removed with the appropriate
+<TT><STRONG>...Input Tab</STRONG></TT> options in the
+<TT><STRONG>Edit</STRONG></TT> pull-down menu of
+the VPE.)
+<P><STRONG>Components</STRONG>
+<P>
+All components are propagated to the output.
+<P><STRONG>See Also</STRONG>
+<P>
+&nbsp;<A HREF="refgu029.htm#HDRCOLLECT">Collect</A>,
+&nbsp;<A HREF="refgu030.htm#HDRMULTIGR">CollectMultiGrid</A>,
+&nbsp;<A HREF="refgu031.htm#HDRCOLLECN">CollectNamed</A>,
+&nbsp;<A HREF="refgu032.htm#HDRCOLLECS">CollectSeries</A>,
+&nbsp;<A HREF="refgu131.htm#HDRSELECT">Select</A>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="refgu010.htm">Previous Page</A> &#124; <A HREF="refgu012.htm">Next
+Page</A> &#124; <A HREF="../refguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="refgu009.htm#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="refgu175.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/refguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

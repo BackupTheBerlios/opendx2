@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="usrgu019.htm">Previous Page</A> &#124; <A HREF="usrgu021.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu010.htm#PToC3">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H1><A NAME="HDROVE" HREF="../usrguide.htm#ToC_32">Chapter 1. Overview</A></H1>
+<P><A NAME="PToC4" HREF="../usrguide.htm#ToC">Partial Table-of-Contents</A>
+<MENU>
+<LI><A NAME="PToC_33" HREF="#HDROVEDX">1.1 Overview of Data Explorer</A>
+<LI><A NAME="PToC_34" HREF="usrgu021.htm#HDRC11">1.2 System Structure</A>
+<MENU>
+<LI><A NAME="PToC_35" HREF="usrgu021.htm#Header_35">Graphical User Interface</A>
+<LI><A NAME="PToC_36" HREF="usrgu021.htm#Header_36">Executive</A>
+<LI><A NAME="PToC_37" HREF="usrgu021.htm#Header_37">Modules</A>
+<LI><A NAME="PToC_38" HREF="usrgu021.htm#HDRDAM">Data Management</A>
+<LI><A NAME="PToC_39" HREF="usrgu021.htm#Header_39">How the Data Model
+Facilitates Interoperability</A>
+</MENU></MENU><HR><P>
+<A NAME="IDX473"></A>
+<P>
+This book describes the IBM Visualization Data
+Explorer<TT><STRONG>*</STRONG></TT>,
+which you can use in a
+workstation environment.
+Data Explorer is a visualization system that can be used in many application
+areas and with a variety of data representations to extract
+useful information from complex data.
+<HR>
+<H2><A NAME="HDROVEDX" HREF="#PToC_33">1.1 Overview of Data Explorer</A></H2>
+<P>
+The Data Explorer graphical user interface allows end users to perform
+tasks at various levels of sophistication.
+For example, a user can use the user interface to apply data and adjust
+input values to an existing visualization process.
+A slightly more advanced user can construct a new visualization process,
+called a visual program,
+by connecting a network of Data Explorer&#39;s modules.
+An expert programmer can create new modules, using C or FORTRAN, for
+use with the system modules.
+Besides the user interface, Data Explorer also provides a scripting language
+interface, for users who want to build their own visualization
+functions in a more traditional programming style.
+<P>
+Data Explorer&#39;s graphical user interface provides an integrated online
+help facility.
+This facility provides users with online access to the Data Explorer user
+manuals, as well as with context-sensitive help information.
+In addition to the help information provided with Data Explorer, the online
+help facility allows users to document various aspects of
+their particular visual programs.
+Other users of these visual programs then have online access to this
+program-specific documentation.
+<P>
+Data Explorer provides an extensive set of modules that you can use to visualize
+your data.
+For example, the Isosurface, Streamline, and AutoColor modules perform
+the standard visualization functions of creating constant-value
+surfaces, tracing particle paths through velocity fields,
+and coloring objects based on a data value,
+respectively.
+<P>
+In addition to these expected functions, Data Explorer also provides tools to
+perform more sophisticated manipulation of data.
+The Map module is a general purpose module that can map a data field
+onto an arbitrary object--whether it is a streamline,
+an isosurface, or even another data field&#39;s
+computational mesh.
+The Compute module can perform arithmetic or trigonometric operations
+point-by-point not only on your data but also on the grid
+itself.
+Thus warping a grid, for example, is a simple matter of entering an
+expression.
+<P>
+Even standard tools, such as Isosurface, operate on multiple types
+of input grids.
+For example, if the input field to Isosurface is 2-dimensional, the
+module automatically creates contour lines.
+<P>
+The Data Explorer renderer can handle opaque or translucent surfaces,
+translucent volumes, and opaque or translucent lines or
+points--all in the same image.
+In addition, data on different computational or observational grids
+can be visualized together,
+allowing you to correlate disparate data fields without requiring you
+to force the data onto the same grid.
+<P>
+The power and interoperability of the modules is possible because
+of the underlying data model, which is capable of describing a
+wide variety of types of input data.
+Because the data itself is self-describing, modules can be flexible in
+the types of data they accept, and can perform their actions
+appropriately based on their input.
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="usrgu019.htm">Previous Page</A> &#124; <A HREF="usrgu021.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="#PToC4">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/usrguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>

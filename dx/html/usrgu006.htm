@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>IBM Visualization Data Explorer User&#39;s Guide</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+
+<A NAME="Top_Of_Page"></A>
+<H1>IBM Visualization Data Explorer User&#39;s Guide</H1>
+<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
+HREF="usrgu005.htm">Previous Page</A> &#124; <A HREF="usrgu007.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="usrgu003.htm#PToC1">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
+<HR>
+<H1><A NAME="Header_7" HREF="../usrguide.htm#ToC_7">About This Guide</A></H1>
+<P><A NAME="PToC2" HREF="../usrguide.htm#ToC">Partial Table-of-Contents</A>
+<MENU>
+<LI><A NAME="PToC_8" HREF="#Header_8">Who Should Use It</A>
+<LI><A NAME="PToC_9" HREF="usrgu007.htm#Header_9">How To Use It</A>
+<LI><A NAME="PToC_10" HREF="usrgu008.htm#Header_10">Typographic Conventions</A>
+<LI><A NAME="PToC_11" HREF="usrgu009.htm#HDRRELPUBS">Related Publications and
+Sources</A>
+<MENU>
+<LI><A NAME="PToC_12" HREF="usrgu009.htm#HDRIBPUBS">IBM Publications</A>
+<LI><A NAME="PToC_13" HREF="usrgu009.htm#HDRNONPUBS">Non-IBM Publications</A>
+<LI><A NAME="PToC_14" HREF="usrgu009.htm#HDRMOREINF">Other sources of
+information</A>
+</MENU></MENU><HR><P>
+<P>
+This manual is a guide to using IBM Visualization Data
+Explorer<TT><STRONG>*</STRONG></TT> for&#58;
+<UL COMPACT>
+<LI>manipulating and controlling data visualizations
+<LI>importing various kinds of data for visualization
+<LI>creating and customizing visual programs with the Visual Program Editor
+<LI>using the Data Explorer scripting language to create visual programs.
+</UL>
+<HR>
+<H2><A NAME="Header_8" HREF="#PToC_8">Who Should Use It</A></H2>
+<P>
+This Guide is intended for users of different degrees of knowledge and
+experience with graphical programs:
+<TABLE CELLPADDING="3">
+<TR VALIGN="TOP"><TD><P><B>Non-programmers
+</B></TD><TD><P>The non-programmer can learn how to use previously created
+visual
+programs to examine data sets (e.g., modifying one or more
+inputs to a visual program and saving and restoring
+the results).
+</TD></TR><TR VALIGN="TOP"><TD><P><B>Programmers
+</B></TD><TD><P>The programmer can learn how to use:
+<UL COMPACT>
+<LI>the visual programming interface to create visual programs and
+applications.
+<LI>the scripting language to create visualizations.
+</UL>
+</TD></TR></TABLE>
+<P>
+This Guide assumes that you have some knowledge of the operating
+system and the X Window System** being used, as well as of
+OSF**/Motif**.
+For more information, see <I>IBM AIXwindows User&#39;s Guide</I> or the
+appropriate
+window system documentation.
+<P>
+In this Guide, any reference  to the X Window System means any window
+server that supports the X11 protocol, including Sun&#39;s
+OpenWindows**.
+<BR>
+The Motif window manager, mwm, has been used in many figures and
+examples in this Guide.
+Please use the appropriate window manager for your system, such as
+vuewm (Hewlett-Packard), 4dwm (SGI), or olwm (Sun).
+Since title bars and window borders are features of a window manager,
+the appearance of your windows may differ slightly from those
+in the figures and examples.
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+HREF="usrgu005.htm">Previous Page</A> &#124; <A HREF="usrgu007.htm">Next
+Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
+HREF="#PToC2">Partial Table of Contents</A> &#124; <A
+HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
+href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
+href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
+href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
+href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
+href="../insguide.htm">Installation and Configuration
+Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
+href="http://www.almaden.ibm.com/dx/">Data Explorer Home
+Page</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
+Explorer</a>&nbsp;&#124;&nbsp;<a
+href="http://www.almaden.ibm.com/dx/docs/html/usrguide.htm">Same document on
+Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
+HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
+HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
+<A NAME="Bot_Of_Page"></A>
+</BODY></HTML>
