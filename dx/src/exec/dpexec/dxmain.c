@@ -174,7 +174,6 @@ static int	exParent = FALSE;
 static int      exParent_RQread_fd;
 static int      exParent_RQwrite_fd;
 static int	exChParent_RQread_fd;
-static int      exRQread_error = FALSE;
 
 static double	read_i_threshhold = READ_I_THRESHHOLD;
 static double	read_s_threshhold = READ_S_THRESHHOLD;
@@ -308,7 +307,7 @@ static volatile int *exReady;
 
 #include "instrument.h"
 
-Error user_cleanup() { return ERROR; } 
+extern Error user_init();
 
 int 
 DXmain (argc, argv, envp)
@@ -385,6 +384,8 @@ DXmain (argc, argv, envp)
         ExCopyright (! _dxd_exRemote);
 
     ExInitialize ();		       /* perform all shared initializations */
+
+    user_init();
 
 #ifdef DXD_LICENSED_VERSION
 
@@ -555,13 +556,11 @@ static void ExMainLoop ()
 	ExMainLoopSlave ();
 }
 
+extern Error user_slave_cleanup();
 
 static void ExMainLoopSlave ()
 {
     int			ret = TRUE;
-#if DXD_HAS_LIBIOP
-    static double	last	= 0.0;
-#endif
     int 		RQ_fd;
     char		c;
 
@@ -569,49 +568,23 @@ static void ExMainLoopSlave ()
 
     RQ_fd = exParent_RQread_fd;
 
-    for (;;)
+    while (! *_dxd_exTerminating)
     {
 	ret = _dxf_ExRQPending () && ExCheckRunqueue (0);
-        if(! ret) {
-	    if (_dxd_exMyPID == 1) {
+        if(! ret)
+	{
+	    if (_dxd_exMyPID == 1)
+	    {
                 if(_dxf_ExIsExecuting())
 	            _dxf_ExCheckRIH ();
                 else
 	            _dxf_ExCheckRIHBlock (-1);
             }
-            else {
-                if(exRQread_error == FALSE) {
-                    ret = read(RQ_fd, &c, 1);
-                    if(ret != 1) {
-                        DXMessage("slave read returned %d %d %d", ret, errno, RQ_fd);
-                        exRQread_error = TRUE;
-                    }
-                }
-            }
+            else
+		read(RQ_fd, &c, 1);
         }
-#if DEBUGMP
-        else DXMessage("got something");
-#endif
-#if OLDCODE
-#if DXD_HAS_LIBIOP
-	if (_dxd_exMyPID == 1 && SVS_double_time () - last > EX_RIH_INTERVAL)
-#else
-	if (_dxd_exMyPID == 1)
-#endif
-	    ret |= _dxf_ExCheckRIH ();
-
-/* need a new way to do this, hopefully this will go away soon */
-#if sgi
-	if (! ret)
-	{
-	    set_status (PS_NAPPING);
-	    sginap (0);
-	    set_status (PS_EXECUTIVE);
-	}
-#endif
-	IFINSTRUMENT (++exInstrument[_dxd_exMyPID].numSlaveTry);
-#endif
     }
+    user_slave_cleanup();
 }
 
 
@@ -1370,7 +1343,7 @@ static void ExSettings ()
 
 static void ExCheckTerminate ()
 {
-    int		n = 3;
+    int		n = 3, i;
 
     if (! (*_dxd_exTerminating))
 	return;
@@ -1389,6 +1362,12 @@ static void ExCheckTerminate ()
 	if (_dxf_ExVCRRunning ())
 	    return;
     }
+
+    /*
+     * signal childen to loop so they will see the terminate flag
+     */
+    for (i = 1; i < nprocs; i++)
+	write(children[i].RQwrite_fd, "a", 1);
 
     _dxf_ExCacheFlush (TRUE);
     _dxf_ExDictionaryPurge (_dxd_exGlobalDict);
@@ -1415,6 +1394,8 @@ static void ExCleanup ()
     dpgraphstat *index;
     PGassign	*pgindex;
     SlavePeers  *sindex;
+
+    user_cleanup();
 
     if (MarkModules)
 	DXPrintTimes ();
@@ -1510,8 +1491,6 @@ static void ExCleanup ()
     }
 #endif
 
-    user_cleanup();
-
     exit (0);
 }
 
@@ -1605,11 +1584,22 @@ static void ExForkChildren ()
     for (i = 1; i < nprocs; i++)
 #endif
     {
+	int p;
+
+#if DXD_EXEC_WAIT_PROCESS && !defined(DXD_PROC_0_FORKED_FIRST)
+	if (i == nprocs-1)
+	    p = 0;
+	else
+	    p = i + 1;
+#else
+	p = i;
+#endif
+
 	/* flush all output files prior to forking */
 	fflush (stdout);
 	fflush (stderr);
 
-	pid = DXmemfork (i);
+	pid = DXForkChild(p);
 
 	if (pid == 0)
 	{
@@ -1632,10 +1622,12 @@ static void ExForkChildren ()
         DXlock(childtbl_lock, 0);
         _dxd_exMyPID = ExFindPID (getpid ());
         DXunlock(childtbl_lock, 0);
+
         if(_dxd_exMyPID < 0)
             _dxf_ExDie("Fork Children unable to get child id %d", 
                        getpid());
-#ifndef DXD_EXEC_WAIT_PROCESS
+
+#if DXD_EXEC_WAIT_PROCESS
 	/* The original process (the master) is also the "exParent", and
 	 * can allow the other processes to start now
 	 */
@@ -1643,7 +1635,10 @@ static void ExForkChildren ()
 	    *exReady = TRUE;
 	    exParent = TRUE;
 	}
+#else
+	*exReady = TRUE;
 #endif
+
 #if DXD_HAS_SYSMP
 	if (nprocs > 1 && nphysprocs == nprocs)
 	{
@@ -1690,7 +1685,9 @@ static int ExReadCharFromRQ_fd (int fd, Pointer p)
 
     ret = read(fd, &c, 1);
     if(ret != 1) {
+	/*
         DXMessage("Error reading from request queue pipe: %d %d", errno, fd);
+	*/
         DXRegisterInputHandler(NULL, fd, NULL);
     }
 
@@ -1704,14 +1701,11 @@ static int ExReadCharFromRQ_fd (int fd, Pointer p)
 void _dxf_update_childpid(int i, int pid, int writefd)
 {
     /* table should already be locked before this call */
-    /* make last one to fork be process 0 */
-    if(i == nprocs-1)
-        i = 0;
-    else
-       i = i + 1;
+
 #if DEBUGMP
     DXMessage("child %d, writefd %d", i, writefd);
 #endif
+
     children[i].pid = pid;
     children[i].RQwrite_fd = writefd;
     DXunlock(childtbl_lock, 0);
@@ -1722,35 +1716,24 @@ void _dxf_set_RQ_ReadFromChild1(int readfd)
     exChParent_RQread_fd = readfd;
 }
 
-/* Set up the file descriptor that the child will block on */
-/* waiting for the parent to put more work in the run queue. */
-/* Also the file descriptor that the child will write on */
-/* when it adds work to the parent's job queue.  The latter is only */
-/* used on child 1. */
-void _dxf_set_RQ_fds(int readfd, int writefd, int i)
+/*
+ * Set up fd that slaves block on waiting for the master to
+ * put work in the run queue
+ */
+void
+_dxf_set_RQ_reader(int fd)
 {
-    /* make last one to fork be process 0 */
-    if(i == nprocs-1)
-        i = 0;
-    else
-       i = i + 1;
+    exParent_RQread_fd = fd;
+    DXRegisterInputHandler(ExReadCharFromRQ_fd, fd, NULL);
+}
 
-#if DEBUGMP
-    if(i == 1)
-        DXMessage("child %d, parent_read %d, parent_write %d", i, readfd, writefd);
-    else
-        DXMessage("child %d, parent_read %d", i, readfd);
-#endif
-
-    exParent_RQread_fd = readfd;
-    exParent_RQwrite_fd = writefd;
-
-    if(i == 1) {
-        DXRegisterInputHandler(ExReadCharFromRQ_fd, readfd, NULL);
-#if DEBUGMP
-        DXMessage("parent %d as an inputhandlr", readfd);
-#endif
-    }
+/*
+ * On slave #1 set up fd for writing to the master
+ */
+void
+_dxf_set_RQ_writer(int fd)
+{
+    exParent_RQwrite_fd = fd;
 }
 
 Error _dxf_parent_RQ_message() 
@@ -1826,6 +1809,7 @@ static int ExFindPID (int pid)
     for (i = 0; i < nprocs; i++)
 	if (pid == children[i].pid)
 	    return (i);
+
     DXWarning ("#4510", pid);
     return (-1);
 }
@@ -2098,6 +2082,8 @@ ExCheckInput ()
     char		*prompt;
     int			fno;
     Context		savedContext;
+    extern SFILE        *_dxd_exBaseFD;
+
 
     /* don't read anymore input if we are exiting */
     if (*_dxd_exTerminating)
@@ -2265,6 +2251,10 @@ ExInputAvailable (SFILE *fp)
     fd_set		fdset;
     struct timeval	tv;
     static int		iters	= 0;
+    extern SFILE        *_dxd_exBaseFD;
+
+    if (ExCheckParseBuffer())
+	return TRUE;
 
     _dxf_ExCheckPacket(NULL, 0);
 
