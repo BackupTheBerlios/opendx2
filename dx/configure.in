@@ -254,24 +254,24 @@ echo Using standard signal argument list in C++
 DX_CHECK_SELECT_ARG
 DX_CHECK_SOCK_LENGTH_TYPE
 
-AC_OUTPUT(bin/dx bin/Makefile src/ui++/ui/Makefile lib/Makefile  \
+AC_OUTPUT(bin/dx bin/Makefile src/uipp/ui/Makefile lib/Makefile  \
 	  src/exec/hwrender/gl/Makefile src/exec/hwrender/xgl/Makefile  \
-	  src/exec/hwrender/starbase/Makefile src/ui++/dxuilib/Makefile \
-	  src/ui++/ui/Makefile src/exec/Makefile \
+	  src/exec/hwrender/starbase/Makefile src/uipp/dxuilib/Makefile \
+	  src/uipp/ui/Makefile src/exec/Makefile \
 	  src/exec/dxexec/Makefile include/Makefile \
 	  include/dx/Makefile src/exec/libdx/Makefile \
 	  src/Makefile src/exec/dpexec/Makefile \
-	  src/exec/dxmods/Makefile src/ui++/base/Makefile \
-	  src/ui++/Makefile src/ui++/dxl/Makefile \
-	  src/ui++/dxui/Makefile src/ui++/prompter/Makefile \
-	  src/ui++/mb/Makefile src/ui++/widgets/Makefile \
-	  src/ui++/startup/Makefile src/ui++/tutor/Makefile \
-	  src/ui++/java/dx/protocol/server/Makefile \
-	  src/ui++/java/dx/protocol/Makefile src/ui++/java/dx/Makefile \
-	  src/ui++/java/dx/runtime/Makefile \
-	  src/ui++/java/dx/client/Makefile src/ui++/java/dx/net/Makefile \
-	  src/ui++/java/dx/applets/Makefile src/ui++/java/dx/server/Makefile \
-	  src/ui++/java/Makefile src/exec/hwrender/opengl/Makefile \
+	  src/exec/dxmods/Makefile src/uipp/base/Makefile \
+	  src/uipp/Makefile src/uipp/dxl/Makefile \
+	  src/uipp/dxui/Makefile src/uipp/prompter/Makefile \
+	  src/uipp/mb/Makefile src/uipp/widgets/Makefile \
+	  src/uipp/startup/Makefile src/uipp/tutor/Makefile \
+	  src/uipp/java/dx/protocol/server/Makefile \
+	  src/uipp/java/dx/protocol/Makefile src/uipp/java/dx/Makefile \
+	  src/uipp/java/dx/runtime/Makefile \
+	  src/uipp/java/dx/client/Makefile src/uipp/java/dx/net/Makefile \
+	  src/uipp/java/dx/applets/Makefile src/uipp/java/dx/server/Makefile \
+	  src/uipp/java/Makefile src/exec/hwrender/opengl/Makefile \
 	  src/exec/hwrender/Makefile Makefile help/Makefile \
 	  html/Makefile man/catl/Makefile man/manl/Makefile \
 	  man/Makefile fonts/Makefile doc/Makefile \
