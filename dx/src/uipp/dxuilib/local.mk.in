@@ -23,7 +23,7 @@ netlex.c: ${srcdir}/net.lex
 	$(LEX) ${srcdir}/net.lex
 	sed "/#line/d" lex.yy.c > netlex.c
 
-netyacc.c: ${srcdir}/net.yacc netlex.c ${srcdir}/netyacc.awk
-	$(YACC) ${srcdir}/net.yacc
+netyacc.c: ${srcdir}/net.y netlex.c ${srcdir}/netyacc.awk
+	$(YACC) ${srcdir}/net.y
 	awk -f ${srcdir}/netyacc.awk y.tab.c > netyacc.c
 	rm -f y.tab.c

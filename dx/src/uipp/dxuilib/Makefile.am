@@ -19,7 +19,7 @@ EXTRA_DIST = \
 	sequence.net \
 	imagemac.net \
 	net.lex \
-	net.yacc \
+	net.y \
 	netyacc.awk \
 	anchor.bm \
 	ntractor.bm \
