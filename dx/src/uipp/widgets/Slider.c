@@ -267,6 +267,8 @@ XmSliderClassRec xmSliderClassRec =
    },
 
    {		/* bulletin board class - none */
+      False,					/* mumble */
+      NULL,					/* mumble */
       NULL,					/* mumble */
       NULL,					/* mumble */
    },

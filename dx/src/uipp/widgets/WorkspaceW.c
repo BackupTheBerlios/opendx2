@@ -808,9 +808,10 @@ XmWorkspaceClassRec xmWorkspaceClassRec = {
     {
 	NULL,                           /* lineGC                       */
 	NULL,                           /* lineGC2                      */
-	NULL,                           /* hour_glass                   */
-	NULL,                           /* move_cursor                  */
-	{ NULL, NULL, NULL, NULL },     /* size_cursor[4]               */
+	None,                           /* hour_glass                   */
+	None,                           /* move_cursor                  */
+	{ None, None, None, None },     /* size_cursor[4]               */
+	NULL,
     }
 };
 
@@ -851,11 +852,11 @@ XEvent event;
        size of the collision lists are then resized.
      */
     new_width = w->core.x + w->core.width;
-    old_width = (Dimension)((CompositeWidget)ww->core.width);
+    old_width = XtWidth(ww);
     new_width = MAX(new_width, old_width);
 
     new_height = w->core.y + w->core.height;
-    old_height = (Dimension)((CompositeWidget)ww->core.height);
+    old_height = XtHeight(ww);
     new_height = MAX(new_height, old_height);
 
     if ( (new_width > old_width) || (new_height > old_height) )
@@ -918,22 +919,22 @@ static void Initialize( XmWorkspaceWidget request, XmWorkspaceWidget new )
     new->workspace.auto_arrange = FALSE;
 
     GetRubberbandGC(new);
-    if( xmWorkspaceClassRec.workspace_class.move_cursor == NULL )
+    if( xmWorkspaceClassRec.workspace_class.move_cursor == None )
 	xmWorkspaceClassRec.workspace_class.move_cursor =
 	  XCreateFontCursor(XtDisplay(new), XC_fleur);
-    if( xmWorkspaceClassRec.workspace_class.hour_glass == NULL )
+    if( xmWorkspaceClassRec.workspace_class.hour_glass == None )
 	xmWorkspaceClassRec.workspace_class.hour_glass =
 	  XCreateFontCursor(XtDisplay(new), XC_watch);
-    if( xmWorkspaceClassRec.workspace_class.size_cursor[SZ_UL] == NULL )
+    if( xmWorkspaceClassRec.workspace_class.size_cursor[SZ_UL] == None )
 	xmWorkspaceClassRec.workspace_class.size_cursor[SZ_UL] =
 	  XCreateFontCursor(XtDisplay(new), XC_ul_angle);
-    if( xmWorkspaceClassRec.workspace_class.size_cursor[SZ_UR] == NULL )
+    if( xmWorkspaceClassRec.workspace_class.size_cursor[SZ_UR] == None )
 	xmWorkspaceClassRec.workspace_class.size_cursor[SZ_UR] =
 	  XCreateFontCursor(XtDisplay(new), XC_ur_angle);
-    if( xmWorkspaceClassRec.workspace_class.size_cursor[SZ_LL] == NULL )
+    if( xmWorkspaceClassRec.workspace_class.size_cursor[SZ_LL] == None )
 	xmWorkspaceClassRec.workspace_class.size_cursor[SZ_LL] =
 	  XCreateFontCursor(XtDisplay(new), XC_ll_angle);
-    if( xmWorkspaceClassRec.workspace_class.size_cursor[SZ_LR] == NULL )
+    if( xmWorkspaceClassRec.workspace_class.size_cursor[SZ_LR] == None )
 	xmWorkspaceClassRec.workspace_class.size_cursor[SZ_LR] =
 	  XCreateFontCursor(XtDisplay(new), XC_lr_angle);
     new->workspace.collide_width  = new->core.width;
@@ -2230,7 +2231,7 @@ static Boolean ConstraintSetValues( Widget current, Widget request, Widget new )
 	} else {
 	    AddWidgetToCollideList(new);
 	}
-	RerouteLines (XtParent(new), FALSE);
+	RerouteLines ((XmWorkspaceWidget)XtParent(new), FALSE);
     }
 
     return retval;

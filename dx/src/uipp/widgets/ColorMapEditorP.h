@@ -38,6 +38,7 @@ typedef struct _XmColorMapEditorClassPart
     ControlPoint *cut_points;
     int num_cut_points;
     ControlColor* color;
+    XtPointer extension;
 } XmColorMapEditorClassPart;
 
 

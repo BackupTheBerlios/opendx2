@@ -267,11 +267,11 @@ XmImageClassRec xmImageClassRec =
    },
 
    {		/* drawing area class - none */
-      0,					/* mumble */
+      NULL,					/* mumble */
    },
 
    {		/* image class - none */
-      0						/* mumble */
+      NULL					/* mumble */
    }
 };
 

@@ -252,6 +252,8 @@ XmFrameControlClassRec xmFrameControlClassRec =
    },
 
    {		/* bulletin board class - none */
+      False,					/* mumble */
+      NULL,					/* mumble */
       NULL,					/* mumble */
       NULL,					/* mumble */
    },
@@ -320,7 +322,7 @@ Widget w;
                               "Increment",
 			      (Widget *)&new->frame_control.inc_label, 
                               new, FALSE, TRUE, 
-                              TRUE, TRUE, FALSE, NULL);
+                              TRUE, TRUE, FALSE, None);
 
     new->frame_control.min_number =
     CreateFrameControlNumber(12, 75, 2, -16383, 
@@ -329,7 +331,7 @@ Widget w;
                                "Min",
 			       (Widget *)&new->frame_control.min_label, 
                                new, FALSE, TRUE, 
-                               FALSE, FALSE, FALSE, NULL);
+                               FALSE, FALSE, FALSE, None);
 
     new->frame_control.max_number =
     CreateFrameControlNumber(79, 75, 2, -16383, 
@@ -338,7 +340,7 @@ Widget w;
 			        "Max", 
                                 (Widget *)&new->frame_control.max_label, 
                                 new, FALSE, TRUE, 
-                                FALSE, FALSE, FALSE, NULL);
+                                FALSE, FALSE, FALSE, None);
 
     /*  Create the actual frame_control part of the popup  */
     n = 0;

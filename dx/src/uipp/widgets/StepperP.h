@@ -28,6 +28,7 @@ typedef struct _XmStepperClassPart {
   Cardinal	 minimum_time_interval;
   Cardinal	 initial_time_interval;
   String	 font;
+  XtPointer	extension;
 } XmStepperClassPart;
 
 typedef struct _XmStepperClassRec {

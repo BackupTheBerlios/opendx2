@@ -72,7 +72,7 @@ extern "C" {
 
 typedef struct 
 {
-	int	mumble;
+	XtPointer	mumble;
 } XmVCRControlClassPart;
 
 typedef struct _XmVCRControlClassRec

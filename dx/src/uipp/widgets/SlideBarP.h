@@ -19,6 +19,87 @@
 
 /*
  * $Log: SlideBarP.h,v $
+ * Revision 1.6  1999/11/25 16:05:44  scottr
+ *
+ * Some of this may explain the recently reported problems with Motif 2.1. If
+ * BulletinBoard has an extension record in 2.1, then the class initialization
+ * of a lot of these things would have messing messing up the class structures.
+ *
+ * It is probably a good idea to do a make clean in the top then make
+ * everything from scratch. This is changing some of the structures hidden
+ * very deep within the beast.....
+ *
+ *
+ *
+ * ColorMapEditor.c: The initialization of the ClassRecord had the wrong number
+ * 	of fields for the BB class.
+ *
+ * ColorMapEditorP.h: Add an extension pointer to the class record
+ *
+ * DialP.h: the ClassPart had the extension field as an int instead
+ * 	of XtPointer.
+ *
+ * ImageP.h: the ClassPart had the extension field as an int instead
+ * 	of XtPointer.
+ *
+ * FrameControlP.h: the ClassPart had the extension field as an int instead
+ * 	of XtPointer.
+ *
+ * FrameControl.c: The initialization of the ClassRecord had the wrong number
+ * 	of fields for the BB class.
+ *
+ * 	- no pixel should be specified as None, not NULL.
+ *
+ * NumericList.c: Timer id's are not pointers
+ *
+ * MultiText.c: No pixmap should be specified as None, not NULL.
+ *
+ * MultiTextP.h: the ClassPart had the extension field as an int instead
+ * 	of XtPointer.
+ *
+ * NumberP.h: the ClassPart had the extension field as an caddr_t instead
+ * 	of XtPointer. (which was probably okay, but in the sake of
+ * 	consistency.....)
+ *
+ * NumericListP.h: the ClassPart had the extension field as an int instead
+ * 	of XtPointer.
+ *
+ * Picture.c: value_mask, in a call of XtGetGC is not a pointer
+ * 	- No pixmap should be specified as None, not NULL.
+ * 	- timer id's are not pointers
+ * 	- No cursor should be None, not NULL
+ * 	- A pixel color is an unsigned short, so full intensity is 0xffff, not
+ * 	  0xffffffff
+ *
+ * PictureP.h: the ClassPart had the extension field as an int instead
+ * 	of XtPointer.
+ *
+ * Slider.c: The initialization of the ClassRecord had the wrong number
+ * 	of fields for the BB class.
+ *
+ * SliderP.h: the ClassPart had the extension field as an int instead
+ * 	of XtPointer.
+ *
+ * SlideBar.c: No pixmap should be specified as None, not NULL.
+ *
+ * SlideBarP.h: the ClassPart had the extension field as an int instead
+ * 	of XtPointer.
+ *
+ * Stepper.c: timer id's are not pointers
+ *
+ * StepperP.h: Add an extension pointer to the class record
+ *
+ * VCRControl.c: The initialization of the ClassRecord had the wrong number
+ * 	  of fields for the BB class.
+ * 	- timer id's are not pointers
+ *
+ * VCRControlP.h: the ClassPart had the extension field as an int instead
+ * 	of XtPointer.
+ *
+ * WorkspaceW.c: No cursor should be None, not NULL
+ *
+ * WorkspaceP.h: Add an extension pointer to the class record
+ *
  * Revision 1.5  1999/05/10 15:46:33  gda
  * Copyright message
  *
@@ -66,7 +147,7 @@ extern "C" {
 
 typedef struct
 {
-   int mumble;   /* No new procedures */
+   XtPointer mumble;   /* No new procedures */
 } XmSlideBarClassPart;
 
 

@@ -210,11 +210,14 @@ XmNumericListClassRec xmNumericListClassRec =
    },
 
    {		/* bulletin board class - none */
-      0,					/* mumble */
+      False,					/* mumble */
+      NULL,					/* mumble */
+      NULL,					/* mumble */
+      NULL,					/* mumble */
    },
 
    {		/* numeric_list class - none */
-      0						/* mumble */
+      NULL					/* mumble */
    }
 };
 
@@ -298,7 +301,7 @@ XmStringCharSet charset;
 	new->numeric_list.vsb = NULL;
 	}
 
-    new->numeric_list.tid = NULL;
+    new->numeric_list.tid = (XtIntervalId)NULL;
     new->numeric_list.scrolled_window = False;
     new->numeric_list.sw = NULL;
     new->numeric_list.decrementing = False;
@@ -650,12 +653,12 @@ Arg     wargs[10];
 	/*
 	 * Turn off Timer if we have moved back in between the top & bottom.
 	 */
-	if  ( (nlw->numeric_list.tid != NULL) &&
+	if  ( (nlw->numeric_list.tid != (XtIntervalId)NULL) &&
 	      (sw_y > 0) &&
 	      (sw_y < sw_height) )
 	    {
 	    XtRemoveTimeOut(nlw->numeric_list.tid);
-	    nlw->numeric_list.tid = NULL;
+	    nlw->numeric_list.tid = (XtIntervalId)NULL;
 	    nlw->numeric_list.decrementing = False;
 	    nlw->numeric_list.incrementing = False;
 	    }
@@ -663,7 +666,7 @@ Arg     wargs[10];
 	/*
 	 *  Turn on decrement timer.
 	 */
-	if( (sw_y < 0) && (nlw->numeric_list.tid == NULL) )
+	if( (sw_y < 0) && (nlw->numeric_list.tid == (XtIntervalId)NULL) )
 	    {
 	    nlw->numeric_list.tid = 
 			XtAppAddTimeOut(XtWidgetToApplicationContext((Widget)nlw),
@@ -676,7 +679,7 @@ Arg     wargs[10];
 	 *  Turn on increment timer.
 	 */
 	if ( (sw_y > sw_height) && 
-	     (nlw->numeric_list.tid == NULL) )
+	     (nlw->numeric_list.tid == (XtIntervalId)NULL) )
 	    {
 	    nlw->numeric_list.tid = 
 			XtAppAddTimeOut(XtWidgetToApplicationContext((Widget)nlw),
@@ -763,10 +766,10 @@ XmNumericListCallbackStruct cb;
 
     if (nlw->numeric_list.vector_count == 0) return;
 
-    if  (nlw->numeric_list.tid != NULL)
+    if  (nlw->numeric_list.tid != (XtIntervalId)NULL)
 	{
 	XtRemoveTimeOut(nlw->numeric_list.tid);
-	nlw->numeric_list.tid = NULL;
+	nlw->numeric_list.tid = (XtIntervalId)NULL;
 	}
     nlw->numeric_list.first_selected = -1;
     /*
@@ -1083,7 +1086,7 @@ XEvent	*event;
 Boolean inverse;
 int	i;
 
-    nlw->numeric_list.tid = NULL;
+    nlw->numeric_list.tid = (XtIntervalId)NULL;
     if (!nlw->numeric_list.scrolled_window) return;
 
     window = (XmScrolledWindowWidget)XtParent(XtParent(nlw));
@@ -1234,7 +1237,7 @@ XEvent	*event;
 Boolean inverse;
 int	i;
 
-    nlw->numeric_list.tid = NULL;
+    nlw->numeric_list.tid = (XtIntervalId)NULL;
     if (!nlw->numeric_list.scrolled_window) return;
 
     window = (XmScrolledWindowWidget)XtParent(XtParent(nlw));

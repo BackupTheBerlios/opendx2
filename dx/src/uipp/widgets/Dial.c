@@ -254,7 +254,7 @@ XmDialClassRec	XmdialClassRec =
 	},
 	/* Dial class fields */
 	{
-	0,				/* ignore		*/
+	NULL,				/* ignore		*/
 	}
 };
 

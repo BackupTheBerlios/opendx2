@@ -20,7 +20,7 @@
 
 typedef	struct	_XmDialClassPart
 	{
-	int	ignore;
+	XtPointer	ignore;
 	}	XmDialClassPart;
 
 typedef	struct	_XmDialClassRec

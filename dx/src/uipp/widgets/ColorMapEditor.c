@@ -254,7 +254,9 @@ XmColorMapEditorClassRec xmColorMapEditorClassRec = {
    },
 
    {				/* bulletin board class fields   */
-	NULL,			/* always_install_accelerators */
+	False,			/* always_install_accelerators */
+	NULL,			/* geo_matrix_create */
+	NULL,			/* focus_moved_proc */
 	NULL,			/* extension */
    },
 
@@ -265,6 +267,8 @@ XmColorMapEditorClassRec xmColorMapEditorClassRec = {
    {				/* color map editor class fields */
 	NULL,             	/* Control Point Cut Buffer */
 	0,
+	NULL,
+	NULL,
    }
 };
 

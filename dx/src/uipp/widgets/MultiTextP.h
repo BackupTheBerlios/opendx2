@@ -112,7 +112,7 @@ struct LineRec
  */
 typedef struct _XmMultiTextClassPart
 {
-    int		ignore;
+    XtPointer		ignore;
 
 } XmMultiTextClassPart;
 

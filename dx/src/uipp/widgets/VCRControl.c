@@ -8,6 +8,8 @@
 
 #include <dxconfig.h>
 
+#include <Xm/DialogS.h>
+
 
 
 #ifdef OS2
@@ -261,6 +263,8 @@ XmVCRControlClassRec xmVCRControlClassRec =
    },
    
    {            /* bulletin board widget class */
+      False,					/* install_accelarators */
+      NULL,					/* install_accelarators */
       NULL,					/* install_accelarators */
       NULL,					/* extension           */
    },
@@ -270,7 +274,7 @@ XmVCRControlClassRec xmVCRControlClassRec =
    },
 
    {		/* vcr_control class - none */
-      0,						/* mumble */
+      NULL,						/* mumble */
    }
 };
 
@@ -330,7 +334,7 @@ static void Initialize( XmVCRControlWidget request, XmVCRControlWidget new )
 
     new->vcr_control.parent = XtParent(new);
 
-    new->vcr_control.button_timeout = NULL;
+    new->vcr_control.button_timeout = (XtIntervalId)NULL;
 
     /*
      * Check min and max relative to each other

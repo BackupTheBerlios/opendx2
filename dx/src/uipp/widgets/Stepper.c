@@ -381,7 +381,7 @@ XmStepperClassRec xmStepperClassRec = {
 	XtVersion,			/* version			*/
 	NULL,				/* callback private		*/
 	defaultTranslations,		/* tm_table			*/
-	PreferredSize,			/* query_geometry		*/
+	(XtGeometryHandler)PreferredSize,/* query_geometry		*/
 	(XtStringProc) NULL,		/* display_accelerator		*/
 	(caddr_t) NULL,			/* extension			*/
     },
@@ -430,6 +430,7 @@ XmStepperClassRec xmStepperClassRec = {
 	10,				/* minimum_time_interval	*/
 	180,				/* initial_time_interval	*/
   	NULL,				/* font				*/
+  	NULL,
     }
 };
 
@@ -648,7 +649,7 @@ static void Initialize( XmStepperWidget request, XmStepperWidget new )
     XtAddCallback(new->stepper.child[0],XmNdisarmCallback,(XtCallbackProc)CallFromNumber, new);
 
     new->stepper.allow_input = TRUE;
-    new->stepper.timer = NULL;
+    new->stepper.timer = (XtIntervalId)NULL;
     XtManageChildren(new->stepper.child, 3);
 }
 
@@ -1259,7 +1260,7 @@ static Boolean IncrementStepper( XmStepperWidget sw,
 static Boolean ButtonArmEvent( Widget w, XmStepperWidget sw,
 			       XtCallbackProc callback_proc )
 {
-    if( (sw->stepper.timer == NULL) ||
+    if( (sw->stepper.timer == (XtIntervalId)NULL) ||
         (sw->stepper.timeout_proc != callback_proc) )
     {
 	sw->stepper.repeat_count = 0;
@@ -1334,7 +1335,7 @@ static void ButtonIsReleased( Widget w, XmStepperWidget sw,
 	sw->stepper.active_widget = NULL;
 	sw->stepper.repeat_count = 0;
 	sw->stepper.timeout_proc = NULL;
-	sw->stepper.timer = NULL;
+	sw->stepper.timer = (XtIntervalId)NULL;
 	CallbackActivate(sw);
     }
 }

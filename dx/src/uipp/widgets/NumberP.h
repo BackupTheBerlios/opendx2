@@ -27,7 +27,7 @@ extern "C" {
 
 typedef struct _XmNumberWidgetClassPart
 {
-   caddr_t extension;
+   XtPointer extension;
 } XmNumberWidgetClassPart;
 
 

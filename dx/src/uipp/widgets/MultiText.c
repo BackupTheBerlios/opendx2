@@ -506,12 +506,12 @@ XmMultiTextClassRec xmMultiTextClassRec =
      * DrawingArea class part:
      */
     {
-	0				/* dummy field			*/
+	NULL				/* dummy field			*/
     },
 
 	    
     {
-	0				/* extension			*/
+	NULL				/* extension			*/
     },
 };
 
@@ -707,8 +707,8 @@ static void Initialize(Widget		 reqWidget,
     newWidget->multiText.cursorY       = 0;
     newWidget->multiText.oldX          = 0;
     newWidget->multiText.oldY          = 0;
-    newWidget->multiText.cursorFg      = NULL;
-    newWidget->multiText.cursorBg      = NULL;
+    newWidget->multiText.cursorFg      = None;
+    newWidget->multiText.cursorBg      = None;
     newWidget->multiText.blinkState    = FALSE;
     newWidget->multiText.cursorAvailable = TRUE;
     newWidget->multiText.blinkTimeOutID = 0;
@@ -779,7 +779,7 @@ static void Redisplay (Widget w, XEvent *event, Region region)
     {
       DoRedrawText(cw, expose->y, expose->height);
       
-      if ((cw->multiText.cursorFg == NULL) && cw->multiText.cursorAvailable)
+      if ((cw->multiText.cursorFg == None) && cw->multiText.cursorAvailable)
 	{
 	  if (cw->multiText.blinkTimeOutID != 0)
 	    {
@@ -1702,7 +1702,7 @@ void XmMultiTextClearText (Widget w)
   cw->multiText.lastLine    = NULL;
 
   /* clean up all the cursor stuff... */
-  if (cw->multiText.cursorFg != NULL)
+  if (cw->multiText.cursorFg != None)
     {
       XFreePixmap(XtDisplay(cw), cw->multiText.cursorFg);
       XFreePixmap(XtDisplay(cw), cw->multiText.cursorBg);
@@ -1712,9 +1712,9 @@ void XmMultiTextClearText (Widget w)
   cw->multiText.blinkTimeOutID = 0;
   cw->multiText.selecting      = FALSE;
   cw->multiText.textIsSelected = FALSE;
-  cw->multiText.cursorFg       = NULL;
-  cw->multiText.cursorBg       = NULL;
-  cw->multiText.cursorMask     = NULL;
+  cw->multiText.cursorFg       = None;
+  cw->multiText.cursorBg       = None;
+  cw->multiText.cursorMask     = None;
 
   XClearArea(XtDisplay(cw), XtWindow(cw), 0, 0, 0, 0, TRUE);
 
@@ -1992,7 +1992,7 @@ unsigned short XmMultiTextAppendWord (Widget w, char *theWord, char *fontName, c
   wordPtr->color           = Color (cw, colorName);
   wordPtr->linkInfo        = linkInfo;
   wordPtr->bbox.attributes = 0;
-  wordPtr->image           = NULL;
+  wordPtr->image           = None;
   wordPtr->widget          = NULL;
   wordPtr->selected        = FALSE;
   wordPtr->linePtr         = NULL;
@@ -2059,7 +2059,7 @@ unsigned short XmMultiTextAppendWordTop (Widget w,  char *theWord, char *fontNam
   wordPtr->color           = Color (cw, colorName);
   wordPtr->linkInfo        = linkInfo;
   wordPtr->bbox.attributes = 0;
-  wordPtr->image           = NULL;
+  wordPtr->image           = None;
   wordPtr->widget          = NULL;
   wordPtr->selected        = FALSE;
   wordPtr->linePtr         = NULL;
@@ -2374,7 +2374,7 @@ unsigned short XmMultiTextAppendWidget (Widget w, char *theWord, char *fontName,
   XtGetValues(newW, args, n);
 
   /* now setup the image information. */
-  wordPtr->image           = NULL;
+  wordPtr->image           = None;
   wordPtr->widget          = newW;
   wordPtr->bbox.lbearing   = 0;
   wordPtr->bbox.rbearing   = width;
@@ -2735,7 +2735,7 @@ static void DisplayWord (XmMultiTextWidget w, WordList wp)
   SetCurrentFont(w, wp, wp->font);
   SetCurrentColor(w, wp, wp->color);
 
-  if (wp->image != NULL)
+  if (wp->image != None)
     DisplayImage (w, wp);
     else
   if (wp->widget != NULL)
@@ -2773,7 +2773,7 @@ static void DisplaySelectedWord (XmMultiTextWidget w, WordList wp)
 	     wp->bbox.width + spaceBefore + spaceAfter,
 	     wp->bbox.ascent + wp->bbox.descent, FALSE); 
 
-  if (wp->image != NULL)
+  if (wp->image != None)
     DisplayImage (w, wp);
     else
   if (wp->widget != NULL)
@@ -2824,7 +2824,7 @@ static void DisplayDeselectedWord (XmMultiTextWidget w, WordList wp)
 	     wp->bbox.width + spaceBefore + spaceAfter,
 	     wp->bbox.ascent + wp->bbox.descent, FALSE); 
 
-  if (wp->image != NULL)
+  if (wp->image != None)
     DisplayImage (w, wp);
     else
   if (wp->widget != NULL)
@@ -3038,7 +3038,7 @@ static void FreeWordRecord (XmMultiTextWidget w, WordList wp)
     cp = cpNext;
   }
 
-  if (wp->image    != NULL)  XFreePixmap(XtDisplay(w), wp->image);
+  if (wp->image    != None)  XFreePixmap(XtDisplay(w), wp->image);
   if (wp->widget   != NULL)  XtDestroyWidget(wp->widget);
   if (wp->chars    != NULL)  XtFree(wp->chars);
   if (wp->linkInfo != NULL)
@@ -3816,7 +3816,7 @@ static void MoveRight (Widget w, XEvent* event, String* params, Cardinal* numPar
  *----------------------------------------------------------------------*/
 static void MakeCursorPixmaps (XmMultiTextWidget cw)
 {
-  if (cw->multiText.cursorFg == NULL)
+  if (cw->multiText.cursorFg == None)
     {
       static char cursor_bits[] = {0x08, 0x1c, 0x3e, 0x7f, 0x77};
 
@@ -3834,7 +3834,7 @@ static void MakeCursorPixmaps (XmMultiTextWidget cw)
 				    1);
     }
 
-  if (cw->multiText.cursorBg == NULL)
+  if (cw->multiText.cursorBg == None)
     cw->multiText.cursorBg = XCreatePixmap(XtDisplay(cw), XtWindow(cw),
 					   cursor_width, cursor_height,
 					   DefaultDepthOfScreen(XtScreen(cw)));
@@ -3858,7 +3858,7 @@ static void BlinkCursor (XmMultiTextWidget cw)
       (XtIsRealized(cw) && !cw->multiText.textIsSelected && !cw->multiText.selecting))
     {
       /* this only gets called once. */
-      if (cw->multiText.cursorFg == NULL)
+      if (cw->multiText.cursorFg == None)
 	{
 	  MakeCursorPixmaps(cw);
 	  cw->multiText.oldX = cw->multiText.actualX;
@@ -3920,15 +3920,15 @@ static void TurnOffCursor (XmMultiTextWidget cw)
     }
 
   /* clearout the pixmaps. */
-  if (cw->multiText.cursorFg != NULL)
+  if (cw->multiText.cursorFg != None)
     {
       XFreePixmap(XtDisplay(cw), cw->multiText.cursorFg);
       XFreePixmap(XtDisplay(cw), cw->multiText.cursorBg);
       XFreePixmap(XtDisplay(cw), cw->multiText.cursorMask);
     }
-  cw->multiText.cursorFg       = NULL;
-  cw->multiText.cursorBg       = NULL;
-  cw->multiText.cursorMask     = NULL;
+  cw->multiText.cursorFg       = None;
+  cw->multiText.cursorBg       = None;
+  cw->multiText.cursorMask     = None;
 }
 
 

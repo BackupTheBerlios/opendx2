@@ -133,6 +133,7 @@ typedef struct {
     Cursor	hour_glass;		/* Cursor to indicate wait state      */
     Cursor	move_cursor;
     Cursor	size_cursor[4];		/* 4 corners of rubber banding	      */
+    XtPointer	extension;
 } XmWorkspaceClassPart;
 
 typedef struct _XmWorkspaceClassRec {

@@ -446,11 +446,11 @@ XmPictureClassRec xmPictureClassRec =
    },
 
    {		/* drawing area class - none */
-      0,					/* mumble */
+      NULL,					/* mumble */
    },
 
    {		/* image class - none */
-      0,						/* mumble */
+      NULL,						/* mumble */
    },
 
    {		/* picture class - none */
@@ -737,7 +737,7 @@ XmStringCharSet charset;
     screen = XScreenNumberOfScreen(XtScreen(new));
     new->picture.rubber_band.gc = NULL;
     new->picture.gcovl = NULL;
-    new->picture.gc = XtGetGC((Widget)new, NULL, NULL);
+    new->picture.gc = XtGetGC((Widget)new, 0, NULL);
 
     valuemask = GCForeground | GCBackground| GCLineStyle;
     values.foreground = new->picture.white;
@@ -748,7 +748,7 @@ XmStringCharSet charset;
     XSetDashes(XtDisplay(new), new->picture.gc_dash, 0, dash_list, 2);
 
 
-    new->picture.ActiveSquareCursor[0] = NULL;
+    new->picture.ActiveSquareCursor[0] = None;
     if ( (new->picture.mode == XmCURSOR_MODE) ||
 	 (new->picture.mode == XmROAM_MODE)   ||
 	 (new->picture.mode == XmPICK_MODE) )
@@ -756,8 +756,8 @@ XmStringCharSet charset;
 	create_cursor_pixmaps(new);
 	}
 
-    new->picture.tid = NULL;
-    new->picture.key_tid = NULL;
+    new->picture.tid = (XtIntervalId)NULL;
+    new->picture.key_tid = (XtIntervalId)NULL;
 
     /*
      * disable_temp is set when we call back the application with a 
@@ -780,7 +780,7 @@ XmStringCharSet charset;
     new->picture.redo_stk_ptr = -1;
     new->picture.camera_defined = False;
     new->picture.piMark = 0;
-    new->picture.cursor = NULL;
+    new->picture.cursor = None;
 
     new->picture.white = 0;
     new->picture.black = 0;
@@ -1111,11 +1111,11 @@ void XmPictureReset(XmPictureWidget w)
 	{
 	XtRemoveTimeOut(w->picture.tid);
 	}
-	w->picture.tid = NULL;
+	w->picture.tid = (XtIntervalId)NULL;
     if (w->picture.key_tid) 
 	{
 	XtRemoveTimeOut(w->picture.key_tid);
-	w->picture.key_tid = NULL;
+	w->picture.key_tid = (XtIntervalId)NULL;
 	}
     if ( w->picture.CursorBlank )
 	{
@@ -3408,7 +3408,7 @@ XmPictureCallbackStruct cb;
 	    if (w->picture.key_tid)
 		{
 		XtRemoveTimeOut(w->picture.key_tid);
-		w->picture.key_tid = NULL;
+		w->picture.key_tid = (XtIntervalId)NULL;
 		}
 	    w->picture.first_key_press = True;
 	    }
@@ -4388,7 +4388,7 @@ char tmp_bits[8];
 	  (w->picture.mode == XmROAM_MODE)) &&
 	  (w->picture.button_pressed == Button1)) )
 	{
-	if (w->picture.cursor == NULL)
+	if (w->picture.cursor == None)
 	    {
 	    screen = XScreenNumberOfScreen(XtScreen(w));
 	    p1 = XCreatePixmapFromBitmapData ( XtDisplay(w), 
@@ -4415,10 +4415,10 @@ char tmp_bits[8];
      * If the tid is not NULL, that means we have a pending "move"
      * callback that needs to be removed (so we only report a delete).
      */
-    if (w->picture.tid != NULL)
+    if (w->picture.tid != (XtIntervalId)NULL)
 	{
 	XtRemoveTimeOut(w->picture.tid);
-	w->picture.tid = NULL;
+	w->picture.tid = (XtIntervalId)NULL;
 	}
     if ( (event->xbutton.time - w->picture.last_time) < 350)
 	{
@@ -4768,7 +4768,7 @@ XWindowAttributes win_att;
 Colormap cm;
 int depth;
 
-    if (new->picture.ActiveSquareCursor[0] != NULL) return;
+    if (new->picture.ActiveSquareCursor[0] != None) return;
 
     if(!new->image.frame_buffer)
 	{
@@ -5285,7 +5285,7 @@ int i;
 
     if ( (w->picture.disable_temp) || (!w->picture.good_at_select) ) 
 	{
-	w->picture.tid = NULL;
+	w->picture.tid = (XtIntervalId)NULL;
 	return;
 	}
 
@@ -5298,7 +5298,7 @@ int i;
 			    w->picture.X, w->picture.Y, w->picture.Z);
 	}
 
-    w->picture.tid = NULL;
+    w->picture.tid = (XtIntervalId)NULL;
     if ( w->picture.CursorBlank )
 	{
 	XUndefineCursor(XtDisplay(w), XtWindow(w));
@@ -6741,7 +6741,7 @@ int depth;
 		globe->Wtrans[i][j] = w->picture.globe->Wtrans[i][j];
 	globe->pixmap = w->picture.globe->pixmap;
 	/*  free(w->picture.globe);	SHOULD be XtFree AJ  */
-	XtFree(w->picture.globe);	
+	XtFree((char *)w->picture.globe);	
 	}
     w->picture.globe = globe;
 
@@ -8805,7 +8805,7 @@ XColor			rgb_db_def;
 	    }
 	    else
 	    {
-		white.red = white.green = white.blue = 0xffffffff;
+		white.red = white.green = white.blue = 0xffff;
 		black.red = black.green = black.blue = 0x0;
 		if(!XAllocColor(XtDisplay(new), win_att.colormap, &white))
 		    find_color((Widget)new, &white);

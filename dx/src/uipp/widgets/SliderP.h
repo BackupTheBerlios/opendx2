@@ -43,7 +43,7 @@ extern "C" {
 
 typedef struct
 {
-   int mumble;   /* No new procedures */
+   XtPointer mumble;   /* No new procedures */
 } XmSliderClassPart;
 
 

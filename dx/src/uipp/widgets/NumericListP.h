@@ -26,7 +26,7 @@ extern "C" {
 
 typedef struct
 {
-   int none;   /* No new procedures */
+   XtPointer none;   /* No new procedures */
 } XmNumericListClassPart;
 
 

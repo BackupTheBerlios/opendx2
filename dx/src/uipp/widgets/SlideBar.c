@@ -294,11 +294,11 @@ XmSlideBarClassRec xmSlideBarClassRec =
    },
 
    {		/* drawing area class - none */
-      0,					/* mumble */
+      NULL,					/* mumble */
    },
 
    {		/* slide bar class - none */
-      0						/* mumble */
+      NULL					/* mumble */
    }
 };
 
@@ -325,20 +325,20 @@ static void Initialize( XmSlideBarWidget request, XmSlideBarWidget new )
     new->slide_bar.init = TRUE;
     new->slide_bar.arrow_width = new->slide_bar.arrow_height;
     /*  Clear some things lest we try to access them  */
-    new->slide_bar.start_mark.in_pixmap = NULL;
-    new->slide_bar.start_mark.out_pixmap = NULL;
+    new->slide_bar.start_mark.in_pixmap = None;
+    new->slide_bar.start_mark.out_pixmap = None;
     new->slide_bar.start_mark.cenGC = NULL;
     new->slide_bar.start_mark.arrow = NULL;
-    new->slide_bar.next_mark.in_pixmap = NULL;
-    new->slide_bar.next_mark.out_pixmap = NULL;
+    new->slide_bar.next_mark.in_pixmap = None;
+    new->slide_bar.next_mark.out_pixmap = None;
     new->slide_bar.next_mark.cenGC = NULL;
     new->slide_bar.next_mark.arrow = NULL;
-    new->slide_bar.current_mark.in_pixmap = NULL;
-    new->slide_bar.current_mark.out_pixmap = NULL;
+    new->slide_bar.current_mark.in_pixmap = None;
+    new->slide_bar.current_mark.out_pixmap = None;
     new->slide_bar.current_mark.cenGC = NULL;
     new->slide_bar.current_mark.arrow = NULL;
-    new->slide_bar.stop_mark.in_pixmap = NULL;
-    new->slide_bar.stop_mark.out_pixmap = NULL;
+    new->slide_bar.stop_mark.in_pixmap = None;
+    new->slide_bar.stop_mark.out_pixmap = None;
     new->slide_bar.stop_mark.cenGC = NULL;
     new->slide_bar.stop_mark.arrow = NULL;
     new->slide_bar.provisional_grab = -1;
