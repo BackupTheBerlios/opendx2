@@ -223,6 +223,31 @@ fi
 rm foo
 ])])
 
+dnl
+dnl  Check whether using glibc tgmath, if so add -D_GNU_SOURCE to CFLAGS
+dnl  -------------------------------------------------------------
+AC_DEFUN(DX_CHECK_TGMATH,
+[AC_CACHE_CHECK(whether we are using GNU glibc math, ac_cv_lib_glibcmath,
+[dnl The semicolon is to pacify NeXT's syntax-checking cpp.
+cat > conftest.c <<EOF
+/* Because certain platforms using glibc and gcc will not use certain
+   math functions correctly unless they are using the ISO C 9X standard
+   we check. If we get a yes, then the define _GNU_SOURCE makes the
+   compiler add the ISO C 9X support. */
+#if defined __GNUC__ && (__GNUC__ > 2 || __GNUC__ == 2 && __GNUC_MINOR__ >= 7)
+  yes;
+#endif
+EOF
+if AC_TRY_COMMAND(${CC-cc} -E conftest.c) | egrep yes > foo 2>&1; then
+  ac_cv_lib_glibcmath=-D_GNU_SOURCE
+fi
+rm foo
+])
+if test -n $ac_cv_lib_glibcmath ; then 
+  CFLAGS="$CFLAGS $ac_cv_lib_glibcmath"
+fi
+])
+
 
 dnl
 dnl  Check whether using GNU C++
