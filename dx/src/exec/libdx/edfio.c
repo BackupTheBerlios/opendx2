@@ -20,11 +20,14 @@
 #include <sys/file.h>
 #endif
 
-#ifdef DXD_HAS_WINSOCKETS
+#if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
-#else
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <math.h>
@@ -779,63 +782,6 @@ Error _dxfclose_dxfile(FILE *fptr, char *filename)
     return OK;
 }
 
-
-/* 
- * see if the filename exists, trying to append .dx and using each part 
- *  of the DXDATA path if the environment variable is defined.
- */
-Error _dxftry_dxfile(char *inname)
-{
-    int rc = OK;
-    struct stat sbuf;
-    char *tryname = NULL;
-    char *datadir = NULL, *cp;
- 
-    /* see if the file exists with the given name, and make sure it isn't
-     *  a directory.  we've gotten random segfaults from trying to read a
-     *  directory, even tho it should just look like garbage.
-     */
-    if ((stat(inname, &sbuf) >= 0) && (!S_ISDIR(sbuf.st_mode)))
-	return OK;
-    
-	
-#define XTRA 8   /* space for the null, the / and .dx - plus some extra */
-    
-    datadir = (char *)getenv("DXDATA");
-    tryname = (char *)DXAllocateLocalZero((datadir ? strlen(datadir) : 0)
-					  + strlen(inname) + XTRA);
-    if (!tryname)
-	return ERROR;
-    
-    strcpy(tryname, inname);
-    strcat(tryname, ".dx");
-    if ((stat(tryname, &sbuf) >= 0) && (!S_ISDIR(sbuf.st_mode)))
-	goto done;
-    
-    while (datadir) {
-	
-	strcpy(tryname, datadir);
-	if((cp = strchr(tryname, DX_DIR_SEPARATOR)) != NULL)
-	    *cp = '\0';
-	strcat(tryname, "/");
-	strcat(tryname, inname);
-	if ((stat(tryname, &sbuf) >= 0) && (!S_ISDIR(sbuf.st_mode)))
-	    goto done;
-	
-	strcat(tryname, ".dx");
-	if ((stat(tryname, &sbuf) >= 0) && (!S_ISDIR(sbuf.st_mode)))
-	    goto done;
-
-	datadir = strchr(datadir, DX_DIR_SEPARATOR);
-	if (datadir)
-	    datadir++;
-    }
-    rc = ERROR;
-    
-  done:
-    DXFree (tryname);
-    return rc;
-}
 
 /*
  * make sure the file pointer doesn't point to a directory.  on random
