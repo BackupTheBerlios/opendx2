@@ -40,8 +40,11 @@
  only enabled for the GT.
 
  $Log: hwPortXGL.c,v $
- Revision 1.1  1999/03/24 15:18:36  gda
- Initial revision
+ Revision 1.2  1999/04/21 18:40:10  gda
+ COLORMAP -> CLRMAP due to conflict on cygwin
+
+ Revision 1.2  1999/04/21 18:40:10  gda
+ COLORMAP -> CLRMAP due to conflict on cygwin
 
  Revision 1.1.1.1  1999/03/24 15:18:36  gda
  Initial CVS Version
@@ -1761,7 +1764,7 @@ _dxf_CREATE_HW_TRANSLATION(void *win)
 
   if (! (ret = (hwTranslationP) tdmAllocate(sizeof(translationT))))
     return NULL;
-  ret->cmap = (void *)COLORMAP;
+
   ret->dpy = DPY;
   ret->visual = NULL;
   ret->cmap = (void *)CLRMAP;

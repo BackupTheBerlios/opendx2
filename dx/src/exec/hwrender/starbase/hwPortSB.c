@@ -804,7 +804,7 @@ _dxf_CREATE_HW_TRANSLATION(void *win)
 
   ret->dpy = DPY;
   ret->visual = NULL;
-  ret->cmap = (void *)COLORMAP;
+  ret->cmap = (void *)CLRMAP;
   ret->depth = 24;
   ret->invertY = FALSE ;
   ret->gamma = 2.0;
