@@ -21,7 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../..;..;../../include"
+				AdditionalIncludeDirectories="../..;..;../../include;../../src/exec/dpexec"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -33,9 +33,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.LIB"
+				AdditionalDependencies="Ws2_32.LIB odbc32.lib odbccp32.lib opengl32.lib glu32.lib netcdf.lib dllcdf.lib hd414m.lib hm414m.lib CORE_RL_magick_.lib binmode.obj"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="../Debug/libs_intelnt,../../../lib"
 				GenerateDebugInformation="TRUE"
 				AssemblyDebug="1"
 				SubSystem="2"/>
@@ -106,6 +107,9 @@
 		</Configuration>
 	</Configurations>
 	<References>
+		<ProjectReference
+			ReferencedProjectIdentifier="{2A86B3C1-29B0-41D3-8614-4BAF1C1217AC}"
+			Name="DX"/>
 		<AssemblyReference
 			RelativePath="mscorlib.dll"/>
 		<AssemblyReference
@@ -609,6 +613,9 @@
 			</File>
 			<File
 				RelativePath="..\..\src\uipp\windows\MsgWin.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\uipp\windows\MsgWindow.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\uipp\windows\MWClearCmd.cpp">
@@ -1762,6 +1769,25 @@
 			</File>
 			<File
 				RelativePath="..\..\src\uipp\windows\MsgWin.h">
+			</File>
+			<File
+				RelativePath="..\..\src\uipp\windows\MsgWindow.h"
+				FileType="3">
+				<File
+					RelativePath="..\..\src\uipp\windows\MsgWindow.resX">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCManagedResourceCompilerTool"
+							ResourceFileName="$(IntDir)/dxui.MsgWindow.resources"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCManagedResourceCompilerTool"
+							ResourceFileName="$(IntDir)/dxui.MsgWindow.resources"/>
+					</FileConfiguration>
+				</File>
 			</File>
 			<File
 				RelativePath="..\..\src\uipp\windows\MWClearCmd.h">

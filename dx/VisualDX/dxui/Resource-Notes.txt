@@ -1,3 +1,51 @@
+if deferring packet handling
+	let event loop continue working for 1 sec 
+	if handling stalled
+		call stallingWorker and receive packets based on its return
+	else
+		getPackets and send
+otherwise
+	receive packets
+	if error
+		handle it 
+	else
+		when the event loop is idle (no mouse, keyboard, etc.)
+		if handling stalled
+			call stallingWorker and receive packets based on its return
+		else
+			getPackets and send
+
+Instead --
+
+create low priority thread containing (PacketIF_InputIdleWP)
+		if handling stalled
+			call stallingWorker and receive packets based on its return and send event
+		else
+			getPackets, send and send event
+			
+
+For sending packets
+	create a low priority thread to PacketIF_QueuedPacketWP
+	instead of XtAppAddWorkProc
+
+
+// Working in PacketIF.cpp
+
+Need to rewrite InstallInputHandler to work on the socket via
+Windows.Forms events instead of XtAppAddInput()
+
+Some thoughts. Looking for the cleanest way to do this--how
+to signal the main thread that something is available on the
+socket. Ideas:
+	Use ioctl in a loop on its own thread to message when something
+	happens. Similar to :http://www.c-sharpcorner.com/Code/2003/Jan/EventsLesson1.asp
+
+	Find a Windows low level message that can raise a signal
+	on wait() that could then raise the event. 
+	
+	The best way may be to write its own thread and block on select().
+	When unblocked, then call the event.
+
 // Notes for remembering
 
 CommandInterfaces are interfaces to actual Xm stuff with commands
