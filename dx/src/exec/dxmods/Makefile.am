@@ -12,6 +12,8 @@ DISTCLEANFILES = y.tab.h _compparse.c _compparse.h dx.mdf dxcm.mdf user.c usercm
 
 dxmdf_DATA = dx.mdf
 
+_complex.c: _compparse.h
+
 HEADERS1 = \
 	_compoper.h glyph_ARRW.h glyph_RCKT20.h glyph_SQUARE.h \
 	glyph_ARRW2D.h glyph_RCKT2D.h impCDF.h \

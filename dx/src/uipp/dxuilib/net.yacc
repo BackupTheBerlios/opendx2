@@ -16,7 +16,7 @@
 /*****************************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Attic/net.yacc,v 1.5 2000/05/16 18:52:20 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Attic/net.yacc,v 1.6 2000/06/08 20:54:53 scottr Exp $
  */
 
 #include "Parse.h"
@@ -136,7 +136,6 @@
 %type <ast> argument_s 
 %type <ast> argument_s0 
 %type <ast> assignment 
-%type <ast> attribute 
 %type <ast> attribute 
 %type <ast> attribute_s 
 %type <ast> attribute_s0 

@@ -24,7 +24,7 @@
 #include <netinet/in.h>
 #endif
 
-#if defined(HAVE_NETINET_IN_H)
+#if defined(HAVE_SYS_IOCTL_H)
 #include <sys/ioctl.h>
 #endif
 
@@ -50,7 +50,7 @@
 #include "context.h"
 #include "obmodule.h"
 
-#if defined(HAVE_NETDB_H)
+#if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
 

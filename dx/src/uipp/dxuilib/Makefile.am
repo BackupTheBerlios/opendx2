@@ -12,7 +12,6 @@ BUILT_SOURCES = \
 	vrmlmac.h \
 	dxmac.h \
 	imagemac.h \
-	netlex.h \
 	netyacc.c
 
 EXTRA_DIST = \
@@ -217,8 +216,7 @@ HDRS4 = \
 	WorkSpaceComponent.h \
 	enums.h \
 	make.image.sh \
-	make.sequence.sh \
-	netlex.h
+	make.sequence.sh
 
 noinst_HEADERS = $(HDRS1) $(HDRS2) $(HDRS3) $(HDRS4)
 
