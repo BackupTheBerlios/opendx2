@@ -27,12 +27,12 @@ libDPEXEC_a_SOURCES =  \
 	yuiif.c
 
 .y.h:
-	yacc $(YFLAGS) $*.y
+	$(YACC) $(YFLAGS) -d $*.y
 	mv y.tab.h $*.h
 	mv y.tab.c $*.c
 
 .y.c:
-	yacc $(YFLAGS) $*.y
+	$(YACC) $(YFLAGS) -d $*.y
 	mv y.tab.h $*.h
 	mv y.tab.c $*.c
 
