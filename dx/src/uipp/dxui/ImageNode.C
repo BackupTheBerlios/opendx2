@@ -2088,7 +2088,7 @@ boolean ImageNode::printAsJava(FILE* f)
     int instno = this->getInstanceNumber();
 
     if (fprintf (f,
-	"%s%s_%d.addInputArk (%d, %s_%d, %d);\n",
+	"%s%s_%d.addInputArc (%d, %s_%d, %d);\n",
 	indent, ns, instno, JAVA_OPTIONS, wns, winstno, 1) 
 	<= 0) return FALSE;
 
