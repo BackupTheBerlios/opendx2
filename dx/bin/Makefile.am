@@ -9,7 +9,7 @@ uninstall-local:
 	if test -f $(prefix)/bin/dx  ; then \
 		/bin/rm  $(prefix)/bin/dx ; \
 	fi ; \
-	if test -f $(prefix)/bin/dx.workerscript  ; then \
+	if test -f $(prefix)/bin/dxworker  ; then \
 		/bin/rm $(prefix)/dx/bin/dxworker ; \
 	fi
 
