@@ -133,8 +133,7 @@ public static void main(String[] args)
 	System.exit(1);
     }
 
-    System.out.println("Copyright International Business Machines Corporation 1997. ");
-    System.out.println(" All rights reserved ");
+    System.out.println("Starting DXServer... ready for clients");
     started_at = new Date();
 
     while (true) {
