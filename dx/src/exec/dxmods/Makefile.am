@@ -87,13 +87,13 @@ SOURCES7 =  \
 	vrml.c eigen.c vsincos.c
 
 libDXMODS_a_SOURCES =   \
-	SOURCES1 \
-	SOURCES2 \
-	SOURCES3 \
-	SOURCES4 \
-	SOURCES5 \
-	SOURCES6 \
-	SOURCES7
+	$(SOURCES1) \
+	$(SOURCES2) \
+	$(SOURCES3) \
+	$(SOURCES4) \
+	$(SOURCES5) \
+	$(SOURCES6) \
+	$(SOURCES7)
 
 
 .l.c:

@@ -20,6 +20,6 @@ DATA2 = \
 	date.fmt decision.cfg decision.net editorWindow help.txt \
 	imageWindow support.txt syntax.txt testimp.net testssheet.net viewer.net 
 
-uidata_DATA = $DATA1 $DATA2
+uidata_DATA = $(DATA1) $(DATA2)
 
 EXTRA_DIST = $(uidata_DATA)
