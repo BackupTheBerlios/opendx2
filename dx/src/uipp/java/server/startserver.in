@@ -326,7 +326,7 @@ if [ ! -d $outloc ]; then
     echo Error: Output location: ${outloc} is not a directory.
     exit 1;
 else
-    if [ ! -x $outloc ]; then
+    if [ ! -w $outloc ]; then
 	echo Error: Output location: ${outloc} is not writable.
 	exit 1;
     fi
