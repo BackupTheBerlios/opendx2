@@ -28,7 +28,12 @@ images3 = \
 images4 = \
 	xmodf10.gif xmodf11.gif xmodf12.gif xmodf13.gif xmodf2.gif	\
 	xmodf3.gif xmodf4.gif xmodf6.gif xmodf7.gif xmodf8.gif		\
-	xmodf9.gif xmpmacro.gif xproda.gif 
+	xmodf9.gif xmpmacro.gif xproda.gif foot-fc.gif foot-ug.gif	\
+	foot-qs.gif foot-ur.gif flcgh_07.gif flcgh_05.gif dxdawn.gif	\
+	flcgh_09.gif spacer.gif flcgh_03d.gif flcgh_03.gif 		\
+	flcgh_02d.gif flcgh_02.gif flcgh_04d.gif flcgh_10.gif		\
+	flcgh_04.gif flcgh_01.gif flcgh_08.gif flcgh_06.gif		\
+	flcgh_11.gif flcgh_05d.gif
 
 EXTRA_DIST = $(images1) $(images2) $(images3) $(images4)
 

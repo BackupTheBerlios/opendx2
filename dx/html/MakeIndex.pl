@@ -25,7 +25,7 @@ foreach my $fileName (@files) {
     foreach my $sym (@text) {
 	$sym =~ s/[^a-zA-Z0-9\-_]/ /g;
 	$sym =~ s/--/ /g;
-	$sym =~ s/([b-df-hj-np-rtv-z])s($|[\s\n])/$1 /g; # eliminate plurals
+#	$sym =~ s/([b-df-hj-np-rtv-z])s($|[\s\n])/$1 /g; # eliminate plurals
 	my @symar = split(" ", $sym);
 	foreach my $sym2 (@symar) {
 	    if(length($sym2) > 3) {

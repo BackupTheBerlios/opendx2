@@ -1,31 +1,42 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
 <HTML><HEAD>
-<TITLE>IBM Visualization Data Explorer User&#39;s Guide</TITLE>
-
-<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
-Guide">
-<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
-(ibmdx@watson.ibm.com)">
-<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
-(ibmdx@watson.ibm.com)">
-<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
-<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
-
-<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+		<TITLE>User's Guide - netCDF Files: Complex Fields</TITLE>
+		<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
 MINING">
-</HEAD><BODY BGCOLOR="#FFFFFF">
-
-<A NAME="Top_Of_Page"></A>
-<H1>IBM Visualization Data Explorer User&#39;s Guide</H1>
-<B>&#91; <A HREF="#Bot_Of_Page">Bottom of Page</A> &#124; <A
-HREF="usrgu067.htm">Previous Page</A> &#124; <A HREF="usrgu069.htm">Next
-Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
-HREF="usrgu064.htm#PToC15">Partial Table of Contents</A> &#124; <A
-HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
-<HR>
-<H2><A NAME="HDRAPE" HREF="usrgu064.htm#PToC_461">B.5 netCDF Files: Complex
+	</HEAD><BODY BGCOLOR="#FFFFFF" link="#00004b" vlink="#4b004b">
+		<TABLE width=510 border=0 cellpadding=0 cellspacing=0>
+			<TR>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=80 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=49 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=24 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=100 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=3 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=127 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=6 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=50 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=71 HEIGHT=1></TD>
+			</TR>
+			<TR>
+				<TD colspan=9><IMG src="../images/flcgh_01.gif" width=510 height=24 border="0" alt="OpenDX - Documentation"></TD>
+			</TR>
+			<TR>
+				<TD colspan=2><A href="../allguide.htm"><IMG src="../images/flcgh_02.gif" width=129 height=25 border="0" alt="Full Contents"></A></TD>
+				<TD colspan=3><A href="../qikguide.htm"><IMG src="../images/flcgh_03.gif" width=127 height=25 border="0" alt="QuickStart Guide"></A></TD>
+				<TD><A href="../usrguide.htm"><B><IMG src="../images/flcgh_04d.gif" width=127 height=25 border="0" alt="User's Guide"></B></A></TD>
+				<TD colspan=3><A href="../refguide.htm"><IMG src="../images/flcgh_05.gif" width=127 height=25 border="0" alt="User's Reference"></A></TD>
+			</TR>
+			<TR>
+				<TD><A href="usrgu067.htm"><IMG src="../images/flcgh_06.gif" width=80 height=17 border="0" alt="Previous Page"></A></TD>
+				<TD colspan=2><A href="usrgu069.htm"><IMG src="../images/flcgh_07.gif" width=73 height=17 border="0" alt="Next Page"></A></TD>
+				<TD><A href="../usrguide.htm"><IMG src="../images/flcgh_08.gif" width=100 height=17 border="0" alt="Table of Contents"></A></TD>
+				<TD colspan=3><A href="usrgu064.htm"><IMG src="../images/flcgh_09.gif" width=136 height=17 border="0" alt="Partial Table of Contents"></A></TD>
+				<TD><A href="usrgu077.htm"><IMG src="../images/flcgh_10.gif" width=50 height=17 border="0" alt="Index"></A></TD>
+				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>
+			</TR>
+		</TABLE>
+		<H2><A NAME="HDRAPE" HREF="usrgu064.htm#PToC_461">B.5 netCDF Files: Complex
 Fields</A></H2>
-<A NAME="IDX1024"></A>
+		<A NAME="IDX1024"></A>
 For data with more
 complex structure, conventions have been established for
 netCDF variable attributes, as
@@ -37,7 +48,7 @@ to that of the netCDL "language."
 <P>This section describes how to specify netCDF variables for
 components with irregular values.
 <P>
-<H4><A NAME="Header_463">Data</A></H4>
+<H4><U>Data</U></H4>
 <P>
 To indicate that a netCDF variable contains values corresponding to
 the data component, it must have
@@ -78,7 +89,7 @@ a spacing of 1.0 along each axis.
 The number of axes will be determined
 from the number of dimensions in the data array.
 <P>
-<H4><A NAME="Header_464">Positions</A></H4>
+<H4><U>Positions</U></H4>
 <P>
 If the locations of the data values in <I>variable1</I>
 do not form a regular lattice (with origins at 0.0 and spacings of 1.0),
@@ -145,7 +156,7 @@ regular, they can be specified in <TT>compact</TT> form:
 where <VAR>variable2a</VAR> is the name of an origin, delta array, and the rest
 are position lists as before.
 <P>
-<H4><A NAME="Header_465">Connections</A></H4>
+<H4><U>Connections</U></H4>
 <P>
 If the connections between positions is a regular lattice, no additional
 attributes are necessary.
@@ -173,7 +184,7 @@ If the shape is
 not explicitly specified,
 <VAR>tetrahedra</VAR> are assumed.
 <P>
-<H4><A NAME="Header_466">Additional Components</A></H4>
+<H4><U>Additional Components</U></H4>
 <P>
 If additional component information is present in the file, the following
 attributes are valid:
@@ -200,7 +211,7 @@ series.  They are:
 <LI>Separate files
 </UL>
 <P>
-<H4><A NAME="Header_468">Single Variable</A></H4>
+<H4><U>Single Variable</U></H4>
 <P>
 When all data values are defined as a single netCDF
 variable, and the unlimited dimension of the variable is to be
@@ -223,7 +234,7 @@ dimension that corresponds one-for-one with the data array.
 <P>An example using this method is provided in <A HREF="#HDRCDFSER">"Partially
 Regular Grids and Time Series"</A>.
 <P>
-<H4><A NAME="Header_469">Separate Variables</A></H4>
+<H4><U>Separate Variables</U></H4>
 <P>
 When there are separate netCDF variables defined for each step in the
 series, but all variables are in the same file, use the following global
@@ -261,7 +272,7 @@ is the value of each step.
 All other specifications
 are the same as for simple fields.
 <P>
-<H4><A NAME="Header_470">Separate Files</A></H4>
+<H4><U>Separate Files</U></H4>
 <A NAME="IDX1027"></A>
 <P>
 When there are netCDF variables in separate files that make up the
@@ -310,7 +321,7 @@ information on netCDL and the <TT><STRONG>ncgen</STRONG></TT> and
 <TT><STRONG>ncdump</STRONG></TT>
 utilities.
 <P>
-<H4><A NAME="Header_472">Compact Specifications of Regular Dimensions</A></H4>
+<H4><U>Compact Specifications of Regular Dimensions</U></H4>
 This example describes a single two-dimensional scalar field on
 a latitude-longitude, regular, rectangular grid.
 The example data
@@ -347,7 +358,7 @@ data:
     temperature = ...       // Data for temperature
 </PRE>
 <P>
-<H4><A NAME="HDRCDFSER">Partially Regular Grids and Time Series</A></H4>
+<H4><U>Partially Regular Grids and Time Series</U></H4>
 <P>
 This example describes an ocean circulation model that consists of
 a time series of four three-dimensional scalars
@@ -434,7 +445,7 @@ data:
     vel = ... ;
 </PRE>
 <P>
-<H4><A NAME="Header_474">Irregular Surface</A></H4>
+<H4><U>Irregular Surface</U></H4>
 <P>
 This example is the netCDL description of a netCDF for an irregular
 surface, that of the classic teapot.
@@ -467,28 +478,13 @@ data:
 &middot;
 &#125;
 </PRE>
-<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
-HREF="usrgu067.htm">Previous Page</A> &#124; <A HREF="usrgu069.htm">Next
-Page</A> &#124; <A HREF="../usrguide.htm#ToC">Table of Contents</A> &#124; <A
-HREF="usrgu064.htm#PToC15">Partial Table of Contents</A> &#124; <A
-HREF="usrgu077.htm#HDRINDEX_START">Index</A> &#93;</B> <br><b>&#91;<a
-href="../allguide.htm">Data Explorer Documentation</a>&nbsp;&#124;&nbsp;<a
-href="../qikguide.htm">QuickStart Guide</a>&nbsp;&#124;&nbsp;<a
-href="../usrguide.htm">User&#39;s Guide</a>&nbsp;&#124;&nbsp;<a
-href="../refguide.htm">User&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
-href="../proguide.htm">Programmer&#39;s Reference</a>&nbsp;&#124;&nbsp;<a
-href="../insguide.htm">Installation and Configuration
-Guide</a>&nbsp;&#93;</b><br><p><b>&#91;<a
-href="http://www.almaden.ibm.com/dx/">Data Explorer Home
-Page</a>&nbsp;&#124;&nbsp;<a
-href="http://www.almaden.ibm.com/dx/DXMailForm.html">Contact Data
-Explorer</a>&nbsp;&#124;&nbsp;<a
-href="http://www.almaden.ibm.com/dx/docs/html/usrguide.htm">Same document on
-Data Explorer Home Page</a>&nbsp;&#93;</b><p><HR ALIGN=LEFT WIDTH=600><b>&#91;<A
-HREF="http://www.ibm.com/">IBM Home Page</A>&nbsp;&#124;&nbsp;<A
-HREF="http://www.ibm.com/Orders/">Order</A>&nbsp;&#124;&nbsp;<A
-HREF="http://www.ibm.com/Search/">Search</A>&nbsp;&#124;&nbsp;<A
-HREF="http://www.ibm.com/Assist/">Contact IBM</A>&nbsp;&#124;&nbsp;<A
-HREF="http://www.ibm.com/Legal/">Legal</A>&nbsp;&#93;</b><hr><p>
-<A NAME="Bot_Of_Page"></A>
-</BODY></HTML>
+		<P>
+		<HR>
+		<DIV align="center">
+			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>
+		</DIV>
+		<DIV align="center">
+			<P><FONT size="-1">[ <A href="http://www.research.ibm.com/dx">OpenDX Home at IBM</A>&nbsp;|&nbsp;<A href="http://www.opendx.org/">OpenDX.org</A>&nbsp;] </FONT></P>
+			<P></P>
+		</DIV>
+	</BODY></HTML>
