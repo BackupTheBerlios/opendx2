@@ -81,18 +81,6 @@ Widget SelectorListInteractor::createInteractivePart(Widget form)
     SelectorListInstance* si = (SelectorListInstance*)this->interactorInstance;
     ASSERT(si);
     
-     // Code added for debugging purposes
-  
-  Display *dpy = XtDisplay(form);
-  int scr = DefaultScreen (dpy);
-  Colormap cmap = DefaultColormap(dpy, scr);
-  XColor color, ignore;
-  
-  XAllocNamedColor(dpy, cmap, "purple", &color, &ignore);
-  
-  // end of debugging code
-
-
     Widget frame = XtVaCreateManagedWidget ("listFrame",
 	xmFrameWidgetClass,	form,
 	XmNshadowThickness,	2,

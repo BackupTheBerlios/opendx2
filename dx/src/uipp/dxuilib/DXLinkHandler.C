@@ -829,8 +829,6 @@ boolean DXLinkHandler::QueryValue(const char *c, int id, void *va)
     DXLinkHandler *a = (DXLinkHandler*)va;
     char inout[10];
     char buffer[1024];
-    // unused variable but does side effect need to happen?
-    // PacketIF *packetIF = a->getPacketIF(); 
 
     sscanf(c, "%[^_]_%[^_]_%d_%[^_]_%d",
 	    macro, module, &inst, inout, &paramInd);

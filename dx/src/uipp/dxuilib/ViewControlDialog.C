@@ -505,8 +505,8 @@ Widget ViewControlDialog::createDialog(Widget parent)
 
 #define VC_OFFSET 5
     XtSetArg(arg[0], XmNautoUnmanage, False);
-    Widget dialog = XmCreateFormDialog( parent, this->name, arg, 1);
-//    Widget dialog = this->CreateMainForm( parent, this->name, arg, 1);
+//    Widget dialog = XmCreateFormDialog( parent, this->name, arg, 1);
+    Widget dialog = this->CreateMainForm( parent, this->name, arg, 1);
 
 #if defined(alphax)
 	XtArgVal dx_l1, dx_l2;
