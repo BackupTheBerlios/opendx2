@@ -1,7 +1,3 @@
-#define MAGICK5
-/* Magick5 is actually incompatible with Magick <= 5.1.1 : go figure */
-/* remove the MAGICK5 define above for Magick 4.0.29 */
-/* remove the MAGICK5 define above for Magick 5.1.1, it may work, but how? */
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -13,7 +9,6 @@
 * _IM_image.c : calls ImageMagick API to write files, especially useful for those files
 *  whose formats DX does not support natively. 
 * FIXED!:  does not write intermediate miff file if the miff does not exist (i.e. is not to be appended).
-* FIXME:  needs read modifications too!
 *FIXME: dx does not know all extensions that IM supports, can dx query IM API for the
 *	supported extensions and thereby alleviate the tedious supplying of both format and extension?
 */
@@ -54,8 +49,6 @@
 */
 #define ImageInfo DXImageInfo
 #define ImageType DXImageType
-#define IM_UCHAR_COLORS 0
-#define IM_FLOAT_COLORS 3
 
 #include <dxconfig.h>
 
@@ -67,6 +60,10 @@
 #include <_helper_jea.h>
 #include <_rw_image.h>
 #include <sys/types.h>
+
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 #if ( CAN_HAVE_ARRAY_DASD == 1 )
 #include <iop/mov.h>
@@ -85,7 +82,7 @@
 #endif /* def HAVE_LIBMAGICK */
 
 #if (0)
-#define DEBUGMESSAGE(mess) DXMessage((mess)) 
+#define DEBUGMESSAGE(mess) DXMessage((mess))
 #else
 #define DEBUGMESSAGE(mess)
 #endif
@@ -101,279 +98,353 @@ static Error write_im(RWImageArgs *iargs);
  * for in-memory translation.  
  */
 Error
-_dxf_write_im(RWImageArgs *iargs)
-{
-/*
-*    how does one error check ?  let IM flag the error for an unsupported image format
-*    if (iargs->imgtyp != img_typ_fb)
-*	DXErrorGoto(ERROR_INTERNAL, "_dxf_write_fb: mismatched image types");
-*/
+_dxf_write_im(RWImageArgs *iargs) {
+    /*
+    *    how does one error check ?  let IM flag the error for an unsupported image format
+    *    if (iargs->imgtyp != img_typ_fb)
+    *	DXErrorGoto(ERROR_INTERNAL, "_dxf_write_fb: mismatched image types");
+    */
 
     return write_im(iargs);
 }
 
-static Error write_im(RWImageArgs *iargs)
-{
+static Error write_im(RWImageArgs *iargs) {
 #ifdef HAVE_LIBMAGICK
-	RWImageArgs tmpargs = *iargs;
-	Image
-	   *image;
+    RWImageArgs tmpargs = *iargs;
+    Image *image=NULL;
+    int err = 0;
+    int pixelsize;
+    int linesize;
+    Field field;
+    Array array;
+    int i;
+    int dim[3], ndim;
+    int nx, ny;
+    Type dxcolortype;
+    int imcolortype;
+    char *p1, *p2;
+    void* colors;
+    void* copycolors=NULL;
+    char *compressFlag = NULL;
+    CompressionType ctype = UndefinedCompression;
 
 
-#ifdef MAGICK5
-	ExceptionInfo
-	   _dxd_exception_info;
-	ImageInfo
-           * image_info;
-#else
-	ImageInfo
-           image_info;
-	MagickInfo * magick_info;
+    ExceptionInfo
+    _dxd_exception_info;
+    ImageInfo* image_info;
+    ImageInfo* new_frame_info;
 
-#endif
 
-	int miff_exists_flag ;
-	char* miff_filename ;
-	FILE* miff_fp;
+    int miff_exists_flag = 0;
+    char* miff_filename = NULL;
+    FILE* miff_fp;
 
-	DEBUGMESSAGE("requested extension is ");
-/* if basename's .ext recognized as a format, it is removed from basename and iargs->extension points to it */
-	if(!iargs->extension)
-	   {
-		/* no extension or not recognized */
-		if(iargs->format)
-			{
-				if(strcmp(iargs->format,"ImageMagick supported format"))
-					{
-						char* firstspace;
-						/* not "ImageMagick supported format" format, use format for extension */
-						iargs->extension=iargs->format;
-						/* strip junk we can't deal withafter format... like "gif delayed=1" */
-						firstspace=strchr(iargs->extension, ' ');
-						if(firstspace != NULL) *firstspace='\0';
-						
-					}
-			}
-	   }
-/* still no recognized extension or "unique" format?  it had better be on the filename! */
-	if(!iargs->extension)
-	   {
-		int i;
-		for(i=strlen(iargs->basename);i>0;--i)
-			{
-				if(iargs->basename[i]=='.')
-					{
-						iargs->extension=&((iargs->basename)[i+1]);
-						iargs->basename[i]='\0';
-						i=0;
-					} else if (iargs->basename[i]=='/') i=0;
-			}
-	   }
-/*
-* before proceeding,
-* find out if we can handle the conversion to the requested extension
-*/
-#ifndef MAGICK5
-	DEBUGMESSAGE(iargs->extension);
-	magick_info=GetMagickInfo(iargs->extension);
-	if(magick_info){
-		DEBUGMESSAGE("magick_info successful for requested extension, assuming support");
-	   } else {
-	  	DXMessage("The specified extension or format was unrecognized or unsupported, tried to use:");
-	  	DXMessage(iargs->extension);
-	  	DXMessage("if format specified is *exactly* 'ImageMagick supported format' then perhaps the file extension is faulty.");
-	  	DXErrorReturn(ERROR_BAD_PARAMETER,"invalid extension, format, or unsupported by ImageMagick");
-	   }
-	
-#endif
-/*
-* 8/99 some ambiguity here, since miff files are appendable.
-* My arbitrary choice: if the miff file exists already, we append and do not erase.
-* if the miff file does not exist, we erase when we are done.
-* So if you want a multi-image file in some non-natively-supported-dx-format,
-* writeimage to a miff, then on the last frame writeimage to e.g. an
-* mpeg of the same name, specifying "im" format.  Then it is up to you to erase it.
-* Maybe some other scenario will prevail.
-*/
-	
-/*
-* write the miff file from DX
-*/
-        tmpargs.format="miff";
-        tmpargs.imgtyp=img_typ_miff;
+    DEBUGMESSAGE("requested extension is ");
+    /* if basename's .ext recognized as a format, it is removed from basename and 
+     * iargs->extension points to it */
+    if(!iargs->extension) {
+        /* no extension or not recognized */
+        if(iargs->format) {
+            if(strcmp(iargs->format,"ImageMagick supported format")) {
+                char* firstspace;
+                /* not "ImageMagick supported format" format, use format for extension */
+                iargs->extension=iargs->format;
+                /* strip junk we can't deal withafter format... like "gif delayed=1" */
+                firstspace=strchr(iargs->extension, ' ');
+                if(firstspace != NULL)
+                    *firstspace='\0';
 
-/* does file exist? */
+            }
+        }
+    }
+    /* still no recognized extension or "unique" format?  it had better be on the filename! */
+    if(!iargs->extension) {
+        int i;
+        for(i=strlen(iargs->basename);i>0;--i) {
+            if(iargs->basename[i]=='.') {
+                iargs->extension=&((iargs->basename)[i+1]);
+                iargs->basename[i]='\0';
+                i=0;
+            } else if (iargs->basename[i]=='/')
+                i=0;
+        }
+    }
+    /*
+    * before proceeding,
+    * find out if we can handle the conversion to the requested extension
+    */
+
+    /*
+    * 8/99 some ambiguity here, since miff files are appendable.
+    * My arbitrary choice: if the miff file exists already, we append and do not erase.
+    * if the miff file does not exist, we erase when we are done.
+    * So if you want a multi-image file in some non-natively-supported-dx-format,
+    * writeimage to a miff, then on the last frame writeimage to e.g. an
+    * mpeg of the same name, specifying "im" format.  Then it is up to you to erase it.
+    * Maybe some other scenario will prevail.
+    */
+
+    /* Only appending to miff files with extension .miff or type MIFF ignore this for others */
+    
+    if(strcmp(iargs->extension, "miff") == 0) {
+	tmpargs.format="miff";
+	tmpargs.imgtyp=img_typ_miff;
+
+	/* does file exist? */
 	miff_filename = (char *)DXAllocateLocal(strlen(iargs->basename)+strlen(tmpargs.format)+2);
 	strcpy(miff_filename,iargs->basename);
 	strcat(miff_filename,".");
 	strcat(miff_filename,tmpargs.format);
-	if((miff_fp=fopen(miff_filename,"r")))
-		{
-			miff_exists_flag=1;
-			fclose(miff_fp);
-		} else {
-			miff_exists_flag=0;
-		}
-#ifdef MAGICK5
-      GetExceptionInfo(&_dxd_exception_info); 
-      image_info=CloneImageInfo((ImageInfo *) NULL);
-#else
-      GetImageInfo(&image_info);
-#endif
-
-/* if the file exists it is intended that we append to the file, we do this the "old way" by dx-writing the appendable miff, then converting... this is dumb but what else can we do? */
-    if(miff_exists_flag) {
-	
-	DEBUGMESSAGE("starting miff conversion");
-	DEBUGMESSAGE(iargs->basename);
-	_dxf_write_miff(&tmpargs);
-
-      /*
-        Initialize the image info structure and read an image.
-      */
-	
-#ifdef MAGICK5
-      (void) strcpy(image_info->filename,iargs->basename);
-      (void) strcat(image_info->filename,".");
-      (void) strcat(image_info->filename,tmpargs.format);
-	DEBUGMESSAGE("reading following file");
-	DEBUGMESSAGE(image_info->filename);
-#else
-      (void) strcpy(image_info.filename,iargs->basename);
-      (void) strcat(image_info.filename,".");
-      (void) strcat(image_info.filename,tmpargs.format);
-	DEBUGMESSAGE("reading following file");
-	DEBUGMESSAGE(image_info.filename);
-#endif
-#ifdef MAGICK5
-      image=ReadImage(image_info,&_dxd_exception_info); 
-#else
-      image=ReadImage(&image_info);
-#endif
-	DEBUGMESSAGE("back from ReadImage");
-      if (image == (Image *) NULL) {
-	DEBUGMESSAGE("oops it was null");
-	  DXErrorReturn(ERROR_BAD_PARAMETER,"ImageMagick API could not read file");
-	}
-	DEBUGMESSAGE("looks like ReadImage successful, we're going to try to write:");
-      /*
-        Write the image with ImageMagick
-      */
-      (void) strcpy(image->filename,iargs->basename);
-    if(iargs->extension)
-	{
-      (void) strcat(image->filename,".");
-      (void) strcat(image->filename,iargs->extension);
+	if((miff_fp=fopen(miff_filename,"r"))) {
+	    miff_exists_flag=1;
+            fclose(miff_fp);
+	} else {
+	    miff_exists_flag=0;
 	}
 	
-	DEBUGMESSAGE(image->filename);
-#ifdef MAGICK5
-      WriteImage(image_info,image);
-#else
-      WriteImage(&image_info,image);
-#endif
-	DEBUGMESSAGE("back from WriteImage, what did I get?");
-      DestroyImage(image);
-	DEBUGMESSAGE("back from DestroyImage");
-	if((iargs->extension) && (!miff_exists_flag) && (strcmp("miff",iargs->extension))) /* if using IM to write an "official" miff file, don't erase! */
-	   {
-		DEBUGMESSAGE("miff file did not exist, trying to remove it");
-		remove(miff_filename);
-		DEBUGMESSAGE(miff_filename);
-	   }
-   } else { /* miff does not exist, do this the new way by ConstituteImage */
-	
-	int pixelsize;
-	int linesize;
-	Field field;
-	Array array;
-	int i;
-	int dim[3], ndim;
-	int nx, ny;
-	int dxcolortype;
-	int imcolortype;
-	char *p1, *p2;
-	void* colors;
-	void* copycolors=NULL;
-
-	field=iargs->image;
-	array=(Array)DXGetComponentValue(field,"colors");
-	DXGetArrayInfo(array,NULL,&dxcolortype,NULL,NULL,NULL);
-	if (dxcolortype == TYPE_FLOAT) {
-		imcolortype = IM_FLOAT_COLORS;
-		pixelsize = 3*sizeof(float);
-		} else {
-		imcolortype = IM_UCHAR_COLORS;
-		pixelsize = 3;
-		}
-	colors=(void*)DXGetArrayData(array);
-	array=(Array)DXGetComponentValue(field,"connections");
-	DXQueryGridConnections(array,&ndim,dim);
-	nx=dim[1];
-	ny=dim[0];
-	copycolors = (void*) DXAllocate(nx*ny*pixelsize);
-	if(!copycolors) {
-		DXErrorGoto( ERROR_INTERNAL , "out of memory allocating copycolors _im_image.c");
-	}
-	linesize= nx*pixelsize;
-	p1=(char*)colors;
-	p2=(char*)copycolors;
-	p1+=(ny-1)*linesize;
-	for (i=0; i<ny; ++i) {
-		memcpy(p2,p1,linesize);
-		p1-=linesize;
-		p2+=linesize;
-	}
-	GetExceptionInfo(&_dxd_exception_info);
-	image=ConstituteImage(nx,ny,"RGB",imcolortype,(void*)copycolors,&_dxd_exception_info);
-	
-      /*
-        Write the image with ImageMagick
-      */
-      strcpy(image->filename,iargs->basename);
-    if(iargs->extension)
-	{
-      strcat(image->filename,".");
-      strcat(image->filename,iargs->extension);
-	}
-	
-	DEBUGMESSAGE(image->filename);
-#ifdef MAGICK5
-      WriteImage(image_info,image);
-#else
-      WriteImage(&image_info,image);
-#endif
-	
-
-	DXFree(copycolors);
-	DestroyImage(image);
-	DestroyImageInfo(image_info);
-   }
-	DXFree((Pointer)miff_filename);
-   return (OK);
-error:
-	DXFree((Pointer)miff_filename);
-   return (ERROR);
-#else /* ndef HAVE_LIBMAGICK */
-	  DXErrorReturn(ERROR_NOT_IMPLEMENTED,"ImageMagick not included in build");
-#endif /* def HAVE_LIBMAGICK */
     }
+    DXFree((Pointer)miff_filename);
 
-  /*
-   * Search names, in order:
-   *   ".<ext>", ".0.<ext>"
-   *
-   *   set states saying whether:
-   *     contains numeric
-   */
-char * _dxf_BuildIMReadFileName 
-    ( char  *buf,
-      int   bufl,
-      char  *basename,  /* Has path but no extension */
-      char  *fullname,  /* As specified */
-      char  *extension, /* File extension */
-      int   framenum,
-      int   *numeric )  /* Numbers postfixed onto name or not? */
+    
+    GetExceptionInfo(&_dxd_exception_info);
+    image_info=CloneImageInfo((ImageInfo *) NULL);
+
+
+    if(miff_exists_flag) {
+        FILE *existFile, *newFrameFile;
+        char *buf;
+        int noir;
+
+	new_frame_info=CloneImageInfo((ImageInfo *) NULL);
+
+        DEBUGMESSAGE("starting miff appending");
+        DEBUGMESSAGE(iargs->basename);
+        /* _dxf_write_miff(&tmpargs); */
+
+        /*
+          Initialize the image info structure and read an image.
+        */
+
+        (void) strcpy(image_info->filename,iargs->basename);
+        (void) strcat(image_info->filename,".");
+        (void) strcat(image_info->filename,tmpargs.format);
+
+        DEBUGMESSAGE("reading following file");
+        DEBUGMESSAGE(image_info->filename);
+
+        /* Now create new frame that will be added onto image. */
+        
+        field=iargs->image;
+        array=(Array)DXGetComponentValue(field,"colors");
+        DXGetArrayInfo(array,NULL,&dxcolortype,NULL,NULL,NULL);
+        if (dxcolortype == TYPE_FLOAT) {
+            imcolortype = FloatPixel;
+            pixelsize = 3*sizeof(float);
+        } else {
+            imcolortype = CharPixel;
+            pixelsize = 3;
+        }
+        
+        DXGetStringAttribute((Object)field, "compression", &compressFlag);
+	if(compressFlag == NULL)
+	    ctype = UndefinedCompression;
+	else if(strcmp(compressFlag, "BZip")==0)
+            ctype = BZipCompression;
+        else if(strcmp(compressFlag, "Fax")==0)
+            ctype = FaxCompression;
+        else if(strcmp(compressFlag, "Group4")==0)
+            ctype = Group4Compression;
+        else if(strcmp(compressFlag, "JPEG")==0)
+            ctype = JPEGCompression;
+        else if(strcmp(compressFlag, "LZW")==0)
+            ctype = LZWCompression;
+        else if(strcmp(compressFlag, "RLE")==0)
+            ctype = RunlengthEncodedCompression;
+        else if(strcmp(compressFlag, "Zip")==0)
+            ctype = ZipCompression;
+        
+        new_frame_info->compression = ctype;
+
+        colors=(void*)DXGetArrayData(array);
+        array=(Array)DXGetComponentValue(field,"connections");
+        DXQueryGridConnections(array,&ndim,dim);
+        nx=dim[1];
+        ny=dim[0];
+        copycolors = (void*) DXAllocate(nx*ny*pixelsize);
+        if(!copycolors) {
+            DestroyImageInfo(new_frame_info);
+            DestroyImageInfo(image_info);
+            DXErrorReturn( ERROR_INTERNAL , "out of memory allocating copycolors _im_image.c");
+        }
+        linesize= nx*pixelsize;
+        p1=(char*)colors;
+        p2=(char*)copycolors;
+        p1+=(ny-1)*linesize;
+        for (i=0; i<ny; ++i) {
+            memcpy(p2,p1,linesize);
+            p1-=linesize;
+            p2+=linesize;
+        }
+        
+        image=ConstituteImage(nx,ny,"RGB",imcolortype,(void*)copycolors,&_dxd_exception_info);
+
+	image->compression = ctype;
+	new_frame_info->compression = ctype;
+	
+        TemporaryFilename(image->filename);
+	strcpy(new_frame_info->filename, image->filename);
+        DEBUGMESSAGE(new_frame_info->filename);
+        
+
+	/* Write to temp file */
+
+        err = WriteImage(new_frame_info, image);
+        if(err == 0) {
+            DXFree(copycolors);
+            DestroyConstitute();
+            DestroyImage(image);
+            DestroyImageInfo(new_frame_info);
+            DestroyImageInfo(image_info);
+            DXErrorReturn(ERROR_INTERNAL, "Could not write temp image to append." );
+        }
+        
+
+        /* Now append image */
+
+	buf = (char*) DXAllocate(4000);
+	if (!buf) {
+            DXFree(copycolors);
+            DestroyConstitute();
+            DestroyImage(image);
+            DestroyImageInfo(new_frame_info);
+            DestroyImageInfo(image_info);
+            DXErrorReturn( ERROR_INTERNAL , "out of memory allocating buffer _im_image.c");
+        }
+	
+	existFile = fopen(image_info->filename, "ab");
+	newFrameFile = fopen(new_frame_info->filename, "rb");
+	
+	while( !feof(newFrameFile) ) {
+	    noir = fread(buf, 1, 4000, newFrameFile);
+	    fwrite(buf, 1, noir, existFile);
+	}
+	
+	fclose(existFile);
+	fclose(newFrameFile);
+
+	remove(new_frame_info->filename);
+
+        DEBUGMESSAGE("back from appending the image, what did I get?");
+        
+	/* Now cleanup */
+        DXFree(buf);
+        DXFree(copycolors);
+	DestroyConstitute();
+        DestroyImage(image);
+        DestroyImageInfo(image_info);
+        DestroyImageInfo(new_frame_info);
+        
+        DEBUGMESSAGE("back from DestroyImage");
+        
+    } else {   /* miff does not exist, do this the new way by ConstituteImage */
+
+        field=iargs->image;
+        array=(Array)DXGetComponentValue(field,"colors");
+        DXGetArrayInfo(array,NULL,&dxcolortype,NULL,NULL,NULL);
+        if (dxcolortype == TYPE_FLOAT) {
+            imcolortype = FloatPixel;
+            pixelsize = 3*sizeof(float);
+        } else {
+            imcolortype = CharPixel;
+            pixelsize = 3;
+        }
+
+        DXGetStringAttribute((Object)field, "compression", &compressFlag);
+	if(compressFlag == NULL)
+	    ctype = UndefinedCompression;
+	else if(strcmp(compressFlag, "BZip")==0)
+            ctype = BZipCompression;
+        else if(strcmp(compressFlag, "Fax")==0)
+            ctype = FaxCompression;
+        else if(strcmp(compressFlag, "Group4")==0)
+            ctype = Group4Compression;
+        else if(strcmp(compressFlag, "JPEG")==0)
+            ctype = JPEGCompression;
+        else if(strcmp(compressFlag, "LZW")==0)
+            ctype = LZWCompression;
+        else if(strcmp(compressFlag, "RLE")==0)
+            ctype = RunlengthEncodedCompression;
+        else if(strcmp(compressFlag, "Zip")==0)
+            ctype = ZipCompression;
+        
+        image_info->compression = ctype;
+        
+        colors=(void*)DXGetArrayData(array);
+        array=(Array)DXGetComponentValue(field,"connections");
+        DXQueryGridConnections(array,&ndim,dim);
+        nx=dim[1];
+        ny=dim[0];
+        copycolors = (void*) DXAllocate(nx*ny*pixelsize);
+        if(!copycolors) {
+            DestroyImageInfo(image_info);
+            DXErrorReturn( ERROR_INTERNAL , "out of memory allocating copycolors _im_image.c");
+        }
+        linesize= nx*pixelsize;
+        p1=(char*)colors;
+        p2=(char*)copycolors;
+        p1+=(ny-1)*linesize;
+        for (i=0; i<ny; ++i) {
+            memcpy(p2,p1,linesize);
+            p1-=linesize;
+            p2+=linesize;
+        }
+
+        image=ConstituteImage(nx,ny,"RGB",imcolortype,(void*)copycolors,&_dxd_exception_info);
+
+        /*
+          Write the image with ImageMagick
+        */
+        strcpy(image->filename,iargs->basename);
+        if(iargs->extension) {
+            strcat(image->filename,".");
+            strcat(image->filename,iargs->extension);
+        }
+
+        DEBUGMESSAGE(image->filename);
+
+        err = WriteImage(image_info,image);
+        if(err == 0) {
+             DXSetError(ERROR_INTERNAL, image->exception.description);
+        }
+
+	DestroyConstitute();
+        DXFree(copycolors);
+        DestroyImage(image);
+        DestroyImageInfo(image_info);
+    }
+    return (OK);
+#else /* ndef HAVE_LIBMAGICK */
+
+    DXErrorReturn(ERROR_NOT_IMPLEMENTED,"ImageMagick not included in build");
+#endif /* def HAVE_LIBMAGICK */
+
+}
+
+/*
+ * Search names, in order:
+ *   ".<ext>", ".0.<ext>"
+ *
+ *   set states saying whether:
+ *     contains numeric
+ */
+char * _dxf_BuildIMReadFileName
+( char  *buf,
+  int   bufl,
+  char  *basename,  /* Has path but no extension */
+  char  *fullname,  /* As specified */
+  char  *extension, /* File extension */
+  int   framenum,
+  int   *numeric )  /* Numbers postfixed onto name or not? */
 {
     int  i;
     int  fd = -1;
@@ -388,11 +459,11 @@ char * _dxf_BuildIMReadFileName
     DXASSERTGOTO ( 0     <= framenum );
     DXASSERTGOTO ( NULL != numeric   );
 
-    for ( i = 0; i < 2; i++ )
-    {
+    for ( i = 0; i < 2; i++ ) {
         *numeric   = i;
- 
-        if ( *numeric && ( framenum == VALUE_UNSPECIFIED ) ) continue;
+
+        if ( *numeric && ( framenum == VALUE_UNSPECIFIED ) )
+            continue;
 
         if (*numeric && !appendable_files)
             sprintf(framestr,".%d",framenum);
@@ -401,19 +472,18 @@ char * _dxf_BuildIMReadFileName
 
         /* Make sure buffer is big enough */
         if ((strlen(basename) + strlen(framestr) + strlen(extension) + 2) > bufl)
-          DXErrorReturn(ERROR_INTERNAL,"Insufficient storage space for filename");
+            DXErrorReturn(ERROR_INTERNAL,"Insufficient storage space for filename");
 
         sprintf( buf, "%s%s.%s", basename, framestr, extension );
 
-        if ( 0 <= ( fd = open ( buf, O_RDONLY ) ) ) 
+        if ( 0 <= ( fd = open ( buf, O_RDONLY ) ) )
             break;
     }
 
-    if ( 0 > fd )
-    {
+    if ( 0 > fd ) {
         *numeric   = 0;
         strcpy ( buf, basename );
-        fd = open ( buf, O_RDONLY ); 
+        fd = open ( buf, O_RDONLY );
     }
 
     DXDebug( "R",
@@ -425,17 +495,14 @@ char * _dxf_BuildIMReadFileName
 
     return buf;
 
-    error:
-        return NULL;
 }
 
 /*
  * Determine the number of images in an ImageMagick file.
  */
-#if defined(HAVE_LIBMAGICK) && defined(MAGICK5)
+#if defined(HAVE_LIBMAGICK)
 
-static int _dxf_GetNumImagesInFile( ImageInfo *image_info )
-{
+static int _dxf_GetNumImagesInFile( ImageInfo *image_info ) {
     /* FIXME:  Currently, ImageMagick has no way to determine the number of
      *   images in a (potentially multi-image) image file without reading 
      *   the data for all of the images into memory at once.  This was
@@ -466,22 +533,21 @@ static int _dxf_GetNumImagesInFile( ImageInfo *image_info )
 #endif
 
 
-  /*
-   * Set a SizeData struct with values.
-   *   set state saying whether:
-   *     has multiple images in file
-   *   Careful:
-   *     if the images are stored internally,
-   *       then reset the use_numerics flag.
-   */
+/*
+ * Set a SizeData struct with values.
+ *   set state saying whether:
+ *     has multiple images in file
+ *   Careful:
+ *     if the images are stored internally,
+ *       then reset the use_numerics flag.
+ */
 SizeData * _dxf_ReadImageSizesIM
-               ( char     *name,
-                 int      startframe,
-                 SizeData *data,
-                 int      *use_numerics,
-                 int      *multiples )
-{
-#if !defined(HAVE_LIBMAGICK) || !defined(MAGICK5)
+( char     *name,
+  int      startframe,
+  SizeData *data,
+  int      *use_numerics,
+  int      *multiples ) {
+#if !defined(HAVE_LIBMAGICK)
     DXErrorReturn(ERROR_NOT_IMPLEMENTED,"ImageMagick 5 not included in build");
 #else
 
@@ -499,35 +565,34 @@ SizeData * _dxf_ReadImageSizesIM
     DXASSERTGOTO ( ERROR != multiples    );
 
     /*  Magick init  */
-    GetExceptionInfo( &_dxd_exception_info ); 
+    GetExceptionInfo( &_dxd_exception_info );
     image_info = CloneImageInfo( NULL );
-    
+
     /*  PingImage returns info on the first image (possibly in a sequence)  */
     image_info->filename[0] = '\0';
     strncat( image_info->filename, name, sizeof( image_info->filename ) - 1 );
 
     if ( (image = PingImage( image_info, &_dxd_exception_info )) == NULL )
-        DXErrorGoto2( ERROR_BAD_PARAMETER, "#13950", 
+        DXErrorGoto2( ERROR_BAD_PARAMETER, "#13950",
                       /* failed to read image in file '%s' */ name );
 
     data->height = image->rows;
     data->width  = image->columns;
 
     data->startframe = ( startframe == VALUE_UNSPECIFIED ) ? 0 : startframe;
-    data->endframe   = ( data->startframe + 
+    data->endframe   = ( data->startframe +
                          _dxf_GetNumImagesInFile( image_info ) - 1 );
     *multiples = data->startframe != data->endframe;
     if ( *multiples )
         *use_numerics = 0;
 
     /*
-     * Intent: If use_numerics (implies there aren't multiple images 
-     *         in this file), see if there are multiple numbered files on disk.
-     */
+    * Intent: If use_numerics (implies there aren't multiple images
+    *         in this file), see if there are multiple numbered files on disk.
+    */
     if ( !(*use_numerics) )
         *multiples = 0;
-    else
-    {   
+    else {
         /*  Magick filenames "always" have a filetype extension  */
         user_basename[0] = extension[0] = '\0';
         _dxf_ExtractImageExtension(name,img_typ_im,
@@ -536,9 +601,8 @@ SizeData * _dxf_ReadImageSizesIM
         _dxf_RemoveImageExtension( user_basename, img_typ_im );
         _dxf_RemoveExtension( user_basename );
 
-        do
-        {
-            sprintf( newname, "%s.%d.%s", 
+        do {
+            sprintf( newname, "%s.%d.%s",
                      user_basename, data->endframe, extension );
             if ( (fh = open ( newname, O_RDONLY )) < 0 )
                 break;
@@ -546,8 +610,7 @@ SizeData * _dxf_ReadImageSizesIM
             close ( fh );
             data->endframe++;
             DXDebug ( "R", "_dxf_ReadImageSizesIM: opened: %s", newname );
-        } 
-        while ( 1 );
+        } while ( 1 );
 
         data->endframe--;
     }
@@ -557,36 +620,35 @@ SizeData * _dxf_ReadImageSizesIM
               "numer = %d, multi = %d",
               data->height, data->width, data->startframe, data->endframe,
               *use_numerics, *multiples );
-    
+
     if ( image_info )
         DestroyImageInfo( image_info );
     if ( image )
         DestroyImage( image );
     return data;
 
-  error:
+error:
     if ( image_info )
         DestroyImageInfo( image_info );
     if ( image )
         DestroyImage( image );
     return NULL;
 
-#endif /* HAVE_LIBMAGICK && MAGICK5  */
+#endif /* HAVE_LIBMAGICK  */
 }
 
 /*
  *  Read an image from a file into a DX image field using ImageMagick.
  */
-Field _dxf_InputIM( int width, int height, char *name, int relframe, 
-                    int delayed, char *colortype )
-{
-#if !defined(HAVE_LIBMAGICK) || !defined(MAGICK5)
+Field _dxf_InputIM( int width, int height, char *name, int relframe,
+                    int delayed, char *colortype ) {
+#if !defined(HAVE_LIBMAGICK)
     DXErrorReturn(ERROR_NOT_IMPLEMENTED,"ImageMagick 5 not included in build");
 #else
 
     Field          dx_image = NULL;
     Image         *image    = NULL,
-                  *image_tmp;
+                              *image_tmp;
     ImageInfo     *image_info = NULL;
     ImageType      image_type;
     ExceptionInfo  _dxd_exception_info;
@@ -605,9 +667,9 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
         DXErrorGoto2( ERROR_BAD_PARAMETER, "#12275", 0 );
 
     /*  Magick init  */
-    GetExceptionInfo( &_dxd_exception_info ); 
+    GetExceptionInfo( &_dxd_exception_info );
     image_info = CloneImageInfo( NULL );
-    
+
     image_info->filename[0] = '\0';
     strncat( image_info->filename, name, sizeof( image_info->filename ) - 1 );
 
@@ -615,265 +677,263 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
     image_info->subrange=1;
 
     if ( (image = ReadImage( image_info, &_dxd_exception_info )) == NULL )
-        DXErrorGoto2( ERROR_BAD_PARAMETER, "#13950", 
+        DXErrorGoto2( ERROR_BAD_PARAMETER, "#13950",
                       /* failed to read image in file '%s' */ name );
 
     if ( width  != image->columns || height != image->rows )
-        DXErrorGoto(ERROR_INTERNAL, 
-                        "Image dimensions don't match requested dimensions" );
+        DXErrorGoto(ERROR_INTERNAL,
+                    "Image dimensions don't match requested dimensions" );
 
     /*  If it's CMYK, convert to RGB.  */
     if ( image->colorspace == CMYKColorspace )
         if ( !TransformRGBImage( image, RGBColorspace ) )
             DXErrorGoto(ERROR_INTERNAL, "CMYK->RGB transform failed" );
 
-    /*  
-     * Set the colors (and possibly color map) components
-     */
+    /*
+    * Set the colors (and possibly color map) components
+    */
 #if MagickLibVersion < 0x0540
+
     image_type = GetImageType( image );
 #else
+
     image_type = GetImageType( image, &_dxd_exception_info );
 #endif
-    switch ( image_type )
-    {
-      default :
 
-        /*  Since we handled CMYK above, we should never get here  */
-        DXErrorGoto2( ERROR_DATA_INVALID,  "#13960", image_type );
+    switch ( image_type ) {
+        default :
 
-      /**********************************************************************/
-      /*  OPTION #1:  Source is RGB direct (dest is float or byte direct)   */
-      case TrueColorType      :
-      case TrueColorMatteType :
+            /*  Since we handled CMYK above, we should never get here  */
+            DXErrorGoto2( ERROR_DATA_INVALID,  "#13960", image_type );
 
-        /*  Create the image field  */
-        dx_image = DXMakeImageFormat(width, height, colortype);
-        if (! dx_image)
-            goto error;
-        
-        colorsArray = (Array)DXGetComponentValue(dx_image, "colors");
-        DXGetArrayInfo(colorsArray, NULL, &type, NULL, &rank, shape);
+            /**********************************************************************/
+            /*  OPTION #1:  Source is RGB direct (dest is float or byte direct)   */
+        case TrueColorType      :
+        case TrueColorMatteType :
 
-        /*  Colors are 3-vectors (direct)  */
-        if (rank != 1 || shape[0] != 3 ||
-            (type != TYPE_UBYTE && type != TYPE_FLOAT))
-            DXErrorGoto(ERROR_INTERNAL, 
-                        "Invalid image field direct color format" );
+            /*  Create the image field  */
+            dx_image = DXMakeImageFormat(width, height, colortype);
+            if (! dx_image)
+                goto error;
 
-        storage_type = ( type == TYPE_UBYTE ) ? CharPixel : FloatPixel;
-        pixels       = DXGetArrayData(colorsArray);
+            colorsArray = (Array)DXGetComponentValue(dx_image, "colors");
+            DXGetArrayInfo(colorsArray, NULL, &type, NULL, &rank, shape);
 
-        /*  Transfer the pixels to the field                       */
-        /*    (NOTE: DX stores rows bottom-to-top, so flip first)  */
-        image_tmp = FlipImage( image, &_dxd_exception_info );
-        if ( !image_tmp ) DXErrorGoto(ERROR_INTERNAL, "Failed to flip image" );
-        DestroyImage( image );
-        image = image_tmp;
-#if MagickLibVersion < 0x0540
-        DispatchImage( image, 0, 0, width, height, "RGB", storage_type, 
-        	pixels );
-#else
-        DispatchImage( image, 0, 0, width, height, "RGB", storage_type, 
-        	pixels, &_dxd_exception_info);
-#endif
-        /*  Handle transparency (opacities are floats) */
-        if ( image->matte )
-        {
-            float *optr;
-
-            if ( !(opacitiesArray = DXNewArray( TYPE_FLOAT, 
-                                                CATEGORY_REAL, 0 )) ||
-                 !DXAddArrayData( opacitiesArray, 0, width*height, NULL) ||
-                 !DXSetComponentValue( (Field)dx_image, "opacities", 
-                                       (Object)opacitiesArray ) ||
-                 !(opacities = DXGetArrayData(opacitiesArray)) ||
-                 !DXEndField( (Field)dx_image ) )
-                DXErrorGoto(ERROR_INTERNAL, "Failed to create opacities" );
-
-#if MagickLibVersion < 0x0540
-            DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
-                           opacities );
-#else
-            DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
-                           opacities, &_dxd_exception_info );
-#endif
-            for ( i = width * height, optr = (float *)opacities; 
-                  i > 0;  i--, optr++ )
-                *optr = 1.0 - *optr;
-        }
-        break;
-
-      /**********************************************************************/
-      /*  OPTION #2:  Source is palettized (includes gray scale or B&W)      */
-      /*              (dest is float or byte direct, or byte delayed with a  */
-      /*              256-element float colormap)                            */
-      case PaletteType        :
-      case PaletteMatteType   :
-      case GrayscaleType      :
-      case GrayscaleMatteType :
-      case BilevelType   :
-
-        /*  ReadImage(delayed=<y/n>) only applies to delayed color images  */
-        if (delayed == DELAYED_YES)
-            colortype = COLORTYPE_DELAYED;
-
-        /*  Create the image field  */
-        dx_image = DXMakeImageFormat(width, height, colortype);
-        if (! dx_image)
-            goto error;
-        
-        colorsArray = (Array)DXGetComponentValue(dx_image, "colors");
-        DXGetArrayInfo(colorsArray, NULL, &type, NULL, &rank, shape);
-        pixels = DXGetArrayData(colorsArray);
-
-        /*  Colors are 3-vectors (direct)  */
-        if (rank == 1 && shape[0] == 3)
-        {
-            if (type != TYPE_UBYTE && type != TYPE_FLOAT)
-                DXErrorGoto(ERROR_INTERNAL, 
+            /*  Colors are 3-vectors (direct)  */
+            if (rank != 1 || shape[0] != 3 ||
+                    (type != TYPE_UBYTE && type != TYPE_FLOAT))
+                DXErrorGoto(ERROR_INTERNAL,
                             "Invalid image field direct color format" );
 
             storage_type = ( type == TYPE_UBYTE ) ? CharPixel : FloatPixel;
+            pixels       = DXGetArrayData(colorsArray);
 
             /*  Transfer the pixels to the field                       */
             /*    (NOTE: DX stores rows bottom-to-top, so flip first)  */
             image_tmp = FlipImage( image, &_dxd_exception_info );
-            if ( !image_tmp ) DXErrorGoto(ERROR_INTERNAL, 
-                                          "Failed to flip image" );
+            if ( !image_tmp )
+                DXErrorGoto(ERROR_INTERNAL, "Failed to flip image" );
             DestroyImage( image );
             image = image_tmp;
+            
 #if MagickLibVersion < 0x0540
             DispatchImage( image, 0, 0, width, height, "RGB", storage_type,
                            pixels );
 #else
-            DispatchImage( image, 0, 0, width, height, "RGB", storage_type,
-                           pixels, &_dxd_exception_info );
+    DispatchImage( image, 0, 0, width, height, "RGB", storage_type,
+                   pixels, &_dxd_exception_info);
 #endif
             /*  Handle transparency (opacities are floats) */
-            if ( image->matte )
-            {
+            if ( image->matte ) {
                 float *optr;
 
-                if ( !(opacitiesArray = DXNewArray( TYPE_FLOAT, 
+                if ( !(opacitiesArray = DXNewArray( TYPE_FLOAT,
                                                     CATEGORY_REAL, 0 )) ||
-                     !DXAddArrayData( opacitiesArray, 0, width*height, NULL) ||
-                     !DXSetComponentValue( (Field)dx_image, "opacities", 
-                                           (Object)opacitiesArray ) ||
-                     !(opacities = DXGetArrayData(opacitiesArray)) ||
-                     !DXEndField( (Field)dx_image ) )
+                        !DXAddArrayData( opacitiesArray, 0, width*height, NULL) ||
+                        !DXSetComponentValue( (Field)dx_image, "opacities",
+                                              (Object)opacitiesArray ) ||
+                        !(opacities = DXGetArrayData(opacitiesArray)) ||
+                        !DXEndField( (Field)dx_image ) )
                     DXErrorGoto(ERROR_INTERNAL, "Failed to create opacities" );
 
 #if MagickLibVersion < 0x0540
                 DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
                                opacities );
 #else
-                DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
-                               opacities, &_dxd_exception_info );
+    DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
+                   opacities, &_dxd_exception_info );
 #endif
-                for ( i = width * height, optr = (float *)opacities; 
-                      i > 0;  i--, optr++ )
+
+                for ( i = width * height, optr = (float *)opacities;
+                        i > 0;  i--, optr++ )
                     *optr = 1.0 - *optr;
             }
-        }
+            break;
 
-        /*  Colors are scalars (delayed)  */
-        else if (rank == 0 || (rank == 1 && shape[0] == 1))
-        {
-            Type mType;
-            int  mRank, mShape[32], mLen;
-            int  i,x,y;
-            float (*cmap)[3], *omap = NULL;
-            Array colorMap, opacityMap;
+            /**********************************************************************/
+            /*  OPTION #2:  Source is palettized (includes gray scale or B&W)      */
+            /*              (dest is float or byte direct, or byte delayed with a  */
+            /*              256-element float colormap)                            */
+        case PaletteType        :
+        case PaletteMatteType   :
+        case GrayscaleType      :
+        case GrayscaleMatteType :
+        case BilevelType   :
 
-            colorMap = (Array)DXGetComponentValue(dx_image, "color map");
-            if (! colorMap)
-                DXErrorGoto(ERROR_INTERNAL, 
-                            "single-valued image requires a color map" );
+            /*  ReadImage(delayed=<y/n>) only applies to delayed color images  */
+            if (delayed == DELAYED_YES)
+                colortype = COLORTYPE_DELAYED;
 
-            DXGetArrayInfo(colorMap, &mLen, &mType, NULL, &mRank, mShape);
+            /*  Create the image field  */
+            dx_image = DXMakeImageFormat(width, height, colortype);
+            if (! dx_image)
+                goto error;
 
-            if (mLen != 256 || mType != TYPE_FLOAT || 
-                mRank != 1 || mShape[0] != 3)
-                DXErrorGoto(ERROR_INTERNAL, 
-                      "DXMakeImageFormat returned invalid delayed-color image");
+            colorsArray = (Array)DXGetComponentValue(dx_image, "colors");
+            DXGetArrayInfo(colorsArray, NULL, &type, NULL, &rank, shape);
+            pixels = DXGetArrayData(colorsArray);
 
-            cmap = (float (*)[3]) DXGetArrayData(colorMap);
+            /*  Colors are 3-vectors (direct)  */
+            if (rank == 1 && shape[0] == 3) {
+                if (type != TYPE_UBYTE && type != TYPE_FLOAT)
+                    DXErrorGoto(ERROR_INTERNAL,
+                                "Invalid image field direct color format" );
 
-            /*  If transparency, opacities is byte & opacity map is float  */
-            if ( image->matte )
-            {
-                if ( !(opacitiesArray = DXNewArray( TYPE_UBYTE, 
+                storage_type = ( type == TYPE_UBYTE ) ? CharPixel : FloatPixel;
+
+                /*  Transfer the pixels to the field                       */
+                /*    (NOTE: DX stores rows bottom-to-top, so flip first)  */
+                image_tmp = FlipImage( image, &_dxd_exception_info );
+                if ( !image_tmp )
+                    DXErrorGoto(ERROR_INTERNAL,
+                                "Failed to flip image" );
+                DestroyImage( image );
+                image = image_tmp;
+#if MagickLibVersion < 0x0540
+                DispatchImage( image, 0, 0, width, height, "RGB", storage_type,
+                               pixels );
+#else
+    DispatchImage( image, 0, 0, width, height, "RGB", storage_type,
+                   pixels, &_dxd_exception_info );
+#endif
+                /*  Handle transparency (opacities are floats) */
+                if ( image->matte ) {
+                    float *optr;
+
+                    if ( !(opacitiesArray = DXNewArray( TYPE_FLOAT,
+                                                        CATEGORY_REAL, 0 )) ||
+                            !DXAddArrayData( opacitiesArray, 0, width*height, NULL) ||
+                            !DXSetComponentValue( (Field)dx_image, "opacities",
+                                                  (Object)opacitiesArray ) ||
+                            !(opacities = DXGetArrayData(opacitiesArray)) ||
+                            !DXEndField( (Field)dx_image ) )
+                        DXErrorGoto(ERROR_INTERNAL, "Failed to create opacities" );
+
+#if MagickLibVersion < 0x0540
+                    DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
+                                   opacities );
+#else
+    DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
+                   opacities, &_dxd_exception_info );
+#endif
+
+                    for ( i = width * height, optr = (float *)opacities;
+                            i > 0;  i--, optr++ )
+                        *optr = 1.0 - *optr;
+                }
+            }
+
+            /*  Colors are scalars (delayed)  */
+            else if (rank == 0 || (rank == 1 && shape[0] == 1)) {
+                Type mType;
+                int  mRank, mShape[32], mLen;
+                int  i,x,y;
+                float (*cmap)[3], *omap = NULL;
+                Array colorMap, opacityMap;
+
+                colorMap = (Array)DXGetComponentValue(dx_image, "color map");
+                if (! colorMap)
+                    DXErrorGoto(ERROR_INTERNAL,
+                                "single-valued image requires a color map" );
+
+                DXGetArrayInfo(colorMap, &mLen, &mType, NULL, &mRank, mShape);
+
+                if (mLen != 256 || mType != TYPE_FLOAT ||
+                        mRank != 1 || mShape[0] != 3)
+                    DXErrorGoto(ERROR_INTERNAL,
+                                "DXMakeImageFormat returned invalid delayed-color image");
+
+                cmap = (float (*)[3]) DXGetArrayData(colorMap);
+
+                /*  If transparency, opacities is byte & opacity map is float  */
+                if ( image->matte ) {
+                    if ( !(opacitiesArray = DXNewArray( TYPE_UBYTE,
+                                                        CATEGORY_REAL, 0 )) ||
+                            !DXAddArrayData( opacitiesArray, 0, width*height, NULL) ||
+                            !DXSetComponentValue( (Field)dx_image, "opacities",
+                                                  (Object)opacitiesArray ) ||
+                            !(opacities = DXGetArrayData(opacitiesArray)) )
+                        DXErrorGoto(ERROR_INTERNAL, "Failed to create opacities" );
+
+                    if ( !(opacityMap = DXNewArray( TYPE_FLOAT,
                                                     CATEGORY_REAL, 0 )) ||
-                     !DXAddArrayData( opacitiesArray, 0, width*height, NULL) ||
-                     !DXSetComponentValue( (Field)dx_image, "opacities", 
-                                           (Object)opacitiesArray ) ||
-                     !(opacities = DXGetArrayData(opacitiesArray)) )
-                    DXErrorGoto(ERROR_INTERNAL, "Failed to create opacities" );
+                            !DXAddArrayData( opacityMap, 0, 256, NULL) ||
+                            !DXSetComponentValue( (Field)dx_image, "opacity map",
+                                                  (Object)opacityMap ) ||
+                            !(omap = DXGetArrayData(opacityMap)) )
+                        DXErrorGoto(ERROR_INTERNAL, "Failed to create opacity map");
 
-                if ( !(opacityMap = DXNewArray( TYPE_FLOAT, 
-                                                CATEGORY_REAL, 0 )) ||
-                     !DXAddArrayData( opacityMap, 0, 256, NULL) ||
-                     !DXSetComponentValue( (Field)dx_image, "opacity map", 
-                                           (Object)opacityMap ) ||
-                     !(omap = DXGetArrayData(opacityMap)) )
-                    DXErrorGoto(ERROR_INTERNAL, "Failed to create opacity map");
+                    if ( !DXEndField( (Field)dx_image ) )
+                        DXErrorGoto(ERROR_INTERNAL, "Failed to close field");
+                }
 
-                if ( !DXEndField( (Field)dx_image ) )
-                    DXErrorGoto(ERROR_INTERNAL, "Failed to close field");
-            }
+                /*  Read the colormap  */
+                for ( i = 0; i < image->colors; i++ ) {
+                    cmap[i][0]   = ((float) image->colormap[i].red   ) / MaxRGB;
+                    cmap[i][1]   = ((float) image->colormap[i].green ) / MaxRGB;
+                    cmap[i][2]   = ((float) image->colormap[i].blue  ) / MaxRGB;
+                    if ( image->matte )
+                        omap[i] = (1.0 -
+                                   ((float) image->colormap[i].opacity ) / MaxRGB);
+                }
+                for ( ; i < 256; i++ ) {
+                    cmap[i][0] = cmap[i][1] = cmap[i][2] = 0.0;
+                    if ( image->matte )
+                        omap[i] = 0.0;
+                }
 
-            /*  Read the colormap  */
-            for ( i = 0; i < image->colors; i++ )
-            {
-                cmap[i][0]   = ((float) image->colormap[i].red   ) / MaxRGB;
-                cmap[i][1]   = ((float) image->colormap[i].green ) / MaxRGB;
-                cmap[i][2]   = ((float) image->colormap[i].blue  ) / MaxRGB;
-                if ( image->matte )
-                    omap[i] = (1.0 - 
-                               ((float) image->colormap[i].opacity ) / MaxRGB);
-            }
-            for ( ; i < 256; i++ )
-            {
-                cmap[i][0] = cmap[i][1] = cmap[i][2] = 0.0;
-                if ( image->matte )
-                    omap[i] = 0.0;
-            }
+                /*  Now copy the pixels (i.e. color/opacity map indicies)  */
+                for ( y = 0; y < height; y++ ) {
+                    ubyte       *pptr = ((ubyte *)pixels   ) + (height-1-y)*width;
+                    ubyte       *optr = NULL;
+                    PixelPacket *pixies;
+                    IndexPacket *indexes, *indexes2;
 
-            /*  Now copy the pixels (i.e. color/opacity map indicies)  */
-            for ( y = 0; y < height; y++ )
-            {
-                ubyte       *pptr = ((ubyte *)pixels   ) + (height-1-y)*width;
-                ubyte       *optr = NULL;
-                PixelPacket *pixies;
-                IndexPacket *indexes, *indexes2;
+                    if ( image->matte )
+                        optr = ((ubyte *)opacities) + (height-1-y)*width;
 
-                if ( image->matte )
-                    optr = ((ubyte *)opacities) + (height-1-y)*width;
+                    pixies = GetImagePixels( image, 0, y, width, 1 );
+                    indexes = indexes2 = GetIndexes( image );
 
-                pixies = GetImagePixels( image, 0, y, width, 1 );
-                indexes = indexes2 = GetIndexes( image );
-            
-                if ( sizeof(indexes[0]) == 1 )
-                    memcpy( pptr, indexes, width );
-                else
-                    for ( x = 0; x < width; x++ )
-                        if( image->matte )
-                            *(pptr++) = *(optr++) = *(indexes++);
-                        else
-                            *(pptr++) = *(indexes++); 
-                
-                /* Opacities in colormap is wrong; use direct color map */
-                if ( image->matte )
-                    for ( x = 0; x < width; x++ )
-                        omap[*(indexes2++)] = ( 1.0 - 
-                                      ((float) (pixies++)->opacity) / MaxRGB );
-            }
-        }
-        else
-            DXErrorGoto( ERROR_INTERNAL,  "unexpected image field format" );
+                    if ( sizeof(indexes[0]) == 1 )
+                        memcpy( pptr, indexes, width );
+                    else
+                        for ( x = 0; x < width; x++ )
+                            if( image->matte )
+                                *(pptr++) = *(optr++) = *(indexes++);
+                            else
+                                *(pptr++) = *(indexes++);
 
-        break;
+                    /* Opacities in colormap is wrong; use direct color map */
+                    if ( image->matte )
+                        for ( x = 0; x < width; x++ )
+                            omap[*(indexes2++)] = ( 1.0 -
+                                                    ((float) (pixies++)->opacity) / MaxRGB );
+                }
+            } else
+                DXErrorGoto( ERROR_INTERNAL,  "unexpected image field format" );
+
+            break;
     }
 
     if ( image_info )
@@ -889,20 +949,20 @@ error:
         DestroyImage( image );
     return NULL;
 
-#endif /* HAVE_LIBMAGICK && MAGICK5  */
+#endif /* HAVE_LIBMAGICK */
 }
 
 int  /* 0/1 on failure/success */
-_dxf_ValidImageExtensionIM(char *ext)
-{
-#if !defined(HAVE_LIBMAGICK) || !defined(MAGICK5)
+_dxf_ValidImageExtensionIM(char *ext) {
+#if !defined(HAVE_LIBMAGICK)
     DXErrorReturn(ERROR_NOT_IMPLEMENTED,"ImageMagick 5 not included in build");
 #else
+
     ExceptionInfo  _dxd_exception_info;
-    MagickInfo    *minfo;
+    const MagickInfo    *minfo;
 
     GetExceptionInfo( &_dxd_exception_info );
     minfo = GetMagickInfo( ext, &_dxd_exception_info );
-    return minfo != NULL;
+    return (minfo != NULL);
 #endif
 }
