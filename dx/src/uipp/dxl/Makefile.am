@@ -5,6 +5,10 @@ MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 dxlibdir = $(prefix)/dx/lib
+incdir = $(prefix)/dx/include/dx
+
+inc_HEADERS = dxl.h
+
 dxlib_LIBRARIES = libDXL.a
 
 noinst_HEADERS = \
