@@ -26,6 +26,8 @@ libDPEXEC_a_SOURCES =  \
 	swap.c task.c userinter.c utils.c variable.c vcr.c \
 	optarg.c yuiif.y
 
+EXTRA_DIST = local.mk
+
 $(libDPEXEC_a_SOURCES): yuiif.c yuiif.h
 
 include local.mk
