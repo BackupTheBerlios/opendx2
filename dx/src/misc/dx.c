@@ -8,6 +8,10 @@
 /*  DX script - C version	*/
 /*  F. Suits   1/97		*/
 
+/*
+#define USE_REGISTRY 1
+*/
+
 #include <dxconfig.h>
 #include <dx/arch.h>
 
@@ -33,7 +37,6 @@
 
 #ifdef DXD_WIN
 #define EXE_EXT ".exe"
-#define DXD_ARCHNAME "intelnt"
 #define DIRSEP "\\"
 #define PATHSEP ";"
 #else
@@ -42,17 +45,23 @@
 #define PATHSEP ":"
 #endif
 
-#ifndef DXD_ARCHNAME
-#define DXD_ARCHNAME "unix"
-#endif
-
 #define SCRIPTVERSION DXD_VERSION_STRING
 
-#define IBM_ID 1
+enum regCo {
+  OPENDX_ID = 1,
+  HUMMBIRD_ID = 2,
+  STARNET_ID = 3
+};
 
-#if defined(HUMMINGBIRD_REGISTRY)
-#define HUMMBIRD_ID 2
-#endif
+enum regGet {
+  GET = 1,
+  CHECK = 2,
+  SET = 3
+};
+
+enum xServer { UNKNOWN, EXCEED6, EXCEED7, XWIN32 };
+
+enum xServer whichX = UNKNOWN;
 
 #define SMALLSTR 50
 #define MAXARGS 200
@@ -62,6 +71,7 @@
 
 #if defined(HAVE__SPAWNVP) && !defined(HAVE_SPAWNVP)
 #define spawnvp _spawnvp
+#define HAVE_SPAWNVP 1
 #endif
 
 #define IfError(s)		\
@@ -70,11 +80,12 @@
 	goto error;		\
     }
 
-#define IfError2(s, t, u)			\
+#define IfError2(s, t, u) {			\
     if (rc != ERROR_SUCCESS) {			\
 	sprintf(errstr, "%s %s %s", s, t, u);	\
 	goto error;				\
-    }
+    }						\
+}
 
 #define ErrorGoto(s) {		\
 	strcpy(errstr, s);	\
@@ -150,14 +161,15 @@ smallstr 	exlic =		"";
 namestr 	FileName =	"";
 namestr 	dxroot =	"";
 namestr 	dxrootreg =	"";
+namestr		dxdatareg =	"";
+namestr		dxmacroreg = 	"";
 namestr 	dxexroot =	"";
 namestr 	dxuiroot =	"";
-#if defined(HUMMINGBIRD_REGISTRY)
 namestr 	exceeddir =	"";
 namestr 	exceeduserdir =	"";
+namestr		starnetdir =	"";
 namestr		xservername =	"";
 namestr		xserverversion= "";
-#endif
 namestr		xnlspath =	"";
 namestr		xapplresdir =	"";
 namestr		xkeysymdb =	"";
@@ -206,17 +218,17 @@ envstr		argstr =	"";
 
 int getenvstr(char *name, char *value);
 int putenvstr(char *name, char *value);
-int regval(int get, char *name, int co, char *value, int size, int *word);
+int regval(enum regGet get, char *name, enum regCo co, char *value, int size, int *word);
 int initrun();
 int getparms(int argc, char **argv);
 int fillparms(char *str, int *n);
-int configure();
+void configure();
 int buildcmd();
 int launchit();
 int shorthelp();
 int longhelp();
-int d2u(char *s);
-int u2d(char *s);
+void d2u(char *s);
+void u2d(char *s);
 
 int main(int argc, char **argv)
 {
@@ -230,7 +242,7 @@ int main(int argc, char **argv)
     exit(0);
 }
 
-int d2u(char *s)
+void d2u(char *s)
 {
     int i;
     for (i=0; s && *s && (i<strlen(s)); i++)
@@ -238,7 +250,7 @@ int d2u(char *s)
 	    s[i] = '/';
 }
 
-int u2d(char *s)
+void u2d(char *s)
 {
     int i;
     for (i=0; s && *s && (i<strlen(s)); i++)
@@ -314,113 +326,129 @@ int putenvstr(char *name, char *value)
 }
 
 /*  The following queries the registry for various paths that,	*/
-/*  among other things, allow dx and exceed to start without 	*/
+/*  among other things, allow dx and Xserver to start without 	*/
 /*  either being in the path.  But they must be added to the	*/
 /*  beginning of the path in order for them to run, and all	*/
 /*  children must convey this down.				*/
-int regval(int get, char *name, int co, char *value, int size, int *word)
+int regval(enum regGet get, char *name, enum regCo co, char *value, int size, int *word)
 {
 #ifdef DXD_WIN
-    char key[500];
-    int valtype;
-    int sizegot = size;
-    HKEY hkey[10];
-    long rc;
-    int i, k=0;
-    DWORD options;
+	char key[500];
+	char key2[500];
+	int valtype;
+	int sizegot = size;
+	HKEY hkey[10];
+	long rc;
+	int i, k=0;
+	DWORD options;
 
-    if (get) {
 	options = KEY_QUERY_VALUE;
-	strcpy(value, "");
-	*word = 0;
-    } else {
-	options = KEY_SET_VALUE;
-    }
 
-    options = KEY_QUERY_VALUE;
+	strcpy(key, "SOFTWARE");
 
-    strcpy(key, "SOFTWARE");
-
-    rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
+	rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
 	options, &hkey[k++]);
 
-    if (co == IBM_ID)
-	strcat(key, "\\IBM");
-    else
-#if defined(HUMMINGBIRD_REGISTRY)
-	strcat(key, "\\Hummingbird");
-#else
-    {
-        fprintf(stderr, "Unknown registery request: %d", key);
- 	goto error;
-    }
-#endif
-    rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
-	options, &hkey[k++]);
-    IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
+	if (co == OPENDX_ID || co == STARNET_ID) {
+		if (co == OPENDX_ID)
+			strcat(key, "\\OpenDX");
+		else if (co == STARNET_ID)
+			strcat(key, "\\StarNet");
 
-    if (co == IBM_ID)
-	strcat(key, "\\IBM Visualization Data Explorer");
-    else
-#if defined(HUMMINGBIRD_REGISTRY)
-	strcat(key, "\\Exceed");
-#else
-    {
-        fprintf(stderr, "Unknown registery request: %d", key);
- 	goto error;
-    }
-#endif
+		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
+    		if(get == CHECK && rc != ERROR_SUCCESS) return 0;
+		IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
 
-    rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
-	options, &hkey[k++]);
-    IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
+		if (co == OPENDX_ID)
+			strcat(key, "\\DX");
+		else if (co == STARNET_ID)
+			strcat(key, "\\X-Win32");
 
-    if (!get)
-	options = KEY_SET_VALUE;
-    strcat(key, "\\CurrentVersion");
-    rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
-	options, &hkey[k++]);
-    IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
+		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
+    		if(get == CHECK && rc != ERROR_SUCCESS) return 0;
+		IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
 
-    if (get) {
-	rc = RegQueryValueEx(hkey[k-1], (LPTSTR) name, (LPDWORD) 0, 
-	    (LPDWORD) &valtype, (LPBYTE) value, &sizegot);
-	IfError2("Query value failed on registry value", name, "");
+		if (co == OPENDX_ID)
+			strcat(key, "\\CurrentVersion");
+		else if (co == STARNET_ID)
+			strcat(key, "\\5.1");
 
-	for (i=k; i > 0; i--) {
-	    rc = RegCloseKey(hkey[i-1]);
-	    IfError2("CloseKey failed on registry value", name, "");
 	}
+	else if (co == HUMMBIRD_ID) {
+		strcat(key, "\\Hummingbird");
+		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
+		IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
+		strcpy(key2, key);
+		strcat(key, "\\Exceed"); /* Version 6 reg entries */
+		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
+		if (rc == ERROR_SUCCESS) {
+			if (get == CHECK) return 6; /* return version number */
+			strcat(key, "\\6.2");
+		} else { /* Version 7 reg entries */
+			strcpy(key, key2); k--;
+			strcat(key, "\\Connectivity");
+			rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
+			IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
+			strcat(key, "\\7.00");
+			rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
+    			if(get == CHECK && rc == ERROR_SUCCESS) return 7;
+			IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
+			strcat(key, "\\Exceed");
+		}
 
-	switch(valtype) {
-	    case REG_DWORD:
-		*word = *((int *)value); 
-		value = "";
-		break;
-	    case REG_SZ:
-		break;
-	    default:
-		return 0;
 	}
-	return 1;
-    } else {
-	rc = RegSetValueEx((HKEY)hkey[k-1], (LPCSTR)name, (DWORD)0, 
-	     (DWORD)REG_SZ, (CONST BYTE *)value, (DWORD)strlen(value)+1);
-	IfError("Registration key installation failed");
+	
+	rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
+	IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
 
-	for (i=k; i > 0; i--) {
-	    rc = RegCloseKey(hkey[i-1]);
-	    IfError("CloseKey failed");
+	if (get == CHECK) { return 1; }
+	if (get == GET) {
+		rc = RegQueryValueEx(hkey[k-1], (LPTSTR) name, (LPDWORD) 0, 
+		(LPDWORD) &valtype, (LPBYTE) value, &sizegot);
+		IfError2("Query value failed on registry value", name, "");
+
+		for (i=k; i > 0; i--) {
+			rc = RegCloseKey(hkey[i-1]);
+			IfError2("CloseKey failed on registry value", name, "");
+		}
+
+		/* Now check to see if it is a DWORD entry if so, pass it back through word
+			   not as a string through name. */
+		switch(valtype) {
+		case REG_DWORD:
+			*word = *((int *)value); 
+			strcpy(value, "");
+			break;
+		case REG_SZ:
+			break;
+		default:
+			return 0;
+		}
+
+		return 1;
+
 	}
-	return 1;
-    }
+	else {
+		if (get == SET)
+			options = KEY_SET_VALUE;
+		rc = RegSetValueEx((HKEY)hkey[k-1], (LPCSTR)name, (DWORD)0, 
+		(DWORD)REG_SZ, (CONST BYTE *)value, (DWORD)strlen(value)+1);
+		IfError("Registration key installation failed");
+
+		for (i=k; i > 0; i--) {
+			rc = RegCloseKey(hkey[i-1]);
+			IfError("CloseKey failed");
+		}
+		return 1;
+	}
 
 error:
-    printf("%s: rc = %d\n", errstr, rc);
-    return 0;
+	printf("%s: rc = %d\n", errstr, rc);
+	return 0;
 #endif
 }
 
+#if 0
 static int keyformat(char *k)
 {
     int i;
@@ -441,6 +469,7 @@ static int keyformat(char *k)
     strcpy(k, buf);
     return 1;
 }
+#endif
 
 int initrun()
 {
@@ -450,26 +479,38 @@ int initrun()
 
 #if defined(USE_REGISTRY)
 
-#if defined(HUMMINGBIRD_REGISTRY)
-    if (!(regval(1, "PathName", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) 		&&
-	regval(1, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata) 	&&
-	regval(1, "Description", HUMMBIRD_ID, xservername, sizeof(xservername), &keydata) 	&&
-	regval(1, "Version", HUMMBIRD_ID, xserverversion, sizeof(xserverversion), &keydata))) 
+    if(regval(CHECK, "Default", OPENDX_ID, dxrootreg, sizeof(dxrootreg), &keydata)) {
+    	if(regval(GET, "DXROOT", OPENDX_ID, dxrootreg, sizeof(dxrootreg), &keydata) +
+    	regval(GET, "DXDATA", OPENDX_ID, dxdatareg, sizeof(dxdatareg), &keydata) +
+    	regval(GET, "DXMACROS", OPENDX_ID, dxmacroreg, sizeof(dxmacroreg), &keydata) < 3)
+    	    	printf("This version of OpenDX does not appear to be correctly installed on this\n"
+    	       "machine. Execution will be attempted anyway, and if it fails, please try\n"
+    	       "reinstalling the software.\n");
+    } else
+    	    	printf("This version of OpenDX does not appear to be correctly installed on this\n"
+    	       "machine. Execution will be attempted anyway, and if it fails, please try\n"
+    	       "reinstalling the software.\n");
+
+    if(regval(CHECK, "Default", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) == 7) {
+    	strcpy(xservername, "Exceed 7"); whichX = EXCEED7;
+        if(!(regval(GET, "HomeDir", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) &&
+	regval(GET, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata)))
+	printf("If Exceed is installed on this machine, please make sure it is available\n"
+	       "to you as a user.  Otherwise, make sure another X server is installed and running.\n");    
+    } else if (regval(CHECK, "Default", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) == 6) {
+    	strcpy(xservername, "Exceed 6"); whichX = EXCEED6;
+        if(!(regval(GET, "PathName", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) &&
+	regval(GET, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata)))
 	printf("If Exceed is installed on this machine, please make sure it is available\n"
 	       "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
-#endif
-
-    if (!(regval(1, "DXROOT", IBM_ID, dxrootreg, sizeof(dxrootreg), &keydata) 		&&
-	regval(1, "InstallDate", IBM_ID, installdate, sizeof(installdate), &keydata) 	&&
-	regval(1, "UserName", IBM_ID, username, sizeof(username), &keydata) 		&&
-	regval(1, "CompanyName", IBM_ID, userco, sizeof(userco), &keydata) 		&&
-	regval(1, "LicenseKey", IBM_ID, licensekey, sizeof(licensekey), &keydata)))
-	printf("Data Explorer does not appear to be correctly installed on this machine.\n"
-	       "Execution will be attempted anyway, and if it fails, please try reinstalling DX.\n");
-
+    } else if (regval(CHECK, "Default", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata) == 1) {
+    	strcpy(xservername, "X-Win32"); whichX = XWIN32;
+    	if(!regval(GET, "Pathname", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata))
+	printf("If X-Win32 is installed on this machine, please make sure it is available\n"
+	       "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+    }
 #endif (USE_REGISTRY)
 
-    keyformat(licensekey);
     strcpy(exarch, DXD_ARCHNAME);
     strcpy(uiarch, DXD_ARCHNAME);
     putenvstr("ARCH", DXD_ARCHNAME);
@@ -487,8 +528,31 @@ int initrun()
     getenvstr("DXUI", dxui);
     getenvstr("DISPLAY", display);
 
+#if defined(USE_REGISTRY)
+    /* Try the registry for the variables */
     if (!*dxroot)
 	strcpy(dxroot, dxrootreg);
+    if(!*dxdata)
+    	strcpy(dxdata, dxdatareg);
+    if(!*dxmacros)
+    	strcpy(dxmacros, dxmacroreg);
+#endif
+
+    /* If all else fails, set some defaults for OpenSource Unix layout */
+    if (!*dxroot) {
+    	strcpy(dxroot, "\\usr\\local\\dx\\");
+    }
+
+    if (!*dxdata) {
+    	strcpy(dxdata, dxroot);
+	if(dxdata[strlen(dxdata)-1] !='\\')
+		strcat(dxdata, "\\");
+        strcat(dxdata,"data");
+    }
+
+#if defined(DEBUG)
+    printf("%s; %s; %s\n", dxroot, dxdata, dxmacros);
+#endif
 
     /* fill envargs */
 
@@ -509,10 +573,11 @@ int initrun()
 	putenvstr(s, v);
 
 
-int configure()
+void configure()
 {
     envstr path0;
 
+    if(dxroot[strlen(dxroot)-1] == '\\') dxroot[strlen(dxroot)-1] = '\0';
     setifnot(dxexroot, dxroot);
     sprintf(dxexecdef, "%s%sbin_%s%sdxexec%s", dxexroot, DIRSEP, exarch, DIRSEP, EXE_EXT);
     setifnot(dxexec, dxexecdef);
@@ -531,20 +596,29 @@ int configure()
 #ifdef DXD_WIN
 
     getenvstr("Path", path0);
+    
+    if (whichX == EXCEED6) {
+    	/* Set Exceed 6 env variables */
+    	sprintf(path, "%s;%s", exceeddir, path0);
+    	sprintf(xapplresdir, "%s", exceeduserdir);
+    	setenvpair(xapplresdir, "XAPPLRESDIR");
+    	sprintf(xnlspath, "%s\\lib", dxroot);
+    	sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
+    	setenvpair(xnlspath, "XNLSPATH");
+    }
 
-#if defined(HUMMINGBIRD_REGISTRY)
-    sprintf(path, "%s\\bin;%s;%s", dxroot, exceeddir, path0);
-    sprintf(xapplresdir, "%s", exceeduserdir);
-    setenvpair(xapplresdir,	"XAPPLRESDIR");
-#else
+    if (whichX == EXCEED7) {
+    	/* Need to define Exceed Env Variables */
+    }
+
+    if (whichX == XWIN32) {
+    	/* Need to define X-Win32 env variables */
+    }
+    
     sprintf(path, "%s\\bin;%s", dxroot, path0);
-#endif
 
-    sprintf(xnlspath, "%s\\lib", dxroot);
-    sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
-    setenvpair(xnlspath,	"XNLSPATH");
-    setenvpair("",		"HOME");
-    setenvpair(path,		"Path");
+    setenvpair("", "HOME");
+    setenvpair(path, "Path");
 #endif
 
     /*  The following logic is specific to the PC, where the	*/
@@ -553,9 +627,11 @@ int configure()
     /*  to have hardcoded paths in the pc environment (they	*/
     /*  are sed'd out).  Unix needs different logic.		*/
 
+/*
     strcpy(path0, dxmacros);
     KILLSEMI(path0);
     d2u(path0);
+
     sprintf(teststr, "%s/samples/macros", dxroot);
     d2u(teststr);
     if (!*path0 || !strcasecmp(teststr, path0))
@@ -573,8 +649,9 @@ int configure()
 	sprintf(dxdata, "%s/samples/data;%s", dxroot, dxroot);
     else
 	sprintf(dxdata, "%s;%s/samples/data;%s", path0, dxroot, dxroot);
-    setenvpair(dxdata,		"DXDATA");
+*/
 
+    setenvpair(dxdata,		"DXDATA");
     setenvpair(dxmodules,	"DXMODULES");
     setenvpair(dxinclude,	"DXINCLUDE");
     setenvpair(dxmdf,		"DXMDF");
@@ -622,41 +699,11 @@ int buildcmd()
     if (!strcmp(uimode, "-java") && !*FileName) 
 	ErrorGoto("-program name required with -java flag");
 
-    if (dxregister) {
-	printf("Registered to: %s of %s\n", username, userco);
-	printf("Current registration key: %s\n\n", licensekey);
-	printf("You may obtain a registration key by e-mailing your name,\n");
-	printf("your company name, the operating system (NT or 95), and\n");
-	printf("the type of registration (trial, beta, node-locked, floating)\n");
-	printf("to dxsupp@watson.ibm.com, or by calling 914-784-6694\n\n");
-	printf("Enter new registration key or <rtn> to cancel:\n");
-	fgets(tmpstr, sizeof(tmpstr), stdin);
-	if (!*tmpstr) {
-	    printf("Registration left unchanged\n");
-	    exit(0);
-	}
-	keyformat(tmpstr);
-	if (strlen(tmpstr) != 20) {
-	    printf("Improper registration key ... aborting\n");
-	    exit(0);
-	}
-	regval(0, "LicenseKey", IBM_ID, tmpstr, strlen(tmpstr), &keydata);
-	regval(1, "LicenseKey", IBM_ID, tmpstr, sizeof(tmpstr), &keydata);
-	printf("Registration key changed to: %s\n", tmpstr);
-	exit(0);
-    }
-
     if (showversion) {
-#ifdef DXD_WIN
-	printf("Open Visualization Data Explorer: Registered to %s of %s\n", username, userco);
-#if defined(HUMMINGBIRD_REGISTRY)
 	if (*xservername) {
 	    printf("X server found: %s\n", xservername);
-	    printf("X server version: %s\n", xserverversion);
 	}
-#endif
-#endif
-	printf("Open Visualization Data Explorer Script, version %s (%s, %s)\n", SCRIPTVERSION, __TIME__, __DATE__);
+	printf("Open Visualization Data Explorer, version %s (%s, %s)\n", SCRIPTVERSION, __TIME__, __DATE__);
 	sprintf(cmd, "%s -v", dxexec);
 	launchit();
 	sprintf(cmd, "%s -version", dxui);
@@ -744,7 +791,7 @@ int launchit()
 #define BUFFSIZE 2048
     int rc;
     char *args[100];
-    char *s;
+    char *s, *lastSep;
     int i;
     FILE *f, *p;
 
@@ -767,11 +814,14 @@ int launchit()
     else
     {
 	for (i=0, s=cmd; *s; s++) {
+	  if (*s == '\\') lastSep = s;
+	}
+	for (i=0, s=cmd; *s; s++) {
 	    for ( ; *s && *s == ' '; s++)
 		;
 	    if (!*s)
 		break;
-	    for (args[i++]=s; *s && (*s != ' '); s++)
+	    for (args[i++]=s; *s && (*s != ' ' || s < lastSep); s++)
 		;
 	    if (!*s)
 		break;
@@ -998,6 +1048,17 @@ int parseparms()
 
 	s = parm[p];
 
+	is(whereami)
+		d2u(dxroot);
+		printf("installed in %s\n", dxroot);
+		exit(0);
+	next
+	
+	is(whicharch)
+		printf("intelnt\n");
+		exit(0);
+	next
+	
 	is(host)
 	    check("-host: missing host name");
 	    set(exhost);
@@ -1025,7 +1086,7 @@ int parseparms()
 	next
 
 	is(processors)
-	    check("-processors: missong parameter, must give number of processors");
+	    check("-processors: missing parameter, must give number of processors");
 	    strcpy(exprocs, " -p");
 	    add(exprocs);
 	next
@@ -1145,7 +1206,7 @@ int parseparms()
 	    neitheroff(highlight);
 	next
 
-#ifdef DXD_WIN 
+#if 0
 	is(license)
 	    check("-license: missing parameter");
 	    eq(runtime)
@@ -1373,7 +1434,7 @@ int parseparms()
 	    add(uirestrict);
 	next
 
-	argadd(limitImageOpions, uirestrict)
+	argadd(limitImageOptions, uirestrict)
 
 	argadd(metric, uiflags)
 
@@ -1563,12 +1624,6 @@ int longhelp()
 "                      override default hardware rendering library on platforms\n"
 "                      where both are supported.  (default = opengl).\n"
 "\n"
-" -license <type>      force a specific license for either the UI or executive.\n"
-"                      type should be one of:\n"
-"    runtime           force a run-time license (UI or executive)\n"
-"    timed             force a timed (limited function) license (UI only)\n"
-"    develop           force a developer license (UI or executive) (default)\n"
-"\n"
 " -verbose             echo command lines before executing\n"
 " -echo                echo the command lines without executing them\n"
 " -outboarddebug       let user start outboard modules by hand\n"
@@ -1622,12 +1677,6 @@ int longhelp()
 " DXHWMOD              specifies the name of the hardware rendering library \n"
 "                      to use when more than one is supported. Should be\n"
 "                      either DXhwdd.o or DXhwddOGL.o\n"
-"\n"
-" DXTRIALKEY           specifies the trial license key, and overrides the\n"
-"                      trial license file.\n"
-" DXTRIALKEYFILE       specifies the name of the expiration file containing\n"
-"                      the trial license key. \n"
-"                      (default = $DXROOT/expiration)\n"
 "\n"
 " DXROOT               sets directory for -dxroot\n"
 "\n"
