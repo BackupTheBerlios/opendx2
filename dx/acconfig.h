@@ -15,6 +15,8 @@
 #define HAS_M_SQRT2		0
 #define HAS_S_ISDIR		0
 #define HAS_sysmp		0
+#define HAS_sys_errlist		0
+#define HAS__sys_errlist	0
 #undef  REQUIRES_GETHOSTNAME_DECLARATION
 #undef  REQUIRES_BZERO_DECLARATION
 
@@ -29,6 +31,7 @@
 #undef HAVE_HCLXMINIT
 #undef HAVE_HCLXTINIT
 #undef HAVE_SYS_ERRLIST
+#undef HAVE__SYS_ERRLIST
 #undef HAVE_SYSCONFIG_NCPUS
 #undef ALTERNATE_CXX_SIGNAL
 
