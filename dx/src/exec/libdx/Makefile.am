@@ -89,20 +89,20 @@ CLEANFILES = \
 SUFFIXES = .X .Z .h .m .c .o .s .i
 
 $(InputName).c: $(InputName).X class class.awk
-	./class -c $*.X > $*.c
-	./class -h $*.X > $*.h
+	sh ./class -c $*.X > $*.c
+	sh ./class -h $*.X > $*.h
 
 .X.h:
 	rm -f $*.h
-	./class -h $*.X >$*.h
+	sh ./class -h $*.X >$*.h
 
 .X.c:
 	rm -f $*.c
-	./class -c $*.X > $*.c
+	sh ./class -c $*.X > $*.c
 
 .X.o:
 	rm -f $*.c
-	./class -c $*.X >$*.c
+	sh ./class -c $*.X >$*.c
 	$(COMPILE) -c $*.c
 
 .c.i:
