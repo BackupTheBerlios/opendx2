@@ -7,6 +7,7 @@
  */
 #ifndef _DXI_ARCH_H
 #define _DXI_ARCH_H 1
+#endif
 
 #ifndef HAS_S_ISDIR
 #define S_ISDIR(x) ((x) & (S_IFDIR))
@@ -61,6 +62,9 @@
 
 /* socket-specific ifdefs */
 #define DXD_SOCKET_UNIXDOMAIN_OK 1
+#ifndef HAVE_SYS_UN_H
+#undef DXD_SOCKET_UNIXDOMAIN_OK 
+#endif
 #define DXD_HAS_GETDTABLESIZE    1
 
 /* can you use rlimit to stop the exec from creating a huge core file? */
@@ -102,7 +106,11 @@
 /* cannot load runtime-loadable modules after forking */
 #define DXD_NO_MP_RUNTIME 1
 
-#endif   /* linux86 */
+#ifdef linux86
+#endif
+
+#ifdef cygwin
+#endif
 
 /* silicon graphics: indigo, crimson, 280/gtx, onyx, extreme
  */
@@ -253,17 +261,6 @@ typedef int * SelectPtr;
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
 #define DXD_HAS_UNISTD_H 1
 
-/* default values for gamma correction */
-#undef DXD_GAMMA_8BIT
-#undef DXD_GAMMA_12BIT
-#undef DXD_GAMMA_16BIT
-#undef DXD_GAMMA_24BIT
-#define DXD_GAMMA_8BIT  2.0
-#define DXD_GAMMA_12BIT	2.0
-#define DXD_GAMMA_16BIT	2.0
-#define DXD_GAMMA_24BIT 2.0
-
-
 #endif  /* ibm6000 */
 
 
@@ -317,16 +314,6 @@ typedef int * SelectPtr;
 /* system includes are in /usr/include/sys and /usr/include/unistd.h exists */
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
 #define DXD_HAS_UNISTD_H 1
-
-/* default values for gamma correction */
-#undef DXD_GAMMA_8BIT
-#undef DXD_GAMMA_12BIT
-#undef DXD_GAMMA_16BIT
-#undef DXD_GAMMA_24BIT
-#define DXD_GAMMA_8BIT  2.0
-#define DXD_GAMMA_12BIT	2.0
-#define DXD_GAMMA_16BIT	2.0
-#define DXD_GAMMA_24BIT 2.0
 
 /* system includes support for the vfork() system call */
 #define DXD_HAS_VFORK 1
@@ -806,18 +793,6 @@ FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 
 /* compiler apparently doesn't parse \a as alert */
 #define DXD_NO_ANSI_ALERT 1
-
-/* fixed type sizes, if different from standard */
-typedef signed char    int8;
-typedef unsigned char  uint8;
-typedef short          int16;
-typedef unsigned short uint16;
-typedef int            int32;
-typedef unsigned int   uint32;
-typedef long           int64;
-typedef unsigned long  uint64;
-typedef float          float32;
-typedef double         float64;
 
 #define DXD_FIXEDSIZES 1 
 
