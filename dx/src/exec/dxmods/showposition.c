@@ -2,7 +2,7 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showposition.c,v 1.1 1999/03/24 15:18:31 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showposition.c,v 1.2 1999/04/21 18:38:15 gda Exp $
  */
 
 #include <stdlib.h>
@@ -61,7 +61,7 @@ Field show_positions_every ( Field input, float every )
     if ( 0 != DXGetInvalidCount ( i_handle ) )
         for ( i=0; i<newitems; )
         {
-            j = lrand48() % validcount;
+            j = random() % validcount;
 
             if ( DXIsElementValidSequential ( i_handle, j ) &&
                  ( 0 == GETBIT ( aux, j ) ) )
@@ -70,7 +70,7 @@ Field show_positions_every ( Field input, float every )
     else
         for ( i=0; i<newitems; )
         {
-            j = lrand48() % validcount;
+            j = random() % validcount;
 
             if ( 0 == GETBIT ( aux, j ) )
                 { pull[i++] = j; SETBIT ( aux, j, 1 ); }
