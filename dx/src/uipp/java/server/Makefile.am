@@ -1,5 +1,6 @@
 srvbindir = $(prefix)/dx/java/server/bin
 srvoutputdir = $(prefix)/dx/java/output
+userhtmldir = $(prefix)/dx/java/user
 # the server script (in srvbindir) will actually cd and run from the class subdir so that java will find the classes
 # the server will expect to find a file dxserver.paths there to tell the exec where to find .net files
 srvrundir = $(srvbindir)/../class
@@ -28,4 +29,6 @@ README.output:
 
 install-exec-local:
 	$(mkinstalldirs) $(DESTDIR)$(srvoutputdir)
+	$(mkinstalldirs) $(DESTDIR)$(userhtmldir)
 	chmod 777 $(DESTDIR)$(srvoutputdir)
+	chmod 777 $(DESTDIR)$(userhtmldir)
