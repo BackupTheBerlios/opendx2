@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 
+#include <dx/dx.h>
 
 /*
  * Header: $
@@ -20,7 +21,6 @@
 #define Screen XScreen
 #include <X11/Xlib.h>
 #undef Screen
-#include <dx/dx.h>
 
 
 extern int _dxf_SetExceedSocket(int, void *);
