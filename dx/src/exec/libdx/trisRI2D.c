@@ -532,8 +532,7 @@ _dxfCleanup(TrisRI2DInterpolator ti)
 }
 
 #define ON_EDGE(q, r, s) \
-    (((q) == 0.0) && ((r) <= 0.0 && (s) <= 0.0) || ((r) >= 0.0 && (s) >= 0))
-        
+    (((q) == 0.0) && ((((r) <= 0.0) && ((s) <= 0.0)) || (((r) >= 0.0) && ((s) >= 0.0))))
 
 static int _dxftriangular_coords (float *pt, float *p0, 
 			float *p1, float *p2, TriCoord *b, float fuzz)
