@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/StandIn.h,v 1.1 1999/03/24 15:17:47 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/StandIn.h,v 1.2 1999/04/12 21:15:33 gda Exp $
  *
  */
 
@@ -243,7 +243,7 @@ class StandIn : public UIComponent, public DXDragSource
 
 
 
-    void setSelected(int s); 
+    void setSelected(boolean s); 
     int isSelected()        { return this->selected; }
 
     void addArc(EditorWindow* editor, Arc *a);
