@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/Interactor.C,v 1.1 1999/03/31 22:32:31 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/Interactor.C,v 1.2 1999/04/12 21:26:34 gda Exp $
  */
 
 
@@ -577,7 +577,7 @@ void Interactor::layoutInteractorWithNoLabel()
 //
 // ...requires only that it be selected
 //
-boolean Interactor::decideToDrag(XEvent *xev)
+int Interactor::decideToDrag(XEvent *xev)
 {
     InteractorInstance *ii = this->interactorInstance;
     if (!this->developerStyle) return DragSource::Abort;
