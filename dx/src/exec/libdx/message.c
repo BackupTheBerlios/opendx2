@@ -16,7 +16,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if defined(HAVE_SYS_ERRNO_H)
+#include <sys/errno.h>
+#endif
+
+#if defined(HAVE_ERRNO_H)
 #include <errno.h>
+#endif
+
+#if defined(HAVE__SYS_ERRLIST)
+#define sys_errlist _sys_errlist
+#endif
+
 #if defined(HAVE_IO_H)
 #include <io.h>
 #endif
@@ -271,9 +283,6 @@ void
 DXPrintError(char *s)
 {
     extern int sys_nerr;
-#if !defined(linux) && !defined(freebsd)
-    extern char *sys_errlist[];
-#endif
     char *msg, *errnomsg;
     static int been_here = 0;
     static char *messages[(int)ERROR_MAX];

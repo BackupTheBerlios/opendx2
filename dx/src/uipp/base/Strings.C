@@ -10,7 +10,17 @@
 #include <defines.h>
 
 
+#if defined(HAVE_SYS_ERRNO_H)
+#include <sys/errno.h>
+#endif
 
+#if defined(HAVE_ERRNO_H)
+#include <errno.h>
+#endif
+
+#if defined(HAVE__SYS_ERRLIST)
+#define sys_errlist _sys_errlist
+#endif
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
@@ -448,7 +458,6 @@ _sprintf(char *s, const char* format, ...)
 extern
 char *strerror(int errnum)
 {
-    extern char *sys_errlist[];
     return sys_errlist[errnum];
 }
 #endif
