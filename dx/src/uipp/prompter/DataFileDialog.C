@@ -45,5 +45,15 @@ DataFileDialog::~DataFileDialog(){}
 
 void DataFileDialog::okFileWork (const char *string)
 {
+#if defined(intelnt)
+    char *str= new char[strlen(string) + 2];
+    strcpy(str, string);
+/* Convert to Unix if DOS */
+    for(int i=0; i<strlen(str); i++)
+        if(str[i] == '\\') str[i] = '/';
+    this->gcw->setDataFile(str);
+    delete(str);
+#else
     this->gcw->setDataFile(string);
+#endif
 }

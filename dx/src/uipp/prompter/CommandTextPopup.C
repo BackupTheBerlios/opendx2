@@ -55,6 +55,7 @@ Widget
 CommandTextPopup::createTextPopup(Widget parent, const char **items, int nitems,
 	SetTextCallback stc, ChangeTextCallback ctc, void *callData)
 {
+/* Need to add Windows path stuff here. dlt */
 char help_msg[128];
 int i, len;
 #define LENLIM 30
@@ -86,6 +87,11 @@ char *more_items[MAXITEMS];
     	char *head = NUL(char*);
     	char *top_head = NUL(char*);
 	char *cp = top_head = DuplicateString(dxd);
+#if defined(intelnt)
+/* Convert to Unix if DOS */
+	for(i=0; i<len; i++)
+	    if(cp[i] == '\\') cp[i] = '/';
+#endif
 	for (i=0; i<len; i++) {
 	    if (!head) head = &cp[i];
 	    if (cp[i]==SEP_CHAR) {
@@ -105,10 +111,16 @@ char *more_items[MAXITEMS];
 	uiroot = "/usr/local/dx";
 
     char *sampDat = new char[strlen(uiroot) + strlen("samples/data") + 16];
-    if (uiroot[strlen(uiroot)-1] == '/') {
-	sprintf (sampDat, "%s%s", uiroot, "samples/data");
+    strcpy(sampDat, uiroot);
+#if defined(intelnt)
+/* Convert to Unix if DOS */
+	for(i=0; i<strlen(sampDat); i++)
+	    if(sampDat[i] == '\\') sampDat[i] = '/';
+#endif
+    if (sampDat[strlen(uiroot)-1] == '/') {
+	strcat(sampDat, "samples/data");
     } else {
-	sprintf (sampDat, "%s/%s", uiroot, "samples/data");
+	strcat(sampDat, "/samples/data");
     }
 
     //
@@ -161,6 +173,8 @@ char *more_items[MAXITEMS];
 
 void CommandTextPopup::activateTextCallback(const char *file_name, void *)
 {
+/* Once file selected, returns to this function, change pathname to unix
+   to clean up problems. dlt */
 int i;
 char *cp;
 
@@ -174,6 +188,11 @@ char *cp;
     //
     if ((!file_name) || (!file_name[0])) return ;
     char *base_name = DuplicateString(file_name);
+#if defined(intelnt)
+/* Convert to Unix if DOS */
+	for(i=0; i<strlen(base_name); i++)
+	    if(base_name[i] == '\\') base_name[i] = '/';
+#endif
     int len = strlen(base_name);
     for (i=len-1; i>0; i--) {
 	if (base_name[i] == '/') {

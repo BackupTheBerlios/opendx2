@@ -735,6 +735,7 @@ boolean GARChooserWindow::postDataFileSelector()
 
 void GARChooserWindow::setFileSearchDir(const char *value)
 {
+/* Need to put code in for Windows conversion dlt. */
     if (this->file_search_dir) delete this->file_search_dir;
     this->file_search_dir = NUL(char*);
 
@@ -750,10 +751,17 @@ void GARChooserWindow::setFileSearchDir(const char *value)
     int extlen = 0;
     if (ext) extlen = strlen(ext);
     char *dirspec = new char[strlen(this->file_search_dir) + extlen + 3];
-    if (extlen)
-	sprintf (dirspec, "%s/*%s", this->file_search_dir, ext);
-    else
-	sprintf (dirspec, "%s/*", this->file_search_dir);
+    strcpy(dirspec, this->file_search_dir);
+#if defined(intelnt)
+/* Convert to Unix if DOS */
+    for(int i=0; i<strlen(dirspec); i++)
+        if(dirspec[i] == '/') dirspec[i] = '\\';
+    strcat(dirspec, "\\*");
+#else
+    strcat(dirspec, "/*");
+#endif
+    if (extlen) 
+	strcat(dirspec, ext);
     XmString xmstr = XmStringCreateLtoR (dirspec, "bold");
 #ifdef DXD_WIN
     Widget filt = XmFileSelectionBoxGetChild(fsb, XmDIALOG_FILTER_TEXT);
