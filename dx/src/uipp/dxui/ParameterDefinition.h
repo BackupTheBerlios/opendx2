@@ -33,7 +33,7 @@
 class Dictionary;
 
 #define FOR_EACH_PARAM_TYPE(pd, dxtype, iterator) \
- for (iterator.setList(pd->types) ; dxtype = (DXType*)iterator.getNext() ; )
+ for (iterator.setList(pd->types) ; (dxtype = (DXType*)iterator.getNext()) ; )
 
 //
 // Used in the .net file to flag macro parameters as dummies.

@@ -574,7 +574,6 @@
 
 #define DoubleVal(a, dx_l)				\
 	(memcpy(&dx_l, &a, sizeof(double)), dx_l)
-
 #else
 #define DoubleSetArg(a, b, c)				\
 	(a).name = (b);					\
