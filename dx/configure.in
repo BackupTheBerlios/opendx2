@@ -956,7 +956,7 @@ AC_LANG_RESTORE
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
 	putenv re_comp regcmp select socket strcspn strdup strerror \
 	strspn strstr strtod strtol strtoul uname popen vfork trunc \
-        _popen spawnvp _spawnvp regcomp sysmp sysconf \
+        _Errno _popen spawnvp _spawnvp regcomp sysmp sysconf \
         pipe _pipe _popen popen _pclose pclose random rand srandom \
 	getopt srand opendir fork _findfirst strrstr strcasecmp \
 	stricmp getpid _getpid unlink _unlink getlogin isatty _isatty)
