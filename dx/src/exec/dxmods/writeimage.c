@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.4 1999/08/05 22:26:14 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.5 1999/09/30 20:57:08 pdk Exp $
  */
 
 #include <dxconfig.h>
@@ -41,6 +41,7 @@ END:
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <ctype.h>
 #include <dx/dx.h>
 #include <_helper_jea.h>
 #include <_rw_image.h>
@@ -359,7 +360,7 @@ m_WriteImage ( Object *in, Object *out )
     if (iargs.pipe) {
 
 #if HAS_POSIX_SIGNALS
-	sigaction,(SIGPIPE, &oaction);
+	sigaction,(SIGPIPE, &oaction, NULL);
 #else
 	signal(SIGPIPE, oaction);
 #endif /* HAS_POSIX_SIGNALS */
