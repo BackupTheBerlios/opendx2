@@ -67,12 +67,13 @@ int ExecuteCommand(char *cmd,int nCmdShow)
    PROCESS_INFORMATION pi;
    char msgbuf[4096];
 
-   memset(&startInfo,0,sizeof(STARTUPINFO));
-   startInfo.dwFlags = STARTF_USESHOWWINDOW | STARTF_FORCEONFEEDBACK;
+   memset(&startInfo, 0, sizeof(STARTUPINFO));
+   startInfo.cb = sizeof(STARTUPINFO);
+   startInfo.dwFlags = STARTF_USESHOWWINDOW;
    startInfo.wShowWindow = nCmdShow;
    processStarted = CreateProcess(NULL,cmd,NULL,NULL,0,
       NORMAL_PRIORITY_CLASS,
-      NULL,NULL,&startInfo,&pi);
+      NULL,NULL, &startInfo, &pi);
    if (processStarted == 0)
       return -1;
    WaitForInputIdle(pi.hProcess, INFINITE);
@@ -126,7 +127,6 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
 	fclose(f);
 
 	HINSTANCE hinst = FindExecutable(fname, NULL, CmdLine);
-	strcpy(CmdLine, "\"C:\\Program Files\\Netscape\\Communicator\\Program\\netscape.exe\"");
 	if ((int)hinst > 32) {
 	    strcat(CmdLine, " ");
 	    strcat(CmdLine, URL);
