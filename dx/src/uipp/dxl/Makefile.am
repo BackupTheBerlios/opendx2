@@ -11,7 +11,8 @@ dxincludedir = $(DXROOT)/include/dx
 dxlib_LIBRARIES = libDXL.a
 
 noinst_HEADERS = \
-	dxlP.h
+	dxlP.h \
+	dict.h
 
 libDXL_a_SOURCES =  \
 	close.c				\
