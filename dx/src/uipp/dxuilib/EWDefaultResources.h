@@ -414,15 +414,10 @@ String EditorWindow::DefaultResources[] =
     "*vpeDeleteOption.acceleratorText:               	Ctrl+Delete",
 #if defined(macos)
     "*vpeDeleteOption.accelerator:                   	Ctrl<Key>BackSpace",
+#elif defined(aviion)
+    "*vpeDeleteOption.accelerator:			Ctrl<Key>Delete",
 #else
     "*vpeDeleteOption.accelerator:                   	Ctrl<Key>osfDelete",
-#endif
-
-#ifdef aviion
-    "*vpeCutOption.accelerator:                      <Key>Delete",
-    "*vpeCopyOption.accelerator:                     Shift<Key>Delete",
-    "*vpePasteOption.accelerator:                    Shift<Key>Insert",
-    "*vpeDeleteOption.accelerator:                   Ctrl<Key>Delete",
 #endif
 
     "*vpeAddDecorator.labelString:                	Add Annotation",
@@ -506,9 +501,9 @@ String EditorWindow::DefaultResources[] =
     "*vpeGridOption.labelString:                  	Grid...",
     "*vpeGridOption.mnemonic:                     	G",
 
-    "*fileMenuPulldown.tearOffModel:		  XmTEAR_OFF_DISABLED",
-    "*editMenuPulldown.tearOffModel:		  XmTEAR_OFF_DISABLED",
-    "*windowsMenuPulldown.tearOffModel:		  XmTEAR_OFF_DISABLED",
+    "*fileMenuPulldown.tearOffModel:		  	XmTEAR_OFF_DISABLED",
+    "*editMenuPulldown.tearOffModel:		  	XmTEAR_OFF_DISABLED",
+    "*windowsMenuPulldown.tearOffModel:		  	XmTEAR_OFF_DISABLED",
 
     "*vpeOnVisualProgramOption.labelString:       	Application Comment...",
     "*vpeOnVisualProgramOption.mnemonic:          	A",

@@ -70,7 +70,7 @@ String DXWindow::DefaultResources[] =
 String DXWindow::DefaultResources[] =
 {
     "*executeMenu.labelString:                    	Execute",
-    "*executeMenu.mnemonic:                       	X",
+    "*executeMenu.mnemonic:                       	x",
     "*executeOnceOption.labelString:              	Execute Once",
     "*executeOnceOption.mnemonic:                 	E",
     "*executeOnceOption.accelerator:              	Ctrl<Key>E",
