@@ -13,17 +13,11 @@
 #ifndef _StartupApplication_h
 #define _StartupApplication_h
 
-
-
 #if defined(HAVE_SSTREAM)
 #include <sstream>
 #elif defined(HAVE_STRSTREAM_H)
 #include <strstream.h>
 #elif defined(HAVE_STRSTREA_H)
-#include <strstrea.h>
-#endif
-
-#if defined(HAVE_STRSTREA_H)
 #include <strstrea.h>
 #endif
 

@@ -16,9 +16,7 @@
 #include <sstream>
 #elif defined(HAVE_STRSTREAM_H)
 #include <strstream.h>
-#endif
-
-#if defined(HAVE_STRSTREA_H)
+#elif defined(HAVE_STRSTREA_H)
 #include <strstrea.h>
 #endif
 
