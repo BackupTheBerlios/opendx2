@@ -25,7 +25,7 @@
 #define INTEL86 
 #endif
 
-#include <hdf/dfsd.h>
+#include <dfsd.h>
 #include <ctype.h>
 
 /* special access: needs extra include file, and has different constants 

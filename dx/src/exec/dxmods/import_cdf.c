@@ -26,7 +26,7 @@
 
 #if defined(HAVE_LIBCDF)
 
-#include <cdf/cdf.h>
+#include <cdf.h>
 #include "import.h"
 #include "impCDF.h"
 
