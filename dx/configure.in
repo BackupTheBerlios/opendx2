@@ -5,8 +5,7 @@ AC_SUBST(YACC)
 AC_SUBST(ARCH)
 AC_SUBST(EXEEXT)
 AC_SUBST(INSTALL_DX_EXE)
-AC_SUBST(INSTALL_DX_SCRIPT)
-AC_SUBST(INSTALL_DX_WORKERSCRIPT)
+AC_SUBST(INSTALL_DX_CSH)
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
