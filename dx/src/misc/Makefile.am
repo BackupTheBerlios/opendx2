@@ -7,7 +7,9 @@ noinst_PROGRAMS = dxlocal
 archmakdir = $(prefix)/dx/lib_$(ARCH)
 archmak_DATA = arch.mak
 
-dxlocal_SOURCES = dx.c 
+dxlocal_SOURCES = dx.c utils.c
+
+noinst_HEADERS = dx.h utils.h
 
 install-exec-local: 
 	if test ! -z "@INSTALL_DX_EXE@" ; then 				     \

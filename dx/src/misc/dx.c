@@ -7,144 +7,52 @@
 /***********************************************************************/
 /*  DX script - C-Windows version	*/
 
+#include "dx.h"
+
+#if !defined(intelnt) /* Only needed for Windows and Cygwin */
+#include <stdio.h>
+int main(){fprintf(stderr, "misc/dx is only needed on Windows based systems.\n"); return 1;}
+#else /* Windows system compile application */
+
+#include "utils.h"
+
 /* #define USE_REGISTRY 1 */
 
-#include <dxconfig.h>
-#include <dx/dx.h>
-#include <dx/arch.h>
-
-#if defined(HAVE_WINDOWS_H)
-#include <windows.h>
-#endif
-
-#if defined(HAVE_UNISTD_H)
-#include <unistd.h>
-#endif
-
-#if defined(HAVE_ERRNO_H)
-#include <errno.h>
-#endif
-
-#if defined(HAVE_PROCESS_H)
-#include <process.h>
-#endif
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define EXE_EXT ".exe"
-#define DIRSEP "\\"
-#define PATHSEP ";"
-
-#define SCRIPTVERSION DXD_VERSION_STRING
-
-enum regCo {
-  OPENDX_ID = 1,
-  HUMMBIRD_ID = 2,
-  STARNET_ID = 3
-};
-
-enum regGet {
-  GET = 1,
-  CHECK = 2,
-  SET = 3
-};
-
-enum xServer { UNKNOWN, EXCEED6, EXCEED7, XWIN32 };
-
-enum xServer whichX = UNKNOWN;
-
-#ifndef MAX_PATH
-#define MAX_PATH 256
-#endif
-
-#define SMALLSTR 50
-#define MAXARGS 200
-#define MAXNAME MAX_PATH
-#define MAXENV  4096
-#define MAXPARMS 200
-
-#if defined(HAVE__SPAWNVP) && !defined(HAVE_SPAWNVP)
-#define spawnvp _spawnvp
-#define HAVE_SPAWNVP 1
-#endif
-
-#define IfError(s)		\
-    if (rc != ERROR_SUCCESS) {	\
-	strcpy(errstr, s);	\
-	goto error;		\
-    }
-
-#define IfError2(s, t, u) {			\
-    if (rc != ERROR_SUCCESS) {			\
-	sprintf(errstr, "%s %s %s", s, t, u);	\
-	goto error;				\
-    }						\
-}
-
-
-#define ErrorGoto(s) {		\
-	strcpy(errstr, s);	\
-	goto error;		\
-    }
-
-#define ErrorGoto2(s, t, u) {			\
-	sprintf(errstr, "%s %s %s", s, t, u);	\
-	goto error;				\
-    }
-
-#define KILLSEMI(s) {							\
-	int kk;								\
-	while ((kk = strlen(s)) && ((s[kk-1] == ';') || (s[kk-1] == ' ')))	\
-	    s[kk-1] = '\0';						\
-    }
-
-#define setenvpair(s, v)	\
-    if (s && *s && v && *v)	\
-	if(!putenvstr(s, v)) {	\
-    printf("\nCannot set env var: %s\n", s); 	\
-}
-
-#if !defined(HAVE_GETSHORTPATHNAME)
-
+#if defined(cygwin)
 void
 GetShortPathName(char *src, char *dst, int max)
 {
     strncpy(dst, src, strlen(src)+1);
 }
-
 #endif
 
-typedef char smallstr[SMALLSTR];
-typedef char envstr[MAXENV];
-typedef char namestr[MAXNAME];
-typedef char valuestr[MAXNAME];
+#define ConvertShortPathName(s1) { \
+	envstr sPath = "";	\
+	GetShortPathName(s1, sPath, MAXENV);	\
+    	strncpy(s1, sPath, strlen(s1));			\
+}
 
-namestr	parm[MAXPARMS];
+/* Global Variables */
 
-int	p =		0;
+enum xServer whichX = UNKNOWN;
+
 int	numparms =	0;
-
 int	exonly =	0;
 int	uionly =	0;
 int	startup =	0;
-int	dxdataset =	0;
 int	seecomline =	0;
 int	echo =		0;
-int	help =		0;
-int	morehelp =	0;
 int	showversion =	0;
 int	prompter =	0;
 int	tutor =		0;
 int	builder =	0;
 int	wizard = 	0;
 int	portset =	0;
-int javaserver = 0;
+int	javaserver = 	0;
+int	needShortPath = 0;
 
+namestr		parm[MAXPARMS];
 envstr		cmd =		"";
-envstr		outenv =	"";
-envstr		pipestr =	"";
 envstr		path =		"";
 
 envstr		dxargs =	"";
@@ -162,15 +70,14 @@ smallstr 	uilog =		"";
 smallstr 	exlog =		"";
 smallstr 	uicache =	"";
 smallstr 	excache =	"";
-smallstr 	extrace =	"";
 smallstr 	uitrace =	"";
-smallstr 	exread =	"";
+smallstr 	extrace =	"";
 smallstr 	uiread =	"";
-smallstr 	extime =	"";
+smallstr 	exread =	"";
 smallstr 	uitime =	"";
-smallstr 	exhilite =	"";
+smallstr 	extime =	"";
 smallstr 	uihilite =	"";
-smallstr 	exlic =		"";
+smallstr 	exhilite =	"";
 namestr 	FileName =	"";
 namestr 	dxroot =	"";
 #if defined(cygwin)
@@ -196,48 +103,35 @@ envstr	 	dxmacros =	"";
 envstr 		dxmodules =	"";
 namestr 	uirestrict =	"";
 namestr	 	prompterflags =	"";
-namestr		licensekey =	"";
 namestr		dxhwmod =	"";
 smallstr	port = 		"";
 smallstr	host =		"";
 smallstr	dx8bitcmap =	"";
 namestr		dxinclude =	"";
 smallstr	dxcolors =	"";
-smallstr	exarch = 	"";
 smallstr	uiarch =	"";
+smallstr	exarch = 	"";
 namestr		curdir =	"";
-namestr		dxexecdef = 	"";
-namestr		dxmode =	"";
 namestr		motifbind = 	"DX*officialmascot: fred";
-envstr		exflags = 	"";
-namestr		exproc = 	"";
-namestr		exerrlvl = 	"";
-namestr		exdist =	"";
-namestr		exoutdb = 	"";
-namestr		uidepth =	"";
-namestr		uiproc =	"";
-namestr		uioutdb =	"";
 namestr		xparms =	"";
-namestr		installdate =	"";
 namestr		thishost = 	"localhost";
 smallstr 	uidebug =	"";
-namestr		username =	"";
-namestr		userco =	"";
-namestr		shortPath =	"";
-namestr		classpath = "";
 
-envstr		teststr = 	"";
+namestr		classpath = 	"";
+
 namestr		msgstr =	"";
 namestr		errstr =	"";
 envstr		argstr =	"";
 envstr		magickhome =    "";
 
-int getenvstr(char *name, char *value);
-int putenvstr(char *name, char *value);
+
+/* Function Prototypes */
+
 int regval(enum regGet get, char *name, enum regCo co, char *value, int size, int *word);
 int initrun();
 int getparms(int argc, char **argv);
 int fillparms(char *str, int *n);
+int parseparms();
 void configure();
 void dxjsconfig(); /* Add more env variables for JavaDX Server */
 int buildcmd();
@@ -245,8 +139,6 @@ int launchit();
 int launchjs(); /* Launch the JavaDX Server */
 int shorthelp();
 int longhelp();
-void d2u(char *s);
-void u2d(char *s);
 
 int main(int argc, char **argv)
 {
@@ -264,119 +156,6 @@ int main(int argc, char **argv)
     exit(0);
 }
 
-void d2u(char *s)
-{
-    int i;
-    for (i=0; s && *s && (i<strlen(s)); i++)
-	if (s[i] == '\\')
-	    s[i] = '/';
-}
-
-void u2d(char *s)
-{
-    int i;
-    for (i=0; s && *s && (i<strlen(s)); i++)
-	if (s[i] == '/')
-	    s[i] = '\\';
-}
-
-void p2des(char *s) /* path to dos with extra seperator */
-{
-	namestr temp;
-    int i, j, length;
-    length=strlen(s);
-    for(i=0, j=0; i<length; i++) {
-    	if(s[i] == '/' || s[i] == '\\') {
-    		temp[j++] = '\\'; temp[j++] = '\\';
-    	} else
-    		temp[j++] = s[i];
-	}
-    temp[j] = '\0';
-    strcpy(s, temp);
-}
-
-
-void removeQuotes(char *s)
-{
-    char *p, *p2; p = s; p2 = s;
-    while(p && *p) {
-	while(*p && p && *p == '"') p++;
-	*p2 = *p; p2++; p++;
-    }
-    *p2 = '\0';
-}
-
-void addQuotes(char *s)
-{
-    int i, length;
-    length=strlen(s);
-    for(i=length; i>0; i--)
-	s[i]=s[i-1];
-    s[length+1] = '"';
-    s[length+2] = '\0';
-    s[0] = '"';
-}
-
-int getenvstr(char *name, char *value)
-{
-    char *s;
-
-    s = getenv(name);
-    if (s)
-	strcpy(value, s);
-
-    return ((s && *s) ? 1 : 0);
-}
-
-/*  In Windows, the name/value pair must be separated by = 	*/
-/*  with no blanks on either side of =.  Null values would have */
-/*  name=\0 to unset them in the environment.			*/
-int putenvstr(char *name, char *value)
-{
-    char s[1000];
-    char *p, *q;
-    int rc;
-    int len;
-    int newlen;
-
-    if (!*name)
-	return 0;
-
-    if (!*value)
-        return 0;
-
-    for(p = name; *p == ' '; p++);
-    for(q = &name[strlen(name)-1]; *q == ' ' && q != p; q--);
-
-    len = (int)(q-p)+1;
-    strncpy(s, p, len);
-    s[len] = '\0';
-    strcat(s, "=");
-
-    /* All env params except path and MAGICK_HOME should be Unix style */
-    if (strcasecmp(s, "path=") && strcasecmp(s, "magick_home="))
-	d2u(value);
-
-    for(p = value; *p == ' '; p++);
-    if(strlen(p)) {
-	for(q = &value[strlen(value)-1]; *q == ' ' && q != p; q--);
-	if (*p != ' ') {
-	    newlen = strlen(s);
-	    len = (int)(q-p)+1;
-	    strncat(s, p, len);
-	    s[len+newlen] = '\0';
-	}
-    }
-
-    p = malloc(strlen(s) + 1);
-    strcpy(p, s);
-    
-    rc = putenv(p);
-    if (echo)
-	printf("%s\n", s);
-    return (!rc ? 1 :0);
-}
-
 #if defined(USE_REGISTRY)
 
 /*  The following queries the registry for various paths that,	*/
@@ -390,157 +169,58 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 	char key2[500];
 	int valtype;
 	int sizegot = size;
-	HKEY hkey[10];
+	HKEY hkey;
 	long rc;
-	int i, k=0;
+	int i;
 	DWORD options;
 	HKEY regLoc = HKEY_LOCAL_MACHINE;
+	DWORD dwDisp;
+	REGSAM access = KEY_READ;
+	const char *regpath;
+
+	if(get == SET) access = KEY_ALL_ACCESS;
 
 	/* First determine which system we're looking up. */
 
 	if(co == OPENDX_ID) {
-		char *path[256] = { "SOFTWARE", "OpenDX", "DX", "CurrentVersion" };
-		const int pathlength = 4;
-
-		options = KEY_QUERY_VALUE;
-
-		/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
-		/* Check there first if not found then search in CURRENT_USER   */
-		strcpy(key, ""); 
-		k = 0;
-		for(i=0; i < pathlength; i++) {
-			strcat(key, path[i]);
-			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-			if(rc != ERROR_SUCCESS)
-				break;
-			strcat(key, "\\");
-		}
-
-		if(rc != ERROR_SUCCESS)
-			regLoc = HKEY_CURRENT_USER;
-		strcpy(key, ""); 
-		k = 0;
-		for(i=0; i < pathlength; i++) {
-			strcat(key, path[i]);
-			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-			if(rc != ERROR_SUCCESS)
-				break;
-			strcat(key, "\\");
-		}
-
-		if(rc != ERROR_SUCCESS && get == CHECK) return 0;
-		else if (get == CHECK) return 1;
-		/* hkey now pointing in the proper reg entry area */
+		regpath = "SOFTWARE\\OpenDX\\DX\\CurrentVersion";
 	}
 	else if (co == STARNET_ID) { 
-		char *path[256] = { "SOFTWARE", "Starnet", "X-Win32", "5.1" };
-		const int pathlength = 4;
-
-		options = KEY_QUERY_VALUE;
-
-		/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
-		/* Check there first if not found then search in CURRENT_USER   */
-		strcpy(key, ""); 
-		k = 0;
-		for(i=0; i < pathlength; i++) {
-			strcat(key, path[i]);
-			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-			if(rc != ERROR_SUCCESS)
-				break;
-			strcat(key, "\\");
-		}
-
-		if(rc != ERROR_SUCCESS)
-			regLoc = HKEY_CURRENT_USER;
-		strcpy(key, ""); 
-		k = 0;
-		for(i=0; i < pathlength; i++) {
-			strcat(key, path[i]);
-			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-			if(rc != ERROR_SUCCESS)
-				break;
-			strcat(key, "\\");
-		}
-
-		if(rc != ERROR_SUCCESS && get == CHECK) return 0;
-		else if(get == CHECK) return 1;
-		/* hkey now pointing in the proper reg entry area */
+		regpath = "SOFTWARE\\Starnet\\X-Win32\\5.1";
 	}
-	else { /* Must be Hummingbird */
-		char *path[256] = { "SOFTWARE", "Hummingbird", "Exceed", "CurrentVersion" };
-		char *path2[256] = { "SOFTWARE", "Hummingbird", "Connectivity", "7.00", "Exceed" };
-		const int pathlength = 4;
-		const int pathlength2 = 5;
-
-		options = KEY_QUERY_VALUE;
-
-		/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
-		/* Check there first if not found then search in CURRENT_USER   */
-		strcpy(key, ""); 
-		k = 0;
-		for(i=0; i < pathlength; i++) {
-			strcat(key, path[i]);
-			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-			if(rc != ERROR_SUCCESS)
-				break;
-			strcat(key, "\\");
-		}
-
-		if(rc != ERROR_SUCCESS)
-			regLoc = HKEY_CURRENT_USER;
-		strcpy(key, ""); 
-		k = 0;
-		for(i=0; i < pathlength; i++) {
-			strcat(key, path[i]);
-			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-			if(rc != ERROR_SUCCESS)
-				break;
-			strcat(key, "\\");
-		}
-
-		if(rc == ERROR_SUCCESS && get == CHECK) return 6;
-		if(rc != ERROR_SUCCESS) { /* Now check for v 7. */
-			regLoc = HKEY_LOCAL_MACHINE;
-			strcpy(key, ""); 
-			k = 0;
-			for(i=0; i < pathlength2; i++) {
-				strcat(key, path2[i]);
-				rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-				if(rc != ERROR_SUCCESS)
-					break;
-				strcat(key, "\\");
-			}
-
-			if(rc != ERROR_SUCCESS)
-				regLoc = HKEY_CURRENT_USER;
-			strcpy(key, ""); 
-			k = 0;
-			for(i=0; i < pathlength2; i++) {
-				strcat(key, path2[i]);
-				rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-				if(rc != ERROR_SUCCESS)
-					break;
-				strcat(key, "\\");
-			}
-		}
-		if(rc != ERROR_SUCCESS && get == CHECK) return 0;
-		else if(get == CHECK) return 7;
-		/* hkey now pointing in the proper reg entry area */
-
+	else if (co == HUMMBIRD_ID) {
+		regpath = "SOFTWARE\\Hummingbird\\Exceed\\CurrentVersion";
 	}
+	else 
+		regpath = "SOFTWARE\\Hummingbird\\Connectivity\\7.00\\Exceed";
+	/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
+	/* Check there first if not found then search in CURRENT_USER   */
+	rc = RegCreateKeyEx(regLoc, __TEXT(regpath), 0, 0, REG_OPTION_NON_VOLATILE,
+	access, 0, &hkey, &dwDisp);
+
+	if(rc != ERROR_SUCCESS) {
+		regLoc = HKEY_CURRENT_USER;
+		rc = RegCreateKeyEx(regLoc, __TEXT(regpath), 0, 0, REG_OPTION_NON_VOLATILE,
+		access, 0, &hkey, &dwDisp);
+	}
+
+	if(rc != ERROR_SUCCESS && get == CHECK) return 0;
+	else if (get == CHECK) {
+		RegCloseKey(hkey);
+		return 1;
+	}
+	/* hkey now pointing in the proper reg entry area */
 
 	if (get == GET) {
-		rc = RegQueryValueEx(hkey[k-1], (LPTSTR) name, (LPDWORD) 0, 
+		rc = RegQueryValueEx(hkey, __TEXT(name), (LPDWORD) 0, 
 		(LPDWORD) &valtype, (LPBYTE) value, &sizegot);
 		IfError2("Query value failed on registry value", name, "");
 
-		for (i=k; i > 0; i--) {
-			rc = RegCloseKey(hkey[i-1]);
-			IfError2("CloseKey failed on registry value", name, "");
-		}
+		rc = RegCloseKey(hkey);
+		IfError2("CloseKey failed on registry value", name, "");
 
 		/* Now check to see if it is a DWORD entry if so, pass it back through word
-				not as a string through name. */
+										not as a string through name. */
 		switch(valtype) {
 		case REG_DWORD:
 			*word = *((int *)value); 
@@ -558,14 +238,12 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 	else {
 		if (get == SET)
 			options = KEY_SET_VALUE;
-		rc = RegSetValueEx((HKEY)hkey[k-1], (LPCSTR)name, (DWORD)0, 
+		rc = RegSetValueEx((HKEY)hkey, (LPCSTR)name, (DWORD)0, 
 		(DWORD)REG_SZ, (CONST BYTE *)value, (DWORD)strlen(value)+1);
 		IfError("Registration key installation failed");
 
-		for (i=k; i > 0; i--) {
-			rc = RegCloseKey(hkey[i-1]);
-			IfError("CloseKey failed");
-		}
+		rc = RegCloseKey(hkey);
+		IfError("CloseKey failed");
 		return 1;
 	}
 
@@ -578,41 +256,37 @@ error:
 
 int initrun()
 {
-    int keydata;
-
+    OSVERSIONINFO osvi;
 #if defined(USE_REGISTRY)
+    int keydata;
 
     namestr 	dxrootreg =	"";
     namestr	dxdatareg =	"";
     namestr	dxmacroreg = 	"";
     namestr	magickhomereg = "";
 
-    if(regval(CHECK, "Default", OPENDX_ID, dxrootreg, sizeof(dxrootreg), &keydata)) {
-    	if(regval(GET, "DXROOT", OPENDX_ID, dxrootreg, sizeof(dxrootreg), &keydata) +
+    if(!(regval(CHECK, "Default", OPENDX_ID, dxrootreg, sizeof(dxrootreg), &keydata) &&
+       (regval(GET, "DXROOT", OPENDX_ID, dxrootreg, sizeof(dxrootreg), &keydata) +
     	regval(GET, "DXDATA", OPENDX_ID, dxdatareg, sizeof(dxdatareg), &keydata) +
     	regval(GET, "DXMACROS", OPENDX_ID, dxmacroreg, sizeof(dxmacroreg), &keydata) +
-	regval(GET, "IMHOME", OPENDX_ID, magickhomereg, sizeof(magickhomereg), &keydata) < 4)
-    	    	printf("This version of OpenDX does not appear to be correctly installed on this\n"
-    	       "machine. Execution will be attempted anyway, and if it fails, please try\n"
-    	       "reinstalling the software.\n");
-    } else
+	regval(GET, "IMHOME", OPENDX_ID, magickhomereg, sizeof(magickhomereg), &keydata))  > 3) )
     	    	printf("This version of OpenDX does not appear to be correctly installed on this\n"
     	       "machine. Execution will be attempted anyway, and if it fails, please try\n"
     	       "reinstalling the software.\n");
 
-    if(regval(CHECK, "Default", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) == 7) {
+    if(regval(CHECK, "Default", HUMMBIRD_ID2, exceeddir, sizeof(exceeddir), &keydata)) {
     	strcpy(xservername, "Exceed 7"); whichX = EXCEED7;
-        if(!(regval(GET, "HomeDir", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) &&
-	regval(GET, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata)))
-	printf("If Exceed is installed on this machine, please make sure it is available\n"
-	       "to you as a user.  Otherwise, make sure another X server is installed and running.\n");    
-    } else if (regval(CHECK, "Default", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) == 6) {
+        if(!(regval(GET, "HomeDir", HUMMBIRD_ID2, exceeddir, sizeof(exceeddir), &keydata) &&
+			regval(GET, "UserDir", HUMMBIRD_ID2, exceeduserdir, sizeof(exceeduserdir), &keydata)))
+			printf("If Exceed is installed on this machine, please make sure it is available\n"
+	       		"to you as a user.  Otherwise, make sure another X server is installed and running.\n");    
+    } else if (regval(CHECK, "Default", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata)) {
     	strcpy(xservername, "Exceed 6"); whichX = EXCEED6;
         if(!(regval(GET, "PathName", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) &&
 	regval(GET, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata)))
 	printf("If Exceed is installed on this machine, please make sure it is available\n"
 	       "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
-    } else if (regval(CHECK, "Default", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata) == 1) {
+    } else if (regval(CHECK, "Default", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata)) {
     	strcpy(xservername, "X-Win32"); whichX = XWIN32;
     	if(!regval(GET, "Pathname", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata))
 	printf("If X-Win32 is installed on this machine, please make sure it is available\n"
@@ -620,11 +294,23 @@ int initrun()
     }
 #endif (USE_REGISTRY)
 
+    osvi.dwOSVersionInfoSize = sizeof(osvi);
+    GetVersionEx(&osvi);
+    
+    if(osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
+    	needShortPath = 1;
+
     strcpy(exhost, thishost);
     strcpy(exarch, DXD_ARCHNAME);
     strcpy(uiarch, DXD_ARCHNAME);
-    putenvstr("ARCH", DXD_ARCHNAME);
+    putenvstr("ARCH", DXD_ARCHNAME, echo);
     startup = 1;
+    
+    /* Currently everything is correct, except that on NT/2000 we need to
+       not convert to short pathnames. Only do this on Windows ME and below.
+       Thus we need to query the system get the revision number and then
+       make the decision based on this fact. */
+    
     getenvstr("DXARGS", dxargs);
     getcwd(curdir, sizeof(curdir));
     getenvstr("DXROOT", dxroot);
@@ -669,8 +355,8 @@ int initrun()
 #if defined(cygwin)
     u2d(msdos_dxroot);
 #endif
-    GetShortPathName(dxroot, shortPath, MAXNAME);
-    strcpy(dxroot, shortPath);
+    if(needShortPath)
+    	ConvertShortPathName(dxroot);
 
     if (dxdata && *dxdata)
 	strcat(dxdata, ";");
@@ -705,7 +391,6 @@ void configure()
 {
 	int result=0;
 	namestr temp, xs;
-	envstr tempPath;
 
 	if(dxroot[strlen(dxroot)-1] == '\\') dxroot[strlen(dxroot)-1] = '\0';
 
@@ -716,15 +401,17 @@ void configure()
 	if(strcmp(xs, "yes") != 0) {
 		if (whichX == EXCEED6) {
 			/* Set Exceed 6 env variables */
-			GetShortPathName(exceeddir, shortPath, MAXNAME);
-			if(shortPath[strlen(shortPath)-1] == '\\') 
-				shortPath[strlen(shortPath)-1] = '\0';
+			if(needShortPath)
+				ConvertShortPathName(exceeddir);
+			if(exceeddir[strlen(exceeddir)-1] == '\\') 
+				exceeddir[strlen(exceeddir)-1] = '\0';
 			strcat(path, ";"); 
-			strcat(path, shortPath);
+			strcat(path, exceeddir);
 			setenvpair("Path", path);
 			sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
-			GetShortPathName(xkeysymdb, shortPath, MAXNAME);
-			setenvpair("XKEYSYMDB", shortPath);
+			if(needShortPath)
+				ConvertShortPathName(xkeysymdb);
+			setenvpair("XKEYSYMDB", xkeysymdb);
 			//sprintf(xapplresdir, "%s", exceeduserdir);
 			//setenvpair("XAPPLRESDIR", xapplresdir);
 			//sprintf(xnlspath, "%s\\lib", dxroot);
@@ -739,15 +426,17 @@ void configure()
 			/* Need to define X-Win32 env variables */
 			/* set DISPLAY to COMPUTERNAME:0 */
 			/* Start XWIN32 */
-			GetShortPathName(starnetdir, shortPath, MAXNAME);
-			if(shortPath[strlen(shortPath)-1] == '\\') 
-				shortPath[strlen(shortPath)-1] = '\0';
+			if(needShortPath)
+				ConvertShortPathName(starnetdir);
+			if(starnetdir[strlen(starnetdir)-1] == '\\') 
+				starnetdir[strlen(starnetdir)-1] = '\0';
 			strcat(path,";"); 
-			strcat(path, shortPath);
+			strcat(path, starnetdir);
 			setenvpair("Path", path);
 			sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
-			GetShortPathName(xkeysymdb, shortPath, MAXNAME);
-			setenvpair("XKEYSYMDB", shortPath);
+			if(needShortPath)
+				ConvertShortPathName(xkeysymdb);
+			setenvpair("XKEYSYMDB", xkeysymdb);
 			result = _spawnlp(_P_NOWAIT, "xwin32", "xwin32", NULL);
 			if(result == -1)
 				printf( "Error spawning xwin32: %s\n", strerror( errno ) );
@@ -758,21 +447,23 @@ void configure()
 
 	if (whichX == EXCEED7) {
 		/* Need to define Exceed Env Variables */
-		GetShortPathName(exceeddir, shortPath, MAXNAME);
-		if(shortPath[strlen(shortPath)-1] == '\\') 
-			shortPath[strlen(shortPath)-1] = '\0';
+		if(needShortPath)
+			ConvertShortPathName(exceeddir);
+		if(exceeddir[strlen(exceeddir)-1] == '\\') 
+			exceeddir[strlen(exceeddir)-1] = '\0';
 		strcat(path, ";"); 
-		strcat(path, shortPath);
+		strcat(path, exceeddir);
 	}
 
 	sprintf(temp, "%s\\bin_%s", dxroot, DXD_ARCHNAME);
-	GetShortPathName(temp, shortPath, MAXNAME);
+	if(needShortPath)
+		ConvertShortPathName(temp);
 	strcat(path, ";"); 
-	strcat(path, shortPath);
+	strcat(path, temp);
 
 	u2d(magickhome);
-	GetShortPathName(magickhome, shortPath, MAXNAME);
-	strcpy(magickhome, shortPath);
+	if(needShortPath)
+		ConvertShortPathName(magickhome);
 	strcat(path, ";"); 
 	strcat(path, magickhome);
 
@@ -808,6 +499,13 @@ void configure()
 	//Solve problem with queuing in DXLink within Windows.
 		setenvpair("DX_STALL", "1");
 
+	/* Due to the way XrmParseCommand works, it cannot accept
+           spaces when launching other processes from dxui, etc. 
+	   Therefore, must store root in the short version without
+           spaces. */
+	if(strstr(dxroot, " "))
+		ConvertShortPathName(dxroot);
+	
 	setenvpair("DXROOT", dxroot);
 	if (strcasecmp(dxroot, dxexroot))
 		setenvpair("DXEXECROOT", dxexroot);
@@ -819,42 +517,46 @@ void configure()
 
 
 void dxjsconfig() {
-    int result=0;
     namestr jdxsrvPath, temp;
-    envstr tempPath;
 
     if(dxroot[strlen(dxroot)-1] == '\\') dxroot[strlen(dxroot)-1] = '\0';
-    sprintf(shortPath, "%s\\java\\server", dxroot);
-    GetShortPathName(shortPath, jdxsrvPath, MAXNAME);
+    sprintf(jdxsrvPath, "%s\\java\\server", dxroot);
+    if(needShortPath)
+	ConvertShortPathName(jdxsrvPath);
 
-	sprintf(shortPath, "%s\\class", jdxsrvPath);
-	GetShortPathName(shortPath, classpath, MAXNAME);
+    sprintf(classpath, "%s\\class", jdxsrvPath);
+    if(needShortPath)
+	ConvertShortPathName(classpath);
 
     getenvstr("Path", path);
     
     /* Add dxroot\bin */
     sprintf(temp, "%s\\bin", dxroot);
-    GetShortPathName(temp, shortPath, MAXNAME);
-    strcat(path, ";"); strcat(path, shortPath);
+    if(needShortPath)
+	ConvertShortPathName(temp);
+    strcat(path, ";"); strcat(path, temp);
 
     /* Add dxroot\bin_arch */
     sprintf(temp, "%s\\bin_%s", dxroot, DXD_ARCHNAME);
-    GetShortPathName(temp, shortPath, MAXNAME);
-    strcat(path, ";"); strcat(path, shortPath);
+    if(needShortPath)
+	ConvertShortPathName(temp);
+    strcat(path, ";"); strcat(path, temp);
 
     /* Add dxroot\lib_arch */
     sprintf(temp, "%s\\lib_%s", dxroot, DXD_ARCHNAME);
-    GetShortPathName(temp, shortPath, MAXNAME);
-    strcat(path, ";"); strcat(path, shortPath);
+    if(needShortPath)
+	ConvertShortPathName(temp);
+    strcat(path, ";"); strcat(path, temp);
 
     /* Add jdxsrvPath\lib_arch */
     sprintf(temp, "%s\\lib_%s", jdxsrvPath, DXD_ARCHNAME);
-    GetShortPathName(temp, shortPath, MAXNAME);
-    strcat(path, ";"); strcat(path, shortPath);
+    if(needShortPath)
+	ConvertShortPathName(temp);
+    strcat(path, ";"); strcat(path, temp);
 
     u2d(magickhome);
-    GetShortPathName(magickhome, shortPath, MAXNAME);
-    strcpy(magickhome, shortPath);
+    if(needShortPath)
+	ConvertShortPathName(magickhome);
     strcat(path, ";"); strcat(path, magickhome);
 
     setenvpair("Path", path);
@@ -866,21 +568,24 @@ void dxjsconfig() {
     /*  are sed'd out).  Unix needs different logic.		*/
 
     sprintf(temp, "%s\\dxmacros", jdxsrvPath);
-    GetShortPathName(temp, shortPath, MAXNAME);
+    if(needShortPath)
+	ConvertShortPathName(temp);
     if(*dxmacros)
-    	strcat(dxmacros, ";"); strcat(dxmacros, shortPath);
+    	strcat(dxmacros, ";"); strcat(dxmacros, temp);
     sprintf(temp, "%s\\usermacros", jdxsrvPath);
-    GetShortPathName(temp, shortPath, MAXNAME);
-    strcat(dxmacros, ";"); strcat(dxmacros, shortPath);
+    if(needShortPath)
+	ConvertShortPathName(temp);
+    strcat(dxmacros, ";"); strcat(dxmacros, temp);
     setenvpair("DXMACROS",	dxmacros);
 
     strcpy(dxinclude, dxmacros);
     setenvpair("DXINCLUDE",	dxinclude);
 
     sprintf(temp, "%s\\userdata", jdxsrvPath);
-    GetShortPathName(temp, shortPath, MAXNAME);
+    if(needShortPath)
+	ConvertShortPathName(temp);
     if(*dxdata)
-    	strcat(dxmacros, ";"); strcat(dxdata, shortPath);
+    	strcat(dxmacros, ";"); strcat(dxdata, temp);
     setenvpair("DXDATA",	dxdata);
 
     setenvpair("DXMODULES",	dxmodules);
@@ -903,14 +608,16 @@ void dxjsconfig() {
 int buildcmd()
 {
 	envstr tmp;
-	int keydata;
-	char tmpstr[100];
 	namestr outdir;
+	namestr	dxexecdef = "";
+	envstr	exflags = "";
+
 
 	if(javaserver) {
-		sprintf(shortPath, "%s\\java\\output", dxroot);
-		GetShortPathName(shortPath, outdir, MAXNAME);
-		
+		sprintf(outdir, "%s\\java\\output", dxroot);
+		if(needShortPath)
+			ConvertShortPathName(outdir);
+			
 		u2d(classpath);
 		d2u(outdir);
 
@@ -924,6 +631,8 @@ int buildcmd()
 		setifnot(dxexroot, msdos_dxroot);
 		setifnot(dxuiroot, msdos_dxroot);
 #else
+		setifnot(dxexroot, dxroot);
+		u2d(dxexroot);
 		setifnot(dxuiroot, dxroot);
 #endif
 		sprintf(dxexecdef, "%s\\bin_%s\\dxexec%s", dxexroot, exarch, EXE_EXT);
@@ -972,30 +681,31 @@ int buildcmd()
 
 		if (tutor) {
 			sprintf(cmd, "%s%sbin_%s%stutor%s", dxexroot, DIRSEP, uiarch, DIRSEP, EXE_EXT);
-
+			u2d(cmd);
 		}
 		else if (prompter) {
 			if (*FileName) {
 				strcat(prompterflags, " -file ");
 				strcat(prompterflags, FileName);
 			}
-			sprintf(cmd, "%s%sbin_%s%sprompter%s %s", dxexroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, prompterflags);
-
+			sprintf(cmd, "%s%sbin_%s%sprompter%s %s", dxuiroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, prompterflags);
+			u2d(cmd);
 		}
 		else if (startup) {
-			sprintf(cmd, "%s%sbin_%s%sstartupui%s %s", dxexroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, argstr);
+			sprintf(cmd, "%s%sbin_%s%sstartupui%s %s", dxuiroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, argstr);
+		u2d(cmd);
 		}
 		else if (builder) {
-			sprintf(cmd, "%s%sbin_%s%sbuilder%s %s", dxexroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, FileName);
+			sprintf(cmd, "%s%sbin_%s%sbuilder%s %s", dxuiroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, FileName);
 			/* sprintf(cmd, "%s%sbin_%s%sbuilder -xrm %s %s", dxroot, DIRSEP, uiarch, DIRSEP, motifbind, FileName); */
-
+			u2d(cmd);
 		}
 		else if (exonly) {
 			printf("Starting DX executive\n");
-			sprintf(exflags, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s",
-			exmode, excache, exlog, exread, exmem, exproc,
-			exerrlvl, extrace, exhilite, extime, exdist,
-			exoutdb, exlic, exmdf);
+			sprintf(exflags, "%s %s %s %s %s %s %s %s %s %s",
+			exmode, excache, exlog, exread, exmem, exprocs,
+			extrace, exhilite, extime,
+			exmdf);
 			sprintf(cmd, "%s %s ", dxexec, exflags);
 			if (*FileName) {
 				u2d(FileName);
@@ -1004,9 +714,9 @@ int buildcmd()
 		}
 		else {
 			printf("Starting DX user interface\n");
-			sprintf(tmp, " %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", 
-			uimode, uidepth, uidebug, uimem, uiproc, uilog, uicache,
-			uiread, uitrace, uitime, uioutdb, uihilite, uimdf, xparms,
+			sprintf(tmp, " %s %s %s %s %s %s %s %s %s %s %s %s", 
+			uimode, uidebug, uimem, uilog, uicache,
+			uiread, uitrace, uitime, uihilite, uimdf, xparms,
 			uirestrict);
 			strcat(uiflags, tmp);
 			if (portset) {
@@ -1126,7 +836,8 @@ int getparms(int argc, char **argv)
     int n = 0;
     int readpipe = 0;
     char c;
-    int bytesread, bytesavail;
+    envstr pipestr = "";
+
 
     /* fill parms array, first with DXARGS values	*/
     /* then with command line options			*/
@@ -1142,6 +853,7 @@ int getparms(int argc, char **argv)
 
     for (i=1; i<argc; i++) {
 	strcpy(parm[n], argv[i]);
+	printf("%s\n", parm[n]);
 	if (!strcmp(parm[n], "-pipeargs"))
 	    readpipe = 1;
 	else
@@ -1153,7 +865,7 @@ int getparms(int argc, char **argv)
     }
 
     if (readpipe) {
-	for (i=0; (EOF != (c=getchar())); i++)
+	for (i=0; (c=getchar()) != EOF; i++)
 	    pipestr[i] = c;
 	pipestr[i] = '\0';
 	fillparms(pipestr, &n);
@@ -1171,7 +883,6 @@ int getparms(int argc, char **argv)
 /*  blanks.							*/
 int fillparms(char *s, int *n)
 {
-    int i;
     char *p, *q, *dest;
 
     for (p = s; *p; p++) 
@@ -1193,6 +904,9 @@ int fillparms(char *s, int *n)
 
     return 1;
 }
+
+
+
 
 
 /*  Below is a slew of macros.  Note that some would be very	*/
@@ -1314,7 +1028,8 @@ int fillparms(char *s, int *n)
 int parseparms()
 {
     char *s;
-
+    int p;
+    
     for (p=0; p<numparms; ) {
 
 	s = parm[p];
@@ -1482,11 +1197,11 @@ int parseparms()
 	is(optimize)
 	    check("-optimize: missing parameter");
 	    eq(memory)
-		putenvstr("DXPIXELTYPE", "DXByte");
-		putenvstr("DXDELAYEDCOLORS", "1");
+		putenvstr("DXPIXELTYPE", "DXByte", echo);
+		putenvstr("DXDELAYEDCOLORS", "1", echo);
 	    next eq(precision)
-		putenvstr("DXPIXELTYPE", "DXFloat");
-		putenvstr("DXDELAYEDCOLORS", "");
+		putenvstr("DXPIXELTYPE", "DXFloat", echo);
+		putenvstr("DXDELAYEDCOLORS", "", echo);
 	    next
 		{
 		    sprintf(errmsg, "-optimize: parameter \'%s\' not recognized", s);
@@ -1610,9 +1325,9 @@ int parseparms()
 	is(hwrender)
 	    check("-hwrender: missing parameter, must be gl or opengl");
 	    eq(opengl)
-		putenvstr("DXHWMOD", "DXHwddOGL.o");
+		putenvstr("DXHWMOD", "DXHwddOGL.o", echo);
 	    next eq(gl)
-		putenvstr("DXHWMOD", "DXHwdd.o");
+		putenvstr("DXHWMOD", "DXHwdd.o", echo);
 	    next
 		{
 		    sprintf(errmsg, "-hwrender: parameter \'%s\' not recognized", s);
@@ -1928,3 +1643,4 @@ int longhelp()
 
     exit(0);
 }
+#endif
