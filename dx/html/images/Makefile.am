@@ -33,7 +33,7 @@ images4 = \
 	flcgh_09.gif spacer.gif flcgh_03d.gif flcgh_03.gif 		\
 	flcgh_02d.gif flcgh_02.gif flcgh_04d.gif flcgh_10.gif		\
 	flcgh_04.gif flcgh_01.gif flcgh_08.gif flcgh_06.gif		\
-	flcgh_11.gif flcgh_05d.gif
+	flcgh_11.gif flcgh_05d.gif matpa3.gif matpa4.gif opacintg.gif
 
 EXTRA_DIST = $(images1) $(images2) $(images3) $(images4)
 

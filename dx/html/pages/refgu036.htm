@@ -514,7 +514,7 @@ The formula string is assigned to <TT><STRONG>function</STRONG></TT> to
 simplify the call to Compute and is equivalent to the following
 formula for converting <TT><STRONG>slice</STRONG></TT>
 positions to 2-dimensional vectors:
-&lt; left lb x, y, z right rb &gt; equals
+&lt; left lb x, y, z right ] equals
 &lt; left lb &lt; sin left ( &lt; 2 pi times (x plus 1) over 3.9 &gt; right ) ,
 y ,
 minus cos left ( &lt; 2 pi times (x plus 1) over 3.9 &gt; right ) &gt; right rb
@@ -542,12 +542,12 @@ warped = Unmark(warped, "positions");
 <TT><STRONG>exp</STRONG></TT>) function warps the positions
 onto a double cone shape, by implementing
 the following formula:
-&lt; left lb x, y, z right rb &gt; equals
+&lt; left lb x, y, z right ] equals
 &lt; left lb &lt; y times
 sin left ( &lt; 2 pi times (x plus 1) over 3.9 &gt; right ) ,
 y ,
 minus y times
-cos left ( &lt; 2 pi times (x plus 1) over 3.9 &gt; right ) &gt; right rb &gt;
+cos left ( &lt; 2 pi times (x plus 1) over 3.9 &gt; right ) &gt; right ]
 <PRE>
 &middot;
     // Now warp the positions onto the shape of a doubled cone
