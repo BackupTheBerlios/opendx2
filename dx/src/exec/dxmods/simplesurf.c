@@ -1732,7 +1732,7 @@ Array _dxfResampleComponentDepPosAfterSimplification(Array array,
 	case TYPE_USHORT:
 	  _dxfRESAMPLE_DEP_POS_AFTER_SIMPLIFICATION(ushort); break;
 	  
-	befault:
+	default:
 	  goto error; break;
 	  
 	}
