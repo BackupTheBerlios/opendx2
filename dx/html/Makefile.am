@@ -18,8 +18,8 @@ install-data-local:
 	       fi ; 						\
 	       chmod 755 $(htmldir) ;				\
 	       cd $(htmldir) ; 					\
-	       tar xpoNf $$f/pages.tar ;			\
-	       tar xpoNf $$f/images.tar ;			\
+	       tar xpof $$f/pages.tar ;				\
+	       tar xpof $$f/images.tar ;			\
 	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.htm ; \
 	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.html ; \
 	       cd $$f ; 						\
