@@ -53,8 +53,12 @@ typedef enum errorcode {
 } ErrorCode;
 
 typedef int Error;
+#ifndef ERROR
 #define ERROR 0
+#endif
+#ifndef OK
 #define OK 1
+#endif
 
 typedef void *Pointer;
 
