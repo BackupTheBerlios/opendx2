@@ -165,7 +165,7 @@ m_Display(Object *in, Object *out)
 	}
     }
     strcpy(type, *copy? copy : "X");
-    if (type[0] == 'X') 	/* matches X, X8, X12, X24 */
+    if (type[0] == 'X') 	/* matches X, X8, X12, X15, X16, X24 */
     {
  	if (arg1)
 	{
@@ -378,6 +378,10 @@ m_Display(Object *in, Object *out)
 	  break;
 	case 12:
 	  if(!DXDisplayX12(image, arg1, arg2))
+	    goto error;
+	  break;
+	case 15:
+	  if(!DXDisplayX15(image, arg1, arg2))
 	    goto error;
 	  break;
 	case 16:

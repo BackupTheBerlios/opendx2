@@ -2107,6 +2107,11 @@ DXDisplayX12(Object image, char *host, char *window)
   return DXDisplayXAny(image,12,host,window);
 }
 Object
+DXDisplayX15(Object image, char *host, char *window)
+{
+  return DXDisplayXAny(image,15,host,window);
+}
+Object
 DXDisplayX16(Object image, char *host, char *window)
 {
   return DXDisplayXAny(image,16,host,window);
@@ -3376,6 +3381,7 @@ static  struct visualLookupS  {
   { 12, PseudoColor },
   { 12, TrueColor   },
   { 12, DirectColor },
+  { 15, TrueColor   },
   { 16, TrueColor   },
   { 24, DirectColor },
   { 24, TrueColor   },
@@ -3688,7 +3694,7 @@ getBestVisual (Display *dpy, int *depth, int *directMap)
     return NULL;
 }
 /*
- * This function will accept only "X","X8","X12","X24" 
+ * This function will accept only "X","X8","X12", "X15", "X16","X24" 
  * (with optionally trailing white space)
  * all other strings will generate a warning, and cause a return 
  * value of 0
@@ -3728,6 +3734,7 @@ _dxf_getXDepth(char *type)
   case 4:
   case 8:
   case 12:
+  case 15:
   case 16:
   case 24:
     return i;
@@ -3984,6 +3991,7 @@ static Error getGamma(int depth, float *gamma)
     {
 	case 8:  str = getenv("DXGAMMA_8BIT");  break;
 	case 12: str = getenv("DXGAMMA_12BIT"); break;
+	case 15: str = getenv("DXGAMMA_15BIT"); break;
 	case 16: str = getenv("DXGAMMA_16BIT"); break;
 	case 24: str = getenv("DXGAMMA_24BIT"); break;
     };
@@ -3998,6 +4006,7 @@ static Error getGamma(int depth, float *gamma)
     {
 	case 8:  *gamma = DXD_GAMMA_8BIT;  break;
 	case 12: *gamma = DXD_GAMMA_12BIT; break;
+	case 15: *gamma = DXD_GAMMA_15BIT; break;
 	case 16: *gamma = DXD_GAMMA_16BIT; break;
 	case 24: *gamma = DXD_GAMMA_24BIT; break;
     };

@@ -71,6 +71,7 @@ static  struct visualLookupS  {
 /*{ 12, PseudoColor },*/
   { 12, TrueColor   },
   { 12, DirectColor },
+  { 15, TrueColor   },
   { 16, TrueColor   },
   { 24, TrueColor   },
   { 24, DirectColor },
@@ -162,6 +163,11 @@ static XtResource resources[] =
     {
       XmN12supported, XmCSupported, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.supported12),
+      XmRImmediate, (caddr_t) False
+    },
+    {
+      XmN15supported, XmCSupported, XmRBoolean, sizeof(Boolean),
+      XtOffset(XmImageWidget, image.supported15),
       XmRImmediate, (caddr_t) False
     },
     {
@@ -282,6 +288,10 @@ int    screen = XScreenNumberOfScreen(XtScreen(request));
     depth = 12;
     vis = getBestVisual(XtDisplay(new), &depth, screen);
     if(depth == 12) new->image.supported12 = True;
+
+    depth = 15;
+    vis = getBestVisual(XtDisplay(new), &depth, screen);
+    if(depth == 15) new->image.supported15 = True;
 
     depth = 16;
     vis = getBestVisual(XtDisplay(new), &depth, screen);

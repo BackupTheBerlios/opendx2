@@ -71,8 +71,12 @@ boolean NoUndoImageCommand::doIt(CommandInterface *ci)
 	if( in && image->imageDepth12Option->getState() )
 	    image->changeDepth(12);
 	break;
+    case NoUndoImageCommand::Depth15:
+	if( in && image->imageDepth15Option->getState() )
+	    image->changeDepth(15);
+	break;
     case NoUndoImageCommand::Depth16:
-	if( in && image->imageDepth12Option->getState() )
+	if( in && image->imageDepth16Option->getState() )
 	    image->changeDepth(16);
 	break;
     case NoUndoImageCommand::Depth24:

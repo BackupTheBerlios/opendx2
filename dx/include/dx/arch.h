@@ -108,6 +108,7 @@
 /* default values for gamma correction */
 #define DXD_GAMMA_8BIT	2.0
 #define DXD_GAMMA_12BIT	2.0
+#define DXD_GAMMA_15BIT	2.0
 #define DXD_GAMMA_16BIT	2.0
 #define DXD_GAMMA_24BIT	2.0
 

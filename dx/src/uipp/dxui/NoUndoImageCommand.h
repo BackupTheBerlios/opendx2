@@ -77,7 +77,8 @@ class NoUndoImageCommand : public NoUndoCommand
 	SaveImage		= 13,   // Save image 
 	SaveAsImage		= 14,   // Post the SaveAsImageDialog...
 	PrintImage		= 15,   // Post the PrintImageDialog...
-	Depth16			= 16    // Set the image depth to 16
+	Depth16			= 16,   // Set the image depth to 16
+	Depth15			= 17    // Set the image depth to 15
     };
     //
     // Returns a pointer to the class name.

@@ -429,6 +429,7 @@ class ImageWindow : public DXWindow
     CascadeMenu		*imageDepthCascade;
     Command             *imageDepth8Cmd;
     Command             *imageDepth12Cmd;
+    Command             *imageDepth15Cmd;
     Command             *imageDepth16Cmd;
     Command             *imageDepth24Cmd;
     Command		*closeCmd;
@@ -494,6 +495,7 @@ class ImageWindow : public DXWindow
     CommandInterface*	displayRotationGlobeOption;
     ToggleButtonInterface*	imageDepth8Option;
     ToggleButtonInterface*	imageDepth12Option;
+    ToggleButtonInterface*	imageDepth15Option;
     ToggleButtonInterface*	imageDepth16Option;
     ToggleButtonInterface*	imageDepth24Option;
     CommandInterface*	setPanelAccessOption;

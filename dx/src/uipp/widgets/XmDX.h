@@ -117,6 +117,7 @@
 #define XmCSendMotion		"SendMotion"
 #define XmN8supported		"8supported"
 #define XmN12supported		"12supported"
+#define XmN15supported		"15supported"
 #define XmN16supported		"16supported"
 #define XmN24supported		"24supported"
 #define XmCSupported		"Supported"

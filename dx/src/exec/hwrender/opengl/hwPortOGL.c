@@ -240,48 +240,6 @@ _dxf_CREATE_WINDOW (void *globals, char *winName, int w, int h)
 
 /* The following code was changed to fix problems in intel and on Stylus
 */
-#if 0
-  static int glattr[] = {
-    GLX_RGBA,
-    GLX_DOUBLEBUFFER,
-    GLX_RED_SIZE,   8,
-    GLX_GREEN_SIZE, 8,
-    GLX_BLUE_SIZE,  8,
-    GLX_DEPTH_SIZE, 23,
-    0
-  };
-  
-  ENTRY(("_dxf_CREATE_WINDOW (0x%x, \"%s\", %d, %d)",
-	 globals, winName, w, h));
-  if (! glXQueryExtension (DPY, 0, 0)) {
-    PRINT (("GLX extension not supported by this server")) ;
-    DXSetError(ERROR_NOT_IMPLEMENTED, "GLX extension not installed\n");
-    goto error;
-    /*
-    DXErrorGoto (ERROR_INTERNAL, "#13670") ;
-    */
-  }
-  screen = DefaultScreen(DPY) ;
-  if (! (vi = glXChooseVisual (DPY, screen, glattr)))
-  {
-      glattr[3] =
-      glattr[5] =
-      glattr[7] = 4;
-
-      if (! (vi = glXChooseVisual (DPY, screen, glattr)))
-      {
-	 glattr[3] =
-	 glattr[5] = 3;
-	 glattr[7] = 2;
-
-         if (! (vi = glXChooseVisual (DPY, screen, glattr)))
-         {
-            PRINT (("Unable to find acceptable X visual")) ;
-            DXErrorGoto (ERROR_INTERNAL, "#11720") ;
-	 }
-      }
-  }
-#else
 
 /* index into glattr struct */
 #define R_DEPTH     3
@@ -326,6 +284,17 @@ _dxf_CREATE_WINDOW (void *globals, char *winName, int w, int h)
       XFree(vi);
   }
 
+  glattr[R_DEPTH] = 5;
+  glattr[G_DEPTH] = 5;
+  glattr[B_DEPTH] = 5;
+  if ((vi = glXChooseVisual (DPY, screen, glattr)) != NULL)
+  {
+      glXGetConfig(DPY, vi, GLX_DEPTH_SIZE, &depth);
+      if (depth >= 16)
+          goto got_visual;
+      XFree(vi);
+  }
+ 
   glattr[R_DEPTH] = 4;
   glattr[G_DEPTH] = 4;
   glattr[B_DEPTH] = 4;
@@ -372,7 +341,6 @@ _dxf_CREATE_WINDOW (void *globals, char *winName, int w, int h)
   goto error;
 
 got_visual:
-#endif
 
   PRINT (("visual depth = %d", vi->depth));
   PRINT (("visual class = %d", vi->class));

@@ -47,6 +47,7 @@ typedef struct _XmImagePart
     Boolean		frame_buffer;
     Boolean		supported8;
     Boolean		supported12;
+    Boolean		supported15;
     Boolean		supported16;
     Boolean		supported24;
     /*  Private (local use)  */
