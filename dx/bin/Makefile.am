@@ -6,7 +6,7 @@ dxbin_SCRIPTS = mdf2c
 EXTRA_DIST = dx.workerscript dx mdf2c
 
 uninstall-local: 
-	@if test -e $(prefix)/bin/dx  ; then \
+	if test -e $(prefix)/bin/dx  ; then \
 		/bin/rm  $(prefix)/bin/dx ; \
 	fi ; \
 	if test -e $(prefix)/bin/dx.workerscript  ; then \
@@ -14,7 +14,10 @@ uninstall-local:
 	fi
 
 install-exec-local: 
-	@ if test "@INSTALL_DX_CSH@" != "" ; then \
+	if test "@INSTALL_DX_CSH@" != "" ; then \
+	    if test ! -e $(prefix)/bin ; then \
+	    	mkdir $(prefix)/bin ; \
+	    fi ; \
 	    $(INSTALL) dx $(prefix)/bin ; \
 	    if test ! -e $(prefix)/dx/bin ; then \
 	    	mkdir $(prefix)/dx/bin ; \
