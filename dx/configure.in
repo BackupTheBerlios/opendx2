@@ -2,7 +2,6 @@
 
 AC_SUBST(SHELL)
 AC_SUBST(YACC)
-YACC=yacc
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
@@ -13,6 +12,7 @@ AC_PROG_RANLIB
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CPP
+AC_PROG_YACC
 
 dnl Checks for libraries.
 
