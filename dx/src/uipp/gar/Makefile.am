@@ -8,9 +8,11 @@ dxdir = $(DXROOT)
 dxbindir = $(DXROOT)/bin
 dxdatadir = $(DXROOT)/data
 dxincludedir = $(DXROOT)/include/dx
-dxbin_PROGRAMS = gar
 
-gar_SOURCES =  				\
+# dxbin_PROGRAMS = gar
+# gar_SOURCES =  		
+
+EXTRA_DATA = \
 	Browser.C			\
 	BrowserCommand.C		\
 	BuildTCDict.C			\

@@ -8,9 +8,10 @@ dxdir = $(DXROOT)
 dxbindir = $(DXROOT)/bin
 dxdatadir = $(DXROOT)/data
 dxincludedir = $(DXROOT)/include/dx
-dxbin_PROGRAMS = tutor
+# dxbin_PROGRAMS = tutor
+# tutor_SOURCES =				
 
-tutor_SOURCES =				\
+EXTRA_DATA = \
 	Main.C                          \
 	NoUndoTutorAppCommand.C         \
 	TutorApplication.C              \

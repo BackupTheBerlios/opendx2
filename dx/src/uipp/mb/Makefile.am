@@ -8,9 +8,10 @@ dxdir = $(DXROOT)
 dxbindir = $(DXROOT)/bin
 dxdatadir = $(DXROOT)/data
 dxincludedir = $(DXROOT)/include/dx
-dxbin_PROGRAMS = builder
+# dxbin_PROGRAMS = builder
+# builder_SOURCES =			
 
-builder_SOURCES =			\
+EXTRA_DATA = \
 	MBApplication.C			\
 	MBMainWindow.C			\
 	MBCommand.C			\

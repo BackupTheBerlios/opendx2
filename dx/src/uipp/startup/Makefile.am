@@ -8,9 +8,11 @@ dxdir = $(DXROOT)
 dxbindir = $(DXROOT)/bin
 dxdatadir = $(DXROOT)/data
 dxincludedir = $(DXROOT)/include/dx
-dxbin_PROGRAMS = startupui
 
-startupui_SOURCES =			\
+# dxbin_PROGRAMS = startupui
+# startupui_SOURCES =			
+
+EXTRA_DATA = \
 	NetFileDialog.C			\
 	StartupApplication.C		\
 	StartupCommand.C		\
