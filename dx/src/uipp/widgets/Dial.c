@@ -25,7 +25,7 @@
 #include <X11/StringDefs.h>
 #include "DialP.h"
 
-#if !defined(HAVE_M_PI)
+#if !defined(HAS_M_PI)
 #define M_PI    3.1415926535897931160E0
 #endif
 
@@ -661,7 +661,7 @@ XmDialWidget	current,request,new;
  	 * If only the indicator needs to be redrawn and the widget is
 	 * realized, erase the current indicator and draw the new one.
 	 */
-	if (redraw_indicator && ! redraw && XtIsRealized(new)
+	if (redraw_indicator && ! redraw && XtIsRealized((Widget)new)
 			&& new->core.visible)
 		{
 		draw_indicator(current,current->dial.inverse_GC);
