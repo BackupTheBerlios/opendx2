@@ -167,9 +167,9 @@ struct block {
 		    DXSetError(ERROR_INTERNAL, "#12140"); \
 		    return ERROR; }
 #define FOUND(x) (x==find_me)
-#define COUNT(x) 0
-#define AFILL(a,b) 0
-#define FFILL(a,b) 0
+#define COUNT(x) /* not debugged */
+#define AFILL(a,b) /* not debugged */
+#define FFILL(a,b) /* not debugged */
 #endif
 
 #if ibmpvs && OPTIMIZED

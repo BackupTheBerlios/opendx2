@@ -2135,7 +2135,7 @@ IUP_Field_PE(Field field)
     if (! DXSaveInvalidComponent(field, vpHandle))
 	goto error;
     
-done:
+/* done: */
     DXFreeInvalidComponentHandle(vpHandle);
     DXFreeInvalidComponentHandle(vplHandle);
     DXFreeArrayHandle(plHandle);
@@ -2281,7 +2281,7 @@ IUP_Field_FLE(Field field)
     if (! DXSaveInvalidComponent(field, vpHandle))
 	goto error;
     
-done:
+/* done: */
     DXFreeInvalidComponentHandle(vpHandle);
     DXFreeInvalidComponentHandle(vfHandle);
     DXFreeArrayHandle(fHandle);

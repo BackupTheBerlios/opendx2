@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/graph.h,v 1.7 2000/08/22 21:08:09 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/graph.h,v 1.8 2000/10/04 17:45:59 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -258,6 +258,11 @@ void 	_dxf_ExPathCopy( ModPath *dest, ModPath *src );
 
 char 	*_dxf_ExGFuncPathToString( gfunc *fnode );
 char 	*_dxf_ExGFuncPathToCacheString( gfunc *fnode );
+Error   _dxf_ModNameTablesInit();
+char    *_dxf_ExPathToString( ModPath * );
+int     DXGetModuleCacheStrLen();
+int     DXGetModuleCacheStr(char *);
+
 
 #define MAX_PATH_STR_LEN 1024
 #define EX_PIN_PROC 1

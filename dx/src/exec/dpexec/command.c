@@ -52,6 +52,7 @@
 #include "userinter.h"
 #include "dxpfsmgr.h"
 #include "evalgraph.h"
+#include "dxmain.h"
 
 #ifdef	DXD_WIN
 #define		strcasecmp	stricmp

@@ -12,7 +12,7 @@
 #include "rq.h"
 #include "instrument.h"
 #include "swap.h"
-#include "utils.h"
+#include "dxmain.h"
 #include "parse.h"
 
 #define MARK_TIME(s) /* DXMarkTimeLocal(s) */

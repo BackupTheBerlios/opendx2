@@ -118,6 +118,7 @@
 #define	CHECK_INIT(_i, what)\
     if ((_i) != OK) ExInitFailed (what)
 
+#include "dxmain.h"
 #include "config.h"
 #include "background.h"
 #include "parse.h"
@@ -169,6 +170,8 @@ extern int   DXConnectToServer(char *host, int pport); /* from libdx/client.c */
 extern void  _dxfTraceObjects(int d); /* from libdx/object.c */
 extern void  _dxf_user_modules(); /* from libdx/ */
 extern void  _dxf_private_modules(); /* from libdx/ */
+extern Error user_cleanup(); /* from libdx/userinit.c */
+extern int   DXForkChild(int); /* from libdx/mem.c */
 
 /*
  * How often to check for registered input handlers
@@ -753,7 +756,7 @@ loop_slave_continue:
 #endif
 	}
 
-main_loop_continue:
+/* main_loop_continue: */
 	continue;
     }
 
@@ -1387,7 +1390,6 @@ static void ExCleanup ()
 {
     int		ok;
     int         i,limit;
-    pathtag     *pt;
     dpgraphstat *index;
     PGassign	*pgindex;
     SlavePeers  *sindex;

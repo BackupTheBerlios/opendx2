@@ -2195,7 +2195,6 @@ create_display(char *name, char *title, int depth, Display **dpy)
     struct display *dpy_ptr = NULL;
     char buf[1024];
     Display *d;
-    int i;
 
     sprintf(buf, "XDisplay %s %s %d", name, title, depth);
     
@@ -2215,12 +2214,14 @@ create_display(char *name, char *title, int depth, Display **dpy)
 	memcpy(cacheid, buf, len);
 
 #if defined(intelnt)
+{
+	int i;
 	i = _dxfHostIsLocal(name);
 	if(i)
 	    d = XOpenDisplay(NULL);
 	else
 	    d = XOpenDisplay(name);
-
+}
 #else
 	d = XOpenDisplay(name);
 #endif

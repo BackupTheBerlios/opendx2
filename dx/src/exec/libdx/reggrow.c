@@ -78,7 +78,6 @@ static Field FindNeighbor(HashTable, int *, int);
 static Error DestroyPartitionHash(HashTable);
 
 static Array GrowRegularGrid(Array, LoHi);
-static Array GrowRegularArray(Array, int *, int, int);
 static Array InitGrowIrregArray(Array, int *, int, int);
 static Error GrowPartition(Pointer);
 static Field GrowPartition1(HashTable, Field, int, char **, Pointer);
@@ -96,6 +95,10 @@ static Array ShrinkProductArray(ProductArray, int *, int *, int *, int, int);
 extern Array _dxfReRef(Array, int);
 static int   DoIt(char *, char **);
 static Error GetDepRef(Array, int *, int *);
+
+#if 0
+static Array GrowRegularArray(Array, int *, int, int);
+#endif
 
 extern Error _dxf_RemoveDupReferences(Field);
 
@@ -2349,6 +2352,8 @@ GrowRegularGrid(Array oArray, LoHi growth)
     return nArray;
 }
 
+
+#if 0
 static Array
 GrowRegularArray(Array oArray, int *counts, int nDim, int dep)
 {
@@ -2385,6 +2390,7 @@ GrowRegularArray(Array oArray, int *counts, int nDim, int dep)
     
     return (Array)DXNewRegularArray(type, len, n, (Pointer)o, (Pointer)d);
 }
+#endif
 
 static Error
 AddPartition(HashTable ht, Field partition)
@@ -2716,7 +2722,7 @@ FillEmptyOverlap(Field field, int *indices, LoHi growth,
 	    Category cat;
 	    int rank, shape[32];
 	    int nItems;
-	    int size, ok;
+	    int size, ok=0;
 
 	    if (! cstFill)
 		continue;
@@ -2724,32 +2730,32 @@ FillEmptyOverlap(Field field, int *indices, LoHi growth,
 	    size = DXGetItemSize(array);
 	    DXGetArrayInfo(array, &nItems, &type, &cat, &rank, shape);
 
-#define CHECK(type, ok)							    \
-{									    \
-    type *o = NULL, *d = NULL;						    \
-    int  i;								    \
-									    \
-    o = (type *)DXAllocate(size); 					    \
-    d = (type *)DXAllocate(size);					    	    \
-    if (! o|| ! d)						    	    \
-    {									    \
+#define CHECK(type, ok)							\
+{									    		\
+    type *o = NULL, *d = NULL;					\
+    int  i;								    	\
+									    		\
+    o = (type *)DXAllocate(size); 				\
+    d = (type *)DXAllocate(size);				\
+    if (! o|| ! d)						    	\
+    {									    	\
 	DXFree((Pointer)o);						    \
 	DXFree((Pointer)d);						    \
-	goto error;							    \
-    }									    \
-									    \
+	goto error;							    	\
+    }									    	\
+									    		\
     DXGetRegularArrayInfo((RegularArray)array, NULL, (Pointer)o, (Pointer)d); \
-									    \
-    for (i = 0, ok = 1; i < shape[0] && ok; i++)			    \
-    {									    \
-	if (d[i] != (type)0)						    \
-	    ok = 0;							    \
-	if (o[i] != ((type *)fill)[i])					    \
-	    ok = 0;							    \
-    }									    \
-									    \
-    DXFree((Pointer)o);							    \
-    DXFree((Pointer)d);							    \
+									    		\
+    for (i = 0, ok = 1; i < shape[0] && ok; i++)\
+    {									    	\
+	if (d[i] != (type)0)						\
+	    ok = 0;							    	\
+	if (o[i] != ((type *)fill)[i])				\
+	    ok = 0;							    	\
+    }									    	\
+									    		\
+    DXFree((Pointer)o);							\
+    DXFree((Pointer)d);							\
 }
 	    switch(type)
 	    {
@@ -2777,47 +2783,47 @@ FillEmptyOverlap(Field field, int *indices, LoHi growth,
 	    if (ok)
 		continue;
 	    
-#define IRREGULARIZE(dx_type, type)					    \
-{									    \
-    type *o = NULL, *d = NULL,	*ptr;					    \
-    Array nArray = NULL;					            \
-    int   i, j;								    \
-									    \
-    nArray = DXNewArrayV(dx_type, cat, rank, shape);			    \
-    if (! nArray)							    \
-	goto error;							    \
-									    \
-    if (! DXAddArrayData(nArray, 0, nItems, NULL))			    \
-    {									    \
-	DXDelete((Object)nArray);						    \
-	goto error;							    \
-    }									    \
-									    \
-    ptr = (type *)DXGetArrayData(nArray) + loop[nDim-1].srcStart*itemSize;    \
-    if (! ptr)								    \
-    {									    \
-	DXDelete((Object)nArray);						    \
-	goto error;							    \
-    }									    \
-									    \
-    o = (type *)DXAllocate(size); 					    \
-    d = (type *)DXAllocate(size);						    \
-    if (! o || ! d)							    \
-    {									    \
-	DXFree((Pointer)o);						    \
-	DXFree((Pointer)d);						    \
-	goto error;							    \
-    }									    \
-									    \
+#define IRREGULARIZE(dx_type, type)					\
+{									    			\
+    type *o = NULL, *d = NULL,	*ptr;				\
+    Array nArray = NULL;					        \
+    int   i, j;								    	\
+									    			\
+    nArray = DXNewArrayV(dx_type, cat, rank, shape);\
+    if (! nArray)							    	\
+	goto error;							    		\
+									    			\
+    if (! DXAddArrayData(nArray, 0, nItems, NULL))	\
+    {									    		\
+	DXDelete((Object)nArray);						\
+	goto error;							    		\
+    }									    		\
+									    			\
+    ptr = (type *)DXGetArrayData(nArray) + loop[nDim-1].srcStart*itemSize; \
+    if (! ptr)								    	\
+    {									    		\
+	DXDelete((Object)nArray);						\
+	goto error;							    		\
+    }									    		\
+									    			\
+    o = (type *)DXAllocate(size); 					\
+    d = (type *)DXAllocate(size);					\
+    if (! o || ! d)							    	\
+    {									    		\
+	DXFree((Pointer)o);						    	\
+	DXFree((Pointer)d);						    	\
+	goto error;							    		\
+    }									    		\
+									    			\
     DXGetRegularArrayInfo((RegularArray)array, NULL, (Pointer)o, (Pointer)d); \
-									    \
-    for (i = 0; i < nItems - loop[nDim-1].srcStart; i++)		    \
-	for (j = 0; j < shape[0]; j++)					    \
+									    			\
+    for (i = 0; i < nItems - loop[nDim-1].srcStart; i++) \
+	for (j = 0; j < shape[0]; j++)					\
 	    *ptr++ = o[j] + i*d[j];					    \
-									    \
-									    \
-    DXSetComponentValue(field, name, (Object)nArray);			    \
-									    \
+									    			\
+									    			\
+    DXSetComponentValue(field, name, (Object)nArray);\
+									    			\
     DXFree((Pointer)o);							    \
     DXFree((Pointer)d);							    \
 }

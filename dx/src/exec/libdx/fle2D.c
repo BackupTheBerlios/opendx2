@@ -514,10 +514,11 @@ _dxfFle2DInterpolator_PrimitiveInterpolate(Fle2DInterpolator fle,
     *points = (float *)p;
 
     return OK;
-
+/*
 error:
     DXFree((Pointer)dbuf);
     return ERROR;
+*/
 }
 
 static int

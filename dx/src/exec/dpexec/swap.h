@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/swap.h,v 1.5 2000/08/11 15:28:14 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/swap.h,v 1.6 2000/10/04 17:46:00 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -18,7 +18,7 @@
 void  _dxf_ExSetGVarCost(gvar *gv, double cost);
 void  _dxf_ExReclaimEnable ();
 int   _dxf_ExReclaimDisable ();
-Error _dxf_ExReclaimMemory (unsigned int nbytes);
+int   _dxf_ExReclaimMemory (unsigned int nbytes);
 Error _dxf_ExInitMemoryReclaim ();
 int   _dxf_ExReclaimingMemory();
 

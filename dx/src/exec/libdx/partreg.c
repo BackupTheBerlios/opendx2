@@ -74,9 +74,11 @@ Field _dxf_has_ref_lists(Field f, int *pos, int *con);
 Error _dxf_make_map_template(Array a, Array *map);
 Error _dxf_fix_map_template(Array map, Array newmap);
 Array _dxf_remap_by_map(Array a, Array map);
+
+#if 0
 static Array remap_by_computation(Array a, int ndims, int *ccounts, 
 				int *corners, int *ncounts);
-
+#endif
 
 static Error todouble(Type t, Pointer v1, int i1, double *v2);
 static Error fromdouble(Type t, double v1, Pointer v2, int i2);
@@ -1279,6 +1281,7 @@ Array _dxf_remap_by_map(Array a, Array map)
 
 /* this needs to be implemented to save memory.  for now, use remap_by_map()
  */
+#if 0
 static 
 Array remap_by_computation(Array a, int ndims, int *ccounts, 
 			 int *corners, int *ncounts)
@@ -1286,6 +1289,7 @@ Array remap_by_computation(Array a, int ndims, int *ccounts,
     /* compute where the new points should go */
     return a;
 }
+#endif
 
 /* this builds a regular array of 0 to N-1 items, which are going
  *  to be partitioned just like the target, so we can see where the
@@ -1421,6 +1425,7 @@ static Error fromdouble(Type t, double v1, Pointer v2, int i2)
       case TYPE_INT:    TYPE_FROM(int,    v1, v2, i2);  return OK;
       case TYPE_FLOAT:  TYPE_FROM(float,  v1, v2, i2);  return OK;
       case TYPE_DOUBLE: TYPE_FROM(double, v1, v2, i2);  return OK;
+	  case TYPE_HYPER: case TYPE_STRING: break;
     }
 
     DXSetError(ERROR_NOT_IMPLEMENTED, "unrecognized data type");
@@ -1440,6 +1445,7 @@ static Error todouble(Type t, Pointer v1, int i1, double *v2)
       case TYPE_INT:    TYPE_TO(int,    v1, i1, v2);  return OK;
       case TYPE_FLOAT:  TYPE_TO(float,  v1, i1, v2);  return OK;
       case TYPE_DOUBLE: TYPE_TO(double, v1, i1, v2);  return OK;
+      case TYPE_HYPER: case TYPE_STRING: break;
     }
 
     DXSetError(ERROR_NOT_IMPLEMENTED, "unrecognized data type");
@@ -1461,6 +1467,7 @@ static int my_iszero (Type t, Pointer v1, int i1)
       case TYPE_INT:    TYPE_EQ(int,    v1, i1, rc);  return rc;
       case TYPE_FLOAT:  TYPE_EQ(float,  v1, i1, rc);  return rc;
       case TYPE_DOUBLE: TYPE_EQ(double, v1, i1, rc);  return rc;
+      case TYPE_HYPER: case TYPE_STRING: break;
     }
 
     return 0;

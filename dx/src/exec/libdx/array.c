@@ -236,28 +236,32 @@ _dxfArray_GetArrayData(Array a)
 Pointer
 DXGetArrayDataLocal(Array a)
 {
-    int n;
-    Pointer data, local;
+	Pointer data;
 
-    CHECK(a, CLASS_ARRAY);
-    data = DXGetArrayData(a);
+	CHECK(a, CLASS_ARRAY);
+	data = DXGetArrayData(a);
 #if DXD_HAS_LOCAL_MEMORY
-    if (!data)
-	return NULL;
-    /* XXX - copy, record local reference */
-    n = a->size * a->items;
-    local = DXAllocateLocal(n);
-    if (!local) {
-	DXResetError();
-	DXWarning("no room for array of %d bytes in local memory", n);
-	return data;
-    }
-    memcpy(local, data, n);
-    return local;
+	{
+		int n;
+		Pointer local;
+		if (!data)
+			return NULL;
+		/* XXX - copy, record local reference */
+		n = a->size * a->items;
+		local = DXAllocateLocal(n);
+		if (!local) {
+			DXResetError();
+			DXWarning("no room for array of %d bytes in local memory", n);
+			return data;
+		}
+		memcpy(local, data, n);
+		return local;
+	}
 #else
-    return data;
+	return data;
 #endif
 }
+
 
 
 Array
@@ -646,6 +650,7 @@ DXCalculateArrayEntry(ArrayHandle handle, int offset, Pointer scratch)
 		    case TYPE_USHORT: REGULAR_GETELEMENT(ushort);  break;
 		    case TYPE_BYTE:   REGULAR_GETELEMENT(byte);    break;
 		    case TYPE_UBYTE:  REGULAR_GETELEMENT(ubyte);   break;
+		    case TYPE_HYPER: case TYPE_STRING: break;
 		}
 	    break;
 	    
@@ -727,6 +732,7 @@ DXCalculateArrayEntry(ArrayHandle handle, int offset, Pointer scratch)
 			case TYPE_USHORT: MESHARRAY_ADDTERM(ushort);  break;
 			case TYPE_BYTE:   MESHARRAY_ADDTERM(byte);    break;
 			case TYPE_UBYTE:  MESHARRAY_ADDTERM(ubyte);   break;
+		    case TYPE_HYPER: case TYPE_STRING: break;
 		    }
 		}
 	    }

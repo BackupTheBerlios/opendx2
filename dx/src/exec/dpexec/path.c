@@ -36,7 +36,10 @@ char
     *(tail++) = EX_I_SEP;
     if (instance < 0 || instance > 999)
     {
-        sprintf(tail, "%d\0", instance);
+		/* sprintf automatically appends \0 to the end of a 
+		   string so why include it twice? */
+        /* was -- sprintf(tail, "%d\0", instance); */
+        sprintf(tail, "%d", instance);
         l = strlen(tail);
         tail += l;
     } 

@@ -220,7 +220,7 @@ __ExReclaimMemory (int nbytes)
     return skipped;
 }
 
-Error _dxf_ExReclaimMemory (unsigned int nbytes)
+int _dxf_ExReclaimMemory (unsigned int nbytes)
 {
     int	status;
     int	found;

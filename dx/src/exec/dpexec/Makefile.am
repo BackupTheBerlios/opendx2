@@ -11,7 +11,7 @@ BUILT_SOURCES =
 noinst_HEADERS = \
 	_eval.h _macro.h _variable.h attribute.h background.h cache.h \
 	cachegraph.h ccm.h command.h compile.h config.h context.h crc.h \
-	d.h distp.h dxpfsmgr.h evalgraph.h exobject.h function.h graph.h \
+	d.h distp.h dxmain.h dxpfsmgr.h evalgraph.h exobject.h function.h graph.h \
 	graphIntr.h graphqueue.h help.h instrument.h lex.h license.h \
 	loader.h log.h nodeb.h obmodule.h packet.h parse.h parsemdf.h \
 	path.h pendingcmds.h pmodflags.h queue.h rq.h remote.h rih.h rq.h \

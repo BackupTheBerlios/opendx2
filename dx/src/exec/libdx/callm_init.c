@@ -14,6 +14,8 @@
 #include <license.h>
 lictype _dxd_exForcedLicense    = NOLIC; /* Is the given license forced */
 #endif
+#include "../dpexec/_macro.h"
+#include "../dpexec/userinter.h"
 
 int _dxd_exMyPID                  = 0;      /* pid of the process */
 int _dxd_exDebug                  = 0;
@@ -27,6 +29,7 @@ char *_dxd_exHostName             = 0;
 
 extern int _dxd_exOutboard;
 extern void _dxf_betaTimeoutCheck();
+extern void _dxf_user_modules(); /* from auto generated dxmods/user.c */
 
 void DXInitModules()
 {

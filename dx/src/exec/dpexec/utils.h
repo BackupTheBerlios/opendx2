@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/utils.h,v 1.5 2000/08/11 15:28:15 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/utils.h,v 1.6 2000/10/04 17:46:00 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -73,11 +73,6 @@ char		*_dxf_ExCopyStringLocal		(char *old);
 int		_dxf_ExNextPowerOf2		(int n);
 Array 		_dxfExNewInteger 		(int n);
 
-/* in dxmain.c */
-char ** _dxf_ExEnvp (void);
-void  _dxf_ExInitSystemVars ();
-Error _dxf_child_RQ_message(int *jobid);
-Error _dxf_parent_RQ_message();
 
 #define LIST(type) struct {int nalloc; int nused; type *vals;}
 #define INIT_LIST(list) ((list).nalloc = (list).nused = 0, (list).vals = NULL)

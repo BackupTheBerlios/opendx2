@@ -423,7 +423,6 @@ _dxfIrregInvalidateDupBoundary(Group group)
     IJ		   	  ij;
     struct task0Params 	  task0;
     struct task1Params 	  task1;
-    struct task2Params 	  task2;
     Object		  obj;
 
     fields = NULL;

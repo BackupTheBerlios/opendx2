@@ -66,7 +66,7 @@ static Error GetProjections(Vector cameraup, Vector eye,
                             float *flipxlab, float *flipylab, float *flipzlab,
                             Vector sgn)
 {
-  Vector cameraupprime, standardprime, crossprod, standard, up, right;
+  Vector cameraupprime;
   Vector xprime, yprime, zprime, xfup, yfup, zfup;
   
   /* I want upprime and standardprime to be the projections of
@@ -76,19 +76,22 @@ static Error GetProjections(Vector cameraup, Vector eye,
      perpendicular with eye */
 
 /*
-  if ((eye.x==0)&&(eye.y==0)&&(eye.z==1)) {
-    up = DXVec(0, 1, 0);
-    right = DXVec(1, 0, 0);
-  }
-  else if ((eye.x==0)&&(eye.y==0)&&(eye.z==-1)) {
-    up = DXVec(0, 1, 0);
-    right = DXVec(1, 0, 0);
-  }
-  else {
-    up = DXVec(0,0,1);
-    up = DXCross(up,eye);
-    right = DXCross(up,eye);
-  }
+{
+	Vector up, right;
+	if ((eye.x==0)&&(eye.y==0)&&(eye.z==1)) {
+		up = DXVec(0, 1, 0);
+		right = DXVec(1, 0, 0);
+	}
+	else if ((eye.x==0)&&(eye.y==0)&&(eye.z==-1)) {
+		up = DXVec(0, 1, 0);
+		right = DXVec(1, 0, 0);
+	}
+	else {
+		up = DXVec(0,0,1);
+		up = DXCross(up,eye);
+		right = DXCross(up,eye);
+	}
+}
  */
 
  

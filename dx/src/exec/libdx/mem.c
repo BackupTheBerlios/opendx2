@@ -64,12 +64,13 @@
  *     the shared memory pool.
  */
 
-#include <string.h>
-#include <dx/dx.h>
-
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
+
+#include <string.h>
+#include <dx/dx.h>
+#include "../dpexec/dxmain.h"
 
 /* prototypes - not in a system header file because these are only
  *  called in a couple places, mostly in memory.c but also from the
@@ -99,7 +100,6 @@ typedef enum memtype {
 
 static Memtype m = MEM_NOTINIT;
 
-static int num_shared_segments = 0;
 static int num_sbrk_calls = 0;
 static int num_failed_calls = 0;
 
@@ -858,7 +858,7 @@ void DXPrintMemoryInfo()
 }
 #endif  /* memory stats */
 
-DXForkChild(int i)
+int DXForkChild(int i)
 {
     int pid, master2slave[2], slave2master[2];
 

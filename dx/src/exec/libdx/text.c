@@ -187,7 +187,7 @@ getname(char *dirlist, char *file, char *result)
 	    dp++;
     }
 
-  error:
+/*  error: */
     /* only gets here on error */
     DXSetError(ERROR_DATA_INVALID, "#10800", file);
     result[0] = '\0';

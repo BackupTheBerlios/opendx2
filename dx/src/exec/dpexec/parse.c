@@ -179,6 +179,8 @@ int _dxf_ExNode__Delete(register node *n)
 	case NT_PACKET:
 	    _dxf_ExPDestroyNode (n->v.packet.packet);
 	    break;
+	case NT_DATA: /* This was missing, can someone verify? */
+		break;
     }
 
     _dxf_ExPDestroyNode (n->attr);

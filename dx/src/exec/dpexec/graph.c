@@ -170,7 +170,7 @@ DXGetModulePath(char *path)
 }
 
 int
-DXGetModuleCacheStrLen(char *path)
+DXGetModuleCacheStrLen()
 {
     return _dxf_ExPathCacheStringLen( &_dxd_exCurrentFunc->mod_path );
 }
@@ -1237,7 +1237,6 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
     ProgramRef		*pPr;
     int			ilimit;
     int			jlimit;
-    int			found = FALSE;
 
     if (graphing_error)
 	goto graphing_error_return;
@@ -2699,7 +2698,10 @@ static char *_dxf_BuildInstanceNumString(int instance)
 
     if (instance < 0 || instance > 999)
     {
-        sprintf(tail, "%d\0", instance);
+    	/* sprintf automatically puts a \0 at the end of a string
+    	   so why print a second one? */
+        /* sprintf(tail, "%d\0", instance); */
+        sprintf(tail, "%d", instance);
         tail += strlen(tail);
     }
     else if (instance > 99)
@@ -2929,7 +2931,7 @@ static char *_dxf_ExCacheStrPrepend( Program *program,
   return str;
 }
 
-
+#ifdef TESTING
 static void _dxf_ExPathPrint( Program *p, gfunc *fnode, char *header )
 {
   int i;
@@ -2946,6 +2948,7 @@ static void _dxf_ExPathPrint( Program *p, gfunc *fnode, char *header )
             path->instances[i] );
   printf( "\n" );
 }
+#endif
 
 static void _dxf_ExPathSet( Program *p, char fname[], int instance, gfunc *fnode )
 {

@@ -18,13 +18,13 @@
 #include <ctype.h>
 #include <string.h>
 
-
-
-
 #include "edf.h"
 
 /* keywords and dictionary code */
 
+/* so what was faster?
+ */    
+#define TIMING 1
 
 /* prototypes
  */
@@ -33,8 +33,12 @@ static char *dictplace(struct dict *d, int len);
 
 static Error initkeywords(struct dict *d);
 static Error putkeyinfo(struct dict *d, char *word, int value);
-static int strcmp_lc(char *a, char *b);
 static char *strcpy_lc(char *a, char *b);
+
+#if TIMING
+#else
+static int strcmp_lc(char *a, char *b);
+#endif
 
 static PseudoKey hashFunc(char *str);
 static int hashCompare(Key search, Element matched);
@@ -160,9 +164,6 @@ static struct keywords {
     {     NULL,			KW_NULL 	}
 };
 
-/* so what was faster?
- */    
-#define TIMING 1
 
 /* compare input word to a list of known keywords.  return the keyword value
  *  if it matches, else return KW_NULL.
@@ -278,6 +279,9 @@ static Error initkeywords(struct dict *d)
 /* given a string and a lower case string, do a strcmp ignoring the
  *  case of the first string.  return 1 if not equal, 0 if equal.
  */
+#if TIMING
+#else
+/* Only used if TIMING is 0 */
 static int strcmp_lc(char *a, char *b)
 {
     if (!a || !b)
@@ -295,6 +299,7 @@ static int strcmp_lc(char *a, char *b)
 
     return 1;
 }
+#endif
 
 /* copy b to a, changing all chars to lower case.  return NULL on error.
  */
@@ -608,6 +613,7 @@ int _dxfgetuniqueid(struct dict *d)
 
 /* for debug, print contents of dictionary
  */
+#ifdef DEBUG
 static void prdictinfo(struct dict *d)
 {
     struct dinfo *di;
@@ -641,3 +647,4 @@ static void prdictinfo(struct dict *d)
 
     return;
 }
+#endif

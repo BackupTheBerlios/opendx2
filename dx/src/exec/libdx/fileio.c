@@ -173,9 +173,8 @@ static Error file_init()
     if (i < 0)
 	DXUIMessage("ERROR", "Array disk not available; execution continues");
     
-#endif
-
   endarray:
+#endif
     of = (struct openfiles *)DXAllocateZero(sizeof(struct openfiles) * NSLOTS);
     if (!of)
 	return ERROR;
@@ -218,74 +217,77 @@ static Error movie_init()
 
 Error _dxffile_open(char *name, int rw)
 {
-    int i, fd, rc;
+	int i, fd;
 
-    if (!name) {
-	DXSetError(ERROR_BAD_PARAMETER, "no filename");
-	return ERROR;
-    }
+	if (!name) {
+		DXSetError(ERROR_BAD_PARAMETER, "no filename");
+		return ERROR;
+	}
 
 #if DXD_HAS_LIBIOP
-    /* array disk, new pfs */
-    if (pfsname(name)) {
-	pfs_stat_t ps;
-	
-	rc = pfs_stat(name, &ps);
-	if (rc < 0) {
-	    /* if read only, don't create */
-	    if (rw == 0) {
-		DXSetError(ERROR_DATA_INVALID, "can't open file '%s'", name);
-		return ERROR;
-	    }
-	    /* must be write or read/write, go ahead and create */
-	    rc = pfs_create(name, 0);
-	    if (rc < 0) {
-		DXSetError(ERROR_DATA_INVALID, pfs_errmsg(rc));
-		return ERROR;
-	    }
-	}
+	{
+		int rc;
+		/* array disk, new pfs */
+		if (pfsname(name)) {
+			pfs_stat_t ps;
 
-	return OK;
-    }
+			rc = pfs_stat(name, &ps);
+			if (rc < 0) {
+				/* if read only, don't create */
+				if (rw == 0) {
+					DXSetError(ERROR_DATA_INVALID, "can't open file '%s'", name);
+					return ERROR;
+				}
+				/* must be write or read/write, go ahead and create */
+				rc = pfs_create(name, 0);
+				if (rc < 0) {
+					DXSetError(ERROR_DATA_INVALID, pfs_errmsg(rc));
+					return ERROR;
+				}
+			}
+
+			return OK;
+		}
+	}
 #endif
 
-    switch(rw) {
-      case 0:	/* read only */
-	fd = open(name, O_RDONLY);
-	if (fd < 0) {
-	    DXSetError(ERROR_DATA_INVALID, "can't open file '%s'", name);
-	    return ERROR;
+	switch(rw) {
+	case 0:/* read only */
+		fd = open(name, O_RDONLY);
+		if (fd < 0) {
+			DXSetError(ERROR_DATA_INVALID, "can't open file '%s'", name);
+			return ERROR;
+		}
+		break;
+	case 1:/* write only */
+	case 2:/* read/write */
+		fd = open(name, O_RDWR);
+		if (fd < 0) {
+			fd = open(name, O_WRONLY | O_CREAT);
+			if (fd < 0) {
+				DXSetError(ERROR_DATA_INVALID, 
+				"can't open/create file '%s'", name);
+				return ERROR;
+			}
+		}
+		break;
 	}
-	break;
-      case 1:	/* write only */
-      case 2:	/* read/write */
-	fd = open(name, O_RDWR);
-	if (fd < 0) {
-	    fd = open(name, O_WRONLY | O_CREAT);
-	    if (fd < 0) {
-		DXSetError(ERROR_DATA_INVALID, 
-			 "can't open/create file '%s'", name);
+
+	/* look for empty slot and put fd into table */
+	for (i=0; i<NSLOTS; i++)
+		if (of[i].fd == -1)
+			break;
+
+	if (i == NSLOTS) {
+		DXSetError(ERROR_DATA_INVALID, "too many datasets open");
 		return ERROR;
-	    }
 	}
-	break;
-    }
 
-    /* look for empty slot and put fd into table */
-    for (i=0; i<NSLOTS; i++)
-	if (of[i].fd == -1)
-	    break;
-
-    if (i == NSLOTS) {
-	DXSetError(ERROR_DATA_INVALID, "too many datasets open");
-	return ERROR;
-    }
-
-    of[i].fd = fd;
-    of[i].socket = 0;
-    of[i].sndbytes = of[i].rcvbytes = 0;
-    strcpy(of[i].fname, name);
-    return OK;
+	of[i].fd = fd;
+	of[i].socket = 0;
+	of[i].sndbytes = of[i].rcvbytes = 0;
+	strcpy(of[i].fname, name);
+	return OK;
 
 }
 

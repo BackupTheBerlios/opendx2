@@ -160,6 +160,7 @@ IsConstantArray(Array a)
 	    case TYPE_USHORT: CONSTANT_REGULAR(ushort, cst); break;
 	    case TYPE_BYTE:   CONSTANT_REGULAR(byte,   cst); break;
 	    case TYPE_UBYTE:  CONSTANT_REGULAR(ubyte,  cst); break;
+		case TYPE_HYPER: case TYPE_STRING: break;
 	}
 	return cst;
     }
