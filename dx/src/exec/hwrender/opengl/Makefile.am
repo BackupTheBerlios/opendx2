@@ -9,6 +9,10 @@ noinst_LIBRARIES = libOPENGL.a
 
 SUFFIXES = .m .y .c .s .h .o .a 
 
+noinst_HEADERS = \
+	hwPortOGL.h hwPortUtilOGL.help
+
+
 libOPENGL_a_SOURCES = \
 	hwPortUtilOGL.c			\
 	hwInteractorEchoOGL.c		\

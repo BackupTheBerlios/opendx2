@@ -11,6 +11,14 @@ noinst_LIBRARIES = libHW.a
 
 SUFFIXES = .m .y .c .s .h .o .a 
 
+noinst_HEADERS = \
+	hwClientMessage.h hwClipped.h hwCursorInteractor.h hwDebug.h \
+	hwDeclarations.h hwFlags.h hwGather.h hwGlobeEchoDef.h hwInteractor.h \
+	hwInteractorEcho.h hwList.h hwMaterials.h hwMatrix.h hwMemory.h \
+	hwObject.h hwObjectHash.h hwPortLayer.h hwQmesh.h hwRotateInteractor.h \
+	hwScreen.h hwSort.h hwStereo.h hwTmesh.h hwUserInteractor.h \
+	hwView.h hwWindow.h hwXfield.h hwZoomInteractor.h
+
 libHW_a_SOURCES = \
 	hwClientMessage.c hwClipped.c hwCursorInteractor.c hwDraw.c \
 	hwGroupInteractor.c hwInitScreen.c hwInteractor.c hwList.c \

@@ -12,6 +12,13 @@ SUFFIXES = .m .y .c .s .h .o .a
 
 BUILT_SOURCES =  yuiif.c
 
+noinst_HEADERS = \
+	_eval.h _macro.h _variable.h attribute.h background.h cache.h \
+	compile.h config.h context.h crc.h d.h distp.h exobject.h graph.h \
+	graphIntr.h graphqueue.h instrument.h license.h log.h obmodule.h \
+	packet.h parse.h path.h pmodflags.h queue.h rq.h status.h swap.h \
+	sysvars.h utils.h vcr.h version.h yuiif.h
+
 libDPEXEC_a_SOURCES =  \
 	attribute.c background.c cache.c cachegraph.c ccm.c \
 	command.c context.c crc.c d.c distconnect.c distpacket.c \
