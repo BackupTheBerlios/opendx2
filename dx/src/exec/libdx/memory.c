@@ -1256,7 +1256,7 @@ DWORD WINAPI VirtualQuery(LPCVOID,PMEMORY_BASIC_INFORMATION,DWORD);
 VOID WINAPI GlobalMemoryStatus(LPMEMORYSTATUS); 
 #endif 
 
-#if defined(intelnt) || defined(WIN32)
+#if defined(intelnt) || defined(WIN32) || defined(cygwin)
 Error _dxfLocateFreeMemory (ulong *size) {
 	/* Basically with Windows we need to walk the memory tree to locate
 	   a range of free addresses that are left in the 2GB address
