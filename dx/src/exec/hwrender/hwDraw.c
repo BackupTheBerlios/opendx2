@@ -12,7 +12,7 @@
 #define render_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.3 1999/05/10 15:45:34 gda Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.4 2001/03/09 17:54:34 gda Exp $"};
 #endif
 
 #include <stdio.h>
@@ -81,6 +81,12 @@ _dxfDraw (void* globals, dxObject o, Camera c, int buttonUp)
     OBJECT_TAG = GATHER_TAG;
   }
 
+  /*
+   * It seems like there's an unnecessary reference here... 
+   * gather is owned by globals about 6 lines up.  Shouldn't need
+   * this extra ref - which needed to be matched by a DXDelete 
+   * below.
+   */
   DXReference((dxObject)gather);
 
   _dxf_STARTFRAME(LWIN);
@@ -94,6 +100,8 @@ _dxfDraw (void* globals, dxObject o, Camera c, int buttonUp)
     DXUIMessage("HW","end");
 
   _dxf_ENDFRAME(LWIN);
+
+  DXDelete((dxObject)gather);
 
   return r;
 
