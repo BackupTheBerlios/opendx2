@@ -37,6 +37,8 @@ static int		have_rec_sem	= 0;
 static EXO_Object	rec_obj		= NULL;		/* for time stamp */
 static int		reclaiming_mem  = 0;
 
+extern int _dxd_exEnableDebug;
+
 int
 _dxf_ExReclaimingMemory()
 {
