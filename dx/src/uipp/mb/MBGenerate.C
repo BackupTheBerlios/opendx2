@@ -262,6 +262,7 @@ do_makefile(char *basename, Module *mod)
     }
 
       fprintf(fd, ".c.o: ; cc -c $(DXABI) $(DX_RTL_CFLAGS) $(CFLAGS) $*.c \n\n");
+      fprintf(fd, ".C.o: ; cc -c $(DXABI) $(DX_RTL_CFLAGS) $(CFLAGS) $*.C \n\n");
 
 
     /* a target to run dx using the user module */
@@ -528,7 +529,15 @@ fprintf(fd, " * Automatically generated on \"%s.mb\" by DX Module Builder\n",
 				basename);
 fprintf(fd, " */\n\n");
 
+fprintf(fd, "/* define your pre-dx.h include file for inclusion here*/ \n");
+fprintf(fd, "#ifdef PRE_DX_H\n");
+fprintf(fd, "#include \"%s_predx.h\"\n",mod->name);
+fprintf(fd, "#endif\n");
 fprintf(fd, "#include \"dx/dx.h\"\n");
+fprintf(fd, "/* define your post-dx.h include file for inclusion here*/ \n");
+fprintf(fd, "#ifdef POST_DX_H\n");
+fprintf(fd, "#include \"%s_postdx.h\"\n",mod->name);
+fprintf(fd, "#endif\n");
 fprintf(fd, "\n");
 fprintf(fd, "static Error traverse(Object *, Object *);\n");
 fprintf(fd, "static Error doLeaf(Object *, Object *);\n");
@@ -580,6 +589,9 @@ fprintf(fd, "%s    int, %s *", (open)?",\n":"", type);
 
 fprintf(fd, ");\n\n");
 
+fprintf(fd, "#if defined (__cplusplus) || defined (c_plusplus)\n");
+fprintf(fd, "extern \"C\"\n");
+fprintf(fd, "#endif\n");
 fprintf(fd, "Error\nm_%s(Object *in, Object *out)\n", mod->name);
 fprintf(fd, "{\n");
 fprintf(fd, "  int i;\n");
@@ -750,7 +762,7 @@ fprintf(fd, "            (DXGetObjectClass(in[%d]) != CLASS_GROUP ||\n", i);
 fprintf(fd, "             DXGetGroupClass((Group)in[%d])  != groupClass  ||\n", i);
 fprintf(fd, "             !DXGetMemberCount((Group)in[%d], &i) || i != memknt))\n", i);
 fprintf(fd, "	      {\n");
-fprintf(fd, "  		DXSetError(ERROR_INVALID_DATA,\n");
+fprintf(fd, "  		DXSetError(ERROR_DATA_INVALID,\n");
 fprintf(fd, "	            \"structure of \\\"%s\\\" doesn't match that of \\\"%s\\\"\");\n",
 			    in[i]->name, in[0]->name);
 fprintf(fd, "  	         return ERROR;\n");
@@ -849,7 +861,7 @@ fprintf(fd, "       */\n");
 	{
 fprintf(fd, "      if (in[%d] && DXGetObjectClass(in[%d]) != CLASS_XFORM)\n", i, i);
 fprintf(fd, "      {\n");
-fprintf(fd, "        DXSetError(ERROR_INVALID_DATA,\n");
+fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,\n");
 fprintf(fd, "	            \"structure of \\\"%s\\\" doesn't match that of \\\"%s\\\"\");\n",
 			    in[i]->name, in[0]->name);
 fprintf(fd, "        return ERROR;\n");
@@ -935,7 +947,7 @@ fprintf(fd, "       */\n\n");
 	{
 fprintf(fd, "       if (in[%d] && DXGetObjectClass(in[%d]) != CLASS_SCREEN)\n", i, i);
 fprintf(fd, "       {\n");
-fprintf(fd, "           DXSetError(ERROR_INVALID_DATA,\n");
+fprintf(fd, "           DXSetError(ERROR_DATA_INVALID,\n");
 fprintf(fd, "	            \"structure of \\\"%s\\\" doesn't match that of \\\"%s\\\"\");\n",
 			    in[i]->name, in[0]->name);
 fprintf(fd, "           return ERROR;\n");
@@ -1022,7 +1034,7 @@ fprintf(fd, "       */\n\n");
 	{
 fprintf(fd, "       if (in[%d] && DXGetObjectClass(in[%d]) != CLASS_CLIPPED)\n", i, i);
 fprintf(fd, "       {\n");
-fprintf(fd, "           DXSetError(ERROR_INVALID_DATA,\n");
+fprintf(fd, "           DXSetError(ERROR_DATA_INVALID,\n");
 fprintf(fd, "               \"mismatching Field/Group objects\");\n");
 fprintf(fd, "           return ERROR;\n");
 fprintf(fd, "       }\n\n");
@@ -1164,7 +1176,7 @@ fprintf(fd, "   * be a field.\n");
 fprintf(fd, "   */\n");
 fprintf(fd, "  if (DXGetObjectClass(in[0]) != CLASS_FIELD)\n");
 fprintf(fd, "  {\n");
-fprintf(fd, "      DXSetError(ERROR_INVALID_DATA,\n");
+fprintf(fd, "      DXSetError(ERROR_DATA_INVALID,\n");
 fprintf(fd, "           \"positions and/or connections unavailable in array object\");\n");
 fprintf(fd, "      goto error;\n");
 fprintf(fd, "  }\n");
@@ -1276,19 +1288,19 @@ fprintf(fd, "     */\n");
 fprintf(fd, "    element_type_attr = DXGetAttribute((Object)array, \"element type\");\n");
 fprintf(fd, "    if (! element_type_attr)\n");
 fprintf(fd, "    {\n");
-fprintf(fd, "        DXSetError(ERROR_INVALID_DATA,\n");
+fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,\n");
 fprintf(fd, "            \"input \\\"%s\\\" has no element type attribute\");\n", in[0]->name);
 fprintf(fd, "        goto error;\n");
 fprintf(fd, "    }\n\n");
 fprintf(fd, "    if (DXGetObjectClass(element_type_attr) != CLASS_STRING)\n");
 fprintf(fd, "    {\n");
-fprintf(fd, "        DXSetError(ERROR_INVALID_DATA,\n");
+fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,\n");
 fprintf(fd, "            \"input \\\"%s\\\" element type attribute is not a string\");\n", in[0]->name);
 fprintf(fd, "        goto error;\n");
 fprintf(fd, "    }\n\n");
 fprintf(fd, "    if (strcmp(DXGetString((String)element_type_attr), \"%s\"))\n", str);
 fprintf(fd, "    {\n");
-fprintf(fd, "        DXSetError(ERROR_INVALID_DATA,\n");
+fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,\n");
 fprintf(fd, "            \"input \\\"%s\\\" invalid element type\");\n", in[0]->name);
 fprintf(fd, "        goto error;\n");
 fprintf(fd, "    }\n\n");
@@ -1378,7 +1390,7 @@ fprintf(fd, "      array = (Array)in[%d];\n", i);
 fprintf(fd, "    }\n");
 fprintf(fd, "    else if (DXGetObjectClass(in[%d]) == CLASS_STRING)\n", i);
 fprintf(fd, "    {\n");
-fprintf(fd, "      in_data[%d] = (Pointer)DXGetString((String)in[%d]);\n",i,i);
+fprintf(fd, "      in_data[%d] = (Pointer *)DXGetString((String)in[%d]);\n",i,i);
 fprintf(fd, "      in_knt[%d] = 1;\n",i); 
 fprintf(fd, "    }\n");
 fprintf(fd, "    else\n");
@@ -1429,7 +1441,7 @@ fprintf(fd, "   * The dependency of this arg should match input[0].\n");
 fprintf(fd, "   */\n"); 
 fprintf(fd, "    if (strcmp(src_dependency, DXGetString((String)attr)))\n");
 fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_INVALID_DATA, \"data dependency of \\\"%s\\\" must match \\\"%s\\\"\");\n",
+fprintf(fd, "      DXSetError(ERROR_DATA_INVALID, \"data dependency of \\\"%s\\\" must match \\\"%s\\\"\");\n",
 						in[i]->name, in[0]->name);
 fprintf(fd, "      goto error;\n");
 fprintf(fd, "    }\n");
@@ -1441,7 +1453,7 @@ fprintf(fd, "   * The dependency of this arg should be positions\n");
 fprintf(fd, "   */\n"); 
 fprintf(fd, "    if (strcmp(\"positions\", DXGetString((String)attr)))\n");
 fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_INVALID_DATA, \"data dependency of \\\"%s\\\" must be positions\");\n",
+fprintf(fd, "      DXSetError(ERROR_DATA_INVALID, \"data dependency of \\\"%s\\\" must be positions\");\n",
 						in[i]->name);
 fprintf(fd, "      goto error;\n");
 fprintf(fd, "    }\n");
@@ -1453,7 +1465,7 @@ fprintf(fd, "   * The dependency of this arg should be connections\n");
 fprintf(fd, "   */\n"); 
 fprintf(fd, "    if (strcmp(\"connections\", DXGetString((String)attr)))\n");
 fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_INVALID_DATA, \"data dependency of \\\"%s\\\" must be connections\");\n",
+fprintf(fd, "      DXSetError(ERROR_DATA_INVALID, \"data dependency of \\\"%s\\\" must be connections\");\n",
 						in[i]->name);
 fprintf(fd, "      goto error;\n");
 fprintf(fd, "    }\n");
@@ -1471,7 +1483,7 @@ fprintf(fd, "             !((rank == 0) || ((rank == 1)&&(shape == 1))))\n");
 fprintf(fd, "           rank != %s || shape != %s)\n", rank, shape);
 
 fprintf(fd, "       {\n");
-fprintf(fd, "         DXSetError(ERROR_INVALID_DATA, \"input \\\"%s\\\"\");\n", in[i]->name);
+fprintf(fd, "         DXSetError(ERROR_DATA_INVALID, \"input \\\"%s\\\"\");\n", in[i]->name);
 fprintf(fd, "         goto error;\n");
 fprintf(fd, "       }\n");
 fprintf(fd, "\n");
@@ -1513,7 +1525,7 @@ fprintf(fd, "      !((rank == 0) || ((rank == 1)&&(shape == 1))))\n");
 	else
 fprintf(fd, "      rank != %s || shape != %s)\n", rank, shape);
 fprintf(fd, "  {\n");
-fprintf(fd, "    DXSetError(ERROR_INVALID_DATA, \"Value output \\\"%s\\\" has bad type\");\n", out[i]->name);
+fprintf(fd, "    DXSetError(ERROR_DATA_INVALID, \"Value output \\\"%s\\\" has bad type\");\n", out[i]->name);
 fprintf(fd, "    goto error;\n");
 fprintf(fd, "  }\n");
 fprintf(fd, "\n");
@@ -1550,7 +1562,7 @@ fprintf(fd, "   * appropriately - if the appropriate size is known\n");
 fprintf(fd, "   */\n");
 fprintf(fd, "  if (p_knt == -1)\n");
 fprintf(fd, "  {\n");
-fprintf(fd, "    DXSetError(ERROR_INVALID_DATA,\n");
+fprintf(fd, "    DXSetError(ERROR_DATA_INVALID,\n");
 fprintf(fd, "      \"cannot make output \\\"%s\\\" dep on positions because no positions were found in input[0]\");\n", out[i]->name);
 fprintf(fd, "    goto error;\n");
 fprintf(fd, "  }\n\n");
@@ -1567,7 +1579,7 @@ fprintf(fd, "   * appropriately - if the appropriate size is known\n");
 fprintf(fd, "   */\n");
 fprintf(fd, "  if (c_knt == -1)\n");
 fprintf(fd, "  {\n");
-fprintf(fd, "    DXSetError(ERROR_INVALID_DATA,\n");
+fprintf(fd, "    DXSetError(ERROR_DATA_INVALID,\n");
 fprintf(fd, "      \"cannot make output \\\"%s\\\" dep on connections because no connections were found in input \\\"%s\\\"\");\n", out[i]->name, in[i]->name);
 fprintf(fd, "    goto error;\n");
 fprintf(fd, "  }\n\n");
