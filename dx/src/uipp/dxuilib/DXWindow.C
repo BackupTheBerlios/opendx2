@@ -783,7 +783,7 @@ void DXWindow::buildFileHistoryMenu()
     iter.setList(this->file_history_commands);
     Command* cmd;
     while (cmd=(Command*)iter.getNext()) delete cmd;
-    this->file_history_buttons.clear();
+    this->file_history_commands.clear();
 
     Widget menu_parent = this->file_history_cascade->getMenuItemParent();
 
@@ -800,6 +800,7 @@ void DXWindow::buildFileHistoryMenu()
 	const char* cp = "(null)";
 	Symbol s = theSymbolManager->registerSymbol(cp);
 	cmd = new OpenFileCommand(s);
+	this->file_history_commands.appendElement(cmd);
 	bi = new ButtonInterface(menu_parent, "openFile", cmd);
 	bi->setLabel(cp);
 	this->file_history_buttons.appendElement(bi);
@@ -819,6 +820,7 @@ void DXWindow::buildFileHistoryMenu()
 	Symbol s;
 	while (s=(Symbol)iter.getNext()) {
 	    cmd = new OpenFileCommand(s);
+	    this->file_history_commands.appendElement(cmd);
 	    bi = new ButtonInterface(menu_parent, "openFile", cmd);
 	    this->file_history_buttons.appendElement(bi);
 
