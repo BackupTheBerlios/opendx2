@@ -1564,12 +1564,15 @@ DXChild::waitForConnection()
 			return 0;
 		    }
 		    if (strstr(rdbuffer, "Execution has been queued")   ||
-			     strstr(rdbuffer, "Server appears to be in use") ||
-			     strstr(rdbuffer, "rror"))           // suits added
+			     strstr(rdbuffer, "Server appears to be in use"))
 		    {
 			return 1;
 		    }
-
+		    else if (strstr(rdbuffer, "rror"))
+		    {
+		        this->errorString = DuplicateString(rdbuffer);
+			return -1;
+		    }
 		}
 	    }
 	}
