@@ -150,7 +150,7 @@ struct block {
 
 #if DEBUGGED
 #define CHECK(b) DXASSERT(b->next_block->prev_block==b)
-#define FOUND(x) (x==(Pointer)find_me)
+#define FOUND(x) (x==find_me)
 #define COUNT(x) ((x)++)
 #define AFILL(a,b) memset(a, 0xAB, b)   /* new allocation fill pattern */
 #define FFILL(a,b) memset(a, 0xEF, b)   /* freed memory fill pattern */
@@ -158,7 +158,7 @@ struct block {
 #define CHECK(b) if (b->next_block->prev_block!=b) {\
 		    DXSetError(ERROR_INTERNAL, "#12140"); \
 		    return ERROR; }
-#define FOUND(x) (x==(Pointer)find_me)
+#define FOUND(x) (x==find_me)
 #define COUNT(x) 0
 #define AFILL(a,b) 0
 #define FFILL(a,b) 0
@@ -1792,12 +1792,12 @@ DXPrintLocalAlloc(int which, int how)
 }
 
 
-static int find_me = 0;
+static Pointer find_me = 0;
 
 void
 DXFindAlloc(Pointer f)
 {
-    find_me = (long)f;
+    find_me = f;
 }
 
 void
