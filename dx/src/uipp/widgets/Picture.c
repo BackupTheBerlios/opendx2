@@ -101,7 +101,9 @@ static int    set_scale(double res[4][4] , double s0, short s1);
 static int    set_trans(double res[4][4] , double s0, short s1);
 
 #define superclass (&xmImageClassRec)
-#define PI 3.1415926
+#if !defined(HAS_M_PI)
+#define M_PI    3.1415926535897931160E0
+#endif
 #define COS05  0.996
 #define SIN15  0.259
 #define COS15  0.966
@@ -2843,8 +2845,8 @@ unsigned long delta_time;
      */
     if (projection == 1)
 	{
-	w->picture.DW = (image_width/2)/tan(2*PI*view_angle/360);
-	w->picture.DH = (image_height/2)/tan(2*PI*view_angle/360);
+	w->picture.DW = (image_width/2)/tan(2*M_PI*view_angle/360);
+	w->picture.DH = (image_height/2)/tan(2*M_PI*view_angle/360);
 
 	/*
 	 * w->picture.D is the value the camera SHOULD be at.  Since it is
@@ -3812,7 +3814,7 @@ XmPictureCallbackStruct    cb;
 	    az = acos((double)x/l);
 	    if (y > 0)
 		{
-		az = 2*PI - az;
+		az = 2*M_PI - az;
 		}
 	    /*
 	     * The last point was also off the sphere
@@ -3825,13 +3827,13 @@ XmPictureCallbackStruct    cb;
 	    dx = major_dx;
 	    dy = major_dy;
 	    az = acos(dx/sqrt(dx*dx + dy*dy));
-	    if (dy > 0.0) az = 2*PI - az;
+	    if (dy > 0.0) az = 2*M_PI - az;
 	    set_rot(globe->Wtrans, az, Zaxis);
 
 	    l = sqrt((w->picture.px - x)*(w->picture.px - x) + 
 		     (w->picture.py - y)*(w->picture.py - y) );
 
-	    ay = (-2*PI*l/globe->circumference);
+	    ay = (-2*M_PI*l/globe->circumference);
 	    set_rot(globe->Wtrans, -ay, Yaxis);
 
 	    set_rot(globe->Wtrans, -az, Zaxis);
@@ -3924,43 +3926,43 @@ XmPictureCallbackStruct    cb;
 	angle = acos( major_dx/sqrt(major_dx*major_dx + major_dy*major_dy));
 	if( major_dy  > 0 )
 	    {
-	    angle = 2*PI - angle;
+	    angle = 2*M_PI - angle;
 	    }
 
 	angle_tol = 0.2;
 
 	dz = 0.0;
 	if ( (fabs(w->picture.angle_posz - angle) < angle_tol) ||
-	     (2*PI - fabs(w->picture.angle_posz - angle) < angle_tol) )
+	     (2*M_PI - fabs(w->picture.angle_posz - angle) < angle_tol) )
 	    {
 	    dz = 1.0;
 	    }
 	if ( (fabs(w->picture.angle_negz - angle) < angle_tol) ||
-	     (2*PI - fabs(w->picture.angle_negz - angle) < angle_tol) )
+	     (2*M_PI - fabs(w->picture.angle_negz - angle) < angle_tol) )
 	    {
 	    dz = -1.0;
 	    }
 
 	dx = 0.0;
 	if ( (fabs(w->picture.angle_posx - angle) < angle_tol) ||
-	     (2*PI - fabs(w->picture.angle_posx - angle) < angle_tol) )
+	     (2*M_PI - fabs(w->picture.angle_posx - angle) < angle_tol) )
 	    {
 	    dx = 1.0;
 	    }
 	if ( (fabs(w->picture.angle_negx - angle) < angle_tol) ||
-	     (2*PI - fabs(w->picture.angle_negx - angle) < angle_tol) )
+	     (2*M_PI - fabs(w->picture.angle_negx - angle) < angle_tol) )
 	    {
 	    dx = -1.0;
 	    }
 
 	dy = 0.0;
 	if ( (fabs(w->picture.angle_posy - angle) < angle_tol) ||
-	     (2*PI - fabs(w->picture.angle_posy - angle) < angle_tol) )
+	     (2*M_PI - fabs(w->picture.angle_posy - angle) < angle_tol) )
 	    {
 	    dy = 1.0;
 	    }
 	if ( (fabs(w->picture.angle_negy - angle) < angle_tol) ||
-	     (2*PI - fabs(w->picture.angle_negy - angle) < angle_tol) )
+	     (2*M_PI - fabs(w->picture.angle_negy - angle) < angle_tol) )
 	    {
 	    dy = -1.0;
 	    }
@@ -4115,17 +4117,17 @@ GC      gc;
 
     hyp = sqrt(x*x + y*y);
     angle = acos((double)(x/hyp));
-    if (y < 0) angle = 2*PI - angle;
+    if (y < 0) angle = 2*M_PI - angle;
 
-    angle = angle + PI/6;
-    if (angle > 2*PI) angle = angle - 2*PI;
+    angle = angle + M_PI/6;
+    if (angle > 2*M_PI) angle = angle - 2*M_PI;
     x1 = cos(angle)*length;
     y1 = sin(angle)*length;
     XDrawLine(dpy, dw, gc,
 		center_x, center_y, center_x + x1, center_y + y1);
 
-    angle = angle - PI/3;
-    if (angle < 0) angle = angle + 2*PI;
+    angle = angle - M_PI/3;
+    if (angle < 0) angle = angle + 2*M_PI;
     x1 = cos(angle)*length;
     y1 = sin(angle)*length;
     XDrawLine(dpy, dw, gc,
@@ -4474,7 +4476,7 @@ char tmp_bits[8];
 		w->picture.globe->paz = acos((double)x/l);
 		if (y > 0)
 		    {
-		    w->picture.globe->paz = 2*PI - w->picture.globe->paz;
+		    w->picture.globe->paz = 2*M_PI - w->picture.globe->paz;
 		    }
 		}
 	    else if ( (event->xbutton.button == Button1) ||
@@ -4493,7 +4495,7 @@ char tmp_bits[8];
 	     * Adjust the globe circumference to be based on the window size.
 	     */
 	    l = MAX(w->core.width, w->core.height)/4;
-	    w->picture.globe->circumference = PI*(l + l);
+	    w->picture.globe->circumference = M_PI*(l + l);
 
 	    /*
 	     * So we only see the globe and gnomon while rotating(i.e. not
@@ -4993,9 +4995,9 @@ double  new_width;
 	if (w->picture.projection == 1)
 	    {
 	    dist = (w->picture.autocamera_width/2)/
-		    (tan((w->picture.view_angle/2)*2*PI/360.0));
+		    (tan((w->picture.view_angle/2)*2*M_PI/360.0));
 	    new_width = (w->picture.autocamera_width/2)*cb.zoom_factor;
-	    cb.view_angle = (360/PI)*atan(new_width/dist);
+	    cb.view_angle = (360/M_PI)*atan(new_width/dist);
 	    cb.view_angle = (cb.view_angle < 0.001) ? 0.001 : cb.view_angle;
 	    cb.view_angle = (cb.view_angle > 179.999) ? 179.999 : cb.view_angle;
 	    }
@@ -5089,9 +5091,9 @@ double  new_width;
 	if (w->picture.projection == 1)
 	    {
 	    dist = (w->picture.autocamera_width/2)/
-		    (tan((w->picture.view_angle/2)*2*PI/360.0));
+		    (tan((w->picture.view_angle/2)*2*M_PI/360.0));
 	    new_width = (w->picture.autocamera_width/2)*cb.zoom_factor;
-	    cb.view_angle = (360/PI)*atan(new_width/dist);
+	    cb.view_angle = (360/M_PI)*atan(new_width/dist);
 	    cb.view_angle = (cb.view_angle < 0.001) ? 0.001 : cb.view_angle;
 	    cb.view_angle = (cb.view_angle > 179.999) ? 179.999 : cb.view_angle;
 	    }
@@ -6688,7 +6690,7 @@ int depth;
     globe = (struct globe *) XtCalloc(1, sizeof(struct globe));
 
     globe->radi = radi;
-    globe->circumference = PI*(radi + radi);
+    globe->circumference = M_PI*(radi + radi);
 
     I44 ( globe->Wtrans );
    
@@ -6697,17 +6699,17 @@ int depth;
 	{
 	arc[i].xcoor = 0.0;
 	arc[i].ycoor = globe->radi
-	     * cos(0.314 + (i  * (PI - 0.624) / (double)(ORBNUM - 1 )) ); 
+	     * cos(0.314 + (i  * (M_PI - 0.624) / (double)(ORBNUM - 1 )) ); 
 
 	arc[i].zcoor = globe->radi
-	     * sin(0.314 + (i  * (PI - 0.624) / (double)(ORBNUM - 1)) ); 
+	     * sin(0.314 + (i  * (M_PI - 0.624) / (double)(ORBNUM - 1)) ); 
 
 	}
 
    /* first generate the equators by rotating around Y axis */
     for ( i = 0 ; i < EQNUM ; i++ )
 	{
-	set_rot ( globe->Wtrans, PI * 2.0 / (double)(EQNUM) , Yaxis ); 
+	set_rot ( globe->Wtrans, M_PI * 2.0 / (double)(EQNUM) , Yaxis ); 
 	for ( j = 0 ; j < ORBNUM ; j++ )
 	    {
 	    globe->equator[i][j].xcoor = (arc[j].xcoor * 
@@ -7056,15 +7058,15 @@ int     i;
 	}
     if( delta_y  > 0 )
 	{
-	w->picture.angle_posx = 2*PI - w->picture.angle_posx;
+	w->picture.angle_posx = 2*M_PI - w->picture.angle_posx;
 	}
-    if (w->picture.angle_posx < PI)
+    if (w->picture.angle_posx < M_PI)
 	{
-	w->picture.angle_negx = w->picture.angle_posx + PI;
+	w->picture.angle_negx = w->picture.angle_posx + M_PI;
 	}
     else
 	{
-	w->picture.angle_negx = w->picture.angle_posx - PI;
+	w->picture.angle_negx = w->picture.angle_posx - M_PI;
 	}
 
     /* Y axis */
@@ -7085,15 +7087,15 @@ int     i;
 	}
     if( delta_y  > 0 )
 	{
-	w->picture.angle_posy = 2*PI - w->picture.angle_posy;
+	w->picture.angle_posy = 2*M_PI - w->picture.angle_posy;
 	}
-    if (w->picture.angle_posy < PI)
+    if (w->picture.angle_posy < M_PI)
 	{
-	w->picture.angle_negy = w->picture.angle_posy + PI;
+	w->picture.angle_negy = w->picture.angle_posy + M_PI;
 	}
     else
 	{
-	w->picture.angle_negy = w->picture.angle_posy - PI;
+	w->picture.angle_negy = w->picture.angle_posy - M_PI;
 	}
 
     /* Z axis */
@@ -7114,15 +7116,15 @@ int     i;
 	}
     if( delta_y  > 0 )
 	{
-	w->picture.angle_posz = 2*PI - w->picture.angle_posz;
+	w->picture.angle_posz = 2*M_PI - w->picture.angle_posz;
 	}
-    if (w->picture.angle_posz < PI)
+    if (w->picture.angle_posz < M_PI)
 	{
-	w->picture.angle_negz = w->picture.angle_posz + PI;
+	w->picture.angle_negz = w->picture.angle_posz + M_PI;
 	}
     else
 	{
-	w->picture.angle_negz = w->picture.angle_posz - PI;
+	w->picture.angle_negz = w->picture.angle_posz - M_PI;
 	}
 
     /* Check to see if the projected axis have similar angles.  If they are
@@ -7592,7 +7594,7 @@ double new_x2, new_y2, new_z2;
 		  &cam_screen_y,
 		  &cam_screen_z);
     /* S/D */
-    sod_width = tan(PI*w->picture.view_angle/360.0);
+    sod_width = tan(M_PI*w->picture.view_angle/360.0);
     ho2 = (double)(w->picture.image_height)/2;
     wo2 = (double)(w->picture.image_width)/2;
     sod_height = sod_width*(ho2/wo2);
@@ -8255,7 +8257,7 @@ int	    i,j;
 	{
 	angle = 0.0;
 	}
-    if (xaxis_sycoor > origin_sycoor) angle = 2*PI - angle;
+    if (xaxis_sycoor > origin_sycoor) angle = 2*M_PI - angle;
     delta_x = length * cos(angle);
     delta_y = -length * sin(angle);
 
@@ -8287,7 +8289,7 @@ int	    i,j;
 	{
 	angle = 0.0;
 	}
-    if (yaxis_sycoor > origin_sycoor) angle = 2*PI - angle;
+    if (yaxis_sycoor > origin_sycoor) angle = 2*M_PI - angle;
     delta_x = length * cos(angle);
     delta_y = -length * sin(angle);
     w->picture.gnomon_yaxis_x = w->picture.gnomon_center_x + delta_x;
@@ -8316,7 +8318,7 @@ int	    i,j;
 	{
 	angle = 0.0;
 	}
-    if (zaxis_sycoor > origin_sycoor) angle = 2*PI - angle;
+    if (zaxis_sycoor > origin_sycoor) angle = 2*M_PI - angle;
     delta_x = length * cos(angle);
     delta_y = -length * sin(angle);
     w->picture.gnomon_zaxis_x = w->picture.gnomon_center_x + delta_x;

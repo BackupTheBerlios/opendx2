@@ -630,7 +630,7 @@ XEvent e;
 	   != (w->core.width - (2 * w->slide_bar.x_margin)) )
 	{
 	    w->slide_bar.width = w->core.width - (2 * w->slide_bar.x_margin);
-	    _XmResizeObject((RectObj)w->slide_bar.line, w->slide_bar.width,
+	    _XmResizeObject((Widget)w->slide_bar.line, w->slide_bar.width,
 			    w->slide_bar.line->rectangle.height, 0);
 	}
 	if(   ((w->core.height - (w->slide_bar.arrow_height)) / 2)
@@ -638,7 +638,7 @@ XEvent e;
 	{
 	    w->slide_bar.y_margin =
 	      (w->core.height - (w->slide_bar.arrow_height)) / 2;
-	    _XmMoveObject((RectObj)w->slide_bar.line, 
+	    _XmMoveObject((Widget)w->slide_bar.line, 
 			  w->slide_bar.line->rectangle.x,
 			  w->slide_bar.y_margin + w->slide_bar.arrow_height);
 
@@ -667,11 +667,11 @@ static void Help( XmSlideBarWidget w, XEvent* event )
    XmGadget gadget;
    XmDrawingAreaCallbackStruct cb;
 
-   if (   (gadget = _XmInputInGadget((CompositeWidget)w, 
+   if (   (gadget = _XmInputInGadget((Widget)w, 
 		event->xbutton.x, event->xbutton.y))
        != NULL)
    {
-      _XmDispatchGadgetInput(gadget, event, XmHELP_EVENT);
+      _XmDispatchGadgetInput((Widget)gadget, event, XmHELP_EVENT);
    }
    else
    {

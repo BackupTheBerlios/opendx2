@@ -36,8 +36,11 @@ static int
 #else
 static int _Optlink
 #endif
-compare(struct sort *a, struct sort *b)
+compare(const void *c, const void *d)
 {
+    struct sort *a = (struct sort *)c;
+    struct sort *b = (struct sort *)d;
+
     if (a->diff<b->diff)
         return 1;
     else

@@ -448,9 +448,9 @@ XButtonPressedEvent * event;
 {
    XmGadget gadget;
 
-   if ((gadget = _XmInputInGadget((CompositeWidget)da, event->x, event->y)) != NULL)
+   if ((gadget = _XmInputInGadget((Widget)da, event->x, event->y)) != NULL)
    {
-      _XmDispatchGadgetInput ((XmGadget)gadget, (XEvent *)event, XmARM_EVENT);
+      _XmDispatchGadgetInput ((Widget)gadget, (XEvent *)event, XmARM_EVENT);
       da->manager.selected_gadget = gadget;
    }
 }
@@ -469,7 +469,7 @@ XButtonPressedEvent * event;
 {
    if (da->manager.selected_gadget != NULL)
    {
-      _XmDispatchGadgetInput ((XmGadget)da->manager.selected_gadget,
+      _XmDispatchGadgetInput ((Widget)da->manager.selected_gadget,
             (XEvent *)event, XmACTIVATE_EVENT);
       da->manager.selected_gadget = NULL;
    }

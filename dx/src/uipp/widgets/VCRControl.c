@@ -918,7 +918,7 @@ static void VCRCounterExpose( XmDrawingAreaWidget w, XmVCRControlWidget vcr,
       - vcr->vcr_control.label->core.height) / 2;
     if( (x1 != vcr->vcr_control.label->core.x) || 
 	(y != vcr->vcr_control.label->core.y) )
-		_XmMoveObject((RectObj)vcr->vcr_control.label, x1, y);
+		_XmMoveObject((Widget)vcr->vcr_control.label, x1, y);
     x1 += vcr->vcr_control.label->core.width;
     x2 = x1 + ((vcr->vcr_control.button[VCR_COUNT]->core.width -
 		(x1 + vcr->vcr_control.dot_dot_dot->core.width)) / 2);
@@ -927,7 +927,7 @@ static void VCRCounterExpose( XmDrawingAreaWidget w, XmVCRControlWidget vcr,
     if(   (x2 != vcr->vcr_control.dot_dot_dot->core.x)
        || (y != vcr->vcr_control.dot_dot_dot->core.y) )
 	/*  Move the Gadget (XtMoveWidget doesn't move Gadgets in R3)  */
-	_XmMoveObject((RectObj)vcr->vcr_control.dot_dot_dot, x2, y);
+	_XmMoveObject((Widget)vcr->vcr_control.dot_dot_dot, x2, y);
 }
 
 /*  Subroutine:	_VCRButtonEvent
@@ -1168,7 +1168,7 @@ VCRCallbackStruct data;
 		ReleaseVCRButton(vcr, VCR_COUNT);
 		if( vcr->vcr_control.frame_control_is_up )
 		{
-		    XtUnmanageChild(vcr->vcr_control.frame_control);
+		    XtUnmanageChild((Widget)vcr->vcr_control.frame_control);
 		}
 		vcr->vcr_control.frame_control_is_up = False;
 		}
@@ -1191,7 +1191,7 @@ VCRCallbackStruct data;
 		XtSetArg(wargs[0], XmNx, dest_x - 10);
 		XtSetArg(wargs[1], XmNy, dest_y);
 		XtSetValues(vcr->vcr_control.shell, wargs, 2);
-		XtManageChild(vcr->vcr_control.frame_control);
+		XtManageChild((Widget)vcr->vcr_control.frame_control);
 	        PushVCRButton(vcr, VCR_COUNT);
 		vcr->vcr_control.frame_control_is_up = True;
 	        ChangeVCRCurrentValue(vcr, vcr->vcr_control.current_value, 
