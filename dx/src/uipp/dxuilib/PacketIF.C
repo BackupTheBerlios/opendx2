@@ -1358,7 +1358,7 @@ void PacketIF::connectAsServer(int pport)
     int fd;
     int sts;
     int oldPort;
-#if !defined(linux) && !defined(cygwin) || defined(freebsd)
+#if !defined(linux) && !defined(cygwin) && !defined(freebsd)
     extern int errno;
 #endif
     int tries;
