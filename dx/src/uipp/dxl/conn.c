@@ -341,8 +341,10 @@ DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* er
     argv[i++] = "-appPort";
     argv[i++] = pi;
     /*argv[i++] = "-noExitOptions";*/	/* So UI won't have Quit menu options */
+#ifdef DXD_LICENSED_VERSION
     argv[i++] = "-license";	/* Tell exec to get its own license instead */ 
     argv[i++] = "self";		/* of negotiated with the remote connection */ 
+#endif
     argv[i++] = NULL;		
 
     child = ConnectTo(host, NULL, NULL, i, argv, environ,
