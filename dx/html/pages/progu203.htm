@@ -33,24 +33,22 @@ Retrieves a named attribute from an Object, verifies that it contains
 a string, and returns a pointer to that string.
 <P><STRONG>Syntax</STRONG>
 <BR>
-<TT><STRONG><BR>
-&#35;include &lt;dx/dx.h&gt;<BR>
+<BR>
+<TT><STRONG>&#35;include &lt;dx/dx.h&gt;</strong></tt><BR>
 <P><BR>
+			<TT><STRONG>
 Object DXGetStringAttribute(Object o, char *name, char **x)<BR>
-</STRONG></TT><BR>
+				</STRONG></TT><BR>
+		
+		
 <P><STRONG>Functional Details</STRONG>
 <P>
 The attribute to be retrieved from Object <TT><STRONG>o</STRONG></TT> is
 specified by the string <TT><STRONG>name</STRONG></TT>.
 It then verifies that the attribute contains a string value.
-If <TT><STRONG>x</STRONG></TT> is not <TT><STRONG>NULL</STRONG></TT>, a pointer
-to
-the string is returned in <TT><STRONG>*x</STRONG></TT>.
-<P><STRONG>Return Value</STRONG>
+If <TT><STRONG>x</STRONG></TT> is not <TT><STRONG>NULL</STRONG></TT>, a pointer to the string in the object is returned in <TT><STRONG>*x</STRONG></TT>. Do not release this memory or it will corrupt the object.<P><STRONG>Return Value</STRONG>
 <P>
-Returns <TT><STRONG>o</STRONG></TT> returns <TT><STRONG>NULL</STRONG></TT> and
-does not set an error code.
-<P><STRONG>See Also</STRONG>
+Returns <TT><STRONG>o</STRONG></TT> if successful, returns <TT><STRONG>NULL</STRONG></TT> if it fails and does not set an error code.<P><STRONG>See Also</STRONG>
 <P>
 <TT><STRONG>
 <A HREF="progu158.htm#HDRDXGA">DXGetAttribute</A>,
