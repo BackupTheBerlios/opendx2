@@ -8,7 +8,9 @@
 
 #include <dxconfig.h>
 
-
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include <Xm/Xm.h>
 #include <Xm/Label.h>
