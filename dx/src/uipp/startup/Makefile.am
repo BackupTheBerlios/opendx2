@@ -1,20 +1,19 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -D$(ARCH) -I$(DXROOT)/include
+INCLUDES = -D$(ARCH) -I../../../include -I../base
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 dxbindir = $(prefix)/dx/bin
 
-# dxbin_PROGRAMS = startupui
-# startupui_SOURCES =			
+dxbin_PROGRAMS = startupui
 
-EXTRA_DIST = \
+startupui_SOURCES =			\
 	NetFileDialog.C			\
 	StartupApplication.C		\
 	StartupCommand.C		\
 	StartupWindow.C			\
-	TimedInfoDialog.C
+	TimedInfoDialog.C 		\
 	\
 	Main.C
 
@@ -25,11 +24,11 @@ noinst_HEADERS = \
 	StartupWindow.h \
 	TimedInfoDialog.h
 
-#startupui_LDADD = 			\
-#	../base/libBASE.a  		\
-#	../widgets/libWIDGETS.a  	\
-#	../dxl/libDXL.a		  	\
-#	-L/usr/X11R6/lib 		\
-#	-L/usr/local/lib 		\
-#	-L$(DXROOT)/lib_$(ARCH) 	\
-#	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
+startupui_LDADD = 			\
+	../base/libBASE.a  		\
+	../widgets/libWIDGETS.a  	\
+	../dxl/libDXL.a		  	\
+	-L/usr/X11R6/lib 		\
+	-L/usr/local/lib 		\
+	-L$(DXROOT)/lib_$(ARCH) 	\
+	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
