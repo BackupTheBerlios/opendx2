@@ -31,33 +31,39 @@ if [ -z "$DXDATA" ]; then
   fi
 fi
 
+# if DXMACROS not set, default it to the usual unless dir doesn't exist
 if [ -z "$DXMACROS" ]; then
   DXMACROS=$DXROOT/samples/macros
+  if [ ! -d "$DXMACROS" ]; then
+	DXMACROS=
+  fi
 fi
+# if JXMACROS not set and default dir exists, add it to the DXMACROS path
 if [ -z "$JXMACROS" ]; then
   JXMACROS=$DXROOT/java/server/dxmacros
-fi
-if [ -z "$JXUSERMACROS" ]; then
-  JXUSERMACROS=$DXROOT/java/server/usermacros
-fi
-if [ ! -d "$DXMACROS" ]; then
-	DXMACROS=
-fi
-if  [ -d "$JXMACROS" ]; then
+  if  [ -d "$JXMACROS" ]; then
 	if [ -z "$DXMACROS" ]; then
 		DXMACROS=$JXMACROS
 	else
 		DXMACROS=$DXMACROS:$JXMACROS
 	fi
+  fi
 fi
-if  [ -d "$JXUSERMACROS" ]; then
+# if JXUSERMACROS not set and default dir exists, add it to the DXMACROS path
+if [ -z "$JXUSERMACROS" ]; then
+  JXUSERMACROS=$DXROOT/java/server/usermacros
+  if  [ -d "$JXUSERMACROS" ]; then
 	if [ -z "$DXMACROS" ]; then
 		DXMACROS=$JXUSERMACROS
 	else
 		DXMACROS=$DXMACROS:$JXUSERMACROS
 	fi
+  fi
 fi
-export DXMACROS
+
+if [ ! -z $DXMACROS ]; then
+	 export DXMACROS
+fi
 
 if [ -f $DXROOT/bin/dxworker ]; then
   exec $DXROOT/bin/dxworker $ARGS 
