@@ -776,10 +776,15 @@ Pointer _dxfgetbrk(Pointer base, int n)
     if (x == ERR_PTR) {
 	unsigned int i;
 	x = (Pointer)sbrk(0);
+#ifdef cygwin
+	DXSetError(ERROR_NO_MEMORY, 
+		"cannot expand the data segment by %u bytes", n);
+#else
 	i = (unsigned int)((char *)x - (char *)&end);
 	DXSetError(ERROR_NO_MEMORY, 
 	"cannot expand the data segment by %u bytes, current size is %u bytes",
 		   n, i);
+#endif
 	return NULL;
     } else
 	return x;
@@ -884,9 +889,11 @@ void DXPrintMemoryInfo()
 		      i+1, alloc_addr_start[i], 
 		      (uint)SUB_PTR(alloc_addr_end[i], alloc_addr_start[i]));
 	
+#ifndef cygwin
 	DXMessage("end address = 0x%08x, data segment extended by %u bytes", 
 		  alloc_addr_end[i-1],
 		  (uint)SUB_PTR(alloc_addr_end[i-1], &end));
+#endif
 	return;
 	
       case MEM_SHARED:
