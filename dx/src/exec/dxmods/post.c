@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/post.c,v 1.5 2000/12/20 21:25:25 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/post.c,v 1.6 2000/12/21 15:21:31 davidt Exp $:
  */
 
 #include <stdio.h>
@@ -45,7 +45,7 @@ m_Post(Object *in, Object *out)
     if (! object)
 	goto error;
 
-    if (! _dxfPost(object, str, NULL)
+    if (! _dxfPost(object, str, NULL))
 	goto error;
     
     out[0] = object;
