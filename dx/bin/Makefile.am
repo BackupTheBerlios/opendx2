@@ -2,6 +2,10 @@
 
 EXTRA_DIST = dx.workerscript
 
+uninstall-local:
+	/bin/rm  $(prefix)/bin/dx
+	/bin/rm $(prefix)/dx/bin/dx.workerscript
+
 install-exec-local:
 	$(INSTALL) dx $(prefix)/bin
 	install -d $(prefix)/dx/bin
