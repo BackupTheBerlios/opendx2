@@ -1102,12 +1102,12 @@ AC_CHECK_HEADERS(stream stream.h)
 AC_CHECK_HEADERS(sstream strstream.h strstrea.h sysent.h)
 AC_CHECK_HEADERS(fstream fstream.h)
 AC_CHECK_HEADERS([regexp.h], [], [], 
-[  #define INIT      char *sp = "";
+[  #define INIT      const char *sp = "";
    #define GETC()    (*sp++)
    #define PEEKC()   (*sp)
-   #define UNGETC()  (--sp)
-   #define RETURN(c) return;
-   #define ERROR(c)  /**/
+   #define UNGETC(c)  (--sp)
+   #define RETURN(pointer) return(pointer);
+   #define ERROR(val)  /**/
 ])
 
 AC_CHECK_LIB(socket, socket)
