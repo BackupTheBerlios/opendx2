@@ -530,8 +530,6 @@ ConfigurationDialog *dialog = (ConfigurationDialog*)clientData;
 //
 void ConfigurationDialog::resizeCallback()
 {
-#if 0
-This was commented out to fix micro-scrolled window problem -- GDA
 Dimension dw;
 
     if ((!this->getRootWidget()) || (!this->scrolledInputForm)) return ;
@@ -561,7 +559,6 @@ Dimension dw;
 	NULL);
 	XtVaSetValues (this->scrolledInputForm, XmNwidth, dw-20, NULL);
     }
-#endif
 }
 
 Widget ConfigurationDialog::createInputs(Widget parent, Widget)
