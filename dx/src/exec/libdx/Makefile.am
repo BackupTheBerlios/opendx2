@@ -21,6 +21,9 @@ EXTRA_DIST = \
 	\
 	buffer.Z shade.Z triangle.Z quad.Z plane.Z 
 
+CLEANFILES = \
+	buffer.c shade.c triangle.c quad.c plane.c 
+
 BUILT_SOURCES = \
 	buffer.c shade.c triangle.c quad.c plane.c \
 	\
