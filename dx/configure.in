@@ -2,9 +2,11 @@
 
 AC_SUBST(SHELL)
 AC_SUBST(YACC)
+AC_SUBST(ARCH)
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
+AM_CONFIG_HEADER(include/dxconfig.h)
 AM_INIT_AUTOMAKE(dx, 1.0)
 
 AC_DEFINE(DXD_VERSION_STRING,   "01.01.0001")
@@ -20,7 +22,7 @@ AC_PROG_RANLIB
 AC_PROG_CXX(-g)
 AC_PROG_CC
 AC_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h sys/file.h sys/ioctl.h sys/time.h unistd.h sys/types.h sys/sysconfig.h sys/un.h values.h )
-AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime putenv regcmp re_comp regcmp select socket strcspn strdup strerror strspn strstr strtod strtol strtoul uname popen vfork)
+AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime putenv regcmp re_comp regcmp select socket strcspn strdup strerror strspn strstr strtod strtol strtoul uname popen vfork trunc)
 AC_PROG_CPP
 AC_PROG_YACC
 
@@ -79,7 +81,5 @@ AC_CHECK_TYPE(float32, float)
 AC_CHECK_TYPE(float64, double char)
 
 AC_C_BIGENDIAN
-
-
 
 AC_OUTPUT( bin/dx bin/Makefile src/ui++/ui/Makefile lib/Makefile src/exec/hwrender/gl/Makefile src/exec/hwrender/xgl/Makefile src/exec/hwrender/starbase/Makefile src/ui++/dxuilib/Makefile src/ui++/ui/Makefile src/exec/Makefile src/exec/dxexec/Makefile include/Makefile include/dx/Makefile src/exec/libdx/Makefile src/Makefile src/exec/dpexec/Makefile src/exec/dxmods/Makefile src/ui++/base/Makefile src/ui++/Makefile src/ui++/dxl/Makefile src/ui++/dxui/Makefile src/ui++/prompter/Makefile src/ui++/mb/Makefile src/ui++/widgets/Makefile src/ui++/startup/Makefile src/ui++/tutor/Makefile src/ui++/java/dx/protocol/server/Makefile src/ui++/java/dx/protocol/Makefile src/ui++/java/dx/Makefile src/ui++/java/dx/runtime/Makefile src/ui++/java/dx/client/Makefile src/ui++/java/dx/net/Makefile src/ui++/java/dx/applets/Makefile src/ui++/java/dx/server/Makefile src/ui++/java/Makefile src/exec/hwrender/opengl/Makefile src/exec/hwrender/Makefile Makefile help/Makefile html/Makefile man/catl/Makefile man/manl/Makefile man/Makefile fonts/Makefile doc/Makefile)
