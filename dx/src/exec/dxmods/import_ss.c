@@ -83,7 +83,7 @@ static Error load_first(struct column_info **src1, struct column_info **src2,
 	char **varlist,struct column_info **ds,struct file_info *fs,int *index);
 static void replace_row(struct column_info **old, struct column_info **new);
 static Field build_field(struct file_info *fs, struct column_info **ds, char** cat_string);
-static Error dx_getline(struct parse_state *ps);
+static Error _dxf_getline(struct parse_state *ps);
 static Type isnumber(char *p, int *d, float *f);
 static Error create_array(struct column_info *ds);
 static Error process_data(char *p, struct column_info *ds, int index, 
@@ -369,14 +369,14 @@ Error parse_it_first(struct parse_state *ps, char **varlist,
   if (fs->labelline > 0) {
     skip = fs->skip;
     for (i=0; i<fs->labelline; i++){
-      if (!dx_getline(ps))
+      if (!_dxf_getline(ps))
 	goto error;
       skip--;
     }
   }
   else if (fs->skip > 0) {
     for (i=0; i<fs->skip+1; i++){
-      if (!dx_getline(ps))
+      if (!_dxf_getline(ps))
 	goto error;
     }
   }
@@ -387,7 +387,7 @@ Error parse_it_first(struct parse_state *ps, char **varlist,
 
   if (fs->labelline > 0 && skip > 0) {
     for (i=0; i<skip+1; i++){
-      if (!dx_getline(ps))
+      if (!_dxf_getline(ps))
 	goto error;
     }
   }
@@ -1213,7 +1213,7 @@ FileTok(struct parse_state *ps,char *sep, int newline, char** token)
        *      c) we are scanning for a token on the next line
        */
       if (current == NULL || *current == '\0' || (newline & FORCE_NEWLINE)) {
-        if (!ps->filename || !dx_getline(ps))
+        if (!ps->filename || !_dxf_getline(ps))
           return ERROR;
         current = ps->line;
 
@@ -1291,7 +1291,7 @@ Error cleanup(struct column_info **ds,int ncolumns)
 /* getline allocating space as you go
  */
 static
-Error dx_getline(struct parse_state *ps)
+Error _dxf_getline(struct parse_state *ps)
 {
   char str[MAX_DSTR];
   int n=0;
