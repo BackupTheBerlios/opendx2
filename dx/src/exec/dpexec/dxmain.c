@@ -9,6 +9,14 @@
 #include <dxconfig.h>
 #include <dx/dx.h>
 
+#if defined(DDX)
+#if defined(DXD_EXEC_WAIT_PROCESS)
+#undef DXD_EXEC_WAIT_PROCESS
+#endif
+#define DXD_EXEC_WAIT_PROCESS   0
+#define DXD_MASTER_IS_P0	1
+#endif
+
 #if defined(HAVE_WINIOCTL_H)
 #include <winioctl.h>
 #endif
@@ -724,35 +732,28 @@ loop_slave_continue:
 	    ExMarkTimeLocal (4, "main:chVCR");
 	    if (_dxf_ExCheckVCR (_dxd_exGlobalDict, FALSE))
 		continue;
-	    
+
+#if defined(DDX)
+	    {
+		extern Error SlaveBcastLoop(int, Pointer);
+		extern int GetMPINodeId();
+		if (GetMPINodeId() == 0)
+		    _dxf_ExCheckRIHBlock (SFILEfileno (yyin));
+		else
+		{
+		    SlaveBcastLoop(0, NULL);
+		    _dxf_ExCheckRIH ();
+		}
+	    }
+#else
 #ifndef DXD_NOBLOCK_SELECT
 	     ExMarkTimeLocal (4, "main:chRIH");
 	    _dxf_ExCheckRIHBlock (SFILEfileno (yyin));
 #endif
-	}
-
-#if TIMEOUT_DX
-/* right now this only works for sgi, it's not being used now but it should
-   be changed to run on all machines if you want to do a timeout            */
-	/*
-	 * If we are idle too long, blow everyone away to free up resources
-	 */
-
-	if (! _dxd_exShowTiming)
-	{
-	    naptime += NAPTIME;
-	    set_status (PS_NAPPING);
-	    sginap (NAPTIME);
-	    set_status (PS_EXECUTIVE);
-	    if (naptime > NAPDEAD)
-	    {
-		DXWarning ("#4500",
-			naptime / CLK_TCK);
-		ExCleanup ();
-	    }
-	}
 #endif
-  main_loop_continue:
+	}
+
+main_loop_continue:
 	continue;
     }
 
@@ -2439,9 +2440,24 @@ ExParallelMaster ()
                 _dxd_exParseAhead = _dxd_exSParseAhead;
             }
 
+#if defined(DDX)
+            if(!_dxf_ExIsExecuting() && !ExInputAvailable(yyin))
+	    {
+		extern Error SlaveBcastLoop(int, Pointer);
+		extern int GetMPINodeId();
+		if (GetMPINodeId() == 0)
+		    _dxf_ExCheckRIHBlock (SFILEfileno (yyin));
+		else
+		{
+		    SlaveBcastLoop(0, NULL);
+		    _dxf_ExCheckRIH ();
+		}
+	    }
+#else
 #ifndef DXD_NOBLOCK_SELECT
             if(!_dxf_ExIsExecuting() && !ExInputAvailable(yyin))
                 _dxf_ExCheckRIHBlock (SFILEfileno (yyin));
+#endif
 #endif
 
 	}
