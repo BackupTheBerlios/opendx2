@@ -577,11 +577,13 @@ AC_LANG_RESTORE
 AC_DEFUN(DX_CYGWIN_MOUNTS,
 [
     changequote(<<,>>)dnl
-    AC_MSG_CHECKING(if intelnt on cygwin, check for mounts)
+    AC_MSG_CHECKING(intelnt under cygwin)
     mnts="none"
     if test "$ARCH" = "intelnt" ; then
 	    tt=`uname -s  | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"`
 	    if test "$tt" = "yes" ; then
+	    	    AC_MSG_RESULT(yes)
+		    AC_MSG_CHECKING(mounted disks)
 		    mnts="`mount | sed '1d' | grep "^[^cC]:" | sed "s?\(.:\)[ ]*\([^ ][^ ]*\).*?-mount:\2=\1?"`"
 		    if test ! -z "$mnts" ; then
 			    CFLAGS="$CFLAGS $mnts"
@@ -590,9 +592,12 @@ AC_DEFUN(DX_CYGWIN_MOUNTS,
 		    else
 			    mnts="none"
 		    fi
+		    AC_MSG_RESULT($mnts)
 	    fi
+	    AC_MSG_RESULT(no)
+    else
+	    AC_MSG_RESULT(no)
     fi
-    AC_MSG_RESULT($mnts)
     changequote([,])dnl
 ])
 
