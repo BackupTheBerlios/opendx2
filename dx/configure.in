@@ -25,12 +25,10 @@ AC_CHECK_PROG(HAVE_CSH, cshZ, 1, 0)
 
 if test "$HAVE_CSH" = "1" ; then
     INSTALL_DX_EXE=
-    INSTALL_DX_SCRIPT=dx
-    INSTALL_DX_WORKERSCRIPT=dx.workerscript
+    INSTALL_DX_CSH=dx dx.workerscript
 else
-    INSTALL_DX_EXE=dx.exe
-    INSTALL_DX_SCRIPT=
-    INSTALL_DX_WORKERSCRIPT=
+    INSTALL_DX_EXE=dx
+    INSTALL_DX_CSH=
 fi
 
 dnl Checks for programs.
