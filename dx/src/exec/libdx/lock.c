@@ -201,14 +201,15 @@ int _dxf_initlocks(void)
 int DXcreate_lock(lock_type *l, char *name)
 {
     static int been_here = 0;
+    lwp_mutex_t *mp = (lwp_mutex_t*) l;
+    lwp_mutex_t template = SHAREDMUTEX;
+
     if (!been_here) {
 	been_here = 1;
 	if (!_dxf_initlocks())
 	    return NULL;
     }
 
-    lwp_mutex_t *mp = (lwp_mutex_t*) l;
-    lwp_mutex_t template = SHAREDMUTEX;
     *mp = template;
     return OK;
 }
