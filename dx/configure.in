@@ -15,6 +15,7 @@ AC_PROG_CPP
 AC_PROG_YACC
 
 dnl Checks for libraries.
+AC_CHECK_LIB(stdc++, main)
 
 dnl Checks for header files.
 AC_PATH_X
