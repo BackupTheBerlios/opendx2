@@ -1,21 +1,21 @@
 //
-// time: Tue Oct 20 10:06:42 1998
+// time: Tue Apr 23 16:34:54 2002
 //
-// version: 3.1.2 (format), 4.1.1 (DX Beta)
+// version: 3.1.2 (format), 4.1.3 (DX)
 //
 //
 // Begin MDF
-// MODULE vrmlexport
+// MODULE VRMLExport
 // CATEGORY Macros
-// DESCRIPTION new macro
+// DESCRIPTION VRML Export for JavaDX
 // INPUT object; object; (none);  
 // INPUT base_name; string; (none);  
 // OUTPUT file_written; string;  
 // End MDF
-// workspace: width = 184, height = 300
+// workspace: width = 190, height = 302
 // layout: snap = 0, width = 50, height = 50, align = NN
 //
-macro vrmlexport(
+macro VRMLExport(
  object
 ,base_name
 ) -> (
@@ -25,19 +25,19 @@ macro vrmlexport(
     // node Input[7]: x = 0, y = 0, inputs = 0, label = Input
     // parameter: position = 1, name = 'object', value = ' ', descriptive = 0, description = ' ', required = 1, visible = 1
     //
-vrmlexport_Input_7_out_1 = object;
+VRMLExport_Input_7_out_1 = object;
     // 
     // node Input[8]: x = 148, y = 0, inputs = 0, label = Input
     // parameter: position = 2, name = 'base_name', value = ' ', descriptive = 0, description = ' ', required = 1, visible = 1
     //
-vrmlexport_Input_8_out_1 = base_name;
+VRMLExport_Input_8_out_1 = base_name;
     // 
     // node Export[1]: x = 6, y = 121, inputs = 3, label = Export
     // input[3]: defaulting = 0, visible = 1, type = 32, value = "vrml"
     //
     Export(
-    vrmlexport_Input_7_out_1,
-    vrmlexport_Input_8_out_1,
+    VRMLExport_Input_7_out_1,
+    VRMLExport_Input_8_out_1,
     "vrml"
     ) [instance: 1, cache: 1];
     // 
@@ -45,19 +45,19 @@ vrmlexport_Input_8_out_1 = base_name;
     // input[1]: defaulting = 0, visible = 1, type = 32, value = "%s.wrl"
     // input[3]: visible = 0
     //
-vrmlexport_Format_8_out_1[cache: 2] = 
+VRMLExport_Format_8_out_1[cache: 2] = 
     Format(
     "%s.wrl",
-    vrmlexport_Input_8_out_1,
+    VRMLExport_Input_8_out_1,
     NULL
     ) [instance: 8, cache: 1];
     // 
     // node Output[4]: x = 131, y = 240, inputs = 1, label = Output
     // parameter: position = 1, name = 'file_written', value = ' ', descriptive = 0, description = ' ', required = 0, visible = 1
     //
-file_written = vrmlexport_Format_8_out_1;
+file_written = VRMLExport_Format_8_out_1;
 // network: end of macro body
 }
-vrmlexport_Input_7_out_1 = NULL;
-vrmlexport_Input_8_out_1 = NULL;
-vrmlexport_Format_8_out_1 = NULL;
+VRMLExport_Input_7_out_1 = NULL;
+VRMLExport_Input_8_out_1 = NULL;
+VRMLExport_Format_8_out_1 = NULL;
