@@ -26,3 +26,6 @@ README.output:
 	echo "htmlpages for default output.  Make this " >> README.output
 	echo "directory writable!" >> README.output
 
+install-exec-local:
+	$(mkinstalldirs) $(DESTDIR)$(srvoutputdir)
+	chmod 777 $(DESTDIR)$(srvoutputdir)
