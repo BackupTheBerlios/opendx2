@@ -107,7 +107,7 @@
 /* program to run for remote shell */
 #define RSH "/usr/bin/rsh"
 
-#ifdef linux86
+#ifdef linux
 
 #undef F_CHAR_READY
 #define F_CHAR_READY(fp) ((fp)->_IO_read_ptr < (fp)->_IO_read_end)

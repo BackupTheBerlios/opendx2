@@ -274,12 +274,7 @@ AC_DEFUN(DX_ARCHITECTURE,
     	ARCH=cygwin
     fi
     if test $unameS = "Linux" ; then
-	isit=`echo $unameM | egrep "i.86"`
-	if test ! -z "$isit" ; then
-	    ARCH=linux86 
-	else
-	    ARCH=unknown 
-	fi
+	ARCH=linux 
     fi
     if test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
     	ARCH=sgi
@@ -467,6 +462,8 @@ AC_DEFUN(DX_CHECK_SELECT_ARG,
 select_argtype=
 cat > selectHdrs.h << EOF
 EOF
+AC_CHECK_HEADER(unistd.h, [ echo "#include <unistd.h>" >> selectHdrs.h ])
+AC_CHECK_HEADER(sys/types.h, [ echo "#include <sys/types.h>" >> selectHdrs.h ])
 AC_CHECK_HEADER(select.h, [ echo "#include <select.h>" >> selectHdrs.h ])
 AC_CHECK_HEADER(sys/select.h, [ echo "#include <sys/select.h>" >> selectHdrs.h ])
 for try in sellist fd_set int void
@@ -496,6 +493,8 @@ AC_DEFUN(DX_CHECK_SOCK_LENGTH_TYPE,
 socket_argtype=
 cat > socketHdrs.h << EOF
 EOF
+AC_CHECK_HEADER(unistd.h, [ echo "#include <unistd.h>" >> socketHdrs.h ])
+AC_CHECK_HEADER(sys/types.h, [ echo "#include <sys/types.h>" >> socketHdrs.h ])
 AC_CHECK_HEADER(sys/socket.h, [ echo "#include <sys/socket.h>" >> socketHdrs.h ])
 for try in socklen_t size_t int
 do
@@ -505,7 +504,7 @@ AC_TRY_LINK(
 #include "socketHdrs.h"
 ],
 [
-$try *foo;
+$try *foo = NULL;
 int i = getsockname(1, (struct sockaddr *)NULL, foo);
 ],
 [

@@ -1031,7 +1031,7 @@ static int sm_lg_ratio = 0;		/* 0 means compute at run time */
 #define LARGE(x) ((int)x>=(int)large)
 #endif
 
-#ifdef	linux86
+#ifdef	linux
 #define initvalues
 #define SMALL_BASE    0               /* use data segment */
 #define SMALL_GET     _dxfgetmem      /* expand by using DosSetMem */

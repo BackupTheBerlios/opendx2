@@ -457,7 +457,7 @@ SIZEINT(_dxdComputeSubs);
 #ifdef cygwin
 #   define trunc(x) ((float)((int)(x)))
 #endif
-#ifdef linux86
+#ifdef linux
 #   define trunc(x) ((float)((int)(x)))
 #endif
 #ifdef aviion

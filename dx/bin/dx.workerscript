@@ -110,8 +110,8 @@ switch ( $thissys )
     breaksw
 
   case Linux:
-    set exarch=linux86
-    set uiarch=linux86
+    set exarch=linux
+    set uiarch=linux
 
     set remote=/usr/bin/rsh
 
@@ -1438,7 +1438,7 @@ switch ( $uiarch )
   case solaris:
   case aviion:
   case alphax:
-  case linux86:
+  case linux:
     breaksw
   
   default:

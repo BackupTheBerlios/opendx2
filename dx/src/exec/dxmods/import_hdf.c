@@ -15,7 +15,7 @@
 
 #if defined(HAVE_LIBDF)
 
-#if defined(linux86)
+#if defined(linux)
 #define UNIX386
 #endif
 

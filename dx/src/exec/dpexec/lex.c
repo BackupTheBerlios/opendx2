@@ -10,7 +10,7 @@
 
 
 /* this has to be before stdio.h gets included. */
-#if !defined(os2) && !defined(linux86)
+#if !defined(os2) && !defined(linux)
 #ifdef GETC
 #undef GETC
 #endif
