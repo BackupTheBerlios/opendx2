@@ -272,7 +272,7 @@ shear(Pointer icstart, char cstc, RGBColor *cmap,
       int osx, float osy, int onx, int ony,
       int it, float scale, float skew, int ot
 ) {
-    int odx, ody, okx, oky;
+    int odx, ody, oky;
     int x, iy, oy, dip, dop, ky;
     float f, f1, yy, df, iscale, y, z, dz;
     float r, g, b, o, r0, g0, b0, o0, r1, g1, b1, o1, s0, s1, obar;
@@ -303,7 +303,7 @@ shear(Pointer icstart, char cstc, RGBColor *cmap,
     if (onx-osx < ikx)
 	ikx = onx-osx;
 
-    okx = ikx;
+    /*okx = ikx;*/
     oky = ony;
 
     /* switch on input/output type */

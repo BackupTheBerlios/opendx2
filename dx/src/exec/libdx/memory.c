@@ -884,11 +884,11 @@ arealloc(struct arena *a, char *x, unsigned int n)
 {
     struct block *b, *nb;
     char *y;
-    int bs, align, m, s;
+    int bs, align, m;
 
     b = (struct block *) (x - USER);	/* convert user to block */
     CHECK(b);				/* check for corruption */
-    s = SIZE(b);                        /* initial size of b */
+    /*s = SIZE(b);*/                    /* initial size of b */
     m = n + USER;			/* add overhead */
     if (m<MINBLOCK) m = MINBLOCK;	/* minimum size */
     align = a->align;			/* alignment boundary for this arena */

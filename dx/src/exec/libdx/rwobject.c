@@ -640,7 +640,7 @@ Class ConvertClassIn(int i, int version)
     }
     
     DXSetError(ERROR_DATA_INVALID, "Unrecognized Object Class");
-    return -1;
+    return (Class) -1;
 }
 
 
@@ -688,7 +688,7 @@ Type ConvertTypeIn(int i, int version)
     }
 
     DXSetError(ERROR_DATA_INVALID, "Unrecognized Array Type");
-    return -1;
+    return (Type) -1;
 }
 
 
@@ -725,7 +725,7 @@ Category ConvertCatIn(int i, int version)
     }
 
     DXSetError(ERROR_DATA_INVALID, "Unrecognized Array Category");
-    return -1;
+    return (Category) -1;
 }
 
 
@@ -1340,19 +1340,19 @@ Error writeout_object(Object o, char *dataset, HashTable ht, Pointer *header,
 			     INC_VOID(*header, sizeof(float)); \
 			     INC_BYTE(*byteoffset, sizeof(float)); }
 #define GetClass(value, version)  \
-                        { value = (*(int *)*header); \
+                        { value = (Class) (*(int *)*header); \
 			     if (needswab) SWABI(value); \
 			     value = ConvertClassIn((Class)value, version); \
 			     INC_VOID(*header, sizeof(int)); \
 			     INC_BYTE(*byteoffset, sizeof(int)); }
 #define GetType(value, version)   \
-                        { value = (*(int *)*header); \
+                        { value = (Type) (*(int *)*header); \
 			     if (needswab) SWABI(value); \
 			     value = ConvertTypeIn((Type)value, version); \
 			     INC_VOID(*header, sizeof(int)); \
 			     INC_BYTE(*byteoffset, sizeof(int)); }
 #define GetCatgry(value, version) \
-                        { value = (*(int *)*header); \
+                        { value = (Category) (*(int *)*header); \
 			     if (needswab) SWABI(value); \
 			     value = ConvertCatIn((Category)value, version); \
 			     INC_VOID(*header, sizeof(int)); \
@@ -1910,7 +1910,7 @@ Object _dxfImportBin(char *dataset)
     Object o = NULL;
     int nh = 0;			/* number of header blocks */
     HashTable hashTable;
-    Pointer header_base, header, hp;
+    Pointer header_base, header;
     struct f_label *flp;
     uint byteoffset = 0;
     int bodyblk = 0;
@@ -1934,7 +1934,6 @@ Object _dxfImportBin(char *dataset)
 	return NULL;
 
     header = (Pointer)ROUNDUP_BYTES(header_base, ONEK);
-    hp = header;
     byteoffset = 0;
 
     if(_dxffile_read(dataset, 0, 1, header, 0) == ERROR) {
@@ -2014,7 +2013,6 @@ Object _dxfImportBin(char *dataset)
 	    return NULL;
 	
 	header = (Pointer)ROUNDUP_BYTES(header_base, ONEK);
-	hp = header;
 	byteoffset = 0;
 	
 #if MARKTIME
@@ -2294,7 +2292,7 @@ Object _dxfImportBin_FP(int fd)
     Object o = NULL;
     int nh = 0;			/* number of header blocks */
     HashTable hashTable = NULL;
-    Pointer header_base = NULL, header, hp;
+    Pointer header_base = NULL, header;
     struct f_label *flp;
     uint byteoffset = 0;
     int trying_inverted = 0;
@@ -2328,7 +2326,6 @@ Object _dxfImportBin_FP(int fd)
 	goto error;
 
     header = header_base;
-    hp = header_base;
     byteoffset = 0;
 
     if(_dxffile_read(dataset, 0, 1, header, 0) == ERROR)
@@ -2404,7 +2401,6 @@ Object _dxfImportBin_FP(int fd)
 	    goto error;
 	
 	header = header_base;
-	hp = header_base;
 	byteoffset = 0;
 	flp = (struct f_label *)header;
 	
@@ -2590,7 +2586,7 @@ Object _dxfImportBin_Buffer(void *buffer, int *size)
     Object o = NULL;
     int nh = 0;			/* number of header blocks */
     HashTable hashTable = NULL;
-    Pointer header_base = NULL, header, hp;
+    Pointer header_base = NULL, header;
     struct f_label *flp;
     uint byteoffset = 0;
     int trying_inverted = 0;
@@ -2609,7 +2605,6 @@ Object _dxfImportBin_Buffer(void *buffer, int *size)
 
     header_base = buffer;
     header      = header_base;
-    hp          = header_base;
     byteoffset  = 0;
 
 again:
@@ -2716,7 +2711,7 @@ _dxfExportBin_Buffer(Object o, int *size, void **buffer)
     int nh = 0;			/* number of header bytes */
     int nb = 0;			/* number of body blocks */
     HashTable hashTable = NULL;
-    Pointer header_base = NULL, header, hp;
+    Pointer header_base = NULL, header;
     struct f_label *flp;
     uint byteoffset = 0;
     int bodyblk;
@@ -2764,7 +2759,6 @@ _dxfExportBin_Buffer(Object o, int *size, void **buffer)
 	goto error;
 
     header = header_base;
-    hp = header;
     byteoffset = 0;
 
     /* fill in label */

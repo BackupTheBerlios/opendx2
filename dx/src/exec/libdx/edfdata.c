@@ -793,9 +793,8 @@ swap_64(void *src, void *dest, int n, int swaps)
     unsigned int *d = (unsigned int*)dest;
     unsigned int x,y,i;
     
-    if (((int)s & 3) || ((int)d & 3)) 
+    if (((long)s & 3) || ((long)d & 3)) 
 	DXErrorGoto(ERROR_INTERNAL,"Tried to swap non-word aligned data");
-    
     
     switch (swaps) {
       case (WORD_SWAP|HWORD_SWAP|BYTE_SWAP):

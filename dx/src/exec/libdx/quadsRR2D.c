@@ -252,8 +252,6 @@ _dxfQuadsRR2DInterpolator_PrimitiveInterpolate(QuadsRR2DInterpolator qi,
     float	    x, y;
     int 	    ix, iy;
     float	    dx, dy;
-    float 	    xMax, xMin;
-    float 	    yMax, yMin;
     int		    ixMax;
     int		    iyMax;
     int		    sz0, sz1;
@@ -306,10 +304,10 @@ _dxfQuadsRR2DInterpolator_PrimitiveInterpolate(QuadsRR2DInterpolator qi,
     /*
      * De-reference bounding box
      */
-    xMax = ((Interpolator)qi)->max[0] + fuzz;
-    xMin = ((Interpolator)qi)->min[0] - fuzz;
-    yMax = ((Interpolator)qi)->max[1] + fuzz;
-    yMin = ((Interpolator)qi)->min[1] - fuzz;
+    /* xMax = ((Interpolator)qi)->max[0] + fuzz; */
+    /* xMin = ((Interpolator)qi)->min[0] - fuzz; */
+    /* yMax = ((Interpolator)qi)->max[1] + fuzz; */
+    /* yMin = ((Interpolator)qi)->min[1] - fuzz; */
 
     if (((FieldInterpolator)qi)->xflag)
 	xform = &(((FieldInterpolator)qi)->xform);

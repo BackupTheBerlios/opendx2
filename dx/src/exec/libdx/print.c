@@ -42,8 +42,8 @@
 #define NEWLINE(l)	DXMessage("\n%*s", l, "")
 #define INDENT(l)       DXMessage("%*s", l, "")
 #if BYTES
-#define PEXP()		if(p->expand) DXMessage("[%08x] {%x} (+%d) ", \
-					        (unsigned int)o, \
+#define PEXP()		if(p->expand) DXMessage("[%08lx] {%x} (+%d) ", \
+					        (unsigned long)o, \
 						(unsigned int)o->tag, o->count)
 #else
 #define PEXP()		if(p->expand) DXMessage("[%08x] ", (unsigned int)o)
@@ -420,8 +420,8 @@ static void Object_Print(Object o, struct prt_info *p)
 	break;
 
       case CLASS_PRIVATE:
-	{ unsigned int po = (unsigned int)DXGetPrivateData((Private)o);
-	  DXMessage("Private Object.  Start of data area = %08x\n", po);
+	{ unsigned long po = (unsigned long)DXGetPrivateData((Private)o);
+	  DXMessage("Private Object.  Start of data area = %08lx\n", po);
 	  break;
         }
 

@@ -656,7 +656,7 @@ int DXCheckRIH (int block)
     EXRIH		r;
     struct timeval	tv;
     int			ret	= FALSE;
-    Error		rval;
+    /*Error		rval;*/
     int			mval;
     int			cfnd;
     int			fd;
@@ -719,7 +719,8 @@ int DXCheckRIH (int block)
 	fd = r->fd;
 	if (r->flag || FD_ISSET(fd, &fdset))
 	{
-	    rval = (* r->proc) (fd, r->arg);
+	    /*rval = (* r->proc) (fd, r->arg);*/
+	    (* r->proc) (fd, r->arg);
 	    ret = TRUE;
 	}
     }

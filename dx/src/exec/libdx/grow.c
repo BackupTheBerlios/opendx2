@@ -551,7 +551,6 @@ Error
 _dxf_RemoveDupReferences(Field field)
 {
     Array    iA, oA = NULL;
-    Object   attr;
     int      i, n, nIn, nOut, r, s[64], nref;
     char     *name, origName[256];
     int      *sPtr, *dPtr, *p0, *p1;
@@ -569,7 +568,7 @@ _dxf_RemoveDupReferences(Field field)
 	if (DXGetComponentAttribute(field, name, "dep"))
 	    continue;
 	
-	if (NULL == (attr = DXGetComponentAttribute(field, name, "ref")))
+	if (NULL == DXGetComponentAttribute(field, name, "ref"))
 	    continue;
 	
 	if (! strcmp(name, "connections"))

@@ -391,7 +391,8 @@ _dxfField_BoundingBox(Field f, Point *box, Matrix *m, int validity)
 
     if (validity == VALID_POSITIONS_ONLY)
     {
-	int invalids_present = (int)DXGetComponentValue(f, "invalid positions");
+	int invalids_present = ( DXGetComponentValue(f, "invalid positions") !=
+				 NULL );
 
 	/*
 	 * if theres a valid_box component, or there are no invalids and

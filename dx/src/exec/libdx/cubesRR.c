@@ -315,9 +315,6 @@ _dxfCubesRRInterpolator_PrimitiveInterpolate(CubesRRInterpolator ci,
     Point	           pt;
     int 	           ix, iy, iz;
     float	           dx, dy, dz;
-    float 	           xMax, xMin;
-    float 	           yMax, yMin;
-    float 	           zMax, zMin;
     int		           sz0, sz1, sz2;
     int		           ixMax, iyMax, izMax;
     float	           weight000, weight001, weight010, weight011;
@@ -371,12 +368,12 @@ _dxfCubesRRInterpolator_PrimitiveInterpolate(CubesRRInterpolator ci,
     /*
      * De-reference bounding box
      */
-    xMax = ((Interpolator)ci)->max[0];
-    xMin = ((Interpolator)ci)->min[0];
-    yMax = ((Interpolator)ci)->max[1];
-    yMin = ((Interpolator)ci)->min[1];
-    zMax = ((Interpolator)ci)->max[2];
-    zMin = ((Interpolator)ci)->min[2];
+    /* xMax = ((Interpolator)ci)->max[0]; */
+    /* xMin = ((Interpolator)ci)->min[0]; */
+    /* yMax = ((Interpolator)ci)->max[1]; */
+    /* yMin = ((Interpolator)ci)->min[1]; */
+    /* zMax = ((Interpolator)ci)->max[2]; */
+    /* zMin = ((Interpolator)ci)->min[2]; */
 
     p = (Point *)*points;
     v = (Pointer)*values;

@@ -14,17 +14,20 @@
 #include "objectClass.h"
 #include "internals.h"
 
-
 /*
  * Tracing
  */
 
+#if DEBUGGED
 static int trace = 1;
+#endif
 
 void
 _dxfTraceObjects(int d)
 {
+#if DEBUGGED
     trace = d;
+#endif
 }
 
 #if DEBUGGED

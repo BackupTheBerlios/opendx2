@@ -584,7 +584,7 @@ int DXcreate_lock(lock_type *l, char *name)
 	    return NULL;
     }
 
-    i = ((((int)(l))>>4) ^ (((int)(l))>>12) ^ (((int)(l))>>20)) & (N-1);
+    i = ((((long)(l))>>4) ^ (((long)(l))>>12) ^ (((long)(l))>>20)) & (N-1);
     /*DXMessage("new lock off of pool id %d", i);*/
     *l = CONS(i, 0);
 

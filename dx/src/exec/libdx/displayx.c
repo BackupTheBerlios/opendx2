@@ -492,7 +492,7 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
     struct { float x, y; } deltas[2];
     int d0, d1, dims[2], ox, oy;
     Array a, cmap;
-    Visual			*vis;
+    /*Visual			*vis;*/
     unsigned long		*rtable,*gtable,*btable;
     int				rr,gg,bb;
     int				left=0;
@@ -505,7 +505,7 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
     if (!translation)
 	DXErrorReturn(ERROR_INTERNAL, "#11610");
 
-    vis = (Visual *)translation->visual;
+    /*vis = (Visual *)translation->visual;*/
 
     rr = translation->redRange;
     gg = translation->greenRange;
@@ -1883,21 +1883,21 @@ display_script(Object image, int width, int height,
 {
     Display 		 *dpy;
     Window 		 root;
-    int 		 screen;
+    /*int 		 screen;*/
     translationP	 trans = NULL;
     XSetWindowAttributes xswa;
     XColor 		 cdef, hdef;
-    Visual  		 *vis;
-    Colormap		 xcmap;
+    /*Visual  		 *vis;*/
+    /*Colormap		 xcmap;*/
     int			 border = BORDER;
 
     ASSERT(DXGetError()==ERROR_NONE);
     dpy = w->dpy;
     root = DefaultRootWindow(dpy);
-    screen = DefaultScreen(dpy);
-    vis = w->translation->visual;
+    /*screen = DefaultScreen(dpy);*/
+    /*vis = w->translation->visual;*/
     trans = w->translation;
-    xcmap = trans->cmap;
+    /*xcmap = trans->cmap;*/
 
     /* create the window if necessary */
     if (!w->gc) {
@@ -1977,21 +1977,21 @@ display_external(Object image, int width, int height,
 {
     Display 		 *dpy;
     Window 		 root;
-    int 		 screen;
+    /*int 		 screen;*/
     translationP	 trans = NULL;
     XSetWindowAttributes xswa;
     XColor 		 cdef, hdef;
-    Visual  		 *vis;
-    Colormap		 xcmap;
+    /*Visual  		 *vis;*/
+    /*Colormap		 xcmap;*/
     int			 border = BORDER;
 
     ASSERT(DXGetError()==ERROR_NONE);
     dpy = w->dpy;
     root = DefaultRootWindow(dpy);
-    screen = DefaultScreen(dpy);
-    vis = w->translation->visual;
+    /*screen = DefaultScreen(dpy);*/
+    /*vis = w->translation->visual;*/
     trans = w->translation;
-    xcmap = trans->cmap;
+    /*xcmap = trans->cmap;*/
 
     /* create the window if necessary */
     if (!w->gc) {
@@ -2127,11 +2127,11 @@ display_ui(Object image, int width, int height,
     Pixmap new = None;
     translationP trans;
     Visual *vis;
-    int screen;
+    /*int screen;*/
     Colormap xcmap;
 
     dpy = w->dpy;
-    screen = XDefaultScreen(dpy);
+    /*screen = XDefaultScreen(dpy);*/
 
     if ((trans = w->translation) == NULL)
     {
@@ -3101,9 +3101,9 @@ Field _dxf_MakeXImage(int width, int height, int depth, char *where)
     Array a = NULL;
     translationP	translation;
     Private w_obj = NULL;
-    Display *dpy = NULL;
-    Visual *vis;
-    int screen;
+    /*Display *dpy = NULL;*/
+    /*Visual *vis;*/
+    /*int screen;*/
     struct window *w;
     char *s, copy[201], *host = NULL, *window = NULL;
     int directMap = 0;
@@ -3143,15 +3143,15 @@ Field _dxf_MakeXImage(int width, int height, int depth, char *where)
     if (! getWindowStructure(host, depth, window, &directMap, &w, &w_obj, 0))
 	goto error;
 
-    dpy = w->dpy;
+    /*dpy = w->dpy;*/
 
-    screen = XDefaultScreen(dpy);
+    /*screen = XDefaultScreen(dpy);*/
 
     translation = w->translation;
     if (!translation)
 	goto error;
 
-    vis = translation->visual;
+    /*vis = translation->visual;*/
 
     if (_dxf_GetXBytesPerPixel(translation) == 4)
     {
@@ -3253,7 +3253,7 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
 {
     int                         x, y, d, i;
     Object 			oo;
-    Visual			*vis;
+    /*Visual			*vis;*/
     int				rr, gg, bb;
     int				outType;
     int				*gamma;
@@ -3277,7 +3277,7 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
     if (!translation)
 	DXErrorReturn(ERROR_INTERNAL, "#11610");
 
-    vis = (Visual *)translation->visual;
+    /*vis = (Visual *)translation->visual;*/
 
     rr = translation->redRange;
     gg = translation->greenRange;
@@ -3922,7 +3922,7 @@ createTranslation(Private dpy_object, char *where,
     Colormap 		xcmap = BadColor; /* Correct Initialization */
     Visual		*visual = NULL;
     int   		dscrn;
-    Visual 		*dvis;
+    /*Visual 		*dvis;*/
     Window		droot;
     int			cached = 0;
     XWindowAttributes   xwa;
@@ -3971,7 +3971,7 @@ createTranslation(Private dpy_object, char *where,
 	DXReference((Object)p);
 
 	dscrn = XDefaultScreen(dpy);
-	dvis  = XDefaultVisual(dpy, dscrn);
+	/*dvis  = XDefaultVisual(dpy, dscrn);*/
 	droot = XRootWindow(dpy, dscrn);
 
 	trans->depth = desiredDepth;

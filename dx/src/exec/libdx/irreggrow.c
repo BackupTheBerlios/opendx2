@@ -480,7 +480,6 @@ _dxfIrregInvalidateDupBoundary(Group group)
 	if (j == 1)
 	{
 	    Object attr;
-	    char *eltType;
 	
 	    attr = DXGetComponentAttribute(fields[0], "connections", 
 							    "element type");
@@ -491,7 +490,7 @@ _dxfIrregInvalidateDupBoundary(Group group)
 	    if (! DXGetComponentValue(fields[0], "connections"))
 		goto done;
 
-	    if (! attr || NULL == (eltType = DXGetString((String)attr)))
+	    if (! attr || NULL == DXGetString((String)attr))
 	    {
 		DXSetError(ERROR_MISSING_DATA,
 			"missing element type attribute");
@@ -1649,7 +1648,6 @@ MakeOverlap(Field field, Boundary boundary, int nRings, char **components)
     int		  *elements, *elt;
     int		  vertKnt, eltKnt;
     int		  ring;
-    float	  *points;
     char	  *name, **cmp;
     int		  doit;
 
@@ -1659,7 +1657,7 @@ MakeOverlap(Field field, Boundary boundary, int nRings, char **components)
 
     pArray = (Array)DXGetComponentValue(field, "positions");
     DXGetArrayInfo(pArray, &nPoints, NULL, NULL, NULL, &nDim);
-    points = (float *)DXGetArrayData(pArray);
+    /*points = (float *)DXGetArrayData(pArray);*/
 
     cArray = (Array)DXGetComponentValue(field, "connections");
     DXGetArrayInfo(cArray, &nElts, NULL, NULL, NULL, &vPerE);
@@ -1810,7 +1808,6 @@ MakeOverlap(Field field, Boundary boundary, int nRings, char **components)
     while (NULL != (array = GetEArray(field, i, &name)))
     {
 	int *dst;
-	int nOverlapElts;
 
 	overlap->names[nComponents]  = name;
 	overlap->arrays[nComponents] = array;
@@ -1825,7 +1822,6 @@ MakeOverlap(Field field, Boundary boundary, int nRings, char **components)
 	    if (! overlap->buffers[nComponents])
 		goto MakeOverlap_error;
 	    
-	    nOverlapElts = 0;
 	    dst = (int *)overlap->buffers[nComponents];
 	    for (j = 0; j < nElts; j++)
 	    {
@@ -2512,7 +2508,6 @@ InvalidateBoundaryDuplicates(Pointer ptr)
 {
     IJ        ij;
     Externals *externals, ei, ej;
-    int       nParts;
     int       i, j, k, n;
     Field     field;
     byte      *flags = NULL;
@@ -2526,7 +2521,6 @@ InvalidateBoundaryDuplicates(Pointer ptr)
     if ((i = ((Task1Params)ptr)->i) == 0)
 	return OK;
 
-    nParts	= ((Task1Params)ptr)->nParts;
     field	= ((Task1Params)ptr)->field;
     ij   	= ((Task1Params)ptr)->ij;
     externals   = ((Task1Params)ptr)->externals;

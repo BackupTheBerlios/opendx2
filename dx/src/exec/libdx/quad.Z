@@ -152,12 +152,12 @@ DEFINE3 CAT(a,b) a##b
     float ox, oy;							    $\
     InvalidComponentHandle iElts;					    $\
     RGBColor *colors;							    $\
-    int cstcolors;							    $\
+    /*int cstcolors;*/							    $\
 									    $\
     if (xf->fcolors) {							    $\
-	colors = xf->fcolors, cstcolors = xf->fcst;			    $\
+	colors = xf->fcolors /*, cstcolors = xf->fcst */;		    $\
     } else {								    $\
-	colors = xf->bcolors, cstcolors = xf->bcst;			    $\
+	colors = xf->bcolors /*, cstcolors = xf->bcst */;		    $\
     }									    $\
 									    $\
     if (! colors)							    $\
@@ -449,7 +449,7 @@ _dxf_Quad(struct buffer *buf,
 	RGBColor *cmap = xf->cmap;			$\
 	float *omap = xf->omap;				$\
 	char fbyte = xf->fbyte, bbyte = xf->bbyte;	$\
-	char obyte = xf->obyte;
+	/*char obyte = xf->obyte;*/
 
 #define QUADFLATEPILOGUE				$\
 	return OK;					$\

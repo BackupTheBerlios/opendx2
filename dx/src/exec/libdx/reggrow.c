@@ -1533,9 +1533,9 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
     char   *name;
     int    spmin[3], spmax[3];
     int    scmin[3], scmax[3];
-    int    dpmin[3], dpmax[3];
-    int    dcmin[3], dcmax[3];
-    int    *dmin, *dmax, *smin, *smax;
+    /*int    dpmin[3], dpmax[3];*/
+    /*int    dcmin[3], dcmax[3];*/
+    int    *smin, *smax;
     int    scstride[3], spstride[3], *sstride;
     int    dcstride[3], dpstride[3], *dstride;
     int	   offset[3];
@@ -1635,10 +1635,10 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
 	scmin[i] = spmin[i];
 	scmax[i] = spmax[i] - 1;
 
-	dpmin[i] = 0;
-	dpmax[i] = dstCounts[i] - 1;
-	dcmin[i] = 0;
-	dcmax[i] = dpmax[i] - 1;
+	/*dpmin[i] = 0;*/
+	/*dpmax[i] = dstCounts[i] - 1;*/
+	/*dcmin[i] = 0;*/
+	/*dcmax[i] = dpmax[i] - 1;*/
 
     }
 
@@ -1899,8 +1899,8 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
 	    dstride = dpstride;
 	    smin    = spmin;
 	    smax    = spmax;
-	    dmin    = dpmin;
-	    dmax    = dpmax;
+	    /*dmin    = dpmin;*/
+	    /*dmax    = dpmax;*/
 	}
 	else if (sref == REFS_CONNECTIONS || dref == REFS_CONNECTIONS)
 	{
@@ -1908,8 +1908,8 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
 	    dstride = dcstride;
 	    smin    = scmin;
 	    smax    = scmax;
-	    dmin    = dcmin;
-	    dmax    = dcmax;
+	    /*dmin    = dcmin;*/
+	    /*dmax    = dcmax;*/
 	}
 	
 	itemSize = DXGetItemSize(srcArray);

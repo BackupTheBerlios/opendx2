@@ -58,12 +58,13 @@ typedef Error                   (*PFE)();
  * Task tracing
  */
 
-static int trace = 0;
+/*static int trace = 0;*/
 
 void
 DXTraceTask(int t)
 {
-    trace = t;
+    /* FIXME:  What was this supposed to do?  */
+    /*trace = t;*/
 }
 
 
@@ -359,15 +360,15 @@ one_task(int block)
 Error
 DXExecuteTaskGroup()
 {
-    static int been_here = 0, nopin = 0;
+    static int been_here = 0 /*, nopin = 0*/;
     int i;
     int master;
 
     if (!been_here) {			/* create workers */
 
 	been_here = 1;			/* once only */
-	nopin = getenv("NOPIN")? 1 : 0;	/* don't fork parent: for gdb */
-	DXProcessors(0);			/* make nprocs valid */
+	/*nopin = getenv("NOPIN")?1:0;*//* don't fork parent: for gdb */
+	DXProcessors(0);		/* make nprocs valid */
 
 	for (id=1; id<nprocs; id++) {	/* nprocs-1 workers: */
 	    pids[id] = slave();		/* fork the slave */
@@ -380,7 +381,7 @@ DXExecuteTaskGroup()
 	id = 0;				/* but we're still processor 0 */
 
 #if !ibmpvs
-        if (nprocs>1 || PIN) {		/* in multi-processor case, */
+        if (nprocs>1 /*|| PIN*/) {	/* in multi-processor case, */
 	    pids[0] = master();		/* fork the master */
 	    if (pids[0]>0) {		/* in parent */
 #if DXD_HAS_OS2_CP

@@ -392,13 +392,15 @@ DXMessage(char *message, ...)
 	va_start(arg,message);
 	vsprintf(long_buf+long_n, message, arg);
 	va_end(arg);
-	for (p=long_buf+long_n; *p; p++) {
+	for (p=long_buf+long_n; *p; ) {
 	    if (*p=='\n') {
 		*p = '\0';
 		aqmessage("*", "%s", long_buf);
 		strcpy(long_buf, p+1);
-		p = long_buf-1;
+		p = long_buf;
 	    }
+	    else
+		p++;
 	}	
 	long_n = p-long_buf;
 	if (long_n > SAFE) {

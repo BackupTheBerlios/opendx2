@@ -1921,9 +1921,9 @@ _dxfFreeLightList(LightList lightlist)
     return OK;
 }
 
-static float      _kaf, _kdf, _ksf;
+static float      _kdf, _ksf;
 static int   	  _kspf;
-static float      _kab, _kdb, _ksb;
+static float      _kdb, _ksb;
 static int   	  _kspb;
 static Pointer    _fc, _bc;
 static Vector     *_normals;
@@ -1946,8 +1946,8 @@ _dxfInitApplyLights(float kaf, float kdf, float ksf, int kspf,
 		    char fcst, char bcst, char ncst,
 		    char fbyte, char bbyte)
 {
-    _kaf  = kaf; _kdf = kdf; _ksf = ksf; _kspf   = kspf;
-    _kab  = kab; _kdb = kdb; _ksb = ksb; _kspb   = kspb;
+    _kdf = kdf; _ksf = ksf; _kspf   = kspf;
+    _kdb = kdb; _ksb = ksb; _kspb   = kspb;
     _map = map; _lights = lights;
     _normals = normals; _cdep = cdep; _ndep = ndep;
     _fbuf = fbuf; _bbuf = bbuf; _vPerE = vPerE;

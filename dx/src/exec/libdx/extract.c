@@ -439,10 +439,9 @@ static Error real2complex(int count, Pointer from, Pointer to, int itemsize)
 static Error real2quatern(int count, Pointer from, Pointer to, int itemsize)
 {
     int i;
-    Pointer efrom, eto;
 
-    efrom = INC(from, itemsize * (count-1));
-    eto = INC(to, 4 * itemsize * (count-1));
+    /*efrom = INC(from, itemsize * (count-1));*/
+    /*eto = INC(to, 4 * itemsize * (count-1));*/
     for (i=count; i>0; i--) {
 	memset(to, '\0', 3 * itemsize);
 	to = DEC(to, 3 * itemsize);
@@ -458,10 +457,9 @@ static Error real2quatern(int count, Pointer from, Pointer to, int itemsize)
 static Error complex2quatern(int count, Pointer from, Pointer to, int itemsize)
 {
     int i;
-    Pointer efrom, eto;
 
-    efrom = INC(from, itemsize * (count-1));
-    eto = INC(from, 2 * itemsize * (count-1));
+    /*efrom = INC(from, itemsize * (count-1));*/
+    /*eto = INC(from, 2 * itemsize * (count-1));*/
     for (i=count; i>0; i--) {
 	memset(to, '\0', itemsize);
 	to = DEC(to, itemsize);
@@ -938,7 +936,7 @@ QueryArrayConvert(Array a, Type t, Category c, int rank, int *shape, int squeeze
 	    
           default:
             DXSetError(ERROR_DATA_INVALID, "cannot convert category %s into %s", 
-                       catname(at), catname(t));
+                       catname(ac), catname(c));
             return ERROR;
         }
         

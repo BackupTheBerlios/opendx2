@@ -100,7 +100,6 @@ DEFINE3 CAT(a,b) a##b
     int v1, v2, v3, i, width, height, valid;				    $\
     float ox, oy;							    $\
     InvalidComponentHandle iElts;					    $\
-    int cstopacities, cstcolors;					    $\
     char fbyte = xf->fbyte, bbyte = xf->bbyte;				    $\
 									    $\
     /* for volume triangles, we either determine validity here (if the      $\
@@ -118,7 +117,7 @@ DEFINE3 CAT(a,b) a##b
 									    
 #define TRI_VOLUME2(pstr, pptr, shrgb, sho, col, face, TEST, PIXEL, LABEL)  $\
     for (i=0; i<ntri; i++, tri++) {					    $\
-	int index = (indices == NULL) ? i : indices[i];			    $\
+	/*int index = (indices == NULL) ? i : indices[i];*/		    $\
 									    $\
 	if (iElts)							    $\
 	    valid = DXIsElementValid(iElts, i);		    		    $\
@@ -149,7 +148,7 @@ DEFINE3 CAT(a,b) a##b
     float r1, g1, b1, o1, z1, r2, g2, b2, o2, z2, r3, g3, b3, o3, z3;	    $\
     float Qx, dxo, dxz, dxr, dxg, dxb;					    $\
     float Qy, dyr, dyg, dyb, dyo, dyz, dyA, dyB;			    $\
-    float r, g, b, o, obar, z, nearPlane=xf->nearPlane;			    $\
+    float r, g, b, o, obar, z, nearPlane=xf->nearPlane ;		    $\
     float A, B, d, d1, d2, d3;						    $\
     int iy1, iy2, iy3;							    $\
     int iA, iB, iy, i, n, nn, left, right;				    $\

@@ -360,7 +360,7 @@ _dxf_Line(struct buffer *b, struct xfield *xf,
 			    xf->kab, xf->kdb, xf->ksb, xf->kspb,
 			    xf->fcolors, xf->bcolors, xf->cmap, 
 			    xf->normals, xf->lights, 
-			    xf->colors_dep, xf->normals_dep==dep_positions,
+			    xf->colors_dep, xf->normals_dep,
 			    cbuf, NULL, 2, xf->fcst, xf->bcst, xf->ncst, 
 			    fbyte, 0);
 	

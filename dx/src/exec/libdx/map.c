@@ -545,11 +545,8 @@ MapArrayIrreg(Array indexArray, Interpolator mapInterp, Array *iaPtr)
     int		indexItemSize;
     int		dataItemSize;
     int		nItemsRemaining, nInterpolated, nNotInterpolated;
-    char 	*invalidPtr;
     int 	newInvalid;
     InvalidComponentHandle ich = NULL;
-
-    invalidPtr = NULL;
 
     /*
      * Get info about data array of the map and make the destination

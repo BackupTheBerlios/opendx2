@@ -23,8 +23,8 @@ _NewLight(struct light_class *class)
     if (!l)
 	return NULL;
 
-    l->kind = invalid;
-    l->relative = invalid;
+    l->kind = invalid_kind;
+    l->relative = invalid_relative;
 
     return l;
 }
@@ -143,7 +143,7 @@ DXNewAmbientLight(RGBColor color)
 	return NULL;
 
     l->kind = ambient;
-    l->relative = invalid;
+    l->relative = invalid_relative;
     l->color = color;
 
     return l;

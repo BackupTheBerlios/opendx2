@@ -43,10 +43,10 @@ matrix(Camera c)
 {
     Vector xaxis, yaxis, zaxis, v;
     Matrix t;
-    float xres, yres;
+    float xres;
 
     /* compute resolution */
-    xres = c->resolution, yres = c->resolution*c->aspect/c->pix_aspect;
+    xres = c->resolution; /* yres = c->resolution*c->aspect/c->pix_aspect; */
 
     /* translate to origin of camera coordinate system */
     t = DXTranslate(DXNeg(c->from));

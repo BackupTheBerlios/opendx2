@@ -692,7 +692,7 @@ static Error
 AT_field_task(Pointer ptr)
 {
     Array a;
-    int   i, doit;
+    int   i;
     char  *name;
     Matrix adjxpose;
     int    adjxpose_done = 0;
@@ -705,7 +705,7 @@ AT_field_task(Pointer ptr)
     i = 0;
     while (NULL != (a = (Array)DXGetEnumeratedComponentValue(field, i++, &name)))
     {
-	doit = NOT_GEOMETRIC;
+	/*doit = NOT_GEOMETRIC;*/
 
 	if (! strcmp(name, "positions"))
 	{

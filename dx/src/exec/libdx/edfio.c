@@ -771,11 +771,12 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
  */
 Error _dxfclose_dxfile(FILE *fptr, char *filename) 
 {
-    int rc = OK;
-
 #if DXD_POPEN_OK
     if (fptr)
-	rc = ((filename[0] == '!') ? pclose(fptr) : fclose(fptr));
+	if (filename[0] == '!')
+	    pclose(fptr);
+        else
+            fclose(fptr);
 #else
     if (fptr) {
 	fclose(fptr);

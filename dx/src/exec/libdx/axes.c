@@ -1294,7 +1294,7 @@ _dxfAutoAxes(Pointer p)
 {
   Object object, corners;
   Camera cam; 
-  char *xlabel, *ylabel, *zlabel, *plottypex, *plottypey, *plottypez; 
+  char *xlabel, *ylabel, *zlabel;
   char *fontname;
   int n, nx, ny, nz, frame, adjust, grid;
   Point *cursor;
@@ -1330,9 +1330,9 @@ _dxfAutoAxes(Pointer p)
   frame = axes_struct->frame;
   adjust = axes_struct->adjust;
   cursor = axes_struct->cursor; 
-  plottypex = axes_struct->plottypex;
-  plottypey = axes_struct->plottypey;
-  plottypez = axes_struct->plottypez;
+  /*plottypex = axes_struct->plottypex;*/  /*  FIXME:  Never used.  A bug?  */
+  /*plottypey = axes_struct->plottypey;*/  /*  FIXME:  Never used.  A bug?  */
+  /*plottypez = axes_struct->plottypez;*/  /*  FIXME:  Never used.  A bug?  */
   grid = axes_struct->grid;
   labelcolor = axes_struct->labelcolor;
   ticcolor = axes_struct->ticcolor;

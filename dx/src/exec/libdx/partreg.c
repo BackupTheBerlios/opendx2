@@ -92,7 +92,7 @@ _dxf_PartitionRegular(Field f, int n, int size)
     int i, rank, parts;
     int counts[MAXRANK], divisions[MAXRANK];
     int intask = 0;
-    Array pos, conn, data;
+    Array conn, data;
     struct argblock arg;
     Field nf = NULL;
     Group g = NULL;
@@ -110,7 +110,7 @@ _dxf_PartitionRegular(Field f, int n, int size)
 		    "PartitionRegular not called with a field");
 
     /* it's an error if no positions component, but ok if no connections */
-    if (!(pos = (Array)DXGetComponentValue(f, "positions")))
+    if (!DXGetComponentValue(f, "positions"))
 	DXErrorReturn(ERROR_BAD_PARAMETER, "no positions component found");
 
     if (!(conn = (Array)DXGetComponentValue(f, "connections")))
@@ -1216,7 +1216,7 @@ Array _dxf_remap_by_map(Array a, Array map)
 {
     int i;
     int index;
-    int nitems, nbytes;
+    int nitems;
     int mapitems;
     int newitems;
     Array na = NULL;
@@ -1238,7 +1238,7 @@ Array _dxf_remap_by_map(Array a, Array map)
     if (!DXGetArrayInfo(map, &mapitems, NULL, NULL, NULL, NULL))
 	return NULL;
 
-    nbytes = sizeof(int);
+    /*nbytes = sizeof(int);*/
 
     na = DXNewArray(TYPE_INT, CATEGORY_REAL, 0);
     if (!na)
@@ -1329,8 +1329,6 @@ Error _dxf_make_map_template(Array a, Array *map)
  */
 Error _dxf_fix_map_template(Array map, Array partmap)
 {
-    int j;
-
     int i, *orig_ip, *part_ip;
     int *np = NULL;
     int orig_items, part_items;
@@ -1369,7 +1367,7 @@ Error _dxf_fix_map_template(Array map, Array partmap)
     /* now for the ones which still exist, say where they came from
      */
     for (i=0; i<part_items; i++) {
-	j = part_ip[i];
+	/*j = part_ip[i];*/
 	np[part_ip[i]] = i;
     }
 

@@ -93,9 +93,8 @@ _getBase(int id)
 Error
 DXRegisterSharedSegment(int id, void (*or)(int, Pointer, Pointer), Pointer d)
 {
-    struct _shmtab *sptr;
-
-    if (! shmtab || (NULL == (sptr = DXQueryHashElement(shmtab, (Key)&id))))
+    /*  DXQueryHashElement returns a "struct _shmtab *"  */
+    if (! shmtab || (NULL == DXQueryHashElement(shmtab, (Key)&id)))
         if (! _newSharedSegment(id, or, d))
 	    return ERROR;
 
@@ -181,7 +180,7 @@ _dxf_NewSharedArrayV(int id, Pointer d, int knt, Type t, Category c, int r, int 
 	a->array.items = knt;
 	a->id = id;
 	a->base = base;
-	a->offset = ((int)d) - ((int)base);
+	a->offset = ((long)d) - ((long)base);
 
 	return a;
     }

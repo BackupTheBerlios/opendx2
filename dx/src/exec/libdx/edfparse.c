@@ -3446,7 +3446,6 @@ file_lists(struct finfo *f, int value)
     struct getby **gpp;
     char *cp;
     int fnamewas = 0;
-    int wascomma = 0;
  
 #if DEBUG_MSG
     DXDebug("E", "in file_lists");
@@ -3485,8 +3484,7 @@ file_lists(struct finfo *f, int value)
     /* the next thing can be a comma and then another string or a number
      * or the keyword lines.
      */
-    if (match_punct(f, COMMA))
-	wascomma = 1;
+    match_punct(f, COMMA);
 
     if (match_keyword(f, KW_LINES)) {
 	(*gpp)->which = GETBY_LINES;

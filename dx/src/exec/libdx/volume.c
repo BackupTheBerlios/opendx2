@@ -528,7 +528,7 @@ static Error VolumeRegularPlane(struct buffer *, struct xfield *, int);
 Error
 _dxf_VolumeRegular(struct buffer *b, struct gather *gather, int clip)
 {
-    int i, patch_size = 0;
+    int i /*, patch_size = 0*/;
     struct xfield **xfields, *xf;
     Vector u, v;
     float a, s;
@@ -607,7 +607,7 @@ _dxf_VolumeRegular(struct buffer *b, struct gather *gather, int clip)
 	s = side(u, v);
 	DXDebug("R", "(%.2f,%.2f) x (%.2f,%.2f): area %.2f, side %.2f",
 	      u.x, u.y, v.x, v.y, a, s);
-	patch_size = CEIL(s);
+	/*patch_size = CEIL(s);*/
 	/* XXX - warp doesn't do z yet, or color multipliers */
 	if (s<=1)
 	    b->vol = /*"warp"*/ "plane";
