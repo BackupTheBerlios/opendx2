@@ -1,18 +1,18 @@
 //
-// time: Tue Apr 23 20:17:34 2002
+// time: Wed Mar  5 10:48:42 2003
 //
-// version: 3.1.2 (format), 4.1.3 (DX)
+// version: 3.2.0 (format), 4.2.0 (DX)
 //
 //
 // Begin MDF
 // MODULE WebOptions
 // CATEGORY Macros
 // DESCRIPTION Information needed when running under control of DXServer
-// INPUT format; string; ("gif"); output format - gif, jpg, png or wrl
-// INPUT file[visible:0]; string; (no default); location of the output image on the local file system
+// INPUT format; value list or string list or object; ("gif"); output format - gif, jpg, png or wrl
+// INPUT file[visible:0]; value list or string list or object; (no default); location of the output image on the local file system
 // INPUT enabled[visible:0]; value list or string list or object; (false); true when running under control of DXServer
 // INPUT counters; value list or string list or object; (no default); 2-vector: execution and loop sequence
-// INPUT orbit[visible:0]; string or integer; (false); true for orbit
+// INPUT orbit[visible:0]; value list or string list or object; (false); true for orbit
 // INPUT javaId[visible:0]; value list or string list or object; (no default); unique identifier - 1 per user
 // INPUT imgId[visible:0]; value list or string list or object; (no default); index into DOM image array
 // INPUT orbitDelta; value list or string list or object; (10); Angle separation between orbit viewpoints (degrees)
@@ -20,8 +20,8 @@
 // INPUT groupName[visible:0]; value list or string list or object; (no default); all images in a group enter/leave grouped interaction modes together
 // OUTPUT optionCollection; group;  
 // End MDF
-// workspace: width = 1138, height = 614
-// layout: snap = 1, width = 50, height = 24, align = UN
+// workspace: width = 911, height = 882
+// layout: snap = 0, width = 50, height = 24, align = NN
 //
 macro WebOptions(
  format
@@ -38,12 +38,12 @@ macro WebOptions(
  optionCollection
 ) {
     // 
-    // node Input[8]: x = 0, y = 0, inputs = 0, label = Input
+    // node Input[8]: x = 10, y = 460, inputs = 0, label = Input
     // parameter: position = 1, name = 'format', value = '("gif")', descriptive = 1, description = 'output format - gif, jpg, png or wrl', required = 0, visible = 1
     //
 WebOptions_Input_8_out_1 = format;
     // 
-    // node Inquire[1]: x = 6, y = 168, inputs = 3, label = Inquire
+    // node Inquire[1]: x = 18, y = 550, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "is null +1"
     // input[3]: visible = 0
     //
@@ -54,7 +54,7 @@ WebOptions_Inquire_1_out_1[cache: 2] =
     NULL
     ) [instance: 1, cache: 1];
     // 
-    // node Switch[1]: x = 24, y = 240, inputs = 3, label = Switch
+    // node Switch[1]: x = 33, y = 640, inputs = 3, label = Switch
     // input[3]: defaulting = 0, visible = 1, type = 67108863, value = "gif"
     //
 WebOptions_Switch_1_out_1[cache: 2] = 
@@ -64,12 +64,12 @@ WebOptions_Switch_1_out_1[cache: 2] =
     "gif"
     ) [instance: 1, cache: 1];
     // 
-    // node Input[16]: x = 113, y = 0, inputs = 0, label = Input
+    // node Input[16]: x = 58, y = 370, inputs = 0, label = Input
     // parameter: position = 7, name = 'imgId', value = '(no default)', descriptive = 1, description = 'index into DOM image array', required = 0, visible = 0
     //
 WebOptions_Input_16_out_1 = imgId;
     // 
-    // node Inquire[9]: x = 95, y = 168, inputs = 3, label = Inquire
+    // node Inquire[9]: x = 66, y = 460, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "is null +1"
     // input[3]: visible = 0
     //
@@ -80,7 +80,7 @@ WebOptions_Inquire_9_out_1[cache: 2] =
     NULL
     ) [instance: 9, cache: 1];
     // 
-    // node Switch[9]: x = 113, y = 240, inputs = 3, label = Switch
+    // node Switch[9]: x = 81, y = 550, inputs = 3, label = Switch
     // input[3]: defaulting = 0, visible = 1, type = 67108863, value = 0
     //
 WebOptions_Switch_9_out_1[cache: 2] = 
@@ -90,12 +90,12 @@ WebOptions_Switch_9_out_1[cache: 2] =
     0
     ) [instance: 9, cache: 1];
     // 
-    // node Input[10]: x = 176, y = 0, inputs = 0, label = Input
+    // node Input[10]: x = 106, y = 280, inputs = 0, label = Input
     // parameter: position = 2, name = 'file', value = '(no default)', descriptive = 1, description = 'location of the output image on the local file system', required = 0, visible = 0
     //
 WebOptions_Input_10_out_1 = file;
     // 
-    // node Inquire[3]: x = 183, y = 168, inputs = 3, label = Inquire
+    // node Inquire[3]: x = 114, y = 370, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "is null +1"
     // input[3]: visible = 0
     //
@@ -106,7 +106,7 @@ WebOptions_Inquire_3_out_1[cache: 2] =
     NULL
     ) [instance: 3, cache: 1];
     // 
-    // node Switch[3]: x = 201, y = 240, inputs = 3, label = Switch
+    // node Switch[3]: x = 129, y = 460, inputs = 3, label = Switch
     // input[3]: defaulting = 0, visible = 1, type = 67108863, value = "image"
     //
 WebOptions_Switch_3_out_1[cache: 2] = 
@@ -116,12 +116,12 @@ WebOptions_Switch_3_out_1[cache: 2] =
     "image"
     ) [instance: 3, cache: 1];
     // 
-    // node Input[11]: x = 244, y = 0, inputs = 0, label = Input
+    // node Input[11]: x = 154, y = 190, inputs = 0, label = Input
     // parameter: position = 3, name = 'enabled', value = '(false)', descriptive = 1, description = 'true when running under control of DXServer', required = 0, visible = 0
     //
 WebOptions_Input_11_out_1 = enabled;
     // 
-    // node Inquire[4]: x = 252, y = 96, inputs = 3, label = Inquire
+    // node Inquire[4]: x = 162, y = 280, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "is null +1"
     // input[3]: visible = 0
     //
@@ -132,7 +132,7 @@ WebOptions_Inquire_4_out_1[cache: 2] =
     NULL
     ) [instance: 4, cache: 1];
     // 
-    // node Switch[4]: x = 270, y = 168, inputs = 3, label = Switch
+    // node Switch[4]: x = 177, y = 370, inputs = 3, label = Switch
     // input[3]: defaulting = 0, visible = 1, type = 67108863, value = 0
     //
 WebOptions_Switch_4_out_1[cache: 2] = 
@@ -142,12 +142,12 @@ WebOptions_Switch_4_out_1[cache: 2] =
     0
     ) [instance: 4, cache: 1];
     // 
-    // node Input[12]: x = 326, y = 0, inputs = 0, label = Input
+    // node Input[12]: x = 305, y = 100, inputs = 0, label = Input
     // parameter: position = 4, name = 'counters', value = '(no default)', descriptive = 1, description = '2-vector: execution and loop sequence', required = 0, visible = 1
     //
 WebOptions_Input_12_out_1 = counters;
     // 
-    // node Inquire[5]: x = 350, y = 96, inputs = 3, label = Inquire
+    // node Inquire[5]: x = 313, y = 190, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "is null +1"
     // input[3]: visible = 0
     //
@@ -158,7 +158,7 @@ WebOptions_Inquire_5_out_1[cache: 2] =
     NULL
     ) [instance: 5, cache: 1];
     // 
-    // node Switch[5]: x = 353, y = 168, inputs = 3, label = Switch
+    // node Switch[5]: x = 328, y = 280, inputs = 3, label = Switch
     // input[3]: defaulting = 0, visible = 1, type = 67108863, value = [ 0, 0]
     //
 WebOptions_Switch_5_out_1[cache: 2] = 
@@ -168,12 +168,12 @@ WebOptions_Switch_5_out_1[cache: 2] =
     [ 0, 0]
     ) [instance: 5, cache: 1];
     // 
-    // node Input[13]: x = 423, y = 0, inputs = 0, label = Input
+    // node Input[13]: x = 427, y = 10, inputs = 0, label = Input
     // parameter: position = 5, name = 'orbit', value = '(false)', descriptive = 1, description = 'true for orbit', required = 0, visible = 0
     //
 WebOptions_Input_13_out_1 = orbit;
     // 
-    // node Inquire[6]: x = 440, y = 96, inputs = 3, label = Inquire
+    // node Inquire[6]: x = 400, y = 190, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "is null"
     // input[3]: visible = 0
     //
@@ -184,7 +184,7 @@ WebOptions_Inquire_6_out_1[cache: 2] =
     NULL
     ) [instance: 6, cache: 1];
     // 
-    // node Inquire[38]: x = 515, y = 96, inputs = 3, label = Inquire
+    // node Inquire[38]: x = 435, y = 100, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "string match"
     // input[3]: defaulting = 0, visible = 0, type = 32, value = "true"
     //
@@ -195,7 +195,7 @@ WebOptions_Inquire_38_out_1[cache: 2] =
     "true"
     ) [instance: 38, cache: 1];
     // 
-    // node Inquire[39]: x = 584, y = 96, inputs = 3, label = Inquire
+    // node Inquire[39]: x = 470, y = 190, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "string match"
     // input[3]: defaulting = 0, visible = 0, type = 32, value = "false"
     //
@@ -206,7 +206,7 @@ WebOptions_Inquire_39_out_1[cache: 2] =
     "false"
     ) [instance: 39, cache: 1];
     // 
-    // node Compute[1]: x = 487, y = 168, inputs = 4, label = Compute
+    // node Compute[1]: x = 415, y = 280, inputs = 4, label = Compute
     // input[1]: defaulting = 0, visible = 0, type = 32, value = "$0==1?1:$2==1?1:$1==1?2:3"
     // expression: value = null==1?1:false==1?1:true==1?2:3
     // name[2]: value = null
@@ -221,7 +221,7 @@ WebOptions_Compute_1_out_1 =
     WebOptions_Inquire_39_out_1
     ) [instance: 1, cache: 1];
     // 
-    // node Switch[6]: x = 493, y = 264, inputs = 4, label = Switch
+    // node Switch[6]: x = 399, y = 370, inputs = 4, label = Switch
     // input[2]: defaulting = 0, visible = 1, type = 67108863, value = 0
     // input[3]: defaulting = 0, visible = 1, type = 67108863, value = 1
     //
@@ -233,12 +233,12 @@ WebOptions_Switch_6_out_1[cache: 2] =
     WebOptions_Input_13_out_1
     ) [instance: 6, cache: 1];
     // 
-    // node Input[14]: x = 705, y = 0, inputs = 0, label = Input
+    // node Input[14]: x = 502, y = 280, inputs = 0, label = Input
     // parameter: position = 6, name = 'javaId', value = '(no default)', descriptive = 1, description = 'unique identifier - 1 per user', required = 0, visible = 0
     //
 WebOptions_Input_14_out_1 = javaId;
     // 
-    // node Inquire[7]: x = 710, y = 96, inputs = 3, label = Inquire
+    // node Inquire[7]: x = 510, y = 370, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "is null +1"
     // input[3]: visible = 0
     //
@@ -249,7 +249,7 @@ WebOptions_Inquire_7_out_1[cache: 2] =
     NULL
     ) [instance: 7, cache: 1];
     // 
-    // node Switch[7]: x = 715, y = 168, inputs = 3, label = Switch
+    // node Switch[7]: x = 483, y = 460, inputs = 3, label = Switch
     // input[3]: defaulting = 0, visible = 1, type = 67108863, value = 0
     //
 WebOptions_Switch_7_out_1[cache: 2] = 
@@ -259,12 +259,12 @@ WebOptions_Switch_7_out_1[cache: 2] =
     0
     ) [instance: 7, cache: 1];
     // 
-    // node Input[51]: x = 794, y = 0, inputs = 0, label = Input
+    // node Input[51]: x = 620, y = 370, inputs = 0, label = Input
     // parameter: position = 8, name = 'orbitDelta', value = '(10)', descriptive = 1, description = 'Angle separation between orbit viewpoints (degrees)', required = 0, visible = 1
     //
 WebOptions_Input_51_out_1 = orbitDelta;
     // 
-    // node Inquire[35]: x = 800, y = 96, inputs = 3, label = Inquire
+    // node Inquire[35]: x = 562, y = 460, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "is null +1"
     // input[3]: visible = 0
     //
@@ -275,7 +275,7 @@ WebOptions_Inquire_35_out_1[cache: 2] =
     NULL
     ) [instance: 35, cache: 1];
     // 
-    // node Switch[32]: x = 823, y = 168, inputs = 3, label = Switch
+    // node Switch[32]: x = 577, y = 550, inputs = 3, label = Switch
     // input[3]: defaulting = 0, visible = 1, type = 67108863, value = 10
     //
 WebOptions_Switch_32_out_1[cache: 2] = 
@@ -285,12 +285,12 @@ WebOptions_Switch_32_out_1[cache: 2] =
     10
     ) [instance: 32, cache: 1];
     // 
-    // node Input[52]: x = 920, y = 0, inputs = 0, label = Input
+    // node Input[52]: x = 656, y = 460, inputs = 0, label = Input
     // parameter: position = 9, name = 'cacheSize', value = '(0)', descriptive = 1, description = 'number of images to cache in the browser', required = 0, visible = 0
     //
 WebOptions_Input_52_out_1 = cacheSize;
     // 
-    // node Inquire[36]: x = 926, y = 96, inputs = 3, label = Inquire
+    // node Inquire[36]: x = 664, y = 550, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "is null +1"
     // input[3]: visible = 0
     //
@@ -301,7 +301,7 @@ WebOptions_Inquire_36_out_1[cache: 2] =
     NULL
     ) [instance: 36, cache: 1];
     // 
-    // node Switch[33]: x = 949, y = 168, inputs = 3, label = Switch
+    // node Switch[33]: x = 679, y = 640, inputs = 3, label = Switch
     // input[3]: defaulting = 0, visible = 1, type = 67108863, value = 0
     //
 WebOptions_Switch_33_out_1[cache: 2] = 
@@ -311,12 +311,12 @@ WebOptions_Switch_33_out_1[cache: 2] =
     0
     ) [instance: 33, cache: 1];
     // 
-    // node Input[53]: x = 1030, y = 0, inputs = 0, label = Input
+    // node Input[53]: x = 705, y = 370, inputs = 0, label = Input
     // parameter: position = 10, name = 'groupName', value = '(no default)', descriptive = 1, description = 'all images in a group enter/leave grouped interaction modes together', required = 0, visible = 0
     //
 WebOptions_Input_53_out_1 = groupName;
     // 
-    // node Inquire[37]: x = 1043, y = 96, inputs = 3, label = Inquire
+    // node Inquire[37]: x = 713, y = 460, inputs = 3, label = Inquire
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "is null +1"
     // input[3]: visible = 0
     //
@@ -327,7 +327,7 @@ WebOptions_Inquire_37_out_1[cache: 2] =
     NULL
     ) [instance: 37, cache: 1];
     // 
-    // node Switch[34]: x = 1066, y = 168, inputs = 3, label = Switch
+    // node Switch[34]: x = 728, y = 550, inputs = 3, label = Switch
     // input[3]: defaulting = 0, visible = 1, type = 67108863, value = "untitled"
     //
 WebOptions_Switch_34_out_1[cache: 2] = 
@@ -337,7 +337,7 @@ WebOptions_Switch_34_out_1[cache: 2] =
     "untitled"
     ) [instance: 34, cache: 1];
     // 
-    // node CollectNamed[1]: x = 149, y = 456, inputs = 20, label = CollectNamed
+    // node CollectNamed[1]: x = 57, y = 730, inputs = 20, label = CollectNamed
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "format"
     // input[4]: defaulting = 0, visible = 1, type = 32, value = "imgId"
     // input[6]: defaulting = 0, visible = 1, type = 32, value = "file"
@@ -373,10 +373,37 @@ WebOptions_CollectNamed_1_out_1[cache: 2] =
     "groupName"
     ) [instance: 1, cache: 1];
     // 
-    // node Output[1]: x = 319, y = 552, inputs = 1, label = Output
+    // node Output[1]: x = 270, y = 820, inputs = 1, label = Output
     // parameter: position = 1, name = 'optionCollection', value = ' ', descriptive = 0, description = ' ', required = 0, visible = 1
     //
 optionCollection = WebOptions_CollectNamed_1_out_1;
+    //
+    // decorator Annotate	pos=(584,0) size=253x82 style(Label), value = <NULL>
+    // annotation user_begin: 144
+    // annotation user: Who uses it?
+    // annotation user: <NULL>
+    // annotation user: When   u   click   on   the  'Edit/Java/Add
+    // annotation user: Tools'  button, then  dxui  places  this  in
+    // annotation user: the vpe and attaches it to an image tool.
+    // annotation user_end: <NULL>
+    //
+    // decorator Annotate	pos=(588,99) size=272x96 style(Label), value = <NULL>
+    // annotation user_begin: 172
+    // annotation user: What's it for?
+    // annotation user: <NULL>
+    // annotation user: It consolidates a whole bunch of things that
+    // annotation user: JavaDX needs.  All this  stuff is  condensed
+    // annotation user: onto 1 arc. That way the image tool doesn't
+    // annotation user: run out of input tabs.
+    // annotation user_end: <NULL>
+    //
+    // decorator Annotate	pos=(592,223) size=319x68 style(Label), value = <NULL>
+    // annotation user_begin: 120
+    // annotation user: How is it located?
+    // annotation user: <NULL>
+    // annotation user: It's  installed  in   $DXROOT/java/server/dxmacros.
+    // annotation user: The dx script appends the location to $DXMACROS.
+    // annotation user_end: <NULL>
 // network: end of macro body
 }
 WebOptions_Input_8_out_1 = NULL;
