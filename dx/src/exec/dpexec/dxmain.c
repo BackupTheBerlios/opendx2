@@ -742,6 +742,9 @@ loop_slave_continue:
 	    if (_dxf_ExCheckVCR (_dxd_exGlobalDict, FALSE))
 		continue;
 
+#ifdef DXD_WIN
+    SleepEx(100, TRUE);
+#endif
 #if defined(DDX)
 	    {
 		extern Error SlaveBcastLoop(int, Pointer);
