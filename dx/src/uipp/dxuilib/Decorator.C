@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////
  
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Decorator.C,v 1.1 1999/03/24 15:17:39 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Decorator.C,v 1.2 1999/04/12 20:37:43 gda Exp $
  */
 
 
@@ -372,7 +372,7 @@ void Decorator::setSelected(boolean state)
     }
 }
  
-boolean
+int
 Decorator::decideToDrag (XEvent *xev)
 {
     if (!this->selected) return DragSource::Inactive;

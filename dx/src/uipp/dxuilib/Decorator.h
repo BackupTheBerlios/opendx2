@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////
  
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Decorator.h,v 1.1 1999/03/24 15:17:39 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Decorator.h,v 1.2 1999/04/12 20:37:43 gda Exp $
  */
 
 // 
@@ -82,7 +82,7 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
 	Text
     };
 
-    virtual boolean decideToDrag(XEvent *);
+    virtual int	    decideToDrag(XEvent *); // probably should be boolean
     virtual void    dropFinish (long, int, unsigned char);
     //
     // Providing these 2 means that subclasses don't have to provide dnd
