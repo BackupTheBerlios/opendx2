@@ -82,6 +82,7 @@
 //	the value hasn't been used yet.  Set to 1 in a modifyVerifyCallback.
 //
 
+char* ConfigurationDialog::HelpText = 0;
 boolean ConfigurationDialog::ClassInitialized = FALSE;
 String ConfigurationDialog::DefaultResources[] =
 {
@@ -2173,32 +2174,38 @@ void ConfigurationDialog::installDefaultResources(Widget  baseWidget)
 }
 const char *ConfigurationDialog::getHelpSyntaxString()
 {
-    const char *dxroot = theDXApplication->getUIRoot();
-    const char *nosup = "No Syntax Help Available";
-    if (!dxroot)
-        return nosup;
+    if (ConfigurationDialog::HelpText == 0) {
+	char *nosup = "No Syntax Help Available";
+	const char *dxroot = theDXApplication->getUIRoot();
+	if (!dxroot) {
+	    ConfigurationDialog::HelpText = new char[1+strlen(nosup)];
+	    strcpy (ConfigurationDialog::HelpText, nosup);
+	    return ConfigurationDialog::HelpText;
+	}
 
+	char supfile[1024];
+	sprintf(supfile,"%s/ui/syntax.txt",dxroot);
+	FILE *fp;
+	int helpsize;
 
+	struct STATSTRUCT buf;
 
-    char supfile[1024];
-    sprintf(supfile,"%s/ui/syntax.txt",dxroot);
-    FILE *fp;
-    int helpsize;
+	if (STATFUNC(supfile, &buf) != 0) {
+	    ConfigurationDialog::HelpText = new char[1+strlen(nosup)];
+	    strcpy (ConfigurationDialog::HelpText, nosup);
+	    return ConfigurationDialog::HelpText;
+	}
+	helpsize = buf.st_size;
 
-    struct STATSTRUCT buf;
+	if (!(fp = fopen(supfile,"r")))
+	    return nosup;
 
-    if (STATFUNC(supfile, &buf) != 0)
-        return nosup;
-    helpsize = buf.st_size;
-
-    if (!(fp = fopen(supfile,"r")))
-        return nosup;
-
-    char *helpstr = new char[helpsize + 30];
-    if (!helpstr) return nosup;
-    fread(helpstr,1,helpsize,fp);
-    fclose(fp);
-    return (const char*)helpstr;        // FIXME: this is leaked
-
+	char *helpstr = new char[helpsize + 30];
+	if (!helpstr) return nosup;
+	fread(helpstr,1,helpsize,fp);
+	fclose(fp);
+	ConfigurationDialog::HelpText = helpstr;
+    }
+    return ConfigurationDialog::HelpText;
 }
 

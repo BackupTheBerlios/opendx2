@@ -90,6 +90,10 @@ class ConfigurationDialog : public Dialog
     //
     void initInstanceData(Node *node);
 
+    // hold the help string so that it's not leaked each time
+    // it's requested.
+    static char* HelpText;
+
 
   protected:
     //
