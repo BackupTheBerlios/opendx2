@@ -56,6 +56,8 @@ server.jar: dx.jar DXServer.java
 	if test "$(ARCH)" = "cygwin" -o "$(ARCH)" = "intelnt" ; then \
 	        tmp=`pwd`/dxsc ; \
 	        dxscdir=`cygpath --windows $$tmp` ; \
+	else \
+		dxscdir=`pwd`/dxsc ; \
 	fi ; \
 	cd $(srcdir) ; \
 	$(JAVAC) -d $$dxscdir DXServer.java ; \
@@ -109,9 +111,14 @@ DXLink.o:  server.jar
 	CLASSPATH="." $(JAVAH) -d \
 	        $$srvrdir server.DXServer server.DXServerThread ; \
 	cd $$javaobj ; \
-	$(CC) $(DXABI) -o $$javaobj/DXLink.o -I$$srcincs \
+	if test "$(ARCH)" = "cygwing" -o "$(ARCH)" = "intelnet" ; then \
+		$(CC) $(DXABI) -o $$javaobj/DXLink.o -I$$srcincs \
 	        -I$(BUILDBASE)/include -I$$javaobj/server \
-	        -c -Dintelnt $(JNI_CFLAGS) -I/cygdrive/c/jdk1.1.8/include -I/cygdrive/c/jdk1.1.8/include/win32 $(srcdir)/server/DXLink.c
+	        -c -Dintelnt $(JNI_CFLAGS) -I/cygdrive/c/jdk1.1.8/include -I/cygdrive/c/jdk1.1.8/include/win32 $(srcdir)/server/DXLink.c ; \
+	else \
+		$(CC) $(DXABI) -o $$javaobj/DXLink.o -I$$srcincs \
+		-c -D@ARCH@ $(JNI_CFLAGS) @JINC@ $(srcdir)/server/DXLink.c ; \
+	fi ;
 
 ##SAMPLE_OBJS = AS400VSMonth.class AutoInsurance.class CCNet2.class \
 ##	GroceryList.class HomeOwn.class MRI_2.class MappedIso.class \
