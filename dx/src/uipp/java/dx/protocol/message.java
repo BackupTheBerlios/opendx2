@@ -11,7 +11,7 @@ public abstract class message {
     protected int packet_id;
 
     public int getPacketId() { return this.packet_id; }
-    protected String getHeader() { return this.getCommand() + ":" + this.packet_id; }
+    protected String getHeader() { return this.getCommand() + "|" + this.packet_id; }
 
     public abstract String toString();
     public abstract String getCommand();
@@ -20,7 +20,7 @@ public abstract class message {
 	packet_id = NextPacketId();
     }
     protected message(String inputLine){ 
-	StringTokenizer stok = new StringTokenizer (inputLine, ",:");
+	StringTokenizer stok = new StringTokenizer (inputLine, ",|");
 	stok.nextToken();
 	String pno = stok.nextToken();
 	Integer pnoi = new Integer(pno);

@@ -31,7 +31,7 @@ public class setidMsg extends threadMsg {
     public setidMsg(String inputLine) { 
 	super(inputLine);
 	try {
-	    StringTokenizer stok = new StringTokenizer(inputLine, ":");
+	    StringTokenizer stok = new StringTokenizer(inputLine, "|");
 	    String tok = stok.nextToken();
 	    tok = stok.nextToken();
 	    StringTokenizer ctok = new StringTokenizer(tok, ",");
