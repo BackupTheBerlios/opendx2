@@ -1,7 +1,7 @@
 //
-// time: Tue Oct 20 10:06:28 1998
+// time: Tue Apr  2 22:59:50 2002
 //
-// version: 3.1.2 (format), 4.1.1 (DX Beta)
+// version: 3.1.2 (format), 4.1.3 (DX)
 //
 //
 // Begin MDF
@@ -9,12 +9,12 @@
 // CATEGORY Macros
 // DESCRIPTION new macro
 // INPUT object; value list or string list or object; (none);  
-// INPUT base_name; string; (none);  
+// INPUT base_name; value list or string; (none);  
 // INPUT originalCamera; camera; (no default);  
 // OUTPUT file_written; string;  
 // End MDF
 // page assignment: rerender	order=2, windowed=0, showing=1
-// workspace: width = 279, height = 420
+// workspace: width = 364, height = 422
 // layout: snap = 1, width = 50, height = 24, align = UN
 //
 macro imageexport(
@@ -25,13 +25,13 @@ macro imageexport(
  file_written
 ) {
     // 
-    // node Input[6]: x = 243, y = 0, inputs = 0, label = Input
+    // node Input[6]: x = 241, y = 0, inputs = 0, label = Input
     // page group: rerender
     // parameter: position = 2, name = 'base_name', value = ' ', descriptive = 0, description = ' ', required = 1, visible = 1
     //
 imageexport_Input_6_out_1 = base_name;
     // 
-    // node Format[7]: x = 225, y = 120, inputs = 3, label = Format
+    // node Format[7]: x = 206, y = 144, inputs = 3, label = Format
     // input[1]: defaulting = 0, visible = 1, type = 32, value = "%s.gif"
     // input[3]: visible = 0
     // page group: rerender
@@ -66,7 +66,7 @@ imageexport_Inquire_8_out_1[cache: 2] =
     NULL
     ) [instance: 8, cache: 1];
     // 
-    // node Output[3]: x = 226, y = 216, inputs = 1, label = Output
+    // node Output[3]: x = 309, y = 216, inputs = 1, label = Output
     // page group: rerender
     // parameter: position = 1, name = 'file_written', value = ' ', descriptive = 0, description = ' ', required = 0, visible = 1
     //
@@ -94,13 +94,13 @@ imageexport_Switch_9_out_1[cache: 2] =
     ) [instance: 9, cache: 1];
     // 
     // node WriteImage[1]: x = 179, y = 360, inputs = 4, label = WriteImage
-    // input[3]: defaulting = 0, visible = 1, type = 32, value = "gif"
+    // input[3]: defaulting = 0, visible = 1, type = 32, value = "ImageMagick supported format"
     // page group: rerender
     //
     WriteImage(
     imageexport_Switch_9_out_1,
-    imageexport_Input_6_out_1,
-    "gif",
+    imageexport_Format_7_out_1,
+    "ImageMagick supported format",
     NULL
     ) [instance: 1, cache: 1];
 // network: end of macro body
