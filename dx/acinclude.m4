@@ -1002,7 +1002,7 @@ AC_MSG_RESULT([none])
 fi
 dx_find_jdk="yes"
 ])
-if test -z $dx_find_jdk ; then
+if test -z "$dx_find_jdk" ; then
   AC_MSG_RESULT($ac_cv_jdk_classes)
 fi
 ])
