@@ -252,7 +252,7 @@ void Application::postCopyrightNotice()
 	    new TimedMessage("copyrightMessage",
 	    this->getRootWidget(),
 	    c, 
-	    "Copyright Notice",
+	    "Welcome",
 	    5000);
 	copyright->post();
     }

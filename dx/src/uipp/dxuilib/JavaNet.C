@@ -676,7 +676,7 @@ const char* JavaNet::getHtmlHeader()
 {
     const char* header = 
 	"<html><head>\n"
-	"<title>IBM Visualization Java Explorer</title>\n"
+	"<title>Open Visualization Java Explorer</title>\n"
 	"</head>\n"
 	"<body bgcolor=\"#dddddd\">\n"
 	"<img src=../htmlpages/bonuspakhead.gif><br>\n"

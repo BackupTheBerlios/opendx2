@@ -176,11 +176,11 @@ const char *MBApplication::getInformalName()
 }
 //
 // Return the formal name of the application (i.e.
-// 'IBM Visualization Data Explorer', 'IBM Visualization Data Prompter'...)
+// 'Open Visualization Data Explorer', 'Open Visualization Data Prompter'...)
 //
 const char *MBApplication::getFormalName()
 {
-   return "IBM Visualization Module Builder";
+   return "Open Visualization Module Builder";
 }
 //
 // Get the applications copyright notice, for example...
@@ -189,8 +189,7 @@ const char *MBApplication::getFormalName()
 //
 const char *MBApplication::getCopyrightNotice()
 {
-    return "Copyright International Business Machines Corporation "
-            "1993,1996.  All rights reserved.";
+    return "";
 }
 
 const char *MBApplication::getHelpDirFileName()

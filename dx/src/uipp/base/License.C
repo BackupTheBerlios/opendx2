@@ -684,12 +684,12 @@ static int getregval(char *name, char *value)
     rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
 	KEY_QUERY_VALUE, &hkey[k++]);
 
-    strcat(key, "\\IBM");
+    strcat(key, "\\OpenDX");
     rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
 	KEY_QUERY_VALUE, &hkey[k++]);
     iferror("Error opening key");
 
-    strcat(key, "\\IBM Visualization Data Explorer");
+    strcat(key, "\\Open Visualization Data Explorer");
     rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
 	KEY_QUERY_VALUE, &hkey[k++]);
     iferror("Error opening key");

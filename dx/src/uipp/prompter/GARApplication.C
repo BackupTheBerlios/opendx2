@@ -420,11 +420,11 @@ const char *GARApplication::getInformalName()
 }
 //
 // Return the formal name of the application (i.e.
-// 'IBM Visualization Data Explorer', 'IBM Visualization Data Prompter'...)
+// 'Open Visualization Data Explorer', 'Open Visualization Data Prompter'...)
 //
 const char *GARApplication::getFormalName()
 {
-   return "IBM Visualization Data Prompter";
+   return "Open Visualization Data Prompter";
 }
 //
 // Get the applications copyright notice, for example...
@@ -433,8 +433,7 @@ const char *GARApplication::getFormalName()
 //
 const char *GARApplication::getCopyrightNotice()
 {
-    return "Copyright International Business Machines Corporation "
-            "1993-1997.  All rights reserved.";
+    return "";
 }
 
 

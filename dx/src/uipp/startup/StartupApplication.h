@@ -41,7 +41,7 @@ extern "C" int	StartupApplication_XErrorHandler(Display *display,
 						XErrorEvent *event);
 
 
-#if !defined(DXD_OS_NON_UNIX)(DXD_LICENSED_VERSION)
+#if defined(DXD_LICENSED_VERSION)
 class StartupApplication : public IBMApplication, public TemporaryLicense
 #else
 class StartupApplication : public IBMApplication
@@ -108,9 +108,9 @@ class StartupApplication : public IBMApplication
 
     //
     // Return the formal name of the application (i.e.
-    // 'IBM Visualization Data Explorer', 'IBM Visualization Data Prompter'...)
+    // 'Open Visualization Data Explorer', 'Open Visualization Data Prompter'...)
     //
-    virtual const char *getFormalName() { return "IBM Visualization Startup"; }
+    virtual const char *getFormalName() { return "Open Visualization Startup"; }
 
     //
     // Get the applications copyright notice, for example...

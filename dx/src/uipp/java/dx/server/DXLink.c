@@ -4,12 +4,12 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/server/Attic/DXLink.c,v 1.1 1999/03/24 15:17:33 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/server/Attic/DXLink.c,v 1.2 1999/04/30 15:57:32 gda Exp $
  */
 
 #include <string.h>
 #include <stdlib.h>
-#include <dx/dxl.h>
+#include <dxl.h>
 #include "DXServerThread.h"
 #include "DXServer.h"
 

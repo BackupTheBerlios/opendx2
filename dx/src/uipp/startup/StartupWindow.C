@@ -36,7 +36,7 @@
 #include "ListIterator.h"
 #include "NetFileDialog.h"
 
-#include <dx/dxl.h>
+#include <dxl.h>
 
 
 
@@ -56,7 +56,7 @@ boolean StartupWindow::ClassInitialized = FALSE;
 // On these platforms, the pipe doesn't work that way so we'll make a
 // polling loop that runs once every few seconds and checks the child pid.
 //
-#if defined(ibm6000) || defined(hp700) || defined(alphax) || defined(sun4)
+#if defined(ibm6000) || defined(hp700) || defined(alphax) || defined(sun4) || defined(linux86)
 #define USE_WAIT3 1
 #endif
 
@@ -511,7 +511,7 @@ char *args[30], *cmdstr;
 	// it hard to run without -p 1 on an mp machine.
 	//
 	args[argcnt++] = "-processors 1";
-#if defined(DXD_LICENSED_VERSION)) 
+#if defined(DXD_LICENSED_VERSION)
 	const char* cp = theStartupApplication->getDxuiArgs();
 	if (cp) args[argcnt++] = DuplicateString(cp);
 #endif

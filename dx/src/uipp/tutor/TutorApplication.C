@@ -281,7 +281,7 @@ boolean TutorApplication::initialize(unsigned int* argcp,
 }
 const char *TutorApplication::getFormalName()
 {
-    return "IBM Visualization Data Explorer Tutorial";
+    return "Open Visualization Data Explorer Tutorial";
 }
 
 const char *TutorApplication::getInformalName()
@@ -295,8 +295,7 @@ const char *TutorApplication::getCopyrightNotice()
     return NULL;	// Kills copyright message.
 #else
 
-    return "Copyright International Business Machines Corporation "
-            "1991, 1992, 1993, 1994.  All rights reserved.";
+    return "";
 #endif
 
 }

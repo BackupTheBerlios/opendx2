@@ -229,8 +229,7 @@ void StartupApplication::postStartupWindow()
 //
 const char *StartupApplication::getCopyrightNotice()
 {
-    return "Copyright International Business Machines Corporation "
-            "1993-1997.  All rights reserved.";
+    return "";
 }
 
 

@@ -75,7 +75,7 @@ class MBApplication : public IBMApplication
 
     //
     // Return the formal name of the application (i.e.
-    // 'IBM Visualization Data Explorer', 'IBM Visualization Data Prompter'...)
+    // 'Open Visualization Data Explorer', 'Open Visualization Data Prompter'...)
     //
     virtual const char *getFormalName();
 

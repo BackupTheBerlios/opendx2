@@ -4,7 +4,7 @@
 
 
 #include "UIConfig.h"
-#include <dx/dxl.h>
+#include <dxl.h>
 #include "defines.h"
 #include "IBMMainWindow.h"
 

@@ -2964,6 +2964,7 @@ DXChild *DXApplication::startServer()
 	    strcat(args, " -mdf ");
 	    strcat(args, this->serverInfo.userModules);
 	}
+#if defined(DXD_LICENSED_VERSION)
 	const char *l = NULL;
 	if (this->isFunctionalLicenseForced()) {
 	    switch (this->getForcedFunctionalLicenseEnum()) {
@@ -2981,6 +2982,7 @@ DXChild *DXApplication::startServer()
 	    strcat(args, " -license ");
 	    strcat(args, l);
 	}
+#endif
 	if (this->serverInfo.executiveFlags)
 	{
 	    strcat(args, " ");
@@ -4152,13 +4154,13 @@ const char *DXApplication::getInformalName()
 }
 //
 // Return the formal name of the application (i.e. 
-// 'IBM Visualization Data Explorer', 'IBM Visualization Data Prompter'...)
+// 'Open Visualization Data Explorer', 'Open Visualization Data Prompter'...)
 // If getOEMApplicationName() return !NULL, then use that. 
 //
 const char *DXApplication::getFormalName()
 {
     const char *s = this->getOEMApplicationName();
-    if (!s) s = "IBM Visualization Data Explorer";
+    if (!s) s = "Open Visualization Data Explorer";
     return s;
 }
 //
@@ -4173,10 +4175,7 @@ const char *DXApplication::getCopyrightNotice()
 {
     const char *s = this->getOEMApplicationName();
     if (!s) 
-	return "IBM Visualization Data Explorer\n"
-		"Copyright International Business Machines Corporation"
-		" 1991-1998.\n"
-		"All rights reserved";
+	return "Open Visualization Data Explorer";
     else
 	return NULL;
 }
@@ -4190,12 +4189,7 @@ const char *DXApplication::getCopyrightNotice()
     char keystr[100];
     int m,d,y;
     char *msg;
-    char preamble[] = "IBM Visualization Data Explorer\n"
-		    "Copyright International Business Machines Corporation"
-		    " 1991-1998.\n"
-		    "All rights reserved\n"
-		    "Registered to: ";
-
+    char preamble[] = "Open Visualization Data Explorer";
     const char *s = this->getOEMApplicationName();
     if (!s) {
 	getuserinforeg(username, userco, keystr);
