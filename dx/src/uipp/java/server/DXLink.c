@@ -11,7 +11,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.4 2001/04/26 22:17:52 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.5 2001/05/03 04:27:32 davidt Exp $
  */
 #if defined(hp700) 
 #define _UINT64_T
@@ -236,8 +236,6 @@ DXLConnection* conn = (DXLConnection*)jdxl;
 	for(i=0; i<strlen(str); i++)
 		if(str[i] == '\\') str[i] = '/';
 #endif
-
-	printf("net_file: %s\n", str);
 
 	retval = DXLLoadVisualProgram (conn, str) != ERROR; 
 	(*env)->ReleaseStringUTFChars(env, jnet, net_file);
