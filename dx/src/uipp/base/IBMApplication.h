@@ -179,6 +179,7 @@ class IBMApplication : public Application
     // This returns $UIRoot/help
     //
     const char *getHelpDirectory();
+    const char *getHTMLDirectory();
 
     //
     // If there is a copyright notice, we create the Logo and Icon data 

@@ -813,6 +813,18 @@ const char *IBMApplication::getHelpDirectory()
     }
     return helpDir;
 }
+const char *IBMApplication::getHTMLDirectory()
+{
+    static char *htmlDir = NULL;
+
+    if (!htmlDir)
+    {
+        const char *root = this->getUIRoot();
+        htmlDir = new char[STRLEN(root) + strlen("/html") + 1];
+        sprintf(htmlDir, "%s/html", root);
+    }
+    return htmlDir;
+}
 const char *IBMApplication::getTmpDirectory(boolean bList)
 {
 #ifndef MAX_DIR_PATH_LIST

@@ -16,6 +16,7 @@
 #include "ButtonInterface.h"
 #include "NoUndoHelpCmd.h"
 #include "DictionaryIterator.h"
+#include "StartWebBrowser.h"
 
 #include "help.h"
 
@@ -34,6 +35,7 @@
 #include "../widgets/MultiText.h"
 
 boolean HelpWin::ClassInitialized = FALSE;
+boolean HelpWin::UseWebBrowser = FALSE;
 String  HelpWin::DefaultResources[] = {
     ".title:				Help",
     ".iconName:				Help",
@@ -94,23 +96,31 @@ extern "C" Widget HelpOn(Widget, int, char *, char *, int);
 //
 HelpWin::HelpWin() : MainWindow("helpWindow", FALSE)
 {
-   this->init();
 
-    //
-    // Install the default resources for THIS class (not the derived classes)
-    //
-    if (NOT HelpWin::ClassInitialized)
-    {
-	ASSERT(theApplication);
-        HelpWin::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+   char *webApp = getenv("DX_WEB_BROWSER");
+   if(webApp) UseWebBrowser = TRUE;
+
+   if(!UseWebBrowser) {
+	this->init();
+
+	//
+    	// Install the default resources for THIS class (not the derived classes)
+    	//
+    	if (NOT HelpWin::ClassInitialized)
+    	{
+	    ASSERT(theApplication);
+            HelpWin::ClassInitialized = TRUE;
+	    this->installDefaultResources(theApplication->getRootWidget());
+    	}
     }
 }
+
 HelpWin::HelpWin(const char *name, boolean hasMenuBar) :
 		    MainWindow(name, hasMenuBar)
 {
    this->init();
 }
+
 //
 // Encapsulate initialization for multiple constructors
 //
@@ -151,16 +161,26 @@ void HelpWin::installDefaultResources(Widget baseWidget)
 
 void HelpWin::initialize()
 {
-    this->MainWindow::initialize();
+    FILE *helpDir;
+    
+    if(UseWebBrowser) {
+	char helpDirFileName[512];
+	strcpy(helpDirFileName, GetHTMLDirectory());
+	strcat(helpDirFileName, "/");
+	strcat(helpDirFileName, GetHTMLDirFileName());
+	helpDir = fopen(helpDirFileName, "r");
+     } else { /* !UseWebBrowser */
+	this->MainWindow::initialize();
 
-    char helpDirFileName[500];
-    strcpy(helpDirFileName, GetHelpDirectory());
-    strcat(helpDirFileName, "/");
-    strcat(helpDirFileName, GetHelpDirFileName());
-    FILE *helpDir = fopen(helpDirFileName, "r");
+	char helpDirFileName[512];
+	strcpy(helpDirFileName, GetHelpDirectory());
+	strcat(helpDirFileName, "/");
+	strcat(helpDirFileName, GetHelpDirFileName());
+	helpDir = fopen(helpDirFileName, "r");
+    }
+
     if (!helpDir)
 	return;
-    
     char line[1000];
     while(fgets(line, 1000, helpDir))
     {
@@ -387,19 +407,31 @@ Widget HelpWin::createWorkArea(Widget parent)
 
 void HelpWin::loadTopicFile(const char *topic, const char *file)
 {
-    HelpOn(this->multiText, LINK, (char*)file, (char*)topic, 0);
+    if(UseWebBrowser) {
+    	//Start web browser with file
+    	char url[520];
+    	strcpy(url, "file://");
+    	strcat(url, GetHTMLDirectory());
+    	strcat(url, "/");
+    	strcat(url, file);
+    	_dxf_StartWebBrowserWithURL(url);
+    } else /* !UseWebBrowser */
+	HelpOn(this->multiText, LINK, (char*)file, (char*)topic, 0);
 }
 void HelpWin::helpOn(const char *topic)
 {
 #ifdef DEBUG
     printf("HelpWin::helpOn(%s)\n", topic);
 #endif
-
-    //
-    // Manage must be done first in case initialize() hasn't been 
-    // called yet (the first manage() results in an initialize() call).
-    //
-    this->manage();
+    if(UseWebBrowser) {
+    	initialize();    	    
+    } else { /* !UseWebBrowser */
+        //
+        // Manage must be done first in case initialize() hasn't been 
+        // called yet (the first manage() results in an initialize() call).
+        //
+	this->manage();
+    }
 
     char *file;
     if ((file = (char*)this->topicToFileMap.findDefinition(topic)) == 0)
@@ -417,4 +449,14 @@ extern "C" const char *GetHelpDirFileName()
 {
     return theApplication->getHelpDirFileName();
 }
+
+extern "C" const char *GetHTMLDirectory()
+{
+    return theApplication->getHTMLDirectory();
+}
+extern "C" const char *GetHTMLDirFileName()
+{
+    return theApplication->getHTMLDirFileName();
+}
+
 

@@ -244,6 +244,8 @@ class Application : public UIComponent, public Server
     virtual void helpOn(const char *topic);
     virtual const char *getHelpDirectory();
     virtual const char *getHelpDirFileName();
+    virtual const char *getHTMLDirectory();
+    virtual const char *getHTMLDirFileName();
 
     //
     // Start a tutorial on behalf of the application.

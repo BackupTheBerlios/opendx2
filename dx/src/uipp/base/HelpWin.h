@@ -30,6 +30,8 @@ class CommandInterface;
 
 extern "C" { const char *GetHelpDirectory(); }
 extern "C" { const char *GetHelpDirFileName(); }
+extern "C" { const char *GetHTMLDirectory(); }
+extern "C" { const char *GetHTMLDirFileName(); }
 
 
 //
@@ -39,10 +41,13 @@ class HelpWin : public MainWindow
 {
   friend const char *GetHelpDirectory();
   friend const char *GetHelpDirFileName();
+  friend const char *GetHTMLDirectory();
+  friend const char *GetHTMLDirFileName();
   private:
     //
     // Private member data:
     //
+    static boolean UseWebBrowser;
     static boolean ClassInitialized;
     friend void HelpWin_SelectCB(Widget, XtPointer, XtPointer);
 

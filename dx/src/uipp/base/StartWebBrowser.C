@@ -44,9 +44,18 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
 
 #if defined(macos)
    if(webApp) {
-	CFStringRef urlStr = CFStringCreateWithCString(NULL, URL, kCFStringEncodingASCII);
+   	OSStatus oss;
+   	CFURLRef outAppURL;
+   	oss = LSGetApplicationForInfo(kLSUnknownType, kLSUnknownCreator, CFSTR("html"),
+   		kLSRolesViewer, NULL, &outAppURL);
+	CFStringRef urlStr = CFStringCreateWithCString(NULL, URL, kCFStringEncodingUTF8);
 	CFURLRef inURL = CFURLCreateWithString(NULL, urlStr, NULL);
-	OSStatus oss = LSOpenCFURLRef( inURL, NULL);
+	CFArrayRef arRef = CFArrayCreate(NULL, (const void**)&inURL, 1, NULL);
+   	LSLaunchURLSpec lurl = { outAppURL, arRef, NULL, kLSLaunchDefaults, NULL};
+	oss = LSOpenFromURLSpec ( &lurl , NULL );
+	CFRelease(urlStr);
+	CFRelease(inURL);
+	CFRelease(arRef);
 	return !oss;
     }
     return 0;

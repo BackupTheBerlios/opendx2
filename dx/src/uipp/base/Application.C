@@ -400,6 +400,15 @@ const char *Application::getHelpDirFileName()
 {
     return "HelpDir";
 }
+const char *Application::getHTMLDirectory()
+{
+    return ".";
+}
+
+const char *Application::getHTMLDirFileName()
+{
+    return "Help.idx";
+}
 
 extern "C" int Application_XErrorHandler(Display *display, XErrorEvent *event)
 {
