@@ -1037,6 +1037,19 @@ static int sm_lg_ratio = 0;		/* 0 means compute at run time */
 #define LARGE(x) ((int)x>=(int)large)
 #endif
 
+#ifdef	cygwin
+#define initvalues
+#define SMALL_BASE    0               /* use data segment */
+#define SMALL_GET     _dxfgetmem      /* expand by using DosSetMem */
+#define LARGE_GET     _dxfgetmem      /* expand by using DosSetMem */
+#define LARGE_INIT    2 MEG           /* doesn't matter; consistent w/ sgi */
+#define LARGE_INCR    2 MEG           /* doesn't matter; consistent w/ sgi */
+#define SIZE_ROUND    2 MEG           /* doesn't matter; consistent w/ sgi */
+#define MALLOC_NONE   1               /* provide malloc from global arena */
+#define SMALL(x) ((int)x<(int)large)
+#define LARGE(x) ((int)x>=(int)large)
+#endif
+
 #if alphax              /* single processor, but can't replace malloc */
 #define initvalues
 #define SMALL_BASE	0               /* normally use end of data seg */
