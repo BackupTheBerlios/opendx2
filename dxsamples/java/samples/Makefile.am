@@ -8,9 +8,15 @@ CLASSPATH := $(CLASSPATH):@WRL_CLASSPATH@:@JDK_CLASSPATH@:@DX_JAR@:.
 export CLASSPATH
 
 samples.jar:
-	$(JAVAC) $(JAVA_FILES)
-	if test -n "$(WRL_CLASSPATH)" ; then \
-	   $(JAVAC) $(WRL_USERS); \
+	@for i in $(JAVA_FILES) ; do		\
+	  echo " $(JAVAC) $$i" ;		\
+	  $(JAVAC) $$i ;			\
+	done ;
+	@if test -n "$(WRL_CLASSPATH)" ; then 	\
+	  for i in $(WRL_USERS) ; do		\
+	    echo " $(JAVAC) $$i" ;		\
+	    $(JAVAC) $$i; 			\
+	  done ;				\
 	fi ;
 	$(JAR) cf samples.jar *.class
 
