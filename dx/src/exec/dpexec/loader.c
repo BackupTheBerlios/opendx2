@@ -78,7 +78,7 @@ typedef shl_t Handle;
 #endif /* hp700 */
 
 
-#if defined(sun4) || defined(solaris) || defined(sgi) || defined(alphax) || defined(aviion) || defined(linux86)
+#if defined(sun4) || defined(solaris) || defined(sgi) || defined(alphax) || defined(aviion) || defined(linux86) || defined(cygwin)
 
 #include <dlfcn.h>
 typedef void *Handle;
@@ -567,7 +567,7 @@ Error DXUnloadObjFile(char *fname, char *envvar)
 #endif  /* hp700 */
 
 
-#if defined(sun4) || defined(solaris) || defined(sgi) || defined(alphax) || defined(aviion) || defined(linux86)
+#if defined(sun4) || defined(solaris) || defined(sgi) || defined(alphax) || defined(aviion) || defined(linux86) || defined(cygwin)
 
 
 #define __ROUTINES_DEF
