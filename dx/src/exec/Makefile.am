@@ -85,7 +85,7 @@ install-exec-local:
 				fi ;					   \
 			done ;						   \
 			if test "$$lib" = ""  ; then			   \
-			  echo Library $$i not found. It's possible that you did not build it statically. Use --disable-libname to compile without it. Without this library, there will be problems when linking with libDX.a later ; 	   \
+			  echo "Library $$i not found. It's possible that you did not build it statically. Use --disable-libname to compile without it. Without this library, there will be problems when linking with libDX.a later" ;    \
 			else						   \
 				echo $$lib ;				   \
 				case $$i in				   \
