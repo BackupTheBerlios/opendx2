@@ -38,7 +38,7 @@
 #include <sys/un.h>
 #endif
 
-#if defined(HAVE__ERRNO)
+#if defined(HAVE__ERRNO) && !defined(errno)
 #define errno _Errno()
 #endif
 
