@@ -63,7 +63,7 @@ boolean HelpMenuCommand::doIt(CommandInterface *ci)
 	char *url = new char[strlen(theIBMApplication->getUIRoot()) + 35];
 	strcpy(url, "file://");
 	strcat(url, theIBMApplication->getUIRoot());
-	strcat(url, "/html/pages/insgu007.htm");
+	strcat(url, "/html/pages/qikgu033.htm");
 	if(!_dxf_StartWebBrowserWithURL(url))
 	    InfoMessage(theIBMApplication->getTechSupportString());
 	delete url;
