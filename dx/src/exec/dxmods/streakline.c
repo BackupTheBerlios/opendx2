@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.5 2000/08/24 20:04:51 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.6 2001/09/07 14:14:05 gda Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
@@ -2494,7 +2494,7 @@ GetFrameData(Object vectors, Object curls, CacheObject co)
 	    goto error;
 	}
 
-	co->v1 = DXCopy(co->v1, COPY_STRUCTURE);
+	co->v1 = DXReference(DXCopy(co->v1, COPY_STRUCTURE));
 	if (! co->v1)
 	    goto error;
 	
@@ -2534,7 +2534,7 @@ GetFrameData(Object vectors, Object curls, CacheObject co)
 	    goto error;
 	}
 
-	co->v1 = DXCopy(vectors, COPY_STRUCTURE);
+	co->v1 = DXReference(DXCopy(vectors, COPY_STRUCTURE));
 	if (! co->v1)
 	    goto error;
 	
