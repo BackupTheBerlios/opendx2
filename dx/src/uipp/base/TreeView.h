@@ -50,7 +50,7 @@ class TreeView : public UIComponent
 
     TreeNode* data_model;
 
-    int single_click_time;
+    unsigned int single_click_time;
     int multi_click_time;
 
     boolean dirty;

@@ -655,7 +655,7 @@ void TreeView::buttonPress(XEvent *xev)
 	if (marker) {
 	    TreeNode* node = marker->getNode();
 	    if (node == this->selection) {
-		int diff = xbe->time - this->single_click_time;
+		unsigned int diff = xbe->time - this->single_click_time;
 		if (diff < this->multi_click_time) {
 		    this->multiClick(node);
 		    this->single_click_time = 0;
