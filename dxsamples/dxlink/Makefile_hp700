@@ -1,4 +1,4 @@
-BASE = /usr/lpp/dx
+BASE = /usr/local/dx
 
 LIBDXL=$(BASE)/lib_hp700/libDXL.a
 
@@ -10,7 +10,7 @@ CFLAGS   = -O -Dhp700 -DBASE=\"$(BASE)\" -Aa -I$(BASE)/include
 LIBS = -L$(BASE)/lib_hp700 $(LIBDXL) -lm
 XLIBS   = -L/usr/lib/X11R5 -L/usr/lib/Motif1.2 -lXm -lXt -lX11 -lPW 
 
-
+all: sealevel maptoplane xapp xapp_supervise demoapp
 
 sealevel: sealevel.o
 	$(CC) sealevel.o $(LIBS) -o sealevel

@@ -1,4 +1,4 @@
-BASE = /usr/lpp/dx
+BASE = /usr/local/dx
 
 LIBDXL=$(BASE)/lib_alphax/libDXL.a
 
@@ -7,7 +7,7 @@ CFLAGS   = -g -Dalphax -DBASE=\"$(BASE)\" -I$(BASE)/include
 LIBS = -L$(BASE)/lib_alphax $(LIBDXL) -lm
 XLIBS   = -lXm -lXt -lX11
 
-
+all: sealevel maptoplane xapp xapp_supervise demoapp
 
 sealevel: sealevel.o
 	$(CC) sealevel.o $(LIBS) -o sealevel

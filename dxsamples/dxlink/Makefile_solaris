@@ -1,5 +1,5 @@
 
-BASE = /usr/lpp/dx
+BASE = /usr/local/dx
 
 LIBDXL=$(BASE)/lib_solaris/libDXL.a
 
@@ -11,7 +11,7 @@ LIBS = -L$(BASE)/lib_solaris -L/usr/openwin/lib -lm -ly -ll -ldl -lnsl \
 XLIBS   = -lXm -lXt -lXmu -lX11 -lw -lgen
 
 
-
+all: sealevel maptoplane xapp xapp_supervise demoapp
 
 sealevel: sealevel.o
 	$(CC) sealevel.o $(LIBS) -o sealevel 

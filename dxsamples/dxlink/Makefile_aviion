@@ -1,5 +1,5 @@
 
-BASE = /usr/lpp/dx
+BASE = /usr/local/dx
 
 LIBDXL=$(BASE)/lib_aviion/libDXL.a
 
@@ -8,7 +8,7 @@ CFLAGS   = -O -Daviion -DBASE=\"$(BASE)\" -Xa -I$(BASE)/include
 LIBS = -L$(BASE)/lib_aviion $(LIBDXL) -lm
 XLIBS   = -lXm -lXmu -lXt -lX11 -lPW
 
-
+all: sealevel maptoplane xapp xapp_supervise demoapp
 
 sealevel: sealevel.o
 	$(CC) sealevel.o $(LIBS) -o sealevel
