@@ -177,13 +177,18 @@ DXLSend(DXLConnection *conn, const char *string)
 	    ptype = PACK_FOREGROUND;
 	else
 	    ptype = PACK_LINK;
-    } else if (conn->macroDef) {
-	DXLSendUnpacketized(conn, string);
-    } else {
-	/* FIXME: is it sufficient to always send in the foreground */
-	ptype = PACK_FOREGROUND;
+	return DXLSendPacket(conn, ptype, string) >= 0 ? OK : ERROR;
     }
-    return DXLSendPacket(conn, ptype, string) >= 0 ? OK : ERROR;
+    else if (conn->macroDef)
+    {
+	DXLSendUnpacketized(conn, string);
+	return OK;
+    }
+    else
+    {
+	ptype = PACK_FOREGROUND;
+	return DXLSendPacket(conn, ptype, string) >= 0 ? OK : ERROR;
+    }
 
 }
 
