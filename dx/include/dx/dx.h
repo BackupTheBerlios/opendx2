@@ -38,6 +38,10 @@
 #include <sys/un.h>
 #endif
 
+#if defined(HAVE__ERRNO)
+#define errno _Errno()
+#endif
+
 #include <dx/arch.h>
 
 #include <dx/error.h>
