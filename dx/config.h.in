@@ -90,6 +90,9 @@
 #undef HAVE_LIBTIFF
 #undef HAVE_LIBTTF
 #undef HAVE_TT_FONT_PATH
+/* Define if you have the <dfsd.h> or <hdf/dfsd.h> header file. */
+#undef HAVE_DFSD_H
+#undef HAVE_HDF_DFSD_H
 
 #undef uint
 #undef SELECT_ARG_TYPE

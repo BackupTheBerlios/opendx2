@@ -31,7 +31,12 @@
 #define INTEL86 
 #endif
 
+#if defined(HAVE_DFSD_H)
+#include <dfsd.h>
+else
 #include <hdf/dfsd.h>
+#endif
+
 #include <ctype.h>
 
 /* special access: needs extra include file, and has different constants 
