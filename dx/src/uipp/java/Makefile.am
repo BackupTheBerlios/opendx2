@@ -33,8 +33,7 @@ SUBDIRS = server dx
 ## which allows for quick jarring
 ##
 
-# got to merge these in configure where we can use logic to trim the number of colons appropriately 
-CLASSPATH = @JDK_CLASSPATH@:@WRL_CLASSPATH@:./
+CLASSPATH = @DX_JAVA_CLASSPATH@:./
 
 export CLASSPATH
 

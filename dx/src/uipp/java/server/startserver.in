@@ -19,9 +19,9 @@ export DXROOT
 PATH=$PATH:@prefix@/dx/bin
 export PATH
 if [ "$CLASSPATH" = "" ]; then
-	CLASSPATH=@JDK_CLASSPATH@:@WRL_CLASSPATH@:./:./server.jar
+	CLASSPATH=@DX_JAVA_CLASSPATH@:./:./server.jar
 	else
-	CLASSPATH=$CLASSPATH:@JDK_CLASSPATH@:@WRL_CLASSPATH@:./:./server.jar
+	CLASSPATH=$CLASSPATH:@DX_JAVA_CLASSPATH@:./:./server.jar
 fi
 export CLASSPATH
 ##

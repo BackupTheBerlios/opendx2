@@ -18,9 +18,8 @@ AC_SUBST(JAVAC)
 AC_SUBST(JAR)
 AC_SUBST(JAVAH)
 AC_SUBST(JINC)
+AC_SUBST(DX_JAVA_CLASSPATH)
 AC_SUBST(JNI_CFLAGS)
-AC_SUBST(JDK_CLASSPATH)
-AC_SUBST(WRL_CLASSPATH)
 AC_SUBST(BUILDBASE)
 AC_SUBST(DXEXEC_EXP)
 AC_SUBST(DXEXEC_IMP)
@@ -36,8 +35,6 @@ AC_SUBST(DX_GL_LINK_LIBS)
 AC_SUBST(SHARED_LINK)
 AC_SUBST(MKDEP)
 AC_SUBST(JNI_CFLAGS)
-AC_SUBST(JDK_CLASSPATH)
-AC_SUBST(WRL_CLASSPATH)
 AC_SUBST(LOCALMAKE)
 
 SHELL=sh
@@ -352,6 +349,9 @@ dnl use the javac -verbose code to try and determine where they may be.
     if test -n "$ac_cv_class_cosmo" ; then
       WRL_CLASSPATH="$ac_cv_class_netscape:$ac_cv_class_cosmo"
     fi
+dnl Fix up the full CLASSPATH to be used with the JAVA compiles.
+    DX_JAVA_CLASSPATH=$COSMOJAR":"$WRL_CLASSPATH":"$CLASSPATH
+    DX_JAVA_CLASSPATH=`echo $DX_JAVA_CLASSPATH | sed -e 's/::/:/g' -e 's/^://' -e 's/:$//'`
   fi
 
 fi
