@@ -24,7 +24,7 @@
 #include <errno.h>
 #endif
 
-#if defined(HAVE__SYS_ERRLIST)
+#if (defined(HAVE__SYS_ERRLIST) && !defined(HAVE_SYS_ERRLIST))
 #define sys_errlist _sys_errlist
 #endif
 
