@@ -1,9 +1,11 @@
 srvbindir = $(prefix)/dx/java/server/bin
+srvoutputdir = $(prefix)/dx/java/output
 # the server script (in srvbindir) will actually cd and run from the class subdir so that java will find the classes
 # the server will expect to find a file dxserver.paths there to tell the exec where to find .net files
 srvrundir = $(srvbindir)/../class
 srvrun_DATA = dxserver.paths
-srvbin_DATA = $(SCRFILES)
+srvoutput_DATA = README.output
+srvbin_SCRIPTS = $(SCRFILES)
 
 SCRFILES = stopserver startserver startserver.bat
 
@@ -11,3 +13,7 @@ EXTRA_DIST = CleanUpDaemon.java ConnectThread.java ConnectionEntry.java DXLink.c
 
 
 SUBDIRS = macros
+
+README.output:
+	echo "This directory is placed at the same level as htmlpages" > README.output
+	echo "for default output.  Make this directory writable!" >> README.output
