@@ -1,7 +1,8 @@
-XDKDEV="C:\Program Files\Hummingbird\Connectivity\7.10\Exceed\XDK"
-MSDEV="C:/Program Files/Microsoft SDK"
-MSVC="C:/Program Files/Microsoft Visual Studio"
-BINMODEDIR="C:\Program Files\Microsoft Visual Studio\VC98\Lib"
+export PATH="`cygpath \"$MSDEV\"`/bin:`cygpath \"$MSCOM\"`/bin:$PATH"
+export INCLUDE="$MSDEV/INCLUDE;XDKDEV/Include:$INCLUDE"
+export LIB="$MSDEV/LIB;$XDKDEV/Lib;$LIB"
+
+BINMODEDIR="$MSDEV\Lib"
 
 stdout=/tmp/stdo$$
 stderr=/tmp/stde$$
@@ -28,6 +29,8 @@ cfiles=
 mounts=
 echo=0
 tmp="$MSDEV\Lib"
+mkdll=0
+entryPt=DXEntry
 
 prelibs="$prelibs wsock32.lib"
 
@@ -75,10 +78,9 @@ cleanup() {
 		fi
 	done
 
-#	if test -f $oname.exe ; then
-#		mv $oname.exe foo
-#		mv foo $oname
-#	fi
+	if test -f tmp.def$$ ; then
+		rm tmp.def$$
+	fi
 	if test -f $stdout ; then
 		rm $stdout
 	fi
@@ -98,16 +100,26 @@ cleanup() {
 
 trap 'cleanup; exit 1' 1 2 15
 
-for i in $* ; do
+while test ! "$1" = "" ; do
+	i=$1
 	case $i in 
+                -e)      shift
+                         if test "$1" = "" ; then
+                             echo "-e requires entry point argument"
+                             exit 1
+                         fi
+                         entryPt=$1;;
+                -shared) mkdll=1
+                         linkopts="$linkopts /dll" ;;
                 -staticRunTime)
                          dlllib="libcmt.lib"
                          dllflag="-MT" ;;
                 -dllRunTime)
                          dlllib="msvcrt.lib"
                          dllflag="-MD" ;;
-                -o)      # args="$args $i"
-                         oset=1 ;;
+                -o)      shift
+                         oname=$1 
+			 args="$args /Fe$1" ;;
 		-map)	 map="/MAP" ;;
                 -Wp*)    dfile=`echo $i | sed "s/^.*\(.deps.*\)/ \1/"`
                          mkdep=1 ;;
@@ -150,27 +162,23 @@ for i in $* ; do
                          cp $i $fname
                          delfiles="$delfiles $fname"
 			 cfiles="$cfiles $fname" ;;
-                -def*)   tmp=`echo $i | sed "s/-def//"`
-                         tmp2=`cygpath -w -s "$tmp"`
-                         deffile="/DEF:\"$tmp2\"" ;;
+                -def)    shift
+                         if test "$1" = ""; then
+                             echo "-def requires def file name argument"
+                             exit 1
+                         fi
+                         deffile=/DEF:\"$1\" ;;
                 -module) dllflag="$dllflag /LD"
                          linkmodule="/DLL /EXPORT:DXEntry" ;;
-                *)       if test $oset = 1 ; then
-                             oname=$i
-                             args="$args /Fe$i"
-                             oset=0
-			 else
-			     args="$args $i"
-                         fi ;;
+                *)	 args="$args $i" ;;
 	esac
+	shift
 done
 
 
 tmp=`cygpath -a --windows "$MSDEV/Include"`
 msincs="/I\"$tmp\""
 incpath="$incpath $msincs"
-#incpath=`echo $incpath | sed 's/\\\\/\\\\\\\\/g'`
-#libpath=`echo $libpath | sed 's/\\\\/\\\\\\\\/g'`
 
 if test $mkdep = 1; then
     if test -f foo$$ ; then
@@ -209,6 +217,16 @@ fi
 
 if test $compile = 1
 then
+    
+    if test $mkdll = 1 ; then
+	if test ! X"$deffile" = X"" ; then
+	    echo "cannot specify both a def file and a DLL entry point
+	    exit 1
+	fi
+	echo EXPORTS > tmp.def$$
+	echo entryPt >> tmp.def$$
+	deffile=/DEF:tmp.def$$
+    fi
 
     if test $link = 1 ; then
 	cmd="cl -nologo $incpath $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $prelibs $libs $deflibs $dlllib $map $binmode $linkopts $linkmodule $deffile" 
@@ -237,6 +255,10 @@ then
         fi
     else
         err=1
+    fi
+
+    if test $mkdll = 1 -a -f ${oname}.exe ; then
+	mv ${oname}.exe ${oname}.dll
     fi
 
     if test $link = 1 ; then
