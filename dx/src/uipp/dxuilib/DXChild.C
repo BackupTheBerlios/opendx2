@@ -26,8 +26,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#if defined(HAVE_FCNTL_H)
 
+#if defined(HAVE_SYS_WAIT_H)
+#include <sys/wait.h>
+#endif
+
+#if defined(HAVE_FCNTL_H)
 #include <fcntl.h>
 #endif
 
