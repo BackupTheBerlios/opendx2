@@ -33,8 +33,8 @@
 #include <sys/time.h>
 #endif
 
-#if defined(HAVE_ASM_SOCKET_H)
-#include <asm/socket.h>
+#if defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
 #endif
 
 #if defined(HAVE_SYS_FILIO_H)
