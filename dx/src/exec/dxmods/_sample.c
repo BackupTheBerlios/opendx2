@@ -3023,7 +3023,7 @@ PolylinesSample(Field field, int nSamples, Array grid)
 
     spacing = totLength / nSamples;
     length  = 0;
-    next    = spacing / 2;
+    next    = spacing / 2.0;
 
     totLength = 0.0;
     for (i = 0; i < nPolylines; i++)
@@ -3287,7 +3287,7 @@ LineSample(Field field, int nSamples, Array grid)
     nSamples = nSamples * totLength / (totLength - invLength);
     spacing = (totLength - invLength) / nSamples;
     length  = 0;
-    next    = spacing / 2;
+    next    = spacing / 2.0;
 
     for (i = 0; i < nSegs; i++)
 	if (segment[i].visited == 0 && !segment[i].invalid)
@@ -3357,6 +3357,7 @@ LineSample(Field field, int nSamples, Array grid)
 	    p = start;
 	    do
 	    {
+	    float *p0=NULL, *p1=NULL;
 		float l0 = length, l1 = l0 + p->length;
 
 		p->visited = 1;
@@ -3366,8 +3367,8 @@ LineSample(Field field, int nSamples, Array grid)
 		while (next < l1)
 		{
 		    int   *elt, eBuf[10];
-		    float *p0=NULL, p0Buf[10];
-		    float *p1=NULL, p1Buf[10];
+		    float p0Buf[10];
+		    float p1Buf[10];
 
 		    if (! p->invalid)
 		    {
