@@ -112,8 +112,8 @@ int GraphLayout::HeightPerLevel = 90;
 // but if we can't make straight arcs, then we'll offset by 
 // DESIRED_
 //
-#define REQUIRED_FUDGE 5
-#define DESIRED_FUDGE 15
+#define REQUIRED_HSEP 5
+#define DESIRED_HSEP 15
 
 //
 // Starting coords for graph placement.  They have no meaning.  They
@@ -853,11 +853,11 @@ boolean GraphLayout::positionDestBesideSibling (Ark* arc, int& x, int& y, boolea
 	int sibling_x;
 	dinfo->getXYPosition (sibling_x, y);
 	if (left) {
-	    x = sibling_x - (w+DESIRED_FUDGE);
+	    x = sibling_x - (w+DESIRED_HSEP);
 	} else {
 	    int sibling_w;
 	    dinfo->getXYSize(sibling_w, dummy);
-	    x = sibling_x + sibling_w + DESIRED_FUDGE;
+	    x = sibling_x + sibling_w + DESIRED_HSEP;
 	}
     }
     boolean collided = (this->nodeCanMoveTo(destination, x,y)==FALSE);
@@ -1112,7 +1112,7 @@ void GraphLayout::computeHopCounts (Node* reflow[], int reflow_count)
     // We might want to make some adjustments to hop counts.  Sounds like
     // nonsense, but the problem is that there are some nodes that could
     // really have several different hop counts.  Think about a receiver
-    // wired directly to an (and only to an output).  Should the receiver
+    // wired directly to an (and only to an) output.  Should the receiver
     // be marked 1 and the output be marked 2?  ...or should the output be
     // (max hops) and the receiver be 1-max?  Usually I've tried to keep
     // things pushed down towards the bottom of the graph.  Here we want
@@ -1126,6 +1126,8 @@ void GraphLayout::computeHopCounts (Node* reflow[], int reflow_count)
     //
     // Rules say that we decrement the hop count of any node that is 
     // connected to multiple non-consecutive input tabs on 1 row.
+    // The idea is to devote more screen realestate to displaying
+    // lines if there are lots of lines between 1 pair of nodes.
     //
     do {
 	changes_made = FALSE;
@@ -1142,8 +1144,10 @@ void GraphLayout::computeHopCounts (Node* reflow[], int reflow_count)
     // in a pleasing way, so  we'll do a final check for this.  If the
     // situation exists, then we'll artificially decrement the hop count
     // for every other reciever so that the pattern is a little garbagey
-    // looking.  
+    // looking.  We sort before the call because if obviates the need
+    // to make the call in a loop the way we do above.
     //
+    qsort (reflow, reflow_count, sizeof(Node*), NodeInfo::SortByHop);
     for (i=0; i<reflow_count; i++) {
 	Node* n = reflow[i];
 	this->fixForTooManyReceivers(n, smallest_hop_count);
@@ -1187,8 +1191,6 @@ boolean GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
     int output;
     Ark* arc;
     int levels_to_decr = 0;
-#if 0
-    List nodes_one_hop_down;
     for (output=1; output<=output_count; output++) {
 	if (!n->isOutputVisible(output)) continue;
 	List* arcs = (List*)n->getOutputArks(output);
@@ -1199,27 +1201,7 @@ boolean GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
 	while (arc = (Ark*)iter.getNext()) {
 	    Node* dest = arc->getDestinationNode(input);
 	    NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
-	    if ((dinfo->getGraphDepth()-1) == depth) {
-		if (!nodes_one_hop_down.isMember(dest)) {
-		    nodes_one_hop_down.appendElement(dest);
-		} else {
-		    levels_to_decr++;
-		}
-	    }
-	}
-    }
-#endif
-    for (output=1; output<=output_count; output++) {
-	if (!n->isOutputVisible(output)) continue;
-	List* arcs = (List*)n->getOutputArks(output);
-	if (!arcs) continue;
-	ListIterator iter(*arcs);
-	int input;
-	Node* arc_dest = NUL(Node*);
-	while (arc = (Ark*)iter.getNext()) {
-	    Node* dest = arc->getDestinationNode(input);
-	    NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
-	    int cnctn_count = this->countConnectionsBetween(n,dest);
+	    int cnctn_count = this->countConnectionsBetween(n,dest,FALSE);
 	    int desired_depth = dinfo->getGraphDepth() - cnctn_count;
 	    if (depth > desired_depth) {
 		levels_to_decr = MAX(levels_to_decr, (depth-desired_depth));
@@ -1255,7 +1237,6 @@ boolean GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
 void GraphLayout::fixForTooManyReceivers(Node* n, int& min)
 {
     NodeInfo* ninfo = (NodeInfo*)n->getLayoutInformation();
-    boolean previous = FALSE;
     int dummy;
     int input;
     int input_count = n->getInputCount();
@@ -1268,18 +1249,24 @@ void GraphLayout::fixForTooManyReceivers(Node* n, int& min)
 	Ark* arc;
 	while (arc = (Ark*)iter.getNext()) {
 	    Node* source = arc->getSourceNode(dummy);
+	    if (wide_nodes.isMember(source)) continue;
+	    if (!this->hasNoCloserDescendant(source,n)) continue;
 	    LayoutInfo* linfo = (LayoutInfo*)source->getLayoutInformation();
 	    int w,h;
 	    linfo->getXYSize(w,h);
-	    if (wide_nodes.isMember(source)==FALSE)
-		wide_nodes.insertElement(source,1);
+	    wide_nodes.appendElement(source);
 	}
     }
     int wnsize = wide_nodes.getSize();
     if (wnsize <= 2) return ;
     
     // saw tooth pattern
-    boolean way_many_inputs = (wnsize >= 5);
+    //  We're controlling how high up/down the pattern goes.
+    int state = 0;
+    int max_state = wnsize>>1;
+    if (wnsize&1) max_state++;
+    int incr = 1;
+    boolean had_inputs = FALSE;
     for (input=1; input<=input_count; input++) {
 	if (!n->isInputVisible(input)) continue;
 	List* arcs = (List*)n->getInputArks(input);
@@ -1288,28 +1275,34 @@ void GraphLayout::fixForTooManyReceivers(Node* n, int& min)
 	Ark* arc;
 	while (arc = (Ark*)iter.getNext()) {
 	    Node* source = arc->getSourceNode(dummy);
-	    if ((this->hasConnectedInputs(source)) && (!way_many_inputs)) continue;
-	    if (this->hasConnectedOutputs(source, n)) {
-		previous = FALSE;
-		continue;
+	    if (state == 3) {
+		if ((!this->hasConnectedInputs(source)) && (!had_inputs)) 
+		    state = 0;
 	    }
 	    NodeInfo* linfo = (NodeInfo*)source->getLayoutInformation();
-	    int w,h;
-	    linfo->getXYSize(w,h);
-	    if (previous) {
-		int gd = ninfo->getGraphDepth()-2;
-		// if this actually does anything...
-		if (gd < linfo->getGraphDepth()) {
-		    if ((way_many_inputs) && (this->hasConnectedInputs(source))) {
+	    int gd;
+	    switch (state) {
+		case -1:
+		    incr = -incr;
+		case 0:
+		    state = 1;
+		    break;
+		default:
+		    gd = ninfo->getGraphDepth()-(state+1);
+		    // if this actually does anything...
+		    if (gd < linfo->getGraphDepth()) {
 			this->adjustAncestorHops (source, gd-1, min);
+			linfo->setGraphDepth(gd);
+			if (gd < min) min = gd;
 		    }
-		    linfo->setGraphDepth(gd);
-		    if (gd < min) min = gd;
-		}
-		previous = FALSE;
-	    } else {
-		previous = TRUE;
+		    state+= incr;
+		    break;
 	    }
+	    if (state == max_state) {
+		incr = -incr;
+		state+= 2*incr;
+	    }
+	    had_inputs = this->hasConnectedInputs(source);
 	}
     }
 }
@@ -1549,6 +1542,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #               endif
 	    }
 
+
 	    // source node casts his vote..
 	    int vo = this->countConnectedOutputs(src, output, nth_output_tab);
 	    if ((vo==1)||((nth_output_tab==(vo>>1))&&((vo&1)==1))) {
@@ -1574,6 +1568,46 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 		    fprintf (stdout, "\t%s source voted %s\n",
 			src->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
 #               endif
+	    }
+
+	    // the source may have another node connected to the same output.
+	    // It should cast a vote also.
+	    List* arcs = (List*)src->getOutputArks(output);
+	    ListIterator iter(*arcs);
+	    Node* other_dst = NUL(Node*);
+	    int oinput;
+	    while (arc = (Ark*)iter.getNext()) {
+		other_dst = arc->getDestinationNode(oinput);
+		if (other_dst == dst) continue;
+		if (placed.isMember(other_dst)) continue;
+		break;
+	    }
+	    if (other_dst) {
+		int vi = this->countConnectedInputs(other_dst, oinput, nth_input_tab);
+		if (vi==1) {
+		    // don't care
+#		    if defined(DEBUG_PLACEMENT)
+		    if (debug)
+			fprintf (stdout, "\t%s destination didn't vote\n",
+			    dst->getLabelString());
+#		    endif
+		} else if (nth_input_tab<=(vi>>1)) {
+		    prefer_left = TRUE;
+		    center+= (prefer_left?-1:1);
+#		    if defined(DEBUG_PLACEMENT)
+		    if (debug)
+			fprintf (stdout, "\t%s source voted %s\n",
+			    src->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+#		    endif
+		} else if (nth_input_tab>(vi>>1)) {
+		    prefer_left = FALSE;
+		    center+= (prefer_left?-1:1);
+#		    if defined(DEBUG_PLACEMENT)
+		    if (debug)
+			fprintf (stdout, "\t%s source voted %s\n",
+			    src->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+#		    endif
+		}
 	    }
 	}
 	prefer_left = (center<=0);
@@ -1654,10 +1688,10 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #       endif
 
 	if (prefer_left) {
-	    xdelta = -(maxx2 + DESIRED_FUDGE - minx1);
+	    xdelta = -(maxx2 + DESIRED_HSEP - minx1);
 	    ydelta = 0;
 	} else {
-	    xdelta =  (maxx1  + DESIRED_FUDGE - minx2);
+	    xdelta =  (maxx1  + DESIRED_HSEP - minx2);
 	    ydelta = 0;
 	}
     }
@@ -2222,16 +2256,21 @@ void LayoutGroup::layout(Node* node, GraphLayout* mgr, List& positioned)
 	prev = ninfo->getGraphDepth();
 	i++;
     }
+    int prev_id;
     row_array[0]->sort();
-    row_array[0]->layout(mgr);
+    row_array[0]->layout(mgr, prev_id);
     SlotList* slots = row_array[0]->getSlotList();
-    int prev_id = row_array[0]->getId();
     for (i=1; i<rows; i++) {
 	row_array[i]->sort();
 	row_array[i]->layout(slots, mgr, prev_id);
-	prev_id = row_array[i]->getId();
 	slots = row_array[i]->getSlotList();
     }
+
+    //
+    // provide additional spacing for crowded situations
+    //
+    this->straightenArcs(row_array, rows);
+
     for (i=0; i<rows; i++) 
 	delete row_array[i];
     free(row_array);
@@ -2247,6 +2286,8 @@ void LayoutRow::sort()
     int i = 0;
     while (n=(Node*)iter.getNext()) this->node_array[i++] = n;
     qsort (this->node_array, size, sizeof(Node*), LayoutRow::SortByDestinationX);
+    this->sorted_by_destination_x = TRUE;
+    this->sorted_by_x = FALSE;
 #   if defined(DEBUG_PLACEMENT)
     if (debug) {
 	fprintf (stdout, "%s[%d] Row %d contains...\n", __FILE__,__LINE__, this->getId());
@@ -2266,7 +2307,7 @@ LayoutRow::~LayoutRow()
 
 // Among the nodes we're placing, there are no connected outputs.  There
 // should be only 1 node in this row.
-void LayoutRow::layout(GraphLayout* mgr)
+void LayoutRow::layout(GraphLayout* mgr, int& previous_id)
 {
     Node* n = this->node_array[0];
     NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
@@ -2277,6 +2318,7 @@ void LayoutRow::layout(GraphLayout* mgr)
     int left_edge = x - (w>>1);
     int right_edge = x + (w>>1);
     this->slot_list.clear();
+    previous_id = this->getId();
 }
 
 SlotList::~SlotList()
@@ -2331,7 +2373,7 @@ void SlotList::occupy (int x, int width)
     int i;
     for (i=1; i<=size; i++) {
 	slot = (Slot*)this->getElement(i);
-	if ((slot->min < x) && (slot->max > x)) {
+	if ((slot->min <= x) && (slot->max >= x)) {
 	    found = i;
 	    break;
 	}
@@ -2395,7 +2437,7 @@ void SlotList::occupy (int x, int width)
 //    above a space between nodes, or place the node directly above its destination
 //    if that is available.
 //
-void LayoutRow::layout(SlotList* slots, GraphLayout* mgr, int previous_id)
+void LayoutRow::layout(SlotList* slots, GraphLayout* mgr, int& previous_id)
 {
     int size = this->nodes.getSize();
     int middle = (size>>1);
@@ -2435,6 +2477,8 @@ void LayoutRow::layout(SlotList* slots, GraphLayout* mgr, int previous_id)
     for (i=middle+1;i<size;i++) {
 	this->position (this->node_array[i], left_edge, right_edge, mgr, go_left, slots, previous_id);
     }
+
+    previous_id = this->getId();
 }
 void LayoutRow::position (Node* n, int& left_edge, int& right_edge, 
 	GraphLayout* lay, boolean go_left, SlotList* slots, int previous_id)
@@ -2449,24 +2493,33 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
     int output;
     arc->getSourceNode(output);
 
-    int desired_fudge = DESIRED_FUDGE;
     StandIn *si = n->getStandIn();
     int tabx = si->getOutputParameterTabX(output);
     int xcoord_of_line = info->getDestinationLocation(hop);
     ASSERT (hop > info->getGraphDepth());
     if (go_left) {
 	int desired_right_edge = xcoord_of_line + w - (tabx+half_tab_width); 
-	if ((left_edge-REQUIRED_FUDGE) > desired_right_edge) {
-	} else if ((left_edge-desired_fudge) < desired_right_edge) {
-	    offset = (left_edge-desired_fudge) - desired_right_edge;
+	if ((left_edge-REQUIRED_HSEP) > desired_right_edge) {
+	} else if ((left_edge-DESIRED_HSEP) < desired_right_edge) {
+	    offset = (left_edge-DESIRED_HSEP) - desired_right_edge;
 	}
     } else {
 	int desired_left_edge = xcoord_of_line - (half_tab_width + tabx);
-	if ((right_edge+REQUIRED_FUDGE) < desired_left_edge) {
-	} else if ((right_edge+desired_fudge) > desired_left_edge) {
-	    offset = (right_edge+desired_fudge) - desired_left_edge;
+	if ((right_edge+REQUIRED_HSEP) < desired_left_edge) {
+	} else if ((right_edge+DESIRED_HSEP) > desired_left_edge) {
+	    offset = (right_edge+DESIRED_HSEP) - desired_left_edge;
 	}
     }
+    //
+    // If we can make the arc straight, then notify the destination that
+    // he has achieved straightness and doesn't need to have his incoming
+    // arcs further straightened, which will happen post-layout in 
+    // LayoutGroup::straightenArcs();
+    //
+    int dummy;
+    Node* dest = arc->getDestinationNode(dummy);
+    NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
+
     int target_x = xcoord_of_line + offset;
     // If we're wired to something on the previous row which is usually 1 hop down.
     // It could also be that the 2 nodes could be like Supervise{State,Window} with
@@ -2480,6 +2533,7 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
 	    }
 #           endif
 	}
+	dinfo->registerStraightArc(offset, arc);
     } else {
 	int available_x = slots->isAvailable(target_x, go_left);
 	if (lay->positionSource(info->getDestination(),available_x)) {
@@ -2490,6 +2544,7 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
 	    }
 #           endif
 	}
+	dinfo->registerStraightArc(available_x-xcoord_of_line, arc);
     }
     info->getXYPosition(x,y);
 #   if defined(DEBUG_PLACEMENT)
@@ -2499,7 +2554,12 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
 	    x, x+w);
     }
 #   endif
-    this->slot_list.occupy (x, w);
+    // What's the meaning of the -3,+6?  Really only the space from x to x+w is
+    // occupied.  Nevertheless, the line router won't place a line closer to
+    // a node than 3 pixels.  So we pretend that we're occupying 3 pixels
+    // either side of the left and right edges.  That way we won't try to 
+    // use those areas in a subsequent pass.
+    this->slot_list.occupy (x-3, w+6);
     left_edge = x;
     right_edge = x+w;
 }
@@ -2537,7 +2597,7 @@ int LayoutGroup::SortByHop (const void* a, const void* b)
 
 int LayoutRow::SortByDestinationX (const void* a, const void* b)
 {
-    int ainput,binput,ax,bx,dummy;
+    int ainput,binput,dummy;
     Node** aptr = (Node**)a;
     Node** bptr = (Node**)b;
     Node* anode = (Node*)*aptr;
@@ -2546,10 +2606,33 @@ int LayoutRow::SortByDestinationX (const void* a, const void* b)
     NodeInfo* binfo = (NodeInfo*)bnode->getLayoutInformation();
 
     int half_tab_width = 9;
-    int ai = ainfo->getDestinationLocation(dummy) + half_tab_width;
-    int bi = binfo->getDestinationLocation(dummy) + half_tab_width;
+    int ai = ainfo->getDestinationLocation(dummy);// + half_tab_width;
+    int bi = binfo->getDestinationLocation(dummy);// + half_tab_width;
     if (ai < bi) return -1;
     if (ai > bi) return  1;
+
+    int ahops = ainfo->getGraphDepth();
+    int bhops = binfo->getGraphDepth();
+    if (ahops > bhops) return -1;
+    if (ahops < bhops) return  1;
+
+    return 0;
+}
+
+int LayoutRow::SortByX (const void* a, const void* b)
+{
+    int ainput,binput,ax,bx,dummy;
+    Node** aptr = (Node**)a;
+    Node** bptr = (Node**)b;
+    Node* anode = (Node*)*aptr;
+    Node* bnode = (Node*)*bptr;
+    NodeInfo* ainfo = (NodeInfo*)anode->getLayoutInformation();
+    NodeInfo* binfo = (NodeInfo*)bnode->getLayoutInformation();
+
+    ainfo->getXYPosition(ax,dummy);
+    binfo->getXYPosition(bx,dummy);
+    if (ax < bx) return -1;
+    if (ax > bx) return  1;
     return 0;
 }
 
@@ -2693,11 +2776,12 @@ void SlotList::clear()
     this->appendElement(new Slot(-999999, 999999));
 }
 
-int GraphLayout::countConnectionsBetween (Node* source, Node* dest)
+int GraphLayout::countConnectionsBetween (Node* source, Node* dest, boolean count_consecutive)
 {
     int output_count = source->getOutputCount();
     int output, input;
     int connections = 0;
+    int prev = -1;
     for (output=1; output<=output_count; output++) {
 	if (!source->isOutputVisible(output)) continue;
 	List* arks = (List*)source->getOutputArks(output);
@@ -2706,8 +2790,170 @@ int GraphLayout::countConnectionsBetween (Node* source, Node* dest)
 	Ark* arc;
 	while (arc=(Ark*)iter.getNext()) {
 	    Node* destination = arc->getDestinationNode(input);
-	    if (destination == dest) connections++;
+	    if (destination == dest) {
+		if (count_consecutive) {
+		    connections++;
+		} else {
+		    int nth_tab;
+		    this->countConnectedInputs(destination, input, nth_tab);
+		    if (nth_tab != (prev+1)) {
+			connections++;
+		    }
+		    prev = nth_tab;
+		}
+	    }
 	}
     }
     return connections;
 }
+
+//
+// Starting with the nodes at the top, try to shift them out farther in order
+// to straighten some arc.  Nodes that get in the way are in turn
+// shifted outward providing more space. 
+//
+boolean LayoutGroup::straightenArcs (LayoutRow* row_array[], int rows)
+{
+    boolean retval = FALSE;
+    
+    for (int i=rows-1; i>=0; i--) {
+	LayoutRow* row = row_array[i];
+	row->straightenArcs(retval);
+    }
+    return retval;
+}
+
+void LayoutRow::straightenArcs(boolean& changes_made_on_previous_row)
+{
+    if (!this->sorted_by_x) {
+	qsort (this->node_array, this->nodes.getSize(), 
+	    sizeof(Node*), LayoutRow::SortByX);
+	this->sorted_by_x = TRUE;
+	this->sorted_by_destination_x = FALSE;
+    }
+
+    boolean changes_made = changes_made_on_previous_row;
+    boolean changes_made_on_current_row = FALSE;
+
+    int input, output;
+    int size = this->nodes.getSize();
+    int midpt = size>>1;
+    for (int j=0; j<size; j++) {
+	Node* dest = this->node_array[j];
+	NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
+	Ark* arc;
+	int offset;
+	arc = dinfo->hasStraightArc(offset);
+	if (arc == NUL(Ark*)) continue;
+
+	if ((!changes_made) && (!offset)) continue;
+
+	ASSERT (dest == arc->getDestinationNode(input));
+	Node* src = arc->getSourceNode(output);
+	NodeInfo* sinfo = (NodeInfo*)src->getLayoutInformation();
+
+	int sx,sy;
+	sinfo->getXYPosition(sx,sy);
+	int dx,dy;
+	dinfo->getXYPosition(dx,dy);
+
+	//
+	// Compute the amount the dest has to shift in order to straighten
+	// the arc.  This is based on the the locations of the standIns and
+	// the relative locations of their input and output tabs.
+	//
+	StandIn* ssi = src->getStandIn();
+	StandIn* dsi = dest->getStandIn();
+	int dtx = dsi->getInputParameterTabX(input);
+	int stx = ssi->getOutputParameterTabX(output);
+
+	int delta = - ((dx+dtx) - (sx + stx));
+	int end, incr;
+
+	if (delta < 0) {
+	    end = -1;
+	    incr = -1;
+	} else if (delta > 0) {
+	    end = size;
+	    incr = 1;
+	} else {
+	    dinfo->registerStraightArc (0, arc);
+	    continue;
+	}
+
+	for (int k=j; k!=end; k+=incr) {
+	    Node* n = this->node_array[k];
+	    NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
+#	    if defined(DEBUG_PLACEMENT)
+	    if (debug) {
+		if (k==j) {
+		    fprintf (stdout, "%s[%d] moving %s:%d %d row(%d)\n", 
+			__FILE__,__LINE__, n->getLabelString(), 
+			n->getInstanceNumber(), delta, this->getId());
+		} else {
+		    fprintf (stdout, "\tmoving %s:%d \n", 
+			n->getLabelString(), n->getInstanceNumber());
+		}
+	    }
+#	    endif
+	    info->getXYPosition(dx,dy);
+	    int dx2 = dx + delta;
+	    info->setProposedLocation (dx2, dy);
+
+
+	    //
+	    // continue scooting neighbors over until we have created enough
+	    // whitespace so that it's no longer necessary.
+	    //
+	    boolean keep_scooting = TRUE;
+
+	    int nextk = k+incr;
+	    if (nextk != end) {
+		Node* nn = this->node_array[nextk];
+		int nnx,nny;
+		NodeInfo* nninfo = (NodeInfo*)nn->getLayoutInformation();
+		nninfo->getXYPosition(nnx,nny);
+		if (incr > 0) {
+		    // does the right edge of n encroach on the left edge of nn
+		    int dw,dh;
+		    info->getXYSize(dw,dh);
+		    if ((dx2 + dw + REQUIRED_HSEP) < nnx) 
+			keep_scooting = FALSE;
+		} else {
+		    // does the left edge of n encroach on the right edge of nn
+		    int nnw,nnh;
+		    nninfo->getXYSize(nnw,nnh);
+		    if ((nnx+nnw+REQUIRED_HSEP) < dx2) 
+			keep_scooting = FALSE;
+		}
+	    }
+
+	    if (!keep_scooting) break;
+	}
+	changes_made = TRUE;
+	changes_made_on_current_row = TRUE;
+    }
+    if (!changes_made_on_current_row) changes_made = FALSE;
+}
+
+Ark* NodeInfo::hasStraightArc(int& offset)
+{
+    if (!this->straightness_set) return NUL(Ark*);
+    offset = this->offset_for_straightness;
+    return this->straightness_opportunity;
+}
+
+void NodeInfo::registerStraightArc(int offset, Ark* arc)
+{
+    if (!this->straightness_set) {
+	this->offset_for_straightness = offset;
+	this->straightness_opportunity = arc;
+	this->straightness_set = TRUE;
+	return ;
+    }
+    if (abs(offset) < abs(this->offset_for_straightness)) {
+	this->offset_for_straightness = offset;
+	this->straightness_opportunity = arc;
+    }
+}
+

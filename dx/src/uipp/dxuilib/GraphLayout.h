@@ -120,8 +120,13 @@ class NodeInfo : public LayoutInfo
     private:
 	Ark* destination;
 
+	Ark* straightness_opportunity;
+	boolean straightness_set;
+	int offset_for_straightness;
+
     protected:
 	friend class GraphLayout;
+	friend class LayoutRow;
 	int hops;
 
 	LayoutGroup* group;
@@ -134,6 +139,7 @@ class NodeInfo : public LayoutInfo
 	    this->group = NUL(LayoutGroup*);
 	    this->connected_nodes = NUL(List*);
 	    this->owns_list = FALSE;
+	    this->straightness_set = FALSE;
 	}
 	void initialize (Node* n, int hops);
 
@@ -142,6 +148,8 @@ class NodeInfo : public LayoutInfo
 	// for qsort
 	static int SortByHop (const void* a, const void* b);
 
+	void registerStraightArc(int offset, Ark* arc);
+	Ark* hasStraightArc(int& offset);
 
     public:
 	int getGraphDepth() { return this->hops; }
@@ -241,6 +249,8 @@ class LayoutGroup : public Base
 
 	void layout(Node* node, GraphLayout* mgr, List& positioned);
 
+	boolean straightenArcs(LayoutRow* row_array[], int rows);
+
     public:
 	LayoutGroup(int id) {
 	    this->initialized = FALSE;
@@ -327,26 +337,37 @@ class LayoutRow : public Base
 
 	int id;
 
+	boolean sorted_by_x;
+	boolean sorted_by_destination_x;
+
     protected:
 	friend class LayoutGroup;
 
-	LayoutRow(int id){ this->id = id; }
+	LayoutRow(int id) { 
+	    this->id = id; 
+	    this->sorted_by_x = FALSE;
+	    this->sorted_by_destination_x = FALSE;
+	}
 
 	void addNode(Node* n) { this->nodes.appendElement(n); }
 
 	void sort ();
 
-	void layout(GraphLayout* mgr);
+	void layout(GraphLayout* mgr, int& previous_id);
 
-	void layout(SlotList* slots, GraphLayout* mgr, int previous_id);
+	void layout(SlotList* slots, GraphLayout* mgr, int& previous_id);
 
 	void position (Node* n, int& left_edge, int& right_edge, 
 		GraphLayout* mgr, boolean go_left, SlotList* slots,
 		int previous_rows_hop);
 
 	static int SortByDestinationX(const void* a, const void* b);
+	static int SortByX(const void* a, const void* b);
 
 	boolean favorsLeftShift (Ark* arc, GraphLayout* mgr, boolean default_value);
+
+	void straightenArcs(boolean& changes_made);
+
     public:
 	SlotList* getSlotList() { return &this->slot_list; }
 
@@ -453,7 +474,7 @@ class GraphLayout : public Base
 
     boolean spreadOutSpaghettiFrom (Node* n, int& min);
 
-    int countConnectionsBetween (Node* source, Node* dest);
+    int countConnectionsBetween (Node* source, Node* dest, boolean count_consecutive=TRUE);
 
   public:
     //
