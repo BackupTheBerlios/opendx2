@@ -166,6 +166,9 @@ AC_CHECK_LIB(netcdf, free_NC_attr,
     FMT_LIBS="$FMT_LIBS libnetcdf.a"
 ])
 
+AC_CHECK_LIB(socket, socket)
+AC_CHECK_LIB(nsl, inet_addr)
+
 DX_STREAM_O2
 
 AC_LANG_CPLUSPLUS
