@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 #if defined(HAVE_UNISTD_H)
@@ -739,7 +738,7 @@ const char *IBMApplication::getTechSupportString()
 
     struct STATSTRUCT buf;
    
-	if (STAT(supfile, &buf) != 0)
+	if (STATFUNC(supfile, &buf) != 0)
 	return nosup;
     helpsize = buf.st_size;
     

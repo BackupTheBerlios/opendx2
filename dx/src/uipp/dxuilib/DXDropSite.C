@@ -19,7 +19,6 @@
 #include <sys/stat.h>
 #endif
 
-#include <Xm/Xm.h>
 #include "ControlPanel.h"
 #include "Application.h" 
 #include "DropSite.h"

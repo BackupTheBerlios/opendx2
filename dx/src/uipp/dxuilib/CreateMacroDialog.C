@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -124,7 +123,7 @@ boolean CreateMacroDialog::okCallback(Dialog *d)
     XtFree(filename);
 
     struct STATSTRUCT buffer;
-	if(STAT(newname, &buffer) == 0) {
+	if(STATFUNC(newname, &buffer) == 0) {
 
     	theQuestionDialogManager->modalPost(
 				this->parent,

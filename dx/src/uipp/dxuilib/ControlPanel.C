@@ -8,12 +8,10 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
-#include <Xm/Xm.h>
 #include <Xm/CascadeB.h>
 #include <Xm/DrawingA.h>
 #include <Xm/Frame.h>

@@ -8,8 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
-#include "../base/defines.h"
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
@@ -19,7 +17,6 @@
 #include <netdb.h>
 #endif
 
-#include <Xm/Xm.h>
 #include <Xm/CutPaste.h>
 #include <Xm/DragC.h>
 #include <X11/cursorfont.h>

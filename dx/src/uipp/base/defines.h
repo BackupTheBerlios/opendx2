@@ -71,6 +71,10 @@
 #include <process.h>
 #endif
 
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
+
 #if !defined(HAVE_GETPID)
 #if defined(HAVE__GETPID)
 #define getpid  _getpid

@@ -14,7 +14,6 @@
 
 
 #include "ImageFormatDialog.h"
-#include <Xm/Xm.h>
 
 //
 // Class name definition:

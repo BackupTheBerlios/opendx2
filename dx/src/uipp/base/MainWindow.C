@@ -6,8 +6,9 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
+#define NO_EDITRES
+
 #include <dxconfig.h>
-#include "../base/defines.h"
 #include "../base/defines.h"
 
 

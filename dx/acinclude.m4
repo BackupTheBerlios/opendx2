@@ -173,14 +173,17 @@ AC_DEFUN(DX_PROG_CXXCPP,
 AC_PROVIDE(AC_PROG_CXXCPP)
 if test -z "$CXXCPP"; then
 AC_CACHE_VAL(ac_cv_prog_CXXCPP,
-[AC_LANG_SAVE[]dnl
+[
+AC_LANG_SAVE[]dnl
 AC_LANG_CPLUSPLUS[]dnl
   CXXCPP="${CXX-g++} -E"
   DX_TRY_CPP([#include <stdlib.h>], , CXXCPP=/lib/cpp)
   ac_cv_prog_CXXCPP="$CXXCPP"
 AC_LANG_RESTORE[]dnl
 CXXCPP="$ac_cv_prog_CXXCPP"
-fi])dnl
+fi]
+)dnl
+CXXCPP=$ac_cv_prog_CXXCPP
 AC_MSG_RESULT($CXXCPP)
 AC_SUBST(CXXCPP)dnl
 ])
@@ -466,14 +469,23 @@ AC_DEFUN(DX_HEADER_HAS_SYMBOL,
 [
     AC_MSG_CHECKING(whether header file $1 contains symbol $2)
     ac_ext=C
-    AC_EGREP_CPP(yes, 
-	[#include <$1>
-	#ifdef $2
-	yes
-	#endif
-	], found="yes", found="no")
+    found="no"
+    for i in $1
+    do
+	echo egrep_cpp $i for $2
+	AC_EGREP_CPP(yes, 
+	    [#include <$i>
+	    #ifdef $2
+	    yes
+	    #endif
+	    ], found="yes")
+    done
     if test $found = "no" ; then
-	AC_EGREP_HEADER($2, $1, found="yes", found="no")
+	for i in $1 
+	do
+	    echo egrep_header $i for $2
+	    AC_EGREP_HEADER($2, $1, found="yes")
+	done
     fi
     if test $found = "yes" ; then 
 	AC_DEFINE_UNQUOTED(HAS_$2)
@@ -613,11 +625,11 @@ AC_DEFUN(DX_CHECK_STAT,
 [
 AC_CHECK_FUNCS( stat _stat )
 if test $ac_cv_func__stat = 'yes' ; then
-    AC_DEFINE_UNQUOTED(STAT, _stat)
+    AC_DEFINE_UNQUOTED(STATFUNC, _stat)
     dx_stat=_stat
 else
     if test $ac_cv_func_stat = 'yes' ; then
-	AC_DEFINE_UNQUOTED(STAT, stat)
+	AC_DEFINE_UNQUOTED(STATFUNC, stat)
 	dx_stat=stat
     else
  	echo could not find either stat or _stat.... need one or the other

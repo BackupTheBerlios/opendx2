@@ -10,7 +10,6 @@
 #include "../base/defines.h"
 
 
-#include "../base/defines.h"
 #include "dxlP.h"
 #include "dxl.h"
 

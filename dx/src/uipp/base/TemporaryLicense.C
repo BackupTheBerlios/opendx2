@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 #if defined(DXD_LICENSED_VERSION)

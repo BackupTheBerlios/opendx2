@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 #ifdef OS2
@@ -1788,7 +1787,7 @@ int response;
 
     if ((file) && (file[0])) {
 	struct STATSTRUCT statbuf;
-	if (STAT(file, &statbuf) == -1) return TRUE;
+	if (STATFUNC(file, &statbuf) == -1) return TRUE;
     }
 
     if ((this->netVersion.major >= 2) && netfile) {

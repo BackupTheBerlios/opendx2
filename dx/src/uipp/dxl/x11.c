@@ -14,7 +14,6 @@
 #include <malloc.h>
 #include <stdio.h>
 
-#include "../base/defines.h"
 #define Object XObject
 #include <X11/Intrinsic.h>
 #undef Object

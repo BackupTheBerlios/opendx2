@@ -8,10 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
-
-
-
 
 #ifndef _DXApplication_h
 #define _DXApplication_h
@@ -502,7 +498,7 @@ class DXApplication : public IBMApplication
     Command*		executingCmd;
     Command*		notExecutingCmd;
 
-#if USE_REMAP	// 6/14/93
+#if USE_REMAP	
     Command*            toggleRemapInteractorsCmd;
 #endif
     Command*            loadMDFCmd;

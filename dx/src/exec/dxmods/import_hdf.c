@@ -31,14 +31,6 @@
 #define INTEL86 
 #endif
 
-#undef int8
-#undef uint8
-#undef int16
-#undef uint16
-#undef int32
-#undef uint32
-#undef float64
-
 #include <hdf/dfsd.h>
 #include <ctype.h>
 

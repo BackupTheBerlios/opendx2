@@ -8,13 +8,11 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
 #include <stdlib.h>
 #include <limits.h>
-#include <Xm/Xm.h>
 #include <Xm/DialogS.h>
 #include <Xm/List.h>
 #include <Xm/Form.h>

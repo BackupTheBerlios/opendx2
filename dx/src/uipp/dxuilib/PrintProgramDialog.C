@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -292,7 +291,7 @@ boolean PrintProgramDialog::okCallback(Dialog *d)
 
 	struct STATSTRUCT buffer;
 
-	if (STAT(filename, &buffer) == 0) {
+	if (STATFUNC(filename, &buffer) == 0) {
 	    theQuestionDialogManager->modalPost(
 		this->parent,
 		"Do you want to overwrite an existing file?",

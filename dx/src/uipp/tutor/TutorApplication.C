@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -19,7 +18,6 @@
 #include <stream.h>
 #endif
 
-#include <Xm/Xm.h>
 #include <Xm/RowColumn.h>
 #include <Xm/CascadeB.h>
 #include <Xm/Separator.h>

@@ -28,7 +28,6 @@
 #include <sys/socket.h>
 #endif
 
-#include "../base/defines.h"
 #include "dxlP.h"
 
 #ifdef OS2

@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -20,7 +19,6 @@
 #define _VPEAnnotator_h
 
 #include <X11/Intrinsic.h>
-#include <Xm/Xm.h>
 
 #include "LabelDecorator.h"
 #if WORKSPACE_PAGES

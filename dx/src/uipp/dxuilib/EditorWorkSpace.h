@@ -8,14 +8,12 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
 
 #ifndef _EditorWorkSpace_h
 #define _EditorWorkSpace_h
-#include <Xm/Xm.h>
 
 #include "WorkSpace.h"
 #include "DXDropSite.h"

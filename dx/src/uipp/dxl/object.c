@@ -13,7 +13,6 @@
 #include <string.h>
 #include <malloc.h>
 
-#include "../base/defines.h"
 #include "dxlP.h"
 /* #include "dx.h" Not until we actually handle the object */
 #include "dict.h"

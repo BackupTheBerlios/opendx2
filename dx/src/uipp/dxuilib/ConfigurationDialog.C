@@ -8,9 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
-
-
 
 #include <sys/stat.h>
 
@@ -2174,7 +2171,7 @@ const char *ConfigurationDialog::getHelpSyntaxString()
 
     struct STATSTRUCT buf;
 
-    if (STAT(supfile, &buf) != 0)
+    if (STATFUNC(supfile, &buf) != 0)
         return nosup;
     helpsize = buf.st_size;
 

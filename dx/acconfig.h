@@ -23,7 +23,7 @@
 #undef OLD_LESSTIF
 
 #undef USING_BISON
-#undef STAT
+#undef STATFUNC
 #undef STATSTRUCT
 #undef HAVE_HCLXMINIT
 #undef HAVE_HCLXTINIT

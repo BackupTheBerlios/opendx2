@@ -210,7 +210,7 @@ boolean SaveImageDialog::okCallback(Dialog *dialog)
 	    strcat (full_filename, ext);
 
 	struct STATSTRUCT buffer;
-	if (STAT(full_filename, &buffer) == 0) {
+	if (STATFUNC(full_filename, &buffer) == 0) {
 	    Widget parent = XtParent(this->getRootWidget());
 	    char *title = "Save Confirmation";
 	    if (this->choice->supportsAppend()) {

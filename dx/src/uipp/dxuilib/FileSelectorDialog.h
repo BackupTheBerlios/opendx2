@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -20,7 +19,6 @@
 
 #include "ApplyFileDialog.h"
 
-#include <Xm/Xm.h>
 
 //
 // Class name definition:

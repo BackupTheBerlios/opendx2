@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -534,7 +533,7 @@ char *GARApplication::FileFound (const char *fname, const char *ext)
 struct STATSTRUCT statb;
 char tmpstr[256];
 
-    if ((STAT(fname, &statb) != -1) && (ISGOOD(statb.st_mode)))
+    if ((STATFUNC(fname, &statb) != -1) && (ISGOOD(statb.st_mode)))
 	return DuplicateString(fname);
 
     if ((ext) && (ext[0])) {
@@ -543,7 +542,7 @@ char tmpstr[256];
 	else
 	    sprintf (tmpstr, "%s.%s", fname, ext);
 
-	if ((STAT(tmpstr, &statb) != -1) && (ISGOOD(statb.st_mode)))
+	if ((STATFUNC(tmpstr, &statb) != -1) && (ISGOOD(statb.st_mode)))
 	    return DuplicateString(tmpstr);
     }
     return NUL(char *);

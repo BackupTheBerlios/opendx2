@@ -15,7 +15,6 @@
 #define _GARCommand_h
 
 
-#include "../base/defines.h"
 #include "../base/NoUndoCommand.h"
 #include <Xm/Xm.h>
 

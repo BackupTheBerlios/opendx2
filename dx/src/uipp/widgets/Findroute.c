@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -46,7 +47,7 @@
 #define LINE_TYPE 1
 #define SLOT_LEN 40
 
-#define abs(A) ((A) < 0 ? -(A) : (A))
+#define Abs(A) ((A) < 0 ? -(A) : (A))
 
 typedef struct _LineList {
     XmWorkspaceLine line;
@@ -328,10 +329,10 @@ Manhattan(XmWorkspaceWidget ww, int srcx, int srcy,
 	    /* Do not follow the path of a line that will be moved! */
 	    if (current_ignore->line->is_to_be_moved)
 		continue;
-	    delta_x = abs(dstx -
+	    delta_x = Abs(dstx -
 			  current_ignore->line->point[
 				current_ignore->line->num_points - 1].x);
-	    delta_y = abs(dsty -
+	    delta_y = Abs(dsty -
 			  current_ignore->line->point[
 				current_ignore->line->num_points - 1].y);
 	    dist = delta_x * delta_x + delta_y * delta_y;
@@ -518,7 +519,7 @@ Manhattan(XmWorkspaceWidget ww, int srcx, int srcy,
 		{
 		    min_cost = lower_cost;
 		    min_dist = MeasureLine(remainder_line) + 
-			       abs(copy_line->point[i].x - newx);
+			       Abs(copy_line->point[i].x - newx);
 		    if (min_line)
 		    {
 			FreeLineElementList(min_line);
@@ -528,7 +529,7 @@ Manhattan(XmWorkspaceWidget ww, int srcx, int srcy,
 		}
 		else if (lower_cost == min_cost &&
 		    (dist = MeasureLine(remainder_line) + 
-			    abs(copy_line->point[i].x - newx)) < min_dist)
+			    Abs(copy_line->point[i].x - newx)) < min_dist)
 		{
 		    min_dist = dist;
 		    if (min_line)
@@ -891,7 +892,7 @@ ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
 		src_line = MakeLineElement(srcx, ypos);
 		mycost += 1;
 		new_dst.x = FindVerticalSlot(ww, srcx, ypos,
-			    horizontal_dir, vertical_dir, abs(ypos - srcy));
+			    horizontal_dir, vertical_dir, Abs(ypos - srcy));
 		new_dst.y = ypos;
 		break;
 	    }
@@ -942,7 +943,7 @@ ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
 		 * position 
 		 */
 		new_src.x = FindVerticalSlot(ww, dstx, ypos,
-			    horizontal_dir, vertical_dir, abs(ypos - dsty));
+			    horizontal_dir, vertical_dir, Abs(ypos - dsty));
 		new_src.y = ypos;
 		break;
 	    }
@@ -1947,7 +1948,7 @@ ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
 	    src_dogleg3.y = src_dogleg2.y - source->core.height;
 	    src_dogleg3.y = FindHorizontalSlot(ww, src_dogleg2.x, src_dogleg3.y,
 					       horizontal_dir, vertical_dir,
-					       abs(dstx - src_dogleg2.x));
+					       Abs(dstx - src_dogleg2.x));
 	    if ((src_dogleg3.y == -1) ||
 		(DetectXCollision(ww, src_dogleg2.x, src_dogleg2.y,
 				  src_dogleg3.y, &ret_line, &ret_widget)))
@@ -1987,7 +1988,7 @@ ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
 		src_dogleg3.y = src_dogleg2.y - source->core.height;
 		src_dogleg3.y = FindHorizontalSlot(ww, src_dogleg2.x, src_dogleg3.y,
 					       horizontal_dir, vertical_dir,
-						 abs(dstx - src_dogleg2.x));
+						 Abs(dstx - src_dogleg2.x));
 		if ((src_dogleg3.y == -1) ||
 		    (DetectXCollision(ww, src_dogleg2.x, src_dogleg2.y,
 				    src_dogleg3.y, &ret_line, &ret_widget)))
@@ -2041,7 +2042,7 @@ ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
 	    src_dogleg3.y = src_dogleg2.y - source->core.height;
 	    src_dogleg3.y = FindHorizontalSlot(ww, src_dogleg2.x, src_dogleg3.y,
 					       horizontal_dir, vertical_dir,
-					       abs(src_dogleg2.x - dstx));
+					       Abs(src_dogleg2.x - dstx));
 	    if ((src_dogleg3.y == -1) ||
 		(DetectXCollision(ww, src_dogleg2.x, src_dogleg2.y,
 				  src_dogleg3.y, &ret_line, &ret_widget)))
@@ -2081,7 +2082,7 @@ ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
 		src_dogleg3.y = src_dogleg2.y - source->core.height;
 		src_dogleg3.y = FindHorizontalSlot(ww, src_dogleg2.x, src_dogleg3.y,
 					       horizontal_dir, vertical_dir,
-						 abs(src_dogleg2.x - dstx));
+						 Abs(src_dogleg2.x - dstx));
 		if ((src_dogleg3.y == -1) ||
 		    (DetectXCollision(ww, src_dogleg2.x, src_dogleg2.y,
 				    src_dogleg3.y, &ret_line, &ret_widget)))
@@ -2144,7 +2145,7 @@ ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
 		{
 		    /* Go 1/2 way to the dest */
 		    xmin = MIN(srcx, dstx);
-		    xpos = xmin + abs(srcx - dstx) / 2;
+		    xpos = xmin + Abs(srcx - dstx) / 2;
 		    line_center[1] = ManhattanWorker(ww, xpos, ypos, dstx,
 			       dsty, level, &left_cost, source, destination,
 				new, failnum, ignore_lines);
@@ -3684,8 +3685,8 @@ MarkCommonLines(XmWorkspaceWidget ww)
 	     * If line 1 is to be moved, search the rest of the list for
 	     * common lines, and mark them to be moved 
 	     */
-	    min_disty = abs(line1->dst_y - line1->src_y);
-	    min_distx = abs(line1->dst_x - line1->src_x);
+	    min_disty = Abs(line1->dst_y - line1->src_y);
+	    min_distx = Abs(line1->dst_x - line1->src_x);
 	    line2 = line1->next;
 	    prev_line2 = line1;
 	    if (line1->is_to_be_moved)
@@ -3700,8 +3701,8 @@ MarkCommonLines(XmWorkspaceWidget ww)
 
 			line2->is_to_be_moved = TRUE;
 			AugmentExposureAreaForLine(ww, line2);
-			cur_disty = abs(line2->src_y - line2->dst_y);
-			cur_distx = abs(line2->dst_x - line2->src_x);
+			cur_disty = Abs(line2->src_y - line2->dst_y);
+			cur_distx = Abs(line2->dst_x - line2->src_x);
 			if (cur_disty < min_disty)
 			{
 			    min_disty = cur_disty;
@@ -3746,8 +3747,8 @@ MarkCommonLines(XmWorkspaceWidget ww)
 			{
 			    line1->is_to_be_moved = TRUE;
 			    AugmentExposureAreaForLine(ww, line1);
-			    cur_disty = abs(line2->src_y - line2->dst_y);
-			    cur_distx = abs(line2->src_x - line2->dst_x);
+			    cur_disty = Abs(line2->src_y - line2->dst_y);
+			    cur_distx = Abs(line2->src_x - line2->dst_x);
 			    if (cur_disty < min_disty)
 			    {
 				min_disty = cur_disty;
@@ -3931,8 +3932,8 @@ ObstructedFind(XmWorkspaceWidget ww,
     /* Find the resulting x position that is closest to the dest */
     for (ypos = ycenter; ypos <= ymax; ypos++)
     {
-	if ((abs(xsave[ypos] - xslot) <
-	     abs(new_src.x - xslot)) &&
+	if ((Abs(xsave[ypos] - xslot) <
+	     Abs(new_src.x - xslot)) &&
 	    (xsave[ypos] != -1))
 	{
 	    ysave     = ypos;
@@ -3942,8 +3943,8 @@ ObstructedFind(XmWorkspaceWidget ww,
     }
     for (ypos = ycenter - 1; ypos >= srcy; ypos--)
     {
-	if ((abs(xsave[ypos] - xslot) <
-	     abs(new_src.x - xslot)) &&
+	if ((Abs(xsave[ypos] - xslot) <
+	     Abs(new_src.x - xslot)) &&
 	    (xsave[ypos] != -1))
 	{
 	    ysave     = ypos;
@@ -4020,7 +4021,7 @@ MeasureLine(LineElement *line)
     line = line->next;
     while (line)
     {
-	length += abs(lastx - line->x) + abs(lasty - line->y);
+	length += Abs(lastx - line->x) + Abs(lasty - line->y);
 	lastx = line->x;
 	lasty = line->y;
 	line = line->next;

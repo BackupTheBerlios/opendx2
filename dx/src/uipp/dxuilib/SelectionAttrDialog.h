@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -16,7 +15,6 @@
 #define _SelectionAttrDialog_h
 
 
-#include <Xm/Xm.h>
 
 #include "SetAttrDialog.h"
 #include "ListEditor.h"

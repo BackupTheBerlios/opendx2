@@ -15,7 +15,6 @@
 #define _SearchDialog_h
 
 
-#include "../base/defines.h"
 #include "../base/Dialog.h"
 
 //

@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 #include "FileContents.h"
@@ -144,7 +145,7 @@ boolean FileContents::initialize ()
     int filedes = fileno (in_fp);
 
     struct STATSTRUCT statbuf;
-    STAT (this->in_file_name, &statbuf);
+    STATFUNC(this->in_file_name, &statbuf);
     this->contents = new char[statbuf.st_size + 1];
 
     int bread = fread (this->contents, sizeof(char), (int)statbuf.st_size, in_fp);

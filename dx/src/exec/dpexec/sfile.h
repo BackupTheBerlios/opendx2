@@ -4,6 +4,12 @@ typedef void SFILE;
 SFILE *socketToSFILE(SOCKET sock);
 #endif
 
+#if !defined(SOCKET)
+#define SOCKET int
+#endif
+
+SFILE *socketToSFILE(SOCKET);
+
 SFILE *fdToSFILE(int fd);
 SFILE *FILEToSFILE(FILE *fptr);
 int    readFromSFILE(SFILE *sf, char *buf, int n);

@@ -8,11 +8,9 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include <defines.h>
 
 
 
-#include <Xm/Xm.h>
 #include <Xm/RowColumn.h>
 #include <Xm/Form.h>
 #include <Xm/ScrolledW.h>

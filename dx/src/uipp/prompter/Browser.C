@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -1330,7 +1331,7 @@ boolean Browser::openFile(char *filenm)
 	return FALSE;
     }
 
-    if(STAT(filenm, &statb) == -1)
+    if(STATFUNC(filenm, &statb) == -1)
     {
 	// stat failed
         return FALSE;

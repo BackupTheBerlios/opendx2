@@ -8,14 +8,12 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 #ifndef _InteractorInstance_h
 #define _InteractorInstance_h
 
 
-#include <Xm/Xm.h> 
 
 #include "Strings.h"
 #include "Base.h"

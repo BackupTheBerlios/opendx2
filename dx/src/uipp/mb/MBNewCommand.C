@@ -12,7 +12,6 @@
 
 
 
-#include "../base/defines.h"
 #include "MBNewCommand.h"
 #include "MBMainWindow.h"
 #include "MBApplication.h"

@@ -17,7 +17,6 @@
 
 
 #include "GARMainWindow.h"
-#include "../base/defines.h"
 #include "../base/TextEditDialog.h"
 
 //

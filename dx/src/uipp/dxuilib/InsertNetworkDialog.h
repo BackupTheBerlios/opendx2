@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 #ifndef _InsertNetworkDialog_h
@@ -19,7 +18,6 @@
 #include "OpenNetworkDialog.h"
 #include "Application.h"
 
-#include <Xm/Xm.h>
 
 //
 // Class name definition:

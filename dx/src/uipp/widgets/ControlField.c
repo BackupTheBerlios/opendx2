@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -139,7 +140,7 @@ int i;
 static Boolean init = TRUE;
 Boolean draw_lines = TRUE;
 
-    if( XtIsRealized(field->w) )
+    if( XtIsRealized((Widget)field->w) )
     {
 	if( field->init )
 	    {

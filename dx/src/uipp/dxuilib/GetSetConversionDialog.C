@@ -8,14 +8,12 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
 
 #include <X11/StringDefs.h>
 
-#include <Xm/Xm.h>
 #include <Xm/DialogS.h>
 #include <Xm/Form.h>
 #include <Xm/PushB.h>

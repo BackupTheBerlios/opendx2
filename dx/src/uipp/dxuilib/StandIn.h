@@ -8,14 +8,12 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 #ifndef _StandIn_h
 #define _StandIn_h
 
 
-#include <Xm/Xm.h>
 #include "UIComponent.h"
 #include "List.h"
 #include "DXDragSource.h"

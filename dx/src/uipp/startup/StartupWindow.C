@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 #include <X11/StringDefs.h>
 
@@ -778,7 +777,7 @@ boolean StartupWindow::help()
 
     struct STATSTRUCT buf;
 
-    if (STAT(helpfile, &buf) != 0) {
+    if (STATFUNC(helpfile, &buf) != 0) {
        ErrorMessage(nohelp);
        return FALSE;
     }

@@ -10,6 +10,9 @@
 #include <dx/dx.h>
 #include "sfile.h"
 
+#if !defined(SOCKET)
+#define SOCKET int
+#endif
  
 #include <stdio.h>
 #include <ctype.h>
@@ -104,7 +107,7 @@ _dxf_ExInitServer(int pport)
     int oldUmask;
 #endif
     struct linger sl;
-    int length;
+    socklen_t length;
     ushort port;
     int fd;
     int sts;
@@ -328,7 +331,7 @@ error:
 #endif
     if (sock >= 0)
 	close (sock);
-    return socketToSFILE(fd);
+    return socketToSFILE((SOCKET)fd);
 }
 
 /*

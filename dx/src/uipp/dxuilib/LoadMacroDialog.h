@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -18,7 +17,6 @@
 #define _LoadMacroDialog_h
 
 
-#include <Xm/Xm.h>
 
 #include "OpenNetworkDialog.h"
 #include "Application.h"

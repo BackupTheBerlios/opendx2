@@ -59,7 +59,6 @@ Warnings:	The data at 'datap' is never copied into the hash table.
 		will not be retrievable.
 */
 #include    <string.h>
-#include	"../base/defines.h"
 #include	"dict.h"
 #if defined(MSDOS) || defined(sun4)
 # include	<malloc.h>

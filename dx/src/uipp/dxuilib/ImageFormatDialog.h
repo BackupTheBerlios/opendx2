@@ -15,7 +15,6 @@
 
 #include "Dialog.h"
 #include "NoOpCommand.h"
-#include <Xm/Xm.h>
 #include <X11/cursorfont.h>
 
 //

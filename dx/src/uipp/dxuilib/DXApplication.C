@@ -53,10 +53,6 @@
 #define chdir _chdir
 #endif
 
-#include <Xm/Xm.h>
-#include <Xm/Label.h>
-#include <X11/cursorfont.h>
-
 
 #include "lex.h"
 #include "DXVersion.h"
@@ -64,6 +60,10 @@
 #include "Network.h"
 #include "JavaNet.h"
 #include "Client.h"
+
+#include <Xm/Label.h>
+#include <X11/cursorfont.h>
+
 
 #include "oem.h"
 #include "CommandScope.h"

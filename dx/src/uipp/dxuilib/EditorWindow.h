@@ -8,13 +8,11 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 #ifndef _EditorWindow_h
 #define _EditorWindow_h
 
-#include <Xm/Xm.h> 
 #include "List.h"
 #include "Command.h"
 #include "DXWindow.h"

@@ -15,7 +15,6 @@
 #define _FilenameSelectDialog_h
 
 
-#include "../base/defines.h"
 #include "../base/FileDialog.h"
 #include "GARMainWindow.h"
 

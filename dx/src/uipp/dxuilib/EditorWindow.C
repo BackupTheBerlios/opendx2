@@ -17,7 +17,6 @@
 #endif
 #include <string.h> // for strerror
 #include <errno.h> // for errno
-#include <Xm/Xm.h>
 #include <Xm/CascadeB.h>
 #include <Xm/DrawingA.h>
 #include <Xm/Frame.h>
@@ -5924,7 +5923,7 @@ Window root = RootWindowOfScreen(screen);
     unsigned char *cfg_buffer = NULL;
 
     struct STATSTRUCT statb;
-    if ((cfgf) && (STAT(cfgfilename, &statb) != -1)) {
+    if ((cfgf) && (STATFUNC(cfgfilename, &statb) != -1)) {
         cfg_len = (unsigned int)statb.st_size;
 	cfg_buffer = (unsigned char *)(cfg_len?new char[1+cfg_len]:NULL);
 
@@ -5940,7 +5939,7 @@ Window root = RootWindowOfScreen(screen);
 	unlink (cfgfilename);
     }
 
-    if (STAT(netfilename, &statb) == -1) {
+    if (STATFUNC(netfilename, &statb) == -1) {
 	sprintf (msg, "Copy failed (stat): %s", strerror(errno));
 	WarningMessage(msg);
 	fclose(netf);

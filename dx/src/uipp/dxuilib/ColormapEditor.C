@@ -9,13 +9,11 @@
 #include <dxconfig.h>
 #include <defines.h>
 
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-#include <Xm/Xm.h>
 #include <Xm/CascadeB.h>
 #include <Xm/DrawingA.h>
 #include <Xm/Frame.h>
@@ -557,7 +555,7 @@ void ColormapEditor::manage()
 	(name = this->colormapNode->getNetSavedCMFilename())) {
         struct STATSTRUCT statbuf;
 
-        if (STAT(name,&statbuf) == 0) {         // File exists
+        if (STATFUNC(name,&statbuf) == 0) {         // File exists
 	    XmColorMapEditorRead(this->colormapEditor,(char*)name);
         } else {
            WarningMessage("Can't locate color map file '%s', "

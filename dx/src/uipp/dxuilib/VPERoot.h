@@ -8,14 +8,12 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
 
 #ifndef _VPERoot_h
 #define _VPERoot_h
-#include <Xm/Xm.h>
 
 #include "EditorWorkSpace.h"
 #include "WorkSpaceRoot.h"

@@ -16,7 +16,6 @@
 #define _SADialog_h
 
 
-#include "../base/defines.h"
 #include "../base/SaveFileDialog.h"
 //#include "GARMainWindow.h"
 

@@ -12,7 +12,6 @@
 
 #include <malloc.h>
 
-#include "../base/defines.h"
 #include "dxlP.h"
 
 DXLError

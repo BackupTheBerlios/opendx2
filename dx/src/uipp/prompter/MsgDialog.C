@@ -17,7 +17,6 @@
 #include <Xm/PushB.h>
 #include <Xm/Separator.h>
 #include <Xm/Label.h>
-#include "../base/defines.h"
 #include "../base/Application.h"
 #include "MsgDialog.h"
 #include "ListIterator.h"

@@ -132,7 +132,7 @@ struct STATSTRUCT statb;
     else
 	sprintf (pathname, "%s/ui/%s", uiroot, this->parent_name);
 
-    if (STAT(pathname, &statb) == -1) return NUL(char*);
+    if (STATFUNC(pathname, &statb) == -1) return NUL(char*);
 
     if (!ISGOOD(statb.st_mode)) return NUL(char*);
 

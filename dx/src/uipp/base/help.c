@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 #ifdef OS2
 #include <stdlib.h>
@@ -736,13 +735,13 @@ char *mktemp(char *tmplate)
                 for (i=0; i<NX && i<strlen(numbuff); i++)
                   if (numbuff[i] != ' ')
                     tmplate[tmplength-i-1] = numbuff[i];
-                if (STAT(tmplate,&buf) != 0)
+                if (STATFUNC(tmplate,&buf) != 0)
                   return (tmplate);
               }
             return(NULL);
           }
          else
-          if (STAT(tmplate,&buf) != 0)
+          if (STATFUNC(tmplate,&buf) != 0)
             return (tmplate);
            else
             return(NULL);

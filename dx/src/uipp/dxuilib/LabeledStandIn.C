@@ -12,7 +12,6 @@
 
 
 
-#include <Xm/Xm.h>
 
 #include "StandIn.h"
 #include "LabeledStandIn.h"

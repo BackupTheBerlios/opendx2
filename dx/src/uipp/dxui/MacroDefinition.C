@@ -589,7 +589,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
  	}
 	strcat(srch_string, "*.net");
 	struct STATSTRUCT b;
-	int d = STAT(nsptr, &b);
+	int d = STATFUNC(nsptr, &b);
 	if (d == -1)
 #else
 	No directory tools?

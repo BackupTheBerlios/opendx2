@@ -463,7 +463,6 @@ _dxfstat_netcdf_file(char *filename)
     int foundfile = 0;
     char *fname = NULL, *cp;
     char *datadir = NULL;
-    //extern int ncerr;
 
     /* netCDF library options: on error, don't abort and don't print */
     ncopts = 0;

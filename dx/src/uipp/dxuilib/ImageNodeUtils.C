@@ -1295,12 +1295,12 @@ boolean ImageNode::SendString(void* callbackData, PacketIFCallback cb, FILE* f, 
 void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac[], boolean viasocket)
 {
     int i = 0;
-#   define BSIZE 90
-    char tmpbuf[BSIZE];
+#   define FMBUFSIZE 90
+    char tmpbuf[FMBUFSIZE];
     int buflen = 0;
     while (mac[i]) {
 	int length = strlen(mac[i]);
-	if ((buflen + length) >= BSIZE) {
+	if ((buflen + length) >= FMBUFSIZE) {
 	    if (buflen > 0) {
 		tmpbuf[buflen++] = '\n'; tmpbuf[buflen] = '\0';
 		SendString (cbd, cb, f, tmpbuf, viasocket);

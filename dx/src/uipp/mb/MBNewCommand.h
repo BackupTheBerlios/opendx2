@@ -16,7 +16,6 @@
 #define _MBNewCommand_h
 
 
-#include "../base/defines.h"
 #include "../base/OptionalPreActionCommand.h"
 
 //

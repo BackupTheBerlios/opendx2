@@ -16,7 +16,6 @@
 
 #include <fstream.h>
 #include <Xm/Xm.h>
-#include "../base/defines.h"
 #include "../base/IBMMainWindow.h"
 #include "../base/CommandInterface.h"
 #include "BrowserCommand.h"

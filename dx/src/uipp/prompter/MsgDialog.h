@@ -17,7 +17,6 @@
 
 
 #include "Dialog.h"
-#include "../base/defines.h"
 #include <Xm/Xm.h>
 
 //

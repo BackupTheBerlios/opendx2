@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -17,7 +16,6 @@
 #define _Tab_h
 
 
-#include <Xm/Xm.h>
 #include "UIComponent.h"
 // #include "StandIn.h"
 

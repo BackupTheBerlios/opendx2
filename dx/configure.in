@@ -58,6 +58,7 @@ AC_DEFINE_UNQUOTED(DXD_VERSION, 4)
 AC_DEFINE_UNQUOTED(DXD_RELEASE, 1)
 AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 1)
 
+
 dnl First set up all the possible configure command line options
 dnl
 

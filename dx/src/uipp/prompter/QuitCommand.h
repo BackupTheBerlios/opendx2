@@ -15,7 +15,6 @@
 #define _QuitCommand_h
 
 
-#include "../base/defines.h"
 #include "../base/ConfirmedCommand.h"
 
 

@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 #include <iostream.h>
 
@@ -22,7 +21,6 @@
 
 #include "DXApplication.h"
 
-#include <Xm/Xm.h>
 #include <Xm/BulletinB.h>
 #include <Xm/PushB.h>
 #include <Xm/Label.h>

@@ -398,7 +398,7 @@ DXChild::ConnectTo(const char *host,
 		s[i] = '\0';
 		strcat (s, "/");
 		strcat (s, av[0]);
-		if (STAT (s, &sbuffer) < 0) {
+		if (STATFUNC(s, &sbuffer) < 0) {
 		    /* if the file doesn't exist, go on */
 		    if (errno == ENOENT) {
 			/* We have no more paths to search */

@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -16,7 +15,6 @@
 #define _GroupedObject_h
 
 #include <stdio.h> 
-#include <Xm/Xm.h> 
 
 #include "enums.h"
 

@@ -15,7 +15,6 @@
 #define _ConfirmedOpenCommand_h
 
 
-#include "../base/defines.h"
 #include "../base/OptionalPreActionCommand.h"
 
 #include <Xm/Xm.h>

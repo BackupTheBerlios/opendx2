@@ -19,7 +19,6 @@
 
 #include "../base/lex.h"
 #include "../base/Strings.h"
-#include "../base/defines.h"
 #include "../base/Command.h"
 #include "../base/List.h"
 #include "../base/IBMMainWindow.h"

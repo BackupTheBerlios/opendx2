@@ -18,7 +18,6 @@
 
 #include <Xm/Xm.h>
 
-#include "../base/defines.h"
 #include "../base/NoUndoCommand.h"
 
 class  StartupWindow;

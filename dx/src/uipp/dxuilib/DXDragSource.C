@@ -147,7 +147,7 @@ int		tmpdirlen;
 	//
 	// Get the length of the cfg file
 	//
-        if(STAT(cfgfilename, &statb) == -1)
+        if(STATFUNC(cfgfilename, &statb) == -1)
         {
             WarningMessage("DXDragSource:stat Drag conversion failed");
 	    fclose (netf);
@@ -159,7 +159,7 @@ int		tmpdirlen;
     //
     // Get the length of the net file
     //
-    if(STAT(netfilename, &statb) == -1)
+    if(STATFUNC(netfilename, &statb) == -1)
     {
         WarningMessage("DXDragSource:stat Drag conversion failed");
 	if (netf) fclose(netf);

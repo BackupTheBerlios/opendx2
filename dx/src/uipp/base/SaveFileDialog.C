@@ -101,7 +101,7 @@ void SaveFileDialog::okFileWork(const char *filename)
     
 
 
-    if (STAT(file, &buffer) == 0)
+    if (STATFUNC(file, &buffer) == 0)
 	{
 	confirmation_data *cd = new confirmation_data;
 	cd->dialog = this;

@@ -12,7 +12,6 @@
 
 #include       <malloc.h>
 
-#include "../base/defines.h"
 #include <ctype.h>
 #include "string.h"
 #include "dxlP.h"

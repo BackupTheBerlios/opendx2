@@ -23,7 +23,6 @@
 #include <Xm/Label.h>
 #include <Xm/BulletinB.h>
 
-#include "../base/defines.h"
 #include "../base/Strings.h"
 #include "SearchDialog.h"
 #include "Browser.h"

@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -16,7 +15,6 @@
 #ifndef _VPEPage_h
 #define _VPEPage_h
 
-#include <Xm/Xm.h>
 
 #include "EditorWorkSpace.h"
 #include "WorkSpacePage.h"

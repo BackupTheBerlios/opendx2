@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -17,7 +16,6 @@
 #ifndef _ToolSelector_h
 #define _ToolSelector_h
 
-#include <Xm/Xm.h>
 
 #include "Base.h"
 #include "ActiveItemDictionary.h"

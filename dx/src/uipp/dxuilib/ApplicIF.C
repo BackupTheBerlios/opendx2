@@ -9,8 +9,8 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-#include "ErrorDialogManager.h"
 #include "DXApplication.h"
+#include "ErrorDialogManager.h"
 #include "Command.h"
 #include "DXExecCtl.h"
 #include "ListIterator.h"

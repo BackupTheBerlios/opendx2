@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
  
@@ -16,7 +15,6 @@
 #ifndef _WorkSpaceComponent_h
 #define _WorkSpaceComponent_h
 
-#include <Xm/Xm.h>
 
 #include "UIComponent.h"
 #include "SymbolManager.h"

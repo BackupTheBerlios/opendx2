@@ -11,7 +11,6 @@
 
 
 
-#include <Xm/Xm.h>
 #include <Xm/CutPaste.h>
 #include <Xm/DragC.h>
 #include <Xm/Frame.h>

@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -16,7 +15,6 @@
 #ifndef _DXDropSite_h
 #define _DXDropSite_h
 
-#include <Xm/Xm.h>
 #include <Xm/DragDrop.h>
 
 #include "Base.h"

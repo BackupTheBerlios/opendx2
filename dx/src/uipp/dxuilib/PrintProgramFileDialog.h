@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/defines.h"
 
 
 
@@ -18,7 +17,6 @@
 #define _PrintProgramFileDialog_h
 
 
-#include <Xm/Xm.h>
 
 #include "FileDialog.h"
 
