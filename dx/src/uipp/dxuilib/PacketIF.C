@@ -1370,7 +1370,7 @@ void PacketIF::connectAsServer(int pport)
     int fd;
     int sts;
     int oldPort;
-#if !defined(linux) && !defined(cygwin) && !defined(freebsd) && !defined(macos)
+#if !defined(linux) && !defined(cygwin) && !defined(freebsd) && !defined(macos) && !defined(solaris)
     extern int errno;
 #endif
     int tries;
