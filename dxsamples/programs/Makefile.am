@@ -41,7 +41,8 @@ DATA1 = Accumulate.cfg Accumulate.net AlternateVisualizations.cfg \
     InterfaceControl2.cfg InterfaceControl2.net InterfaceControl3.cfg \
     InterfaceControl3.net Interop.cfg Interop.net InvalidData.cfg InvalidData.net \
     Isolate.cfg Isolate.net Isosurface.cfg Isosurface.net Legend.cfg \
-    Legend.net Light.cfg Light.net MRI_1.cfg MRI_1.net MRI_2.cfg MRI_2.net \
+    Legend.net Light.cfg Light.net LightingColorSelector.cfg \
+    LightingColorSelector.net MRI_1.cfg MRI_1.net MRI_2.cfg MRI_2.net \
     Majority.cfg Majority.net ManipulateGroups.cfg ManipulateGroups.net \
     Map.cfg Map.net MapToPlane.cfg MapToPlane.net MappedIso.cfg MappedIso.net \
     MarkUnmark.cfg MarkUnmark.net MovingCamera.cfg MovingCamera.net \

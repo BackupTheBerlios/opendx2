@@ -13,6 +13,8 @@ LINKLIST = \
          UsingClipPlane.net\
          UsingLights.cfg\
          UsingLights.net\
+         LightingColorSelector.cfg\
+         LightingColorSelector.net\
          UsingShade.cfg\
          UsingShade.net\
          VolumeRendering.cfg\
