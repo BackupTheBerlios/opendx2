@@ -6,6 +6,8 @@
 #ifndef _LIBDX_H
 #define _LIBDX_H
 
+#include <dxconfig.h>
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
