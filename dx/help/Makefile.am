@@ -252,11 +252,11 @@ help_DATA = $(EXTRA_DIST)
 
 
 install-data-hook:
-	@sh -c ' ln -sf $(helpdir)/hlpalhtl  $(helpdir)/mbidx ; 	\
-	       	 ln -sf $(helpdir)/hlpalhtl  $(helpdir)/quikidx ; 	\
-	       	 ln -sf $(helpdir)/hlpalhtl  $(helpdir)/svsmstrh ; 	\
-	       	 ln -sf $(helpdir)/hlpalhtl  $(helpdir)/ugidx ; 	\
-	       	 ln -sf $(helpdir)/hlpalhtl  $(helpdir)/usrefidx ; 	\
-	       	 ln -sf $(helpdir)/HelpDir   $(helpdir)/GarHelpDir ; 	\
-	       	 ln -sf $(helpdir)/HelpDir   $(helpdir)/MBHelpDir ; 	\
-	      '
+	@-sh -c 'ln -sf $(helpdir)/hlpalhtl  $(helpdir)/mbidx ; \
+		 ln -sf $(helpdir)/hlpalhtl  $(helpdir)/quikidx ; \
+		 ln -sf $(helpdir)/hlpalhtl  $(helpdir)/svsmstrh ; \
+		 ln -sf $(helpdir)/hlpalhtl  $(helpdir)/ugidx ; \
+		 ln -sf $(helpdir)/hlpalhtl  $(helpdir)/usrefidx ; \
+		 ln -sf $(helpdir)/HelpDir   $(helpdir)/GarHelpDir ; \
+		 ln -sf $(helpdir)/HelpDir   $(helpdir)/MBHelpDir \
+	'

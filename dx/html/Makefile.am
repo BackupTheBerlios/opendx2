@@ -19,7 +19,8 @@ if WITH_INSTALLHTML
 html_DATA = $(EXTRA_DIST)
 
 install-data-hook:
-	sh -c 'ln -sf $(htmldir)/allguide.htm $(htmldir)/index.htm ; \
-	       ln -sf $(htmldir)/allguide.htm $(htmldir)/index.html ; \
-	      '
+	@-sh -c 'ln -sf $(htmldir)/allguide.htm $(htmldir)/index.htm ; \
+		 ln -sf $(htmldir)/allguide.htm $(htmldir)/index.html \
+		'
+
 endif # WITH_INSTALLHTML
