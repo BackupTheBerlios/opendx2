@@ -61,6 +61,10 @@ Prerequisites:
 
 Hints:
 
+    No one has yet reported a successful using AIX and gcc.  Nor, for
+that matter, AIX 4.2 and xlC.  Several people have succeeded using 4.1 and
+xlC.  4.2 xlC is being looked into as we speak.
+
     If you are using Lesstif instead of Motif, you may need to create
 symbolic links in /usr/include to /usr/X11R6/include/Xm and /usr/X11R/X11.
 
@@ -73,6 +77,9 @@ luck, and let us know how it goes.
 
     If you are using Lesstif, check include/dxconfig.h after you configure	
 to make sure USING_LESSTIF is set to 1
+
+    To do dynamic loading on linux (at least) you'll need to add 
+LDFLAGS=-export-dynamic on the make command line.  
 
 Known Problems:
 
