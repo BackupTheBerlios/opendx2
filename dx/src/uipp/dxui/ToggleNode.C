@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ToggleNode.C,v 1.1 1999/03/31 22:35:23 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ToggleNode.C,v 1.2 1999/04/12 21:31:22 gda Exp $
  */
 
 #include "UIConfig.h"
@@ -351,7 +351,7 @@ boolean ToggleNode::printToggleComment(FILE *f, const char *indent,
 //
 boolean ToggleNode::parseToggleComment(const char* comment,
                 			const char* filename, int lineno,
-					int includeValues)
+					boolean includeValues)
 {
     int items, set;
     char *setstr, *resetstr, *p, *dup = NULL; 
