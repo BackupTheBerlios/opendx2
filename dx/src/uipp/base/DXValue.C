@@ -1256,15 +1256,21 @@ char *DXValue::CoerceValue(const char *value, Type type)
 	SkipWhiteSpace(p);
 	cnt = STRLEN(p);
 	s = new char[cnt+3];
-	s[0] = ' ';
-	strcpy(&s[1],p);
-	cnt = STRLEN(s);
+	if (cnt) {
+	    s[0] = ' ';
+	    strcpy(&s[1],p);
+	    cnt = STRLEN(s);
 
-	// Skip trailing white space.
-	while (s[--cnt] == ' ' || s[cnt] == '\t') continue;
+	    // Skip trailing white space.
+	    while (s[--cnt] == ' ' || s[cnt] == '\t') continue;
 
-	end = cnt+1;
-	s[end+1] = '\0';
+	    end = cnt+1;
+	    s[end+1] = '\0';
+	} else {
+	    end = 1;
+	    s[2]='\0';
+	}
+
 
 	//
 	// window must be surrounded by quotes just a string is.
