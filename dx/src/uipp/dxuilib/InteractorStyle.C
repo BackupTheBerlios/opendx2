@@ -30,7 +30,7 @@
 #include "SelectorInteractor.h"
 #include "FileSelectorInteractor.h"
 #include "SelectorRadioInteractor.h"
-#include "SelectorPulldownInteractor.h"
+//#include "SelectorPulldownInteractor.h"
 #include "SelectorListInteractor.h"
 #include "ToggleToggleInteractor.h"
 #include "SelectorListToggleInteractor.h"
@@ -129,7 +129,12 @@ void BuildtheInteractorStyleDictionary()
    InteractorStyle::AddSupportedStyle("Selector", 
 			SelectorRadioStyle,  "Radio Button", "RadioGroup",
 			SelectorRadioInteractor::AllocateInteractor);
-// hide this one just for now
+// This interactor solves a problem that users have with data-driven
+// Option Menu selectors.  That is that the menu can become too big
+// very easily.  Nonetheless, I'm not adding support for this new
+// interactor because this problem can be solved by switching from
+// Option Menu to Scrolled List. I'm just not happy with having so
+// much overlap in functionality. 
 //   InteractorStyle::AddSupportedStyle("Selector", 
 //			SelectorPulldownStyle,  "Pulldown Menu",
 //			SelectorPulldownInteractor::AllocateInteractor);
