@@ -1,3 +1,8 @@
+Fix bug where field with ubyte colors (refing a float[3] colormap), which
+is constructed by ReadImage and storable with Export, won't load with
+Import.  Patch allows general UBYTE components to ref other components in
+Import.
+
 Fixed bug in computing conncetion-dependent normals for 2-D positions.
 Of course, the real question is whay are we computing them at all?  
 They'll be {0.0 0.0 1.0}.
