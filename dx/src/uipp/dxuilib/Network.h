@@ -733,7 +733,7 @@ private:
 
     // Add a node to the network's node list.
     void addNode(Node *node, EditorWorkSpace *where = NULL);
-    void deleteNode(Node *node);
+    void deleteNode(Node *node, boolean undefer=TRUE);
     Node *findNode(Symbol name, int instance);
 
     Node *findNode(const char* name, int* startpos = NULL, boolean byLabel = FALSE);
@@ -849,7 +849,14 @@ private:
     // Merge two nets together, resolving instance collisions.  Delete the
     // net being passed in.
     //
-    boolean mergeNetworks(Network *, List *panels, boolean all);
+    // The stitch param (added 11/8/02) indicates what should be done when the
+    // incoming network has type/instance number conflicts with the existing
+    // network.  In the stitch case, the conflicts should be resolved by
+    // deleting the node in the incoming network and shifting its wires over
+    // to the conflicted node in the existing network.  The use of this is
+    // undoing a deletion of a set of nodes.
+    //
+    boolean mergeNetworks(Network *, List *panels, boolean all, boolean stitch=FALSE);
     boolean mergePanels (Network *);
 
     //
@@ -857,6 +864,7 @@ private:
     //
     void addDecoratorToList (void *e); 
     void removeDecoratorFromList (void *e); 
+    const List* getDecoratorList() { return &this->decoratorList; }
 
     //
     // get and set x,y,width,height of a net in the vpe

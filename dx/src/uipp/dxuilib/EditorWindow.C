@@ -114,6 +114,10 @@
 #include "DXLInputNode.h"
 #include "GraphLayout.h"
 #include "UndoMove.h"
+#include "UndoDeletion.h"
+#include "UndoRepeatableTab.h"
+#include "UndoAddArk.h"
+#include "Stack.h"
 
 #ifndef FORGET_GETSET
 #include "GetSetConversionDialog.h"
@@ -275,13 +279,13 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->printProgramCmd =
 	new NoUndoEditorCommand 
 	    ("printProgram", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::PrintProgram);
+		this, NoUndoEditorCommand::PrintProgram, NoUndoEditorCommand::Ignore);
 
 #ifdef DXUI_DEVKIT
     this->saveAsCCodeCmd =
 	new NoUndoEditorCommand 
 	    ("saveAsCCode", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::SaveAsCCode);
+		this, NoUndoEditorCommand::SaveAsCCode, NoUndoEditorCommand::Ignore);
 #else
     this->saveAsCCodeCmd = NULL;
 #endif
@@ -292,36 +296,42 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->undoCmd = 
 	new NoUndoEditorCommand
 	    ("undo", this->commandScope, FALSE,
-	        this, NoUndoEditorCommand::Undo);
+	        this, NoUndoEditorCommand::Undo, NoUndoEditorCommand::Ignore);
     this->valuesCmd =
 	new NoUndoEditorCommand 
 	    ("values", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::ShowConfiguration);
+		this, NoUndoEditorCommand::ShowConfiguration,
+		NoUndoEditorCommand::Ignore);
 
     this->findToolCmd =
 	new NoUndoEditorCommand 
 	    ("findTool", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::OpenFindTool);
+		this, NoUndoEditorCommand::OpenFindTool,
+		NoUndoEditorCommand::Ignore);
 
     this->addInputTabCmd =
 	new NoUndoEditorCommand 
 	    ("addInputTab", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::AddInputTab);
+		this, NoUndoEditorCommand::AddInputTab,
+		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
 
     this->removeInputTabCmd =
 	new NoUndoEditorCommand 
 	    ("removeInputTab", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::RemoveInputTab);
+		this, NoUndoEditorCommand::RemoveInputTab,
+		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
     
     this->addOutputTabCmd =
 	new NoUndoEditorCommand 
 	    ("addOutputTab", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::AddOutputTab);
+		this, NoUndoEditorCommand::AddOutputTab,
+		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
 
     this->removeOutputTabCmd =
 	new NoUndoEditorCommand 
 	    ("removeOutputTab", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::RemoveOutputTab);
+		this, NoUndoEditorCommand::RemoveOutputTab,
+		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
     
     this->hideAllTabsCmd =
 	new NoUndoEditorCommand 
@@ -337,7 +347,8 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->postGetSetCmd =
 	new NoUndoEditorCommand 
 	    ("postGetSet", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::PostGetSet);
+		this, NoUndoEditorCommand::PostGetSet,
+		NoUndoEditorCommand::Ignore);
     this->toLocalCmd = 
 	new NoUndoEditorCommand 
 	    ("setToLocal", this->commandScope, FALSE, 
@@ -355,12 +366,14 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->cutNodeCmd =
 	new NoUndoEditorCommand
 	    ("cutNode", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::CutNode);
+		this, NoUndoEditorCommand::CutNode,
+		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
 
     this->copyNodeCmd =
 	new NoUndoEditorCommand
 	    ("copyNode", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::CopyNode);
+		this, NoUndoEditorCommand::CopyNode,
+		NoUndoEditorCommand::Ignore);
 
     this->pasteNodeCmd =
 	new NoUndoEditorCommand
@@ -370,42 +383,50 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->selectAllNodeCmd =
 	new NoUndoEditorCommand 
 	    ("selectAllNode", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::SelectAll);
+		this, NoUndoEditorCommand::SelectAll,
+		NoUndoEditorCommand::Ignore);
 
     this->selectConnectedNodeCmd =
 	new NoUndoEditorCommand 
 	    ("selectConnectedNode", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::SelectConnected);
+		this, NoUndoEditorCommand::SelectConnected,
+		NoUndoEditorCommand::Ignore);
 
     this->selectUnconnectedNodeCmd =
 	new NoUndoEditorCommand 
 	    ("selectUnconectedNode", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::SelectUnconnected);
+		this, NoUndoEditorCommand::SelectUnconnected,
+		NoUndoEditorCommand::Ignore);
 
     this->selectUpwardNodeCmd =
 	new NoUndoEditorCommand 
 	    ("selectUpwardNode", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::SelectUpward);
+		this, NoUndoEditorCommand::SelectUpward,
+		NoUndoEditorCommand::Ignore);
 
     this->selectDownwardNodeCmd =
 	new NoUndoEditorCommand 
 	    ("selectDownwardNode", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::SelectDownward);
+		this, NoUndoEditorCommand::SelectDownward,
+		NoUndoEditorCommand::Ignore);
 
     this->deselectAllNodeCmd =
 	new NoUndoEditorCommand 
 	    ("deselectAllNode", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::DeselectAll);
+		this, NoUndoEditorCommand::DeselectAll,
+		NoUndoEditorCommand::Ignore);
 
     this->selectUnselectedNodeCmd =
 	new NoUndoEditorCommand 
 	    ("selectUnselectedNode", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::SelectUnselected);
+		this, NoUndoEditorCommand::SelectUnselected,
+		NoUndoEditorCommand::Ignore);
 
     this->showExecutedCmd = 
 	new NoUndoEditorCommand
 	    ("showExecuted", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::ShowExecutedNodes);
+		this, NoUndoEditorCommand::ShowExecutedNodes,
+		NoUndoEditorCommand::Ignore);
 
 #ifndef FORGET_GETSET
     if (!EditorWindow::SelectedToGlobalCmd) {
@@ -422,33 +443,40 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->cacheAllOutputsCmd =
 	new NoUndoEditorCommand 
 	    ("cacheAllOutputsCmd", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::SetOutputsFullyCached);
+		this, NoUndoEditorCommand::SetOutputsFullyCached,
+		NoUndoEditorCommand::Ignore);
     this->cacheLastOutputsCmd =
 	new NoUndoEditorCommand 
 	    ("cacheLastOutputsCmd", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::SetOutputsCacheOnce);
+		this, NoUndoEditorCommand::SetOutputsCacheOnce,
+		NoUndoEditorCommand::Ignore);
     this->cacheNoOutputsCmd =
 	new NoUndoEditorCommand 
 	    ("cacheNoOutputsCmd", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::SetOutputsNotCached);
+		this, NoUndoEditorCommand::SetOutputsNotCached,
+		NoUndoEditorCommand::Ignore);
 
     this->optimizeCacheabilityCmd =
 	new NoUndoEditorCommand 
 	    ("optimizeCacheabilityCmd", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::OptimizeOutputCacheability);
+		this, NoUndoEditorCommand::OptimizeOutputCacheability,
+		NoUndoEditorCommand::Ignore);
 
     this->showCacheAllOutputsCmd =
 	new NoUndoEditorCommand 
 	    ("showCacheAllOutputsCmd", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::ShowOutputsFullyCached);
+		this, NoUndoEditorCommand::ShowOutputsFullyCached,
+		NoUndoEditorCommand::Ignore);
     this->showCacheLastOutputsCmd =
 	new NoUndoEditorCommand 
 	    ("showCacheLastOutputsCmd", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::ShowOutputsCacheOnce);
+		this, NoUndoEditorCommand::ShowOutputsCacheOnce,
+		NoUndoEditorCommand::Ignore);
     this->showCacheNoOutputsCmd =
 	new NoUndoEditorCommand 
 	    ("showCacheNoOutputsCmd", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::ShowOutputsNotCached);
+		this, NoUndoEditorCommand::ShowOutputsNotCached,
+		NoUndoEditorCommand::Ignore);
 
 
     this->editMacroNameCmd =
@@ -459,12 +487,14 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->editCommentCmd =
 	new NoUndoEditorCommand 
 	    ("editComment", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::EditComment);
+		this, NoUndoEditorCommand::EditComment,
+		NoUndoEditorCommand::Ignore);
 
     this->createProcessGroupCmd =
 	new NoUndoEditorCommand 
 	    ("createProcessGroup", this->commandScope, isAnchor, 
-		this, NoUndoEditorCommand::CreateProcessGroup);
+		this, NoUndoEditorCommand::CreateProcessGroup,
+		NoUndoEditorCommand::Ignore);
 
     this->insertNetCmd =
 	new NoUndoEditorCommand 
@@ -510,7 +540,8 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->configurePageCmd =
 	new NoUndoEditorCommand 
 	    ("configurePage", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::ConfigurePage);
+		this, NoUndoEditorCommand::ConfigurePage,
+		NoUndoEditorCommand::Ignore);
 
     this->moveSelectedCmd =
 	new NoUndoEditorCommand 
@@ -532,12 +563,14 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     }
     this->reflowGraphCmd = 
 	new NoUndoEditorCommand ("reflowGraph", this->commandScope, FALSE,
-		this, NoUndoEditorCommand::ReflowGraph);
+		this, NoUndoEditorCommand::ReflowGraph,
+		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
 
 #if THIS_CODE_GETS_WRITTEN
     this->straightenArcsCmd = 
 	new NoUndoEditorCommand ("straightenArcs", this->commandScope, FALSE,
-		this, NoUndoEditorCommand::StraightenArcs);
+		this, NoUndoEditorCommand::StraightenArcs,
+		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
 #else
     this->straightenArcsCmd = NUL(Command*);
 #endif
@@ -547,28 +580,33 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     //
     this->openMacroCmd =
         new NoUndoEditorCommand("openMacroCommand", this->commandScope,
-                        FALSE,this, NoUndoEditorCommand::OpenSelectedMacros);
+                        FALSE,this, NoUndoEditorCommand::OpenSelectedMacros,
+			NoUndoEditorCommand::Ignore);
 
     this->openColormapCmd =
         new NoUndoEditorCommand("openColormapCmd",
                         this->commandScope,
                         FALSE,
                         this,
-                        NoUndoEditorCommand::OpenSelectedColormaps);
+                        NoUndoEditorCommand::OpenSelectedColormaps,
+			NoUndoEditorCommand::Ignore);
     this->openImageCmd =
         new NoUndoEditorCommand("openImageCommand", this->commandScope,
                         FALSE,this,
-			NoUndoEditorCommand::OpenSelectedImageWindows);
+			NoUndoEditorCommand::OpenSelectedImageWindows,
+			NoUndoEditorCommand::Ignore);
 
     this->newControlPanelCmd =
 	new NoUndoEditorCommand 
 	    ("newControlPanel", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::NewControlPanel);
+		this, NoUndoEditorCommand::NewControlPanel,
+		NoUndoEditorCommand::Ignore);
 
     this->openControlPanelCmd =
 	new NoUndoEditorCommand 
 	    ("openControlPanel", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::OpenControlPanel);
+		this, NoUndoEditorCommand::OpenControlPanel,
+		NoUndoEditorCommand::Ignore);
 
     //
     // Options's menu commands
@@ -580,22 +618,26 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->hitDetectionCmd =
 	new NoUndoEditorCommand
 	    ("hitDetector", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::HitDetection);
+		this, NoUndoEditorCommand::HitDetection,
+		NoUndoEditorCommand::Ignore);
 
     this->setPanelAccessCmd =
 	new NoUndoEditorCommand 
 	    ("setAccess", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::SetCPAccess);
+		this, NoUndoEditorCommand::SetCPAccess,
+		NoUndoEditorCommand::Ignore);
 
     this->setPanelGroupCmd =
 	new NoUndoEditorCommand 
 	    ("setGroup", this->commandScope, FALSE, 
-		this, NoUndoEditorCommand::SetPanelGroup);
+		this, NoUndoEditorCommand::SetPanelGroup,
+		NoUndoEditorCommand::Ignore);
 
     this->gridCmd =
 	new NoUndoEditorCommand 
 	    ("grid", this->commandScope, TRUE, 
-		this, NoUndoEditorCommand::OpenGrid);
+		this, NoUndoEditorCommand::OpenGrid,
+		NoUndoEditorCommand::Ignore);
 
     this->deferrableCommandActivation = new DeferrableAction(
 				EditorWindow::SetCommandActivation,
@@ -622,10 +664,11 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->layout_controller = NULL;
     
     //
-    // Undo movement
+    // Undo list management
     //
     this->moving_many_standins = FALSE;
     this->performing_undo = FALSE;
+    this->creating_new_network = FALSE;
 
     //
     // Install the default resources for THIS class (not the derived classes)
@@ -911,12 +954,9 @@ void EditorWindow::setCommandActivation()
     }
 
     //
-    // Is undo available?
+    // Is undo available?  ...also sets button label
     //
-    if (this->undo_move_list.getSize() >= 1)
-	this->undoCmd->activate();
-    else
-	this->undoCmd->deactivate();
+    this->setUndoActivation();
 
     //
     // Handle commands that depend on whether there are nodes 
@@ -2309,18 +2349,28 @@ boolean EditorWindow::editSelectedNodeTabs(boolean adding, boolean input)
     boolean r = TRUE;
     ListIterator li(*l);
 
+    boolean added_separator = FALSE;
     while ( (node = (Node*)li.getNext()) )
     {
+	if (!this->performing_undo) {
+	    if (!added_separator) {
+		this->undo_list.push (new UndoSeparator(this));
+		added_separator = TRUE;
+	    }
+	    this->undo_list.push (new UndoRepeatableTab(this, node, adding, input));
+	}
 	if (adding) {
-	    if (input && node->isInputRepeatable())
+	    if (input && node->isInputRepeatable()) {
 		r = r && node->addInputRepeats();
-	    else if (!input && node->isOutputRepeatable())
+	    } else if (!input && node->isOutputRepeatable()) {
 		r = r && node->addOutputRepeats();
+	    }
 	} else {
-	    if (input && node->hasRemoveableInput())
+	    if (input && node->hasRemoveableInput()) {
 		r = r && node->removeInputRepeats();
-	    else if (!input && node->hasRemoveableOutput())
+	    } else if (!input && node->hasRemoveableOutput()) {
 		r = r && node->removeOutputRepeats();
+	    }
 	}
     }
 
@@ -2328,6 +2378,12 @@ boolean EditorWindow::editSelectedNodeTabs(boolean adding, boolean input)
         this->deferrableCommandActivation->requestAction(NULL); 
 
     delete l;
+ 
+    // this->setCommandActivation() doesn't run often enough to deal
+    // with accelerators.
+    if ((added_separator) && (!this->undoCmd->isActive()))
+	this->setUndoActivation();
+
     return r;
 }
 
@@ -2346,6 +2402,7 @@ boolean EditorWindow::setSelectedNodeTabVisibility(boolean v)
 #else
     this->beginNetworkChange();
 #endif
+    boolean added_separator = FALSE;
     while( (node = (Node*)li.getNext()) )
     {
 	node->setAllInputsVisibility(v);
@@ -2357,6 +2414,7 @@ boolean EditorWindow::setSelectedNodeTabVisibility(boolean v)
 #else
     this->endNetworkChange();
 #endif
+ 
     return TRUE;
 }
 
@@ -2699,7 +2757,7 @@ List *EditorWindow::makeModuleList()
 // has been added.
 //
 
-void EditorWindow::notifyArk(Ark *a)
+void EditorWindow::notifyArk(Ark *a, boolean added)
 {
     StandIn *standIn;
     Node    *n;
@@ -2710,7 +2768,17 @@ void EditorWindow::notifyArk(Ark *a)
 #if WORKSPACE_PAGES
     if (!standIn) return ;
 #endif
-    standIn->addArk(this, a);
+    if (added) {
+	standIn->addArk(this, a);
+    }
+    if ((!this->performing_undo) && (!this->creating_new_network)) {
+	this->undo_list.push (new UndoSeparator(this));
+	this->undo_list.push (new UndoAddArk(this, a, added));
+	// this->setCommandActivation() doesn't run often enough to deal
+	// with accelerators.
+	if (!this->undoCmd->isActive())
+	    this->setUndoActivation();
+    }
 }
 
 //
@@ -2792,7 +2860,7 @@ void EditorWindow::getWorkspaceWindowPos(int *x, int *y)
 }
 
 
-void EditorWindow::moveWorkspaceWindow(StandIn* si)
+void EditorWindow::moveWorkspaceWindow(UIComponent* si)
 {
     XmScrolledWindowWidget scrollWindow;
     Arg                    arg[8];
@@ -2963,7 +3031,7 @@ GroupRecord* EditorWindow::getGroupOfWorkSpace (EditorWorkSpace* where)
 //
 // Add the current ToolSelector node to the workspace
 //
-void EditorWindow::addCurrentNode(int x, int y, EditorWorkSpace *where)
+void EditorWindow::addCurrentNode(int x, int y, EditorWorkSpace *where, boolean stitch)
 {
     NodeDefinition *nodeDef = this->toolSelector->getCurrentSelection();
 
@@ -2991,17 +3059,46 @@ void EditorWindow::addCurrentNode(int x, int y, EditorWorkSpace *where)
 	this->resetCursor();
 	this->setCommandActivation();
     } else if (this->pendingPaste) {
+	// because of stitching, we might be adding nodes to a page that
+	// isn't the current page.  So, make sure the destination page
+	// is set to the current page.
+	if (stitch) {
+	    List *all_nodes = this->pendingPaste->makeClassifiedNodeList(ClassNode);
+	    Symbol psym = theSymbolManager->getSymbol(PAGE_GROUP);
+	    Node* any_node = NUL(Node*);
+	    const char* group_name = NUL(const char*);
+	    if ((all_nodes) && (all_nodes->getSize() >= 1)) {
+		any_node = (Node*)all_nodes->getElement(1);
+		group_name = any_node->getGroupName(psym);
+	    }
+	    if (!any_node) {
+		List* all_decs = (List*)this->pendingPaste->getDecoratorList();
+		VPEAnnotator* any_dec = NUL(VPEAnnotator*);
+		if ((all_decs) && (all_decs->getSize() >= 1)) {
+		    any_dec = (VPEAnnotator*)all_decs->getElement(1);
+		    group_name = any_dec->getGroupName(psym);
+		}
+	    }
+	    if (group_name) {
+		EditorWorkSpace* ews = (EditorWorkSpace*)
+		    this->pageSelector->findDefinition(group_name);
+		if (ews != NUL(EditorWorkSpace*)) 
+		    this->pageSelector->selectPage(ews);
+	    }
+	    delete all_nodes;
+	}
+
 	// Deselect all currently selected nodes
 	this->deselectAllNodes();
 
 	this->pendingPaste->setTopLeftPos (x,y);
 	List *l = this->pendingPaste->getNonEmptyPanels();
 	this->pagifyNetNodes (this->pendingPaste, where, TRUE);
-	this->network->mergeNetworks (this->pendingPaste, l, TRUE);
+	this->network->mergeNetworks (this->pendingPaste, l, TRUE, stitch);
 	if (l) delete l;
 	this->resetCursor();
 	this->setCommandActivation();
-    } 
+    }
     
     //
     // Check these 2 fields for deletion apart from the other if blocks
@@ -3099,6 +3196,23 @@ void EditorWindow::removeSelectedNodes()
     ListIterator iterator;
 
     this->deferrableCommandActivation->deferAction();
+
+    //
+    // Make a copy of the deletions so that the operation can be undone
+    //
+    if (!this->performing_undo) {
+	this->undo_list.push (new UndoSeparator(this));
+	this->undo_list.push(
+	    new UndoDeletion (this, 
+		this->makeSelectedNodeList(NUL(const char*)),
+		this->makeSelectedDecoratorList())
+	);
+	// this->setCommandActivation() doesn't run often enough to deal
+	// with accelerators.
+	if (!this->undoCmd->isActive())
+	    this->setUndoActivation();
+    }
+
     //
     // Build a list of nodes and unmanage the standIns that go with them.
     //
@@ -3130,12 +3244,9 @@ void EditorWindow::removeSelectedNodes()
 	}
     }
 
-    //
-    // If we just removed the last node from an Untitled page, 
-    // then also delete the page.  FIXME.
-    //
-
     this->deferrableCommandActivation->undeferAction();
+
+    //this->setUndoActivation();
 }
 
 //
@@ -3190,12 +3301,6 @@ void EditorWindow::deleteNodes(List *toDelete)
 	    errored_node_deleted|= this->errored_standins->removeElement((void*)si);
         this->network->deleteNode(node);	
     }
-
-    //
-    // Destroy undo information so that we don't try to use a pointer
-    // to a deleted object
-    //
-    this->clearUndoList();
 
     //
     // restart line routing if necessary
@@ -3310,6 +3415,53 @@ void EditorWindow::highlightNode(Node *n, int flag)
 	si->setLabelColor(color);
 }
 
+boolean EditorWindow::selectDecorator (VPEAnnotator* dec, boolean select, boolean warp)
+{
+    if (dec->getNetwork()->getEditor() != this)
+	return FALSE;
+    //
+    // Select the proper page.
+    //
+    Symbol psym = theSymbolManager->getSymbol(PAGE_GROUP);
+    const char* group_name = dec->getGroupName(psym);
+    if ((select) && (warp)) {
+	if (group_name) {
+	    EditorWorkSpace *page =
+		    (EditorWorkSpace*)this->pageSelector->findDefinition(group_name);
+	    ASSERT(page);
+	    page->unsetRecordedScrollPos();
+	    this->pageSelector->selectPage(page);
+	    this->populatePage(page);
+	    this->workSpace->resize();
+	} else {
+	    this->workSpace->unsetRecordedScrollPos();
+	    this->pageSelector->selectPage(this->workSpace);
+	}
+    } else {
+	//
+	// If we're not going to bring the selected node into view,
+	// then make sure that the node's page is the current page.
+	// If it's not, then silently refuse to select the node.
+	//
+	boolean wrong_page = FALSE;
+	EditorWorkSpace *page = NUL(EditorWorkSpace*);
+	if (group_name)
+	    page = (EditorWorkSpace*)this->pageSelector->findDefinition(group_name);
+	else
+	    page = this->workSpace;
+	int page_no = this->workSpace->getCurrentPage();
+	EditorWorkSpace* current_ews = this->workSpace;
+	if (page_no) current_ews = (EditorWorkSpace*)this->workSpace->getElement(page_no);
+	if (page != current_ews) wrong_page = TRUE;
+
+	if (wrong_page) 
+	    return TRUE;
+    }
+    dec->setSelected(select);
+    if (select && warp)
+	this->moveWorkspaceWindow(dec);
+    return TRUE;
+}
 
 boolean EditorWindow::selectNode(Node *node, boolean select, boolean warp)
 {
@@ -3932,10 +4084,13 @@ void EditorWindow::prepareForNewNetwork()
     // FIXME: shouldn't this be in completeNewNetwork()
     this->moveWorkspaceWindow(0,0, FALSE);
 
+    this->creating_new_network = TRUE;
 }
 void EditorWindow::completeNewNetwork()
 {
     this->endNetworkChange();
+    this->clearUndoList();
+    this->creating_new_network = FALSE;
     theDXApplication->refreshErrorIndicators();
 }
 
@@ -5392,12 +5547,6 @@ Node *node;
 	}
     }
 
-    //
-    // Toss out information in the undo list.  It won't be usable
-    // following this type of change
-    //
-    this->clearUndoList();
-
     if (error_node)
 	this->resetErrorList(FALSE);
 }
@@ -5692,9 +5841,11 @@ void EditorWindow::setDecoratorStyle (List *decors, DecoratorStyle *ds)
 //
 boolean EditorWindow::cutSelectedNodes()
 {
-    if (this->copySelectedNodes(TRUE) == FALSE) 
+    if (this->copySelectedNodes(TRUE) == FALSE) {
 	return FALSE;
+    }
     this->removeSelectedNodes();
+    this->setUndoActivation();
     return TRUE;
 }
 
@@ -5707,115 +5858,16 @@ boolean EditorWindow::cutSelectedNodes()
 boolean EditorWindow::copySelectedNodes(boolean delete_property)
 {
 char msg[128];
-char netfilename[256];
-char cfgfilename[256];
-FILE *netf;
 Display *d = XtDisplay(this->getRootWidget());
 Atom file_atom = XmInternAtom (d, NET_ATOM, False);
 Atom delete_atom = XmInternAtom (d, "DELETE", False);
 Screen *screen = XtScreen(this->getRootWidget());
 Window root = RootWindowOfScreen(screen);
 
-    //
-    // It should be unnecessary to perform this check because command activation
-    // should prevent being here if both counts are 0, however kbd accelerators
-    // can get us here and we might not have any way of preempting that.
-    //
-    int nselected = this->getNodeSelectionCount();
-    int dselected = 0; 
-    ListIterator it;
-    Decorator *decor;
-    FOR_EACH_NETWORK_DECORATOR(this->getNetwork(),decor,it) 
-	if (decor->isSelected()) dselected++;
-    if ((dselected == 0) && (nselected == 0)) return FALSE;
-
-    //
-    // Get 2 temp file names for the .net and .cfg files
-    // FIXME:  We need a DXApplication::getTmpFile().  The code
-    // to form tmp file names off the tmp directory is used in several places.
-    //
-    const char *tmpdir = theDXApplication->getTmpDirectory();
-    int tmpdirlen = STRLEN(tmpdir);
-    if (!tmpdirlen) return FALSE;
-    if (tmpdir[tmpdirlen-1] == '/') {
-	sprintf(netfilename, "%sdx%d.net", tmpdir, getpid());
-	sprintf(cfgfilename, "%sdx%d.cfg", tmpdir, getpid());
-    } else {
-	sprintf(netfilename, "%s/dx%d.net", tmpdir, getpid());
-	sprintf(cfgfilename, "%s/dx%d.cfg", tmpdir, getpid());
-    }
-    unlink (netfilename);
-    unlink (cfgfilename);
- 
-    if ((netf = fopen(netfilename, "a+")) == NULL) {
-	sprintf (msg, "Copy failed: %s", strerror(errno));
-	WarningMessage(msg);
-	return FALSE;
-    }
- 
-    //
-    // Save .net/.cfg into the temp directory;
-    //
-    this->network->printNetwork (netf, PrintCut);
-    this->network->cfgPrintNetwork (cfgfilename, PrintCut);
-    fclose(netf);
- 
-
-    //
-    // Read the .net and .cfg back it, and save their contents
-    //
-    netf = NUL(FILE*);
-    if ((netf = fopen(netfilename, RD_FLAG)) == NULL) {
-	sprintf (msg, "Copy failed (fopen): %s", strerror(errno));
-	WarningMessage(msg);
-	return FALSE;
-    }
-
-    FILE *cfgf = fopen(cfgfilename, RD_FLAG);
-    unsigned int cfg_len = 0;
-    unsigned char *cfg_buffer = NULL;
-
-    struct STATSTRUCT statb;
-    if ((cfgf) && (STATFUNC(cfgfilename, &statb) != -1)) {
-        cfg_len = (unsigned int)statb.st_size;
-	cfg_buffer = (unsigned char *)(cfg_len?new char[1+cfg_len]:NULL);
-
-	if (fread((char*)cfg_buffer, sizeof(char), cfg_len, cfgf) != cfg_len) {
-	    sprintf (msg, "Copy failed (fread): %s", strerror(errno));
-	    WarningMessage(msg);
-	    fclose(cfgf);
-	    delete cfg_buffer;
-            return FALSE;
-        }
-        fclose(cfgf);
-	cfgf = NUL(FILE*);
-	unlink (cfgfilename);
-    }
-
-    if (STATFUNC(netfilename, &statb) == -1) {
-	sprintf (msg, "Copy failed (stat): %s", strerror(errno));
-	WarningMessage(msg);
-	fclose(netf);
-        return FALSE;
-    }
-    unsigned int net_len = (unsigned int)statb.st_size;
-    if (!net_len) return TRUE;
-    if (net_len > 63000) {
-	WarningMessage ("Too much data. Try transferring in pieces.");
-	fclose(netf);
-	return FALSE;
-    }
-    unsigned char *net_buffer = (unsigned char *)(net_len?new char[1+net_len]:NULL);
-
-    if (fread((char*)net_buffer, sizeof(char), net_len, netf) != net_len) {
-	sprintf (msg, "Copy failed (fread): %s", strerror(errno));
-	WarningMessage(msg);
-	fclose(netf);
-	delete net_buffer;
-        return FALSE;
-    }
-    fclose(netf);
-    unlink (netfilename);
+    int net_len, cfg_len;
+    char* cfg_buffer;
+    char* net_buffer = this->createNetFileFromSelection(net_len, &cfg_buffer, cfg_len);
+    if (!net_buffer) return FALSE;
 
     //
     // Safeguard:  I don't know if this is necessary.  Maybe calling XtOwnSelection
@@ -5862,13 +5914,132 @@ Window root = RootWindowOfScreen(screen);
     //
     if (this->copiedNet) delete this->copiedNet;
     this->copiedNet = (char *)net_buffer;
-    this->copiedNet[net_len] = '\0';
     if (this->copiedCfg) delete this->copiedCfg;
     this->copiedCfg = (char *)cfg_buffer;
-    if (this->copiedCfg) 
-	this->copiedCfg[cfg_len] = '\0';
 
     return retVal;
+}
+
+//
+// caller must free the returned memory
+//
+char* EditorWindow::createNetFileFromSelection(int& net_len, char** cfg_out, int& cfg_len)
+{
+char netfilename[256];
+char cfgfilename[256];
+FILE *netf;
+char msg[128];
+
+    net_len = cfg_len = 0;
+    if (cfg_out) *cfg_out = NUL(char*);
+
+    //
+    // It should be unnecessary to perform this check because command activation
+    // should prevent being here if both counts are 0, however kbd accelerators
+    // can get us here and we might not have any way of preempting that.
+    //
+    int nselected = this->getNodeSelectionCount();
+    int dselected = 0; 
+    ListIterator it;
+    Decorator *decor;
+    FOR_EACH_NETWORK_DECORATOR(this->getNetwork(),decor,it) 
+	if (decor->isSelected()) dselected++;
+    if ((dselected == 0) && (nselected == 0)) return NUL(char*);
+
+    //
+    // Get 2 temp file names for the .net and .cfg files
+    // FIXME:  We need a DXApplication::getTmpFile().  The code
+    // to form tmp file names off the tmp directory is used in several places.
+    //
+    const char *tmpdir = theDXApplication->getTmpDirectory();
+    int tmpdirlen = STRLEN(tmpdir);
+    if (!tmpdirlen) return FALSE;
+    if (tmpdir[tmpdirlen-1] == '/') {
+	sprintf(netfilename, "%sdx%d.net", tmpdir, getpid());
+	sprintf(cfgfilename, "%sdx%d.cfg", tmpdir, getpid());
+    } else {
+	sprintf(netfilename, "%s/dx%d.net", tmpdir, getpid());
+	sprintf(cfgfilename, "%s/dx%d.cfg", tmpdir, getpid());
+    }
+    unlink (netfilename);
+    unlink (cfgfilename);
+ 
+    if ((netf = fopen(netfilename, "a+")) == NULL) {
+	sprintf (msg, "Copy failed: %s", strerror(errno));
+	WarningMessage(msg);
+	return NUL(char*);
+    }
+ 
+    //
+    // Save .net/.cfg into the temp directory;
+    //
+    this->network->printNetwork (netf, PrintCut);
+    this->network->cfgPrintNetwork (cfgfilename, PrintCut);
+    fclose(netf);
+ 
+
+    //
+    // Read the .net and .cfg back it, and save their contents
+    //
+    netf = NUL(FILE*);
+    if ((netf = fopen(netfilename, RD_FLAG)) == NULL) {
+	sprintf (msg, "Copy failed (fopen): %s", strerror(errno));
+	WarningMessage(msg);
+	return NUL(char*);
+    }
+
+    unsigned char *cfg_buffer = NULL;
+
+    struct STATSTRUCT statb;
+    if (cfg_out) {
+	FILE *cfgf = fopen(cfgfilename, RD_FLAG);
+	if ((cfgf) && (STATFUNC(cfgfilename, &statb) != -1)) {
+	    cfg_len = (unsigned int)statb.st_size;
+	    cfg_buffer = (unsigned char *)(cfg_len?new char[1+cfg_len]:NULL);
+
+	    if (fread((char*)cfg_buffer, sizeof(char), cfg_len, cfgf) != cfg_len) {
+		sprintf (msg, "Copy failed (fread): %s", strerror(errno));
+		WarningMessage(msg);
+		fclose(cfgf);
+		delete cfg_buffer;
+		return NUL(char*);
+	    }
+	    cfg_buffer[cfg_len] = '\0';
+	    fclose(cfgf);
+	    cfgf = NUL(FILE*);
+	    unlink (cfgfilename);
+	}
+    }
+
+    if (STATFUNC(netfilename, &statb) == -1) {
+	sprintf (msg, "Copy failed (stat): %s", strerror(errno));
+	WarningMessage(msg);
+	fclose(netf);
+        return NUL(char*);
+    }
+    net_len = (unsigned int)statb.st_size;
+    if (!net_len) return NUL(char*);
+    if (net_len > 63000) {
+	WarningMessage ("Too much data. Try transferring in pieces.");
+	fclose(netf);
+	return NUL(char*);
+    }
+    unsigned char *net_buffer = (unsigned char *)(net_len?new char[1+net_len]:NULL);
+
+    if (fread((char*)net_buffer, sizeof(char), net_len, netf) != net_len) {
+	sprintf (msg, "Copy failed (fread): %s", strerror(errno));
+	WarningMessage(msg);
+	fclose(netf);
+	delete net_buffer;
+        return NUL(char*);
+    }
+    net_buffer[net_len] = '\0';
+    fclose(netf);
+    unlink (netfilename);
+
+    if (cfg_out) *cfg_out = (char*)cfg_buffer;
+    else if (cfg_buffer) delete cfg_buffer;
+    return (char*)net_buffer;
 }
 
 //
@@ -6114,27 +6285,8 @@ char msg[128];
     }
 
 
-    //
-    // Prepare a new network
-    //
-    if (editor->addingDecorators) {
-	ListIterator it(*editor->addingDecorators);
-	Decorator *dec;
-	while ( (dec = (Decorator*)it.getNext()) )  delete dec;
-	editor->addingDecorators->clear();
-	delete editor->addingDecorators;
-	editor->addingDecorators = NULL;
-    }
-    if (editor->pendingPaste) delete editor->pendingPaste;
-    editor->pendingPaste = theDXApplication->newNetwork(TRUE);
-    ASSERT(editor->pendingPaste);
-    if (!editor->pendingPaste->readNetwork (net_file_name, NULL, TRUE)) {
-	delete editor->pendingPaste;
-	editor->pendingPaste = NULL;
-	WarningMessage ("Paste failed");
-	unlink (net_file_name);
-	return ;
-    }
+    editor->setPendingPaste (net_file_name, NUL(char*), TRUE);
+
     unlink (net_file_name);
 
     unsigned char *del_buf;
@@ -6159,8 +6311,39 @@ char msg[128];
     if (del_buf) XFree(del_buf);
 
 
-    editor->toolSelector->deselectAllTools();
     editor->workSpace->setCursor(UPPER_LEFT);
+}
+
+//
+// Broken out of SelectionReadyCB so that it can be reused by UndoDeletion
+//
+boolean EditorWindow::setPendingPaste (const char* net_file_name,
+	const char* cfg_file_name, boolean ignoreUndefinedModules)
+{
+    //
+    // Prepare a new network
+    //
+    if (this->addingDecorators) {
+	ListIterator it(*this->addingDecorators);
+	Decorator *dec;
+	while ( (dec = (Decorator*)it.getNext()) )  delete dec;
+	this->addingDecorators->clear();
+	delete this->addingDecorators;
+	this->addingDecorators = NULL;
+    }
+
+    if (this->pendingPaste) delete this->pendingPaste;
+    this->pendingPaste = theDXApplication->newNetwork(TRUE);
+    ASSERT(this->pendingPaste);
+    if (!this->pendingPaste->readNetwork (net_file_name, NULL, TRUE)) {
+	delete this->pendingPaste;
+	this->pendingPaste = NULL;
+	WarningMessage ("Paste failed");
+	unlink (net_file_name);
+	return FALSE;
+    }
+    this->toolSelector->deselectAllTools();
+    return TRUE;
 }
 
 //
@@ -6567,6 +6750,8 @@ void EditorWindow::populatePage(EditorWorkSpace* ews)
     }
 
     if (standins_created) {
+	boolean old_value = this->creating_new_network;
+	this->creating_new_network = TRUE;
 	FOR_EACH_NETWORK_NODE (this->network, node, it) {
 	    const char* cp = node->getGroupName(psym);
 	    if (((cp == NUL(char*)) && (page_name == NUL(char*))) || 
@@ -6591,6 +6776,7 @@ void EditorWindow::populatePage(EditorWorkSpace* ews)
 		}
 	    }
 	}
+	this->creating_new_network = old_value;
 	ews->endManyPlacements();
 	ews->setMembersInitialized();
     }
@@ -7115,7 +7301,14 @@ boolean EditorWindow::reflowEntireGraph()
     if (page) current_ws = this->workSpace->getElement(page);
     if (!this->layout_controller)
 	this->layout_controller = new GraphLayout(this);
-    return this->layout_controller->entireGraph(current_ws, this->network->nodeList, this->network->decoratorList);
+    boolean retval = this->layout_controller->entireGraph(
+	    current_ws, this->network->nodeList, this->network->decoratorList);
+
+    // This will cause the ui to prompt the user to save.  In the past we
+    // always tried to avoid this prompt if repositioning of standIns was
+    // the only change.  We'll see if this is nice.
+    if (retval) this->network->setFileDirty();
+    return retval;
 }
 
 //
@@ -7126,14 +7319,12 @@ boolean EditorWindow::reflowEntireGraph()
 //
 void EditorWindow::saveLocationForUndo (UIComponent* uic, boolean mouse, boolean same_event)
 {
+    boolean separator_pushed = same_event||this->moving_many_standins;
     if (this->performing_undo) return ;
-    if ((this->moving_many_standins) || (same_event)) {
-    } else {
-	this->clearUndoList();
-    }
-    if ((mouse)||(this->moving_many_standins)) {
+
+    boolean found_it = FALSE;
+    if ((TRUE)||(mouse)||(this->moving_many_standins)) {
 	ASSERT(uic);
-	boolean found_it = FALSE;
 	ListIterator iterator;
 	Node* n;
 	FOR_EACH_NETWORK_NODE(this->network, n, iterator) {
@@ -7146,37 +7337,64 @@ void EditorWindow::saveLocationForUndo (UIComponent* uic, boolean mouse, boolean
 		if (page) current_ws = this->workSpace->getElement(page);
 		ASSERT (current_ws == si->getWorkSpace());
 
-		this->undo_move_list.appendElement (
-		    new UndoStandInMove (this, n, (StandIn*)uic)
+		if (!separator_pushed) {
+		    this->undo_list.push(new UndoSeparator(this));
+		    separator_pushed = TRUE;
+		}
+
+		this->undo_list.push ( new UndoStandInMove (
+			this, si, n->getNameString(), n->getInstanceNumber()
+		    )
 		);
 		found_it = TRUE;
 		break;
 	    }
 	}
-	if (!found_it) this->undo_move_list.appendElement (new UndoMove (this, uic));
+	Decorator* dec;
+	FOR_EACH_NETWORK_DECORATOR(this->network, dec, iterator) {
+	    if (dec == uic) {
+
+		if (!separator_pushed) {
+		    this->undo_list.push(new UndoSeparator(this));
+		    separator_pushed = TRUE;
+		}
+
+		this->undo_list.push (new UndoDecoratorMove (this, (VPEAnnotator*)dec));
+		found_it = TRUE;
+		break;
+	    }
+	}
+	// don't do this because if you drop one thing on top of
+	// another, someone might unmanage a widget which means
+	// we'll not be able to find out what happened.
+	//ASSERT(found_it);
     }
-    if (this->undo_move_list.getSize() > 0) this->undoCmd->activate();
-    else this->undoCmd->deactivate();
+
+    // this->setCommandActivation() doesn't run often enough to deal
+    // with accelerators.
+    if ((found_it) && (!this->undoCmd->isActive()))
+	this->setUndoActivation();
 }
 
 void EditorWindow::clearUndoList()
 {
-    ListIterator iter(this->undo_move_list);
-    UndoMove* undo_move;
-    while (undo_move = (UndoMove*)iter.getNext())
-	delete undo_move;
-    this->undo_move_list.clear();
+    if (this->undo_list.getSize() == 0) return;
+    UndoableAction* undoable;
+    while (undoable = (UndoableAction*)this->undo_list.pop()) 
+	delete undoable;
+    this->undo_list.clear();
+    this->setUndoActivation();
 }
 
 void EditorWindow::beginMultipleCanvasMovements()
 {
-    this->clearUndoList();
     this->moving_many_standins = TRUE;
+    this->undo_list.push(new UndoSeparator(this));
 }
 
 boolean EditorWindow::undo()
 {
-    boolean many_placements = (this->undo_move_list.getSize() >= 2);
+    boolean many_placements = TRUE;//(this->undo_list.getSize() >= 2);
     WorkSpace *current_ws = this->workSpace;
     if (many_placements) {
 	int page = this->workSpace->getCurrentPage();
@@ -7184,16 +7402,107 @@ boolean EditorWindow::undo()
 	current_ws->beginManyPlacements();
     }
     this->performing_undo = TRUE;
-    ListIterator iter(this->undo_move_list);
-    UndoMove* undo_move;
-    while (undo_move = (UndoMove*)iter.getNext()) {
-	undo_move->undo();
+    UndoableAction* undoable;
+
+    Stack short_stack;
+    List undo_candidates;
+    ListIterator iter;
+    const char* couldnt_undo = NUL(const char*);
+    int count = 0;
+    while (undoable = (UndoableAction*)this->undo_list.pop()) {
+	if (undoable->isSeparator()) break;
+	undoable->prepare();
+	undo_candidates.appendElement(undoable);
+	count++;
     }
+    for (int i=count; i>=1; i--) {
+	undoable = (UndoableAction*)undo_candidates.getElement(i);
+	if (undoable->canUndo()) {
+	    short_stack.push(undoable);
+	} else {
+	    couldnt_undo = undoable->getLabel();
+	}
+    }
+
+
+    if (couldnt_undo) {
+	if (short_stack.getSize() == 0) {
+	    WarningMessage( "An operation could not be undone: %s", couldnt_undo);
+	} else {
+	    ErrorMessage ("Part of the operation could not be undone: %s", couldnt_undo);
+	}
+    }
+
+    boolean first_in_list = TRUE;
+    while (undoable = (UndoableAction*)short_stack.pop()) {
+	undoable->undo(first_in_list);
+	first_in_list = FALSE;
+    }
+
+    iter.setList(undo_candidates);
+    while (undoable = (UndoableAction*)iter.getNext()) {
+	undoable->postpare();
+    }
+
     this->performing_undo = FALSE;
-    this->clearUndoList();
     if (many_placements) {
 	current_ws->endManyPlacements();
     }
+
+    this->setUndoActivation();
+
     return TRUE;
 }
 
+void EditorWindow::setUndoActivation()
+{
+    //if (this->deferrableCommandActivation->isActionDeferred()) return ;
+
+    // These 2 numbers work like the float on your sump pump.  When
+    // the level gets really high (up to check_when) the pump runs
+    // and gets rid of material until it's low (down to max_stack_prune).
+    // how many individual events are we going to keep around?
+    int max_stack_prune = 10;
+    // how big does the stack get before we check it for pruning.
+    int check_when = 30;
+
+    // set up for subsequent undo
+    char button_label[64];
+    strcpy (button_label, "Undo");
+    int current_size = this->undo_list.getSize();
+    if (current_size > 0) {
+
+	UndoableAction* undoable;
+	if (current_size >= check_when) {
+	    int saved = 0;
+	    Stack tmpStack;
+	    while (undoable = (UndoableAction*)this->undo_list.pop()) {
+		if (undoable->isSeparator()) {
+		    saved++;
+		    tmpStack.push(undoable);
+		} else if (saved < max_stack_prune) {
+		    tmpStack.push(undoable);
+		} else {
+		    break;
+		}
+	    }
+	    while (undoable = (UndoableAction*)this->undo_list.pop()) 
+		delete undoable;
+
+	    while(undoable = (UndoableAction*)tmpStack.pop()) {
+		this->undo_list.push(undoable);
+	    }
+	}
+
+	undoable = (UndoableAction*)this->undo_list.peek();
+	const char* cp = undoable->getLabel();
+	strcat (button_label, " ");
+	strcat (button_label, cp);
+	this->undoCmd->activate();
+    } else {
+	this->undoCmd->deactivate();
+    }
+    XmString xmstr = XmStringCreateLtoR (button_label, "bold");
+    XtVaSetValues (this->undoOption->getRootWidget(), XmNlabelString, xmstr, NULL);
+    XmStringFree(xmstr);
+}

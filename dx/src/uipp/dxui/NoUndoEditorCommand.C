@@ -26,11 +26,13 @@ NoUndoEditorCommand::NoUndoEditorCommand(const char*   name,
 				       CommandScope* scope,
 				       boolean       active,
 				       EditorWindow  *editor,
-				       EditorCommandType comType ) :
+				       EditorCommandType comType,
+       				       EditorUndoType undoType) :
 	NoUndoCommand(name, scope, active)
 {
 	this->commandType = comType;
 	this->editor = editor;
+	this->undoType = undoType;
 }
 
 
@@ -235,6 +237,12 @@ boolean NoUndoEditorCommand::doIt(CommandInterface *ci)
 	    break;
 	default:
 	    ASSERT(0);
+    }
+
+    if (this->undoType & NoUndoEditorCommand::AffectsUndo) {
+	if ((this->undoType & NoUndoEditorCommand::CanBeUndone) == 0) {
+	    editor->clearUndoList();
+	}
     }
 
     return ret;

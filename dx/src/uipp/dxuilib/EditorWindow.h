@@ -19,6 +19,7 @@
 #include "ControlPanel.h"
 #include "Cacheability.h"
 #include "InsertNetworkDialog.h"
+#include "Stack.h"
 
 typedef long NodeStatusChange;
 
@@ -81,6 +82,7 @@ class DecoratorStyle;
 class GetSetConversionDialog;
 class TransmitterNode;
 class GraphLayout;
+class VPEAnnotator;
 
 #if WORKSPACE_PAGES
 class GroupManager;
@@ -99,6 +101,7 @@ class EditorWindow : public DXWindow
   friend class DXApplication;	// For the constructor 
   friend class NoUndoEditorCommand; 
   friend class DeleteNodeCommand; 
+  friend class UndoDeletion; // for createNetFileFromSelection
   friend ControlPanel::~ControlPanel();
 
   private:
@@ -253,9 +256,10 @@ class EditorWindow : public DXWindow
     // Record moved StandIns and decorators so that movement
     // can be undone. ...on behalf of the new graph layout operation.
     //
-    List undo_move_list;
+    Stack undo_list;
     boolean moving_many_standins;
     boolean performing_undo;
+    boolean creating_new_network;
     void clearUndoList();
 
   protected:
@@ -511,6 +515,9 @@ class EditorWindow : public DXWindow
     boolean	cutSelectedNodes();
     boolean	copySelectedNodes(boolean delete_property = FALSE);
     boolean	pasteCopiedNodes();
+    char*       createNetFileFromSelection(int& net_len, char** cfg_out, int& cfg_len);
+    boolean     setPendingPaste (const char* net_file_name,
+	    const char* cfg_file_name, boolean ignoreUndefinedModules=FALSE);
 
     //
     // When the user clicks the Edit/Add Decorator option, we create a new
@@ -566,6 +573,12 @@ class EditorWindow : public DXWindow
     // Prepare to place a new decorator (vpe annotation)
     //
     boolean placeDecorator();
+
+    //
+    // In addition to setting command activation based on undo_list size,
+    // also set the text of the undo button label.
+    //
+    void setUndoActivation();
 
   public:
 
@@ -626,6 +639,7 @@ class EditorWindow : public DXWindow
     void highlightNode(const char* name, int instance, int flag);
     boolean selectNode(Node *node, boolean select, boolean moveto = TRUE);
     boolean selectNode(char* name, int instance, boolean select);
+    boolean selectDecorator (VPEAnnotator* dec, boolean select, boolean moveto=TRUE);
     void selectUnselectedNodes();
     void deselectAllNodes(); 
     void selectAllNodes();
@@ -683,14 +697,20 @@ class EditorWindow : public DXWindow
 
     //
     // add the node selected in the toolList to the vpe at x,y
+    // Added stitch 11/8/02.  When it's set to TRUE, we're going to handle
+    // conflicts of node type/inst # by replacing the copy in the merging
+    // network with the copy in the real network.  This is useful in 
+    // implemented Undo of Cut/Delete.  For this we need to copy not only
+    // selected nodes, but also nodes they're wired to so that we can
+    // restore the wires that were broken as a result of the cut.
     //
-    void addCurrentNode(int x, int y, EditorWorkSpace *where);
+    void addCurrentNode(int x, int y, EditorWorkSpace *where, boolean stitch=FALSE);
     void addNode (NodeDefinition *, int x, int y, EditorWorkSpace *where);
 
     //
     // Move the workspace window if the selected error node is not shown 
     //
-    void moveWorkspaceWindow(StandIn*);
+    void moveWorkspaceWindow(UIComponent*);
 
     //
     // Move the workSpace inside the scrolled window so that the given x,y
@@ -744,10 +764,9 @@ class EditorWindow : public DXWindow
     void newDecorator(Decorator* dec, EditorWorkSpace* where=NUL(EditorWorkSpace*));
 
     //
-    // notify the a standIn that an arc has been added to the 
-    // node
+    // notify the a standIn that an arc has been added/deleted to/from the node
     //
-    void notifyArk(Ark *a);
+    void notifyArk(Ark *a, boolean added=TRUE);
 
     FindToolDialog* getFindDialog()
     {
@@ -931,9 +950,22 @@ class EditorWindow : public DXWindow
     void  endMultipleCanvasMovements() { this->moving_many_standins = FALSE; }
 
     //
+    // a mechanism for Node to notify us that his definition has changed.  We
+    // throw out the undo list because this will probably involve changes that
+    // we can't work around i.e. types of io tabs will be different and attempts
+    // to reconnect tabs will fail.
+    //
+    void notifyDefinitionChange(Node* n) { this->clearUndoList(); }
+
+    //
     // perform undo operation
     //
     boolean undo();
+
+    //
+    // Receive a notification that the net has been saved and marked clean
+    //
+    void notifySaved() { this->clearUndoList(); }
 
     //
     // Returns a pointer to the class name.

@@ -1007,7 +1007,7 @@ void Network::setDirty()
 }
 
 
-void Network::deleteNode(Node *node)
+void Network::deleteNode(Node *node, boolean undefer)
 {
     //
     // Disconnect the node from other nodes in the network first.
@@ -1019,7 +1019,7 @@ void Network::deleteNode(Node *node)
 
     this->nodeList.removeElement(node);
 
-    this->deferrableRemoveNode->requestAction((void*)node);
+    if (undefer) this->deferrableRemoveNode->requestAction((void*)node);
 
     delete node;        // Marks network dirty in ~Node()...
     //
@@ -3224,6 +3224,14 @@ boolean Network::saveNetwork(const char *name, boolean force)
 	this->netVersion.major = NETFILE_MAJOR_VERSION;;
 	this->netVersion.minor = NETFILE_MINOR_VERSION;;
 	this->netVersion.micro = NETFILE_MICRO_VERSION;;
+
+	//
+	// The editor may have something to do if the network is clean.
+	// Clearing the undo stack, perhaps?
+	//
+	if (this->editor) {
+	    this->editor->notifySaved();
+	}
     }
     else
     {
@@ -5038,7 +5046,6 @@ boolean Network::redefineNodes(Dictionary *newdefs, Dictionary *olddefs)
 {
     Node *node;
     ListIterator l;
-    // EditorWindow *editor = this->getEditor();
  
     FOR_EACH_NETWORK_NODE(this, node, l) {
 	const char *name = node->getNameString();
@@ -5190,7 +5197,7 @@ boolean Network::saveToFileRequired()
 //
 // Merge the new network into this network.
 //
-boolean Network::mergeNetworks(Network *new_net, List *panels, boolean allNodes)
+boolean Network::mergeNetworks(Network *new_net, List *panels, boolean allNodes, boolean stitch)
 {
 Node		*cur_node;
 Node		*new_node;
@@ -5201,6 +5208,9 @@ ListIterator	new_cp_l;
 List		cpDeleteList;
 List		removedNodes;
 List		removedDecs;
+List		swapFromNodes; 	  // nodes in new_net that aren't going to be
+List		swapToNodes;	  // transferred to this network.
+				
 
     //
     // make sure we don't merge an encoded (unviewable) network into 
@@ -5245,16 +5255,28 @@ List		removedDecs;
 	//
 	FOR_EACH_NETWORK_NODE(this, cur_node, cur_l) 
 	{
-	    if((cur_node->getNameSymbol() == new_name) &&
-	       (cur_node->getInstanceNumber() == new_inst))
-	    {
-		new_node->assignNewInstanceNumber();
+	    if (!stitch) {
+		if((cur_node->getNameSymbol() == new_name) &&
+		   (cur_node->getInstanceNumber() == new_inst))
+		{
+		    new_node->assignNewInstanceNumber();
+		}
+	    } else {
+		// we're helping to undo a node deletion in the vpe.
+		// We want to figure out the arcs that were incident on
+		// the current node in the incoming network and shift 
+		// those arcs over to the node in the existing network.
+		if((cur_node->getNameSymbol() == new_name) &&
+		   (cur_node->getInstanceNumber() == new_inst))
+		{
+		    swapFromNodes.appendElement (new_node);
+		    swapToNodes.appendElement (cur_node);
+		}
 	    }
 	}
 	new_net->nodeList.removeElement(new_node);
 	// new_net->deferrableRemoveNode->requestAction((void*)new_node);
     }
-
 
     //
     // Check to see if there are any problems with moving things over.  If
@@ -5380,10 +5402,124 @@ List		removedDecs;
     this->deferrableAddNode->deferAction();
     for (new_l.setList(removedNodes); (new_node = (Node*)new_l.getNext()); )
     {
-	new_node->switchNetwork(new_net,this);
+	boolean silently = FALSE;
+	if (stitch) {
+	    // don't complain about problems with nodes that are
+	    // about to go away.
+	    if (swapFromNodes.isMember(new_node))
+		silently = TRUE;
+	}
+	new_node->switchNetwork(new_net,this,silently);
 	new_net->nodeList.removeElement(new_node);
 	this->addNode(new_node);
     }
+
+    //
+    // If we're stitching - a result of undoing a deletion -
+    // then for every arc that connects to a member of deleteNodes
+    // from a member of new_net that isn't in deleteNodes, throw
+    // out the arc and replace the arc with one that connects to
+    // the existing counter part to the member of deleteNodes.
+    //
+    if (stitch) {
+	boolean input_tab_problem_detected = FALSE;
+	boolean output_tab_problem_detected = FALSE;
+	int missing_tab_count = 0;
+	int swap_count = swapFromNodes.getSize();
+	for (int i=1; i<=swap_count; i++) {
+	    Node* fromNode = (Node*)swapFromNodes.getElement(i);
+	    const char* cp = fromNode->getLabelString();
+	    Node* toNode = (Node*)swapToNodes.getElement(i);
+	    ASSERT (fromNode->getNameSymbol() == toNode->getNameSymbol());
+	    int input_count = fromNode->getInputCount();
+	    int input_count2 = toNode->getInputCount();
+	    for (int input=1; input<=input_count; input++) {
+		if (!fromNode->isInputVisible(input)) continue;
+		List* arcs = (List*)fromNode->getInputArks(input);
+		ListIterator iter(*arcs);
+		Ark* arc;
+		while (arc = (Ark*)iter.getNext()) {
+		    int output;
+		    Node* source = arc->getSourceNode(output);
+		    // if source is remaining...
+		    if (swapFromNodes.isMember(source)) continue;
+		    delete arc;
+		    if ((input<=input_count2) && (toNode->isInputVisible(input))) {
+			if (toNode->isInputConnected(input)) {
+			    // can't create the arc because someone else
+			    // already wired the input we wanted to use.
+			    input_tab_problem_detected = TRUE;
+			    missing_tab_count++;
+			} else {
+			    StandIn* si = toNode->getStandIn();
+			    ASSERT (si);
+			    si->addArk (this->editor, 
+				new Ark(source, output, toNode, input));
+			}
+		    } else {
+			// the tab was missing
+			input_tab_problem_detected = TRUE;
+			missing_tab_count++;
+		    }
+		}
+	    }
+	    int output_count = fromNode->getOutputCount();
+	    int output_count2 = toNode->getOutputCount();
+	    for (int output=1; output<=output_count; output++) {
+		if (!fromNode->isOutputVisible(output)) continue;
+		List* arcs = (List*)fromNode->getOutputArks(output);
+		ListIterator iter(*arcs);
+		Ark* arc;
+		while (arc = (Ark*)iter.getNext()) {
+		    int input;
+		    Node* dest = arc->getDestinationNode(input);
+		    if (swapFromNodes.isMember(dest)) continue;
+		    delete arc;
+		    if ((output<=output_count2) && (toNode->isOutputVisible(output))) {
+			if (dest->isInputConnected(input)) {
+			    // can't create the arc because someone else
+			    // already wired the input we wanted to use.
+			    output_tab_problem_detected = TRUE;
+			    missing_tab_count++;
+			} else {
+			    StandIn* si = toNode->getStandIn();
+			    ASSERT (si);
+			    si->addArk (this->editor, 
+				new Ark (toNode, output, dest, input));
+			}
+		    } else {
+			// the tab was missing
+			output_tab_problem_detected = TRUE;
+			missing_tab_count++;
+		    }
+		}
+	    }
+	    //delete fromNode;
+	}
+	//swapFromNodes.clear();
+	if ((input_tab_problem_detected) || (output_tab_problem_detected)) {
+	    char *cp;
+	    if ((input_tab_problem_detected) && (!output_tab_problem_detected)) {
+		cp = "input";
+	    } else if ((!input_tab_problem_detected) && (output_tab_problem_detected)) {
+		cp = "output";
+	    } else {
+		cp = "input and output";
+	    }
+	    WarningMessage ( 
+		"The Undo was not completed because %d\n"
+		"%s tab(s) had been hidden, removed, or used", 
+		missing_tab_count, cp);
+	}
+    }
+
+    for (new_l.setList(swapFromNodes); (new_node = (Node*)new_l.getNext()); )
+    {
+	this->deleteNode(new_node, FALSE);
+    }
+    swapFromNodes.clear();
+
+
     this->deferrableAddNode->undeferAction();
 
     if (panels)

@@ -19,6 +19,7 @@
 #include "NoUndoCommand.h"
 
 typedef long EditorCommandType;
+typedef long EditorUndoType;
 
 //
 // Class name definition:
@@ -39,6 +40,7 @@ class NoUndoEditorCommand : public NoUndoCommand
     //
     EditorWindow 	*editor;
     EditorCommandType 	commandType;
+    EditorUndoType	undoType;
  
     virtual boolean doIt(CommandInterface *ci);
 
@@ -50,12 +52,25 @@ class NoUndoEditorCommand : public NoUndoCommand
                    CommandScope  *scope,
                    boolean       active,
 		   EditorWindow  *editor,
-		   EditorCommandType comType);
+		   EditorCommandType comType,
+		   EditorUndoType undoType=AffectsUndo);
 
     //
     // Destructor:
     //
     ~NoUndoEditorCommand(){}
+
+    //
+    // Each command has a potential impact on EditorWindow's undo stack.
+    // There are really 2 bits in this mask with 3 possible values.
+    // Inside the doit(), we'll call on EditorWindow to (maybe) rollback
+    // its undo stack.
+    //
+    enum {
+	Ignore = 0,		// example: print
+	CanBeUndone = 1,	// example: move a standIn
+	AffectsUndo = 2,	// example: delete a node or remove a tab
+    };
 
     // 
     // These are the various operations that the NoUndoEditorCommand can 
