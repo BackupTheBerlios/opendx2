@@ -8,46 +8,39 @@
 #ifndef _DXI_ARCH_H
 #define _DXI_ARCH_H 1
 
+#ifndef HAS_S_ISDIR
+#define S_ISDIR(x) ((x) & (S_IFDIR))
+#endif
 
-/* version numbers for all platforms.  always defined.
- *   if any arch needs to have a different version number,
- *   undefine and redefine these in the arch specific section.
- */
-#define DXD_VERSION_STRING "04.01.0001"
-#define DXD_VERSION         4
-#define DXD_RELEASE         1
-#define DXD_MODIFICATION    1
+#ifndef HAS_M_PI
+#define M_PI       3.1415926535897931160E0  /*Hex  2^ 1 * 1.921FB54442D18 */
+#endif
 
+#ifndef HAS_M_SQRT2
+#define M_SQRT2    1.4142135623730951455E0  /*Hex  2^ 0 * 1.6A09E667F3BCD */
+#endif
 
-/* linux86
- */
-#ifdef linux86
-
-#undef  REGCMP_EXISTS
+#if defined(HAVE_REGCMP) || defined(RE_COMP)
 #undef DXD_LACKS_ANY_REGCMP
+#else
+#define DXD_LACKS_ANY_REGCMP
+#endif
 
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef signed char     byte;
-typedef unsigned char	ubyte;
+#ifdef WORDS_BIGENDIAN
+#define DXD_BIGENDIAN
+#endif
+
+#ifdef HAS_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 
-/* defined for machines with msb byte order (all machines but ibmpvs) */
-#undef DXD_BIGENDIAN 
+#define DXD_IS_MP 1
 
-/* architecture name.  always defined */
-#define DXD_ARCHNAME  "linux86"
-
-/* license manager active in this version */
-#undef DXD_LICENSED_VERSION
-
-/* defined if we support multiprocessor version */
-#define DXD_IS_MP 0
-
-/* do we need to keep a parent wait-process around? */
 #define DXD_EXEC_WAIT_PROCESS 1
 
-/* can we use sysmp() to find out how many processors an MP machine has? */
-#define DXD_HAS_SYSMP 0
+#ifdef HAVE_SYSMP
+#define DXD_HAS_SYSMP 1
+#endif
 
 /* defined if we want to get processor status window */
 #define DXD_PROCESSOR_STATUS 1
@@ -59,7 +52,9 @@ typedef unsigned char	ubyte;
 #define DXD_STANDARD_IEEE 1
 
 /* supports popen() */
+#ifdef HAVE_POPEN
 #define DXD_POPEN_OK 1
+#endif
 
 /* do the printf-type routines return a pointer or a count? */
 #define DXD_PRINTF_RETURNS_COUNT 1
@@ -70,11 +65,6 @@ typedef unsigned char	ubyte;
 
 /* can you use rlimit to stop the exec from creating a huge core file? */
 #define DXD_HAS_RLIMIT 1
-
-/* is triangle mesh swapping supported by hardware graphics API? */
-/* This causes render-every to go bonkers on sgi. This does not */
-/* seem to yield noticable performance gain, so I'm removing it */
-/*#define DXD_HW_TMESH_SWAP_OK 1 */
 
 /* is hardware device coordinates orientation right-handed? */
 #define DXD_HW_DC_RIGHT_HANDED 1
@@ -94,20 +84,19 @@ typedef unsigned char	ubyte;
 /* supports xwindows status display? */
 #define DXD_EXEC_STATUS_DISPLAY 1
 
-/* can use the crypt system call for data encryption */
-#define DXD_HAS_CRYPT 1
-
 /* program to run for remote shell */
 #define RSH  "/usr/bsd/rsh"
 
-/* system includes are in /usr/include/sys and /usr/include/unistd.h exists */
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
+
+#ifdef HAVE_UNISTD
 #define DXD_HAS_UNISTD_H 1
+#endif
 
 /* default values for gamma correction */
-#define DXD_GAMMA_8BIT	1.0
-#define DXD_GAMMA_12BIT	1.0
-#define DXD_GAMMA_16BIT	1.0
+#define DXD_GAMMA_8BIT	2.0
+#define DXD_GAMMA_12BIT	2.0
+#define DXD_GAMMA_16BIT	2.0
 #define DXD_GAMMA_24BIT	2.0
 
 /* cannot load runtime-loadable modules after forking */
@@ -119,59 +108,6 @@ typedef unsigned char	ubyte;
  */
 #ifdef sgi
 
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef signed char     byte;
-typedef unsigned char	ubyte;
-#include <sys/types.h>
-
-/* defined for machines with msb byte order (all machines but ibmpvs) */
-#define DXD_BIGENDIAN 1
-
-/* architecture name.  always defined */
-#define DXD_ARCHNAME  "sgi"
-
-/* license manager active in this version */
-#undef DXD_LICENSED_VERSION 
-
-/* defined if we support multiprocessor version */
-#define DXD_IS_MP 1
-
-/* do we need to keep a parent wait-process around? */
-#define DXD_EXEC_WAIT_PROCESS 1
-
-/* can we use sysmp() to find out how many processors an MP machine has? */
-#define DXD_HAS_SYSMP 1
-
-/* defined if we want to get processor status window */
-#define DXD_PROCESSOR_STATUS 1
-
-/* hardware rendering is an option? */
-#define DXD_CAN_HAVE_HW_RENDERING 1
-
-/* supports full IEEE standard floating point, including under/overflow */
-#define DXD_STANDARD_IEEE 1
-
-/* supports popen() */
-#define DXD_POPEN_OK 1
-
-/* do the printf-type routines return a pointer or a count? */
-#define DXD_PRINTF_RETURNS_COUNT 1
-
-/* socket-specific ifdefs */
-#define DXD_SOCKET_UNIXDOMAIN_OK 1
-#define DXD_HAS_GETDTABLESIZE    1
-
-/* can you use rlimit to stop the exec from creating a huge core file? */
-#define DXD_HAS_RLIMIT 1
-
-/* is triangle mesh swapping supported by hardware graphics API? */
-/* This causes render-every to go bonkers on sgi. This does not */
-/* seem to yield noticable performance gain, so I'm removing it */
-/*#define DXD_HW_TMESH_SWAP_OK 1 */
-
-/* is hardware device coordinates orientation right-handed? */
-#define DXD_HW_DC_RIGHT_HANDED 1
-
 /* is it sometimes necessary to check if a window has been destroyed? */
 #define DXD_HW_WINDOW_DESTRUCTION_CHECK 1
 
@@ -184,27 +120,15 @@ typedef unsigned char	ubyte;
 /* API (eg. GL) keeps its own copy of the object */
 #define DXD_HW_API_DISPLAY_LIST_MEMORY 1
 
-/* supports xwindows status display? */
-#define DXD_EXEC_STATUS_DISPLAY 1
-
-/* can use the crypt system call for data encryption */
-#define DXD_HAS_CRYPT 1
-
-/* program to run for remote shell */
-#define RSH  "/usr/bsd/rsh"
-
-/* system includes are in /usr/include/sys and /usr/include/unistd.h exists */
-#define DXD_HAS_UNIX_SYS_INCLUDES 1
-#define DXD_HAS_UNISTD_H 1
-
 /* default values for gamma correction */
+#undef DXD_GAMMA_8BIT
+#undef DXD_GAMMA_12BIT
+#undef DXD_GAMMA_16BIT
+#undef DXD_GAMMA_24BIT
 #define DXD_GAMMA_8BIT	1.0
 #define DXD_GAMMA_12BIT	1.0
 #define DXD_GAMMA_16BIT	1.0
 #define DXD_GAMMA_24BIT	2.0
-
-/* cannot load runtime-loadable modules after forking */
-#define DXD_NO_MP_RUNTIME 1
 
 #endif   /* sgi */
 
@@ -213,34 +137,8 @@ typedef unsigned char	ubyte;
  */
 #ifdef hp700
 
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef signed char     byte;
-typedef unsigned char	ubyte;
-typedef unsigned long	ulong;
-#include <sys/types.h>
-
-/* architecture name.  always defined */
-#define DXD_ARCHNAME  "hp700"
-
-/* license manager active in this version */
-#undef DXD_LICENSED_VERSION
-
-/* defined for machines with msb byte order (all machines but ibmpvs) */
-#define DXD_BIGENDIAN  1
-
-/* supports full IEEE standard floating point, including under/overflow */
-#define DXD_STANDARD_IEEE 1
-
-/* hardware rendering is an option? */
-#define DXD_CAN_HAVE_HW_RENDERING 1
-
-/* supports popen() */
-#define DXD_POPEN_OK 1
-
 /* do you need to declare the system error list explicitly? */
 #define DXD_SYSERRLIST_DECL 1
-
-/* do the printf-type routines return a pointer or a count? */
 #define DXD_PRINTF_RETURNS_COUNT 1
 
 /* socket-specific ifdefs */
@@ -273,6 +171,10 @@ typedef int * SelectPtr;
 #define DXD_HAS_UNISTD_H 1
 
 /* default values for gamma correction */
+#undef DXD_GAMMA_8BIT
+#undef DXD_GAMMA_12BIT
+#undef DXD_GAMMA_16BIT
+#undef DXD_GAMMA_24BIT
 #define DXD_GAMMA_8BIT  2.0
 #define DXD_GAMMA_12BIT	2.0
 #define DXD_GAMMA_16BIT	2.0
@@ -288,13 +190,7 @@ typedef int * SelectPtr;
  */
 #ifdef ibm6000
 
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef signed char     byte;
-typedef unsigned char	ubyte;
 #include <sys/types.h>
-
-/* architecture name.  always defined */
-#define DXD_ARCHNAME  "ibm6000"
 
 /* license manager active in this version */
 #undef DXD_LICENSED_VERSION
@@ -358,6 +254,10 @@ typedef unsigned char	ubyte;
 #define DXD_HAS_UNISTD_H 1
 
 /* default values for gamma correction */
+#undef DXD_GAMMA_8BIT
+#undef DXD_GAMMA_12BIT
+#undef DXD_GAMMA_16BIT
+#undef DXD_GAMMA_24BIT
 #define DXD_GAMMA_8BIT  2.0
 #define DXD_GAMMA_12BIT	2.0
 #define DXD_GAMMA_16BIT	2.0
@@ -371,14 +271,7 @@ typedef unsigned char	ubyte;
  */
 #ifdef sun4
 
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef signed char     byte;
-typedef unsigned char	ubyte;
-typedef unsigned long	ulong;
 #include <sys/types.h>
-
-/* architecture name.  always defined */
-#define DXD_ARCHNAME  "sun4"
 
 /* license manager active in this version */
 #undef DXD_LICENSED_VERSION
@@ -426,6 +319,10 @@ typedef unsigned long	ulong;
 #define DXD_HAS_UNISTD_H 1
 
 /* default values for gamma correction */
+#undef DXD_GAMMA_8BIT
+#undef DXD_GAMMA_12BIT
+#undef DXD_GAMMA_16BIT
+#undef DXD_GAMMA_24BIT
 #define DXD_GAMMA_8BIT  2.0
 #define DXD_GAMMA_12BIT	2.0
 #define DXD_GAMMA_16BIT	2.0
@@ -441,13 +338,7 @@ typedef unsigned long	ulong;
  */
 #ifdef solaris
 
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef signed char     byte;
-typedef unsigned char	ubyte;
 #include <sys/types.h>
-
-/* architecture name.  always defined */
-#define DXD_ARCHNAME  "solaris"
 
 /* license manager active in this version */
 #undef DXD_LICENSED_VERSION
@@ -523,12 +414,6 @@ union wait{
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
 #define DXD_HAS_UNISTD_H 1
 
-/* default values for gamma correction */
-#define DXD_GAMMA_8BIT  2.0
-#define DXD_GAMMA_12BIT	2.0
-#define DXD_GAMMA_16BIT	2.0
-#define DXD_GAMMA_24BIT 2.0
-
 /* cannot load runtime-loadable modules after forking */
 #define DXD_NO_MP_RUNTIME 1
 
@@ -543,14 +428,7 @@ union wait{
  */
 #ifdef aviion
 
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef unsigned char   uchar;
-typedef signed char     byte;
-typedef unsigned char	ubyte;
 #include <sys/types.h>
-
-/* architecture name.  always defined */
-#define DXD_ARCHNAME  "aviion"
 
 /* license manager active in this version */
 #undef DXD_LICENSED_VERSION
@@ -591,68 +469,28 @@ typedef unsigned char	ubyte;
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
 #define DXD_HAS_UNISTD_H 1
 
-/* default values for gamma correction */
-#define DXD_GAMMA_8BIT  2.0
-#define DXD_GAMMA_12BIT	2.0
-#define DXD_GAMMA_16BIT	2.0
-#define DXD_GAMMA_24BIT 2.0
-
 /* system includes support for the vfork() system call */
 #define DXD_HAS_VFORK 1
 
 #endif  /* aviion */
 
-/* intel x86 architecture
- */
-#if defined(intel) || defined(intelnt)  || defined(DXD_WIN)
-
-#define DXD_CAN_HAVE_HW_RENDERING 1
-
-/*
-#ifdef DXD_BIGENDIAN
-#undef DXD_BIGENDIAN
-#endif
-#define DXD_BIGENDIAN 0
-*/
-
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef unsigned char   uchar;
-typedef signed char     byte;
-typedef unsigned char	ubyte;
-typedef unsigned short  ushort;
-typedef unsigned int    uint;
-#include <sys/types.h>
-
-#define fork() -1
-
-/* architecture name.  always needs to be defined */
-#define DXD_ARCHNAME  "intel"
-
-/* do you need to declare the system error list explicitly? */
-#define DXD_SYSERRLIST_DECL 1
-
-/* do the printf-type routines return a pointer or a count? */
-#define DXD_PRINTF_RETURNS_COUNT 1
-
-/* socket-specific ifdefs */
-#define DXD_SOCKET_WINSOCKETS_OK 1
-
-/* default values for gamma correction */
-#define DXD_GAMMA_8BIT  2.0
-#define DXD_GAMMA_12BIT	2.0
-#define DXD_GAMMA_16BIT	2.0
-#define DXD_GAMMA_24BIT 2.0
-
-#endif  /* intel */
-
+#if 1
 
 #ifdef intelnt
+
+#define DXD_SYSERRLIST_DECL 1
+#define DXD_PRINTF_RETURNS_COUNT 1
+#define DXD_SOCKET_WINSOCKETS_OK 1
 
 /* We have to assume that DXD_WIN is for NT on Intel
    Machines, else we have to change all occurances
 */
+#include <sys/types.h>
+
 #define	DXD_WIN	
 #define DXD_POPEN_OK 1
+
+#undef RSH
 #define RSH  "rsh"
 
 /* supports popen() */
@@ -676,17 +514,6 @@ typedef unsigned int    uint;
 
 #include <windows.h>
 #include <errno.h>
-
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef unsigned char   uchar;
-typedef signed char     byte;
-typedef unsigned char	ubyte;
-typedef unsigned short  ushort;
-typedef unsigned int    uint;
-typedef unsigned long   ulong;
-
-/* architecture name.  always needs to be defined */
-#define DXD_ARCHNAME  "intelnt"
 
 /* do you need to declare the system error list explicitly? */
 
@@ -724,8 +551,6 @@ typedef unsigned long   ulong;
 
 /* stolen from /usr/include/math.h */
 /* these exist in the C++ include file complex.h  */
-#define M_PI       3.1415926535897931160E0  /*Hex  2^ 1 * 1.921FB54442D18 */
-#define M_SQRT2    1.4142135623730951455E0  /*Hex  2^ 0 * 1.6A09E667F3BCD */
 
 #define herror WSAGetLastError()
 
@@ -800,7 +625,6 @@ FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 #define trunc(value) ((float)((int)(value)))
 #define rint(value) ((float)((int)((value) + 0.5)))
 #define isatty(fd) _isatty(fd)
-#define S_ISDIR(x) ((x) & (S_IFDIR))
 
 
 
@@ -809,14 +633,6 @@ FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 	os2_select(count,rmask,wmask,emask,timeout)
 
 #define fork	DXWinFork
-
-#define herror WSAGetLastError
-
-/* default values for gamma correction */
-#define DXD_GAMMA_8BIT  2.0
-#define DXD_GAMMA_12BIT	2.0
-#define DXD_GAMMA_16BIT	2.0
-#define DXD_GAMMA_24BIT 2.0
 
 #define bcopy(s,d,n)	memcpy((void *)(d),(void *)(s),(int)(n))
 #define bzero(s,n)		memset((void *)(s),0,(int)(n))
@@ -844,17 +660,6 @@ FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 
 
 #ifdef os2
-
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef unsigned char   uchar;
-typedef signed char     byte;
-typedef unsigned char	ubyte;
-typedef unsigned short  ushort;
-typedef unsigned int    uint;
-typedef unsigned long   ulong;
-
-/* architecture name.  always needs to be defined */
-#define DXD_ARCHNAME  "os2"
 
 /* do you need to declare the system error list explicitly? */
 
@@ -897,8 +702,12 @@ typedef unsigned long   ulong;
 
 /* stolen from /usr/include/math.h */
 /* these exist in the C++ include file complex.h on os2 */
+#ifndef M_PI
 #define M_PI       3.1415926535897931160E0  /*Hex  2^ 1 * 1.921FB54442D18 */
+#endif
+#ifndef M_SQRT2
 #define M_SQRT2    1.4142135623730951455E0  /*Hex  2^ 0 * 1.6A09E667F3BCD */
+#endif
 
 
 #define herror psock_errno
@@ -940,6 +749,7 @@ FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 	(SOCK_ISSOCKET(fd) ? \
 	 errno = EBADF,-1 : \
 	 _lseek(fd,offset,whence))
+
 #define read(fd,buff,count) \
 	(SOCK_ISSOCKET(fd) ? \
 	 UxRecv(fd,(char *)buff,count,0) : \
@@ -974,32 +784,16 @@ FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 	((float)((int)((value) + 0.5)))
 #define isatty(fd) \
 	_isatty(fd)
-#define S_ISDIR(x) \
-	((x) & (S_IFDIR))
 #undef  select	/* this is also defined in tcpip/include/sys/select.h */
 #define select(count,rmask,wmask,emask,timeout) \
 	os2_select(count,rmask,wmask,emask,timeout)
 #define fork() (-1)
-
-/* default values for gamma correction */
-#define DXD_GAMMA_8BIT  2.0
-#define DXD_GAMMA_12BIT	2.0
-#define DXD_GAMMA_16BIT	2.0
-#define DXD_GAMMA_24BIT 2.0
 
 #endif  /* os2 */
 
 /* Dec Alpha AXP OSF/1
  */
 #ifdef alphax
-
-/* enough typedefs so byte,ubyte,short,ushort,int and uint are defined */
-typedef signed char     byte;
-typedef unsigned char	ubyte;
-#include <sys/types.h>
-
-/* architecture name.  always defined */
-#define DXD_ARCHNAME  "alphax"
 
 /* supports full IEEE standard floating point, including under/overflow */
 #define DXD_STANDARD_IEEE 0
@@ -1010,42 +804,8 @@ typedef unsigned char	ubyte;
 /* supports popen() */
 #define DXD_POPEN_OK 1
 
-/* do the printf-type routines return a pointer or a count? */
-#define DXD_PRINTF_RETURNS_COUNT 1
-
-/* socket-specific ifdefs */
-#define DXD_SOCKET_UNIXDOMAIN_OK 1
-#define DXD_HAS_GETDTABLESIZE    1
-
-#define DXD_IS_MP 1
-#define DXD_EXEC_WAIT_PROCESS 1
-#define DXD_HAS_SYSCONF 1
-
-/* hardware rendering is an option? */
-#define DXD_CAN_HAVE_HW_RENDERING 1
-
-/* can you use rlimit to stop the exec from creating a huge core file? */
-#define DXD_HAS_RLIMIT 1
-
-/* is hardware device coordinates orientation right-handed? */
-#define DXD_HW_DC_RIGHT_HANDED 1
-
-/* supports xwindows status display? */
-#define DXD_EXEC_STATUS_DISPLAY 1
-
 /* compiler apparently doesn't parse \a as alert */
 #define DXD_NO_ANSI_ALERT 1
-
-/* can use the crypt system call for data encryption */
-#define DXD_HAS_CRYPT 1
-
-/* program to run for remote shell */
-#define RSH  "/usr/bin/rsh"
-
-/* system includes are in /usr/include/sys and /usr/include/unistd.h exists */
-#define DXD_HAS_UNIX_SYS_INCLUDES 1
-#define DXD_HAS_UNISTD_H 1
-
 
 /* fixed type sizes, if different from standard */
 typedef signed char    int8;
@@ -1056,17 +816,10 @@ typedef int            int32;
 typedef unsigned int   uint32;
 typedef long           int64;
 typedef unsigned long  uint64;
-
 typedef float          float32;
 typedef double         float64;
 
 #define DXD_FIXEDSIZES 1 
-
-/* default values for gamma correction */
-#define DXD_GAMMA_8BIT  2.0
-#define DXD_GAMMA_12BIT	2.0
-#define DXD_GAMMA_16BIT	2.0
-#define DXD_GAMMA_24BIT 2.0
 
 #endif   /* alphax */
 
@@ -1125,17 +878,6 @@ typedef void * SelectPtr;
 
 /* fixed type sizes */
 #ifndef DXD_FIXEDSIZES
- 
-typedef signed char    int8;
-typedef unsigned char  uint8;
-typedef short          int16;
-typedef unsigned short uint16;
-typedef int            int32;
-typedef unsigned int   uint32;
-
-typedef float          float32;
-typedef double         float64;
-
 #define DXD_FIXEDSIZES 1 
 
 #endif
