@@ -181,14 +181,15 @@ void DXWindow::createAnchor(boolean addPixmap)
 {
     ASSERT(this->menuBar);
 
-    if (!this->anchorButton) 
+    if (!this->anchorButton) {
 	this->anchorButton = XtVaCreateWidget
 				("anchorButton",
 				 xmCascadeButtonWidgetClass,
 				 this->menuBar,
 				 XmNlabelType,	XmPIXMAP,
-				 XmNsensitive,	False,
 				 NULL);
+	XtUninstallTranslations (this->anchorButton);
+    }
     //
     // If an anchor pixmap has not yet been created, do it now.
     //  (This code should be executed only once.)
@@ -243,7 +244,6 @@ void DXWindow::createAnchor(boolean addPixmap)
              XmNlabelType,              XmPIXMAP,
              XmNlabelPixmap,            this->anchorPixmap,
              XmNlabelInsensitivePixmap, this->anchorPixmap,
-             XmNsensitive,              False,
              NULL);
 
     }
