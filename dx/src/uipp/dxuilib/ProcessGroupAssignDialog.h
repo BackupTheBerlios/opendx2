@@ -22,6 +22,8 @@ class List;
 class Dictionary;
 class DXPacketIF;
 
+class ProcessGroupOptionsDialog;
+
 //
 // Class name definition:
 //

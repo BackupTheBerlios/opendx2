@@ -25,6 +25,7 @@
 #define ClassWorkSpaceInfo	"WorkSpaceInfo"
 
 class WorkSpaceRoot;
+class WorkSpace;
 
 //
 // WorkSpaceInfo class definition:

@@ -1169,7 +1169,7 @@ int _dxf_initmemory(void)
 
 #if ibm6000
         float m;
-	FILE *f = popen("/usr/sbin/lsattr -E -l sys0 -a realmem", "r");
+	FILE *f = popen("/usr/sbin/lsattr -E -l sys0 | grep realmem", "r");
 	if (!f)
 	    goto nomem;
 	if (!fscanf(f, "realmem %g", &m)) {

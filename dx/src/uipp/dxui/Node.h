@@ -249,8 +249,10 @@ class Node : public Base
     //
     // Return a readonly list of Arks for the given parameter. 
     //
+public:
     const List *getIOArks(List *io, int index);
 
+private:
     //
     // Determine if the index'th parameter from the given list has visible tab. 
     //

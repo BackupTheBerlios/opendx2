@@ -32,6 +32,7 @@
 extern "C" void ProcessGroupOptionsDialog_NumberTextCB(Widget, XtPointer, XtPointer);
 extern "C" void ProcessGroupOptionsDialog_ToggleCB(Widget, XtPointer, XtPointer);
 
+class ProcessGroupAssignDialog;
 
 //
 // ProcessGroupOptionsDialog class definition:

@@ -223,6 +223,7 @@ class Network : public Base
     //
     void getReferencedMacros(List *macros, List *visted = NULL);
 
+public:
     class ParseState {
       public:
 	//
@@ -266,6 +267,8 @@ class Network : public Base
 	ControlPanel *control_panel;
 
     } parseState;
+
+private:
 
     //
     // Keep track if whether or not the .net had a Get or a Set in it.

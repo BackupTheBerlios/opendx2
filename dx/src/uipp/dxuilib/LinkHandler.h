@@ -35,7 +35,7 @@ class LinkHandler : public Base
 	CmdEntry   *commandEntry;
 	PacketIF   *packetIF;
 
-    protected:
+    public:
 
 	//
 	// Just call packetIF->sendPacket().
