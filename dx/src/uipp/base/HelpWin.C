@@ -13,6 +13,8 @@
 #include "HelpWin.h"
 
 #include "Application.h"
+#include "../dxuilib/DXApplication.h"
+#include "../dxuilib/MsgWin.h"
 #include "ButtonInterface.h"
 #include "NoUndoHelpCmd.h"
 #include "DictionaryIterator.h"
@@ -419,7 +421,25 @@ void HelpWin::loadTopicFile(const char *topic, const char *file)
     	    strcat(url, file);
     	if(!_dxf_StartWebBrowserWithURL(url)) {
 		// Couldn't start browser
-	    HelpOn(this->multiText, LINK, (char*)file, (char*)topic, 0);
+	    // Can't run standard help without initializing it as so. 
+	    theDXApplication->getMessageWindow()->addError(
+	    	"Error: Unable to launch web browser, defaulting back to standard help.");
+
+		UseWebBrowser=FALSE;
+
+		this->init();
+
+		//
+    	// Install the default resources for THIS class (not the derived classes)
+    	//
+    	if (NOT HelpWin::ClassInitialized)
+    	{
+	    ASSERT(theApplication);
+            HelpWin::ClassInitialized = TRUE;
+	    this->installDefaultResources(theApplication->getRootWidget());
+    	}
+    	topicToFileMap.clear();
+    	helpOn(topic);
 	}
     } else /* !UseWebBrowser */
 	HelpOn(this->multiText, LINK, (char*)file, (char*)topic, 0);
