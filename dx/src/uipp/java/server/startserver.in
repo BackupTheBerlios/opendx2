@@ -335,7 +335,7 @@ export LD_LIBRARY_PATH
 ##
 ## DXServer.class must be in the current working directory.
 ##
-if [ ! -r ./DXServer.class ]; then
+if [ ! -r ./DXServer.class ] && [ ! -r ./server.jar ]; then
     echo "Error: Current working directory is" `pwd`
     echo "startserver cannot run the server here."
     exit 1;
