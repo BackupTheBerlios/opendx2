@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.6 2000/08/24 20:04:14 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.7 2001/04/17 15:39:19 gda Exp $
  */
 
 
@@ -496,6 +496,7 @@ Irreg_NewInstanceVars(VectorGrp p)
     iI->nHandle = NULL;
 
     iI->i.currentVectorGrp = p;
+    iI->i.currentPartition = NULL;
     iI->i.isRegular = 0;
 
     return (InstanceVars)iI;
@@ -508,6 +509,9 @@ Irreg_FreeInstanceVars(InstanceVars I)
 
     if (iI)
     {
+	if (I->currentPartition)
+	    DXDelete(I->currentPartition);
+
 	if (iI->pHandle)
 	{
 	    DXFreeArrayHandle(iI->pHandle);
@@ -854,7 +858,12 @@ Irreg_FindElement(InstanceVars I, POINT_TYPE *point)
     else if (i == iP->P.n)
 	return 0;
     else
+    {
+        if (I->currentPartition)
+	     DXDelete(I->currentPartition);
+	I->currentPartition = DXReference((Object)iP->P.p[i]->field);
 	return 1;
+    }
 }
 
 static int

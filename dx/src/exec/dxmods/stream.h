@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/stream.h,v 1.6 2000/09/14 16:09:19 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/stream.h,v 1.7 2001/04/17 15:39:19 gda Exp $:
  */
 
 #ifndef _STREAM_H_
@@ -22,6 +22,7 @@ typedef struct vectorField  *VectorField;
 struct instanceVars
 {
     VectorGrp	currentVectorGrp;
+    Object	currentPartition;
     int		isRegular;
 };
 
@@ -32,7 +33,7 @@ struct vectorPart
     float	  min[3];
     float	  max[3];
     Array	  gArray;
-    unsigned char *ghosts;
+    unsigned short *ghosts;
 };
 
 Error _dxfInitVectorPart(VectorPart, Field);

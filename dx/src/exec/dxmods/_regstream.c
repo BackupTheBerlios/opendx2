@@ -84,7 +84,7 @@ static Error        Reg_CurlMap(VectorGrp, MultiGrid);
 static Matrix	    InvertN(Matrix, int);
 static void	    ApplyN(Matrix, int, POINT_TYPE *, POINT_TYPE *);
 static void	    ApplyRotationN(Matrix, int, VECTOR_TYPE *, VECTOR_TYPE *);
-static Matrix	    GetXYZtoIJKMatrix(Reg_VectorPart, int);
+static Matrix	    GetXYZtoIJKMatrix(Reg_VectorPart, int, int *);
 static int 	    Reg_Ghost(InstanceVars I, POINT_TYPE *p);
 static int 	    Reg_ClampToBoundingBox(InstanceVars, POINT_TYPE *);
 
@@ -97,6 +97,7 @@ Reg_NewInstanceVars(VectorGrp p)
     memset(iI, -1, sizeof(struct reg_InstanceVars));
 
     iI->i.currentVectorGrp = p;
+    iI->i.currentPartition = NULL;
     iI->i.isRegular = 1;
 
     return (InstanceVars)iI;
@@ -105,6 +106,9 @@ Reg_NewInstanceVars(VectorGrp p)
 static Error
 Reg_FreeInstanceVars(InstanceVars I)
 {
+    if (I->currentPartition != NULL)
+        DXDelete((Pointer)I->currentPartition);
+
     if (I)
 	DXFree((Pointer)I);
     return OK;
@@ -269,7 +273,7 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
     }
 
     if (flag)
-	P->mInv = GetXYZtoIJKMatrix(ip, P->P.nDim);
+	P->mInv = GetXYZtoIJKMatrix(ip, P->P.nDim, meshOff);
 
     array = (Array)DXGetComponentValue(f, "partition neighbors");
     if (array)
@@ -407,7 +411,7 @@ error:
 }
     
 static Matrix
-GetXYZtoIJKMatrix(Reg_VectorPart p, int n)
+GetXYZtoIJKMatrix(Reg_VectorPart p, int n, int *mo)
 {
     Matrix         m;
 
@@ -416,7 +420,7 @@ GetXYZtoIJKMatrix(Reg_VectorPart p, int n)
 	memcpy((float *)m.A, p->dels, 9*sizeof(float));
 	memcpy((float *)m.b, p->org, 3*sizeof(float));
 
-	return InvertN(m, 3);
+	m = InvertN(m, 3);
     }
     else
     {
@@ -434,9 +438,14 @@ GetXYZtoIJKMatrix(Reg_VectorPart p, int n)
 	m.b[1] = p->org[1];
 	m.b[2] = 0.0;
 
-	return InvertN(m, 2);
-
+	m = InvertN(m, 2);
     }
+
+    m.b[0] += mo[0];
+    m.b[1] += mo[1];
+    m.b[2] += mo[2];
+
+    return m;
 }
     
 static Error
@@ -492,7 +501,12 @@ Reg_FindElement(InstanceVars I, POINT_TYPE *point)
     if (i == iP->P.n)
 	return 0;
     else
+    {
+        if (I->currentPartition)
+	    DXDelete(I->currentPartition);
+	I->currentPartition = DXReference((Object)iP->P.p[i]->field);
 	return 1;
+    }
 }
 
 static int

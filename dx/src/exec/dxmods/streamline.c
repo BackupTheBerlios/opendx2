@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.6 2000/08/24 20:04:51 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.7 2001/04/17 15:39:20 gda Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
@@ -1465,7 +1465,7 @@ _dxfInitVectorPart(VectorPart p, Field f)
 
     p->gArray = (Array)DXGetComponentValue(f, "ghostzones");
     if (p->gArray)
-        p->ghosts = (unsigned char *)DXGetArrayData(p->gArray);
+        p->ghosts = (unsigned short *)DXGetArrayData(p->gArray);
     else
         p->ghosts = NULL;
 
