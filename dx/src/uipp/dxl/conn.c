@@ -619,6 +619,7 @@ ConnectTo(const char *host,
     struct hostent *he;
     int findx;
     char *pathEnv;
+    char *defaultPath = "PATH=/usr/bin:/usr/local/dx/bin"
     int  j;
 #ifdef hp700
     int  width = MAXFUPLIM;
@@ -671,10 +672,14 @@ ConnectTo(const char *host,
 	}
     }
 
-    for (pathEnv = NULL, i = 0; ep[i] && pathEnv == NULL; ++i)
-	if (    strncmp (ep[i], "PATH=", strlen("PATH=")) == 0 ||
-		strncmp (ep[i], "PATH =", strlen("PATH =")) == 0) 
-	    pathEnv = ep[i];
+    if(ep == NULL) {
+    	/* environment passed in was NULL */
+    	pathEnv = defaultPath;
+    } else
+        for (pathEnv = NULL, i = 0; ep[i] && pathEnv == NULL; ++i)
+	        if ( strncmp (ep[i], "PATH=", strlen("PATH=")) == 0 ||
+		         strncmp (ep[i], "PATH =", strlen("PATH =")) == 0) 
+	            pathEnv = ep[i];
 
     if (DXLIsHostLocal(host)) {
 	char *path;
