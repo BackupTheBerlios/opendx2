@@ -12,7 +12,7 @@
 #define render_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.9 2003/10/31 19:28:44 davidt Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.10 2004/08/31 19:50:43 davidt Exp $"};
 #endif
 
 #include <stdio.h>
@@ -54,6 +54,93 @@ extern dxObject _dxf_getCachedObject(void *, dxObject);
 static HANDLE OGLLock = NULL;
 static int firstRender = 1;
 #endif
+
+
+Error
+_dxfDrawMonoInCurrentContext (void* globals, dxObject o, Camera c, int buttonUp)
+{
+  DEFGLOBALDATA(globals);
+  DEFPORT(PORT_HANDLE);
+  gatherO gather = NULL;
+  int r;
+
+
+#if defined(DX_NATIVE_WINDOWS)
+  if (firstRender)
+  {
+	  firstRender = 0;
+	  OGLLock = CreateMutex(NULL, TRUE, NULL);
+  }
+  else
+  {
+	  if (DXWaitForSignal(1, &OGLLock) == WAIT_TIMEOUT)
+		  return ERROR;
+  }
+#endif
+
+#if !defined(DX_NATIVE_WINDOWS)
+  if (DXUI)
+    DXUIMessage("HW","begin");
+#endif
+
+  if (GATHER_TAG == DXGetObjectTag(o))
+  {
+    gather = (gatherO)GATHER;
+  }
+  else
+  {
+    if (GATHER)
+    {
+      DXDelete(GATHER);
+      GATHER = NULL;
+    }
+
+    GATHER_TAG = -1;
+    gather = _dxf_newHwGather();
+    if (! gather)
+      goto error;
+
+    if (! _dxf_gather(o, gather, globals))
+      goto error;
+
+    GATHER     = DXReference((dxObject)gather);
+    GATHER_TAG = DXGetObjectTag(o);
+    OBJECT_TAG = GATHER_TAG;
+  }
+
+  /*
+   * It seems like there's an unnecessary reference here... 
+   * gather is owned by globals about 6 lines up.  Shouldn't need
+   * this extra ref - which needed to be matched by a DXDelete 
+   * below.
+   */
+  DXReference((dxObject)gather);
+
+  _dxf_STARTFRAME(LWIN);
+
+    _dxf_CLEARBUFFER(LWIN);
+    _dxfDrawEither(gather, globals, o, c, buttonUp);
+
+#if defined(DX_NATIVE_WINDOWS)
+    _dxf_SWAP_BUFFERS(PORT_CTX);
+#else
+    _dxf_SWAP_BUFFERS(PORT_CTX, XWINID);
+#endif
+
+  if (DXUI)
+    DXUIMessage("HW","end");
+
+  _dxf_ENDFRAME(LWIN);
+
+  DXDelete((dxObject)gather);
+
+  return r;
+
+error:
+  if (gather)
+    DXDelete((dxObject)gather);
+  return ERROR;
+}
 
 
 Error

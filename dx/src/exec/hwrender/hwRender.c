@@ -177,7 +177,7 @@ int CanDoOGL(char * Where) /* Are GLX Extensions Available on Where ? */
 }
 
 Error
-_dxfRedraw (dxObject r, Camera c, char *displayString)
+_dxfRedrawInActiveContext (dxObject r, Camera c, char *displayString)
 {
     Private 	    cacheObject = NULL;
     char*		    cacheId = NULL;
@@ -259,7 +259,7 @@ _dxfRedraw (dxObject r, Camera c, char *displayString)
         }
     }
         
-    _dxfDraw(globals, OBJECT, CAMERA, 1);
+    _dxfDrawMonoInCurrentContext(globals, OBJECT, CAMERA, 1);
 
     if(cacheObject) {
         /* delete the working reference  */
