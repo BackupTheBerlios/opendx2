@@ -8,9 +8,6 @@
 
 #include <stdio.h>
 #include <math.h>
-#ifndef DXD_WIN
-#include <values.h>
-#endif
 
 #include "hwDeclarations.h"
 #include "hwMatrix.h"
