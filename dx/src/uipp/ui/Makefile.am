@@ -1,7 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-dxdir = $(DXROOT)
-uidatadir = $(DXROOT)/ui
+uidatadir = $(prefix)/dx/ui
 
 uidata_DATA = 		\
 	icon50.dat	\
