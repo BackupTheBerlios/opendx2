@@ -22,7 +22,7 @@
 #define sys_errlist _sys_errlist
 #endif
 
-#if ! (HAS_sys_errlist || HAS__sys_errlist)
+#if ! (defined(HAVE_SYS_ERRLIST) || defined(HAVE__SYS_ERRLIST))
 extern char *sys_errlist[];
 #endif
 
