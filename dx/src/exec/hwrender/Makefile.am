@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = opengl 
+SUBDIRS = opengl gl xgl starbase
 
 INCLUDES = -D$(ARCH) -I$(DXROOT)/include -I../libdx
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
