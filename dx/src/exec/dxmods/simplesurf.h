@@ -533,7 +533,6 @@
    */ 
 
 
-#include "dx/arch.h"
 #include <stdio.h>
 #include <math.h>
 #ifdef sgi
