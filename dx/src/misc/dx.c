@@ -8,9 +8,8 @@
 /*  DX script - C version	*/
 /*  F. Suits   1/97		*/
 
-/*
-#define USE_REGISTRY 1
-*/
+/* #define USE_REGISTRY 1 */
+/* #define DEBUG 1 */
 
 #include <dxconfig.h>
 #include <dx/arch.h>
@@ -127,7 +126,6 @@ int	tutor =		0;
 int	builder =	0;
 int	wizard = 	0;
 int	portset =	0;
-int	dxregister =	0;
 
 envstr		cmd =		"";
 envstr		outenv =	"";
@@ -1494,9 +1492,6 @@ int parseparms()
 	    printf(msgstr);
 	next
 
-	is(register)
-	    dxregister=1;
-	next
 #endif
 
 	startswith(-)
@@ -1549,7 +1544,6 @@ int shorthelp()
 " -prompter            start the DX Data Prompter\n"
 " -builder             start the DX Module Builder\n"
 " -tutor               start the DX Tutorial\n"
-" -register            register your copy of DX\n"
 "\n"
 " -morehelp            print longer help with information about other options\n"
  
