@@ -335,8 +335,8 @@ retry:
 	char *s = getenv("DX_SOCKET_BUFSIZE");
 	if (s)
 	{
-	    socklen_t rq_bufsz, set_bufsz;
-	    socklen_t set_len, rq_len = sizeof(rq_bufsz);
+	    SOCK_LENGTH_TYPE rq_bufsz, set_bufsz;
+	    SOCK_LENGTH_TYPE set_len, rq_len = sizeof(rq_bufsz);
 
 	    rq_bufsz = atoi(s);
 	    if (setsockopt(fd, SOL_SOCKET, SO_SNDBUF, (void *)&rq_bufsz, rq_len))
