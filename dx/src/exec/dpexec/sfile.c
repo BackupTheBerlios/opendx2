@@ -2,6 +2,22 @@
 #include <dx/dx.h>
 #include "sfile.h"
 
+#if defined(HAVE_TIME_H)
+#include <time.h>
+#endif
+ 
+#if defined(HAVE_SYS_TIME_H)
+#include <sys/time.h>
+#endif
+
+#if defined(HAVE_SYS_TIMEB_H)
+#include <sys/timeb.h>
+#endif
+
+#if defined(HAVE_SYS_TYPES_H)
+#include <sys/types.h>
+#endif                                         
+
 #if !defined(HAVE_CYGWIN_SOCKET_H) &&  !defined(HAVE_SYS_SOCKET_H) && !defined(HAVE_SOCKET_H) && defined(HAVE_WINSOCK_H)
 #define HANDLE_SOCKET
 #endif
