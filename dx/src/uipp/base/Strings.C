@@ -21,6 +21,7 @@
 #if defined(HAVE__SYS_ERRLIST)
 #define sys_errlist _sys_errlist
 #endif
+extern char *sys_errlist[];
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
