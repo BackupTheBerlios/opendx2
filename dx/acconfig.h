@@ -27,6 +27,7 @@
 #define USING_LESSTIF 0
 
 
+#undef uint
 #undef byte
 #undef float32
 #undef float64
