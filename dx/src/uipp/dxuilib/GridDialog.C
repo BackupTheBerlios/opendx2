@@ -275,7 +275,7 @@ Widget GridDialog::createDialog(Widget parent)
         XmNtopOffset,      10,
         NULL);
 
-    this->align_form = XtVaCreateManagedWidget("alignForm",
+    this->align_form = XtVaCreateWidget("alignForm",
 	xmFormWidgetClass,	form,
 	XmNbottomAttachment,	XmATTACH_WIDGET,
 	XmNbottomWidget,	separator1,
@@ -290,14 +290,14 @@ Widget GridDialog::createDialog(Widget parent)
 	NULL);
 
     {
-    this->alignLabel = XtVaCreateManagedWidget("alignLabel",
+    this->alignLabel = XtVaCreateWidget("alignLabel",
 	xmLabelWidgetClass,this->align_form,
 	XmNtopAttachment,  XmATTACH_FORM,
 	XmNleftAttachment,    XmATTACH_FORM,
 	XmNleftOffset,        5,
 	NULL);
 
-    this->ulbtn = XtVaCreateManagedWidget("ulButton",
+    this->ulbtn = XtVaCreateWidget("ulButton",
 	xmToggleButtonWidgetClass, this->align_form,
         XmNtopAttachment,  XmATTACH_WIDGET,
 	XmNtopWidget,      this->alignLabel,
@@ -309,7 +309,7 @@ Widget GridDialog::createDialog(Widget parent)
 	XmNset,               False,
 	NULL);
 
-    this->urbtn = XtVaCreateManagedWidget("urButton",
+    this->urbtn = XtVaCreateWidget("urButton",
 	xmToggleButtonWidgetClass, this->align_form,
         XmNtopAttachment,  XmATTACH_WIDGET,
 	XmNtopWidget,      this->alignLabel,
@@ -321,7 +321,7 @@ Widget GridDialog::createDialog(Widget parent)
 	XmNset,               False,
 	NULL);
 
-    this->ctbtn = XtVaCreateManagedWidget("ctButton",
+    this->ctbtn = XtVaCreateWidget("ctButton",
 	xmToggleButtonWidgetClass, this->align_form,
         XmNtopAttachment,  XmATTACH_WIDGET,
         XmNtopOffset,      10,
@@ -334,7 +334,7 @@ Widget GridDialog::createDialog(Widget parent)
 	XmNset,               False,
         NULL);
 
-    this->llbtn = XtVaCreateManagedWidget("llButton",
+    this->llbtn = XtVaCreateWidget("llButton",
 	xmToggleButtonWidgetClass, this->align_form,
         XmNtopAttachment,  XmATTACH_WIDGET,
         XmNtopOffset,      10,
@@ -346,7 +346,7 @@ Widget GridDialog::createDialog(Widget parent)
 	XmNset,               False,
 	NULL);
 
-    this->lrbtn = XtVaCreateManagedWidget("lrButton",
+    this->lrbtn = XtVaCreateWidget("lrButton",
 	xmToggleButtonWidgetClass, this->align_form,
         XmNtopAttachment,  XmATTACH_WIDGET,
         XmNtopOffset,      10,
@@ -396,7 +396,7 @@ Widget GridDialog::createDialog(Widget parent)
 	XmNset,               False,
         NULL);
 
-    this->rightbtn = XtVaCreateManagedWidget("rightButton",
+    this->rightbtn = XtVaCreateWidget("rightButton",
 	xmToggleButtonWidgetClass, this->align_form,
         XmNtopAttachment,  XmATTACH_OPPOSITE_WIDGET,
         XmNtopOffset,      0,
@@ -614,45 +614,66 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 	XtSetSensitive(dialog->hspacing, False);
 	XtSetSensitive(dialog->vspacing, False);
 
-	XtVaSetValues(dialog->separator2, 
+	XtVaSetValues(XtParent(dialog->ok),
+		XmNresizePolicy, XmRESIZE_NONE,
+		NULL);
+	
+	XtUnmanageChild(dialog->align_form);
+	XtUnmanageChild(dialog->separator2);
+	
+	XtVaSetValues(dialog->hspacing, 
 	    XmNbottomAttachment, XmATTACH_WIDGET, 
 	    XmNbottomOffset, 10, 
-	    XmNbottomWidget, dialog->ok, 
+	    XmNbottomWidget, dialog->separator1, 
 	    NULL);
-	XtUnmanageChild(dialog->align_form);
+
+	XtVaSetValues(XtParent(dialog->ok),
+		XmNresizePolicy, XmRESIZE_ANY,
+		NULL);
+	XtVaSetValues (XtParent(dialog->ok), XmNheight, 0, NULL);
+
     }
     else if(widget == dialog->oneDvTButton)
     {
-
 	XtSetSensitive(dialog->hspacing, False);
 	XtSetSensitive(dialog->vspacing, True);
 
-	XtUnmanageChild(dialog->align_form);
-	XtManageChild(dialog->upperbtn);
-	XtManageChild(dialog->lowerbtn);
-
-	XtVaSetValues(dialog->ctbtn, 
-		XmNtopAttachment,	XmATTACH_WIDGET,
-		XmNtopWidget,	dialog->upperbtn,
+	XtVaSetValues(XtParent(dialog->ok),
+		XmNresizePolicy, XmRESIZE_NONE,
 		NULL);
 
 	XtUnmanageChild(dialog->ulbtn);
 	XtUnmanageChild(dialog->urbtn);
+	XtUnmanageChild(dialog->ctbtn);
 	XtUnmanageChild(dialog->llbtn);
 	XtUnmanageChild(dialog->lrbtn);
 	XtUnmanageChild(dialog->leftbtn);
 	XtUnmanageChild(dialog->rightbtn);
 
-	XtManageChild(dialog->align_form);
-	XtVaSetValues(dialog->separator2, 
+	XtManageChild(dialog->upperbtn);
+	XtVaSetValues(dialog->ctbtn, 
+		XmNtopAttachment,	XmATTACH_WIDGET,
+		XmNtopWidget,	dialog->upperbtn,
+		NULL);
+	XtManageChild(dialog->ctbtn);
+	XtManageChild(dialog->lowerbtn);
+
+	XtVaSetValues(dialog->hspacing, 
 	    XmNbottomAttachment, XmATTACH_NONE,
 	    NULL);
+	XtManageChild(dialog->separator2);
 	if(lower)
 	    XmToggleButtonSetState(dialog->lowerbtn, True, False);
 	else if(center)
 	    XmToggleButtonSetState(dialog->ctbtn, True, False);
 	else
 	    XmToggleButtonSetState(dialog->upperbtn, True, False);
+	XtManageChild(dialog->align_form);
+	XtVaSetValues (dialog->align_form, XmNheight, 0, NULL);
+
+	XtVaSetValues(XtParent(dialog->ok),
+		XmNresizePolicy, XmRESIZE_ANY,
+		NULL);
 	XtVaSetValues (dialog->align_form, XmNheight, 0, NULL);
     }
     else if(widget == dialog->oneDhTButton)
@@ -661,26 +682,31 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 	XtSetSensitive(dialog->hspacing, True);
 	XtSetSensitive(dialog->vspacing, False);
 
-	XtUnmanageChild(dialog->align_form);
-	XtManageChild(dialog->leftbtn);
-	XtManageChild(dialog->rightbtn);
-
-	XtVaSetValues(dialog->ctbtn, 
-		XmNtopAttachment,	XmATTACH_WIDGET,
-		XmNtopWidget,	dialog->alignLabel,
+	XtVaSetValues(XtParent(dialog->ok),
+		XmNresizePolicy, XmRESIZE_NONE,
 		NULL);
 
 	XtUnmanageChild(dialog->ulbtn);
 	XtUnmanageChild(dialog->urbtn);
+	XtUnmanageChild(dialog->ctbtn);
 	XtUnmanageChild(dialog->llbtn);
 	XtUnmanageChild(dialog->lrbtn);
 	XtUnmanageChild(dialog->upperbtn);
 	XtUnmanageChild(dialog->lowerbtn);
 
-	XtManageChild(dialog->align_form);
-	XtVaSetValues(dialog->separator2, 
+	XtManageChild(dialog->leftbtn);
+
+	XtVaSetValues(dialog->ctbtn, 
+		XmNtopAttachment,	XmATTACH_WIDGET,
+		XmNtopWidget,	dialog->alignLabel,
+		NULL);
+	XtManageChild(dialog->ctbtn);
+	XtManageChild(dialog->rightbtn);
+
+	XtVaSetValues(dialog->hspacing, 
 	    XmNbottomAttachment, XmATTACH_NONE,
 	    NULL);
+	XtManageChild(dialog->separator2);
 
 	if(right)
 	    XmToggleButtonSetState(dialog->rightbtn, True, False);
@@ -692,6 +718,12 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 	// make the form widget recalc its height requirement.  In the 1dH case,
 	// the align_form widget is getting too tall.  Changing from 1dH to either
 	// 2d or 1dV, then makes a mess on the screen.
+	XtManageChild(dialog->align_form);
+
+	XtVaSetValues(XtParent(dialog->ok),
+		XmNresizePolicy, XmRESIZE_ANY,
+		NULL);
+
 	XtVaSetValues (dialog->align_form, XmNheight, 0, NULL);
     }
     else if(widget == dialog->twoDTButton)
@@ -700,26 +732,32 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 	XtSetSensitive(dialog->hspacing, True);
 	XtSetSensitive(dialog->vspacing, True);
 
-	XtUnmanageChild(dialog->align_form);
-	XtManageChild(dialog->ulbtn);
-	XtManageChild(dialog->urbtn);
-	XtManageChild(dialog->llbtn);
-	XtManageChild(dialog->lrbtn);
-
-	XtVaSetValues(dialog->ctbtn, 
-		XmNtopAttachment,	XmATTACH_WIDGET,
-		XmNtopWidget,	dialog->ulbtn,
+	XtVaSetValues(XtParent(dialog->ok),
+		XmNresizePolicy, XmRESIZE_NONE,
 		NULL);
 
 	XtUnmanageChild(dialog->leftbtn);
 	XtUnmanageChild(dialog->rightbtn);
 	XtUnmanageChild(dialog->upperbtn);
 	XtUnmanageChild(dialog->lowerbtn);
+	XtUnmanageChild(dialog->ctbtn);
 
-	XtManageChild(dialog->align_form);
-	XtVaSetValues(dialog->separator2, 
+	XtManageChild(dialog->ulbtn);
+	XtManageChild(dialog->urbtn);
+
+	XtVaSetValues(dialog->ctbtn, 
+		XmNtopAttachment,	XmATTACH_WIDGET,
+		XmNtopWidget,	dialog->ulbtn,
+		NULL);
+	XtManageChild(dialog->ctbtn);
+	XtManageChild(dialog->llbtn);
+	XtManageChild(dialog->lrbtn);
+
+	XtVaSetValues(dialog->hspacing, 
 	    XmNbottomAttachment, XmATTACH_NONE,
 	    NULL);
+	XtManageChild(dialog->separator2);
+	
 	if(lower)
 	    if(right)
 		XmToggleButtonSetState(dialog->lrbtn, True, False);
@@ -732,6 +770,12 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 		XmToggleButtonSetState(dialog->urbtn, True, False);
 	    else
 		XmToggleButtonSetState(dialog->ulbtn, True, False);
+	XtManageChild(dialog->align_form);
+
+	XtVaSetValues(XtParent(dialog->ok),
+		XmNresizePolicy, XmRESIZE_ANY,
+		NULL);
+
 	XtVaSetValues (dialog->align_form, XmNheight, 0, NULL);
     }
 }
