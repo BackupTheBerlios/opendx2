@@ -5,8 +5,6 @@
 BEGIN {
     printf("/* Automatically generated - may need to edit! */\n");
     printf("\n");
-    printf("#include \"%s\"\n",config);
-    printf("\n");
     printf("#include <dx/dx.h>\n");
     printf("#include <dx/modflags.h>\n");
     printf("\n");
