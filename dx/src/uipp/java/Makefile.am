@@ -23,8 +23,10 @@ javasrv_DATA = server.jar
 EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java exports.awk
 javalibdir = $(prefix)/dx/java/server/lib_@ARCH@
 
-javalib_DATA = @ANYDX@
-
+javalib_PROGRAMS = @ANYDX@
+EXTRA_PROGRAMS = libAnyDX.so AnyDX.dll
+libAnyDX_so_SOURCES =
+AnyDX_dll_SOURCES =
 SUBDIRS = server dx
 
 ##
