@@ -5,7 +5,7 @@
 #define tdmWindow_c
 
 #ifndef	lint
-static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.c,v 1.1 1999/03/24 15:18:34 gda Exp $";
+static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.c,v 1.2 1999/04/21 18:56:46 gda Exp $";
 #endif
 
 #define FLING_TIMEOUT 3
@@ -39,10 +39,12 @@ static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/open
 extern Bool 
   XCheckTypedWindowEvent(Display *, Window, int, XEvent *) ;
 
+#if 0
 #ifdef DXD_WIN
 extern void XPutBackEvent(Display *, XEvent *) ;
 #else
 extern XPutBackEvent(Display *, XEvent *) ;
+#endif
 #endif
 
 /*
@@ -915,14 +917,14 @@ _dxfProcessEvents (int fd, tdmChildGlobalP globals, int flags)
 	case EnterNotify:
 	  /* we only receive this event from 8-bit windows */
 	  PRINT (("EnterNotify")) ;
-	  XInstallColormap (dpy, COLORMAP) ;
+	  XInstallColormap (dpy, CLRMAP) ;
 	  XFlush(dpy) ;
 	  break ;
 
 	case LeaveNotify:
 	  /* we only receive this event from 8-bit windows */
 	  PRINT (("LeaveNotify")) ;
-	  XUninstallColormap (dpy, COLORMAP) ;
+	  XUninstallColormap (dpy, CLRMAP) ;
 	  XFlush(dpy) ;
 	  break ;
 	  
