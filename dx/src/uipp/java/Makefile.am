@@ -39,26 +39,42 @@ export CLASSPATH
 
 dx.jar: makeall.java $(DX_SRCS)
 	mkdir -p classes
-	-($(JAVAC) -d classes makewrl.java )
-	($(JAVAC) -d classes makeall.java $(DX_SRCS) )
-	(cd classes; $(JAR) cf ../dx.jar $(DX_OBJS) dx)
+	if test "$(ARCH)" = "cygwin" -o "$(ARCH)" = "intelnt" ; then \
+		tmp=`pwd`/classes ; \
+		classdir=`cygpath --windows $$tmp` ; \
+	else \
+		classdir=`pwd`/classes ; \
+	fi ; \
+	cd $(srcdir) ; \
+	$(JAVAC) -d $$classdir makewrl.java ; \
+	$(JAVAC) -d $$classdir makeall.java $(DX_SRCS) ; \
+	cd $$classdir ; \
+	$(JAR) cf ../dx.jar $(DX_OBJS) dx
 
 server.jar: dx.jar DXServer.java
 	mkdir -p dxsc
-	($(JAVAC) -d dxsc DXServer.java)
-	(cd dxsc; $(JAR) cf ../server.jar DXServer.class server dx ) 
+	if test "$(ARCH)" = "cygwin" -o "$(ARCH)" = "intelnt" ; then \
+	        tmp=`pwd`/dxsc ; \
+	        dxscdir=`cygpath --windows $$tmp` ; \
+	fi ; \
+	cd $(srcdir) ; \
+	$(JAVAC) -d $$dxscdir DXServer.java ; \
+	cd $$dxscdir ; \
+	$(JAR) cf ../server.jar DXServer.class server dx
 
 SHRD_FLAGS = -shared -o libAnyDX.so
 
 libAnyDX.so: DXLink.o
-	( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object ) 
+	if test ! $(ARCH) = "intelnt" ; then \
+        	( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object ) \
+	fi
 
 usual_shared_object:
 	$(SHARED_LINK) $(DXABI) $(DX_RTL_LDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&" -e "s&../dxl/x11.o&&"`  DXLink.o
 
 aix_shared_object:
 	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
-	nm -epC tmpAnyDX.a | awk -f exports.awk > tmpAnyDX.exp
+	nm -epC tmpAnyDX.a | awk -f $(srcdir)/exports.awk > tmpAnyDX.exp
 	ld -bnoentry -bM:SRE -o libAnyDX.so -bE:tmpAnyDX.exp tmpAnyDX.a -L /usr/lpp/X11/lib -lXt -lX11 -lc
 	rm -f tmpAnyDX.*
 
@@ -73,8 +89,29 @@ AnyDX.dll: DXLink.o
 ## JINC set by configure via acinclude.m4
 
 DXLink.o:  server.jar
-	(cd dxsc; CLASSPATH="." $(JAVAH) -d ../server server.DXServer server.DXServerThread)
-	(cd server; $(CC) $(DXABI) -o ../DXLink.o -I../../../../include -c -D@ARCH@ $(JNI_CFLAGS) @JINC@ DXLink.c)
+	javaobj=`pwd` ; \
+	cd $(top_srcdir) ; \
+	srcincs=`pwd`/include ; \
+	cd $$javaobj ; \
+	cd $(srcdir) ; \
+	javasrc=`pwd` ; \
+	cd $$javaobj ; \
+	if test "$(ARCH)" = "cygwin" -o "$(ARCH)" = "intelnt" ; then \
+	        tmp=`pwd`/server ; \
+	        srvrdir=`cygpath --windows $$tmp` ; \
+	        tmp=`pwd`/dxsc ; \
+	        dxscdir=`cygpath --windows $$tmp` ; \
+	else \
+	        dxscdir=`pwd`/dxsc ; \
+	        srvrdir=`pwd`/server ; \
+	fi ; \
+	cd $$dxscdir ; \
+	CLASSPATH="." $(JAVAH) -d \
+	        $$srvrdir server.DXServer server.DXServerThread ; \
+	cd $$javaobj ; \
+	$(CC) $(DXABI) -o $$javaobj/DXLink.o -I$$srcincs \
+	        -I$(BUILDBASE)/include -I$$javaobj/server \
+	        -c -Dintelnt $(JNI_CFLAGS) -I/cygdrive/c/jdk1.1.8/include -I/cygdrive/c/jdk1.1.8/include/win32 $(srcdir)/server/DXLink.c
 
 ##SAMPLE_OBJS = AS400VSMonth.class AutoInsurance.class CCNet2.class \
 ##	GroceryList.class HomeOwn.class MRI_2.class MappedIso.class \
