@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.8 2000/08/24 21:53:20 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.9 2000/08/24 21:59:01 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -254,6 +254,7 @@ write_fwd_uint32(int fd, uint32 val)
 }
 
 
+#if WORDS_BIGENDIAN!=1
 static Error
 write_rev_uint32(int fd, uint32 val)
 {
@@ -276,6 +277,7 @@ write_rev_uint32(int fd, uint32 val)
         return ERROR;
     }
 }
+#endif
 
 
 static Error
@@ -294,7 +296,7 @@ write_fwd_uint16(int fd, uint16 val)
     }
 }
 
-
+#if WORDS_BIGENDIAN!=1
 static Error
 write_rev_uint16(int fd, uint16 val)
 {
@@ -315,7 +317,7 @@ write_rev_uint16(int fd, uint16 val)
         return ERROR;
     }
 }
-
+#endif
 
 static Error
 read_fwd_uint32 ( int fd, uint32 *val )
