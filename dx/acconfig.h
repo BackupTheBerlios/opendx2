@@ -15,6 +15,8 @@
 #define HAS_S_ISDIR		0
 #define HAS_sysmp		0
 
+#undef HAVE_REGCMP
+
 
 #undef byte
 #undef float32
