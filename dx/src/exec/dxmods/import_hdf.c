@@ -35,7 +35,7 @@
    undef them so the hdfi.h header can be included. 
  */
  
-#if !defined(intelnt)
+#if !defined(intelnt) && !defined(WIN32)
 
 #ifdef int8
 #undef int8
