@@ -6,7 +6,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/MacroDefinition.C,v 1.2 1999/04/02 19:01:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/MacroDefinition.C,v 1.3 1999/04/16 19:55:30 gda Exp $
  *
  */
 
@@ -46,8 +46,8 @@
 
 #define OLD_DUMMY_DESCRIPTION_STRING "Generated dummy input"
 
-#if (HAVE_RE_COMP == 1) || (HAVE_REGCMP == 1)
-#undef LACKS_ANY_REGCMP
+#if !defined(HAVE_RE_COMP) && !defined(HAVE_REGCMP)
+#define  LACKS_ANY_REGCMP
 #endif
 
 #ifndef LACKS_ANY_REGCMP
@@ -614,7 +614,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	}
 	else
 	{
-#ifndef DXD_LACKS_ANY_REGCMP
+#ifndef LACKS_ANY_REGCMP
 #ifdef HAVE_REGCMP
 	    char *net_file = regcmp(".[.]*\\.net$", NULL);
 	    ASSERT(net_file != NULL);
