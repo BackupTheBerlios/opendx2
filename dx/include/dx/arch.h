@@ -172,10 +172,13 @@ char *strrstr(char *, char *);
 
 #endif
 
+/* 
+ * FreeBSD (and probably NetBSD and OpenBSD)
+ */
 #if defined(freebsd)
 
 #undef F_CHAR_READY
-#define F_CHAR_READY(fp) ((fp)->_r > 0)
+#define F_CHAR_READY(fp) ((fp)->_r > 0 || (fp)->_ub._base)
 
 #endif
 

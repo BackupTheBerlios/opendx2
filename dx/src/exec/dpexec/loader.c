@@ -840,7 +840,7 @@ Error DXLoadAndRunObjFile(char *fname, char *envvar)
     return ERROR;
 }
 
-Error DXUnloadObjFile(char *fname)
+Error DXUnloadObjFile(char *fname, char *envvar)
 {
     /* the unload routine needs the entry point address, which we
      * wouldn't need to save unless this is an important function.

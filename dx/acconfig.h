@@ -216,6 +216,7 @@
 #undef HAVE_OS2_H
 #undef HAVE_PROCESS_H
 #undef HAVE_PWD_H
+#undef HAVE_REGEX_H
 #undef HAVE_REGEXP_H
 #undef HAVE_SETJMP_H
 #undef HAVE_SIGNAL_H

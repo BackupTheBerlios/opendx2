@@ -70,6 +70,12 @@
 #include <sys/sysinfo.h>
 #endif
 
+#if defined(macos)
+#include <mach-o/ldsyms.h>
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#endif
+
 #if DXD_HAS_RLIMIT && ! DXD_IS_MP
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -1095,8 +1101,8 @@ extern int end;				/* linker-provided end of used data  */
 #if defined(macos)
 #define initvalues
 #define SMALL_BASE    0               /* use data segment */
-#define SMALL_GET     _dxfgetmem      /* expand by using DosSetMem */
-#define LARGE_GET     _dxfgetmem      /* expand by using DosSetMem */
+#define SMALL_GET     _dxfgetbrk      /* expand by using DosSetMem */
+#define LARGE_GET     _dxfgetbrk      /* expand by using DosSetMem */
 #define LARGE_INIT    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define LARGE_INCR    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define SIZE_ROUND    2 MEG           /* doesn't matter; consistent w/ sgi */
@@ -1300,6 +1306,18 @@ int _dxf_initmemory(void)
 	int err = sysinfo(&si);
 	if(!err)
 		physmem = si.totalram/(1024*1024);
+#endif
+
+#if defined(macos)
+	int mib[2], pmem;
+	size_t len;
+
+	mib[0] = CTL_HW;
+	mib[1] = HW_PHYSMEM;
+	len = sizeof(pmem);
+	sysctl(mib, 2, &pmem, &len, NULL, 0);
+
+	physmem = (uint)((double)pmem/(1024.0*1024.0));
 #endif
 	
       nomem:
