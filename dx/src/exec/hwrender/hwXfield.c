@@ -93,7 +93,7 @@ static Error _gammaCorrectColors(xfieldP xf, double gamma, int isLit);
  *(Pointer*)&xf->comp = DXCreateArrayHandle(xf->CAT(comp,_array));           \
  if (!xf->comp) {						             \
    EXIT(("returning NULL"));			     			     \
-   return NULL; 						             \
+   return ERROR; 						             \
  }								             \
  DXGetArrayInfo(xf->CAT(comp,_array),&xf->CAT(n,comp), NULL,NULL,NULL,NULL); \
 }
@@ -113,7 +113,7 @@ static Error _gammaCorrectColors(xfieldP xf, double gamma, int isLit);
 	DXSetError(ERROR_INVALID_DATA,"#13050",			\
 		 name, n, count);				\
         EXIT(("ERROR: invalid data"));			     	\
-	return NULL;						\
+	return ERROR;						\
     }								\
 }
 
@@ -620,7 +620,7 @@ _XOpacities(Field f, xfieldT* xf,
     else
     {
 	xf->opacities = NULL;
-	xf->nopacities = NULL;
+	xf->nopacities = 0;
 	xf->opacitiesDep = dep_none;
     }
 
@@ -667,7 +667,7 @@ _dxf_deleteXfield(xfieldP xf)
   if ((xf->glObject || xf->FlatGridTexture.Address) && xf->deletePrivate) 
   {
      (*xf->deletePrivate)((struct xfieldS *)xf);
-     xf->glObject = NULL;
+     xf->glObject = 0;
   }
 
 
@@ -949,7 +949,7 @@ on an MP machine.
       TIMER("< gammaCorrectColors");
     }
 
-    xf->glObject = NULL;
+    xf->glObject = 0;
   }
 
   EXIT(("xf = 0x%x", xf));

@@ -164,7 +164,7 @@ static Display *CurrentDpy = 0 ;
 /*
  *  PORT LAYER SECTION
  */
-static hwTranslationP
+static translationO
 _dxf_CREATE_HW_TRANSLATION (void *win)
 {
   int i ;
@@ -216,7 +216,7 @@ _dxf_CREATE_HW_TRANSLATION (void *win)
     }
 
   EXIT(("ret = 0x%x",ret));
-  return ret ;
+  return (translationO)ret ;
 }
 
 
@@ -501,7 +501,7 @@ got_visual:
 	DO_DISPLAY_LISTS = 1;
     }
 
-    if (!(OGLTRANSLATION = _dxf_CREATE_HW_TRANSLATION(LWIN))) {
+    if (!(OGLTRANSLATION = (hwTranslationP)_dxf_CREATE_HW_TRANSLATION(LWIN))) {
       PRINT (("out of memory allocating translation table")) ;
       DXErrorGoto (ERROR_INTERNAL, "#13000") ;
     }
@@ -1307,7 +1307,7 @@ int _dxf_READ_APPROX_BACKSTORE(void *win, int camw, int camh)
 
   OGL_FAIL_ON_ERROR(_dxf_READ_APPROX_BACKSTORE);
   EXIT(("ERROR"));
-  return NULL ;
+  return ERROR ;
 }
   
 
@@ -1371,7 +1371,7 @@ static void _dxf_WRITE_PIXEL_RECT(void* win, uint32 *buf,
   EXIT((""));
 }
 
-static Error _dxf_DRAW_IMAGE(void* win, dxObject image, hwTranslationP dummy)
+static Error _dxf_DRAW_IMAGE(void* win, dxObject image, translationO dummy)
 {
   DEFWINDATA(win) ;
   DEFPORT(PORT_HANDLE) ;
@@ -1558,9 +1558,10 @@ static void _dxf_INIT_SW_RENDER_PASS (void *win)
  */
 extern tdmInteractorEchoT _dxd_hwInteractorEchoPortOGL ;
 
-extern Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf, RGBColor ambientColor, int buttonUp);
-extern Error _dxf_DrawTranslucentOGL(void *globals, struct sortListElement *sorted,
-			int nSorted, RGBColor * ambientColor, int buttonUp);
+extern Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf,
+				RGBColor ambientColor, int buttonUp);
+extern Error _dxf_DrawTranslucentOGL(void *globals,
+				RGBColor * ambientColor, int buttonUp);
 int _dxf_READ_IMAGE (void* win, void *buf);
 
 static Error
@@ -1605,11 +1606,11 @@ _dxf_EndFrame(void *win)
 
 static tdmDrawPortT _oglDrawPort = 
 {
-  /* AllocatePixelArray */       _dxf_ALLOCATE_PIXEL_ARRAY,          
+  /* AllocatePixelArray */       _dxf_ALLOCATE_PIXEL_ARRAY,
   /* AddClipPlanes */            _dxf_ADD_CLIP_PLANES,
-  /* ClearArea */ 	       	 _dxf_CLEAR_AREA,                    
+  /* ClearArea */ 	       	 _dxf_CLEAR_AREA,
   /* CreateHwTranslation */	 _dxf_CREATE_HW_TRANSLATION,
-  /* CreateWindow */	       	 _dxf_CREATE_WINDOW,                 
+  /* CreateWindow */	       	 _dxf_CREATE_WINDOW,
   /* DefineLight */ 	       	 _dxf_DEFINE_LIGHT,                  
   /* DestroyWindow */ 	       	 _dxf_DESTROY_WINDOW,                
   /* DrawClip */		 NULL, 

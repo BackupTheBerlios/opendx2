@@ -167,7 +167,7 @@ _dxfSendClientMessage
       event.xclient.data.l[4] = data->l[4] ;
     }
 
-  switch (XSendEvent (dpy, win, True, NULL, &event))
+  switch (XSendEvent (dpy, win, True, NoEventMask, &event))
     {
     case 0:
       PRINT(("error: wire protocol conversion failed"));

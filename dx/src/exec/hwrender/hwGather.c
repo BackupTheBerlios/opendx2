@@ -1186,7 +1186,7 @@ _gatherRecurse(dxObject object,
 
       if (!DXGetXformInfo((Xform)object, &subObject, &matrix)) {
 	EXIT(("DXGetXformInfo returns NULL"));
-	return NULL;
+	return ERROR;
       }
       
       CONVERTMATRIX(tmp,matrix);

@@ -376,8 +376,8 @@ static void _dxf_DRAW_GLOBE (tdmInteractor I, void *udata,
   } edges[LATS][LONGS] ;
 
   /* globe and globeface defined in tdmGlobeEchoDef.h */
-  register float (*Globe)[LONGS][3] = globe ;
-  register struct Face (*Globeface)[LONGS] = globeface ;
+  register const float (*Globe)[LONGS][3] = &globe[0] ;
+  register const struct Face (*Globeface)[LONGS] = &globeface[0] ;
 
   /* view normal */
   register float z0, z1, z2 ;

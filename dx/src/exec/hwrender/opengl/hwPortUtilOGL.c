@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.3 1999/05/10 15:45:37 gda Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.4 1999/06/25 20:49:40 gda Exp $
 
 Author:  Ellen Ball
 
@@ -1559,7 +1559,7 @@ _drawPrimitives(tdmPortHandleP portHandle, xfieldP xf,
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
      }
-     helper = getHelper(xf->colorsDep,dep_none,dep_none,NULL);
+     helper = getHelper(xf->colorsDep, dep_none, dep_none, 0);
      TIMER("> polylines");
      polylines(xf, helper, approx, density);
      TIMER("< polylines");
@@ -2015,7 +2015,7 @@ static void _deleteGLObject(xfieldP xf)
   
   if(xf->glObject) {
     glDeleteLists(xf->glObject,1) ;
-    xf->glObject = NULL;
+    xf->glObject = 0;
   }
 
   EXIT((""));
