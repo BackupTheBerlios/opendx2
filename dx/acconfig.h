@@ -293,11 +293,12 @@
 #undef DXEXEC_EXP
 #undef DXEXEC_IMP
 
+#undef DX_XLIBS_LIST
 #undef HAVE_SIGBUS
-#undef HAVE_SIGPIPE
 #undef HAVE_SIGKILL
 #undef HAVE_SIGDANGER
-#undef DX_XLIBS_LIST
+#undef HAVE_SIGQUIT
+#undef HAVE_SIGPIPE
 
 #undef HAVE_UNLINK
 #undef HAVE__UNLINK

@@ -777,10 +777,46 @@ AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
 	shmat getopt srand opendir fork _findfirst strrstr strcasecmp \
 	stricmp getpid _getpid unlink _unlink getlogin isatty _isatty )
 
+AC_EGREP_CPP(xyzzy, 
+[
+#if defined(SIGBUS)
+xyzzy
+#endif
+], AC_DEFINE(HAVE_SIGBUS))
+
+AC_EGREP_CPP(xyzzy, 
+[
+#if defined(SIGKILL)
+xyzzy
+#endif
+], AC_DEFINE(HAVE_SIGKILL))
+
+AC_EGREP_CPP(xyzzy, 
+[
+#if defined(SIGDANGER)
+xyzzy
+#endif
+], AC_DEFINE(HAVE_SIGDANGER))
+
+AC_EGREP_CPP(xyzzy, 
+[
+#if defined(SIGPIPE)
+xyzzy
+#endif
+], AC_DEFINE(HAVE_SIGPIPE))
+
+AC_EGREP_CPP(xyzzy, 
+[
+#if defined(SIGQUIT)
+xyzzy
+#endif
+], AC_DEFINE(HAVE_SIGQUIT))
+
 AC_EGREP_HEADER(SIGBUS, signal.h, AC_DEFINE(HAVE_SIGBUS))
 AC_EGREP_HEADER(SIGKILL, signal.h, AC_DEFINE(HAVE_SIGKILL))
 AC_EGREP_HEADER(SIGDANGER, signal.h, AC_DEFINE(HAVE_SIGDANGER))
 AC_EGREP_HEADER(SIGPIPE, signal.h, AC_DEFINE(HAVE_SIGPIPE))
+AC_EGREP_HEADER(SIGQUIT, signal.h, AC_DEFINE(HAVE_SIGQUIT))
 
 
 AC_TRY_COMPILE(
