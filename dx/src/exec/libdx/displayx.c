@@ -2121,6 +2121,11 @@ DXDisplayX24(Object image, char *host, char *window)
 {
   return DXDisplayXAny(image,24,host,window);
 }
+Object
+DXDisplayX32(Object image, char *host, char *window)
+{
+  return DXDisplayXAny(image,32,host,window);
+}
 
 static Error  CheckColormappedImage(Object image, Array colormap);
 
@@ -3385,6 +3390,8 @@ static  struct visualLookupS  {
   { 16, TrueColor   },
   { 24, DirectColor },
   { 24, TrueColor   },
+  { 32, DirectColor },
+  { 32, TrueColor   },
   { -1, -1          }
 };
 
@@ -3694,7 +3701,7 @@ getBestVisual (Display *dpy, int *depth, int *directMap)
     return NULL;
 }
 /*
- * This function will accept only "X","X8","X12", "X15", "X16","X24" 
+ * This function will accept only "X","X8","X12", "X15", "X16","X24","X32" 
  * (with optionally trailing white space)
  * all other strings will generate a warning, and cause a return 
  * value of 0
@@ -3737,6 +3744,7 @@ _dxf_getXDepth(char *type)
   case 15:
   case 16:
   case 24:
+  case 32:
     return i;
     break;
   default:
@@ -3994,6 +4002,7 @@ static Error getGamma(int depth, float *gamma)
 	case 15: str = getenv("DXGAMMA_15BIT"); break;
 	case 16: str = getenv("DXGAMMA_16BIT"); break;
 	case 24: str = getenv("DXGAMMA_24BIT"); break;
+	case 32: str = getenv("DXGAMMA_32BIT"); break;
     };
 
     if (str == NULL) str = getenv("DXGAMMA");
@@ -4009,6 +4018,7 @@ static Error getGamma(int depth, float *gamma)
 	case 15: *gamma = DXD_GAMMA_15BIT; break;
 	case 16: *gamma = DXD_GAMMA_16BIT; break;
 	case 24: *gamma = DXD_GAMMA_24BIT; break;
+	case 32: *gamma = DXD_GAMMA_32BIT; break;
     };
 
     return OK;

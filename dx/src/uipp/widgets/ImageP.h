@@ -50,6 +50,7 @@ typedef struct _XmImagePart
     Boolean		supported15;
     Boolean		supported16;
     Boolean		supported24;
+    Boolean		supported32;
     /*  Private (local use)  */
 } XmImagePart;
 

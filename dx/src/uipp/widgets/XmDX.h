@@ -120,6 +120,7 @@
 #define XmN15supported		"15supported"
 #define XmN16supported		"16supported"
 #define XmN24supported		"24supported"
+#define XmN32supported		"32supported"
 #define XmCSupported		"Supported"
 
 #define XmNdataType	 "dataType"

@@ -597,6 +597,18 @@ boolean IsWhere (const char* string, int& index)
 	    index++;
 	    retVal = TRUE;
 	}
+    } else if (strncmp (dupstring, "X32,,", 5) == 0) {
+	index = 6;
+	if (dupstring[index] == '"') {
+	    index++;
+	    retVal = TRUE;
+	}
+    } else if (strncmp (dupstring, "x32,,", 5) == 0) {
+	index = 6;
+	if (dupstring[index] == '"') {
+	    index++;
+	    retVal = TRUE;
+	}
     } else {
 	int depth;
 	char dispstr[256];
@@ -619,7 +631,8 @@ boolean IsWhere (const char* string, int& index)
 		    &depth, dispstr, &xwid);
 
 	if (items_parsed == 3) {
-	    if ((depth == 8) || (depth == 12) || (depth == 16) || (depth == 24)) {
+	    if ((depth == 8) || (depth == 12) || (depth == 16) || (depth == 24)
+			|| (depth == 32)) {
 		index = strlen(string);
 		retVal = TRUE;
 	    }

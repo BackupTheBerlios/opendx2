@@ -83,6 +83,10 @@ boolean NoUndoImageCommand::doIt(CommandInterface *ci)
 	if( in && image->imageDepth24Option->getState() )
 	    image->changeDepth(24);
 	break;
+    case NoUndoImageCommand::Depth32:
+	if( in && image->imageDepth32Option->getState() )
+	    image->changeDepth(32);
+	break;
     case NoUndoImageCommand::SetCPAccess:
 	image->postPanelAccessDialog(
 		((DisplayNode*)image->node)->getPanelManager());

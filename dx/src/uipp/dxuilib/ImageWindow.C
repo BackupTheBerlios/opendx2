@@ -251,6 +251,7 @@ String ImageWindow::DefaultResources[] =
     "*imageSetImageDepthOptionSubmenu*15.labelString: 15",
     "*imageSetImageDepthOptionSubmenu*16.labelString: 16",
     "*imageSetImageDepthOptionSubmenu*24.labelString: 24",
+    "*imageSetImageDepthOptionSubmenu*32.labelString: 32",
     "*imageSetImageDepthOptionSubmenu*XmToggleButton.indicatorType:ONE_OF_MANY",
 
     NULL
@@ -332,6 +333,7 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
     this->imageDepth15Option	     = NUL(ToggleButtonInterface*);
     this->imageDepth16Option	     = NUL(ToggleButtonInterface*);
     this->imageDepth24Option	     = NUL(ToggleButtonInterface*);
+    this->imageDepth32Option	     = NUL(ToggleButtonInterface*);
     this->setPanelAccessOption	     = NUL(CommandInterface*);
     this->onVisualProgramOption	     = NUL(CommandInterface*);
 
@@ -578,6 +580,10 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 	    new NoUndoImageCommand("imageDepth24", this->commandScope,
 	       FALSE, this, NoUndoImageCommand::Depth24);
 
+	this->imageDepth32Cmd =
+	    new NoUndoImageCommand("imageDepth32", this->commandScope,
+	       FALSE, this, NoUndoImageCommand::Depth32);
+
 	this->changeImageNameCmd =
 	    new NoUndoImageCommand("changeImageName", this->commandScope, 
 		FALSE, this, NoUndoImageCommand::ChangeImageName);
@@ -593,6 +599,7 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 	this->imageDepth15Cmd = NULL;
 	this->imageDepth16Cmd = NULL;
 	this->imageDepth24Cmd = NULL;
+	this->imageDepth32Cmd = NULL;
     }
 
     // FIXME: this should be DXApplication command
@@ -774,6 +781,7 @@ ImageWindow::~ImageWindow()
     if (this->imageDepth15Cmd)  delete this->imageDepth15Cmd;
     if (this->imageDepth16Cmd)  delete this->imageDepth16Cmd;
     if (this->imageDepth24Cmd)  delete this->imageDepth24Cmd;
+    if (this->imageDepth32Cmd)  delete this->imageDepth32Cmd;
     if (this->setPanelAccessCmd) delete this->setPanelAccessCmd;
     delete this->viewControlCmd;
     delete this->modeNoneCmd;
@@ -1535,6 +1543,11 @@ void ImageWindow::createOptionsMenu(Widget parent)
 	ASSERT(this->imageDepth24Cmd);
 	this->imageDepth24Option = tbi = new ToggleButtonInterface(item_parent,
 		"24", this->imageDepth24Cmd, FALSE);
+	cm->appendComponent(tbi);
+
+	ASSERT(this->imageDepth32Cmd);
+	this->imageDepth32Option = tbi = new ToggleButtonInterface(item_parent,
+		"32", this->imageDepth32Cmd, FALSE);
 	cm->appendComponent(tbi);
 
 	this->throttleOption =
@@ -4825,6 +4838,7 @@ void ImageWindow::beginExecution()
     if (this->imageDepth15Cmd) this->imageDepth15Cmd->deactivate();
     if (this->imageDepth16Cmd) this->imageDepth16Cmd->deactivate();
     if (this->imageDepth24Cmd) this->imageDepth24Cmd->deactivate();
+    if (this->imageDepth32Cmd) this->imageDepth32Cmd->deactivate();
 }
 void ImageWindow::standBy()
 {
@@ -6520,12 +6534,13 @@ boolean sw;
     if(canvas_depth != depth)
     {
 #if 0
-	Boolean sup8, sup12, sup16, sup24;
+	Boolean sup8, sup12, sup16, sup24, sup32;
 	XtVaGetValues(this->getCanvas(),
 		      XmN8supported,  &sup8,
 		      XmN12supported, &sup12,
 		      XmN16supported, &sup16,
 		      XmN24supported, &sup24,
+		      XmN32supported, &sup32,
 		      NULL);
 #endif
 	//
@@ -6620,7 +6635,7 @@ boolean sw;
 boolean ImageWindow::adjustDepth(int &depth)
 {
 ImageNode *in = (ImageNode*)this->node;
-Boolean sup8, sup12, sup15, sup16, sup24;
+Boolean sup8, sup12, sup15, sup16, sup24, sup32;
 int new_depth;
 
     XtVaGetValues(this->getCanvas(),
@@ -6629,6 +6644,7 @@ int new_depth;
 		  XmN15supported, &sup15,
 		  XmN16supported, &sup16,
 		  XmN24supported, &sup24,
+		  XmN32supported, &sup32,
 		  NULL);
     //
     // If an unsupported depth was requested revert to the default depth.
@@ -6638,7 +6654,8 @@ int new_depth;
 	((depth == 12) && !sup12) ||
 	((depth == 15) && !sup16) ||
 	((depth == 16) && !sup16) ||
-	((depth == 24) && !sup24) )
+	((depth == 24) && !sup24) ||
+	((depth == 32) && !sup32) )
     {
 	new_depth = DefaultDepth(theApplication->getDisplay(), 
 			   DefaultScreen(theApplication->getDisplay()));
@@ -6729,6 +6746,7 @@ void ImageWindow::configureImageDepthMenu()
 	ASSERT(this->imageDepth15Option);
 	ASSERT(this->imageDepth16Option);
 	ASSERT(this->imageDepth24Option);
+	ASSERT(this->imageDepth32Option);
 
 	if (!this->node) {
 	    this->imageDepthCascade->deactivate();
@@ -6737,6 +6755,7 @@ void ImageWindow::configureImageDepthMenu()
 	    this->imageDepth15Cmd->deactivate();
 	    this->imageDepth16Cmd->deactivate();
 	    this->imageDepth24Cmd->deactivate();
+	    this->imageDepth32Cmd->deactivate();
 	} else {
 	    boolean sw;
 	    this->getSoftware(sw);
@@ -6746,7 +6765,7 @@ void ImageWindow::configureImageDepthMenu()
 		this->imageDepthCascade->deactivate();
 	    }
 
-	    Boolean sup8, sup12, sup15, sup16, sup24, frame_buffer;
+	    Boolean sup8, sup12, sup15, sup16, sup24, sup32, frame_buffer;
 	    int canvas_depth;
 	    XtVaGetValues(this->getCanvas(),
 		      XmNdepth, 	&canvas_depth, 
@@ -6756,6 +6775,7 @@ void ImageWindow::configureImageDepthMenu()
 		      XmN15supported, &sup15,
 		      XmN16supported, &sup16,
 		      XmN24supported, &sup24,
+		      XmN32supported, &sup32,
 		      NULL);
 
 	    if (frame_buffer || !sw) {
@@ -6769,6 +6789,7 @@ void ImageWindow::configureImageDepthMenu()
 		this->imageDepth15Cmd->deactivate();
 		this->imageDepth16Cmd->deactivate();
 		this->imageDepth24Cmd->deactivate();
+		this->imageDepth32Cmd->deactivate();
 	    } else { 
 		if (sup8 && canvas_depth != 8) 
 		    this->imageDepth8Cmd->activate();
@@ -6788,6 +6809,10 @@ void ImageWindow::configureImageDepthMenu()
 		    this->imageDepth24Cmd->activate();
 		else
 		    this->imageDepth24Cmd->deactivate();
+		if (sup32 && canvas_depth != 32) 
+		    this->imageDepth32Cmd->activate();
+		else
+		    this->imageDepth32Cmd->deactivate();
 	     }
 		
 	    this->imageDepth8Option->setState(canvas_depth == 8);
@@ -6795,6 +6820,7 @@ void ImageWindow::configureImageDepthMenu()
 	    this->imageDepth15Option->setState(canvas_depth == 15);
 	    this->imageDepth16Option->setState(canvas_depth == 16);
 	    this->imageDepth24Option->setState(canvas_depth == 24);
+	    this->imageDepth32Option->setState(canvas_depth == 32);
 	}
     }
 }

@@ -432,6 +432,7 @@ class ImageWindow : public DXWindow
     Command             *imageDepth15Cmd;
     Command             *imageDepth16Cmd;
     Command             *imageDepth24Cmd;
+    Command		*imageDepth32Cmd;
     Command		*closeCmd;
     Command		*setPanelAccessCmd;
     Command		*saveImageCmd;
@@ -498,6 +499,7 @@ class ImageWindow : public DXWindow
     ToggleButtonInterface*	imageDepth15Option;
     ToggleButtonInterface*	imageDepth16Option;
     ToggleButtonInterface*	imageDepth24Option;
+    ToggleButtonInterface*	imageDepth32Option;
     CommandInterface*	setPanelAccessOption;
 
     //

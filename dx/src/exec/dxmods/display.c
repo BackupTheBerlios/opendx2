@@ -392,6 +392,10 @@ m_Display(Object *in, Object *out)
 	  if(!DXDisplayX24(image, arg1, arg2))
 	    goto error;
 	  break;
+	case 32:
+	  if(!DXDisplayX32(image, arg1, arg2))
+	    goto error;
+	  break;
 	default:
 	  goto error;
 	  break;

@@ -75,6 +75,8 @@ static  struct visualLookupS  {
   { 16, TrueColor   },
   { 24, TrueColor   },
   { 24, DirectColor },
+  { 32, TrueColor   },
+  { 32, DirectColor },
 };
 
 #ifdef FORCE_VISUAL
@@ -178,6 +180,11 @@ static XtResource resources[] =
     {
       XmN24supported, XmCSupported, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.supported24),
+      XmRImmediate, (caddr_t) False
+    },
+    {
+      XmN32supported, XmCSupported, XmRBoolean, sizeof(Boolean),
+      XtOffset(XmImageWidget, image.supported32),
       XmRImmediate, (caddr_t) False
     },
 };
@@ -300,6 +307,10 @@ int    screen = XScreenNumberOfScreen(XtScreen(request));
     depth = 24;
     vis = getBestVisual(XtDisplay(new), &depth, screen);
     if(depth == 24) new->image.supported24 = True;
+
+    depth = 32;
+    vis = getBestVisual(XtDisplay(new), &depth, screen);
+    if(depth == 32) new->image.supported32 = True;
 }
 
 
@@ -554,8 +565,10 @@ getBestVisual (Display *dpy, int *depth, int screen)
 	}
 	template.depth = *depth;
 	template.screen = screen;
+
 	vismask = VisualDepthMask|VisualScreenMask;
 	visualInfo = XGetVisualInfo(dpy,vismask,&template,&count);
+
 	for(i = 0; i < nAcceptable; i++)
 	{
 	    for(j=0;j<count && !ret;j++)

@@ -111,6 +111,7 @@
 #define DXD_GAMMA_15BIT	2.0
 #define DXD_GAMMA_16BIT	2.0
 #define DXD_GAMMA_24BIT	2.0
+#define DXD_GAMMA_32BIT 2.0
 
 /* cannot load runtime-loadable modules after forking */
 #define DXD_NO_MP_RUNTIME 1
@@ -168,10 +169,12 @@
 #undef DXD_GAMMA_12BIT
 #undef DXD_GAMMA_16BIT
 #undef DXD_GAMMA_24BIT
+#undef DXD_GAMMA_32BIT
 #define DXD_GAMMA_8BIT	1.0
 #define DXD_GAMMA_12BIT	1.0
 #define DXD_GAMMA_16BIT	1.0
 #define DXD_GAMMA_24BIT	2.0
+#define DXD_GAMMA_32BIT 2.0
 
 #endif   /* sgi */
 
@@ -219,6 +222,7 @@ typedef int * SelectPtr;
 #define DXD_GAMMA_12BIT	2.0
 #define DXD_GAMMA_16BIT	2.0
 #define DXD_GAMMA_24BIT 2.0
+#define DXD_GAMMA_32BIT 2.0
 
 /* system includes support for the vfork() system call */
 #define DXD_HAS_VFORK 1
