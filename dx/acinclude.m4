@@ -658,9 +658,23 @@ fi
 JDKBIN=
 AC_MSG_CHECKING([for jar not in path])
 dnl
+echo > mywhich << EOF
+#! sh
+IFS=":"
+for i in $PATH; do
+    j="`echo $i | sed 's?/$??'`/"
+    t=$j$i
+    if test -x $t ; then
+    	echo $t
+	exit 0
+    fi
+done
+exit 1
+EOF
+chmod a+x mywhich
 dnl which output should not have a space if jar is found (syntax varies from "no jar in")
 dnl
-if test -z "`which jar | grep -v ' '`" ; then
+if test -z "`mywhich jar | grep -v ' '`" ; then
 	JDKBIN=$JBASE/bin/
 	AC_MSG_RESULT(using ${JDKBIN})
 else
@@ -668,6 +682,7 @@ else
 
 fi
 rm -f jdkpath.*
+rm mywhich
 dnl
 dnl determine the existence of netscape/cosmo for building WRLApplication and dependent samples
 dnl   don't know how to do this yet, so just use default.  non-default installations must edit the line below:
