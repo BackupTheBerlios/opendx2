@@ -23,9 +23,9 @@ dx.mdf:  ${srcdir}/dxmdf.src
 	-rm -f dx.mdf
 	cp ${srcdir}/dxmdf.src tmp.c
 	$(CPP) $(MYINC) $(MDF) $(DEFS) -DCPLUSPLUS_UI -DEXECUTIVE_MODS tmp.c > dx.mdf
-	@echo '/^$$/{' > stripl.sed
+	@echo '/^ *$$/{' > stripl.sed
 	@echo 'N' >> stripl.sed
-	@echo '/^\\n$$/D' >> stripl.sed
+	@echo '/^ *\\n *$$/D' >> stripl.sed
 	@echo '}' >> stripl.sed
 	cat dx.mdf |sed '/^#/d' > tmp.mdf
 	cat tmp.mdf |sed -f stripl.sed > dx.mdf
