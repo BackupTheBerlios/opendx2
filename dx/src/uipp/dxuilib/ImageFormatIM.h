@@ -52,8 +52,8 @@ class ImageFormatIM : public PixelImageFormat
     //
     ~ImageFormatIM();
 
-    virtual const char*		paramString() { return "Image Magick supported format"; }
-    virtual const char*		menuString() { return "Image Magick supported format"; }
+    virtual const char*		paramString() { return "ImageMagick supported format"; }
+    virtual const char*		menuString() { return "ImageMagick supported format"; }
     virtual const char*		fileExtension() { return ""; }
 
     //

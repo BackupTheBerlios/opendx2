@@ -26,15 +26,15 @@
 * (1) special cases e.g. gif where an entry in ImageTable(in _rw_image.c) 
 *     specifies the format and acceptable extensions and write_im is specified as the write function.
 *     The special case is triggered by giving the format and/or a listed extension.
-* (2) "Image Magick supported format" format was specified and or the extension was first matched in 
-*	the table entry for "Image Magick supported format" format.
+* (2) "ImageMagick supported format" format was specified and or the extension was first matched in 
+*	the table entry for "ImageMagick supported format" format.
 *     The extension must be included, recognized or not, in this case so ImageMagick knows what to write.
 *     This scheme permits the user to specify, via an extention, an output format the dx coders did not know about
-*	but that Image Magick has added (perhaps later, perhaps as a delegate).
+*	but that ImageMagick has added (perhaps later, perhaps as a delegate).
 *     This scheme also allows the coexistence of DX methods and IM methods for writing image files.  For example,
 *	a format of null and an .rgb (or missing) extension gives the DX rgb output, while a format of 
-*	"Image Magick supported format" and an .rgb extension gives the more conventional raw red/green/blue bytes in a file.
-*	Another example is specifying "filename.miff" and "Image Magick supported format", where dx writes its miff
+*	"ImageMagick supported format" and an .rgb extension gives the more conventional raw red/green/blue bytes in a file.
+*	Another example is specifying "filename.miff" and "ImageMagick supported format", where dx writes its miff
 *	and IM converts and overwrites it to its liking.
 *
 * DX prefers the "format" to the extension, IM goes by the extension.
@@ -45,7 +45,7 @@
 *if dx recognized the extension for the format, the extension was
 *removed from the basename and now the ImageArgs.extension points to the extension.
 *however, dx will not (currently) have hardcoded all extensions that IM supports.
-*So it is easily possible that by the time we get here, we have a format of "Image Magick supported format" or null
+*So it is easily possible that by the time we get here, we have a format of "ImageMagick supported format" or null
 * and a filename
 * with or without an extension appended, with or without a null imageargs.extension.
 */
@@ -78,7 +78,7 @@
 #endif
 
 #ifdef HAVE_LIBMAGICK
-/* we have some namespace conflicts with Image Magick */
+/* we have some namespace conflicts with ImageMagick */
 #undef ImageInfo
 #undef ImageType
 #include <magick/api.h>
@@ -95,7 +95,7 @@
 static Error write_im(RWImageArgs *iargs);
 
 /*
- * DXWrite out the given image in some format supported by Image Magick
+ * DXWrite out the given image in some format supported by ImageMagick
  * currently through an intermediary file in miff (Magick Image File
  * Format) though ideally this would use ImageMagick-4.2.8+'s blob support
  * for in-memory translation.  
@@ -143,10 +143,10 @@ static Error write_im(RWImageArgs *iargs)
 		/* no extension or not recognized */
 		if(iargs->format)
 			{
-				if(strcmp(iargs->format,"Image Magick supported format"))
+				if(strcmp(iargs->format,"ImageMagick supported format"))
 					{
 						char* firstspace;
-						/* not "Image Magick supported format" format, use format for extension */
+						/* not "ImageMagick supported format" format, use format for extension */
 						iargs->extension=iargs->format;
 						/* strip junk we can't deal withafter format... like "gif delayed=1" */
 						firstspace=strchr(iargs->extension, ' ');
@@ -181,7 +181,7 @@ static Error write_im(RWImageArgs *iargs)
 	   } else {
 	  	DXMessage("The specified extension or format was unrecognized or unsupported, tried to use:");
 	  	DXMessage(iargs->extension);
-	  	DXMessage("if format specified is *exactly* 'Image Magick supported format' then perhaps the file extension is faulty.");
+	  	DXMessage("if format specified is *exactly* 'ImageMagick supported format' then perhaps the file extension is faulty.");
 	  	DXErrorReturn(ERROR_BAD_PARAMETER,"invalid extension, format, or unsupported by ImageMagick");
 	   }
 	
@@ -253,7 +253,7 @@ static Error write_im(RWImageArgs *iargs)
 	DEBUGMESSAGE("back from ReadImage");
       if (image == (Image *) NULL) {
 	DEBUGMESSAGE("oops it was null");
-	  DXErrorReturn(ERROR_BAD_PARAMETER,"Image Magick API could not read file");
+	  DXErrorReturn(ERROR_BAD_PARAMETER,"ImageMagick API could not read file");
 	}
 	DEBUGMESSAGE("looks like ReadImage successful, we're going to try to write:");
       /*
@@ -355,7 +355,7 @@ error:
 	DXFree((Pointer)miff_filename);
    return (ERROR);
 #else /* ndef HAVE_LIBMAGICK */
-	  DXErrorReturn(ERROR_NOT_IMPLEMENTED,"Image Magick not included in build");
+	  DXErrorReturn(ERROR_NOT_IMPLEMENTED,"ImageMagick not included in build");
 #endif /* def HAVE_LIBMAGICK */
     }
 
@@ -482,7 +482,7 @@ SizeData * _dxf_ReadImageSizesIM
                  int      *multiples )
 {
 #if !defined(HAVE_LIBMAGICK) || !defined(MAGICK5)
-    DXErrorReturn(ERROR_NOT_IMPLEMENTED,"Image Magick 5 not included in build");
+    DXErrorReturn(ERROR_NOT_IMPLEMENTED,"ImageMagick 5 not included in build");
 #else
 
     Image         *image;
@@ -581,7 +581,7 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
                     int delayed, char *colortype )
 {
 #if !defined(HAVE_LIBMAGICK) || !defined(MAGICK5)
-    DXErrorReturn(ERROR_NOT_IMPLEMENTED,"Image Magick 5 not included in build");
+    DXErrorReturn(ERROR_NOT_IMPLEMENTED,"ImageMagick 5 not included in build");
 #else
 
     Field          dx_image = NULL;
@@ -649,7 +649,7 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
 
         /*  Create the image field  */
         dx_image = DXMakeImageFormat(width, height, colortype);
-        if (! image)
+        if (! dx_image)
             goto error;
         
         colorsArray = (Array)DXGetComponentValue(dx_image, "colors");
@@ -720,7 +720,7 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
 
         /*  Create the image field  */
         dx_image = DXMakeImageFormat(width, height, colortype);
-        if (! image)
+        if (! dx_image)
             goto error;
         
         colorsArray = (Array)DXGetComponentValue(dx_image, "colors");
@@ -858,7 +858,10 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
                     memcpy( pptr, indexes, width );
                 else
                     for ( x = 0; x < width; x++ )
-                        *(pptr++) = *(optr++) = *(indexes++);   
+                        if( image->matte )
+                            *(pptr++) = *(optr++) = *(indexes++);
+                        else
+                            *(pptr++) = *(indexes++); 
                 
                 /* Opacities in colormap is wrong; use direct color map */
                 if ( image->matte )
@@ -893,7 +896,7 @@ int  /* 0/1 on failure/success */
 _dxf_ValidImageExtensionIM(char *ext)
 {
 #if !defined(HAVE_LIBMAGICK) || !defined(MAGICK5)
-    DXErrorReturn(ERROR_NOT_IMPLEMENTED,"Image Magick 5 not included in build");
+    DXErrorReturn(ERROR_NOT_IMPLEMENTED,"ImageMagick 5 not included in build");
 #else
     ExceptionInfo  _dxd_exception_info;
     MagickInfo    *minfo;

@@ -1101,7 +1101,7 @@ INPUT nColors; integer; 256; max. number of colors to use
 OUTPUT images; image or image series; resulting quantized images
 
 #ifdef HAVE_LIBMAGICK
-#define MAGICK_FORMATS ; gif ; Image Magick supported format
+#define MAGICK_FORMATS ; ImageMagick supported format
 #else
 #define MAGICK_FORMATS
 #endif

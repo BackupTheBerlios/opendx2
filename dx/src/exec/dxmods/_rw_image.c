@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.7 2002/03/21 02:57:31 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.8 2002/04/03 05:34:39 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -136,14 +136,13 @@ static ImageInfo ImageTable[] = {
 	_dxf_write_miff,  
 	NULL},
 #ifdef HAVE_LIBMAGICK
- { img_typ_gif,      
+ { img_typ_im,  
 	1, 
-	"gif",              
-	"gif:giff",  /* Preferred. */
-	0, 					
+	"imagemagick supported format",       /* due to pattern matching algorithm, must be lower case */
+	"jpeg:jpg:gif",      /* FIXME: there is a way to get this list from IM */
+	0,			/* FIXME: possibly separate into APPENDABLE_FILES and 0 */
 	_dxf_write_im,  
-	NULL}, 
-
+	nullread},
  { img_typ_im,  
 	1, 
 	"image magick supported format",       /* due to pattern matching algorithm, must be lower case */
