@@ -5,9 +5,11 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/d.h,v 1.5 2000/08/11 15:28:10 davidt Exp $
+ */
 
 #include <dxconfig.h>
-
 
 #ifndef	__EX_DICTIONARY_H
 #define	__EX_DICTIONARY_H

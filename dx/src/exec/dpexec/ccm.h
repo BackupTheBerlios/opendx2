@@ -5,11 +5,14 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/ccm.h,v 1.2 2000/08/11 15:28:10 davidt Exp $
+ */
+
+#include <dxconfig.h>
 
 #ifndef _CCM_H
 #define _CCM_H
-
-#include <dxconfig.h>
 
 int _dxfSetupServer(int pport, int *psock,
             struct sockaddr_in *pserver

@@ -5,9 +5,11 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/path.h,v 1.5 2000/08/11 15:28:13 davidt Exp $
+ */
 
 #include <dxconfig.h>
-
 
 #ifndef __PATH_H
 #define	__PATH_H

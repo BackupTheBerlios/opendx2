@@ -5,6 +5,9 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/nodeb.h,v 1.2 2000/08/11 15:28:12 davidt Exp $
+ */
 
 #ifndef _NODEB_H
 #define _NODEB_H

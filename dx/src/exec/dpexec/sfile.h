@@ -5,6 +5,9 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/sfile.h,v 1.4 2000/08/11 15:28:14 davidt Exp $
+ */
 
 #ifndef _SFILE_H
 #define _SFILE_H

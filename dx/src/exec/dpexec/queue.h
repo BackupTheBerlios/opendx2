@@ -5,14 +5,16 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-#ifndef	__EX_QUEUE_H
-#define	__EX_QUEUE_H
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/queue.h,v 1.4 2000/08/11 15:28:13 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
+#ifndef	__EX_QUEUE_H
+#define	__EX_QUEUE_H
 
 #include <dx/dx.h>
-
 #include "utils.h"
 
 typedef struct	_EXQueue		*EXQueue;

@@ -6,6 +6,10 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/pmodflags.h,v 1.4 2000/08/11 15:28:13 davidt Exp $
+ */
+
+/*
  * these flags modify how a module is treated by the executive and the 
  * user interface.   MODULE_XXX is set in the .mdf file by putting a
  *   FLAGS XXX
@@ -17,6 +21,8 @@
 
 #include <dxconfig.h>
 
+#ifndef PMODFLAGS_H_
+#define PMODFLAGS_H_
 
 #include <dx/modflags.h>
 
@@ -37,3 +43,4 @@
 #define MODULE_PASSBACK     __BIT(18)  /*internal use only */
 #define MODULE_ASYNCNAMED   __BIT(19)  /* does this module have a rerun key*/
 
+#endif /* PMODFLAGS_H_ */

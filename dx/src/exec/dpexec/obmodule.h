@@ -5,11 +5,14 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-#ifndef	__REMOTE_H
-#define	__REMOTE_H
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/obmodule.h,v 1.4 2000/08/11 15:28:12 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
+#ifndef	__REMOTE_H
+#define	__REMOTE_H
 
 #include "utils.h"
 

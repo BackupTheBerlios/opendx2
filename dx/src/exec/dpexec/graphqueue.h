@@ -5,10 +5,11 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/graphqueue.h,v 1.5 2000/08/11 15:28:11 davidt Exp $
+ */
 
 #include <dxconfig.h>
-
-
 
 #ifndef _GRAPHQUEUE_H
 #define _GRAPHQUEUE_H
