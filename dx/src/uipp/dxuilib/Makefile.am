@@ -11,13 +11,18 @@ dxdatadir = $(DXROOT)/data
 dxincludedir = $(DXROOT)/include/dx
 noinst_LIBRARIES = libDXUI.a
 
-BUILT_SOURCES = sequence.txt 		\
-		gifmac.txt 		\
-		vrmlmac.txt 		\
-		dxmac.txt 		\
-		imagemac.txt 		\
-		netlex.h		\
-		netyacc.c	
+BUILT_SOURCES = \
+	sequence.txt \
+	gifmac.txt \
+	vrmlmac.txt \
+	dxmac.txt \
+	imagemac.txt \
+	netlex.h \
+	netyacc.c
+
+EXTRA_DIST = \
+	sequence.net \
+	imagemac.net 
 
 noinst_HEADERS = \
 	AccessNetworkPanelsCommand.h \
