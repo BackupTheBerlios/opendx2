@@ -78,6 +78,47 @@ String LabelDecorator::DefaultResources[] =
   ".decorator.marginBottom:   4",
   ".decorator.marginWidth:    0",
   ".decorator.marginHeight:   0",
+
+  //
+  // Added because of the change made to reduce the font sizes used thruout
+  // the ui.  The fonts used in decorators must remain the same just as the
+  // fonts used in the StandIn must remain the same.  Otherwise we have
+  // trouble reading in existing nets since they're filled with position
+  // and size information.
+  //
+#if defined(DXD_OS_NON_UNIX)
+    "*fontList:\
+-adobe-helvetica-bold-r-normal--14-*iso8859-1=bold,\
+-adobe-helvetica-bold-r-normal--14-*iso8859-1=canvas,\
+-adobe-helvetica-bold-r-normal--12-*=small_bold,\
+-adobe-helvetica-bold-r-normal--12-*=small_canvas,\
+-adobe-helvetica-bold-r-normal--18-*=big_bold,\
+-adobe-helvetica-bold-r-normal--24-*=huge_bold,\
+-adobe-helvetica-medium-r-normal--14-*=normal,\
+-adobe-helvetica-medium-r-normal--12-*=small_normal,\
+-adobe-helvetica-medium-r-normal--18-*=big_normal,\
+-adobe-helvetica-medium-r-normal--24-*=huge_normal,\
+-adobe-helvetica-medium-o-normal--12-*=small_oblique,\
+-adobe-helvetica-medium-o-normal--18-*=big_oblique,\
+-adobe-helvetica-medium-o-normal--24-*=huge_oblique,\
+-adobe-helvetica-medium-o-normal--14-*=oblique",
+#else
+    "*fontList:\
+-adobe-helvetica-bold-r-normal--14-*iso8859-1=bold,\
+-adobe-helvetica-bold-r-normal--14-*iso8859-1=canvas,\
+-adobe-helvetica-bold-r-normal--12-*iso8859-1=small_bold,\
+-adobe-helvetica-bold-r-normal--12-*iso8859-1=small_canvas,\
+-adobe-helvetica-bold-r-normal--18-*iso8859-1=big_bold,\
+-adobe-helvetica-bold-r-normal--24-*iso8859-1=huge_bold,\
+-adobe-helvetica-medium-r-normal--14-*iso8859-1=normal,\
+-adobe-helvetica-medium-r-normal--12-*iso8859-1=small_normal,\
+-adobe-helvetica-medium-r-normal--18-*iso8859-1=big_normal,\
+-adobe-helvetica-medium-r-normal--24-*iso8859-1=huge_normal,\
+-adobe-helvetica-medium-o-normal--12-*iso8859-1=small_oblique,\
+-adobe-helvetica-medium-o-normal--18-*iso8859-1=big_oblique,\
+-adobe-helvetica-medium-o-normal--24-*iso8859-1=huge_oblique,\
+-adobe-helvetica-medium-o-normal--14-*iso8859-1=oblique",
+#endif
 //
 // It might be nice to set these.  Everthing gets pinned top,left in user style
 // panels but few things get pinned right and/or bottom.  Should label decorators?
