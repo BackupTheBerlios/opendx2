@@ -184,7 +184,7 @@ DXCreateTaskGroup()
 	    return ERROR;
 	if (!DXcreate_lock(&(ti->undone_lock), "undone DXlock"))
 	    return ERROR;
-	if (!DXcreate_lock(&(ti->done_flag), "done flag"))
+	if (!DXcreate_lock(&(ti->done_flag), "extra tasks lock"))
 	    return ERROR;
 
 	/* initialize them */
@@ -195,12 +195,15 @@ DXCreateTaskGroup()
 	lti.alloc = 1000;
 	lti.tasks = (struct task *)
 	    DXAllocateLocal(lti.alloc * sizeof(struct task));
+
+        /*  One-time initialization  */
+        ti->tasks = NULL;
+        ti->ntasks = 0;
+        ti->undone = 0;
+
     }
 
     /* initialize */
-    ti->tasks = NULL;
-    ti->ntasks = 0;
-    ti->undone = 0;
     ti->rc = OK;
 
     return OK;
@@ -351,6 +354,7 @@ DXExecuteTaskGroup()
 {
     static int been_here = 0, nopin = 0;
     int i;
+    int master;
 
     if (!been_here) {			/* create workers */
 
@@ -400,29 +404,36 @@ DXExecuteTaskGroup()
 
     }
 
-    if (lti.ntasks==0)
-	return OK;
+    /* If master task group, sort the tasks and copy them to global memory */
+    if (lti.ntasks > 0) {
+       master = 1;
+       tasksort(lti.tasks, lti.ntasks);
+       ti->tasks = (struct task *) DXAllocate(lti.ntasks * sizeof(struct task));
+       if (!ti->tasks)
+           return ERROR;
+       memcpy(ti->tasks, lti.tasks, lti.ntasks * sizeof(struct task));
 
-    DXMarkTime("start parallel");
+       ti->ntasks = lti.ntasks;        /* number of tasks */
+       ti->undone = lti.ntasks;        /* number of tasks not yet done */
+       lti.ntasks = 0;                 /* no more tasks here */
+    }
+    else if (ti->first)
+       master = 0;
+    else
+       return OK;                      /* No tasks to start  */
 
-    /* sort the tasks and copy them to global memory */
-    tasksort(lti.tasks, lti.ntasks);
-    ti->tasks = (struct task *) DXAllocate(lti.ntasks * sizeof(struct task));
-    if (!ti->tasks)
-	return ERROR;
-    memcpy(ti->tasks, lti.tasks, lti.ntasks * sizeof(struct task));
-
-    ti->ntasks = lti.ntasks;		/* number of tasks */
-    ti->undone = lti.ntasks;		/* number of tasks not yet done */
-    lti.ntasks = 0;			/* no more tasks here */
     DXunlock(&(ti->task_lock), 0);	/* start task execution */
-    while (ti->ntasks > 0) {		/* while there are tasks to be done, */
+    while (ti->ntasks > 0 || ti->first){/* while there are new tasks to start,*/
 	one_task(0);			/* do a task, but don't block */
 	DXqflush();			/* flush its messages, if any */
     }
-    DXlock(&(ti->done_flag), 0);		/* wait for all tasks done */
-    DXFree((Pointer)ti->tasks);		/* free allocated task storage */
-    ti->tasks = NULL;			/* just in case */
+
+    /*  If master, wait for all tasks to finish  */
+    if (master) {
+       DXlock(&(ti->done_flag), 0);    /* wait for all tasks done */
+       DXFree((Pointer)ti->tasks);     /* free allocated task storage */
+       ti->tasks = NULL;               /* just in case */
+    }
     DXMarkTime("end parallel");		/* timing */
     return ti->rc;			/* return error if anyone failed */
 }    
