@@ -67,7 +67,7 @@
 * No errors are defined.
 *****************************************************************************/
 
-#if !defined(HAVE_GETOPT)
+#if !defined(HAVE_OPTARG)
 
 #include <stdio.h>                  /* for EOF */
 #include <string.h>                 /* for strchr() */
