@@ -779,6 +779,7 @@ AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
 
 AC_EGREP_CPP(xyzzy, 
 [
+#include <signal.h>
 #if defined(SIGBUS)
 xyzzy
 #endif
@@ -786,6 +787,7 @@ xyzzy
 
 AC_EGREP_CPP(xyzzy, 
 [
+#include <signal.h>
 #if defined(SIGKILL)
 xyzzy
 #endif
@@ -793,6 +795,7 @@ xyzzy
 
 AC_EGREP_CPP(xyzzy, 
 [
+#include <signal.h>
 #if defined(SIGDANGER)
 xyzzy
 #endif
@@ -800,6 +803,7 @@ xyzzy
 
 AC_EGREP_CPP(xyzzy, 
 [
+#include <signal.h>
 #if defined(SIGPIPE)
 xyzzy
 #endif
@@ -807,17 +811,11 @@ xyzzy
 
 AC_EGREP_CPP(xyzzy, 
 [
+#include <signal.h>
 #if defined(SIGQUIT)
 xyzzy
 #endif
 ], AC_DEFINE(HAVE_SIGQUIT))
-
-AC_EGREP_HEADER(SIGBUS, signal.h, AC_DEFINE(HAVE_SIGBUS))
-AC_EGREP_HEADER(SIGKILL, signal.h, AC_DEFINE(HAVE_SIGKILL))
-AC_EGREP_HEADER(SIGDANGER, signal.h, AC_DEFINE(HAVE_SIGDANGER))
-AC_EGREP_HEADER(SIGPIPE, signal.h, AC_DEFINE(HAVE_SIGPIPE))
-AC_EGREP_HEADER(SIGQUIT, signal.h, AC_DEFINE(HAVE_SIGQUIT))
-
 
 AC_TRY_COMPILE(
 [],
