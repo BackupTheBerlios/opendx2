@@ -55,7 +55,6 @@ Widget
 CommandTextPopup::createTextPopup(Widget parent, const char **items, int nitems,
 	SetTextCallback stc, ChangeTextCallback ctc, void *callData)
 {
-/* Need to add Windows path stuff here. dlt */
 char help_msg[128];
 int i, len;
 #define LENLIM 30
@@ -173,8 +172,6 @@ char *more_items[MAXITEMS];
 
 void CommandTextPopup::activateTextCallback(const char *file_name, void *)
 {
-/* Once file selected, returns to this function, change pathname to unix
-   to clean up problems. dlt */
 int i;
 char *cp;
 

@@ -735,7 +735,6 @@ boolean GARChooserWindow::postDataFileSelector()
 
 void GARChooserWindow::setFileSearchDir(const char *value)
 {
-/* Need to put code in for Windows conversion dlt. */
     if (this->file_search_dir) delete this->file_search_dir;
     this->file_search_dir = NUL(char*);
 
