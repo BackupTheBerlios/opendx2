@@ -41,7 +41,7 @@ class FileContents {
 
       char* processReplacements(List*);
 
-      friend QuitCommand;  // so that QuitCommand can make a call to CleanUp().
+      friend class QuitCommand;  // so that QuitCommand can make a call to CleanUp().
       static List* QueuedForDeletion;
       static void  CleanUp();
       static XtIntervalId CleanUpTimer;
@@ -84,7 +84,7 @@ class FileContents {
 //
 class Changling {
   private:
-    friend FileContents;
+    friend class FileContents;
 
     //
     // *start is the first char to copy preceeding the match.

@@ -14,6 +14,7 @@
 #ifndef _GARMainWindow_h
 #define _GARMainWindow_h
 
+#include <iostream.h>
 #include <fstream.h>
 #include <Xm/Xm.h>
 

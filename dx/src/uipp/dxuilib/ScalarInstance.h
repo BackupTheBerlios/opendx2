@@ -42,9 +42,9 @@ class SetScalarAttrDialog;
 //
 class ScalarInstance : public InteractorInstance  {
 
-    friend ScalarNode;
-    friend SetScalarAttrDialog;
-    friend StepperInteractor;
+    friend class ScalarNode;
+    friend class SetScalarAttrDialog;
+    friend class StepperInteractor;
     friend class DialInteractor;
     friend class SliderInteractor;
 

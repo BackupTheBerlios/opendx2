@@ -16,6 +16,8 @@
 #include <strstream.h>
 #endif
 
+#include <iostream.h>
+
 #if defined(HAVE_STRSTREA_H)
 #include <strstrea.h>
 #endif
@@ -104,8 +106,8 @@ class GARApplication : public IBMApplication
     friend Boolean GARApplication_CheckStdoutWP (XtPointer );
     friend void GARApplication_CheckStdoutTO (XtPointer , XtIntervalId* );
 
-    friend GARChooserWindow;
-    friend GridChoice;
+    friend class GARChooserWindow;
+    friend class GridChoice;
 
     void shutdownApplication() {};
 

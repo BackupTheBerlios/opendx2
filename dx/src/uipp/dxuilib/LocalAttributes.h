@@ -30,7 +30,7 @@
 // Currently, we only support a local delta value.
 //
 class LocalAttributes : public Base {
-    friend InteractorNode;
+    friend class InteractorNode;
     friend class ScalarNode;
     friend class ScalarInstance;
     friend class ScalarListInstance;

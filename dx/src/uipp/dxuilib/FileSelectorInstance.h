@@ -32,8 +32,8 @@ class FileSelectorDialog;
 //
 class FileSelectorInstance : public ValueInstance {
 
-      friend FileSelectorNode;
-      friend FileSelectorDialog;
+      friend class FileSelectorNode;
+      friend class FileSelectorDialog;
 
   private:
     char 	*fileFilter;

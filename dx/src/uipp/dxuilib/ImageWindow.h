@@ -223,7 +223,7 @@ struct ImageState {
 //				
 class ImageWindow : public DXWindow
 {
-    friend NoUndoImageCommand;
+    friend class NoUndoImageCommand;
 
   private:
     //

@@ -30,7 +30,7 @@
 //				
 class ActiveItemDictionary : public Dictionary 
 {
-    friend DictionaryIterator;
+    friend class DictionaryIterator;
 
   private:
     //

@@ -33,7 +33,7 @@ class NoUndoAnchorCommand;
 
 class DXAnchorWindow: public DXWindow {
 
-    friend NoUndoAnchorCommand;
+    friend class NoUndoAnchorCommand;
 
   // P R I V A T E   P R I V A T E   P R I V A T E   
   // P R I V A T E   P R I V A T E   P R I V A T E   

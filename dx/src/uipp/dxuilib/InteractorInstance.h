@@ -39,7 +39,7 @@ class SetAttrDialog;
 //
 class InteractorInstance : public Base {
 
-    friend Interactor;
+    friend class Interactor;
     friend void InteractorNode::openDefaultWindow(Widget w);
 
   private:

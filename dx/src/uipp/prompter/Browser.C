@@ -10,7 +10,6 @@
 #include "../base/defines.h"
 
 
-
 #include <ctype.h>
 #include <Xm/Xm.h>
 #include <Xm/MainW.h>
@@ -33,6 +32,7 @@
 #include "../base/DXStrings.h"
 
 #include <fstream.h>
+#include <iostream.h>
 #include <sys/stat.h>
 
 #if HAVE_REGCOMP && HAVE_REGEX_H

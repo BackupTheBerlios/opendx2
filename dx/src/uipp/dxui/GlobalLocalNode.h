@@ -48,8 +48,8 @@ class EditorWindow;
 //				
 class GlobalLocalNode : public Node
 {
-     friend EditorWindow; // Actually, I only want convertGetAndSetNodes() to
-			  // be able to call setAsLocal/GlobalNode().
+     friend class EditorWindow; // Actually, I only want convertGetAndSetNodes() to
+				// be able to call setAsLocal/GlobalNode().
   private:
     //
     // Private member data:

@@ -1955,7 +1955,7 @@ char linebuf[MAXLINE];
 #define WHITESPACE(l) ((l) == ' ' || (l) == '\t')
 
 char *
-getline(FILE *fd)
+_dxf_getline(FILE *fd)
 {
     int i;
     int c;
@@ -2053,7 +2053,7 @@ process_input(char *basename, Module *mod, Parameter **in, Parameter **out)
     }
 
     linenum = -1;
-    while (NULL != (line = getline(fd)))
+    while (NULL != (line = _dxf_getline(fd)))
     {
 	linenum ++;
 

@@ -28,7 +28,7 @@
 //
 class ToggleInstance : public InteractorInstance  {
 
-    friend ToggleNode;
+    friend class ToggleNode;
 
   private:
 

@@ -107,9 +107,9 @@ class OptionsDialog;
 //				
 class MBMainWindow : public IBMMainWindow
 {
-    friend MBCommand;
-    friend MBNewCommand;
-    friend ConfirmedQCommand;
+    friend class MBCommand;
+    friend class MBNewCommand;
+    friend class ConfirmedQCommand;
 
   private:
     //

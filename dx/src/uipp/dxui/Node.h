@@ -76,7 +76,7 @@ class Node : public Base
 #endif
 {
     //friend StandIn::setNodePosition(Node *n, int x,int y);		
-    friend StandIn;	// FIXME: use the above
+    friend class StandIn;	// FIXME: use the above
 
   private:
     //

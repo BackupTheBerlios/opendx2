@@ -33,7 +33,7 @@ class GARChooserWindow: public IBMMainWindow
   private:
     CommandTextPopup *text_file;
 
-    friend TypeChoice;
+    friend class TypeChoice;
     friend void TypeChoice_BrokenConnCB(DXLConnection*, void*);
     friend void TypeChoice_HandleMessagesCB (XtPointer , int*, XtInputId* );
     friend Boolean GARChooserWindow_SyncWP (XtPointer );

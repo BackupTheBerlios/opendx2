@@ -48,7 +48,7 @@ class DictionaryEntry {
 //				
 class Dictionary : protected List 
 {
-    friend DictionaryIterator;
+    friend class DictionaryIterator;
 
   private:
     //
