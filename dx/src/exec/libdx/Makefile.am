@@ -11,18 +11,18 @@ noinst_HEADERS = \
 	binSort.h triangles.h internals.h diskio.h zclip.h edf.h render.h \
 	qsort.c
 
-EXTRA_DIST = \
-	class class.awk \
-	\
+XFILES = \
 	arrayClass.X cameraClass.X clippedClass.X fieldClass.X groupClass.X \
 	lightClass.X objectClass.X privateClass.X screenClass.X stringClass.X \
 	xformClass.X interpClass.X fieldinterpClass.X groupinterpClass.X \
 	fle2DClass.X linesII1DClass.X linesRR1DClass.X linesRI1DClass.X \
 	trisRI2DClass.X quadsRR2DClass.X cubesIIClass.X cubesRRClass.X \
-	tetrasClass.X quadsII2DClass.X \
-	\
+	tetrasClass.X quadsII2DClass.X 
+
+EXTRA_DIST = \
+	class class.awk \
+	$(XFILES) \
 	buffer.Z shade.Z triangle.Z quad.Z plane.Z  \
-	\
 	local.mk
 
 CLEANFILES = \
@@ -120,13 +120,15 @@ CLEANFILES = \
 
 SUFFIXES = .X .Z .h .m .c .o .s .i
 
+include local.mk
+
+$(built_headers) : $(XFILES)
 $(built_sources) : $(built_headers)
 
 BUILT_SOURCES =  $(built_sources) $(built_headers)
 
 $(libDXlite_a_SOURCES) $(libLIBDX_a_SOURCES): $(built_headers)
 
-include local.mk
 
 zclipQ.o: zclipQ.c
 	$(COMPILE) -c -O zclipQ.c
