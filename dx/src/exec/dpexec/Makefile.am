@@ -33,7 +33,7 @@ libDPEXECclm_la_SOURCES = \
 	crc.c d.c exobject.c function.c license.c loader.c macro.c \
 	dpparse.c userinter.c utils.c optarg.c sfile.c ddx.c
 
-EXTRA_DIST = local.mk
+EXTRA_DIST = local.mk dxThreadMain.cpp dxThreadMain.h tmainUtil.cpp tmainUtil.h
 
 $(OBJECTS): yuiif.c yuiif.h
 

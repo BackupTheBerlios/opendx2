@@ -18,6 +18,8 @@ dxexec_LDADD = ../dpexec/libDPEXEC.la ../dxmods/libDXMODS.la ../dxmods/user.lo \
 dxexec_LDFLAGS = @DXEXEC_EXP@
 dxexec_SOURCES = main.c
 
+EXTRA_DIST = tmain.cpp
+
 install-data-hook:
 	if test "$(ARCH)" = "intelnt" ; then \
 	$(INSTALL_DATA) dxexec.exp $(prefix)/dx/lib_intelnt/dxexec.exp ; \

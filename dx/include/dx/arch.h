@@ -546,7 +546,7 @@ union wait{
 
 #undef IOCTL
 #define IOCTL(fd,cmd,buf) \
-	 ioctlsocket(fd,cmd,(char *)buf)
+	 ioctlsocket(fd,cmd,(u_long *)buf)
 
 
 #if defined(DXD_EXEC_WAIT_PROCESS)
@@ -642,8 +642,14 @@ union wait{
 #include <process.h>
 #include <direct.h>
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 int gettablesize(void);
 int getopt(int,char**,char*);
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #if defined(cygwin)
 #include <sys/types.h>
