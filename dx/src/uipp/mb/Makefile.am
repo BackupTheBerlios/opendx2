@@ -21,7 +21,7 @@ EXTRA_DIST = \
 	CommentDialog.C			\
 	OptionsDialog.C			\
 	MBParameter.C			\
-	MBGenerate.C
+	MBGenerate.C			\
 	\
 	Main.C
 
