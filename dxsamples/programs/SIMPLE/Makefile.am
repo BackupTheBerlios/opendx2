@@ -53,6 +53,8 @@ LINKLIST = \
          MapToPlane.net\
          MarkUnmark.cfg\
          MarkUnmark.net\
+         PlotColumn.cfg\
+         PlotColumn.net\
          Post.cfg\
          Post.net\
          QuantizeImage.cfg\

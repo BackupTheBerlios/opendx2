@@ -49,6 +49,7 @@ DATA1 = Accumulate.cfg Accumulate.net AlternateVisualizations.cfg \
     MovingSheet.cfg MovingSheet.net MultipleDataSets.cfg MultipleDataSets.net
 
 DATA2 = PickPlot.cfg PickPlot.net PickStreamline.cfg PickStreamline.net \
+    PlotColumn.cfg PlotColumn.net \
     PlotGroupOfLines.cfg PlotGroupOfLines.net PlotLine.cfg PlotLine.net \
     PlotLine2.cfg PlotLine2.net PlotSpecifyTicks.cfg PlotSpecifyTicks.net \
     PlotTwoLines.cfg PlotTwoLines.net Post.cfg Post.net \

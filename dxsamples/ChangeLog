@@ -1,3 +1,12 @@
+4.x
+-----------------------
+Added PlotColumn.net sample.
+
+4.3.2
+-----------------------
+Added Makefile for Linux for dxlink samples. Minor
+cleanup of all the Makefiles for dxlink.
+
 4.3
 -----------------------
 Added BioRad PIC format
