@@ -1935,6 +1935,7 @@ void GraphLayout::repositionGroups(Node* reflow[], int reflow_count)
 	ninfo->getXYPosition (nx, ny);
 	ninfo->setProposedLocation (nx+x-x1, ny+y-y1);
     }
+    free(groups);
 }
 
 NodeInfo::~NodeInfo() 
@@ -2131,6 +2132,11 @@ void LayoutRow::sort()
 		this->node_array[j]->getInstanceNumber());
 	}
     }
+}
+
+LayoutRow::~LayoutRow()
+{
+    if (this->node_array) free(this->node_array);
 }
 
 // Among the nodes we're placing, there are no connected outputs.  There
@@ -2468,4 +2474,13 @@ boolean LayoutRow::favorsLeftShift (Ark* arc, GraphLayout* mgr, boolean default_
     }
 
     return retval;
+}
+
+void SlotList::clear()
+{
+    ListIterator iter(*this);
+    Slot* slot;
+    while (slot=(Slot*)iter.getNext()) delete slot;
+    this->List::clear();
+    this->appendElement(new Slot(-999999, 999999));
 }

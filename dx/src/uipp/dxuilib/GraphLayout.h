@@ -305,10 +305,7 @@ class SlotList : public List
 	SlotList() {
 	    this->appendElement(new Slot(-999999, 999999));
 	}
-	virtual void clear() {
-	    this->List::clear();
-	    this->appendElement(new Slot(-999999, 999999));
-	}
+	virtual void clear();
 	virtual ~SlotList();
 	int isAvailable (int x, boolean left);
 	void occupy (int x, int width);
@@ -354,7 +351,7 @@ class LayoutRow : public Base
 
 	int getId() { return this->id; }
 
-	virtual ~LayoutRow(){}
+	virtual ~LayoutRow();
 	virtual const char* getClassName()
 	{
 	    return ClassLayoutRow;
