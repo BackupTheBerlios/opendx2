@@ -13,25 +13,34 @@
 #include <ctype.h>
 #include <string.h>
 #include <dx/arch.h>
-#if DXD_HAS_WINSOCKETS
-/* here's where to put NT windows socket specific includes */
-/* will need to fix other code as necessary */
-#define	EADDRINUSE	WSAEADDRINUSE
-#include <winsock.h>
-#else
 #include <sys/types.h>
+
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#define EADDRINUSE      WSAEADDRINUSE
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#else
 #include <sys/socket.h>
+#endif
+
+#if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
-#if DXD_SOCKET_UNIXDOMAIN_OK
+#endif
+
+#if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
 #endif
-#ifndef DXD_HAS_WINSOCKETS
+
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
+
 #if DXD_NEEDS_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-#endif
+
 #ifdef DXD_WIN
 #include <sys/timeb.h>
 #else
