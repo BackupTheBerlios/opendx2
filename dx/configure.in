@@ -254,7 +254,9 @@ AC_PROG_INSTALL
 dnl Checks for programs.
 AC_PROG_RANLIB
 AC_PROG_CXX
-ac_cv_prog_CXXCPP=$CXXCPP
+if test -n "$CXXCPP" ; then
+    ac_cv_prog_CXXCPP=$CXXCPP
+fi
 AC_PROG_CXXCPP
 AC_PROG_CC
 AC_PROG_CPP
