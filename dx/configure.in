@@ -38,6 +38,15 @@ DX_PROG_CPP
 DX_CYGWIN
 DX_EXEEXT
 
+if test "$ARCH" = "solaris" ; then
+    OLDLIBS=$LIBS
+    LIBS="-L/usr/openwin/lib $LIBS"
+    AC_CHECK_LIB(dga, dga_draw_devfd, 
+    [
+	LIBS="$LIBS -ldga"
+	AC_CHECK_LIB(Xmu, XmuAddInitializer, LIBS="$LIBS -lXmu")
+    ], LIBS=$OLDLIBS, -lX11)
+fi
 
 dnl A couple libs for cygwin
 AC_CHECK_LIB(ICE, IceConnectionNumber)
