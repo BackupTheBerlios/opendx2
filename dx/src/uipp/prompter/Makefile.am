@@ -4,7 +4,7 @@ INCLUDES =  -I../base -I../../../include
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxbindir = $(prefix)/dx/bin_@ARCH)
+dxbindir = $(prefix)/dx/bin_@ARCH@
 
 dxbin_PROGRAMS = prompter
 
