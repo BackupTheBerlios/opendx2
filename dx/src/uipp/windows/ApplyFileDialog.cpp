@@ -72,8 +72,9 @@ void ApplyFileDialog::createDialog()
 //
 void ApplyFileDialog::helpCallback(Dialog *d)
 {
-    char *string = this->getSelectedFileName();
+//    char *string = this->getSelectedFileName();
 
+	char *string = NULL;
     if (!string) {
         ModalErrorMessage("A filename must be given");
 	return;

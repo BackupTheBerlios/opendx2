@@ -735,110 +735,110 @@ void DXWindow::getGeometryAlternateNames(char** names, int* count, int max)
 
 //void DXWindow::createFileHistoryMenu (Widget parent)
 //{
-//    if (!this->isAnchor()) return ;
+//	if (!this->isAnchor()) return ;
 //
-//    //
-//    // if there is no history, and we don't have the ability to
-//    // store history, then don't bother offering the menu.
-//    //
-//    char fname[256];
-//    if (!theIBMApplication->getApplicationDefaultsFileName(fname)) {
-//	List recent_nets;
-//	theDXApplication->getRecentNets(recent_nets);
-//	if (recent_nets.getSize()==0) {
-//	    return ;
+//	//
+//	// if there is no history, and we don't have the ability to
+//	// store history, then don't bother offering the menu.
+//	//
+//	char fname[256];
+//	if (!theIBMApplication->getApplicationDefaultsFileName(fname)) {
+//		List recent_nets;
+//		theDXApplication->getRecentNets(recent_nets);
+//		if (recent_nets.getSize()==0) {
+//			return ;
+//		}
 //	}
-//    }
 //
-//    this->file_history_cascade = new CascadeMenu("fileHistory", parent);
+//	this->file_history_cascade = new CascadeMenu("fileHistory", parent);
 //
-//    //
-//    // put the callback on the menu parent in which we create the cascade
-//    // because that allows us to grey out the cascade button before the
-//    // user has a chance to click on it.
-//    //
-//    XtAddCallback(parent, XmNmapCallback,
-//	(XtCallbackProc)DXWindow_FileHistoryMenuMapCB, (XtPointer)this);
+//	//
+//	// put the callback on the menu parent in which we create the cascade
+//	// because that allows us to grey out the cascade button before the
+//	// user has a chance to click on it.
+//	//
+//	XtAddCallback(parent, XmNmapCallback,
+//		(XtCallbackProc)DXWindow_FileHistoryMenuMapCB, (XtPointer)this);
 //}
 
 void DXWindow::buildFileHistoryMenu()
 {
- //   if (!this->file_history_cascade) return ;
+	//if (!this->file_history_cascade) return ;
 
- //   ListIterator iter(this->file_history_buttons);
- //   ButtonInterface* bi;
- //   while (bi=(ButtonInterface*)iter.getNext()) {
-	//bi->unmanage();
-	//delete bi;
- //   }
- //   this->file_history_buttons.clear();
-
- //   iter.setList(this->file_history_commands);
- //   Command* cmd;
- //   while (cmd=(Command*)iter.getNext()) delete cmd;
- //   this->file_history_commands.clear();
-
- //   //Widget menu_parent = this->file_history_cascade->getMenuItemParent();
-
- //   List recent_nets;
- //   theDXApplication->getRecentNets(recent_nets);
- //   if (recent_nets.getSize()==0) {
-	//this->file_history_cascade->deactivate();
-
-	////
-	//// make a 1 button menu if there is no content available.
-	//// I don't think this necessary, but it won't hurt.  No one
-	//// will see it.
-	////
-	//const char* cp = "(null)";
-	//Symbol s = theSymbolManager->registerSymbol(cp);
-	//cmd = new OpenFileCommand(s);
-	//this->file_history_commands.appendElement(cmd);
-	//bi = new ButtonInterface(menu_parent, "openFile", cmd);
-	//bi->setLabel(cp);
-	//this->file_history_buttons.appendElement(bi);
-	//cmd->deactivate();
- //   } else {
-	//this->file_history_cascade->activate();
-	//
-	// Stick each button's label into this list, then before making
-	// new buttons, ensure that the button's label is unique.  If
-	// it isn't unique, then use the file's full path instead of
-	// just the base name. This list actually serves 2 purposes.
-	// It also records allocated memory so that we free it before
-	// finishing.
-	//
-	//List baseNames;
-	//iter.setList(recent_nets);
-	//Symbol s;
-	//while (s=(Symbol)(long)iter.getNext()) {
-	//    cmd = new OpenFileCommand(s);
-	//    this->file_history_commands.appendElement(cmd);
-	//    bi = new ButtonInterface(menu_parent, "openFile", cmd);
-	//    this->file_history_buttons.appendElement(bi);
-
-	//    const char* fullpath = theSymbolManager->getSymbolString(s);
-	//    char* cp = GetFileBaseName(fullpath,0);
-	//    baseNames.appendElement(cp);
-	//    bool unique = true;
-	//    ListIterator biter(baseNames);
-	//    const char* cmprtr;
-	//    while (cmprtr = (const char*)biter.getNext()) {
-	//	if ((cmprtr!=cp) && (EqualString(cmprtr, cp))) {
-	//	    unique = false;
-	//	    break;
-	//	}
-	//    }
-	//    if (!unique) {
-	//	cp = DuplicateString(fullpath);
-	//	baseNames.appendElement(cp);
-	//    }
-	//    bi->setLabel(cp);
+	//ListIterator iter(this->file_history_buttons);
+	//ButtonInterface* bi;
+	//while (bi=(ButtonInterface*)iter.getNext()) {
+	//	bi->unmanage();
+	//	delete bi;
 	//}
-	//iter.setList(baseNames);
-	//char* cp;
-	//while (cp=(char*)iter.getNext()) delete cp;
- //   }
+	//this->file_history_buttons.clear();
+
+	//iter.setList(this->file_history_commands);
+	//Command* cmd;
+	//while (cmd=(Command*)iter.getNext()) delete cmd;
+	//this->file_history_commands.clear();
+
+	////Widget menu_parent = this->file_history_cascade->getMenuItemParent();
+
+	//List recent_nets;
+	//theDXApplication->getRecentNets(recent_nets);
+	//if (recent_nets.getSize()==0) {
+	//	this->file_history_cascade->deactivate();
+
+	//	//
+	//	// make a 1 button menu if there is no content available.
+	//	// I don't think this necessary, but it won't hurt.  No one
+	//	// will see it.
+	//	//
+	//	const char* cp = "(null)";
+	//	Symbol s = theSymbolManager->registerSymbol(cp);
+	//	cmd = new OpenFileCommand(s);
+	//	this->file_history_commands.appendElement(cmd);
+	//	bi = new ButtonInterface(menu_parent, "openFile", cmd);
+	//	bi->setLabel(cp);
+	//	this->file_history_buttons.appendElement(bi);
+	//	cmd->deactivate();
+	//} else {
+	//	this->file_history_cascade->activate();
+
+	//	Stick each button's label into this list, then before making
+	//		new buttons, ensure that the button's label is unique.  If
+	//		it isn't unique, then use the file's full path instead of
+	//		just the base name. This list actually serves 2 purposes.
+	//		It also records allocated memory so that we free it before
+	//		finishing.
+
+	//		List baseNames;
+	//	iter.setList(recent_nets);
+	//	Symbol s;
+	//	while (s=(Symbol)(long)iter.getNext()) {
+	//		cmd = new OpenFileCommand(s);
+	//		this->file_history_commands.appendElement(cmd);
+	//		bi = new ButtonInterface(menu_parent, "openFile", cmd);
+	//		this->file_history_buttons.appendElement(bi);
+
+	//		const char* fullpath = theSymbolManager->getSymbolString(s);
+	//		char* cp = GetFileBaseName(fullpath,0);
+	//		baseNames.appendElement(cp);
+	//		bool unique = true;
+	//		ListIterator biter(baseNames);
+	//		const char* cmprtr;
+	//		while (cmprtr = (const char*)biter.getNext()) {
+	//			if ((cmprtr!=cp) && (EqualString(cmprtr, cp))) {
+	//				unique = false;
+	//				break;
+	//			}
+	//		}
+	//		if (!unique) {
+	//			cp = DuplicateString(fullpath);
+	//			baseNames.appendElement(cp);
+	//		}
+	//		bi->setLabel(cp);
+	//	}
+	//	iter.setList(baseNames);
+	//	char* cp;
+	//	while (cp=(char*)iter.getNext()) delete cp;
+	//}
 }
 
 //extern "C" void DXWindow_FileHistoryMenuMapCB(Widget , XtPointer clientdata, XtPointer )

@@ -79,12 +79,20 @@ bool XmlPreferences::createPrefs() {
 bool XmlPreferences::writePrefs(const char *filename) {
 	this->fileExisted = false;
 
-	// TODO: May want to remove non-persistent prefs. If so,
-	// will need to traverse tree and remove them before 
-	// trying to write file.
+	// Find only Persistent nodes and write them out to the prefs
+	// file. This is done by creating a new XmlDocument, importing
+	// appropriate nodes and adding them before writing.
 
 	try{
-		this->prefs->Save(filename);
+		System::String __gc *lookup = S"DXUIPREF[@Persistent='true']";
+		XmlNodeList __gc *nl = this->root->SelectNodes(lookup);
+
+		XmlDocument __gc *doc = new XmlDocument();
+		XmlElement __gc *elem = doc->CreateElement(S"PREFS");
+		for(int i=0; i<nl->Count; i++)
+			elem->AppendChild(doc->ImportNode(nl->ItemOf[i], true));
+
+		doc->Save(filename);
 		this->fileExisted = true;
 	} catch(System::Xml::XmlException *e) {
 		// couldn't write file
@@ -97,8 +105,8 @@ bool XmlPreferences::getPref(const char *prefName, char *&value) {
 		return false;
 
 	// Xml is in the form.
-	//<PREF Name='UIRoot'><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
-	//<PREF Name='wizard'><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
+	//<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
+	//<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
 
 	System::String __gc *lookup = S"DXUIPREF[@Name='";
 	lookup = System::String::Concat(lookup, new System::String(prefName));
@@ -134,8 +142,8 @@ bool XmlPreferences::getPref(const char *prefName, bool &value) {
 		return false;
 
 	// Xml is in the form.
-	//<PREF Name='UIRoot'><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
-	//<PREF Name='wizard'><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
+	//<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
+	//<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
 
 	System::String __gc *lookup = S"DXUIPREF[@Name='";
 	lookup = System::String::Concat(lookup, new System::String(prefName));
@@ -165,8 +173,8 @@ bool XmlPreferences::getPref(const char *prefName, int &value) {
 		return false;
 
 	// Xml is in the form.
-	//<PREF Name='UIRoot'><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
-	//<PREF Name='wizard'><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
+	//<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
+	//<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
 
 	System::String __gc *lookup = S"DXUIPREF[@Name='";
 	lookup = System::String::Concat(lookup, new System::String(prefName));
@@ -255,15 +263,13 @@ bool XmlPreferences::setPref(const char *prefName, const char *value, bool persi
 			try{
 				XmlElement *elem = this->prefs->CreateElement(S"DXUIPREF");
 				elem->SetAttribute(S"Name", new System::String(prefName));
+				if(persist)
+					elem->SetAttribute(S"Persistent", new System::String(S"true"));
+				else
+					elem->SetAttribute(S"Persistent", new System::String(S"false"));
 				XmlElement *val = this->prefs->CreateElement(S"VALUE");
 				val->InnerText = new System::String(value);
 				elem->AppendChild(val);
-				XmlElement *persistent = this->prefs->CreateElement(S"PERSISTENT");
-				if(persist)
-					persistent->InnerText = S"true";
-				else
-					persistent->InnerText = S"false";
-				elem->AppendChild(persistent);
 				this->root->ReplaceChild(elem, n);
 			} catch (System::Xml::XmlException *e) {
 				return false;
@@ -272,15 +278,13 @@ bool XmlPreferences::setPref(const char *prefName, const char *value, bool persi
 			try{
 				XmlElement *elem = this->prefs->CreateElement(S"DXUIPREF");
 				elem->SetAttribute(S"Name", new System::String(prefName));
+				if(persist)
+					elem->SetAttribute(S"Persistent", new System::String(S"true"));
+				else
+					elem->SetAttribute(S"Persistent", new System::String(S"false"));
 				XmlElement *val = this->prefs->CreateElement(S"VALUE");
 				val->InnerText = new System::String(value);
 				elem->AppendChild(val);
-				XmlElement *persistent = this->prefs->CreateElement(S"PERSISTENT");
-				if(persist)
-					persistent->InnerText = S"true";
-				else
-					persistent->InnerText = S"false";
-				elem->AppendChild(persistent);
 				this->root->AppendChild(elem);
 			} catch (System::Xml::XmlException *e) {
 				return false;
@@ -323,18 +327,16 @@ bool XmlPreferences::setPref(const char *prefName, PrefType type, const char *va
 			try{
 				XmlElement *elem = this->prefs->CreateElement(S"DXUIPREF");
 				elem->SetAttribute(S"Name", new System::String(prefName));
+				if(persist)
+					elem->SetAttribute(S"Persistent", new System::String(S"true"));
+				else
+					elem->SetAttribute(S"Persistent", new System::String(S"false"));
 				XmlElement *val = this->prefs->CreateElement(S"VALUE");
 				val->InnerText = new System::String(value);
 				elem->AppendChild(val);
 				XmlElement *tp = this->prefs->CreateElement(S"TYPE");
 				tp->InnerText = typeS;
 				elem->AppendChild(tp);
-				XmlElement *persistent = this->prefs->CreateElement(S"PERSISTENT");
-				if(persist)
-					persistent->InnerText = S"true";
-				else
-					persistent->InnerText = S"false";
-				elem->AppendChild(persistent);
 				this->root->ReplaceChild(elem, n);
 			} catch (System::Xml::XmlException *e) {
 				return false;
@@ -343,18 +345,16 @@ bool XmlPreferences::setPref(const char *prefName, PrefType type, const char *va
 			try{
 				XmlElement *elem = this->prefs->CreateElement(S"DXUIPREF");
 				elem->SetAttribute(S"Name", new System::String(prefName));
+				if(persist)
+					elem->SetAttribute(S"Persistent", new System::String(S"true"));
+				else
+					elem->SetAttribute(S"Persistent", new System::String(S"false"));
 				XmlElement *val = this->prefs->CreateElement(S"VALUE");
 				val->InnerText = new System::String(value);
 				elem->AppendChild(val);
 				XmlElement *tp = this->prefs->CreateElement(S"TYPE");
 				tp->InnerText = typeS;
 				elem->AppendChild(tp);
-				XmlElement *persistent = this->prefs->CreateElement(S"PERSISTENT");
-				if(persist)
-					persistent->InnerText = S"true";
-				else
-					persistent->InnerText = S"false";
-				elem->AppendChild(persistent);
 				this->root->AppendChild(elem);
 			} catch (System::Xml::XmlException *e) {
 				return false;
@@ -383,12 +383,10 @@ bool XmlPreferences::setDefault(const char *prefName, const char *value) {
 			try{
 				XmlElement *elem = this->prefs->CreateElement(S"DXUIPREF");
 				elem->SetAttribute(S"Name", new System::String(prefName));
+				elem->SetAttribute(S"Persistent", new System::String(S"false"));
 				XmlElement *val = this->prefs->CreateElement(S"VALUE");
 				val->InnerText = new System::String(value);
 				elem->AppendChild(val);
-				XmlElement *persistent = this->prefs->CreateElement(S"PERSISTENT");
-				persistent->InnerText = false;
-				elem->AppendChild(persistent);
 				this->root->AppendChild(elem);
 			} catch (System::Xml::XmlException *e) {
 				return false;
@@ -431,15 +429,13 @@ bool XmlPreferences::setDefault(const char *prefName, PrefType type, const char 
 			try{
 				XmlElement *elem = this->prefs->CreateElement(S"DXUIPREF");
 				elem->SetAttribute(S"Name", new System::String(prefName));
+				elem->SetAttribute(S"Persistent", new System::String(S"false"));
 				XmlElement *val = this->prefs->CreateElement(S"VALUE");
 				val->InnerText = new System::String(value);
 				elem->AppendChild(val);
 				XmlElement *tp = this->prefs->CreateElement(S"TYPE");
 				tp->InnerText = typeS;
 				elem->AppendChild(tp);
-				XmlElement *persistent = this->prefs->CreateElement(S"PERSISTENT");
-				persistent->InnerText = S"false";
-				elem->AppendChild(persistent);
 				this->root->AppendChild(elem);
 			} catch (System::Xml::XmlException *e) {
 				return false;

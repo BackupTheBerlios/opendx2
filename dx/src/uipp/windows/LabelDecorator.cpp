@@ -131,7 +131,7 @@ LabelDecorator::LabelDecorator(bool developerStyle, const char *name) :
     //this->setTextDialog = 0;
     //this->font[0] = '\0';  // equals XmSTRING_DEFAULT_CHARSET
     //this->otherStrings = NUL(Dictionary*);
-    //LabelDecorator::BuildTheCommentStyleDictionary();
+    LabelDecorator::BuildTheCommentStyleDictionary();
 }
 LabelDecorator::LabelDecorator(bool developerStyle) : 
 	Decorator (NULL, "LabelDecorator", developerStyle)
@@ -140,7 +140,7 @@ LabelDecorator::LabelDecorator(bool developerStyle) :
     //this->setTextDialog = 0;
     //this->font[0] = '\0';  // equals XmSTRING_DEFAULT_CHARSET
     //this->otherStrings = NUL(Dictionary*);
-    //LabelDecorator::BuildTheCommentStyleDictionary();
+    LabelDecorator::BuildTheCommentStyleDictionary();
 }
 
 void LabelDecorator::BuildTheCommentStyleDictionary()

@@ -28,21 +28,18 @@ OpenCommand::OpenCommand(const char*   name,
 
 void   OpenCommand::doPreAction()
 {
-    DXApplication *app = this->application;
-    Network *net = app->network;
-    const char    *fname = net->getFileName();
+	DXApplication *app = this->application;
+	Network *net = app->network;
+	const char    *fname = net->getFileName();
 
-    if(fname)
-    {
-	if(net->saveNetwork(fname))
-	     this->doIt(NULL);
-    }
-    else {
-//	Widget parent = this->dialogParent;
-	//if (!parent)
-	//    parent = app->getAnchor()->getRootWidget();
- //   	net->postSaveAsDialog(parent, this);
-   }
+	if(fname)
+	{
+		if(net->saveNetwork(fname))
+			this->doIt(NULL);
+	}
+	else {
+		net->postSaveAsDialog(this);
+	}
 
 }
 

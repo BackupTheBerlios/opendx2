@@ -9,7 +9,7 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
+#include "CopyrightDialog.h"
 
 #include "DXApplication.h"
 #include "DXAnchorWindow.h"
@@ -571,10 +571,14 @@ void DXAnchorWindow::postCopyrightNotice()
 {
 //Arg args[10];
 //
-//    ASSERT (DXAnchorWindow::ClassInitialized);
+    ASSERT (DXAnchorWindow::ClassInitialized);
 //    ASSERT (this->getRootWidget());
-//    const char *c = theDXApplication->getCopyrightNotice();
-//    if (!c) return;
+    const char *c = theDXApplication->getCopyrightNotice();
+    if (!c) return;
+
+	dxui::CopyrightDialog *dl = new dxui::CopyrightDialog();
+	dl->setText(c);
+	dl->showIt();
 //
 //    Pixmap logo_pmap = theDXApplication->getLogoPixmap(true);
 //

@@ -12,6 +12,7 @@
 #include "DXStrings.h"
 #include "TimedMessage.h"
 
+#include "CopyrightDialog.h"
 
 TimedMessage::TimedMessage(const char *name,
 			   const char *message,
@@ -35,6 +36,10 @@ TimedMessage::~TimedMessage()
 
 void TimedMessage::createDialog(void)
 {
+	dxui::CopyrightDialog *dl = new dxui::CopyrightDialog();
+	dl->setText(this->message);
+	dl->showIt();
+
     //Widget dialog;
     //Widget label;
 

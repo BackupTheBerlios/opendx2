@@ -8,9 +8,6 @@
 
 #include <dxconfig.h>
 #include "defines.h"
-#include <vcclr.h>
-
-using namespace System::Windows::Forms;
 
 #ifndef _BaseApp_h
 #define _BaseApp_h
@@ -61,9 +58,6 @@ class BaseApp : public UIComponent, public Server
     // Protected member data:
     //
     char*        applicationClass;	// application class name
-
-	// Windows.Forms application context.
-	gcroot<System::Windows::Forms::ApplicationContext*> applicationContext;
 
     //
     // Initialize the window system.

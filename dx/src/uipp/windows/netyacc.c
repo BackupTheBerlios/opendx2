@@ -33,6 +33,9 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
+#define PROTOFUNC 1
+int yylex( void );
+
 /* Identify Bison output.  */
 #define YYBISON 1
 
@@ -224,7 +227,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "./net.y"
+
 
 
 /***********************************************************************/
@@ -243,12 +246,13 @@
 /*****************************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/windows/netyacc.c,v 1.2 2004/11/19 19:20:02 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/windows/netyacc.c,v 1.3 2004/12/01 00:49:01 davidt Exp $
  */
 
 #include "Parse.h"
 
-
+#define YYDEBUG 1
+#define YYERROR_VERBOSE 1
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -264,7 +268,7 @@
 #endif
 
 #if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
-#line 27 "./net.y"
+
 typedef union YYSTYPE {
     union 
     {
@@ -275,7 +279,7 @@ typedef union YYSTYPE {
     } ast;
 } YYSTYPE;
 /* Line 191 of yacc.c.  */
-#line 279 "y.tab.c"
+
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
@@ -287,7 +291,7 @@ typedef union YYSTYPE {
 
 
 /* Line 214 of yacc.c.  */
-#line 291 "y.tab.c"
+
 
 #if ! defined (yyoverflow) || YYERROR_VERBOSE
 
@@ -847,7 +851,7 @@ do {								\
 | TOP (cinluded).                                                   |
 `------------------------------------------------------------------*/
 
-#if defined (__STDC__) || defined (__cplusplus)
+#if defined (__STDC__) || defined (__cplusplus) || defined (PROTOFUNC)
 static void
 yy_stack_print (short *bottom, short *top)
 #else
@@ -874,7 +878,7 @@ do {								\
 | Report that the YYRULE is going to be reduced.  |
 `------------------------------------------------*/
 
-#if defined (__STDC__) || defined (__cplusplus)
+#if defined (__STDC__) || defined (__cplusplus) || defined(PROTOFUNC)
 static void
 yy_reduce_print (int yyrule)
 #else
@@ -941,7 +945,7 @@ int yydebug;
 #  else
 /* Return the length of YYSTR.  */
 static YYSIZE_T
-#   if defined (__STDC__) || defined (__cplusplus)
+#   if defined (__STDC__) || defined (__cplusplus) || defined (PROTOFUNC)
 yystrlen (const char *yystr)
 #   else
 yystrlen (yystr)
@@ -965,7 +969,7 @@ yystrlen (yystr)
 /* Copy YYSRC to YYDEST, returning the address of the terminating '\0' in
    YYDEST.  */
 static char *
-#   if defined (__STDC__) || defined (__cplusplus)
+#   if defined (__STDC__) || defined (__cplusplus) || defined (PROTOFUNC)
 yystpcpy (char *yydest, const char *yysrc)
 #   else
 yystpcpy (yydest, yysrc)
@@ -993,7 +997,7 @@ yystpcpy (yydest, yysrc)
 | Print this symbol on YYOUTPUT.  |
 `--------------------------------*/
 
-#if defined (__STDC__) || defined (__cplusplus)
+#if defined (__STDC__) || defined (__cplusplus) || defined (PROTOFUNC)
 static void
 yysymprint (FILE *yyoutput, int yytype, YYSTYPE *yyvaluep)
 #else
@@ -1030,7 +1034,7 @@ yysymprint (yyoutput, yytype, yyvaluep)
 | Release the memory associated to this symbol.  |
 `-----------------------------------------------*/
 
-#if defined (__STDC__) || defined (__cplusplus)
+#if defined (__STDC__) || defined (__cplusplus) || defined (PROTOFUNC)
 static void
 yydestruct (int yytype, YYSTYPE *yyvaluep)
 #else
@@ -1346,82 +1350,82 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 201 "./net.y"
+
     { return (0); }
     break;
 
   case 7:
-#line 216 "./net.y"
+
     {
 		    ParseEndOfMacroDefinition();
 		}
     break;
 
   case 8:
-#line 222 "./net.y"
+
     {
 		    ParseEndOfMacroDefinition();
 		}
     break;
 
   case 41:
-#line 316 "./net.y"
+
     {
 			ParseStringAttribute(yyvsp[-2].ast.s, yyvsp[0].ast.s);
 		    }
     break;
 
   case 42:
-#line 322 "./net.y"
+
     {
 			ParseIntAttribute(yyvsp[-2].ast.s, yyvsp[0].ast.i);
 		    }
     break;
 
   case 43:
-#line 332 "./net.y"
+
     {
 	            ParseFunctionID(yyvsp[0].ast.s);
 	        }
     break;
 
   case 51:
-#line 355 "./net.y"
+
     {
 	            ParseArgument(yyvsp[0].ast.s,0);
 	        }
     break;
 
   case 52:
-#line 359 "./net.y"
+
     {
 	            ParseArgument(yyvsp[0].ast.s,1);
 	        }
     break;
 
   case 53:
-#line 369 "./net.y"
+
     {
 	            ParseComment(yyvsp[0].ast.s);
 	        }
     break;
 
   case 94:
-#line 455 "./net.y"
+
     {
 		    ParseLValue(yyvsp[0].ast.s);
 		}
     break;
 
   case 95:
-#line 461 "./net.y"
+
     {
 		    ParseRValue(yyvsp[0].ast.s);
 		}
     break;
 
   case 96:
-#line 467 "./net.y"
+
     {
 		}
     break;
@@ -1430,7 +1434,7 @@ yyreduce:
     }
 
 /* Line 999 of yacc.c.  */
-#line 1434 "y.tab.c"
+
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1634,10 +1638,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-
-
-#line 471 "./net.y"
-
 
 
 #include "netlex.c"

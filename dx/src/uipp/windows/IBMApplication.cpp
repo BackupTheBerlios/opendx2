@@ -375,8 +375,8 @@ bool IBMApplication::startTutorial()
 void IBMApplication::postCopyrightNotice()
 {
     const char *s = this->getCopyrightNotice();
-    if (s) 	
-	this->initLogo();
+ //   if (s) 	
+	//this->initLogo();
 
     this->BaseApp::postCopyrightNotice();
 }
@@ -817,31 +817,13 @@ bool IBMApplication::getApplicationDefaultsFileName(char* res_file, bool create)
 
  //Open $HOME/DX, search for DX*dismissedWizards:.   If found, replace it,
  //otherwise append the DX*dismissedWizards: and the contents of noWizards.
+// No longer goes here, but is put into the XmlPreferences instead and then
+// saved when the XmlPreferences are written out.
 
 void IBMApplication::printResource(const char* resource, const char* value)
 {
-const char* class_name = this->getApplicationClass();
-
-    //
-    // Create one line which specifies the new resource setting.
-    //
-    int totlen = 0;
-    char resource_line[4096];
-    sprintf (resource_line, "%s*%s: %s\n", class_name, resource, value);
-
-    char res_file[256];
-    if (this->getApplicationDefaultsFileName(res_file, true)) {
-	// Here, it would be nice to use a function like
-	// XrmRemoveLineResource() but I can't find any
-	// such beast.  If one were available, then when
-	// there is no value for a resource, the spec
-	// could be removed from the file.  This way
-	// we store a nothing spec in the file.
-	/*	XrmDatabase db = XrmGetFileDatabase(res_file);
-		XrmPutLineResource (&db, resource_line);
-		XrmPutFileDatabase (db, res_file);
-		XrmDestroyDatabase(db);*/
-    }
+	//Add a persistent resource to theXmlPreferences to be saved.
+	theXmlPreferences->setPref(resource, value, true);
 }
 
 

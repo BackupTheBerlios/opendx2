@@ -53,7 +53,7 @@ void RedirectOutputToFile()
 
 	hFile = CreateFile(res_file,
 		GENERIC_WRITE, 
-		0, 
+		FILE_SHARE_READ, 
 		NULL,
 		CREATE_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL,
@@ -91,7 +91,9 @@ void RedirectOutputToFile()
 	// redirect unbuffered STDERR to the console
 
 	//lStdHandle = GetStdHandle(STD_ERROR_HANDLE);
-	//hConHandle = _open_osfhandle((intptr_t)lStdHandle, _O_TEXT);
+	//hConHandle = _open_osfhandle((intptr_t)hFile, _O_TEXT);
+	//if(hConHandle == -1)
+	//	MessageBox(NULL, "Unable to redirect stderr: _open_osfhandle", NULL, MB_ICONERROR | MB_OK);
 	//fp = _fdopen( hConHandle, "w" );
 	*stderr = *fp;
 	setvbuf( stderr, NULL, _IONBF, 0 );

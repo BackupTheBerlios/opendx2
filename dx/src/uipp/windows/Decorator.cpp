@@ -72,7 +72,7 @@ Decorator::Decorator(void *wClass, const char *name,
 //    //this->customPart = NUL(Widget);
 //    this->x = this->y = UIComponent::UnspecifiedPosition;
 //    this->width = this->height = UIComponent::UnspecifiedDimension;
-//    this->dndInfo = NUL(DecoratorInfo*);
+    this->dndInfo = NUL(DecoratorInfo*);
 //
 //    if (NOT Decorator::DecoratorClassInitialized)
 //    {

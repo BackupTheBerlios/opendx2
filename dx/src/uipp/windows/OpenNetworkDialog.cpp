@@ -79,7 +79,8 @@ void OpenNetworkDialog::helpCallback(Dialog* dialog)
 {
 #define BUFSIZE UI_YYLMAX 
 #define REALLOC_CHUNK	512
-    char *f = this->getSelectedFileName();
+//    char *f = this->getSelectedFileName();
+	char *f = NULL;
     char buffer[BUFSIZE];
     bool parsing = false, done = false;
     char *pc = NULL, *comment = NULL, *netfile = NULL; 

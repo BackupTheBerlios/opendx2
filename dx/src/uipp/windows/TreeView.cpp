@@ -53,7 +53,7 @@ using namespace dxui;
 // happens if the I type more than that.
 //
 
-bool TreeView::ClassInitialized = false;
+bool dxui::TreeView::ClassInitialized = false;
 static int IBeamTime = 250;
 
 //Pixmap TreeView::Plus = XmUNSPECIFIED_PIXMAP;
@@ -73,12 +73,12 @@ static int IBeamTime = 250;
 //    NULL
 //};
 
-TreeView::TreeView(const char* bubbleHelp) : UIComponent ("treeView")
+dxui::TreeView::TreeView(const char* bubbleHelp) : UIComponent ("treeView")
 {
     //ASSERT(parent);
 
-    if (!TreeView::ClassInitialized) {
-	TreeView::ClassInitialized = true;
+    if (!dxui::TreeView::ClassInitialized) {
+	dxui::TreeView::ClassInitialized = true;
 	//this->setDefaultResources (theApplication->getRootWidget(), 
 	//    TreeView::DefaultResources);
 	//TreeView::Hand = XCreateFontCursor(XtDisplay(theApplication->getRootWidget()),
@@ -155,7 +155,7 @@ TreeView::TreeView(const char* bubbleHelp) : UIComponent ("treeView")
 //    if (bubbleHelp) this->setBubbleHelp (bubbleHelp, w);
 }
 
-TreeView::~TreeView()
+dxui::TreeView::~TreeView()
 {
  //   Display* d = XtDisplay(this->getRootWidget());
  //   if (this->buffer!=XmUNSPECIFIED_PIXMAP) XFreePixmap(d, this->buffer);
@@ -176,7 +176,7 @@ TreeView::~TreeView()
 // of the tool selector, a new model is supplied every time the user 
 // loads new macros or changes the set of categories.
 //
-void TreeView::initialize (dxui::TreeNode* model, bool repaint)
+void dxui::TreeView::initialize (dxui::TreeNode* model, bool repaint)
 {
     //Widget w = this->getRootWidget();
     //Display* d = XtDisplay(w);
@@ -196,7 +196,7 @@ void TreeView::initialize (dxui::TreeNode* model, bool repaint)
 // this->markers.  They're used to translate a mouse click back into
 // an dxui::TreeNode.
 //
-void TreeView::clearMarkers()
+void dxui::TreeView::clearMarkers()
 {
     ListIterator iter(this->markers);
     Marker* marker;
@@ -216,7 +216,7 @@ void TreeView::clearMarkers()
     this->containing_marker = NUL(Marker*);
 }
 
-void TreeView::endTyping()
+void dxui::TreeView::endTyping()
 {
  //   this->searchable_nodes.clear();
  //   this->typing_ahead = false;
@@ -238,7 +238,7 @@ void TreeView::endTyping()
 //    this->buffer = XmUNSPECIFIED_PIXMAP;
 //}
 
-void TreeView::paint()
+void dxui::TreeView::paint()
 {
  //   Widget w = this->getRootWidget();
  //   Display* d = XtDisplay(w);
@@ -325,7 +325,7 @@ void TreeView::paint()
  //   this->setDirty(false);
 }
 
-bool TreeView::getSelectionLocation (int& x1, int& y1, int& x2, int& y2)
+bool dxui::TreeView::getSelectionLocation (int& x1, int& y1, int& x2, int& y2)
 {
     if (!this->selection) return false;
     if (!this->selection_marker) return false;
@@ -333,7 +333,7 @@ bool TreeView::getSelectionLocation (int& x1, int& y1, int& x2, int& y2)
     return true;
 }
 
-bool TreeView::getMatchLocation (int& x1, int& y1, int& x2, int& y2)
+bool dxui::TreeView::getMatchLocation (int& x1, int& y1, int& x2, int& y2)
 {
     if (!this->matched) return false;
     if (!this->match_marker) return false;
@@ -445,7 +445,7 @@ bool TreeView::getMatchLocation (int& x1, int& y1, int& x2, int& y2)
 // called by the widget's XmNexposeCallback.  Copy from the double-buffer onto
 // the screen.
 //
-void TreeView::redisplay()
+void dxui::TreeView::redisplay()
 {
     //if (!XtIsRealized(this->getRootWidget())) return ;
     //if (this->isDirty()) this->paint();
@@ -481,7 +481,7 @@ void TreeView::redisplay()
  //   }
 //}
 
-void TreeView::clear(bool repaint)
+void dxui::TreeView::clear(bool repaint)
 { 
  //   ListIterator iter(this->auto_expanded);
  //   dxui::TreeNode* node;
@@ -535,7 +535,7 @@ void TreeView::clear(bool repaint)
 //    XDefineCursor(XtDisplay(w), XtWindow(w), TreeView::Typing);
 //}
 
-void TreeView::setDirty(bool d, bool repaint)
+void dxui::TreeView::setDirty(bool d, bool repaint)
 {
     this->dirty = d;
     if (d && repaint) this->redisplay();
@@ -742,7 +742,7 @@ void TreeView::setDirty(bool d, bool repaint)
 //    if (very_next_str) delete very_next_str;
 //}
 
-void TreeView::beginTyping()
+void dxui::TreeView::beginTyping()
 {
  //   this->getSearchableNodes(this->searchable_nodes);
  //   this->typing_ahead = true;
@@ -804,7 +804,7 @@ void TreeView::beginTyping()
 //    }
 //}
 
-Marker* TreeView::pick(int x, int y)
+Marker* dxui::TreeView::pick(int x, int y)
 {
     ListIterator iter(this->items);
     Marker* marker;
@@ -824,14 +824,14 @@ Marker* TreeView::pick(int x, int y)
 //    }
 //}
 
-void TreeView::getSearchableNodes(List& nodes_to_search)
+void dxui::TreeView::getSearchableNodes(List& nodes_to_search)
 {
     nodes_to_search.clear();
     if (!this->data_model) return ;
     this->getSearchableNodes(this->data_model, nodes_to_search);
 }
 
-void TreeView::getSearchableNodes(dxui::TreeNode* subtree, List& nodes_to_search)
+void dxui::TreeView::getSearchableNodes(dxui::TreeNode* subtree, List& nodes_to_search)
 {
     if (subtree->isLeaf()) {
 	nodes_to_search.appendElement(subtree);
@@ -844,7 +844,7 @@ void TreeView::getSearchableNodes(dxui::TreeNode* subtree, List& nodes_to_search
     }
 }
 
-void TreeView::toggleIBeam(bool restart)
+void dxui::TreeView::toggleIBeam(bool restart)
 {
  //   if (!this->match_marker) return ;
  //   ASSERT(this->matched);

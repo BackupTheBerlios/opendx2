@@ -682,7 +682,7 @@ class DXApplication : public IBMApplication
     // if this->anchor is NULL.
     // This may return NULL in which case a message dialog is posted. 
     //
-    virtual EditorWindow *newNetworkEditor(Network *n);
+	virtual EditorWindow * newNetworkEditor(Network *n);
 
     virtual Network *newNetwork(bool nonJava=false);
     virtual MsgWin *newMsgWin();

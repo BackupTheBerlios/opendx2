@@ -60,7 +60,8 @@ void Dialog::post()
  //   theApplication->setBusyCursor(true);
  //   if (this->getRootWidget() == NULL)
  //   {
-	//this->initialize();
+	this->initialize();
+	this->createDialog();
 	//this->setRootWidget(this->createDialog(this->parent));
 
 	//Widget shell = XtParent(this->getRootWidget());

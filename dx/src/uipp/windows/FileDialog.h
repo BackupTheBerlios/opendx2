@@ -121,7 +121,9 @@ namespace dxui {
 		// The returned string must be freed by the caller.
 		// If a filename is not currently selected, then return NULL.
 		//
-		char *getSelectedFileName();
+		//char *getSelectedFileName() {
+		//	return this->selectedFilename;
+		//}
 
 		//
 		// Get the name of the current directory (without a trailing '/').

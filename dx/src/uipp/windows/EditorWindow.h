@@ -129,6 +129,7 @@ class EditorWindow : public DXWindow
 	Atom *, XtPointer , unsigned long *, int *);
     static bool KeyHandler(XEvent *event, void *clientData);
 */
+
     static void SetOwner(void*);
     static void DeleteSelections(void*);
     static void Select(void*);

@@ -12,6 +12,8 @@
 #include "DialogManager.h"
 #include "DialogData.h"
 
+using namespace System::Windows::Forms;
+
 //#ifdef DXD_WIN             //SMH define local X routine
 //extern "C" { extern void ForceUpdate(Widget); }
 //#endif
@@ -267,8 +269,6 @@ void DialogManager::post(
 			 void*          clientData,
 			 DialogCallback okCallback,
 			 DialogCallback cancelCallback,
-
-
 			 DialogCallback helpCallback,
 			 char*		okLabel,
 			 char*		cancelLabel,
@@ -455,6 +455,14 @@ void DialogManager::modalPost(
 			 //cancelLabel,
 			 //helpLabel,
 			 //cancelBtnNum);
+
+	if(MessageBox::Show(message, title, MessageBoxButtons::YesNo)
+		== DialogResult::Yes)
+		okCallback(clientData);
+	else {
+		if(cancelCallback)
+			cancelCallback(clientData);
+	}
 
 }
 

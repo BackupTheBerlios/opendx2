@@ -192,7 +192,7 @@ class PostScriptImageFormat : public ImageFormat
 // handle arbitrary paper sizes.  The misfit field gets larger as the difference
 // between image/paper aspect ratios increases.
 //
-class Orientation {
+class dxOrientation {
     private:
 	friend class PostScriptImageFormat;
 
@@ -207,7 +207,7 @@ class Orientation {
 	// necessary because rounding or truncating it would increase the size of the
 	// printout and we might be trying to fit it onto a page.
 	//
-	Orientation (int w, int h, double page_w, double page_h, 
+	dxOrientation (int w, int h, double page_w, double page_h, 
 		    double margin, bool rnd_up=true) 
 	{
 	    valid = true;
@@ -247,10 +247,10 @@ class Orientation {
 	    }
 	}
 
-	~Orientation(){};
+	~dxOrientation(){};
 };
 
-class RestrictedOrientation: public Orientation {
+class RestrictedOrientation: public dxOrientation {
     private:
 	friend class PostScriptImageFormat;
 
@@ -258,7 +258,7 @@ class RestrictedOrientation: public Orientation {
     protected:
 	RestrictedOrientation (int w, int h, double page_w, double page_h,
 		double margin, double image_w, double image_h, bool rnd_up=true):
-	    Orientation (w,h,image_w, image_h, 0.0, rnd_up)
+	    dxOrientation (w,h,image_w, image_h, 0.0, rnd_up)
 	{
 	    if ((page_w-margin) < image_w) valid = false;
 	    if ((page_h-margin) < image_h) valid = false;

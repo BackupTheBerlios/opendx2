@@ -8,6 +8,10 @@
 
 #include <dxconfig.h>
 #include <string.h>
+#include <vcclr.h>
+
+using namespace System::Windows::Forms;
+
 #include "defines.h"
 
 #ifndef _UIComponent_h
@@ -71,6 +75,9 @@ class UIComponent : virtual public Base
 
     char*   name;	// component name
     bool active;	// is component active?
+
+	// Windows.Forms application context.
+	gcroot<System::Windows::Forms::ApplicationContext*> applicationContext;
 
     //
     // Constructor:
@@ -175,10 +182,16 @@ class UIComponent : virtual public Base
     //
     virtual void deactivate(const char *reason = NUL(char*));
 
+	Form* getMainForm() 
+	{
+		return this->applicationContext->get_MainForm();
+	}
+
     //
     // Returns the root widget of the component.
     //
- //   Widget getRootWidget()
+	
+	//   Widget getRootWidget()
  //   {
 	//return this->root;
  //   }

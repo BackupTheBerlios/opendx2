@@ -25,7 +25,7 @@ class confirmation_data {
 			delete this->filename; 
 		    }
     char *filename;
-    SaveFileDialog *dialog;
+    dxui::SaveFileDialog *dialog;
 }; 
 
 //String SaveFileDialog::DefaultResources[] =
@@ -35,7 +35,7 @@ class confirmation_data {
 
 using namespace dxui;
 
-SaveFileDialog::SaveFileDialog(
+dxui::SaveFileDialog::SaveFileDialog(
 		const char *name, const char *ext) : 
 		FileDialog(name)
 {
@@ -45,7 +45,7 @@ SaveFileDialog::SaveFileDialog(
 	this->forced_extension = NULL; 
 }
 
-SaveFileDialog::~SaveFileDialog()
+dxui::SaveFileDialog::~SaveFileDialog()
 {
     if (this->forced_extension)
 	delete this->forced_extension;
@@ -57,12 +57,12 @@ SaveFileDialog::~SaveFileDialog()
 //    this->FileDialog::installDefaultResources( baseWidget);
 //}
 
-void SaveFileDialog::ConfirmationCancel(void *data)
+void dxui::SaveFileDialog::ConfirmationCancel(void *data)
 {
     confirmation_data *cd = (confirmation_data *)data;
     delete cd;
 }
-void SaveFileDialog::ConfirmationOk(void *data)
+void dxui::SaveFileDialog::ConfirmationOk(void *data)
 {
     confirmation_data *cd = (confirmation_data *)data;
 
@@ -70,7 +70,7 @@ void SaveFileDialog::ConfirmationOk(void *data)
     delete cd;
 }
 
-void SaveFileDialog::okFileWork(const char *filename)
+void dxui::SaveFileDialog::okFileWork(const char *filename)
 {
     struct STATSTRUCT buffer;
 
@@ -111,8 +111,8 @@ void SaveFileDialog::okFileWork(const char *filename)
 	    "Do you want to overwrite an existing file?",
 	    "Overwrite existing file",
 	    (void *)cd,
-	    SaveFileDialog::ConfirmationOk,
-	    SaveFileDialog::ConfirmationCancel,
+	    dxui::SaveFileDialog::ConfirmationOk,
+	    dxui::SaveFileDialog::ConfirmationCancel,
 	    NULL);
     } else {
         this->saveFile(file);

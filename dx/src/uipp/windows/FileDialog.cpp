@@ -21,6 +21,9 @@
 #include "DXStrings.h"
 #endif
 
+using namespace System::Windows::Forms;
+using namespace System::Runtime::InteropServices;
+
 using namespace dxui;
 
 //#ifdef DXD_NON_UNIX_DIR_SEPARATOR
@@ -45,19 +48,19 @@ using namespace dxui;
 //        NULL
 //};
 
-bool FileDialog::ClassInitialized = false;
+bool dxui::FileDialog::ClassInitialized = false;
 
-FileDialog::FileDialog(const char *name) :
+dxui::FileDialog::FileDialog(const char *name) :
                        Dialog(name)
 {
-    this->hasCommentButton = false;
-    this->readOnlyDirectory = NULL;
+    hasCommentButton = false;
+    readOnlyDirectory = NULL;
 }
 
-FileDialog::~FileDialog()
+dxui::FileDialog::~FileDialog()
 {
-    if (this->readOnlyDirectory)
-	delete this->readOnlyDirectory;
+    if (readOnlyDirectory)
+		delete [] readOnlyDirectory;
 }
     
 //void FileDialog::installDefaultResources(Widget  baseWidget)
@@ -66,8 +69,22 @@ FileDialog::~FileDialog()
 //    this->Dialog::installDefaultResources( baseWidget);
 //}
 
-void FileDialog::post()
+void dxui::FileDialog::post()
 {
+	System::Windows::Forms::OpenFileDialog *fd = 
+		new System::Windows::Forms::OpenFileDialog();
+	fd->Filter = S"network files (*.net)|*.net|All files (*.*)|*.*";
+	if(fd->ShowDialog() == DialogResult::OK) {
+		System::String * fn = fd->get_FileName();
+		char* result = new char[fn->Length + 1];
+		strncpy(result, 
+			(const char*) (Marshal::StringToHGlobalAnsi(fn)).ToPointer(), 
+			fn->Length);
+		result[fn->Length] = '\0';
+		this->okFileWork(result);
+		delete [] result;
+	}
+
  //   Widget text;
 
  //   theApplication->setBusyCursor(true);
@@ -116,7 +133,7 @@ void FileDialog::post()
 //
 // Set the name of the current file.
 //
-void FileDialog::setFileName(const char *file)
+void dxui::FileDialog::setFileName(const char *file)
 {
 //    ASSERT(this->fsb);
 //    XmString xmdir = NULL;
@@ -162,8 +179,8 @@ void FileDialog::setFileName(const char *file)
 // The returned string must be freed by the caller.
 // If a filename is not currently selected, then return NULL.
 //
-char *FileDialog::getSelectedFileName()
-{
+//char *dxui::FileDialog::getSelectedFileName()
+//{
 //    ASSERT(this->fsb);
 //    char *p, *s = XmTextGetString(XmSelectionBoxGetChild(this->fsb, 
 //					XmDIALOG_TEXT));
@@ -183,14 +200,14 @@ char *FileDialog::getSelectedFileName()
 //	}
 //    }
 //    return s;
-	return NULL;
-}
+//	return NULL;
+//}
 
 //
 // Get the name of the current directory (without a trailing '/').
 // The returned string must be freed by the caller.
 //
-char *FileDialog::getCurrentDirectory()
+char *dxui::FileDialog::getCurrentDirectory()
 {
 //    ASSERT(this->fsb);
 //    char *dir = NULL;
@@ -219,7 +236,7 @@ char *FileDialog::getCurrentDirectory()
 	return NULL;
 }
 
-bool FileDialog::okCallback(Dialog *d)
+bool dxui::FileDialog::okCallback(Dialog *d)
 {
  //   char *string;
 
@@ -239,7 +256,7 @@ bool FileDialog::okCallback(Dialog *d)
 	return false;
 }
 
-void FileDialog::createDialog()
+void dxui::FileDialog::createDialog()
 {
     //Widget shell;
     //Arg    wargs[10];
@@ -270,7 +287,7 @@ void FileDialog::createDialog()
 // The four buttons are set the have a width of 120
 //
 
-void FileDialog::createFileSelectionBox(const char *name)
+void dxui::FileDialog::createFileSelectionBox(const char *name)
 {
 //    Widget button;
 //    Dimension width;
@@ -313,7 +330,7 @@ void FileDialog::createFileSelectionBox(const char *name)
 //    return fsb;
 }
 
-void FileDialog::manage()
+void dxui::FileDialog::manage()
 {
 //    XmFileSelectionDoSearch(this->getFileSelectionBox(), NULL);
 //#if 0             // SMH hack the loop away
@@ -334,7 +351,7 @@ void FileDialog::manage()
 // If dirname is not NULL, then set the dialog so that the directory is
 // fixed.  If dirname is NULL, then the fixed directory is turned off.
 //
-void FileDialog::setReadOnlyDirectory(const char *dirname)
+void dxui::FileDialog::setReadOnlyDirectory(const char *dirname)
 {
  //   if (this->readOnlyDirectory)
 	//delete this->readOnlyDirectory;
@@ -361,7 +378,7 @@ void FileDialog::setReadOnlyDirectory(const char *dirname)
 // limited mode, that is, the user can only select file from the 
 // current directory specified by XmNdirectory. 
 //
-void FileDialog::displayLimitedMode(bool limit)
+void dxui::FileDialog::displayLimitedMode(bool limit)
 {
  //   Widget w[10]; 
  //   int	n = 0;
@@ -392,7 +409,7 @@ void FileDialog::displayLimitedMode(bool limit)
 // NULL and nothing happens.  Subclasses can implement this to acquire
 // the described behavior. 
 //
-char *FileDialog::getDefaultFileName()
+char *dxui::FileDialog::getDefaultFileName()
 {
     return NULL;
 }

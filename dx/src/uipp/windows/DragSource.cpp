@@ -13,6 +13,10 @@
 #include <unistd.h>
 #endif
 
+#if defined(DXD_WIN)
+#include <winsock.h>
+#endif
+
 #include "DragSource.h"  
 #include "WarningDialogManager.h"
 #include "Dictionary.h"
@@ -24,10 +28,6 @@
 
 #if defined(NEEDS_GETHOSTNAME_DECL)
 extern "C" int gethostname(char *address, int address_len);
-#endif
-
-#if defined(DXD_WIN)
-#include <winsock.h>
 #endif
 
 
