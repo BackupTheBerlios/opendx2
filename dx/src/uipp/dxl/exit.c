@@ -104,7 +104,7 @@ DXLExitDX(DXLConnection *conn)
 #else
 #ifndef OS2
     /* this will set retval even though we don't need it here */
-    SELECT_INTR(width, (SELECT_ARG_TYPE)&fds, NULL, NULL, NULL, retval);
+    SELECT_INTR(width, (SELECT_ARG_TYPE *)&fds, NULL, NULL, NULL, retval);
 #else
     select(&conn->fd, 1, 0, 0, -1);
 #endif
