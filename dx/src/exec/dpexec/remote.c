@@ -115,12 +115,16 @@ Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] )
     hp2 = gethostbyaddr((const char *)&addr, sizeof(struct in_addr),
                         AF_INET );
     if ( hp2 == NULL || hp2->h_name == NULL ) {
-       DXUIMessage("ERROR", "gethostbyaddr returned error");
-       DXSetError(ERROR_UNEXPECTED, "gethostbyaddr error--is it possible this machine doesn't have a reverse DNS/host entry?");
-       return ERROR;
+        if(_dxfHostIsLocal((char *)host)) {
+            strncpy( fqdn, "localhost", MAXHOSTNAMELEN );
+            DXMessage("Warning: Cannot get FQDN; no DNS entry. Assuming localhost.");
+            return OK;
+        }
+        DXUIMessage("ERROR", "gethostbyaddr returned error");
+        DXSetError(ERROR_UNEXPECTED, "gethostbyaddr error--is it possible this machine doesn't have a DNS/host entry?");
+        return ERROR;
     }
-    fqdn[0] = '\0';
-    strncat( fqdn, hp2->h_name, MAXHOSTNAMELEN );
+    strncpy( fqdn, hp2->h_name, MAXHOSTNAMELEN );
     return OK;
 }
 
@@ -557,10 +561,12 @@ int _dxfExRemoteExec(int dconnect, char *host, char *ruser, int r_argc,
     int                 nargc;
 
  
+    printf("In _dxfExRemoteExec. Host is %s\n", host);
     if (gethostname (myhost, sizeof(myhost)) < 0)
         goto error;
+
     if ( ExHostToFQDN( myhost, myhost ) == ERROR)
-	goto error;
+        goto error;
 
     if (getcwd (cwd, sizeof (cwd)) == NULL)
 	goto error;
