@@ -281,6 +281,7 @@ dnl  -------------------------------------------------------------
 AC_DEFUN(DX_STREAM_O2,
 [
     AC_MSG_CHECKING(whether -O2 interferes with fstream in C++)
+    AC_LANG_SAVE
     AC_LANG_CPLUSPLUS
     AC_TRY_LINK(
  [
@@ -296,6 +297,7 @@ AC_DEFUN(DX_STREAM_O2,
  CXXFLAGS=`echo $CXXFLAGS | sed "s/-O2//"`
  AC_MSG_RESULT(yes)
     )
+ AC_LANG_RESTORE
 ])
 
 
@@ -562,6 +564,7 @@ AC_CHECK_HEADER(sys/socket.h, [ echo "#include <sys/socket.h>" >> socketHdrs.h ]
 if test "$ARCH" = "intelnt" ; then
 	AC_CHECK_HEADER(winsock2.h, [ echo "#include <winsock2.h>" >> socketHdrs.h ])
 fi
+AC_LANG_RESTORE
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
 for try in socklen_t size_t int "unsigned int"
