@@ -84,9 +84,9 @@ static PseudoKey
 hash(Entry key)
 {
     char *name = ((struct _entry *) key)->name;
-    long l, i;
-    for (l = i = 0; i < strlen(name); i++, l ^= name[i]);
-    return l;
+    long l, i, s=0;
+    for (l = i = 0; i < strlen(name); i++, l ^= name[i], s+= name[i-1]);
+    return l*s;
 }
 
 static int
