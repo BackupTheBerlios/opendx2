@@ -49,7 +49,7 @@ MINING">
 		<P>
 This section contains only summaries. See
 <a href="../refguide.htm">
-<I>IBM Visualization Data Explorer User&#39;s Reference</I>
+<I>User's Reference</I>
 </a>
 for details.
 Alternatively, you can click on a module name to go directly to that
@@ -57,109 +57,53 @@ module's description.
 
 		<P>
 <TABLE CELLPADDING="3">
-<TR VALIGN="TOP"><TD><P><B><A HREF="refgu014.htm#HDRAUTOAXE">AutoAxes</A>
-</B></TD><TD><P>There are new inputs to AutoAxes which allow you to explicitly
-specify tick locations, and optionally, to specify labels to be
-associated with those locations. Thus for example, if one of your axes
-represents the months, with integers 1 to 12, you could indicate to
-AutoAxes to place ticks at each integer from 1 to 12 and to label them
-"jan", "feb", .... Plot and ColorBar similarly now
-allow you to specify tick location and label.
-<P>
-AutoAxes no longer scales the input object. This should make using
-probes in an image which includes axes easier. There is a break with
-backward compatibility in that for some viewpoints the axes may not lie
-completely within the image; you will need to change the viewpoint to be
-slightly farther away from the object.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu017.htm#HDRAUTOGLY">AutoGlyph</A>, <A
-HREF="refgu068.htm#HDRGLYPH">Glyph</A>
-</B></TD><TD><P>"cube" and "square" glyphs have been added.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu034.htm#HDRCOLORBA">ColorBar</A>
-</B></TD><TD><P>Has new inputs which allow you to specify precise tick locations
-and
-labels for the ticks (see AutoAxes).
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu036.htm#HDRCOMPUTE">Compute</A>, <A
-HREF="refgu037.htm#HDRCOMPUT2">Compute2</A>
-</B></TD><TD><P>Now perform string operations, such as strcmp, strlen, strstr,
-etc.
-Compute also provides a "random" function.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu048.htm#HDRDISPLAY">Display</A>
-</B></TD><TD><P>Now has output called "where". This is the identifier for the
-window into which the image was displayed. See <A
-HREF="usrgu016.htm#SPTNEWRIW">ReadImageWindow</A>.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A HREF="refgu056.htm#HDREXPORT">Export</A>
-</B></TD><TD><P>Now exports VRML 2.0 data.
-</TD></TR><TR VALIGN="TOP"><TD><P><B>Get/Set
-</B></TD><TD><P>Are replaced by
-<A HREF="refgu067.htm#HDRGETLOC">GetLocal</A>/<A
-HREF="refgu136.htm#HDRSETLOC">SetLocal</A>
-
-and
-<A HREF="refgu066.htm#HDRGETGLO">GetGlobal</A>/<A
-HREF="refgu135.htm#HDRSETGLO">SetGlobal</A>.
-See <A HREF="usrgu011.htm#HDRGETSET">"Changes to Get and Set modules"</A>.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu071.htm#HDRHISTOGR">Histogram</A>
-</B></TD><TD><P>Now will create 2- and 3-dimensional histograms for vector data.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A HREF="refgu072.htm#HDRIMAGE">Image</A>
-</B></TD><TD><P>Now has new output called "where". This is the identifier for
-the window into which the image was displayed.
-See <A HREF="usrgu016.htm#SPTNEWRIW">ReadImageWindow</A>. Also, if you choose
-the Rerender Image
-option to render the image at a higher (or lower) resolution, screen
-objects such as captions and color bars will now be WYSIWYG. See
-<A HREF="usrgu016.htm#SPTNEWSCSC">ScaleScreen</A>.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu075.htm#HDRINCLUDE">Include</A>
-</B></TD><TD><P>Has a new input called "pointwise". If this input is set, then
-Include will remove the connections of the input before removing points.
-Thus only those positions with data values outside the specified range
-will be removed. The default behavior (and previous behavior) is to also
-remove all connections (and positions referenced by those connections)
-containing at least one invalid point.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu077.htm#HDRINQUIRE">Inquire</A>
-</B></TD><TD><P>Has several new inquiries: "is image",
-"is connection", "object tag",
-"connection type", "valid count", "invalid count"
-</TD></TR><TR VALIGN="TOP"><TD><P><B>
-<A HREF="refgu078.htm#HDRINTEGER">Integer</A>,
-<A HREF="refgu079.htm#HDRINTEGEL">IntegerList</A>,
-<A HREF="refgu127.htm#HDRSCALAR">Scalar</A>,
-<A HREF="refgu128.htm#HDRSCALARL">ScalarList</A>,
-<A HREF="refgu169.htm#HDRVECTOR">Vector</A>,
-<A HREF="refgu170.htm#HDRVECTORL">VectorList</A>
-</B></TD><TD><P>Each of these data-driven interactors now has a "refresh"
-input. This input resets the interactor, as if it is running for the
-first time, regardless of the current output value with respect to the
-range of the current input to the interactor.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A HREF="refgu103.htm#HDRPICK">Pick</A>
-</B></TD><TD><P>Has new inputs <TT><STRONG>locations</STRONG></TT> and
-<TT><STRONG>camera</STRONG></TT>. These inputs are intended for use when
-picking is done in an image window created using SuperviseWindow, rather
-than the Image tool.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A HREF="refgu104.htm#HDRPLOT">Plot</A>
-</B></TD><TD><P>Has new inputs which allow you to specify precise tick locations
-and
-labels for the ticks (see <A HREF="usrgu017.htm#SPTNEWAUAX">AutoAxes</A>).
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu110.htm#HDRREADIMA">ReadImage</A>
-</B></TD><TD><P>ReadImage supports miff images.  If the .miff file contains a
-sequence
-of images, they will be read in as an image series.  ReadImage has a new
-input, "colortype", which allows control over the pixel format used
-internally to represent the loaded image.  It also has a new input,
-<TT><STRONG>delayed</STRONG></TT>, which specifies whether images stored in
-image-with-colormap format should be imported as a delayed colors image.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu173.htm#HDRWRITEIM">WriteImage</A>
-</B></TD><TD><P>Supports MIFF output, which is a run-length-encoded format that
-supports image sequences. Supports GIF output of any image.
-</TD></TR></TABLE>
+			<TR VALIGN="TOP">
+				<TD><B><A HREF="refgu020.htm">Band</A></B></TD>
+				<TD>Fixed the attribute copying logic for Band.</TD>
+			</TR>
+			<TR VALIGN="TOP">
+				<TD><B><A HREF="refgu052.htm">Enumerate</A></B></TD>
+				<TD>A fix to correct improperly created counts.</TD>
+			</TR>
+			<TR VALIGN="TOP">
+				<TD><A HREF="refgu073.htm"><B>Import</B></A></TD>
+				<TD>HDF and netCDF updates.</TD>
+			</TR>
+			<TR VALIGN="TOP">
+				<TD><A HREF="refgu081.htm"><B>Isosurface</B></A></TD>
+				<TD>Now correctly passes attributes through instead of removing them.
+					<P>Only interpolates on valid components that are dependent on positions. Skips invalid components.</P>
+				</TD>
+			</TR>
+			<TR VALIGN="TOP">
+				<TD><A HREF="refgu085.htm"><B>List</B></A></TD>
+				<TD>A fix to ensure staying within array bounds.</TD>
+			</TR>
+			<TR VALIGN="TOP">
+				<TD><A HREF="refgu091.htm"><B>Map</B></A></TD>
+				<TD>Correction when point on an edge is detected.</TD>
+			</TR>
+			<TR VALIGN="TOP">
+				<TD><A HREF="refgu105.htm"><B>Post</B></A></TD>
+				<TD>Corrected memory leak.</TD>
+			</TR>
+			<TR VALIGN="TOP">
+				<TD><A HREF="refgu115.htm"><B>Regrid</B></A></TD>
+				<TD>New Regrid option of Radius 0 that basically performs a snap to grid functionality. This option will make regrid apply data to the nearest grid position and average it if there are multiple (not weighted).</TD>
+			</TR>
+			<TR VALIGN="TOP">
+				<TD><A HREF="refgu163.htm"><B>Tube</B></A></TD>
+				<TD>Corrected possible crash.</TD>
+			</TR>
+			<TR VALIGN="TOP"><TD><P><B><A HREF="refgu146.htm">Stack</A>
+</B></TD><TD>
+					<P>A correction for series data was added.
+				</TD></TR>
+			<TR VALIGN="TOP">
+				<TD><B><A HREF="refgu153.htm">SuperviseWindow</A></B></TD>
+				<TD>Now possible to set the window size with a Camera.</TD>
+			</TR>
+		</TABLE>
 		<P>
 		<HR>
 		<DIV align="center">

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
 <HTML><HEAD>
-		<TITLE>User's Guide - Version 3.1.4 Changes</TITLE>
+		<TITLE>User's Guide - Version 4.x Changes</TITLE>
 		<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
 MINING">
 	<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">
@@ -35,90 +35,59 @@ MINING">
 				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>
 			</TR>
 		</TABLE>
-		<H2><A NAME="HDRWHATNEW" ></A>Summary of Changes in Data Explorer Version 3.1.4</H2>
+		<H2><A NAME="HDRWHATNEW" ></A>Summary of Changes in Data Explorer Version 4.x</H2>
 		
 <P><A NAME="PToC3" HREF="../usrguide.htm">Partial Table-of-Contents</A> 
 <MENU>
 <LI><A NAME="PToC_16" HREF="#Header_16">User Interface</A>
 <MENU>
-<LI><A NAME="PToC_17" HREF="#HDRNEWSTRT">New Startup Behavior</A>
-<LI><A NAME="PToC_18" HREF="#Header_18">New Save Image Dialog in Image
-Window</A>
-<LI><A NAME="PToC_19" HREF="#Header_19">New Data Prompter</A>
-<LI><A NAME="PToC_20" HREF="#Header_20">Pages</A>
-<LI><A NAME="PToC_21" HREF="#Header_21">Annotation</A>
-<LI><A NAME="PToC_22" HREF="#Header_22">Optimizing Caching</A>
-</MENU>
-<LI><A NAME="PToC_23" HREF="usrgu011.htm#HDRGETSET">Changes to Get and Set
-modules</A>
-<LI><A NAME="PToC_24" HREF="usrgu012.htm#Header_24">New Window Management
-Functionality</A>
-<LI><A NAME="PToC_25" HREF="usrgu013.htm#Header_25">Hardware Rendering</A>
-<LI><A NAME="PToC_26" HREF="usrgu014.htm#Header_26">DXLink</A>
-<LI><A NAME="PToC_27" HREF="usrgu015.htm#Header_27">Changed Modules</A>
-<LI><A NAME="PToC_28" HREF="usrgu016.htm#Header_28">New Modules</A>
-<LI><A NAME="PToC_29" HREF="usrgu017.htm#Header_29">Backward
+<LI><A HREF="#HDRNEWTYPE">New Type Ahead In Tools List</A>
+<LI><A HREF="#HDRNWMODE">New Mode Option in Image Window</A>
+<LI><A HREF="#HDRACCKEY">Accelerator Keys Now Work in More Windows</A>
+<LI><A NAME="PToC_20" HREF="#HDRNEWACC">New Accelerator Keys</A>
+				<LI><A HREF="#HDRWBBRS">New Web Browser Help Functionality</A>
+			</MENU>
+<LI><A NAME="PToC_23" HREF="usrgu011.htm">New Image Formats Available</A>
+<LI><A NAME="PToC_24" HREF="usrgu012.htm">New Java Explorer</A>
+<LI><A NAME="PToC_25" HREF="usrgu013.htm">Hardware Rendering</A>
+<LI><A NAME="PToC_26" HREF="usrgu014.htm">Networking Enhancements</A>
+<LI><A NAME="PToC_27" HREF="usrgu015.htm">Changed Modules</A>
+<LI><A NAME="PToC_28" HREF="usrgu016.htm">New Modules</A>
+<LI><A NAME="PToC_29" HREF="usrgu017.htm">Backward
 Incompatibilities</A>
-<LI><A NAME="PToC_30" HREF="usrgu018.htm#Header_30">HTML Documentation</A>
-<LI><A NAME="PToC_31" HREF="usrgu019.htm#Header_31">Fixes</A>
-</MENU><HR><P>
+<LI><A NAME="PToC_30" HREF="usrgu018.htm">HTML Documentation</A>
+<LI><A NAME="PToC_31" HREF="usrgu019.htm">Fixes</A>
+</MENU><HR><P>The following are changes to OpenDX since the last commercial release of Data Explorer version 3.1.4b.
 <HR>
-<H2><A NAME="Header_16" ></A>User Interface</H2>
-<P>
-<H3><A NAME="HDRNEWSTRT" ></A>New Startup Behavior</H3>
-<P>With this release, when you type <TT>dx</TT>, a different initial
-panel will appear, giving you access to various parts of Data Explorer,
-such as the Data Prompter, the Tutorial, the Visual Program Editor, etc.
-<P>
-To bypass the Startup window and go directly to the Visual Program
-Editor (as in previous versions of Data Explorer) either type <TT>dx -edit</TT>
-at the prompt or set your <TT>DXARGS</TT> environment variable to
-<TT>-edit</TT>.
-<P>
-<H3><A NAME="Header_18" ></A>New Save Image Dialog in Image Window
-</H3>
-<P>
-The Save Image dialog has been improved to make it easier for users to
-save images at a specific size on the printed page.
-<P>
-<H3><A NAME="Header_19" ></A>New Data Prompter</H3>
-<P>
-The Data Prompter has a new initial window, which allows you to specify
-what kind of data you have (dx format, image format, ...). You can
-access the Data Browser from this window to view your data before
-attempting to import it. If you have "general array" format data, then
-choose the "Grid or Scattered file" button, which will lead to the
-interface which was called the Data Prompter in previous versions of
-Data Explorer.
-<P>
-Once your data has been imported, there is an option to either describe
-or visualize your data. If you choose the "Test Import" option, then the
-data will be imported and characteristics about it (such as
-dimensionality, number of points, ...) will be reported to you. If you
-choose the "Visualize Data" option, then a general purpose visual
-program will be run on your data. You can then inspect and modify this
-visual program.
-<P>
-<H3><A NAME="Header_20" ></A>Pages</H3>
-<P>
-In the VPE, you can now segment your visual program into "pages", which
-are disconnected sets of modules. Modules in one page communicate with
-modules in other pages using transmitters and receivers. You can name
-pages and control the ordering of pages. See the Edit menu of the VPE.
-<P>
-<H3><A NAME="Header_21" ></A>Annotation</H3>
-<P>
-You can add comments directly onto the canvas of the VPE. This option is
-available from the Edit menu of the VPE.
-<P>
-<H3><A NAME="Header_22" ></A>Optimizing Caching</H3>
-<P>
-There is now an option in the Edit menu of the VPE called Output
-Cacheability -&gt; Optimize Cache. If you choose this option, Data
-Explorer will use a heuristic to optimally set the caching behavior of
-each tool in the visual program.
-
-		<P>
+		<H2><A NAME="Header_16" ></A>User Interface</H2>
+		<H3><A NAME="HDRNEWTYPE" ></A>New Type Ahead In Tools List</H3>
+		<P>If you use the (All) category quite frequently, it is fairly slow to scroll through the entire list of available tools. To speed up access, place the mouse over the tools list and begin typing the name of the tool. As characters are typed, modules will be selected. Other keys other than alpha that affect this are: Up and Down arrows move the selection up or down and the space bar deselects the current selected tool.
+		
+		
+		
+		
+		<H3><A NAME="HDRNWMODE" ></A>New Mode Option in Image Window</H3>
+		<P>A new Mode menu option allows direct access to the image manipulation routines without having to remember the shortcut keys or open the View Control dialog. It also adds some increased functionality internally to the code by removing the dependency on X based accelerators in the Picture widget and using the standard Motif accelerators.</P>
+		<H3><A NAME="HDRACCKEY" ></A>Accelerator Keys Now Work in More Windows</H3>
+		<P>This version adds functionality to allow accelerators to be mapped onto other windows. The Image Window accelerators now work in:
+		<UL>
+			<LI>View Control Dialog (always has, but is now handled the same as the others)
+			<LI>AutoAxes Dialog (can now click apply and then use accelerators to execute--handy)
+			<LI>Rendering Options Dialog (very nice to click hardware then execute once)
+			<LI>Throttle Dialog (to be consistent)
+		</UL>
+		<P>All the accelerators such as Save, Print, Close all work in the sub-panels giving a more consistent feel to the ImageWindow.</P>
+		<P>To only are the Image Window accelerators mapped to its dialogs, but also the following VPE accelerators are active in configuration dialogs</P>
+		<UL>
+			<LI>save program accelerator
+			<LI>all the execute menu accelerators
+			<LI>add and remove input tabs
+			
+		</UL>
+		<H3><A NAME="HDRNEWACC"></A>New Accelerator Keys</H3>
+		<P>A new set of accelerators key mappings has been added to follow the style of Windows, MacOS, and KDE. For example, paste is Ctrl-v instead Shift-Insert. In order to use the new keymap, OpenDX must have this enabled during compilation as a configure flag.</P>
+		<H3><A NAME="HDRWBBRS"></A>New Web Browser Help Functionality</H3>
+		<P>The html documentation can now be accessed within OpenDX. By setting an environment variable, DX will override its older built-in help and launch a browser to display the html help. In the UN*X environment set the environment variable DX_WEB_BROWSER to your web browser. Within Windows or MacOS X just set this environment variable and the system default browser will launch. Due to bugs in Exceed XDK and MacOS X (Bug ID#2879972, #1951588) their may be some annoyances using this feature.</P>
 		<HR>
 		<DIV align="center">
 			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>

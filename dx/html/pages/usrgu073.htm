@@ -272,9 +272,17 @@ Setting this variable to DXByte will result in images taking up less
 memory.
 <P>
 <H5><U>DXPROCESSORS</U></H5>
+		
 sets the number of processors for Data Explorer SMP.
-<P>
-<H5><U>DXROOT</U></H5>
+
+		<P></P>
+		<H5><U>DXRSH</U></H5>
+		specifies the remote shell command to use when connecting to other systems (such as those when using distributed execution). The default is the the path to rsh.
+		<P></P>
+		<H5><U>DXRSH_NOENV</U></H5>
+		prevents the remote &quot;invoke dxexec&quot; script from being written with a full carbon copy of the local environment (only DISPLAY is set).
+		<P></P>
+		<H5><U>DXROOT</U></H5>
 specifies the top-level directory for all the files and
 directories needed by Data Explorer.
 The default is /usr/lpp/dx.
@@ -322,8 +330,12 @@ multiple shared memory segments if necessary to get the total amount of
 space, but it must be able to allocate them at contiguous virtual memory
 addresses.
 
-<P>
-<H5><U>DXTRIALKEY</U></H5>
+		<P>
+		<H5><U>DX_SOCKET_BUFSIZE</U></H5>
+		allows the user to specify the size of the send and recieve buffers for the socket connection between the UI and the exec. This value is clamped to the max allowed by the system. This can fix a problem where the executive and UI hang involving a deadlock situation in the socket communication. The value assigned to it is passed as the parameter to setsockopt for SOL_SNDBUF and SOL_RCVBUF. A typcial increased value may be 262144.
+		<P></P>
+		<H5><U>DXTRIALKEY</U></H5>
+		
 can be used in place of the expiration file ($DXROOT /expiration) for a
 trial license.
 The value of the variable is the string specifying the trial key.
@@ -343,7 +355,10 @@ HREF="refgu153.htm#HDRSUPWIND">SuperviseWindow</A> in <I>IBM Visualization Data
 Explorer User&#39;s Reference</I>).
 
 		<P>
+		<H5><U>DX_WEB_BROWSER</U></H5>
+		under UNIX specifies the web browser to launch using the -remote flag for viewing the HTML documentation. Under Windows and MacOS X setting this environment variable will launch the systems default web browser. 
 		<HR>
+		<P> </P>
 		<DIV align="center">
 			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="17" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>
 		</DIV>

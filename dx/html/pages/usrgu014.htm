@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
 <HTML><HEAD>
-		<TITLE>User's Guide - DXLink</TITLE>
+		<TITLE>User's Guide - Networking Enhancements</TITLE>
 		<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
 MINING">
 	<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">
@@ -35,15 +35,11 @@ MINING">
 				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>
 			</TR>
 		</TABLE>
-		<H2><A NAME="Header_26" ></A>DXLink</H2>
-		<P>
-A number of new routines which allow execution of named macros, and
-control over window management (e.g. opening and closing image
-windows) have been added. See <A HREF="progu084.htm#HDRDXLINK">Chapter 17.
-"DXLink Developer's Toolkit"</A> in <I>IBM Visualization Data Explorer
-Programmer&#39;s Reference</I>.
-
-		<P></P>
+		<H2><A NAME="Header_26" ></A>Networking Enhancements</H2>
+		<P>The default command for remoted communication between executives or between the UI and the executive, rsh, has been left in place, but a user-specified remote shell command can be specified via the DXRSH environment variable. For example: setenv DXRSH /usr/bin/ssh, would set up DX to use secure shell for communication.
+		<P>FQDNs (full host paths) are used under the hood when available when creating the remote &quot;invoke dxexec&quot; script and connecting back to the master exec. This may cause problems for non-networked machines who may want to set the DXHOST environment variable.</P>
+		<P>Users can now enter host names of the form &quot;user@machine&quot; in the Execute Group Assignment... dialog adding functionality to the ssh networking feature, and</P>
+		<P>setting the DXRSH_NOENV in the local environment prevents the remote &quot;invoke dxexec&quot; script from being written with a full carbon copy of the local environment (only DISPLAY is set).</P>
 		<HR>
 		<DIV align="center">
 			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>

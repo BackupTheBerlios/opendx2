@@ -129,7 +129,9 @@ grid point.
 the
 nearest neighbors can be found.
 The parameter must specify a scalar value or the string "infinity."
-</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>exponent</STRONG></TT>
+
+					<P>if 0, will place the data on the nearest grid point.  If more than 1 data values lie within 1/2 delta of a grid point, then the average value will be computed. (Very fast)</P>
+				</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>exponent</STRONG></TT>
 </B></TD><TD><P>The averaging method is a weighted average.
 The expression for this average is
 1&#47;radius<SUP><TT><STRONG>(exponent)</STRONG></TT></SUP>.
@@ -165,7 +167,9 @@ The "positions" and "connections" components are those of
 <TT><STRONG>input</STRONG></TT> that depend on
 "positions" will be present in the
 output, modified by averaging.
-<P><STRONG>Example Visual Program</STRONG>
+
+		<P>If the <B><TT>grid</TT></B> input contains invalid positions and <B><TT>missing</TT></B> is not set, the grid's invalid positions are replaced with a new invalid positions component computed. If <TT><B>missing</B></TT> is set, then the invalid positions component from the <TT><B>grid</B></TT> input is kept and is in the output.</P>
+		<P><STRONG>Example Visual Program</STRONG>
 <PRE>
 
 SIMPLE/Regrid.net

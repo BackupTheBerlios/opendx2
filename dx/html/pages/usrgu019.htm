@@ -36,19 +36,36 @@ MINING">
 			</TR>
 		</TABLE>
 		<H2><A NAME="Header_31" ></A>Fixes</H2>
-		<P>Creating an outboard module on an SGI will no longer fail due to lack of
-resources resulting from fork.
-
-		<P>
-SelectorList interactors can now contain more entries.
-<P>
-Cache management has been improved.
-<P>
-It is now possible to save texture-mapped images, both from the Image
-window and by capturing the output of Display.
-See <A HREF="usrgu016.htm#SPTNEWRIW">ReadImageWindow</A>.
-
-		<P>
+		<P>A error with postscript printing the networks was corrected.
+		<P>Correction when a point is on the line containing an edge. Needed to check the sign.</P>
+		<P>Correction to quads for possible loop when point coincides with vertex.
+		<P>Added support for 15 bit, 16 bit, and 32 bit color displays.</P>
+		<P>Defaulting of the environment variable of DXMACROS, DXDATA, and DXROOT if they are not set.</P>
+		<P>Added -whereami option to dx to detect location of dx install.</P>
+		<P>Increased network execution of cached networks.</P>
+		<P>Increased network execution of objects with large amounts of invalid data.</P>
+		<P>Now possible to build C++ modules from module builder.</P>
+		<P>A small memory leak fixed from not closing a message file.</P>
+		<P>Some memory leak patches to general import, task, and redce.</P>
+		<P>The native file format now allows the creation of a local reference to an external file. This local reference can then be used repeatedly within the other objects without having to reread the external file. For example:</P>
+		<PRE>  object &quot;localobj&quot; file &quot;externalfile.dx&quot;,1</PRE>
+		<PRE>  object &quot;f1&quot; field
+    component &quot;positions&quot; &quot;localobj&quot;</PRE>
+		<PRE>  object &quot;f2&quot; field
+    component &quot;positions&quot; &quot;localobj&quot;</PRE>
+		<P>The native file format now allows data descriptions as object names as references instead of numbers.</P>
+		<P>Fix to make dxexec release processor when in wait loop. This fixes the 99% CPU usage on NT.</P>
+		<P>Fix to allow clicking off Connect to Already running server in the Options dialog box.</P>
+		<P>Added support for polylines to the opacity renderer. </P>
+		<P>Permit invocation of script functionality from the command-line via without requiring the user to use shell scripting tricks or build temp script files. For example:</P>
+		<PRE>   dx -script script_macros.scr -scriptcmd &quot;MyMacro(value1,value2)&quot;</PRE>
+		<PRE>   dx -scriptcmd 'data = Import(&quot;junk&quot;); Print(data);'</PRE>
+		<P>A fix where some Packet logic could core dump.</P>
+		<P>Fixes to to prevent hanging processes if the UI disconnects from the server while the server is running.</P>
+		<P>Fix the Control-Click on Close of a user style Control Panel to work as described.</P>
+		<P>Fixed the Selection color on Selector List Interactor so the selected value is visible with newer Motifs.</P>
+		<P>Fix Background on Selector Option Menu so the menu is green in the developer mode on newer Motifs.</P>
+		<P>Corrected a problem with lex/parsing of programs from the UI after and error occurs when trying to open a network. A consecutive open now works correctly and does not give false error messages.</P>
 		<HR>
 		<DIV align="center">
 			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>

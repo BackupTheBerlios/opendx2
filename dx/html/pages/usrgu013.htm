@@ -46,19 +46,54 @@ MINING">
 			</TR>
 		</TABLE>
 		<H2><A NAME="Header_25" ></A>Hardware Rendering</H2>
+		<P>Add translucent texturing with alpha blending support to the OpenGL hardware rendering back-end.
+		<P>Intuitively, translucent textures are represented as image fields with opacities components -- either float opacities, or ubyte opacities and a float opacity map.  (FWIW the ImageMagick ReadImage mods I made back in Sept '01 read translucent images to this field format)</P>
+		<P>As with opacities objects, translucent textured objects aren't meshed, are tossed into the translucent SORTLIST, sorted by depth, and rendered with the DrawTransparent back-end callback.</P>
+		<P>Various related changes such as:</P>
+		<UL>
+			<LI>Suppress Z buffer write for fully-tranparent alpha values
+			<LI>Display list texture activation ops in DrawTransparent, as is done in DrawOpaque
+		</UL>
+		<P>Also, it fixes texturing support in general for texture composite field objects which have ubyte[3] or float[3] direct colors (didn't work previously).</P>
 		<P>
-True transparency is now supported for OpenGL platforms (previously only
-screen-door transparency was supported).
-
-		<P>
-Anti-aliasing of lines, and multiple-pixel-width lines is now supported
-in OpenGL and GL. To specify anti-aliasing of lines, pass the object to
-be rendered through the Options module, setting an attribute of
-"antialias" with a value of "lines". To specify multiple pixel
-width lines, pass the object to be rendered through Options, setting an
-attribute of "line width", with value set to the number of pixels.
-
-		<P>
+		<P>Support OpenGL 1.3's GL_CLAMP_TO_EDGE texture wrap mode in the OpenGL back end; support via extension for OpenGL 1.2 To activate, set the &quot;texture wrap s&quot; and/or &quot;texture wrap t&quot; attributes on the field to be textured to &quot;clamp to border&quot; (instead of &quot;clamp&quot;, &quot;repeat&quot;, or &quot;clamp to edge&quot;).</P>
+		<P></P>
+		<P>For OpenGL (hardware) rendering mode, adds the following field<BR>
+			attributes that affect culling and lighting:<BR>
+			     attribute &quot;cull face&quot; string [&quot;off&quot;|&quot;front&quot;|&quot;back&quot;|&quot;front and back&quot;]<BR>
+			     attribute &quot;light model&quot; string [&quot;one side&quot;|&quot;two side&quot;]<BR>
+			and the following field attributes that affect texturing (when the<BR>
+			&quot;texture&quot; attribute and &quot;uv&quot; component are also correctly provided of course):<BR>
+			     attribute &quot;texture wrap s&quot; string [&quot;clamp&quot;|&quot;repeat&quot;]<BR>
+			     attribute &quot;texture wrap t&quot; string [&quot;clamp&quot;|&quot;repeat&quot;]<BR>
+			     attribute &quot;texture min filter&quot; string \<BR>
+			         [&quot;nearest&quot;|&quot;linear&quot;|&quot;nearest_mipmap_nearest&quot;|&quot;nearest_mipmap_linear&quot;|<BR>
+			          &quot;linear_mipmap_nearest&quot;|&quot;linear_mipmap_linear&quot;]<BR>
+			     attribute &quot;texture mag filter&quot; string [&quot;nearest&quot;|&quot;linear&quot;]<BR>
+			     attribute &quot;texture function&quot; string [&quot;decal&quot;|&quot;replace&quot;|&quot;modulate&quot;|&quot;blend&quot;]<BR>
+			Note that &quot;light model = two side&quot; is particularly useful when<BR>
+			lighting polygonal models with no normals where the auto-computed normal<BR>
+			may bear no resemblence to the &quot;outside&quot; of a rendered object (without it,<BR>
+			only software rendering in DX is worthwhile).  The rest are useful when 3D<BR>
+			polygonal models that require specific culling and texturing state for<BR>
+			correct display are integrated into DX visualizations.<BR>
+			--Note that the default OpenGL state when these attributes are not<BR>
+			specified is the same as it was before.<BR>
+			--Also, now that texture maps are registered via gluBuild2DMipmaps in<BR>
+			the OpenGL back-end, the restrictions on supplied texture maps being powers<BR>
+			of two and larger than &gt;= 64x64 is no longer the case in general, so the<BR>
+			checks have been removed.  Back-end specific checks can be added later if<BR>
+			other back-ends are still used.<BR>
+		</P>
+		<P></P>
+		<P>Activated linear interpolation and mipmaping texture filters.<BR>
+		</P>
+		<P></P>
+		<P>Update to allow the user to specify their own object colors (via<BR>
+			the &quot;colors&quot; component) to light and modulate a hardware rendered textured<BR>
+			object, instead of accepting the hard-coded solid white.  &quot;opacities&quot; can<BR>
+			now be defined and used as well.<BR>
+		</P>
 		<HR>
 		<DIV align="center">
 			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>
