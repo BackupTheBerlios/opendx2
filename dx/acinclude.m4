@@ -339,6 +339,7 @@ AC_DEFUN(DX_JAVA_ARCHITECTURE,
 	    irix*)   JAVA_ARCH=irix ;;
 	    aix)     JAVA_ARCH=aix ;;
 	    alpha)   JAVA_ARCH=alpha ;;
+	    osf1)   JAVA_ARCH=alpha ;;
 	    hp-ux)   JAVA_ARCH=hp-ux ;;
 	    sunos)   JAVA_ARCH=solaris ;;
 	    *)       JAVA_ARCH=$lc ;;
