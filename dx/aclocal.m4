@@ -123,3 +123,23 @@ AC_DEFUN(DX_ARCHITECTURE,
     AC_SUBST(ARCH)
     AC_DEFINE_UNQUOTED($ARCH)
 ])
+
+AC_DEFUN(DX_STREAM_O2,
+[
+    AC_MSG_CHECKING(whether -O2 interferes with fstream in C++)
+    ac_ext=C
+    AC_TRY_LINK(
+ [
+ #include <stdio.h>
+ #include <stdarg.h>
+ #include <fstream.h>
+ ],
+ [
+ ifstream *i = new ifstream("foo");
+ ],
+ AC_MSG_RESULT(no)
+ ,
+ CXXFLAGS=`echo $CXXFLAGS | sed "s/-O2//"`
+ AC_MSG_RESULT(yes)
+    )
+])
