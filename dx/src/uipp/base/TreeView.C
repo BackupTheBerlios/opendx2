@@ -42,7 +42,8 @@
 // Notes:
 // 1) This class has been tested only on data that is 1 level deep and with
 // a hidden root - in other words, root + 1 level of categories + 1 level of leaves.
-// It ought to work but I've never tried it so there are probably bugs.
+// It ought to work for deeper nesting but I've never tried it so there 
+// are probably bugs.
 // 2) All outliners draw horizontal/vertical lines to show some sort of parent,
 // child,sibling relationships.  The way I've done it here, is different from
 // the way it's usually done but I chose this way of doing it because I didn't
@@ -60,8 +61,8 @@ Cursor TreeView::Typing = 0;
 XmFontList TreeView::FontList=0;
 
 #define INDENT 10
-#define LEFT_MARGIN 4
-#define TOP_MARGIN 4
+#define LEFT_MARGIN 3
+#define TOP_MARGIN 3
 
 const String TreeView::DefaultResources[] =
 {
@@ -101,6 +102,7 @@ TreeView::TreeView(Widget parent, const char* bubbleHelp) : UIComponent ("treeVi
     this->typing_count = 0;
     this->ibeam_showing = FALSE;
     this->ibeam_timer = 0;
+    this->dirty = TRUE;
 
     Widget w = XtVaCreateWidget (name, xmDrawingAreaWidgetClass, parent, 
 	XmNtraversalOn, FALSE,
@@ -318,8 +320,7 @@ void TreeView::paintNode(TreeNode* node, int& string_count, int level, int strHe
     int level_incr = 1;
     int descent = 1;
     int y = (string_count * strHeight) + TOP_MARGIN;
-    //int x = (level*INDENT) + LEFT_MARGIN ;
-    int x = (level*plus_width) + LEFT_MARGIN ;
+    int x = (level*plus_width) + LEFT_MARGIN + (level>0?(level*INDENT):0);
     Display* d = XtDisplay(this->getRootWidget());
     XGCValues values;
     if ((node->isRoot()) && (!this->isRootVisible())) {
@@ -328,7 +329,6 @@ void TreeView::paintNode(TreeNode* node, int& string_count, int level, int strHe
 	const char* str = node->getString();
 	XmString xmstr = XmStringCreateLtoR((char*)str, (char*)this->getFont());
 	if (paint_it) {
-	    //int sx = x+plus_width+2;
 	    int sx;
 	    if (node->hasChildren())
 		sx = x+plus_width+3;
@@ -399,7 +399,7 @@ void TreeView::paintNode(TreeNode* node, int& string_count, int level, int strHe
 	}
     } else if (paint_it) {
 	int yy = y + 1 + (strHeight>>1);
-	int x1 = ((level-1)*INDENT) + LEFT_MARGIN + (plus_width>>1);
+	int x1 = (level>0?(level*INDENT):0) + LEFT_MARGIN + (plus_width>>1);
 	int x2 = x1+1+(plus_width>>1);
 	values.foreground = this->line_color;
 	XChangeGC (d,this->gc,GCForeground, &values);
@@ -413,6 +413,7 @@ void TreeView::paintNode(TreeNode* node, int& string_count, int level, int strHe
 
 void TreeView::redisplay()
 {
+    if (!XtIsRealized(this->getRootWidget())) return ;
     if (this->isDirty()) this->paint();
     Widget w = this->getRootWidget();
     Dimension width, height;
