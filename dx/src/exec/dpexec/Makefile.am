@@ -37,4 +37,4 @@ DISTCLEANFILES = yuiif.c yuiif.h
 
 @LOCALMAKE@
 
-command.c : compile.h
+command.o : compile.h

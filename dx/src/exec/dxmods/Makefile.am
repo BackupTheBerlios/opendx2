@@ -13,7 +13,7 @@ DISTCLEANFILES = y.tab.h _compparse.c _compparse.h dx.mdf dxcm.mdf user.c usercm
 
 dxmdf_DATA = dx.mdf
 
-_complex.c: _compparse.h
+_complex.o: _compparse.h
 
 HEADERS1 = \
 	_autocolor.h _autogray.h _colormap.h _compoper.h _compputils.h  \

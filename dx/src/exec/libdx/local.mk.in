@@ -1,10 +1,10 @@
 .X.h: ${srcdir}/class.awk
 	rm -f $*.h
-	srcdir=${srcdir} sh ${srcdir}/class -h ${srcdir}/$*.X >$*.h
+	class_srcdir=${srcdir} srcdir=${srcdir} sh ${srcdir}/class -h ${srcdir}/$*.X >$*.h
 
 .X.c: ${srcdir}/class.awk
 	rm -f $*.c
-	srcdir=${srcdir} sh ${srcdir}/class -c ${srcdir}/$*.X > $*.c
+	class_srcdir=${srcdir} srcdir=${srcdir} sh ${srcdir}/class -c ${srcdir}/$*.X > $*.c
 
 buffer.c: ${srcdir}/buffer.Z
 	sed -e 's/[ 	][ 	]*\$$/ $$/' ${srcdir}/buffer.Z > __buffer.c

@@ -128,8 +128,7 @@ $(built_sources) : $(built_headers)
 
 BUILT_SOURCES =  $(built_sources) $(built_headers)
 
-$(libDXlite_a_SOURCES) $(libLIBDX_a_SOURCES): $(built_headers)
-
+$(OBJECTS): $(built_headers)
 
 zclipQ.o: ${srcdir}/zclipQ.c
 	$(COMPILE) -c -O ${srcdir}/zclipQ.c
