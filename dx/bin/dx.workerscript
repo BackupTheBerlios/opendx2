@@ -225,6 +225,10 @@ set arglist=($dxargs $envargs $argv)
 while ($#arglist > 0)
 
   switch ($arglist[1])  
+  case -whereami
+    echo installed in $dxroot
+    exit 0
+    breaksw
 
   case -host:       # start the executive on this machine
     if ($#arglist < 2) then
