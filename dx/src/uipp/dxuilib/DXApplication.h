@@ -16,6 +16,7 @@
 
 #include "IBMApplication.h"
 #include "List.h"
+#include "Dictionary.h"
 #include "DXExecCtl.h"
 #include "License.h"
 
@@ -24,6 +25,7 @@ class MsgWin;
 class ImageWindow;
 class ControlPanel;
 
+#define RECENT_NETS "recentNets"
 
 //
 // Class name definition:
@@ -349,6 +351,8 @@ class DXApplication : public IBMApplication
     // Protected class data:
     //
     static DXResource resource;	// resources and options
+
+    static String ListValuedSettings[];
 
     //
     // Protected member data:
@@ -854,6 +858,10 @@ class DXApplication : public IBMApplication
 #endif
 
     ApplicIF            *getAppConnection() { return this->applicationPacket; }
+
+    void appendReferencedFile (const char* file);
+    void removeReferencedFile (const char* file);
+    void getRecentNets(List& result);
 
 
     //

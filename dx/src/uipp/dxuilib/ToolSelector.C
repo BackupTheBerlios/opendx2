@@ -17,53 +17,29 @@
 #include <Xm/Xm.h>
 #include <Xm/Frame.h>
 #include <Xm/Form.h>
-#include <Xm/ListP.h>
 #include <Xm/List.h>
 #include <Xm/Label.h>
+#include <Xm/Text.h>
 #include <Xm/ScrolledW.h>
-
 
 #include "ToolSelector.h" 
 #include "NodeDefinition.h"
 #include "Dictionary.h"
 #include "DictionaryIterator.h"
+#include "ResourceManager.h"
+
+#define ALPHABETIZED "( ALL )"
+//#define DONT_USE_ALL_IN_THE_LIST 1
 
 boolean ToolSelector::ToolSelectorClassInitialized = FALSE;
 List ToolSelector::AllToolSelectors;
-Dictionary* ToolSelector::DropTypeDictionary = new Dictionary;
-Dictionary* ToolSelector::DragTypeDictionary = new Dictionary;
-Widget ToolSelector::DragIcon = NULL;
-
-#include "tooldrag.bm"
-#include "tooldragmask.bm"
-
-#define UNSELECTED_INDEX -1
-#define ALPHABETIZED "( ALL )"
-
-#define DXTRASH "DXTRASH"
-#define DXTOOLNAME "DXTOOLNAME"
-
-// It's tough to make this string.  The name DragSource_StartDrag must be the name
-// used in the superclass.  That name is not made available, we just know what it is.
-char* ToolSelector::DragTranslations =
-"#override <Btn2Down>: ListKbdDeSelectAll() ListBeginSelect() ListEndSelect() DragSource_StartDrag()";
-
-XtTranslations ToolSelector::TransTable = NULL;
 
 String ToolSelector::DefaultResources[] =
 {
     ".width:    180",
-    "*XmFrame.shadowThickness:	2",
-    "*XmFrame.marginWidth:	3",
-    "*XmFrame.marginHeight:	3",
-    "*categoryListLabel.labelString: Categories:",
-    "*toolListLabel.labelString:     Tools:",
-    "*toolList.translations:	#override <Key>: ToolList_TypeAhead()",
+    "*traversalOn: False",
      NUL(char*)
 };    
-
-XtActionsRec ToolListActions[] = 
-    	{{"ToolList_TypeAhead",		ToolList_TypeAhead}};
 
 
 //
@@ -73,8 +49,6 @@ ToolSelector::ToolSelector(const char *name) : UIComponent(name)
 {
     this->activeData = NUL(void*); 
     this->lockedData = FALSE;
-    this->lastToolIndex = UNSELECTED_INDEX;
-
     this->initialize();
 
     AllToolSelectors.appendElement((void*)this);
@@ -101,15 +75,10 @@ ToolSelector::~ToolSelector()
 //
 void ToolSelector::deselectAllTools()
 {
-    if (this->lastToolIndex != UNSELECTED_INDEX) {
-	ASSERT(this->toolList);
-	XmListDeselectAllItems(this->toolList);
-	this->activeData = NULL;
-	this->lockedData = FALSE;
-	this->lastToolIndex = UNSELECTED_INDEX;
-    }
+    this->activeData = NULL;
+    this->lockedData = FALSE;
+    this->treeView->clear();
 }
-
 
 void ToolSelector::initialize()
 {
@@ -120,48 +89,22 @@ void ToolSelector::initialize()
     {
         ASSERT(theApplication);
 
-        // Add translation for <Key> on window to do type ahead in tool list
-        XtAppAddActions(XtWidgetToApplicationContext(theApplication->getRootWidget()), 
-    		ToolListActions, XtNumber(ToolListActions));
-
         this->setDefaultResources(theApplication->getRootWidget(),
                                   ToolSelector::DefaultResources);
         ToolSelector::ToolSelectorClassInitialized = TRUE;
 
-	//XtAppAddActions (XtWidgetToApplicationContext(), actions, XtNumber(actions));
-
-	ToolSelector::TransTable = XtParseTranslationTable (DragTranslations);
-
-	this->DropSite::addSupportedType (ToolSelector::Trash, DXTRASH, TRUE);
-	this->DragSource::addSupportedType (ToolSelector::ToolName, DXTOOLNAME, TRUE);
     }
-    if (!ToolSelector::DragIcon) {
-        ToolSelector::DragIcon =
-                this->createDragIcon(tooldrag_width, tooldrag_height,
-                                     (char *)tooldrag_bits,
-                                     (char *)tooldragmask_bits);
-    }
-
 }
 //
-// Build two list widgets and initialize the lists from the items in
-// the dictionary. 
 //
-boolean ToolSelector::initialize(Widget parent, 
-                                 Dictionary *d)
+boolean ToolSelector::initialize(Widget parent, Dictionary *d)
 {
-    int rc;
-
     //
     // Create the widgets before do 'addTool'.
     //
-    if (!this->layoutWidgets(parent))
-	return FALSE;
-
+    this->setRootWidget(this->layoutWidgets(parent));
 
     theSymbolManager->registerSymbol(ALPHABETIZED);
-
-    this->installCallbacks();
 
     if (d->getSize() == 0)
 	return TRUE;
@@ -171,22 +114,10 @@ boolean ToolSelector::initialize(Widget parent,
     if (!this->augmentLists(d))
 	return FALSE;
 
+    this->buildTreeModel();
 
-    //
-    // Install the strings in the list widgets.
-    //
-    rc = updateCategoryListWidget() && updateToolListWidget();
-
-    //
-    // After the lists are initialized, highlight the first
-    // category.  This will call the callback associated with 
-    // the list widget.
-    //
-    XmListSelectPos(this->categoryList, 1, True);
-
-    return rc;
+    return TRUE;
 }
-
 
 //
 // Build the category lists and add the list items to the widgets. 
@@ -197,6 +128,8 @@ boolean ToolSelector::augmentLists(Dictionary *d)
     Symbol c, t;
     DictionaryIterator iterator(*d);
     NodeDefinition *nd;
+
+    Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
  
     //
     // Look at all the node definitions and insert their category:name
@@ -215,86 +148,11 @@ boolean ToolSelector::augmentLists(Dictionary *d)
 //
 //  Build the widget tree. 
 //
-boolean ToolSelector::layoutWidgets(Widget parent)
+Widget ToolSelector::layoutWidgets(Widget parent)
 {
-    Widget label;
 
-
-    this->setRootWidget(
-        XtCreateManagedWidget (this->name, xmFormWidgetClass, parent,NULL,0));
-
-    this->setDragIcon(ToolSelector::DragIcon);
-
-    XtVaSetValues(this->getRootWidget(), XmNresizePolicy, XmRESIZE_NONE, NULL);
-
-    this->toolListLabel =
-        XtVaCreateManagedWidget
-            ("toolListLabel",
-             xmLabelWidgetClass,
-             this->getRootWidget(),
-             XmNtopAttachment,   XmATTACH_POSITION,
-             XmNtopPosition,     40,
-             XmNleftAttachment,  XmATTACH_FORM,
-             XmNrightAttachment, XmATTACH_FORM,
-             XmNalignment,       XmALIGNMENT_BEGINNING,
-             NULL);
-
-
-    Widget frame = XtVaCreateManagedWidget("toolFrame",
-                         xmFrameWidgetClass,     this->getRootWidget(), 
-			 XmNtopAttachment,    XmATTACH_WIDGET,
-			 XmNtopWidget,        this->toolListLabel,
-			 XmNtopOffset,        5,
-			 XmNleftAttachment,   XmATTACH_FORM,
-			 XmNrightAttachment,  XmATTACH_FORM,
-			 XmNbottomAttachment, XmATTACH_FORM,
-			 NULL);
-
-    this->toolList = XmCreateScrolledList(frame, 
-				"toolList", NUL(ArgList), 0);
-    XtManageChild(this->toolList);
-
-
-    label = XtVaCreateManagedWidget
-            ("categoryListLabel",
-             xmLabelWidgetClass, 
-	     this->getRootWidget(),
-             XmNtopAttachment,   XmATTACH_FORM,
-             XmNleftAttachment,  XmATTACH_FORM,
-             XmNrightAttachment, XmATTACH_FORM,
-             XmNalignment,       XmALIGNMENT_BEGINNING,
-             NULL);
-
-    frame = XtVaCreateManagedWidget("categoryFrame",
-                         xmFrameWidgetClass, this->getRootWidget(), 
-			 XmNtopAttachment,    XmATTACH_WIDGET,
-			 XmNtopWidget,        label,
-			 XmNtopOffset,        5,
-			 XmNleftAttachment,   XmATTACH_FORM,
-			 XmNrightAttachment,  XmATTACH_FORM,
-			 XmNbottomAttachment, XmATTACH_WIDGET,
-			 XmNbottomWidget,     this->toolListLabel,
-			 XmNbottomOffset,     10,
-			 NULL);
-
-    this->categoryList = XmCreateScrolledList(frame,
-				"categoryList", NUL(ArgList), 0);
-
-    XtManageChild(this->categoryList);
-
-    //
-    // Set up drop widget.  
-    // Set up drag widget.  This normall means telling motif about us
-    // and installing a button2 translation.  In this case the button2
-    // translation is special because we want to select the text under
-    // the mouse and then let the drag operation proceed.  It's better
-    // visual feedback
-    //
-    this->setDropWidget(this->getRootWidget(), XmDROP_SITE_COMPOSITE);
-    this->setDragWidget(this->toolList);
-    XtOverrideTranslations (this->toolList, ToolSelector::TransTable);
-
-    return TRUE;
+    this->treeView = new ToolView(parent, this);
+    return this->treeView->getRootWidget();
 }
 
 //
@@ -303,29 +161,18 @@ boolean ToolSelector::layoutWidgets(Widget parent)
 // We keep an ActiveItemDictionary of ActiveItemDictoinaries.  The
 // first level of dictionary is the categories, the second is the tools
 // under the given category.
-// In addition, we always update the alphabetic tool list.
-// This does not update the widgets.
 //
 boolean ToolSelector::addTool(Symbol cat, Symbol tool, void *ptr)
 {
     ActiveItemDictionary *toollist;
 
-#if 00
-    const char *vcr = theSymbolManager->getSymbolString(tool);
-    if (EqualString(vcr,"VCR")) {
-	printf("Found VCR in category '%s'\n",
-		theSymbolManager->getSymbolString(cat));
-    } 
-#endif
-
     //
     // Tools without categories are ignored.
     //
-    if (!cat)
-	return TRUE;
+    if (!cat) return TRUE;
 
-    toollist = (ActiveItemDictionary*)
-                        this->categoryDictionary.findDefinition(cat);
+    toollist = (ActiveItemDictionary*) this->categoryDictionary.findDefinition(cat);
+
     //
     // If adding new category create a new toollist data structure
     //
@@ -334,12 +181,12 @@ boolean ToolSelector::addTool(Symbol cat, Symbol tool, void *ptr)
         this->categoryDictionary.addDefinition(cat, toollist);
     }
 
+    if (!toollist->addDefinition(tool,ptr)) {
+        if (!toollist->replaceDefinition(tool,ptr)) {
+	    return FALSE;
+	}
+    }
 
-    if (!toollist->addDefinition(tool,ptr) && 
-        !toollist->replaceDefinition(tool,ptr))
-	return FALSE;
-
-    
     Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
     if (cat != alpha)
 	return this->addTool(alpha,tool,ptr);
@@ -347,27 +194,55 @@ boolean ToolSelector::addTool(Symbol cat, Symbol tool, void *ptr)
 	return TRUE;
 }
 
-#if 00
-// See the comments for addTool() above.
-boolean ToolSelector::addTool(const char *cat, const char *tool,
-                void *ptr)
+void ToolSelector::buildTreeModel()
 {
-   Symbol t, c;
-
-    //
-    // Tools without categories are ignored.
-    //
-    if (!cat || !*cat)
-	return TRUE;
-
-   c = theSymbolManager->registerSymbol(cat);
-   t = theSymbolManager->registerSymbol(tool);
-   ASSERT(c != 0);
-   ASSERT(t != 0);
-
-   return this->addTool(c,t,ptr);
-}
+    boolean repaint = (this->treeView->getDataModel()!=NUL(TreeNode*));
+    RootNode* root = new RootNode();
+    DictionaryIterator citer(this->categoryDictionary);
+    Symbol cat;
+    List expanded_categories;
+    theResourceManager->getValue(EXPANDED_CATEGORIES, expanded_categories);
+#if defined(DONT_USE_ALL_IN_THE_LIST)
+    Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
 #endif
+    while (cat = citer.getNextSymbol()) {
+#if defined(DONT_USE_ALL_IN_THE_LIST)
+	if (cat == alpha) continue;
+#endif
+	CategoryNode* cnode = new ToolSelector::ToolCategoryNode(cat, root, this);
+	root->addChild(cnode);
+
+	ActiveItemDictionary* tools = (ActiveItemDictionary*)
+	    this->categoryDictionary.findDefinition(cat);
+	DictionaryIterator titer(*tools);
+	Symbol tool;
+	while (tool = titer.getNextSymbol()) {
+	    cnode->addChild(new ToolSelector::ToolNode(tool, cnode, this));
+	}
+
+	//
+	// did the user leave the category open?
+	//
+	if (expanded_categories.isMember((void*)cat))
+	    cnode->setExpanded(TRUE);
+    }
+
+    //
+    // check for unusable categories in the resource setting and remove them.
+    // This happens if a tool was loaded into a category but during a later
+    // use of dxui, that tool isn't loaded and its category doesn't exist.
+    //
+    ListIterator iter(expanded_categories);
+    while (cat=(Symbol)iter.getNext()) {
+	if (this->categoryDictionary.findDefinition(cat)) continue;
+	const char* cp = theSymbolManager->getSymbolString(cat);
+	//printf ("%s[%d] Warning: bad value(%s) in resource %s\n",
+	//    __FILE__,__LINE__,cp,EXPANDED_CATEGORIES);
+	theResourceManager->removeValue(EXPANDED_CATEGORIES, cp);
+    }
+
+    this->treeView->initialize(root, repaint);
+}
 
 //
 // Remove the Node named 'tool' that is in category 'cat'
@@ -375,21 +250,17 @@ boolean ToolSelector::addTool(const char *cat, const char *tool,
 // We keep a of ActiveItemDictionary of ActiveItemDictoinaries.  The
 // first level of dictionary is the categories, the second is the tools
 // under the given category.
-// This also removes the tool from the alphabetic list.
-// This does not update the widgets.
 //
 boolean ToolSelector::removeTool(Symbol cat, Symbol tool)
 {
     ActiveItemDictionary *toollist;
 
 
-    toollist = (ActiveItemDictionary*)
-                        this->categoryDictionary.findDefinition(cat);
+    toollist = (ActiveItemDictionary*)this->categoryDictionary.findDefinition(cat);
     //
     // If adding new category create a new toollist data structure
     //
-    if (!toollist ||
-         toollist->removeDefinition(tool) == NULL)
+    if (!toollist || toollist->removeDefinition(tool) == NULL)
 	return FALSE;
 
     Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
@@ -398,291 +269,73 @@ boolean ToolSelector::removeTool(Symbol cat, Symbol tool)
     else
 	return TRUE;
 }
-#if 00
-// See the comments for removeTool() above.
-boolean ToolSelector::removeTool(const char *cat, const char *tool)
-{
-   Symbol t, c;
-
-   c = theSymbolManager->registerSymbol(cat);
-   t = theSymbolManager->registerSymbol(tool);
-   ASSERT(c != 0);
-   ASSERT(t != 0);
-
-   return this->removeTool(c,t);
-}
-#endif
-
-//
-// Install new strings into the toolList widget based on the current 
-// state of 'this' (i.e. the active_category)
-//boolean ToolSelector::updateToolSelectorListWidgets()
-//{
-//	return updateCategoryListWidget() && updateToolListWidget();
-//}
-// 
-// Install new strings into the toolList widget based on the current 
-// state of 'this' (i.e. the active_category)
-//
-boolean ToolSelector::updateToolListWidget()
-{
-    int n, n_items;
-    ActiveItemDictionary *toollist;
-    Symbol tool;
-    const char *str;
-    XmString *xmstrings;
-    Arg arg[3];
-
-    toollist = (ActiveItemDictionary*)
-                        this->categoryDictionary.getActiveDefinition();
-    ASSERT(toollist != NUL(ActiveItemDictionary*));
-
-
-    DictionaryIterator iterator(*toollist);
-    n_items = toollist->getSize();
-
-    if (n_items != 0)
-    {
-        xmstrings = new XmString[n_items];
-	n=0;
-	while ( (tool = iterator.getNextSymbol()) ) {
-	    str = theSymbolManager->getSymbolString(tool);
-	    xmstrings[n] = XmStringCreateLtoR((char*)str,"bold");
-	    n++;
-	}
-    }
-    else
-    {
-	n_items = 1;
-	xmstrings = new XmString[n_items];
-        xmstrings[0] = XmStringCreateLtoR("(none)", "oblique");
-    }
-
-    n = 0;
-    XtSetArg(arg[n], XmNitemCount,        n_items);   n++;
-    XtSetArg(arg[n], XmNitems,            xmstrings); n++;
-    XtSetValues(this->toolList, arg, n);
-
-    for (n=0 ; n<n_items ; n++)
-	XmStringFree(xmstrings[n]);
-    delete xmstrings;
-
-    this->toolListDirty = FALSE;
-
-    return TRUE;
-
-}
-
-
-void ToolSelector::clearToolListWidget()
-{
-    this->activeData = NULL;
-    this->lockedData = FALSE;
-    this->lastToolIndex = UNSELECTED_INDEX;
-    XmListDeleteAllItems(this->toolList);
-}
-//
-// Build a new Category list and install it in the categoryList. 
-// This assumes that there is at least ONE categorie.
-//
-boolean ToolSelector::updateCategoryListWidget()
-{
-    ASSERT(this->categoryList != NUL(Widget));
-
-    int n_items = this->categoryDictionary.getSize();
-    XmString *xmstrings = new XmString[n_items];
-    DictionaryIterator iterator(this->categoryDictionary);
-    Symbol cat;
-
-    int i;
-    Symbol first_cat = 0;
-    for (i = 0; (cat = iterator.getNextSymbol()) ; ++i) {
-	const char *str;
-	if (i==0)
-	    first_cat = cat;	
-        str = theSymbolManager->getSymbolString(cat);
-        xmstrings[i] = XmStringCreateLtoR((char*)str,"bold");
-    }
-
-    XtVaSetValues(this->categoryList, 
-	XmNitemCount,        n_items,
-	XmNitems,            xmstrings,
-	NULL);
-
-    for (i = 0; i < n_items; ++i)
-	XmStringFree(xmstrings[i]);
-    delete xmstrings;
-
-    if (!this->categoryDictionary.isActive())
-        this->categoryDictionary.setActiveItem(first_cat);
-
-    return TRUE;
-}
 
 
 /////////////////////////////////////////////////////////////////////////////
 
 
 //
-// Install the callbacks for the widgets in this class. 
-// Includes the tool list and category selection widgets.
-//
-void ToolSelector::installCallbacks()
-{
-    Arg arg[1];
-
-    
-    XtSetArg(arg[0], XmNselectionPolicy, XmSINGLE_SELECT);
-
-    // Enable single click selection
-    XtSetValues(this->categoryList, arg, 1);
-
-    // Install the single click callback
-    XtAddCallback(this->categoryList,
-		  XmNsingleSelectionCallback, 
-		  (XtCallbackProc)ToolSelector_CategorySelectCB,
-		  (XtPointer)this);
-
-    // Enable single click selection
-    XtSetValues(this->toolList, arg, 1);	
-
-    // Install the single click callback
-    XtAddCallback(this->toolList,
-		  XmNsingleSelectionCallback, 
-		  (XtCallbackProc)ToolSelector_ToolSelectCB,
-		  (XtPointer)this);
-
-    // Install the double click callback
-    XtAddCallback(this->toolList,
-		  XmNdefaultActionCallback, 
-		  (XtCallbackProc)ToolSelector_ToolSelectCB,
-		  (XtPointer)this);
-
-    // Install the help callback
-    XtAddCallback(this->toolList,
-		  XmNhelpCallback, 
-		  (XtCallbackProc)ToolSelector_ToolHelpCB,
-		  (XtPointer)this);
-}
-
-//
-// Static member callback for the category selection list.
-//
-extern "C" void ToolSelector_CategorySelectCB(
-		Widget w, XtPointer clientData, XtPointer callData)
-{
-	ToolSelector *ts = (ToolSelector*) clientData;
-	ts->categorySelect(w, (XmListCallbackStruct*)callData);
-}
-	
-//
 // Member function callback called through 
 // (XtCallbackProc)ToolSelector_CategorySelectCB() to handle tool list selection 
 // callbacks.
 //
-void ToolSelector::categorySelect(
-		    Widget                widget,
-	            XmListCallbackStruct* callData)
+void ToolSelector::categorySelect(Symbol cs)
 {
-    char*    value;
-    char     string[128];
-    XmString label;
-    Arg      arg[1];
     ActiveItemDictionary *toollist;
-
-    ASSERT(widget);
-    ASSERT(callData);
+    ToolView* tv = (ToolView*)this->treeView;
 
     /*
      * Get the index of the selected category.
      */
-    toollist = (ActiveItemDictionary*)
-		this->categoryDictionary.getDefinition(callData->item_position);
+    toollist = (ActiveItemDictionary*) this->categoryDictionary.findDefinition(cs);
     ASSERT(toollist);
 
     /*
      * If a new category has been selected, build a module list.
      */
     if (toollist != this->categoryDictionary.getActiveDefinition()) {
-	Symbol cat_symbol = this->categoryDictionary.getSymbol(
-						callData->item_position);
-	this->categoryDictionary.setActiveItem(cat_symbol);
-	this->clearToolListWidget();
-	this->updateToolListWidget();
+	this->categoryDictionary.setActiveItem(cs);
     }
 
-    /*
-     * Set the module list label.
-     */
-    XmStringGetLtoR(callData->item, "bold", &value);
-    sprintf(string, "%s Tools:", value);
-    label = XmStringCreate(string, "bold");
+    Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
 
-    XtSetArg(arg[0], XmNlabelString, label);
-    XtSetValues(this->toolListLabel, arg, 1);
-
-    XmStringFree(label);
-    XtFree(value);
-
+    CategoryNode* cn = this->getCategoryNode(this->treeView->getDataModel(), cs);
+    if (cn->isExpanded() == FALSE) {
+	cn->setExpanded(TRUE);
+	tv->setDirty(TRUE,TRUE);
+    }
 }
 
-
-
-//
-// Static member callback for tool selection list.
-//
-extern "C" void ToolSelector_ToolSelectCB(
-		Widget w, XtPointer clientData, XtPointer callData)
-{
-    ToolSelector *ts = (ToolSelector*) clientData;
-
-    ts->toolSelect(w, (XmListCallbackStruct*)callData);
-}
 
 //
 // Member function callback called through (XtCallbackProc)ToolSelector_ToolSelectCB().
 // to handle tool list selection call backs.
 //
-void ToolSelector::toolSelect(
-		    Widget                widget,
-	            XmListCallbackStruct* callData)
+void ToolSelector::toolSelect(Symbol ts)
 {
-    int        tool_index;
-    ActiveItemDictionary *toollist;
+    if (ts) {
+	ActiveItemDictionary *toollist;
+	ToolView* tv = (ToolView*)this->treeView;
 
-    ASSERT(widget);
-    ASSERT(callData);
-
-    int selects, reason = callData->reason;
-    XtVaGetValues(widget, XmNselectedItemCount, &selects, NULL);
-    ASSERT(selects <= 1);
-
-    // 
-    //  Look for either a double click or the first single click
-    // 
-    if (selects == 1) {
 	/*
 	 * Search for the selected module.
 	 */
-	toollist = (ActiveItemDictionary*)
-		this->categoryDictionary.getActiveDefinition();
+	toollist = (ActiveItemDictionary*) this->categoryDictionary.getActiveDefinition();
+	this->activeData = toollist->findDefinition(ts); 
 
-        tool_index  = callData->item_position;
-	ASSERT(tool_index > 0);
-	this->activeData = toollist->getDefinition(tool_index); 
-        this->lastToolIndex = tool_index;
-    } else { 
-        this->lastToolIndex = UNSELECTED_INDEX;
-	this->activeData = NULL;
-    } 
-
-    if ((this->activeData != NULL) && (reason == XmCR_DEFAULT_ACTION)) {
-	this->lockedData = TRUE;
-	ASSERT(this->activeData);
+	TreeNode* tn = this->getToolNode(this->treeView->getDataModel(), ts);
+	tv->select (tn, TRUE);
     } else {
+	this->activeData = NULL;
 	this->lockedData = FALSE;
     }
 }
+
+void ToolSelector::lockSelect(Symbol ts)
+{
+    if (this->activeData != NULL) this->lockedData = TRUE;
+}
+
 
 //
 // return the NodeDefinition of char strings or 0 if the item is not
@@ -707,27 +360,6 @@ NodeDefinition* activeData;
     
 }
 
-extern "C" void ToolSelector_ToolHelpCB(Widget w, 
-			     XtPointer clientData, XtPointer callData)
-{
-    ToolSelector *ts = (ToolSelector*)clientData;
-    XmString label;
-
-    XtVaGetValues(ts->toolListLabel, XmNlabelString, &label, NULL);
-
-    char *labelString;
-    XmStringGetLtoR(label, "bold", &labelString);
-
-    *strstr(labelString, " Tools:") = '\0';
-    char *p;
-    for (p = labelString; *p; ++p)
-	if (*p == ' ' || *p == '\t')
-	    *p = '-';
-
-    theApplication->helpOn(labelString);
-    XtFree(labelString);
-
-}
 
 // These perform addTool and removeTool to all tool selectors.
 boolean ToolSelector::AddTool(Symbol cat, Symbol tool, void *ptr)
@@ -741,33 +373,11 @@ boolean ToolSelector::AddTool(Symbol cat, Symbol tool, void *ptr)
     if (!cat)
 	return TRUE;
 
-    while( (ts = (ToolSelector*)li.getNext()) )
-    {
-	/*if (!ts->addTool(cat, tool, ptr))
-	    result = FALSE;*/
+    while( (ts = (ToolSelector*)li.getNext()) ) {
 	ts->addTool(cat, tool, ptr);
     }
     return TRUE;
 }
-#if 00
-boolean ToolSelector::AddTool(const char *cat, const char *tool, void *nd)
-{
-   Symbol t, c;
-
-    //
-    // If there is no category, don't put it in the list.
-    //
-    if (!cat || !*cat)
-	return TRUE;
-
-   c = theSymbolManager->registerSymbol(cat);
-   t = theSymbolManager->registerSymbol(tool);
-   ASSERT(c != 0);
-   ASSERT(t != 0);
-
-   return AddTool(c,t,nd);
-}
-#endif
 
 boolean ToolSelector::RemoveTool(Symbol cat, Symbol tool)
 {
@@ -781,20 +391,14 @@ boolean ToolSelector::RemoveTool(Symbol cat, Symbol tool)
     }
     return result;
 }
-#if 00
-boolean ToolSelector::RemoveTool(const char *cat, const char *tool)
-{
-   Symbol t, c;
 
-   c = theSymbolManager->registerSymbol(cat);
-   t = theSymbolManager->registerSymbol(tool);
-   ASSERT(c != 0);
-   ASSERT(t != 0);
-
-   return RemoveTool(c,t);
-}
-#endif
-
+//
+// Caution:  This API isn't very good IMO.  Problem is you can't really
+// call UpdateCategoryListWidget or UpdateToolListWidget idependently.
+// They really operate as a pair.  They're called from MacroDefinition
+// when creating/modifying a macro.  When updating either, you must
+// update both and you have to update the data model.
+//
 boolean ToolSelector::UpdateCategoryListWidget()
 {
     ListIterator li(ToolSelector::AllToolSelectors);
@@ -804,19 +408,8 @@ boolean ToolSelector::UpdateCategoryListWidget()
     {
 	if (!ts->updateCategoryListWidget())
 	    result = FALSE;
-    }
-    return result;
-}
-
-boolean ToolSelector::UpdateToolListWidget()
-{
-    ListIterator li(ToolSelector::AllToolSelectors);
-    ToolSelector *ts;
-    boolean result = TRUE;
-    while( (ts = (ToolSelector*)li.getNext()) )
-    {
-	if (!ts->updateToolListWidget())
-	    result = FALSE;
+	else
+	    ts->buildTreeModel();
     }
     return result;
 }
@@ -832,251 +425,175 @@ boolean ToolSelector::MergeNewTools(Dictionary *d)
 
     while( (ts = (ToolSelector*)li.getNext()) )
     {
-	if (!ts->augmentLists(d) 	|| 
-	    !ts->updateToolListWidget() || 
+	if (!ts->augmentLists(d) ||
 	    !ts->updateCategoryListWidget())
 	    return FALSE;
+	ts->buildTreeModel();
     }
     return TRUE;
 }
 
-// Called to consumate a dnd operation
-boolean ToolSelector::decodeDropType (int tag,
-	char *, XtPointer , unsigned long, int, int)
+
+//
+// Build a new Category list and install it in the categoryList. 
+// This assumes that there is at least ONE categorie.
+//
+boolean ToolSelector::updateCategoryListWidget()
 {
-boolean retVal;
-    switch (tag) {
-	case ToolSelector::Trash:
-	    retVal = TRUE;
-	    break;
-	default:
-	    retVal = FALSE;
-	    break;
-    }
-    return retVal;
+    DictionaryIterator iterator(this->categoryDictionary);
+    Symbol first_cat = iterator.getNextSymbol();
+    if (!this->categoryDictionary.isActive())
+        this->categoryDictionary.setActiveItem(first_cat);
+
+    return TRUE;
 }
 
-boolean ToolSelector::decodeDragType (int tag,
-	char *a, XtPointer *value, unsigned long *length, long operation)
+void ToolSelector::ToolView::select(TreeNode* node, boolean repaint) 
 {
-boolean retVal;
-NodeDefinition *nd;
-const char *toolname;
-const char *category;
-char *cp;
-
-    switch(tag) {
-
-	// Get the text of item under the mouse. (Must be the selected item.)
-	// Put that text into *value.  The format is "category:toolname".
-	case ToolSelector::ToolName:
-
-	    nd = this->getCurrentSelection();
-	    // don't assert because rapid clicking can unselect something
-	    // in the selector;
-	    //ASSERT(nd);
-	    if (nd) {
-
-	        toolname = nd->getNameString();
-	        category = nd->getCategoryString();
-	        if ((!toolname) || (!toolname[0]) || (!category) || (!category[0])) {
-		    retVal = FALSE;
-		    break;
-	        }
-
-	        cp = (char *)new char[2 + strlen(category) + strlen(toolname)];
-	        sprintf (cp, "%s:%s", category, toolname);
-	        *value = cp;
-	        *length = strlen(cp);
-	        retVal = TRUE;
-	    } else {
-		retVal = FALSE;
-	    }
-	    
-	    break;
-	default:
-	    retVal = FALSE;
-	    break;
-    }
-    return retVal;
-}
-
-static void
-ActivateElement(XmListWidget lw,
-	     XEvent *event,
-	     Boolean default_action)
-{
-  int item, SLcount;
-  XmListCallbackStruct cb;
-
-  item = lw->list.LastHLItem;
-  lw->list.DidSelection = TRUE;
-
-  /* If there's a drag timeout, remove it so we don't see two selections. */
-  if (lw->list.DragID)
-    {
-      XtRemoveTimeOut(lw->list.DragID);
-      lw->list.DragID = 0;
-    }
-
-  ASSERT(lw->list.itemCount && lw->list.InternalList);
-  if (lw->list.InternalList[item]->length == -1)
-    lw->list.InternalList[item]->length = XmStringLength(lw->list.items[item]);
-
-  cb.event = event;
-  cb.item_length = lw->list.InternalList[item]->length;
-  cb.item_position = item + 1;
-  cb.item = XmStringCopy(lw->list.items[item]);
-
-  SLcount = lw->list.selectedItemCount;
-
-  /* BEGIN OSF Fix CR 4576 */
-  cb.selected_item_count = SLcount;
-  /* END OSF Fix CR 4576 */
-
-  if (default_action)
-    {
-      cb.reason = XmCR_DEFAULT_ACTION;
-      XtCallCallbackList((Widget) lw, lw->list.DefaultCallback, &cb);
-    }
-  else
-    {
-      switch(lw->list.SelectionPolicy)
-	{
-	case XmSINGLE_SELECT:
-	  cb.reason = XmCR_SINGLE_SELECT;
-	  XtCallCallbackList((Widget) lw, lw->list.SingleCallback, &cb);
-	  break;
-
-	case XmBROWSE_SELECT:
-	  cb.reason = XmCR_BROWSE_SELECT;
-	  XtCallCallbackList((Widget) lw, lw->list.BrowseCallback, &cb);
-	  break;
-
-	case XmMULTIPLE_SELECT:
-	  cb.reason = XmCR_MULTIPLE_SELECT;
-	  XtCallCallbackList((Widget) lw, lw->list.MultipleCallback, &cb);
-	  break;
-
-	case XmEXTENDED_SELECT:
-	  cb.reason = XmCR_EXTENDED_SELECT;
-	  cb.selection_type = lw->list.SelectionType;
-	  XtCallCallbackList((Widget) lw, lw->list.ExtendCallback, &cb);
-	  break;
+    if (this->getSelection() == node) return ;
+    this->TreeView::select(node, repaint);
+    if (node) {
+	if (node->isLeaf()) {
+	    CategoryNode* cn = (CategoryNode*)node->getParent();
+	    this->toolSelector->categorySelect(cn->getDefinition());
+	    toolSelector->toolSelect(node->getDefinition());
 	}
+    } else {
+	toolSelector->toolSelect(0);
     }
-
-  XmStringFree(cb.item);
+}
+void ToolSelector::ToolView::adjustVisibility(int x1, int y1, int x2, int y2)
+{
+    this->TreeView::adjustVisibility(x1,y1,x2,y2);
+    this->toolSelector->adjustVisibility(x1,y1,x2,y2);
 }
 
-static Boolean 
-CompareStrAndItem(XmListWidget lw,
-                   char *input_str,
-                   int pos)
+//
+// append the tools in ( ALL ) so that type-ahead will always give
+// precedence to the exposed tools and then allow matching on all others.
+//
+void ToolSelector::ToolView::getSearchableNodes(List& nodes_to_search)
 {
-    char *listString;
-    XmStringTable list;
-    XmStringContext xmc;
-    XmStringCharSet tag;
-    XmStringDirection direction;
-    Boolean sep;
-    
-    XtVaGetValues((Widget)lw, XmNitems, &list, NULL);
-
-    // Get compound Text String back out.
-    XmStringInitContext(&xmc, list[pos]);
-    XmStringGetNextSegment(xmc, &listString, &tag, &direction, &sep);
-
-    if(listString && strlen(listString) >= strlen(input_str)) {
-    	for(int i=0; i<strlen(input_str); i++)
-    	    listString[i] = tolower(listString[i]);
-	if(strncmp(listString, input_str, strlen(input_str))==0) {
-		XmListSetKbdItemPos((Widget) lw, pos + 1);
-		XmListSelectPos((Widget) lw, pos + 1, True);
-		XtFree(listString);
-		return True;
-	}
-    }
-    if(listString)
-    	XtFree(listString);
-    return False;
-}
-
-#define MOST_TYPED 10
-static char typed[MOST_TYPED] = "";
-static time_t last=0;
-
-void ToolList_TypeAhead(Widget wid, XEvent *event, String *params, 
-	Cardinal *num_params)
-{
-    time_t previous=last;
-    XmListWidget lw = (XmListWidget) wid;
-    XKeyEvent *xk = (XKeyEvent*) event;
-    KeySym kr;
-    char input_string[MOST_TYPED];
-    Boolean found = False;
-    int i, curKbd;
-
-    /* Determine what was pressed. */
-    /*input_length =*/ XLookupString(xk, input_string, MOST_TYPED, &kr, 0);
-
-    curKbd = lw->list.CurrentKbdItem<1?1:
-	(lw->list.CurrentKbdItem>lw->list.itemCount?0:lw->list.CurrentKbdItem);
-
-    if(kr == XK_Up) {
-	int pos = curKbd;
-	last = 0;
-    	XmListSetKbdItemPos(wid, pos);
-    	XmListSelectPos(wid, pos, True);
-    }
-
-    if(kr == XK_Down) {
-	int pos = curKbd + 2;
-	if (pos > lw->list.itemCount) pos = 0;
-	last = 0;
-    	XmListSetKbdItemPos(wid, pos);
-    	XmListSelectPos(wid, pos, True);
-    }
-
-    if(*input_string == ' ') {
-	XmListDeselectPos((Widget) lw, curKbd+1);
-	// After deselecting, send deselect to other callbacks.
-	ActivateElement(lw, NULL, FALSE);
-	last = 0;
-	return;
-    }
-
-    if((*input_string >= 'a' && *input_string <='z') || 
-  	(*input_string >= 'A' && *input_string <= 'Z')) {
-
-        last = time(NULL);
-
-  	if (lw->list.itemCount > 0) {
-	    if(difftime(last, previous) < 2) {
-	    	int len = strlen(typed); if(len>=MOST_TYPED-1) len=0;
-	    	typed[len] = tolower(*input_string);
-	    	typed[len+1] = '\0';
-	    } else
-	    {
-	    	typed[0] = tolower(input_string[0]); 
-	    	typed[1] = '\0';
-	    }
-
-	    for (i = curKbd; i < lw->list.itemCount; i++)
-		if (CompareStrAndItem(lw, typed, i))
-		{
-		    found = True;
-		    break;
+    this->TreeView::getSearchableNodes(nodes_to_search);
+#if defined(ALPHABETIZED)
+    Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
+    if (!alpha) return ;
+    TreeNode* root = this->getDataModel();
+    List* kids = root->getChildren();
+    ListIterator iter(*kids);;
+    TreeNode* kid;
+    boolean found = FALSE;
+    while (kid = (TreeNode*)iter.getNext()) {
+	if (kid->getDefinition() == alpha) {
+	    if (kid->isExpanded() == FALSE) {
+		List* nodes = kid->getChildren();
+		ListIterator liter(*nodes);
+		boolean in_expanded_category;
+		while (kid=(TreeNode*)liter.getNext()) {
+		    Symbol ns = kid->getDefinition();
+		    NodeDefinition* nd = (NodeDefinition*)
+			theNodeDefinitionDictionary->findDefinition(ns);
+		    Symbol cs = nd->getCategorySymbol();
+		    CategoryNode* cat = this->toolSelector->getCategoryNode (root, cs);
+		    in_expanded_category = cat->isExpanded();
+		    if (!in_expanded_category)
+			nodes_to_search.appendElement(kid);
 		}
+	    }
+	    found = TRUE;
+	    break;
+	}
+    }
+    ASSERT(found);
+#endif
+}
 
-	  /* Wrap around to the start of the list if necessary. */
-	    if (!found)
-	    {
-		for (i = 0; i <= curKbd; i++)
-		    if (CompareStrAndItem(lw, typed, i))
-		    	break;
+void ToolSelector::ToolView::multiClick(TreeNode* node) 
+{
+    this->TreeView::multiClick(node);
+    if (node->isLeaf()) {
+	ToolSelector::ToolNode* tn = (ToolSelector::ToolNode*)node;
+	toolSelector->lockSelect(tn->getDefinition());
+    }
+}
+
+//
+// If ALPHABETIZED is in use, then there are always 2 definitions
+// in the tree model for every node.  Don't return the definition
+// that's inside the collapsed ALPHABETIZED category. If 
+// ALPHABETIZED is expanded then we'll allow its use.
+//
+TreeNode* ToolSelector::getToolNode (TreeNode* node, Symbol tool)
+{
+    // this test does nothing if ALPHABETIZED isn't in use.
+    Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
+    if (alpha) {
+	if (node->getDefinition() == alpha) {
+	    if (node->isExpanded()==FALSE) {
+		return 0;
 	    }
 	}
-  }
-  return;
+    }
+
+    if (node->getDefinition() == tool) return node;
+    if (node->hasChildren()) {
+	List* kids = node->getChildren();
+	if (kids) {
+	    ListIterator iter(*kids);
+	    TreeNode* tn;
+	    while (tn=(TreeNode*)iter.getNext()) {
+		TreeNode* n = this->getToolNode(tn, tool);
+		if (n) return n;
+	    }
+	}
+    }
+    return 0;
 }
+
+CategoryNode* ToolSelector::getCategoryNode (TreeNode* node, Symbol cat)
+{
+    if (node->getDefinition() == cat) return (CategoryNode*)node;
+    if (node->hasChildren()) {
+	List* kids = node->getChildren();
+	if (kids) {
+	    ListIterator iter(*kids);
+	    TreeNode* tn;
+	    while (tn=(TreeNode*)iter.getNext()) {
+		CategoryNode* catNode = this->getCategoryNode(tn, cat);
+		if (catNode) return catNode;
+	    }
+	}
+    }
+    return NUL(CategoryNode*);
+}
+
+void ToolSelector::ToolCategoryNode::setExpanded(boolean e) 
+{
+    this->CategoryNode::setExpanded(e);
+    if (this->toolSelector->inAnchor()) {
+	if (e)
+	    theResourceManager->addValue (EXPANDED_CATEGORIES,
+		theSymbolManager->getSymbolString(this->getDefinition()));
+	else
+	    theResourceManager->removeValue (EXPANDED_CATEGORIES,
+		theSymbolManager->getSymbolString(this->getDefinition()));
+    }
+}
+
+void ToolSelector::help()
+{
+    const char* tools = 0;
+    Symbol s = this->categoryDictionary.getActiveItem();
+    if (s)
+	tools = theSymbolManager->getSymbolString(s);
+    else
+	tools = ALPHABETIZED;
+    theApplication->helpOn(tools);
+}
+
+extern "C" void ToolSelector_ToolHelpCB(Widget w, XtPointer clientData, XtPointer unused)
+{
+    ToolSelector *ts = (ToolSelector*)clientData;
+    ts->help();
+}
+

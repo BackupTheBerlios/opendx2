@@ -543,7 +543,6 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
 			      md->getNameSymbol(),
 			      (void *)md);
 	ToolSelector::UpdateCategoryListWidget();
-	ToolSelector::UpdateToolListWidget();
     }
 
 

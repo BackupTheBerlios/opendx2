@@ -19,6 +19,7 @@ String EditorWindow::DefaultResources[] =
     ".minHeight:                                  400",
     "*workArea.width:                             850",
     "*workArea.height:                            650",				
+    "*notebook.width:				  180",
     "*scrolledWindow*XmScrollBar.initialDelay:    2000",
     "*scrolledWindow*XmScrollBar.repeatDelay:     2000",
 
@@ -265,6 +266,8 @@ String EditorWindow::DefaultResources[] =
     "*workAreaFrame*traversalOn:                  false",
     "*workAreaFrame*XmWorkspace*traversalOn:      true",
 #endif
+    ".mainWindow.commandWindowLocation: XmCOMMAND_ABOVE_WORKSPACE",
+    ".mainWindow.packing: 		XmPACK_NONE",
     NULL
 };
 
@@ -278,6 +281,7 @@ String EditorWindow::DefaultResources[] =
     ".minHeight:                                  	400",
     "*workArea.width:                             	850",
     "*workArea.height:                            	650",
+    "*notebook.width:				  	180",
     "*scrolledWindow*XmScrollBar.initialDelay:    	2000",
     "*scrolledWindow*XmScrollBar.repeatDelay:     	2000",
 
@@ -547,6 +551,8 @@ String EditorWindow::DefaultResources[] =
     "*workAreaFrame*traversalOn:                  false",
     "*workAreaFrame*XmWorkspace*traversalOn:      true",
 #endif
+    ".mainWindow.commandWindowLocation:	XmCOMMAND_ABOVE_WORKSPACE",
+    ".mainWindow.packing: 		XmPACK_NONE",
     NULL
 };
 

@@ -199,6 +199,12 @@ class IBMApplication : public Application
     void 	appendNoWizardName(const char* nowiz_name);
 
     //
+    // print a application default to the resource file.  For example:
+    // DX.width: 300x500 into $HOME/DX
+    //
+    void printResource (const char* resource, const char* value);
+
+    //
     // Returns a pointer to the class name.
     //
     const char* getClassName()

@@ -59,6 +59,7 @@ String DXWindow::DefaultResources[] =
     "*toggleWindowStartupOption.mnemonic:         S",
 
     "*connectionMenuPulldown.tearOffModel:	  XmTEAR_OFF_DISABLED",
+    "*fileHistory.labelString:			  Recent Programs",
 
     NULL
 };
@@ -123,6 +124,7 @@ String DXWindow::DefaultResources[] =
 
     "*connectionMenuPulldown.tearOffModel:	  XmTEAR_OFF_DISABLED",
 
+    "*fileHistory.labelString:			  Recent Programs",
 
     NULL
 };

@@ -25,6 +25,7 @@
 #define _DXWindow_h
 
 
+#include "List.h"
 #include "IBMMainWindow.h"
 
 #define ClassDXWindow "DXWindow"
@@ -32,11 +33,14 @@
 extern "C" void DXWindow_ConnectionMenuMapCB(Widget    widget,
                               XtPointer clientData,
                               XtPointer callData);
+extern "C" void DXWindow_FileHistoryMenuMapCB(Widget, XtPointer , XtPointer );
+
 class Command;
 class CommandInterface;
 class ToggleButtonInterface;
 class ControlPanelAccessDialog;
 class PanelAccessManager;
+class CascadeMenu;
 
 //
 // DXWindow class definition:
@@ -47,6 +51,7 @@ class DXWindow : public IBMMainWindow
     friend void DXWindow_ConnectionMenuMapCB(Widget    widget,
                               XtPointer clientData,
                               XtPointer callData);
+    friend void DXWindow_FileHistoryMenuMapCB(Widget, XtPointer , XtPointer );
 
   protected:
     //
@@ -175,6 +180,15 @@ class DXWindow : public IBMMainWindow
     //
     virtual void getGeometryNameHierarchy(String*, int*, int);
     virtual void getGeometryAlternateNames(String*, int*, int);
+
+    //
+    // build a file history button and menu
+    //
+    virtual void createFileHistoryMenu (Widget parent);
+    virtual void buildFileHistoryMenu();
+    CascadeMenu* file_history_cascade;
+    List file_history_buttons;
+    List file_history_commands;
 
   public:
 

@@ -461,10 +461,7 @@ boolean Network::clear(boolean destroyPanelsNow)
 	delete this->description;
         this->description 	= NULL;
     }
-    if (this->fileName) {
-	delete this->fileName;
-	this->fileName = NULL;
-    }
+    this->setFileName(NUL(char*));
     this->setNetworkComment(NULL);
     if (this->prefix) 
     { 
@@ -1319,7 +1316,7 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
     }
 
     if (this->fileName != NULL)
-        delete this->fileName;
+    	delete this->fileName;
     this->fileName = netfile;
 
 #ifdef NoParseState
@@ -1522,6 +1519,8 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
 		    name);
 	} 
     }
+
+    this->setFileName(this->fileName);
 
     //
     // Fixup name conflicts with Transmitters/Receivers read in from old nets.
@@ -3246,6 +3245,7 @@ boolean Network::saveNetwork(const char *name, boolean force)
 	if (this->editor) {
 	    this->editor->notifySaved();
 	}
+	this->setFileName(this->fileName);
     }
     else
     {
@@ -7055,4 +7055,18 @@ List nodes_to_delete;
     }
 
     return TRUE;
+}
+
+void Network::setFileName(char* fname)
+{
+    if (fname != this->fileName) {
+	if (this->fileName != NULL) {
+	    delete this->fileName;
+	}
+    }
+    this->fileName = fname;
+    if (this->fileName) {
+	theDXApplication->appendReferencedFile(fname);
+	//theDXApplication->getAnchorWindow()->notifyNewFile();
+    }
 }

@@ -128,6 +128,7 @@ HDRS4 = \
 	NoUndoNetworkCommand.h \
 	NoUndoPanelCommand.h \
 	OpenCommand.h \
+	OpenFileCommand.h \
 	SaveMacroCommand.h \
 	ToolPanelCommand.h \
 	ViewControlWhichCameraCommand.h

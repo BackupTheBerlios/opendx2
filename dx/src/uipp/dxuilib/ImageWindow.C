@@ -1071,6 +1071,9 @@ void ImageWindow::createFileMenu(Widget parent)
 	this->openOption =
 	   new ButtonInterface(pulldown, "imageOpenOption", 
 			theDXApplication->openFileCmd);
+
+	this->createFileHistoryMenu(pulldown);
+
 	this->saveOption =
 	    new ButtonInterface(pulldown, "imageSaveOption", 
 			    this->network->getSaveCommand());

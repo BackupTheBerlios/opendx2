@@ -170,6 +170,7 @@ HDRS3 = \
 	ProcessGroupManager.h \
 	ProcessGroupOptionsDialog.h \
 	RenderingOptionsDialog.h \
+	ResourceManager.h \
 	SIAllocatorDictionary.h \
 	SaveAsCCodeDialog.h \
 	SaveAsDialog.h \
@@ -354,6 +355,7 @@ SRCS4 = \
 	ProcessGroupCreateDialog.C \
 	ProcessGroupManager.C \
 	ProcessGroupOptionsDialog.C \
+	ResourceManager.C \
 	RenderingOptionsDialog.C \
 	SIAllocatorDictionary.C \
 	SaveAsCCodeDialog.C \

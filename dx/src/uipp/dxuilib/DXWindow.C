@@ -37,6 +37,9 @@
 #include "ErrorDialogManager.h"
 #include "NoUndoDXWindowCommand.h"
 #include "anchor.bm"
+#include "OpenFileCommand.h"
+#include "ListIterator.h"
+#include "CascadeMenu.h"
 
 Symbol DXWindow::lastMsg = 0;
 const void *DXWindow::lastMsgData = NULL;
@@ -120,6 +123,16 @@ DXWindow::~DXWindow()
 
     if (this->toggleWindowStartupCmd)
         delete this->toggleWindowStartupCmd;
+
+    //
+    // file history menu
+    //
+    ListIterator iter(this->file_history_buttons);
+    ButtonInterface* bi;
+    while (bi=(ButtonInterface*)iter.getNext()) delete bi;
+    iter.setList(this->file_history_commands);
+    Command* cmd;
+    while (cmd=(Command*)iter.getNext()) delete cmd;
 }
 void DXWindow::beginExecution()
 {
@@ -725,5 +738,60 @@ void DXWindow::getGeometryAlternateNames(String* names, int* count, int max)
 	*count = cnt;
     }
     this->IBMMainWindow::getGeometryAlternateNames(names, count, max);
+}
+
+void DXWindow::createFileHistoryMenu (Widget parent)
+{
+    if (!this->isAnchor()) return ;
+
+    this->file_history_cascade = new CascadeMenu("fileHistory", parent);
+    XtAddCallback(this->file_history_cascade->getMenuItemParent(), XmNmapCallback,
+	(XtCallbackProc)DXWindow_FileHistoryMenuMapCB, (XtPointer)this);
+}
+
+void DXWindow::buildFileHistoryMenu()
+{
+    ListIterator iter(this->file_history_buttons);
+    ButtonInterface* bi;
+    while (bi=(ButtonInterface*)iter.getNext()) {
+	bi->unmanage();
+	delete bi;
+    }
+    this->file_history_buttons.clear();
+
+    iter.setList(this->file_history_commands);
+    Command* cmd;
+    while (cmd=(Command*)iter.getNext()) delete cmd;
+    this->file_history_buttons.clear();
+
+    Widget menu_parent = this->file_history_cascade->getMenuItemParent();
+
+    List recent_nets;
+    theDXApplication->getRecentNets(recent_nets);
+    if (recent_nets.getSize()==0) {
+	const char* cp = "(null)";
+	Symbol s = theSymbolManager->registerSymbol(cp);
+	cmd = new OpenFileCommand(s);
+	bi = new ButtonInterface(menu_parent, "openFile", cmd);
+	bi->setLabel(cp);
+	this->file_history_buttons.appendElement(bi);
+	cmd->deactivate();
+    } else {
+	iter.setList(recent_nets);
+	Symbol s;
+	while (s=(Symbol)iter.getNext()) {
+	    cmd = new OpenFileCommand(s);
+	    char* cp = GetFileBaseName(theSymbolManager->getSymbolString(s),0);
+	    bi = new ButtonInterface(menu_parent, "openFile", cmd);
+	    bi->setLabel(cp);
+	    delete cp;
+	    this->file_history_buttons.appendElement(bi);
+	}
+    }
+}
+extern "C" void DXWindow_FileHistoryMenuMapCB(Widget , XtPointer clientdata, XtPointer )
+{
+    DXWindow* dxw = (DXWindow*)clientdata;
+    dxw->buildFileHistoryMenu();
 }
 

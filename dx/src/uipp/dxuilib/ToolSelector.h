@@ -5,30 +5,27 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-
-#include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-
-
 #ifndef _ToolSelector_h
 #define _ToolSelector_h
-
 
 #include "Base.h"
 #include "ActiveItemDictionary.h"
 #include "Application.h"
 #include "UIComponent.h"
-#include "DropSite.h"
-#include "DragSource.h"
 
+#include "TreeView.h"
+#include "TreeNode.h"
+
+#define EXPANDED_CATEGORIES "expandedCategories"
 
 //
 // Class name definition:
 //
-
+class TreeNode;
+class ToolView;
+class TreeView;
+class CategoryNode;
+class ToolNode;
 
 //
 // Class name definition:
@@ -43,8 +40,6 @@
 extern "C" void ToolSelector_ToolHelpCB(Widget, XtPointer, XtPointer);
 extern "C" void ToolSelector_ToolSelectCB(Widget, XtPointer, XtPointer);
 extern "C" void ToolSelector_CategorySelectCB(Widget, XtPointer, XtPointer);
-extern "C" void ToolList_TypeAhead(Widget, XEvent*, String *,
-		  Cardinal *);
 
 
 class NodeDefinition;
@@ -52,20 +47,18 @@ class NodeDefinition;
 //
 // ToolSelector class definition:
 //				
-class ToolSelector : public UIComponent , public DropSite, public DragSource
+class ToolSelector : public UIComponent 
 {
-  friend class FindToolSelector;
 
   private:
     //
     // Private member data:
     //
     ActiveItemDictionary 	categoryDictionary;
+    Dictionary			categoryNodeDictionary;
 
-    Widget			categoryList;	// List of categories
-
-    Widget			toolListLabel;	// Label for tools.
-    Widget			toolList;	// List of tools.
+    TreeNode* treeModel;
+    TreeView* treeView;
 
     const void			*activeData;
     boolean			lockedData;
@@ -76,59 +69,53 @@ class ToolSelector : public UIComponent , public DropSite, public DragSource
 
     static String DefaultResources[]; 
 
-    //
-    // Static member callback for the category selection list.
-    //
-    friend void ToolSelector_CategorySelectCB(Widget w, 
-				XtPointer clientData, XtPointer callData);
-    //
-    // Static member callback for tool selection list.
-    //
-    friend void ToolSelector_ToolSelectCB(Widget w, 
-				XtPointer clientData, XtPointer callData);
-    friend void ToolSelector_ToolHelpCB(Widget w, 
-				XtPointer clientData, XtPointer callData);
-    friend void ToolList_TypeAhead(Widget, XEvent*, String *,
-		  Cardinal *);
+    friend class ToolView;
+    friend void ToolSelector_ToolHelpCB(Widget, XtPointer, XtPointer);
 
     // List of all tool selectors.
     static List AllToolSelectors;
   
-    //
-    // data type dictionary for drops.
-    //
-    static Dictionary *DropTypeDictionary;
-    static Dictionary *DragTypeDictionary;
+    void buildTreeModel();
 
-    //
-    // Supply the type dictionary which stores the types we can supply for a dnd
-    //
-    virtual Dictionary *getDropDictionary() { return ToolSelector::DropTypeDictionary; }
-    virtual Dictionary *getDragDictionary() { return ToolSelector::DragTypeDictionary; }
-
-    static char* DragTranslations;
-    static XtTranslations TransTable;
-
-    static Widget DragIcon;
-    // Define constants for the dnd data types we understand
-    enum {
-	Trash,
-	ToolName
+    class ToolCategoryNode : public CategoryNode {
+	private:
+	protected:
+	    ToolSelector* toolSelector;
+	    ToolCategoryNode(Symbol s, TreeNode* parent, ToolSelector* ts) : 
+		CategoryNode(s, parent) { 
+		    this->toolSelector = ts;
+	    }
+	    friend class ToolSelector;
+	public:
+	    void setExpanded(boolean e=TRUE);
+    };
+    class ToolNode : public LeafNode {
+	private:
+	protected:
+	    ToolSelector* toolSelector;
+	    ToolNode(Symbol s, TreeNode* cat, ToolSelector* ts) : LeafNode(s, cat) { 
+		this->toolSelector = ts;
+	    }
+	    friend class ToolSelector;
+	public:
+	    CategoryNode* getCategory() { return (CategoryNode*)this->getParent(); }
     };
 
+    class ToolView : public TreeView {
+	private:
+	    ToolSelector* toolSelector;
+	protected:
+	    void select(TreeNode* node, boolean repaint=TRUE);
+	    void multiClick(TreeNode* node);
+	    friend class ToolSelector;
+	    void adjustVisibility(int, int, int, int);
+	    void getSearchableNodes (List& nodes_to_search);
+	    ToolView (Widget parent, ToolSelector* t) : TreeView(parent) {
+		this->toolSelector = t;
+	    }
+    };
 
   protected:
-
-    //
-    // Drag - n - Drop
-    //
-    virtual boolean decodeDropType (int , char *, XtPointer , unsigned long , int , int );
-    virtual boolean decodeDragType (int, char *, XtPointer*, unsigned long*, long);
-
-    //
-    // Protected member data:
-    //
-    void clearToolListWidget();
 
     //
     // One time initialize for the class. 
@@ -139,8 +126,7 @@ class ToolSelector : public UIComponent , public DropSite, public DragSource
     // Build the category lists and add the list items to the widgets.
     // from a dictionary of NodeDefinitions.
     //
-    boolean layoutWidgets(Widget parent);
-    boolean initializeWidgets(Widget parent);
+    virtual Widget layoutWidgets(Widget parent);
 
     //
     //  Add tools in the given dictionary to the category/tool lists.
@@ -155,41 +141,21 @@ class ToolSelector : public UIComponent , public DropSite, public DragSource
     boolean addTool(Symbol cat, Symbol tool, void *ptr);
     boolean removeTool(Symbol cat, Symbol tool);
 
-#if 00
-    boolean addTool(const char *cat, const char *tool, void *nd); 
-    boolean removeTool(const char *cat, const char *tool); 
-#endif
-
     //
     // Build a new Category list and install it in the categoryList.
     //
     boolean updateCategoryListWidget();
 
-    //
-    // Install new strings into the toolList widget based on the current
-    // state of 'this' (i.e. the active_category)
-    //
-    boolean updateToolListWidget();
+    virtual void toolSelect(Symbol s);
+    virtual void lockSelect(Symbol s);
+    virtual void categorySelect(Symbol s);
 
-    //
-    // Install the callbacks for the widgets in this class. 
-    // Includes the tool list and category selection widgets.
-    //
-    void installCallbacks();
+    CategoryNode* getCategoryNode (TreeNode* node, Symbol cat);
+    TreeNode* getToolNode (TreeNode* node, Symbol tool);
 
-    //
-    // Member function callback called through 
-    // ToolSelector::ToolSelector_ToolSelectCB() to handle tool list 
-    // selection callbacks.
-    //
-    virtual void toolSelect(Widget widget, XmListCallbackStruct* callData);
+    virtual void adjustVisibility(int, int, int, int){}
 
-    //
-    // Member function callback called through 
-    // ToolSelector::ToolSelector_CategorySelectCB() to handle tool list selection 
-    // callbacks.
-    //
-    virtual void categorySelect(Widget widget, XmListCallbackStruct* callData);
+    virtual void help();
 
   public:
     //
@@ -214,13 +180,7 @@ class ToolSelector : public UIComponent , public DropSite, public DragSource
     static boolean AddTool(Symbol cat, Symbol tool, void *ptr);
     static boolean RemoveTool(Symbol cat, Symbol tool);
 
-#if 00
-    static boolean AddTool(const char *cat, const char *tool, void *nd); 
-    static boolean RemoveTool(const char *cat, const char *tool); 
-#endif
-
     static boolean UpdateCategoryListWidget();
-    static boolean UpdateToolListWidget();
 
     //
     // Merge new tools definitions into all tool selectors from a dictionary 
@@ -244,12 +204,14 @@ class ToolSelector : public UIComponent , public DropSite, public DragSource
     //
     // Unhighlight any selected tools in the tool list. 
     //
-    void deselectAllTools();
- 
-    Widget	getToolListWidget() { return toolList; }
-    Widget	getCategoryListWidget() { return categoryList; }
+    virtual void deselectAllTools();
 
- 
+    //
+    // is the object in the anchor window. At this level we know nothing
+    // of windows.  EditorToolSelector has this knowledge.
+    //
+    virtual boolean inAnchor(){ return TRUE; }
+
     //
     // Returns a pointer to the class name.
     //

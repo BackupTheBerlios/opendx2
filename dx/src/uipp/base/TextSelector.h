@@ -100,7 +100,14 @@ class TextSelector: public UIComponent {
     static char *GetTextWidgetToken(Widget textWidget);
 
     void enableModifyCB(boolean enab = TRUE);
-    boolean autoFill();
+    virtual boolean autoFill(boolean any_match=FALSE);
+    virtual boolean autoFill(boolean any_match, boolean& unique_match);
+
+    Widget getTextField() { return this->textField; }
+
+    boolean case_sensitive;
+    boolean equalString(const char*, const char*);
+    boolean equalSubstring(const char*, const char*, int n);
 
   public:
 
@@ -108,7 +115,7 @@ class TextSelector: public UIComponent {
 
     ~TextSelector();
 
-    void createTextSelector (Widget parent, XtCallbackProc, XtPointer);
+    void createTextSelector (Widget,XtCallbackProc,XtPointer,boolean use_button=TRUE);
     void setItems (char* items[], int nitems);
     void setSelectedItem (int );
     int  getSelectedItem(char* item = NUL(char*));
@@ -119,6 +126,8 @@ class TextSelector: public UIComponent {
     // a CascadeButtonWidget, but not in this case.
     //
     void setMenuColors (Arg[], int);
+
+    void setCaseSensitive(boolean cs=TRUE) { this->case_sensitive = cs; }
 
     //
     // Returns a pointer to the class name.

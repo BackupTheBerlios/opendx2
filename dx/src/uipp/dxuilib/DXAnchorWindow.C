@@ -264,6 +264,12 @@ DXAnchorWindow::createMenus (Widget parent)
 }
 
 
+void DXAnchorWindow::createFileHistoryMenu(Widget parent)
+{
+    if (theDXApplication->appAllowsImageRWNetFile()) 
+	this->DXWindow::createFileHistoryMenu(parent);
+}
+
 void 
 DXAnchorWindow::createFileMenu(Widget parent)
 {
@@ -293,6 +299,8 @@ DXAnchorWindow::createFileMenu(Widget parent)
 	this->openOption =
 	   new ButtonInterface(pulldown, "fileOpenOption", 
 			theDXApplication->openFileCmd);
+
+	this->createFileHistoryMenu(pulldown);
 
 	Network* net = theDXApplication->network;
 	this->saveOption = 

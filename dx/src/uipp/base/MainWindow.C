@@ -29,13 +29,6 @@
 #include <X11/Xmu/Editres.h>
 #endif
 
-float foo(float a, float b)
-{
-    return MAX(a, b);
-}
-
-
-#if 1
 boolean MainWindow::OffsetsInitialized = FALSE;
 boolean MainWindow::IsMwmBroken = FALSE;
 boolean MainWindow::IsMwmRunning = FALSE;
@@ -1051,4 +1044,3 @@ void MainWindow::getGeometryNameHierarchy(String names[], int* count, int max)
 }
 
 void MainWindow::getGeometryAlternateNames(String*, int*, int) { }
-#endif

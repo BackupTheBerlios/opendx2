@@ -41,6 +41,7 @@ SRCS2 = \
 	ListIterator.C			\
 	MainWindow.C			\
 	NoOpCommand.C			\
+	Notebook.C			\
 	NoUndoCommand.C			\
 	NoUndoHelpCmd.C			\
 	OptionalPreActionCommand.C	\
@@ -66,6 +67,7 @@ SRCS2 = \
 	TimedMessage.C			\
 	ToggleButtonInterface.C		\
 	TransferStyle.C			\
+	TreeView.C 			\
 	UIComponent.C			\
 	UIComponentHelpCommand.C	\
 	UndoCommand.C			\
@@ -135,6 +137,7 @@ HDRS2 = \
 	ListIterator.h \
 	MainWindow.h \
 	NoOpCommand.h \
+	Notebook.h \
 	NoUndoCommand.h \
 	NoUndoHelpCmd.h \
 	OptionalPreActionCommand.h \
@@ -160,6 +163,8 @@ HDRS2 = \
 	TimedMessage.h \
 	ToggleButtonInterface.h \
 	TransferStyle.h \
+	TreeNode.h \
+	TreeView.h \
 	UIComponent.h \
 	UIComponentHelpCommand.h \
 	UIConfig.h \

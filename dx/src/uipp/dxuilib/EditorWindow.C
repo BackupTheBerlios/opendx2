@@ -118,7 +118,6 @@
 #include "UndoRepeatableTab.h"
 #include "UndoAddArk.h"
 #include "Stack.h"
-
 #include "XHandler.h"
 
 #ifndef FORGET_GETSET
@@ -880,45 +879,6 @@ void EditorWindow::installDefaultResources(Widget baseWidget)
     this->DXWindow::installDefaultResources(baseWidget);
 }
 
-#if 0
-//
-// Find THE selected Node.
-// Return TRUE if a single Node is selected
-// Return FALSE if none or more than one selected Node were found
-// Always set *selected to the first selected Node that was found.  
-// If FALSE is return *selected may be set to NULL if no selected
-// Nodes were found.
-//
-boolean EditorWindow::findTheSelectedNode(Node **selected)
-{
-    ListIterator iterator(this->network->nodeList);
-    Node	*n;
-    boolean found_multi;
-
-    *selected = NULL;
-    //
-    // Look through the list of interactor instances for ones that are
-    // currently selected.
-    //
-    found_multi = FALSE;
-    while (!found_multi && (n = (Node*)iterator.getNext())) {
-    FOR_EACH_NETWORK_NODE(this->network, n, iterator) {
-	standIn = n->getStandIn();
-#if WORKSPACE_PAGES
-	if (!standIn) continue;
-#endif
-	if (standIn->isSelected()) {
-            if (*selected == NULL)
-                *selected = n;
-            else
-                found_multi = TRUE;
-        }
-	if (found_multi)
-	    break;
-    }
-    return !found_multi && (*selected != NULL);
-}
-#endif
 void EditorWindow::SetCommandActivation(void *editor, void *requestData)
 {
     ((EditorWindow*)editor)->setCommandActivation();
@@ -1291,7 +1251,6 @@ void EditorWindow::handleNodeStatusChange(Node *n, NodeStatusChange status)
 }
 Widget EditorWindow::createWorkArea(Widget parent)
 {
-    Widget    frame;
     Widget    form;
     Widget    hBar;
     Widget    vBar;
@@ -1301,25 +1260,22 @@ Widget EditorWindow::createWorkArea(Widget parent)
 
     ASSERT(parent);
 
-    //
-    // Create the outer frame and form.
-    //
-    frame =
-	XtVaCreateManagedWidget
-	    ("workAreaFrame",
-	     xmFrameWidgetClass,
-	     parent,
-	     XmNshadowType,   XmSHADOW_OUT,
-	     XmNmarginHeight, 5,
-	     XmNmarginWidth,  5,
-	     NULL);
+    Widget outer_form = XtVaCreateManagedWidget ("workArea0", xmFormWidgetClass, parent, 
+	XmNshadowType, XmSHADOW_OUT,
+	XmNshadowThickness, 1,
+    NULL);
 
-    form =
-	XtVaCreateManagedWidget
-	    ("workArea",
-	     xmFormWidgetClass,
-	     frame,
-	     NULL);
+    form = XtVaCreateManagedWidget ("workArea", xmFormWidgetClass, outer_form, 
+	XmNtopAttachment, XmATTACH_FORM,
+	XmNleftAttachment, XmATTACH_FORM,
+	XmNrightAttachment, XmATTACH_FORM,
+	XmNbottomAttachment, XmATTACH_FORM,
+	XmNtopOffset, 6,
+	XmNleftOffset, 6,
+	XmNrightOffset, 6,
+	XmNbottomOffset, 6,
+	XmNshadowThickness, 0,
+    NULL);
 
 
     //
@@ -1328,15 +1284,16 @@ Widget EditorWindow::createWorkArea(Widget parent)
 
     this->toolSelector = new EditorToolSelector("toolSelector", this);
     if (!this->toolSelector->initialize(form,theNodeDefinitionDictionary))
-	ASSERT(0);	
+	ASSERT(0);
 
-    XtVaSetValues
-        (this->toolSelector->getRootWidget(),
+    XtVaSetValues (this->toolSelector->getRootWidget(),
         XmNtopAttachment,    XmATTACH_FORM,
         XmNleftAttachment,   XmATTACH_FORM,
         XmNbottomAttachment, XmATTACH_FORM,
-        NULL);
-
+	XmNtopOffset, 0,
+	XmNleftOffset, 0,
+	XmNbottomOffset, 0,
+    NULL);
 
 #if WORKSPACE_PAGES
     this->pageSelector = new PageSelector (this, form, this->network);
@@ -1385,10 +1342,8 @@ Widget EditorWindow::createWorkArea(Widget parent)
     this->workSpace->manage();
     this->pageSelector->setRootPage((VPERoot*)this->workSpace);
 
-    XtVaSetValues(this->scrolledWindow, 
-                  XmNworkWindow, 
-                  this->workSpace->getRootWidget(), 
-                  NULL);
+    XtVaSetValues(this->scrolledWindow, XmNworkWindow, 
+	  this->workSpace->getRootWidget(), NULL);
 
     //
     // Adjust the horizontal/vertical scrollbars to get rid of
@@ -1442,7 +1397,8 @@ Widget EditorWindow::createWorkArea(Widget parent)
     //
     // Return the topmost widget of the work area.
     //
-    return frame;
+    //return frame;
+    return outer_form;
 }
 
 
@@ -1475,6 +1431,8 @@ void EditorWindow::createFileMenu(Widget parent)
     this->openOption =
 	new ButtonInterface(pulldown, 
                             "vpeOpenOption", theDXApplication->openFileCmd);
+
+    this->createFileHistoryMenu(pulldown);
 
     if ( (cmd = this->network->getSaveCommand()) ) {
     	if(this->network->isMacro() == FALSE) 
@@ -2031,8 +1989,8 @@ void EditorWindow::toggleToolPanel()
 {
     Widget toolpanel = this->toolSelector->getRootWidget();
 
-    if (this->panelVisible)
-    {
+    this->panelVisible = NOT this->panelVisible;
+    if (!this->panelVisible) {
 	//
 	// Unmanage the control panel.
 	//
@@ -2040,14 +1998,12 @@ void EditorWindow::toggleToolPanel()
 	XtVaSetValues (this->scrolledWindow,
 	     XmNleftAttachment, XmATTACH_FORM,
 	     XmNleftOffset,     0,
-	     NULL);
+	NULL);
 #if WORKSPACE_PAGES
 	XtVaSetValues (this->pageSelector->getRootWidget(),
 	    XmNleftAttachment, XmATTACH_FORM, XmNleftOffset, 0, NULL);
 #endif
-    }
-    else
-    {
+    } else {
 	//
 	// Manage the control panel.
 	//
@@ -2063,8 +2019,6 @@ void EditorWindow::toggleToolPanel()
 	    XmNleftWidget, toolpanel, NULL);
 #endif
     }
-
-    this->panelVisible = NOT this->panelVisible;
 }
 
 extern "C" void EditorWindow_EditMenuMapCB(Widget widget,
@@ -4727,7 +4681,6 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 			  nd->getNameSymbol(),
 			  (void *)nd);
     ToolSelector::UpdateCategoryListWidget();
-    ToolSelector::UpdateToolListWidget();
 
     //
     // For each arc, if the arc crosses the line between selected and
@@ -7599,3 +7552,4 @@ boolean EditorWindow::keyHandler(XEvent* event)
     this->moveWorkspaceWindow(x,y,FALSE);
     return FALSE;
 }
+

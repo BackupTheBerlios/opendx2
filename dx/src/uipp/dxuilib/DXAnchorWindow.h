@@ -111,6 +111,11 @@ class DXAnchorWindow: public DXWindow {
     //
     virtual void installDefaultResources(Widget baseWidget);
 
+    //
+    // build a file history button and menu
+    //
+    virtual void createFileHistoryMenu (Widget parent);
+
   public:
 
     boolean 		postVPE();

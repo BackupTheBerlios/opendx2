@@ -329,9 +329,7 @@ char* FilterDottedPath(const char* oldPath)
 
     path = DuplicateString(oldPath);
 
-#ifdef DXD_NON_UNIX_DIR_SEPARATOR                               //SMH trap DOS style separators
-    Dos2UnixPath(path);
-#endif
+    DOS2UNIXPATH(path);
 
     i = j = 0;
     while(TRUE)

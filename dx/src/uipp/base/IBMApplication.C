@@ -893,6 +893,63 @@ const char *IBMApplication::getTmpDirectory(boolean bList)
 #endif
 }
 
+//
+// Application Resources
+//
+
+//
+// Open $HOME/DX, search for DX*dismissedWizards:.   If found, replace it,
+// otherwise append the DX*dismissedWizards: and the contents of noWizards.
+//
+void IBMApplication::printResource(const char* resource, const char* value)
+{
+const char* class_name = this->getApplicationClass();
+
+    //
+    // Create one line which specifies the new resource setting.
+    //
+    int totlen = 0;
+    char resource_line[4096];
+    sprintf (resource_line, "%s*%s: %s\n", class_name, resource, value);
+
+    //
+    // Print the resource database to the file.
+    //
+#ifdef DXD_OS_NON_UNIX
+    char* home = (char*)getenv("XAPPLRESDIR");
+    char* res_file = home;
+    if (!home || !strlen(home)) {
+	home = (char*)this->resource.UIRoot;
+	if (!home || !strlen(home)) {
+	    res_file = new char[10];
+	    sprintf(res_file, "/%s", class_name);
+	} else {
+	    res_file = new char[strlen(home) + 19];
+	    sprintf(res_file, "%s/ui/%s", home, class_name);
+	}
+    } else {
+	res_file = new char[strlen(home) + 16];
+	sprintf(res_file, "%s/ui/%s", home, class_name);
+    }
+
+#else
+    char* home = (char*)getenv("HOME");
+    char* res_file = new char[strlen(home) + 16];
+    sprintf (res_file, "%s/%s", home, class_name);
+#endif
+    // Here, it would be nice to use a function like
+    // XrmRemoveLineResource() but I can't find any
+    // such beast.  If one were available, then when
+    // there is no value for a resource, the spec
+    // could be removed from the file.  This way
+    // we store a nothing spec in the file.
+    XrmDatabase db = XrmGetFileDatabase(res_file);
+    XrmPutLineResource (&db, resource_line);
+    XrmPutFileDatabase (db, res_file);
+    XrmDestroyDatabase(db);
+    delete res_file;
+}
+
 
 //
 // W I Z A R D S     W I Z A R D S     W I Z A R D S
@@ -1024,6 +1081,7 @@ const char* class_name = this->getApplicationClass();
     XrmDatabase db = XrmGetFileDatabase(res_file);
     XrmPutLineResource (&db, resource_line);
     XrmPutFileDatabase (db, res_file);
+    XrmDestroyDatabase(db);
     delete resource_line;
     delete res_file;
 }

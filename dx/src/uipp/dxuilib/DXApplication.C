@@ -114,6 +114,7 @@
 #include "ProcessGroupManager.h"
 #include "WarningDialogManager.h"
 #include "Node.h"
+#include "ResourceManager.h"
 
 #ifdef HAS_CLIPNOTIFY_EXTENSION
 #include "../widgets/clipnotify.h"
@@ -1671,6 +1672,11 @@ TurnOffButtonHelp(
     return;
 }
 
+String DXApplication::ListValuedSettings[] = {
+    RECENT_NETS,
+    EXPANDED_CATEGORIES,
+    NULL
+};
 
 DXApplication::DXApplication(char* className): IBMApplication(className)
 {
@@ -2032,6 +2038,12 @@ DXApplication::~DXApplication()
 	delete nd;
     delete theNodeDefinitionDictionary; theNodeDefinitionDictionary = NULL;
 #endif
+
+    ListIterator iter(this->saveResourceValues);
+    List* resources;
+    while (resources=(List*)iter.getNext()) {
+	if (resources) delete resources;
+    }
 
 #endif	// 0 - do not free memory just before terminating (wastes time).
 
@@ -2676,6 +2688,14 @@ boolean wasSetBusy = FALSE;
     }
 
 
+    i=0;
+    ResourceManager::BuildTheResourceManager();
+    while (DXApplication::ListValuedSettings[i]) {
+	theResourceManager->registerMultiValued(DXApplication::ListValuedSettings[i]);
+	i++;
+    }
+
+
 #define START_SERVER_EARLY 0	// Not right before 3.1 release
 #if START_SERVER_EARLY 
     DXChild *c = NULL;
@@ -2925,8 +2945,6 @@ boolean wasSetBusy = FALSE;
 	this->completeConnection(c);
     }
 #endif
-
-
 
     return TRUE;
 }
@@ -4875,6 +4893,8 @@ void DXApplication::shutdownApplication()
 
     XSendEvent(this->display, w, True, XtBuildEventMask(widg), &event);
 
+    if ((this->inEditMode()) && (this->appAllowsSavingNetFile()))
+	theResourceManager->saveResources();
 }
 
 //
@@ -5321,4 +5341,27 @@ DXApplication::setServer(char *server)
 
     this->serverInfo.server = DuplicateString(server);
     fprintf(stderr, "exec server set to %s\n", server);
+}
+
+void DXApplication::getRecentNets(List& result)
+{
+    theResourceManager->getValue(RECENT_NETS, result);
+}
+
+// The call to FilterDottedPath is supposed to take
+// care of calling Dos2Unix().  These functions could
+// also be written with ifdefs for the pc platform,
+// but this way I have better assurance that they're
+// working right since there aren't platform dependencies.
+void DXApplication::appendReferencedFile(const char* file)
+{
+    char* cp = FilterDottedPath(file);
+    theResourceManager->addValue(RECENT_NETS, cp);
+    delete cp;
+}
+void DXApplication::removeReferencedFile(const char* file)
+{
+    char* cp = FilterDottedPath(file);
+    theResourceManager->removeValue(RECENT_NETS, cp);
+    delete cp;
 }

@@ -182,7 +182,29 @@ boolean Application::initializeWindowSystem(unsigned int *argcp, char **argv)
 void Application::parseCommand(unsigned int* argcp, char** argv,
                                XrmOptionDescList optlist, int optlistsize)
 {
+#ifdef DXD_OS_NON_UNIX
+    char* home = (char*)getenv("XAPPLRESDIR");
+    char* res_file = home;
+    const char* class_name = this->getApplicationClass();
+    if (!home || !strlen(home)) {
+	home = (char*)this->resource.UIRoot;
+	if (!home || !strlen(home)) {
+	    res_file = new char[10];
+	    sprintf(res_file, "/%s", class_name);
+	} else {
+	    res_file = new char[strlen(home) + 19];
+	    sprintf(res_file, "%s/ui/%s", home, class_name);
+	}
+    } else {
+	res_file = new char[strlen(home) + 16];
+	sprintf(res_file, "%s/ui/%s", home, class_name);
+    }
+
+    XrmDatabase resourceDatabase = XrmGetFileDatabase(filename);
+    delete res_file;
+#else
     XrmDatabase resourceDatabase = XrmGetStringDatabase("");
+#endif
 
     char *appname = GetFileBaseName(argv[0],NULL);
     XrmParseCommand(&resourceDatabase, optlist, optlistsize, 

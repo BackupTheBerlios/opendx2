@@ -15,6 +15,7 @@
 #include <Xm/List.h>
 #include <Xm/MenuShell.h>
 #include <Xm/Form.h>
+#include <Xm/Separator.h>
 #include <X11/cursorfont.h>
 #include <X11/Shell.h>
 
@@ -70,6 +71,7 @@ TextSelector::TextSelector () :
     this->selected_items = NUL(int*);
     this->selected_cnt = 0;
     this->auto_fill_wpid = NUL(XtWorkProcId);
+    this->case_sensitive = TRUE;
 
     if (!TextSelector::ClassInitialized) {
 	TextSelector::ClassInitialized = TRUE;
@@ -180,12 +182,12 @@ void TextSelector::enableModifyCB(boolean enab)
 	XtVaSetValues (this->textField, XmNeditable, False, NULL);
 	XtRemoveCallback (this->textField, XmNmodifyVerifyCallback, (XtCallbackProc)
 	    TextSelector_ModifyCB, (XtPointer)this);
-	XtRemoveCallback (this->textField, XmNmodifyVerifyCallback, (XtCallbackProc)
+	XtRemoveCallback (this->textField, XmNactivateCallback, (XtCallbackProc)
 	    TextSelector_ResolveCB, (XtPointer)this);
     }
 }
 
-void TextSelector::createTextSelector(Widget parent, XtCallbackProc cbp, XtPointer cdata)
+void TextSelector::createTextSelector(Widget parent, XtCallbackProc cbp, XtPointer cdata, boolean use_button)
 {
     ASSERT (this->parent == NUL(Widget));
     this->parent = parent;
@@ -193,94 +195,114 @@ void TextSelector::createTextSelector(Widget parent, XtCallbackProc cbp, XtPoint
     //
     // Layout a text widget and a ... button inside a form.
     //
-    Widget form = XtVaCreateWidget(this->name,xmFormWidgetClass, parent, NULL);
-    this->setRootWidget(form);
+    if (!use_button) {
+	Widget form = XtVaCreateWidget(this->name,xmFormWidgetClass, parent, 
+	    XmNshadowThickness, 0,
+	    XmNshadowType, XmSHADOW_OUT,
+	NULL);
+	this->setRootWidget(form);
 
-    this->textField = XtVaCreateManagedWidget("textField",
-        xmTextWidgetClass,form,
-        XmNleftAttachment,      XmATTACH_FORM,
-        XmNleftOffset,          2,
-        XmNtopAttachment,       XmATTACH_FORM,
-        XmNtopOffset,           0,
-    NULL);
+	this->textField = XtVaCreateManagedWidget("textField",
+	    xmTextWidgetClass,form,
+	    XmNtopAttachment,      XmATTACH_FORM,
+	    XmNleftAttachment,      XmATTACH_FORM,
+	    XmNrightAttachment,      XmATTACH_FORM,
+	    XmNbottomAttachment,      XmATTACH_FORM,
+	    XmNtopOffset,          0,
+	    XmNleftOffset,          0,
+	    XmNrightOffset,          0,
+	    XmNbottomOffset,          0,
+	NULL);
+    } else {
+	Widget form = XtVaCreateWidget(this->name,xmFormWidgetClass, parent, NULL);
+	this->setRootWidget(form);
 
-    this->diag_button = XtVaCreateManagedWidget("diagButton",
-        xmPushButtonWidgetClass,form,
-        XmNrightAttachment,     XmATTACH_FORM,
-        XmNrightOffset,         2,
-        XmNtopAttachment,       XmATTACH_FORM,
-        XmNtopOffset,           2,
-	XmNwidth,		ELLIPSIS_WIDTH,
-	XmNheight,		SELECTOR_HEIGHT,
-	XmNshadowThickness,	1,
-    NULL);
+	this->textField = XtVaCreateManagedWidget("textField",
+	    xmTextWidgetClass,form,
+	    XmNleftAttachment,      XmATTACH_FORM,
+	    XmNleftOffset,          2,
+	    XmNtopAttachment,       XmATTACH_FORM,
+	    XmNtopOffset,           0,
+	NULL);
 
-    XtUninstallTranslations(this->diag_button);
-    XtAddEventHandler (this->diag_button, ButtonPressMask, False,
-	(XtEventHandler)TextSelector_EllipsisEH, (XtPointer)this);
+	this->diag_button = XtVaCreateManagedWidget("diagButton",
+	    xmPushButtonWidgetClass,form,
+	    XmNrightAttachment,     XmATTACH_FORM,
+	    XmNrightOffset,         2,
+	    XmNtopAttachment,       XmATTACH_FORM,
+	    XmNtopOffset,           2,
+	    XmNwidth,		ELLIPSIS_WIDTH,
+	    XmNheight,		SELECTOR_HEIGHT,
+	    XmNshadowThickness,	1,
+	NULL);
 
-    XtVaSetValues(this->textField,
-        XmNrightAttachment,      XmATTACH_WIDGET,
-        XmNrightWidget,          this->diag_button,
-        XmNrightOffset,          10,
-    NULL);
+	XtUninstallTranslations(this->diag_button);
+	XtAddEventHandler (this->diag_button, ButtonPressMask, False,
+	    (XtEventHandler)TextSelector_EllipsisEH, (XtPointer)this);
+
+	XtVaSetValues(this->textField,
+	    XmNrightAttachment,      XmATTACH_WIDGET,
+	    XmNrightWidget,          this->diag_button,
+	    XmNrightOffset,          10,
+	NULL);
 
 
-    //
-    // Create the menu
-    //
-    Pixel fg,bg;
-    XtVaGetValues (this->textField, XmNforeground, &fg, XmNbackground, &bg, NULL);
+	//
+	// Create the menu
+	//
+	Pixel fg,bg;
+	XtVaGetValues (this->textField, XmNforeground, &fg, XmNbackground, &bg, NULL);
 
-    Arg args[20];
-    int n = 0;
-    this->popupMenu = 
-	XtCreatePopupShell ("popupMenu", overrideShellWidgetClass, 
-	    this->getRootWidget(), args, n);
+	Arg args[20];
+	int n = 0;
+	this->popupMenu = 
+	    XtCreatePopupShell ("popupMenu", overrideShellWidgetClass, 
+		this->getRootWidget(), args, n);
 
-    Widget rcForm = XtVaCreateManagedWidget ("rcForm",
-	xmFormWidgetClass, this->popupMenu,
-	XmNshadowThickness, 1,
-	XmNshadowType, XmSHADOW_OUT,
-	XmNresizePolicy, XmRESIZE_ANY,
-	XmNforeground, fg,
-	XmNbackground, bg,
-    NULL);
+	Widget rcForm = XtVaCreateManagedWidget ("rcForm",
+	    xmFormWidgetClass, this->popupMenu,
+	    XmNshadowThickness, 1,
+	    XmNshadowType, XmSHADOW_OUT,
+	    XmNresizePolicy, XmRESIZE_ANY,
+	    XmNforeground, fg,
+	    XmNbackground, bg,
+	NULL);
 
-    n = 0;
-    XtSetArg (args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNleftAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNtopOffset, 3); n++;
-    XtSetArg (args[n], XmNleftOffset, 3); n++;
-    XtSetArg (args[n], XmNrightOffset, 3); n++;
-    XtSetArg (args[n], XmNbottomOffset, 3); n++;
-    XtSetArg (args[n], XmNlistSizePolicy, XmCONSTANT); n++;
-    XtSetArg (args[n], XmNvisibleItemCount, MAX_VISIBLE); n++;
-    XtSetArg (args[n], XmNselectionPolicy, XmBROWSE_SELECT); n++;
-    this->popupList = XmCreateScrolledList (rcForm, "itemList", args, n);
-    XtVaSetValues (this->popupList, XmNshadowThickness, 0, NULL);
-    XtManageChild (this->popupList);
-    XtAddCallback (this->popupList, XmNsingleSelectionCallback,
-	(XtCallbackProc)TextSelector_SelectCB, (XtPointer)this);
-    XtAddCallback (this->popupList, XmNbrowseSelectionCallback,
-	(XtCallbackProc)TextSelector_SelectCB, (XtPointer)this);
-    XtAddCallback (this->popupList, XmNdefaultActionCallback,
-	(XtCallbackProc)TextSelector_SelectCB, (XtPointer)this);
-    XtAddEventHandler(this->popupList, ButtonReleaseMask, False, (XtEventHandler)
-	TextSelector_RemoveGrabEH, (XtPointer)this);
-    XtAddEventHandler(this->popupList, EnterWindowMask, False, (XtEventHandler)
-	TextSelector_ProcessOldEventEH, (XtPointer)this);
-    XtVaGetValues (XtParent(this->popupList), 
-	XmNverticalScrollBar, &this->vsb,
-	XmNhorizontalScrollBar, &this->hsb,
-    NULL);
+	n = 0;
+	XtSetArg (args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
+	XtSetArg (args[n], XmNtopOffset, 3); n++;
+	XtSetArg (args[n], XmNleftOffset, 3); n++;
+	XtSetArg (args[n], XmNrightOffset, 3); n++;
+	XtSetArg (args[n], XmNbottomOffset, 3); n++;
+	XtSetArg (args[n], XmNlistSizePolicy, XmCONSTANT); n++;
+	XtSetArg (args[n], XmNvisibleItemCount, MAX_VISIBLE); n++;
+	XtSetArg (args[n], XmNselectionPolicy, XmBROWSE_SELECT); n++;
+	this->popupList = XmCreateScrolledList (rcForm, "itemList", args, n);
+	XtVaSetValues (this->popupList, XmNshadowThickness, 0, NULL);
+	XtManageChild (this->popupList);
+	XtAddCallback (this->popupList, XmNsingleSelectionCallback,
+	    (XtCallbackProc)TextSelector_SelectCB, (XtPointer)this);
+	XtAddCallback (this->popupList, XmNbrowseSelectionCallback,
+	    (XtCallbackProc)TextSelector_SelectCB, (XtPointer)this);
+	XtAddCallback (this->popupList, XmNdefaultActionCallback,
+	    (XtCallbackProc)TextSelector_SelectCB, (XtPointer)this);
+	XtAddEventHandler(this->popupList, ButtonReleaseMask, False, (XtEventHandler)
+	    TextSelector_RemoveGrabEH, (XtPointer)this);
+	XtAddEventHandler(this->popupList, EnterWindowMask, False, (XtEventHandler)
+	    TextSelector_ProcessOldEventEH, (XtPointer)this);
+	XtVaGetValues (XtParent(this->popupList), 
+	    XmNverticalScrollBar, &this->vsb,
+	    XmNhorizontalScrollBar, &this->hsb,
+	NULL);
 
-    if (cbp) {
-	XtAddCallback (this->popupList, XmNsingleSelectionCallback, cbp, cdata);
-	XtAddCallback (this->popupList, XmNbrowseSelectionCallback, cbp, cdata);
-	XtAddCallback (this->popupList, XmNdefaultActionCallback, cbp, cdata);
+	if (cbp) {
+	    XtAddCallback (this->popupList, XmNsingleSelectionCallback, cbp, cdata);
+	    XtAddCallback (this->popupList, XmNbrowseSelectionCallback, cbp, cdata);
+	    XtAddCallback (this->popupList, XmNdefaultActionCallback, cbp, cdata);
+	}
     }
 
     this->enableModifyCB(this->item_list.getSize() > 0);
@@ -311,14 +333,14 @@ void TextSelector::updateList()
     XtVaSetValues (this->popupList, XmNvisibleItemCount, 
 	(next<=MAX_VISIBLE?next:MAX_VISIBLE), NULL);
     XtVaSetValues (XtParent(this->popupList), 
-	XmNwidth, 150, NULL);
+	XmNwidth, 160, NULL);
 
     //
     // Show the item as selected in the list and make sure that position is showing.
     //
+    XmListAddItemsUnselected (this->popupList, strTable, next, 1);
     if (this->selected_items) {
 	int select_this_item = this->selected_items[0];
-	XmListAddItemsUnselected (this->popupList, strTable, next, 1);
 	XmListSelectPos (this->popupList, select_this_item, False);
 	int toppos;
 	int maxtoppos = 1 + next - MAX_VISIBLE;
@@ -336,6 +358,7 @@ void TextSelector::updateList()
 	    //
 	    XmListSetBottomPos (this->popupList, 0);
     }
+
     int i;
     for (i=0; i<next; i++)
 	XmStringFree (strTable[i]);
@@ -617,7 +640,7 @@ void TextSelector::setMenuColors (Arg args[], int n)
 // proceed, else not.
 //
 extern "C" void
-TextSelector_ModifyCB (Widget, XtPointer cdata, XtPointer callData)
+TextSelector_ModifyCB (Widget w, XtPointer cdata, XtPointer callData)
 {
     TextSelector* tsel = (TextSelector*)cdata;
     ASSERT (tsel);
@@ -650,10 +673,10 @@ TextSelector_ModifyCB (Widget, XtPointer cdata, XtPointer callData)
 	boolean match = FALSE;
 	int i = 1;
 	while ( (item = (char*)it.getNext()) ) {
-	    if (EqualString (item, cp)) {
+	    if (tsel->equalString (item, cp)) {
 		match = TRUE;
 		break;
-	    } else if (EqualSubstring (item, proposed, plen-1)) {
+	    } else if (tsel->equalSubstring (item, proposed, plen-1)) {
 		found++;
 	    }
 	    i++;
@@ -677,6 +700,8 @@ TextSelector_ModifyCB (Widget, XtPointer cdata, XtPointer callData)
 	if (proposed) delete proposed;
     }
     tvcs->doit = (Boolean)good_chars;
+    if (!tvcs->doit) 
+	XBell(XtDisplay(w), 100);
 }
 
 extern "C" Boolean
@@ -690,10 +715,19 @@ TextSelector_FillWP (XtPointer cdata)
 
     return True;
 }
+boolean TextSelector::autoFill(boolean any_match)
+{
+    boolean unused;
+    return this->autoFill(any_match, unused);
+}
 
-boolean TextSelector::autoFill()
+// if (any_match) then if we don't find an exact match but
+// we do find multiple substring matches, we'll accept the
+// first substring match
+boolean TextSelector::autoFill(boolean any_match, boolean& unique_match)
 {
     boolean retVal = FALSE;
+    unique_match = FALSE;
     char* cp = XmTextGetString (this->textField);
     if ((!cp) || (!cp[0])) return FALSE;
     int len = strlen(cp);
@@ -704,27 +738,87 @@ boolean TextSelector::autoFill()
     ListIterator it(this->item_list);
     const char* item;
     int found = 0;
-    boolean match = FALSE;
     int most_recent=0;
+    int index_of_first_match = -1;
     int i = 1;
     while ( (item = (char*)it.getNext()) ) {
-	if (EqualString (item, cp)) {
-	    match = TRUE;
-	    most_recent = i;
-	    break;
-	} else if (EqualSubstring (item, cp, len)) {
+	// we don't need both tests do we?
+	if ((this->equalString (item, cp)) || (this->equalSubstring(item,cp,len))) {
 	    found++;
 	    most_recent = i;
+	    if (index_of_first_match == -1)
+		index_of_first_match = i;
 	}
 	i++;
     }
-    XtFree(cp);
-    if ((match) || (found == 1))  {
+    if (found == 1)  {
 	this->setSelectedItem (most_recent);
-	XmListSelectPos (this->popupList, most_recent, True);
+	if (this->popupList)
+	    XmListSelectPos (this->popupList, most_recent, True);
+	retVal = TRUE;
+	unique_match = TRUE;
+    } else if ((found > 1) && (any_match)) {
+	ASSERT(cp); // can we have a match with no text?
+	int start = strlen(cp);
+	this->setSelectedItem (index_of_first_match);
+	char *match = (char*)this->item_list.getElement(index_of_first_match);
+	int end = strlen(match);
+	XmTextSetSelection (this->textField, start, end, 
+		XtLastTimestampProcessed(XtDisplay(this->textField)));
+	//
+	// Some of the text just entered might not be correct since
+	// we're accepting the first available match out of several.
+	// Therefore, we'll select the text so that further typing
+	// overwrites the erroneous portion.
+	//
+	if (this->popupList)
+	    XmListSelectPos (this->popupList, index_of_first_match, True);
 	retVal = TRUE;
     }
+    XtFree(cp);
     return retVal;
+}
+
+boolean TextSelector::equalString(const char* s1, const char* s2)
+{
+    if (this->case_sensitive) return EqualString(s1,s2);
+
+    int len = STRLEN(s1);
+    if (len != STRLEN(s2)) return FALSE;
+
+    boolean retval = TRUE;
+    for (int i=0; i<len; i++) {
+	if (s1[i] == s2[i]) continue;
+	if (tolower(s1[i]) == tolower(s2[i])) continue;
+	retval = FALSE;
+	break;
+    }
+
+    return retval;
+}
+
+boolean TextSelector::equalSubstring(const char* s1, const char* s2, int n)
+{
+    if (this->case_sensitive) return EqualSubstring(s1,s2,n);
+
+    // what's supposed to happen if s2 is ""?
+    if (!s2[0]) return FALSE;
+
+    boolean retval = TRUE;
+
+    for (int i=0; i<n; i++) {
+	if (s2[i]=='\0') break;
+	if (s1[i]=='\0') {
+	    retval = FALSE;
+	    break;
+	}
+	if (s1[i] == s2[i]) continue;
+	if (tolower(s1[i]) == tolower(s2[i])) continue;
+	retval = FALSE;
+	break;
+    }
+
+    return retval;
 }
 
 extern "C" void
@@ -733,7 +827,7 @@ TextSelector_ResolveCB (Widget, XtPointer cdata, XtPointer)
     TextSelector* tsel = (TextSelector*)cdata;
     ASSERT (tsel);
 
-    if (tsel->autoFill() == FALSE) {
+    if ((tsel->autoFill(TRUE) == FALSE) && (tsel->popupList)) {
 	if (tsel->selected_items) {
 	    XmListSelectPos (tsel->popupList, tsel->selected_items[0], True);
 	} else {
