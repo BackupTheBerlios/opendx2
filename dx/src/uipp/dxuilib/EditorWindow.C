@@ -1375,7 +1375,7 @@ Widget EditorWindow::createWorkArea(Widget parent)
 		  XmNwidth,              width,
 		  NULL);
 
-#if defined(linux)
+#if ((XmVERSION==2)&&(XmREVISION>=2))
     //
     // Pg {Up,Down} is crashing the vpe.  If this bug goes away
     // then remove this code.  Finding a bug fix for Motif isn't good
@@ -1384,21 +1384,19 @@ Widget EditorWindow::createWorkArea(Widget parent)
     // entry.  I did try that but when I invoked the widget's
     // action routine, I got the same crash.
     // 
-    // Note that although this code is compiled only on linux, it
-    // probably has nothing to do with the linux platform.  It's
-    // really related to the Motif version.  I can't test
-    // on all the different versions, though.  If this bug appears on
-    // another platform, then the treatment should be just to remove
-    // the #if and compile it on all platforms.
-    //
-    this->pgKeyHandler = new XHandler(KeyPress, 
-    	XtWindow(this->workSpace->getRootWidget()), KeyHandler, (void*)this);
+    // Event handling in libXt is more complex than I what I can write
+    // code for at this level.  The 0 passed to this constructor is 
+    // supposed to be a window id. 0 means wildcard i.e. we match any
+    // event.  In KeyPress() we'll try to figure out if the widget
+    // that belongs to this event is in the hierarchy of this window.
+    // 
+    if (!this->pgKeyHandler) {
+	this->pgKeyHandler = new XHandler(KeyPress, 0, KeyHandler, (void*)this);
+    }
 #endif
-
     //
     // Return the topmost widget of the work area.
     //
-    //return frame;
     return outer_form;
 }
 
@@ -4111,6 +4109,7 @@ void EditorWindow::completeNewNetwork()
     this->clearUndoList();
     this->creating_new_network = FALSE;
     theDXApplication->refreshErrorIndicators();
+
 }
 
 #ifndef FORGET_GETSET
@@ -7533,11 +7532,41 @@ boolean EditorWindow::keyHandler(XEvent* event)
     if (event->type != KeyPress) return TRUE;
 
     KeySym lookedup = XLookupKeysym(((XKeyEvent*)event), 0);
-    if ((lookedup!=XK_Page_Up) && (lookedup!=XK_Page_Down)) return TRUE;
+    if ((lookedup!=XK_End) && (lookedup!=XK_Page_Up) && (lookedup!=XK_Page_Down)) 
+	return TRUE;
+
+    Widget ww = XtWindowToWidget(XtDisplay(this->getRootWidget()), event->xany.window);
+    boolean is_descendant = FALSE;
+    //
+    // Choice of window is significant.  By using workArea, we're grabbing any
+    // event that is in the vpe or tool selector.  I thought it would be OK
+    // to get only the events inside the scrolledWindow however, the tool selector
+    // crashes when given pg-up/pg-down also.  It would be nice if there were
+    // a better way of computing ancestory.
+    //
+    // Window win = XtWindow(this->scrolledWindow);
+    //
+    Window win = XtWindow(this->workArea);
+    while ((ww) && (!XtIsShell(ww))) {
+	if (XtWindow(ww) == win) {
+	    is_descendant = TRUE;
+	    break;
+	}
+	ww = XtParent(ww);
+    }
+    if (!is_descendant) return TRUE;
 
     XmScrolledWindowWidget scrollWindow;
     int xsize,xdelta,xpdelta,x;
     int ysize,ydelta,ypdelta,y;
+
+    //
+    // Here, it would be nice to fetch the vertical scrollbar's max value
+    // and use that in the XK_End calculation, but that causes a core dump
+    // inside  Motif the same way Page-Up/Page-Down do.
+    //
+    //int max;
+    //XtVaGetValues ((Widget)scrollWindow->swindow.vScrollBar, XmNmaximum, &max, NULL);
 
     scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
     XmScrollBarGetValues((Widget)scrollWindow->swindow.hScrollBar,
@@ -7549,6 +7578,9 @@ boolean EditorWindow::keyHandler(XEvent* event)
 	y=MAX(y,0);
     } else if (lookedup == XK_Page_Down) {
 	y+=ypdelta;
+    } else if (lookedup == XK_End) {
+	//y = max-(ysize+1);
+	y+=2*ypdelta;
     }
     this->moveWorkspaceWindow(x,y,FALSE);
     return FALSE;
