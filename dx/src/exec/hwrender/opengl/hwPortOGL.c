@@ -400,7 +400,8 @@ got_visual:
    *  bug in OpenGL.
    */
 
-  glXWaitX() ;
+  if(!getenv("IGNORE_GLXWAITX"))
+  glXWaitX() ; 
 
  if(CurrentDpy)
     glXMakeCurrent (CurrentDpy, None, NULL) ;
@@ -419,6 +420,7 @@ got_visual:
   }
 
   /* install the colormap for the UI to manage, if color is not static */
+  if(!getenv("IGNORE_GLXWAITX"))
   glXWaitGL() ;
   XGetWindowAttributes (DPY, xid, &attr) ;
   CLRMAP = attr.colormap ;
@@ -433,6 +435,7 @@ got_visual:
     }
 
     f = XLoadFont (DPY, "9x15") ;
+  if(!getenv("IGNORE_GLXWAITX"))
     glXUseXFont (f, 0, 256, fontListBase) ;
     XUnloadFont (DPY, f) ;
   }
@@ -456,7 +459,9 @@ got_visual:
     FONTLISTBASE = fontListBase ;
     {
 	GLint mcp;
+	if(!getenv("IGNORE_GLXWAITX"))
 	glGetIntegerv(GL_MAX_CLIP_PLANES, &mcp);
+	else mcp=1;
 	MAX_CLIP_PLANES = mcp;
     }
 
@@ -754,9 +759,11 @@ static void _dxf_CLEAR_AREA(void *ctx,
   ENTRY(("_dxf_CLEAR_AREA(0x%x, %d, %d, %d, %d)",
 	 ctx, left, right, bottom, top));
 
+if(!getenv("IGNORE_GLXWAITX"))
   glPushAttrib(GL_VIEWPORT_BIT) ;
   glViewport (left, bottom, (right-left)+1, (top-bottom)+1) ;
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) ;
+if(!getenv("IGNORE_GLXWAITX"))
   glPopAttrib() ;
 
   OGL_FAIL_ON_ERROR(_dxf_CLEAR_AREA);
@@ -774,10 +781,12 @@ static void _dxf_SET_WINDOW_SIZE (void *win, int w, int h)
   WINHEIGHT = h ;
   WINWIDTH = w ;
 
+  if(!getenv("IGNORE_GLXWAITX"))
   glXWaitGL() ;
 
   XResizeWindow (DPY, XWINID, w, h) ;
 
+  if(!getenv("IGNORE_GLXWAITX"))
   glXWaitX() ;
 
   _dxf_SET_VIEWPORT (PORT_CTX, 0, w-1, 0, h-1) ;
