@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES =  -I../../../../include -I.. -I../../libdx
+INCLUDES =  -I../../../../include -I.. -I../../libdx -I/usr/include -I/usr/local/include
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 noinst_LIBRARIES = libOPENGL.a
