@@ -70,6 +70,6 @@ const char *ItalicLabeledStandIn::getPostScriptLabelFont()
 
 const char *ItalicLabeledStandIn::getButtonLabelFont()
 {
-    return "oblique"; 
+    return "big_oblique"; 
 }
 
