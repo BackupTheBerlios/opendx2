@@ -279,8 +279,8 @@ PFI DXLoadObjFile(char *fname, char *envvar)
     }
 
     DXDebug("L", "ready to call load");
-    /* func = load(foundname, L_NOAUTODEFER, "."); */
-    func = loadAndInit(foundname, L_NOAUTODEFER, ".");
+    func = load(foundname, L_NOAUTODEFER, "."); 
+    /* func = loadAndInit(foundname, L_NOAUTODEFER, "."); */
     if (func == NULL) {
 	DXSetError(ERROR_INVALID_DATA, 
 		   "cannot load file `%s', %s", foundname, sys_errlist[errno]);
@@ -365,8 +365,8 @@ Error DXUnloadObjFile(char *fname, char *envvar)
 	return OK;
     }
 
-    /* if (unload((void *)lp->h) < 0) { */
-    if (terminateAndUnload((void *)lp->h) < 0) {
+    if (unload((void *)lp->h) < 0) { 
+    /* if (terminateAndUnload((void *)lp->h) < 0) { */
 	DXSetError(ERROR_INVALID_DATA, "cannot unload file '%s', %s", 
 		   foundname, sys_errlist[errno]);
 	DXFree((Pointer)foundname);
