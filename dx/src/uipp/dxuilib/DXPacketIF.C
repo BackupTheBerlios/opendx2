@@ -322,19 +322,8 @@ int DXPacketIF::sendMacroStart
         this->setWaiter(PacketIF::COMPLETE, this->id, callback, clientData);
     }
 
-#ifndef DXD_NON_UNIX_SOCKETS           //SMH not in NT make socket call directly
-    if (fprintf
-        (this->getFILE(),
-         "|%d|%s|%d|",
-         this->id,
-         PacketIF::PacketTypes[PacketIF::MACRODEF],
-         0) <= 0) {
-        this->handleStreamError(errno,"PacketIF::sendMacroStart");
-    }
-#else
-    int l;
     char *tempbuf = new char [64];
-    l = sprintf
+    int l = sprintf
             (tempbuf,
              "|%d|%s|%d|",
              this->id,
@@ -345,28 +334,14 @@ int DXPacketIF::sendMacroStart
         //	this->handleStreamError(errno,"PacketIF::sendMacroStart");
     this->sendImmediate (tempbuf);
     delete tempbuf;
-#endif
 
     return this->id;
 }
 
 void DXPacketIF::sendMacroEnd()
 {
-    if (!this->getFILE())
-    {
-        return;
-    }
-
-#ifndef DXD_NON_UNIX_SOCKETS
-    if ((fprintf (this->getFILE(), "|\n") <= 0) || 
-			(fflush(this->getFILE()) == EOF))
-        this->handleStreamError(errno,"PacketIF::sendMacroStart");
-#else
-    //	if (UxSend (this->socket, "|\n", 2, 0) == -1)
-       //	 this->handleStreamError(errno,"PacketIF::sendMacroStart");
+    if (!this->getFILE()) return;
     this->sendImmediate("|\n");
-#endif
-
 }
 
 void

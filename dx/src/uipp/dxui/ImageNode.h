@@ -98,12 +98,8 @@ class ImageNode : public DisplayNode
     virtual boolean sendMacro(DXPacketIF *pif);
     virtual boolean printMacro(FILE *f,
 			       PacketIFCallback callback = NULL,
-#ifndef DXD_NON_UNIX_SOCKETS     //SMH leave way to decide whether socket or file
-                               void *callbackData = NULL);
-#else
                                void *callbackData = NULL,
                                boolean viasocket  = FALSE);
-#endif
 
     
     // Fields for handling and storing parts of the image messages
@@ -179,7 +175,7 @@ class ImageNode : public DisplayNode
 		       Type t = DXType::UndefinedType,
 		       boolean send = TRUE);
     boolean sendValues(boolean ignoreDirty = TRUE);
-    virtual boolean	printValues(FILE *f, const char *prefix);
+    virtual boolean	printValues(FILE *f, const char *prefix, PrintType dest);
     virtual boolean associateImage(ImageWindow *w);
 
     enum Cacheability getInternalCacheability() { return this->internalCache; }

@@ -44,9 +44,7 @@
 #include "ListIterator.h"
 #include "ImageDefinition.h"
 #include "WarningDialogManager.h"
-#ifdef DXD_NON_UNIX_SOCKETS
 #include "DXPacketIF.h"
-#endif
 
 #include "DXVersion.h"
 
@@ -1262,33 +1260,17 @@ boolean ImageNode::isRecFileInputSet()
 
 boolean ImageNode::SendString(void* callbackData, PacketIFCallback cb, FILE* f, char* s, boolean viasocket) 
 { 
-// NT requires alternate version using direct socket calls
-#ifndef DXD_NON_UNIX_SOCKETS    
-    do {
-	char *_s = s;
+    char *_s = s;
+    if (!viasocket) {
 	if (fputs(_s, f) < 0)
 	    return FALSE;
 	if (cb)
 	    (*cb)(callbackData, _s);
-    } while (0);
-#else
-    do {
-	char *_s = s;
-	if (viasocket==FALSE)
-	{
-	    if (fputs(_s, f) < 0)
-		return FALSE;
-	} 
-	else
-	{
-	    UxSend ((int)f, _s, STRLEN(_s), 0);
-	}
-	if (cb)
-	    (*cb)(callbackData, _s);
-    } while (0);
-#endif
-
-    return TRUE; 
+    } else {
+	DXPacketIF* pif = theDXApplication->getPacketIF();
+	pif->sendBytes(_s);
+    }
+    return TRUE;
 }
 
 void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac[], boolean viasocket)
@@ -1346,11 +1328,7 @@ boolean ImageNode::sendMacro(DXPacketIF *pif)
     }
 
     pif->sendMacroStart();
-#ifdef DXD_NON_UNIX_SOCKETS                  //SMH on NT pass the word it's a socket
     boolean sts = this->printMacro(pif->getFILE(), cb, cbdata, TRUE);
-#else
-    boolean sts = this->printMacro(pif->getFILE(), cb, cbdata);
-#endif
     pif->sendMacroEnd();
 
     return sts;
@@ -1359,17 +1337,10 @@ boolean ImageNode::sendMacro(DXPacketIF *pif)
 
 boolean ImageNode::printMacro(FILE *f,
 			      PacketIFCallback cb,
-#ifndef DXD_NON_UNIX_SOCKETS     //SMH leave way to decide whether socket or file
-                               void *cbdata)
-#else
                                void *cbdata,
                                boolean viasocket)
-#endif
 
 {
-#ifndef DXD_NON_UNIX_SOCKETS     //SMH leave way to decide whether socket or file
-    boolean viasocket = FALSE;
-#endif
 
     char buf[256];
     enum Cacheability cacheability = this->getInternalCacheability();

@@ -53,14 +53,6 @@
 #endif
 
 
-#ifdef DXD_NON_UNIX_SOCKETS //SMH get socket calls but don't step on send routine in Network.C
-#undef send
-#endif
-
-#if defined(OS2) || defined(DXD_WIN)
-#define FPUTS(a, b) ( ((char)*(a)) ? fputs(a, b) : 0)
-#endif
-
 //
 // Define the maxium number of repeatable inputs and outputs.
 //
@@ -805,19 +797,16 @@ boolean Node::netPrintNode(FILE *f, PrintType dest, const char *prefix,
    
     s = this->netNodeString(prefix);
 
-    if (callback != NUL(PacketIFCallback))
-	callback(clientdata,s);
 
-#ifndef DXD_NON_UNIX_SOCKETS                     //SMH make direct socket calls when socket
-    if (fputs(s, f) < 0)
-	r = FALSE;
-#else
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-        if (FPUTS(s, f) < 0)
+	if (fputs(s, f) < 0)
 	    r = FALSE;
-    } else
-        UxSend ((int)f, s, STRLEN(s), 0);
-#endif
+	if (callback != NUL(PacketIFCallback))
+	    callback(clientdata,s);
+    } else {
+	ASSERT (dest == PrintExec);
+	pif->sendBytes(s);
+    }
 
     delete s;
 	
@@ -1089,19 +1078,22 @@ char *Node::valuesString(const char *prefix)
 
 }
 
-boolean Node::printValues(FILE *f, const char *prefix)
+boolean Node::printValues(FILE *f, const char *prefix, PrintType dest)
 {
     char *s;
     boolean r = TRUE;
 
     s = this->valuesString(prefix);
     if (s) {
-#ifndef OS2
-	if (fputs(s, f) < 0)
-#else
-        if (FPUTS(s, f) < 0)
-#endif
-	    r = FALSE;
+	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
+	    if (fputs(s, f) < 0)
+		r = FALSE;
+	} else {
+	    ASSERT (dest == PrintExec);
+	    DXPacketIF* pif = theDXApplication->getPacketIF();
+	    pif->sendBytes(s);
+	}
+
 	delete s;
     }
     return r;
@@ -3051,19 +3043,17 @@ boolean	Node::netPrintBeginningOfMacroNode(FILE *f,
     if (s == NULL)
 	return TRUE;
 
-    if (callback != NUL(PacketIFCallback))
-	callback(clientdata,s);
-
-#ifndef DXD_NON_UNIX_SOCKETS                     //SMH make direct socket calls when socket
-    if (fputs(s, f) < 0)
-	r = FALSE;
-#else
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-        if (FPUTS(s, f) < 0)
+	if (fputs(s, f) < 0)
 	    r = FALSE;
-    } else
-        UxSend ((int)f, s, STRLEN(s), 0);
-#endif
+	if (callback != NUL(PacketIFCallback))
+	    callback(clientdata,s);
+    } else {
+	ASSERT (dest == PrintExec);
+	DXPacketIF *pif = theDXApplication->getPacketIF(); 
+	pif->sendBytes(s);
+    }
+
 
     delete s;
 
@@ -3086,19 +3076,16 @@ boolean	Node::netPrintEndOfMacroNode(FILE *f,
     if (s == NULL)
 	return TRUE;
 
-    if (callback != NUL(PacketIFCallback))
-	callback(clientdata,s);
-
-#ifndef DXD_NON_UNIX_SOCKETS                     //SMH make direct socket calls when socket
-    if (fputs(s, f) < 0)
-	r = FALSE;
-#else
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-        if (FPUTS(s, f) < 0)
+	if (fputs(s, f) < 0)
 	    r = FALSE;
-    } else
-        UxSend ((int)f, s, STRLEN(s), 0);
-#endif
+	if (callback != NUL(PacketIFCallback))
+	    callback(clientdata,s);
+    } else {
+	ASSERT (dest == PrintExec);
+	DXPacketIF *pif = theDXApplication->getPacketIF(); 
+	pif->sendBytes(s);
+    }
 
     delete s;
 

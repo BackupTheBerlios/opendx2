@@ -3699,6 +3699,7 @@ boolean Network::printHeader(FILE *f,
 			     PacketIFCallback echoCallback,
 			     void *echoClientData)
 {
+    DXPacketIF *pif = theDXApplication->getPacketIF();
     char s[1000];
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer)
     {
@@ -3945,24 +3946,20 @@ boolean Network::printHeader(FILE *f,
 	    (*echoCallback)(echoClientData, s);
 
     }
-    int l;                          //SMH added for NT
     //SMH all sprintfs in the remainder of this routine were changed to
     //    remember length of formatted string in variable l
 
-    l = SPRINTF(s, "macro %s(\n",
+    int l = SPRINTF(s, "macro %s(\n",
 	theSymbolManager->getSymbolString(this->name));
-#ifndef DXD_NON_UNIX_SOCKETS                     //SMH make direct socket calls when socket
-    if (fputs(s, f) < 0) return FALSE;
-#else
-    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer)
-    {
-        if (fputs(s, f) < 0) return FALSE;
+
+    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
+	if (fputs(s, f) < 0) return FALSE;
+	if (echoCallback) (*echoCallback)(echoClientData, s);
+    } else {
+	ASSERT(dest==PrintExec);
+	pif->sendBytes(s);
     }
-    else
-        if (UxSend ((int)f, s, l, 0) ==-1) return FALSE;
-#endif
-    if (echoCallback)
-	(*echoCallback)(echoClientData, s);
+
     int i;
     for (i = 1; this->isMacro() && i <= this->getInputCount(); ++i)
     {
@@ -3977,32 +3974,24 @@ boolean Network::printHeader(FILE *f,
 	else
 	    l = SPRINTF(s, "%c%s = %s\n", (i == 1? ' ': ','),
 		param->getNameString(), param->getDefaultValue());
-#ifndef DXD_NON_UNIX_SOCKETS                     //SMH make direct socket calls when socket
-        if (fputs(s, f) < 0) return FALSE;
-#else
-        if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) 
-	{
-            if (fputs(s, f) < 0) return FALSE;
-        } 
-	else
-            if (UxSend ((int)f, s, l, 0) == -1) return FALSE;
-#endif
-	if (echoCallback)
-	    (*echoCallback)(echoClientData, s);
+	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
+	    if (fputs(s, f) < 0) return FALSE;
+	    if (echoCallback) (*echoCallback)(echoClientData, s);
+	} else {
+	    ASSERT(dest==PrintExec);
+	    pif->sendBytes(s);
+	}
     }
     l = SPRINTF(s, ") -> (\n");
-#ifndef DXD_NON_UNIX_SOCKETS                     //SMH make direct socket calls when socket
-    if (fputs(s, f) < 0) return FALSE;
-#else
-    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer)
-    {
+
+    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
         if (fputs(s, f) < 0) return FALSE;
+	if (echoCallback) (*echoCallback)(echoClientData, s);
+    } else {
+	ASSERT(dest==PrintExec);
+	pif->sendBytes(s);
     }
-    else
-        if (UxSend ((int)f, s, l, 0) == -1 ) return FALSE;
-#endif
-    if (echoCallback)
-	(*echoCallback)(echoClientData, s);
+
     for (i = 1; this->isMacro() && i <= this->getOutputCount(); ++i)
     {
 	ParameterDefinition *param = this->getOutputDefinition(i);
@@ -4010,32 +3999,25 @@ boolean Network::printHeader(FILE *f,
 	    l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), "dummy");
 	else
 	    l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), param->getNameString());
-#ifndef DXD_NON_UNIX_SOCKETS                     //SMH make direct socket calls when socket
-        if (fputs(s, f) < 0) return FALSE;
-#else
-        if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer)
-	{
-            if (fputs(s, f) < 0) return FALSE;
+
+	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
+	    if (fputs(s, f) < 0) return FALSE;
+	    if (echoCallback) (*echoCallback)(echoClientData, s);
+	} else {
+	    ASSERT(dest==PrintExec);
+	    pif->sendBytes(s);
 	}
-        else
-            if (UxSend ((int)f, s, l, 0) == -1) return FALSE;
-#endif
-	if (echoCallback)
-	    (*echoCallback)(echoClientData, s);
+
     }
     l = SPRINTF(s, ") {\n");
-#ifndef DXD_NON_UNIX_SOCKETS                     //SMH make direct socket calls when socket
-    if (fputs(s, f) < 0) return FALSE;
-#else
-    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer)
-    {
-        if (fputs(s, f) < 0) return FALSE;
+    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
+	if (fputs(s, f) < 0) return FALSE;
+	if (echoCallback) (*echoCallback)(echoClientData, s);
+    } else {
+	ASSERT(dest==PrintExec);
+	pif->sendBytes(s);
     }
-    else
-        if (UxSend ((int)f, s, l, 0) == -1) return FALSE;
-#endif
-    if (echoCallback)
-	(*echoCallback)(echoClientData, s);
+
 
     Node *n;
     ListIterator li;
@@ -4112,22 +4094,16 @@ boolean Network::printTrailer(FILE *f,
 	    return FALSE;
     }
 
-#ifndef DXD_NON_UNIX_SOCKETS              //SMH direct socket calls for NT
-    if (fprintf(f, "}\n") < 0)
-	return FALSE;
-#else
-    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer)
-    {
-        if (fprintf(f, "}\n") < 0)
-	    return FALSE;
+    const char* s = "}\n";
+    DXPacketIF* pif = theDXApplication->getPacketIF();
+    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
+	if (fputs(s, f) < 0) return FALSE;
+	if (echoCallback) (*echoCallback)(echoClientData, (char*)s);
+    } else {
+	ASSERT(dest==PrintExec);
+	pif->sendBytes(s);
     }
-    else
-    {
-        if (UxSend ((int)f, "}\n", 2, 0) == -1) return FALSE;
-    }
-#endif
-    if (echoCallback)
-	(*echoCallback)(echoClientData, "}\n");
+
     return TRUE;
 }
 boolean Network::printValues(FILE *f, PrintType ptype)
@@ -4148,7 +4124,7 @@ boolean Network::printValues(FILE *f, PrintType ptype)
 	boolean is_selected = (si?si->isSelected():FALSE);
 #endif
 	if ((ptype != PrintCut) || (is_selected))
-	    if (!n->printValues(f, prefix))
+	    if (!n->printValues(f, prefix, ptype))
 		return FALSE;
     }
     return TRUE;

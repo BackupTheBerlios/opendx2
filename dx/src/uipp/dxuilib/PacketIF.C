@@ -17,6 +17,7 @@
 
 #include "PacketIF.h"
 #include "ListIterator.h"
+#include "QueuedPackets.h"
 
 
 #include "Application.h"
@@ -205,16 +206,39 @@ int _packet_type_count = sizeof(PacketIF::PacketTypes) /
  *** External functions:
  ***/
 
+//
+// A new public interface to sending packets.  We check for input
+// awaiting our attention before we send bytes in order to avoid
+// deadlock.
+//
+void PacketIF::sendPacket(int type, int packetId, const char *data, int length)
+{
+    // checking the queue size protects us in the case that we've queued
+    // something up but in the meantime, we've emptied the input side
+    // of the socket.
+    if ((this->isSocketInputReady())||(this->output_queue.getSize() > 0)) {
+	//
+	// Record our information and queue writing it (via a workproc)
+	//
+	void* item = new QueuedPacket(type, packetId, data, length);
+	this->output_queue.appendElement (item);
+	if (this->output_queue_wpid == 0)
+	    this->output_queue_wpid = XtAppAddWorkProc (
+		theApplication->getApplicationContext(),
+		(XtWorkProc)PacketIF_QueuedPacketWP, this);
+	return ;
+    }
+    this->_sendPacket(type, packetId, data, length);
+}
+
+
 /*****************************************************************************/
 /* _uipSendPacket -							     */
 /*                                                                           */
 /*                                                                           */
 /*****************************************************************************/
 
-void PacketIF::sendPacket(int         type,
-			    int packetId,
-			    const char *data,
-			    int         length)
+void PacketIF::_sendPacket(int type, int packetId, const char *data, int length)
 {
 
     if (this->stream == NUL(FILE*))
@@ -322,6 +346,7 @@ PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
     else
         this->connectAsServer(port);
 
+    this->output_queue_wpid = 0;
 
 
     if (!this->error) 
@@ -403,6 +428,13 @@ PacketIF::~PacketIF()
     _line[0]     = NUL(char);
     _line_length = 0;
 #endif
+
+    if (this->output_queue_wpid)
+	XtRemoveWorkProc(this->output_queue_wpid);
+    ListIterator li(this->output_queue);
+    QueuedPacket* qp;
+    while (qp = (QueuedPacket*)li.getNext()) 
+	delete qp;
 }
 
 void PacketIF::initializePacketIO()
@@ -490,7 +522,26 @@ void PacketIF::removeWorkProc()
         this->workProcId = 0;
     }
 }
+Boolean PacketIF::sendQueuedPackets()
+{
+    if (this->output_queue.getSize() == 0) {
+	this->output_queue_wpid = 0;
+	return TRUE;// Yes, remove me from the list
+    }
 
+    QueuedPacket* qp = (QueuedPacket*)this->output_queue.getElement(1);
+    this->output_queue.deleteElement(1);
+    qp->send(this);
+    delete qp;
+
+    return FALSE; //No, don't remove me.  Keep on calling me.
+}
+
+Boolean PacketIF_QueuedPacketWP(XtPointer clientData)
+{
+    PacketIF *p = (PacketIF*)clientData;
+    return p->sendQueuedPackets();
+}
 
 Boolean PacketIF_InputIdleWP(XtPointer clientData)
 {
@@ -650,10 +701,87 @@ PacketIF::setHandler(int                     type,
     }
 }
 
+boolean PacketIF::isSocketInputReady()
+{
+    //
+    // If messages are waiting to be read from the socket, then
+    // postpone handling and read them in order to prevent deadlock
+    //
+    int fd = fileno(this->stream);
+    fd_set read_fds;
+    FD_SET(fd, &read_fds);
+    struct timeval no_time;
+    no_time.tv_sec = 0;
+    no_time.tv_usec = 0;
+    int status = select (fd+1, (SELECT_ARG_TYPE*)&read_fds, NULL, NULL, &no_time);
+    return (status>=1);
+}
 
+void PacketIF::sendBytes(const char *string)
+{
+    // checking the queue size protects us in the case that we've queued
+    // something up but in the meantime, we've emptied the input side
+    // of the socket.
+    if ((this->isSocketInputReady())||(this->output_queue.getSize() > 0)) {
+	//
+	// Record our information and queue writing it (via a workproc)
+	//
+	void* item = new QueuedBytes(string, STRLEN(string));
+	this->output_queue.appendElement (item);
+	if (this->output_queue_wpid == 0)
+	    this->output_queue_wpid = XtAppAddWorkProc (
+		theApplication->getApplicationContext(),
+		(XtWorkProc)PacketIF_QueuedPacketWP, this);
+	return ;
+    }
+    this->_sendBytes(string);
+}
 
+void PacketIF::_sendBytes(const char* string)
+{
+    if (this->stream == NUL(FILE*))
+	return;
+
+    int length = STRLEN(string);
+
+#if !defined(DXD_NON_UNIX_SOCKETS)
+    if (fputs(string,this->stream) < 0 ||
+         (fflush(this->stream) == EOF)) 
+    {
+	this->handleStreamError(errno,"PacketIF::sendBytes"); 
+    }
+#else
+    if (UxSend (this->socket, string, length), 0) == -1 )
+    {
+        this->handleStreamError(errno,"PacketIF::sendBytes");
+    }
+#endif
+
+    if (this->echoCallback)
+	(*this->echoCallback)(this->echoClientData, (char*)string);
+}
 
 void PacketIF::sendImmediate(const char *string)
+{
+    // checking the queue size protects us in the case that we've queued
+    // something up but in the meantime, we've emptied the input side
+    // of the socket.
+    if ((this->isSocketInputReady())||(this->output_queue.getSize() > 0)) {
+	//
+	// Record our information and queue writing it (via a workproc)
+	//
+	void* item = new QueuedImmediate(string, STRLEN(string));
+	this->output_queue.appendElement (item);
+	if (this->output_queue_wpid == 0)
+	    this->output_queue_wpid = XtAppAddWorkProc (
+		theApplication->getApplicationContext(),
+		(XtWorkProc)PacketIF_QueuedPacketWP, this);
+	return ;
+    }
+    this->_sendImmediate(string);
+}
+
+void PacketIF::_sendImmediate(const char *string)
 {
     if (this->stream == NUL(FILE*))
 	return;

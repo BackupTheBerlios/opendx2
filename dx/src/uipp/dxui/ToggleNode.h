@@ -157,7 +157,7 @@ class ToggleNode : public InteractorNode
 
 #if SYSTEM_MACROS // 3/13/95 - begin work for nodes to use system macros
     virtual boolean     sendValues(boolean     ignoreDirty = TRUE);
-    virtual boolean     printValues(FILE *f, const char *prefix);
+    virtual boolean     printValues(FILE *f, const char *prefix, PrintType dest);
 #endif
 
 

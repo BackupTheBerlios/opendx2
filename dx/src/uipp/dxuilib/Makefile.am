@@ -167,6 +167,7 @@ HDRS3 = \
 	ProcessGroupCreateDialog.h \
 	ProcessGroupManager.h \
 	ProcessGroupOptionsDialog.h \
+	QueuedPackets.h \
 	RenderingOptionsDialog.h \
 	ResourceManager.h \
 	SIAllocatorDictionary.h \
@@ -354,6 +355,7 @@ SRCS4 = \
 	ProcessGroupCreateDialog.C \
 	ProcessGroupManager.C \
 	ProcessGroupOptionsDialog.C \
+	QueuedPackets.C \
 	ResourceManager.C \
 	RenderingOptionsDialog.C \
 	SIAllocatorDictionary.C \

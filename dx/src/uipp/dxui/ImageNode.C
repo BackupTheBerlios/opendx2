@@ -41,9 +41,7 @@
 #include "ListIterator.h"
 #include "ImageDefinition.h"
 #include "WarningDialogManager.h"
-#ifdef DXD_NON_UNIX_SOCKETS
 #include "DXPacketIF.h"
-#endif
 
 #include "DXVersion.h"
 
@@ -509,7 +507,7 @@ boolean ImageNode::sendValues(boolean ignoreDirty)
 // work.  If you never open an image window then each image tool will
 // write out an image macro.  This should really be done in Network.
 //
-boolean ImageNode::printValues(FILE *f, const char *prefix)
+boolean ImageNode::printValues(FILE *f, const char *prefix, PrintType dest)
 {
     ListIterator li(*this->getNetwork()->getImageList());
     ImageWindow *w;
@@ -528,7 +526,7 @@ boolean ImageNode::printValues(FILE *f, const char *prefix)
     if (sendMacro)
 	if (!this->printMacro(f))
 	    return FALSE;
-   return DisplayNode::printValues(f, prefix);
+   return DisplayNode::printValues(f, prefix, dest);
 }
 
 

@@ -945,7 +945,7 @@ private:
     //
     //  Print parameter name/value ('name,name = value,value;') pairs.
     //
-    virtual boolean	printValues(FILE *f, const char *prefix);
+    virtual boolean	printValues(FILE *f, const char *prefix, PrintType dest);
     //
     // For inputs, outputs or both sets of parameters send the values
     // for of which do not have arcs. 

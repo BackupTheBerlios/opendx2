@@ -454,7 +454,7 @@ boolean ToggleNode::sendValues(boolean ignoreDirty)
     return InteractorNode::sendValues(ignoreDirty);
 }
 
-boolean ToggleNode::printValues(FILE *f, const char *prefix)
+boolean ToggleNode::printValues(FILE *f, const char *prefix, PrintType dest)
 {
     
     const char *macname = this->getExecModuleNameString();
@@ -467,7 +467,7 @@ boolean ToggleNode::printValues(FILE *f, const char *prefix)
     }
 	
 
-    return InteractorNode::printValues(f,prefix);
+    return InteractorNode::printValues(f,prefix, dest);
 }
 
 char *ToggleNode::netBeginningOfMacroNodeString(const char *prefix)

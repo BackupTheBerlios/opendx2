@@ -22,6 +22,7 @@
 #include "PacketHandler.h"
 #include "LinkHandler.h"
 #include "List.h"
+#include "QueuedPackets.h"
 
 #if defined(intelnt)  && defined(ERROR)
 #undef ERROR
@@ -40,6 +41,7 @@
 //
 extern "C" void PacketIF_InputIdleTimerTCP(XtPointer, XtIntervalId*);
 extern "C" Boolean PacketIF_InputIdleWP(XtPointer);
+extern "C" Boolean PacketIF_QueuedPacketWP(XtPointer);
 extern "C" void PacketIF_ProcessSocketInputICB(XtPointer, int*, XtInputId*);
 
 #if defined(DXD_IBM_OS2_SOCKETS)  || defined(DXD_HAS_WINSOCKETS)
@@ -61,6 +63,9 @@ class PacketIF : public Base
     // Allow the LinkHandlers to send packets.
     //
     friend void LinkHandler::sendPacket(int , int , const char *, int);
+    friend void QueuedPacket::send(PacketIF*);
+    friend void QueuedBytes::send(PacketIF*);
+    friend void QueuedImmediate::send(PacketIF*);
 
   private:
     //
@@ -94,6 +99,7 @@ class PacketIF : public Base
 
     friend void      PacketIF_InputIdleTimerTCP(XtPointer, XtIntervalId*);
     friend Boolean   PacketIF_InputIdleWP(XtPointer clientData);
+    friend Boolean   PacketIF_QueuedPacketWP(XtPointer clientData);
     friend void	     PacketIF_ProcessSocketInputICB(XtPointer clientData, 
 						       int *socket,
 						       XtInputId *id);
@@ -184,10 +190,18 @@ class PacketIF : public Base
     LinkHandler      *linkHandler;
     virtual void      installLinkHandler();
 
-    void             sendPacket(int type,
-				int packetId,
-			       const char *data = NULL,
-			       int length = 0);
+    //
+    // Queue outgoing messages in order to avoid deadlock with dxexec
+    //
+    void _sendBytes(const char *string);
+    void _sendImmediate(const char *string);
+    void _sendPacket(int type, int packetId, const char *data = NULL, int length = 0);
+    Boolean sendQueuedPackets();
+    boolean isSocketInputReady();
+    List output_queue;
+    int output_queue_wpid;
+    void sendPacket(int type, int packetId, const char *data = NULL, int length = 0);
+
   public:
 
     static const char* PacketTypes[];
@@ -249,6 +263,7 @@ class PacketIF : public Base
     void setEchoCallback(PacketIFCallback callback, void *clientData);
     PacketIFCallback getEchoCallback(void **clientData = NULL);
 
+    void sendBytes(const char *string);
     void sendImmediate(const char *string);
 
     //
@@ -293,6 +308,4 @@ class PacketIF : public Base
 	return ClassPacketIF;
     }
 };
-
-
 #endif // _PacketIF_h
