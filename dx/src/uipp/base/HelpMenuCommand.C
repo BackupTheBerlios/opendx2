@@ -47,7 +47,6 @@ boolean HelpMenuCommand::doIt(CommandInterface *ci)
 
     case HelpMenuCommand::HelpTutorial:
 	
-	InfoMessage("Starting the tutorial...");
 	ret = theApplication->startTutorial();
 
 	break;
