@@ -297,8 +297,6 @@ void ToolSelector::categorySelect(Symbol cs)
 	this->categoryDictionary.setActiveItem(cs);
     }
 
-    Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
-
     CategoryNode* cn = this->getCategoryNode(this->treeView->getDataModel(), cs);
     if (cn->isExpanded() == FALSE) {
 	cn->setExpanded(TRUE);
@@ -457,6 +455,9 @@ void ToolSelector::ToolView::select(TreeNode* node, boolean repaint)
 	    CategoryNode* cn = (CategoryNode*)node->getParent();
 	    this->toolSelector->categorySelect(cn->getDefinition());
 	    toolSelector->toolSelect(node->getDefinition());
+	} else {
+	    CategoryNode* cn = (CategoryNode*)node;
+	    this->toolSelector->categorySelect(cn->getDefinition());
 	}
     } else {
 	toolSelector->toolSelect(0);
@@ -584,11 +585,15 @@ void ToolSelector::help()
 {
     const char* tools = 0;
     Symbol s = this->categoryDictionary.getActiveItem();
-    if (s)
-	tools = theSymbolManager->getSymbolString(s);
-    else
-	tools = ALPHABETIZED;
-    theApplication->helpOn(tools);
+    if (s) tools = theSymbolManager->getSymbolString(s);
+    else tools = ALPHABETIZED;
+    char* cp = DuplicateString(tools);
+    char *p;
+    for (p = cp; *p; ++p)
+	if (*p == ' ' || *p == '\t')
+	    *p = '-';
+    theApplication->helpOn(cp);
+    delete cp;
 }
 
 extern "C" void ToolSelector_ToolHelpCB(Widget w, XtPointer clientData, XtPointer unused)
