@@ -47,10 +47,16 @@ static int copy_comments(char *, FILE *, char *, char *, char *);
 #define DO_C    0x2
 #define DO_MAKE 0x4
 
+// Added COMMA_AND_NEWLINE to replace the use of a comma-separated list
+// of statements in a cond?expr1:expr2 clause.  (The expr1 was the list
+// and its contents were passed to a sprintf function, the outcome of
+// which was unpredictable.) MST
 #if defined(intelnt) || defined (WIN32)
 #define NEWLINE "\r\n"
+#define COMMA_AND_NEWLINE ",\r\n"
 #else
 #define NEWLINE "\n"
+#define COMMA_AND_NEWLINE ",\n"
 #endif
 
 int Generate(int which, char *filename)
@@ -575,12 +581,12 @@ fprintf(fd, "    int, int, float *");
 
     if (in[0]->connections == GRID_REGULAR)
     {
-fprintf(fd, "%s   int, int, int *", (open)?",%s", NEWLINE:"");
+fprintf(fd, "%s   int, int, int *", (open)?COMMA_AND_NEWLINE:"");
 	open = 1;
     }
     else if (in[0]->connections == GRID_IRREGULAR)
     {
-fprintf(fd, "%s    int, int, int *", (open)?",%s", NEWLINE:"");
+fprintf(fd, "%s    int, int, int *", (open)?COMMA_AND_NEWLINE:"");
 	open = 1;
     }
 
@@ -588,7 +594,7 @@ fprintf(fd, "%s    int, int, int *", (open)?",%s", NEWLINE:"");
     { 
 	char *type;
 	GetCDataType(in[i]->datatype, &type);
-fprintf(fd, "%s    int, %s *", (open)?",%s", NEWLINE:"", type);
+fprintf(fd, "%s    int, %s *", (open)?COMMA_AND_NEWLINE:"", type);
 	open = 1;
     }
 
@@ -596,7 +602,7 @@ fprintf(fd, "%s    int, %s *", (open)?",%s", NEWLINE:"", type);
     { 
 	char *type;
 	GetCDataType(out[i]->datatype, &type);
-fprintf(fd, "%s    int, %s *", (open)?",%s", NEWLINE:"", type);
+fprintf(fd, "%s    int, %s *", (open)?COMMA_AND_NEWLINE:"", type);
 	open = 1;
     }
 
@@ -988,7 +994,7 @@ fprintf(fd, "      /* input \"%s\" is Field/Group */%s", in[i]->name, NEWLINE);
 fprintf(fd, "      if (in[%d])%s", i, NEWLINE);
 fprintf(fd, "        DXGetScreenInfo((Screen)in[%d], &new_in[%d], NULL, NULL);%s",i,i, NEWLINE);
 fprintf(fd, "      else%s", NEWLINE);
-fprintf(fd, "        new_in[%d] = NULL;%s%s", i, NEWLINE);
+fprintf(fd, "        new_in[%d] = NULL;%s%s", i, NEWLINE,NEWLINE);
     }
 fprintf(fd, "%s", NEWLINE);
 fprintf(fd, "      /*%s", NEWLINE);
@@ -1664,12 +1670,12 @@ fprintf(fd, "    p_knt, p_dim, (float *)p_positions");
 
     if (in[0]->connections == GRID_REGULAR)
     {
-fprintf(fd, "%s    c_knt, c_nv, c_counts", (open)?",%s", NEWLINE:"");
+fprintf(fd, "%s    c_knt, c_nv, c_counts", (open)?COMMA_AND_NEWLINE:"");
 	open = 1;
     }
     else if (in[0]->connections == GRID_IRREGULAR)
     {
-fprintf(fd, "%s    c_knt, c_nv, (int *)c_connections", (open)?",%s", NEWLINE:"");
+fprintf(fd, "%s    c_knt, c_nv, (int *)c_connections", (open)?COMMA_AND_NEWLINE:"");
 	open = 1;
     }
 
@@ -1677,7 +1683,7 @@ fprintf(fd, "%s    c_knt, c_nv, (int *)c_connections", (open)?",%s", NEWLINE:"")
     { 
 	char *type;
 	GetCDataType(in[i]->datatype, &type);
-fprintf(fd, "%s    in_knt[%d], (%s *)in_data[%d]", (open)?",%s", NEWLINE:"", i, type, i);
+fprintf(fd, "%s    in_knt[%d], (%s *)in_data[%d]", (open)?COMMA_AND_NEWLINE:"", i, type, i);
 	open = 1;
     }
 
@@ -1685,7 +1691,7 @@ fprintf(fd, "%s    in_knt[%d], (%s *)in_data[%d]", (open)?",%s", NEWLINE:"", i, 
     { 
 	char *type;
 	GetCDataType(out[i]->datatype, &type);
-fprintf(fd, "%s    out_knt[%d], (%s *)out_data[%d]", (open)?",%s", NEWLINE:"", i, type, i);
+fprintf(fd, "%s    out_knt[%d], (%s *)out_data[%d]", (open)?COMMA_AND_NEWLINE:"", i, type, i);
 	open = 1;
     }
 
@@ -1737,12 +1743,12 @@ fprintf(fd, "    int p_knt, int p_dim, float *p_positions");
 
     if (in[0]->connections == GRID_REGULAR)
     {
-fprintf(fd, "%s    int c_knt, int c_nv, int *c_counts", (open)?",%s", NEWLINE:"");
+fprintf(fd, "%s    int c_knt, int c_nv, int *c_counts", (open)?COMMA_AND_NEWLINE:"");
 	open = 1;
     }
     else if (in[0]->connections == GRID_IRREGULAR)
     {
-fprintf(fd, "%s    int c_knt, int c_nv, int *c_connections", (open)?",%s", NEWLINE:"");
+fprintf(fd, "%s    int c_knt, int c_nv, int *c_connections", (open)?COMMA_AND_NEWLINE:"");
 	open = 1;
     }
 
@@ -1750,7 +1756,7 @@ fprintf(fd, "%s    int c_knt, int c_nv, int *c_connections", (open)?",%s", NEWLI
     { 
 	char *type;
 	GetCDataType(in[i]->datatype, &type);
-fprintf(fd, "%s    int %s_knt, %s *%s_data", (open)?",%s", NEWLINE:"", in[i]->name, type, in[i]->name);
+fprintf(fd, "%s    int %s_knt, %s *%s_data", (open)?COMMA_AND_NEWLINE:"", in[i]->name, type, in[i]->name);
 	open = 1;
     }
 
@@ -1758,7 +1764,7 @@ fprintf(fd, "%s    int %s_knt, %s *%s_data", (open)?",%s", NEWLINE:"", in[i]->na
     { 
 	char *type;
 	GetCDataType(out[i]->datatype, &type);
-fprintf(fd, "%s    int %s_knt, %s *%s_data", (open)?",%s", NEWLINE:"", out[i]->name, type, out[i]->name);
+fprintf(fd, "%s    int %s_knt, %s *%s_data", (open)?COMMA_AND_NEWLINE:"", out[i]->name, type, out[i]->name);
 	open = 1;
     }
 
