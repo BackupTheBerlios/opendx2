@@ -170,6 +170,9 @@ extern "C"   int select(
 extern "C" {
     void herror(const char *);
 }
+#endif
+
+#if (REQUIRES_BZERO_DECLARATION == 1)
 extern "C" { void bzero(char *, int); }
 #endif
 
