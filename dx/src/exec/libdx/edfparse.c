@@ -3503,6 +3503,7 @@ file_lists(struct finfo *f, int value)
 
     } else if (get_ident(f, &value) || get_string(f, &value)) {
 	/* object name */
+	(*gpp)->which = GETBY_NAME;
 	cp = _dxfdictname(f->d, value);
     /*  hasname: */
 	(*gpp)->gbuf = DXAllocateLocal(2*sizeof(char *) + strlen(cp)+1);
