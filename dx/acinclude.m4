@@ -1,5 +1,3 @@
-FOOBARFOO
-
 AC_DEFUN(DX_ARCHITECTURE,
 [
     AC_MSG_CHECKING(architecture type)
