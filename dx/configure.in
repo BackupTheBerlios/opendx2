@@ -153,6 +153,18 @@ AC_ARG_WITH(magick,
 	      [with_magick=$withval],
 	      [with_magick='yes'])
 
+# Enable CDF.
+AC_ARG_WITH(cdf,
+	      [  --with-cdf              enable CDF (default is yes)],
+	      [with_cdf=$withval],
+	      [with_cdf='yes'])
+
+# Enable NetCDF.
+AC_ARG_WITH(netcdf,
+	      [  --with-netcdf           enable NetCDF (default is yes)],
+	      [with_netcdf=$withval],
+	      [with_netcdf='yes'])
+
 AC_ARG_WITH(javadx,
 	      [  --with-javadx           enable JAVADX (default is yes)],
 	      [with_javadx=$withval],
@@ -192,7 +204,7 @@ dnl Start DX configuration
 DX_ARCHITECTURE
 DX_ARCH_SPECIFIC
 
-if test "$ARCH" = "sgi" ; then
+if test "$DXARCH" = "sgi" ; then
     if test "$DXABI" = "" ; then
 	DXABI=" -n32 -L/usr/lib32"
     fi
