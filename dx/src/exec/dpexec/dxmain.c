@@ -1798,7 +1798,9 @@ void _dxf_child_RQ_message(int *jobid)
     int procid;
     int ret;
 
+#if !defined(HAVE__ERRNO)
     errno = 0;
+#endif
     procid = *jobid - 1;
 
     if(procid == 0) {
