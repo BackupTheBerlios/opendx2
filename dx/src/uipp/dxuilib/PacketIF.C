@@ -707,6 +707,16 @@ boolean PacketIF::isSocketInputReady()
     // If messages are waiting to be read from the socket, then
     // postpone handling and read them in order to prevent deadlock
     //
+#if defined(USING_WINSOCKS)
+	    u_long rc;
+
+	if (ioctlsocket(this->socket, FIONREAD, (u_long *) &rc)<0)
+		return FALSE;
+	else if (rc > 0)
+		return FALSE;
+	else
+		return TRUE;
+#else
     int fd = fileno(this->stream);
     fd_set read_fds;
     FD_SET(fd, &read_fds);
@@ -715,6 +725,7 @@ boolean PacketIF::isSocketInputReady()
     no_time.tv_usec = 0;
     int status = select (fd+1, (SELECT_ARG_TYPE*)&read_fds, NULL, NULL, &no_time);
     return (status>=1);
+#endif
 }
 
 void PacketIF::sendBytes(const char *string)
@@ -751,7 +762,7 @@ void PacketIF::_sendBytes(const char* string)
 	this->handleStreamError(errno,"PacketIF::sendBytes"); 
     }
 #else
-    if (UxSend (this->socket, string, length), 0) == -1 )
+    if (UxSend (this->socket, string, length, 0) == -1 )
     {
         this->handleStreamError(errno,"PacketIF::sendBytes");
     }
@@ -1821,7 +1832,7 @@ boolean PacketIF::stallPacketHandling(StallingHandler h, void *data)
 
 #if defined(USING_WINSOCKS)
 
-int UxSend(int s, char *ExternalBuffer, int TotalBytesToSend, int Flags)
+int UxSend(int s, const char *ExternalBuffer, int TotalBytesToSend, int Flags)
 {
     int BuffPtr;
     struct timeval to;

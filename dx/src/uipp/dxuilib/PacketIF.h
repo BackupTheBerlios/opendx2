@@ -45,7 +45,7 @@ extern "C" Boolean PacketIF_QueuedPacketWP(XtPointer);
 extern "C" void PacketIF_ProcessSocketInputICB(XtPointer, int*, XtInputId*);
 
 #if defined(DXD_IBM_OS2_SOCKETS)  || defined(DXD_HAS_WINSOCKETS)
-int UxSend(int s, char *ExternalBuffer, int TotalBytesToSend, int Flags);
+int UxSend(int s, const char *ExternalBuffer, int TotalBytesToSend, int Flags);
 int UxRecv(int s, char *ExternalBuffer, int BuffSize, int Flags);
 #endif
 

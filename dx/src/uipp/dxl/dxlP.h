@@ -17,12 +17,12 @@
 
 #include <sys/types.h>
 
-#ifdef DXD_HAS_WINSOCKETS
+#if defined(HAVE_WINSOCK_H)
 #include <winsock.h>
-#endif
-
-#ifndef DXD_HAS_WINSOCKETS
-#include <netinet/in.h>
+#else
+# if defined(HAVE_NETINET_IN_H)
+# include <netinet/in.h>
+# endif
 #endif
 
 #if defined(HAVE_SYS_UN_H)

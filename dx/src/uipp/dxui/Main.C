@@ -11,10 +11,6 @@
 
 
 #include "DXApplication.h"
-#ifdef DXD_WINSOCK_SOCKETS          //SMH must initialize Win Sockets
-#define _WINSPOOL_      //SMH prevent name clash from uneeded included inlcudes
-#include <winsock.h>
-#endif
 
 #if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
