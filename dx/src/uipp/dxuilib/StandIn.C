@@ -2946,12 +2946,36 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 		if (tnode->isInputDefaulting(i)) {
 		    strcpy(buf, tnode->getInputNameString(i));
 		} else {
+		    int ii;
+		    int cutoff;
+		    char* doublequote;
 		    char dup_val[64];
 		    const char *val = tnode->getInputValueString(i); 
+		    //trim the string if too long, don't count escape for escaped chars
 		    if (STRLEN(val) > 32) {
-			strncpy(dup_val,val,32);
-			dup_val[31] = '\0';
+			if(STRLEN(val) > 58 ) {
+				strncpy(dup_val,val,58);
+				dup_val[57] = '\0';
+			} else {
+				strcpy(dup_val,val);
+			}
+			cutoff=0;
+			for (ii=0; ii<STRLEN(dup_val); ii++) {
+				if(dup_val[ii]!='\\') {
+					++cutoff;
+					// don't have escape character be last!
+					if((cutoff>31)&&(ii>0)&&(dup_val[ii-1]!='\\')) dup_val[ii]='\0';
+				}
+			}
 			strcat(dup_val,"...");
+			// restore balanced quotes for postscript
+			ii=0;
+			doublequote=dup_val;
+			while((doublequote=strchr(doublequote,'\"'))!=NULL) {
+				++doublequote;
+				++ii;
+			}
+			if(ii&1) strcat(dup_val,"\"");
 		    } else {
 			strcpy(dup_val,val);
 		    }	
