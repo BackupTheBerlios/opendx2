@@ -133,31 +133,31 @@ AC_CHECK_LIB(dl, main)
 AC_CHECK_LIB(z, compress,
 [
     AC_DEFINE(HAVE_LIBZ)
-    LIBS="$LIBS -lz"
+    LIBS="-lz $LIBS"
     FMT_LIBS="$FMT_LIBS libz.a"
 ])
 AC_CHECK_LIB(cdf, CDFlib,
 [
     AC_DEFINE(HAVE_LIBCDF)
-    LIBS="$LIBS -lcdf"
+    LIBS="-lcdf $LIBS"
     FMT_LIBS="$FMT_LIBS libcdf.a"
 ])
 AC_CHECK_LIB(jpeg, jpeg_set_quality,
 [
     AC_DEFINE(HAVE_LIBJPEG)
-    LIBS="$LIBS -ljpeg"
+    LIBS="-ljpeg $LIBS"
     FMT_LIBS="$FMT_LIBS libjpeg.a"
 ])
 AC_CHECK_LIB(df, Hopen,
 [
     AC_DEFINE(HAVE_LIBDF)
-    LIBS="$LIBS -ldf"
+    LIBS="-ldf $LIBS"
     FMT_LIBS="$FMT_LIBS libdf.a"
 ])
 AC_CHECK_LIB(netcdf, free_NC_attr,
 [
     AC_DEFINE(HAVE_LIBNETCDF)
-    LIBS="$LIBS -lnetcdf"
+    LIBS="-lnetcdf $LIBS"
     FMT_LIBS="$FMT_LIBS libnetcdf.a"
 ])
 
