@@ -77,10 +77,8 @@ AnyDX.dll: DXLink.o
 		( $(MAKE) cygwin_shared_object ) 	\
 	fi
 
-libAnyDX.dylib: DXLink.o
-	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
-	ld -dylib -o libAnyDX.dylib tmpAnyDX.a -L/usr/X11R6/lib -lXt -lX11 -lc
-	rm -f tmpAnyDX.*
+libAnyDX.jnilib: DXLink.o
+	cc -bundle -o libAnyDX.jnilib -framework JavaVM `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o -L/usr/X11R6/lib -lXt
 
 usual_shared_object: DXLink.o
 	$(SHARED_LINK) $(DXABI) $(DX_RTL_ALDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&" -e "s&../dxl/x11.o&&"`  DXLink.o

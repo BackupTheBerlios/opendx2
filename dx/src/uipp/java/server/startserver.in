@@ -65,12 +65,14 @@ dxroot=""
 user=""
 sessions=""
 numargs="0"
+shared_obj=""
 while [ ! "$*" = "" ]; do
     case $1 in
 	-debug) aarg="${aarg} -d"; dbg_args="-DDXServerThread.debug -DDXServer.debug";;
 	-d) aarg="${aarg} -d"; dbg_args="-DDXServerThread.debug -DDXServer.debug";;
 
 	-dxroot) aarg="${aarg} -dxroot $2"; dxroot=$2; shift ;;
+	-dxlib) shared_obj="${shared_obj} -Djx.lib=$2"; shift ;;
 
 	-foreground) aarg="${aarg} -fg"; foreground="1";;
 	-fg) aarg="${aarg} -fg"; foreground="1";;
@@ -345,7 +347,6 @@ fi
 ## The use of SERVERDIR is intended to give developers (me) a 
 ## way of using this script with a local build.
 ##
-shared_obj=
 serverdir=
 if [ "$SERVERDIR" = "" ]; then
     serverdir=$default_serverdir
@@ -356,12 +357,22 @@ fi
 
 cd $serverdir
 libarch=`dx -whicharch`
-if [ "$LD_LIBRARY_PATH" = "" ]; then
-LD_LIBRARY_PATH=$serverdir/../lib_$libarch
-else
-LD_LIBRARY_PATH=$serverdir/../lib_$libarch:$LD_LIBRARY_PATH
+if test "$libarch" = "macos" ; then
+  if test -z $DYLD_LIBRARY_PATH ; then
+     DYLD_LIBRARY_PATH=$serverdir/../lib_$libarch
+  else
+     DYLD_LIBRARY_PATH=$serverdir/../lib_$libarch:$DYLD_LIBRARY_PATH
+  fi
+  export DYLD_LIBRARY_PATH
 fi
-export LD_LIBRARY_PATH
+if test "$libarch" != "macos" ; then
+   if [ "$LD_LIBRARY_PATH" = "" ]; then
+   LD_LIBRARY_PATH=$serverdir/../lib_$libarch
+   else
+   LD_LIBRARY_PATH=$serverdir/../lib_$libarch:$LD_LIBRARY_PATH
+   fi
+   export LD_LIBRARY_PATH
+fi
 
 ##
 ## DXServer.class must be in the current working directory.

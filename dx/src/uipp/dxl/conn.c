@@ -110,6 +110,10 @@ int select(
 #include <io.h>
 #endif
 
+#if defined(macos)
+#include <crt_externs.h>
+#endif
+
 #if defined(intelnt)
 HANDLE	hpipeRead, hpipeWrite;
 #endif
@@ -281,7 +285,6 @@ static int _dxl_ReadPortNumber(int fd)
 static int
 DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* errp)
 {
-    extern char **environ;
     int in, out, err;
     static char errorstr[256];
     char *argv[256];
@@ -294,6 +297,11 @@ DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* er
   #endif
     int i, n;
     char *c, *s;
+#if defined(macos)
+    char **environ = *_NSGetEnviron();
+#else
+    extern char **environ;
+#endif
 
     if (strstr(string,"-exonly")) {
 	char *s;
