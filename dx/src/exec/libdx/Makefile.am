@@ -11,7 +11,8 @@ EXTRA_DIST = \
 	class class.awk
 
 noinst_HEADERS = \
-	binSort.h triangles.h internals.h diskio.h zclip.h edf.h render.h
+	binSort.h triangles.h internals.h diskio.h zclip.h edf.h render.h \
+	qsort.c
 
 
 BUILT_SOURCES = \
