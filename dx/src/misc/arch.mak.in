@@ -1,0 +1,14 @@
+# this file is used to record the build configuration 
+# so that we can switch architectures and
+# so that we do not have to repeat configuration for samples 
+DXCC = @CC@
+DXCFLAGS = @CFLAGS@
+DXEXECLINKLIBS = @LIBS@
+DXEXECLINKFLAGS = 
+DXRUNTIMELOADFLAGS = 
+DXFMTLIBS = @FMT_LIBS@
+DXLDFLAGS = @LDFLAGS@
+# the var ARCH may change to DXARCH due to namespace
+DXARCH = @ARCH@
+JDK_CLASSPATH = @JDK_CLASSPATH@
+WRL_CLASSPATH = @WRL_CLASSPATH@

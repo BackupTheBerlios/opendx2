@@ -4,6 +4,8 @@ INCLUDES = -I../../include
 
 dxbindir = $(prefix)/bin
 noinst_PROGRAMS = dxlocal
+archmakdir = $(prefix)/dx/lib_$(ARCH)
+archmak_DATA = arch.mak
 
 dxlocal_SOURCES = dx.c 
 
