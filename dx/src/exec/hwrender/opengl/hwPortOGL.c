@@ -172,7 +172,7 @@ _dxf_CREATE_HW_TRANSLATION (void *win)
 
   ret->dpy = DPY ;
   ret->visual = NULL ;
-  ret->cmap = (ArrayHandle)COLORMAP ;
+  ret->cmap = (ArrayHandle)CLRMAP ;
   ret->depth = 24 ;
   ret->invertY = FALSE ;
 #if sgi
@@ -436,8 +436,8 @@ got_visual:
   /* install the colormap for the UI to manage, if color is not static */
   glXWaitGL() ;
   XGetWindowAttributes (DPY, xid, &attr) ;
-  COLORMAP = attr.colormap ;
-  XInstallColormap (DPY, COLORMAP) ;
+  CLRMAP = attr.colormap ;
+  XInstallColormap (DPY, CLRMAP) ;
 
   /* if this is 1st GLX context in this process, create font display lists */
   if (! oglctx_share) {
