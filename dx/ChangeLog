@@ -1,3 +1,9 @@
+Added TypeAhead functionality to the tools list of the VPE. With Motif 
+2, this functionality was minimally there, but my additions extend it. 
+To use it, place the mouse over the Tool List and begin typing the name 
+of the module you wish to use. Other keys other than alpha that affect 
+this are: Up, Down arrows do the expected. Space bar deselects the tools.
+
 Add translucent texturing with alpha blending support to the OpenGL
 hardware rendering back-end.  
 
@@ -31,6 +37,11 @@ direct access to the image manipulation routines without having to
 remember the shortcut keys or open the View Control dialog. It also
 adds some increased functionality internally to the code by removing
 the dependency on X based accelerators in the Picture widget.
+
+Mapped the following accelerators from the VPE to configuration dialogs
+     - save program accelerator
+     - all the execute menu accelerators
+     - add and remove input tabs
 
 Added the functionality to allow the accelerators to be mapped onto
 subpanels that can be popped up from the Image Window. The accelerators 
