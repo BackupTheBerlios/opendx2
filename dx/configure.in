@@ -7,9 +7,7 @@ AC_SUBST(EXEEXT)
 AC_SUBST(INSTALL_DX_EXE)
 AC_SUBST(INSTALL_DX_CSH)
 
-if test -z "$SHELL" ; then
-    SHELL=sh
-fi
+SHELL=sh
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
