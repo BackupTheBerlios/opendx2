@@ -6,6 +6,9 @@ Minor fixes to clean up errors from 4.3
 ---------------
 Put in a new fix for hdfi.h file compile conflicts.
 
+Add a fix to default back to regular help if browser
+help fails.
+
 A little more fixup on the ExHostToFQDN for hosts with no
 reverse lookup.
 
