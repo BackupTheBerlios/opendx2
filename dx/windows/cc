@@ -2,6 +2,8 @@
 MSDEV="C:\Program Files\Microsoft Platform SDK"
 # MSVC="/usr/Program Files/Microsoft Visual Studio"
 MSVC="C:\Program Files\Microsoft Visual Studio"
+#BINMODEDIR="D:/Program Files/Microsoft Visual Studio/VC98/LIB"
+BINMODEDIR="C:\Program Files\Microsoft Visual Studio\VC98\Lib"
 stdout=/tmp/stdo$$
 stderr=/tmp/stde$$
 args=
@@ -105,7 +107,8 @@ for i in $* ; do
 			 args="$args $i" ;;
 		-E) 	 link=0
 			 args="$args /E" ;;
-		-B)	 binmode="\\\"D:/Program Files/Microsoft Visual Studio/VC98/LIB/BINMODE.OBJ\\\"";;
+		-B)	 libpath="$libpath /LIBPATH:\"$BINMODEDIR\"" 
+			 binmode="BINMODE.OBJ" ;;
                  *)      if test $oset = 1 ; then
                              oname=$i
                              args="$args /Fe$i"
@@ -159,7 +162,7 @@ fi
 if test $compile = 1 ; then
 
     if test $link = 1 ; then
-	cmd="cl -nologo $dllflag $msincs $defs $undefs $args $cfiles /link $libpath $deflibs $libs $dlllib $map $binmode" 
+	cmd="cl -nologo $dllflag $msincs $defs $undefs $args $cfiles $libpath /link $deflibs $libs $dlllib $map $binmode" 
     else
 	cmd="cl $dllflag -nologo $incpath $defs $undefs $args $cfiles"
     fi
