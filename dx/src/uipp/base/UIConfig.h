@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/UIConfig.h,v 1.2 1999/04/02 19:00:16 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/UIConfig.h,v 1.3 1999/04/16 20:08:04 gda Exp $
 //
 
 */
@@ -167,13 +167,6 @@
 */
 #if defined(aviion) || defined(hp700) || defined(sun4) || defined(sgi) || defined(alphax)
 #define DUMMY_FOR_LIST_WIDGET
-#endif
-
-/*
-// To accomodate OS/2 and others that don't have/need Unix sys/includes...
-*/
-#if !defined(OS2)  && !defined(DXD_WIN)
-# define DXD_HAS_UNIX_SYS_INCLUDES
 #endif
 
 /*
