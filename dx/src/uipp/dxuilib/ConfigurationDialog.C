@@ -614,6 +614,7 @@ Widget ConfigurationDialog::createInputs(Widget parent, Widget)
     XtSetArg (args[j], XmNspacing, 0); j++;
     XtSetArg (args[j], XmNleftOffset, 0); j++;
     XtSetArg (args[j], XmNrightOffset, 0); j++;
+    XtSetArg (args[j], XmNwidth, 790); j++;
     this->inputScroller = XmCreateScrolledWindow (swp_form, "inputScroller", args, j);
     XtManageChild(this->inputScroller);
 
