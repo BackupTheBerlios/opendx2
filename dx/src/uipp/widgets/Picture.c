@@ -513,7 +513,6 @@ double 	radi;
 static void Realize ( XmPictureWidget  new, XtValueMask  *value_mask,
 		      XSetWindowAttributes *attributes )
 {
-double 		     	radi;
 unsigned long  	     	gc_value_mask;
 XGCValues 	     	gc_values;
 XSetWindowAttributes 	att;
@@ -586,10 +585,7 @@ XmFontList 	font_list;
     new->picture.PIXMAPWIDTH  = new->core.width;
     new->picture.PIXMAPHEIGHT = new->core.height;
     new->picture.pixmap = XmUNSPECIFIED_PIXMAP;
-    radi = (double)(new->picture.globe_radius);
-
     new->picture.globe = NULL;
-    generate_globe ( new, radi ); 
 
     /* 
      * If we are on the frame buffer, create an overlay window.
@@ -2688,6 +2684,7 @@ double center_y;
 
     if (new_camera)
 	{
+	if (!w->picture.globe) generate_globe(w, (double)w->picture.globe_radius);
 	dir_x = from_x - to_x;
 	dir_y = from_y - to_y;
 	dir_z = from_z - to_z;
@@ -6648,6 +6645,14 @@ Pixel   white;
 Pixel   black;
 
     if(!w->picture.display_globe) return;
+
+    /*
+     * Generate the globe on an as-needed basis instead of in the
+     * realize method because the XtUnrealizeWidget call made by
+     * MainWindow's window placment is causing us to lose track of
+     * the 1st globe created.
+     */
+    if (!w->picture.globe) generate_globe(w, (double)w->picture.globe_radius);
     globe = w->picture.globe;
     dpy = XtDisplay(w);
     if(!w->image.frame_buffer)
