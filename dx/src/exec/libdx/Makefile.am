@@ -17,9 +17,13 @@ EXTRA_DIST = \
 	xformClass.X interpClass.X fieldinterpClass.X groupinterpClass.X \
 	fle2DClass.X linesII1DClass.X linesRR1DClass.X linesRI1DClass.X \
 	trisRI2DClass.X quadsRR2DClass.X cubesIIClass.X cubesRRClass.X \
-	tetrasClass.X quadsII2DClass.X
+	tetrasClass.X quadsII2DClass.X \
+	\
+	buffer.Z shade.Z triangle.Z quad.Z plane.Z 
 
 BUILT_SOURCES = \
+	buffer.c shade.c triangle.c quad.c plane.c \
+	\
 	arrayClass.c cameraClass.c clippedClass.c fieldClass.c groupClass.c \
 	lightClass.c objectClass.c privateClass.c screenClass.c stringClass.c \
 	xformClass.c interpClass.c fieldinterpClass.c groupinterpClass.c \
@@ -63,6 +67,8 @@ libLIBDX_a_SOURCES =  \
 	xwindow.c zclipT.c zclipQ.c  notify.c pick.c
 
 CLEANFILES = \
+	buffer.c shade.c triangle.c quad.c plane.c \
+	\
 	arrayClass.c cameraClass.c clippedClass.c fieldClass.c groupClass.c \
 	lightClass.c objectClass.c privateClass.c screenClass.c stringClass.c \
 	xformClass.c interpClass.c fieldinterpClass.c groupinterpClass.c \
