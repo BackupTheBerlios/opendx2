@@ -17,5 +17,5 @@ LINKLIST = \
 myinstall: 
 	$(mkinstalldirs) $(prefix)/dx/samples/programs/IMPORTING
 	@for s in $(LINKLIST) ; do \
-		ln -sf $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/IMPORTING ; \
+		$(LN_S) $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/IMPORTING ; \
 	done

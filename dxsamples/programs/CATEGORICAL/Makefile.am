@@ -19,5 +19,5 @@ LINKLIST = \
 myinstall: 
 	$(mkinstalldirs) $(prefix)/dx/samples/programs/CATEGORICAL
 	@for s in $(LINKLIST) ; do \
-		ln -sf $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/CATEGORICAL ; \
+		$(LN_S) $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/CATEGORICAL ; \
 	done

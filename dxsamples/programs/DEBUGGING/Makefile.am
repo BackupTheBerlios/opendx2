@@ -9,5 +9,5 @@ LINKLIST = \
 myinstall: 
 	$(mkinstalldirs) $(prefix)/dx/samples/programs/DEBUGGING
 	@for s in $(LINKLIST) ; do \
-		ln -sf $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/DEBUGGING ; \
+		$(LN_S) $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/DEBUGGING ; \
 	done

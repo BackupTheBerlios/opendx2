@@ -25,5 +25,5 @@ LINKLIST = \
 myinstall: 
 	$(mkinstalldirs) $(prefix)/dx/samples/programs/SEQUENCER
 	@for s in $(LINKLIST) ; do \
-		ln -sf $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/SEQUENCER ; \
+		$(LN_S) $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/SEQUENCER ; \
 	done

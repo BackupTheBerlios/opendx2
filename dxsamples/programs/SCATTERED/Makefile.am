@@ -11,5 +11,5 @@ LINKLIST = \
 myinstall: 
 	$(mkinstalldirs) $(prefix)/dx/samples/programs/SCATTERED
 	@for s in $(LINKLIST) ; do \
-		ln -sf $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/SCATTERED ; \
+		$(LN_S) $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/SCATTERED ; \
 	done

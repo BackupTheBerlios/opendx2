@@ -28,6 +28,9 @@ AC_ARG_WITH(javadx,
               [with_javadx=$withval],
               [with_javadx='yes'])
 
+AC_PROG_INSTALL
+AC_PROG_LN_S
+
 DX_INSTALL_PATH
 DX_GET_PREFIX
 DX_GET_ARCH
