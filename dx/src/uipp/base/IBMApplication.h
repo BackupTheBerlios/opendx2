@@ -125,6 +125,10 @@ class IBMApplication : public Application
     void 	parseNoWizardNames();
     void 	printNoWizardNames();
 
+    //
+    // prevent leakage of the tech-support text
+    //
+    char* techSupportString;
 
   public:
 

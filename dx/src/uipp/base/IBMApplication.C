@@ -215,6 +215,7 @@ IBMApplication::IBMApplication(char* className): Application(className)
     this->aboutAppString = NULL;
 
     this->noWizards = NUL(List*);
+    this->techSupportString = NUL(char*);
 }
 
 
@@ -229,7 +230,8 @@ IBMApplication::~IBMApplication()
         delete this->helpWindow;
     if (this->aboutAppString)
 	delete this->aboutAppString;
-#endif
+    if (this->techSupportString)
+	delete this->techSupportString;
 
     if (this->noWizards) {
 	ListIterator it(*this->noWizards);
@@ -239,7 +241,7 @@ IBMApplication::~IBMApplication()
 	delete this->noWizards;
 	this->noWizards = NUL(List*);
     }
-
+#endif
 }
 
 //
@@ -774,31 +776,43 @@ const char *IBMApplication::getAboutAppString()
 //
 const char *IBMApplication::getTechSupportString()
 {
-    const char *dxroot = this->getUIRoot();
-    const char *nosup = "No Technical Support Available";
-    if (!dxroot)
-	return nosup;
+    if (!this->techSupportString) {
+	const char *dxroot = this->getUIRoot();
+	const char *nosup = "No Technical Support Available";
+	if (!dxroot) {
+	    this->techSupportString = DuplicateString(nosup);
+	    return this->techSupportString;
+	}
 
-    char supfile[1024];
-    sprintf(supfile,"%s/ui/support.txt",dxroot);
-    FILE *fp;
-    int helpsize;
+	char supfile[1024];
+	sprintf(supfile,"%s/ui/support.txt",dxroot);
+	FILE *fp;
+	int helpsize;
 
-    struct STATSTRUCT buf;
-   
-	if (STATFUNC(supfile, &buf) != 0)
-	return nosup;
-    helpsize = buf.st_size;
-    
-    if (!(fp = fopen(supfile,"r")))
-	return nosup;
+	struct STATSTRUCT buf;
+       
+	if (STATFUNC(supfile, &buf) != 0) {
+	    this->techSupportString = DuplicateString(nosup);
+	    return this->techSupportString;
+	}
+	helpsize = buf.st_size;
+	
+	if (!(fp = fopen(supfile,"r"))) {
+	    this->techSupportString = DuplicateString(nosup);
+	    return this->techSupportString;
+	}
 
-    char *helpstr = new char[helpsize + 3];
-    if (!helpstr) return nosup;
-    fread(helpstr,1,helpsize,fp);
-    fclose(fp);
-    return (const char*)helpstr;    	// FIXME: this is leaked 
+	this->techSupportString = new char[helpsize + 1];
+	if (!this->techSupportString) {
+	    this->techSupportString = DuplicateString(nosup);
+	    return this->techSupportString;
+	}
+	fread(this->techSupportString,1,helpsize,fp);
+	this->techSupportString[helpsize] = '\0';
+	fclose(fp);
+    }
 
+    return this->techSupportString;
 }
 
 //
