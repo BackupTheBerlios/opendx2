@@ -659,13 +659,11 @@ EditorWindow::~EditorWindow()
     if (this->programVerifyCascade) delete this->programVerifyCascade;
 #endif
     if (this->editTabsCascade) delete this->editTabsCascade;
-    if (this->addInputTabOption) delete this->addInputTabOption;
-    if (this->removeInputTabOption) delete this->removeInputTabOption;
+    //if (this->addInputTabOption) delete this->addInputTabOption;
+    //if (this->removeInputTabOption) delete this->removeInputTabOption;
     if (this->editSelectCascade) delete this->editSelectCascade;
-    if (this->editOutputCacheabilityCascade) 
-			delete this->editOutputCacheabilityCascade;
-    if (this->outputCacheabilityCascade) 
-			delete this->outputCacheabilityCascade;
+    if (this->editOutputCacheabilityCascade) delete this->editOutputCacheabilityCascade;
+    if (this->outputCacheabilityCascade) delete this->outputCacheabilityCascade;
 #if WORKSPACE_PAGES
     if (this->pageCascade) delete this->pageCascade;
 #endif
