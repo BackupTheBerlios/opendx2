@@ -5697,8 +5697,11 @@ FILE *Network::OpenNetworkFILE(const char *netFileName,
 	goto error;
     } 
 
+
+#if defined(USING_BISON)
     if (f)
 	yyrestart(f);
+#endif
 
     delete netfile;
     return f;
