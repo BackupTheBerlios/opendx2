@@ -104,19 +104,26 @@ AC_SUBST($1)])
 
 AC_DEFUN(DX_ARCHITECTURE,
 [
-    AC_MSG_CHECKING(system architecture )
+    AC_MSG_CHECKING(architecture type)
     unameS=`uname -s`
-    unameM=`uname -m`
-    if test $unameS = "Linux" && test $unameM = "i686" ; then
-        ARCH=linux86
-    fi
-    if test $unameS = "AIX" ; then
-        ARCH=ibm6000
+    if test $unameS = "Linux" ; then
+        if test `uname -m` = "i686" ; then
+	    ARCH=linux86 
+	else
+	    ARCH=unknown 
+	fi
     fi
     if test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
-        ARCH=sgi
+    	ARCH=sgi
     fi
-    AC_DEFINE_UNQUOTED(ARCH, $ARCH)
-    AC_SUBST(ARCH)
+    if test $unameS = "AIX" ; then
+    	ARCH=ibm6000
+    fi
     AC_MSG_RESULT($ARCH)
+    AC_SUBST(ARCH)
+    AC_DEFINE_UNQUOTED(ARCH, $ARCH)
 ])
+
+
+
+    unameM=`uname -m`
