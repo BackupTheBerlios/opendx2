@@ -205,7 +205,7 @@ do_makefile(char *basename, Module *mod)
        fprintf(fd, "%s: $(FILES_%s) \n",
                mod->loadable_executable, basename);
 
-       fprintf(fd, "\t$(CCLD) $(DXABI) $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(DX_RTL_LDFLAGS) $(SYSLIBS)\n\n",
+       fprintf(fd, "\t$(SHARED_LINK) $(DXABI) $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(DX_RTL_LDFLAGS) $(SYSLIBS)\n\n",
                mod->loadable_executable, basename, basename);
 #if 0
 #ifdef alphax
