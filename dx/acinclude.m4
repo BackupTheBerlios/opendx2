@@ -386,26 +386,19 @@ AC_DEFUN(DX_ARCHITECTURE,
 	    ac_cv_dx_arch=unknown
 	    if test $unameS = "FreeBSD" ; then
 		ac_cv_dx_arch=freebsd
-	    fi
-	    if test `echo $unameS | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"` = "yes" ; then
+	    elif test `echo $unameS | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"` = "yes" ; then
 		ac_cv_dx_arch=cygwin
-	    fi
-	    if test $unameS = "Linux" ; then
+	    elif test $unameS = "Linux" ; then
 		ac_cv_dx_arch=linux 
-	    fi
-	    if test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
+	    elif test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
 		ac_cv_dx_arch=sgi
-	    fi
-	    if test $unameS = "AIX" ; then
+	    elif test $unameS = "AIX" ; then
 		ac_cv_dx_arch=ibm6000
-	    fi
-	    if test $unameM = "alpha" ; then
+	    elif test $unameM = "alpha" ; then
 		ac_cv_dx_arch=alphax
-	    fi
-	    if test $unameS = "HP-UX" ; then
+	    elif test $unameS = "HP-UX" ; then
 		ac_cv_dx_arch=hp700
-	    fi
-	    if test $unameS = "SunOS" ; then
+	    elif test $unameS = "SunOS" ; then
 		ac_cv_dx_arch=solaris
 	    fi
 	fi
