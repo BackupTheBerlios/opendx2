@@ -630,8 +630,11 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
     /*  
      * Set the colors (and possibly color map) components
      */
+#if MagickLibVersion < 0x0540
     image_type = GetImageType( image );
-
+#else
+    image_type = GetImageType( image, &_dxd_exception_info );
+#endif
     switch ( image_type )
     {
       default :
@@ -667,8 +670,13 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
         if ( !image_tmp ) DXErrorGoto(ERROR_INTERNAL, "Failed to flip image" );
         DestroyImage( image );
         image = image_tmp;
-        DispatchImage( image, 0, 0, width, height, "RGB", storage_type, pixels);
-
+#if MagickLibVersion < 0x0540
+        DispatchImage( image, 0, 0, width, height, "RGB", storage_type, 
+        	pixels );
+#else
+        DispatchImage( image, 0, 0, width, height, "RGB", storage_type, 
+        	pixels, &_dxd_exception_info);
+#endif
         /*  Handle transparency (opacities are floats) */
         if ( image->matte )
         {
@@ -683,9 +691,13 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
                  !DXEndField( (Field)dx_image ) )
                 DXErrorGoto(ERROR_INTERNAL, "Failed to create opacities" );
 
+#if MagickLibVersion < 0x0540
             DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
                            opacities );
-
+#else
+            DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
+                           opacities, &_dxd_exception_info );
+#endif
             for ( i = width * height, optr = (float *)opacities; 
                   i > 0;  i--, optr++ )
                 *optr = 1.0 - *optr;
@@ -731,9 +743,13 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
                                           "Failed to flip image" );
             DestroyImage( image );
             image = image_tmp;
+#if MagickLibVersion < 0x0540
             DispatchImage( image, 0, 0, width, height, "RGB", storage_type,
                            pixels );
-
+#else
+            DispatchImage( image, 0, 0, width, height, "RGB", storage_type,
+                           pixels, &_dxd_exception_info );
+#endif
             /*  Handle transparency (opacities are floats) */
             if ( image->matte )
             {
@@ -748,9 +764,13 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
                      !DXEndField( (Field)dx_image ) )
                     DXErrorGoto(ERROR_INTERNAL, "Failed to create opacities" );
 
+#if MagickLibVersion < 0x0540
                 DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
                                opacities );
-
+#else
+                DispatchImage( image, 0, 0, width, height, "A", FloatPixel,
+                               opacities, &_dxd_exception_info );
+#endif
                 for ( i = width * height, optr = (float *)opacities; 
                       i > 0;  i--, optr++ )
                     *optr = 1.0 - *optr;
