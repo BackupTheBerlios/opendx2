@@ -29,6 +29,9 @@
 #endif
 #include <string.h>
 
+extern void _XmManagerEnter();
+extern void _XmManagerFocusIn();
+
 #define STRCMP(a,b)  ((a) ? ((b) ? strcmp(a,b) : strcmp(a,"")) : \
 			    ((b) ? strcmp("",b) : 0))
 
@@ -694,8 +697,6 @@ static char traversalTranslations[] =
 <FocusOut>:     ManagerFocusOut()\n\
 <FocusIn>:      ManagerFocusIn()";
 
-extern void _XmManagerEnter();
-extern void _XmManagerFocusIn();
 
 XtActionsRec defaultActions[] = {
     {"arm",             (XtActionProc)Arm},
@@ -1893,10 +1894,17 @@ static void ChangeManaged( XmWorkspaceWidget ww )
 	     * Certainly don't want to do this if auto_arrange==True
 	     */
 	   formcon = GetFormConstraint(child);
+#if defined(cygwin)
+	   formcon->atta[0].type = XmATTACH_NONE;
+	   formcon->atta[1].type = XmATTACH_NONE;
+	   formcon->atta[2].type = XmATTACH_NONE;
+	   formcon->atta[3].type = XmATTACH_NONE;
+#else
 	   formcon->att[0].type = XmATTACH_NONE;
 	   formcon->att[1].type = XmATTACH_NONE;
 	   formcon->att[2].type = XmATTACH_NONE;
 	   formcon->att[3].type = XmATTACH_NONE;
+#endif
 
 	    new_node = True;
 #if 1

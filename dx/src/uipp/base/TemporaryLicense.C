@@ -3,7 +3,7 @@
 #include <dxconfig.h>
 
 
-#if !defined(DXD_OS_NON_UNIX)
+#if defined(DXD_LICENSED_VERSION)
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -246,4 +246,9 @@ typedef struct _XmWorkspaceRec {
 
 extern void FreeLineElementList(LineElement *list);
 
+#if defined(cygwin)
+typedef struct _XmFormConstraintPart *XmFormConstraint;
+typedef struct _XmFormConstraintRec *XmFormConstraintPtr;
+#endif
+
 #endif

@@ -19,7 +19,7 @@
 #include <netinet/in.h>
 #endif
 
-#if !defined(OS2)  && !defined(DXD_WIN)
+#if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
 #endif
 
@@ -166,7 +166,7 @@ struct DXLConnectionPrototype {
     int sock;
     struct sockaddr_in server;
     int usock;
-#if !defined(OS2)  && !defined(DXD_HAS_WINSOCKETS)
+#if defined(HAVE_SYS_UN_H)
     struct sockaddr_un userver;
 #endif
 };

@@ -141,21 +141,16 @@ void PageTab::createButton (Widget p)
 	// real ugliness.
 	//
 	static char* unix_servers[] = {
-	    "International Business Machines",
-	    "Silicon",
-	    "Sun Microsystems",
-	    "Data General",
-	    "Digital",
-	    "Hewlett-Packard",
-	    "X Consortium",
+	    "Hummingbird Communications Ltd.",
 	    NUL(char*)
 	};
 	int i;
 	const char* vendor = ServerVendor(XtDisplay(p));
 	i = 0;
+	PageTab::BrokenServer = FALSE;
 	while (unix_servers[i]) {
 	    if (strstr (vendor, unix_servers[i])) {
-		PageTab::BrokenServer = FALSE;
+		PageTab::BrokenServer = TRUE;
 		break;
 	    }
 	    i++;

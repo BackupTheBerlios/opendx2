@@ -2050,6 +2050,13 @@ Tab *StandIn::createOutputTab(Widget, int ndx, int width)
                       (XtCallbackProc)StandIn_DisarmTabCB,
                       (XtPointer)this->node);
 
+#if defined(cygwin)
+    char *str = "\
+    	<Btn1Down>: Arm() \n\
+    	<Btn1Up>: Disarm()";
+    XtVaSetValues(tabRoot, XmNtranslations,  XtParseTranslationTable(str), NULL);
+#endif
+
     return tab;
 }
 
@@ -2097,6 +2104,12 @@ Tab *StandIn::createInputTab(Widget, int ndx, int width)
                       XmNdisarmCallback,
                       (XtCallbackProc)StandIn_DisarmTabCB,
                       (XtPointer)this->node);
+#if defined(cygwin)
+    char *str = "\
+    	<Btn1Down>: Arm() \n\
+    	<Btn1Up>: Disarm()";
+    XtVaSetValues(tab->getRootWidget(), XmNtranslations,  XtParseTranslationTable(str), NULL);
+#endif
 
     return tab;
 }
@@ -2327,6 +2340,14 @@ void StandIn::createStandIn()
 			      XmNdisarmCallback,
 			      (XtCallbackProc)StandIn_DisarmTabCB,
 			      (XtPointer)this->node);
+
+#if defined(cygwin)
+	    char *str = "\
+		<Btn1Down>: Arm() \n\
+		<Btn1Up>: Disarm()";
+	    XtVaSetValues(tabRoot, XmNtranslations,  XtParseTranslationTable(str), NULL);
+#endif
+
 	}
     }
 
@@ -2383,6 +2404,14 @@ void StandIn::createStandIn()
 			      XmNdisarmCallback,
 			      (XtCallbackProc)StandIn_DisarmTabCB,
 			      (XtPointer)this->node);
+
+#if defined(cygwin)
+	    char *str = "\
+		<Btn1Down>: Arm() \n\
+		<Btn1Up>: Disarm()";
+	    XtVaSetValues(tabRoot, XmNtranslations,  XtParseTranslationTable(str), NULL);
+#endif
+
 	}
     }
     this->setMinimumWidth(width);

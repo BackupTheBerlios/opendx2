@@ -32,15 +32,19 @@
 #define  stat  _stat
 #endif
 
-#ifndef DXD_LACKS_ANY_REGCMP
-#ifdef REGCMP_EXISTS
+#if defined(HAVE_REGCOMP)
+extern "C" {
+#include <regexp.h>
+}
+#undef HAVE_REGCMP
+#undef HAVE_RE_COMP
+#elif defined(HAVE_REGCMP)
+#undef HAVE_RE_COMP
 extern "C" char *regcmp(...);
 extern "C" char *regex(char *, char *, ...);
-extern "C" char *__loc1;
-#else
+#elif  defined(HAVE_RE_COMP)
 extern "C" char *re_comp(char *s);
 extern "C" int re_exec(char *);
-#endif
 #endif
 
 
@@ -788,7 +792,7 @@ boolean Browser::prevPage()
     // Provide some overlap, unless this is the start of the file
     //
     if(this->page_start != 0)
-	this->page_start += percentage_overlap*this->page_size;
+	this->page_start += (int)(percentage_overlap*this->page_size);
 
     //
     // Clamp to start of file
@@ -1456,18 +1460,26 @@ void Browser::searchForward(char *text)
  
 
     theIBMApplication->setBusyCursor(TRUE);
-#ifndef DXD_LACKS_ANY_REGCMP
-#ifdef REGCMP_EXISTS
+
+#if defined(HAVE_REGCOMP)
+
+    char *search_for = (char *)regcomp(text);
+    ASSERT(search_for != NULL);
+
+#elif defined(HAVE_REGCMP)
+
     char *search_for = regcmp(text, NULL);
     ASSERT(search_for != NULL);
-#else
+
+#elif defined(HAVE_RE_COMP)
+
     char *error_string = re_comp(text);
     if(error_string)
-	WarningMessage("Could'nt compile regular expression! %s", error_string);
-#endif
+	WarningMessage("Couldn't compile regular expression! %s", error_string);
+
 #endif
 
-    while(!wrap || pos < start_pos)
+    while(!found && !wrap || pos < start_pos)
     {
 	//
 	// Read in a buffer
@@ -1504,62 +1516,57 @@ void Browser::searchForward(char *text)
 		buf[i] = '.';
 	}
 
+	int offset;
 
-#ifndef DXD_LACKS_ANY_REGCMP
-#ifdef REGCMP_EXISTS
-	char *ret = regex(search_for, buf);
-#else
-	boolean ret;
-	char *__loc1;
-	char save_char;
-	//
-	// See if the pattern matches.  NOTE:  re_exec returns a 1 if the 
-	// pattern exists ANYWHERE IN THE STRING(buf, in this case).
-	//
-	ret = re_exec(buf);
+#if defined(HAVE_REGCOMP)
 
-	//
-	// If it did, advance until it does'nt any more.
-	//
-	if(ret > 0)
+	int i;
+	for (i = 0; i < STRLEN(buf); i++)
+	    if (! regexec((regexp *)search_for, buf[i]))
+	    	break;
+
+	if (i)
 	{
-	    for(i = STRLEN(buf) - 1; i >= 0; i--)
-	    {
-		save_char = buf[i];
-		buf[i] = '\0';
-		if(ret = re_exec(buf) == 0)
-		{
-		    buf[i] = save_char;
-		    break;
-		}
-	    }
-	    for(i = 0; i < STRLEN(buf); i++)
-	    {
-		if(ret = re_exec(&buf[i]) > 0)
-		{
-		    __loc1 = &buf[i];
-		}
-		else
-		{
-		    //
-		    // So we know we realy found it, set ret back to 1
-		    //
-		    ret = 1;
-		    break;
-		}
-	    }
+	    offset = i - 1;
+	    found = 1;
 	}
-#endif
+
+#elif defined(HAVE_REGCMP)
+
+	extern char *__loc1;
+	if (regex(search_for, buf))
+	{
+	    offset = __loc1 - buf;
+	    found = 1;
+	}
+
+#elif defined(HAVE_RE_COMP)
+
+	int i;
+	for (i = 0; i < STRLEN(buf); i++)
+	    if (! re_exec(buf[i]))
+	    	break;
+
+	if (i)
+	{
+	    offset = i - 1;
+	    found = 1;
+	}
+
 #else
-        char *__loc1;
-        boolean ret;
+
+	char *s;
+	s = strstr(text,  buf);
+	if (s)
+	{
+	    offset = s - buf;
+	    found = 1;
+	}
         
-        ret = (NULL != (__loc1 = strstr(text, buf)));
 #endif
 
-	if(ret)
+	if(found)
 	{
-	    int offset = pos + __loc1 - buf;
 	    this->gotoByte(offset);
 	    found = TRUE;
 	    break;
@@ -1572,7 +1579,7 @@ void Browser::searchForward(char *text)
 	    //
 	    if(nread == this->page_size)
 	    {
-		pos += 0.95*this->page_size;
+		pos += (int)(0.95*this->page_size);
 	    }
 	    else
 	    {
@@ -1588,7 +1595,7 @@ void Browser::searchForward(char *text)
     if(!found)
 	WarningMessage("Pattern not found");
 
-#ifdef REGCMP_EXISTS
+#if defined(HAVE_RECOMP) || defined(HAVE_REGCMP)
     free(search_for);
 #endif
 
@@ -1610,16 +1617,25 @@ void Browser::searchBackward(char *text)
     long bufstart;
 
     theIBMApplication->setBusyCursor(TRUE);
-#ifndef DXD_LACKS_ANY_REGCMP
-#ifdef REGCMP_EXISTS
+
+#if defined(HAVE_REGCOMP)
+
+    char *search_for = (char *)regcomp(text);
+    ASSERT(search_for != NULL);
+
+#elif defined(HAVE_REGCMP)
+
     char *search_for = regcmp(text, NULL);
     ASSERT(search_for != NULL);
-#else
+
+#elif defined(HAVE_RE_COMP)
+
     char *error_string = re_comp(text);
     if(error_string)
 	WarningMessage("Couldn't compile regular expression! %s", error_string);
+
 #endif
-#endif
+
 
     bufstart = start_pos - this->page_size;
     if(bufstart < 0) bufstart = 0;
@@ -1662,49 +1678,68 @@ void Browser::searchBackward(char *text)
 		buf[i] = '.';
         }
 
-	long bufptr = 0;
+	int offset;
 
-#ifndef DXD_LACKS_ANY_REGCMP
-#ifdef REGCMP_EXISTS
-	char *ret;
-	while(ret = regex(search_for, &buf[bufptr]))
-	{
-	    bufptr = __loc1 - buf + 1;
-#else
-	//
-	// If the starting position is on this page, terminate the string
-	// at the starting position so that re_exec does not inform us
-	// that the pattern exists beyond (past) the starting position.
-	//
-	if( (bufstart < start_pos) && (start_pos < bufstart + this->page_size) )
-	{
-	    buf[start_pos] = '\0';
-	}
-	boolean ret;
-	while(ret = re_exec(&buf[bufptr]))
-	{
-	    bufptr++;
-#endif
-#else
-        boolean ret;
-        char *__loc1;
+#if defined(HAVE_REGCOMP)
 
-        while(ret = (NULL != (__loc1 = strstr(text, &buf[bufptr]))))
-        {
-            bufptr = __loc1 - buf + 1;
-#endif
-	    pos = bufstart + bufptr - 1;
-	    if(!wrap)
-	    {
-		if(pos >= start_pos)
-		{
+	if (regexec((regexp *)search_for, buf))
+	{
+	    found = 1;
+
+	    for (i = STRLEN(buf)-1; i >= 0; i--)
+		if (! regexec((regexp *)search_for, buf[i]))
 		    break;
-		}
-		else
-		{
-		    prev_pos = pos;
-		    found = TRUE;
-		}
+
+	    offset = i + 1;
+	}
+
+#elif defined(HAVE_REGCMP)
+
+	if (regex(search_for, buf))
+	{
+	    found = 1;
+
+	    for (i = STRLEN(buf)-1; i >= 0; i--)
+		if (! regex(search_for, buf[i]))
+		    break;
+
+	    offset = i + 1;
+	}
+
+#elif defined(HAVE_RE_COMP)
+
+	if (re_exec(buf))
+	{
+	    found = 1;
+
+	    for (i = STRLEN(buf)-1; i >= 0; i--)
+		if (! re_exec(buf[i]))
+		    break;
+
+	    offset = i + 1;
+	}
+
+#else
+
+	int i;
+	if (strstr(text,  buf))
+	{
+	    found = 1;
+
+	    for (i = STRLEN(buf)-1; i >= 0; i--)
+		if (! strstr(text,  buf[i]))
+		    break;
+
+	    offset = i + 1;
+	}
+#endif
+
+	pos = bufstart + offset;
+	if(!wrap)
+	{
+	    if(pos >= start_pos)
+	    {
+		break;
 	    }
 	    else
 	    {
@@ -1712,6 +1747,12 @@ void Browser::searchBackward(char *text)
 		found = TRUE;
 	    }
 	}
+	else
+	{
+	    prev_pos = pos;
+	    found = TRUE;
+	}
+    
 	if(!found)
 	{
 	    //
@@ -1719,7 +1760,7 @@ void Browser::searchBackward(char *text)
 	    //
 	    if(bufstart != 0)
 	    {
-		bufstart -= 0.95*this->page_size;
+		bufstart -= (int)(0.95*this->page_size);
 		if(bufstart < 0) bufstart = 0;
 		if(wrap)
 		{

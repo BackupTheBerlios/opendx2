@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-#include <dxconfig.h>
-
-
 #ifdef OS2
 #   define INCL_DOSFILEMGR
 #   include <os2.h>
@@ -18,7 +15,11 @@
 #include <sys/stat.h>
 #endif
 
+
 #include "defines.h"
+
+#include <dx/arch.h>
+
 #include "lex.h"
 #include "MacroDefinition.h"
 #include "MacroNode.h"
@@ -35,19 +36,24 @@
 
 #define OLD_DUMMY_DESCRIPTION_STRING "Generated dummy input"
 
-#if !defined(HAVE_RE_COMP) && !defined(HAVE_REGCMP)
-#define  LACKS_ANY_REGCMP
-#endif
-
-
-#ifndef LACKS_ANY_REGCMP
-#ifdef HAVE_REGCMP
+#ifdef HAVE_REGCOMP
+extern "C" {
+#include <regexp.h>
+}
+#undef HAVE_REGCMP
+#undef HAVE_RE_COMP
+#undef HAVE_FINDFIRST
+#elif defined(HAVE_REGCMP)
+#undef HAVE_RE_COMP
+#undef HAVE_FINDFIRST
 extern "C" char *regcmp(...);
 extern "C" char *regex(char *, char *, ...);
-#else
+#elif  defined(HAVE_RE_COMP)
+#undef HAVE_FINDFIRST
 extern "C" char *re_comp(char *s);
 extern "C" int re_exec(char *);
-#endif
+#elif  defined(HAVE_FINDFIRST)
+#include <mingw32/dir.h>
 #endif
 
 MacroDefinition::MacroDefinition(boolean system) : 
@@ -131,7 +137,7 @@ boolean MacroDefinition::loadNetworkBody()
 {
     if (this->body == NULL)
     {
-	this->body = theDXApplication->newNetwork(TRUE);
+	this->body = theDXApplication->newNetwork();
 	this->body->setDefinition(this);
 	this->initialRead = TRUE;
 	boolean r = this->body->readNetwork(this->fileName);
@@ -521,20 +527,11 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 					boolean replace, char **errmsg,
 					boolean asSystemMacro)
 {
- 
+   boolean wasEncoded;
    boolean return_code = TRUE;
 
     if (path == NULL)
 	return TRUE;
-   
-#ifdef OS2
-#   define NORMAL_FILES 0
-#   define FILE_ATTRIBUTE NORMAL_FILES
-    HDIR         FindHandle;
-    FILEFINDBUF3 FindBuffer;
-    ULONG        FindCount;
-    APIRET       rc;
-#endif
 
 #ifndef DXD_NON_UNIX_ENV_SEPARATOR
 #define SEP_CHAR ':'
@@ -561,26 +558,8 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	{
 	    sptr = NULL;
 	}
-#if !defined(DXD_WIN) && !defined(OS2)           //SMH get correct way to test directories existence
         DIR *d = opendir(nsptr);
 	if (!d)
-#else
-        char *srch_string = new char[STRLEN(nsptr) + 7];  
-        strcpy(srch_string,nsptr);                        
-	if (strlen(srch_string)>0) {
-	    char c = srch_string[strlen(srch_string)-1];
-	    if (c != '/' && c != '\\' && c != ':')
-		strcat(srch_string, "/");                   
-	}
-	strcat(srch_string, "*.net");
-#ifndef OS2
-        struct _stat b;
-#else
-        struct stat b;
-#endif
-        int d=_stat(nsptr,&b);
-        if (d)                       
-#endif
 	{
  	    char *errtxt = "Failed opening directory %s: %s";
 	    if (errmsg) {
@@ -604,52 +583,68 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	}
 	else
 	{
-	    boolean wasEncoded; 
+#if defined(HAVE_REGCOMP)
 
-#ifndef DXD_LACKS_ANY_REGCMP
-#ifdef HAVE_REGCMP
-	    char *net_file = regcmp(".[.]*\\.net$", NULL);
+	    char *net_file = (char *)regcomp(".[.]*\\.net$");
 	    ASSERT(net_file != NULL);
-#else                 // use re_comp
-	    char *net_file = re_comp(".[.]*\\.net$");
-	    ASSERT(net_file == NULL);
-#endif                
+
 	    struct dirent *entry;
 	    while (entry = readdir(d))
 	    {
-#ifdef HAVE_REGCMP
-		boolean exists = regex(net_file, entry->d_name) != NULL;
-#else                 // use re_exec
-		boolean exists = re_exec(entry->d_name) > 0;
-#endif                // REGCMP
+		boolean exists = regexec((regexp *)net_file, entry->d_name);
 		if (exists)
-#elif !defined(OS2)   // Lack REGCMP and not OS2      
+
+#elif defined(HAVE_REGCMP)
+
+	    char *net_file = regcmp(".[.]*\\.net$", NULL);
+	    ASSERT(net_file != NULL);
+
+	    struct dirent *entry;
+	    while (entry = readdir(d))
+	    {
+		boolean exists = regex(net_file, entry->d_name) != NULL;
+		if (exists)
+
+#elif defined(HAVE_RE_COMP)
+
+	    char *net_file = re_comp(".[.]*\\.net$");
+	    ASSERT(net_file == NULL);
+
+	    struct dirent *entry;
+	    while (entry = readdir(d))
+	    {
+		boolean exists = re_exec(entry->d_name) > 0;
+		if (exists)
+
+#elif defined(HAVE_FINDFIRST)
+
+	    char *srch_string = new char[STRLEN(nsptr) + 6];  
+	    strcpy(srch_string,nsptr);                        
+	    if (strlen(srch_string)>0) {
+		char c = srch_string[strlen(srch_string)-1];
+		if (c != '/' && c != '\\' && c != ':')
+		    strcat(srch_string, "/");                   
+	    }
+	    strcat(srch_string, "*.net");
+
             struct _finddata_t entry;
             long handle = _findfirst(srch_string,&entry);
             int exists = (handle == -1) ? -1: 0;
-                while (exists != -1)
-#else                // Lack REGCMP and is OS2
-            FindHandle = 0x0001;
-            FindCount = 1;
-            rc = DosFindFirst((PSZ) srch_string, &FindHandle, FILE_ATTRIBUTE,
-                              (PVOID) &FindBuffer, sizeof(FindBuffer), &FindCount, FIL_STANDARD);
-            int exists = (rc == 0) ? 0: -1;
-                while (exists != -1)
-#endif               // DXD_LACKS_ANY_REGCMP           
-		{
+	    while (exists != -1)
+#endif       
+	    {
 		    char path[1000];
 		    strcpy(path, nsptr);
 		    strcat(path, "/");
-#if !defined(DXD_WIN) && !defined(OS2)
-                    strcat(path, entry->d_name);
-#elif !defined(OS2)
+
+#if defined(HAVE_FINDFIRST)
                     strcat(path, entry.name);
 #else
-                    strcat(path, (char *) FindBuffer.achName);
+                    strcat(path, entry->d_name);
 #endif
+
 		    char *ignore = NULL;
-		    FILE *f = Network::OpenNetworkFILE(path,
-						&wasEncoded,&ignore); 
+		    FILE *f = Network::OpenNetworkFILE(path, &wasEncoded, &ignore); 
 		    if (ignore) delete ignore;
 		    if (f == NULL)
 		    {
@@ -678,29 +673,25 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 		    {
 			MacroDefinition::LoadMacroFile(f, path, 
 						replace, NULL, asSystemMacro);
-			Network::CloseNetworkFILE(f,wasEncoded);
+			Network::CloseNetworkFILE(f, wasEncoded);
 		    }
-#ifdef DXD_WIN                    //SMH loop on the right thing
+#if defined(HAVE_FINDFIRST)
                     exists=_findnext(handle,&entry);
-                }
+	    }
             _findclose(handle);
 	    delete srch_string;
-#elif defined(OS2)
-                    rc = DosFindNext(FindHandle,
-                                     (PVOID) &FindBuffer, sizeof(FindBuffer), &FindCount);
-                    exists = (rc == 0) ? 0 : -1;
-                }
- 
-            DosFindClose(FindHandle);
-            delete srch_string;
-#else
+#elif defined(HAVE_REGCOMP)
 		}
 	    }
-#ifdef HAVE_REGCMP
+#elif defined(HAVE_REGCMP)
+		}
+	    }
+#elif defined(HAVE_REGCMP)
+		}
+	    }
 	    free(net_file);
 #endif
 	    closedir(d);
-#endif          // NOT NT and NOT OS2
 	}
     }
 
@@ -719,12 +710,12 @@ boolean MacroDefinition::LoadMacro(const char *fileName, char **errmsg,
 {
     char *netFile = Network::FilenameToNetname(fileName);
     boolean return_code = TRUE;
+    boolean wasEncoded;
 
     if (errmsg)	
 	*errmsg = NULL;
 
-    boolean wasEncoded; 
-    FILE *f = Network::OpenNetworkFILE(netFile,&wasEncoded, errmsg); 
+    FILE *f = Network::OpenNetworkFILE(netFile, &wasEncoded, errmsg); 
 
  
     if (f == NULL) {
@@ -733,7 +724,7 @@ boolean MacroDefinition::LoadMacro(const char *fileName, char **errmsg,
 	boolean wasMacro;
 	MacroDefinition::LoadMacroFile(f, netFile, TRUE, 
 						&wasMacro, asSystemMacro);
-	Network::CloseNetworkFILE(f,wasEncoded);
+	Network::CloseNetworkFILE(f, wasEncoded);
 	if (!wasMacro) {
 	    char *errtxt = "File %s doesn't contain a macro and was not loaded";
 	    if (errmsg) {

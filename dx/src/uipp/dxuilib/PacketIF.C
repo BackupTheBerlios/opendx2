@@ -16,13 +16,14 @@
 #include "Application.h"
 #include "ErrorDialogManager.h"
 
-#if defined(linux86)
+#if defined(linux86) || defined(cygwin)
 extern "C" {
 #include <errno.h>
 }
 #else
 #include <errno.h>
 #endif
+
 #include <ctype.h>
 #include <fcntl.h>
 #ifdef alphax
@@ -93,8 +94,12 @@ int bzero(char*,int);
 #include <sys/time.h>
 #endif
 #include <sys/types.h>
-#ifndef DXD_LACKS_UTS
+
+#if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
+#endif
+
+#if defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
 #endif
 
@@ -127,19 +132,6 @@ extern "C" int select(
 #include <net/if_arp.h>
 #endif
 
-#if 0
-
-#include "uiudefines.h"
-#include "uiudebug.h"
-#include "uiuerror.h"
-#include "uiualloc.h"
-#include "uiustring.h"
-
-#include "uimdata.h"
-#include "uinetwork.h"
-
-#include "uippacket.h"
-#endif
 
 #ifdef DXD_NON_UNIX_SOCKETS  //SMH hack it out hack it in
 #undef send
@@ -223,7 +215,7 @@ void PacketIF::sendPacket(int         type,
     if (data && length <= 0)
 	length = STRLEN(data);
 
-#ifndef DXD_NON_UNIX_SOCKETS                 //SMH must do direct socket calls for NT
+#if !defined(DXD_NON_UNIX_SOCKETS)
     if ((fprintf
 	(this->stream,
 	 (length > 0? "|%d|%s|%d|%s|\n": "|%d|%s|%d||\n"),
@@ -282,20 +274,20 @@ static int pif_count = 0;
 PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
 {
     struct sockaddr_in server;
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     struct sockaddr_un userver;
 #endif
     struct hostent*    hostp;
 
     ASSERT(host);
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     ASSERT(port > 0);
 #endif
     //
     // If this is the first instance of a packet interface, then set up
     // to ignore SIGPIPE (but we watch for EPIPE).
     //
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     if (pif_count++ == 0) 
 	signal(SIGPIPE, SIG_IGN);
 #endif
@@ -325,12 +317,15 @@ PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
 
 
 
-    if (!this->error)  {
-#ifndef DXD_NON_UNIX_SOCKETS  //SMH  NT can't handle this - set stream to socket
+    if (!this->error) 
+    {
+
+#if !defined(DXD_NON_UNIX_SOCKETS) 
 	this->stream = fdopen(this->socket, "w");
 #else
 	this->stream = (FILE *)this->socket;
 #endif
+
 	this->installInputHandler();
     }
 }
@@ -352,7 +347,7 @@ PacketIF::~PacketIF()
     // If this is the last instance of a packet interface, reset to the 
     // default action for SIGPIPE. 
     //
-#ifndef DXD_NON_UNIX_SOCKETS     //SMH  NT shouldn't do this - no stream was opened
+#if defined(HAVE_SYS_UN_H)     //SMH  NT shouldn't do this - no stream was opened
     if (--pif_count == 0) 
 	signal(SIGPIPE, SIG_DFL);
 
@@ -658,7 +653,7 @@ void PacketIF::sendImmediate(const char *string)
     strcat(newString, string);
     strcat(newString, "\n");
 
-#ifndef DXD_NON_UNIX_SOCKETS                 //SMH must do direct socket calls for NT
+#if !defined(DXD_NON_UNIX_SOCKETS)
     if (fputs(newString,this->stream) < 0 ||
          (fflush(this->stream) == EOF)) 
     {
@@ -709,7 +704,7 @@ void PacketIF::handleStreamError(int errnum, const char *msg)
     }
     errno = 0;
 
-#ifndef DXD_NON_UNIX_SOCKETS                 //SMH must do direct socket calls for NT
+#if defined(HAVE_SYS_UN_H)                 //SMH must do direct socket calls for NT
     if (this->stream != NULL)
 	fclose(this->stream);
     this->stream = NULL;
@@ -1198,92 +1193,6 @@ void PacketIF::HandleError(void *clientData, char *message)
 }
 
 
-#ifdef DXD_IBM_OS2_SOCKETS
-/*****************************************************************************\
-
-  The following are patches to allow IBM OS/2 sockets to send messages that
-  cross a segment boundary (which *could* happen for any message longer than
-  4 bytes).  This is necessary because the OS/2 socket calls are still
-  16-bit code.  When the library goes 32-bit, this should no longer be
-  needed.  suits 6/94.
-
-\*****************************************************************************/
-
-int UxSend(int s, char *ExternalBuffer, int TotalBytesToSend, int Flags)
-{
-  #define MAX_BYTES_PER_SEND 32767
-  #define UX_SEND_SEG_SIZE 65536
-  #define UX_SEND_TIMEOUT 20000
-  int BytesToSend;
-  int BuffPtr;
-  int BytesRemaining;
-
-  if (select((int *)&s,0,1,0,UX_SEND_TIMEOUT)<=0)
-    return -1;  
-  BytesRemaining = TotalBytesToSend;
-  BuffPtr = 0;
-  while (BytesRemaining>0)
-    {
-      BytesToSend = (unsigned short)(-(unsigned long)&ExternalBuffer[BuffPtr]);
-      if (BytesToSend == 0)
-        BytesToSend = UX_SEND_SEG_SIZE;
-      if (BytesToSend>BytesRemaining)
-        BytesToSend = BytesRemaining;
-      if (BytesToSend > MAX_BYTES_PER_SEND)
-        BytesToSend = MAX_BYTES_PER_SEND;
-      if (::send(s, &ExternalBuffer[BuffPtr], BytesToSend, Flags)<1)
-        {
-          if (sock_errno()!=SOCEWOULDBLOCK)
-            return -1;
-          if (select((int *)&s,0,1,0,5000)<=0)
-            return -1;  
-        }
-       else
-        {
-          BuffPtr += BytesToSend;
-          BytesRemaining -= BytesToSend;
-        }
-    }
-  return (int) BuffPtr;
-}
-
-int UxRecv(int s, char *ExternalBuffer, int BuffSize, int Flags)
-{
-  #define MAX_BYTES_PER_RECV 32767
-  #define UX_RECV_SEG_SIZE 65536
-  #define UX_RECV_TIMEOUT 20000
-  int BytesToReceive; 
-  int BuffPtr;
-  int BytesRemaining;
-  int NumReceived = -1;
-
-  if (select((int *)&s,1,0,0,UX_RECV_TIMEOUT)<=0)
-    return -1;  
-  BytesRemaining = BuffSize;
-  BuffPtr = 0;
-  while (NumReceived != 0 && BytesRemaining != 0)
-    {
-      BytesToReceive = (unsigned short)(-(unsigned long)&ExternalBuffer[BuffPtr]);
-      if (BytesToReceive == 0)
-        BytesToReceive = UX_RECV_SEG_SIZE;
-      if (BytesToReceive>BytesRemaining)
-        BytesToReceive = BytesRemaining;
-      if (BytesToReceive>MAX_BYTES_PER_RECV)
-        BytesToReceive = MAX_BYTES_PER_RECV;
-      if ((NumReceived = recv(s, &ExternalBuffer[BuffPtr], BytesToReceive, Flags))<0)
-        {
-          if (sock_errno()!=SOCEWOULDBLOCK)
-            return -1;
-           else
-            return (int) BuffPtr;
-        }
-      BuffPtr += NumReceived;
-      BytesRemaining -= NumReceived;
-    }
-  return (int) BuffPtr;
-}
-#endif     // OS2
-
 
 //
 //
@@ -1292,7 +1201,7 @@ int UxRecv(int s, char *ExternalBuffer, int BuffSize, int Flags)
 void PacketIF::connectAsClient(const char *host, int port, boolean local) 
 {
     struct sockaddr_in server;
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     struct sockaddr_un userver;
 #else
     unsigned long locaddr;
@@ -1300,11 +1209,11 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
     struct hostent*    hostp;
 
     ASSERT(host);
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     ASSERT(port > 0);
 #endif
 
-#ifndef DXD_NON_UNIX_SOCKETS     //SMH  NT can't local socket AF_UNIX
+#if defined(HAVE_SYS_UN_H)     //SMH  NT can't local socket AF_UNIX
     
     if (local)
     {
@@ -1423,6 +1332,8 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
 
 
 }
+
+
 /*
  * Open a socket port and wait for a client to connect.
  * This opens 2 sockets (except on the server), one internet domain, and
@@ -1434,7 +1345,7 @@ void PacketIF::connectAsServer(int pport)
 {
     struct sockaddr_in server;
     int sock = -1;
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     int usock = -1;
     struct sockaddr_un userver;
     int oldUmask;
@@ -1445,7 +1356,7 @@ void PacketIF::connectAsServer(int pport)
     int fd;
     int sts;
     int oldPort;
-#if !defined(linux86)
+#if !defined(linux86) && !defined(cygwin)
     extern int errno;
 #endif
     int tries;
@@ -1489,7 +1400,7 @@ retry:
     SOCK_SETSOCKET(sock);
 #endif
 
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     usock = ::socket(AF_UNIX, SOCK_STREAM, 0);
     if (usock < 0)
     {
@@ -1536,7 +1447,7 @@ retry:
         goto error;
     }
 
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     userver.sun_family = AF_UNIX;
     sprintf(userver.sun_path, "/tmp/.DX-unix/DX%d", port);
     length = sizeof (userver) - sizeof(userver.sun_path) +
@@ -1580,7 +1491,7 @@ retry:
         fd = -1;
         goto error;
     }
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     if (listen(usock, SOCK_QUEUE_LENGTH) < 0)
     {
         perror ("listen");
@@ -1600,7 +1511,7 @@ retry:
      */
     FD_ZERO(&fds);
     FD_SET(sock, &fds);
-#ifndef DXD_NON_UNIX_SOCKETS 
+#if defined(HAVE_SYS_UN_H) 
     FD_SET(usock, &fds);
     if (!isatty(0)) {
         to.tv_sec = SOCK_ACCEPT_TIMEOUT;
@@ -1645,7 +1556,7 @@ retry:
         goto error;
     }
 
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     if (FD_ISSET(sock, &fds))
     {
 #endif
@@ -1659,7 +1570,7 @@ retry:
         SOCK_SETSOCKET(fd);
 #endif
 
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_UN_H)
     }
     else
     {
@@ -1675,7 +1586,7 @@ retry:
     printf ("server: accepted connection from client\n");
 
 error:
-#ifndef DXD_NON_UNIX_SOCKETS 
+#if defined(HAVE_SYS_UN_H) 
     if (userver.sun_path[0] != '\0')
         unlink (userver.sun_path);
     if (usock >= 0)
@@ -1741,7 +1652,9 @@ boolean PacketIF::stallPacketHandling(StallingHandler h, void *data)
     return TRUE;
 }
 
-#ifdef	DXD_HAS_WINSOCKETS
+#if defined(DXD_NON_UNIX_SOCKETS)
+
+#if defined(DXD_HAS_WINSOCKETS)
 
 int UxSend(int s, char *ExternalBuffer, int TotalBytesToSend, int Flags)
 {
@@ -1820,8 +1733,95 @@ int SetSocketMode(int  s, int iMode)
 
 }
 
+#elif  defined(DXD_IBM_OS2_SOCKETS)
 
+/*****************************************************************************\
 
-#endif  //	DXD_HAS_WINSOCKETS
+  The following are patches to allow IBM OS/2 sockets to send messages that
+  cross a segment boundary (which *could* happen for any message longer than
+  4 bytes).  This is necessary because the OS/2 socket calls are still
+  16-bit code.  When the library goes 32-bit, this should no longer be
+  needed.  suits 6/94.
 
+\*****************************************************************************/
+
+int UxSend(int s, char *ExternalBuffer, int TotalBytesToSend, int Flags)
+{
+  #define MAX_BYTES_PER_SEND 32767
+  #define UX_SEND_SEG_SIZE 65536
+  #define UX_SEND_TIMEOUT 20000
+  int BytesToSend;
+  int BuffPtr;
+  int BytesRemaining;
+
+  if (select((int *)&s,0,1,0,UX_SEND_TIMEOUT)<=0)
+    return -1;  
+  BytesRemaining = TotalBytesToSend;
+  BuffPtr = 0;
+  while (BytesRemaining>0)
+    {
+      BytesToSend = (unsigned short)(-(unsigned long)&ExternalBuffer[BuffPtr]);
+      if (BytesToSend == 0)
+        BytesToSend = UX_SEND_SEG_SIZE;
+      if (BytesToSend>BytesRemaining)
+        BytesToSend = BytesRemaining;
+      if (BytesToSend > MAX_BYTES_PER_SEND)
+        BytesToSend = MAX_BYTES_PER_SEND;
+      if (::send(s, &ExternalBuffer[BuffPtr], BytesToSend, Flags)<1)
+        {
+          if (sock_errno()!=SOCEWOULDBLOCK)
+            return -1;
+          if (select((int *)&s,0,1,0,5000)<=0)
+            return -1;  
+        }
+       else
+        {
+          BuffPtr += BytesToSend;
+          BytesRemaining -= BytesToSend;
+        }
+    }
+  return (int) BuffPtr;
+}
+
+int UxRecv(int s, char *ExternalBuffer, int BuffSize, int Flags)
+{
+  #define MAX_BYTES_PER_RECV 32767
+  #define UX_RECV_SEG_SIZE 65536
+  #define UX_RECV_TIMEOUT 20000
+  int BytesToReceive; 
+  int BuffPtr;
+  int BytesRemaining;
+  int NumReceived = -1;
+
+  if (select((int *)&s,1,0,0,UX_RECV_TIMEOUT)<=0)
+    return -1;  
+  BytesRemaining = BuffSize;
+  BuffPtr = 0;
+  while (NumReceived != 0 && BytesRemaining != 0)
+    {
+      BytesToReceive = (unsigned short)(-(unsigned long)&ExternalBuffer[BuffPtr]);
+      if (BytesToReceive == 0)
+        BytesToReceive = UX_RECV_SEG_SIZE;
+      if (BytesToReceive>BytesRemaining)
+        BytesToReceive = BytesRemaining;
+      if (BytesToReceive>MAX_BYTES_PER_RECV)
+        BytesToReceive = MAX_BYTES_PER_RECV;
+      if ((NumReceived = recv(s, &ExternalBuffer[BuffPtr], BytesToReceive, Flags))<0)
+        {
+          if (sock_errno()!=SOCEWOULDBLOCK)
+            return -1;
+           else
+            return (int) BuffPtr;
+        }
+      BuffPtr += NumReceived;
+      BytesRemaining -= NumReceived;
+    }
+  return (int) BuffPtr;
+}
+
+#else
+If there are non-unix sockets, there better be UxSend/UxRecv
+#endif
+
+#endif
 

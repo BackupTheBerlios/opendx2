@@ -113,8 +113,11 @@ extern "C"   int select(
 
 #endif
 
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
+#endif
+
+#if defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
 #endif
 

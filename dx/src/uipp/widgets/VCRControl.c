@@ -1265,6 +1265,7 @@ static void ReleaseModeButtons( XmVCRControlWidget vcr )
  */
 static void ReplaceFrame( XmFrameWidget frame )
 {
+#if !defined(cygwin)
 short highlight_thickness = 0;
 
    if( XtIsRealized(frame) )
@@ -1273,6 +1274,7 @@ short highlight_thickness = 0;
 			 frame->manager.shadow_thickness,
 			 highlight_thickness, frame->manager.top_shadow_GC,
 			 frame->manager.bottom_shadow_GC);
+#endif
 }
 
 

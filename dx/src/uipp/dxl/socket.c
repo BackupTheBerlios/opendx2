@@ -44,8 +44,11 @@
 #ifdef DXD_WIN
 #include <winioctl.h>
 #endif
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SYS_SIGNAL_H)
 #include <sys/signal.h>
+#endif
+#if defined(HAVE_SIGNAL_H)
+#include <signal.h>
 #endif
 
 #ifndef DXD_LACKS_UTS
@@ -153,7 +156,7 @@ _dxl_MakeConnection(DXLConnection *connection, int port, const char *host)
 /*
  * SMH  NT can't local socket AF_UNIX
  */
-#ifndef DXD_NON_UNIX_SOCKETS     
+#if defined(HAVE_SYS_UN_H)
     
     if (local)
     {

@@ -25,7 +25,12 @@
 #include <netdb.h>
 #endif
 
+#if defined(HAVE_SIGNAL_H)
 #include <signal.h>
+#endif
+#if defined(HAVE_SYS_SIGNAL_H)
+#include <sys/signal.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef DXD_HAS_UNIX_SYS_INCLUDES
@@ -75,8 +80,10 @@ int select(
 #include <sys/time.h>
 #endif
 #include <sys/types.h>
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
+#endif
+#if defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
 #endif
 

@@ -541,6 +541,7 @@ static void Redisplay( XmNumberWidget nw, XEvent *event, Region region )
 static
 void DisplayNumberShadow( XmNumberWidget nw )
 {
+#if !defined(cygwin)
     register int border, borders;
     border = nw->primitive.highlight_thickness;
     borders = border + border;
@@ -557,6 +558,7 @@ void DisplayNumberShadow( XmNumberWidget nw )
 		      nw->primitive.shadow_thickness, border, border,
 		      nw->core.width - borders, nw->core.height - borders);
     }
+#endif
 }
 
 
