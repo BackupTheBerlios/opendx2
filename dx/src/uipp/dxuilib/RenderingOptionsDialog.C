@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// RenderingOptionsDialog.C -						    //
-//                                                                          //
-// RenderingOptionsDialog Class methods and other related 		    //
-// functions/procedures.						    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/RenderingOptionsDialog.C,v 1.2 1999/04/12 21:08:47 gda Exp $
- */
 
 
 #include <Xm/Form.h>

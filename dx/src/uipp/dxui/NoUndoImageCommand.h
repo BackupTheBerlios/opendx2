@@ -1,19 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// NoUndoImageCommand.h -						    //
-//                                                                          //
-// Definition for the NoUndoImageCommand class.				    //
-//
-//  All commands implemented here are non-undoable commands and have a	    //	
-// command scope that is local to the control panel.
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/NoUndoImageCommand.h,v 1.1 1999/03/31 22:33:09 gda Exp $
- */
 
 
 #ifndef _NoUndoImageCommand_h
@@ -81,8 +67,7 @@ class NoUndoImageCommand : public NoUndoCommand
 	SetCPAccess		= 12,   // Set the Control Panel access
 	SaveImage		= 13,   // Save image 
 	SaveAsImage		= 14,   // Post the SaveAsImageDialog...
-	PrintImage		= 15,    // Post the PrintImageDialog...
-	Depth16			= 16   // Set the image depth to 12
+	PrintImage		= 15    // Post the PrintImageDialog...
     };
     //
     // Returns a pointer to the class name.

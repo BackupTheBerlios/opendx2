@@ -1,12 +1,7 @@
-/*****************************************************************************/
-/*		            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
+
 
 /*
- */
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/NumericList.c,v 1.1 1999/03/24 15:17:35 gda Exp $
  */
 
 #ifdef sgi
@@ -34,10 +29,6 @@
 #include "NumericList.h"
 #include "NumericListP.h"
 /*#include "uiustring.h" */
-
-
-extern void _XmManagerFocusIn();
-extern void _XmManagerEnter();
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -1074,6 +1065,8 @@ Boolean		fixed_format;
 
 /***************************************************************************/
 /*  Subroutine: decrement_if_possible                                      */
+/*                                                                         */
+/*                                                                         */
 /***************************************************************************/
 static void decrement_if_possible(XmNumericListWidget nlw, XtIntervalId *id)
 {
@@ -1156,6 +1149,8 @@ int	i;
 
 /***************************************************************************/
 /*  Subroutine: jump_to_end                    		                   */
+/*                                                                         */
+/*                                                                         */
 /***************************************************************************/
 static void jump_to_end(XmNumericListWidget nlw)
 {
@@ -1219,6 +1214,8 @@ int	i;
 }
 /***************************************************************************/
 /*  Subroutine: increment_if_possible                                      */
+/*                                                                         */
+/*                                                                         */
 /***************************************************************************/
 static void increment_if_possible(XmNumericListWidget nlw, XtIntervalId *id)
 {

@@ -1,13 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/NoUndoGARAppCommand.h,v 1.1 1999/04/05 13:33:47 gda Exp $
- */
 
 
 #ifndef _NoUndoGARAppCommand_h

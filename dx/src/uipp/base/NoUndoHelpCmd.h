@@ -1,19 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// NoUndoHelpCmd.h -						    //
-//                                                                          //
-// Definition for the NoUndoHelpCmd class.				    //
-//
-//  All commands implemented here are non-undoable commands and have a	    //	
-// command scope that is local to the control panel.
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/NoUndoHelpCmd.h,v 1.1 1999/03/24 15:17:24 gda Exp $
- */
 
 
 #ifndef _NoUndoHelpCmd_h

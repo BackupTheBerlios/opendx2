@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// DXApplication.C -							    //
-//                                                                          //
-// DXApplication Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/DXApplication.C,v 1.2 1999/04/16 20:07:33 gda Exp $
- *
- */
 
 #include "UIConfig.h" 
 
@@ -19,6 +7,8 @@
 #include <Xm/Label.h>
 #include <X11/cursorfont.h>
 #if defined(DXD_WIN) || defined(OS2)                  //SMH get correct hdr
+// putenv should come from stdlib.h
+extern "C" int putenv(char*);
 #include <iostream.h>
 #include <direct.h>
 #include <io.h>
@@ -26,7 +16,7 @@
 #include <stream.h>
 #endif
 
-#ifdef HAVE_UNISTD_H
+#ifdef DXD_HAS_UNIX_SYS_INCLUDES
 #include <unistd.h>
 #endif
 #include <signal.h>
@@ -43,8 +33,8 @@
 #include "JavaNet.h"
 #include "Client.h"
 
+#include "oem.h"
 #include "CommandScope.h"
-
 #include "NoUndoDXAppCommand.h"
 #include "ConfirmedQuitCommand.h"
 #include "ConfirmedExitCommand.h"
@@ -588,6 +578,18 @@ XrmOptionDescRec _DXOptionList[] =
 	"*errorEnabled",
 	XrmoptionNoArg,
 	"False"
+    },
+    {
+	"-forceNetFileEncryption",
+	"*forceNetFileEncryption",
+	XrmoptionSepArg,
+	NULL	
+    },
+    {
+	"-cryptKey",
+	"*cryptKey",
+	XrmoptionSepArg,
+	NULL	
     },
     {
 	"-exitAfter",
@@ -1379,6 +1381,24 @@ XtResource _DXResourceList[] =
 	(XtPointer)False
     },
     {
+        "forceNetFileEncryption",
+        "ForceNetFileEncryption",
+	XmRBoolean,
+	sizeof(Boolean),
+	XtOffset(DXResource*, forceNetFileEncryption),
+	XmRImmediate,
+	(XtPointer)False
+    },
+    {
+        "cryptKey",
+        "Cryptkey",
+        XmRString,
+        sizeof(String),
+        XtOffset(DXResource*, cryptKey),
+        XmRString,
+        NULL
+    },
+    {
         "exitAfter",
         "ExitAfter",
 	XmRBoolean,
@@ -1447,6 +1467,24 @@ XtResource _DXResourceList[] =
 	XmRString,
 	sizeof(String),
 	XtOffset(DXResource*, oemApplicationName),
+	XmRString,
+	NULL
+    },
+    {
+        "oemApplicationNameCode",
+        "ApplicationNameCode",
+	XmRString,
+	sizeof(String),
+	XtOffset(DXResource*, oemApplicationNameCode),
+	XmRString,
+	NULL
+    },
+    {
+        "oemLicenseCode",
+        "LicenseCode",
+	XmRString,
+	sizeof(String),
+	XtOffset(DXResource*, oemLicenseCode),
 	XmRString,
 	NULL
     },
@@ -2223,6 +2261,18 @@ boolean wasSetBusy = FALSE;
 	    DXApplication::resource.netPath = DuplicateString(s); 
     }
 
+    if (DXApplication::resource.cryptKey == 0) {
+        char *s = getenv("DXCRYPTKEY");
+        if (s) {
+            DXApplication::resource.cryptKey = DuplicateString(s);
+#ifndef DEBUG
+            // Hide the key so debuggers can't get at it.
+            s = DuplicateString("DXCRYPTKEY=");
+            putenv(s);
+#endif
+        }
+    }
+
     //
     // If the app does not allow editor access or we are starting up without
     // displaying the anchor window, force one of (image or menubar) mode.
@@ -2474,6 +2524,8 @@ boolean wasSetBusy = FALSE;
 	this->resource.noAnchorAtStartup= True; 
 	this->resource.suppressStartupWindows = True; 
 	this->resource.noConfirmedQuit = True; 
+	// this->resource.cryptKey = 0x54232419; 
+	// this->resource.forceNetFileEncryption = True; 
     } else {
 	//
 	// Get a license (after parsing resources), and if we can't 
@@ -3123,7 +3175,7 @@ void DXApplication::addErrorList(char *line)
 	//
 	// This is similar to a disconnect, so make sure the user knows.
 	//
-	ErrorMessage(p+strlen("PEER ABORT - "));	
+	ErrorMessage(p+STRLEN("PEER ABORT - "));	
     }
 
 }
@@ -3551,7 +3603,11 @@ EditorWindow *DXApplication::newNetworkEditor(Network *n)
 
     ASSERT(n);
 
-    if (!this->appAllowsEditorAccess()) {
+    if (n->wasNetFileEncoded()) {
+	msg = "This visual program is encoded and therefore is not "
+			"viewable in the VPE";
+	goto error;
+    } else if (!this->appAllowsEditorAccess()) {
 	msg = "This invocation of Data Explorer does not allow editor "
 		"access (-edit).\n"
 	      "Try image mode (-image), or forcing a developer license "
@@ -3635,6 +3691,7 @@ boolean	DXApplication::doesErrorOpenMessage()
 int DXApplication::doesErrorOpenVpe(Network *net)
 {
     if ((!this->isErrorEnabled()) ||
+	(net->wasNetFileEncoded()) ||
 	(!this->appAllowsEditorAccess())) 
 	return DXApplication::DontOpenVpe;
 
@@ -3920,7 +3977,8 @@ boolean DXApplication::appAllowsImageRWNetFile()
 }
 boolean DXApplication::appAllowsSavingNetFile(Network *n)
 {
-    return this->appAllowsSavingCfgFile();
+    return this->appAllowsSavingCfgFile() &&
+	   (!n || !n->wasNetFileEncoded());
 }
 boolean DXApplication::appAllowsSavingCfgFile()
 {
@@ -3951,6 +4009,13 @@ boolean DXApplication::appLimitsImageOptions()
 boolean DXApplication::appAllowsEditorAccess()
 { 
     LicenseTypeEnum func = this->getFunctionalLicenseEnum();
+
+    //
+    // If the license hasn't yet been acquired, then try the OEM
+    // license codes.
+    //
+    if (func == UndeterminedLicense) 
+	this->verifyOEMLicenseCode(&func);
 
     return !this->isRestrictionLevel(MINIMALLY_RESTRICTED) 	&&
 	   !this->resource.noEditorAccess &&
@@ -4019,17 +4084,61 @@ boolean DXApplication::appAllowsConfirmedQuit()
     return !this->resource.noConfirmedQuit;
 }
 
+//
+// See if there is an OEM license code (see oemApplicationName and
+// oemLicenseCode resources) and if so see if it is valid.
+// If so return TRUE and set *func, otherwise return FALSE and leave
+// *func untouched.
+//
+boolean DXApplication::verifyOEMLicenseCode(LicenseTypeEnum *func)
+{
+    char cryptbuf[1024];
+    char salt[8];
+    boolean r;
+
+    ASSERT(func);
+
+    if (!this->resource.oemLicenseCode || !this->getOEMApplicationName()) 
+	return FALSE;
+
+    ScrambleAndEncrypt(this->resource.oemApplicationName,"DEV",cryptbuf);
+    if (EqualString(cryptbuf,this->resource.oemLicenseCode)) {
+	*func = DeveloperLicense;
+        r = TRUE;
+    } else {
+        ScrambleAndEncrypt(this->resource.oemApplicationName,"RT",cryptbuf);
+	if (EqualString(cryptbuf,this->resource.oemLicenseCode)) {
+	    *func = RunTimeLicense;
+	    r = TRUE;
+	} else 
+	    r = FALSE;
+    }
+
+    return r;
+    
+}
+//
+// Check the oemApplicationName and oemApplicationNameCode resources and see
+// if an alternate application name can be verified.  If so, return it
+// otherwise return NULL. 
+//
 const char *DXApplication::getOEMApplicationName()
 {
+    char cryptbuf[1024];
     char salt[8];
 
-    if (!this->resource.oemApplicationName)
+    if (!this->resource.oemApplicationName || 
+	!this->resource.oemApplicationNameCode)
 	return NULL;
  
     if (STRLEN(this->resource.oemApplicationName) < 3)
 	return NULL;
 
-    return this->resource.oemApplicationName; 
+    ScrambleAndEncrypt(this->resource.oemApplicationName,"DX",cryptbuf);
+    if (EqualString(cryptbuf,this->resource.oemApplicationNameCode))
+	return this->resource.oemApplicationName; 
+    else
+	return NULL;
 }
 //
 // Return the name of the application (i.e. 'Data Explorer',
@@ -4082,7 +4191,7 @@ const char *DXApplication::getCopyrightNotice()
     char keystr[100];
     int m,d,y;
     char *msg;
-    char *preamble = "IBM Visualization Data Explorer\n"
+    char preamble[] = "IBM Visualization Data Explorer\n"
 		    "Copyright International Business Machines Corporation"
 		    " 1991-1998.\n"
 		    "All rights reserved\n"
@@ -4158,8 +4267,7 @@ void DXApplication::notifyPanelChanged()
 //
 boolean DXApplication::verifyServerLicense()
 {
-#if 0
-#ifndef DXD_LICENSED_VERSION
+#ifndef DXD_OS_NON_UNIX
     DXPacketIF *pif = this->getPacketIF();
     if (!pif)
 	return FALSE;
@@ -4183,9 +4291,6 @@ boolean DXApplication::verifyServerLicense()
 	r = FALSE;
 
     return r;
-#else
-    return TRUE;
-#endif
 #else
     return TRUE;
 #endif
@@ -4295,7 +4400,7 @@ void DXApplication::determineUILicense(LicenseTypeEnum *app,
 # endif
 
 #else
-#ifndef DXD_WIN
+#if !defined(DXD_WIN) || 1
     *app  = FullyLicensed;
     *func = DeveloperLicense;
 #else
@@ -4682,6 +4787,17 @@ void DXApplication::shutdownApplication()
     XSendEvent(this->display, w, True, XtBuildEventMask(widg), &event);
 
 }
+
+//
+// Does this application force the .net files that are read in to be
+// encrypted.
+//
+boolean DXApplication::appForcesNetFileEncryption()
+{
+    return this->resource.forceNetFileEncryption;
+}
+
+
 
 //
 // Write all dirty files into a tmp directory.

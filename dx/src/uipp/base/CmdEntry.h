@@ -1,20 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// CmdEntry.h -								    //
-//                                                                          //
-// Definition for the CmdEntry class.					    //
-// A CmdEntry object is inserted into a Dictionary and is used to handle    //
-// command parsing.  A CmdEntry may be either a function to execute, a      //
-// Command to execute, or a new dictionary to recurse to.                   //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/CmdEntry.h,v 1.1 1999/03/24 15:17:22 gda Exp $
- */
 
 
 #ifndef _CmdEntry_h

@@ -1,37 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// UIComponent.h -							    //
-//                                                                          //
-// Definition for the UIComponent class.				    //
-//                                                                          //
-// This class is intended to provide a foundation for all component sub-    //
-// classes.  All component subclasses should follow these conventions:      //
-//                                                                          //
-// - Each component creates one or more widgets in the class constructor.   //
-//   The root of the created widget tree is stored in a protected instance  //
-//   variable.  An access routine is provided to access this widget	    //
-//   (provided by the UIComponent class).				    //
-//                                                                          //
-// - Each component accepts a string as an argument in the class constructor//
-//   This string is used as the name of the root widget of the component's  //
-//   widget tree (name parameter to be added to subclass constructors).	    //
-//                                                                          //
-// - Each component provides routines to manage and unmanage the widget tree//
-//   of the component (provided by the UIComponent class).		    //
-//                                                                          //
-// - Each component provides routines to activaate and deactivate the widget//
-//   tree of the component (provided by the UIComponent class).		    //
-//                                                                          //
-// - Each component handles the destruction of widgets within the com-      //
-//   ponent's widget tree (destructor to be overriden as required).	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/UIComponent.h,v 1.1 1999/03/24 15:17:24 gda Exp $
- */
 
 
 #ifndef _UIComponent_h

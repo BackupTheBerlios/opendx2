@@ -1,16 +1,5 @@
-// 
-// (C) COPYRIGHT International Business Machines Corp. 1997
-// All Rights Reserved
-// Licensed Materials - Property of IBM
-// 
-// US Government Users Restricted Rights - Use, duplication or
-// disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
-// 
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/TextSelector.h,v 1.1 1999/03/24 15:17:24 gda Exp $
- *
- */
 
 #ifndef _TextSelector_h
 #define _TextSelector_h

@@ -1,18 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// ConfirmedOpenCommand.h -						    //
-//                                                                          //
-// Definition for the ConfirmedOpenCommand class.			    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/ConfirmedOpenCommand.h,v 1.1 1999/04/05 13:33:43 gda Exp $
- */
 
 #ifndef _ConfirmedOpenCommand_h
 #define _ConfirmedOpenCommand_h

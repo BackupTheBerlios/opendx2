@@ -1,14 +1,5 @@
-///////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ImageDefinition.h,v 1.1 1999/03/31 22:31:59 gda Exp $
- *
- */
 
 
 #ifndef _ImageDefinition_h

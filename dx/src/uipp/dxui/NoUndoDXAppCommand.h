@@ -1,19 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// NoUndoDXAppCommand.h -						    //
-//                                                                          //
-// Definition for the NoUndoDXAppCommand class.				    //
-//
-//  All commands implemented here are non-undoable commands and have a	    //	
-// command scope that is local to the control panel.
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/NoUndoDXAppCommand.h,v 1.1 1999/03/31 22:33:01 gda Exp $
- */
 
 
 #ifndef _NoUndoDXAppCommand_h

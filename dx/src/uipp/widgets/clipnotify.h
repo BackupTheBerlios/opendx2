@@ -1,16 +1,10 @@
+/*  Open Visualization Data Explorer Source File */
+
 #ifndef _CLIPNOTIFY_H_
 #define _CLIPNOTIFY_H_
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-
-/*
- * ClipNotify Routine Descriptions:
- *
- *-----------------------------------------------------------------------------
- */
 int XClipNotifyGetVersion(
     Display *dpy, int major_version_return, int minor_version_return);
 /*

@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// FileDialog.C -							    //
-//                                                                          //
-// FileDialog Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/FileDialog.C,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 #include "UIConfig.h"
 
@@ -217,7 +206,10 @@ char *FileDialog::getCurrentDirectory()
 
     XtVaGetValues(this->fsb,XmNdirectory, &xmdir, NULL);
     if (xmdir) {
-	XmStringGetLtoR(xmdir,XmSTRING_DEFAULT_CHARSET, &dir); 
+	XmStringGetLtoR(xmdir,XmSTRING_DEFAULT_CHARSET, &dir);
+	char* cp = DuplicateString(dir);
+	XtFree(dir);
+	dir = cp;
 	XmStringFree(xmdir);
 	int last = STRLEN(dir) - 1;
 #ifdef DXD_NON_UNIX_DIR_SEPARATOR

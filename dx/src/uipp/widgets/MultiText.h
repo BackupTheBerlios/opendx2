@@ -1,17 +1,11 @@
+/*  Open Visualization Data Explorer Source File */
+
 #ifndef _MultiText_h
 #define _MultiText_h
-
-
 #include <Xm/Xm.h>
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-
-/*
- * Constants:
- */
 #define NODPS
 
 #define MAX_TAB_COUNT 32

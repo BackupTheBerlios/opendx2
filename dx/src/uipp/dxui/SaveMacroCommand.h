@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// SaveMacroCommand.h -                                                     //
-//                                                                          //
-// Definition for the SaveMacroCommand class.                               //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/SaveMacroCommand.h,v 1.1 1999/03/31 22:34:07 gda Exp $
- */
 
 #ifndef _SaveMacroCommand_h
 #define _SaveMacroCommand_h

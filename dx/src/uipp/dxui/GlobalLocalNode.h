@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// GlobalLocalNode.h -							    //
-//                                                                          //
-// Definition for the GlobalLocalNode class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/GlobalLocalNode.h,v 1.1 1999/03/31 22:31:50 gda Exp $
- */
 
 
 #ifndef _GlobalLocalNode_h

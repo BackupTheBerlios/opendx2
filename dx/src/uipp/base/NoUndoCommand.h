@@ -1,19 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// NoUndoCommand.h -							    //
-//                                                                          //
-// Definition for the NoUndoCommand class.				    //
-//                                                                          //
-// This class serves as the base abstract class for all commands without    //
-// undo (rollback) capability.						    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/NoUndoCommand.h,v 1.1 1999/03/24 15:17:24 gda Exp $
- */
 
 
 #ifndef _NoUndoCommand_h

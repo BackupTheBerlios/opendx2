@@ -1,10 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/NumberInput.h,v 1.1 1999/03/24 15:17:35 gda Exp $
- */
 
 #include <ctype.h>	/*  issspace(), isdigit(), isalnum()  */
 #include <stdlib.h>	/*  strtod()  */
@@ -104,7 +99,7 @@ static Boolean	TestParse		(XmNumberWidget nw,
 					 char*		in_string,
 					 int		insert_position);
 /*  Report type of error						      */
-static Boolean	NEditError		(XmNumberWidget	nw,
+static Boolean	EditError		(XmNumberWidget	nw,
 					 char*		string,
 					 int		msg,
 				 	 int		char_place);
@@ -394,27 +389,27 @@ static Boolean ValueWithinLimits( XmNumberWidget nw )
      if (nw->number.data_type == INTEGER)
         {
 	if( nw->editor.value < nw->number.value_minimum.i )
-	    return NEditError(nw, nw->editor.string, BelowMinimum, -1);
+	    return EditError(nw, nw->editor.string, BelowMinimum, -1);
 	else if( nw->editor.value > nw->number.value_maximum.i )
-	    return NEditError(nw, nw->editor.string, AboveMaximum, -1);
+	    return EditError(nw, nw->editor.string, AboveMaximum, -1);
 	else
 	    return TRUE;
         }
     if (nw->number.data_type == FLOAT)
         {
 	if( nw->editor.value < nw->number.value_minimum.f )
-	    return NEditError(nw, nw->editor.string, BelowMinimum, -1);
+	    return EditError(nw, nw->editor.string, BelowMinimum, -1);
 	else if( nw->editor.value > nw->number.value_maximum.f )
-	    return NEditError(nw, nw->editor.string, AboveMaximum, -1);
+	    return EditError(nw, nw->editor.string, AboveMaximum, -1);
 	else
 	    return TRUE;
         }
     if (nw->number.data_type == DOUBLE)
         {
 	if( nw->editor.value < nw->number.value_minimum.d )
-	    return NEditError(nw, nw->editor.string, BelowMinimum, -1);
+	    return EditError(nw, nw->editor.string, BelowMinimum, -1);
 	else if( nw->editor.value > nw->number.value_maximum.d )
-	    return NEditError(nw, nw->editor.string, AboveMaximum, -1);
+	    return EditError(nw, nw->editor.string, AboveMaximum, -1);
 	else
 	    return TRUE;
         }
@@ -500,7 +495,7 @@ static Boolean DeleteChars( XmNumberWidget nw, int num_chars )
 	return FALSE;
     /*  If string is already empty, just beep  */
     if( nw->editor.string_len <= 0 )
-	return NEditError(nw, nw->editor.string, StringEmpty, -1);
+	return EditError(nw, nw->editor.string, StringEmpty, -1);
     if( start_position < 0 )
 	start_position = 0;
     if( end_position > nw->editor.string_len )
@@ -560,12 +555,12 @@ static Boolean
 	    if( nw->editor.is_signed )
 		edit.mantissa_negative = TRUE;
 	    else
-		return NEditError(nw, in_string, NoNegative, i);
+		return EditError(nw, in_string, NoNegative, i);
 	} else if( in_string[i] == '+' ) {
 	    --insert_position;
 	    edit.mantissa_negative = FALSE;
 	} else
-	    return NEditError(nw, in_string, InvalidChar, i);
+	    return EditError(nw, in_string, InvalidChar, i);
 	i = 1;
     }
     else
@@ -589,7 +584,7 @@ static Boolean
 	int unwarned = 1;
 
 	if( !nw->editor.is_float )
-	    return NEditError(nw, in_string, NoFloat, i);
+	    return EditError(nw, in_string, NoFloat, i);
 	/*  Copy over the decimal 'point'  */
 	edit.string[j] = in_string[i];
 	++i;
@@ -600,7 +595,7 @@ static Boolean
 	       && (decimal < nw->editor.decimal_minimum) ) {
 		/*  Omit all excess, but give warning only on first case  */
 		if( unwarned )
-		    NEditError(nw, in_string, ExcessPrecision, i);
+		    EditError(nw, in_string, ExcessPrecision, i);
 		/*  Realign position with shortened string  */
 		if( insert_position > i )
 		    --edit.insert_position;
@@ -616,7 +611,7 @@ static Boolean
     if( IsExponentSymbol(in_string[i]) )
     {
 	if( nw->editor.is_fixed )
-	    return NEditError(nw, in_string, NoExponent, i);
+	    return EditError(nw, in_string, NoExponent, i);
 	edit.string[j] = in_string[i];
 	j++;
 	i++;
@@ -625,7 +620,7 @@ static Boolean
 	{
 	    if( in_string[i] == '-' ) {
 		if( !nw->editor.is_float )
-		    return NEditError(nw, in_string, NoFloat, i);
+		    return EditError(nw, in_string, NoFloat, i);
 		edit.string[j] = '-';
 		j++;
 		i++;
@@ -633,7 +628,7 @@ static Boolean
 		++i;
 	    } else if( in_string[i] == '\0' ) {
 	    } else
-		return NEditError(nw, in_string, InvalidChar, i);
+		return EditError(nw, in_string, InvalidChar, i);
 	}
 	/*  Parse exponent value (or initialize to 0  */
 	if( isdigit(in_string[i]) ) {
@@ -652,7 +647,7 @@ static Boolean
 	edit.string[j] = '\0';
     /*  Make sure that string ends reasonably  */
     if( (!isspace(in_string[i])) && (in_string[i] != '\0') )
-	return NEditError(nw, in_string, InvalidChar, i);
+	return EditError(nw, in_string, InvalidChar, i);
     edit.string_len = j;
     if( insert_position < 0 )
 	edit.insert_position = 0;
@@ -662,20 +657,20 @@ static Boolean
 	edit.insert_position = insert_position;
     edit.value = strtod(edit.string, NULL);
     if( errno == ERANGE )
-	return NEditError(nw, in_string, BadInput, -1);
+	return EditError(nw, in_string, BadInput, -1);
     /*  Check limits if subsequent entries won't bring us back into range  */
     if( nw->editor.is_fixed ) 
     {
 	if( edit.value < 0.0 ) 
 	{
 	    if( edit.value < nw->number.value_minimum.d )
-		return NEditError(nw, in_string, BelowMinimum, -1);
+		return EditError(nw, in_string, BelowMinimum, -1);
 	} 
 	else 
 	{
 	    if( nw->number.value_maximum.d > 0.0 )
 		if( edit.value > nw->number.value_maximum.d )
-		    return NEditError(nw, in_string, AboveMaximum, -1);
+		    return EditError(nw, in_string, AboveMaximum, -1);
 	}
     }
     (void)strcpy(nw->editor.string, edit.string);
@@ -686,12 +681,12 @@ static Boolean
 }
 
 
-/*  Subroutine:	NEditError
+/*  Subroutine:	EditError
  *  Purpose:	Centralized handling of parsing errors to provide meaningful
  *		feedback.
  */
 static Boolean
-  NEditError( XmNumberWidget nw, char* string, int msg, int char_place )
+  EditError( XmNumberWidget nw, char* string, int msg, int char_place )
 {
     int place;
     char message[100];

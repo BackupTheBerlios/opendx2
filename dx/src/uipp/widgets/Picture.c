@@ -1,30 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*****************************************************************************/
-/* Picture.c                                                                 */
-/*****************************************************************************/
-
-
-
-#ifdef sgi
-#include <sys/param.h>
-#endif
-#ifdef OS2
-#include <stdlib.h>
-#include <types.h>
-#endif
-
-#include <X11/Intrinsic.h>
-#include <X11/IntrinsicP.h>
-#include <X11/Xutil.h>
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <X11/Shell.h>
-#include <X11/keysym.h>
-#if defined(aviion)
-#include <X11/Xos.h>      /* definitions for time variables */
 #endif
 #include <Xm/DrawingA.h>
 #include <Xm/Xm.h>
@@ -573,10 +548,8 @@ XmFontList 	font_list;
 
     /* Get the pixmap and its sizes */
     new->picture.PIXMAPWIDTH  = new->core.width;
-#ifndef linux86
-    new->picture.pixmap = XmUNSPECIFIED_PIXMAP;
-#endif
     new->picture.PIXMAPHEIGHT = new->core.height;
+    new->picture.pixmap = XmUNSPECIFIED_PIXMAP;
     radi = (double)(new->picture.globe_radius);
 
     new->picture.globe == NULL;
@@ -621,9 +594,11 @@ XmFontList 	font_list;
 
 
 /*****************************************************************************/
+/*                                                                           */
 /*  Subroutine:	ClassInitialize						     */
 /*  Effect:	Install non-standard type converters needed by this widget   */
 /*		class							     */
+/*                                                                           */
 /*****************************************************************************/
 static void ClassInitialize()
 {
@@ -634,8 +609,10 @@ static void ClassInitialize()
 
 
 /*****************************************************************************/
+/*                                                                           */
 /*  Subroutine:	Initialize						     */
 /*  Effect:	Create and initialize the component widgets		     */
+/*                                                                           */
 /*****************************************************************************/
 
 static void Initialize( XmPictureWidget request, XmPictureWidget new )
@@ -806,8 +783,10 @@ XmStringCharSet charset;
 
 
 /*****************************************************************************/
+/*                                                                           */
 /*  Subroutine:	Redisplay						     */
 /*  Effect:	                                                             */
+/*                                                                           */
 /*****************************************************************************/
 static void Redisplay (XmPictureWidget w,
 		       XExposeEvent* event,
@@ -841,8 +820,10 @@ static void Redisplay (XmPictureWidget w,
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /*  Subroutine:	SetValues						     */
 /*  Effect:	Handles requests to change things from the application	     */
+/*                                                                           */
 /*****************************************************************************/
 static Boolean SetValues( XmPictureWidget current,
 			  XmPictureWidget request,
@@ -948,8 +929,10 @@ static Boolean SetValues( XmPictureWidget current,
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /*  Subroutine:	Destroy						             */
 /*  Effect:	Clean up any allocated resources                             */
+/*                                                                           */
 /*****************************************************************************/
 static void Destroy( XmPictureWidget w)
 {
@@ -974,8 +957,10 @@ static void Destroy( XmPictureWidget w)
     if(w->picture.globe)    XtFree((char*)w->picture.globe);
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: restore_rectangle					     */
 /* Effect:     erase a "zoom" rectangle by restoring the image               */
+/*                                                                           */
 /*****************************************************************************/
 static void   restore_rectangle(XmPictureWidget w)
 {
@@ -1047,8 +1032,10 @@ int height;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: erase_image						     */
 /* Effect:     Routine to erase the direct interactors                       */
+/*                                                                           */
 /*****************************************************************************/
 static void erase_image(XmPictureWidget w)
 {
@@ -1094,8 +1081,10 @@ static void erase_image(XmPictureWidget w)
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /*  Subroutine:	XmPictureReset						     */
 /*  Effect:	Reset some important params                	 	     */
+/*                                                                           */
 /*****************************************************************************/
 
 void XmPictureReset(XmPictureWidget w)
@@ -1125,8 +1114,10 @@ void XmPictureReset(XmPictureWidget w)
     erase_image(w);
 }
 /*****************************************************************************/
+/*                                                                           */
 /*  Subroutine:	XmPictureResetCursor					     */
 /*  Effect:	Reset some important params                	 	     */
+/*                                                                           */
 /*****************************************************************************/
 
 void XmPictureResetCursor(XmPictureWidget w)
@@ -1149,6 +1140,7 @@ void XmPictureResetCursor(XmPictureWidget w)
 }
     
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureSetView						     */
 /* Effect:     Convieniece routine to calc new camera direction vector	     */
 /*****************************************************************************/
@@ -1284,6 +1276,7 @@ double  dir_z;
     *from_z = dir_z + w->picture.to_z;
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureGetUndoCamera					     */
 /*****************************************************************************/
 extern Boolean XmPictureGetUndoCamera(XmPictureWidget w, 
@@ -1331,6 +1324,7 @@ int    undo_stk_ptr;
     return True;
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureGetRedoCamera					     */
 /*****************************************************************************/
 extern Boolean XmPictureGetRedoCamera(XmPictureWidget w, 
@@ -1377,6 +1371,7 @@ int    redo_stk_ptr;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: push_undo_camera						     */
 /*****************************************************************************/
 static void push_undo_camera(XmPictureWidget w)
@@ -1410,6 +1405,7 @@ int    undo_stk_ptr;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: push_redo_camera						     */
 /*****************************************************************************/
 static void push_redo_camera(XmPictureWidget w)
@@ -1437,6 +1433,7 @@ int    redo_stk_ptr;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: set_nav_camera_from_camera                                    */
 /* Effect:     Calculate a navigation direction based on the current camera  */
 /*	       and the current "look at" parameters			     */
@@ -1658,6 +1655,7 @@ double  angle;
     w->picture.navigate_from_z = w->picture.from_z;
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: set_camera_from_nav_camera                                    */
 /* Effect:     Calculate a navigation direction based on the current camera  */
 /*	       and the current "look at" parameters			     */
@@ -1880,6 +1878,7 @@ double  angle;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureChangeLookAt                                         */
 /* Effect:     Convieniece routine to calc new camera relative to the current*/
 /*	       navigation direction			                     */
@@ -2116,6 +2115,7 @@ double  new_dir_x, new_dir_y, new_dir_z;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureUndoable					     */
 /* Effect:     Indicate whether the picture widget is capable of undoing itsef*/
 /*****************************************************************************/
@@ -2126,6 +2126,7 @@ XmPicturePushUndoCamera(XmPictureWidget w)
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureUndoable					     */
 /* Effect:     Indicate whether the picture widget is capable of undoing itsef*/
 /*****************************************************************************/
@@ -2136,6 +2137,7 @@ XmPictureUndoable(XmPictureWidget w)
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureRedoable					     */
 /* Effect:     Indicate whether the picture widget is capable of redoing itsef*/
 /*****************************************************************************/
@@ -2146,6 +2148,7 @@ XmPictureRedoable(XmPictureWidget w)
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureAlign						     */
 /* Effect:     Align the navigation camera with the current view camera	     */
 /*****************************************************************************/
@@ -2166,6 +2169,7 @@ XmPictureAlign(XmPictureWidget w)
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureTurnCamera					     */
 /* Effect:     Convieniece routine to calc new camera 	     		     */
 /*****************************************************************************/
@@ -2377,6 +2381,7 @@ double  new_dir_x, new_dir_y, new_dir_z;
     *from_z = dir_z + *to_z;
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureLoadCursors					     */
 /* Effect:     Convieniece routine to  load a new set of cursors	     */
 /*****************************************************************************/
@@ -2461,6 +2466,7 @@ int	n_cur;
 	}
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureDeleteCursor					     */
 /* Effect:     Convieniece routine to delete cursors			     */
 /*****************************************************************************/
@@ -2512,6 +2518,7 @@ int	n_cursors;
 
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureNewCamera					     */
 /* Effect:     Convieniece routine to set new camera 			     */
 /*             if ignore_new_camera == 0, then update all the internal       */
@@ -2903,6 +2910,7 @@ unsigned long delta_time;
     return good_bbox;
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureExecutionState					     */
 /* Effect:     Find out EXACTLY when the exec begins a new execution or      */
 /*	       ends an execution when in background mode.		     */
@@ -2926,6 +2934,7 @@ XmPictureExecutionState(XmPictureWidget w, Boolean begin)
 	}
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: roll_camera        					     */
 /* Effect:     Roll the camera by rotating the up vector about the dir vector*/
 /*****************************************************************************/
@@ -3013,6 +3022,7 @@ double new_up_x, new_up_y, new_up_z;
     set_camera_from_nav_camera(w);
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmPictureMoveCamera					     */
 /* Effect:     Routine to calc new direction and up vector given a rot matrix*/
 /*****************************************************************************/
@@ -3129,6 +3139,7 @@ double dir_newx, dir_newy, dir_newz;	/* x'', y'', z'' */
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: xform_coords						     */
 /* Effect:     Convieniece routine to rotate a point given a rotation matrix*/
 /*****************************************************************************/
@@ -3152,6 +3163,7 @@ xform_coords( double Wtrans[4][4],
 
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: perspective_divide					     */
 /* Effect:     								     */
 /*****************************************************************************/
@@ -3176,6 +3188,7 @@ perspective_divide( XmPictureWidget w,
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: perspective_divide_inverse				     */
 /* Effect:     								     */
 /*****************************************************************************/
@@ -3443,8 +3456,10 @@ XmPictureCallbackStruct cb;
 	}
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: AutoRepeatTimer						     */
 /* Effect:     								     */
+/*                                                                           */
 /*****************************************************************************/
 XtTimerCallbackProc AutoRepeatTimer( XmPictureWidget w, XtIntervalId *id)
 {
@@ -4035,8 +4050,10 @@ XmPictureCallbackStruct    cb;
 } 
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: draw_arrow_head				     		     */
 /* Effect:     draw the arrow head for the Roam mode arrow		     */
+/*                                                                           */
 /*****************************************************************************/
 static void draw_arrow_head(XmPictureWidget w, int x, int y, 
 				int center_x, int center_y)
@@ -4099,8 +4116,10 @@ GC      gc;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: draw_rotated_gnomon			     		     */
 /* Effect:     draw the gnomon based on the current rotation of the globe    */
+/*                                                                           */
 /*****************************************************************************/
 static void draw_rotated_gnomon(XmPictureWidget w)
 {
@@ -4117,9 +4136,11 @@ int height;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: move_selected_cursor			     		     */
 /* Effect:     Update the x,y position of any selected cursors to the current*/
 /*             x,y.                                                          */
+/*                                                                           */
 /*****************************************************************************/
 
 int move_selected_cursor ( XmPictureWidget  w, int x, int y, double z )
@@ -4554,8 +4575,10 @@ char tmp_bits[8];
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: draw_cursors						     */
 /* Effect:     Draws Non-selected cursors???                                 */
+/*                                                                           */
 /*****************************************************************************/
 static int
 draw_cursors( XmPictureWidget  w )
@@ -4672,8 +4695,10 @@ Pixel   white;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: find_closest						     */
 /* Effect:     Returns the 1st selected cursor w/in 4 pixels of x,y          */
+/*                                                                           */
 /*****************************************************************************/
 static int 
 find_closest ( XmPictureWidget  w, int x, int y )
@@ -5228,11 +5253,13 @@ double  new_width;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: ButtonTimeOut						     */
 /* Effect:     This routine is set up the first time a button release occurs.*/
 /*             If the user double clicks, the time out is removed, otherwise,*/
 /*             this routine is executed and the application is called back   */
 /*             indicating that a move has occured.                           */
+/*                                                                           */
 /*****************************************************************************/
 XtTimerCallbackProc ButtonTimeOut( XmPictureWidget w, XtIntervalId *id)
 {
@@ -5282,8 +5309,10 @@ int i;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: select_cursor						     */
 /* Effect:     Set Select flag for this cursor                               */
+/*                                                                           */
 /*****************************************************************************/
 static int 
 select_cursor ( XmPictureWidget    w , int id)
@@ -5300,8 +5329,10 @@ select_cursor ( XmPictureWidget    w , int id)
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: deselect_cursor						     */
 /* Effect:     deselect all 32 cursors                                       */
+/*                                                                           */
 /*****************************************************************************/
 static int 
 deselect_cursor (XmPictureWidget w)
@@ -5323,8 +5354,10 @@ int i;
 } 
 	 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: create_cursor						     */
 /* Effect:     Realloc all of the required arrays		             */
+/*                                                                           */
 /*****************************************************************************/
 static int 
 create_cursor (XmPictureWidget  w)
@@ -5420,8 +5453,10 @@ int	i;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: delete_cursor						     */
 /* Effect:     make cursor inactive by setting appropriate flags             */
+/*                                                                           */
 /*****************************************************************************/
 static int 
 delete_cursor ( XmPictureWidget  w, int id )
@@ -5734,8 +5769,10 @@ Boolean new_box;
 /* ------------- The Geometry and Rendering code ----------------------- */
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: draw_gnomon        					     */
 /* Effect:     Draw the gnomon						     */
+/*                                                                           */
 /*****************************************************************************/
 	
 static void draw_gnomon (w)
@@ -5939,8 +5976,10 @@ int	height;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmDrawBbox        					     */
 /* Effect:     Draw the bounding box                                         */
+/*                                                                           */
 /*****************************************************************************/
 	
 static void XmDrawBbox (w)
@@ -6014,8 +6053,10 @@ int     i;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: inside           	 				     */
 /* Effect:     determine if an transformed point is inside the bounding box  */
+/*                                                                           */
 /*****************************************************************************/
 static Boolean inside ( w, s0, s1 ,s2, WItrans )
 XmPictureWidget  w;
@@ -6040,8 +6081,10 @@ double x, y, z;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: constrain           	 				     */
 /* Effect:     force a transformed point to be  inside the bounding box      */
+/*                                                                           */
 /*****************************************************************************/
 static constrain ( w, s0, s1 ,s2, dx, dy, dz, WItrans, Wtrans, sdx, sdy )
 XmPictureWidget  w;
@@ -6180,8 +6223,10 @@ double  old_x, old_y, old_z;
 	}
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: save_cursors_in_canonical form				     */
 /* Effect:     xform the cursor points to world coords and save		     */
+/*                                                                           */
 /*****************************************************************************/
 static void save_cursors_in_canonical_form (XmPictureWidget w, int i)
 {
@@ -6214,8 +6259,10 @@ double x, y, z;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: restore_cursors_from_canonical form			     */
 /* Effect:     xform the cursor points from world to screen coords	     */
+/*                                                                           */
 /*****************************************************************************/
 static void restore_cursors_from_canonical_form (XmPictureWidget w)
 {
@@ -6253,9 +6300,11 @@ double z;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: line_of_sight    	 				     */
 /* Effect:     when the mouse is clicked on the bounding box, calculate where*/
 /*             the intersection is and return z                               */
+/*                                                                           */
 /*****************************************************************************/
 static double line_of_sight ( w, s0, s1, Wtrans, WItrans )
 XmPictureWidget   w;
@@ -6408,9 +6457,11 @@ double xmark[8], ymark[8], zmark[8];
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: project          	 				     */
 /* Effect:     project the 3D cursor on to the 3 visible faces of the        */
 /*             bounding box                                                  */
+/*                                                                           */
 /*****************************************************************************/
 project ( w, s0, s1 ,s2, Wtrans, WItrans )
 XmPictureWidget      w;
@@ -6533,8 +6584,10 @@ double x, y, z;
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: add2historybuffer      	 				     */
 /* Effect:     record the (x,y) position of the cursor in the history buffer */
+/*                                                                           */
 /*****************************************************************************/
 static add2historybuffer(XmPictureWidget w, int x, int y)
 {
@@ -6551,8 +6604,10 @@ static add2historybuffer(XmPictureWidget w, int x, int y)
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: draw_marker      	 				     */
 /* Effect:     Draw the current markers                                      */
+/*                                                                           */
 /*****************************************************************************/
 draw_marker ( w )
 XmPictureWidget     w;
@@ -6595,8 +6650,10 @@ GC      gc;
 /* --------------- Geometry and rendering for globe rotation ---------- */
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: generate_globe     	 				     */
 /* Effect:     generate x,y,z's for the facet verticies of the globe         */
+/*                                                                           */
 /*****************************************************************************/
 static void
 generate_globe ( XmPictureWidget w , double  radi)    
@@ -6691,8 +6748,10 @@ int depth;
 
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: XmDrawGlobe	     	 				     */
 /* Effect:                                                                   */
+/*                                                                           */
 /*****************************************************************************/
 static void XmDrawGlobe (XmPictureWidget w)
 {
@@ -7729,6 +7788,7 @@ ____________________|__D____\ camera z
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: clip_line 			       			     */
 /* Effect:     clip the line segment to the viewing frustum		     */
 /*****************************************************************************/
@@ -8011,6 +8071,7 @@ double  new_length_z;
     return clipped;
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: trivial_reject						     */
 /* Effect:     See if the line is completely outside the viewing frustum    */
 /*****************************************************************************/
@@ -8048,6 +8109,7 @@ static Boolean  trivial_reject(XmPictureWidget w,
     return False;
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: setup_gnomon						     */
 /* Effect:     Calculate the screen coords of the gnomon (to be drawn later) */
 /*****************************************************************************/
@@ -8258,6 +8320,7 @@ int	    i,j;
 
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: CallCursorCallbacks					     */
 /* Effect:     xform screen x,y,z back to world coords and callback 	     */
 /*             application.                                                  */
@@ -8376,6 +8439,7 @@ double  aaX, aaY, aaZ;
 	}
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: CallNavigateCallbacks					     */
 /* Effect:     								     */
 /*****************************************************************************/
@@ -8662,6 +8726,7 @@ double			new_dir_z;
     XtCallCallbacks ((Widget)w, XmNnavigateCallback, &cb);
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: keyboard_grab						     */
 /* Effect:     								     */
 /*****************************************************************************/
@@ -8687,6 +8752,7 @@ static void keyboard_grab(XmPictureWidget w, Boolean grab)
 }
 
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: alloc_drawing_colors					     */
 /* Effect: allocate black and white from the colormap associated with this win*/
 /*****************************************************************************/
@@ -8739,6 +8805,7 @@ XColor			rgb_db_def;
     }
 }
 /*****************************************************************************/
+/*                                                                           */
 /* Subroutine: convert color						     */
 /* Effect: Converts a pixel value from the default colormap to the current cm*/
 /*****************************************************************************/

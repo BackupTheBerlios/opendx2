@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/TransferStyle.h,v 1.1 1999/03/24 15:17:24 gda Exp $
- */
 
 #ifndef _TransferStyle_h_
 #define _TransferStyle_h_

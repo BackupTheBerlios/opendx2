@@ -1,10 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/Stepper.c,v 1.1 1999/03/24 15:17:36 gda Exp $
- */
 
 /* Stepper resize logic:
 
@@ -44,10 +39,6 @@
 #include "Stepper.h"
 #include "gamma.h"
 #include "findcolor.h"
-
-#ifdef linux86
-#define trunc(a)        ((int)(a))
-#endif
 
 
 /*

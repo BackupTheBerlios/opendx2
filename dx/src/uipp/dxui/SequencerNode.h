@@ -1,14 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// SequencerNode.h -							    //
-//                                                                          //
-// Definition for the SequencerNode class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/SequencerNode.h,v 1.1 1999/03/31 22:35:00 gda Exp $
- *
- */
 
 #ifndef _SequencerNode_h
 #define _SequencerNode_h

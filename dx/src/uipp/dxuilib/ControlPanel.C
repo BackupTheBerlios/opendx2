@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ControlPanel.C,v 1.1 1999/03/24 15:17:38 gda Exp $
- */
 
 #include "defines.h"
 #ifndef DXD_DO_NOT_REQ_UNISTD_H

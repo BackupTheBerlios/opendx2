@@ -1,15 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// ColormapFileCommand.h -						    //
-//                                                                          //
-// Definition for the ColormapFileCommand class.			    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ColormapFileCommand.h,v 1.1 1999/03/31 22:30:42 gda Exp $
- *
- */
 
 #ifndef _ColormapFileCommand_h
 #define _ColormapFileCommand_h

@@ -1,28 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// DeferrableAction.h -							    //
-//                                                                          //
-// Definition for the DeferrableAction class.				    //
-//
-// This class is meant to implement actions (function calls) which can
-// be deferred for a period of time through the use of the un/deferAction()
-// methods below.  Deferrals are implemented through the un/deferAction()
-// and requestAction() calls.  requestAction() will perform the action 
-// if there are no current deferrals, otherwise the action is performed
-// on the last undefAction() call (un/deferAction() can be nested).
-// requestAction() takes a void* that is passed to the ActionFunction if it
-// is called.  However, if the action is deferred and later the ActionFunction
-// is called by undeferAction(), the void* passed to the ActionFunction
-// will be NULL.  This provides a mechanism for the ActionFunction to 
-// determine if it is called by a direct request or by an undeferral.
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/DeferrableAction.h,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 
 #ifndef _DeferrableAction_h

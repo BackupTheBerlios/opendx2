@@ -1,50 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/EchoDefinition.C,v 1.1 1999/03/31 22:31:29 gda Exp $
-
- $Log: EchoDefinition.C,v $
- Revision 1.1  1999/03/31 22:31:29  gda
- moved from dxuilib
-
- Revision 1.1.1.1  1999/03/24 15:17:40  gda
- Initial CVS Version
-
- Revision 1.1.1.1  1999/03/19 20:59:32  gda
- Initial CVS
-
- Revision 10.1  1999/02/23 21:58:26  gda
- OpenDX Baseline
-
- Revision 9.1  1997/05/22 19:28:31  svs
- Copy of release 3.1.4 code
-
-Revision 8.0  1995/10/03  19:14:23  nsc
-Copy of release 3.1 code
-
-Revision 7.2  1994/07/12  22:51:07  dawood
-Remove rcs log messages and make sure there is a header message.
-
-Revision 7.1  1994/01/18  19:15:09  svs
-changes since release 2.0.1
-
-Revision 6.1  93/11/16  11:03:20  svs
-ship level code, release 2.0
-
-Revision 1.2  93/04/09  12:13:38  dawood
-Added NodeDefinition::createNewNode() to supersede newNode().
-
-Revision 1.1  93/03/24  15:49:39  dawood
-Initial revision
-
- 
- 
- */
 
 //////////////////////////////////////////////////////////////////////////////
 

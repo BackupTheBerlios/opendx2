@@ -1,13 +1,4 @@
-///////////////////////////////////////////////////////////////////////////////
-// Browser.C -								     //
-//                                                                           //
-// Browser Class methods and other related functions/procedures.	     //
-//                                                                           //
-///////////////////////////////////////////////////////////////////////////////
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/Browser.C,v 1.1 1999/04/05 13:33:32 gda Exp $
- */
+/*  Open Visualization Data Explorer Source File */
 
 
 #include <ctype.h>
@@ -37,8 +28,6 @@
 #ifdef DXD_WIN
 #define  stat  _stat
 #endif
-
-#include <dx/arch.h>
 
 #ifndef DXD_LACKS_ANY_REGCMP
 #ifdef REGCMP_EXISTS

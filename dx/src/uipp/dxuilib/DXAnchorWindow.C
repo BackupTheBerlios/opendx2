@@ -1,15 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// DXAnchorWindow.C -                                                           //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
- 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/DXAnchorWindow.C,v 1.1 1999/03/24 15:17:39 gda Exp $
- *
- */
+/*  Open Visualization Data Explorer Source File */
+
 
 #include "DXApplication.h"
 #include "DXAnchorWindow.h"

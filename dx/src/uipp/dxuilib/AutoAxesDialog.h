@@ -1,14 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// AutoAxesDialog.h -			        		 	    //
-//                                                                          //
-// Definition for the AutoAxesDialog class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/AutoAxesDialog.h,v 1.1 1999/03/24 15:17:38 gda Exp $
- *
- */
 
 
 #ifndef _AutoAxesDialog_h

@@ -1,13 +1,5 @@
-/*****************************************************************************/
-/* defines.h -								     */
-/*                                                                           */
-/* Contains application-wide constants and macros.			     */
-/*                                                                           */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/defines.h,v 1.2 1999/04/12 21:36:11 gda Exp $
- */
 
 #ifndef _defines_h
 #define _defines_h
@@ -41,11 +33,6 @@
 #ifdef DXD_WIN
 #define getpid  _getpid
 #define DELETE DX_DELETE
-#endif
-
-#ifdef linux86
-#define NON_NULL_STRLEN
-#define NON_NULL_STRCMP
 #endif
 
 /***
@@ -82,8 +69,11 @@
 /***
  *** Types:
  ***/
-
+#if !defined(DXD_WIN)
+typedef int boolean;
+#else
 typedef unsigned char boolean;
+#endif
 
 
 /*****************************************************************************/

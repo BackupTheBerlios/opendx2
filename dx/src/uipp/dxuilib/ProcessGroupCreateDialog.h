@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ProcessGroupCreateDialog.h -						    //
-//                                                                          //
-// Definition for the ProcessGroupCreateDialog class.			    // 
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ProcessGroupCreateDialog.h,v 1.1 1999/03/24 15:17:45 gda Exp $
- *
- */
 
 #ifndef _ProcessGroupCreateDialog_h
 #define _ProcessGroupCreateDialog_h

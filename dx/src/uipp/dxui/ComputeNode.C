@@ -1,14 +1,5 @@
-///////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ComputeNode.C,v 1.1 1999/03/31 22:30:49 gda Exp $
- *
- */
 
 #include "UIConfig.h"
 
@@ -103,12 +94,12 @@ ComputeNode::netParseAuxComment(const char *comment,
     // Compute comments are of the form
     // expression: value = a*0.1
     // name[2]: value = a
-    if (strncmp(" expression:", comment, strlen(" expression:")) == 0)
+    if (strncmp(" expression:", comment, STRLEN(" expression:")) == 0)
     {
-	this->setExpression(comment + strlen(" expression: value = "), FALSE);
+	this->setExpression(comment + STRLEN(" expression: value = "), FALSE);
 	return TRUE;
     }
-    else if (strncmp(" name[", comment, strlen(" name[")) == 0)
+    else if (strncmp(" name[", comment, STRLEN(" name[")) == 0)
     {
 	char *s = new char[STRLEN(comment)];
 	int   i;

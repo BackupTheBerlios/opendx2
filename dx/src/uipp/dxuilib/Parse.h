@@ -1,15 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*****************************************************************************/
-/* uinparse.h - module header file					     */
-/* Contains parser action routines.					     */
-/*****************************************************************************/
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Parse.h,v 1.1 1999/03/24 15:17:44 gda Exp $
- */
 
 #ifndef _uinparse_h
 #define _uinparse_h

@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
- 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/LabelDecorator.C,v 1.1 1999/03/24 15:17:43 gda Exp $
- */
+/*  Open Visualization Data Explorer Source File */
+
 
 
 #include <Xm/Xm.h>
@@ -30,7 +23,9 @@
 
 #include "CommentStyleUser.h"
 
+#if !defined(DXD_WIN)
 #include <unistd.h>
+#endif
 #include <sys/types.h>
 #include <ctype.h> // for isdigit
 
@@ -45,6 +40,10 @@
 // gethostname is needed by decodeDragType 
 #if defined(NEEDS_GETHOSTNAME_DECL)
 extern "C" int gethostname(char *address, int address_len);
+#endif
+
+#if defined(DXD_WIN)
+#include <winsock.h>
 #endif
 
 boolean LabelDecorator::LabelDecoratorClassInitialized = FALSE;

@@ -1,15 +1,5 @@
-// 
-// (C) COPYRIGHT International Business Machines Corp. 1997
-// All Rights Reserved
-// Licensed Materials - Property of IBM
-// 
-// US Government Users Restricted Rights - Use, duplication or
-// disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
-// 
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/NodeList.C,v 1.1 1999/03/31 22:33:25 gda Exp $
- */
 
 
 #include "NodeList.h"

@@ -1,17 +1,7 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
+
 
 /*
- *  Number Widget
- *  Similar to a text widget, but only allows strings representing
- *  numerical values (base 10).
- *  (supports integer, fixed point, or floating point | scientific)
- *  IBM T.J. Watson Research Center	July 16, 1990
- */
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/Number.c,v 1.1 1999/03/24 15:17:35 gda Exp $
  */
 
 /* Number resize logic:

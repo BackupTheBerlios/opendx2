@@ -1,13 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ImageFormatPSColor.h,v 1.1 1999/03/24 15:17:41 gda Exp $
- *
- */
 
 #ifndef _ImageFormatPSColor_h
 #define _ImageFormatPSColor_h

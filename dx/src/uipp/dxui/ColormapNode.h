@@ -1,23 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ColormapNode.C -                                                 //
-//                                                                          //
-// ColormapNode Class methods and other related functions/procedures. //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-// ColormapNode.h -						    //
-//                                                                          //
-// Definition for the ColormapNode class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ColormapNode.h,v 1.1 1999/03/31 22:30:45 gda Exp $
- *
- */
 
 #ifndef _ColormapNode_h
 #define _ColormapNode_h

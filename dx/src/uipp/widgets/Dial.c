@@ -1,10 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/Dial.c,v 1.1 1999/03/24 15:17:35 gda Exp $
- */
 
 /********************************************
  * Dial.c: The Dial Widget Methods.
@@ -20,10 +15,6 @@
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
 #include "DialP.h"
-
- #ifdef linux86
- #define trunc(a)      ((int)(a))
- #endif
 
 #if defined(OS2) || defined (DXD_WIN)
 #define M_PI    3.1415926535897931160E0

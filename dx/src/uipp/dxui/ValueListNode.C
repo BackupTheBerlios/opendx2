@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ValueListNode.C -							    //
-//                                                                          //
-// ValueListNode Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ValueListNode.C,v 1.1 1999/03/31 22:35:52 gda Exp $
- */
 
 
 #include "UIConfig.h"

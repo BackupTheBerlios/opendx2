@@ -1,21 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// MainWindow.h -							    //
-//                                                                          //
-// Definition for the MainWindow class.					    //
-//                                                                          //
-// This is the abstract superclass for a primary application window, based  //
-// on Motif's MainWindow widget.  It supports a context-sensitve help       //
-// system (see HelpOnContextCommand class), and is a client of Application  //
-// class.								    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/MainWindow.h,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 
 #ifndef _MainWindow_h

@@ -1,13 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// QuitCommand.h -							    //
-//                                                                          //
-// Definition for the QuitCommand class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/QuitCommand.h,v 1.1 1999/04/05 13:33:48 gda Exp $
- */
 
 #ifndef _QuitCommand_h
 #define _QuitCommand_h

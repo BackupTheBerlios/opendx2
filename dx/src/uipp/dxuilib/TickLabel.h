@@ -1,15 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// TickLabel.h -                                                            //
-//                                                                          //
-// Definition for the TickLabel class.                                      //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
- 
-/*
- * $Header: /a/dracula/homes/dracula/c1tignor/solaris/src/ui++/dxui/RCS/TickLabel.h,v
- 8.1 1995/10/05 17:37:02 c1tignor Exp c1tignor $
- *
- */
+/*  Open Visualization Data Explorer Source File */
+
  
  
 #ifndef _TickLabel_h

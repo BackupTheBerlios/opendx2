@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// DXChild.C -								    //
-//                                                                          //
-// DXChild Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/DXChild.C,v 1.2 1999/04/16 20:07:33 gda Exp $
- */
 
 
 #include "UIConfig.h"
@@ -63,7 +52,7 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef HAVE_UNISTD_H
+#ifdef DXD_HAS_UNIX_SYS_INCLUDES
 #include <unistd.h>
 #endif
 #ifndef   DXD_WIN
@@ -331,8 +320,8 @@ DXChild::ConnectTo(const char *host,
     }
 
     for (pathEnv = NULL, i = 0; ep[i] && pathEnv == NULL; ++i)
-	if (    strncmp (ep[i], "PATH=", strlen("PATH=")) == 0 ||
-		strncmp (ep[i], "PATH =", strlen("PATH =")) == 0) 
+	if (    strncmp (ep[i], "PATH=", STRLEN("PATH=")) == 0 ||
+		strncmp (ep[i], "PATH =", STRLEN("PATH =")) == 0) 
 	    pathEnv = ep[i];
 
     if (DXChild::HostIsLocal(host)) {
@@ -466,10 +455,10 @@ DXChild::ConnectTo(const char *host,
 	    /* 
 	     * Write the environment variable to the remote script file 
 	     */
-	    if ((strncmp(ep[i],"DISPLAY=unix:",strlen("DISPLAY=unix:"))==0   ||
+	    if ((strncmp(ep[i],"DISPLAY=unix:",STRLEN("DISPLAY=unix:"))==0   ||
 		 strncmp(ep[i],"DISPLAY=localhost:",
-					    strlen("DISPLAY=localhost:"))==0 || 
-		 strncmp(ep[i],"DISPLAY=:",    strlen("DISPLAY=:")) == 0) &&
+					    STRLEN("DISPLAY=localhost:"))==0 || 
+		 strncmp(ep[i],"DISPLAY=:",    STRLEN("DISPLAY=:")) == 0) &&
 		(dnum = strchr(ep[i], ':')) != NULL)
 	    {
 		fprintf(fp,"DISPLAY='%s%s';export DISPLAY\n",

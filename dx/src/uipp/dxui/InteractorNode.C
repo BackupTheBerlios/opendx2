@@ -1,16 +1,11 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/InteractorNode.C,v 1.1 1999/03/31 22:32:37 gda Exp $
- */
 
 
 #include <stdio.h>
+#if !defined(DXD_WIN)
 #include <unistd.h>
+#endif
 #include <ctype.h>
  
 #include "defines.h"

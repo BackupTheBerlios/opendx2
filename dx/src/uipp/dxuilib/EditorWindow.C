@@ -1,18 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// EditorWindow.C -							    //
-//                                                                          //
-// EditorWindow Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/EditorWindow.C,v 1.2 1999/04/12 20:47:06 gda Exp $
- *
- */
 
 #include <UIConfig.h>
 #include <sys/types.h>
@@ -4594,8 +4581,7 @@ error:
     return FALSE;
 }
 
-boolean
-EditorWindow::macroifySelectedNodes(const char *name,
+boolean EditorWindow::macroifySelectedNodes(const char *name,
 				    const char *cat,
 				    const char *desc,
 				    const char *fileName)

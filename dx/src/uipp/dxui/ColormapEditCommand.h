@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ColormapEditCommand.h -						    //
-//                                                                          //
-// Definition for the ColormapEditCommand class.			    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ColormapEditCommand.h,v 1.1 1999/03/31 22:30:39 gda Exp $
- * 
- */
 
 
 #ifndef _ColormapEditCommand_h

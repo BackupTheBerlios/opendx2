@@ -1,9 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/NumericListP.h,v 1.1 1999/03/24 15:17:35 gda Exp $
- */
+/*  Open Visualization Data Explorer Source File */
+
 
 
 #ifndef _NumericList_h

@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// QuitCommand.C -							    //
-//                                                                          //
-// QuitCommand Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/QuitCommand.C,v 1.1 1999/04/05 13:33:40 gda Exp $
- */
+/*  Open Visualization Data Explorer Source File */
+
 
 
 #include "QuitCommand.h"

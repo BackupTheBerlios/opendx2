@@ -1,23 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-//////////////////////////////////////////////////////////////////////////////
-// DXApplication.h -							    //
-//                                                                          //
-// Definition for the DXApplication class.				    //
-//                                                                          //
-// This subclass of Application class encapsulates all the DX-specific      //
-// application information and functions.  The functions are implemented    //
-// as various command class objects.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/DXApplication.h,v 1.1 1999/03/24 15:17:39 gda Exp $
- */
 
 
 #ifndef _DXApplication_h
@@ -181,6 +163,8 @@ typedef struct
     //
     Boolean	noDXHelp;
 
+    String      cryptKey;       // Key used to decrypt the .net and .cfg files
+    Boolean     forceNetFileEncryption; // Do we force encryption 
     String      forceFunctionalLicense; // If non-null, 
 					// force the given license type 
     Pixel	errorNodeForeground;
@@ -196,6 +180,8 @@ typedef struct
     String	applicationHost;
 
     String	oemApplicationName;	// Allow alternate app name if verified 
+    String 	oemApplicationNameCode;	// Crypted app name for verification
+    String 	oemLicenseCode;		// Used to not require a license 
 
     String	viewDataFile;		// Data file to use in viewer mode. 
 
@@ -329,6 +315,14 @@ class DXApplication : public IBMApplication
     // values of getFormalName() and getInformalName().
     //
     const char *getOEMApplicationName();
+
+    //
+    // See if there is an OEM license code (see oemApplicationName and
+    // oemLicenseCode resources) and if so see if it is valid.
+    // If so return TRUE and the type of functional license (rt/dev) that
+    // was granted to the oem.
+    //
+    boolean verifyOEMLicenseCode(LicenseTypeEnum *);
 
 #if defined(BETA_VERSION) && defined(NOTDEF)
     //
@@ -762,6 +756,7 @@ class DXApplication : public IBMApplication
     virtual boolean appAllowsCMapSetName();
     virtual boolean appAllowsCMapOpenMap();
     virtual boolean appAllowsCMapSaveMap();
+    virtual boolean appForcesNetFileEncryption();
     boolean appAllowsExitOptions();
     boolean appAllowsExecuteMenus();
     boolean appAllowsConnectionMenus();
@@ -812,6 +807,8 @@ class DXApplication : public IBMApplication
     // information saved in the .net or .cfg files.
     //
     virtual boolean applyWindowPlacements();
+
+    virtual const char* getCryptKey() { return this->resource.cryptKey; }
 
     const char* getCosmoDir() { return this->resource.cosmoDir; }
     const char* getJdkDir() { return this->resource.jdkDir; }

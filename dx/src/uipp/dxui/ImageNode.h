@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ImageNode.h -							    //
-//                                                                          //
-// Definition for the ImageNode class.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ImageNode.h,v 1.1 1999/03/31 22:32:10 gda Exp $
- */
 
 
 #ifndef _ImageNode_h
@@ -72,8 +61,8 @@ class ImageNode : public DisplayNode
 
     Node* getWebOptionsNode();
 
-    static boolean ImageNode::SendString(void* , PacketIFCallback , FILE* , char* );
-    static void ImageNode::FormatMacro (FILE* , PacketIFCallback , void* , String []);
+    static boolean ImageNode::SendString(void* , PacketIFCallback , FILE* , char* , boolean);
+    static void ImageNode::FormatMacro (FILE* , PacketIFCallback , void* , String [], boolean);
 
 
   protected:

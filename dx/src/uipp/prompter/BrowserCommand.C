@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// BrowserCommand.C -						    //
-//                                                                          //
-// BrowserCommand Class methods and other related functions/procedures.//
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/BrowserCommand.C,v 1.1 1999/04/05 13:33:32 gda Exp $
- */
+/*  Open Visualization Data Explorer Source File */
+
 
 #include <Xm/Xm.h>
 

@@ -1,22 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-//////////////////////////////////////////////////////////////////////////////
-// StartupApplication.h -             					    //
-//                                                                          //
-// Definition for the StartupApplication class.				    //
-//                                                                          //
-// This subclass of Application class encapsulates all the Startup-specific      //
-// application information and functions.  The functions are implemented    //
-// as various command class objects.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-
-/*
- */
 
 #ifndef _StartupApplication_h
 #define _StartupApplication_h
@@ -33,7 +16,7 @@
 #include "../base/MainWindow.h"
 #include "../base/Dialog.h"
 #include "../base/IBMApplication.h"
-#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
+#if !defined(DXD_OS_NON_UNIX)
 #include "../base/TemporaryLicense.h"
 #endif
 #include "../base/List.h"
@@ -58,7 +41,7 @@ extern "C" int	StartupApplication_XErrorHandler(Display *display,
 						XErrorEvent *event);
 
 
-#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
+#if !defined(DXD_OS_NON_UNIX)
 class StartupApplication : public IBMApplication, public TemporaryLicense
 #else
 class StartupApplication : public IBMApplication

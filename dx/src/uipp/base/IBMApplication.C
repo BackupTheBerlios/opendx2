@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// IBMApplication.C -							    //
-//                                                                          //
-// IBMApplication Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/IBMApplication.C,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 #include "defines.h"
 #ifndef DXD_DO_NOT_REQ_UNISTD_H
@@ -587,16 +576,17 @@ char	s[256];
     ximage = XGetImage(d, this->logo_pmap, 0, 0, 
 	LOGO_WIDTH, LOGO_HEIGHT, AllPlanes, ZPixmap);
 
-    Visual *xvi = DefaultVisualOfScreen(XtScreen(this->getRootWidget()));
-    XVisualInfo vinfotemplate;
-    vinfotemplate.visualid = XVisualIDFromVisual(xvi);
-    int nReturn;
-    XVisualInfo *xvinfo = XGetVisualInfo(XtDisplay(this->getRootWidget()),
-    				VisualIDMask, &vinfotemplate, &nReturn);
-
-    if (xvinfo->c_class == PseudoColor || xvinfo->c_class == TrueColor)
+    if(ximage->depth == 8)
     {
-        unsigned char *l;
+	k = 0;
+	for(y = 0; y < LOGO_HEIGHT; y++)
+	{
+	    for(x = 0; x < LOGO_WIDTH; x++)
+	    {
+		XPutPixel(ximage, x, y, logo_data[k++]);
+	    }
+	}
+
 	Boolean failed = False;
 	this->num_colors = 0;
 	for(i = 0; i < LUT_SIZE; i++)
@@ -611,18 +601,16 @@ char	s[256];
 		find_color(this->getRootWidget(), &logo_lut[1][i]);
 	    }
 	}
-
 	for (i = 0; i < LUT_SIZE; i++)
 	{
 	    ndx = logo_lut[0][i].pixel;
 	    xcolor2[ndx] = logo_lut[1][i];
 	}
-
-	for(y = 0, l = logo_data; y < LOGO_HEIGHT; y++ )
+	for(y = 0; y < LOGO_HEIGHT; y++ )
 	    for(x = 0; x < LOGO_WIDTH; x++ )
-		XPutPixel(ximage, x, y, xcolor2[*l++].pixel);
+		XPutPixel(ximage, x, y, xcolor2[XGetPixel(ximage, x, y)].pixel);
     }
-    else if (xvinfo->c_class == DirectColor)
+    else if(ximage->depth == 24)
     {
 	Visual *xvi = DefaultVisualOfScreen(XtScreen(this->getRootWidget()));
 	rmult = xvi->red_mask & (~xvi->red_mask+1);
@@ -826,7 +814,7 @@ const char *IBMApplication::getHelpDirectory()
     if (!helpDir)
     {
         const char *root = this->getUIRoot();
-        helpDir = new char[STRLEN(root) + strlen("/help") + 1];
+        helpDir = new char[STRLEN(root) + STRLEN("/help") + 1];
         sprintf(helpDir, "%s/help", root);
     }
     return helpDir;

@@ -1,21 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// Server.h -								    //
-//                                                                          //
-// Definition for the Server class.					    //
-//                                                                          //
-// This abstract class is a template for derived classes which will behave  //
-// as a server to send notification to its registered clients.		    //
-// Note that the messages passed to the clients are defined by client sub-  //
-// classes or by the server subclasses.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/Server.h,v 1.1 1999/03/24 15:17:24 gda Exp $
- */
 
 
 #ifndef _Server_h

@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/InteractorStyle.C,v 1.1 1999/03/24 15:17:43 gda Exp $
- */
 
 
 #include "defines.h"
@@ -325,7 +318,7 @@ Interactor *InteractorStyle::createInteractor(InteractorInstance *ii)
 	if (isupper(styleName[0]))
 	    styleName[0] = tolower(styleName[0]);
 
-	int len = STRLEN(styleName) + strlen("Interactor") + 15;
+	int len = STRLEN(styleName) + STRLEN("Interactor") + 15;
 	this->interactorName = new char[len];
 	sprintf(this->interactorName,"%sInteractor",styleName);
 	delete styleName;

@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ProcessGroupManager.C -						    //
-//                                                                          //
-// ProcessGroupManager Class methods and other related functions/procedures.//
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ProcessGroupManager.C,v 1.1 1999/03/24 15:17:45 gda Exp $
- */
 
 
 #include <stdlib.h>
@@ -376,7 +365,7 @@ void ProcessGroupManager::sendAssignment(int function)
 		    strcat(grouplist, "\"");	
 	   }
 
-           cmd = new char[strlen("exective( ), ")
+           cmd = new char[STRLEN("exective( ), ")
                           + STRLEN(func)
                           + STRLEN(host)
                           + STRLEN(args)
@@ -509,7 +498,7 @@ void   ProcessGroupManager::updateAssignment()
 	}
 	if(NOT first)
 	{
-            cmd = new char[strlen("exective( group attach ), ")
+            cmd = new char[STRLEN("exective( group attach ), ")
                           + STRLEN(host)
                           + STRLEN(args)
                           + STRLEN(grouplist) + 20];
@@ -540,7 +529,7 @@ void   ProcessGroupManager::detachGroup(const char *host, const char *group)
     if (NOT p)
         return;
 
-    char* cmd = new char[strlen("Executive( group detach );") + 10 
+    char* cmd = new char[STRLEN("Executive( group detach );") + 10 
                          + STRLEN(host) + STRLEN(group)];
 
     sprintf(cmd, "Executive(\"group detach\",{\"%s\"});\n", group);
@@ -561,7 +550,7 @@ void ProcessGroupManager::attachGroup(const char *host, const char *group)
     this->clearGroupHostDirty(group);
 
     const char* args = this->getArgument(host);
-    char* cmd = new char[strlen("Executive( group attach );") + 10 
+    char* cmd = new char[STRLEN("Executive( group attach );") + 10 
                          + STRLEN(host) + STRLEN(args) + STRLEN(group)];
 
     if(args)
@@ -737,7 +726,7 @@ boolean ProcessGroupManager::printAssignment(FILE *f)
                     strcat(grouplist, group);
                 }
 	   }
-           cmd = new char[strlen("exective( ), ")
+           cmd = new char[STRLEN("exective( ), ")
                           + STRLEN(func)
                           + STRLEN(host)
                           + STRLEN(args)
@@ -774,7 +763,7 @@ boolean ProcessGroupManager::parseComment(const char *comment,
     char *p, *c, *host, *args;
     int  inst;
 
-    if (strncmp(comment," pgroup assignment",strlen(" pgroup assignment")))
+    if (strncmp(comment," pgroup assignment",STRLEN(" pgroup assignment")))
         return FALSE;
 
     char *line = DuplicateString(comment);

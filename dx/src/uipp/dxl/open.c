@@ -1,28 +1,5 @@
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-
-
-#include <malloc.h>
-#include <string.h>
-
-#include "../base/UIConfig.h"
-#include "../base/defines.h"
-#include "dxlP.h"
-
-/*
- * Effectively "reset" the server.  Unfortunately, the effects of this
- * are different depending on whether we are dxui- or dxexec-connected.
- * When dxui-connected, the UI will stop execution, flush the cache 
- * and reload all the referenced variables.  
- * When dxexec-connected, we stop execution, flush the cache,
- * and the DXLink application must reload all the referenced variables.
- * 
- * Solution: For now just expose the dxui-connected function by naming
- * 	this function uiDXLResetServer() instead of DXLResetServer().
- * 
- */
 DXLError
 uiDXLResetServer(DXLConnection *conn)
 {

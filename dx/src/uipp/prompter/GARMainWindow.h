@@ -1,13 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// GARMainWindow.h -							    //
-//                                                                          //
-// Definition for the GARMainWindow class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/GARMainWindow.h,v 1.1 1999/04/05 13:33:45 gda Exp $
- */
 
 #ifndef _GARMainWindow_h
 #define _GARMainWindow_h

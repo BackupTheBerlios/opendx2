@@ -1,20 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// StreaklineNode.h -							    //
-//                                                                          //
-// Definition for the StreaklineNode class.				    //
-//
-// All that we do special for this module is initialize the the first parameter
-// which the Streakline module expects to be unique string. 
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/StreaklineNode.h,v 1.1 1999/03/31 22:35:16 gda Exp $
- *
- */
 
 #ifndef _StreaklineNode_h
 #define _StreaklineNode_h

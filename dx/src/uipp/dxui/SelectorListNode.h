@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// SelectorListNode.h -							    //
-//                                                                          //
-// Definition for the SelectorListNode class which implements Scalar,  	    //
-// Integer, Vector and List version of these types of interactors	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/SelectorListNode.h,v 1.1 1999/03/31 22:34:43 gda Exp $
- */
 
 
 #ifndef _SelectorListNode_h

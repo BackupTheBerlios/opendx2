@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// PickNode.h -							    //
-//                                                                          //
-// Definition for the PickNode class.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/PickNode.h,v 1.1 1999/03/31 22:33:41 gda Exp $
- *
- */
 
 #ifndef _PickNode_h
 #define _PickNode_h

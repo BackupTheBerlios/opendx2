@@ -1,13 +1,5 @@
+/*  Open Visualization Data Explorer Source File */
 
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ImageApproxCommand.C,v 1.1 1999/03/31 22:31:52 gda Exp $
- */
 
 
 #include "defines.h"

@@ -1,23 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// CommandScope.h -							    //
-//                                                                          //
-// Definition for the CommandScope class.				    //
-//                                                                          //
-// This class embodies a command scope (there may be many in an application)//
-// and the information shared between commands within a given scope.        //
-// It is intended to be used only by Command and UndoCommand objects to     //
-// store and access information pertinent to the scope.  To this end, most  //
-// functions are protected to be accessible only to the above classes (and  //
-// to derived classes).							    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/CommandScope.h,v 1.1 1999/03/24 15:17:22 gda Exp $
- */
 
 
 #ifndef _CommandScope_h

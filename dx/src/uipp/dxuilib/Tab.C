@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// Tab.C -                                                                  //
-//                                                                          //
-// Tab Class methods and other related functions/procedures.                //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Tab.C,v 1.1 1999/03/24 15:17:45 gda Exp $
- */
 
 
 #include <Xm/Xm.h>

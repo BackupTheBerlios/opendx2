@@ -1,13 +1,6 @@
-/////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/JavaNet.C,v 1.1 1999/03/24 15:17:43 gda Exp $
- */
+#include "defines.h"
 #include "JavaNet.h"
 #include "PageGroupManager.h"
 #include "Command.h"
@@ -467,8 +460,8 @@ ListIterator it;
 	fprintf (this->html_f, "\tEach of these applets handles any number\n");
 	fprintf (this->html_f, "\tof DXLOutputs.  It's up to you to specify\n");
 	fprintf (this->html_f, "\tto the applet how many it should handle by\n");
-	fprintf (this->html_f, "\tgiving the applet params named DXLOutput%d\n");
-	fprintf (this->html_f, "\tThe %d goes from 0 to n and has nothing to\n");
+	fprintf (this->html_f, "\tgiving the applet params named DXLOutput%%d\n");
+	fprintf (this->html_f, "\tThe %%d goes from 0 to n and has nothing to\n");
 	fprintf (this->html_f, "\twith instance numbers.\n");
 	fprintf (this->html_f, "-->\n");
 
@@ -527,11 +520,17 @@ ListIterator it;
     const char* cosmoDir = theDXApplication->getCosmoDir();
     fprintf (this->make_f, "JARFILE=%s\n", theDXApplication->getDxJarFile());
     fprintf (this->make_f, "JDKFILE=%s\n", theDXApplication->getJdkDir());
+    char pathSep = ':';
+#if defined(DXD_WIN)
+    pathSep = ';';
+#endif
     if (cosmoDir[0]) {
 	fprintf (this->make_f, "COSMO=%s\n", cosmoDir);
-	fprintf (this->make_f, "JFLAGS=-classpath $(JDKFILE):$(JARFILE):$(COSMO)\n\n");
+	fprintf (this->make_f, "JFLAGS=-classpath $(JDKFILE)%c$(JARFILE)%c$(COSMO)\n\n",
+	    pathSep, pathSep);
     } else {
-	fprintf (this->make_f, "JFLAGS=-classpath $(JDKFILE):$(JARFILE)\n\n");
+	fprintf (this->make_f, "JFLAGS=-classpath $(JDKFILE)%c$(JARFILE)\n\n",
+	    pathSep);
     }
 
     fprintf (this->make_f, "JARS = \\\n");
@@ -540,7 +539,12 @@ ListIterator it;
     fprintf (this->make_f, "OBJS = \\\n");
     fprintf (this->make_f, "\t%s.class\n\n", this->base_name);
 
-    fprintf (this->make_f, ".%spage: $(JARS)\n\tmake -f %s $(OBJS)\n\ttouch .%spage\n\n",
+#if defined(DXD_WIN)
+    fprintf (this->make_f, "MAKE = nmake -f\n");
+#else
+    fprintf (this->make_f, "MAKE = make -f\n");
+#endif
+    fprintf (this->make_f, ".%spage: $(JARS)\n\t$(MAKE) %s $(OBJS)\n\ttouch .%spage\n\n",
 	this->base_name, this->make_file, this->base_name);
 
     fprintf (this->make_f, "%s.jar: $(OBJS)\n", this->base_name);
@@ -561,10 +565,19 @@ ListIterator it;
 	"##\n"
     );
     fprintf (this->make_f, "DXSERVER=%s\n", theDXApplication->getServerDir());
+#if defined(DXD_WIN)
+    fprintf (this->make_f, "DXSERVER_DIR=$(DXSERVER)\\pcnets\n");
+#else
     fprintf (this->make_f, "DXSERVER_DIR=$(DXSERVER)/unixnets\n");
+#endif
 
-    fprintf (this->make_f, "JAVADIR=%s/%s\n\n", 
-	theDXApplication->getHtmlDir(), theDXApplication->getUserHtmlDir());
+    char dirSep = '/';
+#if defined(DXD_WIN)
+    dirSep = '\\';
+#endif
+    fprintf (this->make_f, "JAVADIR=%s%c%s\n\n", 
+	theDXApplication->getHtmlDir(), dirSep,
+	theDXApplication->getUserHtmlDir());
 
     fprintf (this->make_f,
 	"##\n"
@@ -572,30 +585,40 @@ ListIterator it;
 	"## to $(DXSERVER)/usermacros or data to $(DXSERVER)/userdata\n"
 	"##\n"
     );
+#if defined(DXD_WIN)
+    fprintf (this->make_f, "CP = copy\n");
+#else
+    fprintf (this->make_f, "CP = cp -f\n");
+#endif
     fprintf (this->make_f, "install: .%spage\n", this->base_name);
-    fprintf (this->make_f, "\tcp -f %s.jar $(JAVADIR)\n", this->base_name);
+    fprintf (this->make_f, "\t$(CP) %s.jar $(JAVADIR)\n", this->base_name);
 
-    fprintf (this->make_f, "\tcp -f %s.html %s\n", this->base_name, "$(JAVADIR)");
+    fprintf (this->make_f, "\t$(CP) %s.html %s\n", this->base_name, "$(JAVADIR)");
 
     for (i=1; i<=framecnt; i++) {
 	ImageNode* n = (ImageNode*)framenodes->getElement(i);
 	int f = n->getInstanceNumber();
-	fprintf (this->make_f, "\tcp -f %s%d.0.* %s\n", this->base_name,f,"$(JAVADIR)");
+	fprintf (this->make_f, "\t$(CP) %s%d.0.* %s\n", this->base_name,f,"$(JAVADIR)");
     }
 
-    fprintf (this->make_f, "\tcp -f %s.net $(DXSERVER_DIR)\n", this->base_name);
+    fprintf (this->make_f, "\t$(CP) %s.net $(DXSERVER_DIR)\n\n", this->base_name);
 
+#if defined(DXD_WIN)
+    fprintf (this->make_f, "RM = del\n");
+#else
+    fprintf (this->make_f, "RM = rm -f\n");
+#endif
     fprintf (this->make_f, "\n\nclean:\n");
-    fprintf (this->make_f, "\trm -f .%spage\n", this->base_name);
+    fprintf (this->make_f, "\t$(RM) .%spage\n", this->base_name);
 
-    fprintf (this->make_f, "\trm -f $(DXSERVER_DIR)/%s.net\n", this->base_name);
-    fprintf (this->make_f, "\trm -f %s/%s.class\n", "$(JAVADIR)", this->base_name);
+    fprintf (this->make_f, "\t$(RM) $(DXSERVER_DIR)/%s.net\n", this->base_name);
+    fprintf (this->make_f, "\t$(RM) %s/%s.class\n", "$(JAVADIR)", this->base_name);
 
-    fprintf (this->make_f, "\trm -f %s/%s.html\n", "$(JAVADIR)", this->base_name);
+    fprintf (this->make_f, "\t$(RM) %s/%s.html\n", "$(JAVADIR)", this->base_name);
     for (i=1; i<=framecnt; i++) {
 	ImageNode* n = (ImageNode*)framenodes->getElement(i);
 	int f = n->getInstanceNumber();
-	fprintf (this->make_f, "\trm -f %s/%s%d.*\n", "$(JAVADIR)", this->base_name, f);
+	fprintf (this->make_f, "\t$(RM) %s/%s%d.*\n", "$(JAVADIR)", this->base_name, f);
     }
 
 

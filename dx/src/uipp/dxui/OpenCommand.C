@@ -1,18 +1,5 @@
-/////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-/////////////////////////////////////////////////////////////////////////////
-// OpenCommand.C -							    //
-//                                                                          //
-// OpenCommand Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/OpenCommand.C,v 1.1 1999/03/31 22:33:31 gda Exp $
- *
- */
 
 #include "UIConfig.h"
 

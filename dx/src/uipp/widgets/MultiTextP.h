@@ -1,32 +1,25 @@
+/*  Open Visualization Data Explorer Source File */
+
 #ifndef _MultiTextP_h
 #define _MultiTextP_h
-
-
 #include <Xm/Xm.h>
 #include <Xm/XmP.h>
 #include <Xm/DrawingAP.h>
 #include <Xm/CutPaste.h>
-
 #include "MultiText.h"
-
 #ifndef NODPS
 #include <DPS/XDPSlib.h>
 #include <DPS/dpsXclient.h>
 #include <DPS/psops.h>
-
 #define DPSNAME		"Adobe-DPS-Extension"
 #endif
-
 #define COLOR_NAME_SIZE	32
 #define FONT_NAME_SIZE	64
 #define CURSOR_COUNT	8
 #define RESIZE_FRACTION	2
-
 #if (XmVersion < 1002)
     #define XmRFloat	"float"
 #endif
-
-
 #define MSG1	"Wait cursor count (XmNwaitCursor) must be between 0 and %d."
 #define MSG2	"DPS scaling percentage (XmNscaleDPSpercent) must be greater then 0"
 #define MSG3	"Not enough memory to create link record in routine XmMultiTextMakeLinkRecord."
@@ -36,20 +29,6 @@
 #define MSG7	"DPS extension not available - DPS Turned off."
 #define MSG8	"Word-wrapping not supported when inserting at top. Turn wordWrapping off."
 #define MSG9	"XmMultiText requires a line to exists before appending a word."
-
-
-
-
-/* The main structure holding the widget's data is the following. */
-/* It is composed of LINEs, WORDs, and CHARs.                     */
-
-typedef struct LineRec *LineList;
-typedef struct WordRec *WordList;
-typedef struct CharRec *CharList;
-
-typedef enum
-{
-    NORMAL,		/* word is not selected */
     DESELECTED,		/* word was last drawn selected, but isn't selected */
     SELECTED		/* word is selected */
 

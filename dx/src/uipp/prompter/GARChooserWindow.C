@@ -1,13 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/GARChooserWindow.C,v 1.1 1999/04/05 13:33:36 gda Exp $
- */
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -16,6 +8,8 @@
 #endif
 
 #include <Xm/Xm.h>
+
+#include "dxl.h"
 
 #include "XmUtility.h"
 

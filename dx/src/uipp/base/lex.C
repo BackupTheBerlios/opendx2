@@ -1,15 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header
- *
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/lex.C,v 1.1 1999/03/24 15:17:25 gda Exp $
- */
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -565,18 +555,6 @@ boolean IsWhere (const char* string, int& index)
 	    index++;
 	    retVal = TRUE;
 	}
-    } else if (strncmp (dupstring, "X16,,", 5) == 0) {
-	index = 6;
-	if (dupstring[index] == '"') {
-	    index++;
-	    retVal = TRUE;
-	}
-    } else if (strncmp (dupstring, "x16,,", 5) == 0) {
-	index = 6;
-	if (dupstring[index] == '"') {
-	    index++;
-	    retVal = TRUE;
-	}
     } else if (strncmp (dupstring, "X12,,", 5) == 0) {
 	index = 6;
 	if (dupstring[index] == '"') {
@@ -623,7 +601,7 @@ boolean IsWhere (const char* string, int& index)
 		    &depth, dispstr, &xwid);
 
 	if (items_parsed == 3) {
-	    if ((depth == 8) || (depth == 12) || (depth == 16) || (depth == 24)) {
+	    if ((depth == 8) || (depth == 12) || (depth == 24)) {
 		index = strlen(string);
 		retVal = TRUE;
 	    }

@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/CommentStyle.C,v 1.2 1999/04/12 20:33:46 gda Exp $
-  */
 
 #include "CommentStyle.h"
 #include "defines.h"
@@ -73,8 +66,7 @@ void CommentStyle::AppendParseBuffer(const char* text)
 //	// annotation %s: %s\n
 //	// annotation %s_end: NO_TEXT_SYMBOL\n
 //
-boolean
-CommentStyle::printComment (FILE* f)
+boolean CommentStyle::printComment (FILE* f)
 {
 char begin_stmnt[64];
 char end_stmnt[64];

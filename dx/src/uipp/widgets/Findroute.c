@@ -1,10 +1,5 @@
-/*****************************************************************************/
-/*    DX  SOURCEFILE                                                         */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /a/curve/homes/curve/cpv/svs_ibm6000/src/ui/uix/RCS/Findroute.c,v
- */
 
 #ifdef OS2
 #include <stdlib.h>

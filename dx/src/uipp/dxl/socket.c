@@ -1,62 +1,4 @@
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
-
-
-#include <malloc.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <sys/types.h>
-#ifdef aviion
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#endif
-#if  !defined(OS2)  && !defined(DXD_WIN)
-#include <sys/param.h>
-#endif
-#ifdef DXD_HAS_WINSOCKETS
-#include <winsock.h>
-#else
-#include <sys/socket.h>
-#endif
-#ifdef DXD_WIN
-#include <sys/timeb.h>
-#else
-#include <sys/time.h>
-#endif
-#ifndef DXD_HAS_WINSOCKETS
-#include <netdb.h>
-#endif
-#include <errno.h>
-#include <stdarg.h>
-#if defined(ibm6000) || defined(pgcc) || defined(__METAWARE_HC) || defined(OS2)
-#include <sys/select.h>
-#endif
-
-#include "../base/UIConfig.h"
-#include "../base/defines.h"
-#include "../base/IBMVersion.h"
-#include "dxlP.h"
-#ifdef OS2
-#include <sys/ioctl.h>
-#endif
-
-#ifdef DXD_WIN
-#include <winioctl.h>
-#endif
-#ifndef DXD_NON_UNIX_SOCKETS
-#include <sys/signal.h>
-#endif
-
-#ifndef DXD_LACKS_UTS
-#include <sys/utsname.h>
-#endif
-
-#include <string.h>
-
-extern int _dxl_FreeMessageHandler_1();
-
-extern DXLConnection *DXLNewConnection();
+/*  Open Visualization Data Explorer Source File */
 
 
 #ifdef NON_ANSI_SPRINTF
@@ -361,6 +303,58 @@ DXLConnectToRunningServer(int port, const char *host)
 			connection->minorVersion);
     }
 
+
+#if defined(DXLINK_LICENSES_EXEC) && !defined(OS2)   && !defined(DXD_WIN)
+    /*
+     * Tell the executive that DXLink has a concurrent license
+     * so that the executive does not need one.
+     * FIXME: Pass cmdline argument that tells exec to get its own license.
+     */
+    if (!connection->dxuiConnected) {
+	char *lic_token = "LICENSE:";
+	char lic_code[64];
+	char *outkey, *p= NULL, *dup;
+	int unlicensed = 1;
+	DXLSendImmediate(connection,"getkey");
+
+	if (!DXLGetPacketString(connection,PACK_INFO,lic_token,&event)) 
+	    goto error;
+	p = strstr(event.contents,lic_token);
+	p = p + strlen(lic_token);
+	while (*p == ' ') p++;
+	strcpy(lic_code,p);	
+	DXLClearEvent(&event);
+
+	if (p) {	
+	    outkey = GenerateExecKey(lic_code,0xafe3);
+	    if (outkey) {
+		char buf[1024];
+		sprintf(buf,"license %s",outkey);
+		DXLSendImmediate(connection, buf);
+		FREE(outkey);
+		while (1) {
+		    if (!DXLGetPacketString(connection,PACK_INFO,
+							lic_token,&event)) {
+			break;
+		    } else if (strstr(event.contents,"AUTHORIZED")) {
+			if (strstr(event.contents,"UNAUTHORIZED")) 
+			    unlicensed = 1;
+			else if (strstr(event.contents,"AUTHORIZED")) 
+			    unlicensed = 0;
+			break;
+		    }
+		    DXLClearEvent(&event);
+		}
+		DXLClearEvent(&event);
+	    }
+	}
+	if (unlicensed) {
+	   fprintf(stderr,"Executive could not get a license\n");
+	   goto error;
+  	}
+    }
+#endif /* defined(DXLINK_LICENSES_EXEC) && !defined(OS2)    && !defined(DXD_WIN)*/
+
     return connection;
 
 error:
@@ -421,3 +415,56 @@ DXLIsHostLocal(const char *host)
     return TRUE;
 #endif  
 }
+
+#if defined(DXLINK_LICENSES_EXEC) && !defined(OS2)    && !defined(DXD_WIN)
+/* This function creates the message which will tell the exec if it
+ * is OK to run without a license. inkey must be at least char[14]
+ * and should contain the key returned from the $getkey.  type
+ * should be either ConcurrentLicense or NodeLockedLicense. On return
+ * inkey holds the string to send to the exec with $license.
+ * The returned string must be freed by the caller.
+ * FIXME: code is that same is in dxui.
+ */
+
+static char *GenerateExecKey(const char *inkey, int licenseType)
+{
+
+#ifndef OS2
+#define NEEDS_LICENSE_ROUTINES 1
+#endif
+#if NEEDS_LICENSE_ROUTINES
+
+    int i;
+    char keybuf[64];
+    char cryptbuf[64];
+    char *outkey, salt[8];
+
+    for(i=0;i<4;i++)
+      keybuf[i*2]=inkey[i];
+
+    keybuf[1] = 'g';
+    keybuf[3] = '3';
+    keybuf[5] = '$';
+    keybuf[7] = 'Q';
+    keybuf[8] = '\0';
+
+    salt[0] = '4';
+    salt[1] = '.';
+    salt[2] = '\0';
+
+    strcpy(cryptbuf,crypt(keybuf,salt));
+
+    outkey = (char*)MALLOC(64 * sizeof(char));
+    sprintf(outkey,"%s%hx",cryptbuf,
+                        (unsigned short)licenseType ^
+                        (*((unsigned char *)&cryptbuf[4])<<8)+(*((unsigned char
+*)&cryptbuf[5])));
+
+    return outkey;
+#else
+    return NULL;
+#endif 
+
+}
+
+#endif /* defined(DXLINK_LICENSES_EXEC) && !defined(OS2)    && !defined(DXD_WIN)  */

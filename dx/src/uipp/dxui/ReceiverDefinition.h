@@ -1,14 +1,5 @@
-///////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ReceiverDefinition.h,v 1.1 1999/03/31 22:33:55 gda Exp $
- *
- */
 
 
 #ifndef _ReceiverDefinition_h

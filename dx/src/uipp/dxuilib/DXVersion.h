@@ -1,12 +1,5 @@
-/* //////////////////////////////////////////////////////////////////////// */
-/*                            DX  SOURCEFILE                                */
-/* DXVersion.h -							    */
-/* Version numbers.							    */
-/* //////////////////////////////////////////////////////////////////////// */
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/DXVersion.h,v 1.1 1999/03/24 15:17:39 gda Exp $
- */
 
 
 #ifndef _DXVersion_h

@@ -1,13 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// OpenFileDialog.h -						    //
-//                                                                          //
-// Definition for the OpenFileDialog class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/mb/OpenFileDialog.h,v 1.1 1999/03/24 15:17:34 gda Exp $
- */
 
 
 #ifndef _OpenFileDialog_h

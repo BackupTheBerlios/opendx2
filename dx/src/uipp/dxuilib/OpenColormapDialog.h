@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/OpenColormapDialog.h,v 1.2 1999/04/12 21:05:22 gda Exp $
- */
 
 
 
@@ -55,8 +48,8 @@ class OpenColormapDialog : public FileDialog
     // Constructor:
     //
     OpenColormapDialog( Widget          parent,
-		       ColormapEditor*  editor,
-		       boolean          mode);
+		       ColormapEditor* editor,
+		       int             mode);
 
 
     //

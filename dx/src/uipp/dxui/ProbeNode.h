@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ProbeNode.h -							    //
-//                                                                          //
-// Definition for the ProbeNode class.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ProbeNode.h,v 1.1 1999/03/31 22:33:52 gda Exp $
- *
- */
 
 #ifndef _ProbeNode_h
 #define _ProbeNode_h

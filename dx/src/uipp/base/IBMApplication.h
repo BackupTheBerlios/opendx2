@@ -1,20 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// IBMApplication.h -							    //
-//                                                                          //
-// Definition for the IBMApplication class.				    //
-//                                                                          //
-// This class provides things that are common to all the applications
-// developed for Data Explorer (it should have been called DXApplication
-// but that was already taken).  Initially, this supports online help.
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/IBMApplication.h,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 
 #ifndef _IBMApplication_h

@@ -1,19 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-//                                                                          //
-// ConfirmedExitCommand.h -						    //
-//                                                                          //
-// Definition for the ConfirmedExitCommand class.			    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ConfirmedExitCommand.h,v 1.1 1999/03/31 22:30:54 gda Exp $
- *
- */
 
 #ifndef _ConfirmedExitCommand_h
 #define _ConfirmedExitCommand_h

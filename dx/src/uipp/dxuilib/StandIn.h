@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// StandIn.h -							            //
-//                                                                          //
-// Definition for the StandIn class.				            //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/StandIn.h,v 1.2 1999/04/12 21:15:33 gda Exp $
- *
- */
 
 #ifndef _StandIn_h
 #define _StandIn_h

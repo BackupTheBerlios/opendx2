@@ -1,10 +1,6 @@
-/*****************************************************************************o
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/MultiText.c,v 1.1 1999/03/24 15:17:35 gda Exp $
- */
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef OS2
@@ -20,6 +16,11 @@
 
 #if !defined(ibm6000) && !defined(OS2) && !defined(DXD_WIN)
 #include <sys/param.h>
+#endif
+
+#if defined(DXD_WIN)
+/* winuser.h defines ScrollWindow which conflicts with code in this file */
+#define ScrollWindow _ScrollWindow
 #endif
 
 #define CR			13
@@ -2111,7 +2112,7 @@ void XmMultiTextOpenLineTop (Widget w, int indent)
  | child of a scrolled window (its working area).  In addition, the     |
  | scrolledWindow must be in "applicationDefined" mode.                 |
  *----------------------------------------------------------------------*/
-void ScrollWindow (XmMultiTextWidget cw, int dy)
+static void ScrollWindow (XmMultiTextWidget cw, int dy)
 {
   if (!cw->multiText.exposeOnly) TurnOffCursor(cw);
 

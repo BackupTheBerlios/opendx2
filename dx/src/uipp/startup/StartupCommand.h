@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// StartupCommand.h -						    //
-//                                                                          //
-// Definition for the StartupCommand class.			    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- */
 
 #ifndef _StartupCommand_h
 #define _StartupCommand_h

@@ -1,20 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// DialogData.h -							    //
-//                                                                          //
-// Definition for the DialogData class.					    //
-//                                                                          //
-// This class is intended to be used by the DialogManger class as callback  //
-// client data structure.  To this end, the entire class is declared to be  //
-// private, only accessible by DialogManager class objects.		    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/DialogData.h,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 
 #ifndef _DialogData_h

@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// TickLabel.C -                                                            //
-//                                                                          //
-// Definition for the TickLabel class.                                      //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
- 
-/*
- * $Header: /u/c1tignor/solaris/src/ui++/dxui/RCS/TickLabel.C,v 8.3 1995/10/09 13:47:
-32 c1tignor Exp c1tignor $
- */
+/*  Open Visualization Data Explorer Source File */
+
 
 #include <Xm/Form.h>
 #include <Xm/PushB.h>

@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// Network.h -								    //
-//                                                                          //
-// Definition for the Network class.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Network.h,v 1.1 1999/03/24 15:17:43 gda Exp $
- */
 
 
 #ifndef _Network_h
@@ -188,6 +177,12 @@ class Network : public Base
     // If there is a problem post on Info Message
     //
     boolean versionMismatchQuery (boolean netfile, const char *file);
+
+    //
+    // If the net came from a file and the file was encrypted, 
+    // then this is set to TRUE.
+    //
+    boolean netFileWasEncoded;
 
     static Decorator* lastObjectParsed;
     // Print decorator comments in the .net file.
@@ -679,14 +674,19 @@ class Network : public Base
 		boolean ignoreUndefinedModules = FALSE);
 
     // These are called by readNetwork() and any other functions that want to
-    // READ a .net file. Returns FILE*.
+    // READ a .net file. Returns FILE* and deals with encoded networks.
+    // The static version is provided for others to open and read .net files,
+    // but they must save and pass the wasEncoded value into 
+    // CloseNetworkFILE(). 
+    // NOTE that encoding is done outside dxui (by dxencode).  
     //
-    static FILE* OpenNetworkFILE(const char *netfile, char **errmsg = NULL);
+    static FILE* OpenNetworkFILE(const char *netfile, 
+				boolean *wasEncoded, char **errmsg = NULL);
     FILE* openNetworkFILE(const char *netfile, char **errmsg = NULL);
     //
     // Close the .net file that was opened with [Oo]penNetworkFILE().
     //
-    static void CloseNetworkFILE(FILE *f);
+    static void CloseNetworkFILE(FILE *f, boolean wasEncoded);
     void closeNetworkFILE(FILE *f);
 
 
@@ -901,6 +901,9 @@ class Network : public Base
     // We only operate on those that have writable cacheability.
     //
     void optimizeNodeOutputCacheability();
+
+
+    boolean wasNetFileEncoded() { return this->netFileWasEncoded;}
 
     //
     // See if the given label is unique among nodes requiring uniqueness.

@@ -1,23 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-//////////////////////////////////////////////////////////////////////////////
-// TutorApplication.h -							    //
-//                                                                          //
-// Definition for the TutorApplication class.				    //
-//                                                                          //
-// This subclass of Application class encapsulates all the Tutor-specific      //
-// application information and functions.  The functions are implemented    //
-// as various command class objects.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/tutor/TutorApplication.h,v 1.1 1999/03/24 15:17:34 gda Exp $
- */
 
 #ifndef _TutorApplication_h
 #define _TutorApplication_h

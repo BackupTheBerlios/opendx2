@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// PickDefinition.C -							    //
-//                                                                          //
-// PickDefinition Class methods and other related functions/procedures.    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/PickDefinition.C,v 1.1 1999/03/31 22:33:37 gda Exp $
- *
- */
 
 #include "UIConfig.h"
 #include "defines.h"

@@ -1,13 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/PanelAccessManager.C,v 1.1 1999/03/24 15:17:44 gda Exp $
- */
 
 
 #include "defines.h"
@@ -286,7 +278,7 @@ boolean PanelAccessManager::cfgParseInaccessibleComment(const char *comment,
     int	i;
     char *tmp, gname[64], name[32];
 
-    if (strncmp(comment," inaccessible",strlen(" inaccessible"))) 
+    if (strncmp(comment," inaccessible",STRLEN(" inaccessible"))) 
 	return FALSE;
 
     char* p = strchr(comment,':');

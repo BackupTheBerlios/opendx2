@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
- 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Decorator.C,v 1.2 1999/04/12 20:37:43 gda Exp $
- */
+/*  Open Visualization Data Explorer Source File */
+
 
 
 #include <Xm/Xm.h>

@@ -1,12 +1,5 @@
-/////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/GARNewCommand.h,v 1.1 1999/04/05 13:33:45 gda Exp $
- */
 
 
 #ifndef _GARNewCommand_h

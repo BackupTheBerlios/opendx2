@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/FileSelectorInteractor.h,v 1.1 1999/03/31 22:31:42 gda Exp $
- */
 
 #ifndef _FileSelectorInteractor_h
 #define _FileSelectorInteractor_h

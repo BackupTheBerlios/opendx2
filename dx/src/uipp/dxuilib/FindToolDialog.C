@@ -1,19 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// FindToolDialog.C -                                                       //
-//                                                                          //
-// Definition for the FindToolDialog class.                                 //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /a/spline/homes/spline/danz/ui++/base/RCS/FindToolDialog.C,v 1.1 93/
-02/03 16:45:33 danz Exp Locker: danz $
- *
- */
 
 #include <X11/StringDefs.h>
 

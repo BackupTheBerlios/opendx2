@@ -1,27 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ShadowedOutputNode.h -						    //
-//                                                                          //
-// Definition for the ShadowedOutputNode class.				    //
-//
-// These are DrivenNodes that have inputs that are shadow (are kept in
-// sync with one or more of their outputs).  We define a virtual method,
-// this->getShadowingInput() that defines the mapping of output to input
-// indices.   We redefined setOutputValue() to update a shadowing input
-// when necessary.
-// 
-// The setShadowedOutputSentFromServer() is used to update both the output
-// and its shadowing input internally, and send the value of the shadowing
-// input back to the executive.  
-//
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ShadowedOutputNode.h,v 1.1 1999/03/31 22:35:05 gda Exp $
- */
 
 
 #ifndef _ShadowedOutputNode_h

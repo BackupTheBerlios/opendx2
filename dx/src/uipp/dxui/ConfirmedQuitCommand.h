@@ -1,15 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// ConfirmedQuitCommand.h -							    //
-//                                                                          //
-// Definition for the ConfirmedQuitCommand class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ConfirmedQuitCommand.h,v 1.1 1999/03/31 22:30:56 gda Exp $
- *
- */
 
 #ifndef _ConfirmedQuitCommand_h
 #define _ConfirmedQuitCommand_h

@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// CommentDialog.h -			        		 	    //
-//                                                                          //
-// Definition for the CommentDialog class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/mb/CommentDialog.h,v 1.1 1999/03/24 15:17:33 gda Exp $
- */
 
 
 #ifndef _CommentDialog_h

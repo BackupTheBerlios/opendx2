@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// NoUndoImageCommand.C 						    //
-//                                                                          //
-// NoUndoImageCommand Class methods and other related functions.            //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/NoUndoImageCommand.C,v 1.1 1999/03/31 22:33:08 gda Exp $
- */
 
 
 #include "defines.h"
@@ -72,10 +61,6 @@ boolean NoUndoImageCommand::doIt(CommandInterface *ci)
     case NoUndoImageCommand::Depth12:
 	if( in && image->imageDepth12Option->getState() )
 	    image->changeDepth(12);
-	break;
-    case NoUndoImageCommand::Depth16:
-	if( in && image->imageDepth16Option->getState() )
-	    image->changeDepth(16);
 	break;
     case NoUndoImageCommand::Depth24:
 	if( in && image->imageDepth24Option->getState() )

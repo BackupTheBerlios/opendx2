@@ -1,53 +1,5 @@
-/*
+/*  Open Visualization Data Explorer Source File */
 
-Author	:	David Wood	Date	:	9/22/88
-
-#include	"dict.h"
-
-Routines:	dicttbl_init, DictInit, DictDelete, DictInsert, DictFind
-		DictSize
-
-dicttbl_init()
-Purpose	:	Initialize a dictionary table. 
-Output	:	A pointer to a newly allocated DictTbl returned on success.
-		0 returned on failure when can't allocate hash array.	
-
-
-DictDelete(dict,key)
-Purpose	:	Remove user data indicated by key. 
-Output	:	a pointer equal to the last value of 'def'inserted with key
-		if the item is found.  If the key'ed item was inserted with
-		a deleter then the (*deleter)(def) will be called if the
-		item is found. 
-		0  if item is not found.
-
-DictInsert(dict,key,def, deleter)
-Purpose	:	Add a definition defined by key to the dictionary.	
-		if 'deleter' is non-null it will be called as (*deleter)(def)
-		when the item is removed from the dictionary, or the 
-		dictionary itself is deleted.
-Output	:	None
-
-DictFind(dict,key)
-Purpose	:	Lookup a key in the specified dictionary.	
-Output	:	a pointer equal to the last value of 'def'inserted with key
-		   if item is found.  
-		0  if item is not found.
-
-DictSize(dict)
-Purpose	:	Find size of given dictionary.	
-Output	:	int value equal to number of definitions in dictionary.
-
-Notes	:	Keys should be unique within a table. The last definition 
-		inserted with any key is considered the current active
-		definition.  This provides for the ability to stack 
-		definitions.
-
-Warnings:	The data at 'datap' is never copied into the hash table.
-		Therefore, if the user alters the data at datap after
-		inserting it,  the data will still be on the table but
-		will not be retrievable.
-*/
 #include    <string.h>
 #include	"../base/UIConfig.h"
 #include	"../base/defines.h"

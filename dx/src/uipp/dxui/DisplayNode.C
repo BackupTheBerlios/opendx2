@@ -1,14 +1,5 @@
-///////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/DisplayNode.C,v 1.2 1999/04/12 21:27:09 gda Exp $
- *
- */
 
 
 #include "UIConfig.h"
@@ -352,7 +343,7 @@ boolean DisplayNode::parseCommonComments(const char *comment,
     // title: value = somestring
     if (strncmp(" title:", comment, 7) == 0)
     {
-	this->setTitle(comment + strlen(" title: value = "));
+	this->setTitle(comment + STRLEN(" title: value = "));
 	return TRUE;
     }
     else if (strncmp(" depth:", comment, 7) == 0)

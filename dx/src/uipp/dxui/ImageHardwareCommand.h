@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ImageHardwareCommand.h,v 1.1 1999/03/31 22:32:04 gda Exp $
- */
 
 #ifndef _ImageHardwareCommand_h
 #define _ImageHardwareCommand_h

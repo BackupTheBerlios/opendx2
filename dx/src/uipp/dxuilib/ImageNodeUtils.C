@@ -1,14 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ImageNodeUtils.C,v 1.1 1999/03/24 15:17:42 gda Exp $
- *
- */
 
 
 #ifdef OS2
@@ -1263,7 +1254,7 @@ boolean ImageNode::isRecFileInputSet()
 
 
 
-boolean ImageNode::SendString(void* callbackData, PacketIFCallback cb, FILE* f, char* s) 
+boolean ImageNode::SendString(void* callbackData, PacketIFCallback cb, FILE* f, char* s, boolean viasocket) 
 { 
 // NT requires alternate version using direct socket calls
 #ifndef DXD_NON_UNIX_SOCKETS    
@@ -1294,7 +1285,7 @@ boolean ImageNode::SendString(void* callbackData, PacketIFCallback cb, FILE* f, 
     return TRUE; 
 }
 
-void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac[])
+void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac[], boolean viasocket)
 {
     int i = 0;
 #   define BSIZE 90
@@ -1305,12 +1296,12 @@ void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac
 	if ((buflen + length) >= BSIZE) {
 	    if (buflen > 0) {
 		tmpbuf[buflen++] = '\n'; tmpbuf[buflen] = '\0';
-		SendString (cbd, cb, f, tmpbuf);
+		SendString (cbd, cb, f, tmpbuf, viasocket);
 		//fwrite (tmpbuf, 1, buflen, f);
 		//fflush(f);
 		buflen = 0;
 	    } else {
-		SendString (cbd, cb, f, mac[i++]);
+		SendString (cbd, cb, f, mac[i++], viasocket);
 		//fwrite (mac[i++], 1, length, f);
 		//fflush(f);
 	    }
@@ -1321,8 +1312,9 @@ void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac
     }
     if (buflen > 0) {
 	tmpbuf[buflen++] = '\n'; tmpbuf[buflen] = '\0';
-	fwrite (tmpbuf, 1, buflen, f);
-	fflush(f);
+	SendString (cbd, cb, f, tmpbuf, viasocket);
+	//fwrite (tmpbuf, 1, buflen, f);
+	//fflush(f);
     }
 }
 
@@ -1335,15 +1327,15 @@ boolean ImageNode::sendMacro(DXPacketIF *pif)
 
     if (this->getNetwork()->isJavified()) {
 	pif->sendMacroStart();
-	FormatMacro(f, cb, cbdata, ImageNode::GifMacroTxt);
+	FormatMacro(f, cb, cbdata, ImageNode::GifMacroTxt, viasocket);
 	pif->sendMacroEnd();
 
 	pif->sendMacroStart();
-	FormatMacro(f, cb, cbdata, ImageNode::VrmlMacroTxt);
+	FormatMacro(f, cb, cbdata, ImageNode::VrmlMacroTxt, viasocket);
 	pif->sendMacroEnd();
 
 	pif->sendMacroStart();
-	FormatMacro(f, cb, cbdata, ImageNode::DXMacroTxt);
+	FormatMacro(f, cb, cbdata, ImageNode::DXMacroTxt, viasocket);
 	pif->sendMacroEnd();
     }
 
@@ -1369,6 +1361,10 @@ boolean ImageNode::printMacro(FILE *f,
 #endif
 
 {
+#ifndef DXD_NON_UNIX_SOCKETS     //SMH leave way to decide whether socket or file
+    boolean viasocket = FALSE;
+#endif
+
     char buf[256];
     enum Cacheability cacheability = this->getInternalCacheability();
     int cacheflag = (cacheability == InternalsNotCached) ? 0 :
@@ -1383,466 +1379,466 @@ boolean ImageNode::printMacro(FILE *f,
     // probably be a performance hit.
     //
     if (this->getNetwork()->isJavified()) {
-	FormatMacro(f, cb, cbdata, ImageNode::ImageMacroTxt);
+	FormatMacro(f, cb, cbdata, ImageNode::ImageMacroTxt, viasocket);
     } else {
 	void* cbd = cbdata;
-	SendString(cbd, cb, f, "macro Image(\n");
-	SendString(cbd, cb, f, "        id,\n");
-	SendString(cbd, cb, f, "        object,\n");
-	SendString(cbd, cb, f, "        where,\n");
-	SendString(cbd, cb, f, "        useVector,\n");
-	SendString(cbd, cb, f, "        to,\n");
-	SendString(cbd, cb, f, "        from,\n");
-	SendString(cbd, cb, f, "        width,\n");
-	SendString(cbd, cb, f, "        resolution,\n");
-	SendString(cbd, cb, f, "        aspect,\n");
-	SendString(cbd, cb, f, "        up,\n");
-	SendString(cbd, cb, f, "        viewAngle,\n");
-	SendString(cbd, cb, f, "        perspective,\n");
-	SendString(cbd, cb, f, "        options,\n");
-	SendString(cbd, cb, f, "        buttonState = 1,\n");
-	SendString(cbd, cb, f, "        buttonUpApprox = \"none\",\n");
-	SendString(cbd, cb, f, "        buttonDownApprox = \"none\",\n");
-	SendString(cbd, cb, f, "        buttonUpDensity = 1,\n");
-	SendString(cbd, cb, f, "        buttonDownDensity = 1,\n");
-	SendString(cbd, cb, f, "        renderMode = 0,\n");
-	SendString(cbd, cb, f, "        defaultCamera,\n");
-	SendString(cbd, cb, f, "        reset,\n");
-	SendString(cbd, cb, f, "        backgroundColor,\n");
-	SendString(cbd, cb, f, "        throttle,\n");
-	SendString(cbd, cb, f, "        RECenable = 0,\n");
-	SendString(cbd, cb, f, "        RECfile,\n");
-	SendString(cbd, cb, f, "        RECformat,\n");
-	SendString(cbd, cb, f, "        RECresolution,\n");
-	SendString(cbd, cb, f, "        RECaspect,\n");
-	SendString(cbd, cb, f, "        AAenable = 0,\n");
-	SendString(cbd, cb, f, "        AAlabels,\n");
-	SendString(cbd, cb, f, "        AAticks,\n");
-	SendString(cbd, cb, f, "        AAcorners,\n");
-	SendString(cbd, cb, f, "        AAframe,\n");
-	SendString(cbd, cb, f, "        AAadjust,\n");
-	SendString(cbd, cb, f, "        AAcursor,\n");
-	SendString(cbd, cb, f, "        AAgrid,\n");
-	SendString(cbd, cb, f, "        AAcolors,\n");
-	SendString(cbd, cb, f, "        AAannotation,\n");
-	SendString(cbd, cb, f, "        AAlabelscale,\n");
-	SendString(cbd, cb, f, "        AAfont,\n");
-	SendString(cbd, cb, f, "        interactionMode,\n");
-	SendString(cbd, cb, f, "        title,\n");
-	SendString(cbd, cb, f, "        AAxTickLocs,\n");
-	SendString(cbd, cb, f, "        AAyTickLocs,\n");
-	SendString(cbd, cb, f, "        AAzTickLocs,\n");
-	SendString(cbd, cb, f, "        AAxTickLabels,\n");
-	SendString(cbd, cb, f, "        AAyTickLabels,\n");
-	SendString(cbd, cb, f, "        AAzTickLabels,\n");
-	SendString(cbd, cb, f, "        webOptions) -> (\n");
-	SendString(cbd, cb, f, "        object,\n");
-	SendString(cbd, cb, f, "        camera,\n");
-	SendString(cbd, cb, f, "        where)\n");
+	SendString(cbd, cb, f, "macro Image(\n", viasocket);
+	SendString(cbd, cb, f, "        id,\n", viasocket);
+	SendString(cbd, cb, f, "        object,\n", viasocket);
+	SendString(cbd, cb, f, "        where,\n", viasocket);
+	SendString(cbd, cb, f, "        useVector,\n", viasocket);
+	SendString(cbd, cb, f, "        to,\n", viasocket);
+	SendString(cbd, cb, f, "        from,\n", viasocket);
+	SendString(cbd, cb, f, "        width,\n", viasocket);
+	SendString(cbd, cb, f, "        resolution,\n", viasocket);
+	SendString(cbd, cb, f, "        aspect,\n", viasocket);
+	SendString(cbd, cb, f, "        up,\n", viasocket);
+	SendString(cbd, cb, f, "        viewAngle,\n", viasocket);
+	SendString(cbd, cb, f, "        perspective,\n", viasocket);
+	SendString(cbd, cb, f, "        options,\n", viasocket);
+	SendString(cbd, cb, f, "        buttonState = 1,\n", viasocket);
+	SendString(cbd, cb, f, "        buttonUpApprox = \"none\",\n", viasocket);
+	SendString(cbd, cb, f, "        buttonDownApprox = \"none\",\n", viasocket);
+	SendString(cbd, cb, f, "        buttonUpDensity = 1,\n", viasocket);
+	SendString(cbd, cb, f, "        buttonDownDensity = 1,\n", viasocket);
+	SendString(cbd, cb, f, "        renderMode = 0,\n", viasocket);
+	SendString(cbd, cb, f, "        defaultCamera,\n", viasocket);
+	SendString(cbd, cb, f, "        reset,\n", viasocket);
+	SendString(cbd, cb, f, "        backgroundColor,\n", viasocket);
+	SendString(cbd, cb, f, "        throttle,\n", viasocket);
+	SendString(cbd, cb, f, "        RECenable = 0,\n", viasocket);
+	SendString(cbd, cb, f, "        RECfile,\n", viasocket);
+	SendString(cbd, cb, f, "        RECformat,\n", viasocket);
+	SendString(cbd, cb, f, "        RECresolution,\n", viasocket);
+	SendString(cbd, cb, f, "        RECaspect,\n", viasocket);
+	SendString(cbd, cb, f, "        AAenable = 0,\n", viasocket);
+	SendString(cbd, cb, f, "        AAlabels,\n", viasocket);
+	SendString(cbd, cb, f, "        AAticks,\n", viasocket);
+	SendString(cbd, cb, f, "        AAcorners,\n", viasocket);
+	SendString(cbd, cb, f, "        AAframe,\n", viasocket);
+	SendString(cbd, cb, f, "        AAadjust,\n", viasocket);
+	SendString(cbd, cb, f, "        AAcursor,\n", viasocket);
+	SendString(cbd, cb, f, "        AAgrid,\n", viasocket);
+	SendString(cbd, cb, f, "        AAcolors,\n", viasocket);
+	SendString(cbd, cb, f, "        AAannotation,\n", viasocket);
+	SendString(cbd, cb, f, "        AAlabelscale,\n", viasocket);
+	SendString(cbd, cb, f, "        AAfont,\n", viasocket);
+	SendString(cbd, cb, f, "        interactionMode,\n", viasocket);
+	SendString(cbd, cb, f, "        title,\n", viasocket);
+	SendString(cbd, cb, f, "        AAxTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "        AAyTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "        AAzTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "        AAxTickLabels,\n", viasocket);
+	SendString(cbd, cb, f, "        AAyTickLabels,\n", viasocket);
+	SendString(cbd, cb, f, "        AAzTickLabels,\n", viasocket);
+	SendString(cbd, cb, f, "        webOptions) -> (\n", viasocket);
+	SendString(cbd, cb, f, "        object,\n", viasocket);
+	SendString(cbd, cb, f, "        camera,\n", viasocket);
+	SendString(cbd, cb, f, "        where)\n", viasocket);
 
 	//
 	// Begin macro body.
 	//
-	SendString(cbd, cb, f, "{\n");
+	SendString(cbd, cb, f, "{\n", viasocket);
 
     #if 0
-	SendString(cbd, cb, f, "    Echo(\n");
-	SendString(cbd, cb, f, "        id,\n");
-	SendString(cbd, cb, f, "        backgroundColor,\n");
-	SendString(cbd, cb, f, "        throttle,\n");
-	SendString(cbd, cb, f, "        RECenable,\n");
-	SendString(cbd, cb, f, "        RECfile,\n");
-	SendString(cbd, cb, f, "        RECformat,\n");
-	SendString(cbd, cb, f, "        AAenable,\n");
-	SendString(cbd, cb, f, "        AAlabels,\n");
-	SendString(cbd, cb, f, "        AAticks,\n");
-	SendString(cbd, cb, f, "        AAcorners,\n");
-	SendString(cbd, cb, f, "        AAframe,\n");
-	SendString(cbd, cb, f, "        AAadjust,\n");
-	SendString(cbd, cb, f, "        AAcursor,\n");
-	SendString(cbd, cb, f, "        AAgrid,\n");
-	SendString(cbd, cb, f, "        AAcolors,\n");
-	SendString(cbd, cb, f, "        AAannotation,\n");
-	SendString(cbd, cb, f, "        AAlabelscale,\n");
-	SendString(cbd, cb, f, "        AAfont,\n");
-	SendString(cbd, cb, f, "        AAxTickLocs,\n");
-	SendString(cbd, cb, f, "        AAyTickLocs,\n");
-	SendString(cbd, cb, f, "        AAzTickLocs,\n");
-	SendString(cbd, cb, f, "        AAxTickLabels,\n");
-	SendString(cbd, cb, f, "        AAyTickLabels,\n");
-	SendString(cbd, cb, f, "        AAzTickLabels,\n");
-	SendString(cbd, cb, f, "        interactionMode,\n");
-	SendString(cbd, cb, f, "        title) [instance: 1];\n");
+	SendString(cbd, cb, f, "    Echo(\n", viasocket);
+	SendString(cbd, cb, f, "        id,\n", viasocket);
+	SendString(cbd, cb, f, "        backgroundColor,\n", viasocket);
+	SendString(cbd, cb, f, "        throttle,\n", viasocket);
+	SendString(cbd, cb, f, "        RECenable,\n", viasocket);
+	SendString(cbd, cb, f, "        RECfile,\n", viasocket);
+	SendString(cbd, cb, f, "        RECformat,\n", viasocket);
+	SendString(cbd, cb, f, "        AAenable,\n", viasocket);
+	SendString(cbd, cb, f, "        AAlabels,\n", viasocket);
+	SendString(cbd, cb, f, "        AAticks,\n", viasocket);
+	SendString(cbd, cb, f, "        AAcorners,\n", viasocket);
+	SendString(cbd, cb, f, "        AAframe,\n", viasocket);
+	SendString(cbd, cb, f, "        AAadjust,\n", viasocket);
+	SendString(cbd, cb, f, "        AAcursor,\n", viasocket);
+	SendString(cbd, cb, f, "        AAgrid,\n", viasocket);
+	SendString(cbd, cb, f, "        AAcolors,\n", viasocket);
+	SendString(cbd, cb, f, "        AAannotation,\n", viasocket);
+	SendString(cbd, cb, f, "        AAlabelscale,\n", viasocket);
+	SendString(cbd, cb, f, "        AAfont,\n", viasocket);
+	SendString(cbd, cb, f, "        AAxTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "        AAyTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "        AAzTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "        AAxTickLabels,\n", viasocket);
+	SendString(cbd, cb, f, "        AAyTickLabels,\n", viasocket);
+	SendString(cbd, cb, f, "        AAzTickLabels,\n", viasocket);
+	SendString(cbd, cb, f, "        interactionMode,\n", viasocket);
+	SendString(cbd, cb, f, "        title) [instance: 1];\n", viasocket);
     #endif
 
-	SendString(cbd, cb, f, "    ImageMessage(\n");
-	SendString(cbd, cb, f, "        id,\n");
-	SendString(cbd, cb, f, "        backgroundColor,\n");
-	SendString(cbd, cb, f, "        throttle,\n");
-	SendString(cbd, cb, f, "        RECenable,\n");
-	SendString(cbd, cb, f, "        RECfile,\n");
-	SendString(cbd, cb, f, "        RECformat,\n");
-	SendString(cbd, cb, f, "        RECresolution,\n");
-	SendString(cbd, cb, f, "        RECaspect,\n");
-	SendString(cbd, cb, f, "        AAenable,\n");
-	SendString(cbd, cb, f, "        AAlabels,\n");
-	SendString(cbd, cb, f, "        AAticks,\n");
-	SendString(cbd, cb, f, "        AAcorners,\n");
-	SendString(cbd, cb, f, "        AAframe,\n");
-	SendString(cbd, cb, f, "        AAadjust,\n");
-	SendString(cbd, cb, f, "        AAcursor,\n");
-	SendString(cbd, cb, f, "        AAgrid,\n");
-	SendString(cbd, cb, f, "        AAcolors,\n");
-	SendString(cbd, cb, f, "        AAannotation,\n");
-	SendString(cbd, cb, f, "        AAlabelscale,\n");
-	SendString(cbd, cb, f, "        AAfont,\n");
-	SendString(cbd, cb, f, "        AAxTickLocs,\n");
-	SendString(cbd, cb, f, "        AAyTickLocs,\n");
-	SendString(cbd, cb, f, "        AAzTickLocs,\n");
-	SendString(cbd, cb, f, "        AAxTickLabels,\n");
-	SendString(cbd, cb, f, "        AAyTickLabels,\n");
-	SendString(cbd, cb, f, "        AAzTickLabels,\n");
-	SendString(cbd, cb, f, "        interactionMode,\n");
-	SendString(cbd, cb, f, "        title,\n");
-	SendString(cbd, cb, f, "        renderMode,\n");
-	SendString(cbd, cb, f, "        buttonUpApprox,\n");
-	SendString(cbd, cb, f, "        buttonDownApprox,\n");
-	SendString(cbd, cb, f, "        buttonUpDensity,\n");
+	SendString(cbd, cb, f, "    ImageMessage(\n", viasocket);
+	SendString(cbd, cb, f, "        id,\n", viasocket);
+	SendString(cbd, cb, f, "        backgroundColor,\n", viasocket);
+	SendString(cbd, cb, f, "        throttle,\n", viasocket);
+	SendString(cbd, cb, f, "        RECenable,\n", viasocket);
+	SendString(cbd, cb, f, "        RECfile,\n", viasocket);
+	SendString(cbd, cb, f, "        RECformat,\n", viasocket);
+	SendString(cbd, cb, f, "        RECresolution,\n", viasocket);
+	SendString(cbd, cb, f, "        RECaspect,\n", viasocket);
+	SendString(cbd, cb, f, "        AAenable,\n", viasocket);
+	SendString(cbd, cb, f, "        AAlabels,\n", viasocket);
+	SendString(cbd, cb, f, "        AAticks,\n", viasocket);
+	SendString(cbd, cb, f, "        AAcorners,\n", viasocket);
+	SendString(cbd, cb, f, "        AAframe,\n", viasocket);
+	SendString(cbd, cb, f, "        AAadjust,\n", viasocket);
+	SendString(cbd, cb, f, "        AAcursor,\n", viasocket);
+	SendString(cbd, cb, f, "        AAgrid,\n", viasocket);
+	SendString(cbd, cb, f, "        AAcolors,\n", viasocket);
+	SendString(cbd, cb, f, "        AAannotation,\n", viasocket);
+	SendString(cbd, cb, f, "        AAlabelscale,\n", viasocket);
+	SendString(cbd, cb, f, "        AAfont,\n", viasocket);
+	SendString(cbd, cb, f, "        AAxTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "        AAyTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "        AAzTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "        AAxTickLabels,\n", viasocket);
+	SendString(cbd, cb, f, "        AAyTickLabels,\n", viasocket);
+	SendString(cbd, cb, f, "        AAzTickLabels,\n", viasocket);
+	SendString(cbd, cb, f, "        interactionMode,\n", viasocket);
+	SendString(cbd, cb, f, "        title,\n", viasocket);
+	SendString(cbd, cb, f, "        renderMode,\n", viasocket);
+	SendString(cbd, cb, f, "        buttonUpApprox,\n", viasocket);
+	SendString(cbd, cb, f, "        buttonDownApprox,\n", viasocket);
+	SendString(cbd, cb, f, "        buttonUpDensity,\n", viasocket);
 	sprintf(buf,"        buttonDownDensity) [instance: 1, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 	//
 	// Generate a call to Camera or AutoCamera module.
 	//
-	SendString(cbd, cb, f, "    autoCamera =\n");
-	SendString(cbd, cb, f, "        AutoCamera(\n");
-	SendString(cbd, cb, f, "            object,\n");
-	SendString(cbd, cb, f, "            \"front\",\n");
-	SendString(cbd, cb, f, "            object,\n");
-	SendString(cbd, cb, f, "            resolution,\n");
-	SendString(cbd, cb, f, "            aspect,\n");
-	SendString(cbd, cb, f, "            [0,1,0],\n");
-	SendString(cbd, cb, f, "            perspective,\n");
-	SendString(cbd, cb, f, "            viewAngle,\n");
+	SendString(cbd, cb, f, "    autoCamera =\n", viasocket);
+	SendString(cbd, cb, f, "        AutoCamera(\n", viasocket);
+	SendString(cbd, cb, f, "            object,\n", viasocket);
+	SendString(cbd, cb, f, "            \"front\",\n", viasocket);
+	SendString(cbd, cb, f, "            object,\n", viasocket);
+	SendString(cbd, cb, f, "            resolution,\n", viasocket);
+	SendString(cbd, cb, f, "            aspect,\n", viasocket);
+	SendString(cbd, cb, f, "            [0,1,0],\n", viasocket);
+	SendString(cbd, cb, f, "            perspective,\n", viasocket);
+	SendString(cbd, cb, f, "            viewAngle,\n", viasocket);
 	sprintf(buf,"            backgroundColor) [instance: 1, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    realCamera =\n");
-	SendString(cbd, cb, f, "        Camera(\n");
-	SendString(cbd, cb, f, "            to,\n");
-	SendString(cbd, cb, f, "            from,\n");
-	SendString(cbd, cb, f, "            width,\n");
-	SendString(cbd, cb, f, "            resolution,\n");
-	SendString(cbd, cb, f, "            aspect,\n");
-	SendString(cbd, cb, f, "            up,\n");
-	SendString(cbd, cb, f, "            perspective,\n");
-	SendString(cbd, cb, f, "            viewAngle,\n");
+	SendString(cbd, cb, f, "    realCamera =\n", viasocket);
+	SendString(cbd, cb, f, "        Camera(\n", viasocket);
+	SendString(cbd, cb, f, "            to,\n", viasocket);
+	SendString(cbd, cb, f, "            from,\n", viasocket);
+	SendString(cbd, cb, f, "            width,\n", viasocket);
+	SendString(cbd, cb, f, "            resolution,\n", viasocket);
+	SendString(cbd, cb, f, "            aspect,\n", viasocket);
+	SendString(cbd, cb, f, "            up,\n", viasocket);
+	SendString(cbd, cb, f, "            perspective,\n", viasocket);
+	SendString(cbd, cb, f, "            viewAngle,\n", viasocket);
 	sprintf(buf,"            backgroundColor) [instance: 1, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    coloredDefaultCamera = \n");
-	SendString(cbd, cb, f, "	 UpdateCamera(defaultCamera,\n");
+	SendString(cbd, cb, f, "    coloredDefaultCamera = \n", viasocket);
+	SendString(cbd, cb, f, "	 UpdateCamera(defaultCamera,\n", viasocket);
 	sprintf(buf,"            background=backgroundColor) [instance: 1, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    nullDefaultCamera =\n");
-	SendString(cbd, cb, f, "        Inquire(defaultCamera,\n");
+	SendString(cbd, cb, f, "    nullDefaultCamera =\n", viasocket);
+	SendString(cbd, cb, f, "        Inquire(defaultCamera,\n", viasocket);
 	sprintf(buf,"            \"is null + 1\") [instance: 1, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    resetCamera =\n");
-	SendString(cbd, cb, f, "        Switch(\n");
-	SendString(cbd, cb, f, "            nullDefaultCamera,\n");
-	SendString(cbd, cb, f, "            coloredDefaultCamera,\n");
+	SendString(cbd, cb, f, "    resetCamera =\n", viasocket);
+	SendString(cbd, cb, f, "        Switch(\n", viasocket);
+	SendString(cbd, cb, f, "            nullDefaultCamera,\n", viasocket);
+	SendString(cbd, cb, f, "            coloredDefaultCamera,\n", viasocket);
 	sprintf(buf,"            autoCamera) [instance: 1, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    resetNull = \n");
-	SendString(cbd, cb, f, "        Inquire(\n");
-	SendString(cbd, cb, f, "            reset,\n");
+	SendString(cbd, cb, f, "    resetNull = \n", viasocket);
+	SendString(cbd, cb, f, "        Inquire(\n", viasocket);
+	SendString(cbd, cb, f, "            reset,\n", viasocket);
 	sprintf(buf,"            \"is null + 1\") [instance: 2, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    reset =\n");
-	SendString(cbd, cb, f, "        Switch(\n");
-	SendString(cbd, cb, f, "            resetNull,\n");
-	SendString(cbd, cb, f, "            reset,\n");
+	SendString(cbd, cb, f, "    reset =\n", viasocket);
+	SendString(cbd, cb, f, "        Switch(\n", viasocket);
+	SendString(cbd, cb, f, "            resetNull,\n", viasocket);
+	SendString(cbd, cb, f, "            reset,\n", viasocket);
 	sprintf(buf,"            0) [instance: 2, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    whichCamera =\n");
-	SendString(cbd, cb, f, "        Compute(\n");
-	SendString(cbd, cb, f, "            \"($0 != 0 || $1 == 0) ? 1 : 2\",\n");
-	SendString(cbd, cb, f, "            reset,\n");
+	SendString(cbd, cb, f, "    whichCamera =\n", viasocket);
+	SendString(cbd, cb, f, "        Compute(\n", viasocket);
+	SendString(cbd, cb, f, "            \"($0 != 0 || $1 == 0) ? 1 : 2\",\n", viasocket);
+	SendString(cbd, cb, f, "            reset,\n", viasocket);
 	sprintf(buf,"            useVector) [instance: 1, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 
-	SendString(cbd, cb, f, "    camera = Switch(\n");
-	SendString(cbd, cb, f, "            whichCamera,\n");
-	SendString(cbd, cb, f, "            resetCamera,\n");
+	SendString(cbd, cb, f, "    camera = Switch(\n", viasocket);
+	SendString(cbd, cb, f, "            whichCamera,\n", viasocket);
+	SendString(cbd, cb, f, "            resetCamera,\n", viasocket);
 	sprintf(buf,"            realCamera) [instance: 3, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 	/*
 	 * Generate a call to AutoAxes module.
 	 */
-	SendString(cbd, cb, f, "    AAobject =\n");
-	SendString(cbd, cb, f, "        AutoAxes(\n");
-	SendString(cbd, cb, f, "            object,\n");
-	SendString(cbd, cb, f, "            camera,\n");
-	SendString(cbd, cb, f, "            AAlabels,\n");
-	SendString(cbd, cb, f, "            AAticks,\n");
-	SendString(cbd, cb, f, "            AAcorners,\n");
-	SendString(cbd, cb, f, "            AAframe,\n");
-	SendString(cbd, cb, f, "            AAadjust,\n");
-	SendString(cbd, cb, f, "            AAcursor,\n");
-	SendString(cbd, cb, f, "            AAgrid,\n");
-	SendString(cbd, cb, f, "            AAcolors,\n");
-	SendString(cbd, cb, f, "            AAannotation,\n");
-	SendString(cbd, cb, f, "            AAlabelscale,\n");
-	SendString(cbd, cb, f, "            AAfont,\n");
-	SendString(cbd, cb, f, "            AAxTickLocs,\n");
-	SendString(cbd, cb, f, "            AAyTickLocs,\n");
-	SendString(cbd, cb, f, "            AAzTickLocs,\n");
-	SendString(cbd, cb, f, "            AAxTickLabels,\n");
-	SendString(cbd, cb, f, "            AAyTickLabels,\n");
+	SendString(cbd, cb, f, "    AAobject =\n", viasocket);
+	SendString(cbd, cb, f, "        AutoAxes(\n", viasocket);
+	SendString(cbd, cb, f, "            object,\n", viasocket);
+	SendString(cbd, cb, f, "            camera,\n", viasocket);
+	SendString(cbd, cb, f, "            AAlabels,\n", viasocket);
+	SendString(cbd, cb, f, "            AAticks,\n", viasocket);
+	SendString(cbd, cb, f, "            AAcorners,\n", viasocket);
+	SendString(cbd, cb, f, "            AAframe,\n", viasocket);
+	SendString(cbd, cb, f, "            AAadjust,\n", viasocket);
+	SendString(cbd, cb, f, "            AAcursor,\n", viasocket);
+	SendString(cbd, cb, f, "            AAgrid,\n", viasocket);
+	SendString(cbd, cb, f, "            AAcolors,\n", viasocket);
+	SendString(cbd, cb, f, "            AAannotation,\n", viasocket);
+	SendString(cbd, cb, f, "            AAlabelscale,\n", viasocket);
+	SendString(cbd, cb, f, "            AAfont,\n", viasocket);
+	SendString(cbd, cb, f, "            AAxTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "            AAyTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "            AAzTickLocs,\n", viasocket);
+	SendString(cbd, cb, f, "            AAxTickLabels,\n", viasocket);
+	SendString(cbd, cb, f, "            AAyTickLabels,\n", viasocket);
 	sprintf(buf,"            AAzTickLabels) [instance: 1, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    switchAAenable = Compute(\"$0+1\",\n");
+	SendString(cbd, cb, f, "    switchAAenable = Compute(\"$0+1\",\n", viasocket);
 	sprintf(buf,"	     AAenable) [instance: 2, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
        
-	SendString(cbd, cb, f, "    object = Switch(\n");
-	SendString(cbd, cb, f, "	     switchAAenable,\n");
-	SendString(cbd, cb, f, "	     object,\n");
+	SendString(cbd, cb, f, "    object = Switch(\n", viasocket);
+	SendString(cbd, cb, f, "	     switchAAenable,\n", viasocket);
+	SendString(cbd, cb, f, "	     object,\n", viasocket);
 	sprintf(buf,"	     AAobject) [instance:4, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 	/*
 	 * Generate a call to the Approximation Switch module.
 	 */
-	SendString(cbd, cb, f, "    SWapproximation_options =\n");
-	SendString(cbd, cb, f, "        Switch(\n"); 
-	SendString(cbd, cb, f, "            buttonState,\n");
-	SendString(cbd, cb, f, "            buttonUpApprox,\n");
+	SendString(cbd, cb, f, "    SWapproximation_options =\n", viasocket);
+	SendString(cbd, cb, f, "        Switch(\n", viasocket); 
+	SendString(cbd, cb, f, "            buttonState,\n", viasocket);
+	SendString(cbd, cb, f, "            buttonUpApprox,\n", viasocket);
 	sprintf(buf,"            buttonDownApprox) [instance: 5, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 	/*
 	 * Generate a call to the Density Switch module.
 	 */
-	SendString(cbd, cb, f, "    SWdensity_options =\n");
-	SendString(cbd, cb, f, "        Switch(\n"); 
-	SendString(cbd, cb, f, "            buttonState,\n");
-	SendString(cbd, cb, f, "            buttonUpDensity,\n");
+	SendString(cbd, cb, f, "    SWdensity_options =\n", viasocket);
+	SendString(cbd, cb, f, "        Switch(\n", viasocket); 
+	SendString(cbd, cb, f, "            buttonState,\n", viasocket);
+	SendString(cbd, cb, f, "            buttonUpDensity,\n", viasocket);
 	sprintf(buf,"            buttonDownDensity) [instance: 6, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 	/*
 	 * Generate a call to the Approximation Format module.
 	 */
-	SendString(cbd, cb, f, "    HWapproximation_options =\n");
-	SendString(cbd, cb, f, "        Format(\n"); 
-	SendString(cbd, cb, f, "            \"%s,%s\",\n");
-	SendString(cbd, cb, f, "            buttonDownApprox,\n");
+	SendString(cbd, cb, f, "    HWapproximation_options =\n", viasocket);
+	SendString(cbd, cb, f, "        Format(\n", viasocket); 
+	SendString(cbd, cb, f, "            \"%s,%s\",\n", viasocket);
+	SendString(cbd, cb, f, "            buttonDownApprox,\n", viasocket);
 	sprintf(buf,"            buttonUpApprox) [instance: 1, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 	/*
 	 * Generate a call to the Density Format module.
 	 */
-	SendString(cbd, cb, f, "    HWdensity_options =\n");
-	SendString(cbd, cb, f, "        Format(\n"); 
-	SendString(cbd, cb, f, "            \"%d,%d\",\n");
-	SendString(cbd, cb, f, "            buttonDownDensity,\n");
+	SendString(cbd, cb, f, "    HWdensity_options =\n", viasocket);
+	SendString(cbd, cb, f, "        Format(\n", viasocket); 
+	SendString(cbd, cb, f, "            \"%d,%d\",\n", viasocket);
+	SendString(cbd, cb, f, "            buttonDownDensity,\n", viasocket);
 	sprintf(buf,"            buttonUpDensity) [instance: 2, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    switchRenderMode = Compute(\n");
-	SendString(cbd, cb, f, "	     \"$0+1\",\n");
+	SendString(cbd, cb, f, "    switchRenderMode = Compute(\n", viasocket);
+	SendString(cbd, cb, f, "	     \"$0+1\",\n", viasocket);
 	sprintf(buf,"	     renderMode) [instance: 3, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    approximation_options = Switch(\n");
-	SendString(cbd, cb, f, "	     switchRenderMode,\n");
-	SendString(cbd, cb, f, "            SWapproximation_options,\n");
-	SendString(cbd, cb, f, "	     HWapproximation_options)");
+	SendString(cbd, cb, f, "    approximation_options = Switch(\n", viasocket);
+	SendString(cbd, cb, f, "	     switchRenderMode,\n", viasocket);
+	SendString(cbd, cb, f, "            SWapproximation_options,\n", viasocket);
+	SendString(cbd, cb, f, "	     HWapproximation_options)", viasocket);
 	sprintf(buf,              " [instance: 7, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    density_options = Switch(\n");
-	SendString(cbd, cb, f, "	     switchRenderMode,\n");
-	SendString(cbd, cb, f, "            SWdensity_options,\n");
+	SendString(cbd, cb, f, "    density_options = Switch(\n", viasocket);
+	SendString(cbd, cb, f, "	     switchRenderMode,\n", viasocket);
+	SendString(cbd, cb, f, "            SWdensity_options,\n", viasocket);
 	sprintf(buf,"            HWdensity_options) [instance: 8, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
-	SendString(cbd, cb, f, "    renderModeString = Switch(\n");
-	SendString(cbd, cb, f, "            switchRenderMode,\n");
-	SendString(cbd, cb, f, "            \"software\",\n");
+	SendString(cbd, cb, f, buf, viasocket);
+	SendString(cbd, cb, f, "    renderModeString = Switch(\n", viasocket);
+	SendString(cbd, cb, f, "            switchRenderMode,\n", viasocket);
+	SendString(cbd, cb, f, "            \"software\",\n", viasocket);
 	sprintf(buf,"            \"hardware\")[instance: 9, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    object_tag = Inquire(\n");
-	SendString(cbd, cb, f, "            object,\n");
+	SendString(cbd, cb, f, "    object_tag = Inquire(\n", viasocket);
+	SendString(cbd, cb, f, "            object,\n", viasocket);
 	sprintf(buf,"            \"object tag\")[instance: 3, cache: %d];\n",
 								  cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 	/*
 	 * Generate a call to Options module.
 	 */
-	SendString(cbd, cb, f, "    annoted_object =\n");
-	SendString(cbd, cb, f, "        Options(\n"); 
-	SendString(cbd, cb, f, "            object,\n");
-	SendString(cbd, cb, f, "            \"send boxes\",\n");
-	SendString(cbd, cb, f, "            0,\n");
-	SendString(cbd, cb, f, "            \"cache\",\n");
+	SendString(cbd, cb, f, "    annoted_object =\n", viasocket);
+	SendString(cbd, cb, f, "        Options(\n", viasocket); 
+	SendString(cbd, cb, f, "            object,\n", viasocket);
+	SendString(cbd, cb, f, "            \"send boxes\",\n", viasocket);
+	SendString(cbd, cb, f, "            0,\n", viasocket);
+	SendString(cbd, cb, f, "            \"cache\",\n", viasocket);
 	sprintf(buf,"            %d,\n", cacheflag == InternalsFullyCached ? 1 : 0);
-	SendString(cbd, cb, f, buf);
-	SendString(cbd, cb, f, "            \"object tag\",\n");
-	SendString(cbd, cb, f, "            object_tag,\n");
-	SendString(cbd, cb, f, "            \"ddcamera\",\n");
-	SendString(cbd, cb, f, "            whichCamera,\n");
-	SendString(cbd, cb, f, "            \"rendering approximation\",\n");
-	SendString(cbd, cb, f, "            approximation_options,\n");
-	SendString(cbd, cb, f, "            \"render every\",\n");
-	SendString(cbd, cb, f, "            density_options,\n");
-	SendString(cbd, cb, f, "            \"button state\",\n");
-	SendString(cbd, cb, f, "            buttonState,\n");
-	SendString(cbd, cb, f, "            \"rendering mode\",\n");
+	SendString(cbd, cb, f, buf, viasocket);
+	SendString(cbd, cb, f, "            \"object tag\",\n", viasocket);
+	SendString(cbd, cb, f, "            object_tag,\n", viasocket);
+	SendString(cbd, cb, f, "            \"ddcamera\",\n", viasocket);
+	SendString(cbd, cb, f, "            whichCamera,\n", viasocket);
+	SendString(cbd, cb, f, "            \"rendering approximation\",\n", viasocket);
+	SendString(cbd, cb, f, "            approximation_options,\n", viasocket);
+	SendString(cbd, cb, f, "            \"render every\",\n", viasocket);
+	SendString(cbd, cb, f, "            density_options,\n", viasocket);
+	SendString(cbd, cb, f, "            \"button state\",\n", viasocket);
+	SendString(cbd, cb, f, "            buttonState,\n", viasocket);
+	SendString(cbd, cb, f, "            \"rendering mode\",\n", viasocket);
 	sprintf(buf,"            renderModeString) [instance: 1, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    RECresNull =\n");
-	SendString(cbd, cb, f, "        Inquire(\n");
-	SendString(cbd, cb, f, "            RECresolution,\n");
+	SendString(cbd, cb, f, "    RECresNull =\n", viasocket);
+	SendString(cbd, cb, f, "        Inquire(\n", viasocket);
+	SendString(cbd, cb, f, "            RECresolution,\n", viasocket);
 	sprintf(buf,"            \"is null + 1\") [instance: 4, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    ImageResolution =\n");
-	SendString(cbd, cb, f, "        Inquire(\n");
-	SendString(cbd, cb, f, "            camera,\n");
+	SendString(cbd, cb, f, "    ImageResolution =\n", viasocket);
+	SendString(cbd, cb, f, "        Inquire(\n", viasocket);
+	SendString(cbd, cb, f, "            camera,\n", viasocket);
 	sprintf(buf,"            \"camera resolution\") [instance: 5, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 		    
-	SendString(cbd, cb, f, "    RECresolution =\n");
-	SendString(cbd, cb, f, "        Switch(\n");
-	SendString(cbd, cb, f, "            RECresNull,\n");
-	SendString(cbd, cb, f, "            RECresolution,\n");
+	SendString(cbd, cb, f, "    RECresolution =\n", viasocket);
+	SendString(cbd, cb, f, "        Switch(\n", viasocket);
+	SendString(cbd, cb, f, "            RECresNull,\n", viasocket);
+	SendString(cbd, cb, f, "            RECresolution,\n", viasocket);
 	sprintf(buf,"            ImageResolution) [instance: 10, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    RECaspectNull =\n");
-	SendString(cbd, cb, f, "        Inquire(\n");
-	SendString(cbd, cb, f, "            RECaspect,\n");
+	SendString(cbd, cb, f, "    RECaspectNull =\n", viasocket);
+	SendString(cbd, cb, f, "        Inquire(\n", viasocket);
+	SendString(cbd, cb, f, "            RECaspect,\n", viasocket);
 	sprintf(buf,"            \"is null + 1\") [instance: 6, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 
-	SendString(cbd, cb, f, "    ImageAspect =\n");
-	SendString(cbd, cb, f, "        Inquire(\n");
-	SendString(cbd, cb, f, "            camera,\n");
+	SendString(cbd, cb, f, "    ImageAspect =\n", viasocket);
+	SendString(cbd, cb, f, "        Inquire(\n", viasocket);
+	SendString(cbd, cb, f, "            camera,\n", viasocket);
 	sprintf(buf,"            \"camera aspect\") [instance: 7, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 		    
-	SendString(cbd, cb, f, "    RECaspect =\n");
-	SendString(cbd, cb, f, "        Switch(\n");
-	SendString(cbd, cb, f, "            RECaspectNull,\n");
-	SendString(cbd, cb, f, "            RECaspect,\n");
+	SendString(cbd, cb, f, "    RECaspect =\n", viasocket);
+	SendString(cbd, cb, f, "        Switch(\n", viasocket);
+	SendString(cbd, cb, f, "            RECaspectNull,\n", viasocket);
+	SendString(cbd, cb, f, "            RECaspect,\n", viasocket);
 	sprintf(buf,"            ImageAspect) [instance: 11, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    switchRECenable = Compute(\n");
-	SendString(cbd, cb, f, "          \"$0 == 0 ? 1 : (($2 == $3) && ($4 == $5)) ? ($1 == 1 ? 2 : 3) : 4\",\n"); 
-	SendString(cbd, cb, f, "            RECenable,\n");
-	SendString(cbd, cb, f, "            switchRenderMode,\n");
-	SendString(cbd, cb, f, "            RECresolution,\n");
-	SendString(cbd, cb, f, "            ImageResolution,\n");
-	SendString(cbd, cb, f, "            RECaspect,\n");
+	SendString(cbd, cb, f, "    switchRECenable = Compute(\n", viasocket);
+	SendString(cbd, cb, f, "          \"$0 == 0 ? 1 : (($2 == $3) && ($4 == $5)) ? ($1 == 1 ? 2 : 3) : 4\",\n", viasocket); 
+	SendString(cbd, cb, f, "            RECenable,\n", viasocket);
+	SendString(cbd, cb, f, "            switchRenderMode,\n", viasocket);
+	SendString(cbd, cb, f, "            RECresolution,\n", viasocket);
+	SendString(cbd, cb, f, "            ImageResolution,\n", viasocket);
+	SendString(cbd, cb, f, "            RECaspect,\n", viasocket);
 	sprintf(buf,"	     ImageAspect) [instance: 4, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 	SendString(cbd, cb, f, "    NoRECobject, RECNoRerenderObject, RECNoRerHW, RECRerenderObject = "
-			    "Route(switchRECenable, annoted_object);\n");
+			    "Route(switchRECenable, annoted_object);\n", viasocket);
 
 	/*
 	 * If no recording is specified, just use Display
 	 */
-	SendString(cbd, cb, f, "    Display(\n");
-	SendString(cbd, cb, f, "        NoRECobject,\n");
-	SendString(cbd, cb, f, "        camera,\n");
-	SendString(cbd, cb, f, "        where,\n");
+	SendString(cbd, cb, f, "    Display(\n", viasocket);
+	SendString(cbd, cb, f, "        NoRECobject,\n", viasocket);
+	SendString(cbd, cb, f, "        camera,\n", viasocket);
+	SendString(cbd, cb, f, "        where,\n", viasocket);
 	sprintf(buf,"        throttle) [instance: 1, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 	/*
 	 * If recording is used, but no rerendering is required,
 	 * use Render followed by DIsplay and Write Image
 	 */
-	SendString(cbd, cb, f, "    image =\n");
-	SendString(cbd, cb, f, "        Render(\n");
-	SendString(cbd, cb, f, "            RECNoRerenderObject,\n");
+	SendString(cbd, cb, f, "    image =\n", viasocket);
+	SendString(cbd, cb, f, "        Render(\n", viasocket);
+	SendString(cbd, cb, f, "            RECNoRerenderObject,\n", viasocket);
 	sprintf(buf,"            camera) [instance: 1, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    Display(\n");
-	SendString(cbd, cb, f, "        image,\n");
-	SendString(cbd, cb, f, "        NULL,\n");
-	SendString(cbd, cb, f, "        where,\n");
+	SendString(cbd, cb, f, "    Display(\n", viasocket);
+	SendString(cbd, cb, f, "        image,\n", viasocket);
+	SendString(cbd, cb, f, "        NULL,\n", viasocket);
+	SendString(cbd, cb, f, "        where,\n", viasocket);
 	sprintf(buf,"        throttle) [instance: 2, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    WriteImage(\n");
-	SendString(cbd, cb, f, "        image,\n");
-	SendString(cbd, cb, f, "        RECfile,\n");
+	SendString(cbd, cb, f, "    WriteImage(\n", viasocket);
+	SendString(cbd, cb, f, "        image,\n", viasocket);
+	SendString(cbd, cb, f, "        RECfile,\n", viasocket);
 	sprintf(buf,"        RECformat) [instance: 1, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 
 	/*
 	 * If recording is used in a hardware window, but no rerendering is required,
 	 * use Display and ReadImageWindow.
 	 */
-	SendString(cbd, cb, f, "    rec_where = Display(\n");
-	SendString(cbd, cb, f, "        RECNoRerHW,\n");
-	SendString(cbd, cb, f, "        camera,\n");
-	SendString(cbd, cb, f, "        where,\n");
+	SendString(cbd, cb, f, "    rec_where = Display(\n", viasocket);
+	SendString(cbd, cb, f, "        RECNoRerHW,\n", viasocket);
+	SendString(cbd, cb, f, "        camera,\n", viasocket);
+	SendString(cbd, cb, f, "        where,\n", viasocket);
 	sprintf(buf,"        throttle) [instance: 1, cache: %d];\n", 0/*cacheflag*/);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    rec_image = ReadImageWindow(\n");
+	SendString(cbd, cb, f, "    rec_image = ReadImageWindow(\n", viasocket);
 	sprintf(buf,"        rec_where) [instance: 1, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    WriteImage(\n");
-	SendString(cbd, cb, f, "        rec_image,\n");
-	SendString(cbd, cb, f, "        RECfile,\n");
+	SendString(cbd, cb, f, "    WriteImage(\n", viasocket);
+	SendString(cbd, cb, f, "        rec_image,\n", viasocket);
+	SendString(cbd, cb, f, "        RECfile,\n", viasocket);
 	sprintf(buf,"        RECformat) [instance: 1, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 	/*
 	 * If recording, and rerendering *is* required, use Display 
@@ -1850,48 +1846,48 @@ boolean ImageNode::printMacro(FILE *f,
 	 * the updated camera for the saved image
 	 */
 
-	SendString(cbd, cb, f, "    RECupdateCamera =\n");
-	SendString(cbd, cb, f, "	UpdateCamera(\n");
-	SendString(cbd, cb, f, "	    camera,\n");
-	SendString(cbd, cb, f, "	    resolution=RECresolution,\n");
+	SendString(cbd, cb, f, "    RECupdateCamera =\n", viasocket);
+	SendString(cbd, cb, f, "	UpdateCamera(\n", viasocket);
+	SendString(cbd, cb, f, "	    camera,\n", viasocket);
+	SendString(cbd, cb, f, "	    resolution=RECresolution,\n", viasocket);
 	sprintf(buf,"	    aspect=RECaspect) [instance: 2, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    Display(\n");
-	SendString(cbd, cb, f, "        RECRerenderObject,\n");
-	SendString(cbd, cb, f, "        camera,\n");
-	SendString(cbd, cb, f, "        where,\n");
+	SendString(cbd, cb, f, "    Display(\n", viasocket);
+	SendString(cbd, cb, f, "        RECRerenderObject,\n", viasocket);
+	SendString(cbd, cb, f, "        camera,\n", viasocket);
+	SendString(cbd, cb, f, "        where,\n", viasocket);
 	sprintf(buf,"        throttle) [instance: 1, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    RECRerenderObject =\n");
-	SendString(cbd, cb, f, "	ScaleScreen(\n");
-	SendString(cbd, cb, f, "	    RECRerenderObject,\n");
-	SendString(cbd, cb, f, "	    NULL,\n");
-	SendString(cbd, cb, f, "	    RECresolution,\n");
+	SendString(cbd, cb, f, "    RECRerenderObject =\n", viasocket);
+	SendString(cbd, cb, f, "	ScaleScreen(\n", viasocket);
+	SendString(cbd, cb, f, "	    RECRerenderObject,\n", viasocket);
+	SendString(cbd, cb, f, "	    NULL,\n", viasocket);
+	SendString(cbd, cb, f, "	    RECresolution,\n", viasocket);
 	sprintf(buf,"	    camera) [instance: 1, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    image =\n");
-	SendString(cbd, cb, f, "        Render(\n");
-	SendString(cbd, cb, f, "            RECRerenderObject,\n");
+	SendString(cbd, cb, f, "    image =\n", viasocket);
+	SendString(cbd, cb, f, "        Render(\n", viasocket);
+	SendString(cbd, cb, f, "            RECRerenderObject,\n", viasocket);
 	sprintf(buf,"            RECupdateCamera) [instance: 2, cache: %d];\n",
 								    cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
-	SendString(cbd, cb, f, "    WriteImage(\n");
-	SendString(cbd, cb, f, "        image,\n");
-	SendString(cbd, cb, f, "        RECfile,\n");
+	SendString(cbd, cb, f, "    WriteImage(\n", viasocket);
+	SendString(cbd, cb, f, "        image,\n", viasocket);
+	SendString(cbd, cb, f, "        RECfile,\n", viasocket);
 	sprintf(buf,"        RECformat) [instance: 2, cache: %d];\n", cacheflag);
-	SendString(cbd, cb, f, buf);
+	SendString(cbd, cb, f, buf, viasocket);
 
 
 
 	//
 	// End macro body.
 	//
-	SendString(cbd, cb, f, "}\n");
+	SendString(cbd, cb, f, "}\n", viasocket);
     }
 
     return TRUE;

@@ -1,12 +1,5 @@
-/* //////////////////////////////////////////////////////////////////////// */
-/*                            DX  SOURCEFILE                                */
-/* IBMVersion.h -							    */
-/* Version numbers.							    */
-/* //////////////////////////////////////////////////////////////////////// */
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/IBMVersion.h,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 
 #ifndef _IBMVersion_h

@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ImageWindow.h -							    //
-//                                                                          //
-// Definition for the ImageWindow class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ImageWindow.h,v 1.1 1999/03/24 15:17:42 gda Exp $
- *
- */
 
 #ifndef _ImageWindow_h
 #define _ImageWindow_h
@@ -433,7 +421,6 @@ class ImageWindow : public DXWindow
     CascadeMenu		*imageDepthCascade;
     Command             *imageDepth8Cmd;
     Command             *imageDepth12Cmd;
-    Command             *imageDepth16Cmd;
     Command             *imageDepth24Cmd;
     Command		*closeCmd;
     Command		*setPanelAccessCmd;
@@ -498,7 +485,6 @@ class ImageWindow : public DXWindow
     CommandInterface*	displayRotationGlobeOption;
     ToggleButtonInterface*	imageDepth8Option;
     ToggleButtonInterface*	imageDepth12Option;
-    ToggleButtonInterface*	imageDepth16Option;
     ToggleButtonInterface*	imageDepth24Option;
     CommandInterface*	setPanelAccessOption;
 
@@ -1000,7 +986,7 @@ class ImageWindow : public DXWindow
     void setExecuteOnResize(boolean setting = TRUE) 
 				{ this->state.resizeCausesExecution = setting; }
     void resetExecuteOnResizeWhenAble();
-    boolean hasPendingWindowPlacement() { return (boolean)this->reset_eor_wp != 0; }
+    boolean hasPendingWindowPlacement() { return (boolean)this->reset_eor_wp != NULL; }
  
     //
     // Before calling the super class method we verify that doing this will 

@@ -1,11 +1,7 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/help.h,v 1.2 1999/04/16 19:19:17 gda Exp $
- */
 
+#include "defines.h"
 
 #include "history.h"
 #include "helplist.h"
@@ -13,8 +9,6 @@
 #if !defined(OS2)  && !defined(DXD_WIN)
 #include <sys/param.h>
 #endif
-
-#include "defines.h"
 
 #define SPOTFILE "spots"
 #define README_PREFIX "README"

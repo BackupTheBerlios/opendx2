@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// PacketIF.C -								    //
-//                                                                          //
-// PacketIF Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/PacketIF.C,v 1.3 1999/04/16 20:07:33 gda Exp $
- */
 
 
 
@@ -24,14 +13,7 @@
 #include "Application.h"
 #include "ErrorDialogManager.h"
 
-#ifdef linux86
-extern "C" {
 #include <errno.h>
-}
-#else
-#include <errno.h>
-#endif
-
 #include <ctype.h>
 #include <fcntl.h>
 #ifdef alphax
@@ -49,7 +31,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef HAVE_UNISTD_H
+#ifdef DXD_HAS_UNIX_SYS_INCLUDES
 #include <unistd.h>
 #endif
 
@@ -217,6 +199,8 @@ int _packet_type_count = sizeof(PacketIF::PacketTypes) /
 
 /*****************************************************************************/
 /* _uipSendPacket -							     */
+/*                                                                           */
+/*                                                                           */
 /*****************************************************************************/
 
 void PacketIF::sendPacket(int         type,
@@ -277,6 +261,8 @@ void PacketIF::sendPacket(int         type,
 
 /*****************************************************************************/
 /* uipPacketCreate -							     */
+/*                                                                           */
+/*                                                                           */
 /*****************************************************************************/
 
 //
@@ -343,6 +329,8 @@ PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
 
 /*****************************************************************************/
 /* uipPacketDisconnect -						     */
+/*                                                                           */
+/*                                                                           */
 /*****************************************************************************/
 
 PacketIF::~PacketIF()
@@ -599,6 +587,8 @@ extern "C" void PacketIF_ProcessSocketInputICB(XtPointer    clientData,
 
 /*****************************************************************************/
 /* uipPacketSetHandler -						     */
+/*                                                                           */
+/*                                                                           */
 /*****************************************************************************/
 
 void
@@ -722,7 +712,9 @@ void PacketIF::handleStreamError(int errnum, const char *msg)
 
 /*****************************************************************************/
 /* _uipParsePacket -							     */
+/*                                                                           */
 /* Parses and processes a packet.					     */
+/*                                                                           */
 /*****************************************************************************/
 
 void
@@ -956,11 +948,14 @@ PacketIF::parsePacket()
 
 /*****************************************************************************/
 /* uipPacketReceive -							     */
+/*                                                                           */
 /* Reads a buffer full of input from the socket and process the packets.     */
+/*                                                                           */
 /* NOTE:								     */
 /*   The amount of input may vary in size; and partial lines must be	     */
 /*   expected.  This means that the following code must be able to	     */
 /*   handle multiple lines, as well as partial lines.			     */
+/*                                                                           */
 /*****************************************************************************/
 
 void
@@ -1436,14 +1431,16 @@ void PacketIF::connectAsServer(int pport)
     int oldUmask;
 #endif
     struct linger sl;
+#if defined(_AIX41)
+    size_t length;
+#else
     int length;
+#endif
     ushort port;
     int fd;
     int sts;
     int oldPort;
-#ifndef linux86
     extern int errno;
-#endif
     int tries;
     fd_set fds;
 #ifdef hp700

@@ -1,20 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//     (   DX  SOURCEFILE  -RESTRICTED .Cen combined with the aggregated    //
-//                  OCO source materials for .Cis program.)                 //
-//                                                                          //
-// SaveMacroCommand.C -                                                     //
-//                                                                          //
-// SaveMacroCommand Class methods and other related                         //
-// functions/procedures.                                                    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /a/spline.Comes/spline/danz/ui++/dxui/RCS/SaveMacroCommand.C,v 6.6 9
-4/0 1/13 17:39:50 danz Exp $
- */
 
 
 

@@ -1,10 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/VCRControl.c,v 1.1 1999/03/24 15:17:36 gda Exp $
- */
 
 #ifdef OS2
 #include <stdlib.h>
@@ -26,9 +21,6 @@
 
 extern void _XmForegroundColorDefault();
 extern void _XmBackgroundColorDefault();
-extern void _XmManagerFocusIn();
-extern void _XmManagerEnter();
-
 
 static XtResource resources[] =
 {

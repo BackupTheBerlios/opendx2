@@ -1,23 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-//////////////////////////////////////////////////////////////////////////////
-// MBApplication.h -							    //
-//                                                                          //
-// Definition for the MBApplication class.				    //
-//                                                                          //
-// This subclass of Application class encapsulates all the MB-specific      //
-// application information and functions.  The functions are implemented    //
-// as various command class objects.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/mb/MBApplication.h,v 1.1 1999/03/24 15:17:33 gda Exp $
- */
 
 #ifndef _MBApplication_h
 #define _MBApplication_h

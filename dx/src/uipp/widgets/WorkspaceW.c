@@ -1,10 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/WorkspaceW.c,v 1.1 1999/03/24 15:17:37 gda Exp $
- */
 
 #ifdef OS2
 #include <stdlib.h>
@@ -30,9 +25,6 @@
 #include <sys/param.h>
 #endif
 #include <string.h>
-
-extern void _XmManagerFocusIn();
-extern void _XmManagerEnter();
 
 #define STRCMP(a,b)  ((a) ? ((b) ? strcmp(a,b) : strcmp(a,"")) : \
 			    ((b) ? strcmp("",b) : 0))
@@ -796,13 +788,7 @@ XmWorkspaceClassRec xmWorkspaceClassRec = {
    {                        /* bulletin_board_class fields */
       FALSE,                                /* always_install_accelerators */
       NULL,                                 /* geo_matrix_create  */
-#ifdef linux86
-      XmInheritFocusMovedProc,              /* focus_moved_proc   */
-#else
-      (XmFocusMovedProc)XtInheritFocusMovedProc,              /* focus_moved_proc
-*/
-#endif
-
+      XtInheritFocusMovedProc,              /* focus_moved_proc   */
       NULL,                                 /* extension          */
    },
 

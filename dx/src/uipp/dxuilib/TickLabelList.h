@@ -1,14 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// TickLabelList.h -                                                        //
-//                                                                          //
-// Definition for the TickLabelList class.                                  //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
- 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/TickLabelList.h,v 1.1 1999/03/24 15:17:48 gda Exp $
- *
- */
+/*  Open Visualization Data Explorer Source File */
+
  
  
 #ifndef _TickLabelList_h

@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ToggleButtonInterface.h -						    //
-//                                                                          //
-// Definition for the ToggleButtonInterface class.			    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/ToggleButtonInterface.h,v 1.1 1999/03/24 15:17:24 gda Exp $
- */
 
 
 #ifndef _ToggleButtonInterface_h

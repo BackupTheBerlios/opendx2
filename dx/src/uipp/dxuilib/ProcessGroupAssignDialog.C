@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ProcessGroupAssignDialog.C -						    //
-//                                                                          //
-// ProcessGroupAssignDialog Class methods and other related 		    //	
-//     functions/procedures.  						    // 
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ProcessGroupAssignDialog.C,v 1.2 1999/04/16 20:07:33 gda Exp $
- */
 
 #include "UIConfig.h" 
 #include <stdlib.h>
@@ -320,7 +308,7 @@ extern "C" void ProcessGroupAssignDialog_TextCB(Widget    widget,
 
 }
 
-#ifdef HAVE_UNISTD_H
+#ifdef DXD_HAS_UNIX_SYS_INCLUDES
 #include <unistd.h>
 #endif
 

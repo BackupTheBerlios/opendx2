@@ -1,13 +1,5 @@
-///////////////////////////////////////////////////////////////////////////////
-// Field.C -								     //
-//                                                                           //
-// Field Class methods and other related functions/procedures.		     //
-//                                                                           //
-///////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/Field.C,v 1.1 1999/04/05 13:33:35 gda Exp $
- */
 
 #include "Field.h"
 #include "../base/Strings.h"

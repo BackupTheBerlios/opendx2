@@ -1,12 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/DragSource.C,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 
 #include <Xm/Xm.h>
@@ -38,6 +31,10 @@
 
 #if defined(NEEDS_GETHOSTNAME_DECL)
 extern "C" int gethostname(char *address, int address_len);
+#endif
+
+#if defined(DXD_WIN)
+#include <winsock.h>
 #endif
 
 

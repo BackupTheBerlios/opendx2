@@ -1,19 +1,7 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
+
 
 /*
- *	Slider.c
- *	Construct and manage the "frame sequencer guide" to be used as a
- *	popup of the "sequence controller" (alias VCR control)
- *
- *	August 1990
- *	IBM T.J. Watson Research Center
- *	R. T. Maganti
- */
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/SlideBar.c,v 1.1 1999/03/24 15:17:36 gda Exp $ 
  */
 
 #ifdef OS2
@@ -35,10 +23,6 @@
 
 #define ARROW_WIDTH 16
 #define ARROW_HEIGHT 16
-
-
-extern void _XmManagerFocusIn();
-extern void _XmManagerEnter();
 
 
 static void Initialize( XmSlideBarWidget request, XmSlideBarWidget new );

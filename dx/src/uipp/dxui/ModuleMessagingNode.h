@@ -1,26 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// ModuleMessagingNode.h -						    //
-//                                                                          //
-// Definition for the virtual ModuleMessagingNode class			    //
-//
-// This class is used to define classes of Nodes that have messaging protocol
-// between the Server module that is assiated with the node 
-// (see Node::getExecModuleNameString()), although a class need not be derived
-// from this class to have a messaging protocol since there is messaging
-// support in Node::netPrintNode().   The derived class will need to
-// define the message handler (execModuleMessageHandler) the token that is 
-// used to identify the message (getModuleMessageIdString). 
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ModuleMessagingNode.h,v 1.1 1999/03/31 22:32:52 gda Exp $
- *
- */
 
 #ifndef _ModuleMessagingNode_h
 #define _ModuleMessagingNode_h

@@ -1,10 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/XmDX.h,v 1.1 1999/03/24 15:17:37 gda Exp $
- */
 
 #ifndef _XmDX_H
 #define _XmDX_H
@@ -114,7 +109,6 @@
 #define XmCSendMotion		"SendMotion"
 #define XmN8supported		"8supported"
 #define XmN12supported		"12supported"
-#define XmN16supported		"16supported"
 #define XmN24supported		"24supported"
 #define XmCSupported		"Supported"
 

@@ -1,39 +1,5 @@
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-#ifndef _DXLP_H
-#define _DXLP_H
-
-#include "dxl.h"
-#include "dict.h"
-
-#include <sys/types.h>
-
-#ifdef DXD_HAS_WINSOCKETS
-#include <winsock.h>
-#endif
-
-#ifndef DXD_HAS_WINSOCKETS
-#include <netinet/in.h>
-#endif
-
-#if !defined(OS2)  && !defined(DXD_WIN)
-#include <sys/un.h>
-#endif
-
-#ifdef OS2
-#define INCL_DOS
-#include <os2.h>
-#endif
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-/*
- * Input handling structure.
- */
 #define DXL_EVENT_BUF_SIZE 128
 struct DXLEvent {
     int  type;

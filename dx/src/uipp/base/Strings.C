@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// Strings.C -								    //
-//                                                                          //
-// string-related module procedures.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/Strings.C,v 1.1 1999/03/24 15:17:24 gda Exp $
- */
 
 
 #if !defined(DXD_WIN) && !defined(OS2)               //SMH get correct definitions

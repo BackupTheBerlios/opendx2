@@ -1,16 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*****************************************************************************/
-/* Main.C -								     */
-/* main program								     */
-/*****************************************************************************/
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/Main.C,v 1.1 1999/03/24 15:17:26 gda Exp $
- * 
- */
 
 #include "defines.h"
 #include "DXApplication.h"
@@ -48,6 +37,7 @@ extern unsigned long _etext;
 //
 // Used by the assert macro.
 //
+const char *AssertMsgString = "Internal error detected at \"%s\":%d.\n";
  
 void main(unsigned int argc,
 	  char**       argv)

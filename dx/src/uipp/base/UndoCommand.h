@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// UndoCommand.h -							    //
-//                                                                          //
-// Definition for the UndoCommand class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/UndoCommand.h,v 1.1 1999/03/24 15:17:24 gda Exp $
- */
 
 
 #ifndef _UndoCommand_h

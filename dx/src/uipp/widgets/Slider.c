@@ -1,19 +1,7 @@
-/******************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
+
 
 /*
- *	Slider.c
- *	Construct and manage the "frame sequencer guide" to be used as a
- *	popup of the "sequence controller" (alias VCR control)
- *
- *	August 1990
- *	IBM T.J. Watson Research Center
- *	R. T. Maganti 
- */
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/Slider.c,v 1.1 1999/03/24 15:17:36 gda Exp $
  */
 
 #ifdef OS2
@@ -36,10 +24,6 @@
 #include "SliderP.h"
 
 #define  zero  pow(0.1,6)
-
-
-extern void _XmManagerFocusIn();
-extern void _XmManagerEnter();
 
 /*
  * Hi,
@@ -104,7 +88,7 @@ extern void _XmBackgroundColorDefault();
 #define DEF_MAX 100
 #define DEF_STEP 1
 
-#if defined(hp700) || defined(aviion) || defined(solaris) || defined(sun4) || defined (DXD_WIN) || defined(OS2) || defined(linux86)
+#if defined(hp700) || defined(aviion) || defined(solaris) || defined(sun4) || defined (DXD_WIN) || defined(OS2)
 #define trunc(x) ((double)((int)(x)))
 #endif
 

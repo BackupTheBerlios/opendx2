@@ -1,15 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*****************************************************************************/
-/* Main.C -								     */
-/* main program								     */
-/*****************************************************************************/
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/mb/Main.C,v 1.1 1999/03/24 15:17:33 gda Exp $
- */
 
 #include "defines.h"
 #include "MBApplication.h"

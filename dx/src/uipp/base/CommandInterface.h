@@ -1,24 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// CommandInterface.h -							    //
-//                                                                          //
-// Definition for the CommandInterface class.				    //
-//                                                                          //
-// This class is an abstract derived from UIComponent abstract class.  The  //
-// class does not create any widgets, but adds some features to support     //
-// interactions with Command objects.  All of the member data and functions //
-// are protected, accessible only to derived classes.			    //
-//                                                                          //
-// Note that CommandInterface class is a client of Command class.           //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/CommandInterface.h,v 1.1 1999/03/24 15:17:22 gda Exp $
- */
 
 #ifndef _CommandInterface_h
 #define _CommandInterface_h

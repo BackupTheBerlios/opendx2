@@ -1,16 +1,5 @@
-/////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// Network.C -								    //
-//                                                                          //
-// Network Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Network.C,v 1.2 1999/04/08 17:41:48 gda Exp $
- */
 #ifdef OS2
 #include <stdlib.h>
 #include <types.h>
@@ -124,12 +113,12 @@
 // the configuration file.  The code assumes that they are 4 characters
 // in length
 //
-static const char *NetExtension = ".net";
-static const char *CfgExtension = ".cfg";
+static const char NetExtension[] = ".net";
+static const char CfgExtension[] = ".cfg";
 
 #ifdef DXD_OS_NON_UNIX           //SMH allow upper case extensions as well
-static const char *NetExtensionUpper = ".NET";
-static const char *CfgExtensionUpper = ".CFG";
+static const char NetExtensionUpper[] = ".NET";
+static const char CfgExtensionUpper[] = ".CFG";
 #endif
 
 static void GenerateModuleMessage(Dictionary *nodes, char *msg, boolean error);
@@ -572,6 +561,8 @@ boolean Network::clear(boolean destroyPanelsNow)
     // order for the scrollbars to be removed.
     //
     this->workSpaceInfo.setDefaultConfiguration();
+
+    this->netFileWasEncoded = FALSE;
 
     if (!was_deleting)
 	this->deleting = FALSE;
@@ -1185,11 +1176,8 @@ extern "C"
 extern
 FILE* yyin;			/* parser input stream	  */
 
-#ifdef linux86
-int yylineno;
-#else
-extern int yylineno;			/* lexer line number      */
-#endif
+extern
+int yylineno;			/* lexer line number      */
 
 extern int yyparse();
 }
@@ -1271,7 +1259,23 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
    
     netfile = Network::FilenameToNetname(netFile);
 
-    f = this->OpenNetworkFILE(netfile);
+    f = this->openNetworkFILE(netfile);
+
+    //
+    // If there is an editor and this net file is encoded, then don't 
+    // allow reading the .net.  Note, to catch all cases, we must also 
+    // not allow creating of Editor's for encoded nets that have already
+    // been read in (i.e. in image mode).  
+    // See DXApplication::newNetworkEditor() and/or EditorWindow::manage().
+    //
+    if (this->getEditor() && this->wasNetFileEncoded()) {
+	ErrorMessage("This visual program is encoded and is "
+			"therefore not viewable with the VPE");
+	if (f) {
+	    this->closeNetworkFILE(f);	
+	    f = NULL;
+	}
+    }
 
     if (!f) {
 	delete netfile;
@@ -1311,7 +1315,7 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
     boolean parse_terminated =  this->parse(f);
     this->completeNewNetwork();
     this->readingNetwork = FALSE;
-    this->CloseNetworkFILE(f);	
+    this->closeNetworkFILE(f);	
 #ifdef NoParseState
 #else
     this->parseState.cleanupAfterParse();
@@ -1532,6 +1536,8 @@ boolean anchor_reset = FALSE;
 }
 /*****************************************************************************/
 /* Parse -								     */
+/*                                                                           */
+/*                                                                           */
 /*****************************************************************************/
 
 //
@@ -1654,7 +1660,9 @@ static void GenerateModuleMessage(Dictionary *nodes, char *msg, boolean error)
 }
 /*****************************************************************************/
 /* ParseMODULEComment -						     */
+/*                                                                           */
 /* Parses "MODULE" comment.						     */
+/*                                                                           */
 /*****************************************************************************/
 
 void Network::netParseMODULEComment(const char* comment)
@@ -1812,7 +1820,9 @@ int response;
 
 /*****************************************************************************/
 /* parseVersionComment -						     */
+/*                                                                           */
 /* Parses "version" comment.						     */
+/*                                                                           */
 /*****************************************************************************/
 
 void Network::parseVersionComment(const char* comment, boolean netfile)
@@ -1920,7 +1930,9 @@ void Network::netParseVersionComment(const char* comment)
 
 /*****************************************************************************/
 /* ParseCATEGORYComment -						     */
+/*                                                                           */
 /* Parses "CATEGORY" comment.						     */
+/*                                                                           */
 /*****************************************************************************/
 
 void Network::netParseCATEGORYComment(const char* comment)
@@ -1946,7 +1958,9 @@ void Network::netParseCATEGORYComment(const char* comment)
 
 /*****************************************************************************/
 /* ParseDESCRIPTIONComment -					     */
+/*                                                                           */
 /* Parses "DESCRIPTION" comment.					     */
+/*                                                                           */
 /*****************************************************************************/
 
 void Network::netParseDESCRIPTIONComment(const char* comment)
@@ -1972,7 +1986,9 @@ void Network::netParseDESCRIPTIONComment(const char* comment)
 
 /*****************************************************************************/
 /* ParseCommentComment -						     */
+/*                                                                           */
 /* Parses "comment" comment.						     */
+/*                                                                           */
 /*****************************************************************************/
 
 void Network::netParseCommentComment(const char* comment)
@@ -1988,7 +2004,7 @@ void Network::netParseCommentComment(const char* comment)
      */
     if (this->comment == NUL(char*))
     {
-	this->comment = DuplicateString(comment + strlen(" comment: "));
+	this->comment = DuplicateString(comment + STRLEN(" comment: "));
     }
     else
     {
@@ -1996,9 +2012,9 @@ void Network::netParseCommentComment(const char* comment)
 	    (char*)REALLOC
 		(this->comment,
 		 (2 + STRLEN(this->comment) + STRLEN(comment) -
-		 strlen(" comment: ")) * sizeof(char));
+		 STRLEN(" comment: ")) * sizeof(char));
 	strcat(this->comment, "\n");
-	strcat(this->comment, comment + strlen(" comment: "));
+	strcat(this->comment, comment + STRLEN(" comment: "));
     }
     this->setNetworkComment(this->comment);
 
@@ -2006,7 +2022,9 @@ void Network::netParseCommentComment(const char* comment)
 
 /*****************************************************************************/
 /* ParseNodeComment -						             */
+/*                                                                           */
 /* Parses "node" comment.						     */
+/*                                                                           */
 /*****************************************************************************/
 
 void Network::netParseNodeComment(const char* comment)
@@ -2060,7 +2078,7 @@ void Network::netParseNodeComment(const char* comment)
     // 
     char *p = strstr(comment,"inputs =");
     if (p) {
-	p += strlen("inputs =");
+	p += STRLEN("inputs =");
 	int inputs = atoi(p);
 	if (nd->isUserTool() &&
 	    !nd->isInputRepeatable() && (inputs != nd->getInputCount())) {
@@ -2077,7 +2095,7 @@ void Network::netParseNodeComment(const char* comment)
     }
     p = strstr(comment,"outputs =");
     if (p) {
-	p += strlen("outputs =");
+	p += STRLEN("outputs =");
 	int outputs = atoi(p);
 	if (nd->isUserTool() && 
 	    !nd->isOutputRepeatable() && (outputs != nd->getOutputCount())) {
@@ -2112,7 +2130,9 @@ void Network::netParseNodeComment(const char* comment)
 }
 /*****************************************************************************/
 /* ParseNodeComment -						             */
+/*                                                                           */
 /* Parses "node" comment.						     */
+/*                                                                           */
 /*****************************************************************************/
 
 void Network::cfgParseNodeComment(const char* comment)
@@ -2442,7 +2462,9 @@ boolean Network::cfgParseComments(const char *comment, const char *filename,
 }
 /*****************************************************************************/
 /* uinParseComment -							     */
+/*                                                                           */
 /* Parses comment.							     */
+/*                                                                           */
 /*****************************************************************************/
 
 extern "C"
@@ -2484,7 +2506,9 @@ void Network::parseComment(char* comment)
 
 /*****************************************************************************/
 /* uinParseFunctionID -							     */
+/*                                                                           */
 /* Parses function name.						     */
+/*                                                                           */
 /*****************************************************************************/
 
 extern "C"
@@ -2517,8 +2541,10 @@ void Network::parseFunctionID(char *name)
 
 /*****************************************************************************/
 /* uinParseArgument -							     */
+/*                                                                           */
 /* Parses function arguments, i.e., uses arguement variable names to	     */
 /* generate connections (arcs) between nodes.				     */
+/*                                                                           */
 /*****************************************************************************/
 
 extern "C"
@@ -2713,6 +2739,8 @@ void Network::parseArgument(char* name, const boolean isVarname)
 
 /*****************************************************************************/
 /* uinParseLValue -							     */
+/*                                                                           */
+/*                                                                           */
 /*****************************************************************************/
 
 extern "C"
@@ -2830,6 +2858,8 @@ void Network::parseIntAttribute(char* name, int value)
 
 /*****************************************************************************/
 /* uinParseRValue -							     */
+/*                                                                           */
+/*                                                                           */
 /*****************************************************************************/
 
 extern "C"
@@ -2951,6 +2981,8 @@ void Network::parseRValue(char* name)
 
 /*****************************************************************************/
 /* uinParseEndOfMacroDefinition -					     */
+/*                                                                           */
+/*                                                                           */
 /*****************************************************************************/
 
 extern "C"
@@ -2970,7 +3002,9 @@ void Network::parseEndOfMacroDefinition()
 
 /*****************************************************************************/
 /* yyerror -								     */
+/*                                                                           */
 /* Parser error routine.                                                     */
+/*                                                                           */
 /*****************************************************************************/
 
 extern "C"
@@ -4067,7 +4101,14 @@ boolean Network::sendNetwork()
     void *cbData;
     PacketIFCallback cb;
 
-    cb = pi->getEchoCallback(&cbData);
+    //
+    // Only display the network contents if the file that the net came from
+    // (if it came from a file) was not encrypted.
+    //
+    if (this->netFileWasEncoded)
+        cb = NULL;
+    else
+        cb = pi->getEchoCallback(&cbData);
 
     pi->sendMacroStart();
     if (!this->printHeader(pi->getFILE(), PrintExec, cb, cbData))
@@ -5093,7 +5134,8 @@ boolean Network::saveToFileRequired()
 #endif
     return this->isFileDirty() && (count > 0) && 
 	theDXApplication->appAllowsSavingNetFile(this) &&
-	theDXApplication->appAllowsSavingCfgFile();
+	theDXApplication->appAllowsSavingCfgFile() &&
+	!this->netFileWasEncoded;
 }
 
 //
@@ -5110,6 +5152,17 @@ ListIterator	new_cp_l;
 List		cpDeleteList;
 List		removedNodes;
 List		removedDecs;
+
+    //
+    // make sure we don't merge an encoded (unviewable) network into 
+    // a network that has an editor and that would allow viewing of the
+    // encoded program.
+    //
+    if (this->getEditor() && new_net->wasNetFileEncoded()) {
+	ErrorMessage("Encoded visual programs are not viewable.\n"
+		     "Attempt to merge encoded program aborted.");
+	return FALSE;
+    }
 
     //
     // Delete the image windows: Their network pointers are all wrong.
@@ -5455,37 +5508,172 @@ List *Network::makeLabelledNodeList(const char *label)
     }
     return l;
 }
+#ifndef DXD_LACKS_POPEN
+//
+// Try and start the network decoder with the given key to decode the
+// file given by netfile.  If the envirinment variable DXDECODER does
+// not contain the name of the decoder file, then use 
+// $DXROOT/bin_$ARCH/dxdecode.
+// Returns a valid FILE pointer if the key can decode the network, 
+// otherwise a NULL and error message.  This will exit under certain
+// conditions that might indicate someone is trying to break the
+// security mechanisms of encoded networks.
+//
+static FILE *OpenForDecoding(const char *netfile, const char *key)
+{
+    char buf[1024];
+    char cmd[1024];
+    char envbuf[1024];
+    FILE *f;
+    unsigned int code;
+    char *decoder;
+
+    decoder = getenv("DXDECODER");
+    if (!decoder) {
+	sprintf(buf,"%s/bin_%s/dxdecode", 
+		theDXApplication->getUIRoot(),DXD_ARCHNAME);
+	decoder = buf;
+    }
+    sprintf(cmd,"eval \"_$$=%s\";export _$$;%s %s", key, decoder, netfile );
+    sprintf(envbuf,"__=%d", getpid());
+    putenv(envbuf);
+    f = popen (cmd, "r");
+    if (!f) {
+        ErrorMessage("Could not start %s to decode networks", decoder);
+	return NULL;
+    }
+
+    putenv("__=");
+    code = atoi(fgets(buf,80,f)); //check my pid is first thing in mesg
+    if ( (getpid()^1234) != code ){
+        fprintf(stderr,"Invalid data from %s, exiting\n", decoder);
+        exit(1);
+    }
+
+    // for now we will just check for the first / cause we can
+    // unget this
+
+    if (fgetc(f) != '/') {
+        ErrorMessage("Incorrect key for encoded network %s: %s", 
+					netfile , strerror(errno));
+	pclose(f);
+	f = NULL;
+    } else {
+	ungetc('/',f);
+    }
+
+    return f;
+}
+#endif // DXD_LACKS_POPEN
 
 //
 // Close the .net file that was opened with openNetworkFILE().
 //
-void Network::CloseNetworkFILE(FILE *f)
+void Network::closeNetworkFILE(FILE *f)
 {
-    fclose(f);
+    this->CloseNetworkFILE(f,this->wasNetFileEncoded());
 }
+void Network::CloseNetworkFILE(FILE *f, boolean wasEncoded)
+{
+#ifndef DXD_LACKS_POPEN
+    if (wasEncoded)
+	pclose(f);
+    else
+#endif
+	fclose(f);
 
-FILE *Network::OpenNetworkFILE(const char *netFileName, char **errmsg)
+}
+FILE *Network::openNetworkFILE(const char *netFileName, 
+					char **errmsg)
+{
+    return this->OpenNetworkFILE(netFileName, &this->netFileWasEncoded, errmsg);
+}
+FILE *Network::OpenNetworkFILE(const char *netFileName, 
+					boolean *wasEncoded,
+					char **errmsg)
 {
 
     FILE *f;
     char errbuf[1024];
+#if ! DXD_HAS_CRYPT             //CRYPTKEY
+    char *netfile = DuplicateString(netFileName);
+    *wasEncoded = FALSE;
+#else
     char buf[1024];
     char cmd[1024];
+    const char *key = theDXApplication->getCryptKey();
+    boolean forceEncryption = theDXApplication->appForcesNetFileEncryption(); 
     char *netfile = DuplicateString(netFileName);
-    char *p;
 
+    ASSERT(wasEncoded);
+    *wasEncoded = FALSE;
     errbuf[0] = '\0';
 
-    p = (char *)strstr(netfile,".net");
-    ASSERT(p);
-
-    f = fopen (netfile, "r");
-
-    if (f == NULL)
-    {
-	SPRINTF(errbuf,"Error opening file %s: %s", netfile, strerror(errno));
+    if (!key && forceEncryption) { 
+	SPRINTF(errbuf,
+                "%s must be provided a key to open ecnrypted program files",
+                theDXApplication->getInformalName());
 	goto error;
     }
+
+
+    if (key != NULL) {
+
+        // Deal with .ntz (compressed) filenames
+
+        char *p = (char*)strrstr(netfile,".ntz");
+        if (p != NULL){
+            strcpy(p,".ntz");
+        }
+        else{
+            p = (char *)strstr(netfile,".net");
+            ASSERT(p);
+        }
+
+        f = fopen (netfile, "r");
+
+        if (f == NULL)  {
+            SPRINTF(errbuf,"Error opening file %s: %s", 
+					netfile, strerror(errno));
+	    goto error;
+        }
+
+        // Determine if net is encoded by looking for #* in header
+
+        if ((fread(buf,sizeof(unsigned char),2,f)) != 2) {
+            SPRINTF(errbuf,"Error reading file %s: %s", 
+					netfile, strerror(errno));
+	    goto error;
+        }
+
+        buf[2] = '\0';
+
+        if (strcmp(buf,"#*") == 0) {
+
+	    fclose(f);
+
+            // net is encrypted lets see if our key is good.
+
+	    f = OpenForDecoding(netfile, key); 
+		
+	    if (f)
+		*wasEncoded = TRUE;
+        } else if (forceEncryption) {
+	    SPRINTF(errbuf,"Network file %s must be encoded", netfile);
+	    goto error;
+	} else {
+            fseek(f,0,0);
+	}
+    } else
+#endif
+	f = fopen (netfile, "r");
+
+
+    if (f == NULL)  {
+        SPRINTF(errbuf,"Error opening file %s: %s", netfile, strerror(errno));
+	goto error;
+    } 
+
 
     delete netfile;
     return f;

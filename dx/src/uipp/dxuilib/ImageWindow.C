@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-// ImageWindow.C -							    //
-//                                                                          //
-// ImageWindow Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ImageWindow.C,v 1.2 1999/04/12 21:37:16 gda Exp $
- *
- */
 
 #include "defines.h"
 #include <iostream.h>
@@ -117,6 +106,10 @@
 
 #ifdef NEEDS_GETHOSTNAME_DECL
 extern "C" int gethostname(char *,int);
+#endif
+
+#if defined(DXD_WIN)
+#include <winsock.h>
 #endif
 
 #ifndef OS2
@@ -322,7 +315,6 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
     this->imageDepthCascade = NULL;
     this->imageDepth8Option	     = NUL(ToggleButtonInterface*); 
     this->imageDepth12Option	     = NUL(ToggleButtonInterface*);
-    this->imageDepth16Option	     = NUL(ToggleButtonInterface*);
     this->imageDepth24Option	     = NUL(ToggleButtonInterface*);
     this->setPanelAccessOption	     = NUL(CommandInterface*);
     this->onVisualProgramOption	     = NUL(CommandInterface*);
@@ -558,10 +550,6 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 	    new NoUndoImageCommand("imageDepth12", this->commandScope,
 	       FALSE, this, NoUndoImageCommand::Depth12);
 
-	this->imageDepth16Cmd =
-	    new NoUndoImageCommand("imageDepth16", this->commandScope,
-	       FALSE, this, NoUndoImageCommand::Depth16);
-
 	this->imageDepth24Cmd =
 	    new NoUndoImageCommand("imageDepth24", this->commandScope,
 	       FALSE, this, NoUndoImageCommand::Depth24);
@@ -578,7 +566,6 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 	this->setPanelAccessCmd = NULL;
 	this->imageDepth8Cmd = NULL;
 	this->imageDepth12Cmd = NULL;
-	this->imageDepth16Cmd = NULL;
 	this->imageDepth24Cmd = NULL;
     }
 
@@ -758,7 +745,6 @@ ImageWindow::~ImageWindow()
     delete this->throttleCmd;
     if (this->imageDepth8Cmd)   delete this->imageDepth8Cmd;
     if (this->imageDepth12Cmd)  delete this->imageDepth12Cmd;
-    if (this->imageDepth16Cmd)  delete this->imageDepth16Cmd;
     if (this->imageDepth24Cmd)  delete this->imageDepth24Cmd;
     if (this->setPanelAccessCmd) delete this->setPanelAccessCmd;
     delete this->viewControlCmd;
@@ -1508,11 +1494,6 @@ void ImageWindow::createOptionsMenu(Widget parent)
 		"12", this->imageDepth12Cmd, FALSE);
 	cm->appendComponent(tbi);
 
-	ASSERT(this->imageDepth16Cmd);
-	this->imageDepth16Option = tbi = new ToggleButtonInterface(item_parent,
-		"16", this->imageDepth16Cmd, FALSE);
-	cm->appendComponent(tbi);
-
 	ASSERT(this->imageDepth24Cmd);
 	this->imageDepth24Option = tbi = new ToggleButtonInterface(item_parent,
 		"24", this->imageDepth24Cmd, FALSE);
@@ -1629,6 +1610,8 @@ void ImageWindow::setDisplayGlobe()
 
 /*****************************************************************************/
 /* uinAssignDisplayString -						     */
+/*                                                                           */
+/*                                                                           */
 /*****************************************************************************/
 char *ImageWindow::getDisplayString()
 {
@@ -2178,13 +2161,8 @@ extern "C" void ImageWindow_CursorCB(Widget	drawingArea,
 void ImageWindow::handleCursor(int reason, int cursor_num,
 			       double x, double y, double z)
 {
-#ifdef linux86
-    if(NOT this->state.hardwareRender AND this->state.pixmap == 0)
-      return;
-#else
     if(NOT this->state.hardwareRender AND this->state.pixmap == NULL)
       return;
-#endif
 
     ASSERT(this->currentProbeInstance > 0);
     ProbeNode* probe = (ProbeNode*)this->network->getNode("Probe",
@@ -4566,15 +4544,9 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	if (this->viewControlDialog)
 	    this->viewControlDialog->managePickForm();
 
-#ifdef linux86
-	if ((this->state.pixmap == 0 && !this->state.hardwareRender) ||
-	    (this->state.hardwareWindow == 0 && this->state.hardwareRender)||
-	    (!this->directInteractionAllowed()))
-#else
 	if ((this->state.pixmap == NULL && !this->state.hardwareRender) ||
 	    (this->state.hardwareWindow == NULL && this->state.hardwareRender)||
 	    (!this->directInteractionAllowed()))
-#endif
 	{
 	    // We didn't install it, so save it away and apply it later.
 	    this->pendingInteractionMode = this->currentInteractionMode;	
@@ -4629,15 +4601,9 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	if (this->viewControlDialog)
 	    this->viewControlDialog->resetLookDirection();
 
-#ifdef linux86
-	if ((this->state.pixmap == 0 && !this->state.hardwareRender) ||
-	    (this->state.hardwareWindow == 0 && this->state.hardwareRender)||
-	    (!this->directInteractionAllowed()))
-#else
 	if ((this->state.pixmap == NULL && !this->state.hardwareRender) ||
 	    (this->state.hardwareWindow == NULL && this->state.hardwareRender)||
 	    (!this->directInteractionAllowed()))
-#endif
 	{
 	    // We didn't install it, so save it away and apply it later.
 	    this->pendingInteractionMode = this->currentInteractionMode;	
@@ -4718,15 +4684,9 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
             this->sendClientMessage(this->atoms.display_globe, l);
         }
 	// If we are in direct interaction mode(...), enter the mode.
-#ifdef linux86
-        if ((this->state.pixmap == 0 && !this->state.hardwareRender) ||
-            (this->state.hardwareWindow == 0 && this->state.hardwareRender)||
-            (!this->directInteractionAllowed()))
-#else
         if ((this->state.pixmap == NULL && !this->state.hardwareRender) ||
             (this->state.hardwareWindow == NULL && this->state.hardwareRender)||
             (!this->directInteractionAllowed()))
-#endif
         {
 	    // We didn't install it, so save it away and apply it later.
 	    this->pendingInteractionMode = this->currentInteractionMode;	
@@ -4761,15 +4721,9 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	if (this->viewControlDialog)
 	    this->viewControlDialog->resetLookDirection();
 
-#ifdef linux86
-	if ((this->state.pixmap == 0 && !this->state.hardwareRender) ||
-	    (this->state.hardwareWindow == 0 && this->state.hardwareRender)||
-	    (!this->directInteractionAllowed()))
-#else
 	if ((this->state.pixmap == NULL && !this->state.hardwareRender) ||
 	    (this->state.hardwareWindow == NULL && this->state.hardwareRender)||
 	    (!this->directInteractionAllowed()))
-#endif
 	{
 	    // We didn't install it, so save it away and apply it later.
 	    this->pendingInteractionMode = this->currentInteractionMode;	
@@ -4830,7 +4784,6 @@ void ImageWindow::beginExecution()
     // and in standBy (for eoc mode).
     if (this->imageDepth8Cmd) this->imageDepth8Cmd->deactivate();
     if (this->imageDepth12Cmd) this->imageDepth12Cmd->deactivate();
-    if (this->imageDepth16Cmd) this->imageDepth16Cmd->deactivate();
     if (this->imageDepth24Cmd) this->imageDepth24Cmd->deactivate();
 }
 void ImageWindow::standBy()
@@ -4988,23 +4941,27 @@ void ImageWindow::undoCamera()
 	double from[3];
 	double up[3];
 	double width;
-	int projection;
+	boolean projection;
 	double viewAngle;
 
+	int tmp;
 	if(!XmPictureGetUndoCamera((XmPictureWidget)this->getCanvas(),
 	    &to[0], &to[1], &to[2],
 	    &from[0], &from[1], &from[2],
 	    &up[0], &up[1], &up[2],
-	    &width, &projection,
+	    &width, &tmp,
 	    &viewAngle))
 	    return;
+
+	// pc build changed boolean from int to unsigned char
+	projection = tmp;
 	
 	ImageNode *in = (ImageNode *)this->node;
 	in->setTo(to, FALSE);
 	in->setFrom(from, FALSE);
 	in->setUp(up, FALSE);
 	in->setWidth(width, FALSE);
-	in->setProjection((boolean)(projection == 1), FALSE);
+	in->setProjection(projection, FALSE);
 	in->setViewAngle(viewAngle, FALSE);
 
 	int image_width;
@@ -5058,22 +5015,25 @@ void ImageWindow::redoCamera()
 	double from[3];
 	double up[3];
 	double width;
-	int projection;
+	boolean projection;
 	double viewAngle;
 
+	int tmp;
 	XmPictureGetRedoCamera((XmPictureWidget)this->getCanvas(),
 	    &to[0], &to[1], &to[2],
 	    &from[0], &from[1], &from[2],
 	    &up[0], &up[1], &up[2],
-	    &width, &projection,
+	    &width, &tmp,
 	    &viewAngle);
+
+	projection = tmp;
 	
 	ImageNode *in = (ImageNode *)this->node;
 	in->setTo(to, FALSE);
 	in->setFrom(from, FALSE);
 	in->setUp(up, FALSE);
 	in->setWidth(width, FALSE);
-	in->setProjection((boolean)(projection == 1), FALSE);
+	in->setProjection(projection, FALSE);
 	in->setViewAngle(viewAngle, FALSE);
 
 	int image_width;
@@ -6619,13 +6579,12 @@ boolean sw;
 boolean ImageWindow::adjustDepth(int &depth)
 {
 ImageNode *in = (ImageNode*)this->node;
-Boolean sup8, sup12, sup16, sup24;
+Boolean sup8, sup12, sup24;
 int new_depth;
 
     XtVaGetValues(this->getCanvas(),
 		  XmN8supported,  &sup8,
 		  XmN12supported, &sup12,
-		  XmN16supported, &sup16,
 		  XmN24supported, &sup24,
 		  NULL);
     //
@@ -6722,14 +6681,12 @@ void ImageWindow::configureImageDepthMenu()
     if (this->imageDepthCascade) {
 	ASSERT(this->imageDepth8Option);
 	ASSERT(this->imageDepth12Option);
-	ASSERT(this->imageDepth16Option);
 	ASSERT(this->imageDepth24Option);
 
 	if (!this->node) {
 	    this->imageDepthCascade->deactivate();
 	    this->imageDepth8Cmd->deactivate();
 	    this->imageDepth12Cmd->deactivate();
-	    this->imageDepth16Cmd->deactivate();
 	    this->imageDepth24Cmd->deactivate();
 	} else {
 	    boolean sw;
@@ -6740,14 +6697,13 @@ void ImageWindow::configureImageDepthMenu()
 		this->imageDepthCascade->deactivate();
 	    }
 
-	    Boolean sup8, sup12, sup16, sup24, frame_buffer;
+	    Boolean sup8, sup12, sup24, frame_buffer;
 	    int canvas_depth;
 	    XtVaGetValues(this->getCanvas(),
 		      XmNdepth, 	&canvas_depth, 
 		      XmNframeBuffer,  &frame_buffer,
 		      XmN8supported,  &sup8,
 		      XmN12supported, &sup12,
-		      XmN16supported, &sup16,
 		      XmN24supported, &sup24,
 		      NULL);
 
@@ -6759,7 +6715,6 @@ void ImageWindow::configureImageDepthMenu()
 		    canvas_depth = 24;
 		this->imageDepth8Cmd->deactivate();
 		this->imageDepth12Cmd->deactivate();
-		this->imageDepth16Cmd->deactivate();
 		this->imageDepth24Cmd->deactivate();
 	    } else { 
 		if (sup8 && canvas_depth != 8) 
@@ -6770,10 +6725,6 @@ void ImageWindow::configureImageDepthMenu()
 		    this->imageDepth12Cmd->activate();
 		else
 		    this->imageDepth12Cmd->deactivate();
-		if (sup16 && canvas_depth != 16) 
-		    this->imageDepth16Cmd->activate();
-		else
-		    this->imageDepth16Cmd->deactivate();
 		if (sup24 && canvas_depth != 24) 
 		    this->imageDepth24Cmd->activate();
 		else
@@ -6782,7 +6733,6 @@ void ImageWindow::configureImageDepthMenu()
 		
 	    this->imageDepth8Option->setState(canvas_depth == 8);
 	    this->imageDepth12Option->setState(canvas_depth == 12);
-	    this->imageDepth16Option->setState(canvas_depth == 16);
 	    this->imageDepth24Option->setState(canvas_depth == 24);
 	}
     }

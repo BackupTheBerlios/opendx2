@@ -1,28 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// StringTable.C -							    //
-//                                                                          //
-// StringTable Class methods and other related functions/procedures.	    //
-//
-// This implementation uses a table of Lists as a hash table.  Strings are
-// hashed to produce a hash key which is used to index into the table of Lists.
-// The id from the string is generated from the hash key and the position of
-// the string in the list.  This imposes the following restrictions...
-//
-//    1) One can't delete strings from the table, otherwise the id to string
-//	mappings will change.
-//    2) The lists are assumed to have a maximum size (MAX_LISTSIZE) which is
-//	defined to be much larger than the total number of items on the
-//	list. 
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/StringTable.C,v 1.1 1999/03/24 15:17:24 gda Exp $
- *
- */
 
 
 #include "StringTable.h"

@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// HelpOnPanelDialog.C -						    //
-//                                                                          //
-// HelpOnPanelDialog Class methods and other related functions/procedures.    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/HelpOnPanelDialog.C,v 1.1 1999/03/24 15:17:40 gda Exp $
- *
- */
 
 #include "Strings.h"
 #include "UIConfig.h"
@@ -48,7 +36,7 @@ char *HelpOnPanelDialog::getDialogTitle()
     char *dialogTitle = NULL;
 
     if (title) {
-        int len = STRLEN(title) + strlen(" Help On Control Panel...") + 16;
+        int len = STRLEN(title) + STRLEN(" Help On Control Panel...") + 16;
         dialogTitle = new char[len];
         sprintf(dialogTitle,"Help On %s...",title);
     }

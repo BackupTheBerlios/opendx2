@@ -1,11 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// StartupCommand.C -						    //
-//                                                                          //
-// StartupCommand Class methods and other related functions/procedures.//
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-/*
- */
+/*  Open Visualization Data Explorer Source File */
+
 
 #include "UIConfig.h"
 

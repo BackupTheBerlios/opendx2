@@ -1,39 +1,5 @@
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-
-
-#include <float.h>
-#ifdef OS2
-#include <types.h>
-#include <sys/socket.h>
-#endif
-#ifdef DXD_HAS_WINSOCKETS
-#include <winsock.h>
-#endif
-
-#include "../base/UIConfig.h"
-#include "../base/defines.h"
-#include "dxlP.h"
-
-#ifdef OS2
-VOID _Optlink PMCheckInputThread(void *Voidconn);
-#else
-void PMCheckInputThread(void *Voidconn);
-#endif
-
-static void _dxl_InputHandler(void *clientData)
-{
-    DXLConnection *conn = (DXLConnection *)clientData;
-    DXLHandlePendingMessages(conn);
-}
-
-
-    /* FIXME: arrange for _dxl_InputHandler to be called when input available
-     * on the connection, or deliver a message to the main loop that must 
-     * recognize this message and call DXLHandlePendingMessages(). 
-     */
 
 #ifdef OS2
 DXLError DXLInitializePMMainLoop(HWND PMAppWindow, DXLConnection *conn)

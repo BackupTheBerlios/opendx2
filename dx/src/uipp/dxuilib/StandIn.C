@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// StandIn.C -								    //
-//                                                                          //
-// StandIn Class methods and other related functions/procedures.	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/StandIn.C,v 1.2 1999/04/12 21:37:44 gda Exp $
- */
 
 #include "defines.h"
 #include <iostream.h>
@@ -65,6 +54,10 @@
 // gethostname is needed by selectedNodesCB which is part of drag-n-drop
 #if defined(NEEDS_GETHOSTNAME_DECL) 
 extern "C" int gethostname(char *address, int address_len);
+#endif
+
+#if defined(DXD_WIN)
+#include <winsock.h>
 #endif
 
 #ifdef DXD_XTOFFSET_HOSED

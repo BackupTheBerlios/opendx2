@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// OpenNetworkDialog.C -						    //
-//                                                                          //
-// OpenNetworkDialog Class methods and other related functions/procedures.  //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/OpenNetworkDialog.C,v 1.1 1999/03/24 15:17:44 gda Exp $
- */
 
 
 
@@ -96,6 +85,7 @@ void OpenNetworkDialog::helpCallback(Dialog* dialog)
     int comment_len=0, maxlen=0;
     FILE *fp = NULL;
     char *errmsg = "";
+    boolean wasEncoded;
  
     if (!f) {
 	ModalErrorMessage(this->getRootWidget(),"A file must be selected.");
@@ -104,7 +94,7 @@ void OpenNetworkDialog::helpCallback(Dialog* dialog)
 
     netfile = Network::FilenameToNetname(f);
 
-    fp = Network::OpenNetworkFILE(netfile,&errmsg);
+    fp = Network::OpenNetworkFILE(netfile,&wasEncoded,&errmsg);
     if (!fp) {
 	ModalErrorMessage(this->getRootWidget(),errmsg);
 	if (errmsg[0]) delete errmsg;
@@ -134,7 +124,7 @@ void OpenNetworkDialog::helpCallback(Dialog* dialog)
 	    done = TRUE;
 	}
     }
-    Network::CloseNetworkFILE(fp);
+    Network::CloseNetworkFILE(fp,wasEncoded);
 
 
     if (!comment) {

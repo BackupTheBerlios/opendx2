@@ -1,15 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header
- *
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ParseMDF.C,v 1.1 1999/03/24 15:17:44 gda Exp $
- */
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -64,7 +54,9 @@ Dictionary *theDynamicPackageDictionary = new Dictionary;
 
 /*****************************************************************************/
 /* _ParsePackageLine -						     */
+/*                                                                           */
 /* Parses and processes the PACKAGE line.				     */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -109,7 +101,9 @@ error:
 }
 /*****************************************************************************/
 /* _ParseModuleLine -						     */
+/*                                                                           */
 /* Parses and processes the MODULE line.				     */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -189,7 +183,9 @@ error:
 #ifdef NOT_NEEDED
 /*****************************************************************************/
 /* _ParseCategoryLine -						     */
+/*                                                                           */
 /* Parses and processes the CATEGORY line.				     */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -368,7 +364,9 @@ boolean _ParseParameterAttributes(ParameterDefinition *pd , const char *attr)
 
 /*****************************************************************************/
 /* _ParseOUTBOARDLine -							     */
+/*                                                                           */
 /* Parses and processes the ' OUTBOARD "command" [ ; host ]' line.     */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -464,7 +462,9 @@ error:
 }
 /*****************************************************************************/
 /* _ParseLOADABLELine -							     */
+/*                                                                           */
 /* Parses and processes the ' Loadable file'				     */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -543,7 +543,9 @@ error:
 }
 /*****************************************************************************/
 /* _ParseInputLine -							     */
+/*                                                                           */
 /* Parses and processes the INPUT line.					     */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -719,7 +721,9 @@ error:
 
 /*****************************************************************************/
 /* _ParseOutputLine -						     */
+/*                                                                           */
 /* Parses and processes the OUTPUT line.				     */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -875,7 +879,9 @@ error:
 
 /*****************************************************************************/
 /* _ParseOptionsLine -						     */
+/*                                                                           */
 /* Parses and processes the OPTIONS line.				     */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -938,7 +944,9 @@ boolean _ParseOptionsLine(Dictionary*    mdf,
 }
 /*****************************************************************************/
 /* _ParseRepeatLine -						     */
+/*                                                                           */
 /* Parses and processes the REPEAT line.				     */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -1015,7 +1023,10 @@ boolean _ParseRepeatLine(Dictionary*    mdf,
 
 /*****************************************************************************/
 /* _FinishNodeDefinition -						     */
+/*                                                                           */
 /* Return TRUE if the module was added to the mdf dictionary 		     */ 
+/*                                                                           */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -1050,7 +1061,9 @@ boolean _FinishNodeDefinition(Dictionary*    mdf,
 
 /*****************************************************************************/
 /* ReadMDF -								     */
+/*                                                                           */
 /* Read and parse MDF from open file stream.				     */
+/*                                                                           */
 /*****************************************************************************/
 
 boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
@@ -1759,7 +1772,9 @@ boolean ReadMDFFiles(const char *root, Dictionary *mdf)
 #ifdef NOT_YET
 /*****************************************************************************/
 /* _CompareModules -							     */
+/*                                                                           */
 /* Compares two module name strings.					     */
+/*                                                                           */
 /*****************************************************************************/
 
 static
@@ -1776,7 +1791,9 @@ int _CompareModules(int* first,
 
 /*****************************************************************************/
 /* SortMDF -								     */
+/*                                                                           */
 /* Sorts an MDF list by name.                                                */
+/*                                                                           */
 /*****************************************************************************/
 
 void SortMDF(Dictionary* mdf)
@@ -1794,8 +1811,10 @@ void SortMDF(Dictionary* mdf)
 
 /*****************************************************************************/
 /* InitializeMDF -							     */
+/*                                                                           */
 /* Initializes an MDF after all the various module description files have    */
 /* been read and parsed.						     */
+/*                                                                           */
 /*****************************************************************************/
 
 void InitializeMDF(UimMDF* mdf)
@@ -1905,8 +1924,10 @@ void InitializeMDF(UimMDF* mdf)
 
 /*****************************************************************************/
 /* _uimPrintMDF -							     */
+/*                                                                           */
 /* Prints binary form of module descriptions in ASCII.  prints only one      */
 /* module name, if supplied; otherwise prints the entire table of modules.   */
+/*                                                                           */
 /*****************************************************************************/
 
 static

@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// SearchDialog.h -			        		 	    //
-//                                                                          //
-// Definition for the SearchDialog class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/SearchDialog.h,v 1.1 1999/04/05 13:33:49 gda Exp $
- */
 
 #ifndef _SearchDialog_h
 #define _SearchDialog_h

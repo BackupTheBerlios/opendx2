@@ -1,17 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-//////////////////////////////////////////////////////////////////////////////
-// WarningDialogManager.h -						    //
-//                                                                          //
-// Definition for the WarningDialogManager class.			    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/WarningDialogManager.h,v 1.1 1999/03/24 15:17:24 gda Exp $
- */
 
 
 #ifndef _WarningDialogManager_h

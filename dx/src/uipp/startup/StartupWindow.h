@@ -1,25 +1,12 @@
-/////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// StartupWindow.h -			       		 	    //
-//                                                                          //
-// Definition for the StartupWindow class.			    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/startup/StartupWindow.h,v 1.2 1999/04/01 16:00:24 gda Exp $
- * 
- */
 
 #ifndef _StartupWindow_h
 #define _StartupWindow_h
 
 
 #include "UIConfig.h"
-#include <dxl.h>
+#include "dxl.h"
 #include "defines.h"
 #include "IBMMainWindow.h"
 

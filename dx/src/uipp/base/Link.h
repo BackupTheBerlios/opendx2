@@ -1,22 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// Link.h -								    //
-//                                                                          //
-// Definition for the Link class.					    //
-//                                                                          //
-// The instances of this class serve as individual link/element	containers  //
-// within a list, implmented by the List class and iterated via ListItera-  //
-// tor class; e.g., this class is intended to be used by the List and List- //
-// Iterator classes.  To this end, the entire class is declared to be pri-  //
-// vate.								    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/Link.h,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 
 #ifndef _Link_h

@@ -1,13 +1,5 @@
-/////////////////////////////////////////////////////////////////////////////
-// MBMainWindow.h -							    //
-//                                                                          //
-// Definition for the MBMainWindow class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/mb/MBMainWindow.h,v 1.1 1999/03/24 15:17:33 gda Exp $
- */
 
 #ifndef _MBMainWindow_h
 #define _MBMainWindow_h

@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// EchoNode.h -							    //
-//                                                                          //
-// Definition for the EchoNode class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/EchoNode.h,v 1.1 1999/03/31 22:31:33 gda Exp $
- */
 
 
 #ifndef _EchoNode_h

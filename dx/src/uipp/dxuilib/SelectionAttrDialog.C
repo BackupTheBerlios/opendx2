@@ -1,11 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/SelectionAttrDialog.C,v 1.1 1999/03/24 15:17:45 gda Exp $
- */
 
 #include <Xm/Form.h>
 #include <Xm/Frame.h>
@@ -349,7 +343,7 @@ boolean SelectionAttrDialog::storeAttributes()
 	       strcat(strlist," ");
 	       strcat(vallist," ");
 	    }
-	    delete text;
+	    XtFree(text);
 	}
 	strcat(vallist,"}");
 	strcat(strlist,"}");

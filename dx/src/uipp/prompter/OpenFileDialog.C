@@ -1,13 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-// OpenFileDialog.C -							    //
-//                                                                          //
-// OpenFileDialog Class methods and other related functions/procedures.     //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/OpenFileDialog.C,v 1.1 1999/04/05 13:33:39 gda Exp $
- */
 
 
 #include "../base/defines.h"

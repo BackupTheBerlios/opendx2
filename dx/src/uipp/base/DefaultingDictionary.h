@@ -1,19 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// DefaultingDictionary.h -						    //
-//                                                                          //
-// Definition for the DefaultingDictionary class.			    //
-// Implements a dictionary that has a default value if a given definition is//
-// not found at lookup time.  Default definitions are pushed and popped     //
-// onto a stack.							    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/DefaultingDictionary.h,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 
 #ifndef _DefaultingDictionary_h

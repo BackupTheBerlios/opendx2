@@ -1,19 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// ThrottleDialog.C -                                                       //
-//                                                                          //
-// Definition for the ThrottleDialog class.                                 //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /a/spline/homes/spline/danz/ui++/base/RCS/ThrottleDialog.C,v 1.1 93/
-02/03 16:45:33 danz Exp Locker: danz $
- *
- */
 
 #include <X11/StringDefs.h>
 

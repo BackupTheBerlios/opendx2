@@ -1,16 +1,5 @@
-/////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ConfirmedOpenCommand.C -						    //
-//                                                                          //
-// ConfirmedOpenCommand Class methods and other related functions/procedures.//
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/ConfirmedOpenCommand.C,v 1.1 1999/04/05 13:33:34 gda Exp $
- */
 
 #include "ConfirmedOpenCommand.h"
 #include "GARApplication.h"

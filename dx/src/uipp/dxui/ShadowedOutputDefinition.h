@@ -1,19 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                           DX  SOURCEFILE                                 //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-//
-// This class does not define any methods but is defined so that the 
-// NodeDefinition class hierarchy matches that of the Node class.
-//
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ShadowedOutputDefinition.h,v 1.1 1999/03/31 22:35:02 gda Exp $
- *
- */
 
 
 #ifndef _ShadowedOutputDefinition_h

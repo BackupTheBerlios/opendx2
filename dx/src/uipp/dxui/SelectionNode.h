@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// SelectionNode.h -							    //
-//                                                                          //
-// Definition for the SelectionNode class which implements Scalar,  	    //
-// Integer, Vector and List version of these types of interactors	    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/SelectionNode.h,v 1.1 1999/03/31 22:34:29 gda Exp $
- */
 
 
 #ifndef _SelectionNode_h

@@ -1,18 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// OpenCommand.h -							    //
-//                                                                          //
-// Definition for the OpenCommand class.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/OpenCommand.h,v 1.1 1999/03/31 22:33:32 gda Exp $
- *
- */
 
 #ifndef _OpenCommand_h
 #define _OpenCommand_h

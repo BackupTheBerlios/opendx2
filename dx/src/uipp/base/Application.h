@@ -1,24 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// Application.h -							    //
-//                                                                          //
-// Definition for the Application class.				    //
-//                                                                          //
-// This class is intended to serve as an abstract super class for all	    //
-// application-related information, and to provide the general application  //
-// framework.  To this end, this class establishes a special relationship   //
-// with main() routine to intialize the global application object           //
-// (theApplication) and cause it to handle events.  This class also acts as //
-// the server for its window clients to create/initialize/manage them-      //
-// selves.								    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/Application.h,v 1.1 1999/03/24 15:17:22 gda Exp $
- */
 
 
 #ifndef _Application_h
@@ -89,6 +70,21 @@ class Application : public UIComponent, public Server
 			       XrmOptionDescList optlist, int optlistsize);
 
     //
+    // Initializes the Xt Intrinsics (creating the first widget),
+    // by calling initializeWindowSytstem() if not already called.
+    // Initializes any Application specfic state.  This routine should 
+    // be called by main() or subclasses only.
+    //
+    virtual boolean initialize(unsigned int* argcp, char** argv);
+
+    //
+    // Handles application events.
+    //   This routine should be called by main() only.
+    //
+    virtual void handleEvents();
+    virtual void handleEvent(XEvent *xev);
+
+    //
     // Load application specific action routines
     //
     virtual void addActions() {}
@@ -126,21 +122,6 @@ class Application : public UIComponent, public Server
 
     // Currently used only for debugging. 
     static void DumpApplicationResources(const char *filename);
-
-    //
-    // Initializes the Xt Intrinsics (creating the first widget),
-    // by calling initializeWindowSytstem() if not already called.
-    // Initializes any Application specfic state.  This routine should 
-    // be called by main() or subclasses only.
-    //
-    virtual boolean initialize(unsigned int* argcp, char** argv);
-
-    //
-    // Handles application events.
-    //   This routine should be called by main() only.
-    //
-    virtual void handleEvents();
-    virtual void handleEvent(XEvent *xev);
 
     //
     // Notification messages:

@@ -1,32 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// Dialog.h -								    //
-//                                                                          //
-// Definition for the Dialog class.					    //
-// This dialog class is intended to be used as a base for all other dialogs,//
-// and not instantiated itself.  One needs to define createDialog to        //
-// actually make an unmanaged dialog.  The base dialog class assumes that   //
-// some of three buttons will be created, this->ok, this->cancel, and this  //
-// ->help.  The virtual functions okCallback, cancelCallback, and 	    //
-// helpCallback will be called, and if it's cancel, the dialog will be     //
-// unmanaged.  If its ok and okCallback() returns TRUE, then the dialog will//
-// be unmanged.  To add buttons, a derived class will emulate this, adding a  //
-// static widget callback (like Dialog::Dialog_OkCB) and a virtual function  //
-// like Dialog::okCallback.  A child that uses a dialog with built in 	    //
-// buttons and callbacks should redefine post so that it installs Dialog's  //
-// static widget callbacks Dialog::{Ok,Cancel,Help}Callback in the right    //
-// way, and, if this->root doesn't exist, it should 			    //
-// this->createDialog(this->parent); this->installWidgetDestroyCallback();  //
-// it should also this->manage(); the dialog.				    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/Dialog.h,v 1.1 1999/03/24 15:17:23 gda Exp $
- *
- */
 
 #ifndef _Dialog_h
 #define _Dialog_h

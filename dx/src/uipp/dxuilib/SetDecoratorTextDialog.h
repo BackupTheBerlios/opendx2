@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
-// SetDecoratorTextDialog.h -			       		 	    //
-//                                                                          //
-// Definition for the SetDecoratorTextDialog class.			    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/SetDecoratorTextDialog.h,v 1.2 1999/04/12 21:11:16 gda Exp $
- *
- */
 
 
 #ifndef _SetDecoratorTextDialog_h

@@ -1,19 +1,7 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
+
 
 /*
- *	FrameControl.c
- *	Construct and manage the "frame sequencer guide" to be used as a
- *	popup of the "sequence controller" (alias VCR control)
- *
- *	August 1990
- *	IBM T.J. Watson Research Center
- *	R. T. Maganti 
- */
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/FrameControl.c,v 1.1 1999/03/24 15:17:35 gda Exp $
  */
 /*
  * Templates of the local subroutines
@@ -71,9 +59,6 @@ static void ChangeSlideBarValue( XmFrameControlWidget frame_control, int value,
 
 extern void _XmForegroundColorDefault();
 extern void _XmBackgroundColorDefault();
-extern void _XmManagerFocusIn();
-extern void _XmManagerEnter();
-
 
 /* Declare defaults */
 #define DEF_MIN 1

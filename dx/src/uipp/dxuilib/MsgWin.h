@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// MsgWin.h -								    //
-//                                                                          //
-// Definition for the MsgWin class.					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/MsgWin.h,v 1.1 1999/03/24 15:17:43 gda Exp $
- */
 
 
 #ifndef _MsgWin_h

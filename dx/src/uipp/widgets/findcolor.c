@@ -1,13 +1,5 @@
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
+/*  Open Visualization Data Explorer Source File */
 
-/*****************************************************************************/
-/*****************************************************************************/
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/findcolor.c,v 1.1 1999/03/24 15:17:37 gda Exp $
- */
 
 #include <stdio.h>
 #include <X11/X.h>
@@ -18,6 +10,7 @@
 
 /***************************************************************************/
 /* find_color								   */
+/* 									   */
 /* Read out the default colormap and find the closest cell to the target   */
 /***************************************************************************/
 static void _find_color(Widget w, XColor *target, char *dontuse)

@@ -1,45 +1,5 @@
+/*  Open Visualization Data Explorer Source File */
 
-/*****************************************************************************/
-/*                            DX  SOURCEFILE                                 */
-/*****************************************************************************/
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/widgets/Color.h,v 1.1 1999/03/24 15:17:34 gda Exp $
- * $Log: Color.h,v $
- * Revision 1.1  1999/03/24 15:17:34  gda
- * Initial revision
- *
- * Revision 1.1.1.1  1999/03/19 20:59:40  gda
- * Initial CVS
- *
- * Revision 10.1  1999/02/24 13:22:43  gda
- * OpenDX Baseline
- *
- * Revision 9.1  1997/05/22 18:46:46  svs
- * Copy of release 3.1.4 code
- *
- * Revision 8.0  1995/10/03  18:48:58  nsc
- * Copy of release 3.1 code
- *
- * Revision 7.1  1994/01/18  19:02:08  svs
- * changes since release 2.0.1
- *
- * Revision 6.1  93/11/16  10:50:22  svs
- * ship level code, release 2.0
- * 
- * Revision 1.3  93/09/22  14:31:24  jvergo
- * Colormaps on 24 bit visuals.
- * 
- * Revision 1.2  93/02/17  10:46:03  danz
- * Added compilation flag for C++.
- * 
- * Revision 1.1  93/02/15  13:37:43  danz
- * Initial revision
- * 
- * Revision 1.1  90/10/05  10:28:41  jgv
- * Initial revision
- * 
- */
 #ifndef _Color_h
 #define _Color_h
 

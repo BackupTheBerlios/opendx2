@@ -1,28 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// List.h -								    //
-//                                                                          //
-// Definition for List class.						    //
-//                                                                          //
-// The List class stores a list of pointers typecast to void* type.  This   //
-// allows maximum flexibility in terms of being able to store pointers	    //
-// (or data that will fit in pointer space) as arbitrary data.  However,    //
-// this makes it impossible for the list to properly dispose of the elements//
-// within this list when it is cleared.  Thus, the client needs to first    //
-// iterate through the list and dispose of each element, if necessary,	    //
-// before clearing the list of its elements.				    //
-//                                                                          //
-// This class allows most all operations needed for list management.	    //
-// Iteration through the list may be achieved efficiently through use of    //
-// ListIterator class objects.						    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/List.h,v 1.1 1999/03/24 15:17:23 gda Exp $
- */
 
 #ifndef _List_h
 #define _List_h

@@ -1,17 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// ColormapDefinition.h -						    //
-//                                                                          //
-// Definition for the ColormapDefinition class.			    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ColormapDefinition.h,v 1.1 1999/03/31 22:30:36 gda Exp $
- *
- */
 
 #ifndef _ColormapDefinition_h
 #define _ColormapDefinition_h

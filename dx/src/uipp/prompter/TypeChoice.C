@@ -1,13 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/TypeChoice.C,v 1.2 1999/04/05 17:22:12 gda Exp $
- */
 
 #include <sys/types.h>
 #include <time.h>
@@ -517,7 +509,7 @@ TypeChoice::connect(int mode)
 			"dx -processors 1 -menubar -wizard "
 			"-xrm DX.dxAnchor.geometry:410x56+0+0 "
 			"-xrm DX.editorWindow.geometry:200x150-0+0";
-#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
+#if !defined(DXD_OS_NON_UNIX)
 		    if (!cp) cp = theGARApplication->getResourcesDxuiArgs();
 		    if (!cp) cp = theGARApplication->getDxuiArgs();
 		    if (cp) {

@@ -1,25 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//									    //
-// Command.h -								    //
-//                                                                          //
-// Definition for the Command class.					    //
-//                                                                          //
-// This is an abstract class designed to serve as a base class to represent //
-// all commands in a GUI-driven application.  This class is founded upon    //
-// the concept that every command object should support an action and, per- //
-// haps, to undo that action.  To this end, it provides support for a cen-  //
-// tral undo facility that allows the most recent command to be rolled back.//
-// This class also recognizes and maintains a list of user interface com-   //
-// ponents (WidgetComponent objects) that are visual representations of the //
-// command (i.e., N-to-1 relationship).					    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/Command.h,v 1.1 1999/03/24 15:17:22 gda Exp $
- */
 
 
 #ifndef _Command_h

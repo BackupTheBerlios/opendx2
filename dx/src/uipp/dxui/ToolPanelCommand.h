@@ -1,16 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////
-//                            DX  SOURCEFILE                                //
-//                                                                          //
-//                                                                          //
-// Node.C -                                                                 //
-//                                                                          //
-// Node Class methods and other related functions/procedures.               //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/*  Open Visualization Data Explorer Source File */
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/ToolPanelCommand.h,v 1.1 1999/03/31 22:35:31 gda Exp $
- */
 
 
 #ifndef _ToolPanelCommand_h
