@@ -139,7 +139,7 @@ static Error memsee(int blocktype, Pointer start, uint size, Pointer p);
 static Error memsee1(int blocktype, Pointer start, uint size, Pointer p);
 static Error memquery(int blocktype, Pointer start, uint size, Pointer p);
 
-void sigcatch();
+void _dxf_sigcatch();
 #define NSECONDS 2    /* automatic update */
 
 
@@ -302,7 +302,7 @@ DXVisualizeMemory(int which, int procid)
 	    report_memory(d_local[i]);
 
 #if !defined(intelnt)
-    signal(SIGALRM, sigcatch);
+    signal(SIGALRM, _dxf_sigcatch);
     alarm(NSECONDS);    
 #endif
     return OK;
@@ -882,7 +882,7 @@ error:
 }
 
 
-void sigcatch()
+void _dxf_sigcatch()
 {
     if (d_small)
 	report_memory(d_small);
@@ -892,7 +892,7 @@ void sigcatch()
     
 
 #if !defined(intelnt)
-    signal(SIGALRM, sigcatch);
+    signal(SIGALRM, _dxf_sigcatch);
     alarm(NSECONDS);
 #endif
 }
