@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/SetDecoratorTextDialog.h,v 1.1 1999/03/24 15:17:47 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/SetDecoratorTextDialog.h,v 1.2 1999/04/12 21:11:16 gda Exp $
  *
  */
 
@@ -85,7 +85,7 @@ class SetDecoratorTextDialog : public Dialog
     int     line_count;
     int*    kern_lengths;
     char**  kern_lines;
-    static  char* Pad(char* , int , boolean);
+    static  char* Pad(char* , int , int);
 
   protected:
     //
