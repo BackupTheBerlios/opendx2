@@ -219,6 +219,8 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->undoOption              = NUL(CommandInterface*);
     this->valuesOption            = NUL(CommandInterface*);
     this->findToolOption          = NUL(CommandInterface*);
+    this->Ox			  = -1;
+    this->find_restore_page       = NUL(char*);
 #ifndef FORGET_GETSET
     this->programVerifyCascade    = NUL(CascadeMenu*);
 #endif
@@ -870,6 +872,8 @@ EditorWindow::~EditorWindow()
     if (this->errored_standins) delete this->errored_standins;
     if (this->layout_controller) delete this->layout_controller;
     this->clearUndoList();
+
+    if (this->find_restore_page) delete this->find_restore_page;
 }
 
 //
@@ -2859,6 +2863,56 @@ void EditorWindow::getWorkspaceWindowPos(int *x, int *y)
     return ;
 }
 
+//
+// moveWorkspaceWindow() used to do some side effect stuff on behalf
+// of the FindToolDialog.  I've moved that into a separate method.  I
+// hope it's clearer.  The stuff in moveWorkspaceWindow was broken when
+// I added vpe pages because the timing of the operations changed.
+//
+void EditorWindow::checkPointForFindDialog(FindToolDialog* dialog)
+{
+    XmScrolledWindowWidget scrollWindow;
+    Arg                    arg[8];
+    Cardinal               n;
+    int                    hScrollValue;
+    int                    vScrollValue;
+
+    ASSERT (dialog->isManaged());
+
+    int page = this->workSpace->getCurrentPage();
+    EditorWorkSpace *current_ews = this->workSpace;
+    if (page) current_ews = (EditorWorkSpace*)this->workSpace->getElement(page);
+    GroupRecord* grec = this->getGroupOfWorkSpace(current_ews);
+    if (this->find_restore_page)
+	delete this->find_restore_page;
+    if (grec)
+	this->find_restore_page = DuplicateString(grec->getName());
+    else
+	this->find_restore_page = NUL(char*);
+
+    /*
+     * Convert scrolled window widget to its internal form.
+     */
+    scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
+    /*
+     * Get drawing window resources.
+     */
+    n = 0;
+    XtSetArg(arg[n], XmNvalue, &hScrollValue); n++;
+    XtGetValues((Widget)scrollWindow->swindow.hScrollBar, arg, n);
+
+    n = 0;
+    XtSetArg(arg[n], XmNvalue, &vScrollValue); n++;
+    XtGetValues((Widget)scrollWindow->swindow.vScrollBar, arg, n);
+
+    /*
+     * Store the original position.  The original vpe page
+     * was recorded earlier in this method just prior to 
+     * selecting the vpe page of the destination node.
+     */
+    this->Ox = hScrollValue;
+    this->Oy = vScrollValue;
+}
 
 void EditorWindow::moveWorkspaceWindow(UIComponent* si)
 {
@@ -2882,15 +2936,17 @@ void EditorWindow::moveWorkspaceWindow(UIComponent* si)
     // It's also possible to find the proper page using Node methods but we
     // don't ordinarily know the node behind a standin because that's protected info.
     //
-    Widget page_parent = XtParent(si->getRootWidget());
-    if (page_parent != this->workSpace->getRootWidget()) {
-	DictionaryIterator di(*this->pageSelector);
-	EditorWorkSpace* ews;
-	while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) {
-	    if (ews->getRootWidget() == page_parent) {
-		ews->unsetRecordedScrollPos();
-		this->workSpace->showWorkSpace(ews);
-		break;
+    if (si) {
+	Widget page_parent = XtParent(si->getRootWidget());
+	if (page_parent != this->workSpace->getRootWidget()) {
+	    DictionaryIterator di(*this->pageSelector);
+	    EditorWorkSpace* ews;
+	    while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) {
+		if (ews->getRootWidget() == page_parent) {
+		    ews->unsetRecordedScrollPos();
+		    this->workSpace->showWorkSpace(ews);
+		    break;
+		}
 	    }
 	}
     }
@@ -2916,15 +2972,6 @@ void EditorWindow::moveWorkspaceWindow(UIComponent* si)
     XtGetValues((Widget)scrollWindow->swindow.vScrollBar, arg, n);
 
     /*
-     * Store the original position.
-     */
-     if (this->Ox < 0)
-     {
-        this->Ox = hScrollValue;
-        this->Oy = vScrollValue;
-     }
-
-    /*
      * Check if the module is already in the clip window.
      */
      
@@ -2947,6 +2994,22 @@ void EditorWindow::moveWorkspaceWindow(UIComponent* si)
         newOx = this->Ox;
         newOy = this->Oy;
         this->Ox = -1;
+	if (this->find_restore_page) {
+	    EditorWorkSpace* ews = (EditorWorkSpace*)
+		this->pageSelector->findDefinition (this->find_restore_page);
+	    if (ews) this->workSpace->showWorkSpace(ews);
+	} else {
+	    // It could be that the original was the "Untitled" page in
+	    // which case find_restore_page would legitimatly be NUL.
+	    // In that situation we can show the root workspace but only
+	    // if we first ensure that the user hasn't deleted it.
+	    // Anytime the user has deleted the page we're looking for, we
+	    // just silently ignore the problem.
+	    EditorWorkSpace* ews = (EditorWorkSpace*)
+		this->pageSelector->findDefinition ("Untitled");
+	    if (ews) this->workSpace->showWorkSpace(ews);
+	}
+    	this->find_restore_page = NUL(char*);
     }
     else                       /* FIND */
     {

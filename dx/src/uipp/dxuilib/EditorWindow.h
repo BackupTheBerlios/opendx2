@@ -164,8 +164,10 @@ class EditorWindow : public DXWindow
 
     //
     // Origin of the workspace window, used for error node finding
+    // and for 'restore' in the find tool dialog.
     //
     int    Ox, Oy;
+    char*  find_restore_page;
 
     void   openSelectedINodes();
 
@@ -966,6 +968,14 @@ class EditorWindow : public DXWindow
     // Receive a notification that the net has been saved and marked clean
     //
     void notifySaved() { this->clearUndoList(); }
+
+    //
+    // FindToolDialog requires support in order to move the canvas back
+    // the original location before the first find operation.  This used
+    // to happen via a side effect in moveWorkspaceWindow() which was
+    // broken with the addition of vpe pages.
+    //
+    void checkPointForFindDialog(FindToolDialog*);
 
     //
     // Returns a pointer to the class name.

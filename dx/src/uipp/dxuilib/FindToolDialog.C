@@ -689,6 +689,15 @@ extern "C" void FindToolDialog_FindCB(Widget    widget,
     }
     else
     {
+	//
+	// In order to implement restore, we need to record the name
+	// of the vpe page that was selected prior to our doing
+	// anything.  This used to happen as a side effect of respositioning
+	// the vpe window however that was broken when vpe pages were added.
+	//
+	if (data->undoStack->getSize() == 0)
+	    data->editor->checkPointForFindDialog(data);
+
     	data->selectNode((char*)theNode->getNameString(), 
 			 theNode->getInstanceNumber());
     	data->lastInstance = nextInstance;
@@ -696,7 +705,6 @@ extern "C" void FindToolDialog_FindCB(Widget    widget,
 				theNode->getInstanceNumber(), 
 				name);
         data->redoStack->clear();
-
     	data->restoreSens(True);
     	data->undoSens(True);
     	data->redoSens(False);
@@ -740,8 +748,9 @@ int FindToolDialog::selectNode(char* name, int instance, boolean newNode)
 
 void FindToolDialog::restoreSens(boolean sensitive)
 {
-     if (XtIsSensitive(this->restorebtn) != sensitive)
-     	XtSetSensitive(this->restorebtn,sensitive);
+    if (XtIsSensitive(this->restorebtn) != sensitive) {
+	XtSetSensitive(this->restorebtn,sensitive);
+    }
 }
 
 void FindToolDialog::redoSens(boolean sensitive)
