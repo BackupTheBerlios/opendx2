@@ -1537,7 +1537,7 @@ void Browser::searchForward(char *text)
 
 	int i;
 	for (i = 0; i < STRLEN(buf); i++)
-	    if (! regexec((regexp *)search_for, buf[i]))
+	    if (! regexec((regexp *)search_for, buf + i ))
 	    	break;
 
 	if (i)
@@ -1702,7 +1702,7 @@ void Browser::searchBackward(char *text)
 	    found = 1;
 
 	    for (i = STRLEN(buf)-1; i >= 0; i--)
-		if (! regexec((regexp *)search_for, buf[i]))
+		if (! regexec((regexp *)search_for, buf + i ))
 		    break;
 
 	    offset = i + 1;
@@ -1715,7 +1715,7 @@ void Browser::searchBackward(char *text)
 	    found = 1;
 
 	    for (i = STRLEN(buf)-1; i >= 0; i--)
-		if (! regex(search_for, buf[i]))
+		if (! regex(search_for, buf + i ))
 		    break;
 
 	    offset = i + 1;
@@ -1742,7 +1742,7 @@ void Browser::searchBackward(char *text)
 	    found = 1;
 
 	    for (i = STRLEN(buf)-1; i >= 0; i--)
-		if (! strstr(text,  buf[i]))
+		if (! strstr(text,  buf + i ))
 		    break;
 
 	    offset = i + 1;
