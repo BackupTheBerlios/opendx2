@@ -933,16 +933,16 @@ arealloc(struct arena *a, char *x, unsigned int n)
 #define K   *1024
 #define MEG K K
                                         /* the following are in mem.c:       */
-extern Error _dxfsetmem(int limit);	/*             set shared mem size   */
+extern Error _dxfsetmem(int64 limit);	/*             set shared mem size   */
 extern Error _dxfinitmem();		/*             initialize shared mem */
 extern Pointer _dxfgetmem(Pointer base, int n); /*     expand shared segment */
 extern Pointer _dxfgetbrk(Pointer base, int n); /*     use sbrk to get mem   */
 extern int _dxfinmem(Pointer x);        /* returns true if mem in arena      */
 
 static int threshhold = 1 K;		/* default small vs large threshhold */
-static int small_size = 0;		/* 0 means compute at run time */
-static int large_size = 0;		/* 0 means compute at run time */
-static int total_size = 0;		/* 0 means compute at run time */
+static uint64 small_size = 0;		/* 0 means compute at run time */
+static uint64 large_size = 0;		/* 0 means compute at run time */
+static uint64 total_size = 0;		/* 0 means compute at run time */
 static int sm_lg_ratio = 0;		/* 0 means compute at run time */
 
 #define SMALL_INIT	small_size	/* potentially user specifiable */
@@ -1278,21 +1278,31 @@ int _dxf_initmemory(void)
 #if sgi     
 	/* includes crimson, indigo and onyx */
 	inventory_t *inv;
-	while (inv=getinvent()) {
+
 #if defined(_SYSTYPE_SVR4) || defined(SYSTYPE_SVR4)
-	    if (inv->inv_class==INV_MEMORY && inv->inv_type==INV_MAIN) {
-		physmem = (uint)((double)inv->inv_state / 1024. / 1024.);
-		break;
-	    }
+	uint physmem2 = 0;
+
+	while (inv=getinvent()) {
+	    if (inv->inv_class==INV_MEMORY)
+		if (inv->inv_type==INV_MAIN_MB) {
+		    physmem = inv->inv_state;
+		}
+		else if (inv->inv_type==INV_MAIN) {
+		    physmem2 = (uint)((double)inv->inv_state / 1024. / 1024.);
+		}
+	}
+	if ( physmem == 0 )
+	  physmem = physmem2;   /*  If no MEM/MAIN_MB, fall back to MEM/MAIN  */
 #else
+	while (inv=getinvent()) {
 	    if (inv->class==INV_MEMORY && inv->type==INV_MAIN) {
 		physmem = (uint)((double)inv->inv_state / 1024. / 1024.);
 		break;
 	    }
-#endif  /* SVR4 */
 	}
+#endif  /* SVR4 */
 	
-#endif
+#endif  /* sgi */
 	
 #if ibmpvs
 	/* use all of global memory */
@@ -1370,15 +1380,18 @@ int _dxf_initmemory(void)
 	 * to 4G, but after that we have to go to a 64 bit architecture
 	 * to support this.
 	 */
-	total_size = (physmem - othermem) MEG ;
+	total_size = (uint64)(physmem - othermem) MEG ;
+
+#ifndef ENABLE_LARGE_ARENAS
 	if ((physmem - othermem) >= 2048)
-		total_size = 2047 MEG ;
+		total_size = 2047L MEG ;
+#endif
 
 #if 1  /* debug */
 	if (getenv("DX_DEBUG_MEMORY_INIT")) {
 	    char buf[132];
 	    
-	    sprintf(buf, "final: physmem %d, othermem %d, total_size %d (%dM)\n",
+	    sprintf(buf, "final: physmem %d, othermem %d, total_size %ld (%ldM)\n",
 		    physmem, othermem, total_size, total_size >> 20);
 	    write(2, buf, strlen(buf));
 	}
@@ -1419,10 +1432,10 @@ int _dxf_initmemory(void)
 	sl_ratio = sm_lg_ratio;
 	sl_offset = 0;
     } else {
-	if (total_size < 32 MEG) {
+	if (total_size < 32L MEG) {
 	    sl_ratio = 16;
 	    sl_offset = 2 MEG;
-	} else if (total_size < 128 MEG) {
+	} else if (total_size < 128L MEG) {
 	    sl_ratio = 24;
 	    sl_offset = 2.667 MEG;
 	} else {
@@ -1496,7 +1509,7 @@ int _dxf_initmemory(void)
     if (!_dxd_exRemoteSlave) {
         char tmpbuf[80];
         sprintf(tmpbuf, 
-          "Memory cache will use %d MB (%d for small items, %d for large)\n\n", 
+          "Memory cache will use %ld MB (%ld for small items, %ld for large)\n\n", 
 	  ((large_size + small_size) >> 20),
 	  (small_size >> 20), (large_size >> 20));
         write(fileno(stdout), tmpbuf, strlen(tmpbuf)); 
@@ -1572,12 +1585,12 @@ int free(char *x)			{return DXFree(x);}
  * parameters, debugging, setting the scavenger, etc.
  */
 
-Error DXmemsize(int size)    /* obsolete */
+Error DXmemsize(uint64 size)    /* obsolete */
 {
-    return DXSetMemorySize((unsigned int)size, 0);
+    return DXSetMemorySize(size, 0);
 }
 
-Error DXSetMemorySize(unsigned int size, int ratio)
+Error DXSetMemorySize(uint64 size, int ratio)
 {
 #if DXD_HAS_RLIMIT && ! DXD_IS_MP
     struct rlimit r;

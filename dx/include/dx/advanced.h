@@ -126,7 +126,7 @@ the executive, and is of no interest to module writers.
 #endif
 
 Error DXSetGlobalSize(int, int, int);
-Error DXmemsize(int size);
+Error DXmemsize(uint64 size);
 /**
 \index{DXSetGlobalSize}\index{DXmemsize}
 Sets the maximum total size of the small-block global memory arena, the

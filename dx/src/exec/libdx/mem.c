@@ -77,14 +77,13 @@
  *  exec, and they are basically private routines which shouldn't
  *  be exposed.
  */
-Error _dxfsetmem(int limit);
+Error _dxfsetmem(uint64 limit);
 Error _dxfinitmem();
 Pointer _dxfgetmem(Pointer base, int size);
 Pointer _dxfgetbrk(Pointer base, int size);
 int   _dxfinmem(Pointer x);
 Error DXsyncmem();
 Error DXmemfork(int);
-
 
 /* moved out of memstats conditional section.  i'm going to use this to tell
  * what kind of memory we are using - shared or dataseg - so when we are
@@ -167,7 +166,7 @@ extern int _dxd_exRunningSingleProcess;   /* boolean supplied by the exec */
 /* move this logic out of dxfsetmem() into its own routine.  it's
  * gotten too complicated.
  */
-static Error whatkindofmem(int limit)
+static Error whatkindofmem(uint64 limit)
 {
     int force = 0;    /* set if the user requested a particular choice */
     char *cp = NULL;
@@ -189,6 +188,13 @@ static Error whatkindofmem(int limit)
      * (see man ld, look for -bmaxdata) which cause problems with other
      * runtime-loaded code like the opengl libs.
      *
+     * (sgi note) the following description of DX behavior is still the
+     * case but the allegations about IRIX vfork aren't quite accurate.  On
+     * IRIX, fork()/vfork() are like BSD vfork() but the pages are marked
+     * MAP_PRIVATE rather than MAP_SHARED, so they don't get copied unless
+     * modified.  However, the page table does get duplicated.
+     * Performance-wise this is similar to the BSD vfork().
+     *
      * on the sgi only, always use shared memory.  all other platforms
      * have vfork(), which does NOT copy the current process on a fork.
      * this is good because you are turning around and execing a second
@@ -198,8 +204,7 @@ static Error whatkindofmem(int limit)
      * neither fork() nor vfork() copy shared memory, so by using that
      * instead of expanding the data segment, ! filters and system() and
      * other things which require a fork/exec have a chance of working.
-     *
-     */
+     * */
 
     /* user override - force using shared memory or the data segment.  
      * set the value, but go ahead and check to see if we'd have to set it
@@ -274,15 +279,16 @@ static Error whatkindofmem(int limit)
  * buy us a factor of e6 in size in an int.
  */
 Error
-_dxfsetmem(int limit)
+_dxfsetmem(uint64 limit)
 {
-    int size, maxsegsize = SHMMAX;
+    uint64 size, maxsegsize = SHMMAX;
     int id, nchunk, nextseg;
     int i, j;
     int first = 1;
     Pointer sh_base[MAX_CHUNKS]; 
-    int gotten[MAX_CHUNKS], nsegs[MAX_CHUNKS];
-    uint totalsize = 0;
+    uint64 gotten[MAX_CHUNKS];
+    int    nsegs [MAX_CHUNKS];
+    uint64 totalsize = 0;
     Pointer tbase, tend;
     int tcount;
     extern int errno;
@@ -305,7 +311,12 @@ _dxfsetmem(int limit)
      */
     if ((cp = getenv("DXSHMEMSEGMAX")) != NULL) {
 	maxsegsize = atoi(cp);
-	if (maxsegsize <= 0 || maxsegsize > 2048) {
+#ifdef ENABLE_LARGE_ARENAS
+	if (maxsegsize <= 0)
+#else
+	if (maxsegsize <= 0 || maxsegsize > 2048)
+#endif
+	{
 	    DXSetError(ERROR_BAD_PARAMETER, 
       "bad shared memory segment size limit, DXSHMEMSEGMAX = %d Megabytes",
 			  maxsegsize);
@@ -510,7 +521,7 @@ _dxfinmem(Pointer x)
 /* Still need to write shared memory routines */
 
 void *sh_base;   /* starting virtual address */
-Error _dxfsetmem(int limit)
+Error _dxfsetmem(uint64 limit)
 {
     sh_base = malloc(limit);
     if (sh_base == NULL) {
@@ -537,7 +548,7 @@ Pointer _dxfgetmem(Pointer base, int size)
 #ifndef DXD_WIN_SHARE_MEMORY
 #define memroutines
 void *sh_base;   /* starting virtual address */
-Error _dxfsetmem(int limit)
+Error _dxfsetmem(uint64 limit)
 {
     sh_base = malloc(limit);
     if (sh_base == NULL) {
@@ -585,10 +596,10 @@ void *sh_base;   /* starting virtual address */
 
 HANDLE MapFileHandle, MapHandle;
 LPVOID MappedPointer;
-static  int DXLimit;
+static  uint64 DXLimit;
 
 
-Error _dxfsetmem(int limit)
+Error _dxfsetmem(uint64 limit)
 {
     /*  Create Map file   */
     char DX_MAP_FILE[32];
@@ -676,11 +687,11 @@ Error DXmemfork(int i)
 static PVOID sh_base;   /* starting virtual address */
 
 Error
-_dxfsetmem(int limit)
+_dxfsetmem(uint64 limit)
 {
 
     if (DosAllocSharedMem(&sh_base, "\\sharemem\\dx.dat",
-	limit, PAG_READ | PAG_WRITE)) {
+	(int)limit, PAG_READ | PAG_WRITE)) {
 	DXErrorReturn(ERROR_NO_MEMORY, "setmem can't allocate memory");
     } else
         return OK ;
@@ -712,7 +723,7 @@ DXmemfork(int i)
 #define memroutines
 #include <sys/svs.h>
 
-Error _dxfsetmem(int limit) { return OK; }
+Error _dxfsetmem(uint64 limit) { return OK; }
 Error DXmemfork(int i) { return fork(); }
 Pointer _dxfgetmem(Pointer base, int size) { return base; }
 
@@ -778,7 +789,7 @@ Pointer _dxfgetbrk(Pointer base, int n)
 extern int end;  /* filled in by linker */
 static Pointer after_end = NULL;
 
-Error _dxfsetmem(int limit)
+Error _dxfsetmem(uint64 limit)
 {
     after_end = _dxfgetbrk(limit);
 }
@@ -789,7 +800,7 @@ Pointer _dxfgetmem(Pointer base, int size)
 }
 
 #else
-Error _dxfsetmem(int limit)
+Error _dxfsetmem(uint64 limit)
 {
     return OK;
 }

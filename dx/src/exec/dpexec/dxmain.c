@@ -861,7 +861,6 @@ void _dxf_ExDie (char *format, ...)
 static void ExProcessArgs (int argc, char **argv)
 {
     int		opt;
-    int		mlim = (0x7fffffff >> 20);	/* divide by 1 meg */
 
     /*
      * Loop over the command line looking for arguments.
@@ -916,9 +915,13 @@ static void ExProcessArgs (int argc, char **argv)
 			    optarg);
 		    ExUsage (argv[0]);
 		}
-
-		if (maxMemory > mlim)
-		    maxMemory = mlim;
+#ifndef ENABLE_LARGE_ARENAS
+		{
+		    int mlim = (0x7fffffff >> 20);	/* divide by 1 meg */
+		    if (maxMemory > mlim)
+			maxMemory = mlim;
+		}
+#endif
 
 		/*
 		 * NOTE:  If we don't call DXmemsize then the memory allocator
@@ -927,7 +930,7 @@ static void ExProcessArgs (int argc, char **argv)
 		 */
 
 		if (maxMemory > 0)
-		    while (DXmemsize (MEGA (maxMemory)) != OK)
+		    while (DXmemsize (MEGA ((uint64)maxMemory)) != OK)
 			maxMemory--;
 		break;
 

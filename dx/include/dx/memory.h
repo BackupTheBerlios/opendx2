@@ -156,7 +156,7 @@ since the routine must be executed from the requested processor.  If
 **/
 
 
-Error DXSetMemorySize(unsigned int size, int ratio);
+Error DXSetMemorySize(uint64 size, int ratio);
 Error DXGetMemorySize(unsigned int *sm, unsigned int *lg, unsigned int *lo);
 Error DXGetMemoryBase(Pointer *sm, Pointer *lg, Pointer *lo);
 /**
