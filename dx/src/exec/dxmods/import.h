@@ -30,6 +30,14 @@ struct parmlist {
 };
 
 
+/* data-format file search returns */
+typedef enum
+{
+    IMPORT_STAT_FOUND,
+    IMPORT_STAT_NOT_FOUND,
+    IMPORT_STAT_ERROR
+} ImportStatReturn;
+
 /* 
  * table of entry points for each format.
  *
@@ -43,7 +51,7 @@ struct parmlist {
  *
  */
 struct import_table {
-    Error (*autotype)(struct parmlist *);
+    ImportStatReturn (*autotype)(struct parmlist *);
     Object (*readin)(struct parmlist *);
     char *formatlist[10];
 };
@@ -73,4 +81,3 @@ extern Error     _dxfByteSwap(void *, void*, int, Type);
 extern ByteOrder _dxfLocalByteOrder(void);
 
 #define LOCAL_BYTEORDER   _dxfLocalByteOrder()
-

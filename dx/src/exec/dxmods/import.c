@@ -15,6 +15,12 @@
 #include <string.h>
 #include "import.h"
 
+#if  defined(DXD_NON_UNIX_DIR_SEPARATOR)
+#define DX_DIR_SEPARATOR ';'
+#else
+#define DX_DIR_SEPARATOR ':'
+#endif
+
 
 /* if this ifdef is enabled, then the filename parameter can be a list of
  *  files instead of just single filename.  you can't specify a variable name.
@@ -214,7 +220,7 @@ m_Import(Object *in, Object *out)
 	    for (it=_dxdImportTable, entrynum = 0, match = 0; 
 		                                it->readin; 
 		                                it++, entrynum++) {
-		if (it->autotype != NULL && ((it->autotype)(&p) == OK)) {
+		if (it->autotype != NULL && ((it->autotype)(&p) == IMPORT_STAT_FOUND)) {
 		    match++;
 		    break;
 		}
@@ -338,7 +344,8 @@ static Error check_extension(char *fname, int *entrynum)
  
 extern Error _dxfstat_netcdf_file(char *filename);
  
-Error _dxftry_ncdf(struct parmlist *p)
+ImportStatReturn 
+_dxftry_ncdf(struct parmlist *p)
 {
     char *tbuf;
     int frame, rc;
@@ -347,15 +354,15 @@ Error _dxftry_ncdf(struct parmlist *p)
     /* file or file.(n)cdf exists somewhere in curdir or DXDATA path, and */
     /* ncopen() works, then OK */
  
-    if (_dxfstat_netcdf_file(p->filename) == OK)
-	return OK;
+    if (_dxfstat_netcdf_file(p->filename) == IMPORT_STAT_FOUND)
+	return IMPORT_STAT_FOUND;
 
     if (p->startframe == NULL && p->endframe == NULL && p->deltaframe == NULL)
-	return ERROR;
+	return IMPORT_STAT_NOT_FOUND;
 
     tbuf = (char *)DXAllocate(strlen(p->filename) + 20);
     if (!tbuf)
-	return ERROR;
+	return IMPORT_STAT_ERROR;
 
     frame = p->startframe ? *p->startframe : 1;
     sprintf(tbuf, "%s.%d", p->filename, frame);
@@ -507,11 +514,12 @@ Object _dxfget_ncdf(struct parmlist *p)
 }
  
  
-extern Error _dxfstat_hdf(char *filename);
+extern ImportStatReturn _dxfstat_hdf(char *filename);
 extern int _dxfget_hdfcount(char *filename);
 extern int _dxfwhich_hdf(char *filename,char *fieldname);
 
-Error _dxftry_hdf(struct parmlist *p)
+ImportStatReturn
+_dxftry_hdf(struct parmlist *p)
 {
     char *tbuf;
     int frame, rc;
@@ -521,12 +529,12 @@ Error _dxftry_hdf(struct parmlist *p)
      * dfopen() works, then OK 
      */
 
-    if (_dxfstat_hdf(p->filename) == OK)
-	return OK;
+    if (_dxfstat_hdf(p->filename) == IMPORT_STAT_FOUND)
+	return IMPORT_STAT_FOUND;
 
     tbuf = (char *)DXAllocate(strlen(p->filename) + 20);
     if (!tbuf)
-	return ERROR;
+	return IMPORT_STAT_ERROR;
 
     frame = p->startframe ? *p->startframe : 1;
     sprintf(tbuf, "%s.%d", p->filename, frame);
@@ -672,7 +680,8 @@ Object _dxfget_hdf(struct parmlist *p)
     
 }
  
-Error _dxftry_bin(struct parmlist *p)
+ImportStatReturn
+_dxftry_bin(struct parmlist *p)
 {
     char *cp;
 
@@ -680,15 +689,15 @@ Error _dxftry_bin(struct parmlist *p)
     
 #ifndef DXD_OS_NON_UNIX
     if (strchr(p->filename, ':') != NULL)
-	return OK;
+	return IMPORT_STAT_FOUND;
 #endif
 
     if ((cp = strrchr(p->filename, '.')) != NULL) {
 	if (!strcmp(".bin", cp))
-	    return OK;
+	    return IMPORT_STAT_FOUND;
     }
 
-    return ERROR;
+    return IMPORT_STAT_NOT_FOUND;
 }
  
 Object _dxfget_bin(struct parmlist *p)
@@ -696,9 +705,11 @@ Object _dxfget_bin(struct parmlist *p)
     return _dxfImportBin(p->filename);
 }
  
-extern Error _dxftry_dxfile(char *inname);
+ImportStatReturn
+_dxftry_dxfile(char *inname);
 
-Error _dxftry_dx(struct parmlist *p)
+ImportStatReturn
+_dxftry_dx(struct parmlist *p)
 {
     /* if extension == .dx, or
      * file or file.dx exists somewhere in curdir or DXDATA path, and
@@ -709,6 +720,67 @@ Error _dxftry_dx(struct parmlist *p)
 }
  
 
+/* 
+ * see if the filename exists, trying to append .dx and using each part 
+ *  of the DXDATA path if the environment variable is defined.
+ */
+#include <sys/stat.h>
+
+ImportStatReturn
+_dxftry_dxfile(char *inname)
+{
+    ImportStatReturn rc = IMPORT_STAT_FOUND;
+    struct stat sbuf;
+    char *tryname = NULL;
+    char *datadir = NULL, *cp;
+ 
+    /* see if the file exists with the given name, and make sure it isn't
+     *  a directory.  we've gotten random segfaults from trying to read a
+     *  directory, even tho it should just look like garbage.
+     */
+    if ((stat(inname, &sbuf) >= 0) && (!S_ISDIR(sbuf.st_mode)))
+	return IMPORT_STAT_FOUND;
+    
+	
+#define XTRA 8   /* space for the null, the / and .dx - plus some extra */
+    
+    datadir = (char *)getenv("DXDATA");
+    tryname = (char *)DXAllocateLocalZero((datadir ? strlen(datadir) : 0)
+					  + strlen(inname) + XTRA);
+    if (!tryname)
+	return IMPORT_STAT_ERROR;
+    
+    strcpy(tryname, inname);
+    strcat(tryname, ".dx");
+    if ((stat(tryname, &sbuf) >= 0) && (!S_ISDIR(sbuf.st_mode)))
+	goto done;
+    
+    while (datadir) {
+	
+	strcpy(tryname, datadir);
+	if((cp = strchr(tryname, DX_DIR_SEPARATOR)) != NULL)
+	    *cp = '\0';
+	strcat(tryname, "/");
+	strcat(tryname, inname);
+	if ((stat(tryname, &sbuf) >= 0) && (!S_ISDIR(sbuf.st_mode)))
+	    goto done;
+	
+	strcat(tryname, ".dx");
+	if ((stat(tryname, &sbuf) >= 0) && (!S_ISDIR(sbuf.st_mode)))
+	    goto done;
+
+	datadir = strchr(datadir, DX_DIR_SEPARATOR);
+	if (datadir)
+	    datadir++;
+    }
+    rc = IMPORT_STAT_ERROR;
+    
+  done:
+    DXFree (tryname);
+    return rc;
+}
+
+
 Object _dxfget_dx(struct parmlist *p)
 {
     /* Data Explorer external data format */
@@ -717,9 +789,10 @@ Object _dxfget_dx(struct parmlist *p)
 		   p->endframe, p->deltaframe);
 }
 
-extern Error_dxfstat_cdf(char *filename);
+extern ImportStatReturn _dxfstat_cdf(char *filename);
 
-Error _dxftry_cdf(struct parmlist *p)
+ImportStatReturn
+_dxftry_cdf(struct parmlist *p)
 {
     /* if extension == .cdf */
     /* file or file.cdf exists somewhere in curdir or DXDATA path, and */
@@ -740,9 +813,10 @@ Object _dxfget_cm(struct parmlist *p)
    return DXImportCM(p->filename,p->fieldlist);
 }
 
-Error  _dxftry_wv(struct parmlist *p) 
+ImportStatReturn 
+_dxftry_wv(struct parmlist *p) 
 { 
-    return ERROR; 
+    return IMPORT_STAT_NOT_FOUND; 
 }
 
 Object _dxfget_wv(struct parmlist *p) 

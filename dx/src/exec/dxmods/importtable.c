@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/importtable.c,v 1.3 1999/05/10 15:45:27 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/importtable.c,v 1.4 1999/06/30 17:11:35 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -16,20 +16,20 @@
 #include "import.h"
 
 
-
 /* prototypes for functions used in table */
-extern Error  _dxftry_ncdf(struct parmlist *p);
+extern ImportStatReturn  _dxftry_ncdf(struct parmlist *p);
+extern ImportStatReturn  _dxftry_hdf(struct parmlist *p);
+extern ImportStatReturn  _dxftry_dx(struct parmlist *p);
+extern ImportStatReturn  _dxftry_cdf(struct parmlist *p);
+extern ImportStatReturn  _dxftry_bin(struct parmlist *p);
+extern ImportStatReturn  _dxftry_wv(struct parmlist *p);
+
 extern Object _dxfget_ncdf(struct parmlist *p);
-extern Error  _dxftry_hdf(struct parmlist *p);
 extern Object _dxfget_hdf(struct parmlist *p);
-extern Error  _dxftry_dx(struct parmlist *p);
 extern Object _dxfget_dx(struct parmlist *p);
-extern Error  _dxftry_cdf(struct parmlist *p);
 extern Object _dxfget_cdf(struct parmlist *p);
-extern Error  _dxftry_bin(struct parmlist *p);
 extern Object _dxfget_bin(struct parmlist *p);
 extern Object _dxf_gi_get_gen(struct parmlist *p);
-extern Error  _dxftry_wv(struct parmlist *p);
 extern Object _dxfget_wv(struct parmlist *p);
 extern Object _dxfget_cm(struct parmlist *p);
 

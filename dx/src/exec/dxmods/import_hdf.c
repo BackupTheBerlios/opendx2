@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <dx/dx.h>
+#include "import.h"
 
 #if defined(HAVE_LIBDF)
 
@@ -378,15 +379,16 @@ findfile(char *filename, char *pathname)
 }
 
 
-Error _dxfstat_hdf(char *filename)
+ImportStatReturn
+_dxfstat_hdf(char *filename)
 {
     char pathname[MAXLEN];
     
     if (findfile(filename, pathname) == OK)
-	return OK;
+	return IMPORT_STAT_FOUND;
     
     DXResetError();
-    return ERROR;
+    return IMPORT_STAT_NOT_FOUND;
 }
 
 int _dxfget_hdfcount(char *filename)
@@ -695,9 +697,12 @@ static Error pvsswap(void *data, int numelts, Type type)
 
 #else
 
+ImportStatReturn
+_dxfstat_hdf(char *filename)
+{
+    return IMPORT_STAT_NOT_FOUND;
+}
 
-Error _dxfstat_hdf(char *filename)
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "HDF libs not included"); return ERROR; }
 int _dxfget_hdfcount(char *filename)
 { DXSetError(ERROR_NOT_IMPLEMENTED, "HDF libs not included"); return ERROR; }
 int _dxfwhich_hdf(char *filename, char *fieldname)

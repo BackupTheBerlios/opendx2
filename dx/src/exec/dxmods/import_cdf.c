@@ -23,11 +23,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <dx/dx.h>
+#include "import.h"
 
 #if defined(HAVE_LIBCDF)
 
 #include <cdf.h>
-#include "import.h"
 #include "impCDF.h"
 
 static Error cdfGetData(Infovar vp, long rec, void *data);
@@ -2646,25 +2646,31 @@ cntVars(Infovar vp)
 }
 
 /* called from import.m to test if CDF file */
-Error _dxfstat_cdf(char *filename)
+ImportStatReturn
+_dxfstat_cdf(char *filename)
 {
    Infocdf cdf; 
 
    if (!openCDF(filename,&cdf,0)){
      DXResetError();
-     return ERROR;
+     return IMPORT_STAT_NOT_FOUND;
    }
 
-   return OK;
+   return IMPORT_STAT_FOUND;
 }
 
 #else
 
+
 Object DXImportCDF(char* filename, char **fieldlist, int *startframe,
                 int *endframe, int *deltaframe)
 { DXSetError(ERROR_NOT_IMPLEMENTED, "CDF libs not included"); return ERROR; }
-Error _dxfstat_cdf(char *filename) 
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "CDF libs not included"); return ERROR; }
 
+
+ImportStatReturn 
+_dxfstat_cdf(char *filename)
+{
+    return IMPORT_STAT_NOT_FOUND;
+}
 
 #endif /* DXD_LACKS_CDF_FORMAT */

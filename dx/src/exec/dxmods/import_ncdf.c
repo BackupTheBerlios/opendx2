@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <dx/dx.h>
+#include "import.h"
 
 #if defined(HAVE_LIBNETCDF)
 
@@ -336,6 +337,7 @@ open_netcdf_file(char *filename)
     char *fname = NULL, *foundname = NULL, *cp;
     char *datadir = NULL;
     extern int ncerr;
+    int ll;
 
     /* netCDF library options: on error, don't abort and don't print */
     ncopts = 0;
@@ -343,8 +345,10 @@ open_netcdf_file(char *filename)
 #define XTRA 8  /* space for trailing /, .nc, trailing 0 and some slop */
 
     datadir = (char *)getenv("DXDATA");
-    fname = (char *)DXAllocateLocalZero((datadir ? strlen(datadir) : 0) +
-					strlen(filename) + XTRA);
+    ll = strlen(filename) + XTRA;
+    if (datadir != NULL)
+    	ll += strlen(datadir);
+    fname = (char *)DXAllocateLocalZero(ll);
     if (!fname)
 	goto error;
 
@@ -446,7 +450,8 @@ close_netcdf_file(int cdfhandle)
 /* see if this netcdf file can be opened.  don't set error, but return 
  *  OK or ERROR.
  */
-Error _dxfstat_netcdf_file(char *filename)
+ImportStatReturn
+_dxfstat_netcdf_file(char *filename)
 {
     int cdfhandle;
     int foundfile = 0;
@@ -465,7 +470,6 @@ Error _dxfstat_netcdf_file(char *filename)
      * space for trailing /, .nc, trailing 0 and some slop 
      */
 
-    datadir = (char *)getenv("DXDATA");
     fname = (char *)DXAllocateLocalZero((datadir ? strlen(datadir) : 0) +
 					strlen(filename) + XTRA);
     if (!fname)
@@ -474,8 +478,12 @@ Error _dxfstat_netcdf_file(char *filename)
     strcpy(fname, filename);
     strcat(fname, ".nc");
     if((cdfhandle = ncopen(fname, NC_NOWRITE)) >= 0)
-	goto file_ok;
+    {
+	DXFree((Pointer)fname);
+	return IMPORT_STAT_NOT_FOUND;
+    }
     
+    datadir = (char *)getenv("DXDATA");
     if (!datadir)
 	goto error;
     
@@ -500,12 +508,12 @@ Error _dxfstat_netcdf_file(char *filename)
 
   error:
     DXFree((Pointer)fname);
-    return ERROR;
+    return IMPORT_STAT_ERROR;
     
   file_ok:
     DXFree((Pointer)fname);
     ncclose(cdfhandle);
-    return OK;
+    return IMPORT_STAT_FOUND;
 }
 
 /* find out how many netcdf variables match the spec, and construct an
@@ -3507,8 +3515,12 @@ static char * parseit(char *in, int *n, char *out[])
 
 #else
 
-Error _dxfstat_netcdf_file(char *filename)
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "netCDF libs not included"); return ERROR; }
+ImportStatReturn
+_dxfstat_netcdf_file(char *filename)
+{ 
+    return IMPORT_STAT_NOT_FOUND;
+}
+
 Object DXImportNetCDF(char *filename, char **variable, int *starttime,
                     int *endtime, int *deltatime)
 { DXSetError(ERROR_NOT_IMPLEMENTED, "netCDF libs not included"); return ERROR; }
