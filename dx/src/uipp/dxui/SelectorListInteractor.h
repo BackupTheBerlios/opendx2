@@ -109,6 +109,11 @@ class SelectorListInteractor : public Interactor
     void handleInteractivePartStateChange(InteractorInstance *, boolean );
 
     //
+    // Added to be able to override the developer style selectColor
+    //
+    void setAppearance(boolean );
+
+    //
     // Returns a pointer to the class name.
     //
     const char* getClassName()

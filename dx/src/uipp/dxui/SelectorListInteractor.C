@@ -36,7 +36,7 @@ String SelectorListInteractor::DefaultResources[] =  {
     "*allowVerticalResizing:		True",
     "*selectorList.height:		150",
     "*selectorList.width:		150",
-
+    
     NUL(char*) 
 };
 
@@ -53,7 +53,6 @@ SelectorListInteractor::SelectorListInteractor(const char *name,
 	this->single_select = TRUE;
     } else
 	ASSERT(0);
-
 
     //
     // Initialize default resources (once only).
@@ -81,6 +80,18 @@ Widget SelectorListInteractor::createInteractivePart(Widget form)
 
     SelectorListInstance* si = (SelectorListInstance*)this->interactorInstance;
     ASSERT(si);
+    
+     // Code added for debugging purposes
+  
+  Display *dpy = XtDisplay(form);
+  int scr = DefaultScreen (dpy);
+  Colormap cmap = DefaultColormap(dpy, scr);
+  XColor color, ignore;
+  
+  XAllocNamedColor(dpy, cmap, "purple", &color, &ignore);
+  
+  // end of debugging code
+
 
     Widget frame = XtVaCreateManagedWidget ("listFrame",
 	xmFrameWidgetClass,	form,
@@ -97,7 +108,6 @@ Widget SelectorListInteractor::createInteractivePart(Widget form)
 	XmNmarginWidth,		2,
 	XmNmarginHeight,	2,
     NULL);
-
 
     Arg args[20];
     int n = 0;
@@ -238,6 +248,26 @@ SelectorListInteractor::handleInteractivePartStateChange(InteractorInstance *,
     if (major_change) this->unmanage();
     this->reloadListOptions();
     if (major_change) this->manage();
+}
+
+void SelectorListInteractor::setAppearance(boolean developer_style)
+{
+    Pixel fg,bg,ts,bs,arm;
+    Screen *screen;
+    Colormap cmap;
+
+    boolean changing = (developer_style != this->getAppearance());
+    this->Interactor::setAppearance(developer_style);
+    if (developer_style) {
+    	   XtVaGetValues (this->getRootWidget(), XmNcolormap, &cmap, XmNscreen, &screen, NULL);
+
+	   bg = theDXApplication->getStandInBackground();
+	   XmGetColors (screen, cmap, bg, &fg, &ts, &bs, &arm);
+
+	XtVaSetValues( this->list_widget,
+	    XmNselectColor, bs,
+	    NULL);
+    }
 }
 
 extern "C" {
