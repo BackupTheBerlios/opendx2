@@ -46,12 +46,12 @@ dx.jar: javainfo
 server.jar:
 	mkdir -p dxsc
 	(unset CLASSPATH ; javac -d dxsc DXServer.java)
-	(unset CLASSATH ; cd dxsc; @JDKBIN@jar cf ../server.jar DXServer.class server)
+	(unset CLASSATH ; cd dxsc; @JDKBIN@jar cf ../server.jar DXServer.class server dx )
 
 SHRD_FLAGS = -shared -L../dxl -lDXL -olibAnyDX.so
 
 libAnyDX.so: DXLink.o
-	$(CC) $(SHRD_FLAGS) DXLink.o
+	$(CC) $(SHRD_FLAGS) ../dxl/*.o  DXLink.o
 
 ## JBASE and JINC set by configure via acinclude.m4
 JBASE = @JBASE@
