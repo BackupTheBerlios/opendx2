@@ -245,7 +245,7 @@ helpfiles22 = \
 	dxall976 dxall977 dxall978 dxall979 dxall98 dxall980 \
 	dxall981 dxall982 dxall983 dxall984 dxall985 dxall986 \
 	dxall987 dxall988 dxall989 dxall99 dxall990 dxall991 \
-	dxall992 dxall993 dxall994 dxall995 dxall997 dxall998
+	dxall992 dxall993 dxall994 dxall995 dxall997 dxall998 \
 	dxall999 hlpalhtl hlpall spots 
 
 help_DATA = $(EXTRA_DIST)
