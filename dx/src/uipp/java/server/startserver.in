@@ -2,8 +2,9 @@
 
 ##
 ## Files we write must be world readable so that httpd can get them
+## and writeable so that whoever starts the server next can clean up.
 ##
-umask 2
+umask 1
 
 
 if [ "$DXROOT" = "" ]; then
