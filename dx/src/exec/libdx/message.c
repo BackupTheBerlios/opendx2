@@ -271,7 +271,7 @@ void
 DXPrintError(char *s)
 {
     extern int sys_nerr;
-#ifndef linux
+#if !defined(linux) && !defined(freebsd)
     extern char *sys_errlist[];
 #endif
     char *msg, *errnomsg;
