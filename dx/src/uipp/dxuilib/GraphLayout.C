@@ -6,6 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
+#define ONLY_IN_GRAPH_LAYOUT_CODE 1
 #include "GraphLayout.h"
 #include "EditorWindow.h"
 #include "List.h"
@@ -151,8 +152,7 @@ int GraphLayout::WideStandIn = 65;
 //
 // Comparator function used with qsort
 //
-extern "C"  {
-static int comparator (const void* a, const void* b)
+int LayoutInfo::Comparator (const void* a, const void* b)
 {
     Node** aptr = (Node**)a;
     Node** bptr = (Node**)b;
@@ -167,7 +167,6 @@ static int comparator (const void* a, const void* b)
 
     return 0;
 }
-} // end extern "C"
 
 void LayoutInfo::initialize(Node* n, int hops)
 {
@@ -179,9 +178,6 @@ void LayoutInfo::initialize(Node* n, int hops)
 
     si->getXYPosition(&this->x, &this->y);
     si->getXYSize(&this->w, &this->h);
-
-    this->orig_x = this->x;
-    this->orig_y = this->y;
 }
 
 boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const List& decorators)
@@ -241,7 +237,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
     //    Internal nodes are placed according to the order in which
     //    they're wired to inputs.  
     //
-    qsort (reflow, reflow_count, sizeof(Node*), comparator);
+    qsort (reflow, reflow_count, sizeof(Node*), LayoutInfo::Comparator);
     this->unmarkAllNodes(reflow, reflow_count);
 
     //
@@ -387,27 +383,30 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
     this->computeBoundingBox (reflow, reflow_count, minx, miny, maxx, maxy);
 
     workSpace->beginManyPlacements();
-    this->editor->beginMultipleCanvasMovements();
+    //this->editor->beginMultipleCanvasMovements();
 
-    this->repositionDecorators((List&)decorators, workSpace, minx, miny, maxx, maxy);
-    
-    for (int l=0; l<reflow_count; l++) {
+    // set the objects off from the edges a little bit
+    minx-= 15;
+    miny-= 15;
+
+    int l;
+    for (l=0; l<reflow_count; l++) {
 	int x,y;
 	Node* n = reflow[l];
 	LayoutInfo* linfo = (LayoutInfo*)n->getLayoutInformation();
 	linfo->getXYPosition (x, y);
 	x-= minx;
 	y-= miny;
-	x+=15;
-	y+=15;
 	// By uncommenting this line, I'm able to see what worked
 	// and what didn't.  I like this information but I don't
 	// what it shown to users.
 	//if (linfo->collided()) y+=COLLISION_OFFSET;
-	this->editor->saveLocationForUndo(n->getStandIn());
+	this->editor->saveLocationForUndo(n->getStandIn(), FALSE, (boolean)l);
 	n->setVpePosition (x,y);
     }
 
+    this->repositionDecorators((List&)decorators, workSpace, minx, miny, maxx, maxy, (boolean)l);
+    
     //
     // 8) Rebuild all the arcs by fetching the workspace data structure,
     //    destroying it and creating a new one.  The workspace lines can
@@ -430,7 +429,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	}
     }
     workSpace->endManyPlacements();
-    this->editor->endMultipleCanvasMovements();
+    //this->editor->endMultipleCanvasMovements();
 
 cleanup:
     //
@@ -986,7 +985,7 @@ void GraphLayout::collectPositionedAncestorsOf (Node* n, List& ancestors)
     }
 }
 
-void GraphLayout::repositionDecorators(List& all_decorators, WorkSpace* workSpace, int minx, int miny, int maxx, int maxy)
+void GraphLayout::repositionDecorators(List& all_decorators, WorkSpace* workSpace, int minx, int miny, int maxx, int maxy, boolean same_event_flag)
 {
     //
     // exclude the nodes that aren't in the current page
@@ -1026,7 +1025,7 @@ void GraphLayout::repositionDecorators(List& all_decorators, WorkSpace* workSpac
     int decx, decy, cum_height=0;
     // put all of them along the right side
     while (dec=(Decorator*)decs.getNext()) {
-	this->editor->saveLocationForUndo(dec);
+	this->editor->saveLocationForUndo(dec, FALSE, same_event_flag);
 	dec->setXYPosition (maxx + 4 - minx, cum_height);
 	dec->getXYSize(&decx, &decy);
 	cum_height+= decy+4;

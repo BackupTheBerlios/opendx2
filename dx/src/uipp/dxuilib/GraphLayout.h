@@ -12,15 +12,6 @@
 
 #include "Base.h"
 
-
-//
-// Class name definition:
-//
-#define ClassGraphLayout "GraphLayout"
-#define ClassLayoutInfo "LayoutInfo"
-
-extern "C" static int comparator(const void* a, const void* b);
-
 //
 // referenced classes
 //
@@ -29,6 +20,20 @@ class WorkSpace;
 class Node;
 class List;
 class Ark;
+class LayoutInfo;
+
+
+//
+// Class name definition:
+//
+#define ClassGraphLayout "GraphLayout"
+
+#if ONLY_IN_GRAPH_LAYOUT_CODE
+//
+// No class outside of GraphLayout needs to know anything
+// about LayoutInfo
+//
+#define ClassLayoutInfo "LayoutInfo"
 
 //
 // Store as a sort of extension record in Node.  
@@ -36,14 +41,11 @@ class Ark;
 class LayoutInfo : public Base {
     protected:
 	friend class GraphLayout;
-	friend int comparator(const void* a, const void* b);
-
 	// proposed new location
 	int x,y;
 
-	// snapshot the original location so
-	// that the operation can be undone
-	int orig_x, orig_y;
+	// for qsort
+	static int Comparator (const void* a, const void* b);
 
 	// are the values in x,y set?
 	boolean positioned_yet;
@@ -98,6 +100,7 @@ class LayoutInfo : public Base {
 	    return ClassLayoutInfo;
 	}
 };
+#endif
 
 //
 // GraphLayout class definition:
@@ -199,7 +202,7 @@ class GraphLayout : public Base
     void computeBoundingBox (List& nodes, int& minx, int& miny, int& maxx, int& maxy);
     void computeBoundingBox (Node* nodes[], int count, int& minx, int& miny, int& maxx, int& maxy);
 
-    void repositionDecorators (List& decorators, WorkSpace* workSpace, int minx, int miny, int maxx, int maxy);
+    void repositionDecorators (List& decorators, WorkSpace* workSpace, int minx, int miny, int maxx, int maxy, boolean same_event_flag);
 
     Ark* isSingleInputNoOutputNode(Node* n, boolean *shares_an_output);
     boolean isSingleOutputNoInputNode(Node* n);
