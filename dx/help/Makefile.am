@@ -5,12 +5,15 @@ helpdir = $(prefix)/dx/help
 EXTRA_DIST = help.tar
 
 install-data-local:
-	mkdir $(helpdir)
-	tar -C $(helpdir) -xf pages.tar
-	ln -s $(helpdir)/mbidx      $(helpdir)/hlpalhtl
-	ln -s $(helpdir)/quikidx    $(helpdir)/hlpalhtl
-	ln -s $(helpdir)/svsmstrh   $(helpdir)/hlpalhtl
-	ln -s $(helpdir)/ugidx      $(helpdir)/hlpalhtl
-	ln -s $(helpdir)/usrefidx   $(helpdir)/hlpalhtl
-	ln -s $(helpdir)/GarHelpDir $(helpdir)/HelpDir
-	ln -s $(helpdir)/MBHelpDir  $(helpdir)/HelpDir
+	sh -c 'f=`pwd` ; \
+	       $(INSTALL) -d $(helpdir) ; \
+	       cd $(helpdir) ; \
+	       tar xf $$f/help.tar ; \
+	       ln -s $(helpdir)/hlpalhtl   $(helpdir)/mbidx ; \
+	       ln -s $(helpdir)/hlpalhtl   $(helpdir)/quikidx ; \
+	       ln -s $(helpdir)/hlpalhtl   $(helpdir)/svsmstrh ; \
+	       ln -s $(helpdir)/hlpalhtl   $(helpdir)/ugidx ; \
+	       ln -s $(helpdir)/hlpalhtl   $(helpdir)/usrefidx ; \
+	       ln -s $(helpdir)/GarHelpDir $(helpdir)/GarHelpDir ; \
+	       ln -s $(helpdir)/MBHelpDir  $(helpdir)/BMHelpDir ; \
+	      '
