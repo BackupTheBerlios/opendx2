@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/GARApplication.C,v 1.1 1999/04/05 13:33:35 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/prompter/GARApplication.C,v 1.2 1999/04/05 17:22:13 gda Exp $
  */
 
 #include "defines.h"
@@ -328,7 +328,9 @@ boolean GARApplication::initialize(unsigned int* argcp,
     //
     boolean startup_flag = FALSE;
     if (getenv("DXSTARTUP")) startup_flag = TRUE;
+#ifdef DXD_LICENSED_VERSION
     this->TemporaryLicense::initialize();
+#endif
     if ((startup_flag) && (getenv("DXTRIALKEY"))) {
 	XtAppAddInput (this->getApplicationContext(), fileno(stdin), 
 	    (XtPointer)XtInputReadMask,
