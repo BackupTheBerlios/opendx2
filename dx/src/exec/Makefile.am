@@ -104,16 +104,18 @@ install-exec-local:
 					libjbig.a)	 pre=jb ;;	   \
 					libMagick.a)	 pre=mg ;;	   \
 				esac ;					   \
-				files=`ar t $$lib` ; 			   \
-				ar x $$lib ; 				   \
-				for j in $$files ; do			   \
-					l=`echo $$j | tr A-Z a-z` ;	   \
-					echo $$j renamed $$pre$$l ; 	   \
-					mv $$j $$pre$$l ;		   \
-				done ; 					   \
-				echo adding files from $$i to library... ; \
-				ar qv libDX.a *.o ;			   \
-				rm *.o ; 				   \
+				if eval "ar t $$lib  > /dev/null 2>&1" ; then	   \
+					files=`ar t $$lib` ; 			   \
+					ar x $$lib ; 				   \
+					for j in $$files ; do			   \
+						l=`echo $$j | tr A-Z a-z` ;	   \
+						echo $$j renamed $$pre$$l ; 	   \
+						mv $$j $$pre$$l ;		   \
+					done ; 					   \
+					echo adding files from $$i to library... ; \
+					ar qv libDX.a *.o ;			   \
+					rm *.o ; 				   \
+				fi ;					   \
 			fi ; 						   \
 		fi ;							   \
 	   done ;							   \
