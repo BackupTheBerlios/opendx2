@@ -36,6 +36,8 @@
 #undef HAVE_SYS_FILE_H
 #undef HAVE_SYS_IOCTL_H
 #undef HAVE_SYS_TIME_H
+#undef HAVE_SYS_TIMEB_H
+#undef HAVE_TIME_H
 #undef HAVE_UNISTD_H
 #undef HAVE_SYS_TYPES_H
 #undef HAVE_SYS_SYSCONFIG_H
@@ -54,6 +56,7 @@
 #undef HAVE_SYS_PARAM_H
 #undef HAVE_SYS_SELECT_H
 #undef HAVE_ASM_SOCKET_H
+#undef HAVE_WINDOWS_H
 #undef HAVE_LIBZ
 #undef HAVE_LIBCDF
 #undef HAVE_LIBJPEG
@@ -78,6 +81,7 @@
 #undef uint8
 #undef ulong
 #undef ushort
+#undef caddr_t
 
 @BOTTOM@
 
