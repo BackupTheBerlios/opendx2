@@ -1,5 +1,7 @@
 4.x
 ===============
+Fix for ImportSpreadsheet tendency to munge large integers.
+
 Fix when using more than 31 labels on an AutoAxes. (bug #166)
 
 Added a resize attribute to the ImageMagick format in order

@@ -238,7 +238,7 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
 	    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
 	    ;;
 	macos)
-	    DXUI_ALDFLAGS='-force_flat_namespace -framework CoreFoundation -framework ApplicationServices'
+	    DXUI_ALDFLAGS='-framework CoreFoundation -framework ApplicationServices'
 	    AC_DEFINE_UNQUOTED(DXUI_ALDFLAGS, $DXUI_ALDFLAGS, [Added arch specific LDFLAGS])
 	    ;;
     esac
