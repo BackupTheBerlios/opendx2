@@ -36,7 +36,7 @@ class ControlPanel;
 extern "C" int DXApplication_DXAfterFunction(Display *display);
 
 extern "C" void
-#if defined(sun4) 
+#if defined(ALTERNATE_CXX_SIGNAL) 
 	DXApplication_HandleCoreDump(int dummy, ... );
 #else
 	DXApplication_HandleCoreDump(int dummy);
@@ -267,10 +267,10 @@ class DXApplication : public IBMApplication
     
     static void InitializeSignals();
     friend void
-#if defined(sun4) 
-	DXApplication_HandleCoreDump(int dummy, ... );
+#if defined(ALTERNATE_CXX_SIGNAL) 
+    DXApplication_HandleCoreDump(int dummy, ... );
 #else
-	DXApplication_HandleCoreDump(int dummy);
+    DXApplication_HandleCoreDump(int dummy);
 #endif
 
 

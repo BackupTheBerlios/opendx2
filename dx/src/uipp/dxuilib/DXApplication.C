@@ -4889,7 +4889,7 @@ char buf[1024];
 // lifespan of the object.  The check for !theDXApplication really means:
 // am I being called after DXApplication::~DXApplication() ?
 void
-#if defined(sun4) 
+#if defined(ALTERNATE_CXX_SIGNAL) 
 DXApplication_HandleCoreDump(int dummy, ... )
 #else
 DXApplication_HandleCoreDump(int dummy)
