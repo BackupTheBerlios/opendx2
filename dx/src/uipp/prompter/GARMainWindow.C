@@ -199,7 +199,7 @@ String GARMainWindow::DefaultResources[] =
 
     "*saveOption.labelString:                     Save",
     "*saveOption.mnemonic:                        S",
-    "*saveOption.accelerator:                     Ctrl<Key>S:",
+    "*saveOption.accelerator:                     Ctrl<Key>S",
     "*saveOption.acceleratorText:                 Ctrl+S",
 
     "*saveAsOption.labelString:                   Save As...",
@@ -207,7 +207,7 @@ String GARMainWindow::DefaultResources[] =
 
     "*closeGAROption.labelString:                 Close",
     "*closeGAROption.mnemonic:                    C",
-    "*closeGAROption.accelerator:                 Ctrl<Key>C:",
+    "*closeGAROption.accelerator:                 Ctrl<Key>C",
     "*closeGAROption.acceleratorText:             Ctrl+C",
 
     "*editMenu.labelString:                       Edit",
