@@ -259,6 +259,9 @@ static int      nmdfs           = 0;
 
 int _dxfPhysicalProcs(void);
 extern void _dxfcleanup_mem(); /* from libdx/mem.c */
+extern Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] );
+                               /* from remote.c */
+
 
 /* Common routines added for distributed processing */    
 
@@ -1183,6 +1186,8 @@ static void ExInitialize ()
     if((_dxd_exHostName = (char *)DXAllocate(MAXHOSTNAMELEN)) == NULL)
 	ExInitFailed ("can't allocate memory");
     gethostname(_dxd_exHostName, MAXHOSTNAMELEN);
+    if ( ExHostToFQDN(_dxd_exHostName, _dxd_exHostName ) == ERROR )
+	ExInitFailed ("ExHostToFQDN failed");
 
     /* now that lib is initialized, we can use DXMessage() if needed */
 #if DXD_IS_MP
@@ -1421,6 +1426,7 @@ static void ExCleanup ()
     {
        index = FETCH_LIST(_dxd_dpgraphstat, i);
        DXFree(index->prochostname);
+       DXFree(index->procusername);
        if(index->options)
           DXFree(index->options);
        close(index->procfd);

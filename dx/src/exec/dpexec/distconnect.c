@@ -177,7 +177,7 @@ void _dxf_ExUpdateDPTable()
                 }
             }
             index->procfd = _dxfExRemoteExec (_dxd_exDebugConnect, 
-                  index->prochostname, NULL, ac, av, 0);
+                  index->prochostname, index->procusername, ac, av, 0);
             if(index->procfd < 0) {
                 DXUIMessage("ERROR", "Connection to peer %s failed.\n",
                              index->prochostname);
@@ -261,7 +261,7 @@ static Error ConnectPMtoS(dpgraphstat *index)
 #endif
     if (dxport < 0)
     {
-        DXUIMessage("ERROR", "Failed connecting %s to %s. Bad port number", 
+        DXUIMessage("ERROR", "#1: Failed connecting %s to %s. Bad port number", 
                         _dxd_exHostName, index->prochostname);
         return(ERROR);
     }
@@ -306,7 +306,7 @@ static Error ConnectPMtoS(dpgraphstat *index)
 #endif
             if (dxfd < 0)
             {
-                DXUIMessage("ERROR", "Failed connecting %s to %s\n", 
+                DXUIMessage("ERROR", "#2: Failed connecting %s to %s\n", 
                              _dxd_exHostName, index->prochostname);
                 return(ERROR);
             }
@@ -331,7 +331,7 @@ static Error ConnectPMtoS(dpgraphstat *index)
             return(OK);
         }
     }
-    DXUIMessage("ERROR", "Failed connecting %s to %s", 
+    DXUIMessage("ERROR", "#3: Failed connecting %s to %s", 
                       _dxd_exHostName, spentry.peername);
     return(ERROR);
 }
@@ -416,7 +416,7 @@ static Error ConnectPStoS(dpgraphstat *index, dpgraphstat *index2)
                 }
                 else {
                     DXUIMessage("ERROR", 
-                                "Failed connecting %s to %s", 
+                                "#4: Failed connecting %s to %s", 
                                 index->prochostname, index2->prochostname);
                     DXMessage("Peer did not accept connection, packet type returned %d\n", type);
                     return(ERROR);
@@ -426,7 +426,7 @@ static Error ConnectPStoS(dpgraphstat *index, dpgraphstat *index2)
         else {
 error_return:
             DXUIMessage("ERROR", 
-                        "Failed connecting %s to %s", 
+                        "5: Failed connecting %s to %s", 
                             index->prochostname, index2->prochostname);
             return(ERROR);
         }

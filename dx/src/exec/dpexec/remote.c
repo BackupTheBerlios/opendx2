@@ -100,6 +100,27 @@ extern int _dxfHostIsLocal(char *host); /* from libdx/ */
 
 #define	BUFLEN	4096
 
+Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] )
+{
+    struct hostent *hp, *hp2;
+
+    hp = gethostbyname(host);
+    if ( hp == NULL || hp->h_addr_list[0] == NULL ) {
+       DXUIMessage("ERROR", "gethostbyname returned error");
+       return ERROR;
+    }
+    hp2 = gethostbyaddr( hp->h_addr_list[0], sizeof(struct in_addr),
+                        AF_INET );
+    if ( hp2 == NULL || hp2->h_name == NULL ) {
+       DXUIMessage("ERROR", "gethostbyaddr returned error");
+       return ERROR;
+    }
+    fqdn[0] = '\0';
+    strncat( fqdn, hp2->h_name, MAXHOSTNAMELEN );
+    return OK;
+}
+
+
 /* This routine returns the pid of the forked child to communicate with (or
  * 0 if no waiting is required),
  * or, if failure, -1.  It (for now) also does a perror.  It also returns
@@ -112,7 +133,7 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
  #if defined(HAVE_FORK) 
    char s[BUFSIZ];
     char script_name[500],cmd[1000];
-    char localhost[BUFSIZ];
+    char localhost[MAXHOSTNAMELEN];
     FILE *fp = NULL;
     int i, k;
     int in[2], out[2], err[2];
@@ -125,6 +146,8 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
     int  j;
     int ret;
     int found;
+    int rsh_noenv;
+    char *local_rsh_cmd;
 
 #if HAVE_GETDTABLESIZE
     int  width = getdtablesize();
@@ -136,6 +159,10 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 #endif
 #endif
     char *dnum;
+
+    local_rsh_cmd = getenv( "DXRSH" );
+    if ( !local_rsh_cmd )
+      local_rsh_cmd = RSH;
 
     /*
      * Initialize return values (to default negative results).
@@ -246,21 +273,26 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 	 *    rsh host [ -l user ] /bin/sh /tmp/dx-$host:$pid 
 	 */ 
 
-        if(gethostname(localhost, BUFSIZ) < 0) {
+        if(gethostname(localhost, sizeof(localhost)) < 0) {
             DXUIMessage("ERROR", "gethostname returned error");
             goto error_return;	
         }
+       if ( ExHostToFQDN( localhost, localhost ) == ERROR )
+            goto error_return;
+
 	sprintf(script_name,"/tmp/dx-%s:%d",localhost,getpid());
 	findx=0;
-	fargv[findx++] = RSH;
+	fargv[findx++] = local_rsh_cmd;
 	fargv[findx++] = host;
 
 	if (user != NULL) {
 	    fargv[findx++] = "-l";
 	    fargv[findx++] = user;
-	    sprintf(cmd,"%s %s -l %s 'cat > %s'",RSH, host, user, script_name);
+	    sprintf(cmd,"%s %s -l %s 'cat > %s'", local_rsh_cmd,
+		 host, user, script_name);
 	} else
-	    sprintf(cmd,"%s %s 'cat > %s'",RSH,host,script_name);
+	    sprintf(cmd,"%s %s 'cat > %s'", local_rsh_cmd,
+		host,script_name);
 
 	fargv[findx++] = "/bin/sh";
 	fargv[findx++] = script_name; 
@@ -275,6 +307,8 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 	}
 	setbuf(fp,NULL); /* Unbuffered so file is 'immediately' updated */
 	
+        rsh_noenv = getenv( "DXRSH_NOENV" ) != NULL; /*  Set $DISPLAY only?  */
+
 	for (i = 0; ep[i]; ++i) {
 	    /* Environment variables which are NOT passed to remote process */
 	    static char *eignore[] = {"HOST=", "HOSTNAME=", "TZ=",
@@ -298,7 +332,7 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 	    {
 		fprintf(fp,"DISPLAY='%s%s';export DISPLAY\n",
 							localhost,dnum);
-	    } else {
+	    } else if ( !rsh_noenv ) {
 		int k;
 		char evar[256], c;
 		char eval[1024];
@@ -329,7 +363,7 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 
         if(cwd != NULL) {
             fprintf(fp, "\nif [ -d %s ]; then\n", cwd);
-            fprintf(fp, "cd %s\n", cwd);
+            fprintf(fp, " cd %s\n", cwd);
             fprintf(fp, "else\n echo cannot change directory to %s\n", cwd);
             fprintf(fp, "fi \n");
         }
@@ -368,10 +402,29 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
     return(1);
     }
 #elif sgi
+#ifdef OLDSTUFF
     if(pcreateve(fargv[0], fargv, rep) < 0) {
         perror("pcreateve");
         exit(1);
     }
+#else
+    {
+#if DXD_HAS_VFORK
+        pid_t pid = vfork();
+#else
+        pid_t pid = fork();
+#endif
+       if ( pid < 0 ) {
+           perror("fork()");
+           exit(1);
+       }
+       else if ( pid == 0 ) {
+           execve( fargv[0], fargv, rep );
+           perror("execve()");
+           exit(1);
+       }
+    }
+#endif
     return(1);
 
 #else
@@ -479,7 +532,7 @@ int _dxfExRemoteExec(int dconnect, char *host, char *ruser, int r_argc,
 #ifdef DXD_WIN    /*   AJ   */
     return 0;
 #else
-    char                myhost[MAXHOSTNAMELEN + 2];
+    char                myhost[MAXHOSTNAMELEN];
     char		cwd[MAXPATHLEN];
     char		*spath	= NULL;
     int                 dxport, dxsock;
@@ -499,6 +552,9 @@ int _dxfExRemoteExec(int dconnect, char *host, char *ruser, int r_argc,
  
     if (gethostname (myhost, sizeof(myhost)) < 0)
         goto error;
+    if ( ExHostToFQDN( myhost, myhost ) == ERROR)
+	goto error;
+
     if ((unsigned int)(getcwd (cwd, sizeof (cwd))) == (unsigned int)NULL)
 	goto error;
     if (spath == NULL)
@@ -703,6 +759,7 @@ _dxfExRemote (Object *in, Object *out)
     Array	parmlist = NULL;
     Group	g	 = NULL;
     char	buff[BUFLEN];
+    char	host[MAXHOSTNAMELEN];
     int		fd = -1;
     int		instance = 0;
     Object	obj;
@@ -741,6 +798,9 @@ _dxfExRemote (Object *in, Object *out)
     userp = strchr (buff, ',');
     if (userp)
 	*userp++ = '\000';
+    if ( ExHostToFQDN( hostp, host ) == ERROR )
+	goto cleanup;
+    hostp = host;
 
     persistent = flags & MODULE_PERSISTENT;
     async = flags & (MODULE_ASYNC | MODULE_ASYNCLOCAL);

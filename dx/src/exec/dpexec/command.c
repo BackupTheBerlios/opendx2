@@ -65,7 +65,7 @@ static char _dxd_LicenseKey[5];
 #define MAXOBJECTS 21   /* must match mdf-c generated dx.mdf file */
 
 /* dummy entry for master host */
-static dpgraphstat masterentry = {NULL, NULL, -1, 0, 0, 0, 0};
+static dpgraphstat masterentry = {NULL, NULL, NULL, -1, 0, 0, 0, 0};
 static int *update_dptable = NULL;
 
 /* Defined programatically in libdx */
@@ -130,7 +130,7 @@ static Error	Reclaim		(char *c, Object *in);
 static Error	Terminate	(char *c, Object *in);
 static Error	Version		(char *c, Object *in);
 static Error	SyncGraph	(char *c, Object *in);
-static int 	UpdateWorkers	(char *host, char *options, int add);
+static int 	UpdateWorkers	(char *host, char *user, char *options, int add);
 
 #define	FCALL(_n,_f) 		{_n, _f,   NULL, 0}
 #define	TABLE(_n,_t)		{_n, NULL, _t,   sizeof (_t)}
@@ -359,8 +359,10 @@ _dxf_ExDeleteHost(char *host, int err, int closepeer)
             }
 
             DXFree(index->prochostname);
+	    DXFree(index->procusername);
             DXFree(index->options);
             index->prochostname = NULL;
+	    index->procusername = NULL;
             index->options = NULL;
             if(index->procfd >= 0) {
                 close(index->procfd);
@@ -394,6 +396,7 @@ void _dxf_InitDPtableflag()
     *update_dptable = FALSE;
     INIT_LIST(_dxd_dpgraphstat);
     masterentry.prochostname = _dxd_exHostName;
+    masterentry.procusername = NULL;
     APPEND_LIST(dpgraphstat, _dxd_dpgraphstat, masterentry);
 }
 
@@ -414,7 +417,7 @@ int _dxf_NewDPTableEntry()
  * not be closed.
  */
 
-static int UpdateWorkers(char *host, char *options, int add)
+static int UpdateWorkers(char *host, char *user, char *options, int add)
 {
     int k, limit; 
     dpgraphstat *index;
@@ -561,6 +564,7 @@ static int UpdateWorkers(char *host, char *options, int add)
         /* if we got here we did not find host name in list */
         dpentry.error = opterr;
         dpentry.prochostname = host;
+	dpentry.procusername = user;
         if(optlen > 0) {
             dpentry.options = (char *) DXAllocateLocal (optlen);
             if(!dpentry.options) {
@@ -983,12 +987,13 @@ static int GroupAttach(char *c, Object *in)
     int n, k, limit, grouplen, found;
     dpgraphstat *hostentry;
     char *str, *delimiter;
-    char *hoststr;
+    char *hoststr, *userstr;
     PGassign pgassign, *index=NULL;
     int cerror = FALSE;
     char *hostname;
+    char *username;
     char *optr;
-    int hostlen;
+    int hostlen, userlen;
 
     if(_dxd_exRemoteSlave)
         return(OK);
@@ -1006,14 +1011,40 @@ static int GroupAttach(char *c, Object *in)
             return(ERROR);
         }
         hoststr++;
+
         while(*hoststr == ' ')
             hoststr++;
         if(*hoststr == '\0') {
             DXSetError(ERROR_BAD_PARAMETER, "no host assignment");
             return(ERROR);
         }
+
+       if ( strchr(hoststr, '@') ) {
+            userstr = hoststr;
+            hoststr = strchr(hoststr, '@') + 1;
+            if ( *userstr == '@' ) {
+               DXSetError(ERROR_BAD_PARAMETER, "no user assignment");
+               return(ERROR);
+           }
+            optr = userstr;
+           while(*optr != ' ' && *optr != '@')
+               optr++;
+
+            userlen = optr - userstr;
+       }
+       else
+            userstr = NULL, userlen = 0;
+
+        while(*hoststr == ' ')
+            hoststr++;
+        if(*hoststr == '\0') {
+            DXSetError(ERROR_BAD_PARAMETER, "no host assignment");
+            return(ERROR);
+        }
+
         optr = hoststr;
-        while(*optr && *optr != ' ')
+
+        while(*optr && *optr != ' ' && *optr != ':')
             optr++;
 
         if(*optr)
@@ -1040,6 +1071,16 @@ static int GroupAttach(char *c, Object *in)
 			   "Cannot allocate memory for host table entry");
 	    strncpy(hostname, hoststr, hostlen);
 	    hostname[hostlen] = '\0';
+
+            if ( userstr ) {
+                username = (char *)DXAllocateLocal(userlen + 1);
+                if(username == NULL)
+                    DXSetError(ERROR_NO_MEMORY,
+                               "Cannot allocate memory for user table entry");
+                strncpy(username, userstr, userlen);
+                username[userlen] = '\0';
+                userstr = username;
+            }
 
             delimiter = str;
             while(*delimiter && *delimiter != ',' && 
@@ -1083,7 +1124,7 @@ static int GroupAttach(char *c, Object *in)
                     }
                 }
                 /* replace host assignment in table */
-                index->hostindex = UpdateWorkers(hostname, optr, 1);
+                index->hostindex = UpdateWorkers(hostname, userstr, optr, 1);
                 hostentry = FETCH_LIST(_dxd_dpgraphstat, index->hostindex);
                 DXFree(pgassign.pgname);
                 if(!hostentry->error) {
@@ -1097,7 +1138,7 @@ static int GroupAttach(char *c, Object *in)
                     cerror = hostentry->error;
             }
             else { /* adding new process group assignment */
-                pgassign.hostindex = UpdateWorkers(hostname, optr, 1);
+                pgassign.hostindex = UpdateWorkers(hostname, userstr, optr, 1);
                 hostentry = FETCH_LIST(_dxd_dpgraphstat, pgassign.hostindex);
                 APPEND_LIST(PGassign, _dxd_pgassign, pgassign);
                 if(!hostentry->error) {
@@ -1155,7 +1196,8 @@ static int GroupDetach(char *c, Object *in)
                 if(hostentry) {
                     if(!hostentry->error)
                         index->hostindex = UpdateWorkers(
-                                  hostentry->prochostname, NULL, 0);
+				  hostentry->prochostname,
+                                  hostentry->procusername, NULL, 0);
                 }
                 _dxf_ExGVariableSetStr(index->pgname, NULL);
                 _dxf_ExCacheFlush(FALSE);

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/distp.h,v 1.5 2000/08/11 15:28:10 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/distp.h,v 1.6 2001/03/20 18:46:30 davidt Exp $
  */
 
 #ifndef _DISTP_H
@@ -99,6 +99,7 @@ typedef struct dpversion
 typedef struct dpgraphstat
 {
     char        *prochostname;
+    char	*procusername;
     char        *options;
     int		procfd;      /* for os2 this must always be a *socket* */
     int         SlaveId;
