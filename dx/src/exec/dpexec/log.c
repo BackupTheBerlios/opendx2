@@ -41,7 +41,10 @@ extern Array _dxfExNewInteger (int n);
 
 void _dxf_ExLogError (int errnum)
 {
+
+#if !defined(HAVE__ERRNO)
     errno = errnum;
+#endif
     perror ("can't open dx.log");
 }
 
