@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/UIConfig.h,v 1.1 1999/03/24 15:17:24 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/UIConfig.h,v 1.2 1999/04/02 19:00:16 gda Exp $
 //
 
 */
@@ -29,34 +29,6 @@
 */
 #ifdef sun4
 # define NON_ANSI_SPRINTF
-#endif
-
-/*
-// If strlen() chokes when passed a null pointer define this. 
-*/
-#if defined(solaris) || defined(sgi) || defined(sun4) || defined DXD_WIN || defined OS2 || defined aviion || defined(alphax)
-# define NON_NULL_STRLEN
-#endif
-
-/*
-// If strcmp() chokes when passed a null pointers define this. 
-*/
-#if defined(solaris) || defined(sgi) || defined(sun4) || defined DXD_WIN || defined OS2 || defined aviion || defined(alphax)
-# define NON_NULL_STRCMP
-#endif
-
-/*
-// If neither exists, find workaround
-*/
-#if defined(DXD_WIN) || defined(OS2)
-# define DXD_LACKS_ANY_REGCMP
-#endif
-
-/*
-// If regcmp exists. if false, call re_comp
-*/
-#if !defined(DXD_LACKS_ANY_REGCMP) && !defined(sun4) && !defined(alphax)
-# define REGCMP_EXISTS
 #endif
 
 /*
