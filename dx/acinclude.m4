@@ -14,6 +14,19 @@ CYGWIN=
 test "$ac_cv_cygwin" = yes && CYGWIN=yes])
 
 dnl
+dnl  For intel link, list X libs
+dnl  ------------------------------------------------------------
+AC_DEFUN(DX_XLIBS,
+[
+AC_SUBST(DX_XLIBS_LIST)
+if test "$ARCH" = "intelnt" ; then
+      DX_XLIBS_LIST="hclglx.lib xm.lib xt.lib xlibcon.lib xlib.lib"
+else
+      DX_XLIBS_LIST=""
+fi
+])
+
+dnl
 dnl  If using CYGWIN, then the extensions to the filenames need to be
 dnl  different than that of UN*X. This sets that up.
 dnl
@@ -30,7 +43,7 @@ else
   if AC_TRY_EVAL(ac_link); then
     for file in conftest.*; do
       case $file in
-      *.c | *.o | *.obj) ;;
+      *.c | *.o | *.obj | *.ilk | *.pdb) ;;
       *) ac_cv_exeext=`echo $file | sed -e s/conftest//` ;;
       esac
     done
@@ -157,6 +170,7 @@ AC_DEFUN(DX_REQUIRE_CPP,
 
 AC_DEFUN(DX_PROG_CXXCPP,
 [AC_MSG_CHECKING(how to run the C++ preprocessor)
+AC_PROVIDE(AC_PROG_CXXCPP)
 if test -z "$CXXCPP"; then
 AC_CACHE_VAL(ac_cv_prog_CXXCPP,
 [AC_LANG_SAVE[]dnl
@@ -165,8 +179,8 @@ AC_LANG_CPLUSPLUS[]dnl
   DX_TRY_CPP([#include <stdlib.h>], , CXXCPP=/lib/cpp)
   ac_cv_prog_CXXCPP="$CXXCPP"
 AC_LANG_RESTORE[]dnl
-fi])dnl
 CXXCPP="$ac_cv_prog_CXXCPP"
+fi])dnl
 AC_MSG_RESULT($CXXCPP)
 AC_SUBST(CXXCPP)dnl
 ])
@@ -593,17 +607,72 @@ done])
 
 
 dnl
+dnl  What is the correct function name and structure def stat... stat, or _stat?
+dnl  -------------------------------------------------------------
+AC_DEFUN(DX_CHECK_STAT,
+[
+AC_CHECK_FUNCS( stat _stat )
+if test $ac_cv_func__stat='yes' ; then
+    AC_DEFINE_UNQUOTED(STAT, _stat)
+    dx_stat=_stat
+else
+    if test $ac_cv_func_stat='yes' ; then
+	AC_DEFINE_UNQUOTED(STAT, stat)
+	dx_stat=stat
+    else
+ 	echo could not find either stat or _stat.... need one or the other
+	exit
+    fi
+fi
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+dx_statstruct=
+cat > statHdrs.h << EOF
+EOF
+AC_CHECK_HEADER(windows.h, [ echo "#include <windows.h>" >> statHdrs.h ])
+AC_CHECK_HEADER(unistd.h, [ echo "#include <unistd.h>" >> statHdrs.h ])
+AC_CHECK_HEADER(sys/types.h, [ echo "#include <sys/types.h>" >> statHdrs.h ])
+AC_CHECK_HEADER(sys/stat.h, [ echo "#include <sys/stat.h>" >> statHdrs.h ])
+for try in stat _stat
+do
+AC_TRY_LINK(
+[
+#include <stdio.h>
+#include "statHdrs.h"
+],
+[
+int i = $dx_stat("foo", (struct $try *) NULL);
+],
+[
+dx_statstruct=$try 
+AC_DEFINE_UNQUOTED(STATSTRUCT, $try)
+])
+if test ! -z "$dx_statstruct" ; then
+    break
+fi
+done
+echo stat function is: $dx_stat
+echo stat structure is: $dx_statstruct
+rm statHdrs.h
+AC_LANG_RESTORE
+])
+
+dnl
 dnl  Figure out what the type is needed for the select function.
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CHECK_SELECT_ARG,
 [
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
 select_argtype=
 cat > selectHdrs.h << EOF
 EOF
+AC_CHECK_HEADER(windows.h, [ echo "#include <windows.h>" >> selectHdrs.h ])
 AC_CHECK_HEADER(unistd.h, [ echo "#include <unistd.h>" >> selectHdrs.h ])
 AC_CHECK_HEADER(sys/types.h, [ echo "#include <sys/types.h>" >> selectHdrs.h ])
 AC_CHECK_HEADER(select.h, [ echo "#include <select.h>" >> selectHdrs.h ])
 AC_CHECK_HEADER(sys/select.h, [ echo "#include <sys/select.h>" >> selectHdrs.h ])
+AC_LANG_RESTORE
 for try in sellist fd_set int void
 do
 AC_TRY_LINK(
@@ -633,14 +702,17 @@ dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CHECK_SOCK_LENGTH_TYPE,
 [
 AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
+AC_LANG_C
 socket_argtype=
 cat > socketHdrs.h << EOF
 EOF
 AC_CHECK_HEADER(unistd.h, [ echo "#include <unistd.h>" >> socketHdrs.h ])
 AC_CHECK_HEADER(sys/types.h, [ echo "#include <sys/types.h>" >> socketHdrs.h ])
 AC_CHECK_HEADER(sys/socket.h, [ echo "#include <sys/socket.h>" >> socketHdrs.h ])
-for try in socklen_t size_t int
+AC_CHECK_HEADER(winsock2.h, [ echo "#include <winsock2.h>" >> socketHdrs.h ])
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+for try in socklen_t size_t int "unsigned int"
 do
 AC_TRY_LINK(
 [
@@ -671,7 +743,7 @@ dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CYGWIN_MOUNTS,
 [
     changequote(<<,>>)dnl
-    AC_MSG_CHECKING(intelnt under cygwin)
+    AC_MSG_CHECKING(if intelnt on cygwin, check for mounts)
     mnts="none"
     if test "$ARCH" = "intelnt" ; then
 	    tt=`uname -s  | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"`
@@ -700,24 +772,48 @@ dnl
 dnl this is AC_CHECK_TYPE with windows.h for DX intelnt port
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CHECK_TYPE,
-[ AC_REQUIRE([AC_HEADER_STDC])dnl
-  AC_MSG_CHECKING(for $1)
-AC_CACHE_VAL(ac_cv_type_$1,
-[AC_EGREP_CPP(dnl
+[
+    AC_REQUIRE([AC_HEADER_STDC])dnl
+    AC_MSG_CHECKING(for $1)
+    AC_CACHE_VAL(ac_cv_type_$1,
+    [
+	 if test "$ac_cv_header_windows_h" = "yes" ; then
+	    AC_EGREP_CPP(dnl
 changequote(<<,>>)dnl
 <<$1[^a-zA-Z_0-9]>>dnl
-changequote([,]), [#include <sys/types.h>
-#if STDC_HEADERS
-#include <stdlib.h>
-#include <stddef.h>
-#endif
-#if defined(HAVE_WINDOWS_H)
-#include <windows.h>
-#endif], ac_cv_type_$1=yes, ac_cv_type_$1=no)])dnl
-AC_MSG_RESULT($ac_cv_type_$1)
-if test $ac_cv_type_$1 = no; then
-  AC_DEFINE($1, $2)
-fi
+changequote([,]),
+	    [
+		#include <sys/types.h>
+		#if STDC_HEADERS
+		#include <stdlib.h>
+		#include <stddef.h>
+		#endif
+		#include <windows.h>
+	    ],
+	    ac_cv_type_$1=yes, ac_cv_type_$1=no)
+	else
+	    AC_EGREP_CPP(dnl
+changequote(<<,>>)dnl
+<<$1[^a-zA-Z_0-9]>>dnl
+changequote([,]),
+	    [
+		#include <sys/types.h>
+		#if STDC_HEADERS
+		#include <stdlib.h>
+		#include <stddef.h>
+		#endif
+	    ],
+	    ac_cv_type_$1=yes, ac_cv_type_$1=no)
+
+	fi
+        if test $ac_cv_type_$1 = no; then
+            AC_TRY_COMPILE([], $1 foo;, ac_cv_type_$1=yes, ac_cv_type_$1=no)
+        fi
+    ])
+    AC_MSG_RESULT($ac_cv_type_$1)
+    if test $ac_cv_type_$1 = no; then
+        AC_DEFINE($1, $2)
+    fi
 ])
 
 
@@ -734,7 +830,7 @@ AC_DEFUN(DX_NEEDS_STDCXX,
 	AC_LANG_CPLUSPLUS
 	AC_TRY_LINK(
 	    [
-		#include <stream.h>
+		#include <iostream.h>
 	    ],
 	    [
 		cout << "foo";
@@ -744,7 +840,7 @@ AC_DEFUN(DX_NEEDS_STDCXX,
 		LIBS="$LIBS -lstdc++"
 		AC_TRY_LINK(
 		    [
-			#include <stream.h>
+			#include <iostream.h>
 		    ],
 		    [
 			cout << "foo";

@@ -23,6 +23,10 @@
 #undef OLD_LESSTIF
 
 #undef USING_BISON
+#undef STAT
+#undef STATSTRUCT
+#undef HAVE_HCLXMINIT
+#undef HAVE_HCLXTINIT
 #undef HAVE_SYS_ERRLIST
 #undef HAVE_SYSCONFIG_NCPUS
 #undef ALTERNATE_CXX_SIGNAL
@@ -44,6 +48,20 @@
 #undef HAVE_LIBTTF
 #undef HAVE_TT_FONT_PATH
 
+#undef uint
+#undef byte
+#undef float32
+#undef float64
+#undef int16
+#undef int32
+#undef int8
+#undef short
+#undef ubyte
+#undef uint16
+#undef uint32
+#undef uint8
+#undef ulong
+#undef ushort
 #undef __int64
 
 #undef uint
@@ -272,6 +290,17 @@
 #undef DXEXEC_EXP
 #undef DXEXEC_IMP
 
+#undef HAVE_SIGBUS
+#undef HAVE_SIGPIPE
+#undef HAVE_SIGKILL
+#undef HAVE_SIGDANGER
+#undef DX_XLIBS_LIST
+
+#undef HAVE_UNLINK
+#undef HAVE__UNLINK
+#undef HAVE_GETPID
+#undef HAVE__GETPID
+#undef HAVE_GETLOGIN
 
 @BOTTOM@
 
