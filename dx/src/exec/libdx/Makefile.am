@@ -13,7 +13,14 @@ BUILT_SOURCES = \
 	xformClass.c interpClass.c fieldinterpClass.c groupinterpClass.c \
 	fle2DClass.c linesII1DClass.c linesRR1DClass.c linesRI1DClass.c \
 	trisRI2DClass.c quadsRR2DClass.c cubesIIClass.c cubesRRClass.c \
-	tetrasClass.c quadsII2DClass.c 
+	tetrasClass.c quadsII2DClass.c  \
+	\
+	arrayClass.h cameraClass.h clippedClass.h fieldClass.h groupClass.h \
+	lightClass.h objectClass.h privateClass.h screenClass.h stringClass.h \
+	xformClass.h interpClass.h fieldinterpClass.h groupinterpClass.h \
+	fle2DClass.h linesII1DClass.h linesRR1DClass.h linesRI1DClass.h \
+	trisRI2DClass.h quadsRR2DClass.h cubesIIClass.h cubesRRClass.h \
+	tetrasClass.h quadsII2DClass.h  
 
 libLIBDX_a_SOURCES =  \
 	arrayClass.X cameraClass.X clippedClass.X fieldClass.X groupClass.X \
@@ -29,6 +36,13 @@ libLIBDX_a_SOURCES =  \
 	fle2DClass.c linesII1DClass.c linesRR1DClass.c linesRI1DClass.c \
 	trisRI2DClass.c quadsRR2DClass.c cubesIIClass.c cubesRRClass.c \
 	tetrasClass.c quadsII2DClass.c \
+	\
+	arrayClass.h cameraClass.h clippedClass.h fieldClass.h groupClass.h \
+	lightClass.h objectClass.h privateClass.h screenClass.h stringClass.h \
+	xformClass.h interpClass.h fieldinterpClass.h groupinterpClass.h \
+	fle2DClass.h linesII1DClass.h linesRR1DClass.h linesRI1DClass.h \
+	trisRI2DClass.h quadsRR2DClass.h cubesIIClass.h cubesRRClass.h \
+	tetrasClass.h quadsII2DClass.h \
 	\
 	array.c basic.c box.c cache.c camera.c clipped.c composite.c \
 	cstarray.c field.c grid.c group.c helper.c init.c light.c lock.c \
@@ -69,7 +83,6 @@ SUFFIXES = .X .h .c .o .s .i
 .X.h:
 	rm -f $*.h
 	./class -h $*.X >$*.h
-	chmod -w $*.h
 
 .X.c:
 	rm -f $*.c
@@ -106,7 +119,6 @@ shade.o: shade.c
 	| sed -e '/^#/d'  \
 	| sed -e 's/DEFINE2/#define/'  \
 	| sed -e 's/[^#]pragma/#pragma/'  > shade_.c
-	chmod -w shade_.c
 	$(COMPILE) $(CFLAGS) -c shade_.c
 	mv shade_.o shade.o
 	rm shade_.c
