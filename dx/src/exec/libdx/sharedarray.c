@@ -143,7 +143,7 @@ _unreferenceSegment(int id)
     }
 
     sptr->count --;
-    if (sptr < 0 || (sptr->count == 0 && sptr->base == 0))
+    if (sptr->count < 0 || (sptr->count == 0 && sptr->base == 0))
     {
         DXSetError(ERROR_INTERNAL,
 		"unreferenceing an unmapped shared memory segment");
@@ -222,7 +222,7 @@ _dxfSharedArray_Delete(SharedArray a)
 Pointer
 _dxfSharedArray_GetArrayData(SharedArray a)
 {
-    return (Pointer)(a->base + a->offset);
+    return (Pointer)(((char *)a->base) + a->offset);
 }
 
 Error
@@ -248,7 +248,7 @@ _dxfNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, in
     if (!base)
         return NULL;
 
-    data = (Pointer)((char *)base) + offset;
+    data = (Pointer)(((char *)base) + offset);
     
     return DXNewSharedArray(id, data, t, c, r, s);
 }
