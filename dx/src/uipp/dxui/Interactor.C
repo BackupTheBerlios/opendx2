@@ -85,9 +85,13 @@ Interactor::Interactor(const char * name, InteractorInstance *ii) :
     this->label = this->customPart = NUL(Widget);
     this->currentLayout = ii->isVerticalLayout()?WorkSpaceComponent::VerticalUnset:
 	WorkSpaceComponent::HorizontalUnset;
+    this->drag_drop_wpid = 0;
 }
 
-Interactor::~Interactor() { }
+Interactor::~Interactor() 
+{ 
+    if (this->drag_drop_wpid) XtRemoveWorkProc(this->drag_drop_wpid);
+}
  
 //
 // Change any global attributes and then ask the derived class to
@@ -649,8 +653,12 @@ void Interactor::dropFinish (long operation, int tag, unsigned char status)
     // so that the user isn't required to use the Shift key.
 
     if (status) {
-	if ((operation == XmDROP_MOVE) || (tag == Interactor::Trash))
-	    this->getControlPanel()->deleteSelectedInteractors();
+	if ((operation == XmDROP_MOVE) || (tag == Interactor::Trash)) {
+	    //this->getControlPanel()->deleteSelectedInteractors();
+	    XtAppContext apcxt = theApplication->getApplicationContext();
+	    this->drag_drop_wpid = XtAppAddWorkProc (apcxt, Interactor_DragDropWP,
+		    (XtPointer)this);
+	}
     }
 }
 
@@ -739,3 +747,10 @@ ControlPanel *Interactor::getControlPanel()
     return this->interactorInstance->getControlPanel();
 }
 
+extern "C" Boolean Interactor_DragDropWP(XtPointer clientData)
+{
+    Interactor* ntr = (Interactor*)clientData;
+    ntr->drag_drop_wpid = 0;
+    ntr->getControlPanel()->deleteSelectedInteractors();
+    return TRUE;
+}

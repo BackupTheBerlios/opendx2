@@ -100,6 +100,8 @@ class Dialog;
 
 extern void *GetUserData(Widget widget);
 
+extern "C" Boolean Interactor_DragDropWP(XtPointer);
+
 //
 // Virtual Interactor class definition:
 //				
@@ -127,6 +129,18 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
 	Modules,
 	Trash
     };
+
+    //
+    // Shift+Dragging an Interactor has the effect of deleting the
+    // original interactor.  The new Motif doesn't permit deleting
+    // an object involved in a drag-n-drop operation during the
+    // operation.  We used to delete the interactor in the dropFinish()
+    // method.  Now we create a work proc.  This way the deletion
+    // will happen immediately following completion of the drag-n-drop.
+    //
+    int drag_drop_wpid;
+
+    friend Boolean Interactor_DragDropWP(XtPointer);
 
   protected:
     //

@@ -36,6 +36,7 @@ extern "C" void StandIn_DisarmTabCB(Widget, XtPointer, XtPointer);
 extern "C" void StandIn_ArmOutputCB(Widget, XtPointer, XtPointer);
 extern "C" void StandIn_ArmInputCB(Widget, XtPointer, XtPointer);
 extern "C" void StandIn_SelectNodeCB(Widget, XtPointer, XtPointer);
+extern "C" Boolean StandIn_DragDropWP(XtPointer);
 
 class Tab;
 class Ark;
@@ -110,6 +111,8 @@ class StandIn : public UIComponent, public DXDragSource
                 XtPointer clientData,
                 XEvent* event,
 		Boolean *cont);
+    friend Boolean StandIn_DragDropWP(XtPointer);
+
     void trackArk(Widget widget, XEvent *event);
 
     boolean  setMinimumWidth(int &width);
@@ -138,6 +141,17 @@ class StandIn : public UIComponent, public DXDragSource
 	Interactors,
 	Trash
     };
+
+    //
+    // Dragging a StandIn onto the tool selector means deleting the
+    // standin.  The new Motif doesn't permit deleting an object involved
+    // in a drag drop during the operation.  We used delete it in the
+    // dropFinishCallback.  Now we create a work proc so that the Nodes
+    // will be deleted right away but not until the Drag-n-Drop is over
+    //
+    int drag_drop_wpid;
+
+
 
   protected:
     //

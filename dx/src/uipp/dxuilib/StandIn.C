@@ -215,7 +215,7 @@ StandIn::StandIn(WorkSpace *w, Node *node):
     this->node = node;
     this->buttonWidget = NULL;
     this->requiredButtonWidth = 0;
-
+    this->drag_drop_wpid = 0;
 }
 
 
@@ -237,6 +237,9 @@ StandIn::~StandIn()
         delete tab;
 
     this->node->standin = NULL;
+
+    if (this->drag_drop_wpid)
+	XtRemoveWorkProc (this->drag_drop_wpid);
 
     //
     // Remove it (visually) from the work space, 
@@ -3154,7 +3157,10 @@ void StandIn::dropFinish(long operation, int tag, unsigned char status)
     if (status) {
 	if (tag == StandIn::Interactors) {
 	} else if ((operation == XmDROP_MOVE) || (tag == StandIn::Trash)) {
-	    editor->getDeleteNodeCmd()->execute();
+	    //editor->getDeleteNodeCmd()->execute();
+	    XtAppContext apcxt = theApplication->getApplicationContext();
+	    this->drag_drop_wpid = XtAppAddWorkProc (apcxt,
+		    StandIn_DragDropWP, (XtPointer)this);
 	}
     }
 }
@@ -3280,6 +3286,24 @@ void StandIn_Button2PressEH
     if (xev->xbutton.state & ShiftMask)
         return ;
     XtCallActionProc (w, "select_w", xev, NULL, 0);
+}
+
+//
+// Used during drag-n-drop operations that result in deletion of nodes.
+// The Command passed in is the EditorWindow's delete-selected-nodes
+// command.
+//
+Boolean StandIn_DragDropWP (XtPointer clientData)
+{
+    StandIn* si = (StandIn*)clientData;
+    Network*         network;
+    EditorWindow*    editor;
+
+    network = si->node->getNetwork();
+    editor = network->getEditor();
+    si->drag_drop_wpid = 0;
+    editor->getDeleteNodeCmd()->execute();
+    return TRUE;
 }
 } // extern C
 
