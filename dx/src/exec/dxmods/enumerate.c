@@ -13,7 +13,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <dx/dx.h>
-
+extern int m_Compute(Object *in, Object *out);
 
 static Array MakeSequence(Array start, Array end, int *n, Array delta, 
 			  char *method);
@@ -305,7 +305,7 @@ Array MakeLinearList(Array start, Array end, int *n, Array delta)
 	    i_delta = *(int *)DXGetArrayData(a_delta);
 
 	    if (i_delta == 0)
-		count == 1;
+		count = 1;
 	    else {
 		if ((i_end >= i_start && i_delta > 0) ||
 		    (i_end < i_start && i_delta < 0))
@@ -375,7 +375,7 @@ Array MakeLinearList(Array start, Array end, int *n, Array delta)
 	    f_delta = *(float *)DXGetArrayData(a_delta);
 
 	    if (f_delta == 0.0)
-		count == 1;
+		count = 1;
 	    else {
 		if ((f_end >= f_start && f_delta > 0) ||
 		    (f_end < f_start && f_delta < 0)) {
@@ -906,11 +906,11 @@ static int IsNegative(Array a)
     Pointer value;
     
     if (!DXGetArrayInfo(a, NULL, &t, NULL, NULL, NULL))
-	return;
+	return 0;
     
     value = DXGetArrayData(a);
     if (!value)
-	return;
+	return 0;
     
     switch (t) {
       case TYPE_BYTE:   return (*(byte *)value < (byte)0);
