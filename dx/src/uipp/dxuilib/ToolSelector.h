@@ -43,6 +43,9 @@
 extern "C" void ToolSelector_ToolHelpCB(Widget, XtPointer, XtPointer);
 extern "C" void ToolSelector_ToolSelectCB(Widget, XtPointer, XtPointer);
 extern "C" void ToolSelector_CategorySelectCB(Widget, XtPointer, XtPointer);
+extern "C" void ToolList_TypeAhead(Widget, XEvent*, String *,
+		  Cardinal *);
+
 
 class NodeDefinition;
 
@@ -85,6 +88,8 @@ class ToolSelector : public UIComponent , public DropSite, public DragSource
 				XtPointer clientData, XtPointer callData);
     friend void ToolSelector_ToolHelpCB(Widget w, 
 				XtPointer clientData, XtPointer callData);
+    friend void ToolList_TypeAhead(Widget, XEvent*, String *,
+		  Cardinal *);
 
     // List of all tool selectors.
     static List AllToolSelectors;
@@ -124,9 +129,6 @@ class ToolSelector : public UIComponent , public DropSite, public DragSource
     // Protected member data:
     //
     void clearToolListWidget();
-
-    Widget	getToolListWidget() { return toolList; }
-    Widget	getCategoryListWidget() { return toolList; }
 
     //
     // One time initialize for the class. 
@@ -243,6 +245,10 @@ class ToolSelector : public UIComponent , public DropSite, public DragSource
     // Unhighlight any selected tools in the tool list. 
     //
     void deselectAllTools();
+ 
+    Widget	getToolListWidget() { return toolList; }
+    Widget	getCategoryListWidget() { return categoryList; }
+
  
     //
     // Returns a pointer to the class name.

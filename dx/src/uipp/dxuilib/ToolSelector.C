@@ -10,11 +10,14 @@
 #include "../base/defines.h"
 
 
+#include <ctype.h>
+#include <time.h>
 
-
+#include <X11/keysym.h>
 #include <Xm/Xm.h>
 #include <Xm/Frame.h>
 #include <Xm/Form.h>
+#include <Xm/ListP.h>
 #include <Xm/List.h>
 #include <Xm/Label.h>
 #include <Xm/ScrolledW.h>
@@ -55,8 +58,13 @@ String ToolSelector::DefaultResources[] =
     "*XmFrame.marginHeight:	3",
     "*categoryListLabel.labelString: Categories:",
     "*toolListLabel.labelString:     Tools:",
+    "*toolList.translations:	#override <Key>: ToolList_TypeAhead()",
      NUL(char*)
-};
+};    
+
+XtActionsRec ToolListActions[] = 
+    	{{"ToolList_TypeAhead",		ToolList_TypeAhead}};
+
 
 //
 // Constructor:
@@ -111,6 +119,11 @@ void ToolSelector::initialize()
     if (NOT ToolSelector::ToolSelectorClassInitialized)
     {
         ASSERT(theApplication);
+
+        // Add translation for <Key> on window to do type ahead in tool list
+        XtAppAddActions(XtWidgetToApplicationContext(theApplication->getRootWidget()), 
+    		ToolListActions, XtNumber(ToolListActions));
+
         this->setDefaultResources(theApplication->getRootWidget(),
                                   ToolSelector::DefaultResources);
         ToolSelector::ToolSelectorClassInitialized = TRUE;
@@ -888,3 +901,215 @@ char *cp;
     return retVal;
 }
 
+static void
+ActivateElement(XmListWidget lw,
+	     XEvent *event,
+	     Boolean default_action)
+{
+  int item, SLcount, i;
+  XmListCallbackStruct cb;
+
+  item = lw->list.LastHLItem;
+  lw->list.DidSelection = TRUE;
+
+  /* If there's a drag timeout, remove it so we don't see two selections. */
+  if (lw->list.DragID)
+    {
+      XtRemoveTimeOut(lw->list.DragID);
+      lw->list.DragID = 0;
+    }
+
+  ASSERT(lw->list.itemCount && lw->list.InternalList);
+  if (lw->list.InternalList[item]->length == -1)
+    lw->list.InternalList[item]->length = XmStringLength(lw->list.items[item]);
+
+  cb.event = event;
+  cb.item_length = lw->list.InternalList[item]->length;
+  cb.item_position = item + 1;
+  cb.item = XmStringCopy(lw->list.items[item]);
+
+  SLcount = lw->list.selectedItemCount;
+
+  if ((lw->list.SelectionPolicy == XmMULTIPLE_SELECT) ||
+      (lw->list.SelectionPolicy == XmEXTENDED_SELECT))
+    {
+      if (lw->list.selectedItems && lw->list.selectedItemCount)
+    	{
+	  cb.selected_items =
+	    (XmString *)ALLOCATE_LOCAL(sizeof(XmString) * SLcount);
+	  cb.selected_item_positions =
+	    (int *)ALLOCATE_LOCAL(sizeof(int) * SLcount);
+	  for (i = 0; i < SLcount; i++)
+	    {
+	      cb.selected_items[i] = XmStringCopy(lw->list.selectedItems[i]);
+	      cb.selected_item_positions[i] = lw->list.selectedPositions[i];
+	    }
+	}
+    }
+  /* BEGIN OSF Fix CR 4576 */
+  cb.selected_item_count = SLcount;
+  /* END OSF Fix CR 4576 */
+
+  if (default_action)
+    {
+      cb.reason = XmCR_DEFAULT_ACTION;
+      cb.auto_selection_type = lw->list.AutoSelectionType;
+      XtCallCallbackList((Widget) lw, lw->list.DefaultCallback, &cb);
+    }
+  else
+    {
+      switch(lw->list.SelectionPolicy)
+	{
+	case XmSINGLE_SELECT:
+	  cb.reason = XmCR_SINGLE_SELECT;
+	  XtCallCallbackList((Widget) lw, lw->list.SingleCallback, &cb);
+	  break;
+
+	case XmBROWSE_SELECT:
+	  cb.reason = XmCR_BROWSE_SELECT;
+	  cb.auto_selection_type = lw->list.AutoSelectionType;
+	  XtCallCallbackList((Widget) lw, lw->list.BrowseCallback, &cb);
+	  break;
+
+	case XmMULTIPLE_SELECT:
+	  cb.reason = XmCR_MULTIPLE_SELECT;
+	  XtCallCallbackList((Widget) lw, lw->list.MultipleCallback, &cb);
+	  break;
+
+	case XmEXTENDED_SELECT:
+	  cb.reason = XmCR_EXTENDED_SELECT;
+	  cb.selection_type = lw->list.SelectionType;
+	  cb.auto_selection_type = lw->list.AutoSelectionType;
+	  XtCallCallbackList((Widget) lw, lw->list.ExtendCallback, &cb);
+	  break;
+	}
+    }
+
+  /* Reset the AutoSelectionType. It may not actually be set to anything but
+   * let's reset it in all cases just to be sure everthing remains clean. */
+  lw->list.AutoSelectionType = XmAUTO_UNSET;
+
+  if ((lw->list.SelectionPolicy == XmMULTIPLE_SELECT) ||
+      (lw->list.SelectionPolicy == XmEXTENDED_SELECT))
+    {
+      if (SLcount)
+    	{
+	  for (i = 0; i < SLcount; i++) XmStringFree(cb.selected_items[i]);
+	  DEALLOCATE_LOCAL((char *) cb.selected_items);
+	  DEALLOCATE_LOCAL((char *) cb.selected_item_positions);
+	}
+    }
+
+  XmStringFree(cb.item);
+}
+
+static Boolean 
+CompareStrAndItem(XmListWidget lw,
+                   char *input_str,
+                   int pos)
+{
+    char *listString;
+    XmStringTable list;
+    XmStringContext xmc;
+    XmStringCharSet tag;
+    XmStringDirection direction;
+    Boolean sep;
+    
+    XtVaGetValues((Widget)lw, XmNitems, &list, NULL);
+
+    // Get compound Text String back out.
+    XmStringInitContext(&xmc, list[pos]);
+    XmStringGetNextSegment(xmc, &listString, &tag, &direction, &sep);
+
+    if(listString && strlen(listString) >= strlen(input_str)) {
+    	for(int i=0; i<strlen(input_str); i++)
+    	    listString[i] = tolower(listString[i]);
+	if(strncmp(listString, input_str, strlen(input_str))==0) {
+		XmListSetKbdItemPos((Widget) lw, pos + 1);
+		XmListSelectPos((Widget) lw, pos + 1, True);
+		XtFree(listString);
+		return True;
+	}
+    }
+    if(listString)
+    	XtFree(listString);
+    return False;
+}
+
+#define MOST_TYPED 10
+static char typed[MOST_TYPED] = "";
+static time_t last=0;
+
+void ToolList_TypeAhead(Widget wid, XEvent *event, String *params, 
+	Cardinal *num_params)
+{
+    time_t previous=last;
+    XmListWidget lw = (XmListWidget) wid;
+    XKeyEvent *xk = (XKeyEvent*) event;
+    KeySym kr;
+    char input_string[MOST_TYPED];
+    int input_length;
+    Status status_return;
+    Boolean found = False;
+    int i;
+
+    /* Determine what was pressed. */
+    input_length = XLookupString(xk, input_string, MOST_TYPED, &kr, 0);
+
+    if(kr == XK_Up) {
+	int pos = lw->list.CurrentKbdItem;
+	last = 0;
+    	XmListSetKbdItemPos(wid, pos);
+    	XmListSelectPos(wid, pos, True);
+    }
+
+    if(kr == XK_Down) {
+	int pos = lw->list.CurrentKbdItem + 2;
+	if (pos > lw->list.itemCount) pos = 1;
+	last = 0;
+    	XmListSetKbdItemPos(wid, pos);
+    	XmListSelectPos(wid, pos, True);
+    }
+
+    if(*input_string == ' ') {
+	XmListDeselectPos((Widget) lw, lw->list.CurrentKbdItem+1);
+	// After deselecting, send deselect to other callbacks.
+	ActivateElement(lw, NULL, FALSE);
+	last = 0;
+	return;
+    }
+
+    if((*input_string >= 'a' && *input_string <='z') || 
+  	(*input_string >= 'A' && *input_string <= 'Z')) {
+
+        last = time(NULL);
+
+  	if (lw->list.itemCount > 0) {
+	    if(difftime(last, previous) < 2) {
+	    	int len = strlen(typed); if(len>=MOST_TYPED-1) len=0;
+	    	typed[len] = tolower(*input_string);
+	    	typed[len+1] = '\0';
+	    } else
+	    {
+	    	typed[0] = tolower(input_string[0]); 
+	    	typed[1] = '\0';
+	    }
+
+	    for (i = lw->list.CurrentKbdItem; i < lw->list.itemCount; i++)
+		if (CompareStrAndItem(lw, typed, i))
+		{
+		    found = True;
+		    break;
+		}
+
+	  /* Wrap around to the start of the list if necessary. */
+	    if (!found)
+	    {
+		for (i = 0; i <= lw->list.CurrentKbdItem; i++)
+		    if (CompareStrAndItem(lw, typed, i))
+		    	break;
+	    }
+	}
+  }
+  return;
+}
