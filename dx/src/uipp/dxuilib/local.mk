@@ -1,22 +1,22 @@
 all: sequence.h imagemac.net gifmac.txt dxmac.txt netlex.c netyacc.c
 
 EditorWindow.o: sequence.h
-ImageNodeUtils.o: imagemac.h dxmac.h vrmlmac.txt gifmac.txt
+ImageNodeUtils.o: imagemac.h dxmac.h vrmlmac.h gifmac.h
 
 
 sequence.h: sequence.net 
 	net2c sequence.net sequence.h
 
-imagemac.txt: imagemac.net
+imagemac.h: imagemac.net
 	net2c imagemac.net imagemac.h
 
-gifmac.txt:  
+gifmac.h:  
 	net2c ../java/server/macros/gifmac.net gifmac.h
 
-vrmlmac.txt:
+vrmlmac.h:
 	net2c ../java/server/macros/vrmlmac.net vrmlmac.h
 
-dxmac.txt:
+dxmac.h:
 	net2c ../java/server/macros/dxmac.net dxmac.h
 
 netlex.c: net.lex
