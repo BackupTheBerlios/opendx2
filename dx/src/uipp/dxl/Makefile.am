@@ -4,7 +4,8 @@ INCLUDES = -D$(ARCH) -I$(DXROOT)/include
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-lib_LIBRARIES = libDXL.a
+dxlibdir = $(prefix)/dx/lib
+dxlib_LIBRARIES = libDXL.a
 
 noinst_HEADERS = \
 	dxlP.h \
