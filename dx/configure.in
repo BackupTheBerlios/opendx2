@@ -340,7 +340,7 @@ dnl use the javac -verbose code to try and determine where they may be.
     with_javadx='yes'
     JAVABRANCH=java
     DX_FIND_JDK_CLASSES
-    JDK_CLASSPATH="$ac_cv_jdk_classes"
+    DX_JAVA_CLASSPATH="$ac_cv_jdk_classes"
     if test -z "$with_java40jar_path" ; then
       if test -z "$JAVA40JAR" ; then
         DX_FIND_DEFAULT_NETSCAPE
@@ -366,9 +366,6 @@ dnl use the javac -verbose code to try and determine where they may be.
 
 dnl Fix up the full CLASSPATH to be used with the JAVA compiles.
     TMP_CLASSPATH=./
-    if test ! "$DX_JAVA_CLASSPATH" = "" ; then
-	TMP_CLASSPATH=$DX_JAVA_CLASSPATH$DIRSEP$TMP_CLASSPATH
-    fi
     if test ! "$CLASSPATH" = "" ; then
 	TMP_CLASSPATH=$CLASSPATH$DIRSEP$TMP_CLASSPATH
     fi
@@ -377,6 +374,9 @@ dnl Fix up the full CLASSPATH to be used with the JAVA compiles.
     fi
     if test ! "$WRL_CLASSPATH" = "" ; then
 	TMP_CLASSPATH=$WRL_CLASSPATH$DIRSEP$TMP_CLASSPATH
+    fi
+    if test ! "$DX_JAVA_CLASSPATH" = "" ; then
+	TMP_CLASSPATH=$DX_JAVA_CLASSPATH$DIRSEP$TMP_CLASSPATH
     fi
     DX_JAVA_CLASSPATH=$TMP_CLASSPATH
     echo DX_JAVA_CLASSPATH :: $DX_JAVA_CLASSPATH

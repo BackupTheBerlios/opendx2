@@ -1056,6 +1056,9 @@ dnl  -------------------------------------------------------------
 AC_DEFUN(DX_JAVA_ARCHITECTURE,
 [
     AC_MSG_CHECKING(java architecture type)
+    if test "$JAVA_ARCH" = "linux" ; then
+	JNI_CFLAGS=-DIBM_LINUX
+    fi
     if test "$JAVA_ARCH" = "" ; then
 	lc=`uname -s | tr "A-Z" "a-z"`
         case $lc in
