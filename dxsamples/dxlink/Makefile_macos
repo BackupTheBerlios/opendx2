@@ -7,7 +7,7 @@ CFLAGS   = -O2 -Dmacos -DBASE=\"$(BASE)\" -I/usr/X11R6/include -I$(BASE)/include
  
 
 LIBS = -L$(BASE)/lib_macos -L/usr/X11R6/lib -lm $(LIBDXL)
-XLIBS   = -lXm -lXt -lXmu -lX11 
+XLIBS   = -lXm -lXp -lXext -lXt -lXmu -lX11 
 
 
 all: sealevel maptoplane xapp xapp_supervise demoapp
