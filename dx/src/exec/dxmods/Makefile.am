@@ -73,7 +73,7 @@ SOURCES5 = \
 SOURCES6 = \
 	_connectgrids.c _connectvor.c _construct.c _divcurl.c \
 	_getfield.c _gif.c _glyph.c _gradient.c \
-	_grid.c _helper_jea.c _irregstream.c _isosurface.c \
+	_grid.c _helper_jea.c _im_image.c _irregstream.c _isosurface.c \
 	_maptoplane.c _newtri.c _normals.c _partnbrs.c \
 	_plot.c _post.c _postscript.c _refine.c \
 	_refineirr.c _refinereg.c _refinetopo.c _regstream.c \

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.3 1999/05/10 15:45:21 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.4 1999/08/05 22:10:20 daniel Exp $
  */
 
 #include <dxconfig.h>
@@ -119,13 +119,6 @@ static ImageInfo ImageTable[] = {
 	_dxf_write_eps_gray,  
 	NULL}, 
 
- { img_typ_gif,      
-	1, 
-	"gif",              
-	"gif:giff",  /* Preferred. */
-	0, 					
-	_dxf_write_gif, 	 
-	NULL}, 
 
  { img_typ_yuv,       
    	1, 
@@ -142,6 +135,23 @@ static ImageInfo ImageTable[] = {
 	APPENDABLE_FILES,
 	_dxf_write_miff,  
 	NULL},
+#ifdef HAVE_LIBMAGICK
+ { img_typ_gif,      
+	1, 
+	"gif",              
+	"gif:giff",  /* Preferred. */
+	0, 					
+	_dxf_write_im,  
+	NULL}, 
+
+ { img_typ_im,  
+	1, 
+	"image magick supported format",       /* due to pattern matching algorithm, must be lower case */
+	"jpeg:jpg:gif",      /* FIXME: there is a way to get this list from IM */
+	0,			/* FIXME: possibly separate into APPENDABLE_FILES and 0 */
+	_dxf_write_im,  
+	NULL},
+#endif /* def HAVE_LIBMAGICK */
 
  { img_typ_illegal } };	/* Must be last entry */
 

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.h,v 1.3 1999/05/10 15:45:21 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.h,v 1.4 1999/08/05 22:10:53 daniel Exp $
  */
 
 #include <dxconfig.h>
@@ -49,7 +49,8 @@ typedef enum imagetype {
     img_typ_eps_gray	  = 8,
     img_typ_gif   = 9,
     img_typ_yuv   = 10,
-    img_typ_miff  = 11
+    img_typ_miff  = 11,
+    img_typ_im  = 12
 } ImageType;
 
 /*
@@ -93,6 +94,7 @@ typedef enum imagetype {
 typedef struct {
         Field 		image;
         char 		*basename;
+        char 		*extension;
         ImageType 	imgtyp;
         Class		imgclass;
         int 		startframe;
@@ -252,6 +254,9 @@ extern Error _dxf_write_gif(RWImageArgs *iargs);
 
 /*-------------------- End _gif.c ----------------------------------*/
 
+/*-------------------- Begin _IM_write.c ----------------------------------*/
+extern Error _dxf_write_im(RWImageArgs *iargs);
+/*-------------------- End  _IM_write.c ----------------------------------*/
 /*-------------------- Begin _ps.c ----------------------------------*/
 
 /* Write a color image in PostScript format */
