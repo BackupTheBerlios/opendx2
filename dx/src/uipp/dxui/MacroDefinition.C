@@ -36,18 +36,23 @@
 
 #define OLD_DUMMY_DESCRIPTION_STRING "Generated dummy input"
 
-#ifdef HAVE_REGCOMP
-extern "C" {
-#include <regexp.h>
-}
+#if  defined(HAVE_RE_COMP)
 #undef HAVE_REGCMP
-#undef HAVE_RE_COMP
+#undef HAVE_REGCOMP
 #undef HAVE_FINDFIRST
+extern "C" char *re_comp(char *s);
+extern "C" int re_exec(char *);
 #elif defined(HAVE_REGCMP)
-#undef HAVE_RE_COMP
+#undef HAVE_REGCOMP
 #undef HAVE_FINDFIRST
 extern "C" char *regcmp(...);
 extern "C" char *regex(char *, char *, ...);
+#elif HAVE_REGCOMP
+extern "C" {
+#include <regexp.h>
+}
+#undef HAVE_RE_COMP
+#undef HAVE_FINDFIRST
 #elif  defined(HAVE_RE_COMP)
 #undef HAVE_FINDFIRST
 extern "C" char *re_comp(char *s);
@@ -681,6 +686,9 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
             _findclose(handle);
 	    delete srch_string;
 #elif defined(HAVE_REGCOMP)
+		}
+	    }
+#elif defined(HAVE_RE_COMP)
 		}
 	    }
 #elif defined(HAVE_REGCMP)
