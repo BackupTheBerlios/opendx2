@@ -12,7 +12,7 @@
 #ifndef __VERSION_H
 #define	__VERSION_H
 
-#define EX_NAME		"IBM Visualization Data Explorer Executive"
+#define EX_NAME		"Open Visualization Data Explorer Executive"
 
 /*
  * the current level of the communications protocol between the UI and 

@@ -4198,7 +4198,7 @@ const char *DXApplication::getCopyrightNotice()
 {
     const char *s = this->getOEMApplicationName();
     if (!s) 
-	return "Open Visualization Data Explorer";
+	return DXD_COPYRIGHT_STRING;
     else
 	return NULL;
 }
@@ -4512,7 +4512,7 @@ extern "C" void ShutdownTimeout(XtPointer clientData, XtIntervalId *id)
     boolean can_save = theDXApplication->appAllowsSavingNetFile();
 
     if (seconds > MIN_INTERVAL ) {
-	seconds /= 2.0;
+	seconds = (int)(seconds/2.0);
 	sprintf(buffer,
         "You do not have a license to run %s.\n"
 	"You have %s %s",

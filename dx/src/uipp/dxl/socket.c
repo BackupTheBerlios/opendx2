@@ -315,7 +315,7 @@ DXLConnectToRunningServer(int port, const char *host)
     if (getenv("DXLTRACE")) {
         connection->debugMessaging = 1;
 	fprintf(stderr,"DXLink library is version %d.%d.%d\n",
-		IBM_MAJOR_VERSION,IBM_MINOR_VERSION,IBM_MICRO_VERSION);
+		DXD_VERSION,DXD_RELEASE,DXD_MODIFICATION);
     }
 
 
@@ -373,12 +373,12 @@ DXLConnectToRunningServer(int port, const char *host)
      * Make sure the remote connection is at the same or later release
      * than this library.
      */
-    if ((connection->majorVersion < IBM_MAJOR_VERSION) ||
-	(connection->minorVersion < IBM_MINOR_VERSION)) {
+    if ((connection->majorVersion < DXD_VERSION) ||
+	(connection->minorVersion < DXD_RELEASE)) { 
 	fprintf(stderr,"Warning: DXLink library (V %d.%d) is at a later "
 			"level than the\n\t remote connection (V %d.%d)\n",
-			IBM_MAJOR_VERSION,IBM_MINOR_VERSION,
-			connection->majorVersion,
+			DXD_VERSION,DXD_RELEASE, 
+			connection->majorVersion, 
 			connection->minorVersion);
     }
 

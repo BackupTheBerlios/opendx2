@@ -198,7 +198,7 @@ const char *MBApplication::getFormalName()
 //
 const char *MBApplication::getCopyrightNotice()
 {
-    return "";
+    return DXD_COPYRIGHT_STRING;
 }
 
 const char *MBApplication::getHelpDirFileName()

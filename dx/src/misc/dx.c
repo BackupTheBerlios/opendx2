@@ -610,13 +610,13 @@ int buildcmd()
 
     if (showversion) {
 #ifdef DXD_WIN
-	printf("IBM Visualization Data Explorer: Registered to %s of %s\n", username, userco);
+	printf("Open Visualization Data Explorer: Registered to %s of %s\n", username, userco);
 	if (*xservername) {
 	    printf("X server found: %s\n", xservername);
 	    printf("X server version: %s\n", xserverversion);
 	}
 #endif
-	printf("IBM Visualization Data Explorer Script, version %s (%s, %s)\n", SCRIPTVERSION, __TIME__, __DATE__);
+	printf("Open Visualization Data Explorer Script, version %s (%s, %s)\n", SCRIPTVERSION, __TIME__, __DATE__);
 	sprintf(cmd, "%s -v", dxexec);
 	launchit();
 	sprintf(cmd, "%s -version", dxui);

@@ -4,6 +4,7 @@
 @TOP@
 
 #define DXD_VERSION_STRING      "01.01.0001"
+#define DXD_COPYRIGHT_STRING	"none"
 #define DXD_VERSION 		1
 #define DXD_RELEASE 		1
 #define DXD_MODIFICATION 	1
@@ -24,12 +25,22 @@
 #undef HAVE_SYSCONFIG_NCPUS
 #undef ALTERNATE_CXX_SIGNAL
 
+#undef WITH_BUILDLIBS
 #undef HAVE_LIBZ
 #undef HAVE_LIBCDF
 #undef HAVE_LIBJPEG
 #undef HAVE_LIBMAGICK
 #undef HAVE_LIBDF
 #undef HAVE_LIBNETCDF
+#undef HAVE_LIBBZLIB
+#undef HAVE_LIBDPS
+#undef HAVE_LIBFPX
+#undef HAVE_LIBJBIG
+#undef HAVE_LIBPNG
+#undef HAVE_LIBSFIO
+#undef HAVE_LIBTIFF
+#undef HAVE_LIBTTF
+#undef HAVE_TT_FONT_PATH
 
 #undef uint
 #undef byte

@@ -125,10 +125,6 @@ extern double SVS_double_time ();
 #include "version.h"
 #include "distp.h"
 
-#define	COPYRIGHT_STRING \
-"\nCopyright International Business Machines Corporation 1991,1998.\n \
-All rights reserved.\n\n"
-
 #if DXD_HAS_IBM_OS2_SOCKETS
 #define EX_FD_SETSIZE   FD_SETSIZE
 #else
@@ -1006,8 +1002,9 @@ static void ExProcessArgs (int argc, char **argv)
 static void ExCopyright (int p)
 {
     if (p)
-	write (fileno ((SFILE *)stdout), COPYRIGHT_STRING,
-               strlen (COPYRIGHT_STRING));
+	write (fileno ((SFILE *)stdout), DXD_COPYRIGHT_STRING,
+               strlen (DXD_COPYRIGHT_STRING));
+	write (fileno ((SFILE *)stdout), "\n", 1);
 }
 
 
@@ -1100,12 +1097,6 @@ ExVersion ()
     strcpy(buf, EX_NAME);
     strcat(buf, ", version ");
     strcat(buf, DXD_VERSION_STRING);
-
-    /* The following single line was added for micro version letter.  i cannot
-     *  change the version string #define without affecting the licensing
-     *  code, which i'm afraid to touch.  nsc 12aug97
-     */
-    strcat(buf, "B");
 
     strcat(buf, " (");
     strcat(buf, __TIME__);

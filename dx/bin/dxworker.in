@@ -7,7 +7,7 @@
 #
 
 # Name as reported with -version option 
-set version_name="IBM Visualization Data Explorer Script"
+set version_name="Open Visualization Data Explorer Script"
 
 # machine type, hostname, version etc
 # current machine hostname & version

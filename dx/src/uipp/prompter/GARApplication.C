@@ -442,7 +442,7 @@ const char *GARApplication::getFormalName()
 //
 const char *GARApplication::getCopyrightNotice()
 {
-    return "";
+    return DXD_COPYRIGHT_STRING;
 }
 
 

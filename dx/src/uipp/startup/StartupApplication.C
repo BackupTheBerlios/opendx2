@@ -238,7 +238,7 @@ void StartupApplication::postStartupWindow()
 //
 const char *StartupApplication::getCopyrightNotice()
 {
-    return "";
+    return DXD_COPYRIGHT_STRING;
 }
 
 
