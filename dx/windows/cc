@@ -1,36 +1,53 @@
-# MSDEV=C:/msdev
-MSDEV="C:\Program Files\Microsoft Platform SDK"
-# MSVC="/usr/Program Files/Microsoft Visual Studio"
+XDKDEV="C:\Program Files\Hummingbird\Connectivity\7.10\Exceed\XDK"
+MSDEV="C:\Program Files\Microsoft SDK"
 MSVC="C:\Program Files\Microsoft Visual Studio"
-#BINMODEDIR="D:/Program Files/Microsoft Visual Studio/VC98/LIB"
 BINMODEDIR="C:\Program Files\Microsoft Visual Studio\VC98\Lib"
+
 stdout=/tmp/stdo$$
 stderr=/tmp/stde$$
+
 args=
 libpath=
 libs=
 incpath="$INCPATH"
-defs="/Dintelnt /DWIN32 /D_VISUALC_"
-# defs="/Dintelnt /X /DWIN32"
+incpath="$incpath /I\"$XDKDEV\Include\""
+
+defs='/D "WIN32" /D "CONSOLE" /D "MOTIFAPP"'
+linkopts="/subsystem:console"
+
+# defs for optimized
+optdefs='/Oispb1 /D "NDEBUG"'
+optlinkopts="/incremental:yes"
+
+#defs for debugged
+debugdefs='/GX- /Gi /Od /Zi /D "_DEBUG"'
+debuglinkopts="/DEBUG /incremental:yes"
+
 undefs=
 cfiles=
 map=
 mounts=
 echo=0
 tmp="$MSDEV\Lib"
-# deflibs="/LIBPATH:"\"`cygpath -a --windows "$tmp"`\"
+
+prelibs="$prelibs wsock32.lib"
 deflibs="$deflibs $LIBPATH kernel32.lib"
-deflibs="$deflibs user32.lib gdi32.lib winspool.lib"
-deflibs="$deflibs comdlg32.lib advapi32.lib shell32.lib"
-deflibs="$deflibs uuid.lib wsock32.lib opengl32.lib "
-deflibs="$deflibs -NODEFAULTLIB:LIBCMT -NODEFAULTLIB:LIBC"
+deflibs="$deflibs $LIBPATH user32.lib"
+deflibs="$deflibs $LIBPATH Advapi32.lib"
+deflibs="$deflibs /NODEFAULTLIB:LIBC"
+
+#deflibs="$deflibs user32.lib gdi32.lib winspool.lib"
+#deflibs="$deflibs comdlg32.lib advapi32.lib shell32.lib"
+#deflibs="$deflibs uuid.lib odbc32.lib odbccp32.lib"
+#deflibs="$deflibs /NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBC"
+
 link=1
 compile=1
 mkdep=0
 oset=0
 oname=
-dllflag="-MD"
-dlllib="msvcrt.lib"
+dllflag=/MD
+dlllib=
 binmode=
 
 touch $stdout
@@ -78,10 +95,10 @@ for i in $* ; do
 	case $i in 
 		-staticRunTime)
 			 dlllib="libcmt.lib"
-			 dllflag="-MT" ;;
+			 dllflag="/MT" ;;
 		-dllRunTime)
 			 dlllib="msvcrt.lib"
-			 dllflag="-MD" ;;
+			 dllflag="/MD" ;;
                 -o)      # args="$args $i"
                          oset=1 ;;
 		-map)	 map="/MAP" ;;
@@ -90,8 +107,10 @@ for i in $* ; do
 		-M)	 compile=0
 			 dfile=
 			 mkdep=1 ;;
-		-g) 	 args="$args /Z7" ;;
-		-O2)	 args="$args /O2" ;;
+		-g) 	 defs="$defs $debugdefs" 
+			 linkopts="$linkopts $debuglinkopts" ;;
+		-O2)	 defs="$defs $optdefs" 
+			 linkopts="$linkopts $optlinkopts" ;;
 		-mount*) mounts="$mounts $i" ;;
 		-D*)     defs="$defs `echo $i | sed 's?-D?/D?'`" ;; 
 		-U*)     undefs="$undefs `echo $i | sed 's?-U?/U?'`" ;;
@@ -162,9 +181,7 @@ fi
 if test $compile = 1 ; then
 
     if test $link = 1 ; then
-	cmd="cl -nologo $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $deflibs $libs $dlllib $map $binmode" 
-	# args=`echo $args |sed 's?/Z7?/DEBUG?g'`
-	# cmd="link -nologo $args $cfiles $libpath $deflibs $libs $dlllib $map $binmode" 
+	cmd="cl -nologo $incpath $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $prelibs $libs $deflibs $dlllib $map $binmode $linkopts" 
     else
 	cmd="cl $dllflag -nologo $incpath $defs $undefs $args $cfiles"
     fi
