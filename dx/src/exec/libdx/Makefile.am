@@ -4,8 +4,8 @@ INCLUDES = -I../../../include  -D@ARCH@
 
 dxlibdir = $(prefix)/dx/lib_@ARCH@
 
-noinst_LIBRARIES = libLIBDX.a
-dxlib_LIBRARIES = libDXlite.a libDXcallm.a
+noinst_LIBRARIES = libLIBDX.a libcallm.a
+dxlib_LIBRARIES = libDXlite.a 
 
 noinst_HEADERS = \
 	binSort.h triangles.h internals.h diskio.h zclip.h edf.h render.h \
@@ -68,7 +68,7 @@ dxlite_sources1 = \
 
 libDXlite_a_SOURCES = $(dxlite_sources0) $(dxlite_sources1)
 
-libDXcallm_a_SOURCES =  \
+libcallm_a_SOURCES =  \
         qmessage.c outglue.c task.c cache.c memorystubs.c \
 	callm_xinit.c callm_init.c 
 
