@@ -13,6 +13,23 @@ BUILT_SOURCES = user.c
 
 dxmdf_DATA = dx.mdf
 
+noinst_HEADERS =  \
+	_compoper.h glyph_ARRW.h glyph_RCKT20.h glyph_SQUARE.h \
+	_compparse.h glyph_ARRW2D.h glyph_RCKT2D.h impCDF.h \
+	_compputils.h glyph_BOX.h glyph_RCKT3.h import.h \
+	_compute.h glyph_CIRCLE10.h glyph_RCKT4.h interact.h \
+	_getfield.h glyph_CIRCLE20.h glyph_RCKT6.h plot.h \
+	_helper_jea.h glyph_CIRCLE4.h glyph_RCKT8.h post.h \
+	_isosurface.h glyph_CIRCLE40.h glyph_SPHR114.h quant.h \
+	_normals.h glyph_CIRCLE6.h glyph_SPHR12.h simplesurf.h \
+	_rw_image.h glyph_CIRCLE8.h glyph_SPHR14.h stream.h \
+	bounds.h glyph_DMND.h glyph_SPHR146.h superwin.h \
+	cases.h glyph_NDDL.h glyph_SPHR26.h unpart.h \
+	cat.h glyph_NDDL2D.h glyph_SPHR266.h userInteractors.h \
+	eigen.h glyph_PNT.h glyph_SPHR42.h vectors.h \
+	genimp.h glyph_RCKT12.h glyph_SPHR62.h
+
+
 libDXMODS_a_SOURCES =  \
 	ambientlight.c append.c arrange.c attribute.c \
 	autocolor.c autoaxes.c autoglyph.c autogray.c \
