@@ -194,14 +194,20 @@ String ColormapEditor::DefaultResources[] =
 
     "*cmeDeleteSelectedOption.labelString:    		Delete Selected Control Points",
     "*cmeDeleteSelectedOption.mnemonic:     		D",
-#if defined(macos)
-    "*cmeDeleteSelectedOption.accelerator:          	Ctrl<Key>BackSpace",
-#elif defined(aviion)
-    "*cmeDeleteSelectedOption.accelerator:		Ctrl<Key>Delete",
+
+#if defined(intelnt)
+    "*cmeDeleteSelectedOption.acceleratorText:          Ctrl+Backspace",
 #else
-    "*cmeDeleteSelectedOption.accelerator:             	Ctrl<Key>osfDelete",
+    "*cmeDeleteSelectedOption.acceleratorText:          Ctrl+Delete",
 #endif
-    "*cmeDeleteSelectedOption.acceleratorText:  	Ctrl+Delete",
+#if defined(macos) || defined(intelnt)
+    "*cmeDeleteSelectedOption.accelerator:              Ctrl<Key>BackSpace",
+#elif defined(aviion)
+    "*cmeDeleteSelectedOption.accelerator:              Ctrl<Key>Delete",
+#else
+    "*cmeDeleteSelectedOption.accelerator:              Ctrl<Key>osfDelete",
+#endif
+
     "*cmeSelectAllOption.labelString:    		Select All Control Points",
     "*cmeSelectAllOption.mnemonic:     			S",
     "*cmeSelectAllOption.accelerator:           	Ctrl<Key>A",

@@ -81,12 +81,21 @@ String  MsgWin::DefaultResources[] = {
     "*editMenu.mnemonic:		E",
     "*msgClearOption.labelString:	Clear",
     "*msgClearOption.mnemonic:		C",
-#if defined(macos)
-    "*msgClearOption.accelerator:	Ctrl <Key>BackSpace",
+
+#if defined(intelnt)
+    "*msgClearOption.acceleratorText:   Ctrl+Backspace",
 #else
-    "*msgClearOption.accelerator:	Ctrl <Key>osfDelete",
+    "*msgClearOption.acceleratorText:   Ctrl+Delete",
 #endif
-    "*msgClearOption.acceleratorText:	Ctrl+Delete",
+#if defined(macos) || defined(intelnt)
+    "*msgClearOption.accelerator:       Ctrl<Key>BackSpace",
+#elif defined(aviion)
+    "*msgClearOption.accelerator:       Ctrl<Key>Delete",
+#else
+    "*msgClearOption.accelerator:       Ctrl<Key>osfDelete",
+#endif
+
+
     "*commandsMenu.labelString:		Commands",
     "*commandsMenu.mnemonic:		C",
     "*msgShowMemoryOption.labelString:	Show Memory Use",

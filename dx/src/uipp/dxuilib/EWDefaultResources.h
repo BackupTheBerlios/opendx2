@@ -424,8 +424,12 @@ String EditorWindow::DefaultResources[] =
 
     "*vpeDeleteOption.labelString:                   	Delete",
     "*vpeDeleteOption.mnemonic:                      	D",
+#if defined(intelnt)
+    "*vpeDeleteOption.acceleratorText:			Ctrl+Backspace",
+#else
     "*vpeDeleteOption.acceleratorText:               	Ctrl+Delete",
-#if defined(macos)
+#endif
+#if defined(macos) || defined(intelnt)
     "*vpeDeleteOption.accelerator:                   	Ctrl<Key>BackSpace",
 #elif defined(aviion)
     "*vpeDeleteOption.accelerator:			Ctrl<Key>Delete",

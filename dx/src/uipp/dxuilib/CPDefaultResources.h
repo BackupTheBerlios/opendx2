@@ -174,15 +174,20 @@ String ControlPanel::DefaultResources[] =
 
     "*panelDeleteOption.labelString:                   	Delete",
     "*panelDeleteOption.mnemonic:                      	D",
-#if defined(macos)
-    "*panelDeleteOption.accelerator:                   	Ctrl<Key>BackSpace",
-#elif defined(aviion)
-    "*panelDeleteOption.accelerator:			Ctrl<Key>Delete",
+
+#if defined(intelnt)
+    "*panelDeleteOption.acceleratorText:                  Ctrl+Backspace",
 #else
-    "*panelDeleteOption.accelerator:                   	Ctrl<Key>osfDelete",
+    "*panelDeleteOption.acceleratorText:                  Ctrl+Delete",
+#endif
+#if defined(macos) || defined(intelnt)
+    "*panelDeleteOption.accelerator:                      Ctrl<Key>BackSpace",
+#elif defined(aviion)
+    "*panelDeleteOption.accelerator:                      Ctrl<Key>Delete",
+#else
+    "*panelDeleteOption.accelerator:                      Ctrl<Key>osfDelete",
 #endif
 
-    "*panelDeleteOption.acceleratorText: 		Ctrl+Delete",
     "*panelAddSelectedInteractorsOption.labelString:	Add Selected Interactor(s)",
     "*panelAddSelectedInteractorsOption.mnemonic:      	R",
     "*panelShowSelectedInteractorsOption.labelString:  	Show Selected Interactor(s)",
