@@ -1,0 +1,78 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DX", "DX\DX.vcproj", "{2A86B3C1-29B0-41D3-8614-4BAF1C1217AC}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DXL", "DXL\DXL.vcproj", "{8208807B-0C27-4B7E-A4AD-5AB8AFEADC40}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B9DD8146-558F-4883-8098-0B78EF9A57ED} = {B9DD8146-558F-4883-8098-0B78EF9A57ED}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DXcallm", "DXcallm\DXcallm.vcproj", "{E2DC6C66-3DA7-42B5-9D86-0920BDE33B47}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DXlite", "DXlite\DXlite.vcproj", "{B9DD8146-558F-4883-8098-0B78EF9A57ED}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dxexec", "dxexec\dxexec.vcproj", "{0B3FC322-6B6C-4D4E-9170-E5CCFAFC15B2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dxconsole", "dxconsole\dxconsole.vcproj", "{45ABDA77-CD39-4D53-8A4E-00252CD726AD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinDX", "WinDX\WinDX.vcproj", "{95778A66-892B-4C0C-AD9D-70E195E58ED8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxconcsharp", "dxconcsharp\dxconcsharp.csproj", "{ED943850-DEFA-4891-A648-4BCF7A6CF149}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{2A86B3C1-29B0-41D3-8614-4BAF1C1217AC}.Debug.ActiveCfg = Debug|Win32
+		{2A86B3C1-29B0-41D3-8614-4BAF1C1217AC}.Debug.Build.0 = Debug|Win32
+		{2A86B3C1-29B0-41D3-8614-4BAF1C1217AC}.Release.ActiveCfg = Release|Win32
+		{2A86B3C1-29B0-41D3-8614-4BAF1C1217AC}.Release.Build.0 = Release|Win32
+		{8208807B-0C27-4B7E-A4AD-5AB8AFEADC40}.Debug.ActiveCfg = Debug|Win32
+		{8208807B-0C27-4B7E-A4AD-5AB8AFEADC40}.Debug.Build.0 = Debug|Win32
+		{8208807B-0C27-4B7E-A4AD-5AB8AFEADC40}.Release.ActiveCfg = Release|Win32
+		{8208807B-0C27-4B7E-A4AD-5AB8AFEADC40}.Release.Build.0 = Release|Win32
+		{E2DC6C66-3DA7-42B5-9D86-0920BDE33B47}.Debug.ActiveCfg = Debug|Win32
+		{E2DC6C66-3DA7-42B5-9D86-0920BDE33B47}.Debug.Build.0 = Debug|Win32
+		{E2DC6C66-3DA7-42B5-9D86-0920BDE33B47}.Release.ActiveCfg = Release|Win32
+		{E2DC6C66-3DA7-42B5-9D86-0920BDE33B47}.Release.Build.0 = Release|Win32
+		{B9DD8146-558F-4883-8098-0B78EF9A57ED}.Debug.ActiveCfg = Debug|Win32
+		{B9DD8146-558F-4883-8098-0B78EF9A57ED}.Debug.Build.0 = Debug|Win32
+		{B9DD8146-558F-4883-8098-0B78EF9A57ED}.Release.ActiveCfg = Release|Win32
+		{B9DD8146-558F-4883-8098-0B78EF9A57ED}.Release.Build.0 = Release|Win32
+		{0B3FC322-6B6C-4D4E-9170-E5CCFAFC15B2}.Debug.ActiveCfg = Debug|Win32
+		{0B3FC322-6B6C-4D4E-9170-E5CCFAFC15B2}.Debug.Build.0 = Debug|Win32
+		{0B3FC322-6B6C-4D4E-9170-E5CCFAFC15B2}.Release.ActiveCfg = Release|Win32
+		{0B3FC322-6B6C-4D4E-9170-E5CCFAFC15B2}.Release.Build.0 = Release|Win32
+		{45ABDA77-CD39-4D53-8A4E-00252CD726AD}.Debug.ActiveCfg = Debug|Win32
+		{45ABDA77-CD39-4D53-8A4E-00252CD726AD}.Debug.Build.0 = Debug|Win32
+		{45ABDA77-CD39-4D53-8A4E-00252CD726AD}.Release.ActiveCfg = Release|Win32
+		{45ABDA77-CD39-4D53-8A4E-00252CD726AD}.Release.Build.0 = Release|Win32
+		{95778A66-892B-4C0C-AD9D-70E195E58ED8}.Debug.ActiveCfg = Debug|Win32
+		{95778A66-892B-4C0C-AD9D-70E195E58ED8}.Debug.Build.0 = Debug|Win32
+		{95778A66-892B-4C0C-AD9D-70E195E58ED8}.Release.ActiveCfg = Release|Win32
+		{95778A66-892B-4C0C-AD9D-70E195E58ED8}.Release.Build.0 = Release|Win32
+		{ED943850-DEFA-4891-A648-4BCF7A6CF149}.Debug.ActiveCfg = Debug|.NET
+		{ED943850-DEFA-4891-A648-4BCF7A6CF149}.Debug.Build.0 = Debug|.NET
+		{ED943850-DEFA-4891-A648-4BCF7A6CF149}.Release.ActiveCfg = Release|.NET
+		{ED943850-DEFA-4891-A648-4BCF7A6CF149}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

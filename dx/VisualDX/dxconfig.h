@@ -325,6 +325,8 @@
 /* Define to 1 if you have the `random' function. */
 /* #undef HAVE_RANDOM */
 
+#define HAVE_RAND_MAX 1
+
 /* Define to 1 if you have the `regcmp' function. */
 /* #undef HAVE_REGCMP */
 

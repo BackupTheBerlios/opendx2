@@ -1,5 +1,4 @@
 EXPORTS
-DXmain
 DXInitializeWindows
 DXAbortTaskGroup
 DXAdd
