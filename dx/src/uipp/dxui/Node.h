@@ -533,7 +533,7 @@ private:
     //
     // Destructor:
     //
-    ~Node(); 
+    virtual ~Node(); 
 
      //
      // The following are used to give notification of Node's change in

@@ -160,11 +160,11 @@ extern "C" void InstallShutdownTimer(Widget w,
 boolean    DXApplication::DXApplicationClassInitialized = FALSE;
 DXResource DXApplication::resource;
 
-Symbol DXApplication::MsgExecute = NULL;
-Symbol DXApplication::MsgStandBy = NULL;
-Symbol DXApplication::MsgExecuteDone = NULL;
-Symbol DXApplication::MsgServerDisconnected = NULL;
-Symbol DXApplication::MsgPanelChanged = NULL;
+Symbol DXApplication::MsgExecute = 0;
+Symbol DXApplication::MsgStandBy = 0;
+Symbol DXApplication::MsgExecuteDone = 0;
+Symbol DXApplication::MsgServerDisconnected = 0;
+Symbol DXApplication::MsgPanelChanged = 0;
 
 #define IMAGE_ANCHOR_MODE 	"IMAGE"
 #define EDIT_ANCHOR_MODE 	"EDIT"
