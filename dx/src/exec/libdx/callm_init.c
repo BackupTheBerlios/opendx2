@@ -28,12 +28,10 @@ int _dxd_exRemote                 = 0;
 char *_dxd_exHostName             = 0;
 
 extern int _dxd_exOutboard;
-extern void _dxf_betaTimeoutCheck();
 extern void _dxf_user_modules(); /* from auto generated dxmods/user.c */
 
 void DXInitModules()
 {
-    _dxf_betaTimeoutCheck();
     DXProcessors(1);
     DXinitdx();
     _dxf_ExMacroInit();
