@@ -1582,7 +1582,7 @@ static void ExForkChildren ()
     {
 	int p;
 
-#if DXD_EXEC_WAIT_PROCESS && !defined(DXD_PROC_0_FORKED_FIRST)
+#if DXD_EXEC_WAIT_PROCESS && !defined(DXD_MASTER_IS_P0)
 	if (i == nprocs-1)
 	    p = 0;
 	else
