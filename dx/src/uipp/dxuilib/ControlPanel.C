@@ -918,12 +918,14 @@ void ControlPanel::createEditMenu(Widget parent)
 	    XtManageChild(btn);
 	}
 
-	// FIXME: do we need to install this twice?
+#if 0
+	// Don't install this twice?
 	// I would just take it out, but we are just before release 3.1
 	XtAddCallback(pulldown,
 		  XmNmapCallback,
 		  (XtCallbackProc)ControlPanel_EditMenuMapCB,
 		  (XtPointer)this);
+#endif
 
 
 	//
@@ -3360,12 +3362,6 @@ InteractorInstance *ControlPanel::createAndPlaceInteractor(
 		inode->getNameString());
     } else {
 	
-#if 0	// FIXME: do we need this?
-	Arg    arg[5];
-	int n = 0;
-	XtSetArg(arg[n], XmNbutton1PressMode, False); n++;
-	XtSetValues(w, arg, n);
-#endif
 	//
 	// Now that we have the position, add the instance to the Node's
 	// list of known interactor instances.
