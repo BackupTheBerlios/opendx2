@@ -50,7 +50,11 @@ AC_PROG_YACC
 dnl Checks for libraries.
 AC_CHECK_LIB(g++, main)
 AC_CHECK_LIB(dl, main)
+AC_CHECK_LIB(z, compress)
+AC_CHECK_LIB(cdf, CDFlib)
+AC_CHECK_LIB(df, Hopen)
 AC_CHECK_LIB(netcdf, free_NC_attr)
+
 
 AC_CHECK_LIB(cdf, main)
 AC_CHECK_LIB(hdf, main)
@@ -99,7 +103,7 @@ AC_CHECK_TYPE(int64, signed long)
 AC_CHECK_TYPE(uint64, unsigned long)
 
 AC_CHECK_TYPE(float32, float)
-AC_CHECK_TYPE(float64, double char)
+AC_CHECK_TYPE(float64, double)
 
 AC_C_BIGENDIAN
 
