@@ -37,16 +37,25 @@
 #include <dx/dx.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#if defined(HAVE_SYS_ERRNO_H)
+#include <sys/errno.h>
+#endif
+
+#if defined(HAVE_ERRNO_H)
 #include <errno.h>
+#endif
+
+#if defined(HAVE__SYS_ERRLIST) 
+#define sys_errlist _sys_errlist
+#endif
+
+
 #include <sys/stat.h> 
 #if ibm6000 
 #include <sys/mode.h> 
 #endif
 #include "utils.h"
-
-#if HAVE_SYS_ERRLIST == 0
-extern char *sys_errlist[];
-#endif
 
 #if  defined(DXD_NON_UNIX_DIR_SEPARATOR)
 #define DX_DIR_SEPARATOR ';'
