@@ -1,17 +1,111 @@
+4.1.0
+===============
+
+With this revision, a lot of the Gnu AutoConf stuff was cleaned up to help improve building the package from the source code.
+
+Many updates to the AutoConf build routines for JavaDX. JavaDX should now build readily on all systems.
+
+Added new configuration options to disable building some libraries and JavaDX. Added options to direct where java files reside if they can't be found:
+--disable-buildlibdx
+--disable-installhtml
+--without-javadx (remove compilation alltogether)
+--with-jni-path=/PathToDirectoryContaining-jni.h:/PathToDirectoryContaining-jni_md.h
+--with-cosmojar-path=/PathToCosmoJarFile/cosmoFileName.jar
+--with-java40jar-path=/PathToJava40JarFile/java40.jar
+
+The internal copyright mechanisms all get updated from the configure scripts this makes tracking versions from the user interface easier.
+
+Some general source code clean-up was done, there will be much more to come in the next set of revisions.
+
+OpenDX-generated makefiles are now largely platform independent as created.
+To the extent that they have platform dependencies, these are (or should be)
+determined by dx configure and written into arch.mak. This allows the module builder to generate makefiles compatible with OpenDX, such that runtime loadables work on a number of platforms and dxui now writes compatible makefiles for building and installing JX applets.
+
+Problems with Interactors not working properly on some systems is fixed.
+
+Linux binaries can now use loadable modules.
+
+dx script is now stored in two locations during installation in case the installation is moved and /usr/bin/dx is forgotten to be collected.
+
+name change of dx.workerscript to dxworker
+
+defaulting of the environment variable of DXMACROS, DXDATA, and DXROOT if they are not set.
+
+added -whereami option to dx to detect location of dx install
+
+LD_LIBRARY_PATH is not overwritten on Solaris but just added to now.
+
+mdf2c is now constructed with appropriate open source paths.
+
+Help files links and install should now be correct after installation.
+
+Added support for 15 bit and 32 bit color displays.
+
+Added outboard.c to source tree to be included with outboard modules.
+
+Added support for including libraries from ImageMagick build into libDX.a. If the libraries are shared, then they are not added and must be linked at a later time.
+
+Forced Linux versions to run as single processor only not SMP until shared memory is correctly addressed.
+
+Fixed a memory leak where if DXMACROS was set, it would tromp on memory. This is now fixed and relieves many core dumps in the exec.
+
+Removal of some hard coded geometries on dialog boxes to make dialogs work better with Lesstif. So far no reports of any problems with Motif.
+
+Added support for using ImageMagick. If ImageMagick is available during compilation, then many more image export formats will be available by choosing the ImageMagick formats.
+
+Correction to AutoRegrid module. "infinity" used as the radius caused a core dump. This did not show up with all compilers.
+
+Fix in Colorbar to make positions "dep positions". Fixes compliance with some other tools.
+
+Fix in the Enumerate module for properly creating counts.
+
+A few minor fixes with the import routines for HDF and netCDF.
+
+Corrected typos in module SimplifySurface.
+
+Correction in Stack module for series data.
+
+libDX is now being built correctly so modules can be linked to it with proper functionality.
+
+Added functionality for dx to use its default memory rules on linux. Fix for possible negative memory request.
+
+Correction to quads for possible loop when point coincides with vertex.
+
+Correction when a point is on the line containing an edge. Need to check sign.
+
+Fixes to allow FreeBSD to compile correctly.
+
+A correction the Grid Dialog box. Some testing may still be in order.
+
+A error with postscript printing the networks was corrected.
+
+Correction in the Browser for a pointer to an array.
+
+Clean up a lot of the Motif function calls prototype mismatches.
+
+
+4.0.6
+=============
+First initial stable release.
+
+
 4.0.3
-	Added code to makefiles and c files to create libDX, libDXlite, libcallm
+=============
+Added code to makefiles and c files to create libDX, libDXlite, libcallm
 
-	Fixed missing splat in WorkspaceW.c
+Fixed missing splat in WorkspaceW.c
 
-	Removed apparently unnecessary code referring to _XmDestroyParentCallback
+Removed apparently unnecessary code referring to _XmDestroyParentCallback
 
-	Changed configure to look for old versions of Lesstif and set OLD_LESSTIF, 
-	rather than any version of Lesstif and set USING_LESSTIF
+Changed configure to look for old versions of Lesstif and set OLD_LESSTIF, 
+rather than any version of Lesstif and set USING_LESSTIF
 
-	HP_UX -> HP-UX
+HP_UX -> HP-UX
 
-	More general test for cygwin
+More general test for cygwin
 
-	install change - mkdir dx/bin rather than use INSTALL
+install change - mkdir dx/bin rather than use INSTALL
 
-	configure test for sys/select and use in PacketIF.C
+configure test for sys/select and use in PacketIF.C
+
+
