@@ -4,7 +4,8 @@ INCLUDES = -D$(ARCH) -I$(DXROOT)/include -I../base -I../dxuilib
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-bin_PROGRAMS = dxui
+dxbindir = $(prefix)/dx/bin
+dxbin_PROGRAMS = dxui
 
 dxui_SOURCES = 				\
 	Main.C
