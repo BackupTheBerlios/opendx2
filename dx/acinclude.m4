@@ -612,11 +612,11 @@ dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CHECK_STAT,
 [
 AC_CHECK_FUNCS( stat _stat )
-if test $ac_cv_func__stat='yes' ; then
+if test $ac_cv_func__stat = 'yes' ; then
     AC_DEFINE_UNQUOTED(STAT, _stat)
     dx_stat=_stat
 else
-    if test $ac_cv_func_stat='yes' ; then
+    if test $ac_cv_func_stat = 'yes' ; then
 	AC_DEFINE_UNQUOTED(STAT, stat)
 	dx_stat=stat
     else
