@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/client/DXClient.java,v 1.2 1999/09/03 18:24:42 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/client/DXClient.java,v 1.3 1999/09/07 15:50:45 daniel Exp $
  */
 
 /*
@@ -41,9 +41,9 @@ public abstract class DXClient extends Applet {
     private int ServerMinor = 0;
     private int ServerMicro = 0;
 
-    protected final static int MajorVersion = 4;
+    protected final static int MajorVersion = 2;
     protected final static int MinorVersion = 0;
-    protected final static int MicroVersion = 9;
+    protected final static int MicroVersion = 0;
     protected final static String version_string = 
 	    MajorVersion + "." + MinorVersion + "." + MicroVersion;
     protected final static  String formal_version_string =
