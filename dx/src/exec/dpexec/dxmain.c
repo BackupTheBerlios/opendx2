@@ -307,8 +307,6 @@ static volatile int *exReady;
 
 #include "instrument.h"
 
-extern Error user_init();
-
 int 
 DXmain (argc, argv, envp)
     int		argc;
@@ -384,8 +382,6 @@ DXmain (argc, argv, envp)
         ExCopyright (! _dxd_exRemote);
 
     ExInitialize ();		       /* perform all shared initializations */
-
-    user_init();
 
 #ifdef DXD_LICENSED_VERSION
 
