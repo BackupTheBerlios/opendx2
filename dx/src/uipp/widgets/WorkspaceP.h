@@ -252,7 +252,7 @@ typedef struct _XmWorkspaceRec {
 
 extern void FreeLineElementList(LineElement *list);
 
-#if (USING_LESSTIF == 1)
+#if (OLD_LESSTIF == 1)
 typedef struct _XmFormConstraintPart *XmFormConstraint;
 typedef struct _XmFormConstraintRec *XmFormConstraintPtr;
 #endif

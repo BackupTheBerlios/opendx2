@@ -393,7 +393,7 @@ static void MyInsertChild( Widget w);
 static void MyDeleteChild( Widget w);
 extern void MarkCommonLines(XmWorkspaceWidget ww);
 
-#if (USING_LESSTIF == 1)
+#if (OLD_LESSTIF == 1)
 #define GetFormConstraint(w) (&((XmFormConstraints) (w)->core.constraints)->form)
 #else
 #define GetFormConstraint(w) (&((XmFormConstraintPtr) (w)->core.constraints)->form)
@@ -1534,7 +1534,7 @@ static Boolean SetValues( XmWorkspaceWidget current,
 	     * personality has been asleep and needs to be roused carefully.
 	     */
 	    for (i=0; i<current->composite.num_children; i++) {
-#if (USING_LESSTIF == 1)
+#if (OLD_LESSTIF == 1)
 		XmFormConstraintPart* formcons;
 #else
 		XmFormConstraint formcons;
@@ -1893,7 +1893,7 @@ static void ChangeManaged( XmWorkspaceWidget ww )
     Boolean resolve_overlap = FALSE;
     Boolean new_node = FALSE;
     int max;
-#if (USING_LESSTIF == 1)
+#if (OLD_LESSTIF == 1)
     XmFormConstraintPart *formcon;
 #else
     XmFormConstraint formcon;
@@ -1913,7 +1913,7 @@ static void ChangeManaged( XmWorkspaceWidget ww )
 	     * Certainly don't want to do this if auto_arrange==True
 	     */
 	   formcon = GetFormConstraint(child);
-#if (USING_LESSTIF == 1)
+#if (OLD_LESSTIF == 1)
 	   formcon->atta[0].type = XmATTACH_NONE;
 	   formcon->atta[1].type = XmATTACH_NONE;
 	   formcon->atta[2].type = XmATTACH_NONE;

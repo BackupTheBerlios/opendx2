@@ -1366,14 +1366,6 @@ Arg	wargs2[100];
 
     nlw = (XmNumericListWidget)XmCreateNumericList((Widget)sw, name, wargs, n);
 
-#if !defined(__cplusplus) && !defined(c_plusplus)
-    /* 
-     * The c++ dxui installs its own destroy callbacks for the root of a
-     * widget tree.
-     */
-    XtAddCallback ((Widget)nlw, XmNdestroyCallback, (XtCallbackProc)_XmDestroyParentCallback, NULL);
-#endif
-    
     nlw->numeric_list.scrolled_window = True;
     nlw->numeric_list.sw = sw;
     return ((Widget)nlw);
