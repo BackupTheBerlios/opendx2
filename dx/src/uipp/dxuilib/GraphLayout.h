@@ -18,13 +18,11 @@
 class EditorWindow;
 class WorkSpace;
 class Node;
-class List;
 class Ark;
-class LayoutInfo;
-class LayoutGroup;
 class UIComponent;
 class VPEAnnotator;
-class NodeDistance;
+class LayoutRow;
+class LayoutInfo;
 
 //
 // Class name definition:
@@ -32,6 +30,11 @@ class NodeDistance;
 #define ClassGraphLayout "GraphLayout"
 
 #if ONLY_IN_GRAPH_LAYOUT_CODE
+
+class NodeDistance;
+class LayoutGroup;
+class SlotList;
+
 //
 // There are several classes defined in this include file that ought
 // to be invisible to all classes other than GraphLayout.
@@ -114,6 +117,9 @@ class LayoutInfo : public Base {
 #define ClassNodeInfo "NodeInfo"
 class NodeInfo : public LayoutInfo
 {
+    private:
+	Ark* destination;
+
     protected:
 	friend class GraphLayout;
 	int hops;
@@ -136,6 +142,7 @@ class NodeInfo : public LayoutInfo
 	// for qsort
 	static int Comparator (const void* a, const void* b);
 
+
     public:
 	int getGraphDepth() { return this->hops; }
 
@@ -149,6 +156,11 @@ class NodeInfo : public LayoutInfo
 	static void BuildList(Node* n, List* nodes);
 
 	void setConnectedNodes(List* nodes);
+
+	void setDestination(Ark* arc) { this->destination = arc; }
+	Ark* getDestination() { return this->destination; }
+
+	int getDestinationLocation (int& hop);
 
 	virtual const char* getClassName()
 	{
@@ -224,7 +236,11 @@ class LayoutGroup : public Base
 	int x1,y1,x2,y2;
 	int x,y;
 	static int Comparator(const void* a, const void* b);
+	static int SortByHop(const void* a, const void* b);
 	friend class GraphLayout;
+
+	void layout(Node* node, GraphLayout* mgr, List& positioned);
+
     public:
 	LayoutGroup(int id) {
 	    this->initialized = FALSE;
@@ -267,6 +283,83 @@ class LayoutGroup : public Base
 	}
 };
 
+class Slot
+{
+    private:
+	int min, max;
+	friend class SlotList;
+    protected:
+    public:
+	Slot (int min, int max) {
+	    this->min = min;
+	    this->max = max;
+	}
+};
+
+#define ClassSlotList "SlotList"
+class SlotList : public List
+{
+    private:
+    protected:
+    public:
+	SlotList() {
+	    this->appendElement(new Slot(-999999, 999999));
+	}
+	virtual void clear() {
+	    this->List::clear();
+	    this->appendElement(new Slot(-999999, 999999));
+	}
+	virtual ~SlotList();
+	int isAvailable (int x, boolean left);
+	void occupy (int x, int width);
+	virtual const char* getClassName()
+	{
+	    return ClassSlotList;
+	}
+};
+
+#define ClassLayoutRow "LayoutRow"
+class LayoutRow : public Base
+{
+    private:
+	List nodes;
+
+	SlotList slot_list;
+
+	Node** node_array;
+
+	int id;
+
+    protected:
+	friend class LayoutGroup;
+
+	LayoutRow(int id){ this->id = id; }
+
+	void addNode(Node* n) { this->nodes.appendElement(n); }
+
+	void sort ();
+
+	void layout(GraphLayout* mgr);
+
+	void layout(SlotList* slots, GraphLayout* mgr);
+
+	void position (Node* n, int& left_edge, int& right_edge, 
+		GraphLayout* mgr, boolean go_left, SlotList* slots);
+
+	static int SortByDestinationX(const void* a, const void* b);
+
+	boolean favorsLeftShift (Ark* arc, GraphLayout* mgr, boolean default_value);
+    public:
+	SlotList* getSlotList() { return &this->slot_list; }
+
+	int getId() { return this->id; }
+
+	virtual ~LayoutRow(){}
+	virtual const char* getClassName()
+	{
+	    return ClassLayoutRow;
+	}
+};
 #endif
 
 //
@@ -275,6 +368,8 @@ class LayoutGroup : public Base
 class GraphLayout : public Base
 {
   private:
+    friend class LayoutRow; // for positionSource
+    friend class AnnotationInfo; // for CanMoveTo
     //
     // Private member data:
     //
@@ -298,22 +393,19 @@ class GraphLayout : public Base
     boolean nodeCanMoveTo (Node* n, int x, int y); 
 
     //
-    // return TRUE if the positioning was accomplished without collision
+    // return TRUE if the positioning was accomplished but with collision
     //
-    boolean positionSourceOverDest(Ark* arc, int& x, int& y, 
-	    int& best_x, int& best_y,
-	    int offset=0, 
-	    boolean saw_tooth=FALSE, boolean prefer_left=FALSE,
-	    boolean place_the_node=TRUE);
+    boolean positionSourceOverDest(Ark* arc, int& x, int& y);
 
     //
-    // return TRUE if the positioning was accomplished without collision
+    // return TRUE if the positioning was accomplished but with collision
     //
-    boolean positionDestUnderSource(Ark* arc, int& x, int& y, 
-	    int& best_x, int& best_y,
-	    int offset=0, 
-	    boolean prefer_left=FALSE,
-	    boolean place_the_node=TRUE);
+    boolean positionDestUnderSource(Ark* arc, int& x, int& y);
+
+    //
+    // return TRUE if the positioning was accomplished but with collision
+    //
+    boolean positionSource(Ark* arc, int x);
 
     void repositionGroups(Node* reflow[], int reflow_count);
 
@@ -324,8 +416,6 @@ class GraphLayout : public Base
 
     static int StandInHeight;
     static int HeightPerLevel;
-    static int NarrowStandIn;
-    static int WideStandIn;
 
     static int ArcComparator(const void* a, const void* b);
 
@@ -339,19 +429,11 @@ class GraphLayout : public Base
     //
     int height_per_level;
 
-    boolean permits_saw_tooth;
-
-    void computeSawToothPermission(Node* reflow[], int reflow_count);
-
     void bottomUpTraversal (Node* visit_kids_of, int current_depth, int& min);
 
     boolean hasConnectedInputs(Node* n);
     boolean hasConnectedOutputs(Node* n, Node* other_than=NUL(Node*));
     void unmarkAllNodes(Node* reflow[], int reflow_count);
-
-    void doPlacements(Node* n, LayoutInfo* linfo, Node* reflow[], int reflow_count, List& positioned);
-
-    boolean hasNoCloserDescendant (Node* source, Node* dest);
 
     //
     // An additional pass over the nodes to make whatever minor mods
@@ -364,18 +446,6 @@ class GraphLayout : public Base
 	    int& maxx, int& maxy, List* decorators=NUL(List*));
 
     void repositionDecorators (List& decorators, boolean same_event_flag, Node* reflow[], int reflow_count);
-
-    //
-    // Does the work of countAncestorsWithinHops avoiding double countting.
-    //
-    void listAncestorsWithinHops (Node* n, int hops, List& ancestors);
-
-    //
-    // TRUE if the StandIn width is small enough so that the nodes can be
-    // positioned in a saw tooth pattern with straight arcs.  An Input tool
-    // is an example of a narrow node.
-    //
-    boolean isNarrow(Node* n);
 
     void computeHopCounts (Node* reflow[], int reflow_count);
 
@@ -394,6 +464,13 @@ class GraphLayout : public Base
     int countConnectedInputs (Node* n, int input, int& nth_tab);
     int countConnectedOutputs (Node* n, int output, int& nth_tab);
 
+    void repositionNewPlacements (Node* , boolean , List&);
+
+    static boolean CanMoveTo (LayoutInfo* info, int x, int y, Node* reflow[], 
+	int count, List* decorators); 
+
+    void spreadOutSpaghettiFrom (Node* n, int& min);
+
   public:
     //
     // Constructor:
@@ -406,9 +483,6 @@ class GraphLayout : public Base
     boolean entireGraph(WorkSpace* workspace, const List& nodes, const List& decorators);
 
     boolean arcStraightener(WorkSpace* workspace, const List& nodeList);
-
-    static boolean CanMoveTo (LayoutInfo* info, int x, int y, Node* reflow[], 
-	int count, List* decorators); 
 
     static Ark* IsSingleInputNoOutputNode(Node* n, boolean *shares_an_output, boolean positioned=TRUE);
     static boolean IsSingleOutputNoInputNode(Node* n);
@@ -438,20 +512,17 @@ class GraphLayout : public Base
     //
     int computeRightOffset(Ark* left_arc, Ark* right_arc);
 
-    //
-    // Count the kids within the specified number of hops.  The purpose
-    // is to measure how crowded the graph is.  When the graph is crowded
-    // we'll spread nodes out more so that ancestors don't crash into 
-    // one another
-    //
-    int countAncestorsWithinHops (Node* n, int hops);
+    boolean hasNoCloserDescendant (Node* source, Node* dest);
 
-    // 
-    // Check for 3 or more connections between a pair of nodes 
-    // 
-    Node* hasPriorityAncestor(Node* destination, Ark** priority_arc, int at_least);
-
-    void repositionNewPlacements (Node* , boolean , List&);
+    //
+    // append an ancestor node of root to the list if 
+    // 1) it's not already in the list
+    // 2) The node doesn't have some other descents that it's
+    //    'more closely' related to.
+    // For each node appended to the list append the arc that reaches
+    // that node.
+    //
+    void getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs);
 
     //
     // Returns a pointer to the class name.
