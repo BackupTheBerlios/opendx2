@@ -779,6 +779,7 @@ DXChild::setServer(char *s)
     if (this->server)
 	delete this->server;
     this->server = DuplicateString(s);
+    fprintf(stderr, "child: server set to %s\n", s);
 }
 
 #define RSIZE 512
@@ -1470,12 +1471,15 @@ DXChild::waitForConnection()
 	    }
 	    else
 	    {
-//		write (2, rdbuffer, sts);
 		rdbuffer[sts] = '\0';
 		DXChild::MakeLine(rstring, rdbuffer);
-//		if (STRLEN(rstring) == RSIZE-1 ||
-//			rstring[STRLEN(rstring)-1] == '\n')
-//		    theDXApplication->getMessageWindow()->addError(rdbuffer);
+		if ((s = strstr(rdbuffer, "host = ")) != NULL)
+		{
+		    char buf[256];
+		    sscanf(s, "host = %s", buf);
+		    theDXApplication->setServer(buf);
+		    this->setServer(buf);
+		}
 		if (strstr (rdbuffer, "Server appears to be in use"))
 		{
 		    result = 1;
