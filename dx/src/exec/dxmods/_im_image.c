@@ -126,8 +126,13 @@ static Error write_im(RWImageArgs *iargs)
 			{
 				if(strcmp(iargs->format,"Image Magick supported format"))
 					{
+						char* firstspace;
 						/* not "Image Magick supported format" format, use format for extension */
 						iargs->extension=iargs->format;
+						/* strip junk we can't deal withafter format... like "gif delayed=1" */
+						firstspace=strchr(iargs->extension, ' ');
+						if(firstspace != NULL) *firstspace='\0';
+						
 					}
 			}
 	   }
