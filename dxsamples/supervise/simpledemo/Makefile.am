@@ -5,5 +5,5 @@ SUBDIRS =  interactors
 
 datadir = $(prefix)/dx/samples/supervise/simpledemo
 
-data_DATA =  ReadMe demo demo.cfg demo.net
+data_DATA =  README demo demo.cfg demo.net
 EXTRA_DIST = $(data_DATA)
