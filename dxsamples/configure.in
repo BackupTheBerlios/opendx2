@@ -21,7 +21,8 @@ SHELL=/bin/sh
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(dxsamples, 4.2.0)
+AM_INIT_AUTOMAKE(dxsamples, 4.3.0)
+AC_CONFIG_HEADER(config.h)
 
 AC_ARG_WITH(javadx,
               [  --with-javadx           enable JAVADX (default is yes)],
@@ -57,7 +58,7 @@ AC_OUTPUT( Makefile callmodule/Makefile callmodule/localmk \
 	data/Makefile dxlink/Makefile dxlink/dxlink_make \
 	java/samples/Makefile java/Makefile java/userdata/Makefile  \
 	java/usermacros/Makefile  java/nets/Makefile  java/makes/Makefile  \
-	java/samples/Makefile  macros/Makefile outboard/Makefile \
+	macros/Makefile outboard/Makefile \
 	program_guide/Makefile program_guide/localmk program_guide/guidemake \
 	programs/2D_DATA/Makefile programs/3D_DATA/Makefile \
 	programs/ANNOTATION/Makefile programs/DATA_DRIVEN_INTERACTORS/Makefile \
@@ -71,23 +72,20 @@ AC_OUTPUT( Makefile callmodule/Makefile callmodule/localmk \
 	programs/SCATTERED/Makefile programs/SUPERVISE/Makefile \
 	programs/MISC/Makefile programs/Makefile scripts/Makefile \
 	supervise/simpledemo/Makefile \
-	supervise/simpledemo/interactors/Makefile  supervise/simpledemo/interactors/module_make 
+	supervise/simpledemo/interactors/Makefile \
+	supervise/simpledemo/interactors/module_make \
 	supervise/mediumdemo/Makefile \
-	supervise/mediumdemo/interactors/Makefile supervise/mediumdemo/interactors/module_make \
+	supervise/mediumdemo/interactors/Makefile \
+	supervise/mediumdemo/interactors/module_make \
 	supervise/imagedemo/Makefile \
 	supervise/interactors/Makefile supervise/interactors/module_make \
-	supervise/complexdemo/interactors/Makefile supervise/complexdemo/interactors/module_make \
+	supervise/complexdemo/interactors/Makefile \
+	supervise/complexdemo/interactors/module_make \
 	supervise/complexdemo/nets/Makefile supervise/complexdemo/data/Makefile \
 	supervise/complexdemo/Makefile supervise/Makefile tutorial/Makefile \
 	user/Makefile user/user_inboard_make \
 	user/user_loadable_make user/user_outboard_make \
 	util/dxf/Makefile util/plot3d/Makefile util/mpeg/Makefile \
-	util/fluent/Makefile util/Makefile \
+	util/fluent/Makefile util/biorad-pic/Makefile util/Makefile \
 	stereo/Makefile stereo/src/Makefile stereo/src/localmk )
-
- 
-
-
-
-
 
