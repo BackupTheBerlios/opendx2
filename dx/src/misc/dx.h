@@ -69,7 +69,7 @@ enum regCo {
 
 enum regGet {
   GET = 1,
-  CHECK = 2,
+  CHECK = 2
 };
 
 enum xServer { UNKNOWN, EXCEED6, EXCEED7, XWIN32, WINAXE };
