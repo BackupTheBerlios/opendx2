@@ -7018,12 +7018,10 @@ boolean EditorWindow::toggleHitDetection()
     this->workSpace->installInfo(NULL);
     return TRUE;
 }
-#if 1
 
 String EditorWindow::SequenceNet[] = {
 #include "sequence.h"
 };
-#endif
 
 boolean EditorWindow::unjavifyNetwork()
 {
