@@ -17,4 +17,3 @@ obj, cam, wh = SuperviseState(where=where, defaultCamera=defcam,
 Display(obj, cam, wh);
 }
 main();
-eoc main();
