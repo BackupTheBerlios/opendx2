@@ -59,7 +59,6 @@ Error m_ChangeGroupMember(Object *in, Object *out)
     char *memname = NULL;
     char *newmemname = NULL;
     int byname = 0;
-    int newbyname = 0;
     Class grouptype;
     float newseriespos;
     Group newgrp = NULL;
@@ -234,19 +233,36 @@ Error m_ChangeGroupMember(Object *in, Object *out)
         }
     } else if (optype == O_REPLACE) {
         /* split this into two separate tests for better error msgs */
-        if (in[4] && grouptype == CLASS_SERIES) {
-            if (!DXExtractFloat(in[4], &newseriespos)) {
-                DXSetError(ERROR_BAD_PARAMETER,
-			   "`newtag' must be a floating point series position");
-                goto error;
+
+        if (grouptype == CLASS_SERIES)
+	{
+	    if (in[4])
+	    {
+		if (!DXExtractFloat(in[4], &newseriespos)) 
+		{
+		    DXSetError(ERROR_BAD_PARAMETER,
+			       "`newtag' must be a floating point series position");
+		    goto error;
+		}
+	    }
+	    else if (! DXGetSeriesMember((Series)in[0], id, &newseriespos))
+	    {
+	        DXSetError(ERROR_BAD_PARAMETER, "Input has no member %d", id);
+		goto error;
+	    }
+	}
+	else
+	{
+	    if (in[4])
+	    {
+		if (!DXExtractString(in[4], &newmemname))
+		{
+		    DXSetError(ERROR_BAD_PARAMETER, "`newtag' must be a string name");
+		    goto error;
+		}
             }
-        }
-        if (in[4] && grouptype != CLASS_SERIES) {
-            if (!DXExtractString(in[4], &newmemname)) {
-                DXSetError(ERROR_BAD_PARAMETER, "`newtag' must be a string name");
-                goto error;
-            }
-            newbyname++;
+	    else
+	        newmemname = memname;
 	}
     
     } else {
@@ -262,7 +278,6 @@ Error m_ChangeGroupMember(Object *in, Object *out)
                     "`newtag' must be a string name");
                 goto error;
             }
-            newbyname++;
         }
     }
 
