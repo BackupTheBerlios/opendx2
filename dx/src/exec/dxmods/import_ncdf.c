@@ -23,7 +23,7 @@
 #undef uint32
 #undef float64
 
-#include <netcdf/netcdf.h>
+#include <netcdf.h>
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
