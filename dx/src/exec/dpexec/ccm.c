@@ -265,7 +265,8 @@ _dxfCompleteServer(int sock,
     if (FD_ISSET(sock, &fds))
     {
 	length = sizeof(server);
-	if (accept(sock, (struct sockaddr *)&server, &length) < 0)
+        fd = accept(sock, (struct sockaddr *)&server, &length);
+	if (fd < 0)
 	{
 	    perror ("accept");
 	    goto error;
@@ -275,7 +276,8 @@ _dxfCompleteServer(int sock,
     else
     {
 	length = sizeof (userver) - sizeof(userver.sun_path) + strlen (userver.sun_path);
-	if (accept(usock, (struct sockaddr *)&userver, &length) < 0)
+        fd = accept(usock, (struct sockaddr *)&userver, &length);
+	if (fd < 0)
 	{
 	    perror ("accept");
 	    goto error;
