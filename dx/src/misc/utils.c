@@ -12,7 +12,7 @@
 #include "dx.h"
 #include <stdio.h>
 
-#if defined(intelnt) /* Only needed for Windows and Cygwin */
+#if defined(intelnt) || defined(cygwin)
 
 #if defined(HAVE_WINDOWS_H)
 #include <windows.h>
@@ -32,18 +32,22 @@
 
 void d2u(char *s)
 {
+#if defined(intelnt)
     int i;
     for (i=0; s && *s && (i<strlen(s)); i++)
 	if (s[i] == '\\')
 	    s[i] = '/';
+#endif
 }
 
 void u2d(char *s)
 {
+#if defined(intelnt)
     int i;
     for (i=0; s && *s && (i<strlen(s)); i++)
 	if (s[i] == '/')
 	    s[i] = '\\';
+#endif
 }
 
 #if 0

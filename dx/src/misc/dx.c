@@ -9,7 +9,7 @@
 
 #include "dx.h"
 
-#if !defined(intelnt) /* Only needed for Windows and Cygwin */
+#if !defined(intelnt) && !defined(cygwin)
 #include <stdio.h>
 int main(){fprintf(stderr, "misc/dx is only needed on Windows based systems.\n"); return 1;}
 #else /* Windows system compile application */
@@ -262,7 +262,9 @@ error:
 
 int initrun()
 {
+#if defined(intelnt)
     OSVERSIONINFO osvi;
+#endif
 #if defined(USE_REGISTRY)
     int keydata;
 
@@ -320,11 +322,15 @@ int initrun()
 	}
 #endif (USE_REGISTRY)
 
+#if defined(intelnt)
     osvi.dwOSVersionInfoSize = sizeof(osvi);
     GetVersionEx(&osvi);
     
     if(osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
     	needShortPath = 1;
+    else
+#endif
+        needShortPath = 0;
 
     strcpy(exhost, thishost);
     strcpy(exarch, DXD_ARCHNAME);
@@ -695,7 +701,9 @@ int buildcmd()
 		d2u(exmdf);
 		if (*FileName) {
 			d2u(FileName);
+#if defined(intelnt)
 			addQuotes(FileName);
+#endif
 		}
 
 		if (uionly && exonly)
