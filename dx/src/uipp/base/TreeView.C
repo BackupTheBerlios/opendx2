@@ -179,6 +179,11 @@ TreeView::~TreeView()
     if (this->data_model) delete this->data_model;
     this->clearMarkers();
     if (this->ibeam_timer) XtRemoveTimeOut(this->ibeam_timer);
+    Widget w = this->getRootWidget();
+    if (w) {
+	XtRemoveCallback (w, XmNexposeCallback, (XtCallbackProc)
+	    TreeView_ExposeCB, (XtPointer)this);
+    }
 }
 
 //

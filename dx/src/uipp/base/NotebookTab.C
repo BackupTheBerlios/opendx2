@@ -74,6 +74,11 @@ NotebookTab::~NotebookTab()
     if (this->dbl_buffer) {
 	XFreePixmap(XtDisplay(this->getRootWidget()), this->dbl_buffer);
     }
+    Widget w = this->getRootWidget();
+    if (w) {
+	XtRemoveCallback (w, XmNexposeCallback, (XtCallbackProc)
+	    NotebookTab_ExposeCB, (XtPointer)this);
+    }
 }
 
 void NotebookTab::createButton(Widget parent)
