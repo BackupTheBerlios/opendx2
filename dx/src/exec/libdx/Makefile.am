@@ -92,7 +92,7 @@ libLIBDX_a_SOURCES =  \
 	edfdata.c edfdict.c edfio.c edflex.c edfobj.c edfparse.c edfprint.c \
 	extract.c fileio.c grow.c hash.c image.c invalid.c irreggrow.c map.c \
 	gather.c line.c partition.c partreg.c parts.c permute.c \
-	paint.c print.c private.c reggrow.c rwobject.c seglist.c stats.c text.c \
+	paint.c print.c reggrow.c rwobject.c seglist.c stats.c text.c \
 	transform.c binSort.c interp.c fieldinterp.c groupinterp.c fle2D.c \
 	linesII1D.c linesRR1D.c linesRI1D.c trisRI2D.c quadsRR2D.c \
 	cubesII.c cubesRR.c tetras.c quadsII2D.c plane.c \
