@@ -12,7 +12,7 @@
 #define tdmWindow_c
 
 #ifndef	lint
-static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.c,v 1.6 2002/03/21 02:59:13 rhh Exp $";
+static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.c,v 1.7 2002/03/25 16:51:59 davidt Exp $";
 #endif
 
 #define FLING_TIMEOUT 3
@@ -1355,6 +1355,7 @@ _dxfTryRestoreBuffer (WinP win)
       _dxf_CLEAR_AREA (PORT_CTX, 0, PIXW - 1, 0, PIXH - (camh+1)) ;
   
   PRINT(("writing from backing store"));
+  _dxf_SET_OUTPUT_WINDOW(win, XWINID);
   _dxf_WRITE_APPROX_BACKSTORE (win, camw, camh) ;
 #if defined(solaris)
 	      _dxf_SWAP_BUFFERS(PORT_CTX, XWINID);
