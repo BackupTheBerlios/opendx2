@@ -15,7 +15,19 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdlib.h>
+
+#if defined(HAVE_SYS_ERRNO_H)
+#include <sys/errno.h>
+#endif
+
+#if defined(HAVE_ERRNO_H)
 #include <errno.h>
+#endif
+
+#if defined(HAVE__SYS_ERRLIST)
+#define sys_errlist _sys_errlist
+#endif
+
 #if defined(HAVE_SYS_FILE_H)
 #include <sys/file.h>
 #endif
@@ -493,10 +505,6 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
     char *cmd = NULL;
     int bytes = 0;
     int pid, rc;
-#if !defined(HAVE_SYS_ERRLIST)
-    extern char *sys_errlist[];
-#endif
-
 
     *outname = NULL;
 
@@ -779,9 +787,6 @@ Error _dxfclose_dxfile(FILE *fptr, char *filename)
 static Error is_dir(FILE *fp, char *fname)
 {
     struct stat sbuf;
-#if !defined(HAVE_SYS_ERRLIST)
-    extern char *sys_errlist[];
-#endif
 
     if (fstat(fileno(fp), &sbuf) < 0) {
         DXSetError(ERROR_BAD_PARAMETER, "%s: %s", fname, sys_errlist[errno]);
