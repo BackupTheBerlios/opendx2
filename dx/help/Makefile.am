@@ -2,7 +2,7 @@
 
 htmldir = $(prefix)/html
 
-noinst_DATA = help.tar
+EXTRA_DIST = help.tar
 
 install-data_local:
 	mkdir $(prefix)/help
