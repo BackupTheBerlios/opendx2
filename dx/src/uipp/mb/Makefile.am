@@ -4,12 +4,11 @@ INCLUDES = -I$(DXROOT)/include
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxbindir = $(prefix)/dx/bin
+dxbindir = $(prefix)/dx/bin_@ARCH@
 
-# dxbin_PROGRAMS = builder
-# builder_SOURCES =			
+dxbin_PROGRAMS = builder
 
-EXTRA_DIST = \
+builder_SOURCES =			
 	MBApplication.C			\
 	MBMainWindow.C			\
 	MBCommand.C			\
@@ -39,11 +38,11 @@ noinst_HEADERS = \
 	QuitCommand.h \
 	SADialog.h
 
-#builder_LDADD = 			\
-#	../base/libBASE.a  		\
-#	../widgets/libWIDGETS.a  	\
-#	../dxl/libDXL.a		  	\
-#	-L/usr/X11R6/lib 		\
-#	-L/usr/local/lib 		\
-#	-L$(DXROOT)/lib_@ARCH@	\
-#	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
+builder_LDADD = 			\
+	../base/libBASE.a  		\
+	../widgets/libWIDGETS.a  	\
+	../dxl/libDXL.a		  	\
+	-L/usr/X11R6/lib 		\
+	-L/usr/local/lib 		\
+	-L$(DXROOT)/lib_@ARCH@	\
+	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext

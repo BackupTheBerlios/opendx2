@@ -4,12 +4,11 @@ INCLUDES =
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxbindir = $(prefix)/dx/bin
+dxbindir = $(prefix)/dx/bin_@ARCH@
 
-# dxbin_PROGRAMS = tutor
-# tutor_SOURCES =				
+dxbin_PROGRAMS = tutor
 
-EXTRA_DIST = \
+tutor_SOURCES =				\
 	Main.C                          \
 	NoUndoTutorAppCommand.C         \
 	TutorApplication.C              \
@@ -22,11 +21,11 @@ noinst_HEADERS = \
 	TutorApplication.h \
 	TutorWindow.h
 
-#tutor_LDADD = 				\
-#	../base/libBASE.a  		\
-#	../widgets/libWIDGETS.a  	\
-#	../dxl/libDXL.a		  	\
-#	-L/usr/X11R6/lib 		\
-#	-L/usr/local/lib 		\
-#	-L$(DXROOT)/lib_@ARCH@	\
-#	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
+tutor_LDADD = 				\
+	../base/libBASE.a  		\
+	../widgets/libWIDGETS.a  	\
+	../dxl/libDXL.a		  	\
+	-L/usr/X11R6/lib 		\
+	-L/usr/local/lib 		\
+	-L$(DXROOT)/lib_@ARCH@	\
+	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
