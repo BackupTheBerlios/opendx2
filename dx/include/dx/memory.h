@@ -86,7 +86,7 @@ Returns {\tt OK}, or returns {\tt ERROR} and sets the error code to
 indicate an error such as a corrupted arena.
 **/
 
-typedef Error (*Scavenger)(unsigned int);
+typedef Error (*Scavenger)(ulong);
 Scavenger DXRegisterScavenger(Scavenger scavenger);
 /**
 \index{Scavenger}\index{DXRegisterScavenger}
@@ -139,7 +139,7 @@ breakpoints on.
 #define MEMORY_FREE      0x2
 #define MEMORY_PRIVATE   0x4
 
-typedef Error (*MemDebug)(int blocktype, Pointer start, unsigned int size, Pointer p);
+typedef Error (*MemDebug)(int blocktype, Pointer start, ulong size, Pointer p);
 
 
 Error DXDebugAlloc(int arena, int blocktype, MemDebug m, Pointer p);
@@ -156,8 +156,8 @@ since the routine must be executed from the requested processor.  If
 **/
 
 
-Error DXSetMemorySize(uint64 size, int ratio);
-Error DXGetMemorySize(unsigned int *sm, unsigned int *lg, unsigned int *lo);
+Error DXSetMemorySize(ulong size, int ratio);
+Error DXGetMemorySize(ulong *sm, ulong *lg, ulong *lo);
 Error DXGetMemoryBase(Pointer *sm, Pointer *lg, Pointer *lo);
 /**
 \index{SetMemorySize}\index{GetMemorySize}\index{GetMemoryBase}

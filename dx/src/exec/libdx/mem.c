@@ -33,7 +33,7 @@
  * complication here is due to System V shared memory segments, which
  * are rather difficult to use for this purpose.  This file provides:
  *
- * Error _dxfsetmem(int limit)
+ * Error _dxfsetmem(ulong limit)
  *     Called before getmem or getbrk with the total of the small/large 
  *     arena sizes in bytes.
  *
@@ -41,13 +41,13 @@
  *     Called after the first getmem/getbrk but before any forks;
  *     can be used to initialize lock tables.
  *
- * Pointer _dxfgetmem(Pointer base, int size)
+ * Pointer _dxfgetmem(Pointer base, ulong size)
  *     Request for a shared memory segment starting at base of the given
  *     size.  Guaranteed to be initialized to zeroes. Calls signal_allprocs
  *     so each process can attach to the new memory segment. Returns 
  *     actual address of the segment, or NULL for error
  *
- * Pointer _dxfgetbrk(Pointer base, int size)
+ * Pointer _dxfgetbrk(Pointer base, ulong size)
  *     Alternative to _dxfgetmem.  Calls the brk() system call to expand
  *     the existing data segment.  Defined at the end of the file instead
  *     of in the system-dependent sections because it's the same for all.
@@ -77,10 +77,10 @@
  *  exec, and they are basically private routines which shouldn't
  *  be exposed.
  */
-Error _dxfsetmem(uint64 limit);
+Error _dxfsetmem(ulong limit);
 Error _dxfinitmem();
-Pointer _dxfgetmem(Pointer base, int size);
-Pointer _dxfgetbrk(Pointer base, int size);
+Pointer _dxfgetmem(Pointer base, ulong size);
+Pointer _dxfgetbrk(Pointer base, ulong size);
 int   _dxfinmem(Pointer x);
 Error DXsyncmem();
 Error DXmemfork(int);
@@ -127,7 +127,6 @@ void _dxfcleanup_mem() { }
 
 
 
-
 #if ibm6000 || sgi || solaris || alphax || hp700 || linux
 
 #define memroutines
@@ -166,7 +165,7 @@ extern int _dxd_exRunningSingleProcess;   /* boolean supplied by the exec */
 /* move this logic out of dxfsetmem() into its own routine.  it's
  * gotten too complicated.
  */
-static Error whatkindofmem(uint64 limit)
+static Error whatkindofmem(ulong limit)
 {
     int force = 0;    /* set if the user requested a particular choice */
     char *cp = NULL;
@@ -279,16 +278,16 @@ static Error whatkindofmem(uint64 limit)
  * buy us a factor of e6 in size in an int.
  */
 Error
-_dxfsetmem(uint64 limit)
+_dxfsetmem(ulong limit)
 {
-    uint64 size, maxsegsize = SHMMAX;
+    ulong size, maxsegsize = SHMMAX;
     int id, nchunk, nextseg;
     int i, j;
     int first = 1;
     Pointer sh_base[MAX_CHUNKS]; 
-    uint64 gotten[MAX_CHUNKS];
+    ulong gotten[MAX_CHUNKS];
     int    nsegs [MAX_CHUNKS];
-    uint64 totalsize = 0;
+    ulong totalsize = 0;
     Pointer tbase, tend;
     int tcount;
     extern int errno;
@@ -452,7 +451,7 @@ _dxfsetmem(uint64 limit)
 
 
 Pointer
-_dxfgetmem(Pointer base, int size)
+_dxfgetmem(Pointer base, ulong size)
 {
     int i;
 
@@ -521,7 +520,7 @@ _dxfinmem(Pointer x)
 /* Still need to write shared memory routines */
 
 void *sh_base;   /* starting virtual address */
-Error _dxfsetmem(uint64 limit)
+Error _dxfsetmem(ulong limit)
 {
     sh_base = malloc(limit);
     if (sh_base == NULL) {
@@ -533,7 +532,7 @@ Error _dxfsetmem(uint64 limit)
     }
 }
 
-Pointer _dxfgetmem(Pointer base, int size)
+Pointer _dxfgetmem(Pointer base, ulong size)
 {
     if (!base)	
 	base = (Pointer) sh_base;
@@ -548,7 +547,7 @@ Pointer _dxfgetmem(Pointer base, int size)
 #ifndef DXD_WIN_SHARE_MEMORY
 #define memroutines
 void *sh_base;   /* starting virtual address */
-Error _dxfsetmem(uint64 limit)
+Error _dxfsetmem(ulong limit)
 {
     sh_base = malloc(limit);
     if (sh_base == NULL) {
@@ -560,7 +559,7 @@ Error _dxfsetmem(uint64 limit)
     }
 }
 
-Pointer _dxfgetmem(Pointer base, int size)
+Pointer _dxfgetmem(Pointer base, ulong size)
 {
     if (!base)	
 	base = (Pointer) sh_base;
@@ -596,10 +595,10 @@ void *sh_base;   /* starting virtual address */
 
 HANDLE MapFileHandle, MapHandle;
 LPVOID MappedPointer;
-static  uint64 DXLimit;
+static  ulong DXLimit;
 
 
-Error _dxfsetmem(uint64 limit)
+Error _dxfsetmem(ulong limit)
 {
     /*  Create Map file   */
     char DX_MAP_FILE[32];
@@ -647,7 +646,7 @@ Error _dxfsetmem(uint64 limit)
 }
 
 
-Pointer _dxfgetmem(Pointer base, int size)
+Pointer _dxfgetmem(Pointer base, ulong size)
 {
     /*  static HANDLE MapFileHandle, MapHandle;   */
     char DX_MAP_FILE[32];
@@ -687,7 +686,7 @@ Error DXmemfork(int i)
 static PVOID sh_base;   /* starting virtual address */
 
 Error
-_dxfsetmem(uint64 limit)
+_dxfsetmem(ulong limit)
 {
 
     if (DosAllocSharedMem(&sh_base, "\\sharemem\\dx.dat",
@@ -698,7 +697,7 @@ _dxfsetmem(uint64 limit)
 }
 
 Pointer
-_dxfgetmem(Pointer base, int size)
+_dxfgetmem(Pointer base, ulong size)
 {
     if (!base) 
 	base = (Pointer)sh_base;
@@ -723,9 +722,9 @@ DXmemfork(int i)
 #define memroutines
 #include <sys/svs.h>
 
-Error _dxfsetmem(uint64 limit) { return OK; }
+Error _dxfsetmem(ulong limit) { return OK; }
 Error DXmemfork(int i) { return fork(); }
-Pointer _dxfgetmem(Pointer base, int size) { return base; }
+Pointer _dxfgetmem(Pointer base, ulong size) { return base; }
 
 #endif /* ibmpvs */
 
@@ -738,7 +737,7 @@ extern int end;   /* filled in by linker */
 
 /* extend the existing data segment
  */
-Pointer _dxfgetbrk(Pointer base, int n)
+Pointer _dxfgetbrk(Pointer base, ulong n)
 {
     Pointer x = (Pointer)sbrk(n);
 
@@ -789,23 +788,23 @@ Pointer _dxfgetbrk(Pointer base, int n)
 extern int end;  /* filled in by linker */
 static Pointer after_end = NULL;
 
-Error _dxfsetmem(uint64 limit)
+Error _dxfsetmem(ulong limit)
 {
     after_end = _dxfgetbrk(limit);
 }
 
-Pointer _dxfgetmem(Pointer base, int size)
+Pointer _dxfgetmem(Pointer base, ulong size)
 {
     return ((base == NULL) ? after_end : base);
 }
 
 #else
-Error _dxfsetmem(uint64 limit)
+Error _dxfsetmem(ulong limit)
 {
     return OK;
 }
 
-Pointer _dxfgetmem(Pointer base, int size)
+Pointer _dxfgetmem(Pointer base, ulong size)
 {
     return _dxfgetbrk(base, size);
 }

@@ -101,7 +101,7 @@ struct dispinfo {
     int pixel_ymult;		/* real pixels along each each of virtual p */
     int alloc_unit;		/* minimum arena allocation size in bytes */
     Pointer arena_base;		/* first address in this arena */
-    uint arena_size;		/* arena size in bytes (-1 = uninitialized) */
+    ulong arena_size;		/* arena size in bytes (-1 = uninitialized) */
     int which;			/* which arena */
     int nproc;			/* for local, which processor */
     int smallsize;              /* color smaller blocks differently */
@@ -127,7 +127,7 @@ static struct dispinfo *d_local[32] = { NULL };
 /* prototypes */
 
 static void init_dispinfo(struct dispinfo *d);
-static void pix_set(struct dispinfo *d, Pointer start, uint size, ubyte color);
+static void pix_set(struct dispinfo *d, Pointer start, ulong size, ubyte color);
 static Error report_memory(struct dispinfo *d);
 static Error query_memory(struct dispinfo *d);
 static Display *open_memory_visual_display();
@@ -135,9 +135,9 @@ static Error init_memory_visual (struct dispinfo *d);
 static void cleanup_memory_visual (struct dispinfo *d);
 static int error_handler(Display *dpy, XErrorEvent *event);
 static Error handler_script(int fd, struct dispinfo *d);
-static Error memsee(int blocktype, Pointer start, uint size, Pointer p);
-static Error memsee1(int blocktype, Pointer start, uint size, Pointer p);
-static Error memquery(int blocktype, Pointer start, uint size, Pointer p);
+static Error memsee(int blocktype, Pointer start, ulong size, Pointer p);
+static Error memsee1(int blocktype, Pointer start, ulong size, Pointer p);
+static Error memquery(int blocktype, Pointer start, ulong size, Pointer p);
 
 void _dxf_sigcatch();
 #define NSECONDS 2    /* automatic update */
@@ -233,7 +233,7 @@ DXVisualizeMemory(int which, int procid)
     }
 
     if (which & 4) {			/* local memory */
-	unsigned local_size;
+	ulong local_size;
 
 	if (!DXGetMemorySize(NULL, NULL, &local_size) || local_size == 0) {
 	    DXSetError(ERROR_DATA_INVALID, "local memory not supported");
@@ -312,7 +312,7 @@ static void
 init_dispinfo(struct dispinfo *d)
 {
     int total_squares;
-    uint h;
+    ulong h;
 
     d->win_width = WIN_WIDTH;
     d->win_height = WIN_HEIGHT;
@@ -395,16 +395,17 @@ resize_display(struct dispinfo *d, int new_width, int new_height)
 }
 
 static void 
-pix_set(struct dispinfo *d, Pointer memstart, uint memsize, ubyte color)
+pix_set(struct dispinfo *d, Pointer memstart, ulong memsize, ubyte color)
 {
-    int start, size;			/* start, num to set in 'squares' */
-    int row, col;			/* window column, row to set */
-    int part;				/* wrap around edge of window */
+    ulong start, size;			/* start, num to set in 'squares' */
+    ulong row, col;			/* window column, row to set */
+    ulong part;				/* wrap around edge of window */
     ulong where;
     int i;
 
     /* round size up.  is start also off by one? */
-    start = (((ubyte *)memstart) - ((ubyte *)d->arena_base))/d->bytes_vp * d->pixel_xmult;
+    start = (((ubyte *)memstart) - 
+	     ((ubyte *)d->arena_base))/d->bytes_vp * d->pixel_xmult;
     size = DivideRoundedUp(memsize, d->bytes_vp) * d->pixel_xmult;
 
     col = start % d->win_width;
@@ -440,14 +441,14 @@ pix_set(struct dispinfo *d, Pointer memstart, uint memsize, ubyte color)
 
 /* turn on pixels corresponding to this memory range */
 static Error 
-memsee(int blocktype, Pointer start, unsigned int size, Pointer p)
+memsee(int blocktype, Pointer start, ulong size, Pointer p)
 {
     pix_set((struct dispinfo *)p, start, size, color_alloc);
     return OK;
 }
 
 static Error 
-memsee1(int blocktype, Pointer start, unsigned int size, Pointer p)
+memsee1(int blocktype, Pointer start, ulong size, Pointer p)
 {
     if (size >= ((struct dispinfo *)p)->smallsize)
 	return OK;
@@ -458,7 +459,7 @@ memsee1(int blocktype, Pointer start, unsigned int size, Pointer p)
 
 /* check to see if this block is in the query range */
 static Error 
-memquery(int blocktype, Pointer start, unsigned int size, Pointer p)
+memquery(int blocktype, Pointer start, ulong size, Pointer p)
 {
     struct dispinfo *d = (struct dispinfo *)p;
     Pointer end = (Pointer)(((ubyte *)start) + size);
@@ -662,15 +663,15 @@ init_memory_visual (struct dispinfo *d)
     d->gc = XCreateGC (d->disp, d->wind, flags, &val);
 
     XAllocNamedColor (d->disp, colors, COLOR_ALLOC, &shade, &exact);
-    color_alloc = shade.pixel;
+    color_alloc = (ubyte) shade.pixel;
     XAllocNamedColor (d->disp, colors, COLOR_SMALLOC, &shade, &exact);
-    color_smallalloc = shade.pixel;
+    color_smallalloc = (ubyte) shade.pixel;
     XAllocNamedColor (d->disp, colors, COLOR_FREE, &shade, &exact);
-    color_free = shade.pixel;
+    color_free = (ubyte) shade.pixel;
     XAllocNamedColor (d->disp, colors, COLOR_TRACE, &shade, &exact);
-    color_trace = shade.pixel;
+    color_trace = (ubyte) shade.pixel;
     XAllocNamedColor (d->disp, colors, COLOR_EXTRA, &shade, &exact);
-    color_extra = shade.pixel;
+    color_extra = (ubyte) shade.pixel;
 
 
     d->memory_pixel = (ubyte *) DXAllocate(w * h);

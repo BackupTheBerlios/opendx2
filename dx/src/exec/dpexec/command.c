@@ -1403,7 +1403,7 @@ static int PrintHosts (char *c, Object *in)
 static int Reclaim (char *c, Object *in)
 {
     DXTraceTime (1);
-    _dxf_ExReclaimMemory (atoi (c));
+    _dxf_ExReclaimMemory (atol (c));
     DXTraceTime (0);
     DXPrintTimes ();
     return (OK);

@@ -34,12 +34,12 @@ void _dxfcleanup_mem() { }
 
 int _dxf_initmemory() { return OK; }
 
-Error DXmemsize(uint64 size) { return OK; }
+Error DXmemsize(ulong size) { return OK; }
 
-Error DXSetMemorySize(uint64 size, int ratio) { return OK; }
+Error DXSetMemorySize(ulong size, int ratio) { return OK; }
 
 /* we can make this work for the pvs - there are #defines for it */
-Error DXGetMemorySize(unsigned int *sm, unsigned int *lg, unsigned int *lo)
+Error DXGetMemorySize(ulong *sm, ulong *lg, ulong *lo)
 {
     if (sm) *sm = 0;
     if (lg) *lg = 0;
@@ -165,7 +165,7 @@ DXInitMaxFreedBlock()
 {
 }
 
-int
+ulong
 DXMaxFreedBlock()
 {
     return 0;

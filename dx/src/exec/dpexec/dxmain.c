@@ -930,7 +930,7 @@ static void ExProcessArgs (int argc, char **argv)
 		 */
 
 		if (maxMemory > 0)
-		    while (DXmemsize (MEGA ((uint64)maxMemory)) != OK)
+		    while (DXmemsize (MEGA ((ulong)maxMemory)) != OK)
 			maxMemory--;
 		break;
 

@@ -156,13 +156,13 @@ void _dxf_ExSetGVarCost(gvar *gv, double cost)
 
 #define	N_PER_ITER	512
 
-extern void DXInitMaxFreedBlock(); /* from libdx/memory.c */
-extern int  DXMaxFreedBlock(); /* from libdx/memory.c */
+extern void  DXInitMaxFreedBlock(); /* from libdx/memory.c */
+extern ulong DXMaxFreedBlock();     /* from libdx/memory.c */
 
 static int nDeleted;
 
 static int
-__ExReclaimMemory (int nbytes)
+__ExReclaimMemory (ulong nbytes)
 {
     EXObj	obj;
     gvar	*gv;
@@ -222,7 +222,7 @@ __ExReclaimMemory (int nbytes)
     return skipped;
 }
 
-int _dxf_ExReclaimMemory (unsigned int nbytes)
+int _dxf_ExReclaimMemory (ulong nbytes)
 {
     int	status;
     int	found;
@@ -252,7 +252,7 @@ int _dxf_ExReclaimMemory (unsigned int nbytes)
      * assume that the last sweep just occurred.
      */
 
-    DXDebug ("*0M", "Memory reclamation:  looking for %u bytes", nbytes);
+    DXDebug ("*0M", "Memory reclamation:  looking for %lu bytes", nbytes);
 
     status = get_status ();
     set_status (PS_RECLAIM);
@@ -265,7 +265,7 @@ int _dxf_ExReclaimMemory (unsigned int nbytes)
      */
     DXInitMaxFreedBlock();
 
-    DXDebug ("M", " initial max free blocksize %u bytes", DXMaxFreedBlock());
+    DXDebug ("M", " initial max free blocksize %lu bytes", DXMaxFreedBlock());
 
     /* 
      * EXPERIMENT!!  try reclaiming just a bit more than we need, and
@@ -279,14 +279,14 @@ int _dxf_ExReclaimMemory (unsigned int nbytes)
      * ask for too much.  if this fails, see if we got at least
      * as much as we really need.
      */
-    found = __ExReclaimMemory((int)(nbytes*factor));
+    found = __ExReclaimMemory((ulong)(nbytes*factor));
     if (found)
 	goto done;
  
-    DXDebug ("M", " after deleting %d items max blocksize now %u", 
+    DXDebug ("M", " after deleting %d items max blocksize now %lu", 
 	     nDeleted, DXMaxFreedBlock());
-    DXDebug ("M", " could not get %u bytes (%g times %u needed)", 
-	     (int)(nbytes*factor), factor, nbytes);
+    DXDebug ("M", " could not get %lu bytes (%g times %lu needed)", 
+	     (ulong)(nbytes*factor), factor, nbytes);
 
     /*
      * the first request looked at all objects which were valid to
@@ -315,7 +315,7 @@ int _dxf_ExReclaimMemory (unsigned int nbytes)
 
   done:
 	       
-    DXDebug ("M", "deleted %d items, max blocksize now %u, found=%d", 
+    DXDebug ("M", "deleted %d items, max blocksize now %lu, found=%d", 
 	     nDeleted, DXMaxFreedBlock(), found);
 
     reclaiming_mem = 0;

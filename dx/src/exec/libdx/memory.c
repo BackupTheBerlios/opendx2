@@ -151,13 +151,13 @@ struct block {
 #undef USIZE
 #endif
 
-#define ISFREE(b)   ((((long)(b->next_block))&1))
-#define SETFREE(b)  (b->next_block=(struct block *)(((long)(b->next_block))|1))
-#define CLEARFREE(b)(b->next_block=(struct block *)(((long)(b->next_block))&~1))
-#define SIZE(b)	    ((long)((b)->next_block)-(long)b)
-#define FSIZE(b)    ((long)NEXT(b)-(long)b)
-#define USIZE(x)    SIZE((struct block *)((long)x-USER))
-#define NEXT(b)     ((struct block *)(((long)(b->next_block))&~1))
+#define ISFREE(b)   ((((ulong)(b->next_block))&1))
+#define SETFREE(b)  (b->next_block=(struct block *)(((ulong)(b->next_block))|1))
+#define CLEARFREE(b)(b->next_block=(struct block *)(((ulong)(b->next_block))&~1))
+#define SIZE(b)	    ((ulong)((b)->next_block)-(ulong)b)
+#define FSIZE(b)    ((ulong)NEXT(b)-(ulong)b)
+#define USIZE(x)    SIZE((struct block *)((ulong)x-USER))
+#define NEXT(b)     ((struct block *)(((ulong)(b->next_block))&~1))
 #define ROUND(x,n)  (((x)+(n)-1)&~((n)-1))
 #define ROUNDDOWN(x,n)((x)&~((n)-1))
 
@@ -212,13 +212,13 @@ struct block {
 #define G   16			/* free list granularity parameter */
 #define NL  (32*G)		/* number of lists based on that parameter */
 
-static int maxFreedBlock = 0;
+static ulong maxFreedBlock = 0;/* size of largest freed block */
 
 struct arena {
 
     char *name;			/* character string id */
     struct block *pool;		/* big block of unused storage */
-    int pool_size;		/* bytes in pool in excess of MINPOOL */
+    ulong pool_size;		/* bytes in pool in excess of MINPOOL */
     int pool_satisfied;		/* number satisfied from the pool */
     lock_type pool_lock;	/* lock for pool */
     int merge;			/* whether to merge blocks on free */
@@ -227,29 +227,33 @@ struct arena {
     int shift;			/* log base 2 of align */
     char *oflo;			/* name of overflow arena (for messages) */
     int overflowed;		/* number of overflows */
-    int max_user;		/* largest user size we allow */
+    ulong max_user;		/* largest user size we allow */
     int scavenger_running;      /* set if we are trying to reclaim memory */
     int fill1[3];		/* fill to 8 int boundary  !?not right on axp*/
 
     struct list {		/* per-free list info */
 	lock_type list_lock;	/* the lock */
 	struct block block;	/* dummy block for head of list */
-	int min;		/* minimium size of blocks on this list */
+	ulong min;		/* minimium size of blocks on this list */
 	int requested;		/* blocks requested from this list */
 	int satisfied;		/* blocks satisfied from this list */
     } lists[NL];		/* max of NL free lists */
 
     struct block *blocks;	/* list of all blocks */
-    Pointer (*get)(Pointer, int); /* how to get more memory */
-    int size;			/* current size of arena */
-    int incr;			/* multiple for increments */
-    int max_size;		/* max size to allow arena to grow to */
+    Pointer (*get)(Pointer, ulong); /* how to get more memory */
+    ulong size;		     /* current size of arena */
+    ulong incr;		     /* multiple for increments */
+    ulong max_size;		/* max size to allow arena to grow to */
     int dead_size;              /* amount of space in dead blocks */
 };
 
 
+/*
+ * This routine computes the free list that a block belongs on given its size.
+ */
+
 static struct list *
-flist(struct arena *a, unsigned int n)
+flist(struct arena *a, ulong n)
 {
     struct list *l = a->lists;
     n >>= a->shift;
@@ -260,8 +264,13 @@ flist(struct arena *a, unsigned int n)
     return l + n;
 }
 
+/*
+ * This routine computes the minimum free list such that any block on that
+ * free list is guaranteed to be large enough to satisfy the request.  
+ */
+
 static struct list *
-alist(struct arena *a, unsigned int n)
+alist(struct arena *a, ulong n)
 {
     return flist(a, n - a->align) + 1;
 }
@@ -273,13 +282,13 @@ alist(struct arena *a, unsigned int n)
  */
 
 static struct arena *
-acreate(char *name, long base, int size, int max_user, 
-	Pointer (*get)(Pointer,int), int incr, int max_size, 
+acreate(char *name, ulong base, ulong size, ulong max_user, 
+	Pointer (*get)(Pointer,ulong), ulong incr, ulong max_size, 
 	int merge, int align, int shift, char *oflo)
 {
     struct arena *a;
     int i, j, min, delta;
-    long l;
+    ulong l;
 
     a = (struct arena *)get((Pointer)base,size);/* get segment for the arena */
     if (!a)				/* get access to it? */
@@ -311,10 +320,10 @@ acreate(char *name, long base, int size, int max_user,
 	for (j=0; j<G; j++, min+=delta, i++)
 	    a->lists[i].min = min << shift;
 
-    l = (long)a + sizeof(struct arena);	/* end of arena, */
+    l = (ulong)a + sizeof(struct arena);	/* end of arena, */
     l = ROUND(l+USER, align)-USER;	/* aligned, */
     a->pool = (struct block *)l;	/* is the pool block */
-    a->pool_size = (long)a+size-l-MINPOOL;/* pool_size is excess over MINPOOL*/
+    a->pool_size = (ulong)a+size-l-MINPOOL;/* pool_size is excess over MINPOOL*/
     a->pool->prev_block = NULL;		/* no prev */
     a->pool->next_block = NULL;		/* no next */
     a->blocks = a->pool;		/* remember the list of all blocks */
@@ -348,11 +357,11 @@ acreate(char *name, long base, int size, int max_user,
  * of printing out the actual values
  */
 struct printvals {
-    int size;
-    int header;
-    int used;
-    int free;
-    int pool;
+    ulong size;
+    ulong header;
+    ulong used;
+    ulong free;
+    ulong pool;
 };
 
 static void insfree(struct list *, struct block *);
@@ -360,9 +369,9 @@ static Error aprint(struct arena *a, int how, struct printvals *v);
 static Error acheck(struct arena *a);
 
 static Error
-expand(struct arena *a, unsigned int n)
+expand(struct arena *a, ulong n)
 {
-    long base, add, new;
+    ulong base, add, new;
     struct block *b, *d;
     struct list *l;
 
@@ -388,8 +397,8 @@ expand(struct arena *a, unsigned int n)
 	}
     }
 
-    base = (long)a + a->size;		/* ideal base of new segment */
-    new = (long)a->get((Pointer)base, add); /* get the new segment? */
+    base = (ulong)a + a->size;		/* ideal base of new segment */
+    new = (ulong)a->get((Pointer)base, add); /* get the new segment? */
     if (!new)				/* got it? */
 	return ERROR;			/* no; return failure */
     a->dead_size += new-base;           /* size of dead region, if any */
@@ -439,7 +448,8 @@ aprint(struct arena *a, int how, struct printvals *v)
 {
     struct block *b;
     float sumreq=0, sumsat=0;
-    int i, n=0, m, header, free=0, used=0, pool, size;
+    int i, m, free=0, used=0;
+    ulong n=0, header, pool, size;
     struct list *l;
     int lused[NL];
 
@@ -451,13 +461,13 @@ aprint(struct arena *a, int how, struct printvals *v)
 
     for (b=a->blocks; NEXT(b); b=NEXT(b)) {
 	if (NEXT(b)->prev_block!=b || (b->prev_block&&NEXT(b->prev_block)!=b))
-	    EMessage("corrupt block at 0x%lx (user 0x%lx)", b, (long)b+USER);
+	    EMessage("corrupt block at 0x%lx (user 0x%lx)", b, (ulong)b+USER);
 	if (how==4 && !ISFREE(b))
 	    EMessage("alloc block of size %ld at user 0x%lx", 
-		     FSIZE(b), (long)b+USER);
+		     FSIZE(b), (ulong)b+USER);
 	if (how>=5)
 	    EMessage("%s block of size %ld at 0x%lx (user 0x%lx)",
-		     ISFREE(b)? "free" : "alloc", FSIZE(b), b, (long)b+USER);
+		     ISFREE(b)? "free" : "alloc", FSIZE(b), b, (ulong)b+USER);
 	n = FSIZE(b);
 	if (ISFREE(b))
 	    free += n;
@@ -487,10 +497,9 @@ aprint(struct arena *a, int how, struct printvals *v)
     }
     if (how>=2)
 	EMessage("pool: %d satisfied", a->pool_satisfied);
-    header = (long)a->blocks - (long)a;
+    header = (ulong)a->blocks - (ulong)a;
     pool = a->pool_size + MINPOOL;
     size = a->size;
-
 	
     /* only print old message if not returning values */
     if (!v) {
@@ -533,7 +542,7 @@ acheck(struct arena *a)
     for (b=a->blocks; NEXT(b); b=NEXT(b)) {
 	if (NEXT(b)->prev_block != b
 	    || (b->prev_block && NEXT(b->prev_block) != b)) {
-	    EMessage("corrupt block at 0x%lx (user 0x%lx)", b, (long)b+USER);
+	    EMessage("corrupt block at 0x%lx (user 0x%lx)", b, (ulong)b+USER);
 	    return ERROR;
 	}
     }
@@ -563,13 +572,14 @@ adebug(struct arena *a, int blocktype, MemDebug m, Pointer p)
     for (b=a->blocks; NEXT(b); b=NEXT(b)) {
 
 	if ((blocktype & MEMORY_ALLOCATED) && ! ISFREE(b)) {
-	    rc = (*m)(MEMORY_ALLOCATED, (Pointer)((long)b+USER), 
-		      FSIZE(b)-USER, p);
+	    rc = (*m)(MEMORY_ALLOCATED, (Pointer)((ulong)b+USER), 
+		      (FSIZE(b)-USER), p);
 	    if (rc == ERROR)
 		return rc;
 	}
 	if ((blocktype & MEMORY_FREE) && ISFREE(b)) {
-	    rc = (*m)(MEMORY_FREE, (Pointer)((long)b+USER), FSIZE(b)-USER, p);
+	    rc = (*m)(MEMORY_FREE, (Pointer)((ulong)b+USER), 
+		      (FSIZE(b)-USER), p);
 	    if (rc == ERROR)
 		return rc;
 	}
@@ -662,7 +672,7 @@ getfree(struct list *l)
 
 
 static struct block *
-getpool(struct arena *a, unsigned int n, int exp)
+getpool(struct arena *a, ulong n, int exp)
 {
     struct block *b, *pool;
 
@@ -674,7 +684,7 @@ getpool(struct arena *a, unsigned int n, int exp)
 	}
     }
     b = a->pool;			/* take from beginning of pool */
-    pool = (struct block *)((long)b+n);	/* new pool block */
+    pool = (struct block *)((ulong)b+n);/* new pool block */
     a->pool = pool;			/* record the new pool */
     a->pool_size -= n;			/* record new size */
     COUNT(a->pool_satisfied);		/* statistics */
@@ -691,12 +701,12 @@ mergeprev(struct arena *a, struct block *b)
 {
     struct block *pb, *nb, *nf, *pf;
     struct list *l;
-    int size;
+    ulong size;
 
     pb = b->prev_block;			/* pb is our previous block */
     nb = b->next_block;			/* nb is our next block */
     if (!ISFREE(pb)) return b;		/* quick check before locking */
-    l = flist(a, (long)b-(long)pb);	/* l is the free list it may be on */
+    l = flist(a, (ulong)b-(ulong)pb);	/* l is the free list it may be on */
     DXlock(&l->list_lock, 0);		/* lock that list */
     if (b->prev_block!=pb || !ISFREE(pb)){ /* has pb changed? */
 	DXunlock(&l->list_lock, 0);	/* yes, unlock list */
@@ -723,12 +733,11 @@ mergenext(struct arena *a, struct block *b)
 {
     struct block *nb, *nf, *pf, *nn;
     struct list *l;
-    unsigned int n;
-    int size;
+    ulong size, n;
 
     nb = b->next_block;			/* nb is our next block */
     nn = NEXT(nb);			/* nn is our next-next block */
-    n = (long)nn - (long)nb;		/* n is its size */
+    n = (ulong)nn - (ulong)nb;	/* n is its size */
     l = flist(a, n);			/* l is the free list it may be on */
     DXlock(&l->list_lock, 0);		/* lock that free list */
     if (NEXT(nb)!=nn || !ISFREE(nb)) {	/* has nb changed? */
@@ -775,16 +784,16 @@ mergepool(struct arena *a, struct block *b)
 
 
 static void
-split(struct arena *a, struct block *b, unsigned int n, int merge)
+split(struct arena *a, struct block *b, ulong n, int merge)
 {
     struct block *nf, *nn;
     struct list *l;
-    int m;
+    ulong m;
 
     m = SIZE(b) - n;			/* m size of trimmed-off piece */
     if (m < MINBLOCK)			/* will that satisfy min? */
 	return;				/* no, don't split */
-    nf = (struct block *) ((long)b + n);/* nf is our new next block */
+    nf = (struct block *) ((ulong)b + n);/* nf is our new next block */
     nn = b->next_block;			/* nn will be our next-next block */
     nf->prev_block = b;			/* new next blocks prev is b */
     nf->next_block = nn;		/* new next blocks next is nn */
@@ -808,7 +817,7 @@ split(struct arena *a, struct block *b, unsigned int n, int merge)
  */
 
 static char *
-amalloc(struct arena *a, unsigned int n)
+amalloc(struct arena *a, ulong n)
 {
     struct block *b = NULL;
     struct list *rl, *l, *last;
@@ -862,7 +871,7 @@ afree(struct arena *a, char *x)
 {
     struct list *l;
     struct block *b;
-    int size;
+    ulong size;
 
     b = (struct block *) (x - USER);	/* convert user to block */
     CHECK(b);				/* check for corruption */
@@ -885,11 +894,12 @@ afree(struct arena *a, char *x)
 
 
 static char *
-arealloc(struct arena *a, char *x, unsigned int n)
+arealloc(struct arena *a, char *x, ulong n)
 {
     struct block *b, *nb;
     char *y;
-    int bs, align, m;
+    int align;
+    ulong m, bs;
 
     b = (struct block *) (x - USER);	/* convert user to block */
     CHECK(b);				/* check for corruption */
@@ -938,16 +948,18 @@ arealloc(struct arena *a, char *x, unsigned int n)
 #define K   *1024
 #define MEG K K
                                         /* the following are in mem.c:       */
-extern Error _dxfsetmem(uint64 limit);	/*             set shared mem size   */
+extern Error _dxfsetmem(ulong limit);	/*             set shared mem size   */
 extern Error _dxfinitmem();		/*             initialize shared mem */
-extern Pointer _dxfgetmem(Pointer base, int n); /*     expand shared segment */
-extern Pointer _dxfgetbrk(Pointer base, int n); /*     use sbrk to get mem   */
+
+extern Pointer _dxfgetmem(Pointer base, ulong n); /*   expand shared segment */
+extern Pointer _dxfgetbrk(Pointer base, ulong n); /*   use sbrk to get mem   */
+
 extern int _dxfinmem(Pointer x);        /* returns true if mem in arena      */
 
 static int threshhold = 1 K;		/* default small vs large threshhold */
-static uint64 small_size = 0;		/* 0 means compute at run time */
-static uint64 large_size = 0;		/* 0 means compute at run time */
-static uint64 total_size = 0;		/* 0 means compute at run time */
+static ulong small_size = 0;		/* 0 means compute at run time */
+static ulong large_size = 0;		/* 0 means compute at run time */
+static ulong total_size = 0;		/* 0 means compute at run time */
 static int sm_lg_ratio = 0;		/* 0 means compute at run time */
 
 #define SMALL_INIT	small_size	/* potentially user specifiable */
@@ -955,7 +967,7 @@ static int sm_lg_ratio = 0;		/* 0 means compute at run time */
 #define SMALL_INCR	0		/* can't enlarge */
 #define SMALL_MAX_SIZE	SMALL_INIT	/* can't enlarge past initial size */
 #define SMALL_MERGE	0		/* don't merge blocks as freed */
-#define LARGE_BASE	(long)small + small_size /* large is just past small */
+#define LARGE_BASE	(ulong)small + small_size /* large is just past small */
 #define LARGE_MAX_USER	large_size	/* this is largest possible block */
 #define LARGE_MERGE	1		/* do merge blocks as they're freed */
 
@@ -968,7 +980,7 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_GET	_dxfgetmem	/* just returns ok */
 #define LARGE_INIT	4 MEG		/* doesn't matter much */
 #define LARGE_INCR	4 MEG		/* doesn't matter much */
-#define LOCAL_BASE	(long)&end	/* local arena is in data segment */
+#define LOCAL_BASE	(ulong)&end	/* local arena is in data segment */
 #define LOCAL_INIT	1 MEG		/* need relatively fine granularity */
 #define LOCAL_MAX_USER	LOCAL_MAX_SIZE	/* largest possible block */
 #define LOCAL_GET	_dxfgetbrk	/* uses sbrk to get more memory */
@@ -977,8 +989,8 @@ extern int end;				/* linker-provided end of used data  */
 #define LOCAL_MERGE	1		/* merge local blocks when freed */
 #define SIZE_ROUND	4 MEG		/* doesn't matter much */
 #define MALLOC_LOCAL	1		/* provide malloc from local arena */
-#define SMALL(x) ((long)x>=(long)small && (long)x<(long)large)
-#define LARGE(x) ((long)x>=(long)large)   /* assume local is below large */
+#define SMALL(x) ((ulong)x>=(ulong)small && (ulong)x<(ulong)large)
+#define LARGE(x) ((ulong)x>=(ulong)large)   /* assume local is below large */
 #endif
 
 /* 
@@ -999,8 +1011,8 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_INCR	8 MEG 		/* size to grow data seg by */
 #define SIZE_ROUND	SHMLBA		/* min alignment requirement */
                                         /* don't set any malloc_xxx flags */
-#define SMALL(x) ((long)x>=(long)small && (long)x<(long)small+small->size)
-/* #define LARGE(x) ((long)x>=(long)large && (long)x<(long)large+large->size) */
+#define SMALL(x) ((ulong)x>=(ulong)small && (ulong)x<(ulong)small+small->size)
+/* #define LARGE(x) ((ulong)x>=(ulong)large && (ulong)x<(ulong)large+large->size) */
 #define LARGE(x)        _dxfinmem(x)    /* turns into a func now, ugh. */
 #endif
 
@@ -1017,8 +1029,8 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_INCR	2 MEG 		/* size to grow by */
 #define SIZE_ROUND	SHMLBA		/* min alignment requirement */
 #define MALLOC_GLOBAL   1               /* provide malloc from global arena */
-#define SMALL(x) ((long)x<(long)large)  /* nothing outside global mem */
-#define LARGE(x) ((long)x>=(long)large)
+#define SMALL(x) ((ulong)x<(ulong)large)  /* nothing outside global mem */
+#define LARGE(x) ((ulong)x>=(ulong)large)
 #endif
 
 
@@ -1031,8 +1043,8 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_INCR    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define SIZE_ROUND    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define MALLOC_NONE   1               /* co-exist with system malloc */
-#define SMALL(x) ((int)x<(int)large)
-#define LARGE(x) ((int)x>=(int)large)
+#define SMALL(x) ((ulong)x<(ulong)large)
+#define LARGE(x) ((ulong)x>=(ulong)large)
 #endif
 
 #if defined(intelnt)
@@ -1044,8 +1056,8 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_INCR    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define SIZE_ROUND    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define MALLOC_NONE   1               /* provide malloc from global arena */
-#define SMALL(x) ((int)x<(int)large)
-#define LARGE(x) ((int)x>=(int)large)
+#define SMALL(x) ((ulong)x<(ulong)large)
+#define LARGE(x) ((ulong)x>=(ulong)large)
 #endif
 
 #ifdef	linux
@@ -1057,8 +1069,8 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_INCR    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define SIZE_ROUND    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define MALLOC_NONE   1               /* provide malloc from global arena */
-#define SMALL(x) ((int)x<(int)large)
-#define LARGE(x) ((int)x>=(int)large)
+#define SMALL(x) ((ulong)x<(ulong)large)
+#define LARGE(x) ((ulong)x>=(ulong)large)
 #endif
 
 #ifdef freebsd
@@ -1083,8 +1095,8 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_INCR    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define SIZE_ROUND    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define MALLOC_NONE   1               /* provide malloc from global arena */
-#define SMALL(x) ((int)x<(int)large)
-#define LARGE(x) ((int)x>=(int)large)
+#define SMALL(x) ((ulong)x<(ulong)large)
+#define LARGE(x) ((ulong)x>=(ulong)large)
 #endif
 
 #if alphax              /* single processor, but can't replace malloc */
@@ -1097,8 +1109,8 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_INCR	2 MEG		/* min size to expand by */
 #define SIZE_ROUND	2 MEG		/* min alignment requirement */
 #define MALLOC_NONE   1                 /* co-exist with system malloc */
-#define SMALL(x) ((long)x<(long)large)
-#define LARGE(x) ((long)x>=(long)large)
+#define SMALL(x) ((ulong)x<(ulong)large)
+#define LARGE(x) ((ulong)x>=(ulong)large)
 #endif
 
 #if hp700              /* single processor, NO option to use shmem */
@@ -1111,8 +1123,8 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_INCR	2 MEG		/* min size to expand by */
 #define SIZE_ROUND	2 MEG		/* min alignment requirement */
 #define MALLOC_NONE   1                 /* co-exist with system malloc */
-#define SMALL(x) ((long)x<(long)large)
-#define LARGE(x) ((long)x>=(long)large)
+#define SMALL(x) ((ulong)x<(ulong)large)
+#define LARGE(x) ((ulong)x>=(ulong)large)
 #endif
 
 #if defined(macos)
@@ -1124,13 +1136,13 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_INCR    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define SIZE_ROUND    2 MEG           /* doesn't matter; consistent w/ sgi */
 #define MALLOC_NONE   1               /* provide malloc from global arena */
-#define SMALL(x) ((int)x<(int)large)
-#define LARGE(x) ((int)x>=(int)large)
+#define SMALL(x) ((ulong)x<(ulong)large)
+#define LARGE(x) ((ulong)x>=(ulong)large)
 #endif
 
 #if !defined(initvalues)		/* default for other platforms */
 extern int end;				/* linker-provided end of used data  */
-#define SMALL_BASE	(long)&end	/* start at end of data segment */
+#define SMALL_BASE	(ulong)&end	/* start at end of data segment */
 #define SMALL_GET	_dxfgetbrk	/* expand by using sbrk */
 #define LARGE_GET	_dxfgetbrk	/* expand by using sbrk */
 #define LARGE_INIT	2 MEG           /* initial data segment size */
@@ -1138,8 +1150,8 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE_INCR	2 MEG		/* min size to expand by */
 #define SIZE_ROUND	2 MEG		/* min alignment requirement */
 #define MALLOC_GLOBAL	1		/* provide malloc from global arena */
-#define SMALL(x) ((long)x<(long)large)
-#define LARGE(x) ((long)x>=(long)large)
+#define SMALL(x) ((ulong)x<(ulong)large)
+#define LARGE(x) ((ulong)x>=(ulong)large)
 #endif
 
 
@@ -1198,7 +1210,7 @@ int _dxf_initmemory(void)
      * bytes.  we now have customers with 4G memory machines, which means
      * we have to do careful math using only uints, never signed ints.
      * rather than try to ensure we never go signed, i changed the code to
-     * compute these values in megabytes.  that gives us a 10e6 factor
+     * compute these values in megabytes.  that gives us a 2e20 factor
      * before we overflow 32bit ints.  seems safe for now.
      */
     if (!total_size) {
@@ -1411,15 +1423,19 @@ int _dxf_initmemory(void)
 	if (othermem && ((physmem * po_ratio) > othermem))
 	    othermem = (uint)(physmem * po_ratio);
 
-	/* and finally, don't allow more then 2G.  we may support
-	 * 64bit pointers, but we have other places where we compute
-	 * sizes of things in bytes (like array items, memory arena
-	 * space, etc) and they are still int in places.  when we find
-	 * and get them all converted to long or uint, then allow up
-	 * to 4G, but after that we have to go to a 64 bit architecture
-	 * to support this.
+	/* and finally, don't allow more then 2G, unless ENABLE_LARGE_ARENAS.  
+	 * is set.  we may support 64bit pointers, but we have other places
+	 * where we compute sizes of things in bytes (like array items, etc) 
+	 * and they are still int in places.  when we find and get them all
+	 * converted to long or uint, then allow up to 4G, but after that
+	 * we have to go to a 64 bit architecture to support this.  
+	 *
+	 * ENABLE_LARGE_ARENAS indicates we'll allow more than 2G arenas,
+	 * because we are on a 64-bit capable machine, with 64-bit pointers
+	 * and at least 64-bit ulongs.  However this "does not" mean individual
+	 * memory blocks (and thus DX arrays) can be larger than 2G yet.
 	 */
-	total_size = (uint64)(physmem - othermem) MEG ;
+	total_size = (ulong)(physmem - othermem) MEG ;
 
 #ifndef ENABLE_LARGE_ARENAS
 	if ((physmem - othermem) >= 2048)
@@ -1624,12 +1640,12 @@ int free(char *x)			{return DXFree(x);}
  * parameters, debugging, setting the scavenger, etc.
  */
 
-Error DXmemsize(uint64 size)    /* obsolete */
+Error DXmemsize(ulong size)    /* obsolete */
 {
     return DXSetMemorySize(size, 0);
 }
 
-Error DXSetMemorySize(uint64 size, int ratio)
+Error DXSetMemorySize(ulong size, int ratio)
 {
 #if DXD_HAS_RLIMIT && ! DXD_IS_MP
     struct rlimit r;
@@ -1659,7 +1675,7 @@ Error DXSetMemorySize(uint64 size, int ratio)
     return OK;
 }
 
-Error DXGetMemorySize(unsigned int *sm, unsigned int *lg, unsigned int *lo)
+Error DXGetMemorySize(ulong *sm, ulong *lg, ulong *lo)
 {
     if (sm)
 	*sm = small ? small->max_size : 0;
@@ -1919,7 +1935,7 @@ Scavenger DXRegisterScavenger(Scavenger s)
 }
 
 Error
-_dxfscavenge(unsigned int n)
+_dxfscavenge(ulong n)
 {
     int i;
     for (i=0; i<nscavengers; i++)
@@ -1940,7 +1956,7 @@ Scavenger DXRegisterScavengerLocal(Scavenger s)
 }
 
 int
-_dxflscavenge(unsigned int n)
+_dxflscavenge(ulong n)
 {
     int i;
     for (i=0; i<nlscavengers; i++)
@@ -2196,7 +2212,7 @@ DXInitMaxFreedBlock()
     maxFreedBlock = 0;
 }
 
-int 
+ulong
 DXMaxFreedBlock()
 {
     return maxFreedBlock;
