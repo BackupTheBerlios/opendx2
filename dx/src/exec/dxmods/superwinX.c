@@ -483,6 +483,8 @@ static  struct visualLookupS  {
     {  8, StaticGray  },
     { 12, TrueColor   },
     { 12, DirectColor },
+    { 16, TrueColor   },
+    { 16, DirectColor },
     { 24, TrueColor   },
     { 24, DirectColor },
     { 0,  PseudoColor }
