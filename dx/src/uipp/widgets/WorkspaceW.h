@@ -111,6 +111,7 @@ void XmAddWorkspaceEventHandler (XmWorkspaceWidget ww,
 void XmWorkspaceGetMaxWidthHeight(Widget, int *, int *);
 
 Boolean XmWorkspaceLocationEmpty (Widget , int , int );
+Boolean XmWorkspaceRectangleEmpty (Widget , int , int , int , int );
 Boolean XmWorkspaceSetLocation (Widget w, Dimension x, Dimension y);
 
 #define XmNlineInvisibility "lineInvisibility"

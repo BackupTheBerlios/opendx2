@@ -14,6 +14,21 @@
 #include "ListIterator.h"
 #include "Ark.h"
 #include "ArkStandIn.h"
+#include "VPEAnnotator.h"
+#include "Network.h"
+#include "WorkSpace.h"
+#include "UndoNode.h"
+
+char UndoMove::OperationName[] = "move";
+
+//
+// Never ever store a pointer to an object.  Do that, and you're bound
+// to crash because you can't be sure you can keep track of the the life cycle
+// of the object.  It might get deleted and you won't know.  We keep track
+// of information that we can use to look up an object.  If something happens
+// to the object, then we won't be able to look it up but that's OK.  The undo
+// will fail but we won't crash.
+//
 
 //
 // In order to track movements in the canvas we'll store
@@ -21,34 +36,32 @@
 // better to make this a generic Undo object and then make UndoMove
 // a subclass of Undo, but I'm not planning on really implementing Undo/Redo.
 //
-UndoMove::UndoMove (EditorWindow* editor, UIComponent* uic)
+UndoMove::UndoMove (EditorWindow* editor, UIComponent* uic) :
+    UndoableAction(editor)
 {
-    this->component = uic;
-    this->component->getXYPosition (&this->x, &this->y);
-    this->editor = editor;
+    uic->getXYPosition (&this->x, &this->y);
 }
 
-void UndoMove::undo() 
+UndoStandInMove::UndoStandInMove(EditorWindow* editor, StandIn* standIn, const char* className, int instance) : UndoMove(editor, standIn)
 {
-    // must clear out the undo list if the current
-    // workspace page changes.
-    this->component->setXYPosition (this->x, this->y);
-
+    this->className = className;
+    this->instance_number = instance;
 }
 
-UndoStandInMove::UndoStandInMove(EditorWindow* editor, Node* n, StandIn* standIn) : UndoMove(editor, standIn)
+void UndoStandInMove::undo(boolean first_in_list)
 {
-    this->node = n;
-}
-void UndoStandInMove::undo()
-{
-    this->UndoMove::undo();
-    int input_count = this->node->getInputCount();
-    StandIn* si = (StandIn*)this->component;
+    Node* n = UndoNode::LookupNode(this->editor, this->className, this->instance_number);
+    if (!n) return ;
+    StandIn* si = n->getStandIn();
+    ASSERT(si);
+    si->manage();
+    si->setXYPosition (this->x, this->y);
+
+    int input_count = n->getInputCount();
     Ark* arc;
     for (int i=1; i<=input_count; i++) {
-	if (!this->node->isInputVisible(i)) continue;
-	List* arcs = (List*)this->node->getInputArks(i);
+	if (!n->isInputVisible(i)) continue;
+	List* arcs = (List*)n->getInputArks(i);
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	while (arc = (Ark*)iter.getNext()) {
@@ -58,10 +71,10 @@ void UndoStandInMove::undo()
 	}
     }
 
-    int output_count = this->node->getOutputCount();
+    int output_count = n->getOutputCount();
     for (int i=1; i<=output_count; i++) {
-	if (!this->node->isOutputVisible(i)) continue;
-	List* arcs = (List*)this->node->getOutputArks(i);
+	if (!n->isOutputVisible(i)) continue;
+	List* arcs = (List*)n->getOutputArks(i);
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	while (arc = (Ark*)iter.getNext()) {
@@ -70,4 +83,98 @@ void UndoStandInMove::undo()
 	    si->addArk(this->editor, arc);
 	}
     }
+    if (first_in_list) this->editor->selectNode (n, TRUE, TRUE);
+}
+
+boolean UndoStandInMove::canUndo()
+{
+    Node* n = UndoNode::LookupNode (this->editor, this->className, this->instance_number);
+    if (!n) return FALSE;
+    StandIn* si = n->getStandIn();
+    if (!si) return FALSE;
+
+    // determine if the destination location is empty
+    int w,h;
+    si->getXYSize(&w,&h);
+    WorkSpace* ews = si->getWorkSpace();
+
+    return (ews->isEmpty(this->x, this->y, w, h));
+}
+
+void UndoStandInMove::prepare()
+{
+    Node* n = UndoNode::LookupNode (this->editor, this->className, this->instance_number);
+    if (!n) return ;
+    StandIn* si = n->getStandIn();
+    if (!si) return ;
+    si->unmanage();
+}
+
+void UndoStandInMove::postpare()
+{
+    Node* n = UndoNode::LookupNode (this->editor, this->className, this->instance_number);
+    if (!n) return ;
+    StandIn* si = n->getStandIn();
+    if (!si) return ;
+    if (si->isManaged()) return ;
+    si->manage();
+}
+
+UndoDecoratorMove::UndoDecoratorMove(EditorWindow* editor, VPEAnnotator* dec) :
+    UndoMove (editor, dec)
+{
+    // store the id in the decorator and use that to look up the decorator in undo().
+    this->instance = dec->getInstanceNumber();
+}
+
+UndoDecoratorMove::~UndoDecoratorMove()
+{
+}
+
+void UndoDecoratorMove::undo(boolean first_in_list)
+{
+    VPEAnnotator* dec = this->lookupDecorator();
+    if (dec) {
+	dec->manage();
+	dec->setXYPosition (this->x, this->y);
+	if (first_in_list) this->editor->selectDecorator (dec, TRUE, TRUE);
+    }
+}
+
+VPEAnnotator* UndoDecoratorMove::lookupDecorator()
+{
+    Network* net = this->editor->getNetwork();
+    List* decorators = (List*)net->getDecoratorList();
+    // can't be null
+    ListIterator iter(*decorators);
+    VPEAnnotator* dec;
+    while (dec=(VPEAnnotator*)iter.getNext()) {
+	if (this->instance == dec->getInstanceNumber()) {
+	    return dec;
+	}
+    }
+}
+
+boolean UndoDecoratorMove::canUndo()
+{
+    VPEAnnotator* dec = this->lookupDecorator();
+    if (!dec) return FALSE;
+    int w,h;
+    dec->getXYSize(&w,&h);
+    WorkSpace* ews = dec->getWorkSpace();
+
+    return (ews->isEmpty(this->x, this->y, w, h));
+}
+
+void UndoDecoratorMove::prepare()
+{
+    VPEAnnotator* dec = this->lookupDecorator();
+    if (dec) dec->unmanage();
+}
+void UndoDecoratorMove::postpare()
+{
+    VPEAnnotator* dec = this->lookupDecorator();
+    if (!dec) return ;
+    if (dec->isManaged()) return ;
+    dec->manage();
 }

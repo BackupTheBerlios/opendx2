@@ -174,6 +174,12 @@ class WorkSpace : public UIComponent
     virtual void getSelectedBoundingBox (int *minx, int *miny, int *maxx, int *maxy) = 0;
 
     //
+    // Used by undo operations to determine if an undone move will clobber
+    // other objects.
+    //
+    virtual boolean isEmpty (int x, int y, int width, int height);
+
+    //
     // On behalf of Page/Root
     //
     int getPlacementCount() { return this->activeManyPlacements; }

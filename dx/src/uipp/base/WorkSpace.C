@@ -490,3 +490,8 @@ void WorkSpace::saveWorkSpaceParams(WorkSpace *ws)
 	this->wasManhattanEnabled = manhattan;
     }
 }
+
+boolean WorkSpace::isEmpty (int x, int y, int width, int height)
+{
+    return XmWorkspaceRectangleEmpty (this->getRootWidget(), x,y,width,height);
+}

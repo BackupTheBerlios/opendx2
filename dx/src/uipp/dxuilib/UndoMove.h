@@ -7,14 +7,14 @@
 /***********************************************************************/
 #ifndef _UndoMove_h
 #define _UndoMove_h
-#include "../base/defines.h"
-
-#include "Base.h"
+#include "UndoableAction.h"
 
 class UIComponent;
-class EditorWindow;
-class Node;
 class StandIn;
+class VPEAnnotator;
+class Node;
+class EditorWindow;
+
 
 //
 // In order to track movements in the canvas we'll store
@@ -23,26 +23,72 @@ class StandIn;
 // a subclass of Undo, but I'm not planning on really implementing Undo/Redo.
 //
 #define UndoMoveClassName "UndoMove"
-class UndoMove : public Base
+class UndoMove : public UndoableAction
 {
     private:
-	int x,y;
     protected:
-	EditorWindow* editor;
-	UIComponent* component;
-    public:
-	virtual ~UndoMove(){}
+	int x,y;
 	UndoMove (EditorWindow* editor, UIComponent* uic);
-	virtual void undo();
+	static char OperationName[];
+    public:
+	virtual const char* getLabel() { return UndoMove::OperationName; }
+	virtual ~UndoMove(){}
 	virtual const char* getClassName() { return UndoMoveClassName; }
 };
 
+#define UndoStandInMoveClassName "UndoStandInMove"
 class UndoStandInMove : public UndoMove
 {
     private:
-       	Node* node;
+    protected:
+	const char* className;
+	int instance_number;
+	//Node* lookupNode();
+
     public:
-	UndoStandInMove (EditorWindow* editor, Node* n, StandIn* standIn);
-	virtual void undo();
+	//
+	// Some undo operations need to set up in order for canUndo()
+	// to be successful.
+	//
+	virtual void prepare();
+
+	//
+	// Some undo operations perform unmanage() in prepare().  Here
+	// they can can manage()
+	//
+	virtual void postpare();
+
+	virtual boolean canUndo();
+	UndoStandInMove (EditorWindow* editor, StandIn* si, 
+		const char* className, int instance);
+	virtual void undo(boolean first_in_list=TRUE);
+	virtual const char* getClassName() { return UndoStandInMoveClassName; }
+};
+
+#define UndoDecoratorMoveClassName "UndoDecoratorMove"
+class UndoDecoratorMove : public UndoMove
+{
+    private:
+	int instance;
+    protected:
+	VPEAnnotator* lookupDecorator();
+    public:
+	//
+	// Some undo operations need to set up in order for canUndo()
+	// to be successful.
+	//
+	virtual void prepare();
+
+	//
+	// Some undo operations perform unmanage() in prepare().  Here
+	// they can can manage()
+	//
+	virtual void postpare();
+
+	virtual boolean canUndo();
+	virtual ~UndoDecoratorMove();
+	UndoDecoratorMove (EditorWindow* editor, VPEAnnotator* dec);
+	virtual void undo(boolean first_in_list=TRUE);
+	virtual const char* getClassName() { return UndoDecoratorMoveClassName; }
 };
 #endif // _UndoMove_h

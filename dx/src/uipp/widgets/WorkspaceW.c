@@ -5494,6 +5494,27 @@ int i;
 }
 
 
+Boolean
+XmWorkspaceRectangleEmpty (Widget w, int x, int y, int width, int height)
+{
+XmWorkspaceWidget ww = (XmWorkspaceWidget)w;
+Boolean unoccupied = True;
+Widget child;
+int i;
+
+    for (i=0; ((i<ww->composite.num_children)&&(unoccupied)); i++) {
+	child = ww->composite.children[i];
+	if (!XtIsManaged(child)) continue;
+
+	if ((x+width)<child->core.x) continue;
+	if ((y+height)<child->core.y) continue;
+	if (x>(child->core.x + child->core.width)) continue;
+	if (y>(child->core.y + child->core.height)) continue;
+	unoccupied = False;
+    }
+    return unoccupied;
+}
+
 
 
 #if RESIZE_HANDLES
