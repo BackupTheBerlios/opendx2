@@ -10,7 +10,7 @@ rm -f conftest*])
 CYGWIN=
 test "$ac_cv_cygwin" = yes && CYGWIN=yes])
 
-AC_DEFUN(AC_EXEEXT,
+AC_DEFUN(DX_EXEEXT,
 [AC_REQUIRE([AC_CYGWIN])
 AC_MSG_CHECKING([for executable suffix])
 AC_CACHE_VAL(ac_cv_exeext,
@@ -40,7 +40,7 @@ dnl Setting ac_exeext will implicitly change the ac_link command.
 ac_exeext=$EXEEXT
 AC_SUBST(EXEEXT)])
 
-AC_DEFUN(AC_OBJEXT,
+AC_DEFUN(DX_OBJEXT,
 [AC_MSG_CHECKING([for object file suffix])
 AC_CACHE_VAL(ac_cv_objext,
 [
