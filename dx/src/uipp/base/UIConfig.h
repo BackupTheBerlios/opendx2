@@ -67,7 +67,6 @@
 // ibm6000 because of AIX4.1 header files problems. Remove this when fixed.
 */
 #if defined(alphax) || defined(aviion) || defined(solaris) || defined(ibm6000) || defined(sun4) || defined(os2)
-# define NEEDS_GETHOSTNAME_DECL
 #endif
 /*
 // define CFRONT_3_0_INLINE if you cannot have functional code after a
@@ -107,14 +106,6 @@
 # define EXECVE_3RD_TYPE char * const*
 #else
 # define EXECVE_3RD_TYPE const char **
-#endif
-
-#if defined(ibm6000)
-# define SELECT_ARG_TYPE void *
-#elif defined(hp700)
-# define SELECT_ARG_TYPE int *
-#else
-# define SELECT_ARG_TYPE fd_set *
 #endif
 
 /*
