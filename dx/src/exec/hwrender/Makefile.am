@@ -2,7 +2,7 @@
 
 SUBDIRS = opengl gl xgl starbase
 
-INCLUDES = -I${top_srcdir}/include -I${srcdir}/../libdx -I/usr/include -I/usr/local/include -D@ARCH@
+INCLUDES = -I${top_srcdir}/include -I${srcdir}/../libdx -D@ARCH@
 
 noinst_LIBRARIES = libHW.a
 
