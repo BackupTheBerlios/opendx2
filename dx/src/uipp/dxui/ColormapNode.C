@@ -29,7 +29,7 @@
 
 
 #include "lex.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Parameter.h"
 #include "DXApplication.h"
 #include "ColormapNode.h"

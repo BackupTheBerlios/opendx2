@@ -23,7 +23,7 @@
 #include <Xm/Separator.h>
 #include <Xm/BulletinB.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "OptionsDialog.h"
 #include "MBMainWindow.h"
 

@@ -26,7 +26,7 @@
 #include <Xm/RowColumn.h>
 #include <Xm/ToggleBG.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 #include "AutoAxesDialog.h"
 #include "DXType.h"

@@ -10,7 +10,7 @@
 #include "../base/defines.h"
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXExecCtl.h"
 #include "Command.h"
 #include "DXApplication.h"

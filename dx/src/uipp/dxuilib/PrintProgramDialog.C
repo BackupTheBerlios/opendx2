@@ -27,7 +27,7 @@
 
 #include <sys/stat.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h"
 #include "Network.h"
 #include "EditorWindow.h"

@@ -26,7 +26,7 @@
 #include "HelpWin.h"
 #include "ErrorDialogManager.h"
 #include "WarningDialogManager.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "IBMVersion.h"
 #include "lex.h"
 #include "logo.h"

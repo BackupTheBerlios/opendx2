@@ -15,7 +15,7 @@
 #include "Application.h"
 #include "Client.h"
 #include "Command.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "TimedMessage.h"
 
 Application* theApplication = NUL(Application*);

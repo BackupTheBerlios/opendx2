@@ -28,7 +28,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "MainWindow.h"
 #include "HelpWin.h"
 #include "StartupApplication.h"

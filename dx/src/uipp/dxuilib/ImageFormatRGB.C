@@ -12,7 +12,7 @@
 
 #include "ImageFormatRGB.h"
 #include "Application.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #if defined(DXD_WIN) || defined(OS2)
 #define unlink _unlink
 #endif

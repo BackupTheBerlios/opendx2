@@ -12,7 +12,7 @@
 
 
 #include "MBParameter.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 boolean MBParameter::MBParameterClassInitialized = FALSE;
 

@@ -26,7 +26,7 @@
 extern "C" void gettimer (int, struct timestruc_t* );
 #endif
 
-#include "Strings.h"
+#include "DXStrings.h"
 
 #if defined(aviion) || defined(solaris) || defined(sgi)
 #include <crypt.h>

@@ -23,7 +23,7 @@
 //
 #define STATIC_MACROS
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 #include "Node.h"
 #include "NodeDefinition.h"

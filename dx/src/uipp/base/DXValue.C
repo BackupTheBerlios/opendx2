@@ -15,7 +15,7 @@
 #include "List.h"
 #include "ListIterator.h"
 #include "DXTensor.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 
 //

@@ -12,7 +12,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "SetImageNameDialog.h"
 
 #include "Application.h"

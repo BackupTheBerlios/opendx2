@@ -11,7 +11,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h"
 #include "QuestionDialogManager.h"
 #include "PrintImageDialog.h"

@@ -12,7 +12,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "PacketHandler.h"
 
 PacketHandler::PacketHandler(int plinger,

@@ -15,7 +15,7 @@
 #include "XmUtility.h"
 #include "../widgets/WorkspaceW.h"
 #include "Application.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Dictionary.h"
 #include "SeparatorDecorator.h"
 #include "../widgets/XmDX.h"

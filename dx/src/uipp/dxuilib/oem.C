@@ -8,7 +8,7 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
-#include "../base/Strings.h"
+#include "../base/DXStrings.h"
 #include "../base/ErrorDialogManager.h"
 #include "oem.h"
 

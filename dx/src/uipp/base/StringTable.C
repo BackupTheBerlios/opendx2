@@ -13,7 +13,7 @@
 #include "StringTable.h"
 #include "List.h"
 #include "ListIterator.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 #define LOG_MAX_LISTSIZE	20	
 #define MAX_LISTSIZE		(1<<LOG_MAX_LISTSIZE)	

@@ -19,7 +19,7 @@
 
 #include "InfoDialogManager.h"
 #include "Application.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 
 InfoDialogManager* theInfoDialogManager =

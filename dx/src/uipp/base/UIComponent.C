@@ -23,7 +23,7 @@
 #include "Application.h"
 #include "WarningDialogManager.h"
 #include "WarningDialogManager.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 // SUITS to allow turn-off of stippled drawing on slow devices
 #define RES_CONVERT(res, str) XtVaTypedArg, res, XmRString, str, strlen(str)+1

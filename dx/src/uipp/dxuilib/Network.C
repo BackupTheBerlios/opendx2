@@ -40,7 +40,7 @@
 #include <sys/stat.h>
 
 #include "lex.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Network.h"
 #include "List.h"
 #include "ListIterator.h"

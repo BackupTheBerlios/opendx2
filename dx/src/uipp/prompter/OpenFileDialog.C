@@ -12,7 +12,7 @@
 
 
 
-#include "../base/Strings.h"
+#include "../base/DXStrings.h"
 #include "OpenFileDialog.h"
 #include "../base/Application.h"
 #include "../base/WarningDialogManager.h"

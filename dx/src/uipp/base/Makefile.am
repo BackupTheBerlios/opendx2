@@ -146,7 +146,7 @@ HDRS2 = \
 	SetNameDialog.h \
 	Stack.h \
 	StringTable.h \
-	Strings.h \
+	DXStrings.h \
 	SymbolManager.h \
 	TemporaryLicense.h \
 	TextEditDialog.h \

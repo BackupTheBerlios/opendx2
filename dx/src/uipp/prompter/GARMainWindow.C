@@ -45,7 +45,7 @@
 #include "CommentDialog.h"
 
 #include "../base/lex.h"
-#include "../base/Strings.h"
+#include "../base/DXStrings.h"
 #include "../base/List.h"
 #include "../base/WarningDialogManager.h"
 #include "../base/ErrorDialogManager.h"

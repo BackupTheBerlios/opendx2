@@ -102,7 +102,7 @@
 #include "Parameter.h"
 #include "EditorWindow.h"
 #include "XHandler.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ListIterator.h"
 #include "CloseWindowCommand.h"
 #include "PanelAccessManager.h"

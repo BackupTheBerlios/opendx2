@@ -21,7 +21,7 @@
 #endif
 #include "IBMApplication.h"
 #include "WizardDialog.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ListIterator.h"
 
 boolean WizardDialog::ClassInitialized = FALSE;

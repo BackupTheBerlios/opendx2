@@ -23,7 +23,7 @@
 #include <Xm/List.h>
 #include <Xm/RowColumn.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "MsgWin.h"
 
 #include "DXApplication.h"

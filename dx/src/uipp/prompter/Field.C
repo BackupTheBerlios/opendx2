@@ -12,7 +12,7 @@
 
 
 #include "Field.h"
-#include "../base/Strings.h"
+#include "../base/DXStrings.h"
 
 boolean Field::FieldClassInitialized = FALSE;
 

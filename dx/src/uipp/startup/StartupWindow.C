@@ -34,7 +34,7 @@
 #include "../widgets/Stepper.h"
 #include "ErrorDialogManager.h"
 #include "InfoDialogManager.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ButtonInterface.h"
 #include "StartupCommand.h"
 #include "StartupWindow.h"

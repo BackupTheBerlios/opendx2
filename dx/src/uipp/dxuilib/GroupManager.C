@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 #include "GroupManager.h"
 #include "Dictionary.h"

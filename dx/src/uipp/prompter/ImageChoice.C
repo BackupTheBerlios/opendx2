@@ -12,7 +12,7 @@
 
 #include "ImageChoice.h"
 #include "GARChooserWindow.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "XmUtility.h"
 #include "WarningDialogManager.h"
 #include "GARApplication.h"

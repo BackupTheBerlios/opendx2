@@ -16,7 +16,7 @@
 
 #include <Xm/Xm.h>
 #include "lex.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Command.h"
 #include "List.h"
 #include "IBMMainWindow.h"

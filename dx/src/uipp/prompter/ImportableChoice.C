@@ -18,7 +18,7 @@
 #include "ToggleButtonInterface.h"
 #include "Command.h"
 #include "WarningDialogManager.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 #include <Xm/Form.h>
 #include <Xm/Label.h>

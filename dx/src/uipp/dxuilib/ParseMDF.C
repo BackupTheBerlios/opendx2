@@ -16,7 +16,7 @@
 #include <string.h>
 
 #include "lex.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 #include "ParseMDF.h"
 

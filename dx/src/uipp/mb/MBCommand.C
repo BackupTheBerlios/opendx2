@@ -13,7 +13,7 @@
 
 #include <Xm/Xm.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "NoUndoCommand.h"
 #include "MBApplication.h"
 #include "MBCommand.h"

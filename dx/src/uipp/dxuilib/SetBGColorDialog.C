@@ -13,7 +13,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "SetBGColorDialog.h"
 #include "ImageWindow.h"
 #include "Application.h"

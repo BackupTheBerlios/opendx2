@@ -10,7 +10,7 @@
 #include "../base/defines.h"
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Application.h"
 #include "SetDecoratorTextDialog.h"
 #include "LabelDecorator.h"

@@ -83,7 +83,7 @@
 #include "InfoDialogManager.h"
 #include "FindToolDialog.h"
 #include "GridDialog.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "MacroNode.h"
 #include "MacroDefinition.h"
 #include "MacroParameterDefinition.h"

@@ -28,7 +28,7 @@
 #include <errno.h>
 
 #include "TimedMessage.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "MainWindow.h"
 #include "MBApplication.h"
 #include "MBMainWindow.h"

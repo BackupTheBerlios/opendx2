@@ -36,7 +36,7 @@
 #include "TickLabelList.h"
 #include "TickLabel.h"
 #include "ListIterator.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h"
 
 

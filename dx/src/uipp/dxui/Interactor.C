@@ -29,7 +29,7 @@
 #include "ControlPanel.h"
 #include "ControlPanelWorkSpace.h"
 #include "Network.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h" 
 
 #include "ntractor.bm"

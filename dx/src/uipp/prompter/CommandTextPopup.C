@@ -13,7 +13,7 @@
 #include "CommandTextPopup.h"
 #include "Command.h"
 #include "GARChooserWindow.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include <Xm/Text.h>
 #include <Xm/PushB.h>
 #include "GARApplication.h"

@@ -17,7 +17,7 @@
 #include <Xm/Form.h>
 #include <Xm/Label.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Application.h"
 #include "TimedMessage.h"
 

@@ -13,7 +13,7 @@
 #ifndef _FileContents_h_
 #define _FileContents_h_
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include <stdio.h>
 #include <sys/stat.h>
 #include <Xm/Xm.h>

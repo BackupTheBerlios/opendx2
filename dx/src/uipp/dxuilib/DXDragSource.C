@@ -19,7 +19,7 @@
 #include <sys/stat.h>
 #endif
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DragSource.h"
 #include "DXApplication.h"
 #include "DXDragSource.h"

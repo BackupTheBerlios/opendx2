@@ -16,7 +16,7 @@
 
 
 #include "XmUtility.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "LabelDecorator.h"
 #include "DXApplication.h"
 #include <Xm/Label.h>

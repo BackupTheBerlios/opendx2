@@ -40,7 +40,7 @@
 #include "MBCommand.h"
 #include "MBNewCommand.h"
 #include "lex.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "List.h"
 #include "InfoDialogManager.h"
 #include "WarningDialogManager.h"

@@ -16,7 +16,7 @@
 
 #include <Xm/Xm.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Dictionary.h"
 #include "Definition.h"
 #include "SIAllocatorDictionary.h" 	// For SIAllocator typedef 

@@ -17,7 +17,7 @@
 #include "Client.h"
 #include "Application.h"
 #include "CommandScope.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 
 boolean Command::CommandClassInitialized = FALSE;

@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "AnnotationGroupManager.h"
 #include "Dictionary.h"
 #include "ListIterator.h"

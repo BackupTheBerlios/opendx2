@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 #include "ProcessGroupManager.h"
 #include "ProcessGroupAssignDialog.h"

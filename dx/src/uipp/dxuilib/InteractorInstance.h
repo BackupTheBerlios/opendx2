@@ -15,7 +15,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Base.h"
 #include "InteractorNode.h"
 

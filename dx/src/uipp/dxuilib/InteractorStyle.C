@@ -15,7 +15,7 @@
 
 #include <ctype.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "InteractorInstance.h"
 #include "InteractorStyle.h"
 #include "Dictionary.h"

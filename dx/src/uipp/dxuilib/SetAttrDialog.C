@@ -15,7 +15,7 @@
 #include <Xm/Xm.h> 
 #include <Xm/Form.h> 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "SetAttrDialog.h"
 #include "InteractorInstance.h"
 #include "InteractorNode.h"

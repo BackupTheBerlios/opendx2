@@ -24,7 +24,7 @@
 #include <X11/X.h>
 
 #include "lex.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h"
 #include "EditorWindow.h"
 #include "ProcessGroupCreateDialog.h"

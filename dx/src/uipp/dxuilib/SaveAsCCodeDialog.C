@@ -15,7 +15,7 @@
 
 #ifdef DXUI_DEVKIT
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Application.h"
 #include "Network.h"
 #include "SaveAsCCodeDialog.h"

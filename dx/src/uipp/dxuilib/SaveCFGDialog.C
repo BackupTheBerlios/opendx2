@@ -18,7 +18,7 @@
 #include "ControlPanel.h"
 #include "Application.h"
 #include "ErrorDialogManager.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 
 boolean SaveCFGDialog::ClassInitialized = FALSE;

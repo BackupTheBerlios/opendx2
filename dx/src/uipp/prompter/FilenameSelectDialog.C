@@ -11,7 +11,7 @@
 
 
 
-#include "../base/Strings.h"
+#include "../base/DXStrings.h"
 #include "FilenameSelectDialog.h"
 #include "../base/Application.h"
 #include <Xm/Text.h>

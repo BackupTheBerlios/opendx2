@@ -20,7 +20,7 @@
 #include <Xm/AtomMgr.h>
 #include <Xm/Protocols.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "MainWindow.h"
 #include "Application.h"
 #include "CommandScope.h"

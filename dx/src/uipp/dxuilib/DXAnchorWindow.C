@@ -18,7 +18,7 @@
 #include "Network.h"
 #include "CascadeMenu.h"
 #include "NoUndoAnchorCommand.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include <Xm/Label.h>
 #include <Xm/RowColumn.h>
 #include <Xm/CascadeB.h>

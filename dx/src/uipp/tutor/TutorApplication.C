@@ -25,7 +25,7 @@
 #endif
 
 #include "TimedMessage.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "MainWindow.h"
 #include "TutorApplication.h"
 #include "NoUndoTutorAppCommand.h"

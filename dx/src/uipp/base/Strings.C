@@ -27,7 +27,7 @@
 
 #include <stdarg.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ctype.h"
 #include "lex.h"
 

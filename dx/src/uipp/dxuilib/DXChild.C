@@ -9,7 +9,7 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXChild.h"
 
 #ifdef OS2

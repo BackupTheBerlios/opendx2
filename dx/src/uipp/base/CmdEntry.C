@@ -12,7 +12,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "CmdEntry.h"
 #include "Dictionary.h"
 #include "DictionaryIterator.h"

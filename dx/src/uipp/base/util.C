@@ -28,7 +28,7 @@ STRCMP(char *a, char *b)
 }
 
 int
-STRCMP(char *a, char *b, int n)
+STRNCMP(char *a, char *b, int n)
 {
     if (!a || !b) 
         if (!a) return strncmp("", b, n);

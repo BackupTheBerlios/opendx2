@@ -16,7 +16,7 @@
 #include "DXApplication.h"
 #include "moduledrag.bm"
 #include "moduledragmask.bm"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "postit.bm"
 #include "WorkSpace.h"
 

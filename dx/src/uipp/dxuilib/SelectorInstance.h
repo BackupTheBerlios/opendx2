@@ -17,7 +17,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "SelectorNode.h"
 #include "SelectionInstance.h"
 

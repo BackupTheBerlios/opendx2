@@ -12,7 +12,7 @@
 
 
 
-#include "../base/Strings.h"
+#include "../base/DXStrings.h"
 #include "SADialog.h"
 #include "GARNewCommand.h"
 #include "GARMainWindow.h"

@@ -21,7 +21,7 @@
 #define _lex_h
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 
 //
 // Tells whether the specified character is a white space or not.

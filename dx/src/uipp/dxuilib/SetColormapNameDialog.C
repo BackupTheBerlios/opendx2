@@ -13,7 +13,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "SetColormapNameDialog.h"
 
 #include "Application.h"

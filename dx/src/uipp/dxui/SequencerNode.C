@@ -15,7 +15,7 @@
 #include "DXApplication.h"
 #include "SequencerNode.h"
 #include "SequencerWindow.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ErrorDialogManager.h"
 #include "Network.h"
 #include "Command.h"

@@ -15,7 +15,7 @@
 #include <Xm/Xm.h>
 #include <Xm/MessageB.h>
 #include <X11/cursorfont.h>
-#include "Strings.h"
+#include "DXStrings.h"
 
 Widget TimedInfoDialog::createDialog (Widget parent)
 {

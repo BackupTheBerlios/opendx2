@@ -13,7 +13,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Application.h"
 #include "SaveFileDialog.h"
 #include "QuestionDialogManager.h"

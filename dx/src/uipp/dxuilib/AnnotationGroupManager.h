@@ -18,7 +18,7 @@
 
 #include "GroupManager.h"
 #include "Dictionary.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 //
 // Class name definition:

@@ -15,7 +15,7 @@
 #include "NoUndoChoiceCommand.h"
 #include "ToggleButtonInterface.h"
 #include "GARChooserWindow.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "XmUtility.h"
 #include "DXValue.h"
 #include "DXType.h"

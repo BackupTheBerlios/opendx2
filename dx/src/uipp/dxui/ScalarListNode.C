@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <string.h>
  
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ScalarListNode.h"
 #include "ListIterator.h"
 #include "ScalarListInstance.h"

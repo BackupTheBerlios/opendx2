@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h"
 #include "OpenNetworkDialog.h"
 #include "OpenNetCommentDialog.h"

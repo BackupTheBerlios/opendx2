@@ -13,7 +13,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h"
 #include "DXLinkHandler.h"
 #include "DXPacketIF.h"

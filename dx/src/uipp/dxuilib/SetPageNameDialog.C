@@ -23,7 +23,7 @@
 #include "../widgets/Stepper.h"
 #include <ctype.h> // for isalnum
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 #include "SetPageNameDialog.h"
 #include "PageSelector.h"

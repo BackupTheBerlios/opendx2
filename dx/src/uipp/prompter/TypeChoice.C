@@ -26,7 +26,7 @@
 #include "NoUndoChoiceCommand.h"
 #include "ButtonInterface.h"
 #include "ToggleButtonInterface.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "WarningDialogManager.h"
 #include "MsgDialog.h"
 

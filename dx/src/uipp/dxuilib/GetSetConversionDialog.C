@@ -22,7 +22,7 @@
 #include <Xm/List.h>
 #include <Xm/Frame.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "GetSetConversionDialog.h"
 #include "DXApplication.h"
 #include "MacroDefinition.h"

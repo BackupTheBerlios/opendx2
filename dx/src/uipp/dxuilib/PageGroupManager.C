@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "PageGroupManager.h"
 #include "Dictionary.h"
 #include "SymbolManager.h"

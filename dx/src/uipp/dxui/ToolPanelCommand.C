@@ -17,7 +17,7 @@
 #include "DXApplication.h"
 #include "EditorWindow.h"
 #include "ToggleButtonInterface.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 
 ToolPanelCommand::ToolPanelCommand(const char*     name,

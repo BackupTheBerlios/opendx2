@@ -15,7 +15,7 @@
 #include <Xm/Xm.h>
 #include <Xm/PushB.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Tab.h"
 #include "Application.h"
 #include "StandIn.h"

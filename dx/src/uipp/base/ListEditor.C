@@ -19,7 +19,7 @@
 #include <Xm/RowColumn.h>
 
 #include "lex.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ListEditor.h"
 
 

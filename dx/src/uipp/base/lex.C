@@ -12,7 +12,7 @@
 
 
 #include "lex.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 
 //

@@ -12,7 +12,7 @@
 
 
 #include "CommentStyle.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "WarningDialogManager.h"
 
 //

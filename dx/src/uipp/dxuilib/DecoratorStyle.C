@@ -15,7 +15,7 @@
 
 #include <ctype.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DecoratorStyle.h"
 #include "Dictionary.h"
 #include "DictionaryIterator.h"

@@ -12,7 +12,7 @@
 
 #include "DXTensor.h"
 #include "DXValue.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 
 //

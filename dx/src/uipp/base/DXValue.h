@@ -15,7 +15,7 @@
 #define _DXValue_h
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Base.h"
 #include "DXType.h"
 #include "DXTensor.h"

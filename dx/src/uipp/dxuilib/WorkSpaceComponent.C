@@ -15,7 +15,7 @@
 #include <Xm/CascadeBG.h>
 
 #include "XmUtility.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "WorkSpaceComponent.h"
 #include "DXApplication.h"
 #include "../widgets/WorkspaceW.h"

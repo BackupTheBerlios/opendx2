@@ -13,7 +13,7 @@
 #include "FileContents.h"
 #include "IBMApplication.h"
 #include "ListIterator.h"
-#include "Strings.h"
+#include "DXStrings.h"
 
 List* FileContents::QueuedForDeletion = NUL(List*);
 XtIntervalId FileContents::CleanUpTimer = 0;

@@ -17,7 +17,7 @@
 
 #include "TickLabel.h"
 #include "../widgets/Number.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h"
 
 String TickLabel::DefaultResources[] = {

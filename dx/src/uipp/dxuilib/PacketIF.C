@@ -13,7 +13,7 @@
 #include <strings.h>
 #endif
 
-#include "Strings.h"
+#include "DXStrings.h"
 
 #include "PacketIF.h"
 #include "ListIterator.h"

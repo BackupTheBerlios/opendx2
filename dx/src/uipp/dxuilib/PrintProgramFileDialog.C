@@ -13,7 +13,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Application.h"
 #include "Network.h"
 #include "PrintProgramDialog.h"

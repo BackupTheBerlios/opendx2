@@ -17,7 +17,7 @@
 #include <Xm/Separator.h>
 #include <Xm/RowColumn.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "IBMMainWindow.h"
 #include "IBMApplication.h"
 #include "CommandScope.h"

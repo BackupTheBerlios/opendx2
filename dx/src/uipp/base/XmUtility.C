@@ -17,7 +17,7 @@
 #include <Xm/DialogS.h>
 #include <Xm/Form.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 #include "XmUtility.h"
 

@@ -37,7 +37,7 @@
 #include "Parameter.h"
 #include "List.h"
 #include "ListIterator.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Node.h"
 #include "Ark.h"
 #include "ArkStandIn.h"

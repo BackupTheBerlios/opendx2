@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "List.h"
 #include "ListIterator.h"
 #include "DXApplication.h"

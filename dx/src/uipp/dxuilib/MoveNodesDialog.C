@@ -17,7 +17,7 @@
 #include <Xm/PushB.h>
 #include <Xm/Separator.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "MoveNodesDialog.h"
 #include "PageSelector.h"
 #include "TextSelector.h"

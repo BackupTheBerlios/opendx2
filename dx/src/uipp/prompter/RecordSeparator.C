@@ -12,7 +12,7 @@
 
 
 #include "RecordSeparator.h"
-#include "../base/Strings.h"
+#include "../base/DXStrings.h"
 
 boolean RecordSeparator::RecordSeparatorClassInitialized = FALSE;
 

@@ -18,7 +18,7 @@
 #include "Xm/Separator.h"
 #include "Xm/Text.h"
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 #include "SetMacroNameDialog.h"
 

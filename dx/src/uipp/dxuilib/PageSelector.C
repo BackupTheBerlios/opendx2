@@ -15,7 +15,7 @@
 #include "EditorWindow.h"
 #include "VPERoot.h"
 #include "ListIterator.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h"
 #include "ErrorDialogManager.h"
 #include "Network.h"

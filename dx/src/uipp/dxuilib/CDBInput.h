@@ -16,7 +16,7 @@
 #define _CDBInput
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "CDBParameter.h"
 #include "../base/TextPopup.h"
 

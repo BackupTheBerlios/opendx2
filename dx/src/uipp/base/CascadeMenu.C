@@ -17,7 +17,7 @@
 #include <Xm/CascadeB.h>
 
 #include "CascadeMenu.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ListIterator.h"
 
 

@@ -13,7 +13,7 @@
 
 
 #include <Xm/Label.h>
-#include "Strings.h"
+#include "DXStrings.h"
 #include "VPEAnnotator.h"
 #include "ListIterator.h"
 #include "WorkSpace.h"

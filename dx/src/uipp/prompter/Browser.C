@@ -30,7 +30,7 @@
 #include "IBMApplication.h"
 #include "../base/WarningDialogManager.h"
 #include "../base/ButtonInterface.h"
-#include "../base/Strings.h"
+#include "../base/DXStrings.h"
 
 #include <fstream.h>
 #include <sys/stat.h>

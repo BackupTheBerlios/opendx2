@@ -16,7 +16,7 @@
 #include <Xm/Form.h>
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Application.h"
 #include "TextFile.h"
 #include "TextFileFileDialog.h"

@@ -18,7 +18,7 @@
 #if defined(HAVE_STREAM_H)
 #include <stream.h>
 #endif
-#include "Strings.h"
+#include "DXStrings.h"
 #include "List.h"
 #include "ListIterator.h"
 #include "DXType.h"

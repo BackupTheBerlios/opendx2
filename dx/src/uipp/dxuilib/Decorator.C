@@ -17,7 +17,7 @@
 
 
 #include "XmUtility.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "Decorator.h"
 #include "WorkSpace.h"
 #include "DecoratorStyle.h"

@@ -28,13 +28,13 @@
 
 #include "FileDialog.h"
 #include "Application.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ErrorDialogManager.h"
 
 #ifdef	DXD_WIN   /*   ajay    */
 #include <direct.h>
 #include <io.h>
-#include "Strings.h"
+#include "DXStrings.h"
 #endif
 
 #if 0             //SMH define local X routine

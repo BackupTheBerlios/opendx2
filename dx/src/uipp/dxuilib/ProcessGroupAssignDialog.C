@@ -23,7 +23,7 @@
 #include <Xm/Text.h>
 #include <Xm/Label.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h"
 #include "EditorWindow.h"
 #include "ProcessGroupAssignDialog.h"

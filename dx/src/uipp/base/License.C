@@ -13,7 +13,7 @@ fjdasjfasjhsjasf
 #include <dxconfig.h>
 
 
-#include <Strings.h>
+#include <DXStrings.h>
 
 // This nonsense surrounds sys/types.h because its typedef for boolean conflicts
 // with one from defines.h.  Many includes are ifdef on ARCH because of the

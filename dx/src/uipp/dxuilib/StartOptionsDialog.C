@@ -12,7 +12,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "DXApplication.h"
 #include "StartOptionsDialog.h"
 #include "XmUtility.h"

@@ -12,7 +12,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "SADialog.h"
 #include "Application.h"
 #include "MBNewCommand.h"

@@ -16,7 +16,7 @@
 
 #include "ImageFileDialog.h"
 #include "Application.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ErrorDialogManager.h"
 #include "SaveImageDialog.h"
 

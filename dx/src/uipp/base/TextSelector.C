@@ -21,7 +21,7 @@
 #include "TextSelector.h"
 #include "ListIterator.h"
 #include "IBMApplication.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 
 #include <ctype.h> // for isalnum

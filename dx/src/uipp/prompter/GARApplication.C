@@ -31,7 +31,7 @@
 #include <stdlib.h>
 
 #include "../base/TimedMessage.h"
-#include "../base/Strings.h"
+#include "../base/DXStrings.h"
 #include "../base/MainWindow.h"
 #include "../base/WarningDialogManager.h"
 #include "../base/HelpWin.h"

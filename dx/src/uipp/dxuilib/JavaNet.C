@@ -33,7 +33,7 @@
 #include <errno.h>	// For errno
 #include <sys/stat.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "List.h"
 #include "ListIterator.h"
 

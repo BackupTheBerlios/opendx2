@@ -25,7 +25,7 @@
 #include "DXDropSite.h" 
 #include "DXApplication.h"
 #include "Network.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "WarningDialogManager.h"
 
 #if defined(HAVE_NETDB_H)

@@ -15,7 +15,7 @@
 #include <Xm/Xm.h>
  
 #include "XmDX.h"
-#include "Strings.h"
+#include "DXStrings.h"
 #include "WorkSpaceGrid.h"
 #include "ErrorDialogManager.h"
 

@@ -22,7 +22,7 @@
 #include <Xm/ToggleB.h>
 #include <Xm/Label.h>
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "ListIterator.h"
 #include "ControlPanel.h"
 #include "ControlPanelGroupDialog.h"

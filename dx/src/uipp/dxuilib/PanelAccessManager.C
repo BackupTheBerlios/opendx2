@@ -12,7 +12,7 @@
 
 
 
-#include "Strings.h"
+#include "DXStrings.h"
 #include "lex.h"
 #include "PanelAccessManager.h"
 #include "PanelGroupManager.h"
