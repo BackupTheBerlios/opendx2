@@ -51,6 +51,7 @@ DX_PROG_CC
 DX_PROG_CPP
 AC_CYGWIN
 AC_EXEEXT
+AC_OBJEXT
 
 DX_FIND_JDK()
 
@@ -109,7 +110,39 @@ AC_CHECK_LIB(SM, SmcSetProperties)
 AC_CHECK_LIB(REXP, regcomp)
 AC_CHECK_LIB(pthread, pthread_getspecific)
 
-DX_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h sys/socket.h sys/file.h sys/ioctl.h time.h sys/timeb.h sys/time.h unistd.h sys/types.h sys/sysconfig.h sys/un.h values.h wait.h sys/wait.h sys/utsname.h signal.h sys/signal.h process.h sys/filio.h CC/osfcn.h CC/libc.h sys/param.h sys/select.h cygwin/socket.h winsock.h netinet/in.h netdb.h arpa/inet.h types.h windows.h)
+DX_CHECK_HEADERS( CC/libc.h CC/osfcn.h DPS/XDPSlib.h DPS/dpsXclient.h \
+    DPS/psops.h GL/gl.h GL/glx.h Mrm/MrmPubli.h X11/Composite.h \
+    X11/CompositeP.h X11/Constraint.h X11/CoreP.h X11/Intrinsic.h \
+    X11/IntrinsicI.h X11/IntrinsicP.h X11/Protocols.h X11/Shell.h \
+    X11/StringDefs.h X11/X.h X11/XHPlib.h X11/Xatom.h X11/Xlib.h \
+    X11/XlibXtra.h X11/Xmu/Editres.h X11/Xos.h X11/Xutil.h X11/cursorfont.h \
+    X11/keysym.h X11/keysymdef.h Xm/ArrowB.h Xm/ArrowBG.h Xm/AtomMgr.h \
+    Xm/BulletinB.h Xm/BulletinBP.h Xm/CascadeB.h Xm/CascadeBG.h Xm/Command.h \
+    Xm/CutPaste.h Xm/DialogS.h Xm/DragC.h Xm/DragDrop.h Xm/DrawingA.h \
+    Xm/DrawingAP.h Xm/DrawnB.h Xm/FileSB.h Xm/Form.h Xm/FormP.h Xm/Frame.h \
+    Xm/FrameP.h Xm/GadgetP.h Xm/Label.h Xm/LabelG.h Xm/LabelGP.h Xm/LabelP.h \
+    Xm/List.h Xm/MainW.h Xm/ManagerP.h Xm/MenuShell.h Xm/MessageB.h \
+    Xm/MwmUtil.h Xm/PanedW.h Xm/PrimitiveP.h Xm/Protocols.h Xm/PushB.h \
+    Xm/PushBG.h Xm/PushBP.h Xm/RepType.h Xm/RowColumn.h Xm/Scale.h \
+    Xm/ScrollBar.h Xm/ScrolledW.h Xm/ScrolledWP.h Xm/SelectioB.h Xm/SeparatoG.h \
+    Xm/SeparatoGP.h Xm/Separator.h Xm/Text.h Xm/TextF.h Xm/ToggleB.h \
+    Xm/ToggleBG.h Xm/Xm.h Xm/XmP.h Xm/XmStrDefs.h alloca.h arpa/inet.h \
+    bstring.h cdf.h conio.h crypt.h ctype.h cygwin/socket.h dfsd.h \
+    direct.h dirent.h dl.h dlfcn.h errno.h fcntl.h float.h fstream.h \
+    get.h gl.h gl/device.h gl/gl.h invent.h io.h iop/afb.h iop/mov.h \
+    iop/pfs.h iostream.h license.h limits.h malloc.h math.h memory.h \
+    mingw32/dir.h mon.h net/if.h net/if_arp.h net/route.h netcdf.h netdb.h \
+    netinet/in.h os2.h process.h pwd.h regexp.h setjmp.h signal.h \
+    starbase.c.h stdarg.h stddef.h stdio.h stdlib.h stream.h string.h \
+    strings.h strstrea.h strstream.h synch.h sys/access.h sys/bsd_types.h \
+    sys/file.h sys/filio.h sys/ioctl.h sys/ipc.h sys/ldr.h sys/m88kbcs.h \
+    sys/m_wait.h sys/mman.h sys/mode.h sys/param.h sys/pstat.h sys/resource.h \
+    sys/select.h sys/shm.h sys/signal.h sys/socket.h sys/stat.h sys/svs.h \
+    sys/syslimits.h sys/sysmacros.h sys/sysmp.h sys/sysconfig.h sys/systemcfg.h \
+    sys/systeminfo.h sys/time.h sys/timeb.h sys/times.h sys/types.h sys/un.h \
+    sys/utsname.h sys/wait.h sysent.h time.h types.h ulocks.h unistd.h \
+    values.h wait.h winbase.h windows.h wingdi.h winioctl.h winsock.h \
+    x11/xlibxtra.h xgl/xgl.h ) 
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime putenv re_comp regcmp select socket strcspn strdup strerror strspn strstr strtod strtol strtoul uname popen vfork trunc _popen spawnvp _spawnvp regcomp sysmp sysconf)
 
 AC_TRY_COMPILE(
