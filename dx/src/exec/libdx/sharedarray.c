@@ -76,7 +76,7 @@ _getBase(int id)
 	    return NULL;
 
     sptr = DXQueryHashElement(shmtab, (Key)&id);
-    if (sptr)
+    if (! sptr)
     {
         DXSetError(ERROR_INTERNAL, "unable to access known shared memory segment");
 	return ERROR;
