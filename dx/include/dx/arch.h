@@ -938,6 +938,9 @@ int 	_dxf_sock_getc(SOCKET *file);
 #define SFILE FILE
 
 #define CHAR_READY(fp) F_CHAR_READY(fp)
+#ifdef GETC
+#undef GETC
+#endif
 #define GETC(file) getc(file)
 
 #endif
