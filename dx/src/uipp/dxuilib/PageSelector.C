@@ -148,8 +148,18 @@ PageSelector::PageSelector
 
 PageSelector::~PageSelector()
 {
-    if (this->page_buttons) 
+    if (this->page_buttons) {
+	// The superclass destructor calls clear() but I'm confused
+	// about what the virtual call from the destructor is going
+	// to do.  So I'll add the needed statements.
+	ListIterator it (*this->page_buttons);
+	PageTab* page_button;
+	while ( (page_button = (PageTab*)it.getNext()) ) {
+	    delete page_button;
+	}
 	delete this->page_buttons;
+	this->page_buttons = NUL(List*);
+    }
     if (this->button_release_timer)
 	XtRemoveTimeOut(this->button_release_timer);
     if (this->is_grabbed)
