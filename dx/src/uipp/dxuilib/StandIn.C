@@ -2203,14 +2203,7 @@ void StandIn::createStandIn()
 	StandIn::ClassInitialized = TRUE;
     }
 
-#if 1
-    n = 0;
-    XtSetArg(arg[n], XmNlineThickness, &(standInDefaults.line.thickness));
-    XtGetValues(parent, arg, n);
-#else
-    XtVaGetValues(parent, XmNlineThickness, &(standInDefaults.line.thickness),
-	NULL);
-#endif
+    XtVaGetValues(parent, XmNlineThickness, &(standInDefaults.line.thickness), NULL);
 
     standInDefaults.line.thickness = MAX(standInDefaults.line.thickness, 1);
 
