@@ -13,8 +13,6 @@
 #include "Application.h"
 #include "UIComponent.h"
 
-#include "TreeView.h"
-#include "TreeNode.h"
 
 #define EXPANDED_CATEGORIES "expandedCategories"
 
@@ -37,7 +35,6 @@ class ToolNode;
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void ToolSelector_ToolHelpCB(Widget, XtPointer, XtPointer);
 extern "C" void ToolSelector_ToolSelectCB(Widget, XtPointer, XtPointer);
 extern "C" void ToolSelector_CategorySelectCB(Widget, XtPointer, XtPointer);
 
@@ -70,52 +67,11 @@ class ToolSelector : public UIComponent
     static String DefaultResources[]; 
 
     friend class ToolView;
-    friend void ToolSelector_ToolHelpCB(Widget, XtPointer, XtPointer);
 
     // List of all tool selectors.
     static List AllToolSelectors;
   
     void buildTreeModel();
-
-    class ToolCategoryNode : public CategoryNode {
-	private:
-	protected:
-	    ToolSelector* toolSelector;
-	    ToolCategoryNode(Symbol s, TreeNode* parent, ToolSelector* ts) : 
-		CategoryNode(s, parent) { 
-		    this->toolSelector = ts;
-	    }
-	    friend class ToolSelector;
-	public:
-	    void setExpanded(boolean e=TRUE);
-    };
-    class ToolNode : public LeafNode {
-	private:
-	protected:
-	    ToolSelector* toolSelector;
-	    ToolNode(Symbol s, TreeNode* cat, ToolSelector* ts) : LeafNode(s, cat) { 
-		this->toolSelector = ts;
-	    }
-	    friend class ToolSelector;
-	public:
-	    CategoryNode* getCategory() { return (CategoryNode*)this->getParent(); }
-    };
-
-    class ToolView : public TreeView {
-	private:
-	    ToolSelector* toolSelector;
-	protected:
-	    void select(TreeNode* node, boolean repaint=TRUE);
-	    void multiClick(TreeNode* node);
-	    friend class ToolSelector;
-	    void adjustVisibility(int, int, int, int);
-	    void getSearchableNodes (List& nodes_to_search);
-	    ToolView (Widget parent, ToolSelector* t) : TreeView(parent) {
-		this->toolSelector = t;
-	    }
-	public:
-	    void componentHelp() { this->toolSelector->componentHelp(); }
-    };
 
   protected:
 
@@ -225,5 +181,53 @@ class ToolSelector : public UIComponent
     }
 };
 
+//
+// I had tried making these class definitions inside the ToolSelector
+// protected section.  They shouldn't be usable by classes other than
+// ToolSelector and its descendants.  Instead I've put them inside an
+// ifdef that only ToolSelector.C picks up.  Reason: it seems that
+// some compilers don't work on the definitions I made in the protected
+// section.  I don't know what the problem is.  I hope this solves it.
+//
+#if defined(TOOL_SELECTOR_PRIVATE)
+    class ToolCategoryNode : public CategoryNode {
+	private:
+	protected:
+	    ToolSelector* toolSelector;
+	    ToolCategoryNode(Symbol s, TreeNode* parent, ToolSelector* ts) : 
+		CategoryNode(s, parent) { 
+		    this->toolSelector = ts;
+	    }
+	    friend class ToolSelector;
+	public:
+	    void setExpanded(boolean e=TRUE);
+    };
+    class ToolNode : public LeafNode {
+	private:
+	protected:
+	    ToolSelector* toolSelector;
+	    ToolNode(Symbol s, TreeNode* cat, ToolSelector* ts) : LeafNode(s, cat) { 
+		this->toolSelector = ts;
+	    }
+	    friend class ToolSelector;
+	public:
+	    CategoryNode* getCategory() { return (CategoryNode*)this->getParent(); }
+    };
 
+    class ToolView : public TreeView {
+	private:
+	    ToolSelector* toolSelector;
+	protected:
+	    void select(TreeNode* node, boolean repaint=TRUE);
+	    void multiClick(TreeNode* node);
+	    friend class ToolSelector;
+	    void adjustVisibility(int, int, int, int);
+	    void getSearchableNodes (List& nodes_to_search);
+	    ToolView (Widget parent, ToolSelector* t) : TreeView(parent) {
+		this->toolSelector = t;
+	    }
+	public:
+	    void componentHelp() { this->toolSelector->componentHelp(); }
+    };
+#endif
 #endif // _ToolSelector_h

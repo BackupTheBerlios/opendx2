@@ -22,12 +22,15 @@
 #include <Xm/Text.h>
 #include <Xm/ScrolledW.h>
 
-#include "ToolSelector.h" 
 #include "NodeDefinition.h"
 #include "Dictionary.h"
 #include "DictionaryIterator.h"
 #include "ResourceManager.h"
 
+#include "TreeNode.h"
+#include "TreeView.h"
+#define TOOL_SELECTOR_PRIVATE
+#include "ToolSelector.h" 
 #define ALPHABETIZED "( ALL )"
 //#define DONT_USE_ALL_IN_THE_LIST 1
 
@@ -209,7 +212,7 @@ void ToolSelector::buildTreeModel()
 #if defined(DONT_USE_ALL_IN_THE_LIST)
 	if (cat == alpha) continue;
 #endif
-	CategoryNode* cnode = new ToolSelector::ToolCategoryNode(cat, root, this);
+	CategoryNode* cnode = new ToolCategoryNode(cat, root, this);
 	root->addChild(cnode);
 
 	ActiveItemDictionary* tools = (ActiveItemDictionary*)
@@ -217,7 +220,7 @@ void ToolSelector::buildTreeModel()
 	DictionaryIterator titer(*tools);
 	Symbol tool;
 	while (tool = titer.getNextSymbol()) {
-	    cnode->addChild(new ToolSelector::ToolNode(tool, cnode, this));
+	    cnode->addChild(new ToolNode(tool, cnode, this));
 	}
 
 	//
@@ -440,7 +443,7 @@ boolean ToolSelector::updateCategoryListWidget()
     return TRUE;
 }
 
-void ToolSelector::ToolView::select(TreeNode* node, boolean repaint) 
+void ToolView::select(TreeNode* node, boolean repaint) 
 {
     if (this->getSelection() == node) return ;
     this->TreeView::select(node, repaint);
@@ -457,7 +460,7 @@ void ToolSelector::ToolView::select(TreeNode* node, boolean repaint)
 	toolSelector->toolSelect(0);
     }
 }
-void ToolSelector::ToolView::adjustVisibility(int x1, int y1, int x2, int y2)
+void ToolView::adjustVisibility(int x1, int y1, int x2, int y2)
 {
     this->TreeView::adjustVisibility(x1,y1,x2,y2);
     this->toolSelector->adjustVisibility(x1,y1,x2,y2);
@@ -467,7 +470,7 @@ void ToolSelector::ToolView::adjustVisibility(int x1, int y1, int x2, int y2)
 // append the tools in ( ALL ) so that type-ahead will always give
 // precedence to the exposed tools and then allow matching on all others.
 //
-void ToolSelector::ToolView::getSearchableNodes(List& nodes_to_search)
+void ToolView::getSearchableNodes(List& nodes_to_search)
 {
     this->TreeView::getSearchableNodes(nodes_to_search);
 #if defined(ALPHABETIZED)
@@ -503,11 +506,11 @@ void ToolSelector::ToolView::getSearchableNodes(List& nodes_to_search)
 #endif
 }
 
-void ToolSelector::ToolView::multiClick(TreeNode* node) 
+void ToolView::multiClick(TreeNode* node) 
 {
     this->TreeView::multiClick(node);
     if (node->isLeaf()) {
-	ToolSelector::ToolNode* tn = (ToolSelector::ToolNode*)node;
+	ToolNode* tn = (ToolNode*)node;
 	toolSelector->lockSelect(tn->getDefinition());
     }
 }
@@ -562,7 +565,7 @@ CategoryNode* ToolSelector::getCategoryNode (TreeNode* node, Symbol cat)
     return NUL(CategoryNode*);
 }
 
-void ToolSelector::ToolCategoryNode::setExpanded(boolean e) 
+void ToolCategoryNode::setExpanded(boolean e) 
 {
     this->CategoryNode::setExpanded(e);
     if (this->toolSelector->inAnchor()) {
@@ -588,11 +591,5 @@ void ToolSelector::help()
 	    *p = '-';
     theApplication->helpOn(cp);
     delete cp;
-}
-
-extern "C" void ToolSelector_ToolHelpCB(Widget w, XtPointer clientData, XtPointer unused)
-{
-    ToolSelector *ts = (ToolSelector*)clientData;
-    ts->help();
 }
 
