@@ -133,6 +133,7 @@ shade.c: shade.Z
 	      -e "s/DEFINE2/#define/"  \
 	      -e "s/INCLUDE2/#include/"  \
 	      -e "s/[^#]pragma/#pragma/"  > shade.c
+	rm -f __shade_.c
 
 triangle.c: triangle.Z
 	sed -e "s/[ 	][ 	]*\$$/ $$/" triangle.Z > __triangle.c
