@@ -92,7 +92,7 @@ XtResource _TutorResourceList[] =
         sizeof(String),
         XtOffset(TutorResource*, UIRoot),
         XmRString,
-        NULL
+        (XtPointer) NULL
     }
 };
 
