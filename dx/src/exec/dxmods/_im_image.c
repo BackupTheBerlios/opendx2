@@ -487,7 +487,7 @@ SizeData * _dxf_ReadImageSizesIM
 
     Image         *image;
     ImageInfo     *image_info = NULL;
-    ExceptionInfo  exception_info;
+    ExceptionInfo  _dxd_exception_info;
     char           user_basename [ MAX_IMAGE_NAMELEN ];
     char           newname[ MAX_IMAGE_NAMELEN ];
     char           extension[40];
@@ -499,14 +499,14 @@ SizeData * _dxf_ReadImageSizesIM
     DXASSERTGOTO ( ERROR != multiples    );
 
     /*  Magick init  */
-    GetExceptionInfo( &exception_info ); 
+    GetExceptionInfo( &_dxd_exception_info ); 
     image_info = CloneImageInfo( NULL );
     
     /*  PingImage returns info on the first image (possibly in a sequence)  */
     image_info->filename[0] = '\0';
     strncat( image_info->filename, name, sizeof( image_info->filename ) - 1 );
 
-    if ( (image = PingImage( image_info, &exception_info )) == NULL )
+    if ( (image = PingImage( image_info, &_dxd_exception_info )) == NULL )
         DXErrorGoto2( ERROR_BAD_PARAMETER, "#13950", 
                       /* failed to read image in file '%s' */ name );
 
@@ -589,7 +589,7 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
                   *image_tmp;
     ImageInfo     *image_info = NULL;
     ImageType      image_type;
-    ExceptionInfo  exception_info;
+    ExceptionInfo  _dxd_exception_info;
     Type           type;
     int            rank, shape[32];
     Array          colorsArray = NULL;
@@ -605,7 +605,7 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
         DXErrorGoto2( ERROR_BAD_PARAMETER, "#12275", 0 );
 
     /*  Magick init  */
-    GetExceptionInfo( &exception_info ); 
+    GetExceptionInfo( &_dxd_exception_info ); 
     image_info = CloneImageInfo( NULL );
     
     image_info->filename[0] = '\0';
@@ -614,7 +614,7 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
     image_info->subimage=relframe;
     image_info->subrange=1;
 
-    if ( (image = ReadImage( image_info, &exception_info )) == NULL )
+    if ( (image = ReadImage( image_info, &_dxd_exception_info )) == NULL )
         DXErrorGoto2( ERROR_BAD_PARAMETER, "#13950", 
                       /* failed to read image in file '%s' */ name );
 
@@ -663,7 +663,7 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
 
         /*  Transfer the pixels to the field                       */
         /*    (NOTE: DX stores rows bottom-to-top, so flip first)  */
-        image_tmp = FlipImage( image, &exception_info );
+        image_tmp = FlipImage( image, &_dxd_exception_info );
         if ( !image_tmp ) DXErrorGoto(ERROR_INTERNAL, "Failed to flip image" );
         DestroyImage( image );
         image = image_tmp;
@@ -726,7 +726,7 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
 
             /*  Transfer the pixels to the field                       */
             /*    (NOTE: DX stores rows bottom-to-top, so flip first)  */
-            image_tmp = FlipImage( image, &exception_info );
+            image_tmp = FlipImage( image, &_dxd_exception_info );
             if ( !image_tmp ) DXErrorGoto(ERROR_INTERNAL, 
                                           "Failed to flip image" );
             DestroyImage( image );
@@ -875,11 +875,11 @@ _dxf_ValidImageExtensionIM(char *ext)
 #if !defined(HAVE_LIBMAGICK) || !defined(MAGICK5)
     DXErrorReturn(ERROR_NOT_IMPLEMENTED,"Image Magick 5 not included in build");
 #else
-    ExceptionInfo  exception_info;
+    ExceptionInfo  _dxd_exception_info;
     MagickInfo    *minfo;
 
-    GetExceptionInfo( &exception_info );
-    minfo = GetMagickInfo( ext, &exception_info );
+    GetExceptionInfo( &_dxd_exception_info );
+    minfo = GetMagickInfo( ext, &_dxd_exception_info );
     return minfo != NULL;
 #endif
 }
