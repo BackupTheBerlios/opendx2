@@ -92,7 +92,7 @@ typedef int   (*GetRenderable)(void *handle, Object *obj);
 
 typedef void  (*EventHandler)(void *handler, DXEvent *event);
 
-
+#if defined(__cplusplus) || defined(c_plusplus)
 struct _userInteractor
 {
     InitMode 		InitMode;
@@ -103,6 +103,18 @@ struct _userInteractor
     GetRenderable	GetRenderable;
     EventHandler	EventHandler;
 };
+#else
+struct _userInteractor
+{
+    void** 		InitMode;
+    void*		EndMode;
+    void*		SetCamera;
+    int*		GetCamera;
+    void*	SetRenderable;
+    int*	GetRenderable;
+    void*	EventHandler;
+};
+#endif
 
 typedef struct _userInteractor UserInteractor;
 
