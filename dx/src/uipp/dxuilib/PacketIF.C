@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/PacketIF.C,v 1.1 1999/03/24 15:17:44 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/PacketIF.C,v 1.2 1999/04/08 17:53:01 gda Exp $
  */
 
 
@@ -1436,11 +1436,7 @@ void PacketIF::connectAsServer(int pport)
     int oldUmask;
 #endif
     struct linger sl;
-#if defined(_AIX41)
-    size_t length;
-#else
     int length;
-#endif
     ushort port;
     int fd;
     int sts;
