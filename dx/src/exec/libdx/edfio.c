@@ -502,7 +502,7 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
     char *cmd = NULL;
     int bytes = 0;
     int pid, rc;
-#if HAVE_SYS_ERRLIST == 0
+#if !defined(HAVE_SYS_ERRLIST)
     extern char *sys_errlist[];
 #endif
 
@@ -845,7 +845,7 @@ Error _dxftry_dxfile(char *inname)
 static Error is_dir(FILE *fp, char *fname)
 {
     struct stat sbuf;
-#if HAVE_SYS_ERRLIST == 0
+#if !defined(HAVE_SYS_ERRLIST)
     extern char *sys_errlist[];
 #endif
 
