@@ -118,11 +118,11 @@ class GraphLayout : public Base
     //
     int collisions;
 
-    boolean adjustHopCounts (Node* reflow[], int reflow_count);
-    void adjustAncestorHops (Node* parent, int new_hop_count);
+    boolean adjustHopCounts (Node* reflow[], int reflow_count, int& min);
+    void adjustAncestorHops (Node* parent, int new_hop_count, int& min);
     int computeRequiredHopsTo (Node* n);
     int computeRequiredHopsToSiblingsOf (Node* n);
-    void fixForTooManyReceivers(Node* n);
+    void fixForTooManyReceivers(Node* n, int& min);
 
     //
     // Return TRUE if the node's standin can move to x,y without
@@ -266,6 +266,13 @@ class GraphLayout : public Base
     // one another
     //
     int countAncestorsWithinHops (Node* n, int hops);
+
+    // 
+    // Check for 3 or more connections between a pair of nodes 
+    // 
+    Node* hasPriorityAncestor(Node* destination, Ark** priority_arc, int at_least);
+
+    void repositionNewPlacements (List& , boolean , Node* reflow[], int );
 
     //
     // Returns a pointer to the class name.
