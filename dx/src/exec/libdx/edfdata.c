@@ -90,8 +90,10 @@ void _dxfdouble_denorm(int *from, int count, int *denorm_fp, int *bad_fp)
 /* 
  * read data array routines
  */
+
+/* Not needed if linking with BINOBJ
 extern int _fmode;
- 
+*/ 
  
 /* binary format.  reverse byte order if necessary.  the array space should
  *  have already been allocated before getting here.
