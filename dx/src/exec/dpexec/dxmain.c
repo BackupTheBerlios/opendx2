@@ -46,6 +46,9 @@
 #ifndef DXD_HAS_WINSOCKETS
 #include <netdb.h>
 #endif
+#if HAVE_SYS_FILIO_H
+#include <sys/fileio.h>
+#endif
 #if DXD_HAS_UNIX_SYS_INCLUDES
 #include <sys/wait.h>
 #endif
