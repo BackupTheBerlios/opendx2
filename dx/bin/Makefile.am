@@ -3,7 +3,7 @@
 dxbindir = $(prefix)/dx/bin
 dxbin_SCRIPTS = mdf2c
 
-EXTRA_DIST = dx.workerscript dx
+EXTRA_DIST = dx.workerscript dx mdf2c
 
 uninstall-local: 
 	@if test -e $(prefix)/bin/dx  ; then \
