@@ -273,8 +273,8 @@ AC_DEFUN(DX_ARCHITECTURE,
     if test $unameS = "FreeBSD" ; then
     	ARCH=freebsd
     fi
-    if test $unameS = "CYGWIN_95-4.0" ; then
-    	ARCH=cygwin
+    if test `echo $unameS | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"` = "yes" ; then
+        ARCH=cygwin
     fi
     if test $unameS = "Linux" ; then
 	ARCH=linux 
