@@ -230,7 +230,7 @@ int main(int argc, char **argv)
     exit(0);
 }
 
-int d2u(charn *s)
+int d2u(char *s)
 {
     int i;
     for (i=0; s && *s && (i<strlen(s)); i++)
