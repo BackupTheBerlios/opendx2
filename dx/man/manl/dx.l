@@ -448,12 +448,6 @@ of directories in which the executive will search for
 data files.
 Also see the -data option.
 .TP
-.SO DXDEFAULTIMAGEFORMAT
-Sets the image type to either 24-bit color images or floating-point-based 
-96 bit images.  This affects the behavior of Render and
-ReadImage.  This variable can be set to either DXByte (24 bits)
-or DXFloat (96 bits).
-.TP
 .SO DXDELAYEDCOLORS
 If set to anything other than 0, enables ReadImage to create delayed
 color images if the image is a tiff format image saved in a 
@@ -552,6 +546,15 @@ images taking up less memory.
 .SO DXPROCESSORS
 Sets the number of processors to be used for Data Explorer SMP.
 .TP
+.SO DXRSH
+Specifies the remote shell command to use when connecting to other systems
+(such as those when using distributed execution). The default is the the
+path to rsh.
+.TP
+.SO DXRSH_NOENV
+Prevents the remote "invoke dxexec" script from being written with a full
+carbon copy of the local environment (only DISPLAY is set).
+.TP
 .SO DXROOT
 Specifies the top-level directory for all the files and directories
 needed by Data Explorer.  
@@ -562,19 +565,22 @@ allowed by the architecture).  If set to -1, (if allowed by the architecture)
 will cause the data segment to simply be extended. Please see Appendix C of the
 Data Explorer User Guide for more information.
 .TP
-.SO DXTRIALKEY
-Can be used in place of the expiration file ($DXROOT/expiration) for
-a trial license.  The value of the variable is the string specifying the
-trial key.  Takes precedence over both $DXROOT/expiration and 
-DXTRIALKEYFILE.
-.TP
-.SO DXTRIALKEYFILE
-Specifies the name of the expiration file for a trial license.  Takes
-precedence over $DXROOT/expiration.
+.SO DX_SOCKET_BUFSIZE
+Allows the user to specify the size of the send and recieve buffers for the
+socket connection between the UI and the exec. This value is clamped to the
+max allowed by the system. This can fix a problem where the executive and UI
+hang involving a deadlock situation in the socket communication. The value
+assigned to it is passed as the parameter to setsockopt for SOL_SNDBUF and
+SOL_RCVBUF. A typcial increased value may be 262144.
 .TP
 .SO DX_USER_INTERACTOR_FILE
 Specifies a file containing user interactors for use by the
 SuperviseState and SuperviseWindow modules.
+.TP
+.SO DX_WEB_BROWSER
+Under UNIX specifies the web browser to launch for viewing the HTML
+documentation. Under Windows and MacOS X setting this environment variable
+will launch the systems default web browser.
 .SH EXAMPLES
 The next few examples assume that none of the DX environment variables
 have been set.
