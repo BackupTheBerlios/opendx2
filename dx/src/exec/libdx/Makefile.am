@@ -118,97 +118,13 @@ CLEANFILES = \
 
 SUFFIXES = .X .Z .h .m .c .o .s .i
 
-
 $(built_sources) : $(built_headers)
 
 BUILT_SOURCES =  $(built_sources) $(built_headers)
 
 $(libDXlite_a_SOURCES) $(libLIBDX_a_SOURCES): $(built_headers)
 
-$(InputName).c: $(InputName).X class class.awk
-	sh ./class -c $*.X > $*.c
-	sh ./class -h $*.X > $*.h
-
-.X.h:
-	rm -f $*.h
-	sh ./class -h $*.X >$*.h
-
-.X.c:
-	rm -f $*.c
-	sh ./class -c $*.X > $*.c
-
-.X.o:
-	rm -f $*.c
-	sh ./class -c $*.X >$*.c
-	$(COMPILE) -c $*.c
-
-.c.i:
-	$(CC) $(CFLAGS) -P $*.c
-
-buffer.c: buffer.Z
-	sed -e "s/[ 	][ 	]*\$$/ $$/" buffer.Z > __buffer.c
-	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E __buffer.c \
-	| tr -s '$$\012' '\012\012' \
-	| sed   -e "/^#/d" \
-		-e "/^#/d" \
-		-e "s/INCLUDE2/#include/" \
-		-e "s/^pragma/#pragma/"  > buffer.c
-	rm -f __buffer.c
-
-shade.c: shade.Z
-	sed -e "s/[ 	][ 	]*\$$/ $$/" shade.Z > __shade_.c
-	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E __shade_.c \
-	| tr -s '$$\012' '\012\012' \
-	| sed -e "/^#/d"  \
-	      -e "s/DEFINE2/#define/"  \
-	      -e "s/INCLUDE2/#include/"  \
-	      -e "s/[^#]pragma/#pragma/"  > shade.c
-	rm -f __shade_.c
-
-triangle.c: triangle.Z
-	sed -e "s/[ 	][ 	]*\$$/ $$/" triangle.Z > __triangle.c
-	$(CPP) -E -DPASS1 $(INCLUDES) __triangle.c \
-		| sed -e "/^#/d" \
-		      -e "s/INCLUDE1/#include/" \
-		| tr -s '$$\012' '\012\012' > triangle1.c
-	$(CPP) -E -DPASS2 -I. $(INCLUDES) triangle1.c \
-		| sed -e "/^#/d" \
-		      -e "s/INCLUDE2/#include/" \
-		| tr -s '$$\012' '\012\012' > triangle2.c
-	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E -DPASS3 triangle2.c \
-		| tr -s '$$\012' '\012\012' \
-		| sed -e "/^#/d" \
-		      -e "s/DEFINE3/#define/" \
-		      -e "s/INCLUDE3/#include/" \
-		      -e "s/[^#]pragma/#pragma/" > triangle.c
-	rm triangle1.c triangle2.c __triangle.c
-
-quad.c: quad.Z
-	sed -e "s/[ 	][ 	]*\$$/ $$/" quad.Z > __quad.c
-	$(CPP) -E -DPASS1 $(INCLUDES) __quad.c \
-		| sed -e "/^#/d" \
-		      -e "s/INCLUDE1/#include/" \
-		| tr -s '$$\012' '\012\012' > quad1.c
-	$(CPP) -E -DPASS2 $(INCLUDES) -I. quad1.c \
-		| sed -e "/^#/d" \
-		      -e "s/INCLUDE2/#include/" \
-		| tr -s '$$\012' '\012\012' > quad2.c
-	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E -DPASS3 quad2.c \
-		| tr -s '$$\012' '\012\012' \
-		| sed -e "/^#/d" \
-		      -e "s/DEFINE3/#define/" \
-		      -e "s/INCLUDE3/#include/" \
-		      -e "s/[^#]pragma/#pragma/" > quad.c
-	rm quad1.c quad2.c __quad.c
-
-plane.c: plane.Z
-	cp plane.Z _plane.c
-	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E _plane.c \
-	        | tr -s '$$\012' '\012\012' \
-	        | sed -e "/^#/d" \
-		      -e "s/INCLUDE2/#include/" \
-	              -e "s/[^#]pragma/#pragma/" > plane.c
-	rm _plane.c
+include local.mk
 
 zclipQ.o: zclipQ.c
 	$(COMPILE) -c -O zclipQ.c
