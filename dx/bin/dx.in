@@ -23,14 +23,14 @@ if [ -z "$DXROOT" ]; then
 fi
 export DXROOT
 
-if [ -f $DXROOT/bin/dx.workerscript ]; then
-  exec $DXROOT/bin/dx.workerscript $ARGS 
+if [ -f $DXROOT/bin/dxworker]; then
+  exec $DXROOT/bin/dxworker $ARGS 
 fi 
 
-# if we get here, no workerscript found.  try plain dx, if it isn't already us.
+# if we get here, no dxworker found.  try plain dx, if it isn't already us.
 if [ "$0" != $DXROOT/bin/dx ]; then
   exec $DXROOT/bin/dx $ARGS 
 fi
 
-echo $DXROOT/bin/dx.workerscript not found
+echo $DXROOT/bin/dxworker not found
 exit 1
