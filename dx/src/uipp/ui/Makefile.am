@@ -3,7 +3,7 @@
 uidatadir = $(prefix)/dx/ui
 
 DATA1 = \
-	icon50.dat logo.dat ui.mdf Basic2D.cfg Basic2D.net \
+	icon50.dat icon50.xpm logo.dat logo.xpm ui.mdf Basic2D.cfg Basic2D.net \
 	Basic3D.cfg Basic3D.net FacesLoopsEdges.cfg FacesLoopsEdges.net \
 	GARMWName Gridded_2D_1var_notseries.cfg Gridded_2D_1var_notseries.net \
 	Gridded_2D_2ormorevar_notseries.cfg Gridded_2D_2ormorevar_notseries.net \

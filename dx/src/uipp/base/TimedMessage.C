@@ -65,6 +65,7 @@ Widget TimedMessage::createDialog(Widget parent)
 		XmNshowAsDefault, True,
 		XmNtopAttachment, XmATTACH_FORM,
 		XmNtopOffset, 5,
+		XmNalignment, XmALIGNMENT_CENTER,
 		NULL);
 
     //
@@ -81,7 +82,6 @@ Widget TimedMessage::createDialog(Widget parent)
         XmStringFree(xmstr);
     }
 	
-
     XmString messageString = 
 	XmStringCreateLtoR(this->message, XmSTRING_DEFAULT_CHARSET);
 
@@ -91,16 +91,13 @@ Widget TimedMessage::createDialog(Widget parent)
     label = 
 	XtVaCreateManagedWidget(
 		"label", xmLabelWidgetClass, dialog,
+		XmNalignment, XmALIGNMENT_CENTER,
 		XmNlabelString, messageString,
 		XmNbottomAttachment, XmATTACH_FORM,
 		XmNbottomOffset, 5, 
 		XmNtopAttachment, XmATTACH_WIDGET,
 		XmNtopWidget, this->ok,
 		XmNtopOffset, 5,
-		XmNleftAttachment, XmATTACH_FORM,
-		XmNleftOffset, 5,
-		XmNrightAttachment, XmATTACH_FORM,
-		XmNrightOffset, 5,
 		NULL);
 
     XmString titleString = 
@@ -121,20 +118,24 @@ Widget TimedMessage::createDialog(Widget parent)
     XtVaGetValues(label, XmNwidth, &l_width, NULL);
     XtVaGetValues(this->ok, XmNwidth, &b_width, NULL);
 
-    int offset = abs(l_width - b_width)/2;
+    int offset;
     if(l_width > b_width)
     {
+	offset = (l_width-b_width)>>1;
 	XtVaSetValues(this->ok, 
 	    XmNleftAttachment, XmATTACH_NONE, 
-	    XmNx, offset, 
+	    XmNx, offset+5, 
 	    NULL);
 	XtVaSetValues(label, 
 	    XmNleftAttachment, XmATTACH_FORM, 
+	    XmNleftOffset, 5,
 	    XmNrightAttachment, XmATTACH_FORM, 
+	    XmNrightOffset, 5,
 	    NULL);
     }
     else
     {
+        offset = (b_width-l_width)>>1;
 	XtVaSetValues(label, 
 	    XmNleftAttachment, XmATTACH_NONE, 
 	    XmNx, offset, 

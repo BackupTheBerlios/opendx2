@@ -33,6 +33,13 @@
 #include "icon50.h"
 #include "ListIterator.h"
 
+#if defined (HAVE_XPM_H)
+#include <xpm.h>
+#endif
+#if defined (HAVE_X11_XPM_H)
+#include <X11/xpm.h>
+#endif
+
 IBMApplication *theIBMApplication = NULL;
 IBMResource IBMApplication::resource;
 
@@ -504,6 +511,18 @@ FILE	*fp;
 size_t  size, ret;
 char	s[256];
 
+#if defined(HAVE_LIBXPM)
+    Widget w;
+    int err;
+    w = theIBMApplication->getRootWidget();
+
+    sprintf(s, "%s/ui/logo.xpm", theIBMApplication->getUIRoot());
+    err = XpmReadFileToPixmap(XtDisplay(w),  
+        RootWindowOfScreen(XtScreen(w)),
+	s, &this->logo_pmap, NULL, NULL);
+    if (err != XpmSuccess) {
+
+#endif
     size = LOGO_WIDTH*LOGO_HEIGHT;
     logo_data = (unsigned char *)XtMalloc(size);
     sprintf(s,"%s/ui/logo.dat", this->getUIRoot());
@@ -603,6 +622,9 @@ char	s[256];
     XtFree((char *)logo_data);
     XFreeGC(d, gc);
     XDestroyImage(ximage);
+#if defined(HAVE_LIBXPM)
+    }
+#endif
 }
 void IBMApplication::cleanupLogo()
 {
@@ -630,6 +652,7 @@ void IBMApplication::cleanupLogo()
     }
     XFreePixmap(d, this->logo_pmap);
 }
+
 void IBMApplication::initIcon()
 {
 Display 	*d;
@@ -643,6 +666,18 @@ int		k;
 int		x,y;
 char		s[256];
 
+#if defined(HAVE_LIBXPM)
+    Widget w;
+    int err;
+    w = theIBMApplication->getRootWidget();
+
+    sprintf(s, "%s/ui/icon50.xpm", theIBMApplication->getUIRoot());
+    err = XpmReadFileToPixmap(XtDisplay(w),  
+        RootWindowOfScreen(XtScreen(w)),
+	s, &this->icon_pmap, NULL, NULL);
+    if (err != XpmSuccess) {
+
+#endif
     size = ICON_WIDTH*ICON_HEIGHT;
     icon_data = (unsigned char *)XtMalloc(size);
 
@@ -688,6 +723,9 @@ char		s[256];
     XFreeGC(d, gc);
     XDestroyImage(ximage);
     XtFree((char *)icon_data);
+#if defined(HAVE_LIBXPM)
+    }
+#endif
 }
 void IBMApplication::getVersionNumbers(int *maj, int *min, int *mic)
 {
