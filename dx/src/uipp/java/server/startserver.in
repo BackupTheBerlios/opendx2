@@ -50,6 +50,7 @@ memory=""
 dxroot=""
 user=""
 sessions=""
+numargs="0"
 while [ ! "$*" = "" ]; do
     case $1 in
 	-debug) aarg="${aarg} -d"; dbg_args="-DDXServerThread.debug -DDXServer.debug";;
@@ -88,6 +89,7 @@ while [ ! "$*" = "" ]; do
 
 	*) echo Unknown option $1; help="1" ;;
     esac
+    numargs="nonzero"
     shift
 done
 
@@ -211,6 +213,18 @@ if [ ! -x "$jcmd" ] ; then
     echo Error: no dx command in PATH
     exit 1;
 fi
+##
+##
+## default case, startserver w/o args, use default samples installation for webpage option
+##
+if [ "$numargs" = "0" ] ; then
+webpage=@prefix@/dx/java/htmlpages/Status.html
+echo "no arguments to startserver, you may wish to use startserver -help for options"
+echo "proceeding as if you invoked startserver with installation defaults"
+echo "startserver -webpage $webpage "
+fi
+
+
 
 ##
 ## If -webpage is specified, is it readable?
