@@ -146,6 +146,9 @@ static void GenerateModuleMessage(Dictionary *nodes, char *msg, boolean error);
 #define _PARSE_CONFIGURATION	1	// Currently parsing the .cfg file
 #define _PARSE_NETWORK		2	// Currently parsing the .net file
 
+#define _LEXER_RUNNING		0	// Initialized and lexing
+#define _LEXER_INITIALIZE	1	// Set up the lexer for a new run
+
 #define _PARSED_NONE		0	
 #define _PARSED_NODE		1	// Parsing the node's cfg info
 #define _PARSED_PANEL		2	// Parsing the panel's info
@@ -1197,6 +1200,8 @@ int yylineno;
 extern int yylineno;			/* lexer line number      */
 #endif
 
+extern int yylexerstate;
+
 extern int yyparse();
 }
 
@@ -1583,6 +1588,7 @@ boolean Network::parse(FILE*    input)
      */
     yyin                 = input;
     yylineno             = 1;
+    yylexerstate	 = _LEXER_INITIALIZE;
 #ifdef NoParseState
     _node		 = NULL;
     _parse_state         = _PARSED_NONE;

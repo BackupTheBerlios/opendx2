@@ -16,8 +16,16 @@
 /*****************************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/net.lex,v 1.3 1999/05/10 15:46:23 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/net.lex,v 1.4 2002/02/06 19:17:29 davidt Exp $
  * $Log: net.lex,v $
+ * Revision 1.4  2002/02/06 19:17:29  davidt
+ * Have you ever wondered why after loading a network with a missing macro,
+ * that you get all kinds of errors while trying to load the next program?
+ * This is due to the fact that the lexer was not having its state machine
+ * reset. This fix adds the code to do this so now you can open a program
+ * with an error, then open a second program without getting a screen full
+ * of errors. Tested with flex and Sun's lex.
+ *
  * Revision 1.3  1999/05/10 15:46:23  gda
  * Copyright message
  *
@@ -130,6 +138,8 @@ Initial revision
 
 #define YYLMAX 4096
 
+int yylexerstate = 0;
+
 %}
 
 %p 4000
@@ -146,6 +156,15 @@ US                      [\-\+]?
 E                       [eE]{US}{D}+
 
 %%
+	{ /* This code is run whenever yylex() is called */
+	  if (yylexerstate == 1) {
+	    BEGIN(INITIAL);
+	#ifdef FLEX_SCANNER
+	    yyrestart( yyin );
+	#endif
+	    yylexerstate = 0;
+	  }
+	}
 
 "true"                  { return (V_TRUE); }
 "TRUE"                  { return (V_TRUE); }
