@@ -1384,9 +1384,11 @@ changequote(<<,>>)dnl
 changequote([,])dnl
 	eval test x\${ac_u_$x} = x;
 	if test $? = 0 ; then
-		eval export ac_u_$x=1
+		eval ac_u_$x=1
+		export eval ac_u_$x
 	else
-		eval export ac_u_$x=\`expr \${ac_u_$x} + 1\`
+		eval ac_u_$x=\`expr \${ac_u_$x} + 1\`
+		export eval ac_u_$x
 	fi
 done
 
