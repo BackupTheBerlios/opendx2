@@ -296,17 +296,20 @@ static void	ExUsage			(char *name);
 static void	ExVersion		(void);
 static int      ExFromMasterInputHndlr  (int fd, Pointer p);
 
-#if DXD_HAS_SIGDANGER
-static void	ExSigDanger		(int);
-#endif
 
 #if DXD_EXEC_WAIT_PROCESS
 static void	ExParentProcess		(void);
 #endif
 
+#if HAVE_SIGQUIT
 static void	ExSigQuit(int);
+#endif
+#if HAVE_SIGPIPE
 static void	ExSigPipe(int);
-static void	ExSigGoAway(int);
+#endif
+#if HAVE_SIGDANGER
+static void	ExSigDanger		(int);
+#endif
 static void	ExKillChildren(void);
 
 #if DXD_PVSPROFILE
@@ -370,13 +373,15 @@ DXmain (argc, argv, envp)
     nphysprocs = nprocs = 1;
 #endif
 
-#if DXD_HAS_SIGDANGER
+#if HAVE_SIGDANGER
     signal (SIGDANGER, ExSigDanger);
 #endif
-
+#if HAVE_SIGPIPE
     signal(SIGPIPE, ExSigPipe);
+#endif
+#if HAVE_SIGQUIT
     signal(SIGQUIT, ExSigQuit);
-    signal(SIGUSR2, ExSigGoAway);
+#endif
 
 #if DXD_PVSPROFILE
     DXcreate_lock (&rouLock, "Profiler's Lock");
@@ -2494,6 +2499,7 @@ ExParallelMaster ()
     }
 }
 
+#if HAVE_SIGPIPE
 static void
 ExSigPipe(int signo)
 {
@@ -2506,7 +2512,9 @@ ExSigPipe(int signo)
 #if 0
         fprintf(stderr, "ExSigPipe: slave received %d\n", signo);
 #endif
+#if HAVE_SIGQUIT
 	kill(children[0].pid, SIGQUIT);
+#endif
     }
     else
     {
@@ -2516,7 +2524,9 @@ ExSigPipe(int signo)
 	ExQuit();
     }
 }
+#endif
 
+#if HAVE_SIGQUIT
 static void
 ExSigQuit(int signo)
 {
@@ -2530,23 +2540,14 @@ ExSigQuit(int signo)
     fprintf(stderr, "ExSigQuit: %s receive %d\n",
     	DXProcessorId() == 0 ? "master" : "slave", signo);
 #endif
-    ExQuit();
+    if (DXProcessorId() == 0)
+	ExQuit();
+    else
+	exit(0);
 }
-
-/*
- * GoAway for children... received from ExQuit run on the master
- */
-void
-ExSigGoAway(int signo)
-{
-#if 0
-    fprintf(stderr, "ExSigGoAway: %s receive %d\n",
-    	DXProcessorId() == 0 ? "master" : "slave", signo);
 #endif
-    exit(0);
-}
 
-#if DXD_HAS_SIGDANGER
+#if HAVE_SIGDANGER
 static void ExSigDanger (int signo)
 {
     DXSetError (ERROR_INTERNAL, "#8300");
