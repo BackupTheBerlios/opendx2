@@ -1,0 +1,17 @@
+# 
+# (C) COPYRIGHT International Business Machines Corp. 1997
+# All Rights Reserved
+# Licensed Materials - Property of IBM
+# 
+# US Government Users Restricted Rights - Use, duplication or
+# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+# 
+
+COSMO = /usr/svs/vrml
+JBASE = /usr/jdk_base
+NETSCAPE = /usr/svs/bin/netscapegold30/java_301
+
+JFLAGS = -classpath ../../java/htmlpages/dx.jar:$(COSMO):$(JBASE)/lib/classes.zip:.:$(NETSCAPE)
+
+JAVAC=$(JBASE)/bin/javac 
+

@@ -1,0 +1,18 @@
+BASE = /usr/lpp/dx
+
+
+# The -Aa (ANSI mode) option is only supported by the C compiler sold
+# as an optional separate product.
+CFLAGS=-O -Dhp700 -I$(BASE)/include -Aa -D_HPUX_SOURCE
+LDFLAGS     = -L$(BASE)/lib_hp700 -L/usr/lib/X11R5  -Wl,-E
+LIBS        = -lDXcallm -ly -ll -lm -lX11 -ldld -lXm -lXt
+
+
+Simple:			Simple.o
+			$(CC) $(LDFLAGS) Simple.o $(LIBS) -o Simple 
+ThunderStreamlines:	ThunderStreamlines.o
+			$(CC) $(LDFLAGS) ThunderStreamlines.o $(LIBS) -o ThunderStreamlines
+xapp_supervise:		xapp_supervise.o
+			$(CC) $(LDFLAGS) xapp_supervise.o $(LIBS) -o xapp_supervise 
+renderimage:		renderimage.o
+			$(CC) $(LDFLAGS) renderimage.o $(LIBS) -o renderimage 
