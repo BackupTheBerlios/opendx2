@@ -19,9 +19,6 @@
 #if  DXD_HAS_IBM_OS2_SOCKETS
 #include <sys/socket.h>
 #endif
-#ifdef DXD_HAS_WINSOCKETS
-#include <winsock.h>
-#endif
 
 #ifndef DXD_WIN
 #include <sys/ioctl.h>
@@ -33,9 +30,14 @@
 #include <sys/time.h>
 #endif
 
-#if defined(HAVE_CYGWIN_SOCKET_H)
+#if defined(windows) && defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#elif defined(HAVE_CYGWIN_SOCKET_H)
 #include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
+#include <sys/socket.h>
 #endif
+
 
 #if defined(HAVE_SYS_FILIO_H)
 #include <sys/filio.h>

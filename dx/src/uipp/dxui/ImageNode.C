@@ -16,14 +16,17 @@
 #endif
 
 #if defined(DXD_WIN) || defined(OS2)          //SMH get socket calls
-#ifdef DXD_WIN
-#include <winsock.h>
-#else
-#include <sys/socket.h>
-#endif
 #undef send
 #undef FLOAT
 #undef PFLOAT
+#endif
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
+#include <sys/socket.h>
 #endif
 
 #include "defines.h"

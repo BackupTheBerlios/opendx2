@@ -18,11 +18,15 @@
 
 #if defined(DXD_WIN) || defined(OS2)          //SMH get correct name for unlink for NT in stdio.h
 #define unlink _unlink
-#ifdef  DXD_HAS_WINSOCKETS
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
-#else
-#include <sys/socket.h> //SMH get socket calls
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
+#include <sys/socket.h>
 #endif
+
 #undef send             //SMH without stepping on things
 #undef FLOAT
 #undef PFLOAT

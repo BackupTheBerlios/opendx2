@@ -111,15 +111,22 @@ extern "C"   int select(
 #endif
 
 
-#ifdef	DXD_WIN
+#if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
+#include <sys/socket.h>
+#endif
+
+#ifdef	DXD_WIN
+
 #include <sys/stat.h>
 #include <sys/timeb.h>
 #include <sys/types.h>
 
 #else
 
-#include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>

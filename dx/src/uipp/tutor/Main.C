@@ -12,14 +12,15 @@
 
 #include "defines.h"
 #include "TutorApplication.h"
-#ifdef DXD_WINSOCK_SOCKETS          //SMH must initialize Win Sockets
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
 #define _WINSPOOL_      //SMH prevent name clash from uneeded included inlcudes
 #include <winsock.h>
-#endif
-#ifdef DXD_IBM_OS2_SOCKETS
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
-
 #ifdef	DXD_WIN
 
 #include <stdio.h>

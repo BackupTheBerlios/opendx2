@@ -12,11 +12,15 @@
 #include "defines.h"
 #include <iostream.h>
 #include <sys/types.h>
-#ifdef  DXD_HAS_WINSOCKETS
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
-#else
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
+
 #ifndef DXD_OS_NON_UNIX		 //	#ifndef OS2
 #include <sys/utsname.h>
 #endif

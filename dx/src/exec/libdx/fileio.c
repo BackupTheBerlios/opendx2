@@ -12,12 +12,17 @@
 
 #include <string.h>
 #include <dx/dx.h>
-#ifdef DXD_HAS_WINSOCKETS
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
-#else
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
+
 #include "diskio.h"
+
 
 #ifdef	DXD_WIN
 #include <errno.h>

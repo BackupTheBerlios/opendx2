@@ -63,7 +63,15 @@ extern "C" long gethostid();
 int getdtablesize();
 #include <stdio.h>              /* standard I/O */
 #include <errno.h>              /* error numbers */
-#include <sys/socket.h>         /* socket definitions */
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
+#include <sys/socket.h>
+#endif
+
 #include <sys/ioctl.h>          /* ioctls */
 #include <net/if.h>             /* generic interface structures */
 #include <sys/systeminfo.h>  /* maybe someday this will be implemented...arg! */

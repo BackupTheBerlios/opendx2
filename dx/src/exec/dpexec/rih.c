@@ -15,14 +15,21 @@
 #include <sys/timeb.h>
 #include <sys/types.h> 
 
-#include <winsock.h>
-
 #else
+
 #include <sys/ioctl.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 
+#endif
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#define EADDRINUSE      WSAEADDRINUSE
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#else
+#include <sys/socket.h>
 #endif
 
 #if HAVE_SYS_FILIO_H

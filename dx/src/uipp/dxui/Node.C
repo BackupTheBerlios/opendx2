@@ -43,12 +43,16 @@
 #include "DictionaryIterator.h"
 #endif
 
-#ifdef DXD_NON_UNIX_SOCKETS //SMH get socket calls but don't step on send routine in Network.C
-#ifdef  DXD_HAS_WINSOCKETS
-#include  <winsock.h>
-#else
+#if defined(windows) && defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
+
+
+#ifdef DXD_NON_UNIX_SOCKETS //SMH get socket calls but don't step on send routine in Network.C
 #undef send
 #endif
 

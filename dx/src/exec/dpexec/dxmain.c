@@ -54,8 +54,12 @@
 #endif
 #include <limits.h>
 #include <fcntl.h>
-#ifdef DXD_HAS_WINSOCKETS
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
+#define EADDRINUSE      WSAEADDRINUSE
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
 #else
 #include <sys/socket.h>
 #endif

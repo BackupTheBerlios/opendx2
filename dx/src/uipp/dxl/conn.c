@@ -76,9 +76,14 @@ int select(
     struct timeval *timeout) ;
 #endif
 
-#ifndef DXD_HAS_WINSOCKETS
+#if defined(windows) && defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
+
 #include <sys/stat.h>
 #ifdef DXD_WIN
 #include <sys/timeb.h>

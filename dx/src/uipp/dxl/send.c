@@ -17,9 +17,15 @@
 #if   !defined(OS2)  && !defined(DXD_WIN)
 #include <sys/param.h>
 #endif
-#ifndef DXD_HAS_WINSOCKETS
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
+
 #ifdef DXD_WIN
 #include <sys/timeb.h>
 #else

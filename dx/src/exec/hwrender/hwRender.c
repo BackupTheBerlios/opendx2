@@ -16,12 +16,29 @@
 #include <signal.h>
 #include <string.h>
 #include <stdlib.h>
+
 #ifndef DXD_WIN
 #include <sys/wait.h>
 #include <sys/param.h>
+#endif
+
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
+#endif
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
+#endif
+
+#if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
+#endif
+
+#if defined(HAVE_ARPA_INET_H)
 #include <arpa/inet.h>
 #endif
 

@@ -566,7 +566,16 @@ static Error checkexp(char *root, lictype ltype)
 #if defined(alphax)
 #include <stdio.h>              /* standard I/O */
 #include <errno.h>              /* error numbers */
-#include <sys/socket.h>         /* socket definitions */
+
+#if defined(windows) && defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#define EADDRINUSE      WSAEADDRINUSE
+#elif defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#else
+#include <sys/socket.h>
+#endif
+
 #include <sys/ioctl.h>          /* ioctls */
 #include <net/if.h>             /* generic interface structures */
 #include <sys/systeminfo.h>     /* maybe someday this will be implemented ...arg! */
