@@ -930,22 +930,6 @@ ActivateElement(XmListWidget lw,
 
   SLcount = lw->list.selectedItemCount;
 
-  if ((lw->list.SelectionPolicy == XmMULTIPLE_SELECT) ||
-      (lw->list.SelectionPolicy == XmEXTENDED_SELECT))
-    {
-      if (lw->list.selectedItems && lw->list.selectedItemCount)
-    	{
-	  cb.selected_items =
-	    (XmString *)ALLOCATE_LOCAL(sizeof(XmString) * SLcount);
-	  cb.selected_item_positions =
-	    (int *)ALLOCATE_LOCAL(sizeof(int) * SLcount);
-	  for (i = 0; i < SLcount; i++)
-	    {
-	      cb.selected_items[i] = XmStringCopy(lw->list.selectedItems[i]);
-	      cb.selected_item_positions[i] = lw->list.selectedPositions[i];
-	    }
-	}
-    }
   /* BEGIN OSF Fix CR 4576 */
   cb.selected_item_count = SLcount;
   /* END OSF Fix CR 4576 */
@@ -953,7 +937,6 @@ ActivateElement(XmListWidget lw,
   if (default_action)
     {
       cb.reason = XmCR_DEFAULT_ACTION;
-      cb.auto_selection_type = lw->list.AutoSelectionType;
       XtCallCallbackList((Widget) lw, lw->list.DefaultCallback, &cb);
     }
   else
@@ -967,7 +950,6 @@ ActivateElement(XmListWidget lw,
 
 	case XmBROWSE_SELECT:
 	  cb.reason = XmCR_BROWSE_SELECT;
-	  cb.auto_selection_type = lw->list.AutoSelectionType;
 	  XtCallCallbackList((Widget) lw, lw->list.BrowseCallback, &cb);
 	  break;
 
@@ -979,24 +961,8 @@ ActivateElement(XmListWidget lw,
 	case XmEXTENDED_SELECT:
 	  cb.reason = XmCR_EXTENDED_SELECT;
 	  cb.selection_type = lw->list.SelectionType;
-	  cb.auto_selection_type = lw->list.AutoSelectionType;
 	  XtCallCallbackList((Widget) lw, lw->list.ExtendCallback, &cb);
 	  break;
-	}
-    }
-
-  /* Reset the AutoSelectionType. It may not actually be set to anything but
-   * let's reset it in all cases just to be sure everthing remains clean. */
-  lw->list.AutoSelectionType = XmAUTO_UNSET;
-
-  if ((lw->list.SelectionPolicy == XmMULTIPLE_SELECT) ||
-      (lw->list.SelectionPolicy == XmEXTENDED_SELECT))
-    {
-      if (SLcount)
-    	{
-	  for (i = 0; i < SLcount; i++) XmStringFree(cb.selected_items[i]);
-	  DEALLOCATE_LOCAL((char *) cb.selected_items);
-	  DEALLOCATE_LOCAL((char *) cb.selected_item_positions);
 	}
     }
 
