@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.9 2003/07/11 05:50:34 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.10 2005/02/01 00:36:23 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -139,17 +139,25 @@ static ImageInfo ImageTable[] = {
  { img_typ_im,  
 	1, 
 	"imagemagick supported format",       /* due to pattern matching algorithm, must be lower case */
-	"jpeg:jpg:gif",      /* FIXME: there is a way to get this list from IM */
+	"jpeg:jpg:gif:tif:tiff:png:pict:bmp",      /* FIXME: there is a way to get this list from IM */
 	0,			/* FIXME: possibly separate into APPENDABLE_FILES and 0 */
 	_dxf_write_im,  
 	nullread},
  { img_typ_im,  
 	1, 
 	"image magick supported format",       /* due to pattern matching algorithm, must be lower case */
-	"jpeg:jpg:gif",      /* FIXME: there is a way to get this list from IM */
+	"jpeg:jpg:gif:tif:tiff:png:pict:bmp",      /* FIXME: there is a way to get this list from IM */
 	0,			/* FIXME: possibly separate into APPENDABLE_FILES and 0 */
 	_dxf_write_im,  
 	nullread},
+ { img_typ_im,  
+	1, 
+	"imagemagick",       /* due to pattern matching algorithm, must be lower case */
+	"jpeg:jpg:gif:tif:tiff:png:pict:bmp",      /* FIXME: there is a way to get this list from IM */
+	0,			/* FIXME: possibly separate into APPENDABLE_FILES and 0 */
+	_dxf_write_im,  
+	nullread},
+	
 #endif /* def HAVE_LIBMAGICK */
 
  { img_typ_illegal } };	/* Must be last entry */

@@ -112,6 +112,7 @@ static Error write_im(RWImageArgs *iargs) {
 #ifdef HAVE_LIBMAGICK
     RWImageArgs tmpargs = *iargs;
     Image *image=NULL;
+    Image *resize_image=NULL;
     int err = 0;
     int pixelsize;
     int linesize;
@@ -145,7 +146,7 @@ static Error write_im(RWImageArgs *iargs) {
     if(!iargs->extension) {
         /* no extension or not recognized */
         if(iargs->format) {
-            if(strcmp(iargs->format,"ImageMagick supported format")) {
+            if(strcmp(iargs->format,"ImageMagick supported format") && strcmp(iargs->format, "ImageMagick")) {
                 char* firstspace;
                 /* not "ImageMagick supported format" format, use format for extension */
                 iargs->extension=iargs->format;
@@ -305,6 +306,19 @@ static Error write_im(RWImageArgs *iargs) {
 	strcpy(new_frame_info->filename, image->filename);
         DEBUGMESSAGE(new_frame_info->filename);
         
+		 if(iargs->reduction > 0) {
+		 	int width = (int)(iargs->reduction/100.0 * nx);
+		 	int height = (int)(iargs->reduction/100.0 * ny);
+		 	resize_image = ResizeImage(image, width, height, LanczosFilter, 1.0, &_dxd_exception_info);
+			if (!image) {
+            	DestroyImageInfo(image_info);
+	    		DXFree(copycolors);
+            	DXErrorReturn( ERROR_INTERNAL , "out of memory allocating Image for resize in _im_image.c");
+			} else {
+				DestroyImage(image);
+				image = resize_image;
+			}
+		}
 
 	/* Write to temp file */
 
@@ -440,6 +454,25 @@ static Error write_im(RWImageArgs *iargs) {
 			char gam[7];
 			sprintf(gam, "%2.4f", iargs->gamma);
 			GammaImage(image, gam);
+		}
+		
+		/*
+		 * Allow the user to use ImageMagick's resize filters to resize the image when
+		 * writing. This gives us a cheap way to set up anti-aliasing.
+		 */
+		 
+		 if(iargs->reduction > 0) {
+		 	int width = (int)(iargs->reduction/100.0 * nx);
+		 	int height = (int)(iargs->reduction/100.0 * ny);
+		 	resize_image = ResizeImage(image, width, height, LanczosFilter, 1.0, &_dxd_exception_info);
+			if (!image) {
+            	DestroyImageInfo(image_info);
+	    		DXFree(copycolors);
+            	DXErrorReturn( ERROR_INTERNAL , "out of memory allocating Image for resize in _im_image.c");
+			} else {
+				DestroyImage(image);
+				image = resize_image;
+			}
 		}
 
         DEBUGMESSAGE(image->filename);

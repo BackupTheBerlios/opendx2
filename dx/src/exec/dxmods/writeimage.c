@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.9 2003/09/02 15:21:57 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.10 2005/02/01 00:36:23 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -73,6 +73,7 @@ END:
 static float GammaFromFormat(char *s);
 static char* CompressionFromFormat(char *s);
 static unsigned int QualityFromFormat(char *s);
+static unsigned int ReductionFromFormat(char *s);
 
 #if HANDLE_SIGPIPE
 static int pipe_error_happened;
@@ -225,7 +226,8 @@ m_WriteImage ( Object *in, Object *out )
 	iargs.gamma = GammaFromFormat(format);
 	iargs.compression = CompressionFromFormat(format);
 	iargs.quality = QualityFromFormat(format);
-
+	iargs.reduction = ReductionFromFormat(format);
+	
         if (Output_to_ADASD) {
 	    if (!(imginfo->flags & ADASD_OK)) 
                 DXErrorGoto2 ( ERROR_NOT_IMPLEMENTED,
@@ -469,3 +471,27 @@ static unsigned int QualityFromFormat(char *s)
     buf[len] = '\0';
     return (float)atoi(buf);
 }
+
+static unsigned int ReductionFromFormat(char *s)
+{
+    char *p, *q;
+    char buf[200];
+    int len;
+	
+    p = (char *)strstr(s, "resize");
+    if (!p)
+		return 0;
+    p = (char *)strstr(p, "=");
+    if (!p)
+		return 0;
+    p++;
+    for (q=p; *q && isspace(*q); q++);
+    for (p=q, len=0; *q && !isspace(*q); q++, len++);
+    len++;
+    if (len>=200)
+		return 0;
+    strncpy(buf, p, len);
+    buf[len] = '\0';
+    return (float)atoi(buf);
+}
+	
