@@ -6,7 +6,7 @@ noinst_LIBRARIES = libDPEXEC.a
 
 SUFFIXES = .m .y .c .s .h .o .a 
 
-BUILT_SOURCES =  yuiif.c
+BUILT_SOURCES =  
 
 noinst_HEADERS = \
 	_eval.h _macro.h _variable.h attribute.h background.h cache.h \
@@ -26,17 +26,4 @@ libDPEXEC_a_SOURCES =  \
 	swap.c task.c userinter.c utils.c variable.c vcr.c \
 	optarg.c yuiif.y
 
-.y.h:
-	$(YACC) $(YFLAGS) -d $*.y
-	mv y.tab.h $*.h
-	mv y.tab.c $*.c
-
-.y.c:
-	$(YACC) $(YFLAGS) -d $*.y
-	mv y.tab.h $*.h
-	mv y.tab.c $*.c
-
-compile.h: 
-	echo '#define' EX_COM_DATE '"'`date`'"' >> compile.h
-	echo '#define' EX_COM_HOST '"'`uname -a`'"' >> compile.h
-	
+include local.mk
