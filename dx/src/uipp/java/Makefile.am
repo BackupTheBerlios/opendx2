@@ -20,7 +20,7 @@ javadxdir = $(prefix)/dx/java/htmlpages
 javadx_DATA = dx.jar 
 javasrvdir = $(prefix)/dx/java/server/class
 javasrv_DATA = server.jar 
-EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java
+EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java exports.awk
 javalibdir = $(prefix)/dx/java/server/lib_@ARCH@
 javalib_DATA = libAnyDX.so
 
@@ -51,7 +51,18 @@ server.jar:
 SHRD_FLAGS = -shared -L../dxl -lDXL -o libAnyDX.so
 
 libAnyDX.so: DXLink.o
-	$(CC) $(SHRD_FLAGS) ../dxl/*.o  DXLink.o
+	( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object )
+
+usual_shared_object:
+        $(CC) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"`  DXLink.o
+
+aix_shared_object:
+        ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
+        nm -epC tmpAnyDX.a | awk -f exports.awk > tmpAnyDX.exp
+        ld -bnoentry -bM:SRE -o libAnyDX.so -bE:tmpAnyDX.exp tmpAnyDX.a -L /usr/lpp/X11/lib -lXt -lX11 -lc
+        rm -f tmpAnyDX.*
+
+
 
 ## JBASE and JINC set by configure via acinclude.m4
 JBASE = @JBASE@
