@@ -102,6 +102,7 @@ extern int _dxfHostIsLocal(char *host); /* from libdx/ */
 
 Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] )
 {
+    long addr;
     struct hostent *hp, *hp2;
 
     hp = gethostbyname(host);
@@ -109,7 +110,8 @@ Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] )
        DXUIMessage("ERROR", "gethostbyname returned error");
        return ERROR;
     }
-    hp2 = gethostbyaddr( hp->h_addr_list[0], sizeof(struct in_addr),
+    addr = *(long *)hp->h_addr_list[0];
+    hp2 = gethostbyaddr((const char *)&addr, sizeof(struct in_addr),
                         AF_INET );
     if ( hp2 == NULL || hp2->h_name == NULL ) {
        DXUIMessage("ERROR", "gethostbyaddr returned error");
