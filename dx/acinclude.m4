@@ -472,7 +472,6 @@ AC_DEFUN(DX_HEADER_HAS_SYMBOL,
     found="no"
     for i in $1
     do
-	echo egrep_cpp $i for $2
 	AC_EGREP_CPP(yes, 
 	    [#include <$i>
 	    #ifdef $2
@@ -483,7 +482,6 @@ AC_DEFUN(DX_HEADER_HAS_SYMBOL,
     if test $found = "no" ; then
 	for i in $1 
 	do
-	    echo egrep_header $i for $2
 	    AC_EGREP_HEADER($2, $1, found="yes")
 	done
     fi
