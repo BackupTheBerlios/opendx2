@@ -422,8 +422,7 @@ void HelpWin::loadTopicFile(const char *topic, const char *file)
     	if(!_dxf_StartWebBrowserWithURL(url)) {
 		// Couldn't start browser
 	    // Can't run standard help without initializing it as so. 
-	    theDXApplication->getMessageWindow()->addError(
-	    	"Error: Unable to launch web browser, defaulting back to standard help.");
+             fprintf(stderr, "Error: Unable to launch web browser, defaulting back to standard help.\n");
 
 		UseWebBrowser=FALSE;
 
