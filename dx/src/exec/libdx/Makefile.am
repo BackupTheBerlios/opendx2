@@ -26,9 +26,6 @@ EXTRA_DIST = \
 	buffer.Z shade.Z triangle.Z quad.Z plane.Z  \
 	local.mk.in
 
-CLEANFILES = \
-	buffer.c shade.c triangle.c quad.c plane.c 
-
 built_sources = \
 	buffer.c shade.c triangle.c quad.c plane.c \
 	\

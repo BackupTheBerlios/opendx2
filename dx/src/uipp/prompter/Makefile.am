@@ -84,7 +84,7 @@ prompter_SOURCES =  		 	\
 prompter_LDADD = 			\
 	../base/libBASE.a  		\
 	../widgets/libWIDGETS.a  	\
-	../dxl/libDXL.a @DXUI_LDFLAGS@	\
+	../dxl/libDXL.a @DXUI_ALDFLAGS@	\
 	-L$(DXROOT)/lib_@ARCH@ 
 
 EXTRA_DIST = 				\

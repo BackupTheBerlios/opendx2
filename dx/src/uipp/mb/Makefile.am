@@ -39,5 +39,5 @@ noinst_HEADERS = \
 builder_LDADD = 			\
 	../base/libBASE.a  		\
 	../widgets/libWIDGETS.a  	\
-	../dxl/libDXL.a	@DXUI_LDFLAGS@ 	\
+	../dxl/libDXL.a	@DXUI_ALDFLAGS@ 	\
 	-L$(DXROOT)/lib_@ARCH@	

@@ -76,7 +76,7 @@ libAnyDX.so: DXLink.o
 	fi
 
 usual_shared_object:
-	$(SHARED_LINK) $(DXABI) $(DX_RTL_LDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&" -e "s&../dxl/x11.o&&"`  DXLink.o
+	$(SHARED_LINK) $(DXABI) $(DX_RTL_ALDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&" -e "s&../dxl/x11.o&&"`  DXLink.o
 
 aix_shared_object:
 	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
@@ -151,7 +151,7 @@ DXLink.o:  server.jar
 DX_OBJS = imageWindow.class CaptionLabels.class Status.class
 DX_SRCS = imageWindow.java CaptionLabels.java Status.java
 
-CLEANFILES = dx.jar server.jar javainfo
+CLEANFILES = dx.jar server.jar javainfo libAnyDX.dll libAnyDX.so libAnyDX.dylib
 
 distclean-local:
 	rm -rf classes dxsc

@@ -260,8 +260,8 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
 	    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
 	    ;;
 	macos)
-	    DXUI_LDFLAGS='-force_flat_namespace -framework CoreFoundation -framework ApplicationServices'
-	    AC_DEFINE_UNQUOTED(DXUI_LDFLAGS, $DXUI_LDFLAGS)
+	    DXUI_ALDFLAGS='-force_flat_namespace -framework CoreFoundation -framework ApplicationServices'
+	    AC_DEFINE_UNQUOTED(DXUI_ALDFLAGS, $DXUI_ALDFLAGS)
 	    ;;
     esac
     AC_MSG_RESULT(done)
@@ -1112,7 +1112,7 @@ dnl	allows override of default ($(CC)) with e.g. ld ; some cc's seem incapable o
 dnl	make-shared-object flags to ld.
 dnl DX_RTL_CFLAGS 
 dnl	ideally, this, $(DXABI) and -I's should be all $(CC) requires to make the .o .
-dnl DX_RTL_LDFLAGS 
+dnl DX_RTL_ALDFLAGS 
 dnl	ld flags (prefixed with cc-pass-these-to-ld if SHARED_LINK is a cc) for building any shared object
 dnl DX_RTL_DXENTRY
 dnl	flags, typically -e DXEntry , the runtime loadable dx module entry point
@@ -1138,33 +1138,33 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
         fi
         if test $ARCH = "cygwin" ; then
                 DX_RTL_CFLAGS="-DDXD_WIN -DWIN32 -D_X86_ -DNOMENUS -nologo -w -0d -LD -G5"
-                DX_RTL_LDFLAGS="-DLL -SUBSYSTEM:console -INCREMENTAL:no -MACHINE:I386 -NOLOGO"
+                DX_RTL_ALDFLAGS="-DLL -SUBSYSTEM:console -INCREMENTAL:no -MACHINE:I386 -NOLOGO"
                 DX_RTL_SYSLIBS="$SYSLIBS kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib uuid.lib wsock32.lib"
                 DX_OUTBOARD_LIBS="$OLIBS $DXINST/lib/DXExport.lib"
         fi
         if test $ARCH = "hp700" ; then
                 DX_RTL_CFLAGS="-Dhp700 -Aa +z"
-                DX_RTL_LDFLAGS="${MDXLDFLAG}-q ${MDXLDFLAG}-b ${MDXLDFLAG}-E "
+                DX_RTL_ALDFLAGS="${MDXLDFLAG}-q ${MDXLDFLAG}-b ${MDXLDFLAG}-E "
 		DX_RTL_DXENTRY="${MDXLDFLAG}-eDXEntry"
                 DX_RTL_SYSLIBS="$SYSLIBS -ldld"
         fi
         if test $ARCH = "ibm6000" ; then
                 DX_RTL_CFLAGS="-Dibm6000"
                 DX_RTL_DXENTRY="${MDXLDFLAG}-eDXEntry "
-		DX_RTL_LDFLAGS=
+		DX_RTL_ALDFLAGS=
 		DX_RTL_IMPORT="${MDXLDFLAG}-bI:$DXINST/lib/dxexec.exp"
         fi
         if test $ARCH = "sgi" ; then
                 DX_RTL_CFLAGS=" -Dsgi"
         	if test $ac_cv_prog_gcc = "yes" ; then
 			DX_RTL_CFLAGS=" -Dsgi -D_GNU_SOURCE"
-                	DX_RTL_LDFLAGS=" -shared"
+                	DX_RTL_ALDFLAGS=" -shared"
 			DX_RTL_DXENTRY=" -e DXEntry -exported_symbol DXEntry"
 			if ccld_defaulted ; then 
 				SHARED_LINK="ld"
 			fi
         	else
-                	DX_RTL_LDFLAGS=" -shared -ignore_unresolved "
+                	DX_RTL_ALDFLAGS=" -shared -ignore_unresolved "
 			if ccld_defaulted ; then
 				SHARED_LINK=$CC
 			fi
@@ -1173,24 +1173,24 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
         fi
         if test $ARCH = "solaris" ; then
                 DX_RTL_CFLAGS=" -Dsolaris"
-                # DX_RTL_LDFLAGS=" ${MDXLDFLAG}-G ${MDXLDFLAG}-eDXEntry"
-                DX_RTL_LDFLAGS=" -G "
+                # DX_RTL_ALDFLAGS=" ${MDXLDFLAG}-G ${MDXLDFLAG}-eDXEntry"
+                DX_RTL_ALDFLAGS=" -G "
 		SHARED_LINK="ld"
         fi
         if test $ARCH = "alphax" ; then
                 DX_RTL_CFLAGS=" -Dalphax"
-                DX_RTL_LDFLAGS=" -shared -all -expect_unresolved main "
+                DX_RTL_ALDFLAGS=" -shared -all -expect_unresolved main "
                 DX_RTL_DXENTRY=" -e DXEntry"
                 DX_RTL_IMPORTS=" -expect_unresolved DX\*"
         fi
         if test $ARCH = "linux" ; then
                 DX_RTL_CFLAGS=" -D_GNU_SOURCE -Dlinux"
-                DX_RTL_LDFLAGS=" --shared"
+                DX_RTL_ALDFLAGS=" --shared"
 		DX_RTL_DXENTRY=" -eDXEntry"
         fi
         if test $ARCH = "freebsd" ; then
                 DX_RTL_CFLAGS="-D_GNU_SOURCE -Dfreebsd"
-                DX_RTL_LDFLAGS="--shared "
+                DX_RTL_ALDFLAGS="--shared "
 		DX_RTL_DXENTRY="-eDXEntry"
         fi
 ])
