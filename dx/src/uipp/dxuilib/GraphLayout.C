@@ -78,6 +78,32 @@
 // How far should successive 'levels' of the graph be separated
 //
 int GraphLayout::HeightPerLevel = 90;
+#define ABSOLUTE_MINIMUM_HEIGHT_PER_LEVEL 80
+#define MAXIMUM_HEIGHT_PER_LEVEL 200
+
+//
+//
+//
+const char* GraphLayout::ErrorMessages[] = {
+    "-autoLayoutHeight is outside the legal range [80 - 200]. (The default is 90.)\n",
+    "-autoLayoutGroupSpacing is outside the legal range [10 - 100]. (The default is 30.)\n",
+    "-autoLayoutNodeSpacing is outside the legal range [5 - 100]. (The default is 15.)\n",
+    NULL
+};
+
+//
+// Allow a resource to control the vertical spreading out
+// If there HeightPerLevel were too small, then it would become
+// impossible to lay anything out.
+//
+const char* GraphLayout::SetHeightPerLevel(int hpl)
+{
+    if ((hpl < ABSOLUTE_MINIMUM_HEIGHT_PER_LEVEL) ||(hpl > MAXIMUM_HEIGHT_PER_LEVEL)) {
+	return GraphLayout::ErrorMessages[0];
+    }	
+    GraphLayout::HeightPerLevel = hpl;
+    return NUL(const char*);
+}
 
 //
 // Identify original location of a decorator with respect to its
@@ -91,7 +117,18 @@ int GraphLayout::HeightPerLevel = 90;
 //
 // x distance to separate disconnected groups of nodes from each other
 //
-#define HORIZONTAL_GROUP_SPACING 30
+int GraphLayout::GroupSpacing = 30;
+#define MINIMUM_HORIZONTAL_GROUP_SPACING 10
+#define MAXIMUM_HORIZONTAL_GROUP_SPACING 100
+
+const char* GraphLayout::SetGroupSpacing(int gs)
+{
+    if ((gs<MINIMUM_HORIZONTAL_GROUP_SPACING)||(gs>MAXIMUM_HORIZONTAL_GROUP_SPACING)) {
+	return ErrorMessages[1];
+    }
+    GraphLayout::GroupSpacing = gs;
+    return NUL(const char*);
+}
 
 //
 // When attempting to position nodes, we always check for collisions.
@@ -113,7 +150,18 @@ int GraphLayout::HeightPerLevel = 90;
 // DESIRED_
 //
 #define REQUIRED_HSEP 5
-#define DESIRED_HSEP 15
+#define MINIMUM_DESIRED_HSEP 5
+#define MAXIMUM_DESIRED_HSEP 100
+int GraphLayout::NodeSpacing = 15;
+const char* GraphLayout::SetNodeSpacing(int ns)
+{
+    if ((ns < MINIMUM_DESIRED_HSEP) || (ns > MAXIMUM_DESIRED_HSEP)) {
+	return ErrorMessages[2];
+    }
+    GraphLayout::NodeSpacing = ns;
+    return NUL(const char*);
+}
+
 
 //
 // Starting coords for graph placement.  They have no meaning.  They
@@ -163,8 +211,6 @@ int NodeInfo::SortByHop (const void* a, const void* b)
     if (ark1) {
 	boolean shares_output2;
 	Ark* ark2 = GraphLayout::IsSingleInputNoOutputNode(bnode, shares_output2, FALSE);
-	const char* cp1 = anode->getLabelString();
-	const char* cp2 = bnode->getLabelString();
 
 	if (ark2) {
 	    Node *parent1, *parent2;
@@ -304,7 +350,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	    LayoutGroup* group = ni->getLayoutGroup();
 	    ASSERT (group);
 	    fprintf (stdout, "%s[%d] %s hops=%d in group %d\n",
-		__FILE__,__LINE__,n->getLabelString(), ni->getGraphDepth(), 
+		__FILE__,__LINE__,n->getNameString(), ni->getGraphDepth(), 
 		group->getId());
 	}
     }
@@ -317,7 +363,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 
 #   if defined(DEBUG_PLACEMENT)
     if (debug)
-	fprintf (stdout, "%s[%d] %s placing\n", __FILE__,__LINE__,n->getLabelString());
+	fprintf (stdout, "%s[%d] %s placing\n", __FILE__,__LINE__,n->getNameString());
 #   endif
 
     List positioned;
@@ -339,7 +385,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 #       if defined(DEBUG_PLACEMENT)
 	if (debug)
 	    fprintf (stdout, "%s[%d] %s placing...", 
-		__FILE__,__LINE__,n->getLabelString());
+		__FILE__,__LINE__,n->getNameString());
 #       endif
 
 	//
@@ -577,7 +623,7 @@ boolean GraphLayout::nodeCanMoveTo (Node* n, int x, int y)
 #       if defined(DEBUG_PLACEMENT)
 	if (debug) {
 	    fprintf (stdout, "%s[%d] %s movement to %d,%d conflicted with %s\n",
-		    __FILE__,__LINE__,n->getLabelString(), x,y,target->getLabelString());
+		    __FILE__,__LINE__,n->getNameString(), x,y,target->getNameString());
 	}
 #       endif
 	return FALSE;
@@ -853,11 +899,11 @@ boolean GraphLayout::positionDestBesideSibling (Ark* arc, int& x, int& y, boolea
 	int sibling_x;
 	dinfo->getXYPosition (sibling_x, y);
 	if (left) {
-	    x = sibling_x - (w+DESIRED_HSEP);
+	    x = sibling_x - (w+GraphLayout::NodeSpacing);
 	} else {
 	    int sibling_w;
 	    dinfo->getXYSize(sibling_w, dummy);
-	    x = sibling_x + sibling_w + DESIRED_HSEP;
+	    x = sibling_x + sibling_w + GraphLayout::NodeSpacing;
 	}
     }
     boolean collided = (this->nodeCanMoveTo(destination, x,y)==FALSE);
@@ -947,7 +993,6 @@ boolean GraphLayout::adjustHopCounts (Node* reflow[], int reflow_count, int& min
     for (i=0; i<reflow_count; i++) {
 	Node* n = reflow[i];
 	if (this->hasConnectedOutputs(n)) continue;
-	const char* cp = n->getLabelString();
 	NodeInfo* linfo = (NodeInfo*)n->getLayoutInformation();
 	int required_hops = this->computeRequiredHopsTo(n);
 	int sibling_hops = this->computeRequiredHopsToSiblingsOf (n);
@@ -1013,7 +1058,7 @@ void GraphLayout::adjustDescendantHops(Node* parent, int new_hop_count)
 #               if defined(DEBUG_PLACEMENT)
 		if (debug) {
 		    fprintf (stdout, "%s[%d] moving %s:%d from %d to %d\n",
-			__FILE__,__LINE__, dest->getLabelString(), 
+			__FILE__,__LINE__, dest->getNameString(), 
 			dest->getInstanceNumber(), info->getGraphDepth(), new_hop_count);
 		}
 #               endif
@@ -1177,7 +1222,7 @@ boolean GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
     if (this->countConnectedOutputs (n, 1, dummy) <= 1) return FALSE;
 
     // don't screw around with gets and sets
-    const char* name = n->getLabelString();
+    const char* name = n->getNameString();
     if (EqualString(name, "GetLocal") || EqualString(name, "GetGlobal") ||
 	EqualString(name, "Get")) {
 	return FALSE;
@@ -1214,7 +1259,7 @@ boolean GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
 #       if defined(DEBUG_PLACEMENT)
 	if (debug) {
 	    fprintf (stdout, "%s[%d] changing %s:%d from %d to %d\n", __FILE__,__LINE__,
-		n->getLabelString(), n->getInstanceNumber(), depth, new_depth);
+		n->getNameString(), n->getInstanceNumber(), depth, new_depth);
 	}
 #       endif
 	this->adjustAncestorHops (n,new_depth-1,min);
@@ -1372,7 +1417,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	fprintf (stdout, "%s[%d] placing in group %d...\n", 
 		__FILE__,__LINE__, group->getId());
 	while (node=(Node*)li.getNext()) {
-	    fprintf (stdout, "\t%s:%d\n", node->getLabelString(),
+	    fprintf (stdout, "\t%s:%d\n", node->getNameString(),
 		    node->getInstanceNumber());
 	}
     }
@@ -1522,7 +1567,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s destination didn't vote\n",
-			dst->getLabelString());
+			dst->getNameString());
 #               endif
 	    } else if (nth_input_tab<=(vi>>1)) {
 		prefer_left = (placed.isMember(dst)==FALSE);
@@ -1530,7 +1575,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s destination voted %s\n",
-			dst->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+			dst->getNameString(), (prefer_left?"LEFT":"RIGHT"));
 #               endif
 	    } else if (nth_input_tab>(vi>>1)) {
 		prefer_left = placed.isMember(dst);
@@ -1538,7 +1583,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s destination voted %s\n",
-			dst->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+			dst->getNameString(), (prefer_left?"LEFT":"RIGHT"));
 #               endif
 	    }
 
@@ -1550,7 +1595,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s source didn't vote\n",
-			src->getLabelString());
+			src->getNameString());
 #               endif
 	    } else if (nth_output_tab <= (vo>>1)) {
 		prefer_left = (placed.isMember(src)==FALSE);
@@ -1558,7 +1603,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s source voted %s\n",
-			src->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+			src->getNameString(), (prefer_left?"LEFT":"RIGHT"));
 #               endif
 	    } else if (nth_output_tab > (vo>>1)) {
 		prefer_left = placed.isMember(src);
@@ -1566,7 +1611,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s source voted %s\n",
-			src->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+			src->getNameString(), (prefer_left?"LEFT":"RIGHT"));
 #               endif
 	    }
 
@@ -1589,7 +1634,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #		    if defined(DEBUG_PLACEMENT)
 		    if (debug)
 			fprintf (stdout, "\t%s destination didn't vote\n",
-			    dst->getLabelString());
+			    dst->getNameString());
 #		    endif
 		} else if (nth_input_tab<=(vi>>1)) {
 		    prefer_left = TRUE;
@@ -1597,7 +1642,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #		    if defined(DEBUG_PLACEMENT)
 		    if (debug)
 			fprintf (stdout, "\t%s source voted %s\n",
-			    src->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+			    src->getNameString(), (prefer_left?"LEFT":"RIGHT"));
 #		    endif
 		} else if (nth_input_tab>(vi>>1)) {
 		    prefer_left = FALSE;
@@ -1605,7 +1650,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #		    if defined(DEBUG_PLACEMENT)
 		    if (debug)
 			fprintf (stdout, "\t%s source voted %s\n",
-			    src->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+			    src->getNameString(), (prefer_left?"LEFT":"RIGHT"));
 #		    endif
 		}
 	    }
@@ -1688,10 +1733,10 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #       endif
 
 	if (prefer_left) {
-	    xdelta = -(maxx2 + DESIRED_HSEP - minx1);
+	    xdelta = -(maxx2 + GraphLayout::NodeSpacing - minx1);
 	    ydelta = 0;
 	} else {
-	    xdelta =  (maxx1  + DESIRED_HSEP - minx2);
+	    xdelta =  (maxx1  + GraphLayout::NodeSpacing - minx2);
 	    ydelta = 0;
 	}
     }
@@ -1708,7 +1753,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 #       if defined(DEBUG_PLACEMENT)
 	if (debug)
 	    fprintf (stdout, "%s[%d] moving %s from %d,%d to %d,%d\n",
-		    __FILE__,__LINE__,n->getLabelString(),x,y,x+xdelta,y+ydelta);
+		    __FILE__,__LINE__,n->getNameString(),x,y,x+xdelta,y+ydelta);
 #       endif
 	linfo->setProposedLocation(x+xdelta, y+ydelta);
     }
@@ -1922,7 +1967,6 @@ void AnnotationInfo::reposition(Node* reflow[], int reflow_count, List& others)
 
 	NodeDistance* nd = this->nearby[node_to_try];
 	Node* n = nd->getNode();
-	const char* cp = n->getLabelString();
 	int loc = nd->getLocation();
 	LayoutInfo* linfo = (LayoutInfo*)n->getLayoutInformation();
 	int nodex, nodey;
@@ -2071,13 +2115,12 @@ void GraphLayout::repositionGroups(Node* reflow[], int reflow_count)
 	}
 	group->setProposedLocation(gx,gy);
 	//printf ("%s[%d] group %d at %d,%d\n", __FILE__,__LINE__,group->getId(), gx, gy);
-	gx+= w + HORIZONTAL_GROUP_SPACING;
+	gx+= w + GraphLayout::GroupSpacing;
 	prevy2 = y1+oh;
     }
 
     for (i=0; i<reflow_count; i++) {
 	Node* n = reflow[i];
-	const char* cp = n->getLabelString();
 	NodeInfo* ninfo = (NodeInfo*)n->getLayoutInformation();
 	LayoutGroup* group = ninfo->getLayoutGroup();
 	int x,y;
@@ -2210,11 +2253,11 @@ void LayoutGroup::layout(Node* node, GraphLayout* mgr, List& positioned)
 #   if defined(DEBUG_PLACEMENT)
     if (debug) {
 	fprintf (stdout, "%s[%d] Placing ancestors of %s:%d\n",
-	    __FILE__,__LINE__,node->getLabelString(), node->getInstanceNumber());
+	    __FILE__,__LINE__,node->getNameString(), node->getInstanceNumber());
 	ListIterator li(one_hop_up_nodes);
 	Node* n;
 	while (n=(Node*)li.getNext()) {
-	    fprintf (stdout, "\t%s:%d\n", n->getLabelString(), n->getInstanceNumber());
+	    fprintf (stdout, "\t%s:%d\n", n->getNameString(), n->getInstanceNumber());
 	}
     }
 #   endif
@@ -2293,7 +2336,7 @@ void LayoutRow::sort()
 	fprintf (stdout, "%s[%d] Row %d contains...\n", __FILE__,__LINE__, this->getId());
 	int j;
 	for (j=0; j<size; j++) {
-	    fprintf (stdout, "\t%s:%d\n", this->node_array[j]->getLabelString(),
+	    fprintf (stdout, "\t%s:%d\n", this->node_array[j]->getNameString(),
 		this->node_array[j]->getInstanceNumber());
 	}
     }
@@ -2500,14 +2543,14 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
     if (go_left) {
 	int desired_right_edge = xcoord_of_line + w - (tabx+half_tab_width); 
 	if ((left_edge-REQUIRED_HSEP) > desired_right_edge) {
-	} else if ((left_edge-DESIRED_HSEP) < desired_right_edge) {
-	    offset = (left_edge-DESIRED_HSEP) - desired_right_edge;
+	} else if ((left_edge-GraphLayout::NodeSpacing) < desired_right_edge) {
+	    offset = (left_edge-GraphLayout::NodeSpacing) - desired_right_edge;
 	}
     } else {
 	int desired_left_edge = xcoord_of_line - (half_tab_width + tabx);
 	if ((right_edge+REQUIRED_HSEP) < desired_left_edge) {
-	} else if ((right_edge+DESIRED_HSEP) > desired_left_edge) {
-	    offset = (right_edge+DESIRED_HSEP) - desired_left_edge;
+	} else if ((right_edge+GraphLayout::NodeSpacing) > desired_left_edge) {
+	    offset = (right_edge+GraphLayout::NodeSpacing) - desired_left_edge;
 	}
     }
     //
@@ -2529,7 +2572,7 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
 #           if defined(DEBUG_PLACEMENT)
 	    if (debug) {
 		fprintf (stdout, "%s[%d] %s:%d collided\n", __FILE__,__LINE__,
-			n->getLabelString(), n->getInstanceNumber());
+			n->getNameString(), n->getInstanceNumber());
 	    }
 #           endif
 	}
@@ -2540,7 +2583,7 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
 #           if defined(DEBUG_PLACEMENT)
 	    if (debug) {
 		fprintf (stdout, "%s[%d] %s:%d collided\n", __FILE__,__LINE__,
-			n->getLabelString(), n->getInstanceNumber());
+			n->getNameString(), n->getInstanceNumber());
 	    }
 #           endif
 	}
@@ -2550,7 +2593,7 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
 #   if defined(DEBUG_PLACEMENT)
     if (debug) {
 	fprintf (stdout, "%s[%d] %s:%d placed at %d,%d occupies %d to %d\n",
-	    __FILE__,__LINE__,n->getLabelString(),n->getInstanceNumber(),x,y,
+	    __FILE__,__LINE__,n->getNameString(),n->getInstanceNumber(),x,y,
 	    x, x+w);
     }
 #   endif
@@ -2653,7 +2696,7 @@ void GraphLayout::getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs
 	    LayoutInfo* linfo = (LayoutInfo*)src->getLayoutInformation();
 	    if (linfo->isPositioned()) continue;
 	    if (ancestors.isMember(src) == FALSE) {
-		const char* name = src->getLabelString();
+		const char* name = src->getNameString();
 		if (EqualString("Get",name)||
 		    EqualString("GetGlobal",name)||
 		    EqualString("GetLocal",name)) {
@@ -2709,7 +2752,7 @@ void GraphLayout::getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs
 				if (debug) {
 				    fprintf (stdout, "%s[%d] replacing output %d of %s"
 					" with output %d\n", __FILE__,__LINE__,
-					output, src->getLabelString(), output2);
+					output, src->getNameString(), output2);
 				}
 #                               endif
 			    }
@@ -2888,11 +2931,11 @@ void LayoutRow::straightenArcs(boolean& changes_made_on_previous_row)
 	    if (debug) {
 		if (k==j) {
 		    fprintf (stdout, "%s[%d] moving %s:%d %d row(%d)\n", 
-			__FILE__,__LINE__, n->getLabelString(), 
+			__FILE__,__LINE__, n->getNameString(), 
 			n->getInstanceNumber(), delta, this->getId());
 		} else {
 		    fprintf (stdout, "\tmoving %s:%d \n", 
-			n->getLabelString(), n->getInstanceNumber());
+			n->getNameString(), n->getInstanceNumber());
 		}
 	    }
 #	    endif

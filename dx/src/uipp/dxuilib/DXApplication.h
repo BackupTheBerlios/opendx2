@@ -200,6 +200,13 @@ typedef struct
     String	dxJarFile;
     String	userHtmlDir;
     String	serverDir;
+
+    //
+    // Automatic graph layout
+    //
+    int		autoLayoutHeight;
+    int		autoLayoutGroupSpacing;
+    int		autoLayoutNodeSpacing;
 } DXResource;
 
 

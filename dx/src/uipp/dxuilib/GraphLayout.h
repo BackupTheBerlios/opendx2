@@ -435,6 +435,10 @@ class GraphLayout : public Base
     //
 
     static int HeightPerLevel;
+    static int GroupSpacing;
+    static int NodeSpacing;
+
+    static const char* ErrorMessages[];
 
     static int ArcComparator(const void* a, const void* b);
 
@@ -483,6 +487,10 @@ class GraphLayout : public Base
     GraphLayout(EditorWindow *editor) {
        this->editor = editor;
     }
+
+    static const char* SetHeightPerLevel(int hpl);
+    static const char* SetGroupSpacing(int gs);
+    static const char* SetNodeSpacing(int ns);
 
     boolean entireGraph(WorkSpace* workspace, const List& nodes, const List& decorators);
 

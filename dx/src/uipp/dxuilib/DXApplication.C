@@ -60,6 +60,7 @@
 #include "Network.h"
 #include "JavaNet.h"
 #include "Client.h"
+#include "GraphLayout.h"
 
 #include <Xm/Label.h>
 #include <X11/cursorfont.h>
@@ -674,6 +675,24 @@ XrmOptionDescRec _DXOptionList[] =
        "*autoScrollVPE",
        XrmoptionNoArg,
        "False"
+     },
+     {
+       "-autoLayoutHeight",
+       "*autoLayoutHeight",
+       XrmoptionSepArg,
+       NULL
+     },
+     {
+       "-autoLayoutGroupSpacing",
+       "*autoLayoutGroupSpacing",
+       XrmoptionSepArg,
+       NULL
+     },
+     {
+       "-autoLayoutNodeSpacing",
+       "*autoLayoutNodeSpacing",
+       XrmoptionSepArg,
+       NULL
      },
 };
 
@@ -1536,6 +1555,33 @@ XtResource _DXResourceList[] =
        XmRImmediate,
        (XtPointer)True
      },
+    {
+	"autoLayoutHeight",
+	"Number",
+	XmRInt,
+	sizeof(int),
+	XtOffset(DXResource*, autoLayoutHeight),
+	XmRInt,
+	0
+    },
+    {
+	"autoLayoutGroupSpacing",
+	"Number",
+	XmRInt,
+	sizeof(int),
+	XtOffset(DXResource*, autoLayoutGroupSpacing),
+	XmRInt,
+	0
+    },
+    {
+	"autoLayoutNodeSpacing",
+	"Number",
+	XmRInt,
+	sizeof(int),
+	XtOffset(DXResource*, autoLayoutNodeSpacing),
+	XmRInt,
+	0
+    },
      //
      // For java
      //
@@ -2441,6 +2487,19 @@ boolean wasSetBusy = FALSE;
 	    printf("no message warning option\n");
 	if (DXApplication::resource.noDXHelp)
 	    printf("no DX help\n");
+
+	//
+	// automatic graph layout
+	//
+	if (DXApplication::resource.autoLayoutHeight > 0)
+	    printf("automatic graph layout height = %d\n", 
+		DXApplication::resource.autoLayoutHeight);
+	if (DXApplication::resource.autoLayoutGroupSpacing > 0)
+	    printf("automatic graph layout group spacing = %d\n", 
+		DXApplication::resource.autoLayoutGroupSpacing);
+	if (DXApplication::resource.autoLayoutNodeSpacing > 0)
+	    printf("automatic graph layout node spacing = %d\n", 
+		DXApplication::resource.autoLayoutNodeSpacing);
     }
 
     if (this->resource.echoVersion)
@@ -2468,6 +2527,34 @@ boolean wasSetBusy = FALSE;
 	action.string = "IBMButtonHelp";
 	action.proc   = TurnOffButtonHelp; 
 	XtAppAddActions(this->applicationContext, &action, 1);
+    }
+
+    //
+    // Validate and set automatic graph layout values
+    //
+    if (DXApplication::resource.autoLayoutHeight > 0) {
+	const char* errmsg = 
+	    GraphLayout::SetHeightPerLevel (DXApplication::resource.autoLayoutHeight);
+	if (errmsg) {
+	    fprintf (stderr, errmsg);
+	    return FALSE;
+	}
+    }
+    if (DXApplication::resource.autoLayoutGroupSpacing > 0) {
+	const char* errmsg = 
+	    GraphLayout::SetGroupSpacing (DXApplication::resource.autoLayoutGroupSpacing);
+	if (errmsg) {
+	    fprintf (stderr, errmsg);
+	    return FALSE;
+	}
+    }
+    if (DXApplication::resource.autoLayoutNodeSpacing > 0) {
+	const char* errmsg = 
+	    GraphLayout::SetNodeSpacing (DXApplication::resource.autoLayoutNodeSpacing);
+	if (errmsg) {
+	    fprintf (stderr, errmsg);
+	    return FALSE;
+	}
     }
 
 
