@@ -9,7 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "ValueNode.h"
 #include "ValueInteractor.h"
 #include "InteractorInstance.h"
@@ -51,7 +50,7 @@ void ValueInteractor::initialize()
     //
     if (NOT ValueInteractor::ClassInitialized)
     {
-        ASSERT(theApplication);
+        //ASSERT(theApplication);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          ValueInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),

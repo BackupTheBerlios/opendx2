@@ -10,18 +10,16 @@
 
 #include "Base.h"
 #include "ActiveItemDictionary.h"
-#include "Application.h"
 #include "UIComponent.h"
-
+#include "TreeNode.h"
+#include "TreeView.h"
 
 #define EXPANDED_CATEGORIES "expandedCategories"
 
 //
 // Class name definition:
 //
-class TreeNode;
 class ToolView;
-class TreeView;
 class CategoryNode;
 class ToolNode;
 
@@ -38,7 +36,6 @@ class ToolNode;
 //extern "C" void ToolSelector_ToolSelectCB(Widget, XtPointer, XtPointer);
 //extern "C" void ToolSelector_CategorySelectCB(Widget, XtPointer, XtPointer);
 
-
 class NodeDefinition;
 
 //
@@ -54,8 +51,8 @@ class ToolSelector : public UIComponent
     ActiveItemDictionary 	categoryDictionary;
     Dictionary			categoryNodeDictionary;
 
-    TreeNode* treeModel;
-    TreeView* treeView;
+	dxui::TreeNode* treeModel;
+    dxui::TreeView* treeView;
 
     const void			*activeData;
     boolean			lockedData;
@@ -108,8 +105,8 @@ class ToolSelector : public UIComponent
     virtual void lockSelect(Symbol s);
     virtual void categorySelect(Symbol s);
 
-    CategoryNode* getCategoryNode (TreeNode* node, Symbol cat);
-    TreeNode* getToolNode (TreeNode* node, Symbol tool);
+    CategoryNode* getCategoryNode (dxui::TreeNode* node, Symbol cat);
+    dxui::TreeNode* getToolNode (dxui::TreeNode* node, Symbol tool);
 
     virtual void adjustVisibility(int, int, int, int){}
 
@@ -195,7 +192,7 @@ class ToolSelector : public UIComponent
 	    boolean sorted;
 	protected:
 	    ToolSelector* toolSelector;
-	    ToolCategoryNode(Symbol s, TreeNode* parent, ToolSelector* ts); 
+	    ToolCategoryNode(Symbol s, dxui::TreeNode* parent, ToolSelector* ts); 
 	    friend class ToolSelector;
 	public:
 	    void setExpanded(boolean e=TRUE);
@@ -208,7 +205,7 @@ class ToolSelector : public UIComponent
 	private:
 	protected:
 	    ToolSelector* toolSelector;
-	    ToolNode(Symbol s, TreeNode* cat, ToolSelector* ts) : LeafNode(s, cat) { 
+	    ToolNode(Symbol s, dxui::TreeNode* cat, ToolSelector* ts) : LeafNode(s, cat) { 
 		this->toolSelector = ts;
 	    }
 	    friend class ToolSelector;
@@ -216,16 +213,16 @@ class ToolSelector : public UIComponent
 	    CategoryNode* getCategory() { return (CategoryNode*)this->getParent(); }
     };
 
-    class ToolView : public TreeView {
+    class ToolView : public dxui::TreeView {
 	private:
 	    ToolSelector* toolSelector;
 	protected:
-	    void select(TreeNode* node, boolean repaint=TRUE);
-	    void multiClick(TreeNode* node);
+	    void select(dxui::TreeNode* node, boolean repaint=TRUE);
+	    void multiClick(dxui::TreeNode* node);
 	    friend class ToolSelector;
 	    void adjustVisibility(int, int, int, int);
 	    void getSearchableNodes (List& nodes_to_search);
-	    ToolView (ToolSelector* t) : TreeView() {
+	    ToolView (ToolSelector* t) : dxui::TreeView() {
 		this->toolSelector = t;
 	    }
 	public:

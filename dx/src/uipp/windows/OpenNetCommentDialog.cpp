@@ -9,7 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "OpenNetCommentDialog.h"
 
 boolean OpenNetCommentDialog::ClassInitialized = FALSE;

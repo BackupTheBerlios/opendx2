@@ -58,13 +58,13 @@ class DictionaryIterator : protected ListIterator
     const void* getNextDefinition() {
     		const void *v;
     		v = ListIterator::getNext();
-    		if (v) v = ((DictionaryEntry*)v)->definition;
+			if (v) v = ((dxui::DictionaryEntry*)v)->definition;
 		return v; }
 
     Symbol getNextSymbol() {
     		const void *v;
     		v = ListIterator::getNext();
-    		return v? ((DictionaryEntry*)v)->name: 0; }
+			return v? ((dxui::DictionaryEntry*)v)->name: 0; }
 
     void setList(Dictionary &d) { this->ListIterator::setList(d); }
 

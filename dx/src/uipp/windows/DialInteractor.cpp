@@ -17,7 +17,6 @@
 #include "ScalarNode.h"
 
 #include "ScalarInstance.h"
-#include "Application.h"
 #include "ErrorDialogManager.h"
 
 boolean DialInteractor::DialInteractorClassInitialized = FALSE;
@@ -59,7 +58,7 @@ void DialInteractor::initialize()
     //
     if (NOT DialInteractor::DialInteractorClassInitialized)
     {
-        ASSERT(theApplication);
+        //ASSERT(theApplication);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          DialInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),

@@ -12,8 +12,7 @@
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
-
-#include "Application.h" 
+ 
 #include "DropSite.h" 
 #include "TransferStyle.h"
 #include "DictionaryIterator.h"

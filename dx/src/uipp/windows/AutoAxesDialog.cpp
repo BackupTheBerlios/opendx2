@@ -16,7 +16,6 @@
 #include "DXValue.h"
 #include "ImageWindow.h"
 #include "WarningDialogManager.h"
-#include "Application.h"
 #include "TextPopup.h"
 #include "DrivenNode.h"
 #include "TickLabelList.h"

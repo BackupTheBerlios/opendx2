@@ -12,7 +12,6 @@
 #include "PixelImageFormat.h"
 #include "ImageNode.h"
 #include "ImageFormatDialog.h"
-#include "Application.h"
 #include "SymbolManager.h"
 
 //String PixelImageFormat::DefaultResources[] = {

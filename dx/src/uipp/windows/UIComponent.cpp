@@ -11,8 +11,9 @@
 
 #include <string.h>
 
-#include "UIComponent.h"
 #include "Application.h"
+#include "IBMApplication.h"
+#include "UIComponent.h"
 #include "WarningDialogManager.h"
 #include "WarningDialogManager.h"
 #include "DXStrings.h"
@@ -188,104 +189,73 @@ void UIComponent::widgetDestroyed()
     //this->root = NUL(Widget);
 }
 
-
-//void UIComponent::getResources(const XtPointer      resourceBase,
-//			       const XtResourceList resourceList,
-//			       const int            numResources)
-//{
-//    Widget parent;
-//
-//    ASSERT(resourceBase);
-//    ASSERT(resourceList);
-//    ASSERT(numResources > 0);
-//
-//    ASSERT(this->root);
-//    ASSERT(this->name);
-//
-//    parent = XtParent(this->root);
-//    //
-//    // Use XtGetSubresources() to retrieve the resources
-//    // for a component with a parent.
-//    //
-//    XtGetSubresources
-//	(parent ? parent : this->root,
-//	 resourceBase,
-//	 this->name,
-//	 this->getClassName(),
-//	 resourceList,
-//	 numResources,
-//	 NUL(ArgList),
-//	 0);
-//}
-//
-
 //void UIComponent::setDefaultResources(const Widget  widget,
-//				      const String* resourceSpec)
+//									  const String* resourceSpec)
 //{
-//    XrmDatabase resourceDatabase;
-//    Display*    display;
-//    int         i;
-//    char        buffer[4096];
-//    char	prepend[1024];
+//	XrmDatabase resourceDatabase;
+//	Display*    display;
+//	int         i;
+//	char        buffer[4096];
+//	char	prepend[1024];
 //
-//    ASSERT(widget);
-//    ASSERT(resourceSpec);
+//	ASSERT(widget);
+//	ASSERT(resourceSpec);
 //
-//    display          = XtDisplay(widget);
-//    resourceDatabase = XrmGetStringDatabase("");
+//	display          = XtDisplay(widget);
+//	resourceDatabase = XrmGetStringDatabase("");
 //
-//    String name,classname;
-//    XtGetApplicationNameAndClass(display,&name,&classname);
+//	String name,classname;
+//	XtGetApplicationNameAndClass(display,&name,&classname);
 //
-//    // Determine the base name of the application (i.e. ./dx -> dx)
+//	// Determine the base name of the application (i.e. ./dx -> dx)
 //#ifdef	DXD_NON_UNIX_DIR_SEPARATOR
-//    char *p = this->name;
-//    for (int j=strlen(this->name)-1; j>=0; j--) {
-//	if ((this->name[j] == '\\') || (this->name[j] == '/') || (this->name[j] == ':')) {
-//	    p = &this->name[j+1];
-//	    break;
+//	char *p = this->name;
+//	for (int j=strlen(this->name)-1; j>=0; j--) {
+//		if ((this->name[j] == '\\') || (this->name[j] == '/') || (this->name[j] == ':')) {
+//			p = &this->name[j+1];
+//			break;
+//		}
 //	}
-//    }
 //#else
-//    char *p = strrchr(this->name,'/');
-//    p = ( !p ? this->name : p+1);
+//	char *p = strrchr(this->name,'/');
+//	p = ( !p ? this->name : p+1);
 //#endif
 //
-//    if (EqualString(name,p)) { 		// Global resources
-//	// Replace the resource name with the class name when the resources
-//	// are for the top level component.
-//	strcpy(prepend,classname);
-//    } else {
-//	// Prepend the classname and the component's name 
-//	sprintf(prepend,"%s*%s",classname,this->name);
-//    }
+//	if (EqualString(name,p)) { 		// Global resources
+//		// Replace the resource name with the class name when the resources
+//		// are for the top level component.
+//		strcpy(prepend,classname);
+//	} else {
+//		// Prepend the classname and the component's name 
+//		sprintf(prepend,"%s*%s",classname,this->name);
+//	}
 //
-//    
-//    ASSERT(STRLEN(prepend) < 1024);
 //
-//    i = 0;
-//    while(resourceSpec[i] != NUL(char*))
-//    {
-//	sprintf(buffer, "%s%s", prepend, resourceSpec[i++]);
-//	ASSERT(STRLEN(buffer) < 4096);
-//	XrmPutLineResource(&resourceDatabase, buffer);
-//    }
+//	ASSERT(STRLEN(prepend) < 1024);
 //
-//    //
-//    // Merge the rosources into the Xt database with lowest precedence.
-//    //
-//    if (resourceDatabase)
-//    {
+//	i = 0;
+//	while(resourceSpec[i] != NUL(char*))
+//	{
+//		sprintf(buffer, "%s%s", prepend, resourceSpec[i++]);
+//		ASSERT(STRLEN(buffer) < 4096);
+//		XrmPutLineResource(&resourceDatabase, buffer);
+//	}
+//
+//	//
+//	// Merge the rosources into the Xt database with lowest precedence.
+//	//
+//	if (resourceDatabase)
+//	{
 //#if defined XlibSpecificationRelease && XlibSpecificationRelease > 4
-//        XrmDatabase db = XrmGetDatabase(display);
-//        XrmCombineDatabase(resourceDatabase, &db, False);
+//		XrmDatabase db = XrmGetDatabase(display);
+//		XrmCombineDatabase(resourceDatabase, &db, False);
 //#else
-//	XrmMergeDatabases(display->db, &resourceDatabase);
-//	display->db = resourceDatabase;
+//		XrmMergeDatabases(display->db, &resourceDatabase);
+//		display->db = resourceDatabase;
 //#endif
-//    }
+//	}
 //}
-//
+
 
 void UIComponent::manage()
 {

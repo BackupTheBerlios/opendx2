@@ -13,8 +13,6 @@
 #include "ParameterCDB.h"
 #include "TransmitterNode.h"
 #include "ReceiverNode.h"
-
-#include "Application.h"
 #include "ErrorDialogManager.h"
 #include "ListIterator.h"
 #include "MacroParameterNode.h"

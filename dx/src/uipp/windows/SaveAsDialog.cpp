@@ -9,15 +9,9 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
-
 #include "DXStrings.h"
-#include "Application.h"
 #include "Network.h"
 #include "SaveAsDialog.h"
-//#include "QuestionDialogManager.h"
 #include "OpenCommand.h"
 
 

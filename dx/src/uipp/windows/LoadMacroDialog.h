@@ -19,7 +19,6 @@
 
 
 #include "OpenNetworkDialog.h"
-#include "Application.h"
 
 
 //

@@ -17,7 +17,6 @@
 #endif
 #include <ctype.h>
  
-#include "Application.h"
 #include "EditorWindow.h"
 #include "ErrorDialogManager.h"
 #include "WarningDialogManager.h"

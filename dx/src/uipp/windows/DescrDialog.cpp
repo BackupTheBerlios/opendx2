@@ -9,10 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
-#include "Application.h"
 #include "DescrDialog.h"
 #include "Node.h"
 #include "NodeDefinition.h"

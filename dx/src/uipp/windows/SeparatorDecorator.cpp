@@ -9,7 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "DXStrings.h"
 #include "Dictionary.h"
 #include "SeparatorDecorator.h"

@@ -12,11 +12,8 @@
 #include "SliderInteractor.h"
 #include "SetScalarAttrDialog.h"
 #include "InteractorStyle.h"
-
 #include "ScalarNode.h"
-
 #include "ScalarInstance.h"
-#include "Application.h"
 #include "ErrorDialogManager.h"
 
 boolean SliderInteractor::SliderInteractorClassInitialized = FALSE;
@@ -64,7 +61,7 @@ void SliderInteractor::initialize()
     //
     if (NOT SliderInteractor::SliderInteractorClassInitialized)
     {
-        ASSERT(theApplication);
+        //ASSERT(theApplication);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          SliderInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),

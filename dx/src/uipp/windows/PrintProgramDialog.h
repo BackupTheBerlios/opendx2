@@ -17,7 +17,6 @@
 
 
 #include "Dialog.h"
-//#include "Application.h"
 
 
 //

@@ -18,7 +18,6 @@
 
 
 #include "FileDialog.h"
-#include "Application.h"
 
 
 //
@@ -32,7 +31,7 @@ class TextEditDialog;
 //
 // OpenNetworkDialog class definition:
 //				
-class OpenNetworkDialog : public FileDialog
+class OpenNetworkDialog : public dxui::FileDialog
 {
     static boolean ClassInitialized;
 

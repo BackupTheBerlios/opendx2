@@ -34,15 +34,16 @@ class Dictionary;
 //
 // The items that are inserted in the dictionary
 //
-class DictionaryEntry {
-    public:
-        Symbol  name;
-        void    *definition;
-        DictionaryEntry() {}
-        DictionaryEntry(Symbol key) { name = key; }
-        DictionaryEntry(Symbol key, void *def) { name = key; definition = def;} 
-}; 
-
+namespace dxui {
+	class DictionaryEntry {
+	public:
+		Symbol  name;
+		void    *definition;
+		DictionaryEntry() {}
+		DictionaryEntry(Symbol key) { name = key; }
+		DictionaryEntry(Symbol key, void *def) { name = key; definition = def;} 
+	}; 
+}
 //
 // Dictionary class definition:
 //				
@@ -66,7 +67,7 @@ class Dictionary : protected List
     // Find the  DictionaryEntry in this dictionary for the given symbol
     // Returns NULL if not found.
     //
-    DictionaryEntry *getDictionaryEntry(Symbol findkey);
+	  dxui::DictionaryEntry *getDictionaryEntry(Symbol findkey);
 
   public:
     //

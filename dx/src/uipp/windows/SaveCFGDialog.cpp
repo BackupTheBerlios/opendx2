@@ -12,7 +12,6 @@
 #include "Network.h"
 #include "SaveCFGDialog.h"
 #include "ControlPanel.h"
-#include "Application.h"
 #include "ErrorDialogManager.h"
 #include "DXStrings.h"
 

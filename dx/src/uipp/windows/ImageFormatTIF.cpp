@@ -10,7 +10,6 @@
 
 
 #include "ImageFormatTIF.h"
-#include "Application.h"
 
 boolean ImageFormatTIF::ClassInitialized = FALSE;
 

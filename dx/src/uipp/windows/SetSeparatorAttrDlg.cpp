@@ -11,7 +11,6 @@
 
 
 #include "DXStrings.h"
-#include "Application.h"
 #include "SetSeparatorAttrDlg.h"
 #include "SeparatorDecorator.h"
 #include "Network.h"

@@ -19,8 +19,7 @@
 #include <sys/stat.h>
 #endif
 
-#include "ControlPanel.h"
-#include "Application.h" 
+#include "ControlPanel.h" 
 #include "DropSite.h"
 #include "DXDropSite.h" 
 #include "DXApplication.h"

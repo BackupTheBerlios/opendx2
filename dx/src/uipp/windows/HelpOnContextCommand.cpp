@@ -10,7 +10,6 @@
 #include "defines.h"
 
 #include "HelpOnContextCommand.h"
-#include "Application.h"
 #include "MainWindow.h"
 
 

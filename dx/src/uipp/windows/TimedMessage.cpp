@@ -10,9 +10,7 @@
 #include "defines.h"
 
 #include "DXStrings.h"
-#include "Application.h"
 #include "TimedMessage.h"
-
 
 
 TimedMessage::TimedMessage(const char *name,
@@ -32,7 +30,7 @@ TimedMessage::~TimedMessage()
     if (this->title)
 	delete[] this->title;
     //if(theApplication->getLogoPixmap(FALSE) != XtUnspecifiedPixmap)
-	theApplication->cleanupLogo();
+	//theApplication->cleanupLogo();
 }
 
 void TimedMessage::createDialog(void)

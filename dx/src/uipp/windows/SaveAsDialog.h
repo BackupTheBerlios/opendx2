@@ -15,7 +15,6 @@
 
 
 #include "SaveFileDialog.h"
-#include "Application.h"
 
 
 //
@@ -30,7 +29,7 @@ class Command;
 //
 // SaveAsDialog class definition:
 //				
-class SaveAsDialog : public SaveFileDialog
+class SaveAsDialog : public dxui::SaveFileDialog
 {
     static boolean ClassInitialized;
     //static String  DefaultResources[];

@@ -13,7 +13,6 @@
 #include <stdarg.h>
 
 #include "ErrorDialogManager.h"
-#include "Application.h"
 
 
 ErrorDialogManager* theErrorDialogManager =

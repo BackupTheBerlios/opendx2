@@ -11,8 +11,6 @@
 
 #include "DXStrings.h"
 #include "SetPanelNameDialog.h"
-
-#include "Application.h"
 #include "ControlPanel.h"
 #include "Network.h"
 #include "ErrorDialogManager.h"

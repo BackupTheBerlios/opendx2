@@ -9,7 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "ToggleNode.h"
 #include "ToggleInstance.h"
 #include "ToggleToggleInteractor.h"
@@ -44,7 +43,7 @@ void ToggleToggleInteractor::initialize()
     //
     if (NOT ToggleToggleInteractor::ToggleToggleInteractorClassInitialized)
     {
-        ASSERT(theApplication);
+        //ASSERT(theApplication);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                         ToggleToggleInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),

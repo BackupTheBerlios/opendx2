@@ -10,7 +10,6 @@
 
 #include "PageTab.h"
 #include "PageGroupManager.h"
-#include "Application.h"
 #include "PageSelector.h"
 #include "EditorWindow.h"
 

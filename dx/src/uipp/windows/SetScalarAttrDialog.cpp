@@ -14,7 +14,6 @@
 #include "ScalarInstance.h"
 #include "InteractorStyle.h"
 #include "LocalAttributes.h"
-#include "Application.h"
 #include "WarningDialogManager.h"
 
 #ifdef ABS_IN_MATH_H

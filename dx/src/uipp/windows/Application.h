@@ -10,16 +10,19 @@
 #include "defines.h"
 
 
-#ifndef _Application_h
-#define _Application_h
+#ifndef _BaseApp_h
+#define _BaseApp_h
 
 #include "UIComponent.h"
 #include "Server.h"
+#include <vcclr.h>
+
+using namespace System::Windows::Forms;
 
 //
 // Class name definition:
 //
-#define ClassApplication	"Application"
+#define ClassApplication	"BaseApp"
 
 //
 // XtCallbackProc (*CB), XtEventHandler (*EH) and XtActionProc (*AP)
@@ -31,16 +34,13 @@
 //
 // Application class definition:
 //				
-class Application : public UIComponent, public Server
+class BaseApp : public UIComponent, public Server
 {
   private:
     //
     // Private class data:
     //
-    static boolean ApplicationClassInitialized;
-    //friend void Application_XtWarningHandler(char *message);
-    //friend int  Application_XErrorHandler(Display *display, XErrorEvent *event);
-
+    static boolean ApplicationClassInitialized;	
 
     int 	busyCursors; 	// Keeps track of setBusyCursor calls.
 
@@ -61,9 +61,8 @@ class Application : public UIComponent, public Server
     //
     // Protected member data:
     //
-    //Display*     display;		// X Display pointer
-    //XtAppContext applicationContext;	// Xt application context
     char*        applicationClass;	// application class name
+	gcroot<System::Windows::Forms::ApplicationContext*> applicationContext; // Windows.Forms application context.
 
     //
     // Initialize the window system.
@@ -99,7 +98,7 @@ class Application : public UIComponent, public Server
     //
     // Constructor for the subclasses:
     //
-    Application(char* className);
+    BaseApp(char* className);
 
     //
     // Install the default resources for this class and then call the
@@ -160,7 +159,7 @@ class Application : public UIComponent, public Server
     //
     // Destructor:
     //
-    ~Application();
+    ~BaseApp();
 
     //
     // Manages all the application windows.
@@ -298,7 +297,7 @@ class Application : public UIComponent, public Server
 //
 // Pointer to the single (hopefully) global instance:
 //
-extern Application* theApplication;
+extern BaseApp* theApplication;
 
 
-#endif // _Application_h
+#endif // _BaseApp_h

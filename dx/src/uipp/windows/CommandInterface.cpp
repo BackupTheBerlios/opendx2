@@ -9,9 +9,9 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include "Application.h"
 #include "CommandInterface.h"
 #include "Command.h"
-#include "Application.h"
 
 
 //extern "C" void CommandInterface_ExecuteCommandCB(Widget,

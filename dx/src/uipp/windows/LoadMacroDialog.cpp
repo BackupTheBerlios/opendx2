@@ -9,7 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "LoadMacroDialog.h"
 #include "MacroDefinition.h"
 #include "ErrorDialogManager.h"

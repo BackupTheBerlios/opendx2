@@ -19,9 +19,9 @@
 #include "TreeView.h"
 
 #include "TreeNode.h"
-#include "Application.h"
 #include "List.h"
 #include "ListIterator.h"
+using namespace dxui;
 
 //
 // Notes:
@@ -92,16 +92,16 @@ TreeView::TreeView(const char* bubbleHelp) : UIComponent ("treeView")
     //this->cursor_backing = XmUNSPECIFIED_PIXMAP;
     this->initialized = FALSE;
     //this->gc = 0;
-    this->data_model = NUL(TreeNode*);
-    this->selection = NUL(TreeNode*);
-    this->selection = NUL(TreeNode*);
+    this->data_model = NUL(dxui::TreeNode*);
+    this->selection = NUL(dxui::TreeNode*);
+    this->selection = NUL(dxui::TreeNode*);
     this->containing_marker = NUL(Marker*);
     this->single_click_time = 0;
     this->multi_click_time = 500;
     this->selection_marker = NUL(Marker*);
     this->match_marker = NUL(Marker*);
     this->typing_ahead = FALSE;
-    this->matched = NUL(TreeNode*);
+    this->matched = NUL(dxui::TreeNode*);
     this->typing_count = 0;
     this->ibeam_showing = FALSE;
     //this->ibeam_timer = 0;
@@ -176,7 +176,7 @@ TreeView::~TreeView()
 // of the tool selector, a new model is supplied every time the user 
 // loads new macros or changes the set of categories.
 //
-void TreeView::initialize (TreeNode* model, boolean repaint)
+void TreeView::initialize (dxui::TreeNode* model, boolean repaint)
 {
     //Widget w = this->getRootWidget();
     //Display* d = XtDisplay(w);
@@ -194,7 +194,7 @@ void TreeView::initialize (TreeNode* model, boolean repaint)
 //
 // Every displayed string has a corresponding Rectangle stored in
 // this->markers.  They're used to translate a mouse click back into
-// an TreeNode.
+// an dxui::TreeNode.
 //
 void TreeView::clearMarkers()
 {
@@ -222,7 +222,7 @@ void TreeView::endTyping()
  //   this->typing_ahead = FALSE;
  //   if (XtWindow(this->getRootWidget()))
 	//this->setDefaultCursor();
- //   this->matched = NUL(TreeNode*);
+ //   this->matched = NUL(dxui::TreeNode*);
  //   if (this->match_marker) delete this->match_marker;
  //   this->match_marker = NUL(Marker*);
  //   this->typing_count = 0;
@@ -321,7 +321,7 @@ void TreeView::paint()
  //   }
 
  //   if ((this->selection) && (!selection_drawn)) 
-	//this->select(NUL(TreeNode*), FALSE);
+	//this->select(NUL(dxui::TreeNode*), FALSE);
  //   this->setDirty(FALSE);
 }
 
@@ -345,7 +345,7 @@ boolean TreeView::getMatchLocation (int& x1, int& y1, int& x2, int& y2)
 // Drawing the contents of the display is a recursive operation: 
 // paintNode() on a node, then for each child of that node do paintNode().
 //
-//void TreeView::paintNode(TreeNode* node, int& string_count, int level, int strHeight, Dimension& width, boolean paint_it, boolean last_line, boolean& selection_drawn)
+//void TreeView::paintNode(dxui::TreeNode* node, int& string_count, int level, int strHeight, Dimension& width, boolean paint_it, boolean last_line, boolean& selection_drawn)
 //{
  //   int level_incr = 1;
  //   int descent = 1;
@@ -409,10 +409,10 @@ boolean TreeView::getMatchLocation (int& x1, int& y1, int& x2, int& y2)
 	//	}
 	//    }
 	//    ListIterator li(*kids);
-	//    TreeNode* kid;
+	//    dxui::TreeNode* kid;
 	//    int kidCnt = kids->getSize();
 	//    int cnt = 1;
-	//    while (kid = (TreeNode*)li.getNext()) {
+	//    while (kid = (dxui::TreeNode*)li.getNext()) {
 	//	this->paintNode(kid, string_count, level+level_incr, strHeight, 
 	//	    width, paint_it, (cnt==kidCnt), selection_drawn);
 	//	cnt++;
@@ -484,23 +484,23 @@ void TreeView::redisplay()
 void TreeView::clear(boolean repaint)
 { 
  //   ListIterator iter(this->auto_expanded);
- //   TreeNode* node;
- //   while (node=(TreeNode*)iter.getNext()) {
+ //   dxui::TreeNode* node;
+ //   while (node=(dxui::TreeNode*)iter.getNext()) {
 	//if (node->isExpanded()) node->setExpanded(FALSE);
  //   }
  //   this->auto_expanded.clear();
  //   this->endTyping();
- //   if (this->selection) this->select(NUL(TreeNode*), FALSE); 
+ //   if (this->selection) this->select(NUL(dxui::TreeNode*), FALSE); 
  //   this->setDirty(TRUE,repaint);
 }
 
-//void TreeView::select(TreeNode* node, boolean repaint)
+//void TreeView::select(dxui::TreeNode* node, boolean repaint)
 //{
  //   if (this->selection == node) return ;
  //   this->selection = node;
 
  //   if (node) {
-	//TreeNode* parent = node->getParent();
+	//dxui::TreeNode* parent = node->getParent();
 	//while (!parent->isRoot()) {
 	//    if (!parent->isExpanded()) {
 	//	parent->setExpanded(TRUE);
@@ -546,7 +546,7 @@ void TreeView::setDirty(boolean d, boolean repaint)
 //    if (xev->type != KeyPress) return;
 //    XKeyEvent* xke = (XKeyEvent*)xev;
 //
-//    TreeNode* node = this->selection;
+//    dxui::TreeNode* node = this->selection;
 //    if (!node) node = this->matched;
 //
 //    KeySym lookedup = XLookupKeysym(xke, 0);
@@ -567,7 +567,7 @@ void TreeView::setDirty(boolean d, boolean repaint)
 //	switch (lookedup) {
 //	    case XK_space:
 //		if (this->isTyping()) this->endTyping();
-//		if (this->selection) this->select(NUL(TreeNode*), TRUE);
+//		if (this->selection) this->select(NUL(dxui::TreeNode*), TRUE);
 //		this->auto_expanded.clear();
 //		break;
 //	    case XK_Up:
@@ -613,7 +613,7 @@ void TreeView::setDirty(boolean d, boolean repaint)
 //		    node->setExpanded(node->isExpanded() == FALSE);
 //		    this->setDirty(TRUE,TRUE);
 //		} else if (this->isTyping()) {
-//		    TreeNode* tmp = this->matched;
+//		    dxui::TreeNode* tmp = this->matched;
 //		    this->endTyping();
 //		    this->select(tmp, TRUE);
 //		}
@@ -661,16 +661,16 @@ void TreeView::setDirty(boolean d, boolean repaint)
 //    ListIterator iter(this->searchable_nodes);
 //    int matches = 0;
 //
-//    TreeNode* match;
-//    TreeNode* very_next = NUL(TreeNode*);
+//    dxui::TreeNode* match;
+//    dxui::TreeNode* very_next = NUL(dxui::TreeNode*);
 //    char* very_next_str = 0;
 //
-//    TreeNode* selection_parent = NUL(TreeNode*);
+//    dxui::TreeNode* selection_parent = NUL(dxui::TreeNode*);
 //    if ((this->selection) && (this->selection->isLeaf()))
 //	selection_parent = this->selection->getParent();
 //
-//    this->matched = NUL(TreeNode*);
-//    while (match=(TreeNode*)iter.getNext()) {
+//    this->matched = NUL(dxui::TreeNode*);
+//    while (match=(dxui::TreeNode*)iter.getNext()) {
 //	char* cp = DuplicateString(match->getString());
 //	int len = strlen(cp);
 //	for (int i=0;i<len;i++) cp[i] = tolower(cp[i]);
@@ -768,7 +768,7 @@ void TreeView::beginTyping()
 //	// containing_marker is a rectangle containing a pixmap 
 //	// preceding a category, a plus or minus.
 //	//
-//	TreeNode* node = this->containing_marker->getNode();
+//	dxui::TreeNode* node = this->containing_marker->getNode();
 //	if (node->isLeaf()==FALSE) {
 //	    node->setExpanded(node->isExpanded() == FALSE);
 //	    this->setDirty(TRUE, TRUE);
@@ -782,7 +782,7 @@ void TreeView::beginTyping()
 //	//
 //	Marker* marker = this->pick(xbe->x, xbe->y);
 //	if (marker) {
-//	    TreeNode* node = marker->getNode();
+//	    dxui::TreeNode* node = marker->getNode();
 //	    if (node == this->selection) {
 //		unsigned int diff = xbe->time - this->single_click_time;
 //		if (diff < this->multi_click_time) {
@@ -790,7 +790,7 @@ void TreeView::beginTyping()
 //		    this->single_click_time = 0;
 //		} else {
 //		    if (node->hasChildren() == FALSE) {
-//			this->select(NUL(TreeNode*));
+//			this->select(NUL(dxui::TreeNode*));
 //		    }
 //		    this->single_click_time = xbe->time;
 //		}
@@ -799,7 +799,7 @@ void TreeView::beginTyping()
 //		this->single_click_time = xbe->time;
 //	    }
 //	} else {
-//	    this->select(NUL(TreeNode*));
+//	    this->select(NUL(dxui::TreeNode*));
 //	}
 //    }
 //}
@@ -816,7 +816,7 @@ Marker* TreeView::pick(int x, int y)
     return NUL(Marker*);
 }
 
-//void TreeView::multiClick(TreeNode* node)
+//void TreeView::multiClick(dxui::TreeNode* node)
 //{
 //    if ((node->isLeaf()==FALSE) && (node->hasChildren())) {
 //	node->setExpanded(node->isExpanded() == FALSE);
@@ -830,15 +830,16 @@ void TreeView::getSearchableNodes(List& nodes_to_search)
     if (!this->data_model) return ;
     this->getSearchableNodes(this->data_model, nodes_to_search);
 }
-void TreeView::getSearchableNodes(TreeNode* subtree, List& nodes_to_search)
+
+void TreeView::getSearchableNodes(dxui::TreeNode* subtree, List& nodes_to_search)
 {
     if (subtree->isLeaf()) {
 	nodes_to_search.appendElement(subtree);
     } else if ((subtree->hasChildren()) && (subtree->isExpanded())) {
 	List* kids = subtree->getChildren();
 	ListIterator iter(*kids);
-	TreeNode* kid;
-	while (kid = (TreeNode*)iter.getNext())
+	dxui::TreeNode* kid;
+	while (kid = (dxui::TreeNode*)iter.getNext())
 	    this->getSearchableNodes(kid, nodes_to_search);
     }
 }

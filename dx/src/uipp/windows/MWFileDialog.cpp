@@ -10,7 +10,6 @@
 #include "defines.h"
 
 #include "MWFileDialog.h"
-#include "Application.h"
 #include "MsgWin.h"
 #include "ToggleButtonInterface.h"
 

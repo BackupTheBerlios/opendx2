@@ -16,7 +16,6 @@
 #include <stdarg.h>
 
 #include "InfoDialogManager.h"
-#include "Application.h"
 #include "DXStrings.h"
 
 

@@ -21,6 +21,8 @@
 #include "ListIterator.h"
 #include "DictionaryIterator.h"
 
+using namespace dxui;
+
 #ifndef STRCMP
 #ifdef NON_NULL_STRCMP
 #define STRCMP(a,b)  ((a) ? ((b) ? strcmp(a,b) : strcmp(a,"")) : \

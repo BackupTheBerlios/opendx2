@@ -12,7 +12,6 @@
 #include "DXStrings.h"
 #include "HelpWin.h"
 
-#include "Application.h"
 #include "DXApplication.h"
 #include "MsgWin.h"
 #include "ButtonInterface.h"

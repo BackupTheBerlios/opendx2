@@ -10,7 +10,6 @@
 #include "defines.h"
 
 #include "DeleteNodeCommand.h"
-#include "Application.h"
 #include "EditorWindow.h"
 
 

@@ -25,7 +25,7 @@
 //
 // ApplyFileDialog class definition:
 //				
-class ApplyFileDialog : public FileDialog
+class ApplyFileDialog : public dxui::FileDialog
 {
     static boolean ClassInitialized;
 

@@ -13,10 +13,7 @@
 #include "SetAttrDialog.h"
 #include "ToggleAttrDialog.h"
 #include "ToggleInstance.h"
-#include "Application.h"
 #include "ErrorDialogManager.h"
-//#include "DXValue.h"	// For IsTensor() and IsVector().
-
 
 boolean ToggleAttrDialog::ClassInitialized = FALSE;
 

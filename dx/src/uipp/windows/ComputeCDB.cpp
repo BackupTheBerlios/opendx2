@@ -16,7 +16,6 @@
 #include "ComputeNode.h"
 #include "Ark.h"
 #include "ListIterator.h"
-#include "Application.h"
 #include "ErrorDialogManager.h"
 
 boolean ComputeCDB::ClassInitialized = FALSE;

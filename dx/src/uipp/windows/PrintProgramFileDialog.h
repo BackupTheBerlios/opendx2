@@ -30,7 +30,7 @@ class PrintProgramDialog;
 //
 // PrintProgramFileDialog class definition:
 //				
-class PrintProgramFileDialog : public FileDialog
+class PrintProgramFileDialog : public dxui::FileDialog
 {
     static boolean ClassInitialized;
     //static String  DefaultResources[];

@@ -9,9 +9,7 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
 #include "DXStrings.h"
-#include "Application.h"
 #include "SetPanelCommentDialog.h"
 #include "ControlPanel.h"
 

@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include "ImageFormatREX.h"
-#include "Application.h"
 #include "DXStrings.h"
 #if defined(DXD_WIN) || defined(OS2)
 #define unlink _unlink

@@ -68,7 +68,7 @@ void ValueListInteractor::initialize()
     //
     if (NOT ValueListInteractor::ClassInitialized)
     {
-        ASSERT(theApplication);
+        //ASSERT(theApplication);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          ValueListInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),

@@ -9,22 +9,23 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#define USE_EDITRES 0
-
+#include "Application.h"
 #include "DXStrings.h"
 #include "MainWindow.h"
-#include "Application.h"
 #include "CommandScope.h"
-
-#if defined(HAVE_X11_XMU_EDITRES) && defined(USE_EDITRES)
-#include <X11/Xmu/Editres.h>
-#endif
 
 boolean MainWindow::OffsetsInitialized = FALSE;
 boolean MainWindow::IsMwmBroken = FALSE;
 boolean MainWindow::IsMwmRunning = FALSE;
 int MainWindow::WmOffsetX = 0;
 int MainWindow::WmOffsetY = 0;
+
+using namespace System;
+using namespace System::ComponentModel;
+using namespace System::Collections;
+using namespace System::Windows::Forms;
+using namespace System::Data;
+using namespace System::Drawing;
 
 //String MainWindow::DefaultResources[] =
 //{
@@ -403,48 +404,50 @@ void MainWindow::iconify()
 
 void MainWindow::notify(const Symbol message, const void *data, const char *)
 {
- //   if (message == Application::MsgManage)
- //   {
-	//ASSERT(this->isInitialized());
-	//this->manage();
- //   }
- //   else if (message == Application::MsgUnmanage)
- //   {
-	//this->unmanage();
- //   }
- //   else if (message == Application::MsgSetBusyCursor)
- //   {
-	//if (this->main != NULL && this->isManaged())
+	//if (message == Application::MsgManage)
 	//{
-	//    XmUpdateDisplay(this->main);
-	//    XDefineCursor
-	//	(XtDisplay(this->main),
-	//	 XtWindow(this->main),
-	//	 Application::BusyCursor);
-	//    XFlush(XtDisplay(this->main));
+	//	ASSERT(this->isInitialized());
+	//	this->manage();
 	//}
- //   }
- //   else if (message == Application::MsgResetCursor)
- //   {
-	//if (this->main != NULL && this->isManaged())
+	//else if (message == Application::MsgUnmanage)
 	//{
-	//    XUndefineCursor(XtDisplay(this->main), XtWindow(this->main));
-	//    XFlush(XtDisplay(this->main));
+	//	this->unmanage();
+	//}
+	//else if (message == Application::MsgSetBusyCursor)
+	//{
+		//if (this->main != NULL && this->isManaged())
+		//{
+		//	theApplication->parent->Cursor = Cursors::WaitCursor;
+			//    XmUpdateDisplay(this->main);
+			//   XDefineCursor
+			//(XtDisplay(this->main),
+			// XtWindow(this->main),
+			// Application::BusyCursor);
+			//   XFlush(XtDisplay(this->main));
+		//}
+	//}
+	//else if (message == Application::MsgResetCursor)
+	//{
+		//if (this->main != NULL && this->isManaged())
+		//{
+		//	theApplication->parent->Cursor = Cursors::Default;
+			//XUndefineCursor(XtDisplay(this->main), XtWindow(this->main));
+			//XFlush(XtDisplay(this->main));
 
-	//    // HACK ALERT
-	//    // Somehow I have to figure out the difference between my coords
-	//    // and the ones imposed on me by mwm.  I can only do that after I
-	//    // put some window on the screen.  These numbers are used by setGeometry().
-	//    // I used to fetch these numbers when I needed them which was safe, but
-	//    // because of a dec/mwm bug, I need to fetch  them in order to set
-	//    // XmNgeometry which is earlier than the the window shows up.  So this
-	//    // initialization is here because I just need some relatively safe, 
-	//    // post-manage place to put it.
-	//    //
-	//    if (!MainWindow::OffsetsInitialized)
-	//	MainWindow::InitializeOffsets(this->getRootWidget());
-	//}
- //   } 
+			// HACK ALERT
+			// Somehow I have to figure out the difference between my coords
+			// and the ones imposed on me by mwm.  I can only do that after I
+			// put some window on the screen.  These numbers are used by setGeometry().
+			// I used to fetch these numbers when I needed them which was safe, but
+			// because of a dec/mwm bug, I need to fetch  them in order to set
+			// XmNgeometry which is earlier than the the window shows up.  So this
+			// initialization is here because I just need some relatively safe, 
+			// post-manage place to put it.
+			//
+			//if (!MainWindow::OffsetsInitialized)
+			//	MainWindow::InitializeOffsets(this->getRootWidget());
+		//}
+	//} 
  //   else if (message == Application::MsgManageByLeafClassName)
  //   {
 	//if (!data || EqualString(this->getClassName(),(char*)data))

@@ -15,7 +15,6 @@
 #include "Command.h"
 #include "ListIterator.h"
 #include "Client.h"
-//#include "Application.h"
 #include "CommandScope.h"
 #include "DXStrings.h"
 

@@ -14,8 +14,6 @@
 #include "SetVectorAttrDialog.h"
 #include "ScalarInstance.h"
 #include "ScalarNode.h"
-#include "Application.h"
-
 
 boolean SetVectorAttrDialog::ClassInitialized = FALSE;
 

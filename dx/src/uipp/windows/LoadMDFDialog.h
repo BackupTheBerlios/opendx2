@@ -30,7 +30,7 @@ class DXApplication;
 //
 // LoadMDFDialog class definition:
 //				
-class LoadMDFDialog : public FileDialog
+class LoadMDFDialog : public dxui::FileDialog
 {
     static boolean ClassInitialized;
     //static String  DefaultResources[];

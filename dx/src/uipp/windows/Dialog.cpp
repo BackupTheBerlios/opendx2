@@ -9,8 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-#include "Application.h"
 #include "Dialog.h"
 
 boolean Dialog::ClassInitialized = FALSE;

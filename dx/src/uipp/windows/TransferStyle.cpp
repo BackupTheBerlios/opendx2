@@ -10,7 +10,6 @@
 #include "defines.h"
 
 #include "TransferStyle.h"
-#include "Application.h"
 
 TransferStyle::TransferStyle (int tag, const char *name, boolean preferred)
 {

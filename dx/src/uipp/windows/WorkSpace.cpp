@@ -11,8 +11,7 @@
 
 
 #include "WorkSpace.h" 
-#include "WorkSpaceInfo.h" 
-#include "Application.h" 
+#include "WorkSpaceInfo.h"  
 #include "List.h" 
 #include "ListIterator.h" 
 

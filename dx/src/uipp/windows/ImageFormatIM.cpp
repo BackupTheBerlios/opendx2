@@ -10,7 +10,6 @@
 
 
 #include "ImageFormatIM.h"
-#include "Application.h"
 
 boolean ImageFormatIM::ClassInitialized = FALSE;
 

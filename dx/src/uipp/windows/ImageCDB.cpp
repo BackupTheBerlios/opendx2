@@ -12,9 +12,6 @@
 
 #include "ImageCDB.h"
 
-
-
-#include "Application.h"
 #include "ImageNode.h"
 #include "ImageDefinition.h"
 

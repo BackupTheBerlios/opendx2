@@ -9,15 +9,9 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "ToggleInteractor.h"
 #include "InteractorInstance.h"
 #include "InteractorStyle.h"
-
-#if defined(aviion) || defined(alphax)
-#define XMSTRING_COMPARE_IS_BROKEN
-#endif
-
 
 //String ToggleInteractor::DefaultResources[] =  {
 //    "*recomputeSize: 			True",

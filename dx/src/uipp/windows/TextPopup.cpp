@@ -9,8 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-#include "Application.h"
 #include "TextPopup.h"
 
 boolean TextPopup::ClassInitialized = FALSE;

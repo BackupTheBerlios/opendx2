@@ -40,8 +40,6 @@
 Symbol DXWindow::lastMsg = 0;
 const void *DXWindow::lastMsgData = NULL;
 
-#include "DXWDefaultResources.h"
-
 DXWindow::DXWindow(const char*   name,
 		   boolean isAnchor, boolean usesMenuBar): 
 		IBMMainWindow(name, usesMenuBar)

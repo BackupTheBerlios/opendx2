@@ -9,14 +9,9 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
-
 #include "DXStrings.h"
 #include "SetBGColorDialog.h"
 #include "ImageWindow.h"
-#include "Application.h"
 
 boolean SetBGColorDialog::ClassInitialized = FALSE;
 //String  SetBGColorDialog::DefaultResources[] =

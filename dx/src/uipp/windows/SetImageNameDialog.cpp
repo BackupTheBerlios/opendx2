@@ -14,8 +14,6 @@
 
 #include "DXStrings.h"
 #include "SetImageNameDialog.h"
-
-#include "Application.h"
 #include "DisplayNode.h"
 #include "ImageWindow.h"
 #include "Network.h"

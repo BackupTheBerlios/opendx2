@@ -12,7 +12,6 @@
 #include "Network.h"
 #include "OpenCFGDialog.h"
 #include "ControlPanel.h"
-#include "Application.h"
 #include "ErrorDialogManager.h"
 
 

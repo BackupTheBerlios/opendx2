@@ -9,14 +9,11 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
-#include "QuitCommand.h"
 #include "Application.h"
+#include "QuitCommand.h"
 
 
-QuitCommand::QuitCommand(Application*  app,
+QuitCommand::QuitCommand(BaseApp*  app,
 			 const char*   name,
 			 CommandScope* scope,
 			 boolean       active,

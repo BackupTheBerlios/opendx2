@@ -56,3 +56,15 @@ strrstr(char *a, char *b)
     return l;
 }
 #endif
+
+// The following is how to convert String to Char* from .NET
+//
+//char * StringToChar(System::String __gc *a) {
+//	char* str = NULL;
+//	str = new char[a->Length + 1];
+//	strncpy(str, 
+//		(const char*) (Marshal::StringToHGlobalAnsi(a)).ToPointer(),
+//		a->Length);
+//	str[a->Length] = '\0';
+//	return str;
+//}

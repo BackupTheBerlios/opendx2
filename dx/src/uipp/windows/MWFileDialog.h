@@ -28,7 +28,7 @@ class MsgWin;
 //
 // MWFileDialog class definition:
 //				
-class MWFileDialog : public FileDialog
+class MWFileDialog : public dxui::FileDialog
 {
   private:
     //

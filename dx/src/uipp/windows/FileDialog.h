@@ -27,115 +27,118 @@
 // FileDialog class definition:
 //				
 
-class FileDialog : public Dialog
-{
-  private:
-    //
-    // Private member data:
-    //
-    static boolean ClassInitialized;
+namespace dxui {
 
-  protected:
-    //
-    // Protected member data:
-    //
-    //static String  DefaultResources[];
-    boolean 	hasCommentButton;
-    char	*readOnlyDirectory;
+	class FileDialog : public Dialog
+	{
+	private:
+		//
+		// Private member data:
+		//
+		static boolean ClassInitialized;
 
-    //Widget shell;
-    //Widget fsb;
+	protected:
+		//
+		// Protected member data:
+		//
+		//static String  DefaultResources[];
+		boolean 	hasCommentButton;
+		char	*readOnlyDirectory;
 
-    virtual void createDialog();
+		//Widget shell;
+		//Widget fsb;
 
-    virtual boolean okCallback(Dialog *d);
+		virtual void createDialog();
 
-    //
-    // Create the file selection box (i.e. the part with the filter, directory
-    // and file list boxes, and the 4 buttons, ok, comment, cancel, apply).
-    // The four buttons are set the have a width of 120
-    //
-    void createFileSelectionBox(const char *name);
+		virtual boolean okCallback(Dialog *d);
 
-    //
-    // Called by the okCallback() after extracting the string from
-    // the file selection box.
-    //
-    virtual void okFileWork(const char *string) = 0;
+		//
+		// Create the file selection box (i.e. the part with the filter, directory
+		// and file list boxes, and the 4 buttons, ok, comment, cancel, apply).
+		// The four buttons are set the have a width of 120
+		//
+		void createFileSelectionBox(const char *name);
 
-    //
-    // If 'limit' is true, change the dialog box so that it operates in 
-    // limited mode, that is, the user can only select file from the 
-    // current directory specified by XmNdirectory.
-    //
-    virtual void displayLimitedMode(boolean limit);
+		//
+		// Called by the okCallback() after extracting the string from
+		// the file selection box.
+		//
+		virtual void okFileWork(const char *string) = 0;
 
-    //
-    // Set the name of the current file.
-    //
-    void setFileName(const char *file);
+		//
+		// If 'limit' is true, change the dialog box so that it operates in 
+		// limited mode, that is, the user can only select file from the 
+		// current directory specified by XmNdirectory.
+		//
+		virtual void displayLimitedMode(boolean limit);
 
-    // 
-    // Get the default file name that is to be placed in the filename text
-    // each time this is FileDialog::manage()'d.  By default this returns
-    // NULL and nothing happens.  Subclasses can implement this to acquire
-    // the described behavior.  The returned string will be deleted in
-    // FileDialog::manage().
-    //
-    virtual char *getDefaultFileName();
+		//
+		// Set the name of the current file.
+		//
+		void setFileName(const char *file);
 
-    //
-    // Constructor: protected since this is an abstract class
-    //
-    FileDialog(const char *name);
+		// 
+		// Get the default file name that is to be placed in the filename text
+		// each time this is FileDialog::manage()'d.  By default this returns
+		// NULL and nothing happens.  Subclasses can implement this to acquire
+		// the described behavior.  The returned string will be deleted in
+		// FileDialog::manage().
+		//
+		virtual char *getDefaultFileName();
 
-    //
-    // Install the default resources for this class and then call the
-    // same super class method to get the default resources from the
-    // super classes.
-    //
-    //virtual void installDefaultResources(Widget baseWidget);
+		//
+		// Constructor: protected since this is an abstract class
+		//
+		FileDialog(const char *name);
 
-  public:
-    //
-    // Destructor:
-    //
-    ~FileDialog();
+		//
+		// Install the default resources for this class and then call the
+		// same super class method to get the default resources from the
+		// super classes.
+		//
+		//virtual void installDefaultResources(Widget baseWidget);
 
-    //Widget getFileSelectionBox() { return this->fsb; }
+	public:
+		//
+		// Destructor:
+		//
+		~FileDialog();
 
-    // Redefine manage to make sure the fsb is updated before it's managed.
-    virtual void post();
-    virtual void manage();
+		//Widget getFileSelectionBox() { return this->fsb; }
 
-    //
-    // If dirname is not NULL, then set the dialog so that the directory is
-    // fixed.  If dirname is NULL, then the fixed directory is turned off. 
-    //
-    void setReadOnlyDirectory(const char *dirname);
+		// Redefine manage to make sure the fsb is updated before it's managed.
+		virtual void post();
+		virtual void manage();
 
-    //
-    // Get the name of the currently selected file.
-    // The returned string must be freed by the caller.
-    // If a filename is not currently selected, then return NULL.
-    //
-    char *getSelectedFileName();
+		//
+		// If dirname is not NULL, then set the dialog so that the directory is
+		// fixed.  If dirname is NULL, then the fixed directory is turned off. 
+		//
+		void setReadOnlyDirectory(const char *dirname);
 
-    //
-    // Get the name of the current directory (without a trailing '/').
-    // The returned string must be freed by the caller.
-    //
-    char *getCurrentDirectory();
+		//
+		// Get the name of the currently selected file.
+		// The returned string must be freed by the caller.
+		// If a filename is not currently selected, then return NULL.
+		//
+		char *getSelectedFileName();
+
+		//
+		// Get the name of the current directory (without a trailing '/').
+		// The returned string must be freed by the caller.
+		//
+		char *getCurrentDirectory();
 
 
-    //
-    // Returns a pointer to the class name.
-    //
-    const char* getClassName()
-    {
-	return ClassFileDialog;
-    }
-};
+		//
+		// Returns a pointer to the class name.
+		//
+		const char* getClassName()
+		{
+			return ClassFileDialog;
+		}
+	};
+}
 
 
 #endif // _FileDialog_h

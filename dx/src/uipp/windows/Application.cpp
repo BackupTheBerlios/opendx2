@@ -9,6 +9,8 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+using namespace System::Windows::Forms;
+
 #include <stdio.h>
 
 //
@@ -32,24 +34,26 @@
 #include "Command.h"
 #include "DXStrings.h"
 #include "TimedMessage.h"
+#include "ResourceManager.h"
+#include "XmlPreferences.h"
 
-Application* theApplication = NUL(Application*);
+BaseApp* theApplication = NUL(BaseApp*);
 
 
-boolean Application::ApplicationClassInitialized = FALSE;
+boolean BaseApp::ApplicationClassInitialized = FALSE;
 //Cursor  Application::BusyCursor                  = NUL(Cursor);
 
 
-Symbol Application::MsgCreate        = NUL(Symbol);
-Symbol Application::MsgManage        = NUL(Symbol);
-Symbol Application::MsgUnmanage      = NUL(Symbol);
-Symbol Application::MsgSetBusyCursor = NUL(Symbol);
-Symbol Application::MsgResetCursor   = NUL(Symbol);
+Symbol BaseApp::MsgCreate        = NUL(Symbol);
+Symbol BaseApp::MsgManage        = NUL(Symbol);
+Symbol BaseApp::MsgUnmanage      = NUL(Symbol);
+Symbol BaseApp::MsgSetBusyCursor = NUL(Symbol);
+Symbol BaseApp::MsgResetCursor   = NUL(Symbol);
 
-Symbol Application::MsgManageByLeafClassName   = NUL(Symbol);
-Symbol Application::MsgUnmanageByLeafClassName = NUL(Symbol);
-Symbol Application::MsgManageByTitle 		= NUL(Symbol);
-Symbol Application::MsgUnmanageByTitle 		= NUL(Symbol);
+Symbol BaseApp::MsgManageByLeafClassName   = NUL(Symbol);
+Symbol BaseApp::MsgUnmanageByLeafClassName = NUL(Symbol);
+Symbol BaseApp::MsgManageByTitle 		= NUL(Symbol);
+Symbol BaseApp::MsgUnmanageByTitle 		= NUL(Symbol);
 
 //
 // This is used by the ASSERT macro in defines.h
@@ -66,37 +70,37 @@ extern "C" void AssertionFailure(const char *file, int line)
 	abort();
 }
 
-Application::Application(char* className): UIComponent(className)
+BaseApp::BaseApp(char* className): UIComponent(className)
 {
     ASSERT(className);
 
     //
     // Perform class initializtion, if necessary.
     //
-    if (NOT Application::ApplicationClassInitialized)
+    if (NOT BaseApp::ApplicationClassInitialized)
     {
 	ASSERT(theSymbolManager);
 
-	Application::MsgCreate =
+	BaseApp::MsgCreate =
 	    theSymbolManager->registerSymbol("Create");
-	Application::MsgManage =
+	BaseApp::MsgManage =
 	    theSymbolManager->registerSymbol("Manage");
-	Application::MsgUnmanage =
+	BaseApp::MsgUnmanage =
 	    theSymbolManager->registerSymbol("Unmanage");
-	Application::MsgSetBusyCursor =
+	BaseApp::MsgSetBusyCursor =
 	    theSymbolManager->registerSymbol("SetBusyCursor");
-	Application::MsgResetCursor =
+	BaseApp::MsgResetCursor =
 	    theSymbolManager->registerSymbol("ResetCursor");
-	Application::MsgManageByLeafClassName   = 
+	BaseApp::MsgManageByLeafClassName   = 
 	    theSymbolManager->registerSymbol("ManageByLeafClassName");
-	Application::MsgUnmanageByLeafClassName = 
+	BaseApp::MsgUnmanageByLeafClassName = 
 	    theSymbolManager->registerSymbol("UnmanageByLeafClassName");
-	Application::MsgManageByTitle = 
+	BaseApp::MsgManageByTitle = 
 	    theSymbolManager->registerSymbol("ManageByTitle");
-	Application::MsgUnmanageByTitle= 
+	BaseApp::MsgUnmanageByTitle= 
 	    theSymbolManager->registerSymbol("UnmanageByTitle");
 
-	Application::ApplicationClassInitialized = TRUE;
+	BaseApp::ApplicationClassInitialized = TRUE;
     }
 
     //
@@ -117,9 +121,11 @@ Application::Application(char* className): UIComponent(className)
 }
 
 
-Application::~Application()
+BaseApp::~BaseApp()
 {
-    delete[] this->applicationClass;
+	if(this->applicationClass)
+		delete[] this->applicationClass;
+	applicationContext = NULL;
     theApplication = NULL;
 }
 
@@ -131,77 +137,279 @@ Application::~Application()
 //    //this->setDefaultResources(baseWidget, Application::DefaultResources);
 //}
 
-boolean Application::initializeWindowSystem(unsigned int *argcp, char **argv) 
+boolean BaseApp::initializeWindowSystem(unsigned int *argcp, char **argv) 
 {
-
-    //
-    // Initialize Xt Intrinsics; create the initial shell widget.
-    //
-//    this->setRootWidget(
-//	XtAppInitialize
-//	    (&this->applicationContext, // returned application context
-//	     this->applicationClass,	// application class name
-//	     NULL,			// command line options table
-//	     0,				// number of entries in options table
-//#if XtSpecificationRelease > 4
-//	     (int*)argcp,
-//#else
-//	     argcp,
-//#endif
-//	     argv,			 // "argv" command line arguments
-//#if XtSpecificationRelease > 4
-//	     NULL,			 // fallback resource list
-//#else
-//	     NUL(const char**),		 // fallback resource list
-//#endif
-//	     NUL(ArgList),		 // override argument list
-//	     0),			 // number of entries in argument list
-//	     FALSE			// Don't install destroy callback
-//    );
-
-
-    //
-    // Get and save the X display structure pointer.
-    //
-    //this->display = XtDisplay(this->getRootWidget());
-
-    //
-    // Center the shell and make sure it is not visible.
-    //
- //   XtVaSetValues
-	//(this->getRootWidget(),
-	// XmNmappedWhenManaged, FALSE,
-	// XmNx,                 DisplayWidth(this->display, 0) / 2,
-	// XmNy,                 DisplayHeight(this->display, 0) / 2,
-	// XmNwidth,             1,
-	// XmNheight,            1,
-	// NULL);
-
-
-    //
-    // Force the initial shell window to exist so dialogs popped up
-    // from this shell behave correctly.
-    //
-    //XtRealizeWidget(this->getRootWidget());
-
-	
     //
     // Install error and warning handlers.
     //
     //XtSetWarningHandler((XtErrorHandler)Application_XtWarningHandler);
     //XSetErrorHandler(Application_XErrorHandler);
 
+	applicationContext = new System::Windows::Forms::ApplicationContext();
+
     return TRUE;
 }
 
-void Application::parseCommand(unsigned int* argcp, char** argv)
+void BaseApp::parseCommand(unsigned int* argcp, char** argv)
 {
+	char res_file[512] = "";
+	char **newargv = NULL;
+	unsigned int newargc=1;
+	newargv = new char*[*argcp];
+	newargv[0] = new char[strlen(argv[0])+1];
+	strcpy(newargv[0], argv[0]); //Executable name
+
+	// Open the defaults file first.
+	if (this->getApplicationDefaultsFileName(res_file, FALSE)) {
+		if(!theXmlPreferences->readPrefs(res_file)) {
+			printf("Preference File Corrupted. Please delete and restart!\n");
+			exit(1);
+		}
+	} else
+		theXmlPreferences->createPrefs();
+
+	// What have we got for command line parsing? 
+	// Parse command line and call setValue on XmlPreferences.
+
+#define NOARGTRUE(a,b) else if(strcmp(argv[i], a)==0) \
+	theXmlPreferences->setPref(b, XmlPreferences::PrefType::TypeBool, "true")
+#define NOARGFALSE(a,b) else if(strcmp(argv[i], a)==0) \
+	theXmlPreferences->setPref(b, XmlPreferences::PrefType::TypeBool, "false")
+#define NOARGSTR(a,b,c) else if(strcmp(argv[i], a)==0) \
+	theXmlPreferences->setPref(b, XmlPreferences::PrefType::TypeString, c)
+#define ARGSTR(a, b) else if(strcmp(argv[i], a)==0) { \
+		if(i+1 == *argcp || argv[i+1][0] == '-') { \
+			printf("Missing argument for %s\n", argv[i]); \
+			exit(1); \
+		} \
+		theXmlPreferences->setPref(b, XmlPreferences::PrefType::TypeString, argv[i+1]); \
+		i++; \
+	}
+
+	unsigned int i = 1;
+	while(i < *argcp) {
+		if(0) {}
+		NOARGTRUE("-wizard", "wizard");
+		NOARGSTR("-edit", "anchorMode", "EDIT");
+		NOARGTRUE("-execute", "executeProgram");
+		NOARGTRUE("-execute_on_change", "executeOnChange");
+		NOARGTRUE("-help", "printHelpMessage");
+		NOARGSTR("-image", "anchorMode", "IMAGE");
+		NOARGSTR("-kiosk", "anchorMode", "MENUBAR");
+		NOARGSTR("-menubar", "anchorMode", "MENUBAR");
+		NOARGTRUE("-noAnchorAtStartup", "noAnchorAtStartup");
+		NOARGTRUE("-noConfirmedQuit", "noConfirmedQuit");
+		NOARGTRUE("-local", "runLocally");
+		NOARGTRUE("-metric", "metric");
+		NOARGTRUE("-suppress", "suppressStartupWindows");
+		NOARGTRUE("-uidebug", "debugMode");
+		NOARGTRUE("-showInstanceNumbers", "showInstanceNumbers");
+		NOARGTRUE("-uionly", "runUIOnly");
+		NOARGTRUE("-version", "DXVersion");
+		//Backdoor Switches
+		NOARGTRUE("-noDXHelp", "noDXHelp");
+		NOARGTRUE("-noEditorAccess", "noEditorAccess");
+		NOARGTRUE("-notifySaveNet", "notifySaveNet");
+		NOARGTRUE("-noNetworkExecute", "noNetworkExecute");
+		NOARGTRUE("-noImageRWNetFile", "noImageRWNetFile");
+		NOARGTRUE("-noImageLoad", "noImageLoad");
+		NOARGTRUE("-limitImageOptions", "limitImageOptions");
+		NOARGTRUE("-limitedNetFileSelection", "limitedNetFileSelection");
+		NOARGTRUE("-noNetFileSelection", "noNetFileSelection");
+		NOARGTRUE("-noImageSaving", "noImageSaving");
+		NOARGTRUE("-noImagePrinting", "noImagePrinting");
+		NOARGTRUE("-noInteractorEdits", "noInteractorEdits");
+		NOARGTRUE("-noInteractorAttributes", "noInteractorAttributes");
+		NOARGTRUE("-noInteractorMovement", "noInteractorMovement");
+		NOARGTRUE("-noOpenAllPanels", "noOpenAllPanels");
+		NOARGTRUE("-noPanelAccess", "noPanelAccess");
+		NOARGTRUE("-noPanelOptions", "noPanelOptions");
+		NOARGTRUE("-noPanelEdit", "noPanelEdit");
+		NOARGTRUE("-noRWConfig", "noRWConfig");
+		NOARGTRUE("-noScriptCommands", "noScriptCommands");
+		NOARGTRUE("-noMessageInfoOption", "noMessageInfoOption");
+		NOARGTRUE("-noMessageWarningOption", "noMessageWarningOption");
+		NOARGTRUE("-noEditorOnError", "noEditorOnError");
+		NOARGTRUE("-noCMapSetNameOption", "noCMapSetNameOption");
+		NOARGTRUE("-noCMapSaveMap", "noCMapSaveMap");
+		NOARGTRUE("-noWindowPlacement", "noWindowPlacement");
+		NOARGTRUE("-noCMapOpenMap", "noCMapOpenMap");
+		NOARGTRUE("-noPGroupAssignment", "noPGroupAssignment");
+		NOARGTRUE("-warning", "warningEnabled");
+		NOARGTRUE("-info", "infoEnabled");
+		NOARGTRUE("-error", "errorEnabled");
+		NOARGTRUE("-exitAfter", "exitAfter");
+		NOARGTRUE("-noExecuteMenus", "noExecuteMenus"); 
+		NOARGTRUE("-noConnectionMenus", "noConnectionMenus");
+		NOARGTRUE("-noWindowsMenus", "noWindowsMenus");
+		NOARGTRUE("-noExitOptions", "noExitOptions");
+		NOARGTRUE("-noImageMenus", "noImageMenus");
+		NOARGFALSE("-noAutoScrollVPE", "noAutoScrollVPE"); 
+
+		// Regular Args
+		ARGSTR("-uiroot", "UIRoot")
+		ARGSTR("-dismissedWizards", "dismissedWizards")
+		ARGSTR("-exec", "executive")
+		ARGSTR("-directory", "directory")
+		ARGSTR("-memory", "memory")
+		ARGSTR("-host", "host")
+		ARGSTR("-macros", "macros")
+		ARGSTR("-mdf", "userModuleDescriptionFile")
+		ARGSTR("-dxmdf", "executiveModuleDescriptionFile")
+		ARGSTR("-uimdf", "uiModuleDescriptionFile")
+		ARGSTR("-port", "port")
+		ARGSTR("-printImageFormat", "printImageFormat")
+		ARGSTR("-printImagePageSize", "printImagePageSize")
+		ARGSTR("-printImageSize", "printImageSize")
+		ARGSTR("-printImageResolution", "printImageResolution")
+		ARGSTR("-program", "program")
+		ARGSTR("-cfg", "cfg")
+		ARGSTR("-saveImageFormat", "saveImageFormat")
+		ARGSTR("-saveImagePageSize", "saveImagePageSize")
+		ARGSTR("-saveImageSize", "saveImageSize")
+		ARGSTR("-saveImageResolution", "saveImageResolution")
+		ARGSTR("-uimessages", "messages")
+		// Backdoor Switches
+		ARGSTR("-restrictionLevel", "restrictionLevel")
+		ARGSTR("-appHost", "applicationHost")
+		ARGSTR("-appPort", "applicationPort")
+		ARGSTR("-netPath", "netPath")
+		ARGSTR("-forceNetFileEncryption", "forceNetFileEncryption")
+		ARGSTR("-cryptKey", "cryptKey")
+		ARGSTR("-forceLicense", "forceLicense")
+		ARGSTR("-view", "viewDataFile")
+		ARGSTR("-autoLayoutHeight", "autoLayoutHeight")
+		ARGSTR("-autoLayoutGroupSpacing", "autoLayoutGroupSpacing")
+		ARGSTR("-autoLayoutNodeSpacing", "autoLayoutNodeSpacing")
+		else {
+			//Not found so copy to new argv and increment newargc
+			newargv[newargc] = new char[strlen(argv[i])+1];
+			strcpy(newargv[newargc], argv[i]);
+			newargc++;
+		}
+
+		i++;
+	}
+
+	*argcp = newargc;
+	argv = newargv;
+
+	// Now go through the default parameters and set them if not already set.
+
+	theXmlPreferences->setDefault("standInBackground", XmlPreferences::PrefType::TypeString, "#5F9EA0");
+	theXmlPreferences->setDefault("executionHighlightForeground", XmlPreferences::PrefType::TypeString, "#00ff7e");
+	theXmlPreferences->setDefault("backgroundExecutionForeground", XmlPreferences::PrefType::TypeString, "#7e7eb4");
+	theXmlPreferences->setDefault("errorHighlightForeground", XmlPreferences::PrefType::TypeString, "#ff9b00");
+	theXmlPreferences->setDefault("foreground", XmlPreferences::PrefType::TypeString, "Black");
+	theXmlPreferences->setDefault("background", XmlPreferences::PrefType::TypeString, "#b4b4b4");
+	theXmlPreferences->setDefault("InsensitiveColor", XmlPreferences::PrefType::TypeString, "#888888");	
+	theXmlPreferences->setDefault("anchorMode", XmlPreferences::PrefType::TypeString, "EDIT");
+	theXmlPreferences->setDefault("DXVersion", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("debugMode", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("showInstanceNumbers", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("directory", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("executive", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("executeProgram", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("executeOnChange", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("printHelpMessage", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("host", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("noAnchorAtStartup", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noConfirmedQuit", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("macros", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("memory", XmlPreferences::PrefType::TypeInt, "0");
+	theXmlPreferences->setDefault("metric", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("messages", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("port", XmlPreferences::PrefType::TypeInt, "0");
+	theXmlPreferences->setDefault("printImageCommand", XmlPreferences::PrefType::TypeString, "lpr");
+	theXmlPreferences->setDefault("printImageFormat", XmlPreferences::PrefType::TypeString, "TIFF");
+	theXmlPreferences->setDefault("printImagePageSize", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("printImageSize", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("printImageResolution", XmlPreferences::PrefType::TypeInt, "0");
+	theXmlPreferences->setDefault("program", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("cfg", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("runLocally", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("runUIOnly", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("saveImageFormat", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("saveImagePageSize", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("saveImageSize", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("saveImageResolution", XmlPreferences::PrefType::TypeInt, "0");
+	theXmlPreferences->setDefault("suppressStartupWindows", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("userModuleDescriptionFile", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("executiveModuleDescriptionFile", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("uiModuleDescriptionFile", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("noWindowPlacement", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("restrictionLevel", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("noRWConfig", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noPanelEdit", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noInteractorEdits", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noInteractorAttributes", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noInteractorMovement", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noOpenAllPanels", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noPanelAccess", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noPanelOptions", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noMessageInfoOption", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noMessageWarningOption", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noEditorOnError", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noScriptCommands", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noPGroupAssignment", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noImageRWNetFile", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("limitedNetFileSelection", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("netPath", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("noImageLoad", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noImageSaving", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noImagePrinting", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("limitImageOptions", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("notifySaveNet", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noNetworkExecute", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noEditorAccess", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noDXHelp", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noCMapSetNameOption", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noCMapOpenMap", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noCMapSaveMap", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("applicationPort", XmlPreferences::PrefType::TypeInt, "0");
+	theXmlPreferences->setDefault("applicationHost", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("infoEnabled", XmlPreferences::PrefType::TypeBool, "true");
+	theXmlPreferences->setDefault("warningEnabled", XmlPreferences::PrefType::TypeBool, "true");
+	theXmlPreferences->setDefault("errorEnabled", XmlPreferences::PrefType::TypeBool, "true");
+	theXmlPreferences->setDefault("moduleInfoOpensMessage", XmlPreferences::PrefType::TypeBool, "true");
+	theXmlPreferences->setDefault("infoOpenMessage", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("warningOpenMessage", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("errorOpenMessage", XmlPreferences::PrefType::TypeBool, "true");
+	theXmlPreferences->setDefault("useWindowSpecs", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("forceNetFileEncryption", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("cryptKey", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("exitAfter", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("forceLicense", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("noExecuteMenus", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noConnectionMenus", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noWindowsMenus", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noExitOptions", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("noImageMenus", XmlPreferences::PrefType::TypeBool, "false");
+	theXmlPreferences->setDefault("oemApplicationName", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("oemApplicationNameCode", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("oemLicenseCode", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("viewDataFile", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("autoScrollVPE", XmlPreferences::PrefType::TypeBool, "true");
+	theXmlPreferences->setDefault("autoLayoutHeight", XmlPreferences::PrefType::TypeInt, "0");
+	theXmlPreferences->setDefault("autoLayoutGroupSpacing", XmlPreferences::PrefType::TypeInt, "0");
+	theXmlPreferences->setDefault("autoLayoutNodeSpacing", XmlPreferences::PrefType::TypeInt, "0");
+	theXmlPreferences->setDefault("cosmoDir", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("jdkDir", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("htmlDir", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("serverDir", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("dxJarFile", XmlPreferences::PrefType::TypeString, "");
+	theXmlPreferences->setDefault("userHtmlDir", XmlPreferences::PrefType::TypeString, "");
+
+
+	// Now setup the preferences in DXResource*
+
+	// theXmlPreferences->writePrefs(res_file);
+
 //    char res_file[256];
     //XrmDatabase resourceDatabase = 0;
     //
     // if the file exists, use it, but don't create an empty file.
     //
- //   if (this->getApplicationDefaultsFileName(res_file, FALSE)) 
 	//resourceDatabase = XrmGetFileDatabase(res_file);
 
     //
@@ -238,38 +446,39 @@ void Application::parseCommand(unsigned int* argcp, char** argv)
     //
 }
 
-boolean Application::initialize(unsigned int* argcp, char** argv)
+boolean BaseApp::initialize(unsigned int* argcp, char** argv)
 {
+	//
+	// Initialize the preferences file
+	//
+	theXmlPreferences->BuildTheXmlPreferences();
+
     //
     // Initialize the window system if not done already.
     //
- //   if (!this->getRootWidget() && 
-	//!this->initializeWindowSystem(argcp, argv))
-	//return FALSE;
+	if (!this->initializeWindowSystem(argcp, argv))
+		return FALSE;
 	
     //
     // Since the instance name of this object was set in the UIComponent
     // constructor before the name of the program was visible, delete the
     // old name and set it to argv[0].
     //
-    delete[] this->name;
+	if(this->name)
+		delete[] this->name;
+
     this->name = DuplicateString(argv[0]);
 
     //
-    // Add Application specific actions.
+    // Add Application specific actions. Fixme: apparently does nothing.
     //
     this->addActions();
-
-    //
-    // Create the busy status indicator cursor.
-    //
-    //Application::BusyCursor = XCreateFontCursor(this->display, XC_watch);
 
     //
     // Initialize and manage any windows registered with this
     // application at this point.
     //
-    this->notifyClients(Application::MsgCreate);
+    this->notifyClients(BaseApp::MsgCreate);
 
     return TRUE;
 }
@@ -279,7 +488,7 @@ boolean Application::initialize(unsigned int* argcp, char** argv)
 // Post the copyright notice that is returned by this->getCopyrightNotice().
 // If it returns NULL, then don't post any notice.
 //
-void Application::postCopyrightNotice()
+void BaseApp::postCopyrightNotice()
 {
     const char *c = this->getCopyrightNotice();
 
@@ -296,39 +505,44 @@ void Application::postCopyrightNotice()
     }
 }
 
-void Application::handleEvents()
+void BaseApp::handleEvents()
 {
-//XEvent event;
+	if(this->applicationContext->MainForm) {
+		System::Threading::Thread::CurrentThread->ApartmentState = System::Threading::ApartmentState::STA;
+		Application::Run(this->applicationContext);
+	}
+
+	//XEvent event;
     //
     // Loop forever...
     //
-    for (;;) {
+    //for (;;) {
 	//XtAppNextEvent (this->applicationContext, &event);
 	//this->handleEvent(&event);
-    }
+    //}
 }
 
-//void Application::handleEvent (XEvent *xev)
+//void BaseApp::handleEvent (XEvent *xev)
 //{
 //    XtDispatchEvent (xev);
 //}
 
 
-void Application::manage()
+void BaseApp::manage()
 {
     //
     // Notify the client windows to manage themselves.
     //
-    this->notifyClients(Application::MsgManage);
+    this->notifyClients(BaseApp::MsgManage);
 }
 
 
-void Application::unmanage()
+void BaseApp::unmanage()
 {
     //
     // Notify the client windows to unmanage themselves.
     //
-    this->notifyClients(Application::MsgUnmanage);
+    this->notifyClients(BaseApp::MsgUnmanage);
 }
 
 
@@ -344,39 +558,37 @@ void Application::unmanage()
 // setBusyCursor(FALSE);	// does not effect cursor
 // setBusyCursor(FALSE);	// resets cursor
 //
-void Application::setBusyCursor(boolean setting)
+void BaseApp::setBusyCursor(boolean setting)
 {
-//    ASSERT(this->getRootWidget());
-//    ASSERT(Application::BusyCursor);
-//    ASSERT(this->busyCursors >= 0);
+	ASSERT(this->busyCursors >= 0);
 
-    if (setting)
-    {
-	this->busyCursors++;	
-    }
-    else
-    {
-	this->busyCursors--;	
-    }
+	if (setting)
+	{
+		this->busyCursors++;	
+	}
+	else
+	{
+		this->busyCursors--;	
+	}
 
-    switch (this->busyCursors) {
+	switch (this->busyCursors) {
 	case 0:
-	    this->notifyClients(Application::MsgResetCursor);
-	    break;
+		this->notifyClients(BaseApp::MsgResetCursor);
+		break;
 	case 1:
-	    if (setting)
-		this->notifyClients(Application::MsgSetBusyCursor);
-	    break;
-    }
-	
-    ASSERT(this->busyCursors >= 0);
+		if (setting)
+			this->notifyClients(BaseApp::MsgSetBusyCursor);
+		break;
+	}
+
+	ASSERT(this->busyCursors >= 0);
 }
 
 
 //
 // This is currently only used for debugging.
 //
-//void Application::DumpApplicationResources(const char *filename)
+//void BaseApp::DumpApplicationResources(const char *filename)
 //{
 //    Display *display = theApplication->getDisplay();
 // 
@@ -391,50 +603,50 @@ void Application::setBusyCursor(boolean setting)
 // Virtual methods that are called by Command::ExecuteCommandCallback()
 // before and after Command::execute().
 //
-void Application::startCommandInterfaceExecution()
+void BaseApp::startCommandInterfaceExecution()
 {
     this->notifyClients(Command::MsgBeginExecuting);
 }
-void Application::endCommandInterfaceExecution()
+void BaseApp::endCommandInterfaceExecution()
 {
     this->notifyClients(Command::MsgEndExecuting);
 }
 
 
-const char *Application::getFormalName() 
+const char *BaseApp::getFormalName() 
 {
     return "'Your Application's Formal Name Here'";
 }
 
-const char *Application::getInformalName() 
+const char *BaseApp::getInformalName() 
 {
     return "'Your Application's Informal Name Here'";
 }
 
-const char *Application::getCopyrightNotice() 
+const char *BaseApp::getCopyrightNotice() 
 {
     return "'Your Application's Copyright Notice Here'";
 }
 
-void Application::helpOn(const char *topic)
+void BaseApp::helpOn(const char *topic)
 {
     printf("Your Application specific help on `%s' here\n", topic);
 }
-const char *Application::getHelpDirectory()
+const char *BaseApp::getHelpDirectory()
 {
     return ".";
 }
 
-const char *Application::getHelpDirFileName()
+const char *BaseApp::getHelpDirFileName()
 {
     return "HelpDir";
 }
-const char *Application::getHTMLDirectory()
+const char *BaseApp::getHTMLDirectory()
 {
     return ".";
 }
 
-const char *Application::getHTMLDirFileName()
+const char *BaseApp::getHTMLDirFileName()
 {
     return "Help.idx";
 }
@@ -518,7 +730,7 @@ const char *Application::getHTMLDirFileName()
 // Return TRUE if successful.  At this level in the class hierachy
 // we don't know how to start a tutorial so we always return FALSE.
 //
-boolean Application::startTutorial()
+boolean BaseApp::startTutorial()
 {
     return FALSE;
 }
@@ -526,7 +738,7 @@ boolean Application::startTutorial()
 // A virtual method that allows other applications to handle ASSERT
 // failures among other things.
 //
-void Application::abortApplication()
+void BaseApp::abortApplication()
 {
     abort();
 }
@@ -536,7 +748,7 @@ void Application::abortApplication()
 // this is normally something like $HOME/DX.  There is a virtual version
 // of this method in IBMApplication that uses UIRoot on the pc.
 //
-boolean Application::getApplicationDefaultsFileName(char* res_file, boolean create)
+boolean BaseApp::getApplicationDefaultsFileName(char* res_file, boolean create)
 {
     const char* class_name = this->getApplicationClass();
     char* home = (char*)getenv("HOME");
@@ -553,7 +765,7 @@ boolean Application::getApplicationDefaultsFileName(char* res_file, boolean crea
     return this->isUsableDefaultsFile(res_file, create);
 }
 
-boolean Application::isUsableDefaultsFile(const char* res_file, boolean create)
+boolean BaseApp::isUsableDefaultsFile(const char* res_file, boolean create)
 {
 #if !defined(DXD_OS_NON_UNIX)
     int ru = S_IRUSR;

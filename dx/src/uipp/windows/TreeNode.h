@@ -17,50 +17,52 @@
 
 class List;
 
-class TreeNode : public Base {
+namespace dxui {
+	class TreeNode : public Base {
 
-  private:
+	private:
 
-  protected:
-    Symbol definition;
-    TreeNode* parent;
-    TreeNode(Symbol s, TreeNode* parent) {
-	this->definition = s;
-	this->expanded = FALSE;
-	this->parent = parent;
-    }
+	protected:
+		Symbol definition;
+		TreeNode* parent;
+		TreeNode(Symbol s, TreeNode* parent) {
+			this->definition = s;
+			this->expanded = FALSE;
+			this->parent = parent;
+		}
 
-    boolean expanded;
+		boolean expanded;
 
-  public:
-    virtual ~TreeNode() { }
+	public:
+		virtual ~TreeNode() { }
 
-    virtual boolean hasChildren()=0;
-    virtual List* getChildren()=0;
-    virtual boolean isExpanded() { return this->expanded; }
-    virtual const char* getString() {
-	return theSymbolManager->getSymbolString(this->definition);
-    }
-    virtual boolean isRoot()=0;
-    virtual boolean isLeaf()=0;
-    virtual Symbol getDefinition() { return this->definition; }
-    virtual void setExpanded(boolean e=TRUE) {
-	this->expanded = e;
-    }
-    virtual boolean isSorted() { return FALSE; }
+		virtual boolean hasChildren()=0;
+		virtual List* getChildren()=0;
+		virtual boolean isExpanded() { return this->expanded; }
+		virtual const char* getString() {
+			return theSymbolManager->getSymbolString(this->definition);
+		}
+		virtual boolean isRoot()=0;
+		virtual boolean isLeaf()=0;
+		virtual Symbol getDefinition() { return this->definition; }
+		virtual void setExpanded(boolean e=TRUE) {
+			this->expanded = e;
+		}
+		virtual boolean isSorted() { return FALSE; }
 
-    TreeNode* getParent() { return this->parent; }
- 
-    //
-    // Returns a pointer to the class name.
-    //
-    const char* getClassName()
-    {
-	return ClassTreeNode;
-    }
-};
+		TreeNode* getParent() { return this->parent; }
 
-class LeafNode : public TreeNode {
+		//
+		// Returns a pointer to the class name.
+		//
+		const char* getClassName()
+		{
+			return ClassTreeNode;
+		}
+	};
+}
+
+class LeafNode : public dxui::TreeNode {
     private:
     protected:
     public:
@@ -72,7 +74,7 @@ class LeafNode : public TreeNode {
 	boolean hasChildren() { return FALSE ; }
 };
 
-class CategoryNode: public TreeNode {
+class CategoryNode: public dxui::TreeNode {
     private:
     protected:
 	List kids;

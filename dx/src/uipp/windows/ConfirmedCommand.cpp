@@ -9,7 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "ConfirmedCommand.h"
 #include "QuestionDialogManager.h"
 #include "CommandInterface.h"

@@ -95,14 +95,6 @@ class UIComponent : virtual public Base
     virtual void widgetDestroyed();
 
     //
-    // Retrieves resources for the UIComponent object from the
-    // resource manager.
-    //
-    //void getResources(const XtPointer      resourceBase,
-		  //    const XtResourceList resourceList,
-		  //    const int            numResources);
-
-    //
     // Loads component's default resources into database.
     // This allows overrideable defaults to be set for certain resources.
     // This function should normally be called by the derived class

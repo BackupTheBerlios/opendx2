@@ -11,7 +11,6 @@
 
 #include "PreActionCommand.h"
 #include "DialogManager.h"
-#include "Application.h"
 #include "QuestionDialogManager.h"
 #include "CommandInterface.h"
 

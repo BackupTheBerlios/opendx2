@@ -15,7 +15,6 @@
 
 #include "ToggleButtonInterface.h"
 #include "ButtonInterface.h"
-#include "Application.h"
 
 
 boolean RenderingOptionsDialog::ClassInitialized = FALSE;

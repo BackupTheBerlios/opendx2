@@ -9,7 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "FileSelectorNode.h"
 #include "FileSelectorInteractor.h"
 #include "FileSelectorDialog.h"
@@ -65,7 +64,7 @@ void FileSelectorInteractor::initialize()
     //
     if (NOT FileSelectorInteractor::ClassInitialized)
     {
-        ASSERT(theApplication);
+        //ASSERT(theApplication);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          FileSelectorInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),

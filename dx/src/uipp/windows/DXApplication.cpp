@@ -117,6 +117,7 @@
 #include "WarningDialogManager.h"
 #include "Node.h"
 #include "ResourceManager.h"
+#include "XmlPreferences.h"
 
 //#ifdef HAS_CLIPNOTIFY_EXTENSION
 //#include "../widgets/clipnotify.h"
@@ -175,25 +176,6 @@ Symbol DXApplication::MsgPanelChanged = 0;
 #define MENUBAR_ANCHOR_MODE 	"MENUBAR"
 
 
-
-//static
-//const String _defaultDXResources[] =
-//{
-//    "*quitOption.labelString:                Quit",
-//    "*quitOption.mnemonic:                   Q",
-//    "*quitOption.accelerator:                Ctrl<Key>Q",
-//    "*quitOption.acceleratorText:            Ctrl+Q",
-//    "*standInBackground:              #5F9EA0", // CadetBlue 
-//    "*executionHighlightForeground:   #00ff7e",
-//    "*backgroundExecutionForeground:  #7e7eb4",
-//    "*errorHighlightForeground:       #ff9b00",
-//    "*InsensitiveColor:     #888888",
-//
-//// purify <explitive deleted> the bed because of this
-////    "*tearOffModel:			     XmTEAR_OFF_ENABLED",
-//    NULL
-//};
-
 //extern "C" 
 //void
 //TurnOffButtonHelp(
@@ -220,6 +202,7 @@ DXApplication::DXApplication(char* className): IBMApplication(className)
     //
     this->betaTimeoutCheck();
 #endif
+	this->resource.debugMode = true;
 
     //
     // Set the global DX application pointer.
@@ -778,6 +761,110 @@ DXApplication::InitializeSignals(void)
 //    this->IBMApplication::installDefaultResources(baseWidget);
 //}
 
+void DXApplication::getResources()
+{
+// Need to go through theXmlPrefrences and pull out the appropriate pieces to fill in resource.
+
+	theXmlPreferences->getPref("server", DXApplication::resource.server);
+	theXmlPreferences->getPref("executive", DXApplication::resource.executive);
+	theXmlPreferences->getPref("directory", DXApplication::resource.workingDirectory);
+	theXmlPreferences->getPref("program", DXApplication::resource.program);
+	theXmlPreferences->getPref("cfg", DXApplication::resource.cfgfile);
+	theXmlPreferences->getPref("userModuleDescriptionFile", DXApplication::resource.userModules);
+	theXmlPreferences->getPref("macros", DXApplication::resource.macros);
+	theXmlPreferences->getPref("messages", DXApplication::resource.errorPath);
+	theXmlPreferences->getPref("executiveModuleDescriptionFile", DXApplication::resource.executiveModule);
+	theXmlPreferences->getPref("uiModuleDescriptionFile", DXApplication::resource.uiModule);
+	theXmlPreferences->getPref("noWindowPlacement", DXApplication::resource.noWindowPlacement);
+	theXmlPreferences->getPref("port", DXApplication::resource.port);
+	theXmlPreferences->getPref("memory", DXApplication::resource.memorySize);
+	theXmlPreferences->getPref("DXVersion", DXApplication::resource.echoVersion);
+	theXmlPreferences->getPref("anchorMode", DXApplication::resource.anchorMode);
+	theXmlPreferences->getPref("noAnchorAtStartup", DXApplication::resource.noAnchorAtStartup);
+	theXmlPreferences->getPref("noConfirmedQuit", DXApplication::resource.noConfirmedQuit);
+	theXmlPreferences->getPref("debugMode", DXApplication::resource.debugMode);
+	theXmlPreferences->getPref("showInstanceNumbers", DXApplication::resource.showInstanceNumbers);
+	theXmlPreferences->getPref("runUIOnly", DXApplication::resource.runUIOnly);
+	theXmlPreferences->getPref("runLocally", DXApplication::resource.runLocally);
+	theXmlPreferences->getPref("printHelpMessage", DXApplication::resource.showHelpMessage);
+	theXmlPreferences->getPref("executeProgram", DXApplication::resource.executeProgram);
+	theXmlPreferences->getPref("executeOnChange", DXApplication::resource.executeOnChange);
+	theXmlPreferences->getPref("suppressStartupWindows", DXApplication::resource.suppressStartupWindows);
+	theXmlPreferences->getPref("metric", DXApplication::resource.isMetric);
+	theXmlPreferences->getPref("exitAfter", DXApplication::resource.exitAfter);
+	theXmlPreferences->getPref("noExitOptions", DXApplication::resource.noExitOptions);
+	theXmlPreferences->getPref("noExecuteMenus", DXApplication::resource.noExecuteMenus);
+	theXmlPreferences->getPref("noConnectionMenus", DXApplication::resource.noConnectionMenus);
+	theXmlPreferences->getPref("noWindowsMenus", DXApplication::resource.noWindowsMenus);
+	theXmlPreferences->getPref("printImageFormat", DXApplication::resource.printImageFormat);
+	theXmlPreferences->getPref("printImagePageSize", DXApplication::resource.printImagePageSize);
+	theXmlPreferences->getPref("printImageResolution", DXApplication::resource.printImageResolution);
+	theXmlPreferences->getPref("printImageSize", DXApplication::resource.printImageSize);
+	//theXmlPreferences->getPref("", DXApplication::resource.printImageCommand);
+	theXmlPreferences->getPref("saveImageFormat", DXApplication::resource.saveImageFormat);
+	theXmlPreferences->getPref("saveImagePageSize", DXApplication::resource.saveImagePageSize);
+	theXmlPreferences->getPref("saveImageResolution", DXApplication::resource.saveImageResolution);
+	theXmlPreferences->getPref("saveImageSize", DXApplication::resource.saveImageSize);
+	theXmlPreferences->getPref("infoEnabled", DXApplication::resource.infoEnabled);
+	theXmlPreferences->getPref("warningEnabled", DXApplication::resource.warningEnabled);
+	theXmlPreferences->getPref("errorEnabled", DXApplication::resource.errorEnabled);
+	theXmlPreferences->getPref("moduleInfoOpensMessage", DXApplication::resource.moduleInfoOpensMessage);
+	theXmlPreferences->getPref("infoOpensMessage", DXApplication::resource.infoOpensMessage);
+	theXmlPreferences->getPref("warningOpensMessage", DXApplication::resource.warningOpensMessage);
+	theXmlPreferences->getPref("errorOpensMessage", DXApplication::resource.errorOpensMessage);
+	theXmlPreferences->getPref("restrictionLevel", DXApplication::resource.restrictionLevel);
+	theXmlPreferences->getPref("useWindowSpecs", DXApplication::resource.useWindowSpecs);
+	theXmlPreferences->getPref("noRWConfig", DXApplication::resource.noRWConfig);
+	theXmlPreferences->getPref("noOpenAllPanels", DXApplication::resource.noOpenAllPanels);
+	theXmlPreferences->getPref("noPanelEdit", DXApplication::resource.noPanelEdit);
+	theXmlPreferences->getPref("noPanelAccess", DXApplication::resource.noPanelAccess);
+	theXmlPreferences->getPref("noPanelOptions", DXApplication::resource.noPanelOptions);
+	theXmlPreferences->getPref("noInteractorEdits", DXApplication::resource.noInteractorEdits);
+	theXmlPreferences->getPref("noInteractorAttributes", DXApplication::resource.noInteractorAttributes);
+	theXmlPreferences->getPref("noInteractorMovement", DXApplication::resource.noInteractorMovement);
+	theXmlPreferences->getPref("noImageMenus", DXApplication::resource.noImageMenus);
+	theXmlPreferences->getPref("noImageRWNetFile", DXApplication::resource.noImageRWNetFile);
+	theXmlPreferences->getPref("limitedNetFileSelection", DXApplication::resource.limitedNetFileSelection);
+	theXmlPreferences->getPref("netPath", DXApplication::resource.netPath);
+	theXmlPreferences->getPref("noImageLoad", DXApplication::resource.noImageLoad);
+	theXmlPreferences->getPref("noEditorAccess", DXApplication::resource.noEditorAccess);
+	theXmlPreferences->getPref("limitImageOptions", DXApplication::resource.limitImageOptions);
+	theXmlPreferences->getPref("noImageSaving", DXApplication::resource.noImageSaving);
+	theXmlPreferences->getPref("noImagePrinting", DXApplication::resource.noImagePrinting);
+	theXmlPreferences->getPref("notifySaveNet", DXApplication::resource.notifySaveNet);
+	theXmlPreferences->getPref("noNetworkExecute", DXApplication::resource.noNetworkExecute);
+	theXmlPreferences->getPref("noScriptCommands", DXApplication::resource.noScriptCommands);
+	theXmlPreferences->getPref("noMessageInfoOption", DXApplication::resource.noMessageInfoOption);
+	theXmlPreferences->getPref("noMessageWarningOption", DXApplication::resource.noMessageWarningOption);
+	theXmlPreferences->getPref("noEditorOnError", DXApplication::resource.noEditorOnError);
+	theXmlPreferences->getPref("noCMapSetNameOption", DXApplication::resource.noCMapSetNameOption);
+	theXmlPreferences->getPref("noCMapOpenMap", DXApplication::resource.noCMapOpenMap);
+	theXmlPreferences->getPref("noCMapSaveMap", DXApplication::resource.noCMapSaveMap);
+	theXmlPreferences->getPref("noPGroupAssignment", DXApplication::resource.noPGroupAssignment);
+	theXmlPreferences->getPref("noDXHelp", DXApplication::resource.noDXHelp);
+	theXmlPreferences->getPref("cryptKey", DXApplication::resource.cryptKey);
+	theXmlPreferences->getPref("forceNetFileEncryption", DXApplication::resource.forceNetFileEncryption);
+	theXmlPreferences->getPref("forceFunctionalLicense", DXApplication::resource.forceFunctionalLicense);
+	theXmlPreferences->getPref("applicationPort", DXApplication::resource.applicationPort);
+	theXmlPreferences->getPref("applicationHost", DXApplication::resource.applicationHost);
+	theXmlPreferences->getPref("oemApplicationName", DXApplication::resource.oemApplicationName);
+	theXmlPreferences->getPref("oemApplicationNameCode", DXApplication::resource.oemApplicationNameCode);
+	theXmlPreferences->getPref("oemLicenseCode", DXApplication::resource.oemLicenseCode);
+	theXmlPreferences->getPref("viewDataFile", DXApplication::resource.viewDataFile);
+	theXmlPreferences->getPref("autoScrollVPE", DXApplication::resource.autoScrollVPEInitVal);
+	theXmlPreferences->getPref("cosmoDir", DXApplication::resource.cosmoDir);
+	theXmlPreferences->getPref("jdkDir", DXApplication::resource.jdkDir);
+	theXmlPreferences->getPref("htmlDir", DXApplication::resource.htmlDir);
+	theXmlPreferences->getPref("dxJarFile", DXApplication::resource.dxJarFile);
+	theXmlPreferences->getPref("userHtmlDir", DXApplication::resource.userHtmlDir);
+	theXmlPreferences->getPref("serverDir", DXApplication::resource.serverDir);
+	theXmlPreferences->getPref("autoLayoutHeight", DXApplication::resource.autoLayoutHeight);
+	theXmlPreferences->getPref("autoLayoutGroupSpacing", DXApplication::resource.autoLayoutGroupSpacing);
+	theXmlPreferences->getPref("autoLayoutNodeSpacing", DXApplication::resource.autoLayoutNodeSpacing);
+
+	// TODO: need to take care of the color prefs yet.
+}
+
 boolean DXApplication::initialize(unsigned int* argcp,
 			       char**        argv)
 {
@@ -802,8 +889,9 @@ boolean DXApplication::initialize(unsigned int* argcp,
 	//}
  //   }
 
+	ResourceManager::BuildTheResourceManager();
     if (!this->IBMApplication::initialize(argcp,argv))
-	return FALSE;
+		return FALSE;
 
 //#ifdef DIAGNOSTICS
 //    /*
@@ -815,8 +903,6 @@ boolean DXApplication::initialize(unsigned int* argcp,
 
     this->InitializeSignals();
 
-    this->parseCommand(argcp, argv);
-
 
     //
     // Get application resources.
@@ -824,8 +910,7 @@ boolean DXApplication::initialize(unsigned int* argcp,
     if (NOT DXApplication::DXApplicationClassInitialized)
     {
 	//this->installDefaultResources(theApplication->getRootWidget());
-	//this->getResources((XtPointer)&DXApplication::resource,
-	//   _DXResourceList, XtNumber(_DXResourceList));
+	this->getResources();
 
 	DXApplication::MsgExecute = 
 	    theSymbolManager->registerSymbol("Execute");
@@ -1224,7 +1309,6 @@ boolean DXApplication::initialize(unsigned int* argcp,
 
 
     i=0;
-    ResourceManager::BuildTheResourceManager();
     while (DXApplication::ListValuedSettings[i]) {
 	theResourceManager->registerMultiValued(DXApplication::ListValuedSettings[i]);
 	i++;

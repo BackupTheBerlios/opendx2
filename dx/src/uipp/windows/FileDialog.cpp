@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include "FileDialog.h"
-#include "Application.h"
 #include "DXStrings.h"
 #include "ErrorDialogManager.h"
 
@@ -21,6 +20,8 @@
 #include <io.h>
 #include "DXStrings.h"
 #endif
+
+using namespace dxui;
 
 //#ifdef DXD_NON_UNIX_DIR_SEPARATOR
 //extern "C" {

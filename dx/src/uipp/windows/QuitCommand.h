@@ -34,7 +34,7 @@ class Application;
 class QuitCommand : public ConfirmedCommand
 {
   private:
-    Application *application;
+    BaseApp *application;
   protected:
     //
     // Implements the command:
@@ -48,7 +48,7 @@ class QuitCommand : public ConfirmedCommand
     //
     // Constructor:
     //
-    QuitCommand(Application*  app,
+    QuitCommand(BaseApp*  app,
 		const char*   name,
 		CommandScope* scope,
 		boolean       active,

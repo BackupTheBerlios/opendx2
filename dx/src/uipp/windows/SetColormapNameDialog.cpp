@@ -12,7 +12,6 @@
 #include "DXStrings.h"
 #include "SetColormapNameDialog.h"
 
-#include "Application.h"
 #include "ColormapNode.h"
 #include "Network.h"
 #include "ErrorDialogManager.h"

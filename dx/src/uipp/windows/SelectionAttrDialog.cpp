@@ -14,7 +14,6 @@
 #include "SelectionAttrDialog.h"
 #include "SelectionInstance.h"
 #include "LocalAttributes.h"
-#include "Application.h"
 #include "ErrorDialogManager.h"
 #include "DXValue.h"	// For IsTensor() and IsVector().
 #include "DXTensor.h"	

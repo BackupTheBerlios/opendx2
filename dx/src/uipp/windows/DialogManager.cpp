@@ -11,7 +11,6 @@
 
 #include "DialogManager.h"
 #include "DialogData.h"
-#include "Application.h"
 
 //#ifdef DXD_WIN             //SMH define local X routine
 //extern "C" { extern void ForceUpdate(Widget); }

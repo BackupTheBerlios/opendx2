@@ -30,7 +30,7 @@ class Network;
 //
 // OpenCFGDialog class definition:
 //				
-class OpenCFGDialog : public FileDialog
+class OpenCFGDialog : public dxui::FileDialog
 {
     static boolean ClassInitialized;
     //static String  DefaultResources[];

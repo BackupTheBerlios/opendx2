@@ -9,7 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "ColormapEditor.h"
 #include "OpenColormapDialog.h"
 #include "ErrorDialogManager.h"

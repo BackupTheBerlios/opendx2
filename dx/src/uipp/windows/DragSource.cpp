@@ -13,8 +13,7 @@
 #include <unistd.h>
 #endif
 
-#include "DragSource.h" 
-#include "Application.h" 
+#include "DragSource.h"  
 #include "WarningDialogManager.h"
 #include "Dictionary.h"
 #include "DictionaryIterator.h"

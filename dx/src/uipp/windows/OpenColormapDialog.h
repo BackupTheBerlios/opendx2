@@ -15,7 +15,6 @@
 
 
 #include "FileDialog.h"
-#include "Application.h"
 
 
 //
@@ -29,7 +28,7 @@ class ColormapEditor;
 //
 // OpenColormapDialog class definition:
 //				
-class OpenColormapDialog : public FileDialog
+class OpenColormapDialog : public dxui::FileDialog
 {
   private:
 

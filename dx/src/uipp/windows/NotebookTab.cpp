@@ -8,7 +8,6 @@
 
 #include "NotebookTab.h"
 #include "DXStrings.h"
-#include "Application.h"
 
 int NotebookTab::CornerSize = 6;
 boolean NotebookTab::ClassInitialized = FALSE;

@@ -10,7 +10,6 @@
 #include <stdarg.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "WarningDialogManager.h"
 
 

@@ -27,7 +27,6 @@
 
 #include "DXValue.h"
 #include "ScalarListInstance.h"
-#include "Application.h"
 #include "ErrorDialogManager.h"
 
 boolean ScalarListInteractor::ScalarListInteractorClassInitialized = FALSE;
@@ -78,7 +77,7 @@ void ScalarListInteractor::initialize()
     //
     if (NOT ScalarListInteractor::ScalarListInteractorClassInitialized)
     {
-        ASSERT(theApplication);
+        //ASSERT(theApplication);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          ScalarListInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),

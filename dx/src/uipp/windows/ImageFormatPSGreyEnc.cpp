@@ -10,7 +10,6 @@
 
 
 #include "ImageFormatPSGreyEnc.h"
-#include "Application.h"
 
 boolean ImageFormatPSGreyEnc::ClassInitialized = FALSE;
 

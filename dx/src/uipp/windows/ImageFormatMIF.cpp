@@ -10,7 +10,6 @@
 
 
 #include "ImageFormatMIF.h"
-#include "Application.h"
 
 boolean ImageFormatMIF::ClassInitialized = FALSE;
 

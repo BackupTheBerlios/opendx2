@@ -9,7 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "Application.h"
 #include "ColormapNBinsDialog.h"
 #include "ColormapEditor.h"
 #include "ColormapNode.h"

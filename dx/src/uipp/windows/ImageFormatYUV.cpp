@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include "ImageFormatYUV.h"
-#include "Application.h"
 #include "DXStrings.h"
 #if defined(DXD_WIN) || defined(OS2)
 #define unlink _unlink

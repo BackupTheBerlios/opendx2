@@ -21,7 +21,6 @@
 
 
 #include "DXApplication.h" // for getPacketIF()
-#include "Application.h"
 #include "ErrorDialogManager.h"
 #include "WarningDialogManager.h"
 

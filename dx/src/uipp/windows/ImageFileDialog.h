@@ -27,7 +27,7 @@ class SaveImageDialog;
 // ImageFileDialog class definition:
 //				
 
-class ImageFileDialog : public FileDialog
+class ImageFileDialog : public dxui::FileDialog
 {
   private:
     //

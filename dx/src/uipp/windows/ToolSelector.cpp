@@ -9,10 +9,10 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
 #include <ctype.h>
 #include <time.h>
 
+#include "Application.h"
 #include "NodeDefinition.h"
 #include "Dictionary.h"
 #include "DictionaryIterator.h"
@@ -81,7 +81,7 @@ void ToolSelector::initialize()
     //
     if (NOT ToolSelector::ToolSelectorClassInitialized)
     {
-        ASSERT(theApplication);
+        //ASSERT(theApplication);
 
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          ToolSelector::DefaultResources);
@@ -190,7 +190,7 @@ boolean ToolSelector::addTool(Symbol cat, Symbol tool, void *ptr)
 
 void ToolSelector::buildTreeModel()
 {
-    boolean repaint = (this->treeView->getDataModel()!=NUL(TreeNode*));
+    boolean repaint = (this->treeView->getDataModel()!=NUL(dxui::TreeNode*));
     RootNode* root = new RootNode();
     DictionaryIterator citer(this->categoryDictionary);
     Symbol cat;
@@ -300,8 +300,8 @@ void ToolSelector::toolSelect(Symbol ts)
 	// figuring out exactly which node to select because there are 2 copies
 	// of each node, 1 in the normal category and 1 in ( All ).
 	//
-	TreeNode* tn = this->getToolNode(this->treeView->getDataModel(), ts);
-	TreeNode* seln = tv->getSelection();
+	dxui::TreeNode* tn = this->getToolNode(this->treeView->getDataModel(), ts);
+	dxui::TreeNode* seln = tv->getSelection();
 	if ((seln) && (tn->getDefinition() != seln->getDefinition()))
 	    tv->select (tn, TRUE);
     } else {
@@ -315,7 +315,7 @@ void ToolSelector::lockSelect(Symbol ts)
     if (this->activeData != NULL) this->lockedData = TRUE;
 }
 
-ToolCategoryNode::ToolCategoryNode(Symbol s, TreeNode* parent, ToolSelector* ts) :
+ToolCategoryNode::ToolCategoryNode(Symbol s, dxui::TreeNode* parent, ToolSelector* ts) :
     CategoryNode(s,parent)
 {
     this->toolSelector = ts;
@@ -433,7 +433,7 @@ boolean ToolSelector::updateCategoryListWidget()
     return TRUE;
 }
 
-void ToolView::select(TreeNode* node, boolean repaint) 
+void ToolView::select(dxui::TreeNode* node, boolean repaint) 
 {
  //   if (this->getSelection() == node) return ;
  //   this->TreeView::select(node, repaint);
@@ -467,18 +467,18 @@ void ToolView::getSearchableNodes(List& nodes_to_search)
 #if defined(ALPHABETIZED)
     Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
     if (!alpha) return ;
-    TreeNode* root = this->getDataModel();
+	dxui::TreeNode* root = this->getDataModel();
     List* kids = root->getChildren();
     ListIterator iter(*kids);;
-    TreeNode* kid;
+	dxui::TreeNode* kid;
     boolean found = FALSE;
-    while (kid = (TreeNode*)iter.getNext()) {
+	while (kid = (dxui::TreeNode*)iter.getNext()) {
 	if (kid->getDefinition() == alpha) {
 	    if (kid->isExpanded() == FALSE) {
 		List* nodes = kid->getChildren();
 		ListIterator liter(*nodes);
 		boolean in_expanded_category;
-		while (kid=(TreeNode*)liter.getNext()) {
+		while (kid=(dxui::TreeNode*)liter.getNext()) {
 		    Symbol ns = kid->getDefinition();
 		    NodeDefinition* nd = (NodeDefinition*)
 			theNodeDefinitionDictionary->findDefinition(ns);
@@ -497,7 +497,7 @@ void ToolView::getSearchableNodes(List& nodes_to_search)
 #endif
 }
 
-void ToolView::multiClick(TreeNode* node) 
+void ToolView::multiClick(dxui::TreeNode* node) 
 {
  //   this->TreeView::multiClick(node);
  //   if (node->isLeaf()) {
@@ -512,7 +512,7 @@ void ToolView::multiClick(TreeNode* node)
 // that's inside the collapsed ALPHABETIZED category. If 
 // ALPHABETIZED is expanded then we'll allow its use.
 //
-TreeNode* ToolSelector::getToolNode (TreeNode* node, Symbol tool)
+dxui::TreeNode* ToolSelector::getToolNode (dxui::TreeNode* node, Symbol tool)
 {
     // this test does nothing if ALPHABETIZED isn't in use.
     Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
@@ -529,9 +529,9 @@ TreeNode* ToolSelector::getToolNode (TreeNode* node, Symbol tool)
 	List* kids = node->getChildren();
 	if (kids) {
 	    ListIterator iter(*kids);
-	    TreeNode* tn;
-	    while (tn=(TreeNode*)iter.getNext()) {
-		TreeNode* n = this->getToolNode(tn, tool);
+	    dxui::TreeNode* tn;
+		while (tn=(dxui::TreeNode*)iter.getNext()) {
+			dxui::TreeNode* n = this->getToolNode(tn, tool);
 		if (n) return n;
 	    }
 	}
@@ -539,15 +539,15 @@ TreeNode* ToolSelector::getToolNode (TreeNode* node, Symbol tool)
     return 0;
 }
 
-CategoryNode* ToolSelector::getCategoryNode (TreeNode* node, Symbol cat)
+CategoryNode* ToolSelector::getCategoryNode (dxui::TreeNode* node, Symbol cat)
 {
     if (node->getDefinition() == cat) return (CategoryNode*)node;
     if (node->hasChildren()) {
 	List* kids = node->getChildren();
 	if (kids) {
 	    ListIterator iter(*kids);
-	    TreeNode* tn;
-	    while (tn=(TreeNode*)iter.getNext()) {
+	    dxui::TreeNode* tn;
+	    while (tn=(dxui::TreeNode*)iter.getNext()) {
 		CategoryNode* catNode = this->getCategoryNode(tn, cat);
 		if (catNode) return catNode;
 	    }
@@ -584,12 +584,12 @@ void ToolSelector::help()
 	// then check for the first expanded category and use
 	// that.  The ALPHABETIZED category doesn't have help.
 	//
-	TreeNode* root = this->treeView->getDataModel();
+	dxui::TreeNode* root = this->treeView->getDataModel();
 	List* categories = root->getChildren();
 	ListIterator iter(*categories);
 	iter.getNext();
-	TreeNode* cat;
-	while (cat=(TreeNode*)iter.getNext()) {
+	dxui::TreeNode* cat;
+	while (cat=(dxui::TreeNode*)iter.getNext()) {
 	    if (cat->isExpanded()) {
 		tools = cat->getString();
 		break;

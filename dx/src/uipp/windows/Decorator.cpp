@@ -15,7 +15,6 @@
 #include "DecoratorStyle.h"
 #include "DXApplication.h"
 #include "WarningDialogManager.h"
-#include "Application.h" //for theApplication->getDisplay()
 #include "DecoratorInfo.h"
 #include "ListIterator.h"
 

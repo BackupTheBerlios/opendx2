@@ -30,7 +30,7 @@ class TextFile;
 //
 // TextFileFileDialog class definition:
 //				
-class TextFileFileDialog : public FileDialog
+class TextFileFileDialog : public dxui::FileDialog
 {
     static boolean ClassInitialized;
     //static String  DefaultResources[];

@@ -9,8 +9,6 @@
 #include <dxconfig.h>
 
 
-
-
 #ifndef _IBMApplication_h
 #define _IBMApplication_h
 
@@ -42,14 +40,14 @@ typedef struct
     //
     char*	UIRoot;
 
-    boolean	wizard;		// True is we're opening wizard windows by default
+    bool	wizard;		// True is we're opening wizard windows by default
     char*	noWizardNames;	// list of windows for which we want no wizard
 } IBMResource;
 
 //
 // IBMApplication class definition:
 //				
-class IBMApplication : public Application 
+class IBMApplication : public BaseApp 
 {
   private:
     //
@@ -113,7 +111,8 @@ class IBMApplication : public Application
     // super classes.
     //
     //virtual void installDefaultResources(Widget baseWidget);
-
+	
+	void getResources();
 
     //
     // W I Z A R D S    W I Z A R D S    W I Z A R D S  
@@ -205,8 +204,8 @@ class IBMApplication : public Application
     // print a application default to the resource file.  For example:
     // DX.width: 300x500 into $HOME/DX
     //
-    //void printResource (const char* resource, const char* value);
-    //virtual boolean getApplicationDefaultsFileName(char* res_file, boolean create=FALSE);
+    void printResource (const char* resource, const char* value);
+    virtual boolean getApplicationDefaultsFileName(char* res_file, boolean create=FALSE);
 
     //
     // Returns a pointer to the class name.

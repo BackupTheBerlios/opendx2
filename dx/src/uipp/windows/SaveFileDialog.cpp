@@ -13,9 +13,10 @@
 #include <string.h>
 
 #include "DXStrings.h"
-#include "Application.h"
 #include "SaveFileDialog.h"
 #include "QuestionDialogManager.h"
+
+using namespace dxui;
 
 class confirmation_data {
     public:
@@ -31,6 +32,8 @@ class confirmation_data {
 //{
 //        NULL
 //};
+
+using namespace dxui;
 
 SaveFileDialog::SaveFileDialog(
 		const char *name, const char *ext) : 

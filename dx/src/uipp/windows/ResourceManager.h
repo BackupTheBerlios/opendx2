@@ -12,6 +12,7 @@
 #include "Base.h"
 #include "Dictionary.h"
 #include "DXStrings.h"
+#include "List.h"
 
 #define ClassResourceManager "ResourceManager"
 

@@ -13,11 +13,7 @@
 #ifndef _InsertNetworkDialog_h
 #define _InsertNetworkDialog_h
 
-
-#include "FileDialog.h"
 #include "OpenNetworkDialog.h"
-#include "Application.h"
-
 
 //
 // Class name definition:

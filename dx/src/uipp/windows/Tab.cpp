@@ -11,7 +11,6 @@
 
 #include "DXStrings.h"
 #include "Tab.h"
-#include "Application.h"
 #include "StandIn.h"
 
 Tab::Tab(StandIn *standIn):

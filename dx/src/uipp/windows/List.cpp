@@ -9,9 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
 #include <memory.h>
 
 #include "List.h"
@@ -58,36 +55,38 @@ void List::clear()
 
 boolean List::isMember(const void* element)
 {
-    Link* link;
+	Link* link;
 
-    ASSERT(this);
+	ASSERT(this);
 
-    if (element == NUL(const void*))
-    {
-        //
-	// If element is NULL, return FALSE.
-        //
-	return FALSE;
-    }
-    else
-    {
-	//
-        // Otherwise, iterate through the list and
-	// look for the matching element.
-        //
-	for (link = this->first; link; link = link->next)
+	if (element == NUL(const void*))
 	{
-	    if (link->element == element)
-	    {
-		return TRUE;
-	    }
+		//
+		// If element is NULL, return FALSE.
+		//
+		return FALSE;
 	}
+	else
+	{
+		if(this->size == 0)
+			return false;
+		//
+		// Otherwise, iterate through the list and
+		// look for the matching element.
+		//
+		for (link = this->first; link; link = link->next)
+		{
+			if (link->element == element)
+			{
+				return TRUE;
+			}
+		}
 
-	//
-	// If no match, return FALSE.
-	//
-	return FALSE;
-    }
+		//
+		// If no match, return FALSE.
+		//
+		return FALSE;
+	}
 }
 
 

@@ -10,7 +10,6 @@
 #include "defines.h"
 
 #include "Command.h"
-#include "Application.h"
 #include "NoUndoCommand.h"
 #include "ColormapFileCommand.h"
 #include "ColormapEditor.h"

@@ -32,7 +32,7 @@ class Network;
 //
 // SaveCFGDialog class definition:
 //				
-class SaveCFGDialog : public SaveFileDialog
+class SaveCFGDialog : public dxui::SaveFileDialog
 {
     static boolean ClassInitialized;
     //static String  DefaultResources[];

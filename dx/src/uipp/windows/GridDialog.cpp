@@ -12,7 +12,6 @@
 #include <limits.h>
 
 #include "GridDialog.h"
-#include "Application.h"
 #include "WorkSpace.h"
 #include "WorkSpaceInfo.h"
 #include "WorkSpaceGrid.h"

@@ -10,6 +10,7 @@
 #include "ListIterator.h"
 #include "IBMApplication.h"
 #include "WarningDialogManager.h"
+#include "XmlPreferences.h"
 
 #define VALUE_SEPARATOR ';'
 
@@ -155,14 +156,14 @@ void ResourceManager::saveListResource(Symbol key)
 	strcpy (&spec[os], str);
 	os+= strlen(str);
     }
-    //theIBMApplication->printResource(theSymbolManager->getSymbolString(key),spec);
+    theIBMApplication->printResource(theSymbolManager->getSymbolString(key),spec);
 }
 
 void ResourceManager::saveResource(Symbol key)
 {
     Symbol v = (Symbol)(long)this->resources.findDefinition(key);
-    //theIBMApplication->printResource(theSymbolManager->getSymbolString(key), 
-	//theSymbolManager->getSymbolString(v));
+    theIBMApplication->printResource(theSymbolManager->getSymbolString(key), 
+		theSymbolManager->getSymbolString(v));
 }
 
 void ResourceManager::getValue (const char* resource, char*& result)
@@ -189,73 +190,89 @@ void ResourceManager::getValue (const char* resource, List& result)
 
 void ResourceManager::initializeValue(Symbol key)
 {
-    const char* keyStr = theSymbolManager->getSymbolString(key);
-    const char* class_name = theIBMApplication->getApplicationClass();
+	const char* keyStr = theSymbolManager->getSymbolString(key);
+	const char* class_name = theIBMApplication->getApplicationClass();
 
-    char fname[256];
-    if (!theIBMApplication->getApplicationDefaultsFileName(fname, TRUE)) {
-	if (!this->write_protection_complaint) {
-	    ModalWarningMessage (ERRMSG, fname);
-	    this->write_protection_complaint = TRUE;
-	}
-    }
-    //XrmDatabase db = XrmGetFileDatabase(fname);
-    //if (!db) return ;
-    char* type=0;
-    //XrmValue value;
-    char rspec[256];
-    sprintf (rspec, "%s*%s", class_name,keyStr);
- //   if (XrmGetResource(db, rspec, rspec, &type, &value)) {
-	//const char* spec = value.addr;
-	//if ((spec) && (spec[0])) {
-	//    char* cp = DuplicateString(spec);
-	//    this->resources.addDefinition(key,cp);
+	//char fname[256];
+	//if (!theIBMApplication->getApplicationDefaultsFileName(fname, TRUE)) {
+	//	if (!this->write_protection_complaint) {
+	//		ModalWarningMessage (ERRMSG, fname);
+	//		this->write_protection_complaint = TRUE;
+	//	}
 	//}
- //   }
- //   XrmDestroyDatabase(db);
+
+	//char rspec[256];
+	//sprintf (rspec, "%s*%s", class_name,keyStr);
+
+	char* value=NULL;
+	theXmlPreferences->getPref(keyStr, value);
+	if(value) {
+		char *cp = DuplicateString(value);
+		delete [] value;
+		this->resources.addDefinition(key, cp);
+	}
+
+	//Now instead of using the XrmDatabase we need to be using the XML
+	//version instead. That means adding defaults and overriding any
+	//defaults with the data from the prefs file. Basically using an
+	//XML class to replace the XrmDatabase. 
+
+	//XrmDatabase db = XrmGetFileDatabase(fname);
+	//if (!db) return ;
+	//XrmValue value;
+	//if (XrmGetResource(db, rspec, rspec, &type, &value)) {
+	//	const char* spec = value.addr;
+	//	if ((spec) && (spec[0])) {
+	//		char* cp = DuplicateString(spec);
+	//		this->resources.addDefinition(key,cp);
+	//	}
+	//}
+	//XrmDestroyDatabase(db);
 }
 
 void ResourceManager::initializeMultiValued(Symbol key)
 {
-    const char* keyStr = theSymbolManager->getSymbolString(key);
-    const char* class_name = theIBMApplication->getApplicationClass();
+	const char* keyStr = theSymbolManager->getSymbolString(key);
+	//   const char* class_name = theIBMApplication->getApplicationClass();
 
-    char fname[256];
-    if (!theIBMApplication->getApplicationDefaultsFileName(fname, TRUE)) {
-	if (!this->write_protection_complaint) {
-	    ModalWarningMessage (ERRMSG, fname);
-	    this->write_protection_complaint = TRUE;
-	}
-    }
-    //XrmDatabase db = XrmGetFileDatabase(fname);
-    //if (!db) return ;
-    char* type=0;
-    //XrmValue value;
-    char rspec[256];
-    sprintf (rspec, "%s*%s", class_name,keyStr);
- //   if (XrmGetResource(db, rspec, rspec, &type, &value)) {
-	//const char* spec = value.addr;
-	//if ((spec) && (spec[0])) {
-	//    int spec_len = strlen(spec);
-
-	//    List* values = (List*)this->resources.findDefinition(key);
-	//    ASSERT(values);
-
-	//    char buf[256];
-	//    int si=0;
-	//    for (int i=0; i<=spec_len; i++) {
-	//	if ((i==spec_len) || (spec[i] == VALUE_SEPARATOR)) {
-	//	    int len = i-si;
-	//	    if (len>0) {
-	//		strncpy (buf, &spec[si], len);
-	//		buf[len] = '\0';
-	//		Symbol v = theSymbolManager->registerSymbol(buf);
-	//		values->appendElement((void*)v);
-	//	    }
-	//	    si = i+1;
-	//	}
-	//    }
+	//   char fname[256];
+	//   if (!theIBMApplication->getApplicationDefaultsFileName(fname, TRUE)) {
+	//if (!this->write_protection_complaint) {
+	//    ModalWarningMessage (ERRMSG, fname);
+	//    this->write_protection_complaint = TRUE;
 	//}
- //   }
- //   XrmDestroyDatabase(db);
+	//   }
+	//XrmDatabase db = XrmGetFileDatabase(fname);
+	//if (!db) return ;
+	//char* type=0;
+	//XrmValue value;
+	//char rspec[256];
+	//sprintf (rspec, "%s*%s", class_name,keyStr);
+	//   if (XrmGetResource(db, rspec, rspec, &type, &value)) {
+	//const char* spec = value.addr;
+	char *spec=NULL;
+	theXmlPreferences->getPref(keyStr, spec);
+	if((spec) && (spec[0])) {
+		int spec_len = strlen(spec);
+
+		List* values = (List*)this->resources.findDefinition(key);
+		ASSERT(values);
+
+		char buf[256];
+		int si=0;
+		for (int i=0; i<=spec_len; i++) {
+			if ((i==spec_len) || (spec[i] == VALUE_SEPARATOR)) {
+				int len = i-si;
+				if (len>0) {
+					strncpy (buf, &spec[si], len);
+					buf[len] = '\0';
+					Symbol v = theSymbolManager->registerSymbol(buf);
+					values->appendElement((void*)v);
+				}
+				si = i+1;
+			}
+		}
+	}
+	//   }
+	//   XrmDestroyDatabase(db);
 }

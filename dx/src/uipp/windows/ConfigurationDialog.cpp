@@ -17,7 +17,6 @@
 #include "CDBOutput.h"
 #include "DescrDialog.h"
 
-#include "Application.h"
 #include "DXApplication.h"
 #include "ErrorDialogManager.h"
 

@@ -9,13 +9,8 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
 #include "DXStrings.h"
 #include "SetNameDialog.h"
-
-#include "Application.h"
-//#include "Network.h"
-//#include "ErrorDialogManager.h"
 
 //
 // Since this is an abstract class, THIS class never installs these

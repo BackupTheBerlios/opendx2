@@ -12,7 +12,6 @@
 #include "ViewControlDialog.h"
 #include "ImageWindow.h"
 #include "ImageNode.h"
-#include "Application.h"
 #include "ButtonInterface.h"
 #include "ViewControlWhichCameraCommand.h"
 #include "List.h"

@@ -9,6 +9,10 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+using namespace System;
+using namespace System::IO;
+using namespace System::Runtime::InteropServices;
+
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
@@ -20,177 +24,29 @@
 #include "IBMApplication.h"
 #include "HelpMenuCommand.h"
 #include "MainWindow.h"
-//#include "../widgets/findcolor.h"
 #include "HelpWin.h"
 #include "ErrorDialogManager.h"
 #include "WarningDialogManager.h"
 #include "DXStrings.h"
 #include "IBMVersion.h"
 #include "lex.h"
-//#include "logo.h"
-//#include "icon50.h"
 #include "ListIterator.h"
 #include "StartWebBrowser.h"
+#include "ResourceManager.h"
+#include "XmlPreferences.h"
 
 IBMApplication *theIBMApplication = NULL;
 IBMResource IBMApplication::resource;
 
 //XmColorProc IBMApplication::DefColorProc = NULL;
-//
-//static
-//XrmOptionDescRec _IBMOptionList[] =
-//{
-//    {
-//	"-uiroot",
-//	"*UIRoot",
-//	XrmoptionSepArg,
-//	NULL
-//    },
-//    {
-//	"-wizard",
-//	"*wizard",
-//	XrmoptionNoArg,
-//	"True"
-//    },
-//    {
-//	"-dismissedWizards",
-//	"*dismissedWizards",
-//	XrmoptionSepArg,
-//	NULL
-//    },
-//};
 
-//
-//static
-//XtResource _IBMResourceList[] =
-//{
-//    {
-//	"UIRoot",
-//	"Pathname",
-//	XmRString,
-//	sizeof(String),
-//	XtOffset(IBMResource*, UIRoot),
-//	XmRString,
-//	NULL
-//    },
-//    {
-//	"wizard",
-//	"Flag",
-//	XmRBoolean,
-//	sizeof(Boolean),
-//	XtOffset(IBMResource*, wizard),
-//	XmRImmediate,
-//	(XtPointer)False
-//    },
-//    {
-//	"dismissedWizards",
-//	"Pathname",
-//	XmRString,
-//	sizeof(String),
-//	XtOffset(IBMResource*, noWizardNames),
-//	XmRString,
-//	(XtPointer)NULL
-//    },
-//
-//};
-
-//const String IBMApplication::DefaultResources[] =
-//{
-//    "*background:              #b4b4b4b4b4b4",
-//    "*foreground:              black",
-//#if defined(DXD_OS_NON_UNIX)
-//    "*fontList:\
-//-adobe-helvetica-bold-r-normal--12-*iso8859-1=bold,\
-//-adobe-helvetica-bold-r-normal--14-*iso8859-1=canvas,\
-//-adobe-helvetica-bold-r-normal--10-*=small_bold,\
-//-adobe-helvetica-bold-r-normal--12-*=small_canvas,\
-//-adobe-helvetica-bold-r-normal--14-*=big_bold,\
-//-adobe-helvetica-bold-r-normal--20-*=huge_bold,\
-//-adobe-helvetica-medium-r-normal--12-*=normal,\
-//-adobe-helvetica-medium-r-normal--10-*=small_normal,\
-//-adobe-helvetica-medium-r-normal--14-*=big_normal,\
-//-adobe-helvetica-medium-r-normal--20-*=huge_normal,\
-//-adobe-helvetica-medium-o-normal--10-*=small_oblique,\
-//-adobe-helvetica-medium-o-normal--14-*=big_oblique,\
-//-adobe-helvetica-medium-o-normal--20-*=huge_oblique,\
-//-adobe-helvetica-medium-o-normal--12-*=oblique",
-//#else
-//    "*fontList:\
-//-adobe-helvetica-bold-r-normal--12-*iso8859-1=bold,\
-//-adobe-helvetica-bold-r-normal--14-*iso8859-1=canvas,\
-//-adobe-helvetica-bold-r-normal--10-*iso8859-1=small_bold,\
-//-adobe-helvetica-bold-r-normal--12-*iso8859-1=small_canvas,\
-//-adobe-helvetica-bold-r-normal--14-*iso8859-1=big_bold,\
-//-adobe-helvetica-bold-r-normal--20-*iso8859-1=huge_bold,\
-//-adobe-helvetica-medium-r-normal--12-*iso8859-1=normal,\
-//-adobe-helvetica-medium-r-normal--10-*iso8859-1=small_normal,\
-//-adobe-helvetica-medium-r-normal--14-*iso8859-1=big_normal,\
-//-adobe-helvetica-medium-r-normal--20-*iso8859-1=huge_normal,\
-//-adobe-helvetica-medium-o-normal--10-*iso8859-1=small_oblique,\
-//-adobe-helvetica-medium-o-normal--14-*iso8859-1=big_oblique,\
-//-adobe-helvetica-medium-o-normal--20-*iso8859-1=huge_oblique,\
-//-adobe-helvetica-medium-o-normal--12-*iso8859-1=oblique",
-//#endif
-//    "*keyboardFocusPolicy:     explicit",
-//    "*highlightOnEnter:	       false",
-//    "*highlightThickness:      0",
-//    "*XmPushButton*traversalOn:    false",
-//    "*XmPushButtonGadget*traversalOn:    false",
-//    "*XmToggleButton*traversalOn:  false",
-//    "*XmDial*width:                100",
-//    "*XmDial*height:	           100",
-//    "*XmDial*numMarkers:           60",
-//    "*XmDial*majorMarkerWidth:     10",
-//    "*XmDial*minorMarkerWidth:     5",
-//    "*XmDial*majorPosition:        5",
-//    "*XmDial*startingMarkerPos:    0",
-//    "*XmDial*shadePercentShadow:   0",
-//    "*XmDial*shading:              True",
-//    "*XmDial*shadowThickness:      0",
-//    "*XmDial*shadeIncreasingColor: #b4b4c9c9dddd",
-//    "*XmDial*shadeDecreasingColor: #7e7e7e7eb4b4",
-//    "*XmDial*majorMarkerColor:     Black",
-//    "*XmDial*minorMarkerColor:     Black",
-//    "*XmDial*indicatorColor:       Black",
-//    "*XmDial*indicatorWidth:       20",
-//
-//    "*XmNumber.navigationType:     XmTAB_GROUP",
-//
-//    "*XmScrollBar*foreground:      #b4b4b4b4b4b4",
-//
-//    "*XmSlideBar*alignOnDrop:      True",
-//
-//    "*XmToggleButton.selectColor:  #5F9EA0",
-//    "*XmToggleButton.indicatorSize:15",
-//
-//    "*XmArrowButton.shadowThickness:         1",
-//    "*XmCascadeButton.shadowThickness:       1",
-//    "*XmCascadeButtonGadget.shadowThickness: 1",
-//    "*XmColorMapEditor*shadowThickness:      1",
-//    "*XmDrawnButton.shadowThickness:         1",
-//    "*XmForm.shadowThickness:                0",
-//    "*XmFrame.shadowThickness:               1",
-//    "*XmList.shadowThickness:                1",
-//    "*XmMenuBar.shadowThickness:             1",
-//    "*XmNumber*shadowThickness:              1",
-//    "*XmPushButton.shadowThickness:          1",
-//    "*XmPushButtonGadget.shadowThickness:    1",
-//    "*XmRowColumn.shadowThickness:           1",
-//    "*XmScrollBar.shadowThickness:           1",
-//    "*XmScrolledList.shadowThickness:        1",
-//    "*XmScrolledWindow.shadowThickness:      1",
-//    "*XmText.shadowThickness:                1",
-//    "*XmTextField.shadowThickness:           1",
-//    "*XmToggleButton.shadowThickness:        1",
-//    NULL
-//};
 
 //XtActionsRec IBMApplication::actions[] = {
 //    {"IBMButtonHelp", (XtActionProc)IBMApplication_IBMButtonHelpAP}
 //};
 
 
-IBMApplication::IBMApplication(char* className): Application(className) 
+IBMApplication::IBMApplication(char* className): BaseApp(className) 
 {
     theIBMApplication = this;
     this->helpWindow = NULL;
@@ -215,6 +71,11 @@ IBMApplication::~IBMApplication()
 {
     theIBMApplication = NULL;
 
+	if(this->resource.UIRoot)
+		delete [] this->resource.UIRoot;
+	if(this->resource.noWizardNames)
+		delete [] this->resource.noWizardNames;
+
 #ifdef __PURIFY__
     delete this->genericHelpCmd;
     delete this->helpTutorialCmd;
@@ -235,6 +96,31 @@ IBMApplication::~IBMApplication()
     }
 #endif
 }
+
+//void IBMApplication::getResources(IBMResource& resourceBase)
+//{
+//	char *retval = new char[256];
+//	ASSERT(theResourceManager);
+//
+//	char* _IBMResource[] = {"UIRoot", "wizard", "noWizardNames", NULL};
+//	theResourceManager->getValue("UIRoot", retval);
+//	if(strlen(retval) > 0) {
+//		resourceBase.UIRoot = new char[strlen(retval) + 1];
+//		strcpy(resourceBase.UIRoot, retval);
+//		strcpy(retval, "");
+//	}
+//	theResourceManager->getValue("noWizardNames", retval);
+//	if(strlen(retval) > 0) {
+//		resourceBase.noWizardNames = new char[strlen(retval) + 1];
+//		strcpy(resourceBase.noWizardNames, retval);
+//		strcpy(retval, "");
+//	}
+//	theResourceManager->getValue("wizard", retval);
+//	if(strcmp(retval, "True")==0)
+//		resourceBase.wizard = true;
+//
+//	delete [] retval;
+//}
 
 //
 // Install the default resources for this class.
@@ -344,7 +230,7 @@ IBMApplication::~IBMApplication()
 boolean IBMApplication::initializeWindowSystem(unsigned int *argcp, char **argv)
 {
 
-    if (!this->Application::initializeWindowSystem(argcp, argv))
+    if (!this->BaseApp::initializeWindowSystem(argcp, argv))
         return FALSE;
 
 //#if defined(DEBUG) && defined(BETA_VERSION)
@@ -367,14 +253,26 @@ boolean IBMApplication::initializeWindowSystem(unsigned int *argcp, char **argv)
     return TRUE;
 }
 
+void IBMApplication::getResources() {
+
+	// fill in the resources from the XmlPrefs.
+	theXmlPreferences->getPref("UIRoot", IBMApplication::resource.UIRoot);
+	theXmlPreferences->getPref("wizard", IBMApplication::resource.wizard);
+	theXmlPreferences->getPref("dismissedWizards", IBMApplication::resource.noWizardNames);
+
+}
+
 boolean IBMApplication::initialize(unsigned int* argcp,
 				   char**        argv)
 {
-    if (!this->Application::initialize(argcp,argv))
+    if (!this->BaseApp::initialize(argcp,argv))
         return FALSE;
 
     this->parseCommand(argcp, argv);
 
+	// We need getResources here from the XmlPreferences
+
+	this->getResources();
     //
     // Get application resources.
     //
@@ -413,7 +311,7 @@ void IBMApplication::helpOn(const char *topic)
 
 void IBMApplication::addActions()
 {
-    this->Application::addActions();
+    this->BaseApp::addActions();
     //XtAppAddActions(this->applicationContext, IBMApplication::actions,
     //    sizeof(IBMApplication::actions)/sizeof(IBMApplication::actions[0]));
 }
@@ -496,7 +394,7 @@ void IBMApplication::postCopyrightNotice()
     if (s) 	
 	this->initLogo();
 
-    this->Application::postCopyrightNotice();
+    this->BaseApp::postCopyrightNotice();
 }
 
 void IBMApplication::initLogo()
@@ -902,60 +800,65 @@ const char *IBMApplication::getTmpDirectory(boolean bList)
 //
 // Application Resources
 //
-//boolean IBMApplication::getApplicationDefaultsFileName(char* res_file, boolean create)
-//{
-//    //
-//    // Print the resource database to the file.
-//    //
-//#ifdef DXD_OS_NON_UNIX
-//const char* class_name = this->getApplicationClass();
-//    char* home = (char*)getenv("XAPPLRESDIR");
-//    if (!home || !strlen(home)) {
-//	home = (char*)this->resource.UIRoot;
-//	if (!home || !strlen(home)) {
-//	    sprintf(res_file, "/%s-AD", class_name);
-//	} else {
-//	    sprintf(res_file, "%s/ui/%s-AD", home, class_name);
-//	}
-//    } else {
-//	sprintf(res_file, "%s/ui/%s-AD", home, class_name);
-//    }
-//
-//    return this->isUsableDefaultsFile(res_file, create);
-//#else
-//    return this->Application::getApplicationDefaultsFileName(res_file, create);
-//#endif
-//}
 
-//
-// Open $HOME/DX, search for DX*dismissedWizards:.   If found, replace it,
-// otherwise append the DX*dismissedWizards: and the contents of noWizards.
-//
-//void IBMApplication::printResource(const char* resource, const char* value)
-//{
-//const char* class_name = this->getApplicationClass();
-//
-//    //
-//    // Create one line which specifies the new resource setting.
-//    //
-//    int totlen = 0;
-//    char resource_line[4096];
-//    sprintf (resource_line, "%s*%s: %s\n", class_name, resource, value);
-//
-//    char res_file[256];
-//    if (this->getApplicationDefaultsFileName(res_file, TRUE)) {
-//	// Here, it would be nice to use a function like
-//	// XrmRemoveLineResource() but I can't find any
-//	// such beast.  If one were available, then when
-//	// there is no value for a resource, the spec
-//	// could be removed from the file.  This way
-//	// we store a nothing spec in the file.
-//	XrmDatabase db = XrmGetFileDatabase(res_file);
-//	XrmPutLineResource (&db, resource_line);
-//	XrmPutFileDatabase (db, res_file);
-//	XrmDestroyDatabase(db);
-//    }
-//}
+boolean IBMApplication::getApplicationDefaultsFileName(char* res_file, boolean create)
+{
+	//
+	// Print the resource database to the file.
+	//
+#undef CreateDirectory
+
+	System::String __gc *lad = Environment::GetFolderPath(Environment::SpecialFolder::LocalApplicationData);
+	lad = System::String::Concat(lad, S"\\OpenDX");
+
+	if(!Directory::Exists(lad)) {
+		try {
+			System::IO::Directory::CreateDirectory(lad);
+		} catch (Exception *e) {
+			printf("Unable to create OpenDX Application Data Directory\n");
+			return false;
+		}
+	}
+
+	lad = System::String::Concat(lad, S"\\prefs.xml");
+
+	strncpy(res_file, 
+		(const char*) (Marshal::StringToHGlobalAnsi(lad)).ToPointer(),
+		lad->Length);
+
+	res_file[lad->Length] = '\0';
+	return this->isUsableDefaultsFile(res_file, create);
+}
+
+
+ //Open $HOME/DX, search for DX*dismissedWizards:.   If found, replace it,
+ //otherwise append the DX*dismissedWizards: and the contents of noWizards.
+
+void IBMApplication::printResource(const char* resource, const char* value)
+{
+const char* class_name = this->getApplicationClass();
+
+    //
+    // Create one line which specifies the new resource setting.
+    //
+    int totlen = 0;
+    char resource_line[4096];
+    sprintf (resource_line, "%s*%s: %s\n", class_name, resource, value);
+
+    char res_file[256];
+    if (this->getApplicationDefaultsFileName(res_file, TRUE)) {
+	// Here, it would be nice to use a function like
+	// XrmRemoveLineResource() but I can't find any
+	// such beast.  If one were available, then when
+	// there is no value for a resource, the spec
+	// could be removed from the file.  This way
+	// we store a nothing spec in the file.
+	/*	XrmDatabase db = XrmGetFileDatabase(res_file);
+		XrmPutLineResource (&db, resource_line);
+		XrmPutFileDatabase (db, res_file);
+		XrmDestroyDatabase(db);*/
+    }
+}
 
 
 //

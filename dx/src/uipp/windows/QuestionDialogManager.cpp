@@ -10,7 +10,6 @@
 #include "defines.h"
 
 #include "QuestionDialogManager.h"
-#include "Application.h"
 
 
 QuestionDialogManager* theQuestionDialogManager =

@@ -13,11 +13,8 @@
 #include "StepperInteractor.h"
 #include "SetScalarAttrDialog.h"
 #include "InteractorStyle.h"
-
 #include "ScalarNode.h"
-
 #include "ScalarInstance.h"
-#include "Application.h"
 #include "ErrorDialogManager.h"
 
 static void CreateStepperComponent( 
@@ -71,7 +68,7 @@ void StepperInteractor::initialize()
     //
     if (NOT StepperInteractor::StepperInteractorClassInitialized)
     {
-        ASSERT(theApplication);
+        //ASSERT(theApplication);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          StepperInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),

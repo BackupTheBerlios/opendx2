@@ -10,7 +10,6 @@
 #include "defines.h"
 
 #include "DXStrings.h"
-#include "Application.h"
 #include "TextFile.h"
 #include "TextFileFileDialog.h"
 

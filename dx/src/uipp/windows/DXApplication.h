@@ -17,6 +17,7 @@
 #include "Dictionary.h"
 #include "DXExecCtl.h"
 #include "License.h"
+#include "FileDialog.h"
 
 class HelpWin;
 class MsgWin;
@@ -57,29 +58,29 @@ typedef struct
     char*	executiveModule;
     char*	uiModule;
 
-    boolean	noWindowPlacement;
+    bool	noWindowPlacement;
 
     int		port;
     int		memorySize;
 
-    boolean	echoVersion;
+    bool	echoVersion;
     char*	anchorMode;
-    boolean	noAnchorAtStartup;
-    boolean	noConfirmedQuit;
-    boolean	debugMode;
-    boolean	showInstanceNumbers;
-    boolean	runUIOnly;
-    boolean	runLocally;
-    boolean	showHelpMessage;
-    boolean	executeProgram;
-    boolean	executeOnChange;
-    boolean	suppressStartupWindows;
-    boolean	isMetric;
-    boolean	exitAfter;
-    boolean	noExitOptions;
-    boolean	noExecuteMenus;
-    boolean	noConnectionMenus;
-    boolean	noWindowsMenus;
+    bool	noAnchorAtStartup;
+    bool	noConfirmedQuit;
+    bool	debugMode;
+    bool	showInstanceNumbers;
+    bool	runUIOnly;
+    bool	runLocally;
+    bool	showHelpMessage;
+    bool	executeProgram;
+    bool	executeOnChange;
+    bool	suppressStartupWindows;
+    bool	isMetric;
+    bool	exitAfter;
+    bool	noExitOptions;
+    bool	noExecuteMenus;
+    bool	noConnectionMenus;
+    bool	noWindowsMenus;
 
     //
     // Image window image saving/printing control
@@ -98,79 +99,79 @@ typedef struct
     //
     // Message Window control
     //
-    boolean	infoEnabled;
-    boolean	warningEnabled;
-    boolean	errorEnabled;
-    boolean	moduleInfoOpensMessage;
-    boolean	infoOpensMessage;
-    boolean	warningOpensMessage;
-    boolean	errorOpensMessage;
+    bool	infoEnabled;
+    bool	warningEnabled;
+    bool	errorEnabled;
+    bool	moduleInfoOpensMessage;
+    bool	infoOpensMessage;
+    bool	warningOpensMessage;
+    bool	errorOpensMessage;
 
     //
     // Configurability level 
     //
     char*	restrictionLevel;
-    boolean	useWindowSpecs;
-    boolean	noRWConfig;
+    bool	useWindowSpecs;
+    bool	noRWConfig;
 
     //
     // Panel configurability 
     //
-    boolean	noOpenAllPanels;
-    boolean	noPanelEdit;
-    boolean	noPanelAccess;
-    boolean	noPanelOptions;
+    bool	noOpenAllPanels;
+    bool	noPanelEdit;
+    bool	noPanelAccess;
+    bool	noPanelOptions;
 
     //
     // Interactor/panel  configurability 
     //
-    boolean	noInteractorEdits;
-    boolean	noInteractorAttributes;
-    boolean	noInteractorMovement;
+    bool	noInteractorEdits;
+    bool	noInteractorAttributes;
+    bool	noInteractorMovement;
 
     //
     // Image/Editor window configurability 
     //
-    boolean	noImageMenus;
-    boolean	noImageRWNetFile;
-    boolean	limitedNetFileSelection;
+    bool	noImageMenus;
+    bool	noImageRWNetFile;
+    bool	limitedNetFileSelection;
     char*	netPath;
-    boolean	noImageLoad;
-    boolean	noEditorAccess;
-    boolean	limitImageOptions;
-    boolean	noImageSaving;
-    boolean	noImagePrinting;
-    boolean     notifySaveNet;
-    boolean     noNetworkExecute;
+    bool	noImageLoad;
+    bool	noEditorAccess;
+    bool	limitImageOptions;
+    bool	noImageSaving;
+    bool	noImagePrinting;
+    bool     notifySaveNet;
+    bool     noNetworkExecute;
 
     //
     // Message window  configurability
     //
-    boolean	noScriptCommands;
-    boolean	noMessageInfoOption;
-    boolean	noMessageWarningOption;
-    boolean	noEditorOnError;
+    bool	noScriptCommands;
+    bool	noMessageInfoOption;
+    bool	noMessageWarningOption;
+    bool	noEditorOnError;
 
     //
     // ColormapEditor window configurability
     //
-    boolean	noCMapSetNameOption;
-    boolean	noCMapOpenMap;
-    boolean	noCMapSaveMap;
+    bool	noCMapSetNameOption;
+    bool	noCMapOpenMap;
+    bool	noCMapSaveMap;
 
 
     //
     // Process group defining and host assignments. 
     //
-    boolean	noPGroupAssignment;
+    bool	noPGroupAssignment;
 
     //
     // Global configurability 
     //
-    boolean	noDXHelp;
+    bool	noDXHelp;
 
     char*      cryptKey;       // Key used to decrypt the .net and .cfg files
-    boolean     forceNetFileEncryption; // Do we force encryption 
+    bool     forceNetFileEncryption; // Do we force encryption 
     char*      forceFunctionalLicense; // If non-null, 
 					// force the given license type 
     //Pixel	errorNodeForeground;
@@ -191,7 +192,7 @@ typedef struct
 
     char*	viewDataFile;		// Data file to use in viewer mode. 
 
-    boolean 	autoScrollVPEInitVal;	// set to FALSE by default, provides an
+    bool 	autoScrollVPEInitVal;	// set to FALSE by default, provides an
 					// initial value to EditorWorkSpace for
 					// repositioning scrollbars during page changes.
     char*	cosmoDir;		// On behalf of java generation
@@ -220,7 +221,6 @@ class CommandScope;
 class DXChild;
 class DXPacketIF;
 class ApplicIF;
-class FileDialog;
 class Network;
 class StartServerDialog;
 class LoadMacroDialog;
@@ -364,7 +364,7 @@ class DXApplication : public IBMApplication
     int			clipnotifyEventCode;
 #endif
 
-    FileDialog         *openFileDialog;
+	dxui::FileDialog         *openFileDialog;
 
     ApplicIF	       *applicationPacket;
 
@@ -458,6 +458,8 @@ class DXApplication : public IBMApplication
     // super classes.
     //
     //virtual void installDefaultResources(Widget baseWidget);
+
+	void getResources();
 
   public:
     //

@@ -18,44 +18,45 @@
 
 //
 // SaveFileDialog class definition:
-//				
-class SaveFileDialog : public FileDialog
-{
-  private:
-    char *forced_extension;
+//
+namespace dxui {
+	class SaveFileDialog : public dxui::FileDialog
+	{
+	private:
+		char *forced_extension;
 
-  protected:
-    //static String  DefaultResources[];
-    static  void ConfirmationOk(void *data);
-    static  void ConfirmationCancel(void *data);
+	protected:
+		//static String  DefaultResources[];
+		static  void ConfirmationOk(void *data);
+		static  void ConfirmationCancel(void *data);
 
-    void okFileWork(const char *string);
+		void okFileWork(const char *string);
 
-    //
-    // Do work for okFileWork(), which implements confirmation. 
-    //
-    virtual void saveFile(const char *string) = 0;
+		//
+		// Do work for okFileWork(), which implements confirmation. 
+		//
+		virtual void saveFile(const char *string) = 0;
 
-    //
-    // Constructor:
-    //
-    SaveFileDialog(const char *name, const char *ext=NULL);
+		//
+		// Constructor:
+		//
+		SaveFileDialog(const char *name, const char *ext=NULL);
 
-    //
-    // Install the default resources for this class and then call the
-    // same super class method to get the default resources from the
-    // super classes.
-    //
-    //virtual void installDefaultResources(Widget baseWidget);
+		//
+		// Install the default resources for this class and then call the
+		// same super class method to get the default resources from the
+		// super classes.
+		//
+		//virtual void installDefaultResources(Widget baseWidget);
 
-  public:
+	public:
 
-    //
-    // Destructor:
-    //
-    ~SaveFileDialog();
+		//
+		// Destructor:
+		//
+		~SaveFileDialog();
 
-};
-
+	};
+}
 
 #endif // _SaveFileDialog_h

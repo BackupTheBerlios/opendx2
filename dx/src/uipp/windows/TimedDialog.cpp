@@ -9,9 +9,8 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
 #include "TimedDialog.h"
-#include "Application.h"
+
 boolean TimedDialog::ClassInitialized = FALSE;
 
 TimedDialog::TimedDialog(const char* name, int timeout):
