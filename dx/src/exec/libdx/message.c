@@ -277,7 +277,9 @@ DXGetErrorMessage(void)
 void
 DXResetError(void)
 {
+#if !defined(HAVE__ERRNO)
     errno = 0;
+#endif
     _ErrorCode = ERROR_NONE;
     _ErrorMessage[0] = 0;
 }
