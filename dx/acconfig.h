@@ -306,6 +306,8 @@
 #undef HAVE_GETLOGIN
 
 #undef O_RDONLY
+#undef CXX_HAS_TRUE
+#undef CXX_HAS_FALSE
 
 @BOTTOM@
 

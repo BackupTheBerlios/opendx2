@@ -231,4 +231,12 @@ do {									\
 #define XMSTATIC
 #endif
 
+#if !CXX_HAS_FALSE
+boolean false = (boolean)0;
+#endif
+
+#if !CXX_HAS_TRUE
+boolean true = (boolean)1;
+#endif
+
 #endif
