@@ -128,7 +128,7 @@ HANDLE	hpipeRead, hpipeWrite;
 #endif
 #endif
 
-#ifndef HAS_HERROR
+#if !defined(HAS_HERROR) && !defined(herror)
 #    define herror perror
 #endif
 
