@@ -266,17 +266,17 @@ static XtResource resources[] =
       XmRString, "Fixed"
    },
    {
-      XmNcharPlaces, XmCCharPlaces, XmRInt, sizeof(short),
+      XmNcharPlaces, XmCCharPlaces, XmRShort, sizeof(short),
       XtOffset(XmNumberWidget, number.char_places),
       XmRImmediate, (caddr_t) 4
    },
    {
-      XmNdecimalPlaces, XmCDecimalPlaces, XmRInt, sizeof(short),
+      XmNdecimalPlaces, XmCDecimalPlaces, XmRShort, sizeof(short),
       XtOffset(XmNumberWidget, number.decimal_places),
       XmRImmediate, (caddr_t) 0
    },
    {
-      XmNdataType, XmCDataType, XmRInt, sizeof(short),
+      XmNdataType, XmCDataType, XmRShort, sizeof(short),
       XtOffset(XmNumberWidget, number.data_type),
       XmRImmediate, (caddr_t) INTEGER
    },
