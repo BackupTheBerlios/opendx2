@@ -7,7 +7,7 @@ EXTRA_DIST = help.tar
 install-data-local:
 	sh -c 'if test ! -f $(helpdir)/hlpalhtl ; then \
 		   f=`pwd` ; \
-		   if test ! -e $(helpdir) ; then \
+		   if test ! -d $(helpdir) ; then \
 		   	mkdir $(helpdir) ; \
 		   fi ; \
 	       	   cd $(helpdir) ; \
