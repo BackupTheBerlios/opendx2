@@ -78,7 +78,7 @@ libWIDGETS_a_SOURCES =  		\
 	WorkspaceCallback.c		\
 	Findroute.c			
 
-noinst_HEADERS =			\
+EXTRA_DIST =				\
 	backward.bm			\
 	forward.bm			\
 	frame.bm			\
