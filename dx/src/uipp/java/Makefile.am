@@ -126,13 +126,14 @@ cygwin_shared_object: DXLink.o
 	rm -f tmpAnyDX.*
 
 windows_shared_object: DXLink.o
-	jObjs=`ls ../dxl/*.o` ;                 \
+	jObjs=`ls ../dxl/*.obj` ;                 \
 	if test "z$${jObjs}" = "z" ; then       \
-		jObjs=`ls ../dxl/.libs/*.o` ;   \
+		jObjs=`ls ../dxl/.libs/*.obj` ;   \
 	fi ;                                    \
-	jObjs=`echo $$jObjs |sed -e "s&[^ ]*object\.o&&" -e "s&[^ ]*x11\.o&&"` ; \
+	jObjs=`echo $$jObjs |sed -e "s&[^ ]*object\.obj&&" -e "s&[^ ]*x11\.obj&&"` ; \
 	ar -ruv tmpAnyDX.a $${jObjs} DXLink.obj
-	cc /LD -o AnyDX.dll DXLink.obj -L../dxl/.libs libDXL.lib $(LIBS)
+	cc /LD -o AnyDX.dll DXLink.obj tmpAnyDX.a $(LIBS)
+#	cc /LD -o AnyDX.dll DXLink.obj -L../dxl/.libs libDXL.lib $(LIBS)
 	rm -f tmpAnyDX.*
 
 ## JINC set by configure via acinclude.m4
