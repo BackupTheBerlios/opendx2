@@ -94,11 +94,14 @@ m_SuperviseWindow(Object *in, Object *out)
     
     if (IN_SIZE)
     {
-	if (! DXExtractParameter(IN_SIZE, TYPE_INT, 2, 1, (Pointer)&size))
-	{
-	    DXSetError(ERROR_DATA_INVALID, "size");
-	    goto error;
-	}
+	if (DXGetObjectClass(IN_SIZE) == CLASS_CAMERA)
+	    DXGetCameraResolution((Camera)IN_SIZE, &size[0], &size[1]);
+	else
+	    if (! DXExtractParameter(IN_SIZE, TYPE_INT, 2, 1, (Pointer)&size))
+	    {
+		DXSetError(ERROR_DATA_INVALID, "size");
+		goto error;
+	    }
 
 	sizeSet = 1;
     }
