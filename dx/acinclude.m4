@@ -243,6 +243,7 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
 	    a=`echo $CC | sed "s/.*gcc.*/YES/"`
 	    if test "$a" = "YES" ; then
 		CFLAGS="$CFLAGS -mminimal-toc"
+		CXXFLAGS="$CXXFLAGS -mminimal-toc"
 		DXEXEC_EXP='-Wl,-bexpall'
 		DXEXEC_IMP=''
 	    else
