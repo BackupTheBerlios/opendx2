@@ -939,7 +939,7 @@ omitnamedgroup(Group g, Object names)
 	    if (!omitted)
 		goto error;
         
-	    if (!strcmp(membername, cp))
+	    if (cp && !strcmp(membername, cp))
 		continue;
 	    
 	    if (!DXSetMember(newg, cp, omitted))
