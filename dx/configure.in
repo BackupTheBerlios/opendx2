@@ -910,7 +910,7 @@ fi
 
 AC_LANG_C
 DX_CHECK_HEADERS(DPS/XDPSlib.h DPS/dpsXclient.h \
-    DPS/psops.h GL/gl.h GL/glx.h Mrm/MrmPubli.h X11/Composite.h \
+    DPS/psops.h GL/gl.h GL/glx.h Mrm/MrmPublic.h X11/Composite.h \
     X11/CompositeP.h X11/Constraint.h X11/CoreP.h X11/Intrinsic.h \
     X11/IntrinsicI.h X11/IntrinsicP.h X11/Protocols.h X11/Shell.h \
     X11/StringDefs.h X11/X.h X11/XHPlib.h X11/Xatom.h X11/Xlib.h \
