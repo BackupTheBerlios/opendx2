@@ -6,7 +6,7 @@ FILES_WATCHSOCKET = outboard.o watchsocket.o socket.o
 FILES_MY_SIM = my_simulation.o socket.o
 
 
-BASE = /usr/lpp/dx
+BASE = /usr/local/dx
 
 CFLAGS   = -O -Daviion -I . -I$(BASE)/include -Daviion -Xa
 LITELIBS = -L$(BASE)/lib_aviion -lDXlite -lm 

@@ -5,15 +5,17 @@ FILES_WATCHFILE = outboard.o watchfile.o
 FILES_WATCHSOCKET = outboard.o watchsocket.o socket.o
 FILES_MY_SIM = my_simulation.o socket.o
 
+
 BASE = /usr/local/dx
 
-CFLAGS   = -O -Dsgi -I. -I$(BASE)/include
-LITELIBS = -L$(BASE)/lib_sgi -lDXlite -lm
+CC = cc
+
+CFLAGS   = -g -Dlinux -I. -I$(BASE)/include
+LITELIBS = -L$(BASE)/lib_linux -lDXlite -lm -ldl
 
 default:    hello async
 
 all:    hello async watchfile watchsocket my_simulation
-
 
 hello:	hello.o
 	$(CC) $(CFLAGS) -DUSERMODULE=m_Hello -c $(BASE)/lib/outboard.c
@@ -23,6 +25,7 @@ hello:	hello.o
 watchfile: watchfile.o
 	$(CC) $(CFLAGS) -DUSERMODULE=m_WatchFile -c $(BASE)/lib/outboard.c
 	$(CC) $(FILES_WATCHFILE) $(LITELIBS) -o watchfile
+	rm outboard.o
 
 my_simulation: my_simulation.o socket.o
 	$(CC) $(FILES_MY_SIM) $(LITELIBS) -lm -o my_simulation

@@ -5,7 +5,7 @@ FILES_WATCHFILE = outboard.o watchfile.o
 FILES_WATCHSOCKET = outboard.o watchsocket.o socket.o
 FILES_MY_SIM = my_simulation.o socket.o
 
-BASE = /usr/lpp/dx
+BASE = /usr/local/dx
 
 CFLAGS   = -O -Dibm6000 -I . -I$(BASE)/include
 LITELIBS = -L$(BASE)/lib_ibm6000 -lDXlite -lm

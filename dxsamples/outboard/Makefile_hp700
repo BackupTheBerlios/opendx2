@@ -6,7 +6,7 @@ FILES_WATCHSOCKET = outboard.o watchsocket.o socket.o
 FILES_MY_SIM = my_simulation.o socket.o
 
 
-BASE = /usr/lpp/dx
+BASE = /usr/local/dx
 
 # The -Aa (ANSI mode) option is only supported by the C compiler sold
 # as an optional separate product.
