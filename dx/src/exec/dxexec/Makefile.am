@@ -7,10 +7,12 @@ EXP=$BUILDBASE/lib/dxexec.exp
 
 dxbindir = $(prefix)/dx/bin_@ARCH@
 dxbin_PROGRAMS = dxexec
+noinst_LIBRARIES = libDXEXEC.a
 
 SUFFIXES = .m .y .c .s .h .o .a 
 
 dxexec_SOURCES = main.c
+libDXEXEC_a_SOURCES = main.c
 
 EXP = @BUILDBASE@/lib/dxexec.exp
 
