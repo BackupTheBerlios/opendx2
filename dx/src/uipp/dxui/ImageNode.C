@@ -457,7 +457,8 @@ Type ImageNode::setInputSetValue(int index,
 	if (t == DXType::StringType)
 	    t = DXType::FlagType;
 
-	this->image->setSoftware(*value == '0');
+	if (this->image)
+	    this->image->setSoftware(*value == '0');
 
 	break;
     case BUTTON_UP_APPROX:
