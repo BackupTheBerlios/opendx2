@@ -26,6 +26,7 @@ extern boolean LoadMDFFile(const char* file, const char* type,
 extern boolean ParseMDFTypes(ParameterDefinition *param,
     char *line,
     int lineNumber = 0);
+extern boolean ParseMDFOptions (ParameterDefinition* pd, char* p);
 
 // 
 // A dictionary of strings that are filenames of dynamically loadable object 

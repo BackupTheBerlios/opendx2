@@ -237,6 +237,11 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
     MacroDefinition *oldMd = NULL;
     SymbolManager  *symbolManager = theNodeDefinitionDictionary->
 					getSymbolManager();
+    // statefull-ness.  Remember which INPUT was added most recently so
+    // that the OPTIONS keyword can associate with it.  Ensure the
+    // most_recent_param is set to NULL if INPUT isn't followed
+    // by an OPTIONS keyword.
+    ParameterDefinition* most_recent_param = NULL;
 
 #define EQUAL_STRING_SECOND_LEN(s1,s2) (EqualSubstring((s1), (s2), STRLEN(s2)))
     while(fgets(line, sizeof(line), f) == line)
@@ -419,9 +424,23 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
 		    lineNo, fileName);
 
 		delete pd;
+		pd = NULL;
 		goto error;
 	    }
 	    md->addInput(pd);
+	    most_recent_param = pd;
+	}
+	else if (most_recent_param &&  EQUAL_STRING_SECOND_LEN(line, "// OPTIONS"))
+	{
+	    // must convert trailing \n to whitespace because 
+	    // ParseMDFOptions expects it that way.
+	    int len = STRLEN(line);
+	    if (line[len-1] == '\n') line[len-1] = '\0';
+	    if (!ParseMDFOptions (most_recent_param, &line[11])) {
+		ErrorMessage(
+		    "Invalid parameter options values at line %d of %s.", 
+		    lineNo, fileName);
+	    }
 	}
 	else if (inMDF && EQUAL_STRING_SECOND_LEN(line, "// OUTPUT"))
 	{
@@ -486,6 +505,9 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
 	    WarningMessage("Encountered unrecognized MDF line "
 			   "at line %d of `%s', ignored.",
 		lineNo, fileName);
+	}
+	if (!EQUAL_STRING_SECOND_LEN(line, "// INPUT")) {
+	    most_recent_param = NULL;
 	}
     }
 

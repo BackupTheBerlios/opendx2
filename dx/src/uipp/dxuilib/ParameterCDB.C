@@ -31,6 +31,7 @@
 #include "Network.h"
 #include "ParameterDefinition.h"
 #include "lex.h"
+#include "ParseMDF.h"
 
 boolean ParameterCDB::ClassInitialized = FALSE;
 String ParameterCDB::DefaultResources[] =
@@ -47,6 +48,8 @@ String ParameterCDB::DefaultResources[] =
     "*descriptionLabel.labelString:   Description:",
     "*descriptionLabel.foreground:    SteelBlue",
     "*optionsLabel.labelString:       Options:",
+    "*optionValuesLabel.labelString:  Optional Values:",
+    "*optionValuesLabel.foreground:   SteelBlue",
     "*optionsLabel.foreground:        SteelBlue",
     "*required.labelString:           required parameter",
     "*descriptive.labelString:        descriptive value",
@@ -228,10 +231,41 @@ Widget ParameterCDB::createParam(Widget parent, Widget )
         XmNeditable        , True,
 	NULL);
 
+    if (input) {
+	XtVaCreateManagedWidget(
+	    "optionValuesLabel", xmLabelWidgetClass, form,
+	    XmNtopAttachment   , XmATTACH_WIDGET,
+	    XmNtopWidget       , this->description,
+	    XmNtopOffset       , 10,
+	    XmNleftAttachment  , XmATTACH_FORM,
+	    XmNleftOffset      , 5,
+	    XmNrightAttachment , XmATTACH_POSITION,
+	    XmNrightPosition   , 25,
+	    XmNalignment       , XmALIGNMENT_BEGINNING,
+	    NULL);
+	this->optionValues =  XtVaCreateManagedWidget(
+	    "optionValues", xmTextWidgetClass, form,
+	    XmNtopAttachment   , XmATTACH_WIDGET,
+	    XmNtopWidget       , this->description,
+	    XmNtopOffset       , 10,
+	    XmNleftAttachment  , XmATTACH_POSITION,
+	    XmNleftPosition    , 25,
+	    XmNrightAttachment , XmATTACH_FORM,
+	    XmNrightOffset     , 5,
+	    XmNeditMode        , XmSINGLE_LINE_EDIT,
+	    XmNeditable        , True,
+	    NULL);
+    } else {
+	// This is to simplify specifying form attachments only.
+	// Otherwise it's nonsense to make this assignment.
+	// Later on I'll set optionValues back to NULL.
+	this->optionValues = this->description;
+    }
+
     Widget optionsLabel = XtVaCreateManagedWidget(
         "optionsLabel", xmLabelWidgetClass, form,
         XmNtopAttachment   , XmATTACH_WIDGET,
-        XmNtopWidget       , this->description,
+        XmNtopWidget       , this->optionValues,
         XmNtopOffset       , 10,
         XmNleftAttachment  , XmATTACH_FORM,
         XmNleftOffset      , 5,
@@ -243,7 +277,7 @@ Widget ParameterCDB::createParam(Widget parent, Widget )
     this->required = XtVaCreateManagedWidget(
         "required", xmToggleButtonWidgetClass, form,
         XmNtopAttachment   , XmATTACH_WIDGET,
-        XmNtopWidget       , this->description,
+        XmNtopWidget       , this->optionValues,
         XmNtopOffset       , 10,
         XmNleftAttachment  , XmATTACH_POSITION,
         XmNleftPosition    , 25,
@@ -253,7 +287,7 @@ Widget ParameterCDB::createParam(Widget parent, Widget )
     this->descriptive = XtVaCreateManagedWidget(
         "descriptive", xmToggleButtonWidgetClass, form,
         XmNtopAttachment   , XmATTACH_WIDGET,
-        XmNtopWidget       , this->description,
+        XmNtopWidget       , this->optionValues,
         XmNtopOffset       , 10,
         XmNleftAttachment  , XmATTACH_WIDGET,
         XmNleftWidget      , this->required,
@@ -264,7 +298,7 @@ Widget ParameterCDB::createParam(Widget parent, Widget )
     this->hidden = XtVaCreateManagedWidget(
         "hidden", xmToggleButtonWidgetClass, form,
         XmNtopAttachment   , XmATTACH_WIDGET,
-        XmNtopWidget       , this->description,
+        XmNtopWidget       , this->optionValues,
         XmNtopOffset       , 10,
         XmNleftAttachment  , XmATTACH_WIDGET,
         XmNleftWidget      , this->descriptive,
@@ -277,6 +311,7 @@ Widget ParameterCDB::createParam(Widget parent, Widget )
 	XtSetSensitive(this->required, False);
 	XtSetSensitive(this->descriptive, False);
 	XtSetSensitive(this->hidden, False);
+	this->optionValues = NULL;
     }
 
     this->saveInitialValues();
@@ -328,6 +363,7 @@ ParameterCDB::ParameterCDB( Widget parent, Node *node):
     this->initialRequired = FALSE;
     this->initialDescriptive = FALSE;
     this->initialHidden = FALSE;
+    this->initialOptionValues = NULL;
 }
 
 ParameterCDB::~ParameterCDB()
@@ -338,6 +374,8 @@ ParameterCDB::~ParameterCDB()
 	delete this->initialValue;
     if (this->initialDescription)
 	delete this->initialDescription;
+    if (this->initialOptionValues)
+	delete this->initialOptionValues;
 }
 
 //
@@ -399,6 +437,15 @@ void ParameterCDB::changeInput(int index)
     XtVaSetValues(this->required, XmNset, pd->isRequired(), NULL);
     XtVaSetValues(this->descriptive, XmNset, pd->isDefaultDescriptive(), NULL);
     XtVaSetValues(this->hidden, XmNset, !pd->getDefaultVisibility(), NULL);
+
+    //
+    // Gather up option values and put them into the text widget
+    //
+    if (pd->isInput()) {
+	char* cp = this->getOptionValuesString();
+	XmTextSetString (this->optionValues, cp);
+	delete cp;
+    }
 }
 void ParameterCDB::changeOutput(int index)
 {
@@ -466,7 +513,44 @@ void ParameterCDB::saveInitialValues()
     this->initialRequired = pd->isRequired();
     this->initialDescriptive = pd->isDefaultDescriptive();
     this->initialHidden = !pd->getDefaultVisibility();
+
+    if (this->initialOptionValues) delete this->initialOptionValues;
+    this->initialOptionValues = this->getOptionValuesString();
 }
+
+//
+// Caller must free the returned memory
+//
+char* ParameterCDB::getOptionValuesString()
+{
+    MacroParameterNode *n = (MacroParameterNode *)this->node;
+    ParameterDefinition *pd = n->getParameterDefinition();
+    const char *const *options = pd->getValueOptions();
+    char* retval;
+    if (options && options[0]) {
+	char oval[1024];
+	char tbuf[128];
+	int len = 0;
+	int i=0;
+	while (options[i]) {
+	    if (i) {
+		oval[len++] = ';';
+		oval[len++] = ' ';
+		oval[len] = '\0';
+	    }
+	    sprintf (tbuf, " %s ", options[i]);
+	    strcpy (&oval[len], tbuf);
+	    len+= strlen(tbuf);
+	    i++;
+	}
+	retval = DuplicateString(oval);
+    } else {
+	retval = new char[1];
+	retval[0] = '\0';
+    }
+    return retval;
+}
+
 void ParameterCDB::restoreInitialValues()
 {
     MacroParameterNode *n = (MacroParameterNode *)this->node;
@@ -494,6 +578,12 @@ void ParameterCDB::restoreInitialValues()
 	this->changeInput(1);
     else
 	this->changeOutput(1);
+
+    if (pd->isInput()) {
+	char* cp = this->getOptionValuesString();
+	XmTextSetString (this->optionValues, cp);
+	delete cp;
+    }
 }
 
 boolean ParameterCDB::applyValues()
@@ -510,6 +600,8 @@ boolean ParameterCDB::applyValues()
     char *value = XmTextGetString(this->value);
     char *descr = XmTextGetString(this->description);
     char *name = XmTextGetString(this->name);
+    char *options = NULL;
+    if (pd->isInput()) options = XmTextGetString(this->optionValues);
     boolean return_val = TRUE;
 
     //
@@ -521,6 +613,7 @@ boolean ParameterCDB::applyValues()
 	if(name)  XtFree(name);     //	AJ
 	if(descr) XtFree(descr);     //	AJ
 	if(value)  XtFree(value);     //	AJ
+	if(options) XtFree(options);
 	return FALSE;
     }
 
@@ -533,6 +626,7 @@ boolean ParameterCDB::applyValues()
 	if(name)  XtFree(name);     //	AJ
 	if(descr) XtFree(descr);     //	AJ
 	if(value)  XtFree(value);     //	AJ
+	if(options) XtFree(options);
 
 	return FALSE;
     }
@@ -717,6 +811,54 @@ boolean ParameterCDB::applyValues()
 	}
     }
 
+    //
+    // Error check option values.
+    // - Try to Coerce each one to our set of types
+    //
+    ParameterDefinition *pdef = n->getParameterDefinition();
+    pdef->removeValueOptions();
+    if (options && options[0]) {
+	int i=0;
+	if (ParseMDFOptions (pdef, options)) {
+	    const char *const *ostrings = pdef->getValueOptions();
+	    boolean can_coerce = TRUE;
+	    if (ostrings && ostrings[0]) {
+		List *types = pdef->getTypes();
+		while (ostrings[i]) {
+		    const char* option = ostrings[i];
+
+		    boolean coerced = FALSE;
+
+		    ListIterator iter;
+		    DXType *dxtype;
+		    for (iter.setList(*types); (dxtype = (DXType*)iter.getNext()) ; ) {
+			char* s = DXValue::CoerceValue (option, dxtype->getType());
+			if (s) {
+			    delete s;
+			    coerced = TRUE;
+			    break;
+			}
+		    }
+		    can_coerce&= coerced;
+		    if (!coerced) break;
+		    i++;
+		}
+	    }
+	    if (!can_coerce) {
+		ErrorMessage(
+		    "'%s' is not a valid value for Option values.",
+		     ostrings[i]);
+		return_val = FALSE;
+	    }
+	} else {
+	    ErrorMessage(
+		"'%s' is not a valid value for Option values.",
+		 options);
+	    return_val = FALSE;
+	}
+    }
+
+
     char *p = descr;
     boolean error = FALSE;
     for (; *p; ++p)
@@ -748,6 +890,7 @@ boolean ParameterCDB::applyValues()
     XtFree(name);
     XtFree(descr);
     XtFree(value);
+    if (options) XtFree(options);
 
     return return_val;
 }

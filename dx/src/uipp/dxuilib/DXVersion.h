@@ -80,10 +80,11 @@
  * 	the network conditionally.
  * 	...adds multi line capability to LabelDecorators in {print,parse}Comment
  * 3.1.2 (DX3.1.5) Streakline added a param.  Users will _not_ be notified
+ * 3.2.0 Adds OPTIONS line in the mdf section in macros' .net files
  */
 #define NETFILE_MAJOR_VERSION   3 
-#define NETFILE_MINOR_VERSION   1 
-#define NETFILE_MICRO_VERSION   2 
+#define NETFILE_MINOR_VERSION   2 
+#define NETFILE_MICRO_VERSION   0 
 
 
 

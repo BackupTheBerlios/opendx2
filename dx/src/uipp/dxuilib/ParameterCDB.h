@@ -52,6 +52,7 @@ class ParameterCDB : public ConfigurationDialog
     Widget type;
     Widget value;
     Widget description;
+    Widget optionValues;
     Widget required;
     Widget descriptive;
     Widget hidden;
@@ -60,6 +61,7 @@ class ParameterCDB : public ConfigurationDialog
     char   *initialName;
     char   *initialValue;
     char   *initialDescription;
+    char   *initialOptionValues;
     boolean initialRequired;
     boolean initialDescriptive;
     boolean initialHidden;
@@ -89,6 +91,14 @@ class ParameterCDB : public ConfigurationDialog
     // super classes.
     //
     virtual void installDefaultResources(Widget baseWidget);
+
+    //
+    // Form the %s ; %s ; %s ... string which represents the option
+    // values for the input.  Returns allocated memory that the
+    // caller must delete.  The returned string is the information
+    // that is currently stored in the node.
+    //
+    char* getOptionValuesString();
 
   public:
     static ConfigurationDialog *AllocateConfigurationDialog(Widget parent,

@@ -40,6 +40,15 @@ class MacroParameterNode : public UniqueNameNode
     // Private member data:
     //
 
+    //
+    // Ensure the option values for this are of a type that is safe
+    // given the nodes type.  If the node has no option values, see
+    // if it's possible to get some from the next node downstream.
+    //
+    void setTypeSafeOptions(Ark* pref=NULL);
+
+    boolean canCoerceValue (const char* option, List* types);
+
   protected:
     //
     // Protected member data:

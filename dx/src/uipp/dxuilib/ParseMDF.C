@@ -903,12 +903,26 @@ boolean _ParseOptionsLine(Dictionary*    mdf,
     ASSERT(lineNumber > 0);
     ASSERT(start >= 0);
 
+    int inum = module->getInputCount();
+    char *p = &line[start];
 
+    // assumes we're working on the most recently added param,
+    // which should be an OK assumption.
+    ParameterDefinition* pd = module->getInputDefinition(inum);
+    return ParseMDFOptions (pd, p);
+}
+
+
+//
+// Expose OPTIONS line parsing so that it can be called
+// from MacroDefintion.
+//
+boolean ParseMDFOptions (ParameterDefinition* pd, char* p)
+{
     /*
      * Parse Selection  values (separated by ';').
      */
-    int inum = module->getInputCount();
-    char *p = &line[start];
+
     char *value = new char[STRLEN(p) + 1];
     while (*p) { 
 	memset(value, 0, STRLEN(p) + 1);
@@ -933,9 +947,7 @@ boolean _ParseOptionsLine(Dictionary*    mdf,
 	    else if(*to)
 		*(++to) = '\0';
 	}
-	//printf("Want to call module->addInputValueOption(%d,%s);\n",
-	//			inum,value);
-	module->addInputValueOption(inum,value);
+	pd->addValueOption(value);
 	if(*from)
 	    p = from+1; 
 	else
@@ -945,6 +957,8 @@ boolean _ParseOptionsLine(Dictionary*    mdf,
     delete value;
     return TRUE;
 }
+
+
 /*****************************************************************************/
 /* _ParseRepeatLine -						     */
 /*                                                                           */

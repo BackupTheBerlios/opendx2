@@ -249,6 +249,13 @@ class ParameterDefinition : public Definition
     const char* const *getValueOptions();
 
     //
+    // On behalf of MacroParameterNodes which ought to be able to
+    // take on new types during the running of dxui, permit the
+    // user to create new value options.
+    //
+    void removeValueOptions();
+
+    //
     // Returns a pointer to the class name.
     //
     const char* getClassName()

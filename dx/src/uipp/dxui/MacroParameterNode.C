@@ -26,6 +26,7 @@
 #include "ErrorDialogManager.h"
 #include "WarningDialogManager.h"
 #include "lex.h"
+#include "DXValue.h"
 
 MacroParameterNode::MacroParameterNode(NodeDefinition *nd,
 					Network *net, int instnc) :
@@ -365,6 +366,150 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 	return this->UniqueNameNode::netParseAuxComment(comment,file,lineno);
 }
 
+	
+//
+// Based on the node's connectivity, select values for OPTIONS
+// automatically.  The strategy is
+// - Try to keep the OPTIONS the node already has.
+// - look for OPTIONS in the next connected downstream node(s)
+// - for each value in OPTIONS, see if the value can be coerced
+//   to our current type(s)
+// - Prefer to use OPTIONS from the node at the other end of 
+//   prefer because it's probably the node were adding via ::addIOArk().
+//
+// At this point in the code, our new list of types has already been
+// computed based on our new connectivity.
+//
+void MacroParameterNode::setTypeSafeOptions (Ark* preferred)
+{
+    // This method is nonsense in the case of an Output tool.
+    ASSERT (this->isInput());
+
+    //
+    // If we have OPTIONS && any item in OPTION is illegal input given
+    // our new type, then remove all the OPTIONS.
+    //
+    ParameterDefinition *macroPd = this->getParameterDefinition();
+    const char *const *options = macroPd->getValueOptions();
+    List *types = macroPd->getTypes();
+    if (options && options[0]) {
+	boolean can_coerce = TRUE;
+	for (int i=0; options[i] && can_coerce; i++) {
+	    const char* option = options[i];
+	    can_coerce&= this->canCoerceValue (option, types);
+	}
+	if (!can_coerce) {
+	    macroPd->removeValueOptions();
+	    options = NULL;
+	}
+    }
+
+    // If our current OPTIONS are safe to keep using...
+    if (options && options[0]) return;
+    
+    //
+    // If the parameter has no option values, then check each downstream
+    // input tab.  If any has option values, then try to use those but
+    // only if each of the option values is legal given our new type.
+    //
+    Node* destination;
+    NodeDefinition* destinationDef;
+    ParameterDefinition* destinationParamDef;
+    int paramIndex;
+    
+    // First check the new ark to see if it gave give us
+    // option values.  option strings are stored as a null-terminated
+    // array of char*.
+    const char *const *dest_option_values = NULL;
+    boolean can_coerce = TRUE;
+    if (preferred) {
+	destination = preferred->getDestinationNode(paramIndex);
+	destinationDef = destination->getDefinition();
+	destinationParamDef = destinationDef->getInputDefinition(paramIndex);
+	dest_option_values = destinationParamDef->getValueOptions();
+
+	if (dest_option_values && dest_option_values[0]) {
+	    for (int i=0; dest_option_values[i]&&can_coerce; i++) {
+		can_coerce&= this->canCoerceValue (dest_option_values[i], types);
+	    }
+	}
+    }
+
+    if ((can_coerce) && (dest_option_values) && (dest_option_values[0])) {
+	for (int i=0; dest_option_values[i];  i++) {
+	    if (!macroPd->addValueOption (dest_option_values[i])) {
+		ErrorMessage(
+		    "Cannot add %s to Options values ", 
+		    dest_option_values[i]);
+		break;
+	    }
+	}
+    } else {
+	// get all the destination nodes  When we're called as via ::addIOArk(),
+	// the new connection has not yet been added to our list
+	// of downstream nodes.
+	List *arks = (List*)this->getOutputArks(1);
+	ListIterator iter(*arks);
+	//iter.setList(*arks);
+
+	// the new ark didn't supply options values so check
+	// all the other arks.  These loops say:
+	// For each arc
+	//     For each type
+	Ark* ark;
+	while ((ark = (Ark*)iter.getNext()) != NULL) {
+	    destination = ark->getDestinationNode(paramIndex);
+	    destinationDef = destination->getDefinition();
+	    destinationParamDef = destinationDef->getInputDefinition(paramIndex);
+	
+	    // for each option value see, see if it can be coerced.
+	    dest_option_values = destinationParamDef->getValueOptions();
+	    if ((!dest_option_values) || (!dest_option_values[0])) continue;
+
+	    can_coerce = TRUE;
+	    for (int i=0; dest_option_values[i]&&can_coerce; i++) {
+		can_coerce&= this->canCoerceValue (dest_option_values[i], types);
+	    }
+	    if (can_coerce) {
+		for (int i=0; dest_option_values[i];  i++) {
+		    if (!macroPd->addValueOption (dest_option_values[i])) {
+			ErrorMessage(
+			    "Cannot add %s to Options values ", 
+			    dest_option_values[i]);
+			// This is a tough spot.  We've checked the values
+			// already and determined that all are safe, however
+			// we failed in putting one of them into the node.
+			// So we bail on all the others and we bail on
+			// checking for other nodes.  This probably never
+			// happens unless the user enters more than 64
+			// options, which is something the node will refuse
+			// to handle.
+			break;
+		    }
+		}
+		break;
+	    }
+	}
+    }
+}
+
+boolean
+MacroParameterNode::canCoerceValue (const char* option, List* types)
+{
+    ListIterator iter;
+    boolean coerced = FALSE;
+    DXType* dxtype;
+    for (iter.setList(*types) ; (dxtype = (DXType*)iter.getNext()) ; ) {
+	char* s = DXValue::CoerceValue (option, dxtype->getType());
+	if (s) {
+	    coerced = TRUE;
+	    delete s;
+	    break;
+	}
+    }
+    return coerced;
+}
+	
 boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 {
     List *newTypesList = NULL;
@@ -406,6 +551,8 @@ boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 	    macroPd->addType(t);
 	}
 	delete newTypesList;
+
+	this->setTypeSafeOptions(a);
     }
     else
     {
@@ -459,8 +606,9 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 {
     int destIndex;
     int srcIndex;
-    a->getDestinationNode(destIndex);
-    a->getSourceNode(srcIndex);
+    Node* destinationNode = a->getDestinationNode(destIndex);
+    Node* sourceNode = a->getSourceNode(srcIndex);
+    NodeDefinition* destinationDefinition = destinationNode->getDefinition();
     if (!this->UniqueNameNode::removeIOArk(io, index, a))
 	return FALSE;
 
@@ -502,6 +650,7 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
     else
 	arcs = this->getInputArks(destIndex);
     
+
     ListIterator li;
     li.setList(*(List *)arcs);
 
@@ -543,6 +692,36 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
     }
     delete typesList;
 
+    if (this->isInput()) {
+	const char *const *dest_option_vals;
+	const char *const *src_option_vals;
+	// If our current option values are equal to the options
+	// values at the other end of the ark that we're disconnecting,
+	// then assume that our option values came over this ark, and
+	// toss ours out.  This prevents us from discarding a user's input.
+	boolean we_disconnected_the_one = FALSE;
+
+	ParameterDefinition *dpd = destinationDefinition->getInputDefinition(destIndex);
+	dest_option_vals = dpd->getValueOptions();
+	ParameterDefinition *macroPd = this->getParameterDefinition();
+	src_option_vals = macroPd->getValueOptions();
+
+	if (src_option_vals && src_option_vals[0] && 
+	    dest_option_vals && dest_option_vals[0]) {
+	    int i=0;
+	    while (dest_option_vals[i] && src_option_vals[i]) {
+		if (!EqualString (dest_option_vals[i], src_option_vals[i])) break;
+		i++;
+	    }
+	    if ((dest_option_vals[i] == NULL) && (src_option_vals[i] == NULL))
+		we_disconnected_the_one = TRUE;
+	}
+
+	if (we_disconnected_the_one) {
+	    macroPd->removeValueOptions();
+	    this->setTypeSafeOptions();
+	}
+    }
     if (this->isInput())
     {
 	if (this->getConfigurationDialog())

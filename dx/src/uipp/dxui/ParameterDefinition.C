@@ -212,6 +212,17 @@ Type ParameterDefinition::getDefaultType()
     return type;
 }
 
+void ParameterDefinition::removeValueOptions()
+{
+    if (this->valueOptions) {
+	int i = 0;
+	for (i=0; this->valueOptions[i] ; i++)
+	    delete this->valueOptions[i];
+	FREE(this->valueOptions);
+    }
+    this->valueOptions = 0;
+}
+
 
 //
 // Look for type that matches the type for the value given. 

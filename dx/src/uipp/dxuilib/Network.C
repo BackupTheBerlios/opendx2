@@ -3796,10 +3796,29 @@ boolean Network::printHeader(FILE *f,
 			dflt? dflt: "(no default)",
 			pd->getDescription() ? pd->getDescription() : " ");
 		    delete types;
+		    if (fputs(s, f) < 0) return FALSE;
+		    if (echoCallback)
+			(*echoCallback)(echoClientData, s);
+
+		    // If the input parameter has option values...
+		    const char *const *options = pd->getValueOptions();
+		    if (options && options[0]) {
+			int option_count = 0;
+			while (options[option_count]) option_count++;
+			strcpy (s, "// OPTIONS");
+			int slen = strlen(s);
+			int one_less = option_count - 1;
+			for (int i=0; i<one_less; i++) {
+			    SPRINTF (&s[slen], " %s ;", options[i]);
+			    slen+= strlen(options[i]) + 3;
+			    option_count++;
+			}
+			SPRINTF (&s[slen], " %s\n", options[one_less]);
+			if (fputs(s, f) < 0) return FALSE;
+			if (echoCallback)
+			    (*echoCallback)(echoClientData, s);
+		    }
 		}
-	        if (fputs(s, f) < 0) return FALSE;
-		if (echoCallback)
-		    (*echoCallback)(echoClientData, s);
 	    }
 	    for (i = 1; i <= this->getOutputCount(); ++i)
 	    {
