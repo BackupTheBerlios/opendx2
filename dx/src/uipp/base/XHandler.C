@@ -33,6 +33,7 @@ XHandler::XHandler(int eventName,
 
 XHandler::~XHandler()
 {
+    XHandler::Handlers.removeElement(this);
 }
 
 //

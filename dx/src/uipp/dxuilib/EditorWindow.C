@@ -119,6 +119,8 @@
 #include "UndoAddArk.h"
 #include "Stack.h"
 
+#include "XHandler.h"
+
 #ifndef FORGET_GETSET
 #include "GetSetConversionDialog.h"
 Command *EditorWindow::SelectedToGlobalCmd = NULL;
@@ -662,6 +664,9 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->performing_undo = FALSE;
     this->creating_new_network = FALSE;
 
+    // work around for a motif bug
+    this->pgKeyHandler = NUL(XHandler*);
+
     //
     // Install the default resources for THIS class (not the derived classes)
     //
@@ -862,6 +867,8 @@ EditorWindow::~EditorWindow()
     this->clearUndoList();
 
     if (this->find_restore_page) delete this->find_restore_page;
+
+    if (this->pgKeyHandler) delete this->pgKeyHandler;;
 }
 
 //
@@ -1343,12 +1350,6 @@ Widget EditorWindow::createWorkArea(Widget parent)
     NULL);
 #endif
 
-    // FIXME: Add callbacks for widget = toolSelector->getToolListWidget()
-    // that change the curse when an item is double clicked.  Or, have 
-    // an  enter event hander registered on the canvas widgets that sees if
-    // toolSelector.lockedData() is true and then changes the cursor.
-
-    
     //
     // Create the scrolled window.
     //
@@ -1373,7 +1374,6 @@ Widget EditorWindow::createWorkArea(Widget parent)
 	     XmNvisualPolicy,           XmVARIABLE,
 	     XmNscrollBarDisplayPolicy, XmAS_NEEDED,
 	     NULL);
-
     //
     // Create the workspace object.
     //
@@ -1419,6 +1419,25 @@ Widget EditorWindow::createWorkArea(Widget parent)
 		  XmNwidth,              width,
 		  NULL);
 
+#if defined(linux)
+    //
+    // Pg {Up,Down} is crashing the vpe.  If this bug goes away
+    // then remove this code.  Finding a bug fix for Motif isn't good
+    // enough since we build with shared libraries.  Another way
+    // to fix this might have been to make a translation table
+    // entry.  I did try that but when I invoked the widget's
+    // action routine, I got the same crash.
+    // 
+    // Note that although this code is compiled only on linux, it
+    // probably has nothing to do with the linux platform.  It's
+    // really related to the Motif version.  I can't test
+    // on all the different versions, though.  If this bug appears on
+    // another platform, then the treatment should be just to remove
+    // the #if and compile it on all platforms.
+    //
+    this->pgKeyHandler = new XHandler(KeyPress, 
+    	XtWindow(this->workSpace->getRootWidget()), KeyHandler, (void*)this);
+#endif
 
     //
     // Return the topmost widget of the work area.
@@ -7543,4 +7562,40 @@ void EditorWindow::setUndoActivation()
     XmString xmstr = XmStringCreateLtoR (button_label, "bold");
     XtVaSetValues (this->undoOption->getRootWidget(), XmNlabelString, xmstr, NULL);
     XmStringFree(xmstr);
+}
+
+boolean EditorWindow::KeyHandler(XEvent *event, void *clientData)
+{
+    EditorWindow *ew = (EditorWindow*)clientData;
+    return ew->keyHandler(event);
+}
+
+#if !defined(XK_MISCELLANY)
+#define XK_MISCELLANY
+#endif
+#include <X11/keysymdef.h>
+boolean EditorWindow::keyHandler(XEvent* event)
+{
+    if (event->type != KeyPress) return TRUE;
+
+    KeySym lookedup = XLookupKeysym(((XKeyEvent*)event), 0);
+    if ((lookedup!=XK_Page_Up) && (lookedup!=XK_Page_Down)) return TRUE;
+
+    XmScrolledWindowWidget scrollWindow;
+    int xsize,xdelta,xpdelta,x;
+    int ysize,ydelta,ypdelta,y;
+
+    scrollWindow = (XmScrolledWindowWidget)this->getScrolledWindow();
+    XmScrollBarGetValues((Widget)scrollWindow->swindow.hScrollBar,
+			 &x, &xsize, &xdelta, &xpdelta);
+    XmScrollBarGetValues((Widget)scrollWindow->swindow.vScrollBar,
+			 &y, &ysize, &ydelta, &ypdelta);
+    if (lookedup == XK_Page_Up) {
+	y-=ypdelta;
+	y=MAX(y,0);
+    } else if (lookedup == XK_Page_Down) {
+	y+=ypdelta;
+    }
+    this->moveWorkspaceWindow(x,y,FALSE);
+    return FALSE;
 }

@@ -83,6 +83,7 @@ class GetSetConversionDialog;
 class TransmitterNode;
 class GraphLayout;
 class VPEAnnotator;
+class XHandler;
 
 #if WORKSPACE_PAGES
 class GroupManager;
@@ -122,6 +123,7 @@ class EditorWindow : public DXWindow
     friend void EditorWindow_SelectionDoneCB(Widget, Atom *, Atom *);
     friend void EditorWindow_SelectionReadyCB (Widget , XtPointer , Atom *,
 	Atom *, XtPointer , unsigned long *, int *);
+    static boolean KeyHandler(XEvent *event, void *clientData);
 
     static void SetOwner(void*);
     static void DeleteSelections(void*);
@@ -579,6 +581,11 @@ class EditorWindow : public DXWindow
     // also set the text of the undo button label.
     //
     void setUndoActivation();
+
+    // work around for a motif bug - hitting pg up,down in the vpe crashes dxui
+    XHandler* pgKeyHandler;
+
+    boolean keyHandler(XEvent* event);
 
   public:
 
