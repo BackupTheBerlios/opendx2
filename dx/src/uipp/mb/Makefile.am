@@ -11,7 +11,7 @@ dxincludedir = $(DXROOT)/include/dx
 # dxbin_PROGRAMS = builder
 # builder_SOURCES =			
 
-EXTRA_DATA = \
+EXTRA_DIST = \
 	MBApplication.C			\
 	MBMainWindow.C			\
 	MBCommand.C			\

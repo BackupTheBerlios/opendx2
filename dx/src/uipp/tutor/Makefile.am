@@ -11,7 +11,7 @@ dxincludedir = $(DXROOT)/include/dx
 # dxbin_PROGRAMS = tutor
 # tutor_SOURCES =				
 
-EXTRA_DATA = \
+EXTRA_DIST = \
 	Main.C                          \
 	NoUndoTutorAppCommand.C         \
 	TutorApplication.C              \

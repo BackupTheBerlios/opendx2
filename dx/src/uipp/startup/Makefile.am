@@ -12,7 +12,7 @@ dxincludedir = $(DXROOT)/include/dx
 # dxbin_PROGRAMS = startupui
 # startupui_SOURCES =			
 
-EXTRA_DATA = \
+EXTRA_DIST = \
 	NetFileDialog.C			\
 	StartupApplication.C		\
 	StartupCommand.C		\

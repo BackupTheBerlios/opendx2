@@ -12,7 +12,7 @@ dxincludedir = $(DXROOT)/include/dx
 # dxbin_PROGRAMS = gar
 # gar_SOURCES =  		
 
-EXTRA_DATA = \
+EXTRA_DIST = \
 	Browser.C			\
 	BrowserCommand.C		\
 	BuildTCDict.C			\
