@@ -1,7 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include 
-MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+INCLUDES = -I../../../include  -D@ARCH@
 
 noinst_LIBRARIES = libLIBDX.a
 
@@ -118,8 +117,10 @@ buffer.c: buffer.Z
 	sed -e "s/[ 	][ 	]*\$$/ $$/" buffer.Z > __buffer.c
 	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E __buffer.c \
 	| tr -s '$$\012' '\012\012' \
-	| sed -e "/^#/d"  \
-	| sed -e "s/^pragma/#pragma/"  > buffer.c
+	| sed   -e "/^#/d" \
+		-e "/^#/d" \
+		-e "s/INCLUDE2/#include/" \
+		-e "s/^pragma/#pragma/"  > buffer.c
 	rm -f __buffer.c
 
 shade.c: shade.Z
@@ -127,41 +128,44 @@ shade.c: shade.Z
 	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E __shade_.c \
 	| tr -s '$$\012' '\012\012' \
 	| sed -e "/^#/d"  \
-	| sed -e "s/DEFINE2/#define/"  \
-	| sed -e "s/[^#]pragma/#pragma/"  > shade.c
+	      -e "s/DEFINE2/#define/"  \
+	      -e "s/INCLUDE2/#include/"  \
+	      -e "s/[^#]pragma/#pragma/"  > shade.c
 
 triangle.c: triangle.Z
 	sed -e "s/[ 	][ 	]*\$$/ $$/" triangle.Z > __triangle.c
-	$(CPP) -E -DPASS1 __triangle.c \
+	$(CPP) -E -DPASS1 $(INCLUDES) __triangle.c \
 		| sed -e "/^#/d" \
-		| sed -e "s/INCLUDE1/#include/" \
+		      -e "s/INCLUDE1/#include/" \
 		| tr -s '$$\012' '\012\012' > triangle1.c
-	$(CPP) -E -DPASS2 -I. triangle1.c \
+	$(CPP) -E -DPASS2 -I. $(INCLUDES) triangle1.c \
 		| sed -e "/^#/d" \
-		| sed -e "s/INCLUDE2/#include/" \
+		      -e "s/INCLUDE2/#include/" \
 		| tr -s '$$\012' '\012\012' > triangle2.c
 	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E -DPASS3 triangle2.c \
 		| tr -s '$$\012' '\012\012' \
 		| sed -e "/^#/d" \
-		| sed -e "s/DEFINE3/#define/" \
-		| sed -e "s/[^#]pragma/#pragma/" > triangle.c
+		      -e "s/DEFINE3/#define/" \
+		      -e "s/INCLUDE3/#include/" \
+		      -e "s/[^#]pragma/#pragma/" > triangle.c
 	rm triangle1.c triangle2.c __triangle.c
 
 quad.c: quad.Z
 	sed -e "s/[ 	][ 	]*\$$/ $$/" quad.Z > __quad.c
-	$(CPP) -E -DPASS1 __quad.c \
+	$(CPP) -E -DPASS1 $(INCLUDES) __quad.c \
 		| sed -e "/^#/d" \
-		| sed -e "s/INCLUDE1/#include/" \
+		      -e "s/INCLUDE1/#include/" \
 		| tr -s '$$\012' '\012\012' > quad1.c
-	$(CPP) -E -DPASS2 -I. quad1.c \
+	$(CPP) -E -DPASS2 $(INCLUDES) -I. quad1.c \
 		| sed -e "/^#/d" \
-		| sed -e "s/INCLUDE2/#include/" \
+		      -e "s/INCLUDE2/#include/" \
 		| tr -s '$$\012' '\012\012' > quad2.c
 	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E -DPASS3 quad2.c \
 		| tr -s '$$\012' '\012\012' \
 		| sed -e "/^#/d" \
-		| sed -e "s/DEFINE3/#define/" \
-		| sed -e "s/[^#]pragma/#pragma/" > quad.c
+		      -e "s/DEFINE3/#define/" \
+		      -e "s/INCLUDE3/#include/" \
+		      -e "s/[^#]pragma/#pragma/" > quad.c
 	rm quad1.c quad2.c __quad.c
 
 plane.c: plane.Z
@@ -169,7 +173,8 @@ plane.c: plane.Z
 	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E _plane.c \
 	        | tr -s '$$\012' '\012\012' \
 	        | sed -e "/^#/d" \
-	        | sed -e "s/[^#]pragma/#pragma/" > plane.c
+		      -e "s/INCLUDE2/#include/" \
+	              -e "s/[^#]pragma/#pragma/" > plane.c
 	rm _plane.c
 
 zclipQ.o: zclipQ.c

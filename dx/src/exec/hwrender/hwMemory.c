@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef hwMemory_h
 #define hwMemory_h
 /*---------------------------------------------------------------------------*\
@@ -12,8 +15,11 @@
   interactor implementations.
 
  $Log: hwMemory.c,v $
- Revision 1.1  1999/03/24 15:18:33  gda
- Initial revision
+ Revision 1.2  1999/05/03 14:06:39  gda
+ moved to using dxconfig.h rather than command-line defines
+
+ Revision 1.2  1999/05/03 14:06:39  gda
+ moved to using dxconfig.h rather than command-line defines
 
  Revision 1.1.1.1  1999/03/24 15:18:33  gda
  Initial CVS Version

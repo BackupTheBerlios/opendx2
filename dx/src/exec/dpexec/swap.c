@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define	RECLAIM_TIMING	0
 
 #include <stdio.h>

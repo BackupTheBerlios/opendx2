@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef tdmGather_h
 #define tdmGather_h
 

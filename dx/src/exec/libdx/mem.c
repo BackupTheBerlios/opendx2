@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /* this file is compiled into all versions, but the functions are 
  * really only needed for multiprocessor architectures or machines
  * which are using shared memory.  there are stubs defined at the end

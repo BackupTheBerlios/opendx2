@@ -1,7 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include -I../dpexec -I/usr/include -I/usr/local/include
-MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+INCLUDES = -I../../../include -I../dpexec -I/usr/include -I/usr/local/include -D@ARCH@
 
 dxmdfdir = $(prefix)/dx/lib
 noinst_LIBRARIES = libDXMODS.a

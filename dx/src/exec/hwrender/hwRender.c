@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define tdmRender_c
 
 

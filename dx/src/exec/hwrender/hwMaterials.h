@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef	hwMaterials_h
 #define	hwMaterials_h
 

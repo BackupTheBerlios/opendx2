@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #include <dx/dx.h>
 
 /* routines to deal with the product level version numbers of dx 

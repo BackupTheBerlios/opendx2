@@ -2,12 +2,15 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.1 1999/03/24 15:18:31 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.2 1999/05/03 14:06:37 gda Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
 #include "vectors.h"
 #include "math.h"
+
+#include <dxconfig.h>
+
 
 extern VectorGrp  _dxfIrreg_InitVectorGrp(Object, char *);
 extern VectorGrp  _dxfReg_InitVectorGrp(Object, char *);

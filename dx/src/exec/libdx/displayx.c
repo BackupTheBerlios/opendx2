@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*
  * Header: /usr/people/gresh/code/svs/src/libdx/RCS/displayx.c,v 5.2 93/01/25 17:06:43 gda Exp Locker: gresh 
  * 

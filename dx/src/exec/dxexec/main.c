@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /* real entry point, calls DXmain() immediately */
 extern DXmain(int argc, char **argv, char **envp);
 #ifdef	DXD_WIN

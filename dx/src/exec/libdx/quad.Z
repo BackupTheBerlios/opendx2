@@ -2,13 +2,15 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
-INCLUDE1 "triangles.h"
+INCLUDE3 <dxconfig.h>
 
-INCLUDE2 <string.h>
-INCLUDE2 <dx/dx.h>
-INCLUDE2 "render.h"
-INCLUDE2 "internals.h"
+INCLUDE1 "triangles.h"
 INCLUDE2 "triangles.h"
+
+INCLUDE3 <string.h>
+INCLUDE3 <dx/dx.h>
+INCLUDE3 "render.h"
+INCLUDE3 "internals.h"
 
 DEFINE3 CAT(a,b) a##b
 

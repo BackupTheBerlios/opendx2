@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define WINDOW_CLOSED	    0
 #define WINDOW_OPEN	    1
 #define WINDOW_OPEN_RAISED  2

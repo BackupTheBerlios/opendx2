@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*
  * Header: /usr/people/gresh/code/svs/src/libdx/RCS/invalid.c,v 5.1 93/01/20 14:26:14 gda Exp Locker: gresh 
  *

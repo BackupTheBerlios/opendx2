@@ -1,5 +1,8 @@
 #include "dx/dx.h"
 
+#include <dxconfig.h>
+
+
 #include "quant.h"
 
 static Error traverse(Object *, Object *, int nColors);

@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef __INSTRUMENT_H_
 #define __INSTRUMENT_H_
 

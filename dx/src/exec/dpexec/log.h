@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define LOG_FATAL	0
 #define LOG_ERROR	1
 #define LOG_WARNING	2

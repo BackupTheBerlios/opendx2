@@ -6,6 +6,9 @@
  *
  */
 
+#include <dxconfig.h>
+
+
 /***
 MODULE:
 Color   

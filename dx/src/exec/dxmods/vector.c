@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #include "interact.h"
 
 #define MIN(a,b) ((a<b) ? a: b)

@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #include <dx/dx.h>
 #if HAVE_VALUES_H
 #include <values.h>

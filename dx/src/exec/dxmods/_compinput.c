@@ -8,6 +8,9 @@
 /* #define CHECK_ANY_POSITIONS */
 /* #define CHECK_ALL_POSITIONS */
 
+#include <dxconfig.h>
+
+
 #include <string.h>
 #include <dx/dx.h>
 #include "_compute.h"

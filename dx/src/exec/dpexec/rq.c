@@ -1,7 +1,9 @@
-
 #include <dx/dx.h>
 #include "rq.h"
 #include "instrument.h"
+
+#include <dxconfig.h>
+
 
 extern int *_dxd_exTerminating;
 extern int _dxfExReclaimingMemory();

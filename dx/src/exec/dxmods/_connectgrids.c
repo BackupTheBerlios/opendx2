@@ -4,6 +4,9 @@
 /*
  */
 
+#include <dxconfig.h>
+
+
 
 #include <stdio.h>
 #include <math.h>

@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #include <dx/dx.h>
 
 extern Error _dxfParmCheck(int nobjs, Object o1, char *oname1,

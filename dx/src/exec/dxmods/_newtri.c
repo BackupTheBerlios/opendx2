@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define	TRIANGULATE_ALWAYS		1
 #define	TRIANGULATE_DEBUG		1
 #define	TRIANGULATE_MAIN		0

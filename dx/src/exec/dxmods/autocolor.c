@@ -5,6 +5,9 @@
  * Header: /usr/people/gresh/code/svs/src/dxmods/RCS/autocolor.m,v 5.3 93/01/25 14:50:45 gresh Exp Locker: gresh 
  */
 
+#include <dxconfig.h>
+
+
 /***
 MODULE:
     AutoColor

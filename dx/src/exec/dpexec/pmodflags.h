@@ -8,6 +8,9 @@
  * the private flags that we don't want the user to see.
  */
 
+#include <dxconfig.h>
+
+
 #include <dx/modflags.h>
 
 #define __BIT(x) (1<<(x))

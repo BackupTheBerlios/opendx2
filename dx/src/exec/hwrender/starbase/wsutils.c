@@ -2,6 +2,9 @@
 /*                     I.B.M. CONFIENTIAL                           */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /******************************************************************************
  * These functions were provided by HP with /usr/lib/starbase/demos/SBUTILS
  *
@@ -13,7 +16,7 @@
  *
  ******************************************************************************/
 /*
- $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/starbase/wsutils.c,v 1.1 1999/03/24 15:18:35 gda Exp $
+ $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/starbase/wsutils.c,v 1.2 1999/05/03 14:06:42 gda Exp $
 */
 
 #include <X11/X.h>

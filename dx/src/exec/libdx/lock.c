@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /* on an MP machine, this file defines the lock routines.  on all other
  * machines, there are stubs at the end of this file which do nothing,
  * so this file doesn't need to be edited for single processor architectures.

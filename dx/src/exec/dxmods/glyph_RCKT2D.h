@@ -1,6 +1,9 @@
 #define RCKT2DPTS 7 
 #define RCKT2DTRS 3 
 
+#include <dxconfig.h>
+
+
 static Point points[RCKT2DPTS] = {
    0.2000000000,      0.0000000000,    0.0,
   -0.2000000000,      0.0000000000,    0.0, 

@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 
 /*
  * Header: /a/max/homes/max/gresh/code/svs/src/libdx/RCS/axes.c,v 5.0 92/11/12

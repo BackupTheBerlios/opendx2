@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define NT_ERROR	(-1)
 #define NT_INPUT	0
 #define NT_CONSTANT	1

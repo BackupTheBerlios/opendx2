@@ -1,11 +1,12 @@
-
-
 MODULE AmbientLight
 CATEGORY Rendering
 DESCRIPTION produces an ambient light
 INPUT color; vector or string; [0.2 0.2 0.2]; color and intensity of light
 OPTIONS red ; green ; blue ; white
 OUTPUT light; light; the ambient light
+
+#include <dxconfig.h>
+
 
 MODULE Append
 CATEGORY Structuring

@@ -1,10 +1,13 @@
 /* RPos, normals out,back faces regular, regular growth, leaks ?*/
 
+#include <dxconfig.h>
+
+
 /*********************************************************************/
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.1 1999/03/24 15:18:31 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.2 1999/05/03 14:06:36 gda Exp $
  */
 
 

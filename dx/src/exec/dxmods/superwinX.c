@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <Xm/Xm.h>

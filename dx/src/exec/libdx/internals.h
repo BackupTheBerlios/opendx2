@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 char *_dxfstring(char *s, int add);
 /**
 Add a string to the string table.

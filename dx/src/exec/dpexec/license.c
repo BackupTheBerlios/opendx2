@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /* this has to be before the ifdef, because it defines DXD_LICENSED_VERSION 
  * if this arch supports the license manager.
  */

@@ -4,6 +4,9 @@
 /*
  * Header: /usr/people/gresh/code/svs/src/dxmods/RCS/grid.m,v 5.0 92/11/12 09:15:18 svs Exp Locker: gresh 
 
+#include <dxconfig.h>
+
+
  * 
  */
 /***

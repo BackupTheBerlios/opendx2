@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 
 /* Task.c containes the routines that implement the tasks.  
  * There is a task block structure, which contains various fields including 

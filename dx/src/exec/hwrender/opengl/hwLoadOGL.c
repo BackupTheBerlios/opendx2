@@ -2,8 +2,11 @@
 /*                     I.B.M. CONFIENTIAL                           */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.2 1999/03/31 14:15:32 gda Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.3 1999/05/03 14:06:41 gda Exp $
 \*---------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <math.h>

@@ -8,6 +8,9 @@ static Point points[ARRWPTS] = {
    0.2500000000,      0.8000000000,     -0.2500000000, 
    0.2500000000,      0.8000000000,      0.2500000000, 
 };
+
+#include <dxconfig.h>
+
    
 static Line lines[] = {
     0,       1,       

@@ -8,6 +8,9 @@
 */
 /*=====================Include Files===================================*/
 
+#include <dxconfig.h>
+
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>

@@ -4,6 +4,9 @@
 /*
  */
 
+#include <dxconfig.h>
+
+
 
 /* issues: partitioned grids for base, handling 2D and 3D */
 /* should do not only data but all components dep positions */

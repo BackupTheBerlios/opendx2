@@ -6,6 +6,9 @@
  * 
  */
 
+#include <dxconfig.h>
+
+
 #include <dx/dx.h>
 #include <ctype.h>
 #include <stdarg.h>

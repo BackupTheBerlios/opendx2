@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /* SimplifySurface
 
    is a module that approximates a triangulated surface and resamples data

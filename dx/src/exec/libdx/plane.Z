@@ -2,9 +2,11 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+INCLUDE2 <dxconfig.h>
 
-#include <dx/dx.h>
-#include "render.h"
+
+INCLUDE2  <dx/dx.h>
+INCLUDE2  "render.h"
 
 /*
  * This has to do with the K&R preprocessor used for

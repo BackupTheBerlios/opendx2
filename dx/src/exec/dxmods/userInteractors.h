@@ -20,6 +20,9 @@
  *  matrix can be simplified as follows:
  */
 
+#include <dxconfig.h>
+
+
 #define ROTXY(m, x, y, s, c, t) {\
 m[0][0]= t*x*x + c;   m[0][1]=  t*x*y;       m[0][2]= -s*y;         m[0][3] =0;\
 m[1][0]= t*x*y;       m[1][1]=  t*y*y + c;   m[1][2]=  s*x;         m[1][3] =0;\

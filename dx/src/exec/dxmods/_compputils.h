@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 PTreeNode *_dxfMakeArg(int);
 PTreeNode *_dxfMakeFunCall(char *, PTreeNode *);
 PTreeNode *_dxfMakeList(int op, PTreeNode *);

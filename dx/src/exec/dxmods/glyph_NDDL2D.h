@@ -1,6 +1,9 @@
 #define NDDL2DPTS 2 
 #define NDDL2DLNS 1 
 
+#include <dxconfig.h>
+
+
 static Point points[NDDL2DPTS] = {
    0.0000000000,      0.0000000000,  0.0,
    0.0000000000,      1.0000000000,  0.0,

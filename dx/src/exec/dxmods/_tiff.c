@@ -2,8 +2,11 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.2 1999/04/26 17:32:58 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.3 1999/05/03 14:06:32 gda Exp $
  */
+
+#include <dxconfig.h>
+
 
 /*
  * This file constitutes support for writing (and some reading) TIFF (Tagged

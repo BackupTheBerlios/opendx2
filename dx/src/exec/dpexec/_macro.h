@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #if 0
 These access methods are used to operate on dictionary entries which are
 macro and function definitions.  The macro definitions are actually stored

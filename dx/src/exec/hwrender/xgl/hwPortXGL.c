@@ -2,6 +2,9 @@
 /*                     I.B.M. CONFIENTIAL                            */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*---------------------------------------------------------------------------*\
  $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/xgl/hwPortXGL.c,v $
 
@@ -40,8 +43,11 @@
  only enabled for the GT.
 
  $Log: hwPortXGL.c,v $
- Revision 1.2  1999/04/21 18:40:10  gda
- COLORMAP -> CLRMAP due to conflict on cygwin
+ Revision 1.3  1999/05/03 14:06:43  gda
+ moved to using dxconfig.h rather than command-line defines
+
+ Revision 1.3  1999/05/03 14:06:43  gda
+ moved to using dxconfig.h rather than command-line defines
 
  Revision 1.2  1999/04/21 18:40:10  gda
  COLORMAP -> CLRMAP due to conflict on cygwin

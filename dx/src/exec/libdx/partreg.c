@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 
 /* this routine uses "P" for DXDebug() to print how many partitions are
  *  actually created compared to how many are requested.  for more 

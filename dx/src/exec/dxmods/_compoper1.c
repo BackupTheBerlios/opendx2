@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /* This file contains the description of each operator from a type and 
  * execution pint of view.  For each operator (such as COND (?:), *, 
  * min, [...], etc.) there is a structure containing the operator

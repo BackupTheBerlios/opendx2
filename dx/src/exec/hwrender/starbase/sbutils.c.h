@@ -2,6 +2,9 @@
 /*                     I.B.M. CONFIENTIAL                           */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef sbutils_c_h
 #define sbutils_c_h
 /* SBUTILS:sbutils.c.h    07/14/90    01:44:21 */

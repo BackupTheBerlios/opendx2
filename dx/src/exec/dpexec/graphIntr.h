@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef __GRAPHINT_H__
 #define __GRAPHINT_H__
 #if 0

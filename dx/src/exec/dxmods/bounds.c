@@ -2,8 +2,11 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/bounds.c,v 1.1 1999/03/24 15:18:26 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/bounds.c,v 1.2 1999/05/03 14:06:32 gda Exp $
  */
+
+#include <dxconfig.h>
+
 
 #include <math.h>
 #include <dx/dx.h>

@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*---------------------------------------------------------------------------*\
  $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwCursorInteractor.c,v $
   Adapted for tdm from src/ui/uix/Picture*.* 10/29/91 by Mark Hood

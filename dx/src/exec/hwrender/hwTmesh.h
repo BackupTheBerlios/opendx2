@@ -2,11 +2,14 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef tdmTmesh_h
 #define tdmTmesh_h
 /*
  *
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwTmesh.h,v 1.1 1999/03/24 15:18:34 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwTmesh.h,v 1.2 1999/05/03 14:06:40 gda Exp $
  */
 
 

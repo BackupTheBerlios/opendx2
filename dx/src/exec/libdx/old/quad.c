@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 INCLUDE1 "triangles.h"
 
 INCLUDE2 <string.h>

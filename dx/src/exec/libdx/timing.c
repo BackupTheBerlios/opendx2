@@ -2,6 +2,9 @@
 /*                     DX SOURCEFILE				     */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 
 #include <sys/types.h>
 #include <string.h>

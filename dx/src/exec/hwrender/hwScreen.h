@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 
 screenO _dxf_newHwScreen(dxScreen s, dxObject subObject,
 			    float vm[4][4],float pm[4][4],

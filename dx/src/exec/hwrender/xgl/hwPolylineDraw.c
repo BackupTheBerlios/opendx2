@@ -2,6 +2,9 @@
 /*                     I.B.M. CONFIENTIAL                           */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 
 /*
  * $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/xgl/hwPolylineDraw.c,v $

@@ -3,6 +3,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*
  * Description:
  * This module contains these basic functions:

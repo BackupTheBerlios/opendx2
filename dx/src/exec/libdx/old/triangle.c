@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*
  * Header: /usr/people/gresh/code/svs/src/libdx/RCS/triangle.c,v 5.2 93/02/02 17:57:44 nsc Exp Locker: gresh 
  * 

@@ -2,6 +2,9 @@
 /*                     DX SOURCEFILE				     */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #include <dx/dx.h>
 
 #if DXD_HAS_UNIX_SYS_INCLUDES

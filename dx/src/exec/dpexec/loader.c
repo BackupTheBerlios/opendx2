@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*
  * system dependent code:  dynamically load or unload an executable file.
  *   this is used for adding modules or functions to an already 

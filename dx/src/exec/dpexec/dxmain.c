@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define  DXD_ENABLE_SOCKET_POINTERS   /* define SFILE in arch.h, os2 */
 #include <dx/dx.h>
 

@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define PACK_INTERRUPT	1
 #define PACK_SYSTEM	2
 #define PACK_ACK	3

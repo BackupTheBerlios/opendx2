@@ -2,12 +2,13 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+INCLUDE2 <dxconfig.h>
 
-#include <math.h>
-#include <string.h>
-#include "lightClass.h"
-#include "render.h"
-#include "internals.h"
+INCLUDE2 <math.h>
+INCLUDE2 <string.h>
+INCLUDE2 "lightClass.h"
+INCLUDE2 "render.h"
+INCLUDE2 "internals.h"
 
 /*
  * forward declarations

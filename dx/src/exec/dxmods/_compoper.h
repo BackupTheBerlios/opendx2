@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define MAX_INTYPES 4		/* the addition of any operator that requires 
 				 * more than MAX_INTYPES inputs types will 
 				 * require that this number be bumped.

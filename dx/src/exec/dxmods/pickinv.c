@@ -1,5 +1,7 @@
-
 #include <dx/dx.h>
+
+#include <dxconfig.h>
+
 
 static Error DoPick(Object, Field, int, int, int, int, Object *);
 static Error SetValidity(Object, int);

@@ -1,5 +1,8 @@
 #include "dx/dx.h"
 
+#include <dxconfig.h>
+
+
 Error
 m_MacroStart(Object *in, Object *out)
 {

@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*
  * Header: /usr/people/gresh/code/svs/src/libdx/RCS/point.c,v 5.0 92/11/12 09:08:34 svs Exp Locker: gresh 
  * 

@@ -10,6 +10,9 @@
 #include <math.h>
 #include "eigen.h"
 
+#include <dxconfig.h>
+
+
 #define CYCLE(a,i,j,k,l) g=a[i][j]; h=a[k][l]; a[i][j]=g-s*(h+g*tau);\
 					       a[k][l]=h+s*(g-h*tau);
 Error

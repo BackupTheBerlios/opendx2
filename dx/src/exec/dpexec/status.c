@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define Screen DXScreenHack	/* hack to get around libdx Screen def */
 #include <dx/dx.h>
 #undef Screen

@@ -2,18 +2,16 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
-/*
- * Header: /usr/people/gresh/code/svs/src/libdx/RCS/triangle.c,v 5.2 93/02/02 17:57:44 nsc Exp Locker: gresh 
- * 
- */
+INCLUDE3 <dxconfig.h>
 
 INCLUDE1 "triangles.h"
-
-INCLUDE2 <string.h>
-INCLUDE2 <dx/dx.h>
-INCLUDE2 "render.h"
-INCLUDE2 "internals.h"
 INCLUDE2 "triangles.h"
+
+INCLUDE3 <string.h>
+INCLUDE3 <dx/dx.h>
+INCLUDE3 "render.h"
+INCLUDE3 "internals.h"
+
 
 DEFINE3 CAT(a,b) a##b
 

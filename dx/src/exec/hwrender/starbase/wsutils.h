@@ -2,6 +2,9 @@
 /*                     I.B.M. CONFIENTIAL                           */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef wsutils_c_h
 #define wsutils_c_h
 /******************************************************************************
@@ -11,7 +14,7 @@
  *
  ******************************************************************************/
 /*
- $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/starbase/wsutils.h,v 1.1 1999/03/24 15:18:35 gda Exp $
+ $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/starbase/wsutils.h,v 1.2 1999/05/03 14:06:42 gda Exp $
 */
 
 /* This is the actual structure returned by the X server describing the

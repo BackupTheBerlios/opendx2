@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #include "hwDeclarations.h"
 #include "hwList.h"
 #include "hwClipped.h"

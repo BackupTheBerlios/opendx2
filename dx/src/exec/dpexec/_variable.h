@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #if 0
 These access methods are specifically used to operate on dictionary entries
 which are user-variable definitions.

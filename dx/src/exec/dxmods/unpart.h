@@ -2,8 +2,11 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/unpart.h,v 1.1 1999/03/24 15:18:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/unpart.h,v 1.2 1999/05/03 14:06:38 gda Exp $
  */
 
 #ifndef	__UNPART_H

@@ -1,5 +1,8 @@
 #include <dx/dx.h>
 
+#include <dxconfig.h>
+
+
 #define WHERE in[0]
 
 extern Field _dxfSaveSoftwareWindow(char *);

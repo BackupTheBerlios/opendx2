@@ -1,6 +1,9 @@
 #ifndef	__EX_QUEUE_H
 #define	__EX_QUEUE_H
 
+#include <dxconfig.h>
+
+
 #include <dx/dx.h>
 
 #include "utils.h"

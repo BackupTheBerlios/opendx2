@@ -8,6 +8,9 @@ static Point points[PNTPTS] = {
    0.0000000000,      0.0000000000,     -0.5000000000,
    0.0000000000,      0.0000000000,      0.5000000000
 };
+
+#include <dxconfig.h>
+
    
 static Line lines[PNTLNS] = {
    0,   1,

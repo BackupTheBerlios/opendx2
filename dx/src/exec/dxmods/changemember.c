@@ -7,6 +7,9 @@
  * disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
  */
 
+#include <dxconfig.h>
+
+
 
 #include <dx/dx.h>
 #include <ctype.h>

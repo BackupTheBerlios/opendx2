@@ -2,10 +2,13 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define tdmWindow_c
 
 #ifndef	lint
-static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.c,v 1.2 1999/04/21 18:56:46 gda Exp $";
+static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.c,v 1.3 1999/05/03 14:06:40 gda Exp $";
 #endif
 
 #define FLING_TIMEOUT 3

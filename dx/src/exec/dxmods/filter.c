@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define	GROW_BUG_IN_REF		0
 
 #include <ctype.h>

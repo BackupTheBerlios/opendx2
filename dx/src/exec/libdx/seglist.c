@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*
  * Header: /usr/people/gresh/code/svs/src/libdx/RCS/seglist.c,v 5.2 93/01/13 17:58:38 gda Exp Locker: gresh 
  * 

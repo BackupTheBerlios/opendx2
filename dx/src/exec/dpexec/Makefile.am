@@ -1,7 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include -I../libdx
-MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+INCLUDES = -I../../../include -I../libdx -D@ARCH@
 
 noinst_LIBRARIES = libDPEXEC.a
 

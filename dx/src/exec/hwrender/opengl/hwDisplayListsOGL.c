@@ -1,9 +1,11 @@
-
 #define Screen dxScreen
 #define Object dxObject
 #include <dx/dx.h>
 #undef Screen
 #undef Object
+
+#include <dxconfig.h>
+
 
 #include <GL/glx.h>
 #include <GL/gl.h>

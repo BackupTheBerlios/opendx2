@@ -5,6 +5,9 @@
  * eigen.h - header file for eigenvalue routines in eigen.c
  */
 
+#include <dxconfig.h>
+
+
 #define SHAPE 3
 
 typedef struct stress_tensor {

@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef	__ATTRIBUTE_H
 #define	__ATTRIBUTE_H
 

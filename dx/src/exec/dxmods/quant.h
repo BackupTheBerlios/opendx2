@@ -1,5 +1,8 @@
 typedef struct color *Color;
 
+#include <dxconfig.h>
+
+
 struct color
 {
     unsigned char r, g, b;

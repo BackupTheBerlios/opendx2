@@ -3,6 +3,9 @@
 /*                     ALL RIGHTS RESERVED.                          */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 
 #include <dx/dx.h>
 #include <ctype.h>

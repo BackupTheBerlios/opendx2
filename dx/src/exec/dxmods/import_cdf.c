@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /****************************************************************************
 
   CDF importer: Each CDF variable is categorized as a data, positions or

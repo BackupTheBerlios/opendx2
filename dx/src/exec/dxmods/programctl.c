@@ -1,5 +1,8 @@
 #include <dx/dx.h> 
 
+#include <dxconfig.h>
+
+
 
 typedef struct
 {

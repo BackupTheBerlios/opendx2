@@ -16,6 +16,9 @@ static Point points[SPHR12PTS] = {
 };
 Point points_new[SPHR12PTS];
 Point normals_new[SPHR12PTS];
+
+#include <dxconfig.h>
+
   
 static Triangle triangles[] = {
     {0, 5, 1},

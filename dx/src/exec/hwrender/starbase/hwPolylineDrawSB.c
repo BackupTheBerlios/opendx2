@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define _HP_FAST_MACROS 1
 #include <starbase.c.h>
 #include "hwDeclarations.h"

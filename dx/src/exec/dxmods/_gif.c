@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #include <stdlib.h>
 #include <fcntl.h>
 #include <dx/dx.h>

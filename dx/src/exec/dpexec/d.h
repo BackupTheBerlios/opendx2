@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef	__EX_DICTIONARY_H
 #define	__EX_DICTIONARY_H
 

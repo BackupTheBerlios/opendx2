@@ -2,8 +2,11 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/transpose.c,v 1.1 1999/03/24 15:18:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/transpose.c,v 1.2 1999/05/03 14:06:37 gda Exp $
  */
+
+#include <dxconfig.h>
+
 
 
 #include <dx/dx.h>

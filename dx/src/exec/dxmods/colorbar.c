@@ -1,6 +1,9 @@
 #include <dx/dx.h>
 #include <stdlib.h>
 
+#include <dxconfig.h>
+
+
 extern Object _dxfAxes2D(Pointer);
 
 #define MINTICPIX 5

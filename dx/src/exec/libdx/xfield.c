@@ -2,6 +2,9 @@
 /*                     I.B.M. CONFIENTIAL                           */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 
 #include <string.h>
 #include <dx/dx.h>

@@ -4,6 +4,9 @@
 /*
  */
 
+#include <dxconfig.h>
+
+
 /***
 MODULE:
     AutoGrayScale

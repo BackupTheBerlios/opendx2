@@ -3,6 +3,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #include <dx/dx.h>
 static Error  GetObjectAndCameraFromCache(char *, Object *, Camera *);
 

@@ -2,6 +2,9 @@
 /* XXX - the diagonal isn't preserved with band quad->tri decomp */
 /* XXX - color map component */
 
+#include <dxconfig.h>
+
+
 /* XXX - traverse once to get values and once to set them (attributes). merge */
 
 #ifndef _ISOSURFACE_PASS_NUMBER

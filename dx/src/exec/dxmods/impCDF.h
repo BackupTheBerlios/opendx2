@@ -1,4 +1,3 @@
-
 struct infocdf
 {
   CDFid  id;
@@ -12,6 +11,9 @@ struct infocdf
   int    rotate[CDF_MAX_DIMS];
 };
 typedef struct infocdf *Infocdf;
+
+#include <dxconfig.h>
+
 
 
 struct infovar

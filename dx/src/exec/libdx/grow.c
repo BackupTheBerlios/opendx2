@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*
  * Header: /usr/people/gresh/code/svs/src/dxmods/RCS/_grow.c,v 5.0 92/11/12 09:12:57 svs Exp Locker: gresh 
  *

@@ -1,5 +1,8 @@
 /* Automatically generated - do not edit! */
 
+#include <dxconfig.h>
+
+
 #include <dx/dx.h>
 #include <dx/modflags.h>
 

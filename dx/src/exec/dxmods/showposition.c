@@ -2,8 +2,11 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showposition.c,v 1.2 1999/04/21 18:38:15 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showposition.c,v 1.3 1999/05/03 14:06:36 gda Exp $
  */
+
+#include <dxconfig.h>
+
 
 #include <stdlib.h>
 #include <string.h>

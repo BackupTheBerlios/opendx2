@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 
 /* this file is NOT used with the normal dxexec - the one from
  * the executive directory is used instead.  these stubs are only

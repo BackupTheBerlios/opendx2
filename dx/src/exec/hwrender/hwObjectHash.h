@@ -2,6 +2,9 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 HashTable _dxf_InitObjectHash();
 dxObject  _dxf_QueryObject(HashTable, dxObject);
 void 	  _dxf_InsertObject(HashTable, dxObject, dxObject);

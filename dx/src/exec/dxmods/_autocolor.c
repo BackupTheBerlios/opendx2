@@ -6,6 +6,9 @@
 09:07:29 svs Exp Locker: gresh 
  */
 
+#include <dxconfig.h>
+
+
 
 #include <stdio.h>
 #include <dx/dx.h>

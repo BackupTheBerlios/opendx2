@@ -79,6 +79,9 @@
     nxpt++;\
 }
 
+#include <dxconfig.h>
+
+
 
 #define ADDTRI(A,B,C) {\
     xtri->p = nxpt+(A);\

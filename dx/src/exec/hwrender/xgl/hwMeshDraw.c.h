@@ -2,6 +2,9 @@
 /*                     I.B.M. CONFIENTIAL                           */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 /*---------------------------------------------------------------------------*\
  $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/xgl/hwMeshDraw.c.h,v $
 
@@ -18,8 +21,11 @@
  someday. 
 
  $Log: hwMeshDraw.c.h,v $
- Revision 1.1  1999/03/24 15:18:36  gda
- Initial revision
+ Revision 1.2  1999/05/03 14:06:42  gda
+ moved to using dxconfig.h rather than command-line defines
+
+ Revision 1.2  1999/05/03 14:06:42  gda
+ moved to using dxconfig.h rather than command-line defines
 
  Revision 1.1.1.1  1999/03/24 15:18:36  gda
  Initial CVS Version

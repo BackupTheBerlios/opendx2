@@ -5,6 +5,9 @@
 #define Screen dxScreen
 #define Boolean dxBoolean
 
+#include <dxconfig.h>
+
+
 #include <dx/dx.h>
 
 #undef String

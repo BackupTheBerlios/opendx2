@@ -2,6 +2,9 @@
 /*                     I.B.M. CONFIENTIAL                           */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #ifndef tdmPortXGL_h
 #define tdmPortXGL_h
 /*---------------------------------------------------------------------------*\
@@ -10,8 +13,11 @@
   Private data structures used by the XGL implementation of DX renderer.
 
  $Log: hwPortXGL.h,v $
- Revision 1.1  1999/03/24 15:18:36  gda
- Initial revision
+ Revision 1.2  1999/05/03 14:06:43  gda
+ moved to using dxconfig.h rather than command-line defines
+
+ Revision 1.2  1999/05/03 14:06:43  gda
+ moved to using dxconfig.h rather than command-line defines
 
  Revision 1.1.1.1  1999/03/24 15:18:36  gda
  Initial CVS Version

@@ -13,6 +13,9 @@ static char yysccsid[] = "@(#)yaccpar	1.9 (Berkeley) 02/21/93";
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define DXD_ENABLE_SOCKET_POINTERS	/* define SFILE in arch.h, os2 */
 #include <dx/dx.h>
 

@@ -2,10 +2,13 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 
+#include <dxconfig.h>
+
+
 #define tdmInitScreen_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.1 1999/03/24 15:18:33 gda Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.2 1999/05/03 14:06:39 gda Exp $"};
 #endif
 
 

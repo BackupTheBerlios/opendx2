@@ -1,7 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include -I../dpexec
-MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+INCLUDES = -I../dpexec -D@ARCH@
 
 dxbindir = $(prefix)/dx/bin_@ARCH@
 dxbin_PROGRAMS = dxexec

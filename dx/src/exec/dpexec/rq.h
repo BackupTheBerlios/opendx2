@@ -1,6 +1,9 @@
 #ifndef	__EX_RQ_H
 #define	__EX_RQ_H
 
+#include <dxconfig.h>
+
+
 #include "utils.h"
 
 

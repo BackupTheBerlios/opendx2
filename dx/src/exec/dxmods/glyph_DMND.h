@@ -8,6 +8,9 @@ static Point points[DMNDPTS] = {
    0.0000000119,      0.0000000000,     -1.0000000000, 
    0.0000000000,      1.0000000000,      0.0000000000 
 };
+
+#include <dxconfig.h>
+
    
 static Point normals[DMNDPTS] = {
    0.0000000000,     -1.0000000000,      0.0000000000, 

@@ -1,6 +1,9 @@
 #ifndef _STEREO_H_
 #define _STEREO_H_
 
+#include <dxconfig.h>
+
+
 #define DX_STEREO_LEFT  1
 #define DX_STEREO_RIGHT 2
 

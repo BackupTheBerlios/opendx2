@@ -15,6 +15,9 @@ static char _dxfccsccsid[] = "@(#)yaccpar	1.9 (Berkeley) 02/21/93";
 #include "_compute.h"
 #include "_compputils.h"
 
+#include <dxconfig.h>
+
+
 
 
 int _dxdparseError = 0;		/* Only shared with _compputils.c */

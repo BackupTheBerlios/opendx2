@@ -3,6 +3,9 @@
 /* 		-take first line as field name			*/
 /*		-create invalid data component for missing data	*/
 
+#include <dxconfig.h>
+
+
 #include <stdio.h>
 #include <dx/dx.h>
 #include<sys/types.h>
