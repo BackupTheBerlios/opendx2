@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -D$(ARCH) -I../../../include 
+INCLUDES = -I../../../include 
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxlibdir = $(prefix)/dx/lib_$(ARCH)
+dxlibdir = $(prefix)/dx/lib_@ARCH@
 
 dxlib_LIBRARIES = libDXL.a
 

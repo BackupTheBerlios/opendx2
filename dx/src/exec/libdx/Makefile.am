@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -D$(ARCH) -I../../../include
+INCLUDES = -I../../../include
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 noinst_LIBRARIES = libLIBDX.a

@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -D$(ARCH) -I../../../include -I../base
+INCLUDES =  -I../../../include -I../base
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxbindir = $(prefix)/dx/bin
+dxbindir = $(prefix)/dx/bin_@ARCH@
 
 dxbin_PROGRAMS = startupui
 
@@ -30,5 +30,5 @@ startupui_LDADD = 			\
 	../dxl/libDXL.a		  	\
 	-L/usr/X11R6/lib 		\
 	-L/usr/local/lib 		\
-	-L$(DXROOT)/lib_$(ARCH) 	\
+	-L$(DXROOT)/lib_@ARCH@	\
 	-lcrypt  -lXm -lXmu -lXt -lX11 -lXext
