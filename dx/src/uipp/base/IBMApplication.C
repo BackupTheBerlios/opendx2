@@ -9,7 +9,6 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
@@ -32,6 +31,7 @@
 #include "logo.h"
 #include "icon50.h"
 #include "ListIterator.h"
+#include "StartWebBrowser.h"
 
 #if defined (HAVE_XPM_H)
 #include <xpm.h>
@@ -468,7 +468,13 @@ const char *IBMApplication::getStartTutorialCommandString()
 //
 boolean IBMApplication::startTutorial()
 {
-    system("dx -tutor");
+    char url[512];
+    strcpy(url, "file://");
+    strcat(url, getUIRoot());
+    strcat(url, "/html/pages/qikgu011.htm#HDRAPA");
+    if(!_dxf_StartWebBrowserWithURL(url))
+	system("dx -tutor");
+	
     return TRUE;
 
 }

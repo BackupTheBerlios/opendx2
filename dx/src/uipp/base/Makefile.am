@@ -52,6 +52,7 @@ SRCS2 = \
 	Server.C			\
 	SetNameDialog.C			\
 	Stack.C				\
+	StartWebBrowser.C		\
 	Strings.C			\
 	StringTable.C			\
 	SymbolManager.C			\
@@ -145,6 +146,7 @@ HDRS2 = \
 	Server.h \
 	SetNameDialog.h \
 	Stack.h \
+	StartWebBrowser.h \
 	StringTable.h \
 	DXStrings.h \
 	SymbolManager.h \
