@@ -602,7 +602,7 @@ void ToolSelector::help()
 	}
     }
     if (!tools)
-	tools = ALPHABETIZED;
+	tools = this->name;//ALPHABETIZED;
     char* cp = DuplicateString(tools);
     char *p;
     for (p = cp; *p; ++p)
