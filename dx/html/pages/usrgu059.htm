@@ -65,6 +65,7 @@ MINING">
 		<H2><A NAME="HDRJAVAEXP"></A>11.1 About Java Explorer</H2>
 		<P>Java Explorer is an network based server and a set of Java applets that allow Data Explorer networks to run from within a web browser. In an authoring step, the visualization expert selects to add the required Java Explorer modules; thus, activating the option to then generate an appropriate html page and applet code that corresponds to the network's user interface Control Panels and Images. Once the Java Explorer modules are added, the network can be executed from either the standard DX user interface or a web browser via the Java Explorer server, eliminating dual-source problems. The Image macro when running in the Java Explorer environment outputs image formatted files for the web server to send. Results of a visualization can be sent as Images (single or multiple), or geometry (as VRML), determined by the visualization programmer or the end-user's settings. Direct user interactions (e.g. rotate, pick, etc.) are implemented by the client or the server depending upon the presentation mode.</P>
 		<P>In order to view a network with a web browser, the network is first converted to a web page, installed into the Java Explorer server's specified web page directory and then the server must be started. If Java Explorer is to be used to allow users via the Internet to run specified visualizations, then a web server must also be running and set up in conjunction with Java Explorer.</P>
+		<P>If Java Explorer is to produce images to send to a web browser, it is required that ImageMagick be included within the DX framework.</P>
 		<HR>
 		<H2><A NAME="HDRCRWEBP"></A>11.2 Creating Web Pages</H2>
 		<P>Once a visualization is ready to be shared via Java Explorer, the network must be converted to a web page. The following steps show how to perform this transformation:</P>
@@ -108,10 +109,7 @@ MINING">
 		<H4><A NAME="HDRJAVAMA"></A>Java Explorer Macros</H4>
 		<P>In order for Java Explorer to work, several macros were created to extend the Image Module. The macros are listed below:</P>
 		<UL>
-			<LI>dxexport
-			<LI>imageexport
-			<LI>vrmlexport
-			<LI>WebOptions
+			<LI>DXExport			<LI>ImageExport			<LI>VRMLExport			<LI>WebOptions
 		</UL>
 		<HR>
 		<H2><A NAME="HDRINTERIM"></A>11.3 Interacting with Images</H2>

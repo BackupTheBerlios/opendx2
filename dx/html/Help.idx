@@ -729,9 +729,9 @@ VisualObject 		pages/refgu172.htm
 WriteImage 		pages/refgu173.htm
 
 ! ----- Man page entries (macros)
-dxexport		pages/usrgu059.htm#HDRJAVAMA
-imageexport		pages/usrgu059.htm#HDRJAVAMA
-vrmlexport		pages/usrgu059.htm#HDRJAVAMA
+DXExport		pages/usrgu059.htm#HDRJAVAMA
+ImageExport		pages/usrgu059.htm#HDRJAVAMA
+VRMLExport		pages/usrgu059.htm#HDRJAVAMA
 WebOptions		pages/usrgu059.htm#HDRJAVAMA
 ArrangeMember		pages/qikgu026.htm
 AutoScale		pages/qikgu026.htm

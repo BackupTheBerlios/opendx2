@@ -1,6 +1,12 @@
 4.2.0
 ===============
 
+Java Explorer's macros have been updated to reflect the removal of the
+gif image format internally from OpenDX. They have also been renamed
+to use the standard DX naming convention uc/lc. This will require any
+user networks to be opened and saved with 4.2.0 before serving them
+up with JavaDX.
+
 Fix to update multiple DrawingArea windgets with the same size during
 expose event.
 
