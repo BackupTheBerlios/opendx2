@@ -1631,7 +1631,10 @@ void Browser::searchForward(char *text)
     if(!found)
 	WarningMessage("Pattern not found");
 
-#if (defined(HAVE_REGCOMP) && (defined(HAVE_REGEX_H) || defined(HAVE_REGEXP_H))) || defined(HAVE_REGCMP)
+
+#if defined(HAVE_REGCOMP) && defined(HAVE_REGEX_H)
+    regfree(search_for);
+#elif (defined(HAVE_REGCOMP) && defined(HAVE_REGEXP_H)) || defined(HAVE_REGCMP)
     free(search_for);
 #endif
 
@@ -1843,7 +1846,9 @@ void Browser::searchBackward(char *text)
     if(!found)
 	WarningMessage("Pattern not found");
 
-#if (defined(HAVE_REGCOMP) && (defined(HAVE_REGEX_H) || defined(HAVE_REGEXP_H))) || defined(HAVE_EGCMP)
+#if defined(HAVE_REGCOMP) && defined(HAVE_REGEX_H)
+    regfree(search_for);
+#elif (defined(HAVE_REGCOMP) && defined(HAVE_REGEXP_H)) || defined(HAVE_REGCMP)
     free(search_for);
 #endif
 
