@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.h,v 1.4 2000/08/24 20:04:11 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.h,v 1.5 2001/04/06 16:59:15 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -59,7 +59,7 @@ typedef enum
     DEP          = 0,
     REF          = 1,
     DER          = 2,
-    ELEMENT_TYPE = 3
+    DX_ELEMENT_TYPE = 3
 }
 std_component_attribute_names;
 #define  STD_COMPONENT_ATTRIBUTE_LIM  4

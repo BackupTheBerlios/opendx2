@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.c,v 1.5 2000/08/24 20:04:11 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.c,v 1.6 2001/04/06 16:59:14 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -525,7 +525,7 @@ component_info in_memory_component ( Field input, component_info output, int n )
             DXASSERTGOTO ( output->element_type == NONE );
             DXASSERTGOTO ( output->attrib_list[i].value != NULL );
 
-            output->std_attribs [ (int)ELEMENT_TYPE ] = &output->attrib_list[i];
+            output->std_attribs [ (int)DX_ELEMENT_TYPE ] = &output->attrib_list[i];
 
             if ( MATCH_SUB ( value, "lines" ) )
                 output->element_type = LINES;
@@ -1129,19 +1129,19 @@ component_info _dxf_SetIterator ( component_info input )
                     DXErrorGoto2
                         ( ERROR_DATA_INVALID,
                           "#11380", /* %s is an invalid connections type */
-                          input->std_attribs[(int)ELEMENT_TYPE]->value )
+                          input->std_attribs[(int)DX_ELEMENT_TYPE]->value )
                     break;
 
                 case NONE:
                 case ET_UNKNOWN:
-		    if (input->std_attribs[(int)ELEMENT_TYPE]
+		    if (input->std_attribs[(int)DX_ELEMENT_TYPE]
 			&&
-		        input->std_attribs[(int)ELEMENT_TYPE]->value)
+		        input->std_attribs[(int)DX_ELEMENT_TYPE]->value)
 			{
 			    DXErrorGoto3
 				( ERROR_DATA_INVALID,
 				  "#10210", /* `%s' is not a valid string for %s */
-				  input->std_attribs[(int)ELEMENT_TYPE]->value,
+				  input->std_attribs[(int)DX_ELEMENT_TYPE]->value,
 				  "connections element type" );
 			}
 		      else  

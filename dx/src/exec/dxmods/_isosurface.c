@@ -5882,7 +5882,7 @@ Error isosurface_field
                         ( ERROR_DATA_INVALID,
                           "#11380", /* %s is an invalid connections type */
                           input_info->std_comps[(int)CONNECTIONS]->
-                              std_attribs[ELEMENT_TYPE]->value );
+                              std_attribs[DX_ELEMENT_TYPE]->value );
             }
 #endif
     }
