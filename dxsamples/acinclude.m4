@@ -59,6 +59,79 @@ AC_CHECK_PROGS( DX, dx )
   AC_MSG_RESULT(found $DXARCH)
 ])
 
+dnl
+dnl  Set up some architecture specific, primarily to handle AIX's
+dnl  export flags. (This needs to be fixed if using gcc)
+dnl  (I added the gcc case)
+dnl  -------------------------------------------------------------
+AC_DEFUN(DX_ARCH_SPECIFIC,
+[
+    AC_MSG_CHECKING(architecture specific stuff)
+    case $DXARCH in
+	ibm6000)
+	    if test "$CC" != "gcc" ; then
+		DXEXEC_EXP='-bE:$(BASE)/lib/dxexec.exp'
+		DXEXEC_IMP='-e DXEntry -bI:$(BASE)/lib/dxexec.exp'
+		C_LDARGS=
+	    fi
+	    ;;
+	sun4)
+	    DXEXEC_EXP=
+	    DXEXEC_IMP=
+	    C_LDARGS='-K pic -Xa'
+	    ;;
+	solaris)
+	    DXEXEC_EXP=
+	    DXEXEC_IMP='-G -e DXEntry'
+	    C_LDARGS='-K pic -Xa'
+	    ;;
+	sgi)
+	    DXEXEC_EXP='-Wl,-E'
+	    DXEXEC_IMP='-Wl,-e,DXEntry,-U,-exported_symbol,DXEntry'
+	    C_LDARGS=
+	    RTL_LIBS='-lm -lc'
+	    ;;
+	hp700)
+	    DXEXEC_EXP='-Wl,-E'
+	    DXEXEC_IMP='-q -b -E -e DXEntry'
+	    C_LDARGS='-Aa +z'
+	    RTL_LIBS='-ldld -lm -lc'
+	    ;;
+	linux)
+	    DXEXEC_EXP='-Wl,-export-dynamic'
+	    DXEXEC_IMP='-shared -e DXEntry '
+	    C_LDARGS=
+	    ;;
+	alphax)
+	    DXEXEC_EXP='-bE:$(BASE)/lib/dxexec.exp'
+	    DXEXEC_IMP='-shared -all -e DXEntry -expect_unresolved main -expect_unresolved DX*'
+	    C_LDARGS=
+	    RTL_LIBS='-lm -lc'
+	    ;;
+	os2)
+	    echo os2 not yet supported
+	    ;;
+	intelnt)
+	    echo intelnt not yet supported
+	    ;;
+	pvs)
+	    echo pvs no longer supported
+	    ;;
+	aviion)
+	    echo aviion no longer supported
+	    ;;
+	freebsd)
+	    DXEXEC_EXP='-Wl,-export-dynamic'
+	    ;;
+    esac
+    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
+    AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP)
+    AC_DEFINE_UNQUOTED(C_LDARGS, $C_LDARGS)
+    AC_DEFINE_UNQUOTED(RTL_LIBS, $RTL_LIBS)
+    AC_MSG_RESULT(done)
+])
+
+
 
 dnl  DX_GET_PREFIX
 dnl  Sets the prefix where to install the samples. Is overridden

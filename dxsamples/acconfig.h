@@ -7,4 +7,8 @@
 #define PACKAGE 		"none"
 #define VERSION 		"none"
 
+#define DXEXEC_EXP
+#define DXEXEC_IMP
+#define C_LDARGS
+#define RTL_LIBS
 

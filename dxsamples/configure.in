@@ -11,6 +11,10 @@ AC_SUBST(JAR)
 AC_SUBST(DX_JAR)
 AC_SUBST(MAKE_JAVADX_SAMPLES)
 AC_SUBST(SHARED_LINK)
+AC_SUBST(DXEXEC_EXP)
+AC_SUBST(DXEXEC_IMP)
+AC_SUBST(C_LDARGS)
+AC_SUBST(RTL_LIBS)
 
 SHELL=/bin/sh
 
@@ -27,6 +31,7 @@ AC_ARG_WITH(javadx,
 DX_INSTALL_PATH
 DX_GET_PREFIX
 DX_GET_ARCH
+DX_ARCH_SPECIFIC
 
 MAKE_JAVADX_SAMPLES=""
 if test "with_javadx" != 'no' ; then
@@ -48,7 +53,7 @@ AC_OUTPUT( Makefile callmodule/Makefile callmodule/callmodule_make \
 	java/samples/Makefile java/Makefile java/userdata/Makefile  \
 	java/usermacros/Makefile  java/nets/Makefile  java/makes/Makefile  \
 	java/samples/Makefile  macros/Makefile outboard/Makefile \
-	program_guide/Makefile program_guide/guidemake \
+	program_guide/Makefile program_guide/localmk program_guide/guidemake \
 	programs/2D_DATA/Makefile programs/3D_DATA/Makefile \
 	programs/ANNOTATION/Makefile programs/DATA_DRIVEN_INTERACTORS/Makefile \
 	programs/DEBUGGING/Makefile programs/IMPORTING/Makefile \
