@@ -1,7 +1,7 @@
 SUBDIRS = libdx dxmods hwrender dpexec dxexec
 
 install-exec-local:
-	if test -e tmp ; then						   \
+	if test -d tmp ; then						   \
 		rm -rf tmp ;						   \
 	fi ;								   \
 	mkdir tmp ;							   \
