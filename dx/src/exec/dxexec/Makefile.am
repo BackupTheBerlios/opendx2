@@ -18,4 +18,4 @@ dxexec_LDADD = \
 	../hwrender/opengl/libOPENGL.a \
 	-L/usr/X11R6/lib \
 	-L/usr/local/lib \
-	-ldl -lm -lMesaGL -lX11 -lXext
+	-ldl -lm -lGL -lX11 -lXext
