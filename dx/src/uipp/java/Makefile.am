@@ -37,7 +37,7 @@ javainfo:
 dx.jar: javainfo
 	mkdir -p classes
 	(CLASSPATH=aaaaa ; unset CLASSPATH ; javac -d classes makeall.java $(DX_SRCS) )
-	-(export CLASSPATH=@WRL_CLASSPATH@ ; javac -d classes makewrl.java )
+	-(CLASSPATH=@WRL_CLASSPATH@ ; javac -d classes makewrl.java )
 	grep -v WRL_CLASSPATH javainfo > javainfo.tmp
 	echo WRL_CLASSPATH @WRL_CLASSPATH@ >>javainfo ; \
 	rm -f javainfo.tmp
