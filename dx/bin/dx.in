@@ -61,7 +61,7 @@ if [ -z "$JXUSERMACROS" ]; then
   fi
 fi
 
-if [ ! -z $DXMACROS ]; then
+if [ ! -z "$DXMACROS" ]; then
 	 export DXMACROS
 fi
 
