@@ -334,6 +334,9 @@ addresses.
 		<H5><U>DX_SMALL_ARENA_FACTOR</U></H5>
 		allows the user to specify the ratio between the large and small arena. The value must be set greater than 0 and up to 8. Typically the small arena is 1/16 of the large arena, setting this environment variable to 8 will make dx allocate an equal amount of memory to the large and small arena. 
 		<P></P>
+		<H5><U>DXUINOCATCHERROR</U></H5>
+		Setting this environment variable informs the user interface to ignore OS signals. The user interface normally traps OS signals so that it may save networks on the event that the UI crashes. So setting this variable results in a standard crash. 
+		<P></P>
 		<H5><U>DX_USER_INTERACTOR_FILE</U></H5>
 		
 Specifies a file containing user interactors for use by the
