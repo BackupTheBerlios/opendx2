@@ -16,12 +16,12 @@ export DXROOT
 ## override by having PATH intercept your preferred "java" vm or
 ## custom dx script first.
 ##
-PATH=$PATH:@JBASE@:@prefix@/dx/bin
+PATH=$PATH:@prefix@/dx/bin
 export PATH
 if [ "$CLASSPATH" = "" ]; then
-	CLASSPATH=@WRL_CLASSPATH@:./:./server.jar
+	CLASSPATH=@JDK_CLASSPATH@:@WRL_CLASSPATH@:./:./server.jar
 	else
-	CLASSPATH=$CLASSPATH:@WRL_CLASSPATH@:./:./server.jar
+	CLASSPATH=$CLASSPATH:@JDK_CLASSPATH@:@WRL_CLASSPATH@:./:./server.jar
 fi
 export CLASSPATH
 ##

@@ -947,30 +947,26 @@ AC_DEFUN(DX_JAVA_ARCHITECTURE,
 
 
 dnl
-dnl DX_FIND_JNI([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
+dnl  DX_FIND_JDK_CLASSES
+dnl  Only works for sun java. Skips if not "javac".
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_FIND_JNI, [
-
-AC_MSG_CHECKING([for jniheaders path])
-AC_CACHE_VAL([ac_cv_jdk_base],
+AC_DEFUN(DX_FIND_JDK_CLASSES, [
+dx_find_jdk=""
+AC_MSG_CHECKING([for jdk classes])
+AC_CACHE_VAL([ac_cv_jdk_classes],
 [
-dnl Now start the search using the java -verbose search algorithm.
-dnl Continue on with the search of standard directories [/usr/include].
+ac_cv_jdk_classes=""
+dnl We cannot perform the check if not using Sun's javac, so check if javac.
 
-dnl We cannot perform the check if not using Sun's javac, thus we must fallback
-dnl to checking with default paths. More can be added if there are any.
+if test "$JAVAC" = "javac" ; then
 
-if test "$JAVAC" != "javac" ; then
-AC_MSG_RESULT([trying default path])
-DX_FIND_JNI_WITH_PATH("/usr/include:/usr/include/$JAVA_ARCH", $1, $2)
-fi
+AC_MSG_RESULT([trying javac -verbose])
 
 dnl Create a basic program and run javac -verbose on it. Only works if
 dnl we are using javac, thus test which java.
 dnl This should work for both 1.1.x and 1.2.
-AC_MSG_RESULT([trying javac -verbose])
 
-AC_MSG_CHECKING([jni install path with javac -verbose ])
+AC_MSG_CHECKING([for jdk classes verbosly])
 
 cat > jdkpath.java <<EOF
 //   used to find jdk path via -verbose option to javac
@@ -985,39 +981,81 @@ javac -verbose jdkpath.java >jdkpath.out 2>jdkpath.err
 dnl Examine "loaded" line for default classes. Output is similar to
 dnl [loaded /usr/jdk_base/lib/classes.zip(java/lang/Object.class) in 738 ms]
 dnl Trim off leading stuff and stuff trailing after the left paren to get classes 
-dnl (classes.zip, rt.jar, whatever)
-DX_JDK_CLASSES=`grep loaded jdkpath.err | tr '\134' '\057' | sed -e "s/.loaded //" -e "s&(.*$&&"`
+dnl (classes.zip, rt.jar, whatever) DX_JDK_CLASSES now contains the class
+dnl libraries typically used to run and compile with the JRE or JDK. Because
+dnl of a bug in some Javas, we need to include this with CLASSPATH environment
+dnl variable. (As Of Now--this is IBM's J1.1.8 for rh linux). This appears to be
+dnl a problem as it shouldn't need to be included. This will hardcode the
+dnl path into runtime areas and could cause problems with upgrades of java.
+dnl But as for now this is the way we are going to do it.
 
-dnl Get anything that isn't between "/"'s
-DX_JDK_TRAILING=`echo $DX_JDK_CLASSES | sed -e "s&.*/&&"`
-
-dnl Now trim off /lib/whatever to get to the base of the jdk installation
-dnl The result should look something like /usr/jdk_base for 1.1.x and
-dnl /usr/jdk_base/jre for 1.2.
-DX_ALMOST_BASE=`echo $DX_JDK_CLASSES | sed -e "s&/lib/$DX_JDK_TRAILING&&"`
-DX_JBASE=`echo $DX_ALMOST_BASE | sed -e "s&/jre&&"`
+ac_cv_jdk_classes=`grep loaded jdkpath.err | tr '\134' '\057' | sed -e "s/.loaded //" -e "s&(.*$&&"`
 
 dnl Cleanup the files that were created.
 rm -f jdkpath.*
 
+AC_MSG_RESULT($ac_cv_jdk_classes)
+else
+
+AC_MSG_RESULT([none])
+
+fi
+dx_find_jdk="yes"
+])
+if test -z $dx_find_jdk ; then
+  AC_MSG_RESULT($ac_cv_jdk_classes)
+fi
+])
+
+
+dnl
+dnl DX_FIND_JNI([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
+dnl  -------------------------------------------------------------
+AC_DEFUN(DX_FIND_JNI, [
+
+AC_CACHE_VAL([ac_cv_jdk_base],
+[
+dnl Now start the search using the java -verbose search algorithm.
+dnl Continue on with the search of standard directories [/usr/include].
+
+dnl Find out what system we are on to define $JAVA_ARCH
+DX_JAVA_ARCHITECTURE
+
+DX_FIND_JDK_CLASSES
+
+if test -z "$ac_cv_jdk_classes" ; then
+
+dnl Fallback to checking the default paths since it is empty.
+  AC_MSG_RESULT([trying default path])
+  ac_cv_jdk_base="/usr/include:/usr/include/$JAVA_ARCH"
+
+else
+
+dnl Get anything that isn't between "/"'s
+DX_JDK_TRAILING=`echo $ac_cv_jdk_classes | sed -e "s&.*/&&"`
+
+dnl Now trim off /lib/whatever to get to the base of the jdk installation
+dnl The result should look something like /usr/jdk_base for 1.1.x and
+dnl /usr/jdk_base/jre for 1.2.
+DX_ALMOST_BASE=`echo $ac_cv_jdk_classes | sed -e "s&/lib/$DX_JDK_TRAILING&&"`
+DX_JBASE=`echo $DX_ALMOST_BASE | sed -e "s&/jre&&"`
+
 dnl Now we need to find the subdirectory within the include directory that
 dnl has jni_md.h for the appropriate architecture.
-
-AC_MSG_RESULT(ok)
-
-DX_JAVA_ARCHITECTURE
 
 dnl The path that should be used now is DX_JBASE/include and DX_JBASE/include/JAVA_ARCH.
 DX_FOUND_PATH="$DX_JBASE/include:$DX_JBASE/include/$JAVA_ARCH"
 
 ac_cv_jdk_base="$DX_FOUND_PATH"
-dx_ran_cts="yes"
-])
-if test -z $dx_ran_cts ; then
-  AC_MSG_RESULT(ok)
-fi
-DX_FIND_JNI_WITH_PATH( $ac_cv_jdk_base, $1, $2)
 
+fi
+
+dnl  Set a flag to say that we have already answered the MSG.
+])
+AC_MSG_CHECKING([for jni headers path])
+AC_MSG_RESULT($ac_cv_jdk_base)
+
+DX_FIND_JNI_WITH_PATH( $ac_cv_jdk_base, $1, $2)
 ])
 
 

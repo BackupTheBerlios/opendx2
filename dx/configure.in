@@ -16,7 +16,7 @@ AC_SUBST(JAVAC)
 AC_SUBST(JAR)
 AC_SUBST(JAVAH)
 AC_SUBST(JINC)
-AC_SUBST(JBASE)
+AC_SUBST(JDK_CLASSPATH)
 AC_SUBST(WRL_CLASSPATH)
 AC_SUBST(BUILDBASE)
 AC_SUBST(DXEXEC_EXP)
@@ -234,6 +234,8 @@ dnl use the javac -verbose code to try and determine where they may be.
   else
     with_javadx='yes'
     JAVABRANCH=java
+    DX_FIND_JDK_CLASSES
+    JDK_CLASSPATH="$ac_cv_jdk_classes"
     if test -z "$with_java40jar_path" ; then
       if test -z "$JAVA40JAR" ; then
         DX_FIND_DEFAULT_NETSCAPE
@@ -342,7 +344,6 @@ AC_CHECK_LIB(ICE, IceConnectionNumber)
 AC_CHECK_LIB(SM, SmcSetProperties)
 AC_CHECK_LIB(REXP, regcomp)
 AC_CHECK_LIB(m, sqrt)
-AC_CHECK_LIB(pthread, pthread_getspecific)
 
 dnl If buildlibdx off then pass this down to the Makefile
 AM_CONDITIONAL(WITH_BUILDLIBDX, test $with_buildlibdx = 'yes') 
