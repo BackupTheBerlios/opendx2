@@ -133,3 +133,16 @@ zclipQ.o: zclipQ.c
 
 zclipT.o: zclipT.c
 	$(COMPILE) -c -O zclipT.c
+
+all: .cvsignore
+
+.cvsignore: Makefile.am
+	echo "!" >.cvsignore
+	echo "CVS" >>.cvsignore
+	echo "Makefile" >>.cvsignore
+	echo "Makefile.in" >>.cvsignore
+	echo ".cvsignore" >>.cvsignore
+	for i in $(BUILT_SOURCES) ;\
+	do \
+	    echo "$$i" >>.cvsignore ;\
+	done
