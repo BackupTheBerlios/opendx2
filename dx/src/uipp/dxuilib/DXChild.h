@@ -148,6 +148,7 @@ class DXChild : public Base
     const char *failed() { return this->errorString; }
     const char *getServer() { return this->server; }
     static int  HostIsLocal(const char *);
+    void	setServer(char *);
 
 #if defined(intelnt)
     HANDLE GetWinPipeReadHandle() { return this->hpipeRead; }

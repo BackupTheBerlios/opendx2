@@ -773,6 +773,14 @@ error_return:
     return (-1);
 }
 
+void
+DXChild::setServer(char *s)
+{
+    if (this->server)
+	delete this->server;
+    this->server = DuplicateString(s);
+}
+
 #define RSIZE 512
 void
 DXChild::MakeLine(char *string, char *newString)
@@ -911,17 +919,22 @@ extern "C" void DXChild_OutQueuedInputHandler(XtPointer  clientData,
 	{
 	    if (buffer[i] == '\n' || j == obj->lineSize)
 	    {
+		char *s = obj->outLine;
 		int port;
 		obj->outLine[j] = '\n';
 		obj->outLine[j+1] = '\0';
 		theDXApplication->getMessageWindow()->addInformation(
 		    obj->outLine);
-		if (strstr(obj->outLine, "host = "))
+		if ((s = strstr(obj->outLine, "host = ")) != NULL)
 		{
-		    theDXApplication->setServer(obj->outLine + strlen("host = "));
+  		    char buf[256];
+		    sscanf(s, "host = %s", buf);
+		    theDXApplication->setServer(buf);
+		    obj->setServer(buf);
 		}
-		else if (sscanf(obj->outLine, "port = %d\n", &port) == 1)
+		if ((s = strstr(obj->outLine, "port = ")) != NULL)
 		{
+		    sscanf(obj->outLine, "port = %d\n", &port);
 		    theDXApplication->connectToServer(port, obj);
 		}
 		obj->outLine[0] = '\0';
@@ -1252,7 +1265,7 @@ DXChild::unQueue()
 int
 DXChild::waitForConnection()
 {
-    char rdbuffer[BUFSIZ+1];
+    char *s, rdbuffer[BUFSIZ+1];
     int  sts;
     int result = 0;
     int port;
@@ -1309,13 +1322,16 @@ DXChild::waitForConnection()
         if (sts >= 0)
         {
             DXChild::MakeLine(rstring, rdbuffer);
-	    if (strstr(rdbuffer, "host = "))
+	    if ((s = strstr(rdbuffer, "host = ")) != NULL)
 	    {
-	        theDXApplication->setServer(rdbuffer + strlen("host = "));
+	        char buf[256];
+	        sscanf(s, "host = %s", buf);
+	        theDXApplication->setServer(buf);
+	        this->setServer(buf);
 	    }
-	    else if (strstr(rdbuffer, "port = "))
+	    if ((s = strstr(rdbuffer, "port = ")) != NULL)
 	    {
-		sscanf (rdbuffer, "port = %d", &port);
+		sscanf (s, "port = %d", &port);
 		if (this->isQueued())
 		    this->unQueue();
 		theDXApplication->connectToServer(port, this);
@@ -1348,19 +1364,22 @@ DXChild::waitForConnection()
         if (result >= 0)
         {
             DXChild::MakeLine(rstring, rdbuffer);
-	    if (strstr(rdbuffer, "host = "))
+	    if ((s = strstr(rdbuffer, "host = ")) != NULL)
 	    {
-	        theDXApplication->setServer(rdBuffer + strlen("host = "));
+	        char buf[256];
+	        sscanf(s, "host = %s", buf);
+	        theDXApplication->setServer(buf);
+		this->setServer(buf);
 	    }
-	    else if (strstr(rdbuffer, "port = "))
+	    if ((s = strstr(rdbuffer, "port = ")) != NULL)
 	    {
-                sscanf (rdbuffer, "port = %d", &port);
+                sscanf (s, "port = %d", &port);
                 if (this->isQueued())
                     this->unQueue();
                 theDXApplication->connectToServer(port, this);
 		return 0;
             }
-	    else if (strstr(rdbuffer, "Execution has been queued"))   ||
+	    if (strstr(rdbuffer, "Execution has been queued"))   ||
 		     strstr(rdbuffer, "Server appears to be in use")) ||
 		     strstr(rdbuffer, "rror")))           // suits added
 	    {
@@ -1523,28 +1542,33 @@ DXChild::waitForConnection()
 		result = -1;
 	    }
 	    else {
+	        char *s;
 		rdbuffer[sts] = '\0';
 		theDXApplication->getMessageWindow()->addInformation(
 		    rdbuffer);
 		// write (1, rdbuffer, sts);
+
 		if (result >= 0)
 		{
 		    DXChild::MakeLine(rstring, rdbuffer);
 
-		    if (strstr(rdbuffer, "host = "))
+		    if ((s = strstr(rdbuffer, "host = ")) != NULL)
 		    {
-			theDXApplication->setServer(rdbuffer + strlen("host = "));
+			char buf[256];
+			sscanf(s, "host = %s", buf);
+			theDXApplication->setServer(buf);
+			this->setServer(buf);
 		    }
-		    else if (strstr(rdbuffer, "port = "))
+		    if ((s = strstr(rdbuffer, "port = ")) != NULL)
 		    {
-			sscanf (rdbuffer, "port = %d", &port);
+			sscanf (s, "port = %d", &port);
 			if (this->isQueued())
 			    this->unQueue();
 			theDXApplication->connectToServer(port, this);
 			this->input_handlers_stalled = FALSE;
 			return 0;
 		    }
-		    else if (strstr(rdbuffer, "Execution has been queued")   ||
+		    if (strstr(rdbuffer, "Execution has been queued")   ||
 			     strstr(rdbuffer, "Server appears to be in use") ||
 			     strstr(rdbuffer, "rror"))           // suits added
 		    {
@@ -1624,6 +1648,7 @@ void	ClearExecMessages(void *arg)
 
     return;
 }
+
 
 #endif  //     DXD_WIN
 
