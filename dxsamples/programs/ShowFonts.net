@@ -1,7 +1,7 @@
 //
-// time: Wed Dec 17 10:35:43 1997
+// time: Wed Apr 18 13:58:27 2001
 //
-// version: 3.1.2 (format), 4.1.1 (DX Beta)
+// version: 3.1.2 (format), 4.1.1 (DX)
 //
 //
 // MODULE main
@@ -33,7 +33,7 @@ main_GetLocal_1_out_2 =
     ) [instance: 1, cache: 1];
     // 
     // node StringList[1]: x = 23, y = 25, inputs = 0, label = StringList
-    // output[1]: visible = 1, type = 16777248, value = { "domcasual", "symbol", "dutchit", "dutch", "monospace", "swisscnd", "swissbldit", "swissbld", "swissit", "swiss", "area", "variable", "roman_tser", "fixed", "roman_sfix", "script_s", "roman_dser", "roman_s", "italic_t", "cyril_d", "gothiceng_t", "gothicger_t", "gothicit_t", "greek_d", "greek_s", "italic_d", "script_d" }
+    // output[1]: visible = 1, type = 16777248, value = { "area", "cyril_d", "fixed", "gothiceng_t", "gothicger_t", "gothicit_t", "greek_d", "greek_s", "italic_d", "italic_t", "pitman", "roman_d", "roman_dser", "roman_ext", "roman_s", "roman_sfix", "roman_tser", "script_d", "script_s", "variable" }
     //
     // 
     // node ForEachMember[1]: x = 206, y = 56, inputs = 1, label = ForEachMember
@@ -125,21 +125,22 @@ main_Append_1_out_1 =
     main_Append_1_in_5
     ) [instance: 1, cache: 1];
     // 
-    // node Image[1]: x = 166, y = 499, inputs = 48, label = Image
+    // node Image[1]: x = 166, y = 499, inputs = 49, label = Image
     // input[1]: defaulting = 0, visible = 0, type = 67108863, value = "Image_1"
     // input[4]: defaulting = 0, visible = 0, type = 1, value = 0
-    // input[8]: defaulting = 0, visible = 0, type = 1, value = 723
-    // input[9]: defaulting = 0, visible = 0, type = 5, value = 1.16943
+    // input[8]: defaulting = 0, visible = 0, type = 1, value = 576
+    // input[9]: defaulting = 0, visible = 0, type = 5, value = 1.08247
     // input[14]: defaulting = 0, visible = 0, type = 1, value = 1
     // input[15]: defaulting = 1, visible = 0, type = 32, value = "none"
     // input[16]: defaulting = 1, visible = 0, type = 32, value = "none"
     // input[17]: defaulting = 1, visible = 0, type = 1, value = 1
     // input[18]: defaulting = 1, visible = 0, type = 1, value = 1
-    // input[19]: defaulting = 0, visible = 0, type = 3, value = 0
+    // input[19]: defaulting = 0, visible = 0, type = 1, value = 0
     // input[29]: defaulting = 1, visible = 0, type = 3, value = 0
-    // depth: value = 8
-    // window: position = (0.2156,0.0303), size = 0.5758x0.8682
+    // depth: value = 24
+    // window: position = (0.2617,0.0352), size = 0.5762x0.8685
     // internal caching: 1
+    // interaction mode = NONE
     //
 main_Image_1_out_1,
 main_Image_1_out_2,
@@ -192,7 +193,8 @@ main_Image_1_out_3 =
     main_Image_1_in_45,
     main_Image_1_in_46,
     main_Image_1_in_47,
-    main_Image_1_in_48
+    main_Image_1_in_48,
+    main_Image_1_in_49
     ) [instance: 1, cache: 1];
     // 
     // node SetLocal[1]: x = 344, y = 504, inputs = 3, label = SetLocal
@@ -203,7 +205,7 @@ main_Image_1_out_3 =
     main_SetLocal_1_in_3
     ) [instance: 1, cache: 1];
 // network: end of macro body
-CacheScene("Image_1", main_Image_1_out_1, main_Image_1_out_2);
+CacheScene(main_Image_1_in_1, main_Image_1_out_1, main_Image_1_out_2);
 }
 main_Collect_1_in_1 = NULL;
 main_Collect_1_in_2 = NULL;
@@ -212,7 +214,7 @@ main_GetLocal_1_in_2 = NULL;
 main_GetLocal_1_in_3 = NULL;
 main_GetLocal_1_out_1 = NULL;
 main_GetLocal_1_out_2 = NULL;
-main_StringList_1_out_1 = { "domcasual", "symbol", "dutchit", "dutch", "monospace", "swisscnd", "swissbldit", "swissbld", "swissit", "swiss", "area", "variable", "roman_tser", "fixed", "roman_sfix", "script_s", "roman_dser", "roman_s", "italic_t", "cyril_d", "gothiceng_t", "gothicger_t", "gothicit_t", "greek_d", "greek_s", "italic_d", "script_d" };
+main_StringList_1_out_1 = { "area", "cyril_d", "fixed", "gothiceng_t", "gothicger_t", "gothicit_t", "greek_d", "greek_s", "italic_d", "italic_t", "pitman", "roman_d", "roman_dser", "roman_ext", "roman_s", "roman_sfix", "roman_tser", "script_d", "script_s", "variable" };
 main_ForEachMember_1_out_1 = NULL;
 main_ForEachMember_1_out_2 = NULL;
 main_Compute_2_in_1 = "[.05, 1-$0/26.]";
@@ -290,7 +292,8 @@ macro Image(
         AAzTickLocs,
         AAxTickLabels,
         AAyTickLabels,
-        AAzTickLabels) -> (
+        AAzTickLabels,
+        webOptions) -> (
         object,
         camera,
         where)
@@ -554,13 +557,13 @@ macro Image(
         RECformat) [instance: 2, cache: 1];
 }
 main_Image_1_in_1 = "Image_1";
-main_Image_1_in_3 = "X8,,";
+main_Image_1_in_3 = "X24,,";
 main_Image_1_in_4 = 0;
 main_Image_1_in_5 = NULL;
 main_Image_1_in_6 = NULL;
 main_Image_1_in_7 = NULL;
-main_Image_1_in_8 = 723;
-main_Image_1_in_9 = 1.16943;
+main_Image_1_in_8 = 576;
+main_Image_1_in_9 = 1.08247;
 main_Image_1_in_10 = NULL;
 main_Image_1_in_11 = NULL;
 main_Image_1_in_12 = NULL;
@@ -599,6 +602,7 @@ main_Image_1_in_45 = NULL;
 main_Image_1_in_46 = NULL;
 main_Image_1_in_47 = NULL;
 main_Image_1_in_48 = NULL;
+main_Image_1_in_49 = NULL;
 main_SetLocal_1_in_3 = NULL;
 Executive("product version 4 1 1");
 $sync
