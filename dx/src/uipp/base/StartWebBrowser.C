@@ -32,6 +32,10 @@
 #include <signal.h>
 #endif
 
+#if defined(HAVE_WINDOWS_H)
+#include <windows.h>
+#endif
+
 static int browserPID=0;
 static int fd=0;
 
@@ -42,7 +46,15 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
     CFURLRef inURL = CFURLCreateWithString(NULL, urlStr, NULL);
     OSStatus oss = LSOpenCFURLRef( inURL, NULL);
     return !oss;
-#endif
+#elif defined(intelnt)
+    HINSTANCE hinst = ShellExecute(NULL, // no parent hwnd
+            NULL, // open
+            URL, // topic file or URL
+            NULL, // no parameters
+            NULL, // folder containing file
+            SW_SHOWNORMAL); // yes, show it
+    return hinst > (HINSTANCE)32;
+#else
     if(browserPID != 0) {
 	if(waitpid(browserPID, NULL, WNOHANG)==browserPID) {
 		browserPID = 0;
@@ -89,5 +101,6 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
 	fprintf(stderr, "Unable to fork child.\n");
 	return 0;
     }
+#endif
 
 }
