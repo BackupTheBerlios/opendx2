@@ -47,7 +47,7 @@
 #include "ListIterator.h"
 #include "NetFileDialog.h"
 
-#include <dx/dxl.h>
+#include <dxl.h>
 #include <dx/arch.h>
 #include "../base/UIConfig.h"
 
