@@ -17,10 +17,12 @@ char *ScrambleString(const char *str, const char *hash)
 {
     ErrorMessage("Net file encryption algorithms have been removed from OpenDX");
     abort();
+    return NULL;
 }
 
 char *ScrambleAndEncrypt(const char *src, const char *hash, char *cryptbuf)
 {
     ErrorMessage("Net file encryption algorithms have been removed from OpenDX");
     abort();
+    return NULL;
 }
