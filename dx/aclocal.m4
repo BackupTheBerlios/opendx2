@@ -154,3 +154,24 @@ AC_DEFUN(DX_STREAM_O2,
  AC_MSG_RESULT(yes)
     )
 ])
+
+AC_DEFUN(DX_HEADER_HAS_SYMBOL,
+[
+    AC_MSG_CHECKING(whether header file $1 contains symbol $2)
+    ac_ext=C
+    AC_EGREP_CPP(yes, 
+	[#include <$1>
+	#ifdef $2
+	yes
+	#endif
+	], found="yes", found="no")
+    if test $found = "no" ; then
+	AC_EGREP_HEADER($2, $1, found="yes", found="no")
+    fi
+    if test $found = "yes" ; then 
+	AC_DEFINE_UNQUOTED(HAS_$2)
+	AC_MSG_RESULT("yes")
+    else
+	AC_MSG_RESULT("no")
+    fi
+])
