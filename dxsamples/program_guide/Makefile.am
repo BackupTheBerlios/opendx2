@@ -16,7 +16,10 @@ data_DATA =  Readme add.c add.cfg add.mb add.mdf add.net add2.c add2.cfg \
 	     makexeff.mdf showpick.c showpick.cfg showpick.mdf showpick.net \
 	     simpleimport.c simpleimport.mdf simpleimportfilter.c
 
-EXTRA_DIST = $(data_DATA) makefile
+EXTRA_DIST = $(data_DATA) 
 
-install-exec-local:
+install-data-local:
 	mv localmk $(datadir)/makefile
+
+uninstall-local:
+	rm $(datadir)/makefile
