@@ -1,5 +1,8 @@
 all: sequence.h imagemac.net gifmac.txt dxmac.txt netlex.c netyacc.c
 
+EditorWindow.o: sequence.h
+ImageNodeUtils.o: imagemac.h dxmac.h vrmlmac.txt gifmac.txt
+
 
 sequence.h: sequence.net 
 	net2c sequence.net sequence.h
