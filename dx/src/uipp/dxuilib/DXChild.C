@@ -1338,9 +1338,9 @@ DXChild::waitForConnection()
 		theDXApplication->connectToServer(port, this);
 		return 0;
 	    }
-	    else if (strstr(rdbuffer, "Execution has been queued"))   ||
-		     strstr(rdbuffer, "Server appears to be in use")) ||
-		     strstr(rdbuffer, "rror")))           // suits added
+	    else if (strstr(rdbuffer, "Execution has been queued")   ||
+		     strstr(rdbuffer, "Server appears to be in use") ||
+		     strstr(rdbuffer, "rror"))           // suits added
 	    {
 		return 1;
 	    }
@@ -1380,9 +1380,9 @@ DXChild::waitForConnection()
                 theDXApplication->connectToServer(port, this);
 		return 0;
             }
-	    if (strstr(rdbuffer, "Execution has been queued"))   ||
-		     strstr(rdbuffer, "Server appears to be in use")) ||
-		     strstr(rdbuffer, "rror")))           // suits added
+	    if (strstr(rdbuffer, "Execution has been queued")        ||
+		     strstr(rdbuffer, "Server appears to be in use") ||
+		     strstr(rdbuffer, "rror"))           // suits added
 	    {
                 return 1;
             }
