@@ -685,7 +685,6 @@ void
 _dxfTranspose (register double s1[4][4], register double s0[4][4])
 {
   register int i, j ;
-  double   tmp;
 
   ENTRY(("_dxfTranspose(0x%x, 0x%x)", s1, s0));
 
@@ -700,7 +699,7 @@ _dxfTranspose (register double s1[4][4], register double s0[4][4])
 void
 _dxfRenormalizeView (register float m[4][4])
 {
-  double len, x[3], y[3], z[3] ;
+  double len, x[3], z[3] ;
 
 
   ENTRY(("_dxfRenormalizeView(0x%x)", m));

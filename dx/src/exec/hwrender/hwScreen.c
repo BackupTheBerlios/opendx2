@@ -175,4 +175,5 @@ _dxf_deleteHwScreen(Pointer ptr)
   }
 
   EXIT((""));
+  return OK;
 }

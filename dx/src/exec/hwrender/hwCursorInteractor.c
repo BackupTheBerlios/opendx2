@@ -792,7 +792,7 @@ BtnMotion (tdmInteractor I, int x, int y, int t, int s)
   DEFDATA(I,CursorData) ;
   DEFPORT(I_PORT_HANDLE) ;
   tdmInteractorReturn R ;
-  double dx, dy, dz, X, Y, Z ;
+  double dx, dy, dz;
   double major_dx, major_dy ;
   double angle, angle_tol ;
   int id, warp ;
@@ -1001,7 +1001,7 @@ BtnMotion (tdmInteractor I, int x, int y, int t, int s)
     }
 
   /* constrain motion to within the bounding box */
-  X = PDATA(X) ; Y = PDATA(Y) ; Z = PDATA(Z) ;
+  /*X = PDATA(X) ; Y = PDATA(Y) ; Z = PDATA(Z) ;*/
 
   constrain (I, &PDATA(X), &PDATA(Y), &PDATA(Z), dx, dy, dz,
 	     PDATA(WItrans), PDATA(Wtrans),
@@ -1070,7 +1070,7 @@ Deselect (tdmInteractor I, tdmInteractorReturn *R)
 
   DEFDATA(I,CursorData) ;
   DEFPORT(I_PORT_HANDLE) ;
-  int i, j ;
+  int i;
 
   ENTRY(("Deselect(0x%x, 0x%x)", I, R));
   
@@ -1266,7 +1266,7 @@ draw_cursors (tdmInteractor I)
 
   DEFDATA(I,CursorData) ;
   DEFPORT(I_PORT_HANDLE) ;
-  int i, depth ;
+  int i;
 
   ENTRY(("draw_cursors(0x%x)", I));
 
@@ -1285,8 +1285,8 @@ draw_cursors (tdmInteractor I)
 	      continue ;
 
 	  /* depth cueing ignored for now */
-	  depth = Z_LEVELS*(PDATA(zbuff)[i] - PDATA(Zmin))/
-	                   (PDATA(Zmax) - PDATA(Zmin));
+	  /*depth = Z_LEVELS*(PDATA(zbuff)[i] - PDATA(Zmin))/
+	            (PDATA(Zmax) - PDATA(Zmin));*/
 
 	  if( PDATA(selected)[i] == TRUE )
 	      _dxf_WRITE_BUFFER (PORT_CTX,
@@ -1308,8 +1308,8 @@ draw_cursors (tdmInteractor I)
 	   !CLIPPED(PDATA(roam_xbuff), PDATA(roam_ybuff)))
     {
       /* depth cueing ignored for now */
-      depth = Z_LEVELS*(PDATA(roam_zbuff) - PDATA(Zmin))/
-	               (PDATA(Zmax) - PDATA(Zmin)) ;
+      /*depth = Z_LEVELS*(PDATA(roam_zbuff) - PDATA(Zmin))/
+	               (PDATA(Zmax) - PDATA(Zmin)) ;*/
 
       if(PDATA(roam_selected))
 	  _dxf_WRITE_BUFFER (PORT_CTX,
@@ -1625,7 +1625,7 @@ get_transforms_from_basis (tdmInteractor I)
        *  system visible face computation, so Sz is negated below to
        *  compensate for API's with right-handed device coordinates.
        */
-      float Sx, Sy, Sz ;
+      float Sx, Sy ;
 
       /* copy view transform to double array */
       for (i=0 ; i<4 ; i++)
@@ -1641,7 +1641,7 @@ get_transforms_from_basis (tdmInteractor I)
 
       Sx = ((float)CDATA(w)-1.)/2. ;
       Sy = ((float)CDATA(h)-1.)/2. ;
-      Sz = CDATA(d) ? ((float)CDATA(d)-1.)/2. : (float)0xffffff/2. ;
+      /*Sz = CDATA(d) ? ((float)CDATA(d)-1.)/2. : (float)0xffffff/2. ;*/
 
       CDATA(scrnXfm[0][0]) =  Sx ;
       CDATA(scrnXfm[1][1]) =  Sy ;
@@ -2684,7 +2684,6 @@ setup_bounding_box(tdmInteractor I)
 {
   DEFDATA(I,CursorData) ;
   double x, y, z, nz ;
-  double udelta_x, udelta_y, udelta_z ;
   double vdelta_x, vdelta_y, vdelta_z ;
   double wdelta_x, wdelta_y, wdelta_z ;
   double xmax, xmin, ymax, ymin, zmax, zmin ;
@@ -2735,9 +2734,9 @@ setup_bounding_box(tdmInteractor I)
   zmax = MAX(zmax, PDATA(basis)->Bw[2][2]) ;
   zmax = MAX(zmax, PDATA(basis)->Bw[3][2]) ;
 
-  udelta_x = PDATA(basis)->Bw[0][0] - PDATA(basis)->Bw[3][0] ;
-  udelta_y = PDATA(basis)->Bw[0][1] - PDATA(basis)->Bw[3][1] ;
-  udelta_z = PDATA(basis)->Bw[0][2] - PDATA(basis)->Bw[3][2] ;
+  /*udelta_x = PDATA(basis)->Bw[0][0] - PDATA(basis)->Bw[3][0] ;*/
+  /*udelta_y = PDATA(basis)->Bw[0][1] - PDATA(basis)->Bw[3][1] ;*/
+  /*udelta_z = PDATA(basis)->Bw[0][2] - PDATA(basis)->Bw[3][2] ;*/
 
   vdelta_x = PDATA(basis)->Bw[1][0] - PDATA(basis)->Bw[3][0] ;
   vdelta_y = PDATA(basis)->Bw[1][1] - PDATA(basis)->Bw[3][1] ;

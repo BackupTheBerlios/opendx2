@@ -399,7 +399,8 @@ _dxfInitDXInteractors (tdmChildGlobalP globals)
       (W, tdmGnomonEcho, tdmXYPlaneRoll);
 
   /* the Globe is always passive, and is driven by the Gnomon */
-  globals->Globe = _dxfCreateRotationInteractor (W, tdmGlobeEcho, 0) ;
+  globals->Globe = _dxfCreateRotationInteractor (W, tdmGlobeEcho, 
+                                                 tdmXYPlaneRoll) ;
   _dxfAssociateInteractorEcho (globals->GnomonRotate, globals->Globe) ;
   
   /* the Z rotation interactor for Execute Once mode has no echo... */

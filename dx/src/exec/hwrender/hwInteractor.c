@@ -10,7 +10,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInteractor.c,v 1.3 1999/05/10 15:45:34 gda Exp $"  ;
+static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInteractor.c,v 1.4 2002/03/21 02:59:10 rhh Exp $"  ;
 #endif
 
 /*---------------------------------------------------------------------------*\
@@ -470,8 +470,6 @@ _MoveInteractorCamera (tdmInteractorCam *dest, tdmInteractorCam *source)
 int
 _dxfPopInteractorCamera (tdmInteractorWin W)
 {
-  tdmInteractorCam top ;
-
   ENTRY(("_dxfPopInteractorCamera(0x%x)", W));
   
   /* there must always be at least one camera in W->Cam stack */
@@ -504,8 +502,6 @@ _dxfPopInteractorCamera (tdmInteractorWin W)
 int
 _dxfRedoInteractorCamera (tdmInteractorWin W)
 {
-  tdmInteractorCam top ;
-
   ENTRY(("_dxfRedoInteractorCamera(0x%x)", W));
 
   /* pop redo stack and push onto current camera stack */

@@ -344,8 +344,7 @@ _dxf_quadsToQmesh (xfieldT *xf, void *globals)
       prev_i1,prev_i2,prev_i3 ;
   Quadruple *quads ;           /* array of original quad connections        */
   int nquads ;                 /* number of original quad connections       */
-  int npoints ;                /* number of positions in field              */
-  int i, j, k, l, m ;                   /* misc. indices                             */
+  int i, j, k ;                /* misc. indices                             */
   QMesh qmesh = NULL;
   dxObject qmesho = NULL;
 
@@ -375,7 +374,7 @@ _dxf_quadsToQmesh (xfieldT *xf, void *globals)
   /* get quad connection info; quad connections are replaced by strips */
   quads = DXGetArrayData(xf->connections_array) ;
   nquads = xf->nconnections ;
-  npoints = xf->npositions ;
+  /*npoints = xf->npositions ;*/
 
   xf->origNConnections = nquads;
   xf->origConnections_array = xf->connections_array;

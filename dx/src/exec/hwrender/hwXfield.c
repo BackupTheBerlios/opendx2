@@ -355,9 +355,8 @@ static Error
 _XColors(Field f, xfieldT* xf,
 	     enum xr required)
 {
-  Array a, colors_array;
+  Array colors_array;
   char *fs, *bs, *s;
-  dxObject o;
   dependencyT color_dep;
   int		ncolors;
   
@@ -433,7 +432,6 @@ _XColors(Field f, xfieldT* xf,
 
   if (xf->fcolors_array) {
     Type type;
-    int n;
     DXGetArrayInfo(xf->fcolors_array, NULL, &type, NULL, NULL, NULL);
     if (type==TYPE_UBYTE) {
       /*  FIXME:  Software rendering knows how to deal with ubyte[3] colors  */
@@ -450,7 +448,6 @@ _XColors(Field f, xfieldT* xf,
 
   if (xf->bcolors_array) {
     Type type;
-    int n;
     DXGetArrayInfo(xf->bcolors_array, NULL, &type, NULL, NULL, NULL);
     if (type==TYPE_UBYTE) {
       check(bcolors, "colors", TYPE_UBYTE, 1);
@@ -542,8 +539,6 @@ _XOpacities(Field f, xfieldT* xf,
 {
     Type type;
     dependencyT opacity_dep;
-
-    char * fs;
 
     ENTRY(("_XOpacities(0x%x, 0x%x, %d)", f, xf, required));
     
@@ -753,6 +748,7 @@ _dxf_deleteXfield(xfieldP xf)
   tdmFree(xf);
 
   EXIT((""));
+  return OK;
 }
 
    
@@ -861,7 +857,6 @@ on an MP machine.
 
     if(_dxf_isFlagsSet(servicesFlags,SF_TEXTURE_MAP))
     {
-      float 	pScratch[3];
       int	n,counts[3];
       float	origin[3];
       float	deltas[9];
@@ -1421,6 +1416,7 @@ _dxf_deleteAttribute(attributeP att)
   tdmFree(att);
 
   EXIT((""));
+  return OK;
 }
 
 attributeP

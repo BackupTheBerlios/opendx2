@@ -692,9 +692,7 @@ _dxfCopyParsedDisplayString(tdmParsedFormatT *pFormat)
 static tdmParsedFormatT*
 _tdmParseDisplayString (char *displayString, char** cacheIdP)
 {  
-  char *target, *s ;
   char *whereHostP = NULL, *XserverP = NULL;
-  char	*dPtr;
   tdmParsedFormatT	*pFormat;
   dxObject id;
   ubyte **priv;

@@ -43,7 +43,6 @@ Error
   _dxf_updateView(viewO view, void *globals, screenO camScreen)
 {
   DEFGLOBALDATA(globals);
-  int			i,j;
   dxObject		object,clipObject;
   int 			flags;
   gatherO 		gather;
@@ -84,7 +83,7 @@ error:
 static Error
 _updateViewRecurse(dxObject object, viewO view, screenO parent)
 {
-  dxObject 	subObject,opaqueObject;
+  dxObject 	subObject;
   int 		i;
   Class		class;
 
@@ -128,8 +127,7 @@ _updateViewRecurse(dxObject object, viewO view, screenO parent)
 	  int	positionUnits,z;
 	  int	width,height;
 	  dxScreen	s;
-	  float	mm[4][4],vm[4][4],pm[4][4],vpm[4][4],tmp[4][4],ident[4][4];
-      
+	  float	mm[4][4],vm[4][4],pm[4][4],vpm[4][4],tmp[4][4];
 
 	  if(!(_dxf_getHwScreenView(sp,&s,&subObject,NULL,mm,
 				  NULL,NULL)))
@@ -208,9 +206,9 @@ _updateViewRecurse(dxObject object, viewO view, screenO parent)
 	  tmp[2][2] = 1./100000.;
 	  tmp[3][2] =  z > 0 ? -.99 : (float)z * -.91;
 
-	  COPYMATRIX(ident,identity);
+	  /*COPYMATRIX(ident,identity);*/
 	  _dxf_setHwScreenView(sp,s,subObject,
-			     tmp,NULL,width,height);
+			       tmp,NULL,width,height);
 
 	  if (!_updateViewRecurse(subObject, view, sp)) goto error;
 	  break;

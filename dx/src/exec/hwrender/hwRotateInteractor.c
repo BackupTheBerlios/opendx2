@@ -115,7 +115,7 @@ _dxfCreateRotationInteractor(tdmInteractorWin W,
   if (W && (I = _dxfAllocateInteractor (W, sizeof(tdmRotateData)))) {
     DEFDATA(I,tdmRotateData) ;
     DEFPORT(I_PORT_HANDLE) ;
-    int u, v, echoRadius ;
+    int echoRadius ;
     
     /* instance initial interactor methods */
     FUNC(I, DoubleClick) = NullDoubleClick ;
@@ -388,7 +388,6 @@ InitRollStroke (tdmInteractor I, int x, int y)
    *  Initialize rolling (XY rotation) mode.
    */
   DEFDATA(I,tdmRotateData) ;
-  double dx, dy ;
 
   ENTRY(("InitRollStroke(0x%x, %d, %d)", I, x, y));
 

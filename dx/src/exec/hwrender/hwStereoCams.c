@@ -113,7 +113,6 @@ defCreateStereoCameras0(void *data,
     float ux, uy, uz;
     float ax, ay, az;
     float d;
-    int i, j;
     float l, r, b, t;
     float *lp = args->lp;
     float *rp = args->rp;
@@ -227,6 +226,7 @@ defMapStereoXY0(void *data, Window frame, Window w, WindowInfo wi,
 {
     *xo = xi;
     *yo = yi;
+    return 0;
 }
 
 

@@ -12,7 +12,7 @@
 #define render_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.5 2001/06/21 18:09:50 gda Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.6 2002/03/21 02:59:09 rhh Exp $"};
 #endif
 
 #include <stdio.h>
@@ -50,7 +50,6 @@ _dxfDraw (void* globals, dxObject o, Camera c, int buttonUp)
   DEFGLOBALDATA(globals);
   DEFPORT(PORT_HANDLE);
   gatherO gather = NULL;
-  RGBColor background;
   int r;
 
   if (DXUI)
@@ -195,7 +194,6 @@ _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonU
     float lto[3], lfrom[3], lup[3], *lProjection;
     float rto[3], rfrom[3], rup[3], *rProjection;
     float zaxis[3], x, y, z, d;
-    float prod[4][4];
 
     x = CURRENT_TO[0] - CURRENT_FROM[0];
     y = CURRENT_TO[1] - CURRENT_FROM[1];

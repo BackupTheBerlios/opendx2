@@ -12,7 +12,7 @@
 #define tdmInitScreen_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.4 2000/05/16 18:48:28 gda Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.5 2002/03/21 02:59:10 rhh Exp $"};
 #endif
 
 
@@ -190,6 +190,7 @@ _dxfEndRenderPass (WinP win)
   _dxfRedrawInteractorEchos(INTERACTOR_DATA) ;
 
   EXIT((""));
+  return 0;
 }
 
 int
@@ -205,6 +206,7 @@ _dxfEndSWRenderPass (WinP win, Field image)
   _dxfRedrawInteractorEchos(INTERACTOR_DATA) ;
 
   EXIT((""));
+  return 0;
 }
 
 static int
@@ -233,7 +235,6 @@ _HandleExitErrors (Display *dpy, XErrorEvent *rep)
 Error
 _dxfEndRenderModule (tdmChildGlobalP globals)
 {
-  int i ;
   DEFGLOBALDATA(globals) ;
   DEFPORT(PORT_HANDLE) ;
 

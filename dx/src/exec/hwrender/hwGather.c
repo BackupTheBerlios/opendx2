@@ -845,7 +845,7 @@ _gatherRecurse(dxObject object,
 {
   DEFGLOBALDATA(globals);
   DEFPORT(PORT_HANDLE);
-  dxObject 	subObject,tmpObject,tmpObject1, attr;
+  dxObject 	subObject,tmpObject,attr;
   int 		i;
   attributeP 	new = NULL;
   Class		class,groupClass;
@@ -1020,14 +1020,13 @@ _gatherRecurse(dxObject object,
   case CLASS_CLIPPED:
     {
       dxObject 		clipObject;
-      float		m[4][4],atm[4][4];
+      float		m[4][4];
       double		dm[4][4],datm[4][4];
       static Vector 	X={1.0,0.0,0.0},Y={0.0,1.0,0.0},Z={0.0,0.0,1.0};
       Array		attr;
       Pointer		attP;
       Point		pt,min,max,newMin,newMax;
       Vector		normal;
-      float		fpt[3],fnormal[3];
       clippedO		cpo;
 
 

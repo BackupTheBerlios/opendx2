@@ -13,7 +13,7 @@
 #define tdmMemory_h
 /*
  *
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwMemory.h,v 1.3 1999/05/10 15:45:35 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwMemory.h,v 1.4 2002/03/21 02:59:11 rhh Exp $
  */
 
 
@@ -48,7 +48,7 @@ Error   _tdmCheckAllocTable(int);
 #define tdmAllocateLocalZero(n) DXAllocateLocalZero(n)
 #define tdmReAllocate(x,n)      DXReAllocate(x,n)
 #define tdmFree(x)              DXFree(x)
-#define tdmCheckAllocTable(flag) 0
+#define tdmCheckAllocTable(flag) 
 
 #endif
 

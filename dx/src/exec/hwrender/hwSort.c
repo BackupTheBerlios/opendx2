@@ -99,7 +99,7 @@ int
 _dxf_Sort_Translucent(SortList sl)
 {
     SortListP slp = (SortListP)sl;
-    int       i, j, n;
+    int       j;
     SortBlock sbp;
     SortD     sdp;
     Sort      sp;

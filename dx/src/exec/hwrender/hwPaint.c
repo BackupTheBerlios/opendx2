@@ -204,7 +204,6 @@ _dxf_paint(void* globals, viewO view, int buttonUp, screenO camScreen)
   gatherO	gather;
   translationO  translation;
   int flags;
-  dxObject obj;
   RGBColor color;
   RGBColor background;
   float projectionMat[4][4];
@@ -294,7 +293,6 @@ _paintRecurse(void* globals, dxObject object,
 {
   DEFGLOBALDATA(globals);
   DEFPORT(PORT_HANDLE);
-  xfieldP	xf;
   Class		class;
   int		i;
   dxObject	subObject;
@@ -316,7 +314,6 @@ _paintRecurse(void* globals, dxObject object,
   case CLASS_GROUP:
     PRINT(("CLASS_GROUP"));
     for (i=0; subObject=DXGetEnumeratedMember((Group)object, i, NULL); i++) {
-      dxObject tmpObject;
       /* DXDebug("g", "member %d", i); */
       if (!_paintRecurse(globals, subObject, gather, buttonUp,
 					parent, grandparent))
@@ -454,7 +451,6 @@ _paintRecurse(void* globals, dxObject object,
 	  Point         *pts;
 	  Vector        *nrms;
 	  dxObject      subObject;
-	  int		i;
 	  
 	  PRINT(("HW_CLASS_CLIPPED:"));
 	  

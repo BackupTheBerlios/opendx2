@@ -12,7 +12,7 @@
 #define tdmWindow_c
 
 #ifndef	lint
-static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.c,v 1.5 2000/05/16 18:48:29 gda Exp $";
+static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.c,v 1.6 2002/03/21 02:59:13 rhh Exp $";
 #endif
 
 #define FLING_TIMEOUT 3
@@ -142,7 +142,6 @@ int _dxfCatchWinopenErrors (Display *dpy, XErrorEvent *rep)
 
 Error _dxfCreateWindow (tdmChildGlobalP globals, char *winName)
 {
-  XEvent event ;
   XWindowAttributes attr ;
   unsigned long eventMask ;
   DEFGLOBALDATA(globals) ;
@@ -385,9 +384,8 @@ _tdmResizeImage (WinP win)
   DEFWINDATA(win);
   Window RootReturn ;
   int XReturn, YReturn, camw, camh, dummy ;
-  unsigned int WidthReturn, HeightReturn, BorderWidthReturn, DepthReturn ;
+  unsigned int BorderWidthReturn, DepthReturn ;
   unsigned int wigW, wigH ;
-  long winw, winh ;
 
   ENTRY(("_tdmResizeImage (0x%x)", win));
 
@@ -575,7 +573,7 @@ _dxfProcessEvents (int fd, tdmChildGlobalP globals, int flags)
   Display *dpy ;
   XEvent ev ;
   unsigned int mask;
-  int doRedraw, fromTdmRender, winSizeChange ;
+  int doRedraw, winSizeChange ;
   tdmInteractorReturn R ;
   XWindowAttributes attr;
   static Time lasttime = 0 ;
@@ -1385,8 +1383,6 @@ static void
 _tdmCleanupChild (tdmChildGlobalP globals)
 {
   DEFGLOBALDATA(globals) ;
-  Window tmpParentWindow = PARENT_WINDOW;
-  Display *tmpDpy = DPY;
 
   ENTRY(("_tdmCleanupChild (0x%x)", globals));
 

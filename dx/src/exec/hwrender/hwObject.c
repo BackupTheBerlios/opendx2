@@ -77,12 +77,12 @@ _dxf_getHwClass(dxObject p)
     hwObjectP gPriv;
 
     if (! p)
-	return CLASS_DELETED;
+	return HW_CLASS_ERROR;
     
     gPriv = DXGetPrivateData((Private)p);
 
     if (! gPriv)
-	return CLASS_DELETED;
+	return HW_CLASS_ERROR;
     
     return gPriv->class;
 }

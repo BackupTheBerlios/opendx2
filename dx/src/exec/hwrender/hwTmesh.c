@@ -431,7 +431,6 @@ _dxf_trisToTmesh (xfieldT *xf, tdmChildGlobalP globals)
                                /* reverse stage... see RevDoSwap()          */
   Triple *triangles ;          /* array of original triangle connections    */
   int ntriangles ;             /* number of original triangle connections   */
-  int npoints ;                /* number of positions in field */
   int i, j, k, p, tp ;         /* misc. loop indices */
   TMesh tmesh = NULL;
   dxObject tmesho = NULL;
@@ -461,7 +460,7 @@ PRINT(("invalid connections: %d",
   /* get triangle connection info */
   triangles  = DXGetArrayData(xf->connections_array) ;
   ntriangles = xf->nconnections ;
-  npoints    = xf->npositions ;
+  /*npoints    = xf->npositions ;*/
 
   xf->origNConnections = ntriangles;
   xf->origConnections_array = xf->connections_array;

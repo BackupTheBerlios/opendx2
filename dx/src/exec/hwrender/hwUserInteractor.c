@@ -74,7 +74,6 @@ extern void *_dxd_UserInteractors;
 void
 _dxfSetUserInteractorMode(tdmInteractor I, dxObject args)
 {
-    unsigned long eventMask;
     DEFDATA(I, tdmUserInteractorData);
     DEFGLOBALDATA(UDATA(I));
     int mode;
@@ -197,7 +196,6 @@ UserStartStrokeP(tdmInteractor I, int x, int y, int btn, int s)
 static void
 UserStrokePoint (tdmInteractor I, int x, int y, int flag, int s)
 {
-    int dx, dy;
     float Near, Far;
     float to[3], from[3], up[3], zaxis[3];
     float fov, width;
@@ -389,7 +387,6 @@ UserDestroy(tdmInteractor I)
 static void
 UserKeyStruck(tdmInteractor I, int x, int y, char c, int s)
 {
-    int dx, dy;
     float Near, Far;
     float to[3], from[3], up[3], zaxis[3];
     float fov, width;

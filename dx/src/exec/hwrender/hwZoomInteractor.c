@@ -396,7 +396,7 @@ EndPanZoomStroke (tdmInteractor I, tdmInteractorReturnP M)
       if (CDATA(projection))
 	{
 	  /* perspective:  pan pivots view vector to look at zoom center */
-	  float rx, ry, rz, c, t ;
+	  float rx, ry, c, t ;
 	  double s ;
 
 	  /* [vcx,vcy,vcz] = new view vector expressed in VC: normalize it */
@@ -404,7 +404,7 @@ EndPanZoomStroke (tdmInteractor I, tdmInteractorReturnP M)
 	  vcx /= s ; vcy /= s ; vcz /= s ;
 
 	  /* axis of rotation in view coordinates = [vcx,vcy,vcz] X [0,0,-1] */
-	  rx = -vcy ; ry = vcx ; rz = 0 ;
+	  rx = -vcy ; ry = vcx ; /*rz = 0 ;*/
 	  
 	  /* length of axis is the sine of the angle to rotate */
 	  s = (float) sqrt((double)(rx*rx + ry*ry)) ;
