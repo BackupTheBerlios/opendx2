@@ -171,7 +171,10 @@ extern void  _dxfTraceObjects(int d); /* from libdx/object.c */
 extern void  _dxf_user_modules(); /* from libdx/ */
 extern void  _dxf_private_modules(); /* from libdx/ */
 extern Error user_cleanup(); /* from libdx/userinit.c */
+
+#if !defined(intelnt)
 extern int   DXForkChild(int); /* from libdx/mem.c */
+#endif
 
 /*
  * How often to check for registered input handlers
@@ -1548,6 +1551,8 @@ static void ExForkChildren ()
 	return;
     }
 
+#if !defined(intelnt)
+
     /* set this before we fork and create separate data spaces. */
     _dxd_exGoneMP = TRUE;
 
@@ -1655,6 +1660,7 @@ static void ExForkChildren ()
     }
     else
 	_dxd_exMyPID = -1;
+#endif
 #endif
 }
 
