@@ -134,20 +134,6 @@ extern "C" int getdtablesize();
 #define getdtablesize() FD_SETSIZE
 #endif
 
-#if defined(hp700) || defined(aviion)
-# define RSH "/usr/bin/remsh"
-#else
-# ifdef sgi
-#    define RSH "/usr/bsd/rsh"
-# else
-#  ifdef sun4
-#    define RSH "/usr/ucb/rsh"
-#  else
-#    define RSH "/usr/bin/rsh"
-#  endif
-# endif
-#endif
-#define BSH "/bin/sh"
 #ifndef HAS_HERROR
 #    define herror perror
 #endif
@@ -295,6 +281,11 @@ DXChild::ConnectTo(const char *host,
 #if defined(HAVE_SYS_UTSNAME_H)
     int  width = getdtablesize();
     struct utsname Uts_Name;
+    char *local_rsh_cmd;
+
+    local_rsh_cmd = getenv( "DXRSH" );
+    if ( !local_rsh_cmd )
+      local_rsh_cmd = RSH;
 
     /*
      * Initialize return values (to default negative results).
@@ -309,13 +300,13 @@ DXChild::ConnectTo(const char *host,
      */
     if (strcmp("unix", host) != 0)
     {
-	he = gethostbyname ((char*)host);
-	if (he == NULL)
-	{
-//	    herror (host);
-	    ErrorMessage("%s: Invalid host", host);
-	    return (-1);
-	}
+		he = gethostbyname ((char*)host);
+		if (he == NULL)
+		{
+//	    	herror (host);
+	    	ErrorMessage("%s: Invalid host", host);
+	    	return (-1);
+		}
     }
 
     for (pathEnv = NULL, i = 0; ep[i] && pathEnv == NULL; ++i)
@@ -415,19 +406,19 @@ DXChild::ConnectTo(const char *host,
 	}
 	sprintf(script_name,"/tmp/dx-%s:%d",Uts_Name.nodename,getpid());
 	findx=0;
-	fargv[findx++] = RSH;
+	fargv[findx++] = local_rsh_cmd;
 	fargv[findx++] = (char *)host;
 
 	if (user != NULL) {
 	    fargv[findx++] = "-l";
 	    fargv[findx++] = (char *)user;
 	    sprintf(cmd, "%s -c \"%s %s -l %s 'cat > %s' > /dev/null 2>&1\"",
-		BSH, RSH, host, user, script_name);
+		BSH, local_rsh_cmd, host, user, script_name);
 	} else
 	    sprintf(cmd, "%s -c \"%s %s 'cat > %s' > /dev/null 2>&1\"",
-		BSH, RSH, host, script_name);
+		BSH, local_rsh_cmd, host, script_name);
 
-	fargv[findx++] = "/bin/sh";
+	fargv[findx++] = BSH;
 	fargv[findx++] = script_name; 
 	fargv[findx++] = NULL ;
 		

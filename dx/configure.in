@@ -219,6 +219,33 @@ then
   with_cosmojar_path=''
 fi
 
+# Looking for rsh and path
+AC_ARG_WITH(rsh,
+        [  --with-rsh=PATH         Specify path to remote shell program ],
+        [
+                if test "x$withval" != "$no" ; then
+                        rsh_path=$withval
+                fi
+        ],
+        [
+                AC_PATH_PROG(rsh_path, rsh)
+        ]
+)
+AC_DEFINE_UNQUOTED(RSH, "$rsh_path")
+
+AC_ARG_WITH(bsh,
+        [  --with-bsh=PATH         Specify path to system bourne shell program ],
+        [
+                if test "x$withval" != "$no" ; then
+                        bsh_path=$withval
+                fi
+        ],
+        [
+                AC_PATH_PROG(bsh_path, sh)
+        ]
+)
+AC_DEFINE_UNQUOTED(BSH, "$bsh_path")
+
 dnl End of command line options configuration
 
 dnl Start DX configuration

@@ -156,9 +156,6 @@
 
 #define F_CHAR_READY(fp) ((fp)->_cnt > 0)
 
-/* program to run for remote shell */
-#define RSH "/usr/bin/rsh"
-
 #define IOCTL ioctl
 
 #if !defined(HAVE_STRRSTR)

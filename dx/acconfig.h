@@ -54,6 +54,8 @@
 #undef HAVE_LIBTIFF
 #undef HAVE_LIBTTF
 #undef HAVE_TT_FONT_PATH
+#undef RSH
+#undef BSH
 
 #undef uint
 #undef byte
