@@ -34,10 +34,57 @@
 
 #if defined(HAVE_WINDOWS_H)
 #include <windows.h>
+#include <shellapi.h>
+#include <process.h>
 #endif
 
 static int browserPID=0;
 static int fd=0;
+
+#if defined (intelnt)
+
+#if 0
+BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lparam) {
+   DWORD wndPid;
+
+   GetWindowThreadProcessId(hwnd, &wndPid);
+   if( wndPid == (DWORD)lparam ) {
+//	fprintf(stderr, "Found process--rising\n");
+	SetForegroundWindow( hwnd );
+	SetActiveWindow( hwnd );
+	return false;
+   }
+   else
+	return true;
+}
+#endif
+
+int ExecuteCommand(char *cmd,int nCmdShow)
+{
+   STARTUPINFO startInfo;
+   int processStarted;
+   unsigned long result;
+   PROCESS_INFORMATION pi;
+   char msgbuf[4096];
+
+   memset(&startInfo,0,sizeof(STARTUPINFO));
+   startInfo.dwFlags = STARTF_USESHOWWINDOW | STARTF_FORCEONFEEDBACK;
+   startInfo.wShowWindow = nCmdShow;
+   processStarted = CreateProcess(NULL,cmd,NULL,NULL,0,
+      NORMAL_PRIORITY_CLASS,
+      NULL,NULL,&startInfo,&pi);
+   if (processStarted == 0)
+      return -1;
+   WaitForInputIdle(pi.hProcess, INFINITE);
+//   AttachThreadInput( pi.dwThreadId, GetCurrentThreadId(), TRUE);
+//   EnumWindows ( EnumWindowsProc, (LPARAM) pi.dwProcessId ); 
+   result = 0;
+   CloseHandle(pi.hProcess);
+   CloseHandle(pi.hThread);
+   return result;
+
+}
+#endif
 
 int _dxf_StartWebBrowserWithURL(char *URL) {
     char *webApp = getenv("DX_WEB_BROWSER");
@@ -60,14 +107,34 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
     }
     return 0;
 #elif defined(intelnt)
+    #define MAXPATH 4096
     if(webApp) {
-    HINSTANCE hinst = ShellExecute(NULL, // no parent hwnd
-            NULL, // open
-            URL, // topic file or URL
-            NULL, // no parameters
-            NULL, // folder containing file
-            SW_SHOWNORMAL); // yes, show it
-    return hinst > (HINSTANCE)32;
+	FILE *f;
+	char CmdLine[MAXPATH];
+	char fname[MAXPATH];
+	char *p;
+
+	GetTempPath(MAXPATH, fname);
+	if (p = strrchr(fname, '\\'))
+	    *p = 0;
+	sprintf(fname, "%s%s.%s", fname, tmpnam(NULL), ".htm");
+	f = fopen(fname,"wb");
+
+	if (f == NULL)
+	    return 0;
+	fwrite((char *)"tempfile",1,8,f);
+	fclose(f);
+
+	HINSTANCE hinst = FindExecutable(fname, NULL, CmdLine);
+	strcpy(CmdLine, "\"C:\\Program Files\\Netscape\\Communicator\\Program\\netscape.exe\"");
+	if ((int)hinst > 32) {
+	    strcat(CmdLine, " ");
+	    strcat(CmdLine, URL);
+	    ExecuteCommand(CmdLine, SW_SHOWNORMAL);
+//	    ShellExecute(NULL, "open", CmdLine, URL, NULL, SW_SHOWNORMAL);
+	}
+	unlink(fname);
+    	return hinst > (HINSTANCE)32;
     }
     return 0;
 #else

@@ -409,6 +409,10 @@ void HelpWin::loadTopicFile(const char *topic, const char *file)
 {
     if(UseWebBrowser) {
     	//Start web browser with file
+	if(strcmp(topic, file) == 0) {
+	    fprintf(stderr, "Cannot find help on: %s\n", topic);
+	    return;
+	}
     	char url[520];
     	strcpy(url, "file://");
     	strcat(url, GetHTMLDirectory());
