@@ -1339,7 +1339,6 @@ static void _dxf_WRITE_PIXEL_RECT(void* win, uint32 *buf,
 {
   DEFWINDATA(win) ;
   DEFPORT(PORT_HANDLE) ;
-  int	i ;
 
   ENTRY(("_dxf_WRITE_PIXEL_RECT(0x%x, 0x%x, %d, %d, %d, %d)",
 	 win, buf, x, y, w, h));
