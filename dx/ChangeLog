@@ -1,3 +1,13 @@
+Fix the attribute copying logic for Band since Isosurface creates a 
+separate field for each isosurface, Band creates only one. 
+
+Added  DX_SOCKET_BUFSIZE environment variable allowing the user to 
+specify the size of the send and recieve buffers for the socket 
+connection between the UI and the exec. This provides a fix until time
+permits to write the significant logic change to make the UI interlace
+reading data from the exec and writing data to the exec. This value
+is clamped to the max allowed by the system.
+
 Added MacOS X memory routines for the Executive.
 
 Added configuration flags to make it possible to build loadable modules
