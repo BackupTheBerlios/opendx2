@@ -319,6 +319,7 @@ AC_OUTPUT(bin/dx bin/Makefile src/uipp/ui/Makefile lib/Makefile  \
 	  src/uipp/java/dx/protocol/server/Makefile \
 	  src/uipp/java/dx/protocol/Makefile src/uipp/java/dx/Makefile \
 	  src/uipp/java/dx/runtime/Makefile src/uipp/java/server/Makefile src/uipp/java/server/macros/Makefile \
+	  src/uipp/java/server/dxserver.paths \
 	  src/uipp/java/dx/client/Makefile src/uipp/java/dx/net/Makefile \
 	  src/uipp/java/dx/applets/Makefile src/uipp/java/dx/server/Makefile \
 	  src/uipp/java/Makefile src/exec/hwrender/opengl/Makefile \
