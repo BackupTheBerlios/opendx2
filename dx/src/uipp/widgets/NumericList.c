@@ -13,7 +13,7 @@
 /*
  */
 
-#ifdef sgi
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 #ifdef OS2
@@ -39,15 +39,20 @@
 #include "NumericListP.h"
 /*#include "uiustring.h" */
 
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
+
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 #define superclass (&widgetClassRec)
-
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
 
 static void Initialize( XmNumericListWidget request, XmNumericListWidget new );
 static Boolean SetValues( XmNumericListWidget current,

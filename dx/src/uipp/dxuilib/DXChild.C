@@ -28,13 +28,22 @@
 #include "ErrorDialogManager.h"
 #include "MsgWin.h"
 
-
-#ifdef	DXD_WIN
 #include <stdlib.h>
 #include <stdio.h>
+#if defined(HAVE_FCNTL_H)
+
 #include <fcntl.h>
+#endif
+
+#if defined(HAVE_IO_H)
 #include <io.h>
+#endif
+
+#if defined(HAVE_PROCESS_H)
 #include <process.h>
+#endif
+
+#ifdef	DXD_WIN
 #define 	close	_close
 int LocalRead( int handle, void *buffer, unsigned int count );
 int SetSocketMode(int  s, int iMode);
@@ -42,20 +51,23 @@ int UxRecv(int s, char *ExternalBuffer, int BuffSize, int Flags);
 #define	read	LocalRead
 #endif
 
-
-// #include <stream.h>
 #include <errno.h>
 #include <ctype.h>
+
+#if defined(HAVE_FCNTL_H)
 #include <fcntl.h>
+#endif
+
+#if defined(HAVE_NETDB_H)
 #ifdef alphax
 extern "C" { 
+#endif
 #include <netdb.h>
+#ifdef alphax
 }
-#else
-#ifndef  DXD_WIN
-#include <netdb.h>
 #endif
 #endif
+
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,15 +76,15 @@ extern "C" {
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifndef   DXD_WIN
+#if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
 
-#if defined(ibm6000)
+#if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
 
-#ifdef sun4
+#if defined(HAVE_SYSENT_H)
 #include <sysent.h>
 #endif
 
@@ -1482,9 +1494,9 @@ DXChild::waitForConnection()
 	if (counts++ >= MAX_COUNTS)
 	    status = -1;
 	else
-	    status = select(width, (SELECT_ARG_TYPE)&fds, NULL, NULL, &to);
+	    status = select(width, (SELECT_ARG_TYPE *)&fds, NULL, NULL, &to);
 #else   //   USE_SUB_EVENT_LOOP
-	status = select(width, (SELECT_ARG_TYPE)&fds, NULL, NULL, NULL);
+	status = select(width, (SELECT_ARG_TYPE *)&fds, NULL, NULL, NULL);
 #endif   //   USE_SUB_EVENT_LOOP
 
 	if (status < 0) {

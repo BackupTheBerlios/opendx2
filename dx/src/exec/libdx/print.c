@@ -38,7 +38,6 @@
 
 #define MAXP    50          /* default max array items to print */
 #define MAXRANK 16          /* max rank */
-#define MIN(a, b)           ((a)<(b) ? (a) : (b))
 
 #define NEWLINE(l)	DXMessage("\n%*s", l, "")
 #define INDENT(l)       DXMessage("%*s", l, "")

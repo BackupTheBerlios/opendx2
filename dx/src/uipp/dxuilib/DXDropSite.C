@@ -12,16 +12,21 @@
 
 
 #include "defines.h"
-#ifndef  DXD_DO_NOT_REQ_UNISTD_H
+#include <stdio.h>
+
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
-#include <stdio.h>
+
+#if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
-#ifndef  DXD_DO_NOT_REQ_SYS_PARAM_H
+#endif
+
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
+
 #include <Xm/Xm.h>
-//	Included at top of file   #include "defines.h"
 #include "ControlPanel.h"
 #include "Application.h" 
 #include "DropSite.h"
@@ -31,7 +36,7 @@
 #include "Strings.h"
 #include "WarningDialogManager.h"
 
-#if defined(solaris)
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
 
@@ -39,7 +44,7 @@
 extern "C" int gethostname(char *address, int address_len);
 #endif
 
-#if defined(DXD_WIN)
+#if defined(HAVE_WINSOCK_H)
 #include <winsock.h>
 #endif
 

@@ -79,11 +79,6 @@ ExTime()
 
 #define	MARK_1(_x)		ExMarkTime (0x10, _x)
 
-#ifndef MAX
-#define MIN(a,b)                ((a) < (b) ? (a) : (b))
-#define MAX(a,b)                ((a) > (b) ? (a) : (b))
-#endif
-
 #define LOCAL_ARG_MAX           512	/* max bytes to hold statically */
 #define MAX_LABEL_LEN		64
 #define MAX_ROUTE_OUTPUTS       21

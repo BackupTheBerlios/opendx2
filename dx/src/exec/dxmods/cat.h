@@ -119,9 +119,6 @@ int _dxf_cat_ignore(char *s, int ignore);
 #define INTERNALERROR DXSetError(ERROR_INTERNAL, \
 		      "unexpected error, file %s line %d",  __FILE__, __LINE__)
 
-#ifndef MAX
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-#endif
 
 typedef struct {
     catinfo *data;

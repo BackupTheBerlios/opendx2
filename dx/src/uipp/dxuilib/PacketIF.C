@@ -22,7 +22,7 @@
 #include "Application.h"
 #include "ErrorDialogManager.h"
 
-#if defined(linux) || defined(cygwin) || defined(freebsd)
+#if defined(HAVE_ERRNO_H)
 extern "C" {
 #include <errno.h>
 }
@@ -30,19 +30,30 @@ extern "C" {
 #include <errno.h>
 #endif
 
+#if defined(HAVE_CTYPE_H)
 #include <ctype.h>
+#endif
+
+#if defined(HAVE_FCNTL_H)
 #include <fcntl.h>
-#ifdef alphax
+#endif
+
+#if defined(HAVE_NETDB_H)
 extern "C" {
 #include <netdb.h>
 }
 #else
-#ifdef  DXD_HAS_WINSOCKETS
-#include <winsock.h>
-#else
 #include <netdb.h>
 #endif
+
+#if defined(HAVE_WINSOCK_H)
+#include <winsock.h>
 #endif
+
+#if defined(HAVE_NETDB_H)
+#include <netdb.h>
+#endif
+
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,11 +62,19 @@ extern "C" {
 #include <unistd.h>
 #endif
 
-#if defined(DXD_WIN) || defined(OS2)          //SMH not needed - not available
+#if defined(HAVE_IO_H)
 #include <io.h>
+#endif
+
+#if defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
-#else
+#endif
+
+#if defined(HAVE_STREAM_H)
 #include <stream.h>
+#endif
+
+#if defined(HAVE_ARPA_INET_H)
 #include <arpa/inet.h>
 #endif
 
@@ -81,7 +100,7 @@ int bzero(char*,int);
 }
 #endif
 
-#ifdef hp700
+#if defined(HAVE_TIME_H)
 #include <time.h>
 #endif
 
@@ -93,13 +112,21 @@ int bzero(char*,int);
 #include <sys/socket.h>
 #endif
 
+#if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
-#ifdef DXD_WIN
+#endif
+
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
+
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
+#endif
 
 #if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
@@ -1536,11 +1563,11 @@ retry:
     if (!isatty(0)) {
         to.tv_sec = SOCK_ACCEPT_TIMEOUT;
         to.tv_usec = 0;
-        sts = select(width, (SELECT_ARG_TYPE) &fds, NULL, NULL, &to);
+        sts = select(width, (SELECT_ARG_TYPE *) &fds, NULL, NULL, &to);
     }
     else
     {
-        sts = select(width, (SELECT_ARG_TYPE) &fds, NULL, NULL, NULL);
+        sts = select(width, (SELECT_ARG_TYPE *) &fds, NULL, NULL, NULL);
     }
 #endif
     if (sts < 0) {

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/echo.c,v 1.3 1999/05/10 15:45:24 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/echo.c,v 1.4 1999/07/12 22:32:57 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -23,9 +23,6 @@
 #define MSGLEN     1024   /* can this be bigger and not blow up the UI? */
 #define SLOP	   128
 #define AtEnd(p)    ((p)->atend)
-
-
-#define MIN(a, b)  (a<b? a : b)
 
 struct einfo {
     int maxlen;

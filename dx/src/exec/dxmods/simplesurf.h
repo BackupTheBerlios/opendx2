@@ -565,13 +565,6 @@ typedef unsigned char  u_char;
 
 /* define minimum and maximum of two numbers */
 
-#undef  MIN
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-
-#undef  MAX
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-
-
 /* some vector operations: */
 
 #undef  SQUARED_DISTANCE3

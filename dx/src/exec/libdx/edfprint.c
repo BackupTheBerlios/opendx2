@@ -23,8 +23,6 @@
 #endif
 
 
-#define MIN(a, b)           ((a)<(b) ? (a) : (b))
-
 
 static struct ap_info {
     char *format;

@@ -18,7 +18,6 @@
 
 #define MAXPARMS   22
 #define MAXP       120
-#define MIN(a, b)  (a<b? a : b)
 #define BUFFERSIZE  2048
 #define MAXLEN      2000
 

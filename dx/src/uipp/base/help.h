@@ -12,7 +12,7 @@
 #include "history.h"
 #include "helplist.h"
 #include "helpstack.h"
-#if !defined(OS2)  && !defined(DXD_WIN)
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 

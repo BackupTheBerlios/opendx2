@@ -16,6 +16,14 @@
 #include <sys/param.h>
 #endif
 
+#if !defined(MIN)
+#define MIN(a,b) ((a)<(b)?(a):(b))
+#endif
+
+#if !defined(MAX)
+#define MAX(a,b) ((a)>(b)?(a):(b))
+#endif
+
 #ifndef HAS_S_ISDIR
 #define S_ISDIR(x) ((x) & (S_IFDIR))
 #endif

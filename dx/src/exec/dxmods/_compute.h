@@ -123,5 +123,3 @@ void	_dxfComputeInitExecution (void);
 
 /* #define COMP_DEBUG 1 */
 
-#define MAX(x,y) ((x) > (y)? (x): (y))
-#define MIN(x,y) ((x) < (y)? (x): (y))

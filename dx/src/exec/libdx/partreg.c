@@ -24,8 +24,6 @@
 
 #define MAXRANK   16
 #define MAXSHAPE  128
-#define MIN(a,b)  (a<b? a : b)
-#define MAX(a,b)  (a>b? a : b)
 
 /*
  * arg block for parallel workers:  this version of partition goes

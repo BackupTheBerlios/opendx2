@@ -11,8 +11,6 @@
 
 #include "interact.h"
 
-#define MIN(a,b) ((a<b) ? a: b)
-#define MAX(a,b) ((a>b) ? a: b)
 #define MAX_INPUTS 9
 
 extern

@@ -29,7 +29,6 @@
 #define FLOOR(x) ((x)>=0 || (int)(x)==x? (int)(x) : (int)(x)-1)
 #define CEIL(x) ((x)<=0 || (int)(x)==x? (int)(x) : (int)(x)+1)
 #define ABS(x)   ((x)<0? -(x) : (x))
-#define MIN(a,b) ((a)<(b)? (a) : (b))
 
 
 /*

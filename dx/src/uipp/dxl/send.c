@@ -13,8 +13,12 @@
 
 #include <stdio.h>
 #include <ctype.h>
+
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
-#if   !defined(OS2)  && !defined(DXD_WIN)
+#endif
+
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 
@@ -26,22 +30,34 @@
 #include <sys/socket.h>
 #endif
 
-#ifdef DXD_WIN
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
-#ifndef   DXD_HAS_WINSOCKETS
+
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
+
 #include <errno.h>
+
+#if defined(HAVE_STRING_H)
 #include <string.h>
+#endif
+
 #include <malloc.h>
-#if defined(ibm6000) || defined(pgcc) || defined(__METAWARE_HC)
+
+#if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
+
 #if   defined(OS2)  || defined(DXD_HAS_WINSOCKETS)
+#if defined(HAVE_IO_H)
 #include <io.h>
+#endif
 #define write(a,b,c) _dxl_os2_send(a,b,c,0)
 #define read(a,b,c) _dxl_os2_recv(a,b,c,0)
 #endif
@@ -61,10 +77,6 @@ static DXLError DXLGetPacket(DXLConnection *, DXLPacketTypeEnum, int,
                 DXLEvent *, int,
                 DXLPacketPredicate, const void *);
 
-#ifdef MAX
-# undef MAX
-#endif
-#define MAX(x,y) ((x) > (y)? (x): (y))
 #define STRLEN(A) (A ? strlen(A) : 0)
 
 char *_DXLPacketTypes[] =

@@ -25,6 +25,13 @@
 #include <X11/StringDefs.h>
 #include "DialP.h"
 
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
 #if !defined(HAS_M_PI)
 #define M_PI    3.1415926535897931160E0
 #endif
@@ -37,12 +44,6 @@
 #define QTR_PI		(double)(M_PI / 4.0)
 #define	RADIANS(x)	(M_PI * 2.0 * (x) / 360.0)
 #define DEGREES(x)      ((x) / (M_PI * 2.0) * 360.0)
-#ifndef MIN
-#define MIN(a,b) 	(((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) 	(((a) > (b)) ? (a) : (b))
-#endif
 #define ABS(a)          (((a) >= 0) ? (a) : -(a))
 #define MAX_SHORT 	65535
 

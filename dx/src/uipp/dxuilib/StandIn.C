@@ -12,16 +12,17 @@
 
 #include "defines.h"
 #include <iostream.h>
-#ifndef  DXD_DO_NOT_REQ_UNISTD_H
+
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 
-#if defined(solaris)
-#include <netdb.h> // for MAXHOSTNAMELEN
-#else
-#ifndef  DXD_DO_NOT_REQ_SYS_PARAM_H
-#include <sys/param.h> // for MAXHOSTNAMELEN
+#if defined(HAVE_NETDB_H)
+#include <netdb.h>
 #endif
+
+#if defined(HAVE_SYS_PARAM_H)
+#include <sys/param.h>
 #endif
 
 #include "DXApplication.h"
@@ -36,7 +37,7 @@
 #include <X11/StringDefs.h>
 #include <X11/Xatom.h>
 
-#include <../widgets/WorkspaceW.h>
+#include "../widgets/WorkspaceW.h"
 
 #include "StandIn.h"
 #include "Tab.h"
@@ -74,9 +75,6 @@ extern "C" int gethostname(char *address, int address_len);
 #define XtOffset( p_type, field ) ((size_t)&((( p_type )0)->field))
 #endif
 
-#ifndef MAX
-#define MAX(x,y) ((x) > (y)? (x): (y))
-#endif
 
 #define DXXOFFSET "DX_XOFFSET"
 #define DXYOFFSET "DX_YOFFSET"

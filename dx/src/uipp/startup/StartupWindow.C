@@ -28,11 +28,11 @@
 #include <Xm/FileSB.h>
 #endif
 
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 
-#if HAVE_SYS_PARAM_H
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 

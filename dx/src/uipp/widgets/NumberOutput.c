@@ -14,13 +14,24 @@
 #include <stdlib.h>
 #include <types.h>
 #endif
+
 #include <stdio.h>
-#if defined(solaris) || defined(sgi) || defined (hp700) || defined(aviion)
+
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
+
 #include <limits.h>
 #include "NumberP.h"
 #include "Number.h"
+
+
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -34,10 +45,6 @@ extern "C" {
 /*  Limits of 32 bit signed integers  */
 #define maxlong INT_MAX
 #define minlong INT_MIN
-
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
 
 static double emax[] = { 1.0,  10.0,  1e2,   1e3,  1e4, 1e5,  1e6,   1e7, 1e8,
                            1e9,  1e10,  1e11, 1e12, 1e13, 1e14, 1e15, 1e16,

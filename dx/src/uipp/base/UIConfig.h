@@ -8,13 +8,9 @@
 
 #include <dxconfig.h>
 
-
-
-
 /*
  * $Header
  */
-
 
 /*
 // UI Configuration file for various platforms.

@@ -1111,12 +1111,6 @@ static struct arena *small = NULL;
 static struct arena *large = NULL;
 static struct arena *local = NULL;
 
-#ifndef MAX
-#define MAX(a,b)  ((a) > (b) ? (a) : (b))
-#endif
-#ifndef MIN
-#define MIN(a,b)  ((a) < (b) ? (a) : (b))
-#endif
 
 int _dxf_initmemory()
 {

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showbox.c,v 1.3 1999/05/10 15:45:30 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showbox.c,v 1.4 1999/07/12 22:32:57 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -17,7 +17,6 @@
 #include "bounds.h" 
 
 
-#define MIN(a, b)  (a<b? a : b)
 #define MAXDIM 16
 #define BOXCOLOR  DXRGB(0.7, 0.7, 0.0) 
 

@@ -17,9 +17,6 @@ Instrumentation	*exInstrument;
 int 		exDoInstrumentation = 1;
 static int	instNprocs = 0;
 
-#define MIN(x,y) ((x)<(y)?(x):(y))
-#define MAX(x,y) ((x)>(y)?(x):(y))
-
 void
 ExResetInstrument(void)
 {

@@ -15,8 +15,6 @@
 #include <dx/dx.h>
 
 
-#define MAX(a,b)  (((a)>(b))?(a):(b))
-
 /*
  * simple routines for common cases
  */  

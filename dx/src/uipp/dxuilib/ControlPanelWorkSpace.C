@@ -11,16 +11,16 @@
 
 
 #include "defines.h"
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 
-#if defined(solaris)
-#include <netdb.h> // for MAXHOSTNAMELEN
-#else
-#ifndef DXD_DO_NOT_REQ_SYS_PARAM_H
-#include <sys/param.h> // for MAXHOSTNAMELEN
+#if defined(HAVE_NETDB_H)
+#include <netdb.h>
 #endif
+
+#if defined(HAVE_SYS_PARAM_H)
+#include <sys/param.h>
 #endif
 
 #include <Xm/Xm.h>

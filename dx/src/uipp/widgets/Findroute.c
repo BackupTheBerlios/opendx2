@@ -28,6 +28,15 @@
 #include "WorkspaceW.h"
 #include "WorkspaceP.h"
 
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
+
+
 #define DEPTH 5
 #define LOOKLEFT 0
 #define LOOKRIGHT 1
@@ -37,12 +46,6 @@
 #define LINE_TYPE 1
 #define SLOT_LEN 40
 
-#ifndef MIN
-#define MIN(a,b) 	(((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) 	(((a) > (b)) ? (a) : (b))
-#endif
 #define abs(A) ((A) < 0 ? -(A) : (A))
 
 typedef struct _LineList {

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.4 1999/05/10 15:45:22 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.5 1999/07/12 22:32:57 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -226,9 +226,6 @@ static int put_rgb_ifd(int fd, int width, int length, int strips,
 		int rows_per_strip, int compress, uint32 *strip_offsets, 
 		uint32 *strip_byte_counts);
 static int put_field(int fd, TiffTag tag, TiffType type, int n, uint32 value);
-#ifndef MAX
-#define MAX(A,B)	((A) > (B) ? (A) : (B))
-#endif
 /*
  * Define the maximum length of any dimension of the images.
  * This number is only an estimate and is not expected to be used to 

@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#ifndef DXD_HAS_WINSOCKETS
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
 #include <errno.h>
@@ -39,34 +39,36 @@
 #endif
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef DXD_HAS_UNIX_SYS_INCLUDES
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
-#ifndef   DXD_WIN
+#if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
-#if defined(ibm6000)
+#if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
 
-#ifdef sgi
+#if defined(HAVE_CC_OSFCN_H)
 #include <CC/osfcn.h>
 #endif
-#ifdef hp700
+
+#if defined(HAVE_TIME_H)
 #include <time.h>
 #endif
 
-#ifdef aviion
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
-#include <sys/param.h>
-# ifndef FD_ZERO
-#  define FD_ZERO(p)  memset((void*)p, 0, sizeof(*(p)))
-# endif
 #endif
 
-#ifdef alphax
-#include <sys/types.h>
-#include <sys/time.h>
+#if defined(HAVE_SYS_PARAM_H)
+#include <sys/param.h>
+#endif
+
+#ifndef FD_ZERO
+#define FD_ZERO(p)  memset((void*)p, 0, sizeof(*(p)))
+#endif
+
 int getdtablesize ( void );
 int select(
     int nfds,
@@ -74,7 +76,6 @@ int select(
     fd_set *writefds,
     fd_set *exceptfds,
     struct timeval *timeout) ;
-#endif
 
 #if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>

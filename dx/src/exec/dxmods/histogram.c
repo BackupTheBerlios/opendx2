@@ -144,10 +144,6 @@ static Error FullAllocHistinfo(struct histinfo *hp, int datadim, int setdef);
 
 #define DEFAULTBINS 100
 
-#ifndef MAX
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-#endif
-
 
 /* 0 = input
  * 1 = bins

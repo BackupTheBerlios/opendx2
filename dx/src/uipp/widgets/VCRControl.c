@@ -28,6 +28,15 @@
 #include "stepf.bm"
 #include "stop.bm"
 
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
+
+
 extern void _XmForegroundColorDefault();
 extern void _XmBackgroundColorDefault();
 
@@ -273,12 +282,6 @@ WidgetClass xmVCRControlWidgetClass = (WidgetClass) &xmVCRControlClassRec;
 #define LONG_WAIT 500
 #define MAX_VAL(a,b) ((a)>(b)?(a):(b))
 #define MIN_VAL(a,b) ((a)<(b)?(a):(b))
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
 #define superclass (&widgetClassRec)
 
 static void SetLabel();

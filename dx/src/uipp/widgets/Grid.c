@@ -18,11 +18,15 @@
 #include <Xm/DrawingAP.h>
 #include "Grid.h"
 
-#define NUM_TICKS 11
-
-#ifndef MAX
-#define MAX(a,b)  (a>b ? (a) : (b))
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
 #endif
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
+
+#define NUM_TICKS 11
 
 static void ResizeCallback( Widget w, int color,
 			    XmDrawingAreaCallbackStruct* cb );

@@ -312,12 +312,6 @@ if (CDATA(projection)) { \
 
 #define YFLIP(y) ((CDATA(h) - (y)) - 1)
 
-#ifndef MAX
-#define MAX(x,y) ((x) > (y)? (x): (y))
-#endif
-#ifndef MIN
-#define MIN(x,y) ((x) < (y)? (x): (y))
-#endif
 
 #ifndef RAD2DEG
 #define RAD2DEG(r) (180.0*(r)/M_PI)

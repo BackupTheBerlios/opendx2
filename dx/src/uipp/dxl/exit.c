@@ -11,8 +11,12 @@
 
 #include <stdio.h>
 #include <ctype.h>
+
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
-#if  !defined(OS2) && !defined(DXD_WIN)
+#endif
+
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 
@@ -24,17 +28,22 @@
 #include <sys/socket.h>
 #endif
 
-#ifdef DXD_WIN
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
-#ifndef DXD_HAS_WINSOCKETS
+
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
+
 #include <errno.h>
 #include <malloc.h>
-#if defined(ibm6000) || defined(pgcc) || defined(__METAWARE_HC) || defined(OS2)
+
+#if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
 

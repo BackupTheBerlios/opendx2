@@ -16,8 +16,6 @@
 #include <math.h>
 #include <ctype.h>
 
-#define MIN(a, b)  ((a)>(b) ? (b) : (a))     
-#define MAX(a, b)  ((a)<(b) ? (b) : (a))     
 #define AMIN(a, b)  ((fabs(a))>(fabs(b)) ? (b) : (a))     
 #define AMAX(a, b)  ((fabs(a))<(fabs(b)) ? (b) : (a))     
 

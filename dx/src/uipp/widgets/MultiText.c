@@ -27,6 +27,15 @@
 #include <sys/param.h>
 #endif
 
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
+
+
 #if defined(DXD_WIN)
 /* winuser.h defines ScrollWindow which conflicts with code in this file */
 #define ScrollWindow _ScrollWindow
@@ -60,13 +69,6 @@
 
 #define STRCMP(a,b)  ((a) ? ((b) ? strcmp(a,b) : strcmp(a,"")) : \
 			    ((b) ? strcmp("",b) : 0))
-
-#ifndef MIN
-#define MIN(a,b)	(((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b)	(((a) > (b)) ? (a) : (b))
-#endif
 
 /*
  * Forward declaration of methods:

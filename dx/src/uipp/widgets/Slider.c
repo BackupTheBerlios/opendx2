@@ -39,6 +39,15 @@
 #include "Slider.h"
 #include "SliderP.h"
 
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
+
+
 #define  zero  pow(0.1,6)
 
 #if !defined(HAVE_TRUNC)
@@ -110,10 +119,6 @@ extern void _XmBackgroundColorDefault();
 
 #if defined(hp700) || defined(aviion) || defined(solaris) || defined(sun4) || defined (DXD_WIN) || defined(OS2)
 #define trunc(x) ((double)((int)(x)))
-#endif
-
-#ifndef MAX
-#define MAX(a,b)        (((a) > (b)) ? (a) : (b))
 #endif
 
 static double DefaultMinDbl = DEF_MIN;

@@ -32,18 +32,24 @@
 
 #include "CommentStyleUser.h"
 
-#if !defined(DXD_WIN)
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
-#include <sys/types.h>
-#include <ctype.h> // for isdigit
 
-#if defined(solaris)
-#include <netdb.h> // for MAXHOSTNAMELEN
-#else
-#ifndef  DXD_DO_NOT_REQ_SYS_PARAM_H
-#include <sys/param.h> // for MAXHOSTNAMELEN
+#if defined(HAVE_SYS_TYPES_H)
+#include <sys/types.h>
 #endif
+
+#if defined(HAVE_CTYPE_H)
+#include <ctype.h>
+#endif
+
+#if defined(HAVE_NETDB_H)
+#include <netdb.h>
+#endif
+
+#if defined(HAVE_SYS_PARAM_H)
+#include <sys/param.h>
 #endif
 
 // gethostname is needed by decodeDragType 

@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 
+#include "../base/defines.h"
 
 
 #ifndef _XmColorMapEditor_h

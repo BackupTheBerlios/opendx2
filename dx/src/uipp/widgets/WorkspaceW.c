@@ -30,10 +30,19 @@
 #include "WorkspaceW.h"
 #include "WorkspaceP.h"
 #include "WorkspaceCallback.h"
-#if !defined(DXD_WIN) && !defined(OS2)
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 #include <string.h>
+
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
+
 
 extern void _XmManagerEnter();
 extern void _XmManagerFocusIn();
@@ -157,14 +166,6 @@ struct SortRec {
 /*  Parameter to control size of arms of alignment hash marks: ray+1+ray  */
 #define HASH_RAY 4
 #define GRID_DASH_MIN 10
-
-
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
 
 /*  Codes and indexes for rubberbanding cursor  */
 #define SZ_NONE 4

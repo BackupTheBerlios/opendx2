@@ -34,7 +34,6 @@ extern
 static
   Object MakeGrid(Object, float *, Object);
 
-#define MAX(a,b) ((a)>(b)? (a) : (b))
 #define RND(x) (x<0? x-0.5 : x+0.5)
 
 

@@ -48,6 +48,8 @@
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 
+
+
 #define SCALE .85
 
 static void   alloc_drawing_colors(XmPictureWidget w);

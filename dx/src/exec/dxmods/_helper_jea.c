@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.c,v 1.3 1999/05/10 15:45:19 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.c,v 1.4 1999/07/12 22:32:56 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -927,8 +927,6 @@ _dxf_SetDefaultColor ( Field input, RGBColor color )
 
 /*------------------------------ Begin Image section ------------------------*/
 
-#define    MAX(a,b)  ( ( (a) > (b) ) ? (a) : (b) )
-#define    MIN(a,b)  ( ( (a) < (b) ) ? (a) : (b) )
 #define   SMALL 0.4
 #define  NONZERO(a)  ( ( (a) <  -SMALL ) || ( (a) >  SMALL ) )
 #define     ZERO(a)  ( ( (a) >= -SMALL ) && ( (a) <= SMALL ) )

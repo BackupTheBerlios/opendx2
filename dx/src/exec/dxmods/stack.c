@@ -3153,8 +3153,6 @@ freespace(StackInfo *si)
 }
 
 
-#define MAX(a,b)  ((a)>(b)?(a):(b))
-
 /* return the max of a and b unless the max is zero, then
  * return the other value.
  */

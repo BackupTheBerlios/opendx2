@@ -20,9 +20,6 @@
 #include "rq.h"
 #include "distp.h"
 
-#define MIN(x,y) ((x) < (y)? (x): (y))
-#define MAX(x,y) ((x) > (y)? (x): (y))
-
 typedef enum
 {
     VCR_M_STOP = 0,

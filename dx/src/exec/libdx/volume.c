@@ -344,8 +344,6 @@ error:
  *
  */
 
-#define MAX(a,b) ((a)>(b)? (a) : (b))
-#define MIN(a,b) ((a)<(b)? (a) : (b))
 #define FLOOR(a) (((int)((a)+100000.0)-100000))
 #define CEIL(a) (((int)((a)-100000.0)+100000))
 #define ROUND(a) FLOOR((a)+0.5)

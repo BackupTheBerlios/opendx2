@@ -20,8 +20,6 @@
 #define DIMENSION3D             3
 #define DIMENSION2D             2
 
-#define MAX(a,b) ((a>=b) ? a : b))
-
 extern Error _dxfGetTensorStats(Object, float *, float *);
 extern int _dxfIsTensor(Object);
 extern Error _dxfProcessGlyphObject(Object, Object, char *, 

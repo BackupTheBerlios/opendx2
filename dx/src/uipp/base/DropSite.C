@@ -24,15 +24,15 @@
 #include "TransferStyle.h"
 #include "DictionaryIterator.h"
 
-#ifndef	DXD_DO_NOT_REQ_SYS_PARAM_H
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 
-#if defined(solaris)
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
 

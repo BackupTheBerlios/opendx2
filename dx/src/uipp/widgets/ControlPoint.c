@@ -11,7 +11,7 @@
 
 
 #include <stdio.h>
-#ifdef sgi
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 
@@ -25,6 +25,8 @@
 #ifndef MAX
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #endif
+
+
 
 #define HALF_LEVEL (1/(NUM_LEVELS*2))
 /*

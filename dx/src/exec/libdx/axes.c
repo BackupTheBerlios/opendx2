@@ -50,8 +50,6 @@ static RGBColor BACKGROUNDCOLOR = {0.07, .07, 0.07};
     
 #define ABS(x) ((x)<0? -(x) : (x))
 #define SGN(x) ((x)<0? -1 : 1)
-#define MIN(a,b) ((a)<(b)? (a) : (b))
-#define MAX(a,b) ((a)>(b)? (a) : (b))
 
 #define E 0.0001						/* fuzz */
 #define FL(x) ((x)+E>0? (int)((x)+E) : (int)((x)+E)-1)	/* fuzzy floor */

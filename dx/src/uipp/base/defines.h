@@ -17,6 +17,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#if 0
+#if !defined(MIN)
+#define MIN(a,b) ((a)<(b)?(a):(b))
+#endif
+
+#if !defined(MAX)
+#define MAX(a,b) ((a)>(b)?(a):(b))
+#endif
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 #ifdef DEBUG
 
@@ -131,15 +141,6 @@ do {									\
 #define FREE(p)      (free((MALLOC_RETURNS)(p)))
 #define REALLOC(p,n) ((p)? (void*)realloc((MALLOC_RETURNS)(p), (n)): 	\
 			   (void*)malloc(n))
-
-
-#ifndef MAX
-# define MAX(A,B) ((A) > (B) ? (A) : (B))
-#endif
-
-#ifndef MIN
-# define MIN(A,B) ((A) < (B) ? (A) : (B))
-#endif
 
 #ifdef DXD_WIN
 

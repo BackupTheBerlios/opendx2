@@ -11,7 +11,7 @@
 
 
 #include <stdio.h>
-#ifdef sgi
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 #include <math.h>
@@ -45,6 +45,13 @@
 #include "cubic_spline.h"
 #endif
 
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
 #define WIDTH 80
 #define HEIGHT 300
 
@@ -74,12 +81,6 @@ static double DefaultMinDbl = (double)DEF_MIN;
 static double DefaultMaxDbl = (double)DEF_MAX;
 
 
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
 /*  Class and internal functions  */
 
 static void    ClassInitialize();
