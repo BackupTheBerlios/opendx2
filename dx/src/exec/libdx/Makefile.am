@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include  -D@ARCH@
+#INCLUDES = -I../../../include  -D@ARCH@
+INCLUDES = -I${top_srcdir}/include  -D@ARCH@
 
 dxlibdir = $(prefix)/dx/lib_@ARCH@
 
@@ -130,11 +131,11 @@ BUILT_SOURCES =  $(built_sources) $(built_headers)
 $(libDXlite_a_SOURCES) $(libLIBDX_a_SOURCES): $(built_headers)
 
 
-zclipQ.o: zclipQ.c
-	$(COMPILE) -c -O zclipQ.c
+zclipQ.o: ${srcdir}/zclipQ.c
+	$(COMPILE) -c -O ${srcdir}/zclipQ.c
 
-zclipT.o: zclipT.c
-	$(COMPILE) -c -O zclipT.c
+zclipT.o: ${srcdir}/zclipT.c
+	$(COMPILE) -c -O ${srcdir}/zclipT.c
 
 all: .cvsignore
 

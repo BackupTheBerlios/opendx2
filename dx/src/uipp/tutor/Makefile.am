@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include -I../base -D@ARCH@
+INCLUDES = -I${top_srcdir}/include -I${srcdir}/../base -D@ARCH@
 
 dxbindir = $(prefix)/dx/bin_@ARCH@
 

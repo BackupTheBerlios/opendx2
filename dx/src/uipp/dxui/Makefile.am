@@ -1,6 +1,6 @@
 
 
-INCLUDES = -I../base -I../../../include -I../dxuilib -D@ARCH@
+INCLUDES = -I${srcdir}/../base -I${top_srcdir}/include -I${srcdir}/../dxuilib -D@ARCH@
 
 dxbindir = $(prefix)/dx/bin_@ARCH@
 dxbin_PROGRAMS = dxui

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../include
+INCLUDES = -I${top_srcdir}/include
 
 dxbindir = $(prefix)/bin
 noinst_PROGRAMS = dxlocal

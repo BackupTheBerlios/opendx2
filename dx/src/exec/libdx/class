@@ -40,9 +40,10 @@ out() {
 
 include() {
     incl=`sed -n -e "/^INCLUDE[ \t]*\(.*\)/s//\1/p" <$1`
+    incl=`echo $incl`
     if [ -n "$incl" ]; then
-        (include $incl)
-	out $incl
+        (include ${srcdir}/$incl)
+	out ${srcdir}/$incl
     fi
 }
 
@@ -66,7 +67,7 @@ include() {
 #
 
 if [ $flag = "-c" ]; then
-    (echo "#do_h"; include $file; echo "#do_c"; out $file) | awk -f class.awk
+    (echo "#do_h"; include $file; echo "#do_c"; out $file) | awk -f ${srcdir}/class.awk
 elif [ $flag = "-h" ]; then
-    (echo "#do_h"; include $file; out $file) | awk -f class.awk
+    (echo "#do_h"; include $file; out $file) | awk -f ${srcdir}/class.awk
 fi

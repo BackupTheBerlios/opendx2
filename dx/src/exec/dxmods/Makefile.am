@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include -I../dpexec -I/usr/include -I/usr/local/include -D@ARCH@
+INCLUDES = -I${top_srcdir}/include -I${srcdir}/../dpexec -I/usr/include -I/usr/local/include -D@ARCH@
 
 dxmdfdir = $(prefix)/dx/lib
 noinst_LIBRARIES = libDXMODS.a libusercm.a

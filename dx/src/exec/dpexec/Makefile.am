@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include -I../libdx -D@ARCH@
+INCLUDES = -I${top_srcdir}/include -I${srcdir}/../libdx -D@ARCH@
 
 noinst_LIBRARIES = libDPEXEC.a
 

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include  -D@ARCH@
+INCLUDES = -I${top_srcdir}/include  -D@ARCH@
 
 dxlibdir = $(prefix)/dx/lib_@ARCH@
 

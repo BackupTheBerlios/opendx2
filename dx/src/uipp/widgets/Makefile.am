@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../widgets -D@ARCH@
+INCLUDES = -I${top_srcdir}/include -I${srcdir}/../widgets -D@ARCH@
 
 noinst_LIBRARIES = libWIDGETS.a
 

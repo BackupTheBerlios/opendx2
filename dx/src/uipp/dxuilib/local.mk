@@ -4,26 +4,26 @@ EditorWindow.o: sequence.h
 ImageNodeUtils.o: imagemac.h dxmac.h vrmlmac.h gifmac.h
 
 
-sequence.h: sequence.net 
-	sh net2c sequence.net sequence.h
+sequence.h: ${srcdir}/sequence.net 
+	sh ${srcdir}/net2c ${srcdir}/sequence.net sequence.h
 
-imagemac.h: imagemac.net
-	sh net2c imagemac.net imagemac.h
+imagemac.h: ${srcdir}/imagemac.net
+	sh ${srcdir}/net2c ${srcdir}/imagemac.net imagemac.h
 
 gifmac.h:  
-	sh net2c ../java/server/macros/gifmac.net gifmac.h
+	sh ${srcdir}/net2c ${srcdir}/../java/server/macros/gifmac.net gifmac.h
 
 vrmlmac.h:
-	sh net2c ../java/server/macros/vrmlmac.net vrmlmac.h
+	sh ${srcdir}/net2c ${srcdir}/../java/server/macros/vrmlmac.net vrmlmac.h
 
 dxmac.h:
-	sh net2c ../java/server/macros/dxmac.net dxmac.h
+	sh ${srcdir}/net2c ${srcdir}/../java/server/macros/dxmac.net dxmac.h
 
-netlex.c: net.lex
-	$(LEX) net.lex
+netlex.c: ${srcdir}/net.lex
+	$(LEX) ${srcdir}/net.lex
 	sed "/#line/d" lex.yy.c > netlex.c
 
-netyacc.c: net.yacc netlex.c netyacc.awk
-	$(YACC) net.yacc
-	awk -f netyacc.awk y.tab.c > netyacc.c
+netyacc.c: ${srcdir}/net.yacc netlex.c ${srcdir}/netyacc.awk
+	$(YACC) ${srcdir}/net.yacc
+	awk -f ${srcdir}/netyacc.awk y.tab.c > netyacc.c
 	rm -f y.tab.c

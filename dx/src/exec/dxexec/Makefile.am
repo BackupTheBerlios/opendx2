@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../dpexec -D@ARCH@
+INCLUDES = -I${srcdir}/../dpexec -D@ARCH@
 
 EXPARG=@EXPARG@
 EXP=$BUILDBASE/lib/dxexec.exp
