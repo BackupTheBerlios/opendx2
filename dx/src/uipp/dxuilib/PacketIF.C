@@ -1511,19 +1511,8 @@ retry:
      */
     FD_ZERO(&fds);
     FD_SET(sock, &fds);
-#if defined(HAVE_SYS_UN_H) 
-    FD_SET(usock, &fds);
-    if (!isatty(0)) {
-        to.tv_sec = SOCK_ACCEPT_TIMEOUT;
-        to.tv_usec = 0;
-        sts = select(width, (SELECT_ARG_TYPE) &fds, NULL, NULL, &to);
-    }
-    else
-    {
-        sts = select(width, (SELECT_ARG_TYPE) &fds, NULL, NULL, NULL);
-    }
-#else
-#ifdef  DXD_HAS_WINSOCKETS
+
+#if defined(DXD_HAS_WINSOCKETS)
     if (!isatty(0))
     {
         to.tv_sec = SOCK_ACCEPT_TIMEOUT*1000;
@@ -1534,16 +1523,19 @@ retry:
     {
 	sts = select(sock, &fds, NULL, NULL, NULL);
     }
-	
 #else
+#if defined(HAVE_SYS_UN_H) 
+    FD_SET(usock, &fds);
+#endif
     if (!isatty(0)) {
-        sts = select(&sock, 1, 0, 0, SOCK_ACCEPT_TIMEOUT*1000);
+        to.tv_sec = SOCK_ACCEPT_TIMEOUT;
+        to.tv_usec = 0;
+        sts = select(width, (SELECT_ARG_TYPE) &fds, NULL, NULL, &to);
     }
     else
     {
-	sts = select(&sock, 1, 0, 0, -1);
+        sts = select(width, (SELECT_ARG_TYPE) &fds, NULL, NULL, NULL);
     }
-#endif
 #endif
     if (sts < 0) {
         perror("select");
