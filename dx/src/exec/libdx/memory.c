@@ -64,6 +64,10 @@
 #include <string.h>
 #endif
 
+#if linux
+#include <sys/sysinfo.h>
+#endif
+
 #if DXD_HAS_RLIMIT && ! DXD_IS_MP
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -1272,6 +1276,13 @@ int _dxf_initmemory()
 	/* use all of global memory */
 	physmem = SVS_sh_len / (1024*1024);
 	othermem = 0;
+#endif
+
+#if linux
+	struct sysinfo si;
+	int err = sysinfo(&si);
+	if(!err)
+		physmem = si.totalram/(1024*1024);
 #endif
 	
       nomem:
