@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include <X11/X.h>
 
 char *_dxfstring(char *s, int add);
 /**
@@ -92,7 +92,7 @@ Field _dxf_ZeroFBPixels(Field image, int left, int right,
 typedef struct translationS {
     void* 	  	dpy;		/* display handle, for delete */
     void*		visual;		/* visual handle */
-    void*		cmap;		/* color map handle */
+    Colormap		cmap;		/* color map handle */
     unsigned int	depth;	       	/* visual depth used to create 
 					   translation */
     unsigned char     	invertY;	/* invert image in Y ? */

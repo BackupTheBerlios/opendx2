@@ -114,7 +114,7 @@ XFREECOLOR(Display *d, Colormap map, long c)
 	return ERROR;
     }
 
-    XFreeColors(d, map, (unsigned long *)&c, 1, DisplayPlanes(d,0));
+    XFreeColors(d, map, (unsigned long *)&c, 1, 0);
     allocated[c] --;
 
     return OK;
@@ -123,7 +123,7 @@ XFREECOLOR(Display *d, Colormap map, long c)
 #else
 
 #define XALLOCCOLOR(d, m, c) XAllocColor(d, m, c)
-#define XFREECOLOR(d, m, c)  XFreeColors(d, m, &c, 1, DisplayPlanes(d,0))
+#define XFREECOLOR(d, m, c)  XFreeColors(d, m, &c, 1, 0)
 
 #endif
 
@@ -1752,7 +1752,7 @@ display_script(Object image, int width, int height,
     screen = DefaultScreen(dpy);
     vis = w->translation->visual;
     trans = w->translation;
-    xcmap = (Colormap)trans->cmap;
+    xcmap = trans->cmap;
 
     /* create the window if necessary */
     if (!w->gc) {
@@ -1765,11 +1765,11 @@ display_script(Object image, int width, int height,
 	if(! trans)
 	   DXErrorReturn(ERROR_INTERNAL, "#11610");
 	
-	XLookupColor(dpy, (Colormap)trans->cmap, "black", &cdef, &hdef);
+	XLookupColor(dpy, trans->cmap, "black", &cdef, &hdef);
 
 	xswa.background_pixel = hdef.pixel;
 	xswa.border_pixel     = hdef.pixel;
-	xswa.colormap         = (Colormap)trans->cmap;
+	xswa.colormap         = trans->cmap;
 
 	w->wid  = XCreateWindow(dpy, root, 0, 0, width, height,
 			border,
@@ -1851,7 +1851,7 @@ display_external(Object image, int width, int height,
     screen = DefaultScreen(dpy);
     vis = w->translation->visual;
     trans = w->translation;
-    xcmap = (Colormap)trans->cmap;
+    xcmap = trans->cmap;
 
     /* create the window if necessary */
     if (!w->gc) {
@@ -1866,11 +1866,11 @@ display_external(Object image, int width, int height,
 	
 	if (w->wid == -1)
 	{
-	    XLookupColor(dpy, (Colormap)trans->cmap, "black", &cdef, &hdef);
+	    XLookupColor(dpy, trans->cmap, "black", &cdef, &hdef);
 
 	    xswa.background_pixel = hdef.pixel;
 	    xswa.border_pixel     = hdef.pixel;
-	    xswa.colormap         = (Colormap)trans->cmap;
+	    xswa.colormap         = trans->cmap;
 
 	    w->wid  = XCreateWindow(dpy, root, 0, 0, width, height,
 			    border,
@@ -2004,7 +2004,7 @@ display_ui(Object image, int width, int height,
 
     vis = trans->visual;
 
-    xcmap = (Colormap)trans->cmap;
+    xcmap = trans->cmap;
     if (! xcmap)
     {
       DXSetError(ERROR_INTERNAL, "Translation had no colormap");
@@ -3909,7 +3909,7 @@ createTranslation(Private dpy_object, char *where,
 	if (! xcmap)
 	    goto error;
 
-	trans->cmap = (void *)xcmap;
+	trans->cmap = xcmap;
 
 	if (*directMap && xcmap != XDefaultColormap(dpy, dscrn)
 		&& ((visual->class == PseudoColor  || visual->class == GrayScale)
@@ -3950,10 +3950,10 @@ createTranslation(Private dpy_object, char *where,
 		    goto error;
 		}
 
-		if ((Colormap)trans->cmap != XDefaultColormap(dpy, dscrn))
-		  XFreeColormap(dpy, (Colormap)trans->cmap);
+		if (trans->cmap != XDefaultColormap(dpy, dscrn))
+		  XFreeColormap(dpy, trans->cmap);
 		
-		trans->cmap = (void *)xcmap;
+		trans->cmap = xcmap;
 		trans->ownsCmap = 1;
 	    }
 	}
@@ -4685,7 +4685,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
     xlatesize = rr * gg * bb;
     if (XAllocColorCells(dpy, cmap, 0, NULL, 0, pixels, xlatesize))
     {
-	XFreeColors(dpy, cmap, pixels, xlatesize, DisplayPlanes(dpy, 0));
+	XFreeColors(dpy, cmap, pixels, xlatesize, 0);
 
 	for (r=0; r<rr; r++)
 	    for (g=0; g<gg; g++)
@@ -4745,14 +4745,16 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
     }
 
     if (nn)
-	XFreeColors(dpy, cmap, pixels, nn, DisplayPlanes(dpy, 0));
+	XFreeColors(dpy, cmap, pixels, nn, 0);
 
     /*
      * create a flag array indicating the unallocated cells
      */
     memset(readOnly, 1, cmapsize*sizeof(unsigned char));
-    for (j = 0; j < nn; j++)
+
+    for (j = 0; j < nn; j++) {
 	readOnly[pixels[j]] = 0;
+    }
 
     /*
      * query the colors
@@ -4762,8 +4764,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
 	colors[j].pixel = j;
 	colors[j].flags = DoRed | DoGreen | DoBlue;
     }
-    XQueryColors(dpy, (Colormap)cmap, colors, cmapsize);
-
+    XQueryColors(dpy, cmap, colors, cmapsize);
     /*
      * Now determine which of the already-allocated cells are sharable.
      * We do this by trying to re-allocate them... if we get the same
@@ -4775,7 +4776,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
     {
 	if (readOnly[colors[i].pixel])
 	{
-	    XColor c;
+    	    XColor c;
 
 	    c.red   = colors[i].red;
 	    c.green = colors[i].green;
@@ -4791,7 +4792,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
 		else
 		    nShared ++;
 
-		XFreeColors(dpy, cmap, &c.pixel, 1, DisplayPlanes(dpy, 0));
+	     XFreeColors(dpy, cmap, &c.pixel, 0, 0);
 	    }
 	    else
 	    {
@@ -4914,7 +4915,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
  */
 #define REALLOCATE_COLOR(index, dst)				 \
 {				 				 \
-    XColor c, *src = colors + index;				 \
+    XColor c, *src = colors + (sizeof(XColor)*(index));		 \
 				 				 \
     c.red   = src->red;				 		 \
     c.green = src->green;				 	 \
@@ -4930,8 +4931,6 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
 				 				 \
     (dst) = src->pixel;				 		 \
 }
-
-	
 
     /*
      * allocate colors, worst match first
@@ -5217,7 +5216,7 @@ getGrayMappedTranslation(Display *dpy, translationT *d, int force)
      */
     if (XAllocColorCells(dpy, cmap, 0, NULL, 0, pixels, 256))
     {
-	XFreeColors(dpy, cmap, pixels, 256, DisplayPlanes(dpy,0));
+	XFreeColors(dpy, cmap, pixels, 256, 0);
 
 	for (i = 0; i < 256; i++)
 	{
@@ -5248,7 +5247,7 @@ getGrayMappedTranslation(Display *dpy, translationT *d, int force)
     }
 
     if (nAvailable)
-	XFreeColors(dpy, cmap, pixels, nAvailable, DisplayPlanes(dpy,0));
+	XFreeColors(dpy, cmap, pixels, nAvailable, 0);
 
     /*
      * create a flag array indicating the unallocated cells
@@ -5872,7 +5871,7 @@ getPrivateColormap(Display *dpy, translationT *trans, Colormap xcmap)
     DXMessage("nn: %d start: %d, mymapsize: %d", start, nn, mymapsize);
 #endif
 
-    XQueryColors(dpy, (Colormap)trans->cmap, colors, cmapsize);
+    XQueryColors(dpy, trans->cmap, colors, cmapsize);
 
     for (i = 0; i < start; i++)
     {
@@ -5913,7 +5912,7 @@ getPrivateColormap(Display *dpy, translationT *trans, Colormap xcmap)
 
     XStoreColors(dpy, xcmap, ncolors, nn);
 
-    XFreeColors(dpy, xcmap, pixels, start, DisplayPlanes(dpy,0));
+    XFreeColors(dpy, xcmap, pixels, start, 0);
 
     for (i = 0; i < start; i++)
     {
