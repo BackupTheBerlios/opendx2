@@ -264,6 +264,7 @@ _pushInput (char *name)
 
 	tmp1 = (char *) getenv ("DXINCLUDE");
         tmp2 = (char *) getenv ("DXMACROS");
+	buf[0]='\0';
 	if (tmp1 == NULL && tmp2 == NULL) 
 	    break;
 
