@@ -4,7 +4,7 @@ javasampdir = $(prefix)/dx/java/htmlpages
 javasamp_DATA = $(WEB_FILES)
 EXTRA_DIST = $(WEB_FILES)
  
-SUBDIRS = userdata usermacros nets samples
+SUBDIRS = userdata usermacros nets @MAKE_JAVADX_SAMPLES@
 
  
 WEB_FILES = \

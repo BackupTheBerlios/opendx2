@@ -2,18 +2,62 @@
 
 AC_SUBST(SHELL)
 
-AC_SUBST(JDKBIN)
 AC_SUBST(DXINST)
-AC_SUBST(JBASE)
 AC_SUBST(WRL_CLASSPATH)
-AC_SUBST(MAKE_WRL)
+AC_SUBST(JAVAC)
+AC_SUBST(JAR)
+AC_SUBST(DX_JAR)
+AC_SUBST(MAKE_JAVADX_SAMPLES)
 
 SHELL=/bin/sh
 
 dnl Process this file with autoconf to produce a configure script.
+
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(dxsamples, 4.0.7)
 
-DX_FIND_DX()
+AC_ARG_WITH(javadx,
+              [  --with-javadx           enable JAVADX (default is yes)],
+              [with_javadx=$withval],
+              [with_javadx='yes'])
 
-AC_OUTPUT( Makefile callmodule/Makefile data/Makefile dxlink/Makefile java/samples/Makefile java/Makefile java/userdata/Makefile  java/usermacros/Makefile  java/nets/Makefile  java/makes/Makefile  java/samples/Makefile  macros/Makefile outboard/Makefile program_guide/Makefile programs/2D_DATA/Makefile programs/3D_DATA/Makefile programs/ANNOTATION/Makefile programs/DATA_DRIVEN_INTERACTORS/Makefile programs/DEBUGGING/Makefile programs/IMPORTING/Makefile programs/INTERFACE_CONTROL/Makefile programs/LOOPING/Makefile programs/CATEGORICAL/Makefile programs/COMPUTE/Makefile programs/IMAGE_PROCESSING/Makefile programs/SEQUENCER/Makefile programs/COLORMAP_EDITOR/Makefile programs/PROBES/Makefile programs/RENDERING/Makefile programs/DISTRIBUTED_PROCESSING/Makefile programs/SIMPLE/Makefile programs/PLOTTING/Makefile programs/SCATTERED/Makefile programs/SUPERVISE/Makefile programs/MISC/Makefile programs/Makefile scripts/Makefile supervise/simpledemo/interactors/Makefile supervise/simpledemo/Makefile supervise/mediumdemo/interactors/Makefile supervise/mediumdemo/Makefile supervise/imagedemo/Makefile supervise/interactors/Makefile supervise/complexdemo/interactors/Makefile supervise/complexdemo/nets/Makefile supervise/complexdemo/data/Makefile supervise/complexdemo/Makefile supervise/Makefile tutorial/Makefile user/Makefile util/dxf/Makefile util/plot3d/Makefile util/mpeg/Makefile util/fluent/Makefile util/Makefile )
+DX_INSTALL_PATH
+
+MAKE_JAVADX_SAMPLES=""
+if test "with_javadx" != 'no' ; then
+  failed=0;
+  passed=0;
+  DX_PROG_JAVAC(passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  DX_PROG_JAR(passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+
+  if test $failed -eq 0 ; then
+     DX_JAVADX_SETUP(passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+     if test $failed -eq 0 ; then
+       MAKE_JAVADX_SAMPLES=samples
+     fi
+  fi
+fi
+
+AC_OUTPUT( Makefile callmodule/Makefile data/Makefile dxlink/Makefile \
+	java/samples/Makefile java/Makefile java/userdata/Makefile  \
+	java/usermacros/Makefile  java/nets/Makefile  java/makes/Makefile  \
+	java/samples/Makefile  macros/Makefile outboard/Makefile \
+	program_guide/Makefile programs/2D_DATA/Makefile programs/3D_DATA/Makefile \
+	programs/ANNOTATION/Makefile programs/DATA_DRIVEN_INTERACTORS/Makefile \
+	programs/DEBUGGING/Makefile programs/IMPORTING/Makefile \
+	programs/INTERFACE_CONTROL/Makefile programs/LOOPING/Makefile \
+	programs/CATEGORICAL/Makefile programs/COMPUTE/Makefile \
+	programs/IMAGE_PROCESSING/Makefile programs/SEQUENCER/Makefile 
+	programs/COLORMAP_EDITOR/Makefile programs/PROBES/Makefile \
+	programs/RENDERING/Makefile programs/DISTRIBUTED_PROCESSING/Makefile 
+	programs/SIMPLE/Makefile programs/PLOTTING/Makefile \
+	programs/SCATTERED/Makefile programs/SUPERVISE/Makefile \
+	programs/MISC/Makefile programs/Makefile scripts/Makefile \
+	supervise/simpledemo/interactors/Makefile supervise/simpledemo/Makefile \
+	supervise/mediumdemo/interactors/Makefile supervise/mediumdemo/Makefile \
+	supervise/imagedemo/Makefile supervise/interactors/Makefile \
+	supervise/complexdemo/interactors/Makefile \
+	supervise/complexdemo/nets/Makefile supervise/complexdemo/data/Makefile \
+	supervise/complexdemo/Makefile supervise/Makefile tutorial/Makefile \
+	user/Makefile util/dxf/Makefile util/plot3d/Makefile util/mpeg/Makefile \
+	util/fluent/Makefile util/Makefile )
