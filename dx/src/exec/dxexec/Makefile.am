@@ -2,12 +2,19 @@
 
 INCLUDES = -I../dpexec -D@ARCH@
 
+EXPARG=@EXPARG@
+EXP=$BUILDBASE/lib/dxexec.exp
+
 dxbindir = $(prefix)/dx/bin_@ARCH@
 dxbin_PROGRAMS = dxexec
 
 SUFFIXES = .m .y .c .s .h .o .a 
 
 dxexec_SOURCES = main.c
+
+EXP = @BUILDBASE@/lib/dxexec.exp
+
+dxexec_LDFLAGS = @DXEXEC_EXP@
 
 dxexec_LDADD = \
         ../dpexec/libDPEXEC.a \
