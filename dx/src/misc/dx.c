@@ -9,9 +9,9 @@
 
 #include "dx.h"
 
-#if !defined(intelnt) && !defined(cygwin) && !defined(WIN32)
+#if !defined(intelnt) && !defined(WIN32)
 #include <stdio.h>
-int main(){fprintf(stderr, "misc/dx is only needed on Windows based systems.\n"); return 1;}
+int main(){fprintf(stderr, "misc/dx is only needed on Windows (non-cygwin) based systems.\n"); return 1;}
 #else /* Windows system compile application */
 
 #include "utils.h"
@@ -78,7 +78,7 @@ smallstr 	exread =	"";
 smallstr 	uitime =	"";
 smallstr 	extime =	"";
 smallstr 	uihilite =	"";
-smallstr 	exhilite =	"";
+smallstr 	exhilite =	"-B"; /* Default is on */
 namestr 	FileName =	"";
 namestr 	dxroot =	"";
 namestr 	dxexroot =	"";
@@ -704,7 +704,6 @@ int buildcmd()
 			sprintf(dxexecdef, "%s\\bin_%s\\dxexec%s", dxexroot, exarch, EXE_EXT);
 		setifnot(dxexec, dxexecdef);
 		setifnot(exmode, "-r");
-		setifnot(exhilite, "-B");
 
 		setifnot(dxuiroot, dxroot);
 		if (notset(dxui))
@@ -1249,6 +1248,7 @@ int parseparms()
 		strcpy(uitime, "-timing off");
 	    neitheroff(timing);
 	next
+
 
 	is(highlight)
 	    lastoff(highlight)
