@@ -33,10 +33,31 @@ fi
 
 if [ -z "$DXMACROS" ]; then
   DXMACROS=$DXROOT/samples/macros
-  if [ -d "$DXMACROS" ]; then
-    export DXMACROS
-  fi
 fi
+if [ -z "$JXMACROS" ]; then
+  JXMACROS=$DXROOT/java/server/dxmacros
+fi
+if [ -z "$JXUSERMACROS" ]; then
+  JXUSERMACROS=$DXROOT/java/server/usermacros
+fi
+if [ ! -d "$DXMACROS" ]; then
+	DXMACROS=
+fi
+if  [ -d "$JXMACROS" ]; then
+	if [ -z "$DXMACROS" ]; then
+		DXMACROS=$JXMACROS
+	else
+		DXMACROS=$DXMACROS:$JXMACROS
+	fi
+fi
+if  [ -d "$JXUSERMACROS" ]; then
+	if [ -z "$DXMACROS" ]; then
+		DXMACROS=$JXUSERMACROS
+	else
+		DXMACROS=$DXMACROS:$JXUSERMACROS
+	fi
+fi
+export DXMACROS
 
 if [ -f $DXROOT/bin/dxworker ]; then
   exec $DXROOT/bin/dxworker $ARGS 

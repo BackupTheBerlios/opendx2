@@ -14,16 +14,12 @@
 ## to the directory arg following the -d.  The
 ## result is a place which is easy to jar up.
 ##
-javainfodir = $(prefix)/dx/java
-javainfo_DATA = javainfo
 javadxdir = $(prefix)/dx/java/htmlpages
 javadx_DATA = dx.jar 
 javasrvdir = $(prefix)/dx/java/server/class
 javasrv_DATA = server.jar 
 EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java exports.awk
 javalibdir = $(prefix)/dx/java/server/lib_@ARCH@
-CLASSPATH := $(CLASSPATH):.:@JDK_CLASSPATH@:@WRL_CLASSPATH@
-export CLASSPATH
 
 javalib_PROGRAMS = @ANYDX@
 EXTRA_PROGRAMS = libAnyDX.so AnyDX.dll
@@ -31,24 +27,24 @@ libAnyDX_so_SOURCES =
 AnyDX_dll_SOURCES =
 SUBDIRS = server dx
 
-
 ##
 ## Using -d simplifies things because all .class files
 ## are automatically copied into a directory structure
 ## which allows for quick jarring
 ##
-javainfo:
-	echo JINC @JINC@ >javainfo
-	echo WRL_CLASSPATH @WRL_CLASSPATH@ >>javainfo
-	echo JDK_CLASSPATH @JDK_CLASSPATH@ >>javainfo
-	
-dx.jar: javainfo
+
+# got to merge these in configure where we can use logic to trim the number of colons appropriately 
+CLASSPATH = @JDK_CLASSPATH@:@WRL_CLASSPATH@:./
+
+export CLASSPATH
+
+dx.jar: makeall.java $(DX_SRCS)
 	mkdir -p classes
 	-($(JAVAC) -d classes makewrl.java )
 	($(JAVAC) -d classes makeall.java $(DX_SRCS) )
 	(cd classes; $(JAR) cf ../dx.jar $(DX_OBJS) dx)
 
-server.jar:
+server.jar: dx.jar DXServer.java
 	mkdir -p dxsc
 	($(JAVAC) -d dxsc DXServer.java)
 	(cd dxsc; $(JAR) cf ../server.jar DXServer.class server dx ) 
@@ -59,7 +55,7 @@ libAnyDX.so: DXLink.o
 	( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object ) 
 
 usual_shared_object:
-	$(CC) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&" -e "s&../dxl/x11.o&&"`  DXLink.o
+	$(SHARED_LINK) $(DXABI) $(DX_RTL_LDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&" -e "s&../dxl/x11.o&&"`  DXLink.o
 
 aix_shared_object:
 	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
@@ -78,7 +74,7 @@ AnyDX.dll: DXLink.o
 
 DXLink.o:  server.jar
 	(cd dxsc; $(JAVAH) -d ../server server.DXServer server.DXServerThread)
-	(cd server; $(CC) -o ../DXLink.o -I../../../../include -c -D@ARCH@ $(CFLAGS) @JINC@ DXLink.c)
+	(cd server; $(CC) $(DXABI) -o ../DXLink.o -I../../../../include -c -D@ARCH@ $(JNI_CFLAGS) @JINC@ DXLink.c)
 
 ##SAMPLE_OBJS = AS400VSMonth.class AutoInsurance.class CCNet2.class \
 ##	GroceryList.class HomeOwn.class MRI_2.class MappedIso.class \

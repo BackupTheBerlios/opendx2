@@ -136,6 +136,7 @@ switch ( $thissys )
 
 endsw
     
+setenv DXARCH $exarch
 
 # default to running locally, from /usr/lpp/dx  
 set exhost=$thishost
@@ -1150,7 +1151,7 @@ if ($?dx8bitcmap) then
 endif
 
 #
-# guarenteed to be have values
+# guaranteed to be have values
 #
 setenv DXROOT $dxroot
 if ($dxroot != $dxexroot) setenv DXEXECROOT $dxexroot

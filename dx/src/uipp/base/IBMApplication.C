@@ -383,7 +383,7 @@ boolean IBMApplication::initialize(unsigned int* argcp,
 	    // This will show up as a memory leak, not worth worrying about
 	    IBMApplication::resource.UIRoot = DuplicateString(s); 
 	else
-	    IBMApplication::resource.UIRoot =  "/usr/lpp/dx";
+	    IBMApplication::resource.UIRoot =  "/usr/local/dx";
     }
 
     this->initIcon();

@@ -77,7 +77,7 @@ _dxf_initmessages()
     else {
 	char *root = getenv("DXEXECROOT");
 	if (!root) root = getenv("DXROOT");
-	if (!root) root = "/usr/lpp/dx";
+	if (!root) root = "/usr/local/dx";
 	sprintf(name, "%s/lib/messages", root);
     }
     fd = open(name, O_RDONLY);

@@ -167,7 +167,7 @@ Error DXColorNameToRGB(char *colorstr, RGBColor *colorvec)
 	    if (in) goto got_colorfile;
 	}
 	/* if we still haven't succeeded, try the system version */
-	in = fopen("/usr/lpp/dx/lib/colors.txt","r");
+	in = fopen("/usr/local/dx/lib/colors.txt","r");
 	if (in) goto got_colorfile;
 	
 	/* all has failed; use our old table */

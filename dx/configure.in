@@ -6,6 +6,8 @@ AC_SUBST(YACC)
 AC_SUBST(SHELL)
 AC_SUBST(ARCH)
 AC_SUBST(EXEEXT)
+AC_SUBST(OBJEXT)
+AC_SUBST(DOT_EXE_EXT)
 AC_SUBST(INSTALL_DX_EXE)
 AC_SUBST(INSTALL_DX_CSH)
 AC_SUBST(INSTALL_SCRIPT)
@@ -16,6 +18,7 @@ AC_SUBST(JAVAC)
 AC_SUBST(JAR)
 AC_SUBST(JAVAH)
 AC_SUBST(JINC)
+AC_SUBST(JNI_CFLAGS)
 AC_SUBST(JDK_CLASSPATH)
 AC_SUBST(WRL_CLASSPATH)
 AC_SUBST(BUILDBASE)
@@ -23,6 +26,14 @@ AC_SUBST(DXEXEC_EXP)
 AC_SUBST(DXEXEC_IMP)
 AC_SUBST(VERSION_STRING)
 AC_SUBST(ANYDX)
+AC_SUBST(DXABI)
+AC_SUBST(DX_RTL_CFLAGS)
+AC_SUBST(DX_RTL_LDFLAGS)
+AC_SUBST(DX_RTL_SYSLIBS)
+AC_SUBST(DX_OUTBOARD_LIBS)
+AC_SUBST(DX_X_LINK_LIBS)
+AC_SUBST(DX_GL_LINK_LIBS)
+AC_SUBST(SHARED_LINK)
 
 SHELL=sh
 
@@ -181,6 +192,12 @@ dnl Start DX configuration
 DX_ARCHITECTURE
 DX_ARCH_SPECIFIC
 
+if test "$DXARCH" = "sgi" ; then
+    if test "$DXABI" = "" ; then
+	DXABI=" -n32 -L/usr/lib32"
+    fi
+fi
+
 AC_CHECK_PROG(HAVE_CSH, csh, 1, 0)
 	
 if test "$HAVE_CSH" = "1" ; then
@@ -200,7 +217,13 @@ DX_PROG_CC
 DX_PROG_CPP
 AC_CYGWIN
 DX_EXEEXT
+if test -z "$EXEEXT" ; then
+	DOT_EXE_EXT="";
+	else
+	DOT_EXE_EXT=".$EXEEXT";
+fi
 DX_OBJEXT
+
 
 # Code to enable JAVADX to be built
 if test "$with_javadx" != 'no'; then
@@ -286,9 +309,8 @@ fi
 AC_LANG_C
 
 DX_CYGWIN_MOUNTS
-
+DX_SET_RTL_FLAGS
 AC_CHECK_LIB(gen, regex)
-
 
 dnl Check of X related files and set up include directories
 
@@ -316,6 +338,8 @@ if test "$xm_libraries" != "" ; then
 fi
 AC_CHECK_LIB(Xm, XmGetDestination)
 
+dnl want to put the Xmu tests in before here!!
+DX_X_LINK_LIBS="$LIBS"
 
 dnl The following is set up to check for the old LessTif libraries
 dnl
@@ -346,7 +370,7 @@ dnl A couple libs for cygwin
 AC_CHECK_LIB(ICE, IceConnectionNumber)
 AC_CHECK_LIB(SM, SmcSetProperties)
 AC_CHECK_LIB(REXP, regcomp)
-DX_CHECK_TGMATH
+dnl is this obsolete? DX_CHECK_TGMATH
 AC_CHECK_LIB(m, sqrt)
 
 dnl If buildlibdx off then pass this down to the Makefile
@@ -992,6 +1016,9 @@ DX_CHECK_SELECT_ARG
 DX_CHECK_SOCK_LENGTH_TYPE
 
 DX_NEEDS_STDCXX
+
+dnl since we statically link the hw-dependent renderer dxexec links need GL
+DX_GL_LINK_LIBS=" -lGL "
 
 AC_OUTPUT(
 	Makefile \

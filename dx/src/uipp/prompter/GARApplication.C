@@ -281,7 +281,7 @@ boolean GARApplication::initialize(unsigned int* argcp,
 	printf ("\t-port <port>  :   connect to a running exec on <port>\n");
 	printf ("\t-exec <cmd>   :   use <cmd> to start data explorer (default: dx -image)\n");
 	printf ("\t-data <file>  :   use <file> as a data file\n");
-	printf ("\t-netdir <dir> :   search <dir> for ezstart .net files (default: $DXROOT or /usr/lpp/dx\n");
+	printf ("\t-netdir <dir> :   search <dir> for ezstart .net files (default: $DXROOT or /usr/local/dx\n");
 	exit(0);
     }
     
@@ -663,7 +663,7 @@ GARApplication::getResourcesNetDir()
 	return this->getUIRoot();
     if (getenv("DXROOT"))
 	return getenv("DXROOT");
-    return "/usr/lpp/dx";
+    return "/usr/local/dx";
 }
 
 

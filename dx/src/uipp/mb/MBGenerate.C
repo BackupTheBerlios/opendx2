@@ -123,13 +123,10 @@ do_makefile(char *basename, Module *mod)
 {
     FILE      *fd = NULL;
     char      *buf = (char *)malloc(strlen(basename) + 7);
+    char      *makefilename;
     char      *c;
     const char *uiroot = NULL;
-#if defined(DXD_WIN)  || defined(OS2)
-    #define OBJ_EXT "obj"
-#else
-    #define OBJ_EXT "o"
-#endif
+    #define OBJ_EXT "$(OBJEXT)"
 
     if (! buf)
     {
@@ -153,6 +150,19 @@ do_makefile(char *basename, Module *mod)
 	if (*c == '/')
 	    basename = c+1;
 
+    uiroot = theMBApplication->getUIRoot();
+    // This should not be necessary, but we'll be very
+    // careful just before the 3.1 release
+    if (!uiroot)
+        uiroot = "/usr/local/dx";
+
+    fprintf(fd, "SHELL = /bin/sh\n");
+    fprintf(fd, "BASE = %s\n\n",uiroot);
+
+    fprintf(fd, "# need arch set, e.g. by\n");
+    fprintf(fd, "# setenv DXARCH `dx -whicharch`\n");
+    fprintf(fd, "include $(BASE)/lib_$(DXARCH)/arch.mak\n\n");
+
     if(mod->outboard_executable != NULL)
 	fprintf(fd, "FILES_%s = %s.%s\n\n", basename, basename, OBJ_EXT);
     else if(mod->loadable_executable != NULL)
@@ -162,181 +172,30 @@ do_makefile(char *basename, Module *mod)
 	fprintf(fd, "FILES_%s = user%s.%s %s.%s\n\n", 
 	    basename, basename, OBJ_EXT, basename, OBJ_EXT);
 
-
-    uiroot = theMBApplication->getUIRoot();
-    // This should not be necessary, but we'll be very
-    // carefull just before the 3.1 release
-    if (!uiroot)
-        uiroot = "/usr/lpp/dx";
-
-    fprintf(fd, "BASE = %s\n\n",uiroot);
-
-    if (mod->loadable_executable == NULL) {
-#ifdef aviion
     fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "CFLAGS = -Daviion -O -I$(BASE)/include -Xa\n\n");
-    fprintf(fd, "LDFLAGS = -L$(BASE)/lib_aviion\n\n");
-    fprintf(fd, "LIBS = -lDX -ly -ll -lX11 -lm\n\n");
+    fprintf(fd, "#windows BIN = $(BASE)\\bin\n\n");
+    fprintf(fd, "CFLAGS = -I./ -I$(BASE)/include $(DX_CFLAGS)\n\n");
+    fprintf(fd, "LDFLAGS = -L$(BASE)/lib_$(DXARCH)\n\n");
+    fprintf(fd, "LIBS = -lDX $(DX_GL_LINK_LIBS) $(DXEXECLINKLIBS)\n\n");
     fprintf(fd, "OLIBS = -lDXlite -lm\n\n");
-#endif
-
-#ifdef hp700
     fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "LDFLAGS = -L$(BASE)/lib_hp700 -L/usr/lib/X11R4  -Wl,-E\n\n");
-    fprintf(fd, "CFLAGS= -Dhp700 -O -I$(BASE)/include -Aa -D_HPUX_SOURCE\n\n");
-    fprintf(fd, "LIBS = -lDX -ly -ll -lm -lX11 -ldld\n\n");
-    fprintf(fd, "OLIBS = -lDXlite -lm\n\n");
-#endif
 
-#ifdef ibm6000
-    fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "CFLAGS = -Dibm6000 -O -I$(BASE)/include\n\n");
-    fprintf(fd, "LDFLAGS = \\\n");
-    fprintf(fd, "\t-bE:$(BASE)/lib_ibm6000/dxexec.exp \\\n");
-    fprintf(fd, "\t-L$(BASE)/lib_ibm6000\n\n");
-    fprintf(fd, "LIBS = -lDX -ly -ll -lX11 -lm\n\n");
-    fprintf(fd, "OLIBS = -lDXlite -lm\n\n");
-#endif
-
-#ifdef ibmpvs
-    fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "CFLAGS = -Dibmpvs -O -I$(BASE)/include\n\n");
-    fprintf(fd, "LDFLAGS=-L$(BASE)/lib_ibmpvs\n\n");
-    fprintf(fd, "LIBS = -lDX -ly -ll -lX11 -liop -lm\n\n");
-    fprintf(fd, "OLIBS = -lDXlite -lm\n\n");
-#endif
-
-#ifdef sgi
-    fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "CFLAGS = -Dsgi -O -I$(BASE)/include\n");
-    fprintf(fd, "LDFLAGS = -L$(BASE)/lib_sgi\n\n");
-    fprintf(fd, "LIBS = -lDX -lsun -lgl_s -ly -ll -lX11 -lm -lmpc\n\n");
-    fprintf(fd, "OLIBS = -lDXlite -lm\n\n");
-#endif
-
-#ifdef sun4
-    fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "CC = acc\n\n");
-    fprintf(fd, "CFLAGS = -Dsun4 -O -I$(BASE)/include\n\n");
-    fprintf(fd, "LDFLAGS = -L$(BASE)/lib_sun4\n\n");
-    fprintf(fd, "LIBS = -lDX -ly -ll -lX11 -lm -lansi\n\n");
-    fprintf(fd, "OLIBS = -lDXlite -lm\n\n");
-#endif
-
-#ifdef solaris 
-    fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "CC = acc\n\n");
-    fprintf(fd, "CFLAGS = -O -Dsolaris -I$(BASE)/include\n");
-    fprintf(fd, "LDFLAGS = -L$(BASE)/lib_solaris -L/usr/openwin/lib\n\n");
-    fprintf(fd, "LIBS = -lDX -lm -ly -ll -lX11 -ldl -lnsl -lsocket -lthread\n\n");
-    fprintf(fd, "OLIBS = -lDXlite -lm -ldl -lnsl -lsocket -lthread\n\n");
-#endif
-
-#ifdef alphax
-    fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "CFLAGS = -Dalphax -O -I$(BASE)/include\n");
-    fprintf(fd, "LDFLAGS = -L$(BASE)/lib_alphax\n\n");
-    fprintf(fd, "LIBS = -lDX -lX11 -lGL -lm -ly -ll\n\n");
-    fprintf(fd, "OLIBS = -lDXlite -lm\n\n");
-#endif
-
-#ifdef DXD_WIN
-    fprintf(fd, "BIN = $(BASE)\\bin\n\n");
-    fprintf(fd, "CFLAGS = -DDXD_WIN -DWIN32 -D_CONSOLE -DWIN32 -D_X86_  -DNOMENUS -nologo -w -Od  -MD -G5 -I$(BASE)/include\n\n");
-    fprintf(fd, "LDFLAGS = -SUBSYSTEM:console -INCREMENTAL:no  -MACHINE:I386 -NOLOGO \n\n");
-    fprintf(fd, "LIBS = $(BASE)/lib_intelnt/libDX.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib uuid.lib mrm.lib xm.lib xaw.lib xmu.lib xt.lib xlibgui.lib xlib.lib wsock32.lib \n\n");
-    fprintf(fd, "OLIBS = $(BASE)\\lib_intelnt\\DXlite.LIB \n\n");
-#endif
-
-  }
-  else {
-/* runtime loadable */
-#ifdef aviion
-   ErrorMessage("runtime-loadable not available for aviion");
-   goto error;
-#endif
-
-#ifdef DXD_WIN
-    /*  On NT we will generate  a DLL      */
-
-    fprintf(fd, "INC = $(BASE)\\include\n");
-    fprintf(fd, "BIN = $(BASE)\\bin\n\n");
-    fprintf(fd, "CFLAGS = -DDXD_WIN -DWIN32 -DWIN32 -D_X86_  -DNOMENUS -nologo -w -Od  -LD -G5 -I$(BASE)/include\n\n");
-    fprintf(fd, "LDFLAGS = -DLL -SUBSYSTEM:console -INCREMENTAL:no  -MACHINE:I386 -NOLOGO \n\n");
-    fprintf(fd, "SYSLIBS = kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib uuid.lib wsock32.lib \n\n");
-    fprintf(fd, "OLIBS = $(BASE)\\lib_intelnt\\DXExport.LIB \n\n");
-#endif
-
-#ifdef hp700
-    fprintf(fd, "INC = $(BASE)/include\n");
-    fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "CFLAGS = -I$(INC) -Dhp700 -Aa +z\n");
-    fprintf(fd, "LDFLAGS = -q -b -E -e DXEntry\n");
-    fprintf(fd, "SYSLIBS = -ldld -lm -lc\n\n");
-#endif
-
-#ifdef ibm6000
-    fprintf(fd, "INC = $(BASE)/include\n");
-    fprintf(fd, "EXP = $(BASE)/lib_ibm6000/dxexec.exp\n");
-    fprintf(fd, "BIN = $(BASE)/bin\n");
-    fprintf(fd, "CFLAGS = -O -Dibm6000 -I$(BASE)/include\n\n");
-#endif
-
-#ifdef ibmpvs
-   ErrorMessage("runtime-loadable not available for ibmpvs");
-   goto error;
-#endif
-
-#ifdef sgi
-    fprintf(fd, "INC = $(BASE)/include\n");
-    fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "CFLAGS = -I$(INC) -Dsgi\n");
-    fprintf(fd, "LDFLAGS = -Wl,-shared,-all,-e,DXEntry,-U,-exported_symbol,DXEntry\n");
-    fprintf(fd, "SYSLIBS = -lm -lc\n\n");
-
-#endif
-
-#ifdef sun4
-   ErrorMessage("runtime-loadable not available for sun4");
-   goto error;
-#endif
-
-#ifdef solaris 
-    fprintf(fd, "INC = $(BASE)/include\n");
-    fprintf(fd, "BIN = $(BASE)/bin\n");
-    fprintf(fd, "CFLAGS = -I$(INC) -Dsolaris -K pic -Xa\n");
-    fprintf(fd, "LDFLAGS = -G -e DXEntry\n\n");
-#endif
-
-#ifdef alphax
-    fprintf(fd, "INC = $(BASE)/include\n");
-    fprintf(fd, "BIN = $(BASE)/bin\n");
-    fprintf(fd, "CFLAGS = -I$(INC) -Dalphax\n");
-    fprintf(fd, "LDFLAGS = -shared -all -e DXEntry -expect_unresolved main -expect_unresolved DX*\n");
-    fprintf(fd, "SYSLIBS = -lm -lc\n\n");
-#endif
-  }
 
     fprintf(fd, "# create the necessary executable\n");
     if(mod->outboard_executable != NULL)
     {
-	fprintf(fd, "%s: $(FILES_%s) outboard.o\n",
+	fprintf(fd, "%s: $(FILES_%s) outboard.$(OBJEXT)\n",
 		mod->outboard_executable,
 		basename);
-#if  defined(DXD_WIN)
 	fprintf(fd, 
-		"\t$(CC) $(LDFLAGS) $(FILES_%s) outboard.obj  $(SYSLIBS) $(OLIBS) -o %s.exe\n\n",
-#else
-	fprintf(fd, 
-		"\t$(CC) $(LDFLAGS) $(FILES_%s) outboard.o $(OLIBS) -o %s\n\n",
-#endif
+		"\t$(CC) $(DXABI) $(LDFLAGS) $(FILES_%s) outboard.$(OBJEXT) $(OLIBS) -o %s$(DOT_EXE_EXT)\n\n",
 		basename,
 		mod->outboard_executable);
 
 	  fprintf(fd, "# how to make the outboard main routine\n");
-	  fprintf(fd, "outboard.o: $(BASE)/lib/outboard.c\n");
+	  fprintf(fd, "outboard.$(OBJEXT): $(BASE)/lib/outboard.c\n");
 	  fprintf(fd, "\t%s%s%s\n",
-	     "$(CC) $(CFLAGS) -DUSERMODULE=m_",
+	     "$(CC) $(DXABI) $(CFLAGS) -DUSERMODULE=m_",
 	    mod->name,
 	     " -c $(BASE)/lib/outboard.c");
 	  fprintf(fd, "\n\n");
@@ -345,33 +204,43 @@ do_makefile(char *basename, Module *mod)
     {   
        fprintf(fd, "%s: $(FILES_%s) \n",
                mod->loadable_executable, basename);
+
+       fprintf(fd, "\t$(CCLD) $(DXABI) $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(DX_RTL_LDFLAGS) $(SYSLIBS)\n\n",
+               mod->loadable_executable, basename, basename);
+#if 0
 #ifdef alphax
-       fprintf(fd, "\tld $(LDFLAGS) -o %s user%s.o %s.o $(SYSLIBS)\n\n",
+       fprintf(fd, "\tld $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(SYSLIBS)\n\n",
                mod->loadable_executable, basename, basename);
 #endif
 #ifdef hp700
-       fprintf(fd, "\tld $(LDFLAGS) -o %s user%s.o %s.o $(SYSLIBS)\n\n",
+       fprintf(fd, "\tld $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(SYSLIBS)\n\n",
                mod->loadable_executable, basename, basename);
 #endif
 #ifdef ibm6000 
-       fprintf(fd, "\tcc -o %s user%s.o %s.o -e DXEntry -bI:$(EXP)\n\n",
+       fprintf(fd, "\tcc -o %s user%s.$(OBJEXT) %s.$(OBJEXT) -e DXEntry -bI:$(EXP)\n\n",
                mod->loadable_executable, basename, basename);
 #endif
 #ifdef DXD_WIN 
-       fprintf(fd, "\t$(CC) $(CFLAGS) -o %s  user%s.obj %s.obj  $(SYSLIBS) $(OLIBS) \n\n",
+       fprintf(fd, "\t$(CC) $(CFLAGS) -o %s  user%s.$(OBJEXT) %s.$(OBJEXT)  $(SYSLIBS) $(OLIBS) \n\n",
                mod->loadable_executable, basename, basename);
 #endif
 #ifdef sgi 
-       fprintf(fd, "\tcc $(LDFLAGS) -o %s user%s.o %s.o $(SYSLIBS)\n\n",
+       fprintf(fd, "\tcc $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(SYSLIBS)\n\n",
                mod->loadable_executable, basename, basename);
 #endif
 #ifdef solaris 
-       fprintf(fd, "\tcc $(LDFLAGS) -o %s user%s.o %s.o\n\n",
+       fprintf(fd, "\tcc $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT)n\n",
                mod->loadable_executable, basename, basename);
 #endif
+#endif /* zero */
     }
     else
     {
+	fprintf(fd, "dxexec: $(FILES_%s) \n",
+		basename);
+	fprintf(fd, "\t$(CC) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec\n\n",
+		basename);
+#if 0
 #if defined(DXD_WIN)  || defined(OS2)
 	fprintf(fd, "dxexec.exe: $(FILES_%s) \n",
 		basename);
@@ -379,16 +248,20 @@ do_makefile(char *basename, Module *mod)
 	fprintf(fd, "dxexec: $(FILES_%s) \n",
 		basename);
 #endif
+#endif /* zero */
 
+#if 0
 #if   defined(DXD_WIN)
-	fprintf(fd, "\t$(CC) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec.exe\n\n",
+	fprintf(fd, "\t$(CC) (DXABI) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec.exe\n\n",
 		basename);
 #else
-	fprintf(fd, "\t$(CC) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec\n\n",
+	fprintf(fd, "\t$(CC) $(DXABI) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec\n\n",
 		basename);
 #endif
+#endif /* zero */
     }
 
+      fprintf(fd, ".c.o: ; cc -c $(DXABI) $(DX_RTL_CFLAGS) $(CFLAGS) $*.c \n\n");
 
 
     /* a target to run dx using the user module */
@@ -397,19 +270,19 @@ do_makefile(char *basename, Module *mod)
     /* outboard module */
     if(mod->outboard_executable != NULL) {
       fprintf(fd, "run: %s \n", mod->outboard_executable);
-      fprintf(fd, "\tdx -mdf %s.mdf &\n", basename);
+      fprintf(fd, "\tdx -edit -mdf %s.mdf &\n", basename);
       fprintf(fd, "\n");
     }
     else if(mod->loadable_executable != NULL) {
     /* runtime loadable module */
       fprintf(fd, "run: %s \n", mod->loadable_executable);
-      fprintf(fd, "\tdx -mdf %s.mdf &\n", basename);
+      fprintf(fd, "\tdx -edit -mdf %s.mdf &\n", basename);
       fprintf(fd, "\n");
     }
     else {
     /* inboard module */
       fprintf(fd, "run: dxexec \n");
-      fprintf(fd, "\tdx -exec ./dxexec -mdf %s.mdf &\n", basename);
+      fprintf(fd, "\tdx -edit -exec ./dxexec -mdf %s.mdf &\n", basename);
       fprintf(fd, "\n");
     }
 
@@ -429,6 +302,13 @@ do_makefile(char *basename, Module *mod)
        fprintf(fd, "\t$(BIN)/mdf2c %s.mdf > user%s.c\n", basename, basename);
 #endif
 
+    fprintf(fd, "# kluge for when DXARCH isn't set\n");
+    fprintf(fd, "$(BASE)/lib_/arch.mak:\n");
+    makefilename=strrchr(buf,'/');
+    if(!makefilename) makefilename = buf;
+	else makefilename++;
+    fprintf(fd, "\t(export DXARCH=`dx -whicharch` ; $(MAKE) -f %s )\n",makefilename);
+    fprintf(fd, "\techo YOU NEED TO SET DXARCH via dx -whicharch\n");
     fclose(fd);
     return 1;
 

@@ -4193,12 +4193,18 @@ void MBMainWindow::reallyBuild(void *data)
 
     if (flags & EXECUTABLE) 
     {
+#ifdef HAVE_SETENV
+       if(!getenv("DXARCH")) setenv("DXARCH", DXD_ARCHNAME,1);
+#endif
        sprintf(system_command,"make -f %s.make &", fname);
        InfoMessage("executing: %s", system_command);
        system(system_command);
     }
     else if (flags & RUN)
     {
+#ifdef HAVE_SETENV
+       if(!getenv("DXARCH")) setenv("DXARCH", DXD_ARCHNAME,1);
+#endif
        sprintf(system_command,"make -f %s.make run &", fname);
        InfoMessage("executing: %s", system_command);
        system(system_command);

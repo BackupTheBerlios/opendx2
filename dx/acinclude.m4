@@ -951,8 +951,9 @@ fi
 dnl
 dnl  DX_JAVA_ARCHITECTURE is similar to DX_ARCHITECTURE, but the result
 dnl  is used for part of the search path when looking for jni_md.h
-dnl  This is a problem, since the pathname for linux may not always
-dnl  be genunix. Could there be a better solution here?
+dnl  This is a problem, since the pathname for linux may not always be
+dnl  genunix. Workaround is to set JAVA_ARCH (to e.g. linux) before configure.
+dnl  Could there be a better solution here?
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_JAVA_ARCHITECTURE,
 [
@@ -967,7 +968,8 @@ AC_DEFUN(DX_JAVA_ARCHITECTURE,
 	    osf1)      JAVA_ARCH=alpha ;;
 	    hp-ux)     JAVA_ARCH=hp-ux ;;
 	    sunos)     JAVA_ARCH=solaris ;;
-	    linux)     JAVA_ARCH=genunix ;;
+	    linux)     JAVA_ARCH=genunix 
+		       JNI_CFLAGS=-DIBM_LINUX;;
 	    *)         JAVA_ARCH=$lc ;;
 	esac
     fi
@@ -995,7 +997,7 @@ dnl Create a basic program and run javac -verbose on it. Only works if
 dnl we are using javac, thus test which java.
 dnl This should work for both 1.1.x and 1.2.
 
-AC_MSG_CHECKING([for jdk classes verbosly])
+AC_MSG_CHECKING([for jdk classes verbosely])
 
 cat > jdkpath.java <<EOF
 //   used to find jdk path via -verbose option to javac
@@ -1159,4 +1161,97 @@ DX_FIND_NETSCAPE(/usr/lib/netscape/java/classes/java40.jar)
 
 
 dnl End of the JavaDX stuff -------------------------------------------------
+
+dnl  
+dnl  With the architecture determine flags needed to compile runtime loadable modules etc.
+dnl  -------------------------------------------------------------
+AC_DEFUN(DX_SET_RTL_FLAGS,
+[
+dnl autoconfigure variables for building runtime loadables / shared objects that are
+dnl used in dx build. They also go into lib_$(ARCH)/arch.mak for building samples and user modules.
+dnl These should make it trivial for dx builder or you to construct functional, platform-independent 
+dnl makefiles for your modules.
+dnl SHARED_LINK
+dnl	allows override of default ($(CC)) with e.g. ld ; some cc's seem incapable of passing 
+dnl	make-shared-object flags to ld.
+dnl DX_RTL_CFLAGS 
+dnl	ideally, this, $(DXABI) and -I's should be all $(CC) requires to make the .o .
+dnl DX_RTL_LDFLAGS 
+dnl	ld flags (prefixed with cc-pass-these-to-ld if SHARED_LINK is a cc) for building any shared object
+dnl DX_RTL_DXENTRY
+dnl	flags, typically -e DXEntry , the runtime loadable dx module entry point
+dnl	not generic to all shared objects
+dnl DX_RTL_IMPORTS
+dnl	frequently unnecessary, this flag is for declaring dxexec symbols to the runtime loadable module.
+dnl	not generic to all shared objects
+
+dnl don't require SHARED_LINK to be set going in, but if set, it overrides any selection here.
+	ccld_defaulted=0
+	if test "$SHARED_LINK" = "" ; then
+		SHARED_LINK="$""(CC)"
+		ccld_defaulted=1
+	fi
+	DX_RTL_SYSLIBS=""
+        if test $ac_cv_prog_gcc = "yes" ; then
+                MDXLDFLAG="-Wl,"
+        else
+                MDXLDFLAG=""
+        fi
+        if test $ARCH = "cygwin" ; then
+                DX_RTL_CFLAGS="-DDXD_WIN -DWIN32 -D_X86_ -DNOMENUS -nologo -w -0d -LD -G5"
+                DX_RTL_LDFLAGS="-DLL -SUBSYSTEM:console -INCREMENTAL:no -MACHINE:I386 -NOLOGO"
+                DX_RTL_SYSLIBS="$SYSLIBS kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib uuid.lib wsock32.lib"
+                DX_OUTBOARD_LIBS="$OLIBS $DXINST/lib/DXExport.lib"
+        fi
+        if test $ARCH = "hp700" ; then
+                DX_RTL_CFLAGS="-Dhp700 -Aa +z"
+                DX_RTL_LDFLAGS="${MDXLDFLAG}-q ${MDXLDFLAG}-b ${MDXLDFLAG}-E "
+		DX_RTL_DXENTRY="${MDXLDFLAG}-eDXEntry"
+                DX_RTL_SYSLIBS="$SYSLIBS -ldld"
+        fi
+        if test $ARCH = "ibm6000" ; then
+                DX_RTL_CFLAGS="-Dibm6000"
+                DX_RTL_DXENTRY="${MDXLDFLAG}-eDXEntry "
+		DX_RTL_LDFLAGS=
+		DX_RTL_IMPORT="${MDXLDFLAG}-bI:$DXINST/lib/dxexec.exp"
+        fi
+        if test $ARCH = "sgi" ; then
+                DX_RTL_CFLAGS=" -Dsgi"
+        	if test $ac_cv_prog_gcc = "yes" ; then
+                	DX_RTL_LDFLAGS=" -call_shared -U "
+			DX_RTL_DXENTRY=" -e DXEntry -exported_symbol DXEntry"
+			if ccld_defaulted ; then 
+				SHARED_LINK="ld"
+			fi
+        	else
+                	DX_RTL_LDFLAGS=" -shared -ignore_unresolved "
+			if ccld_defaulted ; then
+				SHARED_LINK=$CC
+			fi
+        	fi
+
+        fi
+        if test $ARCH = "solaris" ; then
+                DX_RTL_CFLAGS=" -Dsolaris"
+                # DX_RTL_LDFLAGS=" ${MDXLDFLAG}-G ${MDXLDFLAG}-eDXEntry"
+                DX_RTL_LDFLAGS=" -G "
+		SHARED_LINK="ld"
+        fi
+        if test $ARCH = "alphax" ; then
+                DX_RTL_CFLAGS=" -Dalphax"
+                DX_RTL_LDFLAGS=" -shared -all -expect_unresolved main "
+                DX_RTL_DXENTRY=" -e DXEntry"
+                DX_RTL_IMPORTS=" -expect_unresolved DX\*"
+        fi
+        if test $ARCH = "linux" ; then
+                DX_RTL_CFLAGS=" -D_GNU_SOURCE -Dlinux"
+                DX_RTL_LDFLAGS=" --shared"
+		DX_RTL_DXENTRY=" -eDXEntry"
+        fi
+        if test $ARCH = "freebsd" ; then
+                DX_RTL_CFLAGS="-D_GNU_SOURCE -Dfreebsd"
+                DX_RTL_LDFLAGS="--shared "
+		DX_RTL_DXENTRY="-eDXEntry"
+        fi
+])
 

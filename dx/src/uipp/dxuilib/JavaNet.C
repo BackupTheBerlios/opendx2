@@ -512,11 +512,14 @@ ListIterator it;
     }
 
     char* cname = NUL(char*);
+    char* uiroot = NULL;
+    char* resource = NULL;
     fprintf (this->make_f,
+	"##MANDATORY TO SET DXARCH prior to invoking this makefile"
 	"##\n"
-	"## There is currently no way to set these values inside the ui.\n"
-	"## You can edit in appropriate values or you can enter them\n"
-	"## in $HOME/DX as follows:\n"
+	"## Certain parameters are set here based upon the dx build environment.\n"
+	"## If other values are more appropriate, you can hand-edit this makefile\n"
+	"## or you can set them in your $HOME/DX resource file as follows:\n"
 	"## \tDX*cosmoDir: /some/where/vrml\n"
 	"## \tDX*dxJarFile: /some/where/java/htmlpages/dx.jar\n"
 	"## \tDX*userHtmlDir: /some/where/java/user\n"
@@ -526,9 +529,25 @@ ListIterator it;
 	"## web page uses vrml and may be left out otherwise.\n"
 	"##\n", this->base_name
     );
+    uiroot = theDXApplication->getUIRoot();
+    if (!uiroot)
+        uiroot = "/usr/local/dx";
+
+    fprintf(this->make_f, "SHELL = /bin/sh\n");
+    fprintf(this->make_f, "BASE = %s\n\n",uiroot);
+
+    fprintf(this->make_f, "# need arch set, e.g. by\n");
+    fprintf(this->make_f, "# setenv DXARCH `dx -whicharch`\n");
+    fprintf(this->make_f, "include $(BASE)/lib_$(DXARCH)/arch.mak\n\n");
+
+
     const char* cosmoDir = theDXApplication->getCosmoDir();
-    fprintf (this->make_f, "JARFILE=%s\n", theDXApplication->getDxJarFile());
-    fprintf (this->make_f, "JDKFILE=%s\n", theDXApplication->getJdkDir());
+    resource= theDXApplication->getDxJarFile();
+    if(resource==NULL || resource[0]=='\0')resource="$(BASE)/java/htmlpages/dx.jar";
+    fprintf (this->make_f, "JARFILE=%s\n", resource); 
+    resource=theDXApplication->getJdkDir();
+    if(resource==NULL || resource[0]=='\0')resource="$(JDK_CLASSPATH)";
+    fprintf (this->make_f, "JDKFILE=%s\n", resource);
     char pathSep = ':';
 #if defined(DXD_WIN)
     pathSep = ';';
@@ -538,8 +557,8 @@ ListIterator it;
 	fprintf (this->make_f, "JFLAGS=-classpath $(JDKFILE)%c$(JARFILE)%c$(COSMO)\n\n",
 	    pathSep, pathSep);
     } else {
-	fprintf (this->make_f, "JFLAGS=-classpath $(JDKFILE)%c$(JARFILE)\n\n",
-	    pathSep);
+	fprintf (this->make_f, "JFLAGS=-classpath $(JDKFILE)%c$(JARFILE)%c$(WRL_CLASSPATH)\n\n",
+	    pathSep,pathSep);
     }
 
     fprintf (this->make_f, "JARS = \\\n");
@@ -565,28 +584,35 @@ ListIterator it;
     fprintf (this->make_f, "\n\n");
     fprintf (this->make_f,
 	"##\n"
-	"## There is currently no way to set these values inside the ui.\n"
-	"## You can hand edit in appropriate values or you can enter them\n"
-	"## in $HOME/DX as follows:\n"
+	"## The following variables are set based upon dx-build-time settings.\n"
+	"## You can hand edit in different values or you can override them\n"
+	"## in your resource file $HOME/DX. For example:\n"
 	"## \tDX*htmlDir: /usr/http/java\n"
 	"## \tDX*userHtmlDir: user\n"
 	"## \tDX*serverDir: /usr/admin/java/server\n"
 	"##\n"
+	"##\tYou will need to make corresponding changes to e.g. dxserver.paths\n"
     );
-    fprintf (this->make_f, "DXSERVER=%s\n", theDXApplication->getServerDir());
+    resource=theDXApplication->getServerDir();
+    if(resource==NULL || resource[0]=='\0')resource="$(BASE)/java/server";
+    fprintf (this->make_f, "DXSERVER=%s\n", resource);
 #if defined(DXD_WIN)
     fprintf (this->make_f, "DXSERVER_DIR=$(DXSERVER)\\pcnets\n");
 #else
-    fprintf (this->make_f, "DXSERVER_DIR=$(DXSERVER)/unixnets\n");
+    fprintf (this->make_f, "DXSERVER_DIR=$(DXSERVER)/nets\n");
 #endif
 
     char dirSep = '/';
 #if defined(DXD_WIN)
     dirSep = '\\';
 #endif
-    fprintf (this->make_f, "JAVADIR=%s%c%s\n\n", 
-	theDXApplication->getHtmlDir(), dirSep,
-	theDXApplication->getUserHtmlDir());
+    resource=theDXApplication->getHtmlDir();
+    if(resource==NULL || resource[0]=='\0')resource="$(BASE)/java/htmlpages";
+    fprintf (this->make_f, "JAVADIR=%s", resource); 
+    resource=theDXApplication->getUserHtmlDir();
+    if(resource!=NULL && resource[0]!='\0')
+	fprintf (this->make_f, "%c%s", dirSep , resource); 
+    fprintf (this->make_f, "\n\n"); 
 
     fprintf (this->make_f,
 	"##\n"

@@ -64,7 +64,7 @@ DXGetFont(char *name, float *ascent, float *descent)
     if (!dir)
 	dir = (char *) getenv("DXROOT");
     if (!dir)
-	dir = "/usr/lpp/dx";
+	dir = "/usr/local/dx";
 
 #define XTRA 32  /* enough extra room for "../fonts/.. .dx" */    
 

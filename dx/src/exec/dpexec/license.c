@@ -151,7 +151,7 @@ Error ExGetLicense(lictype ltype, int forceNetLS)
     if (root == NULL) 
 	root = getenv ("DXROOT");
     if (root == NULL)
-	root = "/usr/lpp/dx";
+	root = "/usr/local/dx";
 
     if (ltype == MPLIC) {
 	MPlic_tried = TRUE;

@@ -5055,7 +5055,7 @@ static int cum_yday[11]; // { 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334
     // Make the DATEMSK environment variable point to the format file
     // which we'll store in the dx tree.
     const char *cp = /*this->getUIRoot();*/getenv("DXROOT");
-    if ((!cp) || (!cp[0]))  cp = "/usr/lpp/dx";
+    if ((!cp) || (!cp[0]))  cp = "/usr/local/dx";
 
     char *dx = DuplicateString(cp); 
     strcpy (dx, cp);

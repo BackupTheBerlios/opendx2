@@ -7084,10 +7084,28 @@ boolean EditorWindow::javifyNetwork()
     //
     NodeDefinition* wopt_nd = (NodeDefinition*)
 	theNodeDefinitionDictionary->findDefinition("WebOptions");
+
+    if (!wopt_nd) {
+	// try loading web-options
+	char* macros = "/java/server/dxmacros";
+	char* uiroot = theDXApplication->getUIRoot();
+	char* jxmacros;
+	fprintf(stderr, "WebOptions macro not in DXMACROS path\n");
+	fprintf(stderr, "attempting to load from configure-time parameters\n");
+    	if (!uiroot)
+        	uiroot = "/usr/local/dx";
+	jxmacros=(char*)malloc(strlen(uiroot)+strlen(macros)+2);
+	strcpy(jxmacros,uiroot);
+	strcat(jxmacros,macros);
+	MacroDefinition::LoadMacroDirectories(jxmacros,TRUE,NULL,FALSE);
+	free(jxmacros);
+    	wopt_nd = (NodeDefinition*) theNodeDefinitionDictionary->findDefinition("WebOptions");
+    }
     if (!wopt_nd) {
 	ErrorMessage (
 	    "The definition of macro WebOptions is missing.\n"
-	    "This visual program will not function properly\n"
+	    "Load the macros from /usr/local/dx/java/server/dxmacros.\n"
+	    "Otherwise, this visual program will not function properly\n"
 	    "under control of DXServer.\n");
 	return FALSE;
     }

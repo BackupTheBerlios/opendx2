@@ -101,7 +101,7 @@ char *more_items[MAXITEMS];
     if ((!uiroot) || (!uiroot[0]))
 	uiroot = (char *)getenv("DXROOT");
     if ((!uiroot) || (!uiroot[0]))
-	uiroot = "/usr/lpp/dx";
+	uiroot = "/usr/local/dx";
 
     char *sampDat = new char[strlen(uiroot) + strlen("samples/data") + 16];
     if (uiroot[strlen(uiroot)-1] == '/') {

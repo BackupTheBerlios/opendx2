@@ -267,7 +267,7 @@ boolean TutorApplication::initialize(unsigned int* argcp,
             // This will show up as a memory leak, not worth worrying about
             TutorApplication::resource.UIRoot = DuplicateString(s);
         else
-            TutorApplication::resource.UIRoot =  "/usr/lpp/dx";
+            TutorApplication::resource.UIRoot =  "/usr/local/dx";
     }
 
     this->mainWindow = new TutorWindow();
