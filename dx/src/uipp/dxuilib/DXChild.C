@@ -65,6 +65,10 @@ extern "C" {
 #endif
 #endif
 
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
+
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
