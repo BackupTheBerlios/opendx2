@@ -1,6 +1,7 @@
 #!/bin/sh
 # Configure is looking for the following line
-DFLTROOT=/usr/lpp/dx
+prefix=/usr/local/src/dx-exe
+DFLTROOT=$prefix/dx
 root=${DXROOT=${DXEXECROOT=$DFLTROOT}}
 
 syslibroot=${root}/lib/
