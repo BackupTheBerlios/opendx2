@@ -61,5 +61,7 @@ install-exec-local:
 			fi ; 						   \
 		done ;							   \
 	fi ; 								   \
+	mv libDX.a .. ; 						   \
+	cd .. ;								   \
 	$(INSTALL) libDX.a $(prefix)/dx/lib_$(ARCH) ;			   \
 	rm libDX.a
