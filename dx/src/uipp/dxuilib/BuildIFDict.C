@@ -13,8 +13,8 @@
 #include "ImageFormatREX.h"
 #include "ImageFormatTIF.h"
 #include "ImageFormatMIF.h"
-#include "ImageFormatGIF.h"
 #ifdef HAVE_LIBMAGICK
+#include "ImageFormatGIF.h"
 #include "ImageFormatIM.h"
 #endif /* def HAVE_LIBMAGICK */
 #include "ImageFormatYUV.h"
@@ -45,8 +45,8 @@ char keystr[2];
     dict->addDefinition (keystr, (void*)ImageFormatREX::Allocator); keystr[0]++;
     dict->addDefinition (keystr, (void*)ImageFormatTIF::Allocator); keystr[0]++;
     dict->addDefinition (keystr, (void*)ImageFormatMIF::Allocator); keystr[0]++;
-    dict->addDefinition (keystr, (void*)ImageFormatGIF::Allocator); keystr[0]++;
 #ifdef HAVE_LIBMAGICK
+    dict->addDefinition (keystr, (void*)ImageFormatGIF::Allocator); keystr[0]++;
     dict->addDefinition (keystr, (void*)ImageFormatIM::Allocator); keystr[0]++;
 #endif /* def HAVE_LIBMAGICK */
     dict->addDefinition (keystr, (void*)ImageFormatYUV::Allocator); keystr[0]++;
