@@ -5,7 +5,7 @@ AC_DEFUN(DX_ARCHITECTURE,
     unameM=`uname -m`
     ARCH=unknown
     if test $unameS = "CYGWIN_95-4.0" ; then
-    	ARCH=intelnt
+    	ARCH=cygwin
     fi
     if test $unameS = "Linux" ; then
         if test $unameM = "i686" ; then
@@ -29,6 +29,7 @@ AC_DEFUN(DX_ARCHITECTURE,
     AC_MSG_RESULT($ARCH)
     AC_SUBST(ARCH)
     AC_DEFINE_UNQUOTED($ARCH)
+    AC_DEFINE_UNQUOTED(DXD_ARCHNAME, $ARCH)
 ])
 
 AC_DEFUN(DX_STREAM_O2,
