@@ -2983,7 +2983,7 @@ static void _dxf_ExPathPrepend( Program *p, char fname[], int instance,
   {
     DXSetError(ERROR_NOT_IMPLEMENTED, "gfunc execution path too deep");
     printf( "gfunc execution path too deep: %d", path->num_comp );
-    exit(1);
+    _dxf_ExDie("gfunc execution path too deep");
     return;
   }
 
@@ -3010,7 +3010,7 @@ static void _dxf_ExPathAppend( Program *p, char fname[], int instance,
   {
     DXSetError(ERROR_NOT_IMPLEMENTED, "gfunc execution path too deep");
     printf( "gfunc execution path too deep: %d", path->num_comp );
-    exit(1);
+    _dxf_ExDie("gfunc execution path too deep");
     return;
   }
 
