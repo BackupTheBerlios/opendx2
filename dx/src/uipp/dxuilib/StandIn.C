@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/StandIn.C,v 1.1 1999/03/24 15:17:47 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/StandIn.C,v 1.2 1999/04/12 21:37:44 gda Exp $
  */
 
 #include "defines.h"
@@ -3168,7 +3168,7 @@ int len;
 
 // Is it ok to start a drag?  This depends only on the selected state of
 // the node.  
-boolean StandIn::decideToDrag(XEvent *xev) 
+int StandIn::decideToDrag(XEvent *xev) 
 { 
     if (!this->selected) return DragSource::Abort;
 
