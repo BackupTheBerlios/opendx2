@@ -24,12 +24,12 @@
 #include <sys/un.h>
 #endif
 
-#include <dx/arch.h>
 
 #if defined(HAVE_WINDOWS_H)
 #include <windows.h>
 #endif
 
+#include <dx/arch.h>
 #include <dx/error.h>
 #include <dx/timing.h>
 #include <dx/memory.h>
