@@ -229,12 +229,6 @@ AC_SUBST(LIB_LF)
 DX_ARCHITECTURE
 DX_ARCH_SPECIFIC
 
-if test "$ARCH" = "sgi" ; then
-    if test "$DXABI" = "" ; then
-	DXABI=" -n32 -L/usr/lib32"
-    fi
-fi
-
 if test "$MKDEP" = "" ; then
     MKDEP='$(CC) -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)'
 fi
@@ -273,6 +267,42 @@ if test "$ARCH" = "intelnt" ; then
 	DX_CHECK_HEADERS(windows.h)
 else
 	ac_cv_header_windows_h="no"
+fi
+
+# On SGI, detect the ABI we're compiling for (handles all methods that
+#   can be used to set the ABI target).
+if test "$ARCH" = "sgi" ; then
+    AC_MSG_CHECKING(for the target SGI ABI ...)
+AC_TRY_COMPILE([],
+[
+#if defined(sgi) && _MIPS_SIM == _ABI64
+#else
+xyzz
+#endif
+], 
+[AC_MSG_RESULT("-64")
+ AC_DEFINE(SGI_ABI,-64)
+], 
+[AC_TRY_COMPILE([],
+[
+#if defined(sgi) && _MIPS_SIM == _ABIO32
+#else
+xyzz
+#endif
+], 
+[AC_MSG_RESULT("-32")
+ AC_DEFINE(SGI_ABI,-32)], 
+[AC_MSG_RESULT("-n32")
+ AC_DEFINE(SGI_ABI,-n32)])])
+fi
+
+# For SGI, set DXABI based on SGI_ABI
+if test "$ARCH" = "sgi" ; then
+    case "$SGI_ABI" in
+      -64)  DXABI=" $SGI_ABI -L/usr/lib64";;
+      -32)  DXABI=" $SGI_ABI -L/usr/lib";;
+      -n32) DXABI=" $SGI_ABI -L/usr/lib32";;
+    esac
 fi
 
 # Code to enable JAVADX to be built

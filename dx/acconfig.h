@@ -33,6 +33,8 @@
 #undef macos
 #undef intelnt
 
+#undef SGI_ABI
+
 #undef OLD_LESSTIF
 
 #undef USING_BISON
