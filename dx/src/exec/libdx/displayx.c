@@ -5153,9 +5153,9 @@ struct gap
 int
 grayCmp(const void * p1, const void * p2)
 {
-    const struct gap *a = p1;
-    const struct gap *b = p2;
-    if (a->gap < b->gap)
+    const struct gap **a = (const struct gap **) p1;
+    const struct gap **b = (const struct gap **) p2;
+    if ((*a)->gap < (*b)->gap)
 	return 1;
     else
 	return -1;
@@ -5343,7 +5343,7 @@ getGrayMappedTranslation(Display *dpy, translationT *d, int force)
     for (i = 0; i < nextGap; i++)
 	sort[i] = gaps+i;
 
-    qsort((char *)*sort, nextGap, sizeof(sort[0]), grayCmp);
+    qsort((char *)sort, nextGap, sizeof(sort[0]), grayCmp);
 
     /*
      * Make a linked list of the sorted gaps
