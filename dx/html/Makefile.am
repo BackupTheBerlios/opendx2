@@ -8,7 +8,7 @@ html_DATA = README.htm README_SMP.htm README_alphax.htm \
 	html.tar images insguide.htm \
 	proguide.htm qikguide.htm refguide.htm usrguide.htm 
 
-EXTRA_DIST = pages.tar images.tar
+EXTRA_DIST = pages.tar images.tar $(html_DATA)
 
 install-data_local:
 	tar -C $(prefix)/html -xf pages.tar
