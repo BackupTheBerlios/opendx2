@@ -803,7 +803,7 @@ changequote([,]),
 	else
 	    AC_EGREP_CPP(dnl
 changequote(<<,>>)dnl
-<<typedef.*[^a-zA-Z_0-9]$2[\\t]*>>dnl
+<<typedef.*[^a-zA-Z_0-9]$1[\\t]*>>dnl
 changequote([,]),
 	    [
 		#include <sys/types.h>
