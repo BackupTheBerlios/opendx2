@@ -848,6 +848,28 @@ else
 fi
 ])
 
+
+dnl
+dnl  DX_PATH_JAVA([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
+dnl  -------------------------------------------------------------
+AC_DEFUN(DX_PATH_JAVA,[
+if test -n "$JAVA"; then
+  AC_MSG_WARN(JAVA was preset)
+  AC_PATH_PROG(JAVA, $JAVAH)
+else
+  AC_PATH_PROGS(JAVA, java)
+fi
+if test -z "$JAVA"; then
+  AC_MSG_WARN([no java executable found in \$PATH])
+  ifelse([$2], , , [$2])
+else
+  DX_JBASE_TRAILING=`echo $JAVA | sed -e "s&.*/&&"`
+  JBASE=`echo $JAVA | sed -e "s&/$DX_JBASE_TRAILING&&"`
+  ifelse([$1], , , [$1])
+fi
+])
+
+
 dnl
 dnl DX_FIND_JNI_WITH_PATH(JNI-PATH,[ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------

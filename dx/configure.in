@@ -16,7 +16,8 @@ AC_SUBST(JAVAC)
 AC_SUBST(JAR)
 AC_SUBST(JAVAH)
 AC_SUBST(JINC)
-AC_SUBST(DX_CLASSPATH)
+AC_SUBST(JBASE)
+AC_SUBST(WRL_CLASSPATH)
 AC_SUBST(BUILDBASE)
 AC_SUBST(DXEXEC_EXP)
 AC_SUBST(DXEXEC_IMP)
@@ -208,6 +209,7 @@ if test "$with_javadx" != 'no'; then
   DX_PROG_JAVAC(passed=`expr $passed + 1`,failed=`expr $failed + 1`)
   DX_PROG_JAR(passed=`expr $passed + 1`,failed=`expr $failed + 1`)
   DX_PROG_JAVAH(passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  DX_PATH_JAVA
 
 dnl The following determines if we have the necessary compilers, etc. then look to
 dnl see if we can find the jni headers. First look to see if a configure flag sent
@@ -250,7 +252,7 @@ dnl use the javac -verbose code to try and determine where they may be.
     else
       DX_FIND_COSMO($with_cosmojar_path)
     fi
-    DX_CLASSPATH="$ac_cv_class_netscape:$ac_cv_class_cosmo"
+    WRL_CLASSPATH="$ac_cv_class_netscape:$ac_cv_class_cosmo"
   fi
 
 fi
