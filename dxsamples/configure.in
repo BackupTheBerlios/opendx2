@@ -77,4 +77,5 @@ AC_OUTPUT( Makefile callmodule/Makefile callmodule/callmodule_make \
 	user/Makefile user/user_inboard_make \
 	user/user_loadable_make user/user_outboard_make \
 	util/dxf/Makefile util/plot3d/Makefile util/mpeg/Makefile \
-	util/fluent/Makefile util/Makefile )
+	util/fluent/Makefile util/Makefile \
+	stereo/Makefile stereo/src/Makefile stereo/src/localmk )
