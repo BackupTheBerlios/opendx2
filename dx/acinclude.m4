@@ -243,7 +243,7 @@ if AC_TRY_COMMAND(${CC-cc} -E conftest.c) | egrep yes > foo 2>&1; then
 fi
 rm foo
 ])
-if test -n $ac_cv_lib_glibcmath ; then 
+if test -n "$ac_cv_lib_glibcmath" ; then 
   CFLAGS="$CFLAGS $ac_cv_lib_glibcmath"
 fi
 ])
