@@ -16,7 +16,7 @@ int main(){fprintf(stderr, "misc/dx is only needed on Windows based systems.\n")
 
 #include "utils.h"
 
-#define USE_REGISTRY 1
+/* #define USE_REGISTRY 1 */
 
 #if defined(cygwin)
 void
@@ -166,39 +166,44 @@ int main(int argc, char **argv)
 /*  children must convey this down.				*/
 int regval(enum regGet get, char *name, enum regCo co, char *value, int size, int *word)
 {
-	char key[500];
-	char key2[500];
-	int valtype;
-	int sizegot = size;
-	HKEY hkey_m;
-	HKEY hkey_u;
-	long rc, rc_m, rc_u;
-	int i;
-	DWORD options;
-	DWORD dwDisp;
-	REGSAM access = KEY_READ;
-	const char *regpath;
+    char key[500];
+    char key2[500];
+    int valtype;
+    int sizegot = size;
+    HKEY hkey_m;
+    HKEY hkey_u;
+    long rc, rc_m, rc_u;
+    int i;
+    DWORD options;
+    DWORD dwDisp;
+    REGSAM access = KEY_READ;
+    const char **regpath;
+    const char *dxpath[] = {"SOFTWARE\\OpenDX\\DX\\CurrentVersion", NULL };
+    const char *snpath[] = { "SOFTWARE\\Starnet\\X-Win32\\5.4", 
+			     "SOFTWARE\\Starnet\\X-Win32\\5.3",
+			     "SOFTWARE\\Starnet\\X-Win32\\5.2",
+			     "SOFTWARE\\Starnet\\X-Win32\\5.1", NULL };
+    const char *wapath[] = { "SOFTWARE\\LabF.com\\WinaXe\\6.3",
+			     "SOFTWARE\\LabF.com\\WinaXe\\6.2",
+			     "SOFTWARE\\LabF.com\\WinaXe\\6.1", NULL };
+    const char *hbpath[] = { "SOFTWARE\\Hummingbird\\Connectivity\\7.20\\Exceed",
+			     "SOFTWARE\\Hummingbird\\Connectivity\\7.10\\Exceed",
+			     "SOFTWARE\\Hummingbird\\Connectivity\\7.00\\Exceed", NULL };
+    const char *h6path[] = { "SOFTWARE\\Hummingbird\\Exceed\\CurrentVersion", NULL };
 
 	/* First determine which system we're looking up. */
 
-	if(co == OPENDX_ID) {
-		regpath = "SOFTWARE\\OpenDX\\DX\\CurrentVersion";
-	}
-	else if (co == STARNET_ID) { 
-		regpath = "SOFTWARE\\Starnet\\X-Win32\\5.1";
-	}
-	else if (co == LABF_ID) {
-		regpath = "SOFTWARE\\LabF.com\\WinaXe\\6.1";
-	}
-	else if (co == HUMMBIRD_ID) {
-		regpath = "SOFTWARE\\Hummingbird\\Exceed\\CurrentVersion";
-	}
-	else if (co == HUMMBIRD_ID2) {
-		regpath = "SOFTWARE\\Hummingbird\\Connectivity\\7.00\\Exceed";
-	}
-	else if (co == HUMMBIRD_ID3) {
-		regpath = "SOFTWARE\\Hummingbird\\Connectivity\\7.10\\Exceed";
-	}
+    if(co == OPENDX_ID)
+	regpath = dxpath;
+    else if (co == STARNET_ID) 
+	regpath = snpath;
+    else if (co == LABF_ID)
+	regpath = wapath;
+    else if (co == HUMMBIRD_ID)
+	regpath = hbpath;
+    else /* Old Exceed 6 */
+	regpath = h6path;
+        
 
 	/* What a pain--some systems store some info in HKEY_LOCAL_MACHINE */
 	/* whereas others store it in HKEY_CURRENT_USER. It also depends   */
@@ -206,52 +211,60 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 	/* to always look at both to make sure we do this right and then   */
 	/* return the result if in either. */
 
-	rc_m = RegOpenKeyEx(HKEY_LOCAL_MACHINE, __TEXT(regpath), 0, access, &hkey_m);
-	rc_u = RegOpenKeyEx(HKEY_CURRENT_USER, __TEXT(regpath), 0, access, &hkey_u);
+    i = 0;
+    while(regpath[i]) {
+#ifdef DEBUGREG
+	printf("Checking: %s\n", regpath[i]);
+#endif
+	rc_m = RegOpenKeyEx(HKEY_LOCAL_MACHINE, __TEXT(regpath[i]), 0, access, &hkey_m);
+	rc_u = RegOpenKeyEx(HKEY_CURRENT_USER, __TEXT(regpath[i]), 0, access, &hkey_u);
 
-	if(rc_m != ERROR_SUCCESS && rc_u != ERROR_SUCCESS && get == CHECK) return 0;
-	else if (get == CHECK) {
-		RegCloseKey(hkey_m);
-		RegCloseKey(hkey_u);
-		return 1;
-	}
-	/* hkey now pointing in the proper reg entry area */
-
-	if (get == GET) {
-		rc_u =  RegQueryValueEx(hkey_u, __TEXT(name), (LPDWORD) 0,
-		(LPDWORD) &valtype, (LPBYTE) value, &sizegot);
-
-	    if(rc_u != ERROR_SUCCESS)
-		rc_m = RegQueryValueEx(hkey_m, __TEXT(name), (LPDWORD) 0, 
-		(LPDWORD) &valtype, (LPBYTE) value, &sizegot);
-
-	    if( rc_u != ERROR_SUCCESS && rc_m != ERROR_SUCCESS) 
-	    {
-		rc = rc_u;
-		sprintf(errstr, "%s %s %s", 
-			"Query value failed on registry value", name, "");
-		goto error;
-	    }
-
-	    RegCloseKey(hkey_u);
+	if((rc_m == ERROR_SUCCESS || rc_u == ERROR_SUCCESS) && get == CHECK) {
 	    RegCloseKey(hkey_m);
-
-	    /* Now check to see if it is a DWORD entry if so, pass it back through word
-		not as a string through name. */
-		switch(valtype) {
-		case REG_DWORD:
-			*word = *((int *)value); 
-			strcpy(value, "");
-			break;
-		case REG_SZ:
-			break;
-		default:
-			return 0;
-		}
-
-		return 1;
-
+	    RegCloseKey(hkey_u);
+	    return 1;
 	}
+	else if (rc_m == ERROR_SUCCESS || rc_u == ERROR_SUCCESS) {
+	    break;
+	}
+	i++;
+    }
+    if(rc_m != ERROR_SUCCESS && rc_u != ERROR_SUCCESS) return 0;
+    
+    /* hkey now pointing in the proper reg entry area */
+
+    if (get == GET) {
+	rc_u =  RegQueryValueEx(hkey_u, __TEXT(name), (LPDWORD) 0,
+		(LPDWORD) &valtype, (LPBYTE) value, &sizegot);
+
+	if(rc_u != ERROR_SUCCESS)
+	    rc_m = RegQueryValueEx(hkey_m, __TEXT(name), (LPDWORD) 0, 
+		(LPDWORD) &valtype, (LPBYTE) value, &sizegot);
+
+	if( rc_u != ERROR_SUCCESS && rc_m != ERROR_SUCCESS) {
+	    rc = rc_u;
+	    sprintf(errstr, "%s %s %s", 
+			"Query value failed on registry value", name, "");
+	    goto error;
+	}
+
+	RegCloseKey(hkey_u);
+	RegCloseKey(hkey_m);
+
+	/* Now check to see if it is a DWORD entry if so, pass it back through word
+		not as a string through name. */
+	switch(valtype) {
+	    case REG_DWORD:
+		*word = *((int *)value); 
+		strcpy(value, "");
+		break;
+	    case REG_SZ:
+		break;
+	    default:
+		return 0;
+	}
+	return 1;
+    }
 
 error:
 	printf("%s: rc = %d\n", errstr, rc);
@@ -285,34 +298,34 @@ int initrun()
 
 	getenvstr("XSRVR", xenvvar);
 	if(strlen(xenvvar)==0 || strcmp(xenvvar, "exceed")==0) {
-            if(regval(CHECK, "Default", HUMMBIRD_ID3, exceeddir, sizeof(exceeddir), &keydata)) {
+            if(regval(CHECK, "Default", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata)) {
     	        strcpy(xservername, "Exceed 7"); whichX = EXCEED7;
-                if(!(regval(GET, "HomeDir", HUMMBIRD_ID3, exceeddir, sizeof(exceeddir), &keydata) &&
-		     regval(GET, "UserDir", HUMMBIRD_ID3, exceeduserdir, sizeof(exceeduserdir), &keydata)))
+                if(!(regval(GET, "HomeDir", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) &&
+		     regval(GET, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata))) {
 			printf("If Exceed is installed on this machine, please make sure it is available\n"
-	       		"to you as a user.  Otherwise, make sure another X server is installed and running.\n");    
+	       		"to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+	       		whichX = UNKNOWN;
+	       	}    
             } 
-	    else if(regval(CHECK, "Default", HUMMBIRD_ID2, exceeddir, sizeof(exceeddir), &keydata)) {
-    	        strcpy(xservername, "Exceed 7"); whichX = EXCEED7;
-                if(!(regval(GET, "HomeDir", HUMMBIRD_ID2, exceeddir, sizeof(exceeddir), &keydata) &&
-		     regval(GET, "UserDir", HUMMBIRD_ID2, exceeduserdir, sizeof(exceeduserdir), &keydata)))
-			printf("If Exceed is installed on this machine, please make sure it is available\n"
-	       		"to you as a user.  Otherwise, make sure another X server is installed and running.\n");    
-            } 
-	    else if(regval(CHECK, "Default", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata)) {
+	    if(regval(CHECK, "Default", HUMMBIRD_ID2, exceeddir, sizeof(exceeddir), &keydata)) {
     	        strcpy(xservername, "Exceed 6"); whichX = EXCEED6;
-                if(!(regval(GET, "PathName", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) &&
-	             regval(GET, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata)))
-	                printf("If Exceed is installed on this machine, please make sure it is available\n"
-	                "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+                if(!(regval(GET, "PathName", HUMMBIRD_ID2, exceeddir, sizeof(exceeddir), &keydata) &&
+		     regval(GET, "UserDir", HUMMBIRD_ID2, exceeduserdir, sizeof(exceeduserdir), &keydata))) {
+			printf("If Exceed is installed on this machine, please make sure it is available\n"
+	       		"to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+	       		whichX = UNKNOWN;
+	       	}    
             } 
+
 	}
 	if((strlen(xenvvar)==0 || strcmp(xenvvar, "xwin32")==0) && whichX == UNKNOWN) {
 	    if (regval(CHECK, "Default", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata)) {
-    	           strcpy(xservername, "X-Win32"); whichX = XWIN32;
-    	           if(!regval(GET, "Pathname", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata))
-	                 printf("If X-Win32 is installed on this machine, please make sure it is available\n"
-	                 "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+		strcpy(xservername, "X-Win32"); whichX = XWIN32;
+		if(!regval(GET, "Pathname", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata)) {
+		    printf("If X-Win32 is installed on this machine, please make sure it is available\n"
+			"to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+		    whichX = UNKNOWN;
+		}
 	    }
 	}
 	if((strlen(xenvvar)==0 || strcmp(xenvvar, "winaxe")==0) && whichX == UNKNOWN) {
@@ -454,10 +467,6 @@ void configure()
 			strcat(path, ";"); 
 			strcat(path, exceeddir);
 			setenvpair("Path", path);
-			//sprintf(xapplresdir, "%s", exceeduserdir);
-			//setenvpair("XAPPLRESDIR", xapplresdir);
-			//sprintf(xnlspath, "%s\\lib", dxroot);
-			//setenvpair("XNLSPATH", xnlspath);
 			result = _spawnlp(_P_NOWAIT, "Exceed", "Exceed", NULL);
 			if(result == -1)
 				printf( "Error spawning Exceed: %s\n", strerror( errno ) );

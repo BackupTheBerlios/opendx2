@@ -62,9 +62,8 @@ enum regCo {
   OPENDX_ID = 1,
   HUMMBIRD_ID = 2,
   HUMMBIRD_ID2 = 3,
-  HUMMBIRD_ID3 = 4,
-  STARNET_ID = 5,
-  LABF_ID = 6
+  STARNET_ID = 4,
+  LABF_ID = 5
 };
 
 enum regGet {
