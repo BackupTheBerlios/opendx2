@@ -78,7 +78,7 @@
 // How far should successive 'levels' of the graph be separated
 //
 int GraphLayout::HeightPerLevel = 90;
-#define ABSOLUTE_MINIMUM_HEIGHT_PER_LEVEL 80
+#define ABSOLUTE_MINIMUM_HEIGHT_PER_LEVEL 70
 #define MAXIMUM_HEIGHT_PER_LEVEL 200
 
 //
