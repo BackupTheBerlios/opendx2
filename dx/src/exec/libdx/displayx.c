@@ -114,7 +114,7 @@ XFREECOLOR(Display *d, Colormap map, long c)
 	return ERROR;
     }
 
-    XFreeColors(d, map, (unsigned long *)&c, 1, NULL);
+    XFreeColors(d, map, (unsigned long *)&c, 1, DisplayPlanes(d,0));
     allocated[c] --;
 
     return OK;
@@ -123,7 +123,7 @@ XFREECOLOR(Display *d, Colormap map, long c)
 #else
 
 #define XALLOCCOLOR(d, m, c) XAllocColor(d, m, c)
-#define XFREECOLOR(d, m, c)  XFreeColors(d, m, &c, 1, NULL)
+#define XFREECOLOR(d, m, c)  XFreeColors(d, m, &c, 1, DisplayPlanes(d,0))
 
 #endif
 
@@ -1333,7 +1333,7 @@ reset_window(struct window *w)
     if (w->pixmap)
     {
 	XFreePixmap(w->dpy, w->pixmap);
-	w->pixmap = NULL;
+	w->pixmap = None;
     }
 
     if (w->ximage)
@@ -1405,6 +1405,40 @@ delete_window(Pointer p)
 error:    
     xerror = 0;
     return ERROR;
+}
+
+int
+XChecker(int fd, Pointer p)
+{
+    struct window *w = p;
+    return XPending(w->dpy);
+}
+
+static Error
+_DXSetSoftwareWindowActive(struct window *w, int active)
+{
+    if (active)
+    {
+	if (! DXRegisterWindowHandlerWithCheckProc(w->handler, XChecker, w->dpy, (Pointer)w))
+	    return ERROR;
+	
+	w->active = 1;
+    }
+    else
+    {
+	if (w->cmap_installed)
+	{
+	    XUninstallColormap(w->dpy, (Colormap)w->translation->cmap);
+	    w->cmap_installed = 0;
+	}
+
+	if (! DXRegisterWindowHandlerWithCheckProc(NULL, NULL, w->dpy, (Pointer)w))
+	    return ERROR;
+	
+	w->active = 0;
+    }
+
+    return OK;
 }
 
 static Error
@@ -1909,7 +1943,7 @@ handler_ui(int fd, struct window *w)
 	{
 	    w->win_invalid = 1;
 	    DXSetCacheEntry(NULL, CACHE_PERMANENT, w->cacheid, 0, 0);
-	    w->wid = NULL;
+	    w->wid = None;
 	    w->winFlag = 0;
 	    if (xerror) goto error;
 	    return OK;
@@ -1953,7 +1987,7 @@ display_ui(Object image, int width, int height,
     XEvent event;
     int i, x, y;
     Display *dpy;
-    Pixmap new = NULL;
+    Pixmap new = None;
     translationP trans;
     Visual *vis;
     int screen;
@@ -2061,7 +2095,7 @@ display_ui(Object image, int width, int height,
     event.xclient.format = 16;
     event.xclient.data.s[0]  = width;
     event.xclient.data.s[1] = height;
-    XSendEvent(dpy, w->wid, 1, NULL, &event);
+    XSendEvent(dpy, w->wid, 1, NoEventMask, &event);
 
 #if !ASYNC
     if (!handler_ui(w->fd, c))
@@ -2328,7 +2362,7 @@ getWindowIDFromCache(char *tag)
     Private p = NULL;
     char *tmp, *p_data;
 
-    p = DXGetCacheEntry(tag, 0, 0);
+    p = (Private)DXGetCacheEntry(tag, 0, 0);
     
     if (! p)
 	return NULL;
@@ -2347,39 +2381,6 @@ getWindowIDFromCache(char *tag)
 error:
     DXDelete((Object)p);
     return NULL;
-}
-
-int
-XChecker(int fd, struct window *w)
-{
-    return XPending(w->dpy);
-}
-
-static Error
-_DXSetSoftwareWindowActive(struct window *w, int active)
-{
-    if (active)
-    {
-	if (! DXRegisterWindowHandlerWithCheckProc(w->handler, XChecker, w->dpy, (Pointer)w))
-	    return ERROR;
-	
-	w->active = 1;
-    }
-    else
-    {
-	if (w->cmap_installed)
-	{
-	    XUninstallColormap(w->dpy, (Colormap)w->translation->cmap);
-	    w->cmap_installed = 0;
-	}
-
-	if (! DXRegisterWindowHandlerWithCheckProc(NULL, NULL, w->dpy, (Pointer)w))
-	    return ERROR;
-	
-	w->active = 0;
-    }
-
-    return OK;
 }
 
 Error
@@ -2691,7 +2692,7 @@ error:
     if (cachetag)
 	DXFree((Pointer)cachetag);
 
-    return NULL;
+    return ERROR;
 }
 
 static Array
@@ -3763,7 +3764,7 @@ createTranslation(Private dpy_object, char *where,
     char 		cacheid[100];
     Private 		p = NULL;
     translationT 	*trans;
-    Colormap 		xcmap = NULL;
+    Colormap 		xcmap = BadColor; // Correct Initialization
     Visual		*visual = NULL;
     int   		dscrn;
     Visual 		*dvis;
@@ -4052,7 +4053,7 @@ getDirectTranslation(Display *dpy, translationT *t)
         t->gammaTable[i] = 255*pow(f, invgamma);
     }
 
-    if (! XAllocColorCells(dpy, (Colormap)t->cmap, 1, 0, 0, pixels, 256))
+    if (! XAllocColorCells(dpy, (Colormap)t->cmap, True, NULL, 0, pixels, 256))
 	return ERROR;
 
     return OK;
@@ -4563,8 +4564,10 @@ static int _Optlink
 #else
 static int
 #endif
-compare(struct color_sort *a, struct color_sort *b)
+compare(const void * p1, const void * p2)
 {
+    const struct color_sort *a = p1;
+    const struct color_sort *b = p2;
     if (a->diff<b->diff)
 	return 1;
     else
@@ -4682,7 +4685,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
     xlatesize = rr * gg * bb;
     if (XAllocColorCells(dpy, cmap, 0, NULL, 0, pixels, xlatesize))
     {
-	XFreeColors(dpy, cmap, pixels, xlatesize, NULL);
+	XFreeColors(dpy, cmap, pixels, xlatesize, DisplayPlanes(dpy, 0));
 
 	for (r=0; r<rr; r++)
 	    for (g=0; g<gg; g++)
@@ -4742,7 +4745,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
     }
 
     if (nn)
-	XFreeColors(dpy, cmap, pixels, nn, NULL);
+	XFreeColors(dpy, cmap, pixels, nn, DisplayPlanes(dpy, 0));
 
     /*
      * create a flag array indicating the unallocated cells
@@ -4766,6 +4769,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
      * We do this by trying to re-allocate them... if we get the same
      * pixel index, then the cell was sharable.
      */
+
     nPrivate = nShared = 0;
     for (i = 0; i < cmapsize; i++)
     {
@@ -4787,14 +4791,14 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
 		else
 		    nShared ++;
 
-		XFreeColors(dpy, cmap, &c.pixel, 1, NULL);
+		XFreeColors(dpy, cmap, &c.pixel, 1, DisplayPlanes(dpy, 0));
 	    }
 	    else
 	    {
 		nPrivate ++;
 		readOnly[colors[i].pixel] = 0;
 	    }
-	}
+	} 
     }
 
     DXDebug("X", "%d private %d shared cells in colormap", nPrivate, nShared);
@@ -5148,9 +5152,11 @@ struct gap
 };
 
 int
-grayCmp(struct gap **a, struct gap **b)
+grayCmp(const void * p1, const void * p2)
 {
-    if ((*a)->gap < (*b)->gap)
+    const struct gap *a = p1;
+    const struct gap *b = p2;
+    if (a->gap < b->gap)
 	return 1;
     else
 	return -1;
@@ -5211,7 +5217,7 @@ getGrayMappedTranslation(Display *dpy, translationT *d, int force)
      */
     if (XAllocColorCells(dpy, cmap, 0, NULL, 0, pixels, 256))
     {
-	XFreeColors(dpy, cmap, pixels, 256, NULL);
+	XFreeColors(dpy, cmap, pixels, 256, DisplayPlanes(dpy,0));
 
 	for (i = 0; i < 256; i++)
 	{
@@ -5242,7 +5248,7 @@ getGrayMappedTranslation(Display *dpy, translationT *d, int force)
     }
 
     if (nAvailable)
-	XFreeColors(dpy, cmap, pixels, nAvailable, NULL);
+	XFreeColors(dpy, cmap, pixels, nAvailable, DisplayPlanes(dpy,0));
 
     /*
      * create a flag array indicating the unallocated cells
@@ -5338,7 +5344,7 @@ getGrayMappedTranslation(Display *dpy, translationT *d, int force)
     for (i = 0; i < nextGap; i++)
 	sort[i] = gaps+i;
 
-    qsort((char *)sort, nextGap, sizeof(sort[0]), grayCmp);
+    qsort((char *)*sort, nextGap, sizeof(sort[0]), grayCmp);
 
     /*
      * Make a linked list of the sorted gaps
@@ -5719,7 +5725,7 @@ CheckColormappedImage(Object image, Array colormap)
 	}
 
 	if (! DXGetArrayInfo(a, NULL, &t, &c, &r, s))
-	    return NULL;
+	    return ERROR;
 
 	if ((t != TYPE_BYTE && t != TYPE_UBYTE) ||
 	    (c != CATEGORY_REAL) ||
@@ -5727,7 +5733,7 @@ CheckColormappedImage(Object image, Array colormap)
 	{
 	    DXSetError(ERROR_INVALID_DATA,
 	      "colormapped images must be byte or ubyte, scalar or 1-vector");
-	    return NULL;
+	    return ERROR;
 	}
     }
 
@@ -5765,8 +5771,10 @@ static int _Optlink
 #else
 static int
 #endif
-icmp(long *a, long *b)
+icmp(const void * p1, const void * p2)
 {
+    const long *a = p1;
+    const long *b = p2;
     if (*a < *b)
 	return -1;
     else
@@ -5905,7 +5913,7 @@ getPrivateColormap(Display *dpy, translationT *trans, Colormap xcmap)
 
     XStoreColors(dpy, xcmap, ncolors, nn);
 
-    XFreeColors(dpy, xcmap, pixels, start, NULL);
+    XFreeColors(dpy, xcmap, pixels, start, DisplayPlanes(dpy,0));
 
     for (i = 0; i < start; i++)
     {
@@ -6654,6 +6662,6 @@ error:
     if (cachetag)
 	DXFree((Pointer)cachetag);
 
-    return NULL;
+    return ERROR;
 }
 
