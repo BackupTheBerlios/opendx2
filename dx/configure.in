@@ -1054,6 +1054,10 @@ AC_EGREP_HEADER(_sys_errlist, sys/errno.h, AC_DEFINE(HAVE__SYS_ERRLIST))
 AC_EGREP_HEADER(_sys_errlist, errno.h,     AC_DEFINE(HAVE__SYS_ERRLIST))
 AC_EGREP_HEADER(_sys_errlist, stdio.h,     AC_DEFINE(HAVE__SYS_ERRLIST))
 
+dnl Check lexer. Look for flex first--if using lex, may be problem
+dnl with duplicate yylineno linking errors.
+AM_PROG_LEX
+
 dnl Check yaccer.  Don't use standard AQC_PROG_YACC... We're going
 dnl to create an -D as well as the make variable
 AC_CHECK_PROG(yakker, bison, "bison", "yacc")
