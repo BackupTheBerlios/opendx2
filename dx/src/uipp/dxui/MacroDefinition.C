@@ -575,7 +575,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	    sptr = NULL;
 	}
 
-#if defined(HAVE_OPENDIR)
+#if defined(HAVE_OPENDIR) && defined(HAVE_DIRENT_H)
         DIR *d = opendir(nsptr);
 	if (!d)
 #elif defined(HAVE_SYS_STAT_H)
