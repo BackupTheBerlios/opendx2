@@ -44,7 +44,9 @@ switch ( $thissys )
     setenv LC_ALL C
 
     # this is for AIX 3.2.3e, so we get the right libs at run time
-    setenv LIBPATH /usr/lib:/lib
+    if ( "$thisver2" == "3.2" ) then
+	setenv LIBPATH /usr/lib:/lib
+    endif
 
     breaksw
 
@@ -1338,22 +1340,6 @@ endif
 # start executive
 #
 if ($exonly) then
-
-  #
-  # do any system specific things 
-  #
-  switch ( $exarch )
-    case ibm6000:
-      # this is so we can find our dummy gl lib if necessary
-      if ($?DXEXECROOT) then
-        setenv LIBPATH "$LIBPATH"":$DXEXECROOT/lib_ibm6000"
-      else
-        setenv LIBPATH "$LIBPATH"":$DXROOT/lib_ibm6000"
-      endif
-      breaksw
-    default:
-      breaksw 
-  endsw
 
   #
   # parse the DISPLAY environment variable to pick out the machine name
