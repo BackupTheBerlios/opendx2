@@ -7,3 +7,5 @@ uidata_DATA = 		\
 	icon50.dat	\
 	logo.dat	\
 	ui.mdf
+
+EXTRA_DIST = $(uidata_DATA)
