@@ -38,7 +38,10 @@ if [ -z "$DXMACROS" ]; then
 	DXMACROS=
   fi
 fi
+#
 # if JXMACROS not set and default dir exists, add it to the DXMACROS path
+# These macros are needed by dxui in order to prepare nets for operation
+# under control of DXServer.
 if [ -z "$JXMACROS" ]; then
   JXMACROS=$DXROOT/java/server/dxmacros
   if  [ -d "$JXMACROS" ]; then
@@ -49,17 +52,14 @@ if [ -z "$JXMACROS" ]; then
 	fi
   fi
 fi
+#
 # if JXUSERMACROS not set and default dir exists, add it to the DXMACROS path
-if [ -z "$JXUSERMACROS" ]; then
-  JXUSERMACROS=$DXROOT/java/server/usermacros
-  if  [ -d "$JXUSERMACROS" ]; then
-	if [ -z "$DXMACROS" ]; then
-		DXMACROS=$JXUSERMACROS
-	else
-		DXMACROS=$DXMACROS:$JXUSERMACROS
-	fi
-  fi
-fi
+# Extending DXMACROS to accommodate the nets that are running under DXServer
+# control is the job of startserver, so I've removed the handling of JXUSERMACROS.
+# These nets aren't needed by dxui
+# - Martin
+#if [ -z "$JXUSERMACROS" ]; then
+#
 
 if [ ! -z "$DXMACROS" ]; then
 	 export DXMACROS
