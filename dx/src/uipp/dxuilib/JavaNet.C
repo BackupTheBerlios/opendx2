@@ -526,18 +526,17 @@ ListIterator it;
 	"## \tDX*jdkDir: /usr/jdk_base/lib/classes.zip\n"
 	"## Note that a value for cosmoDir is required if your\n"
 	"## web page uses vrml and may be left out otherwise.\n"
-	"##\n", this->base_name
+	"##\n\n", this->base_name
     );
     uiroot = theDXApplication->getUIRoot();
     if (!uiroot)
         uiroot = "/usr/local/dx";
 
-    fprintf(this->make_f, "SHELL = /bin/sh\n");
-    fprintf(this->make_f, "BASE = %s\n\n",uiroot);
+    fprintf(this->make_f, "SHELL = /bin/sh\n\n");
+    fprintf(this->make_f, "BASE = %s\n",uiroot);
+    fprintf(this->make_f, "ARCH = %s\n\n", DXD_ARCHNAME);
 
-    fprintf(this->make_f, "# need arch set, e.g. by\n");
-    fprintf(this->make_f, "# setenv DXARCH `dx -whicharch`\n");
-    fprintf(this->make_f, "include $(BASE)/lib_$(DXARCH)/arch.mak\n\n");
+    fprintf(this->make_f, "include $(BASE)/lib_$(ARCH)/arch.mak\n\n");
 
 
     const char* cosmoDir = theDXApplication->getCosmoDir();
@@ -545,19 +544,20 @@ ListIterator it;
     if(resource==NULL || resource[0]=='\0')resource="$(BASE)/java/htmlpages/dx.jar";
     fprintf (this->make_f, "JARFILE=%s\n", resource); 
     resource=theDXApplication->getJdkDir();
-    if(resource==NULL || resource[0]=='\0')resource="$(JDK_CLASSPATH)";
+    if(resource==NULL || resource[0]=='\0')resource="$(DX_JAVA_CLASSPATH)";
     fprintf (this->make_f, "JDKFILE=%s\n", resource);
     char pathSep = ':';
 #if defined(DXD_WIN)
     pathSep = ';';
 #endif
+    /* Allow override of CosmoDir resource if needed */
     if (cosmoDir[0]) {
 	fprintf (this->make_f, "COSMO=%s\n", cosmoDir);
 	fprintf (this->make_f, "JFLAGS=-classpath $(JDKFILE)%c$(JARFILE)%c$(COSMO)\n\n",
 	    pathSep, pathSep);
     } else {
-	fprintf (this->make_f, "JFLAGS=-classpath $(JDKFILE)%c$(JARFILE)%c$(WRL_CLASSPATH)\n\n",
-	    pathSep,pathSep);
+	fprintf (this->make_f, "JFLAGS=-classpath $(JDKFILE)%c$(JARFILE)\n\n",
+	    pathSep);
     }
 
     fprintf (this->make_f, "JARS = \\\n");
@@ -644,6 +644,8 @@ ListIterator it;
 #endif
     fprintf (this->make_f, "\n\nclean:\n");
     fprintf (this->make_f, "\t$(RM) .%spage\n", this->base_name);
+    fprintf (this->make_f, "\t$(RM) %s.jar\n", this->base_name);
+    fprintf (this->make_f, "\t$(RM) %s.class\n", this->base_name);
 
     fprintf (this->make_f, "\t$(RM) $(DXSERVER_DIR)/%s.net\n", this->base_name);
     fprintf (this->make_f, "\t$(RM) %s/%s.class\n", "$(JAVADIR)", this->base_name);
