@@ -504,6 +504,34 @@ _dxfinmem(Pointer x)
 
 #endif   /* ibm6000, solaris, sgi, alpha, hp700 */
 
+#if defined(macos)
+#define memroutines
+
+/* Still need to write shared memory routines */
+
+void *sh_base;   /* starting virtual address */
+Error _dxfsetmem(int limit)
+{
+    sh_base = malloc(limit);
+    if (sh_base == NULL) {
+	DXErrorReturn(ERROR_NO_MEMORY, "getmem can't commit memory");
+    }
+    else {
+	/*   memset(sh_base, 0, limit);   */
+	return OK;
+    }
+}
+
+Pointer _dxfgetmem(Pointer base, int size)
+{
+    if (!base)	
+	base = (Pointer) sh_base;
+
+    return base;
+}
+#endif /* defined(macos) */
+
+
 #if defined(intelnt)
 
 #ifndef DXD_WIN_SHARE_MEMORY
@@ -643,7 +671,6 @@ Error DXmemfork(int i)
 #endif   
 
 #if os2
-
 #define memroutines
 
 static PVOID sh_base;   /* starting virtual address */
