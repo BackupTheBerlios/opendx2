@@ -161,7 +161,7 @@ int CanDoOGL(char * Where) /* Are GLX Extensions Available on Where ? */
     if(RetVal == 0)
         return 0;
 
-    if(Dpy = XOpenDisplay(Where))
+    if((Dpy = XOpenDisplay(Where)))
     {
         int Extra, Major, Valid;
 
@@ -174,6 +174,123 @@ int CanDoOGL(char * Where) /* Are GLX Extensions Available on Where ? */
     }
     return 0;
 #endif
+}
+
+Error
+_dxfRedraw (dxObject r, Camera c, char *displayString)
+{
+    Private 	    cacheObject = NULL;
+    char*		    cacheId = NULL;
+
+	/* Need to build up the globals then call _dxfDraw() */
+	tdmChildGlobalP globals = NULL;
+    tdmParsedFormatT *pFormat = NULL;
+
+	    if (!c && !DXGetImageBounds(r,NULL,NULL,NULL,NULL))
+        goto error;
+
+
+    /* get host and window name from display string, fill in the cache id */
+    if (!(pFormat = _tdmParseDisplayString (displayString, &cacheId)))
+        goto error;
+
+    /* validate the display string */
+    if (!(_validateDisplayString(pFormat, 1)))
+        goto error ;
+
+    /* Get a pointer to the global data, out of the cache or create a new one. */
+    if((cacheObject = (Private) DXGetCacheEntry(cacheId, 0, 0)) != NULL) {
+        globals = (tdmChildGlobalP) DXGetPrivateData(cacheObject) ;
+
+        /* Create a reference so this doesn't get deleted while I'm using it */
+        DXReference ((Pointer)cacheObject);
+
+        /* associate cacheId with cacheObject, set to permanent status */
+        if(! DXSetCacheEntry((Pointer)cacheObject, CACHE_PERMANENT,
+                             cacheId, 0, 0)) {
+            /* Can't set cache entry for tdm globals */
+            DXErrorGoto (ERROR_INTERNAL, "#13300") ;
+        }
+
+        /* save the cacheId to allow cache deletion upon DestroyNotify event */
+        if(! (globals->cacheId = tdmAllocate(strlen(cacheId)+1))) {
+            DXErrorGoto (ERROR_NO_MEMORY, "") ;
+        }
+
+        /* save cacheId */
+        strcpy(globals->cacheId,cacheId) ;
+    } else {
+    	DXErrorGoto(ERROR_INTERNAL, "object must be previously rendered");
+    }
+
+    DEFWINDATA(&(globals->win));
+
+    /* Now that we have a global store, use it */
+    {
+        int needInit = 0;
+        DEFGLOBALDATA(globals);
+
+        if (!OBJECT || (OBJECT && OBJECT_TAG != DXGetObjectTag(r)))
+        {
+            if (OBJECT)
+                DXDelete(OBJECT);
+
+            OBJECT = DXReference(r);
+            OBJECT_TAG = DXGetObjectTag(r);
+            needInit = 1;
+        }
+
+        if (!CAMERA || (CAMERA && CAMERA_TAG != DXGetObjectTag((dxObject)c)))
+        {
+            if (CAMERA)
+                DXDelete(CAMERA);
+
+            CAMERA = DXReference((dxObject)c);
+            CAMERA_TAG = DXGetObjectTag((dxObject)c);
+            needInit = 1;
+        }
+
+        if(CAMERA && needInit)
+        {
+            if(!_dxfInitRenderObject(LWIN)) {
+                /* unable to set up for rendering */
+                DXErrorGoto(ERROR_NO_HARDWARE_RENDERING, "#13350");
+            }
+        }
+    }
+        
+    _dxfDraw(globals, OBJECT, CAMERA, 1);
+
+    if(cacheObject) {
+        /* delete the working reference  */
+        DXDelete((Pointer)cacheObject) ;
+        cacheObject = NULL;
+    }
+
+    if (cacheId)
+        tdmFree(cacheId);
+    if (pFormat)
+        _dxfDeleteParsedDisplayString(pFormat);
+
+
+	return OK;
+
+error:
+
+    if(cacheObject) {
+        /* delete the working reference  */
+        DXDelete((Pointer)cacheObject) ;
+        cacheObject = NULL;
+    }
+
+    if (cacheId)
+        tdmFree(cacheId);
+    if (pFormat)
+        _dxfDeleteParsedDisplayString(pFormat);
+
+    EXIT(("ERROR"));
+    DEBUG_MARKER("_dxfAsyncRender EXIT");
+    return ERROR ;
 }
 
 Error
@@ -217,7 +334,7 @@ _dxfAsyncRender (dxObject r, Camera c, char *obsolete, char *displayString)
         goto error ;
 
     /* Get a pointer to the global data, out of the cache or create a new one. */
-    if(cacheObject = (Private) DXGetCacheEntry(cacheId, 0, 0)) {
+    if((cacheObject = (Private) DXGetCacheEntry(cacheId, 0, 0)) != NULL) {
         globals = (tdmChildGlobalP) DXGetPrivateData(cacheObject) ;
 #if defined(DX_NATIVE_WINDOWS)
         /*
@@ -1045,7 +1162,7 @@ _dxfAsyncDelete (char *where)
      * If the entry is not in cache HW has never been done or the 
      * instance has been deleted. In either case this is not an error.
      */
-    if (cacheObject = (Private) DXGetCacheEntry (cacheId, 0, 0)) {
+    if ((cacheObject = (Private) DXGetCacheEntry (cacheId, 0, 0))!=NULL) {
         globals = (tdmChildGlobalP) DXGetPrivateData(cacheObject) ;
         {
             DEFGLOBALDATA(globals) ;
