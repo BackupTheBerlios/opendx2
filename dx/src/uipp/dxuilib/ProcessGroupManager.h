@@ -135,7 +135,7 @@ class ProcessGroupManager : public GroupManager
     //
     ~ProcessGroupManager();
 
-    static SupportsMacros() { return FALSE; }
+    static boolean SupportsMacros() { return FALSE; }
 
     enum {
 		ATTACH,

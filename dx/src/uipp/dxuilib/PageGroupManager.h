@@ -97,7 +97,7 @@ class PageGroupManager : public GroupManager
     //
     PageGroupManager(Network *net); 
 
-    static SupportsMacros() { return TRUE; }
+    static boolean SupportsMacros() { return TRUE; }
 
     //
     // Parse/Print the  group assignment comment.

@@ -71,7 +71,7 @@ class AnnotationGroupManager : public GroupManager
     //
     ~AnnotationGroupManager(){}
 
-    static SupportsMacros() { return TRUE; }
+    static boolean SupportsMacros() { return TRUE; }
 
     //
     // Constructor:
