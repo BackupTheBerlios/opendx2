@@ -130,7 +130,12 @@ HANDLE	hpipeRead, hpipeWrite;
 #    define herror perror
 #endif
 
-static int ConnectTo(const char *host,
+#if defined(intelnt)
+HANDLE
+#else
+static int 
+#endif
+ConnectTo(const char *host,
 		   const char *user,
 		   const char *cwd,
 		   int ac,
@@ -279,7 +284,12 @@ DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* er
     static char errorstr[256];
     char *argv[256];
     char  pi[256];
-    int child, port;
+    int port;
+  #if defined(intelnt)
+    HANDLE child;
+  #else
+    int child;
+  #endif
     int i, n;
     char *c, *s;
 
@@ -357,7 +367,7 @@ DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* er
     free(s);
 
 #if !defined(intelnt)
-    if (child <= 0)
+    if (child == NULL)
 #else
     if (child == 0)
 #endif
@@ -376,7 +386,7 @@ DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* er
 	    fprintf(stderr,buf);
 	}
 #if defined(intelnt)
-    TerminateProcess(child,-1);
+    TerminateProcess(child, -1);
 #else
 	kill(child, SIGKILL);
 #endif
@@ -576,7 +586,11 @@ int DXLGetSocket(DXLConnection *connection)
     return connection->fd;
 }
 
+#if defined(intelnt)
+HANDLE
+#else
 static int
+#endif
 ConnectTo(const char *host,
 		   const char *user,
 		   const char *cwd,
@@ -1018,8 +1032,9 @@ error_return:
     char         args[1000];
     char         exename[255];
 
-    char         *Envs;
-    int          ReturnCodes, rc, iHostIsLocal, pid;
+    char         *Envs, *cEnv;
+    int          ReturnCodes, rc, iHostIsLocal;
+    HANDLE		pid;
 
     HFILE        hpR0, hpW0;
     HFILE        hpR1, hpW1;
@@ -1109,7 +1124,7 @@ error_return:
     sInfo.hStdOutput = hpipeWrite;
     sInfo.hStdError  = GetStdHandle( STD_ERROR_HANDLE );
 
-    pid = rc = CreateProcess(NULL,
+    rc = CreateProcess(NULL,
                         cmd,
                         NULL,
                         NULL,
@@ -1120,10 +1135,13 @@ error_return:
                         &sInfo,	
                         &pInfo	
 		    );
+
+    *remout = -1;
+
     if(rc == TRUE)  {
 	CloseHandle(pInfo.hThread);	
-	pid = pInfo.dwProcessId;
-	rc = 0;
+	pid = pInfo.hProcess;
+	return pid;
 /*
 	bTest = (int) CreateThread(NULL, 0, 
 	(LPTHREAD_START_ROUTINE) ClearExecMessages, 
@@ -1131,24 +1149,10 @@ error_return:
 	SetThreadPriority((LPVOID) &ThrdTID, THREAD_PRIORITY_BELOW_NORMAL);
 */
     }
-    else
-    {
-	rc = 1;
-	pid = -1;
-    }
-
-    *remout = -1;
-    child = 0;
-    if (rc == 0) 
-      child = pid;
-    else
-      goto error_return;
-
-    return child;
 
 error_return:
     sprintf(errstr,"Could not connect using '%s'\n",cmd);
-    return (-1);
+    return (NULL);
 
 #endif		
 }
