@@ -12,8 +12,6 @@
 #ifndef _DXL_H
 #define _DXL_H
 
-#define DXLINK_LICENSES_EXEC 1
-
 #ifdef OS2
 #define INCL_DOS
 #include <os2.h>
