@@ -703,7 +703,10 @@ static char acceleratorTranslations[] = "#override\n\
 	<Btn1Motion>:   move_w()\n\
         <Btn1Down>:     select_w()\n\
 	<Btn1Up>(2+):   select_w() release_w() select_w() release_w()\n\
-	<Key>:          child_nav()\n\
+	<Key>osfUp:     child_nav()\n\
+	<Key>osfDown:   child_nav()\n\
+	<Key>osfLeft:   child_nav()\n\
+	<Key>osfRight:  child_nav()\n\
         <Btn1Up>:       release_w()";
 
 static char traversalTranslations[] =

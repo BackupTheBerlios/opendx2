@@ -29,6 +29,10 @@
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
 #include <X11/Xatom.h>
+#ifndef XK_MISCELLANY
+#define XK_MISCELLANY
+#endif
+#include <X11/keysymdef.h>
 
 #include "../widgets/WorkspaceW.h"
 
@@ -2036,7 +2040,7 @@ Tab *StandIn::createOutputTab(Widget, int ndx, int width)
 
     tab->createTab(this->getRootWidget());
     XtAddEventHandler (tab->getRootWidget(), KeyPressMask, False,
-        (XtEventHandler)StandIn_TabKeyNavEH, (XtPointer)NULL);
+	(XtEventHandler)StandIn_TabKeyNavEH, (XtPointer)NULL);
 
     /*
      * Set background color.
@@ -2091,7 +2095,7 @@ Tab *StandIn::createInputTab(Widget, int ndx, int width)
 
     tab->createTab(this->getRootWidget());
     XtAddEventHandler (tab->getRootWidget(), KeyPressMask, False,
-        (XtEventHandler)StandIn_TabKeyNavEH, (XtPointer)NULL);
+	(XtEventHandler)StandIn_TabKeyNavEH, (XtPointer)NULL);
 
     /*
      * Set background color.
@@ -3282,12 +3286,26 @@ void StandIn_Button2PressEH
 void StandIn_TabKeyNavEH
 (Widget w, XtPointer , XEvent *xev, Boolean *keep_going)
 {
+    *keep_going = TRUE;
+    boolean is_help_key = FALSE;
+    XKeyEvent* xke = (XKeyEvent*)xev;
+    KeySym lookedup = XLookupKeysym (xke, 0);
+
+    // 
+    // problem here is that we don't know for sure that F1 is help.
+    // What we really want is to compare to osfHelp, not XK_F1.
+    //
+    if (lookedup == XK_F1) is_help_key = TRUE;
+
     // the meaning of False here, is that we have no need for <Key> events
     // in the io tabs.  They have always been hooked up and working but
     // for no purpose.  You could hit the space bar on a tab and watch
     // it wiggle, but so what.
-    *keep_going = False;
-    XtCallActionProc (w, "child_nav", xev, NULL, 0);
+    
+    if (!is_help_key) {
+	*keep_going = False;
+	XtCallActionProc (w, "child_nav", xev, NULL, 0);
+    }
 }
 
 //
