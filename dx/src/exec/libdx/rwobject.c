@@ -21,7 +21,7 @@
 #include <sys/signal.h>
 #endif
 
-#if defined(HAVE_SYS_TYPES_H)
+#if defined(HAVE_TYPES_H)
 #include <types.h>
 #endif
 
