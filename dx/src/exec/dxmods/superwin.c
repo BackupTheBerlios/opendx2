@@ -426,10 +426,11 @@ saveEvent(ImageWindow *iw, int event, int state)
 	case DXEVENT_RIGHT:
 	{
 	    DXMouseEvent *mev = (DXMouseEvent *)&ev;
-	    mev->event = event;
-	    mev->x     = iw->x;
-	    mev->y     = iw->y;
-	    mev->state = state;
+	    mev->event      = event;
+	    mev->x          = iw->x;
+	    mev->y          = iw->y;
+	    mev->kstate     = iw->kstate;
+	    mev->state      = state;
 	    break;
 	}
 	
@@ -440,6 +441,7 @@ saveEvent(ImageWindow *iw, int event, int state)
 	    kpev->x     = iw->x;
 	    kpev->y     = iw->y;
 	    kpev->key   = state;
+	    kpev->kstate = iw->kstate;
 	    break;
 	}
     }
