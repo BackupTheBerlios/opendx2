@@ -41,6 +41,10 @@
 #include <sys/select.h>
 #endif
 
+#if defined(HAVE_SYS_FILIO_H)
+#include <sys/fileio.h>
+#endif
+
 static slave_id = 1;  /* We start at 1 because master will be slave 0 */
 static Error ConnectPStoS(dpgraphstat *index, dpgraphstat *index2);
 static Error ConnectPMtoS(dpgraphstat *index);
