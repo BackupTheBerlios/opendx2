@@ -27,11 +27,11 @@ EXTRA_DIST = \
 	\
 	Main.C
 
-builder_LDADD = 			\
-	../base/libBASE.a  		\
-	../widgets/libWIDGETS.a  	\
-	../dxl/libDXL.a		  	\
-	-L/usr/X11R6/lib 		\
-	-L/usr/local/lib 		\
-	-L$(DXROOT)/lib_$(ARCH) 	\
-	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
+#builder_LDADD = 			\
+#	../base/libBASE.a  		\
+#	../widgets/libWIDGETS.a  	\
+#	../dxl/libDXL.a		  	\
+#	-L/usr/X11R6/lib 		\
+#	-L/usr/local/lib 		\
+#	-L$(DXROOT)/lib_$(ARCH) 	\
+#	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext

@@ -51,14 +51,14 @@ EXTRA_DIST = \
 	\
 	Main.C
 
-gar_LDADD = 				\
-	../base/libBASE.a  		\
-	../widgets/libWIDGETS.a  	\
-	../dxl/libDXL.a		  	\
-	-L/usr/X11R6/lib 		\
-	-L/usr/local/lib 		\
-	-L$(DXROOT)/lib_$(ARCH) 	\
-	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
+# gar_LDADD = 				\
+#	../base/libBASE.a  		\
+#	../widgets/libWIDGETS.a  	\
+#	../dxl/libDXL.a		  	\
+#	-L/usr/X11R6/lib 		\
+#	-L/usr/local/lib 		\
+#	-L$(DXROOT)/lib_$(ARCH) 	\
+#	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
 
 dxdata_DATA = 				\
 	col_insens.bm			\
