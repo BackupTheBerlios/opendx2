@@ -107,11 +107,11 @@ for i in $* ; do
 			 args="$args $i" ;;
 		-E) 	 link=0
 			 args="$args /E" ;;
-		-B)	 libpath="$libpath /libpath:\"$BINMODEDIR\"" 
+		-B)	 LIB="$LIB;$BINMODEDIR" 
 			 binmode="BINMODE.OBJ" ;;
                  *)      if test $oset = 1 ; then
                              oname=$i
-                             args="$args /out:$i"
+                             args="$args /Fe$i"
                              oset=0
                          else
                              args="$args $i"
@@ -161,9 +161,9 @@ fi
 if test $compile = 1 ; then
 
     if test $link = 1 ; then
-	# cmd="cl -nologo $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $deflibs $libs $dlllib $map $binmode" 
+	cmd="cl -nologo $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $deflibs $libs $dlllib $map $binmode" 
 	args=`echo $args |sed 's?/Z7?/DEBUG?g'`
-	cmd="link -nologo $args $cfiles $libpath $deflibs $libs $dlllib $map $binmode" 
+	# cmd="link -nologo $args $cfiles $libpath $deflibs $libs $dlllib $map $binmode" 
     else
 	cmd="cl $dllflag -nologo $incpath $defs $undefs $args $cfiles"
     fi

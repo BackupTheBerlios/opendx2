@@ -106,7 +106,7 @@ for i in $* ; do
 			 args="$args $i" ;;
 		-E)	 link=0
 			 args="$args /E" ;;
-		-B)	 libpath="$libpath /LIBPATH:\"$BINMODEDIR\""
+		-B)	 LIB="$LIB;$BINMODEDIR"
 			 binmode="BINMODE.OBJ" ;;
 		*.cpp)	 
 			 cfiles="$cfiles $i" ;;
@@ -123,7 +123,7 @@ for i in $* ; do
 			 mkdep=1;;
                 *)       if test $oset = 1 ; then
                              oname=$i
-                             args="$args /out:$i"
+                             args="$args /Fe$i"
                              oset=0
 			 else
 			     args="$args $i"
@@ -177,8 +177,8 @@ if test $compile = 1
 then
 
     if test $link = 1 ; then
-	# cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles $libpath /link $deflibs $libs $dlllib $map $binmode" 
-	cmd="link -nologo $args $cfiles $libpath $deflibs $libs $dlllib $map $binmode" 
+	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles $libpath /link $deflibs $libs $dlllib $map $binmode" 
+	# cmd="link -nologo $args $cfiles $libpath $deflibs $libs $dlllib $map $binmode" 
     else
 	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles"
     fi
