@@ -1520,6 +1520,10 @@ if test -n "$dx8bitcmap" ; then
   DX8BITCMAP=$dx8bitcmap
   export DX8BITCMAP
 fi
+if test -n "$dxexec" ; then
+  DXEXEC=$dxexec
+  export DXEXEC
+fi
 
 #
 # guaranteed to be have values
