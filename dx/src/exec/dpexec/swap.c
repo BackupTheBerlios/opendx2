@@ -322,5 +322,5 @@ Error _dxf_ExReclaimMemory (unsigned int nbytes)
 
     set_status (status);
 
-    return TRUE;
+    return found;
 }
