@@ -96,7 +96,7 @@ EXTRA_DIST = \
 #	-L$(DXROOT)/lib_$(ARCH) 	\
 #	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
 
-noinst_DATA = 				\
+EXTRA_DIST = 				\
 	col_insens.bm			\
 	col_sens.bm			\
 	grid1.bm			\
