@@ -1967,4 +1967,10 @@ INPUT unsetvalue [cache:2] ;  value or string; 0 ; output value toggle when unse
 INPUT label  [visible:0, cache:2] ;  string; (no default) ; global name applied to interactor
 OUTPUT output ;  value or string; the selected toggle value
 
+MODULE SocketConnection
+CATEGORY Import and Export
+FLAGS ASYNC PIN
+INPUT port; integer; (none); port to connect to
+OUTPUT obj; object; received data (if any)
+
 #endif /* CPLUSPLUS_UI */

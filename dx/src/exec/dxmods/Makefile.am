@@ -68,7 +68,7 @@ SOURCES4 = \
 	rotate.c route.c rubbersheet.c sample.c scalar.c \
 	scalarlist.c scale.c scalescreen.c screen.c select.c \
 	selector.c sequencer.c shade.c showboundary.c showbox.c \
-	showconnect.c showposition.c slab.c slice.c \
+	showconnect.c showposition.c slab.c slice.c socketconnect.c \
 	sort.c stack.c statistics.c streakline.c streamline.c \
 	stringlegend.c superstate.c superwin.c switch.c system.c \
 	text.c toggle.c trace.c transform.c translate.c 
