@@ -274,7 +274,8 @@ AC_DEFUN(DX_ARCHITECTURE,
     	ARCH=cygwin
     fi
     if test $unameS = "Linux" ; then
-        if test $unameM = "i686" ; then
+	isit=`echo $unameM | egrep "i.86"`
+	if test ! -z "$isit" ; then
 	    ARCH=linux86 
 	else
 	    ARCH=unknown 

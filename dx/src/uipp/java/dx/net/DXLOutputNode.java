@@ -1,15 +1,8 @@
 //
-// (C) COPYRIGHT International Business Machines Corp. 1997
-// All Rights Reserved
-// Licensed Materials - Property of IBM
-//
-// US Government Users Restricted Rights - Use, duplication or
-// disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
-//
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXLOutputNode.java,v 1.1 1999/03/24 15:17:30 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXLOutputNode.java,v 1.2 1999/05/25 22:12:14 gda Exp $
  */
 
 // Received $lnk:0:  0:  LINK:  DXLOutput VALUE DXLOutput_1 [2 2]

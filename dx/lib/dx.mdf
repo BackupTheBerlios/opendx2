@@ -1,7 +1,3 @@
-#####################################################################
-# (c) COPYRIGHT International Business Machines Corporation 1991-1995
-# ALL RIGHTS RESERVED.
-#####################################################################
 # 1 "userTmp.c"
 
 
