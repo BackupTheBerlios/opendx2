@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/EditorWindow.C,v 1.1 1999/03/24 15:17:40 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/EditorWindow.C,v 1.2 1999/04/12 20:47:06 gda Exp $
  *
  */
 
@@ -2752,7 +2752,7 @@ void EditorWindow::doSelectedNodesDefaultAction()
 
 }
 
-boolean EditorWindow::getNodeSelectionCount(const char *classname)
+int EditorWindow::getNodeSelectionCount(const char *classname)
 {
     Node	*node;
     StandIn	*standIn;
@@ -4594,6 +4594,7 @@ error:
     return FALSE;
 }
 
+boolean
 EditorWindow::macroifySelectedNodes(const char *name,
 				    const char *cat,
 				    const char *desc,
