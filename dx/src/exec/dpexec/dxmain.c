@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#if DXD_HAS_UNISTD_H
+#if HAVE_UNISTD_H
 #include <unistd.h>
 #else
 #include <conio.h>
@@ -318,13 +318,13 @@ DXmain (argc, argv, envp)
     char	**envp;
 {
     int		save_errorlevel;
-#if DXD_HAS_RLIMIT
+#if HAVE_SYS_CORE_H
     struct rlimit	rl;
 #endif
 
     exenvp = envp;
 	    
-#if DXD_HAS_RLIMIT
+#if HAVE_SYS_CORE_H
     getrlimit (RLIMIT_CORE, &rl);
     rl.rlim_cur = 0;
     setrlimit (RLIMIT_CORE, &rl);
