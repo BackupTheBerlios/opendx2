@@ -2,7 +2,7 @@ srvbindir = $(prefix)/dx/java/server/bin
 # the server script (in srvbindir) will actually cd and run from the class subdir so that java will find the classes
 # the server will expect to find a file dxserver.paths there to tell the exec where to find .net files
 srvrundir = $(srvbindir)/../class
-srvrundir_DATA=dxserver.paths
+srvrun_DATA = dxserver.paths
 srvbin_DATA = $(SCRFILES)
 
 SCRFILES = stopserver startserver startserver.bat
