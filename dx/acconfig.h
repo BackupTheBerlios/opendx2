@@ -49,6 +49,11 @@
 #undef HAVE_SYS_PARAM_H
 #undef HAVE_SYS_SELECT_H
 #undef HAVE_ASM_SOCKET_H
+#undef HAVE_LIBZ
+#undef HAVE_LIBCDF
+#undef HAVE_LIBJPEG
+#undef HAVE_LIBDF
+#undef HAVE_LIBNETCDF
 
 #undef uint
 #undef byte
