@@ -734,7 +734,6 @@ boolean ToolSelector::AddTool(Symbol cat, Symbol tool, void *ptr)
 {
     ListIterator li(ToolSelector::AllToolSelectors);
     ToolSelector *ts;
-    boolean result;
 
     //
     // If there is no category, don't put it in the list.
@@ -744,8 +743,9 @@ boolean ToolSelector::AddTool(Symbol cat, Symbol tool, void *ptr)
 
     while( (ts = (ToolSelector*)li.getNext()) )
     {
-	if (!ts->addTool(cat, tool, ptr))
-	    result = FALSE;
+	/*if (!ts->addTool(cat, tool, ptr))
+	    result = FALSE;*/
+	ts->addTool(cat, tool, ptr);
     }
     return TRUE;
 }
@@ -906,7 +906,7 @@ ActivateElement(XmListWidget lw,
 	     XEvent *event,
 	     Boolean default_action)
 {
-  int item, SLcount, i;
+  int item, SLcount;
   XmListCallbackStruct cb;
 
   item = lw->list.LastHLItem;
@@ -1014,13 +1014,11 @@ void ToolList_TypeAhead(Widget wid, XEvent *event, String *params,
     XKeyEvent *xk = (XKeyEvent*) event;
     KeySym kr;
     char input_string[MOST_TYPED];
-    int input_length;
-    Status status_return;
     Boolean found = False;
     int i, curKbd;
 
     /* Determine what was pressed. */
-    input_length = XLookupString(xk, input_string, MOST_TYPED, &kr, 0);
+    /*input_length =*/ XLookupString(xk, input_string, MOST_TYPED, &kr, 0);
 
     curKbd = lw->list.CurrentKbdItem<1?1:
 	(lw->list.CurrentKbdItem>lw->list.itemCount?0:lw->list.CurrentKbdItem);

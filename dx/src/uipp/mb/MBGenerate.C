@@ -889,7 +889,7 @@ fprintf(fd, "      new_in[%d] = in[%d];\n\n", i, i);
     {
 fprintf(fd, "      /* input \"%s\" is Field/Group */\n", in[i]->name);
 fprintf(fd, "      if (in[%d])\n", i);
-fprintf(fd, "        DXGetXformInfo((Xform)in[%d], &new_in[%d], NULL);\n", i, i, i);
+fprintf(fd, "        DXGetXformInfo((Xform)in[%d], &new_in[%d], NULL);\n", i, i);
 fprintf(fd, "      else\n");
 fprintf(fd, "        new_in[%d] = NULL;\n", i);
 fprintf(fd, "\n");
@@ -1410,7 +1410,7 @@ fprintf(fd, "        DXSetError(ERROR_MISSING_DATA, \"\\\"%s\\\" has no data com
 fprintf(fd, "        goto error;\n");
 fprintf(fd, "      }\n");
 fprintf(fd, "\n");
-fprintf(fd, "      if (DXGetObjectClass((Object)array) != CLASS_ARRAY)\n", i);
+fprintf(fd, "      if (DXGetObjectClass((Object)array) != CLASS_ARRAY)\n");
 fprintf(fd, "      {\n");
 fprintf(fd, "        DXSetError(ERROR_BAD_CLASS, \"data component of \\\"%s\\\" should be an array\");\n", in[i]->name);
 fprintf(fd, "        goto error;\n");
@@ -2063,8 +2063,9 @@ process_input(char *basename, Module *mod, Parameter **in, Parameter **out)
 	if (line[0] == '#')
 	    continue;
 	
-	if (line[-1] == -1)
-	    goto error;
+	/*  FIXME  */
+	/*if (line[-1] == -1)
+	  goto error;*/
 
 	parseline(line, &name, &value);
 

@@ -69,7 +69,7 @@ class SpreadSheetChoice : public NonimportableChoice {
 
 	SpreadSheetChoice (GARChooserWindow* gcw, Symbol sym);
 	static SpreadSheetChoice* 
-	    SpreadSheetChoice::Allocator(GARChooserWindow* gcw, Symbol sym)
+	    Allocator(GARChooserWindow* gcw, Symbol sym)
 		{ return new SpreadSheetChoice (gcw, sym); }
 	~SpreadSheetChoice();
 

@@ -2314,7 +2314,7 @@ boolean EditorWindow::selectConnection(int dir, boolean connected)
     Node *node, *snode;
     List *nlist = &this->network->nodeList;
     int nsize = nlist->getSize();
-    int i, pos, mnodes;
+    int i, pos;
     boolean *mark = new boolean[nsize];
 
     if (connected)
@@ -2328,7 +2328,7 @@ boolean EditorWindow::selectConnection(int dir, boolean connected)
       	for(i=0; i<nsize; i++)
              mark[i] = FALSE;
 
-	mnodes = this->network->connectedNodes(mark, pos-1, dir);
+	/*mnodes =*/ this->network->connectedNodes(mark, pos-1, dir);
 
 	pos = 0;
 	FOR_EACH_NETWORK_NODE(this->network, node, iterator)
@@ -5145,7 +5145,6 @@ EditorWindow::deletePage(const char* to_delete)
 	DictionaryIterator di(*this->pageSelector);
 	int member_count = 9999999;
 	EditorWorkSpace* contains_few_members = NUL(EditorWorkSpace*);
-	boolean contains_root = FALSE;
 	while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) {
 	    if (ews->membersInitialized()) {
 		found = TRUE;
@@ -5157,8 +5156,8 @@ EditorWindow::deletePage(const char* to_delete)
 		    member_count = current_count;
 		    contains_few_members = (EditorWorkSpace*)ews;
 		}
-		if (ews == this->workSpace)
-		    contains_root = TRUE;
+		/*if (ews == this->workSpace)
+		  contains_root = TRUE;*/
 	    }
 	}
 	if (!found) {
@@ -6192,7 +6191,7 @@ boolean EditorWindow::showExecutedNodes()
 
 	ListIterator it(modless);
 	boolean found_some = FALSE;
-	while ((found_some == FALSE) && (sym = (Symbol)it.getNext())) {
+	while ((found_some == FALSE) && (sym = (Symbol)(long)it.getNext())) {
 	    const char* cp = theSymbolManager->getSymbolString(sym);
 	    ASSERT ((cp) && (cp[0]));
 	    List* nodes = this->network->makeClassifiedNodeList(cp);
@@ -6243,7 +6242,7 @@ boolean EditorWindow::showExecutedNodes()
 			boolean moduleless_node = FALSE;
 
 			ListIterator mit(modless);
-			while ( (sym = (Symbol)mit.getNext()) ) {
+			while ( (sym = (Symbol)(long)mit.getNext()) ) {
 			    if (srcNode->isA(sym)) {
 				if (sym == interactor_sym) {
 				    InteractorNode* in = (InteractorNode*)srcNode;

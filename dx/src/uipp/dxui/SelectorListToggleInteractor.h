@@ -56,9 +56,9 @@ class SelectorListToggleInteractor : public Interactor
     Widget      toggleForm;
     List	toggleWidgets;
 
-    static boolean SelectorListToggleInteractor::ClassInitialized;
+    static boolean ClassInitialized;
 
-    static String SelectorListToggleInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     friend void SelectorListToggleInteractor_ToggleCB(
 		Widget widget, XtPointer clientData, XtPointer callData);

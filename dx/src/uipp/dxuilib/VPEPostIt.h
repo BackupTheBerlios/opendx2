@@ -32,14 +32,14 @@ class VPEPostIt : public VPEAnnotator
   // P R I V A T E   P R I V A T E   P R I V A T E
   // P R I V A T E   P R I V A T E   P R I V A T E
   private:
-    static boolean VPEPostIt::VPEPostItClassInitialized;
+    static boolean VPEPostItClassInitialized;
     Pixmap         bg_pixmap;
     void	   makePixmap();
 
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   protected:
-    static  String 	   VPEPostIt::DefaultResources[]; 
+    static  String 	   DefaultResources[]; 
     virtual void           completeDecorativePart();
 
     virtual boolean requiresLineReroutingOnResize() { return FALSE; }

@@ -56,9 +56,9 @@ class SelectorRadioInteractor : public Interactor
     Widget      toggleRadio;
     List	toggleWidgets;
 
-    static boolean SelectorRadioInteractor::SelectorRadioInteractorClassInitialized;
+    static boolean SelectorRadioInteractorClassInitialized;
 
-    static String SelectorRadioInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     friend void SelectorRadioInteractor_SelectorToggleCB(Widget widget, XtPointer clientData, 
 				     XtPointer callData);

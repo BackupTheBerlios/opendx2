@@ -84,8 +84,8 @@ class InteractorInstance : public Base {
 						char **reason);
     virtual boolean defaultVertical() { return TRUE; }
 
-    static int InteractorInstance::CountLines(const char*);
-    static const char* InteractorInstance::FetchLine(const char*, int);
+    static int CountLines(const char*);
+    static const char* FetchLine(const char*, int);
 
     char* java_var_name;
     virtual const char* javaName() { return "tfld"; }

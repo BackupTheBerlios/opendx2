@@ -2593,7 +2593,6 @@ static void DropSelections( Widget w, XEvent* event,
     Dimension width, height;
     XtWidgetGeometry request, reply;
     XtGeometryResult result;
-    Arg wargs[10];
     int n;
 
     if (!(ww = WorkspaceOfWidget(w))) return ;
@@ -2631,10 +2630,8 @@ static void DropSelections( Widget w, XEvent* event,
 	}
 	if( (resize_x > 0) || (resize_y > 0) )
 	{
-	    int old_width, old_height;
-
-	    old_width = ww->core.width;
-	    old_height = ww->core.height;
+	    /*old_width = ww->core.width;*/
+	    /*old_height = ww->core.height;*/
 	    if(resize_x > 0)
 		request.width = ww->core.width + resize_x + 
 			ww->workspace.grid_width;
@@ -2837,12 +2834,12 @@ static void DropSelections( Widget w, XEvent* event,
 		cb.width  = 0;
 		if(constraints->workspace.is_h_resizable)
 		{
-		    XtSetArg(wargs[n], XmNwidth, width); n++;
+		    /*XtSetArg(wargs[n], XmNwidth, width);*/ n++;
 		    cb.width = width;
 		} else cb.width = child->core.width;
 		if(constraints->workspace.is_v_resizable)
 		{
-		    XtSetArg(wargs[n], XmNheight, height); n++;
+		    /*XtSetArg(wargs[n], XmNheight, height);*/ n++;
 		    cb.height = height;
 		} else cb.height = child->core.height;
 		if(n > 0)

@@ -54,7 +54,7 @@ class SliderInteractor : public ScalarInteractor
     Widget	componentForm;	// Holds the steppers for a vector interactor
     Widget	sliderWidget;
 
-    static boolean SliderInteractor::SliderInteractorClassInitialized;
+    static boolean SliderInteractorClassInitialized;
 
     // Call the virtual callback for value changes. 
     //
@@ -67,7 +67,7 @@ class SliderInteractor : public ScalarInteractor
     // Protected member data:
     //
 
-    static String SliderInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     //
     // Accepts value changes and reflects them into other interactors, cdbs

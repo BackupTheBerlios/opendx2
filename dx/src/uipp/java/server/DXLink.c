@@ -11,7 +11,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.5 2001/05/03 04:27:32 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.6 2002/03/22 23:27:11 rhh Exp $
  */
 #if defined(hp700) 
 #define _UINT64_T
@@ -126,7 +126,6 @@ DXLConnection* dxl;
 JNIEXPORT jint JNICALL Java_server_DXServerThread_DXLExecuteOnce
     (JNIEnv *env, jobject jobj, jlong jdxl, jstring jmacro)
 {
-jmethodID mid = 0;
 int retval = 1;
 DXLConnection* conn = (DXLConnection*)jdxl;
 const char *macro = (*env)->GetStringUTFChars(env, jmacro,0);
@@ -149,7 +148,7 @@ int size = sizeof(struct _JavaEnv);
 	if (exDXLExecuteOnceNamed(conn, tmpbuf) == ERROR) {
 	    retval = 0;
 	} else {
-	    const char* method_name = "hasEndMsg";
+	    /*const char* method_name = "hasEndMsg";*/
 	    jclass cls = (*env)->GetObjectClass(env, jobj);
 	    /* use the javap command to generate the signature. */
 	    jmethodID mid = (*env)->GetMethodID(env, cls, "hasEndMsg", "()I");
@@ -223,7 +222,7 @@ JNIEXPORT jint JNICALL Java_server_DXServer_DXLSend
 JNIEXPORT jint JNICALL Java_server_DXServerThread_DXLLoadVisualProgram
   (JNIEnv *env, jobject jobj, jlong jdxl, jstring jnet)
 {
-int retval = 0, i;
+int retval = 0;
 DXLConnection* conn = (DXLConnection*)jdxl;
 
     if (DXLGetSocket(conn) > 0) {

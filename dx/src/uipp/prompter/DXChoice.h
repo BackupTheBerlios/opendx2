@@ -31,7 +31,7 @@ class DXChoice : public ImportableChoice {
 
 	DXChoice (GARChooserWindow* gcw, Symbol sym) : 
 	    ImportableChoice ("dxData", FALSE, TRUE, TRUE, FALSE, gcw, sym) {};
-	static DXChoice* DXChoice::Allocator(GARChooserWindow* gcw, Symbol sym)
+	static DXChoice* Allocator(GARChooserWindow* gcw, Symbol sym)
 	    { return new DXChoice(gcw, sym); }
 	~DXChoice(){};
 

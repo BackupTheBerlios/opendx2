@@ -467,7 +467,7 @@ boolean DXLinkHandler::OpenNetwork(const char *c, int id, void *va)
 boolean DXLinkHandler::SaveNetwork(const char *c, int id, void *va)
 {
     char *buf = new char[strlen(c)+1];
-    char *d, *cfg, *net;
+    char *d, *net;
 
     if (isspace(*c))
 	while (isspace(*c++));
@@ -486,17 +486,17 @@ boolean DXLinkHandler::SaveNetwork(const char *c, int id, void *va)
 	if (*c && isspace(*c))
 	    while (isspace(*c++));
 
-	if (! *c)
-	    cfg = NULL;
-	else
+	if (*c)
 	{
-	    cfg = d;
+	    /*cfg = d;*/
 	    do {
 		*d++ = *c++;
 	    } while (*c && !isspace(*c));
 
 	    *d = '0';
 	}
+	/*else
+	    cfg = NULL;*/
     }
 
     theDXApplication->setBusyCursor(TRUE);
@@ -759,7 +759,7 @@ boolean DXLinkHandler::SetTabValue(const char *c, int id, void *va)
     char buffer[1024];
 
     sscanf(c, "%[^_]_%[^_]_%d_%[^_]_%d = %n",
-	    macro, module, &inst, &paramInd, inout, &length);
+	    macro, module, &inst, inout, &paramInd, &length);
     const char *value = c+length;
 
     Network *n = theDXApplication->network;

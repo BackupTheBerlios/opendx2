@@ -531,7 +531,7 @@ class ImageWindow : public DXWindow
     XtWorkProcId reset_eor_wp;
     int  pending_resize_x, pending_resize_y; 
     int  pending_resize_width, pending_resize_height;
-    static boolean ImageWindow::NeedsSyncForResize;
+    static boolean NeedsSyncForResize;
 
   protected:
 

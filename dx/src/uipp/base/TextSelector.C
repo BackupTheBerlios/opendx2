@@ -648,16 +648,13 @@ TextSelector_ModifyCB (Widget, XtPointer cdata, XtPointer callData)
 	const char* item;
 	int found = 0;
 	boolean match = FALSE;
-	int most_recent;
 	int i = 1;
 	while ( (item = (char*)it.getNext()) ) {
 	    if (EqualString (item, cp)) {
 		match = TRUE;
-		most_recent = i;
 		break;
 	    } else if (EqualSubstring (item, proposed, plen-1)) {
 		found++;
-		most_recent = i;
 	    }
 	    i++;
 	}

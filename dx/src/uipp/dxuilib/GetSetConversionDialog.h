@@ -52,7 +52,7 @@ class GetSetConversionDialog : public Dialog
     //
     static boolean ClassInitialized;
     static String  DefaultResources[];
-    static Cursor  GetSetConversionDialog::WatchCursor;
+    static Cursor  WatchCursor;
 
     List *referenced_macros;
 
@@ -75,7 +75,7 @@ class GetSetConversionDialog : public Dialog
 
     void setFindButton (boolean first, boolean done);
 
-    static char *GetSetConversionDialog::GetFileName(Network *);
+    static char *GetFileName(Network *);
 
   protected:
     //
@@ -99,7 +99,7 @@ class GetSetConversionDialog : public Dialog
     void unhinge(boolean select_next_editor = FALSE);
     void updateNetName(Network *);
 
-    static void GetSetConversionDialog::GetSetPlacements
+    static void GetSetPlacements
 	(Network *topnet, List* maclist, List **gets, List **sets);
 
     void selectNextNode();

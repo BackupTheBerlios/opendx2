@@ -390,14 +390,14 @@ char *Node::outputParameterNamesString(const char *varprefix)
     if (this->getOutputCount() == 0)
 	return NULL;
 
-    const char *io, *name ;
+    const char *name ;
     char  *buf, *retstr, *newprefix;
     int	  i, paramlen, num_params;
 
     name = this->getNameString();
     ASSERT(name);
 
-    io = "out";
+    /*io = "out";*/
     num_params = outputParameters.getSize();
 
     //

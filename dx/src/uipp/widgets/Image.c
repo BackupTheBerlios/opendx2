@@ -282,32 +282,31 @@ WidgetClass xmImageWidgetClass = (WidgetClass) &xmImageClassRec;
  */
 static void Initialize( XmImageWidget request, XmImageWidget new )
 {
-Visual *vis;
 int    depth;
 int    screen = XScreenNumberOfScreen(XtScreen(request));
 
     depth = 8;
-    vis = getBestVisual(XtDisplay(new), &depth, screen);
+    /*vis =*/ getBestVisual(XtDisplay(new), &depth, screen);
     if(depth == 8) new->image.supported8 = True;
 
     depth = 12;
-    vis = getBestVisual(XtDisplay(new), &depth, screen);
+    /*vis =*/ getBestVisual(XtDisplay(new), &depth, screen);
     if(depth == 12) new->image.supported12 = True;
 
     depth = 15;
-    vis = getBestVisual(XtDisplay(new), &depth, screen);
+    /*vis =*/ getBestVisual(XtDisplay(new), &depth, screen);
     if(depth == 15) new->image.supported15 = True;
 
     depth = 16;
-    vis = getBestVisual(XtDisplay(new), &depth, screen);
+    /*vis =*/ getBestVisual(XtDisplay(new), &depth, screen);
     if(depth == 16) new->image.supported16 = True;
 
     depth = 24;
-    vis = getBestVisual(XtDisplay(new), &depth, screen);
+    /*vis =*/ getBestVisual(XtDisplay(new), &depth, screen);
     if(depth == 24) new->image.supported24 = True;
 
     depth = 32;
-    vis = getBestVisual(XtDisplay(new), &depth, screen);
+    /*vis =*/ getBestVisual(XtDisplay(new), &depth, screen);
     if(depth == 32) new->image.supported32 = True;
 }
 

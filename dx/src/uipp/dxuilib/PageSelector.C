@@ -361,10 +361,9 @@ void PageSelector::addButton (const char* name, const void* definition)
 {
     int size = this->page_buttons->getSize();
     boolean first = (boolean)(size == 0);
-    PageTab *last_button = NUL(PageTab*);
 
-    if (!first)
-	last_button = (PageTab*)this->page_buttons->getElement(size);
+    /*if (!first)
+        last_button = (PageTab*)this->page_buttons->getElement(size);*/
 
     PageTab* new_button; 
     PageGroupRecord* prec = this->getRecordOf(name);
@@ -1026,7 +1025,6 @@ void PageSelector::updateList()
    // height. This means finding out how tall 1 line is and multiplying
    // it by the number of items.
 
-    Dimension marginH, shadowT, highlightT;
     Dimension swmarginH, swshadowT;
     XtVaGetValues (XtParent(this->popupList), XmNmarginHeight, &swmarginH,
 		XmNshadowThickness, &swshadowT, NULL);

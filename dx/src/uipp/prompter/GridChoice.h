@@ -64,7 +64,7 @@ class GridChoice : public NonimportableChoice {
     public:
 
 	GridChoice (GARChooserWindow* gcw, Symbol sym);
-	static GridChoice* GridChoice::Allocator (GARChooserWindow* gcw, Symbol sym)
+	static GridChoice* Allocator (GARChooserWindow* gcw, Symbol sym)
 	    { return new GridChoice(gcw, sym); }
 	~GridChoice();
 

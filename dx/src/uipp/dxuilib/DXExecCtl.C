@@ -337,7 +337,6 @@ void DXExecCtl::vcrCommand(int action, boolean pressed)
     DXPacketIF *p = theDXApplication->getPacketIF();
     SequencerNode* sequencer = theDXApplication->network->sequencer;
     Widget vcr = NULL;
-    void   (*callback)(void*,int,void*);
     boolean doEnd = FALSE;
 
     if (action == VCR_STOP) {
@@ -356,8 +355,6 @@ void DXExecCtl::vcrCommand(int action, boolean pressed)
 
    	return;
     }
-
-    callback = NULL;
 
     switch(action)
     {

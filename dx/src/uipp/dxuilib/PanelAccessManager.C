@@ -89,7 +89,7 @@ ControlPanel *PanelAccessManager::getInaccessiblePanel(int index)
 
     ASSERT(index > 0); 
 
-    while (!found && (instance = (int)iterator.getNext())) {
+    while (!found && (instance = (int)(long)iterator.getNext())) {
 	p = net->getPanelByInstance(instance);
 	if (!p)  {
 	    //
@@ -109,7 +109,7 @@ ControlPanel *PanelAccessManager::getInaccessiblePanel(int index)
     //
     if (obsolete.getSize() > 0) {
 	iterator.setList(obsolete);
-	while ( (instance = (int)iterator.getNext()) ) {
+	while ( (instance = (int)(long)iterator.getNext()) ) {
 	    this->inaccessiblePanels.removeElement((void*)instance);
 	}
     }

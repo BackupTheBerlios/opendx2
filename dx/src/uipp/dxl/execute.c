@@ -40,7 +40,7 @@ static void _dxl_BeginBG(DXLConnection *c, const char *msg, void *data)
 
 static void _dxl_CompleteExecute(DXLConnection *c, const char *msg, void *data)
 {
-    int packetId = (int)data;
+    int packetId = (int)(long)data;
     c->isExecuting--;
     _dxl_RemoveSystemHandler(c,PACK_COMPLETE,packetId,
 			FGendMSG, _dxl_CompleteExecute);

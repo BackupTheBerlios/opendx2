@@ -632,7 +632,6 @@ void ColormapNode::installMaps(
 {
     int      length;
     char*    value;
-    Type   t;
 
     int maxcount = h_count;
     if (s_count > maxcount) maxcount = s_count;
@@ -656,10 +655,10 @@ void ColormapNode::installMaps(
      */
     this->makeControlPointList(h_count, h_level, h_value, value);
     if (send_how == SEND_QUIET)
-    	t = this->setInputValueQuietly(HMAP_PARAM_NUM, value, 
+    	this->setInputValueQuietly(HMAP_PARAM_NUM, value, 
 				DXType::UndefinedType);
     else
-    	t = this->setInputValue(HMAP_PARAM_NUM, value, 
+    	this->setInputValue(HMAP_PARAM_NUM, value, 
 				DXType::UndefinedType, FALSE);
    
    /*
@@ -667,20 +666,20 @@ void ColormapNode::installMaps(
     */
     this->makeControlPointList(s_count, s_level, s_value, value);
     if (send_how == SEND_QUIET)
-    	t = this->setInputValueQuietly(SMAP_PARAM_NUM, value, 
+    	this->setInputValueQuietly(SMAP_PARAM_NUM, value, 
 						DXType::UndefinedType);
     else
-	t = this->setInputValue(SMAP_PARAM_NUM, value, 
+	this->setInputValue(SMAP_PARAM_NUM, value, 
 		    		DXType::UndefinedType, FALSE);
    /*
     * Assign the value to the value map parameter.
     */
     this->makeControlPointList(v_count, v_level, v_value, value);
     if (send_how == SEND_QUIET)
-    	t = this->setInputValueQuietly(VMAP_PARAM_NUM, value, 
+    	this->setInputValueQuietly(VMAP_PARAM_NUM, value, 
 						DXType::UndefinedType);
     else
-	t = this->setInputValue(VMAP_PARAM_NUM, value, 
+	this->setInputValue(VMAP_PARAM_NUM, value, 
 		    		DXType::UndefinedType, FALSE);
 
     /*
@@ -688,10 +687,10 @@ void ColormapNode::installMaps(
      */
     this->makeControlPointList(op_count, op_level, op_value, value);
     if (send_how == SEND_QUIET)
-	t = this->setInputValueQuietly(OMAP_PARAM_NUM, value, 
+	this->setInputValueQuietly(OMAP_PARAM_NUM, value, 
 						DXType::UndefinedType);
     else
-	t = this->setInputValue(OMAP_PARAM_NUM, value, 
+	this->setInputValue(OMAP_PARAM_NUM, value, 
 				DXType::UndefinedType, FALSE);
 
     delete value;
@@ -756,7 +755,6 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
 {
     int index, values = 0;
     char *p, *buf = NULL;
-    boolean update_attr = FALSE;
 
     this->deferMinMaxUpdates();
 
@@ -785,7 +783,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
 	    buf = DuplicateString(p);
 	    index = 0;
 	    if (IsScalar(buf, index)) {
-		update_attr = TRUE;
+		/*update_attr = TRUE;*/
 		values++;
 		buf[index] = '\0';
 		this->setInputAttributeFromServer(MIN_PARAM_NUM,buf,
@@ -810,7 +808,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
 	    buf = DuplicateString(p);
 	    index = 0;
 	    if (IsScalar(buf, index)) {
-		update_attr = TRUE;
+		/*update_attr = TRUE;*/
 		values++;
 		buf[index] = '\0';
 		this->setInputAttributeFromServer(MAX_PARAM_NUM,buf,
@@ -848,7 +846,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
     //
     if ( (p = strstr((char*)line,"map=")) ) {
         char *buf = new char [STRLEN(p)];
-   	update_attr = FALSE;
+   	/*update_attr = FALSE;*/
 	do {
 	    boolean null_default;
 	    int i1, i2;

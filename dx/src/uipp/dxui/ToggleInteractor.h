@@ -46,7 +46,7 @@ class ToggleInteractor : public Interactor
 
     Widget      toggleButton;
 
-    static String ToggleInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     friend void ToggleInteractor_ToggleCB(Widget widget, XtPointer clientData, 
 				     XtPointer callData);

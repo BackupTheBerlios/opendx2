@@ -102,7 +102,7 @@ void CreateMacroDialog::ConfirmationOk(void *data)
 boolean CreateMacroDialog::okCallback(Dialog *d)
 {
 
-    CreateMacroDialog *cmd = (CreateMacroDialog*)d;
+    /*CreateMacroDialog *cmd = (CreateMacroDialog*)d;*/
 
     char *name = SetMacroNameDialog::GetTextWidgetToken(this->macroName); 
 

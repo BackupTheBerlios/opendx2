@@ -51,13 +51,13 @@ class DirtyQueue {
 
 	    int size = this->data->getSize();
 	    int top = 0;
-	    if (size > 0) top = (int)this->data->getElement(1);
+	    if (size > 0) top = (int)(long)this->data->getElement(1);
 	    if (dirty == top) return;
 
 	    ASSERT(this->data->insertElement((void*)dirty, 1));
 	    size++;
 	    if (size > this->max_size) {
-		int bottom = (int)this->data->getElement(size);
+		int bottom = (int)(long)this->data->getElement(size);
 		*all_flags&= ~bottom;
 	    }
 	}

@@ -66,9 +66,9 @@ class SelectorInteractor : public Interactor
     Widget	pulldown;
     List	optionWidgets;
 
-    static boolean SelectorInteractor::SelectorInteractorClassInitialized;
+    static boolean SelectorInteractorClassInitialized;
 
-    static String SelectorInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     friend void SelectorInteractor_OptionMenuCB(Widget widget, XtPointer clientData, 
 				     XtPointer callData);

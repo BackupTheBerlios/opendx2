@@ -39,7 +39,7 @@ class VPEAnnotator : public LabelDecorator
   // P R I V A T E   P R I V A T E   P R I V A T E
   // P R I V A T E   P R I V A T E   P R I V A T E
   private:
-    static boolean VPEAnnotator::VPEAnnotatorClassInitialized;
+    static boolean VPEAnnotatorClassInitialized;
 
     // D R A G - N - D R O P
     // D R A G - N - D R O P
@@ -48,9 +48,9 @@ class VPEAnnotator : public LabelDecorator
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   protected:
-    static String 	   VPEAnnotator::DefaultResources[]; 
-    static Widget          VPEAnnotator::DragIcon;
-    static boolean         VPEAnnotator::DragDictionaryInitialized;
+    static String 	   DefaultResources[]; 
+    static Widget          DragIcon;
+    static boolean         DragDictionaryInitialized;
     static  void           PixelToRGB(Widget, Pixel, float *, float *, float *);
 
     virtual void           completeDecorativePart();

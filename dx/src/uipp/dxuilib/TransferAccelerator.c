@@ -201,7 +201,8 @@ Boolean TransferAccelerator(shell, source, action)
 		}
 #else  /* (HAVE_XMMAPKEYEVENTS) */
 		int       type ;
-		retcode = _XmMapKeyEvent(accelerator, &type, &keysym, &modifiers) ;
+		retcode = _XmMapKeyEvent(accelerator, &type, (unsigned *) &keysym, 
+                             &modifiers) ;
 #endif /* (HAVE_XMMAPKEYEVENTS) */
 
 		/*

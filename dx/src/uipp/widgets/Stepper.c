@@ -664,7 +664,6 @@ static XtGeometryResult GeometryManager( Widget w, XtWidgetGeometry *request,
 {
 Dimension ret_w, ret_h, new_width, new_height;
 Widget stepper;
-XtGeometryResult result;
 Dimension child_width, child_height;
 XmNumberWidget nw;
 
@@ -699,8 +698,8 @@ XmNumberWidget nw;
 	    {
 	    new_height += (request->height - w->core.height);
 	    }
-	if ((result = XtMakeResizeRequest(stepper, new_width, new_height, 
-					&ret_w, &ret_h)) == XtGeometryYes)
+	if (XtMakeResizeRequest(stepper, new_width, new_height, 
+				&ret_w, &ret_h) == XtGeometryYes)
 	    {
 	    XtResizeWidget(w, child_width, child_height, 0);
 	    return XtGeometryYes;

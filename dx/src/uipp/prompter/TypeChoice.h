@@ -49,8 +49,8 @@ class TypeChoice : public UIComponent {
 
 	int		connection_mode;
 
-	static XtInputId    TypeChoice::InputId;
-	static XtWorkProcId TypeChoice::SeekerWP;
+	static XtInputId    InputId;
+	static XtWorkProcId SeekerWP;
 
 	//
 	// Instead of closing/opening all the time, try keeping the connections

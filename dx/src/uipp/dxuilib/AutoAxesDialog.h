@@ -145,7 +145,8 @@ class AutoAxesDialog : public Dialog
     boolean isDirty(int member);
     boolean deferNotify;
 
-    static void AutoAxesDialog::TLLModifyCB (TickLabelList *, void*);
+    static void TLLModifyCB (TickLabelList *, void*);
+
   protected:
     //
     // Protected member data:

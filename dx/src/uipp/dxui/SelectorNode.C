@@ -63,7 +63,7 @@ int SelectorNode::getSelectedOptionIndex()
     if (this->getSelectedOptionCount() != 1)
 	return 0;
 
-    return (int)this->selectedOptions.getElement(1);
+    return (int)(long)this->selectedOptions.getElement(1);
 }
 
 //

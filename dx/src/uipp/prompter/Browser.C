@@ -815,8 +815,8 @@ boolean Browser::prevPage()
     //
     // Clamp to start of file
     //
-    if(this->page_start < 0)
-	this->page_start = 0;
+    /*if(this->page_start < 0)
+      this->page_start = 0;*/
 
     this->loadBuffer(this->page_start);
 
@@ -1036,7 +1036,7 @@ void Browser::gotoByteTopOffsetCB(Widget w, XtPointer client, XtPointer)
 	browser->page_start = pos - browser->page_size/2;
 	if(browser->page_start + browser->page_size > browser->file_size)
 	    browser->page_start = browser->file_size - browser->page_size;
-	if(browser->page_start < 0) browser->page_start = 0;
+	/*if(browser->page_start < 0) browser->page_start = 0;*/
 	browser->loadBuffer(browser->page_start);
     }
     pos = pos - browser->page_start;
@@ -1101,7 +1101,7 @@ void Browser::gotoByteMarkOffsetCB(Widget w, XtPointer client, XtPointer)
 	browser->page_start = browser->marker_pos - browser->page_size/2;
 	if(browser->page_start + browser->page_size > browser->file_size)
 	    browser->page_start = browser->file_size - browser->page_size;
-	if(browser->page_start < 0) browser->page_start = 0;
+	/*if(browser->page_start < 0) browser->page_start = 0;*/
 	browser->loadBuffer(browser->page_start);
     }
     pos = pos - browser->page_start;
@@ -1192,13 +1192,13 @@ int 		start_of_line_offset;
     //
     // Number of lines from top of file
     //
-    sprintf(string, "%d", line_no);
+    sprintf(string, "%ld", line_no);
     XmTextSetString(this->line_top_offset, string);
 
     //
     // Number of bytes from top of file
     //
-    sprintf(string, "%d", position);
+    sprintf(string, "%ld", position);
     XmTextSetString(this->byte_top_offset, string);
 
     //
@@ -1212,7 +1212,7 @@ int 		start_of_line_offset;
     // Number of bytes from marker
     //
     long marker_byte_offset = position - this->marker_pos;
-    sprintf(string, "%d", marker_byte_offset);
+    sprintf(string, "%ld", marker_byte_offset);
     XmTextSetString(this->byte_mark_offset, string);
 
     //
@@ -1278,7 +1278,7 @@ int 		start_of_line_offset;
 	}
     }
 
-    sprintf(string, "%d", line_no);
+    sprintf(string, "%ld", line_no);
     XmTextSetString(this->line_mark_offset, string);
 
     XtFree(str);
@@ -1310,7 +1310,7 @@ UIVDATA *uivdata;
 }
 void Browser::integerMVCB(Widget , XtPointer clientData, XtPointer call)
 {
-    Browser *browser = (Browser *) clientData;
+    /*Browser *browser = (Browser *) clientData;*/
     XmTextVerifyCallbackStruct *cbs = (XmTextVerifyCallbackStruct *)call;
     int i;
 

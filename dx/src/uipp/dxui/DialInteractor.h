@@ -53,7 +53,7 @@ class DialInteractor : public ScalarInteractor
     Widget	dialWidget;
     Widget 	numberWidget;
 
-    static boolean DialInteractor::DialInteractorClassInitialized;
+    static boolean DialInteractorClassInitialized;
 
     // Call the virtual callback for value changes. 
     //
@@ -66,7 +66,7 @@ class DialInteractor : public ScalarInteractor
     // Protected member data:
     //
 
-    static String DialInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     //
     // Accepts value changes and reflects them into other interactors, cdbs

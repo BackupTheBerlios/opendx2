@@ -146,7 +146,7 @@ class GARApplication : public IBMApplication
 
   public:
 
-    static char *GARApplication::FileFound (const char *, const char *);
+    static char *FileFound (const char *, const char *);
 
     void postChooserWindow();
     void postMainWindow(unsigned long);

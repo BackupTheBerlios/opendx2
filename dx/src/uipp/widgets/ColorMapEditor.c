@@ -1040,7 +1040,7 @@ static void FieldControlCB(Widget w, XtPointer client,
 	 XmAnyCallbackStruct* call_data)
 {
 Boolean			set;
-int			field_num = (int)client;
+int			field_num = (int)(long)client;
 XmColorMapEditorWidget 	cmew;
 int			i;
 ControlField 		*field;

@@ -256,7 +256,7 @@ extern "C" void StepperInteractor_StepperCB(Widget                  widget,
 
     ASSERT(widget);
 
-    component = (int)GetUserData(widget);
+    component = (int)(long)GetUserData(widget);
     ASSERT(component > 0);
     si->stepperCallback(widget, component, callData);
 }

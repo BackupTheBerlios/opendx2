@@ -67,7 +67,7 @@ class ScalarListInteractor : public StepperInteractor
     Widget addButton, deleteButton;
     Widget steppers;
 
-    static String ScalarListInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     //
     // We don't care if a the stepper value has changed until, the add or delete

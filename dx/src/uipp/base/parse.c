@@ -55,7 +55,7 @@ extern void InsertList(SpotList *, ListNodeType *); /* from helplist.c */
 char *GetMathToken(FILE **mathfile, char *stoppat, char*buffer)
 {
  char rest[255],fmt[20];
- char ch;
+ int  ch;
  sprintf(fmt,"%s%s%s%s%s%s","%[^",stoppat,"]","%[",stoppat,"]");
  while(((ch = fgetc(*mathfile)) != EOF) && ((ch == ' ') || ch == '\n')) ;
  if (feof(*mathfile)) return(NULL);
@@ -207,8 +207,9 @@ int SendWidgetText (Widget w, FILE *infile, Bool ManPage,char *ref)
                 if (dpsCapable) { 
                   XmMultiTextAppendDPS(w, "BITMAP", Top(userdata->fontstack), 
                          Top(userdata->colorstack), indentnum, psfile, 257, 166,
-                         XmMultiTextMakeLinkRecord(w, userdata->linkType, 
-						   (LinkPosition)0, (char*)link));
+                         XmMultiTextMakeLinkRecord(w, 
+						 (LinkType)userdata->linkType, 
+						 (LinkPosition)0, (char*)link));
 
                   if (userdata->getposition == TRUE) {
                      userdata->getposition = FALSE;
@@ -238,7 +239,7 @@ int SendWidgetText (Widget w, FILE *infile, Bool ManPage,char *ref)
                           XmMultiTextAppendWord(w, buffer, Top(userdata->fontstack), 
                                     Top(userdata->colorstack), indentnum,
                                     XmMultiTextMakeLinkRecord(w, 
-                                                  userdata->linkType, 0, link));
+                                       (LinkType) userdata->linkType, 0, link));
                         }
                         else {
                           while (GetToken(&ascfile," \n",buffer,&newline,ManPage) != NULL) {
@@ -291,12 +292,14 @@ int SendWidgetText (Widget w, FILE *infile, Bool ManPage,char *ref)
               				XmMultiTextAppendWord(w, "	", Top(userdata->fontstack), 
                                          Top(userdata->colorstack), indentnum,
                                          XmMultiTextMakeLinkRecord(w, 
-                                                  userdata->linkType, 0, link));
+                                               (LinkType) userdata->linkType, 
+					       0, link));
                                     else
                                          XmMultiTextAppendWord(w, buffer, Top(userdata->fontstack), 
                                             Top(userdata->colorstack), indentnum,
                                             XmMultiTextMakeLinkRecord(w, 
-                                                  userdata->linkType, 0, link));
+                                                (LinkType) userdata->linkType, 
+						0, link));
                                   }
                             }
                         }
@@ -358,7 +361,7 @@ int SendWidgetText (Widget w, FILE *infile, Bool ManPage,char *ref)
 	    XmMultiTextAppendWord(w, buffer, Top(userdata->fontstack),
 				 Top(userdata->colorstack), indentnum,
 				 XmMultiTextMakeLinkRecord
-				    (w, userdata->linkType, 0, link)
+				    (w, (LinkType) userdata->linkType, 0, link)
 				 );
 	  }
         }
@@ -369,12 +372,12 @@ int SendWidgetText (Widget w, FILE *infile, Bool ManPage,char *ref)
               XmMultiTextAppendWord(w, "	", Top(userdata->fontstack), 
                                     Top(userdata->colorstack), indentnum,
                                     XmMultiTextMakeLinkRecord(w, 
-                                                  userdata->linkType, 0, link));
+                                       (LinkType) userdata->linkType, 0, link));
             else
               XmMultiTextAppendWord(w, buffer, Top(userdata->fontstack), 
                                     Top(userdata->colorstack), indentnum,
                                     XmMultiTextMakeLinkRecord(w, 
-                                                  userdata->linkType, 0, link));
+                                       (LinkType) userdata->linkType, 0, link));
 
             if (userdata->getposition == TRUE) {
                  userdata->getposition = FALSE;

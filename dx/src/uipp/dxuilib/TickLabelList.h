@@ -75,7 +75,7 @@ class TickLabelList : public UIComponent
     double *oldDvals;
     String oldString;
 
-    static void TickLabelList::SelectCB (TickLabel*, void*);
+    static void SelectCB (TickLabel*, void*);
     TickListModifyCB  tlmcb;
     void *clientData;
 

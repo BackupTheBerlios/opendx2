@@ -39,9 +39,9 @@ class SelectorPulldownInteractor : public Interactor
     //
     // Private member data:
     //
-    static boolean SelectorPulldownInteractor::ClassInitialized;
+    static boolean ClassInitialized;
 
-    static String SelectorPulldownInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     TextSelector *text_selector;
 

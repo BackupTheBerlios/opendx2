@@ -31,7 +31,7 @@ class HDFChoice : public ImportableChoice {
 
 	HDFChoice (GARChooserWindow* gcw, Symbol sym) : ImportableChoice (
 	    "hdfData", FALSE, TRUE, TRUE, FALSE, gcw, sym) {};
-	static HDFChoice* HDFChoice::Allocator(GARChooserWindow* gcw, Symbol sym)
+	static HDFChoice* Allocator(GARChooserWindow* gcw, Symbol sym)
 	    { return new HDFChoice(gcw, sym); }
 	~HDFChoice(){};
 

@@ -142,7 +142,7 @@ boolean FileContents::initialize ()
     //
     FILE* in_fp = fopen(this->in_file_name, "r");
     ASSERT (in_fp);
-    int filedes = fileno (in_fp);
+    /*int filedes = fileno (in_fp);*/
 
     struct STATSTRUCT statbuf;
     STATFUNC(this->in_file_name, &statbuf);

@@ -189,8 +189,6 @@ Widget DXCreatePopupMenu(Widget parent)
 {
     Widget menuShell;
     Widget popupMenu;
-    Widget historyMenuLabel;
-    Widget separator;
     int    n;
     Arg    args[10];
 
@@ -212,10 +210,8 @@ Widget DXCreatePopupMenu(Widget parent)
 	(parent, ButtonPressMask, False, _PostHistoryMenu, (XtPointer)popupMenu);
 
     n = 0;
-    historyMenuLabel =
 	XtCreateManagedWidget
 	    ("HistoryMenuLabel", xmLabelWidgetClass, popupMenu, args, n);
-    separator =
 	XtCreateManagedWidget
 	    ("Separator", xmSeparatorWidgetClass, popupMenu, NULL, 0);
 

@@ -61,7 +61,6 @@ ControlColor* 	color;
 int 		i, j;
 int 		r, g, b;
 XColor 		cell_def;
-Boolean 	depth_is_24;
 int             major_code;
 int             event_code;
 int             error_code;
@@ -127,11 +126,11 @@ struct
                          &event_code,
                          &error_code))
 	{
-	depth_is_24 = False;
+	/*depth_is_24 = False;*/
 	}
     else
 	{
-	depth_is_24 = True;
+	/*depth_is_24 = True;*/
 	}
 
     /* gamma compensation; corresponds to xpic, so we can coexist w/ xpic */

@@ -46,7 +46,6 @@ GARCommand::GARCommand(const char*   name,
 
 boolean GARCommand::doIt(CommandInterface *)
 {
-    Arg      	   wargs[8];
     GARMainWindow *gmw = this->gmw;
     char	  *fname;
     unsigned long mode;

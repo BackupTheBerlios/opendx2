@@ -179,7 +179,6 @@ _dxl_MakeConnection(DXLConnection *connection, int port, const char *host)
     
     if (local)
     {
-	int c;
 	struct sockaddr_un userver;
 
 	memset((char*)&userver, 0, sizeof(userver));
@@ -190,10 +189,10 @@ _dxl_MakeConnection(DXLConnection *connection, int port, const char *host)
 	if (connection->fd < 0)
 	    goto error;
 	
-	if ((c = connect(connection->fd,
+	if (connect(connection->fd,
 		    (struct sockaddr *)&userver,
 		    sizeof(userver) - sizeof(userver.sun_path) +
-				      strlen(userver.sun_path))) >= 0)
+				      strlen(userver.sun_path)) >= 0)
 	{
 	    return 1;
 	}

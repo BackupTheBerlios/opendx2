@@ -72,9 +72,9 @@ class ToolSelector : public UIComponent , public DropSite, public DragSource
     boolean			toolListDirty;
     int				lastToolIndex;
 
-    static boolean ToolSelector::ToolSelectorClassInitialized;
+    static boolean ToolSelectorClassInitialized;
 
-    static String ToolSelector::DefaultResources[]; 
+    static String DefaultResources[]; 
 
     //
     // Static member callback for the category selection list.

@@ -274,8 +274,6 @@ char font[64];
     // as well, with the addition of vpe pages. 
     //
     if (EqualSubstring(" annotation",comment,11)) {
-	char additional_text[256];
-	additional_text[0] = '\0';
 	char keyword[64];
 	boolean parsed = FALSE;
 	items_parsed = sscanf (comment, " annotation %[^:]", keyword);

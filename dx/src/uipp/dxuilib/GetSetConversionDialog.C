@@ -978,7 +978,7 @@ extern "C" void GetSetConversionDialog_PushbuttonCB(Widget    widget,
     XtPointer data;
     XtVaGetValues(widget, XmNuserData, &data, NULL);
 
-    switch((int)data)
+    switch((int)(long)data)
     {
       case HELP:
 	break;

@@ -171,10 +171,9 @@ void PanelGroupManager::buildPanelList(List *src, List *dest)
 
     ListIterator i(*src);
     int instance;
-    while ( (instance = (int) i.getNext()) ) {
-	ControlPanel *cp;
+    while ( (instance = (int)(long) i.getNext()) ) {
 	// Make sure the panel has not been deleted from the network.
-	if ( (cp = this->network->getPanelByInstance(instance)) )
+	if ( this->network->getPanelByInstance(instance) )
 	    dest->appendElement((const void*)instance);
     }
 }
@@ -195,7 +194,7 @@ boolean PanelGroupManager::cfgPrintComment(FILE *f)
 
     	li.setList(plist);
 
-    	while( (inst = (int)li.getNext()) )
+    	while( (inst = (int)(long)li.getNext()) )
 	    if (fprintf(f, " %d", inst-1) < 0)
 		return FALSE;
 

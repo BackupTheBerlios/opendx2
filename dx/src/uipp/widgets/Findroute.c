@@ -3035,15 +3035,13 @@ void
 ChangeWidgetInCollideList(XmWorkspaceWidget ww, Widget child)
 {
     register int    x, y;
-    register MyWidgetList *wl_ptr, *back_ptr;
+    register MyWidgetList *wl_ptr;
     int             wtol;
 
     wl_ptr = ww->workspace.widget_list;
     if(!wl_ptr) return;
-    back_ptr = NULL;
     while (child != wl_ptr->w)	/* Find the widget in the list */
     {
-	back_ptr = wl_ptr;
 	wl_ptr = wl_ptr->next;
 	if(!wl_ptr) return;
     }
@@ -3089,15 +3087,12 @@ void
 HideWidgetInCollideList(XmWorkspaceWidget ww, Widget child)
 {
     register int    x, y;
-    register MyWidgetList *wl_ptr, *back_ptr;
-    int             wtol;
+    register MyWidgetList *wl_ptr;
 
     wl_ptr = ww->workspace.widget_list;
     if(!wl_ptr) return;
-    back_ptr = NULL;
     while (child != wl_ptr->w)	/* Find the widget in the list */
     {
-	back_ptr = wl_ptr;
 	wl_ptr = wl_ptr->next;
 	if(!wl_ptr) return;
     }
@@ -3110,7 +3105,7 @@ HideWidgetInCollideList(XmWorkspaceWidget ww, Widget child)
 	RemoveYCollideList(ww, y, wl_ptr->xmin, wl_ptr->xmax);
     }
     /* Add this child widget to the workspaces private widget list */
-    wtol = ww->workspace.wtol;
+    /*wtol = ww->workspace.wtol;*/
     wl_ptr->xmin = 0;
     wl_ptr->xmax = 0;
     wl_ptr->ymin = 0;

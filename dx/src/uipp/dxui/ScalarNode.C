@@ -1387,7 +1387,6 @@ boolean ScalarNode::parseIOComment(boolean input, const char* comment,
 {
     int      defaulting = 0, items_parsed, ionum, tmp_type;
     int	     visible = TRUE;
-    Type     type = DXType::UndefinedType;
     boolean  parse_error = FALSE; 
 
     if(this->Node::parseIOComment(input, comment, filename, lineno, valueOnly) == FALSE)
@@ -1414,12 +1413,12 @@ boolean ScalarNode::parseIOComment(boolean input, const char* comment,
 	    if (sscanf(comment, " input[%d]: defaulting = %d", 
 				&ionum, &defaulting) != 2)
 		parse_error = TRUE;
-	    type = DXType::UndefinedType;
+	    /*type = DXType::UndefinedType;*/
 	} else {
 	    items_parsed = sscanf(comment,
 		" input[%d]: defaulting = %d, visible = %d, type = %d", 
 					&ionum, &defaulting, &visible, &tmp_type);
-	    type = (Type) tmp_type;
+	    /*type = (Type) tmp_type;*/
 	    if (items_parsed != 4) {
 		// Invisibility added 3/30/93
 		items_parsed = sscanf(comment, " input[%d]: visible = %d", 
@@ -1428,12 +1427,12 @@ boolean ScalarNode::parseIOComment(boolean input, const char* comment,
 		    // Backwards compatibility added 3/25/93
 		    items_parsed = sscanf(comment, " input[%d]: type = %d", 
 					    &ionum, &tmp_type);
-		    type = (Type) tmp_type;
+		    /*type = (Type) tmp_type;*/
 		    if (items_parsed != 2) {
 			items_parsed = sscanf(comment,
 				    " input[%d]: defaulting = %d, type = %d", 
 					    &ionum, &defaulting, &tmp_type);
-			type = (Type) tmp_type;
+			/*type = (Type) tmp_type;*/
 			if (items_parsed != 3) 
 			    parse_error = TRUE;
 		    } 

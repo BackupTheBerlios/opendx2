@@ -2920,11 +2920,11 @@ void GARMainWindow::restrictStructure(Boolean restrict)
 
 void GARMainWindow::createRecordSeparatorListStructure()
 {
-    int 	i, j, k, prev_counts, this_counts;
+    int 	i, j, prev_counts, this_counts;
     Widget      current;
     char        name[100];
     int         totalnum=0; 
-    int         numfields, veclen;
+    int         numfields;
     int         extra_record_sep_counts = 0;
     Field       *field, *prevfield;
     RecordSeparator *recsep;
@@ -3060,7 +3060,7 @@ void GARMainWindow::createRecordSeparatorList(Widget parent)
     char        name[100];
     RecordSeparator *recsep;
     int         totalnum=0; 
-    int         numfields, veclen;
+    int         numfields;
     int         extra_record_sep_counts = 0;
     Field       *field, *prevfield;
     Boolean     found;
@@ -4707,7 +4707,6 @@ extern "C" void GARMainWindow_IdentifierMVCB(Widget, XtPointer clientData, XtPoi
     GARMainWindow 	*gmw = (GARMainWindow *) clientData;
     XmTextVerifyCallbackStruct *cbs = (XmTextVerifyCallbackStruct *)call;
     int i;
-    int grid_text_num = 0;
 
     if(cbs->text->ptr == NULL) //backspace
     {
@@ -4747,8 +4746,6 @@ extern "C" void GARMainWindow_VerifyNonZeroCB(Widget w, XtPointer clientData ,
 					XtPointer)
 {
     GARMainWindow 	*gmw = (GARMainWindow *) clientData;
-    int 		i;
-    Widget 		wid;
     char 		*str;
    
     if ((w == gmw->string_size) ||
@@ -4785,7 +4782,7 @@ extern "C" void GARMainWindow_VerifyNonZeroCB(Widget w, XtPointer clientData ,
 extern "C" void GARMainWindow_RecSepTextCB(Widget w, XtPointer clientData, XtPointer call)
 {
     GARMainWindow 	*gmw = (GARMainWindow *) clientData;
-    int                 grid_text_num = 0, *position_list, position_count;
+    int                 *position_list, position_count;
     RecordSeparator     *recsep;
 
     if (w==gmw->record_sep_text_1)
@@ -5260,7 +5257,6 @@ void GARMainWindow::setSeriesSensitivity(Boolean set)
 void GARMainWindow::setSeriesInterleavingSensitivity()
 {
     Widget wid;
-    Widget w[2];
     Boolean set;
     WidgetList children;
     int nchildren;
@@ -5689,7 +5685,6 @@ void GARMainWindow::fieldToWids(Field *field)
 void GARMainWindow::widsToField(Field *field)
 {
     Widget w;
-    char   *str;
 
     field->setName(XmTextGetString(this->field_text)); 
 
@@ -6088,7 +6083,6 @@ boolean GARMainWindow::saveGAR(char *file)
 void GARMainWindow::saveGAR(ostream *to)
 {
     int i;
-    int j;
     int k;
     Widget w;
     Field *field;
@@ -7458,7 +7452,6 @@ void GARMainWindow::parsePositions(istream *from, char *line)
     int cur_size;
     Boolean get_rest = False;
     Boolean regular = False;
-    Boolean irregular = False;
     Boolean explicitly = False;
     Widget w;
 
@@ -7505,7 +7498,7 @@ void GARMainWindow::parsePositions(istream *from, char *line)
     {
 	SET_OM_NAME(this->positions_om[0], "irregular", "Positions");
         this->changePositions(this->positions_om[0]);
-	irregular = True;
+	/*irregular = True;*/
 	get_rest = True;
     }
     if(get_rest)
@@ -7528,7 +7521,7 @@ void GARMainWindow::parsePositions(istream *from, char *line)
 	    {
 		SET_OM_NAME(this->positions_om[i], "irregular", "Positions");
                 this->changePositions(this->positions_om[i]);
-		irregular = True;
+		/*irregular = True;*/
 	    }
 	    else
 	    {
@@ -7587,7 +7580,7 @@ void GARMainWindow::parsePositions(istream *from, char *line)
 	   	     "Regularity");
           XtVaGetValues(this->regularity_om, XmNmenuHistory, &wid, NULL);
           this->changeRegularity(wid); 
-          irregular = True;
+          /*irregular = True;*/
           explicitly = True;
        }
        else
@@ -7597,7 +7590,7 @@ void GARMainWindow::parsePositions(istream *from, char *line)
 	   	     "Regularity");
           XtVaGetValues(this->regularity_om, XmNmenuHistory, &wid, NULL);
           this->changeRegularity(wid); 
-          irregular = False;
+          /*irregular = False;*/
           explicitly = False;
        }
     }
@@ -7676,8 +7669,6 @@ void GARMainWindow::parseDependency(char *line)
 }
 void GARMainWindow::parseRecordSep(char *line)
 {
-    int i;
-    int j;
     int k;
     int ndx;
     char *str, *str1;

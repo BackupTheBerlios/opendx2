@@ -31,7 +31,7 @@ class CDFChoice : public ImportableChoice {
 
 	CDFChoice (GARChooserWindow* gcw, Symbol sym) : ImportableChoice (
 		"cdfData", FALSE, TRUE, TRUE, FALSE, gcw, sym) {};
-	static CDFChoice* CDFChoice::Allocator (GARChooserWindow* gcw, Symbol sym)
+	static CDFChoice* Allocator (GARChooserWindow* gcw, Symbol sym)
 	    { return new CDFChoice(gcw, sym); }
 	~CDFChoice(){};
 

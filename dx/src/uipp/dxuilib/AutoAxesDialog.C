@@ -1547,7 +1547,7 @@ extern "C" void AutoAxesDialog_PushbuttonCB(Widget    widget,
 
     XtVaGetValues(widget, XmNuserData, &data, NULL);
 
-    switch((int)data)
+    switch((int)(long)data)
     {
       case EXPAND:
 	break;
@@ -3228,7 +3228,7 @@ AutoAxesDialog* dialog = (AutoAxesDialog*)clientData;
     ASSERT (clientData);
     XtPointer ud;
     XtVaGetValues (tb, XmNset, &set, XmNuserData, &ud, NULL);
-    which_form = (int)ud;
+    which_form = (int)(long)ud;
 
     ASSERT(which_form > 0);
     ASSERT(which_form < BUTTON_FORM);
@@ -3506,7 +3506,7 @@ XtPointer flag;
     ASSERT(clientData);
     AutoAxesDialog *dialog = (AutoAxesDialog*) clientData;
     XtVaGetValues (w, XmNuserData, &flag, NULL);
-    dialog->dirtyBits |= (int)flag;
+    dialog->dirtyBits |= (int)(long)flag;
     if ((w != dialog->enable_tb) && (!XmToggleButtonGetState (dialog->enable_tb))) {
 	if ((XtClass(w) == xmToggleButtonWidgetClass) || 
 	    (XtClass(w) == xmToggleButtonGadgetClass)) {
@@ -3527,7 +3527,7 @@ XtPointer flag;
     ASSERT(clientData);
     AutoAxesDialog *dialog = (AutoAxesDialog*) clientData;
     XtVaGetValues (w, XmNuserData, &flag, NULL);
-    dialog->dirtyBits|= (int)flag;
+    dialog->dirtyBits|= (int)(long)flag;
     tvcs->doit = True;
     if (!XmToggleButtonGetState (dialog->enable_tb))
 	XmToggleButtonSetState (dialog->enable_tb, True, True);
@@ -3550,7 +3550,7 @@ static int rightPos[3][3] = {
 
     XtPointer ud;
     XtVaGetValues (w, XmNuserData, &ud, NULL);
-    int axis = (int)ud;
+    int axis = (int)(long)ud;
     ASSERT ((axis >= XTICK_LIST) && (axis <= ZTICK_LIST));
 
     Boolean set;

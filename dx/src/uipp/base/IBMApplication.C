@@ -503,7 +503,7 @@ void IBMApplication::postCopyrightNotice()
 
 void IBMApplication::initLogo()
 {
-int		i,k,n;
+int		i,k;
 unsigned long	ndx;
 int		x,y;
 Display 	*d;
@@ -514,7 +514,7 @@ XImage 		*ximage;
 GC		gc;
 unsigned char	*logo_data;
 FILE	*fp;
-size_t  size, ret;
+size_t  size;
 char	s[256];
 
 #if defined(HAVE_LIBXPM)
@@ -539,7 +539,7 @@ char	s[256];
 	XtFree((char *)logo_data);
 	return;
     }
-    if((ret = fread((char *)logo_data, sizeof(char), size, fp)) != size)
+    if(fread((char *)logo_data, sizeof(char), size, fp) != size)
     {
 	WarningMessage("Unable to read logo data");
 	XtFree((char *)logo_data);
@@ -610,7 +610,7 @@ char	s[256];
 				xcolor2[ndx].blue * bmult;
 	}
 
-	n = k = 0;
+	k = 0;
 	for(y = 0; y < LOGO_HEIGHT; y++)
 	{
 	    for(x = 0; x < LOGO_WIDTH; x++)
@@ -667,7 +667,7 @@ XImage		*ximage;
 GC		gc;
 unsigned char	*icon_data;
 FILE		*fp;
-size_t 		size, ret;
+size_t 		size;
 int		k;
 int		x,y;
 char		s[256];
@@ -694,7 +694,7 @@ char		s[256];
 	XtFree((char *)icon_data);
         return;
     }
-    if((ret = fread((char *)icon_data, sizeof(char), size, fp)) != size)
+    if(fread((char *)icon_data, sizeof(char), size, fp) != size)
     {
         WarningMessage("Unable to read icon data\n");
 	XtFree((char *)icon_data);

@@ -79,7 +79,7 @@ void ControlPanelGroupDialog::installDefaultResources(Widget  baseWidget)
 Widget ControlPanelGroupDialog::createDialog(Widget parent)
 {
     Widget frame1, frame2, sw1, sw2, separator1;
-    Widget nameLabel, groupLabel, panelLabel;
+    Widget nameLabel, groupLabel;
     Arg    arg[5];
     int    n = 0;
 
@@ -171,7 +171,7 @@ Widget ControlPanelGroupDialog::createDialog(Widget parent)
         XmNalignment,         XmALIGNMENT_BEGINNING,
         NULL);
 	
-    panelLabel = XtVaCreateManagedWidget("panelLabel", 
+    XtVaCreateManagedWidget("panelLabel", 
 	xmLabelWidgetClass,mainform, 
         XmNtopAttachment,     XmATTACH_FORM,
         XmNleftAttachment,    XmATTACH_POSITION,
@@ -340,7 +340,7 @@ void ControlPanelGroupDialog::makeGroupList(int item)
 
 void ControlPanelGroupDialog::makeToggles()
 {
-     int i, inst;
+     int i;
      Boolean set = FALSE, state = FALSE;
      Widget widget, lastwidget = NULL; // NULL stops scary cc warnings
      ControlPanel *cp;
@@ -379,7 +379,7 @@ void ControlPanelGroupDialog::makeToggles()
      for(i = 0; i < size; i++)
      {
         cp = network->getPanelByIndex(i+1);
-	inst = cp->getInstanceNumber();
+	/*inst = cp->getInstanceNumber();*/
 	if(set)
 	     state = glist.isMember((void*)cp->getInstanceNumber());
 	else

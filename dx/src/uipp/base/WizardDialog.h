@@ -46,7 +46,7 @@ class WizardDialog : public TextEditDialog
     // Keep a list of names of windows for whom we've already shown wizards so
     // that we don't have to show the same wizard over again.
     //
-    static List* WizardDialog::AlreadyWizzered;
+    static List* AlreadyWizzered;
 
   protected:
     //

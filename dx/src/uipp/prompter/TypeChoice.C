@@ -505,7 +505,6 @@ TypeChoice::connect(int mode)
 	    this->gcw->connection = DXLConnectToRunningServer (port, NULL);
 	} else {
 	    char* delete_mem_please = NUL(char*);
-	    const char* cp = NUL(char*);
 	    const char *exec = theGARApplication->getResourcesExec();
 	    switch (mode) {
 		//
@@ -726,7 +725,6 @@ char *fname = NUL(char*);
     } else
 	file_ready = TRUE;
 
-    char msg[128];
     GARMainWindow *gmw = theGARApplication->getMainWindow();
     if (file_ready) {
         if (this->isBrowsable()) {

@@ -870,7 +870,7 @@ _dxl_ReadFromSocket(DXLConnection *conn)
 
 	    msgbuf[nbytes] = '\0';
 
-	    event = DXLNewEvent(id, typei,msgbuf);
+	    event = DXLNewEvent(id, (DXLPacketTypeEnum) typei,msgbuf);
 	    if (!event)
 		goto error;
 	    if (conn->debugMessaging) {

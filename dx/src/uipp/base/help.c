@@ -124,7 +124,7 @@ void AddToHistory(Widget    RefWidget,
     if (linkType != RETURN && userdata->filename[0] != '\0')
     {
 	/* PushMenu(RefWidget, userdata, linkType, Label, LinkData); */
-	PushMenu(RefWidget, userdata, linkType, Label);
+	PushMenu(RefWidget, userdata, (LinkType) linkType, Label);
     }
 
     /*

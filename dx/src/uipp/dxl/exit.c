@@ -86,7 +86,6 @@ DXLExitDX(DXLConnection *conn)
 #endif
 #endif
 #endif
-    struct timeval to;
     const char *cmd;
 
     if (conn->fd <= 0 )
@@ -106,8 +105,6 @@ DXLExitDX(DXLConnection *conn)
 
     FD_ZERO(&fds);
     FD_SET(conn->fd, &fds);
-    to.tv_sec = 0;
-    to.tv_usec = 0;
 #ifdef DXD_HAS_WINSOCKETS
     select(width, &fds, NULL, NULL, NULL);
 #else

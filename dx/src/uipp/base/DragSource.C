@@ -264,7 +264,7 @@ int     response = this->decideToDrag(event);
     // HOST_NAME == hostname of machine we're running on
     // USER == current user name
     //
-    Atom DELETE_ATOM, PROCESS_ATOM, HOST_NAME_ATOM, USER_ATOM;
+    Atom PROCESS_ATOM, HOST_NAME_ATOM, USER_ATOM;
     Display *d = XtDisplay(this->drag_context);
     char hostname[MAXHOSTNAMELEN];
 
@@ -275,7 +275,7 @@ int     response = this->decideToDrag(event);
     int *pid = (int*)&pid_space;
     *pid = (int)getpid();
 
-    DELETE_ATOM = XmInternAtom(d, "DELETE", False);
+    /*DELETE_ATOM = XmInternAtom(d, "DELETE", False);*/
     PROCESS_ATOM = XmInternAtom(d, "PROCESS", False);
     HOST_NAME_ATOM = XmInternAtom(d, "HOST_NAME", False);
     USER_ATOM = XmInternAtom(d, "USER", False);

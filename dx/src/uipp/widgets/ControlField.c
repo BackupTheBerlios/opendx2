@@ -300,10 +300,9 @@ static void FieldInput( Widget w, ControlField* field,
     {
 	KeySym keysym;			/* X code for key that was struck    */
 	XComposeStatus compose;
-	int num_chars;
 	char string[256];	/* buffer to recieve ASCII code	     */
-	num_chars = XLookupString((XKeyEvent*)call_data->event, string,
-				  sizeof(string), &keysym, &compose);
+	/*num_chars =*/ XLookupString((XKeyEvent*)call_data->event, string,
+                                sizeof(string), &keysym, &compose);
 	switch( keysym )
 	{
 	  case XK_H:

@@ -46,7 +46,7 @@ class JavaNet : public Network
     //
     JavaNet();
 
-    static String JavaNet::UnsupportedTools[];
+    static String UnsupportedTools[];
 
     static List*  MakeUnsupportedToolList(JavaNet*);
 

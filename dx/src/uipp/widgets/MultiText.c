@@ -1605,11 +1605,10 @@ static void OpenLineTop (Widget w, XEvent* event, String* params, Cardinal* numP
 static void AddWordTop (Widget w, XEvent* event, String* params, Cardinal* numParams)
 {
   static int i=1;
-  unsigned short status;
   char *str="testing    ";
 
   sprintf(str, "testing%d", i++);
-  status = XmMultiTextAppendWordTop (w, str, "hodges-24", "red", 0, NULL);
+  XmMultiTextAppendWordTop (w, str, "hodges-24", "red", 0, NULL);
 }
 
 
@@ -2216,8 +2215,6 @@ unsigned short XmMultiTextAppendImage (Widget w, char *theWord, char *fontName, 
   WordList           wordPtr;
   XFontStruct       *font;
   XCharStruct        boundingBox;
-  unsigned short     status;
-
 
   font = NamedFont (cw, fontName);
   if (!font)
@@ -2257,7 +2254,7 @@ unsigned short XmMultiTextAppendImage (Widget w, char *theWord, char *fontName, 
 
 
   /* append the word structure on the widget's current line. */
-  status = StoreWord(cw, wordPtr, indent);
+  StoreWord(cw, wordPtr, indent);
 
   return (1);
 }
@@ -2481,14 +2478,13 @@ static XtGeometryResult ChangeHeight (XmMultiTextWidget w, Dimension newHeight)
 static void GetBoundingBox(XmMultiTextWidget cw, char *theWord, XFontStruct *font,
 			   XCharStruct *boundingBox, int indent)
 {
-  int direction, fontAscent, fontDescent, tabPos, tabWidth;
-
+  int direction, fontAscent, fontDescent, tabWidth;
 
   /* if the word is a tab, must build bbox from scratch. */
   if (theWord[0] == TAB)
     {
       /* calculate the bounding box depending on the current tab settings. */
-      tabPos                  = NextTab(cw, &tabWidth, indent);
+      /*tabPos =*/ NextTab(cw, &tabWidth, indent);
       boundingBox->lbearing   = 0;
       boundingBox->rbearing   = tabWidth;
       boundingBox->width      = tabWidth;
@@ -3026,13 +3022,12 @@ static int NextTab (XmMultiTextWidget w, int *tabWidth, int indent)
 static unsigned long Color (XmMultiTextWidget w, char *name)
 {
   Colormap      cmap;
-  int           status;
 
   if (STRCMP(w->multiText.lastColorName, name) != 0)
     {
       cmap                     = DefaultColormap(XtDisplay(w), XScreenNumberOfScreen(XtScreen(w)));
       w->multiText.color.pixel = (unsigned long)0;
-      status                   = XParseColor(XtDisplay(w), cmap, name, &w->multiText.color);
+      XParseColor(XtDisplay(w), cmap, name, &w->multiText.color);
       XAllocColor(XtDisplay(w), cmap, &w->multiText.color);
 
       if (w->multiText.lastColorName != NULL) XtFree(w->multiText.lastColorName);

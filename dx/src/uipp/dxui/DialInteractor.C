@@ -274,7 +274,7 @@ extern "C" void DialInteractor_DialCB(Widget                  widget,
 
     ASSERT(widget);
 
-    component = (int)GetUserData(widget);
+    component = (int)(long)GetUserData(widget);
     ASSERT(component > 0);
     si->dialCallback(widget, component, callData);
 }
@@ -349,7 +349,6 @@ void DialInteractor::updateDialValue()
 	 * Update the Dial.
 	 */
 	XtSetValues(this->numberWidget, wargs, n);
-	XtArgVal dx_l;
 	XtVaSetValues(this->dialWidget, XmNposition, DoubleVal(value, dx_l), NULL);
     }
 

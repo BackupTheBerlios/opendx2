@@ -188,7 +188,7 @@ void SelectionNode::installNewOptions(const char *vlist, const char *slist,
 	//
 	ListIterator iter(this->selectedOptions);
 	int i, pos = 0;
-	while ( (i = (int)iter.getNext()) ) {
+	while ( (i = (int)(long)iter.getNext()) ) {
 	    pos++;
 	    if (i > this->getOptionCount()) {
 		this->selectedOptions.deleteElement(pos);	
@@ -720,7 +720,7 @@ void SelectionNode::changeSelectedOptionIndex(int index, boolean set,
 
     
     ListIterator iter(this->selectedOptions);
-    for (pos=1 ; ((i = (int)iter.getNext()) < index) && (i != 0); pos++)
+    for (pos=1 ; ((i = (int)(long)iter.getNext()) < index) && (i != 0); pos++)
 	;
 
     if (set) {	

@@ -452,7 +452,6 @@ GC			gc;
 Dimension		x;
 Dimension		y;
 Dimension		width;
-Boolean			fixed_format;
 int			k;
 
     y = vector_number * nlw->numeric_list.line_height;	
@@ -519,19 +518,19 @@ int			k;
 	{
 	    sprintf(string, e_format[i], 
 		    *(nlw->numeric_list.local_vectors[vector_number] + i));
-	    fixed_format = False;
+	    /*fixed_format = False;*/
 	}
 	else
 	{
 	    sprintf(string, f_format[i], 
 		    *(nlw->numeric_list.local_vectors[vector_number] + i));
-	    fixed_format = True;
+	    /*fixed_format = True;*/
 	}
 	if (STRLEN(string) > nlw->numeric_list.local_decimal_places[i] + 7)
 	{
 	    sprintf(string, e_format[i], 
 		    *(nlw->numeric_list.local_vectors[vector_number] + i));
-	    fixed_format = False;
+	    /*fixed_format = False;*/
 	}
 
 	k = 0;
@@ -880,12 +879,9 @@ int		k;
 Dimension	sw_width;
 Arg		wargs[20];
 int		n;
-XtGeometryResult status;
 XtWidgetGeometry request;
 XtWidgetGeometry reply;
 Widget          clip_window;
-Boolean		fixed_format;
-
 
     /*
      * Calculate the height required for each line.
@@ -908,7 +904,7 @@ Boolean		fixed_format;
     if(nlw->numeric_list.vsb) XtUnmanageChild(nlw->numeric_list.vsb);
     request.request_mode = CWHeight;
     request.height = height;
-    status = XtMakeGeometryRequest((Widget)nlw, &request, &reply);
+    XtMakeGeometryRequest((Widget)nlw, &request, &reply);
     if(nlw->numeric_list.vsb) XtManageChild(nlw->numeric_list.vsb);
 
     e_format = (char **)XtCalloc(nlw->numeric_list.tuples, sizeof(char *));
@@ -959,19 +955,19 @@ Boolean		fixed_format;
 	    {
 		sprintf(string, e_format[j], 
 			*(nlw->numeric_list.local_vectors[i] + j));
-		fixed_format = False;
+		/*fixed_format = False;*/
 	    }
 	    else
 	    {
 		sprintf(string, f_format[j], 
 			*(nlw->numeric_list.local_vectors[i] + j));
-		fixed_format = True;
+		/*fixed_format = True;*/
 	    }
 	    if (STRLEN(string) > nlw->numeric_list.local_decimal_places[j] + 7)
 	    {
 		sprintf(string, e_format[j], 
 			*(nlw->numeric_list.local_vectors[i] + j));
-		fixed_format = False;
+		/*fixed_format = False;*/
 	    }
 	    
 	    k = 0;
@@ -1049,7 +1045,7 @@ Boolean		fixed_format;
     if(nlw->numeric_list.vsb) XtUnmanageChild(nlw->numeric_list.vsb);
     request.request_mode = CWWidth;
     request.width = width;
-    status = XtMakeGeometryRequest((Widget)nlw, &request, &reply);
+    XtMakeGeometryRequest((Widget)nlw, &request, &reply);
     if(nlw->numeric_list.vsb) XtManageChild(nlw->numeric_list.vsb);
 
     /*

@@ -32,7 +32,7 @@ class SeparatorDecorator : public Decorator
   // P R I V A T E   P R I V A T E   P R I V A T E
   private:
 
-    static boolean SeparatorDecorator::SeparatorDecoratorClassInitialized;
+    static boolean SeparatorDecoratorClassInitialized;
     SetSeparatorAttrDlg *setAttrDialog;
 
     // D R A G - N - D R O P
@@ -43,7 +43,7 @@ class SeparatorDecorator : public Decorator
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   protected:
-    static  String 	   SeparatorDecorator::DefaultResources[]; 
+    static  String 	   DefaultResources[]; 
 
     virtual void 	   completeDecorativePart();
 

@@ -102,7 +102,7 @@ extern "C" void SelectorRadioInteractor_SelectorToggleCB(Widget                 
     ASSERT(si);
 
 
-    int optnum = (int)GetUserData(widget);
+    int optnum = (int)(long)GetUserData(widget);
     si->toggleCallback(widget, optnum, callData);
 }
 

@@ -101,7 +101,7 @@ extern "C" void SelectorInteractor_OptionMenuCB(Widget                  widget,
     ASSERT(si);
 
 
-    int optnum = (int)GetUserData(widget);
+    int optnum = (int)(long)GetUserData(widget);
     si->optionMenuCallback(widget, optnum, callData);
 }
 

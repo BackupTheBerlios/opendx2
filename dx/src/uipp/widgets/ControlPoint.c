@@ -664,8 +664,6 @@ Boolean constrain_horizontal;
 Boolean constrain_vertical;
 int i;
 Boolean set;
-Boolean changed;
-
 
     if ( ((call_data->event->type == ButtonPress) || 
 	  (call_data->event->type == ButtonRelease)) &&
@@ -709,7 +707,6 @@ Boolean changed;
 			    XtVaSetValues( field->toggle_b,
 				XmNset, False, NULL);
 			    field->map[0]->toggle_on = False;
-			    changed = False;
 			    }
 			}
 		    }
@@ -1176,7 +1173,6 @@ int 		i;
 ControlField 	*field;
 ControlMap 	*map;
 int		index;
-double		range, minimum;
 
     call_value.reason = reason;
     call_value.op_values = NULL;
@@ -1550,9 +1546,9 @@ double		range, minimum;
 	call_value.num_op_points = num_alloced_pts;
  }
 #endif
-	minimum = cmew->color_map_editor.value_minimum;
-	range = (cmew->color_map_editor.value_maximum -
-                 cmew->color_map_editor.value_minimum);
+	/*minimum = cmew->color_map_editor.value_minimum;*/
+	/*range = (cmew->color_map_editor.value_maximum -*/
+        /*	   cmew->color_map_editor.value_minimum);*/
 
 	/* Hue field */
 	map = cmew->color_map_editor.g.field[HUE]->map[0];

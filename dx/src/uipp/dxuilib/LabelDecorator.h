@@ -33,7 +33,7 @@ class LabelDecorator : public Decorator
   // P R I V A T E   P R I V A T E   P R I V A T E
   // P R I V A T E   P R I V A T E   P R I V A T E
   private:
-    static boolean LabelDecorator::LabelDecoratorClassInitialized;
+    static boolean LabelDecoratorClassInitialized;
 
     // D R A G - N - D R O P
     // D R A G - N - D R O P
@@ -50,7 +50,7 @@ class LabelDecorator : public Decorator
   protected:
     XmString      	   labelString;
     char 		   font[20];
-    static  String 	   LabelDecorator::DefaultResources[]; 
+    static  String 	   DefaultResources[]; 
     Dictionary*		   otherStrings;
 
     virtual void 	   completeDecorativePart();
@@ -64,12 +64,12 @@ class LabelDecorator : public Decorator
     //
     LabelDecorator(boolean developerStyle, const char *name);
 
-    static void LabelDecorator::BuildTheCommentStyleDictionary();
+    static void BuildTheCommentStyleDictionary();
     virtual Dictionary* getCommentStyleDictionary() { 
 	return LabelDecorator::CommentStyleDictionary;
     }
 
-    static char* LabelDecorator::UnFilterString(char*, int*);
+    static char* UnFilterString(char*, int*);
 
   // P U B L I C   P U B L I C   P U B L I C
   // P U B L I C   P U B L I C   P U B L I C

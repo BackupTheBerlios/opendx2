@@ -47,11 +47,11 @@ boolean AccessNetworkPanelsCommand::doIt(CommandInterface *ci)
 	    break;
 	case AccessNetworkPanelsCommand::OpenPanelByInstance:
 	    if (ci)
-		network->openControlPanel((int)ci->getLocalData());
+		network->openControlPanel((int)(long)ci->getLocalData());
 	    break;
 	case AccessNetworkPanelsCommand::OpenPanelGroupByIndex:
 	    if (ci)
-		network->openControlPanelGroup((int)ci->getLocalData());
+		network->openControlPanelGroup((int)(long)ci->getLocalData());
 	    break;
     }
 

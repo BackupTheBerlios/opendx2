@@ -42,9 +42,9 @@ class FileContents {
       char* processReplacements(List*);
 
       friend QuitCommand;  // so that QuitCommand can make a call to CleanUp().
-      static List* FileContents::QueuedForDeletion;
-      static void  FileContents::CleanUp();
-      static XtIntervalId FileContents::CleanUpTimer;
+      static List* QueuedForDeletion;
+      static void  CleanUp();
+      static XtIntervalId CleanUpTimer;
 
       friend void FileContents_UnlinkTO (XtPointer , XtIntervalId*);
       friend void FileContents_CleanUp ();
@@ -69,7 +69,7 @@ class FileContents {
       //
       // When the app is done, we should go back and delete files.
       //
-      static void FileContents::Cleanup(boolean drop_everything);
+      static void Cleanup(boolean drop_everything);
 
       const char* getFileName() { return this->out_file_name; }
       const char* sansExtension();

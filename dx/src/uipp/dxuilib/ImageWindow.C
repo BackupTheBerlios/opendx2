@@ -2512,7 +2512,6 @@ void ImageWindow_ClientMessageCB(Widget    imageWindow,
     ImageNode			*in = (ImageNode*)obj->node;
     Dimension			width;
     Dimension			height;
-    int				depth;
 
     //
     // Don't access in if it is not an image node.
@@ -2932,13 +2931,13 @@ void ImageWindow_ClientMessageCB(Widget    imageWindow,
 	  case 16:
 	    width  = event->xclient.data.s[0];
 	    height = event->xclient.data.s[1];
-	    depth  = event->xclient.data.s[2];
+	    //depth  = event->xclient.data.s[2];
 	    break;
 
 	  case 32:
 	    width  = event->xclient.data.l[0];
 	    height = event->xclient.data.l[1];
-	    depth  = event->xclient.data.l[2];
+	    //depth  = event->xclient.data.l[2];
 	    break;
 
 	  default:

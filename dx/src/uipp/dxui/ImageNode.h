@@ -70,8 +70,8 @@ class ImageNode : public DisplayNode
 
     Node* getWebOptionsNode();
 
-    static boolean ImageNode::SendString(void* , PacketIFCallback , FILE* , char* , boolean);
-    static void ImageNode::FormatMacro (FILE* , PacketIFCallback , void* , String [], boolean);
+    static boolean SendString(void* , PacketIFCallback , FILE* , char* , boolean);
+    static void FormatMacro (FILE* , PacketIFCallback , void* , String [], boolean);
 
 
   protected:

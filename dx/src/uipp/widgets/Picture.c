@@ -654,7 +654,7 @@ static void ClassInitialize()
 static void Initialize( XmPictureWidget request, XmPictureWidget new )
 {
 
-int	   	i, j, screen;
+int	   	i, j;
 Arg	   	wargs[20];
 int	   	n;
 XmFontList 	font_list;
@@ -747,7 +747,7 @@ XmStringCharSet charset;
 	    }
 	}
 
-    screen = XScreenNumberOfScreen(XtScreen(new));
+    /*screen = XScreenNumberOfScreen(XtScreen(new));*/
     new->picture.rubber_band.gc = NULL;
     new->picture.gcovl = NULL;
     new->picture.gc = XtGetGC((Widget)new, 0, NULL);
@@ -3238,12 +3238,10 @@ XKeyEvent *event;
 
 {
 XComposeStatus compose;
-int            charcount;
 char           buffer[20];
 int            bufsize = 20;
 XmPictureCallbackStruct cb;
 
-    charcount = 
 	XLookupString(event, buffer, bufsize, &w->picture.keysym, &compose);
     if (w->picture.mode == XmNAVIGATE_MODE)
 	{
@@ -4497,11 +4495,10 @@ draw_cursors( XmPictureWidget  w )
 {
 int  i;
 int depth=0;
-Display *dpy;
 Window  dw;
 GC      gc;
 
-    dpy = XtDisplay(w);
+    /*dpy = XtDisplay(w);*/
     if(!w->image.frame_buffer)
 	{
 	dw = XtWindow(w);
@@ -4825,7 +4822,7 @@ XEvent *event;
 {
 
 XmPictureCallbackStruct    cb;
-int     x, y, i;
+int     i;
 double  to_x, to_y, to_z;
 double  dir_x, dir_y, dir_z;
 int	width;
@@ -5102,8 +5099,8 @@ double  new_width;
 		}
 	    }
 
-	x = event->xbutton.x;
-	y = event->xbutton.y;
+	/*x = event->xbutton.x;g*/
+	/*y = event->xbutton.y;g*/
 
 	w->picture.FirstTimeMotion = True;
 	w->picture.FirstTime = True;
@@ -7107,7 +7104,6 @@ int     i;
 static void  setup_bounding_box(XmPictureWidget w)
 {
 double x, y, z;
-double udelta_x, udelta_y, udelta_z;
 double vdelta_x, vdelta_y, vdelta_z;
 double wdelta_x, wdelta_y, wdelta_z;
 double xmax, xmin, ymax, ymin, zmax, zmin;
@@ -7158,9 +7154,9 @@ double new_x2, new_y2, new_z2;
     zmax = MAX(zmax, w->picture.basis.Bw[2][2]);
     zmax = MAX(zmax, w->picture.basis.Bw[3][2]);
 
-    udelta_x = w->picture.basis.Bw[0][0] - w->picture.basis.Bw[3][0];
-    udelta_y = w->picture.basis.Bw[0][1] - w->picture.basis.Bw[3][1];
-    udelta_z = w->picture.basis.Bw[0][2] - w->picture.basis.Bw[3][2];
+    /*udelta_x = w->picture.basis.Bw[0][0] - w->picture.basis.Bw[3][0];*/
+    /*udelta_y = w->picture.basis.Bw[0][1] - w->picture.basis.Bw[3][1];*/
+    /*udelta_z = w->picture.basis.Bw[0][2] - w->picture.basis.Bw[3][2];*/
 
     vdelta_x = w->picture.basis.Bw[1][0] - w->picture.basis.Bw[3][0];
     vdelta_y = w->picture.basis.Bw[1][1] - w->picture.basis.Bw[3][1];

@@ -66,7 +66,7 @@ class UIComponent : virtual public Base
     String	help_msg;
     String	inactive_help_msg;
     Widget	help_widget;
-    static      XtIntervalId UIComponent::BubbleTimer;
+    static      XtIntervalId BubbleTimer;
 
   protected:
     //
@@ -190,7 +190,7 @@ class UIComponent : virtual public Base
     //
     // Returns the root widget of the component.
     //
-    const Widget getRootWidget()
+    Widget getRootWidget()
     {
 	return this->root;
     }

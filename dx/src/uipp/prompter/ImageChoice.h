@@ -46,7 +46,7 @@ class ImageChoice : public NonimportableChoice {
 
 	ImageChoice (GARChooserWindow* gcw, Symbol sym);
 	static ImageChoice* 
-	    ImageChoice::Allocator(GARChooserWindow* gcw, Symbol sym)
+	    Allocator(GARChooserWindow* gcw, Symbol sym)
 		{ return new ImageChoice (gcw, sym); }
 	~ImageChoice();
 

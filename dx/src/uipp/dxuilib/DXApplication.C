@@ -4502,7 +4502,7 @@ static char *format_seconds(int seconds)
 extern "C" void ShutdownTimeout(XtPointer clientData, XtIntervalId *id)
 {
     char buffer[1024];	
-    int seconds = (int) clientData;
+    int seconds = (int)(long) clientData;
     boolean can_save = theDXApplication->appAllowsSavingNetFile();
 
     if (seconds > MIN_INTERVAL ) {
@@ -4631,7 +4631,7 @@ extern "C" void ShutdownTimeout(XtPointer clientData, XtIntervalId *id)
 extern "C" void InstallShutdownTimer(Widget w, 
 				XtPointer clientData, XtPointer calldata)
 {
-    int seconds = (int) clientData;
+    int seconds = (int)(long) clientData;
 
     ASSERT(seconds > 0);
 
@@ -4703,21 +4703,15 @@ extern "C" int DXApplication_DXAfterFunction(Display *display)
     int          win_x;
     int          win_y;
     unsigned int key_buttons;
-    Boolean      boolx;
     Window       win;
 
     XSetAfterFunction(display, NULL);
 
     win  = RootWindow(display,0);
-    boolx = XQueryPointer(display,
-                         win,
-                         &root,
-                         &child,
-                         &root_x,
-                         &root_y,
-                         &win_x,
-                         &win_y,
-                         &key_buttons);
+    XQueryPointer(display, win,
+                  &root, &child, &root_x, &root_y,
+                  &win_x, &win_y, &key_buttons);
+
     XSetAfterFunction(display, DXApplication_DXAfterFunction);
     return 1;
 }

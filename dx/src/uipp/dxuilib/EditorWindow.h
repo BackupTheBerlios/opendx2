@@ -192,14 +192,14 @@ class EditorWindow : public DXWindow
     // Convert nets to use GetLocal/Global and SetLocal/Global
     // instead of Get and Set (nodes).
     //
-           void EditorWindow::postGetSetConversionDialog();
-    static void EditorWindow::ConvertToLocal();
-    static void EditorWindow::ConvertToGlobal(boolean global = TRUE);
+           void postGetSetConversionDialog();
+    static void ConvertToLocal();
+    static void ConvertToGlobal(boolean global = TRUE);
 
     void convertToGlobal(boolean global);
 
-    static Command*  EditorWindow::SelectedToGlobalCmd;
-    static Command*  EditorWindow::SelectedToLocalCmd;
+    static Command*  SelectedToGlobalCmd;
+    static Command*  SelectedToLocalCmd;
 
     CascadeMenu		*programVerifyCascade;	
 
@@ -207,7 +207,7 @@ class EditorWindow : public DXWindow
     Command		*toLocalCmd;
     Command		*postGetSetCmd;
 
-    static GetSetConversionDialog* EditorWindow::GetSetDialog;
+    static GetSetConversionDialog* GetSetDialog;
 #endif
 
     //
@@ -739,9 +739,9 @@ class EditorWindow : public DXWindow
 
     Command *getDeleteNodeCmd(){return this->deleteNodeCmd;};
 #ifndef FORGET_GETSET
-    static Command* EditorWindow::GetGlobalCmd() 
+    static Command* GetGlobalCmd() 
 	{ return EditorWindow::SelectedToGlobalCmd; };
-    static Command* EditorWindow::GetLocalCmd() 
+    static Command* GetLocalCmd() 
 	{ return EditorWindow::SelectedToLocalCmd; };
 #endif
 
@@ -881,7 +881,7 @@ class EditorWindow : public DXWindow
     // On behalf of VPEAnnotators which have the ability to snarf whole nets and
     // set them back into the selection via XtOwnSelection...
     //
-    void EditorWindow::setCopiedNet(const char*);
+    void setCopiedNet(const char*);
 #endif
 
     //

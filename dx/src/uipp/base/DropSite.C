@@ -154,10 +154,9 @@ extern "C" void DropSite_HandleDrop(Widget w, XtPointer, XtPointer call_data)
 {
 XmDropProcCallback	DropData;
 int			n;
-Cardinal		i, num_imports, num_exports;
+Cardinal		i, num_exports;
 Atom			*exportTargets;
 XmDropTransferEntryRec	transferEntries[1];
-XmDropTransferEntry	transferList;
 XPointer		ptr;
 Arg			wargs[20];
 Boolean			favoriteIsFound;
@@ -194,7 +193,6 @@ Boolean			favoriteIsFound;
     // matches excludes our favorite type - any match.
     DictionaryIterator di(*ds->getDropDictionary());
     TransferStyle *ts;
-    num_imports = 0;
     favoriteIsFound = FALSE;
     TransferStyle *matchFound = NUL(TransferStyle*);
     while ((ts=(TransferStyle*)di.getNextDefinition())) {
@@ -226,7 +224,6 @@ Boolean			favoriteIsFound;
 	sop.obj = ds;
 	transferEntries[0].target = matchFound->getAtom();
 	transferEntries[0].client_data = (XtPointer)&sop;
-	transferList = transferEntries;
 
 	XtSetArg(wargs[n], XmNdropTransfers, transferEntries); n++;
 	XtSetArg(wargs[n], XmNnumDropTransfers, XtNumber(transferEntries)); n++;

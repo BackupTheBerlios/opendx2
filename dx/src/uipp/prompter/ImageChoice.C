@@ -199,9 +199,6 @@ void ImageChoice::setCommandActivation(boolean file_checked)
 {
     this->NonimportableChoice::setCommandActivation(file_checked);
 
-
-    boolean file_ready = FALSE;
-
     //
     // Does the text widget at the top contain a valid data file name?
     //

@@ -236,7 +236,7 @@ class DXType : public Base
     //
     // Returns the type value.
     //
-    const long getType()
+    long getType()
     {
 	return this->type;
     }

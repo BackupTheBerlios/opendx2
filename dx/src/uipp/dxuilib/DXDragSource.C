@@ -83,7 +83,6 @@ char            cfgfilename[256];
 char            header[256];
 struct STATSTRUCT statb;
 char            *buf;
-size_t          sz;
 unsigned long   header_len;
 unsigned long   net_len;
 unsigned long   cfg_len;
@@ -185,8 +184,8 @@ int		tmpdirlen;
     // Construct the buffer [header + net + cfg]
     //
     strcpy(buf, header);
-    if((sz = fread(&(buf[header_len]), sizeof(char),
-        (unsigned int)net_len, netf)) != net_len)
+    if(fread(&(buf[header_len]), sizeof(char),
+	     (unsigned int)net_len, netf) != net_len)
     {
         WarningMessage("DXDragSource:fread Drag conversion failed");
 	if (netf) fclose(netf);
@@ -195,8 +194,8 @@ int		tmpdirlen;
     }
     if(cfg_len > 0)
     {
-        if((sz = fread(&(buf[header_len+net_len]), sizeof(char),
-            (unsigned int)cfg_len, cfgf)) != cfg_len)
+        if(fread(&(buf[header_len+net_len]), sizeof(char),
+		 (unsigned int)cfg_len, cfgf) != cfg_len)
         {
             WarningMessage("DXDragSource:fread Drag conversion failed");
 	    if (netf) fclose(netf);

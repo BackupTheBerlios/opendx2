@@ -1276,7 +1276,7 @@ void ControlPanel::setDimensionsCallback(Widget w, XtPointer )
 
     XtPointer ptr;
     XtVaGetValues(w,XmNuserData,&ptr,0);
-    dim = (int)ptr;
+    dim = (int)(long)ptr;
     ASSERT(dim>0);
     inode->changeDimensionality(dim);
 }
@@ -3124,7 +3124,6 @@ boolean ControlPanel::dndPlacement(int x, int y)
 {
 Node *node;
 int prev_width, prev_height, placex, placey, max_right_edge, vert_cnt;
-boolean first_loop;
 
     EditorWindow *editor = this->network->getEditor();
     ASSERT(editor);
@@ -3158,7 +3157,6 @@ boolean first_loop;
 	wsc->setSelected(FALSE);
 
 
-    first_loop = TRUE;
     i.setList(*selected);
     placex = x; placey = y;
     prev_height = prev_width = 0;

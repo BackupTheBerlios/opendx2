@@ -134,12 +134,10 @@ DXLSetValueHandler(DXLConnection *conn, const char *varname,
 DXLError
 DXLRemoveValueHandler(DXLConnection *conn, const char *name)
 {
-    HandlerData *hd;
-
     if (!conn->valueHandlerDict) 
 	return OK;
 
-    if ((hd = DictFind(conn->valueHandlerDict,name))) {
+    if (DictFind(conn->valueHandlerDict,name)) {
 	DictDelete(conn->valueHandlerDict,name);
  	return OK;
     }

@@ -57,7 +57,7 @@ class StepperInteractor : public ScalarInteractor
     Widget	componentForm;	// Holds the steppers for a vector interactor
 
 
-    static boolean StepperInteractor::StepperInteractorClassInitialized;
+    static boolean StepperInteractorClassInitialized;
 
     // Call the virtual callback for value changes. 
     //
@@ -71,7 +71,7 @@ class StepperInteractor : public ScalarInteractor
     // Protected member data:
     //
 
-    static String StepperInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     //
     //

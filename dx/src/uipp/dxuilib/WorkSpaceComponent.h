@@ -60,7 +60,7 @@ class WorkSpaceComponent : public UIComponent
     // Private member data:
     // 
 
-    static boolean WorkSpaceComponent::WorkSpaceComponentClassInitialized;
+    static boolean WorkSpaceComponentClassInitialized;
 
     //
     // developerStyle should really be an enum instead of a boolean.
@@ -81,7 +81,7 @@ class WorkSpaceComponent : public UIComponent
     //
     // Protected member data:
     //
-    static String WorkSpaceComponent::DefaultResources[]; 
+    static String DefaultResources[]; 
     boolean developerStyle;
     boolean selected;
     WorkSpace *workSpace;

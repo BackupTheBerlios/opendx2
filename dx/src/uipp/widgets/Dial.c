@@ -1403,7 +1403,7 @@ XrmValue  	*fromVal, *toVal;
 	 * Convert the string in fromVal to a double precision 
 	 * floating point address.
 	 */
-	if (sscanf((char *)fromVal->addr,"%Lf",&result) == 1)
+	if (sscanf((char *)fromVal->addr,"%lf",&result) == 1)
 		{
 		/*
 	 	 * make toVal point to the result.

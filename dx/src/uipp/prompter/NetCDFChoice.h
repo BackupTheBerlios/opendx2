@@ -29,7 +29,7 @@ class NetCDFChoice : public ImportableChoice {
 
 	NetCDFChoice (GARChooserWindow* gcw, Symbol sym) : ImportableChoice (
 	    "netCDFData", FALSE, TRUE, TRUE, FALSE, gcw, sym) {};
-	static NetCDFChoice* NetCDFChoice::Allocator(GARChooserWindow* gcw, Symbol sym)
+	static NetCDFChoice* Allocator(GARChooserWindow* gcw, Symbol sym)
 	    { return new NetCDFChoice(gcw, sym); }
 	~NetCDFChoice(){};
 

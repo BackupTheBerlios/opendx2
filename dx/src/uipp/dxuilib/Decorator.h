@@ -50,16 +50,16 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
     // 
     DecoratorInfo* dndInfo;
 
-    static 	boolean 	 Decorator::DecoratorClassInitialized;
-    static      const char *	 Decorator::ColorNames[];
-    static      const char *	 Decorator::ColorValues[];
+    static 	boolean 	 DecoratorClassInitialized;
+    static      const char *	 ColorNames[];
+    static      const char *	 ColorValues[];
 
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   protected:
     // S H A R E W A R E
-    static  String 	   Decorator::DefaultResources[]; 
-    static  int		   Decorator::HiLites;
+    static  String 	   DefaultResources[]; 
+    static  int		   HiLites;
 
     virtual void 	   createDecorator();
     Dimension 	x,y,width, height;
@@ -114,8 +114,8 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
     // InteractorInstance.  
     // FIXME: It needs to be pushed up the heirarchy.
     //
-    static int Decorator::CountLines(const char*);
-    static const char* Decorator::FetchLine(const char*, int);
+    static int CountLines(const char*);
+    static const char* FetchLine(const char*, int);
 
   // P U B L I C   P U B L I C   P U B L I C
   // P U B L I C   P U B L I C   P U B L I C

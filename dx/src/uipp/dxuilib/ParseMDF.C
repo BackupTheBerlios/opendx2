@@ -1081,7 +1081,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
     boolean    parsed_category,  parsed_description, parsed_outboard;
     boolean    checked_category=FALSE, checked_description=FALSE, checked_outboard=FALSE; 
     boolean	parsed_loadable, checked_loadable=FALSE;
-    boolean	checked_repeat=FALSE, parsed_repeat;
+    boolean	checked_repeat=FALSE;
     boolean    get_another_line;
     char*      p;
     char       line[2048];
@@ -1107,7 +1107,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 	{
 
 	    checked_description = parsed_description;
-	    checked_repeat	= parsed_repeat = FALSE; 
+	    checked_repeat	= /*parsed_repeat =*/ FALSE; 
 	    checked_loadable	= parsed_loadable;
 	    checked_outboard	= parsed_outboard;
 	    checked_category	= parsed_category;
@@ -1228,7 +1228,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 	    checked_loadable	= parsed_loadable = FALSE;
 	    checked_category	= parsed_category = FALSE;
 	    checked_flags	= parsed_flags    = FALSE;
-	    checked_repeat	= parsed_repeat   = FALSE;
+	    checked_repeat	= /*parsed_repeat   =*/ FALSE;
 	   
 	    /*
 	     * Add the module index to the module index list.
@@ -1583,7 +1583,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		        state = ST_PACKAGE;
 		    } else
 			ASSERT(0);
-	    	    parsed_repeat = TRUE;
+	    	    /*parsed_repeat = TRUE;*/
 		    get_another_line = TRUE;
 		}
 		else

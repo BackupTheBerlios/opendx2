@@ -197,7 +197,7 @@ class GroupManager : public Base
     virtual boolean printAssignment(FILE *){ return TRUE; }
 
     const char *getManagerName();
-    const Symbol getManagerSymbol() { return this->groupID; }
+    Symbol getManagerSymbol() { return this->groupID; }
 
     virtual boolean survivesMerging() { return FALSE; }
 

@@ -56,9 +56,9 @@ class SelectorListInteractor : public Interactor
     // One widget for each component (scalar or n-vector).
     //
 
-    static boolean SelectorListInteractor::ClassInitialized;
+    static boolean ClassInitialized;
 
-    static String SelectorListInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     friend void SelectorListInteractor_SelectCB(Widget , XtPointer , XtPointer );
 

@@ -74,9 +74,9 @@ class StartupWindow : public IBMMainWindow
     NetFileDialog* netFileDialog;
     NetFileDialog* demoNetFileDialog;
 
-    static DXLConnection* StartupWindow::Connection;
-    static char* StartupWindow::PendingCommand;
-    static char* StartupWindow::PendingNetFile;
+    static DXLConnection* Connection;
+    static char* PendingCommand;
+    static char* PendingNetFile;
 
     friend void StartupWindow_BrokenConnCB(DXLConnection*, void*);
     friend void StartupWindow_ErrorMsgCB(DXLConnection*, const char*, const void*);

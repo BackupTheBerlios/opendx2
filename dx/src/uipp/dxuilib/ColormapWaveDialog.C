@@ -84,11 +84,10 @@ void ColormapWaveDialog::installDefaultResources(Widget  baseWidget)
 
 Widget ColormapWaveDialog::createDialog(Widget parent)
 {
-    Widget 	sep, label_w;
+    Widget 	sep;
     Arg		args[20];
     int		n;
     Widget	pulld;
-    Widget	label;
     Pixmap	pixmap;
     Pixel	bg;
     Display	*display;
@@ -107,7 +106,6 @@ Widget ColormapWaveDialog::createDialog(Widget parent)
 //    Widget dialog = XmCreateFormDialog(parent, this->name, args, n);
     Widget dialog = this->CreateMainForm(parent, this->name, args, n);
 
-    label_w = 
 	XtVaCreateManagedWidget("waveFormLabel", xmLabelWidgetClass, dialog,
 		    XmNtopAttachment, XmATTACH_FORM,
 		    XmNleftAttachment, XmATTACH_FORM,
@@ -188,13 +186,13 @@ Widget ColormapWaveDialog::createDialog(Widget parent)
 			NULL);
     XtManageChild(this->waveoption);
 
-    label = XtVaCreateManagedWidget("Range:", xmLabelWidgetClass, dialog,
-		    XmNtopAttachment, XmATTACH_WIDGET,
-		    XmNtopWidget, this->waveoption,
-		    XmNleftAttachment, XmATTACH_FORM,
-		    XmNtopOffset, 10,
-		    XmNleftOffset, 10,
-		    NULL);
+    XtVaCreateManagedWidget("Range:", xmLabelWidgetClass, dialog,
+    	    XmNtopAttachment, XmATTACH_WIDGET,
+    	    XmNtopWidget, this->waveoption,
+    	    XmNleftAttachment, XmATTACH_FORM,
+    	    XmNtopOffset, 10,
+    	    XmNleftOffset, 10,
+    	    NULL);
 
     n = 0;
     pulld = XmCreatePulldownMenu(dialog, "Pulldown", args, n);
@@ -227,7 +225,6 @@ Widget ColormapWaveDialog::createDialog(Widget parent)
    /*
     * Steppers etc.
     */
-    label_w = 
 	XtVaCreateManagedWidget("stepsLabel", xmLabelWidgetClass, dialog,
 			XmNtopOffset, 10,
 			XmNleftOffset, 10,

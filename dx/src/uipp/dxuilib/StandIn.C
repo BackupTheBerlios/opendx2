@@ -545,16 +545,14 @@ Dimension        str1_height;
 Dimension        str2_width;
 Dimension        str2_height;
 Parameter        *p;
-Network*         network;
-EditorWindow*    editor;
 EditorWorkSpace* workspace;
 Position         y;
 unsigned char    alignment;
 Dimension	 shadow_thickness;
 XRectangle	 xrect;
 
-    network = this->node->getNetwork();
-    editor = network->getEditor();
+    /*network = this->node->getNetwork();*/
+    /*editor = network->getEditor();*/
     workspace =  (EditorWorkSpace*)this->workSpace;
 
     if(!outputTab)
@@ -648,15 +646,13 @@ Dimension        width;
 Dimension        height;
 Dimension        str_width;
 Dimension        str_height;
-Network*         network;
-EditorWindow*    editor;
 EditorWorkSpace* workspace;
 Position         y;
 Dimension	 shadow_thickness;
 XRectangle	 xrect;
 
-    network = this->node->getNetwork();
-    editor = network->getEditor();
+    /*network = this->node->getNetwork();*/
+    /*editor = network->getEditor();*/
     workspace =  (EditorWorkSpace*)this->workSpace;
 
     // Clear the PB label
@@ -1030,9 +1026,6 @@ extern "C" void StandIn_ArmInputCB(Widget widget,
 
 void StandIn::armInput(Widget widget, XtPointer cdata)
 {
-
-    Network*      network;
-    EditorWindow* editor;
     Node*         node;
     Node*         node2;
     StandIn*      standIn2;
@@ -1058,8 +1051,8 @@ void StandIn::armInput(Widget widget, XtPointer cdata)
     ASSERT(widget);
 
     node = this->node; 
-    network = node->getNetwork();
-    editor = network->getEditor();
+    /*network = node->getNetwork();*/
+    /*editor = network->getEditor();*/
     workspace =  (EditorWorkSpace*)this->workSpace;
 
 
@@ -1278,10 +1271,8 @@ extern "C" void StandIn_ArmOutputCB(Widget widget,
 
 void StandIn::armOutput(Widget widget, XtPointer cdata)
 {
-    Network* network;
     Node*    node;
     EditorWorkSpace*    workspace; 
-    EditorWindow*    editor; 
     XEvent*     event;
     int         n;
     int         i;
@@ -1297,8 +1288,8 @@ void StandIn::armOutput(Widget widget, XtPointer cdata)
     ASSERT(widget);
 
     node = this->node; 
-    network = node->getNetwork();
-    editor = network->getEditor();
+    /*network = node->getNetwork();*/
+    /*editor = network->getEditor();*/
     workspace =  (EditorWorkSpace*)this->workSpace;
 
 
@@ -1434,7 +1425,6 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
     Widget      t_widget = (Widget)None;
     Window      n_window;
     Window      t_window;
-    boolean     notified;
     XmAnyCallbackStruct* callData = (XmAnyCallbackStruct*) cdata;
     static char *type_error = 
 	"Output parameter type and input parameter type do not match.";
@@ -1709,7 +1699,7 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
          * Delete the old arc, if applicable.
          */
 	if(workspace->io_tab == t_widget) workspace->remove_arcs = FALSE;
-        notified = FALSE;
+        /*notified = FALSE;*/
         if (workspace->remove_arcs) {
               standIn->deleteArk(workspace->arc);
               workspace->remove_arcs = False;
@@ -1918,7 +1908,7 @@ int StandIn::getVisibleInputCount()
 
 void StandIn::adjustParameterLocations(int width)
 {
-    int             vi, vo, i, x, n, j;
+    int             vi, vo, i, x, j;
     int             icnt, ocnt;
     List            *arcs;
     Ark             *a;
@@ -1983,7 +1973,7 @@ void StandIn::adjustParameterLocations(int width)
 
         x = ((2 * (j-1) + 1) * (width)) /
           (2 * vo) - (standInDefaults.io.width / 2);
-        n = 0;
+        /*n = 0;*/
 
 	//
 	// Move it and show it
@@ -2121,13 +2111,10 @@ void StandIn::createStandIn()
     long                 mask;
     XWindowAttributes    getatt;
     XSetWindowAttributes setatt;
-    EditorWindow	*editor;
     ListIterator         iterator;
     Tab                  *tab;
     int                  n;
     Arg                  arg[100];
-    int                  visible_inputs;
-    int                  visible_outputs;
     int                  i;
     int                  icnt,ocnt;
     Dimension            height;
@@ -2140,7 +2127,7 @@ void StandIn::createStandIn()
     ASSERT(this->node);
     this->initialize();
     network = this->node->getNetwork();
-    editor = network->getEditor();
+    /*editor = network->getEditor();*/
     workspace = (EditorWorkSpace*)this->workSpace;
     Widget parent = workspace->getRootWidget();
 
@@ -2290,8 +2277,8 @@ void StandIn::createStandIn()
     icnt = node->getInputCount();
 
 
-    visible_inputs = getVisibleInputCount();
-    visible_outputs = getVisibleOutputCount();
+    /*visible_inputs = getVisibleInputCount();*/
+    /*visible_outputs = getVisibleOutputCount();*/
 
 
     for(i=1; i<=icnt; i++)

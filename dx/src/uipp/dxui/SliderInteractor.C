@@ -210,7 +210,7 @@ extern "C" void SliderInteractor_SliderCB(Widget                  widget,
 
     ASSERT(widget);
 
-    component = (int)GetUserData(widget);
+    component = (int)(long)GetUserData(widget);
     ASSERT(component > 0);
     si->sliderCallback(widget, component, callData);
 }

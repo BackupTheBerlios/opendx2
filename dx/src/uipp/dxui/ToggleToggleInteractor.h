@@ -36,14 +36,14 @@ class ToggleToggleInteractor : public ToggleInteractor
     //
     // Private member data:
     //
-    static boolean ToggleToggleInteractor::ToggleToggleInteractorClassInitialized;
+    static boolean ToggleToggleInteractorClassInitialized;
 
   protected:
     //
     // Protected member data:
     //
 
-    static String ToggleToggleInteractor::DefaultResources[];
+    static String DefaultResources[];
 
     //
     // Accepts value changes and reflects them into other interactors, cdbs

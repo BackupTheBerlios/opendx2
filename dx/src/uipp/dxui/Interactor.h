@@ -114,7 +114,7 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
     // The frame is in this->root
     Widget		label;
 
-    static boolean Interactor::InteractorClassInitialized;
+    static boolean InteractorClassInitialized;
     static Widget DragIcon;
 
     // 1 dictionary for the class... Holds the type which can be dragged from
@@ -138,7 +138,7 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
     //
     InteractorInstance		*interactorInstance;
 
-    static String Interactor::DefaultResources[]; 
+    static String DefaultResources[]; 
 
     // 
     // To the parent's version add dnd participation.

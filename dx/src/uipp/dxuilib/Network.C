@@ -1178,7 +1178,7 @@ void Network::openControlPanelGroup(int groupIndex)
 
     if (this->panelGroupManager->getPanelGroup(groupIndex,&plist)) {
     	ListIterator  iterator(plist);
-    	while ( (panelInstance = (int)iterator.getNext()) ) 
+    	while ( (panelInstance = (int)(long)iterator.getNext()) ) 
 	    this->openControlPanel(panelInstance);
     }
 }
@@ -2722,7 +2722,6 @@ void Network::parseArgument(char* name, const boolean isVarname)
 	return;
 
     Node *n;
-    Ark *a = NULL;
     boolean found = FALSE;
 #if 00
     ListIterator l;
@@ -2751,7 +2750,7 @@ void Network::parseArgument(char* name, const boolean isVarname)
 	    else
 	    {
 		// Connect output parameter to input of this->parseState.node 
-		a = new Ark(n, parameter, this->parseState.node, 
+		new Ark(n, parameter, this->parseState.node, 
 				this->parseState.input_index);
 		this->parseState.node->setInputVisibility(
 			this->parseState.input_index,TRUE);
@@ -2961,7 +2960,6 @@ void Network::parseRValue(char* name)
 	return;
 
     Node *n;
-    Ark *a = NULL;
     boolean found = FALSE;
     Symbol s_of_out = theSymbolManager->registerSymbol(string);
 #if 00
@@ -2990,7 +2988,7 @@ void Network::parseRValue(char* name)
 	    else
 	    {
 		// Connect output parameter to input of this->parseState.node
-		a = new Ark(n, parameter, 
+		new Ark(n, parameter, 
 			this->parseState.node, 1);
 		this->parseState.node->setInputVisibility(1,
 						TRUE);
