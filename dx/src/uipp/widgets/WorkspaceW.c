@@ -1900,7 +1900,7 @@ static void ChangeManaged( XmWorkspaceWidget ww )
 	     * Certainly don't want to do this if auto_arrange==True
 	     */
 	   formcon = GetFormConstraint(child);
-#if defined(cygwin)
+#if (USING_LESSTIF == 1)
 	   formcon->atta[0].type = XmATTACH_NONE;
 	   formcon->atta[1].type = XmATTACH_NONE;
 	   formcon->atta[2].type = XmATTACH_NONE;
@@ -2189,10 +2189,11 @@ XmWorkspaceConstraints constraints = WORKSPACE_CONSTRAINT(w);
 static Boolean ConstraintSetValues( Widget current, Widget request, Widget new )
 {
     Boolean retval;
+    Cardinal zero = 0;
     XmWorkspaceConstraints new_constraints = WORKSPACE_CONSTRAINT(new);
     XmWorkspaceConstraints old_constraints = WORKSPACE_CONSTRAINT(current);
 
-    retval = (*superclass->constraint_class.set_values)(current,request,new,NULL,0);
+    retval = (*superclass->constraint_class.set_values)(current,request,new,NULL,&zero);
 
     new->core.x = current->core.x;
     new->core.y = current->core.y;
