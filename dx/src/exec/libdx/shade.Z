@@ -309,11 +309,7 @@ count(struct xfield *xf, struct shade *shade, Point *box);
 static Error
 task(struct shade *shade)
 {
-    int m, nl;
-    RGBColor *fcolors=NULL, *bcolors=NULL;
-    static RGBColor zero = {0,0,0};
     Array a, normals_array = NULL, box = NULL;
-    Vector *normals;
     struct xfield xf;
     Field f = NULL;
     Matrix *mp = shade->xflag? &shade->m : NULL;
@@ -491,10 +487,7 @@ task(struct shade *shade)
     }
     else
     {
-	char *resultName;
 	Array fcolors_array = NULL, bcolors_array = NULL;
-
-	normals = (Vector *) DXGetArrayData(normals_array);
 
 	/* do the shading */
 
@@ -986,6 +979,9 @@ count(struct xfield *xf, struct shade *shade, Point *box)
 	    irregular = 1;
 	} else if (xf->ct==ct_lines) {
 	    nbytes = nconnections * SIZE(1);
+	    irregular = 1;
+	} else if (xf->ct==ct_polylines) {
+	    nbytes = xf->nedges * (sizeof(struct sort) + (2) * sizeof(int));
 	    irregular = 1;
 	} else if (xf->ct==ct_triangles) {
 	    nbytes = nconnections * SIZE(1);
@@ -1939,8 +1935,6 @@ static RGBColor	  *_bbuf;
 static int    	  _vPerE;
 static char       _fcst, _bcst, _ncst;
 static char       _fbyte, _bbyte;
-static RGBColor	  _ffltcolor;
-static RGBColor	  _bfltcolor;
 
 Error
 _dxfInitApplyLights(float kaf, float kdf, float ksf, int kspf,

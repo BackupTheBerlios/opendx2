@@ -99,6 +99,12 @@ _dxf_VolumeIrregular(struct buffer *b, struct gather *gather, int clip)
 	    z = (((double)p[line.p].z) + ((double)p[line.q].z)) / 2.0;
 	    ADVANCE(1);
 	    break;
+	case SORT_POLYLINE:
+	    line.p = xf->edges[GET(s,1)];
+	    line.q = xf->edges[GET(s,1)+1];
+	    z = (((double)p[line.p].z) + ((double)p[line.q].z)) / 2.0;
+	    ADVANCE(2);
+	    break;
 	case SORT_TRI:
 	    tri = xf->c.triangles[GET(s,0)];
 	    z = (((double)p[tri.p].z) + ((double)p[tri.q].z) + 
@@ -219,6 +225,18 @@ _dxf_VolumeIrregular(struct buffer *b, struct gather *gather, int clip)
 		    goto error;
 	    } else if (xf->colors_dep == dep_connections) {
 		if (!_dxf_LineFlat(b, xf, 1, xf->c.lines, &g,
+			       FCOLORP(g), OPACITYP(g), clip, INV_VALID))
+		    goto error;
+	    }
+	    break;
+	case SORT_POLYLINE:
+            line.p = xf->edges[GET(s,1)];
+	    line.q = xf->edges[GET(s,1)+1];
+	    if (xf->colors_dep == dep_positions) {
+		if (!_dxf_Line(b, xf, 1, &line, NULL, clip, INV_VALID))
+		    goto error;
+	    } else if (xf->colors_dep == dep_polylines) {
+		if (!_dxf_LineFlat(b, xf, 1, &line, NULL,
 			       FCOLORP(g), OPACITYP(g), clip, INV_VALID))
 		    goto error;
 	    }
