@@ -204,10 +204,9 @@ void _dxf_ExQueuePrint (EXQueue q)
     EXQueueElement	e;
     int			i;
     char		buf[4096];
-    PFI			pr;
 
     l  = q->locking;
-    pr = q->print;
+    /*pr = q->print;*/
 
     Q_LOCK (l, q);
 
@@ -215,8 +214,7 @@ void _dxf_ExQueuePrint (EXQueue q)
 
     for (i = 0, e = q->head; e; i++, e = e->next)
     {
-	sprintf (buf, "[%4d] %08x <%08x %08x> ", i, (unsigned int) e, 
-	          (unsigned int) e->prev, (unsigned int) e->next);
+	sprintf (buf, "[%4d] %p <%p %p> ", i, e, e->prev, e->next);
 	(* q->print) (buf + strlen (buf), e->val);
 	DXMessage (buf);
     }
@@ -242,7 +240,7 @@ static int ExQueueDefaultDestroy (Pointer val)
 
 static int ExQueueDefaultPrint (char *buf, Pointer val)
 {
-    return (sprintf (buf, "0x%08x", (unsigned int) val));
+    return (sprintf (buf, "0x%08lx", (long)val));
 }
 
 

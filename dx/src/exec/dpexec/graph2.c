@@ -40,8 +40,8 @@ static int	_macro_depth = 0;
 static int	_nocache_depth = 0;
 static int	_nocache_stack[MACRO_DEPTH];
 
-_excache
-_dxf_ExNoCachePush (_excache n)
+int
+_dxf_ExNoCachePush (int n)
 {
     int		nc	= FALSE;
 

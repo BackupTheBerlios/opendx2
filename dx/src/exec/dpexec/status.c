@@ -41,7 +41,6 @@
 
 int             *_dxd_exProcessorStatus=NULL;
 static int	*old_status		= NULL;
-static int	draw_status		= FALSE;
 static int	nproc			= 4;
 int		_dxd_exStatusPID		= 0;
 
@@ -57,7 +56,6 @@ Error _dxf_ExInitStatus (int n, int flag)
     int i;
 
     nproc = n;
-    draw_status = flag;
 
     _dxd_exProcessorStatus = (int *) DXAllocate (n * sizeof (int));
     old_status = (int *) DXAllocate (n * sizeof (int));

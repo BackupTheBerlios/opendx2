@@ -24,7 +24,7 @@ typedef struct _EXRQJob
     EXRQJob	next;			/* list pointers		*/
     EXRQJob	prev;
     int		highpri;		/* run this NOW			*/
-    int		gid;			/* group id			*/
+    long	gid;			/* group id			*/
     int		JID;			/* job   id			*/
     PFI		func;			/* function to call		*/
     Pointer	arg;			/* argument to pass		*/
@@ -76,7 +76,7 @@ Error _dxf_ExRQInit (void)
 }
 
 void _dxf_ExRQEnqueue (PFI func, Pointer arg, int repeat,
-		  int gid, int JID, int highpri)
+		       long gid, int JID, int highpri)
 {
     volatile EXRQ	rq;
     lock_type		*l;
@@ -193,7 +193,7 @@ MARK_TIME ("RQE Exit");
  */
 
 void _dxf_ExRQEnqueueMany (int n, PFI func[], Pointer arg[], 
-			int repeat[], int gid, int JID, int highpri)
+			int repeat[], long gid, int JID, int highpri)
 {
     volatile EXRQ	rq;
     lock_type		*l;
@@ -327,7 +327,7 @@ MARK_TIME ("RQEM Exit");
 
 
 
-int _dxf_ExRQDequeue	(int gid)
+int _dxf_ExRQDequeue	(long gid)
 {
     volatile EXRQ	rq;
     _EXRQ		localRq;

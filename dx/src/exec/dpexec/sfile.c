@@ -73,6 +73,7 @@ SFILEfileno(SFILE *SF)
 	fprintf(stderr, "unknown SFILE type\n");
 	abort();
     }
+    return -1;  /*  quiet the compiler  */
 }
 
 SFILE *

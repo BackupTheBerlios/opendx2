@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/utils.h,v 1.6 2000/10/04 17:46:00 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/utils.h,v 1.7 2002/03/21 21:14:42 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -66,7 +66,7 @@ typedef Pointer			(*PFP)();
  * Useful functions.
  */
 
-Pointer		_dxf_ExAlignBoundary		(int n, Pointer p);
+Pointer		_dxf_ExAlignBoundary		(long n, Pointer p);
 char		*_dxf_ExCopyString		(char *old);
 char		*_dxf_ExCopyStringN		(char *old, int len);
 char		*_dxf_ExCopyStringLocal		(char *old);

@@ -305,13 +305,12 @@ void _dxf_ExGQPrint (char *s)
 {
     gq_elem	*e;
 
-    printf ("%s: head = %8x, tail = %8x, Q = ", s, (unsigned int) gq_head, 
-             (unsigned int) gq_tail);
+    printf ("%s: head = %p, tail = %p, Q = ", s, gq_head, gq_tail);
     for (e = gq_head; e; e = e->next)
-	printf ("%8x ", (unsigned int) e);
+	printf ("%p ", e);
     printf ("\n");
 
     printf ("curr = ");
-    printf ("%8x ", (unsigned int) *gq_curr);
+    printf ("%p ", *gq_curr);
     printf ("\n");
 }

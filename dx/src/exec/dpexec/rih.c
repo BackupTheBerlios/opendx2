@@ -101,7 +101,6 @@ int _dxf_ExCheckRIHBlock (int input)
     fd_set		wfdset;
     EXRIH		r;
     int			ret	= FALSE;
-    Error		rval;
     int			mval;
     int			fd;
     int			needswriting = _dxf_ExNeedsWriting();
@@ -181,7 +180,7 @@ int _dxf_ExCheckRIHBlock (int input)
 	fd = r->fd;
 	if (r->flag || FD_ISSET(fd, &fdset))
 	{
-	    rval = (* r->proc) (fd, r->arg);
+	    /*rval =*/ (* r->proc) (fd, r->arg);
 	    ret = TRUE;
 	}
     }
@@ -236,7 +235,6 @@ int _dxf_ExCheckRIH (void)
     EXRIH		r;
     struct timeval	tv;
     int			ret	= FALSE;
-    Error		rval;
     int			mval;
     int			fd;
     int			cfnd;
@@ -294,7 +292,7 @@ int _dxf_ExCheckRIH (void)
 	fd = r->fd;
 	if (r->flag || FD_ISSET(fd, &fdset))
 	{
-	    rval = (* r->proc) (fd, r->arg);
+	    /*rval =*/ (* r->proc) (fd, r->arg);
 	    ret = TRUE;
 	}
     }
@@ -456,7 +454,6 @@ int _dxf_ExCheckRCH (int when)
     int			i;
     EXRCH		r;
     int			ret	= FALSE;
-    Error		rval;
 
     if (nRCH <= 0)
 	return (ret);
@@ -464,7 +461,7 @@ int _dxf_ExCheckRCH (int when)
     for (i = 0, r = callbacks; i < nRCH; i++, r++)
     {
 	if (r->when == when)
-	    rval = (* r->proc) (r->arg);
+	    /*rval =*/ (* r->proc) (r->arg);
     }
 
     return TRUE;

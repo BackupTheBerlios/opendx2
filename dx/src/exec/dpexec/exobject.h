@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/exobject.h,v 1.5 2000/08/11 15:28:11 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/exobject.h,v 1.6 2002/03/21 21:14:39 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -123,7 +123,7 @@ typedef	struct exo_object	*EXO_Object;
 #define	EXO_METHOD_CALL(_obj,_meth)\
 ((_obj)->m.methods[_meth]\
     ? (* (_obj)->m.methods[_meth]) (_obj)\
-    : (int) (_obj))
+    : (_obj) != NULL)
 
 
 #define EXO_GetClass(obj)\

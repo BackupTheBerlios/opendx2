@@ -36,10 +36,10 @@ computeDefaultRecipe (Object obj)
     if (obj)
     {
 	DXWarning ("#4610", obj);
-	crc = _dxf_ExCRCInt (crc, (int) obj);
+	crc = _dxf_ExCRCLong (crc, (long) obj);
     }
     else
-	crc = _dxf_ExCRCInt (crc, 0);
+	crc = _dxf_ExCRCLong (crc, 0);
     
     return (EXTAG(crc));
 }

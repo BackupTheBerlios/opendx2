@@ -80,7 +80,6 @@ _dxfSetupServer(int pport, int *psock,
     struct linger sl;
     int length;
     u_short port;
-    int fd;
     int sts;
     int oldPort;
     extern int errno; /* from <errno.h> */
@@ -93,7 +92,6 @@ retry:
     if (sock < 0)
     {
 	perror ("socket");
-	fd = -1;
 	goto error;
     }
 
@@ -106,7 +104,6 @@ retry:
     if (usock < 0)
     {
 	perror ("socket");
-	fd = -1;
 	goto error;
     }
 
@@ -134,14 +131,12 @@ retry:
     if (sts < 0)
     {
 	perror ("bind");
-	fd = -1;
 	goto error;
     }
 
     if (getsockname(sock, (struct sockaddr *)&server, &length) < 0)
     {
 	perror ("getsockname");
-	fd = -1;
 	goto error;
     }
 
@@ -178,7 +173,6 @@ retry:
     if (sts < 0)
     {
 	perror ("bind");
-	fd = -1;
 	goto error;
     }
 #endif
@@ -186,14 +180,12 @@ retry:
     if (listen(sock, SOCK_QUEUE_LENGTH) < 0)
     {
 	perror ("listen");
-	fd = -1;
 	goto error;
     }
 #if DXD_SOCKET_UNIXDOMAIN_OK
     if (listen(usock, SOCK_QUEUE_LENGTH) < 0)
     {
 	perror ("listen");
-	fd = -1;
 	goto error;
     }
 #endif
@@ -263,22 +255,19 @@ _dxfCompleteServer(int sock,
         sts = select(width, (SelectPtr) &fds, NULL, NULL, NULL);
     if (sts < 0) {
 	perror("select");
-	fd = -1;
 	goto error;
     }
     else if (sts == 0) {
 	fprintf (stderr, "connection timed out\n");
-	fd = -1;
 	goto error;
     }
 
     if (FD_ISSET(sock, &fds))
     {
 	length = sizeof(server);
-	if ((fd = accept(sock, (struct sockaddr *)&server, &length)) < 0)
+	if (accept(sock, (struct sockaddr *)&server, &length) < 0)
 	{
 	    perror ("accept");
-	    fd = -1;
 	    goto error;
 	}
     }
@@ -286,10 +275,9 @@ _dxfCompleteServer(int sock,
     else
     {
 	length = sizeof (userver) - sizeof(userver.sun_path) + strlen (userver.sun_path);
-	if ((fd = accept(usock, (struct sockaddr *)&userver, &length)) < 0)
+	if (accept(usock, (struct sockaddr *)&userver, &length) < 0)
 	{
 	    perror ("accept");
-	    fd = -1;
 	    goto error;
 	}
     }

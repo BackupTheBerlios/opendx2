@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/graph.h,v 1.8 2000/10/04 17:45:59 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/graph.h,v 1.9 2002/03/21 21:14:40 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -242,7 +242,7 @@ void 	  _dxf_ExGQDecrement (Program *p);
 void      _dxf_ExQueueGraph(Program * p);
 int       _dxf_NextGraphId();
 int       _dxf_ExMacroRecursionCheck (char *name, _ntype type);
-_excache  _dxf_ExNoCachePush (_excache n);
+int       _dxf_ExNoCachePush (int n);
 void      _dxf_ExNoCachePop ();
 void      _dxf_ExMacroRecursionPop (char *name, _ntype type);
 int       DXGetModulePathLen();

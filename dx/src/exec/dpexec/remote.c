@@ -136,10 +136,8 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
     char localhost[MAXHOSTNAMELEN];
     FILE *fp = NULL;
     int i, k;
-    int in[2], out[2], err[2];
     char **rep;
     char *fargv[MAX_STARTUP_ARGS];
-    int child;
     struct hostent *he;
     int findx;
     char *pathEnv;
@@ -555,7 +553,7 @@ int _dxfExRemoteExec(int dconnect, char *host, char *ruser, int r_argc,
     if ( ExHostToFQDN( myhost, myhost ) == ERROR)
 	goto error;
 
-    if ((unsigned int)(getcwd (cwd, sizeof (cwd))) == (unsigned int)NULL)
+    if (getcwd (cwd, sizeof (cwd)) == NULL)
 	goto error;
     if (spath == NULL)
     {
@@ -975,8 +973,10 @@ _dxfExRemote (Object *in, Object *out)
 		msgObj = DXGetEnumeratedMember((Group)obj, 1, NULL);
 		if (!msgObj || !DXExtractString(msgObj, &msg))
 		    goto message_cleanup;
-		
+
+		va_start(nolist,nolist);      /*  Suppress not inited warning */
 		DXqmessage (who, msg, nolist);
+		va_end(nolist);
 	    }
 	    /* async request */
 	    if (isMsg == 2)

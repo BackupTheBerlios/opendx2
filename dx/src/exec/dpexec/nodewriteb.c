@@ -29,14 +29,13 @@ void writeBuf(int fd, Pointer Buffer, int size)
     int avail = PTBUFSIZE - sizeof(int);
     int bytestowrite;
     static char *ptr = wbuffer + sizeof(int);
-    int ret;
     
     /* do we need to write out buffer */
     if(size > bytesleft || Buffer == NULL) {
         /* write number of bytes actually used at beginning of buffer */
         bytestowrite = PTBUFSIZE-bytesleft;
         bcopy(&bytestowrite, wbuffer, sizeof(int));
-        ret = write(fd, wbuffer, PTBUFSIZE);
+        write(fd, wbuffer, PTBUFSIZE);
         bytesleft = avail;
         ptr = wbuffer + sizeof(int);
     }

@@ -1209,7 +1209,7 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
     int			instance;
     _excache		excache;
     char                *macro_procgroupid;
-    _excache		tmpcache;
+    int                 keep_caching;
     int			*inArgs;
     node		**inAttrs = NULL; 
     ReRouteMap          *reroutem, rr_map;
@@ -1538,10 +1538,9 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
      * set excache to the cache attr value unless a 0 is returned, in which
      * case caching should be suppressed. (is this OK? )
      */
-    tmpcache = excache; 
-    excache = _dxf_ExNoCachePush (excache);
-    if (excache)
-	excache = tmpcache;
+    keep_caching = _dxf_ExNoCachePush (excache != CACHE_OFF);
+    if (!keep_caching)
+	excache = CACHE_OFF;
 
     /*
      * Macro calls are expanded recursively.  Module calls create input
@@ -2900,7 +2899,6 @@ static char *_dxf_ExCacheStrPrepend( Program *program,
   static char str[ MAX_PATH_STR_LEN ];
   static char tmp[ MAX_PATH_STR_LEN ];
   char        *p = str, *colon;
-  char 	      *s;
 
   /*  This oddball cache-string hacking rtn is only used in one place.  */
 
@@ -2909,10 +2907,12 @@ static char *_dxf_ExCacheStrPrepend( Program *program,
   p = int16tohex( p, instance );
 
   strcpy(tmp, path);
+  /*
   if (tmp[0] != '/')
       s = tmp;
   else
       s = tmp + 1;
+  */
 
   colon = strchr(tmp, ':');
   if (colon)

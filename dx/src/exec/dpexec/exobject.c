@@ -138,7 +138,7 @@ _dxf_EXO_compact (void)
 
 Error _dxf_EXOCheck (EXO_Object obj)
 {
-    if (obj && !((int)obj & 0x03) && obj->tag == EXO_TAG)
+    if (obj && !((long)obj & 0x03) && obj->tag == EXO_TAG)
     {
 	switch (obj->class)
 	{

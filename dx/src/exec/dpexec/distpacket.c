@@ -362,7 +362,7 @@ void _dxf_ExDistMsgfd(DistMsg type, Pointer data, int tofd)
     UIPackage *uipkg;
     CacheTagList *ctpkg;
     DelRemote *drpkg;
-    DictType whichdict = 0;
+    DictType whichdict = DICT_NONE;
     dpversion *dpv=NULL;
     dpslave_id *dpslaveid;
     char *name;
@@ -565,7 +565,7 @@ ConverttoGvar(gvarpkg *gp, Object obj)
         _dxf_ExDefineGvar (gv, obj);
     gv->reccrc = gp->reccrc;
     gv->cost = gp->cost;
-    gv->skip = gp->skip;
+    gv->skip = (_skip_state) gp->skip;
     gv->disable_cache = gp->disable_cache;
     gv->procId = gp->procId;
     return(gv);
@@ -619,13 +619,13 @@ ExDPSendGvarPkg(DPSendPkg *pkg, int fd)
 
     ret = _dxf_ExWriteSock(fd, &(pkg->index), sizeof(int));
     if(ret != sizeof(int))
-        printf("_dxf_ExWriteSock returned %d instead of %d\n",ret,sizeof(int));
+        printf("_dxf_ExWriteSock returned %d instead of %ld\n",ret,sizeof(int));
     ret = _dxf_ExWriteSock(fd, &(pkg->excache), sizeof(int));
     if(ret != sizeof(int))
-        printf("_dxf_ExWriteSock returned %d instead of %d\n",ret,sizeof(int));
+        printf("_dxf_ExWriteSock returned %d instead of %ld\n",ret,sizeof(int));
     ret = _dxf_ExWriteSock(fd, &(pkg->gvp), sizeof(gvarpkg));
     if(ret != sizeof(gvarpkg))
-        printf("_dxf_ExWriteSock returned %d instead of %d\n", ret, 
+        printf("_dxf_ExWriteSock returned %d instead of %ld\n", ret, 
                                                      sizeof(gvarpkg));
     if(pkg->obj)
     {
@@ -668,7 +668,7 @@ ExRecvDPSendPkg(int fd, int swap)
 	pv->gv->reccrc = pkg.gvp.reccrc;
     }
     pv->gv->cost = pkg.gvp.cost;
-    pv->gv->skip = pkg.gvp.skip;
+    pv->gv->skip = (_skip_state) pkg.gvp.skip;
     pv->gv->disable_cache = pkg.gvp.disable_cache;
     pv->gv->procId = pkg.gvp.procId;
 
@@ -760,7 +760,7 @@ _dxf_ExWaitOnSlaves()
     dpgraphstat 	*index; 
     DistMsg		pcktype;
     int			maxfd;
-    int			b, ret;
+    int			b;
     SlavePeers          *sp;
     int                 repeat_loop;
 
@@ -848,7 +848,7 @@ wait:
     if(repeat_loop == TRUE)
         return ERROR; 
 
-    while((ret = _dxf_ExCheckRIH()));
+    while(_dxf_ExCheckRIH());
     if(nslaves > 0)
         ExDebug("7", "all slaves are done with graph");
     if(_dxf_NewDPTableEntry()) {

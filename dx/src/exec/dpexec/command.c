@@ -1244,7 +1244,7 @@ static int LoadObjFile(char *c, Object *in)
         return (ERROR);
     }
 
-    return (int) DXLoadObjFile(str, "DXMODULES");
+    return DXLoadObjFile(str, "DXMODULES") != NULL;
 }
 
 static int LoadInteractors(char *c, Object *in)

@@ -138,6 +138,11 @@ EXCRC _dxf_ExCRCInt (EXCRC crc, int v)
     return (_dxf_ExCRCByteV (crc, (unsigned char *) &v, sizeof (int), 1));
 }
 
+EXCRC _dxf_ExCRCLong (EXCRC crc, long v)
+{
+    return (_dxf_ExCRCByteV (crc, (unsigned char *) &v, sizeof (long), 1));
+}
+
 EXCRC _dxf_ExCRCFloat (EXCRC crc, double v)
 {
     float	f = (float) v;		/* regenerate the float		*/

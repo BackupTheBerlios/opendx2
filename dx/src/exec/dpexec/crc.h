@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/crc.h,v 1.4 2000/08/11 15:28:10 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/crc.h,v 1.5 2002/03/21 21:14:38 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -20,7 +20,8 @@ typedef uint32 			EXCRC;
 #define	EX_INITIAL_CRC		0xffffffff
 
 EXCRC	_dxf_ExCRCByte		(EXCRC crc, unsigned char     v);
-EXCRC	_dxf_ExCRCInt		(EXCRC crc, int      v);
+EXCRC	_dxf_ExCRCInt		  (EXCRC crc, int      v);
+EXCRC	_dxf_ExCRCLong		(EXCRC crc, long     v);
 EXCRC	_dxf_ExCRCFloat		(EXCRC crc, double   v);
 EXCRC	_dxf_ExCRCDouble	(EXCRC crc, double   v);
 EXCRC	_dxf_ExCRCString	(EXCRC crc, char    *v);

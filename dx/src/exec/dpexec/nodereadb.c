@@ -100,11 +100,13 @@ struct node *ExReadNode(int fd)
 {
     int len;
     node *n;
-    int type;
+    int type_code;
+    _ntype type;
     struct node *function;
 
-    readN(fd, &type, 1, TYPE_INT);
-    n = _dxf_ExPCreateNode(type);
+    readN(fd, &type_code, 1, TYPE_INT);
+    type = (_ntype) type_code;
+    n = _dxf_ExPCreateNode( type );
     /* first print node attributes */
     n->attr = ExReadNodeList(fd);
     n->type = type;

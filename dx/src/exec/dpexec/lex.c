@@ -146,7 +146,7 @@ GetC(SFILE *yyin)
  
 int _dxd_exUIPacket		= FALSE;
 static int uipacketlen		= 0;
-static int uipackettype		= 0;
+/*static int uipackettype		= 0;*/
  
 SFILE	*yyin;
 int	yylineno = 1;
@@ -993,7 +993,7 @@ void yygrabdata(char *buffer, int len)
 void _dxf_ExUIPacketActive (int id, int t, int n)
 {
     _dxd_exUIPacket     = TRUE;
-    uipackettype = t;
+    /*uipackettype = t;*/
     uipacketlen  = n + 2;	/* +2 for the |'s around the packet's data */
  
     _dxd_exContext->graphId = id;	/* remember packet id for parse messages */
@@ -1005,12 +1005,9 @@ void _dxf_ExUIPacketActive (int id, int t, int n)
 void _dxf_ExUIFlushPacket ()
 {
     int		yytchar;
-    int		junk;
  
     while (uipacketlen > 0)
-    {
-	junk = input ();
-    }
+        input ();
 }
 
 void _dxf_ExFlushNewLine()

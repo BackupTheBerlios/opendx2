@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/task.h,v 1.3 2001/05/17 20:44:35 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/task.h,v 1.4 2002/03/21 21:14:42 rhh Exp $
  */
 
 #ifndef _TASK_H
@@ -41,17 +41,18 @@ typedef struct _EXTask
 typedef struct _EXTaskGroup
 {
     lock_type           lock;
-    EXTaskGroup         link;                   /* stack linkage        */
-    int                 procId;                 /* Creating process ID  */
-    int                 nalloc;                 /* # of tasks allocated */
-    int                 nused;                  /* # of tasks used      */
-    int                 ntodo;                  /* # of tasks to do     */
-    EXTask              tasks;                  /* the task blocks      */
-    float               minwork;                /* smallest work est.   */
-    float               maxwork;                /* largest  work est.   */
-    int                 sync;                   /* synchronous flag     */
-    ErrorCode           error;                  /* for error return     */
-    char                *emsg;                  /* for error return     */
+    EXTaskGroup         link;                   /* stack linkage          */
+    int                 gid;                    /* Group ID (ids this tg) */
+    int                 procId;                 /* Creating process ID    */
+    int                 nalloc;                 /* # of tasks allocated   */
+    int                 nused;                  /* # of tasks used        */
+    int                 ntodo;                  /* # of tasks to do       */
+    EXTask              tasks;                  /* the task blocks        */
+    float               minwork;                /* smallest work est.     */
+    float               maxwork;                /* largest  work est.     */
+    int                 sync;                   /* synchronous flag       */
+    ErrorCode           error;                  /* for error return       */
+    char                *emsg;                  /* for error return       */
     int			seq;			/* allocation sequence  */
 } _EXTaskGroup;
 

@@ -808,9 +808,6 @@ DXCompareModule(char *name, PFI func, int flags, int nin, char *inlist[],
 		            int nout, char *outlist[], char *exec, char *host)
 {
     node		*prev_defn;
-    int			ret;
-
-    ret = OK;
 
     /* does this add a reference? */
     prev_defn = (node*)_dxf_ExMacroSearch(name);

@@ -112,7 +112,7 @@
 #endif
 
 #define	READ_I_THRESHHOLD	0.05		/* how often to ioctl  fd */
-#define	READ_S_THRESHHOLD	5.0		/* how often to select fd */
+/*#define	READ_S_THRESHHOLD	5.0*/	/* how often to select fd */
 #define MAIN_TIMING		1
 
 #define	CHECK_INIT(_i, what)\
@@ -190,7 +190,7 @@ static int      exParent_RQwrite_fd;
 static int	exChParent_RQread_fd;
 
 static double	read_i_threshhold = READ_I_THRESHHOLD;
-static double	read_s_threshhold = READ_S_THRESHHOLD;
+/*static double	read_s_threshhold = READ_S_THRESHHOLD;*/
 
 static int maxMemory	= 0;	/* in MB -- 0 implies library default */
 
@@ -637,8 +637,6 @@ static void ExMainLoopSlave ()
 
 static void ExMainLoopMaster ()
 {
-    int			naptime;
-
     /*
      * Module definitions should be put into the dictionary before
      * macro definitions which may occur in _dxf_ExParseInit (.dxrc files).
@@ -694,7 +692,7 @@ loop_slave_continue:
     else
         _dxd_exSlaveId = 0;
 
-    for (naptime = 0; ; )
+    while (1)  /*  naptime  */
     {
 
 	ExMarkTimeLocal (4, "main:top");
@@ -935,7 +933,7 @@ static void ExProcessArgs (int argc, char **argv)
 	    case 'P': processor_status_on = TRUE;		break;
 #endif
 	    case 'R': _dxd_exRshInput = TRUE;
-		      read_s_threshhold = READ_I_THRESHHOLD;	break;
+		      /*read_s_threshhold = READ_I_THRESHHOLD;*/ break;
 	    case 'S': _dxd_exIntraGraphSerialize = FALSE;	break;
 	    case 'T': _dxd_exShowTrace = TRUE;			break;
 	    case 'U': _dxd_exRemoteUIMsg = TRUE;		break;

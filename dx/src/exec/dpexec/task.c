@@ -51,7 +51,15 @@ static int		taskNprocs = -1;
 static EXTaskGroup	runningTG = NULL;
 
 
+/* Internal function prototypes */
+static Error    ExDestroyTaskGroup      (EXTaskGroup tg);
+static Error    ExProcessTask           (EXTask t, int iteration);
+static Error    ExProcessTaskGroup      (int sync);
+
 /********************* START OF m_fork EMULATION **********************/
+
+#if 0
+
 #define	MFORK_ARGS	6
 
 typedef struct
@@ -68,11 +76,6 @@ typedef struct
 
 static MFork	*_mf_g	= NULL;
 static MFork	_mf_l;
-
-/* Internal function prototypes */
-static Error    ExDestroyTaskGroup      (EXTaskGroup tg);
-static Error    ExProcessTask           (EXTask t, int iteration);
-static Error    ExProcessTaskGroup      (int sync);
 
 static Error
 _mfork_init ()
@@ -121,7 +124,7 @@ m_fork (PFE func, uint a0, uint a1, uint a2, uint a3, uint a4, uint a5)
 
     * _mf_g = _mf_l;
 
-    _dxf_ExRQEnqueue (_mfork_worker, NULL, _mf_l.procs, (int) _mf_g, 0, FALSE);
+    _dxf_ExRQEnqueue (_mfork_worker, NULL, _mf_l.procs, (long) _mf_g, 0, FALSE);
 
     count = &_mf_g->done;
 
@@ -133,7 +136,7 @@ m_fork (PFE func, uint a0, uint a1, uint a2, uint a3, uint a4, uint a5)
 
     while (*count != _mf_l.procs)
     {
-	if (! _dxf_ExRQDequeue ((int) _mf_g))
+	if (! _dxf_ExRQDequeue ((long) _mf_g))
 	    break;
     }
 
@@ -171,6 +174,9 @@ m_get_myid ()
 {
     return (_mf_l.myid);
 }
+
+#endif
+
 /********************* END   OF m_fork EMULATION **********************/
 
 
@@ -214,8 +220,8 @@ void DXTraceTask(int t)
 Error _dxf_ExInitTask(int n) 
 {
     taskNprocs = n;
-    if (! _mfork_init ())
-	return (ERROR);
+    /*if (! _mfork_init ())
+        return (ERROR);*/
     return (OK);
 }
 
@@ -404,7 +410,8 @@ Error DXAddLikeTasks (PFE func, Pointer arg, int size, double work, int repeat)
         t->taskContext = _dxd_exContext;
 #endif
         _dxfCopyContext(&(t->taskContext), _dxd_exContext);
-	_dxf_ExRQEnqueue (ExProcessTask, (Pointer)t, repeat, (int) tg, 0, FALSE);
+	_dxf_ExRQEnqueue (ExProcessTask, (Pointer)t, repeat, 
+			  (long) tg, 0, FALSE);
     }
     else
     {
@@ -535,7 +542,9 @@ static Error ExProcessTask (EXTask t, int iteration)
     EXTaskGroup		tg;
     Pointer		arg;		/* task argument pointer	*/
     ErrorCode		ecode;		/* error code			*/
+#if 0
     int			ntodo;		/* number left in group		*/
+#endif
     char		*emsg;
     Error		returnVal;
     int			status;
@@ -716,7 +725,9 @@ static Error ExProcessTaskGroup (int sync)
     EXTask		task;
     int			i, j;
     int			todo;
+#if 0
     volatile int	*count;		/* task group counter		*/
+#endif
     int			totalTodo;
 #define NUM_TASKS_ALLOCED 256
     Pointer		_args[NUM_TASKS_ALLOCED];
@@ -833,7 +844,7 @@ static Error ExProcessTaskGroup (int sync)
 #ifdef TASK_TIME
     DXMarkTimeLocal ("queue all tasks");
 #endif
-    _dxf_ExRQEnqueueMany (todo, funcs, args, repeats, (int) tg, 0, FALSE);
+    _dxf_ExRQEnqueueMany (todo, funcs, args, repeats, (long) tg, 0, FALSE);
 #ifdef TASK_TIME
     DXMarkTimeLocal ("queued all tasks");
 #endif
@@ -876,7 +887,7 @@ SMP linux -- gda
 	count = &tg->ntodo;
 	while (*count > 0)
 	{
-	    if (! _dxf_ExRQDequeue ((int) tg))
+	    if (! _dxf_ExRQDequeue ((long) tg))
 		break;
 	}
 
@@ -889,7 +900,7 @@ SMP linux -- gda
 	 */
 	while (*count > 0)
 	{
-	    _dxf_ExRQDequeue ((int)tg);
+	    _dxf_ExRQDequeue ((long)tg);
 	    for (i = 0; *count && i < 100; ++i)
 		;
 	}
@@ -902,7 +913,7 @@ SMP linux -- gda
             knt = tg->ntodo;
             DXunlock(&tg->lock, 0);
 
-            _dxf_ExRQDequeue ((int) tg);
+            _dxf_ExRQDequeue ((long) tg);
         } while(knt);
 
 #endif

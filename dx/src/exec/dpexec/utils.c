@@ -80,17 +80,17 @@ char *lstrsave (char *old)
  * WARNING:	Only works if n is a power of 2.
  */
 
-Pointer _dxf_ExAlignBoundary	(int n, Pointer p)
+Pointer _dxf_ExAlignBoundary	(long n, Pointer p)
 {
-    int		mask;
+    long	mask;
 
     if (n == 0 || n == 1)
 	return (p);
     
     mask = n - 1;
 
-    return ((mask & (int) p)
-		? (Pointer) (((int) p + (int) n) & ~mask)
+    return ((mask & (long) p)
+		? (Pointer) (((long) p + n) & ~mask)
 		: p);
 }
 

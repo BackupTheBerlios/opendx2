@@ -517,7 +517,7 @@ Error _dxf_ExSlaveListen()
         DXRegisterInputHandler(ExSendModuleInputHandler, dxfd, NULL);
         /* send signature to peer, this must be the first msg that */
         /* the peer gets to determine if it needs to swap bytes    */
-        msgtype = DPMSG_SIGNATURE;
+        msgtype = (DistMsg) DPMSG_SIGNATURE;
         write(dxfd, &msgtype, sizeof(int));  
     }
     else {
@@ -558,7 +558,7 @@ Error _dxf_ExSlaveConnect()
 
     /* connecting as peer to master */
     if(spentry.SlaveId == 0) {
-        msgtype = DPMSG_SIGNATURE;
+        msgtype = (DistMsg) DPMSG_SIGNATURE;
         write(_dxd_exMasterfd, &msgtype, sizeof(int));
         spentry.SwapMsg = _dxd_exSwapMsg;
     }
@@ -575,7 +575,7 @@ Error _dxf_ExSlaveConnect()
 
         /* send signature to peer, this must be the first msg that */
         /* the peer gets to determine if it needs to swap bytes    */
-        msgtype = DPMSG_SIGNATURE;
+        msgtype = (DistMsg) DPMSG_SIGNATURE;
         write(fd, &msgtype, sizeof(int));  
 	
 
