@@ -24,7 +24,7 @@ EXTRA_DIST = \
 CLEANFILES = \
 	buffer.c shade.c triangle.c quad.c plane.c 
 
-BUILT_SOURCES = \
+built_sources = \
 	buffer.c shade.c triangle.c quad.c plane.c \
 	\
 	arrayClass.c cameraClass.c clippedClass.c fieldClass.c groupClass.c \
@@ -32,8 +32,9 @@ BUILT_SOURCES = \
 	xformClass.c interpClass.c fieldinterpClass.c groupinterpClass.c \
 	fle2DClass.c linesII1DClass.c linesRR1DClass.c linesRI1DClass.c \
 	trisRI2DClass.c quadsRR2DClass.c cubesIIClass.c cubesRRClass.c \
-	tetrasClass.c quadsII2DClass.c  \
-	\
+	tetrasClass.c quadsII2DClass.c  
+
+built_headers = \
 	arrayClass.h cameraClass.h clippedClass.h fieldClass.h groupClass.h \
 	lightClass.h objectClass.h privateClass.h screenClass.h stringClass.h \
 	xformClass.h interpClass.h fieldinterpClass.h groupinterpClass.h \
@@ -87,6 +88,11 @@ CLEANFILES = \
 	tetrasClass.h quadsII2DClass.h 
 
 SUFFIXES = .X .Z .h .m .c .o .s .i
+
+
+$(built_sources) : $(built_headers)
+
+BUILT_SOURCES =  $(built_sources) $(built_headers)
 
 $(InputName).c: $(InputName).X class class.awk
 	sh ./class -c $*.X > $*.c

@@ -2,7 +2,7 @@
 
 SUBDIRS = opengl gl xgl starbase
 
-INCLUDES = -I../../../include -I../libdx
+INCLUDES = -I../../../include -I../libdx -I/usr/include -I/usr/local/include
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 noinst_LIBRARIES = libHW.a
