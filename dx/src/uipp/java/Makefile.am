@@ -38,9 +38,9 @@ dx.jar: javainfo
 	mkdir -p classes
 	(unset CLASSPATH ; javac -d classes makeall.java $(DX_SRCS) )
 	-(export CLASSPATH=@WRL_CLASSPATH@ ; javac -d classes makewrl.java )
-	if test -f classes/dx/net/WRLApplication.class ; then \
-		echo WRL_CLASSPATH @WRL_CLASSPATH@ >>javainfo ; \
-	fi
+	grep -v WRL_CLASSPATH javainfo > javainfo.tmp
+	echo WRL_CLASSPATH @WRL_CLASSPATH@ >>javainfo ; \
+	rm -f javainfo.tmp
 	(unset CLASSPATH ; cd classes; @JDKBIN@jar cf ../dx.jar $(DX_OBJS) dx)
 
 server.jar:
