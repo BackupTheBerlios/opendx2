@@ -274,6 +274,45 @@ _dxfCleanup(CubesRRInterpolator ci)
     }
 }
 
+#define INTERPOLATE(type, round)					   \
+{									   \
+    type    *ptr000, *ptr001, *ptr010, *ptr011;			   	   \
+    type    *ptr100, *ptr101, *ptr110, *ptr111;			   	   \
+    type    *r = (type *)v;						   \
+									   \
+    ptr000 = (type *)DXGetArrayEntry(ci->data, baseIndex,		   \
+				(Pointer)(dbuf));			   \
+									   \
+    ptr100 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz0,		   \
+				(Pointer)(dbuf+itemSize));		   \
+									   \
+    ptr010 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz1,		   \
+				(Pointer)(dbuf+2*itemSize));		   \
+									   \
+    ptr110 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz1+sz0,	   \
+				(Pointer)(dbuf+3*itemSize));		   \
+									   \
+    ptr001 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz2,		   \
+				(Pointer)(dbuf+4*itemSize));		   \
+									   \
+    ptr101 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz2+sz0,	   \
+				(Pointer)(dbuf+5*itemSize));		   \
+									   \
+    ptr011 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz2+sz1,	   \
+				(Pointer)(dbuf+6*itemSize));		   \
+									   \
+    ptr111 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz2+sz1+sz0,	   \
+				(Pointer)(dbuf+7*itemSize));		   \
+									   \
+    for (i = 0; i < ci->nElements; i++)					   \
+	*r++ = weight000*(*ptr000++) + weight001*(*ptr001++) +		   \
+	       weight010*(*ptr010++) + weight011*(*ptr011++) +		   \
+	       weight100*(*ptr100++) + weight101*(*ptr101++) +		   \
+	       weight110*(*ptr110++) + weight111*(*ptr111++) + round;	   \
+									   \
+    v = (Pointer)r;							   \
+}
+
 int
 _dxfCubesRRInterpolator_PrimitiveInterpolate(CubesRRInterpolator ci,
 		int *n, float **points, Pointer *values, int fuzzFlag)
@@ -422,44 +461,6 @@ _dxfCubesRRInterpolator_PrimitiveInterpolate(CubesRRInterpolator ci,
 		 pt.z > izMax)) break;
 	}
 
-#define INTERPOLATE(type, round)					   \
-{									   \
-    type    *ptr000, *ptr001, *ptr010, *ptr011;			   	   \
-    type    *ptr100, *ptr101, *ptr110, *ptr111;			   	   \
-    type    *r = (type *)v;						   \
-									   \
-    ptr000 = (type *)DXGetArrayEntry(ci->data, baseIndex,		   \
-				(Pointer)(dbuf));			   \
-									   \
-    ptr100 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz0,		   \
-				(Pointer)(dbuf+itemSize));		   \
-									   \
-    ptr010 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz1,		   \
-				(Pointer)(dbuf+2*itemSize));		   \
-									   \
-    ptr110 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz1+sz0,	   \
-				(Pointer)(dbuf+3*itemSize));		   \
-									   \
-    ptr001 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz2,		   \
-				(Pointer)(dbuf+4*itemSize));		   \
-									   \
-    ptr101 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz2+sz0,	   \
-				(Pointer)(dbuf+5*itemSize));		   \
-									   \
-    ptr011 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz2+sz1,	   \
-				(Pointer)(dbuf+6*itemSize));		   \
-									   \
-    ptr111 = (type *)DXGetArrayEntry(ci->data, baseIndex+sz2+sz1+sz0,	   \
-				(Pointer)(dbuf+7*itemSize));		   \
-									   \
-    for (i = 0; i < ci->nElements; i++)					   \
-	*r++ = weight000*(*ptr000++) + weight001*(*ptr001++) +		   \
-	       weight010*(*ptr010++) + weight011*(*ptr011++) +		   \
-	       weight100*(*ptr100++) + weight101*(*ptr101++) +		   \
-	       weight110*(*ptr110++) + weight111*(*ptr111++) + round;	   \
-									   \
-    v = (Pointer)r;							   \
-}
 	if (((FieldInterpolator)ci)->cstData)
 	{
 	    memcpy(v, ((FieldInterpolator)ci)->cstData, itemSize);
