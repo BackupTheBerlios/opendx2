@@ -106,7 +106,7 @@ static double widgetnumber2appl( XmSliderWidget slider,
 		                 int number );
 static int appl2widgetnumber( XmSliderWidget slider,
 		              double application_number );
-static  double  round();
+static  double  dx_round();
 
 
 extern void _XmForegroundColorDefault();
@@ -443,7 +443,7 @@ double res;
 		   ((slider->slider.max_value - widget_number) *
 		    slider->slider.application_min_value) ); 
 
-	res = round(res, slider->slider.decimal_places);
+	res = dx_round(res, slider->slider.decimal_places);
 	if(res < slider->slider.application_min_value) 
 		res = slider->slider.application_min_value;
 	if(res > slider->slider.application_max_value) 
@@ -814,7 +814,7 @@ double dval, old_value;
             dval = slider->slider.application_current_value - 
 			slider->slider.increment;
 		 
-	    dval = round(dval, slider->slider.decimal_places);
+	    dval = dx_round(dval, slider->slider.decimal_places);
             if (slider->slider.increment != 0.0) 
                dval = gridify (dval, slider->slider.increment);
 	    
@@ -835,7 +835,7 @@ double dval, old_value;
 	{
 	    dval = slider->slider.application_current_value +  slider->slider.increment; 
 	    
-	    dval = round(dval, slider->slider.decimal_places);
+	    dval = dx_round(dval, slider->slider.decimal_places);
             if (slider->slider.increment != 0.0) 
                dval = gridify (dval, slider->slider.increment);
 
@@ -896,7 +896,7 @@ Widget XmCreateSlider( Widget parent, char *name, ArgList args,
 				num_args));
 
 }
-static double round(double a, int decimal_places)
+static double dx_round(double a, int decimal_places)
 {
     double value;
     double expon;

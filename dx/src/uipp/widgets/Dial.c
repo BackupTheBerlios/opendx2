@@ -57,7 +57,7 @@
 #   define trunc(x) ((double)((int)(x)))
 #endif
 
-static  double  round();
+static  double  dx_round();
 static	void	xm_cvt_str_to_dbladdr();
 static  void    xm_cvt_str_to_clock();
 static	void	ClassInitialize();
@@ -287,13 +287,13 @@ XmDialWidget	request,new;
 		new->core.height = 150;
 
 	new->dial.minimum = 
-			round(new->dial.minimum, new->dial.decimal_places);
+			dx_round(new->dial.minimum, new->dial.decimal_places);
 	new->dial.maximum = 
-			round(new->dial.maximum, new->dial.decimal_places);
+			dx_round(new->dial.maximum, new->dial.decimal_places);
 	new->dial.increment = 
-			round(new->dial.increment, new->dial.decimal_places);
+			dx_round(new->dial.increment, new->dial.decimal_places);
 	new->dial.position = 
-			round(new->dial.position, new->dial.decimal_places);
+			dx_round(new->dial.position, new->dial.decimal_places);
 
 	/*
 	 * Validate resources.
@@ -435,13 +435,13 @@ XmDialWidget	current,request,new;
 	Boolean         recalc_markers = FALSE;
 
 	new->dial.minimum = 
-			round(new->dial.minimum, new->dial.decimal_places);
+			dx_round(new->dial.minimum, new->dial.decimal_places);
 	new->dial.maximum = 
-			round(new->dial.maximum, new->dial.decimal_places);
+			dx_round(new->dial.maximum, new->dial.decimal_places);
 	new->dial.increment = 
-			round(new->dial.increment, new->dial.decimal_places);
+			dx_round(new->dial.increment, new->dial.decimal_places);
 	new->dial.position = 
-			round(new->dial.position, new->dial.decimal_places);
+			dx_round(new->dial.position, new->dial.decimal_places);
 
 	/*
          * Initialize the four resource variables that have addresses
@@ -1452,7 +1452,7 @@ XrmValue  	*fromVal, *toVal;
 		result = COUNTERCLOCKWISE;
 	toVal->addr = (caddr_t) &result;
 	}
-static double round(double a, int decimal_places)
+static double dx_round(double a, int decimal_places)
 {
     double value;
     double expon;
