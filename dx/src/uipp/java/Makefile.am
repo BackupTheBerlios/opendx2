@@ -66,7 +66,7 @@ aix_shared_object:
 
 ## JBASE and JINC set by configure via acinclude.m4
 JBASE = @JBASE@
-JINC = -I$(JBASE)/include -I$(JBASE)/include/@JAVA_ARCH@
+JINC = -I$(JBASE)/include -I$(JBASE)/include/@JAVA_ARCH@ -I$(JBASE)/include/java -I$(JBASE)/include/java/@JAVA_ARCH@
 
 DXLink.o:  server.jar
 	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd dxsc; @JDKBIN@javah -jni -d ../server server.DXServer server.DXServerThread)
