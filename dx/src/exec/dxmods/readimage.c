@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.5 2000/08/24 20:04:44 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.6 2001/09/25 01:45:28 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -104,6 +104,7 @@ m_ReadImage ( Object *in, Object *out )
     int       found_subpath=0;
     char      user_path[MAX_IMAGE_PATHLEN];
     char      user_basename[MAX_IMAGE_NAMELEN];
+    char      extension[40];
     int       fd=0;
     int       frame;
     long int  frame_size_bytes;
@@ -111,6 +112,7 @@ m_ReadImage ( Object *in, Object *out )
     int       delayed;
     char      *str;
     FILE      *fh_miff = NULL;
+    int       channels_in_one_file;
     
 #if DXD_HAS_LIBIOP
     int    Input_from_ADASD = 0;
@@ -144,6 +146,14 @@ m_ReadImage ( Object *in, Object *out )
         int multiples;     /* many images in one file */
     }
     miffopts;
+    
+    struct
+    {
+        char name[MAX_IMAGE_NAMELEN];
+        int use_numerics;  /* numbered names. */
+        int multiples;     /* many images in one file */
+    }
+    imopts;
     
     /*
      * Error Check all of the inputs 
@@ -267,7 +277,7 @@ m_ReadImage ( Object *in, Object *out )
         {
             if (!imginfo) { 
                 imgtyp = img_typ_fb;
-		imginfo = _dxf_ImageInfoFromType(imgtyp);
+                imginfo = _dxf_ImageInfoFromType(imgtyp);
 
                 if ( imginfo == NULL )
                     DXErrorGoto 
@@ -282,7 +292,7 @@ m_ReadImage ( Object *in, Object *out )
         {
             if (!imginfo) { 
                 imgtyp = img_typ_rgb;
-		imginfo = _dxf_ImageInfoFromType(imgtyp);
+                imginfo = _dxf_ImageInfoFromType(imgtyp);
 
                 if ( imginfo == NULL )
                     DXErrorGoto 
@@ -297,13 +307,15 @@ m_ReadImage ( Object *in, Object *out )
     }
 
     if ( ( imginfo->read ==         NULL ) &&
-         ( imginfo->type != img_typ_tiff && imginfo->type != img_typ_gif) && imginfo->type != img_typ_miff  )
+         ( imginfo->type != img_typ_tiff && imginfo->type != img_typ_gif && 
+	   imginfo->type != img_typ_miff && imginfo->type != img_typ_im  ) )
         DXErrorGoto ( ERROR_NOT_IMPLEMENTED, "#12235");
 	    
     /*
-     * Remove the extension in basename if it is recognized
+     * Extract the extension in basename, and remove it if it is recognized
      * and is an acceptable extension for imgtyp.
      */
+    _dxf_ExtractImageExtension(basename,imgtyp,extension,sizeof(extension));
     _dxf_RemoveImageExtension(basename,imgtyp);
 
     if ( I_start )
@@ -563,6 +575,45 @@ m_ReadImage ( Object *in, Object *out )
 		found_subpath = *user_path != '\0';
                 break;
 
+            case img_typ_im:
+
+		try_count=0;
+		do {
+		    CONCAT_PATHS(user_basename, user_path, basename);
+		    if ( !_dxf_BuildIMReadFileName
+			     ( imopts.name,
+			       MAX_IMAGE_NAMELEN,
+			       user_basename,
+			       originalname,
+			       extension,
+			       (param_sizes.startframe==VALUE_UNSPECIFIED)?
+				   0 : param_sizes.startframe,
+			       &imopts.use_numerics ) )
+			goto error;
+		    got_file = ((fd = open(imopts.name, O_RDONLY)) != -1);
+		    if (got_file)
+			close(fd);
+		} while ( !got_file
+			  &&
+			  !found_subpath
+			  &&
+			  get_subpath(envstr_DXDATA, try_count++, user_path, sizeof(user_path)) );
+		if (!got_file)
+		    DXErrorGoto2
+		      (ERROR_BAD_PARAMETER,
+		      "Could not open file %s, nor any other Image Magick name variation"
+		      " in current path or DXDATA",
+		      filename);
+		if (!_dxf_ReadImageSizesIM
+				       (imopts.name,
+				       param_sizes.startframe,
+				       &filed_sizes,
+				       &imopts.use_numerics,
+				       &imopts.multiples))
+		    goto error;
+		found_subpath = *user_path != '\0';
+                break;
+
         }
     }
 
@@ -691,6 +742,7 @@ m_ReadImage ( Object *in, Object *out )
         case img_typ_tiff:                           break;
         case img_typ_gif:                            break;
         case img_typ_miff:                           break;
+        case img_typ_im:                             break;
 
         default:
             DXErrorGoto ( ERROR_ASSERTION, "imgtyp" );
@@ -698,12 +750,16 @@ m_ReadImage ( Object *in, Object *out )
 
     num_files = (imgtyp==img_typ_r_g_b)? 3 : 1;
 
+    // FIXME:  This is the logic that was here before, but it looks wrong
+    channels_in_one_file = ( imgtyp == img_typ_tiff || imgtyp == img_typ_gif || 
+		             imgtyp == img_typ_miff || imgtyp == img_typ_im );
+
     for ( i=0; i<num_files; i++ )
     {
 
 	do {
 	    CONCAT_PATHS(user_basename, user_path, basename);
-	    if (imgtyp != img_typ_tiff && imgtyp != img_typ_gif && imgtyp != img_typ_miff)
+	    if ( !channels_in_one_file )
 		if ( !_dxf_BuildImageFileName(imagefilename, MAX_IMAGE_NAMELEN,
 					      user_basename, imgtyp,
 					      image_sizes.startframe, i))
@@ -713,22 +769,18 @@ m_ReadImage ( Object *in, Object *out )
 	    {
 		DXASSERTGOTO ( num_files == 1 );
 	    }
-	    else if (imgtyp != img_typ_tiff && imgtyp != img_typ_gif && imgtyp != img_typ_miff)
+	    else if ( !channels_in_one_file )
 	    {
 		fd = open(imagefilename,O_RDONLY); 
 	    }
-	} while ( !Input_from_ADASD 
-		  &&
-		  (imgtyp != img_typ_tiff && imgtyp != img_typ_gif && imgtyp != img_typ_miff)
-		  &&
-		  (fd<0)
-		  &&
-		  !found_subpath
-		  &&
+	} while ( !Input_from_ADASD && 
+		  !channels_in_one_file &&
+		  (fd<0) &&
+		  !found_subpath &&
 		  get_subpath(envstr_DXDATA, try_count++, user_path, sizeof(user_path)) );
 
 	found_subpath = *user_path != '\0';
-	if (!Input_from_ADASD && (imgtyp != img_typ_tiff && imgtyp != img_typ_gif && imgtyp != img_typ_miff))
+	if (!Input_from_ADASD && !channels_in_one_file)
 	{
 	    if (fd < 0) 
 	    {
@@ -739,7 +791,7 @@ m_ReadImage ( Object *in, Object *out )
 		DXErrorGoto2 ( ERROR_DATA_INVALID, 
 			"#12240", imagefilename );
 	    }
-	    if ( imgtyp != img_typ_tiff && imgtyp != img_typ_gif && imgtyp != img_typ_miff)
+	    if ( !channels_in_one_file )
 		if ( lseek ( fd, (image_sizes.startframe*frame_size_bytes), 0 )
 		     != ( image_sizes.startframe * frame_size_bytes ) )
 		    DXErrorGoto3
@@ -767,7 +819,7 @@ m_ReadImage ( Object *in, Object *out )
     {
 	if ((frame != image_sizes.startframe ) && 
 	    (delta != 1) &&
-            (imgtyp != img_typ_tiff && imgtyp != img_typ_gif && imgtyp != img_typ_miff) &&
+            !channels_in_one_file &&
 	    !Input_from_ADASD )
 	{
 	    for ( j=0; j<num_files; j++ )
@@ -899,6 +951,22 @@ m_ReadImage ( Object *in, Object *out )
 			goto error;
 		}
 
+		break;
+
+	    case img_typ_im:
+		if ( imopts.use_numerics && !imopts.multiples )
+		{
+		    if ( !_dxf_RemoveExtension ( imopts.name ) ||
+			 !_dxf_RemoveExtension ( imopts.name ) )
+			goto error;
+
+		    sprintf( &imopts.name [ strlen ( imopts.name ) ],
+			     ".%d.%s", frame, extension );
+		}
+		image = _dxf_InputIM(image_sizes.width,
+			   image_sizes.height, imopts.name,
+			   (imopts.multiples)?(frame-filed_sizes.startframe):0,
+			   delayed, colortype);
 		break;
 
 	    default:
@@ -1044,8 +1112,8 @@ Field InputRGB (int width, int height, int fh, char *colortype)
     cptr1 = anchor + (height-1)*oneline;
     for (y = 0; y < (height>>1); y++, cptr0 += oneline, cptr1 -= oneline)
     {
-	unsigned char *c0 = (char *)cptr0;
-	unsigned char *c1 = (char *)cptr1;
+	unsigned char *c0 = (unsigned char *)cptr0;
+	unsigned char *c1 = (unsigned char *)cptr1;
 
 	for (x = 0; x < oneline; x++, c0++, c1++)
 	{

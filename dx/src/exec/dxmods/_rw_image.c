@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.5 2000/08/24 20:04:20 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.6 2001/09/25 01:45:28 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -150,7 +150,7 @@ static ImageInfo ImageTable[] = {
 	"jpeg:jpg:gif",      /* FIXME: there is a way to get this list from IM */
 	0,			/* FIXME: possibly separate into APPENDABLE_FILES and 0 */
 	_dxf_write_im,  
-	NULL},
+	nullread},
 #endif /* def HAVE_LIBMAGICK */
 
  { img_typ_illegal } };	/* Must be last entry */
@@ -202,7 +202,9 @@ _dxf_RemoveExtension ( char *extended )
     int i;
 
     for ( i = strlen ( extended ) - 1;  i >= 0;  i-- )
-        if ( extended[i] == '.' )
+		if ( extended[i] == '/' )
+			break;
+        else if ( extended[i] == '.' )
             { extended[i] = '\0';  return extended; }
 
     return ERROR;
@@ -361,17 +363,23 @@ SearchStringList(char *str, char *pattern)
     return matches;
 }
 
-static int 	/* 0/1 on failure/success */
+static int  /* 0/1 on failure/success */
 ValidImageExtension(char *ext, ImageType type)
 {
-	int i;
+    int i;
 
+    if ( type != img_typ_im ) {
         for ( i = 0; ImageTable[i].type != img_typ_illegal; i++ ) {
-              if ((ImageTable[i].type == type ) && 
-		  SearchStringList(ImageTable[i].extensions,ext))
-                     return 1; 
-	}
-	return 0;
+            if ((ImageTable[i].type == type ) && 
+                SearchStringList(ImageTable[i].extensions,ext))
+                return 1; 
+        }
+        return 0;
+    }
+#ifdef HAVE_LIBMAGICK
+    else /* type == img_typ_im */ 
+        return _dxf_ValidImageExtensionIM( ext );
+#endif
 }
 
 /*
@@ -385,17 +393,45 @@ _dxf_RemoveImageExtension(char *name, ImageType type)
 
     /*
      * Find the last '.' in the file name before '/', if any.
-     * DXRemove the extension in name if it is recognized.
+     * Remove the extension in name if it is recognized.
      */
-    for ( i = strlen (name) - 1; i >= 0; i-- ) {
-	if (name[i] == '.') {
-            if (ValidImageExtension(&name[i+1],type))
-            	name[i] = '\0';
-	    return;
-	}
-        else if ( name[i] == '/' )
+    for ( i = strlen (name) - 1; i >= 0; i-- )
+        if (name[i] == '/')
             return;
-    }
+        else if (name[i] == '.') 
+            break;
+
+    /*
+     * Found a possible extension; see if it's an image ext we recognize
+     */
+    if ( ValidImageExtension(&name[i+1],type) )
+        name[i] = '\0';
+}
+
+char *
+_dxf_ExtractImageExtension ( char *name, ImageType type,
+                             char *ext, int ext_size )
+{
+    int i;
+
+    /*
+     * Find the last '.' in the file name before '/', if any.
+     * Extract the extension in name if it is recognized.
+     */
+    ext[0] = '\0';
+
+    for ( i = strlen (name) - 1; i >= 0; i-- )
+        if (name[i] == '/')
+            return;
+        else if (name[i] == '.') 
+            break;
+
+    /*
+     * Found a possible extension; see if it's an image ext we recognize
+     */
+    if ( ValidImageExtension(&name[i+1],type) )
+        strncat( ext, &name[i+1], ext_size );
+    return ext;
 }
 
 

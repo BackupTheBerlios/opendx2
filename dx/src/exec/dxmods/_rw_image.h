@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.h,v 1.5 2000/08/24 20:04:20 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.h,v 1.6 2001/09/25 01:45:28 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -177,6 +177,13 @@ ImageInfo *_dxf_ImageInfoFromFileName ( char *basename);
  */
 void _dxf_RemoveImageExtension(char *name, ImageType type);
 
+/*
+ * Extract the extension (last part of filename after '.') if it is an
+ * extension for the given image type.
+ */
+char *
+_dxf_ExtractImageExtension ( char *name, ImageType type, 
+                             char *ext, int ext_size );
 
 /*
  * Get the 'member'th image of series.  Assert that dimensions match
@@ -184,6 +191,8 @@ void _dxf_RemoveImageExtension(char *name, ImageType type);
  */
 Field _dxf_GetFlatSeriesImage(Series image, int member,
                                 int width, int height, int *created);
+
+
 
 /*
  * Remove the last dotted part from a filename.
@@ -256,9 +265,23 @@ Error _dxf_write_gif(RWImageArgs *iargs);
 
 /*-------------------- End _gif.c ----------------------------------*/
 
-/*-------------------- Begin _IM_write.c ----------------------------------*/
+/*-------------------- Begin _im_image.c ----------------------------------*/
 Error _dxf_write_im(RWImageArgs *iargs);
-/*-------------------- End  _IM_write.c ----------------------------------*/
+
+char * _dxf_BuildIMReadFileName                                
+           ( char *buf, int bufl, char *basename, char *fullname, 
+             char *extension, int framenum, int *numeric );
+
+SizeData * _dxf_ReadImageSizesIM
+            ( char *name, int startframe, SizeData *data, int *use_numerics,
+              int *multiples );
+
+Field _dxf_InputIM( int width, int height, char *name, int relframe, 
+                    int delayed, char *colortype );
+
+int _dxf_ValidImageExtensionIM( char *ext );
+
+/*-------------------- End  _im_image.c ----------------------------------*/
 /*-------------------- Begin _ps.c ----------------------------------*/
 
 /* Write a color image in PostScript format */

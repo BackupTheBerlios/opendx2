@@ -1100,12 +1100,18 @@ INPUT images; image or image series; (none); image(s) to quantize
 INPUT nColors; integer; 256; max. number of colors to use
 OUTPUT images; image or image series; resulting quantized images
 
+#ifdef HAVE_LIBMAGICK
+#define MAGICK_FORMATS ; gif ; Image Magick supported format
+#else
+#define MAGICK_FORMATS
+#endif
+
 MODULE ReadImage
 CATEGORY Import and Export
 DESCRIPTION reads an image from a file
 INPUT name; string; "image"; file name
 INPUT format; string; ("rgb" or input dependent); format of file
-OPTIONS rgb; r+g+b; tiff; gif; miff
+OPTIONS rgb; r+g+b; tiff; miff MAGICK_FORMATS
 INPUT start [visible:0]; integer; (first frame); starting movie frame
 INPUT end [visible:0]; integer; (last frame); ending movie frame
 INPUT delta [visible:0]; integer; 1; delta of images to read
@@ -1682,12 +1688,6 @@ INPUT input; object; (none); object to see
 INPUT options; string; "v"; layout direction, "v" or "h"
 OPTIONS v ; h
 OUTPUT output; field; visual representation of the object
-
-#ifdef HAVE_LIBMAGICK
-#define MAGICK_FORMATS ; gif ; Image Magick supported format
-#else
-#define MAGICK_FORMATS
-#endif
 
 MODULE WriteImage
 CATEGORY Import and Export
