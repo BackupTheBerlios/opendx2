@@ -209,12 +209,7 @@ _dxf_ExParseInit (char *name, int fd)
      * can do .rc file processing here.
      * Unlicensed PC's will always load dxrc files here since they don't get "license" message.
      */
-#ifndef DXD_WIN
-    if (! _dxd_exRemote)
-	_dxf_ExReadDXRCFiles ();
-#else
     _dxf_ExReadDXRCFiles ();
-#endif
 
     return (OK);
 }
