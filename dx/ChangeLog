@@ -1,3 +1,30 @@
+4.1.3
+===============
+
+Fixes to several problems that quickly arose with 4.1.2
+---------------------------------------------------
+
+- Dependencies of source files on built sources caused build to stop.
+It would continue correctly after restarting, but by making the objects
+dependent instead we made it work in one pass.
+
+- References in _regstream.c.  Missing references/deletes in _regstream.c 
+and steamline.c caused objects to be really deleted before their time.
+Problem appeared in ThunderStreamlines example.  Did this ever work?
+
+- Not enough memory allocated for buffer in parse.c.
+
+- Needed to pass in class_srcdir value to invokation of class script
+in libdx/local.mk
+
+- Include net2c in distribution
+
+- Correctly free search_for in Browser.C.  Proper behavior dependent on
+compile-time definitions.
+
+- Not enoucgh memory allocated for type-in string in GARApplication.C.  
+Caused segfaults in prompter.
+
 4.1.2
 ===============
 
