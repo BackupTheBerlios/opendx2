@@ -1,3 +1,31 @@
+Add translucent texturing with alpha blending support to the OpenGL
+hardware rendering back-end.  
+
+   Intuitively, translucent textures are represented as image fields with
+   opacities components -- either float opacities, or ubyte opacities and 
+   a float opacity map.  (FWIW the ImageMagick ReadImage mods I made back 
+   in Sept '01 read translucent images to this field format)
+
+   As with opacities objects, translucent textured objects aren't meshed, 
+   are tossed into the translucent SORTLIST, sorted by depth, and rendered 
+   with the DrawTransparent back-end callback.
+
+   Various related changes such as:
+     - Suppress Z buffer write for fully-tranparent alpha values
+     - Display list texture activation ops in DrawTransparent, as is done 
+       in DrawOpaque
+
+   Also, it fixes texturing support in general for texture composite field
+   objects which have ubyte[3] or float[3] direct colors (didn't work 
+   previously).
+
+A fix for the Ellipses page selector. Now when you click on the Ellipses
+if it's popped up, it will pop back down (like other Motif menus). It
+also now initially opens up with a height of 12 lines instead of 1 line
+(which was very annoying).
+
+Removed Xm errors when Grid Dialog box displayed.
+
 Added a Mode menu to the Option menu in the Image Window. This allows
 direct access to the image manipulation routines without having to 
 remember the shortcut keys or open the View Control dialog. It also
