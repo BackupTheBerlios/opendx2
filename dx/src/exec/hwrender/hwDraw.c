@@ -12,7 +12,7 @@
 #define render_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.8 2003/07/30 22:39:06 davidt Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.9 2003/10/31 19:28:44 davidt Exp $"};
 #endif
 
 #include <stdio.h>
@@ -149,7 +149,7 @@ _dxfDrawMono (gatherO gather, void* globals, dxObject o, Camera c, int buttonUp)
 #if defined(DX_NATIVE_WINDOWS)
   {
     RECT rect;
-    _dxf_SET_OUTPUT_WINDOW(LWIN, &LEFTWINDOW);
+    _dxf_SET_OUTPUT_WINDOW(LWIN, LEFTWINDOW);
     GetClientRect(XWINID, &rect);
     pixw = rect.right - rect.left;
     pixh = rect.bottom - rect.top;
@@ -262,9 +262,10 @@ _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonU
                             lto, lfrom, lup, &lProjection,
                             rto, rfrom, rup, &rProjection);
 
-    _dxf_SET_OUTPUT_WINDOW(LWIN, &LEFTWINDOW);
+    _dxf_SET_OUTPUT_WINDOW(LWIN, LEFTWINDOW);
 
 #if defined(DX_NATIVE_WINDOWS)
+
 	if (USEGLSTEREO)
 	{
 		glDrawBuffer(GL_BACK_LEFT);
@@ -309,7 +310,7 @@ _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonU
 
     if (LEFTWINDOW != RIGHTWINDOW)
     {
-        _dxf_SET_OUTPUT_WINDOW(LWIN, &RIGHTWINDOW);
+        _dxf_SET_OUTPUT_WINDOW(LWIN, RIGHTWINDOW);
         _dxf_CLEARBUFFER(LWIN);
     }
 
@@ -337,7 +338,7 @@ _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonU
     if (! _dxfDrawEither(gather, globals, o, c, buttonUp))
         return ERROR;
 
-    _dxf_SET_OUTPUT_WINDOW(LWIN, &LEFTWINDOW);
+    _dxf_SET_OUTPUT_WINDOW(LWIN, LEFTWINDOW);
 
 #if defined(DX_NATIVE_WINDOWS)
 	if (USEGLSTEREO)
@@ -354,7 +355,7 @@ _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonU
 
     if (LEFTWINDOW != RIGHTWINDOW)
     {
-        _dxf_SET_OUTPUT_WINDOW(LWIN, &RIGHTWINDOW);
+        _dxf_SET_OUTPUT_WINDOW(LWIN, RIGHTWINDOW);
 #if defined(DX_NATIVE_WINDOWS)
 		_dxf_SWAP_BUFFERS(PORT_CTX);
 #else

@@ -798,7 +798,7 @@ _dxf_DESTROY_WINDOW (void *win)
 }
 
 #if defined(DX_NATIVE_WINDOWS)
-static void _dxf_SET_OUTPUT_WINDOW(void *win, HRGN *hrgn)
+static void _dxf_SET_OUTPUT_WINDOW(void *win, HRGN hrgn)
 #else
 static void _dxf_SET_OUTPUT_WINDOW(void *win, Window w)
 #endif
