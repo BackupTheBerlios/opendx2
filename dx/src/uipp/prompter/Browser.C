@@ -1631,7 +1631,7 @@ void Browser::searchForward(char *text)
     if(!found)
 	WarningMessage("Pattern not found");
 
-#if defined(HAVE_RE_COMP) || defined(HAVE_REGCMP)
+#if (defined(HAVE_REGCOMP) && (defined(HAVE_REGEX_H) || defined(HAVE_REGEXP_H))) || defined(HAVE_REGCMP)
     free(search_for);
 #endif
 
