@@ -502,72 +502,6 @@ _dxfinmem(Pointer x)
     return 0;
 }
 
-
-Error
-DXmemfork(int i)
-{
-#if DXD_IS_MP
-    int pid;
-    int pchild[2], chparent[2];
-    int ret1, ret2;
-
-    if(i >= 0) {
-        _dxf_lock_childpidtbl();
-    
-        /* need to create 2 pipes, one for the parent to talk to the
-         * child and one for the child[1] to talk to the parent.
-         * We don't create these pairs for child 0 which is the master
-         * and the parent. child[0] is the last one forked because of
-         * file inheritance reasons.
-         */
-      
-        if( i != (DXProcessors(0) - 1)) {
-            ret1 = pipe(pchild);
-            /* first slave child has to have a pipe to write to parent */
-            if(i == 0) /* this is actually child[1] */
-                ret2 = pipe(chparent);
-            else ret2 = -1;
-        }
-        else ret1 = ret2  = -1;
-        if(ret1 < 0) {
-            /* We will continue, but we won't be able to block on a select */
-            pchild[0] = -1;
-            pchild[1] = -1;
-        }
-        if(ret2 < 0) {
-            /* We will continue, but we won't be able to block on a select */
-            chparent[0] = -1;
-            chparent[1] = -1;
-        }
-    }
-
-    pid = fork();		/* real fork */
-    if (pid > 0 && i >= 0)  {	/* in parent, if no error add pid to table */
-        if(pchild[0] != -1)
-            close(pchild[0]); /* pipe for writing to the child */
-        if(chparent[1] != -1)
-            close(chparent[1]); /* pipe for reading from the child */
-	_dxf_update_childpid(i, pid, pchild[1]);
-        if(i == 0)
-            _dxf_set_RQ_ReadFromChild1(chparent[0]);
-    }
-    else if (pid == 0){
-        _dxf_set_RQ_fds(pchild[0], chparent[1], i);
-        if(pchild[1] != -1 && i != (DXProcessors(0)-1))
-            close(pchild[1]);
-        if(chparent[0] != -1 && i != (DXProcessors(0)-1))
-            close(chparent[0]);
-    }
-
-    return pid;			/* return code is fork return code */
-
-#else  /* DXD_IS_MP */
-
-    return fork();
-
-#endif  /* !DXD_IS_MP */
-
-}
 #endif   /* ibm6000, solaris, sgi, alpha, hp700 */
 
 #if defined(intelnt)
@@ -924,4 +858,68 @@ void DXPrintMemoryInfo()
 }
 #endif  /* memory stats */
 
+DXForkChild(int i)
+{
+    int pid, master2slave[2], slave2master[2];
 
+    _dxf_lock_childpidtbl();
+
+    /*
+     * The slaves always need to hear from the master
+     */
+    if (pipe(master2slave))
+      return ERROR;
+
+    /*
+     * The master only needs to hear from slave[1]
+     */
+    if (i == 1)
+      if (pipe(slave2master))
+          return ERROR;
+
+    pid = fork();
+
+    /*
+     * The right thing to do depends on whether we're the parent 
+     * or child process.  The parent is always the master, and the
+     * child is always a slave.
+     */
+    if (pid)
+    {
+        /*
+         * The master writes to master2slave[1].
+         */
+        close(master2slave[0]);
+        _dxf_update_childpid(i, pid, master2slave[1]);
+
+        /*
+         * The master only needs to hear from slave[1]
+         */
+        if (i == 1)
+        {
+            close(slave2master[1]);
+            _dxf_set_RQ_ReadFromChild1(slave2master[0]);
+        }
+    }
+    else
+    {
+        /*
+         * The child is a slave.  It needs to listen to the
+         * master. Note that the slave2master pipe is only
+         * required for node 1, and that the master (if we
+	 * forked it at all) should not watch an master2slave
+         */
+        close(master2slave[1]);
+
+	if (i != 0)
+	    _dxf_set_RQ_reader(master2slave[0]);
+  
+        if (i == 1)
+        {
+              close(slave2master[0]);
+            _dxf_set_RQ_writer(slave2master[1]);
+        }
+    }
+
+    return  pid;
+}
