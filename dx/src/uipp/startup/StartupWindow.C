@@ -352,7 +352,7 @@ Widget StartupWindow::createWorkArea(Widget parent)
 Widget StartupWindow::createCommandArea (Widget parent)
 {
     Widget form = 
-	XtVaCreateManagedWidget ("commandForm",
+	XtVaCreateWidget ("commandForm",
 	    xmFormWidgetClass,		parent,
     NULL);
 
