@@ -1133,7 +1133,7 @@ int _dxf_initmemory()
      * all the standard header files also define malloc() which interferes
      * with other things in this file. 
      */
-    extern char *getenv(char *);
+    extern char *getenv(GETENV_ARG);
     extern double atof(char *);
 
 
