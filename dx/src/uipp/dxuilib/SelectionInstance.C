@@ -65,7 +65,7 @@ SetAttrDialog *SelectionInstance::newSetAttrDialog(Widget parent)
     name = DuplicateString(name);
     char *p = strstr(name,"Node");
     if (p)
-	*p = NULL;
+	*p = '\0';
     char title[128];
     sprintf(title,"Set %s Attributes...",name);
     SetAttrDialog *d = new SelectionAttrDialog(parent, title, this);

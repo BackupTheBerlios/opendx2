@@ -201,7 +201,7 @@ void EditorWorkSpace::initializeRootWidget(
                       &values);
 
     this->src.node  = NULL;
-    this->src.param = NULL;
+    this->src.param = 0;
     this->hot_spot = NULL;
     this->labeled_tab = NULL;
     this->font_list = NULL;

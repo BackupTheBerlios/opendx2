@@ -344,9 +344,9 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
     //
     this->state.width			= 0;
     this->state.height			= 0;
-    this->state.pixmap			= NULL;
+    this->state.pixmap			= XtUnspecifiedPixmap;
     this->state.gc			= NULL;
-    this->state.hardwareWindow		= NULL;
+    this->state.hardwareWindow		= 0;
     this->state.hardwareRender		= FALSE;
     this->state.hardwareRenderExists 	= FALSE;
     this->state.resizeFromServer	= FALSE;
@@ -2209,6 +2209,7 @@ void ImageWindow::handleCursor(int reason, int cursor_num,
 
     Parameter* param = probe->getOutput();
     long       l[5];
+
 
     ImageNode *in = (ImageNode*)this->node;
 
@@ -5623,7 +5624,7 @@ void ImageWindow::sendClientMessage(Atom atom, int num, float  *floats)
 	e.xclient.data.l[i] = 0;
 
     XSendEvent(XtDisplay(this->getRootWidget()), this->state.hardwareWindow,
-	True, NULL, &e);
+	True, 0, &e);
 }
 void ImageWindow::sendClientMessage(Atom atom, int num, long  *longs)
 {
@@ -5641,7 +5642,7 @@ void ImageWindow::sendClientMessage(Atom atom, int num, long  *longs)
 	e.xclient.data.l[i] = 0;
 
     XSendEvent(XtDisplay(this->getRootWidget()), this->state.hardwareWindow,
-	True, NULL, &e);
+	True, 0, &e);
 }
 void ImageWindow::sendClientMessage(Atom atom, int num, short *shorts)
 {
@@ -5659,7 +5660,7 @@ void ImageWindow::sendClientMessage(Atom atom, int num, short *shorts)
 	e.xclient.data.s[i] = 0;
 
     XSendEvent(XtDisplay(this->getRootWidget()), this->state.hardwareWindow,
-	True, NULL, &e);
+	True, 0, &e);
 }
 void ImageWindow::sendClientMessage(Atom atom, int num, char  *chars)
 {
@@ -5677,7 +5678,7 @@ void ImageWindow::sendClientMessage(Atom atom, int num, char  *chars)
 	e.xclient.data.b[i] = 0;
 
     XSendEvent(XtDisplay(this->getRootWidget()), this->state.hardwareWindow,
-	True, NULL, &e);
+	True, 0, &e);
 }
 
 //
@@ -6469,7 +6470,7 @@ void ImageWindow::resetWindow()
 	    XtDisplay(this->getCanvas()),
 	    XtWindow(this->getCanvas()),
 	    this->atoms.dx_pixmap_id);
-    this->state.pixmap = NULL;
+    this->state.pixmap = XtUnspecifiedPixmap;
     this->state.hardwareRender = FALSE;
     this->state.hardwareRenderExists = FALSE;
     XSync(XtDisplay(this->getCanvas()), False);

@@ -1796,9 +1796,9 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
     workspace->origin = ORG_NONE;
 
     workspace->src.node  = NULL;
-    workspace->src.param = NULL;
+    workspace->src.param = 0;
     workspace->dst.node  = NULL;
-    workspace->dst.param = NULL;
+    workspace->dst.param = 0;
 
     workspace->first       = TRUE;
     workspace->io_tab      = NUL(Widget);

@@ -308,8 +308,8 @@ PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
     this->deferPacketHandling = FALSE;
     this->stream = NULL;
     this->inputHandlerId = 0;
-    this->workProcTimerId = NULL;  
-    this->workProcId = NULL;  
+    this->workProcTimerId = 0;  
+    this->workProcId = 0;  
     this->line = (char *)MALLOC(this->alloc_line_length = 2000);
     this->line[0] = '\0';
     this->line_length = 0;
@@ -462,7 +462,7 @@ void PacketIF::removeWorkProcTimer()
 {
     if (this->workProcTimerId) {
         XtRemoveTimeOut(this->workProcTimerId);
-        this->workProcTimerId = NULL;
+        this->workProcTimerId = 0;
     }
 }
 extern "C" void PacketIF_InputIdleTimerTCP(XtPointer clientData,
@@ -470,7 +470,7 @@ extern "C" void PacketIF_InputIdleTimerTCP(XtPointer clientData,
 {
     PacketIF *p = (PacketIF*)clientData;
     ASSERT(p);
-    p->workProcTimerId = NULL;  // Xt uninstalls this automatically
+    p->workProcTimerId = 0;  // Xt uninstalls this automatically
     if (p->deferPacketHandling)
         PacketIF_InputIdleWP(clientData);
 }
@@ -488,7 +488,7 @@ void PacketIF::removeWorkProc()
 {
     if (this->workProcId) {
         XtRemoveWorkProc(this->workProcId);
-        this->workProcId = NULL;
+        this->workProcId = 0;
     }
 }
 
@@ -524,7 +524,7 @@ Boolean PacketIF_InputIdleWP(XtPointer clientData)
     boolean r = !p->deferPacketHandling;
 
     if (r)
-        p->workProcId = NULL;   // Xt will be removing it.
+        p->workProcId = 0;   // Xt will be removing it.
 
     return r;
 }
@@ -1078,7 +1078,7 @@ PacketIF::packetReceive(boolean readSocket)
 					 this->alloc_line_length += leftover+1);
 	memcpy((void*)this->line, (void*)(buffer+i), leftover);
 	this->line_length = leftover;
-	this->line[leftover] = NULL;
+	this->line[leftover] = 0;
     }
 }
 

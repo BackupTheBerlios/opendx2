@@ -38,7 +38,7 @@
 #include "NoUndoDXWindowCommand.h"
 #include "anchor.bm"
 
-Symbol DXWindow::lastMsg = NULL;
+Symbol DXWindow::lastMsg = 0;
 const void *DXWindow::lastMsgData = NULL;
 
 String DXWindow::DefaultResources[] =
