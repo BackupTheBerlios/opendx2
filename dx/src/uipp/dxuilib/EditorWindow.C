@@ -7088,7 +7088,7 @@ boolean EditorWindow::javifyNetwork()
     if (!wopt_nd) {
 	// try loading web-options
 	char* macros = "/java/server/dxmacros";
-	char* uiroot = theDXApplication->getUIRoot();
+	const char* uiroot = theDXApplication->getUIRoot();
 	char* jxmacros;
 	fprintf(stderr, "WebOptions macro not in DXMACROS path\n");
 	fprintf(stderr, "attempting to load from configure-time parameters\n");
