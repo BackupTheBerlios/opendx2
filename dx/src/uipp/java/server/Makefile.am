@@ -15,5 +15,5 @@ EXTRA_DIST = CleanUpDaemon.java ConnectThread.java ConnectionEntry.java DXLink.c
 SUBDIRS = macros
 
 README.output:
-	echo "This directory is placed at the same level as htmlpages" > README.output
+	echo "A directory is placed at the same level as htmlpages" > README.output
 	echo "for default output.  Make this directory writable!" >> README.output
