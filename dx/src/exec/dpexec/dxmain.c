@@ -310,7 +310,9 @@ static void	ExSigPipe(int);
 #if HAVE_SIGDANGER
 static void	ExSigDanger		(int);
 #endif
+#if DXD_EXEC_WAIT_PROCESS
 static void	ExKillChildren(void);
+#endif
 
 #if DXD_PVSPROFILE
 static int	ExRouExit		(Pointer junk);
@@ -1122,12 +1124,12 @@ static void ExConnectInput ()
     }
     else
     {
-	int fd = fileno(stdin);
-	setvbuf (stdin, NULL, _IONBF, 0);
-	_pIfd = FILEToSFILE(stdin);
-        _dxd_exIsatty = isatty(fd);
+	FILE *fptr;
+        extern void GetBaseConnection(FILE **fptr, char **str);
+	GetBaseConnection(&fptr, &_pIstr);
+	_pIfd = FILEToSFILE(fptr);
+        _dxd_exIsatty = SFILEisatty(_pIfd);
     }
-
 }
 
 
@@ -1841,21 +1843,10 @@ static int ExFindPID (int pid)
 static
 int OKToRead (SFILE *fp)
 {
-    fd_set		fdset;
-    struct timeval	tv;
-
     if (ExCheckParseBuffer())
 	return 1;
 
-    if (SFILECharReady(fp))
-	return 1;    
-
-    FD_ZERO (&fdset);
-    FD_SET  (SFILEfileno (fp), &fdset);
-    tv.tv_sec  = 0;
-    tv.tv_usec = 0;
-
-    return (select (FD_SETSIZE, (SelectPtr) &fdset, NULL, NULL, &tv) > 0);
+    return SFILECharReady(fp);
 }
 
 void
@@ -2106,7 +2097,6 @@ ExCheckInput ()
     Program		*graph;
     static int 		prompted = FALSE;
     char		*prompt;
-    int			fno;
     Context		savedContext;
     extern SFILE        *_dxd_exBaseFD;
 
@@ -2120,10 +2110,8 @@ ExCheckInput ()
     /* If this is the terminal, and the user hasn't typed anything yet,
      * prompt him.
      */
-    fno = SFILEfileno (yyin);
-    if ((_dxd_exIsatty || 
-        (_dxd_exRshInput && fno == SFILEfileno(_dxd_exBaseFD))) &&
-	! prompted && _dxf_ExGQAllDone () && !SFILECharReady(yyin))
+    if ((SFILEisatty(yyin) || (_dxd_exRshInput && yyin == _dxd_exBaseFD)) &&
+        !prompted && _dxf_ExGQAllDone() && !SFILECharReady(yyin))
     {
 	prompt = _dxf_ExPromptGet(PROMPT_ID_PROMPT);
 	printf (prompt? prompt: EX_PROMPT);
@@ -2271,11 +2259,6 @@ static int EX_LIMIT	= 0;
 static int
 ExInputAvailable (SFILE *fp)
 {
-    int			fd;
-    int			n;
-    int			ret;
-    fd_set		fdset;
-    struct timeval	tv;
     static int		iters	= 0;
     extern SFILE        *_dxd_exBaseFD;
 
@@ -2285,27 +2268,19 @@ ExInputAvailable (SFILE *fp)
     _dxf_ExCheckPacket(NULL, 0);
 
     if (SFILECharReady(fp))
-	return (TRUE);
-    
-    fd = SFILEfileno (fp);
-    if (fd != SFILEfileno(_dxd_exBaseFD))
-	return (TRUE);
+	return TRUE;
+
+    if (fp != _dxd_exBaseFD)
+        return TRUE;
     
     if (++iters < EX_SELECT)
     {
+	int ret, n, fd = SFILEfileno (fp);
 	ret = IOCTL (fd, FIONREAD, (char *) &n);
 	return (n > 0 || ret < 0);
     }
     else
-    {
-	iters = 0;
-	FD_ZERO (&fdset);
-	FD_SET  (fd, &fdset);
-	tv.tv_sec  = 0;
-	tv.tv_usec = 0;
-	ret = select (FD_SETSIZE, (SelectPtr) &fdset, NULL, NULL, &tv);
-	return (ret > 0);
-    }
+        return 0;
 }
 
 

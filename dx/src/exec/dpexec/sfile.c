@@ -52,18 +52,23 @@ struct sfile
     char                *nextchar;
     FILE                *file;
     int			count;
-	int			isAtty;
+    int			isAtty;
 };
+
+int
+SFILEisatty(SFILE *SF)
+{
+    struct sfile *sf = (struct sfile *)SF;
+    return sf->isAtty;
+}
 
 int
 SFILEfileno(SFILE *SF)
 {
     struct sfile *sf = (struct sfile *)SF;
 
-    if (sf->type == SFILE_FDESC)
+    if (sf->type == SFILE_FDESC || sf->type == SFILE_FPTR)
 	return sf->fd;
-    else if (sf->type == SFILE_FPTR)
-	return fileno(sf->file);
 #if defined(HANDLE_SOCKET)
     else if (sf->type == SFILE_SOCKET)
 	return sf->socket;
@@ -90,7 +95,7 @@ socketToSFILE(SOCKET sock)
     sf->type     = SFILE_SOCKET;
     sf->nextchar = NULL;
     sf->count    = 0;
-	sf->isAtty	 = 0;
+    sf->isAtty	 = 0;
 
     return (SFILE *)sf;
 #endif
@@ -105,10 +110,10 @@ FILEToSFILE(FILE *fptr)
 
     sf->type     = SFILE_FPTR;
     sf->file	 = fptr;
-    sf->fd	 = fileno(fptr);
+    sf->fd	 = fptr == NULL ? -1 : fileno(fptr);
     sf->nextchar = NULL;
     sf->count    = 0;
-	sf->isAtty	 = isatty(fileno(fptr));
+    sf->isAtty	 = fptr == NULL ? 0 : isatty(sf->fd);
 
     return (SFILE *)sf;
 }
@@ -121,10 +126,11 @@ fdToSFILE(int fd)
     	return NULL;
 
     sf->type 	 = SFILE_FDESC;
+    sf->file	 = NULL;
     sf->fd	 = fd;
     sf->nextchar = NULL;
     sf->count    = 0;
-	sf->isAtty	 = isatty(fd);
+    sf->isAtty	 = isatty(fd);
 
     return (SFILE *)sf;
 }
@@ -178,6 +184,8 @@ readFromSFILE(SFILE *sf, char *buf, int n)
     return a+b;
 }
 
+extern void ExQuit();
+
 int
 writeToSFILE(SFILE *sf, char *buf, int n)
 {
@@ -199,6 +207,42 @@ writeToSFILE(SFILE *sf, char *buf, int n)
 
 extern SFILE *_dxd_exSockFD;
 
+static int
+_SFILE_load(SFILE *sf)
+{
+    struct sfile *ssf = (struct sfile *)sf;
+
+    if (ssf->count > 0)
+        return 1;
+    
+#if defined(DDX)
+    if (ssf->fd == -1)
+        return 0;
+
+    if (ssf->count == 0 && ssf->type == SFILE_FPTR && feof(ssf->file))
+	return 1;
+#endif
+
+#if defined(HANDLE_SOCKET)
+    if (ssf->type == SFILE_SOCKET)
+	ssf->count = recv(ssf->socket, ssf->buffer, BUFSIZ, 0);
+    else 
+#endif
+    {
+	ssf->count = read(ssf->fd, ssf->buffer, BUFSIZ);
+	ssf->buffer[ssf->count] = '\0';
+    }
+
+    ssf->nextchar = ssf->buffer;
+
+    if (ssf->count < 0)
+	return -1;
+     else if (ssf->count == 0 && ssf->type == SFILE_FPTR && feof(ssf->file))
+	 return 0;
+     else
+	 return 1;
+}
+
 int 
 SFILECharReady(SFILE *sf)
 {
@@ -206,6 +250,10 @@ SFILECharReady(SFILE *sf)
 	struct sfile *ssf = (struct sfile *)sf;
 
 	if (ssf->count) return 1;
+
+#if defined(DDX)
+	if (ssf->fd == -1) return 0;
+#endif
 
 #if defined(HANDLE_SOCKET)
 
@@ -280,6 +328,9 @@ SFILECharReady(SFILE *sf)
 	    FD_SET(fd, &fds);
 	    select(fd+1, &fds, NULL, NULL, &tv);
 	    i = FD_ISSET(fd, &fds);
+	    if (i)
+	        if (_SFILE_load(sf) <= 0)
+		    i = 0;
 	}
 
 	return i;
@@ -290,30 +341,14 @@ SFILEGetChar(SFILE *sf)
 {
     int s;
     struct sfile *ssf = (struct sfile *)sf;
+
     if (ssf->count == 0)
     {
-#if defined(HANDLE_SOCKET)
-	if (ssf->type == SFILE_SOCKET)
-	    ssf->count = recv(ssf->socket, ssf->buffer, BUFSIZ, 0);
-	else 
-#endif
-	if (ssf->type == SFILE_FPTR)
-	{
-		ssf->count = read(ssf->fd, ssf->buffer, BUFSIZ);
-		ssf->buffer[ssf->count] = '\0';
-	}
-	else if (ssf->type == SFILE_FDESC)
-	{
-	    ssf->count = read(ssf->fd, ssf->buffer, BUFSIZ);
-  	    ssf->buffer[ssf->count] = '\0';
-	}
-
-	ssf->nextchar = ssf->buffer;
-
-	if (ssf->count <= 0)
+        _SFILE_load(sf);
+	if (ssf->count == 0)
 	    return EOF;
     }
-
+	    
     ssf->count --;
     s = (int)(*ssf->nextchar ++);
     return s;
@@ -322,8 +357,14 @@ SFILEGetChar(SFILE *sf)
 int
 SFILEIoctl(SFILE *sf, int cmd, void *argp)
 {
-#if defined(HANDLE_SOCKET)
     struct sfile *ssf = (struct sfile *)sf;
+
+#if defined(DDX)
+    if (ssf->fd < 0)
+        return 1;
+#endif
+
+#if defined(HANDLE_SOCKET)
     if (ssf->type == SFILE_SOCKET)
 	return ioctlsocket(ssf->socket, cmd, argp);
     else
