@@ -3,7 +3,7 @@
 /*********************************************************************/
 
 #include <dx/dx.h>
-#if !defined(os2) && !defined(DXD_WIN)
+#if HAVE_VALUES_H
 #include <values.h>
 #endif
 #include <math.h>
