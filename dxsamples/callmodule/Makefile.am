@@ -6,7 +6,7 @@ data_DATA = Readme Simple.c ThunderStreamlines.c renderimage.c xapp_supervise.c
 
 EXTRA_DIST = $(data_DATA)
 
-install-data-local:
+install-data-hook:
 	cp localmk $(datadir)/makefile
 
 uninstall-local:

@@ -18,8 +18,8 @@ data_DATA =  Readme add.c add.cfg add.mb add.mdf add.net add2.c add2.cfg \
 
 EXTRA_DIST = $(data_DATA) 
 
-install-data-local:
-	mv localmk $(datadir)/makefile
+install-data-hook:
+	cp localmk $(datadir)/makefile
 
 uninstall-local:
 	rm $(datadir)/makefile
