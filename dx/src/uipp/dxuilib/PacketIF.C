@@ -20,6 +20,7 @@
 #include "QueuedPackets.h"
 
 
+#include "DXApplication.h" // for getPacketIF()
 #include "Application.h"
 #include "ErrorDialogManager.h"
 #include "WarningDialogManager.h"
@@ -564,18 +565,37 @@ Boolean PacketIF_InputIdleWP(XtPointer clientData)
     } else
 	p->deferPacketHandling = FALSE;
 
-#if 0
-#ifdef	DXD_WIN
-    if(DXMessageOnSocket(p->socket) > 0) 
-	PacketIF_ProcessSocketInputICB(clientData, NULL, NULL);
-    Sleep(10);
-#endif
-#endif
-
     boolean r = !p->deferPacketHandling;
 
     if (r)
         p->workProcId = 0;   // Xt will be removing it.
+
+    //
+    // We have one workProc for the queued packets that we want
+    // to send to the exec.  We have another workProc for a
+    // DXLink connection.  The DXLink workProc busy-waits
+    // until it finds out that an execution has completed.  If
+    // we have queued output for the exec, then we better make
+    // sure that it gets sent before we busy-wait.  Otherwise,
+    // we might actually be sitting on the command we want to
+    // send to the exec to make it start executing in the first
+    // place.
+    //
+    // Here, pif might/might not be the same as p.  But since we
+    // have 2 workProcs installed at the same time, we can't be
+    // sure which will be called and which will be starved.  Another
+    // way to handle this case would be to force a call to 
+    // other workProcs also, but I don't think there is a way to
+    // do that.  So, really what I'm doing here is to ensure that
+    // if this workProc gets called, then the effect is the about
+    // the same as if both workProcs were called.  The "normal"
+    // Xt behavior for workProcs is to keep calling one until
+    // it removes itself, and only then start calling the other.
+    //
+    PacketIF* pif = (PacketIF*)theDXApplication->getPacketIF();
+    if (pif->output_queue.getSize() != 0) {
+	pif->sendQueuedPackets();
+    }
     
     return r;
 }
