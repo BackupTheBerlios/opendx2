@@ -252,11 +252,19 @@ help_DATA = $(EXTRA_DIST)
 
 
 install-data-hook:
-	@-sh -c '$(LN_S) $(helpdir)/hlpalhtl  $(helpdir)/mbidx ; \
-		 $(LN_S) $(helpdir)/hlpalhtl  $(helpdir)/quikidx ; \
-		 $(LN_S) $(helpdir)/hlpalhtl  $(helpdir)/svsmstrh ; \
-		 $(LN_S) $(helpdir)/hlpalhtl  $(helpdir)/ugidx ; \
-		 $(LN_S) $(helpdir)/hlpalhtl  $(helpdir)/usrefidx ; \
-		 $(LN_S) $(helpdir)/HelpDir   $(helpdir)/GarHelpDir ; \
-		 $(LN_S) $(helpdir)/HelpDir   $(helpdir)/MBHelpDir \
+	@-sh -c '( cd $(helpdir) && $(LN_S) hlpalhtl mbidx ; \
+		 $(LN_S) hlpalhtl quikidx ; \
+		 $(LN_S) hlpalhtl svsmstrh ; \
+		 $(LN_S) hlpalhtl ugidx ; \
+		 $(LN_S) hlpalhtl usrefidx ; \
+		 $(LN_S) HelpDir GarHelpDir ; \
+		 $(LN_S) HelpDir MBHelpDir ; \
+		 echo "cd $(helpdir)" ; \
+		 echo "$(LN_S) hlpalhtl mbidx" ; \
+		 echo "$(LN_S) hlpalhtl quikidx" ; \
+		 echo "$(LN_S) hlpalhtl svsmstrh" ; \
+		 echo "$(LN_S) hlpalhtl ugidx" ; \
+		 echo "$(LN_S) hlpalhtl usrefidx" ; \
+		 echo "$(LN_S) HelpDir GarHelpDir" ; \
+		 echo "$(LN_S) HelpDir MBHelpDir" ) \
 	'

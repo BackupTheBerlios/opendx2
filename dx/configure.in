@@ -252,7 +252,9 @@ else
 fi
 
 AC_PROG_INSTALL
-AC_PROG_LN_S
+if test -z "$LN_S" ; then
+    AC_PROG_LN_S
+fi
 
 dnl Checks for programs.
 AC_PROG_RANLIB
