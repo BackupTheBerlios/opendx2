@@ -89,8 +89,8 @@ prompter_LDADD = 			\
 	../dxl/libDXL.a		  	\
 	-L/usr/X11R6/lib 		\
 	-L/usr/local/lib 		\
-	-L$(DXROOT)/lib_@ARCH@ 	\
-	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
+	-L$(DXROOT)/lib_@ARCH@ 		\
+	-lm -lXm -lXmu -lXt -lX11 -lXext
 
 EXTRA_DIST = 				\
 	col_insens.bm			\
