@@ -563,6 +563,7 @@ public synchronized int dxlSend(String s)
 // Look in:
 // 1) /etc
 // 2) current working dir
+// 3) environment variable defined by DXServer.pathsFile
 // Don't look for multiple copies of the file.  Stop after reading the first one found.
 // N.B. The caller is responsible for locking
 //
@@ -577,6 +578,7 @@ Vector paths;
 	paths.addElement((Object)DXServerThread.PathFileUsed);
     paths.addElement((Object)File.separator+"etc"+File.separator+"dxserver.paths");
     paths.addElement((Object)"."+File.separator+"dxserver.paths");
+    paths.addElement((Object)System.getProperty("DXServer.pathsFile"));
 
     synchronized (DXServerThread.PathNames) {
 	try {

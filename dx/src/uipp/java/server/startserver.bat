@@ -1,3 +1,12 @@
+rem  Needed for Windows only--
+rem
+rem  This file is no longer needed since the code has been incorporated
+rem  into dx.c. It is much easier to start JavaDX by "dx -jdxserver". If
+rem  you need to change the outDir directory, the outUrl, and the paths and
+rem  hosts file, you may want to look at "dx -jdxserver -echo" to see what
+rem  it sets and then write your own bat file accordingly. The below could
+rem  be used as a template for Win2000.
+
 @echo off 
 if %1x==-verbosex (set VERBOSE="ver") else set VERBOSE=
 

@@ -82,6 +82,10 @@ public static void main(String[] args)
 	System.exit(1);
     }
 
+    String dbgmsgs = System.getProperty("DXServer.debug");
+    if (dbgmsgs != null) debug = true;
+    else debug = false;
+
     users = new Vector(50);
 
     DXServerThread.ClassInitialize();
@@ -96,10 +100,6 @@ public static void main(String[] args)
 
     DXServer.Cud = new CleanUpDaemon();
     DXServer.Cud.start();
-
-    String dbgmsgs = System.getProperty("DXServer.debug");
-    if (dbgmsgs != null) debug = true;
-    else debug = false;
 
     DXServer.maxThreads = 1;
     String mxstr = System.getProperty ("DXServer.dxsessions");
@@ -378,6 +378,7 @@ public static int GetMaxSessions()
 // Look in:
 // 1) /etc
 // 2) current working dir
+// 3) environment variable DXServer.hostsFile
 // Don't look for multiple copies of the file.  Stop after reading the first one found.
 // N.B. The caller is responsible for locking before both of these class methods.
 //
@@ -399,6 +400,7 @@ Vector paths;
 	paths.addElement((Object)DXServer.HostFileUsed);
     paths.addElement((Object)File.separator+"etc"+File.separator+"dxserver.hosts");
     paths.addElement((Object)"."+File.separator+"dxserver.hosts");
+    paths.addElement((Object)System.getProperty("DXServer.hostsFile"));
 
     synchronized (DXServer.HostNames) {
 	try {
