@@ -3094,7 +3094,10 @@ void EditorWindow::addCurrentNode(int x, int y, EditorWorkSpace *where, boolean 
 	this->pendingPaste->setTopLeftPos (x,y);
 	List *l = this->pendingPaste->getNonEmptyPanels();
 	this->pagifyNetNodes (this->pendingPaste, where, TRUE);
+	boolean tmp = this->creating_new_network;
+	this->creating_new_network = TRUE;
 	this->network->mergeNetworks (this->pendingPaste, l, TRUE, stitch);
+	this->creating_new_network = tmp;
 	if (l) delete l;
 	this->resetCursor();
 	this->setCommandActivation();
