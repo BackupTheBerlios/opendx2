@@ -223,4 +223,8 @@ do {									\
 
 #define WORKSPACE_PAGES 1
 
+#if defined(HAVE_LIBXMSTATIC)
+#define XMSTATIC
+#endif
+
 #endif
