@@ -136,13 +136,6 @@ typedef struct matrix {
     float b[3];
 } Matrix;
 
-static Matrix Identity = {
-    {{ 1.0, 0.0, 0.0 },
-    { 0.0, 1.0, 0.0 },
-    { 0.0, 0.0, 1.0 }},
-    { 0.0, 0.0, 0.0 }
-};
-
 /*
 Transformation matrices may be specified in a number of ways:
 */

@@ -8,9 +8,14 @@
 
 #include <dxconfig.h>
 
-
-
 #include "cameraClass.h"
+
+static Matrix Identity = {
+  {{ 1.0, 0.0, 0.0 },
+   { 0.0, 1.0, 0.0 },
+   { 0.0, 0.0, 1.0 }
+  }
+};
 
 /*
  * Compute the camera matrix from the current parameters
