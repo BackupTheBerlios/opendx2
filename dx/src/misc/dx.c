@@ -5,18 +5,14 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-/*  DX script - C version	*/
-/*  F. Suits   1/97		*/
+/*  DX script - C-Windows version	*/
 
 /* #define USE_REGISTRY 1 */
-/* #define DEBUG 1 */
 
 #include <dxconfig.h>
 #include <dx/arch.h>
 
-#ifdef DXD_WIN
 #include <windows.h>
-#endif
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
@@ -34,15 +30,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef DXD_WIN
 #define EXE_EXT ".exe"
 #define DIRSEP "\\"
 #define PATHSEP ";"
-#else
-#define EXE_EXT ""
-#define DIRSEP "/"
-#define PATHSEP ":"
-#endif
 
 #define SCRIPTVERSION DXD_VERSION_STRING
 
@@ -62,9 +52,13 @@ enum xServer { UNKNOWN, EXCEED6, EXCEED7, XWIN32 };
 
 enum xServer whichX = UNKNOWN;
 
+#ifndef MAX_PATH
+#define MAX_PATH 256
+#endif
+
 #define SMALLSTR 50
 #define MAXARGS 200
-#define MAXNAME 256
+#define MAXNAME MAX_PATH
 #define MAXENV  4096
 #define MAXPARMS 200
 
@@ -86,6 +80,7 @@ enum xServer whichX = UNKNOWN;
     }						\
 }
 
+
 #define ErrorGoto(s) {		\
 	strcpy(errstr, s);	\
 	goto error;		\
@@ -101,6 +96,12 @@ enum xServer whichX = UNKNOWN;
 	while ((kk = strlen(s)) && ((s[kk-1] == ';') || (s[kk-1] == ' ')))	\
 	    s[kk-1] = '\0';						\
     }
+
+#define setenvpair(s, v)	\
+    if (s && *s && v && *v)	\
+	if(!putenvstr(s, v)) {	\
+    printf("\nCannot set env var: %s\n", s); 	\
+}
 
 typedef char smallstr[SMALLSTR];
 typedef char envstr[MAXENV];
@@ -126,6 +127,7 @@ int	tutor =		0;
 int	builder =	0;
 int	wizard = 	0;
 int	portset =	0;
+int javaserver = 0;
 
 envstr		cmd =		"";
 envstr		outenv =	"";
@@ -158,9 +160,6 @@ smallstr 	uihilite =	"";
 smallstr 	exlic =		"";
 namestr 	FileName =	"";
 namestr 	dxroot =	"";
-namestr 	dxrootreg =	"";
-namestr		dxdatareg =	"";
-namestr		dxmacroreg = 	"";
 namestr 	dxexroot =	"";
 namestr 	dxuiroot =	"";
 namestr 	exceeddir =	"";
@@ -208,12 +207,13 @@ namestr		thishost = 	"localhost";
 smallstr 	uidebug =	"";
 namestr		username =	"";
 namestr		userco =	"";
+namestr		shortPath =	"";
+namestr		classpath = "";
 
 envstr		teststr = 	"";
 namestr		msgstr =	"";
 namestr		errstr =	"";
 envstr		argstr =	"";
-envstr		magickhomereg = "";
 envstr		magickhome =    "";
 
 int getenvstr(char *name, char *value);
@@ -223,8 +223,10 @@ int initrun();
 int getparms(int argc, char **argv);
 int fillparms(char *str, int *n);
 void configure();
+void dxjsconfig(); /* Add more env variables for JavaDX Server */
 int buildcmd();
 int launchit();
+int launchjs(); /* Launch the JavaDX Server */
 int shorthelp();
 int longhelp();
 void d2u(char *s);
@@ -235,10 +237,14 @@ int main(int argc, char **argv)
     initrun();
     getparms(argc, argv);
     parseparms();
-    configure();
+    if (javaserver) {
+    	dxjsconfig();
+    } else {
+        configure();
+	}
     buildcmd();
     if (!echo)
-	launchit();
+	    launchit();
     exit(0);
 }
 
@@ -258,7 +264,23 @@ void u2d(char *s)
 	    s[i] = '\\';
 }
 
-void removeQ(char *s)
+void p2des(char *s) /* path to dos with extra seperator */
+{
+	namestr temp;
+    int i, j, length;
+    length=strlen(s);
+    for(i=0, j=0; i<length; i++) {
+    	if(s[i] == '/' || s[i] == '\\') {
+    		temp[j++] = '\\'; temp[j++] = '\\';
+    	} else
+    		temp[j++] = s[i];
+	}
+    temp[j] = '\0';
+    strcpy(s, temp);
+}
+
+
+void removeQuotes(char *s)
 {
     char *p, *p2; p = s; p2 = s;
     while(p && *p) {
@@ -315,11 +337,9 @@ int putenvstr(char *name, char *value)
     s[len] = '\0';
     strcat(s, "=");
 
-    /* All env params except path should be Unix style */
-#ifdef DXD_WIN
-    if (strcasecmp(s, "path="))
+    /* All env params except path and MAGICK_HOME should be Unix style */
+    if (strcasecmp(s, "path=") && strcasecmp(s, "magick_home="))
 	d2u(value);
-#endif
 
     for(p = value; *p == ' '; p++);
     if(strlen(p)) {
@@ -331,10 +351,6 @@ int putenvstr(char *name, char *value)
 	    s[len+newlen] = '\0';
 	}
     }
-
-#ifdef CHECK_ENV
-    printf("%s\n", s);
-#endif
 
     p = malloc(strlen(s) + 1);
     strcpy(p, s);
@@ -352,7 +368,6 @@ int putenvstr(char *name, char *value)
 /*  children must convey this down.				*/
 int regval(enum regGet get, char *name, enum regCo co, char *value, int size, int *word)
 {
-#ifdef DXD_WIN
 	char key[500];
 	char key2[500];
 	int valtype;
@@ -363,213 +378,201 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 	DWORD options;
 	HKEY regLoc = HKEY_LOCAL_MACHINE;
 
-/* First determine which system we're looking up. */
+	/* First determine which system we're looking up. */
 
-if(co == OPENDX_ID) {
-	char *path[256] = {"SOFTWARE", "OpenDX", "DX", "CurrentVersion"};
-	const int pathlength = 4;
+	if(co == OPENDX_ID) {
+		char *path[256] = { "SOFTWARE", "OpenDX", "DX", "CurrentVersion" };
+		const int pathlength = 4;
 
-	options = KEY_QUERY_VALUE;
+		options = KEY_QUERY_VALUE;
 
-/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
-/* Check there first if not found then search in CURRENT_USER   */
-        strcpy(key, ""); k = 0;
-	for(i=0; i < pathlength; i++) {
-        	strcat(key, path[i]);
-		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-		if(rc != ERROR_SUCCESS)
-			break;
-		strcat(key, "\\");
-	}
-	
-	if(rc != ERROR_SUCCESS)
-		regLoc = HKEY_CURRENT_USER;
-	strcpy(key, ""); k = 0;
-	for(i=0; i < pathlength; i++) {
-        	strcat(key, path[i]);
-		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-		if(rc != ERROR_SUCCESS)
-			break;
-		strcat(key, "\\");
-	}
-
-	if(rc != ERROR_SUCCESS && get == CHECK) return 0;
-	else if (get == CHECK) return 1;
-	/* hkey now pointing in the proper reg entry area */
-}
-else if (co == STARNET_ID) { 
-	char *path[256] = {"SOFTWARE", "Starnet", "X-Win32", "5.1"};
-	const int pathlength = 4;
-
-	options = KEY_QUERY_VALUE;
-
-/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
-/* Check there first if not found then search in CURRENT_USER   */
-        strcpy(key, ""); k = 0;
-	for(i=0; i < pathlength; i++) {
-        	strcat(key, path[i]);
-		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-		if(rc != ERROR_SUCCESS)
-			break;
-		strcat(key, "\\");
-	}
-	
-	if(rc != ERROR_SUCCESS)
-		regLoc = HKEY_CURRENT_USER;
-	strcpy(key, ""); k = 0;
-	for(i=0; i < pathlength; i++) {
-        	strcat(key, path[i]);
-		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-		if(rc != ERROR_SUCCESS)
-			break;
-		strcat(key, "\\");
-	}
-
-	if(rc != ERROR_SUCCESS && get == CHECK) return 0;
-	else if(get == CHECK) return 1;
-	/* hkey now pointing in the proper reg entry area */
-}
-else { /* Must be Hummingbird */
-	char *path[256] = {"SOFTWARE", "Hummingbird", "Exceed", "CurrentVersion"};
-	char *path2[256] = {"SOFTWARE", "Hummingbird", "Connectivity", "7.00", "Exceed"};
-	const int pathlength = 4;
-	const int pathlength2 = 5;
-
-	options = KEY_QUERY_VALUE;
-
-/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
-/* Check there first if not found then search in CURRENT_USER   */
-        strcpy(key, ""); k = 0;
-	for(i=0; i < pathlength; i++) {
-        	strcat(key, path[i]);
-		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-		if(rc != ERROR_SUCCESS)
-			break;
-		strcat(key, "\\");
-	}
-	
-	if(rc != ERROR_SUCCESS)
-		regLoc = HKEY_CURRENT_USER;
-	strcpy(key, ""); k = 0;
-	for(i=0; i < pathlength; i++) {
-        	strcat(key, path[i]);
-		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
-		if(rc != ERROR_SUCCESS)
-			break;
-		strcat(key, "\\");
-	}
-
-	if(rc == ERROR_SUCCESS && get == CHECK) return 6;
-	if(rc != ERROR_SUCCESS) { /* Now check for v 7. */
-		regLoc = HKEY_LOCAL_MACHINE;
-	        strcpy(key, ""); k = 0;
-		for(i=0; i < pathlength2; i++) {
-        		strcat(key, path2[i]);
+		/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
+		/* Check there first if not found then search in CURRENT_USER   */
+		strcpy(key, ""); 
+		k = 0;
+		for(i=0; i < pathlength; i++) {
+			strcat(key, path[i]);
 			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
 			if(rc != ERROR_SUCCESS)
 				break;
 			strcat(key, "\\");
 		}
-	
+
 		if(rc != ERROR_SUCCESS)
 			regLoc = HKEY_CURRENT_USER;
-		strcpy(key, ""); k = 0;
-		for(i=0; i < pathlength2; i++) {
-        		strcat(key, path2[i]);
+		strcpy(key, ""); 
+		k = 0;
+		for(i=0; i < pathlength; i++) {
+			strcat(key, path[i]);
 			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
 			if(rc != ERROR_SUCCESS)
 				break;
 			strcat(key, "\\");
 		}
+
+		if(rc != ERROR_SUCCESS && get == CHECK) return 0;
+		else if (get == CHECK) return 1;
+		/* hkey now pointing in the proper reg entry area */
 	}
-	if(rc != ERROR_SUCCESS && get == CHECK) return 0;
-	else if(get == CHECK) return 7;
-	/* hkey now pointing in the proper reg entry area */
+	else if (co == STARNET_ID) { 
+		char *path[256] = { "SOFTWARE", "Starnet", "X-Win32", "5.1" };
+		const int pathlength = 4;
 
-}
+		options = KEY_QUERY_VALUE;
 
-if (get == GET) {
-	rc = RegQueryValueEx(hkey[k-1], (LPTSTR) name, (LPDWORD) 0, 
+		/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
+		/* Check there first if not found then search in CURRENT_USER   */
+		strcpy(key, ""); 
+		k = 0;
+		for(i=0; i < pathlength; i++) {
+			strcat(key, path[i]);
+			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+			if(rc != ERROR_SUCCESS)
+				break;
+			strcat(key, "\\");
+		}
+
+		if(rc != ERROR_SUCCESS)
+			regLoc = HKEY_CURRENT_USER;
+		strcpy(key, ""); 
+		k = 0;
+		for(i=0; i < pathlength; i++) {
+			strcat(key, path[i]);
+			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+			if(rc != ERROR_SUCCESS)
+				break;
+			strcat(key, "\\");
+		}
+
+		if(rc != ERROR_SUCCESS && get == CHECK) return 0;
+		else if(get == CHECK) return 1;
+		/* hkey now pointing in the proper reg entry area */
+	}
+	else { /* Must be Hummingbird */
+		char *path[256] = { "SOFTWARE", "Hummingbird", "Exceed", "CurrentVersion" };
+		char *path2[256] = { "SOFTWARE", "Hummingbird", "Connectivity", "7.00", "Exceed" };
+		const int pathlength = 4;
+		const int pathlength2 = 5;
+
+		options = KEY_QUERY_VALUE;
+
+		/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
+		/* Check there first if not found then search in CURRENT_USER   */
+		strcpy(key, ""); 
+		k = 0;
+		for(i=0; i < pathlength; i++) {
+			strcat(key, path[i]);
+			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+			if(rc != ERROR_SUCCESS)
+				break;
+			strcat(key, "\\");
+		}
+
+		if(rc != ERROR_SUCCESS)
+			regLoc = HKEY_CURRENT_USER;
+		strcpy(key, ""); 
+		k = 0;
+		for(i=0; i < pathlength; i++) {
+			strcat(key, path[i]);
+			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+			if(rc != ERROR_SUCCESS)
+				break;
+			strcat(key, "\\");
+		}
+
+		if(rc == ERROR_SUCCESS && get == CHECK) return 6;
+		if(rc != ERROR_SUCCESS) { /* Now check for v 7. */
+			regLoc = HKEY_LOCAL_MACHINE;
+			strcpy(key, ""); 
+			k = 0;
+			for(i=0; i < pathlength2; i++) {
+				strcat(key, path2[i]);
+				rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+				if(rc != ERROR_SUCCESS)
+					break;
+				strcat(key, "\\");
+			}
+
+			if(rc != ERROR_SUCCESS)
+				regLoc = HKEY_CURRENT_USER;
+			strcpy(key, ""); 
+			k = 0;
+			for(i=0; i < pathlength2; i++) {
+				strcat(key, path2[i]);
+				rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+				if(rc != ERROR_SUCCESS)
+					break;
+				strcat(key, "\\");
+			}
+		}
+		if(rc != ERROR_SUCCESS && get == CHECK) return 0;
+		else if(get == CHECK) return 7;
+		/* hkey now pointing in the proper reg entry area */
+
+	}
+
+	if (get == GET) {
+		rc = RegQueryValueEx(hkey[k-1], (LPTSTR) name, (LPDWORD) 0, 
 		(LPDWORD) &valtype, (LPBYTE) value, &sizegot);
-	IfError2("Query value failed on registry value", name, "");
+		IfError2("Query value failed on registry value", name, "");
 
-	for (i=k; i > 0; i--) {
-		rc = RegCloseKey(hkey[i-1]);
-		IfError2("CloseKey failed on registry value", name, "");
+		for (i=k; i > 0; i--) {
+			rc = RegCloseKey(hkey[i-1]);
+			IfError2("CloseKey failed on registry value", name, "");
+		}
+
+		/* Now check to see if it is a DWORD entry if so, pass it back through word
+				not as a string through name. */
+		switch(valtype) {
+		case REG_DWORD:
+			*word = *((int *)value); 
+			strcpy(value, "");
+			break;
+		case REG_SZ:
+			break;
+		default:
+			return 0;
+		}
+
+		return 1;
+
 	}
-
-	/* Now check to see if it is a DWORD entry if so, pass it back through word
-		not as a string through name. */
-	switch(valtype) {
-	case REG_DWORD:
-		*word = *((int *)value); 
-		strcpy(value, "");
-		break;
-	case REG_SZ:
-		break;
-	default:
-		return 0;
-	}
-
-	return 1;
-
-}
-else {
-	if (get == SET)
-		options = KEY_SET_VALUE;
-	rc = RegSetValueEx((HKEY)hkey[k-1], (LPCSTR)name, (DWORD)0, 
+	else {
+		if (get == SET)
+			options = KEY_SET_VALUE;
+		rc = RegSetValueEx((HKEY)hkey[k-1], (LPCSTR)name, (DWORD)0, 
 		(DWORD)REG_SZ, (CONST BYTE *)value, (DWORD)strlen(value)+1);
-	IfError("Registration key installation failed");
+		IfError("Registration key installation failed");
 
-	for (i=k; i > 0; i--) {
-		rc = RegCloseKey(hkey[i-1]);
-		IfError("CloseKey failed");
+		for (i=k; i > 0; i--) {
+			rc = RegCloseKey(hkey[i-1]);
+			IfError("CloseKey failed");
+		}
+		return 1;
 	}
-	return 1;
-}
 
 error:
 	printf("%s: rc = %d\n", errstr, rc);
 	return 0;
-#endif
 }
 
-#if 0
-static int keyformat(char *k)
-{
-    int i;
-    char buf[25];
-    char *p;
-
-    for (i=0, p=k; *p && i<20; p++) {
-	if (isalpha(*p))
-	    buf[i++] = tolower(*p);
-	if (isdigit(*p))
-	    buf[i++] = *p;
-	if (i==5 || i==10 || i==15)
-	    buf[i++] = ' ';
-    }
-    buf[i] = '\0';
-    if (strlen(buf) != 20)
-	return 0;
-    strcpy(k, buf);
-    return 1;
-}
-#endif
 
 int initrun()
 {
     int keydata;
 
-    strcpy(exhost, thishost);
-
 #if defined(USE_REGISTRY)
+
+    namestr 	dxrootreg =	"";
+    namestr	dxdatareg =	"";
+    namestr	dxmacroreg = 	"";
+    namestr	magickhomereg = "";
 
     if(regval(CHECK, "Default", OPENDX_ID, dxrootreg, sizeof(dxrootreg), &keydata)) {
     	if(regval(GET, "DXROOT", OPENDX_ID, dxrootreg, sizeof(dxrootreg), &keydata) +
     	regval(GET, "DXDATA", OPENDX_ID, dxdatareg, sizeof(dxdatareg), &keydata) +
     	regval(GET, "DXMACROS", OPENDX_ID, dxmacroreg, sizeof(dxmacroreg), &keydata) +
-	regval(GET, "IMHOME", OPENDX_ID, magickhomereg, sizeof(magickhome), &keydata) < 4)
+	regval(GET, "IMHOME", OPENDX_ID, magickhomereg, sizeof(magickhomereg), &keydata) < 4)
     	    	printf("This version of OpenDX does not appear to be correctly installed on this\n"
     	       "machine. Execution will be attempted anyway, and if it fails, please try\n"
     	       "reinstalling the software.\n");
@@ -598,6 +601,7 @@ int initrun()
     }
 #endif (USE_REGISTRY)
 
+    strcpy(exhost, thishost);
     strcpy(exarch, DXD_ARCHNAME);
     strcpy(uiarch, DXD_ARCHNAME);
     putenvstr("ARCH", DXD_ARCHNAME);
@@ -617,7 +621,7 @@ int initrun()
     getenvstr("MAGICK_HOME", magickhome);
 
 #if defined(USE_REGISTRY)
-    /* Try the registry for the variables */
+    /* If env vars not set then try using the Registry vars */
     if (!*dxroot)
 	strcpy(dxroot, dxrootreg);
     if(!*dxdata)
@@ -634,9 +638,10 @@ int initrun()
     }
 
     /* Now strip off any garbage that may have been set on dxroot */
-    removeQ(dxroot);
+    removeQuotes(dxroot);
     u2d(dxroot);
-    
+    GetShortPathName(dxroot, shortPath, MAXNAME);
+    strcpy(dxroot, shortPath);
 
     if (dxdata && *dxdata)
 	strcat(dxdata, ";");
@@ -644,7 +649,6 @@ int initrun()
     if(dxroot[strlen(dxroot)-1] !='\\')
 	strcat(dxdata, "\\");
     strcat(dxdata,"samples\\data");
-    d2u(dxdata);
 
 /* Append the default dxroot/samples/macros to current macros */
 
@@ -654,11 +658,6 @@ int initrun()
     if(dxroot[strlen(dxroot)-1] !='\\')
 	strcat(dxmacros, "\\");
     strcat(dxmacros,"samples\\macros");
-    d2u(dxmacros);
-
-#if defined(DEBUG)
-    printf("%s; %s; %s\n", dxroot, dxdata, dxmacros);
-#endif
 
     /* fill envargs */
 
@@ -672,75 +671,164 @@ int initrun()
 	strcpy(s, v);		\
     }
 
-/*  Unfortunately I messed up and switched v/s and s/v so the	*/
-/*  following is confusing, but correct.			*/
-#define setenvpair(v, s)	\
-    if (s && *s)		\
-	putenvstr(s, v);
-
 
 void configure()
 {
+	int result=0;
+	namestr temp, xs;
+	envstr tempPath;
+
+	if(dxroot[strlen(dxroot)-1] == '\\') dxroot[strlen(dxroot)-1] = '\0';
+
+	getenvstr("Path", path);
+
+	getenvstr("XSERVER_LAUNCHED", xs);
+
+	if(strcmp(xs, "yes") != 0) {
+		if (whichX == EXCEED6) {
+			/* Set Exceed 6 env variables */
+			GetShortPathName(exceeddir, shortPath, MAXNAME);
+			if(shortPath[strlen(shortPath)-1] == '\\') 
+				shortPath[strlen(shortPath)-1] = '\0';
+			strcat(path, ";"); 
+			strcat(path, shortPath);
+			setenvpair("Path", path);
+			sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
+			GetShortPathName(xkeysymdb, shortPath, MAXNAME);
+			setenvpair("XKEYSYMDB", shortPath);
+			//sprintf(xapplresdir, "%s", exceeduserdir);
+			//setenvpair("XAPPLRESDIR", xapplresdir);
+			//sprintf(xnlspath, "%s\\lib", dxroot);
+			//setenvpair("XNLSPATH", xnlspath);
+			result = _spawnlp(_P_NOWAIT, "Exceed", "Exceed", NULL);
+			if(result == -1)
+				printf( "Error spawning Exceed: %s\n", strerror( errno ) );
+			setenvpair("XSERVER_LAUNCHED", "yes");
+		}
+
+		if (whichX == XWIN32) {
+			/* Need to define X-Win32 env variables */
+			/* set DISPLAY to COMPUTERNAME:0 */
+			/* Start XWIN32 */
+			GetShortPathName(starnetdir, shortPath, MAXNAME);
+			if(shortPath[strlen(shortPath)-1] == '\\') 
+				shortPath[strlen(shortPath)-1] = '\0';
+			strcat(path,";"); 
+			strcat(path, shortPath);
+			setenvpair("Path", path);
+			sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
+			GetShortPathName(xkeysymdb, shortPath, MAXNAME);
+			setenvpair("XKEYSYMDB", shortPath);
+			result = _spawnlp(_P_NOWAIT, "xwin32", "xwin32", NULL);
+			if(result == -1)
+				printf( "Error spawning xwin32: %s\n", strerror( errno ) );
+
+			setenvpair("XSERVER_LAUNCHED", "yes");
+		}
+	}
+
+	if (whichX == EXCEED7) {
+		/* Need to define Exceed Env Variables */
+		GetShortPathName(exceeddir, shortPath, MAXNAME);
+		if(shortPath[strlen(shortPath)-1] == '\\') 
+			shortPath[strlen(shortPath)-1] = '\0';
+		strcat(path, ";"); 
+		strcat(path, shortPath);
+	}
+
+	sprintf(temp, "%s\\bin_%s", dxroot, DXD_ARCHNAME);
+	GetShortPathName(temp, shortPath, MAXNAME);
+	strcat(path, ";"); 
+	strcat(path, shortPath);
+
+	u2d(magickhome);
+	GetShortPathName(magickhome, shortPath, MAXNAME);
+	strcpy(magickhome, shortPath);
+	strcat(path, ";"); 
+	strcat(path, magickhome);
+
+	setenvpair("Path", path);
+
+	/*  The following logic is specific to the PC, where the	*/
+	/*  the sample data and macro paths are automatically set	*/
+	/*  if neither is specified.  This allows the samples not	*/
+	/*  to have hardcoded paths in the pc environment (they	*/
+	/*  are sed'd out).  Unix needs different logic.		*/
+
+
+	setenvpair("DXDATA", dxdata);
+	setenvpair("DXMACROS", dxmacros);
+	setenvpair("DXMODULES", dxmodules);
+	setenvpair("DXINCLUDE", dxinclude);
+	setenvpair("DXMDF", dxmdf);
+	setenvpair("DXCOLORS", dxcolors);
+	setenvpair("DX8BITCMAP", dx8bitcmap);
+	setenvpair("MAGICK_HOME", magickhome);
+
+
+	if (!*display || !strcasecmp(display, "localpc:0"))
+	{
+		if(whichX == EXCEED7)
+			strcpy(display, "localpc:0");
+		else
+			strcpy(display, "localhost:0");
+	}
+	setenvpair("DISPLAY", display);
+	setenvpair("DXNO_BACKING_STORE", "1");
+	setenvpair("DXFLING", "1");
+	//Solve problem with queuing in DXLink within Windows.
+		setenvpair("DX_STALL", "1");
+
+	setenvpair("DXROOT", dxroot);
+	if (strcasecmp(dxroot, dxexroot))
+		setenvpair("DXEXECROOT", dxexroot);
+	if (strcasecmp(dxroot, dxuiroot))
+		setenvpair("DXUIROOT", dxuiroot);
+	if (strcmp(exhost, thishost))
+		setenvpair("DXHOST", exhost);
+}
+
+
+void dxjsconfig() {
     int result=0;
-    envstr path0;
+    namestr jdxsrvPath, temp;
+    envstr tempPath;
 
     if(dxroot[strlen(dxroot)-1] == '\\') dxroot[strlen(dxroot)-1] = '\0';
-    setifnot(dxexroot, dxroot);
-    sprintf(dxexecdef, "%s%sbin_%s%sdxexec%s", dxexroot, "\\", exarch, "\\", EXE_EXT);
-    setifnot(dxexec, dxexecdef);
-    setifnot(exmode, "-r");
-    setifnot(exhilite, "-B");
+    sprintf(shortPath, "%s\\java\\server", dxroot);
+    GetShortPathName(shortPath, jdxsrvPath, MAXNAME);
 
-    setifnot(dxuiroot, dxroot);
-    if (notset(dxui))
-	sprintf(dxui, "%s%sbin_%s%sdxui%s", dxuiroot, "\\", uiarch, "\\", EXE_EXT);
-	
-    setifnot(uimode, "-edit");
-    setifnot(cdto, curdir);
+	sprintf(shortPath, "%s\\class", jdxsrvPath);
+	GetShortPathName(shortPath, classpath, MAXNAME);
 
-
-#ifdef DXD_WIN
-
-    getenvstr("Path", path0);
+    getenvstr("Path", path);
     
-    if (whichX == EXCEED6) {
-    	/* Set Exceed 6 env variables */
-    	sprintf(path, "%s;%s", exceeddir, path0);
-	setenvpair(path, "Path");
-    	//sprintf(xapplresdir, "%s", exceeduserdir);
-    	//setenvpair(xapplresdir, "XAPPLRESDIR");
-    	//sprintf(xnlspath, "%s\\lib", dxroot);
-    	//setenvpair(xnlspath, "XNLSPATH");
-    	sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
-	setenvpair(xkeysymdb, "XKEYSYMDB");
-	result = _spawnlp(_P_NOWAIT, "Exceed", "Exceed", NULL);
-    }
+    /* Add dxroot\bin */
+    sprintf(temp, "%s\\bin", dxroot);
+    GetShortPathName(temp, shortPath, MAXNAME);
+    strcat(path, ";"); strcat(path, shortPath);
 
-    if (whichX == EXCEED7) {
-    	/* Need to define Exceed Env Variables */
-    	sprintf(path, "%s;%s", exceeddir, path0);
-    }
+    /* Add dxroot\bin_arch */
+    sprintf(temp, "%s\\bin_%s", dxroot, DXD_ARCHNAME);
+    GetShortPathName(temp, shortPath, MAXNAME);
+    strcat(path, ";"); strcat(path, shortPath);
 
-    if (whichX == XWIN32) {
-    	/* Need to define X-Win32 env variables */
-	/* set DISPLAY to COMPUTERNAME:0 */
-	/* Start XWIN32 */
-    	sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
-	setenvpair(xkeysymdb, "XKEYSYMDB");
-	sprintf(path,"%s;%s", path0, starnetdir);
-	setenvpair(path, "Path");
-	result = _spawnlp(_P_NOWAIT, "xwin32", "xwin32", NULL);
-	if(result == -1)
-		printf( "Error spawning xwin32: %s\n", strerror( errno ) );
-	
-   }
-    
-    sprintf(path, "%s\\bin_%s;%s;%s", dxroot, DXD_ARCHNAME, magickhome, path0);
-    setenvpair("", "HOME");
+    /* Add dxroot\lib_arch */
+    sprintf(temp, "%s\\lib_%s", dxroot, DXD_ARCHNAME);
+    GetShortPathName(temp, shortPath, MAXNAME);
+    strcat(path, ";"); strcat(path, shortPath);
 
-    setenvpair(path, "Path");
-    setenvpair(magickhome, "MAGICK_HOME");
-#endif
+    /* Add jdxsrvPath\lib_arch */
+    sprintf(temp, "%s\\lib_%s", jdxsrvPath, DXD_ARCHNAME);
+    GetShortPathName(temp, shortPath, MAXNAME);
+    strcat(path, ";"); strcat(path, shortPath);
+
+    u2d(magickhome);
+    GetShortPathName(magickhome, shortPath, MAXNAME);
+    strcpy(magickhome, shortPath);
+    strcat(path, ";"); strcat(path, magickhome);
+
+    setenvpair("Path", path);
 
     /*  The following logic is specific to the PC, where the	*/
     /*  the sample data and macro paths are automatically set	*/
@@ -748,153 +836,187 @@ void configure()
     /*  to have hardcoded paths in the pc environment (they	*/
     /*  are sed'd out).  Unix needs different logic.		*/
 
+    sprintf(temp, "%s\\dxmacros", jdxsrvPath);
+    GetShortPathName(temp, shortPath, MAXNAME);
+    if(*dxmacros)
+    	strcat(dxmacros, ";"); strcat(dxmacros, shortPath);
+    sprintf(temp, "%s\\usermacros", jdxsrvPath);
+    GetShortPathName(temp, shortPath, MAXNAME);
+    strcat(dxmacros, ";"); strcat(dxmacros, shortPath);
+    setenvpair("DXMACROS",	dxmacros);
 
-    setenvpair(dxdata,		"DXDATA");
-    setenvpair(dxmacros,	"DXMACROS");
-    setenvpair(dxmodules,	"DXMODULES");
-    setenvpair(dxinclude,	"DXINCLUDE");
-    setenvpair(dxmdf,		"DXMDF");
-    setenvpair(dxcolors,	"DXCOLORS");
-    setenvpair(dx8bitcmap,	"DX8BITCMAP");
+    strcpy(dxinclude, dxmacros);
+    setenvpair("DXINCLUDE",	dxinclude);
 
+    sprintf(temp, "%s\\userdata", jdxsrvPath);
+    GetShortPathName(temp, shortPath, MAXNAME);
+    if(*dxdata)
+    	strcat(dxmacros, ";"); strcat(dxdata, shortPath);
+    setenvpair("DXDATA",	dxdata);
 
-    if (!*display || !strcasecmp(display, "localpc:0"))
-    {
-	if(whichX == EXCEED7)
-		strcpy(display, "localpc:0");
-	else
-		strcpy(display, "localhost:0");
-    }
-    setenvpair(display,		"DISPLAY");
-    setenvpair("1", "DXNO_BACKING_STORE");
-    setenvpair("1", "DXFLING");
-// Solve problem with queuing in DXLink within Windows.
-    setenvpair("1",		"DX_STALL");
+    setenvpair("DXMODULES",	dxmodules);
+    setenvpair("DXMDF", 	dxmdf);
+    setenvpair("DXCOLORS",	dxcolors);
+    setenvpair("DX8BITCMAP",	dx8bitcmap);
+    setenvpair("MAGICK_HOME",	magickhome);
 
-    putenvstr("DXROOT", dxroot);
+    setenvpair("DXROOT",	dxroot);
     if (strcasecmp(dxroot, dxexroot))
-	setenvpair(dxexroot, "DXEXECROOT");
+	setenvpair("DXEXECROOT", dxexroot);
     if (strcasecmp(dxroot, dxuiroot))
-	setenvpair(dxuiroot, "DXUIROOT");
+	setenvpair("DXUIROOT", dxuiroot);
     if (strcmp(exhost, thishost))
-	setenvpair(exhost, "DXHOST");
+	setenvpair("DXHOST", exhost);
+	
+	setenvpair("DXARGS", "-execonly -highlight off -optimize memory");
 }
 
 int buildcmd()
 {
-    envstr tmp;
-    int keydata;
-    char tmpstr[100];
+	envstr tmp;
+	int keydata;
+	char tmpstr[100];
+	namestr outdir;
 
-#ifdef DXD_WIN
-    u2d(dxroot);
-    u2d(dxexec);
-    u2d(dxui);
-    u2d(cdto);
-    d2u(prompterflags);
-    d2u(argstr);
-    d2u(uimdf);
-    d2u(uiflags);
-    d2u(exmdf);
-    if (*FileName) {
-	d2u(FileName);
-	addQuotes(FileName);
-    }
-#endif
+	if(javaserver) {
+		sprintf(shortPath, "%s\\java\\output", dxroot);
+		GetShortPathName(shortPath, outdir, MAXNAME);
+		
+		u2d(classpath);
+		d2u(outdir);
 
-    if (uionly && exonly)
-	ErrorGoto("-uionly and -execonly are mutually exclusive");
-
-    if (!strcmp(uimode, "-java") && !*FileName) 
-	ErrorGoto("-program name required with -java flag");
-
-    if (showversion) {
-	if (*xservername) {
-	    printf("X server found: %s\n", xservername);
+		sprintf(cmd, "java -classpath %s\\server.jar -DDXServer.pathsFile=%s\\dxserver.paths -DDXServer.hostsFile=%s\\dxserver.hosts -DDXServer.outUrl=output -DDXServer.outDir=%s DXServer",
+		classpath, classpath, classpath, outdir);
 	}
-	printf("Open Visualization Data Explorer, version %s (%s, %s)\n", SCRIPTVERSION, __TIME__, __DATE__);
-	sprintf(cmd, "%s -v", dxexec);
-	launchit();
-	sprintf(cmd, "%s -version", dxui);
-	launchit();
-	exit(0);
-    }
+	else
+		{
 
-    if (tutor) {
-	sprintf(cmd, "%s%sbin_%s%stutor%s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT);
+		setifnot(dxexroot, dxroot);
+		sprintf(dxexecdef, "%s\\bin_%s\\dxexec%s", dxexroot, exarch, EXE_EXT);
+		setifnot(dxexec, dxexecdef);
+		setifnot(exmode, "-r");
+		setifnot(exhilite, "-B");
 
-    } else if (prompter) {
-	if (*FileName) {
-	    strcat(prompterflags, " -file ");
-	    strcat(prompterflags, FileName);
-	}
-	sprintf(cmd, "%s%sbin_%s%sprompter%s %s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, prompterflags);
+		setifnot(dxuiroot, dxroot);
+		if (notset(dxui))
+			sprintf(dxui, "%s\\bin_%s\\dxui%s", dxuiroot, uiarch, EXE_EXT);
 
-    } else if (startup) {
-	sprintf(cmd, "%s%sbin_%s%sstartupui%s %s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, argstr);
+		setifnot(uimode, "-edit");
+		setifnot(cdto, curdir);
 
-    } else if (builder) {
-	sprintf(cmd, "%s%sbin_%s%sbuilder%s %s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, FileName);
-	/* sprintf(cmd, "%s%sbin_%s%sbuilder -xrm %s %s", dxroot, DIRSEP, uiarch, DIRSEP, motifbind, FileName); */
+		u2d(dxroot);
+		u2d(dxexec);
+		u2d(dxui);
+		u2d(cdto);
+		d2u(prompterflags);
+		d2u(argstr);
+		d2u(uimdf);
+		d2u(uiflags);
+		d2u(exmdf);
+		if (*FileName) {
+			d2u(FileName);
+			addQuotes(FileName);
+		}
 
-    } else if (exonly) {
-	printf("Starting DX executive\n");
-	sprintf(exflags, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s",
-	    exmode, excache, exlog, exread, exmem, exproc,
-	    exerrlvl, extrace, exhilite, extime, exdist,
-	    exoutdb, exlic, exmdf);
-	sprintf(cmd, "%s %s ", dxexec, exflags);
-	if (*FileName) {
-#ifdef DXD_WIN
-	    u2d(FileName);
-#endif
-	}
+		if (uionly && exonly)
+			ErrorGoto("-uionly and -execonly are mutually exclusive");
 
-    } else {
-	printf("Starting DX user interface\n");
-	sprintf(tmp, " %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", 
-	uimode, uidepth, uidebug, uimem, uiproc, uilog, uicache,
-	uiread, uitrace, uitime, uioutdb, uihilite, uimdf, xparms,
-	uirestrict);
-	strcat(uiflags, tmp);
-	if (portset) {
-	    strcat(uiflags, " -port ");
-	    strcat(uiflags, port);
-	}
-	if (*FileName) {
-	    strcat(uiflags, " -program ");
-	    strcat(uiflags, FileName);
-	}
-	if (uionly)
-	    strcat(uiflags, " -uionly");
-	if (wizard)
-	    strcat(uiflags, " -wizard");
+		if (!strcmp(uimode, "-java") && !*FileName) 
+			ErrorGoto("-program name required with -java flag");
+
+		if (showversion) {
+			if (*xservername) {
+				printf("X server found: %s\n", xservername);
+			}
+			printf("Open Visualization Data Explorer, version %s (%s, %s)\n", SCRIPTVERSION, __TIME__, __DATE__);
+			sprintf(cmd, "%s -v", dxexec);
+			launchit();
+			sprintf(cmd, "%s -version", dxui);
+			launchit();
+			exit(0);
+		}
+
+		if (tutor) {
+			sprintf(cmd, "%s%sbin_%s%stutor%s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT);
+
+		}
+		else if (prompter) {
+			if (*FileName) {
+				strcat(prompterflags, " -file ");
+				strcat(prompterflags, FileName);
+			}
+			sprintf(cmd, "%s%sbin_%s%sprompter%s %s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, prompterflags);
+
+		}
+		else if (startup) {
+			sprintf(cmd, "%s%sbin_%s%sstartupui%s %s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, argstr);
+
+		}
+		else if (builder) {
+			sprintf(cmd, "%s%sbin_%s%sbuilder%s %s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, FileName);
+			/* sprintf(cmd, "%s%sbin_%s%sbuilder -xrm %s %s", dxroot, DIRSEP, uiarch, DIRSEP, motifbind, FileName); */
+
+		}
+		else if (exonly) {
+			printf("Starting DX executive\n");
+			sprintf(exflags, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s",
+			exmode, excache, exlog, exread, exmem, exproc,
+			exerrlvl, extrace, exhilite, extime, exdist,
+			exoutdb, exlic, exmdf);
+			sprintf(cmd, "%s %s ", dxexec, exflags);
+			if (*FileName) {
+				u2d(FileName);
+			}
+
+		}
+		else {
+			printf("Starting DX user interface\n");
+			sprintf(tmp, " %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", 
+			uimode, uidepth, uidebug, uimem, uiproc, uilog, uicache,
+			uiread, uitrace, uitime, uioutdb, uihilite, uimdf, xparms,
+			uirestrict);
+			strcat(uiflags, tmp);
+			if (portset) {
+				strcat(uiflags, " -port ");
+				strcat(uiflags, port);
+			}
+			if (*FileName) {
+				strcat(uiflags, " -program ");
+				strcat(uiflags, FileName);
+			}
+			if (uionly)
+				strcat(uiflags, " -uionly");
+			if (wizard)
+				strcat(uiflags, " -wizard");
 #ifndef DXD_WIN 
-	if (*cdto) {
-	    strcat(uiflags, " -directory ");
-	    strcat(uiflags, cdto);
-	}
+			if (*cdto) {
+				strcat(uiflags, " -directory ");
+				strcat(uiflags, cdto);
+			}
 #endif
-	if (strcmp(dxexec, dxexecdef)) {
-	    strcat(uiflags, " -exec ");
-	    d2u(dxexec);
-	    strcat(uiflags, dxexec);
+			if (strcmp(dxexec, dxexecdef)) {
+				strcat(uiflags, " -exec ");
+				d2u(dxexec);
+				strcat(uiflags, dxexec);
+			}
+
+			sprintf(cmd, "%s %s", dxui, uiflags);
+			/* sprintf(cmd, "%s %s -xrm %s", dxui, uiflags, motifbind); */
+
+		}
 	}
 
-	sprintf(cmd, "%s %s", dxui, uiflags);
-	/* sprintf(cmd, "%s %s -xrm %s", dxui, uiflags, motifbind); */
+	if (seecomline || echo)
+		printf("%s\n", cmd);
 
-    }
 
-    if (seecomline || echo)
-	printf("%s\n", cmd);
-
-    return 1;
+	return 1;
 
 error:
-    printf("%s\n", errstr);
-    return 1;
+	printf("%s\n", errstr);
+	return 1;
 }
+
 
 int launchit()
 {
@@ -922,10 +1044,9 @@ int launchit()
 	fclose(f);
     }
     else
-    {
-	for (i=0, s=cmd; *s; s++) {
-	  if (*s == '\\') lastSep = s;
-	}
+    { 
+	lastSep = strstr(cmd, " -") -1;
+	
 	for (i=0, s=cmd; *s; s++) {
 	    for ( ; *s && *s == ' '; s++)
 		;
@@ -938,6 +1059,11 @@ int launchit()
 	    *s = '\0';
 	}
 	args[i] = NULL;
+	
+#if defined(DEBUG)
+	for (i=0; args[i] != NULL; i++)
+		printf("arg[%d]: %s\n", i, args[i]);
+#endif
 
 #if defined(HAVE_SPAWNVP)
 	if (strcmp(exmode, "-r") || showversion)
@@ -958,6 +1084,8 @@ error:
     printf("%s\n", errstr);
     return 0;
 }
+
+
 
 int getparms(int argc, char **argv)
 {
@@ -1316,32 +1444,7 @@ int parseparms()
 	    neitheroff(highlight);
 	next
 
-#if 0
-	is(license)
-	    check("-license: missing parameter");
-	    eq(runtime)
-		strcpy(exlic, "-Lruntime");
-		strcat(uiflags, " -forceLicense runtime");
-#if 0
-	    next eq(develop)
-		strcpy(exlic, "-Ldevelop");
-		strcat(uiflags, " -forceLicense develop");
-	    next eq(timed)
-		strcat(uiflags, " -forceLicense timed");
-#endif
-	    next
-		{
-		    sprintf(errmsg, "-license: parameter \'%s\' not recognized", s);
-		    /* goto error; */
-		}
-	next
-#endif
-
-#ifdef DXD_WIN
 	skipnowarn(processors)
-#else
-	/* Need Unix handling here */
-#endif
 
 	is(optimize)
 	    check("-optimize: missing parameter");
@@ -1471,9 +1574,6 @@ int parseparms()
 		strcpy(dx8bitcmap, "1.0");
 	next
 
-#if 0
-	skipwarn(hwrender)
-#endif
 	is(hwrender)
 	    check("-hwrender: missing parameter, must be gl or opengl");
 	    eq(opengl)
@@ -1486,6 +1586,10 @@ int parseparms()
 		    goto error;
 		}
 	next
+	
+	is(jdxserver)
+		javaserver = 1;
+	next
 
 	is(verbose)
 	    seecomline = 1;
@@ -1495,21 +1599,13 @@ int parseparms()
 	    set(uidebug);
 	next
 
-#ifdef DXD_WIN
 	skipwarn0(outboarddebug)
-#else
-	/* do Unix stuff */
-#endif
 
 	is(echo)
 	    echo = 1;
 	next
 
-#ifdef DXD_WIN
 	skipwarn0(remoteecho)
-#else
-	/* do Unix stuff */
-#endif
 
 	isor(help) or(shorthelp) rosi(h)
 	    shorthelp();
@@ -1582,13 +1678,10 @@ int parseparms()
 	    add(uiflags);
 	next
 
-#ifdef DXD_WIN
 	startswith(&)
 	    sprintf(msgstr, "ignoring option: %s --- & used only on Unix systems\n", s);
 	    printf(msgstr);
 	next
-
-#endif
 
 	startswith(-)
 	    strcpy(errmsg, "Unrecognized parameter: ");
@@ -1672,6 +1765,7 @@ int longhelp()
 " -connect host:port   start a distributed exec only (no UI)\n"
 "\n"
 " -prompter            start the DX Data Prompter\n"
+" -jdxserver           start the JavaDX Server\n"
 " -full                start the Full Data Prompter\n"
 " -file filename       start the Data Prompter with this header file\n"
 "\n"
