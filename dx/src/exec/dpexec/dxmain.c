@@ -272,7 +272,8 @@ extern Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] );
 /* 
  * This one's used externally in DODX RunOnSlaves 
  */
-int ExCheckInput(void);
+int  ExCheckInput(void);
+void ExQuit(void);
 
 static int	ExCheckGraphQueue	(int);
 static int	ExCheckRunqueue		(int graphId);
@@ -300,10 +301,12 @@ static void	ExSigDanger		(int);
 #endif
 
 #if DXD_EXEC_WAIT_PROCESS
-static void     ExSigPipe               (int);
-static void	ExKillChildren		(void);
 static void	ExParentProcess		(void);
 #endif
+
+static void	ExSigQuit(int);
+static void	ExSigGoAway(int);
+static void	ExKillChildren(void);
 
 #if DXD_PVSPROFILE
 static int	ExRouExit		(Pointer junk);
@@ -370,9 +373,9 @@ DXmain (argc, argv, envp)
     signal (SIGDANGER, ExSigDanger);
 #endif
 
-#if DXD_EXEC_WAIT_PROCESS
-    signal (SIGPIPE, ExSigPipe);
-#endif
+    signal(SIGPIPE, ExSigQuit);
+    signal(SIGUSR1, ExSigQuit);
+    signal(SIGUSR2, ExSigGoAway);
 
 #if DXD_PVSPROFILE
     DXcreate_lock (&rouLock, "Profiler's Lock");
@@ -1382,9 +1385,13 @@ static void ExCheckTerminate ()
 
     _dxf_ExCacheFlush (TRUE);
     _dxf_ExDictionaryPurge (_dxd_exGlobalDict);
-    /* send out exit message before ExCleanup, ExCleanup can get called  */
-    /* multiple times. If a child exits first ExCleanup gets called      */
-    /* a second time by the parent to clean up the rest of the children. */
+
+    /*
+     * send out exit message before ExCleanup, ExCleanup
+     * can get called multiple times. If a child exits first
+     * ExCleanup gets called a second time by the parent
+     * to clean up the rest of the children.
+     */
     if(!_dxd_exRemoteSlave) {
          int peerwait = 0;
         _dxf_ExDistributeMsg(DM_EXIT, (Pointer)&peerwait, 0, TOSLAVES);
@@ -1392,6 +1399,66 @@ static void ExCheckTerminate ()
     else
         close(_dxd_exMasterfd);
     ExCleanup ();
+    exit(0);
+}
+
+/*
+ * GoAway for children
+ */
+void
+ExSigGoAway(int signo)
+{
+    fprintf(stderr, "%d: goAway\n", DXProcessorId());
+    exit(0);
+}
+
+/*
+ * Error quit
+ */
+void
+ExQuit()
+{
+    if (_dxd_exMyPID < 0 || DXProcessorId() != 0)
+    {
+	/*
+	 * If this is a child, signal the parent to quit
+	 */
+	kill(children[0].pid, SIGUSR1);
+    }
+    else
+    {
+	int i;
+
+	(*_dxd_exTerminating) = 1;
+
+	/*
+	 * signal childen to loop so they will see
+	 * the terminate flag (if they are still there)
+	 */
+	for (i = 1; i < nprocs; i++)
+	    kill(children[i].pid, SIGUSR2);
+
+	_dxf_ExCacheFlush (TRUE);
+	_dxf_ExDictionaryPurge (_dxd_exGlobalDict);
+
+	/*
+	 * send out exit message before ExCleanup, ExCleanup
+	 * can get called multiple times. If a child exits first
+	 * ExCleanup gets called a second time by the parent
+	 * to clean up the rest of the children.
+	 */
+	if(!_dxd_exRemoteSlave)
+	{
+	     int peerwait = 0;
+	    _dxf_ExDistributeMsg(DM_EXIT,
+		(Pointer)&peerwait, 0, TOSLAVES);
+	}
+	else
+	    close(_dxd_exMasterfd);
+
+	ExCleanup ();
+    }
+    exit(1);
 }
 
 /*
@@ -1479,56 +1546,11 @@ static void ExCleanup ()
     ExKillChildren ();
 #endif
 
-#if 0
-    _dxf_ExDictionaryDestroy (_dxd_exCacheDict);
-#endif
-
     if (logcache)
 	_dxf_ExLogClose ();
-/*
- * This is used to make each slave processor dump its guts for profiling
- * when using the PGI compiler for the PVS.
- */
 
-#if DXD_PVSPROFILE
-    {
-	int		i;
-	*rouExited = 0;
-	for (i = 1; i < nprocs; i++)
-	    _dxf_ExRQEnqueue (ExRouExit, NULL, 1, 0, i + 1, 0);
-	while (*rouExited != nprocs-1)
-	    ;
-	DXFree((Pointer) rouExited);
-    }
-#endif
-
-    exit (0);
+    return;
 }
-
-#if 0   /* function never used? */
-
-static Error
-ExTraceProfileWorker (int how)
-{
-#if DXD_PVSPROFILE
-    if (how)
-	__roureset ();
-    else
-	__rouwrite ();
-#endif
-
-    return (OK);
-}
-
-/*
- * The fucntion is called wrong so commenting this function out.
- */
-Error
-_dxf_ExTraceProfile (int how)
-{
-    return (_dxf_ExRunOnAll (ExTraceProfileWorker, how, 0));
-}
-#endif
 
 /*
  * Fork off the child processes which will migrate to different physical
@@ -1889,12 +1911,14 @@ static int ExFromMasterInputHndlr (int fd, Pointer p)
     if ((IOCTL(_dxd_exMasterfd, FIONREAD, (char *)&b) < 0) || (b <= 0)) {
         printf("Connect to Master closed\n");
         ExCleanup();
+	exit(0);
     }
 
     if(_dxf_ExReceiveBuffer(_dxd_exMasterfd, &pcktype, 1, TYPE_INT, 
                             _dxd_exSwapMsg) < 0) {
         DXUIMessage("ERROR", "bad distributed packet type");
         ExCleanup();
+	exit(0);
     }
 
     if(pcktype == DPMSG_SIGNATURE || pcktype == DPMSG_SIGNATUREI) {
@@ -1908,6 +1932,7 @@ static int ExFromMasterInputHndlr (int fd, Pointer p)
                                 _dxd_exSwapMsg) < 0) {
             DXUIMessage("ERROR", "bad distributed packet type");
             ExCleanup();
+	    exit(0);
         }
     }
 
@@ -2067,7 +2092,7 @@ DXMarkTimeLocal ("pre  gq_enq");
         if(peerwait)
             _dxf_ExWaitForPeers();
 	ExCleanup();
-	break;
+	exit(0);
     case DM_DELETEPEER:
         if(_dxf_ExReceiveBuffer(_dxd_exMasterfd, &namelen, 1, TYPE_INT,
                                 _dxd_exSwapMsg) < 0) {
@@ -2083,7 +2108,7 @@ DXMarkTimeLocal ("pre  gq_enq");
     default:
 	DXUIMessage("ERROR", "bad message type %d", pcktype);
 	ExCleanup();
-	break;
+	exit(1);
     }
   return (0);
 }
@@ -2487,36 +2512,21 @@ ExParallelMaster ()
     }
 }
 
+static void
+ExSigQuit(int signo)
+{
+    ExQuit();
+}
+
 #if DXD_HAS_SIGDANGER
 static void ExSigDanger (int signo)
 {
-#if DXD_EXEC_WAIT_PROCESS
-    *_dxd_exTerminating = TRUE;
-    ExCleanup();
-#if 0
-    ExKillChildren ();
-#endif
-#endif
     DXSetError (ERROR_INTERNAL, "#8300");
     DXPrintError (NULL);
-    exit (-1);
+    ExQuit();
+    exit(1);
 }
 #endif
-
-#if DXD_EXEC_WAIT_PROCESS
-static void ExSigPipe (int signo)
-{
-    *_dxd_exTerminating = TRUE;
-    ExCleanup();
-   
-#if 0
-    /* cannot print an error message since pipe is broken */
-    ExKillChildren();
-    exit (-1);
-#endif
-}
-#endif
-
 
 #ifdef DXD_WIN
 int DXWinFork()
@@ -2528,7 +2538,7 @@ int DXWinFork()
 
 #if defined(DXD_WIN_SMP)  && defined(THIS_IS_COMMENTED)
 
-int MyChildProc()
+static int MyChildProc()
 {
     int i;
     static int iCount = 0;

@@ -180,13 +180,20 @@ readFromSFILE(SFILE *sf, char *buf, int n)
 int
 writeToSFILE(SFILE *sf, char *buf, int n)
 {
+    int rtn;
     struct sfile *ssf = (struct sfile *)sf;
+
 #if defined(HANDLE_SOCKET)
     if (ssf->type == SFILE_SOCKET)
-	return send(ssf->socket, buf, n, 0);
+	rtn = send(ssf->socket, buf, n, 0);
     else
 #endif
-        return write(ssf->fd, buf, n);
+        rtn = write(ssf->fd, buf, n);
+
+    if (rtn < 0)
+	ExQuit();
+    
+    return rtn;
 }
 
 extern SFILE *_dxd_exSockFD;
