@@ -10,9 +10,15 @@
 /* #define USE_REGISTRY 1 */
 
 #include <dxconfig.h>
+#if !defined(DXD_WIN)
+#include <stdio.h>
+main(){fprintf(stderr, "dx.c shouldn't be being used\n");}
+#else
 #include <dx/arch.h>
 
+#if defined(HAVE_WINDOWS_H)
 #include <windows.h>
+#endif
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
@@ -1895,3 +1901,4 @@ int longhelp()
 
     exit(0);
 }
+#endif

@@ -164,7 +164,7 @@ _unreferenceSegment(int id)
 }
 
 SharedArray
-_dxf_NewSharedArrayV(int id, Pointer d, Type t, Category c, int r, int *s,
+_dxf_NewSharedArrayV(int id, Pointer d, int knt, Type t, Category c, int r, int *s,
 				struct sharedarray_class *class)
 {
     Pointer base = _referenceSegment(id);
@@ -178,6 +178,7 @@ _dxf_NewSharedArrayV(int id, Pointer d, Type t, Category c, int r, int *s,
 	if (!a)
 	    return NULL;
 
+	a->array.items = knt;
 	a->id = id;
 	a->base = base;
 	a->offset = ((int)d) - ((int)base);
@@ -187,13 +188,13 @@ _dxf_NewSharedArrayV(int id, Pointer d, Type t, Category c, int r, int *s,
 }
 
 SharedArray
-DXNewSharedArrayV(int id, Pointer d, Type t, Category c, int r, int *s)
+DXNewSharedArrayV(int id, Pointer d, int k, Type t, Category c, int r, int *s)
 {
-    return _dxf_NewSharedArrayV(id, d, t, c, r, s, &_dxdsharedarray_class);
+    return _dxf_NewSharedArrayV(id, d, k, t, c, r, s, &_dxdsharedarray_class);
 }
 
 SharedArray
-DXNewSharedArray(int id, Pointer d, Type t, Category c, int r, ...)
+DXNewSharedArray(int id, Pointer d, int k, Type t, Category c, int r, ...)
 {
     int shape[100];
     int i;
@@ -208,7 +209,7 @@ DXNewSharedArray(int id, Pointer d, Type t, Category c, int r, ...)
     va_end(arg);
 
     /* call V version */
-    return DXNewSharedArrayV(id, d, t, c, r, shape);
+    return DXNewSharedArrayV(id, d, k, t, c, r, shape);
 }
 
 Error
@@ -242,7 +243,7 @@ _dxfGetSharedArrayInfo(SharedArray a, int *id, long *offset)
 }
 
 SharedArray
-DXNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, int *s)
+DXNewSharedArrayFromOffsetV(int id, long offset, int k, Type t, Category c, int r, int *s)
 {
     Pointer data, base = _getBase(id);
     if (!base)
@@ -250,11 +251,11 @@ DXNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, int 
 
     data = (Pointer)(((char *)base) + offset);
     
-    return DXNewSharedArrayV(id, data, t, c, r, s);
+    return DXNewSharedArrayV(id, data, k, t, c, r, s);
 }
 
 SharedArray
-DXNewSharedArrayFromOffset(int id, long offset, Type t, Category c, int r, ...)
+DXNewSharedArrayFromOffset(int id, long offset, int k, Type t, Category c, int r, ...)
 {
     int shape[100];
     int i;
@@ -269,7 +270,7 @@ DXNewSharedArrayFromOffset(int id, long offset, Type t, Category c, int r, ...)
     va_end(arg);
 
     /* call V version */
-    return DXNewSharedArrayFromOffsetV(id, offset, t, c, r, shape);
+    return DXNewSharedArrayFromOffsetV(id, offset, k, t, c, r, shape);
 }
 
 #else

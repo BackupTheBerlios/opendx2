@@ -480,10 +480,10 @@ Pointer	      DXGetConstantArrayData(Array array);
 Error 	    DXRegisterSharedSegment(int id,
 			    void (*or)(int, Pointer, Pointer), Pointer d);
 
-SharedArray DXNewSharedArray(int id, Pointer d, Type t, Category c, int r, ...);
-SharedArray DXNewSharedArrayV(int id, Pointer d, Type t, Category c, int r, int *s);
-SharedArray DXNewSharedArrayFromOffset(int id, long offset, Type t, Category c, int r, ...);
-SharedArray DXNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, int *s);
+SharedArray DXNewSharedArray(int id, Pointer d, int knt, Type t, Category c, int r, ...);
+SharedArray DXNewSharedArrayV(int id, Pointer d, int knt, Type t, Category c, int r, int *s);
+SharedArray DXNewSharedArrayFromOffset(int id, long offset, int knt, Type t, Category c, int r, ...);
+SharedArray DXNewSharedArrayFromOffsetV(int id, long offset, int knt, Type t, Category c, int r, int *s);
 
 /* make string list arrays */
 Array DXMakeStringList(int n, char *s, ...);
