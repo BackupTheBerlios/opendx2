@@ -3,7 +3,7 @@
 INCLUDES = -D$(ARCH) -I../../../include -I../dpexec
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxmdfdir = $(prefix))/lib
+dxmdfdir = $(prefix)/lib
 noinst_LIBRARIES = libDXMODS.a
 SUFFIXES = .c .y .c .s .h .o .a 
 
