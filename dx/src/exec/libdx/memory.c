@@ -87,7 +87,6 @@
 
 extern int _dxd_exRemoteSlave;
 extern void _dxfemergency(void);
-extern int _dxfPhysicalProcs(void);
 
 /*
  * Every memory block starts with a struct block.  The user's portion
@@ -367,6 +366,8 @@ struct printvals {
 static void insfree(struct list *, struct block *);
 static Error aprint(struct arena *a, int how, struct printvals *v);
 static Error acheck(struct arena *a);
+
+int _dxf_GetPhysicalProcs();
 
 static Error
 expand(struct arena *a, ulong n)
@@ -1533,8 +1534,8 @@ int _dxf_initmemory(void)
 	if (getenv("DX_DEBUG_MEMORY_INIT")) {
 	    char buf[132];
 	    
-	    sprintf(buf, "initial: physmem %d, othermem %d, po_ratio %g, physproc %d, nproc %d\n",
-		    physmem, othermem, po_ratio, _dxfPhysicalProcs(), DXProcessors(0));
+	    sprintf(buf, "initial: physmem %d, othermem %d, po_ratio %g, nproc %d\n",
+		    physmem, othermem, po_ratio, _dxf_GetPhysicalProcs(), DXProcessors(0));
 	    write(2, buf, strlen(buf));
 	}
 #endif
@@ -1543,14 +1544,14 @@ int _dxf_initmemory(void)
 	/* if this is an MP machine, make the default be to leave 2/3 of the
 	 * memory on the machine available to other tasks.
 	 */
-	if (_dxfPhysicalProcs() > 1)
+	if (_dxf_GetPhysicalProcs() > 1)
 	    othermem = (uint)(physmem * 0.66);
 #else
 	/* if this is an MP machine, leave up to 5/8 of physical memory free
          * for other processes.
 	 */
-	if (_dxfPhysicalProcs() > 1)
-	    po_ratio = MIN(5.0, (float)_dxfPhysicalProcs()) / 8.0;
+	if (_dxf_GetPhysicalProcs() > 1)
+	    po_ratio = MIN(5.0, (float)_dxf_GetPhysicalProcs()) / 8.0;
 #endif
 
 	/* allow for the fact that on all systems but pvs, there are other
@@ -2353,3 +2354,40 @@ DXMaxFreedBlock()
 {
     return maxFreedBlock;
 }
+
+
+int _dxf_GetPhysicalProcs()
+{
+	/* return the number of physical processors on the system.
+	*  this is different from the number of processes the user
+	*  asked us to use with -pN
+	*/
+
+	int nphysprocs = 0;
+
+#if defined(linux) && (ENABLE_SMP_LINUX == 0)
+    nphysprocs = 1;
+
+#elif HAVE_SYSMP
+    nphysprocs = sysmp (MP_NPROCS);	/* find the number of processors */
+
+#elif DXD_HAS_LIBIOP
+    nphysprocs = nprocs = SVS_n_cpus;
+
+#elif HAVE_SYSCONF && defined(_SC_NPROCESSORS_ONLN)
+    nphysprocs = sysconf(_SC_NPROCESSORS_ONLN);
+
+#elif HAVE_SYS_SYSCONFIG_NCPUS
+    nphysprocs = _system_configuration.ncpus; /* In Kernel space */
+
+#elif defined(intelnt) || defined(WIN32)
+    SYSTEM_INFO sysinfo;
+	GetSystemInfo(&sysinfo);
+	nphysprocs = sysinfo.dwNumberOfProcessors;
+#else
+    nphysprocs = 1;
+#endif
+
+    return nphysprocs;
+}
+

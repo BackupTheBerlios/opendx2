@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/parse.h,v 1.5 2000/08/11 15:28:13 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/parse.h,v 1.6 2004/06/09 16:14:28 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -17,6 +17,10 @@
 #include <dx/dx.h>
 #include "exobject.h"
 #include "utils.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 /*
  * So that the exec's parser does not collide with any others that
@@ -382,6 +386,10 @@ Error _dxf_ExRunOn (int JID, PFE func, Pointer arg, int size);
 /*
  * Parsing Variables
  */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 
 #endif	/* _PARSE_H */

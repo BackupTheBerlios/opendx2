@@ -6,13 +6,17 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/packet.h,v 1.5 2000/08/11 15:28:12 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/packet.h,v 1.6 2004/06/09 16:14:28 davidt Exp $
  */
 
 #include <dxconfig.h>
 
 #ifndef _PACKET_H
 #define _PACKET_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #define PACK_INTERRUPT	1
 #define PACK_SYSTEM	2
@@ -41,5 +45,9 @@ void  _dxf_ExCheckPacket(char *packet, int length);
 Error _dxf_ExSPack (int type, int seqnumber, Pointer data, int len);
 int   _dxf_ExNeedsWriting(void);
 Error _dxf_ExInitPacket(void);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* _PACKET_H */

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/config.h,v 1.6 2004/06/03 16:27:16 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/config.h,v 1.7 2004/06/09 16:14:27 davidt Exp $
  */
 
 #ifndef _CONFIG_H
@@ -54,6 +54,10 @@ typedef LIST(SlavePeers)  SLAVEPEERS;
  */
 
 /* Declared in dxmain.c */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 /* Only set once in dxmain.c */
 extern int          _dxd_exShowBells; /* set from command line, used in evalgraph.c */
@@ -116,6 +120,11 @@ extern Error        _dxf_ExParseInit (char *name, SFILE *sf);
 
 /* Declared in optarg.c */
 extern char *optarg;
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 
 #endif  /* _CONFIG_H */
 

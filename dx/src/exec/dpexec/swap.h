@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/swap.h,v 1.7 2002/05/23 02:11:23 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/swap.h,v 1.8 2004/06/09 16:14:28 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -15,11 +15,19 @@
 #define _SWAP_H
 #include "graph.h"
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 void  _dxf_ExSetGVarCost(gvar *gv, double cost);
 void  _dxf_ExReclaimEnable ();
 int   _dxf_ExReclaimDisable ();
 int   _dxf_ExReclaimMemory (ulong nbytes);
 Error _dxf_ExInitMemoryReclaim ();
 int   _dxf_ExReclaimingMemory();
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* _SWAP_H */

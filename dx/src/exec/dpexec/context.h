@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/context.h,v 1.5 2000/08/11 15:28:10 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/context.h,v 1.6 2004/06/09 16:14:27 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -15,6 +15,10 @@
 #define _CONTEXT_H
 
 #include "graph.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 typedef struct Context
 {
@@ -25,5 +29,9 @@ typedef struct Context
 } Context;
 
 void _dxfCopyContext(Context *to, Context *from);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* _CONTEXT_H */

@@ -16,6 +16,10 @@
 #include <sys/types.h>
 #include "internals.h"
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 void 		_dxfResizeSWWindow(SWWindow *);
 int 		DXInitializeWindows(HINSTANCE, DWORD);
 DWORD 		_dxfGetContainerThread();
@@ -34,6 +38,9 @@ Error		_dxf_translateWindowsImage(Object,  int, int, int, int, int, int,
 				int, int, int, int, translationP, unsigned char *, int, unsigned char *);
 Error		_dxf_CopyBufferToWindowsImage(struct buffer *, Field, int, int);
 
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* DX_NATIVE_WINDOWS */
 

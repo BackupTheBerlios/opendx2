@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/function.h,v 1.2 2000/08/11 15:28:11 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/function.h,v 1.3 2004/06/09 16:14:28 davidt Exp $
  */
 
 #ifndef _FUNCTION_H
@@ -14,9 +14,17 @@
 
 #include "utils.h"
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 Error _dxf_ExFunctionDone ();
 Error DXAddModuleV (char *name, PFI func, int flags, int nin, char *inlist[],
                     int nout, char *outlist[], char *exec, char *host);
 Error DXAddModule (char *name, ...);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* _FUNCTION_H */

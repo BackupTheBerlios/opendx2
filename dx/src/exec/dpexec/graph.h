@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/graph.h,v 1.9 2002/03/21 21:14:40 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/graph.h,v 1.10 2004/06/09 16:14:28 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -19,6 +19,9 @@
 #include "parse.h"
 #include "d.h"
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 typedef enum
 {
@@ -266,5 +269,9 @@ int     DXGetModuleCacheStr(char *);
 
 #define MAX_PATH_STR_LEN 1024
 #define EX_PIN_PROC 1
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif	/* _GRAPH_H */

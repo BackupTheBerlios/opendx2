@@ -6,13 +6,17 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/command.h,v 1.2 2000/08/11 15:28:10 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/command.h,v 1.3 2004/06/09 16:14:27 davidt Exp $
  */
 
 #ifndef _COMMAND_H
 #define _COMMAND_H
 
 #include "distp.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 void _dxf_ExDeleteHost(char *host, int err, int closepeer);
 void _dxf_ExDeletePeer(SlavePeers *sp, int closepeer);
@@ -23,5 +27,9 @@ void _dxf_ExFlushMacro (void);
 Error _dxf_ExExecCommandStr (char *cmd);
 int   _dxf_NewDPTableEntry();
 void  _dxf_InitDPtableflag();
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* _COMMAND_H */

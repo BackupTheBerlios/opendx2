@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/cache.h,v 1.6 2000/08/11 15:28:09 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/cache.h,v 1.7 2004/06/09 16:14:27 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -14,6 +14,10 @@
 
 #ifndef _CACHE_H_
 #define _CACHE_H_
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #if 0
 These access methods are specifically used to operate on dictionary entries
@@ -44,5 +48,9 @@ int     _dxf_ExCacheInsertRemoteTag (int fd, int swap);
 int     _dxf_ExCacheDeleteRemoteTag (int fd, int swap);
 int     _dxf_ExCacheListDeleteRemoteTag(int fd, int swap);
 extern EXDictionary _dxd_exCacheDict; /* defined in cache.c */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* _CACHE_H_ */

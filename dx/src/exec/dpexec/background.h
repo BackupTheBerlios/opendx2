@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/background.h,v 1.4 2000/08/11 15:28:09 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/background.h,v 1.5 2004/06/09 16:14:27 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -21,6 +21,9 @@
 /*
  * Externally visible functions.
  */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 void	_dxf_ExBackgroundChange	(void);
 void	_dxf_ExBackgroundRedo	(void);
@@ -29,5 +32,9 @@ int	_dxf_ExCheckBackground	(EXDictionary dict, int multiProc);
 void	_dxf_ExCleanupBackground	(void);
 Error	_dxf_ExInitBackground	(void);
 int	ExBackgroundIdle	(void);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif	/* _BACKGROUND_H */

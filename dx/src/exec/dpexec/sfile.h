@@ -6,11 +6,15 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/sfile.h,v 1.6 2004/06/03 16:27:17 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/sfile.h,v 1.7 2004/06/09 16:14:28 davidt Exp $
  */
 
 #ifndef _SFILE_H
 #define _SFILE_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 typedef void SFILE;
 
@@ -34,5 +38,9 @@ int    SFILEGetChar(SFILE *sf);
 int    SFILEIoctl(SFILE *sf, int cmd, void *argp);
 int    SFILEfileno(SFILE *sf);
 int    SFILEisatty(SFILE *sf);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* _SFILE_H */

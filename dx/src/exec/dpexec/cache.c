@@ -240,11 +240,11 @@ gvar *_dxf_ExCacheSearch (EXCRC key)
  * application exits
  */
 
-Error DXCacheInsert (char *id, Pointer data, int (*delete)(), double cost)
+Error DXCacheInsert (char *id, Pointer data, Error (*pdelete)(Pointer), double cost)
 {
     Object o;
 
-    o = (Object)DXNewPrivate(data, delete);
+    o = (Object)DXNewPrivate(data, pdelete);
     return (DXSetCacheEntry(o, cost, id, 0, 0));
 }
 

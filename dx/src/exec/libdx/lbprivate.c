@@ -13,21 +13,21 @@
 #include "privateClass.h"
 
 static Private
-_NewPrivate(Pointer data, Error (*delete)(Pointer),
+_NewPrivate(Pointer data, Error (*pdelete)(Pointer),
 	    struct private_class *class)
 {
     Private p = (Private) _dxf_NewObject((struct object_class *)class);
     if (!p)
 	return NULL;
     p->data = data;
-    p->delete = delete;
+    p->delete = pdelete;
     return p;
 }
 
 Private
-DXNewPrivate(Pointer data, Error (*delete)(Pointer))
+DXNewPrivate(Pointer data, Error (*pdelete)(Pointer))
 {
-    return _NewPrivate(data, delete, &_dxdprivate_class);
+    return _NewPrivate(data, pdelete, &_dxdprivate_class);
 }
 
 Error

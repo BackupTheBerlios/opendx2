@@ -6,13 +6,17 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/dxmain.h,v 1.1 2000/10/04 17:45:58 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/dxmain.h,v 1.2 2004/06/09 16:14:27 davidt Exp $
  */
 
 #ifndef	_DXMAIN_H_
 #define	_DXMAIN_H_
 
 #include <dx/dx.h>
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 /* Function prototypes */
 
@@ -25,5 +29,9 @@ void _dxf_update_childpid(int, int, int);
 void _dxf_set_RQ_ReadFromChild1(int);
 void _dxf_set_RQ_reader(int);
 void _dxf_set_RQ_writer(int);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* _DXMAIN_H_ */

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/status.h,v 1.5 2000/08/11 15:28:14 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/status.h,v 1.6 2004/06/09 16:14:28 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -14,9 +14,13 @@
 #ifndef	_STATUS_H
 #define	_STATUS_H
 
-#if DXD_PROCESSOR_STATUS
-
 #include "config.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+#if DXD_PROCESSOR_STATUS
 
 #define PS_MIN		0		/* this must be first and 0 */
 #define	PS_NONE		1
@@ -43,6 +47,10 @@ void _dxf_ExCleanupStatus	(void);
 #else
 #define	set_status(_s)   FALSE
 #define	get_status()     FALSE
+#endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
 #endif
 
 #endif	/* _STATUS_H */

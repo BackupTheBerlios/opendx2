@@ -6,11 +6,15 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/parsemdf.h,v 1.2 2000/08/11 15:28:13 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/parsemdf.h,v 1.3 2004/06/09 16:14:28 davidt Exp $
  */
 
 #ifndef _PARSEMDF_H
 #define _PARSEMDF_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 /*
  * token and private flag constants:
@@ -63,5 +67,9 @@ Error DXLoadMDFFile(char *filename);
 Error DXLoadMDFString(char *cp);
 void _dxf_ExSendMdfPkg(Pointer *data, int tofd);
 Error _dxf_ExRecvMdfPkg(int fromfd, int swap);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* _PARSEMDF_H */

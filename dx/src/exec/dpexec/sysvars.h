@@ -6,13 +6,17 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/sysvars.h,v 1.4 2000/08/11 15:28:14 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/sysvars.h,v 1.5 2004/06/09 16:14:29 davidt Exp $
  */
 
 #include <dxconfig.h>
 
 #ifndef	__SYSVARS_H
 #define	__SYSVARS_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #define	VCR_ID_START		"@startframe"
 #define	VCR_ID_END		"@endframe"
@@ -30,7 +34,10 @@
 #define EX_CPROMPT	"  > "
 #endif
 
-void _dxf_ExPromptSet(char *var, char *val);
 char *_dxf_ExPromptGet(char *var);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif	/* __SYSVARS_H */

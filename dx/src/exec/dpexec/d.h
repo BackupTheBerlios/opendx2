@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/d.h,v 1.5 2000/08/11 15:28:10 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/d.h,v 1.6 2004/06/09 16:14:27 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -17,6 +17,10 @@
 #include <dx/dx.h>
 
 #include "exobject.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 typedef struct _EXDictionary		*EXDictionary;
 
@@ -38,6 +42,10 @@ Error 	     _dxf_ExDictionaryBeginIterateSorted(EXDictionary d, int reverse);
 EXObj 	     _dxf_ExDictionaryIterateSorted(EXDictionary d, char **key);
 int          _dxf_ExDictionaryIterateSortedMany(EXDictionary d, char **key, EXObj *obj, int n);
 Error	     _dxf_ExDictPrint(EXDictionary d);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 
 #endif /* __EX_DICTIONARY_H */

@@ -8,6 +8,12 @@
 
 #include <dxconfig.h>
 
+#ifndef _DISKIO_H_
+#define _DISKIO_H_
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 /* disk constants */
 
@@ -63,4 +69,8 @@ Error _dxffile_write(char *name, int offset, int count, char *addr, int bytes);
 Error _dxffile_close(char *name);
 Error _dxfsock_close(char *name);
 
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
+#endif /* _DISKIO_H_ */

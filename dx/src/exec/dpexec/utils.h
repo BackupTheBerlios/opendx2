@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/utils.h,v 1.8 2004/06/03 16:27:17 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/utils.h,v 1.9 2004/06/09 16:14:29 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -18,6 +18,10 @@
 #include <stddef.h>
 #include <dx/dx.h>
 #include <dx/arch.h>
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #ifndef NULL
 #define	NULL		0
@@ -158,5 +162,9 @@ Array 		_dxfExNewInteger 		(int n);
 
 #define	ExMarkTime(_m,_t)	if (_m & _dxd_exMarkMask) DXMarkTime (_t)
 #define	ExMarkTimeLocal(_m,_t)	if (_m & _dxd_exMarkMask) DXMarkTimeLocal (_t)
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif	/* __EX_UTILS_H */

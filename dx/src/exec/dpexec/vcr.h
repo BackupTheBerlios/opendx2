@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/vcr.h,v 1.5 2000/08/11 15:28:15 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/vcr.h,v 1.6 2004/06/09 16:14:29 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -16,6 +16,10 @@
 #define	__VCR_H
 
 #include "d.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 /*
  * Commands
@@ -66,5 +70,9 @@ void    _dxf_ExVCRChangeReset(void);
 int     _dxf_ExCheckVCR (EXDictionary dict, int multiProc);
 int     _dxf_ExVCRRunning ();
 int 	_dxf_ExVCRCallBack (int n);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* __VCR_H */

@@ -6,13 +6,21 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/userinter.h,v 1.2 2000/08/11 15:28:15 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/userinter.h,v 1.3 2004/06/09 16:14:29 davidt Exp $
  */
 
 #ifndef _USERINTER_H
 #define _USERINTER_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 Error _dxfLoadUserInteractors(char *fname);
 Error _dxfLoadDefaultUserInteractors();
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* _USERINTER_H */

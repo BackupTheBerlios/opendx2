@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/rq.h,v 1.6 2002/03/21 21:14:41 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/rq.h,v 1.7 2004/06/09 16:14:28 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -15,6 +15,10 @@
 #define	__EX_RQ_H
 
 #include "utils.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 void		_dxf_ExRQEnqueue	(PFI func, Pointer arg, int repeat,
 				 long gid, 	/* Group ID (used)	*/
@@ -27,5 +31,9 @@ void		_dxf_ExRQEnqueueMany	(int n, PFI func[], Pointer arg[], int repeat[],
 int    _dxf_ExRQDequeue	(long gid);	/* Group ID (or 0)	*/
 int    _dxf_ExRQPending(void);
 Error  _dxf_ExRQInit (void);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif	/* __EX_RQ_H */

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/_variable.h,v 1.5 2000/08/11 15:28:09 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/_variable.h,v 1.6 2004/06/09 16:14:27 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -21,6 +21,10 @@ which are user-variable definitions.
 #define __VARIABLE_H
 
 #include "d.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 int	_dxf_ExVariableInsert(char *name, EXDictionary dict, EXObj obj);
 int	_dxf_ExVariableDelete(char *name, EXDictionary dict);
@@ -37,5 +41,9 @@ Error   DXSetIntVariable(char *name, int val, int sync,
 Error   DXSetVariable(char *name, Object obj, int sync, 
                       int cause_execution);
 Error   DXGetIntVariable(char *name, int *val);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif /* __VARIABLE_H */

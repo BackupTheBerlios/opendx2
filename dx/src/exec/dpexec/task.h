@@ -6,17 +6,18 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/task.h,v 1.5 2004/06/03 16:27:17 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/task.h,v 1.6 2004/06/09 16:14:29 davidt Exp $
  */
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
 
 #ifndef _TASK_H
 #define _TASK_H
 
 #include "utils.h"
 #include "context.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 typedef struct _EXTask          *EXTask;
 typedef struct _EXTaskGroup     *EXTaskGroup;

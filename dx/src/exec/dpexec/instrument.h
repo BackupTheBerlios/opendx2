@@ -6,14 +6,18 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/instrument.h,v 1.5 2000/08/11 15:28:12 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/instrument.h,v 1.6 2004/06/09 16:14:28 davidt Exp $
  */
 
 #include <dxconfig.h>
 
-
 #ifndef __INSTRUMENT_H_
 #define __INSTRUMENT_H_
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 
 #define INSTRUMENT
 #undef INSTRUMENT
@@ -41,4 +45,9 @@ void ExResetInstrument(void);
 #define IFINSTRUMENT(x)
 
 #endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 #endif /* __INSTRUMENT_H_ */

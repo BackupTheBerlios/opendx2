@@ -6,12 +6,8 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/exobject.h,v 1.7 2004/06/03 16:27:16 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/exobject.h,v 1.8 2004/06/09 16:14:28 davidt Exp $
  */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
 
 #include <dxconfig.h>
 
@@ -20,6 +16,10 @@ extern "C" {
 #define	__EXOBJECT_H
 
 #include <sys/types.h>
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #if DXD_HAS_LIBIOP
 extern double SVS_double_time(); /* from some systemlib */
@@ -180,7 +180,7 @@ EXO_Object	_dxf_EXO_create_object_local	(EXO_Class exclass, int size,
 
 Error _dxf_EXOCheck (EXO_Object obj);
 
-#endif	/* __EXOBJECT_H */
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
+#endif	/* __EXOBJECT_H */

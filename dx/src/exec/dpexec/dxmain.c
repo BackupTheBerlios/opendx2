@@ -174,6 +174,7 @@ extern void  _dxf_private_modules(); /* from libdx/ */
 extern Error user_cleanup(); /* from libdx/userinit.c */
 
 extern void _dxfcleanup_mem(); /* from libdx/mem.c */
+extern int _dxf_GetPhysicalProcs(); /* from libdx/memory.c */
 extern Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] );
 /* from remote.c */
 extern Error user_slave_cleanup(); /* from userinit.c */
@@ -272,13 +273,13 @@ static int      nmdfs           = 0;
 /*
  * All the main helper functions.
  */
-int _dxfPhysicalProcs(void);
 
 /*
  * This one's used externally in DODX RunOnSlaves 
  */
 int  ExCheckInput(void);
 void ExQuit(void);
+void _dxf_ExPromptSet(char *var, char *val);
 
 static int	ExCheckGraphQueue	(int);
 static int	ExCheckRunqueue		(int graphId);
@@ -352,39 +353,12 @@ int DXmain (int argc, char **argv, char **envp)
     setrlimit (RLIMIT_CORE, &rl);
 #endif
 
-#if defined(linux) && (ENABLE_SMP_LINUX == 0)
+	nphysprocs = _dxf_GetPhysicalProcs();
 
-    nphysprocs = nprocs = 1;
-#elif HAVE_SYSMP
-
-    nphysprocs = sysmp (MP_NPROCS);	/* find the number of processors */
-    if(nphysprocs > 3)
+	if(nphysprocs > 3)
         nprocs = (int)(nphysprocs / 2);
     else
         nprocs = (nphysprocs > 1) ? 2 : 1;
-#elif DXD_HAS_LIBIOP
-
-    nphysprocs = nprocs = SVS_n_cpus;
-#elif HAVE_SYSCONF && defined(_SC_NPROCESSORS_ONLN)
-
-    nphysprocs = sysconf(_SC_NPROCESSORS_ONLN);
-    if (nphysprocs <= 0)
-        nphysprocs = 1;
-    if(nphysprocs > 3)
-        nprocs = (int)(nphysprocs / 2);
-    else
-        nprocs = (nphysprocs > 1) ? 2 : 1;
-
-#elif HAVE_SYS_SYSCONFIG_NCPUS
-
-    nphysprocs = _system_configuration.ncpus; /* In Kernel space */
-    if(nphysprocs > 3)
-        nprocs = (int)(nphysprocs / 2);
-    else
-        nprocs = (nphysprocs > 1) ? 2 : 1;
-#else
-    nphysprocs = nprocs = 1;
-#endif
 
 #if HAVE_SIGDANGER
     signal (SIGDANGER, ExSigDanger);
