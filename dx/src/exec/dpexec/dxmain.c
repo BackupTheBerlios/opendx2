@@ -363,9 +363,11 @@ DXmain (argc, argv, envp)
     nphysprocs = nprocs = SVS_n_cpus;
 #elif HAVE_SYSCONF && defined(_SC_NPROCESSORS_ONLN)
     nphysprocs = sysconf(_SC_NPROCESSORS_ONLN);
+    if (nphysprocs <= 0) nphysprocs = 1;
     if(nphysprocs > 3)
         nprocs = (int)(nphysprocs / 2);
     else nprocs = (nphysprocs > 1) ? 2 : 1;
+
 #elif HAVE_SYS_SYSCONFIG_NCPUS
     nphysprocs = _system_configuration.ncpus; /* In Kernel space */
     if(nphysprocs > 3)
