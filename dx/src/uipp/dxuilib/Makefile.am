@@ -210,7 +210,12 @@ HDRS4 = \
 	ToggleAttrDialog.h \
 	ToggleInstance.h \
 	ToolSelector.h \
+	UndoableAction.h \
+	UndoAddArk.h \
+	UndoDeletion.h \
 	UndoMove.h \
+	UndoNode.h \
+	UndoRepeatableTab.h \
 	VPEAnnotator.h \
 	VPEPage.h \
 	VPEPostIt.h \
@@ -391,7 +396,11 @@ SRCS5 = \
 	ToggleInstance.C \
 	ToolSelector.C \
 	TransferAccelerator.c \
+	UndoAddArk.C \
+	UndoDeletion.C \
 	UndoMove.C \
+	UndoNode.C \
+	UndoRepeatableTab.C \
 	VPEAnnotator.C \
 	VPEPage.C \
 	VPEPostIt.C \
