@@ -380,7 +380,7 @@ DXdestroy_lock
 DXfetch_and_add
 DXinitdx
 DXlock
-DXmemfork
+DXForkChild
 DXmemsize
 DXqflush
 DXqmessage
