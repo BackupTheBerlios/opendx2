@@ -975,8 +975,6 @@ LOCALMAKE="include local.mk"
 
 if test "$with_ddx" = 'yes' ; then
     AC_DEFINE(DDX, 1)
-else
-    AC_DEFINE(DDX, 0)
 fi
 
 if test "$with_smp_linux" = 'yes' ; then
