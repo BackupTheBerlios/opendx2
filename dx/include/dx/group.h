@@ -24,7 +24,7 @@ extern "C" {
 This section describes routines used to manipulate the members of a group.
 */
 
-Group DXNewGroup();
+Group DXNewGroup( void );
 /**
 \index{DXNewGroup}
 Creates a new generic group object.  Returns the group, or returns
@@ -116,7 +116,7 @@ there is a ``series dimension'', for example, time.  Every
 member of the series has some position along the series dimension.
 */
 
-Series DXNewSeries();
+Series DXNewSeries( void );
 /**
 \index{DXNewSeries}
 Creates a new series object.  A series is a collection of compatible
@@ -159,7 +159,7 @@ as one field.  This is useful for example for certain kinds of
 simulation data which are represented by disjoint grids.
 */
 
-CompositeField DXNewCompositeField();
+CompositeField DXNewCompositeField( void );
 /**
 \index{DXNewCompositeField.}
 Creates a new composite field object.  A composite field is a
@@ -179,7 +179,7 @@ as one field.  This is useful for example for certain kinds of
 simulation data which are represented by disjoint grids.
 */
 
-MultiGrid DXNewMultiGrid();
+MultiGrid DXNewMultiGrid( void );
 /**
 \index{DXNewMultiGrid.}
 Creates a new multigrid object.  A multigrid is a collection of
