@@ -1,14 +1,14 @@
 //
-// time: Tue Oct 20 10:07:00 1998
+// time: Mon Apr 22 12:34:53 2002
 //
-// version: 3.1.2 (format), 4.1.1 (DX Beta)
+// version: 3.1.2 (format), 4.1.3 (DX)
 //
 //
 // Begin MDF
 // MODULE WebOptions
 // CATEGORY Macros
 // DESCRIPTION Information needed when running under control of DXServer
-// INPUT format; value list or string list or object; ("gif"); output format - gif or wrl
+// INPUT format; value list or string list or object; ("ImageMagick supported format"); output format - gif or wrl
 // INPUT file[visible:0]; value list or string list or object; (no default); location of the output image on the local file system
 // INPUT enabled[visible:0]; value list or string list or object; (false); true when running under control of DXServer
 // INPUT counters; value list or string list or object; (no default); 2-vector: execution and loop sequence
@@ -20,7 +20,7 @@
 // INPUT groupName[visible:0]; value list or string list or object; (no default); all images in a group enter/leave grouped interaction modes together
 // OUTPUT optionCollection; group;  
 // End MDF
-// workspace: width = 958, height = 612
+// workspace: width = 958, height = 614
 // layout: snap = 1, width = 50, height = 24, align = UN
 //
 macro WebOptions(
@@ -39,7 +39,7 @@ macro WebOptions(
 ) {
     // 
     // node Input[8]: x = 0, y = 0, inputs = 0, label = Input
-    // parameter: position = 1, name = 'format', value = '("gif")', descriptive = 1, description = 'output format - gif or wrl', required = 0, visible = 1
+    // parameter: position = 1, name = 'format', value = '("ImageMagick supported format")', descriptive = 1, description = 'output format - gif or wrl', required = 0, visible = 1
     //
 WebOptions_Input_8_out_1 = format;
     // 
@@ -55,13 +55,13 @@ WebOptions_Inquire_1_out_1[cache: 2] =
     ) [instance: 1, cache: 1];
     // 
     // node Switch[1]: x = 24, y = 240, inputs = 3, label = Switch
-    // input[3]: defaulting = 0, visible = 1, type = 67108863, value = "gif"
+    // input[3]: defaulting = 0, visible = 1, type = 67108863, value = "ImageMagick supported format"
     //
 WebOptions_Switch_1_out_1[cache: 2] = 
     Switch(
     WebOptions_Inquire_1_out_1,
     WebOptions_Input_8_out_1,
-    "gif"
+    "ImageMagick supported format"
     ) [instance: 1, cache: 1];
     // 
     // node Input[16]: x = 113, y = 0, inputs = 0, label = Input
