@@ -314,19 +314,20 @@ DXPrintError(char *s)
 	msg = "Bad error code";
     else
 	msg = messages[(int)_ErrorCode];
-    errnomsg = (char *) sys_errlist[errno];
 
     /* print error message */
-    if (_ErrorCode==ERROR_NONE && errno)
+    if (_ErrorCode==ERROR_NONE && errno) {
+    	errnomsg = (char *) sys_errlist[errno];
 	if (s)
 	    aqmessage("ERROR", "%s: %s", s, errnomsg);
 	else
 	    aqmessage("ERROR", "%s", errnomsg);
-    else
+    } else {
 	if (s)
 	    aqmessage("ERROR", "%s: %s: %s", s, msg, _ErrorMessage);
 	else
 	    aqmessage("ERROR", "%s: %s", msg, _ErrorMessage);
+    }
 }
 
 void
