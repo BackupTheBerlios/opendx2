@@ -106,7 +106,7 @@ user.c:  dx.mdf
 dx.mdf:  dxmdf.src
 	-rm -f dx.mdf
 	cp dxmdf.src tmp.c
-	$(CPP) $(MDF) -DCPLUSPLUS_UI -DEXECUTIVE_MODS tmp.c > dx.mdf
+	$(CPP) $(MDF) $(DEFS) -DCPLUSPLUS_UI -DEXECUTIVE_MODS tmp.c > dx.mdf
 	-rm -f tmp.c
 
 y.tab.c: _compparse.y

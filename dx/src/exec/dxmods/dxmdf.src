@@ -5,6 +5,7 @@
 #/* This code licensed under the                                        */
 #/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 #/***********************************************************************/
+#include "dxconfig.h"
 
 MODULE AmbientLight
 CATEGORY Rendering
