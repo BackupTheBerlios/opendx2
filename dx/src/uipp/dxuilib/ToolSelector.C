@@ -296,12 +296,6 @@ void ToolSelector::categorySelect(Symbol cs)
     if (toollist != this->categoryDictionary.getActiveDefinition()) {
 	this->categoryDictionary.setActiveItem(cs);
     }
-
-    CategoryNode* cn = this->getCategoryNode(this->treeView->getDataModel(), cs);
-    if (cn->isExpanded() == FALSE) {
-	cn->setExpanded(TRUE);
-	tv->setDirty(TRUE,TRUE);
-    }
 }
 
 
