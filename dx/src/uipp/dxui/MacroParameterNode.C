@@ -457,8 +457,10 @@ boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 }
 boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 {
-    int destIndex=0;
-    int srcIndex=0;
+    int destIndex;
+    int srcIndex;
+    a->getDestinationNode(destIndex);
+    a->getSourceNode(srcIndex);
     if (!this->UniqueNameNode::removeIOArk(io, index, a))
 	return FALSE;
 
