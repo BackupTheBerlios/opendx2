@@ -6,6 +6,7 @@ uninstall-local:
 	if [ "$(prefix)" != "/usr/lpp" ] ; then \
 	    rm -f /usr/lpp/dx ; \
 	fi
+	rm -rf $(prefix)/dx
 
 install-data-local:
 	if [ "$(prefix)" != "/usr/lpp" ] ; then \
