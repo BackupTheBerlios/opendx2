@@ -12,6 +12,21 @@
 #include <X11/cursorfont.h>
 #include <stdio.h>
 
+//
+//
+//
+#include <errno.h> // for errno
+#include <fcntl.h> // for stat
+
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
+#if defined(HAVE_SYS_STAT_H)
+#include <sys/stat.h>
+#endif
+
+
 #include "Application.h"
 #include "Client.h"
 #include "Command.h"
@@ -182,29 +197,9 @@ boolean Application::initializeWindowSystem(unsigned int *argcp, char **argv)
 void Application::parseCommand(unsigned int* argcp, char** argv,
                                XrmOptionDescList optlist, int optlistsize)
 {
-#ifdef DXD_OS_NON_UNIX
-    char* home = (char*)getenv("XAPPLRESDIR");
-    char* res_file = home;
-    const char* class_name = this->getApplicationClass();
-    if (!home || !strlen(home)) {
-	home = (char*)this->resource.UIRoot;
-	if (!home || !strlen(home)) {
-	    res_file = new char[10];
-	    sprintf(res_file, "/%s", class_name);
-	} else {
-	    res_file = new char[strlen(home) + 19];
-	    sprintf(res_file, "%s/ui/%s", home, class_name);
-	}
-    } else {
-	res_file = new char[strlen(home) + 16];
-	sprintf(res_file, "%s/ui/%s", home, class_name);
-    }
-
-    XrmDatabase resourceDatabase = XrmGetFileDatabase(filename);
-    delete res_file;
-#else
-    XrmDatabase resourceDatabase = XrmGetStringDatabase("");
-#endif
+    char res_file[256];
+    this->getApplicationDefaultsFileName(res_file);
+    XrmDatabase resourceDatabase = XrmGetFileDatabase(res_file);
 
     char *appname = GetFileBaseName(argv[0],NULL);
     XrmParseCommand(&resourceDatabase, optlist, optlistsize, 
@@ -522,5 +517,64 @@ boolean Application::startTutorial()
 void Application::abortApplication()
 {
     abort();
+}
+
+
+//
+// this is normally something like $HOME/DX.  There is a virtual version
+// of this method in IBMApplication that uses UIRoot on the pc.
+//
+boolean Application::getApplicationDefaultsFileName(char* res_file)
+{
+    const char* class_name = this->getApplicationClass();
+    char* home = (char*)getenv("HOME");
+    sprintf (res_file, "%s/%s", home, class_name);
+    return this->isUsableDefaultsFile(res_file);
+}
+
+boolean Application::isUsableDefaultsFile(const char* res_file)
+{
+#if !defined(DXD_OS_NON_UNIX)
+    int ru = S_IRUSR;
+    int wu = S_IWUSR;
+    int rg = S_IRGRP;
+    int ro = S_IROTH;
+    int reg = S_IFREG;
+#else
+    int ru = _S_READ;
+    int wu = _S_IWRITE;
+    int rg = 0;
+    int ro = 0;
+    int reg = _S_IFREG;
+#endif
+    //
+    // If the file isn't writable, then return FALSE so we
+    // won't try using it to store settings.
+    //
+    boolean writable=TRUE;
+    struct STATSTRUCT statb;
+    if (STATFUNC(res_file, &statb)!=-1) {
+	//if (S_ISREG(statb.st_mode)) {
+	if (statb.st_mode & reg) {
+	    if ((statb.st_mode & wu) == 0) {
+		writable = FALSE;
+	    }
+	} else {
+	    writable = FALSE;
+	}
+    } else if (errno==ENOENT) {
+	int fd = creat(res_file, ru | wu | rg | ro); //S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+	if (fd >= 0) {
+	    close(fd);
+	} else {
+	    writable = FALSE;
+	    //perror(res_file);
+	}
+    } else {
+	//perror(res_file);
+	writable = FALSE;
+    }
+
+    return writable;
 }
 

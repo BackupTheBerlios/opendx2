@@ -13,9 +13,6 @@
 #include <unistd.h>
 #endif
 
-#include <errno.h>
-#include <fcntl.h>
-
 #if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
 #endif
@@ -899,14 +896,13 @@ const char *IBMApplication::getTmpDirectory(boolean bList)
 //
 // Application Resources
 //
-
 boolean IBMApplication::getApplicationDefaultsFileName(char* res_file)
 {
-const char* class_name = this->getApplicationClass();
     //
     // Print the resource database to the file.
     //
 #ifdef DXD_OS_NON_UNIX
+const char* class_name = this->getApplicationClass();
     char* home = (char*)getenv("XAPPLRESDIR");
     if (!home || !strlen(home)) {
 	home = (char*)this->resource.UIRoot;
@@ -919,39 +915,10 @@ const char* class_name = this->getApplicationClass();
 	sprintf(res_file, "%s/ui/%s", home, class_name);
     }
 
+    return this->isUsableDefaultsFile(res_file);
 #else
-    char* home = (char*)getenv("HOME");
-    sprintf (res_file, "%s/%s", home, class_name);
+    return this->Application::getApplicationDefaultsFileName(res_file);
 #endif
-
-    //
-    // If the file isn't writable, then return FALSE so we
-    // won't try using it to store settings.
-    //
-    boolean writable=TRUE;
-    struct STATSTRUCT statb;
-    if (STATFUNC(res_file, &statb)!=-1) {
-	if (S_ISREG(statb.st_mode)) {
-	    if ((statb.st_mode&S_IWUSR) == 0) {
-		writable = FALSE;
-	    }
-	} else {
-	    writable = FALSE;
-	}
-    } else if (errno==ENOENT) {
-	int fd = creat(res_file, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
-	if (fd >= 0) {
-	    close(fd);
-	} else {
-	    writable = FALSE;
-	    //perror(res_file);
-	}
-    } else {
-	//perror(res_file);
-	writable = FALSE;
-    }
-
-    return writable;
 }
 
 //
@@ -1055,6 +1022,17 @@ void IBMApplication::printNoWizardNames()
 {
 const char* class_name = this->getApplicationClass();
 
+    char res_file[256];
+    if (!this->getApplicationDefaultsFileName(res_file)) {
+	//
+	// Probably should complain somehow, but the user is not in a position
+	// to deal with this sort of complaint.  This happens when the user
+	// clicks the 'don't show this help message anymore' button that only
+	// appears as a result of running with -wizard or thru startupui.
+	//
+	return ;
+    }
+
     //
     // Create one line which specifies the new resource setting.
     //
@@ -1090,34 +1068,12 @@ const char* class_name = this->getApplicationClass();
     //
     // Print the resource database to the file.
     //
-#ifdef DXD_OS_NON_UNIX
-    char* home = (char*)getenv("XAPPLRESDIR");
-    char* res_file = home;
-    if (!home || !strlen(home)) {
-	home = (char*)this->resource.UIRoot;
-	if (!home || !strlen(home)) {
-	    res_file = new char[10];
-	    sprintf(res_file, "/%s", class_name);
-	} else {
-	    res_file = new char[strlen(home) + 19];
-	    sprintf(res_file, "%s/ui/%s", home, class_name);
-	}
-    } else {
-	res_file = new char[strlen(home) + 16];
-	sprintf(res_file, "%s/ui/%s", home, class_name);
-    }
 
-#else
-    char* home = (char*)getenv("HOME");
-    char* res_file = new char[strlen(home) + 16];
-    sprintf (res_file, "%s/%s", home, class_name);
-#endif
     XrmDatabase db = XrmGetFileDatabase(res_file);
     XrmPutLineResource (&db, resource_line);
     XrmPutFileDatabase (db, res_file);
     XrmDestroyDatabase(db);
     delete resource_line;
-    delete res_file;
 }
 
 boolean IBMApplication::isWizardWindow(const char* name)

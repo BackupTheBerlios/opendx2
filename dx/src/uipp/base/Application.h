@@ -111,6 +111,11 @@ class Application : public UIComponent, public Server
     //
     virtual void installDefaultResources(Widget baseWidget);
 
+    //
+    // test the file to ensure that's is a regular file, and writable.
+    //
+    boolean isUsableDefaultsFile(const char* res_file);
+
   public:
     //
     // Busy indicator cursor to be used globally:
@@ -281,6 +286,8 @@ class Application : public UIComponent, public Server
     virtual Widget  getHelpViewer () { return this->help_viewer; }
 
     virtual void handleEvents();
+
+    virtual boolean getApplicationDefaultsFileName(char* res_file);
 
     //
     // Returns a pointer to the class name.
