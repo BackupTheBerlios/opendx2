@@ -222,7 +222,7 @@ _dxfCompleteServer(int sock,
     )
 {
     int length;
-    int fd;
+    int fd=-1;
     int sts;
     extern int errno; /* from <errno.h> */
     fd_set fds;
