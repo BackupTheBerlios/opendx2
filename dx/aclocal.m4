@@ -108,6 +108,9 @@ AC_DEFUN(DX_ARCHITECTURE,
     unameS=`uname -s`
     unameM=`uname -m`
     ARCH=unknown
+    if test $unameS = "CYGWIN_95-4.0" ; then
+    	ARCH=intelnt
+    fi
     if test $unameS = "Linux" ; then
         if test $unameM = "i686" ; then
 	    ARCH=linux86 
