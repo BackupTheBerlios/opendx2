@@ -68,7 +68,7 @@ switch ( $thissys )
       set exarch=solaris
       set uiarch=solaris
 
-      setenv LD_LIBRARY_PATH /usr/openwin/lib:/opt/SUNWits/Graphics-sw/xgl-3.0/lib:/usr/ucblib
+      setenv LD_LIBRARY_PATH $LD_LIBRARY_PATH":/usr/openwin/lib:/opt/SUNWits/Graphics-sw/xgl-3.0/lib:/usr/ucblib"
 
     else
       set exarch=sun4
