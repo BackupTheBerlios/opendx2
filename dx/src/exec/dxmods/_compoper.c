@@ -2471,9 +2471,6 @@ VFUNC2 (powVFFCR, complexFloat, complexFloat, float, _dxfComputePowComplexFloatF
 VFUNC1RC (sqrtF, float, float, fsqrt, NONNEG, "#12040")
 VFUNC1RC (sqrtD, double, double, sqrt, NONNEG, "#12040")
 VFUNC1(sqrtFC, complexFloat, complexFloat, _dxfComputeSqrtComplexFloat)
-VFUNC1(cbrtF, float, float, cbrt)
-VFUNC1(cbrtD, double, double, cbrt)
-
 #define POS(x) ((x) > 0.0)
 VFUNC1RC (lnF, float, float, flog, POS, "#12050")
 VFUNC1RC (lnD, double, double, log, POS, "#12050")
@@ -2499,14 +2496,6 @@ static OperBinding sqrts[] = {
 	{0, TYPE_FLOAT, CATEGORY_REAL, 0},
 	{   {0, TYPE_FLOAT, CATEGORY_REAL, 0}}},
     {1, (CompFuncV)sqrtD, _dxfComputeCheckSameShape,
-	{0, TYPE_DOUBLE, CATEGORY_REAL, 0},
-	{   {0, TYPE_DOUBLE, CATEGORY_REAL, 0}}}
-};
-static OperBinding cbrts[] = {
-	{1, (CompFuncV)cbrtF, _dxfComputeCheckSameShape,
-	{0, TYPE_FLOAT, CATEGORY_REAL, 0},
-	{   {0, TYPE_FLOAT, CATEGORY_REAL, 0}}},
-	{1, (CompFuncV)cbrtD, _dxfComputeCheckSameShape,
 	{0, TYPE_DOUBLE, CATEGORY_REAL, 0},
 	{   {0, TYPE_DOUBLE, CATEGORY_REAL, 0}}}
 };
@@ -3225,7 +3214,7 @@ randNULL(
     items = pt->metaType.items;
     for (i = 0; i < items; ++i) 
 	for (j = 0; j < numBasic; j++) {
-	    index = ((float)random()/RAND_MAX)*RANDSORTBINS;
+	    index = (int)((float)random()/RAND_MAX)*RANDSORTBINS;
 	    out[i*numBasic + j] = rands[index];
 	    rands[index] = ((float)random()/RAND_MAX);
 	}
@@ -3382,7 +3371,6 @@ static OperDesc operators[] = {
     OP_RECORD (OPER_PERIOD,	".",		selects),
     OP_RECORD_SIZE (OPER_NOT,	"!",		_dxdComputeNots, _dxdComputeNotsSize),
     OP_RECORD (FUNC_sqrt,	"sqrt",		sqrts),
-    OP_RECORD (FUNC_cbrt,   "cbrt",		cbrts),
     OP_RECORD (FUNC_pow,	"pow",		pows),
     OP_RECORD (FUNC_sin,	"sin",		sins),
     OP_RECORD (FUNC_cos,	"cos",		coss),
@@ -4058,7 +4046,6 @@ _dxfComputeLookupFunction (char *name)
 	{ "dot",	OPER_DOT },
 	{ "cross",	OPER_CROSS },
 	{ "sqrt",	FUNC_sqrt },
-	{ "cbrt",	FUNC_cbrt },
 	{ "pow",	FUNC_pow },
 	{ "sin",	FUNC_sin },
 	{ "cos",	FUNC_cos },
