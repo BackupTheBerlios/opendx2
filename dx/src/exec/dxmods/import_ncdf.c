@@ -469,6 +469,10 @@ _dxfstat_netcdf_file(char *filename)
     /* XTRA defined above: 
      * space for trailing /, .nc, trailing 0 and some slop 
      */
+    
+    datadir = (char *)getenv("DXDATA");
+    if (!datadir)
+	goto error;
 
     fname = (char *)DXAllocateLocalZero((datadir ? strlen(datadir) : 0) +
 					strlen(filename) + XTRA);
@@ -482,10 +486,6 @@ _dxfstat_netcdf_file(char *filename)
 	DXFree((Pointer)fname);
 	return IMPORT_STAT_NOT_FOUND;
     }
-    
-    datadir = (char *)getenv("DXDATA");
-    if (!datadir)
-	goto error;
     
     while (datadir) {
 	
