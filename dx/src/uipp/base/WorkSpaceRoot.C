@@ -303,21 +303,21 @@ WorkSpaceRoot::~WorkSpaceRoot()
 {
     WorkSpace *ws;
     ListIterator it(this->page_list);
-    while (ws = (WorkSpace*)it.getNext())
+    while ( (ws = (WorkSpace*)it.getNext()) )
 	delete ws;
 }
 void WorkSpaceRoot::setPageCursor (int cursorType)
 {
     WorkSpace *ws;
     ListIterator it(this->page_list);
-    while (ws = (WorkSpace*)it.getNext())
+    while ( (ws = (WorkSpace*)it.getNext()) )
 	ws->setCursor(cursorType);
 }
 void WorkSpaceRoot::resetPageCursor()
 {
     WorkSpace *ws;
     ListIterator it(this->page_list);
-    while (ws = (WorkSpace*)it.getNext())
+    while ( (ws = (WorkSpace*)it.getNext()) )
 	ws->resetCursor();
 }
 void  WorkSpaceRoot::installPageInfo (WorkSpaceInfo* new_info)
@@ -334,7 +334,7 @@ int w,h;
 
     ListIterator it(this->page_list);
     WorkSpace *ws = NULL;
-    while  (ws = (WorkSpace*)it.getNext()) { 
+    while  ( (ws = (WorkSpace*)it.getNext()) ) { 
 	WorkSpaceInfo *page_info = ws->getInfo();
 	page_info->setGridAlignment (x_align, y_align);
 	page_info->setGridActive (is_active);
@@ -347,14 +347,14 @@ void WorkSpaceRoot::beginManyPagePlacements()
 {
     ListIterator it(this->page_list);
     WorkSpace *ws = NULL;
-    while  (ws = (WorkSpace*)it.getNext()) 
+    while  ( (ws = (WorkSpace*)it.getNext()) ) 
 	ws->beginManyPlacements();
 }
 void WorkSpaceRoot::endManyPagePlacements()
 {
     ListIterator it(this->page_list);
     WorkSpace *ws = NULL;
-    while  (ws = (WorkSpace*)it.getNext()) 
+    while  ( (ws = (WorkSpace*)it.getNext()) ) 
 	ws->endManyPlacements();
 }
 

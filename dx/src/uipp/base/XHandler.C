@@ -42,7 +42,7 @@ boolean XHandler::ProcessEvent(XEvent *event)
 {
     ListIterator li(XHandler::Handlers);
     XHandler *h;
-    while(h = (XHandler*)li.getNext())
+    while( (h = (XHandler*)li.getNext()) )
     {
 	if ((h->window == 0 || h->window == event->xany.window) &&
 	    h->eventName == event->xany.type)

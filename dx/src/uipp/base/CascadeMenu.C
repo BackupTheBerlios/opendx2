@@ -138,7 +138,7 @@ void CascadeMenu::clearComponents()
 {
     UIComponent *uic;
 
-    while (uic = (UIComponent*)this->componentList.getElement(1)) {
+    while ((uic = (UIComponent*)this->componentList.getElement(1))) {
 	this->componentList.deleteElement(1);
 	delete uic;
     }

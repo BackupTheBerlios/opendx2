@@ -9,8 +9,6 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-
-
 /*---------------------------------------------------------------------*
  |                                Parse.c                              |
  |                           -------------------                       |
@@ -46,6 +44,10 @@ extern char  *Pop();
 extern void   DoRedrawText();
 extern Stack *NewStack();
 extern char  *Top();
+extern void FreeSpotList(SpotList *); /* from helplist.c */
+extern void InsertList(SpotList *, ListNodeType *); /* from helplist.c */
+
+
 
 /*--------------------------------------------------------------------------*
  |                                GetMathToken                              |
@@ -53,10 +55,9 @@ extern char  *Top();
 char *GetMathToken(FILE **mathfile, char *stoppat, char*buffer)
 {
  char rest[255],fmt[20];
- int  n;
  char ch;
  sprintf(fmt,"%s%s%s%s%s%s","%[^",stoppat,"]","%[",stoppat,"]");
- while(((ch = fgetc(*mathfile)) != EOF) && (ch == ' ') || ch == '\n') ;
+ while(((ch = fgetc(*mathfile)) != EOF) && ((ch == ' ') || ch == '\n')) ;
  if (feof(*mathfile)) return(NULL);
  ungetc(ch,*mathfile);
  if (fscanf(*mathfile,fmt,buffer,rest) == EOF)
@@ -69,9 +70,9 @@ char *GetMathToken(FILE **mathfile, char *stoppat, char*buffer)
  *--------------------------------------------------------------------------*/
 char *GetToken (FILE **file, char *stoppat, char *buffer, int *newline, Bool ManPage)
 {
-  char  rest[255], c;
-  char *str, fmt[20];
-  int   rc, len = 0, n = 0;
+  char  rest[255];
+  char  fmt[20];
+  int   n = 0;
 
  if (ManPage == FALSE) {
     sprintf(fmt, "%s%s%s%s%s%s", "%[^" ,stoppat, "]" , "%[" ,stoppat, "]");
@@ -107,24 +108,16 @@ int SendWidgetText (Widget w, FILE *infile, Bool ManPage,char *ref)
   int              tabs[MAX_TAB_COUNT];
   int              tabCount;
   int              i,len;
-  int              width;
-  int              height;
-  Pixmap           pixmap;
-  Pixmap           bitmap,pmap;
-  XImage           *image;
-  int              argcnt = 0;
   int              newline = FALSE;
   UserData         *userdata;
   ListNodeType	   *spot;
   char             buffer[255];
   char             psfile[127];
-  int              hs;
   char font[127];
   char color[127];
   char tabBuf[127];
   char link[127];
   char indent[15];
-  XExposeEvent     event;
   Boolean          dpsCapable;
   char             *psBtmp;
   FILE             *ascfile;
@@ -132,9 +125,6 @@ int SendWidgetText (Widget w, FILE *infile, Bool ManPage,char *ref)
   char             fascname[127];
   const char       *envptr;
   int              psBpos;
-  int              blinkRate;
-
-  unsigned long  planes = AllPlanes;
 
   strcpy(font, DEFAULT_FONT);
   strcpy(color, DEFAULT_COLOR);

@@ -87,7 +87,7 @@ void TextEditDialog::installDefaultResources(Widget  baseWidget)
 
 Widget TextEditDialog::createDialog(Widget parent)
 {
-    Widget sw, frame,separator, label, form;
+    Widget separator, label, form;
     Arg wargs[6];
 
     this->initialize();
@@ -196,8 +196,8 @@ Widget TextEditDialog::createDialog(Widget parent)
     XtManageChild(this->editorText);
 
 #else
-
-    frame = XtVaCreateManagedWidget("frame",xmFrameWidgetClass, form,
+    
+    Widget frame = XtVaCreateManagedWidget("frame",xmFrameWidgetClass, form,
         XmNshadowThickness,   2,
 	XmNtopAttachment,     XmATTACH_WIDGET,
 	XmNtopWidget,         label,
@@ -215,7 +215,7 @@ Widget TextEditDialog::createDialog(Widget parent)
 	XmNmarginHeight,  3,
         NULL);
 
-    sw = XtVaCreateManagedWidget("scrolledWindow",
+    Widget sw = XtVaCreateManagedWidget("scrolledWindow",
                                 xmScrolledWindowWidgetClass,
                                 frame,
 				XmNscrollHorizontal,False,

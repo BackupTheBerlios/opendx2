@@ -35,9 +35,9 @@ boolean UndoCommand::doIt(CommandInterface *ci)
     CommandScope* scope;
     Command*      command;
 
-    while (scope = (CommandScope*)scopeIterator.getNext())
+    while ( (scope = (CommandScope*)scopeIterator.getNext()) )
     {
-	if (command = scope->getLastCommand())
+	if ( (command = scope->getLastCommand()) )
 	{
 	    if (command->undo())
 	    {

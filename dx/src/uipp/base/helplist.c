@@ -13,6 +13,7 @@
 #include "helplist.h"
 #include <stdio.h>
 #include <string.h>
+#include <X11/Intrinsic.h>
 
 #define STRCMP(a,b)  ((a) ? ((b) ? strcmp(a,b) : strcmp(a,"")) : \
 			    ((b) ? strcmp("",b) : 0))
@@ -62,7 +63,7 @@ void DeleteLastListNode(SpotList *list)
   if (list->tail->refname != NULL)
     XtFree(list->tail->refname);
   list->tail->refname = NULL;
-  XtFree(list->tail);
+  XtFree((char *)list->tail);
   list->tail = list->current;
   if (list->tail)
       list->tail->next = NULL;
@@ -71,7 +72,7 @@ void DeleteLastListNode(SpotList *list)
  list->length--;
 }
 
-int *SearchList(SpotList *list, char *str)
+int SearchList(SpotList *list, char *str)
 {
   ListNodeType *ref;
   int      index = 0;
@@ -83,7 +84,7 @@ int *SearchList(SpotList *list, char *str)
 
   while (ref != NULL) {
     if (STRCMP(ref->refname,str) == 0)
-     return((int*)ref->offset);
+     return(ref->offset);
     index++;
     ref = ref->next;
   }

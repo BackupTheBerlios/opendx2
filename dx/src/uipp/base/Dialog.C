@@ -217,7 +217,7 @@ void Dialog::setDialogTitle(const char *title)
 {
     Widget shell;
 
-    if (shell = this->getRootWidget()) {
+    if ((shell=this->getRootWidget())) {
     	while(NOT XtIsShell(shell))
 	     shell = XtParent(shell);
 

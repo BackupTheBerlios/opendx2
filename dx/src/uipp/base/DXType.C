@@ -36,45 +36,45 @@ DXType	*__force_init__ = new DXType;
 static
 DXTypeName _baseType[] =
 {
-    0, "undefined",		DXType::UndefinedType,
-    0, "value",			DXType::ValueType,
-    0, "scalar",		DXType::ScalarType,
-    0, "integer",		DXType::IntegerType,
-    0, "flag",			DXType::FlagType,
-    0, "tensor",		DXType::TensorType,
-    0, "matrix",		DXType::TensorType,
-    0, "vector",		DXType::VectorType,
-    0, "value list",		DXType::ValueType | DXType::ListType,
-    0, "scalar list",		DXType::ScalarType | DXType::ListType,
-    0, "integer list",		DXType::IntegerType | DXType::ListType,
-    0, "flag list",		DXType::FlagType | DXType::ListType,
-    0, "tensor list",		DXType::TensorType | DXType::ListType,
-    0, "matrix list",		DXType::TensorType | DXType::ListType,
-    0, "vector list",		DXType::VectorType | DXType::ListType,
-    0, "string",		DXType::StringType,
-    0, "string list",		DXType::StringType | DXType::ListType,
-    0, "camera",		DXType::CameraType,
-    0, "light",			DXType::LightType,
-    0, "field",			DXType::FieldType,
-    0, "geometry field",	DXType::GeometryFieldType,
-    0, "color field",		DXType::ColorFieldType,
-    0, "scalar field",		DXType::ScalarFieldType,
-    0, "vector field",		DXType::VectorFieldType,
-    0, "data field",		DXType::DataFieldType,
-    0, "series",		DXType::SeriesType,
-    0, "field series",		DXType::FieldSeriesType,
-    0, "image",			DXType::ImageType,
-    0, "image series",		DXType::ImageType | DXType::SeriesType,
-    0, "vector field series",	DXType::VectorFieldType | DXType::SeriesType,
-    0, "group",			DXType::GroupType,
-    0, "value group",		DXType::ValueGroupType,
-    0, "value list group",	DXType::ValueListGroupType,
-    0, "field group",		DXType::FieldGroupType,
-    0, "image group",		DXType::ImageType | DXType::GroupType,
-    0, "list",			DXType::ListType,
-    0, "object",		DXType::ObjectType,
+  {  0, "undefined",		DXType::UndefinedType  },
+  {  0, "value",			DXType::ValueType  },
+  {  0, "scalar",		DXType::ScalarType  },
+  {  0, "integer",		DXType::IntegerType  },
+  {  0, "flag",			DXType::FlagType  },
+  {  0, "tensor",		DXType::TensorType  },
+  {  0, "matrix",		DXType::TensorType  },
+  {  0, "vector",		DXType::VectorType  },
+  {  0, "value list",		DXType::ValueType | DXType::ListType  },
+  {  0, "scalar list",		DXType::ScalarType | DXType::ListType  },
+  {  0, "integer list",		DXType::IntegerType | DXType::ListType  },
+  {  0, "flag list",		DXType::FlagType | DXType::ListType  },
+  {  0, "tensor list",		DXType::TensorType | DXType::ListType  },
+  {  0, "matrix list",		DXType::TensorType | DXType::ListType  },
+  {  0, "vector list",		DXType::VectorType | DXType::ListType  },
+  {  0, "string",		DXType::StringType  },
+  {  0, "string list",		DXType::StringType | DXType::ListType  },
+  {  0, "camera",		DXType::CameraType  },
+  {  0, "light",			DXType::LightType  },
+  {  0, "field",			DXType::FieldType  },
+  {  0, "geometry field",	DXType::GeometryFieldType  },
+  {  0, "color field",		DXType::ColorFieldType  },
+  {  0, "scalar field",		DXType::ScalarFieldType  },
+  {  0, "vector field",		DXType::VectorFieldType  },
+  {  0, "data field",		DXType::DataFieldType  },
+  {  0, "series",		DXType::SeriesType  },
+  {  0, "field series",		DXType::FieldSeriesType  },
+  {  0, "image",			DXType::ImageType  },
+  {  0, "image series",		DXType::ImageType | DXType::SeriesType  },
+  {  0, "vector field series",	DXType::VectorFieldType | DXType::SeriesType  },
+  {  0, "group",			DXType::GroupType  },
+  {  0, "value group",		DXType::ValueGroupType  },
+  {  0, "value list group",	DXType::ValueListGroupType  },
+  {  0, "field group",		DXType::FieldGroupType  },
+  {  0, "image group",		DXType::ImageType | DXType::GroupType  },
+  {  0, "list",			DXType::ListType  },
+  {  0, "object",		DXType::ObjectType  },
 #if !defined(DONT_DEFINE_WINDOW_TYPE)
-    0, "window",		DXType::WhereType
+  {  0, "window",		DXType::WhereType },
 #endif
 };
 
@@ -228,7 +228,7 @@ const char* DXType::TypeToString(const Type type)
     // found, return the corresponding string value; otherwise,
     // return NULL.
     //
-    while (knownType = (DXTypeName*)iterator.getNext())
+    while ((knownType=(DXTypeName*)iterator.getNext()))
     {
 	if (type == knownType->type)
 	{
@@ -252,7 +252,7 @@ Type DXType::StringToType(const char* string)
     // found, return the corresponding type value; otherwise,
     // return undefined type.
     //
-    while (knownType = (DXTypeName*)iterator.getNext())
+    while ((knownType=(DXTypeName*)iterator.getNext()))
     {
 	if (EqualString(string, knownType->name))
 	{
@@ -356,9 +356,9 @@ boolean DXType::MatchTypeLists(List& source,
     // Compare each type in the source list against each type in
     // the destination list.
     //
-    while (sourceType = (DXType*)sourceIterator.getNext())
+    while ((sourceType=(DXType*)sourceIterator.getNext()))
     {
-	while (destinationType = (DXType*)destinationIterator.getNext())
+	while ((destinationType=(DXType*)destinationIterator.getNext()))
 	{
 	    if (MatchType(*sourceType, *destinationType))
 	    {
@@ -409,10 +409,10 @@ List* DXType::IntersectTypeLists(List& first,
     // Generate the new type list, which is an intersection of
     // the two type lists.
     //
-    while(firstType = (DXType*)firstIterator.getNext())
+    while((firstType=(DXType*)firstIterator.getNext()))
     {
 	secondIterator.setPosition(1);
-	while(secondType = (DXType*)secondIterator.getNext())
+	while((secondType=(DXType*)secondIterator.getNext()))
 	{
 	    intersection = firstType->getType() & secondType->getType();
 
@@ -423,7 +423,7 @@ List* DXType::IntersectTypeLists(List& first,
 		//
 		found = FALSE;
 		typeListIterator.setPosition(1);
-		while(typeName = (DXTypeName*)typeListIterator.getNext())
+		while((typeName=(DXTypeName*)typeListIterator.getNext()))
 		{
 		    if (intersection == typeName->type)
 		    {
@@ -439,7 +439,7 @@ List* DXType::IntersectTypeLists(List& first,
 		//
 		found = FALSE;
 		thirdIterator.setPosition(1);
-		while(thirdType = (DXType*)thirdIterator.getNext())
+		while((thirdType=(DXType*)thirdIterator.getNext()))
 		{
 		    if (intersection == thirdType->getType())
 		    {
@@ -512,7 +512,7 @@ boolean DXType::setType(const Type type)
     // Iterate through the type list and look for a matching type.
     // If found, set the instance type and name and return TRUE.
     //
-    while (knownType = (DXTypeName*)iterator.getNext())
+    while ((knownType=(DXTypeName*)iterator.getNext()))
     {
 	if (type == knownType->type)
 	{
@@ -573,7 +573,7 @@ boolean DXType::ValueToType(const char *value, List& typelist)
     // Iterate through the type list and look for a matching type.
     // If found, set the instance type and name and return TRUE.
     //
-    while (knownType = (DXTypeName*)iterator.getNext())
+    while ((knownType=(DXTypeName*)iterator.getNext()))
     {
 	if (DXValue::IsValidValue(value,knownType->type))
 	    typelist.appendElement(knownType);

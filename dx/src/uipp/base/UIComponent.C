@@ -78,7 +78,7 @@ extern "C" void UIComponent_ComponentHelpCB(Widget    /* widget */,
 
 UIComponent::UIComponent(const char* name)
 {
-int	i;
+    unsigned int i;
 
     ASSERT(name);
     for(i = 0; i < STRLEN(name); i++)
@@ -440,7 +440,6 @@ void UIComponent::setGeometry(int x, int y, int width, int height)
     ASSERT(this->root);
     Arg wargs[4];
     int     n = 0;
-    XtWidgetGeometry req;
 
 #if 1
     if (x != UIComponent::UnspecifiedPosition)
@@ -454,6 +453,8 @@ void UIComponent::setGeometry(int x, int y, int width, int height)
     if (n > 0) 
         XtSetValues(this->root,wargs,n);
 #else
+    XtWidgetGeometry req;
+
     req.x = x; req.y = y; req.width = width; req.height = height;
     req.request_mode = 0;
     if (x != UIComponent::UnspecifiedPosition)  req.request_mode|= CWX;
@@ -537,7 +538,7 @@ boolean UIComponent::PrintGeometryComment(FILE *f, int xpos, int ypos,
                                 const char *indent)
 {
     float norm_xsize, norm_ysize, norm_xpos, norm_ypos;
-    int display_xsize, display_ysize, flags;
+    int display_xsize, display_ysize;
 
     if (!tag)
         tag = "window";
@@ -599,10 +600,10 @@ boolean UIComponent::ParseGeometryComment(const char *line, const char *file,
             Display *d = theApplication->getDisplay();
             display_xsize = DisplayWidth(d,0);
             display_ysize = DisplayHeight(d,0);
-            *xpos  = display_xsize * norm_xpos  + .5;
-            *ypos  = display_ysize * norm_ypos  + .5;
-            *xsize = display_xsize * norm_xsize + .5;
-            *ysize = display_ysize * norm_ysize + .5;
+            *xpos  = (int) (display_xsize * norm_xpos  + .5);
+            *ypos  = (int) (display_ysize * norm_ypos  + .5);
+            *xsize = (int) (display_xsize * norm_xsize + .5);
+            *ysize = (int) (display_ysize * norm_ysize + .5);
         } else {
             *xpos = UIComponent::UnspecifiedPosition;
             *ypos = UIComponent::UnspecifiedPosition;

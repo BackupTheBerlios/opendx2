@@ -87,7 +87,7 @@ Command::~Command()
 	int i;	
 	Command **cmds = new Command*[autos];
 	ListIterator li(this->autoActivators);
-	for (i=0 ; c = (Command*)li.getNext() ; i++)
+	for (i=0 ; (c=(Command*)li.getNext()) ; i++)
 	    cmds[i] = c; 
 
 	for (i=0 ; i<autos ; i++)
@@ -105,7 +105,7 @@ Command::~Command()
 	int i;	
 	Command **cmds = new Command*[autos];
 	ListIterator li(this->activateCmds);
-	for (i=0 ; c = (Command*)li.getNext() ; i++)
+	for (i=0 ; (c=(Command*)li.getNext()) ; i++)
 	    cmds[i] = c; 
 
 	for (i=0 ; i<autos ; i++)
@@ -122,7 +122,7 @@ Command::~Command()
 	int i;	
 	Command **cmds = new Command*[autos];
 	ListIterator li(this->deactivateCmds);
-	for (i=0 ; c = (Command*)li.getNext() ; i++)
+	for (i=0 ; (c=(Command*)li.getNext()) ; i++)
 	    cmds[i] = c; 
 
 	for (i=0 ; i<autos ; i++)
@@ -144,7 +144,7 @@ boolean Command::registerClient(Client* DXinterface)
     //
     ASSERT(DXinterface);
 
-    if (result = this->Server::registerClient(DXinterface))
+    if ((result=this->Server::registerClient(DXinterface)))
     {
 	//
 	// Sync the interface with the current state of this command.
@@ -207,7 +207,7 @@ boolean Command::unregisterScope(CommandScope* scope)
 
     ASSERT(scope);
 
-    if (position = this->scopeList.getPosition(scope))
+    if ((position=this->scopeList.getPosition(scope)))
     {
 	return this->scopeList.deleteElement(position);
     }
@@ -247,7 +247,7 @@ boolean Command::execute(CommandInterface *ci)
 	//
 	// Set the "Undo" command status for each scope.
 	//
-	while (scope = (CommandScope*)scopeListIterator.getNext())
+	while ((scope=(CommandScope*)scopeListIterator.getNext()))
 	{
 	    //
 	    // If the "Undo" command exists within the application...
@@ -273,9 +273,9 @@ boolean Command::execute(CommandInterface *ci)
 
 	ListIterator list;
 	Command      *c;
-	for (list.setList(activateCmds); c = (Command *)list.getNext(); )
+	for (list.setList(activateCmds); (c=(Command *)list.getNext()); )
 	    c->activate();
-	for (list.setList(deactivateCmds); c = (Command *)list.getNext(); )
+	for (list.setList(deactivateCmds); (c=(Command *)list.getNext()); )
 	    c->deactivate();
 
 	result = TRUE;
@@ -309,9 +309,9 @@ boolean Command::undo()
     //
     if (this->undoIt())
     {
-	while (scope = (CommandScope*)scopeListIterator.getNext())
+	while ((scope=(CommandScope*)scopeListIterator.getNext()))
 	{
-	    if (command = scope->getUndoCommand())
+	    if ((command=scope->getUndoCommand()))
 	    {
 		command->deactivate();
 	    }

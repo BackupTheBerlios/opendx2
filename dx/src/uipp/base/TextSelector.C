@@ -92,7 +92,7 @@ TextSelector::~TextSelector()
 	XtRemoveWorkProc (this->remove_hook_wpid);
     ListIterator it(this->item_list);
     char* item;
-    while (item = (char*)it.getNext())
+    while ( (item = (char*)it.getNext()) )
 	delete item;
     if (this->selected_items)
 	XtFree((char*)this->selected_items);
@@ -304,7 +304,7 @@ void TextSelector::updateList()
     int next = 0;
     ListIterator it(this->item_list);
     char* name;
-    while (name = (char*)it.getNext()) {
+    while ( (name = (char*)it.getNext()) ) {
 	strTable[next++] = XmStringCreateLtoR (name, "small_bold");
     }
 
@@ -650,7 +650,7 @@ TextSelector_ModifyCB (Widget, XtPointer cdata, XtPointer callData)
 	boolean match = FALSE;
 	int most_recent;
 	int i = 1;
-	while (item = (char*)it.getNext()) {
+	while ( (item = (char*)it.getNext()) ) {
 	    if (EqualString (item, cp)) {
 		match = TRUE;
 		most_recent = i;
@@ -708,9 +708,9 @@ boolean TextSelector::autoFill()
     const char* item;
     int found = 0;
     boolean match = FALSE;
-    int most_recent;
+    int most_recent=0;
     int i = 1;
-    while (item = (char*)it.getNext()) {
+    while ( (item = (char*)it.getNext()) ) {
 	if (EqualString (item, cp)) {
 	    match = TRUE;
 	    most_recent = i;

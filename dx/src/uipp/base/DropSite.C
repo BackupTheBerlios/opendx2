@@ -111,7 +111,7 @@ int	num_imports;
     DictionaryIterator di(*this->getDropDictionary());
     TransferStyle *ts;
     num_imports = 0;
-    while (ts = (TransferStyle*)di.getNextDefinition()) {
+    while ((ts=(TransferStyle*)di.getNextDefinition())) {
 	imports[num_imports] = ts->getAtom();
 	if ((++num_imports) == MAX_IMPORTS) break;
     }
@@ -153,12 +153,9 @@ typedef struct {
 extern "C" void DropSite_HandleDrop(Widget w, XtPointer, XtPointer call_data)
 {
 XmDropProcCallback	DropData;
-Arg 			args[20];
 int			n;
-int			i;
-Cardinal		num_imports, num_exports;
+Cardinal		i, num_imports, num_exports;
 Atom			*exportTargets;
-Boolean			match = False;
 XmDropTransferEntryRec	transferEntries[1];
 XmDropTransferEntry	transferList;
 XPointer		ptr;
@@ -200,7 +197,7 @@ Boolean			favoriteIsFound;
     num_imports = 0;
     favoriteIsFound = FALSE;
     TransferStyle *matchFound = NUL(TransferStyle*);
-    while (ts = (TransferStyle*)di.getNextDefinition()) {
+    while ((ts=(TransferStyle*)di.getNextDefinition())) {
 	for (i=0; i<num_exports; i++) {
 	    if (exportTargets[i] == ts->getAtom()) {
 		if (ts->isPreferred()) {

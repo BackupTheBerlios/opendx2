@@ -520,7 +520,7 @@ boolean IsReservedScriptingWord(const char *word)
     };      
     char *w, **p = ReservedScriptingWords;
 
-    while (w = *p) {
+    while ( (w = *p) ) {
         if (EqualString(w,word))
             return TRUE;
 	p++;
@@ -612,7 +612,6 @@ boolean IsWhere (const char* string, int& index)
 	int depth;
 	char dispstr[256];
 	int xwid;
-	boolean parsed = FALSE;
 
 	int items_parsed = sscanf (dupstring, "X%d,%[^,],##%d",
 		&depth, dispstr, &xwid);

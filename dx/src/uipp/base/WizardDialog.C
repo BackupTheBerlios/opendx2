@@ -158,7 +158,7 @@ void WizardDialog::post()
     if (WizardDialog::AlreadyWizzered) {
 	ListIterator it(*WizardDialog::AlreadyWizzered);
 	char *wizzed;
-	while (wizzed = (char*)it.getNext()) {
+	while ( (wizzed = (char*)it.getNext()) ) {
 	    if (EqualString (wizzed, this->parent_name)) {
 		found = TRUE;
 		break;

@@ -564,7 +564,7 @@ char *DeEscapeString(const char *str)
     const char *pstr = str;
 
 
-    while (c = *pstr) {
+    while ( (c = *pstr) ) {
 	switch (c) {
 	    case '\\':
 		pstr++;
@@ -642,7 +642,7 @@ char* StripWhiteSpace(const char* string)
 
 void Dos2UnixPath(char *path)
 {
-    int i;
+    unsigned int i;
 
     for (i=0; i<STRLEN(path); i++)
       if (path[i]=='\\')
@@ -650,7 +650,7 @@ void Dos2UnixPath(char *path)
 }
 void Unix2DosPath(char *path)
 {
-    int i;
+    unsigned int i;
 
     for (i=0; i<STRLEN(path); i++)
       if (path[i]=='/')

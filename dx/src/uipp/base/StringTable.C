@@ -64,7 +64,7 @@ void StringTable::clear()
 	List *l = &this->lists[i];
 	ListIterator li(*l);
 	char *s;
-	while (s = (char*)li.getNext()) 
+	while ( (s = (char*)li.getNext()) ) 
 	    delete s;
 	l->clear();
     }
@@ -93,7 +93,7 @@ boolean StringTable::addString(const char* string, int& 	   index)
     ListIterator li(*l);
     char *s;
 
-    while (s = (char*) li.getNext()) {
+    while ( (s = (char*) li.getNext()) ) {
 	if (EqualString(s,string))
 	   return FALSE;
     }
@@ -142,7 +142,7 @@ int StringTable::findString(const char* string)
     ListIterator li(*l);
     int index = 0;
     char *s;
-    while (s = (char*) li.getNext()) {
+    while ( (s = (char*) li.getNext()) ) {
 	index++;
 	if (EqualString(s,string))
 	    return LISTINDEX_TO_ID(key,index); 

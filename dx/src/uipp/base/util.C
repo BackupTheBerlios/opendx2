@@ -45,7 +45,7 @@ strrstr(char *a, char *b)
     l = strstr(a, b);
     if (l)
     {
-	while (n = strstr(l+1, b))
+	while ( (n = strstr(l+1, b)) )
 	    l = n;
     }
     return l;

@@ -51,7 +51,7 @@ CmdEntry::~CmdEntry()
     {
 	DictionaryIterator di(*this->dictionary);
 	CmdEntry *e;
-	while(e = (CmdEntry*)di.getNextDefinition())
+	while((e=(CmdEntry*)di.getNextDefinition()))
 	    delete e;
 	delete this->dictionary;
     }

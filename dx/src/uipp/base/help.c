@@ -74,6 +74,15 @@ extern char* mktemp(char*);
 
 extern void RemoveHelpIndexFileCB();
 
+extern void PushMenu(Widget, UserData*, LinkType, char*); /* from history.c */
+extern int  SearchList(SpotList *, char *); /* from helplist.c */
+extern void DeleteLastNode(HistoryList*); /* from history.c */
+extern void Pop(Stack*); /* from helpstack.c */
+extern void FreeSpotList(SpotList *); /* from helplist.c */
+extern void FreeStack(Stack *); /* from helpstack.c */
+
+Bool HelpOn(Widget, int, char *, char *, int);
+
 /*
  * CALLBACK PROCEDURE DECLARATIONS
  */
@@ -102,7 +111,6 @@ void AddToHistory(Widget    RefWidget,
 		  UserData* userdata)
 {
     int   argcnt;
-    char* str;
     Arg   args[8];
 
     argcnt = 0;
@@ -115,7 +123,8 @@ void AddToHistory(Widget    RefWidget,
      */
     if (linkType != RETURN && userdata->filename[0] != '\0')
     {
-	PushMenu(RefWidget, userdata, linkType, Label, LinkData);
+	/* PushMenu(RefWidget, userdata, linkType, Label, LinkData); */
+	PushMenu(RefWidget, userdata, linkType, Label);
     }
 
     /*
@@ -143,7 +152,6 @@ void AddToHistory(Widget    RefWidget,
 void MoveText(UserData *userdata, int offset)
 {
  Arg         args[1];
- int         argcnt;
  int         maxvalue;
  int         slidersize;
 
@@ -233,7 +241,6 @@ char *BuildHelpIndex(RefWidget, IndexTable, Entries)
     char *fname;
     char CurrentFont[127];
     char CurrentColor[127];
-    int  filewidth;
 
     strcpy(CurrentFont, DEFAULT_INDEX_FONT);
     strcpy(CurrentColor, DEFAULT_INDEX_COLOR);
@@ -285,12 +292,10 @@ Bool HelpOn(Widget RefWidget,
 {
     FILE*       infile;
     int         argcnt,i;
-    char        *ref,*envptr,*gptr,*plptr;
+    char        *ref,*gptr,*plptr;
     UserData    *userdata;
-    int         len,offset = 0;
+    int         len, offset = 0;
     Bool        ManPage = FALSE;
-    Widget      hbar;
-    Widget      w;
     char        fname[MAXPATHLEN];
     char        tempname[MAXPATHLEN];
     Arg         args[8];
@@ -454,7 +459,6 @@ Widget InitHelpSystem(Widget parent, Widget *multiText)
     Widget      vbar;
     Widget      goBackButton;
     Widget      menuShell;
-    Widget      popupMenu;
     UserData*   userdata;
     Dimension   width;
     Dimension   height;
@@ -462,8 +466,6 @@ Widget InitHelpSystem(Widget parent, Widget *multiText)
     int         argcnt;
 
     Arg         args[64];
-    XmString    xmstr[32];
-    XmString*   xmstrTable[8];
     
     frame =
 	XtVaCreateManagedWidget

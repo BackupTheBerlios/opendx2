@@ -21,7 +21,7 @@
 #include "../widgets/MultiText.h"
 #include "help.h"
 
-
+extern Bool HelpOn(Widget, int, char *, char *, int); /* from help.c */
 extern unsigned long COLOR();
 
 
@@ -237,7 +237,6 @@ void _PopMenu(Widget  w,
     Widget       mtext = (Widget)closure;
     UserData*    userdata;
     int          index;
-    HistoryList* list;
     int          limit;
     int          i;
     int          position;

@@ -177,7 +177,6 @@ extern "C" void WorkSpace_BackgroundCB(Widget widget,
                 XtPointer calldata)
 {
     WorkSpace *ws = (WorkSpace*) clientData;
-    Arg    arg[2];
 
     ws->doBackgroundAction(widget,calldata);
 }
@@ -187,7 +186,6 @@ extern "C" void WorkSpace_SelectionCB(Widget widget,
                 XtPointer calldata)
 {
     WorkSpace *ws = (WorkSpace*) clientData;
-    Arg    arg[2];
 
     ws->doSelectionAction(widget,calldata);
 }
@@ -357,7 +355,6 @@ void WorkSpace::beginManyPlacements()
 {
    ASSERT(this->getRootWidget());
 
-   ASSERT(this->activeManyPlacements >= 0);
    this->activeManyPlacements++;
    if (this->activeManyPlacements == 1) {
 	XtVaSetValues(this->getRootWidget(),
@@ -379,7 +376,6 @@ void WorkSpace::endManyPlacements()
 		XmNallowOverlap, overlap,
 	    NULL);
     }
-    ASSERT(this->activeManyPlacements >= 0);
 }
 
 void WorkSpace::setPlacementCount(int count)

@@ -342,7 +342,7 @@ boolean List::findElementValue(const void *element, isElementEqual f,int& index)
     void *entry;
 
     index = 0;
-    while(entry = (void*)iterator.getNext())
+    while( (entry = (void*)iterator.getNext()) )
     {
         index++;
         if (f(element, (const void*)entry))
@@ -406,7 +406,7 @@ List *List::dup()
     ListIterator iter(*this);
     const void *v;
 
-    while (v = (const void*)iter.getNext())
+    while ( (v = (const void*)iter.getNext()) )
 	l->appendElement(v);
 
     return l;
@@ -428,7 +428,6 @@ void List::SortOnData(const void **sd, const void **workspace, int cnt,
 	return;
 
     if (cnt == 2) {	
-	int j;
 	if (cmpFunc(sd[0],sd[1]) > 0) {
 	    const void *tmp = sd[0];
 	    sd[0] = sd[1];
@@ -540,7 +539,7 @@ void List::sort(ListElementCmpFunc cmpFunc)
     ListIterator iter(*this);
     const void *v;
     int i = 0;
-    while (v = (const void*)iter.getNext()) {
+    while ( (v = (const void*)iter.getNext()) ) {
 	sd[i] = v;
 	i++;
     }

@@ -944,7 +944,6 @@ const char* MainWindow::getGeometryString()
 int i;
 Widget w = NUL(Widget);
 Widget root = NUL(Widget);
-int alternates = 0;
 int nxtalt = 0;
 #define MAXNM 20
 

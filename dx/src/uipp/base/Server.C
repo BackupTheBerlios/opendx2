@@ -25,7 +25,7 @@ void Server::notifyClients(int message, const void *data, const char *msg)
     //
     // Notify each of the clients in the client list.
     //
-    while(client = (Client*)iterator.getNext())
+    while( (client = (Client*)iterator.getNext()) )
     {
 	client->notify(message, data, msg);
     }
@@ -59,7 +59,7 @@ boolean Server::unregisterClient(Client* client)
     // If the client is in the list, delete the client from the list
     // and return the result; otherwise, return FALSE.
     //
-    if (position = this->clientList.getPosition(client))
+    if ( (position = this->clientList.getPosition(client)) )
     {
 	return this->clientList.deleteElement(position);
     }

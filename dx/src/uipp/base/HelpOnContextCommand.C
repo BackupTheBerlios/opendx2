@@ -30,8 +30,6 @@ HelpOnContextCommand::HelpOnContextCommand(const char*   name,
 					   MainWindow*   window) :
 	NoUndoCommand(name, scope, active)
 {
-    MainWindowHelpCallbackStruct callData;
-
     ASSERT(window);
 
     if (NOT HelpOnContextCommand::HelpOnContextCommandClassInitialized)

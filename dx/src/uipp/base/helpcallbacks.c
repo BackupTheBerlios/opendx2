@@ -7,16 +7,24 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 #ifdef OS2
 #include <stdlib.h>
 #include <types.h>
 #endif
+
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
 #include <stdio.h>
 #include <Xm/Xm.h>
 #include "../widgets/MultiText.h"
 #include "help.h"
+
+extern Bool HelpOn(Widget, int, char *, char *, int); /* from help.c */
+extern void DeleteLastNode(HistoryList*);
 
 /*--------------------------------------------------------------------------*
  |                                 LinkCB                                   |
@@ -52,7 +60,6 @@ Widget w;
 XtPointer client;
 XtPointer call;
 {
-XmAnyCallbackStruct *acs=(XmAnyCallbackStruct*)call;
 UserData *userdata;
 Arg         args[1];
 int         argcnt;
@@ -92,7 +99,6 @@ XtPointer client;
 XtPointer call;
 {
 Widget mtext = (Widget)client;
-XmAnyCallbackStruct *acs=(XmAnyCallbackStruct*)call;
 UserData *userdata;
 Arg         args[1];
 int         argcnt;
@@ -123,12 +129,7 @@ XtPointer call;
  Arg         args[1];
  int         argcnt;
  UserData    *userdata;
- char        fname[MAXPATHLEN];
- char        label[MAXPATHLEN];
  int         position;
- 
-        XmAnyCallbackStruct *acs=(XmAnyCallbackStruct*)call;
-
 
   argcnt = 0;
   XtSetArg(args[argcnt], XmNuserData, &userdata); argcnt++;

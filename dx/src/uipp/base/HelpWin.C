@@ -128,7 +128,7 @@ HelpWin::~HelpWin()
 {
     DictionaryIterator di(this->topicToFileMap);
     char *file;
-    while(file = (char*)di.getNextDefinition())
+    while((file=(char*)di.getNextDefinition()))
 	delete file;
     this->topicToFileMap.clear();
 
@@ -199,8 +199,6 @@ Widget HelpWin::createWorkArea(Widget parent)
     int         argcnt;
 
     Arg         args[64];
-    XmString    xmstr[32];
-    XmString*   xmstrTable[8];
     
     frame =
 	XtVaCreateManagedWidget

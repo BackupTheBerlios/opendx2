@@ -205,7 +205,7 @@ int     response = this->decideToDrag(event);
     DictionaryIterator di(*this->getDragDictionary());
     num_exports = 0;
     TransferStyle *ts;
-    while (ts = (TransferStyle*)di.getNextDefinition()) {
+    while ( (ts = (TransferStyle*)di.getNextDefinition()) ) {
         exports[num_exports] = ts->getAtom();
         if ((++num_exports) == MAX_EXPORTS) break;
     }
@@ -318,7 +318,7 @@ Boolean ret;
     // the transfer atom.
     DictionaryIterator di(*ds->getDragDictionary());
     TransferStyle *ts;
-    while (ts = (TransferStyle*)di.getNextDefinition()) {
+    while ( (ts = (TransferStyle*)di.getNextDefinition()) ) {
 	if (ts->getAtom() == *target) break;
     }
     //

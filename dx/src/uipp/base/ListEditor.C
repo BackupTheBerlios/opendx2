@@ -231,7 +231,7 @@ extern "C" void ListEditor_ListCB(Widget w, XtPointer clientData,
 void ListEditor::listCallback(Widget w, XtPointer cb)
 {
     XmListCallbackStruct *list_data = (XmListCallbackStruct*)cb;
-    char        *text, label[256], value[256];
+    char        *text;
 
     int position = list_data->item_position;
 
@@ -291,7 +291,7 @@ void ListEditor::addCallback(Widget w, XtPointer cb)
     int visible;
     XtVaGetValues(this->valueList, XmNvisibleItemCount, &visible, NULL);
     if (count > visible) {
-        int selected = this->getSelectedItemIndex();
+        this->getSelectedItemIndex();
 	XmListSetBottomPos(this->valueList,position);	
     }
 			
@@ -357,7 +357,6 @@ void ListEditor::deleteCallback(Widget w, XtPointer callData)
 void ListEditor::replaceListItems(const char **items, int nitems)
 {
     int prev_nitems, i;
-    Arg arg[4];
     XmString *xmstrings;
 
     ASSERT(this->valueList);
@@ -366,6 +365,7 @@ void ListEditor::replaceListItems(const char **items, int nitems)
     /*
      * The following dummy code is to fix the vertical scrollbar problem.
      */
+    Arg arg[4];
     int width, height;
     i = 0;
     XtSetArg(arg[i], XmNwidth,  &width); 	i++;
@@ -405,7 +405,6 @@ void ListEditor::replaceListItems(const char **items, int nitems)
     {
 	xmstrings = new XmString[nitems];
 	for (i=0 ; i<nitems ; i++) {
-	    const char *value, *name;
 	    xmstrings[i] = 
 		XmStringCreateLtoR((char*)items[i],XmSTRING_DEFAULT_CHARSET);
 	}
@@ -432,7 +431,6 @@ void ListEditor::replaceListItems(const char **items, int nitems)
 void ListEditor::editListItem(const char *text, int position, 
 					boolean replace, boolean select)
 {
-    int current_pos = this->listSelection;
     XmString string;
  
     ASSERT(position >= 0);

@@ -230,7 +230,7 @@ IBMApplication::~IBMApplication()
     if (this->noWizards) {
 	ListIterator it(*this->noWizards);
 	char *nowiz;
-	while (nowiz = (char*)it.getNext())
+	while ( (nowiz = (char*)it.getNext()) )
 	    delete nowiz;
 	delete this->noWizards;
 	this->noWizards = NUL(List*);
@@ -949,7 +949,7 @@ const char* class_name = this->getApplicationClass();
     char *resource_fmt = "%s*dismissedWizards: %s";
     char* name;
     ListIterator it(*this->noWizards);
-    while (name = (char*)it.getNext()) {
+    while ( (name = (char*)it.getNext()) ) {
 	totlen+= 1+strlen(name);
     }
 
@@ -962,7 +962,7 @@ const char* class_name = this->getApplicationClass();
 
     it.setList(*this->noWizards);
     int nl_os = 0;
-    while (name = (char*)it.getNext()) {
+    while ( (name = (char*)it.getNext()) ) {
 	strcpy (&name_list[nl_os], name);
 	nl_os+= strlen(name);
 	name_list[nl_os++] = NAME_SEP;
@@ -1014,7 +1014,7 @@ boolean IBMApplication::isWizardWindow(const char* name)
 
     ListIterator it(*this->noWizards);
     char *wiz;
-    while (wiz = (char*)it.getNext()) {
+    while ( (wiz = (char*)it.getNext()) ) {
 	if (EqualString(wiz, name)) return FALSE;
     }
 

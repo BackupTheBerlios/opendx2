@@ -510,8 +510,7 @@ boolean
 DynamicResource::VerifyPresence (const char *resourceName, Widget w, XtResource *setting)
 {
 XtResourceList reslist;
-Cardinal rescnt;
-int i;
+Cardinal i, rescnt;
 
     // Not an error because we want to go thru the constructor OK even
     // if the resource name is not yet know.  This is because of printing, parsing.

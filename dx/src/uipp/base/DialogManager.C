@@ -74,7 +74,7 @@ extern "C" void DialogManager_OkCB(Widget    widget,
     // If the caller specified an OK callback, call the function.
     //
     data = (DialogData*)clientData;
-    if (callback = data->getOkCallback())
+    if ( (callback = data->getOkCallback()) )
     {
 	(*callback)(data->getClientData());
     }
@@ -158,7 +158,7 @@ extern "C" void DialogManager_HelpCB(Widget    widget,
     // If the caller specified a help callback, call the function.
     //
     data = (DialogData*)clientData;
-    if (callback = data->getHelpCallback())
+    if ( (callback = data->getHelpCallback()) )
     {
 	(*callback)(data->getClientData());
     }

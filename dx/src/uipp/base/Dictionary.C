@@ -30,6 +30,7 @@
 #endif
 #endif
 
+#if 0 /* Never used */
 //
 // Determine if two symbol values entries have the same name.  
 //
@@ -37,6 +38,7 @@ static boolean _EqualName(const void *sv1, const void *sv2)
 {
 	return ((DictionaryEntry*)sv1)->name == ((DictionaryEntry*)sv2)->name;
 }
+#endif
 
 //
 // Determine if two symbol values entries have the same name.  
@@ -70,7 +72,7 @@ void Dictionary::clear()
     DictionaryEntry *de;
     ListIterator iterator(*this);
 
-    while (de = (DictionaryEntry*)iterator.getNext()) 
+    while ((de=(DictionaryEntry*)iterator.getNext())) 
 	    delete de;
     this->List::clear();
 
@@ -123,7 +125,7 @@ int Dictionary::getPosition(Symbol s)
 	ListIterator iterator(*this);
 	int pos = 0;
 
-	while (de = (DictionaryEntry*)iterator.getNext()) {
+	while ((de=(DictionaryEntry*)iterator.getNext())) {
 	    pos++;
 	    if (de->name == s)	
 		return pos;	
@@ -148,7 +150,7 @@ boolean Dictionary::addDefinition(const char *name, const void *def)
 		
 	if (this->isSorted) {
 	    pos = 1;
-	    while (de = (DictionaryEntry*)iterator.getNext()) {
+	    while ((de=(DictionaryEntry*)iterator.getNext())) {
 		    str = sm->getSymbolString(de->name);
 		    ASSERT(str);
 		    r = STRCMP(str, name);
@@ -211,7 +213,7 @@ boolean Dictionary::replaceDefinitions(Dictionary *d, Dictionary *olddefDict)
     DictionaryEntry *de;
     ListIterator iterator(*d);
 	    
-    while (de = (DictionaryEntry*)iterator.getNext()) {
+    while ((de=(DictionaryEntry*)iterator.getNext())) {
 	Symbol sym = de->name;
 	void *olddef;
 	void *def = de->definition;
@@ -232,7 +234,7 @@ DictionaryEntry* Dictionary::getDictionaryEntry(Symbol findkey)
 	DictionaryEntry *d;
 
         ListIterator di(*this);
-	while (d = (DictionaryEntry*)di.getNext()) {
+	while ((d=(DictionaryEntry*)di.getNext())) {
 	    if (d->name == findkey)
 		break;
 	}
@@ -318,7 +320,6 @@ void *Dictionary::removeDefinition(const char *n)
 //
 void *Dictionary::removeDefinition(const void *def)
 {
-	SymbolManager *sm = this->getSymbolManager();
 	int	index;
 	DictionaryEntry *d;
 	DictionaryEntry de(0,(void*)def);	

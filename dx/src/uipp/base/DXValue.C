@@ -32,7 +32,7 @@ static void clip_trailing_zeros(char *buf)
 	char a, *p = c+2;
 	boolean doit = TRUE;
 	boolean space = FALSE;
-	while (a = *p) {
+	while ( (a=*p) ) {
 	    if (a == ' ')  {
 		space = TRUE;
 		break;
@@ -168,7 +168,7 @@ boolean _IsList(const char* string,
     Type    value_type;
     int     i;
     int     tuple;
-    int     first_tuple;
+    int     first_tuple=0;
     int     elements;
     boolean lexed;
 
@@ -829,11 +829,11 @@ boolean DXValue::setValue(const char* string,
 		//  we convert them to integer values.
 		// 
 		if (strstr(string,"false"))  {
-		    this->integer = this->scalar = 0;
+		    this->integer = 0; this->scalar = 0;
 		    delete this->string;
 		    this->string = DuplicateString("0");
 		} else if (strstr(string,"true")) {
-		    this->integer = this->scalar = 1;
+		    this->integer = 1; this->scalar = 1;
 		    delete this->string;
 		    this->string = DuplicateString("1");
 		} else {
@@ -1136,7 +1136,7 @@ char *DXValue::NextListItem(const char *s, int *index,
 				Type listtype, char *buf)
 {
     int start, i = *index;
-    boolean r;
+    boolean r = true;
     char *p ;
 
     if (!s)
@@ -1183,7 +1183,7 @@ char *DXValue::NextListItem(const char *s, int *index,
 						    IsTensor(s,i);
 	    break;
 	default:
-	    printf("Can't get list items from a list of type 0x%x\n",listtype);
+	    printf("Can't get list items from a list of type 0x%lx\n",listtype);
 	    ASSERT(0);
     }
 
@@ -1474,7 +1474,7 @@ boolean DXValue::ClampVSIValue(const char *val, Type valtype,
     if (valtype & DXType::ListType) {
 	int index = -1;
 	char *clamped = NULL;
-	char *p;
+	char *p=NULL;
 	int maxlen = 0, clampedlen = 0;
 	if (clampedval) {
 	    maxlen = STRLEN(val) + 16;	
@@ -1596,7 +1596,7 @@ int DXValue::GetDoublesFromList(const char *list, Type listtype,
 {
     int count = DXValue::GetListItemCount(list, listtype);
     double *values = NULL;
-    int vtuple, nitems = 0;
+    int vtuple = 0, nitems = 0;
  
     if (count) {
         int     i, index = -1, offset = 0;
