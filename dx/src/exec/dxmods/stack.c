@@ -2815,13 +2815,13 @@ allposregular(StackInfo *si, int *regflag)
 	genorig = orig;
 	gendelta = delta;
     } else {
-	items = sizeof(float) * shape;
+	items = sizeof(float) * shape0;
 	genorig0 = (float *)DXAllocate(items);
 	gencounts0 = (int *)DXAllocate(items);
 	genorig = (float *)DXAllocate(items);
 	gencounts = (int *)DXAllocate(items);
 	
-	items *= shape;
+	items *= shape0;
 	gendelta0 = (float *)DXAllocate(items);
 	gendelta = (float *)DXAllocate(items);
 	if (!gencounts0 || !genorig0 || !gendelta0 || !gencounts || !genorig || !gendelta)

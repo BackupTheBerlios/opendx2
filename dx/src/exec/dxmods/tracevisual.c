@@ -176,7 +176,6 @@ DXVisualizeMemory(int which, int procid)
 		return ERROR;
 	    
 	    if (DXGetMemorySize(&d_small->arena_size, NULL, NULL)
-		&& d_small->arena_size >= 0
 		&& DXGetMemoryBase(&d_small->arena_base, NULL, NULL)) {
 
 		d_small->which = MEMORY_SMALL;
@@ -208,7 +207,6 @@ DXVisualizeMemory(int which, int procid)
 	    
 	    
 	    if (DXGetMemorySize(NULL, &d_large->arena_size, NULL) 
-		&& d_large->arena_size >= 0
 		&& DXGetMemoryBase(NULL, &d_large->arena_base, NULL)) {
 	
 		d_large->which = MEMORY_LARGE;
@@ -235,8 +233,9 @@ DXVisualizeMemory(int which, int procid)
     }
 
     if (which & 4) {			/* local memory */
+	unsigned local_size;
 
-	if (!DXGetMemorySize(NULL, NULL, &i) || i == 0) {
+	if (!DXGetMemorySize(NULL, NULL, &local_size) || local_size == 0) {
 	    DXSetError(ERROR_DATA_INVALID, "local memory not supported");
 	    return ERROR;
 	}
@@ -387,7 +386,7 @@ resize_display(struct dispinfo *d, int new_width, int new_height)
 
     d->memory_image = XCreateImage(d->disp,
 			     XDefaultVisual(d->disp, XDefaultScreen(d->disp)),
-			     8, ZPixmap, 0, d->memory_pixel,
+			     8, ZPixmap, 0, (char *) d->memory_pixel,
 			     d->win_width, d->win_height, 8, 0);
 
     XResizeWindow(d->disp, d->wind, d->win_width, d->win_height);
@@ -401,7 +400,7 @@ pix_set(struct dispinfo *d, Pointer memstart, uint memsize, ubyte color)
     int start, size;			/* start, num to set in 'squares' */
     int row, col;			/* window column, row to set */
     int part;				/* wrap around edge of window */
-    uint where;
+    ulong where;
     int i;
 
     /* round size up.  is start also off by one? */
@@ -420,13 +419,13 @@ pix_set(struct dispinfo *d, Pointer memstart, uint memsize, ubyte color)
 
 	for (i=0; i < d->pixel_ymult; i++) {
 	    
-	    where = (uint)d->memory_pixel + (row + i) * d->win_width + col;
-	    if (where >= (uint)d->memory_pixel + WinSize(d))
+	    where = (ulong)d->memory_pixel + (row + i) * d->win_width + col;
+	    if (where >= (ulong)d->memory_pixel + WinSize(d))
 		break;
 	    
-	    if ((where + part) >= (uint)d->memory_pixel + WinSize(d))
+	    if ((where + part) >= (ulong)d->memory_pixel + WinSize(d))
 		part -= (where + part) - 
-		    ((uint)d->memory_pixel + WinSize(d) + 1);
+		    ((ulong)d->memory_pixel + WinSize(d) + 1);
 
 	    memset ((ubyte *)where, color, part);
 	}
@@ -679,7 +678,8 @@ init_memory_visual (struct dispinfo *d)
 
     d->memory_image = XCreateImage (d->disp,
 			   XDefaultVisual (d->disp, XDefaultScreen (d->disp)),
-			   8, ZPixmap, 0, d->memory_pixel, w, h, 8, 0);
+			   8, ZPixmap, 0, (char *) d->memory_pixel, 
+			   w, h, 8, 0);
     
     XSetErrorHandler(error_handler);
 

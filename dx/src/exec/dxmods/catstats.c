@@ -431,7 +431,7 @@ doLeaf(Object *in, Object *out)
      goto error;
   }
 
-  result = (int)DXEndField((Field)out[0]);
+  result = (DXEndField((Field)out[0]) != NULL);
 
 error:
   return result;
@@ -544,7 +544,7 @@ CategoryStatistics_worker(float *out_data, int in_knt, int out_knt, Array cat_ar
 	}
 
 	/* here should give warning if c is out of range */
-	if ((c >= 0) && (c < out_knt)) {
+	if (c < out_knt) {
 	    switch (operation) {
 		case STAT_COUNT:
 			count[c]++; 

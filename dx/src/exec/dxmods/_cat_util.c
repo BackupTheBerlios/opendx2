@@ -212,10 +212,10 @@ int _dxf_cat_hashstrcmp(Key searchkey, Element element)
 PseudoKey _dxf_cat_hashstrkey(Key key)
 {
     long hash, tmp;
-    char *s, *t;
+    char *s;
     hashelement *h = (hashelement *)key;
     s = (char *)h->p;
-    t = (char *)h->p;
+    /*t = (char *)h->p;*/
 
     for (hash = 0; *s; s++) {
 	hash = (hash << ONE_EIGHTH) + (*s) * prime2[hash%NPRIMES] + prime1[(*s)%NPRIMES];

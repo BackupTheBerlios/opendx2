@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/imagemessage.c,v 1.4 2000/08/24 20:04:36 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/imagemessage.c,v 1.5 2002/03/21 02:57:36 rhh Exp $
  */
 
 #include "dx/dx.h"
@@ -570,7 +570,8 @@ m_ImageMessage(Object *in, Object *out)
 
 		p = buffer0 + strlen(buffer0);
 
-		if (DXTypeCheck((Array)AACOLORS, TYPE_FLOAT, 1, 3))
+		if (DXTypeCheck((Array)AACOLORS, TYPE_FLOAT, CATEGORY_REAL, 
+				1, 3))
 		{
 		    int i;
 		    float *foo = (float *)DXGetArrayData((Array)AACOLORS);
@@ -578,7 +579,8 @@ m_ImageMessage(Object *in, Object *out)
 			sprintf(p, " [ %g %g %g ]", foo[0], foo[1], foo[2]);
 		    while (*p++ != ']');
 		}
-		else if (DXTypeCheck((Array)AACOLORS, TYPE_INT, 1, 3))
+		else if (DXTypeCheck((Array)AACOLORS, TYPE_INT, 
+				     CATEGORY_REAL, 1, 3))
 		{
 		    int i;
 		    int *foo = (int *)DXGetArrayData((Array)AACOLORS);

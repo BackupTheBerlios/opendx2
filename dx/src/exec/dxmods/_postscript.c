@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.7 2000/08/24 20:04:17 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.8 2002/03/21 02:57:30 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -1482,9 +1482,6 @@ parse_format(char *fmt, struct ps_spec *spec)
     char format[1024];
     int i, len = strlen(fmt);
     int dpi_parsed = 0, width_parsed = 0;
-    int height_parsed = 0;
-    int gamma_parsed = 0;
-    int margin_parsed = 0;
     float g;
 
     if (len >= 1024) {
@@ -1560,7 +1557,6 @@ parse_format(char *fmt, struct ps_spec *spec)
             } else  {
                 goto format_error;
             }
-            gamma_parsed = 1;
     }
     /*
      * Parse the page orientation.
@@ -1602,7 +1598,6 @@ parse_format(char *fmt, struct ps_spec *spec)
             } else  {
                 goto format_error;
             }
-            margin_parsed = 1;
     }
     /*
      * Parse the width image dimensioning spec where width is in inches
@@ -1657,7 +1652,6 @@ parse_format(char *fmt, struct ps_spec *spec)
                 DXErrorGoto(ERROR_BAD_PARAMETER,
                     "PostScript 'height' must be non-zero");
             }
-	    height_parsed = 1;
             spec->height_dpi = spec->image_height / height;
             if (!width_parsed) {
                 spec->width_dpi = spec->height_dpi;

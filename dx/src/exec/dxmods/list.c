@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/list.c,v 1.6 2000/08/24 20:04:39 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/list.c,v 1.7 2002/03/21 02:57:36 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -51,7 +51,7 @@ m_List(Object *in, Object *out)
 Array _dxfBuildList(Object *in)
 {
     int i, onum;
-    int seen_null = 0, warn_null = 0;
+    int seen_null = 0 /*, warn_null = 0 */;
     Array new = NULL;
     Object next = NULL;
     Type type;
@@ -92,7 +92,7 @@ Array _dxfBuildList(Object *in)
         }
 
 	if (seen_null) {
-	    warn_null = 1;
+      /* warn_null = 1; */
 	    seen_null = 0;
 	}
 

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/arrange.c,v 1.4 2000/08/24 20:04:23 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/arrange.c,v 1.5 2002/03/21 02:57:33 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -289,7 +289,6 @@ Object _arrange ( CompositeField parent,
 {
     CompositeField  new_parent = NULL;
 
-    Class  class;
     Object out = NULL;
     Object inp_member;
     int    origin[2];
@@ -297,11 +296,11 @@ Object _arrange ( CompositeField parent,
 
     DXASSERTGOTO ( inp != ERROR );
 
-    switch ( class = DXGetObjectClass ( inp ) )
+    switch ( DXGetObjectClass ( inp ) )
     {
         case CLASS_GROUP:
 
-            switch ( class = DXGetGroupClass ( (Group)inp ) )
+            switch ( DXGetGroupClass ( (Group)inp ) )
             {
                 case CLASS_GROUP:
                 case CLASS_SERIES:
@@ -466,16 +465,15 @@ _get_all_image_bounds(Object o, int n, int *count, int ncols, int *binx, int *bi
 	int width, height;
 	int min_x, min_y;
 	int i,j;
-	Class class;
 
 	if (*count==n)
     	    return OK;
 
-    switch ( class = DXGetObjectClass ( o ) )
+    switch ( DXGetObjectClass ( o ) )
     {
         case CLASS_GROUP:
 
-            switch ( class = DXGetGroupClass ( (Group)o ) )
+            switch ( DXGetGroupClass ( (Group)o ) )
             {
                 case CLASS_GROUP:
                 case CLASS_SERIES:

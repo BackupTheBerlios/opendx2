@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/caption.c,v 1.4 2000/05/16 18:47:45 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/caption.c,v 1.5 2002/03/21 02:57:33 rhh Exp $
  */
 
 
@@ -33,7 +33,7 @@ Caption(char **s, int n, Point p, int flag, Point ref, double align,
     Object a[100], b=NULL, c=NULL, o=NULL, oo=NULL, font;
     float ascent, descent, widths[100], width, height, lead=.133;
     Group g=NULL;
-    int i, vertical;
+    int i;
     float xr, yr, xMin, xMax, yMin, yMax;
     Vector xlate;
 
@@ -86,12 +86,13 @@ Caption(char **s, int n, Point p, int flag, Point ref, double align,
     height = n*(ascent+descent) + (n-1)*lead;
 
     x = DXNormalize(x);
-    if (ABS(x.x) < ABS(x.y)) 
-      vertical=1;
-    else
-      vertical=0;
     y = DXNormalize(y);
     z = DXNormalize(DXCross(x, y));
+
+    /* if (ABS(x.x) < ABS(x.y)) */
+    /* 	 vertical=1;	        */
+    /* else		        */
+    /* 	 vertical=0;            */
 
     {
 	float r = sqrt(x.x*x.x + x.y*x.y);

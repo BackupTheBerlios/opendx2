@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.8 2001/01/04 21:27:08 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.9 2002/03/21 02:57:35 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -1260,7 +1260,7 @@ error:
 static Error
 skip_ascii(FILE *fp, int num)
 {
-   int i,c,prev,curr,found;
+   int c,prev,curr,found;
 
    c = getc(fp);
    if (c == ' ' || c == '\n' || c == '\t'){
@@ -1271,7 +1271,7 @@ skip_ascii(FILE *fp, int num)
       prev = 1;
       found = 1;
    }
-   for (i=0; ; ){
+   while (1) {
       c = getc(fp);
       if (c == ' ' || c == '\n' || c == '\t') curr = 0;
       else curr = 1;

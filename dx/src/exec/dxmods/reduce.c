@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/reduce.c,v 1.6 2000/08/24 20:09:36 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/reduce.c,v 1.7 2002/03/21 02:57:38 rhh Exp $:
  */
 
 /***
@@ -1328,7 +1328,6 @@ ReduceSumAxis(Pointer inBuf, Pointer outBuf, int filter, int nDim, int nElts,
     int			overhang;
     int			i, j;
     FilterLoopCntl	loop[MAX_DIMENSION], *l;
-    int		        limit;
     int		        inAxisSkip, outAxisSkip;
     float		*buf, *sumPtr, *lastSumPtr;
     int		   	bufI;
@@ -1416,7 +1415,7 @@ ReduceSumAxis(Pointer inBuf, Pointer outBuf, int filter, int nDim, int nElts,
     if (! lastSumPtr)
 	goto error;
 
-    limit        = loop[0].limit;
+    /*limit        = loop[0].limit;*/
     inAxisSkip   = loop[0].inSkip;
     outAxisSkip  = loop[0].outSkip;
 

@@ -1512,7 +1512,6 @@ Invalidate (Field obj, int items, DepOn d, int olength, int *offsets)
     Object	inv;
     char	*what;
     char	*orig;
-    char	*invl;
     int		ninv;
     InvalidComponentHandle 	ihandle = NULL;
     InvalidComponentHandle 	ohandle = NULL;
@@ -1522,13 +1521,13 @@ Invalidate (Field obj, int items, DepOn d, int olength, int *offsets)
     if (d == DEP_POSITIONS)
     {
 	what = "positions";
-	invl = "invalid positions";
+	/* invl = "invalid positions"; */
 	orig = "original invalid positions";
     }
     else
     {
 	what = "connections";
-	invl = "invalid connections";
+	/* invl = "invalid connections"; */
 	orig = "original invalid connections";
     }
 

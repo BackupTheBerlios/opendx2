@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.c,v 1.6 2001/04/06 16:59:14 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.c,v 1.7 2002/03/21 02:57:26 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -1557,8 +1557,15 @@ Error GEN_get_point_prod ( int index, array_info a, GEN_POINT_TYPE *out )
     ( defined GEN_DELTA_TYPE     )
 Error GEN_get_point_grid ( int index, array_info a, GEN_POINT_TYPE *out )
 {
-    int    iu, iv, iw;
-    int    count_1_count_2;
+#if ( GEN_CONN_D == 1 ) || ( GEN_CONN_D == 2 ) || ( GEN_CONN_D == 3 )
+    int    iu;
+#endif
+#if ( GEN_CONN_D == 2 ) || ( GEN_CONN_D == 3 )
+    int    iv;
+#endif
+#if ( GEN_CONN_D == 3 )
+    int    iw, count_1_count_2;
+#endif
 
     DXASSERTGOTO ( a != ERROR );
     DXASSERTGOTO ( a->data == NULL );
@@ -1672,9 +1679,15 @@ Error GEN_get_conn_irr ( int index, array_info c, GEN_CONN_TYPE *out )
     ( defined GEN_CONN_SHAPE    )
 Error GEN_get_conn_grid ( int index, array_info c, GEN_CONN_TYPE *out )
 {
-    int    iu, iv, iw;
-    int    i;
-    int    count_1, count_2, count_1_count_2;
+#if ( GEN_CONN_D == 1 ) || ( GEN_CONN_D == 2 ) || ( GEN_CONN_D == 3 )
+    int    iu;
+#endif
+#if ( GEN_CONN_D == 2 ) || ( GEN_CONN_D == 3 )
+    int    i, iv, count_1;
+#endif
+#if ( GEN_CONN_D == 3 )
+    int    iw, count_2, count_1_count_2;
+#endif
 
     /* 
      * XXX - An irregular iterator using this will still
@@ -1794,9 +1807,15 @@ Error GEN_get_neighb_irr ( int index, array_info n, GEN_NEIGHB_TYPE *out )
 Error GEN_get_neighb_grid
           ( int index, array_info c, mesh_bounds b, GEN_NEIGHB_TYPE *out )
 {
-    int    iu, iv, iw;
-    int    i;
-    int    count_0, count_1, count_2, count_1_count_2;
+#if ( GEN_CONN_D == 1 ) || ( GEN_CONN_D == 2 ) || ( GEN_CONN_D == 3 )
+    int    iu, count_0;
+#endif
+#if ( GEN_CONN_D == 2 ) || ( GEN_CONN_D == 3 )
+    int    i, iv, count_1;
+#endif
+#if ( GEN_CONN_D == 3 )
+    int    iw, count_2, count_1_count_2;
+#endif
 
     DXASSERTGOTO ( c != ERROR );
     DXASSERTGOTO ( c->class == CLASS_MESHARRAY );

@@ -24,7 +24,7 @@
  */
 Error m_CopyContainer(Object *in, Object *out)
 {
-    int how = COPY_ATTRIBUTES;
+    enum copy how = COPY_ATTRIBUTES;
 
     if (!in[0]) {
         DXSetError(ERROR_BAD_PARAMETER, "#10000", "input");

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/maptoplane.c,v 1.5 2000/08/24 20:04:40 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/maptoplane.c,v 1.6 2002/03/21 02:57:37 rhh Exp $:
  */
 
 #include <dxconfig.h>
@@ -48,7 +48,6 @@ int m_MapToPlane (in, out)
     Point               p;
     float		point[3];
     float		normal[3];
-    Class		class;
 
     out[0] = NULL;
 
@@ -62,7 +61,7 @@ int m_MapToPlane (in, out)
 	goto error;
     }
 
-    class = DXGetObjectClass (ino0);
+    /* class = DXGetObjectClass (ino0); */
 
     if (ino1 == NULL) 
     {

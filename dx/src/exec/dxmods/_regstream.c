@@ -775,9 +775,9 @@ Reg_FaceWeights(InstanceVars I, POINT_TYPE *pt)
 	double D  = dx * dy * dz;
 
 	{
-	    double aa, bb;
+	    double aa;
 	    aa = (1.0 + A + B + C) - (dz + dy + dx + D);
-	    bb = 1.0 - dz - dy - dx + A + B + C - D;
+	    /*bb = 1.0 - dz - dy - dx + A + B + C - D;*/
 	    *w++ = aa;
 	}
 

@@ -431,7 +431,7 @@ message(Object image, char *name, int buttonState, int ddcamera, Object object)
     Camera c;
     Array a;
     Point *box1, corner[4], from, to, up;
-    Matrix t, m;
+    Matrix m;
     int i, width, height;
     float cwidth, aspect, fov;
     float minX = DXD_MAX_FLOAT, maxX = -DXD_MAX_FLOAT;
@@ -475,7 +475,7 @@ message(Object image, char *name, int buttonState, int ddcamera, Object object)
 	if (!DXGetImageBounds(image, NULL, NULL, &width, &height))
 	    return NULL;
 
-	t = DXGetCameraMatrix(c);
+	/* t = DXGetCameraMatrix(c); */
 	for (i=0; i<8; i++)
 	{
 	    if (box1[i].x > maxX) maxX = box1[i].x;

@@ -325,8 +325,8 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
   Array colorfield_positions=NULL; 
   Array colorfield_connections=NULL; 
   Array colorfield_data=NULL;
-  RGBColor corigin, cdelta, colorval;
-  float oorigin, odelta, opval, dataval, fuzz, opacity, intensity;
+  RGBColor corigin, colorval;
+  float oorigin, opval, dataval, fuzz, opacity, intensity;
   float *colorfield_posptr, h, s, v;
   RGBColor *colorfield_dataptr, lowerhsv, upperhsv, lowerrgb, upperrgb;
   Object bytecolorfield;
@@ -490,7 +490,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
     if (surface) {
       if (setopacities) {
 	oorigin = opacity;
-	odelta = 0.0;
+	/*odelta = 0.0;*/
         if (!(a_opacitydata = 
 	      (Array)DXNewConstantArray(count, (Pointer)&oorigin,
 					TYPE_FLOAT, CATEGORY_REAL,
@@ -499,7 +499,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
 	}
       }
       corigin = lowerrgb;
-      cdelta = DXRGB(0.0, 0.0, 0.0);
+      /*cdelta = DXRGB(0.0, 0.0, 0.0);*/
       if (!(a_colordata = 
 	    (Array)DXNewConstantArray(count, (Pointer)&corigin,
 				      TYPE_FLOAT, CATEGORY_REAL,
@@ -511,7 +511,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
     else {
       if (setopacities) {
 	oorigin = 0.0;
-	odelta = 0.0;
+	/*odelta = 0.0;*/
         if (!(a_opacitydata = 
 	      (Array)DXNewConstantArray(count, (Pointer)&oorigin,
 					TYPE_FLOAT, CATEGORY_REAL,
@@ -521,7 +521,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
       }
       /* for volumes, out of range points are invisible */
       corigin = DXRGB(0.0, 0.0, 0.0);
-      cdelta = DXRGB(0.0, 0.0, 0.0);
+      /*cdelta = DXRGB(0.0, 0.0, 0.0);*/
       if (!(a_colordata = 
 	    (Array)DXNewConstantArray(count, (Pointer)&corigin,
 				      TYPE_FLOAT, CATEGORY_REAL,
@@ -565,7 +565,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
     if (surface) {
       if (setopacities) {
 	oorigin = opacity;
-	odelta = 0.0;
+	/*odelta = 0.0;*/
         if (!(a_opacitydata = 
 	      (Array)DXNewConstantArray(count, (Pointer)&oorigin,
 					TYPE_FLOAT, CATEGORY_REAL,
@@ -579,7 +579,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
       }
       
       corigin = DXRGB(red, green, blue);
-      cdelta = DXRGB(0.0, 0.0, 0.0);
+      /*cdelta = DXRGB(0.0, 0.0, 0.0);*/
       if (!(a_colordata = 
 	    (Array)DXNewConstantArray(count, (Pointer)&corigin,
 				      TYPE_FLOAT, CATEGORY_REAL,
@@ -591,7 +591,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
     else {
       if (setopacities) {
 	oorigin = opacity;
-	odelta = 0.0;
+	/*odelta = 0.0;*/
         if (!(a_opacitydata = 
 	      (Array)DXNewConstantArray(count, (Pointer)&oorigin,
 					TYPE_FLOAT, CATEGORY_REAL,
@@ -604,7 +604,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
       }
       
       corigin = DXRGB(red, green, blue);
-      cdelta = DXRGB(0.0, 0.0, 0.0);
+      /*cdelta = DXRGB(0.0, 0.0, 0.0);*/
       if (!(a_colordata = 
 	    (Array)DXNewConstantArray(count, (Pointer)&corigin,
 				      TYPE_FLOAT, CATEGORY_REAL,
@@ -661,7 +661,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
 	if (compactopacities) {
 	  count = 1;
 	  oorigin = opacity;
-	  odelta = 0.0;
+	  /*odelta = 0.0;*/
           if (!(a_opacitydata = 
                 (Array)DXNewConstantArray(count, (Pointer)&oorigin,
 					  TYPE_FLOAT, CATEGORY_REAL,
@@ -1383,7 +1383,7 @@ static Error AutoColorDelayedField(Pointer ptr)
 
 
 {
-  Field f, savedfield;
+  Field f;
   int scalar, i, setopacities, surface,numentries;
   float givenmin, givenmax,opacity,r,g,b;
   float *opacityarray=NULL, huestart, range,saturation,intensity,hue;
@@ -1391,7 +1391,7 @@ static Error AutoColorDelayedField(Pointer ptr)
   int datamin, datamax;
   RGBColor *colorarray=NULL;
   RGBColor lowerrgb, upperrgb;
-  Array newdata, olddata, a_data;
+  Array a_data;
   Array deferredcolors, deferredopacities;
   arg_byte *a;
 
@@ -1408,12 +1408,8 @@ static Error AutoColorDelayedField(Pointer ptr)
   intensity = a->a_intensity;
   lowerrgb = a->a_lowerrgb;
   upperrgb = a->a_upperrgb;
-  newdata = NULL;
-  olddata = NULL;
   deferredcolors = NULL;
   deferredopacities = NULL;
-  savedfield = NULL;
-
 
   /* if it's an empty field, or a field without data, ignore it */
   if (!(GoodField(f))) return OK;
@@ -2065,19 +2061,18 @@ _dxfRGBtoHSV(float r, float g, float b, float *h, float *s, float *v)
 
 Error _dxfBoundingBoxDiagonal(Object ob, float *thickness)
 {
-  Object Box;
   Point boxpoint[8];
-  
-      if (!(Box = DXBoundingBox((Object)ob, boxpoint))) {
-	return ERROR;
-      }
-  
-      *thickness = DXLength(DXSub(boxpoint[7], boxpoint[0])); 
-      if (*thickness == 0.0) {
-	DXSetError(ERROR_DATA_INVALID,
-		 "bounding box for volume has zero thickness");
-	return ERROR;
-      }
+
+  if (!DXBoundingBox((Object)ob, boxpoint)) {
+    return ERROR;
+  }
+
+  *thickness = DXLength(DXSub(boxpoint[7], boxpoint[0])); 
+  if (*thickness == 0.0) {
+    DXSetError(ERROR_DATA_INVALID,
+	     "bounding box for volume has zero thickness");
+    return ERROR;
+  }
   return OK;
 }
 
@@ -2167,7 +2162,6 @@ Field _dxfMakeRGBColorMap(Field mapfield)
   float maxhuediff, maxsatdiff, maxvaldiff, fuzz;
   RGBColor newcolor;
   Array a_positions, a_data, a_newpositions, a_newdata, a_newconnections;
-  Array a_connections;
   Field newmapfield;
 
   fuzz = 0.0;
@@ -2221,8 +2215,7 @@ Field _dxfMakeRGBColorMap(Field mapfield)
     DXSetError(ERROR_BAD_PARAMETER,"map has no positions component");
     goto cleanup;
   }
-  if (!(a_connections =
-	(Array)DXGetComponentValue((Field)mapfield,"connections"))) {
+  if (!DXGetComponentValue((Field)mapfield,"connections")) {
     DXSetError(ERROR_BAD_PARAMETER,"map has no connections component");
     goto cleanup;
   }
@@ -2626,7 +2619,7 @@ Field _dxfMakeHSVfromRGB(Field mapfield)
   float lastr, lastg, lastb, lastp;
   RGBColor newcolor;
   Field newmapfield;
-  int count, rank, shape, icount, i, j, icountnew, numnewsteps;
+  int count, rank, shape, i, j, icountnew, numnewsteps;
 
   fuzz = 0.0;
 
@@ -2695,7 +2688,6 @@ Field _dxfMakeHSVfromRGB(Field mapfield)
   
 
   /* run through the original map */
-  icount = 0;
   icountnew = 0;
   /* do the first point */
   if (!(_dxfRGBtoHSV(dp[0], dp[1], dp[2], &hue, &saturation, &value)))

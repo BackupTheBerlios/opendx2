@@ -42,7 +42,7 @@ DXImportCM(char *filename, char **fieldname)
     Field rgb=NULL,hsv=NULL,of=NULL;
     FILE *fp = NULL;
     double min, max;
-    int i, n, nitems,minmax;
+    int i, n, nitems;
     double level, value;
     int color=1,opacity=1;
     float wrap, x, y;   /* wrap, x, y not used */
@@ -100,7 +100,6 @@ DXImportCM(char *filename, char **fieldname)
 	  if (!DXAddArrayData(a[n],0,nitems,NULL))
             goto error;
           maps[n].map = (Map *)DXGetArrayData(a[n]);
-          minmax=0;
           for (i=0; i<nitems; i++) {
 	    if (fscanf(fp, "%lg %lg %g %g %g", &level, &value, &wrap, &x, &y)
 			!= 5)

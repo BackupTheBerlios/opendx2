@@ -2097,6 +2097,11 @@ int _dxfTrianglesNormalAreaCompactness( int nT, Face *t, Vertex *v, Vertex *t_no
 
    */
 
+/*  Turn off set but never used warnings for ("origin" below)  */
+#ifdef sgi
+#  pragma set woff 1552
+#endif
+
 int _dxfTriangleNormalQR2D(VertexD *tri, double *n)
 {
 
@@ -2225,6 +2230,11 @@ int _dxfTriangleNormalQR2(Vertex *tri, Vertex n)
 
   return 1;
 }
+
+#ifdef sgi
+#  pragma reset woff 1552
+#endif
+
 /*+--------------------------------------------------------------------------+
   |                                                                          |
   |   _dxfVectorProductQRD                                                   |
@@ -7920,8 +7930,7 @@ int _dxfSimplifyManifoldSurface(SimpData *simp_data)
   int 
     e,
     num_edg_tested                 = 0,                   /* number of edges extracted from the heap */
-    num_edg_added_to_heap          = 0,
-    num_edg_adjacent_2_boundary    = 0;
+    num_edg_added_to_heap          = 0;
 
   /* allocate buffers for storing various information on the vertex and edge stars */
 
@@ -7975,8 +7984,8 @@ int _dxfSimplifyManifoldSurface(SimpData *simp_data)
   /* 1) mark the edges touching the surface boundary as not simplifiable: */
 
   if (!simp_data -> simplify_boundary)
-   
-    num_edg_adjacent_2_boundary = _dxfMarkEdgesAdjacent2Boundary(simp_data);
+    /*num_edg_adjacent_2_boundary = */
+      _dxfMarkEdgesAdjacent2Boundary(simp_data);
 
   /* 2) fill a Heap with edges, keyed with the weight of the edge */
 

@@ -458,7 +458,7 @@ doLeaf(Object *in, Object *out)
         if (! DXSetComponentValue((Field)out[0], dest_comp, (Object)look.dest->comp_array))
             goto error;
 	DXChangedComponentValues((Field)out[0], dest_comp);
-	result = (int)DXEndField((Field)out[0]);
+	result = DXEndField((Field)out[0]) != NULL;
     } else {
 	out[0] = (Object)look.dest->comp_array;
 	result = OK;

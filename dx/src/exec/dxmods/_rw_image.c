@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.6 2001/09/25 01:45:28 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.7 2002/03/21 02:57:31 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -376,9 +376,11 @@ ValidImageExtension(char *ext, ImageType type)
         }
         return 0;
     }
-#ifdef HAVE_LIBMAGICK
     else /* type == img_typ_im */ 
+#ifdef HAVE_LIBMAGICK
         return _dxf_ValidImageExtensionIM( ext );
+#else
+        return 0;
 #endif
 }
 
@@ -422,7 +424,7 @@ _dxf_ExtractImageExtension ( char *name, ImageType type,
 
     for ( i = strlen (name) - 1; i >= 0; i-- )
         if (name[i] == '/')
-            return;
+            return ext;
         else if (name[i] == '.') 
             break;
 

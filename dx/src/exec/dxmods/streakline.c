@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.6 2001/09/07 14:14:05 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.7 2002/03/21 02:57:40 rhh Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
@@ -758,7 +758,7 @@ Streakline(CacheObject cstreak,	/* accumulated streak info		*/
     double     	 t, t2;
     int		 done, keepPoint;
     Field 	 field = NULL;
-    int 	 i, totKnt, zeroKnt;
+    int 	 i, totKnt;
     StreakFlags  sFlag;
     StreakVars   svars;
     int		 zeroVector;
@@ -836,7 +836,7 @@ Streakline(CacheObject cstreak,	/* accumulated streak info		*/
     /*
      * While streak is passing from partition to partition...
      */
-    done = 0; totKnt = 1; zeroKnt = 0;
+    done = 0; totKnt = 1;
     while (!done)
     {
 	zeroVector = ZeroVector(v0, nDim);

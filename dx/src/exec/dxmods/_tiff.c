@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.9 2000/08/24 21:59:01 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.10 2002/03/21 02:57:32 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -139,7 +139,8 @@ typedef enum {
 	tiff_ASCII	= 2,
 	tiff_SHORT	= 3,
 	tiff_LONG	= 4,
-	tiff_RATIONAL	= 5 
+	tiff_RATIONAL	= 5, 
+  SHORT_LONG = 6      /* shorthand for tiff_SHORT || tiff_LONG  */
 } TiffType;
 #define TIFF_RATIONAL_SIZE	(2*4)		/* two words */
 
@@ -1012,8 +1013,6 @@ put_tiff_header(int fd, int byte_order, int version, int ifd_offset)
     tag_table_entry;
 
 
-#define  SHORT_LONG   6
-
 #define    FUNCTION  -1
 #define        NONE  -1
 
@@ -1082,7 +1081,7 @@ tag_table_entry * tiff_lookup ( TiffTag tag )
 {
     int    i;
     static tag_table_entry error
-           = { -99, "** Error **", -99, -99 };
+           = { (TiffTag) -99, "** Error **", (TiffType) -99, (uint32) -99 };
 
     for ( i=0; tag_entries[i].tag_name != NULL; i++ )
         if ( tag_entries[i].tag == tag )
@@ -1272,7 +1271,7 @@ TiffField * read_tiff_field
 
     DXDebug ( "R",
               "tag,type,length = %d %s, %d %s, %d",
-              fld->tag,  ( tiff_lookup ( fld->tag ) ) -> tag_name,
+              fld->tag,  ( tiff_lookup ( (TiffTag) fld->tag ) ) -> tag_name,
               fld->type, ((fld->type>=1)&&(fld->type<=5)) ?
                              tiff_type_name [ fld->type ] :
                              "** Error **",
@@ -1759,7 +1758,8 @@ Field _dxf_InputTIFF
                 case ColorResponseCurves:
                 case ColorMap:
 
-                    if ( ERROR == ( lookup = tiff_lookup ( field.tag ) ) )
+                    if ( ERROR == ( lookup = 
+                                    tiff_lookup ( (TiffTag)field.tag ) ) )
                         goto error;
 
                     if ( ( ( field.type < tiff_BYTE     ) ||

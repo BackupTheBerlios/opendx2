@@ -134,7 +134,7 @@ Error
 m_Plot(Object *in, Object *out)
 {
   Pointer *axeshandle=NULL; 
-  int i, adjust, ticks, ticks2, tx, ty, tz, num, background; 
+  int i, adjust, ticks, ticks2, tx, ty, num, background; 
   int needtoclip=0, frame;
   float floatzero=0.0, labelscale=1.0;
   int xlog, ylog, ylog2, secondplot, intzero=0, intone=1;
@@ -155,7 +155,7 @@ m_Plot(Object *in, Object *out)
   Field emptyfield=NULL;
   Matrix matrix, translation1, translation2, xform, scaling;
   Point clippoint1, clippoint2;
-  Object outgroup=NULL, outlabels;
+  Object outgroup=NULL;
   float xwidth, ywidth, ywidth2;
   char *labelx, *labely, *labely2, *labelz, *fontname;
   char *aspectstring;
@@ -202,7 +202,6 @@ m_Plot(Object *in, Object *out)
 
   
   
-  outlabels=NULL;
   if (!in[0]) {
     DXSetError(ERROR_BAD_PARAMETER, "#10000","input");
     goto error;
@@ -240,7 +239,7 @@ m_Plot(Object *in, Object *out)
     }
   }
   
-  ticks = tx = ty = tz = 0;
+  ticks = tx = ty = 0;
   if (!in[2]) {
     ticks = 10;
   }
@@ -257,7 +256,7 @@ m_Plot(Object *in, Object *out)
       DXSetError(ERROR_BAD_PARAMETER,"#10012","ticks", 2);
       goto error;
     }
-    if (! ((rank == 0) || ((rank == 1)&&(shape[0]=1)))) {
+    if (! ((rank == 0) || ((rank == 1)&&(shape[0]==1)))) {
       DXSetError(ERROR_BAD_PARAMETER,"#10012","ticks", 2);
       goto error;
     }
@@ -272,7 +271,7 @@ m_Plot(Object *in, Object *out)
       ticks_ptr = (int *)DXGetArrayData((Array)in[2]); 
       tx = ticks_ptr[0];
       ty = ticks_ptr[1];
-      tz = 0.0;   
+      /*tz = 0.0;*/
     }
     else {
       DXSetError(ERROR_BAD_PARAMETER,"#10012", "ticks", 2);
@@ -1748,7 +1747,7 @@ static Error plottask(Pointer p)
     arg->clippoint2 = clippoint2;
     /* make a new data array */
     DXGetArrayInfo(adata,&numitems, &type, &category, &rank, shape);
-    if (!((rank==0)||((rank==1)&&(shape[0]=1)))) {
+    if (!((rank==0)||((rank==1)&&(shape[0]==1)))) {
       DXSetError(ERROR_DATA_INVALID,"#10081", "data component");
       goto error;
     }
@@ -1886,7 +1885,7 @@ static Error plottask(Pointer p)
       goto error;
     }
     DXGetArrayInfo(apos,&numitems, &type, &category, &rank, shape);
-    if (!((rank==0)||((rank==1)&&(shape[0]=1)))) {
+    if (!((rank==0)||((rank==1)&&(shape[0]==1)))) {
       DXSetError(ERROR_DATA_INVALID, "#11363", "positions component", 1);
       goto error;
     }
@@ -1969,13 +1968,12 @@ static Error PlotDepConnections(struct arg *arg)
   float dataval;
   int *dp_conn, numitems;
   int poscount, datacount, conncount, i, needtoclip, count_p, count_c; 
-  int thisok, lastok, clipregcolors;
+  int clipregcolors;
   int nooutput=0;
   RGBColor defaultcolor, *color_ptr=NULL, color, origin;
   Point clippoint1, clippoint2, newpoint;
   Quadrilateral newconquad;
   Object ino;
-  float epsilonx, epsilony;
   char *color_ubyte_ptr=NULL;
   defaultcolor = DEFAULTCOLOR;
 
@@ -1988,8 +1986,8 @@ static Error PlotDepConnections(struct arg *arg)
   needtoclip = arg->needtoclip;
   clippoint1 = arg->clippoint1;
   clippoint2 = arg->clippoint2;
-  epsilonx = arg->epsilonx;
-  epsilony = arg->epsilony;
+  /*epsilonx = arg->epsilonx;*/
+  /*epsilony = arg->epsilony;*/
 
   /* check for invalid component */
   invalid = (Array)DXGetComponentValue((Field)ino,"invalid connections");
@@ -2044,7 +2042,7 @@ static Error PlotDepConnections(struct arg *arg)
   }
   if (!DXGetArrayInfo(adata,NULL, &type,&category,&rank,shape))
     goto error;
-  if (!((rank==0) ||((rank==1)&&(shape[0]=1)))) {
+  if (!((rank==0) ||((rank==1)&&(shape[0]==1)))) {
     DXSetError(ERROR_DATA_INVALID,"#11363", "data", 1);
     goto error;
   }
@@ -2237,8 +2235,6 @@ static Error PlotDepConnections(struct arg *arg)
     aconnew = DXNewArray(TYPE_INT,CATEGORY_REAL, 1, 4);
     count_c = 0;
     count_p = 0;
-    lastok = 0;
-    thisok = 0;
     for (i=0; i<conncount; i++) {
       if (( !(invalid && DXIsElementInvalidSequential(invalidhandle, i))) && 
          (p_pos[i]>=clippoint1.x && p_pos[i]<=clippoint2.x &&
@@ -2403,10 +2399,10 @@ static Error PlotDepPositions(struct arg *arg)
   InvalidComponentHandle invalidhandle=NULL;
   Type colorstype, datatype;
   Category category, datacat;
-  float stepon, stepoff, factor, dataval; 
+  float dataval; 
   int splat = 0, markcount = 0, rank, shape[32],numitems;
   int datarank, datashape[8];
-  int lastorigindex=0, lastnewindex=0;
+  int lastnewindex=0;
   char  *linetype="solid", coldepatt[30]; 
   short *p_data_s=NULL;
   ushort *p_data_us=NULL;
@@ -2417,10 +2413,10 @@ static Error PlotDepPositions(struct arg *arg)
   int *p_data_i=NULL;
   uint *p_data_ui=NULL;
   float *p_pos;
-  int poscount, datacount, i, needtoclip, count_p, count_c; 
+  int poscount, datacount, i, count_p, count_c; 
   int thisok, lastok, regcolors;
   int nooutput=0;
-  RGBColor color, origin, defaultcolor, *p_colors=NULL;
+  RGBColor color, origin, *p_colors=NULL;
   char *p_ubyte_colors=NULL;
   Point clippoint1, clippoint2, newpoint;
   Object ino;
@@ -2429,14 +2425,13 @@ static Error PlotDepPositions(struct arg *arg)
   float markscale;
   char *marker;
 
-  defaultcolor = DEFAULTCOLOR;
   aposnew=NULL;
   aconnew=NULL;
   acolorsnew=NULL;
   regcolors=0;
 
   ino = arg->ino;
-  needtoclip = arg->needtoclip;
+  /*needtoclip = arg->needtoclip;*/
   clippoint1 = arg->clippoint1;
   clippoint2 = arg->clippoint2;
   epsilonx = arg->epsilonx;
@@ -2456,9 +2451,9 @@ static Error PlotDepPositions(struct arg *arg)
   }
 
 
-  stepon = 4*epsilonx;
-  stepoff = stepon/2.0;
-  factor = epsilony/epsilonx;
+  /*stepon = 4*epsilonx;*/
+  /*stepoff = stepon/2.0;*/
+  /*factor = epsilony/epsilonx;*/
     
   /* extract, typecheck, and get the data from the ``positions''
      component */
@@ -2623,7 +2618,7 @@ static Error PlotDepPositions(struct arg *arg)
     linetype = "solid";
   }
   
-  needtoclip = 1;
+  /*needtoclip = 1;*/
   if (datacount != poscount) {
     DXSetError(ERROR_BAD_PARAMETER, "#11161", "position-dependent data items",
                datacount, "number of positions", poscount);
@@ -2745,7 +2740,7 @@ static Error PlotDepPositions(struct arg *arg)
         }
 	count_p++;
       }
-      lastorigindex = i;
+      /*lastorigindex = i;*/
       lastnewindex = count_p-1;
       if (splat) {
         if ((markcount % markevery )==0) {

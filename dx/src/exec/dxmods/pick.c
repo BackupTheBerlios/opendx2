@@ -667,9 +667,7 @@ extern void *_dxfGetStereoWindowInfo(char *, void *, void *);
 
 m_StereoPick(Object *in, Object *out)
 {
-    Object modeO, stereoArgs;
     Camera camera, lcamera, rcamera;
-    int mode;
     char *where;
     void *globals;
 
@@ -839,7 +837,7 @@ PickBufToField(PickBuf *p, Matrix m)
     int   *pokPtr;
     int   *idxPtr;
     int   *pathSrc, *pathDst;
-    int   i, j, k, lastPoke;
+    int   i, j, lastPoke;
 
     if (p->picks == NULL)
         return DXNewField();
@@ -885,7 +883,7 @@ PickBufToField(PickBuf *p, Matrix m)
     pathDst = (int   *)DXGetArrayData(paths);
 
     lastPoke = -1;
-    for (i = j = k = 0; i < nPicks; i++, picks ++)
+    for (i = j = 0; i < nPicks; i++, picks ++)
     {
 	*posPtr++ = DXApply(picks->xyz, m);
 	*idxPtr++ = j;
@@ -1563,11 +1561,11 @@ Elt2D_Perspective(PickBuf *p, int poke, Point2D xy, Point *xPoints, int *elts,
 	    {
 		Point   *lxp = xPoints + last;
 		Point   *nxp = xPoints + next;
-		float   x, y, z, d = (nearPlane - lxp->z) / (nxp->z - lxp->z);
+		float   x, y, d = (nearPlane - lxp->z) / (nxp->z - lxp->z);
 
 		x = lxp->x + d*(nxp->x - lxp->x);
 		y = lxp->y + d*(nxp->y - lxp->y);
-		z = nearPlane;
+		/* z = nearPlane; */
 		
 		sclippt[nclip].x = dNear * x;
 		sclippt[nclip].y = dNear * y;
@@ -1900,9 +1898,8 @@ Elt1D_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
     for (i = 0; i < nElts; i++, elts += 2)
     {
 	int     p, q;
-	Point   *px, *qx, *xclipped[2];
+	Point   *px, *qx;
 	Point   *ps, *qs, *sclipped[2];
-	Point   xclippt;
 	Point   sclippt;
 	float   x, y, z, a, b, c, D, dx, dy, depth;
 	Point   xyz;
@@ -1922,8 +1919,8 @@ Elt1D_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	
 	if (px->z <= nearPlane && qx->z <= nearPlane)
 	{
-	    xclipped[0] = px;
-	    xclipped[1] = qx;
+	    /*xclipped[0] = px;*/
+	    /*xclipped[1] = qx;*/
 
 	    sclipped[0] = ps;
 	    sclipped[1] = qs;
@@ -1935,11 +1932,11 @@ Elt1D_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	{
 	    float d = (nearPlane - qx->z) / (px->z - qx->z);
 
-	    xclippt.x = qx->x + d*(px->x - qx->x);
-	    xclippt.y = qx->y + d*(px->y - qx->y);
-	    xclippt.z = nearPlane;
-	    xclipped[0] = &xclippt;
-	    xclipped[1] = qx;
+	    /*xclippt.x = qx->x + d*(px->x - qx->x);*/
+	    /*xclippt.y = qx->y + d*(px->y - qx->y);*/
+	    /*xclippt.z = nearPlane;*/
+	    /*xclipped[0] = &xclippt;*/
+	    /*xclipped[1] = qx;*/
 
 	    sclippt.x = qs->x + d*(ps->x - qs->x);
 	    sclippt.y = qs->y + d*(ps->y - qs->y);
@@ -1954,11 +1951,11 @@ Elt1D_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	{
 	    float d = (nearPlane - qx->z) / (px->z - qx->z);
 
-	    xclippt.x = qx->x + d*(px->x - qx->x);
-	    xclippt.y = qx->y + d*(px->y - qx->y);
-	    xclippt.z = nearPlane;
-	    xclipped[0] = &xclippt;
-	    xclipped[1] = px;
+	    /*xclippt.x = qx->x + d*(px->x - qx->x);*/
+	    /*xclippt.y = qx->y + d*(px->y - qx->y);*/
+	    /*xclippt.z = nearPlane;*/
+	    /*xclipped[0] = &xclippt;*/
+	    /*xclipped[1] = px;*/
 
 	    sclippt.x = qs->x + d*(ps->x - qs->x);
 	    sclippt.y = qs->y + d*(ps->y - qs->y);
@@ -2307,9 +2304,8 @@ Polyline_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	for (e = estart, eIndex = 0; e < eend; e++, eIndex++)
 	{
 	    int     p, q;
-	    Point   *px, *qx, *xclipped[2];
+	    Point   *px, *qx;
 	    Point   *ps, *qs, *sclipped[2];
-	    Point   xclippt;
 	    Point   sclippt;
 	    float   x, y, z, a, b, c, D, dx, dy, depth;
 	    Point   xyz;
@@ -2329,8 +2325,8 @@ Polyline_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	
 	    if (px->z <= nearPlane && qx->z <= nearPlane)
 	    {
-		xclipped[0] = px;
-		xclipped[1] = qx;
+		/*xclipped[0] = px;*/
+		/*xclipped[1] = qx;*/
 
 		sclipped[0] = ps;
 		sclipped[1] = qs;
@@ -2342,11 +2338,11 @@ Polyline_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	    {
 		float d = (nearPlane - qx->z) / (px->z - qx->z);
 
-		xclippt.x = qx->x + d*(px->x - qx->x);
-		xclippt.y = qx->y + d*(px->y - qx->y);
-		xclippt.z = nearPlane;
-		xclipped[0] = &xclippt;
-		xclipped[1] = qx;
+		/*xclippt.x = qx->x + d*(px->x - qx->x);*/
+		/*xclippt.y = qx->y + d*(px->y - qx->y);*/
+		/*xclippt.z = nearPlane;*/
+		/*xclipped[0] = &xclippt;*/
+		/*xclipped[1] = qx;*/
 
 		sclippt.x = qs->x + d*(ps->x - qs->x);
 		sclippt.y = qs->y + d*(ps->y - qs->y);
@@ -2361,11 +2357,11 @@ Polyline_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	    {
 		float d = (nearPlane - qx->z) / (px->z - qx->z);
 
-		xclippt.x = qx->x + d*(px->x - qx->x);
-		xclippt.y = qx->y + d*(px->y - qx->y);
-		xclippt.z = nearPlane;
-		xclipped[0] = &xclippt;
-		xclipped[1] = px;
+		/*xclippt.x = qx->x + d*(px->x - qx->x);*/
+		/*xclippt.y = qx->y + d*(px->y - qx->y);*/
+		/*xclippt.z = nearPlane;*/
+		/*xclipped[0] = &xclippt;*/
+		/*xclipped[1] = px;*/
 
 		sclippt.x = qs->x + d*(ps->x - qs->x);
 		sclippt.y = qs->y + d*(ps->y - qs->y);

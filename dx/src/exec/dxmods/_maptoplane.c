@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_maptoplane.c,v 1.5 2000/08/24 20:04:15 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_maptoplane.c,v 1.6 2002/03/21 02:57:29 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -1925,8 +1925,6 @@ MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
     int	      nTotTris = 0;
     int       *state[3][2];
     int       *stateBuf = NULL;
-    int	      *triBuf;
-    int	      *map;
     int	      ptIndices[16];
     int	      meshOffsets[3];
     int       ix, jy, kz;          
@@ -1935,7 +1933,7 @@ MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
     int	      ixSiz, jySiz, kzSiz;
     float     aInv, bInv, cInv;
     int	      doit;
-    int       xproj, yproj, zproj;
+    int       xproj;
     int	      planeSize;
     SegList   *iBuf = NULL;
     SegList   *tBuf = NULL;
@@ -1979,8 +1977,6 @@ MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
     if (! icHandle)
 	goto error;
 
-    triBuf    = NULL;
-    map       = NULL;
     stateBuf = NULL;
 
     cArray = (Array)DXGetComponentValue(field, "connections");
@@ -2086,9 +2082,8 @@ MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
      * The following flags are one if the plane intersects the axis once.
      */
     xproj = (plane.normal.x != 0.0);
-    yproj = (plane.normal.y != 0.0);
-    zproj = (plane.normal.z != 0.0);
-	
+    /*yproj = (plane.normal.y != 0.0);*/
+    /*zproj = (plane.normal.z != 0.0);*/
 
     /*
      * Get the extents of this part of the nesh.
@@ -3225,7 +3220,7 @@ error:
 static Error
 MapArrays(Field field, SegList *iBuf, SegList *mBuf, Matrix *mat)
 {
-    int i, nIntercepts;
+    int i;
     Array old, new = NULL;
     Object attr;
     char *name;
@@ -3236,7 +3231,7 @@ MapArrays(Field field, SegList *iBuf, SegList *mBuf, Matrix *mat)
     if (DXGetComponentValue(field, "box"))
 	DXDeleteComponent(field, "box");
 
-    nIntercepts = DXGetSegListItemCount(iBuf);
+    /*nIntercepts = DXGetSegListItemCount(iBuf);*/
 
     i = 0;
     while ((old = (Array)DXGetEnumeratedComponentValue(field, i++, &name))

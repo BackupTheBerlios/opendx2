@@ -3838,8 +3838,8 @@ Field create_band_surface
             Field out )
 
 {
-    array_info      pi_info, ci_info, di_info, ni_info = NULL;
-    array_info      po_info, co_info, do_info, no_info = NULL;
+    array_info      pi_info, ci_info, di_info;
+    array_info      po_info, co_info, do_info;
     hash_table_rec  vtx_hash;
     SegList         *tri_list = NULL;
     SegList         *cval_list = NULL;
@@ -3894,8 +3894,8 @@ Field create_band_surface
     pi_info = (array_info) &(input_info->std_comps[(int)POSITIONS]->array);
     ci_info = (array_info) &(input_info->std_comps[(int)CONNECTIONS]->array);
     di_info = (array_info) &(input_info->std_comps[(int)DATA]->array);
-    ni_info = (input_info->std_comps[(int)NORMALS]==NULL)?
-              NULL: (array_info) &(input_info->std_comps[(int)NORMALS]->array);
+    /*ni_info = (input_info->std_comps[(int)NORMALS]==NULL)?
+             NULL: (array_info) &(input_info->std_comps[(int)NORMALS]->array);*/
 
     DXASSERTGOTO ( pi_info->get_item != ERROR );
     DXASSERTGOTO ( ci_info->get_item != ERROR );
@@ -4133,8 +4133,8 @@ Field create_band_surface
     po_info = (array_info) &(output_info->std_comps[(int)POSITIONS]->array);
     co_info = (array_info) &(output_info->std_comps[(int)CONNECTIONS]->array);
     do_info = (array_info) &(output_info->std_comps[(int)DATA]->array);
-    no_info = (output_info->std_comps[(int)NORMALS]==NULL)?
-             NULL: (array_info) &(output_info->std_comps[(int)NORMALS]->array);
+    /*no_info = (output_info->std_comps[(int)NORMALS]==NULL)?
+            NULL: (array_info) &(output_info->std_comps[(int)NORMALS]->array);*/
 
     if ( !copy_seglist_to_array ( tri_list, co_info ) )
         goto error;
@@ -5752,7 +5752,7 @@ Error isosurface_field
 {
     int           i;
     field_info    input_info = NULL;
-    array_info    p_info, c_info, d_info = NULL;
+    array_info    d_info = NULL;
 
     Field (*create_output)      () = NULL;
     Error (*convert_connection) () = NULL;
@@ -5802,8 +5802,8 @@ Error isosurface_field
               "#11251", /* %s must be dependent on positions */
               "the \"data\" component" );
 
-    p_info = (array_info) &(input_info->std_comps[(int)POSITIONS]->array);
-    c_info = (array_info) &(input_info->std_comps[(int)CONNECTIONS]->array);
+    /*p_info = (array_info) &(input_info->std_comps[(int)POSITIONS]->array);*/
+    /*c_info = (array_info) &(input_info->std_comps[(int)CONNECTIONS]->array);*/
     d_info = (array_info) &(input_info->std_comps[(int)DATA]->array);
 
     if ( ( d_info->rank != 0 )

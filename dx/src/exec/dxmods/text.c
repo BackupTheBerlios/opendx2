@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/text.c,v 1.5 2000/08/24 20:04:52 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/text.c,v 1.6 2002/03/21 02:57:42 rhh Exp $
  */
 
 
@@ -44,7 +44,7 @@ static Error TextField(Pointer p)
   float dotprod;
   Matrix m;
   Point position;
-  int i, j=0, numitems, rank, shape[8], posdim, datadim, regcolors, posted=0;
+  int i, j=0, numitems, rank, shape[8], posdim, regcolors, posted=0;
   int trank, tshape[8]; 
   int brank, bshape[8]; 
   int nrank, nshape[8];
@@ -103,7 +103,7 @@ static Error TextField(Pointer p)
     goto error;
   }
   
-  datadim = shape[0];
+  /*datadim = shape[0];*/
   
   attr = DXGetString((String)DXGetComponentAttribute((Field)fieldin, "data",
 						     "dep"));

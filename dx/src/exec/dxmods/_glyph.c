@@ -824,13 +824,12 @@ static Error TextGlyphs(Group object, char *string, Matrix translation,
 {
    static Object font=NULL;
    Matrix scale;
-   RGBColor delta;
    Object s, scr, t;
    int items;
    Field text_glyph;
    Array pos, colors=NULL;
   
-   delta = DXRGB(0.0,0.0,0.0);
+   /*delta = DXRGB(0.0,0.0,0.0);*/
 
    /* get font and text glyph */
    font =DXGetFont(fontname, NULL, NULL);
@@ -1297,7 +1296,7 @@ Error
   _dxfGlyphTask(Pointer p)
 {
   Object outo;
-  RGBColor origin, delta;
+  RGBColor origin;
   int data_incr=0, pos_incr, totalpoints = 0, compact=0, numitems; 
   int hasnormals, out_pos_dim, invalid, valid;
   int num_to_be_overridden=0, num_not_drawn=0;
@@ -1322,8 +1321,8 @@ Error
   char overridetype_string[30];
   float glyphshape, scale, ratio, given_min, given_max, quality, base_size;
   float min;
-  int scale_set, ratio_set, min_set, max_set; 
-  int data_rank, data_shape[30], override;
+  int ratio_set;
+  int data_rank, data_shape[30];
   int pos_rank, pos_shape[30], counts[30];
   int numpoints, numoverridepoints, numoverrideconns;
   int numconns, num_pos, i, j, n, countpos=0, countconn=0;
@@ -1348,10 +1347,8 @@ Error
   Object typefield;
   int type_is_field, anyxforms;
   Matrix xform;
-  char *attr, *font;
-  int parentindex;
-  Object parent, uniformscalingattr=NULL;
-
+  char *attr;
+  Object uniformscalingattr=NULL;
 
   Arg *arg = (Arg *)p;
 
@@ -1370,21 +1367,21 @@ Error
   given_type_string = arg->type;
   glyphshape = arg->shape;
   scale = arg->scale;
-  scale_set = arg->scale_set;
+  /*scale_set = arg->scale_set;*/
   ratio = arg->ratio;
   ratio_set = arg->ratio_set;
   given_min = arg->given_min;
-  min_set = arg->min_set;
+  /*min_set = arg->min_set;*/
   given_max = arg->given_max;
-  max_set = arg->max_set;
+  /*max_set = arg->max_set;*/
   quality = arg->quality;
   base_size = arg->base_size;
   AutoSize = arg->AutoSize;
   typefield = arg->typefield;
   type_is_field = arg->type_is_field;
-  parent = arg->parent;
-  parentindex = arg->parentindex;
-  font = arg->font;
+  /*parent = arg->parent;*/
+  /*parentindex = arg->parentindex;*/
+  /*font = arg->font;*/
   
   /* we have a field and are ready to put glyphs in the field */
   
@@ -1847,7 +1844,7 @@ Error
   
   if (!colors_array) {
     /* make a temporary colors component to expand later */
-    delta = DXRGB(0.0, 0.0, 0.0);
+    /*delta = DXRGB(0.0, 0.0, 0.0);*/
     if (!strcmp(glyph_rank,"2-vector")||(!strcmp(glyph_rank,"3-vector"))) {
       origin = DEFAULT_VECTOR_COLOR;
       colors_array = (Array)DXNewConstantArray(num_pos, (Pointer)&origin,
@@ -2334,12 +2331,12 @@ Error
 	}
       }
       lv = DXLength(v);
-      override = 0;
+      /*override = 0;*/
       /* don't override with user given glyph */
       /* why not? go ahead */
       if (((lv <= ratio*given_max) || (lv < given_min) || 
 			     ((given_min == 0.0) && (given_max == 0.0)))) {
-	override = 1;
+        /*override = 1;*/
 	/* over-riding the vector glyph with a sphere */
         dp_old = DXGetArrayEntry(handle, i, scratch);
         if (pos_shape[0] == 1)                                              
@@ -4704,7 +4701,7 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
   Array newnormals=NULL; 
   Array glyphpositions, glyphconnections, glyphcolors, glyphnormals;
   int numdata, datarank, datashape[8], posrank, posshape[8]; 
-  int ipos, icon, iclr, inml, numprev, hasnormals, idata;
+  int ipos, icon, iclr, inml, numprev, hasnormals;
   int newshape, glyphshape, i, j, dataindex=0, numglyphpos, numglyphcon;
   int colorrank, colorshape[8], posted =0, totalpoints;
   int *map;
@@ -4884,7 +4881,7 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
   icon = 0;
   iclr = 0;
   inml = 0;
-  idata = 0;
+  /*idata = 0;*/
   
   newshape = (posshape[0] >= glyphshape) ? posshape[0] : glyphshape;
   

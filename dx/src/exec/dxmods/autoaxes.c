@@ -37,7 +37,7 @@ m_AutoAxes(Object *in, Object *out)
     int n = -9999, ns[3], adjust = 1, i;
     char *xlabel = NULL, *ylabel = NULL, *zlabel = NULL, *extra = NULL;
     char *fontname;
-    Point cursor, box[8], min, max, delta;
+    Point cursor, box[8], min, max;
     int frame;
     float labelscale=1.0, fuzzattfloat;
     int cursor_specified = 0;
@@ -375,9 +375,9 @@ m_AutoAxes(Object *in, Object *out)
          if (box[i].y > max.y) max.y = box[i].y;
          if (box[i].z > max.z) max.z = box[i].z;
        }
-       delta.x = max.x - min.x;
-       delta.y = max.y - min.y;
-       delta.z = max.z - min.z;
+       /* delta.x = max.x - min.x; */
+       /* delta.y = max.y - min.y; */
+       /* delta.z = max.z - min.z; */
 
        DXFree((Pointer)axeshandle);
 

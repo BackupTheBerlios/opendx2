@@ -1572,7 +1572,7 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
   InvalidComponentHandle in_invalidhandle=NULL, out_invalidhandle=NULL;
   int numitemsbase, numitemsino, cntr; 
   int rank_base, rank_ino, shape_base[30], shape_ino[30], i, j, k, l, c; 
-  int anyinvalid, compcount, rank, shape[30];
+  int compcount, rank, shape[30];
   float tmpval;
   int numitems, counts[8], knt;
   Type type;
@@ -1619,8 +1619,6 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
                                                     NULL,"positions");
   if (!out_invalidhandle) goto error;
 
-
-  anyinvalid = 1;
 
   DXSetAllInvalid(out_invalidhandle);
 
@@ -2962,14 +2960,12 @@ static Error ConnectScatter(Field ino, Field base, Array missing)
   Type type;
   Category category;
   Array positions_base, positions_ino, oldcomponent=NULL, newcomponent;
-  Field field;
   InvalidComponentHandle out_invalidhandle=NULL, in_invalidhandle=NULL;
 
   int rank, shape[8];
   int counts[8], rank_base, shape_base[8], shape_ino[8], rank_ino;
   int nitemsbase, nitemsino, nitems, compcount, componentsdone;
   float *ino_positions;
-  float origin=0, delta=0;
   char *name; 
 
   int i,j,k, ijk[3], index, *count=NULL;
@@ -3018,8 +3014,8 @@ static Error ConnectScatter(Field ino, Field base, Array missing)
       inverse.A[1][1]=inverse2D.A[1][1];
     }
     else if (shape_base[0]==1) {
-      origin = matrix.b[0];
-      delta = matrix.A[0][0];
+      /*origin = matrix.b[0];*/
+      /*delta = matrix.A[0][0];*/
       DXSetError(ERROR_DATA_INVALID, "Only 2D and 3D grids supported");
       goto error;
     }

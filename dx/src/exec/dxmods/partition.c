@@ -738,7 +738,7 @@ CpPartitionTemplate_Reg(Field in, CompositeField template)
 	    int      size, n;
 	    byte    *srcData, *dstData;
 	    int      k;
-	    int      *inCounts, *inStrides, *outCounts, *outStrides;
+	    int      *inStrides, *outCounts, *outStrides;
 	    Type     t;
 	    Category cat;
 	    int      r, s[MAXDIM];
@@ -764,7 +764,7 @@ CpPartitionTemplate_Reg(Field in, CompositeField template)
 	    {
 		inStrides  = inPStrides;
 		outStrides = outPStrides;
-		inCounts   = inPCounts;
+		/*inCounts   = inPCounts;*/
 		outCounts  = outPCounts;
 		n          = np;
 	    }
@@ -772,7 +772,7 @@ CpPartitionTemplate_Reg(Field in, CompositeField template)
 	    {
 		inStrides  = inCStrides;
 		outStrides = outCStrides;
-		inCounts   = inCCounts;
+		/*inCounts   = inCCounts;*/
 		outCounts  = outCCounts;
 		n          = nc;
 	    }

@@ -44,7 +44,7 @@ static int write_transform(Matrix mat, int *trans_two);
 Error SetViewPoint(Object dxobject);
 static Error write_caption(Object o,Point *box);
 static Error write_text(Object dxobject);
-static void DGetRotationOfMatrix(Matrix mat, Vector rotvec, float *sinhrot);
+static void DGetRotationOfMatrix(Matrix mat, Vector *rotvec, float *sinhrot);
 
 Error _dxfExportVRML(Object dxobject, char *filename)
 {
@@ -667,7 +667,7 @@ static int write_transform(Matrix mat,int *trans_two)
     }
   }
   else{ 		/* rotation */
-    DGetRotationOfMatrix(mat, rotvec, &sinhrot);
+    DGetRotationOfMatrix(mat, &rotvec, &sinhrot);
     fprintf(fp,"%s %g %g %g %g\n","# rot angle ",rotvec.x,rotvec.y,rotvec.z,    	2.*asin((double)sinhrot));
     if (mat.A[0][0]==1)	{	/* about the x-axis */
       /* angle = acos(mat.A[1][1]); */
@@ -897,7 +897,7 @@ write_text(Object dxobject)
   return OK;
 }
 
-void DGetRotationOfMatrix(Matrix mat, Vector rotvec, float *sinhrot)
+void DGetRotationOfMatrix(Matrix mat, Vector *rotvec, float *sinhrot)
 {
     /* Double precision version of GetRotationOfMatrix.			*/
     /* Input:	pointer to mat = rotation/transl (no scaling) matrix	*/
@@ -937,8 +937,8 @@ void DGetRotationOfMatrix(Matrix mat, Vector rotvec, float *sinhrot)
     if(maxmag < 1.e-14) {
 	/* There is no rotation.  Return a vector along z with zero	*/
 	/* rotation (sine = 0).						*/
-	rotvec.x = rotvec.y = *sinhrot = 0.;
-	rotvec.z = 1.;
+	rotvec->x = rotvec->y = *sinhrot = 0.;
+	rotvec->z = 1.;
 	return;
     }
     /* With min and max rows in hand, median row is only one left.	*/
@@ -955,14 +955,14 @@ void DGetRotationOfMatrix(Matrix mat, Vector rotvec, float *sinhrot)
     mat_max.z = mat.A[imax1][2];
     /* Cross the max row with the second max row and unitize to get the	*/
     /* rotation unit vector.						*/
-    rotvec = DXNormalize(DXCross(row_max,row_med));
+    *rotvec = DXNormalize(DXCross(row_max,row_med));
     /* Determine which direction it should point (backward or not)	*/
     /* by forcing it to lie in the same hemisphere as the cross product	*/
     /* of the axis vector corresponding to max row and its change.	*/
     /* That product establishes the right-handedness of the rotation.	*/
     sensvec = DXCross(mat_max, row_max);
-    if(DXDot(rotvec, sensvec) < 0.)
-      rotvec = DXNeg(rotvec);
+    if(DXDot(*rotvec, sensvec) < 0.)
+      *rotvec = DXNeg(*rotvec);
     /* Cross rotation vector into axis vector corresponding to max	*/
     /* row, and unitize to get direction of axis tip motion at 		*/
     /* beginning of rotation (i. e. initial tangent).			*/
@@ -970,10 +970,10 @@ void DGetRotationOfMatrix(Matrix mat, Vector rotvec, float *sinhrot)
     if (imax1 == 0) maxaxis.x=1.;
     else if (imax1 == 1) maxaxis.y=1.;
     else maxaxis.z=1.;
-    tanvec = DXNormalize(DXCross(rotvec, maxaxis));
+    tanvec = DXNormalize(DXCross(*rotvec, maxaxis));
     /* Cross rotation unit vector into that initial tangent vector	*/
     /* to get corresponding centripetal vector.				*/
-    cenvec = DXCross(rotvec, tanvec);
+    cenvec = DXCross(*rotvec, tanvec);
     /* The centripetal component (dot product with centripetal unit	*/
     /* of unitized max row is sine of half-rotation angle.		*/
     row_max = DXNormalize(row_max);

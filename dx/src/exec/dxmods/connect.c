@@ -30,12 +30,9 @@ int
   Vector normal;
   Array newarray=NULL;
   float *newarrayptr; 
-  float radius,  *radius_ptr;
   double vec_len;
   Type type;
   int numitems, rank, shape[30], count, i;
-  
-  radius_ptr = &radius;
   
   if (!in[0]) {
     DXSetError(ERROR_BAD_PARAMETER, "#10000", "input");

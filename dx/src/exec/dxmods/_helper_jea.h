@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.h,v 1.5 2000/08/24 20:04:13 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.h,v 1.6 2002/03/21 02:57:28 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -111,11 +111,12 @@ Array _dxf_NewComponentArray ( Component_Type comp_type,
                           Pointer        origin,
                           Pointer        delta );
 
-Pointer _dxf_GetComponentData ( Object         in_object,
-                           Component_Type comp_type,
-                           int            *count,
-                           Pointer        origin,
-                           Pointer        delta );
+Error _dxf_GetComponentData ( Object         in_object,
+                              Component_Type comp_type,
+                              int            *count,
+                              Pointer        origin,
+                              Pointer        delta,
+                              Pointer       *ptr );
 
 int _dxf_greater_prime ( int );
 

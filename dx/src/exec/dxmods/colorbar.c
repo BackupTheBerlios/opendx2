@@ -32,7 +32,7 @@ Error
 m_ColorBar(Object *in, Object *out)
 {
   Pointer axeshandle=NULL;
-  Object outo, outscreen, o, oo, withaxes, ooo;
+  Object outo, outscreen, o, oo, ooo;
   Object newo, ob;
   Array a_positions, a_newpositions=NULL; 
   Array a_newcolors=NULL, a_colors, a_newconnections=NULL;
@@ -77,7 +77,6 @@ m_ColorBar(Object *in, Object *out)
   captionsize = 15.0; 
   outo = NULL;
   corners = NULL;
-  withaxes = NULL;
   o = NULL;
   oo = NULL;
 

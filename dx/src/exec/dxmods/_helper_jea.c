@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.c,v 1.6 2000/08/24 20:04:13 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.c,v 1.7 2002/03/21 02:57:27 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -409,11 +409,12 @@ Array _dxf_NewComponentArray ( Component_Type comp_type,
 
 
 /* Extern routine.  Consult the file header */
-Pointer _dxf_GetComponentData ( Object         in_object,
-                           Component_Type comp_type,
-                           int            *count, /* length */
-                           Pointer        origin,
-                           Pointer        delta )
+Error _dxf_GetComponentData ( Object         in_object,
+                              Component_Type comp_type,
+                              int            *count, /* length */
+                              Pointer        origin,
+                              Pointer        delta,
+                              Pointer       *pointer )
 {
     Array     array;
     Object    attribute;
@@ -421,6 +422,9 @@ Pointer _dxf_GetComponentData ( Object         in_object,
 
     int       rank;
     int       position = Component_Type_pos ( comp_type );
+
+    /*  NULL pointer -> regular; else irregular */
+    if ( pointer ) *pointer = NULL;
 
     DXASSERT ( comp_type != NULL_COMP );
     DXASSERT ( ( position >= 0 ) && ( position < Component_Type_size ) );
@@ -516,16 +520,20 @@ Pointer _dxf_GetComponentData ( Object         in_object,
                 if ( ( DXGetArrayClass ( array ) == CLASS_REGULARARRAY ) 
                      &&
                      DXGetRegularArrayInfo
-                         ( (RegularArray)array, count, origin, delta ) )
-                    return (Pointer)OK;
+                         ( (RegularArray)array, count, origin, delta ) ) {
+                    if ( pointer ) *pointer = NULL;
+                    return OK;
+                }
                 break;
             case POSITIONS_2D_COMP:
             case POSITIONS_3D_COMP:
                 DXASSERTGOTO ( delta != NULL );
                 if ( DXQueryGridPositions ( array,
                                           &rank, count,
-                                          (float *)origin, (float *)delta ) )
-                    return (Pointer)OK;
+                                          (float *)origin, (float *)delta ) ) {
+                    if ( pointer ) *pointer = NULL;
+                    return OK;
+                }
                 break;
             case QUAD_CONNECTIONS_COMP:
             case CUBE_CONNECTIONS_COMP:
@@ -534,8 +542,10 @@ Pointer _dxf_GetComponentData ( Object         in_object,
                      DXQueryGridConnections ( array, &rank, count )
                      &&
                      DXGetMeshOffsets ( (MeshArray) array,
-                                      (int *) origin ) )
-                    return (Pointer)OK;
+                                      (int *) origin ) ) {
+                    if ( pointer ) *pointer = NULL;
+                    return OK;
+                }
                 break;
             default:
                 break;
@@ -590,7 +600,8 @@ Pointer _dxf_GetComponentData ( Object         in_object,
                   "\"%s\" component is null", comp_data [ position ].name )
     }
 
-    return ptr;
+    if ( pointer ) *pointer = ptr;
+    return OK;
 
     error:
         ERROR_SECTION;
@@ -1164,16 +1175,17 @@ Field _dxf_CheckImage ( Field image )
     int   count[2];
     float Origin[2];
     float Delta[4];
-    Pointer ptr;
 
     /* Do We Really know what is assumed?  Find out. */
 
     if ( !DXGetImageSize ( image, &width, &height ) )
         goto error;
 
-    ptr = _dxf_GetComponentData ( (Object)image,
-                             POSITIONS_2D_COMP,
-                             count, (Pointer)Origin, (Pointer)Delta );
+    if ( !_dxf_GetComponentData ( (Object)image,
+                                  POSITIONS_2D_COMP,
+                                  count, (Pointer)Origin, (Pointer)Delta, 
+                                  NULL ) )
+        goto error;
 
     if ( NONZERO (  Delta[0] ) ||    ZERO (  Delta[1] ) ||
             ZERO (  Delta[2] ) || NONZERO (  Delta[3] ) ||
@@ -1248,15 +1260,17 @@ Error _get_image_deltas ( Object image, float *deltas, int *set )
             int     count[2];
             Pointer ptr;
 
-            ptr = _dxf_GetComponentData ( (Object)image,
+            if ( !_dxf_GetComponentData ( (Object)image,
                                      POSITIONS_2D_COMP,
-                                     count, (Pointer)Origin, (Pointer)Delta );
+                                     count, (Pointer)Origin, (Pointer)Delta,
+                                     &ptr ) )
+                goto error;
 
-            if ( (int)ptr != OK )
+            if ( ptr )
                 DXErrorGoto2
                     ( ERROR_DATA_INVALID,
                       "#10612", /* only regular positions for %s supported */
-                      "images" );
+                      "images" )
 
             /* Direction is a consideration Only.  Not the magnitude. */
 
@@ -1384,52 +1398,47 @@ Error _dxf_GetImageOrigin ( Field image, int *xorigin, int *yorigin )
     int     offsets[2];
     Pointer ptr;
 
-    ptr = _dxf_GetComponentData ( (Object)image,
-                             QUAD_CONNECTIONS_COMP,
-                             count, (Pointer)offsets, NULL );
+    if ( !_dxf_GetComponentData ( (Object)image,
+                                  QUAD_CONNECTIONS_COMP,
+                                  count, (Pointer)offsets, NULL, &ptr ) )
+        goto error;
 #if 0
-    ptr = _dxf_GetComponentData ( (Object)image,
-                             POSITIONS_2D_COMP,
-                             count, (Pointer)Origin, (Pointer)Delta );
+    _dxf_GetComponentData ( (Object)image,
+                            POSITIONS_2D_COMP,
+                            count, (Pointer)Origin, (Pointer)Delta, &ptr );
 #endif
-    switch ( (int)ptr )
+
+    if ( ptr == NULL )
     {
-        case OK:
-            if ( yorigin ) *yorigin = offsets[0];
-            if ( xorigin ) *xorigin = offsets[1];
+	if ( yorigin ) *yorigin = offsets[0];
+	if ( xorigin ) *xorigin = offsets[1];
 #if 0
-            if ( NULL == ( array = (Array) DXGetComponentValue
-                                               ( image, "connections" ) ) )
-                ErrorGotoPlus2
-                    ( ERROR_MISSING_DATA, "#10250", "image", "\"connections\"" )
+	if ( NULL == ( array = (Array) DXGetComponentValue
+					   ( image, "connections" ) ) )
+	    ErrorGotoPlus2
+		( ERROR_MISSING_DATA, "#10250", "image", "\"connections\"" )
 
-            if ( DXGetMeshOffsets ( (MeshArray) array, count ) )
-            {
-                if ( xorigin ) *xorigin = count[1];
-                if ( yorigin ) *yorigin = count[0];
-            }
-            else
-            {
-                if ( DXGetError() != ERROR_NONE ) goto error;
+	if ( DXGetMeshOffsets ( (MeshArray) array, count ) )
+	{
+	    if ( xorigin ) *xorigin = count[1];
+	    if ( yorigin ) *yorigin = count[0];
+	}
+	else
+	{
+	    if ( DXGetError() != ERROR_NONE ) goto error;
 
-                if ( xorigin ) *xorigin = 0;
-                if ( yorigin ) *yorigin = 0;
-            }
-            if ( !CheckImagePosition ( image ) ) goto error;
+	    if ( xorigin ) *xorigin = 0;
+	    if ( yorigin ) *yorigin = 0;
+	}
+	if ( !CheckImagePosition ( image ) ) goto error;
 #endif
-            break;
-
-        case ERROR:
-            goto error;
-
-        default:
-            DXErrorGoto2
-                ( ERROR_DATA_INVALID,
-                  "#10610", /* only regular connections for %s supported */
-                  "images" )
-
     }
-
+    else
+	DXErrorGoto2
+	    ( ERROR_DATA_INVALID,
+	      "#10610", /* only regular connections for %s supported */
+	      "images" )
+    
     DXDebug ( "A", 
          "_dxf_GetImageOrigin ( [%x], (=%d), (=%d) )", image, *xorigin, *yorigin );
 
@@ -1451,80 +1460,77 @@ Field _dxf_SetImageOrigin ( Field image, int xorigin, int yorigin )
     Pointer ptr;
     Array   array;
 
-    ptr = _dxf_GetComponentData ( (Object)image,
-                             POSITIONS_2D_COMP,
-                             count, (Pointer)Origin, (Pointer)Delta );
+    if ( !_dxf_GetComponentData ( (Object)image,
+				  POSITIONS_2D_COMP,
+				  count, (Pointer)Origin, (Pointer)Delta, 
+				  &ptr ) )
+        goto error;
 
-    if ( (int)ptr != OK )
+    if ( ptr )
         DXErrorGoto2
             ( ERROR_DATA_INVALID,
               "#10612", /* only regular positions for %s supported */
               "images" )
 
-    ptr = _dxf_GetComponentData ( (Object)image,
-                             QUAD_CONNECTIONS_COMP,
-                             count, (Pointer)offsets, NULL );
+    if ( !_dxf_GetComponentData ( (Object)image,
+				  QUAD_CONNECTIONS_COMP,
+				  count, (Pointer)offsets, NULL, &ptr ) )
+        goto error;
 
-    switch ( (int)ptr )
+    if ( ptr == NULL )
     {
-        case OK:
+	if ( Delta[1] /*U.y*/ != 0.0 )
+	{
+	    /* x varying fastest (y slowest) */
 
-            if ( Delta[1] /*U.y*/ != 0.0 )
-            {
-                /* x varying fastest (y slowest) */
+	    offsets[0] = yorigin;
+	    offsets[1] = xorigin;
 
-                offsets[0] = yorigin;
-                offsets[1] = xorigin;
+	    Origin[0] = xorigin * Delta[2]; /* V.x */
+	    Origin[1] = yorigin * Delta[1]; /* U.y */
+	}
+	else
+	{
+	    /* y varying fastest */
 
-                Origin[0] = xorigin * Delta[2]; /* V.x */
-                Origin[1] = yorigin * Delta[1]; /* U.y */
-            }
-            else
-            {
-                /* y varying fastest */
+	    offsets[0] = xorigin;
+	    offsets[1] = yorigin;
 
-                offsets[0] = xorigin;
-                offsets[1] = yorigin;
+	    Origin[0] = xorigin * Delta[0]; /* U.x */
+	    Origin[1] = yorigin * Delta[3]; /* V.y */
+	}
 
-                Origin[0] = xorigin * Delta[0]; /* U.x */
-                Origin[1] = yorigin * Delta[3]; /* V.y */
-            }
+	DXDebug ( "A", 
+		  "_dxf_SetImageOrigin ( [%x], %d, %d )",
+		  image, xorigin, yorigin );
 
-            DXDebug ( "A", 
-                      "_dxf_SetImageOrigin ( [%x], %d, %d )",
-                      image, xorigin, yorigin );
-
-            if ( ( NULL == ( array = _dxf_NewComponentArray
-                                         ( QUAD_CONNECTIONS_COMP,
-                                           count, (Pointer)offsets, NULL ) ) )
-                 ||
-                 !DXSetComponentValue ( image, "connections", (Object)array )
-                 ||
-                 ( NULL == ( array = _dxf_NewComponentArray
-                                         ( POSITIONS_2D_COMP,
-                                           count,
-                                           (Pointer)Origin, (Pointer)Delta ) ) )
-                 ||
-                 !DXSetComponentValue ( image, "positions", (Object)array ) 
-                 ||
-                 !DXChangedComponentValues ( image, "positions" ) 
-                 ||
-                 !DXEndField ( image ) )
-                goto error;
+	if ( ( NULL == ( array = _dxf_NewComponentArray
+				     ( QUAD_CONNECTIONS_COMP,
+				       count, (Pointer)offsets, NULL ) ) )
+	     ||
+	     !DXSetComponentValue ( image, "connections", (Object)array )
+	     ||
+	     ( NULL == ( array = _dxf_NewComponentArray
+				     ( POSITIONS_2D_COMP,
+				       count,
+				       (Pointer)Origin, (Pointer)Delta ) ) )
+	     ||
+	     !DXSetComponentValue ( image, "positions", (Object)array ) 
+	     ||
+	     !DXChangedComponentValues ( image, "positions" ) 
+	     ||
+	     !DXEndField ( image ) )
+	    goto error;
 #if 0
-            if ( !CheckImagePosition ( image ) ) goto error;
+	if ( !CheckImagePosition ( image ) ) goto error;
 #endif
-            return image;
-            break;
-        case ERROR:
-            goto error;
-
-        default:
-            DXErrorGoto2
-                ( ERROR_DATA_INVALID,
-                  "#10610", /* only regular connections for %s supported */
-                  "images" );
+	return image;
     }
+    else
+        DXErrorGoto2
+            ( ERROR_DATA_INVALID,
+              "#10610", /* only regular connections for %s supported */
+              "images" )
     error:
         ERROR_SECTION;
         return ERROR;
@@ -1535,7 +1541,6 @@ Field _dxf_SetImageOrigin ( Field image, int xorigin, int yorigin )
 CompositeField _dxf_SetCompositeImageOrigin ( CompositeField image,
                                          int xorigin, int yorigin )
 {
-    Class  class;
     Object member;
     int    cfield_origin[2];
     int    member_origin[2];
@@ -1555,7 +1560,7 @@ CompositeField _dxf_SetCompositeImageOrigin ( CompositeField image,
           (member= DXGetEnumeratedMember ( (Group)image, i, NULL ));
           i++ )
 
-        switch ( class = DXGetObjectClass ( member ) )
+        switch ( DXGetObjectClass ( member ) )
         {
             case CLASS_FIELD:
                 if ( !DXGetImageBounds
@@ -1578,7 +1583,7 @@ CompositeField _dxf_SetCompositeImageOrigin ( CompositeField image,
 
             case CLASS_GROUP:
 
-                switch ( class = DXGetGroupClass ( (Group)member ) )
+                switch ( DXGetGroupClass ( (Group)member ) )
                 {
                     case CLASS_COMPOSITEFIELD:
 
@@ -1819,7 +1824,6 @@ static
 Field PlaceCompositeMember ( Object source,
                              int xoff, int yoff, Field destination )
 {
-    Class     class;
     Object    member;
     int       i, x, y;
     int       sx0, sy0, sx1, sy1,  is,  hs, ws;
@@ -1831,10 +1835,10 @@ Field PlaceCompositeMember ( Object source,
     int       rank, shape[32];
     float     *srcMap = NULL;
 
-    switch ( class = DXGetObjectClass ( source ) )
+    switch ( DXGetObjectClass ( source ) )
     {
         case CLASS_GROUP:
-            switch ( class = DXGetGroupClass ( (Group)source ) )
+            switch ( DXGetGroupClass ( (Group)source ) )
             {
                 case CLASS_COMPOSITEFIELD:
                     for ( i=0;

@@ -44,7 +44,7 @@ m_Legend(Object *in, Object *out)
   Pointer axeshandle=NULL;
   char extralabel[80];
   char *nullstring="", *fontname, *colorstring, *label; 
-  Object outo, withaxes, o, oo, ooo, ob, newo, outscreen;
+  Object outo, o, oo, ooo, ob, newo, outscreen;
   Array a_newpositions=NULL, a_newcolors=NULL, a_newconnections=NULL; 
   Array stringlist=NULL;
   Array locs=NULL, color_list=NULL, index_list=NULL; 
@@ -62,7 +62,6 @@ m_Legend(Object *in, Object *out)
   strcpy(extralabel,nullstring);
   adjust = 0; 
   outo = NULL;
-  withaxes = NULL;
   o = NULL;
   oo = NULL;
 

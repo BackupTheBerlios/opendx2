@@ -27,7 +27,7 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
    float min,max,valtemp;
    float val,incr;
    char *label, *id, *incrmethod;
-   int i,decimal,item=0,change=0,range,nitem=-1;
+   int i,item=0,change=0,range,nitem=-1;
    int change1,change4,change5,changen=0,req_param=1;
    int *ival,iincr,imax,imin;
    method_type method;
@@ -156,7 +156,7 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
    else
       label="";
   
-   decimal = DXD_MAX_INT;
+   /* decimal = DXD_MAX_INT; */
 
    if (islist){
       if (in[9]){
@@ -277,7 +277,7 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
    } 
    }
 
-   if (incr<1 && incr>0) {incr=1; decimal=0;}
+   if (incr<1 && incr>0) {incr=1; /* decimal=0; */ }
    iincr=incr;
    imin = min;
    imax = max; 

@@ -1520,7 +1520,6 @@ SpawnVolumeTasks(Object o)
 {
     int i;
     Object c;
-    Object attr;
 
     switch(DXGetObjectClass(o))
     {
@@ -1533,7 +1532,7 @@ SpawnVolumeTasks(Object o)
 	    return OK;
 	
 	case CLASS_FIELD:
-	    if (NULL == (attr = DXGetAttribute(o, "volume")))
+	    if (NULL == DXGetAttribute(o, "volume"))
 		if (! DXAddTask(FieldVolumeTask, (Pointer)o, 0, 1.0))
 		    return ERROR;
 	    return OK;
@@ -1690,12 +1689,12 @@ error:
 static Object
 _Sample_MultiGrid(MultiGrid mg, int n)
 {
-    float tv, bv, v;
+    float tv, v;
     int   nd, i, nElts;
     int eltDim = -1;
     Object c;
 
-    if (-1 == (bv = _dxfBoxVolume((Object)mg, &nd)))
+    if (-1 == _dxfBoxVolume((Object)mg, &nd))
 	return NULL;
 
     nElts = Field_Count((Object)mg, &eltDim);
@@ -1984,7 +1983,6 @@ PlanarSurface(Field field, int vPerE,
 {
     Array		   a_connections, a_positions;
     int			   n_connections, n_positions;
-    int			   nOut;
     float		   *eltPoints[MAX_V_PER_E];
     int			   basex, pDim, gDim;
     float		   gridy[2];
@@ -2101,7 +2099,6 @@ PlanarSurface(Field field, int vPerE,
     if (! cHandle)
 	goto error;
 
-    nOut = 0;
     for (i = 0; i < n_connections; i++)
     {
 	elt = (int *)DXGetArrayEntry(cHandle, i, cBuf);
@@ -2284,7 +2281,6 @@ CurvedSurface(Field field,
 {
     Array		   a_connections, a_positions;
     int			   n_connections, n_positions;
-    int			   nOut;
     float		   element[MAX_V_PER_E][3];
     float		   element2D[MAX_V_PER_E][2], *elt2D[MAX_V_PER_E];
     int			   *connections, cBuf[32];
@@ -2295,7 +2291,6 @@ CurvedSurface(Field field,
     float		   gDeltas[9], gOrigin[3];
     int			   gCounts[3], gSizes[3];
     int			   fCounts[2];
-    float		   fOrigin[2];
     int			   deleteGrid=0;
     float		   matrix[9];
     int			   p_axis, axis0, axis1;
@@ -2359,7 +2354,6 @@ CurvedSurface(Field field,
     if (! cHandle)
 	goto error;
 
-    nOut = 0;
     for (i = 0; i < n_connections; i++)
     {
         if (iHandle && DXIsElementInvalid(iHandle, i))
@@ -2457,8 +2451,8 @@ CurvedSurface(Field field,
 	fCounts[0] = gCounts[axis0];
 	fCounts[1] = gCounts[axis1];
 
-	fOrigin[0] = gOrigin[axis0];
-	fOrigin[1] = gOrigin[axis1];
+	/*fOrigin[0] = gOrigin[axis0];*/
+	/*fOrigin[1] = gOrigin[axis1];*/
 
 	mint[0] = mint[1] =  DXD_MAX_FLOAT;
 	maxt[0] = maxt[1] = -DXD_MAX_FLOAT;
@@ -2622,7 +2616,6 @@ Volume(Field field,
 {
     Array		   a_connections, a_positions;
     int			   n_connections, n_positions;
-    int			   nOut;
     float		   *element[MAX_V_PER_E];
     int			   yz, xyz;
     int			   basex, basey;
@@ -2715,7 +2708,6 @@ Volume(Field field,
 	    goto error;
     }
 
-    nOut = 0;
     for (i = 0; i < n_connections; i++)
     {
 	if (iHandle && DXIsElementInvalid(iHandle, i))
@@ -2929,7 +2921,7 @@ PolylinesSample(Field field, int nSamples, Array grid)
     ArrayHandle    	   points   = NULL;
     InvalidComponentHandle ich      = NULL;
     Array   	           pA, plA, eA;
-    float		   length, totLength;
+    float		   totLength;
     float		   spacing, next;
     char		   *name;
     int			   *polylines, *edges;
@@ -3022,7 +3014,6 @@ PolylinesSample(Field field, int nSamples, Array grid)
 	goto error;
 
     spacing = totLength / nSamples;
-    length  = 0;
     next    = spacing / 2.0;
 
     totLength = 0.0;
@@ -4329,7 +4320,6 @@ CreateOutputPolylines(Field f, SegList *pList, SegList *iList)
 	Category c;
 	int      r, shape[32];
 	int      itemSize, itemValues;
-	int      nItems;
 
 	if (! strcmp(name, "positions"))
 	    continue;
@@ -4363,7 +4353,7 @@ CreateOutputPolylines(Field f, SegList *pList, SegList *iList)
 	}
 	else
 	{
-	    nItems = DXGetItemSize(sA) / DXTypeSize(t);
+	    /*nItems = DXGetItemSize(sA) / DXTypeSize(t);*/
 
 	    dA = DXNewArrayV(t, c, r, shape);
 	    if (! dA)
@@ -5464,13 +5454,13 @@ InsideFace(float  x,	  float y,
 	if (x >= lmm->x && x <= lmm->X && 
 	    y >= lmm->y && y <= lmm->Y)
 	{
-	    int   p,     q     = edges[es];
+	    int    q = edges[es];
 	    float *ppos, *qpos = positions+(q<<1);
 	    float *t, *b, intercept, d;
 
 	    for (e = es; e < ee; e++)
 	    {
-		p    = q;
+		/*p    = q;*/
 		ppos = qpos;
 
 		q    = (e == ee-1) ? edges[es] : edges[e+1];
@@ -6082,8 +6072,7 @@ CreateOutputFaces(Field f, SegList *pList, SegList *iList)
 	Type     t; 
 	Category c;
 	int      r, shape[32];
-	int      itemSize, itemValues;
-	int      nItems;
+	int      itemSize;
 
 	if (! strcmp(name, "positions"))
 	    continue;
@@ -6106,7 +6095,7 @@ CreateOutputFaces(Field f, SegList *pList, SegList *iList)
 	DXGetArrayInfo(sA, NULL, &t, &c, &r, shape);
 	
 	itemSize   = DXGetItemSize(sA);
-	itemValues = itemSize / DXTypeSize(t);
+	/*itemValues = itemSize / DXTypeSize(t);*/
 
 	if (DXQueryConstantArray(sA, NULL, NULL))
 	{
@@ -6117,7 +6106,7 @@ CreateOutputFaces(Field f, SegList *pList, SegList *iList)
 	}
 	else
 	{
-	    nItems = DXGetItemSize(sA) / DXTypeSize(t);
+	    /*nItems = DXGetItemSize(sA) / DXTypeSize(t);*/
 
 	    dA = DXNewArrayV(t, c, r, shape);
 	    if (! dA)

@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.7 2001/04/17 15:39:19 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.8 2002/03/21 02:57:28 rhh Exp $
  */
 
 
@@ -451,11 +451,10 @@ _dxfGetOffset(int nDim, int *strides, int *indices)
 int *
 _dxfGetNeighbors(NeighborsHandle handle, int index, int *buf)
 {
-    int i, j, indices[10];
+    int i, indices[10];
 
     _dxfGetIndices(index, handle->nDim, handle->nstrides, indices);
 
-    j = 0;
     for (i = 0; i < handle->nDim; i++)
     {
 	if (indices[i] == 0)
@@ -1223,12 +1222,12 @@ Tetras_Weights(InstanceVars I, POINT_TYPE *pt)
 {
     Irreg_InstanceVars iI = (Irreg_InstanceVars)I;
     Irreg_VectorGrp    iP = (Irreg_VectorGrp)(iI->i.currentVectorGrp);
-    int   np, e, t;
+    int   e, t;
     Irreg_VectorPart ip;
     float vPp[3], vPs[3];
     float V, nV;
-    float *p, *q, *r, *s;
-    float pbuf[3], qbuf[3], rbuf[3], sbuf[3];
+    float *p, *s;
+    float pbuf[3], sbuf[3];
     float *xqsr = iI->planes +  0;
     float *xrps = iI->planes +  4;
     float *xspq = iI->planes +  8;
@@ -1242,7 +1241,7 @@ Tetras_Weights(InstanceVars I, POINT_TYPE *pt)
 
     ip = (Irreg_VectorPart)iP->P.p[iI->cp];
 
-    np = iI->cp;
+    /*np = iI->cp;*/
     e  = iI->ce;
     t  = iI->ct;
 
@@ -1254,8 +1253,8 @@ Tetras_Weights(InstanceVars I, POINT_TYPE *pt)
     tet = iP->primTable + 4*t;
 
     p = (float*)DXGetArrayEntry(iI->pHandle,elt[tet[0]],(Pointer)pbuf);
-    q = (float*)DXGetArrayEntry(iI->pHandle,elt[tet[1]],(Pointer)qbuf);
-    r = (float*)DXGetArrayEntry(iI->pHandle,elt[tet[2]],(Pointer)rbuf);
+    /*q = (float*)DXGetArrayEntry(iI->pHandle,elt[tet[1]],(Pointer)qbuf);*/
+    /*r = (float*)DXGetArrayEntry(iI->pHandle,elt[tet[2]],(Pointer)rbuf);*/
     s = (float*)DXGetArrayEntry(iI->pHandle,elt[tet[3]],(Pointer)sbuf);
 
     /*
@@ -1509,8 +1508,7 @@ Tris_Weights(InstanceVars I, POINT_TYPE *pt)
 {
     Irreg_InstanceVars iI = (Irreg_InstanceVars)I;
     Irreg_VectorGrp iP = (Irreg_VectorGrp)(iI->i.currentVectorGrp);
-    int   np, e, t;
-    Irreg_VectorPart ip;
+    int   e, t;
     float *p, *q, *r;
     float pbuf[3], qbuf[3], rbuf[3];
     float x, y, x0, y0, x1, y1, x2, y2;
@@ -1521,11 +1519,11 @@ Tris_Weights(InstanceVars I, POINT_TYPE *pt)
     if (IsCurrentDegenerate(iI))
 	return 0;
 
-    np = iI->cp;
+    /*np = iI->cp;*/
     e  = iI->ce;
     t  = iI->ct;
 
-    ip = (Irreg_VectorPart)iP->P.p[np];
+    /*ip = (Irreg_VectorPart)iP->P.p[np];*/
 
     elt = (int *)DXGetArrayEntry(iI->cHandle, e, (Pointer)ebuf);
 
@@ -1567,17 +1565,16 @@ Tris_FaceWeights(InstanceVars I, POINT_TYPE *pt)
 {
     Irreg_InstanceVars iI = (Irreg_InstanceVars)I;
     Irreg_VectorGrp iP = (Irreg_VectorGrp)(iI->i.currentVectorGrp);
-    int   np, e, t;
-    Irreg_VectorPart ip;
+    int   e, t;
     float w[2];
     int   npos, i, j, *elt, *tri, ebuf[8];
     float *pts[3], pbuf[3][2];
 
-    np = iI->cp;
+    /*np = iI->cp;*/
     e  = iI->ce;
     t  = iI->ct;
 
-    ip = (Irreg_VectorPart)iP->P.p[np];
+    /*ip = (Irreg_VectorPart)iP->P.p[np];*/
 
     elt = (int *)DXGetArrayEntry(iI->cHandle, e, (Pointer)ebuf);
 

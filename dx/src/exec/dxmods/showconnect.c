@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showconnect.c,v 1.5 2000/08/24 20:04:49 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showconnect.c,v 1.6 2002/03/21 02:57:40 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -138,7 +138,6 @@ int m_ShowConnections ( Object *in, Object *out )
 static 
 Field field_show_connections ( Field in_field, char *dummy, int dummysize )
 {
-    Class     class;
     Line      *lines_ptr;
     Array     larray  = NULL;
     hash_table_rec htab;
@@ -243,7 +242,7 @@ Field field_show_connections ( Field in_field, char *dummy, int dummysize )
                   "\"connections\"",
                   "element type" )
 
-        else if ( ( class = DXGetObjectClass ( conn_element ) ) != CLASS_STRING)
+        else if ( DXGetObjectClass ( conn_element ) != CLASS_STRING)
             DXErrorGoto2 ( ERROR_BAD_CLASS,
                           "#11080", /* name for object %d must be a string */
                           "connections component element type" )
@@ -455,10 +454,10 @@ Error process_triangles
 
     /* 3 edges per triangle, each of which may be shared by 2 triangles */
 
-    if ( ERROR == ( tris_ptr = (Triangle *) _dxf_GetComponentData
-                                                ( (Object)field,
-                                                  TRIANGLE_CONNECTIONS_COMP,
-                                                  &nt, NULL, NULL ) ) )
+    if ( ERROR == _dxf_GetComponentData( (Object)field,
+                                         TRIANGLE_CONNECTIONS_COMP,
+                                         &nt, NULL, NULL,
+                                         (Pointer *) &tris_ptr ) )
         goto error;
 
     for ( i=0; i<nt; i++, tris_ptr++ )
@@ -496,10 +495,10 @@ Error process_quads
     /*----------------*/
     /* 4 edges per quad, each of which may be shared by 2 quads */
 
-    if ( ERROR == ( quads_ptr = (Quadrilateral *) _dxf_GetComponentData
-                                                      ( (Object)field,
-                                                        QUAD_CONNECTIONS_COMP,
-                                                        &nq, NULL, NULL ) ) )
+    if ( ERROR == _dxf_GetComponentData( (Object)field,
+                                         QUAD_CONNECTIONS_COMP,
+                                         &nq, NULL, NULL,
+                                         (Pointer *) &quads_ptr ) )
         goto error;
 
     for ( i=0; i<nq; i++, quads_ptr++ )
@@ -531,7 +530,7 @@ Error process_faces_loops_edges
     char      invalid = 0;
     int       *face_ptr, *fp, *fp_end, *fp_last;  /* base, cur, to, last */
     int       *loop_ptr, *lp, *lp_end, *lp_last;
-    int       *edge_ptr, *ep, *ep_end, *ep_last;
+    int       *edge_ptr, *ep, *ep_end;
     int	      nf;
     int	      nl;
     int	      ne;
@@ -550,7 +549,7 @@ Error process_faces_loops_edges
 
     fp_last = &face_ptr [ nf - 1 ];
     lp_last = &loop_ptr [ nl - 1 ];
-    ep_last = &edge_ptr [ ne - 1 ];
+    /*ep_last = &edge_ptr [ ne - 1 ];*/
 
     fp_end = fp_last;
     fp     = face_ptr;
@@ -601,10 +600,10 @@ Error process_tetrahedra
     int	      i;
     /* 6 edges per tetrahedra, each of which may be shared by 6 tetrahedras */
 
-    if ( ERROR == ( tetras_ptr = (Tetrahedron *) _dxf_GetComponentData
-                                                     ( (Object)field,
-                                                       TETRA_CONNECTIONS_COMP,
-                                                       &nt, NULL, NULL ) ) )
+    if ( ERROR == _dxf_GetComponentData( (Object)field,
+                                         TETRA_CONNECTIONS_COMP,
+                                         &nt, NULL, NULL,
+                                         (Pointer *) &tetras_ptr ) )
         goto error;
 
     for ( i=0; i<nt; i++, tetras_ptr++ )
@@ -647,10 +646,10 @@ Error process_cubes
     int	      i;
     /* 12 edges per cube, each of which may be shared by 4 cubes */
 
-    if ( ERROR == ( cubes_ptr = (Cube *) _dxf_GetComponentData
-                                             ( (Object)field,
-                                                CUBE_CONNECTIONS_COMP,
-                                                &nc, NULL, NULL ) ) )
+    if ( ERROR == _dxf_GetComponentData( (Object)field,
+                                         CUBE_CONNECTIONS_COMP,
+                                         &nc, NULL, NULL,
+                                         (Pointer *) &cubes_ptr ) )
         goto error;
 
     for ( i=0; i<nc; i++, cubes_ptr++ )

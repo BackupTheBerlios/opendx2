@@ -449,15 +449,20 @@ SIZEINT(_dxdComputeNots);
  * types.
  */
 #define VALID_SBYTE(x)  ((x) < 128 && (x) >= -128)
-#define VALID_SHORT(x)  ((x) < 35768 && (x) >= -35768)
+#define VALID_SHORT(x)  ((x) < 32768 && (x) >= -32768)
 #define VALID_INT(x)    ((x) < 2147483648.0 && (x) >= -2147483648.0)
 #define VALID_SBYTEU(x) ((x) < 128)
-#define VALID_SHORTU(x) ((x) < 35768)
+#define VALID_SHORTU(x) ((x) < 32768)
 #define VALID_INTU(x)   ((x) < 2147483648.0)
 #define VALID_UBYTE(x)  ((x) < 256 && (x) >= 0)
 #define VALID_USHORT(x) ((x) < 65536 && (x) >= 0)
 #define VALID_UINT(x)   ((x) < 4294967296.0 && (x) >= 0.0)
 #define VALID_FLOAT(x)  ((x) < DXD_MAX_FLOAT && (x) > -DXD_MAX_FLOAT)
+
+/*  Turn off unsigned being compared to zero warnings  */
+#ifdef sgi
+#  pragma set woff 1183
+#endif
 
 VFUNC1RC(ubyteCastBV, unsigned char, signed char, (unsigned char),
     VALID_UBYTE, "#11999")
@@ -556,6 +561,11 @@ VCATFUNC1 (doubleCastUSV, double, unsigned short, (double) )
 VCATFUNC1 (doubleCastIV, double, int, (double) )
 VCATFUNC1 (doubleCastUIV, double, unsigned int, (double) )
 VCATFUNC1 (doubleCastFV, double, float, (double) )
+
+/*  Turn off unsigned being compared to zero warnings  */
+#ifdef sgi
+#  pragma reset woff 1183
+#endif
 
 #define SignedCharCast(x) (((x) & 0x80)? ((unsigned int)(x)) - 256: (x))
 VCATFUNC1 (signed_intCastCV, int, unsigned char, SignedCharCast)

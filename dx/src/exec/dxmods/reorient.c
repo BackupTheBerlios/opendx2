@@ -506,8 +506,6 @@ static Error dodata (Rtaskarg *tp)
     Array a, new_a = NULL;
 
     int yfastest;
-    int negative_x;
-    int negative_y;
     int loopcount[2];
     int cnum;
     int invert;
@@ -540,8 +538,8 @@ static Error dodata (Rtaskarg *tp)
     field = (Field)tp->o;
 
     yfastest = tp->grid & Y_FASTEST;
-    negative_x = tp->grid & NEGATIVE_X;
-    negative_y = tp->grid & NEGATIVE_Y;
+    /*negative_x = tp->grid & NEGATIVE_X;*/
+    /*negative_y = tp->grid & NEGATIVE_Y;*/
 
 #if 1    /* in again */   /*xxx  out for now */
 

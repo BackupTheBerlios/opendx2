@@ -52,7 +52,7 @@ selector_driver(Object *in, Object *out, int allowLists)
    struct einfo ei;
    int i,index;
    char *id, *label;
-   Object idobj,vallist,strlist,newlist;
+   Object vallist,strlist,newlist;
    char *cstring;
    int item1,item2,icull,startlist,msglen=0,shape[MAXRANK];
    Type type1;
@@ -71,7 +71,7 @@ selector_driver(Object *in, Object *out, int allowLists)
        DXSetError(ERROR_BAD_PARAMETER,"#10000","id");
        return ERROR;
    }
-   idobj = in[0];
+   /*idobj = in[0];*/
 
    /* read current string */
    if (in[1]){
@@ -443,7 +443,7 @@ static Object fillnull(Object *list, Object o)
     char **cp=NULL;
     Class class;
     int i,item,size,*ifree=NULL;
-    Object oo,newlist;
+    Object newlist;
 
     class = DXGetObjectClass((Object)o);
     /* extract strings */
@@ -457,7 +457,7 @@ static Object fillnull(Object *list, Object o)
     ifree = (int *)DXAllocate(sizeof(int) * item);
     if (!ifree)
        goto error;
-     for (i=0; (oo=DXExtractNthString(*list, i, &string)); i++){
+     for (i=0; DXExtractNthString(*list, i, &string); i++){
         if (!strcmp("",string)){
            cp[i] = (char *)DXAllocate(sizeof(char) * (size+1));
            if (!cp[i])
@@ -510,7 +510,6 @@ static Error cullout(Object *slist,Object *vlist)
     int rank,bytsize;
     int shape[MAXRANK];
     char **cp, *string;
-    Object oo;
  
     /* extract strings */
     if (!DXGetArrayInfo((Array)*slist,&item,NULL,NULL,NULL,NULL))
@@ -527,7 +526,7 @@ static Error cullout(Object *slist,Object *vlist)
     if (!cp)
        return ERROR;
     for (i=0; i<item; i++){
-       oo=DXExtractNthString(*slist, i, &string);
+       DXExtractNthString(*slist, i, &string);
        if (strcmp("",string)){
          *(cp+n) = string;
          if (i<item1){

@@ -936,11 +936,10 @@ ExecStrstr(
     int size0 = pt->args->metaType.items;
     int size1 = pt->args->next->metaType.items;
     int i, j, k;
-    int ncmp;
     int allValid =
 	(invalids[0] == NULL || DXGetInvalidCount(invalids[0]) == 0) &&
 	(invalids[1] == NULL || DXGetInvalidCount(invalids[1]) == 0);
-    ncmp = MAX(vectorLen0, vectorLen1);
+    /*ncmp = MAX(vectorLen0, vectorLen1);*/
     for (i = j = k = 0;
 	    i < pt->metaType.items;
 	    ++i) {

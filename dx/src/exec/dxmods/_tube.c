@@ -40,7 +40,7 @@ static
 Field
 TubeRegular(Field f, double diameter, int ngon, float *cs, float *sn)
 {
-    int i, j, k, l, npoints, nnewpoints, nconn, nnewconn, max;
+    int i, j, k, l, npoints, nnewpoints, nnewconn, max;
     Array a = NULL, oPts = NULL, nPts = NULL, nQuads = NULL, nNrms = NULL;
     Point *points, *newpoints;
     Vector *normals=NULL, *newnormals, *binormals=NULL;
@@ -100,7 +100,7 @@ TubeRegular(Field f, double diameter, int ngon, float *cs, float *sn)
         return RemoveFieldComponents(f);
 
     nnewpoints = ngon * npoints;
-    nconn = npoints-1;
+    /*nconn = npoints-1;*/
     nnewconn = (ngon==RIBBON? 1 : ngon) * (npoints-1);
 
     /*
@@ -587,9 +587,8 @@ TubeArrays_Reg(Field field, int ngon, int nPoints)
     Object att;
     char *name, *toDelete[100];
     int i, nDelete;
-    int nQuads;
 
-    nQuads = (ngon == 2) ? 1 : ngon;
+    /*nQuads = (ngon == 2) ? 1 : ngon;*/
 
     i = nDelete = 0;
     while ((s = (Array)DXGetEnumeratedComponentValue(field, i++, &name)) != NULL)
@@ -1756,7 +1755,7 @@ TubePartialPath(Vector *points, double diameter, int ngon,
 	    float *cs, float *sn, PathElt *path, int npoints, CList *clist,
 	    Vector *normals, Vector *binormals)
 {
-    int i, j, k, nnewpoints, nconn, nnewconn, max;
+    int i, j, k, nnewpoints, nnewconn, max;
     Vector *newpoints, *newnormals;
     Quadrilateral *quads, *t;
     int  pOffset, loop, nUniquePoints;
@@ -1771,7 +1770,7 @@ TubePartialPath(Vector *points, double diameter, int ngon,
 
     nnewpoints = ngon * nUniquePoints;
 
-    nconn = npoints-1;
+    /*nconn = npoints-1;*/
     nnewconn = (ngon==RIBBON? 1 : ngon) * (npoints-1);
 
     if (normals && !binormals)

@@ -334,7 +334,7 @@ Spin(Camera in_camera, Camera *out_camera,
 
     if (nEvents)
     {
-	int i, activeButton;
+	int i;
 	void *udata = NULL;
 	int mask;
 	UserInteractor *imode = ((UserInteractor *)_dxd_UserInteractors) + mode;
@@ -346,8 +346,6 @@ Spin(Camera in_camera, Camera *out_camera,
 	    
 	if (imode->SetRenderable)
 	    imode->SetRenderable(udata, in_object);
-
-	activeButton = -1;
 
 	*nuevents = 0;
 

@@ -330,8 +330,8 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
   Array colorfield_positions=NULL; 
   Array colorfield_connections=NULL; 
   Array colorfield_data=NULL;
-  RGBColor corigin, cdelta, lowerhsv, upperhsv, lowerrgb, upperrgb, colorval;
-  float oorigin, odelta, opval, dataval, fuzz;
+  RGBColor corigin, lowerhsv, upperhsv, lowerrgb, upperrgb, colorval;
+  float oorigin, opval, dataval, fuzz;
   float *colorfield_posptr, dmin, dmax;
   int datamin, datamax, numentries;
   RGBColor *colorfield_dataptr;
@@ -502,7 +502,7 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
     if (surface) {
       if (setopacities) {
 	oorigin = opacity;
-	odelta = 0.0;
+	/*odelta = 0.0;*/
 	if (!(a_opacitydata =
 	      (Array)DXNewConstantArray(count, (Pointer)&oorigin, TYPE_FLOAT,
 					CATEGORY_REAL, 0, NULL))) {
@@ -510,7 +510,7 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
 	}
       }
       corigin = lowerrgb;
-      cdelta = DXRGB(0.0, 0.0, 0.0);
+      /*cdelta = DXRGB(0.0, 0.0, 0.0);*/
       if (!(a_colordata =
 	    (Array)DXNewConstantArray(count, (Pointer)&corigin,
 				      TYPE_FLOAT, CATEGORY_REAL, 1, 3))) {
@@ -521,7 +521,7 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
     else {
       if (setopacities) {
 	oorigin = 0.0;
-	odelta = 0.0;
+	/*odelta = 0.0;*/
         if (!(a_opacitydata =
 	      (Array)DXNewConstantArray(count, (Pointer)&oorigin,
 					TYPE_FLOAT, CATEGORY_REAL, 0, NULL))) 
@@ -529,7 +529,7 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
       }
       /* for volumes, out of range points are invisible */
       corigin = DXRGB(0.0, 0.0, 0.0);
-      cdelta = DXRGB(0.0, 0.0, 0.0);
+      /*cdelta = DXRGB(0.0, 0.0, 0.0);*/
       if (!(a_colordata =
 	    (Array)DXNewConstantArray(count, (Pointer)&corigin,
 				      TYPE_FLOAT, CATEGORY_REAL, 1, 3))) 
@@ -574,7 +574,7 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
     if (surface) {
       if (setopacities) {
 	oorigin = opacity;
-	odelta = 0.0;
+	/*odelta = 0.0;*/
         if (!(a_opacitydata =
 	      (Array)DXNewConstantArray(count, (Pointer)&oorigin,
 					TYPE_FLOAT, CATEGORY_REAL, 0, NULL))) 
@@ -586,7 +586,7 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
       
       
       corigin = DXRGB(red, green, blue);
-      cdelta = DXRGB(0.0, 0.0, 0.0);
+      /*cdelta = DXRGB(0.0, 0.0, 0.0);*/
       if (!(a_colordata =
 	    (Array)DXNewConstantArray(count, (Pointer)&corigin,
 				      TYPE_FLOAT, CATEGORY_REAL,1, 3))) {
@@ -597,7 +597,7 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
     else {
       if (setopacities) {
 	oorigin = opacity;
-	odelta = 0.0;
+	/*odelta = 0.0;*/
 	if (!(a_opacitydata =
 	      (Array)DXNewConstantArray(count, (Pointer)&oorigin,
 					TYPE_FLOAT, CATEGORY_REAL,0, NULL))) 
@@ -608,7 +608,7 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
 	goto cleanup;
       
       corigin = DXRGB(red, green, blue);
-      cdelta = DXRGB(0.0, 0.0, 0.0);
+      /*cdelta = DXRGB(0.0, 0.0, 0.0);*/
       if (!(a_colordata =
 	    (Array)DXNewConstantArray(count, (Pointer)&corigin,
 				      TYPE_FLOAT, CATEGORY_REAL, 1, 3))) 
@@ -664,7 +664,7 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
 	if (compactopacities) {
 	  count = 1;
 	  oorigin = opacity;
-	  odelta = 0.0;
+	  /*odelta = 0.0;*/
 	  if (!(a_opacitydata =
 		(Array)DXNewConstantArray(count, (Pointer)&oorigin,TYPE_FLOAT,
 					  CATEGORY_REAL, 0, NULL))) 
@@ -1175,14 +1175,14 @@ static Error AutoGrayScaleDelayedField(Pointer ptr)
 
 
 {
-  Field f, savedfield;
+  Field f;
   int scalar, i, setopacities, surface;
   float givenmin, givenmax,opacity,r,g,b;
   float dmin, dmax;
   int datamin, datamax, numentries;
   float *opacityarray=NULL, intensitystart, range,saturation,intensity,hue;
   RGBColor *colorarray=NULL, lowerrgb,upperrgb;
-  Array newdata, olddata, a_data;
+  Array a_data;
   Array deferredcolors, deferredopacities;
   arg_byte *a;
 
@@ -1199,13 +1199,8 @@ static Error AutoGrayScaleDelayedField(Pointer ptr)
   hue = a->a_hue;
   lowerrgb = a->a_lowerrgb;
   upperrgb = a->a_upperrgb;
-  newdata = NULL;
-  olddata = NULL;
   deferredcolors = NULL;
   deferredopacities = NULL;
-  savedfield = NULL;
-
-
 
   /* if it's an empty field, or a field without data, ignore it */
   if (!(GoodField(f))) return OK;

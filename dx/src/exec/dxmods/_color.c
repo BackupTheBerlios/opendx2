@@ -293,7 +293,7 @@ static Error ColorField(Pointer ptr)
   Object color, opacity, copycolor=NULL, copyopacity=NULL;
   Interpolator i;
   char *component, *el_type, *att;
-  int setcolor, setopacity, colorfield, opacityfield, count, surface;
+  int setcolor, setopacity, colorfield, opacityfield, count;
   int scalar, mapcounts, j, k;
   int immediate, floatflag, textflag; 
   int floatcolors, floatopacities;
@@ -353,17 +353,21 @@ static Error ColorField(Pointer ptr)
 							    "element type"))) 
       != NULL) {
     if ( !strcmp(el_type,"triangles") || !strcmp(el_type,"quads") ||
-	!strcmp(el_type,"faces") || !strcmp(el_type,"lines") ) 
-      surface = 1;
+	 !strcmp(el_type,"faces") || !strcmp(el_type,"lines") ) 
+    {
+      /* surface = 1; */
+    }
     else if ( !strcmp(el_type,"cubes") || !strcmp(el_type,"tetrahedra") )
-      surface = 0;
+    {
+      /* surface = 0; */
+    }
     else {
       DXSetError(ERROR_UNEXPECTED,"unrecognized connections");
       goto error;
     } 
   } 
   else  {
-    surface = 1;
+    /* surface = 1; */
   }
   
   /*   now check what the data (if any) is dependent on. If there is

@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refineirr.c,v 1.5 2000/08/24 20:04:18 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refineirr.c,v 1.6 2002/03/21 02:57:30 rhh Exp $:
  */
 
 #include <string.h>
@@ -170,12 +170,15 @@ typedef struct listElement
     int			index;
 } *ListElement;
 
-#define VALID(table, index) ((((int **)table)[index]) == NULL)
+typedef struct {
+    int                 invalid;     /*  Is this position invalid?  */
+    ListElement         head;        /*  List of invalid elements   */
+} ListHead;
 
-static Error  AddHashReferences(HashTable, ListElement *, SegList *, int, int);
-static Error  AddReferences(int *, int, ListElement *, SegList *, int, int);
-static Error  SetupIPTables(Field, int, ListElement **, SegList **);
-static Error  DumpIPTables(Field, int, ListElement **, SegList **);
+static Error  AddHashReferences(HashTable, ListHead *, SegList *, int, int);
+static Error  AddReferences(int *, int, ListHead *, SegList *, int, int);
+static Error  SetupIPTables(Field, int, ListHead **, SegList **);
+static Error  DumpIPTables(Field, int, ListHead **, SegList **);
 
 static Error  AddQuadToHash(HashTable, int, int, int, int, int *);
 static int    QueryQuad(HashTable, int, int, int, int);
@@ -250,7 +253,7 @@ RefineICubes(Field f, int levels)
     int		nEdges, nFaces;
     Object	old;
     char	*name;
-    ListElement *invTable = NULL;
+    ListHead    *invTable = NULL;
     SegList     *listElements = NULL;
 
     iTable[0].table = iTable[1].table = NULL;
@@ -521,7 +524,7 @@ RefineIQuads(Field f, int levels)
     int		nEdges;
     Object	old;
     char	*name;
-    ListElement *invTable = NULL;
+    ListHead    *invTable = NULL;
     SegList     *listElements = NULL;
     InvalidComponentHandle ich = NULL;
 
@@ -759,7 +762,7 @@ RefineILines(Field f, int levels)
     int  	cOffset;
     Object	old;
     char	*name;
-    ListElement *invTable = NULL;
+    ListHead    *invTable = NULL;
     SegList     *listElements = NULL;
 
     iTable[0].table = iTable[1].table = NULL;
@@ -936,11 +939,11 @@ RefineITetras(Field f, int levels)
     InterpTable iTable[3];
     Array       inP, inC, outC = NULL;
     int         *c, *inElts, *outElts, nElts, nPoints;
-    int  	eOffset, cOffset;
+    int  	eOffset;
     int		nEdges;
     Object	old;
     char	*name;
-    ListElement *invTable = NULL;
+    ListHead    *invTable = NULL;
     SegList     *listElements = NULL;
 
     iTable[0].table = iTable[1].table = NULL;
@@ -1005,7 +1008,7 @@ RefineITetras(Field f, int levels)
 	 */
 
 	eOffset = nPoints;
-	cOffset = eOffset + nEdges;
+	/*cOffset = eOffset + nEdges;*/
 	
 	c = inElts;
 	for (i = 0; i < nElts; i++, c += 4)
@@ -1155,11 +1158,11 @@ RefineITriangles(Field f, int levels)
     InterpTable iTable[3];
     Array       inP, inC, outC = NULL;
     int         *c, *inElts, *outElts, nElts, nPoints;
-    int  	eOffset, cOffset;
+    int  	eOffset;
     int		nEdges;
     Object	old;
     char	*name;
-    ListElement *invTable = NULL;
+    ListHead    *invTable = NULL;
     SegList     *listElements = NULL;
 
     iTable[0].table = iTable[1].table = NULL;
@@ -1224,7 +1227,7 @@ RefineITriangles(Field f, int levels)
 	 */
 
 	eOffset = nPoints;
-	cOffset = eOffset + nEdges;
+	/*cOffset = eOffset + nEdges;*/
 	
 	c = inElts;
 	for (i = 0; i < nElts; i++, c += 3)
@@ -1876,8 +1879,8 @@ Cmp2(Key k0, Key k1)
 }
 
 static Error
-AddHashReferences(HashTable h, ListElement *invTable,
-		SegList *listElements, int base, int nv)
+AddHashReferences(HashTable h, ListHead *invTable,
+		  SegList *listElements, int base, int nv)
 {
     Hash hash;
     int  n = base;
@@ -1892,15 +1895,15 @@ AddHashReferences(HashTable h, ListElement *invTable,
 	for (i = 0; i < nv; i++)
 	{
 	    int index = hash->v[i];
-	    if (! VALID(invTable, index))
+	    if (invTable[index].invalid)
 	    {
 		ListElement le = DXNewSegListItem(listElements);
 		if (! le)
 		    goto error;
 
 		le->index = n;
-		le->next =  invTable[index];
-		invTable[index] = le;
+		le->next  = invTable[index].head;
+		invTable[index].head = le;
 	    }
 	}
 
@@ -1915,7 +1918,7 @@ error:
 }
 
 static Error
-AddReferences(int *list, int knt, ListElement *invTable,
+AddReferences(int *list, int knt, ListHead *invTable,
 		SegList *listElements, int base, int nv)
 {
     int i, j;
@@ -1925,15 +1928,15 @@ AddReferences(int *list, int knt, ListElement *invTable,
 	for (j = 0; j < nv; j++)
 	{
 	    int index = *list++;
-	    if (! VALID(invTable, index))
+	    if (invTable[index].invalid)
 	    {
 		ListElement le = DXNewSegListItem(listElements);
 		if (! le)
 		    goto error;
 
 		le->index = base + i;
-		le->next =  invTable[index];
-		invTable[index] = le;
+		le->next  = invTable[index].head;
+		invTable[index].head = le;
 	    }
 	}
     }
@@ -1950,32 +1953,35 @@ error:
 
 static Error
 SetupIPTables(Field f, int nPoints,
-		ListElement **invTable, SegList **listElements)
+	      ListHead **invTable, SegList **listElements)
 {
     InvalidComponentHandle iph = NULL;
+    int i;
 
     *invTable = NULL;
     *listElements = NULL;
 
     if (DXGetComponentAttribute(f, "invalid positions", "ref"))
     {
-	int index, *iPtr;
+	int index;
 
-	*invTable = (ListElement *)DXAllocateZero(nPoints * sizeof(Pointer));
+	*invTable = (ListHead *)DXAllocateZero(nPoints * sizeof(ListHead));
 	if (! *invTable)
 	    goto error;
+
+	for (i = 0; i < nPoints; i++ )
+	    (*invTable)[i].head = NULL;
 
 	iph = DXCreateInvalidComponentHandle((Object)f, NULL, "positions");
 	if (! iph)
 	    goto error;
 	
-	iPtr = (int *)*invTable;
 	DXInitGetNextInvalidElementIndex(iph);
 	while (-1 != (index = DXGetNextInvalidElementIndex(iph)))
-	    iPtr[index] = 1;
+	    invTable[index]->invalid = 1;
 	
 	*listElements = DXNewSegList(sizeof(struct listElement),
-					    nPoints*2, nPoints);
+				     nPoints*2, nPoints);
 	if (! *listElements)
 	    goto error;
     
@@ -2003,7 +2009,7 @@ error:
 
 static Error
 DumpIPTables(Field f, int nPoints,
-		ListElement **invTable, SegList **listElements)
+	     ListHead **invTable, SegList **listElements)
 {
     InvalidComponentHandle iph = NULL;
 
@@ -2017,11 +2023,12 @@ DumpIPTables(Field f, int nPoints,
 	    goto error;
 
 	for (i = 0; i < nPoints; i++)
-	    if (NULL != (le = (*invTable)[i]))
+	    if ((*invTable)[i].invalid)
 	    {
 		if (! DXSetElementInvalid(iph, i))
 		    goto error;
 
+                le = (*invTable)[i].head;
 		do
 		{
 		    if (! DXSetElementInvalid(iph, le->index))
@@ -2029,7 +2036,7 @@ DumpIPTables(Field f, int nPoints,
 		    
 		    le = le->next;
 
-		} while (((int)le) != 1);
+		} while (le != NULL);
 	    }
 	    
 	if (! DXSaveInvalidComponent(f, iph))

@@ -214,8 +214,8 @@ static void geomCount (OutObjInfo *oo, Class class, int isAttr, int isShared);
 
 struct hashElement
 {
-    uint   key;		/* either an object or an id */
-    uint   data;	/* the other thing */
+    Pointer   key;	/* either an object or an id */
+    Pointer   data;	/* the other thing */
 };
 
 typedef struct hashElement *HashElement;
@@ -225,24 +225,24 @@ typedef struct hashElement *HashElement;
  *  after determining the object isn't already in the list, AddID should be 
  *  called to put the new object and ID in the list.
  */
-static HashTable FindIDbyObject(HashTable ht, Object object, uint *id)
+static HashTable FindIDbyObject(HashTable ht, Object object, ulong *id)
 {
     HashElement eltPtr;
 
     eltPtr = (HashElement)DXQueryHashElement(ht, (Key)&object);
-    *id = eltPtr ? eltPtr->data : (uint)0;
+    *id = eltPtr ? (ulong)eltPtr->data : 0;
 
     return ht;
 }
 
 
-static HashTable AddIDbyObject(HashTable ht, Object object, uint id)
+static HashTable AddIDbyObject(HashTable ht, Object object, ulong id)
 {
     struct hashElement elt;
     HashElement        eltPtr;
 
-    elt.key = (uint)object;
-    elt.data = (uint)id;
+    elt.key  = (Pointer)object;
+    elt.data = (Pointer)id;
 
     eltPtr = (HashElement)DXQueryHashElement(ht, (Key)&object);
     if (eltPtr)
@@ -260,7 +260,7 @@ static HashTable AddIDbyObject(HashTable ht, Object object, uint id)
  *  table by ID.
  */
 #if 0
-static HashTable FindObjectbyID(HashTable ht, uint id, Object *object)
+static HashTable FindObjectbyID(HashTable ht, ulong id, Object *object)
 {
     HashElement eltPtr;
 
@@ -270,13 +270,13 @@ static HashTable FindObjectbyID(HashTable ht, uint id, Object *object)
     return ht;
 }
 
-static HashTable AddObjectbyID(HashTable ht, uint id, Object object)
+static HashTable AddObjectbyID(HashTable ht, ulong id, Object object)
 {
     struct hashElement elt;
     HashElement        eltPtr;
 
-    elt.key = (uint)id;
-    elt.data = (uint)object;
+    elt.key  = (Pointer)id;
+    elt.data = (Pointer)object;
 
     eltPtr = (HashElement)DXQueryHashElement(ht, (Key)&id);
     if (eltPtr)
@@ -1033,14 +1033,13 @@ static int numnodes(Node *np)
  */
 static void nodecount(Node *np, int *count)
 {
-    Node *thisnp, *nextnp;
+    Node *nextnp;
 
     for (nextnp = np; nextnp; ) {
 
 	if (nextnp->child)
 	    nodecount(nextnp->child, count);
 
-	thisnp = nextnp;
 	nextnp = nextnp->sibling;
 
 	(*count)++;
@@ -1397,6 +1396,7 @@ Error traverse(Object o, VisInfo *vi, Node *parent, int isattr, int num,
     InObjInfo *oi;
     Layout *y;
     int count, i;
+    ulong obj_id;
     float pos;
     Error rc;
     Array terms[MAXRANK];
@@ -1428,15 +1428,15 @@ Error traverse(Object o, VisInfo *vi, Node *parent, int isattr, int num,
 
     /* check for shared objects
      */
-    if (!FindIDbyObject(oi->ht, o, (uint *)&i)) {
+    if (!FindIDbyObject(oi->ht, o, &obj_id)) {
 	rc = ERROR;
 	goto done;
     }
     
-    /* if i == 0, this is a new object.  if i == anything else, this
+    /* if obj_id == 0, this is a new object.  if obj_id == anything else, this
      *  is a duplicate.
      */
-    dup = (i != 0);
+    dup = (obj_id != 0);
     
     y->membercount++;
     if (!dup)
@@ -1581,7 +1581,7 @@ Error traverse(Object o, VisInfo *vi, Node *parent, int isattr, int num,
 	goto done;
     }
 
-    if (!dup && !AddIDbyObject(oi->ht, o, (uint)y->membercount+1)) {
+    if (!dup && !AddIDbyObject(oi->ht, o, y->membercount+1)) {
 	rc = ERROR;
 	goto done;
     }

@@ -423,10 +423,11 @@ real
 
 %%
 
-yyerror(char *s)
+int yyerror(char *s)
 {
     if (DXGetError() == ERROR_NONE) {
 	DXSetError(ERROR_BAD_PARAMETER, "#12100", s, _dxfcclexerror());
     }
     _dxdparseError++;
+    return 0;            /*  Return a value to keep the compiler happy  */
 }

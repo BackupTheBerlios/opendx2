@@ -146,13 +146,12 @@ static Error
 MeasureTask(Pointer ptr)
 {
     Object   object;
-    int      what;
     float    *measure;
     Segments *segs;
     PFE      task;
 
     object  = ((MeasureTaskArgs *)ptr)->child;
-    what    = ((MeasureTaskArgs *)ptr)->what;
+    /* what    = ((MeasureTaskArgs *)ptr)->what; */
     measure = ((MeasureTaskArgs *)ptr)->measure;
     segs    = ((MeasureTaskArgs *)ptr)->segs;
     task    = ((MeasureTaskArgs *)ptr)->task;
@@ -1498,7 +1497,7 @@ Loop_Volume(int nEdges, int nPts, Line *segs, Vector *points, Array pA, float *m
     Link  **index = NULL, *links = NULL, *link = NULL;
     ubyte *flags = NULL;
     int nexte, nf, nb, done;
-    Vector *p, *q, *r, vrp, vsp, vqp, cross;
+    Vector *p, *r, vrp, vsp, vqp, cross;
     Line *sPtr;
     float vol;
     Vector origin;
@@ -1650,12 +1649,12 @@ Loop_Volume(int nEdges, int nPts, Line *segs, Vector *points, Array pA, float *m
 	    vqp = vrp;
 	    if (points)
 	    {
-		q = r;
+		/* q = r; */
 		r = points + list[j+1];
 	    }
 	    else
 	    {
-		q    = r;
+		/* q    = r; */
 		qBuf = rBuf;
 		r = (Vector *)DXCalculateArrayEntry(pHandle,
 						list[j+1],(Pointer)&rBuf); 

@@ -11,7 +11,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.6 2000/10/05 20:37:35 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.7 2002/03/21 02:57:39 rhh Exp $
  */
 
 #include <string.h>
@@ -2066,7 +2066,7 @@ static
 Field show_boundary ( Field input, char *arg, int args )
 {
     field_info  input_info     = NULL;
-    array_info  p_info, c_info = NULL;
+    array_info  c_info = NULL;
     int         option;
     Object      output;
 
@@ -2114,7 +2114,7 @@ Field show_boundary ( Field input, char *arg, int args )
               "#10340", /* %s must be 2D or 3D */
               "\"connections\"" ); 
 
-    p_info = (array_info) &(input_info->std_comps[(int)POSITIONS]->array);
+    /*p_info = (array_info) &(input_info->std_comps[(int)POSITIONS]->array);*/
     c_info = (array_info) &(input_info->std_comps[(int)CONNECTIONS]->array);
 
     if ( !_dxf_SetIterator ( input_info->std_comps[(int)CONNECTIONS] ) )

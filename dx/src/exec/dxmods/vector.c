@@ -40,7 +40,7 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
    char *label, *id, *incrmethod;
    int i,item=0,change=0,j,n,nitem=-1,range=0,isint=0;
    int rank=1,dim=3,size,valdim,dec1;
-   int change1,change4,change5,changen=0,req_param=1,decimalzero=1;
+   int change1,change4,change5,changen=0,req_param=1 /*,decimalzero=1*/;
    method_type method;
    Object idobj;
    int iprint[MAXPRINT],ip[MAXPRINT],msglen=0,shape[1];
@@ -256,7 +256,7 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
              goto error1;
          }
       }
-      if (n > 0)decimalzero = 0;
+      /*if (n > 0)decimalzero = 0;*/
    }
    else{
       if (req_param==0){

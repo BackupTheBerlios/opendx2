@@ -344,7 +344,8 @@ ImportStatReturn
 _dxftry_ncdf(struct parmlist *p)
 {
     char *tbuf;
-    int frame, rc;
+    int frame;
+    ImportStatReturn rc;
 
     /* if extension == .cdf or .ncdf, or */
     /* file or file.(n)cdf exists somewhere in curdir or DXDATA path, and */
@@ -366,7 +367,6 @@ _dxftry_ncdf(struct parmlist *p)
     rc = _dxfstat_netcdf_file(tbuf);
     DXFree(tbuf);
     return rc;
-
 }
  
 Object _dxfget_ncdf(struct parmlist *p)
@@ -375,7 +375,7 @@ Object _dxfget_ncdf(struct parmlist *p)
     int startframe, endframe, deltaframe;
     char dataset_name[512], numbuf[16];
     int overwrite = 0;
-    Error firstrc = OK;
+    ErrorCode firstrc = ERROR_NONE;
     char *firsterr = NULL;
     Series tsg = NULL;   /* time series group */
     Group grp = NULL;    /* generic group */
@@ -516,7 +516,8 @@ ImportStatReturn
 _dxftry_hdf(struct parmlist *p)
 {
     char *tbuf;
-    int frame, rc;
+    int frame;
+    ImportStatReturn rc;
 
     /* if extension == .hdf, or 
      * file or file.hdf exists somewhere in curdir or DXDATA path, and

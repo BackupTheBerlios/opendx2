@@ -629,11 +629,10 @@ error:
 /* convert opacity control points to opacity field */
 Error _dxfcontrol_to_o(Object opmap,Field *opacity)
 {
-   float *op_data,*op_pts;
    Map *op;
    int num_op;
    Array c=NULL;
-   op = NULL; op_data = NULL; op_pts = NULL;
+   op = NULL;
 
    if(opmap){
     if (!DXQueryParameter(opmap,TYPE_FLOAT,2,&num_op)){
@@ -658,6 +657,7 @@ Error _dxfcontrol_to_o(Object opmap,Field *opacity)
 
     /* separate into positions and data and create a field */
     /*
+    float *op_data = NULL, *op_pts = NULL;
     *opacity = (Field)_dxfcolorfield(NULL,NULL,num_op,0);
     a = (Array)DXGetComponentValue((Field)*opacity,"positions");
     b = (Array)DXGetComponentValue((Field)*opacity,"data");

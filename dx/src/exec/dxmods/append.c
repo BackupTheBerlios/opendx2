@@ -65,7 +65,7 @@ Group _dxfBuildGroup(Object *in)
     int seen_null = 0;
     int say_warn = 0;
     int seen_valid = 0;
-    Class gclass = 0;
+    Class gclass = (Class) 0;
     Object newo;
     Group newgroup = NULL;
     char *cp;

@@ -61,7 +61,8 @@ _dxf_samplePointer(ImageWindow *iw, int flag)
     if (flag)
     {
 	if (XQueryPointer(iw->iwx->display, iw->iwx->windowId,
-		&rt, &chld, &root_x, &root_y, &win_x, &win_y, &iw->kstate))
+		&rt, &chld, &root_x, &root_y, &win_x, &win_y, 
+		(unsigned int *) &iw->kstate))
 	{
 	    iw->x = win_x;
 	    iw->y = win_y;
@@ -213,7 +214,8 @@ _dxf_processEvents(int fd, void *d)
 	    
 	    case MotionNotify:
 		if (XQueryPointer(iw->iwx->display, iw->iwx->windowId,
-			&rt, &chld, &root_x, &root_y, &win_x, &win_y, &flags))
+			&rt, &chld, &root_x, &root_y, &win_x, &win_y, 
+			(unsigned int *) &flags))
 		{
 		    iw->x = win_x;
 		    iw->y = win_y;

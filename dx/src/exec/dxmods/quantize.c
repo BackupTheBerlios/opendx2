@@ -507,7 +507,6 @@ doLeaf_series_pass1(TreeNode tree, Object *in, int nColors)
   Category category;
   int rank, shape;
   Object attr, src_dependency_attr = NULL;
-  char *src_dependency = NULL;
   int p_knt = -1;
   int float_pixels;
 
@@ -540,7 +539,7 @@ doLeaf_series_pass1(TreeNode tree, Object *in, int nColors)
     goto error;
   }
 
-  src_dependency = DXGetString((String)src_dependency_attr);
+  /*src_dependency = DXGetString((String)src_dependency_attr);*/
 
   array = (Array)DXGetComponentValue(field, "positions");
   if (! array)
@@ -640,7 +639,6 @@ doLeaf_series_pass2(TreeNode tree, Object *in, Object *out)
   Category category;
   int rank, shape;
   Object attr, src_dependency_attr = NULL;
-  char *src_dependency = NULL;
   int p_knt = -1;
   int c_knt = -1;
   int float_pixels=0;
@@ -670,7 +668,7 @@ doLeaf_series_pass2(TreeNode tree, Object *in, Object *out)
       goto error;
     }
 
-    src_dependency = DXGetString((String)src_dependency_attr);
+    /*src_dependency = DXGetString((String)src_dependency_attr);*/
 
     array = (Array)DXGetComponentValue(field, "positions");
     if (! array)
@@ -865,7 +863,6 @@ doLeaf(Object *in, Object *out, int nColors)
   Category category;
   int rank, shape;
   Object attr, src_dependency_attr = NULL;
-  char *src_dependency = NULL;
   int p_knt = -1;
   int c_knt = -1;
   int float_pixels=0;
@@ -895,7 +892,7 @@ doLeaf(Object *in, Object *out, int nColors)
       goto error;
     }
 
-    src_dependency = DXGetString((String)src_dependency_attr);
+    /*src_dependency = DXGetString((String)src_dependency_attr);*/
 
     array = (Array)DXGetComponentValue(field, "positions");
     if (! array)

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_parse.c,v 1.8 2000/08/24 20:08:38 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_parse.c,v 1.9 2002/03/21 02:57:35 rhh Exp $
  */
 
 #include <dxconfig.h>
@@ -2100,16 +2100,15 @@ error:
 static Error
 parse_datafile(struct place_state *dataps)
 {
-   int i,j=0,k=0,num,max_size=0;
+   int i,j=0,k=0,num;
    int read_header;
-   Type t;
    float f=0;
 
    for (i=0; _dxd_gi_fromfile[i]; i++){
       for (num=0; _dxd_gi_fromfile[i]->skip[num]>0; num++)
 	 ;
       if (num==0) num=MAX_POS_DIMS;
-      max_size =+ DXTypeSize(_dxd_gi_fromfile[i]->type) * num;
+      /*max_size =+ DXTypeSize(_dxd_gi_fromfile[i]->type) * num;*/
    }
 
    dataps->lines = 0;
@@ -2171,7 +2170,7 @@ parse_datafile(struct place_state *dataps)
       }
       else{
 
-      t = _dxd_gi_fromfile[i]->type;
+      /*t = _dxd_gi_fromfile[i]->type;*/
       for (num=0; _dxd_gi_fromfile[i]->skip[num]>=0; num++){
 	 switch(_dxd_gi_fromfile[i]->type){
 	 case(TYPE_UBYTE):

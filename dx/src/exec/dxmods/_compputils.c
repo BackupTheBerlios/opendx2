@@ -34,8 +34,8 @@ _dxfMakeArg(int type)
     arg->next = (PTreeNode *)NULL;
     OPRL_INIT (arg, (PTreeNode *)NULL);
     arg->metaType.items = 0;
-    arg->metaType.type = 0;
-    arg->metaType.category = 0;
+    arg->metaType.type = (Type) 0;
+    arg->metaType.category = (Category) 0;
     arg->metaType.rank = 0;
     arg->metaType.shape[0] = 0;
     arg->u.i = 0;

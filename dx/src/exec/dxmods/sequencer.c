@@ -34,7 +34,6 @@
 int m_Sequencer(Object *in, Object *out)
 {
    struct einfo ei;
-   Object idobj;
    char *id;
    int min,max,incr;
    int next,frame;
@@ -47,7 +46,7 @@ int m_Sequencer(Object *in, Object *out)
        DXSetError(ERROR_BAD_PARAMETER,"#10000","id");
        goto error;
    }
-   idobj=in[I_ID];
+   /*idobj=in[I_ID];*/
    ei.msgbuf=NULL;
 
    /* get uimin and max delta */

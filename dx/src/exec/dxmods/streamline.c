@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.8 2001/05/24 14:11:13 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.9 2002/03/21 02:57:41 rhh Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
@@ -1813,7 +1813,6 @@ GeometryCheck(Object vectors, int nD)
 	    Field f;
 	    Array a;
 	    Object o;
-	    char *str;
 	    int n;
 
 	    f = (Field)vectors;
@@ -1850,9 +1849,9 @@ GeometryCheck(Object vectors, int nD)
 		goto error;
 	    }
 
+	    /*
 	    str = DXGetString((String)o);
 
-	    /*
 	    switch(n)
 	    {
 		case 2:
