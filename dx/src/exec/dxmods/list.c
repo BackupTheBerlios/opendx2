@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/list.c,v 1.4 2000/05/16 18:48:01 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/list.c,v 1.5 2000/08/10 05:44:29 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -86,7 +86,9 @@ Array _dxfBuildList(Object *in)
      *  otherwise, make sure the type matches the first parm, and add
      *  the data to the list.
      */
-    for (onum = 0, next = in[onum]; onum < MAXOBJECTS; next = in[++onum]) {
+    for (onum = 0; onum < MAXOBJECTS; ++onum) {
+
+	next = in[onum];
 
         /* skip nulls */
         if (!next) {
