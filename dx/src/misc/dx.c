@@ -11,10 +11,6 @@
 
 #include <dxconfig.h>
 #include <dx/dx.h>
-#if !defined(DXD_WIN)
-#include <stdio.h>
-main(){fprintf(stderr, "dx.c shouldn't be being used\n");}
-#else
 #include <dx/arch.h>
 
 #if defined(HAVE_WINDOWS_H)
@@ -110,6 +106,16 @@ enum xServer whichX = UNKNOWN;
     printf("\nCannot set env var: %s\n", s); 	\
 }
 
+#if !defined(HAVE_GETSHORTPATHNAME)
+
+void
+GetShortPathName(char *src, char *dst, int max)
+{
+    strncpy(dst, src, strlen(src)+1);
+}
+
+#endif
+
 typedef char smallstr[SMALLSTR];
 typedef char envstr[MAXENV];
 typedef char namestr[MAXNAME];
@@ -167,6 +173,9 @@ smallstr 	uihilite =	"";
 smallstr 	exlic =		"";
 namestr 	FileName =	"";
 namestr 	dxroot =	"";
+#if defined(cygwin)
+namestr 	msdos_dxroot =	"";
+#endif
 namestr 	dxexroot =	"";
 namestr 	dxuiroot =	"";
 namestr 	exceeddir =	"";
@@ -368,6 +377,8 @@ int putenvstr(char *name, char *value)
     return (!rc ? 1 :0);
 }
 
+#if defined(USE_REGISTRY)
+
 /*  The following queries the registry for various paths that,	*/
 /*  among other things, allow dx and Xserver to start without 	*/
 /*  either being in the path.  But they must be added to the	*/
@@ -562,6 +573,7 @@ error:
 	printf("%s: rc = %d\n", errstr, rc);
 	return 0;
 }
+#endif
 
 
 int initrun()
@@ -616,6 +628,9 @@ int initrun()
     getenvstr("DXARGS", dxargs);
     getcwd(curdir, sizeof(curdir));
     getenvstr("DXROOT", dxroot);
+#if defined(cygwin)
+    getenvstr("MSDOS_DXROOT", msdos_dxroot);
+#endif
     getenvstr("DXDATA", dxdata);
     getenvstr("DXMACROS", dxmacros);
     getenvstr("DXMODULES", dxmodules);
@@ -643,10 +658,17 @@ int initrun()
     if (!*dxroot) {
     	strcpy(dxroot, "\\usr\\local\\dx\\");
     }
+#if defined(cygwin)
+    if (!*msdos_dxroot) 
+	sprintf(msdos_dxroot, "\\cygwin%s", dxroot);
+#endif
 
     /* Now strip off any garbage that may have been set on dxroot */
     removeQuotes(dxroot);
     u2d(dxroot);
+#if defined(cygwin)
+    u2d(msdos_dxroot);
+#endif
     GetShortPathName(dxroot, shortPath, MAXNAME);
     strcpy(dxroot, shortPath);
 
@@ -898,7 +920,12 @@ int buildcmd()
 	else
 		{
 
-		setifnot(dxexroot, dxroot);
+#if defined(cygwin)
+		setifnot(dxexroot, msdos_dxroot);
+		setifnot(dxuiroot, msdos_dxroot);
+#else
+		setifnot(dxuiroot, dxroot);
+#endif
 		sprintf(dxexecdef, "%s\\bin_%s\\dxexec%s", dxexroot, exarch, EXE_EXT);
 		setifnot(dxexec, dxexecdef);
 		setifnot(exmode, "-r");
@@ -944,7 +971,7 @@ int buildcmd()
 		}
 
 		if (tutor) {
-			sprintf(cmd, "%s%sbin_%s%stutor%s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT);
+			sprintf(cmd, "%s%sbin_%s%stutor%s", dxexroot, DIRSEP, uiarch, DIRSEP, EXE_EXT);
 
 		}
 		else if (prompter) {
@@ -952,15 +979,14 @@ int buildcmd()
 				strcat(prompterflags, " -file ");
 				strcat(prompterflags, FileName);
 			}
-			sprintf(cmd, "%s%sbin_%s%sprompter%s %s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, prompterflags);
+			sprintf(cmd, "%s%sbin_%s%sprompter%s %s", dxexroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, prompterflags);
 
 		}
 		else if (startup) {
-			sprintf(cmd, "%s%sbin_%s%sstartupui%s %s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, argstr);
-
+			sprintf(cmd, "%s%sbin_%s%sstartupui%s %s", dxexroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, argstr);
 		}
 		else if (builder) {
-			sprintf(cmd, "%s%sbin_%s%sbuilder%s %s", dxroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, FileName);
+			sprintf(cmd, "%s%sbin_%s%sbuilder%s %s", dxexroot, DIRSEP, uiarch, DIRSEP, EXE_EXT, FileName);
 			/* sprintf(cmd, "%s%sbin_%s%sbuilder -xrm %s %s", dxroot, DIRSEP, uiarch, DIRSEP, motifbind, FileName); */
 
 		}
@@ -1902,4 +1928,3 @@ int longhelp()
 
     exit(0);
 }
-#endif
