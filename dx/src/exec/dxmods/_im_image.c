@@ -840,7 +840,7 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
                     for ( x = 0; x < width; x++ )
                         *(pptr++) = *(optr++) = *(indexes++);   
                 
-                // Opacities in colormap is wrong; use direct color map
+                /* Opacities in colormap is wrong; use direct color map */
                 if ( image->matte )
                     for ( x = 0; x < width; x++ )
                         omap[*(indexes2++)] = ( 1.0 - 
