@@ -338,10 +338,11 @@ class LayoutRow : public Base
 
 	void layout(GraphLayout* mgr);
 
-	void layout(SlotList* slots, GraphLayout* mgr);
+	void layout(SlotList* slots, GraphLayout* mgr, int previous_id);
 
 	void position (Node* n, int& left_edge, int& right_edge, 
-		GraphLayout* mgr, boolean go_left, SlotList* slots);
+		GraphLayout* mgr, boolean go_left, SlotList* slots,
+		int previous_rows_hop);
 
 	static int SortByDestinationX(const void* a, const void* b);
 
@@ -374,6 +375,7 @@ class GraphLayout : public Base
 
     boolean adjustHopCounts (Node* reflow[], int reflow_count, int& min);
     void adjustAncestorHops (Node* parent, int new_hop_count, int& min);
+    void adjustDescendantHops (Node* parent, int new_hop_count);
     int computeRequiredHopsTo (Node* n);
     int computeRequiredHopsToSiblingsOf (Node* n);
     void fixForTooManyReceivers(Node* n, int& min);
@@ -397,7 +399,7 @@ class GraphLayout : public Base
     //
     // return TRUE if the positioning was accomplished but with collision
     //
-    boolean positionDestBesideSibling(Ark* arc, int& x, int& y, boolean prefer_left);
+    boolean positionDestBesideSibling(Ark* arc, int& x, int& y, boolean prefer_left, List *unusable_nodes);
 
     //
     // return TRUE if the positioning was accomplished but with collision
@@ -449,7 +451,9 @@ class GraphLayout : public Base
     static boolean CanMoveTo (LayoutInfo* info, int x, int y, Node* reflow[], 
 	int count, List* decorators); 
 
-    void spreadOutSpaghettiFrom (Node* n, int& min);
+    boolean spreadOutSpaghettiFrom (Node* n, int& min);
+
+    int countConnectionsBetween (Node* source, Node* dest);
 
   public:
     //
@@ -461,7 +465,7 @@ class GraphLayout : public Base
 
     boolean entireGraph(WorkSpace* workspace, const List& nodes, const List& decorators);
 
-    static Ark* IsSingleInputNoOutputNode(Node* n, boolean *shares_an_output, boolean positioned=TRUE);
+    static Ark* IsSingleInputNoOutputNode(Node* n, boolean& shares_an_output, boolean positioned=TRUE);
     static boolean IsSingleOutputNoInputNode(Node* n);
 
     //
@@ -479,7 +483,7 @@ class GraphLayout : public Base
     // For each node appended to the list append the arc that reaches
     // that node.
     //
-    void getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs);
+    void getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs, boolean last_call=TRUE);
 
     //
     // Returns a pointer to the class name.

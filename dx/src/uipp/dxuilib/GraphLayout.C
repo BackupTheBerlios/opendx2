@@ -72,13 +72,6 @@
 // that have 2 destination arcs on the next lower row.  On behalf of those nodes,
 // it would be nice to perform the sort and layout multiple times and measure
 // the quality of the result.  Then choose the one that worked the best.
-// 2) After a few months, the stuff that looks like:
-// if (debug) {
-//    .
-//    .
-//    .
-// }
-// could be deleted.
 //
 
 //
@@ -130,11 +123,14 @@ int GraphLayout::HeightPerLevel = 90;
 #define INITIAL_X 0//5000 
 #define INITIAL_Y 0//5000
 
+//#define DEBUG_PLACEMENT
+#if defined(DEBUG_PLACEMENT)
 //
 // $ setenv DEBUG_PLACEMENT
 // in order to use this.
 //
 static boolean debug = FALSE;
+#endif
 
 //
 // Comparator function used with qsort.  It says we're going to sort things
@@ -163,10 +159,10 @@ int NodeInfo::SortByHop (const void* a, const void* b)
     //    might produce a few straight lines.
     //
     boolean shares_output1;
-    Ark* ark1 = GraphLayout::IsSingleInputNoOutputNode(anode, &shares_output1, FALSE);
+    Ark* ark1 = GraphLayout::IsSingleInputNoOutputNode(anode, shares_output1, FALSE);
     if (ark1) {
 	boolean shares_output2;
-	Ark* ark2 = GraphLayout::IsSingleInputNoOutputNode(bnode, &shares_output2, FALSE);
+	Ark* ark2 = GraphLayout::IsSingleInputNoOutputNode(bnode, shares_output2, FALSE);
 	const char* cp1 = anode->getLabelString();
 	const char* cp2 = bnode->getLabelString();
 
@@ -224,7 +220,9 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
     int offset;
     List nodeList;
 
+#   if defined(DEBUG_PLACEMENT)
     debug = (getenv("DEBUG_PLACEMENT") ? TRUE : FALSE);
+#   endif
 
     ListIterator li;
     boolean retval = TRUE;
@@ -298,6 +296,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	    info->setLayoutGroup(group);
 	}
     }
+#   if defined(DEBUG_PLACEMENT)
     if (debug) {
 	for (next=0; next<reflow_count; next++) {
 	    Node* n = reflow[next];
@@ -309,14 +308,17 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 		group->getId());
 	}
     }
+#   endif
 
     //
     // 5) For the first node in the list, walk up the graph placing nodes.
     //
     n = reflow[0];
 
+#   if defined(DEBUG_PLACEMENT)
     if (debug)
 	fprintf (stdout, "%s[%d] %s placing\n", __FILE__,__LINE__,n->getLabelString());
+#   endif
 
     List positioned;
     NodeInfo* linfo = (NodeInfo*)n->getLayoutInformation();
@@ -334,9 +336,11 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	if (linfo->isPositioned()) continue;
 
 
+#       if defined(DEBUG_PLACEMENT)
 	if (debug)
 	    fprintf (stdout, "%s[%d] %s placing...", 
 		__FILE__,__LINE__,n->getLabelString());
+#       endif
 
 	//
 	// Locate a connected, positioned node so that we can
@@ -359,7 +363,9 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	}
 
 	if (!separated) {
+#           if defined(DEBUG_PLACEMENT)
 	    if (debug) fprintf (stdout, " [%d] connected\n", __LINE__);
+#           endif
 	    // The value 20000 isn't meaningful.  Its purpose is to
 	    // keep new node placments clear of existing node placements 
 	    // because we want the new ones to get a decent arrangement
@@ -369,7 +375,9 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	    // location relative to the others in their group.
 	    linfo->setProposedLocation (20000, y);
 	} else {
+#           if defined(DEBUG_PLACEMENT)
 	    if (debug) fprintf (stdout, " [%d] disconnected", __LINE__);
+#           endif
 	    // There was no positioned connected node. We are
 	    // be working on a disconnected subgraph.  
 	}
@@ -378,7 +386,9 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	group->layout (n, this, positioned);
 
 	this->repositionNewPlacements(n, separated, positioned);
+#       if defined(DEBUG_PLACEMENT)
 	if (debug) fprintf (stdout, "\n");
+#       endif
     }
 
     //
@@ -564,10 +574,12 @@ boolean GraphLayout::nodeCanMoveTo (Node* n, int x, int y)
 	target_info->getXYSize(tw,th);
 	if ((x > (tx+tw)) || (y > (ty+th))) continue;
 	if (((x+width) < tx) || ((y+height) < ty)) continue;
+#       if defined(DEBUG_PLACEMENT)
 	if (debug) {
 	    fprintf (stdout, "%s[%d] %s movement to %d,%d conflicted with %s\n",
 		    __FILE__,__LINE__,n->getLabelString(), x,y,target->getLabelString());
 	}
+#       endif
 	return FALSE;
     }
     return TRUE;
@@ -766,7 +778,7 @@ boolean GraphLayout::IsSingleOutputNoInputNode (Node* n)
     }
     return TRUE;
 }
-Ark* GraphLayout::IsSingleInputNoOutputNode (Node* n, boolean* shares_an_output, boolean positioned)
+Ark* GraphLayout::IsSingleInputNoOutputNode (Node* n, boolean& shares_an_output, boolean positioned)
 {
     int output_count = n->getOutputCount();
     int output;
@@ -796,9 +808,9 @@ Ark* GraphLayout::IsSingleInputNoOutputNode (Node* n, boolean* shares_an_output,
 		List* outputs = (List*)source->getOutputArks(output);
 		ASSERT(outputs);
 		if (outputs->getSize() != 1) {
-		    *shares_an_output = TRUE;
+		    shares_an_output = TRUE;
 		} else {
-		    *shares_an_output = FALSE;
+		    shares_an_output = FALSE;
 		}
 		if (positioned) {
 		    LayoutInfo* linfo = (LayoutInfo*)source->getLayoutInformation();
@@ -813,7 +825,7 @@ Ark* GraphLayout::IsSingleInputNoOutputNode (Node* n, boolean* shares_an_output,
     return input_arc;
 }
 
-boolean GraphLayout::positionDestBesideSibling (Ark* arc, int& x, int& y, boolean left)
+boolean GraphLayout::positionDestBesideSibling (Ark* arc, int& x, int& y, boolean left,List* unusable_nodes)
 {
     int output, input, dummy;
     Node* source = arc->getSourceNode(output);
@@ -829,6 +841,10 @@ boolean GraphLayout::positionDestBesideSibling (Ark* arc, int& x, int& y, boolea
 	// beside the standIn.  
 	NodeInfo* dinfo = (NodeInfo*)dst->getLayoutInformation();
 	if (!dinfo->isPositioned()) continue;
+
+	// We cannot use a sibling if it's a member of the set of
+	// nodes that we're trying to place.
+	if (unusable_nodes->isMember(dst)) continue;
 
 	int w,h;
 	NodeInfo* info = (NodeInfo*)destination->getLayoutInformation();
@@ -972,6 +988,41 @@ void GraphLayout::adjustAncestorHops (Node* parent, int new_hop_count, int& min)
     }
 }
 
+//
+// When we decrement a node's hop count, we also want to decrement any 
+// descendants of the node if the descendant has no other inputs and
+// no outputs.
+//
+void GraphLayout::adjustDescendantHops(Node* parent, int new_hop_count)
+{
+    int output_count = parent->getOutputCount();
+    int output;
+    int input;
+    for (output=1; output<=output_count; output++) {
+	if (!parent->isOutputVisible(output)) continue;
+	List* arcs = (List*)parent->getOutputArks(output);
+	if (!arcs) continue;
+	ListIterator iter(*arcs);
+	Ark* arc;
+	while (arc = (Ark*)iter.getNext()) {
+	    Node* dest = arc->getDestinationNode(input);
+	    boolean dummy;
+	    if (GraphLayout::IsSingleInputNoOutputNode(dest, dummy, FALSE)) {
+		NodeInfo* info = (NodeInfo*)dest->getLayoutInformation();
+		ASSERT (new_hop_count <= info->getGraphDepth());
+#               if defined(DEBUG_PLACEMENT)
+		if (debug) {
+		    fprintf (stdout, "%s[%d] moving %s:%d from %d to %d\n",
+			__FILE__,__LINE__, dest->getLabelString(), 
+			dest->getInstanceNumber(), info->getGraphDepth(), new_hop_count);
+		}
+#               endif
+		info->setGraphDepth(new_hop_count);
+	    }
+	}
+    }
+}
+
 int GraphLayout::computeRequiredHopsTo(Node* n)
 {
     int output;
@@ -1055,6 +1106,8 @@ void GraphLayout::computeHopCounts (Node* reflow[], int reflow_count)
 	}
     }
 
+    boolean changes_made;
+
     //
     // We might want to make some adjustments to hop counts.  Sounds like
     // nonsense, but the problem is that there are some nodes that could
@@ -1066,7 +1119,7 @@ void GraphLayout::computeHopCounts (Node* reflow[], int reflow_count)
     // to push things back towards the top of the graph i.e. reduce the
     // hop count if that will have the effect of shorting the arcs.
     //
-    boolean changes_made = TRUE;
+    changes_made = TRUE;
     while (changes_made) 
 	changes_made = this->adjustHopCounts(reflow, reflow_count, smallest_hop_count);
 
@@ -1074,10 +1127,13 @@ void GraphLayout::computeHopCounts (Node* reflow[], int reflow_count)
     // Rules say that we decrement the hop count of any node that is 
     // connected to multiple non-consecutive input tabs on 1 row.
     //
-    for (i=0; i<reflow_count; i++) {
-	Node* n = reflow[i];
-	this->spreadOutSpaghettiFrom(n, smallest_hop_count);
-    }
+    do {
+	changes_made = FALSE;
+	for (i=0; i<reflow_count; i++) {
+	    Node* n = reflow[i];
+	    changes_made|= this->spreadOutSpaghettiFrom(n, smallest_hop_count);
+	}
+    } while (changes_made);
  
     //
     // Before we raise the curtain, just one more tweak.  Sometimes
@@ -1111,25 +1167,28 @@ void GraphLayout::computeHopCounts (Node* reflow[], int reflow_count)
 // arcs aren't consecutive, then decrement n's hop count.  Reasoning is that
 // having too many arcs in a cramped area is hard to read.
 //
-void GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
+boolean GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
 {
     int dummy;
-    if (this->countConnectedOutputs (n, 1, dummy) <= 1) return ;
+    if (this->countConnectedOutputs (n, 1, dummy) <= 1) return FALSE;
 
     // don't screw around with gets and sets
     const char* name = n->getLabelString();
     if (EqualString(name, "GetLocal") || EqualString(name, "GetGlobal") ||
 	EqualString(name, "Get")) {
-	return ;
+	return FALSE;
     }
+
+    boolean retval = FALSE;
 
     NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
     int depth = info->getGraphDepth();
     int output_count = n->getOutputCount();
     int output;
     Ark* arc;
-    List nodes_one_hop_down;
     int levels_to_decr = 0;
+#if 0
+    List nodes_one_hop_down;
     for (output=1; output<=output_count; output++) {
 	if (!n->isOutputVisible(output)) continue;
 	List* arcs = (List*)n->getOutputArks(output);
@@ -1149,15 +1208,41 @@ void GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
 	    }
 	}
     }
+#endif
+    for (output=1; output<=output_count; output++) {
+	if (!n->isOutputVisible(output)) continue;
+	List* arcs = (List*)n->getOutputArks(output);
+	if (!arcs) continue;
+	ListIterator iter(*arcs);
+	int input;
+	Node* arc_dest = NUL(Node*);
+	while (arc = (Ark*)iter.getNext()) {
+	    Node* dest = arc->getDestinationNode(input);
+	    NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
+	    int cnctn_count = this->countConnectionsBetween(n,dest);
+	    int desired_depth = dinfo->getGraphDepth() - cnctn_count;
+	    if (depth > desired_depth) {
+		levels_to_decr = MAX(levels_to_decr, (depth-desired_depth));
+	    }
+	}
+    }
+
     if (levels_to_decr) {
 	int new_depth = depth-levels_to_decr;
+#       if defined(DEBUG_PLACEMENT)
 	if (debug) {
 	    fprintf (stdout, "%s[%d] changing %s:%d from %d to %d\n", __FILE__,__LINE__,
 		n->getLabelString(), n->getInstanceNumber(), depth, new_depth);
 	}
+#       endif
 	this->adjustAncestorHops (n,new_depth-1,min);
+	this->adjustDescendantHops (n, new_depth+1);
+	if (new_depth < min) min = new_depth;
 	info->setGraphDepth(new_depth);
+	retval = TRUE;
     }
+
+    return retval;
 }
 
 //
@@ -1169,6 +1254,7 @@ void GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
 //
 void GraphLayout::fixForTooManyReceivers(Node* n, int& min)
 {
+    NodeInfo* ninfo = (NodeInfo*)n->getLayoutInformation();
     boolean previous = FALSE;
     int dummy;
     int input;
@@ -1189,8 +1275,11 @@ void GraphLayout::fixForTooManyReceivers(Node* n, int& min)
 		wide_nodes.insertElement(source,1);
 	}
     }
-    if (wide_nodes.getSize() <= 2) return ;
-    boolean way_many_inputs = (wide_nodes.getSize() >= 5);
+    int wnsize = wide_nodes.getSize();
+    if (wnsize <= 2) return ;
+    
+    // saw tooth pattern
+    boolean way_many_inputs = (wnsize >= 5);
     for (input=1; input<=input_count; input++) {
 	if (!n->isInputVisible(input)) continue;
 	List* arcs = (List*)n->getInputArks(input);
@@ -1208,12 +1297,15 @@ void GraphLayout::fixForTooManyReceivers(Node* n, int& min)
 	    int w,h;
 	    linfo->getXYSize(w,h);
 	    if (previous) {
-		int gd = linfo->getGraphDepth()-1;
-		if ((way_many_inputs) && (this->hasConnectedInputs(source))) {
-		    this->adjustAncestorHops (source, gd-1, min);
+		int gd = ninfo->getGraphDepth()-2;
+		// if this actually does anything...
+		if (gd < linfo->getGraphDepth()) {
+		    if ((way_many_inputs) && (this->hasConnectedInputs(source))) {
+			this->adjustAncestorHops (source, gd-1, min);
+		    }
+		    linfo->setGraphDepth(gd);
+		    if (gd < min) min = gd;
 		}
-		linfo->setGraphDepth(gd);
-		if (gd < min) min = gd;
 		previous = FALSE;
 	    } else {
 		previous = TRUE;
@@ -1227,6 +1319,8 @@ void GraphLayout::fixForTooManyReceivers(Node* n, int& min)
 // count of source.  return FALSE if there is some other node that's connected
 // to source that has a shorter arcs.  We use this information in order to
 // cause source to be placed with its closest living relative.
+// return FALSE if there is some other node that's connected to dest
+// by more arks than source.
 //
 boolean GraphLayout::hasNoCloserDescendant (Node* source, Node* dest)
 {
@@ -1234,6 +1328,8 @@ boolean GraphLayout::hasNoCloserDescendant (Node* source, Node* dest)
     int output;
     NodeInfo* src_info = (NodeInfo*)source->getLayoutInformation();
     NodeInfo* dst_info = (NodeInfo*)dest->getLayoutInformation();
+
+    int connection_count_to_beat = this->countConnectionsBetween(source, dest);
 
     int min_depth = dst_info->getGraphDepth();
     int output_count = source->getOutputCount();
@@ -1247,6 +1343,10 @@ boolean GraphLayout::hasNoCloserDescendant (Node* source, Node* dest)
 	    Node* destination = arc->getDestinationNode(dummy);
 	    if (destination == dest) continue;
 	    NodeInfo* info = (NodeInfo*)destination->getLayoutInformation();
+	    if (this->countConnectionsBetween(source,destination) < 
+		    connection_count_to_beat) {
+		continue;
+	    }
 	    if (info->getGraphDepth() < min_depth) {
 		// a closer relative was found
 		return FALSE;
@@ -1272,6 +1372,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
     LayoutGroup* group = ninfo->getLayoutGroup();
     placed.appendElement(root);
 
+#   if defined(DEBUG_PLACEMENT)
     if (debug) {
 	ListIterator li(placed);
 	Node* node;
@@ -1282,6 +1383,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 		    node->getInstanceNumber());
 	}
     }
+#   endif
 
     int minx2, miny2, maxx2, maxy2;
     this->computeBoundingBox (placed, minx2, miny2, maxx2,maxy2);
@@ -1424,42 +1526,54 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	    // destination node casts his vote...
 	    if ((vi==1)||((nth_input_tab==(vi>>1))&&((vi&1)==1))) {
 		// don't care
+#               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s destination didn't vote\n",
 			dst->getLabelString());
+#               endif
 	    } else if (nth_input_tab<=(vi>>1)) {
 		prefer_left = (placed.isMember(dst)==FALSE);
 		center+= (prefer_left?-1:1);
+#               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s destination voted %s\n",
 			dst->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+#               endif
 	    } else if (nth_input_tab>(vi>>1)) {
 		prefer_left = placed.isMember(dst);
 		center+= (prefer_left?-1:1);
+#               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s destination voted %s\n",
 			dst->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+#               endif
 	    }
 
 	    // source node casts his vote..
 	    int vo = this->countConnectedOutputs(src, output, nth_output_tab);
 	    if ((vo==1)||((nth_output_tab==(vo>>1))&&((vo&1)==1))) {
 		//don't care
+#               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s source didn't vote\n",
 			src->getLabelString());
+#               endif
 	    } else if (nth_output_tab <= (vo>>1)) {
 		prefer_left = (placed.isMember(src)==FALSE);
 		center+= (prefer_left?-1:1);
+#               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s source voted %s\n",
 			src->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+#               endif
 	    } else if (nth_output_tab > (vo>>1)) {
 		prefer_left = placed.isMember(src);
 		center+= (prefer_left?-1:1);
+#               if defined(DEBUG_PLACEMENT)
 		if (debug)
 		    fprintf (stdout, "\t%s source voted %s\n",
 			src->getLabelString(), (prefer_left?"LEFT":"RIGHT"));
+#               endif
 	    }
 	}
 	prefer_left = (center<=0);
@@ -1491,7 +1605,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 		    dinfo->getXYPosition (prevx, prevy);
 		    xdelta = x-prevx;
 		    ydelta = y-prevy;
-		} else if (!this->positionDestBesideSibling (arc, x,y,prefer_left)) {
+		} else if (!this->positionDestBesideSibling (arc, x,y,prefer_left,&placed)) {
 		    // potential problem.  I'm not checking that the arc isn't 
 		    // shorter than some other arc that the destination node
 		    // has coming in.  If it is shorter, then I could place
@@ -1507,7 +1621,8 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	    // now check all other nodes.
 	    if (node_can_move) {
 		arc_found = TRUE;
-		ListIterator iter(*connected);
+		//ListIterator iter(*connected);
+		ListIterator iter(placed);
 		Node* n;
 		while (n=(Node*)iter.getNext()) {
 		    NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
@@ -1532,9 +1647,11 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
     // wants to be on the left of its source.  A low-numbered
     // output wants to be on the right of its destination.
     if (!arc_found) {
+#       if defined(DEBUG_PLACEMENT)
 	if (debug)
 	    fprintf (stdout, "%s[%d] %d arcs will vote on placement\n", 
 		__FILE__,__LINE__,arc_count);
+#       endif
 
 	if (prefer_left) {
 	    xdelta = -(maxx2 + DESIRED_FUDGE - minx1);
@@ -1554,9 +1671,11 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	int x,y;
 	ASSERT (linfo->isPositioned());
 	linfo->getXYPosition(x,y);
+#       if defined(DEBUG_PLACEMENT)
 	if (debug)
 	    fprintf (stdout, "%s[%d] moving %s from %d,%d to %d,%d\n",
 		    __FILE__,__LINE__,n->getLabelString(),x,y,x+xdelta,y+ydelta);
+#       endif
 	linfo->setProposedLocation(x+xdelta, y+ydelta);
     }
     group->initialize(&placed);
@@ -2054,6 +2173,7 @@ void LayoutGroup::layout(Node* node, GraphLayout* mgr, List& positioned)
     List one_hop_up_nodes;
     List one_hop_up;
     mgr->getSpecialAncestorsOf(node, one_hop_up_nodes, one_hop_up);
+#   if defined(DEBUG_PLACEMENT)
     if (debug) {
 	fprintf (stdout, "%s[%d] Placing ancestors of %s:%d\n",
 	    __FILE__,__LINE__,node->getLabelString(), node->getInstanceNumber());
@@ -2063,6 +2183,7 @@ void LayoutGroup::layout(Node* node, GraphLayout* mgr, List& positioned)
 	    fprintf (stdout, "\t%s:%d\n", n->getLabelString(), n->getInstanceNumber());
 	}
     }
+#   endif
     Node** node_array;
     node_array = (Node**)malloc((1+one_hop_up_nodes.getSize()) * sizeof(Node*));
     int i = 1;
@@ -2104,9 +2225,11 @@ void LayoutGroup::layout(Node* node, GraphLayout* mgr, List& positioned)
     row_array[0]->sort();
     row_array[0]->layout(mgr);
     SlotList* slots = row_array[0]->getSlotList();
+    int prev_id = row_array[0]->getId();
     for (i=1; i<rows; i++) {
 	row_array[i]->sort();
-	row_array[i]->layout(slots, mgr);
+	row_array[i]->layout(slots, mgr, prev_id);
+	prev_id = row_array[i]->getId();
 	slots = row_array[i]->getSlotList();
     }
     for (i=0; i<rows; i++) 
@@ -2124,6 +2247,7 @@ void LayoutRow::sort()
     int i = 0;
     while (n=(Node*)iter.getNext()) this->node_array[i++] = n;
     qsort (this->node_array, size, sizeof(Node*), LayoutRow::SortByDestinationX);
+#   if defined(DEBUG_PLACEMENT)
     if (debug) {
 	fprintf (stdout, "%s[%d] Row %d contains...\n", __FILE__,__LINE__, this->getId());
 	int j;
@@ -2132,6 +2256,7 @@ void LayoutRow::sort()
 		this->node_array[j]->getInstanceNumber());
 	}
     }
+#   endif
 }
 
 LayoutRow::~LayoutRow()
@@ -2182,12 +2307,14 @@ int SlotList::isAvailable (int x, boolean left)
 	prev = slot;
     }
     li.setList(*this);
+#   if defined(DEBUG_PLACEMENT)
     if (debug) {
 	fprintf (stdout, "%s[%d] failed %d (%x)\n", __FILE__,__LINE__,x,left);
 	while (slot=(Slot*)li.getNext()) {
 	    fprintf (stdout, "\t %d <--> %d\n", slot->min, slot->max);
 	}
     }
+#   endif
 
     ASSERT(FALSE);
     return 0;
@@ -2209,6 +2336,7 @@ void SlotList::occupy (int x, int width)
 	    break;
 	}
     }
+#   if defined(DEBUG_PLACEMENT)
     if (debug) {
 	if (!found) {
 	    for (i=1; i<=size; i++) {
@@ -2217,6 +2345,7 @@ void SlotList::occupy (int x, int width)
 	    }
 	}
     }
+#   endif
     ASSERT(found);
 
     int right = x+width;
@@ -2234,6 +2363,7 @@ void SlotList::occupy (int x, int width)
 		if (slot->min < right) {
 		    slot->min = right;
 		} else {
+#                   if defined(DEBUG_PLACEMENT)
 		    if (debug) {
 			fprintf (stdout, "%s[%d] Warning, splitting a slot failed\n", 
 				__FILE__,__LINE__);
@@ -2243,6 +2373,7 @@ void SlotList::occupy (int x, int width)
 			    fprintf (stdout, "\t %d to %d\n", s->min, s->max);
 			}
 		    }
+#                   endif
 		}
 		break;
 	    } else {
@@ -2264,7 +2395,7 @@ void SlotList::occupy (int x, int width)
 //    above a space between nodes, or place the node directly above its destination
 //    if that is available.
 //
-void LayoutRow::layout(SlotList* slots, GraphLayout* mgr)
+void LayoutRow::layout(SlotList* slots, GraphLayout* mgr, int previous_id)
 {
     int size = this->nodes.getSize();
     int middle = (size>>1);
@@ -2287,7 +2418,7 @@ void LayoutRow::layout(SlotList* slots, GraphLayout* mgr)
 	right_edge = -9999999; 
     }
 
-    this->position (this->node_array[middle], left_edge, right_edge, mgr, go_left, slots);
+    this->position (this->node_array[middle], left_edge, right_edge, mgr, go_left, slots, previous_id);
 
     int saved_left_edge = left_edge;
     int saved_right_edge = right_edge;
@@ -2296,17 +2427,17 @@ void LayoutRow::layout(SlotList* slots, GraphLayout* mgr)
     // for each node left and right of center
     go_left = TRUE;
     for (i=middle-1;i>=0;i--) {
-	this->position (this->node_array[i], left_edge, right_edge, mgr, go_left, slots);
+	this->position (this->node_array[i], left_edge, right_edge, mgr, go_left, slots, previous_id);
     }
     go_left = FALSE;
     left_edge = saved_left_edge;
     right_edge = saved_right_edge;
     for (i=middle+1;i<size;i++) {
-	this->position (this->node_array[i], left_edge, right_edge, mgr, go_left, slots);
+	this->position (this->node_array[i], left_edge, right_edge, mgr, go_left, slots, previous_id);
     }
 }
 void LayoutRow::position (Node* n, int& left_edge, int& right_edge, 
-	GraphLayout* lay, boolean go_left, SlotList* slots)
+	GraphLayout* lay, boolean go_left, SlotList* slots, int previous_id)
 {
     int half_tab_width = 9;
     int x,y,dx,dy,w,h;
@@ -2317,6 +2448,8 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
     int hop;
     int output;
     arc->getSourceNode(output);
+
+    int desired_fudge = DESIRED_FUDGE;
     StandIn *si = n->getStandIn();
     int tabx = si->getOutputParameterTabX(output);
     int xcoord_of_line = info->getDestinationLocation(hop);
@@ -2324,39 +2457,48 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
     if (go_left) {
 	int desired_right_edge = xcoord_of_line + w - (tabx+half_tab_width); 
 	if ((left_edge-REQUIRED_FUDGE) > desired_right_edge) {
-	} else if ((left_edge-DESIRED_FUDGE) < desired_right_edge) {
-	    offset = (left_edge-DESIRED_FUDGE) - desired_right_edge;
+	} else if ((left_edge-desired_fudge) < desired_right_edge) {
+	    offset = (left_edge-desired_fudge) - desired_right_edge;
 	}
     } else {
 	int desired_left_edge = xcoord_of_line - (half_tab_width + tabx);
 	if ((right_edge+REQUIRED_FUDGE) < desired_left_edge) {
-	} else if ((right_edge+DESIRED_FUDGE) > desired_left_edge) {
-	    offset = (right_edge+DESIRED_FUDGE) - desired_left_edge;
+	} else if ((right_edge+desired_fudge) > desired_left_edge) {
+	    offset = (right_edge+desired_fudge) - desired_left_edge;
 	}
     }
     int target_x = xcoord_of_line + offset;
-    if (hop == (info->getGraphDepth()+1)) {
+    // If we're wired to something on the previous row which is usually 1 hop down.
+    // It could also be that the 2 nodes could be like Supervise{State,Window} with
+    // much different hop counts but with no intervening rows.
+    if ((hop == (info->getGraphDepth()+1)) || (hop == previous_id)) {
 	if (lay->positionSource(info->getDestination(),target_x)) {
+#           if defined(DEBUG_PLACEMENT)
 	    if (debug) {
 		fprintf (stdout, "%s[%d] %s:%d collided\n", __FILE__,__LINE__,
 			n->getLabelString(), n->getInstanceNumber());
 	    }
+#           endif
 	}
     } else {
 	int available_x = slots->isAvailable(target_x, go_left);
 	if (lay->positionSource(info->getDestination(),available_x)) {
+#           if defined(DEBUG_PLACEMENT)
 	    if (debug) {
 		fprintf (stdout, "%s[%d] %s:%d collided\n", __FILE__,__LINE__,
 			n->getLabelString(), n->getInstanceNumber());
 	    }
+#           endif
 	}
     }
     info->getXYPosition(x,y);
+#   if defined(DEBUG_PLACEMENT)
     if (debug) {
 	fprintf (stdout, "%s[%d] %s:%d placed at %d,%d occupies %d to %d\n",
 	    __FILE__,__LINE__,n->getLabelString(),n->getInstanceNumber(),x,y,
 	    x, x+w);
     }
+#   endif
     this->slot_list.occupy (x, w);
     left_edge = x;
     right_edge = x+w;
@@ -2411,7 +2553,7 @@ int LayoutRow::SortByDestinationX (const void* a, const void* b)
     return 0;
 }
 
-void GraphLayout::getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs)
+void GraphLayout::getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs, boolean last_call)
 {
     int input, output;
     int input_count = root->getInputCount();
@@ -2435,15 +2577,81 @@ void GraphLayout::getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs
 		    if (output != 2) continue;
 		    arcs.appendElement(arc);
 		    ancestors.appendElement(src);
-		    this->getSpecialAncestorsOf(src, ancestors, arcs);
+		    this->getSpecialAncestorsOf(src, ancestors, arcs, FALSE);
 		} else if (this->hasNoCloserDescendant(src, root)) {
 		    // only handle distant ancestor nodes if those node don't
 		    // have a more closely related descendant.
 		    arcs.appendElement(arc);
 		    ancestors.appendElement(src);
-		    this->getSpecialAncestorsOf(src, ancestors, arcs);
+		    this->getSpecialAncestorsOf(src, ancestors, arcs, FALSE);
 		}
 	    }
+	}
+    }
+
+    if (last_call) {
+	//
+	// Examine each arc we've picked.  See if each arc ought to be replaced
+	// with a better choice.  A choice is better if the src and dst nodes
+	// have multiple arcs and it's more near the center of the set of arcs.
+	//
+	ListIterator iter(arcs);
+	List to_add;
+	List to_remove;
+	Ark* arc;
+	while (arc=(Ark*)iter.getNext()) {
+	    Node* src = arc->getSourceNode(output);
+	    Node* dst = arc->getDestinationNode(input);
+	    int cnt = this->countConnectionsBetween(src, dst);
+	    if (cnt<=2) continue;
+	    int to_skip = cnt>>1;
+	    int skipped = 0;
+	    input_count = dst->getInputCount();
+	    boolean changed = FALSE;
+	    for (input=1; input<=input_count; input++) {
+		if (!dst->isInputVisible(input)) continue;
+		List* inputs = (List*)dst->getInputArks(input);
+		if (!inputs) continue;
+		ListIterator li(*inputs);
+		Ark* ia;
+		while (ia=(Ark*)li.getNext()) {
+		    int output2;
+		    Node* source = ia->getSourceNode(output2);
+		    if (source == src) {
+			if (skipped == to_skip) {
+			    if (ia != arc) {
+				to_add.appendElement(ia);
+				to_remove.appendElement(arc);
+#                               if defined(DEBUG_PLACEMENT)
+				if (debug) {
+				    fprintf (stdout, "%s[%d] replacing output %d of %s"
+					" with output %d\n", __FILE__,__LINE__,
+					output, src->getLabelString(), output2);
+				}
+#                               endif
+			    }
+			    changed = TRUE;
+			    break;
+			}
+			skipped++;
+		    }
+		}
+		if (changed) break;
+	    }
+	}
+	iter.setList(to_remove);
+	while (arc=(Ark*)iter.getNext()) 
+	    arcs.removeElement(arc);
+	iter.setList(to_add);
+	while (arc=(Ark*)iter.getNext()) 
+	    arcs.appendElement(arc);
+	ancestors.clear();
+	int size = arcs.getSize();
+	for (int i=1; i<=size; i++) {
+	    arc = (Ark*)arcs.getElement(i);
+	    int dummy;
+	    Node* src = arc->getSourceNode(dummy);
+	    ancestors.appendElement(src);
 	}
     }
 }
@@ -2483,4 +2691,23 @@ void SlotList::clear()
     while (slot=(Slot*)iter.getNext()) delete slot;
     this->List::clear();
     this->appendElement(new Slot(-999999, 999999));
+}
+
+int GraphLayout::countConnectionsBetween (Node* source, Node* dest)
+{
+    int output_count = source->getOutputCount();
+    int output, input;
+    int connections = 0;
+    for (output=1; output<=output_count; output++) {
+	if (!source->isOutputVisible(output)) continue;
+	List* arks = (List*)source->getOutputArks(output);
+	if (!arks) continue;
+	ListIterator iter(*arks);
+	Ark* arc;
+	while (arc=(Ark*)iter.getNext()) {
+	    Node* destination = arc->getDestinationNode(input);
+	    if (destination == dest) connections++;
+	}
+    }
+    return connections;
 }
