@@ -4948,7 +4948,10 @@ void Network::setDescription(const char *description, boolean markDirty)
 }
 Symbol Network::setCategory(const char *cat, boolean markDirty)
 {
-    this->category = theSymbolManager->registerSymbol(cat);
+    if ((cat) && (cat[0]))
+	this->category = theSymbolManager->registerSymbol(cat);
+    else
+	this->category = 0;
     if (markDirty)
 	this->setFileDirty();
     return this->category;
