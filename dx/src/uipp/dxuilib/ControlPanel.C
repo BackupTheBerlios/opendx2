@@ -2886,10 +2886,13 @@ boolean isWsManaged;
     // (Un)Manage the menubar and the buttons at the bottom.
     //
     Widget w = this->getCommandArea();
-    if (this->developerStyle) {
+    if (this->developerStyle) 
+    {
 	XtManageChild (this->getMenuBar());
 	if (w) XtUnmanageChild (w);
-    } else {
+    } 
+    else 
+    {
 	XtUnmanageChild (this->getMenuBar());
 	if (w) XtManageChild (w);
     }
@@ -2903,13 +2906,15 @@ boolean isWsManaged;
     wsObj->dropsPermitted(this->developerStyle);
 
     Widget hBar, vBar;
-    if (!this->developerStyle) {
+    if (!this->developerStyle) 
+    {
 
 	//
 	// Turn off Gridding and record the state so that he
 	// doesn't have to bring up GridDialog.
 	//
-	if (this->workSpaceInfo.isGridActive()) {
+	if (this->workSpaceInfo.isGridActive()) 
+	{
 	    this->develModeGridding = TRUE;
 	    this->workSpaceInfo.setGridActive(FALSE);
 	    this->workSpace->installInfo(NULL);
@@ -2918,16 +2923,22 @@ boolean isWsManaged;
 	Dimension maxR, maxB;
 	Dimension diffW, diffH;
 
-	XtVaSetValues (this->scrolledWindow, XmNshadowThickness, 0, NULL);
-	XtVaSetValues (this->scrolledWindowFrame, XmNmarginWidth, 0, 
-	    XmNmarginHeight, 0, NULL);
+	XtVaSetValues (this->scrolledWindow, 
+	    XmNshadowThickness, 0, 
+	    NULL);
+	XtVaSetValues (this->scrolledWindowFrame, 
+	    XmNmarginWidth, 0, 
+	    XmNmarginHeight, 0, 
+	    NULL);
 
 	//
 	// If I call XtUnmanage on the scrollbars of the scrolledwindow,
 	// then no matter what happens, the user will not see them.
 	//
-	XtVaGetValues (this->scrolledWindow, XmNhorizontalScrollBar, &hBar,
-		XmNverticalScrollBar, &vBar, NULL);
+	XtVaGetValues (this->scrolledWindow, 
+	    XmNhorizontalScrollBar, &hBar,
+	    XmNverticalScrollBar, &vBar, 
+	    NULL);
 	XtUnmanageChild (hBar); XtUnmanageChild (vBar);
 
 	int gmw, gmh;
@@ -2938,8 +2949,10 @@ boolean isWsManaged;
 	//
 	// develModeDiag{Width,Height} will be used when returning to developer style
 	//
-	XtVaGetValues(diag, XmNwidth, &this->develModeDiagWidth, XmNheight, 
-		&this->develModeDiagHeight, NULL);
+	XtVaGetValues(diag, 
+	    XmNwidth, &this->develModeDiagWidth, 
+	    XmNheight, &this->develModeDiagHeight, 
+	    NULL);
 
 	//
 	// Need to set dims for both Workspace widget and dialog box.  They're
@@ -2948,7 +2961,7 @@ boolean isWsManaged;
 	// of Close,Help buttons vertically.  I obtained diffH from observation
 	// using editres and flash active widget.
 	//
-	diffW = 0;
+	diffW = 2;
 	diffH = 40;
 
 	//
@@ -2973,8 +2986,14 @@ boolean isWsManaged;
 	// *before* going into XmForm mode.  That requires 2 separate calls to
 	// XtSetValues.
 	//
-	XtVaSetValues (ws, XmNallowOverlap, True, NULL);
-	XtVaSetValues (ws, XmNwidth, maxR, XmNheight, maxB, XmNautoArrange, True, NULL);
+	XtVaSetValues (ws, 
+	    XmNallowOverlap, True, 
+	    NULL);
+	XtVaSetValues (ws, 
+	    XmNwidth, maxR, 
+	    XmNheight, maxB, 
+	    XmNautoArrange, True, 
+	    NULL);
 
 	//
 	// FIXME
@@ -2983,20 +3002,26 @@ boolean isWsManaged;
 	// 325 isn't supported||broken then remove some of this stuff and set
 	// min{Width,Height} and {width,height} together all the time.
 	//
-	if (this->isManaged()) {
+	if (this->isManaged()) 
+	{
 	    XtVaSetValues (diag, 
 		XmNminWidth, newW, 
 		XmNminHeight, newH, 
-	    NULL);
+		NULL);
 #	if !defined(AIX312_MWM_IS_FIXED)
 	    XSync (XtDisplay(diag), False);
 #	endif
 	    XtVaSetValues (diag, 
 		XmNwidth, newW, 
 		XmNheight, newH, 
-	    NULL);
-	} else {
-	    XtVaSetValues (diag, XmNwidth, newW, XmNheight, newH, NULL);
+		NULL);
+	} 
+	else 
+	{
+	    XtVaSetValues (diag, 
+		XmNwidth, newW, 
+		XmNheight, newH, 
+		NULL);
 	}
 
 	wsObj->setSizeDeltas (diffW, diffH);
@@ -3006,7 +3031,9 @@ boolean isWsManaged;
 	if (needTickle)
 	    XtVaSetValues (diag, XmNwidth, newW-1, NULL);
 
-    } else {
+    } 
+    else 
+    {
 	ASSERT (this->develModeDiagWidth && this->develModeDiagHeight);
 	//
 	// Side effects here:  Setting autoArrange==False changes the XmForm back
@@ -3019,15 +3046,19 @@ boolean isWsManaged;
 	    XtVaSetValues(ws, XmNallowOverlap, False, NULL);
 
 
-	XtVaGetValues (this->scrolledWindow, XmNhorizontalScrollBar, &hBar,
-		XmNverticalScrollBar, &vBar, NULL);
+	XtVaGetValues (this->scrolledWindow, 
+	    XmNhorizontalScrollBar, &hBar,
+	    XmNverticalScrollBar, &vBar, 
+	    NULL);
 	XtManageChild (hBar); XtManageChild (vBar);
 
-	XtVaSetValues (this->scrolledWindow, XmNshadowThickness, 1, NULL);
+	XtVaSetValues (this->scrolledWindow, 
+	    XmNshadowThickness, 1, 
+	    NULL);
 	XtVaSetValues (this->scrolledWindowFrame, 
 	    XmNmarginWidth, SCRWF_MARGIN, 
 	    XmNmarginHeight, SCRWF_MARGIN, 
-	NULL);
+	    NULL);
 
 	//
 	// The Motif MainWindow widget wants a chance to recalc sizes, so
@@ -3043,14 +3074,14 @@ boolean isWsManaged;
 	XtVaSetValues (diag, 
 	    XmNminWidth, XtUnspecifiedShellInt,
 	    XmNminHeight, XtUnspecifiedShellInt,
-	NULL);
+	    NULL);
 #ifndef AIX312_MWM_IS_FIXED
 	XSync(XtDisplay(diag), False);
 #endif
 	XtVaSetValues (diag, 
 	    XmNwidth, this->develModeDiagWidth, 
 	    XmNheight, this->develModeDiagHeight, 
-	NULL);
+	    NULL);
 	this->develModeDiagWidth = this->develModeDiagHeight = 0;
 
 	this->displayedStyle = Developer;
@@ -3058,7 +3089,8 @@ boolean isWsManaged;
 	//
 	// Turn Gridding back on if it was in use before the switch.
 	//
-	if (this->develModeGridding) {
+	if (this->develModeGridding) 
+	{
 	    this->develModeGridding = FALSE;
 	    this->workSpaceInfo.setGridActive(TRUE);
 	    this->workSpace->installInfo(NULL);
