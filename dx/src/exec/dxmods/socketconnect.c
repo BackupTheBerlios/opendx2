@@ -6,6 +6,20 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
+#if defined(intelnt)
+
+#include <dx/dx.h>
+
+Error
+m_SocketConnection(Object *in, Object *out)
+{
+    DXSetError(ERROR_NOT_IMPLEMENTED, "SocketConnect in MSVC build");
+    out[0] = NULL;
+    return ERROR;
+}
+
+#else
+
 #include <pthread.h>
 #include <dx/dx.h>
 
@@ -164,3 +178,4 @@ m_SocketConnection(Object *in, Object *out)
 
     return OK;
 }
+#endif
