@@ -92,7 +92,7 @@ struct xfield {
 	ct_triangles,		/* triangles */
 	ct_quads,		/* quads */
 	ct_tetrahedra,		/* tetrahedra */
-	ct_cubes,		/* cubes */
+	ct_cubes		/* cubes */
     } ct;
     union {			/* data array for the irregular ones only */
 	Line *lines;
