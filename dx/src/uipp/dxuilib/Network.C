@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Network.C,v 1.1 1999/03/24 15:17:43 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Network.C,v 1.2 1999/04/08 17:41:48 gda Exp $
  */
 #ifdef OS2
 #include <stdlib.h>
@@ -17,8 +17,6 @@
 #endif
 #include <time.h>
 #include <stdio.h>	// For fprintf(), fseek() and rename()
-
-#include <dx/arch.h>
 
 #if defined(DXD_WIN) || defined(OS2)          //SMH get correct name for unlink for NT in stdio.h
 #define unlink _unlink
