@@ -881,7 +881,7 @@ XtResource _DXResourceList[] =
         sizeof(String),
         XtOffset(DXResource*, printImageCommand),
         XmRString,
-        "lpr"
+        (XtPointer) "lpr"
     },
     {
         "printImageFormat",
@@ -890,7 +890,7 @@ XtResource _DXResourceList[] =
         sizeof(String),
         XtOffset(DXResource*, printImageFormat),
         XmRString,
-        "PSCOLOR"
+        (XtPointer) "PSCOLOR"
     },
     {
         "printImagePageSize",
@@ -1533,7 +1533,7 @@ XtResource _DXResourceList[] =
 	sizeof(String),
 	XtOffset(DXResource*, jdkDir),
 	XmRString,
-	""
+	(XtPointer) ""
     },
     {
         "htmlDir",
@@ -1542,7 +1542,7 @@ XtResource _DXResourceList[] =
 	sizeof(String),
 	XtOffset(DXResource*, htmlDir),
 	XmRString,
-	""
+	(XtPointer) ""
     },
     {
         "serverDir",
@@ -1551,7 +1551,7 @@ XtResource _DXResourceList[] =
 	sizeof(String),
 	XtOffset(DXResource*, serverDir),
 	XmRString,
-	""
+	(XtPointer) ""
     },
     {
         "dxJarFile",
@@ -1560,7 +1560,7 @@ XtResource _DXResourceList[] =
 	sizeof(String),
 	XtOffset(DXResource*, dxJarFile),
 	XmRString,
-	""
+	(XtPointer) ""
     },
     {
         "userHtmlDir",
@@ -1569,7 +1569,7 @@ XtResource _DXResourceList[] =
 	sizeof(String),
 	XtOffset(DXResource*, userHtmlDir),
 	XmRString,
-	"user"
+	(XtPointer) "user"
     },
 };
 
