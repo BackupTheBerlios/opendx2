@@ -3,7 +3,7 @@
 /*********************************************************************/
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.1 1999/03/24 15:18:34 gda Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.2 1999/03/31 14:15:32 gda Exp $
 \*---------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <math.h>
@@ -371,28 +371,8 @@ int _dxfHWload(tdmPortHandleP  (**initPP)(Display*, char*), Display *dpy)
   char *str = getenv("DXHWMOD");
   ENTRY(("_dxfHWload(0x%x)",initPP));
 
-  /* 
-   * Changed this logic. This applies to debug only.
-   * If DXHWMOD is set, use OpenGL otherwise use GL.
-   */
-#  if defined (alphax) || defined(intelnt) || defined(linux86)
-      /* Can only do OpenGL on the DEC */
-      *initPP = _dxfInitPortHandleOGL;
-      isOpenGL = 1;
-#  else
-      if(!str || strstr(str, "OGL"))
-      {
-         PRINT(("using OpenGL"));
-         *initPP = _dxfInitPortHandleOGL ;
-         isOpenGL = 1;
-      }
-      else
-      {
-         PRINT(("using GL"));
-         *initPP = _dxfInitPortHandle ;
-         isOpenGL = 0;
-      }
-#  endif
+  *initPP = _dxfInitPortHandleOGL;
+  isOpenGL = 1;
    
   EXIT(("OK"));
   return OK ;
