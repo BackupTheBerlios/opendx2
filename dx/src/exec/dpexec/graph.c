@@ -2620,8 +2620,11 @@ Error _dxf_ModNameTablesInit()
     return ERROR;
   }
 
+  DXcreate_lock(mod_name_tables_lock, NULL);
+
   /*  FIXME:  Attach this list and its hash to the program structure  */
-  mod_name_str_table = DXAllocate( sizeof( mod_name_str_table ) );
+  mod_name_str_table = DXAllocate( sizeof( LIST(char *) ) );
+
   INIT_LIST(*mod_name_str_table);
 
   mod_name_hash = DXCreateHash( sizeof( struct mod_name_info ), NULL,
@@ -2648,7 +2651,10 @@ static uint32 _dxf_ExGraphInsertAndLookupName( Program *p, char name[] )
   if ((found = (struct mod_name_info *)
                DXQueryHashElement( mod_name_hash,
                                    (Pointer)&search)) != NULL)
+  {
+    DXunlock (mod_name_tables_lock, 0);
     return found->index;
+  }
 
   /*  It's not there, so add it to the list, and to the lookup hash  */
   new = (char *) DXAllocate (strlen (name) + 1);
