@@ -48,7 +48,7 @@ server.jar:
 	(CLASSPATH=aaaaa ; unset CLASSPATH ; javac -d dxsc DXServer.java)
 	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd dxsc; @JDKBIN@jar cf ../server.jar DXServer.class server dx )
 
-SHRD_FLAGS = -shared -L../dxl -lDXL -olibAnyDX.so
+SHRD_FLAGS = -shared -L../dxl -lDXL -o libAnyDX.so
 
 libAnyDX.so: DXLink.o
 	$(CC) $(SHRD_FLAGS) ../dxl/*.o  DXLink.o
@@ -59,7 +59,7 @@ JINC = -I$(JBASE)/include -I$(JBASE)/include/@JAVA_ARCH@
 
 DXLink.o:  server.jar
 	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd dxsc; @JDKBIN@javah -jni -d ../server server.DXServer server.DXServerThread)
-	(cd server; $(CC) -o../DXLink.o -I../../../../include -c -D@ARCH@ $(CFLAGS) $(JINC) DXLink.c)
+	(cd server; $(CC) -o ../DXLink.o -I../../../../include -c -D@ARCH@ $(CFLAGS) $(JINC) DXLink.c)
 
 
 ##SAMPLE_OBJS = AS400VSMonth.class AutoInsurance.class CCNet2.class GroceryList.class HomeOwn.class MRI_2.class MappedIso.class MutualFund.class ScatterData.class SimplifySurface.class Streamline.class Topo.class TwoWells.class ddi.class gordon.class hedge.class ibmqw.class mutFun.class npvcall.class optval.class tgsheet.class wacc.class
