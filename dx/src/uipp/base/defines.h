@@ -6,7 +6,7 @@
 /*****************************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/defines.h,v 1.1 1999/03/24 15:17:25 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/defines.h,v 1.2 1999/04/12 21:36:11 gda Exp $
  */
 
 #ifndef _defines_h
@@ -83,7 +83,7 @@
  *** Types:
  ***/
 
-typedef int boolean;
+typedef unsigned char boolean;
 
 
 /*****************************************************************************/
