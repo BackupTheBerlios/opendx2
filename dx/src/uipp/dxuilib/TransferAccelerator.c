@@ -6,6 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
+#include "dxconfig.h"
 
 #include <stdlib.h>
 #include <X11/Xatom.h>
@@ -18,18 +19,18 @@
 #include "TransferAccelerator.h"
 #include <Xm/XmP.h>
 
-#if       (XmVERSION >= 2) && !defined(LESSTIF_VERSION)
+#if defined(HAVE_XMMAPKEYEVENTS)
 extern int _XmMapKeyEvents(
                         register String str,
                         int **eventType, 
                         KeySym **keysym,
                         Modifiers **modifiers) ;
-#else  /* (XmVERSION >= 2) */
+#else  /* (HAVE_XMMAPKEYEVENTS) */
 extern Boolean _XmMapKeyEvent(String        string,
 			int          *eventType,
-			unsigned     *keysym,
+			unsigned int *keysym,
 			unsigned int *modifiers) ;
-#endif /* (XmVERSION >= 2) */
+#endif /* (HAVE_XMMAPKEYEVENTS) */
 
 /*
 ** Structure used to pass details of the accelerator to the event handler.
@@ -185,7 +186,7 @@ Boolean TransferAccelerator(shell, source, action)
 		** Convert the accelerator to KeySym/Modifier combination.
 		*/
 
-#if       (XmVERSION >= 2) && !defined(LESSTIF_VERSION)
+#if defined(HAVE_XMMAPKEYEVENTS)
 		int        count ;
 		int	  *type_list;
 		KeySym    *keysym_list ;
@@ -198,10 +199,10 @@ Boolean TransferAccelerator(shell, source, action)
 			modifiers = *modifiers_list ;
 			retcode   = True ;
 		}
-#else  /* (XmVERSION >= 2) */
+#else  /* (HAVE_XMMAPKEYEVENTS) */
 		int       type ;
 		retcode = _XmMapKeyEvent(accelerator, &type, &keysym, &modifiers) ;
-#endif /* (XmVERSION >= 2) */
+#endif /* (HAVE_XMMAPKEYEVENTS) */
 
 		/*
 		** Install the action.

@@ -426,6 +426,7 @@ if test "$xm_libraries" != "" ; then
 fi
 AC_CHECK_LIB(Xp, XpSetImageResolution)
 AC_CHECK_LIB(Xm, XmGetDestination)
+AC_TRY_LINK_FUNC(_XmMapKeyEvents, AC_DEFINE(HAVE_XMMAPKEYEVENTS))
 AC_TRY_LINK_FUNC(HCLXmInit, AC_DEFINE(HAVE_HCLXMINIT))
 AC_TRY_LINK_FUNC(HCLXtInit, AC_DEFINE(HAVE_HCLXTINIT))
 
