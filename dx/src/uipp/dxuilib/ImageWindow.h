@@ -52,6 +52,7 @@ extern "C" void ImageWindow_RedrawCB(Widget, XtPointer, XtPointer);
 extern "C" void ImageWindow_WindowsMenuMapCB(Widget, XtPointer, XtPointer);
 extern "C" void ImageWindow_FileMenuMapCB(Widget, XtPointer, XtPointer);
 extern "C" Boolean ImageWindow_ResetEORWP(XtPointer);
+extern "C" void ImageWindow_ResizeTO (XtPointer , XtIntervalId* );
 
 //
 // Referenced classes:
@@ -285,6 +286,7 @@ class ImageWindow : public DXWindow
 		      		  XtPointer clientData,
 		      		  XtPointer callData);
     friend Boolean ImageWindow_ResetEORWP(XtPointer);
+    friend void ImageWindow_ResizeTO (XtPointer , XtIntervalId* );
     boolean adjustDepth(int &depth);
 
     void completePictureCreation();
@@ -349,7 +351,7 @@ class ImageWindow : public DXWindow
 
 
 
-    virtual void resizeImage(XmPictureCallbackStruct*, Widget, boolean ok_to_send=TRUE);
+    virtual void resizeImage(boolean ok_to_send=TRUE);
     virtual void zoomImage(XmPictureCallbackStruct*);
     virtual void roamImage(XmPictureCallbackStruct*);
     virtual void rotateImage(XmPictureCallbackStruct*);
@@ -631,6 +633,14 @@ class ImageWindow : public DXWindow
 
     //virtual int displayWidth() { return 1280; }
     //virtual int displayHeight() { return 1024; }
+
+    //
+    // Rather than triggering an execution following a window resize,
+    // Queue the execution so that it happens soon after the execution
+    // but not immediately after.  This gives better results for users
+    // with window mgrs that deliver tons of resize events
+    //
+    XtIntervalId execute_after_resize_to;
 
 
   public:

@@ -520,6 +520,13 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 
     this->reset_eor_wp = NUL(XtWorkProcId);
 
+    //
+    // Rather than triggering an execution following a window resize,
+    // Queue the execution so that it happens soon after the execution
+    // but not immediately after.  This gives better results for users
+    // with window mgrs that deliver tons of resize events
+    //
+    this->execute_after_resize_to = 0;
 
     //
     // Install the default resources for THIS class (not the derived classes)
@@ -726,6 +733,7 @@ ImageWindow::~ImageWindow()
     if (this->managed_state) delete this->managed_state;
 
     if (this->reset_eor_wp) XtRemoveWorkProc(this->reset_eor_wp);
+    if (this->execute_after_resize_to) XtRemoveTimeOut(this->execute_after_resize_to);
 }
 
 
@@ -1626,6 +1634,9 @@ char *ImageWindow::getDisplayString()
     char      unit[16];
     static char      string[512];
 
+    if (this->execute_after_resize_to) XtRemoveTimeOut (this->execute_after_resize_to);
+    this->execute_after_resize_to = 0;
+
     //
     // If there is a pending resize, then make sure it gets
     // processed first so that the proper WHERE param is sent.
@@ -2346,10 +2357,19 @@ extern "C" void ImageWindow_ResizeCB(Widget	drawingArea,
 			   XtPointer	clientData,
 			   XtPointer	callData)
 {
-    ((ImageWindow*)clientData)->resizeImage((XmPictureCallbackStruct*)callData,
-					    drawingArea);
+    ImageWindow* iw = (ImageWindow*)clientData;
+    if (iw->execute_after_resize_to)
+	XtRemoveTimeOut (iw->execute_after_resize_to);
+    XtAppContext apcxt = theApplication->getApplicationContext();
+    iw->execute_after_resize_to = XtAppAddTimeOut (apcxt, 500, (XtTimerCallbackProc)
+	ImageWindow_ResizeTO, (XtPointer)iw);
+}
 
-    ImageWindow *iw = (ImageWindow*) clientData;
+extern "C" void ImageWindow_ResizeTO (XtPointer clientData, XtIntervalId* )
+{
+    ImageWindow* iw = (ImageWindow*)clientData;
+    iw->execute_after_resize_to = 0;
+    iw->resizeImage();
 
     if(iw->printImageDialog AND iw->printImageDialog->isManaged())
 	iw->printImageDialog->update();
@@ -2360,10 +2380,10 @@ extern "C" void ImageWindow_ResizeCB(Widget	drawingArea,
 //
 // The XmPictureCallbackStruct may be NULL
 //
-void ImageWindow::resizeImage(XmPictureCallbackStruct* , 
-    Widget drawingArea, boolean ok_to_send)
+void ImageWindow::resizeImage(boolean ok_to_send)
 {
     boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+    Widget canvas = this->getCanvas();
 
     //
     // If we were called because the server changed the size.
@@ -2383,7 +2403,7 @@ void ImageWindow::resizeImage(XmPictureCallbackStruct* ,
     // initial geometry negotiation is going on.
     //
     Dimension width, height;
-    XtVaGetValues(drawingArea, XmNwidth,  &width, XmNheight, &height, NULL);
+    XtVaGetValues(canvas, XmNwidth,  &width, XmNheight, &height, NULL);
     if (width > 0) {
 	in->setResolution(width, height, FALSE);
 	double aspect = (height + 0.5) / width;
@@ -3328,6 +3348,9 @@ boolean ImageWindow::associateNode(Node *n)
     this->configureImageDepthMenu();
     this->resetWindowTitle();
     this->configureModeMenu();
+
+    if (this->execute_after_resize_to) XtRemoveTimeOut (this->execute_after_resize_to);
+    this->execute_after_resize_to = 0;
 
     return ret;
 }
@@ -7584,7 +7607,7 @@ void ImageWindow::setGeometry(int  x, int  y, int  width, int  height)
 	//
 	this->DXWindow::setGeometry(x, y, width, height);
 	XSync (XtDisplay(theApplication->getRootWidget()), False);
-	this->resizeImage(NULL, canvas, FALSE);
+	this->resizeImage(FALSE);
     }
  
     Window newWindow = XtWindow(canvas);
