@@ -23,7 +23,7 @@ if [ -z "$DXROOT" ]; then
 fi
 export DXROOT
 
-if [ -f $DXROOT/bin/dxworker]; then
+if [ -f $DXROOT/bin/dxworker ]; then
   exec $DXROOT/bin/dxworker $ARGS 
 fi 
 
