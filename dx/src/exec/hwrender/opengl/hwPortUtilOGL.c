@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.8 2002/01/25 01:19:15 rhh Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.9 2002/02/08 23:38:56 rhh Exp $
 
 Author:  Ellen Ball
 
@@ -283,9 +283,7 @@ static int depthMaskState;
   int _lit = lit && xf->normalsDep != dep_none;				\
  									\
   if (xf->attributes.front.ambient == xf->attributes.front.diffuse) 	\
-  {									\
-    separateAmbientAndDiffuse = 0;					\
-  }									\
+      separateAmbientAndDiffuse = 0;					\
   else									\
       separateAmbientAndDiffuse = 1;					\
 									\
@@ -327,14 +325,14 @@ static int depthMaskState;
 									\
   if(doesTrans)								\
   {									\
-    if (xf->colorsDep == dep_field) {					\
+    if (xf->colorsDep == dep_field) {                                   \
       if (xf->opacitiesDep == dep_none) SENDCOLOR			\
       else if (xf->opacitiesDep == dep_field) SENDCOLOROPACITY;		\
     }									\
   }									\
   else									\
      OPACITY_STIPPLE;							\
-}	
+}
 
 #define ENDPERFIELD()							\
 {									\
@@ -1383,73 +1381,6 @@ static Error bbox (xfieldP xf)
 }
 
 
-/*
- * texture-mapping helpers
- */
-
-static void
-TNnone (xfieldP xf, int posPerConn, int ctIndex, int *translation)
-{
-  static  float	fscratch[3];
-  static  float	uvscratch[2];
-  static  int	p;
-
-  ENTRY(("TNnone(0x%x, %d, %d, 0x%x)",
-	 xf, posPerConn, ctIndex, translation));
-
-  for(p=0;p<posPerConn;p++)  {
-    int q = translation[p];
-    SENDUV(q);
-    SENDPOSITION(q);
-  }
-
-  EXIT((""));
-}
-
-static void
-TNconnections (xfieldP xf, int posPerConn, int ctIndex, int *translation)
-{
-  static float	fscratch[3];
-  static float	uvscratch[2];
-  static int	p;
-  GLubyte c = 0xff;
-
-
-  ENTRY(("TNconnections(0x%x, %d, %d, 0x%x)",
-	 xf, posPerConn, ctIndex, translation));
-
-  SENDNORMAL(ctIndex);
-  glColor3ub(c,c,c);
-  for(p=0;p<posPerConn;p++)  {
-    SENDUV(translation[p]);
-    SENDPOSITION(translation[p]);
-  }
-
-  EXIT((""));
-}
-
-static void
-TNpositions (xfieldP xf, int posPerConn, int ctIndex, int *translation)
-{
-  static float	fscratch[3];
-  static float	uvscratch[2];
-  static int	p;
-  GLubyte c = 0xff;
-
-  ENTRY(("TNpositions(0x%x, %d, %d, 0x%x)",
-	 xf, posPerConn, ctIndex, translation));
-
-  glColor3ub(c,c,c);
-  for(p=0;p<posPerConn;p++)  {
-    int q = translation[p];
-    SENDUV(q);
-    SENDNORMAL(q);
-    SENDPOSITION(q);
-  }
-
-  EXIT((""));
-}
-
 #include "hwPortUtilOGL.help"
 
 static helperFunc
@@ -1463,31 +1394,10 @@ getHelper(dependencyT colorsDep,
 
   ENTRY(("getHelper(%d, %d, %d)",colorsDep,normalsDep,opacitiesDep));
 
-  if (texture)
-  {
-      if (normalsDep == dep_connections) return TNconnections;
-      else if (normalsDep == dep_positions) return TNpositions;
-      else return TNnone;
-  }
-
-#if 0
-  if(colorsDep == dep_none) colorsDep = dep_field;
-  if(opacitiesDep == dep_none) opacitiesDep = dep_field;
-  opacitiesDep = dep_field;
-
-  index = (( (int)opacitiesDep-1) * 3 + ((int)normalsDep)) * 3 + 
-    ((int)colorsDep-1);
-  ret = helperTable[index];
-
-  EXIT(("ret = 0x%x",ret));
-#endif
-
-  index = getIndex(colorsDep, normalsDep, opacitiesDep);
+  index = getIndex(colorsDep, normalsDep, opacitiesDep,texture);
   ret = helperTable[index];
 
   return ret;
-
-
 }
 
 static Error
@@ -1847,8 +1757,8 @@ Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf,
   ENTRY(("_dxf_DrawOpaqueOGL(0x%x, 0x%x, 0x%x, 0x%x)",
 	 portHandle, xf, ambientColor, buttonUp));
 
-  /*  Alpha texture translucency is trapped out here.  Opacities           */
-  /*     translucencycaught in the primitive rendering funcs per element.  */
+  /*  Alpha texture translucency is trapped out here.  Opacities            */
+  /*     translucency caught in the primitive rendering funcs per element.  */
   if (alphaTexture) {
     EXIT(("OK"));
     return OK;
@@ -1890,7 +1800,7 @@ Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf,
     ambient = ambient/diffuse;
     /*
      * DEFINE_LIGHT takes the sqrt() of the input, so we need to square 
-     * the coeficient here
+     * the coefficient here
      */
     ambient = ambient * ambient;
     ambientColor.r *= ambient;
@@ -2229,7 +2139,6 @@ loadTexture(xfieldP xf)
     /*  Set texture  */
     GLenum type    = xf->textureIsRGBA ? GL_RGBA : GL_RGB;
     GLint  int_fmt = xf->textureIsRGBA ? 4 : 3;
-    DXWarning( "Texture type set to %d", type );
     gluBuild2DMipmaps(GL_TEXTURE_2D, int_fmt, xf->textureWidth,
                  xf->textureHeight, type, GL_UNSIGNED_BYTE,
                  (GLubyte *)xf->texture);
