@@ -461,10 +461,6 @@ case $thissys in
 
     remote=/usr/bin/rsh
 
-    if [ -z "$DX_SOCKET_BUFSIZE" ]; then
-    	DX_SOCKET_BUFSIZE=262144
-        export DX_SOCKET_BUFSIZE
-    fi
     ;;
 
   CYGWIN*)
@@ -480,8 +476,6 @@ case $thissys in
    uiarch=macos    
  
    remote=/usr/bin/rsh
-   DX_SOCKET_BUFSIZE=200000
-   export DX_SOCKET_BUFSIZE
  
    if [ -z "$DXMACROS" ]; then
       if [ -d "$HOME/Library/Application Support/OpenDX/macros" ]; then
