@@ -7,12 +7,14 @@ AC_SUBST(EXEEXT)
 AC_SUBST(INSTALL_DX_EXE)
 AC_SUBST(INSTALL_DX_CSH)
 
-SHELL=sh
+if test -z "$SHELL" ; then
+    SHELL=sh
+fi
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
 AM_CONFIG_HEADER(include/dxconfig.h)
-AM_INIT_AUTOMAKE(dx, 4.0)
+AM_INIT_AUTOMAKE(dx, 4.0.1)
 
 AC_DEFINE(DXD_VERSION_STRING,   "04.01.0001")
 AC_DEFINE_UNQUOTED(DXD_VERSION, 4)
@@ -129,10 +131,6 @@ AC_CHECK_LIB(z, compress)
 AC_CHECK_LIB(cdf, CDFlib)
 AC_CHECK_LIB(df, Hopen)
 AC_CHECK_LIB(netcdf, free_NC_attr)
-
-
-AC_CHECK_LIB(cdf, main)
-AC_CHECK_LIB(hdf, main)
 
 dnl Checks for header files.
 AC_PATH_X
