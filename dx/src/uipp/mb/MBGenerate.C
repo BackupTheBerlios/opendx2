@@ -970,7 +970,7 @@ fprintf(fd, "           DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
 fprintf(fd, "	            \"structure of \\\"%s\\\" doesn't match that of \\\"%s\\\"\");%s",
 			    in[i]->name, in[0]->name, NEWLINE);
 fprintf(fd, "           return ERROR;%s", NEWLINE);
-fprintf(fd, "       }%s%s", NEWLINE);
+fprintf(fd, "       }%s%s", NEWLINE, NEWLINE);
 	}
 }
 else
