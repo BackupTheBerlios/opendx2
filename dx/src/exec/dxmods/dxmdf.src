@@ -1,8 +1,3 @@
-#####################################################################
-# (c) COPYRIGHT International Business Machines Corporation 1991-1995
-# ALL RIGHTS RESERVED.
-#####################################################################
-
 
 MODULE AmbientLight
 CATEGORY Rendering
@@ -530,12 +525,12 @@ DESCRIPTION applies a filter to a field
 INPUT input; field; (none); data to filter
 INPUT filter; value or string; "gaussian"; filter to use
 OPTIONS 4-connected ; 8-connected ; 6-connected ; 26-connected
-OPTIONS box ; box:1d ; box:3d
+OPTIONS box ; box 1-d ; box 3-d
 OPTIONS compass:e; compass:n; compass:ne; compass:nw
 OPTIONS compass:s; compass:se; compass:sw; compass:w
-OPTIONS gaussian; gaussian:2d;gaussian:3x3;gaussian:5x5;gaussian:7x7
+OPTIONS gaussian; gaussian 2-d;gaussian 3 x 3;gaussian 5 x 5;gaussian 7 x 7
 OPTIONS isotropic;kirsch
-OPTIONS laplacian; laplacian:1d; laplacian:2d; laplacian:3d
+OPTIONS laplacian; laplacian 1 d; laplacian 2 d; laplacian 3 d
 OPTIONS line:e-w; line:n-s; line:ne-sw; line:nw-se
 OPTIONS prewitt; roberts; sobel
 INPUT component [visible:0]; string; "data"; component on which to operate
@@ -995,7 +990,7 @@ OUTPUT leaf; object; picked leaf object
 
 MODULE Pie
 CATEGORY Realization
-DESCRIPTION Creates 2D or 3D Piechart Wedges
+DESCRIPTION Creates 2-D or 3-D Piechart Wedges
 INPUT percents; scalar list or field ;  (none); wedge data
 INPUT percentflag; string ;  "values"; type of percents
 OPTIONS "values";"percents";"fractions"
@@ -1004,7 +999,7 @@ INPUT radiusscale[visible:0]; scalar; 1; radius for "radiusmax" value
 INPUT radiusmin[visible:0]; scalar; (minimum radius value); radius value which gets the minimum radius size
 INPUT radiusmax[visible:0]; scalar; (maximum radius value); radius value which gets the maximum radius size
 INPUT radiusratio[visible:0]; scalar; (.10); ratio in radius size between radiusmin and radiusmax
-INPUT height; scalar list or field; 0.0; height(s) of piechart (0 for 2D)
+INPUT height; scalar list or field; 0.0; height(s) of piechart (0 for 2
 INPUT heightscale[visible:0]; scalar; 1; height for "heightmax" value
 INPUT heightmin[visible:0]; scalar; (minimum height value); height value which gets the minimum height size
 INPUT heightmax[visible:0]; scalar; (maximum height value); height value which gets the maximum height size
@@ -1565,7 +1560,7 @@ MODULE Transform
 CATEGORY Rendering
 DESCRIPTION generalized transform of an object
 INPUT input; object; (none); object to transform
-INPUT transform; tensor; (none); 3x3 or 3x4 transformation matrix
+INPUT transform; tensor; (none); 3 x 3 or 3 x 4 transformation matrix
 OUTPUT output; object; object marked to be transformed
 
 MODULE Translate

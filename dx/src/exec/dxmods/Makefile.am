@@ -90,9 +90,9 @@ user.c:  dx.mdf
 
 dx.mdf:  dxmdf.src
 	-rm -f dx.mdf
-	sed '4q' dxmdf.src > dx.mdf
-	sed '1,4d' dxmdf.src > userTmp.c
-	$(CPP) $(MDF) -DCPLUSPLUS_UI -DEXECUTIVE_MODS userTmp.c >>dx.mdf
+	cp dxmdf.src tmp.c
+	$(CPP) $(MDF) -DCPLUSPLUS_UI -DEXECUTIVE_MODS tmp.c > dx.mdf
+	-rm -f tmp.c
 
 y.tab.c: _compparse.y
 	$(YACC) -vd _compparse.y
