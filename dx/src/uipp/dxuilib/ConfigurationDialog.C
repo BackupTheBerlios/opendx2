@@ -2204,6 +2204,7 @@ const char *ConfigurationDialog::getHelpSyntaxString()
 	if (!helpstr) return nosup;
 	fread(helpstr,1,helpsize,fp);
 	fclose(fp);
+	helpstr[helpsize] = '\0'; // Null ternimate string
 	ConfigurationDialog::HelpText = helpstr;
     }
     return ConfigurationDialog::HelpText;

@@ -1,3 +1,28 @@
+4.3.2
+===============
+Native Stereo Rendering for Windows added.
+
+Minor fixes to clean up errors from 4.3
+---------------
+Fix (bug #125) within the Module builder plus some memory leaks
+
+Added seq2c to correctly process net files into .h files for
+JavaDX (bug #124)
+
+Fix so that loadable modules work correctly within AIX 4.2 and
+higher.
+
+Typo in EditorWindow code
+
+Disable debug info on GraphLayout code
+
+Removed the "commercial" fonts from standard font popdown menus
+
+Fixed a problem where adding an 'invalids' component did
+not work correctly.
+
+NULL terminate "Help on Syntax" string.
+
 4.3
 ===============
 Added the RTLD_GLOBAL to loading modules so that functions 

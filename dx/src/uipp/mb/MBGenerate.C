@@ -226,7 +226,7 @@ do_makefile(char *basename, Module *mod)
                mod->loadable_executable, basename, basename, NEWLINE, NEWLINE);
 #endif
 #ifdef ibm6000 
-       fprintf(fd, "\tcc -o %s user%s.$(OBJEXT) %s.$(OBJEXT) -e DXEntry -bI:$(EXP)%s%s",
+       fprintf(fd, "\tcc -o %s user%s.$(OBJEXT) %s.$(OBJEXT) -qmkshrobj -G  -bI:$(IMP)%s%s",
                mod->loadable_executable, basename, basename, NEWLINE, NEWLINE);
 #endif
 #ifdef DXD_WIN 
