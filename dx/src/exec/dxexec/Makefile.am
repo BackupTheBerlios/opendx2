@@ -25,5 +25,6 @@ dxexec_LDADD = \
 
 install-data-hook:
 	if test "$(ARCH)" = "intelnt" ; then \
-	$(INSTALL_DATA) dxexec.exp $(prefix)/dx/bin_intelnt/dxexec.exp ; \
+	$(INSTALL_DATA) dxexec.exp $(prefix)/dx/lib_intelnt/dxexec.exp ; \
+	$(INSTALL_DATA) dxexec.lib $(prefix)/dx/lib_intelnt/DX.lib ; \
 	fi
