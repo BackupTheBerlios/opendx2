@@ -239,6 +239,9 @@
 				RelativePath="..\..\src\uipp\windows\ControlPanelGroupDialog.cpp">
 			</File>
 			<File
+				RelativePath="..\..\src\uipp\windows\CopyrightDialog.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\uipp\windows\CreateMacroDialog.cpp">
 			</File>
 			<File
@@ -621,12 +624,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\uipp\windows\netyacc.c">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						CompileAsManaged="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\uipp\windows\NewCommand.cpp">
@@ -1324,6 +1321,25 @@
 				RelativePath="..\..\src\uipp\windows\ControlPanelWorkSpace.h">
 			</File>
 			<File
+				RelativePath="..\..\src\uipp\windows\CopyrightDialog.h"
+				FileType="3">
+				<File
+					RelativePath="..\..\src\uipp\windows\CopyrightDialog.resX">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCManagedResourceCompilerTool"
+							ResourceFileName="$(IntDir)/dxui.CopyrightDialog.resources"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCManagedResourceCompilerTool"
+							ResourceFileName="$(IntDir)/dxui.CopyrightDialog.resources"/>
+					</FileConfiguration>
+				</File>
+			</File>
+			<File
 				RelativePath="..\..\src\uipp\windows\CreateMacroDialog.h">
 			</File>
 			<File
@@ -1459,22 +1475,10 @@
 				RelativePath="..\..\src\uipp\windows\EchoNode.h">
 			</File>
 			<File
-				RelativePath=".\Editor.h"
+				RelativePath="..\..\src\uipp\windows\Editor.h"
 				FileType="3">
 				<File
-					RelativePath=".\Editor.resX">
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCManagedResourceCompilerTool"
-							ResourceFileName="$(IntDir)/dxui.Editor.resources"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCManagedResourceCompilerTool"
-							ResourceFileName="$(IntDir)/dxui.Editor.resources"/>
-					</FileConfiguration>
+					RelativePath="..\..\src\uipp\windows\Editor.resX">
 				</File>
 			</File>
 			<File

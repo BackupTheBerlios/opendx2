@@ -1,3 +1,13 @@
+// Notes for remembering
+
+CommandInterfaces are interfaces to actual Xm stuff with commands
+attached such as button interfaces. This will not be needed. 
+Commands on the other hand are since they are used to handle the
+undo, etc.
+
+
+// The following are all the Xrm and resource stuff. 
+
 Xrm Files:
 
 !Application.cpp
