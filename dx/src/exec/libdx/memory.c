@@ -1335,10 +1335,9 @@ int _dxf_initmemory()
 	 * to 4G, but after that we have to go to a 64 bit architecture
 	 * to support this.
 	 */
-	if ((physmem - othermem) >= 2048)
-	    physmem = 2048 - othermem - 1;
-	
 	total_size = (physmem - othermem) MEG ;
+	if ((physmem - othermem) >= 2048)
+		total_size = 2047 MEG ;
 
 #if 1  /* debug */
 	if (getenv("DX_DEBUG_MEMORY_INIT")) {
