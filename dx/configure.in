@@ -883,7 +883,7 @@ DX_CHECK_HEADERS( CC/libc.h CC/osfcn.h DPS/XDPSlib.h DPS/dpsXclient.h \
     sys/systeminfo.h sys/time.h sys/timeb.h sys/times.h sys/types.h sys/un.h \
     sys/utsname.h sys/wait.h sysent.h time.h types.h ulocks.h unistd.h \
     values.h wait.h winbase.h windows.h wingdi.h winioctl.h winsock.h \
-    x11/xlibxtra.h xgl/xgl.h ) 
+    x11/xlibxtra.h xgl/xgl.h linux/kernel.h linux/sys.h ) 
 
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, inet_addr)
