@@ -48,7 +48,7 @@ if test "with_javadx" != 'no' ; then
   fi
 fi
 
-AC_OUTPUT( Makefile callmodule/Makefile callmodule/callmodule_make \
+AC_OUTPUT( Makefile callmodule/Makefile callmodule/localmk \
 	data/Makefile dxlink/Makefile dxlink/dxlink_make \
 	java/samples/Makefile java/Makefile java/userdata/Makefile  \
 	java/usermacros/Makefile  java/nets/Makefile  java/makes/Makefile  \
