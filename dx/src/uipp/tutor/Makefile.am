@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = 
+INCLUDES = -I../../../include -I../base
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
@@ -12,9 +12,7 @@ tutor_SOURCES =				\
 	Main.C                          \
 	NoUndoTutorAppCommand.C         \
 	TutorApplication.C              \
-	TutorWindow.C			\
-	\
-	Main.C
+	TutorWindow.C			
 
 noinst_HEADERS = \
 	NoUndoTutorAppCommand.h \
@@ -28,4 +26,4 @@ tutor_LDADD = 				\
 	-L/usr/X11R6/lib 		\
 	-L/usr/local/lib 		\
 	-L$(DXROOT)/lib_@ARCH@	\
-	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
+	-lg++ -lXm -lXmu -lXt -lX11 -lXext
