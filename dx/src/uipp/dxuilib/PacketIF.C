@@ -21,6 +21,7 @@
 
 #include "Application.h"
 #include "ErrorDialogManager.h"
+#include "WarningDialogManager.h"
 
 #if defined(HAVE_ERRNO_H)
 extern "C" {
@@ -1212,6 +1213,48 @@ void PacketIF::HandleError(void *clientData, char *message)
 }
 
 
+static int
+setSockBufSize(int sock)
+{
+#if defined(HAVE_SETSOCKOPT)
+    char *s = getenv("DX_SOCKET_BUFSIZE");
+    if (s)
+    {
+	socklen_t rq_bufsz, set_bufsz;
+	socklen_t set_len, rq_len = sizeof(rq_bufsz);
+
+	rq_bufsz = atoi(s);
+	if (setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (void *)&rq_bufsz, rq_len))
+	{
+	    perror("setsockopt");
+	    return 0;
+	}
+	if (getsockopt(sock, SOL_SOCKET, SO_SNDBUF, (void *)&set_bufsz, &set_len))
+	{
+	    perror("getsockopt");
+	    return 0;
+	}
+	if (rq_bufsz != set_bufsz)
+	    WarningMessage("SOCKET bufsize mismatch: send buffer (%d %d)",
+	                            rq_bufsz, set_bufsz);
+
+	if (setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (void *)&rq_bufsz, rq_len))
+	{
+	    perror("setsockopt");
+	    return 0;
+	}
+	if (getsockopt(sock, SOL_SOCKET, SO_RCVBUF, (void *)&set_bufsz, &set_len))
+	{
+	    perror("getsockopt");
+	    return 0;
+	}
+	if (rq_bufsz != set_bufsz)
+	    WarningMessage("SOCKET bufsize mismatch: rcv buffer (%d %d)",
+	                            rq_bufsz, set_bufsz);
+    }
+#endif
+    return 1;
+}
 //
 //
 //
@@ -1255,6 +1298,11 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
 		    sizeof(userver) - sizeof(userver.sun_path) +
 				      STRLEN(userver.sun_path)) >= 0)
 	{
+	     if (! setSockBufSize(this->socket))
+	     {
+		close(this->socket);
+		this->error = TRUE;
+	     }
 	     return;
 	}
 	else
@@ -1324,6 +1372,7 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
 	return;
     }
 
+
     if (connect(this->socket,
 		(struct sockaddr*)&server,
 		sizeof(server)) < 0)
@@ -1332,6 +1381,12 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
 	this->socket = -1;
 	this->error = TRUE;
 	return;
+    }
+
+    if (! setSockBufSize(this->socket))
+    {
+	close(this->socket);
+	this->error = TRUE;
     }
 
 #if  defined(DXD_IBM_OS2_SOCKETS)

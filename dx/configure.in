@@ -775,7 +775,8 @@ AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
         _Errno _popen spawnvp _spawnvp regcomp sysmp sysconf \
         pipe _pipe _popen popen _pclose pclose random rand srandom \
 	shmat getopt srand opendir fork _findfirst strrstr strcasecmp \
-	stricmp getpid _getpid unlink _unlink getlogin isatty _isatty )
+	stricmp getpid _getpid unlink _unlink getlogin isatty _isatty \
+	setsockopt )
 
 AC_EGREP_CPP(xyzzy, 
 [

@@ -330,6 +330,47 @@ retry:
 
     printf ("server: accepted connection from client\n");
 
+#if defined(HAVE_SETSOCKOPT)
+    {
+	char *s = getenv("DX_SOCKET_BUFSIZE");
+	if (s)
+	{
+	    socklen_t rq_bufsz, set_bufsz;
+	    socklen_t set_len, rq_len = sizeof(rq_bufsz);
+
+	    rq_bufsz = atoi(s);
+	    if (setsockopt(fd, SOL_SOCKET, SO_SNDBUF, (void *)&rq_bufsz, rq_len))
+	    {
+		perror("setsockopt");
+		goto error;
+	    }
+	    if (getsockopt(fd, SOL_SOCKET, SO_SNDBUF, (void *)&set_bufsz, &set_len))
+	    {
+		perror("getsockopt");
+		goto error;
+	    }
+	    if (rq_bufsz != set_bufsz)
+	        DXWarning("SOCKET bufsize mismatch: send buffer (%d %d)",
+			rq_bufsz, set_bufsz);
+
+
+	    if (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (void *)&rq_bufsz, rq_len))
+	    {
+		perror("setsockopt");
+		goto error;
+	    }
+	    if (getsockopt(fd, SOL_SOCKET, SO_RCVBUF, (void *)&set_bufsz, &set_len))
+	    {
+		perror("getsockopt");
+		goto error;
+	    }
+	    if (rq_bufsz != set_bufsz)
+	        DXWarning("SOCKET bufsize mismatch: rvc buffer (%d %d)",
+			rq_bufsz, set_bufsz);
+	}
+    }
+#endif
+
 error:
 #if DXD_SOCKET_UNIXDOMAIN_OK
     if (userver.sun_path[0] != '\0')
