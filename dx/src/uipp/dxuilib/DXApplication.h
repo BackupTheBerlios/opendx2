@@ -550,6 +550,7 @@ class DXApplication : public IBMApplication
     void closeConnection(DXChild *c);
     void completeConnection(DXChild *c);
     DXChild *startServer();
+    void setServer(char *server);
 
     DXPacketIF *getPacketIF() { return this->serverInfo.packet; }
     DXExecCtl  *getExecCtl()  { return &this->execCtl; }

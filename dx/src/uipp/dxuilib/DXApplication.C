@@ -5228,3 +5228,12 @@ void DXApplication::showInstanceNumbers(boolean on_or_off)
     }
 }
 
+void 
+DXApplication::setServer(char *server)
+{
+    if (this->serverInfo.server) 
+	delete this->serverInfo.server;
+
+    this->serverInfo.server = DuplicateString(server);
+    fprintf(stderr, "exec server set to %s\n", server);
+}

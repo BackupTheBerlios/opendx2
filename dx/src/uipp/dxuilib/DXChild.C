@@ -916,10 +916,11 @@ extern "C" void DXChild_OutQueuedInputHandler(XtPointer  clientData,
 		obj->outLine[j+1] = '\0';
 		theDXApplication->getMessageWindow()->addInformation(
 		    obj->outLine);
-/* GDA 
-*		write(1, obj->outLine, j + 1);
-*/
-		if (sscanf(obj->outLine, "port = %d\n", &port) == 1)
+		if (strstr(obj->outLine, "host = "))
+		{
+		    theDXApplication->setServer(obj->outLine + strlen("host = "));
+		}
+		else if (sscanf(obj->outLine, "port = %d\n", &port) == 1)
 		{
 		    theDXApplication->connectToServer(port, obj);
 		}
@@ -1251,7 +1252,6 @@ DXChild::unQueue()
 int
 DXChild::waitForConnection()
 {
-    char *portString = NULL;
     char rdbuffer[BUFSIZ+1];
     int  sts;
     int result = 0;
@@ -1309,31 +1309,24 @@ DXChild::waitForConnection()
         if (sts >= 0)
         {
             DXChild::MakeLine(rstring, rdbuffer);
-            portString = strstr (rdbuffer, "port = ");
-            if (portString != NULL) {
-                result = 0;
-/* GDA
-*write(1, portString, strlen(portString)+1);
-*/
-                sscanf (portString, "port = %d", &port);
-                if (this->isQueued())
-                    this->unQueue();
-                theDXApplication->connectToServer(port, this);
-            }
-            else if ((portString =
-                    strstr(rdbuffer, "Execution has been queued"))
-                    != NULL ||
-                (portString =
-                    strstr(rdbuffer, "Server appears to be in use"))
-                    != NULL ||
-                (portString =
-                    strstr(rdbuffer, "rror"))           // suits added
-                    != NULL ) {
-                result = 1;
-            }
-            if (portString) {
-                return result;
-            }
+	    if (strstr(rdbuffer, "host = "))
+	    {
+	        theDXApplication->setServer(rdbuffer + strlen("host = "));
+	    }
+	    else if (strstr(rdbuffer, "port = "))
+	    {
+		sscanf (rdbuffer, "port = %d", &port);
+		if (this->isQueued())
+		    this->unQueue();
+		theDXApplication->connectToServer(port, this);
+		return 0;
+	    }
+	    else if (strstr(rdbuffer, "Execution has been queued"))   ||
+		     strstr(rdbuffer, "Server appears to be in use")) ||
+		     strstr(rdbuffer, "rror")))           // suits added
+	    {
+		return 1;
+	    }
         }
     }  // while
 
@@ -1352,34 +1345,26 @@ DXChild::waitForConnection()
         rdbuffer[sts] = '\0';
         theDXApplication->getMessageWindow()->addInformation(
             rdbuffer);
-        // write (1, rdbuffer, sts);
         if (result >= 0)
         {
             DXChild::MakeLine(rstring, rdbuffer);
-            portString = strstr (rdbuffer, "port = ");
-            if (portString != NULL) {
-                result = 0;
-/* GDA
-*write(1, portString, strlen(portString)+1);
-*/
-                sscanf (portString, "port = %d", &port);
+	    if (strstr(rdbuffer, "host = "))
+	    {
+	        theDXApplication->setServer(rdBuffer + strlen("host = "));
+	    }
+	    else if (strstr(rdbuffer, "port = "))
+	    {
+                sscanf (rdbuffer, "port = %d", &port);
                 if (this->isQueued())
                     this->unQueue();
                 theDXApplication->connectToServer(port, this);
+		return 0;
             }
-            else if ((portString =
-                    strstr(rdbuffer, "Execution has been queued"))
-                    != NULL ||
-                (portString =
-                    strstr(rdbuffer, "Server appears to be in use"))
-                    != NULL ||
-                (portString =
-                    strstr(rdbuffer, "rror"))           // suits added
-                    != NULL ) {
-                result = 1;
-            }
-            if (portString) {
-                return result;
+	    else if (strstr(rdbuffer, "Execution has been queued"))   ||
+		     strstr(rdbuffer, "Server appears to be in use")) ||
+		     strstr(rdbuffer, "rror")))           // suits added
+	    {
+                return 1;
             }
         }
     }
@@ -1472,8 +1457,8 @@ DXChild::waitForConnection()
 //		if (STRLEN(rstring) == RSIZE-1 ||
 //			rstring[STRLEN(rstring)-1] == '\n')
 //		    theDXApplication->getMessageWindow()->addError(rdbuffer);
-		portString = strstr (rdbuffer, "Server appears to be in use");
-		if (portString != NULL) {
+		if (strstr (rdbuffer, "Server appears to be in use"))
+		{
 		    result = 1;
 		    this->input_handlers_stalled = FALSE;
 		    return result;
@@ -1545,29 +1530,27 @@ DXChild::waitForConnection()
 		if (result >= 0)
 		{
 		    DXChild::MakeLine(rstring, rdbuffer);
-		    portString = strstr (rdbuffer, "port = ");
-		    if (portString != NULL) {
-			result = 0;
-/* GDA
-*write(1, portString, strlen(portString)+1);
-*/
-			sscanf (portString, "port = %d", &port);
+
+		    if (strstr(rdbuffer, "host = "))
+		    {
+			theDXApplication->setServer(rdbuffer + strlen("host = "));
+		    }
+		    else if (strstr(rdbuffer, "port = "))
+		    {
+			sscanf (rdbuffer, "port = %d", &port);
 			if (this->isQueued())
 			    this->unQueue();
 			theDXApplication->connectToServer(port, this);
-		    }
-		    else if ((portString = 
-			    strstr(rdbuffer, "Execution has been queued")) 
-			    != NULL ||
-			(portString = 
-			    strstr(rdbuffer, "Server appears to be in use"))
-			    != NULL) {
-			result = 1;
-		    }
-		    if (portString) {
 			this->input_handlers_stalled = FALSE;
-			return result;
+			return 0;
 		    }
+		    else if (strstr(rdbuffer, "Execution has been queued")   ||
+			     strstr(rdbuffer, "Server appears to be in use") ||
+			     strstr(rdbuffer, "rror"))           // suits added
+		    {
+			return 1;
+		    }
+
 		}
 	    }
 	}
