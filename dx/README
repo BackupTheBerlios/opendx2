@@ -1,0 +1,82 @@
+Open Visualization Data Explorer
+
+    This is a *very* early version of the OpenDX source distribution.
+Your patience is appreciated!  It is quite likely that problems will 
+arise building OpenDX; if you encounter difficulties, please try to
+work them through as best you can.  If you find solutions, please send 
+in a note;  they'll be incorporated into the distribution as time allows,
+and it'll be that much easier for the next person.  If you find a
+problem that you can't solve, again, send a note;  we'll try to help.
+
+For the moment, please mail installation problems to the bug-report
+address listed on the website where you downloaded OpenDX.
+
+Bugs:
+
+    While DX 4.0 has a very mature code base, many source files (actually
+virtually all, thanks to the new copyright notice) have been modified for 
+this first open source release.  Furthermore, its likely that it is being
+built on previously unencountered OS versions and using different compilers 
+than before; as such, bugs may arise.  As above, take a crack at it if you
+wish, then send reports in to the bug-report address.
+
+Version:
+
+    This version, labelled 4.0, is an upgrade from the final IBM
+distribution, DX 3.1.4.  It corresponds to the final bug-fix version of
+of 3.1.4 plus several new features amongst which are  improved OpenGL
+rendering (better use of display lists, most notably), JavaDX, and
+stereo rendering.  
+
+Build Instructions:
+
+    This is intended to be a simple configure-and-make build.
+
+    	configure
+	make
+	make install (as root)
+
+    By default, the installation will be in /usr/local/dx; this can be
+changed using the --prefix= argument to configure:
+
+	configure --prefix=/usr/lpp
+	make
+	make install (as root)
+
+will install place the installation in /usr/lpp/dx
+
+Prerequisites:
+
+    Motif  	- Lesstif works, www.gnu.org
+    OpenGL 	- Mesa3D works,  www.mesa3D.org
+
+    For Windows builds:
+	Cygwin  - www.cygnus.com 
+	not sure what, if anything, else
+
+    Not required, but nice:
+
+    NetCDF	- www.unidata.ucar.edu
+    CDF		- nssdc.gsfc.nasa.gov/cdf
+
+Hints:
+
+    If you are using Lesstif instead of Motif, you may need to create
+symbolic links in /usr/include to /usr/X11R6/include/Xm and /usr/X11R/X11.
+
+    If you are using Mesa3G instead of OpenGL, you will need symbolic links
+/usr/local/lib/libGL.a pointing to /usr/local/lib/libMesaGL.a and
+/usr/local/lib/libGLu.a pointing to /usr/local/lib/libMesaGLu.a
+
+    If you are building on Windows, things are really untested.  Best of
+luck, and let us know how it goes.
+
+Known Problems:
+
+    Run-time Loading - eg. user-defined modules, interactors
+
+    Java DX - The code is all there; however, it has not been tried under
+    this distribution.  
+
+    Probably lots of other things. 
+
