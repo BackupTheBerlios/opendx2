@@ -1,18 +1,13 @@
 //
-// time: Wed Feb 27 21:16:29 2002
+// time: Thu Feb 28 20:40:08 2002
 //
 // version: 3.1.2 (format), 4.1.3 (DX)
 //
 //
 // MODULE main
 //
-// comment: A general purpose visual program for gridded, three-dimensional data has been used.
-// comment: 
-// comment: For scalar, position-dependent data, an translucent isosurface is created. You can change the isosurface value using the interactor in the control panel. Otherwise, glyphs are drawn.
-// comment: 
-// comment: In either case, a colored cutting plane has been drawn through the data. You can use the interactor in the control panel to change the normal, or orientation, of the cutting plane.
-// comment: 
-// comment: If you would like to modify or use this visual program in the future, choose Open Visual Program Editor from the Windows menu, and then choose Save As from the File menu of the VPE.
+// comment: A useful tool for selecting object colors for use in
+// comment: various lighting situations.
 // page assignment: color	order=2, windowed=0, showing=1
 // workspace: width = 1689, height = 915
 // layout: snap = 0, width = 50, height = 50, align = NN
