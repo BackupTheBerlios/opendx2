@@ -36,6 +36,7 @@
 #include <Xm/RowColumn.h>
 #include <Xm/List.h>
 #include <Xm/MenuShell.h>
+#include <Xm/ScrolledW.h>
 #include <X11/cursorfont.h>
 #include <X11/Shell.h>
 
@@ -950,10 +951,16 @@ void PageSelector::buildPageMenu()
     NULL);
 
     n = 0;
-    XtSetArg (args[n], XmNlistSizePolicy, XmCONSTANT); n++;
-    XtSetArg (args[n], XmNselectionPolicy, XmBROWSE_SELECT); n++;
-    this->popupList = XmCreateScrolledList (parent, "pageList", args, n);
-    XtVaSetValues (this->popupList, XmNshadowThickness, 0, NULL);
+    XtSetArg(args[n], XmNvisualPolicy, XmCONSTANT); n++;
+    XtSetArg(args[n], XmNscrollingPolicy, XmAUTOMATIC); n++;
+    XtSetArg(args[n], XmNshadowThickness, 0); n++;
+    XtSetArg(args[n], XmNscrollBarDisplayPolicy, XmAS_NEEDED); n++;
+    Widget sw = XmCreateScrolledWindow(parent, "pageListSW", args, n);
+    XtManageChild (sw);
+    n = 0;
+    XtSetArg(args[n], XmNshadowThickness, 0); n++;
+    XtSetArg(args[n], XmNhighlightThickness, 0); n++;
+    this->popupList = XmCreateList (sw, "pageList", args, n);
     XtManageChild (this->popupList);
     XtAddCallback (this->popupList, XmNsingleSelectionCallback,
 	(XtCallbackProc)PageSelector_SelectCB, (XtPointer)this);
@@ -965,7 +972,7 @@ void PageSelector::buildPageMenu()
 	PageSelector_RemoveGrabEH, (XtPointer)this);
     XtAddEventHandler(this->popupList, EnterWindowMask, False, (XtEventHandler)
 	PageSelector_ProcessOldEventEH, (XtPointer)this);
-    XtVaGetValues (XtParent(this->popupList), 
+    XtVaGetValues (sw, 
 	XmNverticalScrollBar, &this->vsb,
 	XmNhorizontalScrollBar, &this->hsb,
     NULL);
@@ -976,6 +983,9 @@ void PageSelector::buildPageMenu()
 //
 void PageSelector::updateList()
 {
+    XmFontList xmf; 
+    Dimension maxWidth = 0;
+
 #if defined(aviion)
     if (this->popupMenu == NUL(Widget)) 
 	this->buildPageMenu();
@@ -992,6 +1002,7 @@ void PageSelector::updateList()
     //
     // Fill in the list with the contents of our PageTabs
     //
+    XtVaGetValues (this->popupList, XmNfontList, &xmf, NULL);
     XmString* strTable = new XmString[this->page_buttons->getSize()];
     int next = 0;
     ListIterator it(*this->page_buttons);
@@ -1000,34 +1011,42 @@ void PageSelector::updateList()
     while ( (pt = (PageTab*)it.getNext()) ) {
 	const char* name = pt->getGroupName();
 	if (!name) continue;
-	strTable[next++] = XmStringCreateLtoR ((char*)name, "small_bold");
+	strTable[next] = XmStringCreateLtoR ((char*)name, "small_bold");
+        Dimension strWidth = XmStringWidth(xmf, strTable[next]);
+	maxWidth = (maxWidth>strWidth?maxWidth:strWidth);
+	next++;
 	if (pt->getState() == TRUE) select_this_item = next;
     }
+    maxWidth = (maxWidth>30?maxWidth:30);
 
+    XtVaSetValues(this->popupList, XmNvisibleItemCount, next, NULL);
     int numDisp = next<=MAX_VISIBLE?next:MAX_VISIBLE;
 
    // If fixing the scroll lists width, we must also set its
    // height. This means finding out how tall 1 line is and multiplying
    // it by the number of items.
 
-    Dimension lheight;
-    XtVaGetValues (this->popupList, XmNheight, &lheight, NULL);
-    fprintf(stderr, "list height %d\n", lheight);
-
-    XmFontList xmf; Dimension marginH, shadowT, highlightT;
-    XtVaGetValues (this->popupList, XmNfontList, &xmf, NULL);
-    XtVaGetValues (XtParent(this->popupList), XmNmarginHeight, &marginH,
-		XmNshadowThickness, &shadowT,
-		XmNhighlightThickness, &highlightT, NULL);
+    Dimension marginH, shadowT, highlightT;
+    Dimension swmarginH, swshadowT;
+    XtVaGetValues (XtParent(this->popupList), XmNmarginHeight, &swmarginH,
+		XmNshadowThickness, &swshadowT, NULL);
 
     Dimension fh = XmStringHeight (xmf, strTable[0]);
 
-    fprintf(stderr, "cons height %d\n", ((fh+1)*numDisp)+(2*(marginH+shadowT+highlightT)));
-
-    XtVaSetValues (XtParent(this->popupList),
-	XmNwidth, BUTTON_WIDTH+30, 
-	XmNheight, ((fh+1)*numDisp+(2*(marginH+shadowT+highlightT))+6), 
+    XtVaSetValues (XtParent(XtParent(this->popupList)),
+	XmNheight, ((fh+2)*numDisp)+(2*(swmarginH+swshadowT)), 
 	NULL);
+
+    // Now set the width -- may need room for the scrollbar.
+    if(next <= MAX_VISIBLE)
+	XtVaSetValues (XtParent(XtParent(this->popupList)),
+		XmNwidth, maxWidth,
+		NULL);
+    else
+	XtVaSetValues (XtParent(XtParent(this->popupList)),
+		XmNwidth, maxWidth + 18, 
+		NULL);
+
 
     //
     // Show the page as selected in the list and make sure that position is showing.
@@ -1040,7 +1059,6 @@ void PageSelector::updateList()
 	if(bofs>MAX_VISIBLE/2) bofs = MAX_VISIBLE/2; 
 	XmListSetBottomPos(this->popupList, select_this_item+bofs); 
     }
-    fprintf(stderr, "select_this_item: %d\n", select_this_item);
 
     int i;
     for (i=0; i<next; i++)
