@@ -16,7 +16,7 @@ BEGIN {
 	if (dynamic > 0) 
 	    printf("DXEntry()\n");
 	else 
-	    printf("_dxf_user_modules()\n");
+	    printf("void\n _dxf_user_modules()\n");
 	printf("{\n");    
 	firsttime = 0;
     }
