@@ -211,6 +211,18 @@ static XtActionsRec actionsList[] =
  *
  ****************************************************************/
 
+static CompositeClassExtensionRec managerCompositeExt =
+{
+    /* next_extension */  NULL,
+    /* record_type    */  NULLQUARK,
+    /* version        */  XtCompositeExtensionVersion,
+    /* record_size    */  sizeof(CompositeClassExtensionRec),
+    /* accepts_objects */ True,
+#if XtSpecificationRelease >= 6
+    /* allows_change_managed_set */ True
+#endif
+};
+ 
 XmSlideBarClassRec xmSlideBarClassRec = 
 {
    {			/* core_class fields      */
@@ -254,7 +266,7 @@ XmSlideBarClassRec xmSlideBarClassRec =
       (XtWidgetProc)_XtInherit,			/* change_managed     */
       (XtWidgetProc)_XtInherit,			/* insert_child       */
       (XtWidgetProc)_XtInherit,			/* delete_child       */
-      NULL,                                     /* extension          */
+      (XtPointer)&managerCompositeExt,          /* extension          */
    },
 
    {		/* constraint_class fields */
