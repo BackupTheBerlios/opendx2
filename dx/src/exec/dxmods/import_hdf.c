@@ -33,7 +33,7 @@
 
 #if defined(HAVE_DFSD_H)
 #include <dfsd.h>
-else
+#else
 #include <hdf/dfsd.h>
 #endif
 
