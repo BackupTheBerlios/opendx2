@@ -555,12 +555,23 @@ int initrun()
     u2d(dxroot);
     
 
-    if (!*dxdata) {
-    	strcpy(dxdata, dxroot);
-	if(dxdata[strlen(dxdata)-1] !='\\')
-		strcat(dxdata, "\\");
-        strcat(dxdata,"data");
-    }
+    if (dxdata && *dxdata)
+	strcat(dxdata, ";");
+    strcpy(dxdata, dxroot);
+    if(dxroot[strlen(dxroot)-1] !='\\')
+	strcat(dxdata, "\\");
+    strcat(dxdata,"samples\\data");
+    d2u(dxdata);
+
+/* Append the default dxroot/samples/macros to current macros */
+
+    if(dxmacros && *dxmacros)
+	strcat(dxmacros, ";");
+    strcat(dxmacros, dxroot);
+    if(dxroot[strlen(dxroot)-1] !='\\')
+	strcat(dxmacros, "\\");
+    strcat(dxmacros,"samples\\macros");
+    d2u(dxmacros);
 
 #if defined(DEBUG)
     printf("%s; %s; %s\n", dxroot, dxdata, dxmacros);
@@ -641,42 +652,23 @@ void configure()
     /*  to have hardcoded paths in the pc environment (they	*/
     /*  are sed'd out).  Unix needs different logic.		*/
 
-/*
-    strcpy(path0, dxmacros);
-    KILLSEMI(path0);
-    d2u(path0);
-
-    sprintf(teststr, "%s/samples/macros", dxroot);
-    d2u(teststr);
-    if (!*path0 || !strcasecmp(teststr, path0))
-	sprintf(dxmacros, "%s/samples/macros", dxroot);
-    else
-	sprintf(dxmacros, "%s;%s/samples/macros", path0, dxroot);
-    setenvpair(dxmacros,	"DXMACROS");
-
-    strcpy(path0, dxdata);
-    d2u(path0);
-    KILLSEMI(path0);
-    sprintf(teststr, "%s/samples/data", dxroot);
-    d2u(teststr);
-    if (!*path0 || !strcasecmp(teststr, path0))
-	sprintf(dxdata, "%s/samples/data;%s", dxroot, dxroot);
-    else
-	sprintf(dxdata, "%s;%s/samples/data;%s", path0, dxroot, dxroot);
-*/
 
     setenvpair(dxdata,		"DXDATA");
+    setenvpair(dxmacros,	"DXMACROS");
     setenvpair(dxmodules,	"DXMODULES");
     setenvpair(dxinclude,	"DXINCLUDE");
     setenvpair(dxmdf,		"DXMDF");
     setenvpair(dxcolors,	"DXCOLORS");
     setenvpair(dx8bitcmap,	"DX8BITCMAP");
 
+
     if (!*display || !strcasecmp(display, "localhost:0") || !strcasecmp(display, "localpc:0"))
 	strcpy(display, ":0.0");
     setenvpair(display,		"DISPLAY");
     setenvpair("1", "DXNO_BACKING_STORE");
     setenvpair("1", "DXFLING");
+// Solve problem with queuing in DXLink within Windows.
+    setenvpair("1",		"DX_STALL");
 
     putenvstr("DXROOT", dxroot);
     if (strcasecmp(dxroot, dxexroot))
@@ -1278,6 +1270,7 @@ int parseparms()
 	is(program)
 	    check("-program: missing program name");
 	    set(FileName);
+	    startup = 0;
 	next
 
 	is(cfg)

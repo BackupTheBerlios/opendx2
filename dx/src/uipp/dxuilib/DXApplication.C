@@ -4822,8 +4822,14 @@ boolean save_files = FALSE;
 boolean write_error = TRUE;
 
 #ifdef DXD_OS_NON_UNIX
+#ifdef DXD_WIN
+    char *dirs[2];
+    dirs[0] = getenv("TMP");
+    dirs[1] = NULL;
+#else
     // FIXME:
     char *dirs[2] = { "\\tmp", NULL };
+#endif
 #else
 #if defined(aviion) || defined(hp700)
     // These guys won't do aggregate initialization of automatics
@@ -4859,7 +4865,11 @@ char buf[1024];
 		    basename = new char[32];
 		    sprintf(basename,"network_%d",++cnt);
 		}
+	#ifdef DXD_WIN
+		sprintf(buf,"%s\\%s",dirs[i],basename);
+	#else
 		sprintf(buf,"%s/%s",dirs[i],basename);
+	#endif
 		if (!introMsgUsed) {
 		   strcpy (msg, introMsg);
 		   introMsgUsed = True;

@@ -468,8 +468,10 @@ char *args[30], *cmdstr;
 
     if (StartupWindow::Connection) {
 	DXLEndExecution(StartupWindow::Connection);
-	if (this->entering_image_mode)
+
+        if (this->entering_image_mode)
 	    uiDXLCloseVPE(StartupWindow::Connection);
+
 
 	//
 	// net file to use
@@ -732,6 +734,11 @@ boolean set_filter = FALSE;
 	char* ext = "/samples/programs/*.net";
 	char* dirspec = new char[strlen(uir) + strlen(ext) + 1];
 	sprintf (dirspec, "%s%s", uir, ext);
+#ifdef DXD_WIN
+/* Convert to Unix if DOS */
+    for(int i=0; i<strlen(dirspec); i++)
+        if(dirspec[i] == '/') dirspec[i] = '\\';
+#endif
 	XmString xmstr = XmStringCreateLtoR (dirspec, "bold");
 #ifdef DXD_WIN
 	Widget filt = XmFileSelectionBoxGetChild(fsb, XmDIALOG_FILTER_TEXT);

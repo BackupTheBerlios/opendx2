@@ -134,10 +134,6 @@ extern "C" int getdtablesize();
 #define getdtablesize() FD_SETSIZE
 #endif
 
-#ifndef HAS_HERROR
-#    define herror perror
-#endif
-
 #ifdef ibm6000
 extern "C" {
     void herror(const char *);
@@ -157,8 +153,11 @@ extern "C" void bzero(char *, int);
 #if defined(XtInputReadMask)
 #undef XtInputReadMask
 #endif
+
 #define     XtInputReadMask     XtInputReadWinsock
+
 void	ClearExecMessages(void *arg);
+
 #endif
 
 int
@@ -748,6 +747,7 @@ DXChild::ConnectTo(const char *host,
 
     *remout = -1;
     child = -1;
+
     if (rc == 0) 
       child = pid;
     else
@@ -864,7 +864,7 @@ DXChild::StartExecutive(const char* host,
 
     if (!block) {
 #ifndef DXD_WIN
-	result = *child < 0;
+	result = (*child < 0);
 #else
 	result = (*child == -1);
 #endif
