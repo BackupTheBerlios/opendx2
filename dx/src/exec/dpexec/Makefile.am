@@ -36,3 +36,5 @@ $(OBJECTS): yuiif.c yuiif.h
 DISTCLEANFILES = yuiif.c yuiif.h
 
 @LOCALMAKE@
+
+command.c : compile.h
