@@ -106,6 +106,7 @@ noinst_HEADERS = \
 	ImageFormat.h \
 	ImageFormatDialog.h \
 	ImageFormatGIF.h \
+	ImageFormatIM.h \
 	ImageFormatMIF.h \
 	ImageFormatPSColor.h \
 	ImageFormatPSColorEnc.h \
@@ -265,6 +266,7 @@ libDXUI_a_SOURCES = 			\
 	ImageFormat.C \
 	ImageFormatDialog.C \
 	ImageFormatGIF.C \
+	ImageFormatIM.C \
 	ImageFormatMIF.C \
 	ImageFormatPSColor.C \
 	ImageFormatPSColorEnc.C \
