@@ -88,8 +88,8 @@ struct dispinfo {
     int query;			/* set to query pointer location */
     int mouse_x;		/* pointer location */
     int mouse_y;
-    uint query_start;		/* start of mem corresponding to a cell */
-    uint query_end;             /* end of mem corresponding to a cell */
+    Pointer query_start;	/* start of mem corresponding to a cell */
+    Pointer query_end;          /* end of mem corresponding to a cell */
     int error;			/* whether X error occurred */
     int win_width;		/* current window width and height */
     int win_height;
@@ -97,7 +97,7 @@ struct dispinfo {
     int pixel_xmult;		/* real pixels along each each of virtual p */
     int pixel_ymult;		/* real pixels along each each of virtual p */
     int alloc_unit;		/* minimum arena allocation size in bytes */
-    uint arena_base;		/* first address in this arena */
+    Pointer arena_base;		/* first address in this arena */
     uint arena_size;		/* arena size in bytes (-1 = uninitialized) */
     int which;			/* which arena */
     int nproc;			/* for local, which processor */
@@ -124,7 +124,7 @@ static struct dispinfo *d_local[32] = { NULL };
 /* prototypes */
 
 static void init_dispinfo(struct dispinfo *d);
-static void pix_set(struct dispinfo *d, uint start, uint size, ubyte color);
+static void pix_set(struct dispinfo *d, Pointer start, uint size, ubyte color);
 static Error report_memory(struct dispinfo *d);
 static Error query_memory(struct dispinfo *d);
 static Display *open_memory_visual_display();
@@ -132,9 +132,9 @@ static Error init_memory_visual (struct dispinfo *d);
 static void cleanup_memory_visual (struct dispinfo *d);
 static void error_handler(Display *dpy, XErrorEvent *event);
 static Error handler_script(int fd, struct dispinfo *d);
-static Error memsee(int blocktype, uint start, uint size, Pointer p);
-static Error memsee1(int blocktype, uint start, uint size, Pointer p);
-static Error memquery(int blocktype, uint start, uint size, Pointer p);
+static Error memsee(int blocktype, Pointer start, uint size, Pointer p);
+static Error memsee1(int blocktype, Pointer start, uint size, Pointer p);
+static Error memquery(int blocktype, Pointer start, uint size, Pointer p);
 
 void sigcatch();
 #define NSECONDS 2    /* automatic update */
@@ -393,7 +393,7 @@ resize_display(struct dispinfo *d, int new_width, int new_height)
 }
 
 static void 
-pix_set(struct dispinfo *d, uint memstart, uint memsize, ubyte color)
+pix_set(struct dispinfo *d, Pointer memstart, uint memsize, ubyte color)
 {
     int start, size;			/* start, num to set in 'squares' */
     int row, col;			/* window column, row to set */
@@ -402,7 +402,7 @@ pix_set(struct dispinfo *d, uint memstart, uint memsize, ubyte color)
     int i;
 
     /* round size up.  is start also off by one? */
-    start = (memstart - d->arena_base)/d->bytes_vp * d->pixel_xmult;
+    start = (((ubyte *)memstart) - ((ubyte *)d->arena_base))/d->bytes_vp * d->pixel_xmult;
     size = DivideRoundedUp(memsize, d->bytes_vp) * d->pixel_xmult;
 
     col = start % d->win_width;
@@ -438,14 +438,14 @@ pix_set(struct dispinfo *d, uint memstart, uint memsize, ubyte color)
 
 /* turn on pixels corresponding to this memory range */
 static Error 
-memsee(int blocktype, unsigned int start, unsigned int size, Pointer p)
+memsee(int blocktype, Pointer start, unsigned int size, Pointer p)
 {
     pix_set((struct dispinfo *)p, start, size, color_alloc);
     return OK;
 }
 
 static Error 
-memsee1(int blocktype, unsigned int start, unsigned int size, Pointer p)
+memsee1(int blocktype, Pointer start, unsigned int size, Pointer p)
 {
     if (size >= ((struct dispinfo *)p)->smallsize)
 	return OK;
@@ -456,12 +456,13 @@ memsee1(int blocktype, unsigned int start, unsigned int size, Pointer p)
 
 /* check to see if this block is in the query range */
 static Error 
-memquery(int blocktype, unsigned int start, unsigned int size, Pointer p)
+memquery(int blocktype, Pointer start, unsigned int size, Pointer p)
 {
     struct dispinfo *d = (struct dispinfo *)p;
+    Pointer end = (Pointer)(((ubyte *)start) + size);
     char *cp;
 
-    if (start+size < d->query_start || start > d->query_end)
+    if (end < d->query_start || start > d->query_end)
 	return OK;
 
     cp = ((size < d->smallsize) && (blocktype == MEMORY_ALLOCATED)) ? 
@@ -470,7 +471,7 @@ memquery(int blocktype, unsigned int start, unsigned int size, Pointer p)
     DXMessage("  %4d%s%15s from 0x%08x to 0x%08x", 
 	      size, cp,
 	      (blocktype == MEMORY_ALLOCATED)?"allocated bytes":"free bytes", 
-	      start, start + size);
+	      start, end);
 #if DB_MEMTRACE
     if (blocktype == MEMORY_ALLOCATED)
 	DXMessage("%s", start);
@@ -506,24 +507,6 @@ report_memory (struct dispinfo *d)
 	    DXDebugAlloc(d->which, MEMORY_ALLOCATED, memsee1, (Pointer)d);
     }
 	
-#if 0
-    /* doesn't work this way... (this is an old comment.  why???) */
-
-    /* now account for the large memory buffers we have allocated
-     * for our pixmaps.
-     */
-    if (d_sm.active) {
-	xbuf = (uint)d_sm.memory_pixel;
-	if ((xbuf >= d->arena_base) && (xbuf < (d->arena_base+d->arena_size)))
-	    pix_set(d, xbuf, WinSize(d), color_trace);
-    }
-    if (d_lg.active) {
-	xbuf = (uint)d_lg.memory_pixel;
-	if ((xbuf >= d->arena_base) && (xbuf < (d->arena_base+d->arena_size)))
-	    pix_set(d, xbuf, WinSize(d), color_trace);
-    }
-#endif
-    
     /* and finally, see if there are any squares at the end of the window
      *  which are beyond the end of the arena and are only there because
      *  the window is square and the number of rows had to be rounded up.
@@ -531,7 +514,7 @@ report_memory (struct dispinfo *d)
     wsquares = WinSize(d) / PixelSize(d);
     mblocks = DivideRoundedUp(d->arena_size, d->bytes_vp);
     if (wsquares > mblocks)
-	pix_set(d, d->arena_base + d->arena_size, 
+	pix_set(d, (Pointer)((ubyte *)d->arena_base + d->arena_size), 
 		(wsquares - mblocks) * d->bytes_vp, color_extra);
 
     
@@ -553,14 +536,14 @@ query_memory (struct dispinfo *d)
 {
     int pixel;				/* the real pixel they picked */
     int block;				/* the virtual pixel they picked */
-    uint qstart, qend;			/* the corresponding mem addresses */
+    Pointer qstart, qend;		/* the corresponding mem addresses */
 
     pixel = d->mouse_y * d->win_width + d->mouse_x;
     block = (d->mouse_y / d->pixel_ymult) * (d->win_width / d->pixel_ymult) 
 	    + (d->mouse_x / d->pixel_xmult);
 
-    qstart = d->arena_base + block * d->bytes_vp;
-    qend = qstart + d->bytes_vp - 1;
+    qstart = ((ubyte *)d->arena_base) + block * d->bytes_vp;
+    qend = ((ubyte *)qstart) + d->bytes_vp - 1;
 
 
     if (d->memory_pixel[pixel] == color_free)
