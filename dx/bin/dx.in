@@ -26,12 +26,16 @@ export DXROOT
 
 if [ -z "$DXDATA" ]; then
   DXDATA=$DXROOT/samples/data
-  export DXDATA
+  if [ -d "$DXDATA" ]; then
+    export DXDATA
+  fi
 fi
 
 if [ -z "$DXMACROS" ]; then
   DXMACROS=$DXROOT/samples/macros
-  export DXMACROS
+  if [ -d "$DXMACROS" ]; then
+    export DXMACROS
+  fi
 fi
 
 if [ -f $DXROOT/bin/dxworker ]; then
