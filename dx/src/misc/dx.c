@@ -336,7 +336,7 @@ int initrun()
 		    "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
 	    }
 	}
-#endif (USE_REGISTRY)
+#endif /*(USE_REGISTRY)*/
 
 #if defined(intelnt)
     osvi.dwOSVersionInfoSize = sizeof(osvi);
