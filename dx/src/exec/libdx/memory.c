@@ -65,7 +65,8 @@
 #endif
 
 #if linux
-#include <sys/sysinfo.h>
+#include <linux/kernel.h>
+#include <linux/sys.h>
 #endif
 
 #if DXD_HAS_RLIMIT && ! DXD_IS_MP
