@@ -37,6 +37,7 @@ Field		_dxf_ZeroWindowsPixels(Field, int, int, int, int, RGBColor);
 Error		_dxf_translateWindowsImage(Object,  int, int, int, int, int, int,
 				int, int, int, int, translationP, unsigned char *, int, unsigned char *);
 Error		_dxf_CopyBufferToWindowsImage(struct buffer *, Field, int, int);
+HWND		DXGetWindowsHandle(char *where);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -38,8 +38,11 @@ DXGetWindowsInstance(HINSTANCE *inst)
 {
 	if (! windowsInitialized)
 	{
-		DXSetError(ERROR_INTERNAL, "windows has not been initialized");
-		return ERROR;
+		if(!(appInstance = GetModuleHandle(NULL))) {
+			DXSetError(ERROR_INTERNAL, "windows has not been initialized");
+			return ERROR;
+		}
+		containerThreadID = GetCurrentThreadId();
 	}
 	*inst = appInstance;
 	return OK;

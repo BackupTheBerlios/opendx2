@@ -19,7 +19,6 @@
 #include "displayutil.h"
 #include "internals.h"
 #include "render.h"
-#include "displayw.h"
 #include "../../../VisualDX/dxexec/resource.h"
 
 #define WINDOW_UI	1
@@ -597,6 +596,38 @@ error:
     return ERROR;
 }
 	
+HWND 
+DXGetWindowsHandle(char *where)
+{
+	HWND win = NULL;
+	char *cachetag = NULL;
+    Private p = NULL;
+    char *host = NULL, *title = NULL;
+
+    if (! DXParseWhere(where, NULL, NULL, &host, &title, NULL, NULL))
+	 return NULL;
+
+    cachetag = getWindowCacheTag(title);
+
+    p = (Private)DXGetCacheEntry(cachetag, 0, 0);
+    DXFree((Pointer)cachetag);
+    cachetag = NULL;
+
+	if (p)
+	{
+		struct window *w = (struct window *)DXGetPrivateData(p);
+		win = w->hWnd;
+
+		DXDelete((Object)p);
+	}
+
+    DXFree((Pointer)host);
+    DXFree((Pointer)title);
+    host = title = NULL;
+
+    return win;
+}
+
 
 Error
 DXSetSoftwareWindowsWindowActive(char *where, int active)
