@@ -6,8 +6,19 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
-#include <dxconfig.h>
+/* Because of type definitions in hdfi.h, this must be before dxconfig.h
+   for solaris. */
+#if defined(HAVE_LIBDF)
+#if defined(solaris)
+#if defined(HAVE_DFSD_H)
+#include <dfsd.h>
+#else
+#include <hdf/dfsd.h>
+#endif
+#endif /*solaris*/
+#endif /*HAVE_LIBDF*/
 
+#include <dxconfig.h>
 
 #include <stdio.h>
 #include <dx/dx.h>
@@ -31,11 +42,13 @@
 #define INTEL86 
 #endif
 
+#if !defined(solaris)
 #if defined(HAVE_DFSD_H)
 #include <dfsd.h>
 #else
 #include <hdf/dfsd.h>
 #endif
+#endif /* !solaris */
 
 #include <ctype.h>
 
