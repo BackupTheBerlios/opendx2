@@ -225,7 +225,8 @@ _dxf_VolumeIrregular(struct buffer *b, struct gather *gather, int clip)
 		    goto error;
 	    } else if (xf->colors_dep == dep_connections) {
 		if (!_dxf_LineFlat(b, xf, 1, xf->c.lines, &g,
-			       FCOLORP(g), OPACITYP(g), clip, INV_VALID))
+				xf->fcolors, xf->opacities,
+				clip, INV_VALID))
 		    goto error;
 	    }
 	    break;
@@ -237,7 +238,8 @@ _dxf_VolumeIrregular(struct buffer *b, struct gather *gather, int clip)
 		    goto error;
 	    } else if (xf->colors_dep == dep_polylines) {
 		if (!_dxf_LineFlat(b, xf, 1, &line, NULL,
-			       FCOLORP(g), OPACITYP(g), clip, INV_VALID))
+			       xf->fcolors, xf->opacities,
+			       clip, INV_VALID))
 		    goto error;
 	    }
 	    break;
