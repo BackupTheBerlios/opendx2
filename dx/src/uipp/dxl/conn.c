@@ -44,8 +44,13 @@
 #if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
+
 #if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
+#endif
+
+#if defined(HAVE_SELECT_H)
+#include <select.h>
 #endif
 
 #if defined(HAVE_CC_OSFCN_H)
@@ -64,13 +69,9 @@
 #define FD_ZERO(p)  memset((void*)p, 0, sizeof(*(p)))
 #endif
 
+#ifdef OS2
 int getdtablesize ( void );
-int select(
-    int nfds,
-    fd_set *readfds,
-    fd_set *writefds,
-    fd_set *exceptfds,
-    struct timeval *timeout) ;
+#endif
 
 #if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
