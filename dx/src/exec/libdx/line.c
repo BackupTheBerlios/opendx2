@@ -87,8 +87,8 @@
 	    r += dr;							    \
 	    g += dg;							    \
 	    b += db;							    \
+	    if (op) o += dop;						    \
 	}								    \
-	if (op) o += dop;						    \
     }									    \
 }
 
