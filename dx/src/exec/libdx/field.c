@@ -15,7 +15,7 @@
 #include "internals.h"
 
 
-static Field _CopyField(Field new, Field old, enum copy copy);
+static Field _CopyField(Field new, Field old, enum _dxd_copy copy);
 
 static Field
 _NewField(struct field_class *class)
@@ -365,7 +365,7 @@ DXEmptyField(Field f)
  */
 
 Object
-_dxfField_Copy(Field old, enum copy copy)
+_dxfField_Copy(Field old, enum _dxd_copy copy)
 {
     Field new;
 
@@ -380,7 +380,7 @@ _dxfField_Copy(Field old, enum copy copy)
 
 
 static Field
-_CopyField(Field new, Field old, enum copy copy)
+_CopyField(Field new, Field old, enum _dxd_copy copy)
 {
     int i, n = old->ncomponents;
     struct component *oc, *nc;

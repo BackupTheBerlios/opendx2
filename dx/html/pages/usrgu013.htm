@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
 <HTML><HEAD>
-<TITLE>User's Guide - Hardware Rendering</TITLE>
+<TITLE>User's Guide - Native Windows Executive</TITLE>
 
 <META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
 Guide">
@@ -45,30 +45,13 @@ MINING">
 				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>
 			</TR>
 		</TABLE>
-		<H2><A NAME="Header_25" ></A>Hardware Rendering</H2>
-		<P>A lot of work has been done to the hardware rendering support for this release. 
-		<H3><A NAME="HDRADDFET"></A>Added features</H3>
-		<UL>
-			<LI>Translucent texturing with alpha blending support.
-			<LI>Added support for texture objects which have ubyte or float colors.
-			<LI>Support for texture wrapping.
-			<LI>Texture maps are registered via gluBuild2DMipmaps removing the restriction that texture maps must have the number of pixels in each direction as a power of 2.
-			<LI>Made it possible to control texture mode.
-			<LI>Activated linear interpolation and mipmaping texture filters.
-			<LI>Made it possible to change some lighting and culling options.
-			<LI>Can now specify object colors and opacities (via the &quot;colors&quot; and &quot;opacities&quot; component) to light and modulate a hardware rendered textured object, instead of accepting the hard-coded solid white.
-			
-			
-			
-		</UL>
-		<H4><A NAME="HDRTRANSL"></A>Translucent Texturing</H4>
-		<P>Translucent textures are represented as image fields with opacities components&#150;either float opacities, or ubyte opacities and a float opacity map. As with opacities objects, translucent textured objects aren't meshed, but are tossed into the translucent sort-list, sorted by depth, and rendered.</P>
-		<P>Translucent textures can be impored into DX with the ReadImage module, as long as ImageMagick support was included, using image formats that support opacity masks.</P>
-		<H4><A NAME="HDRTEXTWR"></A>Texture Wrapping</H4>
-		<P>To activate texture wrapping, add to the field to be textured one or both of the attributes &quot;texture wrap s&quot; and &quot;texture wrap t&quot; with the Options module. Valid values for these attributes are &quot;clamp to border&quot;, &quot;clamp&quot;, &quot;repeat&quot;, or &quot;clamp to edge&quot;. This affects how the texture is to be distributed over the object. <I>s</I> and <I>t</I> are coordinate directions of the texture map.</P>
-		<H4><A NAME="HDRTEXTMP"></A>Texture Mipmapping</H4>
-		<P>Mipmapping is the process of creating a set of filtered texture maps of decreasing resolution generated from a single high resolution texture and used to improve accuracy during texture mapping. This filtering process allows OpenGL to apply an appropriate level of detail to an object depending on the objects viewable size, thus reducing aliasing and flickering. The filter to apply to a texture can be set by adding  the attribute &quot;texture min filter&quot; with values &quot;nearest&quot;, &quot;linear&quot;, &quot;nearest_mipmap_nearest&quot;, &quot;nearest_mipmap_linear&quot;, &quot;linear_mipmap_nearest&quot;, or &quot;linear_mipmap_linear&quot; and the attribute &quot;texture mag filter&quot; with the values &quot;nearest&quot; or &quot;linear&quot; to the object to be textured.</P>
-		<P>Note that the default OpenGL state when none of these attributes are specified is the same as it was in the previous release except for colors. Previously, the texture was only modulated with white not with the object's color. Now, the color modulated is the object's color. In order to produce the previous behavior, run the textured object through Color(&quot;white&quot;) before rendering.For more information on these attributes, see the added documentation on the <A HREF="refgu048.htm">Display</A> module in the <A HREF="../refguide.htm">User's Reference</A>.</P>
+		<H2><A NAME="Header_25" ></A>New Windows Native Executive</H2>
+		<P>It is now possible to run parts of OpenDX on Microsoft Windows without the need for an X server. The native executive can render images and displays directly to native Windows. If you do not need to use the VPE, you can do the following to run OpenDX's executive natively on Windows:
+		<P>C:\&gt;dx -script -native</P>
+		<P>Then to try running a network, include one of the networks from the samples directory:</P>
+		<P>dx&gt;include &quot;C:\Program Files\OpenDX\samples\programs\AutoColor.net&quot;</P>
+		<P>When images are rendered in hardware mode, some functionality for rotating and zooming is available.</P>
+		<P>The functionality for the Supervise* modules does not yet exist.</P>
 		<HR>
 		<DIV align="center">
 			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>

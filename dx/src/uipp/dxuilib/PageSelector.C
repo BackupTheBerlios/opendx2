@@ -551,6 +551,16 @@ void PageSelector::selectPage (PageTab* tab)
     this->root->resize();
     this->selecting_page = FALSE;
     this->updateDialogs();
+
+    //
+    // PageSelector is a friend of EditorWindow so that this protected
+    // method may be used.  The regular mechanism for setting command
+    // activation in EditorWindow uses the map callback of the edit
+    // menu pane.  The problem with that is that it doesn't handle
+    // activation of commands that are associated with buttons that
+    // use accelerators.
+    //
+    this->editor->setCommandActivation();
 }
 
 //

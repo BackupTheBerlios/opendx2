@@ -9,15 +9,6 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-
-
-
-#if defined(HAVE_IOSTREAM_H)
-#include <iostream.h>
-#endif
-#if defined(HAVE_STREAM_H)
-#include <stream.h>
-#endif
 #include "DXStrings.h"
 #include "List.h"
 #include "ListIterator.h"
@@ -669,8 +660,8 @@ Type DXType::DetermineListItemType(const char *val)
 	return DXType::ValueType;
 
      while (!quitting &&
-	    ((s1=DXValue::NextListItem(val,&index, DXType::ValueListType,buf1,512 )) ||
-	     (s2=DXValue::NextListItem(val,&index, DXType::StringListType,buf2,512)))) {
+          ((s1=DXValue::NextListItem(val,&index, DXType::ValueListType,buf1,512 )) ||
+           (s2=DXValue::NextListItem(val,&index, DXType::StringListType,buf2,512)))) {
 	if (s2) {
 	    ctype = DXType::StringType;
 	} else if      (DXValue::IsValidValue(s1,DXType::IntegerType)) {

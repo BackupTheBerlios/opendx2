@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/maptoplane.c,v 1.6 2002/03/21 02:57:37 rhh Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/maptoplane.c,v 1.7 2003/07/11 05:50:35 davidt Exp $:
  */
 
 #include <dxconfig.h>
@@ -35,7 +35,7 @@ END:
 #include <stdio.h>
 #include <math.h>
 #include <dx/dx.h>
-#include <bounds.h>
+#include "bounds.h"
 #include "vectors.h"
 
 static Error map_normal ();

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 
 #include <dx/dx.h>
 

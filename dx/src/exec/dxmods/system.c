@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/system.c,v 1.4 2000/05/16 18:48:23 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/system.c,v 1.5 2003/07/11 05:50:36 davidt Exp $
  */
 
 #include <dx/dx.h>
@@ -20,32 +20,56 @@ m_System(Object *in, Object *out)
 {
     static char format[] = "/bin/sh -c \"%s\" </dev/null";
     char *cmd;
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 #define MAX_CMD_ARGS 30
     char *p[MAX_CMD_ARGS];
     char *s;
-    int i;
+    int i, j;
 #endif
 
     if (DXExtractString(in[0], &cmd)) {
 	char *buf = (char *)DXAllocate(sizeof(format) + strlen(cmd) + 1);
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
+	char *buf2 = (char *)DXAllocate(sizeof(format) + strlen(cmd) + 1);
+	int quote = 0;
 	strcpy(buf, cmd);
-	for (s = buf, i = 0; *s && (i < MAX_CMD_ARGS - 1); s++, i++) {
-	    for ( ; *s && isspace(*s); s++);
-	    p[i] = s;
-	    p[i+1] = '\0';
+	s = buf;
+	for (i = 0; *s && (i < MAX_CMD_ARGS - 1); s++, i++) {
+        p[i] = s;
+	    if(*s == '"') { 
+	    	quote = 1; 
+	    	s++;
+	    }
+	    p[i+1] = NULL;
+		if (quote == 1) {
+			for ( ; *s && *s != '"'; s++);
+			quote = 0;
+		}
+		else
+	    	for ( ; *s && isspace(*s) && *s != '"'; s++);
 	    for ( ; *s && !isspace(*s); s++);
 	    if (*s)
 		*s = '\0';
 	      else
 	        break;
-	}
+	}		
 	for (s = *p; s && *s; s++)
 	    if (*s == '/')
-		*s = '\\';
+			*s = '\\';
 
-	spawnvp(_P_WAIT, p[0], p);
+	strcpy(buf2, p[0]);
+	s = buf2;
+	if(*s == '"') {
+	    s++;
+	    buf2[strlen(buf2)-1] = '\0';
+	}
+	
+	DXDebug("S", "cmd: %s", s);
+	
+	for(j = 0; j <= i; j++)
+		DXDebug("S", "p[%d]: %s", j, p[j]);
+
+	spawnvp(_P_WAIT, s, p);
 #else
 	sprintf(buf, format, cmd);
 	system(buf);

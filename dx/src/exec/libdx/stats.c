@@ -104,8 +104,10 @@ static int DXReallyEmptyField(Field f)
 }
 
 /* isnan doesn't exist for ibmpvs */
-#if defined(ibmpvs)  || defined(intelnt)
+#if defined(ibmpvs)
 #define isnan(a) 0
+#elsif defined(intelnt) || defined(WIN32)
+#define isnan(a) _isnan(a)
 #endif
 
 /* welcome to macro heaven. */

@@ -55,7 +55,7 @@ and the handler simply prints the value to the terminal.
 #include &lt;stdio.h&gt;
 #include "dx/dxl.h"
 #ifndef BASE
-#define BASE "/usr/lpp/dx"
+#define BASE "/usr/local/dx"
 #endif
 void SyncAfterExecute(DXLConnection *conn)
 {
@@ -105,7 +105,7 @@ main(int argc, char *argv&#91;&#93;)
      * "maptoplane_point".
      */
     DXLLoadVisualProgram(conn, BASE"/samples/dxlink/maptoplane.net");
-    DXLSetString(conn, "file_to_import","/usr/lpp/dx/samples/data/temperature");
+    DXLSetString(conn, "file_to_import","/usr/local/dx/samples/data/temperature");
     DXLSetValue(conn, "maptoplane_point", "&#91;0 5000 5000&#93;");
     /*
      * Execute the visual program and check for input from maptoplane_max.

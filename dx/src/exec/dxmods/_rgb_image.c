@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rgb_image.c,v 1.5 2000/08/24 20:04:19 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rgb_image.c,v 1.6 2003/07/11 05:50:34 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -16,8 +16,8 @@
 #include <fcntl.h>
 #include <string.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
-#include <_rw_image.h>
+#include "_helper_jea.h"
+#include "_rw_image.h"
 #include <sys/types.h>
 
 #if defined(HAVE_UNISTD_H)
@@ -249,7 +249,7 @@ write_rgb_or_fb(RWImageArgs *iargs)
         }
         else
         {
-#if !defined(os2) && !defined(intelnt)
+#if !defined(os2) && !defined(intelnt) && !defined(WIN32)
             if ( ( fh[i] = open
                               ( imagefilename,
                                 (O_CREAT|O_WRONLY),
@@ -604,7 +604,7 @@ _dxf_WriteSizeFile ( char *name, SizeData sd )
     DXASSERTGOTO ( sd.startframe != VALUE_UNSPECIFIED );
     DXASSERTGOTO ( sd.endframe   != VALUE_UNSPECIFIED );
 
-#if !defined(os2) && !defined(intelnt)
+#if !defined(os2) && !defined(intelnt) && !defined(WIN32)
     if ( ( fh = open ( name, ( O_CREAT | O_RDWR ), 0666 ) ) < 0 )
 #else
 /* os2 has a 2 parameter #define for open() _open(). This is the only file

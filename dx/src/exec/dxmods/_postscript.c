@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.8 2002/03/21 02:57:30 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.9 2003/07/11 05:50:34 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -24,8 +24,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
-#include <_rw_image.h>
+#include "_helper_jea.h"
+#include "_rw_image.h"
 #include <sys/types.h>
 #include <math.h>
 

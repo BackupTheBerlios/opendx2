@@ -1840,10 +1840,10 @@ void AnnotationInfo::findNearestNode(Node* reflow[], int reflow_count)
 	    } else if ((y1<=ny1) && (y2>=ny2)) {
 		hdist = x1-nx2;
 	    } else if (y1>ny2) {
-		hdist = (int)sqrt((x1-nx2)*(x1-nx2) + (y1-ny2)*(y1-ny2));
+		hdist = (int)sqrt((double)((x1-nx2)*(x1-nx2) + (y1-ny2)*(y1-ny2)));
 		hloc|= DECORATOR_BELOW;
 	    } else {
-		hdist = (int)sqrt((x1-nx2)*(x1-nx2) + (y2-ny1)*(y2-ny1));
+		hdist = (int)sqrt((double)((x1-nx2)*(x1-nx2) + (y2-ny1)*(y2-ny1)));
 		hloc|= DECORATOR_ABOVE;
 	    }
 	} else if (x2 < nx1) {
@@ -1855,10 +1855,10 @@ void AnnotationInfo::findNearestNode(Node* reflow[], int reflow_count)
 	    } else if ((y1<=ny1) && (y2>=ny2)) {
 		hdist = nx1-x2;
 	    } else if (y1>ny2) {
-		hdist = (int)sqrt((x2-nx1)*(x2-nx1) + (y1-ny2)*(y1-ny2));
+		hdist = (int)sqrt((double)((x2-nx1)*(x2-nx1) + (y1-ny2)*(y1-ny2)));
 		hloc|= DECORATOR_BELOW;
 	    } else {
-		hdist = (int)sqrt((x2-nx1)*(x2-nx1) + (y2-ny1)*(y2-ny1));
+		hdist = (int)sqrt((double)((x2-nx1)*(x2-nx1) + (y2-ny1)*(y2-ny1)));
 		hloc|= DECORATOR_ABOVE;
 	    }
 	}
@@ -1874,10 +1874,10 @@ void AnnotationInfo::findNearestNode(Node* reflow[], int reflow_count)
 	    } else if ((x1<=nx1) && (x2>=nx2)) {
 		vdist = y1-ny2;
 	    } else if (x1 > nx2) {
-		vdist = (int)sqrt((x1-nx2)*(x1-nx2) + (y1-ny2)*(y1-ny2));
+		vdist = (int)sqrt((double)((x1-nx2)*(x1-nx2) + (y1-ny2)*(y1-ny2)));
 		vloc|= DECORATOR_RIGHT;
 	    } else {
-		vdist = (int)sqrt((x2-nx1)*(x2-nx1) + (y1-ny2)*(y1-ny2));
+		vdist = (int)sqrt((double)((x2-nx1)*(x2-nx1) + (y1-ny2)*(y1-ny2)));
 		vloc|= DECORATOR_LEFT;
 	    }
 	} else if (y2 < ny1) {
@@ -1889,10 +1889,10 @@ void AnnotationInfo::findNearestNode(Node* reflow[], int reflow_count)
 	    } else if ((x1<=nx1) && (x2>=nx2)) {
 		vdist = ny1-y2;
 	    } else if (x1 > nx2) {
-		vdist = (int)sqrt((x1-nx2)*(x1-nx2) + (y2-ny1)*(y2-ny1));
+		vdist = (int)sqrt((double)((x1-nx2)*(x1-nx2) + (y2-ny1)*(y2-ny1)));
 		vloc|= DECORATOR_RIGHT;
 	    } else {
-		vdist = (int)sqrt((x2-nx1)*(x2-nx1) + (y2-ny1)*(y2-ny1));
+		vdist = (int)sqrt((double)((x2-nx1)*(x2-nx1) + (y2-ny1)*(y2-ny1)));
 		vloc|= DECORATOR_LEFT;
 	    }
 	}

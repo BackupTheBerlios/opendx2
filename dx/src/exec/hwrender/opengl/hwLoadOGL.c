@@ -5,16 +5,12 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-/*********************************************************************/
-/*                     I.B.M. CONFIENTIAL                           */
-/*********************************************************************/
 
 #include <dxconfig.h>
-#include "hwDeclarations.h"
-
+#include "../hwDeclarations.h"
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.7 2002/03/29 14:42:56 davidt Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.8 2003/07/11 05:50:39 davidt Exp $
 \*---------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <math.h>
@@ -46,7 +42,7 @@ $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/e
 #include <stdlib.h>
 #endif
 
-#include "hwDebug.h"
+#include "../hwDebug.h"
 
 #define NAMELEN 257
 #define PATHLEN 513
@@ -55,7 +51,11 @@ $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/e
 
 extern int isOpenGL;
 
+#if defined(DX_NATIVE_WINDOWS)
+typedef tdmPortHandleP (*PF_PORTHANDLE)(char *);
+#else
 typedef tdmPortHandleP (*PF_PORTHANDLE)(Display *, char *);
+#endif
 
 #if !defined(DEBUG) && defined(RTLOAD)
 /* We do not do demand loading if we are in DEBUG mode */
@@ -123,7 +123,11 @@ _tryLoad(char* path, char* file, char** error)
   }
 
   EXIT(("entry_point: 0x%x)",entry_point));
+#if defined(DX_NATIVE_WINDOWS)
+  return  (tdmPortHandleP(*)(char *)) entry_point;
+#else
   return  (tdmPortHandleP(*)(Display *, char *)) entry_point;
+#endif
 }
 
 #elif defined(ibm6000)
@@ -241,8 +245,11 @@ _tryLoad(char* path, char* file, char** error)
     EXIT(("unable to bind symbols for: %s/%s",buff));
     return NULL;
   }
-
+#if defined(DX_NATIVE_WINDOWS)
+  return  (tdmPortHandleP(*)(char *)) entry;
+#else
   return  (tdmPortHandleP(*)(Display *, char *)) entry;
+#endif
 }
 #endif
 
@@ -253,7 +260,11 @@ _tryLoad(char* path, char* file, char** error)
  * we can load the GL, OpenGL or Starbase dependent stuff on the fly
  * and simply report HW render not available if it fails.
  */ 
+#if defined(DX_NATIVE_WINDOWS)
+int _dxfHWload(tdmPortHandleP (**initPP)(char*))
+#else
 int _dxfHWload(tdmPortHandleP (**initPP)(Display*, char*), Display *dpy)
+#endif
 {
 /*
  * NOTE!!! XXX
@@ -311,11 +322,15 @@ int _dxfHWload(tdmPortHandleP (**initPP)(Display*, char*), Display *dpy)
   }
   else 
   {
+#if !defined(DX_NATIVE_WINDOWS)
      int glx,  Extra, Major, valid;
 
      valid = XQueryExtension(dpy, "GLX", &Major, &Extra, &Extra);
 
      glx = valid && Major > 0;
+#else
+     int glx = 1; /* Extension not needed for native windows */
+#endif
 
      if(glx)
      { 
@@ -370,12 +385,20 @@ int _dxfHWload(tdmPortHandleP (**initPP)(Display*, char*), Display *dpy)
 
 
 #else
+
+#if defined(DX_NATIVE_WINDOWS)
+tdmPortHandleP _dxfInitPortHandleOGL(char *hostname) ;
+tdmPortHandleP _dxfInitPortHandle(char *hostname) ;
+#else
 tdmPortHandleP _dxfInitPortHandleOGL(Display *dpy, char *hostname) ;
-
 tdmPortHandleP _dxfInitPortHandle(Display *dpy, char *hostname) ;
+#endif
 
-
+#if defined(DX_NATIVE_WINDOWS)
+int _dxfHWload(tdmPortHandleP  (**initPP)(char*))
+#else
 int _dxfHWload(tdmPortHandleP  (**initPP)(Display*, char*), Display *dpy)
+#endif
 {
   ENTRY(("_dxfHWload(0x%x)",initPP));
 

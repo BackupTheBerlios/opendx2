@@ -1,19 +1,17 @@
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
-/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* (C) Copyright IBM Corp. 1989,1999,2002                              */
 /* ALL RIGHTS RESERVED                                                 */
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-
-#include <dxconfig.h>
-#include <dx/dx.h>
-
-
 /*
  * Header: /usr/people/gresh/code/svs/src/libdx/RCS/displayx.c,v 5.2 93/01/25 17:06:43 gda Exp Locker: gresh 
  * 
  */
+
+#include <dxconfig.h>
+#include <dx/dx.h>
 
 #define FORCE_VISUAL 
 
@@ -21,7 +19,7 @@
 #include <ctype.h>
 #include <math.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 #define Screen XScreen
 #include <X11/Xatom.h>
@@ -32,23 +30,13 @@
 #include "internals.h"
 #include "render.h"
 #include "displayx.h"
-
+#include "displayutil.h"
 
 typedef Error (*Handler)(int, Pointer);
 typedef int   (*Checker)(int, Pointer);
 extern Error DXRegisterWindowHandlerWithCheckProc(Handler proc, Checker check, Display *d, Pointer arg);
-unsigned char * _dxf_GetXPixels(Field);
-
-static short _dxd_dither_matrix[DY][DX] = {
-    { 0 *256,  8 *256,  2 *256, 10 *256 },
-    { 12 *256,  4 *256, 14 *256,  6 *256 },
-    { 3 *256, 11 *256,  1 *256,  9 *256 },
-    { 15 *256,  7 *256, 13 *256,  5 *256 }
-};
 
 static int xerror = 0;
-
-Error DXParseWhere(char *, int *, char **, char **, char **, char **, char **);
 
 static int error_handler(Display *dpy, XErrorEvent *event)
 {
@@ -68,18 +56,6 @@ getWindowColormap(Display *dpy, Window w)
     XGetWindowAttributes(dpy, w, &xwa);
 
     return xwa.colormap;
-}
-
-translationP
-_dxf_GetXTranslation(Object o)
-{
-    translationT *d;
-
-    if(o) {
-      d = (translationT *) DXGetPrivateData((Private)o);
-      return d;
-    } else
-      return NULL;
 }
 
 /*
@@ -362,16 +338,6 @@ XFREECOLOR(Display *d, Colormap map, long c)
     }									\
 }
 
-struct arg {
-    Object image;		/* input image */
-    int width, height;		/* image size */
-    int ox, oy;			/* image origin */
-    int i;			/* which band */
-    int n;			/* number of bands */
-    translationP translation; 	/* X color map translation */
-    unsigned char *out;		/* output pixel array */
-};
-
 #define SGN(x) ((x)>0? 1 : (x)<0? -1 : 0)
 
 #define OUT_INT8	1
@@ -379,104 +345,14 @@ struct arg {
 #define OUT_INT24	4
 #define OUT_INT32	3
 
-static Error
-traverse(Object o, struct arg *arg)
+int
+_dxf_GetXBytesPerPixel(translationP translation)
 {
-    int             i, inType;
-    Object          oo;
-    unsigned char  *src;
-    Array           colorArray;
-    Array           connections;
-    Type            type;
-    int	            rank, shape[32];
-    int		    offsets[2];
-    int		    pcounts[2];
-
-    switch (DXGetObjectClass((Object)o)) {
-
-	case CLASS_GROUP:
-
-	    if (DXGetGroupClass((Group)o)!=CLASS_COMPOSITEFIELD)
-		DXErrorReturn(ERROR_BAD_PARAMETER, "#11660");
-
-	    for (i=0; (oo=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
-		if (!traverse(oo, arg))
-		    return ERROR;
-
-	    break;
-
-	case CLASS_FIELD:
-
-	    colorArray = (Array)DXGetComponentValue((Field)o, COLORS);
-	    if (! colorArray)
-	    {
-		DXSetError(ERROR_INTERNAL, "no colors found in image");
-		return ERROR;
-	    }
-
-	    DXGetArrayInfo(colorArray, NULL, &type, NULL, &rank, shape);
-
-	    if (type == TYPE_UBYTE || type == TYPE_BYTE)
-	    {
-		if (rank == 0 || (rank == 1 && shape[0] == 1))
-		{
-		    inType = IN_BYTE_SCALAR;
-		}
-		else if (rank == 1 && shape[0] == 3)
-		{
-		    inType = IN_BYTE_VECTOR;
-		}
-		else
-		{
-		    DXSetError(ERROR_DATA_INVALID, 
-			"byte images must be scalar or 1-vector or 3-vector");
-		    return ERROR;
-		}
-	    }
-	    else if (type == TYPE_FLOAT)
-	    {
-		if (rank != 1 || shape[0] != 3)
-		{
-		    DXSetError(ERROR_DATA_INVALID, 
-			"float images must be 3-vector");
-		    return ERROR;
-		}
-
-		inType = IN_FLOAT_VECTOR;
-	    }
-	    else
-	    {
-		DXSetError(ERROR_DATA_INVALID, 
-			    "image fields must be type byte or type float");
-		return ERROR;
-	    }
-
-	    src = (unsigned char *)DXGetArrayData(colorArray);
-
-	    /*
-	     * mesh offsets for position
-	     */
-	    connections = (Array)DXGetComponentValue((Field)o, CONNECTIONS);
-	    DXGetMeshOffsets((MeshArray)connections, offsets);
-	    DXQueryGridConnections(connections, NULL, pcounts);
-
-	    return _dxf_translateImage(o,
-			    arg->width, arg->height,
-			    arg->ox,    arg->oy,
-			    offsets[0], offsets[1], pcounts[0], pcounts[1],
-			    arg->i, arg->n,
-			    arg->translation, 
-			    src, inType, arg->out);
-
-	default: /* Shouldn't get here */
-	    break;
-    }
-
-    return OK;
+  return translation->bytesPerPixel;
 }
 
 Error
-_dxf_translateImage(Object image, /* object defining overall pixel grid          */
+_dxf_translateXImage(Object image, /* object defining overall pixel grid          */
 	int iwidth, int iheight,  /* composite width and height                  */
 	int offx, int offy,	  /* origin of composite image in pixel grid     */
 	int px, int py,		  /* explicit partition origin                   */
@@ -1351,44 +1227,6 @@ error:
     return ERROR;
 }
 
-static Error
-task(Pointer ptr)
-{
-    struct arg *arg = (struct arg *)ptr;
-    return traverse(arg->image, arg);
-}
-
-
-Error
-_dxf_dither(
-    Object image,
-    int width,
-    int height,
-    int ox,
-    int oy,
-    translationP translation,
-    unsigned char *out
-) {
-    struct arg arg;
-
-    DXDebug("X", "dither after render");
-
-    arg.image = image;
-    arg.width = width;
-    arg.height = height;
-    arg.ox = ox;
-    arg.oy = oy;
-    arg.n = DXProcessors(0);
-    arg.translation = translation;
-    arg.out = out;
-
-    DXCreateTaskGroup();
-    for (arg.i=0; arg.i<arg.n; arg.i++)
-	if (!DXAddTask(task, (Pointer)&arg, sizeof(arg), 1.0))
-	    return ERROR;
-    return DXExecuteTaskGroup();
-}
-
 
 /*
  * This is the cache entry for a window.  It is maintained by
@@ -2127,11 +1965,9 @@ display_ui(Object image, int width, int height,
     Pixmap new = None;
     translationP trans;
     Visual *vis;
-    /*int screen;*/
     Colormap xcmap;
 
     dpy = w->dpy;
-    /*screen = XDefaultScreen(dpy);*/
 
     if ((trans = w->translation) == NULL)
     {
@@ -2255,7 +2091,6 @@ error:
  *XXX These are all separate calls because DXDisplayX is a documented interface
  * that does not support depth.
  */
-static Object DXDisplayXAny(Object image, int depth, char *host, char *window);
 
 Object
 DXDisplayX(Object image, char *host, char *window)
@@ -2352,7 +2187,7 @@ create_display(char *name, char *title, int depth, Display **dpy)
 	
 	memcpy(cacheid, buf, len);
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 {
 	int i;
 	i = _dxfHostIsLocal(name);
@@ -2523,7 +2358,7 @@ error:
 }
 
 Error
-DXSetSoftwareWindowActive(char *where, int active)
+_dxf_SetSoftwareXWindowActive(char *where, int active)
 {
     char *cachetag = NULL;
     Private p = NULL;
@@ -2580,7 +2415,7 @@ getWindowStructure(char *host, int depth, char *title, int *directMap,
     if (!host || !*host)
 	host = getenv("DISPLAY");
     if (! host)
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
        host = "";
 #else
        host = "unix:0";
@@ -2875,7 +2710,7 @@ error:
     return NULL;
 }
 
-static Object
+Object
 DXDisplayXAny(Object image, int depth, char *host, char *window)
 {
     struct window *w = NULL;
@@ -3089,6 +2924,49 @@ error:
 #endif
 
 
+Error
+_dxf_CopyBufferToXImage(struct buffer *buf, Field image, int xoff, int yoff)
+{
+    int iwidth, iheight;
+    unsigned char *dst, *src;
+    translationP translation;
+    int inType;
+    Object o;
+    o = DXGetComponentAttribute(image, IMAGE, X_SERVER);
+    translation = _dxf_GetXTranslation(o);
+    if (! translation)
+    {
+        DXSetError(ERROR_INTERNAL,
+            "missing translation in _dxf_CopyBufferToXImage");
+        return ERROR;
+    }
+    dst = _dxf_GetXPixels(image);
+    if(!dst)
+      return ERROR;
+    if (buf->pix_type == pix_fast)
+    {
+        src = (unsigned char *)buf->u.fast;
+        inType = IN_FAST_PIX;
+    }
+    else if (buf->pix_type == pix_big)
+    {
+        src = (unsigned char *)buf->u.big;
+        inType = IN_BIG_PIX;
+    }
+    else
+    {
+        DXSetError(ERROR_INTERNAL, "unrecognized pix type");
+        return ERROR;
+    }
+    if (!DXGetImageSize(image, &iwidth, &iheight))
+        return ERROR;
+    return _dxf_translateImage((Object)image, iwidth, iheight,
+                0, 0, yoff, xoff, buf->height, buf->width,
+                0, 1, translation,
+                src, inType, dst);
+}
+
+
 /*
  * Special images: dither X images.  They are relative to
  * the color map on a particular X server, so they contain
@@ -3101,9 +2979,6 @@ Field _dxf_MakeXImage(int width, int height, int depth, char *where)
     Array a = NULL;
     translationP	translation;
     Private w_obj = NULL;
-    /*Display *dpy = NULL;*/
-    /*Visual *vis;*/
-    /*int screen;*/
     struct window *w;
     char *s, copy[201], *host = NULL, *window = NULL;
     int directMap = 0;
@@ -3143,15 +3018,9 @@ Field _dxf_MakeXImage(int width, int height, int depth, char *where)
     if (! getWindowStructure(host, depth, window, &directMap, &w, &w_obj, 0))
 	goto error;
 
-    /*dpy = w->dpy;*/
-
-    /*screen = XDefaultScreen(dpy);*/
-
     translation = w->translation;
     if (!translation)
 	goto error;
-
-    /*vis = translation->visual;*/
 
     if (_dxf_GetXBytesPerPixel(translation) == 4)
     {
@@ -3253,7 +3122,6 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
 {
     int                         x, y, d, i;
     Object 			oo;
-    /*Visual			*vis;*/
     int				rr, gg, bb;
     int				outType;
     int				*gamma;
@@ -3276,8 +3144,6 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
 
     if (!translation)
 	DXErrorReturn(ERROR_INTERNAL, "#11610");
-
-    /*vis = (Visual *)translation->visual;*/
 
     rr = translation->redRange;
     gg = translation->greenRange;
@@ -3458,10 +3324,6 @@ error:
       color |= ((index) >> -shift);				      	      \
 }
 
-/* Function never defined or used --
-static translationT * Xserver (char *where, int desiredDepth);
-*/
-
 static Error getThreeMapTranslation(Display *dpy, translationT *trans);
 static Error getStaticGrayTranslation(Display *dpy, translationT *trans);
 static Error getStaticColorTranslation(Display *dpy, translationT *trans);
@@ -3511,12 +3373,6 @@ getUsefulBits(unsigned long mask)
   for(end=start;end< 32 && (mask|(1<<end))==mask;end++){};
 
   return end-start;
-}
-
-int
-_dxf_GetXBytesPerPixel(translationP translation)
-{
-  return translation->bytesPerPixel;
 }
 
 /* 
@@ -3856,61 +3712,6 @@ getBestVisual (Display *dpy, int *depth, int *directMap)
   
     return NULL;
 }
-/*
- * This function will accept only "X","X8","X12", "X15", "X16","X24","X32" 
- * (with optionally trailing white space)
- * all other strings will generate a warning, and cause a return 
- * value of 0
- */
-int
-_dxf_getXDepth(char *type)
-{
-  char	*tp = type;
-  char	depth[4];
-  int	i=0;
-
-  /* check for "X" exact match, common case */
-  if(!strcmp(type,"X")) return 0;
-
-  /* Must have a leading "X" */
-  if(*type++ != 'X') goto noMatch;
-
-  /* make a copy of the digits immediately following X */
-  for(i=0;i<3 && *type;) {
-    if (!isdigit(*type)) break;
-    depth[i++] = *type++;
-  }
-
-  /* Make sure the string has a trailing NULL */
-  depth[i]='\0';	
-
-
-  /* Make sure we have nothing but trailing white space, before the comma */
-  while(*type) {
-    if(*type == ',') break;
-    if(!isspace(*type++)) goto noMatch;
-  }
-
-
-  switch (i = atoi(depth)) {
-  case 0:
-  case 4:
-  case 8:
-  case 12:
-  case 15:
-  case 16:
-  case 24:
-  case 32:
-    return i;
-    break;
-  default:
-    goto noMatch;
-  }
-
- noMatch:
-  DXSetError(ERROR_BAD_PARAMETER,"#11630",tp);
-  return -1;
-}
 
 static Object
 createTranslation(Private dpy_object, char *where,
@@ -3922,7 +3723,6 @@ createTranslation(Private dpy_object, char *where,
     Colormap 		xcmap = BadColor; /* Correct Initialization */
     Visual		*visual = NULL;
     int   		dscrn;
-    /*Visual 		*dvis;*/
     Window		droot;
     int			cached = 0;
     XWindowAttributes   xwa;
@@ -3941,7 +3741,7 @@ createTranslation(Private dpy_object, char *where,
     if (!where || !*where)
         where = (char *)getenv("DISPLAY");
     if (!where)
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
         where = "";
 #else
         where = "unix:0";
@@ -3971,7 +3771,6 @@ createTranslation(Private dpy_object, char *where,
 	DXReference((Object)p);
 
 	dscrn = XDefaultScreen(dpy);
-	/*dvis  = XDefaultVisual(dpy, dscrn);*/
 	droot = XRootWindow(dpy, dscrn);
 
 	trans->depth = desiredDepth;
@@ -4600,7 +4399,7 @@ getThreeMapTranslation(Display *dpy, translationT *d)
       s1 = (unsigned long) tmp1; \
   }
 	
-#if WORDS_BIGENDIAN==1
+#if defined(WORDS_BIGENDIAN)
   if(XImageByteOrder(dpy) == MSBFirst)  
 #else
   if(XImageByteOrder(dpy) == LSBFirst)
@@ -5723,7 +5522,7 @@ getStaticColorTranslation(Display *dpy, translationT *d)
     d->greenRange = maxGreen;
     d->blueRange  = maxBlue;
 
-#if WORDS_BIGENDIAN==1
+#if defined(WORDS_BIGENDIAN)
     if(XImageByteOrder(dpy) == LSBFirst)
 #else
     if(XImageByteOrder(dpy) == MSBFirst)
@@ -6325,7 +6124,7 @@ _dxfCaptureThreeMapImage(struct window *w, translationT *t, Visual *v)
 		(gshift == 0 || gshift == 8 || gshift == 16 || gshift == 24) &&
 	        (bshift == 0 || bshift == 8 || bshift == 16 || bshift == 24))
 	    {
-#if WORDS_BIGENDIAN!=1
+#if !defined(WORDS_BIGENDIAN)
 		int rbyte = (rshift == 0)  ? 0 :
 			    (rshift == 8)  ? 1 :
 			    (rshift == 16) ? 2 : 3;
@@ -6441,7 +6240,7 @@ _dxfCaptureThreeMapImage(struct window *w, translationT *t, Visual *v)
 		(gshift == 0 || gshift == 8 || gshift == 16 || gshift == 24) &&
 	        (bshift == 0 || bshift == 8 || bshift == 16 || bshift == 24))
 	    {
-#if WORDS_BIGENDIAN==1
+#if defined(WORDS_BIGENDIAN)
 		int rbyte = (rshift == 0)  ? 3 :
 			    (rshift == 8)  ? 2 :
 			    (rshift == 16) ? 1 : 0;
@@ -6559,7 +6358,7 @@ error:
 
 
 Field 
-_dxfCaptureSoftwareImage(int depth, char *host, char *window)
+_dxf_CaptureXSoftwareImage(int depth, char *host, char *window)
 {
     struct window *w = NULL;
     Private w_obj = NULL;
@@ -6618,138 +6417,6 @@ error:
     return NULL;
 }
 
-Error
-DXParseWhere(char *where,
-	int *depth, char **a0, char **a1, char **a2, char **a3, char **a4)
-{
-    char *s;
-    char *arg0 = NULL,
-	 *arg1 = NULL,
-         *arg2 = NULL,
-         *arg3 = NULL,
-         *arg4 = NULL;
-    char *copy = NULL;
-
-    if (a0) *a0 = NULL;
-    if (a1) *a1 = NULL;
-    if (a2) *a2 = NULL;
-    if (a3) *a3 = NULL;
-    if (a4) *a4 = NULL;
-
-    arg0 = copy = (char *)DXAllocate(strlen(where)+1);
-    if (! copy)
-	goto error;
-
-    /*
-     * parse where parameter
-     */
-    strcpy(copy, where);
-    for (s=copy; *s; s++)
-    {
-	if (*s==',')
-	{
-	    if (!arg1) arg1 = s+1;
-	    else if (!arg2) arg2 = s+1;
-	    else if (!arg3) arg3 = s+1;
-	    else if (!arg4) arg4 = s+1;
-	    *s = '\0';
-	}
-    }
-
-    if (a0 && arg0)
-    {
-	*a0 = (char *)DXAllocate(strlen(copy)+1);
-	if (! *a0)
-	    goto error;
-	strncpy(*a0, arg0, strlen(arg0)+1);
-    }
-
-    if (a1)
-    {
-	if (! arg1)
-	{
-	    arg1 = getenv("DISPLAY");
-	    if (! arg1)
-	    {
-#if defined(intelnt)
-		arg1 = "";
-#else
-		arg1 = "unix:0";
-#endif
-	    }
-	}
-
-	*a1 = (char *)DXAllocate(strlen(arg1)+1);
-	if (! *a1)
-	    goto error;
-	strncpy(*a1, arg1, strlen(arg1)+1);
-    }
-
-    if (a2)
-    {
-	if (! arg2)
-	    arg2 = "Image";
-
-	*a2 = (char *)DXAllocate(strlen(arg2)+1);
-	if (! *a2)
-	    goto error;
-	strncpy(*a2, arg2, strlen(arg2)+1);
-    }
-
-    if (a3)
-    {
-	*a3 = (char *)DXAllocate(strlen(arg3)+1);
-	if (! *a3)
-	    goto error;
-	strncpy(*a3, arg3, strlen(arg3)+1);
-    }
-
-    if (a4)
-    {
-	*a4 = (char *)DXAllocate(strlen(arg4)+1);
-	if (! *a4)
-	    goto error;
-	strncpy(*a4, arg4, strlen(arg4)+1);
-    }
-
-    if (depth)
-	*depth = _dxf_getXDepth(arg0);
-
-    DXFree(copy);
-    return OK;
-
-error:
-    DXFree((Pointer)copy);
-    if (a0) DXFree((Pointer)*a0);
-    if (a1) DXFree((Pointer)*a1);
-    if (a2) DXFree((Pointer)*a2);
-    if (a3) DXFree((Pointer)*a3);
-    if (a4) DXFree((Pointer)*a4);
-    return ERROR;
-}
-
-
-Field
-_dxfSaveSoftwareWindow(char *where)
-{
-    Field image = NULL;
-    char *host, *title;
-    int depth;
-
-    if (! DXParseWhere(where, &depth, NULL, &host, &title, NULL, NULL))
-	goto error;
-
-    image = _dxfCaptureSoftwareImage(depth, host, title);
-    if (! image)
-	goto error;
-    
-    return image;
-
-error:
-
-    DXDelete((Object)image);
-    return NULL;
-}
 
 Error
 DXGetSoftwareWindow(char *where, Window *window)
@@ -6771,7 +6438,7 @@ DXGetSoftwareWindow(char *where, Window *window)
     if (!host || !*host)
 	host = getenv("DISPLAY");
     if (! host)
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
        host = "";
 #else
        host = "unix:0";

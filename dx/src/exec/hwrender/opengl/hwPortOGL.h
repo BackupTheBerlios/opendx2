@@ -21,7 +21,9 @@
 
 \*---------------------------------------------------------------------------*/
 
+#if !defined(DX_NATIVE_WINDOWS)
 #include <GL/glx.h>
+#endif
 #include <GL/gl.h>
 
 typedef struct {
@@ -42,6 +44,52 @@ typedef struct ClipPlaneS {
   double c;
   double d;
 } ClipPlaneT, ClipPlane;
+
+#if defined(DX_NATIVE_WINDOWS)
+
+typedef struct {
+  HGLRC hRC;
+  HDC hDC;
+  PAINTSTRUCT ps;
+  HWND	win;
+  int winHeight;
+  int winWidth;
+  int xmaxscreen;
+  int ymaxscreen;
+  RGBColor background_color;
+  int fontListBase;
+  int clipPlaneCount;
+  int maxClipPlanes;
+  WinT *winT;
+  HashTable displayListHash;
+  HashTable textureHash;
+  int doDisplayLists;
+  int currentTexture;
+} tdmOGLctxT, *tdmOGLctx ;
+
+#define DEFCONTEXT(ctx) \
+  register tdmOGLctx _portContext = (tdmOGLctx)(ctx)
+
+#define OGLHRC            (((tdmOGLctx)_portContext)->hRC)
+#define OGLHDC            (((tdmOGLctx)_portContext)->hDC)
+#define OGLPS             (((tdmOGLctx)_portContext)->ps)
+#define OGLXWIN           (((tdmOGLctx)_portContext)->win)
+#define WINWIDTH          (((tdmOGLctx)_portContext)->winWidth)
+#define WINHEIGHT         (((tdmOGLctx)_portContext)->winHeight)
+#define XMAXSCREEN        (((tdmOGLctx)_portContext)->xmaxscreen)
+#define YMAXSCREEN        (((tdmOGLctx)_portContext)->ymaxscreen)
+#define BACKGROUND_COLOR  (((tdmOGLctx)_portContext)->background_color)
+#define FONTLISTBASE      (((tdmOGLctx)_portContext)->fontListBase)
+#define CLIP_PLANE_CNT    (((tdmOGLctx)_portContext)->clipPlaneCount)
+#define MAX_CLIP_PLANES   (((tdmOGLctx)_portContext)->maxClipPlanes)
+#define OGLWINT           (((tdmOGLctx)_portContext)->winT)
+#define DO_DISPLAY_LISTS  (((tdmOGLctx)_portContext)->doDisplayLists)
+#define DISPLAY_LIST_HASH (((tdmOGLctx)_portContext)->displayListHash)
+#define TEXTURE_HASH      (((tdmOGLctx)_portContext)->textureHash)
+#define CURTEX            (((tdmOGLctx)_portContext)->currentTexture)
+#define PATTERN_INDEX    1
+
+#else
 
 typedef struct {
   Display *dpy;
@@ -86,6 +134,8 @@ typedef struct {
 #define TEXTURE_HASH      (((tdmOGLctx)_portContext)->textureHash)
 #define CURTEX            (((tdmOGLctx)_portContext)->currentTexture)
 #define PATTERN_INDEX    1
+
+#endif
 
 int      _dxf_isDisplayListOpenOGL();
 void     _dxf_callDisplayListOGL(dxObject dlo);

@@ -11,7 +11,7 @@
 
 #include <X11/keysym.h>
 #define XK_MISCELLANY
-#include <X11/keysymdef.h>
+#include <X11/keysym.h>
 
 #include "EditorToolSelector.h"
 #include "EditorWindow.h"

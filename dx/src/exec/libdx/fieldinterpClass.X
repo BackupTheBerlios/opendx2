@@ -7,14 +7,14 @@
 /***********************************************************************/
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/fieldinterpClass.X,v 1.4 2000/06/12 05:45:30 davidt Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/fieldinterpClass.X,v 1.5 2003/07/11 05:50:42 davidt Exp $
 //
 
 typedef struct fieldinterpolator *FieldInterpolator;
 
 INCLUDE  	interpClass.X
 SUBCLASS    	FieldInterpolator     OF Interpolator
-DEFINES     	Error  PrimitiveInterpolate(FieldInterpolator, int *,							float **, Pointer *, int);
+DEFINES     	Error  PrimitiveInterpolate(FieldInterpolator, int *, float **, Pointer *, int);
 IMPLEMENTS 	Interpolate Delete
 
 FieldInterpolator _dxfSelectFieldInterpolator(Field,
@@ -49,7 +49,7 @@ FieldInterpolator _dxf_NewFieldInterpolator(Field, float, Matrix *,
 				struct fieldinterpolator_class *);
 
 FieldInterpolator _dxf_CopyFieldInterpolator(FieldInterpolator, 
-				FieldInterpolator, enum copy copy);
+				FieldInterpolator, enum _dxd_copy copy);
 
 #define ELT_TYPECHECK(field, name)					      \
 {									      \

@@ -9,13 +9,13 @@
 /* Because of type definitions in hdfi.h, this must be before dxconfig.h
    for solaris. */
 #if defined(HAVE_LIBDF)
-#if defined(solaris)
+#if defined(solaris) || defined(sgi)
 #if defined(HAVE_DFSD_H)
 #include <dfsd.h>
 #else
 #include <hdf/dfsd.h>
 #endif
-#endif /*solaris*/
+#endif /*solaris || sgi*/
 #endif /*HAVE_LIBDF*/
 
 #include <dxconfig.h>
@@ -24,7 +24,7 @@
 #include <dx/dx.h>
 #include "import.h"
 
-#if defined(WIN32) && defined(NDEBUG)
+#if (defined(WIN32) && defined(NDEBUG)) || defined(_MT)
 #define _HDFDLL_
 #elif defined(_DEBUG)
 #undef _DEBUG
@@ -36,13 +36,13 @@
 #define UNIX386
 #endif
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 #define F_OK	0
 #define R_OK	4
 #define INTEL86 
 #endif
 
-#if !defined(solaris)
+#if !defined(solaris) && !defined(sgi)
 #if defined(HAVE_DFSD_H)
 #include <dfsd.h>
 #else

@@ -1,6 +1,34 @@
-#include "aclocal.m4" 
+#include "aclocal.m4"
 
+AC_PREREQ(2.57)
 dnl Start of configuration ----
+AC_INIT([dx],[4.3.0])
+
+dnl Process this file with autoconf to produce a configure script.
+AC_CONFIG_SRCDIR([include/dx/arch.h])
+AC_CONFIG_HEADERS([include/dxconfig.h])
+AM_INIT_AUTOMAKE
+AC_DISABLE_SHARED
+AC_PROG_LIBTOOL
+
+VERSION_STRING="04.3.0000"
+MAJOR_VERSION=4
+MINOR_VERSION=3
+MICRO_VERSION=0
+AC_DEFINE(DXD_VERSION_STRING, "04.3.3000", [Version String Number])
+AC_DEFINE(DXD_COPYRIGHT_STRING,
+  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.3.0"], 
+  [Copyright string placed on splash screen startup.])
+AC_DEFINE_UNQUOTED(DXD_VERSION, $MAJOR_VERSION, [Version Number])
+AC_DEFINE_UNQUOTED(DXD_RELEASE, $MINOR_VERSION, [Release Number])
+AC_DEFINE_UNQUOTED(DXD_MODIFICATION, $MICRO_VERSION, [Modification Number])
+
+AC_SUBST(MAJOR_VERSION)dnl
+AC_SUBST(MINOR_VERSION)dnl
+AC_SUBST(MICRO_VERSION)dnl
+
+SHELL=sh
+BUILDBASE="`pwd`"
 
 AC_SUBST(YACC)
 AC_SUBST(SHELL)
@@ -36,28 +64,6 @@ AC_SUBST(SHARED_LINK)
 AC_SUBST(MKDEP)
 AC_SUBST(JNI_CFLAGS)
 AC_SUBST(LOCALMAKE)
-
-SHELL=sh
-
-INSTALL_SCRIPT='$(INSTALL)'
-
-BUILDBASE=`pwd`
-
-dnl Process this file with autoconf to produce a configure script.
-AC_INIT(include/dx/arch.h)
-AC_PREREQ(2.13)
-AM_CONFIG_HEADER(include/dxconfig.h)
-AM_INIT_AUTOMAKE(dx, 4.2.0)
-
-VERSION_STRING="04.2.0000"
-AC_DEFINE(DXD_VERSION_STRING, "04.2.0000", [Version String Number])
-AC_DEFINE(DXD_COPYRIGHT_STRING,
-  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.2.0"], 
-  [Copyright string placed on splash screen startup.])
-AC_DEFINE_UNQUOTED(DXD_VERSION, 4, [Version Number])
-AC_DEFINE_UNQUOTED(DXD_RELEASE, 2, [Release Number])
-AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 0, [Modification Number])
-
 
 dnl First set up all the possible configure command line options
 dnl
@@ -180,7 +186,11 @@ AC_ARG_WITH(rsh,
                 rsh_path=$withval
         ],
         [
+if test "$ARCH" = "intelnt" ; then
+	rsh_path="rsh"
+else
                 AC_PATH_PROG(rsh_path, rsh)
+fi
         ]
 )
 AC_DEFINE_UNQUOTED(RSH, "$rsh_path", [Path to the system's remote shell.])
@@ -239,28 +249,28 @@ DX_ARCH_SPECIFIC
 if test "$MKDEP" = "" ; then
     MKDEP='$(CC) -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)'
 fi
-
-AC_CHECK_PROG(HAVE_CSH, csh, yes, no)
 	
-if test "$HAVE_CSH" = "yes" ; then
-    INSTALL_BIN_PROGRAM=""
-    INSTALL_BIN_SCRIPT="dx dxworker"
-else
+if test "$ARCH" = "intelnt" ; then
     INSTALL_BIN_PROGRAM="dx"
     INSTALL_BIN_SCRIPT=""
+else
+    INSTALL_BIN_PROGRAM=""
+    INSTALL_BIN_SCRIPT="dx"
 fi
 
 AC_PROG_INSTALL
+
 if test -z "$LN_S" ; then
     AC_PROG_LN_S
 fi
 
 dnl Checks for programs.
-AC_PROG_RANLIB
+dnl AC_PROG_RANLIB
 AC_PROG_CXX
 if test -n "$CXXCPP" ; then
     ac_cv_prog_CXXCPP=$CXXCPP
 fi
+
 AC_PROG_CXXCPP
 AC_PROG_CC
 AC_PROG_CPP
@@ -283,27 +293,32 @@ fi
 #   can be used to set the ABI target).
 if test "$ARCH" = "sgi" ; then
     AC_MSG_CHECKING(for the target SGI ABI ...)
-AC_TRY_COMPILE([],
-[
-#if defined(sgi) && _MIPS_SIM == _ABI64
-#else
-xyzz
-#endif
-], 
-[AC_MSG_RESULT("-64")
- AC_DEFINE(SGI_ABI, -64, [SGI specific ABI])
-], 
-[AC_TRY_COMPILE([],
-[
-#if defined(sgi) && _MIPS_SIM == _ABIO32
-#else
-xyzz
-#endif
-], 
-[AC_MSG_RESULT("-32")
- AC_DEFINE(SGI_ABI,-32)], 
-[AC_MSG_RESULT("-n32")
- AC_DEFINE(SGI_ABI,-n32)])])
+AC_COMPILE_IFELSE(
+  AC_LANG_PROGRAM([[]], [[
+   #if defined(sgi) && _MIPS_SIM == _ABI64
+   #else
+   xyzz
+   #endif
+   ]]
+  ),
+  [AC_MSG_RESULT("-64")
+   AC_DEFINE(SGI_ABI, -64, [SGI specific ABI])
+  ],
+  [ AC_COMPILE_IFELSE(
+     AC_LANG_PROGRAM([[]], [[
+      #if defined(sgi) && _MIPS_SIM == _ABIO32
+      #else
+      xyzz
+      #endif
+      ]]
+     ), 
+   [AC_MSG_RESULT("-32")
+    AC_DEFINE(SGI_ABI,-32)], 
+   [AC_MSG_RESULT("-n32")
+    AC_DEFINE(SGI_ABI,-n32)
+   ])
+  ]
+)
 fi
 
 # For SGI, set DXABI based on SGI_ABI
@@ -406,13 +421,13 @@ dnl Fix up the full CLASSPATH to be used with the JAVA compiles.
 	TMP_CLASSPATH=$DX_JAVA_CLASSPATH$DIRSEP$TMP_CLASSPATH
     fi
     DX_JAVA_CLASSPATH=$TMP_CLASSPATH
-    echo DX_JAVA_CLASSPATH :: $DX_JAVA_CLASSPATH
+    AC_MSG_NOTICE([ DX_JAVA_CLASSPATH :: $DX_JAVA_CLASSPATH ])
   fi
 
 fi
 # end of JAVADX configure
 
-AC_LANG_C
+AC_LANG([C])
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
@@ -434,7 +449,7 @@ else
     ANYDX=libAnyDX.so
 fi
 
-AC_LANG_C
+dnl AC_LANG([C])
 
 dnl DX_CYGWIN_MOUNTS
 DX_SET_RTL_FLAGS
@@ -495,17 +510,16 @@ DX_X_LINK_LIBS="$LIBS"
 
 dnl The following is set up to check for the old LessTif libraries
 dnl
-AC_TRY_LINK([
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <Xm/FormP.h>
-],
-[
+]], [[
 XmFormConstraintPart *p;
 p->att[0].type;
-],
-,
-[
+]])],
+  [],
+  [
     AC_DEFINE_UNQUOTED(OLD_LESSTIF, 1, [Define to 1 if Using old version of lesstif])
-    echo "using old version of  LESSTIF"
+    AC_MSG_NOTICE([using old version of  LESSTIF])
 ])
 
 if test "$ARCH" = "solaris" ; then
@@ -550,7 +564,7 @@ have_tiff='no'
 LIB_TIFF=''
 if test "$with_tiff" != 'no'
 then
-    AC_CHECKING(for TIFF support ...)
+    AS_MESSAGE([checking for TIFF support ......])
     failed=0;
     passed=0;
     AC_CHECK_HEADER(tiff.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -581,7 +595,7 @@ fi
 #
 have_xpm='no'
 LIB_XPM=''
-AC_CHECKING(for XPM support ...)
+AS_MESSAGE([checking for XPM support ......])
 failed=0;
 passed=0;
 AC_CHECK_HEADERS(xpm.h X11/xpm.h)
@@ -618,7 +632,7 @@ have_hdf='no'
 LIB_HDF=''
 if test "$with_hdf" != 'no'
 then
-    AC_CHECKING(for HDF components ...)
+    AS_MESSAGE([checking for HDF components ......])
     failed=0;
     passed=0;
     AC_CHECK_HEADERS(dfsd.h hdf/dfsd.h)
@@ -629,7 +643,7 @@ then
     	failed=`expr $failed + 1`
     fi
 if test "$ARCH" = "intelnt" ; then
-    AC_CHECK_LIB(hd414,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,[ hm414.lib ])
+    AC_CHECK_LIB(hd414m,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,[ hm414.lib ])
     AC_MSG_CHECKING(if HDF package is complete)
     if test $passed -gt 0
     then
@@ -638,9 +652,9 @@ if test "$ARCH" = "intelnt" ; then
 	AC_MSG_RESULT(no -- some components failed test)
         have_hdf='no (failed tests)'
     else
-	LIB_HDF='-lhd414'
+	LIB_HDF='-lhd414m'
 	LIBS="$LIB_HDF $LIBS"
-	FMT_LIBS="$FMT_LIBS hd414.lib"
+	FMT_LIBS="$FMT_LIBS hd414m.lib"
 	AC_DEFINE(HAVE_LIBDF, 1, [Define to 1 if you have the HDF libraries])
 	AC_MSG_RESULT(yes)
 	have_hdf='yes'
@@ -680,7 +694,7 @@ have_cdf='no'
 LIB_CDF=''
 if test "$with_cdf" != 'no'
 then
-    AC_CHECKING(for CDF support ...)
+    AS_MESSAGE([checking for CDF support ......])
     failed=0;
     passed=0;
     AC_CHECK_HEADER(cdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -736,7 +750,7 @@ have_netcdf='no'
 LIB_NETCDF=''
 if test "$with_netcdf" != 'no'
 then
-    AC_CHECKING(for NETCDF support ...)
+    AS_MESSAGE([checking for NETCDF support ......])
     failed=0;
     passed=0;
     AC_CHECK_HEADER(netcdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -769,12 +783,12 @@ have_magick='no'
 LIB_MAGICK=''
 if test "$with_magick" != 'no'
 then
-    AC_CHECKING(for ImageMagick support ...)
+    AS_MESSAGE([checking for ImageMagick support ......])
     AC_CHECK_PROG(HAVE_MC, Magick-config, yes, no)
 
     failed=0;
     passed=0;
-    AC_CHECK_HEADER(magick/magick.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER([magick/api.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
 if test "$ARCH" = "intelnt" ; then
     AC_CHECK_LIB(CORE_RL_magick_,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if ImageMagick package is complete)
@@ -813,9 +827,6 @@ dnl format configuration libraries.
 	AC_MSG_RESULT(no -- some components failed test)
         have_magick='no (failed tests)'
     else
-dnl Magick-config won't work for FMT_LIBS--how are we going to handle that?
-dnl	FMT_LIBS="$FMT_LIBS `Magick-config --libs`"
-dnl	FMT_LIBS="`Magick-config --ldflags` $FMT_LIBS"
 	CFLAGS="`Magick-config --cflags` $CFLAGS"
 	CPPFLAGS="`Magick-config --cppflags` $CPPFLAGS"
 	LIB_MAGICK="$LIBS `Magick-config --ldflags` `Magick-config --libs`"
@@ -835,16 +846,16 @@ dnl UNIQUIFY will remove duplicate library tokens leaving the last instance.
 fi
 fi
 
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
-AC_TRY_COMPILE([], [int a = true;],
-		[AC_DEFINE(CXX_HAS_TRUE, 1, [Define to 1 if c++ compiler defines true])],
-		[AC_DEFINE(CXX_HAS_TRUE, 0)])
-AC_TRY_COMPILE([], [int a = false;],
-		[AC_DEFINE(CXX_HAS_FALSE, 1, [Define to 1 if c++ compiler defines false])],
-		[AC_DEFINE(CXX_HAS_FALSE, 0)])
+AC_LANG([C++])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[int a = true;]])],
+  [AC_DEFINE(CXX_HAS_TRUE, 1, [Define to 1 if c++ compiler defines true])],
+  [AC_DEFINE(CXX_HAS_TRUE, 0)])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[int a = false;]])],
+  [AC_DEFINE(CXX_HAS_FALSE, 1, [Define to 1 if c++ compiler defines false])],
+  [AC_DEFINE(CXX_HAS_FALSE, 0)])
 AC_CHECK_FUNCS(getdtablesize)
-AC_LANG_RESTORE
+
+AC_LANG([C])
 
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
 	putenv re_comp regcmp select socket strcspn strdup strerror \
@@ -853,65 +864,91 @@ AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
         pipe _pipe _popen popen _pclose pclose random rand srandom \
 	shmat getopt srand opendir _findfirst strrstr strcasecmp \
 	stricmp getpid _getpid unlink _unlink getlogin isatty _isatty \
-	setsockopt )
+	setsockopt isnan finite )
 
+AC_MSG_CHECKING(if RAND_MAX defined)
+AC_COMPILE_IFELSE(
+   AC_LANG_PROGRAM([[#include <stdlib.h>]], 
+                  [[ int a = RAND_MAX; ]]), 
+  [AC_DEFINE(HAVE_RAND_MAX, 1, 
+                  [Define to 1 if RAND_MAX is in stdlib.h])
+   AC_MSG_RESULT(yes)],
+  [ AC_MSG_RESULT(no) ]
+)
+
+AC_MSG_CHECKING(if signal.h defines SIGBUS)
 AC_EGREP_CPP(xyzzy, 
 [
 #include <signal.h>
 #if defined(SIGBUS)
 xyzzy
 #endif
-], AC_DEFINE(HAVE_SIGBUS, 1, [Define to 1 if signal defines SIGBUS]))
+], 
+  [AC_DEFINE(HAVE_SIGBUS, 1, [Define to 1 if signal defines SIGBUS])
+   AC_MSG_RESULT(yes)],
+  [AC_MSG_RESULT(no)]
+)
 
+AC_MSG_CHECKING(if signal.h defines SIGKILL)
 AC_EGREP_CPP(xyzzy, 
 [
 #include <signal.h>
 #if defined(SIGKILL)
 xyzzy
 #endif
-], AC_DEFINE(HAVE_SIGKILL, 1, [Define to 1 if signal defines SIGKILL]))
+], 
+  [AC_DEFINE(HAVE_SIGKILL, 1, [Define to 1 if signal defines SIGKILL])
+   AC_MSG_RESULT(yes)],
+  [AC_MSG_RESULT(no)])
 
+AC_MSG_CHECKING(if signal.h defines SIGDANGER)
 AC_EGREP_CPP(xyzzy, 
 [
 #include <signal.h>
 #if defined(SIGDANGER)
 xyzzy
 #endif
-], AC_DEFINE(HAVE_SIGDANGER, 1, [Define to 1 if signal defines SIGDANGER]))
+], 
+  [AC_DEFINE(HAVE_SIGDANGER, 1, [Define to 1 if signal defines SIGDANGER])
+   AC_MSG_RESULT(yes)],
+  [AC_MSG_RESULT(no)])
 
+AC_MSG_CHECKING(if signal.h defines SIGPIPE)
 AC_EGREP_CPP(xyzzy, 
 [
 #include <signal.h>
 #if defined(SIGPIPE)
 xyzzy
 #endif
-], AC_DEFINE(HAVE_SIGPIPE, 1, [Define to 1 if signal defines SIGPIPE]))
+], 
+  [AC_DEFINE(HAVE_SIGPIPE, 1, [Define to 1 if signal defines SIGPIPE])
+   AC_MSG_RESULT(yes)],
+  [AC_MSG_RESULT(no)])
 
+AC_MSG_CHECKING(if signal.h defines SIGQUIT)
 AC_EGREP_CPP(xyzzy, 
 [
 #include <signal.h>
 #if defined(SIGQUIT)
 xyzzy
 #endif
-], AC_DEFINE(HAVE_SIGQUIT, 1, [Define to 1 if signal defines SIGQUIT]))
+], 
+  [AC_DEFINE(HAVE_SIGQUIT, 1, [Define to 1 if signal defines SIGQUIT])
+   AC_MSG_RESULT(yes)],
+  [AC_MSG_RESULT(no)])
 
-AC_TRY_COMPILE(
-[],
-[extern char *getenv(const char *);],
-AC_DEFINE_UNQUOTED(GETENV_ARG, const char *, [getenv argument requires const]),
-AC_DEFINE_UNQUOTED(GETENV_ARG, char *))
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[extern char *getenv(const char *);]])],
+  [AC_DEFINE_UNQUOTED(GETENV_ARG, const char *, getenv argument requires const)],
+  [AC_DEFINE_UNQUOTED(GETENV_ARG, char *)])
 
-AC_TRY_LINK(
-[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <sys/systemcfg.h>
-],
-[
+]], [[
 int n = _system_configuration.ncpus;
-],
-[
+]])],[
 AC_DEFINE_UNQUOTED(HAVE_SYSCONFIG_NCPUS, 1, 
 	[Define to 1 if you have systemcfg to check for  ncpus])
-])
+],[])
 
 AC_EGREP_HEADER(sys_errlist, sys/errno.h,  
 	AC_DEFINE(HAVE_SYS_ERRLIST, 1, [Define to 1 if errno.h defines sys_errlist]))
@@ -924,7 +961,13 @@ AC_EGREP_HEADER(_sys_errlist, stdio.h,     AC_DEFINE(HAVE__SYS_ERRLIST))
 
 dnl Check lexer. Look for flex first--if using lex, may be problem
 dnl with duplicate yylineno linking errors.
-AM_PROG_LEX
+AC_PROG_LEX
+if test "$LEX" = "flex" ; then
+    AC_DEFINE(USING_FLEX, 1, [Define to 1 if using flex])
+    LEX="flex -l"
+fi
+dnl Check if lexer adds a global variable yylineno
+DX_LEX_YYLINENO
 
 dnl Check yaccer.  Don't use standard AQC_PROG_YACC... We're going
 dnl to create an -D as well as the make variable
@@ -935,9 +978,11 @@ if test "$yakker" = "bison" ; then
 else
     YACC=yacc
 fi
+dnl We are including the bison'd files; thus always using bison
+AC_DEFINE(USING_BISON, 1, [Define to 1 if using bison])
 
 
-AC_LANG_C
+dnl AC_LANG([C])
 
 dnl Just need to check if we have them.
 
@@ -961,34 +1006,76 @@ DX_CHECK_HEADERS( \
   os2.h setjmp.h starbase.c.h stddef.h stdio.h synch.h sys/access.h \
   sys/ipc.h sys/m88kbcs.h sys/mman.h sys/mode.h sys/pstat.h sys/resource.h \
   sys/svs.h sys/sysconfig.h sys/syslimits.h sys/sysmacros.h ulocks.h x11/xlibxtra.h \
-  xgl/xgl.h )
+  xgl/xgl.h)
 
 dnl Need these to define themselves in dxconfig.h
 
 AC_CHECK_HEADERS(arpa/inet.h CC/osfcn.h conio.h crypt.h ctype.h cygwin/socket.h)
-AC_CHECK_HEADERS(dlfcn.h errno.h fcntl.h get.h io.h limits.h malloc.h netdb.h)
-AC_CHECK_HEADERS(netinet/in.h net/if.h process.h pwd.h signal.h string.h strings.h)
-AC_CHECK_HEADERS(sys/bsd_types.h sys/errno.h sys/file.h sys/filio.h)
+AC_CHECK_HEADERS(sys/socket.h dlfcn.h errno.h fcntl.h get.h io.h limits.h malloc.h)
+AC_CHECK_HEADERS(netdb.h netinet/in.h process.h pwd.h signal.h string.h)
+AC_CHECK_HEADERS(strings.h sys/bsd_types.h sys/errno.h sys/file.h sys/filio.h)
 AC_CHECK_HEADERS(sys/ioctl.h sys/ldr.h sys/m_wait.h sys/param.h sys/select.h)
-AC_CHECK_HEADERS(sys/shm.h sys/signal.h sys/socket.h sys/stat.h sys/sysmp.h)
+AC_CHECK_HEADERS(sys/shm.h sys/signal.h sys/stat.h sys/sysmp.h)
 AC_CHECK_HEADERS(sys/systemcfg.h sys/systeminfo.h sys/timeb.h sys/times.h sys/time.h)
-AC_CHECK_HEADERS(sys/types.h sys/un.h sys/un.h sys/utsname.h time.h)
+AC_CHECK_HEADERS(sys/types.h sys/un.h sys/utsname.h time.h)
 AC_CHECK_HEADERS(types.h unistd.h values.h wait.h)
 
+dnl The following is needed to add sys/socket.h to the default headers typically
+dnl included for checking net/if.h. Right now, this is the way it has to be done
+dnl in Autoconf 2.57, but they are working on some kind of fix to be able to 
+dnl include the default headers as well as whatever else is needed in a future 
+dnl version of Autoconf.
+AC_CHECK_HEADERS([net/if.h],[],[], 
+ [#include <stdio.h>
+  #if HAVE_SYS_TYPES_H
+  # include <sys/types.h>
+  #endif
+  #if HAVE_SYS_STAT_H
+  # include <sys/stat.h>
+  #endif
+  #if STDC_HEADERS
+  # include <stdlib.h>
+  # include <stddef.h>
+  #else
+  # if HAVE_STDLIB_H
+  #  include <stdlib.h>
+  # endif
+  #endif
+  #if HAVE_STRING_H
+  # if !STDC_HEADERS && HAVE_MEMORY_H
+  #  include <memory.h>
+  # endif
+  # include <string.h>
+  #endif
+  #if HAVE_STRINGS_H
+  # include <strings.h>
+  #endif
+  #if HAVE_INTTYPES_H
+  # include <inttypes.h>
+  #else
+  # if HAVE_STDINT_H
+  #  include <stdint.h>
+  # endif
+  #endif
+  #if HAVE_UNISTD_H
+  # include <unistd.h>
+  #endif
+  #if HAVE_SYS_SOCKET_H
+  # include <sys/socket.h>
+  #endif
+ ])
 
-AC_TRY_COMPILE([
+AC_MSG_CHECKING(for O_RDONLY)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #if defined(HAVE_FCNTL_H)
 #include <fcntl.h>
 #endif
-],
-[
+]], [[
 int i = O_RDONLY;
-], 
-[
-echo O_RDONLY IS defined by default
-],
-[
-echo O_RDONLY IS NOT defined by default
+]])],[
+AC_MSG_RESULT([yes])
+],[
+AC_MSG_RESULT([no])
 AC_DEFINE_UNQUOTED(O_RDONLY, _O_RDONLY, [O_RDONLY is defined somewhere])
 ])
 
@@ -998,15 +1085,14 @@ fi
 
 DX_CHECK_STAT
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 
 dnl Need these to define themselves for C++
 
-AC_CHECK_HEADERS(CC/libc.h direct.h dirent.h iostream.h regexp.h regex.h stream.h)
-AC_CHECK_HEADERS(strstream.h strstrea.h sysent.h)
-
-
-AC_LANG_C
+AC_CHECK_HEADERS(CC/libc.h direct.h dirent.h iostream iostream.h regexp.h regex.h)
+AC_CHECK_HEADERS(stream stream.h)
+AC_CHECK_HEADERS(sstream strstream.h strstrea.h sysent.h)
+AC_CHECK_HEADERS(fstream fstream.h)
 
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, inet_addr)
@@ -1016,29 +1102,27 @@ AC_CHECK_LIB(REXP, regcomp)
 
 DX_STREAM_O2
 
-AC_LANG_CPLUSPLUS
+dnl AC_LANG([C++])
 
-AC_TRY_LINK([
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <unistd.h>
-], [
+]], [[
 char buf[32];
 gethostname(buf, 32);
-],
-AC_DEFINE_UNQUOTED(REQUIRES_GETHOSTNAME_DECLARATION, 0, 
-	[Define to 1 if gethostname needs declared]),
-AC_DEFINE_UNQUOTED(REQUIRES_GETHOSTNAME_DECLARATION, 1))
+]])],[AC_DEFINE_UNQUOTED(REQUIRES_GETHOSTNAME_DECLARATION, 0, 
+	Define to 1 if gethostname needs declared)],[AC_DEFINE_UNQUOTED(REQUIRES_GETHOSTNAME_DECLARATION, 1)])
 
-AC_TRY_LINK([
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <strings.h>
-], [
+]], [[
 char buf[32];
 bzero(buf, (size_t)32);
-],
-AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 0, [Define to 1 if bzero needs declared]),
-AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 1))
+]])],
+  [AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 0, Define to 1 if bzero needs declared)],
+  [AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 1)])
 
 dnl The following DX_HEADER... check changes the ext to .C so must be C++
-AC_LANG_CPLUSPLUS
+dnl AC_LANG([C++])
 
 DX_HEADER_HAS_SYMBOL(math.h, M_PI)
 DX_HEADER_HAS_SYMBOL(math.h, M_SQRT2)
@@ -1046,13 +1130,13 @@ DX_HEADER_HAS_SYMBOL(sys/stat.h, S_ISDIR)
 DX_HEADER_HAS_SYMBOL(sys/mode.h, S_ISDIR)
 DX_HEADER_HAS_SYMBOL(sys/sysmp.h, sysmp)
 
-AC_LANG_C
+AC_LANG([C])
 
 dnl Checks for library functions.
 AC_FUNC_MEMCMP
 AC_FUNC_SETVBUF_REVERSED
 AC_TYPE_SIGNAL
-AC_FUNC_VFORK
+AC_FUNC_FORK([])
 AC_FUNC_VPRINTF
 
 DX_CHECK_TYPE(uint, unsigned int)
@@ -1078,26 +1162,23 @@ fi
 
 AC_C_BIGENDIAN
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 
-AC_TRY_LINK(
-[
+AC_MSG_CHECKING([for signal argument list in C++])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <signal.h>
 extern "C" void foo(int bar, ...){}
-],
-[
+]], [[
 signal(SIGBUS, foo);
-],
-[
-echo Using alternate signal argument list in C++
+]])],[
+AC_MSG_RESULT([alternate])
 AC_DEFINE_UNQUOTED(ALTERNATE_CXX_SIGNAL, 1, 
 	[Define to 1 to use alternate signal argument list in C++])
-],
-[
-echo Using standard signal argument list in C++
+],[
+AC_MSG_RESULT([standard])
 ])
 
-AC_LANG_C
+AC_LANG([C])
 
 DX_CHECK_SELECT_ARG
 DX_CHECK_SOCK_LENGTH_TYPE
@@ -1119,11 +1200,11 @@ else
     AC_DEFINE(ENABLE_SMP_LINUX, 0)
 fi
 
-AC_OUTPUT(
-	Makefile \
+AC_CONFIG_FILES([ Makefile \
+	VisualDX/Makefile \
+	VisualDX/HelloWorld/Makefile \
 	bin/Makefile \
 	bin/dx
-	bin/dxworker \
 	bin/mdf2c \
 	doc/Makefile \
 	fonts/Makefile \
@@ -1175,5 +1256,6 @@ AC_OUTPUT(
 	src/uipp/startup/Makefile \
 	src/uipp/tutor/Makefile \
 	src/uipp/ui/Makefile \
-	src/uipp/widgets/Makefile \
-	windows/Makefile)
+	src/uipp/widgets/Makefile 
+	windows/Makefile ])
+AC_OUTPUT

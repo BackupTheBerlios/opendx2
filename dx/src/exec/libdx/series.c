@@ -69,7 +69,7 @@ DXGetSeriesMember(Series s, int n, float *position)
 
 
 static Series
-_CopySeries(Series new, Series old, enum copy copy)
+_CopySeries(Series new, Series old, enum _dxd_copy copy)
 {
     int i;
     float position;
@@ -120,7 +120,7 @@ _CopySeries(Series new, Series old, enum copy copy)
  */
 
 Object
-_dxfSeries_Copy(Series old, enum copy copy)
+_dxfSeries_Copy(Series old, enum _dxd_copy copy)
 {
     Series new;
 

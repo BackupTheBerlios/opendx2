@@ -10,3 +10,4 @@ imagemac.h
 lex.yy.c
 local.mk
 vrmlmac.h
+sequence.h

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.c,v 1.7 2002/03/21 02:57:27 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.c,v 1.8 2003/07/11 05:50:33 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -15,7 +15,7 @@
 #include <string.h>
 #include <math.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
+#include "_helper_jea.h"
 #include <fcntl.h>
 
 #define ERROR_SECTION if ( DXGetError() == ERROR_NONE ) \
@@ -614,7 +614,7 @@ Error _dxf_GetComponentData ( Object         in_object,
 /*----------------------------- Begin Array section -------------------------*/
 
 
-Array _dxf_CopyArray_jea ( Array in, enum copy copy )
+Array _dxf_CopyArray_jea ( Array in, enum _dxd_copy copy )
 {
     Array    out = NULL;
     Type     type;

@@ -25,7 +25,7 @@
 #if !defined(XK_LATIN1)
 #define XK_LATIN1
 #endif
-#include <X11/keysymdef.h>
+#include <X11/keysym.h>
 
 #define TREE_VIEW_PRIVATES
 #include "TreeView.h"

@@ -3428,6 +3428,7 @@ static Error remote_object(struct finfo *f, int value, Object *o)
     DXDelete(*o);    /* get rid of extra reference added by setobjptr */
  
   done:
+	DXDebug("F", "trying at (1) to close remote `%s'", newf.fname);
     if (newf.fd)
 	_dxfclose_dxfile(newf.fd, newf.fname);
     DXFree((Pointer)newf.fname);

@@ -109,7 +109,7 @@ Widget WizardDialog::createDialog (Widget parent)
 // Stat the file.  If not exists, then return NULL and the wizard ought to 
 // remain down.
 //
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 #define FILE_SEPARATOR '/'
 #define ISGOOD(a) ((a&_S_IFREG)&&((a&_S_IFDIR)==0))
 #else

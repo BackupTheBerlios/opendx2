@@ -250,9 +250,9 @@ _dxfCompleteServer(int sock,
     to.tv_sec = SOCK_ACCEPT_TIMEOUT;
     to.tv_usec = 0;
     if(timeout)
-        sts = select(width, (SelectPtr) &fds, NULL, NULL, &to);
+        sts = select(width, (SELECT_ARG_TYPE *) &fds, NULL, NULL, &to);
     else 
-        sts = select(width, (SelectPtr) &fds, NULL, NULL, NULL);
+        sts = select(width, (SELECT_ARG_TYPE *) &fds, NULL, NULL, NULL);
     if (sts < 0) {
 	perror("select");
 	goto error;

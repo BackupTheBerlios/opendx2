@@ -250,7 +250,7 @@ _dxl_MakeConnection(DXLConnection *connection, int port, const char *host)
 	}
     }
     connection->fd = socket(AF_INET, SOCK_STREAM, 0);
-#if !defined(intelnt)
+#if !defined(intelnt) && !defined(WIN32)
     if (connection->fd < 0) 
         goto error;
 #else

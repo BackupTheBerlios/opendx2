@@ -716,7 +716,7 @@ _dxfTrisWalk(TrisRI2DInterpolator ti, float *point,
 }
 
 Object
-_dxfTrisRI2DInterpolator_Copy(TrisRI2DInterpolator old, enum copy copy)
+_dxfTrisRI2DInterpolator_Copy(TrisRI2DInterpolator old, enum _dxd_copy copy)
 {
     TrisRI2DInterpolator new;
 
@@ -734,7 +734,7 @@ _dxfTrisRI2DInterpolator_Copy(TrisRI2DInterpolator old, enum copy copy)
 
 TrisRI2DInterpolator
 _dxf_CopyTrisRI2DInterpolator(TrisRI2DInterpolator new, 
-				TrisRI2DInterpolator old, enum copy copy)
+				TrisRI2DInterpolator old, enum _dxd_copy copy)
 {
 
     if (! _dxf_CopyFieldInterpolator((FieldInterpolator)new,

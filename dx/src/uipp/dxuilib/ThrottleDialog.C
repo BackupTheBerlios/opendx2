@@ -142,6 +142,41 @@ Widget ThrottleDialog::createDialog(Widget parent)
 
 void ThrottleDialog::manage()
 {
+    Dimension dialogWidth;
+
+    if (!XtIsRealized(this->getRootWidget()))
+	XtRealizeWidget(this->getRootWidget());
+
+    XtVaGetValues(this->getRootWidget(),
+	XmNwidth, &dialogWidth,
+	NULL);
+
+    Position x;
+    Position y;
+    Dimension width;
+    XtVaGetValues(parent,
+	XmNx, &x,
+	XmNy, &y,
+	XmNwidth, &width,
+	NULL);
+
+    if (x > dialogWidth + 10)
+	x -= dialogWidth + 10;
+    else
+	x += width + 10;
+
+    Display *dpy = XtDisplay(this->getRootWidget());
+    if (x > WidthOfScreen(DefaultScreenOfDisplay(dpy)) - dialogWidth)
+	x = WidthOfScreen(DefaultScreenOfDisplay(dpy)) - dialogWidth;
+    XtVaSetValues(this->getRootWidget(),
+	XmNdefaultPosition, False, 
+	NULL);
+    XtVaSetValues(XtParent(this->getRootWidget()),
+	XmNdefaultPosition, False, 
+	XmNx, x, 
+	XmNy, y, 
+	NULL);
+
     this->Dialog::manage();
     double	value;
     this->image->getThrottle(value);

@@ -32,7 +32,7 @@
 #ifndef XK_MISCELLANY
 #define XK_MISCELLANY
 #endif
-#include <X11/keysymdef.h>
+#include <X11/keysym.h>
 
 #include "../widgets/WorkspaceW.h"
 

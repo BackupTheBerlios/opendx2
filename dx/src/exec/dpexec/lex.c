@@ -148,12 +148,12 @@ int _dxd_exUIPacket		= FALSE;
 static int uipacketlen		= 0;
 /*static int uipackettype		= 0;*/
  
-SFILE	*yyin;
+SFILE	*yyin = NULL;
 int	yylineno = 1;
 int	yycharno = 0;
 static int	yyCharno = 0;
 char	*yyText	 = NULL;
-int	yyLeng;
+int	yyLeng = 0;
  
 static char	yysbuf[4];
 static char	*yysptr		= NULL;
@@ -484,7 +484,7 @@ f16:
 
 #define	MYreturn(v)	{LEXOUT; PRINTV(v); reportNL = FALSE; return (v);}
 
-int yylex()
+int yylex(YYSTYPE *lvalp)
 {
     int		c;
     struct	keytab *keyword;
@@ -657,7 +657,21 @@ int yylex()
 	    {
 		int		hitlimit  = FALSE;
 		int		truncated = FALSE;
+		int		dosFile = TRUE;
+
+		/* check to see if this will be a DOS filename */
+
+		c = input();
+		if(isalpha(c)) { 
+			char cc;
+			cc = input();
+			unput(cc);
+			if(cc == ':')
+				dosFile = FALSE;
+		}
  
+		unput(c);
+
 		for (c = input(); c != '"' && c != '\n'; c = input())
 		{
 		    if (hitlimit)
@@ -665,7 +679,7 @@ int yylex()
  
 		    if (yyleng < YYLMAX_1)
 		    {
-			if (c == '\\')
+			    if (c == '\\' && dosFile == TRUE)
 			{
 			    c = input ();
  
@@ -783,7 +797,7 @@ int yylex()
 		    unput (c);
 		    MYreturn (LEX_ERROR);
 		}
-		yylval.s = _dxf_ExStrSave (yytext);
+		lvalp->s = _dxf_ExStrSave (yytext);
 		yyLeng = strlen (yytext);
 		MYreturn (T_STRING);
 	    }
@@ -823,7 +837,7 @@ int yylex()
 		    }
  
 		    ret = ParseIString (16, yytext, yyleng,
-					&yylval.i, &yylval.f);
+					&lvalp->i, &lvalp->f);
 		    if (! ret)
 			_dxd_exParseError = TRUE;
 		    MYreturn (T_INT);
@@ -836,7 +850,7 @@ int yylex()
 		    goto exponent;
 		unput (c);
 
-		yylval.i = 0;
+		lvalp->i = 0;
 		MYreturn (T_INT);
 
 	    case '1':			/* possible octal number */
@@ -862,7 +876,7 @@ octal:
 		unput (c);
 		yytext[yyleng] = '\0';
 
-		ret = ParseIString (8, yytext, yyleng, &yylval.i, &yylval.f);
+		ret = ParseIString (8, yytext, yyleng, &lvalp->i, &lvalp->f);
 		if (! ret)
 		    _dxd_exParseError = TRUE;
 		MYreturn (T_INT);
@@ -881,7 +895,7 @@ decimal:
 		} while (isdigit(c));
 		unput(c);
 		yytext[yyleng] = '\0';
-		ret = ParseIString (10, yytext, yyleng, &yylval.i, &yylval.f);
+		ret = ParseIString (10, yytext, yyleng, &lvalp->i, &lvalp->f);
 		if (! ret)
 		    _dxd_exParseError = TRUE;
 		MYreturn (T_INT);
@@ -929,12 +943,12 @@ exponent3:
 		}
 
 floating:
-		ret = ParseFString (yytext, &yylval.f);
+		ret = ParseFString (yytext, &lvalp->f);
 		if (! ret)
 		    _dxd_exParseError = TRUE;
 		MYreturn (T_FLOAT);
  
-	    default:				/* probably an identifier */
+default:				/* probably an identifier */
 		if (isalpha(c) || c == '_' || c == '@')
 		{
 		    int		hitlimit  = FALSE;
@@ -956,7 +970,7 @@ floating:
 			    isdigit(c) ||
 			    c == '_'   ||
 			    c == '@'   ||
-			    c == '\'');
+			    c == '\'' );
 		    unput(c);
 		    yytext[yyleng] = '\0';
  
@@ -972,7 +986,7 @@ floating:
 		    if (keyword)
 			MYreturn (keyword->value);
  
-		    yylval.s = _dxf_ExStrSave (yytext);
+		    lvalp->s = _dxf_ExStrSave (yytext);
 		    MYreturn (T_ID);
 		}
 		MYreturn (c);

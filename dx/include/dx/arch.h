@@ -79,9 +79,14 @@
 #define strcasecmp stricmp
 #endif
 
+#if !defined(HAVE_RAND_MAX)
+#define RAND_MAX 0x7fffffff
+#endif
 
 #if defined(HAVE_RAND) && !defined(HAVE_RANDOM)
 #define random rand
+#undef RAND_MAX
+#define RAND_MAX 0x7fff
 #endif
 
 #if defined(HAVE_SRAND) && !defined(HAVE_SRANDOM)
@@ -199,7 +204,7 @@ char *strrstr(char *, char *);
  */
 #ifdef macos
 
-#define trunc(value) ((float)((int)(value)))
+/* #define trunc(value) ((float)((int)(value))) - trunc now defined in OS 10.2 */
 
 /* default values for gamma correction */
 #undef DXD_GAMMA_8BIT
@@ -275,7 +280,6 @@ char *strrstr(char *, char *);
 
 /* select expects int pointers for params */
 #define DXD_SELECTPTR_DEFINED  1
-typedef int * SelectPtr;
 
 /* can use the crypt system call for data encryption */
 #define DXD_HAS_CRYPT  1
@@ -531,7 +535,7 @@ union wait{
 
 #endif  /* aviion */
 
-#ifdef intelnt
+#if defined(intelnt) || defined(WIN32)
 
 #if defined(alloca)
 #undef alloca
@@ -564,8 +568,15 @@ union wait{
 #define	DXD_WIN	
 #define DXD_POPEN_OK 1
 
-#undef RSH
-#define RSH  "rsh"
+#if !defined(HAVE_ISNAN)
+#define isnan _isnan
+#define HAVE_ISNAN 1
+#endif
+
+#if !defined(HAVE_FINITE)
+#define finite _finite
+#define HAVE_FINITE 1
+#endif
 
 /* supports popen() */
 #define DXD_OS_NON_UNIX      1
@@ -593,7 +604,6 @@ union wait{
 #define DXD_PRINTF_RETURNS_COUNT 1
 
 #define DXD_SELECTPTR_DEFINED 1
-#define SelectPtr  fd_set*
 
 #define DXD_HAS_GETDTABLESIZE	1
 /*    #define DXD_NEEDS_SYS_SELECT_H 1     */
@@ -726,10 +736,6 @@ int getopt(int,char**,char*);
 
 #ifndef DXD_HW_XSERVER_MOVE_OK
 #define DXD_HW_XSERVER_MOVE_OK 0
-#endif
-
-#if !defined(DXD_SELECTPTR_DEFINED)
-typedef void * SelectPtr;
 #endif
 
 /* fixed type sizes */

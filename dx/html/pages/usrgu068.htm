@@ -164,7 +164,7 @@ The following example illustrates the basic Objects of the data model,
 and shows how to imbed data as text in the header section.
 The Objects and data describe a regular grid.
 This file is found in
-<TT><STRONG>/usr/lpp/dx/samples/data/regular.dx</STRONG></TT>.
+<TT><STRONG>/usr/local/dx/samples/data/regular.dx</STRONG></TT>.
 <A HREF="#FIGREGREG">Figure 86</A> shows the resulting structure.
 The axes diagram in the lower right corner of the figure indicates the
 orientation of the axes.
@@ -247,7 +247,7 @@ This example is similar to the previous one.
 However, the "positions" component is changed slightly so that the
 Objects and data describe a regular skewed grid.
 This file is found in
-<TT><STRONG>/usr/lpp/dx/samples/data/regularskewed.dx</STRONG></TT>.
+<TT><STRONG>/usr/local/dx/samples/data/regularskewed.dx</STRONG></TT>.
 <A HREF="#FIGREGSKWD">Figure 87</A> shows the resulting structure.
 <PRE>
 # This example describes a regular grid, where the axes are
@@ -301,7 +301,7 @@ Regular Grid Example</A></B><BR>
 displayed."></CENTER><BR></B><BR>
 <P>
 The example file (in
-<TT><STRONG>/usr/lpp/dx/samples/data/deformedregular.dx</STRONG></TT>)
+<TT><STRONG>/usr/local/dx/samples/data/deformedregular.dx</STRONG></TT>)
 defines a warped regular grid and shows how to imbed
 data as text in a header section.
 The values of the "positions" component are irregular and
@@ -376,7 +376,7 @@ are the next 6 and so on (see <A HREF="#FIGDEFORM">Figure 88</A>).
 <A NAME="IDX984"></A>
 <P>
 This example file (in
-<TT><STRONG>/usr/lpp/dx/samples/data/irregular.dx</STRONG></TT>)
+<TT><STRONG>/usr/local/dx/samples/data/irregular.dx</STRONG></TT>)
 defines an irregular grid and shows how to imbed data
 as text in a header section.
 The values of the "positions" and "connections" components
@@ -485,7 +485,7 @@ but the data is stored in a file separate from the header.
 If you use this sample header file in a script, the results are the same as
 in <A HREF="#FIGIRREG">Figure 89</A>.
 This file can be found in
-<TT><STRONG>/usr/lpp/dx/samples/data/irregirreg2.dx</STRONG></TT>.
+<TT><STRONG>/usr/local/dx/samples/data/irregirreg2.dx</STRONG></TT>.
 <PRE>
 object 1 class array type float rank 1 shape 3 items 24 msb binary
 data file irregirreg2.bin,0
@@ -574,7 +574,7 @@ combinations of the terms comprising the Array.
 The first data file defines data that has irregular positions in the xy
 plane but regular spacing in the z dimension.
 This file can be found in
-<TT><STRONG>/usr/lpp/dx/samples/data/product1.dx</STRONG></TT>.
+<TT><STRONG>/usr/local/dx/samples/data/product1.dx</STRONG></TT>.
 <A HREF="#FIGPRODAR">Figure 90</A> shows the resulting image.
 <PRE>
 # define a set of irregular points in the xy plane
@@ -626,7 +626,7 @@ displayed."></CENTER><BR></B><BR>
 The next data file defines a regular grid that is regular in the xy
 plane but has irregular positions in the z direction.
 This file can be found in
-<TT><STRONG>/usr/lpp/dx/samples/data/product2.dx</STRONG></TT>.
+<TT><STRONG>/usr/local/dx/samples/data/product2.dx</STRONG></TT>.
 <A HREF="#FIGPROD">Figure 91</A> shows the resulting image.
 <PRE>
 # define a set of regular points in the xy plane
@@ -676,7 +676,7 @@ that are associated with the data.
 The grid definitions are in a separate file
 (<TT><STRONG>pos&#95;conn.data</STRONG></TT>).
 This first file can be found in
-<TT><STRONG>/usr/lpp/samples/data/regseries.dx</STRONG></TT>.
+<TT><STRONG>/usr/local/samples/data/regseries.dx</STRONG></TT>.
 <PRE>
 # This example describes a data series with three member fields
 # Object 1 is the data associated with the first frame in the
@@ -796,7 +796,7 @@ end
 <P>
 The following file defines the grid for this time series.
 This file can be found in
-<TT><STRONG>/usr/lpp/samples/data/pos_conn.data</STRONG></TT>.
+<TT><STRONG>/usr/local/samples/data/pos_conn.data</STRONG></TT>.
 <PRE>
 object 1 class gridpositions counts 3 2 3
 origin  0  0  0
@@ -829,14 +829,14 @@ see blocks of constant color.
 <P>
 You can use the following script to render this Object:
 <PRE>
-  data = Import("/usr/lpp/samples/data/datadepconnections.dx", format="dx");
+  data = Import("/usr/local/samples/data/datadepconnections.dx", format="dx");
   colored = AutoColor(data);
   camera = AutoCamera(colored);
   Display(colored, camera);
 </PRE>
 <P>
 The data file is located in
-<TT><STRONG>/usr/lpp/samples/data/datadepconnections.dx</STRONG></TT>.
+<TT><STRONG>/usr/local/samples/data/datadepconnections.dx</STRONG></TT>.
 <PRE>
 # object 1 is the regular positions. The grid is 4x4. The origin is
 # at &#91;0 0&#93;, and the deltas are 1 in the first dimension, and
@@ -900,7 +900,7 @@ Display(colored, c);
 The data file is given below, and the resulting connections are
 illustrated in <A HREF="#FIGFLED">Figure 92</A>.
 The data file can be found in
-<TT><STRONG>/usr/lpp/dx/samples/data/FacesLoopsEdges.dx</STRONG></TT>.
+<TT><STRONG>/usr/local/dx/samples/data/FacesLoopsEdges.dx</STRONG></TT>.
 <PRE>
 #
 # Example of faces, loops and edges components.
@@ -1127,7 +1127,7 @@ part to view only the connections.
 The data file is given below, and the resulting connections are shown
 in <A HREF="#FIGSOLIDF">Figure 94</A>.
 This data file can be found in
-<TT><STRONG>/usr/lpp/samples/data/solid.dx</STRONG></TT>.
+<TT><STRONG>/usr/local/samples/data/solid.dx</STRONG></TT>.
 <PRE>
 # Example of faces, loops and edges components.
 #
@@ -1239,9 +1239,9 @@ This Data Explorer header file reads an image
 (<TT><STRONG>cylinder.rgb</STRONG></TT>).
 The image is 350 x 300 and consists of RGB colors (3-vectors).
 You can read this image in, and display it, using the visual program
-<TT><STRONG>/usr/lpp/dx/samples/programs/ReadImage.net</STRONG></TT>.
+<TT><STRONG>/usr/local/dx/samples/programs/ReadImage.net</STRONG></TT>.
 This file can be found in
-<TT><STRONG>/usr/lpp/dx/samples/data/image.dx</STRONG></TT>.
+<TT><STRONG>/usr/local/dx/samples/data/image.dx</STRONG></TT>.
 <TABLE><TR><TD ALIGN="LEFT" VALIGN="TOP"><B>Note:</B></TD><TD ALIGN="LEFT"
 VALIGN="TOP">It is easier to import a file in the RGB format by using the
 ReadImage module.

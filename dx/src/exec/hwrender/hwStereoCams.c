@@ -24,7 +24,9 @@
 #undef Screen
 #undef Boolean
 
+#if !defined(DX_NATIVE_WINDOWS)
 #include <X11/Xlib.h>
+#endif
 
 #include <math.h>
 
@@ -55,8 +57,14 @@ static int  defCreateStereoCameras0(void *,
 					float *, float *, float *, float, float,
 					float *, float *, float *, float **,
 					float *, float *, float *, float **);
+#if defined(DX_NATIVE_WINDOWS)
+/* Place holder for windows version -- correct prototype? */
+static int  defMapStereoXY0(void *, HWND, HWND, WindowInfo,
+							int, int, int*, int*);
+#else
 static int  defMapStereoXY0(void *, Window, Window, WindowInfo,
 					int, int, int*, int*);
+#endif
 
 static StereoCameraMode _defaultStereoCameraModes[1];
 
@@ -220,9 +228,15 @@ defCreateStereoCameras0(void *data,
     return OK;
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+static int
+defMapStereoXY0(void *data, HWND frame, HWND w, WindowInfo wi,
+				int xi, int yi, int *xo, int *yo)
+#else
 static int
 defMapStereoXY0(void *data, Window frame, Window w, WindowInfo wi,
 			int xi, int yi, int *xo, int *yo)
+#endif
 {
     *xo = xi;
     *yo = yi;

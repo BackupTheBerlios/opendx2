@@ -12,8 +12,14 @@
 
 
 #include <ctype.h>
+
+#if defined(HAVE_FSTREAM)
+#include <fstream>
+#elif defined (HAVE_FSTREAM_H)
 #include <fstream.h>
-#include <iostream.h>
+#else
+#error "no fstream and no fstream.h"
+#endif
 
 #include <Xm/Xm.h>
 #include <Xm/CascadeB.h>
@@ -2424,7 +2430,7 @@ Widget GARMainWindow::createWorkArea(Widget parent)
 
 unsigned long GARMainWindow::getMode(char *filenm)
 {
-    ifstream *from = new ifstream(filenm);
+    std::ifstream *from = new std::ifstream(filenm);
     if(!*from)
     {
 	WarningMessage("File open failed in getMode");
@@ -2433,7 +2439,7 @@ unsigned long GARMainWindow::getMode(char *filenm)
 
     return getMode(from);
 }
-unsigned long GARMainWindow::getMode(istream *from)
+unsigned long GARMainWindow::getMode(std::istream *from)
 {
 int	num_error = 0;
 int	ndx, ndim;
@@ -2866,7 +2872,7 @@ extern "C" void GARMainWindow_MajorityCB(Widget w, XtPointer clientData, XtPoint
 
     theGARApplication->setDirty();
 }
-void GARMainWindow::restrictStructure(Boolean restrict)
+void GARMainWindow::restrictStructure(Boolean rstrict)
 {
     Widget w;
     WidgetList children;
@@ -2880,9 +2886,9 @@ void GARMainWindow::restrictStructure(Boolean restrict)
     ASSERT(nchildren == 10);
 
     for(i = 5; i < 10; i++)
-	XtSetSensitive(children[i], !restrict);
+	XtSetSensitive(children[i], !rstrict);
 
-    if(restrict)
+    if(rstrict)
     {
 	XtVaGetValues(this->structure_om, XmNmenuHistory, &w, NULL);
 	for(i = 5; i < 10; i++)
@@ -4281,6 +4287,17 @@ extern "C" void GARMainWindow_InsertFieldCB(Widget, XtPointer clientData, XtPoin
     }
     gmw->updateRecordSeparatorList();
 }
+
+char * GARMainWindow::getFilename(void) {
+    // Check syntax of filename and change to Unix seps.
+    if(!this->filename)
+        return NULL;
+    char *fn = DuplicateString(this->filename);
+    for(int i=0; i<strlen(fn); i++) 
+        if(fn[i] == '\\') fn[i] = '/';
+    return fn;
+}
+
 Boolean GARMainWindow::addField(char *name, char *structure)
 {
     XmTextSetString(this->field_text, name);
@@ -6070,7 +6087,7 @@ boolean GARMainWindow::saveGAR(char *file)
 
     if(!validateGAR()) return False;
 
-    ofstream *to = new ofstream(file);
+    std::ofstream *to = new std::ofstream(file);
     if(!*to)
     {
 	WarningMessage("File open failed on save");
@@ -6080,7 +6097,7 @@ boolean GARMainWindow::saveGAR(char *file)
     saveGAR(to);
     return True;
 }
-void GARMainWindow::saveGAR(ostream *to)
+void GARMainWindow::saveGAR(std::ostream *to)
 {
     int i;
     int k;
@@ -6111,11 +6128,11 @@ void GARMainWindow::saveGAR(ostream *to)
 	      if(this->comment_text[i+1]) *to << "# ";
 	    i++;
 	  }
-	*to << endl;
+	*to << std::endl;
       }
     
     
-    *to << "file = " << XmTextGetString(this->file_text) << endl;
+    *to << "file = " << XmTextGetString(this->file_text) << std::endl;
     
     if(XmToggleButtonGetState(this->grid_tb))
       {
@@ -6127,7 +6144,7 @@ void GARMainWindow::saveGAR(ostream *to)
       {
 	*to << "points = " << XmTextGetString(this->points_text);
       }
-    *to << endl;
+    *to << std::endl;
     
     *to << "format = ";
     if(XtIsSensitive(this->format1_om))
@@ -6136,7 +6153,7 @@ void GARMainWindow::saveGAR(ostream *to)
 	*to << " ";
       }
     OM_NAME_OUT(*to, this->format2_om);
-    *to << endl;
+    *to << std::endl;
     
     //
     // Interleaving translation:
@@ -6199,7 +6216,7 @@ void GARMainWindow::saveGAR(ostream *to)
 	      *to << "record";
 	  }
       }
-    *to << endl;
+    *to << std::endl;
     
     if(XtIsSensitive(this->majority_label))
       {
@@ -6208,7 +6225,7 @@ void GARMainWindow::saveGAR(ostream *to)
 	  *to << "row";
 	else
 	  *to << "column";
-	*to << endl;
+	*to << std::endl;
       }
     
     if(XmToggleButtonGetState(this->header_tb))
@@ -6230,12 +6247,12 @@ void GARMainWindow::saveGAR(ostream *to)
 	  {
 	    str = XmTextGetString(this->header_text);
 	    STRIP_QUOTES(str);
-	    *to << " \"" << str << "\"" << endl;
+	    *to << " \"" << str << "\"" << std::endl;
 	    XtFree(str);
 	  }
 	else
 	  {
-	    *to << " " << XmTextGetString(this->header_text) << endl;
+	    *to << " " << XmTextGetString(this->header_text) << std::endl;
 	  }
       }
     
@@ -6282,7 +6299,7 @@ void GARMainWindow::saveGAR(ostream *to)
 		*to << " " << XmTextGetString(this->series_sep_text);
 	      }
 	  }
-	*to << endl;
+	*to << std::endl;
       }
 
     //
@@ -6300,7 +6317,7 @@ void GARMainWindow::saveGAR(ostream *to)
 	    *to << field->getName();
 	    if(i < this->fieldList.getSize()) *to << ", ";
 	  }
-	*to << endl;
+	*to << std::endl;
 	
 	//
 	// Structure
@@ -6312,7 +6329,7 @@ void GARMainWindow::saveGAR(ostream *to)
 	    *to << field->getStructure();
 	    if(i < this->fieldList.getSize()) *to << ", ";
 	  }
-	*to << endl;
+	*to << std::endl;
 	
 	//
 	// Type
@@ -6324,7 +6341,7 @@ void GARMainWindow::saveGAR(ostream *to)
 	    *to << field->getType();
 	    if(i < this->fieldList.getSize()) *to << ", ";
 	  }
-	*to << endl;
+	*to << std::endl;
 	
 	//
 	// Dependency
@@ -6338,7 +6355,7 @@ void GARMainWindow::saveGAR(ostream *to)
 		*to << field->getDependency();
 		if(i < this->fieldList.getSize()) *to << ", ";
 	      }
-	    *to << endl;
+	    *to << std::endl;
 	  }
 
 	//
@@ -6356,7 +6373,7 @@ void GARMainWindow::saveGAR(ostream *to)
 		    << field->getLayoutWidth();
 		if(i < this->fieldList.getSize()) *to << ", ";
 	      }
-	    *to << endl;
+	    *to << std::endl;
 	  }
 
 
@@ -6376,7 +6393,7 @@ void GARMainWindow::saveGAR(ostream *to)
 		    << field->getBlockWidth();
 		if(i < this->fieldList.getSize()) *to << ", ";
 	      }
-	    *to << endl;
+	    *to << std::endl;
 	  }
 
       }
@@ -6444,9 +6461,9 @@ void GARMainWindow::saveGAR(ostream *to)
 		    *to << ", ";
                 }
 	      
-	      *to << endl;
+	      *to << std::endl;
 	    }
-	*to << endl;
+	*to << std::endl;
 	}
 
     //
@@ -6481,10 +6498,10 @@ void GARMainWindow::saveGAR(ostream *to)
 		*to << ", ";
 	}
         }
-	*to << endl;
+	*to << std::endl;
     }
 
-    *to << endl << "end" << endl;
+    *to << std::endl << "end" << std::endl;
 
     theGARApplication->setClean();
 }
@@ -6805,7 +6822,7 @@ boolean GARMainWindow::openGAR(char *filenm)
 {
     this->setFilename(filenm);
 
-    ifstream *from = new ifstream(filenm);
+    std::ifstream *from = new std::ifstream(filenm);
     if(!*from)
     {
 	WarningMessage("File open failed.");
@@ -6819,7 +6836,7 @@ boolean GARMainWindow::openGAR(char *filenm)
 
     return TRUE;
 }
-boolean GARMainWindow::openGAR(istream *from)
+boolean GARMainWindow::openGAR(std::istream *from)
 {
     int i;
     int ndx;
@@ -7438,7 +7455,7 @@ void GARMainWindow::parseBlock(char *line)
     XmToggleButtonSetState(this->block_tb, True, False);
     this->block_was_on = True;
 }
-void GARMainWindow::parsePositions(istream *from, char *line)
+void GARMainWindow::parsePositions(std::istream *from, char *line)
 {
     char *str;
     char *tmpstr;

@@ -65,13 +65,22 @@ System(<STRONG>string</STRONG>);
 <P>
 The System module uses the C library <TT><STRONG>system()</STRONG></TT>
 function to execute operating system commands.
-<P>
-If the characters %, \, or &quot; occur in the command string, they must
-be escaped: the percent sign must be preceded by another percent
-sign; backslashes and double quotes must be preceded by a
-backslash.
-<P><STRONG>Script Language Example</STRONG>
-<P>
+
+		<P>If the characters %, \, or &quot; occur in the command string, they must be escaped: the percent sign must be preceded by another percent sign; backslashes and double quotes must be preceded by a backslash.
+		<H4>Special note about running Microsoft Window's executables and pathnames. </H4>
+		<P>Because a space can be part of an application's path, it may be required that you quote the path string. Following the convention in the previous paragraph, quotes must be inserted with \&quot; and backslashes will need to use the escaped \ (i.e. \\). There is one exception to this--if the pathname does not contain a space and it starts a full path to the application (<I>letter followed by colon</I>), then non-escaped backslashes may be used. For example acceptable and unacceptable strings, refer to the following:</P>
+		<H5>Acceptable:</H5>
+		<P><CODE>&quot;C:\Progra~1\MyApp\RunData.exe datafile.dat&quot;<BR>
+			</CODE><CODE>&quot;\&quot;C:\\Program Files\\MyApp\\RunData.exe\\&quot; datafile.dat&quot;<BR>
+				&quot;\&quot;C:/Program Files/MyApp/RunData.exe\&quot; datafile.dat&quot;</CODE></P>
+		<H5>Unacceptable</H5>
+		<P><CODE>&quot;C:\Program Files\MyApp\RunData.exe datafile.dat&quot;<BR>
+				(previous needs shortpath used--no spaces)<BR>
+				&quot;\&quot;C:\Program Files\MyApp\RunData.exe\&quot; datafile.net&quot;<BR>
+				(previous needs backslashes escaped)</CODE></P>
+		<P>
+		<P><STRONG>Script Language Example</STRONG></P>
+		<P>
 This example creates a sequence of captioned images using different
 isosurface values.
 The Format module creates a different image file name for
@@ -79,7 +88,7 @@ each image.
 The System module executes the compress function to minimize the amount
 of disk space used.
 <PRE>
-electrondensity = Import("/usr/lpp/dx/samples/data/watermolecule");
+electrondensity = Import("/usr/local/dx/samples/data/watermolecule");
 electrondensity = Partition(electrondensity);
 camera = AutoCamera(electrondensity,resolution=300,aspect=1,width=2.5);
 macro makeiso(isoval)

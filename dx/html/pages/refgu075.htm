@@ -220,7 +220,7 @@ has been mapped onto an isosurface.
 The Include module removes all points whose data values are greater
 than 1.5.
 <PRE>
-electrondensity = Import("/usr/lpp/dx/samples/data/watermolecule");
+electrondensity = Import("/usr/local/dx/samples/data/watermolecule");
 electrondensity = Partition(electrondensity);
 gradientdensity = Gradient(electrondensity);
 maggradient = Compute("mag($0)", gradientdensity);

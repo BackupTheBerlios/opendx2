@@ -224,14 +224,14 @@ dst}.  Attributes that are present in {\tt dst} but not present in
 null and sets the error code to indicate an error.
 **/
 
-enum copy {
+enum _dxd_copy {
     COPY_ATTRIBUTES,
     COPY_HEADER,
     COPY_STRUCTURE,
     COPY_DATA
 };
 
-Object DXCopy(Object o, enum copy copy);
+Object DXCopy(Object o, enum _dxd_copy copy);
 /**
 \index{DXCopy}
 A variety of object copying operations are provided, differing in the

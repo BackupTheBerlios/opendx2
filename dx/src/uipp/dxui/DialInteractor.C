@@ -329,6 +329,10 @@ void DialInteractor::updateDialValue()
 {
     Arg		   wargs[10];
     int		   i,components,n=0;
+#if defined(alphax)
+XtArgVal dx_l;
+#endif
+
     // FIXME: should check to make sure we have the correct class of node.
     ScalarInstance *si = (ScalarInstance*)this->interactorInstance;
     ASSERT(si);

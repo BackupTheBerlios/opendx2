@@ -127,7 +127,12 @@ If you opened the VPE using <TT><STRONG>Open Macro</STRONG></TT>, this option is
 grayed out.
 See <A HREF="usrgu041.htm#HDRFSBOX">"File Selection Dialog Boxes"</A> for more
 information.
-</TD></TR><TR VALIGN="TOP"><TD><P><B>Save Program
+</TD></TR>
+			<TR VALIGN="TOP">
+				<TD><B>Recent Programs</B></TD>
+				<TD>Brings up a cascade menu with the recently opened visual programs. Select one of the choices to open the respective network.</TD>
+			</TR>
+			<TR VALIGN="TOP"><TD><P><B>Save Program
 </B></TD><TD><P>Saves the current visual program, and associated Control Panels.
 This option saves the following files:
 <I>filename</I><TT><STRONG>.net</STRONG></TT> (for network;
@@ -199,7 +204,11 @@ before quitting.
 The <TT><STRONG>Edit</STRONG></TT> menu lists options for manipulating tools
 on the canvas.
 <TABLE CELLPADDING="3">
-<TR VALIGN="TOP"><TD><P><B>Configuration...
+			<TR VALIGN="TOP">
+				<TD><B>Undo</B></TD>
+				<TD>Reverts the last performed action.</TD>
+			</TR>
+			<TR VALIGN="TOP"><TD><P><B>Configuration...
 </B></TD><TD><P>Displays a Configuration dialog box for setting and changing
 the values of the selected tool.
 See <A HREF="usrgu041.htm#HDRUCB">"Entering Values in a Configuration Dialog
@@ -343,11 +352,42 @@ specify whether or not the page is included in PostScript output
 and specify the tab position of the page.
 </TD></TR></TABLE>
 
-</TD></TR><TR VALIGN="TOP"><TD><P><B>Macro Name ...
+</TD></TR>
+			<TR VALIGN="TOP">
+				<TD><B>Java</B></TD>
+				<TD>
+					<P>Brings up a cascade menu available only when the network has been saved with the following options:</P>
+					<TABLE CELLPADDING="3">
+						<TR VALIGN="TOP">
+							<TD><B>Add Tools</B></TD>
+							<TD>Adds a page to the network named &quot;java tools&quot; and sets up the control panels and Image modules to work with the Java applets.</TD>
+						</TR>
+						<TR VALIGN="TOP">
+							<TD><B>Remove Tools</B></TD>
+							<TD>Removes the &quot;java tools&quot; and reverts the network back to a non-Java Explorer based network.</TD>
+						</TR>
+						<TR VALIGN="TOP">
+							<TD><B>Save As Webpage</B></TD>
+							<TD>Saves a minimum of four new files within the same directory as the network that are used to construct the Java Explorer based network.</TD>
+						</TR>
+						<TR VALIGN="TOP">
+							<TD><B>Net To Applet</B></TD>
+							<TD>Save just the network as an applet without updating all the other webpage files.</TD>
+						</TR>
+					</TABLE>
+					<P>See <A HREF="usrgu059.htm">11, </A><A HREF="usrgu059.htm">&quot;Java Explorer&quot;</A> for more information.</P>
+				</TD>
+			</TR>
+			<TR VALIGN="TOP"><TD><P><B>Macro Name ...
 </B></TD><TD><P>Displays a Configuration dialog box for naming a
 visual program as a macro.
 See <A HREF="usrgu044.htm#HDRCREMAC">"Creating Macros"</A> for more information.
-</TD></TR><TR VALIGN="TOP"><TD><P><B>Execution Groups...
+</TD></TR>
+			<TR VALIGN="TOP">
+				<TD><B>Layout Graph</B></TD>
+				<TD>Rearranges a network on the current active page using a graph algorithm to organize its layout.</TD>
+			</TR>
+			<TR VALIGN="TOP"><TD><P><B>Execution Groups...
 </B></TD><TD><P>Displays a dialog box for creating and modifying execution
 groups.
 (See <A HREF="usrgu047.htm#HDRDISTCMP">9.1 , "Using Distributed
@@ -515,7 +555,12 @@ The <TT><STRONG>Options</STRONG></TT> menu lists the following options&#58;
 </B></TD><TD><P>Toggles between displaying the tool palettes and not displaying
 them.
 You can also use the <TT><STRONG>Ctrl&#43;T</STRONG></TT> accelerator key.
-</TD></TR><TR VALIGN="TOP"><TD><P><B>Control Panel Access...
+</TD></TR>
+			<TR VALIGN="TOP">
+				<TD><B>Prevent Overlap</B></TD>
+				<TD>Toggles the option where dropping a module in the same space as an existing module ignores the request. This stops the feature where dropping a module will move an existing module out of the way.</TD>
+			</TR>
+			<TR VALIGN="TOP"><TD><P><B>Control Panel Access...
 </B></TD><TD><P>Allows you to specify which controls panels and control panel
 groups are accessible from the VPE.
 (See <A HREF="usrgu043.htm#HDRCPA">"Control Panel Access, Groups, and

@@ -52,8 +52,8 @@ END:
 
 
 /* These are global variables to allow communication with the parser */
-PTreeNode *_dxdcomputeTree;
-CompInput _dxdcomputeInput[MAX_INPUTS];
+PTreeNode *_dxdcomputeTree = NULL;
+CompInput _dxdcomputeInput[MAX_INPUTS] = {{0, (Class)NULL, NULL}};
 
 
 /*

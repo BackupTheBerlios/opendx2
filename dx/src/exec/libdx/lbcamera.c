@@ -141,7 +141,7 @@ _dxfCamera_Delete(Camera c)
 
 
 Object
-_dxfCamera_Copy(Camera old, enum copy copy)
+_dxfCamera_Copy(Camera old, enum _dxd_copy copy)
 {
     Camera new;
     new = DXNewCamera();

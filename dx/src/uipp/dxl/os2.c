@@ -64,7 +64,7 @@ DXLError DXLInitializePMMainLoop(HWND PMAppWindow, DXLConnection *conn)
 
 #else
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 
 DXLError DXLInitializePMMainLoop(HWND PMAppWindow, DXLConnection *conn)	/*     ajay   */
 {

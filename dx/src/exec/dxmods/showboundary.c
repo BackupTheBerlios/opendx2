@@ -11,7 +11,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.7 2002/03/21 02:57:39 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.8 2003/07/11 05:50:36 davidt Exp $
  */
 
 #include <string.h>
@@ -39,7 +39,7 @@ struct
     int  have_connects;
     int  have_nondegen;
 }
-global;
+global = {0, 0};
 
 
 /*

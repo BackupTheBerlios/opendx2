@@ -18,14 +18,10 @@ javadxdir = $(prefix)/dx/java/htmlpages
 javadx_DATA = dx.jar 
 javasrvdir = $(prefix)/dx/java/server/class
 javasrv_DATA = server.jar 
-EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java exports.awk
+EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java exports.awk README
 javalibdir = $(prefix)/dx/java/server/lib_@ARCH@
 
 javalib_DATA = @ANYDX@
-# EXTRA_PROGRAMS = libAnyDX.so AnyDX.dll
-# EXTRA_DATA = $(javalib_DATA)
-# libAnyDX_so_SOURCES =
-# AnyDX_dll_SOURCES =
 SUBDIRS = server dx
 
 ##
@@ -78,27 +74,27 @@ AnyDX.dll: DXLink.o
 	fi
 
 libAnyDX.jnilib: DXLink.o
-	cc -bundle -o libAnyDX.jnilib -framework JavaVM `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o -L/usr/X11R6/lib -lXt
+	cc -bundle -o libAnyDX.jnilib -framework JavaVM `ls ../dxl/*.o ../dxl/.libs/*.o | sed -e "s&.*object\.o&&" -e "s&.*dylib.*\.o&&"` DXLink.o -L/usr/X11R6/lib -lXt
 
 usual_shared_object: DXLink.o
-	$(SHARED_LINK) $(DXABI) $(DX_RTL_ALDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&" -e "s&../dxl/x11.o&&"`  DXLink.o
+	$(SHARED_LINK) $(DXABI) $(DX_RTL_ALDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/.libs/*.o | sed -e "s&../dxl/.libs/object.o&&" -e "s&../dxl/.libs/x11.o&&"`  DXLink.o
 
 aix_shared_object: DXLink.o
-	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
+	ar -ruv tmpAnyDX.a `ls ../dxl/.libs/*.o | sed -e "s&../dxl/.libs/object.o&&"` DXLink.o
 	nm -epC tmpAnyDX.a | awk -f $(srcdir)/exports.awk > tmpAnyDX.exp
 	ld -bnoentry -bM:SRE -o libAnyDX.so -bE:tmpAnyDX.exp tmpAnyDX.a -L /usr/lpp/X11/lib -lXt -lX11 -lc
 	rm -f tmpAnyDX.*
 
 cygwin_shared_object: DXLink.o
-	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
+	ar -ruv tmpAnyDX.a `ls ../dxl/.libs/*.o | sed -e "s&../dxl/.libs/object.o&&"` DXLink.o
 	echo EXPORTS > tmpAnyDX.exp
 	nm --demangle --defined-only tmpAnyDX.a | sed -n 's/^.* T //p' >> tmpAnyDX.exp
 	dllwrap -s --export-all-symbols --image-base 0x6620000 --def tmpAnyDX.exp --driver-name gcc -o libAnyDX.dll DXLink.o -L../dxl -lDXL -L/usr/X11R6/lib -lXt -lSM -lICE -lX11
 	rm -f tmpAnyDX.*
 
 windows_shared_object: DXLink.o
-	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
-	cc /LD -o AnyDX.dll DXLink.o -L../dxl libDXL.a $(LIBS)
+	ar -ruv tmpAnyDX.a `ls ../dxl/*.obj | sed -e "s&../dxl/object.obj&&"` DXLink.obj
+	cc /LD -o AnyDX.dll DXLink.obj -L../dxl/.libs libDXL.lib $(LIBS)
 	rm -f tmpAnyDX.*
 
 

@@ -3,25 +3,25 @@
 INCLUDES = -I${top_srcdir}/include -I${srcdir}/../dpexec -D@ARCH@
 
 dxmdfdir = $(prefix)/dx/lib
-noinst_LIBRARIES = libDXMODS.a libusercm.a
+noinst_LTLIBRARIES = libDXMODS.la libusercm.la libuser.la libDXMODSN.la
 SUFFIXES = .c .y .c .s .h .o 
 
-BUILT_SOURCES = user.c _compparse.h y.tab.c usercm.c
+BUILT_SOURCES = user.c usercm.c
 EXTRA_DIST = local.mk
 
-DISTCLEANFILES = y.tab.h _compparse.c _compparse.h dx.mdf dxcm.mdf user.c usercm.c tmp.c y.output
+DISTCLEANFILES = dx.mdf dxcm.mdf user.c usercm.c tmp.c
 
 dxmdf_DATA = dx.mdf
 
 _complex.o: _compparse.h
 
 HEADERS1 = \
-	_autocolor.h _autogray.h _colormap.h _compoper.h _compputils.h  \
-	_compute.h _connectgrids.h _connectvor.h _construct.h _divcurl.h \
-	_getfield.h _glyph.h _gradient.h _grid.h _helper_jea.h _isosurface.h \
-	_maptoplane.h _newtri.h _normals.h _partnbrs.h _plot.h _post.h \
-	_refine.h _rubbersheet.h _rw_image.h _sample.h autoaxes.h \
-	bounds.h cases.h cat.h changemember.h color.h echo.h
+	_autocolor.h _autogray.h _colormap.h _compoper.h _compparse.h \
+	_compputils.h  _compute.h _connectgrids.h _connectvor.h _construct.h \
+	_divcurl.h _getfield.h _glyph.h _gradient.h _grid.h _helper_jea.h \
+	_isosurface.h _maptoplane.h _newtri.h _normals.h _partnbrs.h \
+	_plot.h _post.h _refine.h _rubbersheet.h _rw_image.h _sample.h \
+	autoaxes.h bounds.h cases.h cat.h changemember.h color.h echo.h
 
 HEADERS2 = \
 	eigen.h exp_gai.h genimp.h glyph_ARRW.h glyph_ARRW2D.h glyph_BOX.h \
@@ -50,15 +50,15 @@ SOURCES1 = \
 	colorbar.c colormap.c compute.c compute2.c connect.c 
 SOURCES2 = \
 	construct.c convert.c copy.c describe.c direction.c \
-	display.c divcurl.c dxlmessage.c dxlinnamed.c \
-	dxloutvalue.c echo.c enumerate.c equalize.c executive.c \
+	display.c divcurl.c dxlmessage.c \
+	dxloutvalue.c echo.c enumerate.c equalize.c \
 	export.c extract.c facenormals.c filter.c format.c \
-	fourier.c getscene.c getset.c glyph.c gradient.c \
+	fourier.c getscene.c glyph.c gradient.c \
 	grid.c histogram.c imagemessage.c import.c import_ss.c \
 	include.c inquire.c isolate.c isosurface.c integer.c 
 SOURCES3 = \
 	integerlist.c keyin.c light.c list.c lookup.c \
-	loop.c macroutil.c map.c maptoplane.c mark.c \
+	macroutil.c map.c maptoplane.c mark.c \
 	measure.c message.c normals.c options.c overlay.c \
 	parse.c partition.c pick.c pickinv.c pie.c plot.c \
 	post.c print.c programctl.c quantize.c rdimagewin.c \
@@ -67,7 +67,7 @@ SOURCES3 = \
 SOURCES4 = \
 	rotate.c route.c rubbersheet.c sample.c scalar.c \
 	scalarlist.c scale.c scalescreen.c screen.c select.c \
-	selector.c sequencer.c shade.c showboundary.c showbox.c \
+	selector.c shade.c showboundary.c showbox.c \
 	showconnect.c showposition.c slab.c slice.c socketconnect.c \
 	sort.c stack.c statistics.c streakline.c streamline.c \
 	stringlegend.c superstate.c superwin.c switch.c system.c \
@@ -75,11 +75,11 @@ SOURCES4 = \
 SOURCES5 = \
 	transpose.c tube.c unmark.c usage.c vector.c \
 	vectorlist.c verify.c visualobject.c writeimage.c \
-	simplesurf.c dxmdf.src user.c \
+	simplesurf.c dxmdf.src \
 	_autocolor.c _autogray.c \
 	_cat_util.c _color.c _colormap.c _complex.c \
 	_compoper.c _compoper1.c _compoper2.c _compcmplx.c \
-	_compinput.c _compexec.c _compparse.y _compputils.c 
+	_compinput.c _compexec.c _compparse.c _compputils.c 
 SOURCES6 = \
 	_connectgrids.c _connectvor.c _construct.c _divcurl.c \
 	_getfield.c _gif.c _glyph.c _gradient.c \
@@ -93,13 +93,16 @@ SOURCES7 =  \
 	bounds.c definter.c exp_gai.c genimp.c \
 	genimp_io.c genimp_parse.c importtable.c import_cdf.c \
 	import_cm.c import_hdf.c import_ncdf.c private.c \
-	separate.c superwinX.c tracevisual.c vectors.c \
+	separate.c superwinX.c superwinW.c tracevisual.c vectors.c \
 	vrml.c eigen.c vsincos.c
 
-libusercm_a_SOURCES =   \
-	usercm.c 
+libusercm_la_SOURCES = usercm.c 
 
-libDXMODS_a_SOURCES =   \
+libuser_la_SOURCES = user.c
+
+libDXMODSN_la_SOURCES = executive.c getset.c loop.c dxlinnamed.c sequencer.c
+
+libDXMODS_la_SOURCES =   \
 	$(SOURCES1) \
 	$(SOURCES2) \
 	$(SOURCES3) \

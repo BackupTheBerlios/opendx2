@@ -8,6 +8,16 @@
 
 #include <dxconfig.h>
 
+#if defined(DX_NATIVE_WINDOWS)
+
+#include <dx/dx.h>
+Error _dxf_ExInitStatus (int n, int flag)
+{
+    DXSetError(ERROR_INTERNAL, "No X stuff!!");
+    return ERROR;
+}
+
+#else /* !DX_NATIVE_WINDOWS */
 
 #define Screen DXScreenHack	/* hack to get around libdx Screen def */
 #include <dx/dx.h>
@@ -353,3 +363,5 @@ void _dxf_ExReportStatus ()
     }
 }
 #endif
+
+#endif /* DX_NATIVE_WINDOWS */

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/interact.h,v 1.6 2000/08/24 20:04:39 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/interact.h,v 1.7 2003/07/11 05:50:35 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -34,7 +34,7 @@
 #define NAME_CHARS   10		/* number of print characters for each name */
 #define METHOD_CHARS 10     	/* number of print characters for method */
 
-#if  defined(intelnt) && defined(ABSOLUTE)
+#if (defined(intelnt) || defined(WIN32)) && defined(ABSOLUTE)
 #undef	ABSOLUTE
 #endif
 

@@ -12,7 +12,7 @@
 #define render_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.6 2002/03/21 02:59:09 rhh Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.7 2003/07/11 05:50:37 davidt Exp $"};
 #endif
 
 #include <stdio.h>
@@ -25,12 +25,18 @@ static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/op
 #include "hwView.h"
 #include "hwGather.h"
 #include "hwMatrix.h"
-
 #include "hwDebug.h"
 
+#if !defined(DX_NATIVE_WINDOWS)
 #include <X11/Xlib.h>
+#endif
+
 #if !defined(hp700)
+
+#if !defined(DX_NATIVE_WINDOWS)
 #include <GL/glx.h>
+#endif
+
 #include <GL/gl.h>
 #endif
 
@@ -44,6 +50,12 @@ extern void _dxfSetProjectionMatrix(void *, void *, MATRIX);
 
 extern dxObject _dxf_getCachedObject(void *, dxObject);
 
+#if defined(DX_NATIVE_WINDOWS)
+static HANDLE OGLLock = NULL;
+static int firstRender = 1;
+#endif
+
+
 Error
 _dxfDraw (void* globals, dxObject o, Camera c, int buttonUp)
 {
@@ -52,8 +64,24 @@ _dxfDraw (void* globals, dxObject o, Camera c, int buttonUp)
   gatherO gather = NULL;
   int r;
 
+
+#if defined(DX_NATIVE_WINDOWS)
+  if (firstRender)
+  {
+	  firstRender = 0;
+	  OGLLock = CreateMutex(NULL, TRUE, NULL);
+  }
+  else
+  {
+	  if (DXWaitForSignal(1, &OGLLock) == WAIT_TIMEOUT)
+		  return ERROR;
+  }
+#endif
+
+#if !defined(DX_NATIVE_WINDOWS)
   if (DXUI)
     DXUIMessage("HW","begin");
+#endif
 
   if (GATHER_TAG == DXGetObjectTag(o))
   {
@@ -114,18 +142,39 @@ error:
 Error
 _dxfDrawMono (gatherO gather, void* globals, dxObject o, Camera c, int buttonUp)
 {
+    int pixw, pixh;
     DEFGLOBALDATA(globals);
     DEFPORT(PORT_HANDLE);
+
+#if defined(DX_NATIVE_WINDOWS)
+  {
+    RECT rect;
+    _dxf_SET_OUTPUT_WINDOW(LWIN);
+    GetClientRect(XWINID, &rect);
+    pixw = rect.right - rect.left;
+    pixh = rect.bottom - rect.top;
+  }
+#else
+  {
     XWindowAttributes xwa;
 
     _dxf_SET_OUTPUT_WINDOW(LWIN, XWINID);
     XGetWindowAttributes(DPY, XWINID, &xwa);
-    _dxf_SET_VIEWPORT (PORT_CTX, 0, xwa.width-1, 0, xwa.height-1) ;
-    _dxfSetViewport (MATRIX_STACK, 0, xwa.width-1, 0, xwa.height-1) ;
+    pixw = xwa.width - 1;
+    pixh = xwa.height - 1;
+  }
+#endif
+
+    _dxf_SET_VIEWPORT (PORT_CTX, 0, pixw, 0, pixh) ;
+    _dxfSetViewport (MATRIX_STACK, 0, pixw, 0, pixh) ;
     _dxf_CLEARBUFFER(LWIN);
     _dxfDrawEither(gather, globals, o, c, buttonUp);
 
+#if defined(DX_NATIVE_WINDOWS)
+    _dxf_SWAP_BUFFERS(PORT_CTX);
+#else
     _dxf_SWAP_BUFFERS(PORT_CTX, XWINID);
+#endif
 
     return OK;
 }
@@ -187,6 +236,7 @@ _dxfGetStereoCameras (void *globals, Camera c, Camera *lcp, Camera *rcp)
 Error
 _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonUp)
 {
+#if !defined(DX_NATIVE_WINDOWS)
     DEFGLOBALDATA(globals);
     DEFPORT(PORT_HANDLE);
     DEFCAMERA(INTERACTOR_DATA);
@@ -280,7 +330,7 @@ _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonU
         _dxf_SET_OUTPUT_WINDOW(LWIN, RIGHTWINDOW);
         _dxf_SWAP_BUFFERS(PORT_CTX, RIGHTWINDOW);
     }
-
+#endif
     return OK;
 
 }
@@ -363,10 +413,18 @@ _dxfDrawEither (gatherO gather, void* globals, dxObject o, Camera c, int buttonU
   if (camScreen)
       DXDelete(camScreen);
 
+#if defined(DX_NATIVE_WINDOWS)
+  ReleaseMutex(OGLLock);
+#endif
+
   EXIT(("OK"));
   return OK;
   
  error:
+
+#if defined(DX_NATIVE_WINDOWS)
+  ReleaseMutex(OGLLock);
+#endif
 
   if (c) {
     if (view)

@@ -109,7 +109,7 @@ Error _dxfreadarray_binary(struct finfo *f, Array a, int format)
     Type type;
     int items, actual;
 
-#if WORDS_BIGENDIAN==1
+#if defined(WORDS_BIGENDIAN)
     int nonnative = D_LSB;
 #else
     int nonnative = D_MSB;

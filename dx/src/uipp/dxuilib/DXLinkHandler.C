@@ -36,13 +36,6 @@
 #include "DXLinkHandler.h"
 #include <ctype.h>
 #include <stdarg.h>
-#ifdef  DXD_WIN
-#include <iostream.h>
-#else
-#if defined(HAVE_STREAM_H)
-#include <stream.h>
-#endif 
-#endif
 
 /*
  * What follows is a set of routines to handle the DX Application commands.
@@ -401,48 +394,71 @@ boolean DXLinkHandler::CloseVPE(const char *c, int id, void *va)
     in the Unix code.  F Suits 5/97
     Oh - it appears it always had a bug because the line that says *d = '\0';
     used to say *d = '0';
+    
+    I believe this to be a problem. UN*X machines can also send paths
+    with spaces for file names. MacOS X users will commonly do this; thus
+    I will rewrite it to look to see if two files are being passed in (for
+    a .net and a .cfg); if not, then just remove leading and trailing spaces.
 */
 boolean DXLinkHandler::OpenNetwork(const char *c, int id, void *va)
 {
     char *buf = new char[strlen(c)+1];
-    char *d, *cfg, *net;
+    char *d, *e, *cfg, *net;
+	int len=0;
 
-    if (isspace(*c))
-	while (isspace(*c++));
+	if( !c ) 
+	  return TRUE;
 
-    if (! *c)
-	return TRUE;
+	e = buf;
+	strcpy(buf, c);
+	/* remove leading spaces */
 
+    if (isspace(*e))
+	while (isspace(*e++));
+	
+	if(! *e)
+	  return TRUE;
+	
+	/* remove trailing spaces */
+	
+	len = strlen(e);
+	d = (len<=0?e:e+len-1);
+	
+	if (isspace(*d)) {
+	  while(isspace(*d--));
+	  d++; *d = '\0';
+	}
+	
     d = net = buf;
 
-#ifndef DXD_WIN
-    do {
-	*d++ = *c++;
-    } while (*c && !isspace(*c));
+	/* Now determine if there are two filenames passed in */
+	
+	if (strstr(buf, "net") != NULL && strstr(buf, "cfg") != NULL) {
+	
+	    /* Use old routine to get filenames for both net and cfg. File
+	       names cannot contain spaces. 
+	     */
 
-    *d++ = '\0';
+        do {
+	       d++;
+        } while (*d && !isspace(*d));
 
-    if (*c && isspace(*c))
-	while (isspace(*c++));
+        *d++ = '\0';
+        e=d;
 
-    if (! *c)
-	cfg = NULL;
-    else
-    {
-	cfg = d;
-	do {
-	    *d++ = *c++;
-	} while (*c && !isspace(*c));
+        if (*e && isspace(*e))
+	        while (isspace(*e++));
 
-	*d = '\0';
-    }
-#else
-    strcpy(net, c);
-    for (d=&net[strlen(net)-1]; *d && isspace(*d); d--);
-    d[1] = '\0';
-    cfg = NULL;
-#endif
-
+        if (! *e)
+	        cfg = NULL;
+        else
+        {
+	        cfg = e;
+        }
+	} else {
+		cfg = NULL;
+	}
+	
     theDXApplication->setBusyCursor(TRUE);
 
     boolean r;

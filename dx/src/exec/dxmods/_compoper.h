@@ -91,6 +91,9 @@ typedef struct {
 #define FUNC_strlen	(LAST_OPER+ 57)
 #define FUNC_strstr	(LAST_OPER+ 58)
 #define FUNC_stristr	(LAST_OPER+ 59)
+#define FUNC_finite	(LAST_OPER+ 60)
+#define FUNC_isnan	(LAST_OPER+ 61)
+
 
 typedef struct {
     float realPart;
@@ -1468,6 +1471,8 @@ complexFloat _dxfComputeSinhComplexFloat(complexFloat x);
 complexFloat _dxfComputeCoshComplexFloat(complexFloat x);
 complexFloat _dxfComputeTanComplexFloat(complexFloat x);
 complexFloat _dxfComputeTanhComplexFloat(complexFloat x);
+int _dxfComputeFiniteComplexFloat(complexFloat x);
+int _dxfComputeIsnanComplexFloat(complexFloat x);
 complexFloat _dxfComputeAsinComplexFloat(complexFloat x);
 complexFloat _dxfComputeAcosComplexFloat(complexFloat x);
 complexFloat _dxfComputeAtanComplexFloat(complexFloat x);

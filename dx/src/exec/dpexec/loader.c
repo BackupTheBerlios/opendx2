@@ -616,7 +616,7 @@ PFI DXLoadObjFile(char *fname, char *envvar)
      *  filename, mode.  the mode is: RTLD_LAZY (defer binding of procs)
      *  other vals are reserved for future expansion.
      */
-    handle = dlopen(foundname, RTLD_LAZY);
+    handle = dlopen(foundname, RTLD_LAZY|RTLD_GLOBAL);
     if (handle == NULL) {
 	char *cp = dlerror();
 	if (cp)
@@ -711,7 +711,7 @@ Error DXUnloadObjFile(char *fname, char *envvar)
 
 #endif  /* sun4, etc */
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 
 #define __ROUTINES_DEF	1
 
@@ -803,15 +803,66 @@ Error DXLoadAndRunObjFile(char *fname, char *envvar)
 
     return OK;
 }
+
 Error DXUnloadObjFile(char *fname, char *envvar)
 {
+    char *foundname = NULL;
+    struct loadtable *lp = NULL;
+
+    if (!findfile(fname, &foundname, envvar))
+        return ERROR;
+
+    if (((lp = get_tp_entry(foundname)) != NULL) && 
+        (lp->loadstate == L_UNLOADED)) {
+            DXDebug("L", "`%s' found but already unloaded", foundname);
+            DXFree((Pointer)foundname);
+            return OK;
+    }
+
+    if (!lp) {
+        DXDebug("L", "`%s' not found in load list", foundname);
+        DXSetError(ERROR_BAD_PARAMETER, 
+            "cannot unload `%s'; not found in load list", foundname);
+        DXFree((Pointer)foundname);
+        return OK;
+    }
+    
+    if (! FreeLibrary((HMODULE)lp->h)) {
+        DXSetError(ERROR_INVALID_DATA, "cannot unload file '%s', %s", 
+            foundname, sys_errlist[errno]);
+        DXFree((Pointer)foundname);
+        return ERROR;
+    }
+    
+    if (!set_tp_entry(L_UNLOADED, foundname, (Handle)0, (EntryPt)0)) {
+        DXFree((Pointer)foundname);
+        return ERROR;
+    }
+
+    DXFree((Pointer)foundname);
     return OK;
 }
 
 
+#if defined(DX_NATIVE_WINDOWS)
+
+void
+DXFreeLoadedObjectFiles()
+{
+    struct loadtable *np;
+
+	while ((np = ltp[DXProcessorId()]) != NULL)
+	{
+		FreeLibrary((HMODULE)np->h);
+		ltp[DXProcessorId()] = np->next;
+		DXFree((Pointer)np);
+	}
+}
+
+#endif   /* DX_NATIVE_WINDOWS */
 
 
-#endif   /*   DXD_WIN     */
+#endif   /*   DXD_WIN         */
 
 
 

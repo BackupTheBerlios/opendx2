@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/trisRI2DClass.X,v 1.2 1999/05/10 15:45:48 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/trisRI2DClass.X,v 1.3 2003/07/11 05:50:48 davidt Exp $
 //
 
 
@@ -63,5 +63,5 @@ TrisRI2DInterpolator _dxf_NewTrisRI2DInterpolator(Field,
 			struct trisri2dinterpolator_class *);
 
 TrisRI2DInterpolator _dxf_CopyTrisRI2DInterpolator(TrisRI2DInterpolator,
-			TrisRI2DInterpolator, enum copy);
+			TrisRI2DInterpolator, enum _dxd_copy);
 

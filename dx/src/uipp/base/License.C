@@ -285,7 +285,7 @@ void UIGetLicense(const char *root,
 	FD_SET (child_out[0], &rdfds);
 	FD_SET (ConnectionNumber(d), &rdfds);
 	tval.tv_sec = 1; tval.tv_usec = 0;
-	if (select (32, (SELECT_ARG_TYPE)&rdfds, NULL, NULL, &tval) == -1) break;
+	if (select (32, (SELECT_ARG_TYPE *)&rdfds, NULL, NULL, &tval) == -1) break;
 	XtInputMask mask;
 	while ((mask = XtAppPending (app)) & (XtIMXEvent|XtIMTimer)) {
 	    if (XtIMXEvent & mask) {

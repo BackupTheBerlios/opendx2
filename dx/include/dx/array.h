@@ -478,7 +478,7 @@ Array         DXQueryConstantArray(Array a, int *num,  Pointer d);
 Pointer	      DXGetConstantArrayData(Array array);
 
 Error 	    DXRegisterSharedSegment(int id,
-			    void (*or)(int, Pointer, Pointer), Pointer d);
+			    void (*sor)(int, Pointer, Pointer), Pointer d);
 
 SharedArray DXNewSharedArray(int id, Pointer d, int knt, Type t, Category c, int r, ...);
 SharedArray DXNewSharedArrayV(int id, Pointer d, int knt, Type t, Category c, int r, int *s);

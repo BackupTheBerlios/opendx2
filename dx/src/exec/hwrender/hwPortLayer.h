@@ -44,9 +44,14 @@
  *  Corresponding DX-specific code is in hwWindow.h and Light.H.
  */
 typedef struct {
+#if defined(DX_NATIVE_WINDOWS)
+  HWND wigWindow;
+  HWND xid, parentWindow;
+#else
   Display *dpy ;
   Window xid, parentWindow ;
   Window lxid, rxid;
+#endif
   Colormap colorMap ;
   tdmInteractorWin interactorData ;
   int pixw, pixh ; 
@@ -198,13 +203,21 @@ typedef struct tdmDrawPortS {
  				float pow);
   void	(*SetOrthoProjection) (void *ctx, float width, float aspect,
  			       float Near, float Far);
+#if defined(DX_NATIVE_WINDOWS)
+  void  (*SetOutputWindow) (void *win);
+#else
   void	(*SetOutputWindow) (void *win, Window);
+#endif
   void	(*SetPerspectiveProjection) (void *ctx, float xfov, float aspect,
  				     float Near, float Far);
   void	(*SetSingleBufferMode) (void *ctx);
   void	(*SetViewport) (void *ctx, int left, int right, int bottom, int top);
   void	(*SetWindowSize) (void *win,int w,int h);
+#if defined(DX_NATIVE_WINDOWS)
+  void	(*SwapBuffers) (void *ctx);
+#else
   void	(*SwapBuffers) (void *ctx, Window);
+#endif
   void	(*WriteApproxBackstore) (void *win, int camw, int camh);
   void	(*WritePixelRect) (void* win, uint32 *buf, 
 			   int x, int y,int w, int h);
@@ -330,7 +343,11 @@ extern int	_dxd_lmHwddVersion;
    *  Destroy specified window.
    */
 
+#if defined(DX_NATIVE_WINDOWS)
+#define	_dxf_SET_OUTPUT_WINDOW(win) (*_pFuncs->SetOutputWindow)(win)
+#else
 #define	_dxf_SET_OUTPUT_WINDOW(win, wid) (*_pFuncs->SetOutputWindow)(win, wid)
+#endif
   /*
    *  Direct all graphics to specified window
    */
@@ -346,8 +363,11 @@ extern int	_dxd_lmHwddVersion;
    *  created.  It's function is loosely defined to encompass all the
    *  `first time' initialization of the target graphics API.
    */
-
+#if defined(DX_NATIVE_WINDOWS)
+#define	_dxf_SWAP_BUFFERS(ctx) (*_pFuncs->SwapBuffers)(ctx)
+#else
 #define	_dxf_SWAP_BUFFERS(ctx, wid) (*_pFuncs->SwapBuffers)(ctx, wid)
+#endif
   /*
    *  Switch front and back buffers.
    */
@@ -401,6 +421,9 @@ extern int	_dxd_lmHwddVersion;
 
 #define	_dxf_INIT_RENDER_PASS(win, bufferMode, zBufferMode) \
   (*_pFuncs->InitRenderPass)(win, bufferMode, zBufferMode)
+#if defined(DX_NATIVE_WINDOWS)
+#define _dxf_END_RENDER_PASS(win) (*_pFuncs->EndRenderPass)(win)
+#endif
   /*
    *  Clear the screen and prepare for writing a rendered image.
    */

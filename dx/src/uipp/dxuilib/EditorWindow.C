@@ -913,9 +913,34 @@ void EditorWindow::setCommandActivation()
     }
 
     //
+    // count the nodes in the current page
+    //
+    WorkSpace *current_ws = this->workSpace;
+    int page = this->workSpace->getCurrentPage();
+    if (page) current_ws = this->workSpace->getElement(page);
+    int nodes_in_current_page = 0;
+    Node *n;
+    ListIterator iterator;
+    FOR_EACH_NETWORK_NODE(this->network, n, iterator) {
+	StandIn* si = n->getStandIn();
+	if (!si) continue;
+	if (si->getWorkSpace() == current_ws)
+	    nodes_in_current_page++;
+    }
+
+    //
     // Is undo available?  ...also sets button label
     //
     this->setUndoActivation();
+
+    //
+    // Handle commands that depend on whether there are nodes in the current page 
+    //
+    if (nodes_in_current_page==0) {
+	this->reflowGraphCmd->deactivate();
+    } else {
+	this->reflowGraphCmd->activate();
+    }
 
     //
     // Handle commands that depend on whether there are nodes 
@@ -931,7 +956,6 @@ void EditorWindow::setCommandActivation()
 	    this->saveAsCCodeCmd->deactivate();
 	nselected = 0;
 	this->outputCacheabilityCascade->deactivate();
-	this->reflowGraphCmd->deactivate();
     } else {
 	this->selectAllNodeCmd->activate();
 	this->findToolCmd->activate();
@@ -940,7 +964,6 @@ void EditorWindow::setCommandActivation()
 	    this->saveAsCCodeCmd->activate();
 	nselected = this->getNodeSelectionCount();
 	this->outputCacheabilityCascade->activate();
-	this->reflowGraphCmd->activate();
     } 
 
     //
@@ -7533,7 +7556,7 @@ boolean EditorWindow::KeyHandler(XEvent *event, void *clientData)
 #if !defined(XK_MISCELLANY)
 #define XK_MISCELLANY
 #endif
-#include <X11/keysymdef.h>
+#include <X11/keysym.h>
 boolean EditorWindow::keyHandler(XEvent* event)
 {
     if (event->type != KeyPress) return TRUE;

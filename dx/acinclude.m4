@@ -3,12 +3,11 @@ dnl  Check for the CYGWIN environment
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CYGWIN,
 [AC_CACHE_CHECK(for Cygwin environment, ac_cv_cygwin,
-[AC_TRY_COMPILE(,[
+[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
 #ifndef __CYGWIN__
 #define __CYGWIN__ __CYGWIN32__
 #endif
-return __CYGWIN__;],
-ac_cv_cygwin=yes, ac_cv_cygwin=no)
+return __CYGWIN__;]])],[ac_cv_cygwin=yes],[ac_cv_cygwin=no])
 rm -f conftest*])
 CYGWIN=
 test "$ac_cv_cygwin" = yes && CYGWIN=yes])
@@ -31,7 +30,11 @@ dnl  If using CYGWIN, then the extensions to the filenames need to be
 dnl  different than that of UN*X. This sets that up.
 dnl
 AC_DEFUN(DX_EXEEXT,
-[AC_REQUIRE([AC_CYGWIN])
+[AC_REQUIRE([AC_CANONICAL_HOST])[]dnl
+ case $host_os in
+  *cygwin* ) CYGWIN=yes;;
+         * ) CYGWIN=no;;
+ esac
 AC_MSG_CHECKING([for executable suffix])
 AC_PROVIDE([AC_EXEEXT])
 AC_CACHE_VAL(ac_cv_exeext,
@@ -101,8 +104,9 @@ AC_DEFUN(DX_CHECK_HEADER,
 ac_safe=`echo "$1" | sed 'y%./+-%__p_%'`
 AC_MSG_CHECKING([for $1])
 AC_CACHE_VAL(ac_cv_header_$ac_safe,
-[DX_TRY_CPP([#include <$1>], eval "ac_cv_header_$ac_safe=yes",
-  eval "ac_cv_header_$ac_safe=no")])dnl
+[AC_PREPROC_IFELSE([AC_LANG_SOURCE([[ [#]line __oline__ "configure" 
+               #include "confdefs.h"
+               #include <$1> ]])],[ eval "ac_cv_header_$ac_safe=yes" ],[ eval "ac_cv_header_$ac_safe=no"  ])])dnl
 if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = yes"; then
   AC_MSG_RESULT(yes)
   ifelse([$2], , :, [$2])
@@ -128,38 +132,6 @@ changequote([, ])dnl
   AC_DEFINE_UNQUOTED($ac_tr_hdr) $2], $3)dnl
 done
 ])
-
-
-dnl
-dnl  Try out if the C++ compiler works
-dnl  DX_TRY_CPP(INCLUDES, [ACTION-IF-TRUE [, ACTION-IF-FALSE]])
-dnl  -------------------------------------------------------------
-AC_DEFUN(DX_TRY_CPP,
-[AC_REQUIRE_CPP()dnl
-cat > conftest.$ac_ext <<EOF
-[#]line __oline__ "configure"
-#include "confdefs.h"
-[$1]
-EOF
-dnl Capture the stderr of cpp.  eval is necessary to expand ac_cpp.
-dnl We used to copy stderr to stdout and capture it in a variable, but
-dnl that breaks under sh -x, which writes compile commands starting
-dnl with ` +' to stderr in eval and subshells.
-ac_try="$ac_cpp conftest.$ac_ext >conftest.out 2>conftest.err"
-AC_TRY_EVAL(ac_try)
-ac_err=`grep -v '^ *+' conftest.err | grep -v "^conftest.${ac_ext}\$"`
-if test -z "$ac_err"; then
-  ifelse([$2], , :, [rm -rf conftest*
-  $2])
-else
-  echo "$ac_err" >&AC_FD_CC
-  echo "configure: failed program was:" >&AC_FD_CC
-  cat conftest.$ac_ext >&AC_FD_CC
-ifelse([$3], , , [  rm -rf conftest*
-  $3
-])dnl
-fi
-rm -f conftest*])
 
 
 dnl
@@ -281,25 +253,67 @@ dnl  -------------------------------------------------------------
 AC_DEFUN(DX_STREAM_O2,
 [
     AC_MSG_CHECKING(whether -O2 interferes with fstream in C++)
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
-    AC_TRY_LINK(
- [
+    AC_LANG_PUSH([C++])
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
  #include <stdio.h>
  #include <stdarg.h>
  #include <fstream.h>
- ],
- [
+ ]], [[
  ifstream *i = new ifstream("foo");
- ],
- AC_MSG_RESULT(no)
- ,
- CXXFLAGS=`echo $CXXFLAGS | sed "s/-O2//"`
+ ]])],[AC_MSG_RESULT(no)
+ ],[CXXFLAGS=`echo $CXXFLAGS | sed "s/-O2//"`
  AC_MSG_RESULT(yes)
-    )
- AC_LANG_RESTORE
+    ])
+ AC_LANG_POP([])
 ])
 
+dnl
+dnl  See if the lexer produces a file with yylineno defined or if
+dnl  yylineno should be defined.
+dnl  -------------------------------------------------------------
+AC_DEFUN(DX_LEX_YYLINENO,
+[
+AC_CACHE_CHECK(lex output file root, ac_cv_prog_lex_root,
+[# The minimal lex program is just a single line: %%.  But some broken lexes
+# (Solaris, I think it was) want two %% lines, so accommodate them.
+echo '%%
+%%' | $LEX
+if test -f lex.yy.c; then
+  ac_cv_prog_lex_root=lex.yy
+elif test -f lexyy.c; then
+  ac_cv_prog_lex_root=lexyy
+else
+  AC_MSG_ERROR([cannot find output from $LEX; giving up])
+fi])
+LEX_OUTPUT_ROOT=$ac_cv_prog_lex_root
+AC_SUBST(LEX_OUTPUT_ROOT)dnl
+
+AC_MSG_CHECKING(whether yylineno is defined)
+cat > conftest.lex <<EOF
+%%
+test    printf( "testing for yylineno" );
+%%
+int yywrap()
+{
+    return (1);
+}
+int main()
+{
+    yylineno = 1;
+}
+EOF
+$LEX conftest.lex
+ac_save_LIBS=$LIBS
+LIBS="$LIBS $LEXLIB"
+AC_LINK_IFELSE([`cat $LEX_OUTPUT_ROOT.c`], 
+   [AC_MSG_RESULT(yes)
+    AC_DEFINE(YYLINENO_DEFINED, 1, [set to 1 if lexer adds yylineno])],
+   [AC_MSG_RESULT(no)])
+LIBS=$ac_save_LIBS
+rm -f "${LEX_OUTPUT_ROOT}.c"
+rm -f "conftesst.lex"
+
+])
 
 dnl
 dnl  Check whether header file contains a symbol.
@@ -333,7 +347,6 @@ AC_DEFUN(DX_HEADER_HAS_SYMBOL,
     fi
 ])
 
-
 dnl
 dnl Borrowed from acspecific  and modified to add paths to Xm headers
 dnl and libs if different from X11
@@ -357,10 +370,8 @@ fi
   test -z "$xm_direct_test_include" && xm_direct_test_include=Xm/Xm.h
 
   # First, try using that file with no special directory specified.
-AC_TRY_CPP([#include <$xm_direct_test_include>],
-[# We can compile using X headers with no special include directory.
-xm_includes=],
-[# Look for the header file in a standard set of common directories.
+AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <$xm_direct_test_include>]])],[# We can compile using X headers with no special include directory.
+xm_includes=],[# Look for the header file in a standard set of common directories.
 # Check X11 before X11Rn because it is often a symlink to the current release.
   for ac_dir in               \
     /usr/X11/include          \
@@ -414,11 +425,9 @@ xm_includes=],
   # Don't add to $LIBS permanently.
   ac_save_LIBS="$LIBS"
   LIBS="-l$xm_direct_test_library $LIBS"
-AC_TRY_LINK( , [${xm_direct_test_function}()],
-[LIBS="$ac_save_LIBS"
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[]], [[${xm_direct_test_function}()]])],[LIBS="$ac_save_LIBS"
 # We can link Motif programs with no special library path.
-xm_libraries=],
-[LIBS="$ac_save_LIBS"
+xm_libraries=],[LIBS="$ac_save_LIBS"
 # First see if replacing the include by lib works.
 # Check X11 before X11Rn because it is often a symlink to the current release.
 for ac_dir in `echo "$xm_includes" | sed s/include/lib/` \
@@ -471,11 +480,12 @@ done])
 
 dnl
 dnl  What is the correct function name and structure def stat... stat, or _stat?
+dnl
+dnl  What is the correct function name and structure def stat... stat, or _stat?
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CHECK_STAT,
 [
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
+AC_LANG_PUSH([C++])
 echo "/* */" > statHdrs.h
 AC_CHECK_HEADER(windows.h, [ echo "#include <windows.h>" >> statHdrs.h ])
 AC_CHECK_HEADER(unistd.h, [ echo "#include <unistd.h>" >> statHdrs.h ])
@@ -485,17 +495,14 @@ fnc="X"
 str="X"
 for f in stat _stat ; do
 for s in stat _stat ; do
-AC_TRY_LINK(
-[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include "statHdrs.h"
-],
-[
+]], [[
 $f("foo", (struct $s *)0);
-],
-[
+]])],[
 fnc=$f
 str=$s
-])
+],[])
 done
 done
 if test "$fnc" = "X" -o "$str" = "X" ; then
@@ -506,7 +513,7 @@ AC_DEFINE_UNQUOTED(STATFUNC, $fnc, [What is the defined stat func])
 AC_DEFINE_UNQUOTED(STATSTRUCT, $str, [What is the stat struct])
 echo stat function is: $fnc
 echo stat structure is: $str
-AC_LANG_RESTORE
+AC_LANG_POP([])
 ])
 
 dnl
@@ -514,8 +521,7 @@ dnl  Figure out what the type is needed for the select function.
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CHECK_SELECT_ARG,
 [
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
+AC_LANG_PUSH([C++])
 select_argtype=
 cat > selectHdrs.h << EOF
 EOF
@@ -524,21 +530,18 @@ AC_CHECK_HEADER(unistd.h, [ echo "#include <unistd.h>" >> selectHdrs.h ])
 AC_CHECK_HEADER(sys/types.h, [ echo "#include <sys/types.h>" >> selectHdrs.h ])
 AC_CHECK_HEADER(select.h, [ echo "#include <select.h>" >> selectHdrs.h ])
 AC_CHECK_HEADER(sys/select.h, [ echo "#include <sys/select.h>" >> selectHdrs.h ])
-AC_LANG_RESTORE
+AC_LANG_POP([])
 for try in sellist fd_set int void
 do
-AC_TRY_LINK(
-[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
 #include "selectHdrs.h"
-],
-[
+]], [[
 int i = select(1, ($try *)NULL, ($try *)NULL, ($try *)NULL, (struct timeval *)NULL)
-],
-[
+]])],[
 select_argtype=$try 
 AC_DEFINE_UNQUOTED(SELECT_ARG_TYPE, $try, [Arguments for select])
-])
+],[])
 if test ! -z "$select_argtype" ; then
     break
 fi
@@ -553,8 +556,7 @@ dnl  Figure out what the type is needed for getsockname.
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CHECK_SOCK_LENGTH_TYPE,
 [
-AC_LANG_SAVE
-AC_LANG_C
+AC_LANG_PUSH([C])
 socket_argtype=
 cat > socketHdrs.h << EOF
 EOF
@@ -564,31 +566,27 @@ AC_CHECK_HEADER(sys/socket.h, [ echo "#include <sys/socket.h>" >> socketHdrs.h ]
 if test "$ARCH" = "intelnt" ; then
 	AC_CHECK_HEADER(winsock2.h, [ echo "#include <winsock2.h>" >> socketHdrs.h ])
 fi
-AC_LANG_RESTORE
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
+AC_LANG_POP([])
+AC_LANG_PUSH([C++])
 for try in socklen_t size_t int "unsigned int"
 do
-AC_TRY_LINK(
-[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
 #include "socketHdrs.h"
-],
-[
+]], [[
 $try *foo = NULL;
 int i = getsockname(1, (struct sockaddr *)NULL, foo);
-],
-[
+]])],[
 socket_argtype=$try 
 AC_DEFINE_UNQUOTED(SOCK_LENGTH_TYPE, $try, [socket length type])
-])
+],[])
 if test ! -z "$socket_argtype" ; then
     break
 fi
 done
 echo the third arg to getsockname is pointer to $socket_argtype
 rm socketHdrs.h
-AC_LANG_RESTORE
+AC_LANG_POP([])
 ])
 
 
@@ -662,7 +660,7 @@ changequote([,]),
 
 	fi
         if test $ac_cv_type_$1 = no; then
-            AC_TRY_COMPILE([], $1 foo;, ac_cv_type_$1=yes, ac_cv_type_$1=no)
+            AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[$1 foo;]])],[ac_cv_type_$1=yes],[ac_cv_type_$1=no])
         fi
     ])
     AC_MSG_RESULT($ac_cv_type_$1)
@@ -681,38 +679,31 @@ AC_DEFUN(DX_NEEDS_STDCXX,
     tmpLIBS=$LIBS
     AC_CACHE_VAL(ac_cv_requires_lstdcxx,
     [
-	AC_LANG_SAVE
-	AC_LANG_CPLUSPLUS
-	AC_TRY_LINK(
-	    [
+	AC_LANG_PUSH([C++])
+	AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 		#include <iostream.h>
-	    ],
-	    [
+	    ]], [[
 		cout << "foo";
-	    ],
-	    ac_cv_requires_lstdcxx="no",
-	    [
+	    ]])],[ac_cv_requires_lstdcxx="no"],[
 		LIBS="$LIBS -lstdc++"
-		AC_TRY_LINK(
-		    [
+		AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 			#include <iostream.h>
-		    ],
-		    [
+		    ]],
+		    [[
 			cout << "foo";
-		    ],
-		    ac_cv_requires_lstdcxx="yes",
+		    ]])],
+		    [ac_cv_requires_lstdcxx="yes"],
 		    [
 			AC_MSG_RESULT(failed even with lstdc++)
 			exit 1
 		    ]
 		)
-	    ]
-	)
-	AC_LANG_RESTORE
+	    
+	])
+	AC_LANG_POP([])
     ])
     AC_MSG_RESULT(${ac_cv_requires_lstdcxx})
 ])
-
 
 dnl Java Stuff ----------------------------------------------------------
 dnl Adding the functionality to locate the appropriate Java Architecture
@@ -744,7 +735,7 @@ dnl
 dnl  DX_PROG_JAVAC([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_PROG_JAVAC,[
-AC_CHECKING([for java compiler])
+AS_MESSAGE([checking for java compiler...])
 if test -n "$JAVAC"; then
   AC_MSG_WARN(JAVAC was preset)
   AC_CHECK_PROG(JAVAC, $JAVAC)
@@ -793,7 +784,7 @@ dnl
 dnl  DX_PROG_JAR([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_PROG_JAR,[
-AC_CHECKING(for jar)
+AS_MESSAGE([checking for jar...])
 if test -n "$JAR"; then
   AC_MSG_WARN(JAR was preset)
   AC_CHECK_PROG(JAR, $JAR)
@@ -813,7 +804,7 @@ dnl
 dnl  DX_PROG_JAVAH([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_PROG_JAVAH,[
-AC_CHECKING(for javah)
+AS_MESSAGE([checking for javah...])
 if test -n "$JAVAH"; then
   AC_MSG_WARN(JAVAH was preset)
   AC_CHECK_PROG(JAVAH, $JAVAH)
@@ -1099,9 +1090,9 @@ DX_FIND_COSMO(/usr/lib/netscape/java/classes/npcosmop211.jar)
 dnl
 dnl DX_FIND_NETSCAPE(PATH [, ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_FIND_NETSCAPE, 
+AC_DEFUN(DX_FIND_NETSCAPE, [
 AC_MSG_CHECKING([for netscape jar files])
-[AC_CACHE_VAL([ac_cv_class_netscape],
+AC_CACHE_VAL([ac_cv_class_netscape],
 [
 if test -r $1; then
   ac_cv_class_netscape=$1
@@ -1163,7 +1154,7 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
 		ccld_defaulted=1
 	fi
 	DX_RTL_SYSLIBS=""
-        if test $ac_cv_prog_gcc = "yes" ; then
+        if test $ac_cv_c_compiler_gnu = "yes" ; then
                 MDXLDFLAG="-Wl,"
         else
                 MDXLDFLAG=""
@@ -1192,7 +1183,7 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
         fi
         if test $ARCH = "sgi" ; then
                 DX_RTL_CFLAGS=" -Dsgi"
-        	if test $ac_cv_prog_gcc = "yes" ; then
+        	if test $ac_cv_c_compiler_gnu = "yes" ; then
 			DX_RTL_CFLAGS=" -Dsgi -D_GNU_SOURCE"
                 	DX_RTL_ALDFLAGS=" -shared"
 			DX_RTL_DXENTRY=" -e DXEntry -exported_symbol DXEntry"

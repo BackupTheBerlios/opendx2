@@ -108,6 +108,7 @@ Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] )
     hp = gethostbyname(host);
     if ( hp == NULL || hp->h_addr_list[0] == NULL ) {
        DXUIMessage("ERROR", "gethostbyname returned error");
+       DXSetError(ERROR_UNEXPECTED, "gethostbyname error--is it possible this machine doesn't have a DNS/host entry?");
        return ERROR;
     }
     addr = *(long *)hp->h_addr_list[0];
@@ -115,6 +116,7 @@ Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] )
                         AF_INET );
     if ( hp2 == NULL || hp2->h_name == NULL ) {
        DXUIMessage("ERROR", "gethostbyaddr returned error");
+       DXSetError(ERROR_UNEXPECTED, "gethostbyaddr error--is it possible this machine doesn't have a reverse DNS/host entry?");
        return ERROR;
     }
     fqdn[0] = '\0';
@@ -950,7 +952,7 @@ _dxfExRemote (Object *in, Object *out)
             FD_SET(fd, &fdset);
             tv.tv_sec = 0;
             tv.tv_usec = 0;
-            nsel = select(fd + 1, (SelectPtr) &fdset, NULL, NULL, &tv);
+            nsel = select(fd + 1, (SELECT_ARG_TYPE *) &fdset, NULL, NULL, &tv);
             if(nsel > 0) {
                 if((IOCTL(fd, FIONREAD, (char *)&b) < 0) || b <= 0)  {
                     DXSetError(ERROR_DATA_INVALID, 

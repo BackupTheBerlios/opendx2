@@ -14,11 +14,6 @@
 #include <Xm/Label.h>
 #include <X11/cursorfont.h>
 
-#if defined(HAVE_STRSTREAM_H)
-#include <strstream.h>
-#elif defined(HAVE_STRSTREA_H)
-#include <strstrea.h>
-#endif
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>

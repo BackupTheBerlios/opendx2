@@ -12,7 +12,9 @@
 // putenv should come from stdlib.h
 // extern "C" int putenv(char*);
 
-#if defined(HAVE_IOSTREAM_H)
+#if defined(HAVE_IOSTREAM)
+#include <iostream>
+#elif defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
 #endif
 
@@ -20,7 +22,9 @@
 #include <io.h>
 #endif
 
-#if defined(HAVE_STREAM_H)
+#if defined(HAVE_STREAM)
+#include <stream>
+#elif defined(HAVE_STREAM_H)
 #include <stream.h>
 #endif
 
@@ -142,7 +146,7 @@
 //
 #if (XmVersion > 1001)
 #define XK_MISCELLANY
-#include <X11/keysymdef.h>
+#include <X11/keysym.h>
 #endif
 
 
@@ -3105,7 +3109,12 @@ DXChild *DXApplication::startServer()
 	if (testString(this->serverInfo.workingDirectory))
 	{
 	    strcat(args, " -directory ");
-	    strcat(args, this->serverInfo.workingDirectory);
+	    if(strchr(this->serverInfo.workingDirectory, ' ') != NULL) {
+	    	strcat(args, "\"");
+	    	strcat(args, this->serverInfo.workingDirectory);
+	    	strcat(args, "\"");
+	    } else 
+	        strcat(args, this->serverInfo.workingDirectory);
 	}
 	if (testString(this->serverInfo.userModules))
 	{
@@ -3137,7 +3146,7 @@ DXChild *DXApplication::startServer()
 	    strcat(args, this->serverInfo.executiveFlags);
 	}
 
-	sprintf(cmd,"dx %s",args);
+    sprintf(cmd, "dx %s", args);
 	DXChild *c = new DXChild(this->serverInfo.server, cmd, FALSE);
 	if (c->failed()) {
 	    delete c;

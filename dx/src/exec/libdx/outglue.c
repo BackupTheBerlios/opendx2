@@ -813,6 +813,12 @@ Pointer DXGetModuleId()
     return id;
 }
 
+Error DXReadyToRunNoExecute(Pointer ida)
+{
+    return OK;
+}
+
+
 Error DXReadyToRun(Pointer id)
 {
     unsigned int signature = 0xEF33AB88;

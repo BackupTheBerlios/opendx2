@@ -9,8 +9,6 @@
 #include <dxconfig.h>
 #include <dx/dx.h>
 
-#undef EXCEED_SOCKET
-
 #if defined(HAVE_IO_H)
 #include <io.h>
 #endif
@@ -118,9 +116,6 @@ int _dxf_ExCheckRIHBlock (int input)
 	    r->flag = 0;
     }
 
-#ifdef	EXCEED_SOCKET
-    _dxf_InitExceedSockets();
-#endif	
     FD_ZERO (&fdset);
     if(input >= 0) {
         FD_SET  (input, &fdset);
@@ -134,14 +129,7 @@ int _dxf_ExCheckRIHBlock (int input)
 	if (mval < fd)
 	    mval = fd;
 
-#ifdef EXCEED_SOCKET
-	if(r->isWin)
-	    _dxf_SetExceedFd(fd, r->dpy);
-	else
-	    FD_SET(fd, &fdset);
-#else
 	FD_SET(fd, &fdset);
-#endif
 	
     }
 
@@ -163,9 +151,6 @@ int _dxf_ExCheckRIHBlock (int input)
 	if (select (mval + 1, &fdset, 
 		(fd_set *)(needswriting? &wfdset: NULL), NULL, NULL) <= 0)
 	{
-#ifdef	EXCEED_SOCKET
-	    _dxf_InitExceedSockets();
-#endif	
 	    return (ret);
 	}
     }
@@ -185,9 +170,6 @@ int _dxf_ExCheckRIHBlock (int input)
 	}
     }
 
-#ifdef	EXCEED_SOCKET
-    _dxf_InitExceedSockets();
-#endif	
     return (ret);
 }
 
@@ -254,23 +236,13 @@ int _dxf_ExCheckRIH (void)
 	    r->flag = 0;
     }
 
-#ifdef	EXCEED_SOCKET
-    _dxf_InitExceedSockets();
-#endif	
     FD_ZERO (&fdset);
     for (i = 0, r = handlers, mval = 0; i < nRIH; i++, r++)
     {
 	fd = r->fd;
 	if (mval < fd)
 	    mval = fd;
-#ifdef EXCEED_SOCKET
-	if(r->isWin)
-	    _dxf_SetExceedFd(fd, r->dpy);
-	else
-	    FD_SET(fd, &fdset);
-#else
 	FD_SET(fd, &fdset);
-#endif
     }
 
     tv.tv_sec  = 0;
@@ -281,9 +253,6 @@ int _dxf_ExCheckRIH (void)
 	select (mval + 1, &fdset, NULL, NULL, &tv);
     }
     else if (select (mval + 1, &fdset, NULL, NULL, &tv) <= 0) {
-#ifdef	EXCEED_SOCKET
-	_dxf_InitExceedSockets();
-#endif
 	return (ret);
     }
     
@@ -296,10 +265,6 @@ int _dxf_ExCheckRIH (void)
 	    ret = TRUE;
 	}
     }
-
-#ifdef	EXCEED_SOCKET
-    _dxf_InitExceedSockets();
-#endif
 
     return (ret);
 }

@@ -84,7 +84,8 @@ prompter_SOURCES =  		 	\
 prompter_LDADD = 			\
 	../base/libBASE.a  		\
 	../widgets/libWIDGETS.a  	\
-	../dxl/libDXL.a @DXUI_ALDFLAGS@	
+	../dxl/libDXL.la ../../exec/libdx/libDXlite.la \
+	@DXUI_ALDFLAGS@	
 
 EXTRA_DIST = 				\
 	col_insens.bm			\

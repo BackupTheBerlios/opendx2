@@ -34,7 +34,9 @@
 #undef Screen
 #undef Boolean
 
+#if !defined(DX_NATIVE_WINDOWS)
 #include <X11/Xlib.h>
+#endif
 
 #include <math.h>
 #include <stdlib.h>     /* for getenv prototype */
@@ -52,6 +54,19 @@
  * window and the bottom in the lowest 492 scan lines.
  ****************************************************************/
 
+#if defined(DX_NATIVE_WINDOWS)
+static int  defInitializeStereoSystemMode0();
+static int  defExitStereoSystem0();
+static int  defCreateStereoWindows0();
+
+static int  defInitializeStereoSystemMode1();
+static int  defExitStereoSystem1();
+static int  defCreateStereoWindows1();
+
+static int  defInitializeStereoSystemMode2();
+static int  defExitStereoSystem2();
+static int  defCreateStereoWindows2();
+#else
 static int  defInitializeStereoSystemMode0(Display *, Window);
 static int  defExitStereoSystem0(Display *, Window, Window, Window);
 static int  defCreateStereoWindows0(Display *, Window,
@@ -69,6 +84,7 @@ static int  defExitStereoSystem2(Display *, Window, Window, Window);
 static int  defCreateStereoWindows2(Display *, Window,
 					Window *, WindowInfo *,
 					Window *, WindowInfo *);
+#endif
 
 static StereoSystemMode _defaultStereoSystemModes[3];
 
@@ -93,27 +109,49 @@ DXDefaultStereoSystemModes(int *n, StereoSystemMode **ssms)
     return OK;
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+static int
+defInitializeStereoSystemMode0()
+#else
 static int
 defInitializeStereoSystemMode0(Display *dpy, Window w)
+#endif
 {
     return OK;
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+static int
+defExitStereoSystem0()
+#else
 static int
 defExitStereoSystem0(Display *dpy, Window frame, Window left, Window right)
+#endif
 {
+#if defined(DX_NATIVE_WINDOWS)
+	return ERROR;
+#else
     if (left != frame)
 	XDestroyWindow(dpy, left);
     if (right != frame)
 	XDestroyWindow(dpy, right);
     return OK;
+#endif
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+Error
+defCreateStereoWindows0()
+#else
 Error
 defCreateStereoWindows0(Display *dpy, Window frame,
 		Window *left, WindowInfo *leftWI,
 		Window *right, WindowInfo *rightWI)
+#endif
 {
+#if defined(DX_NATIVE_WINDOWS)
+	return ERROR;
+#else
     XWindowAttributes xwattr;
     XGetWindowAttributes(dpy, frame, &xwattr);
 
@@ -134,10 +172,16 @@ defCreateStereoWindows0(Display *dpy, Window frame,
     rightWI->aspect = xwattr.height / xwattr.width;
 
     return OK;
+#endif
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+static int
+defInitializeStereoSystemMode1()
+#else
 static int
 defInitializeStereoSystemMode1(Display *dpy, Window w)
+#endif
 {
 #ifdef sgi
     system("/usr/gfx/setmon -n STR_RECT");
@@ -145,9 +189,17 @@ defInitializeStereoSystemMode1(Display *dpy, Window w)
     return OK;
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+static int
+defExitStereoSystem1()
+#else
 static int
 defExitStereoSystem1(Display *dpy, Window frame, Window left, Window right)
+#endif
 {
+#if defined(DX_NATIVE_WINDOWS)
+	return ERROR;
+#else
 #ifdef sgi
     system("/usr/gfx/setmon -n 60HZ");
 #endif
@@ -156,13 +208,22 @@ defExitStereoSystem1(Display *dpy, Window frame, Window left, Window right)
     if (right != frame)
 	XDestroyWindow(dpy, right);
     return OK;
+#endif
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+Error
+defCreateStereoWindows1()
+#else
 Error
 defCreateStereoWindows1(Display *dpy, Window frame,
 		Window *left, WindowInfo *leftWI,
 		Window *right, WindowInfo *rightWI)
+#endif
 {
+#if defined(DX_NATIVE_WINDOWS)
+	return ERROR;
+#else
     XWindowAttributes xwattr;
     XGetWindowAttributes(dpy, frame, &xwattr);
 
@@ -183,11 +244,16 @@ defCreateStereoWindows1(Display *dpy, Window frame,
     rightWI->aspect = 492.0 / xwattr.width;
 
     return OK;
+#endif
 }
 
-
+#if defined(DX_NATIVE_WINDOWS)
+static int
+defInitializeStereoSystemMode2()
+#else
 static int
 defInitializeStereoSystemMode2(Display *dpy, Window w)
+#endif
 {
     char *cmd = getenv("DX_INIT_STEREO_COMMAND");
     if (cmd)
@@ -196,25 +262,43 @@ defInitializeStereoSystemMode2(Display *dpy, Window w)
     return OK;
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+static int
+defExitStereoSystem2()
+#else
 static int
 defExitStereoSystem2(Display *dpy, Window frame, Window left, Window right)
+#endif
 {
     char *cmd = getenv("DX_EXIT_STEREO_COMMAND");
     if (cmd)
 	system(cmd);
 
+#if defined(DX_NATIVE_WINDOWS)
+	return OK;
+#else
     if (left != frame)
 	XDestroyWindow(dpy, left);
     if (right != frame)
 	XDestroyWindow(dpy, right);
     return OK;
+#endif
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+Error
+defCreateStereoWindows2()
+#else
 Error
 defCreateStereoWindows2(Display *dpy, Window frame,
 		Window *left, WindowInfo *leftWI,
 		Window *right, WindowInfo *rightWI)
+#endif
 {
+#if defined(DX_NATIVE_WINDOWS)
+	return ERROR;
+#else
+
     XWindowAttributes xwattr;
     XGetWindowAttributes(dpy, frame, &xwattr);
 
@@ -235,5 +319,6 @@ defCreateStereoWindows2(Display *dpy, Window frame,
     rightWI->aspect = ((float)rightWI->ySize) / rightWI->xSize;
 
     return OK;
+#endif
 }
 

@@ -1,10 +1,11 @@
+#!/bin/sh
 if test "`cc 2>&1 | grep gcc`" != "" ; then
 	echo cc is gcc ... windows cc must precede gcc!
 fi
 
 HERE="`pwd`"
-export LIBPATH="/LIBPATH:/exceed/xdk/lib"
-export INCPATH="/INCPATH:/exceed/xdk/include"
+XDKINC=`cygpath -s -m "$XDKDEV"`/include
+XDKLIB=`cygpath -s -m "$XDKDEV"`/lib
 
 ARCH=intelnt \
 	AR=ar \
@@ -13,10 +14,14 @@ ARCH=intelnt \
 	CPP=cpp \
 	CXX=cxx \
 	CXXCPP=cxxcpp \
-	CFLAGS="-g" \
-	CXXFLAGS="-g" \
-	configure --x-includes=/exceed/xdk/include \
-		  --x-libraries=/exceed/xdk/lib \
-		  --without-javadx --prefix=/local
-
+	CFLAGS="-O2 -DDLL_NETCDF" \
+	CXXFLAGS="-O2" \
+	LD=cxx \
+	LDFLAGS="-B" \
+	LN_S=cp \
+	configure --disable-shared --enable-static --prefix=/usr/local --enable-new-keylayout \
+        --with-jni-path="/cygdrive/c/j2sdk1.4.1_02/include/win32:/cygdrive/c/j2sdk1.4.1_02/include" \
+        --with-java40jar-path=/usr/local/src/java40.jar \
+        --with-cosmojar-path=/usr/local/src/npcosmop211.jar \
+        --x-includes="$XDKINC" --x-libraries="$XDKLIB" 
 

@@ -64,9 +64,9 @@ static char		**fname;
 
 SFILE		*_dxd_exBaseFD = NULL;
 
-int		_dxd_exParseError;
-node		*_dxd_exParseTree;
-char		*_dxd_exParseMesg;
+int		_dxd_exParseError = 0;
+node		*_dxd_exParseTree = NULL;
+char		*_dxd_exParseMesg = NULL;
 
 static int	data_len;
 
@@ -437,6 +437,8 @@ _popInput()
 %left   A_EXP
 
 %left   U_MINUS         /* unary minus */
+
+%pure_parser
 
 /* Whenever we detect a lexically syntactic problem */
 %token	LEX_ERROR
@@ -1550,18 +1552,21 @@ semicolon	: T_SEMI
 		    if (! _dxd_exUIPacket)
 			yyerrok;
 		}
+		;
 
 rightparen	: T_RPAR
 		{
 		    if (! _dxd_exUIPacket)
 			yyerrok;
 		}
+		;
 
 rightbracket	: T_RBRA
 		{
 		    if (! _dxd_exUIPacket)
 			yyerrok;
 		}
+		;
 
 id		: T_ID
 		{

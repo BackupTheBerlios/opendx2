@@ -5,9 +5,6 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-/*********************************************************************/
-/*                     I.B.M. CONFIENTIAL                           */
-/*********************************************************************/
 
 #include <dxconfig.h>
 
@@ -25,18 +22,17 @@
 
 \*---------------------------------------------------------------------------*/
 
-#include "hwDeclarations.h"
-#include "hwMatrix.h"
-#include "hwInteractor.h"
-#include "hwCursorInteractor.h"
-#include "hwRotateInteractor.h"
-#include "hwZoomInteractor.h"
-#include "hwGlobeEchoDef.h"
-#include "hwPortLayer.h"
-#include "hwWindow.h"
+#include "../hwDeclarations.h"
+#include "../hwMatrix.h"
+#include "../hwInteractor.h"
+#include "../hwCursorInteractor.h"
+#include "../hwRotateInteractor.h"
+#include "../hwZoomInteractor.h"
+#include "../hwGlobeEchoDef.h"
+#include "../hwPortLayer.h"
+#include "../hwWindow.h"
+#include "../hwDebug.h"
 #include "hwPortOGL.h"
-
-#include "hwDebug.h"
 
 static float WS[4][4] = {
   { 1,  0,  0,  0},
@@ -589,6 +585,16 @@ static void _dxf_SET_ZBUFFER_STATUS (void *ctx, int status)
 
 static void _dxf_GET_WINDOW_ORIGIN (void *ctx, int *x, int *y)
 {
+#if defined(DX_NATIVE_WINDOWS)
+	DEFCONTEXT(ctx) ;
+
+	WINDOWPLACEMENT plc;
+	if (! GetWindowPlacement(OGLXWIN, &plc))
+		return;
+
+	*x = plc.ptMinPosition.x;
+	*y = plc.ptMinPosition.y;
+#else
   Window child ;
   DEFCONTEXT(ctx) ;
 
@@ -603,6 +609,7 @@ static void _dxf_GET_WINDOW_ORIGIN (void *ctx, int *x, int *y)
 
   *y = YMAXSCREEN - (*y + WINHEIGHT) + 1 ;
 
+#endif
   EXIT(("x = %d, y = %d", *x, *y));
 }
 
@@ -891,6 +898,7 @@ static void _dxf_DRAW_CURSOR_COORDS (tdmInteractor I, char *text)
 
 static void _dxf_POINTER_INVISIBLE (void *ctx)
 {
+#if !defined(DX_NATIVE_WINDOWS)
   /* make the mouse pointer invisible */
   int i ;
   Pixmap p1, p2 ;
@@ -915,6 +923,7 @@ static void _dxf_POINTER_INVISIBLE (void *ctx)
   XFreePixmap (OGLDPY, p2) ;
 
   XDefineCursor (OGLDPY, OGLXWIN, cursorId) ;
+#endif
 
   EXIT((""));
 }
@@ -923,6 +932,7 @@ static void _dxf_POINTER_INVISIBLE (void *ctx)
 static void
 _dxf_POINTER_VISIBLE (void *ctx)
 {
+#if !defined(DX_NATIVE_WINDOWS)
   DEFCONTEXT(ctx) ;
 
   /* make the mouse pointer visible */
@@ -930,12 +940,14 @@ _dxf_POINTER_VISIBLE (void *ctx)
 
   XUndefineCursor (OGLDPY, OGLXWIN) ;
 
+#endif
   EXIT((""));
 }
 
 
 static void _dxf_WARP_POINTER (void *ctx, int x, int y)
 {
+#if !defined(DX_NATIVE_WINDOWS)
   DEFCONTEXT(ctx) ;
 
   /* move mouse pointer to position [x,y] relative to screen origin */
@@ -944,6 +956,7 @@ static void _dxf_WARP_POINTER (void *ctx, int x, int y)
   XWarpPointer (OGLDPY, None, DefaultRootWindow(OGLDPY), 0, 0, 0, 0,
 		x, YMAXSCREEN-y) ;
 
+#endif
   EXIT((""));
 }
 
@@ -1165,7 +1178,7 @@ static void _dxf_DRAW_ARROWHEAD (void* ctx, float ax, float ay)
  *  Port handle section.
  */
 #define STRUCTURES_ONLY
-#include "hwInteractorEcho.h"
+#include "../hwInteractorEcho.h"
 
 tdmInteractorEchoT	_dxd_hwInteractorEchoPortOGL =
 {

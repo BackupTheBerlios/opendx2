@@ -10,13 +10,13 @@
 
 #include "trace.h"
 
-#if 0
+#if defined(WIN32)
 #include <dx/dx.h>
 
 Error 
 DXVisualizeMemory(int which, int procid)
 {
-    DXMessage("visual memory display only available in debuggable version of system");
+    DXMessage("visual memory display only available in X11 version of DX.");
     return OK;
 }
 
@@ -898,5 +898,5 @@ void _dxf_sigcatch()
 #endif
 }
 
-#endif   /* 1 */
+#endif   /* !(WIN32) */
 

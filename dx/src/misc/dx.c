@@ -9,7 +9,7 @@
 
 #include "dx.h"
 
-#if !defined(intelnt) && !defined(cygwin)
+#if !defined(intelnt) && !defined(cygwin) && !defined(WIN32)
 #include <stdio.h>
 int main(){fprintf(stderr, "misc/dx is only needed on Windows based systems.\n"); return 1;}
 #else /* Windows system compile application */
@@ -38,6 +38,7 @@ enum xServer whichX = UNKNOWN;
 
 int	numparms =	0;
 int	exonly =	0;
+int native =	0;
 int	uionly =	0;
 int	startup =	0;
 int	seecomline =	0;
@@ -80,9 +81,6 @@ smallstr 	uihilite =	"";
 smallstr 	exhilite =	"";
 namestr 	FileName =	"";
 namestr 	dxroot =	"";
-#if defined(cygwin)
-namestr 	msdos_dxroot =	"";
-#endif
 namestr 	dxexroot =	"";
 namestr 	dxuiroot =	"";
 namestr 	exceeddir =	"";
@@ -179,14 +177,18 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
     REGSAM access = KEY_READ;
     const char **regpath;
     const char *dxpath[] = {"SOFTWARE\\OpenDX\\DX\\CurrentVersion", NULL };
-    const char *snpath[] = { "SOFTWARE\\Starnet\\X-Win32\\5.4", 
+    const char *snpath[] = { "SOFTWARE\\Starnet\\X-Win32\\5.5", 
+			     "SOFTWARE\\Starnet\\X-Win32\\5.4",
 			     "SOFTWARE\\Starnet\\X-Win32\\5.3",
 			     "SOFTWARE\\Starnet\\X-Win32\\5.2",
 			     "SOFTWARE\\Starnet\\X-Win32\\5.1", NULL };
-    const char *wapath[] = { "SOFTWARE\\LabF.com\\WinaXe\\6.3",
+    const char *wapath[] = { "SOFTWARE\\LabF.com\\WinaXe\\6.5",
+			     "SOFTWARE\\LabF.com\\WinaXe\\6.4",
+			     "SOFTWARE\\LabF.com\\WinaXe\\6.3",
 			     "SOFTWARE\\LabF.com\\WinaXe\\6.2",
 			     "SOFTWARE\\LabF.com\\WinaXe\\6.1", NULL };
-    const char *hbpath[] = { "SOFTWARE\\Hummingbird\\Connectivity\\7.20\\Exceed",
+    const char *hbpath[] = { "SOFTWARE\\Hummingbird\\Connectivity\\8.10\\Exceed",
+			     "SOFTWARE\\Hummingbird\\Connectivity\\8.00\\Exceed",
 			     "SOFTWARE\\Hummingbird\\Connectivity\\7.10\\Exceed",
 			     "SOFTWARE\\Hummingbird\\Connectivity\\7.00\\Exceed", NULL };
     const char *h6path[] = { "SOFTWARE\\Hummingbird\\Exceed\\CurrentVersion", NULL };
@@ -275,7 +277,7 @@ error:
 
 int initrun()
 {
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
     OSVERSIONINFO osvi;
 #endif
 #if defined(USE_REGISTRY)
@@ -338,7 +340,7 @@ int initrun()
 	}
 #endif /*(USE_REGISTRY)*/
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
     osvi.dwOSVersionInfoSize = sizeof(osvi);
     GetVersionEx(&osvi);
     
@@ -362,9 +364,6 @@ int initrun()
     getenvstr("DXARGS", dxargs);
     getcwd(curdir, sizeof(curdir));
     getenvstr("DXROOT", dxroot);
-#if defined(cygwin)
-    getenvstr("MSDOS_DXROOT", msdos_dxroot);
-#endif
     getenvstr("DXDATA", dxdata);
     getenvstr("DXMACROS", dxmacros);
     getenvstr("DXMODULES", dxmodules);
@@ -390,37 +389,52 @@ int initrun()
 
     /* If all else fails, set some defaults for OpenSource Unix layout */
     if (!*dxroot) {
-    	strcpy(dxroot, "\\usr\\local\\dx\\");
-    }
 #if defined(cygwin)
-    if (!*msdos_dxroot) 
-	sprintf(msdos_dxroot, "\\cygwin%s", dxroot);
+		strcpy(dxroot, "/usr/local/dx/");
+#else
+    	strcpy(dxroot, "\\usr\\local\\dx\\");
 #endif
+    }
 
     /* Now strip off any garbage that may have been set on dxroot */
     removeQuotes(dxroot);
     u2d(dxroot);
-#if defined(cygwin)
-    u2d(msdos_dxroot);
-#endif
     if(needShortPath)
     	ConvertShortPathName(dxroot);
 
+#if defined(cygwin)
+    if (dxdata && *dxdata)
+	strcat(dxdata, ":");
+    strcat(dxdata, dxroot);
+    if(dxroot[strlen(dxroot)-1] !='/')
+	strcat(dxdata, "/");
+    strcat(dxdata,"samples/data");
+#else
     if (dxdata && *dxdata)
 	strcat(dxdata, ";");
     strcat(dxdata, dxroot);
     if(dxroot[strlen(dxroot)-1] !='\\')
 	strcat(dxdata, "\\");
     strcat(dxdata,"samples\\data");
+#endif
 
 /* Append the default dxroot/samples/macros to current macros */
 
+#if defined(cygwin)
+    if(dxmacros && *dxmacros)
+	strcat(dxmacros, ":");
+    strcat(dxmacros, dxroot);
+    if(dxroot[strlen(dxroot)-1] !='/')
+	strcat(dxmacros, "/");
+    strcat(dxmacros,"samples/macros");
+#else
     if(dxmacros && *dxmacros)
 	strcat(dxmacros, ";");
     strcat(dxmacros, dxroot);
     if(dxroot[strlen(dxroot)-1] !='\\')
 	strcat(dxmacros, "\\");
     strcat(dxmacros,"samples\\macros");
+#endif
 
     /* fill envargs */
 
@@ -680,15 +694,14 @@ int buildcmd()
 	else
 		{
 
-#if defined(cygwin)
-		setifnot(dxexroot, msdos_dxroot);
-		setifnot(dxuiroot, msdos_dxroot);
-#else
 		setifnot(dxexroot, dxroot);
 		u2d(dxexroot);
 		setifnot(dxuiroot, dxroot);
-#endif
-		sprintf(dxexecdef, "%s\\bin_%s\\dxexec%s", dxexroot, exarch, EXE_EXT);
+
+		if(native)
+			sprintf(dxexecdef, "%s\\bin_%s\\dxexec-native%s", dxexroot, exarch, EXE_EXT);
+		else
+			sprintf(dxexecdef, "%s\\bin_%s\\dxexec%s", dxexroot, exarch, EXE_EXT);
 		setifnot(dxexec, dxexecdef);
 		setifnot(exmode, "-r");
 		setifnot(exhilite, "-B");
@@ -711,7 +724,7 @@ int buildcmd()
 		d2u(exmdf);
 		if (*FileName) {
 			d2u(FileName);
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 			addQuotes(FileName);
 #endif
 		}
@@ -1275,6 +1288,10 @@ int parseparms()
 		advance;
 		set(FileName);
 	    }
+	next
+	
+	is(native)
+		native = 1;
 	next
 
 	is(program)

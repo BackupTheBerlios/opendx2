@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.h,v 1.6 2001/09/25 01:45:28 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.h,v 1.7 2003/07/11 05:50:34 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -102,6 +102,8 @@ typedef struct {
         int 		startframe;
         int 		adasd;
 	char		*format;  /* The format specified to WriteImage */
+	char		*compression; /* The compression of the format */
+	unsigned int quality; /* compression level */
 	float		gamma;
  	FILE		*pipe;	
 } RWImageArgs;

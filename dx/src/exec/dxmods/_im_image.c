@@ -57,8 +57,8 @@
 #include <fcntl.h>
 #include <string.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
-#include <_rw_image.h>
+#include "_helper_jea.h"
+#include "_rw_image.h"
 #include <sys/types.h>
 
 #if defined(HAVE_UNISTD_H)
@@ -295,6 +295,11 @@ static Error write_im(RWImageArgs *iargs) {
 
 	image->compression = ctype;
 	new_frame_info->compression = ctype;
+	{
+		char gam[7];
+		sprintf(gam, "%2.4f", iargs->gamma);
+		GammaImage(image, gam);
+	}
 	
         TemporaryFilename(image->filename);
 	strcpy(new_frame_info->filename, image->filename);
@@ -372,25 +377,28 @@ static Error write_im(RWImageArgs *iargs) {
             pixelsize = 3;
         }
 
-        DXGetStringAttribute((Object)field, "compression", &compressFlag);
-	if(compressFlag == NULL)
-	    ctype = UndefinedCompression;
-	else if(strcmp(compressFlag, "BZip")==0)
-            ctype = BZipCompression;
-        else if(strcmp(compressFlag, "Fax")==0)
-            ctype = FaxCompression;
-        else if(strcmp(compressFlag, "Group4")==0)
-            ctype = Group4Compression;
-        else if(strcmp(compressFlag, "JPEG")==0)
-            ctype = JPEGCompression;
-        else if(strcmp(compressFlag, "LZW")==0)
-            ctype = LZWCompression;
-        else if(strcmp(compressFlag, "RLE")==0)
-            ctype = RunlengthEncodedCompression;
-        else if(strcmp(compressFlag, "Zip")==0)
-            ctype = ZipCompression;
+		ctype = UndefinedCompression;
+		if(iargs->compression) {
+			if(strcmp(iargs->compression, "BZip")==0)
+				ctype = BZipCompression;
+			else if(strcmp(iargs->compression, "Fax")==0)
+				ctype = FaxCompression;
+			else if(strcmp(iargs->compression, "Group4")==0)
+				ctype = Group4Compression;
+			else if(strcmp(iargs->compression, "JPEG")==0)
+				ctype = JPEGCompression;
+			else if(strcmp(iargs->compression, "LZW")==0)
+				ctype = LZWCompression;
+			else if(strcmp(iargs->compression, "RLE")==0)
+				ctype = RunlengthEncodedCompression;
+			else if(strcmp(iargs->compression, "Zip")==0)
+				ctype = ZipCompression;
+		}
         
         image_info->compression = ctype;
+
+		if(iargs->quality > 0)
+			image_info->quality = iargs->quality;
         
         colors=(void*)DXGetArrayData(array);
         array=(Array)DXGetComponentValue(field,"connections");
@@ -427,6 +435,12 @@ static Error write_im(RWImageArgs *iargs) {
             strcat(image->filename,".");
             strcat(image->filename,iargs->extension);
         }
+
+		{
+			char gam[7];
+			sprintf(gam, "%2.4f", iargs->gamma);
+			GammaImage(image, gam);
+		}
 
         DEBUGMESSAGE(image->filename);
 

@@ -4,7 +4,7 @@ SUBDIRS = opengl gl xgl starbase
 
 INCLUDES = -I${top_srcdir}/include -I${srcdir}/../libdx -D@ARCH@
 
-noinst_LIBRARIES = libHW.a
+noinst_LTLIBRARIES = libHW.la
 
 SUFFIXES = .m .y .c .s .h .o .a 
 
@@ -16,7 +16,7 @@ noinst_HEADERS = \
 	hwScreen.h hwSort.h hwStereo.h hwTmesh.h hwUserInteractor.h \
 	hwView.h hwWindow.h hwXfield.h hwZoomInteractor.h
 
-libHW_a_SOURCES = \
+libHW_la_SOURCES = \
 	hwClientMessage.c hwClipped.c hwCursorInteractor.c hwDraw.c \
 	hwGroupInteractor.c hwInitScreen.c hwInteractor.c hwList.c \
 	hwMatrix.c hwMaterials.c hwMemory.c hwNavigateInteractor.c \

@@ -236,7 +236,7 @@ void ToolSelector::buildTreeModel()
     // use of dxui, that tool isn't loaded and its category doesn't exist.
     //
     ListIterator iter(expanded_categories);
-    while (cat=(Symbol)iter.getNext()) {
+    while (cat=(Symbol)(long)iter.getNext()) {
 	if (this->categoryDictionary.findDefinition(cat)) continue;
 	const char* cp = theSymbolManager->getSymbolString(cat);
 	//printf ("%s[%d] Warning: bad value(%s) in resource %s\n",

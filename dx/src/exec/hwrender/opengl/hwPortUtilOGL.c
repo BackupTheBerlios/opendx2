@@ -7,12 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "hwDeclarations.h"
+#include "../hwDeclarations.h"
 
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.11 2002/03/16 14:12:00 rhh Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.12 2003/07/11 05:50:39 davidt Exp $
 
 Author:  Ellen Ball
 
@@ -29,15 +29,16 @@ Based on hwrender/gl/hwPortUtil.c
 #define TIMER(s)
 #endif
 
-#include "hwXfield.h"
-#include "hwWindow.h"
-#include "hwPortLayer.h"
+#include "../hwXfield.h"
+#include "../hwWindow.h"
+#include "../hwPortLayer.h"
+#include "../hwTmesh.h"
+#include "../hwObjectHash.h"
+#include "../hwSort.h"
 #include "hwPortOGL.h"
-#include "hwTmesh.h"
-#include "hwObjectHash.h"
-#include "hwSort.h"
 
-#include "hwDebug.h"
+
+#include "../hwDebug.h"
 
 #if defined(HAVE_WINDOWS_H)
 #include <windows.h>
@@ -138,6 +139,9 @@ static Error
 #  else
 #    define GL_CLAMP_TO_BORDER 0x812D
 #  endif
+#endif
+#ifndef GL_CLAMP_TO_EDGE
+#  define GL_CLAMP_TO_EDGE 0x812F
 #endif
 
 

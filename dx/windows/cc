@@ -1,3 +1,4 @@
+#!/bin/sh
 export PATH="`cygpath \"$MSDEV\"`/bin:`cygpath \"$MSCOM\"`/bin:$PATH"
 export INCLUDE="$MSDEV/INCLUDE;XDKDEV/Include:$INCLUDE"
 export LIB="$MSDEV/LIB;$XDKDEV/Lib;$LIB"
@@ -58,18 +59,6 @@ touch $stdout
 touch $stderr
 
 cleanup() { 
-	for i in $cfiles foo ; do
-		if test ! "$i" = foo ; then
-			file=`echo $i | sed -e "s?\.c??"`
-			if test -f $file.obj ; then
-				mv $file.obj $file.o
-			fi
-			file1=`echo $file | sed "s/.*\///"`
-			if test -f $file1.obj ; then
-				mv $file1.obj $file1.o
-			fi
-		fi
-	done
         if test -f $stdout ; then
                 rm $stdout
         fi

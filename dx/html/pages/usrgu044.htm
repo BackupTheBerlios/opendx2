@@ -106,7 +106,7 @@ displayed."></CENTER><BR></B><BR>
 The fields in the Configuration dialog box for the
 <TT><STRONG>Input</STRONG></TT>
 tool are:
-<TABLE CELLPADDING="3">
+<TABLE BORDER="1" CELLPADDING="3">
 <TR VALIGN="TOP"><TD><P><B>Position
 </B></TD><TD><P>Specifies the tab position this input occupies on the resulting
 macro icon.
@@ -153,7 +153,12 @@ purposes.
 This description is used to generate the Description window for the
 resulting macro tool, which you can access through its
 Configuration dialog box.
-</TD></TR><TR VALIGN="TOP"><TD><P><B>Options
+</TD></TR>
+			<TR VALIGN="TOP">
+				<TD><B>Optional Values</B></TD>
+				<TD>Allows the macro developer to assign a set of values that will appear in the ellipses of the macro configuration dialog box for the input. For multiple options, separate each by a semicolon.</TD>
+			</TR>
+			<TR VALIGN="TOP"><TD><P><B>Options
 </B></TD><TD><P>The <TT><STRONG>required parameter</STRONG></TT> toggle button,
 when activated,
 indicates that the input is required for the macro.
@@ -165,7 +170,8 @@ tool is connected.
 <P>
 The <TT><STRONG>descriptive value</STRONG></TT> toggle button is used with the
 <TT><STRONG>Default Value</STRONG></TT> field, as described above.
-</TD></TR></TABLE>
+</TD></TR>
+		</TABLE>
 <P>
 Specify the macro&#39;s outputs with the <TT><STRONG>Output</STRONG></TT> tool
 from
@@ -304,12 +310,8 @@ and <A HREF="usrgu073.htm#HDRENVVAR">C.1 , "Environment Variables"</A>.
 After you have created and loaded a macro, you can use it the same way
 you use other Data Explorer tools.
 Simply select it from the tool palette and place the icon on the canvas.
-<A HREF="#FIGMACICON">Figure 78</A> shows the new icon created for the
-MapAndDeform
-macro.
-<P><B><A NAME="FIGMACICON" HREF="../usrguide.htm#FT_FIGMACICON">Figure 78.
-MapAndDeform Macro Icon</A></B><BR>
-<B><BR><CENTER><IMG SRC="../images/mapdform.gif" ALT="Figure mapdform not
+<A HREF="#FIGMACICON">Figure 78</A> shows the new icon created for the BandColors macro.<P><B><A NAME="FIGMACICON" HREF="../usrguide.htm#FT_FIGMACICON">Figure 78. BandColors Macro Icon</A></B><BR>
+			<B><BR><CENTER><IMG SRC="../images/mapdform.gif" ALT="Figure mapdform not
 displayed."></CENTER><BR></B><BR>
 <P>
 The macro has a Configuration dialog box describing the input and output

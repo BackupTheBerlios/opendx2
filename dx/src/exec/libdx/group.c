@@ -15,7 +15,7 @@
 #include "groupClass.h"
 
 
-static Group _CopyGroup(Group new, Group old, enum copy copy);
+static Group _CopyGroup(Group new, Group old, enum _dxd_copy copy);
 
 #define RANKTEST(rval) \
     if (rank>=100) { \
@@ -70,7 +70,7 @@ DXNewGroup(void)
 
 
 Object
-_dxfGroup_Copy(Group old, enum copy copy)
+_dxfGroup_Copy(Group old, enum _dxd_copy copy)
 {
     Group new;
 
@@ -97,7 +97,7 @@ _dxfGroup_Copy(Group old, enum copy copy)
 
 
 static Group
-_CopyGroup(Group new, Group old, enum copy copy)
+_CopyGroup(Group new, Group old, enum _dxd_copy copy)
 {
     int i;
     char *name;

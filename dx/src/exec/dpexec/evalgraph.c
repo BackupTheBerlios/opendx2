@@ -134,8 +134,8 @@ typedef struct execArg
 
 static int      graph_id;
 
-int            *_dxd_exKillGraph;
-int            *_dxd_exBadFunc;
+int            *_dxd_exKillGraph = NULL;
+int            *_dxd_exBadFunc = NULL;
 
 void ExCacheNewGvar(gvar *gv)
 {

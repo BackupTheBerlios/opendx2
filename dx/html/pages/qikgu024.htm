@@ -45,11 +45,11 @@ to create visualizations and save them to disk for analysis the
 next day.
 <P>
 A simple script that computes a series of isosurfaces and exports them
-to disk is <TT>/usr/lpp/dx/samples/tutorial/batch_script</TT>
+to disk is <TT>/usr/local/dx/samples/tutorial/batch_script</TT>
 (this is not a visual program, so you cannot read it into the Visual Program
 Editor):
 <PRE>
-data = Import("/usr/lpp/dx/samples/data/watermolecule");
+data = Import("/usr/local/dx/samples/data/watermolecule");
 counter = 1;
 macro create_iso(isovalue,counter)-&gt;(counter)
 {
@@ -81,7 +81,7 @@ The counter is also incremented.
 Finally the macro is called six times, with six different isovalues.
 <P>
 To run this script, first copy
-<TT>/usr/lpp/dx/samples/tutorial/batch_script</TT> to the directory
+<TT>/usr/local/dx/samples/tutorial/batch_script</TT> to the directory
 being used.
 Then enter the command:
 <PRE>
@@ -97,7 +97,7 @@ and at the <TT>dx&gt;</TT> prompt:
 </PRE>
 <P>
 If you want to view the exported isosurfaces, you can use visual program
-<TT>/usr/lpp/dx/samples/tutorial/view_isosurfaces.net</TT>.
+<TT>/usr/local/dx/samples/tutorial/view_isosurfaces.net</TT>.
 <P>
 <P><B>Note: </B>Visual programs are also scripts.
 However, if a visual program uses a macro, you must include that

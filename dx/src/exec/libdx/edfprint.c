@@ -826,7 +826,7 @@ static Error Array_Format (Array array, struct fmt_info *p)
 	if ((p->dformat & D_FORMATS) != D_TEXT) {
 	    switch(p->dformat & D_BYTES) {
 	      case D_NATIVE:
-#if WORDS_BIGENDIAN==1
+#if defined(WORDS_BIGENDIAN)
 		fprintf(p->fp, "msb ");
 #else
 		fprintf(p->fp, "lsb ");
@@ -948,7 +948,7 @@ static Error Array_Format (Array array, struct fmt_info *p)
 
 	} else if (p->dformat & D_IEEE) {
 
-#if WORDS_BIGENDIAN==1
+#if defined(WORDS_BIGENDIAN)
 	    if ((p->dformat & D_BYTES) == D_LSB) {
 #else
 	    if ((p->dformat & D_BYTES) == D_MSB) {

@@ -144,7 +144,7 @@ scientific notation is made. The default is 7.
 		
 specifies a file name containing
 string and RGB value pairs as an alternate for
-/usr/lpp/dx/lib/colors.txt.
+/usr/local/dx/lib/colors.txt.
 The string name can be used by any Data Explorer tool where a color can be
 specified by name (for example, Color).
 The RGB value specifies the specific numeric value for the color.
@@ -195,7 +195,7 @@ The <TT>DXGAMMA</TT> variable allows you to override this default.
 In particular, if the display device is already gamma corrected, set
 the variable to 1 (one).
 (See Display in <I>IBM Visualization Data Explorer User&#39;s Reference</I>, and
-README&#95;sgi in /usr/lpp/dx.)
+README&#95;sgi in /usr/local/dx.)
 <P>
 <H5><U>DXGAMMA_8BIT, DXGAMMA_12BIT, and DXGAMMA_24BIT</U></H5>
 set the gamma correction for
@@ -234,7 +234,7 @@ display device is already gamma corrected, set the variable to 1.
 <H5><U>DXHWMOD</U></H5>
 if both GL and OpenGL are supported, you can override the default
 library (which is platform-specific; please see the appropriate README
-file for your architecture in <TT>/usr/lpp/dx</TT>)
+file for your architecture in <TT>/usr/local/dx</TT>)
 by using this environment variable. It should be set to either DXhwdd.o
 (for GL) or DXhwddOGL.o (for OpenGL).
 
@@ -280,7 +280,7 @@ sets the number of processors for Data Explorer SMP.
 		<H5><U>DXROOT</U></H5>
 specifies the top-level directory for all the files and
 directories needed by Data Explorer.
-The default is /usr/lpp/dx.
+The default is /usr/local/dx.
 
 <P>
 <H5><U>DXSHMEM</U></H5>
@@ -316,7 +316,7 @@ sun4 architectures always use the data segment.
 <H5><U>DXSHMEMSEGMAX</U></H5>
 Some architectures have a default configuration which limits the size of
 shared memory segments (see the architecture specific README file in
-<TT>/usr/lpp/dx</TT>), and the system configuration must be changed as
+<TT>/usr/local/dx</TT>), and the system configuration must be changed as
 root to increase the maximum allowed size of a shared memory segment. If
 the maximum is not reset or if it is already set to a different limit,
 then you can use <TT>DXSHMEMSEGMAX</TT> to tell Data Explorer what the current
@@ -327,7 +327,12 @@ addresses.
 
 		<P>
 		<H5><U>DX_SOCKET_BUFSIZE</U></H5>
+		
 		allows the user to specify the size of the send and recieve buffers for the socket connection between the UI and the exec. This value is clamped to the max allowed by the system. This can fix a problem where the executive and UI hang involving a deadlock situation in the socket communication. The value assigned to it is passed as the parameter to setsockopt for SOL_SNDBUF and SOL_RCVBUF. A typcial increased value may be 262144.
+
+		<H5></H5>
+		<H5><U>DX_SMALL_ARENA_FACTOR</U></H5>
+		allows the user to specify the ratio between the large and small arena. The value must be set greater than 0 and up to 8. Typically the small arena is 1/16 of the large arena, setting this environment variable to 8 will make dx allocate an equal amount of memory to the large and small arena. 
 		<P></P>
 		<H5><U>DX_USER_INTERACTOR_FILE</U></H5>
 		

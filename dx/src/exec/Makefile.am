@@ -1,5 +1,10 @@
 SUBDIRS = libdx dxmods hwrender dpexec dxexec
-EXTRA_DIST = mklib
+
+dxlibdir = $(prefix)/dx/lib_@ARCH@
+
+MAJOR_VERSION=@MAJOR_VERSION@
+MINOR_VERSION=@MINOR_VERSION@
+MICRO_VERSION=@MICRO_VERSION@
 
 DELFILES = \
         xxmain.o \
@@ -44,25 +49,25 @@ DELFILES = \
         exvcr.o \
         exyuiif.o
 
-if WITH_BUILDLIBDX
+dxlib_LTLIBRARIES = libDX.la libDXcallm.la
+libDX_la_SOURCES = 
+libDX_la_CFLAGS = $(AM_CFLAGS)
+libDX_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+libDX_la_LIBADD = dxexec/libDXEXEC.la \
+	dxmods/libDXMODS.la dxmods/libuser.la dxmods/libDXMODSN.la \
+	libdx/libLIBDX.la libdx/libmem.la \
+	dpexec/libDPEXEC.la \
+	hwrender/libHW.la
+	hwrender/opengl/libOPENGL.la
 
-install-exec-local:
-	echo prefix=\"$(prefix)\"         > env
-	echo export prefix                >> env
-	echo ARCH=\"$(ARCH)\"             >> env
-	echo export ARCH                  >> env
-	echo RANLIB=\"$(RANLIB)\"         >> env
-	echo export RANLIB                >> env
-	echo FMTLIBS=\"$(FMTLIBS)\"       >> env
-	echo export FMTLIBS               >> env
-	echo INSTALL=\"$(INSTALL)\"       >> env
-	echo export INSTALL               >> env
-	echo DELFILES=\"$(DELFILES)\"     >> env
-	echo export DELFILES              >> env
-	sh  ${srcdir}/mklib
-	-rm env
 
-endif # WITH_BUILDLIBDX
 
-clean-local:
-	rm -rf tmp
+libDXcallm_la_SOURCES =
+libDXcallm_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+libDXcallm_la_LIBADD = dxmods/libDXMODS.la dxmods/libusercm.la \
+	libdx/libLIBDX.la libdx/libcallm.la \
+	dpexec/libDPEXECclm.la \
+	hwrender/libHW.la \
+	hwrender/opengl/libOPENGL.la
+
+

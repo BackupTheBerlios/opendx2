@@ -215,7 +215,7 @@ XmFrameControlClassRec xmFrameControlClassRec =
       XtVersion,				/* version            */
       NULL,					/* callback_private   */
       defaultTranslations,			/* tm_table           */
-      NULL,					/* query_geometry     */
+      XtInheritQueryGeometry,			/* query_geometry     */
       NULL,             	                /* display_accelerator   */
       NULL,		                        /* extension             */
    },
@@ -941,6 +941,9 @@ static void CallbackFromNumber( XmNumberWidget	nw,
     Arg wargs[10];
     double dval;
     XmString xms;
+#if defined(alphax)
+XtArgVal dx_l;
+#endif
 
     if( call_data->reason == XmCR_ACTIVATE )
     {

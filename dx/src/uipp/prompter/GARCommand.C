@@ -13,7 +13,9 @@
 
 #include <Xm/Xm.h>
 
-#if defined(HAVE_STRSTREAM_H)
+#if defined(HAVE_SSTREAM)
+#include <sstream>
+#elif defined(HAVE_STRSTREAM_H)
 #include <strstream.h>
 #elif defined(HAVE_STRSTREA_H)
 #include <strstrea.h>
@@ -50,9 +52,17 @@ boolean GARCommand::doIt(CommandInterface *)
     char	  *fname;
     unsigned long mode;
     int dirty;
+#if defined(HAVE_SSTREAM)
+    std::stringstream tmpstr;
+#else
     strstream tmpstr;
+#endif
 #ifdef aviion
+#if defined(HAVE_SSTREAM)
+    std::stringstream tmpstr2;
+#else
     strstream tmpstr2;
+#endif
 #endif
 
     switch (this->option)
@@ -100,7 +110,7 @@ boolean GARCommand::doIt(CommandInterface *)
 		theGARApplication->changeMode(mode, &tmpstr2);
 #else
 		tmpstr.clear();
-		tmpstr.seekg(0, ios::beg);
+		tmpstr.seekg(0, std::ios::beg);
 		theGARApplication->changeMode(mode, &tmpstr);
 #endif
                 if (dirty) theGARApplication->setDirty();

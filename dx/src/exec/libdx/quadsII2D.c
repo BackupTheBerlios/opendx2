@@ -651,7 +651,13 @@ static int quad_coords (QuadArgs *args)
     
     if ((a01 >= 0.0 && a12 >= 0.0 && a20 >= 0.0) ||
         (a01 <= 0.0 && a12 <= 0.0 && a20 <= 0.0) ||
-        (a01 == 0.0 || a12 == 0.0 || a20 == 0.0))
+        (a01 == 0.0 && ((a12 <= 0.0 && a20 <= 0.0) ||
+                        (a12 <= 0.0 && a20 <= 0.0)    )) ||
+        (a12 == 0.0 && ((a01 <= 0.0 && a20 <= 0.0) ||
+                        (a01 <= 0.0 && a20 <= 0.0)    )) ||
+        (a20 == 0.0 && ((a12 <= 0.0 && a01 <= 0.0) ||
+                        (a12 <= 0.0 && a01 <= 0.0)    ))
+       )
     {
 	a = 1.0 / a;
 	q->p = a12 * a;
@@ -689,7 +695,13 @@ static int quad_coords (QuadArgs *args)
 
     if ((b13 >= 0.0 && b32 >= 0.0 && b21 >= 0.0) ||
 	(b13 <= 0.0 && b32 <= 0.0 && b21 <= 0.0) ||
-	(b13 == 0.0 || b32 == 0.0 || b21 == 0.0))
+        (b13 == 0.0 && ((b32 <= 0.0 && b21 <= 0.0) ||
+                        (b32 <= 0.0 && b21 <= 0.0)    )) ||
+        (b32 == 0.0 && ((b13 <= 0.0 && b21 <= 0.0) ||
+                        (b13 <= 0.0 && b21 <= 0.0)    )) ||
+        (b21 == 0.0 && ((b32 <= 0.0 && b13 <= 0.0) ||
+                        (b32 <= 0.0 && b13 <= 0.0)    ))
+       )
     {
 	b = 1.0 / b;
 	q->p = 0.0;
@@ -893,7 +905,7 @@ QuadsWalk(QuadArgs *args, int quadIndex)
 }
 
 Object
-_dxfQuadsII2DInterpolator_Copy(QuadsII2DInterpolator old, enum copy copy)
+_dxfQuadsII2DInterpolator_Copy(QuadsII2DInterpolator old, enum _dxd_copy copy)
 {
     QuadsII2DInterpolator new;
 
@@ -911,7 +923,7 @@ _dxfQuadsII2DInterpolator_Copy(QuadsII2DInterpolator old, enum copy copy)
 
 QuadsII2DInterpolator
 _dxf_CopyQuadsII2DInterpolator(QuadsII2DInterpolator new, 
-				QuadsII2DInterpolator old, enum copy copy)
+				QuadsII2DInterpolator old, enum _dxd_copy copy)
 {
 
     if (! _dxf_CopyFieldInterpolator((FieldInterpolator)new,

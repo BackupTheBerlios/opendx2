@@ -144,7 +144,7 @@ void ResourceManager::saveListResource(Symbol key)
     ListIterator iter(*values);
     Symbol v;
     boolean first = TRUE;
-    while (v=(Symbol)iter.getNext()) {
+    while (v=(Symbol)(long)iter.getNext()) {
 	const char* str = theSymbolManager->getSymbolString(v);
 	if (!first) {
 	    spec[os++] = VALUE_SEPARATOR;
@@ -160,7 +160,7 @@ void ResourceManager::saveListResource(Symbol key)
 
 void ResourceManager::saveResource(Symbol key)
 {
-    Symbol v = (Symbol)this->resources.findDefinition(key);
+    Symbol v = (Symbol)(long)this->resources.findDefinition(key);
     theIBMApplication->printResource(theSymbolManager->getSymbolString(key), 
 	theSymbolManager->getSymbolString(v));
 }
@@ -173,7 +173,7 @@ void ResourceManager::getValue (const char* resource, String& result)
 	this->initializeValue(key);
     }
     result[0] = '\0';
-    Symbol s = (Symbol)this->resources.findDefinition(resource);
+    Symbol s = (Symbol)(long)this->resources.findDefinition(resource);
     const char* str = theSymbolManager->getSymbolString(s);
     strcpy (result, str);
 }

@@ -8,3 +8,13 @@ config.log
 config.cache
 config.status
 statHdrs.h
+compile
+depcomp
+libtool
+ltmain.sh
+config.guess
+config.sub
+config.h.in
+autom4te.cache
+missing
+configure.lineno

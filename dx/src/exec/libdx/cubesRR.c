@@ -634,7 +634,7 @@ not_found:
 }
 
 Object
-_dxfCubesRRInterpolator_Copy(CubesRRInterpolator old, enum copy copy)
+_dxfCubesRRInterpolator_Copy(CubesRRInterpolator old, enum _dxd_copy copy)
 {
     CubesRRInterpolator new;
 
@@ -652,7 +652,7 @@ _dxfCubesRRInterpolator_Copy(CubesRRInterpolator old, enum copy copy)
 
 CubesRRInterpolator
 _dxf_CopyCubesRRInterpolator(CubesRRInterpolator new, 
-				CubesRRInterpolator old, enum copy copy)
+				CubesRRInterpolator old, enum _dxd_copy copy)
 {
 
     if (! _dxf_CopyFieldInterpolator((FieldInterpolator)new,

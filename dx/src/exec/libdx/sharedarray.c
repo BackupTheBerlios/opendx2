@@ -34,7 +34,7 @@ struct _shmtab {
 static HashTable shmtab = NULL;
 
 Error
-_newSharedSegment(int id, void (*or)(int, Pointer, Pointer), Pointer d)
+_newSharedSegment(int id, void (*sor)(int, Pointer, Pointer), Pointer d)
 {
     struct _shmtab *sptr, s;
 
@@ -55,7 +55,7 @@ _newSharedSegment(int id, void (*or)(int, Pointer, Pointer), Pointer d)
     s.id    	= id;
     s.base  	= (Pointer)shmat(id, 0, 0);
     s.count 	= 0;
-    s.onRelease = or;
+    s.onRelease = sor;
     s.data      = d;
     if (! DXInsertHashElement(shmtab, (Element)&s))
 	return ERROR;
@@ -91,11 +91,11 @@ _getBase(int id)
  * in that segment is deleted.
  */
 Error
-DXRegisterSharedSegment(int id, void (*or)(int, Pointer, Pointer), Pointer d)
+DXRegisterSharedSegment(int id, void (*sor)(int, Pointer, Pointer), Pointer d)
 {
     /*  DXQueryHashElement returns a "struct _shmtab *"  */
     if (! shmtab || (NULL == DXQueryHashElement(shmtab, (Key)&id)))
-        if (! _newSharedSegment(id, or, d))
+        if (! _newSharedSegment(id, sor, d))
 	    return ERROR;
 
     return OK;
@@ -275,14 +275,14 @@ DXNewSharedArrayFromOffset(int id, long offset, int k, Type t, Category c, int r
 #else
 
 Error
-_newSharedSegment(int id, void (*or)(int, Pointer, Pointer), Pointer d)
+_newSharedSegment(int id, void (*sor)(int, Pointer, Pointer), Pointer d)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "shared array support requires shmat");
     return ERROR;
 }
 
 Error
-DXRegisterSharedSegment(int id, void (*or)(int, Pointer, Pointer), Pointer d)
+DXRegisterSharedSegment(int id, void (*sor)(int, Pointer, Pointer), Pointer d)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "shared array support requires shmat");
     return ERROR;

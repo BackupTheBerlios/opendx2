@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/groupinterpClass.X,v 1.2 1999/05/10 15:45:43 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/groupinterpClass.X,v 1.3 2003/07/11 05:50:42 davidt Exp $
 //
 
 
@@ -35,4 +35,4 @@ GroupInterpolator _dxf_NewGroupInterpolator(Group, enum interp_init,
 			float, Matrix *, struct groupinterpolator_class *);
 
 GroupInterpolator _dxf_CopyGroupInterpolator(GroupInterpolator,
-			GroupInterpolator, enum copy copy);
+			GroupInterpolator, enum _dxd_copy copy);

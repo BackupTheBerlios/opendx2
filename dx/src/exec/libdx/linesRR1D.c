@@ -417,7 +417,7 @@ _dxfCleanup(LinesRR1DInterpolator li)
 }
 
 Object
-_dxfLinesRR1DInterpolator_Copy(LinesRR1DInterpolator old, enum copy copy)
+_dxfLinesRR1DInterpolator_Copy(LinesRR1DInterpolator old, enum _dxd_copy copy)
 {
     LinesRR1DInterpolator new;
 
@@ -435,7 +435,7 @@ _dxfLinesRR1DInterpolator_Copy(LinesRR1DInterpolator old, enum copy copy)
 
 LinesRR1DInterpolator
 _dxf_CopyLinesRR1DInterpolator(LinesRR1DInterpolator new,
-				    LinesRR1DInterpolator old, enum copy copy)
+				    LinesRR1DInterpolator old, enum _dxd_copy copy)
 {
     if (! _dxf_CopyFieldInterpolator((FieldInterpolator)new,
 					(FieldInterpolator)old, copy))

@@ -1,4 +1,3 @@
-
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -1002,6 +1001,93 @@ DXfetch_and_add(int *p, int value, lock_type *l, int who)
 /*
  * fake locks for UP machines
  */
+
+
+#if defined(DX_NATIVE_WINDOWS)
+
+#define lockcode
+#include <windows.h>
+
+#define LOCKED 0
+#define UNLOCKED 1
+
+static int find_lock = 10;
+
+int _dxf_initlocks(void)
+
+{
+    return OK;
+}
+
+static void 
+
+DXFoundLock()
+
+{
+
+}
+
+int DXcreate_lock(lock_type *l, char *name)
+{
+    *l = (lock_type)CreateMutex(NULL, FALSE, NULL);
+	if (*(int *)l == find_lock)
+		DXFoundLock();
+    return OK;
+}
+
+int DXdestroy_lock(lock_type *l)
+{
+    if (WaitForSingleObject((HANDLE)*l, 0) != WAIT_OBJECT_0)
+		DXErrorReturn(ERROR_INTERNAL, "attempt to destroy locked lock");
+	ReleaseMutex((HANDLE)*l);
+	//CloseHandle((HANDLE)*l);
+    return OK;
+}
+
+int DXlock(lock_type *l, int who)
+{
+	if (*(int *)l == find_lock)
+		DXFoundLock();
+
+	if (DXWaitForSignal(1, (HANDLE *)l) == WAIT_TIMEOUT)
+		return ERROR;
+    return OK;
+}
+
+int DXtry_lock(lock_type *l, int who)
+{
+	if (*(int *)l == find_lock)
+		DXFoundLock();
+
+    if (WaitForSingleObject((HANDLE)*l, 0) == WAIT_OBJECT_0)
+		return OK;
+	else
+		return ERROR;
+}
+
+int DXunlock(lock_type *l, int who)
+{
+	if (*(int *)l == find_lock)
+		DXFoundLock();
+
+	ReleaseMutex((HANDLE)*l);
+    return OK;
+}
+
+int DXfetch_and_add(int *p, int value, lock_type *l, int who)
+{
+    int old_value;
+
+    DXlock(l, who);
+    old_value = *p;
+    *p += value;
+    DXunlock(l, who);
+
+    return old_value;
+}
+
+#endif /* DX_NATIVE_WINDOWS */
+
 
 #if !defined(lockcode)
 

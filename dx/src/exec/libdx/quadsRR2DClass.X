@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/quadsRR2DClass.X,v 1.2 1999/05/10 15:45:46 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/quadsRR2DClass.X,v 1.3 2003/07/11 05:50:46 davidt Exp $
 //
 
 
@@ -43,4 +43,4 @@ QuadsRR2DInterpolator _dxf_NewQuadsRR2DInterpolator(Field,
 			struct quadsrr2dinterpolator_class *);
 
 QuadsRR2DInterpolator _dxf_CopyQuadsRR2DInterpolator(QuadsRR2DInterpolator, 
-			QuadsRR2DInterpolator, enum copy);
+			QuadsRR2DInterpolator, enum _dxd_copy);

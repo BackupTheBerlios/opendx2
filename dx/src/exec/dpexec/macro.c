@@ -15,7 +15,7 @@
 #include "d.h"
 #include "_macro.h"
 
-EXDictionary _dxd_exMacroDict;
+EXDictionary _dxd_exMacroDict = NULL;
 
 /*
  * These routines are simply wrappers around the dictionary routines to

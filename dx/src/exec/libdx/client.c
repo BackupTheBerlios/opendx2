@@ -80,14 +80,15 @@ _dxfHostIsLocal(char *host)
     if(strcmp(tmpHost, localHostname) == 0)
 	return 1;  /*  default to localhost    */
 #endif
+
+    /* Local host names do not have to resolve even in UNIX.
+       If it doesn't resolve, then assume localhost instead
+       of returning error. 
+     */
+
     he = gethostbyname (host);
     if (he == NULL) {
-#ifdef DXD_OS_NON_UNIX
-	return 1;   /* Default to LocalHost */
-#else
-	herror(host);
-	return(0);
-#endif
+		return 1;   /* Default to LocalHost */
     }
     strcpy(remoteHostname, he->h_name);
 

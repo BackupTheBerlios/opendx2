@@ -11,9 +11,9 @@ INCLUDE2 <dxconfig.h>
 
 INCLUDE2 <string.h>
 INCLUDE2 <dx/dx.h>
-INCLUDE2 <X11/X.h> 
 INCLUDE2 "render.h"
 INCLUDE2 "internals.h"
+INCLUDE2 "displayutil.h"
  
 /*  
  * Rendering buffer
@@ -276,7 +276,7 @@ _dxf_CopyBufferToImage(struct buffer *b, Field i, int xoff, int yoff)
     if (o==O_FB_IMAGE)
 	return _dxf_CopyBufferToFBImage(b, i, xoff, yoff);
     else if (o==O_X_IMAGE)
-	return _dxf_CopyBufferToXImage(b, i, xoff, yoff);
+	return _dxf_CopyBufferToPImage(b, i, xoff, yoff);
     else if (o)
 	DXErrorReturn(ERROR_BAD_PARAMETER, "#11600");
 
@@ -457,61 +457,6 @@ _dxf_CopyBufferToFBImage(struct buffer *buf, Field i, int xoff, int yoff)
 	    } \
 	} \
       }
-
-Error
-_dxf_CopyBufferToXImage(struct buffer *buf, Field image, int xoff, int yoff)
-{
-    int           iwidth, iheight;
-    unsigned char *dst, *src;
-    translationP  translation;
-    int		  inType;
-    Object        o;
-
-    o = DXGetComponentAttribute(image, IMAGE, X_SERVER);
-    translation = _dxf_GetXTranslation(o);
-
-    if (! translation)
-    {
-	DXSetError(ERROR_INTERNAL,
-	    "missing translation in _dxf_CopyBufferToXImage");
-	return ERROR;
-    }
-    
-    dst = _dxf_GetXPixels(image);
-    if(!dst)
-      return ERROR;
-
-    if (buf->pix_type == pix_fast)
-    {
-	src = (unsigned char *)buf->u.fast;
-	inType = IN_FAST_PIX;
-    }
-    else if (buf->pix_type == pix_big)
-    {
-	src = (unsigned char *)buf->u.big;
-	inType = IN_BIG_PIX;
-    }
-    else
-    {
-	DXSetError(ERROR_INTERNAL, "unrecognized pix type");
-	return ERROR;
-    }
-
-    if (!DXGetImageSize(image, &iwidth, &iheight))
-        return ERROR;
-    
-#if 0
-    return _dxf_translateImage((Object)image, iwidth, iheight,
-		xoff, yoff, buf->ox, buf->oy, buf->width, buf->height,
-		0, 1, translation,
-		src, inType, dst);
-#else
-    return _dxf_translateImage((Object)image, iwidth, iheight,
-		0, 0, yoff, xoff, buf->height, buf->width,
-		0, 1, translation,
-		src, inType, dst);
-#endif
-}
 
 /*
  * Interference
@@ -981,11 +926,7 @@ ENCODE
 #undef ENCODE_NAME
 #undef COLORMASK
 
-#ifdef DXD_BIGENDIAN
-#define COLORMASK	0xfff0
-#else
-#define COLORMASK	0x0fff
-#endif
+#define COLORMASK COLORMASK12 
 #define CMP(A,B)  	(!((*((ushort *)(A)) ^ *((ushort *)(B))) & COLORMASK))
 #define ASGN(A,B)	(((char *)(A))[0] = ((char *)(B))[0], \
 			 ((char *)(A))[1] = ((char *)(B))[1])
@@ -1012,11 +953,7 @@ ENCODE
 #undef ENCODE_NAME
 #undef COLORMASK
 
-#ifdef DXD_BIGENDIAN
-#define COLORMASK	(XImageByteOrder(t->dpy) == MSBFirst) ? 0x00ffffff : 0xffffff00
-#else
-#define COLORMASK	(XImageByteOrder(t->dpy) == MSBFirst) ? 0xffffff00 : 0x00ffffff
-#endif
+#define COLORMASK COLORMASK24
 #define CMP(A,B)  	(!((*((uint *)(A)) ^ *((uint *)(B))) & mask))
 #define ASGN(A,B)	(((char *)(A))[0] = ((char *)(B))[0], \
 			 ((char *)(A))[1] = ((char *)(B))[1], \

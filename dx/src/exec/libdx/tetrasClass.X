@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/tetrasClass.X,v 1.2 1999/05/10 15:45:47 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/tetrasClass.X,v 1.3 2003/07/11 05:50:47 davidt Exp $
 //
 
 typedef struct tetrasinterpolator *TetrasInterpolator;
@@ -76,4 +76,4 @@ TetrasInterpolator _dxf_NewTetrasInterpolator(Field,
 			struct tetrasinterpolator_class *);
 
 TetrasInterpolator _dxf_CopyTetrasInterpolator(TetrasInterpolator,
-			TetrasInterpolator, enum copy);
+			TetrasInterpolator, enum _dxd_copy);

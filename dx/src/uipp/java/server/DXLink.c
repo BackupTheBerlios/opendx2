@@ -11,7 +11,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.7 2002/03/25 16:40:59 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.8 2003/07/11 05:50:55 davidt Exp $
  */
 #if defined(hp700) 
 #define _UINT64_T
@@ -224,7 +224,7 @@ JNIEXPORT jint JNICALL Java_server_DXServerThread_DXLLoadVisualProgram
 {
 int retval = 0;
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 int i;
 #endif
 
@@ -236,7 +236,7 @@ DXLConnection* conn = (DXLConnection*)jdxl;
 	str = (char *) malloc (sizeof(char)* (strlen(net_file) + 1));
 	strcpy (str, net_file);
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 	for(i=0; i<strlen(str); i++)
 		if(str[i] == '\\') str[i] = '/';
 #endif

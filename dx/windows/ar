@@ -1,6 +1,8 @@
-
+#!/bin/sh
 cmd=$1
 shift
+olname=$1
+msolname=`cygpath -d $1`
 lname=`echo $1 | sed -e "s/\.a//"`
 shift
 ofiles=$*
@@ -13,32 +15,30 @@ case $cmd in
 		rm -f db.$$ gr.$$
 		;;
 	*x*)	if test "X$ofiles" = "X" ; then
-		    dumpbin /archivemembers $lname.a > db.$$
+		    dumpbin /archivemembers \"$msolname\" > db.$$
 		    grep "Archive member name" < db.$$ > gr.$$
-		    ofiles=`sed -e "s/^.*[	 /]\([a-zA-Z0-9_-]*\).o.*/\1.o/"  gr.$$`
+		    ofiles=`sed -e "s/^.*[	 /]\([a-zA-Z0-9_-]*\).obj.*/\1.obj/"  gr.$$`
 		    rm -f db.$$ gr.$$
 		fi
 		for i in $ofiles ; do
-		    lib $lname.a /NOLOGO /EXTRACT:$i
+		    lib.exe \"$msolname\" /NOLOGO /EXTRACT:$i
 		done
 		;;
 	*d*) 	for i in $ofiles ; do
 	 	    mv $lname.a tmp$$.a
-		    lib /OUT:$lname.a /NOLOGO tmp$$.a /REMOVE:$i
+		    lib.exe /OUT:$lname.a /NOLOGO tmp$$.a /REMOVE:$i
 		done
 		;;
-	*[qr]*) if test -e $lname.a ; then
-		    mv $lname.a tmp$$.lib
-		    lib /OUT:$lname.lib /NOLOGO /MACHINE:IX86 tmp$$.lib $ofiles
+	*[qr]*) if test -e $olname ; then
+		    mv $olname tmp$$.lib
+		    lib.exe /OUT:$olname /NOLOGO /MACHINE:IX86 tmp$$.lib $ofiles
 		    rm tmp$$.lib
 		else
-		    lib /OUT:$lname.lib /NOLOGO /MACHINE:IX86 $ofiles
+		    lib.exe /OUT:$olname /NOLOGO /MACHINE:IX86 $ofiles
 		fi
-		mv $lname.lib $lname.a
 		;;
 	*c*)
-		lib /OUT:$lname.lib /NOLOGO /MACHINE:IX86 $ofiles
-		mv $lname.lib $lname.a
+		lib.exe /OUT:$olname /NOLOGO /MACHINE:IX86 $ofiles
 		;;
 	*)	echo cmd \($cmd\) must be one of t x d r c >&2
 		exit 1

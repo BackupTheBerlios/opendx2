@@ -12,7 +12,7 @@
 
 #include <string.h>
 #include <dx/dx.h>
-#include <bounds.h>
+#include "bounds.h"
 #include <math.h>
 #include <ctype.h>
 

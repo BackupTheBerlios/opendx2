@@ -1,3 +1,163 @@
+4.3
+===============
+Added the RTLD_GLOBAL to loading modules so that functions 
+between loadable modules are visible.
+
+Fix a crash bug when a parameter value is set to "". It probably 
+happened only when the Display tool had a user-specified Where 
+param as would be the case with SuperviseWindow AND the user 
+did some operation like drag-n-drop, cut/copy/paste, 
+'Edit/Insert Program...'.
+
+Added better handling of resize calls to an Image window
+so that the update call isn't called continually with Window
+managers that expose the image during resize.
+
+Fix in the 2D quad interpolator where point is on edge.
+
+Remove the new-line character on some new annotations to remove
+the funny character at the end to be displayed.
+
+Fixed up the JavaDX macros to include comments and put some of 
+them in the "" category so they do not show up in the UI.
+
+Add a work around to fix a bug when the PageUp, PageDown, or End
+keys were pressed and caused a crash. This is a bug in Motif < 2.3.
+
+Fix the Tabbed windows so they have rounded corners even with
+Hummingbird's Exceed without requiring Hummingbird to fix their
+software.
+
+Changed the tool selector to be a tree view type list and updated
+all functionality to go along with that.
+
+Implemented a preferences file that saves the state of the
+tree view expansion from launch to launch. Also saves a list
+of recent files that is now available in the File menu.
+
+Fix for the random function in Compute for Windows version.
+(Bug ID#66)
+
+Fix the module builder to work and use CR/LF on DOS based
+systems. (Bug ID#109)
+
+Fix the activation of application wide commands unless the 
+Network object == the application's main network. (Bug ID#106)
+
+Fix problem where a large stream going to the message window
+on Windows would Quit the Exec (Bug ID#107)
+
+Converted dxworker to bourne shell from csh. Now allows spaces
+in filenames and exe names and better handles special characters
+passed in to the exec with scriptcmd option.
+
+Corrected problem where Gamma was not being applied to images
+saved via ImageMagick (Bug ID#67).
+
+Added capabilities to affect the compression method and quality
+in images saved with ImageMagick.
+
+Fix a memory leak in the XHandler within the EditorWindow.
+
+Fix a memory leak with respect to the rotation globes and cfg files.
+
+Fix a memory leak with open file descriptors on systems with 
+HAVE_OPEN_DIR and HAVE_DIRENT_H. Free regular expression compiled
+with regcomp.
+
+Fixed the placement of the Throttle dialog of the Image window.
+
+Fixed a problem with the Frame Control of the Sequencer popping
+up directly over the Sequencer on the first pop-up.
+
+Fix "Visualize Data..." in the prompter to pass unix path
+separators instead of DOS on Windows machines.
+
+User Interface performance improvements.
+
+New option under the edit menu for automatic graph layout, which
+rearranges the nodes in the graph of the current vpe page.
+    Pros n Cons:
+	- It ignores the current layout.  That can be pretty disorienting.
+	- If the graph has connections going all over the place and doesn't
+	  use transmitters,receivers then the output might not be any better
+	  than the input.
+	- It works stupendously on many graphs especially those that don't really
+	  need to be rearranged.
+	- What looks good and what looks bad is pretty subjective.
+
+Undo now available in the editor window.
+How's it work:
+	Every node or annotation move in the canvas is recorded and
+	can be undone via Ctrl+U (Ctrl+Z).
+	
+Cursor keys now affect module movement on the VPE. Helps people 
+who lay out nets really carefully.  Now it's easy to make small 
+movements and you get to see the lines redrawn as the node moves.
+How's it work:  
+	Select a node(s) or annotation.  Then use up, down, left, right
+	arrows to move the selected objects 1 pixel at a time.
+
+There is some code for reading in Selector interactors out of .net 
+files that was cleaned up and corrected.
+	
+Fix a memory leak in configuration dialog boxes.
+
+Bug ID#45
+Implement OPTIONS processing on behalf of macros. Now possible
+to add drop down options on Macros. Use semi-colons to separate
+items of the list.
+
+Fixed Bug ID#18
+EditorWindow destructor was deleting cache-optimization menu 
+items twice, now only once.
+
+Fixed Bug ID# 38, 61
+Object deleted during the dropFinish callback.  The new Motif
+interprets Widget deletion as a need to cancel drag-n-drop which 
+triggers the dropFinish callback a 2nd time. Problem is object 
+already deleted. Now, object deletion is queued so object is
+deleted from dropFinish callback.
+
+Fixed Bug ID#10
+Set Min Width, Height on the container so it can't be resized
+to small.
+
+Added isnan functionality for Windows in stat functions.
+
+Added isnan and finite to the Compute module for those systems
+that support it.
+
+A fix for Streamline when checking for Invalid Data components.
+
+A correction to check to see if "invalid" components are added
+then recompute "dep" components.
+
+Added Visual Studio loadable modules example.
+
+Fix for invalid() to return error instead of crash in Compute.
+
+A correction for netCDF where an invalid file would crash OpenDX
+instead of returning an error.
+
+DXTrimItems() has been added as a function to remove items from
+the end of an array.
+
+Incorporating some native Windows code to begin making a Windows
+native executive.
+
+Began adding WIN32 support and building with Visual Studio 6.0. Due to
+some bugs in Visual Studio 7 (which are acknowledged by MS), we will
+not be able to build with VS7 until fixed.
+
+For libtool purposes and the new work on making a thread safe exec,
+the yacc code must be parsed with bison. Thus we are adding the
+generated *.c files in the cvs tree and in for distribution.
+
+Now building with libtool to allow dynamic libraries to be built. This
+required updates of some global variable initialization and renaming
+some files to be unique in the libraries.
+
 4.2.0
 ===============
 

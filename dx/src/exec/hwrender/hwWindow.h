@@ -13,7 +13,7 @@
 #define	tdmWindow_h
 /*
  *
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.h,v 1.4 1999/05/10 15:45:36 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.h,v 1.5 2003/07/11 05:50:38 davidt Exp $
  */
 
 #include "hwStereo.h"
@@ -52,6 +52,14 @@
  */
 
 typedef	struct WinS {
+#if defined(DX_NATIVE_WINDOWS)
+  HWND wigWindow ;			/* parent window owned by UI process */
+  HWND xid ;				/* X handle to graphics window */
+  HANDLE busy;
+  HANDLE lock;
+  int canRender;
+  DWORD windowThread;
+#else
   Display *dpy ;			/* X display connection to window */
   Window wigWindow ;			/* parent window owned by UI process */
   Window msgWindow ;			/* window which receives UI messages */
@@ -60,6 +68,7 @@ typedef	struct WinS {
   Window lxid ;                         /* X handle to graphics window for left stereo image */
   Window rxid ;                         /* X handle to graphics window for right stereo image */
   Colormap xColormap ;			/* X colormap for graphics window */
+#endif
   int visibility ;			/* visibility state of X window */
   tdmPortHandleP phP ;		       	/* graphics API context */
   void *curcam ;			/* current camera object */
@@ -110,6 +119,9 @@ typedef	struct WinS {
  */
 
 typedef struct tdmChildGlobalS {
+#if defined(DX_NATIVE_WINDOWS)
+  dxObject owner;
+#endif
   tdmHWDescP adapter ;			/* hardware description */
   WinT win ;				/* window description */
   char *cacheId ;			/* renderer state handle in cache */
@@ -169,6 +181,7 @@ typedef struct tdmChildGlobalS {
 
 #define DPY (_wdata->dpy)
 #define XWINID (_wdata->xid)
+#define CAN_RENDER (_wdata->canRender)
 #define PARENT_WINDOW (_wdata->wigWindow)
 #define PORT_HANDLE (_wdata->phP)
 #define CLRMAP (_wdata->xColormap)
@@ -246,6 +259,36 @@ DEFWINDATA(&(((tdmChildGlobalT*) G)->win))
 
 
 void _dxfSetCurrentView(WinP, float *, float *, float *, float, float);
+
+#if defined(DX_NATIVE_WINDOWS)
+
+#define BASE			(_wdata->busy);
+#define WINDOWTHREAD	(_wdata->windowThread)
+#define LOCK			(_wdata->lock)
+
+typedef struct _OGLWindow
+{
+   	HGLRC		hRC;
+	void		*globals;
+	PAINTSTRUCT ps;
+	int			repaint;
+	long		lastX, lastY;
+	int			stroke;
+	int			quit;
+	int			buttonState;
+} OGLWindow;
+
+
+#ifdef _WIN32
+#define GetOGLWPtr(hwnd)		(OGLWindow *)GetWindowLong((hwnd),0)
+#define SetOGLWPtr(hwnd,ptr)	SetWindowLong((hwnd),0,(LONG)(ptr))
+#else
+#define GetOGLWPtr(hwnd)		(OGLWindow *)GetWindowLong((hwnd),0)
+#define SetOGLWPtr(hwnd,ptr)	SetWindowLong((hwnd),0,(WORD)(ptr))
+#endif
+
+#endif
+
 
 /*
  *===================================================================

@@ -14,13 +14,6 @@
 #include <Xm/Xm.h>
 #include <Xm/Label.h>
 #include <X11/cursorfont.h>
-#ifdef DXD_WIN
-#include <iostream.h>
-#else
-#if defined(HAVE_STREAM_H)
-#include <stream.h>
-#endif
-#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -47,7 +40,7 @@
 
 #include "../widgets/Number.h"
 #define XK_MISCELLANY
-#include <X11/keysymdef.h>
+#include <X11/keysym.h>
 
 #ifndef DXD_NON_UNIX_ENV_SEPARATOR
 #define SEP_CHAR ':'
@@ -382,7 +375,7 @@ void GARApplication::postMainWindow(unsigned long mode)
 // The old mode may be the same as the new mode (if we are simply opening
 // a new file.
 //
-void GARApplication::changeMode(unsigned long mode, istream *tmpstr)
+void GARApplication::changeMode(unsigned long mode, std::istream *tmpstr)
 {
     GARMainWindow *old_mw = NULL;
     Boolean change_it = (mode != this->mainWindow->getMode());

@@ -31,7 +31,7 @@ DEFINES Object Paint(Object, struct buffer *, int, struct tile *)
 DEFINES Object Gather(Object, struct gather *, struct tile *)
 DEFINES Error  Partition(Object, int*, int, Object*, int)
 DEFINES Object GetType(Object, Type*, Category*, int*, int*);
-DEFINES Object Copy(Object, enum copy)
+DEFINES Object Copy(Object, enum _dxd_copy)
 IMPLEMENTS Delete BoundingBox Shade
 
 #define NATTRIBUTES 2			/* number of attributes in object */
@@ -75,7 +75,7 @@ This internal routine is called only by other {\tt New...} routines to
 create and initialize the object preamble.
 **/
 
-Object _dxf_CopyObject(Object new, Object old, enum copy copy);
+Object _dxf_CopyObject(Object new, Object old, enum _dxd_copy copy);
 /**
 Copies the portion of the data of {\tt old} managed by the {\tt
 Object} class to {\tt new}.  This is provided for subclasses of {\tt Object}

@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/fle2DClass.X,v 1.2 1999/05/10 15:45:43 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/fle2DClass.X,v 1.3 2003/07/11 05:50:42 davidt Exp $
 //
 
 
@@ -64,5 +64,5 @@ Fle2DInterpolator _dxf_NewFle2DInterpolator(Field,
 			struct fle2dinterpolator_class *);
 
 Fle2DInterpolator _dxf_CopyFle2DInterpolator(Fle2DInterpolator,
-			Fle2DInterpolator, enum copy);
+			Fle2DInterpolator, enum _dxd_copy);
 

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.7 2000/08/24 20:04:56 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.8 2003/07/11 05:50:36 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -43,14 +43,14 @@ END:
 #include <fcntl.h>
 #include <ctype.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
-#include <_rw_image.h>
+#include "_helper_jea.h"
+#include "_rw_image.h"
 #include <sys/types.h>
 #include <signal.h>
 
 
 /* FIXME: this belongs in the arch.h file */
-#if defined(ibmpvs)  || defined(os2) || defined(intelnt)
+#if defined(ibmpvs)  || defined(os2) || defined(intelnt) || defined(WIN32)
 #undef HAS_POSIX_SIGNALS 
 #else
 #define HAS_POSIX_SIGNALS 
@@ -64,13 +64,15 @@ END:
 
 #define HANDLE_SIGPIPE 0
 
-#ifdef intelnt
+#if defined(intelnt) || defined(WIN32)
 #define	SIGPIPE	SIGILL
 #define	popen	_popen
 #define	pclose	_pclose
 #endif
 
 static float GammaFromFormat(char *s);
+static char* CompressionFromFormat(char *s);
+static unsigned int QualityFromFormat(char *s);
 
 #if HANDLE_SIGPIPE
 static int pipe_error_happened;
@@ -220,6 +222,8 @@ m_WriteImage ( Object *in, Object *out )
         iargs.imgtyp = imginfo->type;
 
 	iargs.gamma = GammaFromFormat(format);
+	iargs.compression = CompressionFromFormat(format);
+	iargs.quality = QualityFromFormat(format);
 
         if (Output_to_ADASD) {
 	    if (!(imginfo->flags & ADASD_OK)) 
@@ -381,6 +385,7 @@ m_WriteImage ( Object *in, Object *out )
 #if DXD_POPEN_OK
     if (iargs.pipe) pclose(iargs.pipe);
 #endif
+	if (iargs.compression) DXFree (iargs.compression);
     return OK;
 
 error:
@@ -397,21 +402,69 @@ static float GammaFromFormat(char *s)
     char *p, *q;
     char buf[200];
     int len;
-
+	
     p = (char *)strstr(s, "gamma");
     if (!p)
-	return 2.0;
+		return 2.0;
     p = (char *)strstr(p, "=");
     if (!p)
-	return 2.0;
+		return 2.0;
     p++;
     for (q=p; *q && isspace(*q); q++);
     for (p=q, len=0; *q && !isspace(*q); q++, len++);
     len++;
     if (len>=200)
-	return 2.0;
+		return 2.0;
     strncpy(buf, p, len);
     buf[len] = '\0';
     return (float)atof(buf);
 }
 
+/* Allocates the return. Caller must DXFree the return */
+
+static char* CompressionFromFormat(char *s)
+{
+    char *p, *q;
+    char *buf;
+    int len;
+	
+    p = (char *)strstr(s, "compression");
+    if (!p)
+		return NULL;
+    p = (char *)strstr(p, "=");
+    if (!p)
+		return NULL;
+    p++;
+    for (q=p; *q && isspace(*q); q++);
+    for (p=q, len=0; *q && !isspace(*q); q++, len++);
+    len++;
+    if (len>=200)
+		return NULL;
+	buf = DXAllocate(len);
+    strncpy(buf, p, len-1);
+    buf[len-1] = '\0';
+    return buf;
+}
+
+static unsigned int QualityFromFormat(char *s)
+{
+    char *p, *q;
+    char buf[200];
+    int len;
+	
+    p = (char *)strstr(s, "quality");
+    if (!p)
+		return 0;
+    p = (char *)strstr(p, "=");
+    if (!p)
+		return 0;
+    p++;
+    for (q=p; *q && isspace(*q); q++);
+    for (p=q, len=0; *q && !isspace(*q); q++, len++);
+    len++;
+    if (len>=200)
+		return 0;
+    strncpy(buf, p, len);
+    buf[len] = '\0';
+    return (float)atoi(buf);
+}

@@ -14,8 +14,12 @@
 #ifndef _GARMainWindow_h
 #define _GARMainWindow_h
 
-#include <iostream.h>
+#if defined(HAVE_FSTREAM)
+#include <fstream>
+#elif defined(HAVE_FSTREAM_H)
 #include <fstream.h>
+#endif
+
 #include <Xm/Xm.h>
 
 #include "../base/lex.h"
@@ -347,7 +351,7 @@ class GARMainWindow : public IBMMainWindow
 
     void CreateElipsesPopup();
     void changeHeaderType();
-    void restrictStructure(Boolean restrict);
+    void restrictStructure(Boolean rstrict);
     Boolean addField(int pos);
     void fieldToWids(Field *);
     void recsepToWids(RecordSeparator *);
@@ -403,7 +407,7 @@ class GARMainWindow : public IBMMainWindow
     void parseMajority(char *line);
     void parseLayout(char *line);
     void parseBlock(char *line);
-    void parsePositions(istream *from, char *line);
+    void parsePositions(std::istream *from, char *line);
     void parseComment(char *line);
     void parseDependency(char *line);
     void parseRecordSep(char *line);
@@ -475,14 +479,14 @@ class GARMainWindow : public IBMMainWindow
     void newGAR();
     void newGAR(unsigned long mode);
     boolean saveGAR(char *filenm);
-    void saveGAR(ostream *);
+    void saveGAR(std::ostream *);
 
     boolean openGAR(char *filenm);
-    boolean openGAR(istream *);
+    boolean openGAR(std::istream *);
 
     unsigned long getMode(){return this->mode;};
     static unsigned long getMode(char *filenm);
-    static unsigned long getMode(istream *);
+    static unsigned long getMode(std::istream *);
 
     void postOpenFileDialog();
     void postBrowser(char *filenm);
@@ -492,7 +496,7 @@ class GARMainWindow : public IBMMainWindow
 
     void setFilename(char *filenm);
     void setDataFilename(const char *filenm);
-    char *getFilename(){return DuplicateString(this->filename);};
+    char *getFilename();
 
     Boolean addField(char *name, char *structure);
 

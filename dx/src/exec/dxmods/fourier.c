@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/fourier.c,v 1.5 2000/08/24 20:04:30 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/fourier.c,v 1.6 2003/07/11 05:50:35 davidt Exp $
  */
 
 #include <math.h>
@@ -19,7 +19,7 @@
 typedef Error		(*PFE)();
 extern Error DXAddLikeTasks(PFE, Pointer, int, double, int); /* from libdx/task.c */
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 #define  strcasecmp      stricmp
 #endif
 

@@ -279,7 +279,7 @@ static Error ConnectPMtoS(dpgraphstat *index)
     /* select becomes os2_select in arch.h for os2 */
     FD_ZERO (&fdset);
     FD_SET(index->procfd, &fdset);
-    nselect = select (index->procfd + 1, (SelectPtr) &fdset, NULL,NULL,NULL);
+    nselect = select (index->procfd + 1, (SELECT_ARG_TYPE *) &fdset, NULL,NULL,NULL);
     if(nselect > 0) {
         if(_dxf_ExReceiveBuffer(index->procfd, &type, 1, TYPE_INT, 0) < 0) {
             DXUIMessage("ERROR", "bad distributed packet type");
@@ -357,7 +357,7 @@ static Error ConnectPStoS(dpgraphstat *index, dpgraphstat *index2)
     /* wait for a port to accept from */
     FD_ZERO (&fdset);
     FD_SET(index->procfd, &fdset);
-    nselect = select (index->procfd + 1, (SelectPtr) &fdset, NULL,NULL,NULL);
+    nselect = select (index->procfd + 1, (SELECT_ARG_TYPE *) &fdset, NULL,NULL,NULL);
     if(nselect > 0) {
         if(_dxf_ExReceiveBuffer(index->procfd, &type, 1, TYPE_INT,
                                 index->SwapMsg) < 0) {
@@ -382,7 +382,7 @@ static Error ConnectPStoS(dpgraphstat *index, dpgraphstat *index2)
 
             FD_ZERO (&fdset);
             FD_SET(index2->procfd, &fdset);
-            nselect = select (index2->procfd + 1, (SelectPtr) &fdset, 
+            nselect = select (index2->procfd + 1, (SELECT_ARG_TYPE *) &fdset, 
                                                          NULL,NULL,NULL);
             if(nselect > 0) {
                 /* when second slave has connected tell first slave to accept */
@@ -395,7 +395,7 @@ static Error ConnectPStoS(dpgraphstat *index, dpgraphstat *index2)
                     _dxf_SlaveDone();
                     FD_ZERO (&fdset);
                     FD_SET(index2->procfd, &fdset);
-                    nselect = select (index2->procfd + 1, (SelectPtr) &fdset, 
+                    nselect = select (index2->procfd + 1, (SELECT_ARG_TYPE *) &fdset, 
                                       NULL,NULL,NULL);
                     if(nselect <= 0) 
                         goto error_return;

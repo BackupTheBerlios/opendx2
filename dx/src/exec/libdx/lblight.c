@@ -173,7 +173,7 @@ _dxfLight_Delete(Light l)
  */
 
 Object
-_dxfLight_Copy(Light old, enum copy copy)
+_dxfLight_Copy(Light old, enum _dxd_copy copy)
 {
     return (Object) old;
 }

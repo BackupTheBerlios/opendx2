@@ -15,13 +15,6 @@
 #include <Xm/Label.h>
 #include <X11/cursorfont.h>
 
-#ifdef	DXD_WIN
-#include <iostream.h>
-#else
-#if defined(HAVE_STREAM_H)
-#include <stream.h>
-#endif
-#endif
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
@@ -36,7 +29,7 @@
 #include "MBMainWindow.h"
 #include "../widgets/Number.h"
 #define XK_MISCELLANY
-#include <X11/keysymdef.h>
+#include <X11/keysym.h>
 
 MBApplication* theMBApplication = NUL(MBApplication*);
 

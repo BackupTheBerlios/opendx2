@@ -24,7 +24,7 @@
 #define Matrix dxMatrix
 #define Screen dxScreen
 #define Boolean dxBoolean
-#include "internals.h"
+#include "../libdx/internals.h"
 #undef String
 #undef Object
 #undef Angle

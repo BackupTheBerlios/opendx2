@@ -21,7 +21,7 @@ MINING">
 *      and IBM Visualization Data Explorer for Symmetric Multiprocessing (SMP) 
 * 
 * For architecture dependent information, see 'Platform-Specific 
-* Considerations' in the on-line help, or see /usr/lpp/dx/README_"arch"  
+* Considerations' in the on-line help, or see /usr/local/dx/README_"arch"  
 * where arch is one of ibm6000, hp700, sun4, aviion, alphax,  
 * solaris, or sgi. 
 * 
@@ -139,7 +139,7 @@ CONTENTS
 installation instructions provided with the Data Explorer media. 
 However, if you simply wish to install Data Explorer on a new host, 
 then you need to do the following: 
-  - duplicate (e.g. copy, NFS mount) the /usr/lpp/dx  directory on the new host 
+  - duplicate (e.g. copy, NFS mount) the /usr/local/dx  directory on the new host 
   - use the Configure script to configure the new host 
   Note that you will need a license to run on the new host. If you 
 have a floating license and the new host is on the same network as the 
@@ -181,7 +181,7 @@ B. The DX Installation Directory (DXROOT)
 Data Explorer is installed as a single directory tree that is referred 
 to as the DX root directory.  As part of configuring Data Explorer, 
 links are placed in the public filesystem that reference files within 
-the DX root directory.  The default DX root directory is /usr/lpp/dx. 
+the DX root directory.  The default DX root directory is /usr/local/dx. 
 If the root directory is moved after installation, Data Explorer should 
 be reconfigured to use the new root directory with the following: 
   
@@ -215,7 +215,7 @@ Starting DX user interface
       - the key generation report accurately reflects your DataExplorer 
         configuration.  Review the 'Product License Information' (key 
         generation report from KeyRegs) and verify that the information 
-        it contains matches the output of /usr/lpp/dx/bin/NodeID. 
+        it contains matches the output of /usr/local/dx/bin/NodeID. 
          - 'target' should equal the 'PREFERRED NetLS Target ID' 
          - 'version' should equal 'Version' 
          - 'license type' should equal 'License Usage' 
@@ -244,7 +244,7 @@ choosing the "Tutorial" option of the Help menu of any
 or from the "Tutorial" button of the Data Explorer startup window 
   
 B. Sample Visual Programs and Scripts 
-In the directory /usr/lpp/dx/samples/programs you will find a number 
+In the directory /usr/local/dx/samples/programs you will find a number 
 of example visual programs which illustrate various aspects of Data Explorer. 
 Each sample visual program has a comment associated with it which describes 
 how to use the program. You can access the comment either from the Open 
@@ -254,45 +254,45 @@ opened, from the "Help on Visual Program" option in the Help menu.
 The samples are easily accessed from the "Samples" button of the Data 
 Explorer startup window. 
   
-There are a number of subdirectories in /usr/lpp/dx/samples/programs which 
+There are a number of subdirectories in /usr/local/dx/samples/programs which 
 contain subsets of the sample visual programs organized by topic. So, for 
-example, in /usr/lpp/dx/samples/programs/2D_DATA, you will find a number of 
+example, in /usr/local/dx/samples/programs/2D_DATA, you will find a number of 
 sample visual programs which visualize two dimensional data. When the 
 filter for the Open dialog box of the Visual Program Editor is set to 
-the directory /usr/lpp/dx/samples/programs, these subdirectories will  
+the directory /usr/local/dx/samples/programs, these subdirectories will  
 appear on the left hand side of the dialog, under "Directories". Simply 
 click on one and then press the Filter button to see the example programs 
 in that directory.  
  
-In the directory /usr/lpp/dx/samples/macros you will find a number of 
+In the directory /usr/local/dx/samples/macros you will find a number of 
 useful macros. 
   
-In the directory /usr/lpp/dx/samples/tutorial you will find a number of 
+In the directory /usr/local/dx/samples/tutorial you will find a number of 
 example visual programs which are designed to be used with the Data Explorer 
 tutorial. 
   
-In the directory /usr/lpp/dx/samples/scripts you will find a number of 
+In the directory /usr/local/dx/samples/scripts you will find a number of 
 example script files which illustrate the use of each module in script mode. 
   
-In the directory /usr/lpp/dx/samples/program_guide you will find a number of 
+In the directory /usr/local/dx/samples/program_guide you will find a number of 
 example .c files which will help you in writing your own modules. These 
 samples are designed to be used with the Programmer's Reference. 
   
-In the directory /usr/lpp/dx/samples/dxlink you will find a number of 
+In the directory /usr/local/dx/samples/dxlink you will find a number of 
 example programs which illustrate the use of DXLink. 
   
-In the directory /usr/lpp/dx/samples/callmodule you will find a number of 
+In the directory /usr/local/dx/samples/callmodule you will find a number of 
 example programs which illustrate the use of the DXCallModule interface to 
 call Data Explorer modules from an external program. 
   
-In the directory /usr/lpp/dx/samples/user you will find a number of 
+In the directory /usr/local/dx/samples/user you will find a number of 
 example programs which illustrate how to compile your own module as 
 runtime-loadable, inboard, or outboard. 
   
-In the directory /usr/lpp/dx/samples/outboard you will find a number of 
+In the directory /usr/local/dx/samples/outboard you will find a number of 
 example outboard modules. 
   
-In the directory /usr/lpp/dx/samples/supervise you will find examples of 
+In the directory /usr/local/dx/samples/supervise you will find examples of 
 custom user interactors for use with SuperviseWindow and SuperviseState  
  
   
@@ -722,12 +722,12 @@ more tools on this type of data, then convert it to triangles using Refine.
 15. Notes on On-Line Help  
 Figures have been omitted from On-Line Help.  Users are directed to the  
 hard copy manual at appropriate points in the On-Line Help. Alternatively, 
-you can use the html documentation available in /usr/lpp/dx/html. 
+you can use the html documentation available in /usr/local/dx/html. 
   
   
 16. Adding Modules 
 A. Building a Custom Executive 
-The Makefiles in /usr/lpp/dx/samples/user provides an example of how to  
+The Makefiles in /usr/local/dx/samples/user provides an example of how to  
 build a customized executive. Compiling a user defined module will  
 require an ANSI compliant C compiler which can support function prototypes  
 and the ellipsis notation (...) used in function declarations. 
@@ -737,7 +737,7 @@ All outboard modules should link with the libraries "-lDXlite -lm".
 A number of examples of outboard modules, along with makefiles for 
 each architecture and a README with more detailed information about 
 outboard modules may be found in the directory 
-  /usr/lpp/dx/samples/outboard. 
+  /usr/local/dx/samples/outboard. 
   
 C. Modules written for Version 1 
 In order to compile a module written for Version 1 you need to include 

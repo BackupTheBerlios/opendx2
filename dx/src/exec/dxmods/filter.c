@@ -19,7 +19,7 @@
 typedef Error			(*PFE)();
 extern Error DXAddLikeTasks(PFE, Pointer, int, double, int); /* from libdx/task.c */
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 #define	strcasecmp	stricmp
 #endif
 

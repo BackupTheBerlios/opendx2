@@ -15,7 +15,7 @@
 
 #include <dx/arch.h>
 
-#if defined(HAVE_WINDOWS_H) && defined(intelnt)
+#if defined(HAVE_WINDOWS_H) && (defined(intelnt) || defined(WIN32))
 #include <windows.h>
 #include <winsock.h>
 #define S_IXUSR S_IEXEC
@@ -47,17 +47,21 @@
 
 #if defined(__cplusplus) || defined(c_plusplus)
 
-#if defined(HAVE_IOSTREAM_H)
+#if defined(HAVE_IOSTREAM)
+#include <iostream>
+#elif defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
-#endif
-
 #if defined(HAVE_STREAM_H)
 #include <stream.h>
-#endif
+#endif /*HAVE_STREAM_H */
+#else /* !HAVE_IOSTREAM && !HAVE_IOSTREAM_H */
+#error "no iostream and no iostream.h"
+#endif /* !HAVE_IOSTREAM && !HAVE_IOSTREAM_H */
+
 
 #endif
 
-#ifdef intelnt
+#if defined(intelnt) || defined(WIN32)
 #define DXD_NON_UNIX_SOCKETS
 #endif
 

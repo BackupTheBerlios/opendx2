@@ -86,7 +86,7 @@ boolean _ParsePackageLine(char*      line,
      * Parse package name.
      */
     end = begin;
-    while (*end && !IsWhiteSpace(end) && (*end != '\n'))
+    while (*end && !IsWhiteSpace(end) && (*end != '\n') && (*end != '\r'))
 	end++;
     if (*end)
 	end--;
@@ -1150,7 +1150,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		 */
 		for(start = 0;
 		    line[start] == ' ' OR line[start] == '\t' OR
-		    line[start] == '\n';
+		    line[start] == '\n' OR line[start] == '\r';
 		    start++)
 		    ;
 
@@ -1167,7 +1167,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		 * Remove trailing whitespace.
 		 */
 		for(end = STRLEN(line) - 1;
-		    line[end] == ' ' OR line[end] == '\t' OR line[end] == '\n';
+		    line[end] == ' ' OR line[end] == '\t' OR line[end] == '\n' OR line[end] == '\r';
 		    end--)
 		    ;
 	    

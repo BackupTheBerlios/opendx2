@@ -87,6 +87,7 @@ MacroDefinition::MacroDefinition(boolean system) :
     this->body = NULL;
     this->initialRead = FALSE;
     this->updatingServer = FALSE;
+    this->category = 0;
     if (!system)
 	this->saveCmd = new SaveMacroCommand("saveMacroCommand",
                                          theDXApplication->getCommandScope(),

@@ -114,11 +114,11 @@ int select(
 #include <crt_externs.h>
 #endif
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 HANDLE	hpipeRead, hpipeWrite;
 #endif
 
-#if !defined(intelnt) && !defined(OS2)
+#if !defined(intelnt) && !defined(OS2) && !defined(WIN32)
 #include <sys/wait.h>
 #else
 #ifdef DXD_WINSOCK_SOCKETS
@@ -136,7 +136,7 @@ HANDLE	hpipeRead, hpipeWrite;
 #    define herror perror
 #endif
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 HANDLE
 #else
 static int 
@@ -184,7 +184,7 @@ static int _dxl_ReadPortNumber(int fd)
 #endif
 #endif
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
     DWORD dwRead, dwAvail, dwMess;
 #endif
     struct timeval to;
@@ -200,7 +200,7 @@ static int _dxl_ReadPortNumber(int fd)
     else
 	time_remaining = TIMEOUT;
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
     time_remaining *= 1000;
 #endif
 
@@ -232,7 +232,7 @@ static int _dxl_ReadPortNumber(int fd)
 	}
 #endif
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 	i = PeekNamedPipe(hpipeRead, buf, (DWORD) sizeof(buf) -1, &dwRead, &dwAvail, &dwMess);
 	if(i == FALSE){
 	    Sleep(50);
@@ -269,7 +269,7 @@ static int _dxl_ReadPortNumber(int fd)
 	    }
        }
 
-#if !defined(intelnt)
+#if !defined(intelnt) && !defined(WIN32)
 	current_time = (long)time(NULL);
 	time_remaining = time_remaining - (current_time - start_time);
 	start_time = current_time;
@@ -290,7 +290,7 @@ DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* er
     char *argv[256];
     char  pi[256];
     int port;
-  #if defined(intelnt)
+  #if defined(intelnt) || defined(WIN32)
     HANDLE child;
   #else
     int child;
@@ -391,7 +391,7 @@ DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* er
 	    buf[n] = '\0';
 	    fprintf(stderr,buf);
 	}
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
     TerminateProcess(child, -1);
 #else
 	kill(child, SIGKILL);
@@ -481,7 +481,7 @@ DXLStartDX(const char *string, const char *host)
     DXLConnection *connection;
 
 
-#if  defined(DEBUG)  && defined(intelnt)
+#if  defined(DEBUG)  && (defined(intelnt) || defined(WIN32))
     /* This is to spawn DX seperately for debugging */
 
     if (!host && !getenv("DX_TEST_HOST") ) {
@@ -588,7 +588,7 @@ int DXLGetSocket(DXLConnection *connection)
     return connection->fd;
 }
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 HANDLE
 #else
 static int
@@ -608,7 +608,7 @@ ConnectTo(const char *host,
     char script_name[500],cmd[1000];
     FILE *fp;
     int i;
-#if defined(intelnt) || defined(OS2)
+#if defined(intelnt) || defined(OS2) || defined(WIN32)
     int *in[2], *out[2], *err[2];
 #else
     int in[2], out[2], err[2];
@@ -1026,7 +1026,7 @@ error_return:
 
 #endif    /*    OS2    */
 
-#ifdef	intelnt
+#if defined(intelnt) || defined(WIN32)
 
     char         args[1000];
     char         exename[255];

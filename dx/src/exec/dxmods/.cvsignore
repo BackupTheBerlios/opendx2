@@ -13,3 +13,9 @@ tmp.c
 y.tab.c
 y.output
 local.mk
+*.lo
+.libs
+libDXMODS.la
+libDXMODSN.la
+libuser.la
+libusercm.la

@@ -229,28 +229,28 @@ void windhandler(DXLConnection *conn, const char *name, const char *value,
 void radio_cloudCB(Widget w, XtPointer xp1, XtPointer xp2)
 {
    DXLConnection *conn = (DXLConnection *)xp1;
-   DXLSend(conn, "g = Import(\"/usr/lpp/dx/samples/data/cloudwater\");");
+   DXLSend(conn, "g = Import(\"/usr/local/dx/samples/data/cloudwater\");");
    DXLSend(conn, "mean,sd,var,min,max = Statistics(g);");
    DXLSend(conn, "DXLOutput(\"cloudmax\", max);");
 }
 void radio_rainCB(Widget w, XtPointer xp1, XtPointer xp2)
 {
    DXLConnection *conn = (DXLConnection *)xp1;
-   DXLSend(conn, "g = Import(\"/usr/lpp/dx/samples/data/rainwater\");");
+   DXLSend(conn, "g = Import(\"/usr/local/dx/samples/data/rainwater\");");
    DXLSend(conn, "mean,sd,var,min,max = Statistics(g);");
    DXLSend(conn, "DXLOutput(\"rainmax\", max);");
 }
 void radio_tempCB(Widget w, XtPointer xp1, XtPointer xp2)
 {
    DXLConnection *conn = (DXLConnection *)xp1;
-   DXLSend(conn, "g = Import(\"/usr/lpp/dx/samples/data/temperature\");");
+   DXLSend(conn, "g = Import(\"/usr/local/dx/samples/data/temperature\");");
    DXLSend(conn, "mean,sd,var,min,max = Statistics(g);");
    DXLSend(conn, "DXLOutput(\"tempmax\", max);");
 }
 void radio_windCB(Widget w, XtPointer xp1, XtPointer xp2)
 {
    DXLConnection *conn = (DXLConnection *)xp1;
-   DXLSend(conn, "g = Import(\"/usr/lpp/dx/samples/data/wind\");");
+   DXLSend(conn, "g = Import(\"/usr/local/dx/samples/data/wind\");");
    DXLSend(conn, "mean,sd,var,min,max = Statistics(g);");
    DXLSend(conn, "DXLOutput(\"windmax\", max);");
 }

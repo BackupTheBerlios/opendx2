@@ -35,6 +35,9 @@ PTreeNode * _dxfMakeFunCall(char *func, PTreeNode *args);
 
 /* terminal symbols */
 
+%pure_parser
+%name-prefix="_dxfcc"
+
 %token <s> T_NAME
 %token <f> T_FLOAT
 %token <d> T_DOUBLE
@@ -85,9 +88,9 @@ PTreeNode * _dxfMakeFunCall(char *func, PTreeNode *args);
 %type <a> top
 %type <a> expr
 %type <a> statement_list
-%type <a> constant, real
+%type <a> constant real
 %type <a> list
-%type <a> optional_argument_list, argument_list
+%type <a> optional_argument_list argument_list
 
 /*
  * precedence table
@@ -185,7 +188,7 @@ expr
 		DXSetError(ERROR_BAD_PARAMETER, "#12100",
 		    "syntax error");
 		_dxdparseError++;
-		_CCERROR;
+		YYERROR;
 	    }
 	    $$ = _dxfMakeBinOp(OPER_PERIOD, $1, pt);
 	}
@@ -205,14 +208,14 @@ expr
 	    if (_dxfComputeLookupFunction ($1) == NT_ERROR) {
 		DXSetError(ERROR_BAD_PARAMETER, "#12090", $1);
 		_dxdparseError++;
-		_CCERROR;
+		YYERROR;
 	    }
 	    else
 	    {
 		$$ = _dxfMakeFunCall($1, $3);
 		if ($$ == NULL) {
 		    _dxdparseError++;
-		    _CCERROR;
+		    YYERROR;
 		}
 	    }
 	}
@@ -222,7 +225,7 @@ expr
 	    $$ = _dxfMakeFunCall("mod", $3);
 	    if ($$ == NULL) {
 		_dxdparseError++;
-		_CCERROR;
+		YYERROR;
 	    }
 	}
 	| T_DOT T_LPAR
@@ -231,7 +234,7 @@ expr
 	    $$ = _dxfMakeFunCall("dot", $3);
 	    if ($$ == NULL) {
 		_dxdparseError++;
-		_CCERROR;
+		YYERROR;
 	    }
 	}
 	| T_CROSS T_LPAR
@@ -240,7 +243,7 @@ expr
 	    $$ = _dxfMakeFunCall("cross", $3);
 	    if ($$ == NULL) {
 		_dxdparseError++;
-		_CCERROR;
+		YYERROR;
 	    }
 	}
         | expr T_QUEST expr T_COLON expr

@@ -199,14 +199,6 @@ DXLError        exDXLLoadScript(DXLConnection *connection,
 DXLError        exDXLBeginMacroDefinition(DXLConnection *connection,
                                           const char *mhdr);
 DXLError        exDXLEndMacroDefinition(DXLConnection *connection);
-DXLError        uiDXLLoadConfig(DXLConnection *connection, const char *file);
-DXLError        uiDXLSyncExecutive(DXLConnection *conn);
-DXLError        uiDXLOpenVPE(DXLConnection *conn);
-DXLError        uiDXLCloseVPE(DXLConnection *conn);
-DXLError        uiDXLOpenSequencer(DXLConnection *conn);
-DXLError        uiDXLCloseSequencer(DXLConnection *conn);
-DXLError        uiDXLOpenAllImages(DXLConnection *conn);
-DXLError        uiDXLCloseAllImages(DXLConnection *conn);
 
 /*
  * This is a function that can be used to send a message through dxl
@@ -216,13 +208,20 @@ DXLError        uiDXLCloseAllImages(DXLConnection *conn);
 int             DXLQuery(DXLConnection *connection,
                          const char *msg, const int length, char *response);
 
+#if !defined(DX_NATIVE_WINDOWS)
+DXLError        uiDXLLoadConfig(DXLConnection *connection, const char *file);
+DXLError        uiDXLSyncExecutive(DXLConnection *conn);
+DXLError        uiDXLOpenVPE(DXLConnection *conn);
+DXLError        uiDXLCloseVPE(DXLConnection *conn);
+DXLError        uiDXLOpenSequencer(DXLConnection *conn);
+DXLError        uiDXLCloseSequencer(DXLConnection *conn);
+DXLError        uiDXLOpenAllImages(DXLConnection *conn);
+DXLError        uiDXLCloseAllImages(DXLConnection *conn);
+
 DXLError             uiDXLConnectToRunningServer(DXLConnection *connection,
                         const int port);
 DXLError             uiDXLStartServer(DXLConnection *connection);
 DXLError                uiDXLDisconnect(DXLConnection *conn);
-
-
-
 
 /*
  * UI/Windowing system specific functions
@@ -259,6 +258,15 @@ DXLError           uiDXLCloseColorMapEditorByTitle(DXLConnection *conn, char *ti
  */
 DXLError uiDXLResetServer(DXLConnection *conn);
 
+/*
+ * This routine allows DXLink apps to switch between h/w & s/w rendering
+ * when connected to the ui
+ * hwrender == 0 : s/w else h/w rendering
+ */
+DXLError        uiDXLSetRenderMode(DXLConnection *conn, char *title, 
+			int hwrender);
+
+#endif /* !DX_NATIVE_WINDOWS */
 
 /*
  * Initialize the Presentation manager window system so that...
@@ -268,18 +276,7 @@ DXLError DXLInitializePMMainLoop(/* HWND PMAppWindow, DXLConnection *conn */);
 #endif
 
 
-
-
 DXLError        DXLSync(DXLConnection *conn);
-
-/*
- * This routine allows DXLink apps to switch between h/w & s/w rendering
- * when connected to the ui
- * hwrender == 0 : s/w else h/w rendering
- */
-DXLError        uiDXLSetRenderMode(DXLConnection *conn, char *title, 
-			int hwrender);
-
 
 
 DXLError        DXLGetExecutionStatus(DXLConnection *conn, int *state);

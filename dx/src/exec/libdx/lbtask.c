@@ -78,7 +78,7 @@ static int nprocs = 8;
 #else
 static int nprocs = -1;
 #endif
-int pids[MAXPROC];
+int pids[MAXPROC] = { 0 };
 
 int
 DXProcessors(int n)
@@ -353,7 +353,11 @@ one_task(int block)
  *  to memfork is supposed to be the child number.
  */
 #define slave() DXmemfork(1)		/* slaves */
+#if defined(HAVE_FORK)
 #define master() fork()			/* master */
+#else
+#define master() DXmemfork(1)
+#endif
 #define PIN 0
 #endif
 
@@ -388,7 +392,7 @@ DXExecuteTaskGroup()
 		for (i=0; i<nprocs; i++)/* kill everyone */
 		    DosKill(pids[i]);
 #else
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 		for (i=0; i<nprocs; i++)/* kill everyone */
 		    TerminateProcess((HANDLE)pids[i],-1);
 

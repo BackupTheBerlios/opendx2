@@ -19,9 +19,9 @@ if WITH_INSTALLHTML
 html_DATA = $(EXTRA_DIST)
 
 install-data-hook:
-	@-sh -c '( cd $(htmldir) && $(LN_S) allguide.htm index.htm ; \
+	@-sh -c '( cd $(DESTDIR)$(htmldir) && $(LN_S) allguide.htm index.htm ; \
 		 $(LN_S) allguide.htm index.html ; \
-		 echo "cd $(htmldir)" ; \
+		 echo "cd $(DESTDIR)$(htmldir)" ; \
 		 echo "$(LN_S) allguide.htm index.htm" ; \
 		 echo "$(LN_S) allguide.htm index.html" ) \
 		'

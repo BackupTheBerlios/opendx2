@@ -129,7 +129,7 @@ struct DXLConnection {
     HEV  PMHandlerSemaphore;
     TID  tidCheckInputThread;
 #endif
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
     HWND PMAppWindow;
     HANDLE  PMHandlerSemaphore;
     HANDLE  tidCheckInputThread;

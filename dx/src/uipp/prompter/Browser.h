@@ -14,7 +14,14 @@
 #ifndef _Browser_h
 #define _Browser_h
 
+#if defined(HAVE_FSTREAM)
+#include <fstream>
+#elif defined(HAVE_FSTREAM_H)
 #include <fstream.h>
+#else /* !HAVE_FSTREAM && !HAVE_FSTREAM_H */
+#error "no fstream and no fstream.h"
+#endif /* !HAVE_FSTREAM && !HAVE_FSTREAM_H */
+
 #include <Xm/Xm.h>
 #include "../base/IBMMainWindow.h"
 #include "../base/CommandInterface.h"
@@ -44,7 +51,7 @@ class Browser : public IBMMainWindow
     //
     // Source file stream
     //
-    ifstream *from;
+    std::ifstream *from;
     unsigned long file_size;
     int page_size;
 

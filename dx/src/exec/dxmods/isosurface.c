@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/isosurface.c,v 1.5 2000/08/24 20:04:39 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/isosurface.c,v 1.6 2003/07/11 05:50:35 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -51,7 +51,7 @@ END:
 #include <stdio.h>
 #include <string.h>
 #include <dx/dx.h>
-#include <_isosurface.h>
+#include "_isosurface.h"
 
 
 #define DXErrorGoto4(e,s,a,b,c) {DXSetError(e,s,a,b,c); goto error;}
@@ -59,7 +59,7 @@ END:
 
 
 float *_dxd_user_def_values = NULL;
-int   _dxd_isosurface_task_counter;
+int   _dxd_isosurface_task_counter = 0;
 
 static iso_arg_type ISO_ARG_INITIALIZER =
             { ISOSURFACE, NO_NORMALS,

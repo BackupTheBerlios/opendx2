@@ -47,6 +47,12 @@ static int copy_comments(char *, FILE *, char *, char *, char *);
 #define DO_C    0x2
 #define DO_MAKE 0x4
 
+#if defined(intelnt) || defined (WIN32)
+#define NEWLINE "\r\n"
+#else
+#define NEWLINE "\n"
+#endif
+
 int Generate(int which, char *filename)
 {
     Module module;
@@ -158,160 +164,160 @@ do_makefile(char *basename, Module *mod)
     if (!uiroot)
         uiroot = "/usr/local/dx";
 
-    fprintf(fd, "SHELL = /bin/sh\n");
-    fprintf(fd, "BASE = %s\n\n",uiroot);
+    fprintf(fd, "SHELL = /bin/sh%s", NEWLINE);
+    fprintf(fd, "BASE = %s%s%s",uiroot, NEWLINE, NEWLINE);
 
-    fprintf(fd, "# need arch set, e.g. by\n");
-    fprintf(fd, "# setenv DXARCH `dx -whicharch`\n");
-    fprintf(fd, "include $(BASE)/lib_$(DXARCH)/arch.mak\n\n");
+    fprintf(fd, "# need arch set, e.g. by%s", NEWLINE);
+    fprintf(fd, "# setenv DXARCH `dx -whicharch`%s", NEWLINE);
+    fprintf(fd, "include $(BASE)/lib_$(DXARCH)/arch.mak%s%s", NEWLINE, NEWLINE);
 
     if(mod->outboard_executable != NULL)
-	fprintf(fd, "FILES_%s = %s.%s\n\n", basename, basename, OBJ_EXT);
+	fprintf(fd, "FILES_%s = %s.%s%s%s", basename, basename, OBJ_EXT, NEWLINE, NEWLINE);
     else if(mod->loadable_executable != NULL)
-	fprintf(fd, "FILES_%s = user%s.%s %s.%s\n\n", 
-                basename, basename, OBJ_EXT, basename, OBJ_EXT);
+	fprintf(fd, "FILES_%s = user%s.%s %s.%s%s%s", 
+                basename, basename, OBJ_EXT, basename, OBJ_EXT, NEWLINE, NEWLINE);
     else
-	fprintf(fd, "FILES_%s = user%s.%s %s.%s\n\n", 
-	    basename, basename, OBJ_EXT, basename, OBJ_EXT);
+	fprintf(fd, "FILES_%s = user%s.%s %s.%s%s%s", 
+	    basename, basename, OBJ_EXT, basename, OBJ_EXT, NEWLINE, NEWLINE);
 
-    fprintf(fd, "BIN = $(BASE)/bin\n\n");
-    fprintf(fd, "#windows BIN = $(BASE)\\bin\n\n");
-    fprintf(fd, "CFLAGS = -I./ -I$(BASE)/include $(DX_CFLAGS)\n\n");
-    fprintf(fd, "LDFLAGS = -L$(BASE)/lib_$(DXARCH)\n\n");
-    fprintf(fd, "LIBS = -lDX $(DX_GL_LINK_LIBS) $(DXEXECLINKLIBS)\n\n");
-    fprintf(fd, "OLIBS = -lDXlite -lm\n\n");
-    fprintf(fd, "BIN = $(BASE)/bin\n\n");
+    fprintf(fd, "BIN = $(BASE)/bin%s%s", NEWLINE, NEWLINE);
+    fprintf(fd, "#windows BIN = $(BASE)\\bin%s%s", NEWLINE, NEWLINE);
+    fprintf(fd, "CFLAGS = -I./ -I$(BASE)/include $(DX_CFLAGS)%s%s", NEWLINE, NEWLINE);
+    fprintf(fd, "LDFLAGS = -L$(BASE)/lib_$(DXARCH)%s%s", NEWLINE, NEWLINE);
+    fprintf(fd, "LIBS = -lDX $(DX_GL_LINK_LIBS) $(DXEXECLINKLIBS)%s%s", NEWLINE, NEWLINE);
+    fprintf(fd, "OLIBS = -lDXlite -lm%s%s", NEWLINE, NEWLINE);
+    fprintf(fd, "BIN = $(BASE)/bin%s%s", NEWLINE, NEWLINE);
 
 
-    fprintf(fd, "# create the necessary executable\n");
+    fprintf(fd, "# create the necessary executable%s", NEWLINE);
     if(mod->outboard_executable != NULL)
     {
-	fprintf(fd, "%s: $(FILES_%s) outboard.$(OBJEXT)\n",
+	fprintf(fd, "%s: $(FILES_%s) outboard.$(OBJEXT)%s",
 		mod->outboard_executable,
-		basename);
+		basename, NEWLINE);
 	fprintf(fd, 
-		"\t$(CC) $(DXABI) $(LDFLAGS) $(FILES_%s) outboard.$(OBJEXT) $(OLIBS) -o %s$(DOT_EXE_EXT)\n\n",
+		"\t$(CC) $(DXABI) $(LDFLAGS) $(FILES_%s) outboard.$(OBJEXT) $(OLIBS) -o %s$(DOT_EXE_EXT)%s%s",
 		basename,
-		mod->outboard_executable);
+		mod->outboard_executable, NEWLINE, NEWLINE);
 
-	  fprintf(fd, "# how to make the outboard main routine\n");
-	  fprintf(fd, "outboard.$(OBJEXT): $(BASE)/lib/outboard.c\n");
-	  fprintf(fd, "\t%s%s%s\n",
+	  fprintf(fd, "# how to make the outboard main routine%s", NEWLINE);
+	  fprintf(fd, "outboard.$(OBJEXT): $(BASE)/lib/outboard.c%s", NEWLINE);
+	  fprintf(fd, "\t%s%s%s%s",
 	     "$(CC) $(DXABI) $(CFLAGS) -DUSERMODULE=m_",
 	    mod->name,
-	     " -c $(BASE)/lib/outboard.c");
-	  fprintf(fd, "\n\n");
+	     " -c $(BASE)/lib/outboard.c", NEWLINE);
+	  fprintf(fd, "%s%s", NEWLINE, NEWLINE);
     }
     else if(mod->loadable_executable != NULL)
     {   
-       fprintf(fd, "%s: $(FILES_%s) \n",
-               mod->loadable_executable, basename);
+       fprintf(fd, "%s: $(FILES_%s) %s",
+               mod->loadable_executable, basename, NEWLINE);
 
-       fprintf(fd, "\t$(SHARED_LINK) $(DXABI) $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(DX_RTL_ALDFLAGS) $(SYSLIBS)\n\n",
-               mod->loadable_executable, basename, basename);
+       fprintf(fd, "\t$(SHARED_LINK) $(DXABI) $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(DX_RTL_ALDFLAGS) $(SYSLIBS)%s%s",
+               mod->loadable_executable, basename, basename, NEWLINE, NEWLINE);
 #if 0
 #ifdef alphax
-       fprintf(fd, "\tld $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(SYSLIBS)\n\n",
-               mod->loadable_executable, basename, basename);
+       fprintf(fd, "\tld $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(SYSLIBS)%s%s",
+               mod->loadable_executable, basename, basename, NEWLINE, NEWLINE);
 #endif
 #ifdef hp700
-       fprintf(fd, "\tld $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(SYSLIBS)\n\n",
-               mod->loadable_executable, basename, basename);
+       fprintf(fd, "\tld $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(SYSLIBS)%s%s",
+               mod->loadable_executable, basename, basename, NEWLINE, NEWLINE);
 #endif
 #ifdef ibm6000 
-       fprintf(fd, "\tcc -o %s user%s.$(OBJEXT) %s.$(OBJEXT) -e DXEntry -bI:$(EXP)\n\n",
-               mod->loadable_executable, basename, basename);
+       fprintf(fd, "\tcc -o %s user%s.$(OBJEXT) %s.$(OBJEXT) -e DXEntry -bI:$(EXP)%s%s",
+               mod->loadable_executable, basename, basename, NEWLINE, NEWLINE);
 #endif
 #ifdef DXD_WIN 
-       fprintf(fd, "\t$(CC) $(CFLAGS) -o %s  user%s.$(OBJEXT) %s.$(OBJEXT)  $(SYSLIBS) $(OLIBS) \n\n",
-               mod->loadable_executable, basename, basename);
+       fprintf(fd, "\t$(CC) $(CFLAGS) -o %s  user%s.$(OBJEXT) %s.$(OBJEXT)  $(SYSLIBS) $(OLIBS) %s%s",
+               mod->loadable_executable, basename, basename, NEWLINE, NEWLINE);
 #endif
 #ifdef sgi 
-       fprintf(fd, "\tcc $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(SYSLIBS)\n\n",
-               mod->loadable_executable, basename, basename);
+       fprintf(fd, "\tcc $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(SYSLIBS)%s%s",
+               mod->loadable_executable, basename, basename, NEWLINE, NEWLINE);
 #endif
 #ifdef solaris 
-       fprintf(fd, "\tcc $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT)n\n",
-               mod->loadable_executable, basename, basename);
+       fprintf(fd, "\tcc $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT)%s%s",
+               mod->loadable_executable, basename, basename, NEWLINE, NEWLINE);
 #endif
 #endif /* zero */
     }
     else
     {
-	fprintf(fd, "dxexec: $(FILES_%s) \n",
-		basename);
-	fprintf(fd, "\t$(CC) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec\n\n",
-		basename);
+	fprintf(fd, "dxexec: $(FILES_%s) %s",
+		basename, NEWLINE);
+	fprintf(fd, "\t$(CC) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec%s%s",
+		basename, NEWLINE, NEWLINE);
 #if 0
 #if defined(DXD_WIN)  || defined(OS2)
-	fprintf(fd, "dxexec.exe: $(FILES_%s) \n",
-		basename);
+	fprintf(fd, "dxexec.exe: $(FILES_%s) %s",
+		basename, NEWLINE);
 #else
-	fprintf(fd, "dxexec: $(FILES_%s) \n",
-		basename);
+	fprintf(fd, "dxexec: $(FILES_%s) %s",
+		basename, NEWLINE);
 #endif
 #endif /* zero */
 
 #if 0
 #if   defined(DXD_WIN)
-	fprintf(fd, "\t$(CC) (DXABI) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec.exe\n\n",
-		basename);
+	fprintf(fd, "\t$(CC) (DXABI) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec.exe%s%s",
+		basename, NEWLINE, NEWLINE);
 #else
-	fprintf(fd, "\t$(CC) $(DXABI) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec\n\n",
-		basename);
+	fprintf(fd, "\t$(CC) $(DXABI) $(LDFLAGS) $(FILES_%s) $(LIBS) -o dxexec%s%s",
+		basename, NEWLINE, NEWLINE);
 #endif
 #endif /* zero */
     }
 
-      fprintf(fd, ".c.o: ; cc -c $(DXABI) $(DX_RTL_CFLAGS) $(CFLAGS) $*.c \n\n");
-      fprintf(fd, ".C.o: ; cc -c $(DXABI) $(DX_RTL_CFLAGS) $(CFLAGS) $*.C \n\n");
+      fprintf(fd, ".c.o: ; cc -c $(DXABI) $(DX_RTL_CFLAGS) $(CFLAGS) $*.c %s%s", NEWLINE, NEWLINE);
+      fprintf(fd, ".C.o: ; cc -c $(DXABI) $(DX_RTL_CFLAGS) $(CFLAGS) $*.C %s%s", NEWLINE, NEWLINE);
 
 
     /* a target to run dx using the user module */
 
-    fprintf(fd, "# a command to run the user module\n");
+    fprintf(fd, "# a command to run the user module%s", NEWLINE);
     /* outboard module */
     if(mod->outboard_executable != NULL) {
-      fprintf(fd, "run: %s \n", mod->outboard_executable);
-      fprintf(fd, "\tdx -edit -mdf %s.mdf &\n", basename);
-      fprintf(fd, "\n");
+      fprintf(fd, "run: %s %s", mod->outboard_executable, NEWLINE);
+      fprintf(fd, "\tdx -edit -mdf %s.mdf &%s", basename, NEWLINE);
+      fprintf(fd, "%s", NEWLINE);
     }
     else if(mod->loadable_executable != NULL) {
     /* runtime loadable module */
-      fprintf(fd, "run: %s \n", mod->loadable_executable);
-      fprintf(fd, "\tdx -edit -mdf %s.mdf &\n", basename);
-      fprintf(fd, "\n");
+      fprintf(fd, "run: %s %s", mod->loadable_executable, NEWLINE);
+      fprintf(fd, "\tdx -edit -mdf %s.mdf &%s", basename, NEWLINE);
+      fprintf(fd, "%s", NEWLINE);
     }
     else {
     /* inboard module */
-      fprintf(fd, "run: dxexec \n");
-      fprintf(fd, "\tdx -edit -exec ./dxexec -mdf %s.mdf &\n", basename);
-      fprintf(fd, "\n");
+      fprintf(fd, "run: dxexec %s", NEWLINE);
+      fprintf(fd, "\tdx -edit -exec ./dxexec -mdf %s.mdf &%s", basename, NEWLINE);
+      fprintf(fd, "%s", NEWLINE);
     }
 
-    fprintf(fd, "# make the user files\n");
-    fprintf(fd, "user%s.c: %s.mdf\n", basename, basename);
+    fprintf(fd, "# make the user files%s", NEWLINE);
+    fprintf(fd, "user%s.c: %s.mdf%s", basename, basename, NEWLINE);
   
 #ifdef DXD_WIN    /* just to change forward and back slashes    */
     if(mod->loadable_executable != NULL) 
-       fprintf(fd, "\t$(BIN)\\mdf2c -m %s.mdf > user%s.c\n", basename, basename);
+       fprintf(fd, "\t$(BIN)\\mdf2c -m %s.mdf > user%s.c%s", basename, basename, NEWLINE);
     else
-       fprintf(fd, "\t$(BIN)\\mdf2c %s.mdf > user%s.c\n", basename, basename);
+       fprintf(fd, "\t$(BIN)\\mdf2c %s.mdf > user%s.c%s", basename, basename, NEWLINE);
 
 #else
     if(mod->loadable_executable != NULL) 
-       fprintf(fd, "\t$(BIN)/mdf2c -m %s.mdf > user%s.c\n", basename, basename);
+       fprintf(fd, "\t$(BIN)/mdf2c -m %s.mdf > user%s.c%s", basename, basename, NEWLINE);
     else
-       fprintf(fd, "\t$(BIN)/mdf2c %s.mdf > user%s.c\n", basename, basename);
+       fprintf(fd, "\t$(BIN)/mdf2c %s.mdf > user%s.c%s", basename, basename, NEWLINE);
 #endif
 
-    fprintf(fd, "# kluge for when DXARCH isn't set\n");
-    fprintf(fd, "$(BASE)/lib_/arch.mak:\n");
+    fprintf(fd, "# kluge for when DXARCH isn't set%s", NEWLINE);
+    fprintf(fd, "$(BASE)/lib_/arch.mak:%s", NEWLINE);
     makefilename=strrchr(buf,'/');
     if(!makefilename) makefilename = buf;
 	else makefilename++;
-    fprintf(fd, "\t(export DXARCH=`dx -whicharch` ; $(MAKE) -f %s )\n",makefilename);
-    fprintf(fd, "\techo YOU NEED TO SET DXARCH via dx -whicharch\n");
+    fprintf(fd, "\t(export DXARCH=`dx -whicharch` ; $(MAKE) -f %s )%s",makefilename, NEWLINE);
+    fprintf(fd, "\techo YOU NEED TO SET DXARCH via dx -whicharch%s", NEWLINE);
     fclose(fd);
     return 1;
 
@@ -348,9 +354,9 @@ do_mdf(char *basename, Module *mod, Parameter **in, Parameter **out)
     if (! copy_comments(basename, fd, NULL, "# ", NULL))
 	goto error;
 
-    fprintf(fd, "MODULE %s\n", mod->name);
-    fprintf(fd, "CATEGORY %s\n", mod->category);
-    fprintf(fd, "DESCRIPTION %s\n", mod->description);
+    fprintf(fd, "MODULE %s%s", mod->name, NEWLINE);
+    fprintf(fd, "CATEGORY %s%s", mod->category, NEWLINE);
+    fprintf(fd, "DESCRIPTION %s%s", mod->description, NEWLINE);
 
     if (mod->outboard_persistent == TRUE ||
 	mod->asynchronous  == TRUE       ||
@@ -367,7 +373,7 @@ do_mdf(char *basename, Module *mod, Parameter **in, Parameter **out)
 	    fprintf(fd, "%sPIN", first++ ? " " : ", ");
 	if (mod->side_effect == TRUE)
 	    fprintf(fd, "%sSIDE_EFFECT", first++ ? " " : ", ");
-	fprintf(fd, "\n");
+	fprintf(fd, "%s", NEWLINE);
     }
 
     if (mod->outboard_executable)
@@ -375,13 +381,13 @@ do_mdf(char *basename, Module *mod, Parameter **in, Parameter **out)
 	fprintf(fd, "OUTBOARD %s;", mod->outboard_executable);
 	if (mod->outboard_host)
 	    fprintf(fd, "%s", mod->outboard_host);
-	fprintf(fd, "\n");
+	fprintf(fd, "%s", NEWLINE);
     }
 
     if (mod->loadable_executable)
     {
 	fprintf(fd, "LOADABLE %s;", mod->loadable_executable);
-	fprintf(fd, "\n");
+	fprintf(fd, "%s", NEWLINE);
     }
 
     while (*in)
@@ -437,7 +443,7 @@ do_mdf(char *basename, Module *mod, Parameter **in, Parameter **out)
 	    fprintf(fd, " (%s);", (*in)->default_value);
 	else
 	    fprintf(fd, " %s;", (*in)->default_value);
-	fprintf(fd, " %s\n", (*in)->description);
+	fprintf(fd, " %s%s", (*in)->description, NEWLINE);
 	in++;
     }
 
@@ -482,7 +488,7 @@ do_mdf(char *basename, Module *mod, Parameter **in, Parameter **out)
 	    ErrorMessage("output %s has no STRUCTURE parameter\n", (*out)->name);
 	    goto error;
 	}
-	fprintf(fd, " %s\n", (*out)->description);
+	fprintf(fd, " %s%s", (*out)->description, NEWLINE);
 	out++;
     }
     
@@ -526,28 +532,28 @@ do_builder(char *basename, Module *mod, Parameter **in, Parameter **out)
     for (nin  = 0; in[nin] != NULL; nin++);
     for (nout = 0; out[nout] != NULL; nout++);
 
-fprintf(fd, "/*\n");
-fprintf(fd, " * Automatically generated on \"%s.mb\" by DX Module Builder\n",
-				basename);
-fprintf(fd, " */\n\n");
+fprintf(fd, "/*%s", NEWLINE);
+fprintf(fd, " * Automatically generated on \"%s.mb\" by DX Module Builder%s",
+				basename, NEWLINE);
+fprintf(fd, " */%s%s", NEWLINE, NEWLINE);
 
-fprintf(fd, "/* define your pre-dx.h include file for inclusion here*/ \n");
-fprintf(fd, "#ifdef PRE_DX_H\n");
-fprintf(fd, "#include \"%s_predx.h\"\n",mod->name);
-fprintf(fd, "#endif\n");
-fprintf(fd, "#include \"dx/dx.h\"\n");
-fprintf(fd, "/* define your post-dx.h include file for inclusion here*/ \n");
-fprintf(fd, "#ifdef POST_DX_H\n");
-fprintf(fd, "#include \"%s_postdx.h\"\n",mod->name);
-fprintf(fd, "#endif\n");
-fprintf(fd, "\n");
-fprintf(fd, "static Error traverse(Object *, Object *);\n");
-fprintf(fd, "static Error doLeaf(Object *, Object *);\n");
-fprintf(fd, "\n");
-fprintf(fd, "/*\n");
-fprintf(fd, " * Declare the interface routine.\n");
-fprintf(fd, " */\n");
-fprintf(fd, "int\n%s_worker(\n", mod->name);
+fprintf(fd, "/* define your pre-dx.h include file for inclusion here*/ %s", NEWLINE);
+fprintf(fd, "#ifdef PRE_DX_H%s", NEWLINE);
+fprintf(fd, "#include \"%s_predx.h\"%s",mod->name, NEWLINE);
+fprintf(fd, "#endif%s", NEWLINE);
+fprintf(fd, "#include \"dx/dx.h\"%s", NEWLINE);
+fprintf(fd, "/* define your post-dx.h include file for inclusion here*/ %s", NEWLINE);
+fprintf(fd, "#ifdef POST_DX_H%s", NEWLINE);
+fprintf(fd, "#include \"%s_postdx.h\"%s",mod->name, NEWLINE);
+fprintf(fd, "#endif%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "static Error traverse(Object *, Object *);%s", NEWLINE);
+fprintf(fd, "static Error doLeaf(Object *, Object *);%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "/*%s", NEWLINE);
+fprintf(fd, " * Declare the interface routine.%s", NEWLINE);
+fprintf(fd, " */%s", NEWLINE);
+fprintf(fd, "int%s%s_worker(%s", NEWLINE, mod->name, NEWLINE);
 
     open = 0;
 
@@ -564,12 +570,12 @@ fprintf(fd, "    int, int, float *");
 
     if (in[0]->connections == GRID_REGULAR)
     {
-fprintf(fd, "%s   int, int, int *", (open)?",\n":"");
+fprintf(fd, "%s   int, int, int *", (open)?",%s", NEWLINE:"");
 	open = 1;
     }
     else if (in[0]->connections == GRID_IRREGULAR)
     {
-fprintf(fd, "%s    int, int, int *", (open)?",\n":"");
+fprintf(fd, "%s    int, int, int *", (open)?",%s", NEWLINE:"");
 	open = 1;
     }
 
@@ -577,7 +583,7 @@ fprintf(fd, "%s    int, int, int *", (open)?",\n":"");
     { 
 	char *type;
 	GetCDataType(in[i]->datatype, &type);
-fprintf(fd, "%s    int, %s *", (open)?",\n":"", type);
+fprintf(fd, "%s    int, %s *", (open)?",%s", NEWLINE:"", type);
 	open = 1;
     }
 
@@ -585,35 +591,35 @@ fprintf(fd, "%s    int, %s *", (open)?",\n":"", type);
     { 
 	char *type;
 	GetCDataType(out[i]->datatype, &type);
-fprintf(fd, "%s    int, %s *", (open)?",\n":"", type);
+fprintf(fd, "%s    int, %s *", (open)?",%s", NEWLINE:"", type);
 	open = 1;
     }
 
-fprintf(fd, ");\n\n");
+fprintf(fd, ");%s%s", NEWLINE, NEWLINE);
 
-fprintf(fd, "#if defined (__cplusplus) || defined (c_plusplus)\n");
-fprintf(fd, "extern \"C\"\n");
-fprintf(fd, "#endif\n");
-fprintf(fd, "Error\nm_%s(Object *in, Object *out)\n", mod->name);
-fprintf(fd, "{\n");
-fprintf(fd, "  int i;\n");
-fprintf(fd, "\n");
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Initialize all outputs to NULL\n");
-fprintf(fd, "   */\n");
+fprintf(fd, "#if defined (__cplusplus) || defined (c_plusplus)%s", NEWLINE);
+fprintf(fd, "extern \"C\"%s", NEWLINE);
+fprintf(fd, "#endif%s", NEWLINE);
+fprintf(fd, "Error%sm_%s(Object *in, Object *out)%s", NEWLINE, mod->name, NEWLINE);
+fprintf(fd, "{%s", NEWLINE);
+fprintf(fd, "  int i;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Initialize all outputs to NULL%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
     if (nout == 1)
-fprintf(fd, "  out[0] = NULL;\n");
+fprintf(fd, "  out[0] = NULL;%s", NEWLINE);
     else if (nout > 1)
     {
-fprintf(fd, "  for (i = 0; i < %d; i++)\n", nout);
-fprintf(fd, "    out[i] = NULL;\n");
+fprintf(fd, "  for (i = 0; i < %d; i++)%s", nout, NEWLINE);
+fprintf(fd, "    out[i] = NULL;%s", NEWLINE);
     }
 
-fprintf(fd, "\n");
+fprintf(fd, "%s", NEWLINE);
 
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Error checks: required inputs are verified.\n");
-fprintf(fd, "   */\n\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Error checks: required inputs are verified.%s", NEWLINE);
+fprintf(fd, "   */%s%s", NEWLINE, NEWLINE);
 
     n_GF_in = 0;
     for (i = 0; i < nin; i++)
@@ -623,40 +629,40 @@ fprintf(fd, "   */\n\n");
 
 	if (in[i]->required == TRUE || i == 0)
 	{
-fprintf(fd, "  /* Parameter \"%s\" is required. */\n", in[i]->name);
-fprintf(fd, "  if (in[%d] == NULL)\n", i);
-fprintf(fd, "  {\n");
+fprintf(fd, "  /* Parameter \"%s\" is required. */%s", in[i]->name, NEWLINE);
+fprintf(fd, "  if (in[%d] == NULL)%s", i, NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
 fprintf(fd, "    DXSetError(ERROR_MISSING_DATA, ");
-fprintf(fd, "\"\\\"%s\\\" must be specified\");\n", in[i]->name);
-fprintf(fd, "    return ERROR;\n");
-fprintf(fd, "  }\n\n");
+fprintf(fd, "\"\\\"%s\\\" must be specified\");%s", in[i]->name, NEWLINE);
+fprintf(fd, "    return ERROR;%s", NEWLINE);
+fprintf(fd, "  }%s%s", NEWLINE, NEWLINE);
 	}
     }
 
     n_GF_out = 0;
     for (i = 0; i < nout; i++)
     {
-fprintf(fd, "\n");
+fprintf(fd, "%s", NEWLINE);
 
 	if (out[i]->structure == GROUP_FIELD)
 	{
 	    n_GF_out ++;
 
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Since output \"%s\" is structure Field/Group, it initially\n", out[i]->name);
-fprintf(fd, "   * is a copy of input \"%s\".\n", in[0]->name);
-fprintf(fd, "   */\n");
-fprintf(fd, "  out[%d] = DXCopy(in[0], COPY_STRUCTURE);\n", i);
-fprintf(fd, "  if (! out[%d])\n", i);
-fprintf(fd, "    goto error;\n\n");
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * If in[0] was an array, then no copy is actually made - Copy \n");
-fprintf(fd, "   * returns a pointer to the input object.  Since this can't be written to\n");
-fprintf(fd, "   * we postpone explicitly copying it until the leaf level, when we'll need\n");
-fprintf(fd, "   * to be creating writable arrays anyway.\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  if (out[%d] == in[0])\n", i);
-fprintf(fd, "    out[%d] = NULL;\n", i);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Since output \"%s\" is structure Field/Group, it initially%s", out[i]->name, NEWLINE);
+fprintf(fd, "   * is a copy of input \"%s\".%s", in[0]->name, NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  out[%d] = DXCopy(in[0], COPY_STRUCTURE);%s", i, NEWLINE);
+fprintf(fd, "  if (! out[%d])%s", i, NEWLINE);
+fprintf(fd, "    goto error;%s%s", NEWLINE, NEWLINE);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * If in[0] was an array, then no copy is actually made - Copy %s", NEWLINE);
+fprintf(fd, "   * returns a pointer to the input object.  Since this can't be written to%s", NEWLINE);
+fprintf(fd, "   * we postpone explicitly copying it until the leaf level, when we'll need%s", NEWLINE);
+fprintf(fd, "   * to be creating writable arrays anyway.%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  if (out[%d] == in[0])%s", i, NEWLINE);
+fprintf(fd, "    out[%d] = NULL;%s", i, NEWLINE);
 	}
 	else if (out[i]->structure == VALUE)
 	{
@@ -687,595 +693,595 @@ fprintf(fd, "    out[%d] = NULL;\n", i);
 #endif
 	    l = "1";
 
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Output \"%s\" is a value; set up an appropriate array\n", out[i]->name);
-fprintf(fd, "   */\n");
-fprintf(fd, "  out[%d] = (Object)DXNewArray(%s, CATEGORY_REAL, %s, %s);\n", i, t, r, s);
-fprintf(fd, "  if (! out[%d])\n", i);
-fprintf(fd, "    goto error;\n");
-fprintf(fd, "  if (! DXAddArrayData((Array)out[%d], 0, %s, NULL))\n", i, l);
-fprintf(fd, "    goto error;\n");
-fprintf(fd, "  memset(DXGetArrayData((Array)out[%d]), 0, %s*DXGetItemSize((Array)out[%d]));\n", i, l, i);
-fprintf(fd, "\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Output \"%s\" is a value; set up an appropriate array%s", out[i]->name, NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  out[%d] = (Object)DXNewArray(%s, CATEGORY_REAL, %s, %s);%s", i, t, r, s, NEWLINE);
+fprintf(fd, "  if (! out[%d])%s", i, NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
+fprintf(fd, "  if (! DXAddArrayData((Array)out[%d], 0, %s, NULL))%s", i, l, NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
+fprintf(fd, "  memset(DXGetArrayData((Array)out[%d]), 0, %s*DXGetItemSize((Array)out[%d]));%s", i, l, i, NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 	}
     }
 
-fprintf(fd, "\n");
+fprintf(fd, "%s", NEWLINE);
 
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Call the hierarchical object traversal routine\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  if (!traverse(in, out))\n");
-fprintf(fd, "    goto error;\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Call the hierarchical object traversal routine%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  if (!traverse(in, out))%s", NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
 
-fprintf(fd, "\n");
+fprintf(fd, "%s", NEWLINE);
 
-fprintf(fd, "  return OK;\n");
-fprintf(fd, "\n");
-fprintf(fd, "error:\n");
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * On error, any successfully-created outputs are deleted.\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  for (i = 0; i < %d; i++)\n", nout);
-fprintf(fd, "  {\n");
-fprintf(fd, "    if (in[i] != out[i])\n");
-fprintf(fd, "      DXDelete(out[i]);\n");
-fprintf(fd, "    out[i] = NULL;\n");
-fprintf(fd, "  }\n");
-fprintf(fd, "  return ERROR;\n");
-fprintf(fd, "}\n");
+fprintf(fd, "  return OK;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "error:%s", NEWLINE);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * On error, any successfully-created outputs are deleted.%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  for (i = 0; i < %d; i++)%s", nout, NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "    if (in[i] != out[i])%s", NEWLINE);
+fprintf(fd, "      DXDelete(out[i]);%s", NEWLINE);
+fprintf(fd, "    out[i] = NULL;%s", NEWLINE);
+fprintf(fd, "  }%s", NEWLINE);
+fprintf(fd, "  return ERROR;%s", NEWLINE);
+fprintf(fd, "}%s", NEWLINE);
 
-fprintf(fd, "\n\n");
-fprintf(fd, "static Error\n");
-fprintf(fd, "traverse(Object *in, Object *out)\n");
-fprintf(fd, "{\n");
-fprintf(fd, "  switch(DXGetObjectClass(in[0]))\n");
-fprintf(fd, "  {\n");
-fprintf(fd, "    case CLASS_FIELD:\n");
-fprintf(fd, "    case CLASS_ARRAY:\n");
-fprintf(fd, "    case CLASS_STRING:\n");
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * If we have made it to the leaf level, call the leaf handler.\n");
-fprintf(fd, "       */\n");
-fprintf(fd, "      if (! doLeaf(in, out))\n");
-fprintf(fd, "  	     return ERROR;\n");
-fprintf(fd, "\n");
-fprintf(fd, "      return OK;\n");
-fprintf(fd, "\n");
-fprintf(fd, "    case CLASS_GROUP:\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      int   i, j;\n");
-fprintf(fd, "      int   memknt;\n");
-fprintf(fd, "      Class groupClass  = DXGetGroupClass((Group)in[0]);\n");
-fprintf(fd, "\n");
-fprintf(fd, "      DXGetMemberCount((Group)in[0], &memknt);\n");
-fprintf(fd, "\n");
+fprintf(fd, "%s%s", NEWLINE, NEWLINE);
+fprintf(fd, "static Error%s", NEWLINE);
+fprintf(fd, "traverse(Object *in, Object *out)%s", NEWLINE);
+fprintf(fd, "{%s", NEWLINE);
+fprintf(fd, "  switch(DXGetObjectClass(in[0]))%s", NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "    case CLASS_FIELD:%s", NEWLINE);
+fprintf(fd, "    case CLASS_ARRAY:%s", NEWLINE);
+fprintf(fd, "    case CLASS_STRING:%s", NEWLINE);
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * If we have made it to the leaf level, call the leaf handler.%s", NEWLINE);
+fprintf(fd, "       */%s", NEWLINE);
+fprintf(fd, "      if (! doLeaf(in, out))%s", NEWLINE);
+fprintf(fd, "  	     return ERROR;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "      return OK;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    case CLASS_GROUP:%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      int   i, j;%s", NEWLINE);
+fprintf(fd, "      int   memknt;%s", NEWLINE);
+fprintf(fd, "      Class groupClass  = DXGetGroupClass((Group)in[0]);%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "      DXGetMemberCount((Group)in[0], &memknt);%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 if (n_GF_in > 1)
 {
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * All inputs that are not NULL and are type Field/Group must\n");
-fprintf(fd, "       * match the structure of input[0].  Verify that this is so.\n");
-fprintf(fd, "       */\n");
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * All inputs that are not NULL and are type Field/Group must%s", NEWLINE);
+fprintf(fd, "       * match the structure of input[0].  Verify that this is so.%s", NEWLINE);
+fprintf(fd, "       */%s", NEWLINE);
     for (i = 1; i < nin; i++)
 	if (in[i]->structure == GROUP_FIELD)
 	{
-fprintf(fd, "       if (in[%d] &&\n", i);
-fprintf(fd, "            (DXGetObjectClass(in[%d]) != CLASS_GROUP ||\n", i);
-fprintf(fd, "             DXGetGroupClass((Group)in[%d])  != groupClass  ||\n", i);
-fprintf(fd, "             !DXGetMemberCount((Group)in[%d], &i) || i != memknt))\n", i);
-fprintf(fd, "	      {\n");
-fprintf(fd, "  		DXSetError(ERROR_DATA_INVALID,\n");
-fprintf(fd, "	            \"structure of \\\"%s\\\" doesn't match that of \\\"%s\\\"\");\n",
-			    in[i]->name, in[0]->name);
-fprintf(fd, "  	         return ERROR;\n");
-fprintf(fd, "         }\n\n");
+fprintf(fd, "       if (in[%d] &&%s", i, NEWLINE);
+fprintf(fd, "            (DXGetObjectClass(in[%d]) != CLASS_GROUP ||%s", i, NEWLINE);
+fprintf(fd, "             DXGetGroupClass((Group)in[%d])  != groupClass  ||%s", i, NEWLINE);
+fprintf(fd, "             !DXGetMemberCount((Group)in[%d], &i) || i != memknt))%s", i, NEWLINE);
+fprintf(fd, "	      {%s", NEWLINE);
+fprintf(fd, "  		DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
+fprintf(fd, "	            \"structure of \\\"%s\\\" doesn't match that of \\\"%s\\\"\");%s",
+			    in[i]->name, in[0]->name, NEWLINE);
+fprintf(fd, "  	         return ERROR;%s", NEWLINE);
+fprintf(fd, "         }%s%s", NEWLINE, NEWLINE);
 	}
 }
 else
-fprintf(fd, "\n");
+fprintf(fd, "%s", NEWLINE);
 
-fprintf(fd, "       /*\n");
-fprintf(fd, "        * Create new in and out lists for each child\n");
-fprintf(fd, "        * of the first input. \n");
-fprintf(fd, "        */\n");
-fprintf(fd, "        for (i = 0; i < memknt; i++)\n");
-fprintf(fd, "        {\n");
-fprintf(fd, "          Object new_in[%d], new_out[%d];\n", nin, nout);
-fprintf(fd, "\n");
+fprintf(fd, "       /*%s", NEWLINE);
+fprintf(fd, "        * Create new in and out lists for each child%s", NEWLINE);
+fprintf(fd, "        * of the first input. %s", NEWLINE);
+fprintf(fd, "        */%s", NEWLINE);
+fprintf(fd, "        for (i = 0; i < memknt; i++)%s", NEWLINE);
+fprintf(fd, "        {%s", NEWLINE);
+fprintf(fd, "          Object new_in[%d], new_out[%d];%s", nin, nout, NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 
-fprintf(fd, "         /*\n");
-fprintf(fd, "          * For all inputs that are Values, pass them to \n");
-fprintf(fd, "          * child object list.  For all that are Field/Group, get \n");
-fprintf(fd, "          * the appropriate decendent and place it into the\n");
-fprintf(fd, "          * child input object list.\n");
-fprintf(fd, "          */\n\n");
+fprintf(fd, "         /*%s", NEWLINE);
+fprintf(fd, "          * For all inputs that are Values, pass them to %s", NEWLINE);
+fprintf(fd, "          * child object list.  For all that are Field/Group, get %s", NEWLINE);
+fprintf(fd, "          * the appropriate decendent and place it into the%s", NEWLINE);
+fprintf(fd, "          * child input object list.%s", NEWLINE);
+fprintf(fd, "          */%s%s", NEWLINE, NEWLINE);
 for (i = 0; i < nin; i++)
     if (in[i]->structure == VALUE)
     {
-fprintf(fd, "          /* input \"%s\" is Value */\n", in[i]->name);
-fprintf(fd, "          new_in[%d] = in[%d];\n\n", i, i);
+fprintf(fd, "          /* input \"%s\" is Value */%s", in[i]->name, NEWLINE);
+fprintf(fd, "          new_in[%d] = in[%d];%s%s", i, i, NEWLINE, NEWLINE);
     }
     else if (in[i]->structure == GROUP_FIELD)
     {
-fprintf(fd, "          /* input \"%s\" is Field/Group */\n", in[i]->name);
-fprintf(fd, "          if (in[%d])\n", i);
-fprintf(fd, "            new_in[%d] = DXGetEnumeratedMember((Group)in[%d], i, NULL);\n", i, i);
-fprintf(fd, "          else\n");
-fprintf(fd, "            new_in[%d] = NULL;\n", i);
-fprintf(fd, "\n");
+fprintf(fd, "          /* input \"%s\" is Field/Group */%s", in[i]->name, NEWLINE);
+fprintf(fd, "          if (in[%d])%s", i, NEWLINE);
+fprintf(fd, "            new_in[%d] = DXGetEnumeratedMember((Group)in[%d], i, NULL);%s", i, i, NEWLINE);
+fprintf(fd, "          else%s", NEWLINE);
+fprintf(fd, "            new_in[%d] = NULL;%s", i, NEWLINE);
+fprintf(fd, "%s", NEWLINE);
     }
 
-fprintf(fd, "         /*\n");
-fprintf(fd, "          * For all outputs that are Values, pass them to \n");
-fprintf(fd, "          * child object list.  For all that are Field/Group,  get\n");
-fprintf(fd, "          * the appropriate decendent and place it into the\n");
-fprintf(fd, "          * child output object list.  Note that none should\n");
-fprintf(fd, "          * be NULL (unlike inputs, which can default).\n");
-fprintf(fd, "          */\n\n");
+fprintf(fd, "         /*%s", NEWLINE);
+fprintf(fd, "          * For all outputs that are Values, pass them to %s", NEWLINE);
+fprintf(fd, "          * child object list.  For all that are Field/Group,  get%s", NEWLINE);
+fprintf(fd, "          * the appropriate decendent and place it into the%s", NEWLINE);
+fprintf(fd, "          * child output object list.  Note that none should%s", NEWLINE);
+fprintf(fd, "          * be NULL (unlike inputs, which can default).%s", NEWLINE);
+fprintf(fd, "          */%s%s", NEWLINE, NEWLINE);
 for (i = 0; i < nout; i++)
     if (out[i]->structure == VALUE)
     {
-fprintf(fd, "          /* output \"%s\" is Value */\n", out[i]->name);
-fprintf(fd, "          new_out[%d] = out[%d];\n\n", i, i);
+fprintf(fd, "          /* output \"%s\" is Value */%s", out[i]->name, NEWLINE);
+fprintf(fd, "          new_out[%d] = out[%d];%s%s", i, i, NEWLINE, NEWLINE);
     }
     else
     {
-fprintf(fd, "          /* output \"%s\" is Field/Group */\n", out[i]->name);
-fprintf(fd, "          new_out[%d] = DXGetEnumeratedMember((Group)out[%d], i, NULL);\n\n", i, i);
+fprintf(fd, "          /* output \"%s\" is Field/Group */%s", out[i]->name, NEWLINE);
+fprintf(fd, "          new_out[%d] = DXGetEnumeratedMember((Group)out[%d], i, NULL);%s%s", i, i, NEWLINE, NEWLINE);
     }
 
-fprintf(fd, "          if (! traverse(new_in, new_out))\n");
-fprintf(fd, "            return ERROR;\n");
-fprintf(fd, "\n");
+fprintf(fd, "          if (! traverse(new_in, new_out))%s", NEWLINE);
+fprintf(fd, "            return ERROR;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 
 if (n_GF_out)
 {
-fprintf(fd, "         /*\n");
-fprintf(fd, "          * Now for each output that is not a Value, replace\n");
-fprintf(fd, "          * the updated child into the object in the parent.\n");
-fprintf(fd, "          */\n\n");
+fprintf(fd, "         /*%s", NEWLINE);
+fprintf(fd, "          * Now for each output that is not a Value, replace%s", NEWLINE);
+fprintf(fd, "          * the updated child into the object in the parent.%s", NEWLINE);
+fprintf(fd, "          */%s%s", NEWLINE);
     for (i = 0; i < nout; i++)
 	if (out[i]->structure == GROUP_FIELD)
 	{
-fprintf(fd, "          /* output \"%s\" is Field/Group */\n", out[i]->name);
-fprintf(fd, "          DXSetEnumeratedMember((Group)out[%d], i, new_out[%d]);\n\n", i, i);
+fprintf(fd, "          /* output \"%s\" is Field/Group */%s", out[i]->name, NEWLINE);
+fprintf(fd, "          DXSetEnumeratedMember((Group)out[%d], i, new_out[%d]);%s%s", i, i, NEWLINE, NEWLINE);
 	}
 }
 
-fprintf(fd, "        }\n");
-fprintf(fd, "      return OK;\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
-fprintf(fd, "    case CLASS_XFORM:\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      int    i, j;\n");
-fprintf(fd, "      Object new_in[%d], new_out[%d];\n", nin, nout);
-fprintf(fd, "\n");
+fprintf(fd, "        }%s", NEWLINE);
+fprintf(fd, "      return OK;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    case CLASS_XFORM:%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      int    i, j;%s", NEWLINE);
+fprintf(fd, "      Object new_in[%d], new_out[%d];%s", nin, nout, NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 
 if (n_GF_in > 1)
 {
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * All inputs that are not NULL and are type Field/Group must\n");
-fprintf(fd, "       * match the structure of input[0].  Verify that this is so.\n");
-fprintf(fd, "       */\n");
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * All inputs that are not NULL and are type Field/Group must%s", NEWLINE);
+fprintf(fd, "       * match the structure of input[0].  Verify that this is so.%s", NEWLINE);
+fprintf(fd, "       */%s", NEWLINE);
     for (i = 1; i < nin; i++)
 	if (in[i]->structure == GROUP_FIELD)
 	{
-fprintf(fd, "      if (in[%d] && DXGetObjectClass(in[%d]) != CLASS_XFORM)\n", i, i);
-fprintf(fd, "      {\n");
-fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,\n");
-fprintf(fd, "	            \"structure of \\\"%s\\\" doesn't match that of \\\"%s\\\"\");\n",
-			    in[i]->name, in[0]->name);
-fprintf(fd, "        return ERROR;\n");
-fprintf(fd, "      }\n\n");
+fprintf(fd, "      if (in[%d] && DXGetObjectClass(in[%d]) != CLASS_XFORM)%s", i, i, NEWLINE);
+fprintf(fd, "      {%s", NEWLINE);
+fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
+fprintf(fd, "	            \"structure of \\\"%s\\\" doesn't match that of \\\"%s\\\"\");%s",
+			    in[i]->name, in[0]->name, NEWLINE);
+fprintf(fd, "        return ERROR;%s", NEWLINE);
+fprintf(fd, "      }%s%s", NEWLINE, NEWLINE);
 	}
 }
 else
-fprintf(fd, "\n");
+fprintf(fd, "%s", NEWLINE);
 
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * Create new in and out lists for the decendent of the\n");
-fprintf(fd, "       * first input.  For inputs and outputs that are Values\n");
-fprintf(fd, "       * copy them into the new in and out lists.  Otherwise\n");
-fprintf(fd, "       * get the corresponding decendents.\n");
-fprintf(fd, "       */\n\n");
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * Create new in and out lists for the decendent of the%s", NEWLINE);
+fprintf(fd, "       * first input.  For inputs and outputs that are Values%s", NEWLINE);
+fprintf(fd, "       * copy them into the new in and out lists.  Otherwise%s", NEWLINE);
+fprintf(fd, "       * get the corresponding decendents.%s", NEWLINE);
+fprintf(fd, "       */%s%s", NEWLINE, NEWLINE);
 for (i = 0; i < nin; i++)
     if (in[i]->structure == VALUE)
     {
-fprintf(fd, "      /* input \"%s\" is Value */\n", in[i]->name);
-fprintf(fd, "      new_in[%d] = in[%d];\n\n", i, i);
+fprintf(fd, "      /* input \"%s\" is Value */%s", in[i]->name, NEWLINE);
+fprintf(fd, "      new_in[%d] = in[%d];%s%s", i, i, NEWLINE, NEWLINE);
     }
     else
     {
-fprintf(fd, "      /* input \"%s\" is Field/Group */\n", in[i]->name);
-fprintf(fd, "      if (in[%d])\n", i);
-fprintf(fd, "        DXGetXformInfo((Xform)in[%d], &new_in[%d], NULL);\n", i, i);
-fprintf(fd, "      else\n");
-fprintf(fd, "        new_in[%d] = NULL;\n", i);
-fprintf(fd, "\n");
+fprintf(fd, "      /* input \"%s\" is Field/Group */%s", in[i]->name, NEWLINE);
+fprintf(fd, "      if (in[%d])%s", i, NEWLINE);
+fprintf(fd, "        DXGetXformInfo((Xform)in[%d], &new_in[%d], NULL);%s", i, i, NEWLINE);
+fprintf(fd, "      else%s", NEWLINE);
+fprintf(fd, "        new_in[%d] = NULL;%s", i, NEWLINE);
+fprintf(fd, "%s", NEWLINE);
     }
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * For all outputs that are Values, copy them to \n");
-fprintf(fd, "       * child object list.  For all that are Field/Group,  get\n");
-fprintf(fd, "       * the appropriate decendent and place it into the\n");
-fprintf(fd, "       * child output object list.  Note that none should\n");
-fprintf(fd, "       * be NULL (unlike inputs, which can default).\n");
-fprintf(fd, "       */\n\n");
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * For all outputs that are Values, copy them to %s", NEWLINE);
+fprintf(fd, "       * child object list.  For all that are Field/Group,  get%s", NEWLINE);
+fprintf(fd, "       * the appropriate decendent and place it into the%s", NEWLINE);
+fprintf(fd, "       * child output object list.  Note that none should%s", NEWLINE);
+fprintf(fd, "       * be NULL (unlike inputs, which can default).%s", NEWLINE);
+fprintf(fd, "       */%s%s", NEWLINE, NEWLINE);
 for (i = 0; i < nout; i++)
     if (out[i]->structure == VALUE)
     {
-fprintf(fd, "      /* output \"%s\" is Value */\n", out[i]->name);
-fprintf(fd, "      new_out[%d] = out[%d];\n\n", i, i);
+fprintf(fd, "      /* output \"%s\" is Value */%s", out[i]->name, NEWLINE);
+fprintf(fd, "      new_out[%d] = out[%d];%s%s", i, i, NEWLINE, NEWLINE);
     }
     else
     {
-fprintf(fd, "      /* output \"%s\" is Field/Group */\n", out[i]->name);
-fprintf(fd, "      DXGetXformInfo((Xform)out[%d], &new_out[%d], NULL);\n\n", i,i);
+fprintf(fd, "      /* output \"%s\" is Field/Group */%s", out[i]->name, NEWLINE);
+fprintf(fd, "      DXGetXformInfo((Xform)out[%d], &new_out[%d], NULL);%s%s", i,i, NEWLINE, NEWLINE);
     }
-fprintf(fd, "      if (! traverse(new_in, new_out))\n");
-fprintf(fd, "        return ERROR;\n");
-fprintf(fd, "\n");
+fprintf(fd, "      if (! traverse(new_in, new_out))%s", NEWLINE);
+fprintf(fd, "        return ERROR;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 
 if (n_GF_out)
 {
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * Now for each output that is not a Value replace\n");
-fprintf(fd, "       * the updated child into the object in the parent.\n");
-fprintf(fd, "       */\n\n");
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * Now for each output that is not a Value replace%s", NEWLINE);
+fprintf(fd, "       * the updated child into the object in the parent.%s", NEWLINE);
+fprintf(fd, "       */%s%s", NEWLINE, NEWLINE);
     for (i = 0; i < nout; i++)
 	if (out[i]->structure == GROUP_FIELD) 
 	{
-fprintf(fd, "      /* output \"%s\" is Field/Group */\n", out[i]->name);
-fprintf(fd, "      DXSetXformObject((Xform)out[%d], new_out[%d]);\n\n", i, i);
+fprintf(fd, "      /* output \"%s\" is Field/Group */%s", out[i]->name, NEWLINE);
+fprintf(fd, "      DXSetXformObject((Xform)out[%d], new_out[%d]);%s%s", i, i, NEWLINE, NEWLINE);
 	}
 }
 
-fprintf(fd, "      return OK;\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
-fprintf(fd, "    case CLASS_SCREEN:\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      int    i, j;\n");
-fprintf(fd, "      Object new_in[%d], new_out[%d];\n", nin, nout);
-fprintf(fd, "\n");
+fprintf(fd, "      return OK;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    case CLASS_SCREEN:%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      int    i, j;%s", NEWLINE);
+fprintf(fd, "      Object new_in[%d], new_out[%d];%s", nin, nout, NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 if (n_GF_in > 1)
 {
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * All inputs that are not NULL and are type Field/Group must\n");
-fprintf(fd, "       * match the structure of input[0].  Verify that this is so.\n");
-fprintf(fd, "       */\n\n");
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * All inputs that are not NULL and are type Field/Group must%s", NEWLINE);
+fprintf(fd, "       * match the structure of input[0].  Verify that this is so.%s", NEWLINE);
+fprintf(fd, "       */%s%s", NEWLINE, NEWLINE);
     for (i = 1; i < nin; i++)
 	if (in[i]->structure == GROUP_FIELD)
 	{
-fprintf(fd, "       if (in[%d] && DXGetObjectClass(in[%d]) != CLASS_SCREEN)\n", i, i);
-fprintf(fd, "       {\n");
-fprintf(fd, "           DXSetError(ERROR_DATA_INVALID,\n");
-fprintf(fd, "	            \"structure of \\\"%s\\\" doesn't match that of \\\"%s\\\"\");\n",
-			    in[i]->name, in[0]->name);
-fprintf(fd, "           return ERROR;\n");
-fprintf(fd, "       }\n\n");
+fprintf(fd, "       if (in[%d] && DXGetObjectClass(in[%d]) != CLASS_SCREEN)%s", i, i, NEWLINE);
+fprintf(fd, "       {%s", NEWLINE);
+fprintf(fd, "           DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
+fprintf(fd, "	            \"structure of \\\"%s\\\" doesn't match that of \\\"%s\\\"\");%s",
+			    in[i]->name, in[0]->name, NEWLINE);
+fprintf(fd, "           return ERROR;%s", NEWLINE);
+fprintf(fd, "       }%s%s", NEWLINE);
 	}
 }
 else
-fprintf(fd, "\n");
+fprintf(fd, "%s", NEWLINE);
 
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * Create new in and out lists for the decendent of the\n");
-fprintf(fd, "       * first input.  For inputs and outputs that are Values\n");
-fprintf(fd, "       * copy them into the new in and out lists.  Otherwise\n");
-fprintf(fd, "       * get the corresponding decendents.\n");
-fprintf(fd, "       */\n\n");
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * Create new in and out lists for the decendent of the%s", NEWLINE);
+fprintf(fd, "       * first input.  For inputs and outputs that are Values%s", NEWLINE);
+fprintf(fd, "       * copy them into the new in and out lists.  Otherwise%s", NEWLINE);
+fprintf(fd, "       * get the corresponding decendents.%s", NEWLINE);
+fprintf(fd, "       */%s%s", NEWLINE, NEWLINE);
 for (i = 0; i < nin; i++)
     if (in[i]->structure == VALUE)
     {
-fprintf(fd, "      /* input \"%s\" is Value */\n", in[i]->name);
-fprintf(fd, "      new_in[%d] = in[%d];\n\n", i, i);
+fprintf(fd, "      /* input \"%s\" is Value */%s", in[i]->name, NEWLINE);
+fprintf(fd, "      new_in[%d] = in[%d];%s%s", i, i, NEWLINE, NEWLINE);
     }
     else
     {
-fprintf(fd, "      /* input \"%s\" is Field/Group */\n", in[i]->name);
-fprintf(fd, "      if (in[%d])\n", i);
-fprintf(fd, "        DXGetScreenInfo((Screen)in[%d], &new_in[%d], NULL, NULL);\n",i,i);
-fprintf(fd, "      else\n");
-fprintf(fd, "        new_in[%d] = NULL;\n\n", i);
+fprintf(fd, "      /* input \"%s\" is Field/Group */%s", in[i]->name, NEWLINE);
+fprintf(fd, "      if (in[%d])%s", i, NEWLINE);
+fprintf(fd, "        DXGetScreenInfo((Screen)in[%d], &new_in[%d], NULL, NULL);%s",i,i, NEWLINE);
+fprintf(fd, "      else%s", NEWLINE);
+fprintf(fd, "        new_in[%d] = NULL;%s%s", i, NEWLINE);
     }
-fprintf(fd, "\n");
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * For all outputs that are Values, copy them to \n");
-fprintf(fd, "       * child object list.  For all that are Field/Group,  get\n");
-fprintf(fd, "       * the appropriate decendent and place it into the\n");
-fprintf(fd, "       * child output object list.  Note that none should\n");
-fprintf(fd, "       * be NULL (unlike inputs, which can default).\n");
-fprintf(fd, "       */\n\n");
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * For all outputs that are Values, copy them to %s", NEWLINE);
+fprintf(fd, "       * child object list.  For all that are Field/Group,  get%s", NEWLINE);
+fprintf(fd, "       * the appropriate decendent and place it into the%s", NEWLINE);
+fprintf(fd, "       * child output object list.  Note that none should%s", NEWLINE);
+fprintf(fd, "       * be NULL (unlike inputs, which can default).%s", NEWLINE);
+fprintf(fd, "       */%s%s", NEWLINE, NEWLINE);
 for (i = 0; i < nout; i++)
     if (out[i]->structure == VALUE)
     {
-fprintf(fd, "       /* output \"%s\" is Value */\n", out[i]->name);
-fprintf(fd, "       new_out[%d] = out[%d];\n\n", i, i);
+fprintf(fd, "       /* output \"%s\" is Value */%s", out[i]->name, NEWLINE);
+fprintf(fd, "       new_out[%d] = out[%d];%s%s", i, i, NEWLINE, NEWLINE);
     }
     else
     {
-fprintf(fd, "       /* output \"%s\" is Field/Group */\n", out[i]->name);
-fprintf(fd, "       DXGetScreenInfo((Screen)out[%d], &new_out[%d], NULL, NULL);\n\n", i,i);
+fprintf(fd, "       /* output \"%s\" is Field/Group */%s", out[i]->name, NEWLINE);
+fprintf(fd, "       DXGetScreenInfo((Screen)out[%d], &new_out[%d], NULL, NULL);%s%s", i,i, NEWLINE, NEWLINE);
     }
 
-fprintf(fd, "       if (! traverse(new_in, new_out))\n");
-fprintf(fd, "         return ERROR;\n");
-fprintf(fd, "\n");
+fprintf(fd, "       if (! traverse(new_in, new_out))%s", NEWLINE);
+fprintf(fd, "         return ERROR;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 
 if (n_GF_out)
 {
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * Now for each output that is not a Value, replace\n");
-fprintf(fd, "       * the updated child into the object in the parent.\n");
-fprintf(fd, "       */\n\n");
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * Now for each output that is not a Value, replace%s", NEWLINE);
+fprintf(fd, "       * the updated child into the object in the parent.%s", NEWLINE);
+fprintf(fd, "       */%s%s", NEWLINE, NEWLINE);
 for (i = 0; i < nout; i++)
     if (out[i]->structure == GROUP_FIELD)
     {
-fprintf(fd, "      /* output \"%s\" is Field/Group */\n", out[i]->name);
-fprintf(fd, "       DXSetScreenObject((Screen)out[%d], new_out[%d]);\n\n", i,i);
+fprintf(fd, "      /* output \"%s\" is Field/Group */%s", out[i]->name, NEWLINE);
+fprintf(fd, "       DXSetScreenObject((Screen)out[%d], new_out[%d]);%s%s", i,i, NEWLINE, NEWLINE);
     }
 }
 
-fprintf(fd, "       return OK;\n");
-fprintf(fd, "     }\n");
-fprintf(fd, "\n");
-fprintf(fd, "     case CLASS_CLIPPED:\n");
-fprintf(fd, "     {\n");
-fprintf(fd, "       int    i, j;\n");
-fprintf(fd, "       Object new_in[%d], new_out[%d];\n", nin, nout);
-fprintf(fd, "\n");
+fprintf(fd, "       return OK;%s", NEWLINE);
+fprintf(fd, "     }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "     case CLASS_CLIPPED:%s", NEWLINE);
+fprintf(fd, "     {%s", NEWLINE);
+fprintf(fd, "       int    i, j;%s", NEWLINE);
+fprintf(fd, "       Object new_in[%d], new_out[%d];%s", nin, nout, NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 if (n_GF_in > 1)
 {
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * All inputs that are not NULL and are type Field/Group must\n");
-fprintf(fd, "       * match the structure of input[0].  Verify that this is so.\n");
-fprintf(fd, "       */\n\n");
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * All inputs that are not NULL and are type Field/Group must%s", NEWLINE);
+fprintf(fd, "       * match the structure of input[0].  Verify that this is so.%s", NEWLINE);
+fprintf(fd, "       */%s%s", NEWLINE, NEWLINE);
     for (i = 1; i < nin; i++)
 	if (in[i]->structure == GROUP_FIELD)
 	{
-fprintf(fd, "       if (in[%d] && DXGetObjectClass(in[%d]) != CLASS_CLIPPED)\n", i, i);
-fprintf(fd, "       {\n");
-fprintf(fd, "           DXSetError(ERROR_DATA_INVALID,\n");
-fprintf(fd, "               \"mismatching Field/Group objects\");\n");
-fprintf(fd, "           return ERROR;\n");
-fprintf(fd, "       }\n\n");
+fprintf(fd, "       if (in[%d] && DXGetObjectClass(in[%d]) != CLASS_CLIPPED)%s", i, i, NEWLINE);
+fprintf(fd, "       {%s", NEWLINE);
+fprintf(fd, "           DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
+fprintf(fd, "               \"mismatching Field/Group objects\");%s", NEWLINE);
+fprintf(fd, "           return ERROR;%s", NEWLINE);
+fprintf(fd, "       }%s%s", NEWLINE, NEWLINE);
 	}
 }
 else
-fprintf(fd, "\n");
+fprintf(fd, "%s", NEWLINE);
 
 for (i = 0; i < nin; i++)
     if (in[i]->structure == VALUE)
     {
-fprintf(fd, "       /* input \"%s\" is Value */\n", in[i]->name);
-fprintf(fd, "       new_in[%d] = in[%d];\n\n", i, i);
+fprintf(fd, "       /* input \"%s\" is Value */%s", in[i]->name, NEWLINE);
+fprintf(fd, "       new_in[%d] = in[%d];%s%s", i, i, NEWLINE, NEWLINE);
     }
     else
     {
-fprintf(fd, "       /* input \"%s\" is Field/Group */\n", in[i]->name);
-fprintf(fd, "       if (in[%d])\n", i);
-fprintf(fd, "         DXGetClippedInfo((Clipped)in[%d], &new_in[%d], NULL);\n",i,i);
-fprintf(fd, "       else\n");
-fprintf(fd, "         new_in[%d] = NULL;\n\n", i);
+fprintf(fd, "       /* input \"%s\" is Field/Group */%s", in[i]->name, NEWLINE);
+fprintf(fd, "       if (in[%d])%s", i, NEWLINE);
+fprintf(fd, "         DXGetClippedInfo((Clipped)in[%d], &new_in[%d], NULL);%s",i,i, NEWLINE);
+fprintf(fd, "       else%s", NEWLINE);
+fprintf(fd, "         new_in[%d] = NULL;%s%s", i, NEWLINE, NEWLINE);
     }
-fprintf(fd, "\n");
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * For all outputs that are Values, copy them to \n");
-fprintf(fd, "       * child object list.  For all that are Field/Group,  get\n");
-fprintf(fd, "       * the appropriate decendent and place it into the\n");
-fprintf(fd, "       * child output object list.  Note that none should\n");
-fprintf(fd, "       * be NULL (unlike inputs, which can default).\n");
-fprintf(fd, "       */\n\n");
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * For all outputs that are Values, copy them to %s", NEWLINE);
+fprintf(fd, "       * child object list.  For all that are Field/Group,  get%s", NEWLINE);
+fprintf(fd, "       * the appropriate decendent and place it into the%s", NEWLINE);
+fprintf(fd, "       * child output object list.  Note that none should%s", NEWLINE);
+fprintf(fd, "       * be NULL (unlike inputs, which can default).%s", NEWLINE);
+fprintf(fd, "       */%s%s", NEWLINE, NEWLINE);
 for (i = 0; i < nout; i++)
     if (out[i]->structure == VALUE)
     {
-fprintf(fd, "       /* output \"%s\" is Value */\n", out[i]->name);
-fprintf(fd, "       new_out[%d] = out[%d];\n\n", i, i);
+fprintf(fd, "       /* output \"%s\" is Value */%s", out[i]->name, NEWLINE);
+fprintf(fd, "       new_out[%d] = out[%d];%s%s", i, i, NEWLINE, NEWLINE);
     }
     else
     {
-fprintf(fd, "       /* output \"%s\" is Field/Group */\n", out[i]->name);
-fprintf(fd, "       DXGetClippedInfo((Clipped)out[%d], &new_out[%d], NULL);\n\n", i,i);
+fprintf(fd, "       /* output \"%s\" is Field/Group */%s", out[i]->name, NEWLINE);
+fprintf(fd, "       DXGetClippedInfo((Clipped)out[%d], &new_out[%d], NULL);%s%s", i,i, NEWLINE, NEWLINE);
     }
 
-fprintf(fd, "       if (! traverse(new_in, new_out))\n");
-fprintf(fd, "         return ERROR;\n");
-fprintf(fd, "\n");
+fprintf(fd, "       if (! traverse(new_in, new_out))%s", NEWLINE);
+fprintf(fd, "         return ERROR;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 
 if (n_GF_out)
 {
-fprintf(fd, "      /*\n");
-fprintf(fd, "       * Now for each output that is not a Value, replace\n");
-fprintf(fd, "       * the updated child into the object in the parent.\n");
-fprintf(fd, "       */\n\n");
+fprintf(fd, "      /*%s", NEWLINE);
+fprintf(fd, "       * Now for each output that is not a Value, replace%s", NEWLINE);
+fprintf(fd, "       * the updated child into the object in the parent.%s", NEWLINE);
+fprintf(fd, "       */%s%s", NEWLINE, NEWLINE);
 for (i = 0; i < nout; i++)
     if (out[i]->structure == GROUP_FIELD)
     {
-fprintf(fd, "       /* output \"%s\" is Field/Group */\n", out[i]->name);
-fprintf(fd, "       DXSetClippedObjects((Clipped)out[%d], new_out[%d], NULL);\n\n", i, i);
+fprintf(fd, "       /* output \"%s\" is Field/Group */%s", out[i]->name, NEWLINE);
+fprintf(fd, "       DXSetClippedObjects((Clipped)out[%d], new_out[%d], NULL);%s%s", i, i, NEWLINE, NEWLINE);
     }
 }
 
-fprintf(fd, "       return OK;\n");
-fprintf(fd, "     }\n");
-fprintf(fd, "\n");
-fprintf(fd, "     default:\n");
-fprintf(fd, "     {\n");
+fprintf(fd, "       return OK;%s", NEWLINE);
+fprintf(fd, "     }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "     default:%s", NEWLINE);
+fprintf(fd, "     {%s", NEWLINE);
 fprintf(fd, "       DXSetError(ERROR_BAD_CLASS, ");
-fprintf(fd, "\"encountered in object traversal\");\n");
-fprintf(fd, "       return ERROR;\n");
-fprintf(fd, "     }\n");
-fprintf(fd, "  }\n");
-fprintf(fd, "}\n");
-fprintf(fd, "\n");
+fprintf(fd, "\"encountered in object traversal\");%s", NEWLINE);
+fprintf(fd, "       return ERROR;%s", NEWLINE);
+fprintf(fd, "     }%s", NEWLINE);
+fprintf(fd, "  }%s", NEWLINE);
+fprintf(fd, "}%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 
 
-fprintf(fd, "static int\n");
-fprintf(fd, "doLeaf(Object *in, Object *out)\n");
-fprintf(fd, "{\n");
-fprintf(fd, "  int i, result=0;\n");
-fprintf(fd, "  Array array;\n");
-fprintf(fd, "  Field field;\n");
-fprintf(fd, "  Pointer *in_data[%d], *out_data[%d];\n", nin, nout);
-fprintf(fd, "  int in_knt[%d], out_knt[%d];\n", nin, nout);
-fprintf(fd, "  Type type;\n");
-fprintf(fd, "  Category category;\n");
-fprintf(fd, "  int rank, shape;\n");
-fprintf(fd, "  Object attr, src_dependency_attr = NULL;\n");
-fprintf(fd, "  char *src_dependency = NULL;\n");
+fprintf(fd, "static int%s", NEWLINE);
+fprintf(fd, "doLeaf(Object *in, Object *out)%s", NEWLINE);
+fprintf(fd, "{%s", NEWLINE);
+fprintf(fd, "  int i, result=0;%s", NEWLINE);
+fprintf(fd, "  Array array;%s", NEWLINE);
+fprintf(fd, "  Field field;%s", NEWLINE);
+fprintf(fd, "  Pointer *in_data[%d], *out_data[%d];%s", nin, nout, NEWLINE);
+fprintf(fd, "  int in_knt[%d], out_knt[%d];%s", nin, nout, NEWLINE);
+fprintf(fd, "  Type type;%s", NEWLINE);
+fprintf(fd, "  Category category;%s", NEWLINE);
+fprintf(fd, "  int rank, shape;%s", NEWLINE);
+fprintf(fd, "  Object attr, src_dependency_attr = NULL;%s", NEWLINE);
+fprintf(fd, "  char *src_dependency = NULL;%s", NEWLINE);
   if (in[0]->elementtype != ELT_NOT_REQUIRED)
   {
-fprintf(fd, "  Object element_type_attr;\n");
-fprintf(fd, "  char *element_type;\n");
+fprintf(fd, "  Object element_type_attr;%s", NEWLINE);
+fprintf(fd, "  char *element_type;%s", NEWLINE);
   }
 
   if (in[0]->positions == GRID_REGULAR)
   {
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Regular positions info\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  int p_knt = -1, p_dim, *p_counts = NULL;\n");
-fprintf(fd, "  float *p_origin = NULL, *p_deltas = NULL;\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Regular positions info%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  int p_knt = -1, p_dim, *p_counts = NULL;%s", NEWLINE);
+fprintf(fd, "  float *p_origin = NULL, *p_deltas = NULL;%s", NEWLINE);
   }
   else if (in[0]->positions == GRID_IRREGULAR)
   {
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Irregular positions info\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  int p_knt, p_dim;\n");
-fprintf(fd, "  float *p_positions;\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Irregular positions info%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  int p_knt, p_dim;%s", NEWLINE);
+fprintf(fd, "  float *p_positions;%s", NEWLINE);
   }
   else
-fprintf(fd, "  int p_knt = -1;\n");
+fprintf(fd, "  int p_knt = -1;%s", NEWLINE);
 
   if (in[0]->connections == GRID_REGULAR)
   {
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Regular connections info\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  int c_knt, c_nv, c_dim, *c_counts = NULL;\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Regular connections info%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  int c_knt, c_nv, c_dim, *c_counts = NULL;%s", NEWLINE);
   }
   else if (in[0]->connections == GRID_IRREGULAR)
   {
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Irregular connections info\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  int c_knt, c_dim, c_nv;\n");
-fprintf(fd, "  float *c_connections;\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Irregular connections info%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  int c_knt, c_dim, c_nv;%s", NEWLINE);
+fprintf(fd, "  float *c_connections;%s", NEWLINE);
   }
   else
-fprintf(fd, "  int c_knt = -1;\n");
+fprintf(fd, "  int c_knt = -1;%s", NEWLINE);
 
-fprintf(fd, "\n");
+fprintf(fd, "%s", NEWLINE);
 
 if (in[0]->connections != GRID_NOT_REQUIRED ||
     in[0]->positions   != GRID_NOT_REQUIRED)
 { 
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * positions and/or connections are required, so the first must\n");
-fprintf(fd, "   * be a field.\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  if (DXGetObjectClass(in[0]) != CLASS_FIELD)\n");
-fprintf(fd, "  {\n");
-fprintf(fd, "      DXSetError(ERROR_DATA_INVALID,\n");
-fprintf(fd, "           \"positions and/or connections unavailable in array object\");\n");
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "  }\n");
-fprintf(fd, "  else\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * positions and/or connections are required, so the first must%s", NEWLINE);
+fprintf(fd, "   * be a field.%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  if (DXGetObjectClass(in[0]) != CLASS_FIELD)%s", NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
+fprintf(fd, "           \"positions and/or connections unavailable in array object\");%s", NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "  }%s", NEWLINE);
+fprintf(fd, "  else%s", NEWLINE);
 }
 else
-fprintf(fd, "  if (DXGetObjectClass(in[0]) == CLASS_FIELD)\n");
+fprintf(fd, "  if (DXGetObjectClass(in[0]) == CLASS_FIELD)%s", NEWLINE);
 
-fprintf(fd, "  {\n");
-fprintf(fd, "\n");
-fprintf(fd, "    field = (Field)in[0];\n");
-fprintf(fd, "\n");
-fprintf(fd, "    if (DXEmptyField(field))\n");
-fprintf(fd, "      return OK;\n");
-fprintf(fd, "\n");
-fprintf(fd, "    /* \n");
-fprintf(fd, "     * Determine the dependency of the source object's data\n");
-fprintf(fd, "     * component.\n");
-fprintf(fd, "     */\n");
-fprintf(fd, "    src_dependency_attr = DXGetComponentAttribute(field, \"data\", \"dep\");\n");
-fprintf(fd, "    if (! src_dependency_attr)\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_MISSING_DATA, \"\\\"%s\\\" data component is missing a dependency attribute\");\n", in[0]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
-fprintf(fd, "    if (DXGetObjectClass(src_dependency_attr) != CLASS_STRING)\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" dependency attribute\");\n", in[0]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
-fprintf(fd, "    src_dependency = DXGetString((String)src_dependency_attr);\n");
-fprintf(fd, "\n");
-fprintf(fd, "    array = (Array)DXGetComponentValue(field, \"positions\");\n");
-fprintf(fd, "    if (! array)\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" contains no positions component\");\n", in[0]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    field = (Field)in[0];%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    if (DXEmptyField(field))%s", NEWLINE);
+fprintf(fd, "      return OK;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    /* %s", NEWLINE);
+fprintf(fd, "     * Determine the dependency of the source object's data%s", NEWLINE);
+fprintf(fd, "     * component.%s", NEWLINE);
+fprintf(fd, "     */%s", NEWLINE);
+fprintf(fd, "    src_dependency_attr = DXGetComponentAttribute(field, \"data\", \"dep\");%s", NEWLINE);
+fprintf(fd, "    if (! src_dependency_attr)%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_MISSING_DATA, \"\\\"%s\\\" data component is missing a dependency attribute\");%s", in[0]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    if (DXGetObjectClass(src_dependency_attr) != CLASS_STRING)%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" dependency attribute\");%s", in[0]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    src_dependency = DXGetString((String)src_dependency_attr);%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    array = (Array)DXGetComponentValue(field, \"positions\");%s", NEWLINE);
+fprintf(fd, "    if (! array)%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" contains no positions component\");%s", in[0]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
     if (in[0]->positions == GRID_REGULAR)
     {
-fprintf(fd, "    /* \n");
-fprintf(fd, "     * Input[0] should have regular positions.  First check\n");
-fprintf(fd, "     * that they are, and while you're at it, get the\n");
-fprintf(fd, "     * dimensionality so we can size arrays later.\n");
-fprintf(fd, "     */\n");
-fprintf(fd, "    if (! DXQueryGridPositions(array, &p_dim, NULL, NULL, NULL))\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" positions component is not regular\");\n", in[0]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
-fprintf(fd, "    /* \n");
-fprintf(fd, "     * Allocate arrays for position counts, origin and deltas.\n");
-fprintf(fd, "     * Check that the allocations worked, then get the info.\n");
-fprintf(fd, "     */\n");
-fprintf(fd, "    p_counts = (int   *)DXAllocate(p_dim*sizeof(int));\n");
-fprintf(fd, "    p_origin = (float *)DXAllocate(p_dim*sizeof(float));\n");
-fprintf(fd, "    p_deltas = (float *)DXAllocate(p_dim*p_dim*sizeof(float));\n");
-fprintf(fd, "    if (! p_counts || ! p_origin || ! p_deltas)\n");
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "\n");
-fprintf(fd, "    DXQueryGridPositions(array, NULL, p_counts, p_origin, p_deltas);\n");
-fprintf(fd, "    DXGetArrayInfo(array, &p_knt, NULL, NULL, NULL, NULL);\n");
-fprintf(fd, "\n");
+fprintf(fd, "    /* %s", NEWLINE);
+fprintf(fd, "     * Input[0] should have regular positions.  First check%s", NEWLINE);
+fprintf(fd, "     * that they are, and while you're at it, get the%s", NEWLINE);
+fprintf(fd, "     * dimensionality so we can size arrays later.%s", NEWLINE);
+fprintf(fd, "     */%s", NEWLINE);
+fprintf(fd, "    if (! DXQueryGridPositions(array, &p_dim, NULL, NULL, NULL))%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" positions component is not regular\");%s", in[0]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    /* %s", NEWLINE);
+fprintf(fd, "     * Allocate arrays for position counts, origin and deltas.%s", NEWLINE);
+fprintf(fd, "     * Check that the allocations worked, then get the info.%s", NEWLINE);
+fprintf(fd, "     */%s", NEWLINE);
+fprintf(fd, "    p_counts = (int   *)DXAllocate(p_dim*sizeof(int));%s", NEWLINE);
+fprintf(fd, "    p_origin = (float *)DXAllocate(p_dim*sizeof(float));%s", NEWLINE);
+fprintf(fd, "    p_deltas = (float *)DXAllocate(p_dim*p_dim*sizeof(float));%s", NEWLINE);
+fprintf(fd, "    if (! p_counts || ! p_origin || ! p_deltas)%s", NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    DXQueryGridPositions(array, NULL, p_counts, p_origin, p_deltas);%s", NEWLINE);
+fprintf(fd, "    DXGetArrayInfo(array, &p_knt, NULL, NULL, NULL, NULL);%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
     }
     else if (in[0]->positions == GRID_IRREGULAR)
     {
-fprintf(fd, "    /* \n");
-fprintf(fd, "     * The user requested irregular positions.  So we\n");
-fprintf(fd, "     * get the count, the dimensionality and a pointer to the\n");
-fprintf(fd, "     * explicitly enumerated positions.  If the positions\n");
-fprintf(fd, "     * are in fact regular, this will expand them.\n");
-fprintf(fd, "     */\n");
-fprintf(fd, "    DXGetArrayInfo(array, &p_knt, NULL, NULL, NULL, &p_dim);\n");
-fprintf(fd, "\n");
-fprintf(fd, "    p_positions = (float *)DXGetArrayData(array);\n");
-fprintf(fd, "    if (! p_positions)\n");
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "\n");
+fprintf(fd, "    /* %s", NEWLINE);
+fprintf(fd, "     * The user requested irregular positions.  So we%s", NEWLINE);
+fprintf(fd, "     * get the count, the dimensionality and a pointer to the%s", NEWLINE);
+fprintf(fd, "     * explicitly enumerated positions.  If the positions%s", NEWLINE);
+fprintf(fd, "     * are in fact regular, this will expand them.%s", NEWLINE);
+fprintf(fd, "     */%s", NEWLINE);
+fprintf(fd, "    DXGetArrayInfo(array, &p_knt, NULL, NULL, NULL, &p_dim);%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    p_positions = (float *)DXGetArrayData(array);%s", NEWLINE);
+fprintf(fd, "    if (! p_positions)%s", NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
     }
     else
-fprintf(fd, "    DXGetArrayInfo(array, &p_knt, NULL, NULL, NULL, NULL);\n");
+fprintf(fd, "    DXGetArrayInfo(array, &p_knt, NULL, NULL, NULL, NULL);%s", NEWLINE);
 
     if (in[0]->connections == GRID_REGULAR ||
         in[0]->connections == GRID_IRREGULAR ||
 	in[0]->elementtype != ELT_NOT_REQUIRED)
     {
-fprintf(fd, "    array = (Array)DXGetComponentValue(field, \"connections\");\n");
-fprintf(fd, "    if (! array)\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" contains no connections component\");\n", in[0]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
+fprintf(fd, "    array = (Array)DXGetComponentValue(field, \"connections\");%s", NEWLINE);
+fprintf(fd, "    if (! array)%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" contains no connections component\");%s", in[0]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 
 	if (in[0]->elementtype != ELT_NOT_REQUIRED)
 	{
@@ -1284,85 +1290,85 @@ fprintf(fd, "\n");
 	    if (! GetElementTypeString(in[0]->elementtype, &str))
 		goto error;
 
-fprintf(fd, "    /*\n");
-fprintf(fd, "     * Check that the field's element type matches that requested\n");
-fprintf(fd, "     */\n");
-fprintf(fd, "    element_type_attr = DXGetAttribute((Object)array, \"element type\");\n");
-fprintf(fd, "    if (! element_type_attr)\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,\n");
-fprintf(fd, "            \"input \\\"%s\\\" has no element type attribute\");\n", in[0]->name);
-fprintf(fd, "        goto error;\n");
-fprintf(fd, "    }\n\n");
-fprintf(fd, "    if (DXGetObjectClass(element_type_attr) != CLASS_STRING)\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,\n");
-fprintf(fd, "            \"input \\\"%s\\\" element type attribute is not a string\");\n", in[0]->name);
-fprintf(fd, "        goto error;\n");
-fprintf(fd, "    }\n\n");
-fprintf(fd, "    if (strcmp(DXGetString((String)element_type_attr), \"%s\"))\n", str);
-fprintf(fd, "    {\n");
-fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,\n");
-fprintf(fd, "            \"input \\\"%s\\\" invalid element type\");\n", in[0]->name);
-fprintf(fd, "        goto error;\n");
-fprintf(fd, "    }\n\n");
+fprintf(fd, "    /*%s", NEWLINE);
+fprintf(fd, "     * Check that the field's element type matches that requested%s", NEWLINE);
+fprintf(fd, "     */%s", NEWLINE);
+fprintf(fd, "    element_type_attr = DXGetAttribute((Object)array, \"element type\");%s", NEWLINE);
+fprintf(fd, "    if (! element_type_attr)%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
+fprintf(fd, "            \"input \\\"%s\\\" has no element type attribute\");%s", in[0]->name, NEWLINE);
+fprintf(fd, "        goto error;%s", NEWLINE);
+fprintf(fd, "    }%s%s", NEWLINE, NEWLINE);
+fprintf(fd, "    if (DXGetObjectClass(element_type_attr) != CLASS_STRING)%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
+fprintf(fd, "            \"input \\\"%s\\\" element type attribute is not a string\");%s", in[0]->name, NEWLINE);
+fprintf(fd, "        goto error;%s", NEWLINE);
+fprintf(fd, "    }%s%s", NEWLINE, NEWLINE);
+fprintf(fd, "    if (strcmp(DXGetString((String)element_type_attr), \"%s\"))%s", str, NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "        DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
+fprintf(fd, "            \"input \\\"%s\\\" invalid element type\");%s", in[0]->name, NEWLINE);
+fprintf(fd, "        goto error;%s", NEWLINE);
+fprintf(fd, "    }%s%s", NEWLINE, NEWLINE);
 	}
 
 	if (in[0]->connections == GRID_REGULAR)
 	{
-fprintf(fd, "    /* \n");
-fprintf(fd, "     * Input[0] should have regular connections.  First check\n");
-fprintf(fd, "     * that they are, and while you're at it, get the\n");
-fprintf(fd, "     * dimensionality so we can size an array later.\n");
-fprintf(fd, "     */\n");
-fprintf(fd, "    if (! DXQueryGridConnections(array, &c_dim, NULL))\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" connections component is not regular\");\n", in[0]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
-fprintf(fd, "    /* \n");
-fprintf(fd, "     * Allocate arrays for connections counts.\n");
-fprintf(fd, "     * Check that the allocation worked, then get the info.\n");
-fprintf(fd, "     */\n");
-fprintf(fd, "    c_counts = (int   *)DXAllocate(c_dim*sizeof(int));\n");
-fprintf(fd, "    if (! c_counts)\n");
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "\n");
-fprintf(fd, "    DXQueryGridConnections(array, NULL, c_counts);\n");
-fprintf(fd, "    DXGetArrayInfo(array, &c_knt, NULL, NULL, NULL, &c_nv);\n");
-fprintf(fd, "\n");
+fprintf(fd, "    /* %s", NEWLINE);
+fprintf(fd, "     * Input[0] should have regular connections.  First check%s", NEWLINE);
+fprintf(fd, "     * that they are, and while you're at it, get the%s", NEWLINE);
+fprintf(fd, "     * dimensionality so we can size an array later.%s", NEWLINE);
+fprintf(fd, "     */%s", NEWLINE);
+fprintf(fd, "    if (! DXQueryGridConnections(array, &c_dim, NULL))%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" connections component is not regular\");%s", in[0]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    /* %s", NEWLINE);
+fprintf(fd, "     * Allocate arrays for connections counts.%s", NEWLINE);
+fprintf(fd, "     * Check that the allocation worked, then get the info.%s", NEWLINE);
+fprintf(fd, "     */%s", NEWLINE);
+fprintf(fd, "    c_counts = (int   *)DXAllocate(c_dim*sizeof(int));%s", NEWLINE);
+fprintf(fd, "    if (! c_counts)%s", NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    DXQueryGridConnections(array, NULL, c_counts);%s", NEWLINE);
+fprintf(fd, "    DXGetArrayInfo(array, &c_knt, NULL, NULL, NULL, &c_nv);%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 	}
 	else if (in[0]->connections == GRID_IRREGULAR)
 	{
-fprintf(fd, "    /* \n");
-fprintf(fd, "     * The user requested irregular connections.  So we\n");
-fprintf(fd, "     * get the count, the dimensionality and a pointer to the\n");
-fprintf(fd, "     * explicitly enumerated elements.  If the positions\n");
-fprintf(fd, "     * are in fact regular, this will expand them.\n");
-fprintf(fd, "     */\n");
-fprintf(fd, "    DXGetArrayInfo(array, &c_knt, NULL, NULL, NULL, &c_nv);\n");
-fprintf(fd, "\n");
-fprintf(fd, "    c_connections = (float *)DXGetArrayData(array);\n");
-fprintf(fd, "    if (! c_connections)\n");
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "\n");
+fprintf(fd, "    /* %s", NEWLINE);
+fprintf(fd, "     * The user requested irregular connections.  So we%s", NEWLINE);
+fprintf(fd, "     * get the count, the dimensionality and a pointer to the%s", NEWLINE);
+fprintf(fd, "     * explicitly enumerated elements.  If the positions%s", NEWLINE);
+fprintf(fd, "     * are in fact regular, this will expand them.%s", NEWLINE);
+fprintf(fd, "     */%s", NEWLINE);
+fprintf(fd, "    DXGetArrayInfo(array, &c_knt, NULL, NULL, NULL, &c_nv);%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    c_connections = (float *)DXGetArrayData(array);%s", NEWLINE);
+fprintf(fd, "    if (! c_connections)%s", NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 	}
 	else
-fprintf(fd, "    DXGetArrayInfo(array, &c_knt, NULL, NULL, NULL, NULL);\n");
+fprintf(fd, "    DXGetArrayInfo(array, &c_knt, NULL, NULL, NULL, NULL);%s", NEWLINE);
     }
     else
     {
-fprintf(fd, "    /* \n");
-fprintf(fd, "     * If there are connections, get their count so that\n");
-fprintf(fd, "     * connections-dependent result arrays can be sized.\n");
-fprintf(fd, "     */\n");
-fprintf(fd, "    array = (Array)DXGetComponentValue(field, \"connections\");\n");
-fprintf(fd, "    if (array)\n");
-fprintf(fd, "        DXGetArrayInfo(array, &c_knt, NULL, NULL, NULL, NULL);\n");
+fprintf(fd, "    /* %s", NEWLINE);
+fprintf(fd, "     * If there are connections, get their count so that%s", NEWLINE);
+fprintf(fd, "     * connections-dependent result arrays can be sized.%s", NEWLINE);
+fprintf(fd, "     */%s", NEWLINE);
+fprintf(fd, "    array = (Array)DXGetComponentValue(field, \"connections\");%s", NEWLINE);
+fprintf(fd, "    if (array)%s", NEWLINE);
+fprintf(fd, "        DXGetArrayInfo(array, &c_knt, NULL, NULL, NULL, NULL);%s", NEWLINE);
     }
 
-fprintf(fd, "  }\n");
+fprintf(fd, "  }%s", NEWLINE);
 
   for (i = 0; i < nin; i++)
   {
@@ -1373,128 +1379,128 @@ fprintf(fd, "  }\n");
           goto error;
 
 
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * If the input argument is not NULL then we get the \n");
-fprintf(fd, "   * data array: either the object itself, if its an \n");
-fprintf(fd, "   * array, or the data component if the argument is a field\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  if (! in[%d])\n", i);
-fprintf(fd, "  {\n");
-fprintf(fd, "    array = NULL;\n");
-fprintf(fd, "    in_data[%d] = NULL;\n", i);
-fprintf(fd, "    in_knt[%d] = NULL;\n", i);
-fprintf(fd, "  }\n");
-fprintf(fd, "  else\n");
-fprintf(fd, "  {\n");
-fprintf(fd, "    if (DXGetObjectClass(in[%d]) == CLASS_ARRAY)\n", i);
-fprintf(fd, "    {\n");
-fprintf(fd, "      array = (Array)in[%d];\n", i);
-fprintf(fd, "    }\n");
-fprintf(fd, "    else if (DXGetObjectClass(in[%d]) == CLASS_STRING)\n", i);
-fprintf(fd, "    {\n");
-fprintf(fd, "      in_data[%d] = (Pointer *)DXGetString((String)in[%d]);\n",i,i);
-fprintf(fd, "      in_knt[%d] = 1;\n",i); 
-fprintf(fd, "    }\n");
-fprintf(fd, "    else\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      if (DXGetObjectClass(in[%d]) != CLASS_FIELD)\n", i);
-fprintf(fd, "      {\n");
-fprintf(fd, "        DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" should be a field\");\n", in[i]->name);
-fprintf(fd, "        goto error;\n");
-fprintf(fd, "      }\n");
-fprintf(fd, "\n");
-fprintf(fd, "      array = (Array)DXGetComponentValue((Field)in[%d], \"data\");\n", i);
-fprintf(fd, "      if (! array)\n");
-fprintf(fd, "      {\n");
-fprintf(fd, "        DXSetError(ERROR_MISSING_DATA, \"\\\"%s\\\" has no data component\");\n", in[i]->name);
-fprintf(fd, "        goto error;\n");
-fprintf(fd, "      }\n");
-fprintf(fd, "\n");
-fprintf(fd, "      if (DXGetObjectClass((Object)array) != CLASS_ARRAY)\n");
-fprintf(fd, "      {\n");
-fprintf(fd, "        DXSetError(ERROR_BAD_CLASS, \"data component of \\\"%s\\\" should be an array\");\n", in[i]->name);
-fprintf(fd, "        goto error;\n");
-fprintf(fd, "      }\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * If the input argument is not NULL then we get the %s", NEWLINE);
+fprintf(fd, "   * data array: either the object itself, if its an %s", NEWLINE);
+fprintf(fd, "   * array, or the data component if the argument is a field%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  if (! in[%d])%s", i, NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "    array = NULL;%s", NEWLINE);
+fprintf(fd, "    in_data[%d] = NULL;%s", i, NEWLINE);
+fprintf(fd, "    in_knt[%d] = NULL;%s", i, NEWLINE);
+fprintf(fd, "  }%s", NEWLINE);
+fprintf(fd, "  else%s", NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "    if (DXGetObjectClass(in[%d]) == CLASS_ARRAY)%s", i, NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      array = (Array)in[%d];%s", i, NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "    else if (DXGetObjectClass(in[%d]) == CLASS_STRING)%s", i, NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      in_data[%d] = (Pointer *)DXGetString((String)in[%d]);%s",i,i, NEWLINE);
+fprintf(fd, "      in_knt[%d] = 1;%s",i, NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "    else%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      if (DXGetObjectClass(in[%d]) != CLASS_FIELD)%s", i, NEWLINE);
+fprintf(fd, "      {%s", NEWLINE);
+fprintf(fd, "        DXSetError(ERROR_BAD_CLASS, \"\\\"%s\\\" should be a field\");%s", in[i]->name, NEWLINE);
+fprintf(fd, "        goto error;%s", NEWLINE);
+fprintf(fd, "      }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "      array = (Array)DXGetComponentValue((Field)in[%d], \"data\");%s", i, NEWLINE);
+fprintf(fd, "      if (! array)%s", NEWLINE);
+fprintf(fd, "      {%s", NEWLINE);
+fprintf(fd, "        DXSetError(ERROR_MISSING_DATA, \"\\\"%s\\\" has no data component\");%s", in[i]->name, NEWLINE);
+fprintf(fd, "        goto error;%s", NEWLINE);
+fprintf(fd, "      }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "      if (DXGetObjectClass((Object)array) != CLASS_ARRAY)%s", NEWLINE);
+fprintf(fd, "      {%s", NEWLINE);
+fprintf(fd, "        DXSetError(ERROR_BAD_CLASS, \"data component of \\\"%s\\\" should be an array\");%s", in[i]->name, NEWLINE);
+fprintf(fd, "        goto error;%s", NEWLINE);
+fprintf(fd, "      }%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 
       if (in[i]->dependency != NO_DEPENDENCY)
       {
-fprintf(fd, "    /* \n");
-fprintf(fd, "     * get the dependency of the data component\n");
-fprintf(fd, "     */\n");
-fprintf(fd, "    attr = DXGetAttribute((Object)array, \"dep\");\n");
-fprintf(fd, "    if (! attr)\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_MISSING_DATA, \"data component of \\\"%s\\\" has no dependency\");\n", in[i]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
-fprintf(fd, "    if (DXGetObjectClass(attr) != CLASS_STRING)\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"dependency attribute of data component of \\\"%s\\\"\");\n", in[i]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "\n");
+fprintf(fd, "    /* %s", NEWLINE);
+fprintf(fd, "     * get the dependency of the data component%s", NEWLINE);
+fprintf(fd, "     */%s", NEWLINE);
+fprintf(fd, "    attr = DXGetAttribute((Object)array, \"dep\");%s", NEWLINE);
+fprintf(fd, "    if (! attr)%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_MISSING_DATA, \"data component of \\\"%s\\\" has no dependency\");%s", in[i]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    if (DXGetObjectClass(attr) != CLASS_STRING)%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_BAD_CLASS, \"dependency attribute of data component of \\\"%s\\\"\");%s", in[i]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
 	if (in[i]->dependency == DEP_INPUT && i != 0)
 	{
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * The dependency of this arg should match input[0].\n");
-fprintf(fd, "   */\n"); 
-fprintf(fd, "    if (strcmp(src_dependency, DXGetString((String)attr)))\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_DATA_INVALID, \"data dependency of \\\"%s\\\" must match \\\"%s\\\"\");\n",
-						in[i]->name, in[0]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * The dependency of this arg should match input[0].%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE); 
+fprintf(fd, "    if (strcmp(src_dependency, DXGetString((String)attr)))%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_DATA_INVALID, \"data dependency of \\\"%s\\\" must match \\\"%s\\\"\");%s",
+						in[i]->name, in[0]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
 	}
 	else if (in[i]->dependency == DEP_POSITIONS)
 	{
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * The dependency of this arg should be positions\n");
-fprintf(fd, "   */\n"); 
-fprintf(fd, "    if (strcmp(\"positions\", DXGetString((String)attr)))\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_DATA_INVALID, \"data dependency of \\\"%s\\\" must be positions\");\n",
-						in[i]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * The dependency of this arg should be positions%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE); 
+fprintf(fd, "    if (strcmp(\"positions\", DXGetString((String)attr)))%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_DATA_INVALID, \"data dependency of \\\"%s\\\" must be positions\");%s",
+						in[i]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
 	}
 	else if (in[i]->dependency == DEP_CONNECTIONS)
 	{
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * The dependency of this arg should be connections\n");
-fprintf(fd, "   */\n"); 
-fprintf(fd, "    if (strcmp(\"connections\", DXGetString((String)attr)))\n");
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_DATA_INVALID, \"data dependency of \\\"%s\\\" must be connections\");\n",
-						in[i]->name);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * The dependency of this arg should be connections%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE); 
+fprintf(fd, "    if (strcmp(\"connections\", DXGetString((String)attr)))%s", NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_DATA_INVALID, \"data dependency of \\\"%s\\\" must be connections\");%s",
+						in[i]->name, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
 	}
       }
-fprintf(fd, "\n");
+fprintf(fd, "%s", NEWLINE);
 fprintf(fd, "    if (DXGetObjectClass(in[%d]) != CLASS_STRING)", i);
-fprintf(fd, "    {\n");
-fprintf(fd, "       DXGetArrayInfo(array, &in_knt[%d], &type, &category, &rank, &shape);\n", i);
-fprintf(fd, "       if (type != %s || category != CATEGORY_REAL ||\n", type);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "       DXGetArrayInfo(array, &in_knt[%d], &type, &category, &rank, &shape);%s", i, NEWLINE);
+fprintf(fd, "       if (type != %s || category != CATEGORY_REAL ||%s", type, NEWLINE);
 
   if (! strcmp(rank, "0"))
-fprintf(fd, "             !((rank == 0) || ((rank == 1)&&(shape == 1))))\n");
+fprintf(fd, "             !((rank == 0) || ((rank == 1)&&(shape == 1))))%s", NEWLINE);
   else
-fprintf(fd, "           rank != %s || shape != %s)\n", rank, shape);
+fprintf(fd, "           rank != %s || shape != %s)%s", rank, shape, NEWLINE);
 
-fprintf(fd, "       {\n");
-fprintf(fd, "         DXSetError(ERROR_DATA_INVALID, \"input \\\"%s\\\"\");\n", in[i]->name);
-fprintf(fd, "         goto error;\n");
-fprintf(fd, "       }\n");
-fprintf(fd, "\n");
-fprintf(fd, "       in_data[%d] = DXGetArrayData(array);\n", i);
-fprintf(fd, "       if (! in_data[%d])\n", i);
-fprintf(fd, "          goto error;\n");
-fprintf(fd, "\n");
-fprintf(fd, "    }\n");
-fprintf(fd, "  }\n");
+fprintf(fd, "       {%s", NEWLINE);
+fprintf(fd, "         DXSetError(ERROR_DATA_INVALID, \"input \\\"%s\\\"\");%s", in[i]->name, NEWLINE);
+fprintf(fd, "         goto error;%s", NEWLINE);
+fprintf(fd, "       }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "       in_data[%d] = DXGetArrayData(array);%s", i, NEWLINE);
+fprintf(fd, "       if (! in_data[%d])%s", i, NEWLINE);
+fprintf(fd, "          goto error;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "    }%s", NEWLINE);
+fprintf(fd, "  }%s", NEWLINE);
     }
 
   for (i = 0; i < nout; i++)
@@ -1507,136 +1513,136 @@ fprintf(fd, "  }\n");
 
     if (out[i]->structure == VALUE)
     {
-fprintf(fd, "  if (! out[%d])\n", i);
-fprintf(fd, "  {\n");
-fprintf(fd, "    DXSetError(ERROR_INTERNAL, \"Value output %d (\\\"%s\\\") is NULL\");\n", i, out[i]->name);
-fprintf(fd, "    goto error;\n");
-fprintf(fd, "  }\n");
-fprintf(fd, "  if (DXGetObjectClass(out[%d]) != CLASS_ARRAY)\n", i);
-fprintf(fd, "  {\n");
-fprintf(fd, "    DXSetError(ERROR_INTERNAL, \"Value output %d (\\\"%s\\\") is not an array\");\n", i, out[i]->name);
-fprintf(fd, "    goto error;\n");
-fprintf(fd, "  }\n");
-fprintf(fd, "\n");
-fprintf(fd, "  array = (Array)out[%d];\n", i);
-fprintf(fd, "\n");
-fprintf(fd, "  DXGetArrayInfo(array, &out_knt[%d], &type, &category, &rank, &shape);\n", i);
-fprintf(fd, "  if (type != %s || category != CATEGORY_REAL ||\n", type);
+fprintf(fd, "  if (! out[%d])%s", i, NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "    DXSetError(ERROR_INTERNAL, \"Value output %d (\\\"%s\\\") is NULL\");%s", i, out[i]->name, NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
+fprintf(fd, "  }%s", NEWLINE);
+fprintf(fd, "  if (DXGetObjectClass(out[%d]) != CLASS_ARRAY)%s", i, NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "    DXSetError(ERROR_INTERNAL, \"Value output %d (\\\"%s\\\") is not an array\");%s", i, out[i]->name, NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
+fprintf(fd, "  }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "  array = (Array)out[%d];%s", i, NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "  DXGetArrayInfo(array, &out_knt[%d], &type, &category, &rank, &shape);%s", i, NEWLINE);
+fprintf(fd, "  if (type != %s || category != CATEGORY_REAL ||%s", type, NEWLINE);
 	if (out[i]->datashape == SCALAR)
-fprintf(fd, "      !((rank == 0) || ((rank == 1)&&(shape == 1))))\n");
+fprintf(fd, "      !((rank == 0) || ((rank == 1)&&(shape == 1))))%s", NEWLINE);
 	else
-fprintf(fd, "      rank != %s || shape != %s)\n", rank, shape);
-fprintf(fd, "  {\n");
-fprintf(fd, "    DXSetError(ERROR_DATA_INVALID, \"Value output \\\"%s\\\" has bad type\");\n", out[i]->name);
-fprintf(fd, "    goto error;\n");
-fprintf(fd, "  }\n");
-fprintf(fd, "\n");
+fprintf(fd, "      rank != %s || shape != %s)%s", rank, shape, NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "    DXSetError(ERROR_DATA_INVALID, \"Value output \\\"%s\\\" has bad type\");%s", out[i]->name, NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
+fprintf(fd, "  }%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
     }
     else
     {
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Create an output data array typed according to the\n");
-fprintf(fd, "   * specification given\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  array = DXNewArray(%s, CATEGORY_REAL, %s, %s);\n", type, rank, shape);
-fprintf(fd, "  if (! array)\n");
-fprintf(fd, "    goto error;\n");
-fprintf(fd, "\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Create an output data array typed according to the%s", NEWLINE);
+fprintf(fd, "   * specification given%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  array = DXNewArray(%s, CATEGORY_REAL, %s, %s);%s", type, rank, shape, NEWLINE);
+fprintf(fd, "  if (! array)%s", NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
       if (out[i]->dependency == DEP_INPUT)
       {
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Set the dependency of the array to the same as the first input\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  if (src_dependency_attr != NULL)\n");
-fprintf(fd, "    if (! DXSetAttribute((Object)array, \"dep\", src_dependency_attr))\n");
-fprintf(fd, "      goto error;\n\n");
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * The size and dependency of this output data array will \n");
-fprintf(fd, "   * match that of input[0]\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  out_knt[%d] = in_knt[0];\n", i);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Set the dependency of the array to the same as the first input%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  if (src_dependency_attr != NULL)%s", NEWLINE);
+fprintf(fd, "    if (! DXSetAttribute((Object)array, \"dep\", src_dependency_attr))%s", NEWLINE);
+fprintf(fd, "      goto error;%s%s", NEWLINE, NEWLINE);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * The size and dependency of this output data array will %s", NEWLINE);
+fprintf(fd, "   * match that of input[0]%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  out_knt[%d] = in_knt[0];%s", i, NEWLINE);
       }
       else if (out[i]->dependency == DEP_POSITIONS)
       {
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * This output data array will be dep positions - and sized\n");
-fprintf(fd, "   * appropriately - if the appropriate size is known\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  if (p_knt == -1)\n");
-fprintf(fd, "  {\n");
-fprintf(fd, "    DXSetError(ERROR_DATA_INVALID,\n");
-fprintf(fd, "      \"cannot make output \\\"%s\\\" dep on positions because no positions were found in input[0]\");\n", out[i]->name);
-fprintf(fd, "    goto error;\n");
-fprintf(fd, "  }\n\n");
-fprintf(fd, "  out_knt[%d] = p_knt;\n", i);
-fprintf(fd, "\n");
-fprintf(fd, "  if (! DXSetAttribute((Object)array, \"dep\", (Object)DXNewString(\"positions\")))\n");
-fprintf(fd, "    goto error;\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * This output data array will be dep positions - and sized%s", NEWLINE);
+fprintf(fd, "   * appropriately - if the appropriate size is known%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  if (p_knt == -1)%s", NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "    DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
+fprintf(fd, "      \"cannot make output \\\"%s\\\" dep on positions because no positions were found in input[0]\");%s", out[i]->name, NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
+fprintf(fd, "  }%s%s", NEWLINE, NEWLINE);
+fprintf(fd, "  out_knt[%d] = p_knt;%s", i, NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "  if (! DXSetAttribute((Object)array, \"dep\", (Object)DXNewString(\"positions\")))%s", NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
       }
       else if (out[i]->dependency == DEP_CONNECTIONS)
       {
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * This output data array will be dep connections - and sized\n");
-fprintf(fd, "   * appropriately - if the appropriate size is known\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  if (c_knt == -1)\n");
-fprintf(fd, "  {\n");
-fprintf(fd, "    DXSetError(ERROR_DATA_INVALID,\n");
-fprintf(fd, "      \"cannot make output \\\"%s\\\" dep on connections because no connections were found in input \\\"%s\\\"\");\n", out[i]->name, in[i]->name);
-fprintf(fd, "    goto error;\n");
-fprintf(fd, "  }\n\n");
-fprintf(fd, "  out_knt[%d] = c_knt;\n", i);
-fprintf(fd, "\n");
-fprintf(fd, "  if (! DXSetAttribute((Object)array, \"dep\", (Object)DXNewString(\"connections\")))\n");
-fprintf(fd, "    goto error;\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * This output data array will be dep connections - and sized%s", NEWLINE);
+fprintf(fd, "   * appropriately - if the appropriate size is known%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  if (c_knt == -1)%s", NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "    DXSetError(ERROR_DATA_INVALID,%s", NEWLINE);
+fprintf(fd, "      \"cannot make output \\\"%s\\\" dep on connections because no connections were found in input \\\"%s\\\"\");%s", out[i]->name, in[i]->name, NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
+fprintf(fd, "  }%s%s", NEWLINE, NEWLINE);
+fprintf(fd, "  out_knt[%d] = c_knt;%s", i, NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "  if (! DXSetAttribute((Object)array, \"dep\", (Object)DXNewString(\"connections\")))%s", NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
       }
       else
       {
-	ErrorMessage("field parameter must have a dependency set\n");
+	ErrorMessage("field parameter must have a dependency set%s", NEWLINE);
 	goto error;
       }
 
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Actually allocate the array data space\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  if (! DXAddArrayData(array, 0, out_knt[%d], NULL))\n", i);
-fprintf(fd, "    goto error;\n");
-fprintf(fd, "\n");
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * If the output vector slot is not NULL, then it better be a field, and\n");
-fprintf(fd, "   * we'll add the new array to it as its data component (delete any prior\n");
-fprintf(fd, "   * data component so that its attributes won't overwrite the new component's)\n");
-fprintf(fd, "   * Otherwise, place the new array into the out vector.\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  if (out[%d])\n", i);
-fprintf(fd, "  {\n");
-fprintf(fd, "    if (DXGetObjectClass(out[%d]) != CLASS_FIELD)\n", i);
-fprintf(fd, "    {\n");
-fprintf(fd, "      DXSetError(ERROR_INTERNAL, \"non-field object found in output vector\");\n");
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "    }\n\n");
-fprintf(fd, "    if (DXGetComponentValue((Field)out[%d], \"data\"))\n", i);
-fprintf(fd, "      DXDeleteComponent((Field)out[%d], \"data\");\n\n", i);
-fprintf(fd, "    if (! DXSetComponentValue((Field)out[%d], \"data\", (Object)array))\n", i);
-fprintf(fd, "      goto error;\n");
-fprintf(fd, "\n");
-fprintf(fd, "  }\n");
-fprintf(fd, "  else\n");
-fprintf(fd, "    out[%d] = (Object)array;\n", i);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Actually allocate the array data space%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  if (! DXAddArrayData(array, 0, out_knt[%d], NULL))%s", i, NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * If the output vector slot is not NULL, then it better be a field, and%s", NEWLINE);
+fprintf(fd, "   * we'll add the new array to it as its data component (delete any prior%s", NEWLINE);
+fprintf(fd, "   * data component so that its attributes won't overwrite the new component's)%s", NEWLINE);
+fprintf(fd, "   * Otherwise, place the new array into the out vector.%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  if (out[%d])%s", i, NEWLINE);
+fprintf(fd, "  {%s", NEWLINE);
+fprintf(fd, "    if (DXGetObjectClass(out[%d]) != CLASS_FIELD)%s", i, NEWLINE);
+fprintf(fd, "    {%s", NEWLINE);
+fprintf(fd, "      DXSetError(ERROR_INTERNAL, \"non-field object found in output vector\");%s", NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "    }%s%s", NEWLINE, NEWLINE);
+fprintf(fd, "    if (DXGetComponentValue((Field)out[%d], \"data\"))%s", i, NEWLINE);
+fprintf(fd, "      DXDeleteComponent((Field)out[%d], \"data\");%s%s", i, NEWLINE, NEWLINE);
+fprintf(fd, "    if (! DXSetComponentValue((Field)out[%d], \"data\", (Object)array))%s", i, NEWLINE);
+fprintf(fd, "      goto error;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "  }%s", NEWLINE);
+fprintf(fd, "  else%s", NEWLINE);
+fprintf(fd, "    out[%d] = (Object)array;%s", i, NEWLINE);
     }
 
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Now get the pointer to the contents of the array\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  out_data[%d] = DXGetArrayData(array);\n", i);
-fprintf(fd, "  if (! out_data[%d])\n", i);
-fprintf(fd, "    goto error;\n");
-fprintf(fd, "\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Now get the pointer to the contents of the array%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  out_data[%d] = DXGetArrayData(array);%s", i, NEWLINE);
+fprintf(fd, "  if (! out_data[%d])%s", i, NEWLINE);
+fprintf(fd, "    goto error;%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
   }
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Call the user's routine.  Check the return code.\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  result = %s_worker(\n", mod->name);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Call the user's routine.  Check the return code.%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  result = %s_worker(%s", mod->name, NEWLINE);
 
     open = 0;
 
@@ -1653,12 +1659,12 @@ fprintf(fd, "    p_knt, p_dim, (float *)p_positions");
 
     if (in[0]->connections == GRID_REGULAR)
     {
-fprintf(fd, "%s    c_knt, c_nv, c_counts", (open)?",\n":"");
+fprintf(fd, "%s    c_knt, c_nv, c_counts", (open)?",%s", NEWLINE:"");
 	open = 1;
     }
     else if (in[0]->connections == GRID_IRREGULAR)
     {
-fprintf(fd, "%s    c_knt, c_nv, (int *)c_connections", (open)?",\n":"");
+fprintf(fd, "%s    c_knt, c_nv, (int *)c_connections", (open)?",%s", NEWLINE:"");
 	open = 1;
     }
 
@@ -1666,7 +1672,7 @@ fprintf(fd, "%s    c_knt, c_nv, (int *)c_connections", (open)?",\n":"");
     { 
 	char *type;
 	GetCDataType(in[i]->datatype, &type);
-fprintf(fd, "%s    in_knt[%d], (%s *)in_data[%d]", (open)?",\n":"", i, type, i);
+fprintf(fd, "%s    in_knt[%d], (%s *)in_data[%d]", (open)?",%s", NEWLINE:"", i, type, i);
 	open = 1;
     }
 
@@ -1674,42 +1680,42 @@ fprintf(fd, "%s    in_knt[%d], (%s *)in_data[%d]", (open)?",\n":"", i, type, i);
     { 
 	char *type;
 	GetCDataType(out[i]->datatype, &type);
-fprintf(fd, "%s    out_knt[%d], (%s *)out_data[%d]", (open)?",\n":"", i, type, i);
+fprintf(fd, "%s    out_knt[%d], (%s *)out_data[%d]", (open)?",%s", NEWLINE:"", i, type, i);
 	open = 1;
     }
 
-fprintf(fd, ");\n\n");
-fprintf(fd, "  if (! result)\n");
-fprintf(fd, "     if (DXGetError()==ERROR_NONE)\n");
-fprintf(fd, "        DXSetError(ERROR_INTERNAL, \"error return from user routine\");\n");
-fprintf(fd, "\n");
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * In either event, clean up allocated memory\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "\n");
-fprintf(fd, "error:\n");
+fprintf(fd, ");%s%s", NEWLINE, NEWLINE);
+fprintf(fd, "  if (! result)%s", NEWLINE);
+fprintf(fd, "     if (DXGetError()==ERROR_NONE)%s", NEWLINE);
+fprintf(fd, "        DXSetError(ERROR_INTERNAL, \"error return from user routine\");%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * In either event, clean up allocated memory%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "%s", NEWLINE);
+fprintf(fd, "error:%s", NEWLINE);
 if (in[0]->positions == GRID_REGULAR)
 {
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Free the arrays allocated for the regular positions\n");
-fprintf(fd, "   * counts, origin and deltas\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  DXFree((Pointer)p_counts);\n");
-fprintf(fd, "  DXFree((Pointer)p_origin);\n");
-fprintf(fd, "  DXFree((Pointer)p_deltas);\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Free the arrays allocated for the regular positions%s", NEWLINE);
+fprintf(fd, "   * counts, origin and deltas%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  DXFree((Pointer)p_counts);%s", NEWLINE);
+fprintf(fd, "  DXFree((Pointer)p_origin);%s", NEWLINE);
+fprintf(fd, "  DXFree((Pointer)p_deltas);%s", NEWLINE);
 }
 if (in[0]->connections == GRID_REGULAR)
 {
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * Free the arrays allocated for the regular connections\n");
-fprintf(fd, "   * counts\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "  DXFree((Pointer)c_counts);\n");
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * Free the arrays allocated for the regular connections%s", NEWLINE);
+fprintf(fd, "   * counts%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "  DXFree((Pointer)c_counts);%s", NEWLINE);
 }
-fprintf(fd, "  return result;\n");
-fprintf(fd, "}\n\n");
+fprintf(fd, "  return result;%s", NEWLINE);
+fprintf(fd, "}%s%s", NEWLINE, NEWLINE);
 
-fprintf(fd, "int\n%s_worker(\n", mod->name);
+fprintf(fd, "int%s%s_worker(\n", NEWLINE, mod->name);
     
     open = 0;
 
@@ -1726,12 +1732,12 @@ fprintf(fd, "    int p_knt, int p_dim, float *p_positions");
 
     if (in[0]->connections == GRID_REGULAR)
     {
-fprintf(fd, "%s    int c_knt, int c_nv, int *c_counts", (open)?",\n":"");
+fprintf(fd, "%s    int c_knt, int c_nv, int *c_counts", (open)?",%s", NEWLINE:"");
 	open = 1;
     }
     else if (in[0]->connections == GRID_IRREGULAR)
     {
-fprintf(fd, "%s    int c_knt, int c_nv, int *c_connections", (open)?",\n":"");
+fprintf(fd, "%s    int c_knt, int c_nv, int *c_connections", (open)?",%s", NEWLINE:"");
 	open = 1;
     }
 
@@ -1739,7 +1745,7 @@ fprintf(fd, "%s    int c_knt, int c_nv, int *c_connections", (open)?",\n":"");
     { 
 	char *type;
 	GetCDataType(in[i]->datatype, &type);
-fprintf(fd, "%s    int %s_knt, %s *%s_data", (open)?",\n":"", in[i]->name, type, in[i]->name);
+fprintf(fd, "%s    int %s_knt, %s *%s_data", (open)?",%s", NEWLINE:"", in[i]->name, type, in[i]->name);
 	open = 1;
     }
 
@@ -1747,92 +1753,92 @@ fprintf(fd, "%s    int %s_knt, %s *%s_data", (open)?",\n":"", in[i]->name, type,
     { 
 	char *type;
 	GetCDataType(out[i]->datatype, &type);
-fprintf(fd, "%s    int %s_knt, %s *%s_data", (open)?",\n":"", out[i]->name, type, out[i]->name);
+fprintf(fd, "%s    int %s_knt, %s *%s_data", (open)?",%s", NEWLINE:"", out[i]->name, type, out[i]->name);
 	open = 1;
     }
 
-fprintf(fd, ")\n{\n");
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * The arguments to this routine are:\n");
-fprintf(fd, "   *\n");
+fprintf(fd, ")%s{%s", NEWLINE, NEWLINE);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * The arguments to this routine are:%s", NEWLINE);
+fprintf(fd, "   *%s", NEWLINE);
 
     if (in[0]->positions == GRID_REGULAR)
     {
-fprintf(fd, "   *  p_knt:           total count of input positions\n");
-fprintf(fd, "   *  p_dim:           dimensionality of input positions\n");
-fprintf(fd, "   *  p_counts:        count along each axis of regular positions grid\n");
-fprintf(fd, "   *  p_origin:        origin of regular positions grid\n");
-fprintf(fd, "   *  p_deltas:        regular positions delta vectors\n");
+fprintf(fd, "   *  p_knt:           total count of input positions%s", NEWLINE);
+fprintf(fd, "   *  p_dim:           dimensionality of input positions%s", NEWLINE);
+fprintf(fd, "   *  p_counts:        count along each axis of regular positions grid%s", NEWLINE);
+fprintf(fd, "   *  p_origin:        origin of regular positions grid%s", NEWLINE);
+fprintf(fd, "   *  p_deltas:        regular positions delta vectors%s", NEWLINE);
     }
     else if (in[0]->positions == GRID_IRREGULAR)
     {
-fprintf(fd, "   *  p_knt:           total count of input positions\n");
-fprintf(fd, "   *  p_dim:           dimensionality of input positions\n");
-fprintf(fd, "   *  p_positions:     pointer to positions list\n");
+fprintf(fd, "   *  p_knt:           total count of input positions%s", NEWLINE);
+fprintf(fd, "   *  p_dim:           dimensionality of input positions%s", NEWLINE);
+fprintf(fd, "   *  p_positions:     pointer to positions list%s", NEWLINE);
     }
 
     if (in[0]->connections == GRID_REGULAR)
     {
-fprintf(fd, "   *  c_knt:           total count of input connections elements\n");
-fprintf(fd, "   *  c_nv:            number of vertices per element\n");
-fprintf(fd, "   *  c_counts:        vertex count along each axis of regular positions grid\n");
+fprintf(fd, "   *  c_knt:           total count of input connections elements%s", NEWLINE);
+fprintf(fd, "   *  c_nv:            number of vertices per element%s", NEWLINE);
+fprintf(fd, "   *  c_counts:        vertex count along each axis of regular positions grid%s", NEWLINE);
     }
     else if (in[0]->connections == GRID_IRREGULAR)
     {
-fprintf(fd, "   *  c_knt:           total count of input connections elements\n");
-fprintf(fd, "   *  c_nv:            number of vertices per element\n");
-fprintf(fd, "   *  c_connections:   pointer to connections list\n");
+fprintf(fd, "   *  c_knt:           total count of input connections elements%s", NEWLINE);
+fprintf(fd, "   *  c_nv:            number of vertices per element%s", NEWLINE);
+fprintf(fd, "   *  c_connections:   pointer to connections list%s", NEWLINE);
     }
 
-fprintf(fd, "   *\n");
-fprintf(fd, "   * The following are inputs and therefore are read-only.  The default\n");
-fprintf(fd, "   * values are given and should be used if the knt is 0.\n");
-fprintf(fd, "   *\n");
+fprintf(fd, "   *%s", NEWLINE);
+fprintf(fd, "   * The following are inputs and therefore are read-only.  The default%s", NEWLINE);
+fprintf(fd, "   * values are given and should be used if the knt is 0.%s", NEWLINE);
+fprintf(fd, "   *%s", NEWLINE);
     for (i = 0; i < nin; i++)
     {
-fprintf(fd, "   * %s_knt, %s_data:  count and pointer for input \"%s\"\n", in[i]->name, in[i]->name, in[i]->name);
+fprintf(fd, "   * %s_knt, %s_data:  count and pointer for input \"%s\"%s", in[i]->name, in[i]->name, in[i]->name, NEWLINE);
 	if (in[i]->default_value)
 	    if (in[i]->descriptive == TRUE)
-fprintf(fd, "   *                   descriptive default value is \"%s\"\n", in[i]->default_value);
+fprintf(fd, "   *                   descriptive default value is \"%s\"%s", in[i]->default_value, NEWLINE);
 	    else
-fprintf(fd, "   *                   non-descriptive default value is \"%s\"\n", in[i]->default_value);
+fprintf(fd, "   *                   non-descriptive default value is \"%s\"%s", in[i]->default_value, NEWLINE);
         else
-fprintf(fd, "   *                   no default value given.\n");
+fprintf(fd, "   *                   no default value given.%s", NEWLINE);
     }
 
-fprintf(fd, "   *\n");
-fprintf(fd, "   *  The output data buffer(s) are writable.\n");
-fprintf(fd, "   *  The output buffer(s) are preallocated based on\n");
-fprintf(fd, "   *     the dependency (positions or connections),\n");
-fprintf(fd, "   *     the size of the corresponding positions or\n");
-fprintf(fd, "   *     connections component in the first input, and\n");
-fprintf(fd, "   *     the data type.\n");
-fprintf(fd, "   *\n");
+fprintf(fd, "   *%s", NEWLINE);
+fprintf(fd, "   *  The output data buffer(s) are writable.%s", NEWLINE);
+fprintf(fd, "   *  The output buffer(s) are preallocated based on%s", NEWLINE);
+fprintf(fd, "   *     the dependency (positions or connections),%s", NEWLINE);
+fprintf(fd, "   *     the size of the corresponding positions or%s", NEWLINE);
+fprintf(fd, "   *     connections component in the first input, and%s", NEWLINE);
+fprintf(fd, "   *     the data type.%s", NEWLINE);
+fprintf(fd, "   *%s", NEWLINE);
     for (i = 0; i < nout; i++)
     {
-fprintf(fd, "   * %s_knt, %s_data:  count and pointer for output \"%s\"\n",
-				out[i]->name, out[i]->name, out[i]->name);
+fprintf(fd, "   * %s_knt, %s_data:  count and pointer for output \"%s\"%s",
+				out[i]->name, out[i]->name, out[i]->name, NEWLINE);
     }
-fprintf(fd, "   */\n\n");
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * User's code goes here\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "     \n");
-fprintf(fd, "     \n");
+fprintf(fd, "   */%s%s", NEWLINE, NEWLINE);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * User's code goes here%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "     %s", NEWLINE);
+fprintf(fd, "     %s", NEWLINE);
 /* was an include file specified? */
 if(mod->include_file != NULL)
-	fprintf(fd, "#include \"%s\" \n\n", mod->include_file);
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * successful completion\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "   return 1;\n");
-fprintf(fd, "     \n");
-fprintf(fd, "  /*\n");
-fprintf(fd, "   * unsuccessful completion\n");
-fprintf(fd, "   */\n");
-fprintf(fd, "error:\n");
-fprintf(fd, "   return 0;\n");
-fprintf(fd, "  \n}\n");
+	fprintf(fd, "#include \"%s\" %s%s", mod->include_file, NEWLINE, NEWLINE);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * successful completion%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "   return 1;%s", NEWLINE);
+fprintf(fd, "     %s", NEWLINE);
+fprintf(fd, "  /*%s", NEWLINE);
+fprintf(fd, "   * unsuccessful completion%s", NEWLINE);
+fprintf(fd, "   */%s", NEWLINE);
+fprintf(fd, "error:%s", NEWLINE);
+fprintf(fd, "   return 0;%s", NEWLINE);
+fprintf(fd, "  %s}%s", NEWLINE, NEWLINE);
 
     fclose(fd);
 

@@ -1,3 +1,4 @@
+#!/bin/sh
 export PATH="`cygpath \"$MSDEV\"`/bin:`cygpath \"$MSCOM\"`/bin:$PATH"
 export INCLUDE="$MSDEV/INCLUDE;XDKDEV/Include:$INCLUDE"
 export LIB="$MSDEV/LIB;$XDKDEV/Lib;$LIB"
@@ -17,11 +18,11 @@ defs='/D "WIN32" /D "CONSOLE" /D "MOTIFAPP"'
 linkopts="/subsystem:console"
 
 # defs for optimized 
-optdefs='/Oispb1 /D "NDEBUG"'
+optdefs='/Oispb1 /GX /D "NDEBUG"'
 optlinkopts="/incremental:no"
 
 #defs for debugged
-debugdefs='/Zi /Gi /Od /D "_DEBUG"'
+debugdefs='/Zi /GX /Gi /Od /D "_DEBUG"'
 debuglinkopts="/DEBUG /incremental:yes"
 
 undefs=
@@ -62,19 +63,6 @@ cleanup() {
 	for i in $delfiles foo ; do
 		if test -f $i ; then
 			rm -f $i
-		fi
-	done
-
-	for i in $cfiles foo ; do
-		if test ! "$i" = foo ; then
-			file=`echo $i | sed -e "s?\.cpp??"`
-			if test -f $file.obj ; then
-				mv $file.obj $file.o
-			fi
-                        file1=`echo $file | sed "s/.*\///"`
-                        if test -f $file1.obj ; then
-                                mv $file1.obj $file1.o
-                        fi
 		fi
 	done
 
@@ -154,13 +142,15 @@ while test ! "$1" = "" ; do
 		*.cpp)	 
 			 cfiles="$cfiles $i" ;;
                 *.C)     ofname=$i
+			 defs="$defs /TP"
 			 fname=`echo $i | sed "s?\.C?.cpp?"`
-                         cp $i $fname
-                         delfiles="$delfiles $fname"
-			 cfiles="$cfiles $fname" ;;
-                *.cc)    fname=`echo $i | sed "s?\.cc?.cpp?"`
-                         cp $i $fname
-                         delfiles="$delfiles $fname"
+#                         cp $i $fname
+#                         delfiles="$delfiles $fname"
+			 cfiles="$cfiles $ofname" ;;
+                *.cc)    fname=$i
+			 defs="$defs /TP"
+#                         cp $i $fname
+#                         delfiles="$delfiles $fname"
 			 cfiles="$cfiles $fname" ;;
                 -def)    shift
                          if test "$1" = ""; then

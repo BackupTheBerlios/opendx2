@@ -17,20 +17,24 @@
 \*---------------------------------------------------------------------------*/
 
 #define STRUCTURES_ONLY
-#include "hwDeclarations.h"
-#include "hwWindow.h"
-#include "hwPortOGL.h"
-#include "hwMemory.h"
-#include "hwMatrix.h"
-#include "hwPortLayer.h"
-#include "hwObjectHash.h"
+#include "../hwDeclarations.h"
+#include "../hwWindow.h"
+#include "../hwMemory.h"
+#include "../hwMatrix.h"
+#include "../hwPortLayer.h"
+#include "../hwObjectHash.h"
+#include "../hwDebug.h"
 
-#include "hwDebug.h"
+#include "hwPortOGL.h"
+
+#if defined(DX_NATIVE_WINDOWS)
+#include <windows.h>
+#endif
 
 /* deal with DX/GL namespace collisions */
 #define Object dxObject
 #define Matrix dxMatrix
-#include "internals.h"
+#include "../../libdx/internals.h"
 #undef Object
 #undef Matrix
 #include <math.h>
@@ -60,6 +64,8 @@ static float WS[4][4] = {
   { 0,  0,  1,  0},
   {-1, -1,  0,  1}
 };
+
+#if !defined(DX_NATIVE_WINDOWS)
 
 static int nCtx = 0 ;
 static int ctxListSize = 0 ;
@@ -167,6 +173,7 @@ static Error putGLXContext (GLXContext ctx)
  *  bug and the issue is being brought before the ARB. (4/7/94)
  */
 static Display *CurrentDpy = 0 ;
+#endif
 
 /*
  *  PORT LAYER SECTION
@@ -174,6 +181,9 @@ static Display *CurrentDpy = 0 ;
 static translationO
 _dxf_CREATE_HW_TRANSLATION (void *win)
 {
+#if defined(DX_NATIVE_WINDOWS)
+  return NULL;
+#else
   int i ;
   DEFWINDATA(win) ;
   hwTranslationP ret ;
@@ -224,8 +234,98 @@ _dxf_CREATE_HW_TRANSLATION (void *win)
 
   EXIT(("ret = 0x%x",ret));
   return (translationO)ret ;
+#endif
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+
+static void*
+_dxf_CREATE_WINDOW (void *globals, char *winName, int w, int h)
+{
+	DEFGLOBALDATA(globals);
+	OGLWindow *oglw = GetOGLWPtr(XWINID);
+ 
+    /* Initialize the hwRender port private context */
+    PORT_HANDLE->private = tdmAllocateZero(sizeof(tdmOGLctxT));
+    if(! PORT_HANDLE->private)
+	{
+       DXErrorGoto (ERROR_INTERNAL, "#13000") ;
+	}
+    else
+    {	
+		int nMyPixelFormatID;
+	    char *str;
+		GLint mcp;
+		static PIXELFORMATDESCRIPTOR pfd = 
+		{
+			sizeof(PIXELFORMATDESCRIPTOR),
+			1,
+			PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+			PFD_TYPE_RGBA,
+			24,
+			0, 0, 0,
+			0, 0, 0,
+			0, 0, 
+			0, 0, 0, 0, 0,
+			16,
+			0, 
+			0, 
+			PFD_MAIN_PLANE,
+			0, 0, 0, 0
+		};
+	    DEFPORT(PORT_HANDLE) ;
+    
+		OGLHDC	   = GetDC(XWINID);
+		
+		nMyPixelFormatID = ChoosePixelFormat(OGLHDC, &pfd);
+		if (! nMyPixelFormatID)
+			return NULL;
+
+		SetPixelFormat(OGLHDC, nMyPixelFormatID, &pfd);
+		OGLHRC = wglCreateContext(OGLHDC);
+
+		wglMakeCurrent(OGLHDC, OGLHRC); 
+
+	    OGLXWIN    = XWINID;
+        WINWIDTH   = w ;
+        WINHEIGHT  = h ;
+        XMAXSCREEN = 1024;
+        YMAXSCREEN = 1024;
+        OGLWINT    = _wdata;
+        	        
+		glGetIntegerv(GL_MAX_CLIP_PLANES, &mcp);
+	    MAX_CLIP_PLANES = mcp;
+ 
+		if (NULL != (str = getenv("DX_USE_DISPLAYLISTS")))
+		{
+			if (atoi(str))
+			{
+				_dxf_setFlags(_dxf_SERVICES_FLAGS(), SF_USE_DISPLAYLISTS);
+				DO_DISPLAY_LISTS = 1;
+			}
+			else
+				DO_DISPLAY_LISTS = 1;
+		}
+		else
+		{
+			_dxf_setFlags(_dxf_SERVICES_FLAGS(), SF_USE_DISPLAYLISTS);
+			DO_DISPLAY_LISTS = 1;
+		}
+		DO_DISPLAY_LISTS = 0;
+
+		glEnable(GL_NORMALIZE);
+		wglMakeCurrent(NULL,NULL);
+	
+	}
+
+skip:
+	return (void *)&XWINID;
+
+error:
+	return NULL ;
+}
+
+#else
 
 static void*
 _dxf_CREATE_WINDOW (void *globals, char *winName, int w, int h)
@@ -278,7 +378,7 @@ _dxf_CREATE_WINDOW (void *globals, char *winName, int w, int h)
   /* for pc hardware driver bug - relax the image depth requirement
    * and see what you get.  if it is >= 23, it's ok.
    */
-#ifdef intelnt
+#if defined(intelnt) || defined(WIN32)
   glattr[IMAGE_DEPTH] = 0;
 #else
   glattr[IMAGE_DEPTH] = 1;
@@ -496,6 +596,8 @@ got_visual:
   return NULL ;
 }
 
+#endif
+
 /*
  * These are only used on the DEC alpha to see what kind of
  * graphics adapter we are on.  For certain adapters we need to
@@ -628,17 +730,18 @@ _dxf_DESTROY_WINDOW (void *win)
   ENTRY(("_dxf_DESTROY_WINDOW (0x%x)",win));
 
   if (PORT_CTX) {
-
+#if !defined(DX_NATIVE_WINDOWS)
     glXMakeCurrent (DPY, XWINID, OGLCTX);
-
     /* remove GLX context from list of existing contexts */
     remGLXContext(OGLCTX) ;
+#endif
 
     if (SAVE_BUF) {
       _dxf_FREE_PIXEL_ARRAY (PORT_CTX, SAVE_BUF) ;
       SAVE_BUF = (void *) NULL ;
     }
 
+#if !defined(DX_NATIVE_WINDOWS)
     if (OGLTRANSLATION) {
       tdmFree(OGLTRANSLATION) ;
       OGLTRANSLATION = NULL ;
@@ -646,6 +749,7 @@ _dxf_DESTROY_WINDOW (void *win)
 
     /* we no longer have a display associated with current GLX context */
     CurrentDpy = 0 ;
+#endif
 
     if (DISPLAY_LIST_HASH)
 	_dxf_DeleteDisplayListHash(DISPLAY_LIST_HASH);
@@ -653,11 +757,17 @@ _dxf_DESTROY_WINDOW (void *win)
     if (TEXTURE_HASH)
 	_dxf_DeleteObjectHash(TEXTURE_HASH);
 
+#if defined(DX_NATIVE_WINDOWS)
+    if (OGLHRC)
+		wglDeleteContext(OGLHRC);
+    DeleteDC(OGLHDC);
+#else
     /* OpenGL is a lot happier if we set context NULL before destroying */
     glXMakeCurrent (DPY, None, NULL) ;
 
     PRINT (("Destroying GLX context 0x%x on display 0x%x", OGLCTX, OGLDPY)) ;
     glXDestroyContext (DPY, OGLCTX) ;
+#endif
 
     tdmFree(PORT_CTX) ;
     PORT_HANDLE->private = (void *) NULL ;
@@ -666,7 +776,11 @@ _dxf_DESTROY_WINDOW (void *win)
   EXIT((""));
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+static void _dxf_SET_OUTPUT_WINDOW(void *win)
+#else
 static void _dxf_SET_OUTPUT_WINDOW(void *win, Window w)
+#endif
 {
   DEFWINDATA(win) ;
   DEFPORT(PORT_HANDLE);
@@ -674,6 +788,7 @@ static void _dxf_SET_OUTPUT_WINDOW(void *win, Window w)
   ENTRY(("_dxf_SET_OUTPUT_WINDOW(0x%x)",win));
 
 RT_IFNDEF(DXMAKE_CURRENT)
+#if !defined(DX_NATIVE_WINDOWS)
   if (CurrentDpy)
       /* release context on current display */
       glXMakeCurrent (CurrentDpy, None, NULL) ;
@@ -684,6 +799,7 @@ RT_IFNDEF(DXMAKE_CURRENT)
   } else {
     EXIT(("glXMakeCurrent failed"));
   }
+#endif
 RT_ELSE
   EXIT(("No action RT_IFNDEF'd"));
 RT_ENDIF
@@ -699,9 +815,15 @@ int _dxf_SET_BACKGROUND_COLOR (void *ctx, RGBColor c)
 	 ctx, &c));
   CPRINT(c);
 
+#if defined(DX_NATIVE_WINDOWS)
+  c.r = (c.r <= 0.0) ? 0.0 : pow(c.r,1./0.5);
+  c.g = (c.g <= 0.0) ? 0.0 : pow(c.g,1./0.5);
+  c.b = (c.b <= 0.0) ? 0.0 : pow(c.b,1./0.5);
+#else
   c.r = (c.r <= 0.0) ? 0.0 : pow(c.r,1./OGLTRANSLATION->gamma);
   c.g = (c.g <= 0.0) ? 0.0 : pow(c.g,1./OGLTRANSLATION->gamma);
   c.b = (c.b <= 0.0) ? 0.0 : pow(c.b,1./OGLTRANSLATION->gamma);
+#endif
 
   BACKGROUND_COLOR = c ;
   glClearColor (c.r, c.g, c.b, 0) ;
@@ -732,12 +854,30 @@ static void _dxf_INIT_RENDER_PASS (void *win, int bufferMode, int zBufferMode)
   EXIT((""));
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+static void _dxf_END_RENDER_PASS(void *win)
+{
+	DEFWINDATA(win) ;
+	DEFPORT(PORT_HANDLE) ;
+	OGLWindow *oglw = GetOGLWPtr(XWINID);
+	
+	glFlush();
+	SwapBuffers(OGLHDC);
+	EndPaint(XWINID, &oglw->ps);
+}
+#endif
+
 static void _dxf_SET_VIEWPORT (void *ctx,
 			       int left, int right, int bottom, int top)
 {
   /*
    *  Set up viewport in pixels.
    */
+
+#if defined(DX_NATIVE_WINDOWS)
+  DEFCONTEXT(ctx);
+  wglMakeCurrent(OGLHDC, OGLHRC);
+#endif
 
   ENTRY(("_dxf_SET_VIEWPORT (0x%x, %d, %d, %d, %d)",
 	 ctx, left, right, bottom, top));
@@ -772,9 +912,13 @@ static void _dxf_SET_WINDOW_SIZE (void *win, int w, int h)
   ENTRY(("_dxf_SET_WINDOW_SIZE (0x%x, %d, %d)",
 	 win, w, h));
 
-  WINHEIGHT = h ;
+    WINHEIGHT = h ;
   WINWIDTH = w ;
 
+#if defined(DX_NATIVE_WINDOWS)
+  MoveWindow(XWINID, 0, 0, w, h, FALSE); 
+  _dxf_SET_VIEWPORT (PORT_CTX, 0, w-1, 0, h-1) ;
+#else
   if(!getenv("IGNORE_GLXWAITX"))
   glXWaitGL() ;
 
@@ -784,6 +928,7 @@ static void _dxf_SET_WINDOW_SIZE (void *win, int w, int h)
   glXWaitX() ;
 
   _dxf_SET_VIEWPORT (PORT_CTX, 0, w-1, 0, h-1) ;
+#endif
 
   OGL_FAIL_ON_ERROR(_dxf_SET_WINDOW_SIZE);
   EXIT((""));
@@ -1010,14 +1155,24 @@ static void _dxf_POP_MATRIX (void *ctx)
   EXIT((""));
 }
 
+#if defined(DX_NATIVE_WINDOWS)
 
+static void _dxf_SWAP_BUFFERS(void *ctx)
+
+#else
 static void _dxf_SWAP_BUFFERS(void *ctx, Window w)
+
+#endif
 {
   DEFCONTEXT(ctx) ;
 
   ENTRY(("_dxf_SWAP_BUFFERS(0x%x)",ctx));
-  
+
+#if defined(DX_NATIVE_WINDOWS)
+  SwapBuffers (OGLHDC);
+#else
   glXSwapBuffers (OGLDPY, w) ;
+#endif
 
   OGL_FAIL_ON_ERROR(_dxf_SWAP_BUFFERS);
   EXIT((""));
@@ -1115,7 +1270,11 @@ static int _dxf_DEFINE_LIGHT (void *win, int n, Light light)
   ENTRY(("_dxf_DEFINE_LIGHT (0x%x, %d, 0x%x)",
 	 win, n, light));
 
+#if defined(DX_NATIVE_WINDOWS)
+  gamma = 2;
+#else
   gamma = OGLTRANSLATION->gamma;
+#endif
 
   if (n > 8) {
     /* some API's don't support more than 8 lights */
@@ -1360,6 +1519,9 @@ static void _dxf_WRITE_PIXEL_RECT(void* win, uint32 *buf,
 
 static Error _dxf_DRAW_IMAGE(void* win, dxObject image, translationO dummy)
 {
+#if defined(DX_NATIVE_WINDOWS)
+  return ERROR;
+#else
   DEFWINDATA(win) ;
   DEFPORT(PORT_HANDLE) ;
   int		x,y,w,h ;
@@ -1396,6 +1558,7 @@ static Error _dxf_DRAW_IMAGE(void* win, dxObject image, translationO dummy)
   OGL_FAIL_ON_ERROR(_dxf_DRAW_IMAGE);
   EXIT(("ERROR"));
   return ERROR ;
+#endif
 }
 
 static
@@ -1559,6 +1722,10 @@ _dxf_StartFrame(void *win)
     DEFWINDATA(win);
     DEFPORT(PORT_HANDLE);
 
+#if defined(DX_NATIVE_WINDOWS)
+	wglMakeCurrent(OGLHDC, OGLHRC);
+#endif
+
     if (DO_DISPLAY_LISTS)
     {
 	if (TEXTURE_HASH)
@@ -1657,16 +1824,22 @@ static void _dxfUninitPortHandle(tdmPortHandleP portHandle)
   EXIT((""));
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+tdmPortHandleP _dxfInitPortHandleOGL(char *hostname)
+#else
 tdmPortHandleP _dxfInitPortHandleOGL(Display *dpy, char *hostname)
+#endif
 {
   tdmPortHandleP ret ;
     
   ENTRY(("_dxfInitPortHandleOGL(0x%x, \"%s\")",dpy, hostname));
 
-#ifdef intelnt
+#if 0
+/* Not needed with newer Exceeds > 6.2 */
+#if defined(intelnt) || defined(WIN32)
   HCLXtInit();
 #endif
-
+#endif
 
   _dxf_setFlags(_dxf_SERVICES_FLAGS(),
 	SF_TMESH | SF_QMESH | SF_POLYLINES | SF_DOES_TRANS | SF_VOLUME_BOUNDARY);
@@ -1753,8 +1926,11 @@ int _dxf_READ_IMAGE (void* win, void *buf)
   DEFPORT(PORT_HANDLE) ;
 
   ENTRY(("_dxf_READ_IMAGE (0x%x, 0x%x)", win, buf));
-
+#if defined(DX_NATIVE_WINDOWS)
+  if (wglMakeCurrent (OGLHDC, OGLHRC))
+#else
   if (glXMakeCurrent (DPY, XWINID, OGLCTX)) 
+#endif
     {
       glReadBuffer(GL_FRONT) ;
       glReadPixels(0, 0, PIXW, PIXH, GL_RGB, GL_UNSIGNED_BYTE, buf) ;

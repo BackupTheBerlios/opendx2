@@ -320,9 +320,10 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
     {
 	ip->invElements = DXCreateInvalidComponentHandle((Object)f,
 						    NULL, "connections");
-	if (! ip->invElements)
-	fprintf(stderr, "Reg_InitVectorPart error 10\n");
+	if (! ip->invElements) {
+	    fprintf(stderr, "Reg_InitVectorPart error 10\n");
 	    goto error;
+	}
     }
     else
 	ip->invElements = NULL;

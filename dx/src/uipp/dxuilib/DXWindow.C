@@ -818,7 +818,7 @@ void DXWindow::buildFileHistoryMenu()
 	List baseNames;
 	iter.setList(recent_nets);
 	Symbol s;
-	while (s=(Symbol)iter.getNext()) {
+	while (s=(Symbol)(long)iter.getNext()) {
 	    cmd = new OpenFileCommand(s);
 	    this->file_history_commands.appendElement(cmd);
 	    bi = new ButtonInterface(menu_parent, "openFile", cmd);

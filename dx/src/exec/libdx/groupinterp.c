@@ -265,7 +265,7 @@ _dxfGroupInterpolator_Interpolate(GroupInterpolator gi, int *n,
 }
 
 Object
-_dxfGroupInterpolator_Copy(GroupInterpolator old, enum copy copy)
+_dxfGroupInterpolator_Copy(GroupInterpolator old, enum _dxd_copy copy)
 {
     GroupInterpolator new;
 
@@ -277,7 +277,7 @@ _dxfGroupInterpolator_Copy(GroupInterpolator old, enum copy copy)
 
 GroupInterpolator
 _dxf_CopyGroupInterpolator(GroupInterpolator new, GroupInterpolator old, 
-								enum copy copy)
+								enum _dxd_copy copy)
 {
     Interpolator	*ns, *os;
     int			i;

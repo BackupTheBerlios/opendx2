@@ -147,7 +147,7 @@
 /*
 // Define NO_CC_TEMPLATES if the C++ compiler cannot handle 3.0 templates.
 */
-#if defined(intelnt) || defined(aviion) || defined(solaris)
+#if defined(intelnt) || defined(aviion) || defined(solaris) || defined(WIN32)
 #define NO_CC_TEMPLATES
 #endif
 
@@ -165,7 +165,7 @@
  * since this is only used for debuggable (unreleased) code, we can just 
  * not support this feature on the HP and DG.
  */
-#if defined(DEBUG) && !defined(hp700) && !defined(aviion) && !defined(intelnt) && !defined(OS2)
+#if defined(DEBUG) && !defined(hp700) && !defined(aviion) && !defined(intelnt) && !defined(OS2) && !defined(WIN32)
 # define DXUI_DEVKIT
 #endif
 
@@ -253,7 +253,7 @@
 
 
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 # define DXD_ARCHNAME "intelnt"
 # define DXD_SYSLIB_8_CHARS
 # define DXD_NEEDS_TYPES_H

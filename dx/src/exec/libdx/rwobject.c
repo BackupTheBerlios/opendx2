@@ -47,7 +47,7 @@ static void badaddr(void)
 
 #define MARKTIME  0  /* turn off if timing not needed */
 
-#if WORDS_BIGENDIAN==1
+#if defined(WORDS_BIGENDIAN)
 #define MSB_MACHINE 1
 #else
 #define MSB_MACHINE 0
@@ -65,7 +65,7 @@ struct f_label {
     int type;		/* for series group support (append series) */
     int format;		/* binary or dx format */
     int leftover;	/* number of bytes unused at end of last block */
-    int byteorder;	/* msb or lsb value from DXD_BIGENDIAN in arch.h */
+    int byteorder;	/* msb or lsb value from WORD_BIGENDIAN determined at configure */
 };
 
 #define DISKVERSION_A	 (int)0x010100aa  /* original format */
@@ -2215,7 +2215,7 @@ Object _dxfExportBin(Object o, char *dataset)
 }
 
 
-#if defined(DXD_HAS_OS2_CP) || defined(intelnt)
+#if defined(DXD_HAS_OS2_CP) || defined(intelnt) || defined(WIN32)
 
 #define savecontext() 0
 #define restorecontext() 0

@@ -259,11 +259,11 @@ retry:
     if (!isatty(0)) {
 	to.tv_sec = SOCK_ACCEPT_TIMEOUT;
 	to.tv_usec = 0;
-	sts = select(width, (SelectPtr) &fds, NULL, NULL, &to);
+	sts = select(width, (SELECT_ARG_TYPE *) &fds, NULL, NULL, &to);
     }
     else
     {
-	sts = select(width, (SelectPtr) &fds, NULL, NULL, NULL);
+	sts = select(width, (SELECT_ARG_TYPE *) &fds, NULL, NULL, NULL);
     }
     if (sts < 0) {
 	perror("select");
@@ -287,7 +287,7 @@ retry:
 	    FD_SET(sock, &fds);
 	    to.tv_sec = 0;
 	    to.tv_usec = 0;
-	    sts = select(width, (SelectPtr) &fds, NULL, NULL, &to);
+	    sts = select(width, (SELECT_ARG_TYPE *) &fds, NULL, NULL, &to);
 	    if (sts < 0) {
 		perror("select");
 		fd = -1;

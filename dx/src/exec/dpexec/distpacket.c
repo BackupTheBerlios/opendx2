@@ -792,7 +792,7 @@ wait:
 
     while(nslaves_done < nslaves) {
         _dxf_ExCheckRIH ();
-        nselect = select (maxfd + 1, (SelectPtr) &fdset, NULL, NULL, NULL);
+        nselect = select (maxfd + 1, (SELECT_ARG_TYPE *) &fdset, NULL, NULL, NULL);
         if(nselect > 0) { 
             /* find out who is sending messages */
             for (k = 0; k < limit; ++k) {
@@ -899,7 +899,7 @@ _dxf_ExWaitForPeers()
     }
 
     while(npeers_done < npeers) {
-        nselect = select (maxfd + 1, (SelectPtr) &fdset, NULL, NULL, NULL);
+        nselect = select (maxfd + 1, (SELECT_ARG_TYPE *) &fdset, NULL, NULL, NULL);
         if(nselect > 0) { 
             /* find out who is sending messages */
             for (k = 1; k < limit; ++k) {

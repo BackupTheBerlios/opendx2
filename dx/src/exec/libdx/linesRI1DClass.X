@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/linesRI1DClass.X,v 1.2 1999/05/10 15:45:44 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/linesRI1DClass.X,v 1.3 2003/07/11 05:50:45 davidt Exp $
 //
 
 
@@ -53,5 +53,5 @@ LinesRI1DInterpolator _dxf_NewLinesRI1DInterpolator(Field,
 			struct linesri1dinterpolator_class *);
 
 LinesRI1DInterpolator _dxf_CopyLinesRI1DInterpolator(LinesRI1DInterpolator,
-			LinesRI1DInterpolator, enum copy);
+			LinesRI1DInterpolator, enum _dxd_copy);
 

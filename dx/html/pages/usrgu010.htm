@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
 <HTML><HEAD>
-		<TITLE>User's Guide - Version 4.2.0 Changes</TITLE>
+		<TITLE>User's Guide - Version 4.3.0 Changes</TITLE>
 		<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
 MINING">
 	<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">
@@ -35,65 +35,45 @@ MINING">
 				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>
 			</TR>
 		</TABLE>
-		<H2><A NAME="HDRWHATNEW" ></A>Summary of Changes in Data Explorer Version 4.2.0</H2>
+		<H2><A NAME="HDRWHATNEW" ></A>Summary of Changes in Data Explorer Version 4.3.0</H2>
 		
 <P><A NAME="PToC3" HREF="../usrguide.htm">Partial Table-of-Contents</A> 
 <MENU>
 <LI><A NAME="PToC_16" HREF="#Header_16">User Interface</A>
 <MENU>
-<LI><A HREF="#HDRNEWTYPE">New Type Ahead In Tools List</A>
-<LI><A HREF="#HDRNWMODE">New Mode Option in Image Window</A>
-<LI><A HREF="#HDRACCKEY">Accelerator Keys Now Work in More Windows</A>
-<LI><A NAME="PToC_20" HREF="#HDRNEWACC">New Accelerator Keys</A>
-				<LI><A HREF="#HDRWBBRS">New Web Browser Help Functionality</A>
+				<LI><A HREF="#HDRNEWTAB">Fixed up the tabs on pages</A>
+				<LI><A HREF="#HDRNWTOOL">Tool selector is now a tree view</A>
+				<LI><A HREF="#HDRNWPREF">Preferences file for saving state</A>
+				<LI><A HREF="#HDRNEWGRH">Automatic graph layout of modules</A>
+				<LI><A HREF="#HDRNEWUND">Undo now available in VPE</A>
+				<LI><A HREF="#HDRNEWCUR">Cursor keys now move modules on canvas</A>
 			</MENU>
-<LI><A NAME="PToC_23" HREF="usrgu011.htm">New Image Formats Available</A>
-<LI><A NAME="PToC_24" HREF="usrgu012.htm">New Java Explorer</A>
-			<LI><A NAME="PToC_25" HREF="usrgu013.htm">Hardware Rendering</A>
-			<MENU>
-				<LI><A HREF="usrgu013.htm#HDRADDFET">Added Features</A>
-				<LI><A HREF="usrgu013.htm#HDRTRANSL">Translucent Texturing</A>
-				<LI><A HREF="usrgu013.htm#HDRTEXTWR">Texture Wrapping</A>
-				<LI><A NAME="PToC_20" HREF="usrgu013.htm#HDRTEXTMP">Texture Mipmapping</A>
-			</MENU>
-			<LI><A NAME="PToC_26" HREF="usrgu014.htm">Networking Enhancements</A>
-<LI><A NAME="PToC_27" HREF="usrgu015.htm">Changed Modules</A>
-<LI><A NAME="PToC_28" HREF="usrgu016.htm">New Modules</A>
-<LI><A NAME="PToC_29" HREF="usrgu017.htm">Backward
+			<LI><A HREF="usrgu011.htm">Shared libraries now available</A>
+			<LI><A NAME="PToC_24" HREF="usrgu012.htm">New Windows Visual Studio loadable module example</A>
+			<LI><A NAME="PToC_25" HREF="usrgu013.htm">New Windows native executive</A>
+			<LI><A HREF="usrgu014.htm">Added OPTIONS processing on behalf of Macros</A>
+			<LI><A NAME="PToC_27" HREF="usrgu015.htm">Changed Modules</A>
+			<LI><A NAME="PToC_28" HREF="usrgu016.htm">New Modules</A>
+			<LI><A NAME="PToC_29" HREF="usrgu017.htm">Backward
 Incompatibilities</A>
-<LI><A NAME="PToC_30" HREF="usrgu018.htm">HTML Documentation</A>
-<LI><A NAME="PToC_31" HREF="usrgu019.htm">Fixes</A>
-</MENU><HR><P>The following are changes to OpenDX since the last commercial release of Data Explorer version 3.1.4b.
-<HR>
+			<LI><A NAME="PToC_31" HREF="usrgu019.htm">Fixes</A>
+		</MENU><HR><P>The following are changes to OpenDX since version 4.2.0.<HR>
 		<H2><A NAME="Header_16" ></A>User Interface</H2>
-		<H3><A NAME="HDRNEWTYPE" ></A>New Type Ahead In Tools List</H3>
-		<P>If you use the (All) category quite frequently, it is fairly slow to scroll through the entire list of available tools. To speed up access, place the mouse over the tools list and begin typing the name of the tool. As characters are typed, modules will be selected. Other keys other than alpha that affect this are: Up and Down arrows move the selection up or down and the space bar deselects the current selected tool.
+		<H3><A NAME="HDRNEWTAB" ></A>Fixed up the tabs on pages</H3>
+		<P>The code that draws the tabs on the VPE canvas now produces rounded tabs even on Windows running the Exceed X server.		
 		
 		
 		
-		
-		<H3><A NAME="HDRNWMODE" ></A>New Mode Option in Image Window</H3>
-		<P>A new Mode menu option allows direct access to the image manipulation routines without having to remember the shortcut keys or open the View Control dialog. It also adds some increased functionality internally to the code by removing the dependency on X based accelerators in the Picture widget and using the standard Motif accelerators.</P>
-		<H3><A NAME="HDRACCKEY" ></A>Accelerator Keys Now Work in More Windows</H3>
-		<P>This version adds functionality to allow accelerators to be mapped onto other windows. The Image Window accelerators now work in:
-		<UL>
-			<LI>View Control Dialog (always has, but is now handled the same as the others)
-			<LI>AutoAxes Dialog (can now click apply and then use accelerators to execute--handy)
-			<LI>Rendering Options Dialog (very nice to click hardware then execute once)
-			<LI>Throttle Dialog (to be consistent)
-		</UL>
-		<P>All the accelerators such as Save, Print, Close all work in the sub-panels giving a more consistent feel to the ImageWindow.</P>
-		<P>To only are the Image Window accelerators mapped to its dialogs, but also the following VPE accelerators are active in configuration dialogs</P>
-		<UL>
-			<LI>save program accelerator
-			<LI>all the execute menu accelerators
-			<LI>add and remove input tabs
-			
-		</UL>
-		<H3><A NAME="HDRNEWACC"></A>New Accelerator Keys</H3>
-		<P>A new set of accelerators key mappings has been added to follow the style of Windows, MacOS, and KDE. For example, paste is Ctrl-v instead Shift-Insert. In order to use the new keymap, OpenDX must have this enabled during compilation as a configure flag.</P>
-		<H3><A NAME="HDRWBBRS"></A>New Web Browser Help Functionality</H3>
-		<P>The html documentation can now be accessed within OpenDX. By setting an environment variable, DX will override its older built-in help and launch a browser to display the html help. In the UN*X environment set the environment variable DX_WEB_BROWSER to your web browser or a url handler script such as the one included in the dx/bin directory. Within Windows or MacOS X just set this environment variable and the system default browser will launch. Due to bugs in Exceed XDK and MacOS X (Bug ID#2879972, #1951588) there may be some annoyances using this feature.</P>
+		<H3><A NAME="HDRNWTOOL" ></A>Tool selector is now a tree view</H3>
+		<P>The tool selector and categories have now been combined into a standard tree view. Click on the (+) next to each category to expand the list. Click on the (-) next to an expanded category to collapse the category.</P>
+		<H3><A NAME="HDRNWPREF" ></A>Preferences file for saving state</H3>
+		<P>Now at the end of each execution, OpenDX will add the network to a list of previously opened networks for the new &quot;Open Recent&quot; menu option under file. The preferences all save the state of the tool selector so that it is the same when restarting dx.
+		<H3><A NAME="HDRNEWGRH"></A>Automatic graph layout of modules</H3>
+		<P>New mode under the Edit menu to automatically layout a network page.</P>
+		<H3><A NAME="HDRNEWUND"></A>Undo now available in VPE</H3>
+		<P>An undo option for the VPE is now available. Every node or annotation move is recorded and can be undone from the Edit menu or via the shortcut (Ctrl-U) or (Ctrl-Z) depending on your keyboard layout.</P>
+		<H3><A NAME="HDRNEWCUR"></A>Cursor keys now move modules on canvas</H3>
+		The cursor keys now can move the modules on the VPE canvas. Select a node(s) or annotation, then use the up, down, left, or right	arrows to move the selected objects 1 pixel at a time.
 		<HR>
 		<DIV align="center">
 			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>

@@ -932,7 +932,7 @@ CATEGORY Rendering
 DESCRIPTION computes point normals for shading
 INPUT surface; geometry field; (none); surface on which to compute normals
 INPUT method; string; "positions"; component on which to base normals
-OPTIONS positions; connections; face
+OPTIONS positions; connections; faces
 OUTPUT normals; field; the surface with normals
 
 MODULE Options

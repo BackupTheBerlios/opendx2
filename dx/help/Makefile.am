@@ -252,14 +252,14 @@ help_DATA = $(EXTRA_DIST)
 
 
 install-data-hook:
-	@-sh -c '( cd $(helpdir) && $(LN_S) hlpalhtl mbidx ; \
+	@-sh -c '( cd $(DESTDIR)$(helpdir) && $(LN_S) hlpalhtl mbidx ; \
 		 $(LN_S) hlpalhtl quikidx ; \
 		 $(LN_S) hlpalhtl svsmstrh ; \
 		 $(LN_S) hlpalhtl ugidx ; \
 		 $(LN_S) hlpalhtl usrefidx ; \
 		 $(LN_S) HelpDir GarHelpDir ; \
 		 $(LN_S) HelpDir MBHelpDir ; \
-		 echo "cd $(helpdir)" ; \
+		 echo "cd $(DESTDIR)$(helpdir)" ; \
 		 echo "$(LN_S) hlpalhtl mbidx" ; \
 		 echo "$(LN_S) hlpalhtl quikidx" ; \
 		 echo "$(LN_S) hlpalhtl svsmstrh" ; \

@@ -103,7 +103,7 @@ _times_svs(double *user, double *sys, double *real)
 }
 #endif
 
-#if defined(os2)  || defined(intelnt)
+#if defined(os2)  || defined(intelnt) || defined(WIN32)
 
 static void
 _times_unix(double *user, double *sys, double *real)
@@ -212,7 +212,7 @@ DXGetTime(void)
 void
 DXWaitTime(double seconds)
 {
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
     Sleep(seconds*1000);
 #else
 #if ibmpvs || hp700 || aviion

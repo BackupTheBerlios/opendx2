@@ -73,7 +73,7 @@ _dxfXform_Delete(Xform t)
 
 
 Object
-_dxfXform_Copy(Xform old, enum copy copy)
+_dxfXform_Copy(Xform old, enum _dxd_copy copy)
 {
     Xform new;
     Object o;

@@ -308,7 +308,7 @@ _dxfFieldInterpolator_Interpolate(FieldInterpolator fi, int *n,
 
 FieldInterpolator
 _dxf_CopyFieldInterpolator(FieldInterpolator new, 
-				FieldInterpolator old, enum copy copy)
+				FieldInterpolator old, enum _dxd_copy copy)
 {
     if (! _dxf_CopyInterpolator((Interpolator)new, (Interpolator)old))
 	return NULL;

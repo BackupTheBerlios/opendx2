@@ -551,7 +551,7 @@ DXCopyAttributes(Object dst, Object src)
  */
 
 Object
-_dxf_CopyObject(Object new, Object old, enum copy copy)
+_dxf_CopyObject(Object new, Object old, enum _dxd_copy copy)
 {
     int i, n = old->nattributes;
     struct attribute *oa, *na;
@@ -588,7 +588,7 @@ DXGetType(Object a, Type* b, Category* c, int* d, int* e)
 }
 
 Object
-DXCopy(Object a, enum copy b)
+DXCopy(Object a, enum _dxd_copy b)
 {
     return _dxfCopy((Object)a,b);
 }

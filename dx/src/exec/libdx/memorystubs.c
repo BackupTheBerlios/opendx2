@@ -28,7 +28,13 @@
 #endif
 
 Error DXsyncmem() { return OK; }
-int DXmemfork(int i) { return fork(); }
+int DXmemfork(int i) { 
+#if defined(HAVE_FORK)
+	return fork();
+#else
+	return -1;
+#endif
+}
 void _dxfcleanup_mem() { }
 
 

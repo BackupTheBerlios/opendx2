@@ -32,13 +32,25 @@ dx.mdf:  ${srcdir}/dxmdf.src
 	@rm -f stripl.sed tmp.mdf
 	-rm -f tmp.c
 
-y.tab.c: ${srcdir}/_compparse.y
-	$(YACC) -vd ${srcdir}/_compparse.y
+.y.h:
+	$(YACC) $(YFLAGS) -d ${srcdir}/$*.y
+	@mv y.tab.h $*.h
+	@mv y.tab.c $*.c
+	@echo h rule
 
-_compparse.c: y.tab.c
-	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.c > _compparse.c
+.y.c:
+	$(YACC) $(YFLAGS) -d ${srcdir}/$*.y
+	@mv y.tab.h $*.h
+	@mv y.tab.c $*.c
+	@echo c rule
 
-_compparse.h: y.tab.c
-	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.h > _compparse.h
+#y.tab.c: ${srcdir}/_compparse.y
+#	$(YACC) -vd ${srcdir}/_compparse.y
+
+#_compparse.c: y.tab.c
+#	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.c > _compparse.c
+
+#_compparse.h: y.tab.c
+#	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.h > _compparse.h
 
 

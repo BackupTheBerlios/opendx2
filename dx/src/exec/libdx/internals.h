@@ -7,7 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+
+#ifndef _INTERNALS_H_
+#define _INTERNALS_H_
+
+#if !defined(DX_NATIVE_WINDOWS)
 #include <X11/X.h>
+#endif
 
 char *_dxfstring(char *s, int add);
 /**
@@ -72,7 +78,7 @@ extern unsigned char _dxd_convert[NC];	/* table accessed by unsigned short */
 
 union hl {				/* union to take apart float */
     float f;				/* here's a float */
-#if WORDS_BIGENDIAN==1
+#if defined(WORDS_BIGENDIAN)
     struct {short hi, lo;} hl;		/* two signed shorts, msb first */
 #else
     struct {short lo, hi;} hl;		/* two signed shorts, lsb first */
@@ -108,9 +114,87 @@ Field _dxf_ZeroFBPixels(Field image, int left, int right,
  * Hint: dithering produces D*(C-1)+1 shades of color C
  */
 
+#define DX 4               /* x dimension of dither matrix */
+#define DY 4               /* y dimension of dither matrix */
+#define DD (DX*DY)         /* number of entries in dither matrix */
+
+static short _dxd_dither_matrix[DY][DX] = {
+    { 0 *256,  8 *256,  2 *256, 10 *256 },
+    { 12 *256,  4 *256, 14 *256,  6 *256 },
+    { 3 *256, 11 *256,  1 *256,  9 *256 },
+    { 15 *256,  7 *256, 13 *256,  5 *256 }
+};
+
 #define MAXRGBCMAPSIZE 256
 #define MAXCMAPSIZE 4096
 #define MAXSIZE ((MAXRGBCMAPSIZE*4)>MAXCMAPSIZE?(MAXRGBCMAPSIZE*4):MAXCMAPSIZE)
+
+#if defined DX_NATIVE_WINDOWS
+
+enum translationTypeE {
+	direct,
+	mapped,
+	rgbt,
+	rgb888
+};
+
+typedef struct translationS {
+	enum translationTypeE	translationType;
+	HPALETTE				cmap;
+	unsigned char			invertY;
+	float					gamma;
+	unsigned long			*rtable;
+	unsigned long			*gtable;
+	unsigned long			*btable;
+	unsigned long			*gammaTable;
+	unsigned long			*table;
+	int						nColors;
+	int						redShift,	redBits,	redRange;
+	int						greenShift, greenBits,	greenRange;
+	int						blueShift,	blueBits,	blueRange;
+	int						depth;
+	int						bytesPerPixel;
+} translationT,*translationP;
+
+typedef Error (*Handler)(Pointer);
+
+Handler handler;
+
+
+typedef struct window {
+    HDC					hDC;			/* graphics context */
+	unsigned char		*pixels;		/* the converted pixels */
+    Object				pixels_owner;	/* owner of the pixels, if not us */
+    int					winFlag;		/* is a X window associated with the struct? */
+    HWND				hWnd;			/* window id */
+	HWND				parent;			/* parent window id */
+    int					windowMode;		/* is window owned by UI, another external source, or local? */
+    int					refresh;		/* set to cause refresh of window */
+    int					wwidth, 
+						wheight, 
+						wdepth;			/* current window size */
+    int					pwidth, pheight;/* current image size */
+    int					waitPixmap;		/* whether to wait for pixmap */
+    int					waitEvent;		/* whether to wait for particular event */
+    int					pixmapFull;		/* whether the pixmap is full or available for new image */
+    int					error;			/* whether X error occurred */
+    HBITMAP				bitmap;			/* pixmap for ui */
+	void				*bmi;			/* bitmap info */
+    char				*title;			/* window title */
+    translationP		translation;	/* color table translation info */
+    Object				translation_owner;/* object that keeps the translation */
+    int					colormapTag;	/* tag of user-defined cmap (if so) */
+    char				*cacheid;		/* cache id */
+    Private				dpy_object;		/* object handle for display */
+    int					objectTag;		/* tag of object currently in pixmap */
+    int					win_invalid;	/* has the window been destroyed? */
+    Handler				handler;		/* which input handler to use */
+    int					active;			/* whether the window is currently active */
+    int					cmap_installed;	/* is the colormap installed? */
+	int					directMap;
+} SWWindow;	
+
+#else
 
 typedef struct translationS {
     void* 	  	dpy;		/* display handle, for delete */
@@ -144,9 +228,7 @@ typedef struct translationS {
     int			ownsCmap;
 } translationT,*translationP;
 
-#define DX 4               /* x dimension of dither matrix */
-#define DY 4               /* y dimension of dither matrix */
-#define DD (DX*DY)         /* number of entries in dither matrix */
+#endif
 
 #define MIX(r,g,b)(((r)*gg+(g))*bb+(b))
 #define RGBMIX(r,g,b) ((r) | (g) | (b))
@@ -163,16 +245,10 @@ typedef struct translationS {
 #define IN_BIG_PIX      4
 #define IN_FAST_PIX     5
 
-Field _dxf_MakeXImage(int width, int height, int depth, char *where);
+Field _dxf_MakeImage(int width, int height, int depth, char *where);
 
 Error _dxf_translateImage(Object, int, int, int, int, int, int, int, int, int, int,
 			translationP, unsigned char *, int, unsigned char *);
-
-unsigned char *_dxf_GetXPixels(Field i);
-translationP _dxf_GetXTranslation(Object o);
-int _dxf_GetXBytesPerPixel(translationP translation);
-Field _dxf_ZeroXPixels(Field image, int left, int right,
-				int top, int bot, RGBColor c);
 Object _dxf_XServer(char *where);
 
 /*
@@ -347,3 +423,4 @@ extern char * _dxd_x_server; extern Object _dxd_o_x_server;
 #define O_TETRAHEDRA	_dxd_o_tetrahedra
 #define O_CUBES		_dxd_o_cubes
 
+#endif /* _INTERNALS_H_ */

@@ -68,7 +68,7 @@ static int lastToken = T_EOF;
 #define LEX_RETURN(t) return (lastToken = (t));
 
 int
-_dxfcclex()
+_dxfcclex(YYSTYPE *lvalp)
 {
     int c;
     char _dxfcctext[MAXTOKEN];
@@ -164,11 +164,11 @@ _dxfcclex()
 		c = input();
 	    }
 	    _dxfcctext[_dxfccleng] = '\0';
-	    _dxfcclval.i = atoi(_dxfcctext);
+	    lvalp->i = atoi(_dxfcctext);
 	    unput();
-	    if (_dxfcclval.i >= MAX_INPUTS) {
+	    if (lvalp->i >= MAX_INPUTS) {
 		DXSetError(ERROR_BAD_PARAMETER, "#12070",
-			 _dxfcclval.i, MAX_INPUTS);
+			 lvalp->i, MAX_INPUTS);
 		LEX_RETURN(ERROR);
 	    }
 	    else {
@@ -188,9 +188,9 @@ _dxfcclex()
 			    break;
 			}
 		    }
-		    _dxfcclval.s[i++] = c;
+		    lvalp->s[i++] = c;
 		}
-		_dxfcclval.s[i] = '\0';
+		lvalp->s[i] = '\0';
 		if (c != '\'') {
 		    DXSetError(ERROR_BAD_PARAMETER, "Compute string has unmatched '");
 		    LEX_RETURN(ERROR);
@@ -223,7 +223,7 @@ _dxfcclex()
 		    DXSetError(ERROR_BAD_PARAMETER, "#12080", _dxfcctext);
 		    LEX_RETURN(ERROR);
 		}
-		_dxfcclval.i = strtol(_dxfcctext, NULL, 0);
+		lvalp->i = strtol(_dxfcctext, NULL, 0);
 	    }
 	    /* 
 	     * Process octal, becoming float if we get ., e, or E
@@ -233,17 +233,17 @@ _dxfcclex()
 	     * is greater than or equal to 4Gig >> 3, then it's an error.
 	     */
 	    else {
-		_dxfcclval.i = 0;
+		lvalp->i = 0;
 		while (isdigit(c)) {
 		    if (c == '8' || c == '9')
 			DXWarning ("bad octal digit `%c'", c);
 		    _dxfcctext[_dxfccleng++] = c;
 		    /* Check overflow (including carying the high bit of 8&9) */
-		    if ((_dxfcclval.i + ((c - '0') >> 3)) >= 0x20000000) {
+		    if ((lvalp->i + ((c - '0') >> 3)) >= 0x20000000) {
 			DXSetError(ERROR_BAD_PARAMETER, "#12081", _dxfcctext);
 			LEX_RETURN(ERROR);
 		    }
-		    _dxfcclval.i = _dxfcclval.i * 8 + (c - '0');
+		    lvalp->i = lvalp->i * 8 + (c - '0');
 		    c = input();
 		}
 		if (c == '.') {
@@ -288,7 +288,7 @@ _dxfcclex()
 		DXSetError(ERROR_BAD_PARAMETER, "#12082", _dxfcctext);
 		LEX_RETURN(ERROR);
 	    }
-	    _dxfcclval.i = strtol(_dxfcctext, NULL, 0);
+	    lvalp->i = strtol(_dxfcctext, NULL, 0);
 	    LEX_RETURN(T_INT);
 
 fraction:
@@ -317,7 +317,7 @@ fraction:
 		DXSetError(ERROR_BAD_PARAMETER, "#12085", _dxfcctext);
 		LEX_RETURN(ERROR);
 	    }
-	    _dxfcclval.f = d;
+	    lvalp->f = d;
 	    LEX_RETURN(T_FLOAT);
 exponent:
 	    /* Jam the 'e' in place and get the next thing.  If it's the sign,
@@ -347,11 +347,11 @@ exponent:
 		    DXSetError(ERROR_BAD_PARAMETER, "#12085", _dxfcctext);
 		    LEX_RETURN(ERROR);
 		}
-		_dxfcclval.f = d;
+		lvalp->f = d;
 		LEX_RETURN(T_FLOAT);
 	    }
 	    else {
-		_dxfcclval.d = d;
+		lvalp->d = d;
 		LEX_RETURN(T_DOUBLE);
 	    }
 	default:
@@ -371,7 +371,7 @@ exponent:
 		    if (strcmp(keytab[i].name, _dxfcctext) == 0)
 			LEX_RETURN(keytab[i].value);
 
-		strncpy (_dxfcclval.s, _dxfcctext, MAX_PARSE_STRING_SIZE);
+		strncpy (lvalp->s, _dxfcctext, MAX_PARSE_STRING_SIZE);
 		LEX_RETURN(T_NAME);
 	    }
 	    else {

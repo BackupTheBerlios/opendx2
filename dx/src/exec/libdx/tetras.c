@@ -200,7 +200,7 @@ _dxf_NewTetrasInterpolator(Field field,
 }
 
 Object
-_dxfTetrasInterpolator_Copy(TetrasInterpolator old, enum copy copy)
+_dxfTetrasInterpolator_Copy(TetrasInterpolator old, enum _dxd_copy copy)
 {
     TetrasInterpolator new;
 
@@ -218,7 +218,7 @@ _dxfTetrasInterpolator_Copy(TetrasInterpolator old, enum copy copy)
 
 TetrasInterpolator
 _dxf_CopyTetrasInterpolator(TetrasInterpolator new, 
-				TetrasInterpolator old, enum copy copy)
+				TetrasInterpolator old, enum _dxd_copy copy)
 {
     if (! _dxf_CopyFieldInterpolator((FieldInterpolator)new, 
 						(FieldInterpolator)old, copy))

@@ -7,10 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/UIConfig.h"
 #include "../base/defines.h"
-
-
-
 
 #ifndef _CDBAllocatorDictionary
 #define _CDBAllocatorDictionary

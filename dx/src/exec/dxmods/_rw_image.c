@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.8 2002/04/03 05:34:39 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.9 2003/07/11 05:50:34 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -16,8 +16,8 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
-#include <_rw_image.h>
+#include "_helper_jea.h"
+#include "_rw_image.h"
 #include <sys/types.h>
 #include <string.h>
 #include <math.h>

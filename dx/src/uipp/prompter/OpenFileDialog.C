@@ -38,9 +38,9 @@ Widget OpenFileDialog::createDialog(Widget parent)
 
 void OpenFileDialog::okFileWork(const char *filenm)
 {
-    ifstream *from = new ifstream(filenm);
+    std::ifstream *from = new std::ifstream(filenm);
 #ifdef aviion
-    ifstream *from2 = new ifstream(filenm);
+    std::ifstream *from2 = new std::ifstream(filenm);
 #endif
     if(!from)
     {
@@ -54,7 +54,7 @@ void OpenFileDialog::okFileWork(const char *filenm)
     theGARApplication->changeMode(mode, from2);
 #else
     from->clear();
-    from->seekg(0, ios::beg);
+    from->seekg(0, std::ios::beg);
     theGARApplication->changeMode(mode, from);
 #endif
 

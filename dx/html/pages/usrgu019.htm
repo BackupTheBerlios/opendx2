@@ -36,36 +36,39 @@ MINING">
 			</TR>
 		</TABLE>
 		<H2><A NAME="Header_31" ></A>Fixes</H2>
-		<P>A error with postscript printing the networks was corrected.
-		<P>Correction when a point is on the line containing an edge. Needed to check the sign.</P>
-		<P>Correction to quads for possible loop when point coincides with vertex.
-		<P>Added support for 15 bit, 16 bit, and 32 bit color displays.</P>
-		<P>Defaulting of the environment variable of DXMACROS, DXDATA, and DXROOT if they are not set.</P>
-		<P>Added -whereami option to dx to detect location of dx install.</P>
-		<P>Increased network execution speed of cached networks.</P>
-		<P>Increased network execution speed of objects with large amounts of invalid data.</P>
-		<P>Now possible to build C++ modules from module builder.</P>
-		<P>A small memory leak fixed from not closing a message file.</P>
-		<P>Some memory leak patches to general import, task, and redce.</P>
-		<P>The native file format now allows the creation of a local reference to an external file. This local reference can then be used repeatedly within the other objects without having to reread the external file. For example:</P>
-		<PRE>  object &quot;localobj&quot; file &quot;externalfile.dx&quot;,1</PRE>
-		<PRE>  object &quot;f1&quot; field
-    component &quot;positions&quot; &quot;localobj&quot;</PRE>
-		<PRE>  object &quot;f2&quot; field
-    component &quot;positions&quot; &quot;localobj&quot;</PRE>
-		<P>The native file format now allows data descriptions as object names as references instead of numbers.</P>
-		<P>Fix to make dxexec release processor when in wait loop. This fixes the 99% CPU usage on NT.</P>
-		<P>Fix to allow clicking off Connect to Already running server in the Options dialog box.</P>
-		<P>Added support for polylines to the opacity renderer. </P>
-		<P>Permit invocation of script functionality from the command-line via without requiring the user to use shell scripting tricks or build temp script files. For example:</P>
-		<PRE>   dx -script script_macros.scr -scriptcmd &quot;MyMacro(value1,value2)&quot;</PRE>
-		<PRE>   dx -scriptcmd 'data = Import(&quot;junk&quot;); Print(data);'</PRE>
-		<P>A fix where some Packet logic could core dump.</P>
-		<P>Fixes to to prevent hanging processes if the UI disconnects from the server while the server is running.</P>
-		<P>Fix the Control-Click on Close of a user style Control Panel to work as described.</P>
-		<P>Fixed the Selection color on Selector List Interactor so the selected value is visible with newer Motifs.</P>
-		<P>Fix Background on Selector Option Menu so the menu is green in the developer mode on newer Motifs.</P>
-		<P>Corrected a problem with lex/parsing of programs from the UI after and error occurs when trying to open a network. A consecutive open now works correctly and does not give false error messages.</P>
+		<P>Fix a crash bug when a parameter value is set to &quot;&quot;. It probably happened only when the Display tool had a user-specified Where param as would be the case with SuperviseWindow AND the user  did some operation like drag-n-drop, cut/copy/paste,  'Edit/Insert Program...'.
+		
+		
+		
+		
+		<P>Added better handling of resize calls to an Image window so that the update call isn't called continually with Window managers that expose the image during resize.</P>
+		<P>Fix in the 2D quad interpolator where point is on an edge.
+</P>
+		<P>Remove the new-line character on some new annotations to remove the funny character at the end to be displayed.</P>
+		<P>Fixed up the JavaDX macros to include comments and put some of  them in the &quot;&quot; category so they do not show up in the UI.</P>
+		<P>Add a work around to fix a bug when the PageUp, PageDown, or End keys were pressed and caused a crash. This is a bug in Motif &lt; 2.3.</P>
+		<P>Added some performance improvements in the UI with respect to interactors.</P>
+		<P>Fix for the random function in Compute for Windows version. (Bug ID#66)</P>
+		<P>Fix the module builder to work and use CR/LF on DOS based systems. (Bug ID#109)</P>
+		<P>Fix the activation of application wide commands unless the  Network object == the application's main network. (Bug ID#106)</P>
+		<P>Fix problem where a large stream going to the message window on Windows would Quit the Exec (Bug ID#107)</P>
+		<P>Converted dxworker to bourne shell from csh. Now allows spaces in filenames and exe names and better handles special characters passed in to the exec with scriptcmd option.</P>
+		<P>Corrected problem where Gamma was not being applied to images saved via ImageMagick (Bug ID#67).</P>
+		<P>Fix a memory leak in the XHandler within the EditorWindow.</P>
+		<P>Fix a memory leak with respect to the rotation globes and cfg files.</P>
+		<P>Fix a memory leak with open file descriptors on systems with HAVE_OPEN_DIR and HAVE_DIRENT_H. Free regular expression compiled with regcomp.</P>
+		<P>Fixed the placement of the Throttle dialog of the Image window.</P>
+		<P>Fixed a problem with the Frame Control of the Sequencer popping up directly over the Sequencer on the first pop-up.</P>
+		<P>Fix &quot;Visualize Data...&quot; in the prompter to pass unix path separators instead of DOS on Windows machines.</P>
+		<P>Fix a memory leak in configuration dialog boxes.</P>
+		<P>EditorWindow destructor was deleting cache-optimization menu items twice, now only once. (Bug ID#18)</P>
+		<P>Object deleted during the dropFinish callback.  The new Motif interprets Widget deletion as a need to cancel drag-n-drop which  triggers the dropFinish callback a 2nd time. Problem is object already deleted. Now, object deletion is queued so object is deleted from dropFinish callback. (Bug ID# 38, 61)</P>
+		<P>Set Min Width, Height on the container so it can't be resized to small. (Bug ID#10)</P>
+		<P>A fix for Streamline when checking for Invalid Data components.</P>
+		<P>A correction to check to see if &quot;invalid&quot; components are added then recompute &quot;dep&quot; components.</P>
+		<P>Fix for invalid() to return error instead of crash in Compute.</P>
+		<P>A correction for netCDF where an invalid file would crash OpenDX instead of returning an error.</P>
+		<P></P>
 		<HR>
 		<DIV align="center">
 			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>

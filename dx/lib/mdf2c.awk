@@ -8,7 +8,7 @@ BEGIN {
     printf("#include <dx/dx.h>\n");
     printf("#include <dx/modflags.h>\n");
     printf("\n");
-    printf("#if defined(intelnt)\n");
+    printf("#if defined(intelnt) || defined(WIN32)\n");
     printf("#include <windows.h>\n");
     printf("#endif\n");
     printf("\n");
@@ -20,7 +20,7 @@ BEGIN {
 # for run-time loadable modules, dynamic is set to 1 by the calling script
 {   if (firsttime > 0) {
         if (dynamic > 0) {
-        printf("#if defined(intelnt)\n");
+        printf("#if defined(intelnt) || defined(WIN32)\n");
         printf("void FAR WINAPI DXEntry()\n");
         printf("#else\n");
         printf("void DXEntry()\n");

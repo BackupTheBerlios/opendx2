@@ -174,8 +174,14 @@ readFromSFILE(SFILE *sf, char *buf, int n)
     if (n)
     {
 #if defined(HANDLE_SOCKET)
-        if (ssf->type == SFILE_SOCKET)
+        if (ssf->type == SFILE_SOCKET) {
+		fd_set fdset;
+		FD_ZERO(&fdset);
+		FD_SET(ssf->socket, &fdset);
+		/* need to select here to see if send is possible */
+		select(0, NULL, NULL, &fdset, NULL); /* Blocking */
 	    b = recv(ssf->socket, buf+a, n, 0);
+        }
 	else
 #endif
 	b = read(ssf->fd, buf+a, n);
@@ -193,14 +199,20 @@ writeToSFILE(SFILE *sf, char *buf, int n)
     struct sfile *ssf = (struct sfile *)sf;
 
 #if defined(HANDLE_SOCKET)
-    if (ssf->type == SFILE_SOCKET)
-	rtn = send(ssf->socket, buf, n, 0);
+    if (ssf->type == SFILE_SOCKET) {
+		fd_set fdset;
+		FD_ZERO(&fdset);
+		FD_SET(ssf->socket, &fdset);
+		/* need to select here to see if send is possible */
+		select(0, NULL, &fdset, NULL, NULL); /* Blocking */
+		rtn = send(ssf->socket, buf, n, 0);
+	}
     else
 #endif
         rtn = write(ssf->fd, buf, n);
 
     if (rtn < 0)
-	ExQuit();
+		ExQuit();
     
     return rtn;
 }

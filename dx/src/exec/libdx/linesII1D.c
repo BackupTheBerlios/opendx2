@@ -587,7 +587,7 @@ _dxfLinesII1DInterpolator_LocalizeInterpolator(LinesII1DInterpolator li)
 }
 
 Object
-_dxfLinesII1DInterpolator_Copy(LinesII1DInterpolator old, enum copy copy)
+_dxfLinesII1DInterpolator_Copy(LinesII1DInterpolator old, enum _dxd_copy copy)
 {
     LinesII1DInterpolator new;
 
@@ -605,7 +605,7 @@ _dxfLinesII1DInterpolator_Copy(LinesII1DInterpolator old, enum copy copy)
 
 LinesII1DInterpolator
 _dxf_CopyLinesII1DInterpolator(LinesII1DInterpolator new,
-				    LinesII1DInterpolator old, enum copy copy)
+				    LinesII1DInterpolator old, enum _dxd_copy copy)
 {
     if (! _dxf_CopyFieldInterpolator((FieldInterpolator)new,
 					(FieldInterpolator)old, copy))

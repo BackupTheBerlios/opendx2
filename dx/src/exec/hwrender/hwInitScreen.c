@@ -12,7 +12,7 @@
 #define tdmInitScreen_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.5 2002/03/21 02:59:10 rhh Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.6 2003/07/11 05:50:37 davidt Exp $"};
 #endif
 
 
@@ -209,6 +209,7 @@ _dxfEndSWRenderPass (WinP win, Field image)
   return 0;
 }
 
+#if !defined(DX_NATIVE_WINDOWS)
 static int
 _HandleExitErrors (Display *dpy, XErrorEvent *rep)
 {
@@ -231,6 +232,7 @@ _HandleExitErrors (Display *dpy, XErrorEvent *rep)
   EXIT((""));
   return 1;
 }
+#endif
 
 Error
 _dxfEndRenderModule (tdmChildGlobalP globals)
@@ -246,8 +248,10 @@ _dxfEndRenderModule (tdmChildGlobalP globals)
   DEBUG_MARKER("_dxfEndRenderModule ENTRY");
   ENTRY(("_dxfEndRenderModule(0x%x)",globals));
 
+#if !defined(DX_NATIVE_WINDOWS)
   /* the window is sometimes already destroyed before calling gexit() */
   XSetErrorHandler(_HandleExitErrors) ;
+#endif
 
   if (globals->cacheId)
     {
@@ -289,15 +293,18 @@ _dxfEndRenderModule (tdmChildGlobalP globals)
   /* delete graphics API's data structures */
    _dxf_DESTROY_WINDOW(LWIN) ;
 
+#if defined(DX_NATIVE_WINDOWS)
+  _dxfSendClientMessage (PARENT_WINDOW, GLShutdown, 0) ;
+#else
   _dxfSendClientMessage (DPY, PARENT_WINDOW, GLShutdown, 0) ;
-  
+
   /* delete callback for display's connection */
   PRINT(("deleting callback for display connection %d",
 	 ConnectionNumber(DPY)));
 
-  DXRegisterInputHandler
-    ((Handler) NULL, ConnectionNumber(DPY), NULL) ;
-  
+  DXRegisterInputHandler((Handler) NULL, ConnectionNumber(DPY), NULL) ;
+#endif
+    
   if (PORT_HANDLE)
     {
       _dxfDeletePortHandle(PORT_HANDLE);

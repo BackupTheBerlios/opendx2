@@ -30,13 +30,11 @@
 #include "WorkspaceP.h"
 #include "WorkspaceCallback.h"
 #include <string.h>
-//#if !defined(XK_MISCELLANY)
+#include <X11/keysym.h>
+
+#if !defined(XK_MISCELLANY)
 #define XK_MISCELLANY 1
-#include <X11/keysymdef.h>
-//#undef XK_MISCELLANY
-//#else
-//#include <X11/keysymdef.h>
-//#endif
+#endif
 
 
 /* External functions */
@@ -977,8 +975,10 @@ static void Initialize( XmWorkspaceWidget request, XmWorkspaceWidget new )
      
     trans_table = XtParseTranslationTable (defaultTranslations);
     XtSetArg (warg, XmNtranslations, trans_table);
+#if 0
     // Don't check this in -MST
     //XtSetValues ((Widget)new, &warg, 1);
+#endif
 }
 
 

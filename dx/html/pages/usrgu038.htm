@@ -82,12 +82,12 @@ who created the program).
 Window</A></B><BR>
 <B><BR><CENTER><IMG SRC="../images/helpwin.gif" ALT="Figure helpwin not
 displayed."></CENTER><BR></B><BR>
-<P>
+		<P>
 
 In addition, an HTML version of the documentation is available. Point your
-browser at <TT>/usr/lpp/dx/html/index.htm</TT>.
-
-<TABLE BORDER WIDTH="100%"><TR><TH ALIGN="LEFT">For Future
+browser at <TT>$(DXROOT)/html/index.htm</TT>. The html documentation can now be accessed as the context-sensitive help within OpenDX instead of the internal help system. By setting an environment variable, DX will override its older built-in help and launch a browser to display the html help. In the UN*X environment set the environment variable DX_WEB_BROWSER to your web browser or a url handler script such as the one included in the dx/bin directory. Within Windows or MacOS X just set this environment variable and the system default browser will launch. 
+		<P>The HTML version of the docs also includes a JavaScript local search engine.</P>
+		<TABLE BORDER WIDTH="100%"><TR><TH ALIGN="LEFT">For Future
 Reference</TH><TR><TD>
 <UL COMPACT>
 <LI>In the <TT><STRONG>Help</STRONG></TT> window you can directly access
@@ -111,7 +111,7 @@ the <TT><STRONG>Help</STRONG></TT> window.
 bottom of the <TT><STRONG>Help</STRONG></TT> window.
 </UL>
 </TD></TR></TABLE>
-<P>
+		<P>
 <H3><A NAME="HDRUSRHELP" ></A>User-Defined Help Files</H3>
 <A NAME="IDX640"></A>
 <A NAME="IDX641"></A>

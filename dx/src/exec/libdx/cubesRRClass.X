@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/cubesRRClass.X,v 1.2 1999/05/10 15:45:42 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/cubesRRClass.X,v 1.3 2003/07/11 05:50:41 davidt Exp $
 //
 
 
@@ -44,4 +44,4 @@ CubesRRInterpolator _dxf_NewCubesRRInterpolator(Field,
 			struct cubesrrinterpolator_class *);
 
 CubesRRInterpolator _dxf_CopyCubesRRInterpolator(CubesRRInterpolator, 
-			CubesRRInterpolator, enum copy);
+			CubesRRInterpolator, enum _dxd_copy);

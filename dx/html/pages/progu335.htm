@@ -23,22 +23,20 @@ HREF="progu334.htm">Previous Page</A> &#124; <A HREF="progu336.htm">Next
 Page</A> &#124; <A HREF="../proguide.htm#ToC">Table of Contents</A> &#124; <A
 HREF="progu097.htm#PToC20">Partial Table of Contents</A> &#124; <A
 HREF="progu344.htm#HDRINDEX_START">Index</A> &#93;</B><HR><P>
-<H3><A NAME="HDRDXT" HREF="progu097.htm#PToC_429">DXTrim</A></H3>
+<H3><A NAME="HDRDXT"></A><A HREF="progu097.htm#PToC_429">DXTrim</A></H3>
 <A NAME="IDX2129"></A>
 <A NAME="IDX2130"></A>
 <P><STRONG>Function</STRONG>
 <P>
 Frees space allocated in an Array beyond that required for the number
 of items in the Array.
-<P><STRONG>Syntax</STRONG>
-<BR>
-<TT><STRONG><BR>
-&#35;include &lt;dx/dx.h&gt;<BR>
-<P><BR>
-Array DXTrim(Array a)<BR>
-</STRONG></TT><BR>
-<P><STRONG>Functional Details</STRONG>
-<P>
+
+		<P><STRONG>Syntax</STRONG></P>
+		<P><TT><STRONG>
+					#include &lt;dx/dx.h&gt;</STRONG></TT></P>
+		<P><TT><STRONG>Array DXTrim(Array a)</STRONG></TT></P>
+		<P><STRONG>Functional Details</STRONG>
+		<P>
 Under
 some circumstances, more space than is necessary to hold the
 items added to
@@ -61,20 +59,30 @@ DXTrim
 </STRONG></TT>
 on all components of a Field.
 <P><STRONG>Return Value</STRONG>
-<P>
+		<P>
 Returns <TT><STRONG>a</STRONG></TT> or returns <TT><STRONG>NULL</STRONG></TT>
 and
 sets an error code.
-<P><STRONG>See Also</STRONG>
-<P>
+
+		<H3><A NAME="HDRDTI"></a><A HREF="progu097.htm#PToC_429">DXTrimItems</A></H3>
+		<P><STRONG>Function</STRONG></P>
+		<P>Frees space allocated in an Array beyond that required for the number of items in the Array.</P>
+		<P><STRONG>Syntax</STRONG></P>
+		<P><TT><STRONG>#include &lt;dx/dx.h&gt;</STRONG></TT></P>
+		<P><TT><STRONG>Array DXTrimItems(Array a, int nitems)</STRONG></TT></P>
+		<P><STRONG>Functional Details</STRONG></P>
+		<P>It may desirable to remove elements at the end of an array to shrink the array without having to copy it. DXTrim items will remove nitems from the end of the array and automatically call <TT><STRONG>DXTrim </STRONG></TT>to free the extra array memory.</P>
+		<P><STRONG>Return Value</STRONG></P>
+		<P>Returns <TT><STRONG>a</STRONG></TT> or returns <TT><STRONG>NULL</STRONG></TT> and sets an error code. </P>
+		<P><STRONG>See Also</STRONG></P>
+		<P>
 <TT><STRONG>
 <A HREF="progu100.htm#HDRDXAAD">DXAddArrayData</A>,
 <A HREF="progu107.htm#HDRDXAA">DXAllocateArray</A>,
-<A HREF="progu136.htm#HDRDXENDF">DXEndField</A>
-</STRONG></TT>
-<P>
-<A HREF="progu046.htm#HDRIRREG">"Irregular Arrays"</A>.
-<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
+<A HREF="progu136.htm#HDRDXENDF">DXEndField</A>, </STRONG></TT><A HREF="progu046.htm#HDRIRREG">"Irregular Arrays"</A>.
+
+		<P>
+		<HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A
 HREF="progu334.htm">Previous Page</A> &#124; <A HREF="progu336.htm">Next
 Page</A> &#124; <A HREF="../proguide.htm#ToC">Table of Contents</A> &#124; <A
 HREF="progu097.htm#PToC20">Partial Table of Contents</A> &#124; <A

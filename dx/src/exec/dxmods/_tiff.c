@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.10 2002/03/21 02:57:32 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.11 2003/07/11 05:50:34 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -185,7 +185,7 @@ typedef struct tiff_ifd {
 } TiffIFD;
 
 /* Determine the local byte order */
-#if WORDS_BIGENDIAN==1
+#if defined(WORDS_BIGENDIAN)
 # define LOCAL_MSB_ORDER
 # define  read_fwd_uint32   read_msb_uint32
 # define  read_fwd_uint16   read_msb_uint16
@@ -255,7 +255,7 @@ write_fwd_uint32(int fd, uint32 val)
 }
 
 
-#if WORDS_BIGENDIAN!=1
+#if !defined(WORDS_BIGENDIAN)
 static Error
 write_rev_uint32(int fd, uint32 val)
 {
@@ -297,7 +297,7 @@ write_fwd_uint16(int fd, uint16 val)
     }
 }
 
-#if WORDS_BIGENDIAN!=1
+#if !defined(WORDS_BIGENDIAN)
 static Error
 write_rev_uint16(int fd, uint16 val)
 {

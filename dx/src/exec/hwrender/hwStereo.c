@@ -24,7 +24,9 @@
 #undef Screen
 #undef Boolean
 
+#if !defined(DX_NATIVE_WINDOWS)
 #include <X11/Xlib.h>
+#endif
 
 #include <math.h>
 
@@ -91,6 +93,9 @@ _dxfLoadStereoModes()
 Error
 _dxfInitializeStereoSystemMode(void *globals, dxObject args)
 {
+#if defined(DX_NATIVE_WINDOWS)
+	return ERROR;
+#else
     DEFGLOBALDATA(globals);
     int mode = -1;
 
@@ -134,11 +139,15 @@ _dxfInitializeStereoSystemMode(void *globals, dxObject args)
     }
 
     return OK;
+#endif
 }
 
 int
 _dxfExitStereoSystemMode(void *globals)
 {
+#if defined(DX_NATIVE_WINDOWS)
+	return ERROR;
+#else
     DEFGLOBALDATA(globals);
     if (STEREOSYSTEMMODE)
     {
@@ -149,6 +158,7 @@ _dxfExitStereoSystemMode(void *globals)
 	RIGHTWINDOW       = 0;
     }
     return OK;
+#endif
 }
 
 /***********************************************************

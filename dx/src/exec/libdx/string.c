@@ -71,7 +71,7 @@ DXNewString(char *s)
 }
 
 Object
-_dxfString_Copy(String old, enum copy copy)
+_dxfString_Copy(String old, enum _dxd_copy copy)
 {
     if (copy==COPY_DATA)
 	DXErrorReturn(ERROR_BAD_PARAMETER, "copying data is not implemented");

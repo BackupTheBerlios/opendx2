@@ -1047,7 +1047,7 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE(x) ((ulong)x>=(ulong)large)
 #endif
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 #define initvalues
 #define SMALL_BASE    0               /* use data segment */
 #define SMALL_GET     _dxfgetmem      /* expand by using DosSetMem */
@@ -1213,6 +1213,34 @@ getProcMemInfo()
 
 #endif
 
+#if defined(intelnt) || defined(WIN32)
+Error _dxfLocateFreeMemory (ulong *size) {
+	/* Basically with Windows we need to walk the memory tree to locate
+	   a range of free addresses that are left in the 2GB address
+	   space and then return that to allocate it for the arena. */
+	ULONG initial;
+	MEMORY_BASIC_INFORMATION mbi;
+
+	initial = 0x0000FFFF; /* Addresses less than this are reserved for protection */
+	*size = 0;
+
+	while(initial <  0x7FFF0000) { /* Addresses greater are reserved for protection */
+		if(VirtualQuery((LPCVOID)initial, &mbi, sizeof(MEMORY_BASIC_INFORMATION)) == 0) 
+			return FALSE;
+		if(mbi.State == MEM_FREE) {
+			if(mbi.RegionSize >= *size) {
+				*size = mbi.RegionSize;
+			}
+		}
+		initial = (ULONG) mbi.RegionSize + (ULONG) mbi.BaseAddress;
+	}
+
+	*size -= 2097152; /* Make sure to leave at least 2M for other allocs */
+
+	return OK;
+}
+#endif
+
 
 int _dxf_initmemory(void)
 {
@@ -1231,7 +1259,6 @@ int _dxf_initmemory(void)
      */
     extern char *getenv(GETENV_ARG);
     extern double atof(char *);
-
 
     if (small)            /* set if we've been here before */
 	return OK;
@@ -1259,6 +1286,16 @@ int _dxf_initmemory(void)
      * compute these values in megabytes.  that gives us a 2e20 factor
      * before we overflow 32bit ints.  seems safe for now.
      */
+
+#if defined(intelnt) || defined(WIN32)
+	if(total_size) {
+		ULONG avail;
+
+		_dxfLocateFreeMemory(&avail);
+		if(avail < total_size) total_size = avail;
+	}
+#endif
+
     if (!total_size) {
 
 #if ibm6000
@@ -1332,18 +1369,24 @@ int _dxf_initmemory(void)
 	physmem = 32;
 #endif
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 	{
-	    MEMORYSTATUS memStatus;
-	    
-	    memset(&memStatus, 0, sizeof(memStatus));
-	    memStatus.dwLength = sizeof(memStatus);
-	    GlobalMemoryStatus(&memStatus);
-
-	    physmem = memStatus.dwTotalPhys;
-	    if (physmem > memStatus.dwAvailPageFile + memStatus.dwAvailPhys)
-		physmem = (uint)(0.75*((double)memStatus.dwAvailPageFile + (double)memStatus.dwAvailPhys));
-	    physmem = (uint)((double)physmem / 1024.0 / 1024.0); /* This is MEG now */
+		MEMORYSTATUS memStatus;
+		ULONG avail;
+		
+		memset(&memStatus, 0, sizeof(memStatus));
+		memStatus.dwLength = sizeof(memStatus);
+		GlobalMemoryStatus(&memStatus);
+		
+		if(memStatus.dwTotalPhys > 0)
+			physmem = memStatus.dwTotalPhys;
+		else /* Whoa boy big memory - limit to 4GB*/
+			physmem = 4294967295;
+		
+		_dxfLocateFreeMemory(&avail);
+		if(avail < physmem) physmem = avail;
+		
+		physmem = (uint)((double)physmem / 1024.0 / 1024.0); /* This is MEG now */		
 	}
 #endif
 	
@@ -1431,7 +1474,9 @@ int _dxf_initmemory(void)
 		physmem = (uint)((double)basic_info.memory_size/(1024.0*1024.0));
 #endif
 	
+#if ibm6000 || hp700
       nomem:
+#endif
 	/* we should only get here without physmem set if one of the above
 	 * cases failed, or if an architecture is added without adding an
 	 * #ifdef for it.   nsc23oct92
@@ -1541,7 +1586,7 @@ int _dxf_initmemory(void)
 	    sl_offset = 2 MEG;
 	} else if (total_size < 128L MEG) {
 	    sl_ratio = 24;
-	    sl_offset = 2.667 MEG;
+	    sl_offset = 3 MEG;
 	} else {
 	    sl_ratio = 16;
 	    sl_offset = 0;
@@ -1558,7 +1603,7 @@ int _dxf_initmemory(void)
 
 	/* enforce reasonable limits here */
 	if (f > 0.0 && f < 20.0)
-	    sl_ratio /= f;
+	    sl_ratio = (int)(sl_ratio / f);
     }
 
     small_size = total_size / sl_ratio + sl_offset;
@@ -1817,7 +1862,7 @@ struct dbparms {
 static Error
 adebug_local_wrapper(Pointer p)
 {
-    struct dbparms *d = (struct dbparms *)d;
+    struct dbparms *d = (struct dbparms *)p;
 
     adebug(local, d->blocktype, d->m, d->p);
     return OK;
@@ -1836,7 +1881,7 @@ DXDebugLocalAlloc(int which, int blocktype, MemDebug m, Pointer p)
 
     d.blocktype = blocktype;
     d.m = m;
-    d.p = d.p;
+    d.p = p;
 
     /* arrange to run on correct processor(s) here */
     if (which < 0) {

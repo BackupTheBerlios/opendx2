@@ -104,6 +104,7 @@ class EditorWindow : public DXWindow
   friend class NoUndoEditorCommand; 
   friend class DeleteNodeCommand; 
   friend class UndoDeletion; // for createNetFileFromSelection
+  friend class PageSelector; // for setCommandActivation() in PageSelector::selectPage()
   friend ControlPanel::~ControlPanel();
 
   private:

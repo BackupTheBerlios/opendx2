@@ -28,11 +28,13 @@
 
 #include "hwDeclarations.h"
 
+#if !defined(DX_NATIVE_WINDOWS)
 #ifdef STANDALONE
 #include <X11/Xlib.h>
 #else
 #include "hwMemory.h"
 #include <X11/Xlib.h>
+#endif
 #endif
 
 #include "hwPortLayer.h"
@@ -159,7 +161,7 @@ StartStroke (tdmInteractor I, int x, int y, int btn, int s)
     case 2:
       *I = *BTN2(I) ;
       break ;
-    case 3:
+    default:
       *I = *BTN3(I) ;
       break ;
     }

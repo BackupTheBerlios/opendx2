@@ -13,8 +13,9 @@
 
 #include <dxconfig.h>
 
-
+#if !defined(DX_NATIVE_WINDOWS)
 #include <GL/glx.h>
+#endif
 #include <GL/gl.h>
 
 typedef struct {

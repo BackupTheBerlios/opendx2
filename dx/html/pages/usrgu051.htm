@@ -42,7 +42,7 @@ The following example illustrate some of the more important
 characteristics of scripts;
 a detailed description of each of the elements follows.
 However, you may prefer to simply study these examples (and perhaps
-those in /usr/lpp/dx/samples/scripts) and then begin writing your
+those in /usr/local/dx/samples/scripts) and then begin writing your
 own scripts.
 
 		<P>
@@ -57,7 +57,7 @@ A Camera is created using AutoCamera, and the isosurface is displayed
 using Display (note that the Image tool is not available in the
 scripting language.
 <PRE>
-data = Import("/usr/lpp/dx/samples/data/cloudwater");
+data = Import("/usr/local/dx/samples/data/cloudwater");
 iso = Isosurface(data);
 camera = AutoCamera(iso);
 Display(iso, camera);
@@ -113,7 +113,7 @@ display the image to the screen.
 In order to use Route in a script, the Route module and the tools that
 consume the outputs of Route must be contained in a macro.
 <PRE>
-data = Import("/usr/lpp/dx/samples/data/cloudwater");
+data = Import("/usr/local/dx/samples/data/cloudwater");
 iso = Isosurface(data);
 camera = Autocamera(iso);
 image= Render(iso, camera);

@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <float.h>
 #include <string.h>
 #include <dx/dx.h>
 #include "_compute.h"
@@ -211,6 +212,27 @@ _dxfComputeTanhComplexFloat(complexFloat x)
 
     return result;
 }
+
+#if defined(HAVE_ISNAN)
+int
+_dxfComputeIsnanComplexFloat(complexFloat x)
+{
+    int result;
+
+    result = isnan(REAL(x)) || isnan(IMAG(x));
+    return result;
+}
+#endif
+#if defined(HAVE_FINITE)
+int
+_dxfComputeFiniteComplexFloat(complexFloat x)
+{
+    int result;
+
+    result = finite(REAL(x)) && finite(IMAG(x));
+    return result;
+}
+#endif
 complexFloat
 _dxfComputeAsinComplexFloat(complexFloat x)
 {

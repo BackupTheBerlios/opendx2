@@ -15,12 +15,24 @@ typedef struct
     int xSize, ySize;
     float aspect;
 } WindowInfo;
-    
+
+#if defined(DX_NATIVE_WINDOWS)
+
+typedef int   (*InitializeStereoSystemMode)();
+typedef int   (*CreateStereoWindows)();
+typedef int   (*ExitStereo)();
+typedef int   (*MapStereoXY)();
+
+#else
+
 typedef int   (*InitializeStereoSystemMode)(Display *, Window);
 typedef int   (*CreateStereoWindows)(Display *, Window,
 				Window *, WindowInfo *,
 				Window *, WindowInfo *);
 typedef int   (*ExitStereo)(Display *, Window, Window, Window);
+typedef int   (*MapStereoXY)(void *, Window, Window, WindowInfo, 
+				int, int, int*, int*);
+#endif
 
 typedef struct 
 {
@@ -36,8 +48,6 @@ typedef int   (*CreateStereoCameras)(void *,
 				float *, float *, float *, float, float,
 				float *, float *, float *, float **,
 				float *, float *, float *, float **);
-typedef int   (*MapStereoXY)(void *, Window, Window, WindowInfo, 
-				int, int, int*, int*);
 
 typedef struct 
 {

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/arrange.c,v 1.5 2002/03/21 02:57:33 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/arrange.c,v 1.6 2003/07/11 05:50:34 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -43,7 +43,7 @@
 
 #include <string.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
+#include "_helper_jea.h"
 
 #define ARRANGE_INF  2147483647
 

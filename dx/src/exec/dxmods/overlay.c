@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/overlay.c,v 1.5 2000/08/24 20:04:41 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/overlay.c,v 1.6 2003/07/11 05:50:35 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -32,7 +32,7 @@ END:
 ***/
 
 #include <dx/dx.h>
-#include <_helper_jea.h>
+#include "_helper_jea.h"
 #include  <math.h>		/* for fabs() */
 #include <stdlib.h>
 

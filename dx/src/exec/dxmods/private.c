@@ -18,7 +18,7 @@
 #include "macroutil.h"
 
 #include <dx/dx.h>
-#include <pmodflags.h>
+#include "../dpexec/pmodflags.h"
 #include "../dpexec/function.h"
 
 /*

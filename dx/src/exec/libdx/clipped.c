@@ -80,7 +80,7 @@ _dxfClipped_Delete(Clipped c)
  */
 
 Object
-_dxfClipped_Copy(Clipped old, enum copy copy)
+_dxfClipped_Copy(Clipped old, enum _dxd_copy copy)
 {
     Clipped new;
     Object render, clipping;

@@ -12,11 +12,11 @@
 #ifndef _GARApplication_h
 #define _GARApplication_h
 
-#if defined(HAVE_STRSTREAM_H)
+#if defined(HAVE_SSTREAM)
+#include <sstream>
+#elif defined(HAVE_STRSTREAM_H)
 #include <strstream.h>
 #endif
-
-#include <iostream.h>
 
 #if defined(HAVE_STRSTREA_H)
 #include <strstrea.h>
@@ -163,7 +163,7 @@ class GARApplication : public IBMApplication
     void setDirty();
     void setClean();
 
-    void changeMode(unsigned long, istream *);
+    void changeMode(unsigned long, std::istream *);
 
     const char *getResourcesExec() { return this->resource.exec; }
     int	        getResourcesPort() { return this->resource.port; }

@@ -69,7 +69,7 @@ _dxfScreen_Delete(Screen s)
 
 
 Object
-_dxfScreen_Copy(Screen old, enum copy copy)
+_dxfScreen_Copy(Screen old, enum _dxd_copy copy)
 {
     Screen new;
     Object o;

@@ -73,6 +73,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <float.h>
 #include <string.h>
 #include <dx/dx.h>
 #if defined(HAVE_CTYPE_H)
@@ -1440,8 +1441,6 @@ CheckVariable (PTreeNode *pt, ObjStruct *os, OperBinding *binding)
     return OK;
 }
 
-
-
 static OperBinding inputs[] = {
     {0, (CompFuncV)ExecInput, CheckInput}
 };
@@ -2621,6 +2620,12 @@ VFUNC1 (tanF, float, float, ftan)
 VFUNC1 (sinhF, float, float, fsinh)
 VFUNC1 (coshF, float, float, fcosh)
 VFUNC1 (tanhF, float, float, ftanh)
+#if defined(HAVE_FINITE)
+VFUNC1 (finiteF, int, float, finite)
+#endif
+#if defined(HAVE_ISNAN)
+VFUNC1 (isnanF, int, float, isnan)
+#endif
 
 VFUNC1 (sinD, double, double, sin)
 VFUNC1 (cosD, double, double, cos)
@@ -2628,6 +2633,12 @@ VFUNC1 (tanD, double, double, tan)
 VFUNC1 (sinhD, double, double, sinh)
 VFUNC1 (coshD, double, double, cosh)
 VFUNC1 (tanhD, double, double, tanh)
+#if defined(HAVE_FINITE)
+VFUNC1 (finiteD, int, double, finite)
+#endif
+#if defined(HAVE_ISNAN)
+VFUNC1 (isnanD, int, double, isnan)
+#endif
 
 VFUNC1 (sinFC, complexFloat, complexFloat, _dxfComputeSinComplexFloat)
 VFUNC1 (cosFC, complexFloat, complexFloat, _dxfComputeCosComplexFloat)
@@ -2635,6 +2646,13 @@ VFUNC1 (tanFC, complexFloat, complexFloat, _dxfComputeTanComplexFloat)
 VFUNC1 (sinhFC, complexFloat, complexFloat, _dxfComputeSinhComplexFloat)
 VFUNC1 (coshFC, complexFloat, complexFloat, _dxfComputeCoshComplexFloat)
 VFUNC1 (tanhFC, complexFloat, complexFloat, _dxfComputeTanhComplexFloat)
+#if defined(HAVE_FINITE)
+VFUNC1 (finiteFC, int, complexFloat, _dxfComputeFiniteComplexFloat)
+#endif
+#if defined(HAVE_ISNAN)
+VFUNC1 (isnanFC, int, complexFloat, _dxfComputeIsnanComplexFloat)
+#endif
+
 #define FPM1(x) ((x) >= -1 && (x) <= 1)
 VFUNC1RC (asinF, float, float, fasin, FPM1, "#12060")
 VFUNC1RC (acosF, float, float, facos, FPM1, "#12061")
@@ -2717,6 +2735,32 @@ static OperBinding tanhs[] = {
 	{0, TYPE_FLOAT, CATEGORY_COMPLEX, 0},
 	{   {0, TYPE_FLOAT, CATEGORY_COMPLEX, 0}}}
 };
+#if defined(HAVE_ISNAN)
+static OperBinding isnans[] = {
+    {1, (CompFuncV)isnanF, _dxfComputeCheckSameShape,
+	{0, TYPE_INT, CATEGORY_REAL, 0},
+	{   {0, TYPE_FLOAT, CATEGORY_REAL, 0}}},
+    {1, (CompFuncV)isnanD, _dxfComputeCheckSameShape,
+	{0, TYPE_INT, CATEGORY_REAL, 0},
+	{   {0, TYPE_DOUBLE, CATEGORY_REAL, 0}}},
+    {1, (CompFuncV)isnanFC, _dxfComputeCheckSameShape,
+	{0, TYPE_INT, CATEGORY_REAL, 0},
+	{   {0, TYPE_FLOAT, CATEGORY_COMPLEX, 0}}}
+};
+#endif
+#if defined(HAVE_FINITE)
+static OperBinding finites[] = {
+    {1, (CompFuncV)finiteF, _dxfComputeCheckSameShape,
+	{0, TYPE_INT, CATEGORY_REAL, 0},
+	{   {0, TYPE_FLOAT, CATEGORY_REAL, 0}}},
+    {1, (CompFuncV)finiteD, _dxfComputeCheckSameShape,
+	{0, TYPE_INT, CATEGORY_REAL, 0},
+	{   {0, TYPE_DOUBLE, CATEGORY_REAL, 0}}},
+    {1, (CompFuncV)finiteFC, _dxfComputeCheckSameShape,
+	{0, TYPE_INT, CATEGORY_REAL, 0},
+	{   {0, TYPE_FLOAT, CATEGORY_COMPLEX, 0}}}
+};
+#endif
 static OperBinding asins[] = {
     {1, (CompFuncV)asinF, _dxfComputeCheckSameShape,
 	{0, TYPE_FLOAT, CATEGORY_REAL, 0},
@@ -3161,7 +3205,7 @@ randNULL(
 
     srandom(seed);
     for (i = 0; i<RANDSORTBINS; ++i)
-	rands[i] = ((float)random()/0x7fffffff);
+	rands[i] = ((float)random()/RAND_MAX);
 
     for (numBasic = 1, i = 0; i < pt->metaType.rank; i++)
 	numBasic *= pt->metaType.shape[i];
@@ -3170,9 +3214,9 @@ randNULL(
     items = pt->metaType.items;
     for (i = 0; i < items; ++i) 
 	for (j = 0; j < numBasic; j++) {
-	    index = ((float)random()/0x7fffffff)*RANDSORTBINS;
+	    index = ((float)random()/RAND_MAX)*RANDSORTBINS;
 	    out[i*numBasic + j] = rands[index];
-	    rands[index] = ((float)random()/0x7fffffff);
+	    rands[index] = ((float)random()/RAND_MAX);
 	}
     return (OK);
 }
@@ -3364,6 +3408,12 @@ static OperDesc operators[] = {
     OP_RECORD_SIZE (FUNC_imagj,	"imagj",	_dxdComputeImagjs, _dxdComputeImagjsSize),
     OP_RECORD_SIZE (FUNC_imagk,	"imagk",	_dxdComputeImagks, _dxdComputeImagksSize),
     OP_RECORD_SIZE (FUNC_quaternion,	"quaternion",	_dxdComputeQuaternions, _dxdComputeQuaternionsSize),
+#if defined(HAVE_FINITE)
+    OP_RECORD (FUNC_finite,     "finite",  finites),
+#endif
+#if defined(HAVE_ISNAN)
+    OP_RECORD (FUNC_isnan,      "isnan",  isnans),
+#endif
     /* Not available on the i860 version 
      * OP_RECORD (FUNC_acosh,	"acosh",	acoshs),
      * OP_RECORD (FUNC_asinh,	"asinh",	asinhs),
@@ -4056,7 +4106,9 @@ _dxfComputeLookupFunction (char *name)
 	{ "stricmp",	FUNC_stricmp },
 	{ "strstr",	FUNC_strstr },
 	{ "stristr",	FUNC_stristr },
-	{ "strlen",	FUNC_strlen }
+	{ "strlen",	FUNC_strlen },
+	{ "finite",	FUNC_finite },
+	{ "isnan",	FUNC_isnan }
     };
     int i;
 

@@ -468,7 +468,7 @@ MINING">
 			<P></P>
 			<LI>This example renders two views of the object and displays them in two separate windows, as specified by the <TT><STRONG>where</STRONG></TT> parameter.
 			<PRE>
-electrondensity = Import(&quot;/usr/lpp/dx/samples/data/watermolecule&quot;);
+electrondensity = Import(&quot;/usr/local/dx/samples/data/watermolecule&quot;);
 isosurface = Isosurface(electrondensity, 0.3);
 camera1 = AutoCamera(isosurface, &quot;front&quot;, resolution=300);
 camera2 = AutoCamera(isosurface, &quot;top&quot;, resolution=300);
@@ -480,7 +480,7 @@ Display(image2,where=&quot;X, localhost:0, view from top&quot;);
 			<P></P>
 			<LI>This example sets the rendering mode to &quot;hardware&quot; with the approximation method of &quot;dots.&quot;
 			<PRE>
-electrondensity = Import(&quot;/usr/lpp/dx/samples/data/watermolecule&quot;);
+electrondensity = Import(&quot;/usr/local/dx/samples/data/watermolecule&quot;);
 isosurface = Isosurface(electrondensity, 0.3);
 from = Direction(65, 5, 10);
 camera = AutoCamera(isosurface, from);

@@ -31,8 +31,6 @@
 #include "../base/ButtonInterface.h"
 #include "../base/DXStrings.h"
 
-#include <fstream.h>
-#include <iostream.h>
 #include <sys/stat.h>
 
 #if HAVE_REGCOMP && HAVE_REGEX_H
@@ -974,16 +972,16 @@ void Browser::gotoLine(unsigned long line_num)
     //
     while (offset < this->file_size)
     {
-	this->from->seekg((streampos)offset);
+	this->from->seekg((std::streampos)offset);
 	if(!this->from)
 	{
-	    cerr << "Seekg failed in Browser::gotoLine()" << endl;
+	    std::cerr << "Seekg failed in Browser::gotoLine()" << std::endl;
 	    break;
 	}
 	this->from->read(buf, this->page_size);
 	if(!this->from)
 	{
-	    cerr << "Read failed in Browser::gotoLine()" << endl;
+	    std::cerr << "Read failed in Browser::gotoLine()" << std::endl;
 	    break;
 	}
 	if(this->from->fail()) this->from->clear();
@@ -1330,7 +1328,7 @@ boolean Browser::openFile(char *filenm)
     struct STATSTRUCT statb;
     char title[512];
 
-    this->from = new ifstream(filenm);
+    this->from = new std::ifstream(filenm);
     if(!this->from)
     {
 	WarningMessage("File open failed for file %s", filenm);
@@ -1374,15 +1372,15 @@ void Browser::loadBuffer(unsigned long file_offset)
     //
     // Read in a buffer
     //
-    this->from->seekg((streampos)file_offset);
+    this->from->seekg((std::streampos)file_offset);
     if(!this->from)
     {
-	cerr << "Seekg failed in Browser::loadBuffer()" << endl;
+	std::cerr << "Seekg failed in Browser::loadBuffer()" << std::endl;
     }
     this->from->read(buf, this->page_size);
     if(!this->from)
     {
-	cerr << "Read failed in Browser::loadBuffer()" << endl;
+	std::cerr << "Read failed in Browser::loadBuffer()" << std::endl;
     }
     if(this->from->fail()) this->from->clear();
 
@@ -1427,10 +1425,10 @@ void Browser::loadBuffer(unsigned long file_offset)
     //
     // Calc the line number offset of this position
     //
-    this->from->seekg((streampos)0);
+    this->from->seekg((std::streampos)0);
     if(!this->from)
     {
-	cerr << "Seekg failed in Browser::loadBuffer()" << endl;
+	std::cerr << "Seekg failed in Browser::loadBuffer()" << std::endl;
     }
     int offset = 0;
     this->page_start_line_no = 0;
@@ -1439,7 +1437,7 @@ void Browser::loadBuffer(unsigned long file_offset)
 	this->from->getline(linebuf, this->page_size);
 	if(!this->from)
 	{
-	    cerr << "Getline failed in Browser::gotoLine()" << endl;
+	    std::cerr << "Getline failed in Browser::gotoLine()" << std::endl;
 	    break;
 	}
 	// Add one, since getline does not get the '\n'
@@ -1507,15 +1505,15 @@ void Browser::searchForward(char *text)
 	//
 	// Read in a buffer
 	//
-	this->from->seekg((streampos)pos);
+	this->from->seekg((std::streampos)pos);
 	if(!this->from)
 	{
-	    cerr << "Seekg failed in Browser::searchForward()" << endl;
+	    std::cerr << "Seekg failed in Browser::searchForward()" << std::endl;
 	}
 	this->from->read(buf, this->page_size);
 	if(!this->from)
 	{
-	    cerr << "Read failed in Browser::searchForward()" << endl;
+	    std::cerr << "Read failed in Browser::searchForward()" << std::endl;
 	}
 	if(this->from->fail()) this->from->clear();
 
@@ -1689,15 +1687,15 @@ void Browser::searchBackward(char *text)
 	//
 	// Read in a buffer
 	//
-	this->from->seekg((streampos)bufstart);
+	this->from->seekg((std::streampos)bufstart);
 	if(!this->from)
 	{
-	    cerr << "Seekg failed in Browser::searchBackward()" << endl;
+	    std::cerr << "Seekg failed in Browser::searchBackward()" << std::endl;
 	}
 	this->from->read(buf, this->page_size);
 	if(!this->from)
 	{
-	    cerr << "Read failed in Browser::searchBackward()" << endl;
+	    std::cerr << "Read failed in Browser::searchBackward()" << std::endl;
 	}
 	if(this->from->fail()) this->from->clear();
 

@@ -38,7 +38,7 @@
 #include <process.h>
 #endif
 
-#if defined (intelnt)
+#if defined(intelnt) || defined(WIN32)
 
 #if 0
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lparam) {
@@ -94,17 +94,24 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
         oss = LSGetApplicationForInfo(kLSUnknownType, kLSUnknownCreator, CFSTR("html"),
                                       kLSRolesViewer, NULL, &outAppURL);
         CFStringRef urlStr = CFStringCreateWithCString(NULL, URL, kCFStringEncodingUTF8);
-        CFURLRef inURL = CFURLCreateWithString(NULL, urlStr, NULL);
+	CFStringRef urlStrEsc = CFURLCreateStringByAddingPercentEscapes(NULL,
+					urlStr, NULL, NULL, kCFStringEncodingUTF8);
+        CFURLRef inURL = CFURLCreateWithString(NULL, urlStrEsc, NULL);
         CFArrayRef arRef = CFArrayCreate(NULL, (const void**)&inURL, 1, NULL);
         LSLaunchURLSpec lurl = { outAppURL, arRef, NULL, kLSLaunchDefaults, NULL};
         oss = LSOpenFromURLSpec ( &lurl , NULL );
-        CFRelease(urlStr);
-        CFRelease(inURL);
-        CFRelease(arRef);
+	if(urlStrEsc)
+	  CFRelease(urlStrEsc);
+	if(urlStr)
+          CFRelease(urlStr);
+	if(inURL)
+          CFRelease(inURL);
+	if(arRef)
+          CFRelease(arRef);
         return !oss;
     }
     return 0;
-#elif defined(intelnt)
+#elif defined(intelnt) || defined(WIN32)
     #define MAXPATH 4096
     if(webApp) {
         FILE *f;

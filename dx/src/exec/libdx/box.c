@@ -597,8 +597,10 @@ _dxfField_BoundingBox(Field f, Point *box, Matrix *m, int validity)
 
 done:
 
-    if (ich)
-	DXFreeInvalidComponentHandle(ich);
+    if (ich) {
+        DXFreeInvalidComponentHandle(ich);
+        ich = NULL;
+	}
 
     if (box && !_copyout(box, m, box_array))
 	goto null_return;
@@ -608,7 +610,7 @@ done:
 null_return:
 
     if (ich)
-	DXFreeInvalidComponentHandle(ich);
+        DXFreeInvalidComponentHandle(ich);
     
     return NULL;
 }

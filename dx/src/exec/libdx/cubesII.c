@@ -661,7 +661,7 @@ _dxfCleanup(CubesIIInterpolator ci)
 }
 
 Object
-_dxfCubesIIInterpolator_Copy(CubesIIInterpolator old, enum copy copy)
+_dxfCubesIIInterpolator_Copy(CubesIIInterpolator old, enum _dxd_copy copy)
 {
     CubesIIInterpolator new;
 
@@ -679,7 +679,7 @@ _dxfCubesIIInterpolator_Copy(CubesIIInterpolator old, enum copy copy)
 
 CubesIIInterpolator
 _dxf_CopyCubesIIInterpolator(CubesIIInterpolator new, 
-				CubesIIInterpolator old, enum copy copy)
+				CubesIIInterpolator old, enum _dxd_copy copy)
 {
 
     if (! _dxf_CopyFieldInterpolator((FieldInterpolator)new,

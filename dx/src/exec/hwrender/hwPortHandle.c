@@ -42,8 +42,13 @@
 
 extern tdmInteractorEchoP   	_dxf_initInteractorEchoPort ();
 
+#if defined(DX_NATIVE_WINDOWS)
+int _dxfHWload(tdmPortHandleP (**initPP)(char*,void(*)(tdmPortHandleP)));
+#else
 int
 _dxfHWload(tdmPortHandleP (**initPP)(Display*, char*,void(*)(tdmPortHandleP)), Display *);
+#endif
+
 
 #ifndef STANDALONE
 /*
@@ -57,7 +62,7 @@ _dxfHWload(tdmPortHandleP (**initPP)(Display*, char*,void(*)(tdmPortHandleP)), D
  * given version of DXhwdd.o
  */
 
-int			_dxd_execHwddVersion,_dxd_lmHwddVersion = 0;
+int			_dxd_execHwddVersion = 0, _dxd_lmHwddVersion = 0;
 
 Error
 _dxfExportHwddVersion(int version)
@@ -82,8 +87,12 @@ _dxfExportHwddVersion(int version)
  * definition.
  */
 
+#if defined(DX_NATIVE_WINDOWS)
+tdmPortHandleP _dxfNewPortHandle(tdmParsedFormatP format)
+#else
 tdmPortHandleP
 _dxfNewPortHandle(tdmParsedFormatP format, Display **dpy)
+#endif
 {
   /*
    *  Return NULL if hardware rendering is not available.  
@@ -91,6 +100,17 @@ _dxfNewPortHandle(tdmParsedFormatP format, Display **dpy)
 
   tdmPortHandleP	ret = NULL;
   tdmPortHandleP	(*_initP)();
+
+
+#if defined(DX_NATIVE_WINDOWS)
+
+  if (! _dxfHWload(&_initP))
+      goto error;
+
+  if(!(ret = (_initP)(format->where)))
+    goto error;
+
+#else
 
   ENTRY(("_dxfNewPortHandle(0x%x, 0x%x)", format, dpy));
 
@@ -127,6 +147,7 @@ _dxfNewPortHandle(tdmParsedFormatP format, Display **dpy)
 #endif
 
   ret->dpy = (void*)*dpy;
+#endif
 
   EXIT(("ret = 0x%x",ret));
   return ret;
@@ -135,10 +156,12 @@ error:
   if(ret) (ret->uninitP)(ret);
   ret = NULL;
 
-  if(*dpy) {
+#if !defined(DX_NATIVE_WINDOWS)
+ if(*dpy) {
       XSync(*dpy,0);
       XCloseDisplay(*dpy);
     }
+#endif
 
   EXIT(("ret = NULL"));
   return NULL;
@@ -151,16 +174,22 @@ error:
 void
 _dxfDeletePortHandle(tdmPortHandleP portHandle)
 {
+#if !defined(DX_NATIVE_WINDOWS)
   Display *dpy = (Display*)portHandle->dpy;
+#endif
 
   ENTRY(("_dxfDeletePortHandle(0x%x)", portHandle));
 
   if (portHandle) {
     (portHandle->uninitP)(portHandle);
+    {
+#if !defined(DX_NATIVE_WINDOWS)    
     if (dpy) {
       XSync(dpy,0);
       XCloseDisplay(dpy);
     }
+#endif
+	}
   }
   EXIT((""));
 }

@@ -37,7 +37,7 @@
 #if (XmVersion > 1001)
 # include "../widgets/Number.h"
 # define XK_MISCELLANY
-# include <X11/keysymdef.h>
+# include <X11/keysym.h>
 #endif
 
 #ifdef APP_HAS_TUTOR_DBASE

@@ -550,7 +550,7 @@ _dxfCleanup(Fle2DInterpolator fle)
 }
 
 Object
-_dxfFle2DInterpolator_Copy(Fle2DInterpolator old, enum copy copy)
+_dxfFle2DInterpolator_Copy(Fle2DInterpolator old, enum _dxd_copy copy)
 {
     Fle2DInterpolator new;
 
@@ -568,7 +568,7 @@ _dxfFle2DInterpolator_Copy(Fle2DInterpolator old, enum copy copy)
 
 Fle2DInterpolator
 _dxf_CopyFle2DInterpolator(Fle2DInterpolator new, 
-				Fle2DInterpolator old, enum copy copy)
+				Fle2DInterpolator old, enum _dxd_copy copy)
 {
 
     if (! _dxf_CopyFieldInterpolator((FieldInterpolator)new,

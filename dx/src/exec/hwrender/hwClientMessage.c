@@ -28,8 +28,12 @@
 #include "hwDeclarations.h"
 #include "hwClientMessage.h"
 #include "hwWindow.h"
+#if defined(DX_NATIVE_WINDOWS)
+#include <windows.h>
+#else
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#endif
 
 #include "hwDebug.h"
 
@@ -41,7 +45,7 @@
 #define SIN45  0.707
 #define SIN35  0.574
 
-struct atomRep _dxdtdmAtoms[MAX_ATOMS];
+struct atomRep _dxdtdmAtoms[MAX_ATOMS] = {{ None, NULL}};
 
 static void
 _sendLinkCamera(tdmChildGlobalP globals,
@@ -49,8 +53,13 @@ _sendLinkCamera(tdmChildGlobalP globals,
   float width, float aspect, float fov, float dist,
   int projection, int pixwidth);
 
+#if defined(DX_NATIVE_WINDOWS)
+static int
+internAtoms ()
+#else
 static int
 internAtoms (Display *dpy)
+#endif
 {
   /*
    *  Intern UI/renderer protocol elements into the X server to allow the
@@ -106,9 +115,13 @@ internAtoms (Display *dpy)
   INTERNATOM(ImageReset);
   INTERNATOM(StartUserInteraction);
 
-  /* Add X predefined Atoms to the list of available atoms */
+#if defined(DX_NATIVE_WINDOWS)
+    INTERNATOM(XA_Integer);
+#else
+  /* Add X predefined Atoms to theDisplay *dpy) list of available atoms */
   _dxdtdmAtoms[XA_Integer].atom = XA_INTEGER;
   _dxdtdmAtoms[XA_Integer].spelling="XA_Integer";
+#endif
 
   EXIT(("1"));
   return 1 ;
@@ -137,6 +150,14 @@ lookupAtomName (Atom a)
   return "unknown atom" ;
 }
 
+
+#if defined(DX_NATIVE_WINDOWS)
+void
+_dxfSendClientMessage (HWND win, int atomIndex, tdmMessageDataP data)
+{
+    SendMessage(win, WM_CLIENT_MESSAGE, atomIndex, (void *)data);
+}
+#else
 
 void
 _dxfSendClientMessage
@@ -183,7 +204,7 @@ _dxfSendClientMessage
   XFlush(dpy) ;
   EXIT((""));
 }
-
+#endif
 
 static void
 _SendCamera (WinP win, float to[3], float up[3], float from[3],
@@ -200,7 +221,9 @@ _SendCamera (WinP win, float to[3], float up[3], float from[3],
   ENTRY(("_SendCamera (0x%x, 0x%x, 0x%x, 0x%x, %f, %d, %f, %f, %d, %d)",
 	 win, to, up, from, width, pixwidth, aspect, fov, proj, refresh));
 
+#if !defined(DX_NATIVE_WINDOWS)
   data0.l[0] = MSG_WINDOW ; /* kludge: ought to be win.xid */
+#endif
   data0.f[1] = to[0] ;
   data0.f[2] = to[1] ;
   data0.f[3] = to[2] ;
@@ -231,15 +254,26 @@ _SendCamera (WinP win, float to[3], float up[3], float from[3],
   data2.l[4] = proj ;
   PRINT(("%s projection", proj ? "perspective" : "orthographic"));
 
+#if defined(DX_NATIVE_WINDOWS)
+  _dxfSendClientMessage(PARENT_WINDOW, Camera0, &data0) ;
+  _dxfSendClientMessage(PARENT_WINDOW, Camera1, &data1) ;
+#else
   _dxfSendClientMessage(DPY, PARENT_WINDOW, Camera0, &data0) ;
   _dxfSendClientMessage(DPY, PARENT_WINDOW, Camera1, &data1) ;
+#endif
 
+#ifdef DX_NATIVE_WINDOWS
   if (refresh)
-      _dxfSendClientMessage(DPY, PARENT_WINDOW,
-			   Camera2Execute, &data2) ;
+      _dxfSendClientMessage(PARENT_WINDOW, Camera2Execute, &data2) ;
   else
-      _dxfSendClientMessage(DPY, PARENT_WINDOW,
-			   Camera2, &data2) ;
+      _dxfSendClientMessage(PARENT_WINDOW, Camera2, &data2) ;
+#else
+  if (refresh)
+      _dxfSendClientMessage(DPY, PARENT_WINDOW, Camera2Execute, &data2) ;
+  else
+      _dxfSendClientMessage(DPY, PARENT_WINDOW, Camera2, &data2) ;
+#endif
+
   EXIT((""));
 }
   
@@ -257,11 +291,16 @@ _dxfInitCMProtocol (WinP win)
 
   ENTRY(("_dxfInitCMProtocol(0x%x), win"));
 
+#if defined(DX_NATIVE_WINDOWS)
+  if (first_time && !internAtoms())
+#else
   if (first_time && !internAtoms(DPY))
+#endif
       goto error ;
   else
       first_time = 0 ;
 
+#if !defined(DX_NATIVE_WINDOWS)
   MSG_WINDOW = XCreateSimpleWindow
       (DPY, DefaultRootWindow(DPY), 0, 0, 1, 1, 0, 0, 0) ;
 
@@ -269,6 +308,7 @@ _dxfInitCMProtocol (WinP win)
       XSelectInput (DPY, MSG_WINDOW, 0) ;
   else
       DXErrorGoto (ERROR_INTERNAL, "Could not create ClientMessage window") ;
+#endif
 
   EXIT(("1"));
   return 1 ;
@@ -604,15 +644,21 @@ _dxfSetInteractionMode(tdmChildGlobalP globals, int mode, dxObject args)
 	        /* navigation switches to perspective, so push camera first */
 	        tdmMessageData data ;
 	        data.l[0] = _dxfPushInteractorCamera(INTERACTOR_DATA) ;
-	        _dxfSendClientMessage (DPY, PARENT_WINDOW,
-				      CameraUndoable, &data) ;
+#if defined(DX_NATIVE_WINDOWS)
+	        _dxfSendClientMessage (PARENT_WINDOW, CameraUndoable, &data) ;
+#else
+	        _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraUndoable, &data) ;
+#endif
       
 	      }
       
             /* switch to Execute On Change mode */
             data.l[0] = 1 ;
-            _dxfSendClientMessage (DPY, PARENT_WINDOW,
-			          ExecuteOnChange, &data) ;
+#if defined(DX_NATIVE_WINDOWS)
+            _dxfSendClientMessage (PARENT_WINDOW, ExecuteOnChange, &data) ;
+#else
+            _dxfSendClientMessage (DPY, PARENT_WINDOW, ExecuteOnChange, &data) ;
+#endif
       
 	    globals->CrntInteractor = globals->Navigator ;
 	    break;
@@ -636,9 +682,15 @@ _dxfSetInteractionMode(tdmChildGlobalP globals, int mode, dxObject args)
     }
 }
 
+#if defined(DX_NATIVE_WINDOWS)
+Error
+_dxfReceiveClientMessage (tdmChildGlobalP globals,
+			  UINT msg, void *data, int *NeedRefresh)
+#else
 Error
 _dxfReceiveClientMessage (tdmChildGlobalP globals,
 			  XClientMessageEvent *message, int *NeedRefresh)
+#endif
 {
   /*
    *  Process messages received from the UI process.  The bulk of these
@@ -671,16 +723,31 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
 
   /* Xlib.h has message.data.l defined as long's.  Fill in our expected
      format to avoid problems on arch's with 64 bit long's */
+
+#if defined(DX_NATIVE_WINDOWS)
+  dataP->l[0] = ((long *)data)[0];
+  dataP->l[1] = ((long *)data)[1];
+  dataP->l[2] = ((long *)data)[2];
+  dataP->l[3] = ((long *)data)[3];
+  dataP->l[4] = ((long *)data)[4];
+#else
   dataP->l[0] = (int32)message->data.l[0];
   dataP->l[1] = (int32)message->data.l[1];
   dataP->l[2] = (int32)message->data.l[2];
   dataP->l[3] = (int32)message->data.l[3];
   dataP->l[4] = (int32)message->data.l[4];
-  
-  if (message->message_type == ATOM(DisplayGlobe))
+#endif
+
+#if defined(DX_NATIVE_WINDOWS)
+#define COMPARE_MSGTYPE(t)	((msg) == (t))
+#else
+#define COMPARE_MSGTYPE(t)	(message->message_type == ATOM((t)))
+#endif
+
+  if (COMPARE_MSGTYPE(DisplayGlobe))
     {
-      PRINT(("DisplayGlobe %d", message->data.l[0]));
-      if (message->data.l[0] && !globals->displayGlobe)
+      PRINT(("DisplayGlobe %d", dataP->l[0]));
+      if (dataP->l[0] && !globals->displayGlobe)
 	{
 	  PRINT(("turning globe display on"));
 	  _dxfRotateInteractorVisible(globals->Globe) ;
@@ -694,7 +761,7 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
 	      tdmResumeEcho (globals->Globe, tdmFrontBufferDraw) ;
 	      
 	}
-      else if (!message->data.l[0] && globals->displayGlobe)
+      else if (!dataP->l[0] && globals->displayGlobe)
 	{
 	  PRINT(("turning globe display off"));
 	  _dxfRotateInteractorInvisible(globals->Globe) ;
@@ -706,12 +773,12 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
 	      globals->CrntInteractor == globals->CursorGroup)
 	      *NeedRefresh = 1 ;
 	}
-      globals->displayGlobe = message->data.l[0] ;
+      globals->displayGlobe = dataP->l[0] ;
     }
-  else if (message->message_type == ATOM(ExecuteOnChange))
+  else if (COMPARE_MSGTYPE(ExecuteOnChange))
     {
-      PRINT(("ExecuteOnChange %d", message->data.l[0]));
-      if (message->data.l[0] && !globals->executeOnChange)
+      PRINT(("ExecuteOnChange %d", dataP->l[0]));
+      if (dataP->l[0] && !globals->executeOnChange)
 	{
 	  PRINT(("switching to Execute On Change mode"));
 	  _dxfUpdateInteractorGroup (globals->RoamGroup,
@@ -727,7 +794,7 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
 				    globals->ViewRotate,
 				    globals->ViewTwirl) ;
 	}
-      else if (!message->data.l[0] && globals->executeOnChange)
+      else if (!dataP->l[0] && globals->executeOnChange)
 	{
 	  PRINT(("switching to Execute Once mode"));
 	  _dxfUpdateInteractorGroup (globals->RoamGroup,
@@ -743,52 +810,52 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
 				    globals->GnomonRotate,
 				    globals->GnomonTwirl) ;
 	}
-      globals->executeOnChange = message->data.l[0] ;
+      globals->executeOnChange = dataP->l[0] ;
     }
-  else if (message->message_type == ATOM(StopInteraction))
+  else if (COMPARE_MSGTYPE(StopInteraction))
     {
       PRINT(("StopInteraction"));
       *NeedRefresh |= switchInteractors(globals) ;
        _dxfSetInteractionMode(globals, INTERACTION_NONE, NULL);
     }
-  else if (message->message_type == ATOM(StartRotateInteraction))
+  else if (COMPARE_MSGTYPE(StartRotateInteraction))
     {
       PRINT(("StartRotateInteraction"));
       *NeedRefresh |= switchInteractors(globals) ;
        _dxfSetInteractionMode(globals, INTERACTION_ROTATE, NULL);
 
     }
-  else if (message->message_type == ATOM(StartCursorInteraction))
+  else if (COMPARE_MSGTYPE(StartCursorInteraction))
     {
       PRINT(("StartCursorInteraction"));
       *NeedRefresh |= switchInteractors(globals) ;
        _dxfSetInteractionMode(globals, INTERACTION_CURSORS, NULL);
     }
-  else if (message->message_type == ATOM(StartRoamInteraction))
+  else if (COMPARE_MSGTYPE(StartRoamInteraction))
     {
       PRINT(("StartRoamInteraction"));
       *NeedRefresh |= switchInteractors(globals) ;
        _dxfSetInteractionMode(globals, INTERACTION_ROAM, NULL);
     }
-  else if (message->message_type == ATOM(StartPickInteraction))
+  else if (COMPARE_MSGTYPE(StartPickInteraction))
     {
       PRINT(("StartPickInteraction"));
       *NeedRefresh |= switchInteractors(globals) ;
        _dxfSetInteractionMode(globals, INTERACTION_PICK, NULL);
     }
-  else if (message->message_type == ATOM(SetCursorConstraint))
+  else if (COMPARE_MSGTYPE(SetCursorConstraint))
     {
       /* set global cursor constraints (applies to Roamer and Cursor3D) */
       PRINT(("SetCursorConstraint"));
-      _dxfSetCursorConstraint (INTERACTOR_DATA, message->data.l[0]) ;
+      _dxfSetCursorConstraint (INTERACTOR_DATA, dataP->l[0]) ;
     }
-  else if (message->message_type == ATOM(SetCursorSpeed))
+  else if (COMPARE_MSGTYPE(SetCursorSpeed))
     {
       /* set global cursor speed (applies to Roamer and Cursor3D) */
       PRINT(("SetCursorSpeed"));
-      _dxfSetCursorSpeed (INTERACTOR_DATA, message->data.l[0]) ;
+      _dxfSetCursorSpeed (INTERACTOR_DATA, dataP->l[0]) ;
     }
-  else if (message->message_type == ATOM(CursorChange))
+  else if (COMPARE_MSGTYPE(CursorChange))
     {
       /*
        *  This is the UI's handle for moving, deleting, and adding
@@ -800,7 +867,7 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
       _dxfCursorInteractorChange (globals->Cursor3D, dataP->l[0], dataP->l[1],
 				  dataP->f[2], dataP->f[3], dataP->f[4]) ;
     }
-  else if (message->message_type == ATOM(StartNavigateInteraction))
+  else if (COMPARE_MSGTYPE(StartNavigateInteraction))
     {
       /*
        *  Start navigation mode.  Align the current navigation vectors with
@@ -810,7 +877,7 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
       *NeedRefresh |= switchInteractors(globals) ;
       _dxfSetInteractionMode(globals, INTERACTION_NAVIGATE, NULL);
     }
-  else if (message->message_type == ATOM(NavigateLookAt))
+  else if (COMPARE_MSGTYPE(NavigateLookAt))
     {
       /*
        *  Generate a new view relative to current navigation vectors.  The
@@ -830,8 +897,11 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
 
       /* push camera before changing */
       data.l[0] = _dxfPushInteractorCamera(INTERACTOR_DATA) ;
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-			    CameraUndoable, &data) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, CameraUndoable, &data) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraUndoable, &data) ;
+#endif
 
       /*
        *  Provide current view to _dxfSetNavigateLookAt, which then returns
@@ -866,29 +936,29 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
 	    _sendLinkCamera(globals, f, t, viewUpReturn, width, aspect, fov, dist,
 					      projection, pixwidth);
     }
-  else if (message->message_type == ATOM(NavigateMotion))
+  else if (COMPARE_MSGTYPE(NavigateMotion))
     {
       PRINT(("NavigateMotion"));
       _dxfSetNavigateTranslateSpeed (globals->Navigator, dataP->f[0]) ;
     }
-  else if (message->message_type == ATOM(NavigatePivot))
+  else if (COMPARE_MSGTYPE(NavigatePivot))
     {
       PRINT(("NavigatePivot"));
       _dxfSetNavigateRotateSpeed (globals->Navigator, dataP->f[0]) ;
     }
-  else if (message->message_type == ATOM(StartZoomInteraction))
+  else if (COMPARE_MSGTYPE(StartZoomInteraction))
     {
       PRINT(("StartZoomInteraction"));
       *NeedRefresh |= switchInteractors(globals) ;
       _dxfSetInteractionMode(globals, INTERACTION_ZOOM, NULL);
     }
-  else if (message->message_type == ATOM(StartPanZoomInteraction))
+  else if (COMPARE_MSGTYPE(StartPanZoomInteraction))
     {
       PRINT(("StartPanZoomInteraction"));
       *NeedRefresh |= switchInteractors(globals) ;
       _dxfSetInteractionMode(globals, INTERACTION_PANZOOM, NULL);
     }
-  else if (message->message_type == ATOM(ImageReset))
+  else if (COMPARE_MSGTYPE(ImageReset))
     {
       /* reset interactors that require it */
       SAVE_BUF_VALID = FALSE;
@@ -904,7 +974,7 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
 	  printf("_dxfResetNavigateInteractor(globals->Navigator);\n");
       }
     }
-  else if (message->message_type == ATOM(PushCamera))
+  else if (COMPARE_MSGTYPE(PushCamera))
     {
       /*
        *  There are two camera stacks associated with each image window:
@@ -925,10 +995,13 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
       PRINT(("PushCamera"));
 
       data.l[0] = _dxfPushInteractorCamera(INTERACTOR_DATA) ;
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-			    CameraUndoable, &data) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, CameraUndoable, &data) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraUndoable, &data) ;
+#endif
     }
-  else if (message->message_type == ATOM(UndoCamera))
+  else if (COMPARE_MSGTYPE(UndoCamera))
     {
       int r ;
       tdmMessageData data ;
@@ -942,8 +1015,11 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
 
 	  /* popped camera has been pushed onto redo stack */
 	  data.l[0] = 1 ;
-	  _dxfSendClientMessage (DPY, PARENT_WINDOW,
-				CameraRedoable, &data) ;
+#if defined(DX_NATIVE_WINDOWS)
+	  _dxfSendClientMessage (PARENT_WINDOW, CameraRedoable, &data) ;
+#else
+	  _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraRedoable, &data) ;
+#endif
 
 	  /* check to see if the undo stack is empty */
 	  data.l[0] = (r == -1 ? 0 : 1) ;
@@ -964,10 +1040,13 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
       else
 	  data.l[0] = 0 ;
 
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-			    CameraUndoable, &data) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, CameraUndoable, &data) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraUndoable, &data) ;
+#endif
     }
-  else if (message->message_type == ATOM(RedoCamera))
+  else if (COMPARE_MSGTYPE(RedoCamera))
     {
       int r ;
       tdmMessageData data ;
@@ -981,8 +1060,11 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
 
 	  /* re-done camera is pushed onto undo stack */
 	  data.l[0] = 1 ;
-	  _dxfSendClientMessage (DPY, PARENT_WINDOW,
-				 CameraUndoable, &data) ;
+#if defined(DX_NATIVE_WINDOWS)
+	  _dxfSendClientMessage (PARENT_WINDOW, CameraUndoable, &data) ;
+#else
+	  _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraUndoable, &data) ;
+#endif
 
 	  /* check to see if the redo stack is empty */
 	  data.l[0] = (r == -1 ? 0 : 1) ;
@@ -1004,10 +1086,13 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
       else
 	  data.l[0] = 0 ;
 
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-			    CameraRedoable, &data) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, CameraRedoable, &data) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraRedoable, &data) ;
+#endif
     }
-  else if (message->message_type == ATOM(Set_View))
+  else if (COMPARE_MSGTYPE(Set_View))
     {
       /*
        *  The UI process is asking us for the `view-from' point and `up'
@@ -1029,7 +1114,7 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
       }
 
       up = DXVec(0.0, 1.0, 0.0) ;
-      switch (message->data.l[0])
+      switch (dataP->l[0])
 	{
 	case FRONT:
 	  PRINT(("front"));
@@ -1100,15 +1185,21 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
       data.f[1] = f[1] = from.y ;
       data.f[2] = f[2] = from.z ;
       PRINT(("new look-from point")); VPRINT(data.f) ;
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-                            FromPoint, &data) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, FromPoint, &data) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, FromPoint, &data) ;
+#endif
 
       data.f[0] = u[0] = up.x ;
       data.f[1] = u[0] = up.y ;
       data.f[2] = u[0] = up.z ;
       PRINT(("new up-vector")); VPRINT(data.f) ;
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-                            UpVector, &data) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, UpVector, &data) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, UpVector, &data) ;
+#endif
 
       
 
@@ -1197,6 +1288,18 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
       return ;
     }
 
+#ifdef DX_NATIVE_WINDOWS
+  if (!globals || !PARENT_WINDOW)
+    {
+      PRINT(("I = %0x%x", I));
+      PRINT(("globals = 0x%x", globals));
+      if (globals) {
+	PRINT(("UI window = 0x%x", PARENT_WINDOW));
+      }
+      EXIT(("ERROR"));
+      return ;
+    }
+#else
   if (!globals || !DPY || !PARENT_WINDOW)
     {
       PRINT(("I = %0x%x", I));
@@ -1208,6 +1311,7 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
       EXIT(("ERROR"));
       return ;
     }
+#endif
 
   if (returnP)
       /* if provided, use it.  occurs as result of double click */
@@ -1241,8 +1345,11 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
       float fov, width, aspect ;
 
       data0.l[0] = _dxfPushInteractorCamera(INTERACTOR_DATA) ;
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-			    CameraUndoable, &data0) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, CameraUndoable, &data0) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraUndoable, &data0) ;
+#endif
 
       /*
       DXGetView (CAMERA, &from, &to, &up) ;
@@ -1280,10 +1387,13 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
       data2.f[3] = from[2] = R->from[2] ;
       PRINT(("sending new look-from point")); VPRINT(R->from) ;
 
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-                            Zoom1, &data1) ;
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-                            Zoom2, &data2) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, Zoom1, &data1) ;
+      _dxfSendClientMessage (PARENT_WINDOW, Zoom2, &data2) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, Zoom1, &data1) ;
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, Zoom2, &data2) ;
+#endif
     }
   else if (I == globals->User)
     {
@@ -1291,8 +1401,11 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
       float width, aspect, fov;
 
       data0.l[0] = _dxfPushInteractorCamera(INTERACTOR_DATA) ;
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-                            CameraUndoable, &data0) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, CameraUndoable, &data0) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraUndoable, &data0) ;
+#endif
 
       DXGetCameraResolution (CAMERA, &pixwidth, &pixheight) ;
       if (! DXGetOrthographic (CAMERA, &width, &aspect))
@@ -1323,24 +1436,33 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
       else
 	{
 	  data0.l[0] = _dxfPushInteractorCamera(INTERACTOR_DATA) ;
-	  _dxfSendClientMessage (DPY, PARENT_WINDOW,
-				CameraUndoable, &data0) ;
+#if defined(DX_NATIVE_WINDOWS)
+	  _dxfSendClientMessage (PARENT_WINDOW, CameraUndoable, &data0) ;
+#else
+	  _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraUndoable, &data0) ;
+#endif
 
 	  data1.f[0] = from[0] = R->from[0] ;
 	  data1.f[1] = from[1] = R->from[1] ;
 	  data1.f[2] = from[2] = R->from[2] ;
 	  PRINT(("new look-from point")); VPRINT(R->from) ;
 	  
-	  _dxfSendClientMessage (DPY, PARENT_WINDOW,
-				FromPoint, &data1) ;
+#if defined(DX_NATIVE_WINDOWS)
+	  _dxfSendClientMessage (PARENT_WINDOW, FromPoint, &data1) ;
+#else
+	  _dxfSendClientMessage (DPY, PARENT_WINDOW, FromPoint, &data1) ;
+#endif
 	  
 	  data1.f[0] = up[0] = R->up[0] ;
 	  data1.f[1] = up[1] = R->up[1] ;
 	  data1.f[2] = up[2] = R->up[2] ;
 	  PRINT(("new up vector")); VPRINT(R->up) ;
 	  
-	  _dxfSendClientMessage (DPY, PARENT_WINDOW,
-				UpVector, &data1) ;
+#if defined(DX_NATIVE_WINDOWS)
+	  _dxfSendClientMessage (PARENT_WINDOW, UpVector, &data1) ;
+#else
+	  _dxfSendClientMessage (DPY, PARENT_WINDOW, UpVector, &data1) ;
+#endif
 	}
     }
   else if (I == globals->Navigator)
@@ -1349,8 +1471,11 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
       float width, aspect, fov, viewdir[3] ;
       
       data0.l[0] = _dxfPushInteractorCamera(INTERACTOR_DATA) ;
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-			    CameraUndoable, &data0) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, CameraUndoable, &data0) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, CameraUndoable, &data0) ;
+#endif
 
       DXGetCameraResolution (CAMERA, &pixwidth, &pixheight) ;
       if (DXGetOrthographic (CAMERA, &width, &aspect))
@@ -1381,8 +1506,11 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
       PRINT(("sending cursor %d change,", R->id));
       PRINT((" reason %d", R->reason));
       PRINT(("coordinates")); VPRINT((&data1.f[2])) ;
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-                            CursorChange, &data1) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, CursorChange, &data1) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, CursorChange, &data1) ;
+#endif
     }
   else if (I == globals->RoamGroup && R->reason != tdmROTATION_UPDATE)
     {
@@ -1391,8 +1519,11 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
       data1.f[2] = R->z ;
 
       PRINT(("sending new roam point")); VPRINT(data1.f) ;
-      _dxfSendClientMessage (DPY, PARENT_WINDOW,
-                            RoamPoint, &data1) ;
+#if defined(DX_NATIVE_WINDOWS)
+      _dxfSendClientMessage (PARENT_WINDOW, RoamPoint, &data1) ;
+#else
+      _dxfSendClientMessage (DPY, PARENT_WINDOW, RoamPoint, &data1) ;
+#endif
 
     }
   else if (I == globals->Pick)
@@ -1402,7 +1533,11 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
       data1.f[2] = R->z ;
 
       PRINT(("sending new pick point")); VPRINT(data1.f) ;
+#ifdef DX_NATIVE_WINDOWS
+      _dxfSendClientMessage (PARENT_WINDOW, RoamPoint, &data1) ;
+#else
       _dxfSendClientMessage (DPY, PARENT_WINDOW, PickPoint, &data1) ;
+#endif
     }
 
   if (LINK)

@@ -62,7 +62,7 @@
 #define STRCMP(a,b)  ((a) ? ((b) ? strcmp(a,b) : strcmp(a,"")) : \
 			    ((b) ? strcmp("",b) : 0))
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
 const char *AssertMsgString = "Internal error detected at \"%s\":%d.\n";
 #endif
 

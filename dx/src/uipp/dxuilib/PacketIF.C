@@ -61,14 +61,6 @@ extern "C" {
 #include <io.h>
 #endif
 
-#if defined(HAVE_IOSTREAM_H)
-#include <iostream.h>
-#endif
-
-#if defined(HAVE_STREAM_H)
-#include <stream.h>
-#endif
-
 #if defined(HAVE_ARPA_INET_H)
 #include <arpa/inet.h>
 #endif
@@ -157,9 +149,6 @@ extern "C" int select(
 
 #define SOCK_QUEUE_LENGTH       1
 #define SOCK_ACCEPT_TIMEOUT     60      /* Seconds */
-#if !defined(SelectPtr)
-typedef void * SelectPtr;
-#endif
 
 #ifdef USING_WINSOCKS
 #define close closesocket
@@ -1581,9 +1570,9 @@ retry:
 #else
 #if defined(HAVE_SYS_UN_H) 
     FD_SET(usock, &fds);
-    width = ((sock > usock) ? sock : usock) + 1;
+	width = ((sock > usock) ? sock : usock) + 1;
 #else
-    width = sock + 1;
+	width = sock + 1;
 #endif
     if (!isatty(0)) {
         to.tv_sec = SOCK_ACCEPT_TIMEOUT;

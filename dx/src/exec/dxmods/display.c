@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <dx/dx.h>
 #include <stdlib.h>
-#include "../libdx/displayx.h"
+#include "../libdx/displayutil.h"
 
 static Matrix Identity = {
   {{ 1.0, 0.0, 0.0 },
@@ -196,7 +196,7 @@ m_Display(Object *in, Object *out)
 	    _dxf_NoHardwareMessage();
 #else
 	    _dxf_NoHardwareMessage();
-#endif
+#endif /* DXD_CAN_HAVE_HW_RENDERING */
 	 }
     }
 
@@ -225,7 +225,7 @@ m_Display(Object *in, Object *out)
 #if DXD_CAN_HAVE_HW_RENDERING
     if (!_dxfAsyncDelete(where))
 	return ERROR;
-#endif
+#endif /* DXD_CAN_HAVE_HW_RENDERING */
 
     /* render? */
     if (in[1])
@@ -365,39 +365,14 @@ m_Display(Object *in, Object *out)
 	if (external_window && !_link_message(arg3, where, camera))
 	    goto error;
 	    
-	switch (_dxf_getXDepth(type)) {
-	case 0:
-	  if(!DXDisplayX(image, arg1, arg2))
+#if defined(DX_NATIVE_WINDOWS)
+	if(!DXDisplay(image, 0, arg1, arg2))
 	    goto error;
-	  break;
-	case 8:
-	  if(!DXDisplayX8(image, arg1, arg2))
+#else
+	if(!DXDisplay(image, _dxf_getXDepth(type), arg1, arg2))
 	    goto error;
-	  break;
-	case 12:
-	  if(!DXDisplayX12(image, arg1, arg2))
-	    goto error;
-	  break;
-	case 15:
-	  if(!DXDisplayX15(image, arg1, arg2))
-	    goto error;
-	  break;
-	case 16:
-	  if(!DXDisplayX16(image, arg1, arg2))
-	    goto error;
-	  break;
-	case 24:
-	  if(!DXDisplayX24(image, arg1, arg2))
-	    goto error;
-	  break;
-	case 32:
-	  if(!DXDisplayX32(image, arg1, arg2))
-	    goto error;
-	  break;
-	default:
-	  goto error;
-	  break;
-	}
+#endif /* DX_NATIVE_WINDOWS */
+
     } else if (strcmp(type,"FB")==0) {
 	int x, y;
 	if (!message(image, arg4, buttonState, ddcamera, object))

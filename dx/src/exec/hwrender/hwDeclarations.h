@@ -27,8 +27,6 @@
 \*---------------------------------------------------------------------------*/
 
 #include "hwObject.h"
-#include <X11/Xlib.h>
-
 
 /*
  * Values for the attribute & gather 'flags' parameter
@@ -86,6 +84,9 @@ typedef struct translationS		*hwTranslationP;
 
 typedef void				*SortList;
 
+#if !defined(DX_NATIVE_WINDOWS)
+#include <X11/Xlib.h>
+#endif
 
 #include "hwFlags.h"
 #include "hwPortLayer.h"

@@ -17,8 +17,10 @@
 #include <stdlib.h>
 #include <dx/dx.h>
 #include "internals.h"
+#include "displayx.h"
+#include "displayw.h"
 
-unsigned char _dxd_convert[NC];	   /* see internals.h for more info */
+unsigned char _dxd_convert[NC] = { 0 };	   /* see internals.h for more info */
 
 typedef  struct {char r, g, b;} rgb;
 typedef  struct {double r, g, b;} drgb;
@@ -986,7 +988,11 @@ _dxf_ZeroPixels(Field image, int left, int right, int top, int bot, RGBColor col
 	if (o==O_FB_IMAGE)
 	    return _dxf_ZeroFBPixels(image, left, right, top, bot, color);
 	else if (o==O_X_IMAGE)
+#if defined(DX_NATIVE_WINDOWS)
+		return _dxf_ZeroWindowsPixels(image, left, right, top, bot, color);
+#else
 	    return _dxf_ZeroXPixels(image, left, right, top, bot, color);
+#endif
 	else
 	    DXErrorReturn(ERROR_BAD_PARAMETER, "unknown image type");
 

@@ -41,7 +41,9 @@
 #else
 #include "hwMemory.h"
 #include "hwPortLayer.h"
+#if !defined(DX_NATIVE_WINDOWS)
 #include <X11/Xlib.h>
+#endif
 #endif
 
 #include "hwMatrix.h"

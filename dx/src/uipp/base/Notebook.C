@@ -58,9 +58,13 @@ Notebook::Notebook(Widget parent) : UIComponent("notebook")
     NULL);
 
     // I don't think this is necessary but it does follow the doc.
+    // XmNscrolledWindowChildType probably defaults
+    // to XmWORK_AREA but you can't really tell by reading the man page.
     XtVaSetValues (this->scrolled_window, 
 	XmNworkWindow, this->manager, 
+#if (XmVersion>=2000)
 	XmNscrolledWindowChildType, XmWORK_AREA,
+#endif
     NULL);
 
     this->index_of_selection = -1;

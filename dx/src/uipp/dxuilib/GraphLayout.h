@@ -34,6 +34,7 @@ class LayoutInfo;
 class NodeDistance;
 class LayoutGroup;
 class SlotList;
+class GraphLayout;
 
 //
 // There are several classes defined in this include file that ought

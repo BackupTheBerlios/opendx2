@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.8 2002/04/03 05:21:33 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.9 2003/07/11 05:50:36 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -32,8 +32,8 @@ INPUTS:
 #include <stdio.h>
 #include <string.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
-#include <_rw_image.h>
+#include "_helper_jea.h"
+#include "_rw_image.h"
 #include <fcntl.h>
 
 #if defined(HAVE_ERRNO_H)

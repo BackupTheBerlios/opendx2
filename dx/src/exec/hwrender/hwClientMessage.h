@@ -55,8 +55,13 @@ _dxfInitCMProtocol(WinP) ;
 void
 _dxfInitDXInteractors(tdmChildGlobalP) ;
 
+#if defined(DX_NATIVE_WINDOWS)
+void
+_dxfSendClientMessage (HWND, int, tdmMessageDataP) ;
+#else
 void
 _dxfSendClientMessage (Display *, Window, int, tdmMessageDataP) ;
+#endif
 
 void
 _dxfConnectUI(WinP) ;
@@ -64,8 +69,13 @@ _dxfConnectUI(WinP) ;
 void
 _dxfSendInteractorData (tdmChildGlobalP, tdmInteractor, tdmInteractorReturn *) ;
 
+#if defined(DX_NATIVE_WINDOWS)
+Error
+_dxfReceiveClientMessage (tdmChildGlobalP, MSG *, int *) ;
+#else
 Error
 _dxfReceiveClientMessage (tdmChildGlobalP, XClientMessageEvent *, int *) ;
+#endif
 
 
 /*
@@ -78,9 +88,22 @@ _dxfReceiveClientMessage (tdmChildGlobalP, XClientMessageEvent *, int *) ;
  * hwClientMessage.c and INTERNATOM below)
  */
 
+#if defined(DX_NATIVE_WINDOWS)
+
+#define WM_CLIENT_MESSAGE (WM_USER + 0)
+#define Atom int
+#define None -1
+#define INTERNATOM(name) \
+    _dxdtdmAtoms[name].atom = name; \
+    _dxdtdmAtoms[name].spelling = #name
+
+#else
+
 #define INTERNATOM(name) \
   _dxdtdmAtoms[name].atom = XInternAtom(dpy, #name, FALSE);\
   _dxdtdmAtoms[name].spelling = #name
+
+#endif
 
 #define GLWindow0                        0
 #define GLWindow1                        1

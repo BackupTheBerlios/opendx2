@@ -20,7 +20,7 @@
 char * _dxfstring(char *, int);
 Object _dxfstringobject(char *, int);
 
-#define DECLARE(x) char * _dxd_##x; Object _dxd_o_##x
+#define DECLARE(x) char * _dxd_##x = NULL; Object _dxd_o_##x = NULL
 
 DECLARE(back_colors);
 DECLARE(binormals);

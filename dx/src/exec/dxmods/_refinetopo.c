@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinetopo.c,v 1.5 2000/08/24 20:04:19 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinetopo.c,v 1.6 2003/07/11 05:50:34 davidt Exp $:
  */
 
 #include <dxconfig.h>
@@ -14,7 +14,7 @@
 #include <math.h>
 #include <ctype.h>
 #include <dx/dx.h>
-#include <vectors.h>
+#include "vectors.h"
 #include <string.h>
 #include "_refine.h"
 #include "_newtri.h"

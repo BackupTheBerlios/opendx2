@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showconnect.c,v 1.6 2002/03/21 02:57:40 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showconnect.c,v 1.7 2003/07/11 05:50:36 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -32,7 +32,7 @@ END:
 #include <string.h>
 #include <stdio.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
+#include "_helper_jea.h"
 
 #define DEFAULT_CONNECT_COLOR    DXRGB ( 0.7, 0.7, 0.0 )
 

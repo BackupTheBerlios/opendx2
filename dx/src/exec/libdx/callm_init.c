@@ -77,12 +77,12 @@ DXSetPendingCmd(char *major, char *minor, int (*job)(Private), Private data)
     return OK;
 }
 
-Error DXReadyToRunNoExecute(Pointer ida)
-{
-    return OK;
-}
-
 int _dxf_ExIsExecuting()
 {
     return 0;
+}
+
+void
+ExQuit() {
+	exit(1);
 }

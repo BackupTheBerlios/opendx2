@@ -23,6 +23,12 @@
 #undef uint32
 #undef float64
 
+#if (defined(WIN32) && defined(NDEBUG)) || defined(_MT)
+#define _HDFDLL_
+#elif defined(_DEBUG)
+#undef _DEBUG
+#endif
+
 #include <netcdf.h>
 #include <ctype.h>
 #include <string.h>
@@ -298,11 +304,10 @@ Object_Import(char *filename, char **varlist, int *starttime, int *endtime,
 
       case IMPORT_DATA:      
 	o = import_field(cdfhandle, vp);
-        /* add any Global Attributes */
-	if (!o)
-	    DXWarning("Nothing has been imported.  Did you use OpenDX-compliant netcdf file conventions?");
+ 	if( !o )
+ 	  DXWarning("Nothing has been imported. Did you use a OpenDX-compliant netCDF file convention?");
 	else
-	    getglobalattr(o,vp);
+        getglobalattr(o,vp);
 	break;
 
       case IMPORT_VARINFO:
@@ -1633,13 +1638,11 @@ static Error getglobalattr(Object o, Varinfo vp)
   char stringattr[MAXNAME];
   char *attr_string;
   void *attr_value;
-
-  if (! o)
-  {
-    if (DXGetError() != ERROR)
-	DXErrorReturn(ERROR_INTERNAL, "getglobalattr called with NULL object");
-    return ERROR;
-  }
+ 
+	if( !o ) {
+		if (DXGetError() == ERROR_NONE)
+		DXErrorReturn(ERROR_INTERNAL,"getglobalattr called without a proper object");
+	}
 
   while(ncattname(vp->cdfid,NC_GLOBAL,attr_count,stringattr) !=-1) {
     attr_count++;

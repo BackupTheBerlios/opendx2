@@ -573,7 +573,7 @@ _dxfCleanup(QuadsRR2DInterpolator qi)
 }
 
 Object
-_dxfQuadsRR2DInterpolator_Copy(QuadsRR2DInterpolator old, enum copy copy)
+_dxfQuadsRR2DInterpolator_Copy(QuadsRR2DInterpolator old, enum _dxd_copy copy)
 {
     QuadsRR2DInterpolator new;
 
@@ -591,7 +591,7 @@ _dxfQuadsRR2DInterpolator_Copy(QuadsRR2DInterpolator old, enum copy copy)
 
 QuadsRR2DInterpolator
 _dxf_CopyQuadsRR2DInterpolator(QuadsRR2DInterpolator new, 
-				QuadsRR2DInterpolator old, enum copy copy)
+				QuadsRR2DInterpolator old, enum _dxd_copy copy)
 {
 
     if (! _dxf_CopyFieldInterpolator((FieldInterpolator)new,

@@ -133,7 +133,13 @@ boolean ProcessGroupOptionsDialog::okCallback(Dialog *clientData)  // AJ
 	if(cwd && !IsBlankString(cwd))
 	{
 	    strcat(args, "-directory ");
-	    strcat(args, cwd);
+	    if(strchr(cwd, ' ') != NULL) {
+	    	strcat(args, "\"");
+	    	strcat(args, cwd);
+	    	strcat(args, "\"");
+	    } else 
+	        strcat(args, cwd);
+
 	    strcat(args, " ");
 	}
 	if(sMem && !IsBlankString(sMem))

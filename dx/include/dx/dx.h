@@ -17,7 +17,7 @@
 #include <sys/types.h>
 #endif
 
-#if defined(HAVE_WINDOWS_H) && defined(intelnt)
+#if defined(HAVE_WINDOWS_H) && (defined(intelnt) || defined(WIN32))
 #include <windows.h>
 #include <winsock.h>
 #define S_IXUSR S_IEXEC

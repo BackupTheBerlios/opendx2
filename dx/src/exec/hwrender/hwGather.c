@@ -30,7 +30,7 @@ static Error _gatherRecurse(dxObject object, dxObject *newObject,
 
 typedef struct clipPlanesS *clipPlaneP;
 
-struct clipPlanesS
+typedef struct clipPlanesS
 {
   int		n;
   Point		*p;

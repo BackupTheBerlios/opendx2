@@ -11,8 +11,13 @@
 #include "defines.h"
 
 #include <ctype.h>
+
+#if defined(HAVE_FSTREAM)
+#include <fstream>
+#elif defined(HAVE_FSTREAM_H)
 #include <fstream.h>
-#include <iostream.h>
+#endif
+
 //#include <X11/IntrinsicP.h>
 //#include <X11/CoreP.h>
 
@@ -2836,7 +2841,7 @@ boolean MBMainWindow::saveMB(char *filenm)
 
     if(!validateMB()) return FALSE;
 
-    ofstream to(file);
+    std::ofstream to(file);
     if(!to)
 	WarningMessage("File open failed on save");
 
@@ -2856,25 +2861,25 @@ boolean MBMainWindow::saveMB(char *filenm)
 		if(this->comment_text[i+1]) to << "# ";
 	    i++;
 	}
-	to << endl;
+	to << std::endl;
     }
 
     str = XmTextGetString(this->module_name_text);
     to << "MODULE_NAME = " 
        << str
-       << endl;
+       << std::endl;
     XtFree(str);
 
     str = XmTextGetString(this->category_text); 
     to << "CATEGORY = " 
        << str
-       << endl;
+       << std::endl;
     XtFree(str);
 
     str = XmTextGetString(this->mod_description_text); 
     to << "MODULE_DESCRIPTION = " 
        << str
-       << endl;
+       << std::endl;
     XtFree(str);
 
 
@@ -2883,7 +2888,7 @@ boolean MBMainWindow::saveMB(char *filenm)
         str = XmTextGetString(this->includefile_text); 
 	to << "INCLUDE_FILE = " 
 	   << str
-	   << endl;
+	   << std::endl;
 	XtFree(str);
     }
 
@@ -2900,28 +2905,28 @@ boolean MBMainWindow::saveMB(char *filenm)
 	to << "TRUE";
     else
 	to << "FALSE";
-    to << endl;
+    to << std::endl;
 	
     to << "SIDE_EFFECT = ";
     if(side_effect)
 	to << "TRUE";
     else
 	to << "FALSE";
-    to << endl;
+    to << std::endl;
 
     to << "ASYNCHRONOUS = ";
     if(asychronous)
 	to << "TRUE";
     else
 	to << "FALSE";
-    to << endl;
+    to << std::endl;
 
     if(XmToggleButtonGetState(this->runtime_tb))
     {
         str = XmTextGetString(this->outboard_text); 
 	to << "LOADABLE_EXECUTABLE = " 
 	   << str
-	   << endl;
+	   << std::endl;
 	XtFree(str);
     }
 
@@ -2930,7 +2935,7 @@ boolean MBMainWindow::saveMB(char *filenm)
         str = XmTextGetString(this->outboard_text); 
 	to << "OUTBOARD_EXECUTABLE = " 
 	   << str
-	   << endl;
+	   << std::endl;
 	XtFree(str);
 
 	to << "OUTBOARD_PERSISTENT = ";
@@ -2938,14 +2943,14 @@ boolean MBMainWindow::saveMB(char *filenm)
 	    to << "TRUE";
 	else
 	    to << "FALSE";
-	to << endl;
+	to << std::endl;
 	
 	if(STRLEN(host) > 0)
-	    to << "OUTBOARD_HOST = " << host << endl;
+	    to << "OUTBOARD_HOST = " << host << std::endl;
     }
 	
     // Space after module section
-    to << endl;
+    to << std::endl;
 
     XtVaGetValues(this->num_inputs_stepper, XmNiValue, &num_inputs, NULL);
     for(i = 1; i <= num_inputs; i++)
@@ -2954,17 +2959,17 @@ boolean MBMainWindow::saveMB(char *filenm)
 
 	to << "INPUT = "
 	   << param->getName()
-	   << endl;
+	   << std::endl;
 
 	if(param->getDescription()) {
 	    to << "DESCRIPTION = "
 	       << param->getDescription()
-	       << endl;
+	       << std::endl;
 	   }
 	else {
 	    to << "DESCRIPTION = "
 	       << " "
-	       << endl;
+	       << std::endl;
 	}
 
 	to << "REQUIRED = ";
@@ -2972,20 +2977,20 @@ boolean MBMainWindow::saveMB(char *filenm)
 	    to << "TRUE";
 	else
 	    to << "FALSE";
-	to << endl;
+	to << std::endl;
 
 	if(!param->getRequired())
 	{
 	    to << "DEFAULT_VALUE = "
 	       << param->getDefaultValue()
-	       << endl;
+	       << std::endl;
 
 	    to << "DESCRIPTIVE = ";
 	    if(param->getDescriptive())
 		to << "TRUE";
 	    else
 		to << "FALSE";
-	    to << endl;
+	    to << std::endl;
 	}
 	param_type = param->getType();
 	first = TRUE;
@@ -3007,50 +3012,50 @@ boolean MBMainWindow::saveMB(char *filenm)
 	    }
 	}
 	if(!first)
-	    to << endl;
+	    to << std::endl;
 
 	to << "STRUCTURE = " 
 	   << param->getStructure()
-	   << endl;
+	   << std::endl;
 
 
 	if(!EqualString(param->getStructure(), "Value"))
 	{
 	    to << "POSITIONS = "
 	       << param->getPositions()
-	       << endl;
+	       << std::endl;
 
 	    to << "CONNECTIONS = "
 	       << param->getConnections()
-	       << endl;
+	       << std::endl;
 
 	    to << "ELEMENT_TYPE = "
 	       << param->getElementType()
-	       << endl;
+	       << std::endl;
 
 	    to << "DEPENDENCY = "
 	       << param->getDependency()
-	       << endl;
+	       << std::endl;
 
  	    to << "DATA_TYPE = "
 	       << param->getDataType()
-	       << endl;
+	       << std::endl;
 
 	    to << "DATA_SHAPE = " 
 	       << param->getDataShape()
-	       << endl;
+	       << std::endl;
 	}
         else 
         {
  	    to << "DATA_TYPE = "
 	       << param->getDataType()
-	       << endl;
+	       << std::endl;
 
 	    to << "DATA_SHAPE = "
 	       << param->getDataShape()
-	       << endl;
+	       << std::endl;
         }
-	to << endl;
+	to << std::endl;
     }
 
     XtVaGetValues(this->num_outputs_stepper, XmNiValue, &num_outputs, NULL);
@@ -3060,17 +3065,17 @@ boolean MBMainWindow::saveMB(char *filenm)
 
 	to << "OUTPUT = "
 	   << param->getName()
-	   << endl;
+	   << std::endl;
 
 	if(param->getDescription()) {
 	    to << "DESCRIPTION = "
 	       << param->getDescription()
-	       << endl;
+	       << std::endl;
 	}
 	else {
 	    to << "DESCRIPTION = "
 	       << " "
-	       << endl;
+	       << std::endl;
 	}
 
 	param_type = param->getType();
@@ -3093,39 +3098,39 @@ boolean MBMainWindow::saveMB(char *filenm)
 	    }
 	}
 	if(!first)
-	    to << endl;
+	    to << std::endl;
 
 	to << "STRUCTURE = "
 	   << param->getStructure()
-	   << endl;
+	   << std::endl;
 
 	to << "DATA_TYPE = "
 	   << param->getDataType()
-	   << endl;
+	   << std::endl;
 
 	to << "DATA_SHAPE = "
 	   << param->getDataShape()
-	   << endl;
+	   << std::endl;
 
 	if(!EqualString(param->getStructure(), "Value"))
 	{
 	    to << "POSITIONS = "
 	       << param->getPositions()
-	       << endl;
+	       << std::endl;
 
 	    to << "CONNECTIONS = "
 	       << param->getConnections()
-	       << endl;
+	       << std::endl;
 
 	    to << "ELEMENT_TYPE = "
 	       << param->getElementType()
-	       << endl;
+	       << std::endl;
 
 	    to << "DEPENDENCY = "
 	       << param->getDependency()
-	       << endl;
+	       << std::endl;
 	}
-    to << endl;
+    to << std::endl;
     }
 
     theMBApplication->setClean();
@@ -3326,7 +3331,7 @@ void MBMainWindow::openMB(char *filenm)
 
     param = NULL;
 
-    ifstream from(filenm);
+    std::ifstream from(filenm);
     if(!from)
     {
 	WarningMessage("File open failed.");
@@ -4002,7 +4007,7 @@ void MBMainWindow::build(int flag)
     fname = GetFileBaseName(fname, ".mb");
 
 
-    sprintf(build_name,"/tmp/%s", fname);
+    sprintf(build_name,"%s/%s", theIBMApplication->getTmpDirectory(), fname);
 
     dirty = theMBApplication->isDirty();
     if(!this->saveMB(build_name))
@@ -4041,7 +4046,7 @@ void MBMainWindow::build(int flag)
     {
 	sprintf(dest_file,"%s/%s.c", path, fname);
 	// Open for input
-	ifstream *from = new ifstream(dest_file);
+	std::ifstream *from = new std::ifstream(dest_file);
 	if(!from->fail())
 	{
 	    c_exists = TRUE;
@@ -4051,7 +4056,7 @@ void MBMainWindow::build(int flag)
 	from->close();
 
 	// Make sure the file is writable
-	ofstream *to = new ofstream(dest_file, ios::app);
+	std::ofstream *to = new std::ofstream(dest_file, std::ios::app);
 	if(to->fail())
 	{
 	    ErrorMessage("File: %s is not writeable!", dest_file);
@@ -4063,7 +4068,7 @@ void MBMainWindow::build(int flag)
     {
 	sprintf(dest_file,"%s/%s.mdf", path, fname);
 	// Open for input
-	ifstream *from = new ifstream(dest_file);
+	std::ifstream *from = new std::ifstream(dest_file);
 	if(!from->fail())
 	{
 	    mdf_exists = TRUE;
@@ -4073,7 +4078,7 @@ void MBMainWindow::build(int flag)
 	from->close();
 
 	// Make sure the file is writable
-	ofstream *to = new ofstream(dest_file, ios::app);
+	std::ofstream *to = new std::ofstream(dest_file, std::ios::app);
 	if(to->fail())
 	{
 	    ErrorMessage("File: %s is not writeable!", dest_file);
@@ -4085,7 +4090,7 @@ void MBMainWindow::build(int flag)
     {
 	sprintf(dest_file,"%s/%s.make", path, fname);
 	// Open for input
-	ifstream *from = new ifstream(dest_file);
+	std::ifstream *from = new std::ifstream(dest_file);
 	if(!from->fail())
 	{
 	    makefile_exists = TRUE;
@@ -4095,7 +4100,7 @@ void MBMainWindow::build(int flag)
 	from->close();
 
 	// Make sure the file is writable
-	ofstream *to = new ofstream(dest_file, ios::app);
+	std::ofstream *to = new std::ofstream(dest_file, std::ios::app);
 	if(to->fail())
 	{
 	    ErrorMessage("File: %s is not writeable!", dest_file);
@@ -4135,6 +4140,7 @@ void MBMainWindow::reallyBuild(void *data)
     char          *command;
     int		  flags;
     MBMainWindow  *mbmw = (MBMainWindow *)data;
+    const char *tmpdir = theIBMApplication->getTmpDirectory();
 
     XtVaGetValues(mbmw->getMainWindow(), XmNuserData, &flags, NULL);
 
@@ -4153,7 +4159,7 @@ void MBMainWindow::reallyBuild(void *data)
 
     if(STRLEN(path) == 0) path = ".";
     command = (char *)CALLOC(STRLEN(path) + STRLEN(fname) + 10, sizeof(char));
-    sprintf(command,"/tmp/%s", fname);
+    sprintf(command,"%s/%s", theIBMApplication->getTmpDirectory(), fname);
 
     if(!Generate(flags, command))
     {
@@ -4169,25 +4175,25 @@ void MBMainWindow::reallyBuild(void *data)
     strcat(gen_msg, "The following files have been generated:\n");
     if(flags & DO_C)
     {
-	sprintf(system_command, "mv /tmp/%s.c %s/%s.c", fname, path, fname);
+	sprintf(system_command, "mv \"%s/%s.c\" \"%s/%s.c\"", tmpdir, fname, path, fname);
 	system(system_command);
 	sprintf(&gen_msg[STRLEN(gen_msg)], " %s/%s.c\n", path, fname);
     }
     if(flags & DO_MDF)
     {
-	sprintf(system_command, "mv /tmp/%s.mdf %s/%s.mdf", fname, path, fname);
+	sprintf(system_command, "mv \"%s/%s.mdf\" \"%s/%s.mdf\"", tmpdir, fname, path, fname);
 	system(system_command);
 	sprintf(&gen_msg[STRLEN(gen_msg)], " %s/%s.mdf\n", path, fname);
     }
     if(flags & DO_MAKE)
     {
-	sprintf(system_command, "mv /tmp/%s.make %s/%s.make",fname,path,fname);
+	sprintf(system_command, "mv \"%s/%s.make\" \"%s/%s.make\"",tmpdir,fname,path,fname);
 	system(system_command);
 	sprintf(&gen_msg[STRLEN(gen_msg)], "%s/%s.make", path, fname);
     }
     InfoMessage(gen_msg);
 
-    sprintf(system_command, "rm /tmp/%s.mb", fname);
+    sprintf(system_command, "rm \"%s/%s.mb\"", tmpdir, fname);
     system(system_command);
 
 

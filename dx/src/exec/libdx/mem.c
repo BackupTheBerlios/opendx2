@@ -64,8 +64,16 @@
  *     the shared memory pool.
  */
 
+#if defined(HAVE_WINDOWS_H)
+#include <windows.h>
+#endif
+
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
+#endif
+
+#if defined(HAVE_ERRNO_H)
+#include <errno.h>
 #endif
 
 #include <string.h>
@@ -552,7 +560,7 @@ _dxfinmem(Pointer x)
 
 /* Still need to write shared memory routines */
 
-void *sh_base;   /* starting virtual address */
+void *sh_base = NULL;   /* starting virtual address */
 Error _dxfsetmem(ulong limit)
 {
     sh_base = malloc(limit);
@@ -575,21 +583,182 @@ Pointer _dxfgetmem(Pointer base, ulong size)
 #endif /* defined(macos) */
 
 
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
+
+#if defined(USE_AWE)
+
+/*****************************************************************
+   LoggedSetLockPagesPrivilege: a function to obtain, if possible, or
+   release the privilege of locking physical pages.
+
+   Inputs:
+
+       HANDLE hProcess: Handle for the process for which the
+       privilege is needed
+
+       BOOL bEnable: Enable (TRUE) or disable?
+
+   Return value: TRUE indicates success, FALSE failure.
+
+*****************************************************************/
+BOOL
+LoggedSetLockPagesPrivilege ( HANDLE hProcess,
+							 BOOL bEnable)
+{
+	struct {
+		DWORD Count;
+		LUID_AND_ATTRIBUTES Privilege [1];
+	} Info;
+	
+	HANDLE Token;
+	BOOL Result;
+	
+	Result = OpenProcessToken ( hProcess,
+		TOKEN_ADJUST_PRIVILEGES,
+		& Token);
+	
+	if( Result != TRUE ) {
+		DXSetError(ERROR_NO_MEMORY, "Cannot open process token.\n" );
+		return FALSE;
+	}
+	
+	Info.Count = 1;
+	if( bEnable ) 
+	{
+		Info.Privilege[0].Attributes = SE_PRIVILEGE_ENABLED;
+	} 
+	else 
+	{
+		Info.Privilege[0].Attributes = 0;
+	}
+	
+	Result = LookupPrivilegeValue ( NULL,
+		SE_LOCK_MEMORY_NAME,
+		&(Info.Privilege[0].Luid));
+	
+	if( Result != TRUE ) 
+	{
+		DXSetError(ERROR_NO_MEMORY, "Cannot get privilege value for %s.\n", SE_LOCK_MEMORY_NAME );
+		return FALSE;
+	}
+	
+	Result = AdjustTokenPrivileges ( Token, FALSE,
+		(PTOKEN_PRIVILEGES) &Info,
+		0, NULL, NULL);
+	
+	if( Result != TRUE ) 
+	{
+		DXSetError(ERROR_NO_MEMORY, "Cannot adjust token privileges, error %u.\n", GetLastError() );
+		return FALSE;
+	} 
+	else 
+	{
+		if( GetLastError() != ERROR_SUCCESS ) 
+		{
+			DXSetError(ERROR_NO_MEMORY, "Cannot enable SE_LOCK_MEMORY privilege, please check the local policy.\n");
+			return FALSE;
+		}
+	}
+	
+	CloseHandle( Token );
+	
+	return TRUE;
+}
+
+#endif
 
 #ifndef DXD_WIN_SHARE_MEMORY
 #define memroutines
 void *sh_base;   /* starting virtual address */
+
+
+DWORD GetPageSize(void) {
+	SYSTEM_INFO SystemInfo;
+	GetSystemInfo(&SystemInfo);
+	return SystemInfo.dwPageSize;
+}
+
 Error _dxfsetmem(ulong limit)
 {
-    sh_base = malloc(limit);
-    if (sh_base == NULL) {
-	DXErrorReturn(ERROR_NO_MEMORY, "getmem can't commit memory");
-    }
-    else {
-	/*   memset(sh_base, 0, limit);   */
+	/* Determine if we should use the AWE extensions and lock physical
+	   memory. Can give us significant speed up. Only available with
+	   Win2K or better and user must have special priveledges. See AWE
+	   extensions in MSDN. 
+	*/
+#if defined(USE_AWE)
+	HANDLE hProcess = GetCurrentProcess();
+	ULONG_PTR pnPages;
+	PULONG_PTR ppPFN;
+	int PFNArraySize;
+
+	pnPages = limit / GetPageSize();
+	if (limit % GetPageSize() ) { pnPages += 1; }
+	
+	PFNArraySize = sizeof(ULONG_PTR) * pnPages;
+
+	ppPFN = (PULONG_PTR) HeapAlloc (GetProcessHeap(), 0, PFNArraySize); /* Allocate PFN array */
+	
+	if( ! LoggedSetLockPagesPrivilege( GetCurrentProcess(), TRUE ) ) {
+		DXErrorReturn(ERROR_NO_MEMORY, "Cannot get priveledges to lock physical memory.");
+	}
+
+	if(AllocateUserPhysicalPages(hProcess, &pnPages, ppPFN) ) {
+		limit = pnPages * GetPageSize(); /* May return fewer pages than asked for */
+		sh_base = VirtualAlloc(NULL, limit, MEM_RESERVE | MEM_PHYSICAL, PAGE_READWRITE);
+		if(sh_base == 0) {
+			LPVOID lpMsgBuf;
+			FormatMessage( 
+				FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+				FORMAT_MESSAGE_FROM_SYSTEM | 
+				FORMAT_MESSAGE_IGNORE_INSERTS,
+				NULL,
+				GetLastError(),
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), /* Default language */
+				(LPTSTR) &lpMsgBuf,
+				0,
+				NULL 
+				);
+			DXErrorReturn(ERROR_NO_MEMORY, (char *) lpMsgBuf);
+			LocalFree( lpMsgBuf );
+		}
+		MapUserPhysicalPages(sh_base, pnPages, ppPFN);
+	} else {
+		LPVOID lpMsgBuf;
+		FormatMessage( 
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+			FORMAT_MESSAGE_FROM_SYSTEM | 
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			GetLastError(),
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), /* Default language */
+			(LPTSTR) &lpMsgBuf,
+			0,
+			NULL 
+			);
+		DXErrorReturn(ERROR_NO_MEMORY, (char *) lpMsgBuf);
+		LocalFree( lpMsgBuf );
+	}
+
+#else
+	sh_base = VirtualAlloc(NULL, limit, MEM_COMMIT, PAGE_READWRITE);
+	if(sh_base == 0) {
+		LPVOID lpMsgBuf;
+		FormatMessage( 
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+			FORMAT_MESSAGE_FROM_SYSTEM | 
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			GetLastError(),
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), /* Default language */
+			(LPTSTR) &lpMsgBuf,
+			0,
+			NULL 
+			);
+		DXErrorReturn(ERROR_NO_MEMORY, (char *) lpMsgBuf);
+		LocalFree( lpMsgBuf );
+	}
+#endif
 	return OK;
-    }
 }
 
 Pointer _dxfgetmem(Pointer base, ulong size)
@@ -605,6 +774,7 @@ Error DXmemfork(int i)
 #if 0
     return fork(); I hope this is not needed -- GDA
 #endif
+		return 0;
 }
 
 
@@ -762,7 +932,7 @@ Pointer _dxfgetmem(Pointer base, ulong size) { return base; }
 #endif /* ibmpvs */
 
 
-#if !defined(os2) && !defined(intelnt)
+#if !defined(os2) && !defined(intelnt) && !defined(WIN32)
 
 #if !defined(cygwin) && !defined(macos)
 extern int end;   /* filled in by linker */
@@ -862,7 +1032,10 @@ Error DXmemfork(int i)
  * so the calculations about the size of the data segment can't be done 
  * on the NT.  thus this section is disabled on that platform.
  */
-#if defined(intelnt)
+#if defined(intelnt) || defined(WIN32)
+#if defined(MEMSTATS)
+#undef MEMSTATS
+#endif
 #define MEMSTATS 0
 #endif
 
@@ -934,7 +1107,7 @@ void DXPrintMemoryInfo()
 }
 #endif  /* memory stats */
 
-#if !defined(intelnt)
+#if !defined(intelnt) && !defined(WIN32)
 
 int DXForkChild(int i)
 {

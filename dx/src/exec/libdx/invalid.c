@@ -3365,7 +3365,9 @@ DXIsElementInvalidSequential(InvalidComponentHandle handle, int index)
     }
     else
     */
-	return DXIsElementInvalid(handle, index);
+	if(handle)
+		return DXIsElementInvalid(handle, index);
+	return 0;
 }
 
 

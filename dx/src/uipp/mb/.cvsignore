@@ -3,3 +3,4 @@ CVS
 Makefile
 Makefile.in
 builder
+.libs

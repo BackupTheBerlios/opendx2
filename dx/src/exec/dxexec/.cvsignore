@@ -3,3 +3,8 @@ CVS
 Makefile
 Makefile.in
 dxexec
+*.lo
+.libs
+libDXEXEC.la
+dxexec.lib
+dxexec.exp

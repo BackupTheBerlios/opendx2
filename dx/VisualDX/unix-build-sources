@@ -1,0 +1,14 @@
+#!/bin/sh
+cd ../src/exec/dpexec
+make yuiif.c yuiif.h compile.h
+cd ../dxmods
+make user.c usercm.c _compparse.h _compparse.c dx.mdf dxcm.mdf
+cd ../libdx
+make buffer.c lbshade.c triangle.c quad.c plane.c \
+arrayClass.c cameraClass.c clippedClass.c fieldClass.c groupClass.c \
+lightClass.c objectClass.c privateClass.c screenClass.c stringClass.c \
+xformClass.c interpClass.c fieldinterpClass.c groupinterpClass.c \
+fle2DClass.c linesII1DClass.c linesRR1DClass.c linesRI1DClass.c \
+trisRI2DClass.c quadsRR2DClass.c cubesIIClass.c cubesRRClass.c \
+tetrasClass.c quadsII2DClass.c
+

@@ -313,6 +313,11 @@ DXRender(Object o, Camera camera, char *format)
     
     if (! DXGetBackgroundColor(camera, &background))
 	DXErrorGoto(ERROR_INTERNAL, "#13600");
+
+#if defined(DX_NATIVE_WINDOWS)
+	if (c.width & 0x1) 
+		c.width += 1;
+#endif
 	       
     if (format) {
 #if DXD_HAS_LIBIOP
@@ -338,7 +343,7 @@ DXRender(Object o, Camera camera, char *format)
 
 	    if((depth = _dxf_getXDepth(depth_str)) < 0) return NULL;
 
-	    c.image = _dxf_MakeXImage(c.width, 
+	    c.image = _dxf_MakeImage(c.width, 
 				      c.height,
 				      depth,
 				      format);

@@ -1206,8 +1206,8 @@ extern "C"
 extern
 FILE* yyin;			/* parser input stream	  */
 
-#if defined(USING_BISON)
-int yylineno;
+#if !defined(YYLINENO_DEFINED)
+int yylineno;			/* flex line number */
 #else
 extern int yylineno;			/* lexer line number      */
 #endif

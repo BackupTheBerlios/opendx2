@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.h,v 1.6 2002/03/21 02:57:28 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.h,v 1.7 2003/07/11 05:50:34 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -23,7 +23,7 @@
 #define  FALSE  0
 
 
-#if !defined(intelnt)
+#if !defined(intelnt) && !defined(WIN32)
 typedef int boolean;
 #endif
 #if DXD_HAS_LIBIOP
@@ -188,7 +188,7 @@ typedef struct sizedata
 SizeData;
 
 
-Array _dxf_CopyArray_jea ( Array in, enum copy copy );
+Array _dxf_CopyArray_jea ( Array in, enum _dxd_copy copy );
 
 Field _dxf_GetEnumeratedImage ( Object o, int n );
 

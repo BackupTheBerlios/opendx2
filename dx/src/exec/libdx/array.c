@@ -288,7 +288,7 @@ _dxfArray_Delete(Array a)
 
 
 Object
-_dxfArray_Copy(Array old, enum copy copy)
+_dxfArray_Copy(Array old, enum _dxd_copy copy)
 {
     if (copy==COPY_DATA)
 	DXErrorReturn(ERROR_BAD_PARAMETER, "copying data is not implemented");
@@ -372,7 +372,6 @@ DXTrim(Array a)
     return a;
 }
 
-#if 0 
 /* this might be a useful function to add sometime */
 Array
 DXTrimItems(Array a, int nitems)
@@ -382,12 +381,11 @@ DXTrimItems(Array a, int nitems)
     /* reset the item count only if smaller, 
      * and release any extra space in either case.
      */
-    if (a->items > a->nitems)
-	a->items = a->nitems;
+    if (a->items > nitems)
+	a->items = nitems;
 
     return DXTrim(a);
 }
-#endif
 
 Pointer
 DXGetArrayData(Array a)
