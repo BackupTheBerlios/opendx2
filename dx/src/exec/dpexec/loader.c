@@ -44,7 +44,7 @@
 #endif
 #include "utils.h"
 
-#if DXD_SYSERRLIST_DECL
+#if HAVE_SYS_ERRLIST == 0
 extern char *sys_errlist[];
 #endif
 
