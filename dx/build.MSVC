@@ -1,0 +1,17 @@
+export HERE=`pwd`
+export LIBPATH="/LIBPATH:/exceed/xdk/lib"
+export INCPATH="/INCPATH:/exceed/xdk/include"
+
+ARCH=intelnt \
+	AR=$HERE/windows/ar \
+	RANLIB=$HERE/windows/ranlib \
+	CC=$HERE/windows/cc \
+	CPP=$HERE/windows/cpp \
+	CXX=$HERE/windows/cxx \
+	CXXCPP=$HERE/windows/cpp \
+	CFLAGS="-g" \
+	CXXFLAGS="-g" \
+	configure --x-includes=/exceed/xdk/include \
+		  --x-libraries=/exceed/xdk/lib \
+		  --without-javadx --prefix=/local
+
