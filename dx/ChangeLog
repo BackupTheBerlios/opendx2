@@ -1,5 +1,20 @@
 4.x
 ===============
+Fix when using more than 31 labels on an AutoAxes. (bug #166)
+
+Added a resize attribute to the ImageMagick format in order
+to use the Lanczos Filter for reduction before saving an image.
+
+Changed the default behavior of nested loops within dx. Now
+the more time consuming but less crash prone TriangulateNestedLoops
+is used instead of the faster simpler version. Can change with
+the environment variable DX_SIMPLE_LOOPS
+
+Fix for module builder crash (bug #162)
+
+Fix for crash in exec when excluding a text based field
+in select (bug #161)
+
 Added some support for a Multithreaded exec (still a long
 way from full mt). This makes way for wrapper classes for
 Microsoft .NET world.
