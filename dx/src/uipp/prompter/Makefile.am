@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES =  -I../base
+INCLUDES =  -I../base -I../../../include
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
@@ -44,7 +44,7 @@ noinst_HEADERS = \
 	SpreadSheetChoice.h \
 	TypeChoice.h 
 
-prompter_SOURCES =  		
+prompter_SOURCES =  		 	\
 	Browser.C			\
 	BrowserCommand.C		\
 	BuildTCDict.C			\
