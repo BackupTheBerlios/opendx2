@@ -346,5 +346,6 @@ DXPrintTimes(void)
     DXEndLongMessage();
 
     /* reset all per-processor information to 0 */
-    memset(ti->procs, 0, sizeof(ti->procs));
+    for (i=0, p=ti->procs; i < DXProcessors(0);  i++, p++)
+	p->n = p->printed = 0;
 }
