@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.8 2003/07/11 05:50:36 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.9 2003/09/02 15:21:57 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -106,6 +106,7 @@ m_WriteImage ( Object *in, Object *out )
 
     iargs.image = NULL;
     iargs.pipe = NULL;
+    iargs.compression = NULL;
 
     if ( !I_image )
 	DXErrorGoto2
