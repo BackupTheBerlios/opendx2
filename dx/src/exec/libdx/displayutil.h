@@ -34,10 +34,14 @@ Error		DXSetSoftwareWindowActive(char *, int);
 Error		_dxf_CopyBufferToPImage(struct buffer*, Field, int, int);
 
 #if defined(WORDS_BIGENDIAN)
-#define COLORMASK12 0xfff0
+#define COLORMASK12 (XImageByteOrder(t->dpy) == MSBFirst) ? 0x0fff : 0xfff0
 #else
-#define COLORMASK12 0x0fff
-#endif
+#if !defined(DX_NATIVE_WINDOWS)
+#define COLORMASK12 (XImageByteOrder(t->dpy) == MSBFirst) ? 0xfff0 : 0x0fff
+#else
+#define COLORMASK12 0xfff0
+#endif /* DX_NATIVE_WINDOWS */
+#endif /* WORDS_BIGENDIAN */
 
 #if defined(WORDS_BIGENDIAN)
 #define COLORMASK24 (XImageByteOrder(t->dpy) == MSBFirst) ? 0x00ffffff : 0xffffff00
