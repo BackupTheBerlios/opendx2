@@ -9,8 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
 #ifndef _ThrottleDialog_h
 #define _ThrottleDialog_h
 

@@ -9,10 +9,8 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "RenderingOptionsDialog.h"
-
 #include "ImageWindow.h"
-
+#include "RenderingOptionsDialog.h"
 #include "ToggleButtonInterface.h"
 #include "ButtonInterface.h"
 

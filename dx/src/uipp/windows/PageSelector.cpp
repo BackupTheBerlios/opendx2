@@ -761,7 +761,7 @@ void PageSelector::highlightTab (EditorWorkSpace* ews, int flag)
 	    break;
 	}
     }
-    ASSERT(found_but);
+    //ASSERT(found_but);
 
     //
     // Now get a pixel for the tab.

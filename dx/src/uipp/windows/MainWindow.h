@@ -98,7 +98,7 @@ class MainWindow : public UIComponent, public Client
     //
     //Widget  main;	// XmMainWindow widget
     //Widget  menuBar;	// menu bar
-    //Widget  workArea;	// work area widget created by derived class
+    void *  workArea;	// work area widget created by derived class
     //Widget  commandArea; // command area widget created by derived class
     bool resizable;
     bool managed;	// True if the window has been managed.
@@ -119,7 +119,7 @@ class MainWindow : public UIComponent, public Client
     // Derived classes must define this function to
     // create the window-specific work area.
     //
-    //virtual Widget createWorkArea(Widget parent) = 0;
+    virtual void* createWorkArea() = 0;
 
     //
     // Most derived classes will not want this.  It provides a look like

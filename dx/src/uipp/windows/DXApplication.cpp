@@ -1385,16 +1385,16 @@ bool DXApplication::initialize(unsigned int* argcp,
 
 					this->applicationContext->set_MainForm(new dxui::Editor(true, this->network));
 
-					//this->anchor = this->newNetworkEditor(this->network);
-					//if (!this->anchor)
-					//    return false;    // Expect newNetworkEditor() to issue message.
+					this->anchor = this->newNetworkEditor(this->network);
+					if (!this->anchor)
+					    return false;    // Expect newNetworkEditor() to issue message.
 
 					//
 					// The editor must always be managed before reading .nets
 					// (we could do it with some work, but doesn't seem useful especially
 					// since we don't want error messages coming up behind the VPE).
 					//
-					//this->anchor->manage();
+					this->anchor->manage();
 					//this->setBusyCursor(true);
 					//wasSetBusy = true;
 				}
@@ -1433,7 +1433,7 @@ bool DXApplication::initialize(unsigned int* argcp,
 				//if (DXApplication::resource.noAnchorAtStartup)
 				//XtRealizeWidget(this->anchor->getRootWidget());
 				//   else if (!this->anchor->isManaged()) {
-				//this->anchor->manage();
+				this->anchor->manage();
 				////this->setBusyCursor(true);
 				//wasSetBusy = true;
 				//   }

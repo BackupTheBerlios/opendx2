@@ -130,7 +130,6 @@ namespace dxui
 				this->messageBox->Clear();
 			}
 			void showIt() {
-				theDXApplication->getMainForm()->AddOwnedForm(this);
 				this->ShowInTaskbar = false;
 				this->Show();
 			}

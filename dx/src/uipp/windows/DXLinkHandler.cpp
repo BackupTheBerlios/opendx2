@@ -11,6 +11,7 @@
 
 #include <string.h>
 
+#include "ImageWindow.h"
 #include "ErrorDialogManager.h"
 #include "DXApplication.h"
 #include "DXVersion.h"
@@ -25,7 +26,6 @@
 #include "ImageNode.h"
 #include "ColormapNode.h"
 #include "DisplayNode.h"
-#include "ImageWindow.h"
 #include "EditorWindow.h"
 #include "ProbeNode.h"
 #include "PickNode.h"

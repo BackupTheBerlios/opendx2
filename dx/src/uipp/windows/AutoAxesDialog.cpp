@@ -9,12 +9,12 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include "ImageWindow.h"
 #include "DXStrings.h"
 #include "lex.h"
 #include "AutoAxesDialog.h"
 #include "DXType.h"
 #include "DXValue.h"
-#include "ImageWindow.h"
 #include "WarningDialogManager.h"
 #include "TextPopup.h"
 #include "DrivenNode.h"

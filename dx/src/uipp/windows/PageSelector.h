@@ -155,7 +155,7 @@ class PageSelector: public UIComponent, public Dictionary {
 
     ~PageSelector();
 
-    //void setRootPage(VPERoot* root) { this->root = root; }
+    void setRootPage(VPERoot* root) { this->root = root; }
 
     void postPageNamePrompt(PageTab* );
     void postPageNameDialog();

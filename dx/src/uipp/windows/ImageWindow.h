@@ -13,14 +13,18 @@
 #ifndef _ImageWindow_h
 #define _ImageWindow_h
 
+#include <windows.h>
+
 #include "DXWindow.h"
 #include "NoUndoImageCommand.h"
 #include "ToggleButtonInterface.h"
 #include "enums.h"
 #include "Network.h"
-//#include "AutoAxesDialog.h"
-//#include "SetBGColorDialog.h"
+#include "AutoAxesDialog.h"
+#include "SetBGColorDialog.h"
 
+#include <vcclr.h>
+#include "ImageWinForm.h"
 
 //
 // Class name definition:
@@ -286,6 +290,7 @@ class ImageWindow : public DXWindow
 		  //    		  XtPointer callData);
     //friend Boolean ImageWindow_ResetEORWP(XtPointer);
     //friend void ImageWindow_ResizeTO (XtPointer , XtIntervalId* );
+
     bool adjustDepth(int &depth);
 
     void completePictureCreation();
@@ -541,7 +546,7 @@ class ImageWindow : public DXWindow
     //
     // Creates the editor window workarea (as required by MainWindow class).
     //
-    //virtual Widget createWorkArea(Widget parent);
+    virtual void* createWorkArea();
 
     //
     // Creates the editor window menus (as required by DXWindow class).
@@ -648,6 +653,7 @@ class ImageWindow : public DXWindow
     //
     ImageWindow(bool  isAnchor, Network* network);
 
+	gcroot<dxui::ImageWinForm *> iw;
 
     //
     // Destructor:

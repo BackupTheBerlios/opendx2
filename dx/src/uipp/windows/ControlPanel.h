@@ -255,7 +255,7 @@ class ControlPanel : public DXWindow
     //
     // Creates the editor window workarea (as required by MainWindow class).
     //
-    //virtual Widget createWorkArea(Widget parent);
+    virtual void* createWorkArea();
 
     //
     // Creates a form,separator, and group of buttons

@@ -190,8 +190,8 @@ void HelpWin::initialize()
 //extern "C"  SpotList *NewList();
 //extern "C"  void ResizeTheWindow(Widget, XtPointer, XEvent*, Boolean*);
 
-//Widget HelpWin::createWorkArea(Widget parent)
-//{
+void* HelpWin::createWorkArea()
+{
 //    Widget	frame;
 //    Widget      form;
 //    Widget      panedWindow;
@@ -391,7 +391,8 @@ void HelpWin::initialize()
 //    XtSetValues(this->multiText, args, argcnt);
 //
 //    return frame;
-//}
+	return this;
+}
 
 void HelpWin::loadTopicFile(const char *topic, const char *file)
 {

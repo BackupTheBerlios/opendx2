@@ -128,18 +128,18 @@ LabelDecorator::LabelDecorator(bool developerStyle, const char *name) :
 	Decorator (NULL, name, developerStyle)
 {
     //this->labelString = 0;
-    //this->setTextDialog = 0;
+    this->setTextDialog = 0;
     //this->font[0] = '\0';  // equals XmSTRING_DEFAULT_CHARSET
-    //this->otherStrings = NUL(Dictionary*);
+    this->otherStrings = NUL(Dictionary*);
     LabelDecorator::BuildTheCommentStyleDictionary();
 }
 LabelDecorator::LabelDecorator(bool developerStyle) : 
 	Decorator (NULL, "LabelDecorator", developerStyle)
 {
     //this->labelString = 0;
-    //this->setTextDialog = 0;
+    this->setTextDialog = 0;
     //this->font[0] = '\0';  // equals XmSTRING_DEFAULT_CHARSET
-    //this->otherStrings = NUL(Dictionary*);
+    this->otherStrings = NUL(Dictionary*);
     LabelDecorator::BuildTheCommentStyleDictionary();
 }
 

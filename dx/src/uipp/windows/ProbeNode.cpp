@@ -9,14 +9,12 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
+#include "ImageWindow.h"
 #include "ProbeNode.h"
 #include "Network.h"
 #include "Parameter.h"
 #include "ErrorDialogManager.h"
 #include "ListIterator.h"
-#include "ImageWindow.h"
 #include "InfoDialogManager.h"
 
 ProbeNode::ProbeNode(NodeDefinition *nd, Network *net, int instnc) :

@@ -78,6 +78,7 @@ using namespace System::Drawing;
 
 MainWindow::MainWindow(const char* name, bool usesMenuBar): UIComponent(name)
 {
+	this->workArea = NULL; //DT - changed since no widget.
 //    this->workArea = NUL(Widget);
 //    this->commandArea = NUL(Widget);
 //    this->main = NUL(Widget);
@@ -221,8 +222,8 @@ int n = 0;
     //
     // Create the work area.
     //
-//    this->workArea = this->createWorkArea(this->main);
-//    ASSERT(this->workArea);
+    this->workArea = this->createWorkArea();
+    ASSERT(this->workArea);
 
 
     //
@@ -337,7 +338,7 @@ int n = 0;
 void MainWindow::manage()
 {
     if (!this->isInitialized()) 
-	this->initialize();
+		this->initialize();
 
     //
     // Pop up the shell.
@@ -404,68 +405,68 @@ void MainWindow::iconify()
 
 void MainWindow::notify(const Symbol message, const void *data, const char *)
 {
-	//if (message == Application::MsgManage)
-	//{
-	//	ASSERT(this->isInitialized());
-	//	this->manage();
-	//}
-	//else if (message == Application::MsgUnmanage)
-	//{
-	//	this->unmanage();
-	//}
+	if (message == BaseApp::MsgManage)
+	{
+		ASSERT(this->isInitialized());
+		this->manage();
+	}
+	else if (message == BaseApp::MsgUnmanage)
+	{
+		this->unmanage();
+	}
 	//else if (message == Application::MsgSetBusyCursor)
 	//{
-		//if (this->main != NULL && this->isManaged())
-		//{
-		//	theApplication->parent->Cursor = Cursors::WaitCursor;
-			//    XmUpdateDisplay(this->main);
-			//   XDefineCursor
-			//(XtDisplay(this->main),
-			// XtWindow(this->main),
-			// Application::BusyCursor);
-			//   XFlush(XtDisplay(this->main));
-		//}
+	//if (this->main != NULL && this->isManaged())
+	//{
+	//	theApplication->parent->Cursor = Cursors::WaitCursor;
+	//    XmUpdateDisplay(this->main);
+	//   XDefineCursor
+	//(XtDisplay(this->main),
+	// XtWindow(this->main),
+	// Application::BusyCursor);
+	//   XFlush(XtDisplay(this->main));
+	//}
 	//}
 	//else if (message == Application::MsgResetCursor)
 	//{
-		//if (this->main != NULL && this->isManaged())
-		//{
-		//	theApplication->parent->Cursor = Cursors::Default;
-			//XUndefineCursor(XtDisplay(this->main), XtWindow(this->main));
-			//XFlush(XtDisplay(this->main));
+	//if (this->main != NULL && this->isManaged())
+	//{
+	//	theApplication->parent->Cursor = Cursors::Default;
+	//XUndefineCursor(XtDisplay(this->main), XtWindow(this->main));
+	//XFlush(XtDisplay(this->main));
 
-			// HACK ALERT
-			// Somehow I have to figure out the difference between my coords
-			// and the ones imposed on me by mwm.  I can only do that after I
-			// put some window on the screen.  These numbers are used by setGeometry().
-			// I used to fetch these numbers when I needed them which was safe, but
-			// because of a dec/mwm bug, I need to fetch  them in order to set
-			// XmNgeometry which is earlier than the the window shows up.  So this
-			// initialization is here because I just need some relatively safe, 
-			// post-manage place to put it.
-			//
-			//if (!MainWindow::OffsetsInitialized)
-			//	MainWindow::InitializeOffsets(this->getRootWidget());
-		//}
-	//} 
- //   else if (message == Application::MsgManageByLeafClassName)
- //   {
-	//if (!data || EqualString(this->getClassName(),(char*)data))
-	//    this->manage();
- //   } 
- //   else if (message == Application::MsgUnmanageByLeafClassName)
- //   {
-	//if (!data || EqualString(this->getClassName(),(char*)data))
-	//    this->unmanage();
- //   } 
- //   else if (message == Application::MsgCreate)
- //   {
-	//if (!this->isManaged()) {
-	//    if (!this->isInitialized())
-	//	this->initialize();
-	//    this->manage();
+	// HACK ALERT
+	// Somehow I have to figure out the difference between my coords
+	// and the ones imposed on me by mwm.  I can only do that after I
+	// put some window on the screen.  These numbers are used by setGeometry().
+	// I used to fetch these numbers when I needed them which was safe, but
+	// because of a dec/mwm bug, I need to fetch  them in order to set
+	// XmNgeometry which is earlier than the the window shows up.  So this
+	// initialization is here because I just need some relatively safe, 
+	// post-manage place to put it.
+	//
+	//if (!MainWindow::OffsetsInitialized)
+	//	MainWindow::InitializeOffsets(this->getRootWidget());
 	//}
- //   }
+	//} 
+	else if (message == BaseApp::MsgManageByLeafClassName)
+	{
+		if (!data || EqualString(this->getClassName(),(char*)data))
+			this->manage();
+	} 
+	else if (message == BaseApp::MsgUnmanageByLeafClassName)
+	{
+		if (!data || EqualString(this->getClassName(),(char*)data))
+			this->unmanage();
+	} 
+	else if (message == BaseApp::MsgCreate)
+	{
+		if (!this->isManaged()) {
+			if (!this->isInitialized())
+				this->initialize();
+			this->manage();
+		}
+	}
 
 
  //   // else ignore unrecognized messages, since applications can

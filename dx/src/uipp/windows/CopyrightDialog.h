@@ -27,7 +27,7 @@ namespace dxui
 		{
 			InitializeComponent();
 			this->timer = new Timer();
-			this->timer->Interval = 8000;
+			this->timer->Interval = 15000;
 			this->timer->Tick += new EventHandler(this, closeDialog);
 		}
         

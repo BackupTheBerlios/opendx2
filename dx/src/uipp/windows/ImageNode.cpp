@@ -25,6 +25,7 @@
 #include <sys/socket.h>
 #endif
 
+#include "ImageWindow.h"
 #include "ImageNode.h"
 #include "StandIn.h"
 #include "Ark.h"
@@ -32,7 +33,6 @@
 #include "DXApplication.h"
 #include "Network.h"
 #include "PickNode.h"
-#include "ImageWindow.h"
 #include "ListIterator.h"
 #include "ImageDefinition.h"
 #include "WarningDialogManager.h"
@@ -978,6 +978,11 @@ void ImageNode::handleImageMessage(int id, const char *line)
 	    this->enableVector(true, false);
 	    this->sendValuesQuietly();
 	    iw->newCamera(box, aamat, from, to, up, x, y, w, persp, viewAngle);
+
+		//DT - we have received the message back from Display here
+		// so now we are ready to render the image. The resolution has been
+		// set so we can just call the show method.
+		iw->iw->DrawPicture();
 	}
         else if (!iw->cameraIsInitialized() || imode == NAVIGATE)
             iw->newCamera(box, aamat, from, to, up, x, y, w, persp, viewAngle);

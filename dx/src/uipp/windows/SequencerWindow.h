@@ -55,7 +55,7 @@ class SequencerWindow : public DXWindow
     //
     // Protected member data:
     //
-    //Widget createWorkArea(Widget);
+    void* createWorkArea();
 
     //friend void SequencerWindow_PopdownCB(Widget, XtPointer , XtPointer);
     //friend void SequencerWindow_FrameCB(Widget, XtPointer , XtPointer);

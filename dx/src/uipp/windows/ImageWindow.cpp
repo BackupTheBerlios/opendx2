@@ -70,6 +70,8 @@
 
 #include "CascadeMenu.h"
 
+#include "ImageWinForm.h"
+
 #ifdef ABS_IN_MATH_H
 # define abs __Dont_define_abs
 #endif
@@ -103,6 +105,11 @@ ImageWindow::ImageWindow(bool  isAnchor, Network* network) :
     //
     // Save associated network and add self to network image list.
     //
+
+	iw = new dxui::ImageWinForm();
+	iw->width				= 0;
+	iw->height			=0;
+
     this->network = network;
     this->network->addImage(this);
    
@@ -481,6 +488,11 @@ ImageWindow::ImageWindow(bool  isAnchor, Network* network) :
     //
     //this->execute_after_resize_to = 0;
 
+ // Added to get demo working -- DT
+	iw->width = 448;
+	iw->height = 395;
+
+
 //    //
 //    // Install the default resources for THIS class (not the derived classes)
 //    //
@@ -495,7 +507,10 @@ ImageWindow::ImageWindow(bool  isAnchor, Network* network) :
 
 ImageWindow::~ImageWindow()
 {
- 
+	if(this->iw)
+		iw->Close();
+	iw = NULL;
+
     //
     // Purify caught an abr originating in ImageWindow_RedrawCB
     // if you do File/New with many opened image tools.  So remove
@@ -713,10 +728,10 @@ void ImageWindow::initialize()
 
     this->completePictureCreation();
 
-    if(this->node)
-    {
-	this->changeDepth(((ImageNode *)(this->node))->getDepth());
-    }
+	if(this->node)
+	{
+		this->changeDepth(((ImageNode *)(this->node))->getDepth());
+	}
 }
 
 //
@@ -815,6 +830,7 @@ void ImageWindow::installCallbacks()
 void ImageWindow::manage()
 {
     this->DXWindow::manage();
+	iw->showIt();
 
     if (this->state.frameBuffer)
     {
@@ -849,8 +865,8 @@ void ImageWindow::unmanage()
 	this->changeImageNameDialog->unmanage();
 }
 
-//Widget ImageWindow::createWorkArea(Widget parent)
-//{
+void* ImageWindow::createWorkArea()
+{
 //    Widget outerFrame;
 //    Widget innerFrame;
 //
@@ -1001,7 +1017,8 @@ void ImageWindow::unmanage()
 //    // Return the topmost widget of the work area.
 //    //
 //    return outerFrame;
-//}
+	return this;
+}
 
 
 //void ImageWindow::createFileMenu(Widget parent)
@@ -1566,166 +1583,168 @@ void ImageWindow::setDisplayGlobe()
 /*****************************************************************************/
 char *ImageWindow::getDisplayString()
 {
-//#if defined(HAVE_SYS_UTSNAME_H)
-//    struct
-//    utsname   name;
-//#else
-//    #define HOST_NAMELEN 33
-//    char *cp;
-//    struct    _dummy_utsname 
-//              {
-//                char    nodename[HOST_NAMELEN];
-//              } name;
-//#endif   
-//    Window    window;
-//    Window    child;
-//    bool   frame_buffer;
-//    int       x;
-//    int       y;
-//    char*     display;
-//    char      host[64];
-//    char      unit[16];
-//    static char      string[512];
+#if defined(HAVE_SYS_UTSNAME_H)
+    struct
+    utsname   name;
+#else
+    #define HOST_NAMELEN 33
+    char *cp;
+    struct    _dummy_utsname 
+              {
+                char    nodename[HOST_NAMELEN];
+              } name;
+#endif   
+    //Window    window;
+	long	window = 0;
+    //Window    child;
+    bool   frame_buffer;
+    int       x;
+    int       y;
+    char*     display;
+    char      host[64];
+    char      unit[16];
+    static char      string[512];
 //
 //    if (this->execute_after_resize_to) XtRemoveTimeOut (this->execute_after_resize_to);
-//    this->execute_after_resize_to = 0;
+    //this->execute_after_resize_to = 0;
 //
 //    //
 //    // If there is a pending resize, then make sure it gets
 //    // processed first so that the proper WHERE param is sent.
 //    //
-//    if (this->hasPendingWindowPlacement()) {
-//	if (this->reset_eor_wp) XtRemoveWorkProc (this->reset_eor_wp);
-//	this->reset_eor_wp = 0;
-//	this->setGeometry(this->pending_resize_x, this->pending_resize_y,
-//	    this->pending_resize_width, this->pending_resize_height);
-//	this->setExecuteOnResize(true);
-//    }
+	//if (this->hasPendingWindowPlacement()) {
+		//if (this->reset_eor_wp) XtRemoveWorkProc (this->reset_eor_wp);
+		//this->reset_eor_wp = 0;
+	//	this->setGeometry(this->pending_resize_x, this->pending_resize_y,
+	//		this->pending_resize_width, this->pending_resize_height);
+	//	this->setExecuteOnResize(true);
+	//}
 //
-//    /*
-//     * Determine whether we're working with a frame buffer or not....
-//     */
+    /*
+     * Determine whether we're working with a frame buffer or not....
+     */
 //    window = XtWindow(this->getCanvas());
 //	    
-//    frame_buffer = this->state.frameBuffer;
-//
-//    DisplayNode *in = (DisplayNode *)this->node;
-//    /*
-//     * Determine the X server host.
-//     */
-//    display = DisplayString(theApplication->getDisplay());
-//#if	defined(DXD_WIN)
-//	/* 
-//     	as DISPLAY Enviroment is haveing some king of problen with EXCEED...
-//		if DISPLAY is set to be DXPENT:0 (which is hostname:o), DXUI startup
-//		gives an error "Unable to open CONNECT Strean". This problem is also
-//		encountered while running EXCEED samples also.
-//
-//		If it is set to be "localhost:o" than eEXEC fails in "gethostname()".
-//
-//	*/
-//#endif
-//    if (display)
-//    {
-//#if defined(HAVE_SYS_UTSNAME_H)
-//	if (uname(&name) < 0)
-//#else
-//        if (gethostname(name.nodename, HOST_NAMELEN) < 0)
-//#endif
-//	{
-//	    return NULL;
-//	}
-//#if !defined(HAVE_SYS_UTSNAME_H)
-//        cp = strchr(name.nodename,'.');
-//        if (cp != NULL) 
-//        {
-//            *cp = '\0';
-//        }
-//#endif
-//	const char *serverHost;
-//	theDXApplication->getServerParameters(NULL, &serverHost,
-//	    NULL, NULL, NULL, NULL, NULL);
-//	if (sscanf(display, "%[^:]:%s", host, unit) == 2)
-//	{
-//	    const char* group_name =
-//#if WORKSPACE_PAGES
-//		in->getGroupName(theSymbolManager->getSymbol(PROCESS_GROUP));
-//#else
-//		in->getGroupName();
-//#endif
-//#ifdef	DXD_OS_NON_UNIX
-//	    if(!DXChild::HostIsLocal(serverHost))
-//#else
-//	    if (EqualString(host, "unix") &&
-//		(group_name != NULL ||
-//		 !DXChild::HostIsLocal(serverHost)))
-//#endif
-//	    {
-//		display = new char[ STRLEN(name.nodename) + STRLEN(unit) + 4];
-//		SPRINTF(display, "%s:%s", name.nodename, unit);
-//	    }
-//	    else
-//	    {
-//		display = DuplicateString(display);
-//	    }
-//	}
-//	else if (sscanf(display, ":%s", unit) == 1)
-//	{
-//	    const char* group_name =
-//#if WORKSPACE_PAGES
-//		in->getGroupName(theSymbolManager->getSymbol(PROCESS_GROUP));
-//#else
-//		in->getGroupName();
-//#endif
-//	    if (group_name != NULL || !DXChild::HostIsLocal(serverHost))
-//	    {
-//
-//		display = new char[STRLEN(name.nodename) + STRLEN(unit) + 4];
-//		SPRINTF(display, "%s:%s", name.nodename, unit);
-//	    }
-//	    else
-//	    {
-//		display = DuplicateString(display);
-//	    }
-//	}
-//	else
-//	{
-//	    return NULL;
-//	}
-//    }
-//    else
-//    {
-//	(void)gethostname(host, 63);
-//#if defined(HAVE_SYS_UTSNAME_H)
-//        if (uname(&name) < 0)
-//#else
-//        if (gethostname(name.nodename, HOST_NAMELEN) < 0)
-//#endif
-//        {
-//            return NULL;
-//        }
-//#if !defined(HAVE_SYS_UTSNAME_H)
-//        cp = strchr(name.nodename,'.');
-//        if (cp != NULL) 
-//        {
-//            *cp = '\0';
-//        }
-//#endif
-//
-//	display = new char[STRLEN(name.nodename) + STRLEN(unit) + 4];
-//	SPRINTF(display, "%s:0", name.nodename);
-//    }
-//
-//    /*
-//     * Compose the display string accordingly.
-//     */
-//    if (!frame_buffer)
-//    {
-//	SPRINTF(string, "X%d,%s,##%ld", 
-//	    in->getDepth(), display, window);
-//    }
-//    else
-//    {
+    frame_buffer = this->state.frameBuffer;
+
+    DisplayNode *in = (DisplayNode *)this->node;
+    /*
+     * Determine the X server host.
+     */
+    //display = DisplayString(theApplication->getDisplay());
+	display = "localhost:0";
+#if	defined(DXD_WIN)
+	/* 
+     	as DISPLAY Enviroment is haveing some king of problen with EXCEED...
+		if DISPLAY is set to be DXPENT:0 (which is hostname:o), DXUI startup
+		gives an error "Unable to open CONNECT Strean". This problem is also
+		encountered while running EXCEED samples also.
+
+		If it is set to be "localhost:o" than eEXEC fails in "gethostname()".
+
+	*/
+#endif
+    if (display)
+    {
+#if defined(HAVE_SYS_UTSNAME_H)
+	if (uname(&name) < 0)
+#else
+        if (gethostname(name.nodename, HOST_NAMELEN) < 0)
+#endif
+	{
+	    return NULL;
+	}
+#if !defined(HAVE_SYS_UTSNAME_H)
+        cp = strchr(name.nodename,'.');
+        if (cp != NULL) 
+        {
+            *cp = '\0';
+        }
+#endif
+	const char *serverHost;
+	theDXApplication->getServerParameters(NULL, &serverHost,
+	    NULL, NULL, NULL, NULL, NULL);
+	if (sscanf(display, "%[^:]:%s", host, unit) == 2)
+	{
+	    const char* group_name =
+#if WORKSPACE_PAGES
+		in->getGroupName(theSymbolManager->getSymbol(PROCESS_GROUP));
+#else
+		in->getGroupName();
+#endif
+#ifdef	DXD_OS_NON_UNIX
+	    if(!DXChild::HostIsLocal(serverHost))
+#else
+	    if (EqualString(host, "unix") &&
+		(group_name != NULL ||
+		 !DXChild::HostIsLocal(serverHost)))
+#endif
+	    {
+		display = new char[ STRLEN(name.nodename) + STRLEN(unit) + 4];
+		SPRINTF(display, "%s:%s", name.nodename, unit);
+	    }
+	    else
+	    {
+		display = DuplicateString(display);
+	    }
+	}
+	else if (sscanf(display, ":%s", unit) == 1)
+	{
+	    const char* group_name =
+#if WORKSPACE_PAGES
+		in->getGroupName(theSymbolManager->getSymbol(PROCESS_GROUP));
+#else
+		in->getGroupName();
+#endif
+	    if (group_name != NULL || !DXChild::HostIsLocal(serverHost))
+	    {
+
+		display = new char[STRLEN(name.nodename) + STRLEN(unit) + 4];
+		SPRINTF(display, "%s:%s", name.nodename, unit);
+	    }
+	    else
+	    {
+		display = DuplicateString(display);
+	    }
+	}
+	else
+	{
+	    return NULL;
+	}
+    }
+    else
+    {
+	(void)gethostname(host, 63);
+#if defined(HAVE_SYS_UTSNAME_H)
+        if (uname(&name) < 0)
+#else
+        if (gethostname(name.nodename, HOST_NAMELEN) < 0)
+#endif
+        {
+            return NULL;
+        }
+#if !defined(HAVE_SYS_UTSNAME_H)
+        cp = strchr(name.nodename,'.');
+        if (cp != NULL) 
+        {
+            *cp = '\0';
+        }
+#endif
+
+	display = new char[STRLEN(name.nodename) + STRLEN(unit) + 4];
+	SPRINTF(display, "%s:0", name.nodename);
+    }
+
+    /*
+     * Compose the display string accordingly.
+     */
+    if (!frame_buffer)
+    {
+	SPRINTF(string, "W%d,%s,##%ld", 
+	    in->getDepth(), display, this->iw->ImageWinFormHWND.ToPointer());
+    }
+    else
+    {
 //	XTranslateCoordinates
 //	    (XtDisplay(this->getCanvas()),
 //	     XtWindow(this->getCanvas()),
@@ -1733,31 +1752,34 @@ char *ImageWindow::getDisplayString()
 //	     0, 0,
 //	     &x, &y,
 //	     &child);
-//	     
-//#ifdef FB_FLAG
-//	unsigned int flag = 0x00000000;
-//	if(in->isLastImage())
-//	    flag |= FB_WHERE_SWAP;
 //
-//	SPRINTF(string,
-//		"FB,%s,%d,%d,##%d,%#010x",
-//		display,
-//		(in->isLastImage() ? x : -(1 + x)),
-//		y,
-//		window,
-//		flag);
-//#endif
-//	SPRINTF(string,
-//		"FB,%s,%d,%d,##%ld",
-//		display,
-//		(in->isLastImage() ? x : -(1 + x)),
-//		y,
-//		window);
-//    }
-//    delete display;
-//
-//    return string;
-	return "nativeWindows";
+		x = 0; y = 0; /* Added to take care of XTranslate DT */
+
+#ifdef FB_FLAG
+	unsigned int flag = 0x00000000;
+	if(in->isLastImage())
+	    flag |= FB_WHERE_SWAP;
+
+	SPRINTF(string,
+		"FB,%s,%d,%d,##%d,%#010x",
+		display,
+		(in->isLastImage() ? x : -(1 + x)),
+		y,
+		window,
+		flag);
+#endif
+	SPRINTF(string,
+		"FB,%s,%d,%d,##%ld",
+		display,
+		(in->isLastImage() ? x : -(1 + x)),
+		y,
+		window);
+    }
+
+    delete display;
+
+    return string;
+//	return "nativeWindows";
 }
 
 //extern "C" void ImageWindow_RedrawCB(Widget	drawingArea,
@@ -4965,6 +4987,8 @@ void ImageWindow::newCamera(int image_width, int image_height)
 {
     this->state.width = image_width;
     this->state.height = image_height;
+	this->iw->width = image_width;
+	this->iw->height = image_height;
 
     this->pushedSinceExec = false;
 
@@ -6611,6 +6635,8 @@ bool sw;
 		  //XmNdepth, &canvas_depth, 
 		  //XmNframeBuffer, &frame_buffer,
 		  //NULL);
+	// Again hardcode depth
+	canvas_depth = 24;
     if(canvas_depth != depth)
     {
 //#if 0
@@ -6739,6 +6765,9 @@ int new_depth;
     {
 	//new_depth = DefaultDepth(theApplication->getDisplay(), 
 	//		   DefaultScreen(theApplication->getDisplay()));
+
+		// Hardcode depth to true color for Windows
+		new_depth = 24;
 
 #if 0
 	char msg[256];

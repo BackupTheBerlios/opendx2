@@ -134,7 +134,7 @@ class MsgWin : public DXWindow
     //
     // functions to set up menus and the window itself.
     //
-    //virtual Widget createWorkArea(Widget parent);
+    virtual void* createWorkArea();
     //virtual void createMenus(Widget parent);
     //virtual void createFileMenu(Widget parent);
     //virtual void createEditMenu(Widget parent);

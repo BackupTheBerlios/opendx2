@@ -736,8 +736,8 @@ void ColormapEditor::handleStateChange()
 //
 //}
 //
-//Widget ColormapEditor::createWorkArea(Widget parent)
-//{
+void * ColormapEditor::createWorkArea()
+{
 //    Arg    arg[8];
 //    int    n;
 //
@@ -766,7 +766,8 @@ void ColormapEditor::handleStateChange()
 //    // Return the topmost widget of the work area.
 //    //
 //    return this->colormapEditor;
-//}
+	return this;
+}
 //
 //
 //void ColormapEditor::createFileMenu(Widget parent)

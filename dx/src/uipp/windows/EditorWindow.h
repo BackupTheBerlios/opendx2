@@ -455,7 +455,7 @@ class EditorWindow : public DXWindow
     //
     // Creates the editor window workarea (as required by MainWindow class).
     //
-    //virtual Widget createWorkArea(Widget parent);
+    virtual void* createWorkArea();
 
     //
     // Creates the editor window menus (as required by DXWindow class).

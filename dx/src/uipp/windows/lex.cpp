@@ -628,6 +628,14 @@ bool IsWhere (const char* string, int& index)
 	    items_parsed = sscanf (dupstring, "x%d,%[^,],#x%d",
 		    &depth, dispstr, &xwid);
 
+	if (items_parsed != 3)
+		items_parsed = sscanf (dupstring, "w%d,%[^,],##%d",
+			&depth, dispstr, &xwid);
+
+	if (items_parsed != 3)
+		items_parsed = sscanf (dupstring, "W%d,%[^,],##%d",
+			&depth, dispstr, &xwid);
+
 	if (items_parsed == 3) {
 	    if ((depth == 8) || (depth == 12) || (depth == 16) || (depth == 24)
 			|| (depth == 32)) {

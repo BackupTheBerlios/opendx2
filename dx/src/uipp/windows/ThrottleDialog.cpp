@@ -9,8 +9,8 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "ThrottleDialog.h"
 #include "ImageWindow.h"
+#include "ThrottleDialog.h"
 
 bool ThrottleDialog::ClassInitialized = false;
 

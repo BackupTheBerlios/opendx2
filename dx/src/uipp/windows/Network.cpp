@@ -40,6 +40,7 @@
 #include <errno.h>	// For errno
 #include <sys/stat.h>
 
+#include "ImageWindow.h"
 #include "lex.h"
 #include "DXStrings.h"
 #include "Network.h"
@@ -79,7 +80,6 @@
 #include "ApplicIF.h"
 #include "DXVersion.h"
 #include "EditorWindow.h"
-#include "ImageWindow.h"
 #include "DXAnchorWindow.h" // for resetWindowTitle()
 #include "ImageNode.h"
 #include "StandIn.h" 

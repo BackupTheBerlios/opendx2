@@ -226,10 +226,11 @@ DisplayNode::associateImage(ImageWindow *w)
 	this->image = w;
     }
 
-    if (this->title != NULL && this->image != NULL)
-	this->image->setWindowTitle(this->title);
-//    if (this->image != NULL)
-//	this->image->changeDepth(this->depth);
+	if (this->title != NULL && this->image != NULL)
+		this->image->setWindowTitle(this->title);
+
+	if (this->image != NULL)
+		this->image->changeDepth(this->depth);
 
     return true;
 }

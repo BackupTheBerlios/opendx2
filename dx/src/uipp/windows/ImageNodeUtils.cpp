@@ -9,6 +9,7 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include "ImageWindow.h"
 #include "ImageNode.h"
 #include "StandIn.h"
 #include "Ark.h"
@@ -16,7 +17,6 @@
 #include "DXApplication.h"
 #include "Network.h"
 #include "PickNode.h"
-#include "ImageWindow.h"
 #include "ListIterator.h"
 #include "ImageDefinition.h"
 #include "WarningDialogManager.h"

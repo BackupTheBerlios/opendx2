@@ -204,6 +204,7 @@ EditorWindow::EditorWindow(bool  isAnchor, Network* network) :
     this->editOutputCacheabilityCascade	    = NULL;
 #if WORKSPACE_PAGES
     this->pageCascade	          = NULL;
+	this->pageSelector			  = NULL;
 #endif
     this->javaCascade	          = NULL;
     this->deleteOption            = NUL(CommandInterface*);
@@ -646,6 +647,7 @@ EditorWindow::EditorWindow(bool  isAnchor, Network* network) :
         EditorWindow::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
+
 }
 
 
@@ -926,7 +928,7 @@ void EditorWindow::setCommandActivation()
 	if (this->saveAsCCodeCmd)
 	    this->saveAsCCodeCmd->deactivate();
 	nselected = 0;
-	this->outputCacheabilityCascade->deactivate();
+	//this->outputCacheabilityCascade->deactivate();
     } else {
 	this->selectAllNodeCmd->activate();
 	this->findToolCmd->activate();
@@ -934,7 +936,7 @@ void EditorWindow::setCommandActivation()
 	if (this->saveAsCCodeCmd)
 	    this->saveAsCCodeCmd->activate();
 	nselected = this->getNodeSelectionCount();
-	this->outputCacheabilityCascade->activate();
+	//this->outputCacheabilityCascade->activate();
     } 
 
     //
@@ -985,19 +987,19 @@ void EditorWindow::setCommandActivation()
     //
     // command depends on whether selected nodes are pagifiable
     //
-    bool mscmd_activate = false;
-    if ((nselected) || (dselected)) {
-	Dialog* diag = this->pageSelector->getMoveNodesDialog();
-	if ((diag) && (diag->isManaged())) {
-	    if (this->pageSelector->getSize() > 1)
-		mscmd_activate = this->areSelectedNodesPagifiable(false);
-	    else
-		mscmd_activate = false;
-	} else {
-	    mscmd_activate = true;
+	bool mscmd_activate = false;
+	if ((nselected) || (dselected)) {
+		Dialog* diag = this->pageSelector->getMoveNodesDialog();
+		if ((diag) && (diag->isManaged())) {
+			if (this->pageSelector->getSize() > 1)
+				mscmd_activate = this->areSelectedNodesPagifiable(false);
+			else
+				mscmd_activate = false;
+		} else {
+			mscmd_activate = true;
+		}
 	}
-    }
-    if (mscmd_activate)
+	if (mscmd_activate)
 	this->moveSelectedCmd->activate();
     else
 	this->moveSelectedCmd->deactivate();
@@ -1047,7 +1049,7 @@ void EditorWindow::setCommandActivation()
 	this->openMacroCmd->deactivate();
 	this->openImageCmd->deactivate();
 	this->openControlPanelCmd->deactivate();
-	this->editOutputCacheabilityCascade->deactivate();
+	//this->editOutputCacheabilityCascade->deactivate();
     } else {
 	//
 	// Commands that can only work selected nodes, but depend on the Node.
@@ -1104,8 +1106,8 @@ void EditorWindow::setCommandActivation()
 			this->revealAllTabsCmd->deactivate());	
 	(hide_all ? 	this->hideAllTabsCmd->activate() : 
 			this->hideAllTabsCmd->deactivate());	
-	(cacheable ?	this->editOutputCacheabilityCascade->activate() :
-			this->editOutputCacheabilityCascade->deactivate());
+	//(cacheable ?	this->editOutputCacheabilityCascade->activate() :
+	//		this->editOutputCacheabilityCascade->deactivate());
 	//
 	// Commands that can only work if there are unselected nodes 
 	//
@@ -1217,8 +1219,8 @@ void EditorWindow::setCommandActivation()
 	}
     }
 
-    this->editTabsCascade->setActivationFromChildren();
-    this->editSelectCascade->setActivationFromChildren();
+    //this->editTabsCascade->setActivationFromChildren();
+    //this->editSelectCascade->setActivationFromChildren();
 }
 
 //
@@ -1243,8 +1245,8 @@ void EditorWindow::handleNodeStatusChange(Node *n, NodeStatusChange status)
     }
     
 }
-//Widget EditorWindow::createWorkArea(Widget parent)
-//{
+void * EditorWindow::createWorkArea(void)
+{
 //    Widget    form;
 //    Widget    hBar;
 //    Widget    vBar;
@@ -1291,7 +1293,7 @@ void EditorWindow::handleNodeStatusChange(Node *n, NodeStatusChange status)
 //    NULL);
 //
 //#if WORKSPACE_PAGES
-//    this->pageSelector = new PageSelector (this, form, this->network);
+    this->pageSelector = new PageSelector (this, /*form,*/ this->network);
 //    XtVaSetValues (this->pageSelector->getRootWidget(),
 //	XmNtopAttachment,	XmATTACH_FORM,
 //	XmNleftAttachment,      XmATTACH_WIDGET,
@@ -1330,12 +1332,12 @@ void EditorWindow::handleNodeStatusChange(Node *n, NodeStatusChange status)
 //    // Create the workspace object.
 //    //
 //
-//    this->workSpace = new VPERoot("vpeCanvas", this->scrolledWindow, 
-//				this->network->getWorkSpaceInfo(),
-//				this, this->pageSelector);
-//    this->workSpace->initializeRootWidget();
-//    this->workSpace->manage();
-//    this->pageSelector->setRootPage((VPERoot*)this->workSpace);
+    this->workSpace = new VPERoot("vpeCanvas", /*this->scrolledWindow,*/ 
+				this->network->getWorkSpaceInfo(),
+				this, this->pageSelector);
+    this->workSpace->initializeRootWidget();
+    this->workSpace->manage();
+    this->pageSelector->setRootPage((VPERoot*)this->workSpace);
 //
 //    XtVaSetValues(this->scrolledWindow, XmNworkWindow, 
 //	  this->workSpace->getRootWidget(), NULL);
@@ -1392,7 +1394,10 @@ void EditorWindow::handleNodeStatusChange(Node *n, NodeStatusChange status)
 //    // Return the topmost widget of the work area.
 //    //
 //    return outer_form;
-//}
+
+	// DT - can't return Widget so we'll return this.
+	return this;
+}
 
 
 //void EditorWindow::createFileMenu(Widget parent)
@@ -3908,37 +3913,37 @@ void EditorWindow::clearProcessGroup(const char* name)
 
 void EditorWindow::installWorkSpaceInfo(WorkSpaceInfo *info)
 {
-    ASSERT(this->workSpace);
-    this->workSpace->installInfo(info);
+    //ASSERT(this->workSpace);
+    //this->workSpace->installInfo(info);
 }
 
 #if WORKSPACE_PAGES
 void EditorWindow::beginPageChange()
 {
-    int page = this->workSpace->getCurrentPage();
-    WorkSpace *current_ews = this->workSpace;
-    if (page) current_ews = this->workSpace->getElement(page);
-    current_ews->beginManyPlacements();
-    this->deferrableCommandActivation->deferAction();
-    this->resetExecutionList();
+    //int page = this->workSpace->getCurrentPage();
+    //WorkSpace *current_ews = this->workSpace;
+    //if (page) current_ews = this->workSpace->getElement(page);
+    //current_ews->beginManyPlacements();
+    //this->deferrableCommandActivation->deferAction();
+    //this->resetExecutionList();
 }
 
 void EditorWindow::endPageChange()
 {
-    int page = this->workSpace->getCurrentPage();
-    WorkSpace *current_ews = this->workSpace;
-    if (page) current_ews = this->workSpace->getElement(page);
-    current_ews->endManyPlacements();
-    //
-    // Don't resize if we need less space.  It's too visually jarring.
-    //
-    int reqw, w, reqh, h;
-    this->workSpace->getMaxWidthHeight(&reqw, &reqh);
-    this->workSpace->getXYSize(&w,&h);
-    if ((reqw > w) || (reqh > h)) this->workSpace->resize();
+    //int page = this->workSpace->getCurrentPage();
+    //WorkSpace *current_ews = this->workSpace;
+    //if (page) current_ews = this->workSpace->getElement(page);
+    //current_ews->endManyPlacements();
+    ////
+    //// Don't resize if we need less space.  It's too visually jarring.
+    ////
+    //int reqw, w, reqh, h;
+    //this->workSpace->getMaxWidthHeight(&reqw, &reqh);
+    //this->workSpace->getXYSize(&w,&h);
+    //if ((reqw > w) || (reqh > h)) this->workSpace->resize();
 
-    this->deferrableCommandActivation->requestAction(NULL);
-    this->deferrableCommandActivation->undeferAction();
+    //this->deferrableCommandActivation->requestAction(NULL);
+    //this->deferrableCommandActivation->undeferAction();
 }
 #endif
 
@@ -3950,12 +3955,12 @@ void EditorWindow::endPageChange()
 //
 void EditorWindow::beginNetworkChange()
 {
-    WorkSpace *ws = this->workSpace;
-    ASSERT(ws);
-    ws->beginManyPlacements();
-    this->lastSelectedTransmitter = NULL;
-    this->deferrableCommandActivation->deferAction();
-    this->resetColorList();
+    //WorkSpace *ws = this->workSpace;
+    //ASSERT(ws);
+    //ws->beginManyPlacements();
+    //this->lastSelectedTransmitter = NULL;
+    //this->deferrableCommandActivation->deferAction();
+    //this->resetColorList();
 }
 //
 // Do what ever is necessary just after changing to the current network.
@@ -3964,72 +3969,72 @@ void EditorWindow::beginNetworkChange()
 //
 void EditorWindow::endNetworkChange()
 {
-    WorkSpace *ws = this->workSpace;
-    ASSERT(ws);
-    this->lastSelectedTransmitter = NULL;
-    ws->endManyPlacements();
+//	WorkSpace *ws = this->workSpace;
+//	ASSERT(ws);
+//	this->lastSelectedTransmitter = NULL;
+//	ws->endManyPlacements();
+//
+//#if WORKSPACE_PAGES
+//	//
+//	// All non-empty pages will be created automatically.  Now go and look
+//	// for empty pages and create them.
+//	//
+//	PageGroupManager *pmgr = (PageGroupManager*)
+//		this->network->getGroupManagers()->findDefinition(PAGE_GROUP);
+//	int gcnt = pmgr->getGroupCount();
+//	if (gcnt) {
+//		int i;
+//		for (i=1; i<=gcnt; i++) {
+//			const char *pageName = pmgr->getGroupName(i);
+//			if (this->pageSelector->findDefinition (pageName)) continue;
+//			PageGroupRecord  *prec = (PageGroupRecord*)pmgr->getGroup (pageName);
+//			ASSERT(prec);
+//			EditorWorkSpace *page = (EditorWorkSpace*) this->workSpace->addPage();
+//			page->resetCursor();
+//			ASSERT (this->pageSelector->addDefinition (pageName, page));
+//		}
+//		//
+//		// If the root page has no members and its name is still Untitled, then
+//		// remove the it from the page selector since there's no longer
+//		// a need for it.
+//		// On the other hande, if the root page has members, then make sure that
+//		// it's in the PageSelector.
+//		//
+//		int cnt = this->getPageMemberCount (this->workSpace);
+//		if (!cnt) {
+//			if (this->network->getFileName()) {
+//				EditorWorkSpace* ews = (EditorWorkSpace*)
+//					this->pageSelector->findDefinition("Untitled");
+//				if (this->workSpace == ews) {
+//					this->pageSelector->removeDefinition ((void*)this->workSpace);
+//
+//					//
+//					// Try to get the leftmost tab's workspace.
+//					//
+//					EditorWorkSpace* ews = (EditorWorkSpace*)
+//						this->pageSelector->getInitialWorkSpace();
+//					this->workSpace->showWorkSpace(ews);
+//				}
+//			}
+//		} else {
+//			int i,dsize = this->pageSelector->getSize();
+//			bool found = false;
+//			for (i=1; i<=dsize; i++) {
+//				EditorWorkSpace* ews = (EditorWorkSpace*)
+//					this->pageSelector->getDefinition(i);
+//				if (ews == this->workSpace) {
+//					found = true;
+//					break;
+//				}
+//			}
+//			if (!found) 
+//				this->pageSelector->addDefinition ("Untitled", this->workSpace);
+//		}
+//	}
+//#endif
 
-#if WORKSPACE_PAGES
-    //
-    // All non-empty pages will be created automatically.  Now go and look
-    // for empty pages and create them.
-    //
-    PageGroupManager *pmgr = (PageGroupManager*)
-	this->network->getGroupManagers()->findDefinition(PAGE_GROUP);
-    int gcnt = pmgr->getGroupCount();
-    if (gcnt) {
-	int i;
-	for (i=1; i<=gcnt; i++) {
-	    const char *pageName = pmgr->getGroupName(i);
-	    if (this->pageSelector->findDefinition (pageName)) continue;
-	    PageGroupRecord  *prec = (PageGroupRecord*)pmgr->getGroup (pageName);
-	    ASSERT(prec);
-	    EditorWorkSpace *page = (EditorWorkSpace*) this->workSpace->addPage();
-	    page->resetCursor();
-	    ASSERT (this->pageSelector->addDefinition (pageName, page));
-	}
-	//
-	// If the root page has no members and its name is still Untitled, then
-	// remove the it from the page selector since there's no longer
-	// a need for it.
-	// On the other hande, if the root page has members, then make sure that
-	// it's in the PageSelector.
-	//
-	int cnt = this->getPageMemberCount (this->workSpace);
-	if (!cnt) {
-	    if (this->network->getFileName()) {
-		EditorWorkSpace* ews = (EditorWorkSpace*)
-		    this->pageSelector->findDefinition("Untitled");
-		if (this->workSpace == ews) {
-		    this->pageSelector->removeDefinition ((void*)this->workSpace);
-
-		    //
-		    // Try to get the leftmost tab's workspace.
-		    //
-		    EditorWorkSpace* ews = (EditorWorkSpace*)
-			this->pageSelector->getInitialWorkSpace();
-		    this->workSpace->showWorkSpace(ews);
-		}
-	    }
-	} else {
-	    int i,dsize = this->pageSelector->getSize();
-	    bool found = false;
-	    for (i=1; i<=dsize; i++) {
-		EditorWorkSpace* ews = (EditorWorkSpace*)
-		    this->pageSelector->getDefinition(i);
-		if (ews == this->workSpace) {
-		    found = true;
-		    break;
-		}
-	    }
-	    if (!found) 
-		this->pageSelector->addDefinition ("Untitled", this->workSpace);
-	}
-    }
-#endif
-
-    this->deferrableCommandActivation->requestAction(NULL);
-    this->deferrableCommandActivation->undeferAction();
+    //this->deferrableCommandActivation->requestAction(NULL);
+    //this->deferrableCommandActivation->undeferAction();
 }
 //
 // Do what ever is necessary just before and after reading a new network
@@ -4087,13 +4092,13 @@ void EditorWindow::prepareForNewNetwork()
 	}
 	this->pageSelector->clear();
     }
-    this->workSpace->setMembersInitialized(false);
-    this->workSpace->showRoot();
+    //this->workSpace->setMembersInitialized(false);
+    //this->workSpace->showRoot();
 #endif
 
     // reset the workspace
     // FIXME: shouldn't this be in completeNewNetwork()
-    this->moveWorkspaceWindow(0,0, false);
+    //this->moveWorkspaceWindow(0,0, false);
 
     this->creating_new_network = true;
 }
@@ -4177,24 +4182,24 @@ void EditorWindow::notifyCPChange(bool newList)
 
 void EditorWindow::notify(const Symbol message, const void *msgdata, const char *msg)
 {
-    if (message == DXApplication::MsgPanelChanged) {
-	//
-	// Set the command activations that depend on the number of panels.
-	//
-	int panelCount = this->network->getPanelCount();
-	if (panelCount == 0) {
-	    this->openControlPanelByNameMenu->deactivate();
-	    this->setPanelAccessCmd->deactivate();
-	    this->setPanelGroupCmd->deactivate();
-	} else if (panelCount == 1) {
-	    this->openControlPanelByNameMenu->activate();
-	    this->setPanelAccessCmd->activate();
-	    this->setPanelGroupCmd->activate();
-	} // else if panelCount == 2 the commands were already activated.
-    } else if (message == DXApplication::MsgExecute) {
-	this->resetColorList();
-    }
-    this->DXWindow::notify(message, msgdata, msg);
+	if (message == DXApplication::MsgPanelChanged) {
+		//
+		// Set the command activations that depend on the number of panels.
+		//
+		int panelCount = this->network->getPanelCount();
+		if (panelCount == 0) {
+			//this->openControlPanelByNameMenu->deactivate();
+			this->setPanelAccessCmd->deactivate();
+			this->setPanelGroupCmd->deactivate();
+		} else if (panelCount == 1) {
+			//this->openControlPanelByNameMenu->activate();
+			this->setPanelAccessCmd->activate();
+			this->setPanelGroupCmd->activate();
+		} // else if panelCount == 2 the commands were already activated.
+	} else if (message == DXApplication::MsgExecute) {
+		this->resetColorList();
+	}
+	this->DXWindow::notify(message, msgdata, msg);
 }
 
 
@@ -5378,40 +5383,40 @@ EditorWindow::deletePage(const char* to_delete)
     // try to put up one which contains fewest members.  Else just put up page 0.
     // Putting up page 0 might require adding "Untitled" to the pageSelector.
     //
-    if (deleted_was_current) {
-	bool found = false;
-	DictionaryIterator di(*this->pageSelector);
-	int member_count = 9999999;
-	EditorWorkSpace* contains_few_members = NUL(EditorWorkSpace*);
-	while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) {
-	    if (ews->membersInitialized()) {
-		found = true;
-		this->pageSelector->selectPage(ews);
-		break;
-	    } else {
-		int current_count = this->getPageMemberCount(ews);
-		if ((current_count > 0) && (current_count < member_count)) {
-		    member_count = current_count;
-		    contains_few_members = (EditorWorkSpace*)ews;
-		}
-		/*if (ews == this->workSpace)
-		  contains_root = true;*/
-	    }
-	}
-	if (!found) {
-	    if (contains_few_members) {
-		this->pageSelector->selectPage(contains_few_members);
-	     } else if (this->pageSelector->getSize()) {
-		EditorWorkSpace* ws = (EditorWorkSpace*)
-		    this->pageSelector->getDefinition(1);
-		ASSERT(ws);
-		this->pageSelector->selectPage(ws);
-	    } else {
-		this->pageSelector->addDefinition ("Untitled", this->workSpace);
-		this->pageSelector->selectPage(this->workSpace);
-	    }
-	}
-    }
+	//if (deleted_was_current) {
+	//	bool found = false;
+	//	DictionaryIterator di(*this->pageSelector);
+	//	int member_count = 9999999;
+	//	EditorWorkSpace* contains_few_members = NUL(EditorWorkSpace*);
+	//	while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) {
+	//		if (ews->membersInitialized()) {
+	//			found = true;
+	//			this->pageSelector->selectPage(ews);
+	//			break;
+	//		} else {
+	//			int current_count = this->getPageMemberCount(ews);
+	//			if ((current_count > 0) && (current_count < member_count)) {
+	//				member_count = current_count;
+	//				contains_few_members = (EditorWorkSpace*)ews;
+	//			}
+	//			/*if (ews == this->workSpace)
+	//			contains_root = true;*/
+	//		}
+	//	}
+	//	if (!found) {
+	//		if (contains_few_members) {
+	//			this->pageSelector->selectPage(contains_few_members);
+	//		} else if (this->pageSelector->getSize()) {
+	//			EditorWorkSpace* ws = (EditorWorkSpace*)
+	//				this->pageSelector->getDefinition(1);
+	//			ASSERT(ws);
+	//			this->pageSelector->selectPage(ws);
+	//		} else {
+	//			this->pageSelector->addDefinition ("Untitled", this->workSpace);
+	//			this->pageSelector->selectPage(this->workSpace);
+	//		}
+	//	}
+	//}
 
     return true;
 }
@@ -6651,11 +6656,11 @@ void EditorWindow::resetErrorList(bool reset_all)
 	}
     }
 
-    DictionaryIterator di(*this->pageSelector);
-    EditorWorkSpace* ews;
-    while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) 
-	if (yellow_tabs.isMember((void*)ews) == false)
-	    this->pageSelector->highlightTab (ews, EditorWindow::REMOVEHIGHLIGHT);
+ //   DictionaryIterator di(*this->pageSelector);
+ //   EditorWorkSpace* ews;
+ //   while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) 
+	//if (yellow_tabs.isMember((void*)ews) == false)
+	//    this->pageSelector->highlightTab (ews, EditorWindow::REMOVEHIGHLIGHT);
 }
 #endif
 

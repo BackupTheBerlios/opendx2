@@ -9,8 +9,8 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#include "ViewControlDialog.h"
 #include "ImageWindow.h"
+#include "ViewControlDialog.h"
 #include "ImageNode.h"
 #include "ButtonInterface.h"
 #include "ViewControlWhichCameraCommand.h"

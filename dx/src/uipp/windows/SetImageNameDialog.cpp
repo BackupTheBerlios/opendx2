@@ -9,13 +9,10 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
+#include "ImageWindow.h"
 #include "DXStrings.h"
 #include "SetImageNameDialog.h"
 #include "DisplayNode.h"
-#include "ImageWindow.h"
 #include "Network.h"
 #include "ErrorDialogManager.h"
 

@@ -57,7 +57,7 @@ class DXAnchorWindow: public DXWindow {
 
     //static String DefaultResources[];
 
-    //virtual Widget createWorkArea    (Widget parent);
+    virtual void* createWorkArea    ();
     //virtual void   createMenus       (Widget parent);
     //virtual void   createFileMenu    (Widget parent);
     //virtual void   createWindowsMenu (Widget parent);

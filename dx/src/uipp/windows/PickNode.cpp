@@ -9,15 +9,12 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
-#include "PickNode.h"
+#include "ImageWindow.h"
 #include "ImageNode.h"
+#include "PickNode.h"
 #include "Network.h"
 #include "Parameter.h"
 #include "ErrorDialogManager.h"
-#include "ImageWindow.h"
 #include "ListIterator.h"
 
 #define PICK_NAME 1

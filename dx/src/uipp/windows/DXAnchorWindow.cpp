@@ -210,8 +210,8 @@ DXAnchorWindow::~DXAnchorWindow()
 //
 // Create the work area for this window.  
 //
-//Widget DXAnchorWindow::createWorkArea (Widget parent)
-//{
+void* DXAnchorWindow::createWorkArea ()
+{
 //int n;
 //Arg args[20];
 //XmString xmstr;
@@ -233,10 +233,11 @@ DXAnchorWindow::~DXAnchorWindow()
 //
 //    XmStringFree(xmstr);
 //
-//    this->resetWindowTitle();
+    this->resetWindowTitle();
 //
 //    return form;
-//}
+	return this;
+}
 //
 //void
 //DXAnchorWindow::createMenus (Widget parent)

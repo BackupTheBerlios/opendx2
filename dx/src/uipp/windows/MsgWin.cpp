@@ -326,8 +326,8 @@ void MsgWin::manage()
 //	theDXApplication->toggleErrorEnable, theDXApplication->isErrorEnabled());
 //}
 //
-//Widget MsgWin::createWorkArea(Widget parent)
-//{
+void* MsgWin::createWorkArea()
+{
 //    Widget top = XtVaCreateManagedWidget(
 //	"workAreaFrame", xmFrameWidgetClass, parent,
 //	XmNshadowType,		XmSHADOW_OUT,
@@ -360,7 +360,8 @@ void MsgWin::manage()
 //    XtManageChild(this->list);
 //
 //    return top;
-//}
+	return this;
+}
 
 void MsgWin::addInformation(const char *info)
 {

@@ -693,8 +693,8 @@ void ControlPanel::unmanage()
     theDXApplication->notifyPanelChanged();
 }
 
-//Widget ControlPanel::createWorkArea(Widget parent)
-//{
+void* ControlPanel::createWorkArea()
+{
 //    Widget    frame;
 //    Widget    hBar;
 //    Widget    vBar;
@@ -779,7 +779,9 @@ void ControlPanel::unmanage()
 //    // Return the topmost widget of the work area.
 //    //
 //    return frame;
-//}
+	return this;
+}
+
 //
 //
 //void ControlPanel::createFileMenu(Widget parent)

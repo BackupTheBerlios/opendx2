@@ -27,8 +27,8 @@ bool SequencerWindow::ClassInitialized = false;
 //	NULL
 //};
 
-//Widget SequencerWindow::createWorkArea(Widget parent)
-//{
+void* SequencerWindow::createWorkArea()
+{
 //    
 //    SequencerNode *snode = this->node;
 //
@@ -80,8 +80,9 @@ bool SequencerWindow::ClassInitialized = false;
 //		      (XtPointer)this);
 //
 //    return this->vcr;
-//}
-//
+	return this;
+}
+
 
 SequencerWindow::SequencerWindow(SequencerNode* node) 
                        		: DXWindow("sequencerWindow", false, false)

@@ -75,7 +75,7 @@ class HelpWin : public MainWindow
     //
     // functions to set up menus and the window itself.
     //
-    //virtual Widget createWorkArea(Widget parent);
+    virtual void* createWorkArea();
 
     //
     // Constructor for derived classes:
