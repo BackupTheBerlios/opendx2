@@ -3668,7 +3668,7 @@ MarkCommonLines(XmWorkspaceWidget ww)
     int             min_disty, cur_disty;
     int             min_distx, cur_distx;
 
-    if (original_line == ww->workspace.lines)
+    if ((original_line = ww->workspace.lines) != NULL)
     {
 	line1 = original_line;
 	prev_line1 = NULL;
