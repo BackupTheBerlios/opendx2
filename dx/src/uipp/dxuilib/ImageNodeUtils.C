@@ -69,10 +69,10 @@ String ImageNode::DXMacroTxt[] = {
 #   include "dxmac.h"
 };
 String ImageNode::VrmlMacroTxt[] = {
-#   include "vrmlmac.txt"
+#   include "vrmlmac.h"
 };
 String ImageNode::GifMacroTxt[] = {
-#   include "gifmac.txt"
+#   include "gifmac.h"
 };
 
 #include <ctype.h>
