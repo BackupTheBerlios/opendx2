@@ -371,11 +371,6 @@ AC_LANG_C
 
 dnl DX_CYGWIN_MOUNTS
 DX_SET_RTL_FLAGS
-dnl I think the next one is bogus... the following one adds libregex.a 
-dnl for cygnus
-AC_CHECK_LIB(gen, regex)
-AC_CHECK_LIB(regex, regcomp)
-AC_CHECK_LIB(REXP, regcomp)
 AC_CHECK_LIB(pthread, pthread_getspecific)
 
 dnl Check of X related files and set up include directories
@@ -891,6 +886,9 @@ AC_LANG_C
 
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, inet_addr)
+AC_CHECK_LIB(gen, regex)
+AC_CHECK_LIB(regex, regcomp)
+AC_CHECK_LIB(REXP, regcomp)
 
 DX_STREAM_O2
 
