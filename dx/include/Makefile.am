@@ -1,2 +1,3 @@
+dxincdir = $(prefix)/include/dx
 SUBDIRS = dx
-EXTRA_DIST = dxl.h
+dxinc_HEADERS = dxl.h
