@@ -79,10 +79,6 @@ typedef int (*Handle)();
 
 #endif  /* ibm6000 */
 
-#ifdef DXD_WIN
-#define PFI   FARPROC
-#endif
-
 #if hp700
 
 #include <dl.h>
@@ -715,11 +711,9 @@ Error DXUnloadObjFile(char *fname, char *envvar)
 
 #endif  /* sun4, etc */
 
-#ifdef DXD_WIN
+#if defined(intelnt)
 
 #define __ROUTINES_DEF	1
-
-#define PFI   FARPROC
 
 
 PFI DXLoadObjFile(char *fname, char *envvar)
@@ -747,7 +741,7 @@ PFI DXLoadObjFile(char *fname, char *envvar)
 	 (lp->loadstate == L_LOADED)) {
 	DXDebug("L", "`%s' was already loaded", foundname);
 	DXFree((Pointer)foundname);
-	return ALREADY_LOADED;
+	return (PFI)ALREADY_LOADED;
     }
 
     /* args are:
@@ -780,7 +774,7 @@ PFI DXLoadObjFile(char *fname, char *envvar)
     }
 
     DXFree((Pointer)foundname);
-    return func;
+    return (PFI) func;
 }
 
 
@@ -790,7 +784,7 @@ Error DXLoadAndRunObjFile(char *fname, char *envvar)
     FARPROC  func;
 
 
-    func = DXLoadObjFile(fname, envvar);
+    func = (FARPROC) DXLoadObjFile(fname, envvar);
     if (func == NULL)
 	return ERROR;
     if (func == ALREADY_LOADED)
