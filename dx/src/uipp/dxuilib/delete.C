@@ -24,7 +24,9 @@ void operator delete(void *p)
 
     if (p == NULL)
     {
+#if defined(MALLOC_DEBUG)
 	printf("void operator delete(void*): Freeing NULL pointer\n");
+#endif
     }
     else
 	FREE(p);
