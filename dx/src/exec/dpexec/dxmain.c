@@ -75,11 +75,11 @@ extern double SVS_double_time ();
 #include <sys/select.h>
 #endif
 
-#if DXD_HAS_SYSMP
+#if HAVE_SYSMP
 #include <sys/sysmp.h>
 #endif
 
-#if defined DXD_HAS_SYSCONFIG
+#if defined HAVE_SYSCONFIG_NCPUS
 # include <sys/systemcfg.h>
 #endif
 
@@ -340,7 +340,7 @@ DXmain (argc, argv, envp)
     setrlimit (RLIMIT_CORE, &rl);
 #endif
 
-#if DXD_HAS_SYSMP
+#if HAVE_SYSMP
     nphysprocs = sysmp (MP_NPROCS);	/* find the number of processors */
     if(nphysprocs > 3)
         nprocs = (int)(nphysprocs / 2);
@@ -352,7 +352,7 @@ DXmain (argc, argv, envp)
     if(nphysprocs > 3)
         nprocs = (int)(nphysprocs / 2);
     else nprocs = (nphysprocs > 1) ? 2 : 1;
-#elif DXD_HAS_SYSCONFIG
+#elif HAVE_SYS_SYSCONFIG_NCPUS
     nphysprocs = _system_configuration.ncpus; /* In Kernel space */
     if(nphysprocs > 3)
         nprocs = (int)(nphysprocs / 2);
