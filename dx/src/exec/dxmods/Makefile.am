@@ -6,7 +6,7 @@ dxmdfdir = $(prefix)/dx/lib
 noinst_LIBRARIES = libDXMODS.a
 SUFFIXES = .c .y .c .s .h .o 
 
-BUILT_SOURCES = user.c
+BUILT_SOURCES = user.c _compparse.h _compparse.c
 
 dxmdf_DATA = dx.mdf
 
