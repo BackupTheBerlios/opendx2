@@ -1,3 +1,7 @@
+#define MAGICK5
+/* Magick5 is actually incompatible with Magick <= 5.1.1 : go figure */
+/* remove the MAGICK5 define above for Magick 4.0.29 */
+/* remove the MAGICK5 define above for Magick 5.1.1, it may work, but how? */
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -78,8 +82,11 @@
 #include <magick/api.h>
 #endif /* def HAVE_LIBMAGICK */
 
-/* define DEBUGMESSAGE(mess) DXMessage((mess)) */
+#if (0)
+#define DEBUGMESSAGE(mess) DXMessage((mess)) 
+#else
 #define DEBUGMESSAGE(mess)
+#endif
 
 static Error write_im(RWImageArgs *iargs);
 /*
@@ -110,8 +117,16 @@ static Error write_im(RWImageArgs *iargs)
 	Image
 	   *image;
 
+
+#ifdef MAGICK5
+	ExceptionInfo
+	   exception_info;
+	ImageInfo
+           * image_info;
+#else
 	ImageInfo
            image_info;
+#endif
 
 	int miff_exists_flag ;
 	char* miff_filename ;
@@ -154,6 +169,7 @@ static Error write_im(RWImageArgs *iargs)
 * before proceeding,
 * find out if we can handle the conversion to the requested extension
 */
+#ifndef MAGICK5
 	DEBUGMESSAGE(iargs->extension);
 	magick_info=GetMagickInfo(iargs->extension);
 	if(magick_info){
@@ -165,6 +181,7 @@ static Error write_im(RWImageArgs *iargs)
 	  	DXErrorReturn(ERROR_BAD_PARAMETER,"invalid extension, format, or unsupported by ImageMagick");
 	   }
 	
+#endif
 /*
 * 8/99 some ambiguity here, since miff files are appendable.
 * My arbitrary choice: if the miff file exists already, we append and do not erase.
@@ -201,14 +218,31 @@ static Error write_im(RWImageArgs *iargs)
       /*
         Initialize the image info structure and read an image.
       */
+#ifdef MAGICK5
+      GetExceptionInfo(&exception_info); 
+      image_info=CloneImageInfo((ImageInfo *) NULL);
+#else
       GetImageInfo(&image_info);
+#endif
 	
+#ifdef MAGICK5
+      (void) strcpy(image_info->filename,iargs->basename);
+      (void) strcat(image_info->filename,".");
+      (void) strcat(image_info->filename,tmpargs.format);
+	DEBUGMESSAGE("reading following file");
+	DEBUGMESSAGE(image_info->filename);
+#else
       (void) strcpy(image_info.filename,iargs->basename);
       (void) strcat(image_info.filename,".");
       (void) strcat(image_info.filename,tmpargs.format);
 	DEBUGMESSAGE("reading following file");
 	DEBUGMESSAGE(image_info.filename);
+#endif
+#ifdef MAGICK5
+      image=ReadImage(image_info,&exception_info); 
+#else
       image=ReadImage(&image_info);
+#endif
 	DEBUGMESSAGE("back from ReadImage");
       if (image == (Image *) NULL) {
 	DEBUGMESSAGE("oops it was null");
@@ -226,7 +260,11 @@ static Error write_im(RWImageArgs *iargs)
 	}
 	
 	DEBUGMESSAGE(image->filename);
+#ifdef MAGICK5
+      WriteImage(image_info,image);
+#else
       WriteImage(&image_info,image);
+#endif
 	DEBUGMESSAGE("back from WriteImage, what did I get?");
       DestroyImage(image);
 	DEBUGMESSAGE("back from DestroyImage");
