@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/reduce.c,v 1.5 2000/08/24 20:04:45 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/reduce.c,v 1.6 2000/08/24 20:09:36 davidt Exp $:
  */
 
 /***
@@ -274,7 +274,11 @@ Reduce(Object input, int nFactors, float *factorList, int nDim)
     }
 
     if (nFactors == 1 && maxFactor == 1.0)
+    {
+        for(i=0; i < nFactors; i++)
+		DXDelete((Object)plist[i]);
 	return input;
+    }
 
     template = DXCopy(input, COPY_STRUCTURE);
     if (! template)
