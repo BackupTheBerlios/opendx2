@@ -38,6 +38,8 @@
 #include <sys/ioctl.h>
 #endif
 
+#include <errno.h>
+
 struct sfile
 {
     enum 
@@ -213,14 +215,16 @@ writeToSFILE(SFILE *sf, char *buf, int n)
 	}
     else
 #endif
+/*	errno = 0; */
 	rtn = write(ssf->fd, buf, n);
 
     if (rtn < 0) {
 
 #if defined(_DEBUG) && defined(intelnt)
 		int err = WSAGetLastError();
-#endif
 		ExQuit();
+#endif
+/*	fprintf(stderr, "Errorno is: %d\n", errno); */
     }
     return rtn;
 }
