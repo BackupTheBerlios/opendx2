@@ -24,7 +24,7 @@ libDPEXEC_a_SOURCES =  \
 	nodewriteb.c packet.c parse.c parsemdf.c path.c pendingcmds.c \
 	queue.c remote.c rih.c rq.c socket.c status.c \
 	swap.c task.c userinter.c utils.c variable.c vcr.c \
-	yuiif.c
+	yuiif.c optarg.c
 
 .y.h:
 	$(YACC) $(YFLAGS) -d $*.y
