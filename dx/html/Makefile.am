@@ -25,12 +25,8 @@ install-data-local:
 	       if test ! -d images ; then 			\
 	           tar xf $$f/images.tar ; 			\
 	       fi ; 						\
-	       if test ! -e $(htmldir)/index.htm ; then 	\
-	           ln -s $(htmldir)/allguide.htm $(htmldir)/index.htm ; \
-	       fi ; 						\
-	       if test ! -e $(htmldir)/index.html ; then 	\
-	           ln -s $(htmldir)/allguide.htm $(htmldir)/index.html ; \
-	       fi ; 						\
+	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.htm ; \
+	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.html ; \
 	       cd $$f ; 						\
 	      '
 endif # WITH_INSTALLHTML
