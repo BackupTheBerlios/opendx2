@@ -979,9 +979,7 @@ _dxfExRemote (Object *in, Object *out)
 		if (!msgObj || !DXExtractString(msgObj, &msg))
 		    goto message_cleanup;
 
-		va_start(nolist,nolist);      /*  Suppress not inited warning */
 		DXqmessage (who, msg, nolist);
-		va_end(nolist);
 	    }
 	    /* async request */
 	    if (isMsg == 2)
