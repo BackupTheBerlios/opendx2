@@ -396,68 +396,73 @@ next:
      goto error;
 
   /* what do we have */
-  if (ncolumn1 == ncolumn2 && ncolumn1 != 0) {	/* possibly a match */
-    /* check for data in this row (data is any numeric field)	*/
-    for (i=0; i<ncolumn1; i++) 
-      if (test1[i]->type != TYPE_STRING &&
-		test1[i]->type != TYPE_BYTE)
-	break;	
-    if (i == ncolumn1){	 	/* this is a label row? */
-      for (j=0; j<ncolumn2; j++) 
-	if (test2[j]->type != TYPE_STRING &&
-		test2[j]->type != TYPE_BYTE)
-	  break;
-      if (j != ncolumn2) 	/* First line is label, then data */
-	rtype = LABEL_ROW;
-      else 			/* data is all strings */
-        rtype = DATA_ROW;
-    }
-    else			/* contains numeric data, the data */
-      rtype = DATA_ROW;
-  } 
-  else 				/* number of columns unequal, comments */
-    rtype = COMMENT_ROW;
-    
-  if (fs->skip > 0 && rtype == COMMENT_ROW) {
-    DXSetError(ERROR_BAD_PARAMETER,"detected comments after skipping specified number of comment lines");
-    goto error;
-  }
-  if (fs->labelline > 0 && rtype == COMMENT_ROW) {
-    DXSetError(ERROR_BAD_PARAMETER,"detected comments after labels, use headerlines parameter to specify this");
-    goto error;
-  }
-  else if (fs->labelline > 0 && rtype == DATA_ROW)
-    rtype = LABEL_ROW;
+  if(ncolumn2 == -1) { /* no second line to read */
+  		fs->ncolumns = ncolumn1;
+		if(!load_first(test1, NULL, varlist, ds, fs, &nrec))
+			goto error;
+  } else {
+	  if (ncolumn1 == ncolumn2 && ncolumn1 != 0) {	/* possibly a match */
+		/* check for data in this row (data is any numeric field)	*/
+		for (i=0; i<ncolumn1; i++) 
+		  if (test1[i]->type != TYPE_STRING &&
+			test1[i]->type != TYPE_BYTE)
+		break;	
+		if (i == ncolumn1){	 	/* this is a label row? */
+		  for (j=0; j<ncolumn2; j++) 
+		if (test2[j]->type != TYPE_STRING &&
+			test2[j]->type != TYPE_BYTE)
+		  break;
+		  if (j != ncolumn2) 	/* First line is label, then data */
+		rtype = LABEL_ROW;
+		  else 			/* data is all strings */
+			rtype = DATA_ROW;
+		}
+		else			/* contains numeric data, the data */
+		  rtype = DATA_ROW;
+	  } 
+	  else 				/* number of columns unequal, comments */
+		rtype = COMMENT_ROW;
+		
+	  if (fs->skip > 0 && rtype == COMMENT_ROW) {
+		DXSetError(ERROR_BAD_PARAMETER,"detected comments after skipping specified number of comment lines");
+		goto error;
+	  }
+	  if (fs->labelline > 0 && rtype == COMMENT_ROW) {
+		DXSetError(ERROR_BAD_PARAMETER,"detected comments after labels, use headerlines parameter to specify this");
+		goto error;
+	  }
+	  else if (fs->labelline > 0 && rtype == DATA_ROW)
+		rtype = LABEL_ROW;
+	
+	  switch (rtype) {
+		case(LABEL_ROW):
+		  /* place first row into real label and second row into data */
+		  fs->ncolumns = ncolumn1;
+		  if (!load_first(test2,test1,varlist,ds,fs,&nrec))
+		goto error;
+		  np=1;
+		  break;
+		case(DATA_ROW):
+		  /* load into real column structure */
+		  fs->ncolumns = ncolumn1;
+		  if (!load_first(test1,NULL,varlist,ds,fs,&nrec))
+		goto error;
+		  np=1;
+		  if (np >= fs->start && np <= fs->end &&(np - fs->start) % fs->delta == 0){
+			if (!load_data(test2,ds,fs,&nrec))
+		  goto error;
+		  }
+		  np++;
+		  break;
+		case(COMMENT_ROW):
+		  replace_row(test1,test2);
+		  ncolumn1=ncolumn2;
+		  break;
+	  }
+	  if (rtype == COMMENT_ROW) 	/* continue until you find data */
+		goto next;
 
-  switch (rtype) {
-    case(LABEL_ROW):
-      /* place first row into real label and second row into data */
-      fs->ncolumns = ncolumn1;
-      if (!load_first(test2,test1,varlist,ds,fs,&nrec))
-	goto error;
-      np=1;
-      break;
-    case(DATA_ROW):
-      /* load into real column structure */
-      fs->ncolumns = ncolumn1;
-      if (!load_first(test1,NULL,varlist,ds,fs,&nrec))
-	goto error;
-      np=1;
-      if (np >= fs->start && np <= fs->end &&(np - fs->start) % fs->delta == 0){
-        if (!load_data(test2,ds,fs,&nrec))
-	  goto error;
-      }
-      np++;
-      break;
-    case(COMMENT_ROW):
-      replace_row(test1,test2);
-      ncolumn1=ncolumn2;
-      break;
   }
-  if (rtype == COMMENT_ROW) 	/* continue until you find data */
-    goto next;
-
-
 
 /* get rest of data */
   if (!parse_it(ps,fs,ds,np,nrec))
@@ -477,6 +482,7 @@ static Error evaluate_oneline(struct parse_state *ps, char *delimiter,
 		struct column_info **test, int *ncolumns)
 {
   int nc=0;
+  int err = 0;
   char *p;
   int d;
   float f;
@@ -504,9 +510,12 @@ static Error evaluate_oneline(struct parse_state *ps, char *delimiter,
     nc++; 
   }
 
-  *ncolumns = nc;
+  if(p == NULL && ps->current==NULL)
+	*ncolumns = -1;
+  else
+	*ncolumns = nc;
  
-  if (nc == 0 && strlen(p) > 1)	/* to catch case where token returning */
+  if (p && nc == 0 && strlen(p) > 1)	/* to catch case where token returning */
     return ERROR;		/* is greater than 256 , delimiter is wrong */
 
   return OK;
@@ -1208,8 +1217,11 @@ FileTok(struct parse_state *ps,char *sep, int newline, char** token)
        *      c) we are scanning for a token on the next line
        */
       if (current == NULL || *current == '\0' || (newline & FORCE_NEWLINE)) {
-        if (!ps->filename || !_dxf_getline(ps))
+        if (!ps->filename || !_dxf_getline(ps)) {
+        	ps->current = NULL;
+			*token = NULL;
           return ERROR;
+        }
         current = ps->line;
 
 	/* when the delimiter is specfied, check for special case of
