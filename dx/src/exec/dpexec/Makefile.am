@@ -13,7 +13,7 @@ noinst_HEADERS = \
 	compile.h config.h context.h crc.h d.h distp.h exobject.h graph.h \
 	graphIntr.h graphqueue.h instrument.h license.h log.h obmodule.h \
 	packet.h parse.h path.h pmodflags.h queue.h rq.h status.h swap.h \
-	sysvars.h utils.h vcr.h version.h yuiif.h
+	sysvars.h utils.h vcr.h version.h 
 
 libDPEXEC_a_SOURCES =  \
 	attribute.c background.c cache.c cachegraph.c ccm.c \
@@ -24,7 +24,7 @@ libDPEXEC_a_SOURCES =  \
 	nodewriteb.c packet.c parse.c parsemdf.c path.c pendingcmds.c \
 	queue.c remote.c rih.c rq.c socket.c status.c \
 	swap.c task.c userinter.c utils.c variable.c vcr.c \
-	yuiif.c optarg.c
+	optarg.c yuiif.y
 
 .y.h:
 	$(YACC) $(YFLAGS) -d $*.y
