@@ -29,9 +29,8 @@ AC_CHECK_LIB(g++, main)
 AC_CHECK_LIB(dl, main)
 AC_CHECK_LIB(netcdf, free_NC_attr)
 
-dnl Don't know procedure names for the next two
-AC_CHECK_LIB(cdf, FOOFOO)
-AC_CHECK_LIB(hdf, BARBAR)
+AC_CHECK_LIB(cdf, main)
+AC_CHECK_LIB(hdf, main)
 
 dnl Checks for header files.
 AC_PATH_X
