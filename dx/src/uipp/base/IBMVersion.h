@@ -26,14 +26,14 @@
 /*
  * Define this while code is in development, but undef it before a release.
  */
-#if 1 
+#if 0 
 #define BETA_VERSION 
 #endif
 
 /* The DX release version number. */
-#define IBM_MAJOR_VERSION	4
-#define IBM_MINOR_VERSION	1
-#define IBM_MICRO_VERSION	1
+#define IBM_MAJOR_VERSION	DXD_VERSION
+#define IBM_MINOR_VERSION	DXD_RELEASE
+#define IBM_MICRO_VERSION	DXD_MODIFICATION
 
 
 #endif /* _IBMVersion_h */
