@@ -17,7 +17,7 @@ SHELL=/bin/sh
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(dxsamples, 4.0.8)
+AM_INIT_AUTOMAKE(dxsamples, 4.1.3)
 
 AC_ARG_WITH(javadx,
               [  --with-javadx           enable JAVADX (default is yes)],
