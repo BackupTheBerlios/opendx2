@@ -89,8 +89,6 @@
 // Define EXECVE_2ND_TYPE to be the type expected for the second param
 // and EXECVE_3RD_TYPE to be the type expected for the third parameter of
 // the system call execve().
-// Define SELECT_ARG_TYPE to be the type expected for the second, third
-// and fourth params of select().
 */
 #if defined(sgi)
 # define EXECVE_2ND_TYPE char **
