@@ -1,4 +1,4 @@
-## Process this file with automake to produce Makefile.in
+
 
 INCLUDES = -I../base -I../../../include -I../dxuilib
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -72,7 +72,6 @@ noinst_HEADERS = \
 	SelectorNode.h \
 	SelectorPulldownInteractor.h \
 	SelectorRadioInteractor.h \
-	SelectorToggleInteractor.h \
 	SequencerDefinition.h \
 	SequencerNode.h \
 	ShadowedOutputDefinition.h \
