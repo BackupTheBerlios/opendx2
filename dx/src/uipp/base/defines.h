@@ -45,12 +45,16 @@
 #define MAX(a,b) ((a)>(b)?(a):(b))
 #endif
 
+#if defined(__cplusplus) || defined(c_plusplus)
+
 #if defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
 #endif
 
 #if defined(HAVE_STREAM_H)
 #include <stream.h>
+#endif
+
 #endif
 
 #ifdef intelnt
