@@ -4,12 +4,12 @@ EXTRA_DIST = $(JAVA_FILES) $(WRL_USERS)
 
 CLEANFILES = samples.jar
 
-CLASSPATH := $(CLASSPATH):@WRL_CLASSPATH@:@DX_JAR@:.
+CLASSPATH := $(CLASSPATH):@WRL_CLASSPATH@:@JDK_CLASSPATH@:@DX_JAR@:.
 export CLASSPATH
 
 samples.jar:
 	$(JAVAC) $(JAVA_FILES)
-	if test -z "$(WRL_CLASSPATH)" ; then \
+	if test -n "$(WRL_CLASSPATH)" ; then \
 	   $(JAVAC) $(WRL_USERS); \
 	fi ;
 	$(JAR) cf samples.jar *.class

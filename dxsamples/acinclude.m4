@@ -1,59 +1,103 @@
 dnl
+dnl  There are two things going on here. We need to know where the dx installation
+dnl  is so we can get the CLASSPATH info from the javainfo file and we need
+dnl  to know where to install the samples. Typically this would be in the 
+dnl  dx install directory--but allow users to override with --prefix.
+dnl
 dnl  Locate the dx installation. If not found then can default to where it would
 dnl  go with a default install of OpenDX.
 dnl
+dnl
+
+dnl  DX_INSTALL_PATH
+dnl  Tries to find the location where dx is installed if it 
+dnl  can not then it defaults to /usr/local/dx
+dnl  --------------------------------------------------------
 AC_DEFUN(DX_INSTALL_PATH,
 [
+AC_CACHE_CHECK([for dx install path], ac_cv_dx_install_path,
+[
+AC_MSG_RESULT(locating)
 DX_DEFAULT_INST=/usr/local/dx
+AC_CHECK_PROGS( DX, dx )
 
-if test "x${prefix}" = "xNONE" ; then
-  AC_CHECK_PROGS( DX, dx )
-  if test -n "$DX" ; then
-    AC_MSG_CHECKING([for path via "dx -whereami"])
-    DXINST=""
-    DXINST=`$DX -whereami | grep "installed in" | sed -e "s/installed in //"`
-    if test -z "$DXINST" ; then
-	AC_MSG_RESULT([old version of dx script])
-	AC_MSG_CHECKING([for /usr/local/bin/dx])
-	if test -r "/usr/local/bin/dx" ; then
-	  DXINST=`/usr/local/bin/dx -whereami | grep "installed in" | sed -e "s/installed in //"`
-	  if test -z "$DXINST" ; then
-	   	DXINST=$DX_DEFAULT_INST
-	   	AC_MSG_RESULT([old version of dx script, defaulting to $DXINST])
-	  else
-	   	AC_MSG_RESULT([installed in $DXINST])	
-	  fi
-	else
-	  DXINST=$DX_DEFAULT_INST
-	  AC_MSG_RESULT([no /usr/local/bin/dx, setting to $DXINST])
-	fi
-    else
-	AC_MSG_RESULT($DXINST)
-    fi
+DXINST=""
+if test -n "$DX" ; then
+  AC_MSG_CHECKING([for path via "dx -whereami"])
+  DXINST=`$DX -whereami | grep "installed in" | sed -e "s/installed in //"`
+  if test -z "$DXINST" ; then 
+	AC_MSG_RESULT([warning: old version of dx script in path])
   else
-    AC_MSG_CHECKING([for /usr/local/bin/dx])
-    if test -r "/usr/local/bin/dx" ; then
-	DXINST=`/usr/local/bin/dx -whereami | grep "installed in" | sed -e "s/installed in //"`
-	if test -z "$DXINST" ; then
-   	 	DXINST=$DX_DEFAULT_INST
-   		AC_MSG_RESULT([old version of dx script, setting to $DXINST])
-	else
-   		AC_MSG_RESULT([installed in $DXINST])	
-	fi
-     else
-   	DXINST=$DX_DEFAULT_INST
-	AC_MSG_RESULT([no dx, setting to $DXINST])
-     fi
+	AC_MSG_RESULT($DXINST)
   fi
-else
-  AC_MSG_CHECKING(for dx path)
-  DXINST=$prefix
-  AC_MSG_RESULT(using --prefix value $DXINST)
 fi
 
-dnl Don't forget to set it once found!
-prefix=$DXINST
+if test -z "$DXINST" ; then
+  AC_MSG_CHECKING([for /usr/local/bin/dx])
+  if test -x "/usr/local/bin/dx" ; then
+     DXINST=`/usr/local/bin/dx -whereami | grep "installed in" | sed -e "s/installed in //"`
+  fi
+
+  if test -z "$DXINST" ; then
+	DXINST=$DX_DEFAULT_INST
+   	AC_MSG_RESULT([defaulting to $DXINST])
+	AC_MSG_WARN([Missing dx script--please install OpenDX first.])
+  else
+	AC_MSG_RESULT($DXINST)
+  fi
+else
+  AC_MSG_RESULT($DXINST)
+fi
+ac_cv_dx_install_path=$DXINST
+])])
+
+
+dnl  DX_GET_PREFIX
+dnl  Sets the prefix where to install the samples. Is overridden
+dnl  by the --prefix configure line.
+dnl  --------------------------------------------------------
+AC_DEFUN(DX_GET_PREFIX,
+[
+DX_DEFAULT_INST=/usr/local
+if test "x${prefix}" = "xNONE" ; then
+  if test -n "$DXINST" ; then
+	prefix=`echo $DXINST | sed -e "s&/dx&&"`
+  else
+	prefix=$DX_DEFAULT_INST
+  fi
+else
+  AC_MSG_RESULT(using --prefix value $prefix)
+fi
 ])
+
+
+dnl
+dnl  Set up the JavaDX related samples stuff.
+dnl  DX_JAVADX_SETUP([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
+dnl  --------------------------------------------------------
+AC_DEFUN(DX_JAVADX_SETUP,
+[
+AC_MSG_CHECKING(for JavaDX files)
+if test -n "$ac_cv_dx_install_path" ; then
+  DXINST=$ac_cv_dx_install_path
+fi
+DX_JAR=""
+WRL_CLASSPATH=""
+JDK_CLASSPATH=""
+if test -r $DXINST/java/javainfo ; then
+  WRL_CLASSPATH=`cat $DXINST/java/javainfo | grep WRL_CLASSPATH | sed -e "s/WRL_CLASSPATH //"`
+  JDK_CLASSPATH=`cat $DXINST/java/javainfo | grep JDK_CLASSPATH | sed -e "s/JDK_CLASSPATH //"`
+fi
+if test -r $DXINST/java/htmlpages/dx.jar ; then
+  DX_JAR=$DXINST/java/htmlpages/dx.jar
+  AC_MSG_RESULT([$DX_JAR])
+  ifelse([$1], , , [$1])
+else
+  AC_MSG_RESULT([dx.jar not found or not readable])
+  ifelse([$2], , , [$2])
+fi
+])
+
 
 dnl
 dnl  DX_PROG_JAVAC([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
@@ -123,25 +167,4 @@ else
 fi
 ])
 
-
-dnl
-dnl  Set up the JavaDX related samples stuff.
-dnl  DX_JAVADX_SETUP([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
-AC_DEFUN(DX_JAVADX_SETUP,
-[
-AC_MSG_CHECKING(for JavaDX files)
-DX_JAR=""
-WRL_CLASSPATH=""
-if test -r $DXINST/java/javainfo ; then
-  WRL_CLASSPATH=`cat $DXINST/java/javainfo | grep WRL_CLASSPATH | sed -e "s/WRL_CLASSPATH //"`
-fi
-if test -r $DXINST/java/htmlpages/dx.jar ; then
-  DX_JAR=$DXINST/java/htmlpages/dx.jar
-  AC_MSG_RESULT([$DX_JAR])
-  ifelse([$1], , , [$1])
-else
-  AC_MSG_RESULT([dx.jar not found or not readable])
-  ifelse([$2], , , [$2])
-fi
-])
 

@@ -4,6 +4,7 @@ AC_SUBST(SHELL)
 
 AC_SUBST(DXINST)
 AC_SUBST(WRL_CLASSPATH)
+AC_SUBST(JDK_CLASSPATH)
 AC_SUBST(JAVAC)
 AC_SUBST(JAR)
 AC_SUBST(DX_JAR)
@@ -22,6 +23,7 @@ AC_ARG_WITH(javadx,
               [with_javadx='yes'])
 
 DX_INSTALL_PATH
+DX_GET_PREFIX
 
 MAKE_JAVADX_SAMPLES=""
 if test "with_javadx" != 'no' ; then
