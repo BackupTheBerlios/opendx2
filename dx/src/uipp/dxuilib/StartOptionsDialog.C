@@ -130,12 +130,11 @@ boolean StartOptionsDialog::okCallback(Dialog *clientData)
 
 
     theDXApplication->setServerParameters(autoStart,
-					  STRLEN(server) == 0? (const char *)NULL: server,
-					  STRLEN(exec) == 0? (const char *)NULL: exec,
-					  STRLEN(cwd) == 0? (const char *)NULL: cwd,
-					  STRLEN(options) == 0? (const char *)NULL: options,
-					  port,
-					  mem);
+		  STRLEN(server)  == 0? (const char *)NULL: (const char *)server,
+		  STRLEN(exec)    == 0? (const char *)NULL: (const char *)exec,
+		  STRLEN(cwd)     == 0? (const char *)NULL: (const char *)cwd,
+		  STRLEN(options) == 0? (const char *)NULL: (const char *)options,
+		  port, mem);
     XtFree(exec);
     XtFree(cwd);
     XtFree(options);
