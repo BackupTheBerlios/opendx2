@@ -642,6 +642,7 @@ void TreeView::buttonPress(XEvent *xev)
     Widget w = this->getRootWidget();
 
     XButtonEvent* xbe = (XButtonEvent*)xev;
+    if (xbe->button != 1) return ;
     if (this->containing_marker) {
 	TreeNode* node = this->containing_marker->getNode();
 	if (node->isLeaf()==FALSE) {
