@@ -158,11 +158,13 @@ cat > conftest.c <<EOF
   yes;
 #endif
 EOF
-if AC_TRY_COMMAND(${CC-cc} -E conftest.c) | egrep yes -q -s; then
+if AC_TRY_COMMAND(${CC-cc} -E conftest.c) | egrep yes > foo 2>&1; then
   ac_cv_prog_gcc=yes
 else
   ac_cv_prog_gcc=no
-fi])])
+fi
+rm foo
+])])
 
 AC_DEFUN(DX_PROG_CXX_GNU,
 [AC_CACHE_CHECK(whether we are using GNU C++, ac_cv_prog_gxx,
@@ -172,11 +174,13 @@ cat > conftest.C <<EOF
   yes;
 #endif
 EOF
-if AC_TRY_COMMAND(${CXX-g++} -E conftest.C) | egrep yes -s -q; then
+if AC_TRY_COMMAND(${CXX-g++} -E conftest.C) | egrep yes > foo 2>&1; then
   ac_cv_prog_gxx=yes
 else
   ac_cv_prog_gxx=no
-fi])])
+fi
+rm foo
+])])
 AC_DEFUN(DX_PROG_CC,
 [AC_BEFORE([$0], [AC_PROG_CPP])dnl
 AC_CHECK_PROG(CC, gcc, gcc)
@@ -287,6 +291,9 @@ AC_DEFUN(DX_ARCHITECTURE,
     fi
     if test $unameS = "HP_UX" ; then
         ARCH=hp700
+    fi
+    if test $unameS = "SunOS" ; then
+        ARCH=solaris
     fi
     AC_MSG_RESULT($ARCH)
     AC_SUBST(ARCH)
