@@ -1423,8 +1423,10 @@ ExQuit()
      * signal childen to loop so they will see
      * the terminate flag (if they are still there)
      */
+#if HAVE_SIGQUIT
     for (i = 1; i < nprocs; i++)
-	kill(children[i].pid, SIGUSR2);
+	kill(children[i].pid, SIGQUIT);
+#endif
 
     _dxf_ExCacheFlush (TRUE);
     _dxf_ExDictionaryPurge (_dxd_exGlobalDict);
