@@ -1,3 +1,7 @@
+#!
+*
+* Exports/Imports file for IBM AIX
+*
 DXAbortTaskGroup
 DXAdd
 DXAddArrayData
@@ -504,10 +508,6 @@ _dxf_attributeMatrix
 _dxf_deleteAttribute
 _dxf_deleteXfield
 _dxf_gather
-_dxf_gatherImage
-_dxf_gatheredClipObject
-_dxf_gatheredFlags
-_dxf_gatheredObject
 _dxf_linesToPlines
 _dxf_listAppendItem
 _dxf_listEmpty
@@ -523,7 +523,6 @@ _dxf_updateView
 _dxf_xfieldAttributes
 _dxf_xfieldNconnections
 _dxf_xfieldSidesPerConnection
-_dxf_Insert
 _dxf_SERVICES_FLAGS
 _dxf_ConvertObjectsToStringValues
 _dxf_InitObjectHash
