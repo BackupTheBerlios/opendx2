@@ -438,6 +438,6 @@ netlex.c: net.lex
 
 netyacc.c: net.yacc netlex.c netyacc.awk
 	$(YACC) net.yacc
-	awk -f netyacc.awk net.yacc.tab.c > netyacc.c
+	awk -f netyacc.awk y.tab.c > netyacc.c
 	rm -f y.tab.c
 
