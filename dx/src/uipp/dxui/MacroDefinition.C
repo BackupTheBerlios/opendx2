@@ -6,7 +6,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/MacroDefinition.C,v 1.1 1999/03/31 22:32:40 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/MacroDefinition.C,v 1.2 1999/04/02 19:01:32 gda Exp $
  *
  */
 
@@ -46,8 +46,12 @@
 
 #define OLD_DUMMY_DESCRIPTION_STRING "Generated dummy input"
 
+#if (HAVE_RE_COMP == 1) || (HAVE_REGCMP == 1)
+#undef LACKS_ANY_REGCMP
+#endif
+
 #ifndef LACKS_ANY_REGCMP
-#ifdef REGCMP_EXISTS
+#ifdef HAVE_REGCMP
 extern "C" char *regcmp(...);
 extern "C" char *regex(char *, char *, ...);
 #else
@@ -611,7 +615,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	else
 	{
 #ifndef DXD_LACKS_ANY_REGCMP
-#ifdef REGCMP_EXISTS
+#ifdef HAVE_REGCMP
 	    char *net_file = regcmp(".[.]*\\.net$", NULL);
 	    ASSERT(net_file != NULL);
 #else                 // use re_comp
@@ -621,7 +625,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	    struct dirent *entry;
 	    while (entry = readdir(d))
 	    {
-#ifdef REGCMP_EXISTS
+#ifdef HAVE_REGCMP
 		boolean exists = regex(net_file, entry->d_name) != NULL;
 #else                 // use re_exec
 		boolean exists = re_exec(entry->d_name) > 0;
