@@ -243,11 +243,11 @@ AC_PROG_INSTALL
 
 dnl Checks for programs.
 AC_PROG_RANLIB
-DX_PROG_CXX
-DX_PROG_CXXCPP
-DX_PROG_CC
-DX_PROG_CPP
-AC_CYGWIN
+AC_PROG_CXX
+AC_PROG_CXXCPP
+AC_PROG_CC
+AC_PROG_CPP
+DX_CYGWIN
 DX_EXEEXT
 if test -z "$EXEEXT" ; then
 	DOT_EXE_EXT="";
@@ -369,7 +369,7 @@ fi
 
 AC_LANG_C
 
-DX_CYGWIN_MOUNTS
+dnl DX_CYGWIN_MOUNTS
 DX_SET_RTL_FLAGS
 dnl I think the next one is bogus... the following one adds libregex.a 
 dnl for cygnus
@@ -399,7 +399,7 @@ AC_CHECK_LIB(xmstatxt, XtVaGetValues)
 AC_CHECK_LIB(xmstatic, XmStringFree)
 AC_CHECK_LIB(xm, XmStringFree)
 AC_CHECK_LIB(hclglx, glXGetConfig)
-
+AC_CHECK_LIB(glwstati, glAccum)
 
 AC_CHECK_LIB(X11, XCreateGC)
 AC_CHECK_LIB(Xt, XtMalloc)

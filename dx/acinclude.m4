@@ -1,8 +1,7 @@
-
 dnl
 dnl  Check for the CYGWIN environment
 dnl  -------------------------------------------------------------
-AC_DEFUN(AC_CYGWIN,
+AC_DEFUN(DX_CYGWIN,
 [AC_CACHE_CHECK(for Cygwin environment, ac_cv_cygwin,
 [AC_TRY_COMPILE(,[
 #ifndef __CYGWIN__
@@ -64,7 +63,7 @@ AC_SUBST(EXEEXT)])
 
 
 dnl
-dnl  Learn what an object files extension is. Somebody with more info explain why?
+dnl  Learn what an object files extension is.
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_OBJEXT,
 [AC_MSG_CHECKING([for object file suffix])
@@ -136,7 +135,7 @@ dnl  Try out if the C++ compiler works
 dnl  DX_TRY_CPP(INCLUDES, [ACTION-IF-TRUE [, ACTION-IF-FALSE]])
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_TRY_CPP,
-[DX_REQUIRE_CPP()dnl
+[AC_REQUIRE_CPP()dnl
 cat > conftest.$ac_ext <<EOF
 [#]line __oline__ "configure"
 #include "confdefs.h"
@@ -164,84 +163,6 @@ rm -f conftest*])
 
 
 dnl
-dnl  Require finding the C or C++ preprocessor, whichever is the
-dnl  current language.
-dnl  -------------------------------------------------------------
-AC_DEFUN(DX_REQUIRE_CPP,
-[ifelse(AC_LANG, C, [AC_REQUIRE([DX_PROG_CPP])], [AC_REQUIRE([DX_PROG_CXXCPP])])])
-
-AC_DEFUN(DX_PROG_CXXCPP,
-[AC_MSG_CHECKING(how to run the C++ preprocessor)
-AC_PROVIDE(AC_PROG_CXXCPP)
-if test -z "$CXXCPP"; then
-AC_CACHE_VAL(ac_cv_prog_CXXCPP,
-[
-AC_LANG_SAVE[]dnl
-AC_LANG_CPLUSPLUS[]dnl
-  CXXCPP="${CXX-g++} -E"
-  DX_TRY_CPP([#include <stdlib.h>], , CXXCPP=/lib/cpp)
-  ac_cv_prog_CXXCPP="$CXXCPP"
-AC_LANG_RESTORE[]dnl
-CXXCPP="$ac_cv_prog_CXXCPP"
-fi]
-)dnl
-AC_MSG_RESULT($CXXCPP)
-AC_SUBST(CXXCPP)dnl
-])
-
-AC_DEFUN(DX_PROG_CPP,
-[AC_MSG_CHECKING(how to run the C preprocessor)
-# On Suns, sometimes $CPP names a directory.
-if test -n "$CPP" && test -d "$CPP"; then
-  CPP=
-fi
-if test -z "$CPP"; then
-AC_CACHE_VAL(ac_cv_prog_CPP,
-[  # This must be in double quotes, not single quotes, because CPP may get
-  # substituted into the Makefile and "${CC-cc}" will confuse make.
-  CPP="${CC-cc} -E"
-  # On the NeXT, cc -E runs the code through the compiler's parser,
-  # not just through cpp.
-dnl Use a header file that comes with gcc, so configuring glibc
-dnl with a fresh cross-compiler works.
-  DX_TRY_CPP([#include <assert.h>
-Syntax Error], ,
-  CPP="${CC-cc} -E -traditional-cpp"
-  DX_TRY_CPP([#include <assert.h>
-Syntax Error], ,
-  CPP="${CC-cc} -nologo -E"
-  DX_TRY_CPP([#include <assert.h>
-Syntax Error], , CPP=/lib/cpp)))
-  ac_cv_prog_CPP="$CPP"])dnl
-  CPP="$ac_cv_prog_CPP"
-else
-  ac_cv_prog_CPP="$CPP"
-fi
-AC_MSG_RESULT($CPP)
-AC_SUBST(CPP)dnl
-])
-
-
-dnl
-dnl  Check whether using GNU C
-dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PROG_CC_GNU,
-[AC_CACHE_CHECK(whether we are using GNU C, ac_cv_prog_gcc,
-[dnl The semicolon is to pacify NeXT's syntax-checking cpp.
-cat > conftest.c <<EOF
-#ifdef __GNUC__
-  yes;
-#endif
-EOF
-if AC_TRY_COMMAND(${CC-cc} -E conftest.c) | egrep yes > foo 2>&1; then
-  ac_cv_prog_gcc=yes
-else
-  ac_cv_prog_gcc=no
-fi
-rm foo
-])])
-
-dnl
 dnl  Check whether using glibc tgmath, if so add -D_GNU_SOURCE to CFLAGS
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CHECK_TGMATH,
@@ -263,111 +184,6 @@ rm foo
 ])
 if test -n "$ac_cv_lib_glibcmath" ; then 
   CFLAGS="$CFLAGS $ac_cv_lib_glibcmath"
-fi
-])
-
-
-dnl
-dnl  Check whether using GNU C++
-dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PROG_CXX_GNU,
-[AC_CACHE_CHECK(whether we are using GNU C++, ac_cv_prog_gxx,
-[dnl The semicolon is to pacify NeXT's syntax-checking cpp.
-cat > conftest.C <<EOF
-#ifdef __GNUC__
-  yes;
-#endif
-EOF
-if AC_TRY_COMMAND(${CXX-g++} -E conftest.C) | egrep yes > foo 2>&1; then
-  ac_cv_prog_gxx=yes
-else
-  ac_cv_prog_gxx=no
-fi
-rm foo
-])])
-AC_DEFUN(DX_PROG_CC,
-[AC_BEFORE([$0], [AC_PROG_CPP])dnl
-AC_CHECK_PROG(CC, gcc, gcc)
-if test -z "$CC"; then
-  AC_CHECK_PROG(CC, cc, cc, , , /usr/ucb/cc)
-  if test -z "$CC"; then
-    case "`uname -s`" in
-    *win32* | *WIN32*)
-      AC_CHECK_PROG(CC, cl, cl) ;;
-    esac
-  fi
-  test -z "$CC" && AC_MSG_ERROR([no acceptable cc found in \$PATH])
-fi
-
-AC_PROG_CC_WORKS
-DX_PROG_CC_GNU
-
-if test $ac_cv_prog_gcc = yes; then
-  GCC=yes
-else
-  GCC=
-fi
-dnl Check whether -g works, even if CFLAGS is set, in case the package
-dnl plays around with CFLAGS (such as to build both debugging and
-dnl normal versions of a library), tasteless as that idea is.
-ac_test_CFLAGS="${CFLAGS+set}"
-ac_save_CFLAGS="$CFLAGS"
-CFLAGS=
-AC_PROG_CC_G
-if test "$ac_test_CFLAGS" = set; then
-  CFLAGS="$ac_save_CFLAGS"
-elif test $ac_cv_prog_cc_g = yes; then
-  if test "$GCC" = yes; then
-    CFLAGS="-g -O2"
-  else
-    CFLAGS="-g"
-  fi
-else
-  if test "$GCC" = yes; then
-    CFLAGS="-O2"
-  else
-    CFLAGS=
-  fi
-fi
-])
-
-
-dnl
-dnl  Find which C++ to use
-dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PROG_CXX,
-[AC_BEFORE([$0], [AC_PROG_CXXCPP])dnl
-AC_CHECK_PROGS(CXX, $CCC c++ g++ gcc CC cxx cc++ cl, gcc)
-
-AC_PROG_CXX_WORKS
-DX_PROG_CXX_GNU
-
-if test $ac_cv_prog_gxx = yes; then
-  GXX=yes
-else
-  GXX=
-fi
-dnl Check whether -g works, even if CXXFLAGS is set, in case the package
-dnl plays around with CXXFLAGS (such as to build both debugging and
-dnl normal versions of a library), tasteless as that idea is.
-ac_test_CXXFLAGS="${CXXFLAGS+set}"
-ac_save_CXXFLAGS="$CXXFLAGS"
-CXXFLAGS=
-AC_PROG_CXX_G
-if test "$ac_test_CXXFLAGS" = set; then
-  CXXFLAGS="$ac_save_CXXFLAGS"
-elif test $ac_cv_prog_cxx_g = yes; then
-  if test "$GXX" = yes; then
-    CXXFLAGS="-g -O2"
-  else
-    CXXFLAGS="-g"
-  fi
-else
-  if test "$GXX" = yes; then
-    CXXFLAGS="-O2"
-  else
-    CXXFLAGS=
-  fi
 fi
 ])
 
@@ -752,7 +568,7 @@ dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CYGWIN_MOUNTS,
 [
 changequote(<<,>>)dnl
-    AC_MSG_CHECKING(if intelnt on cygwin, check for mounts)
+AC_MSG_CHECKING(if intelnt on cygwin, check for mounts)
     mnts="none"
     if test "$ARCH" = "intelnt" ; then
 	    tt=`uname -s  | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"`
