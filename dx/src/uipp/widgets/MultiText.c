@@ -1242,7 +1242,7 @@ void DeleteLineFromWidget (XmMultiTextWidget cw, LineList *lpp)
     (*lpp)->prev->next = (*lpp)->next;
 
   if ((*lpp)->next == NULL)
-    cw->multiText.lastLine == (*lpp)->prev;
+    cw->multiText.lastLine = (*lpp)->prev;
   else
     (*lpp)->next->prev = (*lpp)->prev;
 
