@@ -4,10 +4,9 @@ INCLUDES =  -I../base
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxbindir = $(prefix)/dx/bin
+dxbindir = $(prefix)/dx/bin_@ARCH)
 
-# dxbin_PROGRAMS = gar
-# gar_SOURCES =  		
+dxbin_PROGRAMS = prompter
 
 noinst_HEADERS = \
 	Browser.h \
@@ -45,7 +44,7 @@ noinst_HEADERS = \
 	SpreadSheetChoice.h \
 	TypeChoice.h 
 
-EXTRA_DIST = \
+prompter_SOURCES =  		
 	Browser.C			\
 	BrowserCommand.C		\
 	BuildTCDict.C			\
@@ -84,14 +83,14 @@ EXTRA_DIST = \
 	\
 	Main.C
 
-# gar_LDADD = 				\
-#	../base/libBASE.a  		\
-#	../widgets/libWIDGETS.a  	\
-#	../dxl/libDXL.a		  	\
-#	-L/usr/X11R6/lib 		\
-#	-L/usr/local/lib 		\
-#	-L$(DXROOT)/lib_@ARCH@ 	\
-#	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
+prompter_LDADD = 			\
+	../base/libBASE.a  		\
+	../widgets/libWIDGETS.a  	\
+	../dxl/libDXL.a		  	\
+	-L/usr/X11R6/lib 		\
+	-L/usr/local/lib 		\
+	-L$(DXROOT)/lib_@ARCH@ 	\
+	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
 
 EXTRA_DIST = 				\
 	col_insens.bm			\
