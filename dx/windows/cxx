@@ -17,6 +17,7 @@ deflibs="$deflibs comdlg32.lib advapi32.lib shell32.lib"
 deflibs="$deflibs uuid.lib wsock32.lib opengl32.lib"
 deflibs="$deflibs -NODEFAULTLIB:LIBCMT -NODEFAULTLIB:LIBC"
 link=1
+compile=1
 mkdep=0
 map=
 oset=0
@@ -24,6 +25,7 @@ oname=
 dllflag="-MD"
 dlllib="msvcrt.lib msvcirt.lib"
 binmode=
+dfile=
 
 cleanup() { 
 
@@ -52,6 +54,15 @@ cleanup() {
 	if test -f $stderr ; then
 		rm $stderr
 	fi
+	if test -f foo$$ ; then
+		rm foo$$
+	fi
+	if test -f bar$$ ; then
+		rm bar$$
+	fi
+	if test -f foobar$$ ; then
+		rm foobar$$
+	fi
 }
 
 trap 'cleanup; exit 1' 1 2 15
@@ -67,7 +78,7 @@ for i in $* ; do
                 -o)      args="$args $i"
                          oset=1 ;;
 		-map)	 map="/MAP" ;;
-		-M)	 link=0
+		-M)	 compile=0
 			 mkdep=1 ;;
 		-g)      args="$args /Z7" ;;
 		-mount*) mounts="$mounts $i" ;;
@@ -92,6 +103,8 @@ for i in $* ; do
                          cp $i $fname
                          delfiles="$delfiles $fname"
                          cfiles="$cfiles $fname"  ;;
+		-Wp*)	 dfile=`echo $i | sed "s/^.*\(.deps*\)/ \1/"`
+			 mkdep=1;;
                 *)       args="$args $i"
                          if test $oset = 1 ; then
                                 oname=$i
@@ -101,29 +114,40 @@ for i in $* ; do
 done
 
 if test $mkdep = 1; then
-    if test -f foo ; then
-	rm foo
+    if test -f foo$$ ; then
+	rm foo$$
     fi
-    touch foo
+    touch foo$$
 
     MSVC="/usr/Program Files/Microsoft Visual Studio"
     MSVC_INCLUDE=\"$MSVC/Vc98/Include\"
     MSVC_COMMON_INCLUDE=\"$MSVC/Common/Include\"
-    eval makedepend -ffoo -Dintelnt -D_WIN32 -D_M_IX86=500 -Y -I$MSVC_INCLUDE -I$MSVC_COMMON_INCLUDE $fname 2>/dev/null
+    cmd="makedepend -ffoo$$ -Dintelnt -D_WIN32 -D_M_IX86=500 -Y -I$MSVC_INCLUDE -I$MSVC_COMMON_INCLUDE $fname"
+    if test $echo = 1 ; then
+	echo $cmd
+    fi
+    eval $cmd 2>/dev/null
     sed -e "/Microsoft/d"  \
 	-e "/DO NOT DELETE/d"  \
 	-e "/^$/d" -e "s/^.*://"  \
-		< foo > bar
-    if test `cat bar | wc -l` -eq 0 ; then
-	echo `echo $fname | sed "s/\.cpp/.o/"`: $ofname
+		< foo$$ > bar$$
+    if test `cat bar$$ | wc -l` -eq 0 ; then
+	echo `echo $fname | sed "s/\.cpp/.o/"`: $ofname > foobar$$
     else
-	echo `echo $fname | sed "s/\.cpp/.o/"`: $ofname "\\"
-	sed  -e '1,$s/$/ \\/' -e '$s/\\/ /' < bar
+	echo `echo $fname | sed "s/\.cpp/.o/"`: $ofname "\\" > foobar$$
+	sed  -e '1,$s/$/ \\/' -e '$s/\\/ /' < bar$$ >> foobar$$
     fi
-    rm foo
+    if test "$dfile" != ""
+    then
+	mv foobar$$ $dfile
+    else
+	cat foobar$$
+    fi
     err=0
+fi
 
-else
+if test $compile = 1
+then
 
     if test $link = 1 ; then
 	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles /link $libpath $libs $deflibs  $dlllib $map $binmode" 
