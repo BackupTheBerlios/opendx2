@@ -1516,7 +1516,7 @@ CATEGORY Windows
 FLAGS ASYNC PIN
 INPUT name; string; "SuperviseWindow"; title for window
 INPUT display; string; "localhost"; display
-INPUT size; vector or value list; [640,480]; resolution
+INPUT size; camera or vector or value list; [640,480]; resolution
 INPUT offset; vector or value list; [0, 0]; offset of window in parent
 INPUT parent; window; (no default); parent window
 INPUT depth; integer; 8; depth
