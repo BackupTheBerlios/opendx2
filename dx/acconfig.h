@@ -19,7 +19,7 @@
 #define SELECT_ARG_TYPE void *
 #define SOCK_LENGTH_TYPE int 
 #undef HAVE_REGCMP
-#define USING_LESSTIF 0
+#define OLD_LESSTIF 0
 #undef USING_BISON
 #undef HAVE_SYS_ERRLIST
 #undef HAVE_SYSCONFIG_NCPUS

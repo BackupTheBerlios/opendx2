@@ -1,0 +1,17 @@
+4.0.3
+	Added code to makefiles and c files to create libDX, libDXlite, libcallm
+
+	Fixed missing splat in WorkspaceW.c
+
+	Removed apparently unnecessary code referring to _XmDestroyParentCallback
+
+	Changed configure to look for old versions of Lesstif and set OLD_LESSTIF, 
+	rather than any version of Lesstif and set USING_LESSTIF
+
+	HP_UX -> HP-UX
+
+	More general test for cygwin
+
+	install change - mkdir dx/bin rather than use INSTALL
+
+	configure test for sys/select and use in PacketIF.C

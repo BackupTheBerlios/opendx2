@@ -12,12 +12,12 @@ SHELL=sh
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
 AM_CONFIG_HEADER(include/dxconfig.h)
-AM_INIT_AUTOMAKE(dx, 4.0.2)
+AM_INIT_AUTOMAKE(dx, 4.0.3)
 
-AC_DEFINE(DXD_VERSION_STRING,   "04.01.0002")
+AC_DEFINE(DXD_VERSION_STRING,   "04.01.0003")
 AC_DEFINE_UNQUOTED(DXD_VERSION, 4)
 AC_DEFINE_UNQUOTED(DXD_RELEASE, 1)
-AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 2)
+AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 3)
 
 DX_ARCHITECTURE
 
@@ -59,19 +59,19 @@ if test "$xm_libraries" != "" ; then
     LIBS="-L$xm_libraries $LIBS"
 fi
 
-AC_EGREP_CPP(yes,
-[
-#include <Xm/Xm.h>
-#ifdef LESSTIF_VERSION
-yes
-#endif
+AC_TRY_LINK([
+#include <Xm/FormP.h>
 ],
 [
-    AC_DEFINE_UNQUOTED(USING_LESSTIF, 1)
+XmFormConstraintPart *p;
+p->att[0].type;
 ],
+,
 [
-    AC_DEFINE_UNQUOTED(USING_LESSTIF, 0)
+    AC_DEFINE_UNQUOTED(OLD_LESSTIF, 1)
+    echo "using old version of  LESSTIF"
 ])
+
 if test "$ARCH" = "solaris" ; then
     OLDLIBS=$LIBS
     LIBS="-L/usr/openwin/lib $LIBS"
