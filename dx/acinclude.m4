@@ -568,3 +568,67 @@ if test $ac_cv_type_$1 = no; then
 fi
 ])
 
+
+dnl DX_FIND_JDK
+AC_DEFUN(DX_FIND_JDK,
+[
+dx_sedtest=`echo sed should strip everything in this line | sed -e "s&sed should .*&&"`
+AC_MSG_CHECKING([sed syntax OK if the rest of this is blank])
+AC_MSG_RESULT([$dx_sedtest])
+
+cat > jdkpath.java <<EOF
+
+//   used to find jdk path via -verbose option to javac
+public class jdkpath extends Object {
+ public static void main() {
+   }
+}
+
+
+EOF
+dnl 
+dnl javac must be in the path for this to work
+dnl 
+JBASE=
+AC_MSG_CHECKING([for JDK install path via javac -verbose ])
+(unset CLASSPATH ; javac -verbose jdkpath.java >jdkpath.out 2>jdkpath.err )
+dnl
+dnl examine "loaded" line for default classes
+dnl output is similar to
+dnl [loaded /usr/jdk_base/lib/classes.zip(java/lang/Object.class) in 738 ms]
+dnl
+dnl trim off leading stuff and stuff trailing after lparen to get classes (classes.zip, rt.jar, whatever)
+dnl
+JDK_CLASSES=`grep loaded jdkpath.err | sed -e "s/.loaded //" | sed -e "s&(.*$&&"`
+dnl echo JDK_CLASSES $JDK_CLASSES
+dnl
+dnl get anything that isn't between "/"'s
+dnl 
+dx_jdk_trailing=`echo $JDK_CLASSES | sed -e "s&/.*/&&"`
+dnl echo dx_jdk_trailing $dx_jdk_trailing
+dnl
+dnl now trim off /lib/whatever to get to the base of the jdk installation
+dnl 
+JBASE=`echo $JDK_CLASSES | sed -e "s&/lib/$dx_jdk_trailing&&"`
+AC_MSG_RESULT(${JBASE})
+JDKBIN=
+AC_MSG_CHECKING([for jar not in path])
+dnl
+dnl which output should not have a space if jar is found (syntax varies from "no jar in")
+dnl
+if test -z "`which jar | grep -v ' '`" ; then
+	JDKBIN=$JBASE/bin/
+	AC_MSG_RESULT(using ${JDKBIN})
+else
+	AC_MSG_RESULT(jar found using path)
+
+fi
+rm -f jdkpath.*
+dnl
+dnl determine the existence of netscape/cosmo for building WRLApplication and dependent samples
+dnl   don't know how to do this yet, so just use default.  non-default installations must edit the line below:
+WRL_CLASSPATH=$JDK_CLASSES:/usr/lib/netscape/java/classes/npcosmop211.jar:./:/usr/lib/netscape/java/classes/java40.jar
+
+
+])
+dnl
