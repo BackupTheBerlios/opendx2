@@ -1,7 +1,7 @@
 //
-// time: Wed Apr 18 13:31:50 2001
+// time: Sat Jan 26 10:50:14 2002
 //
-// version: 3.1.2 (format), 4.1.1 (DX)
+// version: 3.1.2 (format), 4.1.3 (DX)
 //
 //
 // MODULE main
@@ -13,7 +13,7 @@
 // comment: An image (in this example, the DX logo) is texture mapped onto a much lower resolution height map. To the height map is added a "uv" component, which specifies how the image should be mapped to the geometry. Each component of uv goes from 0 to 1.
 // comment: 
 // comment: Go into execute-on-change mode and rotate the object to see the effect of the texture mapped height field.
-// workspace: width = 425, height = 615
+// workspace: width = 453, height = 615
 // layout: snap = 0, width = 50, height = 50, align = UL
 //
 macro main(
@@ -112,26 +112,34 @@ main_ReadImage_2_out_1 =
     main_ReadImage_2_in_9
     ) [instance: 2, cache: 1];
     // 
-    // node Options[1]: x = 286, y = 471, inputs = 3, label = Options
+    // node Options[1]: x = 285, y = 471, inputs = 7, label = Options
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "texture"
+    // input[4]: defaulting = 0, visible = 1, type = 32, value = "texture min filter"
+    // input[5]: defaulting = 0, visible = 1, type = 32, value = "linear_mipmap_linear"
+    // input[6]: defaulting = 0, visible = 1, type = 32, value = "texture mag filter"
+    // input[7]: defaulting = 0, visible = 1, type = 32, value = "linear"
     //
 main_Options_1_out_1 = 
     Options(
     main_RubberSheet_1_out_1,
     main_Options_1_in_2,
-    main_ReadImage_2_out_1
+    main_ReadImage_2_out_1,
+    main_Options_1_in_4,
+    main_Options_1_in_5,
+    main_Options_1_in_6,
+    main_Options_1_in_7
     ) [instance: 1, cache: 1];
     // 
     // node Image[2]: x = 297, y = 553, inputs = 49, label = Image
     // input[1]: defaulting = 0, visible = 0, type = 67108863, value = "Image_2"
     // input[4]: defaulting = 0, visible = 0, type = 1, value = 1
     // input[5]: defaulting = 0, visible = 0, type = 8, value = [0 0 -0.000288427]
-    // input[6]: defaulting = 0, visible = 0, type = 8, value = [10.0688 -5.27862 33.8571]
-    // input[7]: defaulting = 0, visible = 0, type = 5, value = 19.1397
-    // input[8]: defaulting = 0, visible = 0, type = 1, value = 640
-    // input[9]: defaulting = 0, visible = 0, type = 5, value = 0.750781
-    // input[10]: defaulting = 0, visible = 0, type = 8, value = [-0.956205 0.0377639 0.290252]
-    // input[11]: defaulting = 1, visible = 0, type = 5, value = 30.0001
+    // input[6]: defaulting = 0, visible = 0, type = 8, value = [24.2436 -3.51258 25.2423]
+    // input[7]: defaulting = 0, visible = 0, type = 5, value = 18.8502
+    // input[8]: defaulting = 0, visible = 0, type = 1, value = 803
+    // input[9]: defaulting = 0, visible = 0, type = 5, value = 0.761519
+    // input[10]: defaulting = 0, visible = 0, type = 8, value = [-0.696777 0.180218 0.694279]
+    // input[11]: defaulting = 1, visible = 0, type = 5, value = 30.0
     // input[12]: defaulting = 0, visible = 0, type = 1, value = 0
     // input[14]: defaulting = 0, visible = 0, type = 1, value = 1
     // input[15]: defaulting = 1, visible = 0, type = 32, value = "none"
@@ -141,8 +149,8 @@ main_Options_1_out_1 =
     // input[19]: defaulting = 0, visible = 0, type = 1, value = 1
     // input[29]: defaulting = 1, visible = 0, type = 3, value = 0
     // input[41]: defaulting = 0, visible = 0, type = 32, value = "rotate"
-    // depth: value = 24
-    // window: position = (0.3461,0.0674), size = 0.5109x0.5117
+    // depth: value = 16
+    // window: position = (0.3463,0.0672), size = 0.5106x0.5117
     // internal caching: 1
     //
 main_Image_2_out_1,
@@ -234,6 +242,10 @@ main_ReadImage_2_in_8 = NULL;
 main_ReadImage_2_in_9 = NULL;
 main_ReadImage_2_out_1 = NULL;
 main_Options_1_in_2 = "texture";
+main_Options_1_in_4 = "texture min filter";
+main_Options_1_in_5 = "linear_mipmap_linear";
+main_Options_1_in_6 = "texture mag filter";
+main_Options_1_in_7 = "linear";
 main_Options_1_out_1 = NULL;
 macro Image(
         id,
@@ -548,14 +560,14 @@ macro Image(
         RECformat) [instance: 2, cache: 1];
 }
 main_Image_2_in_1 = "Image_2";
-main_Image_2_in_3 = "X24,,";
+main_Image_2_in_3 = "X16,,";
 main_Image_2_in_4 = 1;
 main_Image_2_in_5 = [0 0 -0.000288427];
-main_Image_2_in_6 = [10.0688 -5.27862 33.8571];
-main_Image_2_in_7 = 19.1397;
-main_Image_2_in_8 = 640;
-main_Image_2_in_9 = 0.750781;
-main_Image_2_in_10 = [-0.956205 0.0377639 0.290252];
+main_Image_2_in_6 = [24.2436 -3.51258 25.2423];
+main_Image_2_in_7 = 18.8502;
+main_Image_2_in_8 = 803;
+main_Image_2_in_9 = 0.761519;
+main_Image_2_in_10 = [-0.696777 0.180218 0.694279];
 main_Image_2_in_11 = NULL;
 main_Image_2_in_12 = 0;
 main_Image_2_in_13 = NULL;
@@ -594,6 +606,6 @@ main_Image_2_in_46 = NULL;
 main_Image_2_in_47 = NULL;
 main_Image_2_in_48 = NULL;
 main_Image_2_in_49 = NULL;
-Executive("product version 4 1 1");
+Executive("product version 4 1 3");
 $sync
 main();
