@@ -367,11 +367,13 @@ libDXUI_a_SOURCES = 			\
 	delete.C \
 	new.C \
 	\
-	sequence.txt 			\
-	gifmac.txt 			\
-	vrmlmac.txt 			\
-	dxmac.txt 			\
-	imagemac.txt			
+	sequence.txt \
+	gifmac.txt  \
+	vrmlmac.txt \
+	dxmac.txt \
+	imagemac.txt \
+	\
+	netyacc.c
 
 sequence.txt: sequence.net
 	sed -e 's/"/\\"/g' sequence.net | \
