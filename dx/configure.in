@@ -1175,6 +1175,5 @@ AC_OUTPUT(
 	src/uipp/startup/Makefile \
 	src/uipp/tutor/Makefile \
 	src/uipp/ui/Makefile \
-	src/uipp/widgets/Makefile 
-	windows/Makefile
-)
+	src/uipp/widgets/Makefile \
+	windows/Makefile)
