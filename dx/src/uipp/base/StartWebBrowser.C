@@ -49,7 +49,7 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
 	OSStatus oss = LSOpenCFURLRef( inURL, NULL);
 	return !oss;
     }
-    return 1;
+    return 0;
 #elif defined(intelnt)
     if(webApp) {
     HINSTANCE hinst = ShellExecute(NULL, // no parent hwnd
@@ -60,7 +60,7 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
             SW_SHOWNORMAL); // yes, show it
     return hinst > (HINSTANCE)32;
     }
-    return 1;
+    return 0;
 #else
     if(browserPID != 0) {
 	if(waitpid(browserPID, NULL, WNOHANG)==browserPID) {
