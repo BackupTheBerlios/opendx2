@@ -49,7 +49,10 @@
 #define SCRIPTVERSION DXD_VERSION_STRING
 
 #define IBM_ID 1
+
+#if defined(HUMMINGBIRD_REGISTRY)
 #define HUMMBIRD_ID 2
+#endif
 
 #define SMALLSTR 50
 #define MAXARGS 200
@@ -149,8 +152,12 @@ namestr 	dxroot =	"";
 namestr 	dxrootreg =	"";
 namestr 	dxexroot =	"";
 namestr 	dxuiroot =	"";
+#if defined(HUMMINGBIRD_REGISTRY)
 namestr 	exceeddir =	"";
 namestr 	exceeduserdir =	"";
+namestr		xservername =	"";
+namestr		xserverversion= "";
+#endif
 namestr		xnlspath =	"";
 namestr		xapplresdir =	"";
 namestr		xkeysymdb =	"";
@@ -187,8 +194,6 @@ namestr		uiproc =	"";
 namestr		uioutdb =	"";
 namestr		xparms =	"";
 namestr		installdate =	"";
-namestr		xservername =	"";
-namestr		xserverversion= "";
 namestr		thishost = 	"localhost";
 smallstr 	uidebug =	"";
 namestr		username =	"";
@@ -225,7 +230,7 @@ int main(int argc, char **argv)
     exit(0);
 }
 
-int d2u(char *s)
+int d2u(charn *s)
 {
     int i;
     for (i=0; s && *s && (i<strlen(s)); i++)
@@ -342,7 +347,14 @@ int regval(int get, char *name, int co, char *value, int size, int *word)
     if (co == IBM_ID)
 	strcat(key, "\\IBM");
     else
+#if defined(HUMMINGBIRD_REGISTRY)
 	strcat(key, "\\Hummingbird");
+#else
+    {
+        fprintf(stderr, "Unknown registery request: %d", key);
+ 	goto error;
+    }
+#endif
     rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
 	options, &hkey[k++]);
     IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
@@ -350,7 +362,15 @@ int regval(int get, char *name, int co, char *value, int size, int *word)
     if (co == IBM_ID)
 	strcat(key, "\\IBM Visualization Data Explorer");
     else
+#if defined(HUMMINGBIRD_REGISTRY)
 	strcat(key, "\\Exceed");
+#else
+    {
+        fprintf(stderr, "Unknown registery request: %d", key);
+ 	goto error;
+    }
+#endif
+
     rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
 	options, &hkey[k++]);
     IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
@@ -430,12 +450,14 @@ int initrun()
 
 #if defined(USE_REGISTRY)
 
+#if defined(HUMMINGBIRD_REGISTRY)
     if (!(regval(1, "PathName", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) 		&&
 	regval(1, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata) 	&&
 	regval(1, "Description", HUMMBIRD_ID, xservername, sizeof(xservername), &keydata) 	&&
 	regval(1, "Version", HUMMBIRD_ID, xserverversion, sizeof(xserverversion), &keydata))) 
 	printf("If Exceed is installed on this machine, please make sure it is available\n"
 	       "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+#endif
 
     if (!(regval(1, "DXROOT", IBM_ID, dxrootreg, sizeof(dxrootreg), &keydata) 		&&
 	regval(1, "InstallDate", IBM_ID, installdate, sizeof(installdate), &keydata) 	&&
@@ -507,15 +529,20 @@ int configure()
 
 
 #ifdef DXD_WIN
+
     getenvstr("Path", path0);
+
+#if defined(HUMMINGBIRD_REGISTRY)
     sprintf(path, "%s\\bin;%s;%s", dxroot, exceeddir, path0);
-    sprintf(xnlspath, "%s\\lib", dxroot);
     sprintf(xapplresdir, "%s", exceeduserdir);
-    /* sprintf(xapplresdir, "%s\\ui", dxroot); */
+    setenvpair(xapplresdir,	"XAPPLRESDIR");
+#else
+    sprintf(path, "%s\\bin;%s", dxroot, path0);
+#endif
+
+    sprintf(xnlspath, "%s\\lib", dxroot);
     sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
     setenvpair(xnlspath,	"XNLSPATH");
-    setenvpair(xapplresdir,	"XAPPLRESDIR");
-    //setenvpair(xkeysymdb,	"XKEYSYMDB");  GDA
     setenvpair("",		"HOME");
     setenvpair(path,		"Path");
 #endif
@@ -622,10 +649,12 @@ int buildcmd()
     if (showversion) {
 #ifdef DXD_WIN
 	printf("Open Visualization Data Explorer: Registered to %s of %s\n", username, userco);
+#if defined(HUMMINGBIRD_REGISTRY)
 	if (*xservername) {
 	    printf("X server found: %s\n", xservername);
 	    printf("X server version: %s\n", xserverversion);
 	}
+#endif
 #endif
 	printf("Open Visualization Data Explorer Script, version %s (%s, %s)\n", SCRIPTVERSION, __TIME__, __DATE__);
 	sprintf(cmd, "%s -v", dxexec);
