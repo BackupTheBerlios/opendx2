@@ -6,7 +6,7 @@
 #define	tdmWindow_h
 /*
  *
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.h,v 1.1 1999/03/24 15:18:34 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.h,v 1.2 1999/04/21 18:57:16 gda Exp $
  */
 
 #include "hwStereo.h"
@@ -164,7 +164,7 @@ typedef struct tdmChildGlobalS {
 #define XWINID (_wdata->xid)
 #define PARENT_WINDOW (_wdata->wigWindow)
 #define PORT_HANDLE (_wdata->phP)
-#define COLORMAP (_wdata->xColormap)
+#define CLRMAP (_wdata->xColormap)
 #define CAMERA (_wdata->curcam)
 #define OBJECT (_wdata->curobj)
 #define PIXW (_wdata->w)
