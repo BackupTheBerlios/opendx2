@@ -66,6 +66,22 @@ class PacketIF : public Base
     //
     // Private member data:
     //
+
+    //
+    // I hate this... on some AIX systems, it seems that the work proc can
+    // get called even after the PacketIF deletion method is called.  When this
+    // happens, the work proc receives a deleted PacketIF, and all hell breaks 
+    // loose.  Instead, I'm going to use double indirection... I'll allocate a
+    // pointer when the PacketIF is created, set it to point to the PacketIF
+    // itselfkeep a pointer to it in the PacketIF, and pass its address as the
+    // work proc client data.  When the PacketIF is deleted, the pointer is set
+    // to NULL, but not freed.  So if the pointer that the work proc receives as 
+    // its client data points to NULL, we know that the PacketIF has been deleted
+    // and the work proc returns immediately.  Unfortunately, this leaks space 
+    // for a pointer for each packetIF created.
+    //
+    PacketIF	     **wpClientData;
+
     int      	     error;
     int      	     socket;
     FILE    	     *stream;

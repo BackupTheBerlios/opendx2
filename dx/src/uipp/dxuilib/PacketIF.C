@@ -18,6 +18,7 @@
 #include "PacketIF.h"
 #include "ListIterator.h"
 
+
 #include "Application.h"
 #include "ErrorDialogManager.h"
 
@@ -225,6 +226,7 @@ void PacketIF::sendPacket(int         type,
 			    const char *data,
 			    int         length)
 {
+
     if (this->stream == NUL(FILE*))
 	return;
 
@@ -291,6 +293,10 @@ PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
 {
     ASSERT(host);
 
+    // see comment in PacketIF.h
+    this->wpClientData = new (PacketIF *);
+    (*this->wpClientData) = this;
+
 #if defined(HAVE_SYS_UN_H)
     ASSERT(port > 0);
 #endif
@@ -350,9 +356,8 @@ PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
 
 PacketIF::~PacketIF()
 {
-#if 0
-    UipPacketHandler *p, *q;
-#endif
+    // see comment in PacketIF.h
+    (*this->wpClientData) = NULL;
 
     //
     // If this is the last instance of a packet interface, reset to the 
@@ -389,6 +394,7 @@ PacketIF::~PacketIF()
 
     this->removeWorkProc();
     this->removeWorkProcTimer();
+
 
 #if 0
     /*
@@ -456,7 +462,7 @@ void PacketIF::installWorkProcTimer()
             theApplication->getApplicationContext(),
             1000,       // 1 second
             (XtTimerCallbackProc)PacketIF_InputIdleTimerTCP,
-            (XtPointer)this);
+            (XtPointer)this->wpClientData);
 }
 void PacketIF::removeWorkProcTimer()
 {
@@ -468,8 +474,10 @@ void PacketIF::removeWorkProcTimer()
 extern "C" void PacketIF_InputIdleTimerTCP(XtPointer clientData,
                                                 XtIntervalId *id)
 {
-    PacketIF *p = (PacketIF*)clientData;
-    ASSERT(p);
+    PacketIF *p = *(PacketIF**)clientData;
+    if (! p)
+	return;
+
     p->workProcTimerId = 0;  // Xt uninstalls this automatically
     if (p->deferPacketHandling)
         PacketIF_InputIdleWP(clientData);
@@ -482,7 +490,8 @@ void PacketIF::installWorkProc()
     this->workProcId = XtAppAddWorkProc(
             theApplication->getApplicationContext(),
             (XtWorkProc)PacketIF_InputIdleWP,
-            (XtPointer)this);
+            (XtPointer)this->wpClientData);
+
 }
 void PacketIF::removeWorkProc()
 {
@@ -495,8 +504,9 @@ void PacketIF::removeWorkProc()
 
 Boolean PacketIF_InputIdleWP(XtPointer clientData)
 {
-    PacketIF *p = (PacketIF*)clientData;
-    ASSERT(p);
+    PacketIF *p = *(PacketIF**)clientData;
+    if (! p)
+	return True;
 
     //
     // Check to see if message handling is stalled.  If so, then
@@ -525,7 +535,7 @@ Boolean PacketIF_InputIdleWP(XtPointer clientData)
 
     if (r)
         p->workProcId = 0;   // Xt will be removing it.
-
+    
     return r;
 }
 
