@@ -230,6 +230,11 @@ while ($#arglist > 0)
     exit 0
     breaksw
 
+  case -whicharch
+    echo $exarch
+    exit 0
+    breaksw
+
   case -host:       # start the executive on this machine
     if ($#arglist < 2) then
       set errmsg="-host: missing hostname"
