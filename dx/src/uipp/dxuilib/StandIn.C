@@ -2946,10 +2946,11 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 		if (tnode->isInputDefaulting(i)) {
 		    strcpy(buf, tnode->getInputNameString(i));
 		} else {
-		    int ii;
+		    int ii, jj;
 		    int cutoff;
 		    char* doublequote;
 		    char dup_val[64];
+		    char escaped_val[128];
 		    const char *val = tnode->getInputValueString(i); 
 		    //trim the string if too long, don't count escape for escaped chars
 		    if (STRLEN(val) > 32) {
@@ -2969,6 +2970,7 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 			}
 			strcat(dup_val,"...");
 			// restore balanced quotes for postscript
+			// ---turns out it isn't a requirement, but it is aesthetic
 			ii=0;
 			doublequote=dup_val;
 			while((doublequote=strchr(doublequote,'\"'))!=NULL) {
@@ -2979,8 +2981,14 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 		    } else {
 			strcpy(dup_val,val);
 		    }	
+		    jj=0;
+		    for (ii=0; ii<=STRLEN(dup_val); ++ii) {
+			//some characters require escaping, feel free to expand the list
+		 	if(ii<STRLEN(dup_val) && strchr("()",dup_val[ii])) escaped_val[jj++]='\\';
+			escaped_val[jj++]=dup_val[ii];
+			}
 		    sprintf(buf,"%s = %s", 
-				tnode->getInputNameString(i),dup_val);
+				tnode->getInputNameString(i),escaped_val);
 	 	}
 		
 		if (fprintf(f,"gsave %d %d translate -45 rotate "
