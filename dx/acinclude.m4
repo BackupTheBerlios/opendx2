@@ -646,6 +646,12 @@ dnl now trim off /lib/whatever to get to the base of the jdk installation
 dnl 
 JBASE=`echo $JDK_CLASSES | sed -e "s&/lib/$dx_jdk_trailing&&"`
 AC_MSG_RESULT(${JBASE})
+JAVABRANCH=
+if ! test -z "$JBASE" ; then 
+	JAVABRANCH=java 
+else
+	echo "java explorer portion of compile has been disabled due to unexpected behavior of javac.  is it really kaffe? try setting KAFFE_CLASSPATH"
+fi
 JDKBIN=
 AC_MSG_CHECKING([for jar not in path])
 dnl
