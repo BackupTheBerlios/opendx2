@@ -31,6 +31,10 @@
 #include "WorkspaceCallback.h"
 #include <string.h>
 
+
+/* External functions */
+extern void ChangeWidgetInCollideList(); /* From Findroute.c */
+
 extern void _XmManagerEnter();
 extern void _XmManagerFocusIn();
 
@@ -214,8 +218,6 @@ static XtGeometryResult
 	        GeometryManager         (Widget w,
 	                                 XtWidgetGeometry *request,
 	                                 XtWidgetGeometry *reply);
-static void     DisplayAccelerator      (Widget ww,
-	                                 String string);
 static void     Arm                     (XmWorkspaceWidget ww,
 	                                 XEvent* event);
 static void     Drag                    (XmWorkspaceWidget ww,
@@ -230,7 +232,6 @@ static Boolean  ConstraintSetValues     (Widget current,
 static void     ConstraintDestroy       (Widget w);
 static void     GetRubberbandGC         (XmWorkspaceWidget ww);
 static void     DrawRubberband          (XmWorkspaceWidget ww);
-static void     DoFeep                  (XmWorkspaceWidget ww);
 static void     GrabSelections          (Widget w,
 	                                 XEvent* event,
 	                                 String* params,
@@ -369,9 +370,6 @@ static void     CvtStringToWorkspaceType(XrmValue* args,
 	                                 XrmValue* to_val);
 static Boolean  StringsAreEqual         (register char * in_str,
 	                                 register char * test_str);
-static Boolean  ResolveConflicts	( XmWorkspaceWidget ww, 
-					  XmWorkspaceLine new,
-					  int line_change_dir);
 static void 	childRelative 		(XmWorkspaceWidget ww, 
 					 XEvent *xev, int *x, int *y);
 static Boolean Overlapping( XmWorkspaceWidget , int , int );
@@ -839,10 +837,7 @@ Dimension old_width, old_height;
 XmWorkspaceWidget ww;
 XtWidgetGeometry request, reply;
 XtGeometryResult result;
-int i;
 XmWorkspaceConstraints nc;
-Widget child;
-XEvent event;
 
     (*superclass->composite_class.insert_child) (w);
     ww = (XmWorkspaceWidget)w->core.parent;
@@ -893,10 +888,8 @@ static void ClassInitialize( )
  */
 static void Initialize( XmWorkspaceWidget request, XmWorkspaceWidget new )
 {
-    XtAccelerators acc_table;
     XtTranslations trans_table;
     Arg warg;
-	 int i;
 
     /*  Contrary to what is promised, record is not initially cleared  */
     new->workspace.suppress_callbacks = False;
@@ -1071,17 +1064,19 @@ static void unobstructedHoriz (XmWorkspaceWidget , Widget , int *, int*);
 static void Resize( XmWorkspaceWidget ww)
 {
 XmWorkspaceCallbackStruct cb;
-int i, bw;
-Widget child;
-XmWorkspaceConstraints cons;
-XtWidgetGeometry req;
 
     if (ww->workspace.auto_arrange)
 	(*superclass->core_class.resize) ((Widget)ww);
-    if (!XtIsRealized(ww))
+    if (!XtIsRealized((Widget)ww))
 	return;
 
 #if STRETCH_SEPARATORS
+{
+XtWidgetGeometry req;
+int i, bw;
+Widget child;
+XmWorkspaceConstraints cons;
+
     /*
      * if !auto_arrange_mode then see if there are widgets who want
      * want to be pinned top/bottom or left/right.  Separator widgets
@@ -1115,6 +1110,7 @@ XtWidgetGeometry req;
 	    _GeometryManager (child, &req, NULL, False);
 	}
     }
+}
 #endif
 
     ReallocCollideLists(ww);
@@ -1188,14 +1184,14 @@ XmWorkspaceConstraints cons;
 static void Redisplay( XmWorkspaceWidget ww, XExposeEvent* event,
 	               Region region )
 {
-    int i, grab_state;
+    int i;
     Boolean clip_region_set = FALSE;
     short line_excess;
 
     if (ww->workspace.auto_arrange)
 	(*superclass->core_class.expose) ((Widget)ww, (XEvent *)event, region);
 
-    if( !XtIsRealized(ww) )
+    if( !XtIsRealized((Widget)ww) )
 	return;
     /* The user can enter events while the application is in the process of   *
      * rearranging its windows.  Since the server may be slow to make all of  *
@@ -1379,7 +1375,7 @@ static Boolean SetValues( XmWorkspaceWidget current,
     if ((new->workspace.line_drawing_enabled == TRUE) &&
 	 (current->workspace.line_drawing_enabled == FALSE))
 	{
-	if (XtIsRealized (new))
+	if (XtIsRealized ((Widget)new))
 	    XClearWindow(XtDisplay(new), XtWindow(new));
 #if 11
 	reroute = True;
@@ -1401,7 +1397,6 @@ static Boolean SetValues( XmWorkspaceWidget current,
 	if ( (new->workspace.snap_to_grid == TRUE) && 
 		(current->workspace.snap_to_grid == FALSE) )
 	    {
-	    int selCnt = 0;
 	    new->workspace.suppress_callbacks = True;
 	    was_selected = (Boolean *)
 		XtMalloc(new->composite.num_children*sizeof(Boolean));
@@ -1499,7 +1494,7 @@ static Boolean SetValues( XmWorkspaceWidget current,
      * the attachments.  One possibility would be sorting the edges.
      */
     if (current->workspace.auto_arrange != new->workspace.auto_arrange) {
-	int ih,iw, n, wwidth, wheight, bw;
+	int n, wwidth, wheight, bw;
 	int bottomp, rightp, leftp, topp, fbase;
 	XmFormAttachmentRec *att;
 	Arg args[20];
@@ -1881,7 +1876,6 @@ static void ChangeManaged( XmWorkspaceWidget ww )
     int i;
     Boolean resolve_overlap = FALSE;
     Boolean new_node = FALSE;
-    int max;
 #if (OLD_LESSTIF == 1)
     XmFormConstraintPart *formcon;
 #else
@@ -2133,7 +2127,6 @@ XtGeometryResult retval;
 static void ConstraintInitialize( Widget req, Widget new )
 {
     XtTranslations acc_table;
-    Arg warg;
 
     /*  Unitialized fields are not automatically cleared!  */
     XmWorkspaceConstraints constraints = WORKSPACE_CONSTRAINT(new);
@@ -2354,16 +2347,6 @@ static void DrawRubberband( XmWorkspaceWidget ww )
 	            ww->workspace.rubberband, 1);
     ww->workspace.band_is_visible = !ww->workspace.band_is_visible;
 }
-
-
-/*  Subroutine: DoFeep
- *  Purpose:    Sound bell for to get user's attention
- */
-static void DoFeep( XmWorkspaceWidget ww )
-{
-    XBell(XtDisplay(ww), 50);
-}
-
 
 static Boolean
 inHierarchy (Widget child, XmWorkspaceWidget ww, int i)
@@ -2646,7 +2629,6 @@ static void DropSelections( Widget w, XEvent* event,
 	if( (resize_x > 0) || (resize_y > 0) )
 	{
 	    int old_width, old_height;
-	    CollideList **cl_ptr;
 
 	    old_width = ww->core.width;
 	    old_height = ww->core.height;
@@ -2893,7 +2875,6 @@ static void MoveChild( XmWorkspaceWidget ww, Widget child,
 {
     XmWorkspaceLine line;
     register short x_delta, y_delta;
-    int wxmin, wxmax, wymin, wymax, wxcenter, wycenter;
 
     x_delta = constraints->workspace.x_delta;
     y_delta = constraints->workspace.y_delta;
@@ -3186,8 +3167,6 @@ static void EndRubberband( XmWorkspaceWidget ww, XEvent* event )
 static void UpdateRubberbandSelections( XmWorkspaceWidget ww, XEvent* event )
 {
     XmWorkspaceConstraints constraints;
-    Widget chosen_one, unchosen_one;
-    XmAnyCallbackStruct cb;
     register short x1, x2, y1, y2;
     int i;
     Boolean included;
@@ -4257,7 +4236,6 @@ static int MoveAToRightOfB( XmWorkspaceWidget ww,
 static void RepositionSelectedChildren( struct SortRec* current, short delta_x )
 {
     struct SortRec* other;
-    struct SortRec* resort;
 
     /*  Look for the other selected ones  */
     other = current->next;
@@ -4337,7 +4315,6 @@ static struct SortRec *GetSortList( XmWorkspaceWidget ww,
      struct SortRec** sortmem;  /* Xtalloc pointer to be XtFree'd when done */
 #endif
 {
-    Widget *childList;
     struct SortRec* sortlist;
     struct SortRec* heap;
 #ifdef DEBUG
@@ -4429,9 +4406,9 @@ XmWorkspaceLine
 	                 Widget source, short src_x_offset, short src_y_offset,
 	                 Widget dest, short dst_x_offset, short dst_y_offset )
 {
-    XmWorkspaceLine line, tmp_line;
     XmWorkspaceConstraints constraints;
     int i;
+    XmWorkspaceLine line;
     Boolean source_not_found, destination_not_found;
 
     /*  Check to make sure this one is here  */
@@ -4481,7 +4458,7 @@ XmWorkspaceLine
     line->is_to_be_moved = TRUE;
 
     /*  Get the GC and set it to this color  */
-    if( XtIsRealized(ww) )
+    if( XtIsRealized((Widget)ww) )
     {
 	if( xmWorkspaceClassRec.workspace_class.lineGC == NULL )
 	    InitLineGC(ww, line->color);
@@ -4518,7 +4495,6 @@ static void SetLineRoute( XmWorkspaceWidget ww, XmWorkspaceLine new )
 short i;
 LineElement *line_list;
 int cost, failnum;
-Widget child;
 
     /* Point 1 */
     new->point[0].x = new->src_x;
@@ -4771,12 +4747,11 @@ void RefreshLines( XmWorkspaceWidget ww )
 {
 XmWorkspaceLine line, tmp_line;
 int             color = -1;
-int             i;
 XRectangle      rect;
 
     if(!ww->workspace.line_drawing_enabled)
 	return;
-    if (XtIsRealized(ww) == False)
+    if (XtIsRealized((Widget)ww) == False)
 	return ;
 
     /*
@@ -4859,7 +4834,7 @@ XRectangle      rect;
 		    }
 		    tmp_line = tmp_line->next;
 		}
-		if( XtIsRealized(ww) )
+		if( XtIsRealized((Widget)ww) )
 		{
 		    color = line->color;
 		    /*  Get the GC and set it to this color  */
@@ -4871,7 +4846,7 @@ XRectangle      rect;
 			   xmWorkspaceClassRec.workspace_class.lineGC,
 			   color);
 		}
-		if( ( XtIsRealized(ww) ) && (!line->two_phase_draw) )
+		if( ( XtIsRealized((Widget)ww) ) && (!line->two_phase_draw) )
 		{
 		    if (line->num_points > 0)
 		    {
@@ -4898,7 +4873,7 @@ XRectangle      rect;
 	{
 	    if( line->two_phase_draw )
 	    {
-		if( XtIsRealized(ww) )
+		if( XtIsRealized((Widget)ww) )
 		{
 		    color = line->color;
 		    /*  Get the GC and set it to this color  */
@@ -4910,7 +4885,7 @@ XRectangle      rect;
 			   xmWorkspaceClassRec.workspace_class.lineGC,
 			   color);
 		}
-		if( XtIsRealized(ww) )
+		if( XtIsRealized((Widget)ww) )
 		{
 		    if (line->num_points > 0)
 		    {
@@ -4940,7 +4915,7 @@ XRectangle      rect;
 		    tmp_line = tmp_line->next;
 		}
 	
-		if( XtIsRealized(ww) )
+		if( XtIsRealized((Widget)ww) )
 		{
 		    if (line->num_points > 0)
 		    {

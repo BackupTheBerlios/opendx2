@@ -48,8 +48,8 @@
 
 /* Normal matrix for 2x2 dither */
 static short matrix[DX][DY] = 
-    { 	0*256,	2*256,
-	3*256,	1*256,
+    { 	{ 0*256, 2*256 },
+	{ 3*256, 1*256 },
     };
 #ifdef Comment
 /* Normal matrix for 4x4 dither */
@@ -75,11 +75,9 @@ static short matrix[DX][DY] =
 
 void Dither(XColor *in, int width, int height, XColor *out, ControlColor *color)
 {
-int y, i, j, k;
+int y;
 register int x, d;
 register short *m;
-unsigned int red, green, blue;
-int r;
 
     for(y = 0; y < height; y++)
 	{

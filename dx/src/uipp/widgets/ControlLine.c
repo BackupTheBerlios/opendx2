@@ -227,7 +227,7 @@ void DrawLine( ControlLine* line, GC gc )
 {
     if(gc == NULL) return;
     if (!line->field->w) return ;
-    if (!XtIsRealized(line->field->w)) return ;
+    if (!XtIsRealized((Widget)(line->field->w))) return ;
     XDrawLines(XtDisplay(line->field->w), XtWindow(line->field->w),
 	       gc, line->points, line->num_points,
 	       CoordModeOrigin);

@@ -77,6 +77,17 @@
 static double DefaultMinDbl = (double)DEF_MIN;
 static double DefaultMaxDbl = (double)DEF_MAX;
 
+/* External Functions */
+void AddControlPoint(ControlMap* map, double level, double value,
+                     Boolean above);   /* From ControlPoint.c */
+void RemoveSelectedControlPoints(XmColorMapEditorWidget cmew); /* From ControlPoint.c */
+void PrintAllControlPoints(XmColorMapEditorWidget cmew); /* From ControlPoint.c */
+void SetColorCoords( XColor *cells, ControlField* field,
+                            short* load, short load_limit ); /* From ColorRGB.c */
+void DrawColorBar( ColorBar* bar, XColor* undithered_cells ); /* From ColorBar.c */
+void SetRGBLines( XColor* cells, ControlField* field,
+                  ControlLine* h, ControlLine* s, ControlLine* v ); /* From ColorRGB.c */
+
 
 /*  Class and internal functions  */
 
@@ -99,8 +110,6 @@ static void CreateColors( Widget toplevel, Pixel *black,
 			  Pixel *red, Pixel *green, Pixel *blue );
 static Widget CreateFormLabel( Widget form, char *title, int attach_left,
 			       int attach_right, Boolean attach_top );
-static void HueExposeCallback( Widget w, ControlField* field,
-			       XmDrawingAreaCallbackStruct* cb );
 extern void LoadColormapFromFile(char *filename, XmColorMapEditorWidget cmew,
 		Boolean init);
 extern void LoadHardCodeDefaults(XmColorMapEditorWidget new, Boolean init);
@@ -280,10 +289,8 @@ XmColorMapEditorClassRec *xmCMEWidgetClass = &xmColorMapEditorClassRec;
 static void Initialize (XmColorMapEditorWidget request, 
 			XmColorMapEditorWidget new)
 {
-Pixel black, brick, yellow, red, green, blue;
-char string[20];
+Pixel black, red, green, blue;
 Arg wargs[12];
-char *filename;
 int n;
 #if (XmVersion < 1001)
 short shadow_thickness;
@@ -832,15 +839,7 @@ static Boolean SetValues (XmColorMapEditorWidget current,
 			  XmColorMapEditorWidget new)
 
 {
-Arg 		wargs[10];
-int 		i,n;
-ControlField 	*field;
-int 		field_num;
-Boolean 	add_point;
-double 		level;
-int		index;
 Boolean		print_pts = False; 
-XtArgVal	dx_l;
 
    if(new->color_map_editor.trigger_callback != 
       current->color_map_editor.trigger_callback)
@@ -902,7 +901,7 @@ XtArgVal	dx_l;
 	print_pts = True;
 	}
 
-   if (print_pts && XtIsRealized(new)) 
+   if (print_pts && XtIsRealized((Widget)new)) 
 	{
 	PrintAllControlPoints(new);
    	}
@@ -1044,8 +1043,6 @@ Boolean			set;
 int			field_num = (int)client;
 XmColorMapEditorWidget 	cmew;
 int			i;
-int			j;
-Boolean 		changed;
 ControlField 		*field;
 
     cmew = (XmColorMapEditorWidget)XtParent(w);
@@ -1072,9 +1069,6 @@ static void MinNumCallback( XmNumberWidget nw, XmColorMapEditorWidget cmew,
 	 XmDoubleCallbackStruct* call_data)
 {
 Arg wargs[12];
-int n, i;
-ControlField *field;
-XmColorMapEditorCallbackStruct call_value;
 
     cmew->color_map_editor.value_minimum = call_data->value;
     if(cmew->color_map_editor.value_minimum >
@@ -1091,8 +1085,6 @@ static void MaxNumCallback( XmNumberWidget nw, XmColorMapEditorWidget cmew,
 	 XmDoubleCallbackStruct* call_data)
 {
 Arg wargs[12];
-int n;
-XmColorMapEditorCallbackStruct call_value;
 
     cmew->color_map_editor.value_maximum = call_data->value;
     if(cmew->color_map_editor.value_minimum >
@@ -1146,12 +1138,12 @@ FILE *fp;
     for (j=0;j < cmew->color_map_editor.g.field[i]->map[0]->num_points; j++)
   	{
 	cp_ptr = cmew->color_map_editor.g.field[i]->map[0]->points;
-	if (fprintf(fp,"%.20lf  ",cp_ptr[j].level) < 0)
+	if (fprintf(fp,"%.20f  ",cp_ptr[j].level) < 0)
 	    {
 	    XtWarning("Error writing to color map file");
 	    return False;
 	    }
-	if (fprintf(fp,"%.20lf  ",cp_ptr[j].value) < 0)
+	if (fprintf(fp,"%.20f  ",cp_ptr[j].value) < 0)
 	    {
 	    XtWarning("Error writing to color map file");
 	    return False;
@@ -1300,7 +1292,6 @@ void XmColorMapPaste(Widget w)
 {
 XmColorMapEditorWidget cmew = (XmColorMapEditorWidget)w;
 int i;
-int k;
 ControlField *field;
 XmColorMapEditorClassPart *color_map_editor_class;
 
@@ -1663,7 +1654,6 @@ XmColorMapEditorWidget cmew = (XmColorMapEditorWidget)w;
 ControlField *field;
 ControlMap *map;
 int i;
-int j;
 
     for(i= 0; i < 4; i++)
     {

@@ -54,6 +54,14 @@ typedef struct _LineList {
     struct _LineList *next;
 }               LineList;
 
+/* External Functions */
+
+void ReallocCollideLists(XmWorkspaceWidget ww); /* From WorkspaceW.c */
+void  AugmentExposureAreaForLine (XmWorkspaceWidget ww,
+                                         XmWorkspaceLine line);
+
+/* Internal Functions */
+
 static LineElement *
 ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
 	  int dstx, int dsty,
@@ -112,9 +120,6 @@ void
 AddLineToCollideList(XmWorkspaceWidget ww, XmWorkspaceLine line);
 void 
 WidgetCollide(XmWorkspaceWidget ww, Widget child);
-static int 
-FindHorizontalPlumb(XmWorkspaceWidget ww, int srcx, int srcy,
-		    int direction);
 static int 
 FindHorizontalPlumbIgnoringLines(XmWorkspaceWidget ww, int srcx,
 			  int srcy, int direction, LineList * ignore_lines);
@@ -206,23 +211,22 @@ Manhattan(XmWorkspaceWidget ww, int srcx, int srcy,
 	  Widget source, Widget destination,
 	  XmWorkspaceLine new, int *failnum)
 {
-    register int    xpos, ypos, xmax, ymax;
-    int             xmin, xmax_src, xmax_dst, xmin_src, xmin_dst;
-    int             xleft, xright, ymin, ycenter;
+    register int    ypos, xmax, ymax;
+    int             xmin;
+    int             ymin;
     int		    mycost, lower_cost;
     LineElement     *min_line;
     LineElement	    *src_element, *dst_element;
     LineElement	    *previous_element, *current_element;
     LineElement	    *remainder_line, *line;
     int             horizontal_dir;
-    int             newx, newy;
+    int             newx;
     int             slotx;
     XmWorkspaceLine ret_line;
     Widget          ret_widget;
     LineList       *ignore_lines, *current_ignore;
     XmWorkspaceLine copy_line;
     int             delta_x, delta_y, dist, min_dist, min_cost, min_point, i;
-    Boolean         reverse;
 
     level++;
     remainder_line = NULL;
@@ -725,23 +729,22 @@ ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
 {
     register int    xpos, ypos, xmax=0, ymax;
     int             xmin=0, xmax_src, xmax_dst, xmin_src, xmin_dst;
-    int             xleft, xright, ymin, ycenter;
-    int             mycost, right_cost, left_cost, lower_cost,
+    int             ymin, ycenter;
+    int             mycost, right_cost, left_cost,
 		    src_left_cost, src_right_cost,
 		    dst_left_cost, dst_right_cost;
-    LineElement     *min_line;
     int		    lower_level_cost[5];
     LineElement     *line_center[5];
     LineElement     src_dogleg1;
     LineElement     src_dogleg2;
     LineElement     src_dogleg3;
     LineElement     src_dogleg4;
-    LineElement     *src_element, *dst_element, *line_left, *line_right,
-		    *element1 = NULL, *element2 = NULL, *element3 = NULL, *element4,
+    LineElement     *src_element, *dst_element,
+		    *element1 = NULL, *element2 = NULL, *element3 = NULL,
 		    *remainder_line, *line, *right_line=NULL, *left_line=NULL,
-		    *src_line, *dst_line, *current_element, *previous_element;
+		    *src_line, *dst_line;
     int             vertical_dir, horizontal_dir;
-    int             newx, newy;
+    int             newx;
     LineElement     new_src, new_dst,
 		    src_dogleg_left, src_dogleg_right,
 		    dst_dogleg_left, dst_dogleg_right,
@@ -750,11 +753,7 @@ ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
     Boolean         do_lines;
     XmWorkspaceLine ret_line;
     Widget          ret_widget;
-    LineList       *current_ignore;
-    XmWorkspaceLine copy_line;
-    int             delta_x, delta_y, dist, min_dist, min_cost, min_point, i;
     int             inc;
-    Boolean         reverse;
     int		    left_failnum;
     int		    right_failnum;
 
@@ -2767,8 +2766,6 @@ FindHorizontalPlumbIgnoringLines(XmWorkspaceWidget ww, int srcx,
 {
     register CollideList *cl_ptr;
     int             x, ypos;
-    XmWorkspaceLine ret_line;
-    Widget          ret_widget;
     int             offset, ystart, yend;
     register LineList *current_ignore;
     Boolean         ignore;
@@ -2850,6 +2847,8 @@ FindHorizontalPlumbIgnoringLines(XmWorkspaceWidget ww, int srcx,
     return x;
 }
 
+#if 0
+
 static int 
 FindHorizontalPlumb(XmWorkspaceWidget ww, int srcx, int srcy,
 		    int direction)
@@ -2923,7 +2922,7 @@ FindHorizontalPlumb(XmWorkspaceWidget ww, int srcx, int srcy,
     }
     return x;
 }
-
+#endif
 
 /*
  * Subroutine: AddWidgetToCollideList Purpose:    Add the effects of this
@@ -3671,11 +3670,10 @@ void
 MarkCommonLines(XmWorkspaceWidget ww)
 {
     XmWorkspaceLineRec *original_line, *line1, *line2, *prev_line1, *prev_line2, *tmp_line;
-    int             srcx, srcy, dstx, dsty;
     int             min_disty, cur_disty;
     int             min_distx, cur_distx;
 
-    if (original_line = ww->workspace.lines)
+    if (original_line == ww->workspace.lines)
     {
 	line1 = original_line;
 	prev_line1 = NULL;
@@ -4078,6 +4076,7 @@ FindDogleg(XmWorkspaceWidget ww,
 	    *cost = 999;
 	}
     }
+    return 0;
 }
 
 static LineElement*

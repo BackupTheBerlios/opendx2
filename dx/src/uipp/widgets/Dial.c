@@ -839,7 +839,7 @@ XmDialWidget    w;
 XtPointer		client_data;
 XEvent          *event;
         {
-	double	angle1,angle2,angle2_pre_round,delta_angle,rounded_value;
+	double	angle1,angle2,delta_angle,rounded_value;
 	Sign	before_rounding = POSITIVE;
 	Sign	after_rounding = POSITIVE;
 	int	delta_degree;
@@ -1391,7 +1391,7 @@ XrmValue	*args;
 Cardinal	*nargs;
 XrmValue  	*fromVal, *toVal;
  	{
-	static	double	result;
+	static double	result;
 
 	/*
 	 * Make sure the number of args is correct.
@@ -1457,7 +1457,6 @@ static double _dxf_round(double a, int decimal_places)
 {
     double value;
     double expon;
-    int    ivalue;
     double remember;
 
     remember = a;

@@ -367,11 +367,7 @@ static Boolean SetValues( XmSlideBarWidget current,
 			  XmSlideBarWidget request,
 			  XmSlideBarWidget new )
 {
-    XEvent e;
     Boolean redraw = FALSE;
-    XGCValues	values;
-    XtGCMask	valueMask;
-    GC	cenGC;
     Arrow	arrow;
 
     if( new->slide_bar.arrow_width != new->slide_bar.arrow_height )
@@ -502,7 +498,7 @@ static Boolean SetValues( XmSlideBarWidget current,
 	}
     if (new->slide_bar.current_visible != current->slide_bar.current_visible)
 	{
-	if (XtIsRealized(new))
+	if (XtIsRealized((Widget)new))
 	    {
 	    if (new->slide_bar.current_visible)
 	        {
@@ -624,22 +620,26 @@ static void Resize( XmSlideBarWidget w )
 {
 XEvent e;
 
-    if( XtIsRealized(w) )
+    if( XtIsRealized((Widget)w) )
     {
 	XClearWindow(XtDisplay(w), w->core.window);
 	if(   w->slide_bar.width
 	   != (w->core.width - (2 * w->slide_bar.x_margin)) )
 	{
+	    RectObj g = (RectObj) w->slide_bar.line;
+	    XmDropSiteStartUpdate((Widget) w->slide_bar.line);
 	    w->slide_bar.width = w->core.width - (2 * w->slide_bar.x_margin);
-	    _XmResizeObject((Widget)w->slide_bar.line, w->slide_bar.width,
+	    XtResizeWidget((Widget) g, w->slide_bar.width,
 			    w->slide_bar.line->rectangle.height, 0);
 	}
 	if(   ((w->core.height - (w->slide_bar.arrow_height)) / 2)
 	   != w->slide_bar.y_margin )
 	{
+	    RectObj g = (RectObj) w->slide_bar.line;
+	    XmDropSiteStartUpdate((Widget)w->slide_bar.line);
 	    w->slide_bar.y_margin =
 	      (w->core.height - (w->slide_bar.arrow_height)) / 2;
-	    _XmMoveObject((Widget)w->slide_bar.line, 
+	    XtMoveWidget((Widget) g, 
 			  w->slide_bar.line->rectangle.x,
 			  w->slide_bar.y_margin + w->slide_bar.arrow_height);
 
@@ -668,7 +668,7 @@ static void Help( XmSlideBarWidget w, XEvent* event )
    XmGadget gadget;
    XmDrawingAreaCallbackStruct cb;
 
-   if (   (gadget = _XmInputInGadget((Widget)w, 
+   if (   (gadget = (XmGadget) _XmInputInGadget((Widget)w, 
 		event->xbutton.x, event->xbutton.y))
        != NULL)
    {
@@ -1309,8 +1309,6 @@ static Pixmap CreateArrowPixmap( XmSlideBarWidget w, GC gc,
 static void FillArrowPixmap( XmSlideBarWidget w, struct ArrowRec* arrow,
 			     GC cenGC, Boolean in, Pixmap pixmap )
 {
-XImage *xi;
-
     if( in )
     {
 	XFillRectangles(XtDisplay(w), pixmap, w->manager.bottom_shadow_GC,
@@ -1348,7 +1346,6 @@ static void GetArrowDrawRects( int  shadow_thickness,
     int size, width, start;
     register int y;
     XRectangle *tmp;
-    register int temp;
     short t = 0;
     short b = 0;
     short c = 0;
@@ -1510,7 +1507,7 @@ static void ChangeSlideBarStart( XmSlideBarWidget w, short detent )
 	x = ((detent - w->slide_bar.min_detent) * w->slide_bar.width) / 
 				w->slide_bar.num_detents;
 	/*  Check for adequate initialization  */
-	if( XtIsRealized(w) && w->slide_bar.start_mark.arrow )
+	if( XtIsRealized((Widget)w) && w->slide_bar.start_mark.arrow )
 	{
 	    ClearMarker(w, &w->slide_bar.start_mark,
 			w->slide_bar.start_mark.x,
@@ -1546,7 +1543,7 @@ static void ChangeSlideBarStop( XmSlideBarWidget w, short detent )
 	x = ((detent - w->slide_bar.min_detent) * w->slide_bar.width) / 
 				w->slide_bar.num_detents;
 	/*  Check for adequate initialization  */
-	if( XtIsRealized(w) && w->slide_bar.stop_mark.arrow )
+	if( XtIsRealized((Widget)w) && w->slide_bar.stop_mark.arrow )
 	{
 	    ClearMarker(w, &w->slide_bar.stop_mark,
 			w->slide_bar.stop_mark.x, w->slide_bar.stop_mark.width);
@@ -1582,7 +1579,7 @@ static void ChangeSlideBarNext( XmSlideBarWidget w, short detent )
 	x = ((detent - w->slide_bar.min_detent) * w->slide_bar.width) / 
 			w->slide_bar.num_detents;
 	/*  Check for adequate initialization  */
-	if( XtIsRealized(w) && w->slide_bar.next_mark.arrow )
+	if( XtIsRealized((Widget)w) && w->slide_bar.next_mark.arrow )
 	{
 	    ClearMarker(w, &w->slide_bar.next_mark,
 			w->slide_bar.next_mark.x,
@@ -1618,7 +1615,7 @@ static void ChangeSlideBarCurrent( XmSlideBarWidget w, short detent )
 	x = ((detent - w->slide_bar.min_detent) * w->slide_bar.width) / 
 			w->slide_bar.num_detents;
 	/*  Check for adequate initialization  */
-	if( XtIsRealized(w) && w->slide_bar.current_mark.arrow )
+	if( XtIsRealized((Widget)w) && w->slide_bar.current_mark.arrow )
 	{
 	    ClearMarker(w, &w->slide_bar.current_mark,
 			w->slide_bar.current_mark.x,

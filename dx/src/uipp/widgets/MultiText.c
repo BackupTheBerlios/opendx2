@@ -13,8 +13,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef OS2
+#if defined (HAVE_CTYPE_H)
 #include <ctype.h>
+#endif
+#if defined (HAVE_TYPES_H)
 #include <types.h>
 #endif
 #include <X11/IntrinsicP.h>
@@ -77,9 +79,6 @@ static Boolean SetValues();
  * Private routines used by the XmMultiTextWidget.
  */
 static char* NewString(char*);
-
-static void WarningDialog(Widget,
-			  char*);
 
 static XtGeometryResult	ChangeHeight(XmMultiTextWidget,
 				     Dimension);
@@ -537,8 +536,6 @@ GetTextGC(XmMultiTextWidget cw)
     XtGCMask     mask;
     XGCValues    values;
     XFontStruct* font;
-    XRectangle   recs[1];
-
 
     mask =
 	GCForeground |
@@ -582,12 +579,10 @@ DoRedrawText(XmMultiTextWidget cw,
 	     int               height)
 {
     LineList lp = cw->multiText.firstLine;
-    WordList wp;
     int      y1;
     int      y2;
     int      ey1;
     int      ey2;
-    int      maxHeight;
 
 
     if (cw->multiText.drawing)
@@ -676,13 +671,14 @@ static void Initialize(Widget		 reqWidget,
     XmMultiTextWidget req = (XmMultiTextWidget)reqWidget;
     XmMultiTextWidget newWidget = (XmMultiTextWidget)newWidgetWidget;
     int   i;
-    int   majorOpCode;
-    int   firstEvent;
-    int   firstError;
     char  buf[MAX_STR_LEN];
 
 
 #ifndef NODPS
+
+    int   firstEvent;
+    int   firstError;
+    int   majorOpCode;
     if (!XQueryExtension(XtDisplay(req),
 			 DPSNAME,
 			 &majorOpCode,
@@ -691,6 +687,7 @@ static void Initialize(Widget		 reqWidget,
     {
 	WarningDialog(newWidget, MSG7);
     }
+
 #endif
 
     newWidget->manager.traversal_on = True;
@@ -775,7 +772,7 @@ static void Redisplay (Widget w, XEvent *event, Region region)
   XmMultiTextWidget cw = (XmMultiTextWidget)w;
   XExposeEvent *expose = (XExposeEvent*)event;
 
-  if (XtIsRealized(cw))
+  if (XtIsRealized((Widget)cw))
     {
       DoRedrawText(cw, expose->y, expose->height);
       
@@ -848,47 +845,6 @@ static Boolean SetValues (XmMultiTextWidget current, XmMultiTextWidget request,
   /* should add checking for margins here... */
 
   return redraw;
-}
-
-
-
-/*-------------------------====================-------------------------*
- |                         ChangeManaged method                         |
- | This routine is responsible for making the initial layout of an app  |
- | and changing the layout when any child changes management state.     |
- | Also, when a child becomes managed or unmanaged, any redrawing or    |
- | moving of other widgets is handled here.
- *-------------------------====================-------------------------*/
-static void ChangeManaged (XmMultiTextWidget cw, XExposeEvent *event)
-{
-
-}
-
-
-
-/*-----------------------=======================------------------------*
- |                        GeometryManager method                        |
- | This method handles resize requests from its children.               |
- | Technically, this routine should try to accomidate requests to change|
- | the size of the children my either moving items around or asking its |
- | parent for more space.  This one just tells any child widget 'NO!'.  |
- *-----------------------=======================------------------------*/
-static XtGeometryResult GeometeryManager (XmMultiTextWidget cw, XExposeEvent *event)
-{
-    return XtGeometryNo;
-}
-
-
-
-/*-------------------------====================-------------------------*
- |                         QueryGeometry method                         |
- | This routine supplies a preferred geometry to a widget's parent when |
- | the parent calls XtQueryGeometry.  The parent makes these calls in   |
- | the process of determining a new layout for its children.            |
- *-------------------------====================-------------------------*/
-static XtGeometryResult QueryGeometry (XmMultiTextWidget cw, XExposeEvent *event)
-{
-    return XtGeometryYes;
 }
 
 
@@ -1070,7 +1026,6 @@ static void BtnMoveNew (Widget w, XEvent* event, String* params, Cardinal* numPa
 {
   XmMultiTextWidget cw = (XmMultiTextWidget) w;
   LineList          lp, lp1, lp2;
-  WordList          wp;
   int               y1, y2;
 
   /* find the line containing the starting point (the lowest of the y positions). */
@@ -1142,9 +1097,6 @@ static void BtnRelease (Widget w, XEvent* event, String* params, Cardinal* numPa
   LineList                         lp;
   WordList                         wp;
   XmMultiTextSelectCallbackStruct  callValue;
-  XButtonEvent                    *btnEvent = (XButtonEvent *)event;
-  long                             itemid, dataid;
-  int                              result;
   Boolean                          foundSomething, textIsSelected = FALSE;
 
 
@@ -1323,9 +1275,7 @@ void WrapLastWordToNextLine (XmMultiTextWidget cw, LineList lp)
  *----------------------------------------------------------------------*/
 void Reflow (XmMultiTextWidget cw, LineList reflp)
 {
-  int      maxAscent, maxDescent, ascent, descent, width, xcur, ycur, x, y;
   LineList lp;
-  WordList wp;
 
 
   /* start reflowing after the current line unless lp is set to NULL. */
@@ -1369,19 +1319,16 @@ void ShiftFollowingLines2 (XmMultiTextWidget cw, LineList indexLine)
  *----------------------------------------------------------------------*/
 void DeleteWordFromLine (XmMultiTextWidget cw, WordList wp)
 {
-  LineList lp;
-
-
   if (wp == NULL) return;
 
 
   if (wp->prev == NULL)
-    wp->linePtr->firstWord == wp->next;
+    wp->linePtr->firstWord = wp->next;
   else
     wp->prev->next = wp->next;
 
   if (wp->next == NULL)
-    wp->linePtr->lastWord == wp->prev;
+    wp->linePtr->lastWord = wp->prev;
   else
     wp->next->prev = wp->prev;
 
@@ -1424,7 +1371,6 @@ Cut (Widget w, XEvent* event, String* params, Cardinal* numParams)
  *----------------------------------------------------------------------*/
 static char *GetWholeLink (Widget w, WordList wp)
 {
-  XmMultiTextWidget  cw = (XmMultiTextWidget) w;
   WordList           wpStart, wpTemp;
   char              *buf = "\0";
   int                len = 0;;
@@ -1503,7 +1449,6 @@ static void MoveTo (Widget    w,
     Boolean                        foundLine = FALSE;
     Boolean                        foundWord = FALSE;
     XmMultiTextLinkCallbackStruct  callValue;
-    char                          *wholeLink;
 
 
   /* First scan all the lines until correct line is found. */
@@ -1572,6 +1517,7 @@ static void MoveTo (Widget    w,
  *----------------------------------------------------------------------*/
 static void ChangeFocus(Widget w, XEvent* event, String* params, Cardinal* numParams)
 {
+
 }
 
 
@@ -1581,7 +1527,7 @@ static void ChangeFocus(Widget w, XEvent* event, String* params, Cardinal* numPa
  *----------------------------------------------------------------------*/
 static void Enter (Widget w, XEvent* event, String* params, Cardinal* numParams)
 {
-  XmMultiTextWidget cw = (XmMultiTextWidget) w;
+
 }
 
 
@@ -1591,7 +1537,7 @@ static void Enter (Widget w, XEvent* event, String* params, Cardinal* numParams)
  *----------------------------------------------------------------------*/
 static void Leave (Widget w, XEvent* event, String* params, Cardinal* numParams)
 {
-  XmMultiTextWidget cw = (XmMultiTextWidget) w;
+
 }
 
 
@@ -1601,7 +1547,6 @@ static void Leave (Widget w, XEvent* event, String* params, Cardinal* numParams)
  *----------------------------------------------------------------------*/
 static void InFocus (Widget w, XEvent* event, String* params, Cardinal* numParams)
 {
-  XmMultiTextWidget cw = (XmMultiTextWidget) w;
 
 }
 
@@ -1612,7 +1557,6 @@ static void InFocus (Widget w, XEvent* event, String* params, Cardinal* numParam
  *----------------------------------------------------------------------*/
 static void OutFocus (Widget w, XEvent* event, String* params, Cardinal* numParams)
 {
-  XmMultiTextWidget cw = (XmMultiTextWidget) w;
 
 }
 
@@ -1686,7 +1630,6 @@ void XmMultiTextClearText (Widget w)
 {
   XmMultiTextWidget  cw = (XmMultiTextWidget) w;
   LineList           lp, lpNext;
-  int                defaultHeight;
 
   lp = cw->multiText.firstLine;
 
@@ -1770,7 +1713,7 @@ void XmMultiTextQueryCursor (Widget w, int *lineNumber, int *y)
     {
       if (lp->y + lp->bbox.ascent + lp->bbox.descent  >  cw->multiText.cursorY)
 	break;
-      *lineNumber++;
+      *lineNumber = *lineNumber + 1;
     }
 
   if (lp == NULL)
@@ -1794,7 +1737,7 @@ void XmMultiTextDeselectAll (Widget w)
 {
   XmMultiTextWidget   cw = (XmMultiTextWidget) w;
 
-  if (XtIsRealized(cw))
+  if (XtIsRealized((Widget)cw))
     DeselectAll(cw);
 }
 
@@ -2159,8 +2102,7 @@ int XmMultiTextDeleteLineTop (Widget w, int linesToDelete)
 {
   XmMultiTextWidget  cw = (XmMultiTextWidget) w;
   int                dy, i;
-  LineList           lp = cw->multiText.firstLine, lp2;
-  Arg                args[2];
+  LineList           lp = cw->multiText.firstLine;
 
 
   if ((cw->multiText.firstLine == NULL) || (linesToDelete <= 0)) return (0);
@@ -2219,9 +2161,7 @@ int XmMultiTextDeleteLineTop (Widget w, int linesToDelete)
 void XmMultiTextDeleteLineBottom (Widget w)
 {
   XmMultiTextWidget  cw = (XmMultiTextWidget) w;
-  int                dy;
   LineList           lp = cw->multiText.firstLine;
-  Arg                args[2];
 
 
   lp = cw->multiText.lastLine;
@@ -2407,8 +2347,6 @@ unsigned short XmMultiTextAppendDPS (Widget w, char *theWord, char *fontName, ch
 				     int indent, char *dpsFileName, unsigned int width,
 				     unsigned int height, LinkInfoPtr linkInfo)
 {
-  XmMultiTextWidget  cw = (XmMultiTextWidget) w;
-  Pixmap             image;
   unsigned short     status;
 
 
@@ -2417,6 +2355,10 @@ unsigned short XmMultiTextAppendDPS (Widget w, char *theWord, char *fontName, ch
   status = XmMultiTextAppendWord (w, "Graphics omitted from Online Documentation, please see the manual", fontName, colorName, indent, linkInfo);
 
 #else
+{
+  XmMultiTextWidget  cw = (XmMultiTextWidget) w;
+  Pixmap             image;
+
   if (cw->multiText.dpsCapable)
     {
       image = GetDPSImage(cw, dpsFileName, &width, &height);
@@ -2430,6 +2372,7 @@ unsigned short XmMultiTextAppendDPS (Widget w, char *theWord, char *fontName, ch
       /* if the systems doesn't support DPS then just replace it with a substitute string. */
       status = XmMultiTextAppendWord (w, "Graphics omitted from Online Documentation, please see the manual", fontName, colorName, indent, linkInfo);
     }
+}
 #endif
 
   return (status != APPEND_ERROR);
@@ -2442,7 +2385,6 @@ unsigned short XmMultiTextAppendDPS (Widget w, char *theWord, char *fontName, ch
  *-----------------------=====================--------------------------*/
 Boolean XmMultiTextAppendLine (Widget w, char *str)
 {
-  XmMultiTextWidget cw = (XmMultiTextWidget) w;
   return True;
 }
 
@@ -2511,32 +2453,6 @@ static char *NewString(char *str)
 
   return(retStr);
 }
-
-
-
-/*----------------------------------------------------------------------*
- |		                WarningDialog		                |
- *----------------------------------------------------------------------*/
-static void WarningDialog (Widget parent, char *str)
-{
-  XmString tcs;
-  Arg      args[2];
-  Widget   dialog;
-
-
-  tcs = XmStringLtoRCreate(MSG7, XmSTRING_DEFAULT_CHARSET);
-
-  XtSetArg(args[0], XmNmessageString, tcs);
-  dialog = XmCreateWarningDialog(parent, "dialog", args, 1);
-
-  XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_CANCEL_BUTTON));
-  XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_HELP_BUTTON));
-
-  XtManageChild(dialog);
-
-  XmStringFree(tcs);
-}
-
 
 
 /*----------------------------------------------------------------------*
@@ -2641,9 +2557,6 @@ static Boolean PtInLine (int x, int y, LineList lp)
  *----------------------------------------------------------------------*/
 static void CalculateSpacing (Widget w, WordList wp, int *spaceBefore, int *spaceAfter)
 {
-  int x1, x2, x3, w1, w2;
-
-
   *spaceBefore = 0;   /* problems will occur if these aren't initialized. */
   *spaceAfter  = 0;
 
@@ -2653,7 +2566,7 @@ static void CalculateSpacing (Widget w, WordList wp, int *spaceBefore, int *spac
     *spaceBefore = (int)((wp->x - (wp->prev->x + wp->prev->bbox.width)) / 2);
 
   if (wp->next == NULL)
-    *spaceAfter == 0;
+    *spaceAfter = 0;
   else
     *spaceAfter = (int)((wp->next->x - (wp->x + wp->bbox.width)) / 2 + 1);
 }
@@ -2757,7 +2670,7 @@ static void DisplaySelectedWord (XmMultiTextWidget w, WordList wp)
 {
   Pixel fg      = wp->color;
   Pixel bg      = w->core.background_pixel;
-  int   i, gap, spaceBefore, spaceAfter, x[4], y[4];
+  int   spaceBefore, spaceAfter;
   int   xoffset = wp->linePtr->x;			     /* line's indent + margine width */
   int   yposn   = wp->linePtr->y + wp->linePtr->bbox.ascent; /* baseline position             */
                                                              /* X always draws strings at the */
@@ -2807,9 +2720,7 @@ static void DisplaySelectedWord (XmMultiTextWidget w, WordList wp)
  *----------------------------------------------------------------------*/
 static void DisplayDeselectedWord (XmMultiTextWidget w, WordList wp)
 {
-  Pixel fg      = wp->color;
-  Pixel bg      = w->core.background_pixel;
-  int   i, gap, spaceBefore, spaceAfter, x[4], y[4];
+  int   spaceBefore, spaceAfter;
   int   xoffset = wp->linePtr->x;			     /* line's indent + margine width */
   int   yposn   = wp->linePtr->y + wp->linePtr->bbox.ascent; /* baseline position             */
                                                              /* X always draws strings at the */
@@ -3250,8 +3161,6 @@ static Boolean StuffWordOntoCurrentLine (XmMultiTextWidget w, LineList lp, WordL
 					 Boolean prevWordIsTab)
 {
   Boolean resizeLine = FALSE;
-  int     currentPos;
-
 
   if (lp->firstWord == NULL)
     /* zero, not indent since word offset from lp and is already indented correctly. */
@@ -3443,7 +3352,6 @@ static unsigned int AppendWordToTopLine(XmMultiTextWidget cw, WordList wordPtr, 
 {
   int          maxAscent, maxDescent, dy;
   int          textBottomY;
-  unsigned int status;
   LineList     lp;
 
 
@@ -3709,11 +3617,10 @@ static void MoveLeft (Widget w, XEvent* event, String* params, Cardinal* numPara
 {
   XmMultiTextWidget cw = (XmMultiTextWidget) w;
   int               actualX;
-  int               dx;
   int               currentX;
   int               currentY = cw->multiText.cursorY;
   LineList          lp;
-  WordList          wp, closestWord;
+  WordList          closestWord;
 
 
   if (cw->multiText.textIsSelected) DeselectAll(cw);
@@ -3769,11 +3676,10 @@ static void MoveRight (Widget w, XEvent* event, String* params, Cardinal* numPar
 {
   XmMultiTextWidget cw = (XmMultiTextWidget) w;
   int               actualX;
-  int               dx;
   int               currentX;
   int               currentY = cw->multiText.cursorY;
   LineList          lp;
-  WordList          wp, closestWord;
+  WordList          closestWord;
 
 
   if (cw->multiText.textIsSelected) DeselectAll(cw);
@@ -3855,7 +3761,7 @@ static void BlinkCursor (XmMultiTextWidget cw)
   cw->multiText.blinkTimeOutID = 0;
 
   if ((cw->multiText.showCursor) &&
-      (XtIsRealized(cw) && !cw->multiText.textIsSelected && !cw->multiText.selecting))
+      (XtIsRealized((Widget)cw) && !cw->multiText.textIsSelected && !cw->multiText.selecting))
     {
       /* this only gets called once. */
       if (cw->multiText.cursorFg == None)
@@ -3964,8 +3870,6 @@ static void TurnOnCursor (XmMultiTextWidget cw)
  *-----------------------========================-----------------------*/
 static void KeyPush (Widget w, XEvent* event, String* params, Cardinal* numParams)
 {
-
-  XmMultiTextWidget cw = (XmMultiTextWidget) w;
   KeySym            ks;
   char             *str = "  ";
 

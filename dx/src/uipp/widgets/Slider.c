@@ -75,7 +75,6 @@ static Boolean SetValues( XmSliderWidget current,
                           XmSliderWidget request,
                           XmSliderWidget new );
 static void Destroy( XmSliderWidget sw );
-static void Resize( XmSliderWidget sw );
 static void CenterNumber( XmSliderWidget sw );
 
 static void CallbackFromNumber	(XmNumberWidget w,
@@ -87,10 +86,6 @@ static void CallbackFromArrow ( XmArrowButtonWidget   arrow,
 				XmAnyCallbackStruct   *call_data );
 
 static void CallbackFromScale ( XmScaleWidget scale,
-	   			XmSliderWidget   slider,
-				XmScaleCallbackStruct  *call_data );
-
-static void CallbackFromScale2 ( XmScaleWidget scale,
 	   			XmSliderWidget   slider,
 				XmScaleCallbackStruct  *call_data );
 
@@ -124,8 +119,6 @@ extern void _XmBackgroundColorDefault();
 
 static double DefaultMinDbl = DEF_MIN;
 static double DefaultMaxDbl = DEF_MAX;
-static float DefaultMinFlt = DEF_MIN;
-static float DefaultMaxFlt = DEF_MAX;
 static double DefaultCurrentDbl = (DEF_MIN + DEF_MAX) / 2; 
 
 static XtResource resources[] =
@@ -300,8 +293,6 @@ Dimension thick;
 int n = 0;
 Dimension h;
 Arg wargs[40], wargs2[40];
-XColor screen_color, exact_color;
-double dval;
 	
     if (new->core.width < 200)  new->core.width = 200;
     if (new->core.height < 55)  new->core.height = 55;
@@ -475,9 +466,7 @@ static Boolean SetValues( XmSliderWidget current,
                           XmSliderWidget new )
 {
 Arg wargs[16];
-int type, ival;
-double dval, max;
-XmSliderCallbackStruct callback_data;
+double dval;
 int n;
 Boolean center_number = False;
 
@@ -624,10 +613,6 @@ static void Destroy( XmSliderWidget sw )
     XtRemoveAllCallbacks((Widget)sw, XmNvalueCallback);
 }
 
-static void Resize( XmSliderWidget sw )
-{
-}
-
 static void CenterNumber(XmSliderWidget sw )
 {
 }
@@ -647,8 +632,6 @@ static XmNumberWidget CreateSliderNumber(  int x, int min, double value,
     double dmin, dmax, dval;
     Widget number;
     XmString text;
-    int len;
-    int size;
     int n;
 
     /*
@@ -749,32 +732,6 @@ XmSliderCallbackStruct callback_data;
 }
 
 
-static void CallbackFromScale2 ( XmScaleWidget scale,
-	   			XmSliderWidget   slider,
-				XmScaleCallbackStruct  *call_data )
-{
-
-Arg wargs[10];
-double dval;
-XmSliderCallbackStruct callback_data;
-
-
-
-	if ( call_data->reason != XmCR_VALUE_CHANGED )    return;
-
-	slider->slider.current_value = call_data->value;
-	
-	dval = widgetnumber2appl(slider, call_data->value);
-	DoubleSetArg( wargs[0], XmNcurrent, dval ); 
-	XtSetValues((Widget) slider, wargs, 1 );
-
-	DoubleSetArg(wargs[0], XmNdValue, dval );
-	XtSetValues((Widget)slider->slider.current_number, wargs, 1);
-
-	callback_data.reason = call_data->reason;
-	callback_data.value = dval;
-	XtCallCallbacks((Widget)slider, XmNvalueCallback, &callback_data);
-}
 
 static double
 gridify (double dval, double inc)
@@ -798,8 +755,6 @@ static void CallbackFromArrow ( XmArrowButtonWidget   arrow,
 				XmAnyCallbackStruct   *call_data )
 {
 
-short  inc;
-int value, which, n = 0, ival ;
 XmSliderCallbackStruct callback_data;
 Arg wargs[10];
 double dval, old_value;
@@ -860,10 +815,8 @@ static void CallbackFromNumber( XmNumberWidget		nw,
 			        XmSliderWidget		slider,
 			        XmDoubleCallbackStruct* call_data )
 {
-    int value, which;
     XmSliderCallbackStruct callback_data;
-    Arg wargs[10];
-    double dval;
+    Arg wargs[2];
 
     if( call_data->reason == XmCR_ACTIVATE )
     {

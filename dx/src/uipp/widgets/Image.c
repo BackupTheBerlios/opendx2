@@ -108,9 +108,6 @@ static struct classes
   }
 
 static void Initialize( XmImageWidget request, XmImageWidget new );
-static Boolean SetValues( XmImageWidget current,
-			  XmImageWidget request,
-			  XmImageWidget new );
 static void Realize( register XmImageWidget w, Mask *p_valueMask,
 		     XSetWindowAttributes *attributes );
 
@@ -315,9 +312,14 @@ int    screen = XScreenNumberOfScreen(XtScreen(request));
 }
 
 
+#if 0
 /*  Subroutine:	SetValues
  *  Effect:	Handles requests to change things from the application
  */
+static Boolean SetValues( XmImageWidget current,
+			  XmImageWidget request,
+			  XmImageWidget new );
+
 static Boolean SetValues( XmImageWidget current,
 			  XmImageWidget request,
 			  XmImageWidget new )
@@ -326,6 +328,7 @@ static Boolean SetValues( XmImageWidget current,
 
     return redraw;
 }
+#endif
 
 /*  Subroutine:	Realize
  *  Purpose:	Create the window with PointerMotion events and None gravity
@@ -335,7 +338,6 @@ static void Realize( register XmImageWidget w, Mask *p_valueMask,
 {
 Mask valueMask = 	*p_valueMask;
 Window 			root;
-XSetWindowAttributes 	win_values; /* window attribute values */
 XStandardColormap 	cmap_info;
 XVisualInfo 		visual_info;    /* temp storage for a visual data */
 unsigned int 		black, white;
@@ -449,7 +451,7 @@ XButtonPressedEvent * event;
 {
    XmGadget gadget;
 
-   if ((gadget = _XmInputInGadget((Widget)da, event->x, event->y)) != NULL)
+   if ((gadget = (XmGadget) _XmInputInGadget((Widget)da, event->x, event->y)) != NULL)
    {
       _XmDispatchGadgetInput ((Widget)gadget, (XEvent *)event, XmARM_EVENT);
       da->manager.selected_gadget = gadget;
@@ -512,7 +514,7 @@ getBestVisual (Display *dpy, int *depth, int screen)
 
 #ifdef FORCE_VISUAL
     {
-	char *str, *name;
+	char *str;
 	int  depth;
 
 	str = (char *)getenv("DXVISUAL");
@@ -624,7 +626,7 @@ getBestVisual (Display *dpy, int *depth, int screen)
     if (ret)
 	return ret;
 
-    template.screen - screen;
+    template.screen = screen;
     vismask = VisualScreenMask;
     visualInfo = XGetVisualInfo(dpy,vismask,&template,&count);
     *depth =  visualInfo->depth; 

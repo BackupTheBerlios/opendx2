@@ -21,6 +21,12 @@
 #define WHITE 1
 #define CELL_SIZE 2
 
+/* External Functions */
+
+void Dither(XColor *, int, int, XColor *, ControlColor *); /* from Dither.c */
+
+/* Internal Functions */
+
 static void BarExposeCallback( XmImageWidget w, ColorBar* bar,
 			       ImageCallbackStruct* cb );
 void DrawColorBar( ColorBar* bar, XColor* undithered_cells );
@@ -43,7 +49,6 @@ ColorBar* CreateColorBar( XmColorMapEditorWidget parent,
 			  int max_val, ControlColor *color)
 {
 ColorBar* bar;
-int i;
 Arg wargs[8];
 #if (XmVersion < 1001)
 short shadow_thickness;
@@ -100,7 +105,7 @@ static void BarExposeCallback( XmImageWidget w, ColorBar* bar,
     bar->height = w->core.height;
     bar->image_width = bar->width;
     bar->image_height = bar->height;
-    if( XtIsRealized(bar->w) )
+    if( XtIsRealized((Widget)(bar->w)) )
         {
 	XClearArea(XtDisplay(w), XtWindow(w), 0, 0, 
 			w->core.width, w->core.height, False);
@@ -115,13 +120,9 @@ static void BarExposeCallback( XmImageWidget w, ColorBar* bar,
  */
 void DrawColorBar( ColorBar* bar, XColor* undithered_cells )
 {
-XImage *ximage;
-int i;
 XGCValues	values;
 Display *d;
-Visual *visual;
 unsigned long r_mask, g_mask, b_mask;
-Boolean frame_buffer;
 XWindowAttributes attributes;
 
     d = XtDisplay(bar->w);
@@ -264,7 +265,6 @@ static void FillIndexLine( register XColor* data_line,
 double range;
 double end_value, value_inc;
 register double value;
-unsigned long* data_end;
 int i;
 
     value = (double)first;
@@ -333,10 +333,8 @@ static void FillColorBar( XImage* ximage, int x, int y,
 			  unsigned long green_mask, 
 			  unsigned long blue_mask)
 {
-unsigned char value;
 Pixel pix24;
 int level, i, index;
-int pad;
 unsigned long rmult, gmult, bmult;
 
     if (depth == 24)
@@ -378,8 +376,6 @@ void OpacityCorrectCells( ControlColor* color, double opacity[],
 			  int starting_color)
 {
 int i;
-XColor cell_def;
-unsigned short red, green, blue;
 int cb_count;
 int cb_white;
 

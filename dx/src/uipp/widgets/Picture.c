@@ -41,16 +41,22 @@
 
 #define SCALE .85
 
+/* External Functions */
+void find_color(Widget w, XColor *target); /* From findcolor.c */
+void gamma_correct(XColor *cell_def); /* From gamma.c */
+
+/* Local Functions */
+
 static void   alloc_drawing_colors(XmPictureWidget w);
 static void   convert_color(XmPictureWidget w, XColor *color);
 static int    delete_cursor ( XmPictureWidget  w, int id );
 static int    select_cursor ( XmPictureWidget    w , int id);
 static int    deselect_cursor (XmPictureWidget w);
-static        constrain( XmPictureWidget w, double *s0, double *s1 ,double *s2,
+static int    constrain( XmPictureWidget w, double *s0, double *s1 ,double *s2,
 		double dx, double dy, double dz, 
 		double WItrans[4][4], double Wtrans[4][4],
 		int sdx, int sdy );
-static 	      add2historybuffer(XmPictureWidget w, int x, int y);
+static int    add2historybuffer(XmPictureWidget w, int x, int y);
 static void   generate_globe(XmPictureWidget w, double radi);
 static void   keyboard_grab(XmPictureWidget w, Boolean grab);
 static void   restore_rectangle(XmPictureWidget w);
@@ -60,7 +66,6 @@ static void   setup_bounding_box(XmPictureWidget w);
 static void   calc_projected_axis(XmPictureWidget w);
 static void   setup_gnomon(XmPictureWidget w, Boolean rotate);
 static void   draw_gnomon (XmPictureWidget w);
-static void   transform_cursors(XmPictureWidget w);
 static void   restore_cursors_from_canonical_form (XmPictureWidget w);
 static void   save_cursors_in_canonical_form (XmPictureWidget w, int i);
 static void   draw_rotated_gnomon(XmPictureWidget w);
@@ -97,8 +102,12 @@ static double cofac(), det33() ;
 static int    find_closest(), draw_cursors();
 static int    set_rot ( double res[4][4],  double s0, short s1 );
 static int    I44(double w[4][4]);
-static int    set_scale(double res[4][4] , double s0, short s1);
 static int    set_trans(double res[4][4] , double s0, short s1);
+int 	      draw_marker ( XmPictureWidget w );
+int 	      project ( XmPictureWidget w, double s0, double s1 ,double s2, 
+		double Wtrans[4][4], double WItrans[4][4] );
+int move_selected_cursor ( XmPictureWidget  w, int x, int y, double z );
+
 
 #define superclass (&xmImageClassRec)
 #if !defined(HAS_M_PI)
@@ -129,8 +138,6 @@ static void    KeyMode();
 static void    ServerMessage (XmPictureWidget w, XEvent *event);
 static void    PropertyNotifyAR (XmPictureWidget w, XEvent *event);
 static void    Realize();
-static Boolean inside (XmPictureWidget w, double s0, double s1 ,double s2, 
-		       double WItrans[4][4] );
 static void    Redisplay (XmPictureWidget ww,
 			  XExposeEvent* event,
 			  Region region);
@@ -467,7 +474,7 @@ static void Resize( XmPictureWidget w )
 double 	radi;
 
     (*superclass->core_class.resize) ((Widget)w);
-    if (!XtIsRealized(w)) return;
+    if (!XtIsRealized((Widget)w)) return;
     /* Get the pixmap and its sizes */
     w->picture.PIXMAPWIDTH  = w->core.width;
     w->picture.PIXMAPHEIGHT = w->core.height;
@@ -506,13 +513,6 @@ XGCValues 	     	gc_values;
 XSetWindowAttributes 	att;
 unsigned 	     	long mask;
 char			dash_list[2];
-Arg	   	wargs[20];
-int	   	n;
-unsigned long 	valuemask;
-XGCValues  	values;
-XmFontContext   context;
-XmStringCharSet charset;
-XmFontList 	font_list;
 
     (*superclass->core_class.realize) ((Widget)new,value_mask, attributes);
 
@@ -526,6 +526,15 @@ XmFontList 	font_list;
      * remove this delta.
      */
 #if defined(aviion)
+{
+Arg	   	wargs[20];
+int	   	n;
+unsigned long 	valuemask;
+XGCValues  	values;
+XmFontContext   context;
+XmStringCharSet charset;
+XmFontList 	font_list;
+
     /*
      * Create a Popup shell for the pushbutton
      */
@@ -564,6 +573,7 @@ XmFontList 	font_list;
     valuemask = GCFont;
     values.font = new->picture.font->fid;
     new->picture.fontgc = XtGetGC((Widget)new->picture.pb, valuemask, &values);
+}
 #endif
 
     /* Get the pixmap and its sizes */
@@ -572,7 +582,7 @@ XmFontList 	font_list;
     new->picture.pixmap = XmUNSPECIFIED_PIXMAP;
     radi = (double)(new->picture.globe_radius);
 
-    new->picture.globe == NULL;
+    new->picture.globe = NULL;
     generate_globe ( new, radi ); 
 
     /* 
@@ -639,14 +649,9 @@ static void Initialize( XmPictureWidget request, XmPictureWidget new )
 {
 
 int	   	i, j, screen;
-double 	   	l, x, y, z, inc;
 Arg	   	wargs[20];
 int	   	n;
 XmFontList 	font_list;
-int        	dir;
-int        	width;
-int        	height;
-XCharStruct 	overall;
 unsigned long 	valuemask;
 XGCValues  	values;
 char		dash_list[2];
@@ -850,7 +855,6 @@ static Boolean SetValues( XmPictureWidget current,
 			  XmPictureWidget new )
 {
     Boolean redraw = False;
-    int	    i;
 
     if ( (new->picture.mode != current->picture.mode) ||
 	 (new->picture.display_globe != current->picture.display_globe) )
@@ -1458,7 +1462,7 @@ int    redo_stk_ptr;
 /* Effect:     Calculate a navigation direction based on the current camera  */
 /*	       and the current "look at" parameters			     */
 /*****************************************************************************/
-set_nav_camera_from_camera(XmPictureWidget w)
+int set_nav_camera_from_camera(XmPictureWidget w)
 {
 double  l;
 double  angle1;
@@ -1673,6 +1677,8 @@ double  angle;
     w->picture.navigate_from_x = w->picture.from_x;
     w->picture.navigate_from_y = w->picture.from_y;
     w->picture.navigate_from_z = w->picture.from_z;
+
+    return 0;
 }
 /*****************************************************************************/
 /*                                                                           */
@@ -1680,7 +1686,7 @@ double  angle;
 /* Effect:     Calculate a navigation direction based on the current camera  */
 /*	       and the current "look at" parameters			     */
 /*****************************************************************************/
-set_camera_from_nav_camera(XmPictureWidget w)
+int set_camera_from_nav_camera(XmPictureWidget w)
 {
 double  l;
 double  angle1;
@@ -1895,6 +1901,8 @@ double  angle;
     w->picture.from_x = w->picture.navigate_from_x;
     w->picture.from_y = w->picture.navigate_from_y;
     w->picture.from_z = w->picture.navigate_from_z;
+
+    return 0;
 }
 
 /*****************************************************************************/
@@ -2557,19 +2565,14 @@ XmPictureNewCamera(XmPictureWidget w,
 double angle1;
 double angle2;
 double angle3;
-double t[4][4];
 double xform[4][4];
 double Wtrans[4][4];
 double up_xp, up_yp, up_zp;		/* x', y', z' */
 double dir_x, dir_y, dir_z;		/* x', y', z' */
 double dir_xp, dir_yp, dir_zp;		/* x', y', z' */
 double up_xpp, up_ypp, up_zpp;		/* x'', y'', z'' */
-double dir_xpp, dir_ypp, dir_zpp;	/* x'', y'', z'' */
 double l;
-double width;
-double height;
 double new_to_x, new_to_y, new_to_z;
-double dx, dy, dz;
 int    i;
 int    j;
 Boolean was_camera_defined = w->picture.camera_defined;
@@ -2584,12 +2587,7 @@ struct
 Boolean good_bbox = True;
 double center_x;
 double center_y;
-#if !defined(intelnt) && !defined(OS2)
-time_t cur_time;
-struct timeval newtime;
-struct timezone tz;
-unsigned long delta_time;
-#endif    
+
     if (w->picture.ignore_new_camera < 0)
 	{
 #ifdef Comment
@@ -2953,94 +2951,7 @@ XmPictureExecutionState(XmPictureWidget w, Boolean begin)
 	    }
 	}
 }
-/*****************************************************************************/
-/*                                                                           */
-/* Subroutine: roll_camera        					     */
-/* Effect:     Roll the camera by rotating the up vector about the dir vector*/
-/*****************************************************************************/
-static void
-roll_camera( XmPictureWidget w, double roll_angle)
-{
-double angle1;
-double angle2;
-double l;
-double xform[4][4];
-double up_xp, up_yp, up_zp;		/* x', y', z' */
-double dir_x, dir_y, dir_z;
-double dir_xp, dir_yp, dir_zp;		/* x', y', z' */
-double new_up_x, new_up_y, new_up_z;
 
-    /*
-     * The overall stategy is to rotate the direction vector so it is aligned
-     * with the positive Z axis, then rotate the up vector by the amount
-     * requested.
-     */
-
-    dir_x = w->picture.navigate_from_x - w->picture.navigate_to_x;
-    dir_y = w->picture.navigate_from_y - w->picture.navigate_to_y;
-    dir_z = w->picture.navigate_from_z - w->picture.navigate_to_z;
-    /*
-     * Rotation about the y axis
-     */
-    l = sqrt(dir_x*dir_x + dir_z*dir_z);
-    if (l != 0.0)
-	{
-	angle1 = acos(dir_z/l);
-	}
-    else
-	{
-	angle1 = 0.0;
-	}
-    if (dir_x > 0)
-	{
-	angle1 = -angle1;
-	}
-    I44(xform);
-    set_rot(xform, angle1, Yaxis);
-    xform_coords( xform, w->picture.navigate_up_x, 
-			 w->picture.navigate_up_y, 
-			 w->picture.navigate_up_z, 
-			 &up_xp, &up_yp, &up_zp);
-    xform_coords( xform, dir_x, dir_y, dir_z, &dir_xp, &dir_yp, &dir_zp);
-
-    /*
-     * Rotation about the x axis
-     */
-    l = sqrt(dir_yp*dir_yp + dir_zp*dir_zp);
-    if (l != 0.0)
-	{
-	angle2 = acos(dir_zp/l);
-	}
-    else
-	{
-	angle2 = 0.0;
-	}
-    if (dir_yp < 0)
-	{
-	angle2 = -angle2;
-	}
-
-    /*
-     * Rotate about the z axis
-     */
-
-    I44(xform);
-    set_rot(xform, angle1, Yaxis);
-    set_rot(xform, angle2, Xaxis);
-    set_rot(xform, roll_angle, Zaxis);
-    set_rot(xform, -angle2, Xaxis);
-    set_rot(xform, -angle1, Yaxis);
-    
-    xform_coords( xform, w->picture.navigate_up_x, 
-			 w->picture.navigate_up_y, 
-			 w->picture.navigate_up_z,
-			 &new_up_x, &new_up_y, &new_up_z);
-
-    w->picture.navigate_up_x = new_up_x;
-    w->picture.navigate_up_y = new_up_y;
-    w->picture.navigate_up_z = new_up_z;
-    set_camera_from_nav_camera(w);
-}
 /*****************************************************************************/
 /*                                                                           */
 /* Subroutine: XmPictureMoveCamera					     */
@@ -3062,7 +2973,6 @@ double dir_x, dir_y, dir_z;		/* x, y, z */
 double up_xp, up_yp, up_zp;		/* x', y', z' */
 double dir_xp, dir_yp, dir_zp;		/* x', y', z' */
 double up_xpp, up_ypp, up_zpp;		/* x'', y'', z'' */
-double dir_xpp, dir_ypp, dir_zpp;	/* x'', y'', z'' */
 double dir_newx, dir_newy, dir_newz;	/* x'', y'', z'' */
 
     /*
@@ -3321,18 +3231,6 @@ XComposeStatus compose;
 int            charcount;
 char           buffer[20];
 int            bufsize = 20;
-double	       screen_x;
-double	       screen_y;
-double	       screen_z;
-double	       dx;
-double	       dy;
-double	       dz;
-int	       save_trans;
-double	       roll_angle;
-double	       tmp_x;
-double	       tmp_y;
-double	       tmp_z;
-double	       Wtrans[4][4];
 XmPictureCallbackStruct cb;
 
     charcount = 
@@ -3484,11 +3382,6 @@ XmPictureCallbackStruct cb;
 XtTimerCallbackProc AutoRepeatTimer( XmPictureWidget w, XtIntervalId *id)
 {
 XmPictureCallbackStruct cb;
-double	       tmp_x;
-double	       tmp_y;
-double	       tmp_z;
-double	       roll_angle;
-double	       Wtrans[4][4];
 
     w->picture.key_tid = 
 	XtAppAddTimeOut(XtWidgetToApplicationContext((Widget)w),
@@ -3568,6 +3461,7 @@ double	       Wtrans[4][4];
 			    w->picture.arrow_roam_z);
 #endif
 	}
+    return NULL;
 }
 
 /************************************************************************
@@ -3584,22 +3478,20 @@ XEvent *event;
 
 {
 
-int     i, j, x, y; 
+int     i, x, y; 
 double  dx, dy, dz;
 double  major_dx, major_dy;
 struct  globe    *globe;
-double  ax, ay, az;
+double  ay, az;
 double  l;
 double  angle;
 double  angle_tol;
 Boolean warp;
-double  det;
 double  aspect;
 int	width;
 int	height;
 int	trans_x;
 int	trans_y;
-Widget  child;
 int	id;
 XEvent  ev;
 XmPictureCallbackStruct    cb;
@@ -4143,11 +4035,6 @@ GC      gc;
 /*****************************************************************************/
 static void draw_rotated_gnomon(XmPictureWidget w)
 {
-int i,j;
-int xmin, xmax, ymin, ymax;
-int width;
-int height;
-
     /*
      * Recalc the xformed screen coords based on the new rotation xform
      */
@@ -4222,14 +4109,9 @@ int	trans_x;
 int	trans_y;
 int	width;
 int	height;
-Widget  child;
-#if !defined(intelnt) && !defined(OS2)
-struct timezone tz;
-#endif
 XmPictureCallbackStruct cb;
 unsigned long  value_mask;
 XGCValues values;
-GC	gc;
 char tmp_bits[8];
 
 
@@ -4450,8 +4332,8 @@ char tmp_bits[8];
 		return;
 	    CreateDelete(w, event);
 	    }
-	if ( (w->picture.mode == XmROTATION_MODE) ||
-	      ((w->picture.mode == XmCURSOR_MODE) ||
+	if ( ((w->picture.mode == XmROTATION_MODE) ||
+	      (w->picture.mode == XmCURSOR_MODE) ||
 	       (w->picture.mode == XmROAM_MODE)) &&
 		(w->picture.button_pressed != Button1))
 	    {
@@ -4608,7 +4490,6 @@ int depth;
 Display *dpy;
 Window  dw;
 GC      gc;
-Pixel   white;
 
     dpy = XtDisplay(w);
     if(!w->image.frame_buffer)
@@ -4712,6 +4593,7 @@ Pixel   white;
 		break;
 	    }
 	}
+    return 0;
 }
 
 /*****************************************************************************/
@@ -4755,11 +4637,9 @@ int i;
 static void create_cursor_pixmaps(XmPictureWidget  new)
 {
 int i;
-int j;
 int screen;
 GC  gc;
 Window dw;
-XGCValues values;
 XColor colorcell_def;
 XColor selected_out_cell;
 XColor unselected_out_cell;
@@ -4935,15 +4815,10 @@ XEvent *event;
 {
 
 XmPictureCallbackStruct    cb;
-int     x, y, i, j;
-struct  globe *globe;
-double  ax, ay, az;
+int     x, y, i;
 double  to_x, to_y, to_z;
 double  dir_x, dir_y, dir_z;
 int	width;
-Widget  child;
-double  Wtrans[4][4];
-double  InvWtrans[4][4];
 double  dist;
 double  new_width;
 
@@ -5288,7 +5163,7 @@ int i;
     if ( (w->picture.disable_temp) || (!w->picture.good_at_select) ) 
 	{
 	w->picture.tid = (XtIntervalId)NULL;
-	return;
+	return NULL;
 	}
 
     if ( ((w->picture.mode == XmROAM_MODE) &&
@@ -5326,6 +5201,7 @@ int i;
 	    }
 	w->picture.CursorBlank = False;
 	}
+    return NULL;
 }
 
 /*****************************************************************************/
@@ -5346,6 +5222,8 @@ select_cursor ( XmPictureWidget    w , int id)
 	{
 	w->picture.roam_selected = True;
 	}
+
+    return 0;
 }
 
 /*****************************************************************************/
@@ -5371,6 +5249,8 @@ int i;
 	{
 	w->picture.roam_selected = False;
 	}
+
+    return 0;
 } 
 	 
 /*****************************************************************************/
@@ -5603,6 +5483,7 @@ int	k;
 	draw_cursors( w ); 
 	XFlush(XtDisplay(w));
     }
+    return 0;
 }
 
 /************************************************************************
@@ -6072,33 +5953,6 @@ int     i;
     XFlush(XtDisplay(w));
 }
 
-/*****************************************************************************/
-/*                                                                           */
-/* Subroutine: inside           	 				     */
-/* Effect:     determine if an transformed point is inside the bounding box  */
-/*                                                                           */
-/*****************************************************************************/
-static Boolean inside ( w, s0, s1 ,s2, WItrans )
-XmPictureWidget  w;
-double     s0;
-double     s1;
-double     s2;
-double     WItrans[4][4];
-
-{
-double x, y, z;
-
-    perspective_divide_inverse(w, s0, s1, s2, &s0, &s1);
-    xform_coords( WItrans, s0, s1, s2, &x, &y, &z);
-
-    if ( (x >= 0.0) && (x <= w->picture.Face1[2].xcoor) && 
-	 (y >= 0.0) && (y <= w->picture.Face1[2].ycoor) && 
-	 (z >= 0.0) && (z <= w->picture.Face1[2].zcoor)  )
-	return True;
-    else
-	return False; 
-
-}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -6106,7 +5960,7 @@ double x, y, z;
 /* Effect:     force a transformed point to be  inside the bounding box      */
 /*                                                                           */
 /*****************************************************************************/
-static constrain ( w, s0, s1 ,s2, dx, dy, dz, WItrans, Wtrans, sdx, sdy )
+static int constrain ( w, s0, s1 ,s2, dx, dy, dz, WItrans, Wtrans, sdx, sdy )
 XmPictureWidget  w;
 double     *s0;
 double     *s1;
@@ -6241,6 +6095,7 @@ double  old_x, old_y, old_z;
 	*s1 = old_y;
 	*s2 = old_z;
 	}
+    return 0;
 }
 /*****************************************************************************/
 /*                                                                           */
@@ -6287,9 +6142,6 @@ double x, y, z;
 static void restore_cursors_from_canonical_form (XmPictureWidget w)
 {
 int i;
-double can_x;
-double can_y;
-double can_z;
 double x;
 double y;
 double z;
@@ -6334,9 +6186,8 @@ double    Wtrans[4][4];
 double    WItrans[4][4];
 
 {
-int  i = -1, I, II;
+int  i = -1, II;
 double x, y, z, lx, ly, lz, minz, maxz, t, xt, yt, zt;
-double xp, yp, zp;
 double xmark[8], ymark[8], zmark[8];
 
     /* as far as possible from the box */
@@ -6483,14 +6334,8 @@ double xmark[8], ymark[8], zmark[8];
 /*             bounding box                                                  */
 /*                                                                           */
 /*****************************************************************************/
-project ( w, s0, s1 ,s2, Wtrans, WItrans )
-XmPictureWidget      w;
-double    s0;
-double    s1;
-double    s2;
-double    Wtrans[4][4];
-double    WItrans[4][4];
-
+int project ( XmPictureWidget w, double s0, double s1 ,double s2, 
+	double Wtrans[4][4], double WItrans[4][4] )
 {
 int  i = -1;
 double x, y, z;
@@ -6601,6 +6446,8 @@ double x, y, z;
 	    w->picture.Zmark[i], &w->picture.Xmark[i], &w->picture.Ymark[i]);
 	}
     w->picture.iMark = i + 1;
+    
+    return 0;
 }
 
 /*****************************************************************************/
@@ -6609,7 +6456,7 @@ double x, y, z;
 /* Effect:     record the (x,y) position of the cursor in the history buffer */
 /*                                                                           */
 /*****************************************************************************/
-static add2historybuffer(XmPictureWidget w, int x, int y)
+static int add2historybuffer(XmPictureWidget w, int x, int y)
 {
     /* Shuffle the points back */
     w->picture.pppx = w->picture.ppx;
@@ -6621,6 +6468,8 @@ static add2historybuffer(XmPictureWidget w, int x, int y)
     w->picture.px = x;
     w->picture.py = y;
     if (w->picture.K < 4) w->picture.K++;
+    
+    return 0;
 }
 
 /*****************************************************************************/
@@ -6629,8 +6478,7 @@ static add2historybuffer(XmPictureWidget w, int x, int y)
 /* Effect:     Draw the current markers                                      */
 /*                                                                           */
 /*****************************************************************************/
-draw_marker ( w )
-XmPictureWidget     w;
+int draw_marker ( XmPictureWidget w )
 {
 	
 int i;
@@ -6665,6 +6513,8 @@ GC      gc;
 		  (int)(w->picture.Xmark[i]) - 1, 
 		  (int)(w->picture.Ymark[i]) - 1); 
     XFlush(XtDisplay(w));
+    
+    return 0;
 }
 
 /* --------------- Geometry and rendering for globe rotation ---------- */
@@ -6678,11 +6528,9 @@ GC      gc;
 static void
 generate_globe ( XmPictureWidget w , double  radi)    
 {
-int xmax, xmin, ymax, ymin;
 int i, j;
 struct point arc[ORBNUM];
 struct globe   *globe;
-double xcenter, ycenter, xcoor, ycoor, zcoor;
 int    screen;
 int depth;
 
@@ -7248,13 +7096,11 @@ int     i;
  */
 static void  setup_bounding_box(XmPictureWidget w)
 {
-double xtol, ytol, ztol;
 double x, y, z;
 double udelta_x, udelta_y, udelta_z;
 double vdelta_x, vdelta_y, vdelta_z;
 double wdelta_x, wdelta_y, wdelta_z;
 double xmax, xmin, ymax, ymin, zmax, zmin;
-double sxmax, sxmin, symax, symin, szmax, szmin;
 int    i;
 int    j;
 double xlen, ylen, zlen, maxlen;
@@ -8135,8 +7981,6 @@ static Boolean  trivial_reject(XmPictureWidget w,
 /*****************************************************************************/
 static void  setup_gnomon(XmPictureWidget w, Boolean rotate)
 {
-double	    Wtmp[4][4];
-double	    InvWtmp[4][4];
 double      angle;
 double      delta_x;
 double      delta_y;
@@ -8155,19 +7999,6 @@ double      zaxis_sxcoor;
 double      zaxis_sycoor;
 double      zaxis_szcoor;
 
-double      rot_origin_sxcoor;
-double      rot_origin_sycoor;
-double      rot_origin_szcoor;
-double      rot_xaxis_sxcoor;
-double      rot_xaxis_sycoor;
-double      rot_xaxis_szcoor;
-double      rot_yaxis_sxcoor;
-double      rot_yaxis_sycoor;
-double      rot_yaxis_szcoor;
-double      rot_zaxis_sxcoor;
-double      rot_zaxis_sycoor;
-double      rot_zaxis_szcoor;
-
 double      xaxis_length;
 double      yaxis_length;
 double      zaxis_length;
@@ -8179,7 +8010,6 @@ XCharStruct overall;
 char	    string[10];
 int	    origin_offset_x;
 int	    origin_offset_y;
-int	    i,j;
 
     if (!w->picture.camera_defined) return;
     string[0] = 'Z';
@@ -8352,12 +8182,10 @@ XmPictureCallbackStruct cb;
 char	text[256];
 Arg	wargs[20];
 XmString xmstring;
-int	n;
 int     height;
 int	dest_x;
 int	dest_y;
 Widget	child;
-double  aaX, aaY, aaZ;
 
     cb.reason = reason;
     cb.cursor_num = cursor_num;
@@ -8414,7 +8242,7 @@ double  aaX, aaY, aaZ;
 	XtPopdown(w->picture.popup);
 	w->picture.popped_up = False;
 	}
-    if (XtIsRealized(w->picture.pb))
+    if (XtIsRealized((Widget)w->picture.pb))
 	{
 	XClearArea( XtDisplay(w), 
 		    XtWindow(w->picture.pb), 
@@ -8502,10 +8330,6 @@ double			xform[4][4];
 double			angle1;
 double			angle2;
 double			angle3;
-double			angle4;
-double			new_dir_x;
-double			new_dir_y;
-double			new_dir_z;
 
     cb.reason = reason;
 
@@ -8797,12 +8621,12 @@ XColor			rgb_db_def;
 	    {
 		if (!XAllocNamedColor(XtDisplay(new), win_att.colormap, "white",
 					&white, &rgb_db_def))
-		    find_color(new, &white);
+		    find_color((Widget)new, &white);
 		new->picture.white = white.pixel;
 
 		if (!XAllocNamedColor(XtDisplay(new), win_att.colormap, "black",
 					&black, &rgb_db_def))
-		    find_color(new, &black);
+		    find_color((Widget)new, &black);
 		new->picture.black = black.pixel;
 	    }
 	    else
@@ -8831,7 +8655,6 @@ XColor			rgb_db_def;
 /*****************************************************************************/
 static void convert_color(XmPictureWidget w, XColor *color)
 {
-XColor                  new_color;
 int                     screen;
 Colormap                cm;
 XWindowAttributes       att;
@@ -8898,35 +8721,7 @@ double w[4][4];
 	}
 
 	mult44 ( res, w );
-}
-
-static int 
-set_scale ( double res[4][4] , double s0, short s1 )
-
-{
-int  i, j;
-double w[4][4];
-
-	for ( i = 0 ; i < 4 ; i++ )
-	  for ( j = 0 ; j < 4 ; j++ )
-	    if ( i == j )     w[i][i] = 1.0;
-	    else 	      w[i][j] = 0.0;
-
-
-
-	switch ( s1 )
-	{
-	     case Xaxis :    w[0][0] = s0;
-			     break;
-
-	     case Yaxis :    w[1][1] = s0;
-			     break;
-
-	     case Zaxis :    w[2][2] = s0;
-			     break;
-	}
-
-	mult44 ( res, w );
+    return 0;
 }
 
 
@@ -8965,6 +8760,8 @@ double w[4][4];
 	}
 
 	mult44 ( res, w );
+
+    return 0;
 }
 
 
@@ -8997,6 +8794,7 @@ double res[4][4];
 	  for ( j = 0 ; j < 4 ; j++ )
 	    s0[i][j] = res[i][j];
 
+    return 0;
 }
 
 
@@ -9069,6 +8867,7 @@ double det;
 	  for ( j = 0 ; j < 4 ; j++ )
 	    s1[j][i] = ( (((i + j + 1) % 2) * 2) - 1 ) * cofac(s0, i, j ) * det;
 
+    return 0;
 
 }
 
@@ -9083,6 +8882,7 @@ int   i, j;
 	    if ( i == j )    w[i][j] = 1.0;
 	    else
 			     w[i][j] = 0.0;
+  return 0;
 }
 
 /*  Subroutine:	XmCreatePicture

@@ -58,7 +58,7 @@ static void ConvertHSVtoRGB( double hue, double saturation, double value,
 ControlColor* CreateColorMap( Widget w, int num_cells, Boolean reserve_new_map )
 {
 ControlColor* 	color;
-int 		i, j, k, status;
+int 		i, j;
 int 		r, g, b;
 XColor 		cell_def;
 Boolean 	depth_is_24;

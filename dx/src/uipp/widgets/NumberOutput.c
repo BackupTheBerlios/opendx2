@@ -102,7 +102,7 @@ void XmShowNumberValue( XmNumberWidget nw )
     GC   gc;
 
     nw->number.visible = True;
-    if( !XtIsRealized(nw) )
+    if( !XtIsRealized((Widget)nw) )
 	return;
     if( nw->number.decimal_places == 0 )
 	pad = IString(nw, nw->number.value.d, string,

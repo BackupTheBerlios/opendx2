@@ -31,6 +31,7 @@
 #include <Xm/XmP.h>
 #include <Xm/ScrolledW.h>
 #include <Xm/ScrolledWP.h>
+#include <Xm/Label.h>
 #include "NumericList.h"
 #include "NumericListP.h"
 
@@ -230,9 +231,6 @@ WidgetClass xmNumericListWidgetClass = (WidgetClass) &xmNumericListClassRec;
 static void Initialize( XmNumericListWidget request, XmNumericListWidget new )
 {
 XmFontList	font_list;
-int		n;
-int		i;
-int		j;
 Widget		label;
 Arg		wargs[100];
 unsigned long	space;
@@ -322,7 +320,6 @@ static Boolean SetValues( XmNumericListWidget current,
 {
 Boolean dolayout = False;
 Boolean redraw = False;
-XSetWindowAttributes attributes;
 
     if (new->numeric_list.decimal_places != 
 	current->numeric_list.decimal_places)
@@ -454,7 +451,6 @@ char			tmp[100];
 GC			gc;
 Dimension		x;
 Dimension		y;
-XCharStruct		overall;
 Dimension		width;
 Boolean			fixed_format;
 int			k;
@@ -881,8 +877,6 @@ char		**e_format;
 char		**f_format;
 char		string[100];
 int		k;
-Dimension	ret_width;
-Dimension	ret_height;
 Dimension	sw_width;
 Arg		wargs[20];
 int		n;
@@ -1082,7 +1076,6 @@ int	n;
 int	value;
 int	blank_lines;
 XmScrolledWindowWidget window;
-XEvent	*event;
 Boolean inverse;
 int	i;
 
@@ -1165,13 +1158,10 @@ Arg	wargs[10];
 int	n;
 int	value;
 int	max;
-int	min;
 int	slider_size;
 int	increment;
 int	page_increment;
-int	blank_lines;
 XmScrolledWindowWidget window;
-XEvent	*event;
 Boolean inverse;
 int	i;
 
@@ -1233,7 +1223,6 @@ int	max;
 int	slider_size;
 int	blank_lines;
 XmScrolledWindowWidget window;
-XEvent	*event;
 Boolean inverse;
 int	i;
 

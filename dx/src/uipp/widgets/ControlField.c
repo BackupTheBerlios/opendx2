@@ -13,6 +13,7 @@
 
 #include "ControlField.h"
 #include <X11/keysym.h>		/* Define XK_Left, XK_Right */
+#include <Xm/DrawP.h>
 #include "ColorMapEditorP.h"
 
 GC InitGC( XmDrawingAreaWidget w, Pixel color );
@@ -27,6 +28,10 @@ extern void SetColorCoords( XColor *cells, ControlField* field,
 			    short* load, short load_limit );
 static GC GetRubberbandGC(XmColorMapEditorWidget cmew);
 
+
+/* External Functions */
+void SetRGBLines( XColor* cells, ControlField* field,
+                  ControlLine* h, ControlLine* s, ControlLine* v ); /* From ColorRGB.c */
 
 
 /*  Subroutine:	FieldActionProc
@@ -55,8 +60,6 @@ ControlField* CreateControlField( Widget parent, char *name, short num_levels,
 {
     ControlField* field;
     Arg wargs[40];
-    short shadow_thickness;
-    XtTranslations trans;
 
     field = (ControlField *)XtMalloc(sizeof(struct ControlFieldRec));
     (void)memcpy(wargs, args, num_args * sizeof(Arg));
@@ -210,11 +213,15 @@ Boolean draw_lines = TRUE;
 	    }
 	}
 #if (OLD_LESSTIF != 1)
-	_XmDrawShadowType((Widget)field->w, XmSHADOW_IN,
-			  field->w->core.width, field->w->core.height,
-			  field->w->manager.shadow_thickness,
-			  0, field->w->manager.top_shadow_GC,
-			  field->w->manager.bottom_shadow_GC);
+			  
+	XmeDrawShadows(XtDisplay((Widget)field->w), XtWindow((Widget)field->w),
+			field->w->manager.top_shadow_GC,
+			field->w->manager.bottom_shadow_GC,
+			0, 0,
+			field->w->core.width,
+			field->w->core.height,
+			field->w->manager.shadow_thickness,
+			XmSHADOW_IN);
 #endif
     }
 }
@@ -317,7 +324,7 @@ void InitializeLevels( ControlField* field, int num_levels )
 {
     double span, position;
     double level, level_increment;
-    int clicks, i, last_level_index, index;
+    int clicks, i, last_level_index;
     LineCoord* end_coord;
     register LineCoord* coord;
 

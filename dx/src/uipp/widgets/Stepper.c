@@ -77,6 +77,10 @@ struct layout {
 };
 
 
+/* External Functions */
+void SyncMultitypeData( MultitypeData* new, short type ); /* from Number.c */
+
+
 /*
  *  Forward local subroutine and function declarations:
  */
@@ -106,8 +110,6 @@ static void	VerifyValueRange    (XmStepperWidget		sw, Boolean);
 static void	ComputeLayout	    (XmStepperWidget		sw,
 				     struct layout *		loc);
 static void	LayoutStepper	    (XmStepperWidget		sw);
-static void	ChangeNumberValue   (XmStepperWidget		sw,
-				     double			value);
 static Boolean	IncrementStepper    (XmStepperWidget		sw,
 				     Boolean			increase,
 				     double			step_size);
@@ -125,7 +127,6 @@ static Boolean	ButtonArmEvent      (Widget			w,
 				     XtCallbackProc		callback_proc);
 static void	RepeatDigitButton   (XmStepperWidget		sw,
 				     XtIntervalId *		id);
-static Boolean	TestQuery	    (Widget w, int* win_x, int* win_y);
 static XtGeometryResult 
 PreferredSize (XmStepperWidget , XtWidgetGeometry *, XtWidgetGeometry *);
 static XtGeometryResult
@@ -477,6 +478,8 @@ struct layout needs;
 	return XtGeometryNo;
     } else
 	return XtGeometryAlmost;
+
+    return XtGeometryNo;
 }
 
 
@@ -487,7 +490,6 @@ static void Initialize( XmStepperWidget request, XmStepperWidget new )
 {
     Arg wargs[25];
     struct layout loc;
-    Pixel fg, bg;
     XColor fg_cell_def, bg_cell_def;
 
     /*  Check value and limits for consistency and adjust if nescessary  */
@@ -718,13 +720,8 @@ static Boolean SetValues( XmStepperWidget current,
 			  XmStepperWidget request,
 			  XmStepperWidget new )
 {
-    XGCValues values;
-    XtGCMask  valueMask;
     Arg wargs[6];
     int i;
-    Boolean   redraw = TRUE;
-    char      string[32];
-    XEvent event;
     struct layout loc;
     Boolean need_new_width;
     Boolean need_new_height;
@@ -807,7 +804,7 @@ static Boolean SetValues( XmStepperWidget current,
 	XtSetValues(new->composite.children[0], wargs, i);
 
     ComputeLayout(new, &loc);
-    if (XtIsRealized (new)) LayoutStepper (new);
+    if (XtIsRealized ((Widget)new)) LayoutStepper (new);
 
     if (need_new_width) new->core.width = loc.field_width;
     if (need_new_height) new->core.height = loc.field_height;
@@ -1106,13 +1103,11 @@ static Boolean IncrementStepper( XmStepperWidget sw,
     double 	expon;
     double 	cross_under;
     double 	cross_over;
-    double	ddv, diff;
     int         expon2;
-    int 	d1, dv;
+    int 	d1;
     int 	d2;
     char   	string[100];
     Arg		wargs[5];
-    Boolean neg;
 
     if( increase )
     {
@@ -1125,6 +1120,9 @@ static Boolean IncrementStepper( XmStepperWidget sw,
     new_value = value;
 
 #if 0
+    double	ddv, diff;
+    int dv;
+    Boolean neg;
 /* This code was added so that stepper and slider would be consistent.
    Taking it out because it's undesirable behavior for a stepper.  Leaving
    it in slider though.
@@ -1426,20 +1424,6 @@ Boolean UpdateMultitypeData(XmStepperWidget sw, MultitypeData* new,
     return False;
 }
 
-
-static Boolean TestQuery( Widget w, int* win_x, int* win_y )
-{
-    Window root, child;
-    int root_x, root_y;
-    unsigned int mask;
-
-    (void)XQueryPointer(XtDisplay(w), XtWindow(w), &root, &child,
-			&root_x, &root_y, win_x, win_y, &mask);
-    if( mask & Button1Mask )
-	return TRUE;
-    else
-	return FALSE;
-}
 
 
 /*  Subroutine:	XmCreateStepper

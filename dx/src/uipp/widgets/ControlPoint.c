@@ -344,7 +344,7 @@ static int RemoveControlPoint( ControlMap* map, int index )
     int i;
 
     if( (index < 0) || (index >= map->num_points) )
-	return;
+	return 0;
     /*  Move everything between there and index down  */
     for( i=index+1; i<map->num_points; i++ )
     {
@@ -354,6 +354,7 @@ static int RemoveControlPoint( ControlMap* map, int index )
 			sizeof(XRectangle));
     }
     --map->num_points;
+    return 0;
 }
 
 
@@ -385,7 +386,6 @@ static int MoveControlPoint( ControlMap* map, int index, int x, int y )
 static int RepositionControlPoint( ControlMap* map, int index,
 				   double level, double value )
 {
-int i, j;
 Boolean get_new_vals;
 Boolean use_adjacent_level;
 double adjacent_level;
@@ -483,7 +483,6 @@ static int GetControlPoint( ControlMap* map, int x, int y, int grab_mode )
     int save_error;
     int save_i;
     register int error_i, error_y;
-    register int error_j;
 
     GetControlValues(map, x, y, &level, &value);
     /*  Position i at the index we want to use  */
@@ -559,8 +558,6 @@ void DrawControlBoxes( ControlMap* map, GC gc )
 {
     int start, finish, index;
     int low, high;
-    char buf[4];
-    int i;
 
     if (gc == NULL) return;
 
@@ -656,7 +653,6 @@ Boolean MapInput( Widget w, ControlMap* map,
 		  XmDrawingAreaCallbackStruct* call_data )
 {
 ControlField    *field;
-double level, value;
 static Time time = 0;	/* Time of last button1 press event */
 int index, dummy_index;
 int delta_y, delta_x;
@@ -667,7 +663,6 @@ int point;
 Boolean constrain_horizontal;
 Boolean constrain_vertical;
 int i;
-int j;
 Boolean set;
 Boolean changed;
 
@@ -676,13 +671,13 @@ Boolean changed;
 	  (call_data->event->type == ButtonRelease)) &&
          (call_data->event->xbutton.button != Button1) )
 	{
-	return;
+	return FALSE;
 	}
 
     if ( (call_data->event->type == MotionNotify) &&
 	!(call_data->event->xmotion.state & Button1Mask) )
 	{
-	return;
+	return FALSE;
 	}
     constrain_vertical = map->field->cmew->color_map_editor.constrain_vert &&
 			 map->toggle_on;
@@ -818,7 +813,7 @@ Boolean changed;
 	/*
 	 * Shift/Button events are processed in the button press.
 	 */
-	if(ShiftMask & call_data->event->xmotion.state) return;
+	if(ShiftMask & call_data->event->xmotion.state) return FALSE;
 
 	if( map->grabbed >= 0 )
 	    {
@@ -989,7 +984,7 @@ Boolean changed;
 	if(ShiftMask & call_data->event->xbutton.state)
 	    {
 	    CallActivateCallback(map->field->cmew, XmCR_SELECT);
-	    return;
+	    return FALSE;
 	    }
 
 	if (map->rubber_banding)
@@ -1078,7 +1073,6 @@ static void DrawMultiPointGrabBoxes( Widget w, ControlMap* map)
 {
 int start, finish;
 int low, high;
-char buf[4];
 int yupper, ylower, index;
 
     if( map->field->vertical )
@@ -1178,25 +1172,11 @@ int index;
 void CallActivateCallback( XmColorMapEditorWidget cmew, int reason)
 {
 XmColorMapEditorCallbackStruct call_value;
-int 		i, j;
+int 		i;
 ControlField 	*field;
 ControlMap 	*map;
 int		index;
-double		range, minimum, level;
-double		value;
-struct 
-    {
-    Boolean	occupied;
-    int		num_hues;
-    int		num_sats;
-    int		num_vals;
-    int		hue_index[2];
-    int		sat_index[2];
-    int		val_index[2];
-    int		wrap_around;
-    double	level;
-    } flags[NUM_LEVELS];
-int		num_alloced_pts;
+double		range, minimum;
 
     call_value.reason = reason;
     call_value.op_values = NULL;
@@ -1306,6 +1286,22 @@ int		num_alloced_pts;
 	    }
 	}
 #ifdef Comment
+{
+    struct 
+    {
+    Boolean	occupied;
+    int		num_hues;
+    int		num_sats;
+    int		num_vals;
+    int		hue_index[2];
+    int		sat_index[2];
+    int		val_index[2];
+    int		wrap_around;
+    double	level;
+    } flags[NUM_LEVELS];
+
+    int		num_alloced_pts;
+
     /* Initialize the flags array */
     for (i = 0; i < NUM_LEVELS; i++)
 	{
@@ -1552,6 +1548,7 @@ int		num_alloced_pts;
 		 field->map[0]->line[0].values[(int)(NUM_LEVELS-1)];
 	    }
 	call_value.num_op_points = num_alloced_pts;
+ }
 #endif
 	minimum = cmew->color_map_editor.value_minimum;
 	range = (cmew->color_map_editor.value_maximum -
@@ -2067,17 +2064,14 @@ void XmColorMapEditorLoad(Widget cmew, double min, double max,
 			  int nvals, double *vals,
 			  int nopat, double *opat)
 {
-int i,j;
-char *message;
-Arg wargs[12];
+int i;
 double norm, range;
 Boolean skip_normalize;
-XtArgVal	dx_l;
 
     XmColorMapEditorWidget w = (XmColorMapEditorWidget)cmew;
 
     /* Erase the old Control points */
-    if (XtIsRealized(w))
+    if (XtIsRealized((Widget)w))
     {
 	for (i=0; i<4; i++)
 	{
@@ -2109,7 +2103,7 @@ XtArgVal	dx_l;
 		XmNdValue, DoubleVal(max, dx_l), NULL);
     }
 
-    if(XtIsRealized(w))
+    if(XtIsRealized((Widget)w))
 	for(i = 0; i < 4; i++)
 	    RemoveAllControlPoints(w->color_map_editor.g.field[i]);
 
@@ -2161,7 +2155,7 @@ XtArgVal	dx_l;
 			True );
     }
 
-    if(XtIsRealized(w))
+    if(XtIsRealized((Widget)w))
     {
 	for(i = 0; i < 4; i++)
 	{
@@ -2198,8 +2192,7 @@ int i, j;
 void CMESawToothWave(Widget w, int nsteps, Boolean start_on_left,
 		     Boolean use_selected)
 {
-int 			i,j;
-ControlPoint 		cp_ptr;
+int 			i;
 double 			level;
 double 			value;
 double 			tmp_value;
@@ -2331,8 +2324,7 @@ double			max_level;
 void CMESquareWave(Widget w, int nsteps, Boolean start_on_left,
 		   Boolean use_selected)
 {
-ControlPoint cp_ptr;
-int 			i, n;
+int 			i;
 double 			level;
 double 			value;
 double 			tmp_value;
@@ -2466,9 +2458,7 @@ double			max_level;
 
 void CMEStep(Widget w, int nsteps, Boolean use_selected)
 {
-int 			i,j;
-ControlPoint 		cp_ptr;
-int 			num_points, n;
+int 			i;
 double 			level;
 double 			value;
 double 			inc_level;

@@ -36,10 +36,8 @@ static void FillAlongArray( ControlLine* line, int start_index,
 void SetArrayValues( ControlMap* map, ControlLine* line )
 {
     double value;
-    int low, high;
     int index, count;
     int control_point;
-    int i;
 
     /*  Set mark count to 0 (count used to mark redundantly defined levels)  */
     for( index=0; index<line->field->num_levels; index++ )

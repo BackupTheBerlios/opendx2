@@ -278,12 +278,10 @@ WidgetClass xmFrameControlWidgetClass = (WidgetClass) &xmFrameControlClassRec;
 static void Initialize( XmFrameControlWidget request, XmFrameControlWidget new ) 
 {
 Arg wargs[32];
-XColor screen_color, exact_color;
 int n;
 char string[100];
 XmString xmstring;
 Widget arrow;
-Widget w;
 
     /*  Windows are mapped in reverse order, those created first are on top  */
 
@@ -774,7 +772,6 @@ double dmin, dmax, dval;
 Widget number;
 Widget arrow;
 XmString text;
-int len;
 
     /*
      *  Create the panel-meter like number display
@@ -944,7 +941,6 @@ static void CallbackFromNumber( XmNumberWidget	nw,
     Arg wargs[10];
     double dval;
     XmString xms;
-    XtArgVal	dx_l;
 
     if( call_data->reason == XmCR_ACTIVATE )
     {
@@ -1113,7 +1109,6 @@ static void ChangeSlideBarValue( XmFrameControlWidget fc, int value,
 {
     Arg wargs[2];
     double dval;
-    int ival;
 
     /*  Digital readout numbers are min based and double  */
     dval = (double)(value);
@@ -1206,9 +1201,9 @@ static void ChangeSlideBarValue( XmFrameControlWidget fc, int value,
  */
 static void AdjustIncrementLimits( XmFrameControlWidget fc )
 {
+#ifdef Comment
     Arg wargs[2];
     int ival;
-#ifdef Comment
     /*  Set the upper bound on the increment, but not less than the inc  */
     ival = fc->frame_control.stop_value - fc->frame_control.start_value;
     if( ival < fc->frame_control.increment )

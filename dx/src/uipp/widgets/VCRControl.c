@@ -10,8 +10,7 @@
 #include "../base/defines.h"
 
 #include <Xm/DialogS.h>
-
-
+#include <Xm/DrawP.h>
 
 #ifdef OS2
 #include <stdlib.h>
@@ -22,7 +21,7 @@
 #include "VCRControlP.h"
 #include "backward.bm"
 #include "forward.bm"
-#include "frame.bm"
+/* #include "frame.bm" */
 #include "loop.bm"
 #include "palim.bm"
 #include "pause.bm"
@@ -189,7 +188,6 @@ static Boolean SetValues(XmVCRControlWidget current,
 		      XmVCRControlWidget request,
 		      XmVCRControlWidget new);
 static void Destroy(XmVCRControlWidget w);
-static void Redisplay(XmVCRControlWidget w, XEvent* event, Region region);
 static void MyRealize(XmVCRControlWidget w, XtValueMask *valueMask, 
 			XSetWindowAttributes *attributes);
 static void SimulateButtonPress(XmVCRControlWidget vcr, int button_num);
@@ -300,7 +298,6 @@ static void ReleaseVCRButton();
 static void PushVCRButton();
 static void ReleaseModeButtons();
 static void ReplaceFrame();
-static void CounterEvent();
 void ChangeVCRStopValue( XmVCRControlWidget vcr, int value, Boolean to_vcr,
 			 Boolean to_frame_control, Boolean to_outside );
 void ChangeVCRStartValue( XmVCRControlWidget vcr, int value, Boolean to_vcr,
@@ -322,9 +319,6 @@ static void FrameControlCallback();
 static void Initialize( XmVCRControlWidget request, XmVCRControlWidget new )
 {
     Arg wargs[20];
-    XmString text;
-    int i;
-
 
     if (request->core.width == 0)
        new->core.width = 240;
@@ -479,9 +473,6 @@ static void Initialize( XmVCRControlWidget request, XmVCRControlWidget new )
 static void MyRealize(XmVCRControlWidget w, XtValueMask *valueMask, 
 			XSetWindowAttributes *attributes)
 {
-Widget widget;
-XmDrawingAreaCallbackStruct call_data;
-int i;
 
     /* Call the superclass Realize */
     (*superclass->core_class.realize)((Widget)w, valueMask, attributes);
@@ -711,6 +702,8 @@ Arg wargs[12];
 	    ChangeVCRCurrentValue(new, new->vcr_control.current_value,
 		TRUE, TRUE, FALSE);
 	    }
+
+    return FALSE;
 }
 
 /*  Subroutine: Destroy
@@ -722,15 +715,6 @@ static void Destroy(XmVCRControlWidget w)
     /* Free all the callbacks */
 }
 
-/*  Subroutine: Redisplay
- *  Effect:     Right now it is not needed. 
-*/
-
-static void Redisplay(XmVCRControlWidget w, XEvent* event, Region region)
-{
-}
-
-/*  Subroutine:	SetLabel
 /*  Subroutine:	SetLabel
  *  Purpose:	Prepare the interactive part of a button and its iconic image
  *  Note:	The interaction is through a DrawingArea while the 3d frame
@@ -743,7 +727,6 @@ static void Redisplay(XmVCRControlWidget w, XEvent* event, Region region)
 static void SetLabel( XmVCRControlWidget vcr,
 		      int i, char* bits, int width, int height )
 {
-    Widget child;
     Arg wargs[2];
     unsigned long fg, bg;
     Display *display;
@@ -783,9 +766,6 @@ Arg                  wargs[16];
 XmString             text;
 char                 string[100];
 Dimension            width;
-long                 mask;
-XWindowAttributes    getatt;
-XSetWindowAttributes setatt;
 
     vcr->vcr_control.button[VCR_COUNT] = (XmDrawingAreaWidget) 
 		XmCreateDrawingArea((Widget)vcr->vcr_control.frame[VCR_COUNT], 
@@ -852,7 +832,7 @@ XSetWindowAttributes setatt;
 static void VCRButtonResize( XmDrawingAreaWidget w, XmVCRControlWidget vcr,
 			     XmDrawingAreaCallbackStruct* cb )
 {
-    if( XtIsRealized(w) )
+    if( XtIsRealized((Widget)w) )
     {
 	XClearWindow(XtDisplay(w), XtWindow(w));
 	VCRButtonExpose(w, vcr, cb);
@@ -891,7 +871,7 @@ static void VCRButtonExpose( XmDrawingAreaWidget w, XmVCRControlWidget vcr,
     x = (w->core.width - image_data->width) / 2;
     y = (w->core.height - image_data->height) / 2;
     display = XtDisplay(w);
-    if (XtIsRealized(w))
+    if (XtIsRealized((Widget)w))
 	{
 	window = XtWindow(w);
 	XCopyArea(display, image_data->pixid, window, image_data->gc, 0, 0, 
@@ -918,17 +898,23 @@ static void VCRCounterExpose( XmDrawingAreaWidget w, XmVCRControlWidget vcr,
     y = (vcr->vcr_control.button[VCR_COUNT]->core.height
       - vcr->vcr_control.label->core.height) / 2;
     if( (x1 != vcr->vcr_control.label->core.x) || 
-	(y != vcr->vcr_control.label->core.y) )
-		_XmMoveObject((Widget)vcr->vcr_control.label, x1, y);
+	(y != vcr->vcr_control.label->core.y) ) {
+		RectObj g = (RectObj) vcr->vcr_control.label;
+		XmDropSiteStartUpdate((Widget)vcr->vcr_control.label);
+		XtMoveWidget((Widget)g, x1, y);
+	}
     x1 += vcr->vcr_control.label->core.width;
     x2 = x1 + ((vcr->vcr_control.button[VCR_COUNT]->core.width -
 		(x1 + vcr->vcr_control.dot_dot_dot->core.width)) / 2);
     y = (vcr->vcr_control.button[VCR_COUNT]->core.height
 	 - vcr->vcr_control.dot_dot_dot->core.height) / 2;
     if(   (x2 != vcr->vcr_control.dot_dot_dot->core.x)
-       || (y != vcr->vcr_control.dot_dot_dot->core.y) )
+       || (y != vcr->vcr_control.dot_dot_dot->core.y) ) {
 	/*  Move the Gadget (XtMoveWidget doesn't move Gadgets in R3)  */
-	_XmMoveObject((Widget)vcr->vcr_control.dot_dot_dot, x2, y);
+	RectObj g = (RectObj) vcr->vcr_control.dot_dot_dot;
+	XmDropSiteStartUpdate((Widget)vcr->vcr_control.dot_dot_dot);
+	XtMoveWidget((Widget)g, x2, y);
+    }
 }
 
 /*  Subroutine:	_VCRButtonEvent
@@ -1247,7 +1233,7 @@ static void PushVCRButton( XmVCRControlWidget vcr, int button )
     XtSetValues((Widget)vcr->vcr_control.frame[button], wargs, 1);
     vcr->vcr_control.button_is_in[button] = TRUE;
     /*  Since the Frame's SetValues doesn't ask to redraw, we must do it!  */
-    if (XtIsRealized(vcr->vcr_control.frame[button]))
+    if (XtIsRealized((Widget)vcr->vcr_control.frame[button]))
 	{
 	ReplaceFrame(vcr->vcr_control.frame[button]);
     /*  Send it right-away to maximize flicker, before it gets released  */
@@ -1284,12 +1270,14 @@ static void ReplaceFrame( XmFrameWidget frame )
 
 short highlight_thickness = 0;
 
-   if( XtIsRealized(frame) )
-       _XmDrawShadowType((Widget)frame, frame->frame.shadow_type,
-			 frame->core.width, frame->core.height,
-			 frame->manager.shadow_thickness,
-			 highlight_thickness, frame->manager.top_shadow_GC,
-			 frame->manager.bottom_shadow_GC);
+   if( XtIsRealized((Widget)frame) )
+       XmeDrawShadows(XtDisplay((Widget)frame), XtWindow((Widget)frame),
+       			frame->manager.top_shadow_GC,
+			frame->manager.bottom_shadow_GC,
+			highlight_thickness, highlight_thickness, 
+			frame->core.width, frame->core.height,
+			frame->manager.shadow_thickness,
+       			frame->frame.shadow_type);
 #endif
 }
 
@@ -1302,7 +1290,6 @@ void ChangeVCRNextValue( XmVCRControlWidget vcr, int value, Boolean to_vcr,
 			    Boolean to_frame_control, Boolean to_outside )
 {
     VCRCallbackStruct data;
-    double dval;
     Arg wargs[2];
 
     vcr->vcr_control.next_value = value;
@@ -1344,7 +1331,6 @@ void ChangeVCRCurrentValue( XmVCRControlWidget vcr, int value, Boolean to_vcr,
 			    Boolean to_frame_control, Boolean to_outside )
 {
 VCRCallbackStruct data;
-double dval;
 Arg wargs[2];
 char string[100];
 XmString text;
@@ -1440,7 +1426,6 @@ void ChangeVCRStartValue( XmVCRControlWidget vcr, int value, Boolean to_vcr,
 {
     VCRCallbackStruct data;
     Arg wargs[2];
-    double dval;
 
     vcr->vcr_control.start_value = value;
     if( to_frame_control)
@@ -1465,8 +1450,6 @@ void ChangeVCRStopValue( XmVCRControlWidget vcr, int value, Boolean to_vcr,
 {
     VCRCallbackStruct data;
     Arg wargs[2];
-    double dval;
-
 
     vcr->vcr_control.stop_value = value;
     if( to_frame_control)
@@ -1491,7 +1474,6 @@ void ChangeVCRIncrementValue( XmVCRControlWidget vcr, int increment,
 {
     VCRCallbackStruct data;
     Arg wargs[2];
-    double dval;
 	
     vcr->vcr_control.frame_increment = increment;
     if( to_frame_control)

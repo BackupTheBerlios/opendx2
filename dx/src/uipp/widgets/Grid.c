@@ -25,6 +25,9 @@
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 
+/* External Functions */
+
+void PrintAllControlPoints(XmColorMapEditorWidget cmew); /* From ControlPoint.c */
 
 #define NUM_TICKS 11
 
@@ -34,7 +37,6 @@ extern GC InitGC(Widget w, Pixel color );
 
 Widget CreateGrid( Widget parent, Pixel color, Arg* args, int num_args )
 {
-    int i;
     Arg wargs[40];
     Widget w;
     long                 mask;
