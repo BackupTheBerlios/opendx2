@@ -801,6 +801,11 @@ FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 #ifdef alphax
 
 /* supports full IEEE standard floating point, including under/overflow */
+/* undef is necessary for gcc on alpha, gets really upset otherwise */
+/* wondering why DXD_STANDARD_IEEE isn't 1 !!!  */
+#ifdef DXD_STANDARD_IEEE
+#undef DXD_STANDARD_IEEE
+#endif
 #define DXD_STANDARD_IEEE 0
 
 /* license manager active in this version */
