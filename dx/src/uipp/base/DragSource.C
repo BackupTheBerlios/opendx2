@@ -62,7 +62,8 @@ XtTranslations DragSource::drag_tranlations = NULL;
 void* DragSource::TransferData = 0;
 
 static char dragTranslations[] = 
-    "#override <Btn2Down>:	DragSource_StartDrag()";
+    "#override <Btn2Down>:	DragSource_StartDrag()\n\
+	a<Btn1Down>:		DragSource_StartDrag()";
 
 static XtActionsRec dragActions[] = 
     {
