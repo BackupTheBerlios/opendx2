@@ -1,10 +1,17 @@
 /*  Open Visualization Data Explorer Source File */
 
+/*	Construct and manage the "frame sequencer guide" to be used as a
+ *	popup of the "sequence controller" (alias VCR control)
+ *
+ *	August 1990
+ *	IBM T.J. Watson Research Center
+ *	R. T. Maganti
+ */
 
 /*
  * $Log: SlideBarP.h,v $
- * Revision 1.2  1999/04/29 20:45:42  gda
- * New UI code snapshot
+ * Revision 1.3  1999/04/30 13:10:08  gda
+ * After re-snapshotting, ripping out headers and adding linux changes
  *
  * Revision 1.3  1999/04/30 13:10:08  gda
  * After re-snapshotting, ripping out headers and adding linux changes

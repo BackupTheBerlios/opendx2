@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _PostScriptImageFormat_h
 #define _PostScriptImageFormat_h
 

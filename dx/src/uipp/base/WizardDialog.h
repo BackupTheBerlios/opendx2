@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _WizardDialog_h
 #define _WizardDialog_h
 

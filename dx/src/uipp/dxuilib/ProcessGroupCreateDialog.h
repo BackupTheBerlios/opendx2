@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ProcessGroupCreateDialog_h
 #define _ProcessGroupCreateDialog_h
 

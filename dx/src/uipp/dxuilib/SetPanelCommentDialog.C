@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "Strings.h"
 #include "UIConfig.h"
 #include "defines.h"

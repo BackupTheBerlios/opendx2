@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-//////////////////////////////////////////////////////////////////////////////
-
 #ifndef _ValueDefinition_h
 #define _ValueDefinition_h
 

@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _ControlPanelGroupDialog_h
 #define _ControlPanelGroupDialog_h
 

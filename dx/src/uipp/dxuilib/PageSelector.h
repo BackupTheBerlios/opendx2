@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _PageSelector_h
 #define _PageSelector_h
 

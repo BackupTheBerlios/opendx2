@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _CommandTextPopup_h
 #define _CommandTextPopup_h
 

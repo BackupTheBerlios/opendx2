@@ -1,7 +1,4 @@
 /*  Open Visualization Data Explorer Source File */
-
-
-
 #ifndef _EchoNode_h
 #define _EchoNode_h
 

@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
 #include "StringTable.h"
 #include "List.h"
 #include "ListIterator.h"

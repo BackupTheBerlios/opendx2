@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _GridDialog_h
 #define _GridDialog_h
 

@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-//////////////////////////////////////////////////////////////////////////////
-
 #ifndef _ResetDefinition_h
 #define _ResetDefinition_h
 

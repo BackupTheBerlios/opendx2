@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
-
 #include <string.h> 
 #include "defines.h"
 #include "Stack.h"

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "DXApplication.h"
 #include "DXAnchorWindow.h"
 #include "ButtonInterface.h"

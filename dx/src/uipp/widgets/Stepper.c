@@ -40,6 +40,10 @@
 #include "gamma.h"
 #include "findcolor.h"
 
+#if !defined(HAVE_TRUNC)
+#define trunc(c)        ((double)((int)(c)))
+#endif
+
 
 /*
  *  Error messages:

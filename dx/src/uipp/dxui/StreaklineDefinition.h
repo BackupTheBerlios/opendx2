@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-//////////////////////////////////////////////////////////////////////////////
-
 
 #ifndef _StreaklineDefinition_h
 #define _StreaklineDefinition_h

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ComputeNode_h
 #define _ComputeNode_h
 

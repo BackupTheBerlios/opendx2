@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _SequencerWindow_h
 #define _SequencerWindow_h
 

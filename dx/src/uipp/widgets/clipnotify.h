@@ -5,6 +5,9 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+/*
+ *-----------------------------------------------------------------------------
+ */
 int XClipNotifyGetVersion(
     Display *dpy, int major_version_return, int minor_version_return);
 /*

@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _Stack_h
 #define _Stack_h
 

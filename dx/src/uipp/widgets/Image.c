@@ -1,5 +1,18 @@
 /*  Open Visualization Data Explorer Source File */
 
+/*	Widget that will display that final ADX images.  The widget will
+ *	detect the depth of the display and, if depth == 24, it will assume
+ *	that we have a HIPPI frame buffer.  There is a standard colormap 
+ *	available as a property from the server.  We will obtain and use the
+ *	standard colormap.
+ *
+ *	Resources:
+ *		XmNmotionCallback - Callback to get ButtonMotion events.
+ *		XmNsendMotion - Boolean that controls whether a detected
+ *				ButtonMotion event should be reported via
+ *				a registered callback. (On/Off switch)
+ *		 
+ */
 
 /*
  */
@@ -100,6 +113,9 @@ static char defaultTranslations[] =
      <BtnMotion>:    BtnMotion()\n\
      <EnterWindow>:  Enter() \n\
      <FocusIn>:      FocusIn()";
+
+extern void _XmManagerEnter();
+extern void _XmManagerFocusIn();
 
 static XtActionsRec actionsList[] =
 {

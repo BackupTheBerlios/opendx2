@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
 #ifndef _AutoAxesDialog_h
 #define _AutoAxesDialog_h
 

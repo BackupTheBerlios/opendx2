@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _VCRControl_h
 #define _VCRControl_h
 

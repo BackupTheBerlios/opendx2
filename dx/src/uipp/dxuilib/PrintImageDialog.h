@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _PrintImageDialog_h
 #define _PrintImageDialog_h
 

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 // ScalarInteractor.h -							    //
 //                                                                          //
 // Definition for the ScalarInteractor class.				    //

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "defines.h"
 #include <iostream.h>
 #include <sys/types.h>
@@ -2161,7 +2160,7 @@ extern "C" void ImageWindow_CursorCB(Widget	drawingArea,
 void ImageWindow::handleCursor(int reason, int cursor_num,
 			       double x, double y, double z)
 {
-    if(NOT this->state.hardwareRender AND this->state.pixmap == NULL)
+    if(NOT this->state.hardwareRender AND this->state.pixmap == 0)
       return;
 
     ASSERT(this->currentProbeInstance > 0);
@@ -4544,8 +4543,8 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	if (this->viewControlDialog)
 	    this->viewControlDialog->managePickForm();
 
-	if ((this->state.pixmap == NULL && !this->state.hardwareRender) ||
-	    (this->state.hardwareWindow == NULL && this->state.hardwareRender)||
+	if ((this->state.pixmap == 0 && !this->state.hardwareRender) ||
+	    (this->state.hardwareWindow == 0 && this->state.hardwareRender)||
 	    (!this->directInteractionAllowed()))
 	{
 	    // We didn't install it, so save it away and apply it later.
@@ -4601,8 +4600,8 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	if (this->viewControlDialog)
 	    this->viewControlDialog->resetLookDirection();
 
-	if ((this->state.pixmap == NULL && !this->state.hardwareRender) ||
-	    (this->state.hardwareWindow == NULL && this->state.hardwareRender)||
+	if ((this->state.pixmap == 0 && !this->state.hardwareRender) ||
+	    (this->state.hardwareWindow == 0 && this->state.hardwareRender)||
 	    (!this->directInteractionAllowed()))
 	{
 	    // We didn't install it, so save it away and apply it later.
@@ -4684,8 +4683,8 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
             this->sendClientMessage(this->atoms.display_globe, l);
         }
 	// If we are in direct interaction mode(...), enter the mode.
-        if ((this->state.pixmap == NULL && !this->state.hardwareRender) ||
-            (this->state.hardwareWindow == NULL && this->state.hardwareRender)||
+        if ((this->state.pixmap == 0 && !this->state.hardwareRender) ||
+            (this->state.hardwareWindow == 0 && this->state.hardwareRender)||
             (!this->directInteractionAllowed()))
         {
 	    // We didn't install it, so save it away and apply it later.
@@ -4721,8 +4720,8 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	if (this->viewControlDialog)
 	    this->viewControlDialog->resetLookDirection();
 
-	if ((this->state.pixmap == NULL && !this->state.hardwareRender) ||
-	    (this->state.hardwareWindow == NULL && this->state.hardwareRender)||
+	if ((this->state.pixmap == 0 && !this->state.hardwareRender) ||
+	    (this->state.hardwareWindow == 0 && this->state.hardwareRender)||
 	    (!this->directInteractionAllowed()))
 	{
 	    // We didn't install it, so save it away and apply it later.

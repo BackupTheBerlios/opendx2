@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include <Xm/Xm.h>
 #include <Xm/Form.h>
 #include <Xm/Frame.h>

@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
 #ifndef _InteractorInstance_h
 #define _InteractorInstance_h
 

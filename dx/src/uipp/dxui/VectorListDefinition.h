@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-//////////////////////////////////////////////////////////////////////////////
-
 #ifndef _VectorListDefinition_h
 #define _VectorListDefinition_h
 

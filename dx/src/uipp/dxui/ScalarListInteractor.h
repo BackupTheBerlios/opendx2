@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
 #ifndef _ScalarListInteractor_h
 #define _ScalarListInteractor_h
 

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "UIConfig.h"
 
 #include <Xm/Xm.h>

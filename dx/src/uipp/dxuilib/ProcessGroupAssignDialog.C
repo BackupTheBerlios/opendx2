@@ -308,7 +308,7 @@ extern "C" void ProcessGroupAssignDialog_TextCB(Widget    widget,
 
 }
 
-#ifdef DXD_HAS_UNIX_SYS_INCLUDES
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 

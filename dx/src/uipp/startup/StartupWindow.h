@@ -1,12 +1,10 @@
 /*  Open Visualization Data Explorer Source File */
-
-
 #ifndef _StartupWindow_h
 #define _StartupWindow_h
 
 
 #include "UIConfig.h"
-#include "dxl.h"
+#include <dx/dxl.h>
 #include "defines.h"
 #include "IBMMainWindow.h"
 

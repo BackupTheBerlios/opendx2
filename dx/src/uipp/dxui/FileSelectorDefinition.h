@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-//////////////////////////////////////////////////////////////////////////////
-
 #ifndef _FileSelectorDefinition_h
 #define _FileSelectorDefinition_h
 

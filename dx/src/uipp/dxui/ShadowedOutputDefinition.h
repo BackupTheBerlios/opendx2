@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _ShadowedOutputDefinition_h
 #define _ShadowedOutputDefinition_h
 

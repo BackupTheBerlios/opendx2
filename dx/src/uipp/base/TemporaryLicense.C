@@ -1,5 +1,58 @@
 /*  Open Visualization Data Explorer Source File */
 
+#if !defined(DXD_OS_NON_UNIX)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <sys/time.h>
+#include <time.h>
+#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#include <unistd.h>
+#endif
+
+
+#if defined(ibm6000) 
+extern "C" void gettimer (int, struct timestruc_t* );
+#endif
+
+#include "defines.h"
+#include "Strings.h"
+
+#if defined(aviion) || defined(solaris) || defined(sgi)
+#include <crypt.h>
+#endif
+
+#if defined(ibm6000) || defined(hp700)
+#include <sys/utsname.h>
+#if defined(ibm6000) && !defined(_AIX41)
+extern "C" const char *crypt(const char* , const char*);
+#else
+extern "C" char *crypt(const char* , const char*);
+#endif
+#endif
+
+#if defined(aviion) || defined(solaris) || defined(sgi)
+#include <sys/systeminfo.h>
+#endif
+#if defined(sgi) && !( __mips > 1)
+extern "C" unsigned sysid(unsigned char *id);
+#endif
+#if defined(aviion)
+extern "C" long sysinfo (int , char *, long );
+#endif
+#if defined(aviion)
+extern "C" int gettimeofday(struct timeval *);
+#endif
+
+#if defined(sun4)
+extern "C" long gethostid();
+#endif
+
+#ifdef alphax
+#include <crypt.h>
+int getdtablesize();
+#include <stdio.h>              /* standard I/O */
 #include <errno.h>              /* error numbers */
 #include <sys/socket.h>         /* socket definitions */
 #include <sys/ioctl.h>          /* ioctls */

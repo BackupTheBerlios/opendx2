@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
 #ifndef _DeleteNodeCommand_h
 #define _DeleteNodeCommand_h
 

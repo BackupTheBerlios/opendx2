@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
-
 #ifndef _StartOptionsDialog_h
 #define _StartOptionsDialog_h
 

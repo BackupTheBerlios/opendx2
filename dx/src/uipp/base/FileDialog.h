@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _FileDialog_h
 #define _FileDialog_h
 

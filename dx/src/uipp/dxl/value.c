@@ -1,5 +1,47 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <string.h>
+#include <malloc.h>
+
+#include "../base/UIConfig.h"
+#include "../base/defines.h"
+#include "dxlP.h"
+#include "dict.h"
+
+typedef struct handler_data{
+    DXLValueHandler 	handler;
+    const void		*data;
+} HandlerData;
+
+static HandlerData *NewHandlerData(DXLValueHandler
+                                        handler, const void *data)
+{
+    HandlerData *hd = (HandlerData*)MALLOC(sizeof(HandlerData));
+    if (!hd)
+        return NULL;
+
+    hd->handler = handler;
+    hd->data = data;
+
+    return hd;
+}
+
+static void DeleteHandlerData(HandlerData *hd)
+{
+    if (hd)
+        FREE(hd);
+}
+static void DictDeleteHandlerData(void *data)
+{
+    DeleteHandlerData((HandlerData*)data);
+}
+
+
+/*
+ * The message comming across is in the format
+ *  "DXLOutput VALUE <name> <value>"
+ * FIXME: what about values that are longer than a single message buffer.
+ */
 static char *link_value_token = "LINK:  DXLOutput VALUE"; 	
 
 

@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _SetNetworkCommentDialog_h
 #define _SetNetworkCommentDialog_h
 

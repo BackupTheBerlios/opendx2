@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include <limits.h>
 #include <Xm/Xm.h>
 #include <Xm/DialogS.h>

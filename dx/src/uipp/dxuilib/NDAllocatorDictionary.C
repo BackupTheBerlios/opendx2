@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 //
 // This is the dictionary of NodeDefinition allocating functions.
 // It is a defaulting dictionary which means that if a name/allocator 

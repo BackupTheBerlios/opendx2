@@ -1,5 +1,4 @@
 /*  Open Visualization Data Explorer Source File */
-
  
  
 #ifndef _TickLabelList_h

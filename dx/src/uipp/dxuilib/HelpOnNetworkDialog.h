@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _HelpOnNetworkDialog_h
 #define _HelpOnNetworkDialog_h
 

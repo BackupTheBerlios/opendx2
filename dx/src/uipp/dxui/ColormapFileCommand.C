@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "Command.h"
 #include "Application.h"
 #include "NoUndoCommand.h"

@@ -48,6 +48,7 @@ EXTRA_DIST = \
 
 
 noinst_HEADERS = \
+	oem.h \
 	AnnotationGroupManager.h \
 	ApplicIF.h \
 	Arc.h \
@@ -213,6 +214,7 @@ noinst_HEADERS = \
 	netlex.h
 
 libDXUI_a_SOURCES = 			\
+	oem.C \
 	AnnotationGroupManager.C \
 	ApplicIF.C \
 	Arc.C \

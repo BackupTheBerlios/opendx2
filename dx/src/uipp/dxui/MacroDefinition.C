@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifdef OS2
 #   define INCL_DOSFILEMGR
 #   include <os2.h>
@@ -33,8 +32,13 @@
 
 #define OLD_DUMMY_DESCRIPTION_STRING "Generated dummy input"
 
+#if !defined(HAVE_RE_COMP) && !defined(HAVE_REGCMP)
+#define  LACKS_ANY_REGCMP
+#endif
+
+
 #ifndef LACKS_ANY_REGCMP
-#ifdef REGCMP_EXISTS
+#ifdef HAVE_REGCMP
 extern "C" char *regcmp(...);
 extern "C" char *regex(char *, char *, ...);
 #else
@@ -600,7 +604,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	    boolean wasEncoded; 
 
 #ifndef DXD_LACKS_ANY_REGCMP
-#ifdef REGCMP_EXISTS
+#ifdef HAVE_REGCMP
 	    char *net_file = regcmp(".[.]*\\.net$", NULL);
 	    ASSERT(net_file != NULL);
 #else                 // use re_comp
@@ -610,7 +614,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	    struct dirent *entry;
 	    while (entry = readdir(d))
 	    {
-#ifdef REGCMP_EXISTS
+#ifdef HAVE_REGCMP
 		boolean exists = regex(net_file, entry->d_name) != NULL;
 #else                 // use re_exec
 		boolean exists = re_exec(entry->d_name) > 0;
@@ -689,7 +693,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 #else
 		}
 	    }
-#ifdef REGCMP_EXISTS
+#ifdef HAVE_REGCMP
 	    free(net_file);
 #endif
 	    closedir(d);

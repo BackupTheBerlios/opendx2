@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
-
 #ifndef _UniqueNameNode_h
 #define _UniqueNameNode_h
 

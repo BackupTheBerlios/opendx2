@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _SetSeparatorAttrDlg_h
 #define _SetSeparatorAttrDlg_h
 

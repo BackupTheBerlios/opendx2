@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "CommandTextPopup.h"
 #include "Command.h"
 #include "GARChooserWindow.h"

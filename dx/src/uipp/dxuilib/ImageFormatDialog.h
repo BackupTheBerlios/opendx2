@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ImageFormatDialog_h
 #define _ImageFormatDialog_h
 

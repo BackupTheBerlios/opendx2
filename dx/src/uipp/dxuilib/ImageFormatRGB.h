@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ImageFormatRGB_h
 #define _ImageFormatRGB_h
 

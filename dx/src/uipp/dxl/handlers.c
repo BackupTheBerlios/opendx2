@@ -1,5 +1,58 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include       <malloc.h>
+
+#include "../base/defines.h"
+#include <ctype.h>
+#include "string.h"
+#include "dxlP.h"
+
+
+static void DeleteHandlerEntry(HandlerEntry he)
+{
+    if (he->operand)
+	FREE(he->operand);
+    FREE(he);
+}
+static HandlerEntry NewHandlerEntry(int packetId, const char *str, 
+				DXLMessageHandler h, const void *data)
+{
+    HandlerEntry he;
+
+    he = (HandlerEntry)MALLOC(sizeof(struct handlerEntry));
+
+    if (! he)
+	return NULL;	
+
+    if (str)
+    {
+	he->operandLength = strlen(str);
+	he->operand = (char *)MALLOC(he->operandLength+1);
+	if (! he->operand)
+	    goto error;
+	strcpy(he->operand,str);
+    }
+    else
+    {
+	he->operandLength = 0;
+	he->operand = NULL;
+    }
+
+    he->packetId = packetId;
+    he->handler = h;
+    he->data = data;
+    he->next = NULL; 
+
+    return he;
+
+error:
+    if (he) {
+	DeleteHandlerEntry(he);
+    }
+}
+/*
+ * Set a user error handler
+ */
 DXLError
 DXLSetErrorHandler(DXLConnection *conn, DXLMessageHandler handler, 
 					const void *data)

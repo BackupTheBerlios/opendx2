@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ModuleMessagingNode_h
 #define _ModuleMessagingNode_h
 

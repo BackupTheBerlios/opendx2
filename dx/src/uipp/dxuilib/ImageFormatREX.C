@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "ImageFormatREX.h"
 #include "Application.h"
 #include "Strings.h"

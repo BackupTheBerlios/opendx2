@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
 #ifndef _SelectorListInteractor_h
 #define _SelectorListInteractor_h
 

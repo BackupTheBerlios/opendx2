@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "ImageFormatTIF.h"
 #include "Application.h"
 

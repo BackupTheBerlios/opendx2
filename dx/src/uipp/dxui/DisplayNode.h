@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _DisplayNode_h
 #define _DisplayNode_h
 

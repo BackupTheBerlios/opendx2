@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _SetDecoratorTextDialog_h
 #define _SetDecoratorTextDialog_h
 

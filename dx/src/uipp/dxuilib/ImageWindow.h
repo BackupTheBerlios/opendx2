@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ImageWindow_h
 #define _ImageWindow_h
 
@@ -986,7 +985,7 @@ class ImageWindow : public DXWindow
     void setExecuteOnResize(boolean setting = TRUE) 
 				{ this->state.resizeCausesExecution = setting; }
     void resetExecuteOnResizeWhenAble();
-    boolean hasPendingWindowPlacement() { return (boolean)this->reset_eor_wp != NULL; }
+    boolean hasPendingWindowPlacement() { return (boolean)(this->reset_eor_wp != 0); }
  
     //
     // Before calling the super class method we verify that doing this will 

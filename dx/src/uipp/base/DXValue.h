@@ -1,9 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-//////////////////////////////////////////////////////////////////////////////
-
-
 #ifndef _DXValue_h
 #define _DXValue_h
 

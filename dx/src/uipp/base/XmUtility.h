@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _XmUtility_h
 #define _XmUtility_h
 

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ImageFormatGIF_h
 #define _ImageFormatGIF_h
 

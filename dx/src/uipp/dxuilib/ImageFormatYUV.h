@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ImageFormatYUV_h
 #define _ImageFormatYUV_h
 

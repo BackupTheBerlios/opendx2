@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _TransmitterDefinition_h
 #define _TransmitterDefinition_h
 

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "defines.h"
 #include "DXApplication.h"
 #ifdef DXD_WINSOCK_SOCKETS          //SMH must initialize Win Sockets

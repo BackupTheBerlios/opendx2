@@ -52,39 +52,17 @@ const char *strrstr(const char *s1, const char *s2);
 # define SPRINTF	sprintf
 #endif
 
-//
-// Define strlen that can handle null pointers.
-//
-#ifdef NON_NULL_STRLEN
-# define STRLEN(a)	((a == NULL) ? 0 : strlen(a))
-#else
-# define STRLEN(a)	strlen(a)
-#endif
+#define STRLEN(a)	((a != NULL) ? strlen(a) : 0)
 
-//
-// Define strcmp that can handle null pointers.
-//
-#ifdef NON_NULL_STRCMP
 # define STRCMP(a,b) 	((a) ? ((b) ? strcmp(a,b)  \
                                     : strcmp(a,"")) \
                              : ((b) ? strcmp("",b) \
                                     : 0))
-#else
-# define STRCMP(a,b)	strcmp(a,b)
-#endif
 
-//
-// Define strncmp that can handle null pointers.
-//
-
-#ifdef NON_NULL_STRCMP
 # define STRNCMP(a,b,n)    ((a) ? ((b) ? strncmp(a,b,n)  \
                                     : strncmp(a,"",n)) \
                              : ((b) ? strncmp("",b,n) \
                                     : 0))    
-#else
-# define STRNCMP(a,b,n)    strncmp(a,b,n)
-#endif
 
 
 #ifdef NEEDS_STRERROR

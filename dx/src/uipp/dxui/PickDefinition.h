@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
 #ifndef _PickDefinition_h
 #define _PickDefinition_h
 

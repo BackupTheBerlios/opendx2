@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ImageFormatPSGreyEnc_h
 #define _ImageFormatPSGreyEnc_h
 

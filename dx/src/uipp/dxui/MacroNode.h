@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _MacroNode_h
 #define _MacroNode_h
 

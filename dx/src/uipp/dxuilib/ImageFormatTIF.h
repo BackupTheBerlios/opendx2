@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ImageFormatTIF_h
 #define _ImageFormatTIF_h
 

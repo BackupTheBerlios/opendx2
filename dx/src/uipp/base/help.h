@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-#include "defines.h"
-
 #include "history.h"
 #include "helplist.h"
 #include "helpstack.h"

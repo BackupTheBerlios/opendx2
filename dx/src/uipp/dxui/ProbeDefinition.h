@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _ProbeDefinition_h
 #define _ProbeDefinition_h
 

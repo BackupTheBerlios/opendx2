@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifdef OS2
 #include <stdlib.h>
 #include <types.h>

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "PixelImageFormat.h"
 #include "ImageNode.h"
 #include "ImageFormatDialog.h"

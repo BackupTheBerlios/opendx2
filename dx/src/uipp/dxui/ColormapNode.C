@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "defines.h"
 
 #ifdef ABS_IN_MATH_H

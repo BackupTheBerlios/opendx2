@@ -13,7 +13,13 @@
 #include "Application.h"
 #include "ErrorDialogManager.h"
 
+#if defined(linux86)
+extern "C" {
 #include <errno.h>
+}
+#else
+#include <errno.h>
+#endif
 #include <ctype.h>
 #include <fcntl.h>
 #ifdef alphax
@@ -31,7 +37,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef DXD_HAS_UNIX_SYS_INCLUDES
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
@@ -1431,16 +1437,14 @@ void PacketIF::connectAsServer(int pport)
     int oldUmask;
 #endif
     struct linger sl;
-#if defined(_AIX41)
-    size_t length;
-#else
     int length;
-#endif
     ushort port;
     int fd;
     int sts;
     int oldPort;
+#if !defined(linux86)
     extern int errno;
+#endif
     int tries;
     fd_set fds;
 #ifdef hp700

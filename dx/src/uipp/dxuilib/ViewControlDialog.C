@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include <Xm/Form.h>
 #include <Xm/Label.h>
 #include <Xm/PushB.h>

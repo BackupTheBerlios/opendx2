@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
 #ifndef _SequencerDefinition_h
 #define _SequencerDefinition_h
 

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ConfirmedExitCommand_h
 #define _ConfirmedExitCommand_h
 

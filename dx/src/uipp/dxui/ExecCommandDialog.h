@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _ExecCommandDialog_h
 #define _ExecCommandDialog_h
 

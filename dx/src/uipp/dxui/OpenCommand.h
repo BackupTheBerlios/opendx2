@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _OpenCommand_h
 #define _OpenCommand_h
 

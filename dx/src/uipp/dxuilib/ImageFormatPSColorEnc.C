@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "ImageFormatPSColorEnc.h"
 #include "Application.h"
 

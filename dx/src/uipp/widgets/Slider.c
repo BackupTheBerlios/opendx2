@@ -1,5 +1,12 @@
 /*  Open Visualization Data Explorer Source File */
 
+/*	Construct and manage the "frame sequencer guide" to be used as a
+ *	popup of the "sequence controller" (alias VCR control)
+ *
+ *	August 1990
+ *	IBM T.J. Watson Research Center
+ *	R. T. Maganti 
+ */
 
 /*
  */
@@ -24,6 +31,10 @@
 #include "SliderP.h"
 
 #define  zero  pow(0.1,6)
+
+#if !defined(HAVE_TRUNC)
+#define trunc(c)        ((double)((int)(c)))
+#endif
 
 /*
  * Hi,
@@ -155,6 +166,9 @@ static XtResource resources[] =
 static char defaultTranslations[] =
     "<EnterWindow>:  Enter() \n\
      <FocusIn>:      FocusIn()";
+
+extern void _XmManagerEnter();
+extern void _XmManagerFocusIn();
 
 static XtActionsRec actionsList[] =
 {

@@ -1,5 +1,10 @@
 /*  Open Visualization Data Explorer Source File */
 
+/*  Similar to a text widget, but only allows strings representing
+ *  numerical values (base 10).
+ *  (supports integer, fixed point, or floating point | scientific)
+ *  IBM T.J. Watson Research Center	July 16, 1990
+ */
 
 /*
  */

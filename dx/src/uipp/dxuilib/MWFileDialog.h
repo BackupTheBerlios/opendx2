@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _MWFileDialog_h
 #define _MWFileDialog_h
 

@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-//////////////////////////////////////////////////////////////////////////////
-
 #include "UIConfig.h"
 #include "defines.h"
 #include "ValueDefinition.h"

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _SaveImageDialog_h
 #define _SaveImageDialog_h
 

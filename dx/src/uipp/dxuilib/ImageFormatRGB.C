@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "ImageFormatRGB.h"
 #include "Application.h"
 #include "Strings.h"

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ImageFormatMIF_h
 #define _ImageFormatMIF_h
 

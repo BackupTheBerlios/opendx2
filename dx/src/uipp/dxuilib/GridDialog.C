@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include <X11/StringDefs.h>
 
 #include <limits.h>

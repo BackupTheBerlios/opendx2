@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _ReceiverDefinition_h
 #define _ReceiverDefinition_h
 

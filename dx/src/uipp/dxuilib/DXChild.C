@@ -52,7 +52,7 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef DXD_HAS_UNIX_SYS_INCLUDES
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #ifndef   DXD_WIN

@@ -1,5 +1,12 @@
 /*  Open Visualization Data Explorer Source File */
 
+/*	Construct and manage the "frame sequencer guide" to be used as a
+ *	popup of the "sequence controller" (alias VCR control)
+ *
+ *	August 1990
+ *	IBM T.J. Watson Research Center
+ *	R. T. Maganti 
+ */
 
 /*
  */
@@ -149,6 +156,9 @@ static XtResource resources[] =
 static char defaultTranslations[] =
     "<EnterWindow>:  Enter() \n\
      <FocusIn>:      FocusIn()";
+
+extern void _XmManagerEnter();
+extern void _XmManagerFocusIn();
 
 static XtActionsRec actionsList[] =
 {

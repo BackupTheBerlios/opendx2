@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
 #ifndef _DXLOutputNode_h
 #define _DXLOutputNode_h
 

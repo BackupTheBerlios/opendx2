@@ -61,7 +61,6 @@
 #define XmNmajorMarkerThickness	"majorMarkerThickness"
 #define XmNminorMarkerThickness "minorMarkerThickness"
 
-#define XmNposition		"position"
 #define XmNindicatorWidth	"indicatorWidth"
 #define XmNindicatorColor       "indicatorColor"
 
@@ -298,8 +297,6 @@
 #define XmLOOK_FORWARD	5
 
 #define XmNmarkColor	"markColor"
-#define XmNarrowSize	"arrowSize"
-#define XmCArrowSize	"ArrowSize"
 #define XmNminValue	"minValue"
 #define XmCMinValue	"MinValue"
 #define XmNmaxValue	"maxValue"
@@ -449,7 +446,6 @@
 #define XmCPlacementPolicy      "PlacementPolicy"
 #define XmNresizingCallback     "resizingCallback"
 #define XmCResizingCallback     "ResizingCallback"
-#define XmNselectionCallback    "selectionCallback"
 #define XmCSelectionCallback    "SelectionCallback"
 #define XmNselectable           "selectable"
 #define XmCSelectable           "Selectable"
@@ -472,6 +468,18 @@
 #define XmCLineDrawingEnabled	"LineDrawingEnabled"
 #define XmNpreventOverlap	"preventOverlap"
 
+#if !defined(XmNselectionCallback)
+#define XmNselectionCallback    "selectionCallback"
+#endif
+#if !defined(XmNposition)
+#define XmNposition		"position"
+#endif
+#if !defined(XmNarrowSize)
+#define XmNarrowSize	"arrowSize"
+#endif
+#if !defined(XmCArrowSize)
+#define XmCArrowSize	"ArrowSize"
+#endif
 /*
  * Workspace placement policy constants.
  * ...added 3/95 to replace integers used.  The values

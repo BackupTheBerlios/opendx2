@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _DXExecCtl_h
 #define _DXExecCtl_h
 

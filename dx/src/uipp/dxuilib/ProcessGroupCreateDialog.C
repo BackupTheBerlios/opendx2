@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include <limits.h>
 #include <string.h>
 #include <Xm/Xm.h>

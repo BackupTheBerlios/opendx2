@@ -1,5 +1,61 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include "../base/UIConfig.h"
+
+#include <stdio.h>
+#include <ctype.h>
+#include <sys/types.h>
+#if   !defined(OS2)  && !defined(DXD_WIN)
+#include <sys/param.h>
+#endif
+#ifndef DXD_HAS_WINSOCKETS
+#include <sys/socket.h>
+#endif
+#ifdef DXD_WIN
+#include <sys/timeb.h>
+#else
+#include <sys/time.h>
+#endif
+#ifndef   DXD_HAS_WINSOCKETS
+#include <netdb.h>
+#endif
+#include <errno.h>
+#include <string.h>
+#include <malloc.h>
+#if defined(ibm6000) || defined(pgcc) || defined(__METAWARE_HC)
+#include <sys/select.h>
+#endif
+#if   defined(OS2)  || defined(DXD_HAS_WINSOCKETS)
+#include <io.h>
+#define write(a,b,c) _dxl_os2_send(a,b,c,0)
+#define read(a,b,c) _dxl_os2_recv(a,b,c,0)
+#endif
+
+#include "../base/defines.h"
+#include "dxlP.h"
+
+typedef int (*DXLPacketPredicate)(DXLConnection *, DXLEvent *, void *);
+
+static int _dxl_ReadFromSocket(DXLConnection *conn);
+static int _dxl_WaitForReadable(DXLConnection *conn);
+static int _dxl_IsReadable(DXLConnection *conn);
+static void PrintEvent(DXLEvent *e);
+static void PrintEventList(DXLEvent *e);
+
+static DXLError DXLGetPacket(DXLConnection *, DXLPacketTypeEnum, int,
+                DXLEvent *, int,
+                DXLPacketPredicate, const void *);
+
+#ifdef MAX
+# undef MAX
+#endif
+#define MAX(x,y) ((x) > (y)? (x): (y))
+#define STRLEN(A) (A ? strlen(A) : 0)
+
+char *_DXLPacketTypes[] =
+{
+    NULL,
+    "$int",             /* PACK_INTERRUPT */
     "$sys",             /* PACK_SYSTEM */
     "$ack",             /* PACK_ACK */
     "$mac",             /* PACK_MACRODEF */

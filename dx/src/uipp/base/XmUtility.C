@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include <string.h>
 #include <X11/IntrinsicP.h>
 #include <Xm/Xm.h>

@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #include "PageTab.h"
 #include "PageGroupManager.h"
 #include "Application.h"

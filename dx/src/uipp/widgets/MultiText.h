@@ -2,10 +2,13 @@
 
 #ifndef _MultiText_h
 #define _MultiText_h
+
 #include <Xm/Xm.h>
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
 #define NODPS
 
 #define MAX_TAB_COUNT 32

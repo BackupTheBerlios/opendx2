@@ -317,7 +317,9 @@ boolean GARApplication::initialize(unsigned int* argcp,
     //
     boolean startup_flag = FALSE;
     if (getenv("DXSTARTUP")) startup_flag = TRUE;
+#if defined(DXD_LICENSED_VERSION)
     this->TemporaryLicense::initialize();
+#endif
     if ((startup_flag) && (getenv("DXTRIALKEY"))) {
 	XtAppAddInput (this->getApplicationContext(), fileno(stdin), 
 	    (XtPointer)XtInputReadMask,

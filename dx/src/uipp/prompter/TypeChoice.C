@@ -509,7 +509,7 @@ TypeChoice::connect(int mode)
 			"dx -processors 1 -menubar -wizard "
 			"-xrm DX.dxAnchor.geometry:410x56+0+0 "
 			"-xrm DX.editorWindow.geometry:200x150-0+0";
-#if !defined(DXD_OS_NON_UNIX)
+#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
 		    if (!cp) cp = theGARApplication->getResourcesDxuiArgs();
 		    if (!cp) cp = theGARApplication->getDxuiArgs();
 		    if (cp) {

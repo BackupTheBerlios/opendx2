@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _FindToolDialog_h
 #define _FindToolDialog_h
 

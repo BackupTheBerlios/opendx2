@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _HelpOnPanelDialog_h
 #define _HelpOnPanelDialog_h
 

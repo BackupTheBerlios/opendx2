@@ -1,7 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
 #ifndef _DialInteractor_h
 #define _DialInteractor_h
 

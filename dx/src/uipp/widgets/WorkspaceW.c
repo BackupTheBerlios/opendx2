@@ -131,7 +131,7 @@
 
 
 /*  Define structure of link elements in a sort list of child widgets  */
-static struct SortRec {
+struct SortRec {
     struct SortRec* next;
     Widget child;
     XmWorkspaceConstraints constraints;
@@ -691,6 +691,9 @@ static char traversalTranslations[] =
 <FocusOut>:     ManagerFocusOut()\n\
 <FocusIn>:      ManagerFocusIn()";
 
+extern void _XmManagerEnter();
+extern void _XmManagerFocusIn();
+
 XtActionsRec defaultActions[] = {
     {"arm",             (XtActionProc)Arm},
     {"drag",            (XtActionProc)Drag},
@@ -788,7 +791,7 @@ XmWorkspaceClassRec xmWorkspaceClassRec = {
    {                        /* bulletin_board_class fields */
       FALSE,                                /* always_install_accelerators */
       NULL,                                 /* geo_matrix_create  */
-      XtInheritFocusMovedProc,              /* focus_moved_proc   */
+      XmInheritFocusMovedProc,              /* focus_moved_proc   */
       NULL,                                 /* extension          */
    },
 

@@ -16,8 +16,12 @@
 #include <X11/StringDefs.h>
 #include "DialP.h"
 
-#if defined(OS2) || defined (DXD_WIN)
+#if !defined(HAVE_M_PI)
 #define M_PI    3.1415926535897931160E0
+#endif
+
+#if !defined(HAVE_TRUNC)
+#define trunc(c)	((double)((int)(c)))
 #endif
 
 #define	TWO_PI		(double)(M_PI * 2.0)

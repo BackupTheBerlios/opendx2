@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "UIConfig.h" 
 
 #include <Xm/Xm.h>
@@ -16,7 +15,7 @@ extern "C" int putenv(char*);
 #include <stream.h>
 #endif
 
-#ifdef DXD_HAS_UNIX_SYS_INCLUDES
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <signal.h>

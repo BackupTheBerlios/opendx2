@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _ThrottleDialog_h
 #define _ThrottleDialog_h
 

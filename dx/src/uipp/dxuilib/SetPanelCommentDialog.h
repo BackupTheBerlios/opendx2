@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _SetPanelCommentDialog_h
 #define _SetPanelCommentDialog_h
 

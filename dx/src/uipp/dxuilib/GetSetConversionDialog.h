@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _GetSetConversionDialog_h
 #define _GetSetConversionDialog_h
 

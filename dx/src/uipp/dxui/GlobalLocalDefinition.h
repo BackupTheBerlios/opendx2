@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-//////////////////////////////////////////////////////////////////////////////
-
 #ifndef _GlobalLocalDefinition_h
 #define _GlobalLocalDefinition_h
 

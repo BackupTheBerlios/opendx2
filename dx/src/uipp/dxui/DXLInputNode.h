@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _DXLInputNode_h
 #define _DXLInputNode_h
 

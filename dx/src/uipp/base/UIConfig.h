@@ -22,34 +22,6 @@
 #endif
 
 /*
-// If strlen() chokes when passed a null pointer define this. 
-*/
-#if defined(solaris) || defined(sgi) || defined(sun4) || defined DXD_WIN || defined OS2 || defined aviion || defined(alphax)
-# define NON_NULL_STRLEN
-#endif
-
-/*
-// If strcmp() chokes when passed a null pointers define this. 
-*/
-#if defined(solaris) || defined(sgi) || defined(sun4) || defined DXD_WIN || defined OS2 || defined aviion || defined(alphax)
-# define NON_NULL_STRCMP
-#endif
-
-/*
-// If neither exists, find workaround
-*/
-#if defined(DXD_WIN) || defined(OS2)
-# define DXD_LACKS_ANY_REGCMP
-#endif
-
-/*
-// If regcmp exists. if false, call re_comp
-*/
-#if !defined(DXD_LACKS_ANY_REGCMP) && !defined(sun4) && !defined(alphax)
-# define REGCMP_EXISTS
-#endif
-
-/*
 // If this system doesn't implement strerror
 */
 #ifdef sun4
@@ -141,14 +113,6 @@
 // Define whether or not the UI should use the license manager
 //
 */
-#ifndef DXD_LICENSED_VERSION
-# if defined(DXD_WIN) || defined(OS2)
-#  define DXD_LICENSED_VERSION 0
-# else
-#  define DXD_LICENSED_VERSION 1
-# endif
-#endif
-
 /*
 //
 // Define this if the architecture supports the IBM 7246 ClipNotify
@@ -198,13 +162,6 @@
 */
 #if defined(aviion) || defined(hp700) || defined(sun4) || defined(sgi) || defined(alphax)
 #define DUMMY_FOR_LIST_WIDGET
-#endif
-
-/*
-// To accomodate OS/2 and others that don't have/need Unix sys/includes...
-*/
-#if !defined(OS2)  && !defined(DXD_WIN)
-# define DXD_HAS_UNIX_SYS_INCLUDES
 #endif
 
 /*

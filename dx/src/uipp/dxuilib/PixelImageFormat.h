@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _PixelImageFormat_h
 #define _PixelImageFormat_h
 

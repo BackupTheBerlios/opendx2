@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "defines.h"
 #include "SequencerDefinition.h"
 #include "SequencerNode.h"

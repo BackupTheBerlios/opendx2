@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _GARApplication_h
 #define _GARApplication_h
 
@@ -15,7 +14,7 @@
 #include "../base/Dialog.h"
 #include "../base/IBMApplication.h"
 #include "../base/List.h"
-#if !defined(DXD_OS_NON_UNIX)
+#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
 #include "../base/TemporaryLicense.h"
 #endif
 
@@ -69,7 +68,7 @@ typedef struct
     Boolean	limited_use;
 } GARResource;
 
-#if !defined(DXD_OS_NON_UNIX)
+#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
 class GARApplication : public IBMApplication, public TemporaryLicense
 #else
 class GARApplication : public IBMApplication
@@ -152,7 +151,7 @@ class GARApplication : public IBMApplication
     boolean     getResourcesDebug(){ return this->resource.debugging; }
     const char *getResourcesData() { return this->resource.data_file; }
 
-#if !defined(DXD_OS_NON_UNIX)
+#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
     const char *getResourcesDxuiArgs() { 
 	return (this->resource.limited_use?this->getLimitedArgs():NUL(char*));
     }

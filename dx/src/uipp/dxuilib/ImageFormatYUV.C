@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "ImageFormatYUV.h"
 #include "Application.h"
 #include "Strings.h"

@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #include "PageSelector.h"
 #include "EditorWindow.h"
 #include "VPERoot.h"

@@ -1,5 +1,22 @@
 /*  Open Visualization Data Explorer Source File */
 
+#ifdef sgi
+#include <sys/param.h>
+#endif
+#ifdef OS2
+#include <stdlib.h>
+#include <types.h>
+#endif
+
+#include <X11/Intrinsic.h>
+#include <X11/IntrinsicP.h>
+#include <X11/Xutil.h>
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include <X11/Shell.h>
+#include <X11/keysym.h>
+#if defined(aviion)
+#include <X11/Xos.h>      /* definitions for time variables */
 #endif
 #include <Xm/DrawingA.h>
 #include <Xm/Xm.h>

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include <Xm/Xm.h>
 
 #include "defines.h"

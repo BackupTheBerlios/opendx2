@@ -1,5 +1,94 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <UIConfig.h>
+#include <Strings.h>
+
+// This nonsense surrounds sys/types.h because its typedef for boolean conflicts
+// with one from defines.h.  Many includes are ifdef on ARCH because of the
+// need for select().
+#if defined(solaris) 
+#define boolean bool
+#endif
+
+#include <sys/types.h>
+
+#if defined(solaris)
+#undef boolean
+#endif
+
+#include <stdio.h>
+#include <time.h>
+#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#include <unistd.h>
+#if defined(sgi)
+#include <bstring.h>
+#endif
+#if defined(ibm6000)
+#include <sys/select.h>
+#endif
+#include <sys/utsname.h>
+#endif
+#ifdef  DXD_WIN
+#include <sys/timeb.h>
+#else
+#include <sys/time.h>
+#endif
+
+#if defined(_AIX41)
+#include <strings.h>
+#endif
+
+#if defined(aviion)
+extern "C" { void bzero(char *, int); }
+#endif
+
+#include <X11/Intrinsic.h>
+
+#include "IBMApplication.h"
+
+#include "License.h"
+
+#if defined(DXD_LICENSED_VERSION) && DXD_LICENSED_VERSION!=0 
+# define NEEDS_LICENSE_ROUTINES 1
+#else
+# define NEEDS_LICENSE_ROUTINES 0
+#endif
+
+#if NEEDS_LICENSE_ROUTINES 
+
+extern "C" {
+
+
+#if (defined(sgi) && !( __mips > 1)) || defined(aviion)
+const char *crypt(const char*, const char*);
+#endif
+
+#if defined(solaris)
+#include <crypt.h>
+#endif
+
+#ifdef sun4 
+int gethostid();
+int getdtablesize();
+#endif
+
+
+#ifdef sgi
+unsigned sysid(unsigned char id[]);
+int getdtablesize(void);
+#endif
+
+
+#if defined(aviion) 
+int gethostid();
+int getdtablesize();
+int gettimeofday(struct timeval*, struct timezone*);
+#endif
+
+#ifdef alphax 
+#include <crypt.h>
+int getdtablesize();
+#include <stdio.h>              /* standard I/O */
 #include <errno.h>              /* error numbers */
 #include <sys/socket.h>         /* socket definitions */
 #include <sys/ioctl.h>          /* ioctls */
@@ -18,7 +107,7 @@ extern "C"   int select(
 
 #define ANYWHERE_HOSTID "00000000"
 
-#if NEEDS_LICENSE_ROUTINES && !DXD_HAS_CRYPT
+#if defined(DXD_LICENSED_VERSION) && !defined(HAVE_CRYPT)
   error:  Can not  run licensing routines without crypt()
 #endif
 

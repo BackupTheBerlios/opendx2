@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _ControlPanelAccessDialog_h
 #define _ControlPanelAccessDialog_h
 

@@ -1,5 +1,42 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include "defines.h"
+#include "ErrorDialogManager.h"
+#include "DXApplication.h"
+#include "DXVersion.h"
+#include "DXWindow.h"
+#include "Command.h"
+#include "DXExecCtl.h"
+#include "List.h"
+#include "ListIterator.h"
+#include "Network.h"
+#include "Node.h"
+#include "SequencerNode.h"
+#include "ImageNode.h"
+#include "ColormapNode.h"
+#include "DisplayNode.h"
+#include "ImageWindow.h"
+#include "EditorWindow.h"
+#include "ProbeNode.h"
+#include "PickNode.h"
+#include "DXLInputNode.h"
+#include "CmdEntry.h"
+#include "ControlPanel.h"
+#include "MacroDefinition.h"
+#include "ViewControlDialog.h"
+#include "DXLinkHandler.h"
+#include <ctype.h>
+#include <stdarg.h>
+#ifdef  DXD_WIN
+#include <iostream.h>
+#else
+#include <stream.h>
+#endif
+
+/*
+ * What follows is a set of routines to handle the DX Application commands.
+ * It's essentially unchanged.
+ */
 
 #define QUALIFIER_NONE   0
 #define QUALIFIER_LABEL  1

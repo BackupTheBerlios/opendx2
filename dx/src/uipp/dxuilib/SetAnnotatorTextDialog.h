@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _SetAnnotatorTextDialog_h
 #define _SetAnnotatorTextDialog_h
 

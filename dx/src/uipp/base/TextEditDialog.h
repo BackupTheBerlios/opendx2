@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _TextEditDialog_h
 #define _TextEditDialog_h
 

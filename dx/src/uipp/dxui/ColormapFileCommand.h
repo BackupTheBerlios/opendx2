@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _ColormapFileCommand_h
 #define _ColormapFileCommand_h
 

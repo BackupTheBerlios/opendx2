@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _MacroParameterDefinition_h
 #define _MacroParameterDefinition_h
 

@@ -1,5 +1,18 @@
 /*  Open Visualization Data Explorer Source File */
 
+#ifndef _TMP_LIC_
+#define _TMP_LIC_
+
+#if !defined(DXD_OS_NON_UNIX)
+
+#include "defines.h"
+#include "License.h"
+
+#define KEY1 "a9"
+#define KEY2 "Pp"
+#define XOR_KEY 0x12345678
+
+#define PROGVER  "3.1"   /* version of expire program */
 
 #define ANYWHERE_HOSTID "00000000"
 

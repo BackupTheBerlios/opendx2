@@ -69,12 +69,7 @@
 /***
  *** Types:
  ***/
-#if !defined(DXD_WIN)
-typedef int boolean;
-#else
 typedef unsigned char boolean;
-#endif
-
 
 /*****************************************************************************/
 /* NUL -								     */

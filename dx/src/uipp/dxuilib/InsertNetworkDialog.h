@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-
-
 #ifndef _InsertNetworkDialog_h
 #define _InsertNetworkDialog_h
 

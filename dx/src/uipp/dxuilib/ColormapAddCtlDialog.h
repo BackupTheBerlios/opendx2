@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _ColormapAddCtlDialog_h
 #define _ColormapAddCtlDialog_h
 

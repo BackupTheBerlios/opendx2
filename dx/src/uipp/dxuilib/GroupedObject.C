@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #include "GroupManager.h"
 #include "GroupedObject.h"
 #include "Dictionary.h"

@@ -1,8 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
-
 #ifndef _GroupedObject_h
 #define _GroupedObject_h
 

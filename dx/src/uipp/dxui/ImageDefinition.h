@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _ImageDefinition_h
 #define _ImageDefinition_h
 

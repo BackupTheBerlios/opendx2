@@ -147,6 +147,9 @@ static char defaultTranslations[] =
     "<EnterWindow>:  Enter() \n\
      <FocusIn>:      FocusIn()";
 
+extern void _XmManagerEnter();
+extern void _XmManagerFocusIn();
+
 static XtActionsRec actionsList[] =
 {
    { "Enter",    (XtActionProc) _XmManagerEnter },

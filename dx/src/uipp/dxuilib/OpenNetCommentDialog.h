@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _OpenNetCommentDialog_h
 #define _OpenNetCommentDialog_h
 

@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _DXANCHOR_WINDOW_H
 #define _DXANCHOR_WINDOW_H 1
 

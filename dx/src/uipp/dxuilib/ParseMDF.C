@@ -1,8 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
-//////////////////////////////////////////////////////////////////////////////
-
 #include <stdio.h>
 #include <ctype.h>
 #include <stdarg.h>

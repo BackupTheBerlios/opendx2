@@ -1176,8 +1176,11 @@ extern "C"
 extern
 FILE* yyin;			/* parser input stream	  */
 
-extern
-int yylineno;			/* lexer line number      */
+#if defined(linux86) 
+int yylineno;
+#else
+extern int yylineno;			/* lexer line number      */
+#endif
 
 extern int yyparse();
 }

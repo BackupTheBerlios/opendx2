@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _EditorWindow_h
 #define _EditorWindow_h
 

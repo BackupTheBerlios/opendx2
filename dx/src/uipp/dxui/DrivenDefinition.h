@@ -1,8 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-//////////////////////////////////////////////////////////////////////////////
-
 #ifndef _DrivenDefinition_h
 #define _DrivenDefinition_h
 

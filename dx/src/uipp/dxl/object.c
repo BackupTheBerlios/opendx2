@@ -1,5 +1,46 @@
 /*  Open Visualization Data Explorer Source File */
 
+#include <string.h>
+#include <malloc.h>
+
+#include "../base/UIConfig.h"
+#include "../base/defines.h"
+#include "dxlP.h"
+/* #include "dx.h" Not until we actually handle the object */
+#include "dict.h"
+
+typedef struct handler_data{
+    DXLObjectHandler 	handler;
+    const void		*data;
+} HandlerData;
+
+static HandlerData *NewHandlerData(DXLObjectHandler    
+					handler, const void *data)
+{
+    HandlerData *hd = (HandlerData*)MALLOC(sizeof(HandlerData));
+    if (!hd)
+	return NULL;
+
+    hd->handler = handler;
+    hd->data = data;
+ 
+    return hd; 
+}
+
+static void DeleteHandlerData(HandlerData *hd)
+{
+    if (hd) 
+	FREE(hd);
+}
+static void DictDeleteHandlerData(void *data)
+{
+    DeleteHandlerData((HandlerData*)data);
+}
+
+/*
+ * The message comming across is in the format
+ *  "DXLOutput OBJECT <name> <size>"
+ */
 static char *link_object_token = "LINK:  DXLOutput OBJECT"; 	/* V2.x */
 static char *object_token = "DXLOutput OBJECT"; 		/* V3.x + */
 

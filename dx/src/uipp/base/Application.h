@@ -70,18 +70,9 @@ class Application : public UIComponent, public Server
 			       XrmOptionDescList optlist, int optlistsize);
 
     //
-    // Initializes the Xt Intrinsics (creating the first widget),
-    // by calling initializeWindowSytstem() if not already called.
-    // Initializes any Application specfic state.  This routine should 
-    // be called by main() or subclasses only.
-    //
-    virtual boolean initialize(unsigned int* argcp, char** argv);
-
-    //
     // Handles application events.
     //   This routine should be called by main() only.
     //
-    virtual void handleEvents();
     virtual void handleEvent(XEvent *xev);
 
     //
@@ -135,6 +126,14 @@ class Application : public UIComponent, public Server
     static Symbol MsgUnmanageByLeafClassName;
     static Symbol MsgManageByTitle;
     static Symbol MsgUnmanageByTitle;
+
+    //
+    // Initializes the Xt Intrinsics (creating the first widget),
+    // by calling initializeWindowSytstem() if not already called.
+    // Initializes any Application specfic state.  This routine should 
+    // be called by main() or subclasses only.
+    //
+    virtual boolean initialize(unsigned int* argcp, char** argv);
 
     //
     // Allow others to access our event processing mechanism
@@ -272,6 +271,8 @@ class Application : public UIComponent, public Server
 	{ this->show_bubbles = state; }
     virtual void    setHelpViewer (Widget viewer) { this->help_viewer = viewer; }
     virtual Widget  getHelpViewer () { return this->help_viewer; }
+
+    virtual void handleEvents();
 
     //
     // Returns a pointer to the class name.

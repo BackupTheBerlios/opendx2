@@ -1,8 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
-
 #include "defines.h"
 #include "SaveMacroCommand.h"
 #include "DXApplication.h"

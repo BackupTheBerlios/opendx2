@@ -1,6 +1,5 @@
 /*  Open Visualization Data Explorer Source File */
 
-
 #ifndef _StreaklineNode_h
 #define _StreaklineNode_h
 

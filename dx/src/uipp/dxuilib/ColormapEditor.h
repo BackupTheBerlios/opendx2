@@ -1,7 +1,6 @@
 /*  Open Visualization Data Explorer Source File */
 
 
-
 #ifndef _ColormapEditor_h
 #define _ColormapEditor_h
 

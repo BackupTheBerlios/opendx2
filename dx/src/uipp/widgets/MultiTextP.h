@@ -29,6 +29,13 @@
 #define MSG7	"DPS extension not available - DPS Turned off."
 #define MSG8	"Word-wrapping not supported when inserting at top. Turn wordWrapping off."
 #define MSG9	"XmMultiText requires a line to exists before appending a word."
+typedef struct LineRec *LineList;
+typedef struct WordRec *WordList;
+typedef struct CharRec *CharList;
+
+typedef enum
+{
+    NORMAL,		/* word is not selected */
     DESELECTED,		/* word was last drawn selected, but isn't selected */
     SELECTED		/* word is selected */
 
