@@ -292,6 +292,7 @@
 #undef int8
 #undef DXEXEC_EXP
 #undef DXEXEC_IMP
+#undef DXUI_LDFLAGS
 
 #undef DX_XLIBS_LIST
 #undef HAVE_SIGBUS

@@ -259,6 +259,10 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
 	    DXEXEC_EXP='-Wl,-export-dynamic'
 	    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
 	    ;;
+	macos)
+	    DXUI_LDFLAGS='-force_flat_namespace -framework CoreFoundation -framework ApplicationServices'
+	    AC_DEFINE_UNQUOTED(DXUI_LDFLAGS, $DXUI_LDFLAGS);
+	    ;;
     esac
     AC_MSG_RESULT(done)
 ])

@@ -262,6 +262,7 @@ dxui_SOURCES =	$(SRCS1) $(SRCS2) $(SRCS3)
 dxui_LDADD = \
 	../dxuilib/libDXUI.a  \
 	../base/libBASE.a  \
-	../widgets/libWIDGETS.a 
+	../widgets/libWIDGETS.a @DXUI_LDFLAGS@
+	
 
 
