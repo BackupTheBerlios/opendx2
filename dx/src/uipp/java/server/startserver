@@ -5,6 +5,12 @@
 ##
 umask 2
 
+
+if [ "$DXROOT" = "" ]; then
+	DXROOT=/usr/local/dx
+fi
+export PATH=$PATH:/usr/lib/jdk-1.1.7/bin/
+export CLASSPATH=$CLASSPATH:/usr/lib/jdk-1.1.7/lib/classes.zip:/usr/lib/netscape/java/classes/npcosmop211.jar:./:/usr/lib/netscape/java/classes/java40.jar:./:./server.jar
 ##
 ## We're interested in the location of the script file so that
 ## we can make an attempt at avoiding the use of DXROOT for
@@ -319,7 +325,11 @@ else
 fi
 
 cd $serverdir
+if [ "$LD_LIBRARY_PATH" = "" ]; then
 LD_LIBRARY_PATH=$serverdir
+else
+LD_LIBRARY_PATH=$serverdir:$LD_LIBRARY_PATH
+fi
 export LD_LIBRARY_PATH
 
 ##
