@@ -12,7 +12,6 @@ AC_SUBST(LIBS)
 
 SHELL=sh
 
-
 INSTALL_SCRIPT='$(INSTALL)'
 
 
@@ -29,7 +28,7 @@ AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 6)
 DX_ARCHITECTURE
 
 AC_CHECK_PROG(HAVE_CSH, csh, 1, 0)
-
+	
 if test "$HAVE_CSH" = "1" ; then
     INSTALL_DX_EXE=
     INSTALL_DX_CSH="dx dx.workerscript"
@@ -47,6 +46,10 @@ DX_PROG_CC
 DX_PROG_CPP
 AC_CYGWIN
 AC_EXEEXT
+
+AC_LANG_C
+
+DX_CYGWIN_MOUNTS
 
 AC_PATH_X
 if test "$x_includes" != "" ; then
@@ -86,8 +89,8 @@ if test "$ARCH" = "solaris" ; then
     LIBS="-L/usr/openwin/lib $LIBS"
     AC_CHECK_LIB(dga, dga_draw_devfd, 
     [
-	LIBS="$LIBS -ldga"
-	AC_CHECK_LIB(Xmu, XmuAddInitializer, LIBS="$LIBS -lXmu")
+      LIBS="$LIBS -ldga"
+      AC_CHECK_LIB(Xmu, XmuAddInitializer, LIBS="$LIBS -lXmu")
     ], LIBS=$OLDLIBS, -lX11)
 fi
 
@@ -99,7 +102,7 @@ AC_CHECK_LIB(SM, SmcSetProperties)
 AC_CHECK_LIB(REXP, regcomp)
 AC_CHECK_LIB(pthread, pthread_getspecific)
 
-DX_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h sys/socket.h sys/file.h sys/ioctl.h sys/time.h unistd.h sys/types.h sys/sysconfig.h sys/un.h values.h wait.h sys/wait.h sys/utsname.h signal.h sys/signal.h process.h sys/filio.h CC/osfcn.h CC/libc.h sys/param.h sys/select.h cygwin/socket.h winsock.h netinet/in.h netdb.h arpa/inet.h types.h)
+DX_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h sys/socket.h sys/file.h sys/ioctl.h time.h sys/timeb.h sys/time.h unistd.h sys/types.h sys/sysconfig.h sys/un.h values.h wait.h sys/wait.h sys/utsname.h signal.h sys/signal.h process.h sys/filio.h CC/osfcn.h CC/libc.h sys/param.h sys/select.h cygwin/socket.h winsock.h netinet/in.h netdb.h arpa/inet.h types.h windows.h)
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime putenv re_comp regcmp select socket strcspn strdup strerror strspn strstr strtod strtol strtoul uname popen vfork trunc _popen spawnvp _spawnvp regcomp sysmp sysconf)
 
 AC_TRY_COMPILE(
@@ -121,6 +124,7 @@ AC_DEFINE_UNQUOTED(HAVE_SYSCONFIG_NCPUS)
 
 AC_EGREP_HEADER(sys_errlist, errno.h, AC_DEFINE(HAVE_SYS_ERRLIST))
 AC_EGREP_HEADER(sys_errlist, stdio.h, AC_DEFINE(HAVE_SYS_ERRLIST))
+
 
 dnl Check yaccer.  Don't use standard AQC_PROG_YACC... We're going
 dnl to create an -D as well as the make variable
@@ -172,6 +176,7 @@ AC_CHECK_LIB(nsl, inet_addr)
 DX_STREAM_O2
 
 AC_LANG_CPLUSPLUS
+
 AC_TRY_LINK([
 #include <unistd.h>
 ], [
@@ -189,6 +194,8 @@ bzero(buf, (size_t)32);
 ],
 AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 0),
 AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 1))
+
+AC_LANG_C
 
 dnl Checks for header files.
 AC_PATH_X
@@ -214,30 +221,28 @@ AC_TYPE_SIGNAL
 AC_FUNC_VFORK
 AC_FUNC_VPRINTF
 
-AC_CHECK_TYPE(uint, unsigned int)
-
-AC_CHECK_TYPE(byte, char)
-AC_CHECK_TYPE(ubyte, unsigned char)
-AC_CHECK_TYPE(short, short)
-AC_CHECK_TYPE(ushort, unsigned short)
-AC_CHECK_TYPE(ulong, unsigned long)
-
-AC_CHECK_TYPE(int8, char)
-AC_CHECK_TYPE(uint8, unsigned char)
-AC_CHECK_TYPE(int16, short)
-AC_CHECK_TYPE(uint16, unsigned short)
-AC_CHECK_TYPE(int32, int)
-AC_CHECK_TYPE(uint32, unsigned int)
-AC_CHECK_TYPE(int64, long)
-AC_CHECK_TYPE(uint64, unsigned long)
-AC_CHECK_TYPE(uint, unsigned int)
-
-AC_CHECK_TYPE(float32, float)
-AC_CHECK_TYPE(float64, double)
+DX_CHECK_TYPE(caddr_t, char **)
+DX_CHECK_TYPE(uint, unsigned int)
+DX_CHECK_TYPE(byte, char)
+DX_CHECK_TYPE(ubyte, unsigned char)
+DX_CHECK_TYPE(short, short)
+DX_CHECK_TYPE(ushort, unsigned short)
+DX_CHECK_TYPE(ulong, unsigned long)
+DX_CHECK_TYPE(int8, char)
+DX_CHECK_TYPE(uint8, unsigned char)
+DX_CHECK_TYPE(int16, short)
+DX_CHECK_TYPE(uint16, unsigned short)
+DX_CHECK_TYPE(int32, int)
+DX_CHECK_TYPE(uint32, unsigned int)
+DX_CHECK_TYPE(int64, long)
+DX_CHECK_TYPE(uint64, unsigned long)
+DX_CHECK_TYPE(float32, float)
+DX_CHECK_TYPE(float64, double)
 
 AC_C_BIGENDIAN
 
 AC_LANG_CPLUSPLUS
+
 AC_TRY_LINK(
 [
 #include <signal.h>
@@ -253,6 +258,8 @@ AC_DEFINE_UNQUOTED(ALTERNATE_CXX_SIGNAL)
 [
 echo Using standard signal argument list in C++
 ])
+
+AC_LANG_C
 
 DX_CHECK_SELECT_ARG
 DX_CHECK_SOCK_LENGTH_TYPE
