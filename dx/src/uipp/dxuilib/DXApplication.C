@@ -4709,10 +4709,10 @@ extern "C" int DXApplication_DXAfterFunction(Display *display)
     unsigned int key_buttons;
     Boolean      boolx;
     Window       win;
-#ifndef OS2
-    int          (*func)();
-#else
+#if defined(OS2) || NeedNestedPrototypes
     int          (*func)(Display *);
+#else
+    int          (*func)();
 #endif
 
     func = XSetAfterFunction(display, NULL);
