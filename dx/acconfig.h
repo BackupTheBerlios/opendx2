@@ -24,6 +24,8 @@
 
 #undef HAVE_REGCMP
 
+#define USING_LESSTIF 0
+
 
 #undef byte
 #undef float32
