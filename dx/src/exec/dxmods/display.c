@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 
-
 #if sgi
 #include <limits.h>
 #endif
@@ -16,6 +15,12 @@
 #include <stdio.h>
 #include <dx/dx.h>
 #include <stdlib.h>
+
+static Matrix Identity = {
+  {{ 1.0, 0.0, 0.0 },
+   { 0.0, 1.0, 0.0 },
+   { 0.0, 0.0, 1.0 }}
+};
 
 #if 0
 #include <dl.h>
