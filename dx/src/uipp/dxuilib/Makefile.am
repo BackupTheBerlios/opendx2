@@ -25,7 +25,32 @@ EXTRA_DIST = \
 	imagemac.net \
 	net.lex \
 	net.yacc \
-	netyacc.awk
+	netyacc.awk \
+	anchor.bm \
+	ntractor.bm \
+	saw_sor.bm \
+	ticks_out.bm \
+	anim_mask.bm \
+	ntractormask.bm \
+	square_sol.bm \
+	ticks_out_ins.bm \
+	animation.bm \
+	pagedrag.bm \
+	square_sor.bm \
+	tooldrag.bm \
+	bottom_shadow.bm \
+	pagedragmask.bm \
+	step.bm \
+	tooldragmask.bm \
+	moduledrag.bm \
+	postit.bm \
+	ticks_in.bm \
+	top_shadow.bm \
+	moduledragmask.bm \
+	saw_sol.bm \
+	ticks_in_ins.bm \
+	top_shadow_pc.bm
+
 
 noinst_HEADERS = \
 	AccessNetworkPanelsCommand.h \
