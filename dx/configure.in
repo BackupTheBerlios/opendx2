@@ -1124,7 +1124,7 @@ AC_FUNC_VFORK
 AC_FUNC_VPRINTF
 
 DX_CHECK_TYPE(uint, unsigned int)
-DX_CHECK_TYPE(byte, char)
+DX_CHECK_TYPE(byte, signed char)
 DX_CHECK_TYPE(ubyte, unsigned char)
 DX_CHECK_TYPE(short, short)
 DX_CHECK_TYPE(ushort, unsigned short)
