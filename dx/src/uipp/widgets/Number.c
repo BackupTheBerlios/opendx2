@@ -1258,6 +1258,20 @@ void DisplayNumberShadow( XmNumberWidget nw )
     border = nw->primitive.highlight_thickness;
     borders = border + border;
     if( nw->number.raised != nw->number.key_entry_mode ) {
+#if (OLD_LESSTIF != 1)
+#if    (XmVersion < 2000)
+        _XmDrawShadow(XtDisplay(nw), XtWindow(nw),
+                      nw->primitive.top_shadow_GC,
+                      nw->primitive.bottom_shadow_GC,
+                      nw->primitive.shadow_thickness, border, border,
+                      nw->core.width - borders, nw->core.height - borders);
+      } else {
+        _XmDrawShadow(XtDisplay(nw), XtWindow(nw), 
+                      nw->primitive.bottom_shadow_GC,
+                      nw->primitive.top_shadow_GC,
+                      nw->primitive.shadow_thickness, border, border,
+                      nw->core.width - borders, nw->core.height - borders);
+#else    /* XmVersion >= 2000 */
 	XmeDrawShadows(XtDisplay(nw), XtWindow(nw),
 		      nw->primitive.top_shadow_GC,
 		      nw->primitive.bottom_shadow_GC,
@@ -1273,6 +1287,8 @@ void DisplayNumberShadow( XmNumberWidget nw )
 		      nw->core.width - borders, nw->core.height - borders,
 		      nw->primitive.shadow_thickness,
 		      XmSHADOW_IN );
+#endif    /* XmVersion */
+#endif /* OLD_LESSTIF */
     }
 #endif
 }

@@ -196,6 +196,11 @@ static char defaultTranslations[] =
      <KeyUp>osfLeft:  KeyAct()\n\
      <KeyUp>osfUp:    KeyAct()\n\
      <KeyUp>osfDown:  KeyAct()\n\
+     <ClientMessage>: ClientMessage()\n\
+     <PropertyNotify>:	PropertyNotify()";
+#endif
+
+/*
      Ctrl<Key>I:     KeyMode()\n\
      Ctrl<Key>G:     KeyMode()\n\
      Ctrl<Key>F:      KeyMode()\n\
@@ -206,9 +211,7 @@ static char defaultTranslations[] =
      Ctrl<Key>N:      KeyMode()\n\
      Ctrl<Key>U:      KeyMode()\n\
      Ctrl<Key>K:      KeyMode()\n\
-     <ClientMessage>: ClientMessage()\n\
-     <PropertyNotify>:	PropertyNotify()";
-#endif
+*/
 
 static XtActionsRec actionsList[] =
 {

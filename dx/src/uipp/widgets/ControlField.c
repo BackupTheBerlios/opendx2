@@ -213,7 +213,13 @@ Boolean draw_lines = TRUE;
 	    }
 	}
 #if (OLD_LESSTIF != 1)
-			  
+#if    (XmVersion < 2000)
+	_XmDrawShadowType((Widget)field->w, XmSHADOW_IN,
+		field->w->core.width, field->w->core.height,
+		field->w->manager.shadow_thickness,
+		0, field->w->manager.top_shadow_GC,
+		field->w->manager.bottom_shadow_GC);
+#else    /* XmVersion >= 2000 */
 	XmeDrawShadows(XtDisplay((Widget)field->w), XtWindow((Widget)field->w),
 			field->w->manager.top_shadow_GC,
 			field->w->manager.bottom_shadow_GC,
@@ -222,7 +228,8 @@ Boolean draw_lines = TRUE;
 			field->w->core.height,
 			field->w->manager.shadow_thickness,
 			XmSHADOW_IN);
-#endif
+#endif    /* XmVersion */
+#endif /* OLD_LESSTIF */
     }
 }
 

@@ -1271,6 +1271,13 @@ static void ReplaceFrame( XmFrameWidget frame )
 short highlight_thickness = 0;
 
    if( XtIsRealized((Widget)frame) )
+#if    (XmVersion < 2000)
+         _XmDrawShadowType((Widget)frame, frame->frame.shadow_type,
+                         frame->core.width, frame->core.height,
+                         frame->manager.shadow_thickness,
+                         highlight_thickness, frame->manager.top_shadow_GC,
+                         frame->manager.bottom_shadow_GC);
+#else    /* XmVersion >= 2000 */
        XmeDrawShadows(XtDisplay((Widget)frame), XtWindow((Widget)frame),
        			frame->manager.top_shadow_GC,
 			frame->manager.bottom_shadow_GC,
@@ -1278,7 +1285,8 @@ short highlight_thickness = 0;
 			frame->core.width, frame->core.height,
 			frame->manager.shadow_thickness,
        			frame->frame.shadow_type);
-#endif
+#endif    /* XmVersion */
+#endif /* OLD_LESSTIF */
 }
 
 
