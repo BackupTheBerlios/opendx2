@@ -2,7 +2,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXLOutputNode.java,v 1.2 1999/05/25 22:12:14 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXLOutputNode.java,v 1.3 1999/07/09 19:30:00 daniel Exp $
  */
 
 // Received $lnk:0:  0:  LINK:  DXLOutput VALUE DXLOutput_1 [2 2]

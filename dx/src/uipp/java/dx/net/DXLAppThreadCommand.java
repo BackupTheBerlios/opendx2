@@ -4,7 +4,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXLAppThreadCommand.java,v 1.1 1999/03/24 15:17:30 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXLAppThreadCommand.java,v 1.2 1999/07/09 19:30:00 daniel Exp $
  */
 
 package dx.net;
