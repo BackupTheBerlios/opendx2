@@ -299,7 +299,10 @@ Object_Import(char *filename, char **varlist, int *starttime, int *endtime,
       case IMPORT_DATA:      
 	o = import_field(cdfhandle, vp);
         /* add any Global Attributes */
-        getglobalattr(o,vp);
+	if (!o)
+	    DXWarning("Nothing has been imported.  Did you use OpenDX-compliant netcdf file conventions?");
+	else
+	    getglobalattr(o,vp);
 	break;
 
       case IMPORT_VARINFO:
@@ -1630,6 +1633,13 @@ static Error getglobalattr(Object o, Varinfo vp)
   char stringattr[MAXNAME];
   char *attr_string;
   void *attr_value;
+
+  if (! o)
+  {
+    if (DXGetError() != ERROR)
+	DXErrorReturn(ERROR_INTERNAL, "getglobalattr called with NULL object");
+    return ERROR;
+  }
 
   while(ncattname(vp->cdfid,NC_GLOBAL,attr_count,stringattr) !=-1) {
     attr_count++;

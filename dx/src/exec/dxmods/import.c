@@ -306,7 +306,14 @@ m_Import(Object *in, Object *out)
 
   done: 
     DXFree((Pointer)fp);
-    return (out[0] ? OK : ERROR);
+    if (! out[0])
+    {
+	if (DXGetError() != ERROR)
+		DXSetError(ERROR_INTERNAL, "unspecified error in Import");
+	return ERROR;
+    }
+    else
+	return OK;
 }
 
 
