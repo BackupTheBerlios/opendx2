@@ -159,10 +159,12 @@ quad.c: quad.Z
 	rm quad1.c quad2.c __quad.c
 
 plane.c: plane.Z
-	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E plane.Z \
+	cp plane.Z _plane.c
+	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E _plane.c \
 	        | tr -s '$$\012' '\012\012' \
 	        | sed -e "/^#/d" \
 	        | sed -e "s/[^#]pragma/#pragma/" > plane.c
+	rm _plane.c
 
 zclipQ.o: zclipQ.c
 	$(COMPILE) -c -O zclipQ.c
