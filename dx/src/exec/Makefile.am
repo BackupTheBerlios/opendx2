@@ -47,18 +47,18 @@ DELFILES = \
 if WITH_BUILDLIBDX
 
 install-exec-local:
-	echo set prefix=\"$(prefix)\"         > env
-	echo export prefix                    >> env
-	echo set ARCH=\"$(ARCH)\"             >> env
-	echo export ARCH                      >> env
-	echo set RANLIB=\"$(RANLIB)\"         >> env
-	echo export RANLIB                    >> env
-	echo set FMTLIBS=\"$(FMTLIBS)\"       >> env
-	echo export FMTLIBS                   >> env
-	echo set INSTALL=\"$(INSTALL)\"       >> env
-	echo export INSTALL                   >> env
-	echo set DELFILES=\"$(DELFILES)\"     >> env
-	echo export DELFILES                  >> env
+	echo prefix=\"$(prefix)\"         > env
+	echo export prefix                >> env
+	echo ARCH=\"$(ARCH)\"             >> env
+	echo export ARCH                  >> env
+	echo RANLIB=\"$(RANLIB)\"         >> env
+	echo export RANLIB                >> env
+	echo FMTLIBS=\"$(FMTLIBS)\"       >> env
+	echo export FMTLIBS               >> env
+	echo INSTALL=\"$(INSTALL)\"       >> env
+	echo export INSTALL               >> env
+	echo DELFILES=\"$(DELFILES)\"     >> env
+	echo export DELFILES              >> env
 	sh  ${srcdir}/mklib
 	-rm env
 
