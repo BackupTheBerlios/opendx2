@@ -97,7 +97,7 @@ libAnyDX.jnilib: DXLink.o
 usual_shared_object: DXLink.o
 	jObjs=`ls ../dxl/*.o` ;                 \
 	if test "z$${jObjs}" = "z" ; then       \
-		jObjs=`ls ../dxl/.libs/*.o` ;   \     
+		jObjs=`ls ../dxl/.libs/*.o` ;   \
 	fi ;                                    \
 	jObjs=`echo $$jObjs |sed -e "s&[^ ]*object\.o&&" -e "s&[^ ]*x11\.o&&"` ; \
 	$(SHARED_LINK) $(DXABI) $(DX_RTL_ALDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) $${jObjs}  DXLink.o
@@ -116,7 +116,7 @@ aix_shared_object: DXLink.o
 cygwin_shared_object: DXLink.o
 	jObjs=`ls ../dxl/*.o` ;                 \
 	if test "z$${jObjs}" = "z" ; then       \
-		jObjs=`ls ../dxl/.libs/*.o` ;   \     
+		jObjs=`ls ../dxl/.libs/*.o` ;   \
 	fi ;                                    \
 	jObjs=`echo $$jObjs |sed -e "s&[^ ]*object\.o&&" -e "s&[^ ]*x11\.o&&"` ; \
 	ar -ruv tmpAnyDX.a $${jObjs} DXLink.o
@@ -128,7 +128,7 @@ cygwin_shared_object: DXLink.o
 windows_shared_object: DXLink.o
 	jObjs=`ls ../dxl/*.o` ;                 \
 	if test "z$${jObjs}" = "z" ; then       \
-		jObjs=`ls ../dxl/.libs/*.o` ;   \     
+		jObjs=`ls ../dxl/.libs/*.o` ;   \
 	fi ;                                    \
 	jObjs=`echo $$jObjs |sed -e "s&[^ ]*object\.o&&" -e "s&[^ ]*x11\.o&&"` ; \
 	ar -ruv tmpAnyDX.a $${jObjs} DXLink.obj
