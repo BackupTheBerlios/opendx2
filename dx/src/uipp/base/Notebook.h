@@ -47,8 +47,6 @@ class Notebook : public UIComponent
 	// list of names of the tabs
 	List names;
 
-	virtual Widget getSelectedPage();
-
 	// the shadow pixmap problem first encountered in dxuilib/PageTab.
 	// The bug might not exist any more but I have no way to test for it.
 	static boolean BrokenServer;
@@ -67,6 +65,8 @@ class Notebook : public UIComponent
 	virtual Widget getPage(const char* name);
 	
 	void showRectangle(int x1, int y1, int x2, int y2);
+
+	virtual Widget getSelectedPage();
 
 	//
 	// Returns a pointer to the class name.
