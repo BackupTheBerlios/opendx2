@@ -42,7 +42,7 @@ AC_CHECK_LIB(ICE, IceConnectionNumber)
 AC_CHECK_LIB(SM, SmcSetProperties)
 AC_CHECK_LIB(REXP, regcomp)
 
-AC_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h sys/file.h sys/ioctl.h sys/time.h unistd.h sys/types.h sys/sysconfig.h sys/un.h values.h wait.h sys/wait.h sys/utsname.h signal.h sys/signal.h process.h)
+AC_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h sys/file.h sys/ioctl.h sys/time.h unistd.h sys/types.h sys/sysconfig.h sys/un.h values.h wait.h sys/wait.h sys/utsname.h signal.h sys/signal.h process.h sys/filio.h)
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime putenv re_comp regcmp select socket strcspn strdup strerror strspn strstr strtod strtol strtoul uname popen vfork trunc _popen spawnvp _spawnvp regcomp)
 AC_PROG_CPP
 AC_PROG_YACC
