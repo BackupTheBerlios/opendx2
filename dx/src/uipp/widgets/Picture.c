@@ -4332,10 +4332,10 @@ char tmp_bits[8];
 		return;
 	    CreateDelete(w, event);
 	    }
-	if ( ((w->picture.mode == XmROTATION_MODE) ||
-	      (w->picture.mode == XmCURSOR_MODE) ||
+	if ( (w->picture.mode == XmROTATION_MODE) ||
+	      (((w->picture.mode == XmCURSOR_MODE) ||
 	       (w->picture.mode == XmROAM_MODE)) &&
-		(w->picture.button_pressed != Button1))
+		(w->picture.button_pressed != Button1)))
 	    {
 	    w->picture.K = 0;
 
