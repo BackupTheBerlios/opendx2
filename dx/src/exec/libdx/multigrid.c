@@ -25,7 +25,7 @@ _dxf_NewMultiGrid(struct multigrid_class *class)
 
 
 MultiGrid
-DXNewMultiGrid()
+DXNewMultiGrid(void)
 {
     return _dxf_NewMultiGrid(&_dxdmultigrid_class);
 }

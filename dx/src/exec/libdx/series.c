@@ -26,7 +26,7 @@ _NewSeries(struct series_class *class)
 
 
 Series
-DXNewSeries()
+DXNewSeries(void)
 {
     return _NewSeries(&_dxdseries_class);
 }

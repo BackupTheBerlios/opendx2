@@ -56,7 +56,7 @@ _dxf_NewGroup(struct group_class *class)
 
 
 Group
-DXNewGroup()
+DXNewGroup(void)
 {
     return _dxf_NewGroup(&_dxdgroup_class);
 }

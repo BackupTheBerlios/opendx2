@@ -26,7 +26,7 @@ _dxf_NewCompositeField(struct compositefield_class *class)
 
 
 CompositeField
-DXNewCompositeField()
+DXNewCompositeField(void)
 {
     return _dxf_NewCompositeField(&_dxdcompositefield_class);
 }
