@@ -1,3 +1,4 @@
+
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -9,16 +10,14 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-
-
-
 #include <Xm/Xm.h>
 #include <Xm/Label.h>
 #include <X11/cursorfont.h>
-#ifdef DXD_WIN
-#include <iostream.h>
-#else
-#include <stream.h>
+
+#if defined(HAVE_STRSTREAM_H)
+#include <strstream.h>
+#elif defined(HAVE_STRSTREA_H)
+#include <strstrea.h>
 #endif
 
 #if defined(HAVE_UNISTD_H)
