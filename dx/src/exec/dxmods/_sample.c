@@ -4857,7 +4857,8 @@ _Sample_Grid_Regular(Object o, int nSamples, int eltDim)
 	 */
 	_Get_Counts(ed, nSamples, lengths, samples);
 	    
-	for (i; i < sd; i++)
+	/* i is already == ed but lack of initialization makes some nervous */
+	for (i=ed; i < sd; i++)
 	    samples[i] = 1;
     }
     else
