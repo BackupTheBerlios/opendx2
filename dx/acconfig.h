@@ -24,6 +24,7 @@
 #undef ibm6000
 #undef intelnt
 #undef cygwin
+#undef linux
 
 #undef OLD_LESSTIF
 

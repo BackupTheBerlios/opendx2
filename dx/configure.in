@@ -1111,14 +1111,14 @@ AC_TRY_COMPILE([
 #endif
 ],
 [
-int O_RDONLY;
+int i = O_RDONLY;
 ], 
 [
 echo O_RDONLY IS defined by default
 ],
 [
 echo O_RDONLY IS NOT defined by default
-AC_DEFINE_UNQUOTED(O_RDONLY, _O_RDONLY)
+AC_DEFINE_UNQUOTED(O_RDONLY, _O_RDONLY, O_RDONLY is defined somewhere)
 ])
 
 if test "$ARCH" = "intelnt" ; then
