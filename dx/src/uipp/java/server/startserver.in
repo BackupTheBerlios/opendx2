@@ -10,7 +10,13 @@ if [ "$DXROOT" = "" ]; then
 	DXROOT=@prefix@/dx
 fi
 export DXROOT
-PATH=$PATH:@JBASE@/bin
+##
+## both java and dx script need to be in the path
+## we know where they are, so don't take any chances
+## override by having PATH intercept your preferred "java" vm or
+## custom dx script first.
+##
+PATH=$PATH:@JBASE@/bin:@prefix@/dx/bin
 export PATH
 if [ "$CLASSPATH" = "" ]; then
 	CLASSPATH=@WRL_CLASSPATH@:./:./server.jar
@@ -373,6 +379,7 @@ if [ "$DXMACROS" = "" ]; then
 else
     DXMACROS=$DXROOT/samples/macros:../dxmacros:../usermacros:$DXMACROS
 fi
+## dxexec doesn't use DXMACROS, it uses DXINCLUDES the same way
 DXINCLUDES=$DXMACROS
 
 if [ "$DXDATA" = "" ]; then
@@ -390,6 +397,7 @@ fi
 export DXARGS
 export DXMACROS
 export DXDATA
+export DXINCLUDES
 
 if [ "$verbose" = "1" ]; then
     echo "java $dbg_args $sessions $outdir $outurl $shared_obj_flag DXServer"
