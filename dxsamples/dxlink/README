@@ -3,6 +3,10 @@ use dxlink to communicate with Data Explorer. Copy the
 files in this directory to your own directory, rename the
 appropriate makefile (Makefile_ibm6000, etc.) to Makefile,
 then type either
+
+make 
+       to make all the demos
+or
        make sealevel
 or
        make maptoplane
