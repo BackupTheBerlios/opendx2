@@ -1172,7 +1172,7 @@ static struct arena *local = NULL;
 static int
 getProcMemInfo()
 {
-    long int memsize = 0;
+    long int memsize = 0, swapsize = 0;
     FILE *fp = NULL;
 
     fp = fopen("/proc/meminfo", "r");
@@ -1180,7 +1180,8 @@ getProcMemInfo()
     {
 	char str[256];
 
-	while (memsize <= 0 && fscanf(fp, "%s", str) == 1)
+	while ((memsize <= 0 || swapsize <= 0) && fscanf(fp, "%s", str) == 1)
+	{
 	    if (! strcmp(str, "MemTotal:"))
 	    {
 		fscanf(fp, "%lu", &memsize);
@@ -1190,9 +1191,22 @@ getProcMemInfo()
 		else
 		    memsize = 0;
 	    }
+	    else if (! strcmp(str, "SwapFree:"))
+	    {
+		fscanf(fp, "%lu", &swapsize);
+		fscanf(fp, "%s", str);
+		if (!strcmp(str, "kB"))
+		    swapsize >>= 10;
+		else
+		    swapsize = 0;
+	    }
+	}
 
-	    fclose(fp);
+	fclose(fp);
     }
+
+    if (memsize > swapsize)
+        memsize = swapsize;
 
     return memsize;
 }
