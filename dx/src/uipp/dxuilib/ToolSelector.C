@@ -1051,20 +1051,23 @@ void ToolList_TypeAhead(Widget wid, XEvent *event, String *params,
     int input_length;
     Status status_return;
     Boolean found = False;
-    int i;
+    int i, curKbd;
 
     /* Determine what was pressed. */
     input_length = XLookupString(xk, input_string, MOST_TYPED, &kr, 0);
 
+    curKbd = lw->list.CurrentKbdItem<1?1:
+	(lw->list.CurrentKbdItem>lw->list.itemCount?lw->list.itemCount:1);
+
     if(kr == XK_Up) {
-	int pos = lw->list.CurrentKbdItem;
+	int pos = curKbd;
 	last = 0;
     	XmListSetKbdItemPos(wid, pos);
     	XmListSelectPos(wid, pos, True);
     }
 
     if(kr == XK_Down) {
-	int pos = lw->list.CurrentKbdItem + 2;
+	int pos = curKbd;
 	if (pos > lw->list.itemCount) pos = 1;
 	last = 0;
     	XmListSetKbdItemPos(wid, pos);
@@ -1072,7 +1075,7 @@ void ToolList_TypeAhead(Widget wid, XEvent *event, String *params,
     }
 
     if(*input_string == ' ') {
-	XmListDeselectPos((Widget) lw, lw->list.CurrentKbdItem+1);
+	XmListDeselectPos((Widget) lw, curKbd+1);
 	// After deselecting, send deselect to other callbacks.
 	ActivateElement(lw, NULL, FALSE);
 	last = 0;
@@ -1095,7 +1098,7 @@ void ToolList_TypeAhead(Widget wid, XEvent *event, String *params,
 	    	typed[1] = '\0';
 	    }
 
-	    for (i = lw->list.CurrentKbdItem; i < lw->list.itemCount; i++)
+	    for (i = curKbd; i < lw->list.itemCount; i++)
 		if (CompareStrAndItem(lw, typed, i))
 		{
 		    found = True;
@@ -1105,7 +1108,7 @@ void ToolList_TypeAhead(Widget wid, XEvent *event, String *params,
 	  /* Wrap around to the start of the list if necessary. */
 	    if (!found)
 	    {
-		for (i = 0; i <= lw->list.CurrentKbdItem; i++)
+		for (i = 0; i <= curKbd; i++)
 		    if (CompareStrAndItem(lw, typed, i))
 		    	break;
 	    }
