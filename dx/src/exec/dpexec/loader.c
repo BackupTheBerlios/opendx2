@@ -75,7 +75,7 @@ extern char *sys_errlist[];
 
 #endif /* hp700 */
 
-#if !defined(hp700)
+#if !defined(hp700) && !defined(intelnt)
 
 #include <dlfcn.h>
 typedef void *Handle;
@@ -435,7 +435,7 @@ Error DXUnloadObjFile(char *fname, char *envvar)
 #endif  /* hp700 */
 
 
-#if !defined(hp700)
+#if !defined(hp700) && !defined(intelnt)
 
 #define __ROUTINES_DEF
 
