@@ -468,15 +468,15 @@ const char *IBMApplication::getStartTutorialCommandString()
 //
 boolean IBMApplication::startTutorial()
 {
-    char url[512];
+    char *url = new char[strlen(getUIRoot()) + 35];
     strcpy(url, "file://");
     strcat(url, getUIRoot());
-    strcat(url, "/html/pages/qikgu011.htm#HDRAPA");
+    strcat(url, "/html/pages/qikgu011.htm");
     if(!_dxf_StartWebBrowserWithURL(url))
 	system("dx -tutor");
-	
-    return TRUE;
+    delete url;
 
+    return TRUE;
 }
 void IBMApplication::handleXtWarning(char *message)
 {

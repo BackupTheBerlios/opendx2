@@ -10,14 +10,12 @@
 #include "../base/defines.h"
 
 
-
-
-
 #include "HelpMenuCommand.h"
 #include "IBMApplication.h"
 #include "CommandInterface.h"
 #include "InfoDialogManager.h"
-
+#include "TimedMessage.h"
+#include "StartWebBrowser.h"
 
 HelpMenuCommand::HelpMenuCommand(const char*   name,
 				       CommandScope* scope,
@@ -62,8 +60,15 @@ boolean HelpMenuCommand::doIt(CommandInterface *ci)
 	break;
 
     case HelpMenuCommand::TechSupport:
-	
-	InfoMessage(theIBMApplication->getTechSupportString());
+	{
+	char *url = new char[strlen(theIBMApplication->getUIRoot()) + 35];
+	strcpy(url, "file://");
+	strcat(url, theIBMApplication->getUIRoot());
+	strcat(url, "/html/pages/insgu007.htm");
+	if(!_dxf_StartWebBrowserWithURL(url))
+	    InfoMessage(theIBMApplication->getTechSupportString());
+	delete url;
+	}
 	ret = TRUE;
 
 	break;
