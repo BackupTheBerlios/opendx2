@@ -1,3 +1,4 @@
+#define FIONREAD 99
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -31,6 +32,14 @@
 #include <sys/timeb.h>
 #else
 #include <sys/time.h>
+#endif
+
+#if defined(HAVE_ASM_SOCKET_H)
+#include <asm/socket.h>
+#endif
+
+#if defined(HAVE_SYS_FILIO_H)
+#include <sys/filio.h>
 #endif
 
 typedef Error (*PFE)();
