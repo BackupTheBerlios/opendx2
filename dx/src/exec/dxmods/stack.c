@@ -2971,7 +2971,7 @@ stackgroup(StackParms *sp, StackInfo *si)
 
     /* if series only has 1 member and it is a field, stack it alone */
     if (si->membercnt == 1) {
-	if (si->inclass = CLASS_SERIES) {
+	if (si->inclass == CLASS_SERIES) {
 	    if (!(subo=DXGetSeriesMember((Series)si->thisobj, 0, &seriespos)))
 		goto error;
 	    
