@@ -22,10 +22,16 @@
 #define ENABLE_SMP_LINUX	0
 #undef DDX
 
-#undef ibm6000
-#undef intelnt
+#undef freebsd
 #undef cygwin
 #undef linux
+#undef sgi
+#undef ibm6000
+#undef alphax
+#undef hp700
+#undef solaris
+#undef macos
+#undef intelnt
 
 #undef OLD_LESSTIF
 
