@@ -1894,7 +1894,7 @@ static void ChangeManaged( XmWorkspaceWidget ww )
     Boolean new_node = FALSE;
     int max;
 #if (USING_LESSTIF == 1)
-    XmFormConstraintPart formcon;
+    XmFormConstraintPart *formcon;
 #else
     XmFormConstraint formcon;
 #endif
