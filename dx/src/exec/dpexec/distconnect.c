@@ -16,6 +16,10 @@
 #include <io.h>
 #endif
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
 #if defined(HAVE_WINIOCTL_H)
 #include <winioctl.h>
 #endif
@@ -44,11 +48,18 @@
 #include <netdb.h>
 #endif
 
+#include "config.h"
+#include "_macro.h"
 #include "sysvars.h"
 #include "distp.h"
 #include "config.h"
 #include "context.h"
 #include "obmodule.h"
+#include "cache.h"
+#include "remote.h"
+#include "command.h"
+#include "distp.h"
+#include "ccm.h"
 
 #if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
@@ -58,18 +69,11 @@
 #include <sys/filio.h>
 #endif
 
-static slave_id = 1;  /* We start at 1 because master will be slave 0 */
+static int slave_id = 1;  /* We start at 1 because master will be slave 0 */
 static Error ConnectPStoS(dpgraphstat *index, dpgraphstat *index2);
 static Error ConnectPMtoS(dpgraphstat *index);
-extern LIST(dpgraphstat) _dxd_dpgraphstat;
-extern LIST(SlavePeers) _dxd_slavepeers;
-extern  EXDictionary    _dxd_exMacroDict;
-extern  EXDictionary    _dxd_exGlobalDict;
-extern int _dxfExRemoteExec(int connectd, char *host, char *ruser,
-                               int r_argc, char **r_argv, int outboard);
-extern void _dxf_ExDeleteHost(char *host, int err, int closepeer);
-extern void _dxf_ExDeletePeer(SlavePeers *sp, int closepeer);
-extern void _dxf_ExAddPeer(SlavePeers *sp);
+
+extern int DXConnectToServer(char *host, int pport); /* from libdx/client.c */
 
 static int
 ExNextSlaveId()
@@ -116,16 +120,14 @@ static Error ExSendModuleInputHandler(int fd, Pointer arg)
     return(_dxf_ExReceivePeerPacket(sp));
 }
 
-void 
-_dxf_ExUpdateDPTable()
+void _dxf_ExUpdateDPTable()
 {
-    int	i, j,k,limit;
+    int	i, j,k;
     dpgraphstat *index, *index2; 
     char *opt;
     char ** t;
     char **av = NULL;
     int ac = 1;
-    DistMsg type;
     int addedhost = FALSE;
     int init_av = TRUE;
     dpversion dpv = {DPMSG_SIGNATURE, DPMSG_VERSION};
@@ -240,14 +242,13 @@ static Error ConnectPMtoS(dpgraphstat *index)
     int                 dxusock;
 #endif
     int                 dxfd    = -1;
-    int			len, slaveid, k, limit;
+    int			len, slaveid;
     struct sockaddr_in  dxserver;
 #if DXD_SOCKET_UNIXDOMAIN_OK
     struct sockaddr_un  dxuserver;
 #endif
     SlavePeers		spentry;
     fd_set              fdset;
-    int			fd;
 
 
     if(_dxd_exDebug)
@@ -434,6 +435,7 @@ error_return:
         printf("connected %s to %s at port %d\n", index->prochostname, index2->prochostname, port);
         printf("Done Connect\n");
     }
+   return OK; 
 }
 
 Error _dxf_ExSlaveListen()
@@ -451,7 +453,6 @@ Error _dxf_ExSlaveListen()
     struct sockaddr_un  dxuserver;
 #endif
     SlavePeers		spentry;
-    int			k, limit;
 
     if(_dxf_ExReceiveBuffer(_dxd_exMasterfd, &len, 1, TYPE_INT, 
                             _dxd_exSwapMsg) < 0) 
@@ -531,7 +532,6 @@ Error _dxf_ExSlaveConnect()
 {
     int len, port, fd;
     SlavePeers spentry;
-    int k, limit;
     DistMsg msgtype = DM_SACCEPT;
     spentry.peername = NULL;
     spentry.SwapMsg = FALSE;
@@ -595,7 +595,7 @@ Error _dxf_ExSlaveConnect()
     return(ERROR);
 }
 
-extern int _dxf_SuspendPeers()
+int _dxf_SuspendPeers()
 {
     int i, ilimit;
     SlavePeers *sp;
@@ -609,7 +609,7 @@ extern int _dxf_SuspendPeers()
     return OK;
 }
 
-extern int _dxf_ResumePeers()
+int _dxf_ResumePeers()
 {
     int i, ilimit;
     SlavePeers *sp;

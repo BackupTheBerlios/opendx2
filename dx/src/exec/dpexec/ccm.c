@@ -11,6 +11,9 @@
 
 #include <dx/dx.h>
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 #if defined(HAVE_SYS_FILE_H)
 #include <sys/file.h>
 #endif
@@ -18,42 +21,35 @@
 #include <stdio.h>
 #include <ctype.h>
 
-
 #if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
 #endif
-
 #if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
 #endif
-
 #if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
-
 #if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
-
 #if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
 #endif
-
 #if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
-
 #if defined(HAVE_ERRNO_H)
 #include <errno.h>
 #endif
-
-#if DXD_NEEDS_SYS_SELECT_H
+#if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
-
 #if defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
 #endif
+
+#include "ccm.h"
 
 #define SOCK_QUEUE_LENGTH	1
 #define SOCK_ACCEPT_TIMEOUT	60	/* Seconds */
@@ -87,19 +83,8 @@ _dxfSetupServer(int pport, int *psock,
     int fd;
     int sts;
     int oldPort;
-    extern int errno;
+    extern int errno; /* from <errno.h> */
     int tries;
-    fd_set fds;
-#ifdef  DXD_HAS_WINSOCKETS
-    int width = FD_SETSIZE;
-#else
-#if DXD_HAS_GETDTABLESIZE
-    int width = getdtablesize();
-#else
-    int width = MAXFUPLIM;
-#endif
-#endif
-    struct timeval to;
 
     port = pport;
 
@@ -244,17 +229,10 @@ _dxfCompleteServer(int sock,
     , int timeout
     )
 {
-#if DXD_SOCKET_UNIXDOMAIN_OK
-    int oldUmask;
-#endif
-    struct linger sl;
     int length;
-    u_short port;
     int fd;
     int sts;
-    int oldPort;
-    extern int errno;
-    int tries;
+    extern int errno; /* from <errno.h> */
     fd_set fds;
 #ifdef   DXD_HAS_WINSOCKETS
     int width = FD_SETSIZE;

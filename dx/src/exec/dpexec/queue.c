@@ -10,6 +10,7 @@
 #include <dxconfig.h>
 
 
+#include "config.h"
 #include "queue.h"
 
 
@@ -214,7 +215,8 @@ void _dxf_ExQueuePrint (EXQueue q)
 
     for (i = 0, e = q->head; e; i++, e = e->next)
     {
-	sprintf (buf, "[%4d] %08x <%08x %08x> ", i, e, e->prev, e->next);
+	sprintf (buf, "[%4d] %08x <%08x %08x> ", i, (unsigned int) e, 
+	          (unsigned int) e->prev, (unsigned int) e->next);
 	(* q->print) (buf + strlen (buf), e->val);
 	DXMessage (buf);
     }
@@ -240,7 +242,7 @@ static int ExQueueDefaultDestroy (Pointer val)
 
 static int ExQueueDefaultPrint (char *buf, Pointer val)
 {
-    return (sprintf (buf, "0x%08x", val));
+    return (sprintf (buf, "0x%08x", (unsigned int) val));
 }
 
 
@@ -401,7 +403,7 @@ static Pointer ExQueueRemove (EXQueue q, int head)
 
 ExWorker_TestQueue ()
 {
-    extern int		exDEBUGQ;
+    extern int		exDEBUGQ; /* defd out */
     EXQueue		q;
     int			i;
     int			n;

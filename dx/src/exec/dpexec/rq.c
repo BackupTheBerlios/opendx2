@@ -6,17 +6,16 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 #include <dx/dx.h>
-#include "rq.h"
-#include "instrument.h"
-
 #include <dxconfig.h>
 
-
-extern int *_dxd_exTerminating;
-extern int _dxfExReclaimingMemory();
+#include "config.h"
+#include "rq.h"
+#include "instrument.h"
+#include "swap.h"
+#include "utils.h"
+#include "parse.h"
 
 #define MARK_TIME(s) /* DXMarkTimeLocal(s) */
-void _dxf_child_RQ_message(int *jobid);
 
 typedef struct _EXRQJob         *EXRQJob; 
 
@@ -43,7 +42,7 @@ typedef struct
 
 static EXRQ runQueue = NULL;
 static lock_type *RQlock;
-static send_RQ_message = 1;
+static int send_RQ_message = 1;
 
 Error _dxf_ExRQInit (void)
 {
@@ -198,7 +197,6 @@ void _dxf_ExRQEnqueueMany (int n, PFI func[], Pointer arg[],
 {
     volatile EXRQ	rq;
     lock_type		*l;
-    EXRQJob		job	= NULL;
     _EXRQJob		localJob;
     EXRQJob		tail;
     EXRQJob		head;

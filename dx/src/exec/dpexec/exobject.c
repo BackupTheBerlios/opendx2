@@ -11,11 +11,10 @@
 
 #include <dx/dx.h>
 #include "exobject.h"
+#include "config.h"
 #include "log.h"
 #include "graph.h"
 #include "parse.h"
-
-extern int	_dxd_exDebug;
 
 /* DXFree lists of GLOBAL objects only */
 typedef struct {
@@ -311,7 +310,7 @@ int _dxf_EXO_delete (EXO_Object obj)
 	    abort();		/* Die here please */
     }
 
-    return (NULL);
+    return (0);
 }
 
 /*

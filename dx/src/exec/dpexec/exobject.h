@@ -15,7 +15,7 @@
 #include <sys/types.h>
 
 #if DXD_HAS_LIBIOP
-extern double SVS_double_time();
+extern double SVS_double_time(); /* from some systemlib */
 #endif
 
 #include "utils.h"
@@ -132,6 +132,8 @@ typedef	struct exo_object	*EXO_Object;
 #define EXO_timestamp(_obj) 	((_obj) ? EXO_TIMESTAMP (_obj) : OK)
 #define	EXO_reference(_obj)	((_obj) ? EXO_REFERENCE (_obj) : (_obj))
 #define EXO_delete(_obj) 	((_obj) ? EXO_DELETE    (_obj) : OK)
+
+extern PFI           _dxd_EXO_default_methods[]; /* from exobject.c */
     
 /*
  * The default methods
@@ -139,14 +141,15 @@ typedef	struct exo_object	*EXO_Object;
 
 int			_dxf__EXO_delete	(EXO_Object obj);
 
-extern PFI		_dxd_EXO_default_methods[];
+extern PFI		_dxd_EXO_default_methods[]; /* from exobject.c */
 
 /*
  * Generally useful external routines (for other objects)
  */
-Error		_dxf_EXO_init		(void);
+Error		_dxf_EXO_init			(void);
 Error		_dxf_EXO_cleanup		(void);
 int		_dxf_EXO_compact		(void);
+int 		_dxf_EXO_delete 		(EXO_Object obj);
 
 EXO_Object	_dxf_EXO_create_object	(EXO_Class class, int size,
 					 PFI *methods);
@@ -168,5 +171,6 @@ EXO_Object	_dxf_EXO_create_object_local	(EXO_Class class, int size,
 #define	ExNonIntraLock(v)	if (! _dxd_exIntraGraphSerialize) ExLock (v)
 #define	ExNonIntraUnlock(v)	if (! _dxd_exIntraGraphSerialize) ExUnlock (v)
 
-extern int 	_dxd_exIntraGraphSerialize;
+Error _dxf_EXOCheck (EXO_Object obj);
+
 #endif	/* __EXOBJECT_H */

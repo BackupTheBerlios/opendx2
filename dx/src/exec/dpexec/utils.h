@@ -16,6 +16,7 @@
 #include <string.h>
 #include <stddef.h>
 #include <dx/dx.h>
+#include <dx/arch.h>
 
 #ifndef NULL
 #define	NULL		0
@@ -26,9 +27,8 @@
 #define FALSE		0
 #endif
 
-extern char *_dxf_ExStrSave (char *old);
+char *_dxf_ExStrSave (char *old);
 
-extern int _dxd_exMyPID;
 #define exJID (_dxd_exMyPID+1)
 
 #define	KILO(n)			((n) << 10)
@@ -71,6 +71,12 @@ char		*_dxf_ExCopyStringN		(char *old, int len);
 char		*_dxf_ExCopyStringLocal		(char *old);
 int		_dxf_ExNextPowerOf2		(int n);
 Array 		_dxfExNewInteger 		(int n);
+
+/* in dxmain.c */
+char ** _dxf_ExEnvp (void);
+void  _dxf_ExInitSystemVars ();
+Error _dxf_child_RQ_message(int *jobid);
+Error _dxf_parent_RQ_message();
 
 #define LIST(type) struct {int nalloc; int nused; type *vals;}
 #define INIT_LIST(list) ((list).nalloc = (list).nused = 0, (list).vals = NULL)
@@ -151,10 +157,8 @@ Array 		_dxfExNewInteger 		(int n);
 #define SIZE_LIST(list) ((list).nused)
 #define FREE_LIST(list) (DXFree((Pointer)((list).vals)), INIT_LIST(list))
 
-extern int _dxd_exEnableDebug;
 #define	ExDebug			if (_dxd_exEnableDebug) DXDebug
 
-extern long _dxd_exMarkMask;
 #define	ExMarkTime(_m,_t)	if (_m & _dxd_exMarkMask) DXMarkTime (_t)
 #define	ExMarkTimeLocal(_m,_t)	if (_m & _dxd_exMarkMask) DXMarkTimeLocal (_t)
 

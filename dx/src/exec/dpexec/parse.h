@@ -15,7 +15,6 @@
 
 #include <dx/dx.h>
 #include "exobject.h"
-#include "config.h"
 #include "utils.h"
 
 /*
@@ -55,8 +54,10 @@
 
 #define	yyerror		_dxf_ExYYError
 #define	yygrabdata	_dxf_ExYYGrabData
-#define	yylex		_dxf_ExYYLex
-#define	yyparse		_dxf_ExYYParse
+#define yylex		_dxf_ExYYLex
+#define yyparse		_dxf_ExYYParse
+
+extern int yyparse();
 
 #define	LIST_CREATE(_e)	      	if(_e) _e->last = _e;
 #define	LIST_APPEND(_l, _e)\
@@ -299,7 +300,7 @@ typedef struct
 /*
  * The top level node declaration.
  */
-extern struct node	*_dxd_exParseTree;
+extern struct node	*_dxd_exParseTree; /* from yuiif.c */
 
 typedef struct node
 {
@@ -340,39 +341,42 @@ typedef struct node
  * Parsing Functions
  */
 
-extern		_dxf_ExPDestroyNode (node *n);
+void	_dxf_ExPDestroyNode (node *n);
 
-extern node	*_dxf_ExAppendConst	(node *list, node *elem);
-extern node	*_dxf_ExPExtendConst	(node *n);
+node	*_dxf_ExAppendConst	(node *list, node *elem);
+node	*_dxf_ExPExtendConst	(node *n);
 
-extern node	*_dxf_ExPDotDotList	(node *n1, node *n2, node *n3);
+node	*_dxf_ExPDotDotList	(node *n1, node *n2, node *n3);
 
-extern node	*_dxf_ExPCreateArgument (node *id, node *val);
-extern node	*_dxf_ExPCreateArith	(_op op, node *lhs, node *rhs);
-extern node	*_dxf_ExPCreateAssign	(node *lval, node *rval);
-extern node	*_dxf_ExPCreateAttribute (node *id, node *val);
-extern node	*_dxf_ExPCreateCall	(node *id, node *arg);
-extern node	*_dxf_ExPCreateConst	(Type type, Category category,
+node	*_dxf_ExPCreateArgument (node *id, node *val);
+node	*_dxf_ExPCreateArith	(_op op, node *lhs, node *rhs);
+node	*_dxf_ExPCreateAssign	(node *lval, node *rval);
+node	*_dxf_ExPCreateAttribute (node *id, node *val);
+node	*_dxf_ExPCreateCall	(node *id, node *arg);
+node	*_dxf_ExPCreateConst	(Type type, Category category,
 					 int cnt, Pointer p);
-extern node	*_dxf_ExPCreateData     (Pointer data, int len);
-extern node	*_dxf_ExPCreateExid	(char *id);
-extern node	*_dxf_ExPCreateId	(char *id);
-extern node	*_dxf_ExPCreateLogical	(_op op, node *lhs, node *rhs);
-extern node	*_dxf_ExPCreateLoop	(_ltype type, node *init, node *top,
+node	*_dxf_ExPCreateData     (Pointer data, int len);
+node	*_dxf_ExPCreateExid	(char *id);
+node	*_dxf_ExPCreateId	(char *id);
+node	*_dxf_ExPCreateLogical	(_op op, node *lhs, node *rhs);
+node	*_dxf_ExPCreateLoop	(_ltype type, node *init, node *top,
 				         node *stmt, node *incr, node *bot);
-extern node	*_dxf_ExPCreateMacro	(node *id, node *in, node *out, 
+node	*_dxf_ExPCreateMacro	(node *id, node *in, node *out, 
 					 node *stmt);
-extern node	*_dxf_ExPCreateNode	(_ntype type);
-extern node	*_dxf_ExPCreatePrint	(_ptype type, node *val);
-extern node	*_dxf_ExPCreateBackground (int handle, _bg type, node *stmt);
-extern node	*_dxf_ExPCreatePacket   (_pack type, int number, int size, 
+node	*_dxf_ExPCreateNode	(_ntype type);
+node	*_dxf_ExPCreatePrint	(_ptype type, node *val);
+node	*_dxf_ExPCreateBackground (int handle, _bg type, node *stmt);
+node	*_dxf_ExPCreatePacket   (_pack type, int number, int size, 
 					 node *packet);
 
+node	*_dxf_ExPNegateConst (node *elem);
 
-extern node	*_dxf_ExPNegateConst (node *elem);
+void	_dxf_ExEvaluateConstants (int);
+void     _dxf_ExEvalConstant (node *n);
 
-extern void	_dxf_ExEvaluateConstants (int);
-extern void     _dxf_ExEvalConstant (node *n);
+/* for starting a task on one or all processors.  private to the exec */
+Error _dxf_ExRunOnAll (PFE func, Pointer arg, int size);
+Error _dxf_ExRunOn (int JID, PFE func, Pointer arg, int size);
 
 /*
  * Parsing Variables

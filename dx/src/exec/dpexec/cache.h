@@ -31,17 +31,15 @@ typedef struct pathtag
     int         entry_inuse;
 } pathtag;
 
-int _dxf_ExCacheInit(void);
-uint32 _dxf_ExGenCacheTag(char *function, int key, int n, uint32 *in);
-
-int _dxf_ExCacheInsert(gvar *obj);
-
-int _dxf_ExCacheDelete(uint32 key);
-
-gvar *_dxf_ExCacheSearch(uint32 key);
-
-Error _dxf_ExCacheFlush(int all);
-
-extern EXDictionary _dxd_exCacheDict;
+int     _dxf_ExCacheInit(void);
+uint32  _dxf_ExGenCacheTag(char *function, int key, int n, uint32 *in);
+int     _dxf_ExCacheInsert(gvar *obj);
+int     _dxf_ExCacheDelete(uint32 key);
+gvar   *_dxf_ExCacheSearch(uint32 key);
+Error   _dxf_ExCacheFlush(int all);
+int     _dxf_ExCacheInsertRemoteTag (int fd, int swap);
+int     _dxf_ExCacheDeleteRemoteTag (int fd, int swap);
+int     _dxf_ExCacheListDeleteRemoteTag(int fd, int swap);
+extern EXDictionary _dxd_exCacheDict; /* defined in cache.c */
 
 #endif /* _CACHE_H_ */

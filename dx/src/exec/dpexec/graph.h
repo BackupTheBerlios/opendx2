@@ -216,12 +216,29 @@ typedef struct program {
     LIST(char *) 		foreach_id;
 } Program;
     
+
+extern gfunc            *_dxd_exCurrentFunc; /* from graph.c */
+extern  EXDictionary    _dxd_exGraphCache;   /* from graph.c */
+
 gvar	*_dxf_ExCreateGvar (_gvtype type);
 void	 _dxf_ExDefineGvar (gvar *gv, Object o);
+void	 _dxf_ExUndefineGvar(gvar *gv);
 Program	*_dxf_ExGraph (node *n);
 void	 _dxf_ExGraphDelete (Program *p);
 int	 _dxf_ExGraphCompact (void);
-extern void     _dxf_ExGraphInit (void);
+void     _dxf_ExGraphInit (void);
+void     _dxf_ExMarkVarRequired(int gid, int sgid, int fnbr, int pvar, int requiredFlag);
+void 	_dxf_ExGQDecrement (Program *p);
+void    _dxf_ExQueueGraph(Program * p);
+int     _dxf_NextGraphId();
+int     _dxf_ExMacroRecursionCheck (char *name, _ntype type);
+int     _dxf_ExNoCachePush (int n);
+void    _dxf_ExNoCachePop ();
+void    _dxf_ExMacroRecursionPop (char *name, _ntype type);
+int     DXGetModulePathLen();
+int     DXGetModulePath(char *path);
+int     _dxf_ExGetCurrentInstance();
+Error   m__badfunc(Object *in, Object *out);
 
 #define EX_PIN_PROC 2
 

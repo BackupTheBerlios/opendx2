@@ -8,15 +8,15 @@
 
 #include <dxconfig.h>
 
-
-
 #include <time.h>
 #include <dx/dx.h>
+#include "config.h"
 #include "_variable.h"
 #include "background.h"
 #include "graph.h"
 #include "log.h"
 #include "distp.h"
+#include "rq.h"
 
 typedef struct varupdateArg
 {
@@ -42,7 +42,6 @@ int
 _dxf_ExVariableInsert(char *name, EXDictionary dict, EXO_Object obj)
 {
     int		ret;
-    GDictSend   pkg;
 
     if (!strcmp(name, "NULL"))
     {
@@ -65,7 +64,6 @@ int
 _dxf_ExVariableInsertNoBackground(char *name, EXDictionary dict, EXO_Object obj)
 {
     int		ret;
-    GDictSend   pkg;
 
     if (!strcmp(name, "NULL"))
     {
@@ -117,7 +115,6 @@ _dxf_ExGVariableGetStr(char *var)
     char	*val;
 
     vargetArg *va;
-    int ret;
 
     va = (vargetArg *) DXAllocate(sizeof(vargetArg));
     va->name = var;
@@ -152,13 +149,13 @@ _dxf_ExUpdateGlobalDict (char *name, Object obj, int cause_execution)
        to = TOSLAVES;
     if (cause_execution) {
 	rc =  _dxf_ExVariableInsert(name, _dxd_exGlobalDict, (EXObj)gv);
-        _dxf_ExCreateGDictPkg(&pkg, name, gv);
+        _dxf_ExCreateGDictPkg(&pkg, name, &gv->object);
         _dxf_ExDistributeMsg(DM_INSERTGDICT, (Pointer)&pkg, 0, to);
     }
     else {
 	rc =  _dxf_ExVariableInsertNoBackground(name, _dxd_exGlobalDict, 
 						(EXObj)gv);
-        _dxf_ExCreateGDictPkg(&pkg, name, gv);
+        _dxf_ExCreateGDictPkg(&pkg, name, &gv->object);
         _dxf_ExDistributeMsg(DM_INSERTGDICTNB, (Pointer)&pkg, 0, to);
     }
     
@@ -184,10 +181,10 @@ Error DXSetIntVariable(char *name, int val, int sync, int cause_execution)
     ExDebug("*1","Setting IntVar %s to %d", name, val);
 
     if (!(arr = DXNewArray (TYPE_INT, CATEGORY_REAL, 0)))
-        return;
+        return ERROR;
 
     if (!DXAddArrayData (arr, 0, 1, (Pointer) &val))
-        return;
+        return ERROR; 
 
     return(DXSetVariable(name, (Object)arr, sync, cause_execution));
 }

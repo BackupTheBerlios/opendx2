@@ -14,6 +14,10 @@
  */
 #include <dx/dx.h>
 
+#if defined(HAVE_CRYPT_H)
+#include <crypt.h>
+#endif
+
 #if defined(HAVE_TIME_H)
 #include <time.h>
 #endif
@@ -53,6 +57,8 @@
 #include <sys/time.h>
 #endif
 
+#include "config.h"
+
 #ifdef DXD_LICENSED_VERSION
 #include "license.h"
 
@@ -70,17 +76,9 @@ struct lic_info {
 struct lic_info dxlic = {-1, -1};
 struct lic_info mplic = {-1, -1};
 
-extern char *crypt(char *key, char *salt);
-
 static Error system_hostname(char *buf);
 static Error checkexp(char *root, lictype ltype);
 static char messagebuf[1024];
-
-extern int _dxd_ExHasLicense;
-extern int _dxd_exRemote;
-extern int *_dxd_exTerminating;
-extern char *_dxd_exHostName;
-extern int _dxd_exRemoteSlave;
 
 int _dxfCheckLicenseChild(int child)
 {
@@ -393,7 +391,6 @@ Error ExLicenseFinish()
 
 Error ExGetPrimaryLicense()
 {
-    extern lictype _dxd_exForcedLicense;
     lictype lic;
     int force;
 

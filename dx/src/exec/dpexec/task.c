@@ -28,74 +28,15 @@
 
 #include <dx/dx.h>
 
+#include "task.h"
 #include "rq.h"
-#include "utils.h"
 #include "status.h"
 #include "config.h"
-#include "context.h"
-
-extern gfunc   *_dxd_exCurrentFunc;
-
-/* #define TASK_TIME */
-
-#define	EX_TASK_DATA	128			/* local task data	*/
-#define	EX_TASK_BLOCKS	256			/* initial task blocks	*/
-#define FREE_THRESHOLD	2
-#define MAX_SAVED_TASKS (EX_TASK_BLOCKS)
+#include "graph.h"
 
 #define	EMPTY		(_tasks == NULL)
 #define	POP(_tg)	{_tg = _tasks; _tasks = _tg->link;}
 #define	PUSH(_tg)	{_tg->link = _tasks; _tasks = _tg;}
-
-
-typedef struct _EXTask		*EXTask;
-typedef struct _EXTaskGroup	*EXTaskGroup;
-
-
-typedef struct _EXTask
-{
-    EXTaskGroup		tg;			/* control block	*/
-    float		work;			/* work estimate	*/
-    PFE			func;			/* function to call	*/
-    int			repeat;			/* number of requested reps */
-    int			nocopy;			/* just pass arg flag	*/
-    int			delete;			/* 1->not in `tasks' array */
-    Pointer		arg;			/* function argument	*/
-    unsigned char	data[EX_TASK_DATA];	/* local data storage	*/
-    Context             taskContext;            /* copy of global context */
-} _EXTask;
-
-
-typedef struct _EXTaskGroup
-{
-    lock_type		lock;
-    EXTaskGroup		link;			/* stack linkage 	*/
-    int			procId;			/* Creating process ID  */
-    int			nalloc;			/* # of tasks allocated	*/
-    int			nused;			/* # of tasks used	*/
-    int			ntodo;			/* # of tasks to do	*/
-    EXTask		tasks;			/* the task blocks	*/
-    float		minwork;		/* smallest work est.	*/
-    float		maxwork;		/* largest  work est.	*/
-    int			sync;			/* synchronous flag	*/
-    ErrorCode		error;			/* for error return	*/
-    char		*emsg;			/* for error return	*/
-} _EXTaskGroup;
-
-typedef struct 
-{
-    float	work;
-    EXTask	task;
-} WorkIndex;
-
-
-static Error	ExDestroyTaskGroup	(EXTaskGroup tg);
-static Error	ExProcessTask		(EXTask t, int iteration);
-static Error	ExProcessTaskGroup	(int sync);
-
-void		_dxf_ExPrintTask		(EXTask t);
-void		_dxf_ExPrintTaskGroup	(EXTaskGroup tg);
-
 
 /* Note that these structures (the task stack and free list)
  * are PER PROCESSOR.
@@ -127,6 +68,11 @@ typedef struct
 
 static MFork	*_mf_g	= NULL;
 static MFork	_mf_l;
+
+/* Internal function prototypes */
+static Error    ExDestroyTaskGroup      (EXTaskGroup tg);
+static Error    ExProcessTask           (EXTask t, int iteration);
+static Error    ExProcessTaskGroup      (int sync);
 
 static Error
 _mfork_init ()
@@ -234,11 +180,13 @@ DXProcessorId(void)
     return(_dxd_exMyPID);
 }
 
+#if 0
 static int
 ParentProcessId(void)
 {
     return(_dxd_exPPID);
 }
+#endif
 
 int
 DXProcessors (int n)
@@ -662,7 +610,7 @@ copymessage:
 	len = strlen (emsg);
 	len = len >= L_ERROR ? L_ERROR - 1 : len;
 	strncpy (lbuf, emsg, len);
-	lbuf[len] = NULL;
+	lbuf[len] = 0;
 	emsg = _dxf_ExCopyString (lbuf);
     }
 
@@ -952,9 +900,6 @@ typedef struct
 
 static Error ExRunOnWorker (EXROJob job, int n)
 {
-    ErrorCode	code	= ERROR_NONE;
-    char	*emsg	= NULL;
-
     DXResetError ();
     (* job->func) (job->arg);
     job->code = DXGetError ();
@@ -1035,7 +980,7 @@ Error
 _dxf_ExRunOnAll (PFE func, Pointer arg, int size)
 {
     int		i;
-    Error	ret;
+    Error	ret=OK;
 
     for (i = 0; i < taskNprocs; i++)
     {

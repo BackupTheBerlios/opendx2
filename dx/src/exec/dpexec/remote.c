@@ -15,97 +15,86 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+#if defined(HAVE_WAIT_H)
+#include <wait.h>
+#endif
 #if defined(HAVE_CTYPE_H)
 #include <ctype.h>
 #endif
-
 #if defined(HAVE_ERRNO_H)
 #include <errno.h>
 #endif
-
 #if defined(HAVE_STRING_H)
 #include <string.h>
 #endif
-
 #if defined(HAVE_FCNTL_H)
 #include <fcntl.h>
 #endif
-
 #if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
 #endif
-
 #if defined(HAVE_TIME_H)
 #include <time.h>
 #endif
-
 #if defined(HAVE_SYS_TIMES_H)
 #include <sys/time.h>
 #endif
-
 #if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
-
 #if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
 #endif
-
 #if defined(HAVE_SYS_FILIO_H)
 #include <sys/filio.h>
 #endif
-
 #if defined(HAVE_IO_H)
 #include <io.h>
 #endif
-
 #if defined(HAVE_WINIOCTL_H)
 #include <winioctl.h>
 #endif
-
 #if defined(HAVE_SYS_IOCTL_H)
 #include <sys/ioctl.h>
 #endif
-
 #if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
-
 #if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
 #endif
-
 #if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
 #endif
-
 #if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
-
 #if defined(HAVE_PWD_H)
 #include <pwd.h>
 #endif
-
 #if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
 
+#include "remote.h"
 #include "pmodflags.h"
-
 #include "obmodule.h"
 #include "config.h"
 #include "utils.h"
 #include "parse.h"
 #include "distp.h"
 #include "context.h"
+#include "_macro.h"
+#include "_variable.h"
+#include "ccm.h"
+#include "graph.h"
 
-extern Object _dxfExportBin_FP(Object o, int fd);
-extern Object _dxfImportBin_FP(int fd);
-extern int _dxfExRemoteExec(int dconnect, char *host, char *ruser, 
-			    int r_argc, char **r_argv, int outboard);
-extern Error _dxfExRemote(Object *in, Object *out);
-extern void _dxfPrintConnectTimeOut(char *execname, char *hostname);
+extern Object _dxfExportBin_FP(Object o, int fd); /* from libdx/rwobject.c */
+extern Object _dxfImportBin_FP(int fd); /* from libdx/rwobject.c */
+extern int _dxfHostIsLocal(char *host); /* from libdx/ */
 
 #define MAX_STARTUP_ARGS 100
 
@@ -122,8 +111,7 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 {
  #if defined(HAVE_FORK) 
    char s[BUFSIZ];
-    char wd[BUFSIZ],script_name[500],cmd[1000];
-    char cmdpvs[1000];
+    char script_name[500],cmd[1000];
     char localhost[BUFSIZ];
     FILE *fp = NULL;
     int i, k;
@@ -132,11 +120,8 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
     char *fargv[MAX_STARTUP_ARGS];
     int child;
     struct hostent *he;
-    char *home;
     int findx;
     char *pathEnv;
-    char *is;
-    char *os;
     int  j;
     int ret;
     int found;
@@ -151,7 +136,6 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 #endif
 #endif
     char *dnum;
-    char dstring[256];
 
     /*
      * Initialize return values (to default negative results).
@@ -183,7 +167,6 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 
     if (_dxfHostIsLocal(host)) {
 	char *path;
-	char *opath;
 	struct stat sbuffer;
 
 	if (user != NULL)
@@ -324,7 +307,7 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 			evar[j] = ep[i][j];
 		evar[j] = '\0';
 		k = j + 1;	/* Skip the '=' sign */
-		for (j=0 ; c = ep[i][k] ; k++, j++) {
+		for (j=0 ; (c=ep[i][k]); k++, j++) {
 			if (c == '\'') {		/* ' -> '\'' */
 				/* Value contains a double quote */
 				eval[j++] = '\'';
@@ -372,6 +355,8 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
     }
 
 #if DXD_HAS_LIBIOP
+    {
+    char cmdpvs[1000];
     strcpy(cmdpvs, fargv[0]);
     for(i = 1; i < findx-1; i++) {
         strcat(cmdpvs, " ");
@@ -381,6 +366,7 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
     ExDebug("*2", "cmd to run %s", cmdpvs);
     system(cmdpvs);
     return(1);
+    }
 #elif sgi
     if(pcreateve(fargv[0], fargv, rep) < 0) {
         perror("pcreateve");
@@ -503,8 +489,8 @@ int _dxfExRemoteExec(int dconnect, char *host, char *ruser, int r_argc,
     struct sockaddr_un  dxuserver;
     int			dxusock;
 #endif
-    int                 i, len;
-    extern char         **environ;
+    int                 i;
+    extern char         **environ; 
     int                 child = 0;
     int                 in = -1, out = -1, error = -1;
     char                **nargv = NULL;
@@ -700,8 +686,6 @@ Error DXOutboard (Object *in, Object *out)
 Error
 _dxfExRemote (Object *in, Object *out)
 {
-    extern      int _dxf_ExGetCurrentInstance();
-
     Error	ret	= ERROR;
     char	*cmd;
     char	*hostp;
@@ -720,7 +704,6 @@ _dxfExRemote (Object *in, Object *out)
     Group	g	 = NULL;
     char	buff[BUFLEN];
     int		fd = -1;
-    int		c;
     int		instance = 0;
     Object	obj;
     ErrorCode	rc;
@@ -729,7 +712,6 @@ _dxfExRemote (Object *in, Object *out)
     char        *av[2];
     Object	attr;
     int		isMsg;
-    char	*msg;
     Object      cachelist[2];
     char	cachetag[32];
     int 	one = 1; 
@@ -924,7 +906,7 @@ _dxfExRemote (Object *in, Object *out)
 		Object whoObj = NULL;
 		Object msgObj = NULL;
 		char *who, *msg;
-		va_list nolist = { NULL };
+		va_list nolist;
 		
 		whoObj = DXGetEnumeratedMember((Group)obj, 0, NULL);
 		if (!whoObj || !DXExtractString(whoObj, &who))
@@ -1026,7 +1008,6 @@ _dxfExRemote (Object *in, Object *out)
 
     /* fall thru */
 
-  close:
     if (!persistent && fd >= 0)
     {
 	close (fd);
@@ -1081,7 +1062,6 @@ Error
 _dxf_ExDeleteReallyRemote (char *procgroup, char *name, int instance)
 {
     node	*module;
-    node	*id;
     int		flags;
     int		both;
     int		fd;
@@ -1152,7 +1132,6 @@ Pointer DXGetModuleId()
 {
     Pointer id;
     int len;
-    char *cpath;
 
     len = DXGetModulePathLen() + 1;
     
@@ -1169,7 +1148,6 @@ Pointer DXGetModuleId()
 Pointer DXCopyModuleId(Pointer id)
 {
     Pointer nid;
-    int len;
 
     if (id == NULL || (char *)id == '\0')
 	return NULL;

@@ -10,6 +10,7 @@
 
 
 #include <dx/dx.h>
+#include "config.h"
 #include "distp.h"
 
 /*

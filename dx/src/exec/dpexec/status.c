@@ -13,6 +13,7 @@
 #include <dx/dx.h>
 #undef Screen
 
+#include <stdlib.h>
 
 #if DXD_PROCESSOR_STATUS
 #include <X11/Xatom.h>
@@ -31,17 +32,21 @@
 #include <signal.h>
 #endif
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 #include "utils.h"
 #include "status.h"
 
-int 		*_dxd_exProcessorStatus	= NULL;
+int             *_dxd_exProcessorStatus=NULL;
 static int	*old_status		= NULL;
 static int	draw_status		= FALSE;
 static int	nproc			= 4;
 int		_dxd_exStatusPID		= 0;
 
 void _dxf_ExInitStatusW (int n);
+void _dxf_ExReportStatus ();
 
 /*
  * Initialize the processor status window.  Fork a subprocess to watch
@@ -109,7 +114,6 @@ void _dxf_ExCleanupStatus ()
 
 
 /**************************************************************************/
-extern char	*getenv ();
 
 typedef struct
 {
@@ -153,7 +157,7 @@ static s_color	s_data[] =
 
 
 static Display		*s_disp = NULL;
-static Window		s_wind  = NULL;
+static Window		s_wind  = 0;
 static GC		s_gc	= NULL;
 
 void _dxf_ExCleanupStatusW (void);
@@ -287,7 +291,7 @@ void _dxf_ExCleanupStatusW (void)
  * Run forever.  This process watches for changes in the processors' status
  * flags and updates the window appropriately.
  */
-_dxf_ExReportStatus ()
+void _dxf_ExReportStatus ()
 {
     int		i;
     int		status;

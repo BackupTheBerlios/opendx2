@@ -11,17 +11,16 @@
 
 #include <dx/dx.h>
 #include <string.h>
+#include "help.h"
 #include "_macro.h"
 #include "parse.h"
 #include "log.h"
+#include "graph.h"
 
-extern Error m__badfunc(Object *, Object *);
-
-_dxf_ExInitHelp ()
+Error _dxf_ExInitHelp ()
 {
     return (OK);
 }
-
 
 #define	ADVANCE(_bp)	while (*(_bp)) (_bp)++
 #define	ADDCOMMA(_bp)	{strcpy (_bp, ", "); ADVANCE (_bp);}

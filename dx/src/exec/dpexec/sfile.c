@@ -1,3 +1,11 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
+
 #include <dxconfig.h>
 #include <dx/dx.h>
 #include "sfile.h"
@@ -18,12 +26,12 @@
 #include <sys/types.h>
 #endif                                         
 
-#if !defined(HAVE_CYGWIN_SOCKET_H) &&  !defined(HAVE_SYS_SOCKET_H) && !defined(HAVE_SOCKET_H) && defined(HAVE_WINSOCK_H)
-#define HANDLE_SOCKET
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
 #endif
 
-#if !defined(SOCKET)
-#define SOCKET int
+#if defined(HAVE_SYS_SELECT_H)
+#include <sys/select.h>
 #endif
 
 struct sfile
@@ -178,7 +186,7 @@ writeToSFILE(SFILE *sf, char *buf, int n)
 	return send(ssf->socket, buf, n, 0);
     else
 #endif
-    write(ssf->fd, buf, n);
+        return write(ssf->fd, buf, n);
 }
 
 extern SFILE *_dxd_exSockFD;
@@ -186,7 +194,6 @@ extern SFILE *_dxd_exSockFD;
 int 
 SFILECharReady(SFILE *sf)
 {
-	int fd;
 	int i = 1;
 	struct sfile *ssf = (struct sfile *)sf;
 
@@ -307,8 +314,8 @@ SFILEGetChar(SFILE *sf)
 int
 SFILEIoctl(SFILE *sf, int cmd, void *argp)
 {
-    struct sfile *ssf = (struct sfile *)sf;
 #if defined(HANDLE_SOCKET)
+    struct sfile *ssf = (struct sfile *)sf;
     if (ssf->type == SFILE_SOCKET)
 	return ioctlsocket(ssf->socket, cmd, argp);
     else

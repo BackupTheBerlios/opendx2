@@ -8,91 +8,31 @@
 
 #include <dxconfig.h>
 
-
-#include <dx/dx.h>
-#include "pmodflags.h"
-#include "utils.h"
-#include "distp.h"
-#include "parse.h"
-
 #include <stdio.h>
 #include <ctype.h>
-#include <stdarg.h>
 #include <stdarg.h>
 #include <string.h>
 #include <fcntl.h>
 
+#include <dx/dx.h>
 
-/* funcs for dynamic loading.  these belong in a header file somewhere */
-extern Error DXLoadAndRunObjFile (char *fname, char *envvar);
-extern Error DXUnloadObjFile (char *fname, char *envvar);
-extern PFI   DXLoadObjFile (char *fname, char *envvar);
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
-/* belongs in libdx somewhere.  see loader.c for source and usage.  */
-extern Error _dxf_fileSearch(char *inname, char **outname, char *extension,
-			     char *environment);
+#include "config.h"
+#include "pmodflags.h"
+#include "utils.h"
+#include "distp.h"
+#include "parse.h"
+#include "parsemdf.h"
+#include "_macro.h"
+#include "remote.h"
+#include "loader.h"
+#include "graph.h"
+#include "function.h"
 
-/* for starting a task on one or all processors.  private to the exec */
-Error _dxf_ExRunOnAll (PFE func, Pointer arg, int size);
-Error _dxf_ExRunOn (int JID, PFE func, Pointer arg, int size);
-
-
-
-
-/*
- * token and private flag constants:
- */
-#define T_NONE		0x00000000
-#define T_MODULE	0x00000001
-#define T_CATEGORY	0x00000002
-#define T_DESCRIPTION	0x00000004
-#define T_INPUT		0x00000008
-#define T_REPEAT	0x00000010
-#define T_OUTPUT	0x00000020	
-#define T_OPTIONS	0x00000040	
-#define T_FLAGS		0x00000080
-#define T_OUTBOARD      0x00000100
-#define T_LOADABLE      0x00000200
-#define T_ERROR         0x00008000
-
-#define PF_RELOAD	0x00000000   /* redefinition of an existing module */
-#define PF_LOADABLE	0x00000001   /* run-time dynamicly loaded module */
-#define PF_OUTBOARD     0x00000002   /* outboard module definition */
-	
-
-#define F_NONE          0
-
-#define REPCOUNT        20   /* should match constant in mdf2c file */
-
-/* this now works for both outboards and loadable modules.  
- */
-
-struct modargs {
-    char *		thisarg;      /* name of this input/output */
-    char * 		deflt;        /* default value (not used yet) */
-    struct modargs *	nextarg;      /* linked list pointer */
-};
-
-struct moddef {
-    char *		m_name;       /* module name */
-    PFI			m_func;       /* entry point - function address */ 
-    int			m_flags;      /* module flags */
-    int			m_nin;        /* number of inputs */
-    struct modargs *	m_innames;    /* list of inputs - modargs structs */
-    int			m_nout;       /* number of outputs */
-    struct modargs *	m_outnames;   /* list of outputs - modargs structs */
-    char *		m_exec;       /* for outboards, filename to run */
-    char *		m_host;       /* for outboards, host to run on */
-    int			m_pflags;     /* private flags for parsemdf use */
-    char *		m_loadfile;   /* filename for loadable modules */
-};
-
-extern Error DXOutboard (Object *in, Object *out);
-extern EXDictionary     _dxd_exGraphCache;
-extern int _dxd_exGoneMP;
 static Error do_mdf_load(struct moddef *mp);
-
-
 
 /* this has to be in global memory for MP systems
  * since adding run-time modules has to happen on 
@@ -157,7 +97,6 @@ static Error delmod(struct moddef *mp)
 static Error addarg(struct moddef *mp, int type, char *name, char *def)
 {
     struct modargs *map, *newmap;
-    int i;
 
     if (!mp)
 	return OK;
@@ -468,7 +407,6 @@ Error _dxf_ExRecvMdfPkg(int fromfd, int swap)
 {
     int i, len, num;
     struct moddef *mp;
-    struct modargs *map;
     char *argname;
 
 
@@ -888,11 +826,10 @@ static Error ExParseMDF(char *str)
     int lineno = 0;
     int modflag;
     int repcount;
-    int loadable = 0;     /* see the comment below in the loadable section */
-    int id, rc;
+    int id;
     int argtype = -1;
     char *tempc;
-    char *nextc, *cp;
+    char *nextc;
     struct moddef *mp = NULL;
 
 
@@ -1082,8 +1019,6 @@ static Error ExParseMDF(char *str)
 
 	nextc = nextline(nextc, 1, &lineno);
     }
-
-  done:
 
     /* at end-of-string, finish current definition if there is one */
     if (mp) {

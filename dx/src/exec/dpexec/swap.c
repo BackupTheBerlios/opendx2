@@ -154,8 +154,8 @@ void _dxf_ExSetGVarCost(gvar *gv, double cost)
 
 #define	N_PER_ITER	512
 
-extern void DXInitMaxFreedBlock();
-extern int  DXMaxFreedBlock();
+extern void DXInitMaxFreedBlock(); /* from libdx/memory.c */
+extern int  DXMaxFreedBlock(); /* from libdx/memory.c */
 
 static int nDeleted;
 
@@ -166,7 +166,6 @@ __ExReclaimMemory (int nbytes)
     gvar	*gv;
     int		skipped;
     char	*key;
-    int		k;
     CacheTagList pkg;
     uint32	 *ctp;
 
@@ -221,7 +220,7 @@ __ExReclaimMemory (int nbytes)
     return skipped;
 }
 
-_dxf_ExReclaimMemory (int nbytes)
+Error _dxf_ExReclaimMemory (unsigned int nbytes)
 {
     int	status;
     int	found;
@@ -323,5 +322,5 @@ _dxf_ExReclaimMemory (int nbytes)
 
     set_status (status);
 
-    return found;
+    return TRUE;
 }

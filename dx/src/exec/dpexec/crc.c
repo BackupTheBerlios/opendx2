@@ -156,9 +156,8 @@ EXCRC _dxf_ExCRCString (EXCRC crc, char *v)
 
 EXCRC _dxf_ExCRCByteV (EXCRC crc, unsigned char *v, int tsize, int n)
 {
-    unsigned char	c, *next, *nextb;
+    unsigned char	c;
     uint32 	        sum = 0;
-    int			i, j;
 
 #if WORDS_BIGENDIAN==1
     n *= tsize;
@@ -169,6 +168,9 @@ EXCRC _dxf_ExCRCByteV (EXCRC crc, unsigned char *v, int tsize, int n)
 	sum += c * PRIMEINT;
     }
 #else
+  { 
+    unsigned char *next, *nextb;
+    int	i, j;
     nextb = next = v + (tsize-1);
     for(i = 0; i < n; i ++) {
         for(j = 0; j < tsize; j++) {
@@ -178,6 +180,7 @@ EXCRC _dxf_ExCRCByteV (EXCRC crc, unsigned char *v, int tsize, int n)
         }
         next += tsize;
         nextb = next;
+   }
     }
 #endif
     crc ^= sum;

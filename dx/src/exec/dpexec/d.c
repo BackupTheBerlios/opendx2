@@ -14,6 +14,7 @@
 
 #include <dx/dx.h>
 
+#include "config.h"
 #include "crc.h"
 #include "d.h"
 #include "graph.h"
@@ -378,10 +379,8 @@ Error _dxf_ExDictionaryInsert (EXDictionary d, char *key, EXObj obj)
     int			b;
     int			l;
     Pointer		k;
-    int			s;
     EXDictElement	e, ne;
     EXObj		o;
-    int			i,ilimit;
 
 #ifdef DICT_TIMING
 DXMarkTimeLocal("D insert");

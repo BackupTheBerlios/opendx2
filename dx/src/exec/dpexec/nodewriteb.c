@@ -11,9 +11,17 @@
 
 #include <stdio.h>
 #include <dx/dx.h>
-#include "parse.h"
+
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
+#include "config.h"
+#include "nodeb.h"
 
 static char wbuffer[PTBUFSIZE];
+
+int ExWriteNode(int fd, struct node *n);
 
 void writeBuf(int fd, Pointer Buffer, int size)
 {
@@ -48,6 +56,7 @@ int _dxf_ExWriteTree(struct node *pt, int fd)
 {
     ExWriteNode(fd, pt);
     writeBuf(fd, NULL, 0);
+    return (0);
 }
 
 int ExNodeListCheck(int fd, struct node *n)
@@ -57,12 +66,14 @@ int ExNodeListCheck(int fd, struct node *n)
     for(; n; n = n->next)
         numnodes++;
     writeBuf(fd, &numnodes, sizeof(int));
+    return (0);
 }
 
 int ExWriteNodeList(int fd, struct node *n)
 {
     ExNodeListCheck(fd, n);
     ExWriteNode(fd, n);
+    return (0);
 }
 
 
@@ -201,6 +212,7 @@ int ExWriteNode(int fd, struct node *n)
                 break;
         }
     }
+    return (0);
 }
 
 

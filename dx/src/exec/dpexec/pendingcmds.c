@@ -10,26 +10,7 @@
 
 
 #include <dx/dx.h>
-
-typedef int (*PFI_P)(Private);
-
-typedef struct
-{
-    char    *major;
-    char    *minor;
-    PFI_P   job;
-    Private data;
-} PendingCmd;
-
-typedef struct 
-{
-    Object       private;
-    PendingCmd	*pendingCmdList;
-    int          pendingCmdListMax;
-    int          pendingCmdListSize;
-} PendingCmdList;
-
-#define PJL_KEY "__PendingObjectList"
+#include "pendingcmds.h"
 
 static PendingCmdList *
 _dxf_getPendingCmdList()
@@ -134,15 +115,16 @@ Error
 DXSetPendingCmd(char *major, char *minor, int (*job)(Private), Private data)
 {
     int i;
-    PendingCmd *p, *n;
+    PendingCmd *p;
     PendingCmdList *pjl = _dxf_getPendingCmdList();
 
-    if (!pjl)
+    if (!pjl){
 	if (!job)
 	    return OK;
 	else
 	    if (NULL == (pjl = _dxf_newPendingCmdList()))
 		goto error;
+    }
 
     for (i = 0, p = pjl->pendingCmdList;
 		i < pjl->pendingCmdListSize; i++, p++)
@@ -251,4 +233,5 @@ Error
 _dxf_CleanupPendingCmdList()
 {
     DXSetCacheEntry(NULL, CACHE_PERMANENT, PJL_KEY, 0, 0);
+    return OK; 
 }

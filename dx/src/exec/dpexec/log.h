@@ -8,6 +8,8 @@
 
 #include <dxconfig.h>
 
+#ifndef _LOG_H
+#define _LOG_H
 
 #define LOG_FATAL	0
 #define LOG_ERROR	1
@@ -21,4 +23,10 @@
 
 extern int _dxd_exErrorPrintLevel;
 
+int _dxf_ExLogOpen();
+void _dxf_ExLogClose();
 int lprintf(int type, char *format, ...);
+void _dxf_ExQMessage(int type, int graphId, int len, char *buf);
+void _dxf_ExLogError (int errnum);
+
+#endif /* _LOG_H */

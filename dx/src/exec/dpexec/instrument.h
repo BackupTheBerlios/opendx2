@@ -24,8 +24,8 @@ typedef struct {
     int numMasterTry;
 } Instrumentation;
 
-extern Instrumentation	*exInstrument;
-extern int		exDoInstrumentation;
+extern Instrumentation	*exInstrument; /* defined in instrument.c */
+extern int		exDoInstrumentation; /* defined in instrument.c */
 #define IFINSTRUMENT(x) do {if(exDoInstrumentation) {x;}} while (0)
 
 void ExAllocateInstrument (int);

@@ -15,24 +15,17 @@
 #include <math.h>
 #include <errno.h>
 
+#include "config.h"
 #include "sfile.h"
 #include "context.h"
 #include "parse.h"
 #include "yuiif.h"
 #include "log.h"
 #include "sysvars.h"
+#include "lex.h"
+#include "command.h"
 
 #define U(x) (x)
-#define LINEFEED 10
-
-#define YYLMAX_1	4000		/* max string/identifer length */
-#define YYLMAX		(YYLMAX_1 + 1)
-
-typedef struct _cmdBuf
-{
-    char *buf;
-    struct _cmdBuf *next;
-} CmdBuf;
 
 static CmdBuf *cmdHead = NULL, *cmdTail = NULL;
 static char *cmdPtr = NULL;
@@ -151,9 +144,6 @@ GetC(SFILE *yyin)
 }
  
  
-extern int _dxd_exRshInput;
-extern int _dxd_exIsatty;
- 
 int _dxd_exUIPacket		= FALSE;
 static int uipacketlen		= 0;
 static int uipackettype		= 0;
@@ -254,7 +244,7 @@ Error _dxf_ExInitLex ()
  * DXFree the global storage needed by the lexical analyzer
  */
 
-_dxf_ExCleanupLex ()
+void _dxf_ExCleanupLex ()
 {
     DXFree ((Pointer) yyText);
 }
@@ -275,7 +265,7 @@ keycomp(const void *a, const void *b)
 }
  
  
-_dxf_ExLexInit ()
+void _dxf_ExLexInit ()
 {
     _dxd_exUIPacket	= FALSE;
     uipacketlen	= 0;
@@ -286,7 +276,7 @@ _dxf_ExLexInit ()
 /*
  * Pinpoint the location of an error.
  */
-_dxf_ExLexError ()
+void _dxf_ExLexError ()
 {
     int		i;
     char	buffer[2048];
@@ -350,7 +340,6 @@ static int
 ParseIString (int base, char *yytext, int yyleng, int *ip, float *fp)
 {
     int		ival	= 0;
-    float	fval	= 0;
     int		i;
     int		c;
 
@@ -377,6 +366,8 @@ ParseIString (int base, char *yytext, int yyleng, int *ip, float *fp)
 	    return (TRUE);
 f8:
 #if 0
+    {
+    float	fval	= 0;
 	    for (i = 1; i < yyleng; i++)
 	    {
 		fval *= (float) 8;
@@ -387,6 +378,7 @@ f8:
 	    }
 	    DXWarning ("#4520", "octal");
 	    *fp = fval;
+     }
 #endif
 	    DXUIMessage ("ERROR", piserr, "Octal", " ", yytext);
 	    return (FALSE);
@@ -504,7 +496,6 @@ int yylex()
     char	dbg[2048];
     char	*prompt;
     int		ret;
-    extern int	_dxd_exParseError;
  
     LEXIN;
     /*
@@ -615,7 +606,7 @@ int yylex()
 		    for (i = 0, c = input (); c != '\n'; c = input ())
 			dbg[i++] = (char) c;
 		    unput (c);
-		    dbg[i] = NULL;
+		    dbg[i] = 0;
 		    _dxf_ExExecCommandStr (dbg);
 		    break;
 		}
@@ -989,7 +980,7 @@ floating:
     }
 }
  
-yygrabdata(char *buffer, int len)
+void yygrabdata(char *buffer, int len)
 {
     int yytchar;
  
@@ -999,7 +990,7 @@ yygrabdata(char *buffer, int len)
 }
  
  
-_dxf_ExUIPacketActive (int id, int t, int n)
+void _dxf_ExUIPacketActive (int id, int t, int n)
 {
     _dxd_exUIPacket     = TRUE;
     uipackettype = t;
@@ -1011,7 +1002,7 @@ _dxf_ExUIPacketActive (int id, int t, int n)
     yyCharno = 0;
 }
  
-_dxf_ExUIFlushPacket ()
+void _dxf_ExUIFlushPacket ()
 {
     int		yytchar;
     int		junk;
@@ -1022,7 +1013,7 @@ _dxf_ExUIFlushPacket ()
     }
 }
 
-_dxf_ExFlushNewLine()
+void _dxf_ExFlushNewLine()
 {
     int yytchar;
     int junk;

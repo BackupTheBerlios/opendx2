@@ -39,8 +39,8 @@
 #include <sys/filio.h>
 #endif
 
-
-#include "utils.h"
+#include "rih.h"
+#include "packet.h"
 
 #if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
@@ -49,43 +49,20 @@
 #define	MAXRIH		128
 #define	MAXRCH		32
 
-typedef struct
-{
-    PFE		proc;
-    int		fd;
-    Pointer	arg;
-    PFI		check;
-    int		flag;
-    int		isWin;
-	void	*dpy;
-} _EXRIH, *EXRIH;
-
-
 static int		nRIH	= 0;
 static _EXRIH		handlers[MAXRIH];
 static lock_type	*rih_lock;
 static int		*rih_count;
 
-static Error RIHDelete (int fd);
-static Error RIHInsert (Error (*proc) (int, Pointer),
-	    int fd, Pointer arg, int (*check) (int, Pointer));
-
-
-typedef struct
-{
-    PFE		proc;
-    Pointer	arg;
-    int		when;
-} _EXRCH, *EXRCH;
-
 static int		nRCH	= 0;
 static _EXRCH		callbacks[MAXRCH];
-static lock_type	*rch_lock;
-static int		*rch_count;
 
+/* Internal function prototypes */
+static Error RIHDelete (int fd);
+static Error RIHInsert (Error (*proc) (int, Pointer),
+            int fd, Pointer arg, int (*check) (int, Pointer));
 static Error RCHDelete (Pointer arg);
 static Error RCHInsert (Error (*proc) (Pointer), Pointer arg, int when);
-
 
 Error _dxf_initRIH (void)
 {
@@ -480,8 +457,6 @@ int _dxf_ExCheckRCH (int when)
     EXRCH		r;
     int			ret	= FALSE;
     Error		rval;
-    int			mval;
-    int			fd;
 
     if (nRCH <= 0)
 	return (ret);

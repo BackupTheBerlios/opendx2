@@ -34,9 +34,13 @@
 #endif
 
 #include "exobject.h"
+#include "config.h"
 #include "parse.h"
 #include "vcr.h"
 #include "log.h"
+#include "background.h"
+#include "lex.h"
+#include "command.h"
 
 #include "sfile.h"
 
@@ -252,6 +256,7 @@ _dxf_ExBeginInput()
     yycharno = charnum[*fnum];
 }
 
+void
 _dxf_ExEndInput()
 {
     linenum[*fnum] = yylineno;
@@ -277,7 +282,7 @@ _pushInput (char *name)
 	char		*tmp2;
 	int		size;
 
-	buf[0] = NULL;
+	buf[0] = 0;
 
 	initme = FALSE;
 
@@ -384,7 +389,7 @@ _pushInput (char *name)
 
 static char PopMessage[] = "< INCLUDED FILE > ";
 
-static
+static int
 _popInput()
 {
     char	*cp;

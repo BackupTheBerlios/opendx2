@@ -13,17 +13,19 @@
 #include <stdarg.h>
 #include <string.h>
 #include <dx/dx.h>
+#include "function.h"
+#include "config.h"
 #include "pmodflags.h"
 #include "d.h"
 #include "_macro.h"
 #include "log.h"
-#include "utils.h"
 #include "parse.h"
 #include "context.h"
 #include "attribute.h"
 
 typedef	char	EXC_4[4];
 
+extern int DXGetErrorExit(); /* from libdx/message.c */
 static node *ExExtractAttrs(char *attrstr);
 static node *ExCreateAttrNode(char *attrstr, int attrval);
 
@@ -126,7 +128,7 @@ retry:
 #endif
 
 
-DXAddMacro (node *macro)
+int DXAddMacro (node *macro)
 {
     node	*par;
     int		nin;
@@ -160,7 +162,6 @@ DXAddMacro (node *macro)
 Error DXAddModuleV (char *name, PFI func, int flags, int nin, char *inlist[],
 		    int nout, char *outlist[], char *exec, char *host)
 {
-    int			n;
     char		*par;
     int			i;
     node		*module;
@@ -248,7 +249,7 @@ Error DXAddModuleV (char *name, PFI func, int flags, int nin, char *inlist[],
 	 * look for parameter attributes:  parmname[attr:val,attr:val] 
          * and create an attribute node associated with the input parm.
 	 */
-        if (attrstart = strchr (par, '[')) 
+        if ((attrstart = strchr(par, '['))) 
 	{ 
 	    id  = _dxf_ExPCreateId (_dxf_ExCopyStringN (par, attrstart-par));
 	    id->attr = ExExtractAttrs (attrstart);
@@ -304,7 +305,7 @@ Error DXAddModuleV (char *name, PFI func, int flags, int nin, char *inlist[],
 	 * look for parameter attributes:  parmname[attr:val,attr:val] 
          * and create an attribute node associated with the output parm.
 	 */
-        if (attrstart = strchr (par, '[')) 
+        if ((attrstart = strchr(par, '['))) 
         { 
 	    id  = _dxf_ExPCreateId (_dxf_ExCopyStringN (par, attrstart-par));
 	    id->attr = ExExtractAttrs (attrstart);
@@ -480,7 +481,7 @@ static node *ExExtractAttrs(char *attrstr)
    node *attr_node;
    char formatstr[MAX_ATTRLEN+3];
 
-   if (curr_attr = strstr (attrstr, ATTR_DIREROUTE))  {
+   if ((curr_attr=strstr(attrstr, ATTR_DIREROUTE)))  {
        strcpy (formatstr, ATTR_DIREROUTE);
        strcat (formatstr, ":%d");
        sscanf (curr_attr, formatstr, &tmp);
@@ -488,7 +489,7 @@ static node *ExExtractAttrs(char *attrstr)
        LIST_APPEND (attrlist, attr_node);
    }
 
-   if (curr_attr = strstr (attrstr, ATTR_CACHE))  {
+   if ((curr_attr=strstr(attrstr, ATTR_CACHE)))  {
        strcpy (formatstr, ATTR_CACHE);
        strcat (formatstr, ":%d");
        sscanf (curr_attr, formatstr, &tmp);
@@ -496,7 +497,7 @@ static node *ExExtractAttrs(char *attrstr)
        LIST_APPEND (attrlist, attr_node);
    }
 
-   if (curr_attr = strstr (attrstr, ATTR_RERUNKEY))  {
+   if ((curr_attr=strstr(attrstr, ATTR_RERUNKEY)))  {
        strcpy (formatstr, ATTR_RERUNKEY);
        strcat (formatstr, ":%d");
        sscanf (curr_attr, formatstr, &tmp);
@@ -806,17 +807,8 @@ Error
 DXCompareModule(char *name, PFI func, int flags, int nin, char *inlist[],
 		            int nout, char *outlist[], char *exec, char *host)
 {
-    int			n;
-    char		*par;
-    int			i;
-    node		*module;
     node		*prev_defn;
-    node		*id;
-    node		*list;
     int			ret;
-    char		*sname;
-    char		*attrstart;
-    int			argcnt;
 
     ret = OK;
 
@@ -853,6 +845,17 @@ DXCompareModule(char *name, PFI func, int flags, int nin, char *inlist[],
 
 
 #if 0
+    {
+    int			n;
+    char		*par;
+    int			i;
+    node		*module;
+    node		*id;
+    node		*list;
+    char		*sname;
+    char		*attrstart;
+    int			argcnt;
+
     /* fix this to be sure the input names and attributes match what's
      *  already been defined 
      */
@@ -928,7 +931,7 @@ DXCompareModule(char *name, PFI func, int flags, int nin, char *inlist[],
 
     module->v.module.nout = argcnt;
     module->v.module.out  = list;
-
+    }
 #endif
 
     ExDelete (prev_defn);

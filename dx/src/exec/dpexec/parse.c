@@ -12,6 +12,7 @@
 #define MACRO_MODULES 1
 
 #include <math.h>
+#include "config.h"
 #include "parse.h"
 #include "graph.h"
 
@@ -47,9 +48,6 @@ node_methods[] =
     _dxf_ExNode__Delete
 };
 
-extern char		*_dxd_exParseMesg;
-extern int		_dxd_exParseError;
-
 #if 0
 static void PrintNodeList(register node *n);
 #endif
@@ -79,7 +77,7 @@ node *_dxf_ExPCreateNode (_ntype type)
     return (n);
 }
 
-_dxf_ExPDestroyNode (node *n)
+void _dxf_ExPDestroyNode (node *n)
 {
     if (! n)
 	return;
@@ -93,13 +91,13 @@ _dxf_ExPDestroyNode (node *n)
  * added here.
  */
 
-_dxf_ExNode__Delete(register node *n)
+int _dxf_ExNode__Delete(register node *n)
 {
     node	*next;
     node	*prev;
 
     if (n == NULL)
-	return;
+	return (0);
 
     switch (n->type)
     {
@@ -185,6 +183,7 @@ _dxf_ExNode__Delete(register node *n)
 
     _dxf_ExPDestroyNode (n->attr);
     _dxf_ExPDestroyNode (n->next);
+    return (0);
 }
 
 /*
@@ -220,16 +219,16 @@ node *_dxf_ExPCreateId (char *id)
 node *_dxf_ExPDotDotList (node *n1, node *n2, node *n3)
 {
     node	*n	= NULL;
-    int		isv, iev, idv;		/* int   start/end/delta values	*/
+    int		isv=0, iev=0, idv=0;	/* int   start/end/delta values	*/
     float	fsv, fev, fdv;		/* float start/end/delta values	*/
     double	dsv, dev, ddv;		/* doubles for better precision	*/
     Type	st, et, dt, ot;		/* types			*/
     int		rev;			/* reverse direction		*/
-    int		num;			/* element count		*/
+    int		num=0;			/* element count		*/
 
     if (n1->v.constant.cat != CATEGORY_REAL ||
 	n2->v.constant.cat != CATEGORY_REAL ||
-	n3 && n3->v.constant.cat != CATEGORY_REAL)
+	(n3 && n3->v.constant.cat != CATEGORY_REAL))
     {
 	_dxd_exParseMesg = "semantic error:  invalid category";
 	goto error;
@@ -237,7 +236,7 @@ node *_dxf_ExPDotDotList (node *n1, node *n2, node *n3)
 
     if (n1->v.constant.rank != 0 ||
 	n2->v.constant.rank != 0 ||
-	n3 && n3->v.constant.rank != 0)
+	(n3 && n3->v.constant.rank != 0))
     {
 	_dxd_exParseMesg = "semantic error:  invalid rank";
 	goto error;
@@ -252,9 +251,9 @@ node *_dxf_ExPDotDotList (node *n1, node *n2, node *n3)
     st = n1->v.constant.type;
     et = n2->v.constant.type;
     dt = n3 ? n3->v.constant.type : st;
-    if (st != TYPE_INT && st != TYPE_FLOAT ||
-	et != TYPE_INT && et != TYPE_FLOAT ||
-	dt != TYPE_INT && dt != TYPE_FLOAT)
+    if ((st != TYPE_INT && st != TYPE_FLOAT) ||
+	(et != TYPE_INT && et != TYPE_FLOAT) ||
+	(dt != TYPE_INT && dt != TYPE_FLOAT))
     {
 	_dxd_exParseMesg = "semantic error:  invalid type";
 	goto error;
@@ -334,6 +333,8 @@ node *_dxf_ExPDotDotList (node *n1, node *n2, node *n3)
 	    ddv = rev ? -ddv : ddv;
 	    num++;
 	    break;
+        default:   /* Fix if ever allow other position types. */
+           break;
     }
 
     n = _dxf_ExPCreateConst (ot, CATEGORY_REAL, 0, NULL);
@@ -355,6 +356,8 @@ node *_dxf_ExPDotDotList (node *n1, node *n2, node *n3)
             *(float *)(n->v.constant.origin) = fsv;
             *(float *)(n->v.constant.delta) = fdv;
             break;
+        default:   /* Fix if ever allow other position types. */
+	    break;
     }
 
     n->v.constant.items = num;
@@ -474,7 +477,6 @@ node *_dxf_ExPCreateMacro (node *id, node *in, node *out, node *stmt)
     node	*p;
     int		nin;
     int		nout;
-    node	*init, *end;
     
     n = _dxf_ExPCreateNode (NT_MACRO);
 
@@ -724,7 +726,7 @@ _dxf_ExEvalConstant (node *n)
     Array	arr;
     RegularArray regarr;
     String	str;
-    Object	obj;
+    Object	obj=NULL;
     int		err	= FALSE;
     int		i;
     int		nstrs;
@@ -881,6 +883,8 @@ node *_dxf_ExPNegateConst (node *n)
               *(float *)(n->v.constant.origin) *= (float) -1.0;
               *(float *)(n->v.constant.delta) *= (float) -1.0;
               break;
+	  default: /* Fix if allow other position types. */
+	      break;
         }
     }
     else {
@@ -1053,7 +1057,7 @@ node *_dxf_ExAppendConst (node *list, node *elem)
     have = list->v.constant.nalloc;
     if (size + used > have)
     {
-	n = size + used << 1;
+	n = (size + used) << 1;
 	ld = (char *)DXAllocateLocal (n);
 	if (ld == NULL)
 	{

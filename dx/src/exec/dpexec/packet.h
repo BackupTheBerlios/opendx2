@@ -8,6 +8,8 @@
 
 #include <dxconfig.h>
 
+#ifndef _PACKET_H
+#define _PACKET_H
 
 #define PACK_INTERRUPT	1
 #define PACK_SYSTEM	2
@@ -31,3 +33,10 @@
 #define PACK_IMPORT	20
 #define PACK_IMPORTINFO	21
 #define PACK_LINK	22
+
+void  _dxf_ExCheckPacket(char *packet, int length);
+Error _dxf_ExSPack (int type, int seqnumber, Pointer data, int len);
+int   _dxf_ExNeedsWriting(void);
+Error _dxf_ExInitPacket(void);
+
+#endif /* _PACKET_H */

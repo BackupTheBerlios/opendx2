@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 #include <dx/dx.h>
+#include "socket.h"
 #include "sfile.h"
 
 #if !defined(SOCKET)
@@ -20,28 +21,35 @@
 #include <dx/arch.h>
 #include <sys/types.h>
 
-
 #if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
-
 #if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
 #endif
-
 #if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
-
-#if DXD_NEEDS_SYS_SELECT_H
+#if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
+#endif
+#if defined(HAVE_SYS_TIME_H)
+#include <sys/time.h>
+#endif
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+#if defined(HAVE_SYS_STAT_H)
+#include <sys/stat.h>
+#endif
+#if defined(HAVE_ARPA_INET_H)
+#include <arpa/inet.h>
 #endif
 
 #ifdef DXD_WIN
 #include <sys/timeb.h>
-#else
-#include <sys/time.h>
 #endif
+
 #include <errno.h>
 #include <stdlib.h>
 
@@ -56,7 +64,7 @@
  * with anything in /etc/services.  In general, I believe that most numbers
  * over 1024 will work.
  */
-_dxf_ExGetSocket(char *name, int *port)
+int _dxf_ExGetSocket(char *name, int *port)
 {
     char *getenv();
     char *env;
@@ -112,7 +120,7 @@ _dxf_ExInitServer(int pport)
     int fd;
     int sts;
     int oldPort;
-    extern int errno;
+    extern int errno; /* from <errno.h> */
     int tries;
     fd_set fds;
     int width = FD_SETSIZE;
@@ -334,10 +342,11 @@ error:
     return socketToSFILE((SOCKET)fd);
 }
 
+#ifdef TEST
 /*
  * Initiate a connection to a server.
  */
-static
+static int
 init_client(char *host, int pport)
 {
     int sock;
@@ -406,6 +415,7 @@ init_client(char *host, int pport)
 
     return(sock);
 }
+#endif
 
 
 #ifdef TEST

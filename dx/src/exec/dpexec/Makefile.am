@@ -24,7 +24,7 @@ libDPEXEC_a_SOURCES =  \
 	nodewriteb.c packet.c parse.c parsemdf.c path.c pendingcmds.c \
 	queue.c remote.c rih.c rq.c socket.c status.c \
 	swap.c task.c userinter.c utils.c variable.c vcr.c \
-	optarg.c yuiif.y sfile.c usercleanup.c
+	optarg.c yuiif.y sfile.c
 
 EXTRA_DIST = local.mk
 

@@ -6,8 +6,10 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
-#include <dxconfig.h>
+#ifndef _DISTP_H
+#define _DISTP_H
 
+#include <dxconfig.h>
 
 #include "exobject.h"
 #include "graph.h"
@@ -200,23 +202,38 @@ typedef struct CacheTagList
     uint32 ct[N_CACHETAGLIST_ITEMS];
 } CacheTagList;
 
-extern void _dxf_ExDistributeMsg(DistMsg type, Pointer data, int size, int to);
-extern void _dxf_ExDistMsgfd(DistMsg type, Pointer data, int tofd);
-extern int _dxf_ExWriteTree(struct node *pt, int fd);
-extern struct node *_dxf_ExReadTree(int fd, int swap);
-extern void _dxf_ExWaitOnSlaves();
-extern void _dxf_ExWaitForPeers();
-extern void _dxf_ExSendDict(int fd, EXDictionary dict);
-extern void _dxf_ExRecvGDictPkg(int fd, int swap, int nobkgrnd);
-extern void _dxf_ExReqDPSend(ProgramVariable *pv, int varindex, SlavePeers *sp);
-extern Error _dxf_ExReceivePeerPacket(SlavePeers *sp);
-extern void _dxf_ExSendPVRequired(int gid, int sgid, int funcId, int varId, int requiredFlag);
-extern int _dxf_ExReceiveBuffer(int fd, Pointer buffer, int n, Type t,int swap);
-extern int _dxf_SuspendPeers();
-extern int _dxf_ResumePeers();
-extern void _dxf_ExSendParseTree(node *n);
-extern void _dxf_ExUpdateDPTable();
-extern void _dxf_ExSendMdfPkg(Pointer *data, int tofd);
-extern Error _dxf_ExRecvMdfPkg(int fromfd, int swap);
-extern void _dxf_ExDeletePeer(SlavePeers *sp, int closepeer);
+/* from distpacket.c */
+int   _dxf_ExValidGroupAttach(char *groupname);
 
+/* from distconnect.c */
+void  _dxf_ExUpdateDPTable();
+Error _dxf_ExSlaveListen();
+Error _dxf_ExSlaveConnect();
+void  _dxf_ResetSlavesDone();
+
+/* from distp.c */
+int   _dxf_SuspendPeers();
+int   _dxf_ResumePeers();
+void  _dxf_ExDistributeMsg(DistMsg type, Pointer data, int size, int to);
+void  _dxf_ExDistMsgfd(DistMsg type, Pointer data, int tofd);
+Error _dxf_ExWaitOnSlaves();
+void  _dxf_ExWaitForPeers();
+void  _dxf_ExSendDict(int fd, EXDictionary dict);
+void  _dxf_ExRecvGDictPkg(int fd, int swap, int nobkgrnd);
+void  _dxf_ExReqDPSend(ProgramVariable *pv, int varindex, SlavePeers *sp);
+Error _dxf_ExReceivePeerPacket(SlavePeers *sp);
+void  _dxf_ExSendPVRequired(int gid, int sgid, int funcId, int varId, int requiredFlag);
+int   _dxf_ExReceiveBuffer(int fd, Pointer buffer, int n, Type t,int swap);
+void  _dxf_ExSendParseTree(node *n);
+Error _dxf_ExSendQInit(DPSendQ *sendq);
+Error _dxf_ExCreateGDictPkg(GDictSend *pkg, char *name, EXObj ex_obj);
+int   _dxf_ExWriteSock(int fd, Pointer buffer, int size);
+int   _dxf_ExGetSocketId(char *procname);
+void  _dxf_SlaveDone();
+
+/* from distqueue.c */
+void _dxf_ExSendQEnqueue (DPSendQ *sendq, DPSendPkg *pkg);
+DPSendPkg *_dxf_ExSendQDequeue (DPSendQ *sendq);
+int _dxf_ExSendQEmpty(DPSendQ *sendq);
+
+#endif /* _DISTP_H */

@@ -12,29 +12,44 @@
 #include <dx/dx.h>
 #include <stdio.h>
 
-#ifdef DXD_WIN
+#if defined(HAVE_IO_H)
 #include <io.h>
-#include <winioctl.h>
-#else
-#include <sys/ioctl.h>
 #endif
-#ifndef DXD_HAS_WINSOCKETS
+#if defined(HAVE_WINIOCTL_H)
+#include <winioctl.h>
+#endif
+#if defined(HAVE_SYS_TIMEB_H)
+#include <sys/timeb.h>
+#endif
+#if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
-#if DXD_SOCKET_UNIXDOMAIN_OK
-#include <sys/un.h>
-#endif
-#ifdef DXD_WIN
-#include <sys/timeb.h>
-#else
-#include <sys/time.h>
-#endif
-#ifndef DXD_HAS_WINSOCKETS
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
-#if HAVE_SYS_FILIO_H
+#if defined(HAVE_SYS_IOCTL_H)
+#include <sys/ioctl.h>
+#endif
+#if defined(HAVE_SYS_TIME_H)
+#include <sys/time.h>
+#endif
+#if defined(HAVE_SYS_UN_H)
+#include <sys/un.h>
+#endif
+#if defined(HAVE_SYS_FILIO_H)
 #include <sys/filio.h>
 #endif
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+#if defined(HAVE_SYS_SELECT_H)
+#include <sys/select.h>
+#endif
+#if defined(HAVE_SYS_WAIT_H)
+#include <sys/wait.h>
+#endif
+
+#include "config.h"
 #include "graph.h"
 #include "exobject.h"
 #include "d.h"
@@ -42,13 +57,18 @@
 #include "cache.h"
 #include "distp.h"
 #include "parse.h"
-#include "config.h"
 #include "obmodule.h"
 #include "context.h"
 #include "_variable.h"
-#if DXD_NEEDS_SYS_SELECT_H
-#include <sys/select.h>
-#endif
+#include "packet.h"
+#include "vcr.h"
+#include "log.h"
+#include "nodeb.h"
+#include "parsemdf.h"
+#include "evalgraph.h"
+#include "rih.h"
+#include "command.h"
+#include "_macro.h"
 
 typedef struct dmargs
 {
@@ -57,23 +77,9 @@ typedef struct dmargs
     int to;
 } dmargs;
 
-extern int _dxd_exCacheOn;
-extern int *_dxd_exKillGraph;
-extern int *_dxd_exBadFunc;
-
-extern LIST(dpgraphstat) _dxd_dpgraphstat;
-extern LIST(SlavePeers) _dxd_slavepeers;
-extern LIST(PGassign) 	_dxd_pgassign;
-extern  EXDictionary    _dxd_exMacroDict;
-extern  EXDictionary    _dxd_exGlobalDict;
-extern  EXDictionary    _dxd_exGraphCache;
-extern Object _dxfExportBin_FP(Object o, int fd);
-extern Object _dxfImportBin_FP(int fd);
-extern void _dxf_ExQMessage(int type, int graphId, int len, char *buf);
-extern void _dxf_ExSendQEnqueue (DPSendQ *sendq, DPSendPkg *pkg);
-extern DPSendPkg *_dxf_ExSendQDequeue (DPSendQ *sendq);
-extern int _dxf_ExSendQEmpty(DPSendQ *sendq);
-
+extern Object _dxfExportBin_FP(Object o, int fd); /* from libdx/rwobject.c */
+extern Object _dxfImportBin_FP(int fd); /* from libdx/rwobject.c */
+extern Error _dxfByteSwap(void *dest, void *src, int ndata, Type t); /* from libdx/edfdata.c */
 
 
 static void ExSendGDictPkg(GDictSend *pkg, int fd);
@@ -84,7 +90,7 @@ static void ExRecvDPSendPkg(int fd, int swap);
 static Error ExCheckAcknowledge(SlavePeers *sp);
 static void ExOKToSend(SlavePeers *sp);
 static void ExCheckSendReq(SlavePeers *sp);
-static void DistributeMsgAP(dmargs *argp);
+static Error DistributeMsgAP(dmargs *argp);
 static void DistributeMsg(DistMsg type, Pointer data, int to);
 
 static LIST(uint32) SavedCacheTags;
@@ -141,8 +147,7 @@ static void ReceivePVRequired(int fd, int swap)
 Error _dxf_ExReceivePeerPacket(SlavePeers *sp)
 {
     DistMsg	type;
-    int         b, i, limit, graphId, cause_exec, len;
-    char	id[80];
+    int         graphId;
     UIPackage	pkg;
     
     if(_dxf_ExReceiveBuffer(sp->sfd, &type, 1, TYPE_INT, sp->SwapMsg) < 0) {
@@ -279,9 +284,10 @@ void _dxf_ExDistributeMsg(DistMsg type, Pointer data, int size, int to)
     }
 }
 
-static void DistributeMsgAP(dmargs *argp)
+static Error DistributeMsgAP(dmargs *argp)
 {
     DistributeMsg(argp->type, argp->data, argp->to);
+    return OK; 
 }
 
 static void DistributeMsg(DistMsg type, Pointer data, int to)
@@ -357,8 +363,7 @@ void _dxf_ExDistMsgfd(DistMsg type, Pointer data, int tofd)
     CacheTagList *ctpkg;
     DelRemote *drpkg;
     DictType whichdict = 0;
-    int sts = 0;
-    dpversion *dpv;
+    dpversion *dpv=NULL;
     dpslave_id *dpslaveid;
     char *name;
     int len;
@@ -439,9 +444,9 @@ void _dxf_ExDistMsgfd(DistMsg type, Pointer data, int tofd)
           if((EXDictionary)data == _dxd_exGlobalDict)
               whichdict = DICT_GLOBAL;
           else if((EXDictionary)data == _dxd_exMacroDict)
-              whichdict == DICT_MACRO;
+              whichdict = DICT_MACRO;
           else if((EXDictionary)data == _dxd_exGraphCache)
-              whichdict == DICT_GRAPH;
+              whichdict = DICT_GRAPH;
           else DXUIMessage("ERROR", "flush dictionary: bad dictionary");
           _dxf_ExWriteSock(tofd, &whichdict, sizeof(int));
           break;
@@ -571,7 +576,7 @@ _dxf_ExRecvGDictPkg(int fd, int swap, int nobkgrnd)
 {
     GDictSend pkg;
     gvar *gv;
-    int len, ret;
+    int len;
 
     RCV_BUF(fd, &len, 1, TYPE_INT, swap);
     pkg.varname = DXAllocate(len);
@@ -635,8 +640,6 @@ static void
 ExRecvDPSendPkg(int fd, int swap)
 {
     DPSendPkg           pkg;
-    int                 ret;
-    gvar                *gv;
     ProgramVariable	*pv;
 
     RCV_BUF(fd, &(pkg.index), 1, TYPE_INT, swap);
@@ -749,7 +752,7 @@ void _dxf_SlaveDone()
     nslaves_done++; 
 }
 
-void 
+Error
 _dxf_ExWaitOnSlaves()
 {
     fd_set              fdset;
@@ -843,7 +846,7 @@ wait:
         }
     } /* while not done */
     if(repeat_loop == TRUE)
-        return;
+        return ERROR; 
 
     while((ret = _dxf_ExCheckRIH()));
     if(nslaves > 0)
@@ -861,6 +864,8 @@ wait:
     repeat_loop = TRUE;
     _dxf_ResetSlavesDone();
     goto wait;
+
+    return OK; 
 }
 
 void 
@@ -871,7 +876,7 @@ _dxf_ExWaitForPeers()
     SlavePeers  	*sp; 
     DistMsg		pcktype;
     int			maxfd;
-    int			b, ret;
+    int			b;
 
     npeers = npeers_done = 0;
     maxfd = 0;
@@ -886,11 +891,12 @@ _dxf_ExWaitForPeers()
             if(sp->sfd > maxfd) maxfd = sp->sfd;
         }
     }
-    if(npeers > 0)
+    if(npeers > 0) {
         if(_dxd_exDebug)
             printf("waiting for %d peers to close\n", npeers);
         else 
             ExDebug("7", "waiting for %d peers", npeers);
+    }
 
     while(npeers_done < npeers) {
         nselect = select (maxfd + 1, (SelectPtr) &fdset, NULL, NULL, NULL);
@@ -1010,6 +1016,8 @@ _dxf_ExSendParseTree(node *n)
                         return;
                     }
                     /* fall through and check for assignment */
+		default:
+		  break;
             }
         case NT_ASSIGNMENT:      
             n2 = n2->v.assign.rval;

@@ -10,7 +10,6 @@
 #include <dxconfig.h>
 #include <dx/dx.h>
 
-
 /*
  * Description:
  * This module contains these basic functions:
@@ -38,12 +37,14 @@
 #include <sys/times.h>
 #endif
 
+#include "evalgraph.h"
+#include "config.h"
+#include "graph.h"
 #include "pmodflags.h"
 #include "context.h"
 #include "utils.h"
-#include "config.h"
-#include "graph.h"
 #include "cache.h"
+#include "cachegraph.h"
 #include "swap.h"
 #include "log.h"
 #include "packet.h"
@@ -54,10 +55,31 @@
 #include "_variable.h"
 #include "sysvars.h"
 #include "distp.h"
+#include "graphIntr.h"
+#include "exobject.h"
 
-#if DXD_HAS_LIBIOP
-extern double   SVS_double_time();
-#endif
+extern void DXMarkTimeX(char *s); /* from libdx/timing.c */
+extern int _dxfHostIsLocal(char *host); /* from libdx/ */
+
+/* Internal use functions */
+static int  QueueSendRequest(qsr_args *args);
+static void ExExecError(Program *p, gfunc *n, ErrorCode code, Error status);
+static int  _execGnode(Pointer n);
+static void ExStartModules(Program *p);
+static int  ExFixSwitchSelector(Program *p, gfunc *gf,
+                                int executionTime, int requiredFlag);
+static int  ExFixRouteSelector(Program *p, gfunc *gf,
+                                 int executionTime, int requiredFlag);
+static int  ExProcessGraphFunc(Program *p, int fnbr, int executionTime);
+static void ExRefFuncIO(Program *p, int fnbr);
+static int  ExCheckDDI(Program *p, gfunc *gf);
+static int  ExCacheDDIInputs(Program *p, gfunc *gf);
+static void ExDoPreExecPreparation(Program *p);
+static int  ExProcessDPSENDFunction(Program *p, gfunc *gf, Object *DPSEND_obj);
+static int  ExRunOnThisProcessor(char *procid);
+static int  ExCheckInputAvailability(Program *p, gfunc *gf, int fnbr);
+static void ExFixConstantSwitch(Program *p);
+static void ExCleanupForState();
 
 long
 ExTime()
@@ -110,49 +132,10 @@ typedef struct execArg
     gfunc          *gf;
 }               execArg;
 
-typedef struct qsr_args {
-    char *procid;
-    ProgramVariable *pv;
-    int index;
-}  qsr_args; 
-
-static int QueueSendRequest(qsr_args *args);
-static void ExExecError(Program *p, gfunc *n, ErrorCode code, Error status);
-static int _execGnode(Pointer n);
-static void ExStartModules(Program *p);
-static int ExFixSwitchSelector(
-    Program *p, gfunc *gf, int executionTime, int requiredFlag);
-static int ExFixRouteSelector(
-    Program *p, gfunc *gf, int executionTime, int requiredFlag);
-static int ExProcessGraphFunc(Program *p, int fnbr, int executionTime);
-static void ExRefFuncIO(Program *p, int fnbr);
-static int ExCheckDDI(Program *p, gfunc *gf);
-static int ExCacheDDIInputs(Program *p, gfunc *gf);
-static void ExDoPreExecPreparation(Program *p);
-static int ExProcessDPSENDFunction(Program *p, gfunc *gf, Object *DPSEND_obj);
-static int ExRunOnThisProcessor(char *procid);
-static int ExCheckInputAvailability(Program *p, gfunc *gf, int fnbr);
-static void ExFixConstantSwitch(Program *p);
-void DXLoopDone(int done);
-static void ExCleanupForState();
-
-extern int      _dxd_exCacheOn;
-extern int      _dxd_exShowTiming;
-extern int      _dxd_exShowBells;
-extern int      _dxd_exRemote;
-extern gfunc   *_dxd_exCurrentFunc;
-
-extern char    *_dxf_ExProcessorGet(char *val);
 static int      graph_id;
 
 int            *_dxd_exKillGraph;
 int            *_dxd_exBadFunc;
-extern          EXDictionary _dxd_exGlobalDict;
-extern LIST(SlavePeers) _dxd_slavepeers;
-extern LIST(dphosts) *_dxd_dphosts;
-extern lock_type _dxd_dphostslock;
-extern Error m__badfunc(Object *, Object *);
-extern int _dxf_ExManageCacheTable(char *cpath, uint32 reccrc, int outnbr);
 
 void ExCacheNewGvar(gvar *gv)
 {
@@ -526,8 +509,6 @@ void ExCacheMacroResults(Program *p)
     gvar *gv;
     int i, *ip, index;
     ProgramVariable *pv;
-    uint32 tag;
-    int ilimit;
     double cost;
 
     n = p->saved_gf;
@@ -610,7 +591,7 @@ void ExCacheMacroResults(Program *p)
     DECR_RUNABLE
 }
 
-void
+Error
 ExQueueSubGraph(Program * p)
 {
     int i, ilimit, nfuncs;
@@ -758,12 +739,14 @@ if (pv->refs > pv->gv->object.refs)
 
     ExStartModules(p);
 
+    return OK; 
 }
 
 static int _QueueableStartModules(Pointer pp)
 {
     Program *p = (Program *)pp;
     ExStartModules(p);
+    return (0); 
 }
 
 static int _QueueableStartModulesReset(Pointer pp)
@@ -773,16 +756,16 @@ static int _QueueableStartModulesReset(Pointer pp)
     p->outstandingRequests--;
 
     ExStartModules(p);
+    return (0);
 }
 
 
 static void
 ExStartModules(Program *p)
 {
-    int             i, j, index;
+    int             i;
     gfunc          *gf;
     int             procId;
-    char            prochostname[20];
     execArg        *ta;
     char            pbuf[64];
     int             found = FALSE;
@@ -790,7 +773,6 @@ ExStartModules(Program *p)
     int             ilimit;
     ProgramVariable *pv;
     ProgramRef     *pr;
-    ErrorCode       code;
     int             nfuncs;
     int		    oldCursor;
     gvar	    *gv;
@@ -862,7 +844,6 @@ ExStartModules(Program *p)
     {
 	if (p->first_skipped != -1)
 	{
-	    SlavePeers     *spindex;
             if(p->cursor != (p->first_skipped -1)) {
                 if(p->cursor > -1) {
                     gfunc *dgf;
@@ -914,7 +895,6 @@ ExStartModules(Program *p)
 	    int             nframe = p->vcr.nframe;
 	    int             stop = p->vcr.stop;
             int             kill = *_dxd_exKillGraph;
-            Object          reset;
             gvar            *new_gvar;
             
 	    /* Send all outputs to peers */
@@ -940,7 +920,7 @@ ExStartModules(Program *p)
 					  (EXObj) new_gvar);
                 }    
 		if (gv->type != GV_UNRESOLVED) {
-		    _dxf_ExCreateGDictPkg(&pkg, pr->name, gv);
+		    _dxf_ExCreateGDictPkg(&pkg, pr->name, &gv->object);
 		    ExDebug("7", "sending cache for variable %s", pr->name);
 		    _dxf_ExDistributeMsg(DM_INSERTGDICT, (Pointer)&pkg,
                                          sizeof(GDictSend), TOSLAVES);
@@ -1051,7 +1031,7 @@ _execGnode(Pointer ptr)
     execArg        *ta = (execArg *) ptr;
     Program        *p = ta->p;
     gfunc          *n = ta->gf;
-    int             i, j, k;
+    int             i;
     int             index;
     gvar           *gv;
     Error           status = ERROR;
@@ -1069,7 +1049,6 @@ _execGnode(Pointer ptr)
     char            bell[512];
     int             len = 0;
     char            buf[33];
-    extern int      _dxd_exSkipExecution;
     int             skipping = FALSE;
     int             ilimit;
     int             nbr_inputs_inerror;
@@ -1212,6 +1191,8 @@ _execGnode(Pointer ptr)
                   case GV_SKIPROUTE:
                       nbr_inputs_routeoff++;
                       break;
+		  case GV_SKIPMACROEND:
+		      break;
                 }
 
 		/*
@@ -1922,7 +1903,6 @@ ExFixRouteSelector(Program * p, gfunc * gf, int executionTime, int requiredFlag)
     ProgramVariable *pv;
     int             switchOut;
     int             switchIn;
-    int             index;
     int             single_route;
     int             ret = FALSE;
     ProgramVariable *switchIvar;
@@ -2128,12 +2108,11 @@ OKtoCache(ProgramVariable *pv, gfunc *gf)
 static int 
 ExProcessGraphFunc(Program *p, int fnbr, int executionTime)
 {
-    int             index, i, j, k, l;
+    int             index, i, j;
     int             ilimit, jlimit;
     gfunc          *gf;
     gvar           *g;
     gvar           *cachedGvar;
-    ErrorCode       code;
     int		    requiredFlag;
     int		    returnValue;
 
@@ -2790,8 +2769,6 @@ static void
 ExDoPreExecPreparation(Program *p)
 {
     int             i, ilimit;
-    ProgramVariable *pv;
-    _gorigin        origin;
 
     /*
      * If we're caching, we must leave the cache disabled until we've looked
@@ -2919,7 +2896,7 @@ static int QueueSendRequest(qsr_args *args)
     char        *procid = args->procid;
     ProgramVariable *pv = args->pv;
     int         varindex = args->index;
-    SlavePeers  *spindex;
+    SlavePeers  *spindex=NULL;
 
     if (procid != NULL)
         host = _dxf_ExGVariableGetStr(procid);
@@ -2956,10 +2933,11 @@ ExRunOnThisProcessor(char *procid)
     if(*_dxd_exBadFunc == TRUE && *_dxd_exKillGraph == TRUE)
         return(TRUE);
 
-    if(*_dxd_extoplevelloop)
+    if(*_dxd_extoplevelloop) {
 	if (_dxd_exRemoteSlave)
             return(FALSE);
         else return(TRUE);
+    }
 
     if (procid)
 	prochost = _dxf_ExGVariableGetStr(procid);
@@ -2991,7 +2969,7 @@ ExRunOnThisProcessor(char *procid)
     strcpy(dphostent.name, prochost);
 
     if((_dxd_exRemoteSlave && !strcmp(_dxd_exHostName, prochost))
-      || !_dxd_exRemoteSlave && _dxfHostIsLocal(prochost))
+      || (!_dxd_exRemoteSlave && _dxfHostIsLocal(prochost)))
         dphostent.islocal = TRUE;
     else
         dphostent.islocal = FALSE;
@@ -3011,8 +2989,7 @@ ExCheckInputAvailability(Program *p, gfunc *n, int fnbr)
     int              index, i;
     ProgramVariable *pv;
     gvar            *gv;
-    gvar	    *cachedGvar;
-    ProgramVariable *switchPv;
+    ProgramVariable *switchPv=NULL;
     int 	     sw;
     int		     switchIn;
 
@@ -3185,6 +3162,7 @@ _dxf_ExPrintProgram(Program *p)
 	      gf->procgroupid? gf->procgroupid: "(NULL)",
 	      gf->flags);
     }
+    return (0);
 }
 
 int
@@ -3216,6 +3194,7 @@ _dxf_ExPrintProgramIO(Program *p)
             _dxf_ExPrintProgramIO(gf->func.subP);
         }
     }
+    return (0);
 }
 
 void DXLoopDone(int done)
@@ -3258,5 +3237,6 @@ int _dxf_ExIsExecuting()
 int DXPrintCurrentModule(char *string) 
 {
     DXMessage("%s: %s", string, _dxd_exCurrentFunc->cpath); 
+    return (0);
 }
 

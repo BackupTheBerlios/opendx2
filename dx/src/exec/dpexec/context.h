@@ -8,6 +8,8 @@
 
 #include <dxconfig.h>
 
+#ifndef _CONTEXT_H
+#define _CONTEXT_H
 
 #include "graph.h"
 
@@ -19,6 +21,6 @@ typedef struct Context
     Program **subp;
 } Context;
 
-extern Context *_dxd_exContext;
+void _dxfCopyContext(Context *to, Context *from);
 
-extern void _dxfCopyContext(Context *to, Context *from);
+#endif /* _CONTEXT_H */

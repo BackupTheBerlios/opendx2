@@ -8,6 +8,9 @@
 
 #include <dxconfig.h>
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -15,10 +18,12 @@
 #include <string.h>
 #include <errno.h>
 #include <dx/dx.h>
+#include "config.h"
 #include "log.h"
 #include "packet.h"
 #include "context.h"
 #include "distp.h"
+#include "utils.h"
 
 static int 	lfd	= -1;
 static FILE	*lfp	= NULL;
@@ -26,13 +31,9 @@ static FILE	*lfp	= NULL;
 static int	isoutboard = FALSE;
 static int	outsocket = -1;
 
+extern Object _dxfExportBin_FP(Object o, int fd); /* from libdx/rwobject.c */
+
 int _dxd_exErrorPrintLevel = 3;
-
-extern int	_dxd_exRemote;
-
-void _dxf_ExQMessage(int type, int graphId, int len, char *buf);
-extern Array _dxfExNewInteger (int n);
-
 
 /*
  * Create the log file.  Note that the file name is currently hardcoded.
@@ -63,7 +64,7 @@ int _dxf_ExLogOpen ()
  * Close the log file.
  */
 
-_dxf_ExLogClose()
+void _dxf_ExLogClose()
 {
     if (lfd != -1)
     {
@@ -312,7 +313,7 @@ _dxf_initmemqueue()
     return OK;
 }
 
-_dxfemergency()
+void _dxfemergency()
 {
 }
 

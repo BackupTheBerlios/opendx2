@@ -11,11 +11,26 @@
 
 #include <dx/dx.h>
 #include "utils.h"
+#include "userinter.h"
+#include "loader.h"
 
 void *_dxd_UserInteractors = NULL;
 int _dxd_nUserInteractors = 0;
 
-extern PFI DXLoadObjFile(char *, char *);
+extern int DXDefaultUserInteractors(int *n, void *t); /* from dxmods/definter.c */
+
+Error
+_dxfLoadUserInteractors(char *fname)
+{
+    char *path = (char *)getenv("DXUSERINTERACTORS");
+    int (*func)() = DXLoadObjFile(fname, path);
+    if (! func)
+	DXWarning("unable to open user interactor file %s", fname);
+    else
+	(*func)(&_dxd_nUserInteractors, &_dxd_UserInteractors);
+
+    return OK;
+}
 
 Error
 _dxfLoadDefaultUserInteractors()
@@ -30,18 +45,3 @@ _dxfLoadDefaultUserInteractors()
     return OK;
 }
 
-Error
-_dxfLoadUserInteractors(char *fname)
-{
-    char *path = (char *)getenv("DXUSERINTERACTORS");
-    int (*func)() = DXLoadObjFile(fname, path);
-    if (! func)
-	DXWarning("unable to open user interactor file %s", fname);
-    else
-	(*func)(&_dxd_nUserInteractors, &_dxd_UserInteractors);
-
-    return OK;
-
-error:
-    return ERROR;
-}

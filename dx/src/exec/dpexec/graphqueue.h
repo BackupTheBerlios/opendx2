@@ -16,10 +16,13 @@
 #include "graph.h"
 
 int _dxf_ExGQInit (int ngraphs);
-extern void _dxf_ExGQEnqueue (Program *func);
+int _dxf_ExGQAllDone (void);
+void _dxf_ExGQEnqueue (Program *func);
 Program *_dxf_ExGQDequeue (void);
 
+#if 0
 extern int *gq_sort;
 extern int ngraphs;
+#endif
 
 #endif /* _GRAPHQUEUE_H */

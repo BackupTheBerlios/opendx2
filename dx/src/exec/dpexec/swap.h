@@ -7,17 +7,17 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include "graph.h"
 
 
 #ifndef _SWAP_H
 #define _SWAP_H
 
-
-extern int lockGvar(gvar *gv);
-extern int unlockGvar(gvar *gv);
-extern void _dxf_ExSetGVarCost(gvar *gv, double cost);
-extern void _dxf_ExReclaimEnable ();
-
+void  _dxf_ExSetGVarCost(gvar *gv, double cost);
+void  _dxf_ExReclaimEnable ();
+int   _dxf_ExReclaimDisable ();
+Error _dxf_ExReclaimMemory (unsigned int nbytes);
+Error _dxf_ExInitMemoryReclaim ();
+int   _dxf_ExReclaimingMemory();
 
 #endif /* _SWAP_H */

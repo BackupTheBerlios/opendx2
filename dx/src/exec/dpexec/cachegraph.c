@@ -10,16 +10,17 @@
 
 
 #include <dx/dx.h>
+#include "config.h"
+#include "cachegraph.h"
 #include "pmodflags.h"
 #include "cache.h"
 #include "utils.h"
-#include "config.h"
 #include "graph.h"
 #include "log.h"
+#include "crc.h"
+#include "_variable.h"
 
 #define STATIC_TAGS  100
-
-extern LIST(pathtag)  _dxd_pathtags;
 
 /*
  * $$$$$ THIS ROUTINE SHOULD BE REPLACED WITH ONES TO DEAL WITH OBJECTS
@@ -109,7 +110,7 @@ computeArrayRecipe (Array a)
         origin = DXAllocateLocal(2*size);
         delta = (Pointer)((char *)origin + size);
         DXGetRegularArrayInfo((RegularArray)a, NULL, origin, delta);
-	crc = _dxf_ExCRCByteV (crc, "regulararray", 1, 12);
+	crc = _dxf_ExCRCByteV (crc, (unsigned char *) "regulararray", 1, 12);
 	crc = _dxf_ExCRCByteV (crc, origin, tsize, 2*size/tsize);
         DXFree(origin);
     }
@@ -140,7 +141,6 @@ computeRecipe(Program *p, int ind)
     Object obj;
     uint32 tcrc;
     gvar *gv;
-    int i;
 
     if (ind == -1) 
         return(computeDefaultRecipe (NULL));
@@ -277,25 +277,22 @@ void _dxf_ExFlushPathTags()
 void _dxf_ExComputeRecipes(Program *p, int funcInd)
 {
     gfunc	*n = FETCH_LIST(p->funcs, funcInd);
-    int		i, j, size, ntags, macro_tags, extra_tags, async_tags;
+    int		i, j, size, ntags, macro_tags=0, extra_tags, async_tags=0;
     gvar	*gv;
-    Object	obj;
-    uint32 	tcrc, objecttag;
+    uint32 	tcrc;
     gvar	*out;
     uint32 	*inTags, staticTags[STATIC_TAGS];
     int		varInd, *varIndp;
     int		varInd2;
     ProgramVariable *pv, *inpv, *pv_key;
-    ProgramRef 	*pr;
     MacroRef 	*mr;
     AsyncVars 	*avars;
-    int    	tpvcache;
     _excache    fcache;
     _excache    pvcache;
-    Program     *subP;
+    Program     *subP=NULL;
     int  tag_changed = FALSE;
     uint32 crc = 0xFFFFFFFF;
-    char 	*async_name, *name;
+    char 	*async_name=NULL, *name;
     int		passthru = FALSE;
 
 check_async:
@@ -498,7 +495,7 @@ check_async:
 	    if(n->procgroupid) {
 		size = strlen (n->procgroupid);
 		out->reccrc = EXTAG(_dxf_ExCRCByteV(out->reccrc & 0x7fffffff,
-		    n->procgroupid, 1, size));
+		    (unsigned char *) n->procgroupid, 1, size));
 	    }
 	    ExDebug ("1", "Cache value for %s.%d = 0x%08x ",
 			    n->name, i, out->reccrc);

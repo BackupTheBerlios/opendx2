@@ -52,7 +52,7 @@ char *_dxf_ExStrSave (char *old)
     if (new)
     {
 	memcpy (new, old, n);
-	new[n] = NULL;
+	new[n] = '\0';
     }
     return (new);
 }
@@ -167,6 +167,7 @@ int _dxf_ExNextPowerOf2 (int n)
     for (i = 0, v = 1; i < 31; i++, v <<= 1)
 	if (v >= n)
 	    return (v);
+    return 0; 
 }
 
 Array _dxfExNewInteger (int n)

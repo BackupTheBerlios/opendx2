@@ -13,6 +13,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+#if defined(HAVE_SYS_WAIT_H)
+#include <sys/wait.h>
+#endif
 #if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
@@ -26,26 +32,32 @@
 #include <netdb.h>
 #endif
 
-#include "cache.h"
+#include "config.h"
+#include "command.h"
+#include "function.h"
+#include "remote.h"
 #include "compile.h"
 #include "d.h"
 #include "exobject.h"
-#include "utils.h"
 #include "_variable.h"
 #include "_macro.h"
 #include "version.h"
 #include "parse.h"
-#include "distp.h"
-#include "config.h"
-#include "context.h"
+#include "graph.h"
+#include "graphqueue.h"
+#include "parsemdf.h"
+#include "swap.h"
+#include "loader.h"
+#include "help.h"
+#include "userinter.h"
+#include "dxpfsmgr.h"
+#include "evalgraph.h"
 
 #ifdef	DXD_WIN
 #define		strcasecmp	stricmp
 #endif
 
 #ifdef DXD_LICENSED_VERSION
-#include "license.h"
-extern int _dxd_ExHasLicense;
 static char _dxd_LicenseKey[5];
 #endif
 
@@ -55,12 +67,15 @@ static char _dxd_LicenseKey[5];
 static dpgraphstat masterentry = {NULL, NULL, -1, 0, 0, 0, 0};
 static int *update_dptable = NULL;
 
-extern LIST(PGassign) _dxd_pgassign;
-extern LIST(SlavePeers) _dxd_slavepeers;
-extern LIST(dpgraphstat) _dxd_dpgraphstat;
-extern int _dxd_exParseAhead;
-extern int _dxd_exSParseAhead;
-extern Error m__badfunc(Object *, Object *);
+/* Defined programatically in libdx */
+extern void _dxf_user_modules(); /* from libdx/ */
+extern void _dxf_private_modules(); /* from libdx/ */
+
+/* Defined in libdx/client.c */
+extern int _dxfHostIsLocal(char *host); /* from libdx/ */
+
+/* Defined by yuiif.c */
+void _dxf_ExReadDXRCFiles ();
 
 typedef struct _EXTab		*EXTab;
 
@@ -77,9 +92,9 @@ static Error	CmdProc		(Object *in);
 static Error    MustRunOnMaster (Object in0);
 
 #if DXD_OS2_SYSCALL
-static int _Optlink	Compare		(EXTab a, EXTab b);
+static int _Optlink	Compare		(const void *key, const void *data);
 #else
-static int		Compare		(EXTab a, EXTab b);
+static int		Compare		(const void *key, const void *data);
 #endif
 
 static Error	ProcessTable	(char *cmd, Object *in, EXTab table, int len);
@@ -114,7 +129,6 @@ static Error	Reclaim		(char *c, Object *in);
 static Error	Terminate	(char *c, Object *in);
 static Error	Version		(char *c, Object *in);
 static Error	SyncGraph	(char *c, Object *in);
-static Error	UnLoadObjFile	(char *c, Object *in);
 static int 	UpdateWorkers	(char *host, char *options, int add);
 
 #define	FCALL(_n,_f) 		{_n, _f,   NULL, 0}
@@ -310,7 +324,7 @@ void
 _dxf_ExDeleteHost(char *host, int err, int closepeer)
 {
     dpgraphstat *index, *hostentry;
-    PGassign pgassign, *pgindex;
+    PGassign *pgindex;
     int i, j, limit, limit2;
     char savehost[MAXHOSTNAMELEN];
 
@@ -383,7 +397,7 @@ void _dxf_InitDPtableflag()
 }
 
 /* if a new host was added to the table return true */
-_dxf_NewDPTableEntry()
+int _dxf_NewDPTableEntry()
 {
     if(*update_dptable) {
         *update_dptable = FALSE;
@@ -601,6 +615,7 @@ Error _dxf_ExPrintGroups()
         else
             DXMessage("%-25s", index->pgname);
     }
+    return OK; 
 }
 
 Error _dxf_ExPrintHosts()
@@ -633,6 +648,7 @@ Error _dxf_ExPrintHosts()
                  index->prochostname, "connected", index->numpgrps);
         }
     }
+    return OK; 
 }
 
 /* 
@@ -645,7 +661,6 @@ Error _dxf_ExPrintHosts()
  */
 static Error MustRunOnMaster (Object in0)
 {
-    Error	ret;
     char        *cmd;
 
     if (!in0 || ! DXExtractString (in0, &cmd))
@@ -678,8 +693,10 @@ static int _Optlink
 #else
 static int
 #endif
-Compare (EXTab a, EXTab b)
+Compare (const void *key, const void *data)
 {
+    EXTab a = (EXTab) key;
+    EXTab b = (EXTab) data;
     return (strcmp (a->name, b->name));
 }
 
@@ -758,7 +775,6 @@ static int Describe (char *c, Object *in)
     node		**funcs	= NULL;
     char		help[1024];
     char		*hp;
-    extern char		*_dxf_ExHelpFunction ();
 
     if ((c == NULL || *c == '\000') && (in == NULL || in[0] == NULL))
     {
@@ -864,10 +880,25 @@ static int FlushCache (char *c, Object *in)
 
 void _dxf_ExFlushGlobal (void)
 {
-    char *dummy;
-    Object *in;
+    char *dummy=NULL;
+    Object *in=NULL;
 
     FlushGlobal(dummy, in);
+}
+
+void ExResetGroupAssign ()
+{
+    int k, limit;
+    PGassign *index;
+    dpgraphstat *hostentry;
+
+    for (k = 0, limit = SIZE_LIST(_dxd_pgassign); k < limit; ++k) {
+        index = FETCH_LIST(_dxd_pgassign, k);
+        hostentry = FETCH_LIST(_dxd_dpgraphstat, index->hostindex);
+        if(!hostentry->error) 
+            _dxf_ExGVariableSetStr(index->pgname,
+                                       hostentry->prochostname);
+    }
 }
 
 static int FlushGlobal (char *c, Object *in)
@@ -889,8 +920,8 @@ static int FlushGlobal (char *c, Object *in)
 
 void _dxf_ExFlushMacro (void)
 {
-    char *dummy;
-    Object *in;
+    char *dummy=NULL;
+    Object *in=NULL;
 
     FlushMacro(dummy, in);
 }
@@ -952,7 +983,7 @@ static int GroupAttach(char *c, Object *in)
     dpgraphstat *hostentry;
     char *str, *delimiter;
     char *hoststr;
-    PGassign pgassign, *index;
+    PGassign pgassign, *index=NULL;
     int cerror = FALSE;
     char *hostname;
     char *optr;
@@ -1094,21 +1125,6 @@ next_string:
 }
 
 
-ExResetGroupAssign ()
-{
-    int k, limit;
-    PGassign *index;
-    dpgraphstat *hostentry;
-
-    for (k = 0, limit = SIZE_LIST(_dxd_pgassign); k < limit; ++k) {
-        index = FETCH_LIST(_dxd_pgassign, k);
-        hostentry = FETCH_LIST(_dxd_dpgraphstat, index->hostindex);
-        if(!hostentry->error) 
-            _dxf_ExGVariableSetStr(index->pgname,
-                                       hostentry->prochostname);
-    }
-}
-
 /* This routine does not close the sockets associated with a host. 
  * This routine takes a string list of group names to be removed from the
  * process assignment table.
@@ -1168,8 +1184,6 @@ static int HostDisconnect(char *c, Object *in)
 
 static int KillGraph (char *c, Object *in)
 {
-    extern int	*_dxd_exKillGraph;
-
     if (!_dxf_ExGQAllDone ()) {
 	*_dxd_exKillGraph = TRUE;
         _dxf_ExDistributeMsg(DM_KILLEXECGRAPH,
@@ -1187,10 +1201,8 @@ static int LoadObjFile(char *c, Object *in)
         return (ERROR);
     }
 
-    return DXLoadObjFile(str, "DXMODULES");
+    return (int) DXLoadObjFile(str, "DXMODULES");
 }
-
-extern _dxfLoadUserInteractors(char *);
 
 static int LoadInteractors(char *c, Object *in)
 {
@@ -1227,7 +1239,6 @@ static int MdfLoadString(char *c, Object *in)
  */
 static int OutboardKill (char *c, Object *in)
 {
-    extern Error *_dxd_ExDeleteRemote(char *, int);
     char *module;
     int instance;
     char *procgroup;
@@ -1552,7 +1563,9 @@ static int ProductVersion (char *c, Object *in)
     return (OK);
 }
 
-static int UnLoadObjFile(char *c, Object *in)
+/* No longer used so make it undefined */
+#if 0
+static Error UnLoadObjFile(char *c, Object *in)
 {
     char *str;
 
@@ -1563,4 +1576,4 @@ static int UnLoadObjFile(char *c, Object *in)
 
     return DXUnloadObjFile(str);
 }
-
+#endif

@@ -12,6 +12,8 @@
 
 #include <dx/dx.h>
 
+#include "dxpfsmgr.h"
+
 #ifndef DXD_HAS_LIBIOP
 
 Error _dxf_pfsmgr(int argc, char **argv)

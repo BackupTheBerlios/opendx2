@@ -10,6 +10,7 @@
 
 
 #include <dx/dx.h>
+#include "config.h"
 #include "pmodflags.h"
 #include "d.h"
 #include "_macro.h"
@@ -21,8 +22,6 @@
 #include "utils.h"
 #include "log.h"
 #include "graphIntr.h"
-
-extern int _dxd_exRemote;
 
 #define	MACRO_DEPTH	512
 #define	MACRO_QUIT	MACRO_DEPTH

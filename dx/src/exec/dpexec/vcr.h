@@ -12,6 +12,8 @@
 #ifndef	__VCR_H
 #define	__VCR_H
 
+#include "d.h"
+
 /*
  * Commands
  */
@@ -48,8 +50,18 @@
 #define	VCR_D_FORWARD		(1)
 #define	VCR_D_BACKWARD		(- VCR_D_FORWARD)
 
-extern void _dxf_ExVCRRedo(void);
-extern void _dxf_ExVCRChange(void);
-
+/*
+ * Externally visible functions.
+ */
+Error   _dxf_ExInitVCR  (EXDictionary dict);
+void    _dxf_ExCleanupVCR       (void);
+int     _dxf_ExInitVCRVars      (void);
+void    _dxf_ExVCRCommand       (int comm, long arg1, int arg2);
+void    _dxf_ExVCRRedo(void);
+void    _dxf_ExVCRChange(void);
+void    _dxf_ExVCRChangeReset(void);
+int     _dxf_ExCheckVCR (EXDictionary dict, int multiProc);
+int     _dxf_ExVCRRunning ();
+int 	_dxf_ExVCRCallBack (int n);
 
 #endif /* __VCR_H */

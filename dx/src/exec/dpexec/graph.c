@@ -29,6 +29,7 @@
 #include <dx/dx.h>
 #include "pmodflags.h"
 
+#include "config.h"
 #include "_macro.h"
 #include "_variable.h"
 #include "attribute.h"
@@ -45,14 +46,13 @@
 #include "obmodule.h"
 #include "sysvars.h"
 #include "distp.h"
-
-extern char     *_dxf_ExProcessorGet(char *val);
+#include "rq.h"
+#include "function.h"
 
 #define DICT_SIZE 64
 #define HYPHEN_SEP '_' 
 #define MAXNAMELEN 64
 
-extern Array _dxfExNewInteger (int n);
 static int graphing_error = FALSE;	/* error while constructing graph */
 static int subgraph_id = 0;
 EXDictionary _dxd_exGraphCache = NULL;
@@ -95,7 +95,6 @@ static void ExGraphCall (Program *p, node *n, int top, list_int *out,
 static void ExCreateSendModules (Program *p);  
 static void ExBuildSendModule (Program *p, gfunc *sgf, gfunc *tgf, int srcfn,
 			       int tgfn, int in_tab, int out_tab, int *outdex);
-static char *ExConvertToChar(int intval);
 static int GvarDelete (gvar *p);
 static int progobjDelete (progobj *p);
 static void ExRemapVars(Program *p, Program *subP, int *map, int *resolved, char *fname, int inst);
@@ -381,17 +380,19 @@ static Program *
 AllocateProgram(void)
 {
     Program *p = NULL;
-    int i;
 
 #ifdef ALLOC_UPFRONT
-    for (i = 0; i < MAX_FREED; ++i)
     {
-	if (freedProgs[i] != NULL)
-	{
-	    p = freedProgs[i];
-	    freedProgs[i] = NULL;
-	    return (p);
-	}
+        int i;
+        for (i = 0; i < MAX_FREED; ++i)
+        {
+	    if (freedProgs[i] != NULL)
+	    {
+	        p = freedProgs[i];
+	        freedProgs[i] = NULL;
+	        return (p);
+	    }
+        }
     }
 #endif
 
@@ -456,7 +457,6 @@ void
 ExSubGraphDelete(Program *subp, int top)
 {
     gfunc *gf;
-    MacroRef *mr;
     ProgramRef *pr;
     int i, j, limit, jlimit;
 
@@ -491,7 +491,6 @@ ExSubGraphDelete(Program *subp, int top)
 void
 _dxf_ExGraphDelete(Program *p)
 {
-    gfunc *gf;
     ProgramVariable *pv;
     ProgramRef *pr;
     MacroRef *mr;
@@ -641,7 +640,6 @@ Program *_dxf_ExGraph (node *n)
 {
     Program *p;
     EXDictionary dict;
-    int i, limit;
 
     ExMarkTime(0x10, ">_graph");
     if (n == NULL)
@@ -784,6 +782,8 @@ static void ExGraphTraverse (Program *p, node *n, int top, EXDictionary dict)
 			}
 			break;
 		    }
+		    default:
+		        break;
 		}
 		break;
 
@@ -893,7 +893,6 @@ static void ExGraphExpression (Program *p, node *n, int top, list_int *out, EXDi
     node	*func;
     node	*cons;
     node	*args;
-    gvar	*gv	= NULL;
     int		i, flags;
 
     cnt = ExCountExprLeaves (n, 0);
@@ -924,7 +923,7 @@ static void ExGraphExpression (Program *p, node *n, int top, list_int *out, EXDi
     nodes = (node *) DXAllocateLocal (size);
     if (nodes == NULL)
 	goto error;
-    memset (nodes, NULL, size);
+    memset (nodes, 0, size);
 
     /*
      * We'll be conservative and use 16 although each leaf of the expression
@@ -936,7 +935,7 @@ static void ExGraphExpression (Program *p, node *n, int top, list_int *out, EXDi
     opstr = (char *) DXAllocateLocal (size);
     if (opstr == NULL)
 	goto error;
-    memset (opstr, NULL, size);
+    memset (opstr, 0, size);
 
     /*
      * Now we dummy up the parse tree nodes that we need to construct a
@@ -1178,7 +1177,7 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
 {
     char		*fname;
     char		*name;
-    node		*function;
+    node		*function=NULL;
     node		*formal;
     node		*arg;
     int			slot;
@@ -1192,14 +1191,12 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
     int			tmpcache;
     int			*inArgs;
     node		**inAttrs = NULL; 
-    node		*nodep;
     ReRouteMap          *reroutem, rr_map;
     int			nin;
     int			namedArgs;
     int			prehidden;
     int			posthidden;
     node_function	localFunct;
-    String		str;
     _ntype		functionType;
     int			i, j;
 
@@ -1928,8 +1925,6 @@ static Program *GetNewMacro(Program *p, int *map, int *resolved)
     Program *newp;
     int i, slot;
     ProgramRef pr, *pPr;
-    AsyncVars *avars, av;
-    ProgramVariable *pv;
 
     newp = AllocateProgram();
     for(i = 0; i < SIZE_LIST(p->undefineds); i++) {
@@ -1966,7 +1961,6 @@ static Program *GetNewMacro(Program *p, int *map, int *resolved)
 static void ExCopySubP(Program *toP, Program *fromP, int top)
 {
     Program *mp;
-    progobj *pobj;
     gfunc *pFnode, fnode;
     int i, ilimit, j, jlimit, slot;
     ReRouteMap *reroutem, rr_map;
@@ -2081,6 +2075,8 @@ static void ExMakeGfunc(node_function ndfunc, _ntype type, int instance,
 #endif
             fnode.name = ndfunc.id->v.id.id;
             break;
+        default:
+	    break;
     }
     fnode.instance = instance;
     fnode.excache = excache;
@@ -2191,7 +2187,7 @@ static void ExMakeGfunc(node_function ndfunc, _ntype type, int instance,
         if (fnode.ftype == F_MODULE && 
             (ndfunc.flags & (MODULE_ASYNC | MODULE_ASYNCLOCAL))) {
             int rerun_attr;
-	    if(_dxf_ExHasIntegerAttribute(inAttrs[i], ATTR_RERUNKEY, &rerun_attr))
+	    if(_dxf_ExHasIntegerAttribute(inAttrs[i], ATTR_RERUNKEY, &rerun_attr)) {
                 if(found) 
                     DXWarning("Multiple rerun keys found for module %s, using first occurence of rerun key");
                 else {
@@ -2199,6 +2195,7 @@ static void ExMakeGfunc(node_function ndfunc, _ntype type, int instance,
                     fnode.rerun_index = i;
                     found = TRUE;
                 }
+	    }
         }
         APPEND_LIST(int, fnode.inputs, inArgs[i]);
     }

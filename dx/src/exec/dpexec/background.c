@@ -10,11 +10,13 @@
 
 
 #include <dx/dx.h>
+#include "config.h"
 #include "background.h"
 #include "graph.h"
 #include "graphqueue.h"
 #include "log.h"
 #include "distp.h"
+#include "vcr.h"
 
 typedef struct
 {
@@ -37,7 +39,7 @@ Error _dxf_ExInitBackground (void)
 
     size = sizeof (_background);
 
-    memset (&background, NULL, size);
+    memset (&background, 0, size);
 
     return (OK);
 }

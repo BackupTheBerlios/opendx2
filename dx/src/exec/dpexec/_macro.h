@@ -28,6 +28,6 @@ int	_dxf_ExMacroInsert	(char *name, EXObj obj);
 int	_dxf_ExMacroDelete	(char *name);
 EXObj	_dxf_ExMacroSearch	(char *name);
 
-extern	EXDictionary	_dxd_exMacroDict;
+extern	EXDictionary	_dxd_exMacroDict; /* defined in macro.c */
 
 #endif /* __MACRO_H */

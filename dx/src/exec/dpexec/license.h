@@ -8,7 +8,8 @@
 
 #include <dxconfig.h>
 
-
+#ifndef _LICENSE_H
+#define _LICENSE_H
 
 #define AUTH_MSG_LEN 1024 
 
@@ -40,3 +41,9 @@ typedef enum
         RTLIBLIC = 0x24a3  /* DX Run-time libraries (libDXcallm.a) license */
 } lictype;
 
+Error ExGetLicense(lictype ltype, int forceNetLS);
+Error ExGetPrimaryLicense();
+void _dxf_ExReleaseLicense();
+int _dxfCheckLicenseChild(int child);
+
+#endif /* _LICENSE_H */

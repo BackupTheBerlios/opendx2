@@ -11,18 +11,18 @@
 
 #include <time.h>
 #include <dx/dx.h>
+#include "config.h"
 #include "cache.h"
 #include "crc.h"
 #include "d.h"
-#include "config.h"
 #include "graph.h"
 #include "log.h"
 #include "swap.h"
 #include "utils.h"
 #include "context.h"
 #include "distp.h"
+#include "exobject.h"
 
-extern gfunc   *_dxd_exCurrentFunc;
 EXDictionary _dxd_exCacheDict = (EXDictionary) NULL;
 static gvar *EmptyGvar;
 void _dxf_ExFlushPathTags();
@@ -306,9 +306,6 @@ _dxf_ExCacheFlush (int all)
     EXObj		curr;
     gvar		*gv;
     char		*key;
-    extern int		*_dxd_exTerminating;
-    int  		i, ilimit;
-    char	 	stringKey[8+3];
 
     if (! *_dxd_exTerminating)
         DXDebug ("1", "flushing cache");

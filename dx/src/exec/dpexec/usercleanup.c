@@ -1,2 +1,0 @@
-void
-user_cleanup(){} 

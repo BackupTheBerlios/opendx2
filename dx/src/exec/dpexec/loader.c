@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include "loader.h"
 
 /*
  * system dependent code:  dynamically load or unload an executable file.
@@ -59,18 +59,12 @@ extern char *sys_errlist[];
 #if ibm6000 
 #include <sys/mode.h> 
 #endif
-#include "utils.h"
 
 #if  defined(DXD_NON_UNIX_DIR_SEPARATOR)
 #define DX_DIR_SEPARATOR ';'
 #else
 #define DX_DIR_SEPARATOR ':'
 #endif
-
-
-Error _dxf_fileSearch(char *inname, char **outname, char *extension, 
-		      char *environment);
-
 
 /* include files and definition of the 'handle' used to identify
  * the loaded segment.
@@ -191,16 +185,10 @@ Error _dxf_initloader()
  * would also be a parm set and returned.
  */
 
-
-Error DXLoadAndRunObjFile (char *fname, char *envvar);
-Error DXUnloadObjFile (char *fname, char *envvar);
-PFI   DXLoadObjFile (char *fname, char *envvar);
-
 static struct loadtable *get_tp_entry(char *filename);
 static struct loadtable *set_tp_entry(Ls loadstate, 
 					char *filename, Handle h, EntryPt func);
 static Error findfile(char *inname, char **outname, char *envvar);
-
 
 
 #if ibm6000
@@ -278,7 +266,7 @@ it worked fine UP.
 PFI DXLoadObjFile(char *fname, char *envvar)
 {
     int (*func)();
-    extern Error DXinitdx();
+    extern Error DXinitdx(); /* from libdx/init.c */
     char *foundname = NULL;
     struct loadtable *lp = NULL;
 

@@ -11,14 +11,17 @@
 
 #include <dx/dx.h>
 #include <string.h>
+#include "config.h"
+#include "vcr.h"
 #include "graph.h"
 #include "_variable.h"
-#include "vcr.h"
 #include "sysvars.h"
 #include "log.h"
 #include "packet.h"
 #include "rq.h"
 #include "distp.h"
+#include "graphqueue.h"
+#include "command.h"
 
 typedef enum
 {
@@ -97,25 +100,12 @@ typedef struct {
 } VCRCommandTaskArg;
 
 /*
- * Externally visible functions.
- */
-Error	_dxf_ExInitVCR	(EXDictionary dict);
-void	_dxf_ExCleanupVCR	(void);
-int	_dxf_ExInitVCRVars	(void);
-void 	_dxf_ExVCRCommand 	(int comm, long arg1, int arg2);
-
-/*
  * Static functions.
  */
 static	void	ExVCRSet	(char *var, int val);
 static 	int	ExVCRGet	(char *name);
 static	void	ExVCRLoad	(void);
 static	void	ExVCRAdvance	(void);
-
-/*
- * Extern functions.
- */
-extern	gvar	*create_gvar	(_gvtype type);
 
 
 /*************************************************************************/
@@ -137,7 +127,7 @@ Error _dxf_ExInitVCR (EXDictionary dict)
     if ((vcr = (_vcr *) DXAllocate (size)) == NULL)
 	return (ERROR);
 
-    memset (vcr, NULL, size);
+    memset (vcr, 0, size);
 
     if (DXcreate_lock (&vcr->lock, "vcr lock") != OK)
     {
@@ -265,7 +255,7 @@ static void ExVCRSet (char *var, int val)
     _dxf_ExDefineGvar(gv, (Object) arr);
     gv->cost = 1.0;
     _dxf_ExVariableInsert (var, vcr_dict, (EXO_Object) gv);
-    _dxf_ExCreateGDictPkg(&pkg, var, gv);
+    _dxf_ExCreateGDictPkg(&pkg, var, (EXObj)gv);
     _dxf_ExDistributeMsg(DM_INSERTGDICT, (Pointer)&pkg, 0, TOSLAVES);
 }
 
@@ -689,6 +679,8 @@ _dxf_ExCheckVCR (EXDictionary dict, int multiProc)
 	    case VCR_M_PLAY:
 		ExVCRAdvance ();
 		break;
+	    default:
+	        break;
 	    }
 	    doGraph = TRUE;
 	}
@@ -724,6 +716,8 @@ _dxf_ExCheckVCR (EXDictionary dict, int multiProc)
 
 		case VCR_M_PLAY:
 		    ExVCRAdvance ();
+		    break;
+		default:
 		    break;
 		}
 	    }

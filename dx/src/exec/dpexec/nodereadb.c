@@ -11,11 +11,14 @@
 
 #include <stdio.h>
 #include <dx/dx.h>
+#include "config.h"
+#include "nodeb.h"
 #include "pmodflags.h"
-#include "parse.h"
 #include "_macro.h"
+#include "distp.h"
+#include "remote.h"
 
-extern Error DXOutboard (Object *in, Object *out);
+extern Error _dxfByteSwap(void *dest, void *src, int ndata, Type t); /* from libdx/edfdata.c */
 
 static char rbuffer[PTBUFSIZE];
 static int SwapMsg;
@@ -28,8 +31,13 @@ Error readN(int fd, Pointer Buffer, int n, Type t)
 
     nbytes = n * DXTypeSize(t);
 
+/* The 2 _dxf_ExReceiveBuffer calls here did not include SwapMsg. Prototyping
+ * revealed the coding error. However, now someone that knows needs to check
+ * out the calls with _dxfByteSwap.
+ */
+
     if(nbytes > PTBUFSIZE-sizeof(int)) {
-        if(_dxf_ExReceiveBuffer(fd, Buffer, n, t) < 0) {
+        if(_dxf_ExReceiveBuffer(fd, Buffer, n, t, SwapMsg) < 0) {
             DXUIMessage("ERROR", "Received bad parse tree");
             return(ERROR);
         }
@@ -38,7 +46,7 @@ Error readN(int fd, Pointer Buffer, int n, Type t)
     }
 
     if(bytesleft == 0) {
-        if(_dxf_ExReceiveBuffer(fd, rbuffer, PTBUFSIZE, TYPE_UBYTE) < 0) {
+        if(_dxf_ExReceiveBuffer(fd, rbuffer, PTBUFSIZE, TYPE_UBYTE, SwapMsg) < 0) {
             DXUIMessage("ERROR", "Received bad parse tree");
             return(ERROR);
         }
@@ -92,10 +100,8 @@ struct node *ExReadNode(int fd)
 {
     int len;
     node *n;
-    int numattr;
     int type;
-    int i;
-    struct node *lattr, *function;
+    struct node *function;
 
     readN(fd, &type, 1, TYPE_INT);
     n = _dxf_ExPCreateNode(type);
@@ -199,7 +205,7 @@ struct node *ExReadNode(int fd)
                 else {
                     readN(fd, &(n->v.constant.cat), 1, TYPE_INT);
                     readN(fd, &(n->v.constant.rank), 1, TYPE_INT);
-                    if(n->v.constant.rank > 0)
+                    if(n->v.constant.rank > 0) {
                         if(n->v.constant.rank <= LOCAL_SHAPE) {
                             n->v.constant.shape = n->v.constant.lshape;
                             n->v.constant.salloc = LOCAL_SHAPE;
@@ -212,6 +218,7 @@ struct node *ExReadNode(int fd)
                                 _dxf_ExDie("Could not allocate memory");
                             n->v.constant.salloc = n->v.constant.rank;
                         }
+		     }
                         readN(fd, n->v.constant.shape, n->v.constant.rank, 
                               TYPE_INT);
 		}

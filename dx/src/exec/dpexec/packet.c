@@ -65,8 +65,6 @@ static char
     "$lnk"		/* PACK_LINK */
 };
 
-extern SFILE 	*_dxd_exSockFD;
-extern int	_dxd_exRemote;
 
 static char 	**tmpbuffer = NULL;
 static int	*tmpbuffersize = NULL;
@@ -177,7 +175,7 @@ _dxf_ExCheckPacket(char *packet, int length)
  * Format a packet so it can be transmitted to dxui
  */
 
-_dxf_ExSPack (int type, int seqnumber, Pointer data, int len)
+Error _dxf_ExSPack (int type, int seqnumber, Pointer data, int len)
 {
     char packet[MAX_UI_PACKET];
     int length;
@@ -187,7 +185,7 @@ _dxf_ExSPack (int type, int seqnumber, Pointer data, int len)
 
     if (data)
 	length = (int) sprintf (packet, "|%d|%s|%d|%s|\n",
-			        seqnumber, packtype[type], len, data);
+			        seqnumber, packtype[type], len, (char *)data);
     else
 	length = (int) sprintf (packet, "|%d|%s|%d||\n",
 			        seqnumber, packtype[type], 0);

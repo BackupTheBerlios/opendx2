@@ -12,39 +12,30 @@
 #if defined(HAVE_WINIOCTL_H)
 #include <winioctl.h>
 #endif
-
 #if defined(HAVE_SYS_IOCTL_H)
 #include <sys/ioctl.h>
 #endif
-
 #if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
 #endif
-
 #if defined(HAVE_SYS_TIMES_H)
 #include <sys/times.h>
 #endif
-
 #if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
-
 #if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
 #endif
-
 #if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
-
 #if defined(HAVE_TIME_H)
 #include <time.h>  
 #endif
-
 #if defined(HAVE_SYS_SIGNAL_H)
 #include <sys/signal.h>
 #endif
-
 #if defined(HAVE_CTYPE_H)
 #include <ctype.h>
 #endif
@@ -53,39 +44,30 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#if HAVE_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
-
 #if defined(HAVE_CONIO_H)
 #include <conio.h>
 #endif
-
 #if defined(HAVE_ERRNO_H)
 #include <errno.h>
 #endif
-
 #if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
-
 #if defined(HAVE_SYS_FILIO_H)
 #include <sys/filio.h>
 #endif
-
 #if defined(HAVE_SYS_WAIT_H)
 #include <sys/wait.h>
 #endif
-
 #if defined(HAVE_LIMITS_H)
 #include <limits.h>
 #endif
-
 #if defined(HAVE_FCNTL_H)
 #include <fcntl.h>
 #endif
-
-#include "sfile.h"
 
 #if defined(HAVE_SYS_RESOURCES_H)
 #include <sys/resource.h>
@@ -99,18 +81,16 @@
 #define WEXITSTATUS(status)	((status).w_retcode)
 #endif
 
-extern double SVS_double_time ();
 #endif
 
 #if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
 
-#if HAVE_SYSMP
+#if defined(HAVE_SYS_SYSMP_H)
 #include <sys/sysmp.h>
 #endif
-
-#if defined(HAVE_SYSCONFIG_NCPUS)
+#if defined(HAVE_SYS_SYSTEMCFG_H)
 # include <sys/systemcfg.h>
 #endif
 
@@ -130,6 +110,7 @@ extern double SVS_double_time ();
 #define	CHECK_INIT(_i, what)\
     if ((_i) != OK) ExInitFailed (what)
 
+#include "config.h"
 #include "background.h"
 #include "parse.h"
 #include "d.h"
@@ -138,20 +119,33 @@ extern double SVS_double_time ();
 #include "graphqueue.h"
 #include "status.h"
 #include "log.h"
-#include "config.h"
-#include "context.h"
 #include "packet.h"
 #include "exobject.h"
-#include "utils.h"
-#include "cache.h"
 #include "sysvars.h"
 #include "version.h"
-#include "distp.h"
+#include "vcr.h"
+#include "swap.h"
+#include "_macro.h"
+#include "_variable.h"
+#include "parsemdf.h"
+#include "command.h"
+#include "pendingcmds.h"
+#include "userinter.h"
+#include "nodeb.h"
+#include "lex.h"
+#include "evalgraph.h"
+#include "function.h"
+#include "rih.h"
+#include "task.h"
+#include "remote.h"
+#include "socket.h"
+#include "../libdx/diskio.h"
 
 #ifdef DXD_LICENSED_VERSION
 #include "license.h"
 static int exLicenseSelf = FALSE;
 lictype _dxd_exForcedLicense    = NOLIC; /* Is the given license forced */
+int		_dxd_ExHasLicense	= FALSE;
 #endif
 
 #ifndef OPEN_MAX
@@ -160,6 +154,13 @@ lictype _dxd_exForcedLicense    = NOLIC; /* Is the given license forced */
 
 static int extestport = -1;
 static char extesthost[80];
+
+/* Functions defined in libdx or programatically defined */
+
+extern int   DXConnectToServer(char *host, int pport); /* from libdx/client.c */
+extern void  _dxfTraceObjects(int d); /* from libdx/object.c */
+extern void  _dxf_user_modules(); /* from libdx/ */
+extern void  _dxf_private_modules(); /* from libdx/ */
 
 /*
  * How often to check for registered input handlers
@@ -185,14 +186,12 @@ static int nphysprocs;
 
 static int processor_status_on	= FALSE;
 
-
-typedef LIST(dphosts)     DPHosts;
-LIST(pathtag)      _dxd_pathtags;
-LIST(dpgraphstat)  _dxd_dpgraphstat;
-DPHosts            *_dxd_dphosts;
+PATHTAG            _dxd_pathtags;
+DPGRAPHSTAT        _dxd_dpgraphstat;
+DPHOSTS            *_dxd_dphosts;
 lock_type          _dxd_dphostslock;
-LIST(PGassign)     _dxd_pgassign;
-LIST(SlavePeers)   _dxd_slavepeers;
+PGASSIGN           _dxd_pgassign;
+SLAVEPEERS         _dxd_slavepeers;
 
 int _dxd_exCacheOn 		  = TRUE;		/* use cache */
 int _dxd_exIntraGraphSerialize    = TRUE;
@@ -230,15 +229,12 @@ int  _dxd_exMsgOK	  	= FALSE;
 int  *_dxd_exNSlaves;		 /* number of distributed slaves */
 int  *_dxd_extoplevelloop;	 /* looping at top level of graph */
 
-
 int _dxd_exEnableDebug	        = 0;
 long _dxd_exMarkMask		= 0;	      /* DXMarkTime enable mask	*/
-static MarkModules		= FALSE;
+static int MarkModules		= FALSE;
 
 int _dxd_exParseAhead	        = TRUE;
 int _dxd_exSParseAhead;
-
-extern int *_dxd_exKillGraph;
 
 static char	*_pIstr	= "stdin";
 
@@ -248,18 +244,8 @@ static char	**exenvp	= NULL;
 static char     *mdffiles[MDF_MAX];
 static int      nmdfs           = 0;
 
-int _dxf_ExReclaimMemory();
-void _dxf_ExDie (char *format, ...);
 int _dxfPhysicalProcs(void);
-extern void _dxfcleanup_mem();
-extern void _dxf_ExFlushGlobal(void);
-extern void _dxf_ExFlushMacro(void);
-
-extern void _dxf_RunPendingCmds();
-extern void _dxf_CleanupPendingCmds();
-extern void _dxf_ExLogError(int error);
-
-extern Error _dxfLoadDefaultUserInteractors();
+extern void _dxfcleanup_mem(); /* from libdx/mem.c */
 
 /* Common routines added for distributed processing */    
 
@@ -309,17 +295,7 @@ static volatile int	*rouExited;
 static lock_type rouLock;
 #endif
 
-#ifdef DXD_LICENSED_VERSION
-extern Error	ExGetLicense		();
-extern Error	ExGetPrimaryLicense	();
-extern void     _dxf_ExReleaseLicense   ();
-extern int      _dxfCheckLicenseChild(int child);
-int		_dxd_ExHasLicense	= FALSE;
-#endif
-
 EXDictionary	_dxd_exGlobalDict;
-extern EXDictionary	_dxd_exMacroDict;
-extern EXDictionary	_dxd_exGraphCache;
 
 static struct child {
 		int pid;
@@ -332,14 +308,15 @@ static volatile int *exReady;
 
 #include "instrument.h"
 
-extern Error user_cleanup();
+Error user_cleanup() { return ERROR; } 
 
+int 
 DXmain (argc, argv, envp)
     int		argc;
     char	**argv;
     char	**envp;
 {
-    int		save_errorlevel;
+    int		save_errorlevel=0;
 #if HAVE_SYS_CORE_H
     struct rlimit	rl;
 #endif
@@ -666,7 +643,6 @@ static void ExMainLoopSlave ()
 static void ExMainLoopMaster ()
 {
     int			naptime;
-    extern SFILE	*yyin;
 
     /*
      * Module definitions should be put into the dictionary before
@@ -807,8 +783,7 @@ loop_slave_continue:
 	    }
 	}
 #endif
-
-main_loop_continue:
+  main_loop_continue:
 	continue;
     }
 
@@ -822,9 +797,6 @@ main_loop_continue:
 static void ExKillChildren ()
 {
     int		i;
-#if DXD_PROCESSOR_STATUS
-    extern int	_dxd_exStatusPID;
-#endif
 
     if (! (_dxd_exMyPID == 0 && nprocs == 1))
 	for (i = 0; i < nprocs && i < nphysprocs; i++)
@@ -897,7 +869,6 @@ void _dxf_ExDie (char *format, ...)
  */
 static void ExProcessArgs (int argc, char **argv)
 {
-    extern char *optarg;
     int		opt;
     int		mlim = (0x7fffffff >> 20);	/* divide by 1 meg */
 
@@ -1062,7 +1033,8 @@ static void ExUsage (char *name)
     fprintf (stdout, "  -L    force a license type (runtime or develop)\n");
 
     fprintf (stdout, "  -m    mark module execution times\n");
-    fprintf (stdout, "  -M    limit global memory\n", maxMemory);
+    fprintf (stdout, "  -M    limit global memory           (default = %d)\n", 
+             maxMemory);
 
 #if DXD_IS_MP
     fprintf (stdout, "  -p    number of processors         (default = %d)\n",
@@ -1121,8 +1093,14 @@ ExVersion ()
     exit (0);
 }
 
+void _dxf_ExInitPromptVars()
+{
+    _dxf_ExPromptSet(PROMPT_ID_PROMPT,EX_PROMPT);
+    _dxf_ExPromptSet(PROMPT_ID_CPROMPT,EX_CPROMPT);
+}
 
-_dxf_ExInitSystemVars ()
+
+void _dxf_ExInitSystemVars ()
 {
     _dxf_ExInitVCRVars ();
     if(!_dxd_exRemoteSlave)
@@ -1166,9 +1144,6 @@ static void ExConnectInput ()
 
 static void ExInitialize ()
 {
-#if YYDEBUG != 0
-    extern int		yydebug;
-#endif
     int			i;
     int			n;
     int			nasked;
@@ -1325,7 +1300,7 @@ static void ExInitialize ()
     _dxd_exGlobalDict = _dxf_ExDictionaryCreate (2048, TRUE, FALSE);
 
     _dxd_dphosts =
-	(DPHosts *)DXAllocate(sizeof(LIST(dphosts)));
+	(DPHOSTS *)DXAllocate(sizeof(LIST(dphosts)));
     if(_dxd_dphosts == NULL)
 	ExInitFailed ("can't allocate memory for distributed table");
     INIT_LIST(*_dxd_dphosts);
@@ -1543,6 +1518,7 @@ static void ExCleanup ()
     exit (0);
 }
 
+#if 0   /* function never used? */
 
 static Error
 ExTraceProfileWorker (int how)
@@ -1557,13 +1533,15 @@ ExTraceProfileWorker (int how)
     return (OK);
 }
 
-
+/*
+ * The fucntion is called wrong so commenting this function out.
+ */
 Error
 _dxf_ExTraceProfile (int how)
 {
     return (_dxf_ExRunOnAll (ExTraceProfileWorker, how, 0));
 }
-
+#endif
 
 /*
  * Fork off the child processes which will migrate to different physical
@@ -1573,8 +1551,6 @@ static void ExForkChildren ()
 {
     int		pid;
     int		i;
-    int         *GI = NULL;
-    lock_type   *LI = NULL;
 
 #ifdef INSTRUMENT
     ExAllocateInstrument (nprocs);
@@ -1601,6 +1577,9 @@ static void ExForkChildren ()
     _dxd_exGoneMP = TRUE;
 
 #if DXD_HAS_LIBIOP
+    {
+    int         *GI = NULL;
+    lock_type   *LI = NULL;
     GI = (int *)DXAllocate(sizeof(int));
     LI = (lock_type *)DXAllocate(sizeof(lock_type));
     if(GI == NULL || LI == NULL)
@@ -1620,6 +1599,7 @@ static void ExForkChildren ()
     *GI += 1;
     DXunlock(LI, 0);
     children[i].pid = getpid ();
+    }
 #else
     /* fork off processes for each of the processors */
 #if DXD_EXEC_WAIT_PROCESS
@@ -1705,7 +1685,6 @@ static int ExReadCharFromRQ_fd (int fd, Pointer p)
 {
     int ret; 
     char c;
-    int n = 0;
 
 #if DEBUGMP
     if(_dxd_exMyPID == 0)
@@ -1722,6 +1701,7 @@ static int ExReadCharFromRQ_fd (int fd, Pointer p)
     if(_dxd_exMyPID == 0)
         DXMessage("-----------finished read from rq");
 #endif
+    return 0; 
 }
 
 void _dxf_update_childpid(int i, int pid, int writefd)
@@ -1776,7 +1756,7 @@ void _dxf_set_RQ_fds(int readfd, int writefd, int i)
     }
 }
 
-void _dxf_parent_RQ_message() 
+Error _dxf_parent_RQ_message() 
 {
     int ret;
 
@@ -1786,13 +1766,13 @@ void _dxf_parent_RQ_message()
     ret = write(exParent_RQwrite_fd, "a", 1);
     if(ret != 1)
         _dxf_ExDie("Write Erroring notifying parent of job request, write returns %d, error number %d", ret, errno);
-
+    return ERROR; 
 }
 
 /* Send a message to the child so they know there is work on the queue. */
 /* If there is a jobid then only notify the child that the job is for,  */
 /* otherwise notify all children and the first to get the job wins.     */
-void _dxf_child_RQ_message(int *jobid)
+Error _dxf_child_RQ_message(int *jobid)
 {
     int i;
     int procid;
@@ -1806,7 +1786,7 @@ void _dxf_child_RQ_message(int *jobid)
     if(procid == 0) {
         if(_dxd_exMyPID != 0)
             DXWarning("Ignoring rq message to parent");
-        return;
+        return ERROR; 
     }
 
     if(procid > 0) {
@@ -1835,6 +1815,7 @@ void _dxf_child_RQ_message(int *jobid)
 #endif
         }
     }
+    return ERROR; 
 }
 
 /*
@@ -1899,17 +1880,10 @@ _dxf_ExPromptGet(char *var)
     return (val);
 }
 
-_dxf_ExInitPromptVars()
-{
-    _dxf_ExPromptSet(PROMPT_ID_PROMPT,EX_PROMPT);
-    _dxf_ExPromptSet(PROMPT_ID_CPROMPT,EX_CPROMPT);
-}
-
 static int ExFromMasterInputHndlr (int fd, Pointer p)
 {
     Program		*graph;
     DistMsg             pcktype; 
-    node 		*n;
     int			b, peerwait;
     int 		graphId;
     DictType		whichdict;
@@ -2053,6 +2027,8 @@ DXMarkTimeLocal ("pre  gq_enq");
             case DICT_GRAPH:
                 _dxf_ExDictionaryPurge (_dxd_exGraphCache);
                 break;
+	    default:
+	    	break;
         }
 	break;
     case DM_GRAPHDELETE:
@@ -2114,18 +2090,17 @@ DXMarkTimeLocal ("pre  gq_enq");
 	ExCleanup();
 	break;
     }
+  return (0);
 }
     
 int
 ExCheckInput ()
 {
-    extern SFILE	*yyin;
     Program		*graph;
     static int 		prompted = FALSE;
     char		*prompt;
     int			fno;
     Context		savedContext;
-    extern SFILE	*_dxd_exBaseFD;
 
     /* don't read anymore input if we are exiting */
     if (*_dxd_exTerminating)
@@ -2293,7 +2268,6 @@ ExInputAvailable (SFILE *fp)
     fd_set		fdset;
     struct timeval	tv;
     static int		iters	= 0;
-    extern SFILE	*_dxd_exBaseFD;
 
     _dxf_ExCheckPacket(NULL, 0);
 
@@ -2346,7 +2320,6 @@ ExRegisterRQ_fds()
 static void
 ExParallelMaster ()
 {
-    extern SFILE	*yyin;
     Program		*graph;
     Context             savedContext;
     int			tries		= 0;
@@ -2380,7 +2353,6 @@ ExParallelMaster ()
                    (ExInputAvailable (yyin) || _dxd_exSelectReturnedInput)
                    && _dxd_exParseAhead)
 	    {
-block:
 		limit = -EX_INCREMENT;
 
                 _dxd_exSelectReturnedInput = FALSE;

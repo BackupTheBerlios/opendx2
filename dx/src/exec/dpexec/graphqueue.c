@@ -10,22 +10,21 @@
 
 
 #include <dx/dx.h>
-#include "pmodflags.h"
-#include "config.h"
 #include "graphqueue.h"
+#include "config.h"
+#include "pmodflags.h"
 #include "utils.h"
 #include "log.h"
 #include "packet.h"
 #include "cache.h"
 #include "_variable.h"
+#include "evalgraph.h"
 
 typedef struct gq_elem
 {
     struct gq_elem	*next;		/* linked list of elements */
     Program		*func;		/* root node of graph */
 } gq_elem;
-
-extern int		_dxd_exIntraGraphSerialize;
 
 static lock_type	*gq_sem;
 static gq_elem		*gq_head;
@@ -157,10 +156,13 @@ Program *_dxf_ExGQDequeue ()
 
     if (func)
 	DXDebug ("*1", "[%08x] OUT of gq  %d", func, func->graphId);
-    if (SIZE_LIST(func->funcs) == 0)
+
+    if (SIZE_LIST(func->funcs) == 0) {
 	ExMarkTime(8, "enq assign");
-    else
+    }
+    else {
 	ExMarkTime(8, "enq module");
+    }
 
     return (func);
 }
@@ -175,8 +177,6 @@ Program *_dxf_ExGQCurrent ()
 
 static void ExResetGraphKill ()
 {
-    extern int	*_dxd_exKillGraph;
-
     *_dxd_exKillGraph = FALSE;
 }
 
@@ -256,6 +256,7 @@ unlock:
 /*
  * Determine if the specified graph is executing.
  */
+int
 _dxf_ExGQRunning (int graphId)
 {
     int		status;
@@ -304,12 +305,13 @@ void _dxf_ExGQPrint (char *s)
 {
     gq_elem	*e;
 
-    printf ("%s: head = %8x, tail = %8x, Q = ", s, gq_head, gq_tail);
+    printf ("%s: head = %8x, tail = %8x, Q = ", s, (unsigned int) gq_head, 
+             (unsigned int) gq_tail);
     for (e = gq_head; e; e = e->next)
-	printf ("%8x ", e);
+	printf ("%8x ", (unsigned int) e);
     printf ("\n");
 
     printf ("curr = ");
-    printf ("%8x ", *gq_curr);
+    printf ("%8x ", (unsigned int) *gq_curr);
     printf ("\n");
 }
