@@ -27,10 +27,10 @@ install-exec-local:
 		ar qv libDX.a *.o ;					   \
 		rm *.o	;						   \
 	done ; 								   \
-	if test ! -z "$(FMT_LIBS)" ; then				   \
-		for i in $(FMT_LIBS) ; do				   \
+	if test ! -z "@FMT_LIBS@" ; then				   \
+		for i in @FMT_LIBS@ ; do				   \
 			lib="";						   \
-			for j in $(LIBS) ; do				   \
+			for j in /lib /usr/lib /usr/local/lib @LIBS@ ; do  \
 				k=`echo $$j | sed -e "s/-L//"` ;	   \
 				if test -f $$k/$$i ; then		   \
 					lib=$$k/$$i ;			   \
