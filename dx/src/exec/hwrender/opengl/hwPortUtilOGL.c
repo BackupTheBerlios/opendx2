@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.10 2002/03/15 00:17:33 rhh Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.11 2002/03/16 14:12:00 rhh Exp $
 
 Author:  Ellen Ball
 
@@ -21,6 +21,7 @@ Based on hwrender/gl/hwPortUtil.c
 \*---------------------------------------------------------------------------*/
 
 #include <math.h>
+#include <string.h>
 
 #ifdef DEBUG
 #define TIMER(s) glFlush(); DXMarkTime(s);
@@ -128,6 +129,16 @@ static Error
 #define ALL_PRIMS         0
 #define OPAQUE_PRIMS      1
 #define TRANSLUCENT_PRIMS 2
+
+/*  We presume OpenGL >= 1.2. */
+/*  If < OpenGL 1.3...        */
+#ifndef GL_CLAMP_TO_BORDER
+#  ifdef sgi
+#    define GL_CLAMP_TO_BORDER GL_CLAMP_TO_BORDER_SGIS
+#  else
+#    define GL_CLAMP_TO_BORDER 0x812D
+#  endif
+#endif
 
 
 /*-------- These happen once per field -- outside glBegin/glEnd -------*/
@@ -2133,6 +2144,53 @@ WriteToFile(char *s, xfieldP xf, int type, float mat[4][4])
 }
 #endif
 
+static int isGLExtensionSupported( const char *extension )
+  /* Blatent copy from: 
+   *    http://www.opengl.org/developers/code/features/OGLextensions/\
+   *    OGLextensions.html
+   */
+{
+  const GLubyte *extensions = NULL;
+  const GLubyte *start;
+  GLubyte *where, *terminator;
+
+  /* Extension names should not have spaces. */
+  where = (GLubyte *) strchr(extension, ' ');
+  if (where || *extension == '\0')
+    return 0;
+  extensions = glGetString(GL_EXTENSIONS);
+  /* It takes a bit of care to be fool-proof about parsing the
+     OpenGL extensions string. Don't be fooled by sub-strings,
+     etc. */
+  start = extensions;
+  for (;;) {
+      where = (GLubyte *) strstr((const char *) start, extension);
+      if (!where)
+          break;
+      terminator = where + strlen(extension);
+      if (where == start || *(where - 1) == ' ')
+          if (*terminator == ' ' || *terminator == '\0')
+              return 1;
+      start = terminator;
+  }
+  return 0;
+}
+
+static int glSupports_CLAMP_TO_BORDER( void )
+{
+#ifdef GL_VERSION_1_3
+  return 1;
+#else
+  static int Texture_border_supported = -1;
+  if ( Texture_border_supported < 0 ) 
+    Texture_border_supported = 
+      ( !isGLExtensionSupported("SGIS_texture_border_clamp") &&
+        !isGLExtensionSupported("GL_ARB_texture_border_clamp") );
+  return Texture_border_supported;
+#endif
+}
+
+
 static void
 loadTexture(xfieldP xf)
 {
@@ -2167,17 +2225,28 @@ startTexture(xfieldP xf)
       { tfn_decal   , GL_DECAL    }, { tfn_replace , GL_REPLACE  },
       { tfn_modulate, GL_MODULATE }, { tfn_blend   , GL_BLEND    }
     };
+    static struct 
+      { textureWrapE dx; GLint gl; }
+    wrap_to_gl[] = { 
+      { tw_clamp , GL_CLAMP   }, { tw_clamp_to_edge  , GL_CLAMP_TO_EDGE   },
+      { tw_repeat, GL_REPEAT  }, { tw_clamp_to_border, GL_CLAMP_TO_BORDER }
+    };
+
     attributeP attr = &xf->attributes;
-    int i;
+    int i, len;
     GLint wrap_s, wrap_t, min_filter, mag_filter, function;
 
     /*  Set texture wrap modes  */
-    wrap_s = ( attr->texture_wrap_s == tw_clamp  ? GL_CLAMP  : 
-               attr->texture_wrap_s == tw_repeat ? GL_REPEAT : 
-               GL_CLAMP_TO_EDGE );
-    wrap_t = ( attr->texture_wrap_t == tw_clamp  ? GL_CLAMP  : 
-               attr->texture_wrap_t == tw_repeat ? GL_REPEAT : 
-               GL_CLAMP_TO_EDGE );
+    wrap_s = wrap_t = GL_CLAMP;
+    len = sizeof(wrap_to_gl)/sizeof(*wrap_to_gl);
+    if ( !glSupports_CLAMP_TO_BORDER() )
+        len--;
+    for ( i = 0; i < len; i++ ) {
+      if ( attr->texture_wrap_s == wrap_to_gl[i].dx )
+        wrap_s = wrap_to_gl[i].gl;
+      if ( attr->texture_wrap_t == wrap_to_gl[i].dx )
+        wrap_t = wrap_to_gl[i].gl;
+    }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
 

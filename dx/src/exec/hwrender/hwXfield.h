@@ -53,7 +53,8 @@ enum xd {
 typedef enum {
     tw_repeat,
     tw_clamp,
-    tw_clamp_to_edge
+    tw_clamp_to_edge,
+    tw_clamp_to_border
 } textureWrapE;
 
 typedef enum {
