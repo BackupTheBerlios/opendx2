@@ -10,6 +10,9 @@ dxlibdir = $(DXROOT)/lib
 dxincludedir = $(DXROOT)/include/dx
 dxlib_LIBRARIES = libDXL.a
 
+noinst_HEADERS = \
+	dxlP.h
+
 libDXL_a_SOURCES =  \
 	close.c				\
 	conn.c				\

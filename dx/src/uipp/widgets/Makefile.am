@@ -9,6 +9,46 @@ dxincludedir = $(DXROOT)/include/dx
 dxdatadir = $(DXROOT)/data
 noinst_LIBRARIES = libWIDGETS.a
 
+noinst_HEADERS = \
+	Color.h \
+	ColorMapEditor.h \
+	ColorMapEditorP.h \
+	ControlField.h \
+	Dial.h \
+	DialP.h \
+	FFloat.h \
+	FieldCursor.h \
+	FrameControl.h \
+	FrameControlP.h \
+	Grid.h \
+	Image.h \
+	ImageP.h \
+	MultiText.h \
+	MultiTextP.h \ 
+	Number.h \
+	NumberInput.h \
+	NumberP.h \
+	NumericList.h \
+	NumericListP.h \
+	Picture.h \
+	PictureP.h \
+	SlideBar.h \
+	SlideBarP.h \
+	Slider.h \
+	SliderP.h \
+	Stepper.h \
+	StepperP.h \
+	VCRControl.h \
+	VCRControlP.h \
+	WorkspaceCallback.h \
+	WorkspaceP.h \
+	WorkspaceW.h \
+	XmDX.h \
+	clipnotify.h \
+	findcolor.h \
+	gamma.h 
+
+
 libWIDGETS_a_SOURCES =  		\
 	ColorBar.c			\
 	ColorRGB.c			\

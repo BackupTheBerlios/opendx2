@@ -19,6 +19,11 @@ EXTRA_DIST = \
 	\
 	Main.C
 
+noinst_HEADERS = \
+	NoUndoTutorAppCommand.h \
+	TutorApplication.h \
+	TutorWindow.h
+
 #tutor_LDADD = 				\
 #	../base/libBASE.a  		\
 #	../widgets/libWIDGETS.a  	\

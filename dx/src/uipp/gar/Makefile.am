@@ -12,6 +12,42 @@ dxincludedir = $(DXROOT)/include/dx
 # dxbin_PROGRAMS = gar
 # gar_SOURCES =  		
 
+noinst_HEADERS = \
+	Browser.h \
+	BrowserCommand.h \
+	CDFChoice.h \
+	CommandTextPopup.h \
+	CommentDialog.h \
+	ConfirmedOpenCommand.h \
+	ConfirmedQCommand.h \
+	DXChoice.h \
+	DataFileDialog.h \
+	Field.h \
+	FileContents.h \
+	FilenameSelectDialog.h \
+	GARApplication.h \
+	GARChooserWindow.h \
+	GARCommand.h \
+	GARMainWindow.h \
+	GARNewCommand.h \
+	GridChoice.h \
+	HDFChoice.h \
+	ImageChoice.h \
+	ImportableChoice.h \
+	MsgDialog.h \
+	NetCDFChoice.h \
+	NoUndoChoiceCommand.h \
+	NoUndoChooserCommand.h \
+	NoUndoGARAppCommand.h \
+	NonimportableChoice.h \
+	OpenFileDialog.h \
+	QuitCommand.h \
+	RecordSeparator.h \
+	SADialog.h \
+	SearchDialog.h \
+	SpreadSheetChoice.h \
+	TypeChoice.h 
+
 EXTRA_DIST = \
 	Browser.C			\
 	BrowserCommand.C		\
@@ -77,3 +113,4 @@ dxdata_DATA = 				\
 	vector1_insens.bm		\
 	vector2.bm			\
 	vector2_insens.bm
+

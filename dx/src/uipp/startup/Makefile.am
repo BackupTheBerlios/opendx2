@@ -21,6 +21,13 @@ EXTRA_DIST = \
 	\
 	Main.C
 
+noinst_HEADERS = \
+	NetFileDialog.h \
+	StartupApplication.h \
+	StartupCommand.h \
+	StartupWindow.h \
+	TimedInfoDialog.h
+
 #startupui_LDADD = 			\
 #	../base/libBASE.a  		\
 #	../widgets/libWIDGETS.a  	\

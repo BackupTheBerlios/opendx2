@@ -27,6 +27,20 @@ EXTRA_DIST = \
 	\
 	Main.C
 
+noinst_HEADERS = \
+	CommentDialog.h \
+	ConfirmedQCommand.h \
+	MBApplication.h \
+	MBCommand.h \
+	MBGenerate.h \
+	MBMainWindow.h \
+	MBNewCommand.h \
+	MBParameter.h \
+	OpenFileDialog.h \
+	OptionsDialog.h \
+	QuitCommand.h \
+	SADialog.h
+
 #builder_LDADD = 			\
 #	../base/libBASE.a  		\
 #	../widgets/libWIDGETS.a  	\
