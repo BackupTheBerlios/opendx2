@@ -33,7 +33,7 @@ extern Object _dxfExportBin_FP(Object o, int fd);
  * next write from this processor.
  */
 
-static struct queue {			/* the queue */
+static struct _dxd_queue {			/* the queue */
     lock_type DXlock;			/* queue DXlock */
     struct element *first;		/* first element of queue */
     struct element *last;		/* last element of queue */
@@ -61,7 +61,7 @@ void _dxfemergency(void)		/* call to declare an emergency */
 Error
 _dxf_initmemqueue()
 {
-    queue = (struct queue *) DXAllocate(sizeof(struct queue));
+    queue = (struct _dxd_queue *) DXAllocate(sizeof(struct _dxd_queue));
     if (!queue)
 	return ERROR;
     DXcreate_lock(&queue->DXlock, "message queue");
