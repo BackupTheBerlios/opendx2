@@ -2,9 +2,6 @@
 
 #include <dxconfig.h>
 
-
-
-
 #include <stdio.h>
 #if !defined(DXD_WIN)
 #include <unistd.h>

@@ -1573,7 +1573,7 @@ const String _defaultDXResources[] =
 {
     "*quitOption.labelString:                Quit",
     "*quitOption.mnemonic:                   Q",
-    "*quitOption.accelerator:                Ctrl<Key>Q:",
+    "*quitOption.accelerator:                Ctrl<Key>Q",
     "*quitOption.acceleratorText:            Ctrl+Q",
     "*standInBackground:              #5F9EA0", // CadetBlue 
     "*executionHighlightForeground:   #00ff7e",
