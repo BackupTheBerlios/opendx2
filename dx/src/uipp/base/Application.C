@@ -17,6 +17,7 @@
 //
 #include <errno.h> // for errno
 #include <fcntl.h> // for stat
+#include <ctype.h> // for tolower
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
@@ -528,7 +529,16 @@ boolean Application::getApplicationDefaultsFileName(char* res_file)
 {
     const char* class_name = this->getApplicationClass();
     char* home = (char*)getenv("HOME");
-    sprintf (res_file, "%s/%s", home, class_name);
+    int len = strlen(home);
+    strcpy (res_file, home);
+    res_file[len++] = '/';
+    res_file[len++] = '.';
+    char* cp = (char*)class_name;
+    while (*cp) {
+	res_file[len++] = tolower(*cp);
+	cp++;
+    }
+    strcpy (&res_file[len], "-ad");
     return this->isUsableDefaultsFile(res_file);
 }
 

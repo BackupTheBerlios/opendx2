@@ -921,12 +921,12 @@ const char* class_name = this->getApplicationClass();
     if (!home || !strlen(home)) {
 	home = (char*)this->resource.UIRoot;
 	if (!home || !strlen(home)) {
-	    sprintf(res_file, "/%s", class_name);
+	    sprintf(res_file, "/%s-AD", class_name);
 	} else {
-	    sprintf(res_file, "%s/ui/%s", home, class_name);
+	    sprintf(res_file, "%s/ui/%s-AD", home, class_name);
 	}
     } else {
-	sprintf(res_file, "%s/ui/%s", home, class_name);
+	sprintf(res_file, "%s/ui/%s-AD", home, class_name);
     }
 
     return this->isUsableDefaultsFile(res_file);
