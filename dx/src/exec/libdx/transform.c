@@ -108,7 +108,7 @@ TransformProductArray(Matrix m, Camera c, Array points, Array *box,
 		      Field f, int *behind)
 {
     int i, n;
-    Array xpoints, terms[100];
+    Array terms[100];
 
     /* is product array transformation applicable? */
     if ((c && !c->ortho) || DXGetArrayClass(points)!=CLASS_PRODUCTARRAY)
@@ -353,7 +353,7 @@ Array
 _dxf_TransformArray(Matrix *mp, Camera c, Array points,
 		Array *box, Field f, int *behind, float fuzz)
 {
-    Array xpoints, a;
+    Array xpoints;
     Matrix m;
     Point *boxpts;
 
@@ -374,11 +374,11 @@ _dxf_TransformArray(Matrix *mp, Camera c, Array points,
 	m = DXGetCameraMatrixWithFuzz(c, fuzz);
 
     /* regular array? */
-    if (xpoints = TransformRegularArray(m, c, points, box))
+    if ((xpoints=TransformRegularArray(m, c, points, box))!=NULL)
 	return xpoints;
 
     /* product array? */
-    if (xpoints = TransformProductArray(m, c, points, box, f, behind))
+    if ((xpoints=TransformProductArray(m, c, points, box, f, behind))!=NULL)
 	return xpoints;
 
     /* irregular array */
@@ -900,7 +900,7 @@ ApplyTransform_RegularArray(Array array, Matrix *matrix, int norm)
     Category cat;
     Pointer  inOrigin = NULL, outOrigin = NULL;
     Pointer  inDeltas = NULL, outDeltas = NULL;
-    int      rank, shape[32], size, n, count, nDin, nDout, i, j;
+    int      rank, shape[32], n, count, nDin, nDout, i;
     Array    result = NULL;
 
     if (! DXGetArrayInfo(array, &count, &type, &cat, &rank, shape))
@@ -1027,7 +1027,7 @@ ApplyTransform_ConstantArray(Array array, Matrix *matrix, int norm)
 {
     Type     type;
     Category cat;
-    int      rank, shape[32], size, n, count, nDin, nDout, i, j;
+    int      rank, shape[32], count, nDin, nDout, i;
     Array    result = NULL;
     Pointer  inVector;
     Pointer  outVector;
@@ -1170,7 +1170,7 @@ static Array
 ApplyTransform_GenericArray(Array array, Matrix *m, int norm)
 {
     Category          cat;
-    int               rank, shape[32], size, n;
+    int               rank, shape[32];
     Array             result = NULL;
     int               i, j, k;
     int		      count;
@@ -1313,7 +1313,7 @@ SetDimensionality_RegularArray(Array array, int n)
     Category 	   cat;
     unsigned char  *origin = NULL;
     unsigned char  *delta = NULL;
-    int      	   rank, shape[32],  count, nD, i, j;
+    int      	   rank, shape[32],  count, nD;
     Array    	   result = NULL;
 
     if (! DXGetArrayInfo(array, &count, &type, &cat, &rank, shape))

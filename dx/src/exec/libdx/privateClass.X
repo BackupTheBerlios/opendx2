@@ -17,5 +17,3 @@ struct private {
     Error (*delete)(Pointer);		/* deletion routine */
 };
 
-static Private _NewPrivate(Pointer data, Error (*delete)(Pointer),
-		        struct private_class *class);

@@ -184,9 +184,8 @@ static Error
 _dxfInitialize(LinesRI1DInterpolator li)
 {
     Field	field;
-    int		nDim;
     int		seg, i, i0, i1, dir;
-    float	p0, p1, last;
+    float	p0, p1;
     float	len;
 
     li->fieldInterpolator.initialized = 1;
@@ -356,7 +355,7 @@ Error
 _dxfLinesRI1DInterpolator_Delete(LinesRI1DInterpolator li)
 {
     _dxfCleanup(li);
-    _dxfFieldInterpolator_Delete((FieldInterpolator) li);
+    return _dxfFieldInterpolator_Delete((FieldInterpolator) li);
 }
 
 int
@@ -371,7 +370,6 @@ _dxfLinesRI1DInterpolator_PrimitiveInterpolate(LinesRI1DInterpolator li,
     int outside;
     Pointer v;
     float *p;
-    int side;
     int dir;
     int i0, i1;
     float fuzz;
@@ -513,7 +511,7 @@ _dxfLinesRI1DInterpolator_PrimitiveInterpolate(LinesRI1DInterpolator li,
 	    else
 		seg ++;
 		    
-	    if (seg < 0 || seg >= li->nLines)
+	    if (seg < 0 || seg >= li->nLines) {
 		if (dir == 2 || dir == -2)
 		{
 		    seg -= dir;
@@ -522,6 +520,7 @@ _dxfLinesRI1DInterpolator_PrimitiveInterpolate(LinesRI1DInterpolator li,
 		}
 		else
 		    outside = TRUE;
+	    }
 	}
 
 	if (outside == TRUE || (icH && DXIsElementInvalid(icH, seg)))
@@ -653,6 +652,7 @@ _dxfCleanup(LinesRI1DInterpolator li)
 	li->linesArray = NULL;
     }
 
+    return OK;
 }
 
 static int
@@ -704,6 +704,7 @@ _dxfLinesRI1DInterpolator_LocalizeInterpolator(LinesRI1DInterpolator li)
     {
         li->lines  = (int   *)DXGetArrayDataLocal(li->linesArray);
     }
+    return (Interpolator)li;
 }
 
 Object

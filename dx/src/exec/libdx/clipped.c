@@ -119,9 +119,11 @@ _dxfClipped_Copy(Clipped old, enum copy copy)
 
 
 /*
- *
+ *  I seem to see that dx never uses the functions facenormals or outline.
+ *  Thus they are if'd out.
  */
 
+#if 0
 static
 void
 facenormals(Field f)
@@ -167,6 +169,9 @@ facenormals(Field f)
     DXSetComponentValue(f, NORMALS, (Object)a);
     DXSetAttribute((Object)a, DEP, O_CONNECTIONS);
 }
+#endif
+
+#if 0
 
 static
 Field
@@ -197,6 +202,7 @@ outline(Object o)
 
     return DXEndField(f);
 }
+#endif
 
 
 /*
@@ -267,16 +273,16 @@ outline(Object o)
 
 #define CROSSING(e,a,b) {	/* edge e, endpoints a and b */		\
     Point pa, pb;							\
-    float da, db, t, r;							\
-    pa = points[nearPlane^a];	/* point a, relative to nearPlane */		\
-    pb = points[nearPlane^b];	/* point b, relative to nearPlane */		\
+    float da, db, t;							\
+    pa = points[nearPlane^(a)];	/* point a, relative to nearPlane */	\
+    pb = points[nearPlane^(b)];	/* point b, relative to nearPlane */	\
     da = DXDot(pa, n);		/* projection of a on normal */		\
     db = DXDot(pb, n);		/* projection of b on normal */		\
     if (db!=da) {		/* XXX ABS((d-da)/(db-da))<DXD_MAX_FLOAT */	\
 	t = (d-da) / (db-da);	/* compare w/ projection of p */	\
 	if (0<=t && t<=1) {	/* is there a crossing? */		\
-	    points[npoints] = DXAdd(DXMul(pb,t), DXMul(pa,(1-t)));		\
-	    crossings[e] = npoints;					\
+	    points[npoints] = DXAdd(DXMul(pb,t), DXMul(pa,(1-t)));	\
+	    crossings[(e)] = npoints;					\
 	    POINT(npoints);						\
 	    npoints++;							\
         }								\
@@ -316,14 +322,19 @@ outline(Object o)
 static Vector
 perp(Vector *d, Vector *a, Vector *b)
 {
-    float x = d->x;
-    float y = d->y;
-    float z = d->z;
-    if      (x!=0) x*=.02,d->x=x, a->x=0,a->y=x,a->z=0, b->x=0,b->y=0,b->z=x;
-    else if (y!=0) y*=.02,d->y=y, a->x=0,a->y=0,a->z=y, b->x=y,b->y=0,b->z=0;
-    else if (z!=0) z*=.02,d->z=z, a->x=z,a->y=0,a->z=0, b->x=0,b->y=z,b->z=0;
-}
+    Vector c;
+    c.x = d->x;
+    c.y = d->y;
+    c.z = d->z;
+    if (c.x!=0) 
+	c.x*=.02,d->x=c.x, a->x=0,a->y=c.x,a->z=0, b->x=0,b->y=0,b->z=c.x;
+    else if (c.y!=0) 
+	c.y*=.02,d->y=c.y, a->x=0,a->y=0,a->z=c.y, b->x=c.y,b->y=0,b->z=0;
+    else if (c.z!=0) 
+	c.z*=.02,d->z=c.z, a->x=c.z,a->y=0,a->z=0, b->x=0,b->y=c.z,b->z=0;
 
+    return c;
+}
 
 Object
 DXClipPlane(Object o, Point p, Vector n)
@@ -336,7 +347,6 @@ DXClipPlane(Object o, Point p, Vector n)
     int elements = 0;		/* number of triangles so far */
     int nearPlane;			/* maximal box corner in direction of n */
     Vector v1, v2, v4;
-    Vector c1, c2, c4;
     float max, d, l1, l2, l4;
     int i, debug;
     ConstantArray array;

@@ -74,7 +74,7 @@ Array
 DXQueryGridPositions(Array a, int *n, int *counts, float *origin, float *deltas)
 {
     Array as[100];
-    float orig[100], delt[100];
+    float orig[100];
     int i, j, nn;
 
     /* is it a product array? */

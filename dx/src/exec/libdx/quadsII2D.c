@@ -190,18 +190,10 @@ static Error
 _dxfInitialize(QuadsII2DInterpolator qi)
 {
     Field	field;
-    int		nDim;
     Type	dataType;
     Category	dataCategory;
-    int		i, j;
-    int 	nPoints;
-    int		*quad;
-    float	min[2], max[2];
-    float	*pt;
-    float	fuzz;
+    int		i;
     float	len, area;
-    int		scale;
-    int 	counts[2];
 
     qi->fieldInterpolator.initialized = 1;
 
@@ -341,7 +333,7 @@ Error
 _dxfQuadsII2DInterpolator_Delete(QuadsII2DInterpolator qi)
 {
     _dxfCleanup(qi);
-    _dxfFieldInterpolator_Delete((FieldInterpolator) qi);
+    return _dxfFieldInterpolator_Delete((FieldInterpolator) qi);
 }
 
 int
@@ -349,14 +341,11 @@ _dxfQuadsII2DInterpolator_PrimitiveInterpolate(QuadsII2DInterpolator qi,
 		    int *n, float **points, Pointer *values, int fuzzFlag)
 {
     int primNum;
-    float *p0, *p1, *p2, *p3;
     QuadCoord quadCoord;
-    Quadrilateral *quad;
     int i;
     int found;
     Pointer v;
     float *p;
-    int side;
     QuadArgs args;
     int	dep;
     char *dbuf = NULL;
@@ -632,6 +621,7 @@ _dxfCleanup(QuadsII2DInterpolator qi)
 	_dxfFreeSearchGrid(qi->grid);
 	qi->grid = NULL;
     }
+    return OK;
 }
 
 static int quad_coords (QuadArgs *args)
@@ -640,7 +630,6 @@ static int quad_coords (QuadArgs *args)
     double 	b, b13, b32, b21;
     double	x, x0, x1, x2, x3;
     double	y, y0, y1, y2, y3;
-    double	w0, w1;
     QuadCoord   *q;
     float       fuzz, fa, fb;
 
@@ -751,7 +740,6 @@ quadExit(QuadArgs *args, int side, int index)
     int		   nBuf[4];
     float          best;		/* best choice so far */
     int            f;
-    int 	   n;
 
     f = -1;
 
@@ -836,7 +824,6 @@ quadExit(QuadArgs *args, int side, int index)
 static int
 QuadsWalk(QuadArgs *args, int quadIndex)
 {
-    int  	  face;
     int  	  side;
     int           *quad;
     int		  knt;
@@ -858,7 +845,6 @@ QuadsWalk(QuadArgs *args, int quadIndex)
     for (knt = 0; quadIndex != -1 && knt < limit; knt++, quadIndex = nbr)
     {
 	float pbuf[2], qbuf[2], rbuf[2], sbuf[2];
-	int   quadbuf[4];
 
 	if (visited)
 	{ 

@@ -12,6 +12,7 @@
 
 #include <string.h>
 #include "groupClass.h"
+#include "internals.h"
 
 
 static CompositeField

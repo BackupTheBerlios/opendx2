@@ -53,7 +53,7 @@ static
 struct component *
 look_component(Field f, char *name, int add)
 {
-    int i, j, m, n = f->ncomponents;
+    int i, m, n = f->ncomponents;
     struct component *c = NULL;
 
     /* is component there? */
@@ -245,7 +245,7 @@ _ComponentXX(Array a, Pointer *data, int *n, int nreq, Type t, int dim,
     else if (nreq!=nn) {
 	DXSetError(ERROR_DATA_INVALID,
 		 "component has %d items, requires %d", nn, nreq);
-	return NULL;
+	return ERROR;
     }
 
     /* check type and category */
@@ -382,7 +382,7 @@ _dxfField_Copy(Field old, enum copy copy)
 static Field
 _CopyField(Field new, Field old, enum copy copy)
 {
-    int i, j, n = old->ncomponents;
+    int i, n = old->ncomponents;
     struct component *oc, *nc;
 
     /* copy superclass */

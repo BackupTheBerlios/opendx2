@@ -42,9 +42,5 @@ struct field {
     int hash_alloc;			/* allocate size of hash table */
 };
 
-static Field _NewField(struct field_class *class);
-
-static Field _CopyField(Field old, Field new, enum copy copy);
-
 
 

@@ -113,12 +113,12 @@ Array _dxf_NewArrayV(Type type, Category category, int rank, int *shape,
 #if 0 /* was if OPTIMIZED */
 #define CHECKARRAY(obj, cls) { \
     if (!obj) \
-	return NULL; \
+	return ERROR; \
 }
 #else
 #define CHECKARRAY(obj, cls) { \
     if (!obj) \
-        return NULL; \
+        return ERROR; \
     if (DXGetArrayClass((Array)(obj)) != cls) \
         DXErrorReturn(ERROR_BAD_CLASS, "called with array of wrong class"); \
 }

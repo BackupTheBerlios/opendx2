@@ -67,7 +67,7 @@
 #include <string.h>
 #include <dx/dx.h>
 
-#if DXD_HAS_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 
@@ -878,7 +878,6 @@ extern int end;   /* filled in by linker */
 void DXPrintMemoryInfo()
 {
     uint i, total;
-    Pointer p;
 
     switch (m) {
       case MEM_NOTINIT:

@@ -13,6 +13,7 @@
  */
 
 #include <dx/dx.h>
+#include "arrayClass.h"
 
 #define DISCLAIMER(what)  DXSetError(ERROR_BAD_CLASS, \
 		         "%s not available with this version of the library", \
@@ -129,4 +130,4 @@ Error _dxfField_Partition(Field f, int *n, int size, Object *o, int delete)
  *
  * stub to shut off run-time loading.
  */
-Error _dxf_initloader() { return OK; }
+Error _dxf_initloader(void) { return OK; }

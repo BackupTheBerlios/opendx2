@@ -51,7 +51,7 @@ DXValidPositionsBoundingBox(Object o, Point *box)
  */
 
 static
-expand(float *out, int dim, int nboxpts, float *min, float *max)
+void expand(float *out, int dim, int nboxpts, float *min, float *max)
 {
     int i, j, k, m, n;
     n = dim * nboxpts;
@@ -71,7 +71,7 @@ bbox(float *out, float *in, int dim, int nboxpts, int npoints,
 	InvalidComponentHandle ich)
 {
     float min[100], max[100];
-    int i, j, k, m, n;
+    int i, j, k, n;
 
     /* callers should have checked this */
     ASSERT(npoints!=0);
@@ -114,6 +114,7 @@ bbox(float *out, float *in, int dim, int nboxpts, int npoints,
 
     /* expand min/max out to nboxpts corners */
     expand(out, dim, nboxpts, min, max);
+    return OK;
 }
 
 
@@ -125,12 +126,12 @@ Object
 _dxfGroup_BoundingBox(Group g, Point *box, Matrix *m, int validity)
 {
     Object o;
-    int i, j, k, n=0, align=0;
+    int i, j, n=0, align=0;
     Point min, max, p;
     Matrix mat, inv;
 
     /* compute the collective min/max of components */
-    for (i=0; o=DXGetEnumeratedMember(g, i, NULL); i++) {
+    for (i=0; (o=DXGetEnumeratedMember(g, i, NULL)); i++) {
 
 	/* get the component bounding box */
 	if (!_dxfBoundingBox(o, box, m, validity)) {
@@ -198,14 +199,14 @@ Object
 _dxfCompositeField_BoundingBox(Group g, Point *box, Matrix *m, int validity)
 {
     Object o;
-    int i, j, k, n=0;
+    int i, j, n=0;
     Point min, max, *p;
 
     min.x = min.y = min.z = DXD_MAX_FLOAT;
     max.x = max.y = max.z = -DXD_MAX_FLOAT;
 
     /* compute the collective min/max of components */
-    for (i=0; o=DXGetEnumeratedMember(g, i, NULL); i++) {
+    for (i=0; (o=DXGetEnumeratedMember(g, i, NULL)); i++) {
 
 	/* get the component bounding box */
 	if (!_dxfBoundingBox(o, box, NULL, validity)) {
@@ -276,12 +277,12 @@ _copyout(Point *out, Matrix *m, Array a)
     float *in;
 
     if (!DXGetArrayInfo(a, NULL, NULL, NULL, &rank, &dim))
-	return NULL;
+	return ERROR;
     if (rank==0)
 	dim = 1;
     in = (float *) DXGetArrayData(a);
     if (!in)
-	return NULL;
+	return ERROR;
 
     if (dim==3) {
 	if (m)
@@ -308,7 +309,7 @@ _copyout(Point *out, Matrix *m, Array a)
 		    = DXPt(in[i],0,0);
     } else {
 	DXSetError(ERROR_BAD_PARAMETER, "positions must be 3-dimensional");
-	return NULL;
+	return ERROR;
     }
 
     return OK;
@@ -337,7 +338,7 @@ check(Array a, int *dim, int *nboxpts)
     if (rank==0)
 	*dim = 1;
     else if (!DXGetArrayInfo(a, NULL, NULL, NULL, NULL, dim))
-	return NULL;
+	return ERROR;
     *nboxpts = 1;
     for (i=0; i<*dim; i++)
 	*nboxpts *= 2;
@@ -353,7 +354,7 @@ _dxfField_BoundingBox(Field f, Point *box, Matrix *m, int validity)
 {
     Array points_array, box_array;
     float *in, *out;
-    int i, j, k, dim, nboxpts, npoints, n, counts[MAX_DIMS];
+    int i, j, dim, nboxpts, npoints, counts[MAX_DIMS];
     float origins[MAX_DIMS], deltas[MAX_DIMS*MAX_DIMS];
     float min[MAX_DIMS], max[MAX_DIMS];
     InvalidComponentHandle ich = NULL;

@@ -63,9 +63,6 @@ struct multigrid {		/* multigrid object */
 
 Group _dxf_NewGroup(struct group_class *class);
 
-static Group _CopyGroup(Group old, Group new, enum copy copy);
-static Series _CopySeries(Series old, Series new, enum copy copy);
-
 Group _dxf_SetEnumeratedMember(Group g, int n, double position, Object value);
 /**
 Internal routine to support both {\tt SetEnumeratedMember()} and
@@ -77,10 +74,4 @@ Object _dxf_GetEnumeratedMember(Group g, int n, float *position, char **name);
 Internal routine to support both {\tt GetEnumeratedMember()} and
 {\tt GetSeriesMember()}.
 **/
-
-static Series _NewSeries(struct series_class *class);
-
-static CompositeField _dxf_NewCompositeField(struct compositefield_class *class);
-
-static MultiGrid _dxf_NewMultiGrid(struct multigrid_class *class);
 

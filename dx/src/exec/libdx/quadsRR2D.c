@@ -27,7 +27,6 @@ int
 _dxfRecognizeQuadsRR2D(Field field)
 {
     Array 	array;
-    Array 	topology;
     int	  	nDim;
     int	  	status;
     Type	type;
@@ -100,7 +99,7 @@ _dxf_NewQuadsRR2DInterpolator(Field field,
      * The grid should be regular
      */
     {
-	float localOrigin[2], displacement[2];
+	float localOrigin[2];
 	Array connections, positions;
 	float deltas[4], d;
 
@@ -163,11 +162,9 @@ _dxfInitialize(QuadsRR2DInterpolator qi)
     Field		field;
     int			nDim;
     int			i;
-    float		deltas[4], d;
+    float		deltas[4];
     Type		dataType;
     Category		dataCategory;
-    float		edge0, edge1;
-    Point		diagonal;
 
     field = (Field)((Interpolator)qi)->dataObject;
 
@@ -245,7 +242,7 @@ Error
 _dxfQuadsRR2DInterpolator_Delete(QuadsRR2DInterpolator qi)
 {
     _dxfCleanup(qi);
-    _dxfFieldInterpolator_Delete((FieldInterpolator) qi);
+    return _dxfFieldInterpolator_Delete((FieldInterpolator) qi);
 }
 
 int
@@ -260,12 +257,9 @@ _dxfQuadsRR2DInterpolator_PrimitiveInterpolate(QuadsRR2DInterpolator qi,
     int		    ixMax;
     int		    iyMax;
     int		    sz0, sz1;
-    float	    *org;
-    float	    *iD;
-    float	    value00, value01, value10, value11;
     float    	    weight00, weight01, weight10, weight11;
     float	    dxdy;
-    int		    baseIndex, i, knt;
+    int		    baseIndex, i;
     float	    *p;
     Pointer	    v;
     float	    *A, *b;

@@ -15,6 +15,9 @@
 #include <dx/dx.h>
 #include <stdio.h>
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 #if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
@@ -241,7 +244,7 @@ DXWaitTime(double seconds)
  */
 
 Error
-_dxf_inittiming()
+_dxf_inittiming(void)
 {
     if (!ti) {
 	ti = (struct ti *) DXAllocateZero(sizeof(struct ti));

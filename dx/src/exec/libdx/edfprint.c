@@ -18,30 +18,32 @@
 
 #include <stdlib.h>
 
-
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 static struct ap_info {
     char *format;
     int stride;
 } ap[] = { 
 	/* strings */
-	NULL,                  0,   /* use pstring instead */
+	{ NULL,                  0 },   /* use pstring instead */
 	/* unsigned bytes */
-	"%3u",                16,
+	{ "%3u",                16 },
 	/* bytes */
-	"%3d",                16,
+	{ "%3d",                16 },
 	/* unsigned shorts */
-	"%6u",                 8,
+	{ "%6u",                 8 },
 	/* shorts */
-	"%6d",                 8,
+	{ "%6d",                 8 },
 	/* unsigned ints */
-	"%9u",                 6,
+	{ "%9u",                 6 },
 	/* ints */
-	"%9d",                 6,
+	{ "%9d",                 6 },
 	/* floats */
-	"%12.7g",              6,
+	{ "%12.7g",              6 },
 	/* doubles */
-	"%15g",                4,
+	{ "%15g",                4 },
 };
 
 
@@ -459,7 +461,7 @@ Object _dxfExportDX_FD(Object o, FILE *fptr, char *format)
 {
     int rc = OK;
     struct fmt_info p;
-    char *cp, *cp2, *fname = NULL;
+    char *cp;
     char lcasefmt[32], *lcp;
     struct dict d;
 
@@ -771,20 +773,14 @@ static Error Array_Format (Array array, struct fmt_info *p)
     Type type;
     Category category;
     Class aclass;
-    int items, rank, tshape = 1, shape[MAXRANK];
+    int items, rank, shape[MAXRANK];
     Array terms[MAXRANK];
-    int *ip;
-    short int *sip;
     int stride;
     Pointer origin, delta;
     FILE *datafile = NULL;
     int i, j, rc;
-    int numtype, numcat;
-    int dataformat = 0;
-    char *format, *space;
-    int increment;
-    float *fp;
-    double *dp;
+    int numtype;
+    char *format;
     char *cp;
     
     
@@ -870,11 +866,11 @@ static Error Array_Format (Array array, struct fmt_info *p)
 	    datafile = p->fp;
 	    break;
 	  case D_ONE:
-	    fprintf(p->fp, "%d\n",  ftell(p->dfp));
+	    fprintf(p->fp, "%ld\n",  ftell(p->dfp));
 	    datafile = p->dfp;
 	    break;
 	  case D_TWO:
-	    fprintf(p->fp, "file %s,%d\n", p->dfile, ftell(p->dfp));
+	    fprintf(p->fp, "file %s,%ld\n", p->dfile, ftell(p->dfp));
 	    datafile = p->dfp;
 	    break;
 	  default:
@@ -1218,7 +1214,7 @@ static Error Field_Format (Field field, struct fmt_info *p)
      *  the components get written out.
      */
 
-    for(i=0; subo=DXGetEnumeratedComponentValue(field, i, &name); i++) {
+    for(i=0; (subo=DXGetEnumeratedComponentValue(field, i, &name)); i++) {
 	if (!DXGetAttribute(subo, "der")) {
 	    rc = _dxfObject_Format(subo, p);
 	    if (rc != OK)
@@ -1228,7 +1224,7 @@ static Error Field_Format (Field field, struct fmt_info *p)
     
     fprintf(p->fp, "object %s class field\n", objid(p, (Object)field));
 
-    for(i=0; subo=DXGetEnumeratedComponentValue(field, i, &name); i++) {
+    for(i=0; (subo=DXGetEnumeratedComponentValue(field, i, &name)); i++) {
 	if (!DXGetAttribute(subo, "der"))
 	    fprintf(p->fp, "component \"%s\" value %s\n", 
 		    name, objid(p, subo));
@@ -1311,7 +1307,7 @@ static Error Group_Format (Group group, struct fmt_info *p)
     switch(DXGetGroupClass(group)) {
 	
       case CLASS_GROUP:
-	for(i=0; subo=DXGetEnumeratedMember(group, i, &name); i++) {
+	for(i=0; (subo=DXGetEnumeratedMember(group, i, &name)); i++) {
 	    rc = _dxfObject_Format(subo, p);
 	    if (rc != OK)
 		return ERROR;
@@ -1322,7 +1318,7 @@ static Error Group_Format (Group group, struct fmt_info *p)
 	goto group_common;
 
       case CLASS_COMPOSITEFIELD:
-	for(i=0; subo=DXGetEnumeratedMember(group, i, &name); i++) {
+	for(i=0; (subo=DXGetEnumeratedMember(group, i, &name)); i++) {
 	    rc = _dxfObject_Format(subo, p);
 	    if (rc != OK)
 		return ERROR;
@@ -1334,7 +1330,7 @@ static Error Group_Format (Group group, struct fmt_info *p)
 	goto group_common;
 
       case CLASS_MULTIGRID:
-	for(i=0; subo=DXGetEnumeratedMember(group, i, &name); i++) {
+	for(i=0; (subo=DXGetEnumeratedMember(group, i, &name)); i++) {
 	    rc = _dxfObject_Format(subo, p);
 	    if (rc != OK)
 		return ERROR;
@@ -1346,7 +1342,7 @@ static Error Group_Format (Group group, struct fmt_info *p)
 	goto group_common;
 
       group_common:
-	for(i=0; subo=DXGetEnumeratedMember(group, i, &name); i++) {
+	for(i=0; (subo=DXGetEnumeratedMember(group, i, &name)); i++) {
 	    if (name)
 		fprintf(p->fp, "member \"%s\" value %s\n", 
 			name, objid(p, subo));
@@ -1356,7 +1352,7 @@ static Error Group_Format (Group group, struct fmt_info *p)
 	break;
 	
       case CLASS_SERIES:
-	for(i=0; subo=DXGetSeriesMember((Series)group, i, &position); i++) { 
+	for(i=0; (subo=DXGetSeriesMember((Series)group, i, &position)); i++) { 
 	    rc = _dxfObject_Format(subo, p);
 	    if (rc != OK)
 		return ERROR;
@@ -1364,7 +1360,7 @@ static Error Group_Format (Group group, struct fmt_info *p)
 	
 	fprintf(p->fp, "object %s class series\n", objid(p, (Object)group));
 	
-	for(i=0; subo=DXGetSeriesMember((Series)group, i, &position); i++)
+	for(i=0; (subo=DXGetSeriesMember((Series)group, i, &position)); i++)
 	    fprintf(p->fp, "member %d position %13.7g value %s\n", i, position,
 		    objid(p, subo));
 	
@@ -1577,7 +1573,7 @@ static Error dattrib(Object o, struct fmt_info *p)
     char *name;
     int i, rc;
     
-    for(i=0; subo=DXGetEnumeratedAttribute(o, i, &name); i++) 
+    for(i=0; (subo=DXGetEnumeratedAttribute(o, i, &name)); i++) 
 	if (!has_shorthand(subo, NULL)) {
 	    rc = _dxfObject_Format(subo, p);
 	    if (rc != OK)
@@ -1597,7 +1593,7 @@ static void pattrib(Object o, struct fmt_info *p)
     int i;
     Pointer dp;
     
-    for(i=0; subo=DXGetEnumeratedAttribute(o, i, &name); i++) {
+    for(i=0; (subo=DXGetEnumeratedAttribute(o, i, &name)); i++) {
 	fprintf(p->fp, "attribute \"%s\" ", name);
 	switch (has_shorthand(subo, &dp)) {
 	  case SH_STRING:

@@ -215,7 +215,6 @@ DXRegisterForNotification(char *name, Pointer modid)
 	if (! registerModid(table, entry, modid, NOTIFY_READYTORUN))
 	    goto error;
     
-done:
     freeTable(table);
     return OK;
 
@@ -240,7 +239,6 @@ DXRegisterForNotificationNoExecute(char *name, Pointer modid)
 	if (! registerModid(table, entry, modid, NOTIFY_READYTORUN_NOEXECUTE))
 	    goto error;
     
-done:
     freeTable(table);
     return OK;
 
@@ -268,7 +266,6 @@ DXNotifyRegistered(char *name)
 	else
 	    DXReadyToRunNoExecute((Pointer)str->string);
     
-done:
     freeTable(table);
     return OK;
 
@@ -293,7 +290,6 @@ DXNotifyRegisteredNoExecute(char *name)
     for (str = entry->modids; str; str = str->link)
 	DXReadyToRunNoExecute((Pointer)str->string);
     
-done:
     freeTable(table);
     return OK;
 

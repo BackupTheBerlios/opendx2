@@ -23,7 +23,9 @@
 static Object namedobjfunc(struct finfo *f, char **namelist, int flag);
 static Object numberedobjfunc(struct finfo *f, int *numlist, int idflag, int flag);
 
+#if 0
 static void printobjlist(struct finfo *f);   /* for debug */
+#endif
 
 static struct hashidtolist {
     PseudoKey id;
@@ -341,7 +343,6 @@ Object _dxfmarknamedobjlist(struct finfo *f, char **namelist)
 static Object namedobjfunc(struct finfo *f, char **namelist, int flag)
 {
     struct objlist *this, *first = NULL;
-    struct objlist *ref;
     Object o = NULL;
     int total = 0;
     int members = 0;
@@ -655,6 +656,7 @@ static Object numberedobjfunc(struct finfo *f, int *numlist, int idflag,
 
 /* for debug, dump object list
  */
+#ifdef DEBUG
 static void printobjlist(struct finfo *f)
 {
     struct objlist *this;
@@ -666,6 +668,7 @@ static void printobjlist(struct finfo *f)
 		  this->nrefs);
     }
 }
+#endif
  
 
 
@@ -740,7 +743,6 @@ Error _dxfadd_objident(HashTable ht, Object o, int id, int literal)
 Error _dxflook_objident(HashTable ht, Object o, int *id, int *literal)
 {
     struct hashobjtoid *he;
-    long lid = (long)id;
 
     if (!ht || !o || !id || !literal)
         return ERROR;
@@ -749,7 +751,7 @@ Error _dxflook_objident(HashTable ht, Object o, int *id, int *literal)
      */
     he = (struct hashobjtoid *)DXQueryHashElement(ht, (Key)&o);
     if (!he)
-	*id = NULL;
+	*id = 0;
     else {
 	*id = he->id;
 	*literal = he->literal;

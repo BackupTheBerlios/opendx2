@@ -57,7 +57,7 @@ parameters(Object o, struct tile *new, struct tile *old, int *if_object)
 Object
 _dxfField_Paint(Field f, struct buffer *b, int clip_status, struct tile *tile)
 {
-    int i, j, k, n;
+    int n;
     struct xfield xf;
     int if_object = 0;
 
@@ -258,7 +258,7 @@ _dxfGroup_Paint(Group g, struct buffer *b, int clip_status, struct tile *tile)
     if (DXGetObjectClass((Object)g)==CLASS_COMPOSITEFIELD)
 	new.ignore = 1;
 
-    for (i=0; o=DXGetEnumeratedMember(g, i, NULL); i++) {
+    for (i=0; (o=DXGetEnumeratedMember(g, i, NULL)); i++) {
 	if (DXGetObjectClass(o)==CLASS_FIELD) {
 	    Array a;
 	    Point *box;

@@ -775,7 +775,7 @@ int DXcreate_lock(lock_type *l, char *name)
     if (!been_here) {
 	been_here = 1;
 	if (!_dxf_initlocks())
-	    return NULL;
+	    return 0;
     }
 
     *l = UNLOCKED;

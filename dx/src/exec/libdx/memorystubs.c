@@ -15,6 +15,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dx/dx.h>
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 /* what to do with sh_realloc and sh_free?  maybe by using
  * the memory base numbers we can tell whether it's local or global
@@ -64,8 +67,6 @@ Error DXDebugLocalAlloc(int which, int blocktype, MemDebug m, Pointer p)
 void DXPrintAlloc(int how) { }
 
 void DXPrintLocalAlloc(int which, int how) { }
-
-static int find_me = 0;
 
 void DXFindAlloc(Pointer f) { }
 

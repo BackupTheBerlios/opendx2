@@ -8,12 +8,15 @@
 
 #include <dxconfig.h>
 
-
 #include <stdio.h>
 #include <dx/dx.h>
 #include <string.h>
 #include <fcntl.h>
 #include <stdlib.h>
+
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 #if  defined(DXD_NON_UNIX_DIR_SEPARATOR)
 #define DX_DIR_SEPARATOR ';'
@@ -205,11 +208,7 @@ static Error
 verifyfont(Group font, char *name)
 {
     Object subo;
-    Array a;
     float fm;
-    char *dbuf = NULL;
-    char *tbuf = NULL;
-    char *dir;
     int items;
 
 
@@ -225,7 +224,7 @@ verifyfont(Group font, char *name)
 	goto error;
     }
 
-    for (items = 0; subo = DXGetEnumeratedMember(font, items, NULL); items++) {
+    for (items = 0; (subo=DXGetEnumeratedMember(font, items, NULL)); items++) {
 	if (DXGetObjectClass(subo) != CLASS_FIELD) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#10804", name);
 	    goto error;
@@ -263,9 +262,9 @@ DXGeometricText(char *s, Object font, float *stringwidth)
     Array a, points_array = NULL, conn_array = NULL;
     Field f, newf = NULL;
     float charwidth;
-    Pointer conn, newconn, pos;
+    Pointer conn, newconn;
     float *newpos;
-    Point *points, *newpoints;
+    Point *newpoints;
     Line *lines, *newlines;
     Triangle *tris, *newtris;
     int pointdim, connsize;

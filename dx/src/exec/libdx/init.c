@@ -12,6 +12,10 @@
 
 #include <string.h>
 #include <dx/dx.h>
+#include "internals.h"
+#include "diskio.h"
+
+Error user_init();
 
 static int been_here = 0;
 

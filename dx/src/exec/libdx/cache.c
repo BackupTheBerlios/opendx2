@@ -17,7 +17,7 @@
 
 #include <string.h>
 #include <dx/dx.h>
-
+#include "internals.h"
 
 static struct cache {
     lock_type DXlock;
@@ -36,7 +36,6 @@ static struct cache {
 
 /* prototypes */
 static int cachescavenger(unsigned int n);
-Error _dxf_initcache(void);
 static struct entry *find(char *fun, int key, int n, Object *in);
 static void remove_(struct entry *this); /* '_' resolves os2 name conflict */
 static void insert(struct entry *this);
@@ -210,7 +209,7 @@ Object
 DXGetCacheEntryV(char *fun, int key, int n, Object *in)
 {
     Object o;
-    struct entry *this, *last;
+    struct entry *this;
 
     if (!cache && !_dxf_initcache())
 	return ERROR;

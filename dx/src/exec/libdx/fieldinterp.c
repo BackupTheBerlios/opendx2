@@ -74,8 +74,6 @@ _dxfSelectFieldInterpolator(Field f,
 {
     FieldInterpolator	fi;
     struct subClass 	*sub;
-    Array		array;
-    int			nElements;
 
     /*
      * If the field is empty of positions and/or connections,
@@ -118,7 +116,7 @@ _dxf_NewFieldInterpolator(Field f, float fuzz, Matrix *m,
 			    struct fieldinterpolator_class *class)
 {
     FieldInterpolator fi;
-    Array	      boxArray, icArray, dArray;
+    Array	      boxArray, dArray;
     float	      *boxPts, *boxPt;
     int		      i, nDim, nItems;
     Object	      attr;
@@ -246,11 +244,11 @@ _dxf_NewFieldInterpolator(Field f, float fuzz, Matrix *m,
     return fi;
 }
 
-_dxfFieldInterpolator_Delete(FieldInterpolator fi)
+Error _dxfFieldInterpolator_Delete(FieldInterpolator fi)
 {
     if (fi->invCon)
 	DXFreeInvalidComponentHandle(fi->invCon);
-    _dxfInterpolator_Delete((Interpolator) fi);
+    return _dxfInterpolator_Delete((Interpolator) fi);
 }
 
 int
@@ -300,7 +298,7 @@ _dxfFieldInterpolator_Interpolate(FieldInterpolator fi, int *n,
     nStart = *n;
 
     if (! _dxfPrimitiveInterpolate(fi, n, points, values, fuzzFlag))
-	return 0;
+	return ERROR;
 
     if (hint && nStart != *n)
 	*hint = (Interpolator)fi;

@@ -12,7 +12,7 @@
 
 #include <string.h>
 #include "groupClass.h"
-
+#include "internals.h"
 
 static MultiGrid
 _dxf_NewMultiGrid(struct multigrid_class *class)

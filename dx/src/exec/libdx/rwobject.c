@@ -150,7 +150,6 @@ AddOffset(HashTable ht, Object object, uint offset)
 static HashTable
 ReplaceOffset(HashTable ht, Object object, uint offset)
 {
-    struct hashElement elt;
     HashElement        eltPtr;
 
     eltPtr = (HashElement)DXQueryHashElement(ht, (Key)&object);
@@ -792,6 +791,8 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
       case CLASS_DELETED:
 	DXSetError(ERROR_DATA_INVALID, "bad object class");
 	return ERROR;
+      default: /* Lots of other classes */
+	break;
     }
 
 
@@ -807,7 +808,7 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
     
     if (doattr) {
 	/* if object has attributes, add them first */
-	for(i=0; subo = DXGetEnumeratedAttribute(o, i, &name); i++) {
+	for(i=0; (subo = DXGetEnumeratedAttribute(o, i, &name)); i++) {
 	    *header += sizeof(struct i_attributes) + GetStrLenX(name);
 	    if (size_estimate(subo, header, body, 0, cutoff, ht) == ERROR)
 		return ERROR;
@@ -879,7 +880,7 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
 
       case CLASS_FIELD:
 	*header += sizeof(struct i_field);
-	for(i=0; subo = DXGetEnumeratedComponentValue((Field)o, i, &name); i++) {
+	for(i=0; (subo=DXGetEnumeratedComponentValue((Field)o, i, &name)); i++) {
 	    *header += sizeof(struct i_field) + GetStrLenX(name);
 	    if (size_estimate(subo, header, body, 1, cutoff, ht) == ERROR)
 		return ERROR;
@@ -921,7 +922,7 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
 	*header += sizeof(struct i_group);
 	switch(DXGetGroupClass((Group)o)) {
 	  case CLASS_GROUP:
-	    for(i=0; subo = DXGetEnumeratedMember((Group)o, i, &name); i++) {
+	    for(i=0; (subo=DXGetEnumeratedMember((Group)o, i, &name)); i++) {
 		*header += sizeof(struct i_groupgroup) + GetStrLenX(name);
 		if (size_estimate(subo, header, body, 1, cutoff, ht) == ERROR)
 		    return ERROR;
@@ -930,7 +931,7 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
 		
 	  case CLASS_MULTIGRID:
 	  case CLASS_COMPOSITEFIELD:
-	    for(i=0; subo = DXGetEnumeratedMember((Group)o, i, &name); i++) {
+	    for(i=0; (subo=DXGetEnumeratedMember((Group)o, i, &name)); i++) {
 		*header += sizeof(struct i_compositegroup) + GetStrLenX(name);
 		if (size_estimate(subo, header, body, 1, cutoff, ht) == ERROR)
 		    return ERROR;
@@ -938,7 +939,7 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
 	    break;
 		
 	  case CLASS_SERIES:
-	    for(i=0; subo = DXGetSeriesMember((Series)o, i, &pos); i++) {
+	    for(i=0; (subo=DXGetSeriesMember((Series)o, i, &pos)); i++) {
 		*header += sizeof(struct i_seriesgroup);
 		if (size_estimate(subo, header, body, 1, cutoff, ht) == ERROR)
 		    return ERROR;
@@ -1010,7 +1011,7 @@ Error writeout_object(Object o, char *dataset, HashTable ht, Pointer *header,
     Point from, to;
     Matrix m;
     int fixed, z;
-    int w, h;
+    int w;
     float pos, width, aspect;
     Array terms[MAXRANK];
     Object subo, subo1, subo2;
@@ -1146,7 +1147,7 @@ Error writeout_object(Object o, char *dataset, HashTable ht, Pointer *header,
       case CLASS_FIELD:
 	listcount = (int *)*header;
 	SetInt(0);
-	for(i=0; subo = DXGetEnumeratedComponentValue((Field)o, i, &name); i++) {
+	for(i=0; (subo=DXGetEnumeratedComponentValue((Field)o, i, &name)); i++) {
 	    (*listcount)++;
 	    SetInt(GetStrLen(name));
 	    if(GetStrLen(name) > 0)
@@ -1234,7 +1235,7 @@ Error writeout_object(Object o, char *dataset, HashTable ht, Pointer *header,
 	  case CLASS_MULTIGRID:
 	    listcount = (int *)*header;
 	    SetInt(0);
-	    for(i=0; subo = DXGetEnumeratedMember((Group)o, i, &name); i++) {
+	    for(i=0; (subo=DXGetEnumeratedMember((Group)o, i, &name)); i++) {
 		(*listcount)++;
 		SetInt(GetStrLen(name));
 		if(GetStrLen(name) > 0)
@@ -1248,7 +1249,7 @@ Error writeout_object(Object o, char *dataset, HashTable ht, Pointer *header,
 	  case CLASS_SERIES:
 	    listcount = (int *)*header;
 	    SetInt(0);
-	    for(i=0; subo = DXGetSeriesMember((Series)o, i, &pos); i++) {
+	    for(i=0; (subo=DXGetSeriesMember((Series)o, i, &pos)); i++) {
 		(*listcount)++;
 		SetFloat(pos);
 		if (!writeout_object(subo, dataset, ht, header, byteoffset, 
@@ -1275,7 +1276,7 @@ Error writeout_object(Object o, char *dataset, HashTable ht, Pointer *header,
     if(attrflag) {
 	/* attrflag makes sure we don't add attributes of attributes.
 	 */
-	for(i=0; subo = DXGetEnumeratedAttribute(o, i, &name); i++) {
+	for(i=0; (subo=DXGetEnumeratedAttribute(o, i, &name)); i++) {
 	    (*listcount)++;
 	    SetInt(GetStrLen(name));
 	    if(GetStrLen(name) > 0)
@@ -1290,7 +1291,7 @@ Error writeout_object(Object o, char *dataset, HashTable ht, Pointer *header,
     DXDebug("H", "adding offset %5d for object %08x", offset, o);
 #endif
     if(!AddOffset(ht, o, offset))
-       return NULL;
+       return ERROR;
 
     return OK;
 }
@@ -1501,6 +1502,8 @@ Object readin_object(char *dataset, Pointer *header, HashTable ht,
 		  case TYPE_DOUBLE:
 		    GetDBytes(dp, len);
 		    break;
+		  default: /* Type Hyper not handled (bug?) */
+		    break;
 		}
 		if (!DXAddArrayData((Array)o, 0, count, dp)) {
 		    DXDelete(o);
@@ -1556,6 +1559,8 @@ Object readin_object(char *dataset, Pointer *header, HashTable ht,
 		GetDBytes(origin, arrayitemsize(type, category, rank, shape));
 		GetDBytes(delta, arrayitemsize(type, category, rank, shape));;
 		break;
+	      default: /* No TYPE_HYPER (bug?) */
+		break;
 	    }
 	    o = (Object)DXNewRegularArray(type, shape[0], count, origin, delta);
 	    break;
@@ -1576,6 +1581,8 @@ Object readin_object(char *dataset, Pointer *header, HashTable ht,
 		break;
 	      case TYPE_DOUBLE:
 		GetDBytes(origin, arrayitemsize(type, category, rank, shape));
+		break;
+	      default: /* TYPE_HYPER not handled (bug?) */
 		break;
 	    }
 	    o = (Object)DXNewConstantArrayV(count, origin, type,
@@ -1871,7 +1878,6 @@ Object _dxfImportBin(char *dataset)
 {
     Object o = NULL;
     int nh = 0;			/* number of header blocks */
-    int nb = 0;			/* number of body blocks */
     HashTable hashTable;
     Pointer header_base, header, hp;
     struct f_label *flp;
@@ -2192,15 +2198,20 @@ Object _dxfExportBin(Object o, char *dataset)
 /* badsock0 and badsock1 were added because there seems to be a bug with */
 /* setjump in solaris seems broken. Probably type jmp_buf is not big enough */
 /* remove badsock0 and badsock1 when this is resolved. */
+
+#ifdef DEBUG
+
 static jmp_buf badsock0;
-static jmp_buf badsock;
 static jmp_buf badsock1;
-void (*oldsignal)(int, void (*)) = NULL;
 
 static void handlesock(void) {
     signal(SIGPIPE, oldsignal);
     longjmp(badsock, 1);
 }
+#endif
+
+static jmp_buf badsock;
+void (*oldsignal)(int) = NULL;
 
 static int savecontext()
 {
@@ -2251,7 +2262,6 @@ Object _dxfImportBin_FP(int fd)
 {
     Object o = NULL;
     int nh = 0;			/* number of header blocks */
-    int nb = 0;			/* number of body blocks */
     HashTable hashTable = NULL;
     Pointer header_base = NULL, header, hp;
     struct f_label *flp;
@@ -2417,7 +2427,6 @@ Object _dxfExportBin_FP(Object o, int fd)
     struct f_label *flp;
     uint byteoffset = 0;
     int bodyblk;
-    Error rc = OK;
     char dataset[64];
 
 
@@ -2549,7 +2558,6 @@ Object _dxfImportBin_Buffer(void *buffer, int *size)
 {
     Object o = NULL;
     int nh = 0;			/* number of header blocks */
-    int nb = 0;			/* number of body blocks */
     HashTable hashTable = NULL;
     Pointer header_base = NULL, header, hp;
     struct f_label *flp;
@@ -2681,7 +2689,6 @@ _dxfExportBin_Buffer(Object o, int *size, void **buffer)
     struct f_label *flp;
     uint byteoffset = 0;
     int bodyblk;
-    Error rc = OK;
     char dataset[64];
 
     oneblock = 1; /* no blocking for in-memory serialization */

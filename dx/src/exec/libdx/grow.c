@@ -431,6 +431,10 @@ IsRegular(Object in)
     }
 }
 
+/* --FIXME
+ * The following two functions are not used anywhere, determined by
+ * the compiler. Commented out by DT
+
 static char **
 makeGlobalStrings(char **locPtrs)
 {
@@ -482,6 +486,8 @@ freeGlobalStrings(char **gblPtrs)
 	DXFree((Pointer)gblPtrs);
     }
 }
+
+****/
 
 Field
 DXQueryOriginalSizes(Field partition, int *positions, int *connections)
@@ -546,7 +552,7 @@ _dxf_RemoveDupReferences(Field field)
 {
     Array    iA, oA = NULL;
     Object   attr;
-    int      i, n, nIn, nOut, r, s[64], nref, dup;
+    int      i, n, nIn, nOut, r, s[64], nref;
     char     *name, origName[256];
     int      *sPtr, *dPtr, *p0, *p1;
     Type     t;

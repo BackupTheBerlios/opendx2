@@ -53,12 +53,12 @@ struct object {				/* object preamble */
 #if 0 /* was if OPTIMIZED */
 #define CHECK(obj, cls) { \
     if (!obj) \
-	return NULL; \
+	return ERROR; \
 }
 #else
 #define CHECK(obj, cls) { \
     if (!obj) \
-        return NULL; \
+        return ERROR; \
     if (DXGetObjectClass((Object)(obj)) != cls) \
         DXErrorReturn(ERROR_BAD_CLASS, "called with object of wrong class"); \
 }

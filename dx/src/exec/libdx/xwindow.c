@@ -66,7 +66,7 @@ DXRegisterWindowHandler(Error (*proc) (int, Pointer), Display *d, Pointer arg)
     
 }
 
-_dxf_AnyPendingWindowEvent(Display *d)
+int _dxf_AnyPendingWindowEvent(Display *d)
 {
     return XPending(d);
 }

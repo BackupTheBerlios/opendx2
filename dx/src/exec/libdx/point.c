@@ -46,7 +46,6 @@ _dxf_Points(struct buffer *b, struct xfield *xf)
     int ox = b->ox, oy = b->oy;
     int perspective = xf->tile.perspective;
     RGBColor *cmap = xf->cmap;
-    float *omap = xf->omap;
     Pointer colors = xf->fcolors;
     float nearPlane = xf->nearPlane;
     Point *positions = xf->positions;

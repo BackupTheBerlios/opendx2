@@ -90,6 +90,7 @@ _dxfNextPoint(Field f, PointId id)
 	f->pts_alloc = n;
     }
     f->pts[f->npts++] = id;
+    return f;
 }
 
 
@@ -240,7 +241,7 @@ Field
 DXEndField(Field f)
 {
     Triangle *surface, *inner;
-    int npoints=0, i; 
+    int i; 
     int ns, ni, np, nc, n;
     Array a, ap, ac;
     Object o;
@@ -252,26 +253,26 @@ DXEndField(Field f)
 	char **name;				/* dependent's name */
 	int n;					/* number of items in value */
     } *s, standard[] = {			/* standard comp attributes */
-	&POSITIONS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1,
-	&CONNECTIONS,	&DEP,	&O_CONNECTIONS, &CONNECTIONS, -1,
-	&CONNECTIONS,	&REF,	&O_POSITIONS,   &POSITIONS,   -1,
-	&DATA,		&DEP,	&O_POSITIONS,   &POSITIONS,   -1,
-	&COLORS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1,
-	&IMAGE,		&DEP,	&O_POSITIONS,   &POSITIONS,   -1,
-	&FRONT_COLORS,  &DEP,	&O_POSITIONS,   &POSITIONS,   -1,
-	&BACK_COLORS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1,
-	&OPACITIES,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1,
-	&TANGENTS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1,
-	&NORMALS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1,
-	&BINORMALS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1,
-	NULL    	    
+	{ &POSITIONS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ &CONNECTIONS,	&DEP,	&O_CONNECTIONS, &CONNECTIONS, -1 },
+	{ &CONNECTIONS,	&REF,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ &DATA,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ &COLORS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ &IMAGE,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ &FRONT_COLORS,  &DEP,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ &BACK_COLORS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ &OPACITIES,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ &TANGENTS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ &NORMALS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ &BINORMALS,	&DEP,	&O_POSITIONS,   &POSITIONS,   -1 },
+	{ NULL }
     };
 
     CHECK(f, CLASS_FIELD);
 
 
     /* trim component arrays */
-    for (i=0; o=DXGetEnumeratedComponentValue(f, i, NULL); i++)
+    for (i=0; (o=DXGetEnumeratedComponentValue(f, i, NULL)); i++)
 	if (DXGetObjectClass(o)==CLASS_ARRAY)
 	    if (!DXTrim((Array)o))
 		return NULL;
@@ -394,7 +395,7 @@ DXEndField(Field f)
      * XXX - this depends on knowing that fields always store the
      * name as a pointer to one of the standard strings
      */
-    for (i=0; o=DXGetEnumeratedComponentValue(f, i, &name); i++) {
+    for (i=0; (o=DXGetEnumeratedComponentValue(f, i, &name)); i++) {
 	for (s=standard; s->component; s++) {
 	    if (name==*s->component && s->n>=0) {
 		if (!DXGetAttribute(o, *s->attribute)) {
@@ -470,10 +471,10 @@ Field
 DXChangedComponentStructure(Field f, char *component)
 {
     int i, n;
-    Object c, o;
+    Object c;
     char *names[100], *cp;
 
-    for (i=0, n=0; c=DXGetEnumeratedComponentValue(f, i, &names[n]); i++)
+    for (i=0, n=0; (c=DXGetEnumeratedComponentValue(f, i, &names[n])); i++)
 	if (ATTR(DEP) || ATTR(REF) || attrlist(c, DER, component))
 	    if (strcmp(names[n],component) != 0)
 		n++;
@@ -488,11 +489,11 @@ DXChangedComponentStructure(Field f, char *component)
 Field
 DXChangedComponentValues(Field f, char *component)
 {
-    int i, l, n;
-    Object o, c;
+    int i, n;
+    Object c;
     char *names[100];
 
-    for (i=0, n=0; c=DXGetEnumeratedComponentValue(f, i, &names[n]); i++)
+    for (i=0, n=0; (c=DXGetEnumeratedComponentValue(f, i, &names[n])); i++)
 	if (attrlist(c, DER, component))
 	    if (strcmp(names[n],component) != 0)
 		n++;

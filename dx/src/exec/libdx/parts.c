@@ -99,13 +99,14 @@ Error _replace_child ( part_arg_type *arg, Object child )
     DXASSERTGOTO ( arg->parent != NULL );
 
     /* Trace */
-    if ( DXQueryDebug ( PartsDebugChar ) )
+    if ( DXQueryDebug ( PartsDebugChar ) ) {
         if ( ( DXGetObjectClass ( child ) == CLASS_FIELD )
              &&
              DXEmptyField ( (Field) child ) )
             DXDebug ( PartsDebugChar, "_replace_child with DXEmptyField" );
         else
             DXDebug ( PartsDebugChar, "_replace_child" );
+     }
 
     switch ( DXGetObjectClass ( arg->parent ) )
     {
@@ -371,13 +372,12 @@ Error _recurse ( part_arg_type *arg, Field placeholder  )
                 {
                     case CLASS_SERIES:
                         call_arg.member_name = NULL;
-                        for ( call_arg.group_member_position = 0;
-                              call_arg.self
-                                  = DXGetSeriesMember
-                                        ( (Series)arg->self,
-                                          call_arg.group_member_position,
-                                          &call_arg.series_FP_value );
-                              call_arg.group_member_position++ )
+                        for(call_arg.group_member_position = 0;
+                            (call_arg.self=DXGetSeriesMember
+                                      ( (Series)arg->self,
+                                         call_arg.group_member_position,
+                                         &call_arg.series_FP_value ));
+                             call_arg.group_member_position++ )
                             if ( !_recurse ( &call_arg, placeholder ) )
                                 goto error;
 
@@ -385,13 +385,12 @@ Error _recurse ( part_arg_type *arg, Field placeholder  )
 
                     default:
                         call_arg.series_FP_value = 0.0;
-                        for ( call_arg.group_member_position = 0;
-                              call_arg.self
-                                  = DXGetEnumeratedMember
+                        for(call_arg.group_member_position = 0;
+                            (call_arg.self=DXGetEnumeratedMember
                                         ( (Group)arg->self,
                                           call_arg.group_member_position,
-                                          &call_arg.member_name );
-                              call_arg.group_member_position++ )
+                                          &call_arg.member_name ));
+                             call_arg.group_member_position++ )
                             if ( ! _recurse ( &call_arg, placeholder ) )
                                 goto error;
 

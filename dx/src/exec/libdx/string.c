@@ -8,10 +8,9 @@
 
 #include <dxconfig.h>
 
-
-
 #include <string.h>
 #include "stringClass.h"
+#include "internals.h"
 
 char *
 DXGetString(String s)
@@ -81,5 +80,5 @@ _dxfString_Copy(String old, enum copy copy)
 
 String DXMakeString(char *s)
 {
-    return (Object)DXNewString(s);
+    return DXNewString(s);
 }

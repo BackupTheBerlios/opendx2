@@ -269,7 +269,7 @@ _dxfField_Gather(Field f, struct gather *gather, struct tile *tile)
     Line line;
     Triangle tri;
     Quadrilateral quad;
-    int col, i, j, k, n, field, cull;
+    int col, i, j, k, field, cull;
     struct sort *s;
     struct xfield *xf;
     InvalidComponentHandle ich = NULL;
@@ -718,7 +718,7 @@ _dxfGroup_Gather(Group g, struct gather *gather, struct tile *tile)
     if (DXGetObjectClass((Object)g)==CLASS_COMPOSITEFIELD)
 	new.ignore = 1;
 
-    for (i=0; o=DXGetEnumeratedMember(g, i, NULL); i++) {
+    for (i=0; (o=DXGetEnumeratedMember(g, i, NULL)); i++) {
 	DXDebug("G", "member %d", i);
 	if (!_dxfGather(o, gather, &new))
 	    return NULL;

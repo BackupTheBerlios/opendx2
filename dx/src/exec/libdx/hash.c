@@ -786,16 +786,16 @@ _splitLeaf(HashTable hashTable, int bucketNum, Leaf leaf)
     if (i == LEAF_LEN)
     {
 	DXSetError(ERROR_INTERNAL, "excessive hash key collisions");
-	return NULL;
+	return ERROR;
     }
 
     leaf0 = _getFreeLeaf(&(hashTable->directory.leafCache));
     if (! leaf0)
-	return NULL;
+	return ERROR;
 
     leaf1 = _getFreeLeaf(&(hashTable->directory.leafCache));
     if (! leaf1)
-	return NULL;
+	return ERROR;
 
     leaf0->depth = leaf1->depth = leaf->depth+1;
 

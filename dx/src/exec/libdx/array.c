@@ -8,12 +8,9 @@
 
 #include <dxconfig.h>
 
-
-
 #include <stdarg.h>
 #include <string.h>
 #include "arrayClass.h"
-
 
 /*
  * size multipliers for type, category
@@ -397,7 +394,6 @@ DXGetArrayData(Array a)
 ArrayHandle
 DXCreateArrayHandle(Array array)
 {
-    int i;
     ArrayHandle handle = NULL;
     Array *terms = NULL;
 
@@ -735,13 +731,13 @@ DXCalculateArrayEntry(ArrayHandle handle, int offset, Pointer scratch)
 		}
 	    }
 	    break;
+	    default: /* All other TYPEs and CLASSes  */
+	    break;
 	}
 
-	return scratch;
     }
+    return scratch;
 
-error:
-    return NULL;
 }
 
 
@@ -749,7 +745,7 @@ error:
 Array
 DXMakeStringList(int n, char *s, ...)
 {
-    int i, alloc;
+    int i;
     char **c;
     va_list arg;
     Array a;

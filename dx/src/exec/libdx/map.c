@@ -83,8 +83,7 @@ DXMap(Object g_in, Object map, char *srcComponent, char *dstComponent)
 
 	if (DXGetObjectClass(map) == CLASS_ARRAY)
 	{
-	    int	     nItems, itemSz;
-	    char     *srcPtr, *dstPtr;
+	    int	     nItems;
 
 	    if (! DXGetArrayInfo((Array)map, &nItems, &type, &cat, &rank, shape))
 		return NULL;
@@ -233,12 +232,8 @@ Map_Group(Group in, Object map, char *src, char *dst)
 {
     int      i;
     Object   child;
-    Type     type;
-    Category cat;
-    int	     rank;
-    int      shape[MAX_SHAPE];
 
-    for (i = 0; child = DXGetEnumeratedMember(in, i, NULL); i++)
+    for (i = 0; (child=DXGetEnumeratedMember(in, i, NULL)); i++)
 	if (! Map_Object(child, map, src, dst))
 	    return ERROR;
     
@@ -550,8 +545,6 @@ MapArrayIrreg(Array indexArray, Interpolator mapInterp, Array *iaPtr)
     int		indexItemSize;
     int		dataItemSize;
     int		nItemsRemaining, nInterpolated, nNotInterpolated;
-    Array	vArray;
-    char	*vPtr;
     char 	*invalidPtr;
     int 	newInvalid;
     InvalidComponentHandle ich = NULL;
@@ -674,9 +667,9 @@ Map_Field_Constant(Array indexArray, Array map)
 {
     Category 	cat;
     Type     	type;
-    int		i, nItems, itemSize, rank, shape[MAX_SHAPE];
+    int		nItems, rank, shape[MAX_SHAPE];
     Array	newArray;
-    char 	*newData, *oldData;
+    char 	*oldData;
 
     DXGetArrayInfo(map, &nItems, &type, &cat, &rank, shape);
     if (nItems != 1)
@@ -712,7 +705,7 @@ SetGroupTypeVRecursive(Object object,
     
     class = DXGetGroupClass((Group)object);
 
-    for (i = 0; child = DXGetEnumeratedMember((Group)object, i, NULL); i++)
+    for (i = 0; (child=DXGetEnumeratedMember((Group)object, i, NULL)); i++)
     {
 	if (! SetGroupTypeVRecursive(child, type, cat, rank, shape))
 	    return ERROR;

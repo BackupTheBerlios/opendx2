@@ -26,7 +26,6 @@ int
 _dxfRecognizeLinesRR1D(Field field)
 {
     Array array;
-    Array topology;
     int	  nDim;
     int   status;
 
@@ -122,7 +121,6 @@ _dxfInitialize(LinesRR1DInterpolator li)
 {
     Field			field;
     int				nDim;
-    int				i;
     float			origin;
     float			delta;
     Type			dataType;
@@ -194,7 +192,7 @@ Error
 _dxfLinesRR1DInterpolator_Delete(LinesRR1DInterpolator li)
 {
     _dxfCleanup(li);
-    _dxfFieldInterpolator_Delete((FieldInterpolator) li);
+    return _dxfFieldInterpolator_Delete((FieldInterpolator) li);
 }
 
 int
@@ -209,7 +207,7 @@ _dxfLinesRR1DInterpolator_PrimitiveInterpolate(LinesRR1DInterpolator li, int *n,
     float    org;
     float    iD;
     float    w0, w1;
-    int	     i, knt;
+    int	     i;
     float    *p;
     Pointer  v;
     float    fuzz;

@@ -65,12 +65,12 @@
     if (xd==XD_GLOBAL) {						    \
 	*(Pointer*)&xf->comp = DXGetArrayData(xf->CAT(comp,_array));	    \
 	if (!xf->comp)							    \
-	    return NULL;						    \
+	    return ERROR;						    \
     } else if (xd==XD_LOCAL) {						    \
 	*(Pointer*)&xf->comp = DXGetArrayDataLocal(xf->CAT(comp,_array));	    \
 	xf->CAT(comp,_local) = 1;					    \
 	if (!xf->comp)							    \
-	    return NULL;						    \
+	    return ERROR;						    \
     }									    \
     DXGetArrayInfo(xf->CAT(comp,_array), &xf->CAT(n,comp), NULL,NULL,NULL,NULL);\
 }
@@ -95,19 +95,19 @@ _dxf_XZero(struct xfield *xf)
     if (xd==XD_GLOBAL) {						      \
 	*(Pointer*)&xf->comp = DXGetArrayData(xf->CAT(comp,_array));	      \
 	if (!xf->comp)							      \
-	    return NULL;						      \
+	    return ERROR;						      \
     } else if (xd==XD_LOCAL) {						      \
 	*(Pointer*)&xf->comp = DXGetArrayDataLocal(xf->CAT(comp,_array));     \
 	xf->CAT(comp,_local) = 1;					      \
 	if (!xf->comp)							      \
-	    return NULL;						      \
+	    return ERROR;						      \
     }									      \
     DXGetArrayInfo(xf->CAT(comp,_array), &n, NULL,NULL,NULL,NULL);	      \
     if (n!=count && count!=0) {						      \
 	DXSetError(ERROR_DATA_INVALID,					      \
 		 "%s component has %d items, expecting %d",		      \
 		 name, n, count);					      \
-	return NULL;							      \
+	return ERROR;							      \
     }									      \
 }
 
@@ -276,12 +276,12 @@ _dxf_XConnections(Field f, struct xfield *xf, enum xr required)
 	int expand;	/* whether to expand data */
 	int volume;	/* whether these are volume connections */
     } info[] = {
-	"lines",	ct_lines,	2,	1,	0,
-	"triangles",	ct_triangles,	3,	1,	0,
-	"quads",	ct_quads,	4,	0,	0,
-	"tetrahedra",	ct_tetrahedra,	4,	1,	1,
-	"cubes",	ct_cubes,	8,	0,	1,
-	NULL
+	{ "lines",	ct_lines,	2,	1,	0 },
+	{ "triangles",	ct_triangles,	3,	1,	0 },
+	{ "quads",	ct_quads,	4,	0,	0 },
+	{ "tetrahedra",	ct_tetrahedra,	4,	1,	1 },
+	{ "cubes",	ct_cubes,	8,	0,	1 },
+	{ NULL }
     };
     struct info *i;
     Object ct;
@@ -366,7 +366,7 @@ _dxf_XNeighbors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 Error
 _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 {
-    Array a, colors_array;
+    Array colors_array;
     char *fs, *bs, *s;
     Object o;
     Type t;
@@ -379,12 +379,12 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
     colors_array = (Array) DXGetComponentValue(f, BOTH_COLORS);
     if (colors_array) {
 	if (!DXGetArrayInfo(colors_array, &xf->ncolors, &t, NULL, &r, shape))
-	    return NULL;
+	    return ERROR;
 
 	if (r != 1 || shape[0] != 3)
 	{
 	    DXSetError(ERROR_INTERNAL, "both_colors must be rgb vector");
-	    return NULL;
+	    return ERROR;
 	}
 
 	if (t == TYPE_UBYTE)
@@ -394,7 +394,7 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	else
 	{
 	    DXSetError(ERROR_INTERNAL, "both_colors must be ubyte or float");
-	    return NULL;
+	    return ERROR;
 	}
 
 	xf->ncolors /= 2;
@@ -411,7 +411,7 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	    {
 	      xf->fcolors = DXGetArrayDataLocal(xf->fcolors_array);
 	      if (!xf->fcolors)
-		 return NULL;
+		 return ERROR;
 	      xf->bcolors = (Pointer)
 		(((RGBColor *)(xf->fcolors)) + xf->ncolors);
 	      xf->fcolors_local = 1;
@@ -421,7 +421,7 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	    {
 	      xf->fcolors = DXGetArrayData(xf->fcolors_array);
 	      if (!xf->fcolors)
-		 return NULL;
+		 return ERROR;
 	      xf->bcolors = (Pointer)
 		(((RGBColor *)(xf->fcolors)) + xf->ncolors);
 	      xf->fcst = xf->bcst = 0;
@@ -433,7 +433,7 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	    xf->bcolors = NULL;
 	}
 	if (!xf->fcolors)
-	    return NULL;
+	    return ERROR;
 	o = DXGetAttribute((Object)colors_array, DEP);
 	if (o==O_POSITIONS) xf->colors_dep = dep_positions;
 	else if (o==O_CONNECTIONS) xf->colors_dep = dep_connections;
@@ -510,7 +510,7 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	    {
 	      xf->fcolors = DXGetArrayDataLocal(xf->fcolors_array);
 	      if (!xf->fcolors)
-		 return NULL;
+		 return ERROR;
 	      xf->fcolors_local = 1;
 	      xf->fcst = 0;
 	    }
@@ -518,7 +518,7 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	    {
 	      xf->fcolors = DXGetArrayData(xf->fcolors_array);
 	      if (!xf->fcolors)
-		 return NULL;
+		 return ERROR;
 	      xf->fcst = 0;
 	    }
 	}
@@ -568,7 +568,7 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	    {
 	      xf->bcolors = DXGetArrayDataLocal(xf->bcolors_array);
 	      if (!xf->bcolors)
-		 return NULL;
+		 return ERROR;
 	      xf->bcolors_local = 1;
 	      xf->bcst = 0;
 	    }
@@ -576,7 +576,7 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	    {
 	      xf->bcolors = DXGetArrayData(xf->bcolors_array);
 	      if (!xf->bcolors)
-		 return NULL;
+		 return ERROR;
 	      xf->bcst = 0;
 	    }
 	}
@@ -603,10 +603,10 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	DXWarning("inconsistent normals: tri %d, pt p, d=%g", i, d); \
 }
 
+#if 0   /* was !ibmpvs && !OPTIMIZED, but isn't called anymore */
 static void
 check_normals(struct xfield *xf)
 {
-#if 0   /* was !ibmpvs && !OPTIMIZED, but isn't called anymore */
     int i, every;
 
     if (!xf->normals)
@@ -643,8 +643,8 @@ check_normals(struct xfield *xf)
 	CHECK_NORMAL(q);
 	CHECK_NORMAL(r);
     }
-#endif
 }
+#endif
 
 
 Error
@@ -692,7 +692,7 @@ _dxf_XNormals(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	{
 	  xf->normals = DXGetArrayDataLocal(xf->normals_array);
 	  if (!xf->normals)
-	     return NULL;
+	     return ERROR;
 	  xf->normals_local = 1;
 	  xf->ncst = 0;
 	}
@@ -700,7 +700,7 @@ _dxf_XNormals(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	{
 	  xf->normals = DXGetArrayData(xf->normals_array);
 	  if (!xf->normals)
-	     return NULL;
+	     return ERROR;
 	  xf->ncst = 0;
 	}
     }
@@ -769,7 +769,7 @@ _dxf_XOpacities(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	{
 	  xf->opacities = DXGetArrayDataLocal(xf->opacities_array);
 	  if (!xf->opacities)
-	     return NULL;
+	     return ERROR;
 	  xf->opacities_local = 1;
 	  xf->ocst = 0;
 	}
@@ -777,7 +777,7 @@ _dxf_XOpacities(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	{
 	  xf->opacities = DXGetArrayData(xf->opacities_array);
 	  if (!xf->opacities)
-	     return NULL;
+	     return ERROR;
 	  xf->ocst = 0;
 	}
     }
@@ -869,6 +869,7 @@ _dxf_XFreeLocal(struct xfield *xf)
     FREE(omap);
     DXFreeInvalidComponentHandle(xf->iPts);
     DXFreeInvalidComponentHandle(xf->iElts);
+    return OK;
 }
 
 

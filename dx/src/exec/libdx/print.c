@@ -57,45 +57,45 @@ struct ap_info {
     int increment;
 } ap[10][3] = { 
 	/* strings */
-	"%1s",                      	  "%1s",   1,   64,    1,
-	"(%1s,%1s)",                	  "%6s",   6,   12,    2,
-	"(%1s,%1s,%1s,%1s)",       	 "%10s",  10,    6,    4,
+      { { "%1s",                      	  "%1s",   1,   64,    1 },
+	{ "(%1s,%1s)",                	  "%6s",   6,   12,    2 },
+	{ "(%1s,%1s,%1s,%1s)",       	 "%10s",  10,    6,    4 } },
 	/* unsigned hex bytes */
-	"%02x",                     	  "%3s",   3,   20,    1,
-	"(%02x,%02x)",              	  "%8s",   8,    8,    2,
-	"(%02x,%02x,%02x,%02x)",   	 "%14s",  14,    4,    4,
+      { { "%02x",                     	  "%3s",   3,   20,    1 },
+	{ "(%02x,%02x)",              	  "%8s",   8,    8,    2 },
+	{ "(%02x,%02x,%02x,%02x)",   	 "%14s",  14,    4,    4 } },
 	/* unsigned decimal bytes */
-	"%3u",                   	  "%4s",   4,   20,    1,
-	"(%3u,%3u)",            	 "%10s",  10,    6,    2,
-	"(%3u,%3u,%3u,%3u)",  	 	 "%18s",  18,    4,    4,
+      { { "%3u",                   	  "%4s",   4,   20,    1 },
+	{ "(%3u,%3u)",            	 "%10s",  10,    6,    2 },
+	{ "(%3u,%3u,%3u,%3u)", 	 	 "%18s",  18,    4,    4 } },
 	/* bytes */
-	"%3d",                   	  "%4s",   4,   20,    1,
-	"(%3d,%3d)",            	 "%10s",  10,    6,    2,
-	"(%3d,%3d,%15g,%15g)",  	 "%18s",  18,    4,    4,
+      { { "%3d",                   	  "%4s",   4,   20,    1 },
+	{ "(%3d,%3d)",            	 "%10s",  10,    6,    2 },
+	{ "(%3d,%3d,%15g,%15g)",  	 "%18s",  18,    4,    4 } },
 	/* unsigned shorts */
-	"%6u",                   	 "%7s",    7,    8,    1,
-	"(%6u,%6u)",            	 "%16s",  16,    4,    2,
-	"(%6u,%6u,%6u,%6u)",	  	 "%32s",  32,    2,    4,
+      { { "%6u",                   	 "%7s",    7,    8,    1 },
+	{ "(%6u,%6u)",            	 "%16s",  16,    4,    2 },
+	{ "(%6u,%6u,%6u,%6u)",	  	 "%32s",  32,    2,    4 } },
 	/* shorts */
-	"%6d",                      	  "%7s",   7,    8,    1,
-	"(%6d,%6d)",               	 "%16s",  16,    4,    2,
-	"(%6d,%6d,%6d,%6d)",       	 "%32s",  32,    2,    4,
+      { { "%6d",                      	  "%7s",   7,    8,    1 },
+	{ "(%6d,%6d)",               	 "%16s",  16,    4,    2 },
+	{ "(%6d,%6d,%6d,%6d)",       	 "%32s",  32,    2,    4 } },
 	/* unsigned ints */
-	"%9u",                   	 "%10s",  10,    6,    1,
-	"(%9u,%9u)",            	 "%22s",  22,    3,    2,
-	"(%9u,%9u,%9u,%9u)",  	         "%42s",  42,    1,    4,
+      { { "%9u",                   	 "%10s",  10,    6,    1 },
+	{ "(%9u,%9u)",            	 "%22s",  22,    3,    2 },
+	{ "(%9u,%9u,%9u,%9u)", 	         "%42s",  42,    1,    4 } },
 	/* ints */
-	"%9d",                     	 "%10s",  10,    6,    1,
-	"(%9d,%9d)",               	 "%22s",  22,    3,    2,
-	"(%9d,%9d,%9d,%9d)",       	 "%42s",  42,    1,    4,
+      { { "%9d",                     	 "%10s",  10,    6,    1 },
+	{ "(%9d,%9d)",               	 "%22s",  22,    3,    2 },
+	{ "(%9d,%9d,%9d,%9d)",       	 "%42s",  42,    1,    4 } },
 	/* floats */
-	"%14.8g",                  	 "%15s",  15,    5,    1,
-	"(%14.8g,%14.8g)",         	 "%32s",  32,    3,    2,
-	"(%14.8g,%14.8g,%14.8g,%14.8g)", "%62s",  62,    1,    4,
+      { { "%14.8g",                  	 "%15s",  15,    5,    1 },
+	{ "(%14.8g,%14.8g)",         	 "%32s",  32,    3,    2 },
+	{ "(%14.8g,%14.8g,%14.8g,%14.8g)", "%62s",  62,    1,    4 } },
 	/* doubles */
-	"%24.18g",                   	 "%24s",  24,    3,    1,
-	"(%24.18g,%24.18g)",           	 "%52s",  52,    1,    2,
-	"(%24.18g,%24.18g,%24.18g,%24.18g)", "%102s",  102,    1,    4,
+      { { "%24.18g",                   	 "%24s",  24,    3,    1 },
+	{ "(%24.18g,%24.18g)",           	 "%52s",  52,    1,    2 },
+	{ "(%24.18g,%24.18g,%24.18g,%24.18g)", "%102s",  102,    1,    4 } },
 };
 
 #define NCLASSES 32     /* raise this if the number of classes goes up */
@@ -132,7 +132,6 @@ struct prt_info {
 };
 
 
-static void dump(char *name, ...);
 static void pinfo(int isitems, int items, Type t, Category c, int rank, 
                   int *shape, int level);
 static void pvalue(Type t, Category c, int rank, int *shape, 
@@ -173,6 +172,7 @@ static void Interpolator_Summary (Interpolator interp, struct prt_info *p);
 static void Summary_Print(struct sum_info *s);
 
 
+#if DEBUG
 /* private entry points for debugger use */
 static void prt(Object o, char *options)
 {
@@ -190,7 +190,7 @@ static void prt1(Object o, char *options, char *component)
     DXPrintV(o, options, c);
     return;
 }
-
+#endif
 
 
 
@@ -239,7 +239,7 @@ Error DXPrintV(Object o, char *options, char **components)
 
     if(options) {
     	recursion_set = 0;
-    	for (i=0; ch = options[i]; i++) {
+    	for (i=0; (ch=options[i])!=0; i++) {
 	    switch (ch) {
 	      case 'r':
 		if (!recursion_set) {
@@ -449,10 +449,9 @@ static void Array_Print (Array array, struct prt_info *p)
     int pitems = 0, maxp = MAXP;
     int stride;
     Pointer origin, delta, ptr;
-    int i, j, k;
+    int i, k;
     int numtype, numcat;
     int split = 0;
-    int doascii = 1;
     char *format, *space;
     char *cp;
     int increment;
@@ -899,7 +898,7 @@ static void Field_Print (Field field, struct prt_info *p)
 	return;
 
     /* p->level++; */
-    for(i=0; subo=DXGetEnumeratedComponentValue((Field)field, i, &name); i++) {
+    for(i=0; (subo=DXGetEnumeratedComponentValue((Field)field, i, &name)); i++) {
 	INDENT(p->level);
 	DXMessage("Component number %d, name '%s':\n", i, name);
 
@@ -1043,7 +1042,7 @@ static void Group_Print (Group group, struct prt_info *p)
 	if(!p->recurse || p->level >= p->maxlevel)
 	    break;
 
-	for(i=0; subo=DXGetEnumeratedMember((Group)group, i, &name); i++) {
+	for(i=0; (subo=DXGetEnumeratedMember((Group)group, i, &name)); i++) {
 	    INDENT(p->level);
 	    if (name)
 		DXMessage("Member %d, name '%s':\n", i, name);
@@ -1070,7 +1069,7 @@ static void Group_Print (Group group, struct prt_info *p)
 	    break;
 
 	p->level++;
-	for(i=0; subo=DXGetSeriesMember((Series)group, i, &position); i++) {
+	for(i=0; (subo=DXGetSeriesMember((Series)group, i, &position)); i++) {
 	    INDENT(p->level);
 	    DXMessage("Member %d, position %g:\n", i, position);
 	    Object_Print(subo, p);
@@ -1382,7 +1381,7 @@ static void Field_Summary (Field field, struct prt_info *p)
 	p->s[class].max = i;
     p->s[class].sum += i;
 
-    for(i=0; subo=DXGetEnumeratedComponentValue((Field)field, i, &name); i++) {
+    for(i=0; (subo=DXGetEnumeratedComponentValue((Field)field, i, &name)); i++) {
 
 	p->level++;
 	Object_Summary(subo, p);
@@ -1487,7 +1486,7 @@ static void Group_Summary (Group group, struct prt_info *p)
 	p->s[subclass].max = items;
     p->s[subclass].sum += items;
     
-    for(i=0; subo=DXGetEnumeratedMember(group, i, NULL); i++) {
+    for(i=0; (subo=DXGetEnumeratedMember(group, i, NULL)); i++) {
 	p->level++;
 	Object_Summary(subo, p);
 	p->level--;
@@ -1504,7 +1503,7 @@ static void sattrib(Object o, struct prt_info *p)
     char *name;
     int i;
 
-    for (i=0; subo=DXGetEnumeratedAttribute(o, i, &name); i++) {
+    for (i=0; (subo=DXGetEnumeratedAttribute(o, i, &name)); i++) {
 	p->level++;
 	Object_Summary(subo, p);
 	p->level--;
@@ -1562,7 +1561,6 @@ static void Summary_Print(struct sum_info *s)
     char *mformat = "Min, max, avg, total %s: %d, %d, %g, %d";
     char *eformat = "Max depth %d";
     char *lformat = "%s%-55s%-15s\n";
-    char *bformat = "    (%d %s)\n";
 
     for (i=0; i<NCLASSES; i++) {
 	if (s[i].num <= 0)
@@ -1993,7 +1991,7 @@ static void pattrib(Object o, struct prt_info *p)
     p->recurse = 0;
 #endif
 
-    for(i=0; subo=DXGetEnumeratedAttribute(o, i, &name); i++) {
+    for(i=0; (subo=DXGetEnumeratedAttribute(o, i, &name)); i++) {
 	INDENT(p->level);
 	DXMessage("Attribute.  Name '%s':\n", name);
 	p->level++;

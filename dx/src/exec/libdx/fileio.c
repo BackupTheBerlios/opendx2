@@ -17,6 +17,10 @@
 #include <errno.h>
 #endif
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
 #if defined(HAVE_IO_H)
 #include <io.h>
 #endif
@@ -287,7 +291,7 @@ Error _dxffile_open(char *name, int rw)
 
 Error _dxfsock_open(char *name, int fd)
 {
-    int i, rc;
+    int i;
     int len = sizeof(int);
 
     if (!name) {
@@ -324,7 +328,7 @@ Error _dxfsock_open(char *name, int fd)
 
 Error _dxffile_add(char *name, uint nblocks)
 {
-    int fd, rc;
+    int fd;
     int issocket = 0;
 
     if (!name) {

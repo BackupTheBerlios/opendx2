@@ -14,7 +14,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <dx/dx.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#include "internals.h"
 
+extern Object _dxfExportBin_FP(Object o, int fd);
 
 /*
  * The message queue is maintained as a linked list of messages.
@@ -47,7 +52,7 @@ static int emergency_flag = 0;		/* whether to flush next DXqwrite */
 static int isoutboard = 0;              /* is this an outboard module? */
 static int outsocket = -1;              /* open socket to real exec */
 
-void _dxfemergency()			/* call to declare an emergency */
+void _dxfemergency(void)		/* call to declare an emergency */
 {
     emergency_flag = 1;
 }
@@ -125,7 +130,6 @@ void
 #endif
 exit(int n)
 {
-    int i;
     fclose(stdout);
     fclose(stderr);
     DXqflush();

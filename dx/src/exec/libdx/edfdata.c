@@ -102,7 +102,6 @@ Error _dxfreadarray_binary(struct finfo *f, Array a, int format)
     char *cp;
 
     int bytes;
-    int done = 0;
     Error rc = OK;
     
     Type type;
@@ -247,7 +246,6 @@ Error _dxfskiparray_binary(struct finfo *f, int items, int itemsize)
  */
 Error _dxfreadarray_text(struct finfo *f, Array a)
 {
-    int done = 0;
     Error rc = OK;
  
     Type type;
@@ -310,7 +308,7 @@ Error _dxfreadarray_text(struct finfo *f, Array a)
 	{ 
 	    char *cp = (char *)DXGetArrayData(a);
 	    char *dp;
-	    int id, j, len;
+	    int j, len;
 
 	    /* make sure rank-1 means something down below 
 	     * for strings, last rank is max length of each string
@@ -395,7 +393,6 @@ Error _dxfreadarray_text(struct finfo *f, Array a)
  */
 Error _dxfskiparray_text(struct finfo *f, int items, Type type)
 {
-    int done = 0;
     Error rc = OK;
  
     if(items <= 0)
@@ -429,8 +426,7 @@ Error _dxfskiparray_text(struct finfo *f, int items, Type type)
     switch(type) {
       case TYPE_STRING:
 	{ 
-	    int rc;
-	    int j, len;
+	    int rc, j;
 
 	    for (j=0; j<items; j++) {
 		rc = _dxfgetstringnodict(f);
@@ -664,8 +660,6 @@ Error _dxfreadremote(struct finfo *f, Array a, int id, int type)
     int rc = OK;
     struct finfo nf;
     struct getby **gpp;
-    char *fname;
-    int offset;
  
     /* getby struct is setup by file_lists() */
     gpp = _dxfgetobjgb(f, id);
@@ -850,7 +844,7 @@ swap_64(void *src, void *dest, int n, int swaps)
 Error
 _dxfByteSwap(void *dest, void *src, int ndata, Type t) 
 {
-    unsigned int swaps, doubles, mask,x, tsize;
+    unsigned int swaps, doubles, x, tsize;
     
     tsize = DXTypeSize(t);		/* The number of bytes in an item */
     

@@ -849,13 +849,9 @@ Error DXStatistics (Object o, char *compname,
 static Error
 ProcessPartsXX(Object o, struct argblock *ab, int len)
 {
-    Object subo, newo, subo2;
+    Object subo, subo2;
     Matrix m;
-    Array a;
-    Stats ap;
     int fixed, z;
-    float pos;
-    char *name;
     int i;
 
     switch (DXGetObjectClass(o)) {
@@ -868,7 +864,7 @@ ProcessPartsXX(Object o, struct argblock *ab, int len)
 		if (!DXAddTask(ComputeStats, (Pointer)ab, len, 0.0))
 		    goto error;
 	    } else {
-		for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++)
+		for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
 		    if (!ProcessPartsXX (subo, ab, len))
 			return ERROR;
 	    }
@@ -881,7 +877,7 @@ ProcessPartsXX(Object o, struct argblock *ab, int len)
 		if (!DXCreateTaskGroup())
 		    return ERROR;
 		ab->isparallel = 1;
-		for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++)
+		for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
 		    if (!ProcessPartsXX (subo, ab, len))
 			return ERROR;
 	    }
@@ -903,7 +899,7 @@ ProcessPartsXX(Object o, struct argblock *ab, int len)
 
       case CLASS_SCREEN:
 	if (!DXGetScreenInfo((Screen)o, &subo, &fixed, &z))
-	    return NULL;
+	    return ERROR;
 
 	if (!ProcessPartsXX(subo, ab, len))
 	    return ERROR;
@@ -912,7 +908,7 @@ ProcessPartsXX(Object o, struct argblock *ab, int len)
 
       case CLASS_XFORM:
 	if (!DXGetXformInfo((Xform)o, &subo, &m))
-	    return NULL;
+	    return ERROR;
 	
 	if (!ProcessPartsXX(subo, ab, len))
 	    return ERROR;
@@ -921,7 +917,7 @@ ProcessPartsXX(Object o, struct argblock *ab, int len)
 	
       case CLASS_CLIPPED:
 	if (!DXGetClippedInfo((Clipped)o, &subo, &subo2))
-	    return NULL;
+	    return ERROR;
 	
 	if (!ProcessPartsXX(subo, ab, len))
 	    return ERROR;
@@ -1023,7 +1019,7 @@ static Error ComputeStats(Pointer ptr)
 	if ((DXProcessParts (o, Compute_Wrapper, ab, len, 0, 1)) == NULL)
 		return ERROR;
 #else
-	for (i = 0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++) {
+	for (i = 0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++) {
 	    if (DXReallyEmptyField((Field)subo))
 		continue;
 	
@@ -1042,7 +1038,7 @@ static Error ComputeStats(Pointer ptr)
 	if ((DXProcessParts (o, Compute_Wrapper, ab, len, 0, 1)) == NULL)
 		return ERROR;
 #else
-	for (i = 0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++) {
+	for (i = 0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++) {
 	    if (DXReallyEmptyField((Field)subo))
 		continue;
 	
@@ -1080,13 +1076,11 @@ static Error
 AccumulateStats(Object o, char *compname, char *statname, Stats sp, int *iv,
 		int cfmember)
 {
-    Object subo, newo, subo2;
+    Object subo, subo2;
     Matrix m;
     Array a;
     Stats ap;
     int fixed, z;
-    float pos;
-    char *name;
     int i;
 
     switch (DXGetObjectClass(o)) {
@@ -1095,13 +1089,13 @@ AccumulateStats(Object o, char *compname, char *statname, Stats sp, int *iv,
 
 	if (DXGetGroupClass((Group)o) == CLASS_COMPOSITEFIELD) {
 	    /* use the cf stats here */
-	    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++)
+	    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
 		if (!AccumulateStats(subo, compname, statname, sp, iv, 1))
 		    return ERROR;
 	    
 	} else {   /* any other type of group uses normal stats */
 	    
-	    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++)
+	    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
 		if (!AccumulateStats(subo, compname, statname, sp, iv, 0))
 		    return ERROR;
 	}
@@ -1148,7 +1142,7 @@ AccumulateStats(Object o, char *compname, char *statname, Stats sp, int *iv,
 	
       case CLASS_SCREEN:
 	if (!DXGetScreenInfo((Screen)o, &subo, &fixed, &z))
-	    return NULL;
+	    return ERROR;
 
 	if (!AccumulateStats(subo, compname, statname, sp, iv, 0))
 	    return ERROR;
@@ -1157,7 +1151,7 @@ AccumulateStats(Object o, char *compname, char *statname, Stats sp, int *iv,
 
       case CLASS_XFORM:
 	if (!DXGetXformInfo((Xform)o, &subo, &m))
-	    return NULL;
+	    return ERROR;
 	
 	if (!AccumulateStats(subo, compname, statname, sp, iv, 0))
 	    return ERROR;
@@ -1166,7 +1160,7 @@ AccumulateStats(Object o, char *compname, char *statname, Stats sp, int *iv,
 	
       case CLASS_CLIPPED:
 	if (!DXGetClippedInfo((Clipped)o, &subo, &subo2))
-	    return NULL;
+	    return ERROR;
 	
 	if (!AccumulateStats(subo, compname, statname, sp, iv, 0))
 	    return ERROR;
@@ -1196,7 +1190,7 @@ static Stats Add__Stats(Object o, char *compname,
     int rank;
     Pointer dp, dp2;
     int isarray = 0;
-    int i, j, size, rc = OK, shape[MAXDIM];
+    int size, shape[MAXDIM];
     double origin[MAXDIM];
     struct stats *s = NULL;
     ICH hasinvalid = NULL;
@@ -1578,12 +1572,10 @@ static Error supported(Array a)
 
 Array DXScalarConvert(Array a)
 {
-    int i, j, rc, nitems;
-    int isregular = 0;
+    int i, nitems;
     int rank, shape[MAXDIM];
     double origins[MAXDIM];
     float norigin, ndelta;
-    double x;
     Type type;
     Pointer dp, dp2;
     float *fp;
@@ -1919,8 +1911,7 @@ RegularData(Array a)
     Type type;
     Category cat;
     int rank;
-    int i, shape[MAXDIM], count;
-    ubyte *op;
+    int shape[MAXDIM];
 
 
     if (DXGetArrayClass(a) != CLASS_REGULARARRAY)
@@ -1977,7 +1968,6 @@ static Error HasInvalid(Field f, char *component, ICH *ih)
  */
 static Error InvalidName(Field f, char *component, char **invalid)
 {
-    Error rc = OK;
     char *dep = NULL;
 
     *invalid = NULL;

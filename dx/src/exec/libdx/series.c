@@ -12,6 +12,7 @@
 
 #include <string.h>
 #include "groupClass.h"
+#include "internals.h"
 
 
 static Series
@@ -67,26 +68,6 @@ DXGetSeriesMember(Series s, int n, float *position)
 }
 
 
-/*
- * DXCopy.  DXWarning: this code is essentially the same as the
- * code for Group_Copy, until the loop at the end that does the copy.
- * If you change anything here, check that code also.
- */
-
-Object
-_dxfSeries_Copy(Series old, enum copy copy)
-{
-    Series new;
-
-    new = DXNewSeries();
-    if (!new)
-	return NULL;
-
-    /* XXX - check return code and delete new */
-    return (Object) _CopySeries(new, old, copy);
-}
-
-
 static Series
 _CopySeries(Series new, Series old, enum copy copy)
 {
@@ -121,7 +102,7 @@ _CopySeries(Series new, Series old, enum copy copy)
 	new->group.shape = NULL;
 
     /* copy the members */
-    for (i=0; val = DXGetSeriesMember(old, i, &position); i++) {
+    for (i=0; (val=DXGetSeriesMember(old, i, &position)); i++) {
 	if (copy!=COPY_HEADER) {
 	    val = DXCopy(val, copy);
 	    if (!val)
@@ -131,3 +112,23 @@ _CopySeries(Series new, Series old, enum copy copy)
     }
     return new;
 }
+
+/*
+ * DXCopy.  DXWarning: this code is essentially the same as the
+ * code for Group_Copy, until the loop at the end that does the copy.
+ * If you change anything here, check that code also.
+ */
+
+Object
+_dxfSeries_Copy(Series old, enum copy copy)
+{
+    Series new;
+
+    new = DXNewSeries();
+    if (!new)
+	return NULL;
+
+    /* XXX - check return code and delete new */
+    return (Object) _CopySeries(new, old, copy);
+}
+

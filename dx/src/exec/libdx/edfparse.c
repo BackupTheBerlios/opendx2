@@ -323,7 +323,7 @@ static Error parse_object(struct finfo *f)
     int kind;
     int skip = 0;
     int dictid;
-    int objnum, objtype;
+    int objnum;
     Error rc = OK;
  
 #if DEBUG_MSG
@@ -542,7 +542,6 @@ static Error parse_include(struct finfo *f)
 {
     int rc;
     int remoteid;
-    int objtype;
     Object o;
  
 #if DEBUG_MSG
@@ -579,7 +578,6 @@ static Error parse_include(struct finfo *f)
 static Error parse_string(struct finfo *f)
 {
     Object o;
-    char *cp = NULL;
     Error rc = OK;
     
 #if DEBUG_MSG
@@ -607,7 +605,6 @@ static Error parse_series(struct finfo *f)
     Object o;
     Error rc = OK;
     int id;
-    int seriespos = 0;
     int member = 0;
     int done = 0;
  
@@ -675,8 +672,7 @@ extern Array _dxfReallyCopyArray(Array a);
 
 static Error parse_smember(struct finfo *f, int gmember) 
 {
-    int value, num, enumval;
-    int objnum, objtype;
+    int num, enumval;
     int state = 0;
     int skip = 0;
     int done = 0;
@@ -684,7 +680,6 @@ static Error parse_smember(struct finfo *f, int gmember)
     Object o = NULL;
     Object newo = NULL;
     float pos;
-    char *cp = NULL, *ocp = NULL;
     Error rc = OK;
  
 #if DEBUG_MSG
@@ -964,7 +959,7 @@ static Error make_group(struct finfo *f, Object o, char *thing)
  
 static Error parse_member(struct finfo *f) 
 {
-    int name, value, enumval;
+    int name, enumval;
     int byname;
     int which;
     Object o;
@@ -1652,8 +1647,7 @@ static Error parse_array(struct finfo *f, int kind)
  
 static Error parse_sarray(struct finfo *f, int kind)
 {
-    int value, objtype;
-    float fvalue;
+    int value;
     Object o = NULL;
     int i, done = 0;
     int drank = 0;
@@ -1665,7 +1659,6 @@ static Error parse_sarray(struct finfo *f, int kind)
     int signok = 0;
     int items = 0;
     int rank = 0;
-    int rankset = 0;
     int shape = 0;
     Pointer origin = NULL;
     Pointer deltas = NULL;
@@ -2765,14 +2758,12 @@ static Error parse_camera(struct finfo *f)
  
 static Error parse_xform(struct finfo *f)
 { 
-    int i, j, value, done;
-    int objtype;
+    int i, j, done;
     float fvalue;
     Matrix m;
     Object o = NULL;
     Object subo = NULL;
     int which;
-    char *cp;
     Error rc = OK;
  
 #if DEBUG_MSG
@@ -2855,10 +2846,7 @@ static Error parse_clipped(struct finfo *f)
     Object o = NULL;
     Object clipper = NULL;
     Object clippie = NULL;
-    int value, objtype;
-    char *cp;
     int which;
-    int done = 0;
     Error rc = ERROR;
  
 #if DEBUG_MSG
@@ -2918,8 +2906,6 @@ static Error parse_screen(struct finfo *f)
     Object so = NULL;
     Object o = NULL;
     Error rc = ERROR;
-    int value, objtype;
-    char *cp;
     int setpos = 0;
     int position = SCREEN_WORLD;
     int setwhere = 0;
@@ -3146,7 +3132,6 @@ static Error parse_attribute(struct finfo *f, Object o)
  */
 static Error local_objectid(struct finfo *f, int *objnum, char *what)
 {
-    Error rc = OK;
     int slot, type, value;
     
 #if DEBUG_MSG
@@ -3197,7 +3182,7 @@ static Error
 remote_objectid(struct finfo *f, int *objnum, char *what)
 {
     Error rc = OK;
-    int slot, type, value;
+    int value;
     
 #if DEBUG_MSG
     DXDebug("E", "in remote_objectid");
@@ -3365,7 +3350,6 @@ seriesobject_or_id(struct finfo *f, Object *o, char *what, int *which,
  */
 static Error remote_object(struct finfo *f, int value, Object *o)
 {
-    int i;
     struct finfo newf;
     struct getby **gpp;
     Error rc = OK;
@@ -3457,7 +3441,6 @@ file_lists(struct finfo *f, int value)
     char *cp;
     int fnamewas = 0;
     int wascomma = 0;
-    Error rc = OK;
  
 #if DEBUG_MSG
     DXDebug("E", "in file_lists");
@@ -3521,7 +3504,7 @@ file_lists(struct finfo *f, int value)
     } else if (get_ident(f, &value) || get_string(f, &value)) {
 	/* object name */
 	cp = _dxfdictname(f->d, value);
-      hasname:
+    /*  hasname: */
 	(*gpp)->gbuf = DXAllocateLocal(2*sizeof(char *) + strlen(cp)+1);
 	if (!(*gpp)->gbuf)
 	    return ERROR;
@@ -3711,10 +3694,8 @@ static Error parse_default(struct finfo *f)
 {
     struct getby *gp;
     int rc = OK;
-    int objnum, objtype;
+    int objnum;
     int objcount = 0;
-    int done = 0;
-    int ignore = 0;
 
     gp = &(f->gb);
 
@@ -3792,7 +3773,6 @@ static Object make_string(struct finfo *f)
 {
     int id, nid;
     Object o;
-    char *cp = NULL;
     char **clist = NULL;
     int nalloc = 0, nfilled = 0;
     Error rc = OK;

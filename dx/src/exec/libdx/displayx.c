@@ -37,17 +37,26 @@ typedef Error (*Handler)(int, Pointer);
 typedef int   (*Checker)(int, Pointer);
 extern Error DXRegisterWindowHandlerWithCheckProc(Handler proc, Checker check, Display *d, Pointer arg);
 unsigned char * _dxf_GetXPixels(Field);
+
+static short _dxd_dither_matrix[DY][DX] = {
+    { 0 *256,  8 *256,  2 *256, 10 *256 },
+    { 12 *256,  4 *256, 14 *256,  6 *256 },
+    { 3 *256, 11 *256,  1 *256,  9 *256 },
+    { 15 *256,  7 *256, 13 *256,  5 *256 }
+};
+
 static int xerror = 0;
 
 Error DXParseWhere(char *, int *, char **, char **, char **, char **, char **);
 
-static error_handler(Display *dpy, XErrorEvent *event)
+static int error_handler(Display *dpy, XErrorEvent *event)
 {
     char buffer[100];
     DXDebug("X", "error handler");
     XGetErrorText(dpy, event->error_code, buffer, sizeof(buffer));
     DXSetError(ERROR_INTERNAL, "#11690", buffer);
     xerror = 1;
+    return xerror;
 }
 
 Colormap
@@ -320,7 +329,7 @@ XFREECOLOR(Display *d, Colormap map, long c)
     unsigned char *_src = src + (src_imp_offset + src_exp_offset)*isz;	\
     unsigned char *t_dst; 						\
     int _d0 = d0*osz, _d1 = d1*osz;					\
-    int ir, ig, ib, i;							\
+    int i;								\
 									\
     for (y=0;  y<height;  y++)						\
     { 									\
@@ -383,7 +392,7 @@ traverse(Object o, struct arg *arg)
 	    if (DXGetGroupClass((Group)o)!=CLASS_COMPOSITEFIELD)
 		DXErrorReturn(ERROR_BAD_PARAMETER, "#11660");
 
-	    for (i=0; oo=DXGetEnumeratedMember((Group)o, i, NULL); i++)
+	    for (i=0; (oo=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
 		if (!traverse(oo, arg))
 		    return ERROR;
 
@@ -451,6 +460,9 @@ traverse(Object o, struct arg *arg)
 			    arg->i, arg->n,
 			    arg->translation, 
 			    src, inType, arg->out);
+
+	default: /* Shouldn't get here */
+	    break;
     }
 
     return OK;
@@ -467,13 +479,11 @@ _dxf_translateImage(Object image, /* object defining overall pixel grid         
 	unsigned char *src, int inType, unsigned char *dst)
 {
     unsigned long *table;
-    unsigned long t0;
     int width, height;
-    int p, x, y, d, i, r, g, b;
+    int p, x, y, d, i;
     short *m;
-    unsigned char *conv;
     struct { float x, y; } deltas[2];
-    int d0, d1, dims[2], offsets[2], ox, oy;
+    int d0, d1, dims[2], ox, oy;
     Array a, cmap;
     Visual			*vis;
     unsigned long		*rtable,*gtable,*btable;
@@ -1731,14 +1741,9 @@ static Error
 display_script(Object image, int width, int height,
 		int ox, int oy, struct window *w)
 {
-    XWindowAttributes    attr;
-    XSizeHints 		 s;
-    XEvent 		 event;
-    int 		 i, x, y;
     Display 		 *dpy;
     Window 		 root;
     int 		 screen;
-    Object		 o;
     translationP	 trans = NULL;
     XSetWindowAttributes xswa;
     XColor 		 cdef, hdef;
@@ -1830,14 +1835,9 @@ static Error
 display_external(Object image, int width, int height,
 		int ox, int oy, struct window *w)
 {
-    XWindowAttributes    attr;
-    XSizeHints 		 s;
-    XEvent 		 event;
-    int 		 i, x, y;
     Display 		 *dpy;
     Window 		 root;
     int 		 screen;
-    Object		 o;
     translationP	 trans = NULL;
     XSetWindowAttributes xswa;
     XColor 		 cdef, hdef;
@@ -1982,10 +1982,7 @@ display_ui(Object image, int width, int height,
 			int ox, int oy, struct window *w)
 {
 
-    XWindowAttributes  attr;
-    XSizeHints size;
     XEvent event;
-    int i, x, y;
     Display *dpy;
     Pixmap new = None;
     translationP trans;
@@ -2559,7 +2556,7 @@ getWindowStructure(char *host, int depth, char *title, int *directMap,
     }
     else
     {
-	char *s, *num;
+	char *num;
 
 	if (w)
 	{
@@ -3226,7 +3223,6 @@ _dxf_ZeroXPixels(Field image, int left, int right, int top, int bot, RGBColor c)
 	unsigned long *rtable = translation->rtable;
 	unsigned long *gtable = translation->gtable;
 	unsigned long *btable = translation->btable;
-	unsigned long *table  = translation->table;
 
 	GAMMA;
 
@@ -3305,7 +3301,9 @@ error:
       color |= ((index) >> -shift);				      	      \
 }
 
+/* Function never defined or used --
 static translationT * Xserver (char *where, int desiredDepth);
+*/
 
 static Error getThreeMapTranslation(Display *dpy, translationT *trans);
 static Error getStaticGrayTranslation(Display *dpy, translationT *trans);
@@ -3421,12 +3419,11 @@ getBestVisual (Display *dpy, int *depth, int *directMap)
     int	  	  count,i,j;
     XVisualInfo	  *visualInfo=NULL,template;
     Visual	  *visual,*ret=NULL;
-    unsigned char acceptable;
     int	          screen = XDefaultScreen(dpy);
 
 #ifdef FORCE_VISUAL
     {
-	char *str, *name;
+	char *str;
 	int  depth;
 
 	str = (char *)getenv("DXVISUAL");
@@ -3773,7 +3770,6 @@ createTranslation(Private dpy_object, char *where,
     int			cached = 0;
     XWindowAttributes   xwa;
     Display 		*dpy;
-    long		dummyPixel;
     XImage		*dummyXImage;
 
     if (! dpy_object)
@@ -3995,7 +3991,6 @@ error:
 static Error getGamma(int depth, float *gamma)
 {
     char		*str = NULL;
-    int			i;
 
     switch(depth)
     {
@@ -4033,7 +4028,6 @@ static Error
 getDirectTranslation(Display *dpy, translationT *t)
 { 
     float		invgamma;
-    char		*str = NULL;
     int			i;
     unsigned long 	pixels[256];
 
@@ -4066,7 +4060,6 @@ getThreeMapTranslation(Display *dpy, translationT *d)
   Visual 		*visual = (Visual *)d->visual;
   Colormap		cmap    = (Colormap)d->cmap;
   int			i,n,saveI;
-  translationT 	tmpd;
   int	 		cmapsize;
   unsigned long		planes;
   int			nn;
@@ -4081,7 +4074,6 @@ getThreeMapTranslation(Display *dpy, translationT *d)
   unsigned long		bwriteable[MAXRGBCMAPSIZE];
   unsigned long		rMask,gMask,bMask;
   int			rShift,gShift,bShift;
-  char		        *str;
   float 		invgamma;
 
   if (! getGamma(d->depth, &(d->gamma)))
@@ -4166,7 +4158,6 @@ getThreeMapTranslation(Display *dpy, translationT *d)
   if (nn == cmapsize)
   {
       unsigned char redI,greenI,blueI;
-      int i;
 
       for (n = 0; n < nn; n++)
       {
@@ -4263,7 +4254,7 @@ getThreeMapTranslation(Display *dpy, translationT *d)
        * find any unassigned rtable entries and assign them using saved pixels
        */
       for(n=0;n<cmapsize;n++) {
-	if(!d->rtable[n])
+	if(!d->rtable[n]) {
 	  if(saveI) {
 	    unsigned long tmpPixel;
 
@@ -4294,6 +4285,7 @@ getThreeMapTranslation(Display *dpy, translationT *d)
 	    DXWarning("#11640");
 	    }
 	  }
+	}
       }
       /* green */
       bzero(d->gtable,MAXRGBCMAPSIZE * sizeof(unsigned long));
@@ -4324,7 +4316,7 @@ getThreeMapTranslation(Display *dpy, translationT *d)
        * find any unassigned gtable entries and assign them using saved pixels
        */
       for(n=0;n<cmapsize;n++) {
-	if(!d->gtable[n])
+	if(!d->gtable[n]) {
 	  if(saveI) {
 	    unsigned long tmpPixel;
 
@@ -4355,6 +4347,7 @@ getThreeMapTranslation(Display *dpy, translationT *d)
 	    DXWarning("#11640");
 	    }
 	  }
+	}
       }
       /* blue */
       bzero(d->btable,MAXRGBCMAPSIZE * sizeof(unsigned long));
@@ -4385,7 +4378,7 @@ getThreeMapTranslation(Display *dpy, translationT *d)
        * find any unassigned btable entries and assign them using saved pixels
        */
       for(n=0;n<cmapsize;n++) {
-	if(!d->btable[n])
+	if(!d->btable[n]) {
 	  if(saveI) {
 	    unsigned long tmpPixel;
 
@@ -4416,6 +4409,7 @@ getThreeMapTranslation(Display *dpy, translationT *d)
 	    DXWarning("#11640");
 	    }
 	  }
+	}
       }
       for (n=COFFSET; n<cmapsize+COFFSET; n++) {
 	  colors[n].pixel = REDINDEXTOPIXEL(n-COFFSET) |
@@ -4598,14 +4592,12 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
 {
     Visual 		*visual = (Visual *)d->visual;
     Colormap		cmap    = (Colormap)d->cmap;
-    XColor 		color, colors[MAXCMAPSIZE], newcolors[MAXCMAPSIZE];
+    XColor 		colors[MAXCMAPSIZE];
     int 		i, j, best, r, g, b, n,nn, max_nbrhd; 
-    int			x, max=0;
     int 		comp[MAXCMAPSIZE],
 			uncomp[MAXCMAPSIZE];
     unsigned char       readOnly[MAXCMAPSIZE];
     struct {unsigned char r, g, b;} map[MAX_RR*MAX_GG*MAX_BB];
-    char 		cacheid[100];
     struct color_sort 	sort[MAX_RR*MAX_GG*MAX_BB];
     unsigned char       colorAssigned[MAX_RR*MAX_GG*MAX_BB];
     unsigned long	pixels[MAXCMAPSIZE];
@@ -4617,7 +4609,6 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
     int			maxdiff = 0;
     float		approximationTolerance = APPROX_TOLERANCE;
     int 		nPrivate, nShared;
-    unsigned char 	allocated[MAX_RR*MAX_GG*MAX_BB];
 
     str = getenv("DX8BITCMAP");
     if (str)
@@ -5175,8 +5166,7 @@ getGrayMappedTranslation(Display *dpy, translationT *d, int force)
     int			cmapsize;
     unsigned char	allocated[256];
     unsigned char	readOnly[256];
-    float		invgamma, gamma;
-    char	        *str;
+    float		invgamma;
 
     memset(allocated, 0, 256*sizeof(unsigned char));
 
@@ -5482,7 +5472,6 @@ getStaticGrayTranslation(Display *dpy, translationT *d)
     int			i;
     Visual 		*visual = (Visual *)d->visual;
     float		invgamma;
-    char	        *str;
 
     d->translationType = GrayStatic;
 
@@ -5530,7 +5519,6 @@ getStaticColorTranslation(Display *dpy, translationT *d)
 {
     int 		i;
     float		invgamma;
-    char	        *str;
     Visual 		*vis = (Visual *)(d->visual);
     int			redWidth, redShift, redBits, maxRed;
     int			greenWidth, greenShift, greenBits, maxGreen;
@@ -5610,7 +5598,6 @@ setColors(struct window *w, Colormap xCmap, Array iCmap)
     XColor colors[MAXCMAPSIZE];
     float *cIn = (float *)DXGetArrayData(iCmap);
     int   i, j, n, grayIn, grayOut;
-    unsigned long pixels[MAXCMAPSIZE];
     translationT *trans = w->translation;
     Visual *vis = (Visual *)(trans->visual);
     int oneMap, r, g, b;
@@ -5787,7 +5774,6 @@ getPrivateColormap(Display *dpy, translationT *trans, Colormap xcmap)
     int mymapsize, cmapsize;
     XColor colors[MAXCMAPSIZE];
     XColor ncolors[MAXCMAPSIZE];
-    char *str;
     float invgamma;
     unsigned int comp[256];
     int start, n, nn, i, r, g, b, rr, gg, bb;
@@ -6137,9 +6123,8 @@ _dxfCaptureThreeMapImage(struct window *w, translationT *t, Visual *v)
     {
 	int    rshift, gshift, bshift;
 	int    rmask, gmask, bmask;
-	int    i, notSimple, pixsize = _dxf_GetXBytesPerPixel(t);
+	int    i, notSimple;
 	XColor xmap[256];
-	float  *dxmap;
 	Array  c = (Array)DXGetComponentValue(image, "colors");
 	if (! c)
 	    goto error;
@@ -6423,7 +6408,6 @@ _dxfCaptureSoftwareImage(int depth, char *host, char *window)
     Private w_obj = NULL;
     int directMap = 0;
     Field image = NULL;
-    int pixSize;
     translationP t;
     Visual *v;
 
@@ -6616,7 +6600,6 @@ DXGetSoftwareWindow(char *where, Window *window)
     Private p = NULL;
     char *cachetag = NULL;
     struct window *w;
-    int wid;
     char *host = NULL, *title = NULL;
 
     if (! DXParseWhere(where, NULL, NULL, &host, &title, NULL, NULL))

@@ -31,7 +31,6 @@ int
 _dxfRecognizeFLE2D(Field field)
 {
     Array    array;
-    int      nDim;
     Type     t;
     Category c;
     int      r, s[32];
@@ -189,17 +188,9 @@ static Error
 _dxfInitialize(Fle2DInterpolator fle)
 {
     Field	field;
-    int		nDim;
-    Type	dataType;
-    Category	dataCategory;
     int		i, j, k;
-    int 	nPoints;
     float	lx, ly, lX, lY;
     float	fx, fy, fX, fY;
-    float	fuzz;
-    float	len, area;
-    int		*faces, *loops, *edges, *faceEdges = NULL;
-    float	*positions;
     MinMax	*lmm, *fmm;
 
     fle->fieldInterpolator.initialized = 1;
@@ -319,7 +310,7 @@ Error
 _dxfFle2DInterpolator_Delete(Fle2DInterpolator fle)
 {
     _dxfCleanup(fle);
-    _dxfFieldInterpolator_Delete((FieldInterpolator) fle);
+    return _dxfFieldInterpolator_Delete((FieldInterpolator) fle);
 }
 
 static int
@@ -553,6 +544,8 @@ _dxfCleanup(Fle2DInterpolator fle)
     fle->dArray   = NULL;
     fle->mmfArray = NULL;
     fle->mmlArray = NULL;
+
+    return OK;
 }
 
 Object

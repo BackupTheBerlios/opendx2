@@ -773,7 +773,7 @@ Error _dxfgetstringnodict(struct finfo *f)
 
 char *_dxfgetstringinfo(struct finfo *f, int *len)
 {
-    int i, class;
+    int class;
 
     next_class(f, &class);
     if (class != STRING)

@@ -175,7 +175,6 @@ static
 Error datafromhost (int dxfd, Pointer arg)
 {
     int 	b;
-    int 	ret;
 
     /* if the pipe is closed, set the status
      */
@@ -208,7 +207,6 @@ Error DXCallOutboard (PFE m, int dxfd)
     int		i;
     int		*iptr;
     int		count	= 0;
-    int		b;
     int		one = 1;
     int         zero = 0;
 
@@ -301,6 +299,8 @@ Error DXCallOutboard (PFE m, int dxfd)
 		DXAddMessage("bad object returned as output %d from outboard module", i);
 
 	    olist[i] = NULL;
+	  default: /* Lots of other classes */
+	    break;
 	}
     }
 
@@ -395,12 +395,10 @@ Error DXGetInputs(Object *in, int dxfd)
 {
     static int  firsttime = 1;
     int		nin	= 0;
-    Error	ret    = ERROR;
     Group	iobj	= NULL;
     int		i;
     int		*iptr;
     int		count	= 0;
-    int		b;
 
 
     if (firsttime && ! callsetup (dxfd)) {
@@ -478,9 +476,7 @@ Error DXSetOutputs(Object *olist, int dxfd)
     Array	code	= NULL;
     String	mess	= NULL;
     int		i;
-    int		*iptr;
     int		count	= 0;
-    int		b;
     int		one = 1;
     int         zero = 0;
 
@@ -612,7 +608,7 @@ static Error RIHInsert (Error (*proc) (int, Pointer),
 
 /* is this necessary?  it apparently wasn't being called before...
  */
-Error _dxf_initRIH ()
+Error _dxf_initRIH (void)
 {
     rih_lock = (lock_type *) DXAllocate (sizeof (lock_type));
     if (rih_lock == NULL)

@@ -20,9 +20,6 @@
  * DXNeighbors routines
  */
 
-Array _dxf_TetraNeighbors(Field f);
-Array _dxf_CubeNeighbors(Field f);
-
 static Array TriNeighbors(Field f);
 static Array QuadNeighbors(Field f);
 

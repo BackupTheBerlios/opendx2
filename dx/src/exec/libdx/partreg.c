@@ -21,6 +21,10 @@
 
 #include <dx/dx.h>
 
+/* defined in permute.c */
+#define PPP unsigned char *
+void _dxfPermute( int dim, PPP out, int *ostrides, int *counts, 
+                  int size, PPP in, int *istrides );
 
 #define MAXRANK   16
 #define MAXSHAPE  128
@@ -150,7 +154,7 @@ _dxf_PartitionRegular(Field f, int n, int size)
      *  set.  composite fields are only supposed to contain fields which
      *  have the same data type.
      */
-    if (data = (Array)DXGetComponentValue(f, "data")) {
+    if ((data=(Array)DXGetComponentValue(f, "data"))!=NULL) {
 	Type t;
 	Category c;
 	int rank;
@@ -524,7 +528,7 @@ static int Partition_Worker(Pointer ptr)
     /* for each other component in the field, partition it accordingly.
      */
     for (i = 0; 
-	 a = (Array)DXGetEnumeratedComponentValue(ap->parent, i, &name); 
+	 (a=(Array)DXGetEnumeratedComponentValue(ap->parent, i, &name)); 
 	 i++) {
 
 	/* skip connections - we've already done them */
@@ -659,7 +663,7 @@ static Array Array_Subset_Pos(Array a, int *startpos, int **prevcounts,
     int ostride[MAXRANK], nstride[MAXRANK];
     int *nprevcounts[MAXRANK];
     Pointer op, np;
-    int i, j, k, l, p;
+    int i, j, k, p;
 
     /* check here for fully regular array and shortcut the following code */
 
@@ -894,12 +898,11 @@ static Array Array_Subset_Con(Array a, int *startpos, int **prevcounts,
     Type t;
     Category c;
     float origins[MAXRANK], deltas[MAXRANK*MAXRANK];
-    float norigins[MAXRANK];
     int rank, shape[MAXSHAPE], counts[MAXRANK], ncounts[MAXRANK];
     int nsp[MAXRANK], ntk[MAXRANK];
     int ostride[MAXRANK], nstride[MAXRANK];
     Pointer op, np;
-    int i, j, k, l, p;
+    int i, j, k, p;
     
 
     /* check here for fully regular array and shortcut the following code */
@@ -1145,7 +1148,7 @@ Field _dxf_has_ref_lists(Field f, int *pos, int *con)
 
     /* check attributes for each component in the field.
      */
-    for (i = 0; comp = DXGetEnumeratedComponentValue(f, i, &name); i++) {
+    for (i = 0; (comp=DXGetEnumeratedComponentValue(f, i, &name)); i++) {
 	
 	/* skip positions and connections.
 	 */
@@ -1294,11 +1297,11 @@ Error _dxf_make_map_template(Array a, Array *map)
     int nitems;
 
     if (!DXGetArrayInfo(a, &nitems, NULL, NULL, NULL, NULL))
-	return NULL;
+	return ERROR;
 
     *map = DXNewArray(TYPE_INT, CATEGORY_REAL, 0);
     if (! *map)
-	return NULL;
+	return ERROR;
 
     if (!DXAddArrayData(*map, 0, nitems, NULL))
 	goto error;
@@ -1314,7 +1317,7 @@ Error _dxf_make_map_template(Array a, Array *map)
     
   error:
     DXDelete((Object) *map);
-    return NULL;
+    return ERROR;
 }
 
 /* this routine takes the original map and the partitioned map and
@@ -1332,10 +1335,10 @@ Error _dxf_fix_map_template(Array map, Array partmap)
      * in the partitioned map.
      */
     if (!DXGetArrayInfo(map, &orig_items, NULL, NULL, NULL, NULL))
-	return NULL;
+	return ERROR;
 
     if (!DXGetArrayInfo(partmap, &part_items, NULL, NULL, NULL, NULL))
-	return NULL;
+	return ERROR;
 
     /* allocate space for another list of the same size.  this will
      *  replace the original list when it contains the new values.
@@ -1377,7 +1380,7 @@ Error _dxf_fix_map_template(Array map, Array partmap)
 
   error:
     DXFree((Pointer) np);
-    return NULL;
+    return ERROR;
 }
 
 

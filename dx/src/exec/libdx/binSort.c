@@ -188,8 +188,6 @@ _dxfAddItemToSearchGrid(Grid grid, float **vertices, int nVerts, int prim)
     GridLevel 	 gridlevel;
     Item	 itemPtr;
     register int i, j, nDim;
-    int		 g;
-    int		 same;
     int		 *stride;
     float 	 fMin[MAXDIM], fMax[MAXDIM];
     int		 iMin[MAXDIM], iMax[MAXDIM];

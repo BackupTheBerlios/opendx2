@@ -91,15 +91,11 @@ static Error
 patch(Pointer ptr)
 {
     struct buffer b;
-    int i, ii, n, nbytes;
-    int nprocs = DXProcessors(0);
+    int i, nbytes;
     int clip_status;
     struct gather gather;
-    int initonly=0;
     struct patch *p = (struct patch *)ptr;
     struct common *c = p->common;
-    int nconnections;
-    char *imagetype;
     enum pix_type pix_type;
 
 
@@ -273,7 +269,7 @@ DXRender(Object o, Camera camera, char *format)
     struct common c, *cp;
     int ci, irregular, n, i, j;
     int nosplit;
-    int x, y, left, bot, lt, rt, tp, bt, split, s;
+    int x, y, left, bot, lt, rt, tp, bt, split;
     Point box[8];
     float width;
     int	depth;
@@ -391,7 +387,7 @@ DXRender(Object o, Camera camera, char *format)
 	count->pcount = 
 		(struct pcount *)DXAllocateZero(ci*ci*sizeof(struct pcount));
 	if (!count->pcount) goto error;
-	c.o = (Object)_dxfXShade(o, camera, count);
+	c.o = (Object)_dxfXShade(o, camera, count, box);
 	if (!c.o)
 	{
 	    if (DXGetError() == ERROR_NO_MEMORY)

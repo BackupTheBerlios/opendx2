@@ -163,13 +163,8 @@ _dxfInitialize(CubesRRInterpolator ci)
     Field		field;
     int			nDim;
     int			i;
-    float		origins[3];
-    float		deltas[3];
-    int			counts[3];
     Type		dataType;
     Category		dataCategory;
-    Matrix		*m;
-    float		diagonal;
 
     field = (Field)((Interpolator)ci)->dataObject;
 
@@ -182,7 +177,7 @@ _dxfInitialize(CubesRRInterpolator ci)
     if (!ci->dataArray) 
     {
 	DXSetError(ERROR_MISSING_DATA, "#10240", "data");
-	return NULL;
+	return ERROR;
     }
     DXReference((Object)ci->dataArray);
 
@@ -192,7 +187,7 @@ _dxfInitialize(CubesRRInterpolator ci)
     
     ci->data = DXCreateArrayHandle(ci->dataArray);
     if (! ci->data)
-	 return NULL;
+	 return ERROR;
 
     /*
      * Get the grid. 
@@ -249,7 +244,7 @@ Error
 _dxfCubesRRInterpolator_Delete(CubesRRInterpolator ci)
 {
     _dxfCleanup(ci);
-    _dxfFieldInterpolator_Delete((FieldInterpolator) ci);
+    return _dxfFieldInterpolator_Delete((FieldInterpolator) ci);
 }
 
 static void
@@ -324,13 +319,11 @@ _dxfCubesRRInterpolator_PrimitiveInterpolate(CubesRRInterpolator ci,
     float 	           yMax, yMin;
     float 	           zMax, zMin;
     int		           sz0, sz1, sz2;
-    float	           *org;
-    float	           *iD;
     int		           ixMax, iyMax, izMax;
     float	           weight000, weight001, weight010, weight011;
     float	           weight100, weight101, weight110, weight111;
     float	           A, B, C, D;
-    int		           baseIndex, i, knt;
+    int		           baseIndex, i;
     Point	           *p;
     Pointer	           v;
     float	           *mA, *mb;

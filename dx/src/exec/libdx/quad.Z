@@ -30,8 +30,6 @@ DEFINE3 CAT(a,b) a##b
     RGBColor vcolors[8];						    $\
     int shademe;							    $\
     char fcst = xf->fcst, bcst = xf->bcst, ncst = xf->ncst;		    $\
-    char fbyte = xf->fbyte, bbyte = xf->bbyte;				    $\
-    char obyte = xf->obyte;						    $\
 									    $\
     iElts = (invalid_status == INV_UNKNOWN) ? xf->iElts : NULL;		    $\
 									    $\
@@ -150,11 +148,9 @@ DEFINE3 CAT(a,b) a##b
 #define QUAD_VOLUME(pstr, pptr, shrgb, sho, col, face, TEST, PIXEL, LABEL){ $\
 									    $\
     Point *p;								    $\
-    int v1, v2, v3, i, width, height, valid;				    $\
+    int v1, v2, v3, width, height, valid;				    $\
     float ox, oy;							    $\
     InvalidComponentHandle iElts;					    $\
-    float dr, dg, db;							    $\
-    RGBColor *cmap = xf->cmap;						    $\
     RGBColor *colors;							    $\
     int cstcolors;							    $\
 									    $\
@@ -180,7 +176,6 @@ DEFINE3 CAT(a,b) a##b
 									    $\
     for (i=0; i<nquad; i++, quad++) {					    $\
 	int index = (indices == NULL) ? i : indices[i];			    $\
-	float dps, dqr;							    $\
 									    $\
 	if (iElts)							    $\
 	    valid = DXIsElementValid(iElts, index);	    		    $\
@@ -230,7 +225,7 @@ DEFINE3 CAT(a,b) a##b
     float r1, g1, b1, o1, z1, r2, g2, b2, o2, z2, r3, g3, b3, o3, z3;	    $\
     float Qx, dxo, dxz, dxr, dxg, dxb;					    $\
     float Qy, dyr, dyg, dyb, dyo, dyz, dyA, dyB;			    $\
-    float r, g, b, o, obar, z, nearPlane=xf->nearPlane;			    $\
+    float r, g, b, o, obar, z, nearPlane=xf->nearPlane ;		    $\
     float A, B, d, d1, d2, d3;						    $\
     int iy1, iy2, iy3;							    $\
     int iA, iB, iy, i, n, nn, left, right;				    $\
@@ -262,7 +257,6 @@ DEFINE3 CAT(a,b) a##b
 	RGBColor *cmap = xf->cmap;					    $\
 	float *omap = xf->omap;						    $\
 	char fbyte = xf->fbyte, bbyte = xf->bbyte;			    $\
-	char obyte = xf->obyte;						    $\
 
 #define QUADEPILOGUE							    $\
 	return OK;							    $\
@@ -351,7 +345,6 @@ _dxf_QuadClipping(
     float *omap = NULL;
     inv_stat invalid_status = INV_VALID;
     char fbyte = xf->fbyte, bbyte = xf->bbyte;
-    char obyte = xf->obyte;
 
     if (xf->tile.perspective) {
 	struct xfield xx;
@@ -384,7 +377,6 @@ _dxf_QuadComposite(
     RGBColor *cmap = xf->cmap;
     float *omap = xf->omap;
     char fbyte = xf->fbyte, bbyte = xf->bbyte;
-    char obyte = xf->obyte;
 
     if (xf->tile.perspective)
 	DXErrorReturn(ERROR_BAD_PARAMETER,
@@ -415,8 +407,6 @@ _dxf_Quad(struct buffer *buf,
 	  inv_stat invalid_status)
 {
     int i;
-    char fbyte = xf->fbyte, bbyte = xf->bbyte;
-    char obyte = xf->obyte;
 
     if (xf->tile.perspective) {
 	struct xfield xx;
@@ -532,10 +522,6 @@ _dxf_QuadFlat(
     inv_stat invalid_status
 ) {
     QUADDCL;
-    RGBColor *cmap = xf->cmap;
-    float *omap = xf->omap;
-    char fbyte = xf->fbyte, bbyte = xf->bbyte;
-    char obyte = xf->obyte;
 
     if (xf->tile.perspective) {
 	struct xfield xx;

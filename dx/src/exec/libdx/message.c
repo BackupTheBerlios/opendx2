@@ -10,7 +10,11 @@
 
 
 #include <dx/dx.h>
+#include "internals.h"
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 #include <stdarg.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -57,9 +61,9 @@ static struct state {		/* message system state */
 
 
 Error
-_dxf_initmessages()
+_dxf_initmessages(void)
 {
-    char *file, *s, **messages, name[100];
+    char *file, *s, name[100];
     int fd, mno, size;
 
     if (state)
@@ -176,7 +180,7 @@ aqmessage(char *who, char *message, ...)
  */
 
 static ErrorCode _ErrorCode = ERROR_NONE;
-static char _ErrorMessage[2000] = { NULL };
+static char _ErrorMessage[2000] = "";
 
 void
 DXSetErrorExit(int t)
@@ -308,7 +312,7 @@ DXPrintError(char *s)
 	msg = "Bad error code";
     else
 	msg = messages[(int)_ErrorCode];
-    errnomsg = sys_errlist[errno];
+    errnomsg = (char *) sys_errlist[errno];
 
     /* print error message */
     if (_ErrorCode==ERROR_NONE && errno)
@@ -484,7 +488,7 @@ DXQueryDebug(char *classes)
     int c, i;
     if (!state && !DXinitdx())
 	return 0;
-    for (i=0; c=classes[i]; i++)
+    for (i=0; (c=classes[i])!=0; i++)
 	if (state->enabled[c])
 	    return 1;
     return 0;

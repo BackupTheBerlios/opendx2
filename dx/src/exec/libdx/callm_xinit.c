@@ -24,7 +24,7 @@ extern PFE _dxd_registerIHProc;
 static XtAppContext appcontext = NULL;
 Error _dxf_RegisterInputHandlerX(PFE func, int fd, Pointer arg);
 
-DXInitializeXMainLoop(XtAppContext app)
+void DXInitializeXMainLoop(XtAppContext app)
 {
     appcontext = app;
     _dxd_registerIHProc = _dxf_RegisterInputHandlerX;
@@ -53,4 +53,6 @@ _dxf_RegisterInputHandlerX(Error (*func)(int, Pointer), int fd, Pointer arg)
 
     XtAppAddInput(appcontext, fd, (XtPointer)XtInputReadMask,
         (XtInputCallbackProc)_rihProc, (XtPointer)mev);
+
+    return OK;
 }

@@ -139,7 +139,7 @@
     if (iy1>iy2 || iy2>iy3) {						$\
 	DXSetError(ERROR_DATA_INVALID,					$\
 	    "position number %d, %d, or %d is invalid", v1, v2, v3);	$\
-	return NULL;							$\
+	return ERROR;							$\
     }									$\
     if (iy1==iy3)					/* TIME */	$\
 	goto CAT(LABEL,VER);
@@ -271,7 +271,7 @@
     if (iy1>iy2 || iy2>iy3) {						$\
 	DXSetError(ERROR_DATA_INVALID,					$\
 	    "position number %d, %d, or %d is invalid", v1, v2, v3);	$\
-	return NULL;							$\
+	return ERROR;							$\
     }									$\
     if (iy1==iy3)				/* TIME */		$\
 	goto CAT(LABEL,VER);						$\

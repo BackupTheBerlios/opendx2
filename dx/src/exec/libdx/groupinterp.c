@@ -138,6 +138,7 @@ _dxf_NewGroupInterpolator(Group g,
     return gi;
 }
 
+Error
 _dxfGroupInterpolator_Delete(GroupInterpolator gi)
 {
     int i;

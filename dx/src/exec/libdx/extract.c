@@ -86,7 +86,7 @@ Object DXExtractNthString (Object o, int n, char **cp)
     char *c, *cs;
     int	len;
     Type type;
-    int rank, shape;
+    int shape;
 
     if (n < 0)
 	return (NULL);
@@ -266,155 +266,155 @@ static int typeindex(Type t)
 static struct convtable typetable[NUM_TYPES][NUM_TYPES] = 
 {
  /* from BYTE */			                           /* to ... */ 
- { CONV_EQUAL,      NULL,   	    HAS_COMMON,     TYPE_BYTE,     /* BYTE */
-   CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* UBYTE */
-   CONV_ALLOWED,    byte2short,     HAS_COMMON,     TYPE_SHORT,    /* SHORT */
-   CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* USHORT */
-   CONV_ALLOWED,    byte2int,  	    HAS_COMMON,     TYPE_INT,      /* INT */
-   CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* UINT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* HYPER */
-   CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* UHYPER */
-   CONV_ALLOWED,    byte2float,     HAS_COMMON,     TYPE_FLOAT,    /* FLOAT */
-   CONV_ALLOWED,    byte2double,    HAS_COMMON,     TYPE_DOUBLE,   /* DOUBLE */
-   CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX,  }, /* LDOUBLE */
+ { { CONV_EQUAL,      NULL,   	    HAS_COMMON,     TYPE_BYTE },     /* BYTE */
+   { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* UBYTE */
+   { CONV_ALLOWED,    byte2short,   HAS_COMMON,     TYPE_SHORT },    /* SHORT */
+   { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* USHORT */
+   { CONV_ALLOWED,    byte2int,     HAS_COMMON,     TYPE_INT },      /* INT */
+   { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* UINT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* HYPER */
+   { CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* UHYPER */
+   { CONV_ALLOWED,    byte2float,   HAS_COMMON,     TYPE_FLOAT },    /* FLOAT */
+   { CONV_ALLOWED,    byte2double,  HAS_COMMON,     TYPE_DOUBLE },   /* DOUBLE */
+   { CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX },  }, /* LDOUBLE */
 
  /* from UBYTE */			                           /* to ... */ 
- { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* BYTE */
-   CONV_EQUAL,	    NULL,   	    HAS_COMMON,     TYPE_UBYTE,    /* UBYTE */
-   CONV_ALLOWED,    ubyte2short,    HAS_COMMON,     TYPE_SHORT,    /* SHORT */
-   CONV_ALLOWED,    ubyte2ushort,   HAS_COMMON,     TYPE_USHORT,   /* USHORT */
-   CONV_ALLOWED,    ubyte2int,      HAS_COMMON,     TYPE_INT,      /* INT */
-   CONV_ALLOWED,    ubyte2uint,     HAS_COMMON,     TYPE_UINT,     /* UINT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* HYPER */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* UHYPER */
-   CONV_ALLOWED,    ubyte2float,    HAS_COMMON,     TYPE_FLOAT,    /* FLOAT */
-   CONV_ALLOWED,    ubyte2double,   HAS_COMMON,     TYPE_DOUBLE,   /* DOUBLE */
-   CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX,  }, /* LDOUBLE */
+ { { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* BYTE */
+   { CONV_EQUAL,	    NULL,   	    HAS_COMMON,     TYPE_UBYTE },    /* UBYTE */
+   { CONV_ALLOWED,    ubyte2short,    HAS_COMMON,     TYPE_SHORT },    /* SHORT */
+   { CONV_ALLOWED,    ubyte2ushort,   HAS_COMMON,     TYPE_USHORT },   /* USHORT */
+   { CONV_ALLOWED,    ubyte2int,      HAS_COMMON,     TYPE_INT },      /* INT */
+   { CONV_ALLOWED,    ubyte2uint,     HAS_COMMON,     TYPE_UINT },     /* UINT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* HYPER */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* UHYPER */
+   { CONV_ALLOWED,    ubyte2float,    HAS_COMMON,     TYPE_FLOAT },    /* FLOAT */
+   { CONV_ALLOWED,    ubyte2double,   HAS_COMMON,     TYPE_DOUBLE },   /* DOUBLE */
+   { CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX },  }, /* LDOUBLE */
 
  /* from SHORT */			                           /* to ... */ 
- { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_SHORT,    /* BYTE */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_SHORT,    /* UBYTE */
-   CONV_EQUAL,	    NULL,   	    HAS_COMMON,     TYPE_SHORT,    /* SHORT */
-   CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* USHORT */
-   CONV_ALLOWED,    short2int,      HAS_COMMON,     TYPE_INT,      /* INT */
-   CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* UINT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* HYPER */
-   CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* UHYPER */
-   CONV_ALLOWED,    short2float,    HAS_COMMON,     TYPE_FLOAT,    /* FLOAT */
-   CONV_ALLOWED,    short2double,   HAS_COMMON,     TYPE_DOUBLE,   /* DOUBLE */
-   CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX,  }, /* LDOUBLE */
+ { { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_SHORT },    /* BYTE */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_SHORT },    /* UBYTE */
+   { CONV_EQUAL,	    NULL,   	    HAS_COMMON,     TYPE_SHORT },    /* SHORT */
+   { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* USHORT */
+   { CONV_ALLOWED,    short2int,      HAS_COMMON,     TYPE_INT },      /* INT */
+   { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* UINT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* HYPER */
+   { CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* UHYPER */
+   { CONV_ALLOWED,    short2float,    HAS_COMMON,     TYPE_FLOAT },    /* FLOAT */
+   { CONV_ALLOWED,    short2double,   HAS_COMMON,     TYPE_DOUBLE },   /* DOUBLE */
+   { CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX },  }, /* LDOUBLE */
 
  /* from USHORT */			                           /* to ... */ 
- { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* BYTE */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_USHORT,   /* UBYTE */
-   CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* SHORT */
-   CONV_EQUAL,	    NULL,   	    HAS_COMMON,     TYPE_USHORT,   /* USHORT */
-   CONV_ALLOWED,    ushort2int,     HAS_COMMON,     TYPE_INT,      /* INT */
-   CONV_ALLOWED,    ushort2uint,    HAS_COMMON,     TYPE_UINT,     /* UINT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* HYPER */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* UHYPER */
-   CONV_ALLOWED,    ushort2float,   HAS_COMMON,     TYPE_FLOAT,    /* FLOAT */
-   CONV_ALLOWED,    ushort2double,  HAS_COMMON,     TYPE_DOUBLE,   /* DOUBLE */
-   CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX, },  /* LDOUBLE */
+ { { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* BYTE */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_USHORT },   /* UBYTE */
+   { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* SHORT */
+   { CONV_EQUAL,	    NULL,   	    HAS_COMMON,     TYPE_USHORT },   /* USHORT */
+   { CONV_ALLOWED,    ushort2int,     HAS_COMMON,     TYPE_INT },      /* INT */
+   { CONV_ALLOWED,    ushort2uint,    HAS_COMMON,     TYPE_UINT },     /* UINT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* HYPER */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* UHYPER */
+   { CONV_ALLOWED,    ushort2float,   HAS_COMMON,     TYPE_FLOAT },    /* FLOAT */
+   { CONV_ALLOWED,    ushort2double,  HAS_COMMON,     TYPE_DOUBLE },   /* DOUBLE */
+   { CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX }, },  /* LDOUBLE */
 
  /* from INT */			                                   /* to ... */ 
- { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_INT,      /* BYTE */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_INT,      /* UBYTE */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_INT,      /* SHORT */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_INT,      /* USHORT */
-   CONV_EQUAL,	    NULL,   	    HAS_COMMON,     TYPE_INT,      /* INT */
-   CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* UINT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* HYPER */
-   CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* UHYPER */
-   CONV_ALLOWED,    int2float,      HAS_COMMON,     TYPE_FLOAT,    /* FLOAT */
-   CONV_ALLOWED,    int2double,     HAS_COMMON,     TYPE_DOUBLE,   /* DOUBLE */
-   CONV_NOTIMPL,    NULL,	    HAS_COMMON,     TYPE_XXXX,  }, /* LDOUBLE */
+ { { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_INT },      /* BYTE */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_INT },      /* UBYTE */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_INT },      /* SHORT */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_INT },      /* USHORT */
+   { CONV_EQUAL,	    NULL,   	    HAS_COMMON,     TYPE_INT },      /* INT */
+   { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* UINT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* HYPER */
+   { CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* UHYPER */
+   { CONV_ALLOWED,    int2float,      HAS_COMMON,     TYPE_FLOAT },    /* FLOAT */
+   { CONV_ALLOWED,    int2double,     HAS_COMMON,     TYPE_DOUBLE },   /* DOUBLE */
+   { CONV_NOTIMPL,    NULL,	    HAS_COMMON,     TYPE_XXXX },  }, /* LDOUBLE */
 
  /* from UINT */			                           /* to ... */ 
- { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* BYTE */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_UBYTE,    /* UBYTE */
-   CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* SHORT */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_USHORT,   /* USHORT */
-   CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* INT */
-   CONV_EQUAL,	    NULL,   	    HAS_COMMON,     TYPE_UINT,     /* UINT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* HYPER */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* UHYPER */
-   CONV_ALLOWED,    uint2float,     HAS_COMMON,     TYPE_FLOAT,    /* FLOAT */
-   CONV_ALLOWED,    uint2double,    HAS_COMMON,     TYPE_DOUBLE,   /* DOUBLE */
-   CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX, },  /* LDOUBLE */
+ { { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* BYTE */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_UBYTE },    /* UBYTE */
+   { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* SHORT */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_USHORT },   /* USHORT */
+   { CONV_ILLEGAL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* INT */
+   { CONV_EQUAL,	    NULL,   	    HAS_COMMON,     TYPE_UINT },     /* UINT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* HYPER */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* UHYPER */
+   { CONV_ALLOWED,    uint2float,     HAS_COMMON,     TYPE_FLOAT },    /* FLOAT */
+   { CONV_ALLOWED,    uint2double,    HAS_COMMON,     TYPE_DOUBLE },   /* DOUBLE */
+   { CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX }, },  /* LDOUBLE */
 
  /* from HYPER */			                           /* to ... */ 
- { CONV_NOTIMPL,    NULL,   	    HAS_COMMON,     TYPE_HYPER,    /* BYTE */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* UBYTE */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* SHORT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* USHORT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* INT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* UINT */
-   CONV_EQUAL,	    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* HYPER */
-   CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* UHYPER */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT,    /* FLOAT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* DOUBLE */
-   CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX, },  /* LDOUBLE */
+ { { CONV_NOTIMPL,    NULL,   	    HAS_COMMON,     TYPE_HYPER },    /* BYTE */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* UBYTE */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* SHORT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* USHORT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* INT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* UINT */
+   { CONV_EQUAL,	    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* HYPER */
+   { CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* UHYPER */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT },    /* FLOAT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* DOUBLE */
+   { CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX }, },  /* LDOUBLE */
 
  /* from UHYPER */			                           /* to ... */ 
- { CONV_NOTIMPL,    NULL,   	     NO_COMMON,     TYPE_BYTE,     /* BYTE */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* UBYTE */
-   CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* SHORT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* USHORT */
-   CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* INT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER,    /* UINT */
-   CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE,     /* HYPER */
-   CONV_EQUAL,	    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* UHYPER */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT,    /* FLOAT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* DOUBLE */
-   CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX, },  /* LDOUBLE */
+ { { CONV_NOTIMPL,    NULL,   	     NO_COMMON,     TYPE_BYTE },     /* BYTE */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* UBYTE */
+   { CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* SHORT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* USHORT */
+   { CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* INT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_HYPER },    /* UINT */
+   { CONV_NOTIMPL,    NULL,  	     NO_COMMON,     TYPE_BYTE },     /* HYPER */
+   { CONV_EQUAL,	    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* UHYPER */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT },    /* FLOAT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* DOUBLE */
+   { CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX }, },  /* LDOUBLE */
 
  /* from FLOAT */			                           /* to ... */ 
- { CONV_ILLEGAL,    NULL,   	    HAS_COMMON,     TYPE_FLOAT,    /* BYTE */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT,    /* UBYTE */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT,    /* SHORT */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT,    /* USHORT */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT,    /* INT */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT,    /* UINT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT,    /* HYPER */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT,    /* UHYPER */
-   CONV_EQUAL,	    NULL,  	    HAS_COMMON,     TYPE_FLOAT,    /* FLOAT */
-   CONV_ALLOWED,    float2double,   HAS_COMMON,     TYPE_DOUBLE,   /* DOUBLE */
-   CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX,  }, /* LDOUBLE */
+ { { CONV_ILLEGAL,    NULL,   	    HAS_COMMON,     TYPE_FLOAT },    /* BYTE */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT },    /* UBYTE */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT },    /* SHORT */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT },    /* USHORT */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT },    /* INT */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT },    /* UINT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT },    /* HYPER */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_FLOAT },    /* UHYPER */
+   { CONV_EQUAL,	    NULL,  	    HAS_COMMON,     TYPE_FLOAT },    /* FLOAT */
+   { CONV_ALLOWED,    float2double,   HAS_COMMON,     TYPE_DOUBLE },   /* DOUBLE */
+   { CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX },  }, /* LDOUBLE */
 
  /* from DOUBLE */			                           /* to ... */ 
- { CONV_ILLEGAL,    NULL,   	    HAS_COMMON,     TYPE_DOUBLE,   /* BYTE */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* UBYTE */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* SHORT */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* USHORT */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* INT */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* UINT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* HYPER */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* UHYPER */
-   CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* FLOAT */ 
-   CONV_EQUAL,	    NULL,  	    HAS_COMMON,     TYPE_DOUBLE,   /* DOUBLE */
-   CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX,  }, /* LDOUBLE */
+ { { CONV_ILLEGAL,    NULL,   	    HAS_COMMON,     TYPE_DOUBLE },   /* BYTE */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* UBYTE */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* SHORT */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* USHORT */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* INT */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* UINT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* HYPER */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* UHYPER */
+   { CONV_ILLEGAL,    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* FLOAT */ 
+   { CONV_EQUAL,	    NULL,  	    HAS_COMMON,     TYPE_DOUBLE },   /* DOUBLE */
+   { CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX },  }, /* LDOUBLE */
 
  /* from LDOUBLE */			                           /* to ... */ 
- { CONV_NOTIMPL,    NULL,   	    HAS_COMMON,     TYPE_XXXX,     /* BYTE */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* UBYTE */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* SHORT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* USHORT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* INT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* UINT */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* HYPER */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* UHYPER */
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* FLOAT */ 
-   CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX,     /* DOUBLE */
-   CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX,  }, /* LDOUBLE */
+ { { CONV_NOTIMPL,    NULL,   	    HAS_COMMON,     TYPE_XXXX },     /* BYTE */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* UBYTE */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* SHORT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* USHORT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* INT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* UINT */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* HYPER */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* UHYPER */
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* FLOAT */ 
+   { CONV_NOTIMPL,    NULL,  	    HAS_COMMON,     TYPE_XXXX },     /* DOUBLE */
+   { CONV_NOTIMPL,    NULL, 	    HAS_COMMON,     TYPE_XXXX },  }, /* LDOUBLE */
 };
 
 
 /* these could probably be macro-ized somehow */
 /* THESE MUST WORK INPLACE!!! */
 
-#define INC(ptr, size)  (Pointer)((long)ptr + (size))
-#define DEC(ptr, size)  (Pointer)((long)ptr - (size))
+#define INC(ptr, size)  (Pointer)((long)(ptr) + (size))
+#define DEC(ptr, size)  (Pointer)((long)(ptr) - (size))
 
 /* conversion is:  a -> a + 0i */
 static Error real2complex(int count, Pointer from, Pointer to, int itemsize)
@@ -514,20 +514,20 @@ static int catindex(Category c)
 
 static struct convtable2 cattable[NUM_CATS][NUM_CATS] = 
 {
- /* from REAL */			                              /* to ... */ 
- { CONV_EQUAL,	  NULL, 	 HAS_COMMON,  CATEGORY_REAL,          /* REAL */
-   CONV_ALLOWED,  real2complex,  HAS_COMMON,  CATEGORY_COMPLEX,       /* COMPLEX */
-   CONV_ALLOWED,  real2quatern,  HAS_COMMON,  CATEGORY_QUATERNION, }, /* QUATERN */
+ /* from REAL */			                                /* to ... */ 
+ { { CONV_EQUAL,  NULL, 	 HAS_COMMON,  CATEGORY_REAL },          /* REAL */
+   { CONV_ALLOWED, real2complex, HAS_COMMON,  CATEGORY_COMPLEX },       /* COMPLEX */
+   { CONV_ALLOWED, real2quatern, HAS_COMMON,  CATEGORY_QUATERNION }, }, /* QUATERN */
 
- /* from COMPLEX */		 	                              /* to ... */ 
- { CONV_ILLEGAL,  NULL,   	 HAS_COMMON,  CATEGORY_COMPLEX,       /* REAL */
-   CONV_EQUAL,	  NULL,  	 HAS_COMMON,  CATEGORY_COMPLEX,       /* COMPLEX */
-   CONV_ALLOWED, complex2quatern, HAS_COMMON, CATEGORY_QUATERNION, }, /* QUATERN */
+ /* from COMPLEX */		 	                                /* to ... */ 
+ { { CONV_ILLEGAL,  NULL,   	 HAS_COMMON,  CATEGORY_COMPLEX },       /* REAL */
+   { CONV_EQUAL,  NULL,  	 HAS_COMMON,  CATEGORY_COMPLEX },       /* COMPLEX */
+   { CONV_ALLOWED, complex2quatern, HAS_COMMON, CATEGORY_QUATERNION }, }, /* QUATERN */
 
- /* from QUATERN */			                              /* to ... */ 
- { CONV_ILLEGAL,  NULL,   	HAS_COMMON,  CATEGORY_QUATERNION,     /* REAL */
-   CONV_ILLEGAL,  NULL,  	HAS_COMMON,  CATEGORY_QUATERNION,     /* COMPLEX */
-   CONV_EQUAL,	  NULL,  	HAS_COMMON,  CATEGORY_QUATERNION, },  /* QUATERN */
+ /* from QUATERN */			                                /* to ... */ 
+ { { CONV_ILLEGAL,  NULL,   	HAS_COMMON,  CATEGORY_QUATERNION },     /* REAL */
+   { CONV_ILLEGAL,  NULL,  	HAS_COMMON,  CATEGORY_QUATERNION },     /* COMPLEX */
+   { CONV_EQUAL,  NULL,  	HAS_COMMON,  CATEGORY_QUATERNION }, },  /* QUATERN */
 };
 
 /* this modifies shape in place to squeeze out shapes of 1
@@ -558,6 +558,8 @@ static void SqueezeShape(int *rank, int *shape)
  *
  * this routine isn't done yet.
  */
+
+#if 0
 static Error SqueezeToShape(int *rank, int *shape, int trank, int *tshape)
 {
     int i, j;
@@ -575,15 +577,14 @@ static Error SqueezeToShape(int *rank, int *shape, int trank, int *tshape)
 
     return ERROR;
 }
-
+#endif
 
 static Error
 ConvertArrayContents(Array from, Array to, int squeeze)
 {
-    int i, j, k;
+    int i;
     int fi, ti;
     Pointer fromdp, todp;
-    int itemsize;
     int count;
     int fromcount, tocount;
     Type fromtype, totype;
@@ -685,10 +686,6 @@ ArrayConvert(Array a, Type t, Category c, int rank, int *shape)
 {
     int i;
     Array out;
-    Type nt;
-    Category nc;
-    int nrank;
-    int nshape[100];
 
     ASSERT(rank<100);
 
@@ -741,7 +738,7 @@ static Error
 QueryArrayCommon(Type *t, Category *c, int *rank, int *shape, int n, 
 		 Array *a, int squeeze)
 {
-    int i, j, k;
+    int i, j;
     int ni, cti, cci;
     Type nextt, comt;
     Category nextc, comc;
@@ -769,7 +766,7 @@ QueryArrayCommon(Type *t, Category *c, int *rank, int *shape, int n,
     for (i=1; i<n; i++) {
 
 	if (!DXGetArrayInfo(a[i], NULL, &nextt, &nextc, &nextrank, nextshape))
-	    return NULL;
+	    return ERROR;
         
 	/* data type */
 	if (comt != nextt) {
@@ -872,7 +869,7 @@ DXQueryArrayCommon(Type *t, Category *c, int *rank, int *shape,
     ASSERT(n<100);
 
     /* collect args */
-    va_start(arg,n);       /* no spaces allowed - this is a weird macro */
+    va_start(arg,a);       /* no spaces allowed - this is a weird macro */
     for (i=0; i<n; i++)
 	alist[i] = va_arg(arg, Array);
     va_end(arg);
@@ -896,7 +893,7 @@ DXQueryArrayCommonV(Type *t, Category *c, int *rank, int *shape,
 static Error 
 QueryArrayConvert(Array a, Type t, Category c, int rank, int *shape, int squeeze)
 {
-    int i, j, k;
+    int i;
     int ai, rti, rci;
     Type at;
     Category ac;
@@ -1105,7 +1102,7 @@ Object DXExtractParameter(Object o, Type t, int dim, int count, Pointer p)
 {
     Array na;
     char *sp;
-    int i, nitems;
+    int nitems;
     Type at;
     Category ac;
     int ar, as[MAXDIM];

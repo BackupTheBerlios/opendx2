@@ -20,6 +20,10 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
 #if defined(HAVE_SYS_TIMES_H)
 #include <sys/times.h>
 #endif
@@ -173,15 +177,15 @@ DXCreateTaskGroup()
 	/* allocate shared task info */
 	ti = (struct taskinfo *) DXAllocateZero(sizeof(struct taskinfo));
 	if (!ti)
-	    return NULL;
+	    return ERROR;
 
 	/* create the locks */
 	if (!DXcreate_lock(&(ti->task_lock), "task DXlock"))
-	    return NULL;
+	    return ERROR;
 	if (!DXcreate_lock(&(ti->undone_lock), "undone DXlock"))
-	    return NULL;
+	    return ERROR;
 	if (!DXcreate_lock(&(ti->done_flag), "done flag"))
-	    return NULL;
+	    return ERROR;
 
 	/* initialize them */
 	DXlock(&(ti->done_flag), 0);	/* DXunlock to signal all tasks done */
@@ -281,7 +285,6 @@ Error
 one_task(int block)
 {
     struct task *t;
-    char msg[16];
     int delete;
 
     if (block)				/* get DXlock w/ blocking, */

@@ -121,7 +121,6 @@ partition(Field f, int *n, int size, Object *o, int delete)
     char *name;
     Type type;
     Category category;
-    Object attr;
     Array posA = NULL, negA = NULL;
     char *pptr, *nptr;
     int  *ipsrc = NULL, *insrc = NULL;

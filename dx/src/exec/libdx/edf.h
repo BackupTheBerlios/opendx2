@@ -571,7 +571,12 @@ extern Error  _dxfskip_object_or_attr(struct finfo *fp);
  */
 extern Error _dxfValidate(Field f);
 extern Error DXColorNameToRGB(char *, RGBColor *);
- 
+
+/* routines defined in edf*.c */
+Error _dxflook_objident(HashTable, Object, int*, int*);
+Error _dxfinit_objident(HashTable *);
+Error _dxfdelete_objident(HashTable);
+Error _dxfadd_objident(HashTable, Object, int, int);
 
 #if !defined(DXD_STANDARD_IEEE)
 /*

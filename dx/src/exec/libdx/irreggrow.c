@@ -254,7 +254,7 @@ _dxfIrregGrow(Group group, int nRings, Array components)
     IJ		   	  ij;
     struct task0Params 	  task0;
     struct task1Params 	  task1;
-    struct task2Params 	  task2;
+    struct task2Params    task2;
     Object		  obj;
 
     fields = NULL;
@@ -863,12 +863,13 @@ IrregShrinkField(Pointer ptr)
 			if (sPtr[j] < rLength)
 			    k++;
 		    
-		    if (k)
+		    if (k) {
 			for (j = 0; j < nRefs; j++)
 			    if (sPtr[j] < rLength)
 				*dPtr++ = sPtr[j];
 			    else
 				*dPtr++ = -1;
+		    }
 		}
 	    }
 	}
@@ -892,7 +893,7 @@ IrregShrinkField(Pointer ptr)
 	     */
 	    if (rLength != -1)
 	    {
-		int i, j, k, nRefs, nItems, nVItems, *sPtr, *dPtr, shape[32], rank;
+		int i, nRefs, *sPtr, *dPtr, shape[32], rank;
 		Type t; Category c;
 
 		DXGetArrayInfo(nArray, &dLength, &t, &c, &rank, shape);
@@ -1013,15 +1014,13 @@ AddOverlap(Pointer ptr)
     Overlap   overlap, *overlapPtr;
     int	      nElements, nPoints, nComponents, newElements, newPoints;
     int	      oElements, oPoints;
-    char      *name, origName[256];
+    char      origName[256];
     int	      *src, *dst;
-    Pointer   buffer;
-    Array     orig, array, oArray;
+    Array     orig, array;
     Type      type;
     Category  cat;
     int       rank, shape[32], nItems;
     char      *names[100];
-    byte      deps[100];
     Object    obj;
     char      *components[256];
     int       *map = NULL;
@@ -1932,7 +1931,7 @@ MakeOverlap(Field field, Boundary boundary, int nRings, char **components)
 		{
 		    if (! strcmp(DXGetString((String)attr), "positions"))
 		    {
-			int i, j, knt, *dst;
+			int i, knt, *dst;
 			int nItems, nRefs = DXGetItemSize(array) / sizeof(int);
 			int *s, *src = (int *)DXGetArrayData(array);
 
@@ -1977,7 +1976,7 @@ MakeOverlap(Field field, Boundary boundary, int nRings, char **components)
 		    }
 		    else if (! strcmp(DXGetString((String)attr), "connections"))
 		    {
-			int i, j, knt, *dst;
+			int i, knt, *dst;
 			int nItems, nRefs = DXGetItemSize(array) / sizeof(int);
 			int *s, *src = (int *)DXGetArrayData(array);
 
@@ -2176,7 +2175,7 @@ MakeExternals(Pointer ptr)
 	if (NULL == (externals = NewExternals()))
 	{
 	    DXFree((Pointer)visited);
-	    return NULL;
+	    return ERROR;
 	}
 	
 	for (i = 0; i < nPts; i++)
@@ -2229,7 +2228,7 @@ MakeExternals(Pointer ptr)
 	}
 
 	if (NULL == (externals = NewExternals()))
-	    return NULL;
+	    return ERROR;
 
 	for (i = 0; i < nElts; i++, elts += vPerE)
 	{

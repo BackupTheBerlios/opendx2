@@ -202,8 +202,6 @@ _dxfInitialize(CubesIIInterpolator ci)
     Field	   field;
     Type	   dataType;
     Category	   dataCategory;
-    register int   *c;
-    register Point *p;
     register int   i;
 
     field = (Field) ((Interpolator)ci)->dataObject;

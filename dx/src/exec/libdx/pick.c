@@ -129,9 +129,8 @@ DXQueryPickPath(Field p, int poke, int pick,
     Array picks;
     Array paths;
     int   nPokes, nPicks, nPathElts;
-    int   thisPick, nextPick;
+    int   thisPick;
     int   thisPathStart, nextPathStart;
-    int   n;
 
     if (DXEmptyField(p))
     {

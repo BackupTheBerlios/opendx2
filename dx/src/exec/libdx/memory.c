@@ -15,6 +15,9 @@
 
 #define NO_STD_H
 #include <dx/dx.h>
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 #if ibmpvs
 #include <sys/svs.h>
@@ -37,12 +40,10 @@
 #endif
 
 #if aviion
-#include <unistd.h>
 #include <sys/m88kbcs.h>
 #endif
 
 #if solaris
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/ipc.h>
@@ -60,13 +61,13 @@
 #endif
 
 #if alphax
-#include <unistd.h>
 #include <string.h>
 #endif
 
 #if linux
 #include <linux/kernel.h>
 #include <linux/sys.h>
+#include <sys/sysinfo.h>
 #endif
 
 #if DXD_HAS_RLIMIT && ! DXD_IS_MP
@@ -75,6 +76,8 @@
 #endif
 
 extern int _dxd_exRemoteSlave;
+extern void _dxfemergency(void);
+extern int _dxfPhysicalProcs(void);
 
 /*
  * Every memory block starts with a struct block.  The user's portion
@@ -272,7 +275,7 @@ acreate(char *name, long base, int size, int max_user,
     if (!a)				/* get access to it? */
 	return NULL;			/* no, return error */
     memset(a, 0, sizeof(struct arena));	/* zero arena header */
-    a->name = name;			/* remember name */
+    a->name = name;			/* remember name */	
     a->merge = merge;			/* whether to merge blocks on free */
     a->max_user = max_user;		/* largest user size we allow */
     a->align = align;			/* alignment boundary for this arena */
@@ -1117,7 +1120,7 @@ static struct arena *large = NULL;
 static struct arena *local = NULL;
 
 
-int _dxf_initmemory()
+int _dxf_initmemory(void)
 {
     char *s;
     uint physmem = 0;  /* if total_size unset, find physical memsize in Meg */
@@ -1674,7 +1677,6 @@ adebug_local_wrapper(Pointer p)
 Error
 DXDebugLocalAlloc(int which, int blocktype, MemDebug m, Pointer p)
 { 
-    Error rc;
     struct dbparms d;
 
     if (!local)
@@ -1883,11 +1885,11 @@ DXAllocate(unsigned int n)
     for (;;) {
 	
 	if (n <= small->max_user) {
-	    if (x = amalloc(small, n))
+	    if ((x=amalloc(small, n))!=NULL)
 		break;
 	    DXResetError();
 	}
-	if (x = amalloc(large, n))
+	if ((x=amalloc(large, n))!=NULL)
 	    break;
 
 #if NORECURSE
@@ -1939,7 +1941,7 @@ DXAllocateLocalOnly(unsigned int n)
 
     for (;;) {
 
-	if (x = malloc(n?n:1))
+	if ((x=malloc(n?n:1))!=NULL)
 	    break;
 
 #if NORECURSE
@@ -2027,9 +2029,9 @@ DXReAllocate(Pointer x, unsigned int n)
 
 	if (SMALL(x)) {
 	    if (n <= small->max_user)
-		if (y = arealloc(small, x, n))
+		if ((y=arealloc(small, x, n))!=NULL)
 		    break;
-	    if (y = amalloc(large, n)) {
+	    if ((y=amalloc(large, n))!=NULL) {
 		memcpy(y, x, USIZE(x)-USER);
 		afree(small, x);
 		break;
@@ -2037,12 +2039,12 @@ DXReAllocate(Pointer x, unsigned int n)
 	    s = _dxfscavenge;
 
 	} else if (LARGE(x)) {
-	    if (y = arealloc(large, x, n))
+	    if ((y=arealloc(large, x, n))!=NULL)
 		break;
 	    s = _dxfscavenge;
 
 	} else { /* assume local */
-	    if (y = realloc(x, n?n:1))
+	    if ((y=realloc(x, n?n:1))!=NULL)
 		break;
 #if !MALLOC_LOCAL && !MALLOC_GLOBAL
 	    DXSetError(ERROR_NO_MEMORY, "realloc of %d bytes failed", n);

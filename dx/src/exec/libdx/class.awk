@@ -304,10 +304,13 @@ END {
 	        for (k=1; k<na; k++)
 	            printf(",%s %s", argtype[method k], substr(alpha,k+1,1))
 	        printf(") {\n")
-	        printf("    char buf[1000], *name;\n")
+	        printf("    char *name;\n")
 	        printf("    name = (*(struct %s_class **)a)->name;\n", lc_names[class])
  		printf("    DXSetError(ERROR_BAD_PARAMETER, \"#12130\", \"DX%s\", name);\n", method);
-	        printf("    return ERROR;\n")
+                if (returns[method] ~ /Error/)
+	           printf("    return ERROR;\n")
+                else
+		   printf("    return NULL;\n")
 	        printf("}\n")
 	        printf("\n")
 	    }
@@ -335,7 +338,10 @@ END {
                    printf(",%s %s", argtype[method k], substr(alpha,k+1,1))
                printf(") {\n")
 	       printf("    if (!a)\n")
-	       printf("        return NULL;\n")
+	       if (returns[method] ~ /Error/)
+		  printf("        return ERROR;\n")
+	       else
+	          printf("        return NULL;\n")
 	       printf("    return (*(struct %s_class **)a)->%s(", lc, method)
 	    # note we change type of first arg
                if (na>0)

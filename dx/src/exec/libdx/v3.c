@@ -179,7 +179,6 @@ STATIC Matrix3 Transpose3(Matrix3 t)
 STATIC Matrix3 Invert3(Matrix3 t)
 {
     Matrix3 s;
-    Point3 o;
     double inv;
 
     inv = t.A[0][0]*COF(1,2,1,2)+t.A[0][1]*COF(1,2,2,0)+t.A[0][2]*COF(1,2,0,1);

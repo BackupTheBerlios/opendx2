@@ -172,7 +172,6 @@ int _dxfiskeyword(struct dict *d, char *word)
 #if TIMING
     struct kinfo *ki, search;
     char lcase[LONGESTKEY];
-    int len, key;
 
     if (!d || !word)
         return BADINDEX;
@@ -233,7 +232,6 @@ char *_dxflookkeyword(int id)
 static Error putkeyinfo(struct dict *d, char *word, int value)
 {
     struct kinfo ki;
-    int id;
 
     if (!d || !word)
         return ERROR;
@@ -485,7 +483,6 @@ int _dxfputdict(struct dict *d, char *word)
 int _dxflookdict(struct dict *d, char *word)
 {
     struct dinfo *di, search;
-    int key;
 
     if (!d || !word)
         return BADINDEX;

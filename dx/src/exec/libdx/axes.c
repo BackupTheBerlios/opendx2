@@ -8,8 +8,6 @@
 
 #include <dxconfig.h>
 
-
-
 /*
  * Header: /a/max/homes/max/gresh/code/svs/src/libdx/RCS/axes.c,v 5.0 92/11/12
 09:07:33 svs Exp Locker: gresh 
@@ -57,6 +55,12 @@ static RGBColor BACKGROUNDCOLOR = {0.07, .07, 0.07};
 
 extern Error _dxfGetFormat(float *, char *, int, float);
 extern Error _dxfCheckLocationsArray(Array, int *, float **);
+
+/* From helper.c. Should probably be in .h file */
+extern Field _dxfBeginFace(Field); 
+extern Field _dxfNextPoint(Field, PointId);
+extern Field _dxfEndFace(Field);
+
 static Error GetProjections(Vector cameraup, Vector eye, 
                             float *flipx, float *flipy, float *flipz,
                             float *flipxlab, float *flipylab, float *flipzlab,
@@ -175,7 +179,6 @@ static
        ) {
     Vector normal;
     int i;
-    float d1, d2;
     
     /* face corner points */
     DXAddPoint(f, *pt+0, o);
@@ -301,7 +304,7 @@ mark(
     int pt=0, ln=0;		/* current point, line number within f */
     int pt1=0, ln1=0;		/* current point, line number within f */
     float x, y, a, b, major, minor, xx, yy;
-    int i, j, xlog, ylog, zlog;
+    int i, j;
     char *tempstring;
     int createdxlocs = 0, createdylocs = 0;
     int createdxlabels = 0, createdylabels = 0;
@@ -476,12 +479,13 @@ mark(
         else {
 	   LINE1(ticcolor,  o.x+s.x, y, z,  o.x+(1-major)*s.x, y, z);
         }
-	if (grid)
+	if (grid) {
 	  if ((i==ny-1)||(i==0)) {
 	    if (!show_axes) LINE(gridcolor,  o.x, y, z,  o.x+s.x, y, z);
 	  }
 	  else
 	    LINE(gridcolor,  o.x, y, z,  o.x+s.x, y, z);
+	}
       }
       if (i < ny-1)
 	for (j=0; j<suby; j++) {
@@ -739,12 +743,10 @@ mark(
 
 
 static
-  _dxfaaxes_delta(float *o, float *s, float scale, int *n, float *l, float *d,
+void _dxfaaxes_delta(float *o, float *s, float scale, int *n, float *l, float *d,
 		 char *fmt, int *sub, int adjust)
 {
-    double a, lg, po, delta, lo, hi, sd, so, ss, range;
-    int max, min;
-    float absmin, absmax, biggestnum, smallestnum;
+    double a, lg, po, lo, hi, sd, so, ss, range;
     int i, k, n1, n2, width, precision, maxwidth;
     char *cstring;
     static struct {			/* permissible tick mark spacings */
@@ -752,11 +754,11 @@ static
       int precision;			/* our contribution to precision */
       int sub;			/* spacing of sub-marks */
     } ds[] = {
-      1.0,   0,  5,
-      2.0,   0,  4,
-      2.5,   1,  5,
-      5.0,   0,  5,
-      10.0, -1,  5
+      { 1.0,   0,  5 },
+      { 2.0,   0,  4 },
+      { 2.5,   1,  5 },
+      { 5.0,   0,  5 },
+      { 10.0, -1,  5 }
       };
     
     
@@ -920,12 +922,11 @@ static Object
     Field f = NULL;
     Group g = NULL;
     int pt=0, subx=0, suby=0, subz=0;
-    float dx, dy, dz, lx=0, ly=0, lz=0, angle;
+    float dx, dy, dz, lx=0, ly=0, lz=0;
     float fs, sum, flipx, flipy, flipz, ax, ay, az, p;
     float flipxlab, flipylab, flipzlab;
-    float major, minor, temp;
     int reverse, i;
-    int background, frontframe, showaxes, quad;
+    int background, frontframe, showaxes;
     char fmtx[20], fmty[20], fmtz[20];
     Error rc;
     float *xptr=NULL, *yptr=NULL, *zptr=NULL;
@@ -1094,7 +1095,7 @@ static Object
     if (!g) goto error;
     
     /* deltas - may change o and s, so do this before faces */
-    if (nx>0)
+    if (nx>0) {
       if (!xlocs)
 	_dxfaaxes_delta(&o.x, &s.x, ls.x, &nx, &lx, &dx, fmtx, &subx, 
 		       adjust);
@@ -1102,8 +1103,9 @@ static Object
 	lx = xptr[0];
 	dx = s.x/(nx-1);
         if (!xlabels) _dxfGetFormat(xptr, fmtx, nx, ls.x);
-      }  
-    if (ny>0)
+      }
+    }
+    if (ny>0) {
       if (!ylocs) 
         _dxfaaxes_delta(&o.y, &s.y, ls.y, &ny, &ly, &dy, fmty, &suby, 
    		       adjust);
@@ -1111,8 +1113,9 @@ static Object
 	ly = yptr[0];
 	dy = s.y/(ny-1);
         if (!ylabels) _dxfGetFormat(yptr, fmty, ny, ls.y);
-      }  
-    if (nz>0)
+      }
+    }
+    if (nz>0) {
       if (!zlocs)
         _dxfaaxes_delta(&o.z, &s.z, ls.z, &nz, &lz, &dz, fmtz, &subz, 
 		       adjust);
@@ -1120,7 +1123,8 @@ static Object
 	lz = zptr[0];
 	dz = s.z/(nz-1);
         if (!zlabels) _dxfGetFormat(zptr, fmtz, nz, ls.z);
-      }  
+      } 
+    }
     
     
     /* font scaling is related to minimum delta, and limited by max length */
@@ -1302,7 +1306,6 @@ _dxfAutoAxes(Pointer p)
   float l, labelscale;
   Object axes;
   Group g;
-  Matrix t;
   Array xlocs, ylocs, zlocs, xlabels, ylabels, zlabels;
   float *xptr, *yptr, *zptr;
 
@@ -1719,7 +1722,7 @@ extern Error _dxfCheckLocationsArray(Array locs, int *n, float **p)
 
 extern Error _dxfGetFormat(float *locs, char *fmt, int num, float scale)
 {
-    int width, precision, i; 
+    int width, i; 
     char tbuf[32], *cp;
     int prec,z,minprec=1, lastz, maxwidth;
     char *cstring;

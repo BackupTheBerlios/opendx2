@@ -161,11 +161,10 @@ DXDelete(Object o)
 Error
 DXUnreference(Object o)
 {
-    int rc = 0, i, n;
     Class class;
 
     if (!o)
-	return NULL;
+	return ERROR;
     if (o->count==PERMANENT || o->count==0)
 	return OK;
 
@@ -178,7 +177,7 @@ DXUnreference(Object o)
 	DXSetError(ERROR_DATA_INVALID,
 		 "Deleting object of unknown class %d! (or not an object)",
 		 class);
-	return NULL;
+	return ERROR;
     }
 
     /* lock & decrement count */
@@ -332,7 +331,7 @@ DXSetAttribute(Object o, char *name, Object value)
 Object
 DXDeleteAttribute(Object o, char *name)
 {
-    int i, m, n = o->nattributes;
+    int i, n = o->nattributes;
     struct attribute *a;
 
     if (!o)

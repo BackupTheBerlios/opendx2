@@ -29,6 +29,29 @@ Error _dxf_SetType(Group g, Object o);
 Set the type of group {\tt g} to be the same as the type of object {\tt o}.
 **/
 
+Error _dxf_initmemqueue();
+/**
+The message queue is maintained as a linked list of messages.
+The struct queue contains the pointers to the first and last
+elements of the list, and a DXlock for the list.  It is allocated
+and initialized by _dxf_initmessages().
+**/
+
+Array _dxf_TetraNeighbors(Field f);
+Array _dxf_CubeNeighbors(Field f);
+int _dxf_initlocks(void);
+int _dxf_initmemory(void);
+Error _dxf_initmessages(void);
+Error _dxf_inittiming(void);
+Error _dxf_initobjects(void);
+Error _dxf_initstringtable(void);
+Error _dxf_initcache(void);
+Error _dxf_initRIH (void);
+Error _dxf_initloader(void);
+/**
+The previous functions are used in init, so prototype them here.
+**/
+
 Array _dxf_TransformArray(Matrix *mp, Camera c, Array points,
 		      Array *box, Field f, int *behind, float fuzz);
 Array _dxf_TransformBox(Matrix *mp, Camera c, Array points,
@@ -129,13 +152,6 @@ typedef struct translationS {
 #define RGBMIX(r,g,b) ((r) | (g) | (b))
 
 #define DITH(C,c,d) (((unsigned)((DD*(C-1)+1)*c+d)) / (DD*256))
-
-static short _dxd_dither_matrix[DY][DX] = {
-     0 *256,  8 *256,  2 *256, 10 *256,
-    12 *256,  4 *256, 14 *256,  6 *256,
-     3 *256, 11 *256,  1 *256,  9 *256,
-    15 *256,  7 *256, 13 *256,  5 *256
-};
 
 /*
  * The following are the recognized pixel types for translation into

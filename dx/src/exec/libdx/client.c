@@ -15,6 +15,9 @@
 #include <ctype.h>
 #include <sys/types.h>
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 #if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
@@ -24,6 +27,10 @@
 
 #if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
+#endif
+
+#if defined(HAVE_ARPA_INET_H)
+#include <arpa/inet.h>
 #endif
 
 #if defined(HAVE_NETDB_H)
@@ -49,7 +56,7 @@ _dxfHostIsLocal(char *host)
     char localhostHostname[BUFSIZ];
     char remoteHostname[BUFSIZ];
     struct hostent *he;
-    int  hostnameFound, i;
+    int  hostnameFound;
 #ifndef DXD_OS_NON_UNIX
     if (strcmp ("unix", host) == 0)
 	return 1;
@@ -111,7 +118,7 @@ _dxfHostIsLocal(char *host)
 /*
  * Initiate a connection to a server.
  */
-DXConnectToServer(char *host, int pport)
+int DXConnectToServer(char *host, int pport)
 {
     int sock;
     struct sockaddr_in server;

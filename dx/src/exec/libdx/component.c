@@ -41,7 +41,10 @@ Array _dxfReallyCopyArray(Array a);
 
 static Array CopyArray(Array a);
 static Array MakeArray(String s);
+
+#if 0
 static void fix_attrs(Field f, char *old, char *new);
+#endif
 
 static int tree_match(Object o1, Object o2, int flag);
 #define EXACT    0	/* structures much match exactly */
@@ -124,7 +127,7 @@ static Object Field__Rename(Object o, char *old, char *new, int flag)
 	if (!strcmp(new, "data"))
 	    istyped++;
 	
-	for (i=0; subo=DXGetEnumeratedMember((Group)o, i, &cname); i++) 
+	for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, &cname)); i++) 
 	    if (!Field__Rename(subo, old, new, flag))
 		return NULL;
 	
@@ -233,7 +236,7 @@ static Object Field__Swap(Object o, char *c1, char *c2)
 	if (!strcmp(c1, "data") || !strcmp(c2, "data"))
 	    istyped++;
 
-	for (i=0; subo=DXGetEnumeratedMember((Group)o, i, &cname); i++)
+	for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, &cname)); i++)
 	    if (!Field__Swap(subo, c1, c2))
 		return NULL;
 	
@@ -348,7 +351,7 @@ Object DXRemove(Object o, char *name)
 
 static Object Field__Remove(Object o, char *name)
 {
-    Object subo, comp;
+    Object subo;
     Object subo2;
     Matrix m;
     int fixed, z;
@@ -364,7 +367,7 @@ static Object Field__Remove(Object o, char *name)
 	if (!strcmp(name, "data"))
 	    istyped++;
 
-	for (i=0; subo=DXGetEnumeratedMember((Group)o, i, &cname); i++) 
+	for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, &cname)); i++) 
 	    if (!Field__Remove(subo, name))
 		return NULL;
 
@@ -452,7 +455,7 @@ static Object Field__Exists(Object o, char *name)
     switch(DXGetObjectClass(o)) {
 	
       case CLASS_GROUP:
-	for (i=0; subo=DXGetEnumeratedMember((Group)o, i, NULL); i++)
+	for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
 	    if (Field__Exists(subo, name))
 		return o;
 	
@@ -523,7 +526,7 @@ Object Exists2(Object o, char *name, char *name2)
 
 static Object Field__Exists2(Object o, char *name, char *name2)
 {
-    Object subo, comp;
+    Object subo;
     Object subo2;
     Matrix m;
     int fixed, z;
@@ -535,7 +538,7 @@ static Object Field__Exists2(Object o, char *name, char *name2)
     switch(DXGetObjectClass(o)) {
 	
       case CLASS_GROUP:
-	for (i=0; subo=DXGetEnumeratedMember((Group)o, i, NULL); i++)
+	for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
 	    if (!Field__Exists2(subo, name, name2))
 		return NULL;
 	
@@ -617,7 +620,7 @@ static Object Field__Empty(Object o)
     switch(DXGetObjectClass(o)) {
 	
       case CLASS_GROUP:
-	for (i=0; subo=DXGetEnumeratedMember((Group)o, i, NULL); i++)
+	for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
 	    if (!Field__Empty(subo))
 		return NULL;
 	
@@ -679,8 +682,6 @@ static Object Field__Empty(Object o)
  */
 Object DXExtract(Object o, char *name)
 {
-    Object o2;
-
     if (!o)
 	DXErrorReturn(ERROR_MISSING_DATA, "null object");
     
@@ -694,12 +695,12 @@ Object DXExtract(Object o, char *name)
 
 static Object Field__Extract(Object o, char *name)
 {
-    Object subo, comp;
-    Object subo2, newo, newo2;
+    Object subo;
+    Object subo2, newo;
     Matrix m;
     int fixed, z;
     char *cname;
-    int i, j, istyped = 0;
+    int i, istyped = 0;
 
     if (!o)
 	return NULL;
@@ -728,7 +729,7 @@ static Object Field__Extract(Object o, char *name)
 	}
 	
         /* replace each field with one array */
-	for (i=0; subo=DXGetEnumeratedMember((Group)o, i, &cname); i++) {
+	for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, &cname)); i++) {
 	    
             /* replace member with object which was extracted */
 	    if (!(newo = Field__Extract(subo, name)))
@@ -857,12 +858,12 @@ Object DXInsert(Object o, Object add, char *name)
 
 static Object Field__Insert(Object o, Object add, char *name)
 {
-    Object subo, subadd, comp;
+    Object subo, subadd;
     Object subo2, newo;
     Matrix m;
     int fixed, z;
     char *cname;
-    int i, j, istyped = 0;
+    int i, istyped = 0;
 
     if (!o) 
 	return NULL;
@@ -1021,7 +1022,7 @@ static Object Field__Replace(Object o, Object add, char *from, char *to, int fla
     Matrix m;
     int fixed, z;
     char *cname;
-    int i, j, istyped = 0;
+    int i, istyped = 0;
     
     if (!o) 
 	return NULL;
@@ -1135,12 +1136,14 @@ static void set_gtype(Group g)
       case CLASS_MULTIGRID:
       case CLASS_COMPOSITEFIELD:
       case CLASS_SERIES:
-	for (i=0; o=DXGetEnumeratedMember(g, i, NULL); i++) {
+	for (i=0; (o=DXGetEnumeratedMember(g, i, NULL)); i++) {
 	    if (DXGetType(o, &t, &c, &r, s)) {
 		DXSetGroupTypeV(g, t, c, r, s);
 		return;
 	    }
 	}
+      default:
+	break;
     }
     return;
 }
@@ -1165,6 +1168,9 @@ static void unset_gtype(Group g)
  * look through all the components in a field, and if any have the old
  *  component name as the target of a ref, dep or der, change it to new.
  */
+
+#if 0
+
 static char *attrlist[] = { "ref", "dep", "der", "" };
 
 static void fix_attrs(Field f, char *old, char *new)
@@ -1175,7 +1181,7 @@ static void fix_attrs(Field f, char *old, char *new)
 
     for (cp = attrlist; *cp[0]; cp++) {
         for (i=0; 
-             attr = DXGetEnumeratedComponentAttribute(f, i, &name, *cp); 
+             (attr=DXGetEnumeratedComponentAttribute(f, i, &name, *cp)); 
              i++) {
 
             if (name && DXGetObjectClass(attr) == CLASS_STRING 
@@ -1185,7 +1191,7 @@ static void fix_attrs(Field f, char *old, char *new)
     }
     
 }
-
+#endif
 
 
 /*
@@ -1290,7 +1296,8 @@ static int tree_match(Object o1, Object o2, int flag)
 	    return ERROR;
 
 	break;
-
+      default:
+	break;
     }
 
     return OK;

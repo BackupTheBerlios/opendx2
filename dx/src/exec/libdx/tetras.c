@@ -317,12 +317,10 @@ static int
 _dxfInitialize(TetrasInterpolator ti)
 {
     int			i, j;
-    Category		dataCategory;
     Field               field;
     float		len, vol;
-    Point		*p;
     int			*t;
-    Point 		min, max, *mm;
+    Point 		*mm;
     float		fuzz;
 
     ti->hint = -1;
@@ -361,7 +359,7 @@ _dxfInitialize(TetrasInterpolator ti)
 
     ti->points = DXCreateArrayHandle(ti->pointsArray);
     if (! ti->points)
-	return NULL;
+	return ERROR;
 
     /*
      * Get the tetrahedra. 
@@ -489,7 +487,7 @@ _dxfInitialize(TetrasInterpolator ti)
 
     ti->visited = (int *)DXAllocate(ti->nTetras*sizeof(int));
     if (! ti->visited)
-	return NULL;
+	return ERROR;
 
     memset(ti->visited, 0, ti->nTetras*sizeof(int));
 
@@ -522,7 +520,7 @@ _dxfBBoxTest(TetraArgs *args, int i)
 
     if (args->fuzzFlag)
     {
-	float f, fuzz = args->fuzz;
+	float f;
 
 	f = args->fuzz * (mm[3] - mm[0]);
 	if (*p < mm[0]-f || *p > mm[3]+f) goto out;
@@ -1119,7 +1117,7 @@ _dxfTetraSearch(TetraArgs *args, int index)
     limit     = args->limit;
     fuzzFlag  = args->fuzzFlag;
 
-    nbr = NULL;
+    nbr = 0;
 
     for (knt = 0; index != -1 && knt < limit; knt++, index = nbr)
     {

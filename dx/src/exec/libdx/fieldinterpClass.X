@@ -7,14 +7,14 @@
 /***********************************************************************/
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/fieldinterpClass.X,v 1.3 2000/05/16 18:48:53 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/fieldinterpClass.X,v 1.4 2000/06/12 05:45:30 davidt Exp $
 //
 
 typedef struct fieldinterpolator *FieldInterpolator;
 
 INCLUDE  	interpClass.X
 SUBCLASS    	FieldInterpolator     OF Interpolator
-DEFINES     	int PrimitiveInterpolate(FieldInterpolator, int *,							float **, Pointer *, int);
+DEFINES     	Error  PrimitiveInterpolate(FieldInterpolator, int *,							float **, Pointer *, int);
 IMPLEMENTS 	Interpolate Delete
 
 FieldInterpolator _dxfSelectFieldInterpolator(Field,

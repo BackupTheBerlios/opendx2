@@ -28,7 +28,6 @@ int
 _dxfRecognizeLinesII1D(Field field)
 {
     Array    array;
-    int      nDim;
     int      rank, shape[32];
     Type     type;
     Category cat;
@@ -136,10 +135,8 @@ static Error
 _dxfInitialize(LinesII1DInterpolator li)
 {
     Field	field;
-    int		nDim;
-    int		seg, i, i0, i1;
-    float	p0, p1;
     float	len;
+    int 	i;
 
     li->fieldInterpolator.initialized = 1;
 
@@ -268,7 +265,7 @@ Error
 _dxfLinesII1DInterpolator_Delete(LinesII1DInterpolator li)
 {
     _dxfCleanup(li);
-    _dxfFieldInterpolator_Delete((FieldInterpolator) li);
+    return _dxfFieldInterpolator_Delete((FieldInterpolator) li);
 }
 
 int
@@ -282,8 +279,6 @@ _dxfLinesII1DInterpolator_PrimitiveInterpolate(LinesII1DInterpolator li,
     int found;
     Pointer v;
     float *p;
-    int side;
-    int dir;
     int i0, i1;
     float fuzz;
     int	dep;
@@ -535,6 +530,7 @@ _dxfCleanup(LinesII1DInterpolator li)
 	li->gridFlag = 0;
     }
 
+    return OK;
 }
 
 static int
@@ -587,6 +583,7 @@ _dxfLinesII1DInterpolator_LocalizeInterpolator(LinesII1DInterpolator li)
 	return (Interpolator)li;
 
     li->fieldInterpolator.localized = 1;
+    return (Interpolator)li;
 }
 
 Object

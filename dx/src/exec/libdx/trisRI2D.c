@@ -33,8 +33,6 @@ int
 _dxfRecognizeTrisRI2D(Field field)
 {
     Array    array;
-    Array    topology;
-    int      nDim;
     Type     t;
     Category c;
 
@@ -148,14 +146,10 @@ static Error
 _dxfInitialize(TrisRI2DInterpolator ti)
 {
     Field	field;
-    int		nDim;
     Type	dataType;
     Category	dataCategory;
-    int		i, j;
-    int 	nPoints;
+    int		i;
     int		*tri;
-    float	min[2], max[2];
-    float	fuzz;
     float	len, area;
 
     ti->fieldInterpolator.initialized = 1;
@@ -288,7 +282,7 @@ Error
 _dxfTrisRI2DInterpolator_Delete(TrisRI2DInterpolator ti)
 {
     _dxfCleanup(ti);
-    _dxfFieldInterpolator_Delete((FieldInterpolator) ti);
+    return _dxfFieldInterpolator_Delete((FieldInterpolator) ti);
 }
 
 int
@@ -296,14 +290,13 @@ _dxfTrisRI2DInterpolator_PrimitiveInterpolate(TrisRI2DInterpolator ti,
 		    int *n, float **points, Pointer *values, int fuzzFlag)
 {
     int primNum;
-    float *p0, *p1, *p2;
     TriCoord triCoord;
     Triangle *tri;
     int i;
     int found;
     Pointer v;
     float *p;
-    int side, dep;
+    int dep;
     int itemSize;
     InvalidComponentHandle icH = ((FieldInterpolator)ti)->invCon;
     char *dbuf = NULL;
@@ -528,6 +521,8 @@ _dxfCleanup(TrisRI2DInterpolator ti)
 	_dxfFreeSearchGrid(ti->grid);
 	ti->grid = NULL;
     }
+
+    return OK;
 }
 
 #define ON_EDGE(q, r, s) \
@@ -634,8 +629,6 @@ _dxftriExit(int side, TriCoord *be, int *face)
     *face = f;
     return 1;
 }
-
-static bugKnt = 0;
 
 static int
 _dxfTrisSearch(TrisRI2DInterpolator ti, float *point, 

@@ -108,7 +108,6 @@ Pointer
 DXNewSegListItem(SegList *slist)
 {
     SegListSegment *tmp = NULL;
-    Pointer *item;
 
     if (slist->currentSeg->current == slist->currentSeg->size)
     {

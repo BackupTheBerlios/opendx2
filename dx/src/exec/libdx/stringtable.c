@@ -84,7 +84,7 @@ _dxf_initstringtable(void)
 {
     table = (struct table *) DXAllocateZero(sizeof(struct table));
     if (!table)
-	return NULL;
+	return ERROR;
     DXcreate_lock(&table->DXlock, "string table");
 
     DO_INIT(back_colors, "back colors");
@@ -146,22 +146,22 @@ _string(char *s, int add, int object)
     if (!table)
 	DXinitdx();
     if (!table)
-	return NULL;
+	return 0;
     hash = table->hash;
 
     /* calculate initial hash value h */
-    for (ss=s, h=0; c=(unsigned char)*ss; ss++)	/* for each char c in s */
+    for (ss=s, h=0; (c=(unsigned char)*ss)!=0; ss++)	/* for each char c in s */
 	h = WRAP(17*h + c);			/* update h */
 
     /* look for it (closed chaining) */
-    for (h=h; t=hash[h].s; h=WRAP(h+1))		/* start with h; wrap around */
+    for (h=h; (t=hash[h].s)!=0; h=WRAP(h+1))		/* start with h; wrap around */
 	if (strcmp(t,s)==0)			/* is t the string we want? */
 	    break;				/* if so break */
 
     /* add it if not there and adding was requested */
     if (!t && add) {				/* t is NULL if not there */
 	DXlock(&table->DXlock, 0);		/* one person at a time */
-	for (h=h; t=hash[h].s; h=WRAP(h+1))	/* start where we left off */
+	for (h=h; (t=hash[h].s)!=0; h=WRAP(h+1))	/* start where we left off */
 	    if (strcmp(t,s)==0)			/* did anyone beat us to it? */
 		break;				/* if so break */
 	if (!t) {				/* if no one else added it */

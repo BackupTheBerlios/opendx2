@@ -288,12 +288,9 @@ GrowPartition(Pointer ptr)
     HashTable ht;
     Field     partition;
     int       nRings;
-    Array     array;
     Object    attr;
     char      *str;
     char      *components[256];
-    int	      i, j, doit;
-    char      *name, origName[256];
     Pointer   fill;
     Array     compArray;
 
@@ -380,10 +377,9 @@ GrowPartition1(HashTable ht, Field field,
 		int nRings, char **components, Pointer fill)
 {
     int   nCount, oCount;
-    Array nArray, oArray;
-    int   i, j;
+    Array oArray;
+    int   i;
     int   box[8][3];
-    char  *name;
     Field neighbors[3];
     struct lohi growth, overlap, extra;
     int   cornerIndex, tag;
@@ -523,10 +519,9 @@ GrowPartition2(HashTable ht, Field field,
 {
     int   nCounts[2], oCounts[2];
     int	  indices[2];
-    Array nArray, oArray;
+    Array oArray;
     int   i, j;
     int   box[8][3];
-    char  *name;
     Field neighbors[3][3];
     struct lohi growth[2], overlap[2], extra[2];
     int   cornerIndex, tag;
@@ -720,10 +715,9 @@ GrowPartition3(HashTable ht, Field field, int nRings,
 {
     int   nCounts[3], oCounts[3];
     int	  indices[3];
-    Array nArray, oArray;
+    Array oArray;
     int   i, j, k;
     int   box[8][3];
-    char  *name;
     Field neighbors[3][3][3];
     struct lohi growth[3], overlap[3], extra[3];
     int   cornerIndex, tag;
@@ -1000,7 +994,7 @@ ShrinkPartition(Pointer ptr)
 	return OK;
     
     if (! DXQueryOriginalSizes(partition, &nPositions, &nConnections))
-	return NULL;
+	return ERROR;
     
     scstrides[nDim-1] = 1;
     spstrides[nDim-1] = 1;
@@ -1247,12 +1241,12 @@ ShrinkPartition(Pointer ptr)
 
 		for (i = 0; i < nItemsIn; i++)
 		{
-		    int j, k, first, keep;
+		    int j, k, keep;
 		    int refs[32];
 
 		    for (keep = 0, j = 0; j < nRefsPerElt; j++, sPtr++)
 		    {
-			int indices[3], first, in;
+			int indices[3], in;
 
 			INDICES(*sPtr, indices, sstrides, nDim);
 			OFFSET(indices, rOffsets, nDim);
@@ -1531,13 +1525,9 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
     struct loop pdep_loop[3];
     struct loop cdep_loop[3];
     struct loop *loop;
-    Array  cArray, srcArray, dstArray, origArray = NULL;
+    Array  srcArray, dstArray, origArray = NULL;
     int    srcCounts[3];
     char   *name;
-    int	   doit;
-    char   **cmp;
-    Class  class;
-    Object attr;
     int    spmin[3], spmax[3];
     int    scmin[3], scmax[3];
     int    dpmin[3], dpmax[3];
@@ -1957,12 +1947,12 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
 		}
 		else
 		{
-		    int i, in;
+		    int i;
 		    int *sPtr = (int *)loop[0].srcPtr;
 		    int *dPtr = (int *)loop[0].dstPtr;
 		    for (i = 0; i < loop[0].length*nRefs; i++, sPtr++, dPtr++)
 		    {
-			int indices[3], dRef, in;
+			int indices[3], in;
 
 			if (*sPtr == -1)
 			    *dPtr = -1;
@@ -2011,7 +2001,7 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
 	     */
 	    int  *srcData = (int  *)DXGetArrayData(srcArray);
 	    byte *dstData = (byte *)DXGetArrayData(dstArray);
-	    int  nRefs, dIndex;
+	    int  nRefs;
 
 	    if ((ddep == DEP_ON_CONNECTIONS && sref != REFS_CONNECTIONS) ||
 		(ddep == DEP_ON_POSITIONS   && sref != REFS_POSITIONS  ))
@@ -2047,7 +2037,7 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
 	     */
 	    byte *srcData;
 	    int  *dstData;
-	    int  nOldRefs, nNewRefs, sIndex;
+	    int  nOldRefs, nNewRefs;
 
 	    if ((sdep == DEP_ON_CONNECTIONS && dref != REFS_CONNECTIONS) ||
 		(sdep == DEP_ON_POSITIONS   && dref != REFS_POSITIONS  ))
@@ -2212,7 +2202,7 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
 		    DXGetArrayInfo(dstArray, &nDstItems, NULL,NULL,NULL,NULL);
 
 		if (! DXAddArrayData(dstArray, nDstItems, newDstItems, NULL))
-		    return NULL;
+		    return ERROR;
 	    
 		sPtr = (int *)DXGetArrayData(srcArray);
 		dPtr = ((int *)DXGetArrayData(dstArray))+nDstItems;
@@ -2363,7 +2353,6 @@ static Array
 GrowRegularArray(Array oArray, int *counts, int nDim, int dep)
 {
     int len, i, n;
-    int count;
     float o[32];
     float d[32];
     Type type;
@@ -2609,7 +2598,7 @@ FillEmptyOverlap(Field field, int *indices, LoHi growth,
 
     cArray = (Array)DXGetComponentValue(field, "connections");
     if (! cArray)
-	return NULL;
+	return ERROR;
     
     if (! DXQueryGridConnections(cArray, NULL, counts))
     {
@@ -3004,7 +2993,7 @@ static Error
 DupTask(Pointer p)
 {
     Field field = (Field)p;
-    int   mo[32], mc[32], stride[32], i, j, k, d, l, nd, done;
+    int   mo[32], mc[32], stride[32], i, j, k, nd, done;
     InvalidComponentHandle ich = NULL;
     Loop loop[32];
     Array a;

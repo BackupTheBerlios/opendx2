@@ -8,7 +8,9 @@
 
 #include <dxconfig.h>
 
-
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 #include <math.h>
 #include <string.h>
@@ -123,7 +125,7 @@ Field DXMakeImageFormat(int width, int height, char *format)
         onearray = DXNewArray(TYPE_INT,CATEGORY_REAL, 0);
 	if (!DXAddArrayData(onearray, 0, 1, &one))
 	    goto error;
-	if (!DXSetAttribute(i, "direct color map", onearray))
+	if (!DXSetAttribute((Object)i, "direct color map", (Object)onearray))
 	    goto error;
 	onearray = NULL;
     }
@@ -271,7 +273,7 @@ bounds(Object o, int *left, int *right, int *bot, int *top)
 
     switch (DXGetObjectClass(o)) {
     case CLASS_GROUP:
-	for (i=0; oo=DXGetEnumeratedMember((Group)o,i,NULL); i++)
+	for (i=0; (oo=DXGetEnumeratedMember((Group)o,i,NULL)); i++)
 	    if (!bounds(oo, left, right, bot, top))
 		return NULL;
 	break;
@@ -373,7 +375,7 @@ DXGetImageSize(Field i, int *width, int *height)
 	    bptr->b = CLAMP(b); \
 	} \
  \
-	if (n != write (fd, buf, n)) \
+	if (n!=write (fd, buf, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
     else \
@@ -391,7 +393,7 @@ DXGetImageSize(Field i, int *width, int *height)
 	} \
 	rgb_to_yuv(dbuf, tmp, yuv_buf, width); \
  \
-	if (2*width != write (fd, tmp, 2*width)) \
+	if (2*width!=write (fd, tmp, 2*width)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
 }
@@ -416,7 +418,7 @@ DXGetImageSize(Field i, int *width, int *height)
 	    bptr->b = CLAMP(b); \
 	} \
  \
-	if (n != write (fd, buf, n)) \
+	if (n!=write (fd, buf, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
     else \
@@ -434,7 +436,7 @@ DXGetImageSize(Field i, int *width, int *height)
 	} \
 	rgb_to_yuv(dbuf, tmp, yuv_buf, width); \
  \
-	if (2*width != write (fd, tmp, 2*width)) \
+	if (2*width!=write (fd, tmp, 2*width)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
 }
@@ -474,7 +476,7 @@ switch(map_type) \
 	    buf[x].b = CLAMP(b); \
 	} \
  \
-	if (n != write (fd, buf, n)) \
+	if (n!=write (fd, buf, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
     else \
@@ -490,7 +492,7 @@ switch(map_type) \
 	} \
 	rgb_to_yuv(dbuf, tmp, yuv_buf, width); \
  \
-	if (2*width != write (fd, tmp, 2*width)) \
+	if (2*width!=write (fd, tmp, 2*width)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
 }
@@ -513,7 +515,7 @@ switch(map_type) \
 	    buf[x].b = CLAMP(b); \
 	} \
 \
-	if (n != write (fd, buf, n)) \
+	if (n!=write (fd, buf, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
     else \
@@ -529,7 +531,7 @@ switch(map_type) \
 	} \
 	rgb_to_yuv(dbuf, tmp, yuv_buf, width); \
 \
-	if (2*width != write (fd, tmp, 2*width)) \
+	if (2*width!=write (fd, tmp, 2*width)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
 }
@@ -543,7 +545,7 @@ switch(map_type) \
     if (!yuv) { \
 	for (y=height-1; y>=0; y--) { \
 	    from = pixels + y*wid; \
-	    if (n != write (fd, from, n)) \
+	    if (n!=write (fd, from, n)) \
 		DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
 	} \
     } else { \
@@ -558,7 +560,7 @@ switch(map_type) \
 		dbuf[x].b = CLAMPF(db); \
 	    } \
 	    rgb_to_yuv(dbuf, tmp, yuv_buf, width); \
-	    if (2*width != write (fd, tmp, 2*width)) \
+	    if (2*width!=write (fd, tmp, 2*width)) \
 		DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
 	} \
     } \
@@ -629,7 +631,7 @@ _dxf_outputrgb_yuv(Field i, int fd, int yuv)
     if (rank == 0 || (rank == 1 && shape[0] == 1))
     {
 	Type map_type;
-	int  mr, ms[32], msize;
+	int  mr, ms[32];
 
 	map = (Array)DXGetComponentValue(i, "color map");
 	if (! map)
@@ -722,11 +724,11 @@ error:
 	    bufB[x] = CLAMP(b); \
 	} \
  \
-	if (n != write (fh[0], bufR, n)) \
+	if (n!=write (fh[0], bufR, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
-	if (n != write (fh[1], bufG, n)) \
+	if (n!=write (fh[1], bufG, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
-	if (n != write (fh[2], bufB, n)) \
+	if (n!=write (fh[2], bufB, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
 }
@@ -749,11 +751,11 @@ error:
 	    bufB[x] = CLAMP(b); \
 	} \
  \
-	if (n != write (fh[0], bufR, n)) \
+	if (n!=write (fh[0], bufR, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
-	if (n != write (fh[1], bufG, n)) \
+	if (n!=write (fh[1], bufG, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
-	if (n != write (fh[2], bufB, n)) \
+	if (n!=write (fh[2], bufB, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
 }
@@ -792,11 +794,11 @@ switch(map_type) \
 	    bufB[x] = CLAMP(b); \
 	} \
  \
-	if (n != write (fh[0], bufR, n)) \
+	if (n!=write (fh[0], bufR, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
-	if (n != write (fh[1], bufG, n)) \
+	if (n!=write (fh[1], bufG, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
-	if (n != write (fh[2], bufB, n)) \
+	if (n!=write (fh[2], bufB, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
 }
@@ -818,11 +820,11 @@ switch(map_type) \
 	    bufB[x] = CLAMP(b); \
 	} \
  \
-	if (n != write (fh[0], bufR, n)) \
+	if (n!=write (fh[0], bufR, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
-	if (n != write (fh[1], bufG, n)) \
+	if (n!=write (fh[1], bufG, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
-	if (n != write (fh[2], bufB, n)) \
+	if (n!=write (fh[2], bufB, n)) \
             DXErrorReturn ( ERROR_UNEXPECTED, "Error writing image file" ); \
     } \
 }
@@ -830,7 +832,7 @@ switch(map_type) \
 Field
 DXOutputRGBSeparate(Field i, int *fh)
 {
-    int c, x, y, n, r, g, b;
+    int x, y, n, r, g, b;
     ubyte *bufR = NULL, *bufG = NULL, *bufB = NULL;
     int width, height;
     Array colors, map;
@@ -867,7 +869,7 @@ DXOutputRGBSeparate(Field i, int *fh)
     if (rank == 0 || (rank == 1 && shape[0] == 1))
     {
 	Type map_type;
-	int  mr, ms[32], msize;
+	int  mr, ms[32];
 
 	map = (Array)DXGetComponentValue(i, "color map");
 	if (! map)
@@ -946,7 +948,7 @@ error:
  * values we need mostly stay in the cache.
  */
 
-_dxfinit_convert(double gamma)
+void _dxfinit_convert(double gamma)
 {
     static double convert_gamma = 0.0;	/* current gamma loaded into table */
     union hl f;
@@ -975,7 +977,6 @@ Field
 _dxf_ZeroPixels(Field image, int left, int right, int top, int bot, RGBColor color)
 {
     Object o;
-    char *type;
     RGBColor *fpixels;
     RGBByteColor *bpixels;
     
@@ -996,8 +997,8 @@ _dxf_ZeroPixels(Field image, int left, int right, int top, int bot, RGBColor col
 	if (color.r == 0.0 && color.g == 0.0 && color.b == 0.0)
 	{
 	    int bwidth = right-left, n = bwidth * sizeof(RGBColor);
-	    int bheight = top-bot, iwidth, x, y;
-	    RGBColor *tt, *t;
+	    int bheight = top-bot, iwidth, y;
+	    RGBColor *tt;
 
 	    DXGetImageSize(image, &iwidth, NULL);
 	    tt = fpixels + bot*iwidth + left;
@@ -1041,8 +1042,8 @@ _dxf_ZeroPixels(Field image, int left, int right, int top, int bot, RGBColor col
 	if (color.r == 0.0 && color.g == 0.0 && color.b == 0.0)
 	{
 	    int bwidth = right-left, n = bwidth * sizeof(RGBByteColor);
-	    int bheight = top-bot, iwidth, x, y;
-	    RGBByteColor *tt, *t;
+	    int bheight = top-bot, iwidth, y;
+	    RGBByteColor *tt;
 
 	    DXGetImageSize(image, &iwidth, NULL);
 	    tt = bpixels + bot*iwidth + left;
@@ -1138,5 +1139,6 @@ rgb_to_yuv(drgb *buf, char *tmp, double *yuv_buf[3], int n_line)
                    tmp[2*i+1] = (ubyte)(Y);
                 }
         }
+	return OK;
 }
 

@@ -38,9 +38,15 @@ static Object  IUP_Field_Standard(Field);
 static Object  IUP_Field_PE(Field);
 static Object  IUP_Field_FLE(Field);
 
+/* --FIXME 
+ * Never defined --remove after determining not used
+ *
+
 static Object  C_Object(Object);
 static Object  IC_Object(Object);
 static Object  IUP_Object(Object);
+
+ */
 
 static Field DeleteFieldContents(Field);
 
@@ -158,11 +164,8 @@ C_Field_PE(Field field)
 {
     Array			pArray,   plArray, eArray;
     Array			child, 	  newChild;
-    Type			type;
-    Category			cat;
-    int				rank, shape[32];
     int				nPositions, nPolylines, nEdges, nInvP, nInvPl;
-    int				nNewPositions, nNewPolylines, nNewEdges;
+    int				nNewPositions, nNewPolylines;
     int				i, j, k, knt;
     char			*validPositions,   *validPolylines;
     int				*validPositionsMap, *validPolylinesMap;
@@ -554,13 +557,10 @@ C_Field_FLE(Field field)
 {
     Array			pArray, fArray, lArray, eArray;
     Array			child, newChild;
-    Type			type;
-    Category			cat;
-    int				rank, shape[32];
     int				nPositions, nFaces, nLoops;
     int				nEdges, nInvP, nInvF;
-    int				nNewPositions, nNewFaces, nNewEdges, nNewLoops;
-    int				i, j, k, f, nfknt, nlknt, neknt;
+    int				nNewPositions, nNewFaces;
+    int				i, f, nfknt, nlknt, neknt;
     char			*validPositions,   *validFaces;
     int				*validPositionsMap, *validFacesMap;
     Object			attr;
@@ -992,9 +992,6 @@ C_Field_Standard(Field field)
 {
     Array			pArray,   cArray;
     Array			child, 	  newChild;
-    Type			type;
-    Category			cat;
-    int				rank, shape[32];
     int				nPositions, nConnections, nInvP, nInvC;
     int				nNewPositions, nNewConnections;
     int				i;
@@ -1466,8 +1463,6 @@ IC_Field_PE(Field field)
 {
     Array	           plArray, eArray;
     InvalidComponentHandle vp = NULL, vplIn = NULL, vplOut = NULL;
-    Array	           vplHandle;
-    int		           *cPtr = NULL;
     int		           i, j;
     int			   nPl, nE;
     int			   *polylines = NULL, *edges = NULL;
@@ -1598,9 +1593,7 @@ IC_Field_FLE(Field field)
 {
     Array	           fArray, lArray, eArray;
     InvalidComponentHandle vp = NULL, vfIn = NULL, vfOut = NULL;
-    Array	           vfHandle;
-    int		           *cPtr = NULL;
-    int		           face, i, j;
+    int		           face;
     int			   nF, nL, nE;
     int			   *faces = NULL, *loops = NULL, *edges = NULL;
 
@@ -1748,7 +1741,6 @@ IC_Field_Standard(Field field)
 {
     Array	           cArray;
     InvalidComponentHandle vp = NULL, vcIn = NULL, vcOut = NULL;
-    Array	           vcHandle;
     int		           ptsPerPrim;
     int		           *cPtr = NULL;
     int		           i, j, nCons;
@@ -1894,7 +1886,7 @@ IUP_Field_Standard(Field field)
     InvalidComponentHandle vpHandle = NULL, vcHandle = NULL;
     int         	   *refs = NULL, *cons;
     int	        	   i, j, ptsPerPrim, nCons, nPts;
-    int         	   unReffedPositions, maxReference;
+    int         	   unReffedPositions;
     ArrayHandle 	   cHandle = NULL;
     Pointer     	   cBuf = NULL;
 
@@ -1914,7 +1906,6 @@ IUP_Field_Standard(Field field)
     if (NULL == (cArray = (Array)DXGetComponentValue(field, "connections")))
     {
 	Array invPos;
-	int i;
 	byte valid;
 
 	valid =  DATA_INVALID;
@@ -2041,9 +2032,8 @@ IUP_Field_PE(Field field)
     InvalidComponentHandle vpHandle = NULL, vplHandle = NULL;
     ubyte         	   *refs = NULL;
     int	        	   i, j, nPls, nEs, nPts;
-    int         	   unReffedPositions, maxReference;
+    int         	   unReffedPositions;
     ArrayHandle 	   plHandle = NULL, eHandle = NULL;
-    int			   plBuf, eBuf;
 
     if (DXEmptyField(field))
 	return (Object)field;
@@ -2170,10 +2160,9 @@ IUP_Field_FLE(Field field)
     Array       	   pArray,  fArray, lArray, eArray;
     InvalidComponentHandle vpHandle = NULL, vfHandle = NULL;
     ubyte         	   *refs = NULL;
-    int	        	   f, l, e, i, j, nFs, nLs, nEs, nPts;
-    int         	   unReffedPositions, maxReference;
+    int	        	   f, e, i, nFs, nLs, nEs, nPts;
+    int         	   unReffedPositions;
     ArrayHandle 	   fHandle = NULL, lHandle = NULL, eHandle = NULL;
-    int			   fBuf, lBuf, eBuf;
 
     if (DXEmptyField(field))
 	return (Object)field;
@@ -2417,7 +2406,6 @@ DXCreateInvalidComponentHandle(Object o, Array iarray, char *name)
 	int rank, shape[100];
 	int i;
 	ubyte *dPtr;
-	char *dependency, *reference;
 
 	DXGetArrayInfo(iarray, &nInv, &type, &cat, &rank, shape);
 
@@ -2648,7 +2636,6 @@ Array
 DXGetInvalidComponentArray(InvalidComponentHandle handle)
 {
     Array  array = NULL;
-    char   *name;
     Object attr;
     int    nInvalid;
     int    type = 0;
@@ -2778,7 +2765,7 @@ DXGetInvalidComponentArray(InvalidComponentHandle handle)
 	 * This depends on the number actually invalid, regardless
 	 * of the sense of the hash table.
 	 */
-	int i, *dPtr;
+	int *dPtr;
 
 	if (handle->nItems != -1 && nInvalid > 0.20*handle->nItems)
 	{
@@ -2907,6 +2894,7 @@ DXIsElementInvalid(InvalidComponentHandle handle, int index)
 	return IsElementMarked(handle, index);
 }
 
+int
 DXIsElementValid(InvalidComponentHandle handle, int index)
 {
     if (handle->sense == IC_MARKS_INDICATE_INVALID)
@@ -2975,6 +2963,8 @@ IsElementMarked(InvalidComponentHandle handle, int index)
 		return FALSE;
 	}
     }
+    /* Function should always short circuit, but just incase */
+    return FALSE;
 }
 
 Error
@@ -3708,6 +3698,8 @@ GetNextMarked(InvalidComponentHandle handle)
 	    return -1;
 	}
     }
+    /* Function should be already returned, but just incase */
+   return -1;
 }
 
 

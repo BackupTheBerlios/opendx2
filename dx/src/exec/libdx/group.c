@@ -131,7 +131,7 @@ _CopyGroup(Group new, Group old, enum copy copy)
 	new->shape = NULL;
 
     /* copy the members */
-    for (i=0; val = DXGetEnumeratedMember(old, i, &name); i++) {
+    for (i=0; (val = DXGetEnumeratedMember(old, i, &name)); i++) {
 	if (copy!=COPY_HEADER) {
 	    val = DXCopy(val, copy);
 	    if (!val)
@@ -154,18 +154,18 @@ type_check(Group g, Object value)
 
     if (!DXGetType(value, &type, &category, &rank, shape)) {
 	if (DXGetError() != ERROR_NONE)
-	    return NULL;
+	    return ERROR;
 	return OK;
     }
     RANKTEST(ERROR);
     if (type!=g->type || category!=g->category || rank!=g->rank) {
 	DXSetError(ERROR_BAD_PARAMETER, "#11090");
-	return NULL;
+	return ERROR;
     }
     for (i=0; i<rank; i++)
 	if (shape[i]!=g->shape[i]) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#11090");
-	    return NULL;
+	    return ERROR;
 	}
     return OK;
 }
@@ -596,8 +596,6 @@ DXSetGroupType(Group g, Type t, Category c, int rank, ...)
 Group
 DXUnsetGroupType(Group g)
 {
-    int i;
-
     CHECK(g, CLASS_GROUP);
 
     g->typed = 0;

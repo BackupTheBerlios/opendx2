@@ -63,9 +63,8 @@ _dxf_VolumeIrregular(struct buffer *b, struct gather *gather, int clip)
     Triangle tri;
     Line line;
     Point *p;
-    float z, skipz;
-    int i, j, g, n, skipping=0, skipf;
-    int valid;
+    float z;
+    int i, j, g, n;
 
     /* anything to do? */
     if (!gather->nthings)
@@ -404,7 +403,7 @@ area(Vector u, Vector v)
  * can then just be written to iterate through axis 2 in the outermost loop.
  */
 
-static
+static void
 swap(struct xfield *xf, float *den, int a, int b) {
     if (ABS(den[a]) > ABS(den[b])) {
 	{float t; t=den[a]; den[a]=den[b]; den[b]=t;}
@@ -468,8 +467,10 @@ int
 #ifdef OS2
 _Optlink
 #endif
-compare(struct xfield **a, struct xfield **b)
+compare(const void *p1, const void * p2)
 {
+    const struct xfield **a = (const struct xfield **) p1;
+    const struct xfield **b = (const struct xfield **) p2;
     if ((*a)->o.z < (*b)->o.z)
 	return -1;
     else if ((*a)->o.z > (*b)->o.z)
@@ -499,14 +500,17 @@ step(struct xfield *xf, int i)		    /* step along axis i: */
  *
  */
 
+/* --CHECKME-- the following was prototyped but never defined 
+static Error VolumeRegularQuad(struct buffer *, struct xfield *, int);
+ */
+
 static Error VolumeRegularFace(struct buffer *, struct xfield *, int);
 static Error VolumeRegularFace3(struct buffer *, struct xfield *, int);
-static Error VolumeRegularQuad(struct buffer *, struct xfield *, int);
 static Error VolumeRegularPlane(struct buffer *, struct xfield *, int);
 Error
 _dxf_VolumeRegular(struct buffer *b, struct gather *gather, int clip)
 {
-    int i, j, patch_size = 0;
+    int i, patch_size = 0;
     struct xfield **xfields, *xf;
     Vector u, v;
     float a, s;
@@ -657,7 +661,7 @@ error:
     xf->positions = (Point *) DXGetArrayDataLocal(xf->positions_array);	    	\
     xf->positions_local = 1;						        \
     if (!xf->positions)								\
-	return NULL;
+	return ERROR;
 
 #define Q(o, i, j, surface) {							\
 	Quadrilateral quad;							\
@@ -698,7 +702,7 @@ error:
 static Error
 VolumeRegularFace3(struct buffer *b, struct xfield *xf, int clip)
 {
-    int i0, i1, i2, n, n0, n1, n2;
+    int i0, i1, i2, n0, n1, n2;
     int col0, col1, col2;
     InvalidComponentHandle ich = xf->iElts;
 

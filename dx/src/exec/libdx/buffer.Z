@@ -42,7 +42,7 @@ _dxf_InitBuffer(struct buffer *b, enum pix_type pix_type,
 	    DXResetError();
 	    b->buffer = DXAllocate(n*sizeof(struct fast));
 	    if (!b->buffer)
-		return NULL;
+		return ERROR;
 #if 0
             /* warning about 'frame buffer in global memory' */
 	    DXWarning("#4870");
@@ -55,7 +55,7 @@ _dxf_InitBuffer(struct buffer *b, enum pix_type pix_type,
 	    DXResetError();
 	    b->buffer = DXAllocate(n*sizeof(struct big));
 	    if (!b->buffer)
-		return NULL;
+		return ERROR;
 #if 0
 	    DXWarning("#4870");
 #endif
@@ -67,7 +67,7 @@ _dxf_InitBuffer(struct buffer *b, enum pix_type pix_type,
 	    DXResetError();
 	    b->buffer = DXAllocate(n*sizeof(struct zbuf));
 	    if (!b->buffer)
-		return NULL;
+		return ERROR;
 #if 0
 	    DXWarning("#4870");
 #endif
@@ -138,6 +138,12 @@ _dxf_InitBuffer(struct buffer *b, enum pix_type pix_type,
     return OK;
 }
 
+
+extern int XImageByteOrder(
+#if NeedFunctionPrototypes
+   Display*		/* display */
+#endif
+);
 
 /*
  * XXX - for now, we do nothing at start of clipping; at end
@@ -275,11 +281,11 @@ _dxf_CopyBufferToImage(struct buffer *b, Field i, int xoff, int yoff)
 	DXErrorReturn(ERROR_BAD_PARAMETER, "#11600");
 
     if (!DXGetImageSize(i, &iwidth, NULL))
-	return NULL;
+	return ERROR;
     
     a = (Array)DXGetComponentValue(i, COLORS);
     if (! a) 
-	return NULL;
+	return ERROR;
     
     DXGetArrayInfo(a, NULL, &type, NULL, NULL, NULL);
 
@@ -352,7 +358,7 @@ _dxf_CopyBufferToFBImage(struct buffer *buf, Field i, int xoff, int yoff)
 
     pixels = _dxf_GetFBPixels(i);
     if (!DXGetImageSize(i, &iwidth, &iheight))
-	return NULL;
+	return ERROR;
 
     if (buf->pix_type==pix_fast) {
 
@@ -402,10 +408,8 @@ _dxf_CopyBufferToFBImage(struct buffer *buf, Field i, int xoff, int yoff)
 
     }
 
-
-
-    return OK;
 #endif
+    return OK;
 }
 
 
@@ -475,7 +479,7 @@ _dxf_CopyBufferToXImage(struct buffer *buf, Field image, int xoff, int yoff)
     
     dst = _dxf_GetXPixels(image);
     if(!dst)
-      return NULL;
+      return ERROR;
 
     if (buf->pix_type == pix_fast)
     {
@@ -494,7 +498,7 @@ _dxf_CopyBufferToXImage(struct buffer *buf, Field image, int xoff, int yoff)
     }
 
     if (!DXGetImageSize(image, &iwidth, &iheight))
-        return NULL;
+        return ERROR;
     
 #if 0
     return _dxf_translateImage((Object)image, iwidth, iheight,
@@ -615,7 +619,6 @@ static Field DECODE_NAME(Array encodedImage)				$\
     Field pixField = NULL;						$\
     Array a = NULL;							$\
     int   i, j, image_size, flag, knt;					$\
-    Object attr;							$\
     ubyte *ptr = (ubyte *)DXGetArrayData(encodedImage);			$\
     int *res, x, y;							$\
     ubyte *pix;								$\
@@ -719,9 +722,8 @@ static Array ENCODE_NAME(Field image, translationP t)			$\
     int segknt, totknt;							$\
     SegListSegment *seg;						$\
     SegList *seglist = NULL;						$\
-    SegListSegment *segment;						$\
     ubyte *segptr;							$\
-    int mask = COLORMASK;						$\
+    int mask = COLORMASK;                                               $\
 									$\
     a = (Array)DXGetComponentValue(image, "connections");		$\
     if (! a)								$\

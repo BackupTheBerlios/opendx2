@@ -132,7 +132,7 @@ _dxfValidate(Field f)
     Array target = NULL;
     char *tname, *cname;
     int ncurrent, ntarget, *ip;
-    int i, j, cur, lim, nitems;
+    int i, j, lim, nitems;
     Type type;
     Category cat;
     String s = NULL;
@@ -140,7 +140,7 @@ _dxfValidate(Field f)
     int rank, shape[MAXRANK];
     int counts[MAXRANK];
 
-    for (i=0; current=(Array)DXGetEnumeratedComponentValue(f, i, &cname); i++) {
+    for (i=0; (current=(Array)DXGetEnumeratedComponentValue(f, i, &cname)); i++) {
 
 	/* dep */
 	if ((s = (String)DXGetAttribute((Object)current, "dep")) != NULL) {
@@ -149,19 +149,19 @@ _dxfValidate(Field f)
 	        ((tname = DXGetString(s)) == NULL)) {
 		DXSetError(ERROR_DATA_INVALID, 
 			 Err_MustBeString, "dep", cname);
-		return NULL;
+		return ERROR;
 	    }
 	    
 	    if ((target = (Array)DXGetComponentValue(f, tname)) == NULL) {
 		DXSetError(ERROR_DATA_INVALID, 
 			 Err_MissingComp, tname, "dep", cname);
-		return NULL;
+		return ERROR;
 	    }
 	    
 	    if (DXGetObjectClass((Object)target) != CLASS_ARRAY) {
 		DXSetError(ERROR_DATA_INVALID,
 			 Err_NotArray, tname, "dep", cname);
-		return NULL;
+		return ERROR;
 	    }
 	    
 	    if (!DXGetArrayInfo(current, &nitems, &type, &cat, &rank, shape))
@@ -178,7 +178,7 @@ _dxfValidate(Field f)
 		DXSetError(ERROR_DATA_INVALID,
 			 Err_DiffCount, "dep",
 			 ncurrent, cname, ntarget, tname);
-		return NULL;
+		return ERROR;
 	    }
 
 	} /* end of if (has dep) */
@@ -190,19 +190,19 @@ _dxfValidate(Field f)
 	        ((tname = DXGetString(s)) == NULL)) {
 		DXSetError(ERROR_DATA_INVALID, 
 			   Err_MustBeString, "ref", cname);
-		return NULL;
+		return ERROR;
 	    }
 	    
 	    if ((target = (Array)DXGetComponentValue(f, tname)) == NULL) {
 		DXSetError(ERROR_DATA_INVALID,
 			   Err_MissingComp, tname, "ref", cname);
-		return NULL;
+		return ERROR;
 	    }
 	    
 	    if (DXGetObjectClass((Object)target) != CLASS_ARRAY) {
 		DXSetError(ERROR_DATA_INVALID, 
 			   Err_NotArray, tname, "ref", cname);
-		return NULL;
+		return ERROR;
 	    }
 	    
 	    if (!DXGetArrayInfo(current, &nitems, &type, &cat, &rank, shape))
@@ -210,7 +210,7 @@ _dxfValidate(Field f)
 	    
 	    if (type != TYPE_INT) {
 		DXSetError(ERROR_DATA_INVALID, Err_RefNotInt, cname);
-		return NULL;
+		return ERROR;
 	    }
 	    
 	    ncurrent = nitems;
@@ -236,7 +236,7 @@ _dxfValidate(Field f)
 			if (*ip < lim || *ip >= ntarget) {
 			    DXSetError(ERROR_DATA_INVALID, Err_OutOfRange,
 				j+1, ending(j+1), cname, *ip, lim, ntarget-1);
-			    return NULL;
+			    return ERROR;
 			}
 		    }
 
@@ -247,7 +247,7 @@ _dxfValidate(Field f)
                         DXSetError(ERROR_DATA_INVALID,
                                  Err_DiffCount, "ref",
                                  ncurrent, cname, ntarget, tname);
-                        return NULL;
+                        return ERROR;
                     }
                 } else {
                     /* mesh array of mixed path and irregular arrays. */
@@ -264,13 +264,13 @@ _dxfValidate(Field f)
 		if ((target = (Array)DXGetComponentValue(f, tname)) == NULL) {
 		    DXSetError(ERROR_DATA_INVALID,
 			       Err_MissingComp, tname, "der", cname);
-		    return NULL;
+		    return ERROR;
 		}
 		
 		if (DXGetObjectClass((Object)target) != CLASS_ARRAY) {
 		    DXSetError(ERROR_DATA_INVALID,
 			       Err_NotArray, tname, "der", cname);
-		    return NULL;
+		    return ERROR;
 		}
 	    } else if (DXExtractNthString(o, 0, &tname)) {  /* string list? */
 		for (j=0; DXExtractNthString(o, j, &tname); j++) {
@@ -278,19 +278,19 @@ _dxfValidate(Field f)
 		    if ((target = (Array)DXGetComponentValue(f, tname)) == NULL) {
 			DXSetError(ERROR_DATA_INVALID,
 				   Err_MissingComp, tname, "der", cname);
-			return NULL;
+			return ERROR;
 		    }
 		    
 		    if (DXGetObjectClass((Object)target) != CLASS_ARRAY) {
 			DXSetError(ERROR_DATA_INVALID,
 				   Err_NotArray, tname, "der", cname);
-			return NULL;
+			return ERROR;
 		    }
 		}
 	    } else {  /* neither string or string list */
 		DXSetError(ERROR_DATA_INVALID, 
 			   Err_MustBeStringList, "der", cname);
-		return NULL;
+		return ERROR;
 	    }
 	    
 	} /* end of if (has der) */
@@ -301,14 +301,14 @@ _dxfValidate(Field f)
 	        ((tname = DXGetString(s)) == NULL)) {
 		DXSetError(ERROR_DATA_INVALID, 
 			 Err_MustBeString, "element type", cname);
-		return NULL;
+		return ERROR;
 	    }
 	    
 	    if (!strcmp(cname, "connections") && 
 		DXQueryGridConnections(current, &rank, counts)) {
 
 		if (!elemtypecheck(rank, tname))
-		    return NULL;
+		    return ERROR;
 	    }
 
 	} /* end of if (has element type) */
@@ -506,9 +506,8 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
     FILE *fd = NULL;
     char *datadir = NULL, *cp;
     char *basename = NULL;
-    char *cmd = NULL;
     int bytes = 0;
-    int pid, rc;
+    int rc;
 
     *outname = NULL;
 
@@ -645,7 +644,7 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
     strcpy(*outname, inname);
     strcat(*outname, ext);
     DXDebug("F", "trying at (2) to open `%s'", *outname);
-    if (fd = fopen(*outname, "r")) {
+    if ((fd=fopen(*outname, "r"))!=NULL) {
 	if (is_dir(fd, *outname) != OK)
 	    goto error;
 
@@ -687,7 +686,7 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
 	    (*outname)[basename-auxname+1] = '\0';
 	    strcat(*outname, inname);
 	    DXDebug("F", "trying at (3) to open `%s'", *outname);
-	    if (fd = fopen(*outname, "r")) {
+	    if ((fd=fopen(*outname, "r"))!=NULL) {
 		if (is_dir(fd, *outname) != OK)
 		    goto error;
 		
@@ -698,7 +697,7 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
 	    /* basename + file + extension */
 	    strcat(*outname, ext);
 	    DXDebug("F", "trying at (4) to open `%s'", *outname);
-	    if (fd = fopen(*outname, "r")) {
+	    if ((fd=fopen(*outname, "r"))!=NULL) {
 		if (is_dir(fd, *outname) != OK)
 		    goto error;
 		
@@ -720,7 +719,7 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
 	strcat(*outname, "/");
 	strcat(*outname, inname);
 	DXDebug("F", "trying at (5) to open `%s'", *outname);
-	if (fd = fopen(*outname, "r")) {
+	if ((fd=fopen(*outname, "r"))!=NULL) {
 	    if (is_dir(fd, *outname) != OK)
 		goto error;
 	    
@@ -730,7 +729,7 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
 	
 	strcat(*outname, ext);
 	DXDebug("F", "trying at (6) to open `%s'", *outname);
-	if (fd = fopen(*outname, "r")) {
+	if ((fd=fopen(*outname, "r"))!=NULL) {
 	    if (is_dir(fd, *outname) != OK)
 		goto error;
 	    
@@ -852,7 +851,7 @@ static Error check_parms(struct getby *gp, char *fname, char **namelist,
     if (start && end) {
 	if (*start > *end) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#10185", "start", "end");
-	    return NULL;
+	    return ERROR;
 	}
     }
    

@@ -220,6 +220,10 @@ Error _dxf_XOpacities(Field f, struct xfield *xf, enum xr required, enum xd xd);
 Error _dxf_XSurface(Field f, struct xfield *xf, enum xr required, enum xd xd);
 Error _dxf_XInner(Field f, struct xfield *xf, enum xr required, enum xd xd);
 Error _dxf_XLighting(Field f, struct xfield *xf);
+Error _dxf_XInvalidPositions(Field f, struct xfield *xf);
+Error _dxf_XInvalidConnections(Field f, struct xfield *xf);
+Error _dxf_XInvalidPolylines(Field f, struct xfield *xf);
+Error _dxf_XPolylines(Field f, struct xfield *xf, enum xr required, enum xd xd);
 /**
 These routines extract various components.  The {\tt xr} parameter
 indicates whether the component is required, i.e. whether it is an
@@ -369,12 +373,14 @@ Error _dxf_QuadClipping(struct buffer *b, struct xfield *xf,
 Renders face {\tt tri} from field {\tt xf} as a clipping triangle.
 **/
 
+/* These aren't needed in the header. 
 static Error _dxf_TriangleComposite(struct buffer *b, struct xfield *xf, int n,
 				   Triangle *tri, int *indices,
 			 	   int clip_status, inv_stat invalid_status);
 static Error _dxf_QuadComposite(struct buffer *b, struct xfield *xf, int n,
 			 	Quadrilateral *quad, int *indices,
 			 	int clip_status, inv_stat invalid_status);
+*/
 /**
 Composites a triangle or a quad.
 **/
@@ -548,6 +554,10 @@ Error     _dxfInitApplyLights(float, float, float, int,
 			      RGBColor *, RGBColor *, int,
 			      char, char, char, char, char);
 Error     _dxfApplyLights(int *, int *, int);
+Field _dxf_ZeroPixels(Field image, int left, int right, int top, int bot, RGBColor color);
+int _dxf_getXDepth(char *type);
+Object _dxfXShade(Object o, Camera c, struct count *count, Point *box);
+
 
 #define FRONTFACING 1
 #define BACKFACING  2
