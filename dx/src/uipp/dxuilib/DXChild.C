@@ -275,7 +275,6 @@ DXChild::ConnectTo(const char *host,
     int  j;
     char *dnum;
 #if defined(HAVE_SYS_UTSNAME_H)
-    int  width = getdtablesize();
     struct utsname Uts_Name;
     char *local_rsh_cmd;
 
@@ -521,12 +520,6 @@ DXChild::ConnectTo(const char *host,
 	    ErrorMessage("dup2() error: %s", strerror(errno));
 	    exit(1);
 	}
-	/* Close all other file descriptors */
-#if !defined(__PURIFY__)
-	// purify uses some file descriptors
-	for (i = 3; i < width; ++i)
-	    close(i);
-#endif
 
 	if (cwd != NULL && chdir (cwd) < 0) {
 	    ErrorMessage("chdir() error: %s", strerror(errno));
@@ -1261,7 +1254,6 @@ DXChild::waitForConnection()
     rstring[0] = '\0';
 #if defined(HAVE_SYS_UTSNAME_H)
     fd_set fds;
-    int  width = getdtablesize();
 #endif
 
     /* Until we get port = ..., read from stdout and error.  Close the
@@ -1307,6 +1299,7 @@ DXChild::waitForConnection()
 	sts = dwordTmp;	//	strlen(rdbuffer);
         rdbuffer[sts] = '\0';
         theDXApplication->getMessageWindow()->addInformation(rdbuffer);
+fprintf(stderr, "========= %s\n", rdbuffer);
         if (sts >= 0)
         {
             DXChild::MakeLine(rstring, rdbuffer);
@@ -1409,6 +1402,7 @@ DXChild::waitForConnection()
     int status;
 
     while (this->child >= 0 && (this->out >= 0 || this->err >= 0)) {
+	int width = (this->out > this->err ? this->out : this->err) + 1;
 	FD_ZERO(&fds);
 	if (this->out >= 0)
 	    FD_SET(this->out, &fds);
