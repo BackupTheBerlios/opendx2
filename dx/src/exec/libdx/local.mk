@@ -1,3 +1,4 @@
+.SUFFIXES: .X .c .h
 
 .X.h: class.awk $*.X
 	rm -f $*.h
@@ -9,7 +10,7 @@
 
 buffer.c: buffer.Z
 	sed -e 's/[ 	][ 	]*\$$/ $$/' buffer.Z > __buffer.c
-	gcc -E __buffer.c \
+	/projects/ms/dx/windows/cpp __buffer.c \
 	| tr -s "\044" "\012" \
 	| sed   -e '/^#/d' \
 		-e 's/INCLUDE2/#include/' \
@@ -18,7 +19,7 @@ buffer.c: buffer.Z
 
 shade.c: shade.Z
 	sed -e 's/[ 	][ 	]*\$$/ $$/' shade.Z > __shade_.c
-	gcc -E __shade_.c  \
+	/projects/ms/dx/windows/cpp __shade_.c  \
 	| tr -s "\044" "\012" \
 	| sed -e '/^#/d' \
 		-e 's/DEFINE2/#define/'   \
@@ -28,15 +29,15 @@ shade.c: shade.Z
 
 triangle.c: triangle.Z
 	sed -e 's/[ 	][ 	]*\$$/ $$/' triangle.Z > __triangle.c
-	gcc -E -DPASS1 __triangle.c \
+	/projects/ms/dx/windows/cpp -DPASS1 __triangle.c \
 		| sed -e '/^#/d' \
 		      -e 's/INCLUDE1/#include/' \
 		| tr -s "\044" "\012" > triangle1.c
-	gcc -E -DPASS2 triangle1.c \
+	/projects/ms/dx/windows/cpp -DPASS2 triangle1.c \
 		| sed -e '/^#/d' \
 		      -e 's/INCLUDE2/#include/' \
 		| tr -s "\044" "\012" > triangle2.c
-	gcc -E -DPASS3 triangle2.c \
+	/projects/ms/dx/windows/cpp -DPASS3 triangle2.c \
 		| tr -s "\044" "\012" \
 		| sed -e '/^#/d' \
 		      -e 's/DEFINE3/#define/' \
@@ -46,15 +47,15 @@ triangle.c: triangle.Z
 
 quad.c: quad.Z
 	sed -e 's/[ 	][ 	]*\$$/ $$/' quad.Z > __quad.c
-	gcc -E -DPASS1 __quad.c \
+	/projects/ms/dx/windows/cpp -DPASS1 __quad.c \
 		| sed -e '/^#/d' \
 		      -e 's/INCLUDE1/#include/' \
 		| tr -s "\044" "\012" > quad1.c
-	gcc -E -DPASS2 quad1.c \
+	/projects/ms/dx/windows/cpp -DPASS2 quad1.c \
 		| sed -e '/^#/d' \
 		      -e 's/INCLUDE2/#include/' \
 		| tr -s "\044" "\012" > quad2.c
-	gcc -E -DPASS3 quad2.c \
+	/projects/ms/dx/windows/cpp -DPASS3 quad2.c \
 		| tr -s "\044" "\012" \
 		| sed -e '/^#/d' \
 		      -e 's/DEFINE3/#define/' \
@@ -64,7 +65,7 @@ quad.c: quad.Z
 
 plane.c: plane.Z
 	cp plane.Z _plane.c
-	gcc -E _plane.c \
+	/projects/ms/dx/windows/cpp _plane.c \
 	        | tr -s "\044" "\012" \
 	        | sed -e '/^#/d' \
 		      -e 's/INCLUDE2/#include/' \
