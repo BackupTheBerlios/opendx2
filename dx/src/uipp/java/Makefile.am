@@ -54,7 +54,7 @@ libAnyDX.so: DXLink.o
 	( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object ) 
 
 usual_shared_object:
-	$(CC) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"`  DXLink.o
+	$(CC) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"`  DXLink.o
 
 aix_shared_object:
 	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
