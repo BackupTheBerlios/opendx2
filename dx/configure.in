@@ -20,6 +20,11 @@ AC_PROG_YACC
 dnl Checks for libraries.
 AC_CHECK_LIB(g++, main)
 AC_CHECK_LIB(dl, main)
+AC_CHECK_LIB(netcdf, free_NC_attr)
+
+dnl Don't know procedure names for the next two
+AC_CHECK_LIB(cdf, FOOFOO)
+AC_CHECK_LIB(hdf, BARBAR)
 
 dnl Checks for header files.
 AC_PATH_X
@@ -45,11 +50,5 @@ AC_FUNC_VFORK
 AC_FUNC_VPRINTF
 AC_FUNC_WAIT3
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime putenv re_comp regcmp select socket strcspn strdup strerror strspn strstr strtod strtol strtoul uname)
-
-dnl Got to define these unless the libs are made available
-AC_DEFINE(DXD_LACKS_CDF_FORMAT)
-AC_DEFINE(DXD_LACKS_HDF_FORMAT)
-AC_DEFINE(DXD_LACKS_NCDF_FORMAT)
-
 
 AC_OUTPUT( bin/dx bin/Makefile src/ui++/ui/Makefile lib/Makefile src/exec/hwrender/gl/Makefile src/exec/hwrender/xgl/Makefile src/exec/hwrender/starbase/Makefile src/ui++/dxuilib/Makefile src/ui++/ui/Makefile src/exec/Makefile src/exec/dxexec/Makefile include/Makefile include/dx/Makefile src/exec/libdx/Makefile src/Makefile src/exec/dpexec/Makefile src/exec/dxmods/Makefile src/ui++/base/Makefile src/ui++/Makefile src/ui++/dxl/Makefile src/ui++/dxui/Makefile src/ui++/prompter/Makefile src/ui++/mb/Makefile src/ui++/widgets/Makefile src/ui++/startup/Makefile src/ui++/tutor/Makefile src/ui++/java/dx/protocol/server/Makefile src/ui++/java/dx/protocol/Makefile src/ui++/java/dx/Makefile src/ui++/java/dx/runtime/Makefile src/ui++/java/dx/client/Makefile src/ui++/java/dx/net/Makefile src/ui++/java/dx/applets/Makefile src/ui++/java/dx/server/Makefile src/ui++/java/Makefile src/exec/hwrender/opengl/Makefile src/exec/hwrender/Makefile Makefile samples/data/Makefile samples/Makefile samples/callmodule/Makefile samples/dxlink/Makefile samples/java/Makefile samples/macros/Makefile samples/outboard/Makefile samples/program_guide/Makefile samples/programs/MISC/Makefile samples/programs/2D_DATA/Makefile samples/programs/3D_DATA/Makefile samples/programs/ANNOTATION/Makefile samples/programs/CATEGORICAL/Makefile samples/programs/COLORMAP_EDITOR/Makefile samples/programs/COMPUTE/Makefile samples/programs/DATA_DRIVEN_INTERACTORS/Makefile samples/programs/DEBUGGING/Makefile samples/programs/DISTRIBUTED_PROCESSING/Makefile samples/programs/IMAGE_PROCESSING/Makefile samples/programs/IMPORTING/Makefile samples/programs/INTERFACE_CONTROL/Makefile samples/programs/LOOPING/Makefile samples/programs/PLOTTING/Makefile samples/programs/PROBES/Makefile samples/programs/RENDERING/Makefile samples/programs/SCATTERED/Makefile samples/programs/SEQUENCER/Makefile samples/programs/SIMPLE/Makefile samples/programs/SUPERVISE/Makefile samples/programs/Makefile samples/scripts/Makefile samples/supervise/Makefile samples/supervise/complexdemo/data/Makefile samples/supervise/complexdemo/interactors/Makefile samples/supervise/complexdemo/nets/Makefile samples/supervise/complexdemo/Makefile samples/supervise/imagedemo/Makefile samples/supervise/interactors/Makefile samples/supervise/mediumdemo/interactors/Makefile samples/supervise/mediumdemo/Makefile samples/supervise/simpledemo/interactors/Makefile samples/supervise/simpledemo/Makefile samples/tutorial/Makefile samples/user/Makefile samples/util/dxf/Makefile samples/util/fluent/Makefile samples/util/mpeg/Makefile samples/util/plot3d/Makefile samples/util/Makefile help/Makefile html/Makefile man/catl/Makefile man/manl/Makefile man/Makefile fonts/Makefile doc/Makefile)
