@@ -1,4 +1,5 @@
 SUBDIRS = libdx dxmods hwrender dpexec dxexec
+EXTRA_DIST = mklib
 
 DELFILES = \
         xxmain.o \
