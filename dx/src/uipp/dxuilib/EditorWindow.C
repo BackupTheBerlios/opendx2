@@ -1378,12 +1378,21 @@ void EditorWindow::createFileMenu(Widget parent)
 	new ButtonInterface(pulldown, 
                             "vpeOpenOption", theDXApplication->openFileCmd);
 
-    if ( (cmd = this->network->getSaveCommand()) ) 
-	this->saveOption = new ButtonInterface(pulldown, "vpeSaveOption", cmd);
+    if ( (cmd = this->network->getSaveCommand()) ) {
+    	if(this->network->isMacro() == FALSE) 
+	    this->saveOption = new ButtonInterface(pulldown, "vpeSaveOption", cmd);
+	else
+	    this->saveOption = new ButtonInterface(pulldown, "vpeSaveMacroOption", cmd);
+    }
 
-    if ( (cmd = this->network->getSaveAsCommand()) ) 
-	this->saveAsOption = new ButtonInterface(pulldown, 
+    if ( (cmd = this->network->getSaveAsCommand()) ) {
+        if(this->network->isMacro() == FALSE)
+	    this->saveAsOption = new ButtonInterface(pulldown, 
 						"vpeSaveAsOption", cmd);
+	else
+	    this->saveAsOption = new ButtonInterface(pulldown, 
+						"vpeSaveMacroAsOption", cmd);
+    }
 
    
     Command *openCfgCmd = this->network->getOpenCfgCommand();
