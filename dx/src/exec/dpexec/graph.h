@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/graph.h,v 1.6 2000/08/11 15:28:11 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/graph.h,v 1.7 2000/08/22 21:08:09 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -260,6 +260,6 @@ char 	*_dxf_ExGFuncPathToString( gfunc *fnode );
 char 	*_dxf_ExGFuncPathToCacheString( gfunc *fnode );
 
 #define MAX_PATH_STR_LEN 1024
-#define EX_PIN_PROC 2
+#define EX_PIN_PROC 1
 
 #endif	/* _GRAPH_H */
