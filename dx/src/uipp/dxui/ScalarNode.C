@@ -1390,7 +1390,7 @@ boolean ScalarNode::parseIOComment(boolean input, const char* comment,
 	    const char* filename, int lineno, boolean valueOnly)
 {
     int      defaulting = 0, items_parsed, ionum, r;
-    boolean  visible = TRUE;
+    int	     visible = TRUE;
     Type     type = DXType::UndefinedType;
     char     *value;
     boolean  parse_error = FALSE; 
