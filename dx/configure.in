@@ -63,6 +63,8 @@ if test "$ARCH" = "solaris" ; then
     ], LIBS=$OLDLIBS, -lX11)
 fi
 
+AC_CHECK_LIB(gen, regex)
+
 dnl A couple libs for cygwin
 AC_CHECK_LIB(ICE, IceConnectionNumber)
 AC_CHECK_LIB(SM, SmcSetProperties)
