@@ -13,6 +13,8 @@ uninstall-local:
 install-exec-local: 
 	@ if test "@INSTALL_DX_CSH@" != "" ; then \
 	    $(INSTALL) dx $(prefix)/bin ; \
-	    $(INSTALL) -d $(prefix)/dx/bin ; \
+	    if test ! -e $(prefix)/dx/bin ; then \
+	    	mkdir $(prefix)/dx/bin ; \
+	    fi ; \
 	    $(INSTALL) dx.workerscript $(prefix)/dx/bin  ;\
 	fi
