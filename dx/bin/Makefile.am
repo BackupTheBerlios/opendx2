@@ -1,5 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
+dxbindir = $(prefix)/dx/bin
+dxbin_SCRIPTS = mdf2c
+
 EXTRA_DIST = dx.workerscript dx
 
 uninstall-local: 
