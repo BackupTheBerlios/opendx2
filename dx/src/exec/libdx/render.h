@@ -17,6 +17,7 @@
 \section{Rendering}
 This section describes the internal routines and data structures
 associated with rendering.
+*/
 
 /*
 \paragraph{Xfield}  The {\tt xfield} data structure contains information
