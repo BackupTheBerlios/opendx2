@@ -3,12 +3,15 @@
 AC_SUBST(SHELL)
 
 AC_SUBST(DXINST)
+AC_SUBST(DXARCH)
+AC_SUBST(DXCC)
 AC_SUBST(WRL_CLASSPATH)
 AC_SUBST(JDK_CLASSPATH)
 AC_SUBST(JAVAC)
 AC_SUBST(JAR)
 AC_SUBST(DX_JAR)
 AC_SUBST(MAKE_JAVADX_SAMPLES)
+AC_SUBST(SHARED_LINK)
 
 SHELL=/bin/sh
 
@@ -24,6 +27,7 @@ AC_ARG_WITH(javadx,
 
 DX_INSTALL_PATH
 DX_GET_PREFIX
+DX_GET_ARCH
 
 MAKE_JAVADX_SAMPLES=""
 if test "with_javadx" != 'no' ; then
@@ -40,11 +44,13 @@ if test "with_javadx" != 'no' ; then
   fi
 fi
 
-AC_OUTPUT( Makefile callmodule/Makefile data/Makefile dxlink/Makefile \
+AC_OUTPUT( Makefile callmodule/Makefile callmodule/callmodule_make \
+	data/Makefile dxlink/Makefile dxlink/dxlink_make \
 	java/samples/Makefile java/Makefile java/userdata/Makefile  \
 	java/usermacros/Makefile  java/nets/Makefile  java/makes/Makefile  \
 	java/samples/Makefile  macros/Makefile outboard/Makefile \
-	program_guide/Makefile programs/2D_DATA/Makefile programs/3D_DATA/Makefile \
+	program_guide/Makefile program_guide/guidemake \
+	programs/2D_DATA/Makefile programs/3D_DATA/Makefile \
 	programs/ANNOTATION/Makefile programs/DATA_DRIVEN_INTERACTORS/Makefile \
 	programs/DEBUGGING/Makefile programs/IMPORTING/Makefile \
 	programs/INTERFACE_CONTROL/Makefile programs/LOOPING/Makefile \
@@ -55,11 +61,16 @@ AC_OUTPUT( Makefile callmodule/Makefile data/Makefile dxlink/Makefile \
 	programs/SIMPLE/Makefile programs/PLOTTING/Makefile \
 	programs/SCATTERED/Makefile programs/SUPERVISE/Makefile \
 	programs/MISC/Makefile programs/Makefile scripts/Makefile \
-	supervise/simpledemo/interactors/Makefile supervise/simpledemo/Makefile \
-	supervise/mediumdemo/interactors/Makefile supervise/mediumdemo/Makefile \
-	supervise/imagedemo/Makefile supervise/interactors/Makefile \
-	supervise/complexdemo/interactors/Makefile \
+	supervise/simpledemo/Makefile \
+	supervise/simpledemo/interactors/Makefile  supervise/simpledemo/interactors/module_make 
+	supervise/mediumdemo/Makefile \
+	supervise/mediumdemo/interactors/Makefile supervise/mediumdemo/interactors/module_make \
+	supervise/imagedemo/Makefile \
+	supervise/interactors/Makefile supervise/interactors/module_make \
+	supervise/complexdemo/interactors/Makefile supervise/complexdemo/interactors/module_make \
 	supervise/complexdemo/nets/Makefile supervise/complexdemo/data/Makefile \
 	supervise/complexdemo/Makefile supervise/Makefile tutorial/Makefile \
-	user/Makefile util/dxf/Makefile util/plot3d/Makefile util/mpeg/Makefile \
+	user/Makefile user/user_inboard_make \
+	user/user_loadable_make user/user_outboard_make \
+	util/dxf/Makefile util/plot3d/Makefile util/mpeg/Makefile \
 	util/fluent/Makefile util/Makefile )

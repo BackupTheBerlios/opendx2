@@ -12,7 +12,7 @@
 #include <Xm/PushB.h>
 #include <Xm/ToggleB.h>
 #include <Xm/Text.h>
-#include "dx/dxl.h"
+#include "dxl.h"
 
 
 void radio_cloudCB(Widget, XtPointer, XtPointer);

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "dx/dxl.h"
+#include "dxl.h"
 
 #ifndef BASE
 #define BASE "/usr/lpp/dx"

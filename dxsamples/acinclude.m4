@@ -47,6 +47,18 @@ ac_cv_dx_install_path=$DXINST
 DXINST=$ac_cv_dx_install_path
 ])
 
+dnl DX_GET_ARCH
+dnl Finds what DX calls the platform's architecture.
+dnl (Rather than duplicate uname code everwhere we just ask dx)
+dnl  --------------------------------------------------------
+AC_DEFUN(DX_GET_ARCH,
+[
+  AC_MSG_CHECKING(for platform architecture via dx -whicharch)
+AC_CHECK_PROGS( DX, dx )
+  DXARCH=`$DX -whicharch`
+  AC_MSG_RESULT(found $DXARCH)
+])
+
 
 dnl  DX_GET_PREFIX
 dnl  Sets the prefix where to install the samples. Is overridden
@@ -80,9 +92,9 @@ fi
 DX_JAR=""
 WRL_CLASSPATH=""
 JDK_CLASSPATH=""
-if test -r $DXINST/java/javainfo ; then
-  WRL_CLASSPATH=`cat $DXINST/java/javainfo | grep WRL_CLASSPATH | sed -e "s/WRL_CLASSPATH//" -e "s/ //"`
-  JDK_CLASSPATH=`cat $DXINST/java/javainfo | grep JDK_CLASSPATH | sed -e "s/JDK_CLASSPATH//" -e "s/ //"`
+if test -r $DXINST/lib_$DXARCH/arch.mak ; then
+  WRL_CLASSPATH=`grep WRL_CLASSPATH $DXINST/lib_$DXARCH/arch.mak | sed -e "s/WRL_CLASSPATH =//" -e "s/ //"`
+  JDK_CLASSPATH=`grep JDK_CLASSPATH $DXINST/lib_$DXARCH/arch.mak | sed -e "s/JDK_CLASSPATH =//" -e "s/ //"`
 fi
 if test -r $DXINST/java/htmlpages/dx.jar ; then
   DX_JAR=$DXINST/java/htmlpages/dx.jar

@@ -3,5 +3,12 @@
 
 datadir = $(prefix)/dx/samples/supervise/simpledemo/interactors
 
-data_DATA =  Makefile_alphax Makefile_hp700 Makefile_ibm6000 Makefile_sgi Makefile_solaris interactors.c
+data_DATA =  Makefile_alphax Makefile_hp700 Makefile_ibm6000 Makefile_sgi Makefile_solaris interactors.c interactors_make
 EXTRA_DIST = $(data_DATA)
+
+loadable: module_make
+	$(MAKE) -f module_make loadable
+
+inboard: module_make
+	$(MAKE) -f module_make inboard
+

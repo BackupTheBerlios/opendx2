@@ -10,7 +10,7 @@
 #include <Xm/DrawingA.h>
 #include <Xm/PushB.h>
 #include <Xm/Text.h>
-#include "dx/dxl.h"
+#include "dxl.h"
 
 #include <stdio.h>
 #include <stdlib.h>

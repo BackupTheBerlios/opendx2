@@ -8,7 +8,9 @@ SUBDIRS =  2D_DATA 3D_DATA ANNOTATION CATEGORICAL COLORMAP_EDITOR \
 
 datadir = $(prefix)/dx/samples/programs
 
-data_DATA =  Accumulate.cfg Accumulate.net AlternateVisualizations.cfg \
+data_DATA =  $(DATA1) $(DATA2)
+
+DATA1 = Accumulate.cfg Accumulate.net AlternateVisualizations.cfg \
     AlternateVisualizations.net AnnotationGlyphs.cfg AnnotationGlyphs.net \
     Arrange.cfg Arrange.net AutoAxes.cfg AutoAxes.net AutoAxesSpecifyTicks.cfg \
     AutoAxesSpecifyTicks.net AutoColor.cfg AutoColor.net AutoGlyph.cfg \
@@ -43,8 +45,9 @@ data_DATA =  Accumulate.cfg Accumulate.net AlternateVisualizations.cfg \
     Majority.cfg Majority.net ManipulateGroups.cfg ManipulateGroups.net \
     Map.cfg Map.net MapToPlane.cfg MapToPlane.net MappedIso.cfg MappedIso.net \
     MarkUnmark.cfg MarkUnmark.net MovingCamera.cfg MovingCamera.net \
-    MovingSheet.cfg MovingSheet.net MultipleDataSets.cfg MultipleDataSets.net \
-    PickPlot.cfg PickPlot.net PickStreamline.cfg PickStreamline.net \
+    MovingSheet.cfg MovingSheet.net MultipleDataSets.cfg MultipleDataSets.net
+
+DATA2 = PickPlot.cfg PickPlot.net PickStreamline.cfg PickStreamline.net \
     PlotGroupOfLines.cfg PlotGroupOfLines.net PlotLine.cfg PlotLine.net \
     PlotLine2.cfg PlotLine2.net PlotSpecifyTicks.cfg PlotSpecifyTicks.net \
     PlotTwoLines.cfg PlotTwoLines.net Post.cfg Post.net \
