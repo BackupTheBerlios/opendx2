@@ -530,6 +530,8 @@ rm selectHdrs.h
 
 AC_DEFUN(DX_CHECK_SOCK_LENGTH_TYPE,
 [
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
 socket_argtype=
 cat > socketHdrs.h << EOF
 EOF
@@ -557,6 +559,7 @@ fi
 done
 echo the third arg to getsockname is pointer to $socket_argtype
 rm socketHdrs.h
+AC_LANG_RESTORE
 ])
 
 AC_DEFUN(DX_CYGWIN_MOUNTS,
