@@ -339,7 +339,7 @@ then
         with_motif_includes=''
 fi
 
-AC_ARG_WITH(motif-libs, [  --with-motif-libs       set path for motif libraries (default none)],[with_motif_libs=$withval], [with-motif-libs=''])
+AC_ARG_WITH(motif-libs, [  --with-motif-libs       set path for motif libraries (default none)],[with_motif_libs=$withval], [with_motif_libs=''])
 if test "$with_motif_libs" != "yes" && test -z "$with_motif_libs"
 then
   with_motif_libs=''
@@ -1186,12 +1186,12 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
 			DX_RTL_CFLAGS=" -Dsgi -D_GNU_SOURCE"
                 	DX_RTL_ALDFLAGS=" -shared"
 			DX_RTL_DXENTRY=" -e DXEntry -exported_symbol DXEntry"
-			if ccld_defaulted ; then 
+			if test $ccld_defaulted != 0 ; then 
 				SHARED_LINK="ld"
 			fi
         	else
                 	DX_RTL_ALDFLAGS=" -shared -ignore_unresolved "
-			if ccld_defaulted ; then
+			if test $ccld_defaulted != 0 ; then
 				SHARED_LINK=$CC
 			fi
         	fi
