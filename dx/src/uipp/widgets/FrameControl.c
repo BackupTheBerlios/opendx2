@@ -362,8 +362,6 @@ Widget w;
     XtSetArg(wargs[n], XmNcurrentColor,   new->frame_control.current_color);
     n++;
     XtSetArg(wargs[n], XmNlimitColor,     new->frame_control.limit_color); n++;
-    XtSetArg(wargs[n], XmNwidth,          new->core.width);                n++;
-    XtSetArg(wargs[n], XmNheight,         new->core.height);               n++;
     XtSetArg(wargs[n], XmNminValue,       new->frame_control.min_value);   n++;
     XtSetArg(wargs[n], XmNcurrent,        new->frame_control.current_value);
     n++;
