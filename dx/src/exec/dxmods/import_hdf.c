@@ -6,18 +6,6 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
-/* Because of type definitions in hdfi.h, this must be before dxconfig.h
-   for solaris. */
-#if defined(HAVE_LIBDF)
-#if defined(solaris) || defined(sgi)
-#if defined(HAVE_DFSD_H)
-#include <dfsd.h>
-#else
-#include <hdf/dfsd.h>
-#endif
-#endif /*solaris || sgi*/
-#endif /*HAVE_LIBDF*/
-
 #include <dxconfig.h>
 
 #include <stdio.h>
@@ -42,15 +30,45 @@
 #define INTEL86 
 #endif
 
-#if !defined(solaris) && !defined(sgi)
+/* hdfi.h typdefs a set of number types whereas dx defines them
+   with configure. In order to compile, it is necessary for us to
+   undef them so the hdfi.h header can be included. 
+ */
+ 
+#ifdef int8
+#undef int8
+#endif
+#ifdef uint8
+#undef uint8
+#endif
+#ifdef int16
+#undef int16
+#endif
+#ifdef uint16
+#undef uint16
+#endif
+#ifdef int32
+#undef int32
+#endif
+#ifdef uint32
+#undef uint32
+#endif
+#ifdef float32
+#undef float32
+#endif
+#ifdef float64
+#undef float64
+#endif
+
 #if defined(HAVE_DFSD_H)
 #include <dfsd.h>
 #else
 #include <hdf/dfsd.h>
 #endif
-#endif /* !solaris */
 
+#if !defined(macos)
 #include <ctype.h>
+#endif
 
 /* special access: needs extra include file, and has different constants 
  *  to call stat() to find out if file exists and is readable.
