@@ -35,7 +35,7 @@ PickNode::~PickNode()
     ImageWindow *iw;
     List *l = this->getNetwork()->getImageList();
     ListIterator iter(*l);
-    while (iw = (ImageWindow*)iter.getNext()) 
+    while ( (iw = (ImageWindow*)iter.getNext()) ) 
         iw->deletePick(this);
 }
 
@@ -59,7 +59,7 @@ void PickNode::initializeAfterNetworkMember()
     ImageWindow *iw;
     List *l = this->getNetwork()->getImageList();
     ListIterator iter(*l);
-    while (iw = (ImageWindow*)iter.getNext()) 
+    while ( (iw = (ImageWindow*)iter.getNext()) ) 
         iw->addPick(this);
 }
 
@@ -79,7 +79,7 @@ boolean PickNode::setLabelString(const char *label)
     ImageWindow *iw;
     List *l = this->getNetwork()->getImageList();
     ListIterator iter(*l);
-    while (iw = (ImageWindow*)iter.getNext()) 
+    while ( (iw = (ImageWindow*)iter.getNext()) ) 
         iw->changePick(this);
     return result;
 }

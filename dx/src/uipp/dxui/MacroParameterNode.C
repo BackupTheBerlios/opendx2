@@ -107,7 +107,7 @@ MacroParameterNode::initialize()
     if (!net->isMacro())
 	net->makeMacro(TRUE);
     MacroDefinition *md = net->getDefinition();
-    ParameterDefinition *param;
+    ParameterDefinition *param=NULL;
 
     boolean input = this->isInput();
     if (!md->isReadingNet()) {
@@ -333,7 +333,6 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 	        return this->UniqueNameNode::netParseAuxComment(comment,file,lineno);
 	    visible = TRUE;
 	}
-	MacroDefinition *md = this->getNetwork()->getDefinition();
 	if (!this->getNetwork()->isMacro())
 	    this->getNetwork()->makeMacro(TRUE);
 	if (this->isInput())
@@ -384,7 +383,7 @@ boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 
 	ListIterator li(*outTypes);
 	DXType *t;
-	while(t = (DXType*)li.getNext())
+	while( (t = (DXType*)li.getNext()) )
 	{
 	    macroPd->removeType(t);
 	}
@@ -394,13 +393,13 @@ boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 	outTypes = nodePd->getTypes();
 
         li.setList(*outTypes);
-        while(t = (DXType*)li.getNext())
+        while( (t = (DXType*)li.getNext()) )
         {
             nodePd->removeType(t);
         }
 
 	li.setList(*newTypesList);
-	while(t = (DXType*)li.getNext())
+	while( (t = (DXType*)li.getNext()) )
 	{
 	    DXType *newt = t->duplicate(); 
 	    nodePd->addType(newt);
@@ -423,7 +422,7 @@ boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 
 	ListIterator li(*outTypes);
 	DXType *t;
-	while(t = (DXType*)li.getNext())
+	while( (t = (DXType*)li.getNext()) )
 	{
 	    macroPd->removeType(t);
 	}
@@ -433,13 +432,13 @@ boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 	outTypes = nodePd->getTypes();
 
         li.setList(*outTypes);
-        while(t = (DXType*)li.getNext())
+        while( (t = (DXType*)li.getNext()) )
         {
             nodePd->removeType(t);
         }
 
 	li.setList(*newTypesList);
-	while(t = (DXType*)li.getNext())
+	while( (t = (DXType*)li.getNext()) )
 	{
 	    DXType *newt = t->duplicate(); 
 	    nodePd->addType(newt);
@@ -458,10 +457,8 @@ boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 }
 boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 {
-    int destIndex;
-    Node *dest = a->getDestinationNode(destIndex);
-    int srcIndex;
-    Node *src = a->getSourceNode(srcIndex);
+    int destIndex=0;
+    int srcIndex=0;
     if (!this->UniqueNameNode::removeIOArk(io, index, a))
 	return FALSE;
 
@@ -484,13 +481,13 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 
     List *outTypes = macroPd->getTypes();
     DXType *t;
-    while(t = (DXType*)(outTypes->getElement(1)))
+    while( (t = (DXType*)(outTypes->getElement(1))) )
     {
 	macroPd->removeType(t);
     }
 
     outTypes = nodePd->getTypes();
-    while(t = (DXType*)(outTypes->getElement(1)))
+    while( (t = (DXType*)(outTypes->getElement(1))) )
     {
 	nodePd->removeType(t);
     }
@@ -509,7 +506,7 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
     List *typesList = new List;
     typesList->appendElement(new DXType(DXType::ObjectType));
 
-    while(a = (Ark*)li.getNext())
+    while( (a = (Ark*)li.getNext()) )
     {
 	ParameterDefinition *pind;
 	if (this->isInput())
@@ -536,7 +533,7 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 
 
     li.setList(*typesList);
-    while(t = (DXType*)li.getNext())
+    while( (t = (DXType*)li.getNext()) )
     {
 	DXType *newt = t->duplicate(); 
 	nodePd->addType(newt);

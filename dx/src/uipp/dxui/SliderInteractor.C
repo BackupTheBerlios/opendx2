@@ -111,11 +111,8 @@ void SliderInteractor::completeInteractivePart()
 Widget SliderInteractor::createInteractivePart(Widget form)
 {
     ScalarNode	*node;
-    int         		components, i;
-    Widget			last_widget, w;
     ScalarInstance		*si = (ScalarInstance*)
 					this->interactorInstance;
-    Arg				wargs[2];
 
     ASSERT(si);
 
@@ -157,7 +154,7 @@ static Widget CreateSliderComponent(Widget  parent,
 				     void * clientData)
 				     
 {
-    Widget form,widget;
+    Widget widget;
     int    n;
     Arg    wargs[30];
 

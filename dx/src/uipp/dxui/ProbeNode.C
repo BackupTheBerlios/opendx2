@@ -30,7 +30,7 @@ ProbeNode::~ProbeNode()
     ImageWindow *iw;
     List *l = this->getNetwork()->getImageList();
     ListIterator iterator(*l);
-    while (iw = (ImageWindow*)iterator.getNext()) 
+    while ( (iw = (ImageWindow*)iterator.getNext()) ) 
     	iw->deleteProbe(this);
 }
 
@@ -51,7 +51,7 @@ void ProbeNode::initializeAfterNetworkMember()
     ImageWindow *iw;
     List *l = this->getNetwork()->getImageList();
     ListIterator iterator(*l);
-    while (iw = (ImageWindow*)iterator.getNext()) 
+    while ( (iw = (ImageWindow*)iterator.getNext()) ) 
     	iw->addProbe(this);
 }
 
@@ -61,7 +61,7 @@ boolean ProbeNode::setLabelString(const char *label)
     ImageWindow *iw;
     List *l = this->getNetwork()->getImageList();
     ListIterator iterator(*l);
-    while (iw = (ImageWindow*)iterator.getNext()) 
+    while ( (iw = (ImageWindow*)iterator.getNext()) ) 
     	iw->changeProbe(this);
     return result;
 }
@@ -105,7 +105,6 @@ void ProbeNode::resetValueList(int cursor, boolean toDelete,
 {
 	char *newList, list[10];
 	const char *p, *oldList= this->getOutputValueString(1);
-	int   i = 0;
 
 	if (EqualString(oldList,"NULL")) {
 	    sprintf(list, "{ }");

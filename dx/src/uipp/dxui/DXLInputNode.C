@@ -189,7 +189,7 @@ boolean DXLInputNode::printAsBean(FILE* f)
     fprintf (f, "%spublic void set%s(float new_value) {\n", indent, PropName);
     indent = "\t";
     fprintf (f, "%sthis.%s = (float)new_value;\n", indent, propName);
-    fprintf (f, "%sif (this.rmi == null) return ;\n", indent, propName);
+    fprintf (f, "%sif (this.rmi == null) return %s;\n", indent, propName);
     fprintf (f, "%sthis.rmi.setScalar(\"%s\", new_value);\n", indent, this->getLabelString());
     indent = "    ";
     fprintf (f, "%s}\n\n", indent);

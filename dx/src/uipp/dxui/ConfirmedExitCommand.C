@@ -46,7 +46,7 @@ void   ConfirmedExitCommand::doPreAction()
     Network       *net;
     SaveMacroCommand *cmd = NULL, *first = NULL,*last = NULL;
 
-    while (net = (Network*)li.getNext())
+    while ( (net = (Network*)li.getNext()) )
     	if (net->isMacro() AND net->saveToFileRequired())
 	{
 	    cmd = (SaveMacroCommand*)net->getDefinition()->getSaveCmd();
@@ -80,7 +80,7 @@ boolean ConfirmedExitCommand::needsConfirmation()
     ListIterator  li(app->macroList);
     Network       *net;
 
-    while (net = (Network*)li.getNext())
+    while ( (net = (Network*)li.getNext()) )
     	if (net->isMacro() AND net->saveToFileRequired())
 	    return TRUE;
      

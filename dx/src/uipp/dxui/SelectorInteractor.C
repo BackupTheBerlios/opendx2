@@ -96,7 +96,6 @@ extern "C" void SelectorInteractor_OptionMenuCB(Widget                  widget,
                XtPointer                callData)
 {
     SelectorInteractor *si = (SelectorInteractor*)clientData;
-    int            component;
 
     ASSERT(widget);
     ASSERT(si);
@@ -123,8 +122,6 @@ Widget SelectorInteractor::createInteractivePart(Widget form)
 {
     SelectorNode	*node;
     SelectorInstance	*si = (SelectorInstance*)this->interactorInstance;
-    Arg			wargs[3];
-    int			n;
 
     ASSERT(si);
 
@@ -157,7 +154,7 @@ void SelectorInteractor::reloadMenuOptions()
     int options, n, i;
     Arg wargs[20];
     Pixel bg, fg;
-    unsigned char rsp, rsproot;
+    unsigned char rsp;
     
     XtVaGetValues (this->optionForm, XmNresizePolicy, &rsp, NULL);
     XtVaSetValues (this->optionForm, XmNresizePolicy, XmRESIZE_GROW, NULL);
@@ -322,7 +319,6 @@ void SelectorInteractor::reloadMenuOptions()
 void SelectorInteractor::optionMenuCallback(Widget w, int optnum, XtPointer cb)
 {
     SelectorInstance *si = (SelectorInstance*)this->interactorInstance;
-    SelectorNode	*snode;
 
     ASSERT(w);
     ASSERT(optnum > 0);
@@ -335,8 +331,6 @@ void SelectorInteractor::optionMenuCallback(Widget w, int optnum, XtPointer cb)
 //
 void SelectorInteractor::updateDisplayedInteractorValue()
 {
-    Arg		   wargs[10];
-    int		   i,components,n;
     // FIXME: should check to make sure we have the correct class of node.
     SelectorInstance *si = (SelectorInstance*)this->interactorInstance;
     ASSERT(si);
@@ -357,7 +351,6 @@ void SelectorInteractor::updateDisplayedInteractorValue()
     Widget w = this->getOptionWidget(option);
     ASSERT(w);
     XtVaSetValues(this->optionMenu, XmNmenuHistory, w, NULL);
-
 }
 
 //
@@ -376,8 +369,6 @@ void SelectorInteractor::handleInteractivePartStateChange(
 
 void SelectorInteractor::layoutInteractorHorizontally()
 {
-Widget button;
-
     this->Interactor::layoutInteractorHorizontally();
 
     if (!this->optionMenu) return ;

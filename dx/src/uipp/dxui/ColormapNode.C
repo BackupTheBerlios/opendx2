@@ -526,8 +526,6 @@ ColormapNode::netParseComment(const char* comment,
 
 boolean ColormapNode::netPrintAuxComment(FILE *f)
 {
-    char   *temp, *path, *name, *netname;
-
     if (!this->DrivenNode::netPrintAuxComment(f))
         return FALSE;
 
@@ -765,7 +763,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
     //
     // Handle the 'title=%s\n' part of the message.
     //
-    if (p = strstr((char*)line,"title=")) {
+    if ( (p = strstr((char*)line,"title=")) ) {
         while (*p != '=') p++;
         p++;
 	if (EqualString(p,"NULL"))
@@ -776,7 +774,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
     //
     // Handle the 'min=%g' part of the message.
     //
-    if (p = strstr((char*)line,"min=")) {
+    if ( (p = strstr((char*)line,"min=")) ) {
         while (*p != '=') p++;
         p++;
 	if (EqualSubstring(p,"NULL",4)) {
@@ -801,7 +799,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
     //
     // Handle the 'max=%g' part of the message.
     //
-    if (p = strstr((char*)line,"max=")) {
+    if ( (p = strstr((char*)line,"max=")) ) {
         while (*p != '=') p++;
         p++;
 	if (EqualSubstring(p,"NULL",4)) {
@@ -828,7 +826,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
     // message.
     // Backwards compatibility for versions 2.0.0 -> 2.0.2.
     //
-    if (p = strstr((char*)line,"histogram=")) {
+    if ( (p = strstr((char*)line,"histogram=")) ) {
 	values++;
         while (*p != '=') p++;
         p++;
@@ -848,7 +846,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
     // the first four inputs), otherwise do install it.
     //
     //
-    if (p = strstr((char*)line,"map=")) {
+    if ( (p = strstr((char*)line,"map=")) ) {
         char *buf = new char [STRLEN(p)];
    	update_attr = FALSE;
 	do {
@@ -891,7 +889,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
 		this->setInputValueQuietly(i2,buf, DXType::VectorListType);
 	    }
 	    p += 4; 
-	} while (p = strstr((char*)p,"map="));
+	} while ( (p = strstr((char*)p,"map=")) );
 	delete buf;
     }
     
@@ -1004,7 +1002,7 @@ void ColormapNode::RescaleDoubles(double *values, int count,
 				double newmin, double newmax)
 {
     int i;
-    double rel_slope, min, max;
+    double rel_slope, min=0, max=0;
 
     for (i=0 ; i<count ; i++) {
 	double val = values[i];
@@ -1233,7 +1231,7 @@ error:
 void ColormapNode::convertOldInputs()
 {
     const char *value; 
-    double *hsvdata, *opdata, *h, *s, *v, *op; 
+    double *hsvdata, *opdata, *h, *s=NULL, *v=NULL, *op; 
     int datacnt, hsvcnt, opcnt, i,j, tuples;
 
     //
@@ -1349,7 +1347,7 @@ char *ColormapNode::cmParseMap(FILE *fp, double min, double max)
 {
 #define BUFLEN 1024
     double *values = NULL, *levels = NULL; 
-    char *map, buffer[BUFLEN];
+    char *map=NULL, buffer[BUFLEN];
     int count;
 
     if (!fgets(buffer,BUFLEN, fp))
@@ -1402,7 +1400,7 @@ boolean ColormapNode::cmPrintMap(FILE *fp, double min, double max,
 	// Print out the (normalized) level and value for this map.
 	// The 3 trailing zeros are included for backwards compatibility
 	double l = values[offset];
-	if (fprintf(fp,"%.20lf   %.20lf  0  0  0\n",l,values[offset+1]) <= 0)
+	if (fprintf(fp,"%.20f   %.20f  0  0  0\n",l,values[offset+1]) <= 0)
 	    goto error;
 	offset += 2;
     } 

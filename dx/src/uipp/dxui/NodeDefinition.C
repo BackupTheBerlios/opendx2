@@ -51,10 +51,10 @@ NodeDefinition::~NodeDefinition()
     //
     ParameterDefinition *pd;
     ListIterator iterator(this->inputDefs);
-    while (pd = (ParameterDefinition*)iterator.getNext())
+    while ( (pd = (ParameterDefinition*)iterator.getNext()) )
 	delete pd;
     iterator.setList(this->outputDefs);
-    while (pd = (ParameterDefinition*)iterator.getNext())
+    while ( (pd = (ParameterDefinition*)iterator.getNext()) )
 	delete pd;
 
 
@@ -65,7 +65,7 @@ NodeDefinition::~NodeDefinition()
     if (this->loadFile)
     	delete this->loadFile;
     if (this->description)
-    	delete (void*)this->description;
+    	delete this->description;
 
     //
     // If this node definition was installed in the Node definition 
@@ -237,7 +237,7 @@ void NodeDefinition::ResetInstanceNumbers(Dictionary *dict)
     DictionaryIterator di(*dict);
     NodeDefinition  *nd;
 
-    while (nd = (NodeDefinition*) di.getNextDefinition()) 
+    while ( (nd = (NodeDefinition*) di.getNextDefinition()) ) 
 	nd->setNextInstance(1);
 }
 
@@ -298,7 +298,7 @@ char *NodeDefinition::getMDFHeaderString()
 	io_board[0] = '\0';
     }
     if (this->mdf_flags) {
-	sprintf(flags,"FLAGS%s%s%s%s%s%s%s%s\n",
+	sprintf(flags,"FLAGS%s%s%s%s%s%s%s%s%s\n",
 		(this->isMDFFlagERR_CONT() ? " ERR_CONT" : ""),
 		(this->isMDFFlagSWITCH() ? " SWITCH" : ""),
 		(this->isMDFFlagPIN() ? " PIN" : ""),
@@ -349,7 +349,7 @@ char *NodeDefinition::getMDFParametersString(boolean inputs)
     else
 	li.setList(this->outputDefs);	
 
-    while (pd = (ParameterDefinition*)li.getNext()) {
+    while ( (pd = (ParameterDefinition*)li.getNext()) ) {
 	char *line = pd->getMDFString();
 	int linelen = STRLEN(line) + 1;
 	if (linelen + currend > maxlen) {

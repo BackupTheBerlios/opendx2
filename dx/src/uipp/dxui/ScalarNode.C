@@ -124,7 +124,7 @@ boolean ScalarNode::doDimensionalityChange(int new_dim)
     // non-existent vector components. 
     //
     ListIterator iterator(this->instanceList);
-    while (si = (ScalarInstance*)iterator.getNext())  
+    while ( (si = (ScalarInstance*)iterator.getNext()) )  
 	si->uncreateInteractor();
     
 
@@ -142,7 +142,7 @@ boolean ScalarNode::doDimensionalityChange(int new_dim)
     // Now have all the instances adjust themselves
     //
     iterator.setList(this->instanceList);
-    while (si = (ScalarInstance*)iterator.getNext())  {
+    while ( (si = (ScalarInstance*)iterator.getNext()) )  {
 	if (!si->handleNewDimensionality())
 	    return FALSE;	
     }
@@ -214,7 +214,7 @@ boolean ScalarNode::adjustAttributeDimensions(int old_dim, int new_dim)
 boolean ScalarNode::setDefaultAttributes()
 {
     const char *id;
-    const char *min, *max, *incr, *decimals;
+    const char *min=NULL, *max=NULL, *incr=NULL, *decimals=NULL;
     boolean r;
  
 // FIXME: these strings should be build from DEFAULT_*_STR
@@ -433,7 +433,7 @@ int ScalarNode::handleScalarMsgInfo(const char *line)
     //
     // Handle the 'min=%g' part of the message.
     //
-    if (p = strstr((char*)line,"min=")) {
+    if ( (p = strstr((char*)line,"min=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -449,7 +449,7 @@ int ScalarNode::handleScalarMsgInfo(const char *line)
     //
     // Handle the 'max=%g' part of the message.
     //
-    if (p = strstr((char*)line,"max=")) {
+    if ( (p = strstr((char*)line,"max=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -468,7 +468,7 @@ int ScalarNode::handleScalarMsgInfo(const char *line)
     // different meanings we only set the attribute value as received from
     // the exec.
     //
-    if (p = strstr((char*)line,"delta=")) {
+    if ( (p = strstr((char*)line,"delta=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -484,7 +484,7 @@ int ScalarNode::handleScalarMsgInfo(const char *line)
     //
     // Handle the 'decimals=%d' part of the message.
     //
-    if (p = strstr((char*)line,"decimals=")) {
+    if ( (p = strstr((char*)line,"decimals=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -500,7 +500,7 @@ int ScalarNode::handleScalarMsgInfo(const char *line)
     //
     // Handle the 'value=%g' part of the message.
     //
-    if (p = strstr((char*)line,"value=")) {
+    if ( (p = strstr((char*)line,"value=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -548,7 +548,7 @@ int ScalarNode::handleVectorMsgInfo(const char *line)
     // We don't need to do a 'values++' since the info is handled locally 
     // with this->changeDimensionality().
     //
-    if (p = strstr((char*)line,"dim=")) {
+    if ( (p = strstr((char*)line,"dim=")) ) {
 	while (*p != '=') p++;
 	p++;
 	int dim = atoi(p);
@@ -558,7 +558,7 @@ int ScalarNode::handleVectorMsgInfo(const char *line)
     //
     // Handle the 'min=[%g...]' part of the message.
     //
-    if (p = strstr((char*)line,"min=")) {
+    if ( (p = strstr((char*)line,"min=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -571,7 +571,7 @@ int ScalarNode::handleVectorMsgInfo(const char *line)
     //
     // Handle the 'max=[%g...]' part of the message.
     //
-    if (p = strstr((char*)line,"max=")) {
+    if ( (p = strstr((char*)line,"max=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -586,7 +586,7 @@ int ScalarNode::handleVectorMsgInfo(const char *line)
     // different meanings we only set the attribute value as received from
     // the exec.
     //
-    if (p = strstr((char*)line,"delta=")) {
+    if ( (p = strstr((char*)line,"delta=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -598,7 +598,7 @@ int ScalarNode::handleVectorMsgInfo(const char *line)
     //
     // Handle the 'decimals=[%g...]' part of the message.
     //
-    if (p = strstr((char*)line,"decimals=")) {
+    if ( (p = strstr((char*)line,"decimals=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -610,7 +610,7 @@ int ScalarNode::handleVectorMsgInfo(const char *line)
     //
     // Handle the 'value=[%g...]' part of the message.
     //
-    if (p = strstr((char*)line,"value=")) {
+    if ( (p = strstr((char*)line,"value=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -712,12 +712,11 @@ boolean ScalarNode::cfgPrintInstanceAuxInfo(FILE *f,
 boolean ScalarNode::cfgParseInstanceComment(const char *comment,
                                 const char *filename, int lineno)
 {
-    int i, instance, components;
-
     if (!this->InteractorNode::cfgParseInstanceComment(comment,filename,lineno))
 	return FALSE;
 
 #if 0
+    int i, instance, components;
     //
     // Get the instance added above.
     //
@@ -751,7 +750,6 @@ boolean ScalarNode::cfgParseComponentComment(const char *comment,
     double   minimum;
     double   maximum;
     double   delta;
-    int      instance;
     int      decimal;
     int      component_num;
     int      continuous;
@@ -981,7 +979,7 @@ int ScalarNode::getComponentDecimals(int component)
 	else 
 	    return DEFAULT_SCALAR_DECIMALS;
     } else
-        return p->getAttributeComponentValue(component);
+        return (int) p->getAttributeComponentValue(component);
 }
 boolean ScalarNode::setComponentValue(int component, double value)
 {
@@ -1087,7 +1085,6 @@ boolean ScalarNode::cfgParseLocalIncrementComment(
 {
     int            items_parsed;
     int            component_num;
-    int            int_step;
     double         double_step;
     char           mode[32];
 
@@ -1388,10 +1385,9 @@ boolean     ScalarNode::netParseComment(const char* comment,
 boolean ScalarNode::parseIOComment(boolean input, const char* comment,
 	    const char* filename, int lineno, boolean valueOnly)
 {
-    int      defaulting = 0, items_parsed, ionum, r;
+    int      defaulting = 0, items_parsed, ionum, tmp_type;
     int	     visible = TRUE;
     Type     type = DXType::UndefinedType;
-    char     *value;
     boolean  parse_error = FALSE; 
 
     if(this->Node::parseIOComment(input, comment, filename, lineno, valueOnly) == FALSE)
@@ -1422,7 +1418,8 @@ boolean ScalarNode::parseIOComment(boolean input, const char* comment,
 	} else {
 	    items_parsed = sscanf(comment,
 		" input[%d]: defaulting = %d, visible = %d, type = %d", 
-					&ionum, &defaulting, &visible, &type);
+					&ionum, &defaulting, &visible, &tmp_type);
+	    type = (Type) tmp_type;
 	    if (items_parsed != 4) {
 		// Invisibility added 3/30/93
 		items_parsed = sscanf(comment, " input[%d]: visible = %d", 
@@ -1430,11 +1427,13 @@ boolean ScalarNode::parseIOComment(boolean input, const char* comment,
 		if (items_parsed != 2) {
 		    // Backwards compatibility added 3/25/93
 		    items_parsed = sscanf(comment, " input[%d]: type = %d", 
-					    &ionum, &type);
+					    &ionum, &tmp_type);
+		    type = (Type) tmp_type;
 		    if (items_parsed != 2) {
 			items_parsed = sscanf(comment,
 				    " input[%d]: defaulting = %d, type = %d", 
-					    &ionum, &defaulting, &type);
+					    &ionum, &defaulting, &tmp_type);
+			type = (Type) tmp_type;
 			if (items_parsed != 3) 
 			    parse_error = TRUE;
 		    } 
@@ -1478,7 +1477,7 @@ boolean ScalarNode::printJavaValue (FILE* jf)
 	    double step = this->getComponentDelta(i);
 	    double value = this->getComponentValue(i);
 	    int decimals = this->getComponentDecimals(i);
-	    fprintf (jf, "%s%s.setValues(%d,%lg,%lg,%lg,%d,%lg);\n",
+	    fprintf (jf, "%s%s.setValues(%d,%g,%g,%g,%d,%g);\n",
 		indent, var_name, i,min,max,step,decimals,value);
 	}
     }

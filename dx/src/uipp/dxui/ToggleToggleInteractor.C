@@ -99,7 +99,7 @@ void ToggleToggleInteractor::toggleCallback(Widget w,
 //
 void ToggleToggleInteractor::updateDisplayedInteractorValue()
 {
-    Boolean set, was_set;
+    Boolean set;
     ToggleInstance *ti = (ToggleInstance*)this->interactorInstance;
     ASSERT(ti);
     ToggleNode        *tnode = (ToggleNode*)ti->getNode();
@@ -112,9 +112,7 @@ void ToggleToggleInteractor::updateDisplayedInteractorValue()
     else
 	set = False;
 
-    //XtVaGetValues(this->toggleButton, XmNset, &was_set, NULL);
-    //if (was_set != set)
-	XtVaSetValues(this->toggleButton, XmNset, set, NULL);
+    XtVaSetValues(this->toggleButton, XmNset, set, NULL);
 
 }
 

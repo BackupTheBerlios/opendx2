@@ -188,7 +188,7 @@ void SelectionNode::installNewOptions(const char *vlist, const char *slist,
 	//
 	ListIterator iter(this->selectedOptions);
 	int i, pos = 0;
-	while (i = (int)iter.getNext()) {
+	while ( (i = (int)iter.getNext()) ) {
 	    pos++;
 	    if (i > this->getOptionCount()) {
 		this->selectedOptions.deleteElement(pos);	
@@ -574,7 +574,7 @@ boolean SelectionNode::appendOptionPair(const char *value, const char *label)
     //
     // Make sure the label has double quotes around it.
     //
-    if (str = FindDelimitedString(label,'"','"')) {
+    if ( (str = FindDelimitedString(label,'"','"')) ) {
 	str = DuplicateString(label);
     } else {
 	str = new char [STRLEN(label) + 4]; 
@@ -610,20 +610,19 @@ boolean SelectionNode::appendOptionPair(const char *value, const char *label)
 //
 int SelectionNode::handleInteractorMsgInfo(const char *line)
 {
-    int i, index, val_count = 0, str_count = 0, values = 0;
-    int  old_option_count = this->getOptionCount();
-    char *p, *vlist = NULL, *slist = NULL, buf[1024];
+    int index, values = 0;
+    char *p, *vlist = NULL, *slist = NULL;
     
     //
     // Handle the 'value list={...}' part of the message.
     //
-    if (p = strstr((char*)line,"value list=")) {
+    if ( (p = strstr((char*)line,"value list=")) ) {
 	vlist = FindDelimitedString(p,'{','}');
     }
     //
     // Handle the 'string list={...}' part of the message.
     //
-    if (p = strstr((char*)line,"string list=")) {
+    if ( (p = strstr((char*)line,"string list=")) ) {
 	slist = FindDelimitedString(p,'{','}',NULL,"\"");
     }
     //
@@ -661,7 +660,7 @@ int SelectionNode::handleInteractorMsgInfo(const char *line)
     //
     // Handle the 'index=%d' part of the message.
     //
-    if (p = strstr((char*)line,"index=")) {
+    if ( (p = strstr((char*)line,"index=")) ) {
 	int selections[1024], nselects = 0,nchars;
 	values++;
         while (*p != '=') p++;
@@ -960,7 +959,7 @@ boolean SelectionNode::printJavaValue (FILE* jf)
 
 	ListIterator it(selection_stmts);
 	char* cp;
-	while (cp = (char*)it.getNext()) {
+	while ( (cp = (char*)it.getNext()) ) {
 	    fprintf (jf, cp);
 	    delete cp;
 	}

@@ -62,7 +62,7 @@ int DXLOutputNode::handleNodeMsgInfo(const char *line)
 {
     char *p;
 
-    if (p = strstr(line,"label=")) {
+    if ( (p = strstr(line,"label=")) ) {
 	p+=6;	// skip =.
 	this->setLabelString(p);	
     }

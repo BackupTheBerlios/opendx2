@@ -108,7 +108,6 @@ Widget DialInteractor::createInteractivePart(Widget form)
     ScalarNode	*node;
     ScalarInstance		*si = (ScalarInstance*)
 					this->interactorInstance;
-    Arg				wargs[2];
 
     ASSERT(si);
 

@@ -481,7 +481,7 @@ boolean ImageNode::sendValues(boolean ignoreDirty)
     ImageWindow *w;
     boolean sendMacro = TRUE;	// This shouldn't be necessary, 
 				// the loop should catch all cases.
-    while(w = (ImageWindow*)li.getNext())
+    while( (w = (ImageWindow*)li.getNext()) )
 	if (w == this->image)
 	{
 	    sendMacro = TRUE;
@@ -513,8 +513,8 @@ boolean ImageNode::printValues(FILE *f, const char *prefix)
 {
     ListIterator li(*this->getNetwork()->getImageList());
     ImageWindow *w;
-    boolean sendMacro;
-    while(w = (ImageWindow*)li.getNext())
+    boolean sendMacro=TRUE;
+    while( (w = (ImageWindow*)li.getNext()) )
 	if (w == this->image)
 	{
 	    sendMacro = TRUE;
@@ -1059,8 +1059,6 @@ boolean ImageNode::isA(Symbol classname)
 
 char *ImageNode::netEndOfMacroNodeString(const char *prefix)
 {
-
-    const char *name = this->getModuleMessageIdString();
     char buf[1025];
 #if WORKSPACE_PAGES
     const char *gpn  = this->getGroupName(theSymbolManager->getSymbol(PROCESS_GROUP));
@@ -1428,7 +1426,6 @@ boolean ImageNode::parseCommonComments(const char *comment, const char *file,
 
 int ImageNode::handleNodeMsgInfo(const char *line)
 {
-    int i, index;
     boolean save = FALSE, throttle = FALSE, bckgnd = FALSE,
 	    ititle = FALSE, autoaxes = FALSE, rdropt = FALSE;
     char *p = (char *)line, *q, r, *argbuf;

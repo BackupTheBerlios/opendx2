@@ -41,12 +41,10 @@ ScalarListNode::ScalarListNode(NodeDefinition *nd,
 //
 boolean ScalarListNode::initialize()
 {
-    const char *id, *decimal;
-
     if (!this->verifyInputCount())
 	return FALSE;
 
-    const char *value;
+    const char *value=NULL;
     switch (this->numComponents) {
 	case 1: if (this->isVectorType()) 
 		    value = "{ [ 0 ] }"; 
@@ -99,7 +97,6 @@ void ScalarListNode::doRangeCheckComponentValue(int component,
 						double min, double max)
 
 {
-    boolean reset = FALSE;
     char *clamped;
 
     int i, ncomp = this->getComponentCount();
@@ -195,7 +192,7 @@ int ScalarListNode::handleScalarListMsgInfo(const char *line)
     //
     // Handle the 'list={...}' part of the message.
     //
-    if (p = strstr((char*)line,"list=")) {
+    if ( (p = strstr((char*)line,"list=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -232,7 +229,7 @@ int ScalarListNode::handleVectorListMsgInfo(const char *line)
     //
     // Handle the 'list={...}' part of the message.
     //
-    if (p = strstr((char*)line,"list=")) {
+    if ( (p = strstr((char*)line,"list=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -253,8 +250,6 @@ boolean ScalarListNode::adjustOutputDimensions(int old_dim, int new_dim)
 
 #define CHUNK	256
     char buf[256];
-    char *p;
-    int i;
 
     //
     // Adjust the output value

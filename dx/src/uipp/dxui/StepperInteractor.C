@@ -119,8 +119,6 @@ Widget StepperInteractor::createInteractivePart(Widget form)
     int         	components, i;
     Widget		w, last_widget = NULL; /* NULL keeps compiler quiet */
     ScalarInstance	*si = (ScalarInstance*) this->interactorInstance;
-    Dimension		width;
-    Arg			wargs[25];
 
     ASSERT(si);
 
@@ -131,7 +129,6 @@ Widget StepperInteractor::createInteractivePart(Widget form)
 
     components = node->getComponentCount();
 
-    int n = 0;
     this->componentForm = form;
 
     for (i=1 ; i<=components ; i++) 
@@ -203,7 +200,7 @@ static Widget CreateStepperComponent(Widget  parent,
     n = 0;
     if (isInteger) 	// An integer interactor
     {
-	int imin = min, imax = max, ivalue = value, idelta = delta;
+	int imin = (int)min, imax = (int)max, ivalue = (int)value, idelta = (int)delta;
 	XtSetArg(wargs[n], XmNdataType,      INTEGER);   n++;
 	XtSetArg(wargs[n], XmNdecimalPlaces, 0);         n++;
 	XtSetArg(wargs[n], XmNiMinimum,      imin);      n++;

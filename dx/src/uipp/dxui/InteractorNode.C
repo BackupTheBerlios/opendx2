@@ -60,7 +60,7 @@ InteractorNode::~InteractorNode()
     //
     // Delete all InteractorInstances associated with this node 
     //
-    while (ii = (InteractorInstance*)iterator.getNext()) 
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) 
 	this->deleteInstance(ii);
 
     if (this->lastInteractorLabel) 
@@ -167,7 +167,7 @@ void InteractorNode::ioParameterStatusChanged(boolean input, int index,
 //
 char *InteractorNode::getOutputDerivedLabel()
 {
-    Ark *the_arc;
+    Ark *the_arc=NULL;
     char *s = NULL;
     int i, outputs = this->getOutputCount();
     int	total_arcs = 0;
@@ -300,7 +300,7 @@ boolean InteractorNode::cfgPrintInteractorInstances(FILE *f, PrintType dest)
     ControlPanel *ownerCp;
 
     ownerCp = this->getNetwork()->getSelectionOwner();
-    while (ii = (InteractorInstance*)iterator.getNext()) { 
+    while ( (ii = (InteractorInstance*)iterator.getNext()) ) { 
 	if (dest == PrintCPBuffer) {
 	    if (!ii->isSelected()) continue;
 	    if (ii->getControlPanel() != ownerCp) continue;
@@ -340,8 +340,7 @@ boolean InteractorNode::cfgPrintInteractorComment(FILE *f)
 boolean InteractorNode::cfgParseInteractorComment(const char* comment, 
 		const char* filename, int lineno)
 {
-    int        num_components, i, instance, items_parsed;
-    Symbol	namesym;
+    int        num_components, instance, items_parsed;
     char       value[4069];
     char       interactor_name[64];
     
@@ -484,9 +483,9 @@ boolean InteractorNode::cfgParseInstanceComment(const char* comment,
     int            items_parsed;
     int            panel_id;
     InteractorStyle *is = NUL(InteractorStyle*);
-    InteractorStyleEnum style;
+    InteractorStyleEnum style=UnknownStyle;
     int            vertical, x,y,width,height;
-    char           layout[32], style_name[256];
+    char           style_name[256];
     InteractorInstance *ii;
  
     if (strncmp(" instance: panel",comment,16))
@@ -831,7 +830,7 @@ Type InteractorNode::setOutputValue(
 	//
 	// Update all interactors associated with this node.
 	//
-	while (ii = (InteractorInstance*)iterator.getNext()) {
+	while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 	    Interactor  *interactor = ii->getInteractor();
 	    if (interactor)	// Only if the interactor/panel have been opened
 		interactor->updateDisplayedInteractorValue();
@@ -865,7 +864,7 @@ void InteractorNode::openControlPanels(Widget parent)
 	// Open the ControlPanels of each InteractorInstance.
 	//
         ListIterator iterator(this->instanceList);
-	while (ii = (InteractorInstance*) iterator.getNext()) {
+	while ( (ii = (InteractorInstance*) iterator.getNext()) ) {
 	    ControlPanel *panel = ii->getControlPanel();
 	    panel->manage();	// Raise it even if it is managed.
 	    ii->setSelected(TRUE);
@@ -928,7 +927,7 @@ void InteractorNode::reflectStateChange( boolean unmanage)
     ListIterator iterator(this->instanceList);
     InteractorInstance *ii;
 
-    while (ii = (InteractorInstance*) iterator.getNext()) 
+    while ( (ii = (InteractorInstance*) iterator.getNext()) ) 
 	ii->handleInteractorStateChange(NULL, unmanage);
 }
 // 
@@ -1044,7 +1043,7 @@ int InteractorNode::handleCommonMsgInfo(const char *line)
     // Handle the 'label="%s"' part of the message only if it is being
     // data driven.
     //
-    if (p = strstr((char*)line,"label=")) {
+    if ( (p = strstr((char*)line,"label=")) ) {
         char buf[1024];
         int label_index = this->getLabelParameterIndex();
 	ASSERT(label_index > 0);
@@ -1198,7 +1197,7 @@ boolean InteractorNode::printAsJava(FILE* aplf)
 
     InteractorInstance *ii;
     ListIterator it(this->instanceList);
-    while (ii = (InteractorInstance*)it.getNext()) {
+    while ( (ii = (InteractorInstance*)it.getNext()) ) {
 	if (ii->printAsJava(aplf) == FALSE) return FALSE;
 	this->printJavaValue(aplf);
     }

@@ -77,10 +77,6 @@ void SelectorRadioInteractor::initialize()
 }
 
 
-static Widget CreateStepperComponent(Widget,  boolean, double, double,
-				     double, double, int,   XtCallbackProc,   
-				     int, void *) ;
-
 //
 // Allocate an interactor 
 //
@@ -101,7 +97,6 @@ extern "C" void SelectorRadioInteractor_SelectorToggleCB(Widget                 
                XtPointer                callData)
 {
     SelectorRadioInteractor *si = (SelectorRadioInteractor*)clientData;
-    int            component;
 
     ASSERT(widget);
     ASSERT(si);
@@ -117,7 +112,7 @@ extern "C" void SelectorRadioInteractor_SelectorToggleCB(Widget                 
 //
 void SelectorRadioInteractor::completeInteractivePart()
 {
-    SelectorInstance	*si = (SelectorInstance*)this->interactorInstance;
+    //SelectorInstance	*si = (SelectorInstance*)this->interactorInstance;
 }
 //
 // Build the selector interactor option menu. 
@@ -268,7 +263,6 @@ void SelectorRadioInteractor::reloadMenuOptions()
     Boolean setting, oldSetting;
     XmString xmstr, oldstr;
     char *cp;
-    int selectedOption = si->getSelectedOptionIndex();
 
     // reuse existing buttons
     for (i=1; i<=oldOptionCnt; i++) {
@@ -347,7 +341,6 @@ void SelectorRadioInteractor::reloadMenuOptions()
 void SelectorRadioInteractor::toggleCallback(Widget w, int optnum, XtPointer cb)
 {
     SelectorInstance *si = (SelectorInstance*)this->interactorInstance;
-    SelectorNode	*snode;
     XmToggleButtonCallbackStruct *tbcb = (XmToggleButtonCallbackStruct *)cb;
     
     ASSERT(tbcb);
@@ -383,8 +376,6 @@ void SelectorRadioInteractor::toggleCallback(Widget w, int optnum, XtPointer cb)
 //
 void SelectorRadioInteractor::updateDisplayedInteractorValue()
 {
-    Arg		   wargs[10];
-    int		   i,components,n;
     // FIXME: should check to make sure we have the correct class of node.
     SelectorInstance *si = (SelectorInstance*)this->interactorInstance;
     ASSERT(si);
@@ -398,7 +389,7 @@ void SelectorRadioInteractor::updateDisplayedInteractorValue()
 #if 11 
     ListIterator li(this->toggleWidgets);
     Widget toggle;
-    while (toggle = (Widget)li.getNext()) {
+    while ( (toggle = (Widget)li.getNext()) ) {
 	Boolean isset;
 	XtVaGetValues(toggle, XmNset, &isset, NULL);	
 	if (isset) {

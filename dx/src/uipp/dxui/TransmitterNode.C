@@ -54,8 +54,6 @@ char *TransmitterNode::netNodeString(const char *prefix)
 {
     char      *string = new char[200];
     char      *source;
-    int       len;
-    Parameter *p = this->getInputParameter(1);
 
     source = this->inputParameterNamesString(prefix);
     sprintf(string, "%s = %s;\n", this->getLabelString(), source);
@@ -68,7 +66,6 @@ char *TransmitterNode::netNodeString(const char *prefix)
 boolean TransmitterNode::setLabelString(const char *label)
 {
     List *l;
-    Node *node;
     ListIterator li;
 
 
@@ -97,14 +94,14 @@ boolean TransmitterNode::setLabelString(const char *label)
 		if (l) {
 		    li.setList(*l);
 		    ReceiverNode *node;
-		    while (node = (ReceiverNode*)li.getNext()) {
+		    while ( (node = (ReceiverNode*)li.getNext()) ) {
 			if (!node->isTransmitterConnected() &&
 			    EqualString(node->getLabelString(), label))
 			{
 			    Network* net = this->getNetwork();
 			    if (!net->checkForCycle (this, node)) {
 				// link me to receiver
-				Ark *a = new Ark(this, 1, node, 1);
+				new Ark(this, 1, node, 1);
 			    } else {
 				WarningMessage (
 				    "This network contains Transmitter/Receiver\n"
@@ -146,7 +143,7 @@ boolean TransmitterNode::setLabelString(const char *label)
 	if (l) {
 	    li.setList(*l);
 	    ReceiverNode *node;
-	    while (node = (ReceiverNode*)li.getNext()) {
+	    while ( (node = (ReceiverNode*)li.getNext()) ) {
 		if (!node->isTransmitterConnected() &&
 		    EqualString(node->getLabelString(), label)) {
 		    Network* net = this->getNetwork();
@@ -172,7 +169,7 @@ boolean TransmitterNode::setLabelString(const char *label)
     l = (List*)this->getOutputArks(1);
     li.setList(*l);
     Ark *a;
-    while (a = (Ark*)li.getNext())
+    while ( (a = (Ark*)li.getNext()) )
     {
 	int dummy;
 	Node *rcvr = a->getDestinationNode(dummy);
@@ -187,12 +184,12 @@ boolean TransmitterNode::setLabelString(const char *label)
     if (l) {
 	li.setList(*l);
 	ReceiverNode *node;
-	while (node = (ReceiverNode*)li.getNext()) {
+	while ( (node = (ReceiverNode*)li.getNext()) ) {
 	    if (!node->isTransmitterConnected() &&
 		EqualString(node->getLabelString(), label))
 	    {
 		// link me to receiver
-		Ark *a = new Ark(this, 1, node, 1);
+		new Ark(this, 1, node, 1);
 	    }
         }
 	delete l;
@@ -238,7 +235,7 @@ void TransmitterNode::switchNetwork(Network *from, Network *to)
 	li.setList(*l);
 	ReceiverNode *node;
 	const char* cp = (name_change_required? new_name : label);
-	while (node = (ReceiverNode*)li.getNext()) {
+	while ( (node = (ReceiverNode*)li.getNext()) ) {
 	    if (!node->isTransmitterConnected() &&
 		EqualString(node->getLabelString(), cp))
 	    {
@@ -267,12 +264,12 @@ void TransmitterNode::switchNetwork(Network *from, Network *to)
 	ListIterator li;
 	li.setList(*l);
 	ReceiverNode *node;
-	while (node = (ReceiverNode*)li.getNext()) {
+	while ( (node = (ReceiverNode*)li.getNext()) ) {
 	    if (!node->isTransmitterConnected() &&
 		EqualString(node->getLabelString(), label))
 	    {
 		// link me to receiver
-		Ark *a = new Ark(this, 1, node, 1);
+		new Ark(this, 1, node, 1);
 	    }
         }
 	delete l;

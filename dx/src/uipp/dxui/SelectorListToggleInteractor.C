@@ -111,7 +111,7 @@ extern "C" void SelectorListToggleInteractor_ToggleCB(
 //
 void SelectorListToggleInteractor::completeInteractivePart()
 {
-    SelectorListInstance *si = (SelectorListInstance*)this->interactorInstance;
+    //SelectorListInstance *si = (SelectorListInstance*)this->interactorInstance;
 }
 //
 // Build the selector interactor option menu. 
@@ -122,8 +122,6 @@ Widget SelectorListToggleInteractor::createInteractivePart(Widget form)
 {
     SelectorListNode	*node;
     SelectorListInstance	*si = (SelectorListInstance*)this->interactorInstance;
-    Arg args[9];
-    int n;
 
     ASSERT(si);
 
@@ -341,8 +339,7 @@ void SelectorListToggleInteractor::applyCallback(Widget w, XtPointer cb)
 //
 void SelectorListToggleInteractor::updateDisplayedInteractorValue()
 {
-    Arg		   wargs[10];
-    int		   i,components,n;
+    int		   i;
     SelectorListInstance *si = (SelectorListInstance*)this->interactorInstance;
     ASSERT(si);
     SelectorListNode	*snode = (SelectorListNode*)si->getNode();
@@ -358,7 +355,7 @@ void SelectorListToggleInteractor::updateDisplayedInteractorValue()
     ListIterator li(this->toggleWidgets);
     Widget toggle;
     i = 1;
-    while (toggle = (Widget)li.getNext()) {
+    while ( (toggle = (Widget)li.getNext()) ) {
 	Boolean toggle_isset;
 	Boolean option_isselected;
 	XtVaGetValues(toggle, XmNset, &toggle_isset, NULL);	

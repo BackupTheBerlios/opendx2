@@ -256,7 +256,6 @@ void SelectorListInteractor::setAppearance(boolean developer_style)
     Screen *screen;
     Colormap cmap;
 
-    boolean changing = (developer_style != this->getAppearance());
     this->Interactor::setAppearance(developer_style);
     if (developer_style) {
     	   XtVaGetValues (this->getRootWidget(), XmNcolormap, &cmap, XmNscreen, &screen, NULL);

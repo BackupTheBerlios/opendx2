@@ -58,12 +58,12 @@ typedef long NodeStatusChange;		// For the enums below
 typedef long NodeParameterStatusChange; // For the enums below
 
 #define FOR_EACH_NODE_INPUT(node, param, iterator) \
-for (iterator.setList(node->inputParameters) ; \
-     param = (Parameter*)iterator.getNext() ; )
+for ( iterator.setList(node->inputParameters) ; \
+     (param = (Parameter*)iterator.getNext()) ; )
 
 #define FOR_EACH_NODE_OUTPUT(node, param, iterator) \
-for (iterator.setList(node->outputParameters) ; \
-     param = (Parameter*)iterator.getNext() ; )
+for ( iterator.setList(node->outputParameters)  ; \
+     (param = (Parameter*)iterator.getNext()) ; )
 
 
 //

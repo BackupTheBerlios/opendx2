@@ -155,7 +155,6 @@ void ToggleInteractor::setLabel(
 {
 XmStringContext cxt;
 char *text, *tag;
-static char buf[1024];
 XmStringDirection dir;
 Boolean sep;
 unsigned char rp;

@@ -233,18 +233,18 @@ char *ToggleNode::getToggleValue(boolean setval)
 
 int  ToggleNode::handleInteractorMsgInfo(const char *line)
 {
-    int index, values = 0;
-    char *p, *buf = NULL;
+    int values = 0;
+    char *p;
 
     //
     // Handle the 'unset=...' part of the message.
     //
-    if (p = strstr((char*)line,"unset=")) {
+    if ( (p = strstr((char*)line,"unset=")) ) {
         values++;
         while (*p != '=') p++;
         p++;
 	this->changeToggleValues(NULL,p,NO_SEND);
-    } else if (p = strstr((char*)line,"set=")) {
+    } else if ( (p = strstr((char*)line,"set=")) ) {
 	//
 	// Handle the 'set=...' part of the message.
 	//
@@ -379,7 +379,7 @@ boolean ToggleNode::parseToggleComment(const char* comment,
 	if (*p != ',') goto parse_error;
 	*p = '\0';	// Now the setstr is set.
 	resetstr += 8;	// First character of reset value
-	if (p = strchr(resetstr,'\n'))
+	if ( (p = strchr(resetstr,'\n')) )
 	    *p = '\0';
 	// Now the resetstr is set.
 

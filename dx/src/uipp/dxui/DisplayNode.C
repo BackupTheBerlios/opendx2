@@ -140,7 +140,6 @@ boolean DisplayNode::netParseAuxComment(const char *comment,
 
 boolean DisplayNode::cfgPrintNode(FILE *f, PrintType dest)
 {
-    int r;
     long fpos1, fpos2; 
 
     fpos1 = ftell(f);
@@ -169,8 +168,6 @@ boolean DisplayNode::cfgParseComment(const char *comment,
 				const char *file,
 				int lineno)
 {
-    boolean r;
-
     if (this->Node::cfgParseNodeLeader(comment, file, lineno)) 
 	return TRUE;
 
@@ -559,7 +556,7 @@ ImageWindow *DisplayNode::getUnassociatedImageWindow(
     //
     if (!w) {
 	li.setList(*imageList);
-	while (w = (ImageWindow *)li.getNext()) {
+	while ( (w = (ImageWindow *)li.getNext()) ) {
 	    if (!w->isAssociatedWithNode() && (canBeAnchor || !w->isAnchor()))
 		break;
 	}

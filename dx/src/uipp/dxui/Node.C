@@ -272,7 +272,7 @@ char *Node::inputParameterNamesString(const char *varprefix, const char *indent)
 {
     const char *name ;
     char  *retstr;
-    int	  i, num_params, argsize;
+    int	  i, num_params;
 
     name = this->getNameString();
     ASSERT(name);
@@ -518,7 +518,7 @@ boolean Node::printIOComment(FILE *f, boolean input, int i,
 		    i,
 		    (p->isDefaulting() || p->isConnected() ? 1 : 0),
 		    (p->isVisible()? 1 : 0),
-		    p->getValueType(),
+		    (int) p->getValueType(),
 		    p->getSetValueString());
 	    }
 	} else if (!valueOnly && p->isViewable() &&
@@ -548,7 +548,7 @@ boolean Node::printIOComment(FILE *f, boolean input, int i,
 		    indent,
 		    i,
 		    (p->isVisible()? 1 : 0),
-		    p->getValueType(),
+		    (int) p->getValueType(),
 		    p->getSetValueString());
 	    }
 	} else if (!valueOnly && p->isViewable() &&  
@@ -579,7 +579,6 @@ boolean Node::printIOComment(FILE *f, boolean input, int i,
 */
 boolean Node::netPrintCommentHeader(FILE *f)
 {
-    Parameter *p;
     int i, status, x, y, num;
     const char *name;
     
@@ -1044,7 +1043,7 @@ char *Node::valuesString(const char *prefix)
     //
     cnt = this->getInputCount();
     for (i=1 ; i<=cnt ; i++) {
-	if (buf = this->inputValueString(i,prefix))
+	if ( (buf = this->inputValueString(i,prefix)) )
 	{
 	    if (s) 
 		first = FALSE;
@@ -1067,7 +1066,7 @@ char *Node::valuesString(const char *prefix)
     //
     cnt = this->getOutputCount();
     for (i=1 ; i<=cnt ; i++) {
-	if (buf = this->outputValueString(i,prefix))
+	if ( (buf = this->outputValueString(i,prefix)) )
 	{
 	    if (s) 
 		first = FALSE;
@@ -1116,8 +1115,8 @@ boolean Node::sendValues(boolean ignoreDirty)
 
     const char *prefix = this->network->getPrefix();
     int i, cnt;
-    char *names;
-    char *values;
+    char *names=NULL;
+    char *values=NULL;
     int nameLen = 0;
     int valueLen = 0;
 
@@ -1299,7 +1298,7 @@ boolean Node::netParsePgrpComment(const char* comment,
 boolean Node::parseIOComment(boolean input, const char* comment,
                 const char* filename, int lineno, boolean valueOnly)
 {
-    int      defaulting = 0, allowed_params, items_parsed, ionum, r;
+    int      defaulting = 0, allowed_params, items_parsed, ionum, r, type_tmp;
     int  visible = TRUE;
     Type     type = DXType::UndefinedType;
     char     *value, *ioname;
@@ -1319,7 +1318,9 @@ boolean Node::parseIOComment(boolean input, const char* comment,
 	} else {
 	    items_parsed = sscanf(comment,
 		" input[%d]: defaulting = %d, visible = %d, type = %d", 
-					&ionum, &defaulting, &visible, &type);
+					&ionum, &defaulting, &visible, &type_tmp);
+	    type = (Type) type_tmp;
+	    
 	    if (items_parsed != 4) {
 		// Invisibility added 3/30/93
 		items_parsed = sscanf(comment, " input[%d]: visible = %d", 
@@ -1327,11 +1328,14 @@ boolean Node::parseIOComment(boolean input, const char* comment,
 		if (items_parsed != 2) {
 		    // Backwards compatibility added 3/25/93
 		    items_parsed = sscanf(comment, " input[%d]: type = %d", 
-					    &ionum, &type);
+					    &ionum, &type_tmp);
+		    type = (Type) type_tmp;
+		    
 		    if (items_parsed != 2) {
 			items_parsed = sscanf(comment,
 				    " input[%d]: defaulting = %d, type = %d", 
-					    &ionum, &defaulting, &type);
+					    &ionum, &defaulting, &type_tmp);
+			type = (Type) type_tmp;
 			if (items_parsed != 3) 
 			    parse_error = TRUE;
 		    } 
@@ -1358,11 +1362,15 @@ boolean Node::parseIOComment(boolean input, const char* comment,
 	    // Invisibility added 3/30/93
 	    items_parsed = sscanf(comment, 
 				" output[%d]: visible = %d, type = %d", 
-					    &ionum, &visible, &type);
+					    &ionum, &visible, &type_tmp);
+	    type = (Type) type_tmp;
+	    
 	    if (items_parsed != 3) {
 
 		items_parsed = sscanf(comment, " output[%d]: type = %d", 
-						&ionum, &type);
+						&ionum, &type_tmp);
+		type = (Type) type_tmp;
+		
 		if (items_parsed != 2) {
 		    items_parsed = sscanf(comment, " output[%d]: visible = %d", 
 						    &ionum, &visible);
@@ -1678,7 +1686,6 @@ Type Node::setInputSetValue(int index, const char *value,
 {
 
     boolean was_defaulting = this->isInputDefaulting(index);
-    NodeParameterStatusChange status;
 
     //
     // If the parameter is already set (i.e. tab down) then just do
@@ -1919,7 +1926,7 @@ void Node::ioParameterStatusChanged(boolean input, int index,
 	List *l = (List*) this->getOutputArks(index);
 	ListIterator iterator(*l);
 
-	while (a = (Ark*)iterator.getNext()) {
+	while ( (a = (Ark*)iterator.getNext()) ) {
 	    int in_index;
 	    Node *n = a->getDestinationNode(in_index); 
 	    n->notifyIoParameterStatusChanged(TRUE, in_index, status);
@@ -2095,7 +2102,7 @@ char *Node::getIONameString(List *io, int index, char *buf)
     Parameter *p;
     ASSERT( index >= 1 );
     int repeat_num;     // The number on the MDF's REPEAT line
-    int mdf_params;    // The number of in/outputs including the first
+    int mdf_params=0;    // The number of in/outputs including the first
 			// set of inputs/outputs 
     boolean input = (io == &this->inputParameters);
     char pname[128];
@@ -2259,7 +2266,7 @@ void Node::setAllIOVisibility(List *io, boolean v)
 	XmNmappedWhenManaged, False,
     NULL);
 #endif
-    while(p = (Parameter *)li.getNext())
+    while( (p = (Parameter *)li.getNext()) )
     {
 	boolean newv = v || p->isConnected();
 	boolean oldv = p->isVisible();
@@ -2319,7 +2326,7 @@ boolean Node::hasHideableIO(List *io)
 {
     ListIterator iterator(*io);
     Parameter *p;
-    while (p = (Parameter*)iterator.getNext()) {
+    while ( (p = (Parameter*)iterator.getNext()) ) {
 	if (p->isVisible() && !p->isConnected())
 	    return TRUE;
     }
@@ -2335,7 +2342,7 @@ boolean Node::hasExposableIO(List *io)
     ListIterator iterator(*io);
     Parameter *p;
 
-    while (p = (Parameter*)iterator.getNext()) {
+    while ( (p = (Parameter*)iterator.getNext()) ) {
 	if (p->isViewable() && !p->isVisible())
 	    return TRUE;
     }
@@ -2732,8 +2739,6 @@ boolean Node::removeIOArk(List *io, int index, Ark *a)
 void
 Node::updateDefinition()
 {
-    boolean hadStandIn = FALSE;
-
     struct ArkInfo {
 	int   srcIndex;
 	int   dstIndex;
@@ -2751,6 +2756,8 @@ Node::updateDefinition()
 
 #if 11 	// This is the beginning of an attemp to fix bug DAWOOD91 
 #else
+    boolean hadStandIn = FALSE;
+
     //
     // Recreate the standin if need be
     //
@@ -2790,7 +2797,7 @@ Node::updateDefinition()
 	    inputArks[i-1] = new List;
 	    ListIterator li(*(List*)arcs);
 	    Ark *a;
-	    while(a = (Ark*)li.getNext())
+	    while( (a = (Ark*)li.getNext()) )
 	    {
 		ArkInfo *ai = new ArkInfo;
 		ai->src = a->getSourceNode(ai->srcIndex);
@@ -2817,7 +2824,7 @@ Node::updateDefinition()
 	    outputArks[i-1] = new List;
 	    ListIterator li(*(List*)arcs);
 	    Ark *a;
-	    while(a = (Ark*)li.getNext())
+	    while( (a = (Ark*)li.getNext()) )
 	    {
 		ArkInfo *ai = new ArkInfo;
 		ai->src = a->getSourceNode(ai->srcIndex);
@@ -2838,7 +2845,7 @@ Node::updateDefinition()
 	{
 	    ListIterator li(*inputArks[i-1]);
 	    ArkInfo *ai;
-	    while(ai = (ArkInfo*)li.getNext())
+	    while( (ai = (ArkInfo*)li.getNext()) )
 	    {
 		if (ai->src->typeMatchOutputToInput(ai->srcIndex,
 						    ai->dst, ai->dstIndex))
@@ -2893,7 +2900,7 @@ Node::updateDefinition()
 	{
 	    ListIterator li(*outputArks[i-1]);
 	    ArkInfo *ai;
-	    while(ai = (ArkInfo*)li.getNext())
+	    while( (ai = (ArkInfo*)li.getNext()) )
 	    {
 		if (ai->src->typeMatchOutputToInput(ai->srcIndex,
 						    ai->dst, ai->dstIndex))
@@ -3027,7 +3034,6 @@ boolean	Node::netPrintBeginningOfMacroNode(FILE *f,
 		      PacketIFCallback callback,
 		      void *clientdata)
 {
-    DXPacketIF *pif = theDXApplication->getPacketIF();
     boolean r = TRUE;
 
     char *s = netBeginningOfMacroNodeString(prefix);
@@ -3063,7 +3069,6 @@ boolean	Node::netPrintEndOfMacroNode(FILE *f,
 		      PacketIFCallback callback,
 		      void *clientdata)
 {
-    DXPacketIF *pif = theDXApplication->getPacketIF();
     boolean r = TRUE;
 
     char *s = netEndOfMacroNodeString(prefix);
@@ -3177,7 +3182,7 @@ boolean Node::disconnectArks()
     // Disconnect the inputs.
     //
     li.setList(this->inputParameters);
-    for (i=1 ; p = (Parameter*)li.getNext() ; i++) {
+    for (i=1 ; (p = (Parameter*)li.getNext()) ; i++) {
 	if (p->isConnected()) {
 	    p->disconnectArks();
 	    this->notifyIoParameterStatusChanged(TRUE, i, Node::ParameterArkRemoved);
@@ -3188,7 +3193,7 @@ boolean Node::disconnectArks()
     // Disconnect the outputs.
     //
     li.setList(this->outputParameters);
-    for (i=1 ; p = (Parameter*)li.getNext() ; i++) {
+    for (i=1 ; (p = (Parameter*)li.getNext()) ; i++) {
 	if (p->isConnected()) {
 	    p->disconnectArks();
 	    this->notifyIoParameterStatusChanged(FALSE, i, Node::ParameterArkRemoved);

@@ -147,7 +147,7 @@ void ValueListInteractor::updateDisplayedInteractorValue()
     const char *val = vln->getOutputValueString(1); 	// Get the list itself
     index = -1;
     count = 0;
-    while (s = DXValue::NextListItem(val, &index, type, NULL)) {
+    while ( (s = DXValue::NextListItem(val, &index, type, NULL)) ) {
 	if ((count & 15) == 0)
 	    items = (char**)REALLOC(items,(count + 16)*sizeof(char*));
 	items[count++] = s;
@@ -247,10 +247,10 @@ char *ValueListInteractor::verifyValueEditorText()
     ListIterator i(typeList);
     char *s = this->getDisplayedText(); 
     boolean matched = FALSE;
-    while (itemType = (Type)i.getNext()) {
+    while ( (itemType = (Type)i.getNext()) ) {
 	if (!DXValue::IsValidValue(s,itemType)) {
 	    char *news;
-	    if (news = DXValue::CoerceValue(s,itemType)) {
+	    if ( (news = DXValue::CoerceValue(s,itemType)) ) {
 		if (s) delete s;
 		s = news;
 	    	matched = TRUE;
@@ -290,7 +290,7 @@ char *ValueListInteractor::getValueEditorValue()
     // user can use the Add button without hitting return in the text
     // window, thereby bypassing valueEditorCallback().
     //
-    if (s = this->verifyValueEditorText()) 
+    if ( (s = this->verifyValueEditorText()) ) 
 	this->installNewText(s);
     return s;
 }
@@ -344,7 +344,7 @@ void ValueListInteractor::valueEditorCallback(Widget w, XtPointer cb)
     //
     // Make sure the value entered is valid value
     //
-    if (s = this->verifyValueEditorText()) 
+    if ( (s = this->verifyValueEditorText()) ) 
 	this->installNewText(s);
 
     this->ListEditor::valueEditorCallback(w,cb);
@@ -361,8 +361,6 @@ void ValueListInteractor::valueEditorCallback(Widget w, XtPointer cb)
 //
 void ValueListInteractor::addCallback(Widget w, XtPointer cb)
 {
-    InteractorNode *node = (InteractorNode*)
-				this->interactorInstance->getNode();
     const char *item1 = this->getListItem(1);
     char *valueText = this->getDisplayedText();
 
@@ -398,9 +396,6 @@ void ValueListInteractor::addCallback(Widget w, XtPointer cb)
 //
 void ValueListInteractor::deleteCallback(Widget w, XtPointer cb)
 {
-    InteractorNode *node = (InteractorNode*)
-				this->interactorInstance->getNode();
-
     // 
     // If the list is displayed as empty, ignore callback.
     //

@@ -42,7 +42,7 @@ void DrivenDefinition::finishDefinition()
     ParameterDefinition *pd;
 
     ListIterator iterator(this->outputDefs);
-    while (pd = (ParameterDefinition*)iterator.getNext()) {
+    while ( (pd = (ParameterDefinition*)iterator.getNext()) ) {
         pd->setWriteableCacheability(FALSE);
         pd->setDefaultCacheability(OutputCacheOnce);
     }

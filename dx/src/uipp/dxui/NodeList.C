@@ -27,7 +27,7 @@ NodeList::~NodeList()
 {	
     DictionaryIterator di(this->nodeDict);
     List* nl;
-    while (nl = (List*)di.getNextDefinition()) 
+    while ( (nl = (List*)di.getNextDefinition()) ) 
 	delete nl;
     this->nodeDict.clear();
 }
@@ -39,7 +39,7 @@ void NodeList::clear()
     this->List::clear();
     DictionaryIterator di(this->nodeDict);
     List* nl;
-    while (nl = (List*)di.getNextDefinition()) 
+    while ( (nl = (List*)di.getNextDefinition()) ) 
 	delete nl;
     this->nodeDict.clear();
 }
@@ -124,7 +124,7 @@ List* NodeList::dup()
     ListIterator iter(*this);
     const void *v;
 
-    while (v = (const void*)iter.getNext())
+    while ( (v = (const void*)iter.getNext()) )
         nl->appendElement(v);
 
     return nl;
@@ -145,7 +145,7 @@ List* NodeList::makeClassifiedNodeList(const char* classname)
     ListIterator it(*this);
     Node* n;
     List* l = NUL(List*);
-    while (n = (Node*)it.getNext()) {
+    while ( (n = (Node*)it.getNext()) ) {
 	if (EqualString(classname, n->getClassName()) == TRUE) {
 	    if (!l) l = new List;
 	    l->appendElement((void*)n);

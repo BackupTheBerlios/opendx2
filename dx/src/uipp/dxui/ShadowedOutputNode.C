@@ -206,7 +206,6 @@ Type ShadowedOutputNode::setOutputValue(
 #if 1
     int shadow_input = this->getShadowingInput(index);
     if (shadow_input) {
-	boolean send_shadow;
 	type = this->DrivenNode::setOutputValue(index, value, t, FALSE);
 	if (type != DXType::UndefinedType)  {
 	    value = this->getOutputValueString(index);

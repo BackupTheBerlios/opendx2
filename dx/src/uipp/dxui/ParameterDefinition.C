@@ -71,7 +71,7 @@ ParameterDefinition::~ParameterDefinition()
 
     ListIterator iterator(this->types);
     DXType *t;
-    while (t = (DXType*)iterator.getNext())
+    while ( (t = (DXType*)iterator.getNext()) )
 	delete t;
 }
 
@@ -110,7 +110,7 @@ ParameterDefinition *ParameterDefinition::duplicate(ParameterDefinition *newpd)
     //
     DXType *t;
     ListIterator iterator(this->types);
-    while (t = (DXType*)iterator.getNext()) {
+    while ( (t = (DXType*)iterator.getNext()) ) {
 	DXType *newt = t->duplicate(); 
 	newpd->addType(newt);
     }
@@ -185,7 +185,7 @@ ParameterDefinition::removeType(DXType *t)
     //
     // Look for type and if found, free memory associated with it 
     //
-    while(dxtype = (DXType*)iterator.getNext())
+    while( (dxtype = (DXType*)iterator.getNext()) )
 	if (dxtype->getType() == t->getType()) {
 	    boolean r = this->types.deleteElement(
 				this->types.getPosition(dxtype));

@@ -140,7 +140,7 @@ boolean ReceiverNode::setLabelString(const char *label)
 	    // Before creating any Arks, check for cycles.
 	    //
 	    iterator.setList(*l);
-	    while (n = (Node*)iterator.getNext()) {
+	    while ( (n = (Node*)iterator.getNext()) ) {
 		if (EqualString(label, n->getLabelString())) {
 		    Network* net = this->getNetwork();
 		    if (net->checkForCycle(n, this)) {
@@ -158,12 +158,12 @@ boolean ReceiverNode::setLabelString(const char *label)
 
 	if (l) {
 	    iterator.setList(*l);
-	    while (n = (Node*)iterator.getNext()) {
+	    while ( (n = (Node*)iterator.getNext()) ) {
 		if (EqualString(label, n->getLabelString()))
 		{
 		    found = TRUE;
 		    // link me to transmitter
-		    Ark *a = new Ark(n, 1, this, 1);
+		    new Ark(n, 1, this, 1);
 		}
 	    }
 	    delete l;
@@ -213,7 +213,6 @@ boolean ReceiverNode::isA(Symbol classname)
 //
 Node *ReceiverNode::getUltimateSourceNode(int* param_no)
 {
-    const char* lstr = this->getLabelString();
     int startPos = 1;
 
     //
@@ -284,7 +283,7 @@ void ReceiverNode::switchNetwork(Network *from, Network *to)
 	if (l) {
 	    Node *n;
 	    ListIterator iterator(*l);
-	    while (n = (Node*)iterator.getNext()) {
+	    while ( (n = (Node*)iterator.getNext()) ) {
 		if (EqualString(label, n->getLabelString())) {
 		    if (to->checkForCycle(n, this)) {
 			avoiding_cycle = TRUE;
@@ -295,10 +294,10 @@ void ReceiverNode::switchNetwork(Network *from, Network *to)
 
 	    if (!avoiding_cycle) {
 		iterator.setList(*l);
-		while (n = (Node*)iterator.getNext()) {
+		while ( (n = (Node*)iterator.getNext()) ) {
 		    if (EqualString(label, n->getLabelString())) {
 			// link me to transmitter
-			Ark *a = new Ark(n, 1, this, 1);
+			new Ark(n, 1, this, 1);
 			found = TRUE;
 		    }
 		}

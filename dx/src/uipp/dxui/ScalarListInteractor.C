@@ -176,8 +176,7 @@ void ScalarListInteractor::completeInteractivePart()
 //
 void ScalarListInteractor::updateDisplayedInteractorValue()
 {
-    Arg		wargs[10];
-    int		i,components,n;
+    int		i;
     char 	*s;
     VectorList	vectors = NULL;
     Type 	type;
@@ -205,8 +204,7 @@ void ScalarListInteractor::updateDisplayedInteractorValue()
     const char *val = sln->getOutputValueString(1); 	// Get the list itself
     index = -1;
     count = 0;
-    while (s = DXValue::NextListItem(val, &index, type, NULL)) {
-	int vindex = 0, dummy = 0;
+    while ( (s = DXValue::NextListItem(val, &index, type, NULL)) ) {
 	// 
 	// Get the individual components out of a vector.
 	// This is a very slow, but at least uses DXValue to do the parse.
@@ -223,7 +221,6 @@ void ScalarListInteractor::updateDisplayedInteractorValue()
 	// 
 	for (i=1 ; i<=n_tuples ; i++) {
 	    double dval = 0; 
-	    double min, max;
 	    switch (type) {
 	        case DXType::IntegerListType:
 			dval = v.getInteger(); break;
@@ -234,8 +231,8 @@ void ScalarListInteractor::updateDisplayedInteractorValue()
 	    }
 
 #if 0	// 9/22/93 - doRangeCheck...() handles this now.
-	    min = sln->getComponentMinimum(i);
-	    max = sln->getComponentMaximum(i);
+	    double min = sln->getComponentMinimum(i);
+	    double max = sln->getComponentMaximum(i);
 	    if (dval > max)
 		dval = max;
 	    else if (dval < min)
@@ -281,7 +278,6 @@ void ScalarListInteractor::handleInteractivePartStateChange(
 {
     int n_tuples, count, j, i, *decimalPlaces;
     ScalarListInstance *sli = (ScalarListInstance*)this->interactorInstance;
-    ScalarListNode *sln = (ScalarListNode*)sli->getNode();
     VectorList ro_vectors, vectors;
 
 
@@ -363,6 +359,7 @@ void ScalarListInteractor::handleInteractivePartStateChange(
     // In addition, this seems like a reasonable, albeit necessary, 
     // optimization.
     //
+    ScalarListNode *sln = (ScalarListNode*)sli->getNode();
     if (clamped_vector) {
 	char *s = this->buildDXList();
 	sln->setOutputValue(1,s);
@@ -472,7 +469,6 @@ char *ScalarListInteractor::buildDXList()
 	
 
     if (count > 0 ) {
-        int decimals;
 	ScalarNode *node = (ScalarNode*)this->interactorInstance->getNode();
 	boolean ints = node->isIntegerTypeComponent();
         list = new char[n_tuples * count * (1 + 4 + 16)  * sizeof(char)];
@@ -485,7 +481,7 @@ char *ScalarListInteractor::buildDXList()
 	    for (j=0 ; j<n_tuples ; j++) {
                 char s[128];
                 if (ints) {
-                    int tmp = vectors[i][j];
+                    int tmp = (int) vectors[i][j];
                     DXValue::FormatDouble((double)tmp, s, 0);
                 } else
 		    DXValue::FormatDouble((double)vectors[i][j], s);
@@ -524,7 +520,7 @@ void ScalarListInteractor::listCallback(Widget w, XtPointer callData)
 					this->interactorInstance;
     ScalarListNode *sln = (ScalarListNode*)this->getNode();
     XmNumericListCallbackStruct *cb = (XmNumericListCallbackStruct*)callData;
-    int i, position = cb->position;
+    int i;
     VectorList   vlist = cb->vector_list;
 
     if (cb->position == -1) {
@@ -648,7 +644,6 @@ Widget ScalarListInteractor::createList(Widget     frame_parent)
 {
     Widget          widget;
     int             n;
-    int             i;
     Widget          label;
     XmFontList      font_list;
     XFontStruct    *font;

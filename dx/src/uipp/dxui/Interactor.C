@@ -96,7 +96,7 @@ Interactor::~Interactor() { }
 void Interactor::handleInteractorStateChange(
 			InteractorInstance *src_ii, boolean major_change)
 {
-int userw, userh, curw, curh, iw, ih;
+int userw, userh, curw, curh;
 
     this->handleInteractivePartStateChange(src_ii, FALSE);
 
@@ -200,7 +200,6 @@ void Interactor::setLabel(const char *labelString, boolean )
 {
 XmStringContext cxt;
 char *text, *tag;
-static char buf[1024];
 XmStringDirection dir;
 Boolean sep;
 unsigned char rp;

@@ -31,7 +31,6 @@ NoUndoPanelCommand::NoUndoPanelCommand(const char*   name,
 boolean NoUndoPanelCommand::doIt(CommandInterface *ci)
 {
     ControlPanel *cp = this->controlPanel;
-    int          i, size;
 
     ASSERT(cp);
 

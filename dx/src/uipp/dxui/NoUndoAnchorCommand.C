@@ -31,7 +31,6 @@ NoUndoAnchorCommand::NoUndoAnchorCommand(const char*   name,
 
 boolean NoUndoAnchorCommand::doIt(CommandInterface *ci)
 {
-    Command *cmd;
     DXAnchorWindow *aw = this->anchorWindow;
 
     ASSERT(aw);

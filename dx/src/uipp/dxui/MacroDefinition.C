@@ -124,7 +124,7 @@ void MacroDefinition::reference(MacroNode *n)
 {
     ListIterator li(this->referencingNodes);
     Node *listNode;
-    while (listNode = (MacroNode*)li.getNext())
+    while ( (listNode = (MacroNode*)li.getNext()) )
 	if (n == listNode)
 	    return;
     this->referencingNodes.appendElement(n);
@@ -134,7 +134,7 @@ void MacroDefinition::dereference(MacroNode *n)
 {
     ListIterator li(this->referencingNodes);
     Node *listNode;
-    while (listNode = (MacroNode*)li.getNext())
+    while ( (listNode = (MacroNode*)li.getNext()) )
     {
 	if (n == listNode)
 	{
@@ -199,9 +199,8 @@ boolean MacroDefinition::setNodeDefinitions(MacroDefinition *newDef)
 {
     ListIterator li(this->referencingNodes);
     MacroNode *n;
-    char *p;
 
-    while (n = (MacroNode*)li.getNext())
+    while ( (n = (MacroNode*)li.getNext()) )
     {
 	n->setDefinition(newDef);
 	n->updateDefinition();
@@ -381,7 +380,7 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
 	    }
 	    name[index++] = '\0';
   	    int visattr = 1;
-	    if (p = strstr(&name[index],"visible:")) {
+	    if ( (p = strstr(&name[index],"visible:")) ) {
 		p += strlen("visible:");
 		visattr = atoi(p);
 	    } 
@@ -454,7 +453,7 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
 
 	    name[index++]='\0';
   	    int visattr = 1;
-	    if (p = strstr(&name[index],"visible:")) {
+	    if ( (p = strstr(&name[index],"visible:")) ) {
 		p += strlen("visible:");
 		visattr = atoi(p);
 	    } 
@@ -631,7 +630,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	    ASSERT(regcomp(&net_file, ".[.]*\\.net$", REG_NOSUB) == 0);
 
 	    struct dirent *entry;
-	    while (entry = readdir(d))
+	    while ( (entry = readdir(d)) )
 	    {
 	        boolean exists = regexec(&net_file, entry->d_name, 0, NULL, 0);
 		if (exists == 0)
@@ -875,7 +874,7 @@ ParameterDefinition *MacroDefinition::getNonDummyIODefinition(List *l, int n)
    ASSERT(n > 0);
    ASSERT(l);
 
-   ParameterDefinition *pd;
+   ParameterDefinition *pd=NULL;
    ListIterator iterator(*l);
    int count = 0;
 

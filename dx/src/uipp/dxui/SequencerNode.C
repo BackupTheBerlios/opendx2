@@ -478,7 +478,7 @@ int SequencerNode::handleNodeMsgInfo(const char *line)
     //
     // Handle the 'min=%g' part of the message.
     //
-    if (p = strstr((char*)line,"min=")) {
+    if ( (p = strstr((char*)line,"min=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -497,7 +497,7 @@ int SequencerNode::handleNodeMsgInfo(const char *line)
     //
     // Handle the 'max=%g' part of the message.
     //
-    if (p = strstr((char*)line,"max=")) {
+    if ( (p = strstr((char*)line,"max=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -521,7 +521,7 @@ int SequencerNode::handleNodeMsgInfo(const char *line)
     // NOTE: this is done before 'frame=' so that we can compute an accurate
     //	next frame.
     //
-    if (p = strstr((char*)line,"delta=")) {
+    if ( (p = strstr((char*)line,"delta=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
@@ -538,7 +538,7 @@ int SequencerNode::handleNodeMsgInfo(const char *line)
     //
     // Handle the 'frame=%g' part of the message.
     //
-    if (p = strstr((char*)line,"frame=")) {
+    if ( (p = strstr((char*)line,"frame=")) ) {
 	values++;
 	while (*p != '=') p++;
 	p++;
