@@ -60,8 +60,6 @@ Error _dxf_fileSearch(char *inname, char **outname, char *extension,
 #if ibm6000
 
 #include <sys/ldr.h>
-/* #include "/usr/lpp/xlC/include/load.h" */
-#include "./load.h"
 typedef int (*Handle)();
 #define __HANDLE_DEF
 
