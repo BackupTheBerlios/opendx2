@@ -562,9 +562,20 @@ int os2_select();
 int 	_dxf_nu_pipe(int *fds);
 FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 
+#if defined(cygwin)
+#include <sys/types.h>
+
+#define fopen(file,mode) _dxf_nu_fopen(file,mode"O_BINARY")
+#define open(path,oflag)  _open(path,oflag|O_BINARY&(~O_CREAT),0,mode"O_BINARY")
+#define creat(path,mode) _open(path, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode"O_BINARY")
+
+#else
+
 #define fopen(file,mode) _dxf_nu_fopen(file,mode"b")
 #define open(path,oflag)  _open(path,oflag|O_BINARY&(~O_CREAT),0)
-#define creat(path,mode) _open(path, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode)
+#define creat(path,mode) _open(path, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode"b")
+
+#endif
 
 #define close(fd) \
 	if(SOCK_ISSOCKET(fd))  \
