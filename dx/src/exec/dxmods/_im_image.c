@@ -409,8 +409,6 @@ static Error write_im(RWImageArgs *iargs) {
 				ctype = ZipCompression;
 		}
         
-        image_info->compression = ctype;
-
 		if(iargs->quality > 0)
 			image_info->quality = iargs->quality;
         
@@ -474,6 +472,9 @@ static Error write_im(RWImageArgs *iargs) {
 				image = resize_image;
 			}
 		}
+
+		image->compression = ctype;
+		image_info->compression = ctype;
 
         DEBUGMESSAGE(image->filename);
 
