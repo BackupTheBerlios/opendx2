@@ -93,6 +93,8 @@ $(built_sources) : $(built_headers)
 
 BUILT_SOURCES =  $(built_sources) $(built_headers)
 
+$(libLIBDX_a_SOURCES): $(built_headers)
+
 $(InputName).c: $(InputName).X class class.awk
 	sh ./class -c $*.X > $*.c
 	sh ./class -h $*.X > $*.h
