@@ -265,6 +265,14 @@ Widget FileDialog::createDialog(Widget parent)
     sprintf(shellname,"%sShell",this->name);
     shell = XmCreateDialogShell(parent, shellname, wargs, n);
 
+    //
+    // Motif FileSelection dialogs don't tolerate being sized to tiny
+    // dimensions.  They're not able to lay themselves out following
+    // such a resize.  So impose min sizes.  It might be better to 
+    // make a virtual method in Dialog.
+    //
+    XtVaSetValues (shell, XmNminWidth, 130, XmNminHeight, 320, NULL);
+
     this->fsb =  this->createFileSelectionBox(shell, this->name);
 
     return this->fsb;
