@@ -44,12 +44,16 @@ static struct keytab
 
 _dxfccinput(char *buffer)
 {
+#if defined(_CCDEBUG)
     extern int _dxfccdebug;
+#endif
 
     _dxfccsbuf = buffer;
     _dxfccsptr = _dxfccsbuf;
 
+#if defined(_CCDEBUG)
     _dxfccdebug = 1;
+#endif
 }
 
 int
