@@ -2407,8 +2407,10 @@ static void KeyboardNavigation( XmWorkspaceWidget ww, XEvent* event )
 	    if (first) ww->workspace.is_moving = FALSE;
 	    delta_x = delta_y = 0;
 	    if (ww->workspace.snap_to_grid) {
-		dx = ww->workspace.grid_width;
-		dy = ww->workspace.grid_height;
+		if (ww->workspace.horizontal_alignment != XmALIGNMENT_NONE)
+		    dx = ww->workspace.grid_width;
+		if (ww->workspace.vertical_alignment != XmALIGNMENT_NONE)
+		    dy = ww->workspace.grid_height;
 	    }
 	    switch (keysym) {
 		case XK_Left:
