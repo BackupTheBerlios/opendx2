@@ -6,7 +6,7 @@ dxmdfdir = $(prefix)/dx/lib
 noinst_LIBRARIES = libDXMODS.a
 SUFFIXES = .c .y .c .s .h .o 
 
-BUILT_SOURCES = user.c _compparse.h _compparse.c
+BUILT_SOURCES = user.c _compparse.h _compparse.c y.tab.c
 
 dxmdf_DATA = dx.mdf
 
@@ -94,28 +94,13 @@ dx.mdf:  dxmdf.src
 	sed '1,4d' dxmdf.src > userTmp.c
 	$(CPP) $(MDF) -DCPLUSPLUS_UI -DEXECUTIVE_MODS userTmp.c >>dx.mdf
 
-.c.c:
-	echo "#line 1 \"$*.c\"" | cat - $*.c > $*.c
+y.tab.c: _compparse.y
+	$(YACC) -vd _compparse.y
 
-.y.c:
-	yacc -vd $*.y
-	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.h > $*.h
-	rm y.tab.h
-	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.c > $*.c
-	rm y.tab.c
+_compparse.c: y.tab.c
+	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.c > _compparse.c
 
-.y.h:
-	yacc -vd $*.y
-	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.h > $*.h
-	rm y.tab.h
-	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.c > $*.c
-	rm y.tab.c
+_compparse.h: y.tab.c
+	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.h > _compparse.h
 
-.y.o:
-	yacc -vd $*.y
-	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.h > $*.h
-	rm y.tab.h
-	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.c > $*.c
-	rm y.tab.c
-	$(CC) $(CFLAGS) -c $*.c
 
