@@ -69,7 +69,7 @@ extern "C" int getdtablesize();
 #if defined(sgi)
 #include <bstring.h>
 #endif
-#if !defined(hp700) && !defined(sun4) && !defined(aviion) && !defined(DXD_DO_NOT_REQ_SYS_SELECT_H)
+#if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
 
