@@ -553,6 +553,7 @@ Position         y;
 unsigned char    alignment;
 Dimension	 shadow_thickness;
 XRectangle	 xrect;
+XmFontList       font_list;
 
     /*network = this->node->getNetwork();*/
     /*editor = network->getEditor();*/
@@ -571,6 +572,7 @@ XRectangle	 xrect;
 	sprintf(str2, "%s", p->getNameString());
     }
 
+#if 0
     if(!workspace->font_list)
     {
 	XFontStruct *font_struct;
@@ -584,12 +586,14 @@ XRectangle	 xrect;
 		     font_struct->fid);
 	}
     }
+#endif
 
     // Clear the PB label
     XtVaGetValues(this->buttonWidget,
 		  XmNwidth, &width,
 		  XmNheight, &height,
 		  XmNshadowThickness, &shadow_thickness,
+		  XmNfontList, &font_list,
 		  NULL);
     XClearArea(XtDisplay(this->buttonWidget), XtWindow(this->buttonWidget),
 		shadow_thickness, shadow_thickness, 
@@ -600,11 +604,11 @@ XRectangle	 xrect;
     xrect.width = width - 2*shadow_thickness;
     xrect.height = height - 2*shadow_thickness;
 
-    xmstr1 = XmStringCreate(str1, "small");
-    xmstr2 = XmStringCreate(str2, "small");
+    xmstr1 = XmStringCreateLtoR(str1, "small_canvas");
+    xmstr2 = XmStringCreateLtoR(str2, "small_canvas");
 
-    XmStringExtent(workspace->font_list, xmstr1, &str1_width, &str1_height);
-    XmStringExtent(workspace->font_list, xmstr2, &str2_width, &str2_height);
+    XmStringExtent(font_list, xmstr1, &str1_width, &str1_height);
+    XmStringExtent(font_list, xmstr2, &str2_width, &str2_height);
 
     y = height/2 - str1_height + 1;
     if(str1_width <= width)
@@ -614,7 +618,7 @@ XRectangle	 xrect;
 
     XmStringDraw(XtDisplay(this->buttonWidget),
 		 XtWindow(this->buttonWidget),
-		 workspace->font_list,
+		 font_list,
 		 xmstr1,
 		 workspace->gc,
 		 0, y, width,
@@ -629,7 +633,7 @@ XRectangle	 xrect;
 	alignment = XmALIGNMENT_BEGINNING;
     XmStringDraw(XtDisplay(this->buttonWidget),
 		 XtWindow(this->buttonWidget),
-		 workspace->font_list,
+		 font_list,
 		 xmstr2,
 		 workspace->gc,
 		 0, y, width,
@@ -1234,7 +1238,6 @@ void StandIn::armInput(Widget widget, XtPointer cdata)
                  XtWindow(workspace->getRootWidget()),
                  workspace->cursor[cursor],
                  CurrentTime);
-
     /*
      * Draw the initial line.
      */
@@ -1378,7 +1381,6 @@ void StandIn::armOutput(Widget widget, XtPointer cdata)
                  XtWindow(workspace->getRootWidget()),
                  workspace->cursor[cursor],
                  CurrentTime);
-
     /*
      * Add cursor tracking handler.
      */
@@ -1391,13 +1393,17 @@ void StandIn::armOutput(Widget widget, XtPointer cdata)
 
 void StandIn::deleteArk(Ark *a)
 {
-     delete a;
+    EditorWindow* editor = this->node->getNetwork()->getEditor();
+    if (editor) editor->notifyArk(a,FALSE);
+    delete a;
 }
 
 extern "C" void StandIn_DisarmTabCB(Widget widget,
                 XtPointer clientData,
                 XtPointer cdata)
 {
+    XUngrabPointer(XtDisplay(widget), CurrentTime);
+    XFlush(XtDisplay(widget));
     Node *node = (Node *) clientData;
     StandIn *standIn = node->getStandIn();
     ASSERT(standIn);
@@ -1477,9 +1483,11 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
     /*
      * Determine where the cursor stopped.
      */
+    Window src_w = XtWindow(widget);
+    Window dst_w = XtWindow(workspace->getRootWidget());
     XTranslateCoordinates(workspace->display,
-                          XtWindow(widget),
-                          XtWindow(workspace->getRootWidget()),
+                          src_w, //XtWindow(widget),
+                          dst_w, //XtWindow(workspace->getRootWidget()),
                           event->xbutton.x,
                           event->xbutton.y,
                           &x,
@@ -1704,6 +1712,11 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
 	if(workspace->io_tab == t_widget) workspace->remove_arcs = FALSE;
         /*notified = FALSE;*/
         if (workspace->remove_arcs) {
+	      if (!standIn) {
+		  int dummy;
+		  Node* src = workspace->arc->getSourceNode(dummy);
+		  standIn = src->getStandIn();
+	      }
               standIn->deleteArk(workspace->arc);
               workspace->remove_arcs = False;
 
@@ -1872,7 +1885,7 @@ XmString StandIn::createButtonLabel()
 	sprintf(buffer,"%s:%d",label,this->node->getInstanceNumber());
 	label = buffer;
     } 
-    xms = XmStringCreate((char*)label, (char*)font);
+    xms = XmStringCreateLtoR((char*)label, (char*)font);
     return xms;
 }
 
@@ -1882,7 +1895,7 @@ const char* StandIn::getButtonLabel()
 }
 const char* StandIn::getButtonLabelFont()
 {
-   return XmSTRING_DEFAULT_CHARSET;
+   return "canvas";
 }
 
 int StandIn::getVisibleOutputCount()
@@ -2264,7 +2277,7 @@ void StandIn::createStandIn()
      *** Create input param buttons.
      ***/
 
-    string = XmStringCreate("", XmSTRING_DEFAULT_CHARSET);
+    string = XmStringCreateLtoR("", "canvas");
 
     y  = 0;
 #if 0

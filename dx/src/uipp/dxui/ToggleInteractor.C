@@ -181,7 +181,7 @@ XmString oldXmStr = NULL;
     //
 #if !defined(XMSTRING_COMPARE_IS_BROKEN)
     // For efficiency only
-    XmString tmpXmStr = XmStringCreateLtoR (filtered, "bold");
+    XmString tmpXmStr = XmStringCreateLtoR (filtered, "canvas");
     if (XmStringCompare (tmpXmStr, oldXmStr)) return ;
     XmStringFree (tmpXmStr);
 #endif
@@ -210,7 +210,7 @@ XmString oldXmStr = NULL;
         XtVaSetValues (this->getRootWidget(), XmNresizePolicy, XmRESIZE_ANY, NULL);
 
     //this->WorkSpaceComponent::setLabelResource(this->toggleButton, labelString);
-    XmString xmstr = XmStringCreateLtoR (filtered, XmSTRING_DEFAULT_CHARSET);
+    XmString xmstr = XmStringCreateLtoR (filtered, "canvas");
     XtVaSetValues (this->toggleButton, XmNlabelString, xmstr, NULL);
     XmStringFree(xmstr);
     delete filtered;

@@ -222,7 +222,7 @@ XmString oldXmStr = NULL;
 
 #if !defined(XMSTRING_COMPARE_IS_BROKEN)
     // For efficiency only
-    XmString tmpXmStr = XmStringCreateLtoR (filtered, "bold");
+    XmString tmpXmStr = XmStringCreateLtoR (filtered, "canvas");
     if (XmStringCompare (tmpXmStr, oldXmStr)) {
 	XmStringFree (tmpXmStr);
 	if (filtered) delete filtered;

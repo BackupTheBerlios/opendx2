@@ -179,7 +179,7 @@ SelectorListToggleInteractor::reloadMenuOptions()
 	XmStringFree (oldstr);
 	if (!XtIsSensitive (w)) XtSetSensitive(w, True);
 	if ((!cp)||(strcmp(cp, optname))) {
-	    xmstr = XmStringCreateSimple(optname);
+	    xmstr = XmStringCreateLtoR(optname, "canvas");
 	    XtVaSetValues (w, XmNuserData, i, XmNlabelString, xmstr, NULL);
 	    XmStringFree (xmstr);
 	} else XtVaSetValues (w, XmNuserData, i, NULL);
@@ -192,7 +192,7 @@ SelectorListToggleInteractor::reloadMenuOptions()
     for (i=i; i<=oldOptionCnt; i++) {
 	w = (Widget)this->toggleWidgets.getElement(endi);
 	if ((i==oldOptionCnt) && (newOptionCnt == 0)) {
-	    xmstr = XmStringCreateSimple("(empty)");
+	    xmstr = XmStringCreateLtoR("(empty)", "canvas");
 	    XtSetSensitive(w, False);
 	    XtVaSetValues (w, XmNlabelString, xmstr, NULL);
 	    XmStringFree(xmstr);
@@ -209,7 +209,7 @@ SelectorListToggleInteractor::reloadMenuOptions()
 	char *optname = (char*)si->getOptionNameString(i);
 	Boolean setting;
 	ASSERT(optname);
-	xmstr = XmStringCreateSimple(optname);
+	xmstr = XmStringCreateLtoR(optname, "canvas");
 	n = 0;
 	XtSetArg(wargs[n], XmNuserData, i); n++;
 	XtSetArg(wargs[n], XmNlabelString, xmstr ); n++;
@@ -268,7 +268,7 @@ void SelectorListToggleInteractor::reloadMenuOptions()
 	    char *optname = (char*)si->getOptionNameString(i);
 	    Boolean setting;
 	    ASSERT(optname);
-	    xmstr = XmStringCreateSimple(optname);
+	    xmstr = XmStringCreateLtoR(optname, "canvas");
 	    n = 0;
 	    XtSetArg(wargs[n], XmNuserData, i); n++;
 	    XtSetArg(wargs[n], XmNlabelString, xmstr ); n++;
@@ -294,7 +294,7 @@ void SelectorListToggleInteractor::reloadMenuOptions()
 	}
     } else {
 	n = 0;
-	xmstr = XmStringCreateSimple("(empty)");
+	xmstr = XmStringCreateLtoR("(empty)", "canvas");
 	XtSetArg(wargs[n], XmNlabelString, xmstr); n++;
 	XtSetArg(wargs[n], XmNbackground, bg); n++;
 	XtSetArg(wargs[n], XmNforeground, fg); n++;

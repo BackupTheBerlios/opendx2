@@ -151,105 +151,6 @@ Widget SelectorRadioInteractor::createInteractivePart(Widget form)
 
     return this->toggleRadio;
 }
-//
-// [Re]load the options into this->pulldown.
-//
-#if 0
-void SelectorRadioInteractor::reloadMenuOptions()
-{
-    SelectorInstance *si = (SelectorInstance*) this->interactorInstance;
-    int options, n, i;
-    Arg wargs[20];
-    Pixel bg, fg;
-    Widget oldRadio;
-    int    oldOptionCnt = this->toggleWidgets.getSize();
-
-
-    if(this->toggleRadio) {
-	oldRadio = this->toggleRadio;
-	this->toggleRadio = NULL;
-    } else 
-	oldRadio = 0;
-
-    /*
-     * Destroy all the children in the list
-     */
-    Widget w;
-    while (w = (Widget)this->toggleWidgets.getElement(1)) {
-	this->toggleWidgets.deleteElement(1);
-    }
-
-    XtVaGetValues (this->form, XmNbackground, &bg, XmNforeground, &fg, NULL);
-    n = 0;
-    XtSetArg (wargs[n], XmNbackground, bg); n++;
-    XtSetArg (wargs[n], XmNforeground, bg); n++;
-    this->toggleRadio = XmCreateRadioBox(form,"toggleRadio", wargs, n);
-    XtManageChild(this->toggleRadio);
-
-    /*
-     * Create the options in the pulldown menu according to specified
-     * option list.
-     */
-    options = si->getOptionCount();
-    XmString xmstr;
-    if (options > 0) {
-	int selectedOption = si->getSelectedOptionIndex();
-	ASSERT(selectedOption <= options);
-	for (i = 1; i <= options; i++)
-	{
-	    char *optname = (char*)si->getOptionNameString(i);
-	    Boolean setting;
-	    ASSERT(optname);
-	    Widget button;
-	    xmstr = XmStringCreateSimple(optname);
-	    n = 0;
-	    XtSetArg(wargs[n], XmNuserData, i); n++;
-	    XtSetArg(wargs[n], XmNlabelString, xmstr ); n++;
-	    if (i == selectedOption) {
-		setting = True;
-	    } else {
-		setting = False;
-	    }
-    	    XtSetArg (wargs[n], XmNbackground, bg); n++;
-    	    XtSetArg (wargs[n], XmNforeground, fg); n++;
-	    XtSetArg(wargs[n], XmNset, setting); n++;
-	    button = XtCreateManagedWidget(optname,
-		xmToggleButtonWidgetClass, this->toggleRadio, wargs,n); 
-
-	    XtAddCallback (button, XmNvalueChangedCallback,
-		 (XtCallbackProc)SelectorRadioInteractor_SelectorToggleCB,
-		 (XtPointer)this);
-	    XtManageChild(button);
-
-	    this->appendOptionWidget(button);
-	    delete optname;
-	    XmStringFree(xmstr);
-	}
-    } else {
-	n = 0;
-	xmstr = XmStringCreateSimple("(empty)");
-	XtSetArg(wargs[n], XmNlabelString, xmstr); n++;
-    	XtSetArg (wargs[n], XmNbackground, bg); n++;
-    	XtSetArg (wargs[n], XmNforeground, fg); n++;
-        Widget button = XtCreateManagedWidget("(empty)",
-                xmToggleButtonWidgetClass, this->toggleRadio, wargs,n);
-
-	XtSetSensitive(button,False);
-	XtManageChild(button);
-	XmStringFree(xmstr);
-    }
-
-    if (oldRadio) {
-	XtUnmanageChild(oldRadio);
-	XtDestroyWidget(oldRadio);
-    }
-    n = 0;
-    XtSetValues (this->toggleRadio, wargs, n);
-
-    XtVaSetValues (this->form, XmNrightAttachment, XmATTACH_NONE, NULL);
-    XtVaSetValues (this->form, XmNrightAttachment, XmATTACH_FORM, NULL);
-}
-#else
 void SelectorRadioInteractor::reloadMenuOptions()
 {
     SelectorInstance *si = (SelectorInstance*) this->interactorInstance;
@@ -278,7 +179,7 @@ void SelectorRadioInteractor::reloadMenuOptions()
         XmStringFree (oldstr);
         if (!XtIsSensitive (w)) XtSetSensitive(w, True);
         if ((!cp)||(strcmp(cp, optname))) {
-            xmstr = XmStringCreateSimple(optname);
+            xmstr = XmStringCreateLtoR(optname, "canvas");
             XtVaSetValues (w, XmNuserData, i, XmNlabelString, xmstr, NULL);
             XmStringFree (xmstr);
         } else XtVaSetValues (w, XmNuserData, i, NULL);
@@ -291,7 +192,7 @@ void SelectorRadioInteractor::reloadMenuOptions()
     for (i=i; i<=oldOptionCnt; i++) {
         w = (Widget)this->toggleWidgets.getElement(endi);
         if ((i==oldOptionCnt) && (newOptionCnt == 0)) {
-            xmstr = XmStringCreateSimple("(empty)");
+            xmstr = XmStringCreateLtoR("(empty)", "canvas");
             XtSetSensitive(w, False);
             XtVaSetValues (w, XmNlabelString, xmstr, NULL);
             XmStringFree(xmstr);
@@ -309,7 +210,7 @@ void SelectorRadioInteractor::reloadMenuOptions()
         char *optname = (char*)si->getOptionNameString(i);
         Boolean setting;
         ASSERT(optname);
-        xmstr = XmStringCreateSimple(optname);
+        xmstr = XmStringCreateLtoR(optname, "canvas");
         n = 0;
         XtSetArg(wargs[n], XmNuserData, i); n++;
         XtSetArg(wargs[n], XmNlabelString, xmstr ); n++;
@@ -332,7 +233,6 @@ void SelectorRadioInteractor::reloadMenuOptions()
     this->resetUserDimensions();
     XtVaSetValues (XtParent(this->toggleRadio), XmNheight, 0, NULL);
 }
-#endif
 
 //
 // Accepts value changes and reflects them into other interactors, cdbs

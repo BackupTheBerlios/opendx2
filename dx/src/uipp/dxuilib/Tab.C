@@ -39,7 +39,7 @@ void Tab::createTab(Widget parent, boolean createManaged)
     Widget w;
 
     if (!nullXmString)
-        nullXmString = XmStringCreate("", XmSTRING_DEFAULT_CHARSET);
+        nullXmString = XmStringCreateLtoR("", "canvas");
 
     XtSetArg(arg[n], XmNlabelString, nullXmString);		n++;
     XtSetArg(arg[n], XmNwidth,       standIn->getIOWidth());	n++;
