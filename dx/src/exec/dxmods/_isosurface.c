@@ -5915,6 +5915,9 @@ Error isosurface_field
 
                 if ( DXGetError() != ERROR_NONE )
                     goto error;
+
+		if (! DXCopyAttributes((Object)out_h[i], (Object)input_info->field))
+		    goto error;
             }
     }
     else if ( create_output == create_iso_surface )
@@ -5936,6 +5939,9 @@ Error isosurface_field
 
                 if ( DXGetError() != ERROR_NONE )
                     goto error;
+
+		if (! DXCopyAttributes((Object)out_h[i], (Object)input_info->field))
+		    goto error;
             }
     }
     else if ( ( create_output == create_band_lines   ) ||
@@ -5955,14 +5961,12 @@ Error isosurface_field
 
         if ( DXGetError() != ERROR_NONE )
             goto error;
+
+	if (! DXCopyAttributes((Object)out_h[0], (Object)input_info->field))
+	    goto error;
     }
     else
         goto error;
-
-    for ( i=0; i<number; i++ )
-	if ( !skipvec[i] )
-	    if (! DXCopyAttributes((Object)out_h[i], (Object)input_info->field))
-		goto error;
 
 #ifdef WHITEBOX_TEST
     if ( DXQueryDebug ( "I" ) )
