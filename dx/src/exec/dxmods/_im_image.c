@@ -286,6 +286,12 @@ static Error write_im(RWImageArgs *iargs) {
         }
         
         image=ConstituteImage(nx,ny,"RGB",imcolortype,(void*)copycolors,&_dxd_exception_info);
+	if (!image) {
+            DestroyImageInfo(new_frame_info);
+            DestroyImageInfo(image_info);
+	    DXFree(copycolors);
+            DXErrorReturn( ERROR_INTERNAL , "out of memory allocating Image _im_image.c");
+	}
 
 	image->compression = ctype;
 	new_frame_info->compression = ctype;
@@ -306,7 +312,9 @@ static Error write_im(RWImageArgs *iargs) {
 #if MagickLibVersion > 0x0537
             DestroyConstitute();
 #endif
-            DXErrorReturn(ERROR_INTERNAL, "Could not write temp image to append." );
+             DXSetError(ERROR_INTERNAL, "reason = %s, description = %s",
+                        image->exception.reason,
+                        image->exception.description);
         }
         
 
@@ -405,6 +413,11 @@ static Error write_im(RWImageArgs *iargs) {
         }
 
         image=ConstituteImage(nx,ny,"RGB",imcolortype,(void*)copycolors,&_dxd_exception_info);
+	if (!image) {
+            DestroyImageInfo(image_info);
+	    DXFree(copycolors);
+            DXErrorReturn( ERROR_INTERNAL , "out of memory allocating Image _im_image.c");
+	}
 
         /*
           Write the image with ImageMagick
@@ -419,7 +432,9 @@ static Error write_im(RWImageArgs *iargs) {
 
         err = WriteImage(image_info,image);
         if(err == 0) {
-             DXSetError(ERROR_INTERNAL, image->exception.description);
+             DXSetError(ERROR_INTERNAL, "reason = %s, description = %s",
+                        image->exception.reason,
+                        image->exception.description);
         }
 
         DXFree(copycolors);
