@@ -10,13 +10,13 @@
 
 
 #include <dx/dx.h>
+#include <fcntl.h>
 #include "internals.h"
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <stdarg.h>
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
