@@ -85,8 +85,8 @@ DX_JAR=""
 WRL_CLASSPATH=""
 JDK_CLASSPATH=""
 if test -r $DXINST/java/javainfo ; then
-  WRL_CLASSPATH=`cat $DXINST/java/javainfo | grep WRL_CLASSPATH | sed -e "s/WRL_CLASSPATH //"`
-  JDK_CLASSPATH=`cat $DXINST/java/javainfo | grep JDK_CLASSPATH | sed -e "s/JDK_CLASSPATH //"`
+  WRL_CLASSPATH=`cat $DXINST/java/javainfo | grep WRL_CLASSPATH | sed -e "s/WRL_CLASSPATH//" -e "s/ //"`
+  JDK_CLASSPATH=`cat $DXINST/java/javainfo | grep JDK_CLASSPATH | sed -e "s/JDK_CLASSPATH//" -e "s/ //"`
 fi
 if test -r $DXINST/java/htmlpages/dx.jar ; then
   DX_JAR=$DXINST/java/htmlpages/dx.jar
