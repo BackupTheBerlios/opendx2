@@ -35,14 +35,12 @@ SUBDIRS = server dx
 ##
 javainfo:
 	echo JBASE $(JBASE) >javainfo
+	echo WRL_CLASSPATH @WRL_CLASSPATH@ >>javainfo 
 	
 dx.jar: javainfo
 	mkdir -p classes
 	(CLASSPATH=aaaaa ; unset CLASSPATH ; javac -d classes makeall.java $(DX_SRCS) )
 	-(CLASSPATH=@WRL_CLASSPATH@ ; javac -d classes makewrl.java )
-	grep -v WRL_CLASSPATH javainfo > javainfo.tmp
-	echo WRL_CLASSPATH @WRL_CLASSPATH@ >>javainfo ; \
-	rm -f javainfo.tmp
 	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd classes; @JDKBIN@jar cf ../dx.jar $(DX_OBJS) dx)
 
 server.jar:
