@@ -63,16 +63,25 @@ dnl
 dnl For the time being, require a command-line arg to build with SMP 
 dnl support on linux platforms
 AC_ARG_ENABLE(smp_linux,
-	      [  --enable-smp-linux     build exec, libs with SMP-parallel capability for Linux platforms (default is no)],
+	      [  --enable-smp-linux     build exec, libs with SMP-parallel capability for Linux platforms (default is disabled)],
 	      [with_smp_linux=$enableval],
 	      [with_smp_linux='no'])
 
 dnl Since building the libs for all the formats and DX stuff takes so long
 dnl this allows you to disable it while developing/extending dx.
 AC_ARG_ENABLE(ddx,
-	      [  --enable-ddx            build exec, libs for ddx compatibility (default is no)],
+	      [  --enable-ddx            build exec, libs for ddx compatibility (default is disabled)],
 	      [with_ddx=$enableval],
 	      [with_ddx='no'])
+
+dnl Some users will prefer a set of accelerators much more like that of the native
+dnl applications on Windows and the MacOS. Required for some limitations on some
+dnl keyboards.
+AC_ARG_ENABLE(new-keylayout,
+	      [  --enable-new-keylayout  build user interface with different accelerators (default is disabled)],
+	      [with_new_keylayout=$enableval],
+	      [with_new_keylayout='no'])
+
 
 dnl Since building the libs for all the formats and DX stuff takes so long
 dnl this allows you to disable it while developing/extending dx.
@@ -448,7 +457,6 @@ dnl A couple libs for cygwin
 AC_CHECK_LIB(ICE, IceConnectionNumber)
 AC_CHECK_LIB(SM, SmcSetProperties)
 AC_CHECK_LIB(REXP, regcomp)
-dnl I guess this is not obsolete ;)
 DX_CHECK_TGMATH
 AC_CHECK_LIB(m, sqrt)
 
@@ -462,6 +470,12 @@ dnl Check for ImageMagick Libraries
 dnl Checks for libraries.
 AC_CHECK_LIB(g++, main)
 AC_CHECK_LIB(dl, main)
+
+dnl Set the CXXFLAG for new keylayout
+if test "$with_new_keylayout" != 'no'
+then
+    CXXFLAGS="$CXXFLAGS -DDX_NEW_KEYLAYOUT"
+fi
 
 dnl Leave the TIFF check for now incase we want to rewrite the ReadImage
 dnl module to use these routines at a later date. 
