@@ -17,5 +17,5 @@ LINKLIST = \
 myinstall: 
 	$(mkinstalldirs) $(prefix)/dx/samples/programs/SUPERVISE
 	@for s in $(LINKLIST) ; do \
-		ln  $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/SUPERVISE ; \
+		ln -sf $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/SUPERVISE ; \
 	done

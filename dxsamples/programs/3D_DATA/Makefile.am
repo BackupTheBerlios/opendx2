@@ -75,5 +75,5 @@ LINKLIST = \
 myinstall: 
 	$(mkinstalldirs) $(prefix)/dx/samples/programs/3D_DATA
 	@for s in $(LINKLIST) ; do \
-		ln  $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/3D_DATA ; \
+		ln -sf $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/3D_DATA ; \
 	done

@@ -13,5 +13,5 @@ LINKLIST = \
 myinstall: 
 	$(mkinstalldirs) $(prefix)/dx/samples/programs/INTERFACE_CONTROL
 	@for s in $(LINKLIST) ; do \
-		ln  $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/INTERFACE_CONTROL ; \
+		ln -sf $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/INTERFACE_CONTROL ; \
 	done

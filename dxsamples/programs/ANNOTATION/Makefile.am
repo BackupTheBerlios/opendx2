@@ -59,5 +59,5 @@ LINKLIST = \
 myinstall: 
 	$(mkinstalldirs) $(prefix)/dx/samples/programs/ANNOTATION
 	@for s in $(LINKLIST) ; do \
-		ln  $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/ANNOTATION ; \
+		ln -sf $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/ANNOTATION ; \
 	done

@@ -103,7 +103,7 @@ Web browsers.
 <p>
 <hr>
 
-<a name="interacting">
+<a name="interacting"></a>
 <h2>Interacting with Images</h2>
 Java Explorer provides interaction modes similar to those in Data Explorer:
 Rotate, Pan, Zoom, and Pick.  
@@ -192,7 +192,7 @@ a complete web page will be written however the images will not be saved to
 your disk.  Of course that's perfectly reasonable if you've already saved
 these images.
 </ul>
-<a name="generated_files">
+<a name="generated_files"></a>
 <h4>The generated files</h4>
 Data Explorer will write the following files:
 <ul>
@@ -204,7 +204,7 @@ Data Explorer will write the following files:
 the Data Explorer user interface, you might have to go searching for the
 .gif or .wrl files.</small>
 </ul>
-<a name="makefile">
+<a name="makefile"></a>
 <h4>The generated makefile</h4>
 <i>myprog</i>.make contains values which you can insert using
 you favorite editor.  A new alternative is to set <a href="Status.htm#changes">
@@ -224,7 +224,7 @@ as that directory is included in <i>installDir</i>/java/server/class/dxserver.pa
 <p>
 <hr>
 <p>
-<h2> <a name="installing">Installing Java Explorer </h2> 
+<h2> <a name="installing"></a>Installing Java Explorer </h2> 
 There is no formal installation process
 for Java Explorer as there is with most software products
 including Data Explorer.  These instructions assume some
@@ -239,7 +239,7 @@ tar file</a>
 version, or here for a 
 <a href="http://quad/javaxp_tarfiles/javadx.latest.zip">zip file.</a>
 <ol>
-<a name="path">
+<a name="path"></a>
 <li>For cshell users... Add <i>installDir</i>/java/server/bin to your path:
 <b>
 <pre>
@@ -275,11 +275,11 @@ Internet Explorer, you'll need 4.0 or later.
 
 <p>
 <hr>
-<h2> <a name="running"> Running the Java Explorer server </h2>
-</a>
+		<h2> <a name="running"> </a>Running the Java Explorer server </h2>
+		
 You run one DXServer process on a machine and it serves all requests from
-all browsers pointed at the machine.  
-<p>
+all browsers pointed at the machine. 
+		<p>
 The web pages generated using Java Explorer use applets which detect
 the ip address of the machine from which they were loaded and attempt to
 contact a DXServer using that ip address.  
@@ -295,9 +295,9 @@ startserver and stopserver scripts.
 <p>
 
 <hr>
-<h2> <a name="cmds"> Scripts for controlling DXServer </h2>
-These are located in <i>installDir</i>/java/server/bin:</a>
-<ul>
+<h2> <a name="cmds"> </a>Scripts for controlling DXServer </h2>
+These are located in <i>installDir</i>/java/server/bin:
+		<ul>
 <li> <pre><b> Format: startserver [ -webpage htmlfile | [ -outdir dir -outurl url ]] \
 		[ -help ] [ -debug ] [ -verbose ] [ -memory Mbytes ] \
 		[ -dxroot dir ] [ -user user ]
@@ -321,9 +321,9 @@ These are located in <i>installDir</i>/java/server/bin:</a>
      host..........the host machine of the DXServer (default is localhost)
 </b></pre>
 </ul>
-<p>
+		<p>
 <hr>
-<h2> <a name="runthepc"> Running the Java Explorer server on a pc </h2>
+<h2> <a name="runthepc"> </a>Running the Java Explorer server on a pc </h2>
 A batch file is provided in
 <i>installDir</i>/java/server/bin/startserver.bat
 to start the pc version of DXServer.
@@ -333,14 +333,14 @@ If you edit this file and then find that it won't run, then reinstall from the
 original zip file and re-edit the file using a different
 editor.  You may have saved unprintable characters in the file.
 <hr>
-<h2> <a name="configuration"> Configuration Files </h2>
+<h2> <a name="configuration"> </a>Configuration Files </h2>
 DXServer reads the following files from its current working 
 directory (which will be <i>installDir</i>/java/server/class):
 <ul>
-<li> <b><i>dxserver.paths</b></i>  contains directories which are searched
+<li><b><i>dxserver.paths</i></b>  contains directories which are searched
     for visual program files.  DXServer locates the .net file prior to instructing
     Data Explorer to load the visual program.
-<li> <b><i>dxserver.hosts</b></i> contains host names.  DXServer will 
+<li><b><i>dxserver.hosts</i></b> contains host names.  DXServer will 
     schedule Data Exlporer sessions on the hosts in <i>dxserver.hosts</i>
     in round-robin fashion.  Before using this mechanism you will want to
     modify the following environment variables which are normally set by
@@ -358,7 +358,7 @@ directory (which will be <i>installDir</i>/java/server/class):
 Lines beginning with // and empty lines are ignored.   DXServer rereads these
 files as they are updated, so it isn't necessary to restart.
 <p>
-<a name="changes">
+<a name="changes"></a>
 <hr>
 <h2>Changes in this release</h2>
 <ul>
@@ -429,7 +429,7 @@ is missing, so it's virtually impossible to do.
 </ul>
 <a href="earlier.htm">Changes in earlier</a> releases.
 <hr>
-<h2> <a name="interfaces">Java Interfaces</h2>
+<h2> <a name="interfaces"></a>Java Interfaces</h2>
 <pre>
 package dx.net;
 
@@ -448,13 +448,13 @@ intends to handle messages produced the the DXLOutput tool named in
 <i>key</i>.
 
 <hr>
-<h2> <a name="references">References</h2>
+<h2> <a name="references"></a>References</h2>
 <blockquote>
 Richard Brealy and Stewart Myers  1981. <i>Principles of
 Corporate Finance</i>. McGraw-Hill Book Company 
 </blockquote>
 <hr>
-<h2> <a name="bugs">Bugs/Issues</h2>
+<h2> <a name="bugs"></a>Bugs/Issues</h2>
 You should expect to have to find workarounds for things in the
 'Issues' list and software fixes in Java Explorer for things in the
 'Bugs' list.
@@ -536,7 +536,7 @@ works badly on AIX4.1.  Because of an apparent limitation on the use
 of popen to run remote programs via rsh, DXServer can not run multiple
 simultaneous sessions.  In other words if you point more than browsers
 at pages served by a DXServer spawning remote dx sessions, the DXServer
-will hang.  You'll have to use <b>$ kill -9 <pid></b> to clean up after
+will hang.  You'll have to use <b>$ kill -9 &lt;pid&gt; </b> to clean up after
 it.  This mechanism does work on AIX4.2.
 </ul>
 <p>
