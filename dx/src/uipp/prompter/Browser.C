@@ -32,21 +32,30 @@
 #define  stat  _stat
 #endif
 
-#if defined(HAVE_REGCOMP)
+#if  defined(HAVE_RE_COMP)
+#undef HAVE_REGCMP
+#undef HAVE_REGCOMP
+#undef HAVE_FINDFIRST
+extern "C" char *re_comp(char *s);
+extern "C" int re_exec(char *);
+#elif defined(HAVE_REGCMP)
+#undef HAVE_REGCOMP
+#undef HAVE_FINDFIRST
+extern "C" char *regcmp(...);
+extern "C" char *regex(char *, char *, ...);
+#elif HAVE_REGCOMP
 extern "C" {
 #include <regexp.h>
 }
-#undef HAVE_REGCMP
 #undef HAVE_RE_COMP
-#elif defined(HAVE_REGCMP)
-#undef HAVE_RE_COMP
-extern "C" char *regcmp(...);
-extern "C" char *regex(char *, char *, ...);
+#undef HAVE_FINDFIRST
 #elif  defined(HAVE_RE_COMP)
+#undef HAVE_FINDFIRST
 extern "C" char *re_comp(char *s);
 extern "C" int re_exec(char *);
+#elif  defined(HAVE_FINDFIRST)
+#include <mingw32/dir.h>
 #endif
-
 
 boolean Browser::ClassInitialized = FALSE;
 
