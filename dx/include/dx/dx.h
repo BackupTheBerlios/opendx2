@@ -6,6 +6,10 @@
 #ifndef _LIBDX_H
 #define _LIBDX_H
 
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
 #include <dx/arch.h>
 
 #include <dx/error.h>
