@@ -1,6 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = \
+dxincdir = $(prefix)/dx/include/dx
+ 
+dxinc_HEADERS = \
 	UserInteractors.h advanced.h arch.h array.h arrayhandles.h \
 	basic.h cache.h camera.h clipped.h component.h dx.h error.h \
 	extract.h field.h geometry.h group.h grow.h hash.h helper.h image.h \
