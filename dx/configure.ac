@@ -482,6 +482,7 @@ AC_CHECK_LIB(glwstati, glAccum)
 AC_CHECK_LIB(X11, XCreateGC)
 AC_CHECK_LIB(Xt, XtMalloc)
 AC_CHECK_LIB(Xext, XextAddDisplay)
+AC_CHECK_LIB(Xmu, XmuAddInitializer)
 AC_CHECK_LIB(m, sqrt)
 
 DX_PATH_XM
@@ -992,7 +993,7 @@ DX_CHECK_HEADERS( \
   DPS/XDPSlib.h DPS/dpsXclient.h DPS/psops.h GL/gl.h GL/glx.h Mrm/MrmPublic.h \
   X11/Composite.h X11/CompositeP.h X11/Constraint.h X11/CoreP.h X11/Intrinsic.h \
   X11/IntrinsicI.h X11/IntrinsicP.h X11/Protocols.h X11/Shell.h X11/StringDefs.h \
-  X11/X.h X11/XHPlib.h X11/Xatom.h X11/Xlib.h X11/XlibXtra.h X11/Xmu/Editres.h \
+  X11/X.h X11/XHPlib.h X11/Xatom.h X11/Xlib.h X11/XlibXtra.h \
   X11/Xos.h X11/Xutil.h X11/cursorfont.h X11/keysym.h X11/keysymdef.h Xm/ArrowB.h \
   Xm/ArrowBG.h Xm/AtomMgr.h Xm/BulletinB.h Xm/BulletinBP.h Xm/CascadeB.h \
   Xm/CascadeBG.h Xm/Command.h Xm/CutPaste.h Xm/DialogS.h Xm/DragC.h Xm/DragDrop.h \
@@ -1020,7 +1021,7 @@ AC_CHECK_HEADERS(sys/ioctl.h sys/ldr.h sys/m_wait.h sys/param.h sys/select.h)
 AC_CHECK_HEADERS(sys/shm.h sys/signal.h sys/stat.h sys/sysmp.h)
 AC_CHECK_HEADERS(sys/systemcfg.h sys/systeminfo.h sys/timeb.h sys/times.h sys/time.h)
 AC_CHECK_HEADERS(sys/types.h sys/un.h sys/utsname.h time.h)
-AC_CHECK_HEADERS(types.h unistd.h values.h wait.h)
+AC_CHECK_HEADERS(types.h unistd.h values.h wait.h X11/Xmu/Editres.h)
 
 dnl The following is needed to add sys/socket.h to the default headers typically
 dnl included for checking net/if.h. Right now, this is the way it has to be done

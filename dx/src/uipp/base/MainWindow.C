@@ -6,12 +6,10 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
-#define NO_EDITRES
-
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-
+#define USE_EDITRES 0
 
 #include <Xm/Xm.h>
 #include <Xm/MainW.h>
@@ -25,7 +23,7 @@
 #include "Application.h"
 #include "CommandScope.h"
 
-#if (defined(solaris) || defined(sgi) || defined(_AIX41)) && !defined(NO_EDITRES)
+#if defined(HAVE_X11_XMU_EDITRES) && defined(USE_EDITRES)
 #include <X11/Xmu/Editres.h>
 #endif
 
@@ -187,6 +185,11 @@ int n = 0;
 	     theApplication->getRootWidget(),
 	     args, 
 	     n));
+
+#if defined(HAVE_X11_XMU_EDITRES) && defined(USE_EDITRES)
+    XtAddEventHandler((Widget)this->getRootWidget(), (EventMask)0, True,
+         (XtEventHandler)_XEditResCheckMessages, 0);
+#endif
 
     if(this->title)
     {
