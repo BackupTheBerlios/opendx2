@@ -426,12 +426,13 @@ AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
 
-dnl if test "$CYGWIN" = yes || test "$MINGW32" = yes ; then
-dnl    ANYDX=AnyDX.dll
-dnl else
-dnl    ANYDX=libAnyDX.so
-dnlfi
-ANYDX=libAnyDX.so
+if test "$ARCH" = "intelnt" -o test "$ARCH" = "cygwin" ; then
+    ANYDX=AnyDX.dll
+elif test "$ARCH" = "macos" ; then
+    ANYDX=libAnyDX.dylib
+else
+    ANYDX=libAnyDX.so
+fi
 
 AC_LANG_C
 
