@@ -93,10 +93,10 @@ typedef struct textarg
       char font[100];
 } Textarg;
      
-static RGBColor DEFAULT_SCALAR_COLOR = { 0.5, 0.7, 1.0};
-static RGBColor OVERRIDE_SCALAR_COLOR = { 1.0, 0.8, 0.8};
-static RGBColor DEFAULT_VECTOR_COLOR = { 0.7, 0.7, 0.0};
-static RGBColor DEFAULT_TENSOR_COLOR = { 1.0, 0.0, 0.0};
+static RGBColor DEFAULT_SCALAR_COLOR = { 0.5F, 0.7F, 1.0F};
+static RGBColor OVERRIDE_SCALAR_COLOR = { 1.0F, 0.8F, 0.8F};
+static RGBColor DEFAULT_VECTOR_COLOR = { 0.7F, 0.7F, 0.0F};
+static RGBColor DEFAULT_TENSOR_COLOR = { 1.0F, 0.0F, 0.0F};
 
 
 int _dxfIsFieldorGroup(Object ob)
@@ -1324,7 +1324,7 @@ Error
   int ratio_set;
   int data_rank, data_shape[30];
   int pos_rank, pos_shape[30], counts[30];
-  int numpoints, numoverridepoints, numoverrideconns;
+  int numpoints, numoverridepoints=0, numoverrideconns=0;
   int numconns, num_pos, i, j, n, countpos=0, countconn=0;
   float vector_width; 
   float *dp_old=NULL, datavalue=0, lv; 
@@ -1604,9 +1604,9 @@ Error
   
   if (!ratio_set) {
     if (!strcmp(glyph_rank,"scalar")) 
-      ratio = 0.05;
+      ratio = 0.05F;
     else 
-      ratio = 0.0;
+      ratio = 0.0F;
   }
   
   if (!type_is_field) {

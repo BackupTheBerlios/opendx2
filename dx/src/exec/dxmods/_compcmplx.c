@@ -206,7 +206,7 @@ _dxfComputeTanhComplexFloat(complexFloat x)
 
     result = _dxfComputeCoshComplexFloat(x);
     if (REAL(result) == 0 && IMAG(result) == 0)
-	REAL(result) = IMAG(result) = 1e20;
+	REAL(result) = IMAG(result) = 1e20F;
     else
 	result = _dxfComputeDivComplexFloat(_dxfComputeSinhComplexFloat(x), result);
 
