@@ -364,8 +364,8 @@ AC_CHECK_LIB(hclglx, glXGetConfig)
 AC_CHECK_LIB(X11, XCreateGC)
 AC_CHECK_LIB(Xt, XtMalloc)
 AC_CHECK_LIB(Xext, XextAddDisplay)
-AC_CHECK_LIB(GL, glXGetConfig)
 AC_CHECK_LIB(m, sqrt)
+AC_CHECK_LIB(GL, glXGetConfig)
 
 DX_PATH_XM
 if test "$xm_includes" != "" ; then
