@@ -589,7 +589,7 @@ char *GARApplication::resolvePathName(const char *str, const char *ext)
     char *datadir = (char *)getenv("DXDATA");
     if (!datadir) return NUL(char*);
 
-    char *newstr = new char[STRLEN(str) + STRLEN(datadir)+1];
+    char *newstr = new char[STRLEN(str) + STRLEN(datadir) + 2];
     char *newstrHead = newstr;
     while (datadir) {
 
