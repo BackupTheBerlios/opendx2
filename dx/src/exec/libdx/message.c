@@ -29,7 +29,9 @@
 #define sys_errlist _sys_errlist
 #endif
 
+#if ! (HAS_sys_errlist || HAS__sys_errlist)
 extern char *sys_errlist[];
+#endif
 
 #if defined(HAVE_IO_H)
 #include <io.h>
