@@ -580,6 +580,9 @@ void configure()
 void dxjsconfig() {
     namestr jdxsrvPath, temp;
 
+    /* Don't need X Server for Java Explorer server */
+    setenvpair("XSERVER_LAUNCHED", "yes");
+
     if(dxroot[strlen(dxroot)-1] == '\\') dxroot[strlen(dxroot)-1] = '\0';
     sprintf(jdxsrvPath, "%s\\java\\server", dxroot);
     ConvertShortPathName(jdxsrvPath);
