@@ -16,15 +16,10 @@ install-data-local:
 	       if test ! -d $(htmldir) ; then 			\
 		   mkdir $(htmldir) ; 				\
 	       fi ; 						\
-	       if test -d $(htmldir) ; then 			\
-	           cd $(htmldir) ; 				\
-	       fi ;						\
-	       if test ! -d pages ; then 			\
-	           tar xf $$f/pages.tar ; 			\
-	       fi ; 						\
-	       if test ! -d images ; then 			\
-	           tar xf $$f/images.tar ; 			\
-	       fi ; 						\
+	       chmod 755 $(htmldir) ;				\
+	       cd $(htmldir) ; 					\
+	       tar xpoNf $$f/pages.tar ;			\
+	       tar xpoNf $$f/images.tar ;			\
 	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.htm ; \
 	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.html ; \
 	       cd $$f ; 						\
