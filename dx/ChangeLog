@@ -1,7 +1,22 @@
+Added MacOS X memory routines for the Executive.
+
+Added configuration flags to make it possible to build loadable modules
+with Windows.
+
+Support for translucent polylines added.
+
 Fix bug where field with ubyte colors (refing a float[3] colormap), which
 is constructed by ReadImage and storable with Export, won't load with
 Import.  Patch allows general UBYTE components to ref other components in
 Import.
+
+Changes to the way invalid components are handled so that two thresholds
+are used: one for storage in an Array (20% of total values, as before)
+and another for building the InvalidComponentHandle for transient
+processing (currently 1024); small size for storage and faster access
+performance. SORTED lists are always converted to HASHes or DEP_ARRAYs
+now for processing (as they were when originally created), not left as
+SORTED_LISTs.
 
 Fixed bug in computing conncetion-dependent normals for 2-D positions.
 Of course, the real question is whay are we computing them at all?  
