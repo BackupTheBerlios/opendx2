@@ -2,7 +2,7 @@
 /*                        DX  SOURCEFILE                             */
 /*********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.1 1999/03/24 15:18:25 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.2 1999/04/26 17:32:58 gda Exp $
  */
 
 /*
@@ -175,7 +175,7 @@ typedef struct tiff_ifd {
 } TiffIFD;
 
 /* Determine the local byte order */
-#if DXD_BIGENDIAN
+#if WORDS_BIGENDIAN==1
 # define LOCAL_MSB_ORDER
 # define  read_fwd_uint32   read_msb_uint32
 # define  read_fwd_uint16   read_msb_uint16
