@@ -446,7 +446,9 @@ must delete the .miff file.
 				<TD><B>ImageMagick supported format</B></TD>
 				<TD>With the <A HREF="http://www.imagemagick.org">ImageMagick<FONT SIZE="-2"><SUP>TM</SUP></FONT></A> libraries configured and compiled with DX, WriteImage can read and write a large number of image file formats. ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in many image formats (over 68 major formats) including popular formats like TIFF, JPEG, PNG, PDF, PhotoCD, and GIF. The formats that can be written by WriteImage will depend on what functionality is compiled into ImageMagick.
 					<P>For example:</P>
-					<P>WriteImage(y, name, &quot;ImageMagick supported format gamma=2.2 compression=JPEG quality=90&quot;);</P>
+					<P>WriteImage(y, name, &quot;ImageMagick supported format gamma=2.2 compression=JPEG quality=90 resize=50&quot;);</P>
+					<P>Setting a quality sets the amount of compression for variable compression types such as JPEG. </P>
+					<P>Setting a resize value on the format will use the Lanczos interpolation function. The value represents the percentage of reduction (resize=50 sets it to 50%. A good value for anti-aliasing).</P>
 				</TD>
 			</TR>
 		</TABLE>

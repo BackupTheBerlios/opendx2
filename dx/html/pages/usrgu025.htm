@@ -725,15 +725,8 @@ Faces, Loops, and Edge Components</A></B><BR>
 <B><BR><CENTER><IMG SRC="../images/usefle.gif" ALT="Figure usefle not
 displayed."></CENTER><BR></B><BR>
 </TD></TR></TABLE>
-<P>
-It is assumed that the first loop for each face is the enclosing loop,
-and that subsequent loops, if any, are holes in the face. If this is not
-true, then set the <TT>DX_NESTED_LOOPS</TT> environment variable (see
-<A HREF="usrgu073.htm#HDRMOREVAR">"Other Environment Variables"</A>). However,
-setting this environment variable will
-cause a decrease in performance when processing faces, loops, and edges
-data.
-<P>
+<P>If you can guarantee that the first loop for each face is an enclosing loop, and that any subsequent loops, are completely enclosed holes in the face, then you may be able to increase performance when processing faces, loops, and edges data by setting the <TT>DX_SIMPLE_LOOPS</TT> environment variable (see
+<A HREF="usrgu073.htm#HDRMOREVAR">"Other Environment Variables"</A>). However, setting this environment variable may cause the executive to crash if data is not conformant. <P>
 <H5><A NAME="HDREGNPOLS"></A><U>Edges and Polylines</U></H5>
 <A NAME="IDX533"></A>
 <A NAME="IDX534"></A>
