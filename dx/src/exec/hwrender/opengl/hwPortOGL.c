@@ -182,7 +182,7 @@ _dxf_CREATE_HW_TRANSLATION (void *win)
 
   ret->dpy = DPY ;
   ret->visual = NULL ;
-  ret->cmap = (ArrayHandle)CLRMAP ;
+  ret->cmap = CLRMAP ;
   ret->depth = 24 ;
   ret->invertY = FALSE ;
 #if sgi
