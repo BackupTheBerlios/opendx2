@@ -315,7 +315,8 @@ void BaseApp::parseCommand(unsigned int* argcp, char** argv)
 	theXmlPreferences->setDefault("host", XmlPreferences::PrefType::TypeString, "");
 	theXmlPreferences->setDefault("noAnchorAtStartup", XmlPreferences::PrefType::TypeBool, "false");
 	theXmlPreferences->setDefault("noConfirmedQuit", XmlPreferences::PrefType::TypeBool, "false");
-	theXmlPreferences->setDefault("macros", XmlPreferences::PrefType::TypeString, "");
+
+
 	theXmlPreferences->setDefault("memory", XmlPreferences::PrefType::TypeInt, "0");
 	theXmlPreferences->setDefault("metric", XmlPreferences::PrefType::TypeBool, "false");
 	theXmlPreferences->setDefault("messages", XmlPreferences::PrefType::TypeString, "");
@@ -399,6 +400,10 @@ void BaseApp::parseCommand(unsigned int* argcp, char** argv)
 	theXmlPreferences->setDefault("serverDir", XmlPreferences::PrefType::TypeString, "");
 	theXmlPreferences->setDefault("dxJarFile", XmlPreferences::PrefType::TypeString, "");
 	theXmlPreferences->setDefault("userHtmlDir", XmlPreferences::PrefType::TypeString, "");
+
+	// The following is a little different. The default should actually be dxroot/samples/macros
+	// Set it in DXApplication if null.
+	theXmlPreferences->setDefault("macros", XmlPreferences::PrefType::TypeString, "");
 
 
 	// Now setup the preferences in DXResource*

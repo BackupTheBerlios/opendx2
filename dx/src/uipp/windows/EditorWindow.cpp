@@ -7415,7 +7415,7 @@ bool EditorWindow::undo()
     this->performing_undo = true;
     UndoableAction* undoable;
 
-    Stack short_stack;
+    dxc_Stack short_stack;
     List undo_candidates;
     ListIterator iter;
     const char* couldnt_undo = NUL(const char*);
@@ -7486,7 +7486,7 @@ void EditorWindow::setUndoActivation()
 	UndoableAction* undoable;
 	if (current_size >= check_when) {
 	    int saved = 0;
-	    Stack tmpStack;
+	    dxc_Stack tmpStack;
 	    while (undoable = (UndoableAction*)this->undo_list.pop()) {
 		if (undoable->isSeparator()) {
 		    saved++;

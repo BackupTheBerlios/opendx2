@@ -306,12 +306,12 @@ bool ImageNode::useSoftwareRendering()
     
 
 
-Type ImageNode::setInputValue(int index,
+dx_Type ImageNode::setInputValue(int index,
 			      const char *value,
-			      Type t,
+			      dx_Type t,
 			      bool send)
 {
-    Type result;
+    dx_Type result;
 
     int translating = this->translating;
     this->translating = 0;
@@ -385,12 +385,12 @@ Type ImageNode::setInputValue(int index,
     return result;
 }
 
-Type ImageNode::setInputSetValue(int index,
+dx_Type ImageNode::setInputSetValue(int index,
 			      const char *value,
-			      Type t,
+			      dx_Type t,
 			      bool send)
 {
-    Type result;
+    dx_Type result;
 
     int translating = this->translating;
     this->translating = 0;
@@ -489,8 +489,8 @@ bool ImageNode::sendValues(bool ignoreDirty)
     if (sendMacro && (ignoreDirty || this->macroDirty))
     {
 	DXPacketIF *pif = theDXApplication->getPacketIF();
-	//if (pif == NULL || !this->sendMacro(pif))
-	//    return false;
+	if (pif == NULL || !this->sendMacro(pif))
+	    return false;
 	this->macroDirty = false;
     }
     return this->DisplayNode::sendValues(ignoreDirty);

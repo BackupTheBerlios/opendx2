@@ -99,7 +99,7 @@ bool _IsNULL(const char* string,
 static
 bool _IsValue(const char* string,
 		 int&        index,
-		 Type&       type)
+		 dx_Type&       type)
 {
     int tuple;
 
@@ -164,9 +164,9 @@ bool _IsValue(const char* string,
 static
 bool _IsList(const char* string,
 		int&        index,
-		const Type  type)
+		const dx_Type  type)
 {
-    Type    value_type;
+    dx_Type    value_type;
     int     i;
     int     tuple;
     int     first_tuple=0;
@@ -448,7 +448,7 @@ bool _uinIsListConstructor(const char* string,
 static 
 bool IsList(const char* string,
 		int&        index,
-		const Type  type)
+		const dx_Type  type)
 {
 
     bool r = _IsList(string, index, type);
@@ -466,7 +466,7 @@ static
 bool _IsObject(const char* string,
 		  int&        index)
 {
-    Type value_type;
+    dx_Type value_type;
     int  tuple;
 
     if (string == NUL(char*))
@@ -551,14 +551,14 @@ bool _IsObject(const char* string,
 // FIXME: this needs to know about user types (also see DXType::ValueToType()).
 //
 bool DXValue::IsValidValue(const char* string,
-		       const Type  type)
+		       const dx_Type  type)
 {
     int em_size=4096;
     char extra_memory[4096];
     char*   value;
     bool result;
-    Type    value_type;
-    Type    list_type;
+    dx_Type    value_type;
+    dx_Type    list_type;
     int     tuple;
     int     i;
     bool to_be_freed;
@@ -792,7 +792,7 @@ void DXValue::clear()
 // returns false otherwise.
 //
 bool DXValue::setValue(const char* string,
-			  const Type  type)
+			  const dx_Type  type)
 {
     int i;
     bool r;
@@ -969,7 +969,7 @@ bool DXValue::setString(const char* string)
 {
     ASSERT(this);
 
-    if (DXValue::IsValidValue(string, (Type)DXType::StringType))
+    if (DXValue::IsValidValue(string, (dx_Type)DXType::StringType))
     {
 	this->clear();
 	this->type.setType(DXType::StringType);
@@ -1145,7 +1145,7 @@ bool DXValue::setVector(DXTensor& vector)
 // the string holding the list item is returned upon success.
 //
 char *DXValue::NextListItem(const char *s, int *index, 
-				Type listtype, char *buf, int bufsz)
+				dx_Type listtype, char *buf, int bufsz)
 {
     int start, i = *index;
     bool r = true;
@@ -1243,7 +1243,7 @@ char *DXValue::FormatNumber(double val, int decimals)
 // If the value is coerceable return a new string that does not need to
 // be coerced to the given value, otherwise return NULL.
 //
-char *DXValue::CoerceValue(const char *value, Type type)
+char *DXValue::CoerceValue(const char *value, dx_Type type)
 {
     char *s;
 
@@ -1300,7 +1300,7 @@ char *DXValue::CoerceValue(const char *value, Type type)
 	// element and the overall value).
 	//
 	if (failed && (type & DXType::ListType)) {
-	    Type basetype = type & DXType::ListTypeMask;
+	    dx_Type basetype = type & DXType::ListTypeMask;
 	    if ((p = DXValue::CoerceValue(value,basetype))) {
 		char *p2  = DXValue::CoerceValue(p,type);
 		if (p2) {
@@ -1359,7 +1359,7 @@ char *DXValue::AppendListItem(const char *list, const char *item)
 // The return list item must be deleted by the caller.
 // NULL is returned if the item was not found or if the listtype is wrong.
 //
-char *DXValue::GetListItem(const char *list, int index, Type listtype)
+char *DXValue::GetListItem(const char *list, int index, dx_Type listtype)
 {
    int size = STRLEN(list);
    char *value = NULL, *buf = new char [size];
@@ -1381,7 +1381,7 @@ char *DXValue::GetListItem(const char *list, int index, Type listtype)
 //
 // Get the number of items in the list. 
 //
-int DXValue::GetListItemCount(const char *list, Type listtype)
+int DXValue::GetListItemCount(const char *list, dx_Type listtype)
 {
    char *buf;
    int count =0,  idx = -1;
@@ -1485,13 +1485,13 @@ char *DXValue::AdjustVectorDimensions(const char *vec, int new_dim,
 // given ranges, false otherwise.  If clampedval is provided, then a 
 // string is passed back which represents the clamped value.
 //
-bool DXValue::ClampVSIValue(const char *val, Type valtype,
+bool DXValue::ClampVSIValue(const char *val, dx_Type valtype,
 		    double *mins, double *maxs,
                         char **clampedval)
 {
     bool reset = false;
     char valbuf[64], itembuf[1024];
-    Type itemtype;
+    dx_Type itemtype;
     DXValue dxval;
 
     ASSERT(val);
@@ -1624,7 +1624,7 @@ bool DXValue::ClampVSIValue(const char *val, Type valtype,
 // *tuple is the dimensionality of the VectorList items (1 for ScalarList).
 // '*tuple * return-val' is the number of items in the *data array.
 //
-int DXValue::GetDoublesFromList(const char *list, Type listtype, 
+int DXValue::GetDoublesFromList(const char *list, dx_Type listtype, 
 					double **data, int *tuple)
 {
     int count = DXValue::GetListItemCount(list, listtype);
@@ -1688,7 +1688,7 @@ int DXValue::GetDoublesFromList(const char *list, Type listtype,
 // is less than or equal to 0, then the last item is removed.  This works
 // on the same list types that NextListItem() does.
 //
-char *DXValue::DeleteListItem(const char *list, Type listtype, int position)
+char *DXValue::DeleteListItem(const char *list, dx_Type listtype, int position)
 {
    char *p, *value = NULL, *newlist, *buf;
    int i, idx;
@@ -1758,7 +1758,7 @@ char *DXValue::DeleteListItem(const char *list, Type listtype, int position)
 // This works on the same list types that NextListItem() does.
 //
 char *DXValue::ReplaceListItem(const char *list, const char *item,
-				Type listtype, int position)
+				dx_Type listtype, int position)
 {
    char *p, *value = NULL, *newlist, *buf;
    int i, idx;
@@ -1860,7 +1860,7 @@ int DXValue::getVectorComponentCount()
     return t->getVectorComponentCount();
 }
 
-Type DXValue::getType()
+dx_Type DXValue::getType()
 {
     return this->type.getType();
 }
@@ -1899,7 +1899,7 @@ double DXValue::getVectorComponentValue(int component)
 // on the same list types that NextListItem() does.
 //
 char *DXValue::InsertListItem(const char *list, const char *item,
-				Type listtype, int position)
+				dx_Type listtype, int position)
 {
    char *p, *value = NULL, *newlist, *buf;
    int i, idx;

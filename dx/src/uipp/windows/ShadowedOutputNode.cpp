@@ -26,11 +26,11 @@
 // we are currently in execute-on-change  mode, the assignment would cause
 // extra executions.
 //
-Type ShadowedOutputNode::setShadowedOutputSentFromServer(
-                        int output_index, const char *val, Type t)
+dx_Type ShadowedOutputNode::setShadowedOutputSentFromServer(
+                        int output_index, const char *val, dx_Type t)
 {
     int input_index = this->getShadowingInput(output_index);
-    Type type;
+    dx_Type type;
     //
     // Set the values internally
     // Set the output quietly instead of just setting it and not sending it
@@ -180,13 +180,13 @@ void ShadowedOutputNode::ioParameterStatusChanged(bool input, int index,
 // Set the output value of ShadowedOutputNode.  This is the same as for
 // the super class methodd, except that it updates the shadowing inputs 
 //
-Type ShadowedOutputNode::setOutputValue( 
+dx_Type ShadowedOutputNode::setOutputValue( 
                                 int index,
                                 const char *value,
-                                Type t,
+                                dx_Type t,
                                 bool send)
 {
-    Type type;
+    dx_Type type;
 
     //
     // Defer visual notification in case, we do more then one set*Value().

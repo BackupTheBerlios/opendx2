@@ -76,7 +76,7 @@ class SetImageNameDialog;
 class PrintImageDialog;
 class CascadeMenu;
 class SetBGColorDialog;
-class Stack;
+class dxc_Stack;
 
 enum ApproxMode 
 {
@@ -323,7 +323,7 @@ class ImageWindow : public DXWindow
     bool		directInteraction;
     ImageAtoms		atoms;
     ImageState		state;
-    Stack*		managed_state;
+    dxc_Stack*		managed_state;
 
     // are we just switching between hardware and software?
     bool		switchingSoftware;

@@ -812,13 +812,13 @@ InteractorInstance *InteractorNode::addInstance(int x, int y,
 // in this->instanceList with 
 //  InteractorInstance->Interactor->updateDisplayedInteractorValue().
 //
-Type InteractorNode::setOutputValue( 
+dx_Type InteractorNode::setOutputValue( 
                                 int index,
                                 const char *value,
-                                Type t,
+                                dx_Type t,
                                 bool send)
 {
-    Type type;
+    dx_Type type;
 
     type = this->ShadowedOutputNode::setOutputValue(index, value, t, send);
 
@@ -958,10 +958,10 @@ bool InteractorNode::removeInstance(InteractorInstance *ii)
 // If an interactor can have different outputs, that class should
 // override this. 
 //
-Type  InteractorNode::getTheCurrentOutputType(int index)
+dx_Type  InteractorNode::getTheCurrentOutputType(int index)
 {
     Parameter *p = this->getOutputParameter(index);
-    Type t;
+    dx_Type t;
 
     if (p->hasValue()) {
         t = p->getValueType();

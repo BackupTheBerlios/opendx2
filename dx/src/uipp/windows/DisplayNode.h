@@ -141,9 +141,9 @@ class DisplayNode : public DrivenNode
     void setDepth(int depth);
     int getDepth() { return this->depth;}
 
-    virtual Type setInputValue(int index,
+    virtual dx_Type setInputValue(int index,
 		       const char *value,
-		       Type t = DXType::UndefinedType,
+		       dx_Type t = DXType::UndefinedType,
 		       bool send = true);
     virtual bool associateImage(ImageWindow *w);
     void    notifyWhereChange(bool send);

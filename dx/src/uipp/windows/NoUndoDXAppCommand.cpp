@@ -9,12 +9,9 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
 #include "NoUndoDXAppCommand.h"
-#include "DXApplication.h"
 #include "MsgWin.h"
+#include "DXApplication.h"
 #include "Network.h"
 #include "SequencerNode.h"
 #include "ToggleButtonInterface.h"

@@ -14,16 +14,16 @@
 #include "Stack.h"
 
 
-void Stack::push(const void *datum)
+void dxc_Stack::push(const void *datum)
 {
     this->insertElement(datum,1);  
 }
 
-const void *Stack::peek()
+const void *dxc_Stack::peek()
 {
     return this->getElement(1);
 }
-const void *Stack::pop()
+const void *dxc_Stack::pop()
 {
     const void *datum = this->peek();
 
@@ -33,7 +33,7 @@ const void *Stack::pop()
 	return NULL;
 }
     
-void Stack::clear()
+void dxc_Stack::clear()
 {
     this->List::clear();
 }

@@ -98,301 +98,301 @@ ImageWindow::ImageWindow(bool  isAnchor, Network* network) :
 			DXWindow("imageWindow", isAnchor,
 				theDXApplication->appAllowsImageMenus())
 {
-//    ASSERT(network);
-//
-//    //
-//    // Save associated network and add self to network image list.
-//    //
-//    this->network = network;
-//    this->network->addImage(this);
-//   
-//    this->viewControlDialog      = NULL;
-//    this->renderingOptionsDialog = NULL;
-//    this->backgroundColorDialog  = NULL;
-//    this->throttleDialog	 = NULL;
-//    this->autoAxesDialog	 = NULL;
-//    this->changeImageNameDialog  = NULL;
-//    this->saveImageDialog      = NULL;
-//    this->printImageDialog       = NULL;
-//
-//    this->fbEventHandler	 = NULL;
-//
+    ASSERT(network);
+
+    //
+    // Save associated network and add self to network image list.
+    //
+    this->network = network;
+    this->network->addImage(this);
+   
+    this->viewControlDialog      = NULL;
+    this->renderingOptionsDialog = NULL;
+    this->backgroundColorDialog  = NULL;
+    this->throttleDialog	 = NULL;
+    this->autoAxesDialog	 = NULL;
+    this->changeImageNameDialog  = NULL;
+    this->saveImageDialog      = NULL;
+    this->printImageDialog       = NULL;
+
+    //this->fbEventHandler	 = NULL;
+
 //    //
 //    // Initialize member data.
 //    //
 //    //this->fileMenu       = NUL(Widget);
 //    //this->windowsMenu    = NUL(Widget);
 //    //this->optionsMenu    = NUL(Widget);
-//    this->managed_state  = NUL(Stack*);
-//
+    this->managed_state  = NUL(dxc_Stack*);
+
 //    //this->fileMenuPulldown       = NUL(Widget);
 //    //this->windowsMenuPulldown    = NUL(Widget);
 //    //this->optionsMenuPulldown    = NUL(Widget);
 //	
-//    this->openOption         = NUL(CommandInterface*);
-//    this->saveOption         = NUL(CommandInterface*);
-//    this->saveAsOption       = NUL(CommandInterface*);
-//    this->cfgSettingsCascadeMenu = NULL;
-//    this->saveCfgOption      = NUL(CommandInterface*);
-//    this->openCfgOption      = NUL(CommandInterface*);
-//    this->loadMacroOption    = NUL(CommandInterface*);
-//    this->loadMDFOption      = NUL(CommandInterface*);
-//#if 0
-//    this->quitOption         = NUL(CommandInterface*);
-//#endif
-//    this->closeOption        = NUL(CommandInterface*);
-//    this->saveImageOption    = NUL(CommandInterface*);
-//    this->printImageOption   = NUL(CommandInterface*);
-//
-//    this->openVisualProgramEditorOption = NUL(CommandInterface*);
-//    this->openAllControlPanelsOption    = NUL(CommandInterface*);
-//    this->openControlPanelByNameMenu	= NULL;
-//    this->openAllColormapEditorsOption  = NUL(CommandInterface*);
-//    this->messageWindowOption 	 	= NUL(CommandInterface*);
-//
-//    this->renderingOptionsOption     = NUL(CommandInterface*);
-//    this->autoAxesOption             = NUL(CommandInterface*);
-//    this->throttleOption             = NUL(CommandInterface*);
-//    this->viewControlOption          = NUL(CommandInterface*);
-//    this->modeOptionCascade = NULL;
-//    this->undoOption                 = NUL(CommandInterface*);
-//    this->redoOption                 = NUL(CommandInterface*);
-//    this->resetOption                = NUL(CommandInterface*);
-//    this->changeImageNameOption      = NUL(CommandInterface*);
-//    this->backgroundColorOption	     = NUL(CommandInterface*);
-//    this->displayRotationGlobeOption = NUL(CommandInterface*);
-//    this->imageDepthCascade = NULL;
+    this->openOption         = NUL(CommandInterface*);
+    this->saveOption         = NUL(CommandInterface*);
+    this->saveAsOption       = NUL(CommandInterface*);
+    this->cfgSettingsCascadeMenu = NULL;
+    this->saveCfgOption      = NUL(CommandInterface*);
+    this->openCfgOption      = NUL(CommandInterface*);
+    this->loadMacroOption    = NUL(CommandInterface*);
+    this->loadMDFOption      = NUL(CommandInterface*);
+#if 0
+    this->quitOption         = NUL(CommandInterface*);
+#endif
+    this->closeOption        = NUL(CommandInterface*);
+    this->saveImageOption    = NUL(CommandInterface*);
+    this->printImageOption   = NUL(CommandInterface*);
+
+    this->openVisualProgramEditorOption = NUL(CommandInterface*);
+    this->openAllControlPanelsOption    = NUL(CommandInterface*);
+    this->openControlPanelByNameMenu	= NULL;
+    this->openAllColormapEditorsOption  = NUL(CommandInterface*);
+    this->messageWindowOption 	 	= NUL(CommandInterface*);
+
+    this->renderingOptionsOption     = NUL(CommandInterface*);
+    this->autoAxesOption             = NUL(CommandInterface*);
+    this->throttleOption             = NUL(CommandInterface*);
+    this->viewControlOption          = NUL(CommandInterface*);
+    this->modeOptionCascade = NULL;
+    this->undoOption                 = NUL(CommandInterface*);
+    this->redoOption                 = NUL(CommandInterface*);
+    this->resetOption                = NUL(CommandInterface*);
+    this->changeImageNameOption      = NUL(CommandInterface*);
+    this->backgroundColorOption	     = NUL(CommandInterface*);
+    this->displayRotationGlobeOption = NUL(CommandInterface*);
+    this->imageDepthCascade = NULL;
 //    this->imageDepth8Option	     = NUL(ToggleButtonInterface*); 
 //    this->imageDepth12Option	     = NUL(ToggleButtonInterface*);
 //    this->imageDepth15Option	     = NUL(ToggleButtonInterface*);
 //    this->imageDepth16Option	     = NUL(ToggleButtonInterface*);
 //    this->imageDepth24Option	     = NUL(ToggleButtonInterface*);
 //    this->imageDepth32Option	     = NUL(ToggleButtonInterface*);
-//    this->setPanelAccessOption	     = NUL(CommandInterface*);
-//    this->onVisualProgramOption	     = NUL(CommandInterface*);
+    this->setPanelAccessOption	     = NUL(CommandInterface*);
+    this->onVisualProgramOption	     = NUL(CommandInterface*);
 //
 //    //
 //    // Intialize state.
 //    //
-//    this->state.width			= 0;
-//    this->state.height			= 0;
+    this->state.width			= 0;
+    this->state.height			= 0;
 //    //this->state.pixmap			= XtUnspecifiedPixmap;
 //    this->state.gc			= NULL;
-//    this->state.hardwareWindow		= 0;
-//    this->state.hardwareRender		= false;
-//    this->state.hardwareRenderExists 	= false;
-//    this->state.resizeFromServer	= false;
-//    this->state.frameBuffer		= false;
-//    this->state.globeDisplayed		= false;
-//    this->state.degenerateBox		= false;
-//    this->state.imageCount		= 0;
-//    this->state.parent.window		= 0;
-//    this->state.resizeCausesExecution   = true;
-//
-//    this->state.hardwareCamera.undoable = false;
-//    this->state.hardwareCamera.redoable = false;
-//
-//    this->node = NULL;
-//    this->directInteraction = false;
-//    this->switchingSoftware = false;
-//    this->pushedSinceExec   = false;
-//    this->currentInteractionMode = NONE;
-//    this->pendingInteractionMode = NONE;
-//    //
-//    // Create the commands.
-//    //
-//    this->renderingOptionsCmd =
-//	new NoUndoImageCommand("renderingOptions", this->commandScope,
-//			  false, this, NoUndoImageCommand::RenderingOptions);
-//    this->softwareCmd = new ImageSoftwareCommand("software", this->commandScope,
-//			    false, this);
-//    this->hardwareCmd = new ImageHardwareCommand("hardware", this->commandScope,
-//			    false, this);
-//    this->upNoneCmd = new ImageApproxCommand("upNone",
-//	this->commandScope,
-//	false, this, true, APPROX_NONE);
-//    this->upWireframeCmd = new ImageApproxCommand("upWireframe",
-//	this->commandScope,
-//	false, this, true, APPROX_WIREFRAME);
-//    this->upDotsCmd = new ImageApproxCommand("upDots",
-//	this->commandScope,
-//	false, this, true, APPROX_DOTS);
-//    this->upBoxCmd = new ImageApproxCommand("upBox",
-//	this->commandScope,
-//	false, this, true, APPROX_BOX);
-//    this->downNoneCmd = new ImageApproxCommand("downNone",
-//	this->commandScope,
-//	false, this, false, APPROX_NONE);
-//    this->downWireframeCmd = new ImageApproxCommand("downWireframe",
-//	this->commandScope,
-//	false, this, false, APPROX_WIREFRAME);
-//    this->downDotsCmd = new ImageApproxCommand("downDots",
-//	this->commandScope,
-//	false, this, false, APPROX_DOTS);
-//    this->downBoxCmd = new ImageApproxCommand("downBox",
-//	this->commandScope,
-//	false, this, false, APPROX_BOX);
-//
-//    this->autoAxesCmd =
-//	new NoUndoImageCommand("autoAxes", this->commandScope,
-//			  false, this,
-//			  NoUndoImageCommand::AutoAxes);
-//
-//    this->throttleCmd =
-//	new NoUndoImageCommand("throttle", this->commandScope,
-//			  false, this, NoUndoImageCommand::Throttle);
-//    this->viewControlCmd =
-//	new NoUndoImageCommand("viewControl", this->commandScope,
-//			  false, this,
-//			  NoUndoImageCommand::ViewControl);
-//    this->modeNoneCmd = 
-//	new ImageSetModeCommand("modeNone", this->commandScope, false,
-//				this, NONE);
-//    this->modeCameraCmd = 
-//	new ImageSetModeCommand("modeCamera", this->commandScope, false,
-//				this, CAMERA);
-//    this->modeCursorsCmd = 
-//	new ImageSetModeCommand("modeCursors", this->commandScope, false,
-//				this, CURSORS);
-//    this->modePickCmd = 
-//	new ImageSetModeCommand("modePick", this->commandScope, false,
-//				this, PICK);
-//    this->modeNavigateCmd = 
-//	new ImageSetModeCommand("modeNavigate", this->commandScope, false,
-//				this, NAVIGATE);
-//    this->modePanZoomCmd = 
-//	new ImageSetModeCommand("modePanZoom", this->commandScope, false,
-//				this, PANZOOM);
-//    this->modeRoamCmd = 
-//	new ImageSetModeCommand("modeRoam", this->commandScope, false,
-//				this, ROAM);
-//    this->modeRotateCmd = 
-//	new ImageSetModeCommand("modeRotate", this->commandScope, false,
-//				this, ROTATE);
-//    this->modeZoomCmd = 
-//	new ImageSetModeCommand("modeZoom", this->commandScope, false,
-//				this, ZOOM);
-//
-//    this->setViewNoneCmd = 
-//	new ImageSetViewCommand("setViewNone", this->commandScope, false,
-//				this, VIEW_NONE);
-//    this->setViewTopCmd = 
-//	new ImageSetViewCommand("setViewTop", this->commandScope, true,
-//				this, VIEW_TOP);
-//    this->setViewBottomCmd = 
-//	new ImageSetViewCommand("setViewBottom", this->commandScope, true,
-//				this, VIEW_BOTTOM);
-//    this->setViewFrontCmd = 
-//	new ImageSetViewCommand("setViewFront", this->commandScope, true,
-//				this, VIEW_FRONT);
-//    this->setViewBackCmd = 
-//	new ImageSetViewCommand("setViewBack", this->commandScope, true,
-//				this, VIEW_BACK);
-//    this->setViewLeftCmd = 
-//	new ImageSetViewCommand("setViewLeft", this->commandScope, true,
-//				this, VIEW_LEFT);
-//    this->setViewRightCmd =
-//	new ImageSetViewCommand("setViewRight", this->commandScope, true,
-//				this, VIEW_RIGHT);
-//    this->setViewDiagonalCmd = 
-//	new ImageSetViewCommand("setViewDiagonal", this->commandScope, true,
-//				this, VIEW_DIAGONAL);
-//    this->setViewOffTopCmd = 
-//	new ImageSetViewCommand("setViewOffTop", this->commandScope, true,
-//				this, VIEW_OFF_TOP);
-//    this->setViewOffBottomCmd = 
-//	new ImageSetViewCommand("setViewOffBottom", this->commandScope, true,
-//				this, VIEW_OFF_BOTTOM);
-//    this->setViewOffFrontCmd = 
-//	new ImageSetViewCommand("setViewOffFront", this->commandScope, true,
-//				this, VIEW_OFF_FRONT);
-//    this->setViewOffBackCmd = 
-//	new ImageSetViewCommand("setViewOffBack", this->commandScope, true,
-//				this, VIEW_OFF_BACK);
-//    this->setViewOffLeftCmd = 
-//	new ImageSetViewCommand("setViewOffLeft", this->commandScope, true,
-//				this, VIEW_OFF_LEFT);
-//    this->setViewOffRightCmd =
-//	new ImageSetViewCommand("setViewOffRight", this->commandScope, true,
-//				this, VIEW_OFF_RIGHT);
-//    this->setViewOffDiagonalCmd = 
-//	new ImageSetViewCommand("setViewOffDiagonal", this->commandScope, true,
-//				this, VIEW_OFF_DIAGONAL);
-//
-//    this->perspectiveCmd = 
-//	new ImagePerspectiveCommand("perspective", this->commandScope,
-//				    true, this, true);
-//    this->parallelCmd = 
-//	new ImagePerspectiveCommand("parallel", this->commandScope,
-//				    true, this, false);
-//    this->constrainNoneCmd = 
-//	new ImageConstraintCommand("constrainNone", this->commandScope, true,
-//				    this, CONSTRAINT_NONE);
-//    this->constrainXCmd = 
-//	new ImageConstraintCommand("constrainX", this->commandScope, true,
-//				    this, CONSTRAINT_X);
-//    this->constrainYCmd = 
-//	new ImageConstraintCommand("constrainY", this->commandScope, true,
-//				    this, CONSTRAINT_Y);
-//    this->constrainZCmd = 
-//	new ImageConstraintCommand("constrainZ", this->commandScope, true,
-//				    this, CONSTRAINT_Z);
-//
-//    this->lookForwardCmd =
-//	new ImageLookCommand("lookForwardCmd", this->commandScope, true,
-//			     this, LOOK_FORWARD);
-//    this->lookLeft45Cmd =
-//	new ImageLookCommand("lookLeft45Cmd", this->commandScope, true,
-//			     this, LOOK_LEFT45);
-//    this->lookRight45Cmd =
-//	new ImageLookCommand("lookRight45Cmd", this->commandScope, true,
-//			     this, LOOK_RIGHT45);
-//    this->lookUp45Cmd =
-//	new ImageLookCommand("lookUp45Cmd", this->commandScope, true,
-//			     this, LOOK_UP45);
-//    this->lookDown45Cmd =
-//	new ImageLookCommand("lookDown45Cmd", this->commandScope, true,
-//			     this, LOOK_DOWN45);
-//    this->lookLeft90Cmd =
-//	new ImageLookCommand("lookLeft90Cmd", this->commandScope, true,
-//			     this, LOOK_LEFT90);
-//    this->lookRight90Cmd =
-//	new ImageLookCommand("lookRight90Cmd", this->commandScope, true,
-//			     this, LOOK_RIGHT90);
-//    this->lookUp90Cmd =
-//	new ImageLookCommand("lookUp90Cmd", this->commandScope, true,
-//			     this, LOOK_UP90);
-//    this->lookDown90Cmd =
-//	new ImageLookCommand("lookDown90Cmd", this->commandScope, true,
-//			     this, LOOK_DOWN90);
-//    this->lookBackwardCmd =
-//	new ImageLookCommand("lookBackwardCmd", this->commandScope, true,
-//			     this, LOOK_BACKWARD);
-//    this->lookAlignCmd =
-//	new ImageLookCommand("lookAlignCmd", this->commandScope, true,
-//			     this, LOOK_ALIGN);
-//
-//
-//    this->undoCmd =
-//	new ImageUndoCommand("undo", this->commandScope, false, this);
-//    this->redoCmd =
-//	new ImageRedoCommand("redo", this->commandScope, false, this);
-//    this->resetCmd =
-//	new ImageResetCommand("reset", this->commandScope,
-//			  this->directInteractionAllowed(), this);
-//
-//    // FIXME: this should be DXApplication command
-//    this->openVPECmd =
-//	    new NoUndoImageCommand("openVPE", this->commandScope, true,
-//				   this, NoUndoImageCommand::OpenVPE);
-//    this->displayRotationGlobeCmd =
-//	new NoUndoImageCommand("displayRotationGlobe", this->commandScope,
-//			  false, this, NoUndoImageCommand::DisplayGlobe);
-//
-//    this->backgroundColorCmd =
-//	new NoUndoImageCommand("setBackgroundColor", this->commandScope,
-//			       false, this, NoUndoImageCommand::SetBGColor);
-// 
+    this->state.hardwareWindow		= 0;
+    this->state.hardwareRender		= false;
+    this->state.hardwareRenderExists 	= false;
+    this->state.resizeFromServer	= false;
+    this->state.frameBuffer		= false;
+    this->state.globeDisplayed		= false;
+    this->state.degenerateBox		= false;
+    this->state.imageCount		= 0;
+    //this->state.parent.window		= 0;
+    this->state.resizeCausesExecution   = true;
+
+    this->state.hardwareCamera.undoable = false;
+    this->state.hardwareCamera.redoable = false;
+
+    this->node = NULL;
+    this->directInteraction = false;
+    this->switchingSoftware = false;
+    this->pushedSinceExec   = false;
+    this->currentInteractionMode = NONE;
+    this->pendingInteractionMode = NONE;
+    //
+    // Create the commands.
+    //
+    this->renderingOptionsCmd =
+	new NoUndoImageCommand("renderingOptions", this->commandScope,
+			  false, this, NoUndoImageCommand::RenderingOptions);
+    this->softwareCmd = new ImageSoftwareCommand("software", this->commandScope,
+			    false, this);
+    this->hardwareCmd = new ImageHardwareCommand("hardware", this->commandScope,
+			    false, this);
+    this->upNoneCmd = new ImageApproxCommand("upNone",
+	this->commandScope,
+	false, this, true, APPROX_NONE);
+    this->upWireframeCmd = new ImageApproxCommand("upWireframe",
+	this->commandScope,
+	false, this, true, APPROX_WIREFRAME);
+    this->upDotsCmd = new ImageApproxCommand("upDots",
+	this->commandScope,
+	false, this, true, APPROX_DOTS);
+    this->upBoxCmd = new ImageApproxCommand("upBox",
+	this->commandScope,
+	false, this, true, APPROX_BOX);
+    this->downNoneCmd = new ImageApproxCommand("downNone",
+	this->commandScope,
+	false, this, false, APPROX_NONE);
+    this->downWireframeCmd = new ImageApproxCommand("downWireframe",
+	this->commandScope,
+	false, this, false, APPROX_WIREFRAME);
+    this->downDotsCmd = new ImageApproxCommand("downDots",
+	this->commandScope,
+	false, this, false, APPROX_DOTS);
+    this->downBoxCmd = new ImageApproxCommand("downBox",
+	this->commandScope,
+	false, this, false, APPROX_BOX);
+
+    this->autoAxesCmd =
+	new NoUndoImageCommand("autoAxes", this->commandScope,
+			  false, this,
+			  NoUndoImageCommand::AutoAxes);
+
+    this->throttleCmd =
+	new NoUndoImageCommand("throttle", this->commandScope,
+			  false, this, NoUndoImageCommand::Throttle);
+    this->viewControlCmd =
+	new NoUndoImageCommand("viewControl", this->commandScope,
+			  false, this,
+			  NoUndoImageCommand::ViewControl);
+    this->modeNoneCmd = 
+	new ImageSetModeCommand("modeNone", this->commandScope, false,
+				this, NONE);
+    this->modeCameraCmd = 
+	new ImageSetModeCommand("modeCamera", this->commandScope, false,
+				this, CAMERA);
+    this->modeCursorsCmd = 
+	new ImageSetModeCommand("modeCursors", this->commandScope, false,
+				this, CURSORS);
+    this->modePickCmd = 
+	new ImageSetModeCommand("modePick", this->commandScope, false,
+				this, PICK);
+    this->modeNavigateCmd = 
+	new ImageSetModeCommand("modeNavigate", this->commandScope, false,
+				this, NAVIGATE);
+    this->modePanZoomCmd = 
+	new ImageSetModeCommand("modePanZoom", this->commandScope, false,
+				this, PANZOOM);
+    this->modeRoamCmd = 
+	new ImageSetModeCommand("modeRoam", this->commandScope, false,
+				this, ROAM);
+    this->modeRotateCmd = 
+	new ImageSetModeCommand("modeRotate", this->commandScope, false,
+				this, ROTATE);
+    this->modeZoomCmd = 
+	new ImageSetModeCommand("modeZoom", this->commandScope, false,
+				this, ZOOM);
+
+    this->setViewNoneCmd = 
+	new ImageSetViewCommand("setViewNone", this->commandScope, false,
+				this, VIEW_NONE);
+    this->setViewTopCmd = 
+	new ImageSetViewCommand("setViewTop", this->commandScope, true,
+				this, VIEW_TOP);
+    this->setViewBottomCmd = 
+	new ImageSetViewCommand("setViewBottom", this->commandScope, true,
+				this, VIEW_BOTTOM);
+    this->setViewFrontCmd = 
+	new ImageSetViewCommand("setViewFront", this->commandScope, true,
+				this, VIEW_FRONT);
+    this->setViewBackCmd = 
+	new ImageSetViewCommand("setViewBack", this->commandScope, true,
+				this, VIEW_BACK);
+    this->setViewLeftCmd = 
+	new ImageSetViewCommand("setViewLeft", this->commandScope, true,
+				this, VIEW_LEFT);
+    this->setViewRightCmd =
+	new ImageSetViewCommand("setViewRight", this->commandScope, true,
+				this, VIEW_RIGHT);
+    this->setViewDiagonalCmd = 
+	new ImageSetViewCommand("setViewDiagonal", this->commandScope, true,
+				this, VIEW_DIAGONAL);
+    this->setViewOffTopCmd = 
+	new ImageSetViewCommand("setViewOffTop", this->commandScope, true,
+				this, VIEW_OFF_TOP);
+    this->setViewOffBottomCmd = 
+	new ImageSetViewCommand("setViewOffBottom", this->commandScope, true,
+				this, VIEW_OFF_BOTTOM);
+    this->setViewOffFrontCmd = 
+	new ImageSetViewCommand("setViewOffFront", this->commandScope, true,
+				this, VIEW_OFF_FRONT);
+    this->setViewOffBackCmd = 
+	new ImageSetViewCommand("setViewOffBack", this->commandScope, true,
+				this, VIEW_OFF_BACK);
+    this->setViewOffLeftCmd = 
+	new ImageSetViewCommand("setViewOffLeft", this->commandScope, true,
+				this, VIEW_OFF_LEFT);
+    this->setViewOffRightCmd =
+	new ImageSetViewCommand("setViewOffRight", this->commandScope, true,
+				this, VIEW_OFF_RIGHT);
+    this->setViewOffDiagonalCmd = 
+	new ImageSetViewCommand("setViewOffDiagonal", this->commandScope, true,
+				this, VIEW_OFF_DIAGONAL);
+
+    this->perspectiveCmd = 
+	new ImagePerspectiveCommand("perspective", this->commandScope,
+				    true, this, true);
+    this->parallelCmd = 
+	new ImagePerspectiveCommand("parallel", this->commandScope,
+				    true, this, false);
+    this->constrainNoneCmd = 
+	new ImageConstraintCommand("constrainNone", this->commandScope, true,
+				    this, CONSTRAINT_NONE);
+    this->constrainXCmd = 
+	new ImageConstraintCommand("constrainX", this->commandScope, true,
+				    this, CONSTRAINT_X);
+    this->constrainYCmd = 
+	new ImageConstraintCommand("constrainY", this->commandScope, true,
+				    this, CONSTRAINT_Y);
+    this->constrainZCmd = 
+	new ImageConstraintCommand("constrainZ", this->commandScope, true,
+				    this, CONSTRAINT_Z);
+
+    this->lookForwardCmd =
+	new ImageLookCommand("lookForwardCmd", this->commandScope, true,
+			     this, LOOK_FORWARD);
+    this->lookLeft45Cmd =
+	new ImageLookCommand("lookLeft45Cmd", this->commandScope, true,
+			     this, LOOK_LEFT45);
+    this->lookRight45Cmd =
+	new ImageLookCommand("lookRight45Cmd", this->commandScope, true,
+			     this, LOOK_RIGHT45);
+    this->lookUp45Cmd =
+	new ImageLookCommand("lookUp45Cmd", this->commandScope, true,
+			     this, LOOK_UP45);
+    this->lookDown45Cmd =
+	new ImageLookCommand("lookDown45Cmd", this->commandScope, true,
+			     this, LOOK_DOWN45);
+    this->lookLeft90Cmd =
+	new ImageLookCommand("lookLeft90Cmd", this->commandScope, true,
+			     this, LOOK_LEFT90);
+    this->lookRight90Cmd =
+	new ImageLookCommand("lookRight90Cmd", this->commandScope, true,
+			     this, LOOK_RIGHT90);
+    this->lookUp90Cmd =
+	new ImageLookCommand("lookUp90Cmd", this->commandScope, true,
+			     this, LOOK_UP90);
+    this->lookDown90Cmd =
+	new ImageLookCommand("lookDown90Cmd", this->commandScope, true,
+			     this, LOOK_DOWN90);
+    this->lookBackwardCmd =
+	new ImageLookCommand("lookBackwardCmd", this->commandScope, true,
+			     this, LOOK_BACKWARD);
+    this->lookAlignCmd =
+	new ImageLookCommand("lookAlignCmd", this->commandScope, true,
+			     this, LOOK_ALIGN);
+
+
+    this->undoCmd =
+	new ImageUndoCommand("undo", this->commandScope, false, this);
+    this->redoCmd =
+	new ImageRedoCommand("redo", this->commandScope, false, this);
+    this->resetCmd =
+	new ImageResetCommand("reset", this->commandScope,
+			  this->directInteractionAllowed(), this);
+
+    // FIXME: this should be DXApplication command
+    this->openVPECmd =
+	    new NoUndoImageCommand("openVPE", this->commandScope, true,
+				   this, NoUndoImageCommand::OpenVPE);
+    this->displayRotationGlobeCmd =
+	new NoUndoImageCommand("displayRotationGlobe", this->commandScope,
+			  false, this, NoUndoImageCommand::DisplayGlobe);
+
+    this->backgroundColorCmd =
+	new NoUndoImageCommand("setBackgroundColor", this->commandScope,
+			       false, this, NoUndoImageCommand::SetBGColor);
+ 
 //    if (!theDXApplication->appLimitsImageOptions()) {
 //	this->imageDepth8Cmd =
 //	    new NoUndoImageCommand("imageDepth8", this->commandScope,
@@ -426,70 +426,70 @@ ImageWindow::ImageWindow(bool  isAnchor, Network* network) :
 //		new NoUndoImageCommand("setPanelAccess", this->commandScope,
 //		   false, this, NoUndoImageCommand::SetCPAccess);
 //    } else {
-//	this->changeImageNameCmd = NULL;
-//	this->setPanelAccessCmd = NULL;
-//	this->imageDepth8Cmd = NULL;
-//	this->imageDepth12Cmd = NULL;
-//	this->imageDepth15Cmd = NULL;
-//	this->imageDepth16Cmd = NULL;
-//	this->imageDepth24Cmd = NULL;
-//	this->imageDepth32Cmd = NULL;
+	this->changeImageNameCmd = NULL;
+	this->setPanelAccessCmd = NULL;
+	this->imageDepth8Cmd = NULL;
+	this->imageDepth12Cmd = NULL;
+	this->imageDepth15Cmd = NULL;
+	this->imageDepth16Cmd = NULL;
+	this->imageDepth24Cmd = NULL;
+	this->imageDepth32Cmd = NULL;
 //    }
-//
-//    // FIXME: this should be DXApplication command
-//    if (theDXApplication->appAllowsImageSaving())
-//	this->saveImageCmd =
-//	    new NoUndoImageCommand("saveImage", this->commandScope,
-//	       false, this, NoUndoImageCommand::SaveAsImage);
-//    else
-//	this->saveImageCmd = NULL;
-//
-//    // FIXME: this should be DXApplication command
-//    if (theDXApplication->appAllowsImagePrinting())
-//	this->printImageCmd =
-//	    new NoUndoImageCommand("printImage", this->commandScope,
-//	       false, this, NoUndoImageCommand::PrintImage);
-//    else
-//	this->printImageCmd = NULL;
-//
-//    this->closeCmd =
-//        new CloseWindowCommand("close",this->commandScope,true,this);
-//
-//    this->allowDirectInteraction(false);
-//
-//    //this->currentProbeNode = NULL;
-//    this->currentProbeInstance = -1;
-//    this->currentPickInstance = -1;
-//    //this->currentPickNode = NULL;
-//
-//    this->resetWindowTitle();
-//
-//    this->cameraInitialized = False;
-//
-//    //
-//    // By default the only startup image window is the anchor window.
-//    //
-//    this->startup = this->anchor || (this->network->getImageCount() == 1);
-//
+
+    // FIXME: this should be DXApplication command
+    if (theDXApplication->appAllowsImageSaving())
+	this->saveImageCmd =
+	    new NoUndoImageCommand("saveImage", this->commandScope,
+	       false, this, NoUndoImageCommand::SaveAsImage);
+    else
+	this->saveImageCmd = NULL;
+
+    // FIXME: this should be DXApplication command
+    if (theDXApplication->appAllowsImagePrinting())
+	this->printImageCmd =
+	    new NoUndoImageCommand("printImage", this->commandScope,
+	       false, this, NoUndoImageCommand::PrintImage);
+    else
+	this->printImageCmd = NULL;
+
+    this->closeCmd =
+        new CloseWindowCommand("close",this->commandScope,true,this);
+
+    this->allowDirectInteraction(false);
+
+    //this->currentProbeNode = NULL;
+    this->currentProbeInstance = -1;
+    this->currentPickInstance = -1;
+    //this->currentPickNode = NULL;
+
+    this->resetWindowTitle();
+
+    this->cameraInitialized = false;
+
+    //
+    // By default the only startup image window is the anchor window.
+    //
+    this->startup = this->anchor || (this->network->getImageCount() == 1);
+
 //    this->reset_eor_wp = NUL(XtWorkProcId);
 //
-//    //
-//    // Rather than triggering an execution following a window resize,
-//    // Queue the execution so that it happens soon after the execution
-//    // but not immediately after.  This gives better results for users
-//    // with window mgrs that deliver tons of resize events
-//    //
-//    this->execute_after_resize_to = 0;
-//
+    //
+    // Rather than triggering an execution following a window resize,
+    // Queue the execution so that it happens soon after the execution
+    // but not immediately after.  This gives better results for users
+    // with window mgrs that deliver tons of resize events
+    //
+    //this->execute_after_resize_to = 0;
+
 //    //
 //    // Install the default resources for THIS class (not the derived classes)
 //    //
-//    if (NOT ImageWindow::ClassInitialized)
-//    {
-//	ASSERT(theApplication);
-//        ImageWindow::ClassInitialized = true;
+    if (NOT ImageWindow::ClassInitialized)
+    {
+	ASSERT(theApplication);
+        ImageWindow::ClassInitialized = true;
 //	this->installDefaultResources(theApplication->getRootWidget());
-//    }
+    }
 }
 
 
@@ -524,30 +524,30 @@ ImageWindow::~ImageWindow()
 //    //
 //    // Disconnect from the node
 //    //
-//    DisplayNode *n = (DisplayNode*)this->node;
-//    if (n) {
-//	this->node = NULL;
-//	n->associateImage(NULL);
-//    }
-//
-//    if (this->changeImageNameDialog)
-//        delete this->changeImageNameDialog;
-//    if (this->viewControlDialog) 
-//	delete this->viewControlDialog;
-//    if (this->renderingOptionsDialog)
-//	delete this->renderingOptionsDialog;
-//    if (this->backgroundColorDialog)
-//	delete this->backgroundColorDialog;
-//    if (this->throttleDialog)
-//	delete this->throttleDialog;
-//    if (this->autoAxesDialog)
-//	delete this->autoAxesDialog;
-//    if (this->saveImageDialog)
-//	delete this->saveImageDialog;
-//    if (this->printImageDialog)
-//	delete this->printImageDialog;
-//    if (this->fbEventHandler)
-//	delete this->fbEventHandler;
+    DisplayNode *n = (DisplayNode*)this->node;
+    if (n) {
+	this->node = NULL;
+	n->associateImage(NULL);
+    }
+
+    if (this->changeImageNameDialog)
+        delete this->changeImageNameDialog;
+    if (this->viewControlDialog) 
+	delete this->viewControlDialog;
+    if (this->renderingOptionsDialog)
+	delete this->renderingOptionsDialog;
+    if (this->backgroundColorDialog)
+	delete this->backgroundColorDialog;
+    if (this->throttleDialog)
+	delete this->throttleDialog;
+    if (this->autoAxesDialog)
+	delete this->autoAxesDialog;
+    if (this->saveImageDialog)
+	delete this->saveImageDialog;
+    if (this->printImageDialog)
+	delete this->printImageDialog;
+ //   if (this->fbEventHandler)
+	//delete this->fbEventHandler;
 //
 //    //
 //    // File menu optoins
@@ -563,35 +563,35 @@ ImageWindow::~ImageWindow()
 //#if 0
 //    if (this->quitOption) delete this->quitOption;
 //#endif
-//    if (this->closeOption) delete this->closeOption;
-//    if (this->saveImageOption) delete this->saveImageOption;
-//    if (this->printImageOption) delete this->printImageOption;
-//
-//    //
-//    // Windows options
-//    //
-//    if (this->openVisualProgramEditorOption) delete this->openVisualProgramEditorOption;
-//    if (this->openAllControlPanelsOption) delete this->openAllControlPanelsOption;
-//    if (this->openControlPanelByNameMenu) delete this->openControlPanelByNameMenu;
-//    if (this->openAllColormapEditorsOption) delete this->openAllColormapEditorsOption;
-//    if (this->messageWindowOption) delete this->messageWindowOption;
-//    this->panelNameList.clear();
-//    this->panelGroupList.clear();
-//
-//    //
-//    // Option options
-//    //
-//    if (this->renderingOptionsOption) delete this->renderingOptionsOption;
-//    if (this->autoAxesOption) delete this->autoAxesOption;
-//    if (this->throttleOption) delete this->throttleOption;
-//    if (this->viewControlOption) delete this->viewControlOption;
-//    if (this->modeOptionCascade) delete this->modeOptionCascade;
-//    if (this->undoOption) delete this->undoOption;
-//    if (this->redoOption) delete this->redoOption;
-//    if (this->resetOption) delete this->resetOption;
-//    if (this->changeImageNameOption) delete this->changeImageNameOption;
-//    if (this->backgroundColorOption) delete this->backgroundColorOption;
-//    if (this->displayRotationGlobeOption) delete this->displayRotationGlobeOption;
+    if (this->closeOption) delete this->closeOption;
+    if (this->saveImageOption) delete this->saveImageOption;
+    if (this->printImageOption) delete this->printImageOption;
+
+    //
+    // Windows options
+    //
+    if (this->openVisualProgramEditorOption) delete this->openVisualProgramEditorOption;
+    if (this->openAllControlPanelsOption) delete this->openAllControlPanelsOption;
+    if (this->openControlPanelByNameMenu) delete this->openControlPanelByNameMenu;
+    if (this->openAllColormapEditorsOption) delete this->openAllColormapEditorsOption;
+    if (this->messageWindowOption) delete this->messageWindowOption;
+    this->panelNameList.clear();
+    this->panelGroupList.clear();
+
+    //
+    // Option options
+    //
+    if (this->renderingOptionsOption) delete this->renderingOptionsOption;
+    if (this->autoAxesOption) delete this->autoAxesOption;
+    if (this->throttleOption) delete this->throttleOption;
+    if (this->viewControlOption) delete this->viewControlOption;
+    if (this->modeOptionCascade) delete this->modeOptionCascade;
+    if (this->undoOption) delete this->undoOption;
+    if (this->redoOption) delete this->redoOption;
+    if (this->resetOption) delete this->resetOption;
+    if (this->changeImageNameOption) delete this->changeImageNameOption;
+    if (this->backgroundColorOption) delete this->backgroundColorOption;
+    if (this->displayRotationGlobeOption) delete this->displayRotationGlobeOption;
 //    //
 //    // Delete the image depth cascade which contains the imageDepth*Options.
 //    // Deleting the cascade deletes the contained options so we don't need
@@ -602,89 +602,89 @@ ImageWindow::~ImageWindow()
 //    if (this->setPanelAccessOption) delete this->setPanelAccessOption;
 //    if (this->onVisualProgramOption) delete this->onVisualProgramOption;
 //
-//    //
-//    // Delete the commands after the command interfaces.
-//    //
-//    delete this->renderingOptionsCmd;
-//    delete this->softwareCmd;
-//    delete this->hardwareCmd;
-//    delete this->upNoneCmd;
-//    delete this->upWireframeCmd;
-//    delete this->upDotsCmd;
-//    delete this->upBoxCmd;
-//    delete this->downNoneCmd;
-//    delete this->downWireframeCmd;
-//    delete this->downDotsCmd;
-//    delete this->downBoxCmd;
-//    delete this->autoAxesCmd;
-//    delete this->throttleCmd;
-//    if (this->imageDepth8Cmd)   delete this->imageDepth8Cmd;
-//    if (this->imageDepth12Cmd)  delete this->imageDepth12Cmd;
-//    if (this->imageDepth15Cmd)  delete this->imageDepth15Cmd;
-//    if (this->imageDepth16Cmd)  delete this->imageDepth16Cmd;
-//    if (this->imageDepth24Cmd)  delete this->imageDepth24Cmd;
-//    if (this->imageDepth32Cmd)  delete this->imageDepth32Cmd;
-//    if (this->setPanelAccessCmd) delete this->setPanelAccessCmd;
-//    delete this->viewControlCmd;
-//    delete this->modeNoneCmd;
-//    delete this->modeCameraCmd;
-//    delete this->modeCursorsCmd;
-//    delete this->modePickCmd;
-//    delete this->modeNavigateCmd;
-//    delete this->modePanZoomCmd;
-//    delete this->modeRoamCmd;
-//    delete this->modeRotateCmd;
-//    delete this->modeZoomCmd;
-//    delete this->setViewNoneCmd;
-//    delete this->setViewTopCmd;
-//    delete this->setViewBottomCmd;
-//    delete this->setViewFrontCmd;
-//    delete this->setViewBackCmd;
-//    delete this->setViewLeftCmd;
-//    delete this->setViewRightCmd;
-//    delete this->setViewDiagonalCmd;
-//    delete this->setViewOffTopCmd;
-//    delete this->setViewOffBottomCmd;
-//    delete this->setViewOffFrontCmd;
-//    delete this->setViewOffBackCmd;
-//    delete this->setViewOffLeftCmd;
-//    delete this->setViewOffRightCmd;
-//    delete this->setViewOffDiagonalCmd;
-//    delete this->perspectiveCmd;
-//    delete this->parallelCmd;
-//    delete this->constrainNoneCmd;
-//    delete this->constrainXCmd;
-//    delete this->constrainYCmd;
-//    delete this->constrainZCmd;
-//    delete this->lookForwardCmd;
-//    delete this->lookLeft45Cmd;
-//    delete this->lookRight45Cmd;
-//    delete this->lookUp45Cmd;
-//    delete this->lookDown45Cmd;
-//    delete this->lookLeft90Cmd;
-//    delete this->lookRight90Cmd;
-//    delete this->lookUp90Cmd;
-//    delete this->lookDown90Cmd;
-//    delete this->lookBackwardCmd;
-//    delete this->lookAlignCmd;
-//    delete this->closeCmd;
-//    delete this->undoCmd;
-//    delete this->redoCmd;
-//    delete this->resetCmd;
-//    if (this->changeImageNameCmd) delete this->changeImageNameCmd;
-//    delete this->backgroundColorCmd;
-//    delete this->displayRotationGlobeCmd;
-//    if (this->saveImageCmd)  delete this->saveImageCmd;
-//    if (this->printImageCmd) delete this->printImageCmd;
-//    if (this->openVPECmd) delete this->openVPECmd;
-//
-//
-//    //
-//    // Remove self from the network image list.
-//    //
-//    this->network->removeImage(this);
-//    if (this->managed_state) delete this->managed_state;
-//
+    //
+    // Delete the commands after the command interfaces.
+    //
+    delete this->renderingOptionsCmd;
+    delete this->softwareCmd;
+    delete this->hardwareCmd;
+    delete this->upNoneCmd;
+    delete this->upWireframeCmd;
+    delete this->upDotsCmd;
+    delete this->upBoxCmd;
+    delete this->downNoneCmd;
+    delete this->downWireframeCmd;
+    delete this->downDotsCmd;
+    delete this->downBoxCmd;
+    delete this->autoAxesCmd;
+    delete this->throttleCmd;
+    if (this->imageDepth8Cmd)   delete this->imageDepth8Cmd;
+    if (this->imageDepth12Cmd)  delete this->imageDepth12Cmd;
+    if (this->imageDepth15Cmd)  delete this->imageDepth15Cmd;
+    if (this->imageDepth16Cmd)  delete this->imageDepth16Cmd;
+    if (this->imageDepth24Cmd)  delete this->imageDepth24Cmd;
+    if (this->imageDepth32Cmd)  delete this->imageDepth32Cmd;
+    if (this->setPanelAccessCmd) delete this->setPanelAccessCmd;
+    delete this->viewControlCmd;
+    delete this->modeNoneCmd;
+    delete this->modeCameraCmd;
+    delete this->modeCursorsCmd;
+    delete this->modePickCmd;
+    delete this->modeNavigateCmd;
+    delete this->modePanZoomCmd;
+    delete this->modeRoamCmd;
+    delete this->modeRotateCmd;
+    delete this->modeZoomCmd;
+    delete this->setViewNoneCmd;
+    delete this->setViewTopCmd;
+    delete this->setViewBottomCmd;
+    delete this->setViewFrontCmd;
+    delete this->setViewBackCmd;
+    delete this->setViewLeftCmd;
+    delete this->setViewRightCmd;
+    delete this->setViewDiagonalCmd;
+    delete this->setViewOffTopCmd;
+    delete this->setViewOffBottomCmd;
+    delete this->setViewOffFrontCmd;
+    delete this->setViewOffBackCmd;
+    delete this->setViewOffLeftCmd;
+    delete this->setViewOffRightCmd;
+    delete this->setViewOffDiagonalCmd;
+    delete this->perspectiveCmd;
+    delete this->parallelCmd;
+    delete this->constrainNoneCmd;
+    delete this->constrainXCmd;
+    delete this->constrainYCmd;
+    delete this->constrainZCmd;
+    delete this->lookForwardCmd;
+    delete this->lookLeft45Cmd;
+    delete this->lookRight45Cmd;
+    delete this->lookUp45Cmd;
+    delete this->lookDown45Cmd;
+    delete this->lookLeft90Cmd;
+    delete this->lookRight90Cmd;
+    delete this->lookUp90Cmd;
+    delete this->lookDown90Cmd;
+    delete this->lookBackwardCmd;
+    delete this->lookAlignCmd;
+    delete this->closeCmd;
+    delete this->undoCmd;
+    delete this->redoCmd;
+    delete this->resetCmd;
+    if (this->changeImageNameCmd) delete this->changeImageNameCmd;
+    delete this->backgroundColorCmd;
+    delete this->displayRotationGlobeCmd;
+    if (this->saveImageCmd)  delete this->saveImageCmd;
+    if (this->printImageCmd) delete this->printImageCmd;
+    if (this->openVPECmd) delete this->openVPECmd;
+
+
+    //
+    // Remove self from the network image list.
+    //
+    this->network->removeImage(this);
+    if (this->managed_state) delete this->managed_state;
+
 //    if (this->reset_eor_wp) XtRemoveWorkProc(this->reset_eor_wp);
 //    if (this->execute_after_resize_to) XtRemoveTimeOut(this->execute_after_resize_to);
 }
@@ -1757,7 +1757,7 @@ char *ImageWindow::getDisplayString()
 //    delete display;
 //
 //    return string;
-	return NULL;
+	return "nativeWindows";
 }
 
 //extern "C" void ImageWindow_RedrawCB(Widget	drawingArea,
@@ -6996,17 +6996,17 @@ void ImageWindow::configureImageDepthMenu()
 
 void ImageWindow::configureModeMenu()
 {
-    this->modeNoneOption->setState(this->getInteractionMode() == NONE);
-    this->modeCameraOption->setState(this->getInteractionMode() == CAMERA);
-    this->modeCursorsOption->setState(this->getInteractionMode() == CURSORS);
-    this->modePickOption->setState(this->getInteractionMode() == PICK);
-    this->modeNavigateOption->setState(this->getInteractionMode() == NAVIGATE);
-    this->modePanZoomOption->setState(this->getInteractionMode() == PANZOOM);
-    this->modeRoamOption->setState(this->getInteractionMode() == ROAM);
-    this->modeRotateOption->setState(this->getInteractionMode() == ROTATE);
-    this->modeZoomOption->setState(this->getInteractionMode() == ZOOM);
+    //this->modeNoneOption->setState(this->getInteractionMode() == NONE);
+    //this->modeCameraOption->setState(this->getInteractionMode() == CAMERA);
+    //this->modeCursorsOption->setState(this->getInteractionMode() == CURSORS);
+    //this->modePickOption->setState(this->getInteractionMode() == PICK);
+    //this->modeNavigateOption->setState(this->getInteractionMode() == NAVIGATE);
+    //this->modePanZoomOption->setState(this->getInteractionMode() == PANZOOM);
+    //this->modeRoamOption->setState(this->getInteractionMode() == ROAM);
+    //this->modeRotateOption->setState(this->getInteractionMode() == ROTATE);
+    //this->modeZoomOption->setState(this->getInteractionMode() == ZOOM);
 
-    this->modeOptionCascade->setActivationFromChildren();
+    //this->modeOptionCascade->setActivationFromChildren();
 }
 
 Network *ImageWindow::getNetwork()

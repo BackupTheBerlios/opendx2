@@ -33,7 +33,7 @@ class ComponentAttributes;
 class LocalAttributes;
 class SelectionInstance;
 
-typedef long Type;	// From DXType.h
+typedef long dx_Type;	// From DXType.h
 
 //
 // SelectionAttrDialog class definition:
@@ -58,7 +58,7 @@ class SelectionAttrDialog : protected ListEditor, public SetAttrDialog
     //
     // The current type of the values in the value list. 
     //
-    Type	valueType;	
+    dx_Type	valueType;	
 
     //
     // Build the interactive set attributes widgets that sit in the dialog.

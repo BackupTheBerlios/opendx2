@@ -92,6 +92,7 @@ namespace dxui
 			this->MinimizeBox = false;
 			this->Name = S"CopyrightDialog";
 			this->ShowInTaskbar = false;
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterParent;
 			this->Text = S"CopyrightDialog";
 			this->Load += new System::EventHandler(this, CopyrightDialog_Load);
 			this->ResumeLayout(false);
@@ -104,6 +105,7 @@ namespace dxui
 		}
 		void showIt() {
 			theDXApplication->getMainForm()->AddOwnedForm(this);
+			this->ShowInTaskbar = false;
 			this->Show();
 			this->timer->Start();
 		}

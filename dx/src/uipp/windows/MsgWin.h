@@ -12,9 +12,11 @@
 #ifndef _MsgWin_h
 #define _MsgWin_h
 
-
 #include "DXWindow.h"
 #include "List.h"
+
+#include <vcclr.h>
+#include "MsgWindow.h"
 
 
 //
@@ -58,6 +60,8 @@ class MsgWin : public DXWindow
 
     //static void ShowEditor (XtPointer);
     //static void NoShowEditor (XtPointer);
+
+	gcroot<dxui::MsgWindow *> mw;
 
     //
     // If there is an editor opened on the net, or if there is a resource

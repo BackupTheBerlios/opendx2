@@ -87,7 +87,7 @@ bool Parameter::isNeededValue(bool ignoreDirty)
 // The types we can coerce are StringType, ListType, VectorType and TensorType.
 // Return T/F indicating whether the value was successfully set (and coerced)
 //
-bool Parameter::coerceAndSetValue(const char *value, Type type)
+bool Parameter::coerceAndSetValue(const char *value, dx_Type type)
 {
     char *s = DXValue::CoerceValue(value, type);
     bool r = false;
@@ -104,10 +104,10 @@ bool Parameter::coerceAndSetValue(const char *value, Type type)
 // of this parameter to the value given.
 // On failure, return DXType::UndefinedType
 //
-Type Parameter::setValue(const char *value)
+dx_Type Parameter::setValue(const char *value)
 {
     DXType *dxtype;
-    Type type;
+    dx_Type type;
     ParameterDefinition *pd;
     ListIterator iterator;
 
@@ -144,7 +144,7 @@ Type Parameter::setValue(const char *value)
 
     return DXType::UndefinedType;
 }
-bool Parameter::setValue(const char *value, Type type, bool coerce)
+bool Parameter::setValue(const char *value, dx_Type type, bool coerce)
 {
     bool success;
 
@@ -191,7 +191,7 @@ bool Parameter::setValue(const char *value, Type type, bool coerce)
 // the same as setValue, but if it is defaulting, then we set the
 // value but leave the parameter clean and defaulting.
 //
-bool Parameter::setSetValue(const char *value, Type type)
+bool Parameter::setSetValue(const char *value, dx_Type type)
 {
     bool was_defaulting = this->defaultingWhenUnconnected;
 
@@ -373,7 +373,7 @@ char *Parameter::getObjectCodeDecl(const char *indent, const char *tag)
 	return NULL;
 
     char *p, *code = new char[1024];
-    Type type = this->getValueType();
+    dx_Type type = this->getValueType();
     int i, count,items,tuples, hasDecimal;
     double *values, *data;
 
@@ -480,7 +480,7 @@ char *Parameter::getObjectCreateCode(const char *indent,
 
     char *listitem, *code = new char[1024], varspec[128];
     int i, rank, shape, items;
-    Type type = this->getValueType();
+    dx_Type type = this->getValueType();
     DXTensor tensor;
     bool r;
     int count, hasDecimal;
@@ -562,7 +562,7 @@ char *Parameter::getObjectCleanupCode(const char *indent, const char *tag)
 	return NULL;
 
     char *code = new char[1024];
-    Type type = this->getValueType();
+    dx_Type type = this->getValueType();
     switch (this->getValueType()) {
 
         default:

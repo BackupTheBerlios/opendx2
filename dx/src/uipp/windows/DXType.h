@@ -24,7 +24,7 @@
 // Type type definition:
 //
 
-typedef long Type;
+typedef long dx_Type;
 
 class List;
 
@@ -35,7 +35,7 @@ typedef struct _DXTypeName
 {
     bool		userDefined;
     char*		name;
-    Type		type;
+    dx_Type		type;
 
 } DXTypeName;
 
@@ -61,7 +61,7 @@ class DXType : public Base
     //
     // Protected member data:
     //
-    Type		type;		// type value
+    dx_Type		type;		// type value
     const char*		name;		// type name
 
   public:
@@ -134,21 +134,21 @@ class DXType : public Base
     // If an unrecognized   list item is found, DXType::UndefinedType is 
     // returned.
     //
-    static Type DetermineListItemType(const char *val);
+    static dx_Type DetermineListItemType(const char *val);
 
     //
     // Adds a user-defined type to the class type list.
     // Returns true if successful; otherwise, false.
     // Note: The name string is copied by the function.
     //
-    static bool AddUserType(const Type  type,
+    static bool AddUserType(const dx_Type  type,
 			       const char* name);
 
     //
     // Deletes a type (by type) from the class type list.
     // Returns true if successful; otherwise, false.
     //
-    static bool DeleteType(const Type type);
+    static bool DeleteType(const dx_Type type);
 
     //
     // Given a string containing a value, determine its type. 
@@ -165,22 +165,22 @@ class DXType : public Base
     //
     // Returns a name string of the specified type.
     //
-    static const char* TypeToString(const Type type);
+    static const char* TypeToString(const dx_Type type);
 
     //
     // Returns the type of the specified name string.
     //
-    static Type StringToType(const char* string);
+    static dx_Type StringToType(const char* string);
 
     //
     // Convert a version 1.0 (DX/6000 1.2 11/92) type to new type system. 
     //
-    static Type ConvertVersionType(Type t);
+    static dx_Type ConvertVersionType(dx_Type t);
 
     //
     // Find the first type in the list of DXTypes, that matches the value. 
     //
-    static Type FindTypeMatch(const char *value, List *typelist);
+    static dx_Type FindTypeMatch(const char *value, List *typelist);
 
     //
     // Returns true if the source and destination types match;
@@ -189,8 +189,8 @@ class DXType : public Base
     static bool MatchType(DXType& source,
 			     DXType& destination);
 
-    static bool MatchType(const Type source,
-			     const Type destination);
+    static bool MatchType(const dx_Type source,
+			     const dx_Type destination);
 
     //
     // Returns true if there exists a matching type in both lists.
@@ -212,7 +212,7 @@ class DXType : public Base
     // Constructor:
     //
     DXType();
-    DXType(const Type type);
+    DXType(const dx_Type type);
 
     //
     // Destructor:
@@ -223,7 +223,7 @@ class DXType : public Base
     // Sets the type value IFF the type is a base or user-defined type.
     // Returns true if successful; false, otherwise.
     //
-    bool setType(const Type type);
+    bool setType(const dx_Type type);
 
     //
     // Returns a pointer to the type name string.

@@ -183,17 +183,17 @@ bool DisplayNode::cfgParseComment(const char *comment,
 
 
 
-Type
+dx_Type
 DisplayNode::setInputValue(int index,
 				 const char *value,
-				 Type t,
+				 dx_Type t,
 				 bool send)
 {
     if (index == 3)
     {
 	if (this->image == NULL) {
 	    this->userSpecifiedWhere = true;
-	    Type tmp = this->Node::setInputValue(index, value, t, send);
+	    dx_Type tmp = this->Node::setInputValue(index, value, t, send);
 	    this->userSpecifiedWhere = (bool)tmp;
 	    return tmp;
 	} else {

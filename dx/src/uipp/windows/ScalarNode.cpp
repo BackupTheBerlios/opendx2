@@ -776,7 +776,7 @@ bool ScalarNode::cfgParseComponentComment(const char *comment,
 
 #if 0
     Parameter *p = this->getOutputParameter(1);
-    Type t = p->getValueType();
+    dx_Type t = p->getValueType();
 
     //
     // The following is done most for lists, which when the list is empty
@@ -1032,7 +1032,7 @@ void ScalarNode::doRangeCheckComponentValue(int component,
 	int i, ncomp = this->getComponentCount();
 	double *mins = new double[ncomp];
 	double *maxs = new double[ncomp];
-	Type output_type = this->getOutputSetValueType(1);
+	dx_Type output_type = this->getOutputSetValueType(1);
 	char *newval;
 
 	for (i=1 ; i<=ncomp ; i++) {
@@ -1416,7 +1416,7 @@ bool ScalarNode::parseIOComment(bool input, const char* comment,
 	    items_parsed = sscanf(comment,
 		" input[%d]: defaulting = %d, visible = %d, type = %d", 
 					&ionum, &defaulting, &visible, &tmp_type);
-	    /*type = (Type) tmp_type;*/
+	    /*type = (dx_Type) tmp_type;*/
 	    if (items_parsed != 4) {
 		// Invisibility added 3/30/93
 		items_parsed = sscanf(comment, " input[%d]: visible = %d", 
@@ -1425,12 +1425,12 @@ bool ScalarNode::parseIOComment(bool input, const char* comment,
 		    // Backwards compatibility added 3/25/93
 		    items_parsed = sscanf(comment, " input[%d]: type = %d", 
 					    &ionum, &tmp_type);
-		    /*type = (Type) tmp_type;*/
+		    /*type = (dx_Type) tmp_type;*/
 		    if (items_parsed != 2) {
 			items_parsed = sscanf(comment,
 				    " input[%d]: defaulting = %d, type = %d", 
 					    &ionum, &defaulting, &tmp_type);
-			/*type = (Type) tmp_type;*/
+			/*type = (dx_Type) tmp_type;*/
 			if (items_parsed != 3) 
 			    parse_error = true;
 		    } 

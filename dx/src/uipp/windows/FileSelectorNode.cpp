@@ -85,10 +85,10 @@ bool FileSelectorNode::cfgParseComment(const char *comment,
 // One should never use this method to set the 2nd output, only the 1st.
 // Well, this is used when we parse a .net file.
 //
-Type FileSelectorNode::setOutputValue(
+dx_Type FileSelectorNode::setOutputValue(
                                 int indx,
                                 const char *value,
-                                Type t,
+                                dx_Type t,
                                 bool send)
 {
 //GDA
@@ -101,7 +101,7 @@ Type FileSelectorNode::setOutputValue(
     if (indx == 2)
 	return this->ValueNode::setOutputValue(2,localValue,t,send);
 
-    Type type = this->ValueNode::setOutputValue(1,localValue,t,false);
+    dx_Type type = this->ValueNode::setOutputValue(1,localValue,t,false);
     if (type != DXType::UndefinedType) {
 	char *basename = (char*)this->getOutputValueString(1);
 	basename = DuplicateString(basename);
@@ -128,7 +128,7 @@ Type FileSelectorNode::setOutputValue(
     if (indx == 2)
 	return this->ValueNode::setOutputValue(2,value,t,send);
 
-    Type type = this->ValueNode::setOutputValue(1,value,t,false);
+    dx_Type type = this->ValueNode::setOutputValue(1,value,t,false);
     if (type != DXType::UndefinedType) {
 	char *basename = (char*)this->getOutputValueString(1);
 	basename = DuplicateString(basename);

@@ -12,6 +12,9 @@
 #include <windows.h>
 #include <winsock.h>
 
+#include "dxThreadMain.h"
+#include "tmainUtil.h"
+
 #include "DXStrings.h"
 #include "DXChild.h"
 
@@ -231,14 +234,7 @@ DXChild::ConnectTo(const char *host,
     char script_name[500],cmd[1000];
     FILE *fp;
     int i;
-#if defined(DXD_WIN) || defined(OS2)
-
     int *in[2], *out[2], *err[2];
-#else
-
-    int in[2], out[2], err[2];
-#endif
-
     char **rep;
     char **fargv = NULL;
     int child;
@@ -247,350 +243,6 @@ DXChild::ConnectTo(const char *host,
     char *pathEnv;
     int  j;
     char *dnum;
-#if defined(HAVE_SYS_UTSNAME_H)
-
-    struct utsname Uts_Name;
-    char *local_rsh_cmd;
-
-    local_rsh_cmd = getenv( "DXRSH" );
-    if ( !local_rsh_cmd )
-        local_rsh_cmd = RSH;
-
-    /*
-     * Initialize return values (to default negative results).
-     */
-    *remin  = -1;
-    *remout = -1;
-    *remerr = -1;
-    *errstr = '\0';
-
-    /*
-     * Check to see if "host" is a valid hostname.
-     */
-    if (strcmp("unix", host) != 0) {
-        he = gethostbyname ((char*)host);
-        if (he == NULL) {
-            ErrorMessage("Unable to resolve %s, connecting locally.", host);
-
-            //	    	herror (host);
-            //	    	ErrorMessage("%s: Invalid host", host);
-            //	    	return (-1);
-        }
-    }
-
-    for (pathEnv = NULL, i = 0; ep[i] && pathEnv == NULL; ++i)
-        if (    strncmp (ep[i], "PATH=", STRLEN("PATH=")) == 0 ||
-                strncmp (ep[i], "PATH =", STRLEN("PATH =")) == 0)
-            pathEnv = ep[i];
-
-    if (DXChild::HostIsLocal(host)) {
-        char *path;
-        char *opath;
-        struct STATSTRUCT sbuffer;
-
-        if (verbose)
-            fprintf(stderr, "local\n");
-
-        if (user != NULL)
-            fprintf (stdout, "Different user on local machine ignored\n");
-
-        fargv = (char**)CALLOC((ac + 1), sizeof (char*));
-        if (fargv == NULL) {
-            ErrorMessage("calloc() error: %s", strerror(errno));
-            goto error_return;
-        }
-        for (i = 0; i < ac; ++i) {
-            fargv[i] = av[i];
-        }
-        fargv[i] = 0;
-        rep = ep;
-        /* Scan through ep looking for "PATH".  If "PATH" is found, then
-         * look through path for the specified command, and if it's
-         * found and executable, replace it in fargv with the expanded 
-         * path name.
-         */
-        if (*fargv[0] != '.' && *fargv[0] != '/') {
-            path = strchr (pathEnv, '=') + 1;
-            opath = path = strdup(path);
-            if (path == NULL) {
-                ErrorMessage("strdup() error: %s", strerror(errno));
-                goto error_return;
-            }
-            while (*path) {
-                for (i = 0;
-                        *path != '\0' && *path != ':';
-                        ++i, ++path) {
-                    s[i] = *path;
-                }
-                if (*path == ':') {
-                    ++path;
-                }
-                s[i] = '\0';
-                strcat (s, "/");
-                strcat (s, av[0]);
-                if (STATFUNC(s, &sbuffer) < 0) {
-                    /* if the file doesn't exist, go on */
-                    if (errno == ENOENT) {
-                        /* We have no more paths to search */
-                        if (*path == '\0') {
-                            FREE(opath);
-                            goto error_return;
-                        }
-                    }
-                    /* Ignore bad stats, we just can't find it */
-                    continue;
-                }
-                /* If it's executable, and a regular file, we're done. */
-                if ((sbuffer.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) != 0 &&
-                        (sbuffer.st_mode & S_IFREG) != 0) {
-                    break;	/* out of while(*path) */
-                }
-            }
-            fargv[0] = s;
-            FREE (opath);
-        }
-    } else {		/* Host is NOT local */
-        /* The general thread here is to first create a script on the
-         * remote host using popen().  The script contains shell code to
-         *   1) set up a similar environment to the current one (PATH,...)
-         *   2) exec 'dx -...' 
-         *   3) remove the script from the remote file system.
-         * Then we set up fargv to contain the following: 
-         *    rsh host [ -l user ] /bin/sh /tmp/dx-$host:$pid 
-         */
-
-        if (verbose)
-            fprintf(stderr, "remote\n");
-
-        fargv = (char**)CALLOC(12, sizeof(char*));
-
-        if (fargv == NULL) {
-            ErrorMessage("calloc() error: %s", strerror(errno));
-            goto error_return;
-        }
-
-
-        if (uname(&Uts_Name) < 0) {
-            ErrorMessage("uname() error: %s", strerror(errno));
-            goto error_return;
-        }
-        sprintf(script_name,"/tmp/dx-%s:%d",Uts_Name.nodename,getpid());
-        findx=0;
-        fargv[findx++] = local_rsh_cmd;
-        fargv[findx++] = (char *)host;
-
-        if (user != NULL) {
-            fargv[findx++] = "-l";
-            fargv[findx++] = (char *)user;
-            sprintf(cmd, "%s -c \"%s %s -l %s 'cat > %s' > /dev/null 2>&1\"",
-                    BSH, local_rsh_cmd, host, user, script_name);
-        } else
-            sprintf(cmd, "%s -c \"%s %s 'cat > %s' > /dev/null 2>&1\"",
-                    BSH, local_rsh_cmd, host, script_name);
-
-        fargv[findx++] = BSH;
-        fargv[findx++] = script_name;
-        fargv[findx++] = NULL ;
-
-        fp = popen(cmd,"w");
-        if (!fp) {
-            ErrorMessage("popen() error: %s", strerror(errno));
-            goto error_return;
-        }
-        setbuf(fp,NULL); /* Unbuffered so file is 'immediately' updated */
-
-        for (i = 0; ep[i]; ++i) {
-            /* Environment variables which are NOT passed to remote process */
-            static char *eignore[] = {"HOST=","HOSTNAME=","TZ=","SHELL=", 0};
-            int ignore;
-
-            /* Look for and skip certain environment variables */
-            /* We could do this more quickly elsewhere, but ... */
-            for (ignore=j=0 ; !ignore && eignore[j] ; j++)
-                if (!strncmp(ep[i], eignore[j], STRLEN(eignore[j])))
-                    ignore = 1;
-            if (ignore)
-                continue;
-
-            /*
-             * Write the environment variable to the remote script file 
-             */
-            if ((strncmp(ep[i],"DISPLAY=unix:",STRLEN("DISPLAY=unix:"))==0   ||
-                    strncmp(ep[i],"DISPLAY=localhost:",
-                            STRLEN("DISPLAY=localhost:"))==0 ||
-                    strncmp(ep[i],"DISPLAY=:",    STRLEN("DISPLAY=:")) == 0) &&
-                    (dnum = strchr(ep[i], ':')) != NULL) {
-                fprintf(fp,"DISPLAY='%s%s';export DISPLAY\n",
-                        Uts_Name.nodename,dnum);
-            } else {
-                int k;
-                char evar[256], c;
-                char eval[1024];
-
-                for (j=0 ; ep[i][j] && (ep[i][j] != '=') ; j++)
-                    evar[j] = ep[i][j];
-                evar[j] = '\0';
-                k = j + 1;	/* Skip the '=' sign */
-                for (j=0 ; (c = ep[i][k]) ; k++, j++) {
-                    if (c == '\'') {		/* ' -> '\'' */
-                        /* Value contains a double quote */
-                        eval[j++] = '\'';
-                        eval[j++] = '\\';
-                        eval[j++] = '\'';
-                    }
-                    eval[j] = c;
-                }
-                eval[j] = '\0';
-                fprintf(fp,"%s='%s'; export %s\n", evar, eval, evar);
-            }
-        }
-
-        if (cwd != NULL)
-            fprintf(fp,"cd %s\n",cwd);
-
-        fprintf(fp,"\n(sleep 15; rm -f %s) &\nexec ",script_name);
-        for (i = 0; i < ac; ++i)
-            fprintf(fp, "%s ",av[i]);
-        fprintf(fp,"\n");
-        pclose(fp);
-
-        rep = ep;
-    }
-
-    /* Set up three pipes */
-    if (pipe(in) < 0) {
-        ErrorMessage("pipe(in) error: %s", strerror(errno));
-        goto error_return;
-    }
-    if (pipe(out) < 0) {
-        ErrorMessage("pipe(out) error: %s", strerror(errno));
-        goto error_return;
-    }
-    if (pipe(err) < 0) {
-        ErrorMessage("pipe(err) error: %s", strerror(errno));
-        goto error_return;
-    }
-
-    child = fork();
-    if (child == 0) {
-        if (verbose && cwd != NULL)
-            fprintf(stderr, "cd %s\n", cwd);
-        fflush (stdout);
-        if (verbose)
-            fprintf(stderr, "exec %s\n", fargv[0]);
-        fflush (stdout);
-        if (verbose)
-            for (i = 0; rep[i]; ++i)
-                fprintf(stderr, "envp[%d] = `%s'\n", i, rep[i]);
-        if (verbose)
-            for (i = 0; fargv[i]; ++i)
-                fprintf(stderr, "argv[%d] = `%s'\n", i, fargv[i]);
-        close (in[1]);
-        close (out[0]);
-        close (err[0]);
-        if (dup2(in[0], 0) < 0) {
-            ErrorMessage("dup2() error: %s", strerror(errno));
-            exit(1);
-        }
-        if (dup2(out[1], 1) < 0) {
-            ErrorMessage("dup2() error: %s", strerror(errno));
-            exit(1);
-        }
-        if (dup2(err[1], 2) < 0) {
-            ErrorMessage("dup2() error: %s", strerror(errno));
-            exit(1);
-        }
-
-        if (cwd != NULL && chdir (cwd) < 0) {
-            ErrorMessage("chdir() error: %s", strerror(errno));
-            exit(1);
-        }
-        if (execve(fargv[0], fargv, rep) < 0) {
-            ErrorMessage("execve() error: %s", strerror(errno));
-            exit(1);
-        }
-    } else if (child > 0) {
-        close (in[0]);
-        close (out[1]);
-        close (err[1]);
-        *remin = in[1];
-        *remout = out[0];
-        *remerr = err[0];
-    } else {
-        goto error_return;
-    }
-
-
-    if (fargv != NULL)
-        FREE ((char*)fargv);
-    return (child);
-
-#endif                   // HAVE_SYS_UTSNAME_H
-
-
-#ifdef	OS2
-
-#define BuffSize     1000
-#define HF_STDOUT    1
-
-    if (DXChild::HostIsLocal(host)) {
-        CHAR         LoadError[100];
-        PSZ          Envs;
-        RESULTCODES  ReturnCodes;
-        APIRET       rc;
-        PSZ          ptr;
-        HFILE        hpR, hpW;
-        int          PipeSize=4096;
-        int          NRead, TotRead;
-        char         Buff[BuffSize];
-        HFILE        hfSave = -1;
-        HFILE        hfNew = HF_STDOUT;
-
-
-        rc=DosDupHandle(HF_STDOUT, &hfSave);
-        rc=DosCreatePipe(&hpR, &hpW, PipeSize);
-        rc=DosDupHandle(hpW, &hfNew);
-        *remout = hpR;
-
-        if (verbose)
-            fprintf(stderr, "local\n");
-
-        if (user != NULL)
-            fprintf (stdout, "Different user on local machine ignored\n");
-
-        Envs = 0;
-
-        strcpy(cmd,"CMD.EXE");
-        ptr = &cmd[strlen(cmd)+1];
-        strcpy(ptr,"");
-        for (i=0;i<ac;i++) {
-            if (i==0)
-                strcpy(ptr,"/C");
-            strcat(ptr," ");
-            strcat(ptr,av[i]);
-        }
-        ptr[strlen(ptr)+1]='\0';
-
-        rc = DosExecPgm(LoadError, sizeof(LoadError), EXEC_ASYNC, cmd, Envs,
-                        (PRESULTCODES)&ReturnCodes, "CMD.EXE");
-
-        DosClose(hpW);
-        rc=DosDupHandle(hfSave, &hfNew);
-
-        child = -1;
-        if (rc==0)
-            child = ReturnCodes.codeTerminate;
-        else
-            ErrorMessage("Failure to spawn dx.cmd", "XXXX");
-        return child;
-    } else {
-        return (-1);
-    }
-
-#endif		//	OS2
-
-#ifdef	DXD_WIN
-
     char         args[1000];
     char         exename[255];
 
@@ -652,69 +304,78 @@ DXChild::ConnectTo(const char *host,
     }
 
     Envs = NULL;
+	DXEnvironment dxe;
+	dxe.Setup(ac, av);
 
-    memset(&pInfo, 0, sizeof(pInfo));
-    memset(&sInfo, 0, sizeof(sInfo));
-    memset(&sa,    0, sizeof(sa));
+	int exargc; char **exargv = NULL;
+	exargc = dxe.getExArgs(exargv);
 
-    sa.nLength = sizeof(SECURITY_ATTRIBUTES);	// structure size
-    sa.lpSecurityDescriptor = NULL;		// default descriptor
-    sa.bInheritHandle = true;			// inheritable
+	this->dxexec = new DXExecThread();
+	this->dxexec->StartAsThread(exargc, exargv);
+	for(int i=0; i<exargc; i++)
+		delete [] exargv[i];
+	delete [] exargv;
 
-    bTest = CreatePipe( &(this->hpipeRead),	// reading handle
-                        &(this->hpipeWrite),	// writing handle
-                        &sa,			// lets handles be inherited
-                        0 );			// default buffer size
+    //memset(&pInfo, 0, sizeof(pInfo));
+    //memset(&sInfo, 0, sizeof(sInfo));
+    //memset(&sa,    0, sizeof(sa));
 
-    bTest = DuplicateHandle( GetCurrentProcess( ),
-                             this->hpipeRead,		// original handle
-                             GetCurrentProcess( ),
-                             NULL,			// don't create new handle
-                             0,
-                             false,			// not inheritable
-                             DUPLICATE_SAME_ACCESS );
+    //sa.nLength = sizeof(SECURITY_ATTRIBUTES);	// structure size
+    //sa.lpSecurityDescriptor = NULL;		// default descriptor
+    //sa.bInheritHandle = true;			// inheritable
 
-    sInfo.cb = sizeof(sInfo);
-    sInfo.dwFlags = STARTF_USESTDHANDLES;
-    sInfo.hStdInput = GetStdHandle( STD_INPUT_HANDLE );
-    sInfo.hStdOutput = this->hpipeWrite;
-    sInfo.hStdError  = GetStdHandle( STD_ERROR_HANDLE );
+    //bTest = CreatePipe( &(this->hpipeRead),	// reading handle
+    //                    &(this->hpipeWrite),	// writing handle
+    //                    &sa,			// lets handles be inherited
+    //                    0 );			// default buffer size
 
-    pid = rc = CreateProcess(NULL,
-                             cmd,
-                             NULL,
-                             NULL,
-                             true,
-                             0,
-                             Envs,
-                             NULL,	// CurDir
-                             &sInfo,	// Startup Info
-                             &pInfo	// address of PROCESS_INFORMATION
-                            );
-    if(rc == true)  {
-        CloseHandle(pInfo.hThread);	// discard new thread handle
-        pid = pInfo.dwProcessId;
-        rc = 0;
-        bTest = (int) CreateThread(NULL, 0,
-                                   (LPTHREAD_START_ROUTINE) ClearExecMessages,
-                                   (LPVOID) this->hpipeRead, 0, &ThrdTID);
-        SetThreadPriority((LPVOID) &ThrdTID, THREAD_PRIORITY_BELOW_NORMAL);
-    } else {
-        rc = 1;
-        pid = -1;
-    }
+    //bTest = DuplicateHandle( GetCurrentProcess( ),
+    //                         this->hpipeRead,		// original handle
+    //                         GetCurrentProcess( ),
+    //                         NULL,			// don't create new handle
+    //                         0,
+    //                         false,			// not inheritable
+    //                         DUPLICATE_SAME_ACCESS );
 
-    *remout = -1;
-    child = -1;
+    //sInfo.cb = sizeof(sInfo);
+    //sInfo.dwFlags = STARTF_USESTDHANDLES;
+    //sInfo.hStdInput = GetStdHandle( STD_INPUT_HANDLE );
+    //sInfo.hStdOutput = this->hpipeWrite;
+    //sInfo.hStdError  = GetStdHandle( STD_ERROR_HANDLE );
 
-    if (rc == 0)
-        child = pid;
-    else
-        ErrorMessage("Failure to spawn dx child process");
+    //pid = rc = CreateProcess(NULL,
+    //                         cmd,
+    //                         NULL,
+    //                         NULL,
+    //                         true,
+    //                         0,
+    //                         Envs,
+    //                         NULL,	// CurDir
+    //                         &sInfo,	// Startup Info
+    //                         &pInfo	// address of PROCESS_INFORMATION
+    //                        );
+    //if(rc == true)  {
+    //    CloseHandle(pInfo.hThread);	// discard new thread handle
+    //    pid = pInfo.dwProcessId;
+    //    rc = 0;
+    //    bTest = (int) CreateThread(NULL, 0,
+    //                               (LPTHREAD_START_ROUTINE) ClearExecMessages,
+    //                               (LPVOID) this->hpipeRead, 0, &ThrdTID);
+    //    SetThreadPriority((LPVOID) &ThrdTID, THREAD_PRIORITY_BELOW_NORMAL);
+    //} else {
+    //    rc = 1;
+    //    pid = -1;
+    //}
+
+    //*remout = -1;
+    //child = -1;
+
+    //if (rc == 0)
+    //    child = pid;
+    //else
+    //    ErrorMessage("Failure to spawn dx child process");
 
     return child;
-
-#endif		//	DXD_WIN
 
 error_return:
                 sprintf(errstr,"Could not connect using '%s'\n",fargv[0]);
@@ -772,97 +433,91 @@ DXChild::StartExecutive(const char* host,
                         int   block,
                         char **rstringParam)
 {
-    extern char **environ;
-    char **av = NULL;
-    char **t;
-    int	 ac = 0;
-    int  i, j, k;
-    int result;
-    static char rstring[RSIZE];
+	extern char **environ;
+	char **av = NULL;
+	char **t;
+	int	 ac = 0;
+	int  i, j, k;
+	int result;
+	static char rstring[RSIZE];
 
-    rstring[0] = '\0';
-    result = -1;
-    *child = -1;
+	rstring[0] = '\0';
+	result = -1;
+	*child = -1;
 
-    if (verbose) {
-        fprintf(stderr, "Connect to `%s'\n", host);
-        if (user)
-            fprintf(stderr, "tas `%s'\n", user);
-        if (cwd)
-            fprintf(stderr, "tin `%s'\n", cwd);
-        fprintf(stderr, "trunning `%s'\n", cmd);
-    }
+	if (verbose) {
+		fprintf(stderr, "Connect to `%s'\n", host);
+		if (user)
+			fprintf(stderr, "tas `%s'\n", user);
+		if (cwd)
+			fprintf(stderr, "tin `%s'\n", cwd);
+		fprintf(stderr, "trunning `%s'\n", cmd);
+	}
 
-    /* Turn the optional cmd into an ac/av pair */
-    av = (char **)CALLOC(1, sizeof (char*));
-    if (av == NULL) {
-        ErrorMessage("calloc() error: %s", strerror(errno));
-        goto error_return;
-    }
-    for (ac = 0; *cmd; ++ac) {
-        t = (char**)REALLOC ((char*)av, (ac + 1) * sizeof (char*));
-        if (t == NULL) {
-            ErrorMessage("realloc() error: %s", strerror(errno));
-            goto error_return;
-        } else
-            av = t;
-        /* Skip leading whitespace */
-        cmd += strspn(cmd, " \t");
-        
-        i = 0; 
-        while(cmd[i] != ' ' && cmd[i] != '\0') {
-            if(cmd[i] == '"') {
-            	i++;
-            	while(cmd[i] != '"' && cmd[i] != '\0') {
-            		i++;
-            	}
-            }
-            if(cmd[i] != '\0')
-            	i++;
-        }
-            	
-            ;
-        av[ac] = (char *)CALLOC((i + 1), sizeof (char));
-        if (av[ac] == NULL)
-            goto error_return;
+	/* Turn the optional cmd into an ac/av pair */
+	av = (char **)CALLOC(1, sizeof (char*));
+	if (av == NULL) {
+		ErrorMessage("calloc() error: %s", strerror(errno));
+		goto error_return;
+	}
+	for (ac = 0; *cmd; ++ac) {
+		t = (char**)REALLOC ((char*)av, (ac + 1) * sizeof (char*));
+		if (t == NULL) {
+			ErrorMessage("realloc() error: %s", strerror(errno));
+			goto error_return;
+		} else
+			av = t;
+		/* Skip leading whitespace */
+		cmd += strspn(cmd, " \t");
+
+		i = 0; 
+		while(cmd[i] != ' ' && cmd[i] != '\0') {
+			if(cmd[i] == '"') {
+				i++;
+				while(cmd[i] != '"' && cmd[i] != '\0') {
+					i++;
+				}
+			}
+			if(cmd[i] != '\0')
+				i++;
+		}
+
+		;
+		av[ac] = (char *)CALLOC((i + 1), sizeof (char));
+		if (av[ac] == NULL)
+			goto error_return;
 
 		/* Now copy the string into the argv without quotes */
-        for (j = 0, k = 0; j<i; ++j, ++cmd)
-        	if(*cmd != '"')
-                av[ac][k++] = *cmd;
-        av[ac][k] = '\0';
-    }
+		for (j = 0, k = 0; j<i; ++j, ++cmd)
+			if(*cmd != '"')
+				av[ac][k++] = *cmd;
+		av[ac][k] = '\0';
+	}
 
-    *child =DXChild::ConnectTo(host, user, cwd, ac, av, environ, in, out, err,
-                               rstring);
+	*child =DXChild::ConnectTo(host, user, cwd, ac, av, environ, in, out, err,
+		rstring);
 
 
-    if (!block) {
-#ifndef DXD_WIN
-        result = (*child < 0);
-#else
-
-        result = (*child == -1);
-#endif
-
-        goto error_return;
-    }
+	if (!block) {
+		result = (*child == -1);
+		goto error_return;
+	}
 
 
 error_return:
-                if (av) {
-                    for (i = 0; i < ac; ++i)
-                        if (av[i] != NULL)
-                            FREE (av[i]);
-                    FREE ((char*)av);
-                }
-                /* remove the \n at the end of the string */
-                char *p = strrchr(rstring,'\n');
-    if (p)
-        *p = '\0';
-    *rstringParam = rstring;
+	if (av) {
+		for (i = 0; i < ac; ++i)
+			if (av[i] != NULL)
+				FREE (av[i]);
+		FREE ((char*)av);
+	}
+	/* remove the \n at the end of the string */
+	char *p = strrchr(rstring,'\n');
+	if (p)
+		*p = '\0';
+	*rstringParam = rstring;
 
-    return (result);
+	return (result);
 }
 
 //extern "C" void DXChild_OutQueuedInputHandler(XtPointer  clientData,
@@ -1016,74 +671,50 @@ DXChild::DXChild(char *host,
                  char *user,
                  char *cwd)
 {
-    int port = 0;
-    char *s = NULL;
+	int port = 0;
+	char *s = NULL;
 
-    this->lineSize = 1000;
-    this->outLine = new char[this->lineSize + 2];
-    this->errLine = new char[this->lineSize + 2];
-    *this->outLine = '\0';
-    *this->errLine = '\0';
-    //this->deletion_wpid = NUL(XtWorkProcId);
-    this->input_handlers_stalled = false;
+	this->lineSize = 1000;
+	this->outLine = new char[this->lineSize + 2];
+	this->errLine = new char[this->lineSize + 2];
+	*this->outLine = '\0';
+	*this->errLine = '\0';
+	//this->deletion_wpid = NUL(XtWorkProcId);
+	this->input_handlers_stalled = false;
+	this->dxexec = NULL;
 
-    this->server = DuplicateString(host);
+	this->server = DuplicateString(host);
 
-    int result = StartExecutive(this->server,
-                                user,
-                                cwd,
-                                cmd,
-                                &this->in,
-                                &this->out,
-                                &this->err,
-                                &port,
-                                &this->child,
-                                block,
-                                &s);
-    if (!block && result < 0) {
-        this->queued = 1;
-#if !defined(DXD_WIN) && !defined(OS2)
+	int result = StartExecutive(this->server,
+		user,
+		cwd,
+		cmd,
+		&this->in,
+		&this->out,
+		&this->err,
+		&port,
+		&this->child,
+		block,
+		&s);
 
-        this->outId = XtAppAddInput(theApplication->getApplicationContext(),
-                                    this->out,
-                                    (XtPointer)XtInputReadMask,
-                                    DXChild_OutQueuedInputHandler,
-                                    (XtPointer)this);
-        this->errId = XtAppAddInput(theApplication->getApplicationContext(),
-                                    this->err,
-                                    (XtPointer)XtInputReadMask,
-                                    DXChild_ErrQueuedInputHandler,
-                                    (XtPointer)this);
-#endif                          //SMH
+	if (!block && result < 0) {
+		this->queued = 1;
 
-    } else if (result == 0) {
-        this->queued = 0;
-#if !defined(DXD_WIN) && !defined(OS2)
+	} else if (result == 0) {
+		this->queued = 0;
+		//	if (block)
+		//	{
+		//	    theDXApplication->connectToServer(port, this);
+		//	}
+	} else {
+		this->queued = 0;
+	}
 
-        this->outId = XtAppAddInput(theApplication->getApplicationContext(),
-                                    this->out,
-                                    (XtPointer)XtInputReadMask,
-                                    DXChild_OutInputHandler,
-                                    (XtPointer)this);
-        this->errId = XtAppAddInput(theApplication->getApplicationContext(),
-                                    this->err,
-                                    (XtPointer)XtInputReadMask,
-                                    DXChild_ErrInputHandler,
-                                    (XtPointer)this);
-#endif                          //SMH
-        //	if (block)
-        //	{
-        //	    theDXApplication->connectToServer(port, this);
-        //	}
-    } else {
-        this->queued = 0;
-    }
-
-    if (!IsBlankString(s)) {
-        this->errorString = DuplicateString(s);
-    } else {
-        this->errorString = NULL;
-    }
+	if (!IsBlankString(s)) {
+		this->errorString = DuplicateString(s);
+	} else {
+		this->errorString = NULL;
+	}
 }
 
 
@@ -1109,16 +740,12 @@ DXChild::~DXChild()
         close(this->in);
     }
 
-    if (this->child > 1) {
-#if defined(DXD_WIN)
-        TerminateProcess((HANDLE)this->child,-1);
-#else
+	if(this->dxexec)
+		this->dxexec->Terminate();
 
-        kill(this->child, SIGTERM);
-        wait(0);
-#endif
-
-    }
+  //  if (this->child > 1) {
+		//TerminateProcess((HANDLE)this->child,-1);
+  //  }
 
     delete this->server;
     if (this->errorString != NULL)
@@ -1237,53 +864,59 @@ DXChild::waitForConnection()
     int iRet, iLoop = 0;
     while (result==0) {
 
-        iLoop = 0;
-        while(1) {
-            iRet = PeekNamedPipe(this->hpipeRead, rdbuffer,
-                                 sizeof(rdbuffer), &dwordTmp,
-                                 NULL, NULL);
-            if(iRet && dwordTmp > 0)
-                break;
-            Sleep(10);
-            iLoop++;
-            if(iLoop > 1000) {
-                ErrorMessage("read() error: %s", strerror(errno));
-                return -1;
-            }
-        }
+        //iLoop = 0;
+        //while(1) {
+        //    iRet = PeekNamedPipe(this->hpipeRead, rdbuffer,
+        //                         sizeof(rdbuffer), &dwordTmp,
+        //                         NULL, NULL);
+        //    if(iRet && dwordTmp > 0)
+        //        break;
+        //    Sleep(10);
+        //    iLoop++;
+        //    if(iLoop > 1000) {
+        //        ErrorMessage("read() error: %s", strerror(errno));
+        //        return -1;
+        //    }
+        //}
 
 
-        sts = ReadFile(this->hpipeRead, // handle of file to read
-                       rdbuffer,	// address of buffer that receives data
-                       sizeof(rdbuffer),	// number of bytes to read
-                       &dwordTmp,	// address of number of bytes read
-                       NULL 	// address of structure for data
-                      );
-        sts = dwordTmp;	//	strlen(rdbuffer);
-        rdbuffer[sts] = '\0';
-        theDXApplication->getMessageWindow()->addInformation(rdbuffer);
-        fprintf(stderr, "========= %s\n", rdbuffer);
-        if (sts >= 0) {
-            DXChild::MakeLine(rstring, rdbuffer);
-            if ((s = strstr(rdbuffer, "host = ")) != NULL) {
-                char buf[256];
-                sscanf(s, "host = %s", buf);
-                theDXApplication->setServer(buf);
-                this->setServer(buf);
-            }
-            if ((s = strstr(rdbuffer, "port = ")) != NULL) {
-                sscanf (s, "port = %d", &port);
+        //sts = ReadFile(this->hpipeRead, // handle of file to read
+        //               rdbuffer,	// address of buffer that receives data
+        //               sizeof(rdbuffer),	// number of bytes to read
+        //               &dwordTmp,	// address of number of bytes read
+        //               NULL 	// address of structure for data
+        //              );
+        //sts = ReadFile(stdout, // handle of file to read
+        //               rdbuffer,	// address of buffer that receives data
+        //               sizeof(rdbuffer),	// number of bytes to read
+        //               &dwordTmp,	// address of number of bytes read
+        //               NULL 	// address of structure for data
+        //              );
+        //sts = dwordTmp;	//	strlen(rdbuffer);
+        //rdbuffer[sts] = '\0';
+        //theDXApplication->getMessageWindow()->addInformation(rdbuffer);
+        //fprintf(stderr, "========= %s\n", rdbuffer);
+        //if (sts >= 0) {
+        //    DXChild::MakeLine(rstring, rdbuffer);
+        //    if ((s = strstr(rdbuffer, "host = ")) != NULL) {
+        //        char buf[256];
+        //        sscanf(s, "host = %s", buf);
+        //        theDXApplication->setServer(buf);
+        //        this->setServer(buf);
+        //    }
+        //    if ((s = strstr(rdbuffer, "port = ")) != NULL) {
+        //        sscanf (s, "port = %d", &port);
                 if (this->isQueued())
                     this->unQueue();
-                theDXApplication->connectToServer(port, this);
+                theDXApplication->connectToServer(1900, this);
                 return 0;
-            } else if (strstr(rdbuffer, "Execution has been queued")   ||
-                       strstr(rdbuffer, "Server appears to be in use") ||
-                       strstr(rdbuffer, "rror"))           // suits added
-            {
-                return 1;
-            }
-        }
+            //} else if (strstr(rdbuffer, "Execution has been queued")   ||
+            //           strstr(rdbuffer, "Server appears to be in use") ||
+            //           strstr(rdbuffer, "rror"))           // suits added
+            //{
+            //    return 1;
+            //}
+        //}
     }  // while
 
 #endif	//	if DXD_WIN

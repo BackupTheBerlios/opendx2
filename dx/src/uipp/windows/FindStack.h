@@ -26,12 +26,12 @@
 //
 // FindStack class definition:
 //				
-class FindStack : protected Stack 
+class FindStack : protected dxc_Stack 
 {
 
   public:
 
-    FindStack() : Stack() { };
+    FindStack() : dxc_Stack() { };
 
     ~FindStack() { this->clear(); };
 
@@ -41,7 +41,7 @@ class FindStack : protected Stack
     
     void clear();
 
-    int getSize() { return this->Stack::getSize(); }
+    int getSize() { return this->dxc_Stack::getSize(); }
 
     const char* getClassName()
     {

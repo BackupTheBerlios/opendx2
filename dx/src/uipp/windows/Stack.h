@@ -26,14 +26,14 @@
 //
 // Stack class definition:
 //				
-class Stack : protected List
+class dxc_Stack : protected List
 {
 
   public:
 
-    Stack() { };
+    dxc_Stack() { };
 
-    ~Stack() { };
+    ~dxc_Stack() { };
 
     void push(const void *datum);
 

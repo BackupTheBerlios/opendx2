@@ -170,9 +170,9 @@ class ImageNode : public DisplayNode
     virtual void setTitle(const char *title, bool fromServer = false);
     virtual const char *getTitle();
 
-    virtual Type setInputValue(int index,
+    virtual dx_Type setInputValue(int index,
 		       const char *value,
-		       Type t = DXType::UndefinedType,
+		       dx_Type t = DXType::UndefinedType,
 		       bool send = true);
     bool sendValues(bool ignoreDirty = true);
     virtual bool	printValues(FILE *f, const char *prefix, PrintType dest);
@@ -348,8 +348,8 @@ class ImageNode : public DisplayNode
     virtual void setDefaultCfgState();
 
 
-    virtual Type setInputSetValue(int index, const char *value,
-				Type type = DXType::UndefinedType,
+    virtual dx_Type setInputSetValue(int index, const char *value,
+				dx_Type type = DXType::UndefinedType,
 				bool send = true);
     
     bool isAutoAxesEnableConnected();

@@ -12,6 +12,11 @@
 #include <windows.h>
 #include <winsock.h>
 
+#using <mscorlib.dll>
+using namespace System;
+using namespace System::Threading;
+using namespace System::Windows::Forms;
+
 #include "DXStrings.h"
 
 #include "PacketIF.h"
@@ -212,22 +217,23 @@ int _packet_type_count = sizeof(PacketIF::PacketTypes) /
 //
 void PacketIF::sendPacket(int type, int packetId, const char *data, int length)
 {
-    // checking the queue size protects us in the case that we've queued
-    // something up but in the meantime, we've emptied the input side
-    // of the socket.
-    if ((this->isSocketInputReady())||(this->output_queue.getSize() > 0)) {
-	//
-	// Record our information and queue writing it (via a workproc)
-	//
-	void* item = new QueuedPacket(type, packetId, data, length);
-	this->output_queue.appendElement (item);
-	if (this->output_queue_wpid == 0)
-	    //this->output_queue_wpid = XtAppAddWorkProc (
-		//theApplication->getApplicationContext(),
-		//(XtWorkProc)PacketIF_QueuedPacketWP, this);
-	return ;
-    }
-    this->_sendPacket(type, packetId, data, length);
+	// checking the queue size protects us in the case that we've queued
+	// something up but in the meantime, we've emptied the input side
+	// of the socket.
+	if ((this->isSocketInputReady())||(this->output_queue.getSize() > 0)) {
+		//
+		// Record our information and queue writing it (via a workproc)
+		//
+		void* item = new QueuedPacket(type, packetId, data, length);
+		this->output_queue.appendElement (item);
+		this->QueuedPacketWP();
+		//if (this->output_queue_wpid == 0)
+			//this->output_queue_wpid = XtAppAddWorkProc (
+			//theApplication->getApplicationContext(),
+			//(XtWorkProc)PacketIF_QueuedPacketWP, this);
+			return ;
+	}
+	this->_sendPacket(type, packetId, data, length);
 }
 
 
@@ -326,7 +332,8 @@ PacketIF::PacketIF(const char *host, int port, bool local, bool asClient)
     this->error = false;
     this->deferPacketHandling = false;
     this->stream = NULL;
-//    this->inputHandlerId = 0;
+    this->deleting = false;
+	this->packetSender = false;
 //    this->workProcTimerId = 0;  
 //    this->workProcId = 0;  
     this->line = (char *)MALLOC(this->alloc_line_length = 2000);
@@ -345,7 +352,7 @@ PacketIF::PacketIF(const char *host, int port, bool local, bool asClient)
     else
         this->connectAsServer(port);
 
-    this->output_queue_wpid = 0;
+    //this->output_queue_wpid = 0;
 
 
     if (!this->error) 
@@ -370,7 +377,11 @@ PacketIF::PacketIF(const char *host, int port, bool local, bool asClient)
 
 PacketIF::~PacketIF()
 {
-    // see comment in PacketIF.h
+	// This will message all the threads to exit before p disappears.
+	this->deleting = true;
+	Thread::Sleep(1000);
+
+	// see comment in PacketIF.h
     (*this->wpClientData) = NULL;
 
     //
@@ -386,7 +397,6 @@ PacketIF::~PacketIF()
 #endif
     close(this->socket);
  //   if (this->inputHandlerId != 0)
-	//this->removeInputHandler();
 
     /*
      * Reset the socket info.
@@ -405,9 +415,8 @@ PacketIF::~PacketIF()
 	delete h;
     }
 
-
-    this->removeWorkProc();
-    this->removeWorkProcTimer();
+    //this->removeWorkProc();
+    //this->removeWorkProcTimer();
 
 
 #if 0
@@ -428,12 +437,12 @@ PacketIF::~PacketIF()
     _line_length = 0;
 #endif
 
-    if (this->output_queue_wpid)
+    //if (this->output_queue_wpid)
 	//XtRemoveWorkProc(this->output_queue_wpid);
-    ListIterator li(this->output_queue);
-    QueuedPacket* qp;
- //   while (qp = (QueuedPacket*)li.getNext()) 
-	//delete qp;
+	ListIterator li(this->output_queue);
+	QueuedPacket* qp;
+	while (qp = (QueuedPacket*)li.getNext()) 
+		delete qp;
 }
 
 void PacketIF::initializePacketIO()
@@ -474,8 +483,8 @@ void PacketIF::initializePacketIO()
 		    (void*)this);
 }
 
-void PacketIF::installWorkProcTimer()
-{
+//void PacketIF::installWorkProcTimer()
+//{
     //if (this->workProcTimerId)
     //    return;
 
@@ -484,14 +493,14 @@ void PacketIF::installWorkProcTimer()
     //        1000,       // 1 second
     //        (XtTimerCallbackProc)PacketIF_InputIdleTimerTCP,
     //        (XtPointer)this->wpClientData);
-}
-void PacketIF::removeWorkProcTimer()
-{
+//}
+//void PacketIF::removeWorkProcTimer()
+//{
     //if (this->workProcTimerId) {
     //    XtRemoveTimeOut(this->workProcTimerId);
     //    this->workProcTimerId = 0;
     //}
-}
+//}
 //extern "C" void PacketIF_InputIdleTimerTCP(XtPointer clientData,
 //                                                XtIntervalId *id)
 //{
@@ -503,38 +512,85 @@ void PacketIF::removeWorkProcTimer()
 //    if (p->deferPacketHandling)
 //        PacketIF_InputIdleWP(clientData);
 //}
-void PacketIF::installWorkProc()
-{
-    //if (this->workProcId)
-    //    return;
-
-    //this->workProcId = XtAppAddWorkProc(
-    //        theApplication->getApplicationContext(),
-    //        (XtWorkProc)PacketIF_InputIdleWP,
-    //        (XtPointer)this->wpClientData);
-
-}
-void PacketIF::removeWorkProc()
-{
+//void PacketIF::installWorkProc()
+//{
+//    if (this->workProcId)
+//        return;
+//
+//    this->workProcId = XtAppAddWorkProc(
+//            theApplication->getApplicationContext(),
+//            (XtWorkProc)PacketIF_InputIdleWP,
+//            (XtPointer)this->wpClientData);
+//
+//}
+//void PacketIF::removeWorkProc()
+//{
     //if (this->workProcId) {
     //    XtRemoveWorkProc(this->workProcId);
     //    this->workProcId = 0;
     //}
-}
-bool PacketIF::sendQueuedPackets()
+//}
+
+// So instead of sending via a XtAppAddWorkProc, we'll create a thread
+// that can just process the queue until finished and then stop.
+
+__gc class ThreadSender
 {
-    if (this->output_queue.getSize() == 0) {
-	this->output_queue_wpid = 0;
-	return true;// Yes, remove me from the list
-    }
+private:
+	PacketIF * p;
 
-    QueuedPacket* qp = (QueuedPacket*)this->output_queue.getElement(1);
-    this->output_queue.deleteElement(1);
-    qp->send(this);
-    delete qp;
+public:
+	ThreadSender(PacketIF *in)
+	{
+		p = in;
+	}
 
-    return false; //No, don't remove me.  Keep on calling me.
+	void ThreadSendProc() {
+		while(p->output_queue.getSize() > 0 && !p->deleting) {
+			QueuedPacket *qp = (QueuedPacket*)p->output_queue.getElement(1);
+			p->output_queue.deleteElement(1);
+			qp->send(p);
+			delete qp;
+		}
+		// Once finished, the thread then just should terminate.
+		// Letting PacketIF know that it is gone. --probably needs to lock.
+		p->packetSender = false;
+	}
+};
+
+void PacketIF::QueuedPacketWP() {
+
+	// Should probably lock on this in case two come in at the same time.
+	if(this->packetSender)
+		return;
+
+	this->packetSender = true;
+
+	ThreadSender *ts = new ThreadSender(this);
+
+	System::Threading::Thread * t = new System::Threading::Thread(
+		new System::Threading::ThreadStart(ts, &ThreadSender::ThreadSendProc));
+	t->Priority = ThreadPriority::BelowNormal;
+	t->IsBackground = true;
+	t->Name = S"SendPackets";
+	t->Start();
 }
+
+//
+//bool PacketIF::sendQueuedPackets()
+//{
+//	if (this->output_queue.getSize() == 0) {
+//		this->output_queue_wpid = 0;
+//		return true;// Yes, remove me from the list
+//	}
+//
+//	QueuedPacket* qp = (QueuedPacket*)this->output_queue.getElement(1);
+//	this->output_queue.deleteElement(1);
+//	qp->send(this);
+//	delete qp;
+//
+//	return false; //No, don't remove me.  Keep on calling me.
+//}
 
 //Boolean PacketIF_QueuedPacketWP(XtPointer clientData)
 //{
@@ -542,61 +598,60 @@ bool PacketIF::sendQueuedPackets()
 //    return p->sendQueuedPackets();
 //}
 
-//Boolean PacketIF_InputIdleWP(XtPointer clientData)
-//{
-//    PacketIF *p = *(PacketIF**)clientData;
-//    if (! p)
-//	return True;
-//
-//    //
-//    // Check to see if message handling is stalled.  If so, then
-//    //
-//    //
-//    if (p->isPacketHandlingStalled()) {
-//	ASSERT(p->stallingWorker);
-//	ASSERT(p->deferPacketHandling);
-//	if (p->stallingWorker(p->stallingWorkerData)) {
-//	    p->stallingWorker = NULL;
-//	    p->deferPacketHandling = false;
-//	    p->packetReceive(false); // Process read()'d but unhandled packets 
-//	} 
-//    } else
-//	p->deferPacketHandling = false;
-//
-//    bool r = !p->deferPacketHandling;
-//
-//    if (r)
-//        p->workProcId = 0;   // Xt will be removing it.
-//
-//    //
-//    // We have one workProc for the queued packets that we want
-//    // to send to the exec.  We have another workProc for a
-//    // DXLink connection.  The DXLink workProc busy-waits
-//    // until it finds out that an execution has completed.  If
-//    // we have queued output for the exec, then we better make
-//    // sure that it gets sent before we busy-wait.  Otherwise,
-//    // we might actually be sitting on the command we want to
-//    // send to the exec to make it start executing in the first
-//    // place.
-//    //
-//    // Here, pif might/might not be the same as p.  But since we
-//    // have 2 workProcs installed at the same time, we can't be
-//    // sure which will be called and which will be starved.  Another
-//    // way to handle this case would be to force a call to 
-//    // other workProcs also, but I don't think there is a way to
-//    // do that.  So, really what I'm doing here is to ensure that
-//    // if this workProc gets called, then the effect is the about
-//    // the same as if both workProcs were called.  The "normal"
-//    // Xt behavior for workProcs is to keep calling one until
-//    // it removes itself, and only then start calling the other.
-//    //
-//    PacketIF* pif = (PacketIF*)theDXApplication->getPacketIF();
-//    if (pif->output_queue.getSize() != 0) {
-//	pif->sendQueuedPackets();
-//    }
-//    
-//    return r;
-//}
+bool PacketIF::InputIdleWP()
+{
+	if (! this)
+		return true;
+
+	//
+	// Check to see if message handling is stalled.  If so, then
+	//
+	//
+	if (this->isPacketHandlingStalled()) {
+		ASSERT(this->stallingWorker);
+		ASSERT(this->deferPacketHandling);
+		if (this->stallingWorker(this->stallingWorkerData)) {
+			this->stallingWorker = NULL;
+			this->deferPacketHandling = false;
+			this->packetReceive(false); // Process read()'d but unhandled packets 
+		} 
+	} else
+		this->deferPacketHandling = false;
+
+	bool r = !this->deferPacketHandling;
+
+	//if (r)
+	//	this->workProcId = 0;   // Xt will be removing it.
+
+	//
+	// We have one workProc for the queued packets that we want
+	// to send to the exec.  We have another workProc for a
+	// DXLink connection.  The DXLink workProc busy-waits
+	// until it finds out that an execution has completed.  If
+	// we have queued output for the exec, then we better make
+	// sure that it gets sent before we busy-wait.  Otherwise,
+	// we might actually be sitting on the command we want to
+	// send to the exec to make it start executing in the first
+	// place.
+	//
+	// Here, pif might/might not be the same as p.  But since we
+	// have 2 workProcs installed at the same time, we can't be
+	// sure which will be called and which will be starved.  Another
+	// way to handle this case would be to force a call to 
+	// other workProcs also, but I don't think there is a way to
+	// do that.  So, really what I'm doing here is to ensure that
+	// if this workProc gets called, then the effect is the about
+	// the same as if both workProcs were called.  The "normal"
+	// Xt behavior for workProcs is to keep calling one until
+	// it removes itself, and only then start calling the other.
+	//
+	PacketIF* pif = (PacketIF*)theDXApplication->getPacketIF();
+	if (pif->output_queue.getSize() != 0) {
+		pif->QueuedPacketWP();
+	}
+
+	return r;
+}
 
 
 //
@@ -623,50 +678,43 @@ bool PacketIF::sendQueuedPackets()
 // thereby forcing the input handler to periodically handle packets,
 // regardless of the event stream..
 //
-//extern "C" void PacketIF_ProcessSocketInputICB(XtPointer    clientData,
-//				    int*       /* socket */,
-//				    XtInputId* /* id */)
-//{
-//    PacketIF *p = (PacketIF *)clientData;
-//
-//    ASSERT(p);
-//
-//    if (p->deferPacketHandling) {
-//        if (!p->workProcTimerId)
-//            p->installWorkProcTimer();
-//        return;
-//    }
-//
-//    if (p->stream == NULL)
-//	return;
-//
-//    /*
-//     * Basically, we hand over the the processing of the socket input
-//     * completely over to the packet handling routine....
-//     */
-//    p->packetReceive();
-//
-//    /*
-//     * If the connection has been severed, handle the error.  If someone else
-//     * handled the error, we're done.
-//     */
-//    if (p->stream == NULL)
-//	return;
-//    if (p->error)
-//    {
-//	p->handleStreamError(errno,"(XtInputCallbackProc)PacketIF_ProcessSocketInputICB"); 
-//	p->deferPacketHandling = false;
-//    }
-//    else
-//    {
-//	p->deferPacketHandling = true;
-//	p->installWorkProc();
-//    }
-//}
-//
+void PacketIF::ProcessSocketInputICB()
+{
+	//PacketIF *p = (PacketIF *)clientData;
 
+	//if (this->deferPacketHandling) {
+	//	if (!this->workProcTimerId)
+	//		this->installWorkProcTimer();
+	//	return;
+	//}
 
+	if (this->stream == NULL)
+		return;
 
+	/*
+	* Basically, we hand over the the processing of the socket input
+	* completely over to the packet handling routine....
+	*/
+	this->packetReceive();
+
+	/*
+	* If the connection has been severed, handle the error.  If someone else
+	* handled the error, we're done.
+	*/
+	if (this->stream == NULL)
+		return;
+
+	if (this->error)
+	{
+		this->handleStreamError(errno,"ProcessSocketInputICB"); 
+		this->deferPacketHandling = false;
+	}
+	else
+	{
+		this->deferPacketHandling = true;
+		this->InputIdleWP();
+	}
+}
 
 
 /*****************************************************************************/
@@ -677,46 +725,46 @@ bool PacketIF::sendQueuedPackets()
 
 void
 PacketIF::setHandler(int                     type,
-		       PacketHandlerCallback callback,
-		       void                   *clientData,
-		       const char	      *matchString)
+					 PacketHandlerCallback callback,
+					 void                   *clientData,
+					 const char	      *matchString)
 {
-    PacketHandler *p;
+	PacketHandler *p;
 
-    if (clientData == NULL)
-        fprintf(stderr, "null client data\n");
-	
-    /*
-     * See if the handler is already in the queue.
-     */
-    ListIterator li(this->handlers);
-    for ( ; (p = (PacketHandler*)li.getNext()); )
-	if (p->getType() == type && p->match(matchString))
-	    break;
-    if (callback == NULL)
-    {
-	if (p)
+	if (clientData == NULL)
+		fprintf(stderr, "null client data\n");
+
+	/*
+	* See if the handler is already in the queue.
+	*/
+	ListIterator li(this->handlers);
+	for ( ; (p = (PacketHandler*)li.getNext()); )
+		if (p->getType() == type && p->match(matchString))
+			break;
+	if (callback == NULL)
 	{
-	    this->handlers.deleteElement(li.getPosition() - 1);
-	    delete p;
-	}
-    }
-    else
-    {
-	PacketHandler *h = new PacketHandler(true,
-						 type,
-						 0,
-						 callback,
-						 clientData,
-						 matchString);
-	if (p)
-	{
-	    this->handlers.replaceElement((void *)h, li.getPosition() - 1);
-	    delete p;
+		if (p)
+		{
+			this->handlers.deleteElement(li.getPosition() - 1);
+			delete p;
+		}
 	}
 	else
-	    this->handlers.insertElement((void *)h, 1);
-    }
+	{
+		PacketHandler *h = new PacketHandler(true,
+			type,
+			0,
+			callback,
+			clientData,
+			matchString);
+		if (p)
+		{
+			this->handlers.replaceElement((void *)h, li.getPosition() - 1);
+			delete p;
+		}
+		else
+			this->handlers.insertElement((void *)h, 1);
+	}
 }
 
 bool PacketIF::isSocketInputReady()
@@ -748,22 +796,23 @@ bool PacketIF::isSocketInputReady()
 
 void PacketIF::sendBytes(const char *string)
 {
-    // checking the queue size protects us in the case that we've queued
-    // something up but in the meantime, we've emptied the input side
-    // of the socket.
-    if ((this->isSocketInputReady())||(this->output_queue.getSize() > 0)) {
-	//
-	// Record our information and queue writing it (via a workproc)
-	//
-	void* item = new QueuedBytes(string, STRLEN(string));
-	this->output_queue.appendElement (item);
-	if (this->output_queue_wpid == 0)
-	 //   this->output_queue_wpid = XtAppAddWorkProc (
+	// checking the queue size protects us in the case that we've queued
+	// something up but in the meantime, we've emptied the input side
+	// of the socket.
+	if ((this->isSocketInputReady())||(this->output_queue.getSize() > 0)) {
+		//
+		// Record our information and queue writing it (via a workproc)
+		//
+		void* item = new QueuedBytes(string, STRLEN(string));
+		this->output_queue.appendElement (item);
+		this->QueuedPacketWP();
+		//if (this->output_queue_wpid == 0)
+		//   this->output_queue_wpid = XtAppAddWorkProc (
 		//theApplication->getApplicationContext(),
 		//(XtWorkProc)PacketIF_QueuedPacketWP, this);
-	return ;
-    }
-    this->_sendBytes(string);
+		return ;
+	}
+	this->_sendBytes(string);
 }
 
 void PacketIF::_sendBytes(const char* string)
@@ -792,60 +841,61 @@ void PacketIF::_sendBytes(const char* string)
 
 void PacketIF::sendImmediate(const char *string)
 {
-    // checking the queue size protects us in the case that we've queued
-    // something up but in the meantime, we've emptied the input side
-    // of the socket.
-    if ((this->isSocketInputReady())||(this->output_queue.getSize() > 0)) {
-	//
-	// Record our information and queue writing it (via a workproc)
-	//
-	void* item = new QueuedImmediate(string, STRLEN(string));
-	this->output_queue.appendElement (item);
-	if (this->output_queue_wpid == 0)
-	 //   this->output_queue_wpid = XtAppAddWorkProc (
+	// checking the queue size protects us in the case that we've queued
+	// something up but in the meantime, we've emptied the input side
+	// of the socket.
+	if ((this->isSocketInputReady())||(this->output_queue.getSize() > 0)) {
+		//
+		// Record our information and queue writing it (via a workproc)
+		//
+		void* item = new QueuedImmediate(string, STRLEN(string));
+		this->output_queue.appendElement (item);
+		this->QueuedPacketWP();
+		//if (this->output_queue_wpid == 0)
+		//   this->output_queue_wpid = XtAppAddWorkProc (
 		//theApplication->getApplicationContext(),
 		//(XtWorkProc)PacketIF_QueuedPacketWP, this);
-	return ;
-    }
-    this->_sendImmediate(string);
+		return ;
+	}
+	this->_sendImmediate(string);
 }
 
 void PacketIF::_sendImmediate(const char *string)
 {
-    if (this->stream == NUL(FILE*))
-	return;
+	if (this->stream == NUL(FILE*))
+		return;
 
-    int length = STRLEN(string) + 2;
-    char *newString = new char[length + 1];
-    strcpy(newString, "$");
-    strcat(newString, string);
-    strcat(newString, "\n");
+	int length = STRLEN(string) + 2;
+	char *newString = new char[length + 1];
+	strcpy(newString, "$");
+	strcat(newString, string);
+	strcat(newString, "\n");
 
 #if !defined(DXD_NON_UNIX_SOCKETS)
-    if (fputs(newString,this->stream) < 0 ||
-         (fflush(this->stream) == EOF)) 
-    {
-	this->handleStreamError(errno,"PacketIF::sendImmediate"); 
-    }
+	if (fputs(newString,this->stream) < 0 ||
+		(fflush(this->stream) == EOF)) 
+	{
+		this->handleStreamError(errno,"PacketIF::sendImmediate"); 
+	}
 #else
-    if (UxSend (this->socket, newString, length, 0) == -1 )
-    {
-        this->handleStreamError(errno,"PacketIF::sendPacket");
-    }
+	if (UxSend (this->socket, newString, length, 0) == -1 )
+	{
+		this->handleStreamError(errno,"PacketIF::sendPacket");
+	}
 #endif
 
-    if (this->echoCallback)
-    {
-	char *echo_string = new char[length + 32];
+	if (this->echoCallback)
+	{
+		char *echo_string = new char[length + 32];
 
-	sprintf(echo_string, "-1: ");
-	strncat(echo_string, newString, length);
-	(*this->echoCallback)(this->echoClientData, echo_string);
+		sprintf(echo_string, "-1: ");
+		strncat(echo_string, newString, length);
+		(*this->echoCallback)(this->echoClientData, echo_string);
 
-	delete echo_string;
-    }
+		delete echo_string;
+	}
 
-    delete newString;
+	delete newString;
 }
 
 //
@@ -1585,8 +1635,10 @@ void PacketIF::connectAsServer(int pport)
 
     port = pport;
 
+#if defined(HAVE_SYS_UN_H)
 retry:
-    sock = ::socket(AF_INET, SOCK_STREAM, 0);
+#endif
+	sock = ::socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0)
     {
         perror ("socket");
@@ -1800,10 +1852,62 @@ error:
     return; 
 }
 
+
+__gc class ThreadWorker
+{
+private:
+	PacketIF * p;
+
+public:
+	ThreadWorker(PacketIF *in)
+	{
+		p = in;
+	}
+
+	void managedProcessSocketInputICB()
+	{
+		p->ProcessSocketInputICB();
+	}
+
+	void managedInputIdleWP()
+	{
+		p->InputIdleWP();
+	}
+
+	void watchForActivity() { 
+		MethodInvoker * processSocket = 
+			new MethodInvoker(this, ThreadWorker::managedProcessSocketInputICB);
+		MethodInvoker * idleProcess = 
+			new MethodInvoker(this, &ThreadWorker::managedInputIdleWP);
+		while(!p->deleting) {
+			if(DXMessageOnSocket(p->getSocket())) {
+				if(p->isPacketHandlingDeferred()) {
+					Thread::Sleep(1000);
+					if(p->isPacketHandlingDeferred())
+						theDXApplication->getMainForm()->BeginInvoke(idleProcess);
+				} else {
+					theDXApplication->getMainForm()->BeginInvoke(processSocket);
+				}
+			}
+			Thread::Sleep(1000);
+		}
+	}
+
+};
+
 void PacketIF::installInputHandler()
 {
-    //ASSERT(this->inputHandlerId == 0);
+    ASSERT(this->deleting == false);
     ASSERT(this->socket >= 0);
+	ThreadWorker *tw = new ThreadWorker(this);
+
+	System::Threading::Thread * t = new System::Threading::Thread(
+		new System::Threading::ThreadStart(tw, &ThreadWorker::watchForActivity));
+	t->Priority = ThreadPriority::BelowNormal;
+	t->IsBackground = true;
+	t->Name = S"WatchActivity";
+	t->Start();
+
 //    this->inputHandlerId =
 //            XtAppAddInput(theApplication->getApplicationContext(),
 //                      this->socket,
@@ -1815,12 +1919,14 @@ void PacketIF::installInputHandler()
 //                      (XtInputCallbackProc)PacketIF_ProcessSocketInputICB,
 //                      (XtPointer) this);
 }
-void PacketIF::removeInputHandler()
-{
-    //ASSERT(this->inputHandlerId != 0);
-    //XtRemoveInput(this->inputHandlerId);
-    //this->inputHandlerId = 0;
-}
+
+//void PacketIF::removeInputHandler()
+//{	
+//	// Setting the inputHandler to false will drop out of the thread loop
+//	// and finish the handler.
+//
+//	this->inputHandler = false;
+//}
 //
 // Return true if packet handling is currently stalled.
 //
@@ -1873,10 +1979,6 @@ int UxSend(int s, const char *ExternalBuffer, int TotalBytesToSend, int Flags)
 int UxRecv(int s, char *ExternalBuffer, int BuffSize, int Flags)
 {
     int BuffPtr;
-    u_long rc;
-    struct timeval to;
-    int i;
-    fd_set fds;
 
     BuffPtr  = recv(s, ExternalBuffer, BuffSize, Flags);
     return (int) BuffPtr;

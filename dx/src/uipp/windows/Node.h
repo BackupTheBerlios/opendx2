@@ -150,15 +150,15 @@ class Node : public Base
     // Node::ParameterSetValueChanged and Node::ParameterValueChanged.
     // index is 1 based.
     //
-    Type setIOValue(List *io, int index, const char *value, 
-					Type t = DXType::UndefinedType,
+    dx_Type setIOValue(List *io, int index, const char *value, 
+					dx_Type t = DXType::UndefinedType,
 					bool send = true,
 					bool notify = true);
 
     // This is the same as setIOValue, but it sends the value to the
     // executive without causing an executive execution in execute on change.
-    Type setIOValueQuietly(List *io, int index, const char *value, 
-					Type t = DXType::UndefinedType);
+    dx_Type setIOValueQuietly(List *io, int index, const char *value, 
+					dx_Type t = DXType::UndefinedType);
     //
     //  Mark the given parameter as clean.
     //
@@ -212,7 +212,7 @@ class Node : public Base
     //
     // Get the type of the set value of the index'th parameter in the list. 
     //
-    Type getIOSetValueType(List *io, int index);
+    dx_Type getIOSetValueType(List *io, int index);
 
     //
     // Get the name of the input as specified in the network
@@ -709,9 +709,9 @@ private:
         { return getIOValueString(&inputParameters, index); }
     const char *getOutputValueString(int index)
         { return getIOValueString(&outputParameters, index); }
-    Type getInputSetValueType(int index)
+    dx_Type getInputSetValueType(int index)
         { return getIOSetValueType(&inputParameters, index); }
-    Type getOutputSetValueType(int index)
+    dx_Type getOutputSetValueType(int index)
         { return getIOSetValueType(&outputParameters, index); }
 
     //
@@ -840,34 +840,34 @@ private:
     // the same as setValue, but if it is defaulting, then we set the
     // value but leave the parameter clean and defaulting and ignore send.
     //
-    virtual Type setInputSetValue(int index, const char *value, 
-				 Type type = DXType::UndefinedType,
+    virtual dx_Type setInputSetValue(int index, const char *value, 
+				 dx_Type type = DXType::UndefinedType,
 				 bool send = true);
 
-    virtual Type setInputValue(int index,
+    virtual dx_Type setInputValue(int index,
 			       const char *value,
-			       Type t = DXType::UndefinedType,
+			       dx_Type t = DXType::UndefinedType,
 			       bool send = true)
         { return setIOValue(&inputParameters, index, value, t, send); }
-    virtual Type setOutputValue(int index,
+    virtual dx_Type setOutputValue(int index,
 				const char *value,
-				Type t = DXType::UndefinedType,
+				dx_Type t = DXType::UndefinedType,
 				bool send = true)
         { return setIOValue(&outputParameters, index, value, t, send); }
 
     // These are the same as setInputValue and setOutputValue, but they send
     // the value to the executive without causing an executive execution in 
     // execute on change.
-    virtual Type setInputValueQuietly(int index,
+    virtual dx_Type setInputValueQuietly(int index,
 			       const char *value,
-			       Type t = DXType::UndefinedType)
+			       dx_Type t = DXType::UndefinedType)
         { return setIOValueQuietly(&inputParameters, index, value, t); }
-    virtual Type setOutputValueQuietly(int index,
+    virtual dx_Type setOutputValueQuietly(int index,
 				const char *value,
-				Type t = DXType::UndefinedType)
+				dx_Type t = DXType::UndefinedType)
         { return setIOValueQuietly(&outputParameters, index, value, t); }
 
-    virtual Type clearOutputValue(int index,
+    virtual dx_Type clearOutputValue(int index,
 				  bool send = true)
         { return setIOValue(&outputParameters, 
 			    index, 

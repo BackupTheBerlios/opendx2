@@ -273,7 +273,7 @@ SetAttrDialog *InteractorInstance::newSetAttrDialog()
 //
 bool InteractorInstance::verifyValueAgainstAttributes(int output, 
 							const char *val,
-							Type t,
+							dx_Type t,
 							char **reason)
 {
     if (*reason)
@@ -293,7 +293,7 @@ bool InteractorInstance::verifyValueAgainstAttributes(int output,
 // failure.  This string is expected to be freed by the caller.
 //
 bool InteractorInstance::setAndVerifyOutput(int index, const char *val,
-                                        Type type, bool send,
+                                        dx_Type type, bool send,
 					char **reason)
 {
     Node *n = this->getNode();

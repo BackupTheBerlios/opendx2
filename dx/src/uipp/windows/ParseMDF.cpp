@@ -223,7 +223,7 @@ bool ParseMDFTypes(ParameterDefinition *param, char *p, int lineNumber)
     int current;
     char      save;
     DXType	*input_type = NULL;
-    Type	type;
+    dx_Type	type;
 
     /*
      * Begin a new type.

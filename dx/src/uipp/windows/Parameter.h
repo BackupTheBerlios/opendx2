@@ -72,7 +72,7 @@ class Parameter : public Base
     // Return T/F indicating whether the value was successfully set (and 
     // coerced).
     //
-    bool coerceAndSetValue(const char *value, Type type);
+    bool coerceAndSetValue(const char *value, dx_Type type);
 
 
   public:
@@ -129,12 +129,12 @@ class Parameter : public Base
     // must match the given type.  If coerce is true, then try and add
     // syntactic sugar to make the value match the type.
     //
-    bool 	setValue(const char *v, Type t, bool coerce = true);
+    bool 	setValue(const char *v, dx_Type t, bool coerce = true);
 
     //
     // Use setValue(v,t,c) to try and set the value to one of the types.
     //
-    Type	setValue(const char *v);
+    dx_Type	setValue(const char *v);
 
     //
     // Uset setValue(v,t,c) to set the stored value.
@@ -142,14 +142,14 @@ class Parameter : public Base
     // the same as setValue, but if it is defaulting, then we set the
     // value but leave the parameter clean and defaulting.
     //
-    bool setSetValue(const char *value, Type type);
+    bool setSetValue(const char *value, dx_Type type);
 
 
     // DXValue 	*getValue() { return this->value; } 
     bool 	hasValue() 
 		{ return (this->value != NUL(DXValue*)) && 
  		 	 (this->value->getType() != DXType::UndefinedType); } 
-    Type    	getValueType() 
+    dx_Type    	getValueType() 
 			{ ASSERT(this->value); return this->value->getType(); }
     void   	setDefinition(ParameterDefinition *pd) { this->definition=pd;}
     ParameterDefinition *getDefinition() { return this->definition; }
@@ -184,7 +184,7 @@ class Parameter : public Base
     // Get the default type of this parameter.  When a parameter has more
     // than 1 type, always return the first type on the type list.
     //
-    Type getDefaultType() { return this->getDefinition()->getDefaultType(); }
+    dx_Type getDefaultType() { return this->getDefinition()->getDefaultType(); }
 
     //
     // Get the i'th component of a vector value.  

@@ -86,7 +86,7 @@ bool ScalarListNode::initialize()
 // 	sub-class) so if changes are made here they may also need to be
 //	made there.
 //
-extern bool ClampVSIValue(const char *val, Type valtype,
+extern bool ClampVSIValue(const char *val, dx_Type valtype,
                         double *mins, double *maxs,
                         char **clampedval);
 
@@ -106,7 +106,7 @@ void ScalarListNode::doRangeCheckComponentValue(int component,
     }
 
     const char *val = this->getOutputValueString(1);
-    Type output_type = this->getOutputSetValueType(1);
+    dx_Type output_type = this->getOutputSetValueType(1);
 
 #if 1
     if (DXValue::ClampVSIValue(val,output_type,mins,maxs,&clamped)) {

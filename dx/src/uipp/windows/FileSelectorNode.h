@@ -75,8 +75,8 @@ class FileSelectorNode : public ValueNode
     // 2nd output (the basename of the full file name) up to date.
     // One should never use this method to set the 2nd output, only the 1st.
     //
-    Type setOutputValue(int index, const char *value, 
-				Type t = DXType::UndefinedType, 
+    dx_Type setOutputValue(int index, const char *value, 
+				dx_Type t = DXType::UndefinedType, 
 				bool send = true);
 
     //

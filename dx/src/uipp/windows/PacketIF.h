@@ -36,9 +36,7 @@
 // functions for this and derived classes
 //
 //extern "C" void PacketIF_InputIdleTimerTCP(XtPointer, XtIntervalId*);
-//extern "C" Boolean PacketIF_InputIdleWP(XtPointer);
 //extern "C" Boolean PacketIF_QueuedPacketWP(XtPointer);
-//extern "C" void PacketIF_ProcessSocketInputICB(XtPointer, int*, XtInputId*);
 
 #if defined(DXD_IBM_OS2_SOCKETS)  || defined(DXD_HAS_WINSOCKETS)
 int UxSend(int s, const char *ExternalBuffer, int TotalBytesToSend, int Flags);
@@ -86,20 +84,16 @@ class PacketIF : public Base
     int      	     error;
     int      	     socket;
     FILE    	     *stream;
-    //XtInputId 	     inputHandlerId;
     bool	     deferPacketHandling;
     //XtWorkProcId     workProcId;      
-    //XtIntervalId     workProcTimerId;  
+    //XtIntervalId     workProcTimerId;
     int      	     line_length;
     int      	     alloc_line_length;
 
     //friend void      PacketIF_InputIdleTimerTCP(XtPointer, XtIntervalId*);
-    //friend Boolean   PacketIF_InputIdleWP(XtPointer clientData);
     //friend Boolean   PacketIF_QueuedPacketWP(XtPointer clientData);
-    //friend void	     PacketIF_ProcessSocketInputICB(XtPointer clientData, 
-				//		       int *socket,
-				//		       XtInputId *id);
-    PacketIFCallback echoCallback;
+
+	PacketIFCallback echoCallback;
     void             *echoClientData;
 
     PacketIFCallback errorCallback;
@@ -135,11 +129,10 @@ class PacketIF : public Base
     // we don't enable the handling of a message until the WorkProc 
     // is called (indicating that there are no other events to handle).
     //
-    void installWorkProc();
-    void removeWorkProc();
-    void installWorkProcTimer();
-    void removeWorkProcTimer();
-
+    //void installWorkProc();
+    //void removeWorkProc();
+    //void installWorkProcTimer();
+    //void removeWorkProcTimer();
 
   protected:
     //
@@ -193,12 +186,23 @@ class PacketIF : public Base
     void _sendImmediate(const char *string);
     void _sendPacket(int type, int packetId, const char *data = NULL, int length = 0);
     bool sendQueuedPackets();
-    bool isSocketInputReady();
-    List output_queue;
-    int output_queue_wpid;
+    //int output_queue_wpid;
     void sendPacket(int type, int packetId, const char *data = NULL, int length = 0);
 
   public:
+
+    List output_queue;
+	bool isSocketInputReady();
+	bool isPacketHandlingDeferred() { return deferPacketHandling; }
+	void ProcessSocketInputICB();
+	void QueuedPacketWP();
+	bool InputIdleWP();
+	int getSocket() {return socket;}
+    bool deleting;
+	// Do we have a packet sender thread already?
+	bool			packetSender;
+
+
 
     static const char* PacketTypes[];
 

@@ -1296,7 +1296,7 @@ bool Node::parseIOComment(bool input, const char* comment,
 {
     int      defaulting = 0, allowed_params, items_parsed, ionum, r, type_tmp;
     int  visible = true;
-    Type     type = DXType::UndefinedType;
+   dx_Type     type = DXType::UndefinedType;
     char     *value, *ioname;
     bool	parse_error = false;
     
@@ -1315,7 +1315,7 @@ bool Node::parseIOComment(bool input, const char* comment,
 	    items_parsed = sscanf(comment,
 		" input[%d]: defaulting = %d, visible = %d, type = %d", 
 					&ionum, &defaulting, &visible, &type_tmp);
-	    type = (Type) type_tmp;
+	    type = (dx_Type) type_tmp;
 	    
 	    if (items_parsed != 4) {
 		// Invisibility added 3/30/93
@@ -1325,13 +1325,13 @@ bool Node::parseIOComment(bool input, const char* comment,
 		    // Backwards compatibility added 3/25/93
 		    items_parsed = sscanf(comment, " input[%d]: type = %d", 
 					    &ionum, &type_tmp);
-		    type = (Type) type_tmp;
+		    type = (dx_Type) type_tmp;
 		    
 		    if (items_parsed != 2) {
 			items_parsed = sscanf(comment,
 				    " input[%d]: defaulting = %d, type = %d", 
 					    &ionum, &defaulting, &type_tmp);
-			type = (Type) type_tmp;
+			type = (dx_Type) type_tmp;
 			if (items_parsed != 3) 
 			    parse_error = true;
 		    } 
@@ -1359,13 +1359,13 @@ bool Node::parseIOComment(bool input, const char* comment,
 	    items_parsed = sscanf(comment, 
 				" output[%d]: visible = %d, type = %d", 
 					    &ionum, &visible, &type_tmp);
-	    type = (Type) type_tmp;
+	    type = (dx_Type) type_tmp;
 	    
 	    if (items_parsed != 3) {
 
 		items_parsed = sscanf(comment, " output[%d]: type = %d", 
 						&ionum, &type_tmp);
-		type = (Type) type_tmp;
+		type = (dx_Type) type_tmp;
 		
 		if (items_parsed != 2) {
 		    items_parsed = sscanf(comment, " output[%d]: visible = %d", 
@@ -1676,8 +1676,8 @@ bool Node::netParseNodeComment(const char* comment,
 // ioParameterStatusChanged()) so that multiple intermediate notifications
 // are avoided. 
 //
-Type Node::setInputSetValue(int index, const char *value, 
-				Type type,
+dx_Type Node::setInputSetValue(int index, const char *value, 
+			dx_Type type,
 				bool send)
 {
 
@@ -1764,10 +1764,10 @@ void Node::setIODirty(List *io, int index, bool dirty)
 // index is 1 based.
 //
 //
-Type Node::setIOValue(List *io,
+dx_Type Node::setIOValue(List *io,
 		      int index,
 		      const char *value,
-		      Type t,
+		     dx_Type t,
 		      bool send,
 		      bool notify)
 {
@@ -1777,7 +1777,7 @@ Type Node::setIOValue(List *io,
     ASSERT(p); 
     bool was_set = !p->isDefaulting();
 
-    Type type = DXType::UndefinedType;
+   dx_Type type = DXType::UndefinedType;
     if (t == DXType::UndefinedType)
      	type = p->setValue(value);
     else if (p->setValue(value, t))
@@ -1825,7 +1825,7 @@ Type Node::setIOValue(List *io,
 // we are currently in execute-on-change  mode, the assignment would cause
 // extra executions.  The Executive() call (a dictionary update) avoids that.
 //
-Type Node::setIOValueQuietly(List *io, int index, const char *value, Type t)
+dx_Type Node::setIOValueQuietly(List *io, int index, const char *value,dx_Type t)
 {
     t = this->setIOValue(io, index, value, t, false);
     if (t == DXType::UndefinedType)
@@ -2058,7 +2058,7 @@ const char *Node::getIOValueString(List *io, int index)
 // 
 //  Get the type of the set value of the index'th parameter in the given list.
 // 
-Type Node::getIOSetValueType(List *io, int index)
+dx_Type Node::getIOSetValueType(List *io, int index)
 {
 
     Parameter *p;

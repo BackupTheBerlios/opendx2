@@ -55,10 +55,10 @@ void ScalarListInstance::setComponentValue(int component, double val)
 //
 bool ScalarListInstance::verifyValueAgainstAttributes(int output,
 					    	const char *val,
-                                                Type t,
+                                                dx_Type t,
                                                 char **reason)
 {
-    Type itemtype = t & DXType::ListTypeMask;
+    dx_Type itemtype = t & DXType::ListTypeMask;
     int index = -1;
     char buf[1024];
     bool r = true;

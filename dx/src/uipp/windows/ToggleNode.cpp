@@ -528,7 +528,7 @@ bool ToggleNode::printJavaType(FILE* jf, const char* indent, const char* var)
 {
     Parameter *p = this->getOutputParameter(1);
     if (p->hasValue()) {
-	Type t = p->getValueType();
+	dx_Type t = p->getValueType();
 	if (t & DXType::StringType) {
 	    fprintf (jf, "%s%s.setOutputType(BinaryInstance.STRING);\n", indent,var);
 	} else if (t & DXType::IntegerType) {

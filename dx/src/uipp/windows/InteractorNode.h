@@ -85,7 +85,7 @@
 #include "ShadowedOutputNode.h"
 #include "InteractorStyle.h"
 
-typedef long Type;
+typedef long dx_Type;
 
 class Network;
 class InteractorInstance;
@@ -317,7 +317,7 @@ class InteractorNode : public ShadowedOutputNode
     // list. If an interactor can have different outputs, that class should
     // override this.
     //
-    Type  getTheCurrentOutputType(int index);
+    dx_Type  getTheCurrentOutputType(int index);
 
     //
     // Redefine this so that we call the super-class method and then
@@ -347,9 +347,9 @@ class InteractorNode : public ShadowedOutputNode
     // Calls setOutputAndOtherInteractorValues to update all interactor
     // instances.
     //
-    virtual Type setOutputValue(int index,
+    virtual dx_Type setOutputValue(int index,
                                 const char *value,
-                                Type t = DXType::UndefinedType,
+                                dx_Type t = DXType::UndefinedType,
                                 bool send = true);
 
 

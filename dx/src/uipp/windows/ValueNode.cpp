@@ -34,7 +34,7 @@ ValueNode::~ValueNode()
 
 bool ValueNode::initialize()
 {
-    Type t = this->setOutputValue(1,"NULL", DXType::UndefinedType, false);
+    dx_Type t = this->setOutputValue(1,"NULL", DXType::UndefinedType, false);
     return t == DXType::UndefinedType ? false : true;
 }
 

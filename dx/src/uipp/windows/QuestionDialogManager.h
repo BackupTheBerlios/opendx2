@@ -9,9 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
 #ifndef _QuestionDialogManager_h
 #define _QuestionDialogManager_h
 

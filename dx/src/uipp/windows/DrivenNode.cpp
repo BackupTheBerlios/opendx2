@@ -43,8 +43,8 @@ DrivenNode::DrivenNode(NodeDefinition *nd,
 // defaulting/set status of the parameter, we don't want it sent back
 // to the server, and we don't want to mark it as dirty.
 //
-Type DrivenNode::setInputAttributeFromServer(int index, 
-				const char *val, Type t)
+dx_Type DrivenNode::setInputAttributeFromServer(int index, 
+				const char *val, dx_Type t)
 {
 
     Parameter *p = this->getInputParameter(index);

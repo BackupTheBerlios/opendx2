@@ -49,7 +49,7 @@ class ParameterDefinition : public Definition
   private:
 
 #if 0 // FIXME: circular includes won't let us do this.
-    friend Type Parameter::setValue(const char *v);
+    friend dx_Type Parameter::setValue(const char *v);
 #else
     friend class Parameter;
 #endif
@@ -199,7 +199,7 @@ class ParameterDefinition : public Definition
     // Get the default type of this parameter.  When a parameter has more
     // than 1 type, always return the first type on the type list.
     //
-    Type getDefaultType();
+    dx_Type getDefaultType();
 
     //
     // Set the default value, which must be of a type found in the type list. 

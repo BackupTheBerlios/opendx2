@@ -202,10 +202,10 @@ ParameterDefinition::removeType(DXType *t)
 // Get the default type of this parameter.  When a parameter has more
 // than 1 type, always return the first type on the type list.
 //
-Type ParameterDefinition::getDefaultType()
+dx_Type ParameterDefinition::getDefaultType()
 {
     DXType *dxtype;
-    Type type;
+    dx_Type type;
 
     dxtype = (DXType*)this->types.getElement(1); 
     type = dxtype->getType();

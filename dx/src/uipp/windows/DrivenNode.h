@@ -142,8 +142,8 @@ class DrivenNode : public ModuleMessagingNode
     // defaulting/set status of the parameter, we don't want it sent back
     // to the server, and we don't want to mark it as dirty.
     //
-    Type setInputAttributeFromServer(int index, const char *val,
-                                        Type t = DXType::UndefinedType);
+    dx_Type setInputAttributeFromServer(int index, const char *val,
+                                        dx_Type t = DXType::UndefinedType);
 
     //
     // Initialize/set the value of an attribute parameter.

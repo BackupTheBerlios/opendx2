@@ -332,23 +332,23 @@ bool Command::undo()
 
 void Command::autoActivate(Command *c)
 {
-    int position;
+	int position;
 
-    this->activateCmds.insertElement((const void *)c, 1);
-    if ((position = this->deactivateCmds.getPosition((const void*)c)) != 0)
-	this->deactivateCmds.deleteElement(position);
+	this->activateCmds.insertElement((const void *)c, 1);
+	if ((position = this->deactivateCmds.getPosition((const void*)c)) != 0)
+		this->deactivateCmds.deleteElement(position);
 
-    c->addActivator(this);
+	c->addActivator(this);
 }
 void Command::autoDeactivate(Command *c)
 {
-    int position;
+	int position;
 
-    this->deactivateCmds.insertElement((const void *)c, 1);
-    if ((position = this->activateCmds.getPosition((const void*)c)) != 0)
-	this->activateCmds.deleteElement(position);
+	this->deactivateCmds.insertElement((const void *)c, 1);
+	if ((position = this->activateCmds.getPosition((const void*)c)) != 0)
+		this->activateCmds.deleteElement(position);
 
-    c->addActivator(this);
+	c->addActivator(this);
 }
 void Command::removeAutoCmd(Command *c)
 {

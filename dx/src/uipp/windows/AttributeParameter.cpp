@@ -28,7 +28,7 @@ AttributeParameter::AttributeParameter(ParameterDefinition *pd,
 bool  AttributeParameter::syncAttributeValue() 
 {
     if (this->hasValue()) {
-	Type t = this->getValueType();
+	dx_Type t = this->getValueType();
 	const char *v = this->getSetValueString();
 	return  this->set2ndValue(v,t,false);
     } else 
@@ -45,7 +45,7 @@ bool  AttributeParameter::syncAttributeValue()
 bool  AttributeParameter::syncPrimaryValue(bool force) 
 {
     if (force || this->syncOnTypeMatch) {
-	Type t = this->get2ndValueType();
+	dx_Type t = this->get2ndValueType();
 	if (force || (this->hasValue() && this->getValueType() == t)) {
 	    ASSERT(this->isInput());
 	    const char *v = this->get2ndValueString();

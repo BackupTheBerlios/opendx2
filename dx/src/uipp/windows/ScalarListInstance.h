@@ -56,7 +56,7 @@ class ScalarListInstance : public ScalarInstance
     // of the component values.
     //
     virtual bool verifyValueAgainstAttributes(int output, const char *val,
-							    Type t,
+							    dx_Type t,
                                                             char **reason);
 
   public:

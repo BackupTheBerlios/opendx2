@@ -46,7 +46,7 @@ class DXValue : public Base
     // of the specified type (of DXType constant).
     //
     static bool IsValidValue(const char* string,
-				const Type  type);
+				const dx_Type  type);
 
     static bool IsValidValue(const char* string,
 				DXType&     type)
@@ -63,7 +63,7 @@ class DXValue : public Base
     // be coerced to the given value, otherwise return NULL.
     // On success, the returned string must be freed by the caller.
     //
-    static char *CoerceValue(const char *value, Type type);
+    static char *CoerceValue(const char *value, dx_Type type);
 
 
     //
@@ -79,7 +79,7 @@ class DXValue : public Base
     // upon success.
     //
     static char *NextListItem(const char *s, int *index, 
-					Type listtype, char *buf = NULL, int bufsz=0);
+					dx_Type listtype, char *buf = NULL, int bufsz=0);
 
     //
     //  Append a list item to a list value. 
@@ -98,7 +98,7 @@ class DXValue : public Base
     // on the same list types that NextListItem() does.
     //
     static char *InsertListItem(const char *list, const char *item,
-				    Type listtype, int position);
+				    dx_Type listtype, int position);
 #endif
     //
     //
@@ -108,7 +108,7 @@ class DXValue : public Base
     // This works on the same list types that NextListItem() does.
     //
     static char *ReplaceListItem(const char *list, const char *item,
-				    Type listtype, int position);
+				    dx_Type listtype, int position);
 
 
     //
@@ -118,7 +118,7 @@ class DXValue : public Base
     // is less than or equal to 0, then the last item is removed.  This works
     // on the same list types that NextListItem() does.
     //
-    static char *DeleteListItem(const char *list, Type listtype, int position);
+    static char *DeleteListItem(const char *list, dx_Type listtype, int position);
 
     //
     // Get the index'th list item from the given string which
@@ -126,12 +126,12 @@ class DXValue : public Base
     // The return list item must be deleted by the caller.
     // NULL is returned if the item was not found or if the listtype is wrong.
     //
-    static char *GetListItem(const char *list, int index, Type listtype);
+    static char *GetListItem(const char *list, int index, dx_Type listtype);
 
     //
     // Get the number of items in the list.
     //
-    static int GetListItemCount(const char *list, Type listtype);
+    static int GetListItemCount(const char *list, dx_Type listtype);
 
     //
     // Change the dimensionality of the given vector to the given dimensions.
@@ -154,7 +154,7 @@ class DXValue : public Base
     // given ranges, false otherwise.  If clampedval is provided, then a 
     // string is passed back which represents the clamped value. 
     //
-    static bool ClampVSIValue(const char *val, Type valtype, 
+    static bool ClampVSIValue(const char *val, dx_Type valtype, 
 			double *mins, double *maxs,
                         char **clampedval);
 
@@ -169,7 +169,7 @@ class DXValue : public Base
     // *tuple is the dimensionality of the VectorList items (1 for ScalarList).
     // '*tuple * return-val' is the number of items in the *data array.
     //
-    static int GetDoublesFromList(const char *list, Type listtype, 
+    static int GetDoublesFromList(const char *list, dx_Type listtype, 
 					    double **data, int *tuple);
 
     //
@@ -220,7 +220,7 @@ class DXValue : public Base
     // returns false otherwise.
     //
     bool setValue(const char* string,
-		     const Type  type);
+		     const dx_Type  type);
 
     bool setValue(const char* string,
 		     DXType&     type)
@@ -261,7 +261,7 @@ class DXValue : public Base
     //
     // Access routines:
     //
-    Type getType();
+    dx_Type getType();
     const char* getTypeName();
     int getInteger();
     double getScalar();
@@ -280,7 +280,7 @@ class DXValue : public Base
     //
     // Does the given string represent the given type?
     //
-    bool Valid(const char* string, const Type type);
+    bool Valid(const char* string, const dx_Type type);
 
     //
     // Returns a pointer to the class name.

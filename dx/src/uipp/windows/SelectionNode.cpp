@@ -319,7 +319,7 @@ const char *SelectionNode::getStringOptionsAttribute()
 char  *SelectionNode::getOptionValueString(int optind)
 {
    const char *s = this->getValueOptionsAttribute();
-   Type t = DXType::DetermineListItemType(s);
+   dx_Type t = DXType::DetermineListItemType(s);
    return DXValue::GetListItem(s,optind,t | DXType::ListType);
 }
 //
@@ -894,7 +894,7 @@ bool SelectionNode::printJavaType(FILE* jf, const char* indent, const char* var)
 {
     Parameter *p = this->getOutputParameter(1);
     if (p->hasValue()) {
-	Type t = p->getValueType();
+	dx_Type t = p->getValueType();
 	if (t & DXType::IntegerType) {
 	    if (t & DXType::ListType)
 		fprintf (jf, 

@@ -408,6 +408,9 @@ private: System::Void OpenRecentFileClick(System::Object *  sender, System::Even
 				 s = (Symbol)(long)iter.getNext();
 			 cmd = new OpenFileCommand(s);
 			 cmd->execute();
+			 if(this->network->getFileName() != NULL)
+				 this->Text = System::String::Concat(S"Visual Program Editor - ", 
+				 new System::String(this->network->getFileName()));
 			 delete cmd;
 		 }
 

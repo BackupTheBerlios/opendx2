@@ -42,14 +42,14 @@ class FindStackElement
 void FindStack::push(char* name, int instance, char* label)
 {
     FindStackElement* element = new FindStackElement(name, instance, label);
-    this->Stack::push((const void*)element);
+    this->dxc_Stack::push((const void*)element);
 }
 
 bool FindStack::pop(char* name, int* instance, char* label)
 {
     FindStackElement* element;
 
-    element = (FindStackElement*)this->Stack::pop();
+    element = (FindStackElement*)this->dxc_Stack::pop();
     if (element) {
        strcpy(name, element->name);
        strcpy(label, element->label);
@@ -65,9 +65,9 @@ void FindStack::clear()
 {
     FindStackElement *element;
 
-    while ( (element = (FindStackElement *)this->Stack::pop()) )
+    while ( (element = (FindStackElement *)this->dxc_Stack::pop()) )
        delete element;
 
-    this->Stack::clear();
+    this->dxc_Stack::clear();
 }
 

@@ -70,8 +70,8 @@ class ShadowedOutputNode : public DrivenNode
     // extra executions.  
     // The Executive() call (a dictionary update) avoids that.
     //
-    Type setShadowedOutputSentFromServer(
-			    int output_index, const char *val, Type t);
+    dx_Type setShadowedOutputSentFromServer(
+			    int output_index, const char *val, dx_Type t);
 
 
   public:
@@ -91,8 +91,8 @@ class ShadowedOutputNode : public DrivenNode
     // Set the output value of ShadowedOutputNode.  This is the same as for
     // the super class methodd, except that it updates the shadowing inputs 
     //
-    Type setOutputValue(int index, const char *value,
-				    Type t = DXType::UndefinedType,
+    dx_Type setOutputValue(int index, const char *value,
+				    dx_Type t = DXType::UndefinedType,
 				    bool send = true);
     //
     // Determine if this node is a node of the given class

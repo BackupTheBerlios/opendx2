@@ -72,7 +72,7 @@ class ToggleNode : public InteractorNode
     //
     // Protected member data:
     //
-    Type	outputType;
+    dx_Type	outputType;
     bool	is_set;
 
     //

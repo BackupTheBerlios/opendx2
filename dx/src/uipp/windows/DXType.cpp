@@ -92,7 +92,7 @@ inline void DXType::InitializeClass()
 }
 
 
-bool DXType::AddUserType(const Type  type,
+bool DXType::AddUserType(const dx_Type  type,
 			    const char* name)
 {
     DXTypeName* userType;
@@ -117,12 +117,12 @@ bool DXType::AddUserType(const Type  type,
 // in the typelist.
 // Return the first type found to match, otherwise DXType::UndefinedType.
 //
-Type DXType::FindTypeMatch(const char *value,
+dx_Type DXType::FindTypeMatch(const char *value,
 			    List *typelist)
 {
     ListIterator iterator(*typelist);
     DXType *dxtype;
-    Type t; 
+    dx_Type t; 
 
     ASSERT(typelist->getSize() > 0);
 
@@ -139,7 +139,7 @@ Type DXType::FindTypeMatch(const char *value,
    
 }
 
-bool DXType::DeleteType(const Type type)
+bool DXType::DeleteType(const dx_Type type)
 {
     ListIterator iterator(*DXType::TypeList);
     DXTypeName*  knownType;
@@ -209,7 +209,7 @@ bool DXType::DeleteType(const char* name)
 }
 
 
-const char* DXType::TypeToString(const Type type)
+const char* DXType::TypeToString(const dx_Type type)
 {
     ListIterator iterator(*DXType::TypeList);
     DXTypeName*  knownType;
@@ -231,7 +231,7 @@ const char* DXType::TypeToString(const Type type)
 }
 
 
-Type DXType::StringToType(const char* string)
+dx_Type DXType::StringToType(const char* string)
 {
     ListIterator iterator(*DXType::TypeList);
     DXTypeName*  knownType;
@@ -255,12 +255,12 @@ Type DXType::StringToType(const char* string)
 }
 
 
-bool DXType::MatchType(const Type source,
-			  const Type destination)
+bool DXType::MatchType(const dx_Type source,
+			  const dx_Type destination)
 {
-    Type intersection;
-    Type baseSource;
-    Type baseDestination;
+    dx_Type intersection;
+    dx_Type baseSource;
+    dx_Type baseDestination;
 
     //
     // Get the intersection of source and destination types.
@@ -474,7 +474,7 @@ DXType::DXType()
 }
 
 
-DXType::DXType(const Type type)
+DXType::DXType(const dx_Type type)
 {
     //
     // Initialize class.
@@ -494,7 +494,7 @@ DXType::DXType(const Type type)
 }
 
 
-bool DXType::setType(const Type type)
+bool DXType::setType(const dx_Type type)
 {
     ListIterator iterator(*DXType::TypeList);
     DXTypeName*  knownType;
@@ -524,7 +524,7 @@ bool DXType::setType(const Type type)
 // Returns the Type of the value and DXType::UndefinedType if no
 // match is found.
 //
-Type DXType::ValueToType(const char *value)
+dx_Type DXType::ValueToType(const char *value)
 {
 
     ListIterator iterator(*DXType::TypeList);
@@ -602,9 +602,9 @@ bool DXType::ValueToType(const char *value, List& typelist)
 //
 // Convert a version 1.0 (DX/6000 version 1.2 11/92) type to new UI types.
 //
-Type DXType::ConvertVersionType(Type t)
+dx_Type DXType::ConvertVersionType(dx_Type t)
 {
-	Type r;
+	dx_Type r;
  	bool   waslist = false;	
 
 	if (t & MT_LIST) {
@@ -647,13 +647,13 @@ Type DXType::ConvertVersionType(Type t)
 // If there are not mixed types than the type of each item is returned.
 // If an unrecognized   list item is found, DXType::UndefinedType is returned.
 //
-Type DXType::DetermineListItemType(const char *val)
+dx_Type DXType::DetermineListItemType(const char *val)
 {
      char *s1 = NULL, *s2 = NULL;
      int count = 0, index = -1;
      char buf1[512];
      char buf2[512];
-     Type ctype, type = DXType::UndefinedType;
+     dx_Type ctype, type = DXType::UndefinedType;
      bool quitting = false;
    
      if (EqualString(val,"NULL") || EqualString(val,"null"))

@@ -9,17 +9,15 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
 #include <ctype.h>
 #include <errno.h>
 #include <string.h>
 
 #include "DXStrings.h"
-#include "MsgWin.h"
 
 #include "DXApplication.h"
 #include "ButtonInterface.h"
-#include "EditorWindow.h"
+//#include "EditorWindow.h"
 #include "ErrorDialogManager.h"
 #include "QuestionDialogManager.h"
 #include "ListIterator.h"
@@ -31,6 +29,8 @@
 #include "ToggleButtonInterface.h"
 #include "RepeatingToggle.h"
 #include "DXPacketIF.h"
+
+#include "MsgWin.h"
 
 bool MsgWin::ClassInitialized = false;
 
@@ -103,6 +103,10 @@ MsgWin::MsgWin(): DXWindow("messageWindow", false)
     this->logDialog  = NULL;
     this->execCommandDialog = NULL;
 
+
+	mw = new dxui::MsgWindow();
+	mw->Clear();
+	mw->showIt();
 
     //
     // Install the default resources for THIS class (not the derived classes)
@@ -179,7 +183,7 @@ MsgWin::~MsgWin()
 void MsgWin::manage()
 {
     this->beenManaged = true;
-    this->DXWindow::manage();
+    mw->showIt();
 }
 
 //void MsgWin::createMenus(Widget parent)
@@ -378,6 +382,10 @@ void MsgWin::addInformation(const char *info)
 		info = s;
 	}
 
+	if(this->firstMsg)
+		this->mw->SetText("Begin Execution");
+
+	this->mw->SetText(info);
 
 	if (executing)
 	{
@@ -469,6 +477,7 @@ void MsgWin::addError(const char *error)
 	    fputs("Begin Execution\n", this->logFile);
 	    fflush(this->logFile);
 	}
+	this->mw->SetText("Begin Execution");
 	//XmString s = XmStringCreate("Begin Execution", "oblique");
 	//XmListAddItemUnselected(this->list, s, 0);
 	//XmStringFree(s);
@@ -563,6 +572,8 @@ void MsgWin::addError(const char *error)
 	    fputs(o, this->logFile);
 	    fputc('\n', this->logFile);
 	}
+	this->mw->SetText("ERROR:", line, o);
+
 	//XmString errorString = XmStringCreate("ERROR: ", "bold");
 	//XmString nameString = XmStringCreate((char*)line, "bold");
 	//XmString text = XmStringCreate((char*)o, "oblique");
@@ -656,6 +667,8 @@ void MsgWin::addWarning(const char *warning)
 		fputc('\n', this->logFile);
 		fflush(this->logFile);
 	}
+
+	this->mw->SetText(warning);
 	//XmString s = XmStringCreate((char*)warning, "normal");
 	//XmListAddItemUnselected(this->list, s, 0);
 	//XmStringFree(s);
@@ -792,6 +805,8 @@ void MsgWin::flushBuffer()
 
 bool MsgWin::clear()
 {
+	this->mw->Clear();
+
 	this->flushBuffer();
 	//if (this->intervalId)
 	//{
@@ -1086,8 +1101,8 @@ bool MsgWin::openEditorIfNecessary(Network *net,
 									  const char *nodeName, int inst, 
 									  bool promptUser)
 {
-	EditorWindow *e = net->getEditor();
-	EdInfo *edinfo = new EdInfo (nodeName, net, e, inst);
+	//EditorWindow *e = net->getEditor();
+	//EdInfo *edinfo = new EdInfo (nodeName, net, e, inst);
 	int show_status = theDXApplication->doesErrorOpenVpe(net);
 	bool questionPosted = false;
 
@@ -1099,10 +1114,11 @@ bool MsgWin::openEditorIfNecessary(Network *net,
 		//else
 		//	MsgWin::NoShowEditor((XtPointer)edinfo);
 	} else if (show_status == DXApplication::MayOpenVpe) {
-		if (e && e->isManaged()) {
-			//MsgWin::ShowEditor((XtPointer)edinfo);
-		}
-		else if (promptUser) { 
+		//if (e && e->isManaged()) {
+		//	//MsgWin::ShowEditor((XtPointer)edinfo);
+		//}
+		//else
+			if (promptUser) { 
 			//
 			// Must be FULL_APPLICATION_MODAL so that the user can't do 
 			// File/Open while the question dialog is on the screen.  

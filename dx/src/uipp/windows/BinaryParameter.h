@@ -56,9 +56,9 @@ class BinaryParameter : public Parameter
     //
     // Manipulate the Value and definition
     //
-    Type	set2ndValue(const char *v)
+    dx_Type	set2ndValue(const char *v)
 			{ return this->secondValue->setValue(v); }
-    bool 	set2ndValue(const char *v, Type t, bool coerce = true)
+    bool 	set2ndValue(const char *v, dx_Type t, bool coerce = true)
 			{ return this->secondValue->setValue(v,t,coerce); }
     //
     // Set the stored value.
@@ -66,13 +66,13 @@ class BinaryParameter : public Parameter
     // the same as setValue, but if it is defaulting, then we set the
     // value but leave the parameter clean and defaulting.
     //
-    bool set2ndSetValue(const char *v, Type t)
+    bool set2ndSetValue(const char *v, dx_Type t)
 			{ return this->secondValue->setSetValue(v,t); }
 
 
     bool 	has2ndValue() 
 		{ return this->secondValue->hasValue(); }
-    Type    	get2ndValueType() 
+    dx_Type    	get2ndValueType() 
 		{ return this->secondValue->getValueType(); }
 
     const char 	*get2ndSetValueString() 

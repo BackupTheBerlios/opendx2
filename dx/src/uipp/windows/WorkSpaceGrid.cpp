@@ -12,6 +12,8 @@
 #include "DXStrings.h"
 #include "WorkSpaceGrid.h"
 #include "ErrorDialogManager.h"
+enum { DXUI_ALIGNMENT_BEGINNING, DXUI_ALIGNMENT_CENTER,
+DXUI_ALIGNMENT_END, DXUI_ALIGNMENT_NONE };
 
 WorkSpaceGrid::WorkSpaceGrid()
 {
@@ -29,42 +31,41 @@ void WorkSpaceGrid::setDefaultConfiguration()
 
 char *WorkSpaceGrid::alignmentString()
 {
-//    char *align = new char[4];
+    char *align = new char[4];
 
- //   switch (this->y_alignment) 
- //   {
-	//case XmALIGNMENT_BEGINNING:
-	//align[0] = 'U';
- //       break;
- //     case XmALIGNMENT_CENTER:
-	//align[0] = 'C';
- //       break;
- //     case XmALIGNMENT_END:
-	//align[0] = 'L';
- //       break;
- //     case XmALIGNMENT_NONE:
-	//align[0] = 'N';
- //       break;
- //   }
- //   switch (this->x_alignment) 
- //   {
- //     case XmALIGNMENT_BEGINNING:
-	//align[1] = 'L';
- //       break;
- //     case XmALIGNMENT_CENTER:
-	//align[1] = 'C';
- //       break;
- //     case XmALIGNMENT_END:
-	//align[1] = 'R';
- //       break;
- //     case XmALIGNMENT_NONE:
-	//align[1] = 'N';
- //       break;
- //   }
- //   align[2] = '\0';
+    switch (this->y_alignment) 
+    {
+	case DXUI_ALIGNMENT_BEGINNING:
+	align[0] = 'U';
+        break;
+      case DXUI_ALIGNMENT_CENTER:
+	align[0] = 'C';
+        break;
+      case DXUI_ALIGNMENT_END:
+	align[0] = 'L';
+        break;
+      case DXUI_ALIGNMENT_NONE:
+	align[0] = 'N';
+        break;
+    }
+    switch (this->x_alignment) 
+    {
+      case DXUI_ALIGNMENT_BEGINNING:
+	align[1] = 'L';
+        break;
+      case DXUI_ALIGNMENT_CENTER:
+	align[1] = 'C';
+        break;
+      case DXUI_ALIGNMENT_END:
+	align[1] = 'R';
+        break;
+      case DXUI_ALIGNMENT_NONE:
+	align[1] = 'N';
+        break;
+    }
+    align[2] = '\0';
 
- //   return align;
-	return "CC";
+    return align;
 }
 void WorkSpaceGrid::parseAlignment(const char *align)
 {

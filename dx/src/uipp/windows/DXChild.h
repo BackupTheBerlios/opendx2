@@ -15,9 +15,10 @@
 #ifndef _DXChild_h
 #define _DXChild_h
 
-
+//#include "dxThreadMain.h"
 #include "Base.h"
 
+class DXExecThread;
 
 //
 // Class name definition:
@@ -57,7 +58,10 @@ class DXChild : public Base
     int         in;
     int         out;
     int         err;
+	// DT FIXME: will need to remove child and replace with dxexec.
     int         child;
+	DXExecThread * dxexec;
+
     //XtInputId   outId;
     //XtInputId   errId;
     int         queued;

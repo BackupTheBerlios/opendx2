@@ -132,7 +132,7 @@ void ValueListInteractor::updateDisplayedInteractorValue()
     char	*s, **items = NULL;
     int 	count, index;
     ValueListNode *vln = (ValueListNode*)this->interactorInstance->getNode();
-    Type type = vln->getTheCurrentOutputType(1);
+    dx_Type type = vln->getTheCurrentOutputType(1);
 
     const char *val = vln->getOutputValueString(1); 	// Get the list itself
     index = -1;
@@ -213,7 +213,7 @@ char *ValueListInteractor::verifyValueEditorText()
 {
     int itemCount = this->getListItemCount();
     InteractorNode *node= (InteractorNode*)this->interactorInstance->getNode();
-    Type itemType;
+    dx_Type itemType;
     List typeList;
 
     if ((itemCount == 1) && (this->getSelectedItemIndex() == 0)) {
@@ -237,7 +237,7 @@ char *ValueListInteractor::verifyValueEditorText()
     ListIterator i(typeList);
     char *s = this->getDisplayedText(); 
     bool matched = false;
-    while ( (itemType = (Type)i.getNext()) ) {
+    while ( (itemType = (dx_Type)i.getNext()) ) {
 	if (!DXValue::IsValidValue(s,itemType)) {
 	    char *news;
 	    if ( (news = DXValue::CoerceValue(s,itemType)) ) {
@@ -253,7 +253,7 @@ char *ValueListInteractor::verifyValueEditorText()
     }
     if (!matched) {
 	if (typeList.getSize() == 1) {
-    	    itemType = (Type)typeList.getElement(1); 
+    	    itemType = (dx_Type)typeList.getElement(1); 
 	    ErrorMessage("'%s' is not a valid %s", 
 			s,DXType::TypeToString(itemType));
 	}

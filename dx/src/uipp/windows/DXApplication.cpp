@@ -562,11 +562,11 @@ DXApplication::~DXApplication()
     delete theNodeDefinitionDictionary; theNodeDefinitionDictionary = NULL;
 #endif
 
-    ListIterator iter(this->saveResourceValues);
-    List* resources;
-    while (resources=(List*)iter.getNext()) {
-	if (resources) delete resources;
-    }
+    //ListIterator iter(this->saveResourceValues);
+ //   List* resources;
+ //   while (resources=(List*)iter.getNext()) {
+	//if (resources) delete resources;
+ //   }
 
 #endif	// 0 - do not free memory just before terminating (wastes time).
 
@@ -926,6 +926,12 @@ bool DXApplication::initialize(unsigned int* argcp,
 		if (s)
 			// This will show up as a memory leak, not worth worrying about
 			DXApplication::resource.macros = DuplicateString(s);
+		else {
+			char macPath[512];
+			strcpy(macPath, this->getUIRoot());
+			strcat(macPath, "/samples/macros");
+			DXApplication::resource.macros = DuplicateString(macPath);
+		}
 	}
 
 	if (DXApplication::resource.server == NULL) {
@@ -1376,7 +1382,6 @@ bool DXApplication::initialize(unsigned int* argcp,
 				// window, etc.
 				if (this->resource.program != NULL)
 					this->openFile(this->resource.program, this->resource.cfgfile);
-
 
 					this->applicationContext->set_MainForm(new dxui::Editor(true, this->network));
 

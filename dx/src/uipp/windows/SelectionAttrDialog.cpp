@@ -148,7 +148,7 @@ void SelectionAttrDialog::updateValueEditor(const char *text)
 char *SelectionAttrDialog::getValueEditorValue()
 {
     char *label, *value, *buffer = NULL;
-    Type	type;
+    dx_Type	type;
     char *saved_value=NULL;
     SelectionInstance *si;
     SelectionNode *snode;

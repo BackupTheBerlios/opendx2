@@ -75,7 +75,7 @@ class AttributeParameter : public BinaryParameter
     // If the super-class method succeeds then, copy the value into 
     // the attribute (the secondary parameter value).
     //
-    virtual bool 	setValue(const char *v, Type type, bool coerce=true)
+    virtual bool 	setValue(const char *v, dx_Type type, bool coerce=true)
 		{  bool r = this->BinaryParameter::setValue(v,type,coerce);
 		   if (r && this->syncOnTypeMatch && (this->hasValue() &&
 			     this->getValueType() == this->get2ndValueType())) {
@@ -124,7 +124,7 @@ class AttributeParameter : public BinaryParameter
 		{  ASSERT(this->has2ndValue()); 
 		   return this->get2ndValueString(); 
 		}
-    Type	getAttributeValueType()
+    dx_Type	getAttributeValueType()
 		{  ASSERT(this->has2ndValue()); 
 		   return this->get2ndValueType(); 
 		}

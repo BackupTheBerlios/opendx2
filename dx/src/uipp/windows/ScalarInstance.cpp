@@ -186,7 +186,7 @@ SetAttrDialog *ScalarInstance::newSetAttrDialog()
 //
 bool ScalarInstance::verifyValueAgainstAttributes(int output, 
 						const char *val, 
-						Type t,
+						dx_Type t,
 						char **reason)
 {
     return this->verifyVSIAgainstAttributes(val,t,reason);
@@ -198,7 +198,7 @@ bool ScalarInstance::verifyValueAgainstAttributes(int output,
 // on a single Vector, Scalar or Integer (VSI) string value.
 //
 bool ScalarInstance::verifyVSIAgainstAttributes(const char *val,
-					Type t, char **reason)
+					dx_Type t, char **reason)
 {
     DXValue dxval;
     bool r = true;

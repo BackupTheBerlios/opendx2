@@ -80,7 +80,7 @@ class InteractorInstance : public Base {
     //
     virtual bool verifyValueAgainstAttributes(int output, 
 					 	const char *val,
-						Type t,
+						dx_Type t,
 						char **reason);
     virtual bool defaultVertical() { return true; }
 
@@ -188,7 +188,7 @@ class InteractorInstance : public Base {
     // failure.  This string is expected to be freed by the caller.
     //
     bool setAndVerifyOutput(int index, const char *val, 
-					Type type, bool send,
+					dx_Type type, bool send,
 					char **reason);
 
     //

@@ -210,14 +210,14 @@ class ScalarInstance : public InteractorInstance  {
     // of the component values.
     //
     virtual bool verifyValueAgainstAttributes(int output, const char *val,
-							Type t,
+							dx_Type t,
                                                         char **reason);
     //
     // Perform the functions of ScalarInstance::verifyValueAgainstAttributes()
     // on a single Vector, Scalar or Integer (VSI) string value.
     //
     bool verifyVSIAgainstAttributes(const char *val,
-                                        Type t, char **reason);
+                                        dx_Type t, char **reason);
 
     virtual const char* javaName() { return "step"; }
 

@@ -265,7 +265,7 @@ class EditorWindow : public DXWindow
     // Record moved StandIns and decorators so that movement
     // can be undone. ...on behalf of the new graph layout operation.
     //
-    Stack undo_list;
+    dxc_Stack undo_list;
     bool moving_many_standins;
     bool performing_undo;
     bool creating_new_network;
