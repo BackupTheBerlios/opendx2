@@ -1,16 +1,20 @@
-MSDEV=C:/msdev
+# MSDEV=C:/msdev
+MSDEV="C:/Program Files/Microsoft Platform SDK"
+# MSVC="/usr/Program Files/Microsoft Visual Studio"
+MSVC="C:/Program Files/Microsoft Visual Studio"
 stdout=/tmp/stdo$$
 stderr=/tmp/stde$$
 args=
 libs=
 incpath="$INCPATH"
-defs="/Dintelnt /X /DWIN32"
+defs="/Dintelnt /DWIN32 /D_VISUALC_"
+#defs="/Dintelnt /X /DWIN32"
 undefs=
 cfiles=
 mounts=
 echo=0
-tmp=$MSDEV/Lib
-deflibs="/LIBPATH:"`cygpath --windows $tmp | sed 's/\\\\/\\\\\\\\/'g`
+tmp="$MSDEV\Lib"
+# deflibs="/LIBPATH:\"`cygpath -a --windows \"$tmp\"`\""
 deflibs="$deflibs $LIBPATH kernel32.lib"
 deflibs="$deflibs user32.lib gdi32.lib winspool.lib"
 deflibs="$deflibs comdlg32.lib advapi32.lib shell32.lib"
@@ -89,9 +93,11 @@ for i in $* ; do
 		-D*)     defs="$defs `echo $i | sed 's?-D?/D?'`" ;; 
 		-U*)     undefs="$undefs `echo $i | sed 's?-U?/U?'`" ;;
                 -I*)     tmp=`echo $i | sed "s/-I//"`
-                         incpath="$incpath /I"`cygpath --windows $tmp` ;;
+                         tmp2=`cygpath -a --windows "$tmp"`
+                         incpath="$incpath /I\"$tmp2\"";;
                 -L*)     tmp=`echo $i | sed "s/-L//"`
-                         libpath="$libpath /LIBPATH:`cygpath --windows $tmp`" ;;
+                         tmp2=`cygpath -a --windows "$tmp"`
+                         libpath="$libpath /LIBPATH:\"$tmp2\"" ;;
 		-l*)     libs="$libs `echo $i | sed 's?-l??'`.lib" ;;
 		-echo)   echo=1 ;;
 		-c)      link=0
@@ -120,11 +126,12 @@ for i in $* ; do
 	esac
 done
 
-incpath="$incpath /I$MSDEV/Include"
-tmp=$MSDEV/Include
-msincs="$incpath /I"`cygpath --windows $tmp | sed 's/\\\\/\\\\\\\\/'g`
-incpath=`echo $incpath | sed 's/\\\\/\\\\\\\\/g'`
-libpath=`echo $libpath | sed 's/\\\\/\\\\\\\\/g'`
+
+tmp=`cygpath -a --windows "$MSDEV/Include"`
+msincs="/I\"$tmp\""
+incpath="$incpath $msincs"
+#incpath=`echo $incpath | sed 's/\\\\/\\\\\\\\/g'`
+#libpath=`echo $libpath | sed 's/\\\\/\\\\\\\\/g'`
 
 if test $mkdep = 1; then
     if test -f foo$$ ; then
@@ -132,7 +139,6 @@ if test $mkdep = 1; then
     fi
     touch foo$$
 
-    MSVC="/usr/Program Files/Microsoft Visual Studio"
     MSVC_INCLUDE=\"$MSVC/Vc98/Include\"
     MSVC_COMMON_INCLUDE=\"$MSVC/Common/Include\"
     cmd="makedepend -ffoo$$ -Dintelnt -D_WIN32 -D_M_IX86=500 -Y -I$MSVC_INCLUDE -I$MSVC_COMMON_INCLUDE $fname"
@@ -166,7 +172,7 @@ if test $compile = 1
 then
 
     if test $link = 1 ; then
-	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles /link $libpath $libs $deflibs  $dlllib $map $binmode" 
+	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles /link $libpath $deflibs $libs $dlllib $map $binmode" 
     else
 	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles"
     fi
