@@ -33,7 +33,7 @@ SUBDIRS = server dx
 ## which allows for quick jarring
 ##
 
-CLASSPATH = @DX_JAVA_CLASSPATH@:./
+CLASSPATH = @DX_JAVA_CLASSPATH@
 
 export CLASSPATH
 
@@ -72,7 +72,7 @@ AnyDX.dll: DXLink.o
 ## JINC set by configure via acinclude.m4
 
 DXLink.o:  server.jar
-	(cd dxsc; $(JAVAH) -d ../server server.DXServer server.DXServerThread)
+	(cd dxsc; CLASSPATH= $(JAVAH) -d ../server server.DXServer server.DXServerThread)
 	(cd server; $(CC) $(DXABI) -o ../DXLink.o -I../../../../include -c -D@ARCH@ $(JNI_CFLAGS) @JINC@ DXLink.c)
 
 ##SAMPLE_OBJS = AS400VSMonth.class AutoInsurance.class CCNet2.class \
