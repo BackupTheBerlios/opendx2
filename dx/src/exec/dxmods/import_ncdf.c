@@ -6,16 +6,7 @@
 #include <stdio.h>
 #include <dx/dx.h>
 
-#if DXD_LACKS_NCDF_FORMAT
-Error _dxfstat_netcdf_file(char *filename)
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "netCDF libs not included"); return ERROR; }
-Object DXImportNetCDF(char *filename, char **variable, int *starttime,
-                    int *endtime, int *deltatime)
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "netCDF libs not included"); return ERROR; }
-Object _dxfQueryImportInfo(char *filename)
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "netCDF libs not included"); return ERROR; }
-
-#else
+#if defined(HAVE_LIBNETCDF)
 
 #include <netcdf.h>
 #include <ctype.h>
@@ -3506,5 +3497,15 @@ static char * parseit(char *in, int *n, char *out[])
     
     return in;
 }
+
+#else
+
+Error _dxfstat_netcdf_file(char *filename)
+{ DXSetError(ERROR_NOT_IMPLEMENTED, "netCDF libs not included"); return ERROR; }
+Object DXImportNetCDF(char *filename, char **variable, int *starttime,
+                    int *endtime, int *deltatime)
+{ DXSetError(ERROR_NOT_IMPLEMENTED, "netCDF libs not included"); return ERROR; }
+Object _dxfQueryImportInfo(char *filename)
+{ DXSetError(ERROR_NOT_IMPLEMENTED, "netCDF libs not included"); return ERROR; }
 
 #endif /* DXD_LACKS_NCDF_FORMAT */
