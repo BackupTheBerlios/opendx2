@@ -51,6 +51,7 @@ dllflag=/MD
 dlllib=
 binmode=
 dfile=
+deffile=
 
 cleanup() { 
 
@@ -107,7 +108,10 @@ for i in $* ; do
                 -o)      # args="$args $i"
                          oset=1 ;;
 		-map)	 map="/MAP" ;;
+                -Wp*)    dfile=`echo $i | sed "s/^.*\(.deps.*\)/ \1/"`
+                         mkdep=1 ;;
 		-M)	 compile=0
+			 dfile=
 			 mkdep=1 ;;
 		-g)      defs="$defs $debugdefs" 
 			 linkopts="$linkopts $debuglinkopts" ;;
@@ -118,10 +122,14 @@ for i in $* ; do
 		-U*)     undefs="$undefs `echo $i | sed 's?-U?/U?'`" ;;
                 -I*)     tmp=`echo $i | sed "s/-I//"`
                          tmp2=`cygpath -a --windows "$tmp"`
-                         incpath="$incpath /I\"$tmp2\"";;
+                         if test -n "$tmp2" ; then
+                           incpath="$incpath /I\"$tmp2\""
+                         fi  ;;
                 -L*)     tmp=`echo $i | sed "s/-L//"`
-                         tmp2=`cygpath -a --windows "$tmp"`
-                         libpath="$libpath /LIBPATH:\"$tmp2\"" ;;
+                         tmp2=`cygpath -w -s $tmp`
+                         if test -n "$tmp2" ; then
+                           libpath="$libpath /libpath:\"$tmp2\""
+                         fi ;;
 		-l*)     libs="$libs `echo $i | sed 's?-l??'`.lib" ;;
 		-echo)   echo=1 ;;
 		-c)      link=0
@@ -141,8 +149,11 @@ for i in $* ; do
                          cp $i $fname
                          delfiles="$delfiles $fname"
 			 cfiles="$cfiles $fname" ;;
-		-Wp*)	 dfile=`echo $i | sed "s/^.*\(.deps*\)/ \1/"`
-			 mkdep=1;;
+                -def*)   tmp=`echo $i | sed "s/-def//"`
+                         tmp2=`cygpath -w -s "$tmp"`
+                         deffile="/DEF:\"$tmp2\"" ;;
+                -module) dllflag="$dllflag /LD"
+                         linkmodule="/DLL /EXPORT:DXEntry" ;;
                 *)       if test $oset = 1 ; then
                              oname=$i
                              args="$args /Fe$i"
@@ -199,7 +210,7 @@ if test $compile = 1
 then
 
     if test $link = 1 ; then
-	cmd="cl -nologo $incpath $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $prelibs $libs $deflibs $dlllib $map $binmode $linkopts" 
+	cmd="cl -nologo $incpath $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $prelibs $libs $deflibs $dlllib $map $binmode $linkopts $linkmodule $deffile" 
     else
 	cmd="cl $dllflag -nologo $incpath $defs $undefs $args $cfiles"
     fi

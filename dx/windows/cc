@@ -49,6 +49,8 @@ oname=
 dllflag=/MD
 dlllib=
 binmode=
+linkmodule=
+deffile=
 
 touch $stdout
 touch $stderr
@@ -95,10 +97,10 @@ for i in $* ; do
 	case $i in 
 		-staticRunTime)
 			 dlllib="libcmt.lib"
-			 dllflag="/MT" ;;
+			 dllflag="$dllflag /MT" ;;
 		-dllRunTime)
 			 dlllib="msvcrt.lib"
-			 dllflag="/MD" ;;
+			 dllflag="$dllflag /MD" ;;
                 -o)      # args="$args $i"
                          oset=1 ;;
 		-map)	 map="/MAP" ;;
@@ -116,10 +118,14 @@ for i in $* ; do
 		-U*)     undefs="$undefs `echo $i | sed 's?-U?/U?'`" ;;
                 -I*)     tmp=`echo $i | sed "s/-I//"`
                          tmp2=`cygpath -a --windows "$tmp"`
-                         incpath="$incpath /I\"$tmp2\"" ;; 
+                         if test -n "$tmp2" ; then
+			   incpath="$incpath /I\"$tmp2\"" 
+			 fi  ;; 
                 -L*)     tmp=`echo $i | sed "s/-L//"`
-                         tmp2=`cygpath -a --windows "$tmp"`
-                         libpath="$libpath /libpath:\"$tmp2\"" ;;
+                         tmp2=`cygpath -w -s $tmp`
+			 if test -n "$tmp2" ; then
+                           libpath="$libpath /libpath:\"$tmp2\"" 
+			 fi ;;
 		-l*)     libs="$libs `echo $i | sed 's?-l??'`.lib" ;;
 		-echo)   echo=1 ;;
 		*.c)     cfiles="$cfiles $i" ;;
@@ -129,6 +135,11 @@ for i in $* ; do
 			 args="$args /E" ;;
 		-B)	 LIB="$LIB;$BINMODEDIR" 
 			 binmode="BINMODE.OBJ" ;;
+		-def*)	 tmp=`echo $i | sed "s/-def//"`
+			 tmp2=`cygpath -w -s "$tmp"`
+			 deffile="/DEF:\"$tmp2\"" ;;
+		-module) dllflag="$dllflag /LD"
+			 linkmodule="/DLL /EXPORT:DXEntry" ;;
                  *)      if test $oset = 1 ; then
                              oname=$i
                              args="$args /Fe$i"
@@ -181,7 +192,7 @@ fi
 if test $compile = 1 ; then
 
     if test $link = 1 ; then
-	cmd="cl -nologo $incpath $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $prelibs $libs $deflibs $dlllib $map $binmode $linkopts" 
+	cmd="cl -nologo $incpath $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $prelibs $libs $deflibs $dlllib $map $binmode $linkopts $linkmodule $deffile" 
     else
 	cmd="cl $dllflag -nologo $incpath $defs $undefs $args $cfiles"
     fi
