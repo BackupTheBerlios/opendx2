@@ -3,7 +3,7 @@
 dxbindir = $(prefix)/dx/bin
 bindir = $(prefix)/bin
 
-EXTRA_DIST = dxworker dx mdf2c url_handler.sh
+EXTRA_SCRIPTS = mdf2c url_handler.sh dx dxworker 
 
-dxbin_SCRIPTS = dxworker mdf2c dx url_handler.sh
-bin_SCRIPTS = dx
+dxbin_SCRIPTS = mdf2c url_handler.sh @INSTALL_BIN_SCRIPT@
+bin_SCRIPTS = @INSTALL_BIN_SCRIPT@
