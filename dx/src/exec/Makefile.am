@@ -57,7 +57,7 @@ libDX_la_LIBADD = dxexec/libDXEXEC.la \
 	dxmods/libDXMODS.la dxmods/libuser.la dxmods/libDXMODSN.la \
 	libdx/libLIBDX.la libdx/libmem.la \
 	dpexec/libDPEXEC.la \
-	hwrender/libHW.la
+	hwrender/libHW.la \
 	hwrender/opengl/libOPENGL.la
 
 
