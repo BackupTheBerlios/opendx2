@@ -25,7 +25,7 @@ switch ( $thissys )
     set exarch=freebsd
     set uiarch=freebsd
 
-    set remove=/usr/bin/rsh
+    set remote=/usr/bin/rsh
 
     breaksw
 
@@ -68,6 +68,9 @@ switch ( $thissys )
       set exarch=solaris
       set uiarch=solaris
 
+      if ( ! $?LD_LIBRARY_PATH ) then
+	setenv LD_LIBRARY_PATH ""
+      endif
       setenv LD_LIBRARY_PATH $LD_LIBRARY_PATH":/usr/openwin/lib:/opt/SUNWits/Graphics-sw/xgl-3.0/lib:/usr/ucblib"
 
     else
@@ -225,12 +228,12 @@ set arglist=($dxargs $envargs $argv)
 while ($#arglist > 0)
 
   switch ($arglist[1])  
-  case -whereami
+  case -whereami:
     echo installed in $dxroot
     exit 0
     breaksw
 
-  case -whicharch
+  case -whicharch:
     echo $exarch
     exit 0
     breaksw
@@ -1409,7 +1412,7 @@ if ($exonly) then
     endif
   endif
 
-  if ( $FileName != "" ) then
+  if ( "$FileName" != "" ) then
     if ( "$echoparms" != "" ) then
       $echoparms $dxcom $exflags "< $FileName"
     else
