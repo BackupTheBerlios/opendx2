@@ -1,7 +1,7 @@
 javamacrodir = $(prefix)/dx/java/server/usermacros
 
 MACRO_FILES = ClassifyMacro.net Legend2Macro.net MOSFromLongLat.net \
-	Makefile.am bschols.net kmeansmacro.net logn.net optsurf.net \
+	bschols.net kmeansmacro.net logn.net optsurf.net \
 	pdflogn.net prunemac.net vhwymac.net
 
 javamacro_DATA = $(MACRO_FILES)
