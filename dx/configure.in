@@ -8,6 +8,7 @@ AC_INIT(include/dx/arch.h)
 AM_INIT_AUTOMAKE(dx, 1.0)
 
 DX_ARCHITECTURE
+DX_STREAM_O2
 
 dnl Checks for programs.
 AC_PROG_RANLIB
