@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -D$(ARCH) -I../base -I../../../include -I../dxuilib
+INCLUDES = -I../base -I../../../include -I../dxuilib
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxbindir = $(prefix)/dx/bin_$(ARCH)
+dxbindir = $(prefix)/dx/bin_@ARCH@
 dxbin_PROGRAMS = dxui
 
 
