@@ -10,13 +10,14 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.4 2000/05/16 18:47:24 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.5 2000/08/23 17:08:25 gda Exp $
  */
 
 
 #include <dx/dx.h>
 #include "stream.h"
 #include "vectors.h"
+#include <math.h>
 
 typedef struct neighborsHandle
 {
@@ -102,6 +103,8 @@ struct irreg_VectorGrp
     int	     	      primsPerElement;
     int		      nbrsPerElement;
     int		      vrtsPerElement;
+    int		      nbrsPerPrim;
+    int		      nDimensions;
 };
 
 struct irreg_VectorPart
@@ -160,6 +163,7 @@ static NbrTable tetrahedra_nbrTable[] =
 #define TETRAHEDRA_N_NBRS	4
 #define TETRAHEDRA_N_VRTS	4
 #define TETRAHEDRA_N_DIMS	3
+#define TETRAHEDRA_N_PRIM_NBRS	4
 
 /*
  ***********************************
@@ -181,6 +185,7 @@ static NbrTable triangles_nbrTable[] =
 #define TRIANGLES_N_NBRS	3
 #define TRIANGLES_N_VRTS	3
 #define TRIANGLES_N_DIMS	2
+#define TRIANGLES_N_PRIM_NBRS	3
 
 /*
  ***********************************
@@ -202,6 +207,7 @@ static int icubes_primTable[] =
 #define ICUBES_N_NBRS		6
 #define ICUBES_N_VRTS		8
 #define ICUBES_N_DIMS		3
+#define ICUBES_N_PRIM_NBRS	4
 
 static NbrTable icubes_nbrTable[] =
 {
@@ -229,6 +235,7 @@ static int iquads_primTable[] =
 #define IQUADS_N_NBRS		4
 #define IQUADS_N_VRTS		4
 #define IQUADS_N_DIMS		2
+#define IQUADS_N_PRIM_NBRS	3
 
 static NbrTable iquads_nbrTable[] =
 {
@@ -250,6 +257,7 @@ typedef struct
     int		      nbrsPerElement;
     int		      vrtsPerElement;
     int		      nDimensions;
+    int		      nbrsPerPrim;
 } ElementDef;
 
 static ElementDef   elementTable[] =
@@ -261,7 +269,8 @@ static ElementDef   elementTable[] =
 	TETRAHEDRA_N_PRIMS,
 	TETRAHEDRA_N_NBRS,
 	TETRAHEDRA_N_VRTS,
-	TETRAHEDRA_N_DIMS
+	TETRAHEDRA_N_DIMS,
+	TETRAHEDRA_N_PRIM_NBRS
     },
     {
 	"triangles",
@@ -270,7 +279,8 @@ static ElementDef   elementTable[] =
 	TRIANGLES_N_PRIMS,
 	TRIANGLES_N_NBRS,
 	TRIANGLES_N_VRTS,
-	TRIANGLES_N_DIMS
+	TRIANGLES_N_DIMS,
+	TRIANGLES_N_PRIM_NBRS
     },
     {
 	"cubes",
@@ -279,7 +289,8 @@ static ElementDef   elementTable[] =
 	ICUBES_N_PRIMS,
 	ICUBES_N_NBRS,
 	ICUBES_N_VRTS,
-	ICUBES_N_DIMS
+	ICUBES_N_DIMS,
+	ICUBES_N_PRIM_NBRS
     },
     {
 	"quads",
@@ -288,7 +299,8 @@ static ElementDef   elementTable[] =
 	IQUADS_N_PRIMS,
 	IQUADS_N_NBRS,
 	IQUADS_N_VRTS,
-	IQUADS_N_DIMS
+	IQUADS_N_DIMS,
+	IQUADS_N_PRIM_NBRS
     },
     {
 	NULL,
@@ -317,6 +329,8 @@ static int          Irreg_Interpolate(InstanceVars, POINT_TYPE *,
 					VECTOR_TYPE *);
 static Error        Irreg_StepTime(InstanceVars, double,
 					VECTOR_TYPE *, double *);
+static Error        Irreg_Walk(InstanceVars, POINT_TYPE *,
+					VECTOR_TYPE *, POINT_TYPE *);
 static Error        Irreg_FindBoundary(InstanceVars, POINT_TYPE *,
 					VECTOR_TYPE *, double *);
 static int          Irreg_Neighbor(InstanceVars, VECTOR_TYPE *);
@@ -327,7 +341,7 @@ static Error        Irreg_CurlMap_Field(Irreg_VectorGrp,
 					Irreg_VectorPart, Group, Field *);
 static Error	    Irreg_ResetVectorGrp(VectorGrp);
 static Error	    Irreg_ResetVectorPart(VectorPart);
-
+static int	    Irreg_Ghost(InstanceVars I, POINT_TYPE *p);
 
 static int Tetras_Weights(InstanceVars, POINT_TYPE *);
 static int Tetras_FaceWeights(InstanceVars, POINT_TYPE *);
@@ -482,6 +496,7 @@ Irreg_NewInstanceVars(VectorGrp p)
     iI->nHandle = NULL;
 
     iI->i.currentVectorGrp = p;
+    iI->i.isRegular = 0;
 
     return (InstanceVars)iI;
 }
@@ -570,6 +585,8 @@ _dxfIrreg_InitVectorGrp(Object object, char *elementType)
     P->P.CurlMap           	   = Irreg_CurlMap;
     P->P.Delete            	   = Irreg_Delete;
     P->P.Reset            	   = Irreg_ResetVectorGrp;
+    P->P.Walk            	   = Irreg_Walk;
+    P->P.Ghost            	   = Irreg_Ghost;
 
     /*
      * Attach element type-dependent info to return object
@@ -579,6 +596,8 @@ _dxfIrreg_InitVectorGrp(Object object, char *elementType)
     P->primsPerElement     = eDef->primsPerElement;
     P->nbrsPerElement      = eDef->nbrsPerElement;
     P->vrtsPerElement      = eDef->vrtsPerElement;
+    P->nbrsPerPrim         = eDef->nbrsPerPrim;
+    P->nDimensions         = eDef->nDimensions;
 
     if ((P->P.nDim = eDef->nDimensions) == 3)
     {
@@ -641,27 +660,12 @@ Irreg_InitVectorPart(Field f, Irreg_VectorGrp iP)
     ip = (Irreg_VectorPart)DXAllocate(sizeof(struct irreg_VectorPart));
     if (! ip)
 	goto error;
+
+    if (! _dxfInitVectorPart((VectorPart)ip, f))
+        goto error;
     
     ip->visited = NULL;
 
-    if (! DXGetComponentValue(f, "data"))
-    {
-	DXSetError(ERROR_MISSING_DATA, "#10240", "data");
-	goto error;
-    }
-
-    attr = DXGetComponentAttribute(f, "data", "dep");
-    if (! attr | DXGetObjectClass(attr) != CLASS_STRING)
-    {
-	DXSetError(ERROR_DATA_INVALID, "data dependency");
-	goto error;
-    }
-
-    if (!strcmp(DXGetString((String)attr), "positions"))
-	ip->p.dependency = DEP_ON_POSITIONS;
-    else
-	ip->p.dependency = DEP_ON_CONNECTIONS;
-    
     ip->cArray = (Array)DXGetComponentValue(f, "connections");
     if (! ip->cArray)
 	goto error;
@@ -764,9 +768,6 @@ Irreg_InitVectorPart(Field f, Irreg_VectorGrp iP)
 	ip->constantData = 0;
 	ip->vectors = (float *)DXGetArrayData(array);
     }
-
-    if (! _dxfMinMaxBox(f, ip->p.min, ip->p.max))
-	goto error;
     
     return (VectorPart)ip;
 
@@ -1313,6 +1314,7 @@ Tetras_FaceWeights(InstanceVars I, POINT_TYPE *pt)
     float              V, *pts[3], pbuf[3][3];
     Vector             vecs[3], cross;
     float	       fpt[3];
+    int		       npos;
 
     fpt[0] = pt[0];
     fpt[1] = pt[1];
@@ -1358,13 +1360,18 @@ Tetras_FaceWeights(InstanceVars I, POINT_TYPE *pt)
 
     V = 1.0 / V;
 
-    for (i = j = 0; i < 4; i++)
+    for (i = j = npos = 0; i < 4; i++)
+    {
 	if (i == iI->face)
 	    iI->w[i] = 0.0;
 	else
 	    iI->w[i] = w[j++] * V;
 
-    return 1;
+	if (iI->w[i] >= 0.0)
+	    npos ++;
+    }
+
+    return npos == 0 || npos == 4;
 }
 
 static int
@@ -1560,7 +1567,7 @@ Tris_FaceWeights(InstanceVars I, POINT_TYPE *pt)
     int   np, e, t;
     Irreg_VectorPart ip;
     float w[2];
-    int   i, j, *elt, *tri, ebuf[8];
+    int   npos, i, j, *elt, *tri, ebuf[8];
     float *pts[3], pbuf[3][2];
 
     np = iI->cp;
@@ -1597,13 +1604,18 @@ Tris_FaceWeights(InstanceVars I, POINT_TYPE *pt)
 	return 0;
     }
 
-    for (i = j = 0; i < 3; i++)
+    for (i = j = npos = 0; i < 3; i++)
+    {
 	if (i == iI->face)
 	    iI->w[i] = 0.0;
 	else
 	    iI->w[i] = w[j++];
+	
+	if (iI->w[i] >= 0.0)
+	    npos ++;
+    }
 
-    return 1;
+    return npos == 0 || npos == 3;
 }
 
 #define POINTLINE(a,b) ((a)[0]*(b)[0] + (a)[1]*(b)[1] + (a)[2])
@@ -1788,7 +1800,8 @@ Irreg_Interpolate(InstanceVars I, POINT_TYPE *pt, VECTOR_TYPE *vec)
 
     if (ip->constantData)
     {
-	memcpy((char *)vec, (char *)ip->vectors, iP->P.nDim*sizeof(float));
+        for (i = 0; i < iP->P.nDim; i++)
+	    vec[i] = (VECTOR_TYPE)ip->vectors[i];
 	return OK;
     }
 
@@ -1899,6 +1912,156 @@ Irreg_StepTime(InstanceVars I, double c, VECTOR_TYPE *vec, double *t)
     return OK;
 }
 	
+static int
+_Irreg_Walk(Irreg_InstanceVars iI, Irreg_VectorGrp iP,
+	int *nbrs, /* The element neighbors of elt iI->ce	*/
+	int NPerP, /* The number of nbrs of a primitive	*/
+	int nDim,  /* The dimensionality of the space */
+	POINT_TYPE *start, VECTOR_TYPE *vector, POINT_TYPE *target)
+{
+    float    w[4];
+    int      nbuf[6];
+    int      i, j, k;
+    float    *plane;
+    int      ne;
+    NbrTable *nt;
+    /*
+     * Check the current element/primitive.  If its in, we're done.
+     */
+    if ((*iP->P.Weights)((InstanceVars)iI, target))
+        return WALK_FOUND;
+
+#if 0
+    plane = iI->planes;
+    for (k = 0; k < NPerP; k++)
+    {
+	float l = 0.0;
+	for (j = 0; j < NPerP-1; j++)
+	    l += (plane[j]*plane[j]);
+    
+	if (l == 0)
+	    continue;
+
+	l = 1.0 / sqrt(l);
+
+	for (j = 0; j < NPerP; j++)
+	    plane[j] *= l;
+
+	plane += NPerP;
+    }
+#endif
+
+    /*
+     * Find the exit point for the vector.  To do so, intersect
+     * the vector with the plane of each face, then test the
+     * intersection point against each other plane.
+     */
+    plane = iI->planes;
+    for (i = 0; i < NPerP; i++)
+    {
+        float VDotP = 0.0; /* vector dot plane		      */
+	float SDotP = 0.0; /* start dot plane                 */
+	float t;           /* intersection dist along vector  */
+	POINT_TYPE xit[3]; /* intersection point              */
+	int out;
+	float aa;
+
+	VDotP = 0.0;
+	for (j = 0; j < nDim; j++)
+	{
+	    VDotP += (vector[j] * *plane);
+	    SDotP += (start[j] * *plane);
+	    plane ++;
+	}
+	SDotP += *plane;
+	plane++;
+
+	/*
+	 * if VDotP <= 0.0 then the vector points away
+	 * from the element face
+	 */
+	if (VDotP <= 0)
+	    continue;
+
+	t = -SDotP / VDotP;
+	if (t > 1.0)
+	    continue;
+
+	for (j = 0; j < nDim; j++)
+	    xit[j] = start[j] + t*vector[j];
+
+	/*
+	 * See if the intersection point (xit) actually lies in the
+	 * face.
+	 */
+	iI->face = i;
+	if (! (*iP->P.FaceWeights)((InstanceVars)iI, xit))
+	    continue;
+
+	if (j == NPerP)
+	    return WALK_ERROR;
+
+	nt = iP->nbrTable + NPerP*iI->ct + iI->face;
+
+	/*
+	 * If there is no neighbor, then we've found the exit.  This
+	 * is the case if the primitive face corresponds to an element
+	 * face (nt->nelt != -1) and there's no corresponding  element
+	 * neighbor.
+	 *
+	 * ne is the next element.  Its either the same as this one,
+	 * if this is an internal face, or the neighbor if there
+	 * is one.  If this face is external to the partition, then 
+	 * we'll be returning before its used. 
+	 */
+	ne = iI->ce; 
+	if (nt->nelt != -1 && (ne = nbrs[nt->nelt]) == -1)
+	{
+	    for (j = 0; j < nDim; j++)
+	        target[j] = xit[j];
+	    return WALK_EXIT;
+	}
+
+	iI->ct = nt->nprim;
+	if (ne != iI->ce)
+	{
+	    iI->ce = ne;
+	    nbrs = GET_NEIGHBORS(iI->nHandle, iI->ce, nbuf);
+	}
+
+	(*iP->InitElement)(iI);
+
+	if (IsCurrentDegenerate(iI))
+	{
+	    for (j = 0; j < nDim; j++)
+	        target[j] = xit[j];
+	    return WALK_EXIT;
+	}
+
+	return _Irreg_Walk(iI, iP, nbrs, NPerP, nDim, start, vector, target);
+    }
+
+    /*
+     * If we fall out, then we didn't find the exit face.
+     */
+    return WALK_ERROR;
+}
+    
+static int
+Irreg_Walk(InstanceVars I, 
+	POINT_TYPE *start, VECTOR_TYPE *vector, POINT_TYPE *target)
+{
+    Irreg_InstanceVars iI = (Irreg_InstanceVars)I;
+    Irreg_VectorGrp    iP = (Irreg_VectorGrp)(iI->i.currentVectorGrp);
+    Irreg_VectorPart   ip = (Irreg_VectorPart)iP->P.p[iI->cp];
+    int nbuf[6], *nbrs;
+
+    nbrs = GET_NEIGHBORS(iI->nHandle, iI->ce, nbuf);
+
+    return _Irreg_Walk(iI, iP, nbrs,
+    	iP->nbrsPerPrim, iP->nDimensions, start, vector, target);
+}
+
 static int
 Irreg_Neighbor(InstanceVars I, VECTOR_TYPE *v)
 {
@@ -2298,5 +2461,14 @@ error:
     DXDelete((Object)newf);
 
     return ERROR;
+}
+
+static int
+Irreg_Ghost(InstanceVars I, POINT_TYPE *p)
+{
+    Irreg_InstanceVars iI = (Irreg_InstanceVars)I;
+    Irreg_VectorGrp    iP = (Irreg_VectorGrp)(iI->i.currentVectorGrp);
+    Irreg_VectorPart   vp = (Irreg_VectorPart)iP->P.p[iI->cp];
+    return vp->p.ghosts[iI->ce];
 }
 

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.4 2000/05/16 18:48:21 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.5 2000/08/23 17:08:25 gda Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
@@ -1453,6 +1453,50 @@ _dxfMinMaxBox(Field f, float *min, float *max)
 	    if (*b < min[j]) min[j] = *b;
 	    if (*b > max[j]) max[j] = *b;
 	}
+    
+    return OK;
+}
+
+Error
+_dxfInitVectorPart(VectorPart p, Field f)
+{
+    Object a;
+
+    p->field = f;
+
+    p->gArray = (Array)DXGetComponentValue(f, "ghostzones");
+    if (p->gArray)
+        p->ghosts = (unsigned char *)DXGetArrayData(p->gArray);
+    else
+        p->ghosts = NULL;
+
+    a = DXGetComponentAttribute(f, "data", "dep");
+    if (! a)
+    {
+	fprintf(stderr, "data dep error\n");
+	DXSetError(ERROR_MISSING_DATA, "data dependency");
+        return ERROR;
+    }
+    else
+    {
+        char *s = DXGetString((String)a);
+        if (! strcmp(s, "positions"))
+            p->dependency = DEP_ON_POSITIONS;
+        else if (! strcmp(s, "connections"))
+            p->dependency = DEP_ON_POSITIONS;
+	else
+	{
+	    fprintf(stderr, "data dep error 2\n");
+	    DXSetError(ERROR_DATA_INVALID, "data dependency");
+	    return ERROR;
+	}
+    }
+
+    if (! _dxfMinMaxBox(f, p->min, p->max))
+    {
+	fprintf(stderr, "minmaxbox error\n");
+        return ERROR;
+    }
     
     return OK;
 }

@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/stream.h,v 1.3 1999/05/10 15:45:32 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/stream.h,v 1.4 2000/08/23 17:08:25 gda Exp $:
  */
 
 #define DEFAULT_C	0.1
@@ -23,15 +23,20 @@ typedef struct vectorField  *VectorField;
 struct instanceVars
 {
     VectorGrp	currentVectorGrp;
+    int		isRegular;
 };
 
 struct vectorPart
 {
-    Field  	field;
-    int         dependency;       /* data dependency: pos or con       */
-    float	min[3];
-    float	max[3];
+    Field  	  field;
+    int           dependency;       /* data dependency: pos or con       */
+    float	  min[3];
+    float	  max[3];
+    Array	  gArray;
+    unsigned char *ghosts;
 };
+
+Error _dxfInitVectorPart(VectorPart, Field);
  
 #define DEP_ON_POSITIONS        0x01
 #define DEP_ON_CONNECTIONS      0x02
@@ -63,9 +68,18 @@ struct vectorGrp
     int          (*FaceWeights)(InstanceVars, POINT_TYPE *);
     Error        (*Delete)(VectorGrp);
     Error        (*Reset)(VectorGrp);
+    Error        (*Walk)(InstanceVars, POINT_TYPE *, VECTOR_TYPE*, POINT_TYPE *);
+    int          (*Ghost)(InstanceVars, POINT_TYPE *);
+    int          (*ClampToBoundingBox)(InstanceVars, POINT_TYPE *);
+
     int          n, nDim, multigrid;
     VectorPart   *p;
 };
+
+#define WALK_NOT_FOUND	0
+#define WALK_EXIT	1
+#define WALK_FOUND	2
+#define WALK_ERROR	3
 
 
 #define STREAM_BUF_POINTS	32
@@ -81,6 +95,7 @@ struct stream
     int   nDim;
     int   bufKnt, arrayKnt;
 };
+
 
 typedef struct stream *Stream;
 

@@ -83,7 +83,8 @@ static Matrix	    InvertN(Matrix, int);
 static void	    ApplyN(Matrix, int, POINT_TYPE *, POINT_TYPE *);
 static void	    ApplyRotationN(Matrix, int, VECTOR_TYPE *, VECTOR_TYPE *);
 static Matrix	    GetXYZtoIJKMatrix(Reg_VectorPart, int);
-
+static int 	    Reg_Ghost(InstanceVars I, POINT_TYPE *p);
+static int 	    Reg_ClampToBoundingBox(InstanceVars, POINT_TYPE *);
 
 static InstanceVars
 Reg_NewInstanceVars(VectorGrp p)
@@ -94,6 +95,7 @@ Reg_NewInstanceVars(VectorGrp p)
     memset(iI, -1, sizeof(struct reg_InstanceVars));
 
     iI->i.currentVectorGrp = p;
+    iI->i.isRegular = 1;
 
     return (InstanceVars)iI;
 }
@@ -113,7 +115,10 @@ _dxfReg_InitVectorGrp(Object object, char *elementType)
     int                i, nP;
 
     if (! _dxfPartitionNeighbors(object))
-	 return NULL;
+    {
+	fprintf(stderr, "Partition neighbors error\n");
+	return NULL;
+    }
 
     if (DXGetObjectClass(object) == CLASS_FIELD)
 	nP = 1;
@@ -122,7 +127,10 @@ _dxfReg_InitVectorGrp(Object object, char *elementType)
     
     P = (Reg_VectorGrp)DXAllocate(sizeof(struct reg_VectorGrp));
     if (! P)
+    {
+	fprintf(stderr, "Allocation error 1\n");
 	goto error;
+    }
 
     P->object = object;
     
@@ -130,7 +138,10 @@ _dxfReg_InitVectorGrp(Object object, char *elementType)
 
     P->P.p = (VectorPart *)DXAllocateZero(nP * sizeof(struct reg_VectorPart));
     if (! P->P.p)
+    {
+	fprintf(stderr, "Allocation error 2\n");
 	goto error;
+    }
     
     /*
      * Attach generic regular element type methods to 
@@ -149,6 +160,8 @@ _dxfReg_InitVectorGrp(Object object, char *elementType)
     P->P.FaceWeights       		= Reg_FaceWeights;
     P->P.Delete            		= Reg_Delete;
     P->P.Reset             		= NULL;
+    P->P.Ghost             		= Reg_Ghost;
+    P->P.ClampToBoundingBox           	= Reg_ClampToBoundingBox;
 
     if (! strcmp(elementType, "cubes"))
 	P->P.nDim = 3;
@@ -156,7 +169,7 @@ _dxfReg_InitVectorGrp(Object object, char *elementType)
 	P->P.nDim = 2;
     else
     {
-	DXSetError(ERROR_DATA_INVALID, "data");
+	fprintf(stderr, "element type error 1\n");
 	goto error;
     }
 
@@ -164,7 +177,10 @@ _dxfReg_InitVectorGrp(Object object, char *elementType)
     {
 	P->P.p[0] = Reg_InitVectorPart((Field)object, P, 1);
 	if (! P->P.p[0])
+	{
+	    fprintf(stderr, "Reg_InitVectorPart 0 return error 1\n");
 	    goto error;
+	}
 
 	P->P.p[0]->field = (Field)object;
     }
@@ -178,7 +194,10 @@ _dxfReg_InitVectorGrp(Object object, char *elementType)
 	{
 	    P->P.p[i] = Reg_InitVectorPart(f, P, (i == 0));
 	    if (! P->P.p[i] && DXGetError() != ERROR_NONE)
+	    {
+		fprintf(stderr, "Reg_InitVectorPart 0 return error 2\n");
 	        goto error;
+	    }
 	    
 	    P->P.p[i]->field = f;
 	    
@@ -209,37 +228,42 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
     if (! ip)
 	goto error;
 
-    attr = DXGetComponentAttribute(f, "data", "dep");
-    if (! attr | DXGetObjectClass(attr) != CLASS_STRING)
+    if (! _dxfInitVectorPart((VectorPart)ip, f))
     {
-	DXSetError(ERROR_DATA_INVALID, "data dependency");
-	goto error;
+	fprintf(stderr, "Reg_InitVectorPart error 1\n");
+        goto error;
     }
-
-    if (!strcmp(DXGetString((String)attr), "positions"))
-	ip->p.dependency = DEP_ON_POSITIONS;
-    else
-	ip->p.dependency = DEP_ON_CONNECTIONS;
 
     array = (Array)DXGetComponentValue(f, "connections");
     if (! array)
+    {
+	fprintf(stderr, "Reg_InitVectorPart error 2\n");
 	goto error;
+    }
 
     if (! DXQueryGridConnections(array, NULL, ip->cnts))
     {
+	fprintf(stderr, "Reg_InitVectorPart error 3\n");
 	DXSetError(ERROR_DATA_INVALID, "irregular connections");
 	goto error;
     }
 
     if (! DXGetMeshOffsets((MeshArray)array, meshOff))
+    {
+	fprintf(stderr, "Reg_InitVectorPart error 4\n");
 	goto error;
+    }
 
     array = (Array)DXGetComponentValue(f, "positions");
     if (! array)
+    {
+	fprintf(stderr, "Reg_InitVectorPart error 5\n");
 	goto error;
+    }
     
     if (! DXQueryGridPositions(array, NULL, ip->cnts, ip->org, ip->dels))
     {
+	fprintf(stderr, "Reg_InitVectorPart error 6\n");
 	DXSetError(ERROR_DATA_INVALID, "irregular positions");
 	goto error;
     }
@@ -256,12 +280,14 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
     array = (Array)DXGetComponentValue(f, "data");
     if (! array)
     {
+	fprintf(stderr, "Reg_InitVectorPart error 7\n");
 	DXSetError(ERROR_MISSING_DATA, "no data component found");
 	goto error;
     }
 
     if (! DXTypeCheck(array, TYPE_FLOAT, CATEGORY_REAL, 1, P->P.nDim))
     {
+	fprintf(stderr, "Reg_InitVectorPart error 8\n");
 	DXSetError(ERROR_DATA_INVALID,
 	   "dimensionality of positions differs from that of vector field");
 	return NULL;
@@ -278,11 +304,12 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
 	ip->constantData = 0;
     }
 
-    if (! _dxfMinMaxBox(f, ip->p.min, ip->p.max))
-	goto error;
     
     if (! DXInvalidateConnections((Object)f))
+    {
+	fprintf(stderr, "Reg_InitVectorPart error 9\n");
 	goto error;
+    }
     
     DXGetComponentValue(f, "invalid connections");
     if (DXGetComponentValue(f, "invalid connections"))
@@ -290,6 +317,7 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
 	ip->invElements = DXCreateInvalidComponentHandle((Object)f,
 						    NULL, "connections");
 	if (! ip->invElements)
+	fprintf(stderr, "Reg_InitVectorPart error 10\n");
 	    goto error;
     }
     else
@@ -503,7 +531,7 @@ Reg_FindElement_VectorPart(Reg_InstanceVars iI, int np, POINT_TYPE *point)
     ApplyN(ip->mInv, (nd = iP->P.nDim), point, cpoint);
 
     for (i = 0; i < nd; i++)
-	if (cpoint[i] < 0.0 || cpoint[i] >= (ip->cnts[i]-1))
+	if (cpoint[i] < -0.0001 || cpoint[i] >= ((ip->cnts[i]-1) + 0.0001))
 	    break;
     
     if (i != nd)
@@ -616,7 +644,15 @@ Reg_Weights(InstanceVars I, POINT_TYPE *pt)
 	base += ((int)ipoint[i]) * *strd++;
     
     if (base != iI->ce)
+#if 0
 	return 0;
+#else
+    {
+	iI->ce = base;
+	for (i = 0; i < nd; i++)
+	    iI->indices[i] = indices[i];
+    }
+#endif
 
     if (nd == 3)
     {
@@ -673,31 +709,36 @@ Reg_FaceWeights(InstanceVars I, POINT_TYPE *pt)
 
     if (! ip)
 	return -1;
-    
-    ApplyN(ip->mInv, (nd = iP->P.nDim), pt, ipoint);
 
+    ApplyN(ip->mInv, (nd = iP->P.nDim), pt, ipoint);
+    
     for (i = 0; i < nd; i++)
     {
 	if (iI->face == (i<<1)+0)
 	{
+	    iI->indices[i] = 0;
 	    dels[i]        = 0.0;
 	}
 	else if (iI->face == (i<<1)+1)
 	{
+	    iI->indices[i] = ip->cnts[i]-2;
 	    dels[i]        = 1.0;
 	}
 	else
 	{
 	    if (ipoint[i] < 0.0)
 	    {
+		iI->indices[i] = 0;
 		dels[i] = 0.0;
 	    } 
 	    else if (ipoint[i] >= (ip->cnts[i]-1))
 	    {
-		dels[i] = 1.0;
+		iI->indices[i] = (ip->cnts[i]-1);
+		dels[i] = ip->cnts[i]-1;
 	    }
 	    else
 	    {
+		iI->indices[i] = (int)ipoint[i];
 		dels[i] = ipoint[i] - iI->indices[i];
 	    }
 	}
@@ -717,7 +758,13 @@ Reg_FaceWeights(InstanceVars I, POINT_TYPE *pt)
 	double C  = dy * dz;
 	double D  = dx * dy * dz;
 
-	*w++ = 1.0 - dz - dy - dx + A + B + C - D;
+	{
+	    double aa, bb;
+	    aa = (1.0 + A + B + C) - (dz + dy + dx + D);
+	    bb = 1.0 - dz - dy - dx + A + B + C - D;
+	    *w++ = aa;
+	}
+
 	*w++ = dz - B - C + D;
 	*w++ = dy - C - A + D;
 	*w++ = C - D;
@@ -761,6 +808,7 @@ Reg_FindBoundary(InstanceVars I, POINT_TYPE *p, POINT_TYPE *v, double *t)
     int   face = -1, f;
 
     ApplyN(ip->mInv, (nd = iP->P.nDim), p, ipoint);
+    ApplyRotationN(ip->mInv, iP->P.nDim, v, iI->ivector);
 
     tmin = DXD_MAX_FLOAT;
     for (i = 0; i < nd; i++)
@@ -768,10 +816,10 @@ Reg_FindBoundary(InstanceVars I, POINT_TYPE *p, POINT_TYPE *v, double *t)
 	double iv = iI->ivector[i];
 	double l, t0;
 
-	l  = ipoint[i] - iI->indices[i];
+	l  = ipoint[i];
 
 	if (l < 0.0) l = 0.0;
-	else if (l > 1.0) l = 1.0;
+	else if (l > (ip->cnts[i]-1)) l = (ip->cnts[i]-1);
 
 	if (iv < 0)
 	{
@@ -780,11 +828,9 @@ Reg_FindBoundary(InstanceVars I, POINT_TYPE *p, POINT_TYPE *v, double *t)
 	}
 	else if (iv > 0)
 	{
-	    l = 1.0 - l;
+	    l = (ip->cnts[i]-1) - l;
 	    f  = (i << 1) + 1;
 	}
-	else
-	    continue;
 
 	t0 = l / iv;
 	if (t0 < tmin)
@@ -826,7 +872,7 @@ Reg_Interpolate(InstanceVars I, POINT_TYPE *pt, VECTOR_TYPE *vec)
     if (ip->constantData)
     {
 	for (i = 0; i < nDim; i++)
-	    vec[i] = ip->vectors[i];
+	    vec[i] = (VECTOR_TYPE)ip->vectors[i];
 	return OK;
     }
 
@@ -871,9 +917,9 @@ Reg_StepTime(InstanceVars I, double c, VECTOR_TYPE *vec, double *t)
      * determine the step in time that results in a step along
      * the given step vector of length c.
      */
-    
-    ApplyRotationN(ip->mInv, (nd = iP->P.nDim), vec, iI->ivector);
+    ApplyRotationN(ip->mInv, iP->P.nDim, vec, iI->ivector);
 
+    nd = iP->P.nDim;
     l = 0.0;
     for (i = 0; i < nd; i++)
 	l += (iI->ivector[i] * iI->ivector[i]);
@@ -1107,3 +1153,38 @@ Reg_CurlMap(VectorGrp P, MultiGrid mg)
 error:
     return ERROR;
 }
+
+static void bar(){}
+
+static int
+Reg_Ghost(InstanceVars I, POINT_TYPE *p)
+{
+    Reg_InstanceVars rI = (Reg_InstanceVars)I;
+    Reg_VectorGrp    rP = (Reg_VectorGrp)(rI->i.currentVectorGrp);
+    Reg_VectorPart   vp = (Reg_VectorPart)rP->P.p[rI->cp];
+    int i, base;
+
+    for (i = 0, base = 0; i <  rP->P.nDim; i++)
+	base += rI->indices[i]*vp->cstrides[i];
+	
+    return vp->p.ghosts[base];
+}
+
+
+static int
+Reg_ClampToBoundingBox(InstanceVars I, POINT_TYPE *p)
+{
+    Reg_InstanceVars rI = (Reg_InstanceVars)I;
+    Reg_VectorGrp    rP = (Reg_VectorGrp)rI->i.currentVectorGrp;
+    Reg_VectorPart   rp = (Reg_VectorPart)rP->P.p[rI->cp];
+    int i;
+
+    for (i = 0; i <  rP->P.nDim; i++)
+    {
+	if (p[i] < rp->p.min[i]) p[i] = rp->p.min[i];
+	if (p[i] > rp->p.max[i]) p[i] = rp->p.max[i];
+    }
+
+    return OK;
+}
+
