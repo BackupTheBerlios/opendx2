@@ -284,6 +284,7 @@ SFILEGetChar(SFILE *sf)
 #endif
 	if (ssf->type == SFILE_FPTR)
 	{
+		ssf->count = read(ssf->fd, ssf->buffer, BUFSIZ);
 		ssf->buffer[ssf->count] = '\0';
 	}
 	else if (ssf->type == SFILE_FDESC)
