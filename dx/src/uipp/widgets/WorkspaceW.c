@@ -949,13 +949,11 @@ static void Initialize( XmWorkspaceWidget request, XmWorkspaceWidget new )
      * thing since the SetValues method will then be called on a widget
      * whose initialization process hasn't completed.
      *
-     * Use XtOverrideTranslations instead of XtSetValues so as to not blow 
-     * away parent translations that might be useful.
      */
      
     trans_table = XtParseTranslationTable (defaultTranslations);
-    XtOverrideTranslations((Widget)new, trans_table);
-
+    XtSetArg (warg, XmNtranslations, trans_table);
+    XtSetValues ((Widget)new, &warg, 1);
 }
 
 
