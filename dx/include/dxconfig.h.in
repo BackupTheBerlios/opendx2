@@ -73,6 +73,9 @@
 #define HAS_S_ISDIR  0
 #define HAS_sysmp  0
 
+#define USING_LESSTIF 0
+
+#undef uint
 #undef byte
 #undef float32
 #undef float64
@@ -251,6 +254,9 @@
 /* Define if you have the cdf library (-lcdf).  */
 #undef HAVE_LIBCDF
 
+/* Define if you have the df library (-ldf).  */
+#undef HAVE_LIBDF
+
 /* Define if you have the dl library (-ldl).  */
 #undef HAVE_LIBDL
 
@@ -262,5 +268,11 @@
 
 /* Define if you have the netcdf library (-lnetcdf).  */
 #undef HAVE_LIBNETCDF
+
+/* Define if you have the pthread library (-lpthread).  */
+#undef HAVE_LIBPTHREAD
+
+/* Define if you have the z library (-lz).  */
+#undef HAVE_LIBZ
 
 #endif
