@@ -11,7 +11,7 @@ dxlocal_SOURCES = dx.c
 
 install-exec-local: 
 	if test ! -z "@INSTALL_DX_EXE@" ; then 				     \
-	    /bin/sh ../../../dx/mkinstalldirs $(prefix)/bin ;                \
+	    $(mkinstalldirs) $(prefix)/bin ;                \
 	    cp $(noinst_PROGRAMS) @INSTALL_DX_EXE@@EXEEXT@ ;  	     	     \
 	    $(INSTALL) @INSTALL_DX_EXE@@EXEEXT@  $(prefix)/bin/@INSTALL_DX_EXE@@EXEEXT@ ;	     \
 	fi
