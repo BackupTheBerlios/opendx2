@@ -146,6 +146,12 @@ static Error  PickInterpolate(Object, Field, int);
 #define CLOSEST_VERTEX  1
 #define INTERPOLATE     2
 
+/*
+ * Used only by StereoPick
+ */
+#define STEREO_ARG      9
+#define WHERE_ARG       10
+
 static Array getXY(Array);
 
 Error
@@ -169,9 +175,6 @@ m_Pick(Object *in, Object *out)
     int      persistence;
     int	     first;
     int      interpolate = NO_INTERP;
-#if 0
-    int	     autoaxes = 0;
-#endif
 
     pick.picks     = NULL;
     pick.paths     = NULL;
@@ -231,20 +234,6 @@ m_Pick(Object *in, Object *out)
 	    }
 	}
 
-
-#if 0
-	if (NULL != (attr = DXGetAttribute(object, "autoaxes")))
-	{
-	    if (! DXExtractInteger(attr, &autoaxes) || autoaxes != 1)
-	    {
-		DXSetError(ERROR_INTERNAL, "invalid attribute: autoaxes flag");
-		goto error;
-	    }
-	}
-	else
-	    autoaxes = 0;
-#endif
-
 	list = (Array)in[LIST_ARG];
 	if (list)
 	{
@@ -294,21 +283,7 @@ m_Pick(Object *in, Object *out)
 
 	    sensitivity = SENSITIVITY;
 
-#if 0
-	    if (autoaxes)
-	    {
-		Matrix m;
-
-		if (! GetAAMatrix(object, &m))
-		    goto error;
-
-		initialMatrix = DXConcatenate(m, cameraMatrix);
-	    }
-	    else
-		initialMatrix = cameraMatrix;
-#else
 	    initialMatrix = cameraMatrix;
-#endif
 	
 
 	    xy = xyPicks;
@@ -490,30 +465,7 @@ m_Pick(Object *in, Object *out)
 
 	object = in[OBJECT_ARG];
 	if (! object)
-	{
 	    object = cacheObject;
-#if 0
-	    autoaxes = 0;
-#endif
-	}
-#if 0
-	else 
-	{
-	    Object attr;
-
-	    if (cacheObject && 
-		 (NULL != (attr = DXGetAttribute(cacheObject, "autoaxes"))))
-	    {
-		if (! DXExtractInteger(attr, &autoaxes) || autoaxes != 1)
-		{
-		    DXSetError(ERROR_INTERNAL, "invalid attribute: autoaxes flag");
-		    goto error;
-		}
-	    }
-	    else
-		autoaxes = 0;
-	}
-#endif
 
 	list = (Array)in[LIST_ARG];
 	
@@ -564,22 +516,7 @@ m_Pick(Object *in, Object *out)
 
 	    sensitivity = SENSITIVITY;
 
-#if 0
-	    if (autoaxes)
-	    {
-		Matrix m;
-
-		if (! GetAAMatrix(cacheObject, &m))
-		    goto error;
-
-		initialMatrix = DXConcatenate(m, cameraMatrix);
-	    }
-	    else
-		initialMatrix = cameraMatrix;
-#else
 	    initialMatrix = cameraMatrix;
-#endif
-	
 
 	    xy = xyPicks;
 	    for (i = 0; i < nPicks; i++, xy ++)
@@ -723,6 +660,76 @@ error:
     out[0] = NULL;
 
     return ERROR;
+}
+
+extern Error _dxfGetStereoCameras(void *, Camera, Camera *, Camera *);
+extern void *_dxfGetStereoWindowInfo(char *, void *, void *);
+
+m_StereoPick(Object *in, Object *out)
+{
+    Object modeO, stereoArgs;
+    Camera camera, lcamera, rcamera;
+    int mode;
+    char *where;
+    void *globals;
+
+    out[0] = NULL;
+
+    if (! in[LIST_ARG])
+        return OK;
+
+    in[LIST_ARG] = (Object)getXY((Array)in[LIST_ARG]);
+    if (! in[LIST_ARG])
+        return OK;
+
+    if (! in[STEREO_ARG])
+    {
+        DXSetError(ERROR_BAD_PARAMETER, "stereo arg must be given");
+        return ERROR;
+    }
+
+    if (! in[WHERE_ARG] || ! DXExtractString(in[WHERE_ARG], &where))
+    {
+        DXSetError(ERROR_BAD_PARAMETER, "where must be given");
+        return ERROR;
+    }
+
+    if (! _dxfLoadStereoModes())
+    {
+        DXSetError(ERROR_BAD_PARAMETER, "error loading stereo code");
+        return ERROR;
+    }
+
+    globals = _dxfGetStereoWindowInfo(where, NULL, NULL);
+    if (! globals)
+    {
+        DXSetError(ERROR_BAD_PARAMETER, "error accessing stereo window info");
+        return ERROR;
+    }
+
+    if (! in[CAMERA_ARG])
+    {
+        DXSetError(ERROR_BAD_PARAMETER, "camera arg must be given");
+        return ERROR;
+    }
+
+    camera = (Camera)in[CAMERA_ARG];
+
+    _dxfLoadStereoModes();
+
+    if (! _dxfInitializeStereoCameraMode(globals, in[STEREO_ARG]))
+    {
+        DXSetError(ERROR_BAD_PARAMETER, "error initting stereo mode");
+        return ERROR;
+    }
+
+    if (! _dxfGetStereoCameras(globals, camera, &lcamera, &rcamera))
+    {
+        DXSetError(ERROR_BAD_PARAMETER, "error getting stereo cameras");
+        return ERROR;
+    }
+
+    return m_Pick(in, out);
 }
 
 static Field

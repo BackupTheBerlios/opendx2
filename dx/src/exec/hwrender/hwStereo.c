@@ -76,6 +76,19 @@ _dxfLoadStereoSystemModes()
 }
 
 Error
+_dxfLoadStereoModes()
+{
+    if (! stereoSystemLoaded)
+    {
+	if (! _dxfLoadStereoSystemModes())
+	    return ERROR;
+	stereoSystemLoaded = 1;
+    }
+    return OK;
+}
+
+
+Error
 _dxfInitializeStereoSystemMode(void *globals, dxObject args)
 {
     DEFGLOBALDATA(globals);

@@ -1187,3 +1187,60 @@ _dxf_SERVICES_FLAGS()
     return &servicesFlags;
 }
 
+void *
+_dxfGetStereoWindowInfo(char *where, void *lwi, void *rwi)
+{
+  Private           cacheObject = NULL;
+  tdmChildGlobalP   globals = NULL;
+  char*             cacheId = NULL;
+  tdmParsedFormatT* pFormat = NULL;
+ 
+  /*
+   * get host and window name from display string, fill in the cache id
+   */
+  if (!(pFormat = _tdmParseDisplayString (where, &cacheId)))
+    goto error;
+
+  /*
+   * validate the display string
+   */
+  if (!(_validateDisplayString(pFormat, 1)))
+    goto error ;
+
+  /*
+   * Get a pointer to the global data
+   */
+  cacheObject = (Private) DXGetCacheEntry(cacheId, 0, 0);
+  if (! cacheObject)
+  {
+      DXSetError(ERROR_BAD_PARAMETER,
+        "window matching \"%s\" not found", where);
+      goto error;
+  }
+  else
+  {
+      globals = (tdmChildGlobalP) DXGetPrivateData(cacheObject) ;
+      {
+          DEFGLOBALDATA(globals) ;
+	  if (lwi)
+	      *(WindowInfo *)lwi = LEFTWINDOWINFO;
+	  if (rwi)
+	      *(WindowInfo *)rwi = RIGHTWINDOWINFO;
+      }
+  }
+
+  return (void *)globals;
+
+error:
+  if (pFormat)
+    _dxfDeleteParsedDisplayString(pFormat);
+
+  if (cacheId)
+    tdmFree(cacheId);
+
+  if(cacheObject)
+    DXDelete((Pointer)cacheObject) ;
+
+  return NULL;
+}
+

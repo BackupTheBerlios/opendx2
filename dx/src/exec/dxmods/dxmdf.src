@@ -1462,6 +1462,26 @@ OUTPUT var; scalar; the variance
 OUTPUT min; scalar; the minimum value
 OUTPUT max; scalar; the maximum value
 
+MODULE StereoPick
+CATEGORY Stereo
+DESCRIPTION
+INPUT pickname [visible:2]; string; (none); name of associated cached picks
+INPUT imagename [visible:2]; string; (none); name of associated cached scene
+INPUT locations [visible:0]; vector list; (no default); 2-D screen coordinate pick positions
+INPUT reexecute [visible:2]; flag; (none); cause re-execution whenever pick list is reset
+OPTIONS false; true
+INPUT first; flag; 1; first intersection only instead of all intersections
+OPTIONS true; false
+INPUT persistent [visible:0]; flag; 1; if no new picks, reuse previous picks
+OPTIONS true; false
+INPUT interpolate [visible:0]; flag; 0; include data from pick object in picked
+OPTIONS 0; 1; 2
+INPUT object [visible:0]; object; (no default); object to pick in
+INPUT camera [visible:0]; camera; (no default); camera used to render scene
+INPUT stereoArgs; group; (no default) ;
+INPUT where; window or string; (no default) ;
+OUTPUT picked; field; pick information
+
 MODULE Streakline
 CATEGORY Realization
 DESCRIPTION computes streaklines

@@ -12,7 +12,7 @@
 #define render_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.4 2001/03/09 17:54:34 gda Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.5 2001/06/21 18:09:50 gda Exp $"};
 #endif
 
 #include <stdio.h>
@@ -133,6 +133,57 @@ _dxfDrawMono (gatherO gather, void* globals, dxObject o, Camera c, int buttonUp)
 
 #define DEFCAMERA(interactorData)       \
     register tdmInteractorCam _cdata = (interactorData)->Cam
+
+extern Camera _dxfSetCameraProjection(Camera c, float *p);
+
+Error
+_dxfGetStereoCameras (void *globals, Camera c, Camera *lcp, Camera *rcp)
+{
+    DEFGLOBALDATA(globals);
+    DEFPORT(PORT_HANDLE);
+    DEFCAMERA(INTERACTOR_DATA);
+    float Near, Far;
+    float lto[3], lfrom[3], lup[3], *lProjection;
+    float rto[3], rfrom[3], rup[3], *rProjection;
+    float zaxis[3], x, y, z, d;
+    Camera sc;
+
+    x = CURRENT_TO[0] - CURRENT_FROM[0];
+    y = CURRENT_TO[1] - CURRENT_FROM[1];
+    z = CURRENT_TO[2] - CURRENT_FROM[2];
+    d = sqrt(x*x + y*y + z*z);
+    zaxis[0] = x/d;
+    zaxis[1] = y/d;
+    zaxis[2] = z/d;
+
+    _dxfGetNearFar(CDATA(projection), CDATA(w),
+                   CDATA(projection) ? CDATA(fov) : CDATA(width),
+                   CURRENT_FROM, zaxis, CDATA(box), &Near, &Far);
+
+    _dxfCreateStereoCameras(globals,
+                            CDATA(projection), CURRENT_FOV, CURRENT_WIDTH,
+                            CURRENT_TO, CURRENT_FROM, CURRENT_UP, Near, Far,
+                            lto, lfrom, lup, &lProjection,
+                            rto, rfrom, rup, &rProjection);
+
+    sc = (Camera)DXCopy((dxObject)c, COPY_STRUCTURE);
+    sc = DXSetView(sc,
+                DXPt(lfrom[0], lfrom[1], lfrom[2]),
+                DXPt(lto[0],   lto[1],   lto[2]),
+                DXVec(lup[0],  lup[1],   lup[2]));
+    sc = _dxfSetCameraProjection(sc, lProjection);
+    *lcp = sc;
+
+    sc = (Camera)DXCopy((dxObject)c, COPY_STRUCTURE);
+    sc = DXSetView(sc,
+                DXPt(rfrom[0], rfrom[1], rfrom[2]),
+                DXPt(rto[0],   rto[1],   rto[2]),
+                DXVec(rup[0],  rup[1],   rup[2]));
+    sc = _dxfSetCameraProjection(sc, rProjection);
+    *lcp = sc;
+
+    return OK;
+}
 
 Error
 _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonUp)
