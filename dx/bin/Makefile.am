@@ -11,7 +11,7 @@ uninstall-local:
 	fi
 
 install-exec-local: 
-	if test "INSTALL_DX_CSH" != "" ; then
+	if test "@INSTALL_DX_CSH@" != "" ; then
 	    $(INSTALL) dx $(prefix)/bin
 	    $(INSTALL) -d $(prefix)/dx/bin
 	    $(INSTALL) dx.workerscript $(prefix)/dx/bin
