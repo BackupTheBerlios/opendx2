@@ -1,6 +1,6 @@
 #!/bin/sh
 # Configure is looking for the following line
-prefix=/usr/local/src/dx-exe
+prefix=@prefix@
 DFLTROOT=$prefix/dx
 root=${DXROOT=${DXEXECROOT=$DFLTROOT}}
 
