@@ -1,3 +1,230 @@
+4.1.2
+===============
+
+Distributed-memory extension to OpenDX
+---------------------------------------------------
+dxmpi checked in as a new part within OpenDX. No significant documentation
+has been written. 
+
+dxmpi works by starting an instance of the DX executive on each MPI
+host, with one (rank 0) designated the master.  The master communicates
+with the UI or directly in script language (though rather than by typing
+directly in, a separate program is used to connect the keyboard to dxexec).
+Absent any use of OpenDX-MPI extensions, the master performs as a
+completely normal OpenDX exec.
+
+The MPI extensions to OpenDX fit two forms: modules that appear to run on
+the master but which use MPI internally to run in parallel, and macros that
+are run in parallel on the slaves at the behest of a "RunOnSlaves" module
+that runs on the master.  I've put in an API allowing modules to register
+and call remote procedures and to pass DX objects around to support the
+first type.  For the second, there's a set of new modules that provide
+tools for data distribution from the master to the slaves, leaving the
+distributed data as named objects in the slaves' cache, where they can be
+retrieved by name by macros run on the slaves by RunOnSlaves.
+
+As an example of the first type, a parallel regular-grid importer 
+(DRegularImporter) that works like this.  As inputs, it receives
+the name of an ad-hoc data description file that describes the layout of
+data found in a separate file.  It registers a remote procedure with the
+slaves, and then invokes that procedure on the slaves, passing them the
+data description and a destination object name.   Each slave, knowing how
+many slaves there are and its own rank among them, is able to determine
+what portion of the data its responsible for (essentially, partitioning the
+data as a part of importing it, and including a "ghost zone" of overlap
+with neighboring partitions).   Each imports its part, saves it in the
+cache under the destination object name (the same on all slaves), and
+returns the bounding box and min max of its partition to the master.  The
+master (still in the guts of the DReguarImport module) gathers this info
+together into an output Group object where member i is the box and minmax
+of partition i residing on slave i.
+
+Now suppose you want to isosurface and render that data.  You create a
+macro on the slaves that accesses the data by the name under which
+DRegularImporter left it and an isovalue (again by name, from the cache).
+The macro then sends the data through Isosurface and Color and whatever,
+then passes that result to the SlaveDone module, which indicates to the
+master that the execution of the macro is complete and returns the object.
+On the master, a scalar interactor feeds the input of  Broadcast(value,
+name) that broadcasts the interactor's value to the slaves under the
+associated name.  The dummy output of Broadcast and the output of
+DRegularImporter are passed to "control" inputs to RunOnSlaves(macro name,
+control ...) that just serve to ensure correct module sequencing.
+RunOnSlaves causes the slaves to run the named macro, waits for their
+results, and gathers it all together in a group where member i contains the
+result of slave i.  This could then be passed directly into Image for
+rendering.
+
+There are a couple other cool pieces to this, most notably a distributed
+parallel renderer and a new streamline module that runs on distributed
+vector fields.  There are a lot of holes to fix; for example, errors in
+slave macros very often cause system hangs.  There is no integration of the
+notion of slave macros into the UI. Lots of things.
+
+Added command-line arg to configure for compatibility with ddx.  Either
+way the resulting code works exactly as before, but if --enable-ddx is set
+the libraries will work with ddx.
+
+Implement compatibility with ddx, which requires code in the main loop
+to check for input from MPI.  ddx.c is a stub file, so whether or not
+--enable-ddx, the dxexec built in the source tree works as before.  
+---------------------------------------------------
+
+Added mechanisms to directly connect OpenDX to other processes.
+Includes a new module, SocketConnection, that supports sending objects 
+from an external process to OpenDX across a socket (and back, as a 
+future enhancement). The idea is that the process makes a call to
+see if an OpenDX instance has opened a port.  If it has, it can send data
+to OpenDX by creating an object using the data model calls in the DXlite
+library,  buffer it, and write it to the socket.  On the OpenDX side,
+SocketConnection creates a port and an associated fd, then adds an input
+handler to watch for input on the fd.  When input arrives, its read off the
+socket and converted to a DX object via _dxfImportBin_Buffer, and
+DXReadyToRun is called to indicate that new data is available.  When the
+module runs, the received object is the module result.  This allows the
+external process to send arbitrary objects to OpenDX across a socket.
+
+Added a new subclass of Array to further assist with direct connection.
+A SharedArray is very similar to a generic Array, but allows the array
+contents to be shared with the external process directly.    When a
+SharedArray is created, DXNewSharedArray is given a shared memory segment
+ID and the address of the data, which must lie in that segment.  Unlike
+generic Arrays, which copy data using the DXAddArrayData call, SharedArrays
+use it directly.   DX keeps track of how many SharedArrays reference each
+segment, and maintains an attachment to that segment as long as there are
+references to it.   When the external process creates an object containing
+a SharedArray, the buffering process transmits the segment id and offset
+within the segment to OpenDX.  When its unbuffered, a new OpenDX-side
+SharedArray is created, the segment is attached (if necessary - it may have
+been seen before), and the SharedArray stores the address of the data in
+OpenDX' memory space.  Thus the external-side SharedArray (which itself
+shares data with the external process) and the OpenDX side SharedArray
+actually share memory.
+
+Support for SMP linux boxes:
+Since this is not well tested it is an optional make- --with-smp-linux
+on the configure command line.  The memory available to OpenDX in SMP mode 
+is limited to the max size of a shared-memory segment.  This may be set 
+low and must be changed in /proc/sys/kernel/shmmax. Created inter-process 
+locking from IPC semaphores, and its not confidence-inspiring.
+
+Fixed a bug in the handling of the deletion of task groups in task.c.
+
+RSH enhancements: 
+  - configure now picks up system rsh and bsh or is setable by the user.
+  
+  - The default command "rsh" has been left in place, but
+    a user-specified remote shell command can be specified via the
+    $DXRSH environment variable. Example: setenv DXRSH /usr/bin/ssh
+
+  - FQDNs (full host paths) are used under the hood when available
+    when creating the remote "invoke dxexec" script and connecting
+    back to the master exec,
+
+  - Users can now enter host names of the form "user@machine" in
+    the Execute Group Assignment... dialog, and
+
+  - setting the $DXRSH_NOENV in the local environment prevents the
+    remote "invoke dxexec" script from being written with a full
+    carbon copy of the local environment (only $DISPLAY is set).
+
+  - dumped pcreateve on SGI in favor of vfork/fork and exec for
+    kicking off rsh.
+
+Correctly avoiding a memory leak with hardware rendering due to a mysterious
+reference.
+
+Add the capability to change the logo and splash screen by adding a
+hook into the Xpm libraries. Now users can customize if they so desire.
+
+New Regrid option of Radius 0 that basically performs a snap to grid
+functionality. This option will make regrid apply data to the nearest
+grid position and average it if there are multiple (not weighted).
+
+Initial support for MacOS X. It appears that there are quite a few bugs
+in 10.0.2 still so it may have to wait a little longer. Also, somebody
+needs to work on the memory routines for OS X.
+
+An addition made to edfparse to allow the creation of a local reference
+to an external file within the native file format. This local reference
+can then be used repeatedly within the other objects without having to
+reread the external file.
+(Example:
+  object "localobj" file "externalfile.dx",1
+
+  object "f1" field
+    component "positions" "localobj"
+
+  object "f2" field
+    component "positions" "localobj"
+)
+
+A correction to the edfparse to accept data description in the native
+file format with object names as references instead of numbers.
+
+A correction to isosurface to pass attributes through not remove them.
+
+Fix to make CDBs open at correct opening width when scrollbar is needed.
+
+Modifications to avoid glx functions not implemented by wiregl.
+
+Some memory leak patches to general import, task, and redce.
+
+Now installing the built dx.mdf file so that the BSpline
+module is now visible in the VPE.
+
+Add functionality to SuperviseWindow to use a camera to set the
+window size.
+
+If DXMDF env variable is set to NULL then an error occured. Check
+it first before trying to open it.
+
+Fixed SMP OpenDX to use parent process and fork in a better 
+order. Didn't change the default behavior.
+
+A fix in the List module that could go past array bounds.
+
+A fix for DXcallm that allows Rubbersheet to be used again.
+
+A small memory leak fixed from not closing a message file.
+
+Fix in the Tube module that could cause a possible core dump.
+
+Provided a fix in dxworker so the exec could launch on Solaris 2.8.
+
+Cleaned up the warnings in src/exec/libdx, src/exec/dpexec, 
+and src/exec/dxmods -- this included adding header files and
+removing many of the extern prototypes making APIs more
+usable.
+
+Added the functionality to build C++ modules from the module
+builder.
+
+Fixed a possible memory leak in the Post module.
+
+Added Randall Hopper's lock fixes to decrease execution
+time on single processor machines by 20%.
+
+Added Randall Hopper's module path fix that can decrease
+execution time on cached networks significantly.
+
+Dropped support for ImageMagick 5.1.1 and added support for ImageMagick > 5.2.
+ImageMagick < 5.0 support still exists.
+
+Added support for compiling with Microsoft compilers. Updated much
+of the Windows environment setups.
+
+Added more support for the AIX xl series of compilers.
+
+Correction for 2D Map when point is on edge it is detected.
+
+More cleanup to JavaDX. DX_JAVA_CLASSPATH is now the variable that
+stores all classpath info. Removed the multiple ones of Netscape and
+WRL.
+
+Added support in configure to work with ImageMagick's Magick-config,
+thus reducing the amount of checks that are required when configuring.
+
 4.1.0 
 ===============
 
