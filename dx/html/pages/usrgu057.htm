@@ -35,7 +35,7 @@ MINING">
 				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>
 			</TR>
 		</TABLE>
-		<H2><A NAME="HDRSEM" ></A>10.8 Understanding the Script 
+		<H2><A NAME="HDRSEM" ></A>10.8 Understanding the Script Execution Model
 </H2>
 		<P>
 An execution model is applied to the constructs defined by the Data Explorer
@@ -49,7 +49,7 @@ function calls.
 
 		<P>
 <P>
-<H3><A NAME="Header_356" ></A>Top-level 
+<H3><A NAME="Header_356" ></A>Top-level Environment
 </H3>
 <A NAME="IDX927"></A>
 <P>
@@ -60,7 +60,7 @@ function invocations initiated in this environment are always
 executed.
 <P>
 <P>
-<H3><A NAME="Header_357" ></A>Function 
+<H3><A NAME="Header_357" ></A>Function Execution
 </H3>
 <A NAME="IDX928"></A>
 <P>
@@ -77,7 +77,7 @@ they share a single parameter and are initialized to the value passed
 as input when the function is called.
 <P>
 <P>
-<H3><A NAME="Header_358" ></A> </H3>
+<H3><A NAME="Header_358" ></A>Macro Expansion</H3>
 <A NAME="IDX929"></A>
 <A NAME="IDX930"></A>
 <P>
@@ -88,7 +88,7 @@ This guarantees that the partial orderings defined by macros are
 maintained.
 <P>
 <P>
-<H3><A NAME="HDRVUIM" ></A>Variables Used in 
+<H3><A NAME="HDRVUIM" ></A>Variables Used in Macros
 </H3>
 <P>
 The Data Explorer allows you to use variables on both the left and right sides
@@ -148,7 +148,7 @@ sum = 10;
 total = add(4, 4);  // total = 8, sum stays at 10
 </PRE>
 <P>
-<H3><A NAME="Header_363" ></A>Assignment and Function 
+<H3><A NAME="Header_363" ></A>Assignment and Function Call Semantics
 </H3>
 <P>
 As stated earlier, all assignment statements and function calls
@@ -182,7 +182,7 @@ HREF="progu037.htm#HDRMDFSEC">11.1 , "Module Description Files"</A>
 in <I>IBM Visualization Data Explorer Programmer&#39;s Reference</I>.)
 <P>
 <P>
-<H3><A NAME="Header_364" ></A> </H3>
+<H3><A NAME="Header_364" ></A>Execution Example</H3>
 <A NAME="IDX932"></A>
 <P>
 The macro <TT><STRONG>sum3</STRONG></TT> in the following example computes

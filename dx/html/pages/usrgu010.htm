@@ -1,1 +1,129 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN"><HTML><HEAD>		<TITLE>User's Guide - Version 3.1.4 Changes</TITLE>		<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATAMINING">	<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1"></HEAD><BODY BGCOLOR="#FFFFFF" link="#00004b" vlink="#4b004b">		<TABLE width=510 border=0 cellpadding=0 cellspacing=0>			<TR>				<TD><IMG SRC="../images/spacer.gif" WIDTH=80 HEIGHT=1></TD>				<TD><IMG SRC="../images/spacer.gif" WIDTH=49 HEIGHT=1></TD>				<TD><IMG SRC="../images/spacer.gif" WIDTH=24 HEIGHT=1></TD>				<TD><IMG SRC="../images/spacer.gif" WIDTH=100 HEIGHT=1></TD>				<TD><IMG SRC="../images/spacer.gif" WIDTH=3 HEIGHT=1></TD>				<TD><IMG SRC="../images/spacer.gif" WIDTH=127 HEIGHT=1></TD>				<TD><IMG SRC="../images/spacer.gif" WIDTH=6 HEIGHT=1></TD>				<TD><IMG SRC="../images/spacer.gif" WIDTH=50 HEIGHT=1></TD>				<TD><IMG SRC="../images/spacer.gif" WIDTH=71 HEIGHT=1></TD>			</TR>			<TR>				<TD colspan=9><IMG src="../images/flcgh_01.gif" width=510 height=24 border="0" alt="OpenDX - Documentation"></TD>			</TR>			<TR>				<TD colspan=2><A href="../allguide.htm"><IMG src="../images/flcgh_02.gif" width=129 height=25 border="0" alt="Full Contents"></A></TD>				<TD colspan=3><A href="../qikguide.htm"><IMG src="../images/flcgh_03.gif" width=127 height=25 border="0" alt="QuickStart Guide"></A></TD>				<TD><A href="../usrguide.htm"><B><IMG src="../images/flcgh_04d.gif" width=127 height=25 border="0" alt="User's Guide"></B></A></TD>				<TD colspan=3><A href="../refguide.htm"><IMG src="../images/flcgh_05.gif" width=127 height=25 border="0" alt="User's Reference"></A></TD>			</TR>			<TR>				<TD><A href="usrgu009.htm"><IMG src="../images/flcgh_06.gif" width=80 height=17 border="0" alt="Previous Page"></A></TD>				<TD colspan=2><A href="usrgu011.htm"><IMG src="../images/flcgh_07.gif" width=73 height=17 border="0" alt="Next Page"></A></TD>				<TD><A href="../usrguide.htm"><IMG src="../images/flcgh_08.gif" width=100 height=17 border="0" alt="Table of Contents"></A></TD>				<TD colspan=3><A href="usrgu006.htm"><IMG src="../images/flcgh_09.gif" width=136 height=17 border="0" alt="Partial Table of Contents"></A></TD>				<TD><A href="usrgu077.htm"><IMG src="../images/flcgh_10.gif" width=50 height=17 border="0" alt="Index"></A></TD>				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>			</TR>		</TABLE>		<H2><A NAME="HDRWHATNEW" ></A>Summary of Changes in Data </H2>		<P><A NAME="PToC3" HREF="../usrguide.htm">Partial Table-of-Contents</A> <MENU><LI><A NAME="PToC_16" HREF="#Header_16">User Interface</A><MENU><LI><A NAME="PToC_17" HREF="#HDRNEWSTRT">New Startup Behavior</A><LI><A NAME="PToC_18" HREF="#Header_18">New Save Image Dialog in ImageWindow</A><LI><A NAME="PToC_19" HREF="#Header_19">New Data Prompter</A><LI><A NAME="PToC_20" HREF="#Header_20">Pages</A><LI><A NAME="PToC_21" HREF="#Header_21">Annotation</A><LI><A NAME="PToC_22" HREF="#Header_22">Optimizing Caching</A></MENU><LI><A NAME="PToC_23" HREF="usrgu011.htm#HDRGETSET">Changes to Get and Setmodules</A><LI><A NAME="PToC_24" HREF="usrgu012.htm#Header_24">New Window ManagementFunctionality</A><LI><A NAME="PToC_25" HREF="usrgu013.htm#Header_25">Hardware Rendering</A><LI><A NAME="PToC_26" HREF="usrgu014.htm#Header_26">DXLink</A><LI><A NAME="PToC_27" HREF="usrgu015.htm#Header_27">Changed Modules</A><LI><A NAME="PToC_28" HREF="usrgu016.htm#Header_28">New Modules</A><LI><A NAME="PToC_29" HREF="usrgu017.htm#Header_29">BackwardIncompatibilities</A><LI><A NAME="PToC_30" HREF="usrgu018.htm#Header_30">HTML Documentation</A><LI><A NAME="PToC_31" HREF="usrgu019.htm#Header_31">Fixes</A></MENU><HR><P><HR><H2><A NAME="Header_16" ></A> </H2><P><H3><A NAME="HDRNEWSTRT" ></A> </H3><P>With this release, when you type <TT>dx</TT>, a different initialpanel will appear, giving you access to various parts of Data Explorer,such as the Data Prompter, the Tutorial, the Visual Program Editor, etc.<P>To bypass the Startup window and go directly to the Visual ProgramEditor (as in previous versions of Data Explorer) either type <TT>dx -edit</TT>at the prompt or set your <TT>DXARGS</TT> environment variable to<TT>-edit</TT>.<P><H3><A NAME="Header_18" ></A>New Save Image Dialog in Image </H3><P>The Save Image dialog has been improved to make it easier for users tosave images at a specific size on the printed page.<P><H3><A NAME="Header_19" ></A> </H3><P>The Data Prompter has a new initial window, which allows you to specifywhat kind of data you have (dx format, image format, ...). You canaccess the Data Browser from this window to view your data beforeattempting to import it. If you have "general array" format data, thenchoose the "Grid or Scattered file" button, which will lead to theinterface which was called the Data Prompter in previous versions ofData Explorer.<P>Once your data has been imported, there is an option to either describeor visualize your data. If you choose the "Test Import" option, then thedata will be imported and characteristics about it (such asdimensionality, number of points, ...) will be reported to you. If youchoose the "Visualize Data" option, then a general purpose visualprogram will be run on your data. You can then inspect and modify thisvisual program.<P><H3><A NAME="Header_20" ></A> </H3><P>In the VPE, you can now segment your visual program into "pages", whichare disconnected sets of modules. Modules in one page communicate withmodules in other pages using transmitters and receivers. You can namepages and control the ordering of pages. See the Edit menu of the VPE.<P><H3><A NAME="Header_21" ></A> </H3><P>You can add comments directly onto the canvas of the VPE. This option isavailable from the Edit menu of the VPE.<P><H3><A NAME="Header_22" ></A> </H3><P>There is now an option in the Edit menu of the VPE called OutputCacheability -&gt; Optimize Cache. If you choose this option, DataExplorer will use a heuristic to optimally set the caching behavior ofeach tool in the visual program.		<P>		<HR>		<DIV align="center">			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>		</DIV>		<DIV align="center">			<P><FONT size="-1">[ <A href="http://www.research.ibm.com/dx">OpenDX Home at IBM</A>&nbsp;|&nbsp;<A href="http://www.opendx.org/">OpenDX.org</A>&nbsp;] </FONT></P>		</DIV>	</BODY></HTML>
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+		<TITLE>User's Guide - Version 3.1.4 Changes</TITLE>
+		<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+MINING">
+	<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">
+</HEAD><BODY BGCOLOR="#FFFFFF" link="#00004b" vlink="#4b004b">
+		<TABLE width=510 border=0 cellpadding=0 cellspacing=0>
+			<TR>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=80 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=49 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=24 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=100 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=3 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=127 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=6 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=50 HEIGHT=1></TD>
+				<TD><IMG SRC="../images/spacer.gif" WIDTH=71 HEIGHT=1></TD>
+			</TR>
+			<TR>
+				<TD colspan=9><IMG src="../images/flcgh_01.gif" width=510 height=24 border="0" alt="OpenDX - Documentation"></TD>
+			</TR>
+			<TR>
+				<TD colspan=2><A href="../allguide.htm"><IMG src="../images/flcgh_02.gif" width=129 height=25 border="0" alt="Full Contents"></A></TD>
+				<TD colspan=3><A href="../qikguide.htm"><IMG src="../images/flcgh_03.gif" width=127 height=25 border="0" alt="QuickStart Guide"></A></TD>
+				<TD><A href="../usrguide.htm"><B><IMG src="../images/flcgh_04d.gif" width=127 height=25 border="0" alt="User's Guide"></B></A></TD>
+				<TD colspan=3><A href="../refguide.htm"><IMG src="../images/flcgh_05.gif" width=127 height=25 border="0" alt="User's Reference"></A></TD>
+			</TR>
+			<TR>
+				<TD><A href="usrgu009.htm"><IMG src="../images/flcgh_06.gif" width=80 height=17 border="0" alt="Previous Page"></A></TD>
+				<TD colspan=2><A href="usrgu011.htm"><IMG src="../images/flcgh_07.gif" width=73 height=17 border="0" alt="Next Page"></A></TD>
+				<TD><A href="../usrguide.htm"><IMG src="../images/flcgh_08.gif" width=100 height=17 border="0" alt="Table of Contents"></A></TD>
+				<TD colspan=3><A href="usrgu006.htm"><IMG src="../images/flcgh_09.gif" width=136 height=17 border="0" alt="Partial Table of Contents"></A></TD>
+				<TD><A href="usrgu077.htm"><IMG src="../images/flcgh_10.gif" width=50 height=17 border="0" alt="Index"></A></TD>
+				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>
+			</TR>
+		</TABLE>
+		<H2><A NAME="HDRWHATNEW" ></A>Summary of Changes in Data Explorer Version 3.1.4</H2>
+		
+<P><A NAME="PToC3" HREF="../usrguide.htm">Partial Table-of-Contents</A> 
+<MENU>
+<LI><A NAME="PToC_16" HREF="#Header_16">User Interface</A>
+<MENU>
+<LI><A NAME="PToC_17" HREF="#HDRNEWSTRT">New Startup Behavior</A>
+<LI><A NAME="PToC_18" HREF="#Header_18">New Save Image Dialog in Image
+Window</A>
+<LI><A NAME="PToC_19" HREF="#Header_19">New Data Prompter</A>
+<LI><A NAME="PToC_20" HREF="#Header_20">Pages</A>
+<LI><A NAME="PToC_21" HREF="#Header_21">Annotation</A>
+<LI><A NAME="PToC_22" HREF="#Header_22">Optimizing Caching</A>
+</MENU>
+<LI><A NAME="PToC_23" HREF="usrgu011.htm#HDRGETSET">Changes to Get and Set
+modules</A>
+<LI><A NAME="PToC_24" HREF="usrgu012.htm#Header_24">New Window Management
+Functionality</A>
+<LI><A NAME="PToC_25" HREF="usrgu013.htm#Header_25">Hardware Rendering</A>
+<LI><A NAME="PToC_26" HREF="usrgu014.htm#Header_26">DXLink</A>
+<LI><A NAME="PToC_27" HREF="usrgu015.htm#Header_27">Changed Modules</A>
+<LI><A NAME="PToC_28" HREF="usrgu016.htm#Header_28">New Modules</A>
+<LI><A NAME="PToC_29" HREF="usrgu017.htm#Header_29">Backward
+Incompatibilities</A>
+<LI><A NAME="PToC_30" HREF="usrgu018.htm#Header_30">HTML Documentation</A>
+<LI><A NAME="PToC_31" HREF="usrgu019.htm#Header_31">Fixes</A>
+</MENU><HR><P>
+<HR>
+<H2><A NAME="Header_16" ></A>User Interface</H2>
+<P>
+<H3><A NAME="HDRNEWSTRT" ></A>New Startup Behavior</H3>
+<P>With this release, when you type <TT>dx</TT>, a different initial
+panel will appear, giving you access to various parts of Data Explorer,
+such as the Data Prompter, the Tutorial, the Visual Program Editor, etc.
+<P>
+To bypass the Startup window and go directly to the Visual Program
+Editor (as in previous versions of Data Explorer) either type <TT>dx -edit</TT>
+at the prompt or set your <TT>DXARGS</TT> environment variable to
+<TT>-edit</TT>.
+<P>
+<H3><A NAME="Header_18" ></A>New Save Image Dialog in Image Window
+</H3>
+<P>
+The Save Image dialog has been improved to make it easier for users to
+save images at a specific size on the printed page.
+<P>
+<H3><A NAME="Header_19" ></A>New Data Prompter</H3>
+<P>
+The Data Prompter has a new initial window, which allows you to specify
+what kind of data you have (dx format, image format, ...). You can
+access the Data Browser from this window to view your data before
+attempting to import it. If you have "general array" format data, then
+choose the "Grid or Scattered file" button, which will lead to the
+interface which was called the Data Prompter in previous versions of
+Data Explorer.
+<P>
+Once your data has been imported, there is an option to either describe
+or visualize your data. If you choose the "Test Import" option, then the
+data will be imported and characteristics about it (such as
+dimensionality, number of points, ...) will be reported to you. If you
+choose the "Visualize Data" option, then a general purpose visual
+program will be run on your data. You can then inspect and modify this
+visual program.
+<P>
+<H3><A NAME="Header_20" ></A>Pages</H3>
+<P>
+In the VPE, you can now segment your visual program into "pages", which
+are disconnected sets of modules. Modules in one page communicate with
+modules in other pages using transmitters and receivers. You can name
+pages and control the ordering of pages. See the Edit menu of the VPE.
+<P>
+<H3><A NAME="Header_21" ></A>Annotation</H3>
+<P>
+You can add comments directly onto the canvas of the VPE. This option is
+available from the Edit menu of the VPE.
+<P>
+<H3><A NAME="Header_22" ></A>Optimizing Caching</H3>
+<P>
+There is now an option in the Edit menu of the VPE called Output
+Cacheability -&gt; Optimize Cache. If you choose this option, Data
+Explorer will use a heuristic to optimally set the caching behavior of
+each tool in the visual program.
+
+		<P>
+		<HR>
+		<DIV align="center">
+			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>
+		</DIV>
+		<DIV align="center">
+			<P><FONT size="-1">[ <A href="http://www.research.ibm.com/dx">OpenDX Home at IBM</A>&nbsp;|&nbsp;<A href="http://www.opendx.org/">OpenDX.org</A>&nbsp;] </FONT></P>
+		</DIV>
+	</BODY></HTML>
