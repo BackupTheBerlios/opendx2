@@ -44,15 +44,15 @@ BUILDBASE=`pwd`
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
 AM_CONFIG_HEADER(include/dxconfig.h)
-AM_INIT_AUTOMAKE(dx, 4.0.10)
+AM_INIT_AUTOMAKE(dx, 4.1.0)
 
-VERSION_STRING="04.0.0010"
-AC_DEFINE(DXD_VERSION_STRING, "04.0.0010")
+VERSION_STRING="04.1.0000"
+AC_DEFINE(DXD_VERSION_STRING, "04.1.0000")
 AC_DEFINE(DXD_COPYRIGHT_STRING,
-  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.0.10"])
+  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.1.0"])
 AC_DEFINE_UNQUOTED(DXD_VERSION, 4)
-AC_DEFINE_UNQUOTED(DXD_RELEASE, 0)
-AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 10)
+AC_DEFINE_UNQUOTED(DXD_RELEASE, 1)
+AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 0)
 
 dnl First set up all the possible configure command line options
 dnl
