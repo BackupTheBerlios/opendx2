@@ -88,6 +88,7 @@ namestr 	dxuiroot =	"";
 namestr 	exceeddir =	"";
 namestr 	exceeduserdir =	"";
 namestr		starnetdir =	"";
+namestr		winaxedir = 	"";
 namestr		xservername =	"";
 namestr		xserverversion= "";
 namestr		xnlspath =	"";
@@ -173,12 +174,10 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 	long rc;
 	int i;
 	DWORD options;
-	HKEY regLoc = HKEY_LOCAL_MACHINE;
+	HKEY regLoc = HKEY_CURRENT_USER;
 	DWORD dwDisp;
 	REGSAM access = KEY_READ;
 	const char *regpath;
-
-	if(get == SET) access = KEY_ALL_ACCESS;
 
 	/* First determine which system we're looking up. */
 
@@ -188,20 +187,25 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 	else if (co == STARNET_ID) { 
 		regpath = "SOFTWARE\\Starnet\\X-Win32\\5.1";
 	}
+	else if (co == LABF_ID) {
+		regpath = "SOFTWARE\\LabF.com\\WinaXe\\6.1";
+	}
 	else if (co == HUMMBIRD_ID) {
 		regpath = "SOFTWARE\\Hummingbird\\Exceed\\CurrentVersion";
 	}
-	else 
+	else if (co == HUMMBIRD_ID2) {
 		regpath = "SOFTWARE\\Hummingbird\\Connectivity\\7.00\\Exceed";
+	}
+	else if (co == HUMMBIRD_ID3) {
+		regpath = "SOFTWARE\\Hummingbird\\Connectivity\\7.10\\Exceed";
+	}
 	/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
 	/* Check there first if not found then search in CURRENT_USER   */
-	rc = RegCreateKeyEx(regLoc, __TEXT(regpath), 0, 0, REG_OPTION_NON_VOLATILE,
-	access, 0, &hkey, &dwDisp);
+	rc = RegOpenKeyEx(regLoc, __TEXT(regpath), 0, access, &hkey);
 
 	if(rc != ERROR_SUCCESS) {
-		regLoc = HKEY_CURRENT_USER;
-		rc = RegCreateKeyEx(regLoc, __TEXT(regpath), 0, 0, REG_OPTION_NON_VOLATILE,
-		access, 0, &hkey, &dwDisp);
+		regLoc = HKEY_LOCAL_MACHINE;
+		rc = RegOpenKeyEx(regLoc, __TEXT(regpath), 0, access, &hkey);
 	}
 
 	if(rc != ERROR_SUCCESS && get == CHECK) return 0;
@@ -235,17 +239,6 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 		return 1;
 
 	}
-	else {
-		if (get == SET)
-			options = KEY_SET_VALUE;
-		rc = RegSetValueEx((HKEY)hkey, (LPCSTR)name, (DWORD)0, 
-		(DWORD)REG_SZ, (CONST BYTE *)value, (DWORD)strlen(value)+1);
-		IfError("Registration key installation failed");
-
-		rc = RegCloseKey(hkey);
-		IfError("CloseKey failed");
-		return 1;
-	}
 
 error:
 	printf("%s: rc = %d\n", errstr, rc);
@@ -274,24 +267,44 @@ int initrun()
     	       "machine. Execution will be attempted anyway, and if it fails, please try\n"
     	       "reinstalling the software.\n");
 
-    if(regval(CHECK, "Default", HUMMBIRD_ID2, exceeddir, sizeof(exceeddir), &keydata)) {
-    	strcpy(xservername, "Exceed 7"); whichX = EXCEED7;
-        if(!(regval(GET, "HomeDir", HUMMBIRD_ID2, exceeddir, sizeof(exceeddir), &keydata) &&
-			regval(GET, "UserDir", HUMMBIRD_ID2, exceeduserdir, sizeof(exceeduserdir), &keydata)))
+	getenvstr("XSRVR", xparms);
+	if(strcmp(xparms, "xwin32")!=0 || strcmp(xparms, "winaxe")!=0) {
+            if(regval(CHECK, "Default", HUMMBIRD_ID3, exceeddir, sizeof(exceeddir), &keydata)) {
+    	        strcpy(xservername, "Exceed 7"); whichX = EXCEED7;
+                if(!(regval(GET, "HomeDir", HUMMBIRD_ID3, exceeddir, sizeof(exceeddir), &keydata) &&
+		     regval(GET, "UserDir", HUMMBIRD_ID3, exceeduserdir, sizeof(exceeduserdir), &keydata)))
 			printf("If Exceed is installed on this machine, please make sure it is available\n"
 	       		"to you as a user.  Otherwise, make sure another X server is installed and running.\n");    
-    } else if (regval(CHECK, "Default", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata)) {
-    	strcpy(xservername, "Exceed 6"); whichX = EXCEED6;
-        if(!(regval(GET, "PathName", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) &&
-	regval(GET, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata)))
-	printf("If Exceed is installed on this machine, please make sure it is available\n"
-	       "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
-    } else if (regval(CHECK, "Default", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata)) {
-    	strcpy(xservername, "X-Win32"); whichX = XWIN32;
-    	if(!regval(GET, "Pathname", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata))
-	printf("If X-Win32 is installed on this machine, please make sure it is available\n"
-	       "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
-    }
+            } 
+	    else if(regval(CHECK, "Default", HUMMBIRD_ID2, exceeddir, sizeof(exceeddir), &keydata)) {
+    	        strcpy(xservername, "Exceed 7"); whichX = EXCEED7;
+                if(!(regval(GET, "HomeDir", HUMMBIRD_ID2, exceeddir, sizeof(exceeddir), &keydata) &&
+		     regval(GET, "UserDir", HUMMBIRD_ID2, exceeduserdir, sizeof(exceeduserdir), &keydata)))
+			printf("If Exceed is installed on this machine, please make sure it is available\n"
+	       		"to you as a user.  Otherwise, make sure another X server is installed and running.\n");    
+            } 
+	    else if(regval(CHECK, "Default", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata)) {
+    	        strcpy(xservername, "Exceed 6"); whichX = EXCEED6;
+                if(!(regval(GET, "PathName", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) &&
+	             regval(GET, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata)))
+	                printf("If Exceed is installed on this machine, please make sure it is available\n"
+	                "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+            } 
+	}
+	if (whichX == UNKNOWN && 
+	    regval(CHECK, "Default", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata)) {
+    	       strcpy(xservername, "X-Win32"); whichX = XWIN32;
+    	       if(!regval(GET, "Pathname", STARNET_ID, starnetdir, sizeof(starnetdir), &keydata))
+	             printf("If X-Win32 is installed on this machine, please make sure it is available\n"
+	             "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+	}
+	if (whichX == UNKNOWN &&
+	    regval(CHECK, "Default", LABF_ID, winaxedir, sizeof(winaxedir), &keydata)) {
+		strcpy(xservername, "WinaXe"); whichX = WINAXE;
+		if(!regval(GET, "App Path", LABF_ID, winaxedir, sizeof(winaxedir), &keydata))
+		    printf("If WinaXe is installed on this machine, please make sure it is available\n"
+		    "to you as a user.  Otherwise, make sure another X server is installed and running.\n");
+	}
 #endif (USE_REGISTRY)
 
     osvi.dwOSVersionInfoSize = sizeof(osvi);
@@ -443,6 +456,24 @@ void configure()
 
 			setenvpair("XSERVER_LAUNCHED", "yes");
 		}
+		if (whichX == WINAXE) {
+			if(needShortPath)
+				ConvertShortPathName(winaxedir);
+			if(winaxedir[strlen(winaxedir)-1] == '\\') 
+				winaxedir[strlen(winaxedir)-1] = '\0';
+			strcat(path,";"); 
+			strcat(path, winaxedir);
+			setenvpair("Path", path);
+			sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
+			if(needShortPath)
+				ConvertShortPathName(xkeysymdb);
+			setenvpair("XKEYSYMDB", xkeysymdb);
+			result = _spawnlp(_P_NOWAIT, "xserver", "xserver", NULL);
+			if(result == -1)
+				printf( "Error spawning winaxe: %s\n", strerror( errno ) );
+
+			setenvpair("XSERVER_LAUNCHED", "yes");
+		}	
 	}
 
 	if (whichX == EXCEED7) {
@@ -453,6 +484,10 @@ void configure()
 			exceeddir[strlen(exceeddir)-1] = '\0';
 		strcat(path, ";"); 
 		strcat(path, exceeddir);
+		sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
+		if(needShortPath)
+			ConvertShortPathName(xkeysymdb);
+		setenvpair("XKEYSYMDB", xkeysymdb);
 	}
 
 	sprintf(temp, "%s\\bin_%s", dxroot, DXD_ARCHNAME);
@@ -521,42 +556,35 @@ void dxjsconfig() {
 
     if(dxroot[strlen(dxroot)-1] == '\\') dxroot[strlen(dxroot)-1] = '\0';
     sprintf(jdxsrvPath, "%s\\java\\server", dxroot);
-    if(needShortPath)
-	ConvertShortPathName(jdxsrvPath);
+    ConvertShortPathName(jdxsrvPath);
 
     sprintf(classpath, "%s\\class", jdxsrvPath);
-    if(needShortPath)
-	ConvertShortPathName(classpath);
+    ConvertShortPathName(classpath);
 
     getenvstr("Path", path);
     
     /* Add dxroot\bin */
     sprintf(temp, "%s\\bin", dxroot);
-    if(needShortPath)
-	ConvertShortPathName(temp);
+    ConvertShortPathName(temp);
     strcat(path, ";"); strcat(path, temp);
 
     /* Add dxroot\bin_arch */
     sprintf(temp, "%s\\bin_%s", dxroot, DXD_ARCHNAME);
-    if(needShortPath)
-	ConvertShortPathName(temp);
+    ConvertShortPathName(temp);
     strcat(path, ";"); strcat(path, temp);
 
     /* Add dxroot\lib_arch */
     sprintf(temp, "%s\\lib_%s", dxroot, DXD_ARCHNAME);
-    if(needShortPath)
-	ConvertShortPathName(temp);
+    ConvertShortPathName(temp);
     strcat(path, ";"); strcat(path, temp);
 
     /* Add jdxsrvPath\lib_arch */
     sprintf(temp, "%s\\lib_%s", jdxsrvPath, DXD_ARCHNAME);
-    if(needShortPath)
-	ConvertShortPathName(temp);
+    ConvertShortPathName(temp);
     strcat(path, ";"); strcat(path, temp);
 
     u2d(magickhome);
-    if(needShortPath)
-	ConvertShortPathName(magickhome);
+    ConvertShortPathName(magickhome);
     strcat(path, ";"); strcat(path, magickhome);
 
     setenvpair("Path", path);
@@ -568,13 +596,11 @@ void dxjsconfig() {
     /*  are sed'd out).  Unix needs different logic.		*/
 
     sprintf(temp, "%s\\dxmacros", jdxsrvPath);
-    if(needShortPath)
-	ConvertShortPathName(temp);
+    ConvertShortPathName(temp);
     if(*dxmacros)
     	strcat(dxmacros, ";"); strcat(dxmacros, temp);
     sprintf(temp, "%s\\usermacros", jdxsrvPath);
-    if(needShortPath)
-	ConvertShortPathName(temp);
+    ConvertShortPathName(temp);
     strcat(dxmacros, ";"); strcat(dxmacros, temp);
     setenvpair("DXMACROS",	dxmacros);
 
@@ -582,8 +608,7 @@ void dxjsconfig() {
     setenvpair("DXINCLUDE",	dxinclude);
 
     sprintf(temp, "%s\\userdata", jdxsrvPath);
-    if(needShortPath)
-	ConvertShortPathName(temp);
+    ConvertShortPathName(temp);
     if(*dxdata)
     	strcat(dxmacros, ";"); strcat(dxdata, temp);
     setenvpair("DXDATA",	dxdata);
@@ -615,8 +640,7 @@ int buildcmd()
 
 	if(javaserver) {
 		sprintf(outdir, "%s\\java\\output", dxroot);
-		if(needShortPath)
-			ConvertShortPathName(outdir);
+		ConvertShortPathName(outdir);
 			
 		u2d(classpath);
 		d2u(outdir);

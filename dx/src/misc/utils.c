@@ -9,6 +9,7 @@
 #include <dxconfig.h>
 #include <dx/arch.h>
 #include "utils.h"
+#include "dx.h"
 #include <stdio.h>
 
 #if defined(intelnt) /* Only needed for Windows and Cygwin */
@@ -85,7 +86,7 @@ void addQuotes(char *s)
 
 int getenvstr(char *name, char *value)
 {
-    char *s;
+    char *s=NULL;
 
     s = getenv(name);
     if (s)
@@ -99,7 +100,7 @@ int getenvstr(char *name, char *value)
 /*  name=\0 to unset them in the environment.			*/
 int putenvstr(char *name, char *value, int echo)
 {
-    char s[1000];
+    char s[MAXENV];
     char *p, *q;
     int rc;
     int len;
@@ -137,7 +138,7 @@ int putenvstr(char *name, char *value, int echo)
     p = malloc(strlen(s) + 1);
     strcpy(p, s);
     
-    rc = putenv(p);
+    rc = _putenv(p);
     if (echo)
 		printf("%s\n", s);
     return (!rc ? 1 :0);

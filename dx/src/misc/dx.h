@@ -48,7 +48,7 @@
 #define SMALLSTR 50
 #define MAXARGS 200
 #define MAXNAME MAX_PATH
-#define MAXENV  4096
+#define MAXENV  24576
 #define MAXPARMS 200
 
 /* String Types ----------------------------*/
@@ -62,16 +62,17 @@ enum regCo {
   OPENDX_ID = 1,
   HUMMBIRD_ID = 2,
   HUMMBIRD_ID2 = 3,
-  STARNET_ID = 4
+  HUMMBIRD_ID3 = 4,
+  STARNET_ID = 5,
+  LABF_ID = 6
 };
 
 enum regGet {
   GET = 1,
   CHECK = 2,
-  SET = 3
 };
 
-enum xServer { UNKNOWN, EXCEED6, EXCEED7, XWIN32 };
+enum xServer { UNKNOWN, EXCEED6, EXCEED7, XWIN32, WINAXE };
 
 
 /* Macros ---------------------------- */
