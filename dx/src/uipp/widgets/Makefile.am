@@ -78,7 +78,7 @@ libWIDGETS_a_SOURCES =  		\
 	WorkspaceCallback.c		\
 	Findroute.c			
 
-dxdata_DATA =				\
+noinst_DATA =				\
 	backward.bm			\
 	forward.bm			\
 	frame.bm			\
