@@ -308,6 +308,8 @@
 #undef HAVE__GETPID
 #undef HAVE_GETLOGIN
 
+#undef O_RDONLY
+
 @BOTTOM@
 
 #endif

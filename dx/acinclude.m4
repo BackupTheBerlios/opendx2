@@ -34,6 +34,7 @@ dnl
 AC_DEFUN(DX_EXEEXT,
 [AC_REQUIRE([AC_CYGWIN])
 AC_MSG_CHECKING([for executable suffix])
+AC_PROVIDE([AC_EXEEXT])
 AC_CACHE_VAL(ac_cv_exeext,
 [if test "$CYGWIN" = yes || test "$MINGW32" = yes; then
   ac_cv_exeext=.exe

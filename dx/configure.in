@@ -453,8 +453,8 @@ if test "$xm_libraries" != "" ; then
 fi
 AC_CHECK_LIB(Xp, XpSetImageResolution)
 AC_CHECK_LIB(Xm, XmGetDestination)
-AC_CHECK_LIB(Xm, HCLXmInit, AC_DEFINE(HAVE_HCLXMINIT))
-AC_CHECK_LIB(Xt, HCLXtInit, AC_DEFINE(HAVE_HCLXTINIT))
+AC_TRY_LINK_FUNC(HCLXmInit, AC_DEFINE(HAVE_HCLXMINIT))
+AC_TRY_LINK_FUNC(HCLXtInit, AC_DEFINE(HAVE_HCLXTINIT))
 
 dnl want to put the Xmu tests in before here!!
 DX_X_LINK_LIBS="$LIBS"
@@ -1030,6 +1030,7 @@ AC_EGREP_HEADER(SIGKILL, signal.h, AC_DEFINE(HAVE_SIGKILL))
 AC_EGREP_HEADER(SIGDANGER, signal.h, AC_DEFINE(HAVE_SIGDANGER))
 AC_EGREP_HEADER(SIGPIPE, signal.h, AC_DEFINE(HAVE_SIGPIPE))
 
+
 AC_TRY_COMPILE(
 [],
 [extern char *getenv(const char *);],
@@ -1103,6 +1104,22 @@ DX_CHECK_HEADERS(DPS/XDPSlib.h DPS/dpsXclient.h \
     sys/systeminfo.h sys/time.h sys/timeb.h sys/times.h sys/types.h sys/un.h \
     sys/utsname.h sys/wait.h sysent.h time.h types.h ulocks.h unistd.h \
     values.h wait.h x11/xlibxtra.h xgl/xgl.h linux/kernel.h linux/sys.h)
+
+AC_TRY_COMPILE([
+#if defined(HAVE_FCNTL_H)
+#include <fcntl.h>
+#endif
+],
+[
+int O_RDONLY;
+], 
+[
+echo O_RDONLY IS defined by default
+],
+[
+echo O_RDONLY IS NOT defined by default
+AC_DEFINE_UNQUOTED(O_RDONLY, _O_RDONLY)
+])
 
 if test "$ARCH" = "intelnt" ; then
     DX_CHECK_HEADERS(winbase.h wingdi.h winioctl.h winsock.h)
