@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.7 2001/04/17 15:39:20 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.8 2001/05/24 14:11:13 gda Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
@@ -270,7 +270,7 @@ Streamlines(Object iVectors, Array starts, Array times, float c,
     if (n < 1)
 	return OK;
 
-    vectors = DXCopy(iVectors, COPY_STRUCTURE);
+    vectors = DXReference(DXCopy(iVectors, COPY_STRUCTURE));
     if (! vectors)
 	return ERROR;
 

@@ -188,7 +188,7 @@ _dxfReg_InitVectorGrp(Object object, char *elementType)
 	    goto error;
 	}
 
-	P->P.p[0]->field = (Field)object;
+	P->P.p[0]->field = (Field)DXReference(object);
     }
     else
     {
@@ -205,7 +205,7 @@ _dxfReg_InitVectorGrp(Object object, char *elementType)
 	        goto error;
 	    }
 	    
-	    P->P.p[i]->field = f;
+	    P->P.p[i]->field = (Field)DXReference((Object)f);
 	    
 	    i++;
 	}
@@ -475,6 +475,9 @@ Reg_DestroyVectorPart(VectorPart p)
 
     if (ip)
     {
+        if (p->field)
+	    DXDelete((Object)p->field);
+
 	if (ip->invElements)
 	    DXFreeInvalidComponentHandle(ip->invElements);
 
