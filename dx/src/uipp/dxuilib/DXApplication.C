@@ -5355,6 +5355,17 @@ void DXApplication::getRecentNets(List& result)
 // working right since there aren't platform dependencies.
 void DXApplication::appendReferencedFile(const char* file)
 {
+    //
+    // Don't include files that go in /tmp.  These are files
+    // that are created as a result of Cut,Copy,Paste and 
+    // Drag-n-Drop and shouldn't be recorded here.
+    //
+    const char *tmpdir = theDXApplication->getTmpDirectory();
+    int tmpdirlen = STRLEN(tmpdir);
+    if (strncmp (file, tmpdir, tmpdirlen)==0) {
+	return ;
+    }
+
     char* cp = GetFullFilePath(file);
     theResourceManager->addValue(RECENT_NETS, cp);
     delete cp;
