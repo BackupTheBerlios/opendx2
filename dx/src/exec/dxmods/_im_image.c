@@ -118,7 +118,7 @@ static Error write_im(RWImageArgs *iargs)
 
 #ifdef MAGICK5
 	ExceptionInfo
-	   exception_info;
+	   _dxd_exception_info;
 	ImageInfo
            * image_info;
 #else
@@ -211,7 +211,7 @@ static Error write_im(RWImageArgs *iargs)
 			miff_exists_flag=0;
 		}
 #ifdef MAGICK5
-      GetExceptionInfo(&exception_info); 
+      GetExceptionInfo(&_dxd_exception_info); 
       image_info=CloneImageInfo((ImageInfo *) NULL);
 #else
       GetImageInfo(&image_info);
@@ -242,7 +242,7 @@ static Error write_im(RWImageArgs *iargs)
 	DEBUGMESSAGE(image_info.filename);
 #endif
 #ifdef MAGICK5
-      image=ReadImage(image_info,&exception_info); 
+      image=ReadImage(image_info,&_dxd_exception_info); 
 #else
       image=ReadImage(&image_info);
 #endif
@@ -293,7 +293,7 @@ static Error write_im(RWImageArgs *iargs)
 	void* copycolors=NULL;
 
 	field=iargs->image;
-	array=DXGetComponentValue(field,"colors");
+	array=(Array)DXGetComponentValue(field,"colors");
 	DXGetArrayInfo(array,NULL,&dxcolortype,NULL,NULL,NULL);
 	if (dxcolortype == TYPE_FLOAT) {
 		imcolortype = IM_FLOAT_COLORS;
@@ -320,8 +320,8 @@ static Error write_im(RWImageArgs *iargs)
 		p1-=linesize;
 		p2+=linesize;
 	}
-	GetExceptionInfo(&exception_info);
-	image=ConstituteImage(nx,ny,"RGB",imcolortype,(void*)copycolors,&exception_info);
+	GetExceptionInfo(&_dxd_exception_info);
+	image=ConstituteImage(nx,ny,"RGB",imcolortype,(void*)copycolors,&_dxd_exception_info);
 	
       /*
         Write the image with ImageMagick
