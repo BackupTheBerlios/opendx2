@@ -163,3 +163,9 @@ plane.c: plane.Z
 	        | tr -s '$$\012' '\012\012' \
 	        | sed -e "/^#/d" \
 	        | sed -e "s/[^#]pragma/#pragma/" > plane.c
+
+zclipQ.o: zclipQ.c
+	$(COMPILE) -c -O zclipQ.c
+
+zclipT.o: zclipT.c
+	$(COMPILE) -c -O zclipT.c
