@@ -351,6 +351,7 @@ AC_DEFUN(DX_JAVA_ARCHITECTURE,
         case $lc in
 	    linux)   JAVA_ARCH=genunix ;;
 	    irix*)   JAVA_ARCH=irix ;;
+	    cygwin*)   JAVA_ARCH=win32 ;;
 	    aix)     JAVA_ARCH=aix ;;
 	    alpha)   JAVA_ARCH=alpha ;;
 	    osf1)   JAVA_ARCH=alpha ;;
@@ -668,12 +669,12 @@ dnl [loaded /usr/jdk_base/lib/classes.zip(java/lang/Object.class) in 738 ms]
 dnl
 dnl trim off leading stuff and stuff trailing after lparen to get classes (classes.zip, rt.jar, whatever)
 dnl
-JDK_CLASSES=`grep loaded jdkpath.err | sed -e "s/.loaded //" | sed -e "s&(.*$&&"`
+JDK_CLASSES=`grep loaded jdkpath.err | tr '\134' '\057' | sed -e "s/.loaded //" -e "s&(.*$&&"`
 dnl echo JDK_CLASSES $JDK_CLASSES
 dnl
 dnl get anything that isn't between "/"'s
 dnl 
-dx_jdk_trailing=`echo $JDK_CLASSES | sed -e "s&/.*/&&"`
+dx_jdk_trailing=`echo $JDK_CLASSES | sed -e "s&.*/&&"`
 dnl echo dx_jdk_trailing $dx_jdk_trailing
 dnl
 dnl now trim off /lib/whatever to get to the base of the jdk installation
@@ -705,7 +706,7 @@ XYZZY
 chmod a+x findjar
 dnl which output should not have a space if jar is found (syntax varies from "no jar in")
 dnl
-if test -z "`findjar | grep -v ' '`" ; then
+if test -z "`./findjar | grep -v ' '`" ; then
 	JDKBIN=$JBASE/bin/
 	AC_MSG_RESULT(using ${JDKBIN})
 else
