@@ -264,12 +264,6 @@ DX_CYGWIN_MOUNTS
 
 AC_CHECK_LIB(gen, regex)
 
-dnl A couple libs for cygwin
-AC_CHECK_LIB(ICE, IceConnectionNumber)
-AC_CHECK_LIB(SM, SmcSetProperties)
-AC_CHECK_LIB(REXP, regcomp)
-AC_CHECK_LIB(m, sqrt)
-AC_CHECK_LIB(pthread, pthread_getspecific)
 
 dnl Check of X related files and set up include directories
 
@@ -322,6 +316,13 @@ if test "$ARCH" = "solaris" ; then
       AC_CHECK_LIB(Xmu, XmuAddInitializer, LIBS="$LIBS -lXmu")
     ], LIBS=$OLDLIBS, -lX11)
 fi
+
+dnl A couple libs for cygwin
+AC_CHECK_LIB(ICE, IceConnectionNumber)
+AC_CHECK_LIB(SM, SmcSetProperties)
+AC_CHECK_LIB(REXP, regcomp)
+AC_CHECK_LIB(m, sqrt)
+AC_CHECK_LIB(pthread, pthread_getspecific)
 
 dnl If buildlibdx off then pass this down to the Makefile
 AM_CONDITIONAL(WITH_BUILDLIBDX, test $with_buildlibdx = 'yes') 
