@@ -96,7 +96,7 @@ class LayoutInfo : public Base {
 	}
 	boolean isPositioned() { return this->positioned_yet; }
 	void reposition() { this->collision = this->positioned_yet = FALSE; }
-	void setProposedLocation(int x, int y) {
+	virtual void setProposedLocation(int x, int y) {
 	    this->x = x;
 	    this->y = y;
 	    this->positioned_yet = TRUE;
@@ -120,6 +120,8 @@ class NodeInfo : public LayoutInfo
     private:
 	Ark* destination;
 
+	NodeInfo* straightness_destination;
+
 	Ark* straightness_opportunity;
 	boolean straightness_set;
 	int offset_for_straightness;
@@ -140,6 +142,7 @@ class NodeInfo : public LayoutInfo
 	    this->connected_nodes = NUL(List*);
 	    this->owns_list = FALSE;
 	    this->straightness_set = FALSE;
+	    this->straightness_destination = NUL(NodeInfo*);
 	}
 	void initialize (Node* n, int hops);
 
@@ -150,6 +153,8 @@ class NodeInfo : public LayoutInfo
 
 	void registerStraightArc(int offset, Ark* arc);
 	Ark* hasStraightArc(int& offset);
+	void shiftStraightArc(int dx);
+	void setStraightnessDestination (NodeInfo* dest);
 
     public:
 	int getGraphDepth() { return this->hops; }
@@ -169,6 +174,8 @@ class NodeInfo : public LayoutInfo
 	Ark* getDestination() { return this->destination; }
 
 	int getDestinationLocation (int& hop);
+
+	virtual void setProposedLocation(int x, int y);
 
 	virtual const char* getClassName()
 	{

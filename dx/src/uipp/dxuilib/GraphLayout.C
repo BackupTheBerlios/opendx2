@@ -171,7 +171,7 @@ const char* GraphLayout::SetNodeSpacing(int ns)
 #define INITIAL_X 0//5000 
 #define INITIAL_Y 0//5000
 
-//#define DEBUG_PLACEMENT
+#define DEBUG_PLACEMENT
 #if defined(DEBUG_PLACEMENT)
 //
 // $ setenv DEBUG_PLACEMENT
@@ -2889,6 +2889,11 @@ void LayoutRow::straightenArcs(boolean& changes_made_on_previous_row)
 	arc = dinfo->hasStraightArc(offset);
 	if (arc == NUL(Ark*)) continue;
 
+	//
+	// problem right here is that, the value we've recorded for
+	// offset might not be correct any more if the src node was
+	// moved in an earlier pass. FIXME
+	//
 	if ((!changes_made) && (!offset)) continue;
 
 	ASSERT (dest == arc->getDestinationNode(input));
@@ -2988,15 +2993,79 @@ Ark* NodeInfo::hasStraightArc(int& offset)
 
 void NodeInfo::registerStraightArc(int offset, Ark* arc)
 {
+    int dummy;
+    Node* src;
+    NodeInfo* sinfo;
+
+    //
+    // The this is the info for the node at the destination end of arc
+    //
     if (!this->straightness_set) {
 	this->offset_for_straightness = offset;
 	this->straightness_opportunity = arc;
 	this->straightness_set = TRUE;
+
+	src = arc->getSourceNode(dummy);
+	sinfo = (NodeInfo*)src->getLayoutInformation();
+	sinfo->setStraightnessDestination(this);
+
 	return ;
     }
     if (abs(offset) < abs(this->offset_for_straightness)) {
 	this->offset_for_straightness = offset;
+
+	src = arc->getSourceNode(dummy);
+	sinfo = (NodeInfo*)src->getLayoutInformation();
+	sinfo->setStraightnessDestination(NUL(NodeInfo*));
 	this->straightness_opportunity = arc;
+	
+	// find the NodeInfo at the src end of the arc.
+	// Notify that object that this of a partnership.
+	src = arc->getSourceNode(dummy);
+	sinfo = (NodeInfo*)src->getLayoutInformation();
+	sinfo->setStraightnessDestination(this);
     }
 }
 
+//
+// The purpose for shiftStraightArc(), setStraightnessDestination(), 
+// and a virtual setProposedLocation() is to modify our notion
+// of straightness so that if a src is moved in order to straighten
+// one of its incoming arcs, we'll notify downstream arcs that had
+// once believed themselves to be straight, that they're no longer
+// straight.  All these methods are used as a result of ::straightenArcs().
+// Note that by storing a reference to a NodeInfo* inside the 
+// NodeInfo* object we create a potential crash bug if that NodeInfo*
+// is deleted.
+//
+void NodeInfo::shiftStraightArc(int dx)
+{
+    if (!this->straightness_set) return ;
+    this->offset_for_straightness+= dx;
+}
+
+void NodeInfo::setProposedLocation (int x, int y)
+{
+    int dx;
+    boolean was_positioned = this->positioned_yet;
+
+    if (was_positioned) dx = x - this->x;
+
+    this->LayoutInfo::setProposedLocation(x,y);
+    if (!was_positioned) return ;
+
+    //
+    // If the destination is using this node as it's
+    // targeted straight arc and the destination thought
+    // that the arc was stragith, then ensure that the
+    // destination knows that it's arc isn't straight
+    // any longer.
+    //
+    if (this->straightness_destination) 
+	this->straightness_destination->shiftStraightArc(dx);
+}
+
+void NodeInfo::setStraightnessDestination(NodeInfo* dest)
+{
+    this->straightness_destination = dest;
+}
