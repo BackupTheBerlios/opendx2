@@ -2021,7 +2021,7 @@ RemoveFieldComponents(Field f)
     char *names[100];
 
     for (i = 0; DXGetEnumeratedComponentValue(f, i, &names[i]); i++);
-    for (; i >= 0; i--)
+    for (--i; i >= 0; i--)
 	DXDeleteComponent(f, names[i]);
     return DXEndField(f);
 }
