@@ -69,27 +69,50 @@ public class DXServerThread extends DXThread
 	//
 	// os.name is something like "Windows NT"
 	// os.arch is something like "x86" or "80486"
-	// If the server is started with -Djx.local or the arch
-	//    is unrecognized, then we'll load the library from the current wd
+	// If the server is started with -Djx.lib set
+	//    then we try to use System.load() which allows a path specification
+	//    where jx.lib is set to the full path and library name. for some archs we
+	//    have a default for jx.lib which might work but increasingly does not.
+	//   Otherwise or in case of failure, then we'll try to load the library from the current wd
+	//    or based on the library search path using System.loadLibrary() .
 	//
-	boolean use_local_shared_obj = true;
-	String locallibs = System.getProperty("jx.local");
-	if (locallibs != null) {
-	} else {
-	    String arch = System.getProperty("os.name");
-	    if (arch.equals("AIX")) {
-		System.load("../lib_ibm6000/libAnyDX.so");
-		use_local_shared_obj = false;
-	    } else if (arch.equals("Solaris")) {
-		System.load("../lib_solaris/libAnyDX.so");
-		use_local_shared_obj = false;
-	    } else if (arch.equals("Irix")) {
-		System.load("../lib_sgi/libAnyDX.so");
-		use_local_shared_obj = false;
-	    } 
+	boolean use_loadLibrary = true;
+	String jxlib = System.getProperty("jx.lib");
+	if (jxlib != null) {
+	    try {
+	    	String arch = System.getProperty("os.name");
+	    	if (jxlib.length()==0) {
+			if (arch.equals("AIX")) 
+				jxlib ="../lib_ibm6000/libAnyDX.so";
+			if (arch.equals("Solaris")) 
+				jxlib ="../lib_solaris/libAnyDX.so";
+	   		if (arch.equals("Irix")) 
+				jxlib ="../lib_sgi/libAnyDX.so";
+	   	} 
+		if (jxlib.length()!=0) {
+			System.load(jxlib);
+			use_loadLibrary = false;
+	    	} 
+	   } catch (UnsatisfiedLinkError ule) { 
+		System.out.println(" ");
+		System.out.println("DXServer: normal library loading is suppressed because jx.lib is set.");
+		System.out.println("However DXServer is unable to load AnyDX shared lib from file "+ jxlib);
+		System.out.println("Put correct system-dependent path and name in -Djx.lib (startserver script?) ");
+		System.out.println("Alternatively remove the jx.lib definition entirely and normal library loading will be the default ");
+		System.out.println("We will now try to load the library normally via System.loadLibrary() .");
+		use_loadLibrary=true;
+	   }
 	}
-	if (use_local_shared_obj)
-	    System.loadLibrary("AnyDX");
+	if (use_loadLibrary)
+	    try {
+		System.loadLibrary("AnyDX");
+	    } catch (UnsatisfiedLinkError ule) {
+		System.out.println("Unable to load AnyDX shared library: is PATH or LD_LIBRARY_PATH correct?");
+		System.out.println("Try setting -Djx.lib to the full name including path in startserver script");
+		if(System.getProperty("os.name").equals("Irix"))
+			System.out.println("Irix platform: if library exists then possibly its abi is not -n32 ");
+		System.exit(1);
+	    }
     }
 
     public  int     getId() 			{ return java_id; }
