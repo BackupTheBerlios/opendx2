@@ -1,4 +1,3 @@
-#define FIONREAD 99
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
