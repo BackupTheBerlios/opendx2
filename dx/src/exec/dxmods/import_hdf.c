@@ -6,16 +6,7 @@
 #include <stdio.h>
 #include <dx/dx.h>
 
-#if DXD_LACKS_HDF_FORMAT
-Error _dxfstat_hdf(char *filename)
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "HDF libs not included"); return ERROR; }
-int _dxfget_hdfcount(char *filename)
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "HDF libs not included"); return ERROR; }
-int _dxfwhich_hdf(char *filename, char *fieldname)
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "HDF libs not included"); return ERROR; }
-Field DXImportHDF(char *filename, char *fieldname) 
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "HDF libs not included"); return ERROR; }
-#else
+#if defined(HAVE_LIBHDF)
 
 #ifdef DXD_WIN
 #define F_OK	0
@@ -691,7 +682,16 @@ static Error pvsswap(void *data, int numelts, Type type)
 }
 #endif
 
-/* from here down SPECIAL CASE FOR THUNDERSTORM */ 
-/* removed 5/94 lumba 				*/
+#else
+
+
+Error _dxfstat_hdf(char *filename)
+{ DXSetError(ERROR_NOT_IMPLEMENTED, "HDF libs not included"); return ERROR; }
+int _dxfget_hdfcount(char *filename)
+{ DXSetError(ERROR_NOT_IMPLEMENTED, "HDF libs not included"); return ERROR; }
+int _dxfwhich_hdf(char *filename, char *fieldname)
+{ DXSetError(ERROR_NOT_IMPLEMENTED, "HDF libs not included"); return ERROR; }
+Field DXImportHDF(char *filename, char *fieldname) 
+{ DXSetError(ERROR_NOT_IMPLEMENTED, "HDF libs not included"); return ERROR; }
 
 #endif /* DXD_LACKS_HDF_FORMAT */

@@ -17,14 +17,7 @@
 #include <string.h>
 #include <dx/dx.h>
 
-#if DXD_LACKS_CDF_FORMAT
-Object DXImportCDF(char* filename, char **fieldlist, int *startframe,
-                int *endframe, int *deltaframe)
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "CDF libs not included"); return ERROR; }
-Error _dxfstat_cdf(char *filename) 
-{ DXSetError(ERROR_NOT_IMPLEMENTED, "CDF libs not included"); return ERROR; }
-
-#else
+#if defined(HAVE_LIBCDF)
 
 #include "cdf.h"
 #include "import.h"
@@ -2657,5 +2650,14 @@ Error _dxfstat_cdf(char *filename)
 
    return OK;
 }
+
+#else
+
+Object DXImportCDF(char* filename, char **fieldlist, int *startframe,
+                int *endframe, int *deltaframe)
+{ DXSetError(ERROR_NOT_IMPLEMENTED, "CDF libs not included"); return ERROR; }
+Error _dxfstat_cdf(char *filename) 
+{ DXSetError(ERROR_NOT_IMPLEMENTED, "CDF libs not included"); return ERROR; }
+
 
 #endif /* DXD_LACKS_CDF_FORMAT */
