@@ -33,10 +33,6 @@
 #include <io.h>
 #endif
 
-#if defined(intelnt)
-#define	sys_nerr	_sys_nerr
-#endif
-
 /*
  * DXMessage system state.
  */
@@ -282,7 +278,6 @@ DXResetError(void)
 void
 DXPrintError(char *s)
 {
-    extern int sys_nerr;
     char *msg, *errnomsg;
     static int been_here = 0;
     static char *messages[(int)ERROR_MAX];
@@ -309,7 +304,7 @@ DXPrintError(char *s)
 	msg = "Bad error code";
     else
 	msg = messages[(int)_ErrorCode];
-    errnomsg = errno<sys_nerr? sys_errlist[errno] : "Bad errno code";
+    errnomsg = sys_errlist[errno];
 
     /* print error message */
     if (_ErrorCode==ERROR_NONE && errno)
