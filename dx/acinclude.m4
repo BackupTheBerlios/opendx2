@@ -1,4 +1,4 @@
-AC_DEFUN(DX_CYGWIN,
+AC_DEFUN(AC_CYGWIN,
 [AC_CACHE_CHECK(for Cygwin environment, ac_cv_cygwin,
 [AC_TRY_COMPILE(,[
 #ifndef __CYGWIN__
@@ -10,8 +10,8 @@ rm -f conftest*])
 CYGWIN=
 test "$ac_cv_cygwin" = yes && CYGWIN=yes])
 
-AC_DEFUN(DX_EXEEXT,
-[AC_REQUIRE([DX_CYGWIN])
+AC_DEFUN(AC_EXEEXT,
+[AC_REQUIRE([AC_CYGWIN])
 AC_MSG_CHECKING([for executable suffix])
 AC_CACHE_VAL(ac_cv_exeext,
 [if test "$CYGWIN" = yes || test "$MINGW32" = yes; then
