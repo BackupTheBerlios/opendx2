@@ -916,8 +916,9 @@ extern "C" void DXChild_OutQueuedInputHandler(XtPointer  clientData,
 		obj->outLine[j+1] = '\0';
 		theDXApplication->getMessageWindow()->addInformation(
 		    obj->outLine);
-/* GDA */
-		write(1, obj->outLine, j + 1);
+/* GDA 
+*		write(1, obj->outLine, j + 1);
+*/
 		if (sscanf(obj->outLine, "port = %d\n", &port) == 1)
 		{
 		    theDXApplication->connectToServer(port, obj);
@@ -1311,8 +1312,9 @@ DXChild::waitForConnection()
             portString = strstr (rdbuffer, "port = ");
             if (portString != NULL) {
                 result = 0;
-/* GDA */
-write(1, portString, strlen(portString)+1);
+/* GDA
+*write(1, portString, strlen(portString)+1);
+*/
                 sscanf (portString, "port = %d", &port);
                 if (this->isQueued())
                     this->unQueue();
@@ -1357,8 +1359,9 @@ write(1, portString, strlen(portString)+1);
             portString = strstr (rdbuffer, "port = ");
             if (portString != NULL) {
                 result = 0;
-/* GDA */
-write(1, portString, strlen(portString)+1);
+/* GDA
+*write(1, portString, strlen(portString)+1);
+*/
                 sscanf (portString, "port = %d", &port);
                 if (this->isQueued())
                     this->unQueue();
@@ -1545,8 +1548,9 @@ write(1, portString, strlen(portString)+1);
 		    portString = strstr (rdbuffer, "port = ");
 		    if (portString != NULL) {
 			result = 0;
-/* GDA */
-write(1, portString, strlen(portString)+1);
+/* GDA
+*write(1, portString, strlen(portString)+1);
+*/
 			sscanf (portString, "port = %d", &port);
 			if (this->isQueued())
 			    this->unQueue();
