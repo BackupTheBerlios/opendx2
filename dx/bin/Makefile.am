@@ -5,6 +5,5 @@ bindir = $(prefix)/bin
 
 EXTRA_DIST = dxworker dx mdf2c
 
-dxbin_DATA = dxworker mdf2c
-bin_DATA = dx
-
+dxbin_SCRIPTS = dxworker mdf2c
+bin_SCRIPTS = dx
