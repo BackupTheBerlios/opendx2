@@ -66,7 +66,7 @@ enum xServer whichX = UNKNOWN;
 #define SMALLSTR 50
 #define MAXARGS 200
 #define MAXNAME 256
-#define MAXENV  1024
+#define MAXENV  4096
 #define MAXPARMS 200
 
 #if defined(HAVE__SPAWNVP) && !defined(HAVE_SPAWNVP)
@@ -258,6 +258,15 @@ void u2d(char *s)
 	    s[i] = '\\';
 }
 
+void removeQ(char *s)
+{
+    char *p, *p2; p = s; p2 = s;
+    while(p && *p) {
+	while(*p && p && *p == '"') p++;
+	*p2 = *p; p2++; p++;
+    }
+    *p2 = '\0';
+}
 
 int getenvstr(char *name, char *value)
 {
@@ -543,6 +552,11 @@ int initrun()
     	strcpy(dxroot, "\\usr\\local\\dx\\");
     }
 
+    /* Now strip off any garbage that may have been set on dxroot */
+    removeQ(dxroot);
+    u2d(dxroot);
+    
+
     if (!*dxdata) {
     	strcpy(dxdata, dxroot);
 	if(dxdata[strlen(dxdata)-1] !='\\')
@@ -579,32 +593,33 @@ void configure()
 
     if(dxroot[strlen(dxroot)-1] == '\\') dxroot[strlen(dxroot)-1] = '\0';
     setifnot(dxexroot, dxroot);
-    sprintf(dxexecdef, "%s%sbin_%s%sdxexec%s", dxexroot, DIRSEP, exarch, DIRSEP, EXE_EXT);
+    sprintf(dxexecdef, "%s%sbin_%s%sdxexec%s", dxexroot, "\\", exarch, "\\", EXE_EXT);
     setifnot(dxexec, dxexecdef);
     setifnot(exmode, "-r");
     setifnot(exhilite, "-B");
 
     setifnot(dxuiroot, dxroot);
     if (notset(dxui))
-	sprintf(dxui, "%s%sbin_%s%sdxui%s", dxuiroot, DIRSEP, uiarch, DIRSEP, EXE_EXT);
+	sprintf(dxui, "%s%sbin_%s%sdxui%s", dxuiroot, "\\", uiarch, "\\", EXE_EXT);
 	
     setifnot(uimode, "-edit");
     setifnot(cdto, curdir);
 
 
-
 #ifdef DXD_WIN
 
+//    GetEnvironmentVariable("Path", path0, sizeof(envstr));
     getenvstr("Path", path0);
     
     if (whichX == EXCEED6) {
-    	/* Set Exceed 6 env variables */
+    	/* Set Exceed 6 env variables 
     	sprintf(path, "%s;%s", exceeddir, path0);
     	sprintf(xapplresdir, "%s", exceeduserdir);
     	setenvpair(xapplresdir, "XAPPLRESDIR");
     	sprintf(xnlspath, "%s\\lib", dxroot);
     	sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
     	setenvpair(xnlspath, "XNLSPATH");
+        */
     }
 
     if (whichX == EXCEED7) {
@@ -615,10 +630,11 @@ void configure()
     	/* Need to define X-Win32 env variables */
     }
     
-    sprintf(path, "%s\\bin;%s", dxroot, path0);
-
+    sprintf(path, "%s\\bin_%s;%s", dxroot, DXD_ARCHNAME, path0);
     setenvpair("", "HOME");
+
     setenvpair(path, "Path");
+//    SetEnvironmentVariable("Path", path);
 #endif
 
     /*  The following logic is specific to the PC, where the	*/
@@ -768,6 +784,7 @@ int buildcmd()
 #endif
 	if (strcmp(dxexec, dxexecdef)) {
 	    strcat(uiflags, " -exec ");
+	    d2u(dxexec);
 	    strcat(uiflags, dxexec);
 	}
 
