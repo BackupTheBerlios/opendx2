@@ -27,8 +27,6 @@ if test -n "$DX" ; then
   DXINST=`$DX -whereami | grep "installed in" | sed -e "s/installed in //"`
   if test -z "$DXINST" ; then 
 	AC_MSG_RESULT([warning: old version of dx script in path])
-  else
-	AC_MSG_RESULT($DXINST)
   fi
 fi
 
@@ -42,14 +40,12 @@ if test -z "$DXINST" ; then
 	DXINST=$DX_DEFAULT_INST
    	AC_MSG_RESULT([defaulting to $DXINST])
 	AC_MSG_WARN([Missing dx script--please install OpenDX first.])
-  else
-	AC_MSG_RESULT($DXINST)
   fi
-else
-  AC_MSG_RESULT($DXINST)
 fi
 ac_cv_dx_install_path=$DXINST
-])])
+])
+DXINST=$ac_cv_dx_install_path
+])
 
 
 dnl  DX_GET_PREFIX
