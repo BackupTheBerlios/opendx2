@@ -444,8 +444,6 @@ private:
     //
     boolean	chopInputArk(Node*, int, Dictionary*, Dictionary*);
 
-    void setFileName(char* fname);
-
   public:
     
     SequencerNode* sequencer;	// FIXME! does this need to be public. 

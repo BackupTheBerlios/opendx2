@@ -4278,8 +4278,12 @@ void EditorWindow::openSelectedMacros()
     ListIterator li(*l);
 
     MacroNode *n;
-    while( (n = (MacroNode *)li.getNext()) )
+    while( (n = (MacroNode *)li.getNext()) ) {
         n->openMacro();
+	MacroDefinition* md = (MacroDefinition*)n->getDefinition();
+	Network* net = md->getNetwork();
+	theDXApplication->appendReferencedFile (net->getFileName());
+    }
     delete l;
 }
 void EditorWindow::openSelectedImageWindows()

@@ -3487,6 +3487,7 @@ boolean DXApplication::openFile(const char *netfile, const char *cfgfile,
 	    this->getExecCtl()->updateMacros();
 	    this->getExecCtl()->resumeExecOnChange();
 	}
+	this->appendReferencedFile(netfile);
     }
 
     this->readFirstNetwork = TRUE;
