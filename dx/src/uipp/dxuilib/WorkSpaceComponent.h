@@ -77,6 +77,17 @@ class WorkSpaceComponent : public UIComponent
     friend void Component_SelectWorkSpaceComponentCB(Widget, XtPointer, XtPointer);
     friend void Component_ResizeCB(Widget, XtPointer, XtPointer);
 
+    //
+    // Similar to a node's instance number.  I use this to uniquely
+    // identify a decorator.  This number doesn't need to be saved in the .net
+    // file, however because it isn't used in writing out executable code to the
+    // exec.  It's only needed at runtime and doesn't have to be the same every
+    // time the net is used.
+    //
+    int instance;
+
+    static int NextInstanceNumber;
+
   protected:
     //
     // Protected member data:
@@ -247,6 +258,12 @@ class WorkSpaceComponent : public UIComponent
 
     // Destructor:
     ~WorkSpaceComponent(); 
+
+    //
+    // Used during undo operations, so that decorators can be identified
+    // uniquely without the use of a UIComponent*
+    //
+    int getInstanceNumber() { return this->instance; }
 
     //
     // Returns a pointer to the class name.

@@ -109,7 +109,7 @@ class MacroParameterNode : public UniqueNameNode
     //
     // Switch the node's net from 'from' to 'to'
     //
-    virtual void switchNetwork(Network *from, Network *to);
+    virtual void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
     virtual boolean canSwitchNetwork(Network *from, Network *to);
 
     //
@@ -121,7 +121,7 @@ class MacroParameterNode : public UniqueNameNode
     //
     // Returns a pointer to the class name.
     //
-    const char* getClassName()
+    virtual const char* getClassName()
     {
 	return ClassMacroParameterNode;
     }

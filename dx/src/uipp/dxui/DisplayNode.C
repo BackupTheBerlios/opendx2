@@ -570,7 +570,7 @@ ImageWindow *DisplayNode::getUnassociatedImageWindow(
 
 }
 
-void DisplayNode::switchNetwork(Network *from, Network *to)
+void DisplayNode::switchNetwork(Network *from, Network *to, boolean silently)
 {
     if (this->panelAccessManager)  {
         delete this->panelAccessManager;

@@ -214,7 +214,7 @@ boolean TransmitterNode::isA(Symbol classname)
 //
 // Switch the node from one net to another.  Resolve any name space collisions.
 //
-void TransmitterNode::switchNetwork(Network *from, Network *to)
+void TransmitterNode::switchNetwork(Network *from, Network *to, boolean silently)
 {
 
     const char* label = this->getLabelString();
@@ -250,7 +250,8 @@ void TransmitterNode::switchNetwork(Network *from, Network *to)
     }
 
     if (name_change_required) {
-	InfoMessage("Transmitter %s has been relabeled %s", label, new_name);
+	if (!silently)
+	    InfoMessage("Transmitter %s has been relabeled %s", label, new_name);
 	this->setLabelString(new_name);
 	label = this->getLabelString();
     }
@@ -275,7 +276,7 @@ void TransmitterNode::switchNetwork(Network *from, Network *to)
 	delete l;
     }
 
-    this->UniqueNameNode::switchNetwork(from,to);
+    this->UniqueNameNode::switchNetwork(from,to,silently);
 }
 
 

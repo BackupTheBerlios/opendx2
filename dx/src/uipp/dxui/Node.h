@@ -1062,8 +1062,13 @@ private:
 
     //
     // Switch the node's net from 'from' to 'to'
+    // 'silently' added 11/10/02 to support EditorWindow's undo.  We might be
+    // merging network elements some of which are going to be discarded.  We
+    // do this sometimes when we want to a node's arcs.  There are nodes saved
+    // at the other ends of those arcs however those nodes are just going to
+    // be thrown away at the end of the merge.
     //
-    virtual void switchNetwork(Network *from, Network *to);
+    virtual void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
 
     //
     // Get the selectable values for the n'th input.
@@ -1142,7 +1147,7 @@ private:
     //
     // Returns a pointer to the class name.
     //
-    const char* getClassName() { return ClassNode; }
+    virtual const char* getClassName() { return ClassNode; }
 };
 
 

@@ -1543,7 +1543,7 @@ int ColormapNode::getMessageIdParamNumber() { return ID_PARAM_NUM; }
 // operations is the wrong network.  The instance number will be updated
 // by switching networks at which time its safe to go ahead and spout off.
 //
-void ColormapNode::switchNetwork(Network *from, Network *to)
+void ColormapNode::switchNetwork(Network *from, Network *to, boolean silently)
 {
     this->DrivenNode::switchNetwork(from, to);
 

@@ -866,7 +866,7 @@ boolean MacroParameterNode::canSwitchNetwork(Network *from, Network *to)
     return this->UniqueNameNode::canSwitchNetwork(from,to);
 }
 
-void MacroParameterNode::switchNetwork(Network *from, Network *to)
+void MacroParameterNode::switchNetwork(Network *from, Network *to, boolean silently)
 {
     MacroDefinition *md = from->getDefinition();
     ParameterDefinition *pd = this->getParameterDefinition();
@@ -885,7 +885,7 @@ void MacroParameterNode::switchNetwork(Network *from, Network *to)
     //
     // Switch the Network pointers
     //
-    this->UniqueNameNode::switchNetwork(from, to);
+    this->UniqueNameNode::switchNetwork(from, to, silently);
 
     //
     // Make sure we are a macro
@@ -979,12 +979,13 @@ void MacroParameterNode::switchNetwork(Network *from, Network *to)
 	    }
 	    new_name = name_buf;
 
-	    WarningMessage (
-		"Parameter name `%s' is the same name used by parameter #%d.\n"
-		"Your macro %s has been renamed \"%s\".",
-		current_name, name_clash, (this->isInput()? "Input" : "Output"),
-		new_name
-	    );
+	    if (!silently) 
+		WarningMessage (
+		    "Parameter name `%s' is the same name used by parameter #%d.\n"
+		    "Your macro %s has been renamed \"%s\".",
+		    current_name, name_clash, (this->isInput()? "Input" : "Output"),
+		    new_name
+		);
 	    pd->setName(name_buf);
 	    name_reset = TRUE;
 	}
@@ -1001,12 +1002,13 @@ void MacroParameterNode::switchNetwork(Network *from, Network *to)
 	    }
 	    new_name = name_buf;
 
-	    WarningMessage (
-		"A %s with name \"%s\" already exists.\n"
-		"Your macro %s has been renamed \"%s\".",
-		conflict, this->getUniqueName(), (this->isInput()? "Input" : "Output"),
-		name_buf
-	    );
+	    if (!silently)
+		WarningMessage (
+		    "A %s with name \"%s\" already exists.\n"
+		    "Your macro %s has been renamed \"%s\".",
+		    conflict, this->getUniqueName(), (this->isInput()? "Input" : "Output"),
+		    name_buf
+		);
 	    pd->setName(name_buf);
 	    name_reset = TRUE;
 	}

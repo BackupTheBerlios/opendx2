@@ -73,7 +73,7 @@ class ProbeNode : public Node
     // Switch the node from one net to another.  
     // Resolve any name space collisions.
     //
-    virtual void switchNetwork(Network *from, Network *to);
+    virtual void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
 
     //
     // Determine if this node is a node of the given class
@@ -83,7 +83,7 @@ class ProbeNode : public Node
     //
     // Returns a pointer to the class name.
     //
-    const char* getClassName()
+    virtual const char* getClassName()
     {
 	return ClassProbeNode;
     }

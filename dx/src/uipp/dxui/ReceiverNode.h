@@ -75,7 +75,7 @@ class ReceiverNode : public UniqueNameNode
     // Switch the node from one net to another.  Look for a tranmitter to
     // connect to.
     //
-    void switchNetwork(Network *from, Network *to);
+    void switchNetwork(Network *from, Network *to, boolean silently);
 
     //
     // Determine if this node is a node of the given class
@@ -93,7 +93,7 @@ class ReceiverNode : public UniqueNameNode
     //
     // Returns a pointer to the class name.
     //
-    const char* getClassName()
+    virtual const char* getClassName()
     {
 	return ClassReceiverNode;
     }

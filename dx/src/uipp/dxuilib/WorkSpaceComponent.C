@@ -52,6 +52,8 @@ static String wwTable = "\
 //
 #endif
 
+int WorkSpaceComponent::NextInstanceNumber = 1;
+
 String WorkSpaceComponent::DefaultResources[] =
 {
   NUL(char*)
@@ -68,6 +70,7 @@ WorkSpaceComponent::WorkSpaceComponent(const char *name, boolean developerStyle)
     this->userAssignedWidth = this->userAssignedHeight = 0;
     this->currentLayout = WorkSpaceComponent::NotSet;
     this->setResourceList = NUL(List*);
+    this->instance = WorkSpaceComponent::NextInstanceNumber++;
 
     if (NOT WorkSpaceComponent::WorkSpaceComponentClassInitialized)
     {
@@ -385,7 +388,7 @@ WorkSpaceComponent::SetLabelResource (Widget w, const char *labelString)
      * Replace "\n" character sequences with the '\n' character.
      */
     filtered_string = WorkSpaceComponent::FilterLabelString(labelString);
-    string = XmStringCreateLtoR((char*)filtered_string, "bold");
+    string = XmStringCreateLtoR((char*)filtered_string, "canvas");
 
     mw = mh = mt = mb = ml = mr = ht = st = 0;
     XtVaGetValues (w, XmNfontList, &xmfl, XmNmarginWidth, &mw,

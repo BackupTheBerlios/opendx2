@@ -255,7 +255,7 @@ Node *ReceiverNode::getUltimateSourceNode(int* param_no)
 // Switch the node from one net to another.  Look for a transmitter
 // to connect to.
 //
-void ReceiverNode::switchNetwork(Network *from, Network *to)
+void ReceiverNode::switchNetwork(Network *from, Network *to, boolean silently)
 {
     const char *label = this->getLabelString();
 
@@ -315,20 +315,23 @@ void ReceiverNode::switchNetwork(Network *from, Network *to)
 	if (!avoiding_cycle) {
 	    const char* conflict = to->nameConflictExists(this, label);
 	    if (conflict){
-		WarningMessage ("A %s with name \"%s\" already exists.", conflict, label);
+		if (!silently)
+		    WarningMessage ("A %s with name \"%s\" already exists.", 
+			conflict, label);
 		this->setLabelString ("Receiver");
 	    }
 	} else {
-	    WarningMessage (
-		"Receiver \"%s\" has been renamed \"%s\"\n"
-		"due to a cyclic connection.",
-		this->getLabelString(), "Receiver"
-	    );
+	    if (!silently)
+		WarningMessage (
+		    "Receiver \"%s\" has been renamed \"%s\"\n"
+		    "due to a cyclic connection.",
+		    this->getLabelString(), "Receiver"
+		);
 	    this->setLabelString ("Receiver");
 	}
     }
 
-    this->UniqueNameNode::switchNetwork(from, to);
+    this->UniqueNameNode::switchNetwork(from, to, silently);
 }
 
 

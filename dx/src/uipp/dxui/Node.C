@@ -38,6 +38,7 @@
 #include "ListIterator.h"
 #include "DXApplication.h"
 #include "ProcessGroupManager.h"
+#include "EditorWindow.h"
 #if WORKSPACE_PAGES
 #include "Dictionary.h"
 #include "DictionaryIterator.h"
@@ -2949,6 +2950,13 @@ Node::updateDefinition()
 	this->standin = this->newStandIn(e->getWorkSpace());
     }
 #endif
+
+    //
+    // Because of undo in Editor, provide notification that a defintion
+    // has changed.  The undo list will probably have to be tossed out
+    //
+    EditorWindow *e = this->getNetwork()->getEditor();
+    if (e) e->notifyDefinitionChange(this);
 }
 
 //
@@ -3224,7 +3232,7 @@ boolean Node::canSwitchNetwork(Network *from, Network *to)
 //
 // Do whatever is necessary to switch the node to the new Network.
 //
-void Node::switchNetwork(Network *from, Network *to)
+void Node::switchNetwork(Network *from, Network *to, boolean silently)
 {
     if (this->cdb) {
 	delete this->cdb;

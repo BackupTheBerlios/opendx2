@@ -89,7 +89,7 @@ class DisplayNode : public DrivenNode
     ImageWindow *getUnassociatedImageWindow(
 			boolean alloc_one = TRUE, boolean canBeAnchor = TRUE);
 
-    virtual void switchNetwork(Network *from, Network *to);
+    virtual void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
 
     //
     // Update any UI visuals that may be based on the state of this
@@ -185,7 +185,7 @@ class DisplayNode : public DrivenNode
     //
     // Returns a pointer to the class name.
     //
-    const char* getClassName()
+    virtual const char* getClassName()
     {
 	return ClassDisplayNode;
     }

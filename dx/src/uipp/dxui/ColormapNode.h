@@ -378,8 +378,9 @@ class ColormapNode : public DrivenNode
     // a noisy way using its instance number which in the case of mergeNetwork
     // operations is the wrong network.  The instance number will be updated
     // by switching networks at which time its safe to go ahead and spout off.
+    // See node.h for a comment on 'silently'
     //
-    virtual void switchNetwork(Network *from, Network *to);
+    virtual void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
 
  
     //
@@ -390,7 +391,7 @@ class ColormapNode : public DrivenNode
     //
     // Returns a pointer to the class name.
     //
-    const char* getClassName()
+    virtual const char* getClassName()
     {
 	return ClassColormapNode;
     }

@@ -66,7 +66,7 @@ class TransmitterNode : public UniqueNameNode
     // Switch the node from one net to another.  Resolve any name 
     // space collisions.
     //
-    void switchNetwork(Network *from, Network *to);
+    void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
 
     //
     // Check for name conflicts.  Usually you disallow 2 nodes with the same
@@ -80,7 +80,7 @@ class TransmitterNode : public UniqueNameNode
     //
     // Returns a pointer to the class name.
     //
-    const char* getClassName()
+    virtual const char* getClassName()
     {
 	return ClassTransmitterNode;
     }

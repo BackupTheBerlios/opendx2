@@ -201,7 +201,7 @@ boolean ProbeNode::isA(Symbol classname)
 // that can be called from any of the subclasses.  I won't bother right
 // before the 3.1 release.  dawood - 9/15/95
 //
-void ProbeNode::switchNetwork(Network *from, Network *to)
+void ProbeNode::switchNetwork(Network *from, Network *to, boolean silently)
 {
     boolean change_label = FALSE; 
     const char *nodename = this->getNameString();
@@ -239,11 +239,11 @@ void ProbeNode::switchNetwork(Network *from, Network *to)
     if (change_label) {
 	char dflt_label[128];
 	sprintf(dflt_label, "%s_%d", nodename, this->getInstanceNumber());
-	InfoMessage("%s %s has been relabeled %s",
-		    		nodename, curr_label, dflt_label);
+	if (!silently)
+	    InfoMessage("%s %s has been relabeled %s", nodename, curr_label, dflt_label);
 	this->setLabelString(dflt_label);
     }
 
-    this->Node::switchNetwork(from,to);
+    this->Node::switchNetwork(from,to,silently);
 }
 
