@@ -9,8 +9,6 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-
-#include <iostream.h>
 #include <sys/types.h>
 
 #if 0
