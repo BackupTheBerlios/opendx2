@@ -1,9 +1,19 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
 <HTML><HEAD>
-		<TITLE>User's Guide - CDF Files</TITLE>
-		<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
+<TITLE>User's Guide - Presentation: Issues and Techniques</TITLE>
+
+<META HTTP-EQUIV="abstract" CONTENT="IBM Visualization Data Explorer User&#39;s
+Guide">
+<META HTTP-EQUIV="contact" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="owner" CONTENT="IBM Visualization Data Explorer
+(ibmdx@watson.ibm.com)">
+<META HTTP-EQUIV="updated" CONTENT="Tue, 16 Sep 1997 ">
+<META HTTP-EQUIV="review" CONTENT="Fri, 14 Aug 1998 ">
+
+<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
 MINING">
-	<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">
+<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">
 </HEAD><BODY BGCOLOR="#FFFFFF" link="#00004b" vlink="#4b004b">
 		<TABLE width=510 border=0 cellpadding=0 cellspacing=0>
 			<TR>
@@ -30,154 +40,222 @@ MINING">
 				<TD><A href="usrgu065.htm"><IMG src="../images/flcgh_06.gif" width=80 height=17 border="0" alt="Previous Page"></A></TD>
 				<TD colspan=2><A href="usrgu067.htm"><IMG src="../images/flcgh_07.gif" width=73 height=17 border="0" alt="Next Page"></A></TD>
 				<TD><A href="../usrguide.htm"><IMG src="../images/flcgh_08.gif" width=100 height=17 border="0" alt="Table of Contents"></A></TD>
-				<TD colspan=3><A href="usrgu064.htm"><IMG src="../images/flcgh_09.gif" width=136 height=17 border="0" alt="Partial Table of Contents"></A></TD>
-				<TD><A href="usrgu077.htm"><IMG src="../images/flcgh_10.gif" width=50 height=17 border="0" alt="Index"></A></TD>
+				<TD colspan=3><A href="usrgu062.htm"><IMG src="../images/flcgh_09.gif" width=136 height=17 border="0" alt="Partial Table of Contents"></A></TD>
+				<TD><A href="usrgu080.htm"><IMG src="../images/flcgh_10.gif" width=50 height=17 border="0" alt="Index"></A></TD>
 				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>
 			</TR>
 		</TABLE>
-		<H2><A NAME="HDRCDF" ></A>B.3 CDF Files</H2>
-		<A NAME="IDX1020"></A>
-		<P>
-CDF is a data abstraction for self-describing multidimensional
-Arrays.
-It represents a simpler data model than that of Data Explorer, one similar to
-that of the Array Object.
-Data are accessed in CDF through an applications programming interface,
-available as C and FORTRAN libraries from the National Space Science
-Data Center, NASA/Goddard Space Flight Center, Greenbelt, MD.
-Data in CDF may be stored in a number of physical formats
-(e.g., native or portable binary, single or multiple files, row or
-column majority), but the interface is the same.
-Hence, data in a CDF written in a format "foreign" to the
-workstation on which Data Explorer is running are converted
-automatically during the Import process.
+		<H2><A NAME="Header_410" ></A>A.5 Presentation: Issues and Techniques
+</H2>
+		<A NAME="IDX972"></A><A NAME="IDX973"></A>
 <P>
-Data Explorer provides support for importing Fields stored as CDF
-r-variables.
-To import data from a CDF, specify the CDF name as the
-<TT><STRONG>name</STRONG></TT>
-parameter in the Import Configuration dialog box (not the file
-name, since the CDF may be in multiple-file format).
-If the CDF has more than one variable, which is typical, Data Explorer
-categorizes each variable as positions, series, or data
-as appropriate.
-Variables that vary in one dimension only and are not record-variant
-are considered positions, and become the positions component in
-a Field Object.
-In many cases, these variables may have the CDF variable mnemonics
-of LATITUDE and LONGITUD, which are mapped to the first (x) and
-second (y) components of the positions vector, if they exist.
-This mapping permits direct use of these data with cartographic and
-other tools for the earth and space sciences that are publicly
-available for use with Data Explorer.
-Otherwise, the first <I>n</I> variables categorized as positions
-(where <I>n</I> is the dimensionality of the CDF dimensions)
-are used to form the positions component.
-Any additional such variables are treated as data
-variables.
-If there are no positions-type variables, the positions component will
-be a regular grid with origin of 0 and increments of 1 in each
-axis, where the number of axes corresponds to the
-dimensionality of the imported CDF r-variable.
+Visualization is used to represent natural phenomena that are inherently
+visual themselves, but probably more often, it is used to
+"visualize" non-visual phenomena.
+The process of making something visual means making choices on the part
+of the program author or designer.
+Clearly, without a sound scientific basis for these choices, this can
+become a purely artistic venture.
+While computer graphics can be used to make beautiful artwork, that is
+presumably not the point of using visualization to help study,
+analyze, or understand data.
+This does not mean that you should forego good design in making your
+visualization scene understandable.
+Remember and use the "rules" of design mentioned above, including
+proper, legible annotation, reasonable choices for colors, and so on.
+These things are determined partly by the medium you are working in and
+partly by the rules of good layout and design.
 <P>
-If there are records in the CDF, each record is imported as a
-series member.
-In many cases there is a variable with the mnemonic EPOCH, which
-corresponds to a time stamp for each record in the CDF.
-If so, the double representing msec since 0 AD in each value of EPOCH
-is stored as the series position attribute.
-If not, the first variable that is record-variant and
-nondimensional-variant is considered the
-series variable.
-This variable is imported as the series position attribute.
-If there is no time variable, the series position starts at 1 and
-increments by 1 per series member, so that there is one
-member for each record in the CDF.
-The series position attribute, containing the time stamp, may be
-accessed with the  Attribute module.
+But what color is a magnetic field?
+What color is hot?
+What color is high?
+How fast should molecules vibrate?
+How quickly should a metallic surface move as it changes phase?
+These decisions must be made by the program author.
+Probably the three most critical choices are color, scale, and speed.
 <P>
-You can specify the name or names of the data variable in the
-<I>variable</I>
-parameter of the Import tool and the corresponding variable(s) will be
-imported.
-In the same way, you can use <I>start</I>, <I>end</I>, and
-<I>delta</I> to import a subset of CDF records.
+In visualization, color is used precisely because it is <I>not</I>
+realistic.
+That is, to emphasize an area of interest, red is
+commonly used.
+Or, a strong contrast color can be used against a field of fairly
+neutral colors.
+However, there are some cultural color choices that you may find
+inappropriate to violate.
+For historical and to some degree natural reasons, we tend to make
+color gamuts that indicate red as the "highest" and blue
+the "lowest."
+Particularly with temperature, we can associate blue with "cool"
+or water/ice color, and red with "hot" or flame/sun color.
+To some degree, this gamut is related to the color of heated metal, but
+of course, the metal color does not pass through green at the
+midway point, and the color scale does not end at white
+like white-hot metal, so this too is only a loose analogy.
+But try inverting a color map of temperature to make red cool and blue
+hot and you will probably find you have to perform mental gymnastics
+to interpret it "correctly."
+If you are mapping altitude, however, red is not necessarily best
+associated with the "high" point: after all, the highest
+altitudes are snow-covered and lower altitude deserts are
+frequently "red-hot"!
+Actually, color-mapping altitude is almost purely an artistic endeavor,
+but at least it has a long history and literature in cartography.
+Consulting the "traditional" textbooks for a field may indicate
+how users in that discipline "prefer" things to be mapped.
+It is generally unwise to start a new schema for your visualization if
+you wish it to be immediately accessible to other viewers familiar
+with the discipline.
+But relating new ways of visualizing data to the old methods may be a
+good way to provide new insights for everyone involved.
 <P>
-Variable and global attributes present in the CDF are imported as Object
-attributes.
-These attributes may be accessed through the Attribute and Inquire
-modules (e.g., to build metadata-driven applications).
+Remember that to use interpolation, the basis of your assumptions is
+that the phenomenological space studied is continuous and linear.
+If you have reason to believe the sampling was not done over a domain
+that can be linearly interpolated, you should certainly not be
+using linear interpolated images to understand the data.
+You may need to collect more data on a finer grid to resolve such
+problems.
+Since Data Explorer supports irregular grids, this is not a problem for the
+software, as long as you provide the correct data sampling.
+Also, be aware that trying to read too much detail out of an image is
+an error.
+You cannot accurately assess detail at a resolution equal to or less
+than your sampling rate (the Nyquist law states that you cannot
+derive valid signal from noisy information at less than
+twice your sample rate).
+For example, occasionally, you will see peculiar color artifacts that
+arise when data and therefore interpolated colors change rapidly
+at the scale of the sampling mesh.
+In those cases, the best bet is to "zoom out" to see only the big
+picture: do not try to read between the lines!
 <P>
-Variables that vary in all dimensions and are record-variant are
-considered data variables.
-Any variable that is not a position or time variable is also considered
-a data variable, allowing every variable to be imported.
-If you want the positions to be a variable other than the one chosen by
-Data Explorer, you can use Replace or Rename to switch the components (e.g.,
-two or more sets of positions information are stored for
-different coordinate systems).
-Each data variable becomes a data component in a Field
-Object.
-Hence, there is one Field for each data variable in the Group
-imported.
-Since Data Explorer can handle data more flexibly than CDF, some assumptions
-are imposed upon certain classes of data that may be imported:
-<UL COMPACT>
-<LI>Since data stored in CDF are not distinguished as cell-centered or
-node-based, all data components are treated as the latter,
-(i.e., data dep positions).
-The Post module may be used to transform a Field to cell-centered
-(i.e., data dep connections).
-<LI> Since CDF does not "natively" support Fields other than
-rank=0, all data variables are treated as scalars.
-The Compute module can be used to construct the appropriate vector
-representation from multiple scalar Fields.
-<LI>The connections component depends on the dimensionality of the
-data variable such that 0 = none, 1 = lines, 2 = quads,
-3 = cubes, and so on.
-<LI>Each positions variable is considered a term of a Product Array
-to form the positions component.
-<LI>All variables of 0 dimension are imported as the data component of
-a Field with no positions and no connections.
-If the LATITUDE and/or LONGITUD variables exist, the other variables
-are considered data components of Fields with positions and no
-connections, where the positions are those latitude and
-longitude variables.
-You can construct an appropriate Field with positions and connections
-from the variables that are imported through modules like
-Construct, Regrid, and Connect.
-<LI>All variables of 1 dimension are imported as the data component of
-a Field of lines, where the positions would typically be a scalar
-(i.e., the one independent variable).
-If the LATITUDE and LONGITUD variables exist, then the positions are a
-2-vector constructed from the latitude and longitude Arrays, but
-still a line.
+Related to sampling rate in space is sampling in time.
+Be sure you have collected enough time step detail to ensure you have
+not completely missed some important transitional state that
+might have occurred in the middle of an animated sequence.
+It is acceptable to skip through the entire range of time steps
+during the development of your animation, but be sure to fill
+in the gaps before the final presentation is analyzed.
 <P>
-One-dimensional variables in CDF may be of one of three distinct
-classes, which are NOT distinguished in the way they are
-stored in a CDF file:
-1) true 1-dimensional or line data; 2) indexed point data;
-or 3) indexed mesh data.
-You must know which class the variable belongs to in order to ensure
-that Data Explorer processes the data in an appropriate fashion.
-The first class is handled correctly.
-For the second and third class, the connections component of any
-imported Field(s) may be meaningless.
-You can use the Remove module to eliminate it and treat the Field as
-scattered or point data (i.e., use Regrid or Connect to create
-a more appropriate mesh).
+As in traditional statistical plotting, a computer can all too easily
+permit the author to scale objects or graphs into wildly
+distorted aspects.
+In charting, there are some simple
+rules of thumb: it is often suggested that the aspect
+ratio (height/width) be about 0.75 to 1.00 for a
+2-dimensional chart.
+This may require rescaling one axis, and naturally, both axes and their
+scales must be shown.
+It is also bad form to start an axis at one point then create a break
+part way along, causing a visual foreshortening.
+And it is also inappropriate to start an axis at a point other than the
+origin if the intent of the chart is to represent absolute amounts
+of quantities being compared side by side.
+All of these rules of thumb are employed to make "good" charts;
+nevertheless, these rules are too often violated even in the mainstream
+media.
 <P>
-Treating such data as a collection of points is consistent with the
-original design philosophy of CDF and CDF applications.
-The third case actually represents an irregular mesh, which Data Explorer
-can support directly.
-Unfortunately, the connectivity information (i.e., the mesh structure)
-is typically not stored in the CDF, so Import cannot directly
-reconstruct the original mesh.
-Hence, the data must be treated as point data unless you have
-information, external to the CDF, that can be used to
-recreate the original mesh structure.
-</UL>
+Unfortunately, these traditional rules of scale do not help us much
+when we create 3-dimensional objects of arbitrary shape.
+So it becomes incumbent upon you to make sensible decisions in
+depicting objects never before seen by any viewer.
+It will be very easy to exaggerate a 3-D height field by changing the
+scale factor in Rubbersheet.
+You can make the one high point in the data leap as high as
+Mt. Everest.
+If that point is in fact a special value in your data, this may be
+an appropriate thing to do.
+If not, you may wish to choose a scale better suited to depicting the
+entire surface.
+On the other hand, if there are peaks, you must avoid "crushing"
+the entire surface to lessen the high points.
+Doing so could lead to potential misinterpretation of your results.
+<P>
+For many researchers, Data Explorer will be the first program they have
+used that permits them to create and view animation or motion
+playback of their data.
+This new temporal dimension is often a source of problems until the
+author gets the hang of things.
+Here are a few tips as you develop your own "moving pictures."
+<P>
+First, remember that your viewers have never seen this phenomenon
+before.
+Give them a chance to absorb it: looping the entire sequence is
+usually helpful.
+You do not want to bore the viewer to death, but visualization is
+not a TV commercial: cutting to a new scene every two seconds
+is not a good editing technique for communicating difficult
+visual information.
+As we discussed in the section on Animation, showing the same sequence
+at more than one speed helps a viewer notice different information in
+the very same scene.
+<P>
+Visualization allows users (fortunately) to wildly distort time
+scales.
+One video may show the movement of tectonic plates, another the
+gyrations of atoms in a gas.
+One scale is millions of years, the other billionths of seconds, but
+both are brought into the "video" scale of one frame every
+thirtieth of a second.
+Clearly, you must use some kind of clock annotation, especially if you
+plan to change playback rates, and even more importantly, if you plan
+to show different data sets using the same type of animation.
+The user must be given a proper sense of how two animations compare in
+their duration if sense is to be made of these animated sequences.
+<P>
+However, humans are not particularly good at visual comparison from
+memory.
+We are good at pattern recognition and comparison, but we have
+inadequate temporal rate memories;
+we do not remember detail in relation to time because we do not have
+good time-keeping reference systems in our brain.
+That implies that you must either choose to show comparisons based on
+precisely the same time duration and playback rate (thus factoring
+out the time dimension), or, much better, show two motion
+sequences at the same time in the same picture.
+One way to accomplish this is to render two sets of images, then use
+the Arrange module to construct an animation showing the two
+sequences side by side.
+This technique is important if the two phenomena vary in a
+scientifically critical way during the process;
+for example, if one phase change event is virtually complete after
+40% of the entire time step series and another phase change
+after 60%, this may represent one of the important
+findings of your research.
+But if you show the viewer first one sequence, then the other, very few
+people will be able to make a solid visual comparison from their
+memory.
+It is much more visually impressive to show the two phase change
+simulations side by side, starting at the same time, and
+proceeding for the same number of time steps.
+<P>
+Animation must also proceed quickly enough for the mind&#39;s eye to
+perceive it as animation.
+Imagine taking each time step of your simulation, making a 35mm slide,
+and loading up a slide carousel with ninety slides.
+A viewer who is shown each slide for 5 seconds is unlikely to
+perceive the "motion."
+Put on videotape, the same sequence of images takes only 3 seconds.
+This may be too fast: the entire event may flash by too
+fast for the viewer to see any change.
+You may need to double-record each image (i.e., slowing things down
+by one-half) making the video take 6 seconds.
+Another way (more computationally expensive) is to generate twice as
+many raw data files and twice as many images.
+This will yield smoother animation, but may be too costly for your
+resources.
+Of course, some events can be shown in 3 seconds:
+maybe everything stays the same for 1.5 seconds, then
+"pops" into a new configuration.
+Slowing this down too much might hide the importance of the sudden
+transition to a new state.
+Again, you, the user familiar with the field and with the phenomenon
+become a judge and a designer.
+You have to make wise decisions based on a desire to accurately and
+honestly depict the behavior under study with the purpose of
+illuminating other viewers, not impressing them with
+spectacular computer graphics displays.
+
 		<P>
 		<HR>
 		<DIV align="center">

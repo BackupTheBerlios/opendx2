@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
 <HTML><HEAD>
-		<TITLE>User's Guide - Design for Video Output</TITLE>
+		<TITLE>User's Guide - Appendix A. Using Data Explorer: Some Useful Hints</TITLE>
 		<META HTTP-EQUIV="keywords" CONTENT="GRAPHICS VISUALIZATION VISUAL PROGRAM DATA
 MINING">
 	<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">
@@ -30,173 +30,468 @@ MINING">
 				<TD><A href="usrgu061.htm"><IMG src="../images/flcgh_06.gif" width=80 height=17 border="0" alt="Previous Page"></A></TD>
 				<TD colspan=2><A href="usrgu063.htm"><IMG src="../images/flcgh_07.gif" width=73 height=17 border="0" alt="Next Page"></A></TD>
 				<TD><A href="../usrguide.htm"><IMG src="../images/flcgh_08.gif" width=100 height=17 border="0" alt="Table of Contents"></A></TD>
-				<TD colspan=3><A href="usrgu059.htm"><IMG src="../images/flcgh_09.gif" width=136 height=17 border="0" alt="Partial Table of Contents"></A></TD>
-				<TD><A href="usrgu077.htm"><IMG src="../images/flcgh_10.gif" width=50 height=17 border="0" alt="Index"></A></TD>
+				<TD colspan=3><A href="usrgu050.htm"><IMG src="../images/flcgh_09.gif" width=136 height=17 border="0" alt="Partial Table of Contents"></A></TD>
+				<TD><A href="usrgu080.htm"><IMG src="../images/flcgh_10.gif" width=50 height=17 border="0" alt="Index"></A></TD>
 				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>
 			</TR>
 		</TABLE>
-		<H2><A NAME="Header_406" ></A>A.4 Design for Video Output
+		<H2><A NAME="HDRAPPVIZ" ></A>Appendix A. Using Data Explorer: Some Useful Hints
 </H2>
-		<A NAME="IDX966"></A><A NAME="IDX967"></A>
+		<P><A NAME="PToC14" HREF="../usrguide.htm">Partial Table-of-Contents</A>
+		<MENU>
+<LI><A NAME="PToC_367" HREF="#HDRUDXEFF">A.1 Using Data Explorer Effectively</A>
+<MENU>
+<LI><A NAME="PToC_368" HREF="#Header_368">Common Problems</A>
+<LI><A NAME="PToC_372" HREF="#Header_372">What is the Difference Between Image
+and Display?</A>
+<LI><A NAME="PToC_373" HREF="#Header_373">How do I get more information?</A>
+<LI><A NAME="PToC_374" HREF="#Header_374">Memory Use</A>
+</MENU>
+<LI><A NAME="PToC_390" HREF="usrgu063.htm#Header_390">A.2 Visualization
+Techniques</A>
+<MENU>
+<LI><A NAME="PToC_391" HREF="usrgu063.htm#HDRANIMAT">Animation</A>
+<LI><A NAME="PToC_392" HREF="usrgu063.htm#HDRANNOT">Annotation</A>
+<LI><A NAME="PToC_393" HREF="usrgu063.htm#HDRCOLMAP">Color Mapping</A>
+<LI><A NAME="PToC_394" HREF="usrgu063.htm#HDRCNTISO">Contours and
+Isosurfaces</A>
+<LI><A NAME="PToC_395" HREF="usrgu063.htm#HDRMAPING">Mapping</A>
+<LI><A NAME="PToC_396" HREF="usrgu063.htm#HDRNORSHA">Normals and Shading</A>
+<LI><A NAME="PToC_397" HREF="usrgu063.htm#HDRPLOHIS">Plots and Histograms</A>
+<LI><A NAME="PToC_398" HREF="usrgu063.htm#HDRRUBSHT">Rubbersheet</A>
+<LI><A NAME="PToC_399" HREF="usrgu063.htm#HDRTRASTR">Transformations and
+Structuring</A>
+<LI><A NAME="PToC_400" HREF="usrgu063.htm#HDRVECFLD">Vector Fields</A>
+<LI><A NAME="PToC_401" HREF="usrgu063.htm#HDRVOLRND">Volume Rendering</A>
+</MENU>
+<LI><A NAME="PToC_402" HREF="usrgu064.htm#Header_402">A.3 Design for Interactive
+Use</A>
+<MENU>
+<LI><A NAME="PToC_403" HREF="usrgu064.htm#Header_403">Interactors and Control
+Panels</A>
+<LI><A NAME="PToC_404" HREF="usrgu064.htm#Header_404">Transmitters and
+Receivers</A>
+<LI><A NAME="PToC_405" HREF="usrgu064.htm#Header_405">Documentation</A>
+</MENU>
+<LI><A NAME="PToC_406" HREF="usrgu065.htm#Header_406">A.4 Design for Video
+Output</A>
+<MENU>
+<LI><A NAME="PToC_407" HREF="usrgu065.htm#Header_407">TV Line Resolution</A>
+<LI><A NAME="PToC_408" HREF="usrgu065.htm#Header_408">TV Color Resolution</A>
+<LI><A NAME="PToC_409" HREF="usrgu065.htm#Header_409">Animation and Frame
+Rates</A>
+</MENU>
+<LI><A NAME="PToC_410" HREF="usrgu066.htm#Header_410">A.5 Presentation: Issues
+and Techniques</A>
+</MENU><HR><P>
+<A NAME="IDX933"></A>
+<HR>
+<H2><A NAME="HDRUDXEFF" ></A>A.1 Using Data Explorer Effectively
+</H2>
 <P>
-Video production is only one useful output from a Data Explorer visual program.
-Videotape has the advantage of portability: you can send a video to
-almost anyone these days because of the proliferation of consumer
-VCRs.
-But video has the great disadvantage that you can no longer make
-interactive changes in the images: you cannot "explore"
-any more once you have committed your images to videotape.
+Following are some hints for using Data Explorer more
+effectively, debugging visual programs, and using memory
+efficiently.
 <P>
-Unfortunately, high-definition digital television is not widely
-available yet.
-It is very important to be aware of the technical limitations of
-standard analog television, especially as it differs from
-workstation monitors.
+<H3><A NAME="Header_368" ></A>Common Problems</H3>
 <P>
-The two biggest problems encountered in moving images created on a
-high-resolution workstation to a consumer television (monitor or
-VCR) are the loss of resolution and the inability of consumer
-TV to accurately render color.
-(These remarks are basically true for both the American NTSC TV system
-and the European PAL system.
-This is not meant to be a technical description of either system.)
+<H4><U>Debugging</U></H4>
+		<A name="IDX934"></A>
+		<P>
+One of the most useful tools for debugging visual programs
+is the Print module.
+For example, if you are getting
+an error from a module that a particular field is
+inappropriate for processing, you can print out the
+object to see if it is what you expect it to be.
+Print can be used to see the
+structure of and data values in any object. The options
+parameter is used to set the level of detail printed:
+the default "o" prints just the top level object: for
+example "Field with 4 (four) components."
+If options is set to
+"r,"
+more information about each component is printed, for
+example, how many items in each component, and the data type.
+You can also print out some or all of the values in the
+components.
 <P>
-<H3><A NAME="Header_407" ></A>TV Line Resolution
+The output of Print appears in the Message window.
+<P>
+<H4><U>Stopping Execution</U></H4>
+<A NAME="IDX935"></A>
+<A NAME="IDX936"></A>
+<P>
+There are two ways to stop execution of a visual program:
+<UL COMPACT>
+<LI>End Execution in the Execute menu stops execution <I>after</I>
+the currently executing module has finished.
+<LI>Disconnect from Server in the Connection menu kills the Data Explorer
+executive (not the user interface) immediately.
+You can restart, using <TT><STRONG>Start Server</STRONG></TT> in the
+<TT><STRONG>Connection</STRONG></TT> menu.
+</UL>
+<P>
+In addition, modifying a visual program (for example by disconnecting an
+arc or adding a new tool) will cause execution to stop after the
+currently executing module.
+<P>
+<H4>How to orient yourself in the Image window</H4>
+<P>
+If you find yourself "lost" in the Image window; for example,
+you have
+a black picture and don't know where your data object is, you
+can always "reset the camera" by using the Reset Camera option
+in the
+View Control dialog box of the Image window.
+This zooms out so that
+you can see <I>all</I> of your object, from a "front and
+center" view.
+<P>
+It is also often helpful to use ShowBox to display the bounding box
+of your entire data set. Collect this with the rest of
+your visualization, and then you will be able to see how the
+part you are looking at relates to the entire data set.
+<P>
+<H3><A NAME="Header_372" ></A>What is the Difference Between Image and Display?
 </H3>
-<A NAME="IDX968"></A>
 <P>
-Resolution losses are most evident if you use single-width lines.
-Workstations have both a higher number of vertical and horizontal lines
-on the screen, and a much higher "refresh" rate than
-consumer TV.
-However, on TV, the alternating lines (odd numbered, even numbered)
-are "refreshed" or painted on the monitor at slightly
-different times.
-As long as the scene contains objects that span more than one of these
-lines, our eye-brain system is fooled into believing that the entire
-object is always present, due to the phenomenon of "persistence
-of vision."
-But when you use single-line width horizontal lines, the lines will
-visibly flash, clearly showing that they are being drawn only half
-of the time.
+Image, Display, and Render all render an object (i.e. create an image).
 <P>
-Related to this problem is the condition in which you rotate a grid of
-single-width lines slightly away from horizontal.
-This will generate an optical effect called a "moire pattern",
-in which curved lines appear where none are actually present,
-and, this frequently causes colors to appear that are not
-in the original signal.
-Both of these effects can be very distracting.
+Render, given an object and a camera, creates as output an image.
+This
+image can be sent directly to Display for display to the screen, sent
+to WriteImage to be written to a file, or collected with other images
+into a single window using Arrange.
 <P>
-Finally, single-width vertical lines will not have the same color!
-Because of the way consumer TV color phosphors are aligned, a vertical
-line at one location may be blue, but if you move it slightly it
-will become red.
-A grid with single-width vertical lines will appear to change color as
-you translate the grid in a horizontal direction.
+Display, given an object and a camera, both renders the object (using
+the camera) and displays it to the screen.
 <P>
-So what is the solution to all these problems?
-Do not use single-width lines, ever.
-Data Explorer&#39;s Tube module is the easiest way to fix most of these
-problems.
-Tube generates cylinders around any kind of field with line
-connections.
-If you have created a mesh of lines with ShowConnections, for example,
-you can run this visual object through Tube to "fatten" up the
-lines.
-Tube permits you to choose a diameter that looks right.
-As long as you make the tubed lines bigger than one TV line width, you
-will have solved the problem.
+Display, given only an image, simply displays it to the screen.
 <P>
-Be aware that single-width line text or captions will become virtually
-illegible on TV.
-To get better-looking results using the "stroke" fonts (originally
-designed for plotters), you can use Tube.
-Another technique is to use a multiple-line font, such as the
-"roman&#95;d" font supplied with Data Explorer.
-The best solution is to use an "area" font that is made up of
-characters containing polygonal faces rather than single lines.
-Data Explorer provides a font called "area", or "pitman", which uses
-polygonal faces.
+Image, given an object, renders it and displays it to the screen.
+The camera information is provided via direct interactors (rotate,
+zoom, etc.) or through the camera mode option in the View Control
+dialog box.
+Image has two outputs: the object to be rendered (including
+any AutoAxes that may have been added via menu choices) and the
+camera used.
 <P>
-Another tip about text is that due to the much lower resolution of TV,
-you must be careful to keep text large!
-Ideally, use a size that permits only about 30 to 40 characters to fit
-across the width of the screen.
-Fine detailed text annotations may look good on the workstation, but
-will become blurry little globs on TV, defeating the whole purpose
-of annotating your video for your viewers.
-Try making some text in different sizes, then dub to VHS videotape.
-Can you still read the text?
-If so, the size is probably sufficient for general use.
-If it is too mushy to read, increase the size.
-For best legibility use white or yellow colored text.
+You would use Render if you needed the image itself, for example, for
+the Arrange or Filter modules, or if you wanted to use WriteImage.
+(For the Image tool, the WriteImage function is available through the
+Save
+Image and Print Image commands in the Image window, or through the
+hidden recordEnable, recordFormat, and recordFile parameters to the
+Image tool).
 <P>
-<H3><A NAME="Header_408" ></A>TV Color Resolution
+You would use Display without a camera if your object is already
+an image, and you simply want to display it. You do not need (or want)
+to render it.
+You would also use Display without a camera to display
+a set of Arranged images.
+<P>
+You would use Display with a camera if you wanted to directly
+control the camera, for example, for a computed fly-through path.
+
+You would also use Display if you wanted to define your own direct
+interaction modes (see <A HREF="refgu153.htm#HDRSUPWIND">SuperviseWindow</A> and
+<A HREF="refgu152.htm#HDRSUPSTAT">SuperviseState</A>
+in <I>IBM Visualization Data Explorer User&#39;s Reference</I>), rather than
+using the predefined direct interaction
+modes of the Image tool.
+
+<P>
+<H3><A NAME="Header_373" ></A>How do I get more information?
 </H3>
-<A NAME="IDX969"></A>
+<UL COMPACT>
+<LI>In the Help Menu:
+<UL COMPACT>
+<LI><TT><STRONG>Application Comment</STRONG></TT> presents comments (if
+provided) on the current visual program.
+<LI><TT><STRONG>Table of Contents</STRONG></TT> presents the table of
+contents of the user documentation.
+You can use hypertext links to go to a particular topic.
+<LI><TT><STRONG>Context-Sensitive Help</STRONG></TT> presents a "?"
+cursor:
+just click on a tool icon or other feature to
+learn more.
+</UL>
+<LI>Samples:
+<UL COMPACT>
+<LI>Sample Visual Programs: /usr/lpp/dx/samples/programs.
+See also the subdirectories there, grouped by topic.
+<LI>Sample Scripts: /usr/lpp/dx/samples/scripts.
+</UL>
+<LI>Information available electronically:
+<UL COMPACT>
+<LI>Data Explorer mailing lists on the internet
+
+<LI>DX Home Page on world wide web
+<A HREF="http://www.research.ibm.com/dx">
+(<TT>http://www.research.ibm.com/dx/</TT>).
+</A>
+				<LI><a href="http://www.opendx.org/">OpenDX.org</a> web site.
+				<li>Commercial support from companies such as <a href="http://www.vizsolutions.com/">VIS, Inc.</a>
+			</UL>
+</UL>
 <P>
-Standard TV is simply not capable of correctly rendering fully
-saturated colors, like red (in particular) or blue.
-Large areas of fully saturated colors will pulse and "bleed";
-that is, they will smear to the right (due to the direction the TV
-raster scan is moving).
-This smears any sharp edges on your objects and will severely degrade
-the quality of your visualization.
-The color problem can best be dealt with by never using fully saturated
-colors.
-Instead, when building your color maps, lower the entire Saturation
-curve to about 0.8.
-Although this will look much more pastel than you might prefer, once
-you have converted the images to TV, these colors will brighten
-up again.
-What looks kind of pink on the RGB workstation monitor will usually be
-much redder on TV.
-Of course, if you are producing images for another medium, like a color
-printer, you can set the color saturations appropriately (fully
-saturated may be correct in that case: the tips in this
-section are to help you make better video recordings).
+<H3><A NAME="Header_374" ></A> </H3>
+<A NAME="IDX937"></A>
+<A NAME="IDX938"></A>
 <P>
-<H3><A NAME="Header_409" ></A>Animation and Frame Rates
-</H3>
-<A NAME="IDX970"></A>
-<A NAME="IDX971"></A>
+<H4><U>Data Explorer Object Cache</U></H4>
+<A NAME="IDX939"></A>
+<A NAME="IDX940"></A>
+<A NAME="IDX941"></A>
+<A NAME="IDX942"></A>
+<A NAME="IDX943"></A>
+<A NAME="IDX944"></A>
 <P>
-In making animation for TV, you must be aware of "frame rate."
-Just like all the other references to sampling in the discussion above,
-TV "samples" time at 30 frames per second (25 in PAL).
-That means that at most you can have 30 time-step changes per second of
-video (unless you choose to skip some time steps in your data).
-Generally, you may want to show many fewer changes than that or the
-phenomenon may go by too quickly for the viewer to comprehend.
-On the other hand, when you rotate an object you want to make as many
-small changes as you can afford.
-The result will be smooth animation rather than jerky cartoon-like
-movement.
-One rule of thumb is to rotate no faster than 3 degrees per frame.
-That means that your object would rotate 90 degrees in one second, or
-360 degrees in 4 seconds.
-Like any rule of thumb, this can be adjusted depending on the case at
-hand.
-For example, it is often useful to record the rotation at more than one
-speed.
-The human visual system will detect different levels of detail in an
-object depending on its motion rate.
-This can be used to your advantage, to get double-duty out of your
-visualization.
-Record and play it at one rate, and viewers will see one aspect of your
-data;
-play it faster or slower, and different details will be noticed.
-And often, it is good practice to let an animation "loop" a few
-times, allowing the viewer to observe the entire process from
-beginning to end.
+Data Explorer uses an object cache to store intermediate results
+of modules.
+Caching systems are intended to fill up
+and then reclaim memory by throwing things out of the cache. The
+size of the cache defaults to a large percentage of the physical
+memory on the machine. You can control the size of the cache with
+the <TT>-memory</TT> command line option to the
+<TT><STRONG>dx</STRONG></TT> command.
+The minimum cache size needed is on the order of the
+maximum amount of memory required for a program
+execution.
 <P>
-The Sequencer also can generate "palindromic" motion in which the
-object swings back and forth rather than jumping from the end of a
-series back to the beginning.
-Be sure that you use this feature in a meaningful way: time steps shown
-in reverse order imply time running backward.
-Annotation is definitely required in this case!
+The Data Explorer "executive" schedules module execution. It
+does detailed graph analysis, implements distributed processing of the
+modules, and implements the Switch and Route modules.
+It also
+provides optimization by caching the intermediate outputs of
+modules.
+For example, if you run Import twice in a row with
+the same inputs, Import will not actually run the second time,
+and instead the executive will use the cached output from the
+previous execution. The Image and Display tools also cache their
+images internally.
+<P>
+To implement the caching scheme, Data Explorer will allocate
+memory up to some fixed size.
+This memory is referred to
+as the arena.  When the arena fills up and more memory is
+required, Data Explorer looks for objects to discard from
+the cache.
+When it does this it may mean that subsequent executions
+will have to execute larger portions of the program.
+<P>
+The arena is of fixed size for any one instance of Data Explorer.
+The size of this arena is chosen by default based on the size of
+the physical memory in the system.
+<P>
+For some data sets, the default arena size will not be sufficient.
+In those cases, one can use the <TT>-memory</TT>
+option to increase
+the size of the arena, with the limitation that your can't
+increase the arena size to be larger than the amount of
+real plus virtual memory (page or swap space) on your machine.
+Talk to your system administrator if you think you need
+to increase the amount of swap space on your system.
+<P>
+<H4><U>Reducing Memory Requirements</U></H4>
+<P>
+If, after using the <TT>-memory</TT> option as described above, you
+find you still lack sufficient memory to perform your
+visualization, there are a number of strategies that can be used to
+reduce the amount of memory that is required by your program.
+<P>
+<H5><U>Do Not Render Images</U></H5>
+<P>
+A common mistake is to render image data (i.e. 2-dimensional
+grids) using Render, Image, or Display with a camera input.
+This results in Data Explorer interpreting the image as a
+very large number of quads, in which case much memory
+and CPU is used.
+<P>
+Instead, one can AutoColor or Color the image and pass it directly
+to Display (without a camera input), or for even more memory
+savings, convert the data to unsigned bytes (see below) and
+AutoColor or Color the data with delayed colors (see below).
+<P>
+<H5>><U>Delayed Colors</U></H5>
+<P>
+If you are coloring your objects (using AutoColor, AutoGrayScale,
+or Colormap/Color), you might want to use "delayed" colors.
+<P>
+To do this, convert the data component to unsigned bytes and set the
+"delayed" parameter of the coloring module to 1.
+Using delayed
+colors means that rather than a 3-vector being used for each
+data point, a single scalar byte is used to index into a color
+table with 256 entries.
+<P>
+If you are using ReadImage, you may want to set the DXDELAYEDCOLORS
+environment variable.
+See <A HREF="refgu110.htm#HDRREADIMA">ReadImage</A> in <I>IBM Visualization Data
+Explorer User&#39;s Reference</I>.
+<P>
+<H5><U>Converting Data Types</U></H5>
+<P>
+In many cases it may be acceptable to convert your data components to
+smaller sized types using Compute. For example, you might change your
+floating point data to bytes.
+This has the advantage that all downstream modules will require less
+memory.
+<P>
+<H5><U>Working with Series Data</U></H5>
+<P>
+When working with series data, if you are importing the entire
+series and then selecting members out of the series, it may
+be that your program can be changed so that you only import
+one member at a time.
+Do this using the <TT><STRONG>start</STRONG></TT> and
+<TT><STRONG>end</STRONG></TT>
+parameters to Import.
+<P>
+This reduces memory requirements by not having the whole series
+in memory at once.
+<P>
+<H5><U>Glyphs</U></H5>
+<P>
+If you are using glyphs (AutoGlyph or Glyph), you may want to
+use less "spiffy" glyphs.
+A less spiffy glyph is one that
+has fewer positions and connections (facets), and therefore
+consumes less memory.
+To use less spiffy glyphs, use the
+<TT><STRONG>type</STRONG></TT>
+parameter of either AutoGlyph or Glyph, and set it to
+"speedy" or to a small fraction of 1.
+<P>
+<H5><U>Reducing Grid Resolution</U></H5>
+<P>
+If you can sacrifice resolution in your data set, you may want to use the
+Reduce module (usually just after Import) to reduce the number of
+points in your data set. Reduce filters the data set before reducing
+the number of points. Remember that it is of little use to process
+5000x5000 points if your final image is only 1000x1000 pixels.
+<P>
+<H5><U>24-Bit Images</U></H5>
+<P>
+You can create 24-bit images (instead of the default 96-bit images)
+by setting the environment variable DXPIXELTYPE to DXByte.
+See <A HREF="refgu110.htm#HDRREADIMA">ReadImage</A> and <A
+HREF="refgu118.htm#HDRRENDER">Render</A> in <I>IBM Visualization Data Explorer
+User&#39;s Reference</I>.
+<P>
+<H5><U><a name="HDRCCTRLEX"></a>Cache Control: Executive</U></H5>
+<P>
+In general, it is not necessary to change how the executive
+caches intermediate results.
+However, in a few cases, it
+may be advantageous to do so.
+For example, if you are reading a live data feed into your program,
+it is probably not necessary to cache the downstream outputs.
+<P>
+You can change how and if the executive caches intermediate
+output values by opening the
+Configuration dialog box of a module and changing the
+option menu to the right of each output.
+
+You can also choose <TT><STRONG>Output Cacheability</STRONG></TT> from the
+<TT><STRONG>Edit</STRONG></TT> menu of the VPE, and set the cacheability of a
+group of modules, show the cacheability of a group of modules, or ask
+Data Explorer to use a heuristic to automatically optimize the caching for the
+current visual program.
+
+<P>
+In general, it is most efficient to cache only the results of
+the last module in a single file
+line of modules; for example to cache the output of Isosurface,
+but not Import.  Note that if you do this, however, if you need to
+change the isosurface value, the data file will need to be
+reimported, slowing execution.
+<P>
+If you want to turn off caching altogether you can use the
+<TT>-cache off</TT> command-line option to Data Explorer.
+<P>
+<H5><U>Cache Control: Display</U></H5>
+<P>
+Some modules use the caching system to cache their own data.
+The Display and Image tools are such tools.
+When using software rendering, they cache the images they display in
+the X windows.
+This is an optimization that can be seen when using the Sequencer.
+When this tool starts repeating itself (in loop or palindrome
+mode), the images are displayed much faster.
+That is, Display (or Image) is pulling them out of the cache instead
+of rerendering the input objects each time.
+You can observe this effect by running the example program
+MovingCamera.net with software rendering.
+<P>
+Most of the time this caching behavior is desirable, but in some
+cases it is better turned off.
+To do that, use the Options module to add a "cache" attribute
+with the
+integer value of 0 (zero), as follows:
+
+<PRE>
+   o = Options(o, "cache", 0);
+   Display(o, camera);
+</PRE>
+<P>
+The Image tool&#39;s Configuration dialog box has an
+<TT><STRONG>option</STRONG></TT> menu that lets you
+control its caching.
+This can be useful when one is running a batch job to
+generate an animation in which none of the frames will be
+displayed a second time.
+<P>
+Note that the <TT>-cache off</TT> command line option mentioned
+above has no
+effect on the internal caching that modules themselves perform.
+<P><B>Note: </B>You can use the Data Explorer command line option
+<TT>-optimize memory</TT>, which will automatically set the
+DXDELAYEDCOLORS and DXPIXELTYPE environment variable to the
+options that consume the least memory.
+The alternative is
+<TT>-optimize precision</TT>.
+<P>
+<H4><U>System Tuning</U></H4>
+<P>
+<H5><U>Default Memory Size</U></H5>
+<P>
+Except where noted in the architecture-specific README
+(in /usr/lpp/dx), by default Data Explorer will be allowed
+to grow to use all but 8 megabytes of the physical memory
+when there is less than 64 megabytes of physical memory.
+<P>
+If there are more than 64 megabytes of physical memory, then
+Data Explorer will, by default, be allowed to grow to 7/8
+of the amount of physical memory.
+<P>
+Users may wish to alter this default amount of memory by using
+the <TT>-memory</TT> option to the <TT><STRONG>dx</STRONG></TT>
+command, or the "Memory"
+field of the <TT><STRONG>Connect to Server Options</STRONG></TT>
+dialog box.
+<P>
+<H5><U>Paging Space</U></H5>
+<P>
+Since it is possible for Data Explorer to use a large amount of
+virtual memory, users should configure systems with paging space
+at least two or three times the total physical memory in
+their system.
+<P>
+If you do not have enough paging space, the operating system may kill
+Data Explorer (or other processes), sometimes without warning,
+depending on the architecture.
+Your system administrator can increase your paging space.
+<P>
+<H5><U>Per Process Limits</U></H5>
+<P>
+Some systems may enforce per process limits on such things as data
+segment size, stack size and so forth.
+These may need to be
+adjusted to run Data Explorer with large amounts of memory to
+avoid paging.
+Your system administrator can adjust your per-process limits.
 
 		<P>
 		<HR>

@@ -152,7 +152,8 @@ pages19 = \
 	usrgu059.htm usrgu060.htm usrgu061.htm usrgu062.htm usrgu063.htm \
 	usrgu064.htm usrgu065.htm usrgu066.htm usrgu067.htm usrgu068.htm \
 	usrgu069.htm usrgu070.htm usrgu071.htm usrgu072.htm usrgu073.htm \
-	usrgu074.htm usrgu075.htm usrgu076.htm usrgu077.htm 
+	usrgu074.htm usrgu075.htm usrgu076.htm usrgu077.htm usrgu078.htm \
+	usrgu079.htm usrgu080.htm
 
 EXTRA_DIST = $(pages1) $(pages2) $(pages3) $(pages4) $(pages5) \
 	$(pages6) $(pages7) $(pages8) $(pages9) $(pages10) $(pages11) \

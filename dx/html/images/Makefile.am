@@ -13,10 +13,11 @@ images2 = \
 	genwave.gif griddb.gif gridtype.gif grparts.gif hand.gif	\
 	hdrdat.gif hello1.gif hello2.gif helpwin.gif htswork.gif	\
 	imagwin.gif impconf.gif inputcfg.gif intlabl.gif irggrid.gif	\
-	macrname.gif majcomp.gif map.gif map2plan.gif mapdform.gif	\
-	matpa1.gif matpa2.gif modbuild.gif navigate.gif opendb.gif	\
-	optbox.gif patrx1.gif patrx2.gif patry1.gif patry2.gif		\
-	prodarxy.gif prodarz.gif prtimg.gif quikovx.gif reggrid.gif
+	javatls.gif macrname.gif majcomp.gif map.gif map2plan.gif 	\
+	mapdform.gif matpa1.gif matpa2.gif modbuild.gif navigate.gif 	\
+	opendb.gif optbox.gif patrx1.gif patrx2.gif patry1.gif 		\
+	patry2.gif prodarxy.gif prodarz.gif prtimg.gif quikovx.gif 	\
+	reggrid.gif
 images3 = \
 	rendopts.gif reorient.gif saveas.gif savimg.gif sealevel.gif	\
 	selattr.gif selctint.gif seqctrl.gif setattr.gif sgroup.gif	\
