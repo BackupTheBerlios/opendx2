@@ -38,7 +38,7 @@ typedef unsigned char	ubyte;
 #define DXD_ARCHNAME  "linux86"
 
 /* license manager active in this version */
-#undef DXD_LICENSED_VERSION 
+#undef DXD_LICENSED_VERSION
 
 /* defined if we support multiprocessor version */
 #define DXD_IS_MP 0
@@ -131,7 +131,7 @@ typedef unsigned char	ubyte;
 #define DXD_ARCHNAME  "sgi"
 
 /* license manager active in this version */
-#define DXD_LICENSED_VERSION 1
+#undef DXD_LICENSED_VERSION 
 
 /* defined if we support multiprocessor version */
 #define DXD_IS_MP 1
@@ -223,7 +223,7 @@ typedef unsigned long	ulong;
 #define DXD_ARCHNAME  "hp700"
 
 /* license manager active in this version */
-#define DXD_LICENSED_VERSION 1
+#undef DXD_LICENSED_VERSION
 
 /* defined for machines with msb byte order (all machines but ibmpvs) */
 #define DXD_BIGENDIAN  1
@@ -297,7 +297,7 @@ typedef unsigned char	ubyte;
 #define DXD_ARCHNAME  "ibm6000"
 
 /* license manager active in this version */
-#define DXD_LICENSED_VERSION 1
+#undef DXD_LICENSED_VERSION
 
 /* defined for machines with msb byte order (all machines but ibmpvs) */
 #define DXD_BIGENDIAN 1
@@ -381,7 +381,7 @@ typedef unsigned long	ulong;
 #define DXD_ARCHNAME  "sun4"
 
 /* license manager active in this version */
-#define DXD_LICENSED_VERSION 1
+#undef DXD_LICENSED_VERSION
 
 /* defined for machines with msb byte order (all machines but ibmpvs) */
 #define DXD_BIGENDIAN 1
@@ -450,7 +450,7 @@ typedef unsigned char	ubyte;
 #define DXD_ARCHNAME  "solaris"
 
 /* license manager active in this version */
-#define DXD_LICENSED_VERSION 1
+#undef DXD_LICENSED_VERSION
 
 /* defined for machines with msb byte order (all machines but ibmpvs) */
 #define DXD_BIGENDIAN 1
@@ -553,7 +553,7 @@ typedef unsigned char	ubyte;
 #define DXD_ARCHNAME  "aviion"
 
 /* license manager active in this version */
-#define DXD_LICENSED_VERSION 1
+#undef DXD_LICENSED_VERSION
 
 /* defined for machines with msb byte order (all machines but ibmpvs) */
 #define DXD_BIGENDIAN 1
@@ -1005,7 +1005,7 @@ typedef unsigned char	ubyte;
 #define DXD_STANDARD_IEEE 0
 
 /* license manager active in this version */
-#define DXD_LICENSED_VERSION 1
+#undef DXD_LICENSED_VERSION
 
 /* supports popen() */
 #define DXD_POPEN_OK 1
