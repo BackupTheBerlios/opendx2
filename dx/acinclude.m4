@@ -305,7 +305,7 @@ AC_DEFUN(DX_ARCHITECTURE,
 AC_DEFUN(DX_STREAM_O2,
 [
     AC_MSG_CHECKING(whether -O2 interferes with fstream in C++)
-    ac_ext=C
+    AC_LANG_CPLUSPLUS
     AC_TRY_LINK(
  [
  #include <stdio.h>
@@ -460,4 +460,62 @@ dnl Don't even attempt the hair of trying to link an X program!
     fi
   done
 done])
+])
+
+AC_DEFUN(DX_CHECK_SELECT_ARG,
+[
+select_argtype=
+cat > selectHdrs.h << EOF
+EOF
+AC_CHECK_HEADER(select.h, [ echo "#include <select.h>" >> selectHdrs.h ])
+AC_CHECK_HEADER(sys/select.h, [ echo "#include <sys/select.h>" >> selectHdrs.h ])
+for try in sellist fd_set int void
+do
+AC_TRY_LINK(
+[
+#include <stdio.h>
+#include "selectHdrs.h"
+],
+[
+int i = select(1, ($try *)NULL, ($try *)NULL, ($try *)NULL, (struct timeval *)NULL)
+],
+[
+select_argtype=$try 
+AC_DEFINE_UNQUOTED(SELECT_ARG_TYPE, $try)
+])
+if test ! -z "$select_argtype" ; then
+    break
+fi
+done
+echo the second third and fourth args to select are pointers to $select_argtype
+rm selectHdrs.h
+])
+
+AC_DEFUN(DX_CHECK_SOCK_LENGTH_TYPE,
+[
+socket_argtype=
+cat > socketHdrs.h << EOF
+EOF
+AC_CHECK_HEADER(sys/socket.h, [ echo "#include <sys/socket.h>" >> socketHdrs.h ])
+for try in socklen_t size_t int
+do
+AC_TRY_LINK(
+[
+#include <stdio.h>
+#include "socketHdrs.h"
+],
+[
+$try *foo;
+int i = getsockname(1, (struct sockaddr *)NULL, foo);
+],
+[
+socket_argtype=$try 
+AC_DEFINE_UNQUOTED(SOCK_LENGTH_TYPE, $try)
+])
+if test ! -z "$socket_argtype" ; then
+    break
+fi
+done
+echo the third arg to getsockname is pointer to $socket_argtype
+rm socketHdrs.h
 ])
