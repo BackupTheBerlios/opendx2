@@ -421,9 +421,9 @@ extern int	_dxd_lmHwddVersion;
 
 #define	_dxf_INIT_RENDER_PASS(win, bufferMode, zBufferMode) \
   (*_pFuncs->InitRenderPass)(win, bufferMode, zBufferMode)
-#if defined(DX_NATIVE_WINDOWS)
+/*#if defined(DX_NATIVE_WINDOWS) */
 #define _dxf_END_RENDER_PASS(win) (*_pFuncs->EndRenderPass)(win)
-#endif
+/* #endif */
   /*
    *  Clear the screen and prepare for writing a rendered image.
    */

@@ -872,21 +872,33 @@ static void _dxf_INIT_RENDER_PASS (void *win, int bufferMode, int zBufferMode)
   SAVE_BUF_VALID = FALSE ;
 
   OGL_FAIL_ON_ERROR(_dxf_INIT_RENDER_PASS);
+
+  glEnable(GL_BLEND);
+  OGL_FAIL_ON_ERROR(glEnableBlend);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  OGL_FAIL_ON_ERROR(glBlendFunc);
+  //glAlphaFunc(GL_GREATER, 0.0);
+  //OGL_FAIL_ON_ERROR(glAlphaFunc);
+
   EXIT((""));
 }
 
-#if defined(DX_NATIVE_WINDOWS)
+/* #if defined(DX_NATIVE_WINDOWS) */
 static void _dxf_END_RENDER_PASS(void *win)
 {
 	DEFWINDATA(win) ;
 	DEFPORT(PORT_HANDLE) ;
+	glDisable(GL_BLEND);
+	OGL_FAIL_ON_ERROR(_dxf_END_RENDER_PASS);
+#if defined(DX_NATIVE_WINDOWS)
 	OGLWindow *oglw = GetOGLWPtr(XWINID);
 	
 	glFlush();
 	SwapBuffers(OGLHDC);
 	EndPaint(XWINID, &oglw->ps);
-}
 #endif
+}
+/* #endif */
 
 static void _dxf_SET_VIEWPORT (void *ctx,
 			       int left, int right, int bottom, int top)

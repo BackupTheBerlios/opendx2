@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.13 2003/09/30 17:41:45 davidt Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.14 2005/02/01 00:50:10 davidt Exp $
 
 Author:  Ellen Ball
 
@@ -22,6 +22,8 @@ Based on hwrender/gl/hwPortUtil.c
 
 #include <math.h>
 #include <string.h>
+
+#include "../hwDebug.h"
 
 #ifdef DEBUG
 #define TIMER(s) glFlush(); DXMarkTime(s);
@@ -37,8 +39,6 @@ Based on hwrender/gl/hwPortUtil.c
 #include "../hwSort.h"
 #include "hwPortOGL.h"
 
-
-#include "../hwDebug.h"
 
 #if defined(HAVE_WINDOWS_H)
 #include <windows.h>
@@ -1447,8 +1447,8 @@ _drawPrimitives(tdmPortHandleP portHandle, xfieldP xf,
 
     if(xf->attributes.aalines) {
        glEnable(GL_LINE_SMOOTH);
-       glEnable(GL_BLEND);
-       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+       //glEnable(GL_BLEND);
+       //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
        glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
     }
     helper = getHelper(xf->colorsDep,dep_none,dep_none,xf->texture != NULL);
@@ -1456,7 +1456,7 @@ _drawPrimitives(tdmPortHandleP portHandle, xfieldP xf,
     lines(xf,helper,0,xf->nconnections,0,approx,density) ;
     TIMER("< lines") ;
     glDisable(GL_LINE_SMOOTH);
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
     break;
   case ct_polylines:
      PRINT(("> polylines"));
@@ -1465,8 +1465,8 @@ _drawPrimitives(tdmPortHandleP portHandle, xfieldP xf,
 
      if(xf->attributes.aalines) {
         glEnable(GL_LINE_SMOOTH);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //glEnable(GL_BLEND);
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
      }
      helper = getHelper(xf->colorsDep, dep_none, dep_none, 0);
@@ -1474,7 +1474,7 @@ _drawPrimitives(tdmPortHandleP portHandle, xfieldP xf,
      polylines(xf, helper, approx, density);
      TIMER("< polylines");
      glDisable(GL_LINE_SMOOTH);
-     glDisable(GL_BLEND);
+     //glDisable(GL_BLEND);
      break;
   case ct_pline:
      PRINT((" plines:"));
@@ -1483,8 +1483,8 @@ _drawPrimitives(tdmPortHandleP portHandle, xfieldP xf,
 
      if(xf->attributes.aalines) {
         glEnable(GL_LINE_SMOOTH);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //glEnable(GL_BLEND);
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
      }
      helper = getHelper(xf->colorsDep,dep_none,dep_none, xf->texture != NULL);
@@ -1492,7 +1492,7 @@ _drawPrimitives(tdmPortHandleP portHandle, xfieldP xf,
      plines(xf,helper,approx,density);
      TIMER("< plines");
      glDisable(GL_LINE_SMOOTH);
-     glDisable(GL_BLEND);
+     //glDisable(GL_BLEND);
      break;
   case ct_triangles: 
      PRINT((" tris:"));
@@ -1604,12 +1604,12 @@ Error _dxf_DrawTranslucentOGL(void *globals,
   ENTRY(("_dxf_DrawTranslucentOGL(0x%x, 0x%x, 0x%x, 0x%x)",
          PORT_HANDLE, xf, ambientColor, buttonUp));
 
-  glEnable(GL_BLEND);
-  OGL_FAIL_ON_ERROR(glEnableBlend);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  OGL_FAIL_ON_ERROR(glBlendFunc);
-  glAlphaFunc(GL_GREATER, 0.0);
-  OGL_FAIL_ON_ERROR(glAlphaFunc);
+  //glEnable(GL_BLEND);
+  //OGL_FAIL_ON_ERROR(glEnableBlend);
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //OGL_FAIL_ON_ERROR(glBlendFunc);
+  //glAlphaFunc(GL_GREATER, 0.0);
+  //OGL_FAIL_ON_ERROR(glAlphaFunc);
 
   for (i = 0; i < nSorted; i = j)
   {
@@ -1730,9 +1730,9 @@ Error _dxf_DrawTranslucentOGL(void *globals,
 
    }
 
-   glDisable(GL_BLEND);
+   //glDisable(GL_BLEND);
 
-   OGL_FAIL_ON_ERROR(_dxf_DrawTranslucentOGL);
+   //OGL_FAIL_ON_ERROR(_dxf_DrawTranslucentOGL);
    glFinish();
    EXIT(("OK"));
    return OK;
@@ -1744,7 +1744,7 @@ Error _dxf_DrawTranslucentOGL(void *globals,
       glCallList(notFirstPass + 1);
 #endif
 
-   glDisable(GL_BLEND);
+   //glDisable(GL_BLEND);
 
 
    _dxf_SET_GLOBAL_LIGHT_ATTRIBUTES(PORT_CTX ,0) ;
