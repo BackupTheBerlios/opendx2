@@ -26,4 +26,4 @@ tutor_LDADD = 				\
 	-L/usr/X11R6/lib 		\
 	-L/usr/local/lib 		\
 	-L$(DXROOT)/lib_@ARCH@	\
-	-lXm -lXmu -lXt -lX11 -lXext
+	-lm -lXm -lXmu -lXt -lX11 -lXext
