@@ -6,7 +6,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/DisplayNode.C,v 1.1 1999/03/31 22:31:21 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxui/DisplayNode.C,v 1.2 1999/04/12 21:27:09 gda Exp $
  *
  */
 
@@ -131,7 +131,7 @@ boolean DisplayNode::netPrintAuxComment(FILE *f)
     return this->Node::netPrintAuxComment(f) &&
     	   this->printCommonComments(f,"    ");
 }
-DisplayNode::netParseAuxComment(const char *comment,
+boolean DisplayNode::netParseAuxComment(const char *comment,
 				const char *file,
 				int lineno)
 {
