@@ -7,12 +7,9 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
-
+#include "../base/defines.h"
 
 #include "UIConfig.h"
-#include "defines.h"
 #include "Strings.h"
 #include "DXChild.h"
 
@@ -106,7 +103,6 @@ extern "C" int getdtablesize();
 
 #ifdef aviion
 #include <sys/types.h>
-#include <sys/param.h>
 #define FD_ZERO(p)  memset((void*)p, 0, sizeof(*(p)))
 #endif
 

@@ -7,10 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
-
-
+#include "defines.h"
 
 #include "UIConfig.h"
 #ifdef OS2

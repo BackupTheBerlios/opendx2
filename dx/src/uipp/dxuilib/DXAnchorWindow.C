@@ -8,6 +8,8 @@
 
 #include <dxconfig.h>
 
+#include "defines.h"
+
 
 #include "DXApplication.h"
 #include "DXAnchorWindow.h"

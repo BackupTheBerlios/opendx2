@@ -7,15 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
+#include "../base/defines.h"
 
 /*
  */
 
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
-#endif
 #ifdef OS2
 #include <stdlib.h>
 #include <types.h>
@@ -37,16 +33,6 @@
 #include <Xm/ScrolledWP.h>
 #include "NumericList.h"
 #include "NumericListP.h"
-/*#include "uiustring.h" */
-
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
-
-
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

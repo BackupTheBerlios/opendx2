@@ -7,8 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
+#include "../base/defines.h"
 
 #include <X11/StringDefs.h>
 
@@ -32,12 +31,7 @@
 #include <unistd.h>
 #endif
 
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
-#endif
-
 #include "../widgets/Stepper.h"
-#include "defines.h"
 #include "ErrorDialogManager.h"
 #include "InfoDialogManager.h"
 #include "Strings.h"

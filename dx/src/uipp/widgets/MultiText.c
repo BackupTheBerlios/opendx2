@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -22,19 +23,6 @@
 
 
 #include "MultiTextP.h"
-
-#if !defined(ibm6000) && !defined(OS2) && !defined(DXD_WIN)
-#include <sys/param.h>
-#endif
-
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
-
-
 
 #if defined(DXD_WIN)
 /* winuser.h defines ScrollWindow which conflicts with code in this file */

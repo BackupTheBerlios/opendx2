@@ -7,10 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
-
-
-#include "defines.h"
 #include <iostream.h>
 
 #if defined(HAVE_UNISTD_H)
@@ -19,10 +17,6 @@
 
 #if defined(HAVE_NETDB_H)
 #include <netdb.h>
-#endif
-
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
 #endif
 
 #include "DXApplication.h"

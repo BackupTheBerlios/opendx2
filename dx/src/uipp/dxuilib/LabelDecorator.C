@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -15,7 +16,6 @@
 #include <Xm/Label.h>
 
 
-#include "defines.h"
 #include "XmUtility.h"
 #include "Strings.h"
 #include "LabelDecorator.h"
@@ -46,10 +46,6 @@
 
 #if defined(HAVE_NETDB_H)
 #include <netdb.h>
-#endif
-
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
 #endif
 
 // gethostname is needed by decodeDragType 

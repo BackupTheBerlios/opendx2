@@ -7,11 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
-
-
 #include "defines.h"
+
 #include "Strings.h"
 #include "HelpWin.h"
 
@@ -21,6 +18,7 @@
 #include "DictionaryIterator.h"
 
 #include "help.h"
+#include "defines.h"
 
 #include <stdio.h>
 

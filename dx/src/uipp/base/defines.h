@@ -8,23 +8,22 @@
 
 #include <dxconfig.h>
 
-
-
 #ifndef _defines_h
 #define _defines_h
-
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#if 0
+#if defined(HAVE_SYS_PARAM_H)
+#include <sys/param.h>
+#endif
+
 #if !defined(MIN)
 #define MIN(a,b) ((a)<(b)?(a):(b))
 #endif
 
 #if !defined(MAX)
 #define MAX(a,b) ((a)>(b)?(a):(b))
-#endif
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

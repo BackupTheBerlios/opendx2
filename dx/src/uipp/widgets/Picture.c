@@ -7,11 +7,9 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
-#ifdef sgi
-#include <sys/param.h>
-#endif
 #ifdef OS2
 #include <stdlib.h>
 #include <types.h>
@@ -40,15 +38,6 @@
 #include "../widgets/ImageP.h"
 #include "../widgets/Picture.h"
 #include "../widgets/PictureP.h"
-
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
-
-
 
 #define SCALE .85
 

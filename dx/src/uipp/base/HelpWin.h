@@ -8,17 +8,11 @@
 
 #include <dxconfig.h>
 
-
-
-
 #ifndef _HelpWin_h
 #define _HelpWin_h
 
-
-#include "defines.h"
 #include "MainWindow.h"
 #include "Dictionary.h"
-
 
 //
 // Class name definition:

@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include "../base/defines.h"
 
 #include <malloc.h>
 #include <stdio.h>
@@ -23,10 +23,6 @@
 
 #if defined(HAVE_ARPA_INET_H)
 #include <arpa/inet.h>
-#endif
-
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
 #endif
 
 #if defined(windows) && defined(HAVE_WINSOCK_H)
@@ -57,7 +53,6 @@
 #endif
 
 #include "../base/UIConfig.h"
-#include "../base/defines.h"
 #include "../base/IBMVersion.h"
 #include "dxlP.h"
 #ifdef OS2

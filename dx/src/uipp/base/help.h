@@ -8,13 +8,9 @@
 
 #include <dxconfig.h>
 
-
 #include "history.h"
 #include "helplist.h"
 #include "helpstack.h"
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
-#endif
 
 #define SPOTFILE "spots"
 #define README_PREFIX "README"

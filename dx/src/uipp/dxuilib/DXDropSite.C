@@ -7,11 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
-
-
-
-#include "defines.h"
 #include <stdio.h>
 
 #if defined(HAVE_UNISTD_H)
@@ -20,10 +17,6 @@
 
 #if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
-#endif
-
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
 #endif
 
 #include <Xm/Xm.h>

@@ -7,9 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
-
+#include "defines.h"
 
 #ifdef OS2
 #include <stdlib.h>

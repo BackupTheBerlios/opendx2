@@ -7,17 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include "../base/defines.h"
 
 #include <stdio.h>
 #include <ctype.h>
 
 #if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
-#endif
-
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
 #endif
 
 #if defined(windows) && defined(HAVE_WINSOCK_H)
@@ -48,7 +44,6 @@
 #endif
 
 #include "../base/UIConfig.h"
-#include "../base/defines.h"
 #include "dxlP.h"
 
 DXLError

@@ -7,8 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
+#include <defines.h>
 
 #include <stdio.h>
 #include <Xm/Xm.h>
@@ -18,8 +17,6 @@
 #include <X11/Shell.h>
 #include <Xm/PushB.h>
 #include <Xm/RowColumn.h>
-
-#include "defines.h"
 
 #include "../widgets/MultiText.h"
 #include "help.h"

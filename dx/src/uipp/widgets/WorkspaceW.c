@@ -7,8 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
+#include "../base/defines.h"
 
 #ifdef OS2
 #include <stdlib.h>
@@ -30,19 +29,7 @@
 #include "WorkspaceW.h"
 #include "WorkspaceP.h"
 #include "WorkspaceCallback.h"
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
-#endif
 #include <string.h>
-
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
-
-
 
 extern void _XmManagerEnter();
 extern void _XmManagerFocusIn();

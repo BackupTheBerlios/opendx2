@@ -7,20 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
-
-
-#include "defines.h"
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 
 #if defined(HAVE_NETDB_H)
 #include <netdb.h>
-#endif
-
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
 #endif
 
 #include <Xm/Xm.h>

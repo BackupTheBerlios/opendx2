@@ -7,13 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 #if defined(_AIX41)
 #include <strings.h>
 #endif
 
 #include "UIConfig.h"
-#include "defines.h"
 #include "Strings.h"
 
 #include "PacketIF.h"
@@ -94,7 +94,6 @@ extern "C" int getdtablesize();
 
 #ifdef aviion 
 extern "C" {
-#include <sys/param.h>
 int getsockname(int,struct sockaddr*, int*);
 int bzero(char*,int);
 }

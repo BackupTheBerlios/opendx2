@@ -44,8 +44,8 @@
 #include <X11/cursorfont.h>
 
 
-#include <defines.h>
-#include <../widgets/WorkspaceW.h>
+#include "defines.h"
+#include "../widgets/WorkspaceW.h"
 #include "EditorWindow.h"
 #include "Arc.h"
 #include "ButtonInterface.h"

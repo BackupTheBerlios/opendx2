@@ -8,8 +8,6 @@
 
 #include <dxconfig.h>
 
-
-
 #include "defines.h"
 #ifndef DXD_DO_NOT_REQ_UNISTD_H
 #include <unistd.h>

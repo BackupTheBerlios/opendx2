@@ -7,13 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
 #include <stdio.h>
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
-#endif
 
 #include <math.h>
 #include "ColorMapEditor.h"

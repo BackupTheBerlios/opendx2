@@ -8,9 +8,6 @@
 
 #include <dxconfig.h>
 
-
-
-
 #include <Xm/Xm.h>
 #include <Xm/ScrolledW.h>
 #include <X11/cursorfont.h>

@@ -8,7 +8,7 @@
 
 #include <dxconfig.h>
 
-
+#include "defines.h"
 
 #ifndef _history_h
 #define _history_h

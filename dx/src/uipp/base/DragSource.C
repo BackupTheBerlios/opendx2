@@ -7,9 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "defines.h"
 
-
-
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 #include <Xm/Xm.h>
 #include <Xm/CutPaste.h>
@@ -19,20 +21,11 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 
-#include "defines.h"
 #include "DragSource.h" 
 #include "Application.h" 
 #include "WarningDialogManager.h"
 #include "Dictionary.h"
 #include "DictionaryIterator.h"
-
-#if defined(HAVE_UNISTD_H)
-#include <unistd.h>
-#endif
- 
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
-#endif
 
 #if defined(HAVE_NETDB_H)
 #include <netdb.h>

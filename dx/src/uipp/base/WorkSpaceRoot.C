@@ -8,8 +8,7 @@
 
 #include <dxconfig.h>
 
-
-
+#include "defines.h"
 
 #include "WorkSpace.h"
 #include "WorkSpaceRoot.h" 

@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -17,21 +18,9 @@
 
 #include <stdio.h>
 
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
-#endif
-
 #include <limits.h>
 #include "NumberP.h"
 #include "Number.h"
-
-
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include "../base/defines.h"
 
 #include "../base/UIConfig.h"
 
@@ -16,10 +16,6 @@
 
 #if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
-#endif
-
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
 #endif
 
 #if defined(windows) && defined(HAVE_WINSOCK_H)
@@ -62,7 +58,6 @@
 #define read(a,b,c) _dxl_os2_recv(a,b,c,0)
 #endif
 
-#include "../base/defines.h"
 #include "dxlP.h"
 
 typedef int (*DXLPacketPredicate)(DXLConnection *, DXLEvent *, void *);

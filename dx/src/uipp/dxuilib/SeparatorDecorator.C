@@ -7,14 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
-
+#include "defines.h"
 
 #include <Xm/Xm.h>
 #include <Xm/Separator.h>
 
-#include "defines.h"
 #include "XmUtility.h"
 #include "../widgets/WorkspaceW.h"
 #include "Application.h"

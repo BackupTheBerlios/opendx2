@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include "../base/defines.h"
 
 #include <stdio.h>
 #include <ctype.h>
@@ -18,7 +18,6 @@
 #include <malloc.h>
 
 #include "../base/UIConfig.h"
-#include "../base/defines.h"
 #include <string.h>
 
 #include "dxlP.h"
@@ -59,10 +58,6 @@
 
 #if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
-#endif
-
-#if defined(HAVE_SYS_PARAM_H)
-#include <sys/param.h>
 #endif
 
 #ifndef FD_ZERO
