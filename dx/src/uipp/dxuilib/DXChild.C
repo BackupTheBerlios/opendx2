@@ -9,17 +9,13 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
+
 #include "UIConfig.h"
 #include "Strings.h"
 #include "DXChild.h"
-
-#ifdef OS2
-#define INCL_DOSPROCESS
-#define INCL_DOSDATETIME
-#define INCL_DOSFILEMGR
-#define INCL_DOSQUEUES
-#include <os2.h>
-#endif
 
 #include "DXApplication.h"
 #include "ErrorDialogManager.h"
@@ -63,10 +59,6 @@ extern "C" {
 #ifdef alphax
 }
 #endif
-#endif
-
-#if defined(HAVE_STRINGS_H)
-#include <strings.h>
 #endif
 
 #include <signal.h>
