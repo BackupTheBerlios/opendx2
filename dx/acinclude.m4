@@ -629,49 +629,38 @@ dnl  What is the correct function name and structure def stat... stat, or _stat?
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CHECK_STAT,
 [
-AC_CHECK_FUNCS( stat _stat )
-if test $ac_cv_func__stat = 'yes' ; then
-    AC_DEFINE_UNQUOTED(STATFUNC, _stat)
-    dx_stat=_stat
-else
-    if test $ac_cv_func_stat = 'yes' ; then
-	AC_DEFINE_UNQUOTED(STATFUNC, stat)
-	dx_stat=stat
-    else
- 	echo could not find either stat or _stat.... need one or the other
-	exit
-    fi
-fi
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
-dx_statstruct=
-cat > statHdrs.h << EOF
-EOF
+echo "/* */" > statHdrs.h
 AC_CHECK_HEADER(windows.h, [ echo "#include <windows.h>" >> statHdrs.h ])
 AC_CHECK_HEADER(unistd.h, [ echo "#include <unistd.h>" >> statHdrs.h ])
 AC_CHECK_HEADER(sys/types.h, [ echo "#include <sys/types.h>" >> statHdrs.h ])
 AC_CHECK_HEADER(sys/stat.h, [ echo "#include <sys/stat.h>" >> statHdrs.h ])
-for try in stat _stat
-do
+fnc="X"
+str="X"
+for f in stat _stat ; do
+for s in stat _stat ; do
 AC_TRY_LINK(
 [
-#include <stdio.h>
 #include "statHdrs.h"
 ],
 [
-int i = $dx_stat("foo", (struct $try *) NULL);
+$f("foo", (struct $s *)0);
 ],
 [
-dx_statstruct=$try 
-AC_DEFINE_UNQUOTED(STATSTRUCT, $try)
+fnc=$f
+str=$s
 ])
-if test ! -z "$dx_statstruct" ; then
-    break
-fi
 done
-echo stat function is: $dx_stat
-echo stat structure is: $dx_statstruct
-rm statHdrs.h
+done
+if test "$fnc" = "X" or "$str" = "X" ; then
+    echo could not find working combination of stat function and structure
+    exit
+fi
+AC_DEFINE_UNQUOTED(STATFUNC, $fnc)
+AC_DEFINE_UNQUOTED(STATSTRUCT, $str)
+echo stat function is: $fnc
+echo stat structure is: $str
 AC_LANG_RESTORE
 ])
 
