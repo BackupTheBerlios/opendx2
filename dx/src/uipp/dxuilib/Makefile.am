@@ -45,7 +45,7 @@ EXTRA_DIST = \
 	top_shadow_pc.bm
 
 
-noinst_HEADERS = \
+HDRS1 = \
 	oem.h \
 	AnnotationGroupManager.h \
 	ApplicIF.h \
@@ -91,7 +91,9 @@ noinst_HEADERS = \
 	EditorWindow.h \
 	EditorWorkSpace.h \
 	FileSelectorDialog.h \
-	FileSelectorInstance.h \
+	FileSelectorInstance.h 
+
+HDRS2 = \
 	FindStack.h \
 	FindToolDialog.h \
 	GetSetConversionDialog.h \
@@ -132,7 +134,9 @@ noinst_HEADERS = \
 	MWClearCmd.h \
 	MWFileDialog.h \
 	MoveNodesDialog.h \
-	MsgWin.h \
+	MsgWin.h 
+
+HDRS3 = \
 	NDAllocatorDictionary.h \
 	Network.h \
 	NoUndoMWCmd.h \
@@ -167,7 +171,9 @@ noinst_HEADERS = \
 	SaveCFGDialog.h \
 	SaveImageDialog.h \
 	ScalarInstance.h \
-	ScalarListInstance.h \
+	ScalarListInstance.h
+ 
+HDRS4 = \
 	SelectionAttrDialog.h \
 	SelectionInstance.h \
 	SelectorInstance.h \
@@ -212,7 +218,9 @@ noinst_HEADERS = \
 	make.sequence.sh \
 	netlex.h
 
-libDXUI_a_SOURCES = 			\
+noinst_HEADERS = $(HDRS1) $(HDRS2) $(HDRS3) $(HDRS4)
+
+SRCS1 = \
 	oem.C \
 	AnnotationGroupManager.C \
 	ApplicIF.C \
@@ -254,7 +262,9 @@ libDXUI_a_SOURCES = 			\
 	FileSelectorInstance.C \
 	FindStack.C \
 	FindToolDialog.C \
-	GetSetConversionDialog.C \
+	GetSetConversionDialog.C 
+
+SRCS2 = \
 	GridDialog.C \
 	GroupManager.C \
 	GroupStyle.C \
@@ -278,7 +288,9 @@ libDXUI_a_SOURCES = 			\
 	ImageFormatYUV.C \
 	ImageNodeUtils.C \
 	ImageWindow.C \
-	InsertNetworkDialog.C \
+	InsertNetworkDialog.C 
+
+SRCS3 = \
 	InteractorInstance.C \
 	InteractorStandIn.C \
 	InteractorStyle.C \
@@ -302,7 +314,9 @@ libDXUI_a_SOURCES = 			\
 	OpenNetworkDialog.C \
 	PacketHandler.C \
 	PacketIF.C \
-	PageGroupManager.C \
+	PageGroupManager.C 
+
+SRCS4 = \
 	PageSelector.C \
 	PageTab.C \
 	PanelAccessManager.C \
@@ -328,7 +342,9 @@ libDXUI_a_SOURCES = 			\
 	ScalarInstance.C \
 	ScalarListInstance.C \
 	SelectionAttrDialog.C \
-	SelectionInstance.C \
+	SelectionInstance.C 
+
+SRCS5 = \
 	SelectorInstance.C \
 	SelectorListInstance.C \
 	SeparatorDecorator.C \
@@ -376,6 +392,8 @@ libDXUI_a_SOURCES = 			\
 	imagemac.txt \
 	\
 	netyacc.c
+
+libDXUI_a_SOURCES = $(SRCS1) $(SRCS2) $(SRCS3) $(SRCS4) $(SRCS5)
 
 sequence.txt: sequence.net
 	sed -e 's/"/\\"/g' sequence.net | \
