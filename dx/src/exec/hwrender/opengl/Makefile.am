@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES =  -I${top_srcdir}/include -I${srcdir}/.. -I${srcdir}/../../libdx -I/usr/include -I/usr/local/include -D@ARCH@
+INCLUDES =  -I${top_srcdir}/include -I${srcdir}/.. -I${srcdir}/../../libdx -D@ARCH@
 
 noinst_LIBRARIES = libOPENGL.a
 
