@@ -1334,7 +1334,8 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
         if test $ARCH = "sgi" ; then
                 DX_RTL_CFLAGS=" -Dsgi"
         	if test $ac_cv_prog_gcc = "yes" ; then
-                	DX_RTL_LDFLAGS=" -call_shared -U "
+			DX_RTL_CFLAGS=" -Dsgi -D_GNU_SOURCE"
+                	DX_RTL_LDFLAGS=" -shared"
 			DX_RTL_DXENTRY=" -e DXEntry -exported_symbol DXEntry"
 			if ccld_defaulted ; then 
 				SHARED_LINK="ld"
