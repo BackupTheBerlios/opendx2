@@ -244,6 +244,7 @@ _dxf_CREATE_WINDOW (void *globals, char *winName, int w, int h)
 {
 	DEFGLOBALDATA(globals);
 	OGLWindow *oglw = GetOGLWPtr(XWINID);
+ 	char * doGLStereo;
  
     /* Initialize the hwRender port private context */
     PORT_HANDLE->private = tdmAllocateZero(sizeof(tdmOGLctxT));
@@ -256,6 +257,8 @@ _dxf_CREATE_WINDOW (void *globals, char *winName, int w, int h)
 		int nMyPixelFormatID;
 	    char *str;
 		GLint mcp;
+		int checkID;                     /* for verifying window */
+		PIXELFORMATDESCRIPTOR checkPfd;  /*   capabilites        */
 		static PIXELFORMATDESCRIPTOR pfd = 
 		{
 			sizeof(PIXELFORMATDESCRIPTOR),
@@ -275,6 +278,15 @@ _dxf_CREATE_WINDOW (void *globals, char *winName, int w, int h)
 		};
 	    DEFPORT(PORT_HANDLE) ;
     
+		/* check if we should request stereo window */
+		if ((doGLStereo = getenv("DX_USE_GL_STEREO")) != NULL)
+		{
+			if (atoi(doGLStereo))
+			{
+				pfd.dwFlags |= PFD_STEREO;
+			}
+		}
+    
 		OGLHDC	   = GetDC(XWINID);
 		
 		nMyPixelFormatID = ChoosePixelFormat(OGLHDC, &pfd);
@@ -284,6 +296,15 @@ _dxf_CREATE_WINDOW (void *globals, char *winName, int w, int h)
 		SetPixelFormat(OGLHDC, nMyPixelFormatID, &pfd);
 		OGLHRC = wglCreateContext(OGLHDC);
 
+		/* initialize, then check if we got a stereo window */
+		USEGLSTEREO = 0;
+		checkID  = GetPixelFormat(OGLHDC);
+		if (DescribePixelFormat(OGLHDC, checkID,
+			sizeof(PIXELFORMATDESCRIPTOR), &checkPfd) &&
+		    ((checkPfd.dwFlags & PFD_STEREO) != 0))
+		{
+			USEGLSTEREO = 1;
+		}
 		wglMakeCurrent(OGLHDC, OGLHRC); 
 
 	    OGLXWIN    = XWINID;
@@ -777,7 +798,7 @@ _dxf_DESTROY_WINDOW (void *win)
 }
 
 #if defined(DX_NATIVE_WINDOWS)
-static void _dxf_SET_OUTPUT_WINDOW(void *win)
+static void _dxf_SET_OUTPUT_WINDOW(void *win, HRGN *hrgn)
 #else
 static void _dxf_SET_OUTPUT_WINDOW(void *win, Window w)
 #endif

@@ -93,11 +93,13 @@ _dxfLoadStereoModes()
 Error
 _dxfInitializeStereoSystemMode(void *globals, dxObject args)
 {
-#if defined(DX_NATIVE_WINDOWS)
-	return ERROR;
-#else
     DEFGLOBALDATA(globals);
     int mode = -1;
+
+#if defined(DX_NATIVE_WINDOWS)
+	DEFPORT(PORT_HANDLE);
+	HDC tempHdc = GetDC(XWINID);
+#endif
 
     if (! stereoSystemLoaded)
     {
@@ -124,41 +126,68 @@ _dxfInitializeStereoSystemMode(void *globals, dxObject args)
 	{
 	    StereoSystemMode *ssm = _dxd_StereoSystemModes + mode;
 
+#if defined(DX_NATIVE_WINDOWS)
+			if (! (*ssm->initializeStereoSystemMode)(tempHdc, XWINID))
+#else
 	    if (! (*ssm->initializeStereoSystemMode)(DPY, XWINID))
+#endif
 	    {
+#if defined(DX_NATIVE_WINDOWS)
+				ReleaseDC(XWINID, tempHdc);
+#endif
 		STEREOSYSTEMMODE = -1;
 		return ERROR;
 	    }
 
+#if defined(DX_NATIVE_WINDOWS)
+			(*ssm->createStereoWindows)(tempHdc, XWINID, 
+				&LEFTWINDOW, &LEFTWINDOWINFO,
+				&RIGHTWINDOW, &RIGHTWINDOWINFO);
+#else
 	    (*ssm->createStereoWindows)(DPY, XWINID, 
 				&LEFTWINDOW, &LEFTWINDOWINFO,
 				&RIGHTWINDOW, &RIGHTWINDOWINFO);
+#endif
 	}
 
 	STEREOSYSTEMMODE = mode;
     }
 
-    return OK;
+#if defined(DX_NATIVE_WINDOWS)
+	ReleaseDC(XWINID, tempHdc);
 #endif
+
+    return OK;
 }
 
 int
 _dxfExitStereoSystemMode(void *globals)
 {
-#if defined(DX_NATIVE_WINDOWS)
-	return ERROR;
-#else
     DEFGLOBALDATA(globals);
+
+#if defined(DX_NATIVE_WINDOWS)
+	DEFPORT(PORT_HANDLE);
+	HDC tempHdc = GetDC(XWINID);
+#endif
+
     if (STEREOSYSTEMMODE)
     {
 	StereoSystemMode *ssm = _dxd_StereoSystemModes + STEREOSYSTEMMODE;
+#if defined(DX_NATIVE_WINDOWS)
+	(*ssm->exitStereo)(tempHdc, XWINID, &LEFTWINDOW, &RIGHTWINDOW);
+#else
 	(*ssm->exitStereo)(DPY, XWINID, LEFTWINDOW, RIGHTWINDOW);
+#endif
 	STEREOCAMERADATA  = NULL;
 	LEFTWINDOW        = 0;
 	RIGHTWINDOW       = 0;
     }
-    return OK;
+
+#if defined(DX_NATIVE_WINDOWS)
+	ReleaseDC(XWINID, tempHdc);
 #endif
+
+    return OK;
 }
 
 /***********************************************************

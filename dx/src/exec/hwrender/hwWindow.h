@@ -13,7 +13,7 @@
 #define	tdmWindow_h
 /*
  *
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.h,v 1.5 2003/07/11 05:50:38 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.h,v 1.6 2003/07/30 22:39:07 davidt Exp $
  */
 
 #include "hwStereo.h"
@@ -59,6 +59,9 @@ typedef	struct WinS {
   HANDLE lock;
   int canRender;
   DWORD windowThread;
+  HRGN lrgn;                /* left clipping region */
+  HRGN rrgn;                /* right clipping region */
+  int useGLStereo;          /* whether or not we're using GL stereo */
 #else
   Display *dpy ;			/* X display connection to window */
   Window wigWindow ;			/* parent window owned by UI process */
@@ -219,8 +222,15 @@ typedef struct tdmChildGlobalS {
 #define STEREOSYSTEMMODE (_wdata->stereoSystemMode)
 #define STEREOCAMERAMODE (_wdata->stereoCameraMode)
 #define STEREOCAMERADATA (_wdata->stereoCameraData)
+
+#if defined(DX_NATIVE_WINDOWS)
+#define LEFTWINDOW (_wdata->lrgn)
+#define RIGHTWINDOW (_wdata->rrgn)
+#define USEGLSTEREO (_wdata->useGLStereo)
+#else
 #define LEFTWINDOW (_wdata->lxid)
 #define RIGHTWINDOW (_wdata->rxid)
+#endif
 #define CURRENT_UP (_wdata->currentUp)
 #define CURRENT_FROM (_wdata->currentFrom)
 #define CURRENT_TO (_wdata->currentTo)

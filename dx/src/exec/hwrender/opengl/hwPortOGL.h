@@ -57,6 +57,7 @@ typedef struct {
   int xmaxscreen;
   int ymaxscreen;
   RGBColor background_color;
+  hwTranslationP translation;
   int fontListBase;
   int clipPlaneCount;
   int maxClipPlanes;
@@ -79,6 +80,7 @@ typedef struct {
 #define XMAXSCREEN        (((tdmOGLctx)_portContext)->xmaxscreen)
 #define YMAXSCREEN        (((tdmOGLctx)_portContext)->ymaxscreen)
 #define BACKGROUND_COLOR  (((tdmOGLctx)_portContext)->background_color)
+#define OGLTRANSLATION   (((tdmOGLctx)_portContext)->translation)
 #define FONTLISTBASE      (((tdmOGLctx)_portContext)->fontListBase)
 #define CLIP_PLANE_CNT    (((tdmOGLctx)_portContext)->clipPlaneCount)
 #define MAX_CLIP_PLANES   (((tdmOGLctx)_portContext)->maxClipPlanes)

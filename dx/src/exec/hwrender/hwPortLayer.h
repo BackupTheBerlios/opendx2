@@ -204,7 +204,7 @@ typedef struct tdmDrawPortS {
   void	(*SetOrthoProjection) (void *ctx, float width, float aspect,
  			       float Near, float Far);
 #if defined(DX_NATIVE_WINDOWS)
-  void  (*SetOutputWindow) (void *win);
+  void  (*SetOutputWindow) (void *win, HRGN *);
 #else
   void	(*SetOutputWindow) (void *win, Window);
 #endif
@@ -344,7 +344,7 @@ extern int	_dxd_lmHwddVersion;
    */
 
 #if defined(DX_NATIVE_WINDOWS)
-#define	_dxf_SET_OUTPUT_WINDOW(win) (*_pFuncs->SetOutputWindow)(win)
+#define	_dxf_SET_OUTPUT_WINDOW(win, rgn) (*_pFuncs->SetOutputWindow)(win, rgn)
 #else
 #define	_dxf_SET_OUTPUT_WINDOW(win, wid) (*_pFuncs->SetOutputWindow)(win, wid)
 #endif

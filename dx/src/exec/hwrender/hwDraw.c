@@ -12,7 +12,7 @@
 #define render_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.7 2003/07/11 05:50:37 davidt Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.8 2003/07/30 22:39:06 davidt Exp $"};
 #endif
 
 #include <stdio.h>
@@ -149,7 +149,7 @@ _dxfDrawMono (gatherO gather, void* globals, dxObject o, Camera c, int buttonUp)
 #if defined(DX_NATIVE_WINDOWS)
   {
     RECT rect;
-    _dxf_SET_OUTPUT_WINDOW(LWIN);
+    _dxf_SET_OUTPUT_WINDOW(LWIN, &LEFTWINDOW);
     GetClientRect(XWINID, &rect);
     pixw = rect.right - rect.left;
     pixh = rect.bottom - rect.top;
@@ -228,7 +228,7 @@ _dxfGetStereoCameras (void *globals, Camera c, Camera *lcp, Camera *rcp)
                 DXPt(rto[0],   rto[1],   rto[2]),
                 DXVec(rup[0],  rup[1],   rup[2]));
     sc = _dxfSetCameraProjection(sc, rProjection);
-    *lcp = sc;
+    *rcp = sc;
 
     return OK;
 }
@@ -236,7 +236,6 @@ _dxfGetStereoCameras (void *globals, Camera c, Camera *lcp, Camera *rcp)
 Error
 _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonUp)
 {
-#if !defined(DX_NATIVE_WINDOWS)
     DEFGLOBALDATA(globals);
     DEFPORT(PORT_HANDLE);
     DEFCAMERA(INTERACTOR_DATA);
@@ -263,7 +262,15 @@ _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonU
                             lto, lfrom, lup, &lProjection,
                             rto, rfrom, rup, &rProjection);
 
-    _dxf_SET_OUTPUT_WINDOW(LWIN, LEFTWINDOW);
+    _dxf_SET_OUTPUT_WINDOW(LWIN, &LEFTWINDOW);
+
+#if defined(DX_NATIVE_WINDOWS)
+	if (USEGLSTEREO)
+	{
+		glDrawBuffer(GL_BACK_LEFT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+#endif
 
     _dxf_CLEARBUFFER(LWIN);
 
@@ -292,9 +299,17 @@ _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonU
     if (! _dxfDrawEither(gather, globals, o, c, buttonUp))
         return ERROR;
 
+#if defined(DX_NATIVE_WINDOWS)
+	if (USEGLSTEREO)
+	{
+		glDrawBuffer(GL_BACK_RIGHT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+#endif
+
     if (LEFTWINDOW != RIGHTWINDOW)
     {
-        _dxf_SET_OUTPUT_WINDOW(LWIN, RIGHTWINDOW);
+        _dxf_SET_OUTPUT_WINDOW(LWIN, &RIGHTWINDOW);
         _dxf_CLEARBUFFER(LWIN);
     }
 
@@ -322,15 +337,30 @@ _dxfDrawStereo (gatherO gather, void* globals, dxObject o, Camera c, int buttonU
     if (! _dxfDrawEither(gather, globals, o, c, buttonUp))
         return ERROR;
 
-    _dxf_SET_OUTPUT_WINDOW(LWIN, LEFTWINDOW);
+    _dxf_SET_OUTPUT_WINDOW(LWIN, &LEFTWINDOW);
+
+#if defined(DX_NATIVE_WINDOWS)
+	if (USEGLSTEREO)
+	{
+		glDrawBuffer(GL_BACK_LEFT);
+	}
+#endif
+
+#if defined(DX_NATIVE_WINDOWS)
+    _dxf_SWAP_BUFFERS(PORT_CTX);
+#else
     _dxf_SWAP_BUFFERS(PORT_CTX, LEFTWINDOW);
+#endif
 
     if (LEFTWINDOW != RIGHTWINDOW)
     {
-        _dxf_SET_OUTPUT_WINDOW(LWIN, RIGHTWINDOW);
+        _dxf_SET_OUTPUT_WINDOW(LWIN, &RIGHTWINDOW);
+#if defined(DX_NATIVE_WINDOWS)
+		_dxf_SWAP_BUFFERS(PORT_CTX);
+#else
         _dxf_SWAP_BUFFERS(PORT_CTX, RIGHTWINDOW);
-    }
 #endif
+    }
     return OK;
 
 }

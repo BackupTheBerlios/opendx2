@@ -55,17 +55,22 @@
  ****************************************************************/
 
 #if defined(DX_NATIVE_WINDOWS)
-static int  defInitializeStereoSystemMode0();
-static int  defExitStereoSystem0();
-static int  defCreateStereoWindows0();
+static int  defInitializeStereoSystemMode0(HDC, HWND);
+static int  defExitStereoSystem0(HDC, HWND, HRGN *, HRGN *);
+static int  defCreateStereoWindows0(HDC, HWND, HRGN *, WindowInfo *, HRGN *, WindowInfo *);
 
-static int  defInitializeStereoSystemMode1();
-static int  defExitStereoSystem1();
-static int  defCreateStereoWindows1();
+static int  defInitializeStereoSystemMode1(HDC, HWND);
+static int  defExitStereoSystem1(HDC, HWND, HRGN *, HRGN *);
+static int  defCreateStereoWindows1(HDC, HWND, HRGN *, WindowInfo *, HRGN *, WindowInfo *);
 
-static int  defInitializeStereoSystemMode2();
-static int  defExitStereoSystem2();
-static int  defCreateStereoWindows2();
+static int  defInitializeStereoSystemMode2(HDC, HWND);
+static int  defExitStereoSystem2(HDC, HWND, HRGN *, HRGN *);
+static int  defCreateStereoWindows2(HDC, HWND, HRGN *, WindowInfo *, HRGN *, WindowInfo *);
+
+static int  defInitializeStereoSystemMode3(HDC, HWND);
+static int  defExitStereoSystem3(HDC, HWND, HRGN *, HRGN *);
+static int  defCreateStereoWindows3(HDC, HWND, HRGN *, WindowInfo *, HRGN *, WindowInfo *);
+
 #else
 static int  defInitializeStereoSystemMode0(Display *, Window);
 static int  defExitStereoSystem0(Display *, Window, Window, Window);
@@ -84,9 +89,15 @@ static int  defExitStereoSystem2(Display *, Window, Window, Window);
 static int  defCreateStereoWindows2(Display *, Window,
 					Window *, WindowInfo *,
 					Window *, WindowInfo *);
+
+static int  defInitializeStereoSystemMode3(Display *, Window);
+static int  defExitStereoSystem3(Display *, Window, Window, Window);
+static int  defCreateStereoWindows3(Display *, Window,
+					Window *, WindowInfo *,
+					Window *, WindowInfo *);
 #endif
 
-static StereoSystemMode _defaultStereoSystemModes[3];
+static StereoSystemMode _defaultStereoSystemModes[4];
 
 int 
 DXDefaultStereoSystemModes(int *n, StereoSystemMode **ssms)
@@ -105,13 +116,17 @@ DXDefaultStereoSystemModes(int *n, StereoSystemMode **ssms)
     (*ssms)[2].exitStereo 		  = defExitStereoSystem2;
     (*ssms)[2].createStereoWindows 	  = defCreateStereoWindows2;
 
-    *n = 3;
+	(*ssms)[3].exitStereo                 = defExitStereoSystem3;
+	(*ssms)[3].createStereoWindows        = defCreateStereoWindows3;
+	(*ssms)[3].initializeStereoSystemMode = defInitializeStereoSystemMode3;
+
+    *n = 4;
     return OK;
 }
 
 #if defined(DX_NATIVE_WINDOWS)
 static int
-defInitializeStereoSystemMode0()
+defInitializeStereoSystemMode0(HDC hdc, HWND w)
 #else
 static int
 defInitializeStereoSystemMode0(Display *dpy, Window w)
@@ -122,7 +137,7 @@ defInitializeStereoSystemMode0(Display *dpy, Window w)
 
 #if defined(DX_NATIVE_WINDOWS)
 static int
-defExitStereoSystem0()
+defExitStereoSystem0(HDC hdc, HWND w, HRGN *left, HRGN *right)
 #else
 static int
 defExitStereoSystem0(Display *dpy, Window frame, Window left, Window right)
@@ -141,7 +156,9 @@ defExitStereoSystem0(Display *dpy, Window frame, Window left, Window right)
 
 #if defined(DX_NATIVE_WINDOWS)
 Error
-defCreateStereoWindows0()
+defCreateStereoWindows0(HDC hdc, HWND w,
+						 HRGN *left, WindowInfo *leftWI,
+						 HRGN *right, WindowInfo *rightWI)
 #else
 Error
 defCreateStereoWindows0(Display *dpy, Window frame,
@@ -177,7 +194,7 @@ defCreateStereoWindows0(Display *dpy, Window frame,
 
 #if defined(DX_NATIVE_WINDOWS)
 static int
-defInitializeStereoSystemMode1()
+defInitializeStereoSystemMode1(HDC hdc, HWND w)
 #else
 static int
 defInitializeStereoSystemMode1(Display *dpy, Window w)
@@ -191,7 +208,7 @@ defInitializeStereoSystemMode1(Display *dpy, Window w)
 
 #if defined(DX_NATIVE_WINDOWS)
 static int
-defExitStereoSystem1()
+defExitStereoSystem1(HDC hdc, HWND w, HRGN *left, HRGN *right)
 #else
 static int
 defExitStereoSystem1(Display *dpy, Window frame, Window left, Window right)
@@ -213,7 +230,9 @@ defExitStereoSystem1(Display *dpy, Window frame, Window left, Window right)
 
 #if defined(DX_NATIVE_WINDOWS)
 Error
-defCreateStereoWindows1()
+defCreateStereoWindows1(HDC hdc, HWND w,
+						 HRGN *left, WindowInfo *leftWI,
+						 HRGN *right, WindowInfo *rightWI)
 #else
 Error
 defCreateStereoWindows1(Display *dpy, Window frame,
@@ -249,7 +268,7 @@ defCreateStereoWindows1(Display *dpy, Window frame,
 
 #if defined(DX_NATIVE_WINDOWS)
 static int
-defInitializeStereoSystemMode2()
+defInitializeStereoSystemMode2(HDC hdc, HWND w)
 #else
 static int
 defInitializeStereoSystemMode2(Display *dpy, Window w)
@@ -264,7 +283,7 @@ defInitializeStereoSystemMode2(Display *dpy, Window w)
 
 #if defined(DX_NATIVE_WINDOWS)
 static int
-defExitStereoSystem2()
+defExitStereoSystem2(HDC hdc, HWND w, HRGN *left, HRGN *right)
 #else
 static int
 defExitStereoSystem2(Display *dpy, Window frame, Window left, Window right)
@@ -287,7 +306,9 @@ defExitStereoSystem2(Display *dpy, Window frame, Window left, Window right)
 
 #if defined(DX_NATIVE_WINDOWS)
 Error
-defCreateStereoWindows2()
+defCreateStereoWindows2(HDC hdc, HWND w,
+						 HRGN *left, WindowInfo *leftWI,
+						 HRGN *right, WindowInfo *rightWI)
 #else
 Error
 defCreateStereoWindows2(Display *dpy, Window frame,
@@ -322,3 +343,80 @@ defCreateStereoWindows2(Display *dpy, Window frame,
 #endif
 }
 
+/********************************************************************/
+/* GL stereo mode */
+
+#if !defined(DX_NATIVE_WINDOWS)
+Error
+defCreateStereoWindows3(Display *dpy, Window frame,
+		Window *left, WindowInfo *leftWI,
+		Window *right, WindowInfo *rightWI) {
+	return ERROR;
+
+#else
+
+int defCreateStereoWindows3(HDC hdc, HWND w,
+						 HRGN *left, WindowInfo *leftWI,
+						 HRGN *right, WindowInfo *rightWI) {
+	RECT rect;
+
+	if (GetWindowRect(w, &rect)) {
+		leftWI->xOffset = rightWI->xOffset = 0;
+		leftWI->yOffset = rightWI->yOffset = 0;
+		leftWI->xSize   = rightWI->xSize   = rect.right - rect.left;
+		leftWI->ySize   = rightWI->ySize   = rect.bottom - rect.top;
+		leftWI->aspect  = rightWI->aspect  =
+			((float) leftWI->ySize) / leftWI->xSize;
+		return OK;
+	}
+	return ERROR;
+#endif
+}
+
+#if !defined(DX_NATIVE_WINDOWS)
+static int defInitializeStereoSystemMode3(Display *dpy, Window w) {
+	return ERROR;
+
+#else
+
+static int defInitializeStereoSystemMode3(HDC hdc, HWND w) {
+	char *cmd;
+	int checkID;
+	PIXELFORMATDESCRIPTOR checkPfd;
+
+	/* reuse 'cmd' here */
+	cmd = getenv("DX_USE_GL_STEREO");
+	if (!atoi(cmd)) {
+		DXMessage("InitStereoSysMode: GL stereo not requested, aborting.");
+		return ERROR;
+	}
+	checkID  = GetPixelFormat(hdc);
+	if (!DescribePixelFormat(hdc, checkID,
+		sizeof(PIXELFORMATDESCRIPTOR), &checkPfd)) {
+		return ERROR;
+	}
+	if ((checkPfd.dwFlags & PFD_STEREO) == 0) {
+		DXMessage("InitStereoSysMode: init failed: PFD_STEREO not set");
+		return ERROR;
+	}
+
+	return OK;
+#endif
+}
+
+#if !defined(DX_NATIVE_WINDOWS)
+static int defExitStereoSystem3(Display *dpy, Window frame, Window left, Window right) {
+	return ERROR;
+
+#else
+
+static int defExitStereoSystem3(HDC hdc, HWND w, HRGN *left, HRGN *right) {
+//	char *cmd;
+
+/* needed?
+	cmd = getenv("DX_EXIT_STEREO_COMMAND");
+	if (cmd)			system(cmd);
+*/
+	return OK;
+#endif
+}

@@ -26,7 +26,7 @@ Error _dxfCreateStereoCameras(void *,
 				 float *, float *, float *, float **,
 				 float *, float *, float *, float **);
 #if defined(DX_NATIVE_WINDOWS)
-Error _dxfMapStereoXY(void *, WindowInfo, int, int, int*, int*);
+Error _dxfMapStereoXY(void *, HWND, HRGN, WindowInfo, int, int, int*, int*);
 #else
 Error _dxfMapStereoXY(void *, Window, Window, WindowInfo, int, int, int*, int*);
 #endif
