@@ -5946,6 +5946,9 @@ Error isosurface_field
     else
         goto error;
 
+    if (! DXCopyAttributes((Object)out_h[0], (Object)input_info->field))
+        goto error;
+
 #ifdef WHITEBOX_TEST
     if ( DXQueryDebug ( "I" ) )
     { 
