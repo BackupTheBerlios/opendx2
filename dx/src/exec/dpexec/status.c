@@ -74,7 +74,13 @@ Error _dxf_ExInitStatus (int n, int flag)
     
     if (flag)
     {
-	switch (_dxd_exStatusPID = DXmemfork (-1))
+	/*
+	 * This was calling memfork... that's unnecessary; memfork handles the
+	 * run queue pipes, which this doesn't need. GDA
+	 *
+	 *      switch (_dxd_exStatusPID = DXmemfork (-1))
+	 */
+	switch (_dxd_exStatusPID = fork())
 	{
 	    case -1:
 		_dxd_exStatusPID = 0;
