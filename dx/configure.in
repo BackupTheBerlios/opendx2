@@ -1,11 +1,13 @@
 #include "aclocal.m4"
 
-AC_SUBST(SHELL)
 AC_SUBST(YACC)
+AC_SUBST(SHELL)
 AC_SUBST(ARCH)
 AC_SUBST(EXEEXT)
 AC_SUBST(INSTALL_DX_EXE)
 AC_SUBST(INSTALL_DX_CSH)
+
+SHELL=sh
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
@@ -46,6 +48,16 @@ if test "$x_includes" != "" ; then
 fi
 if test "$x_libraries" != "" ; then
     LIBS="-L$x_libraries $LIBS"
+fi
+
+DX_PATH_XM
+if test "$xm_includes" != "" ; then
+    CFLAGS="$CFLAGS -I$xm_includes"
+    CXXFLAGS="$CXXFLAGS -I$xm_includes"
+    CPPFLAGS="$CPPFLAGS -I$xm_includes"
+fi
+if test "$xm_libraries" != "" ; then
+    LIBS="-L$xm_libraries $LIBS"
 fi
 
 AC_EGREP_CPP(yes,
