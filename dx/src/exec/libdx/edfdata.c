@@ -100,10 +100,10 @@ Error _dxfreadarray_binary(struct finfo *f, Array a, int format)
     Type type;
     int items, actual;
 
-#if !defined(DXD_BIGENDIAN)
-    int nonnative = D_MSB;
-#else
+#if WORDS_BIGENDIAN==1
     int nonnative = D_LSB;
+#else
+    int nonnative = D_MSB;
 #endif
 
     fd = f->fd;

@@ -4421,7 +4421,7 @@ getThreeMapTranslation(Display *dpy, translationT *d)
       s1 = (unsigned long) tmp1; \
   }
 	
-#ifdef DXD_BIGENDIAN
+#if WORDS_BIGENDIAN==1
   if(XImageByteOrder(dpy) == MSBFirst)  
 #else
   if(XImageByteOrder(dpy) == LSBFirst)
@@ -5546,7 +5546,7 @@ getStaticColorTranslation(Display *dpy, translationT *d)
     d->greenRange = maxGreen;
     d->blueRange  = maxBlue;
 
-#ifdef DXD_BIGENDIAN
+#if WORDS_BIGENDIAN==1
     if(XImageByteOrder(dpy) == LSBFirst)
 #else
     if(XImageByteOrder(dpy) == MSBFirst)
@@ -6149,7 +6149,7 @@ _dxfCaptureThreeMapImage(struct window *w, translationT *t, Visual *v)
 		(gshift == 0 || gshift == 8 || gshift == 16 || gshift == 24) &&
 	        (bshift == 0 || bshift == 8 || bshift == 16 || bshift == 24))
 	    {
-#ifndef DXD_BIGENDIAN
+#if WORDS_BIGENDIAN!=1
 		int rbyte = (rshift == 0)  ? 0 :
 			    (rshift == 8)  ? 1 :
 			    (rshift == 16) ? 2 : 3;
@@ -6265,17 +6265,7 @@ _dxfCaptureThreeMapImage(struct window *w, translationT *t, Visual *v)
 		(gshift == 0 || gshift == 8 || gshift == 16 || gshift == 24) &&
 	        (bshift == 0 || bshift == 8 || bshift == 16 || bshift == 24))
 	    {
-#ifndef DXD_BIGENDIAN
-		int rbyte = (rshift == 0)  ? 0 :
-			    (rshift == 8)  ? 1 :
-			    (rshift == 16) ? 2 : 3;
-		int gbyte = (gshift == 0)  ? 0 :
-			    (gshift == 8)  ? 1 :
-			    (gshift == 16) ? 2 : 3;
-		int bbyte = (bshift == 0)  ? 0 :
-			    (bshift == 8)  ? 1 :
-			    (bshift == 16) ? 2 : 3;
-#else
+#if WORDS_BIGENDIAN==1
 		int rbyte = (rshift == 0)  ? 3 :
 			    (rshift == 8)  ? 2 :
 			    (rshift == 16) ? 1 : 0;
@@ -6285,6 +6275,16 @@ _dxfCaptureThreeMapImage(struct window *w, translationT *t, Visual *v)
 		int bbyte = (bshift == 0)  ? 3 :
 			    (bshift == 8)  ? 2 :
 			    (bshift == 16) ? 1 : 0;
+#else
+		int rbyte = (rshift == 0)  ? 0 :
+			    (rshift == 8)  ? 1 :
+			    (rshift == 16) ? 2 : 3;
+		int gbyte = (gshift == 0)  ? 0 :
+			    (gshift == 8)  ? 1 :
+			    (gshift == 16) ? 2 : 3;
+		int bbyte = (bshift == 0)  ? 0 :
+			    (bshift == 8)  ? 1 :
+			    (bshift == 16) ? 2 : 3;
 #endif
 	    
 		if (rmask == 255 && gmask == 255 && bmask == 255)

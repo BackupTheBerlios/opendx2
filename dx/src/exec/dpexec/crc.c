@@ -153,7 +153,7 @@ EXCRC _dxf_ExCRCByteV (EXCRC crc, unsigned char *v, int tsize, int n)
     uint32 	        sum = 0;
     int			i, j;
 
-#if DXD_BIGENDIAN
+#if WORDS_BIGENDIAN==1
     n *= tsize;
     while (n--)
     {

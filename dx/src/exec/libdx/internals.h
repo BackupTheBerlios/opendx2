@@ -42,7 +42,7 @@ extern unsigned char _dxd_convert[NC];	/* table accessed by unsigned short */
 
 union hl {				/* union to take apart float */
     float f;				/* here's a float */
-#if DXD_BIGENDIAN
+#if WORDS_BIGENDIAN==1
     struct {short hi, lo;} hl;		/* two signed shorts, msb first */
 #else
     struct {short lo, hi;} hl;		/* two signed shorts, lsb first */
