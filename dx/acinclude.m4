@@ -273,27 +273,35 @@ AC_DEFUN(DX_ARCHITECTURE,
 	ARCH=unknown
 	if test $unameS = "FreeBSD" ; then
 	    ARCH=freebsd
+	    JAVA_ARCH=fixme
 	fi
 	if test `echo $unameS | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"` = "yes" ; then
 	    ARCH=cygwin
+	    JAVA_ARCH=fixme
 	fi
 	if test $unameS = "Linux" ; then
 	    ARCH=linux 
+	    JAVA_ARCH=genunix
 	fi
 	if test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
 	    ARCH=sgi
+	    JAVA_ARCH=irix
 	fi
 	if test $unameS = "AIX" ; then
 	    ARCH=ibm6000
+	    JAVA_ARCH=aix
 	fi
 	if test $unameM = "alpha" ; then
 	    ARCH=alphax
+	    JAVA_ARCH=alpha
 	fi
 	if test $unameS = "HP-UX" ; then
 	    ARCH=hp700
+	    JAVA_ARCH=hp-ux
 	fi
 	if test $unameS = "SunOS" ; then
 	    ARCH=solaris
+	    JAVA_ARCH=solaris
 	fi
     fi
     AC_MSG_RESULT($ARCH)
