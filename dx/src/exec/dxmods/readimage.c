@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.7 2001/10/11 22:32:00 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.8 2002/04/03 05:21:33 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -601,7 +601,7 @@ m_ReadImage ( Object *in, Object *out )
 		if (!got_file)
 		    DXErrorGoto2
 		      (ERROR_BAD_PARAMETER,
-		      "Could not open file %s, nor any other Image Magick name variation"
+		      "Could not open file %s, nor any other ImageMagick name variation"
 		      " in current path or DXDATA",
 		      filename);
 		if (!_dxf_ReadImageSizesIM
