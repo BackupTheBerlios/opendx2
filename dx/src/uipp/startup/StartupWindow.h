@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/startup/StartupWindow.h,v 1.1 1999/03/24 15:17:34 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/startup/StartupWindow.h,v 1.2 1999/04/01 16:00:24 gda Exp $
  * 
  */
 
@@ -19,7 +19,7 @@
 
 
 #include "UIConfig.h"
-#include "dx/dxl.h"
+#include <dxl.h>
 #include "defines.h"
 #include "IBMMainWindow.h"
 
