@@ -55,10 +55,10 @@ If it is not part of a Field, <TT><STRONG>DXTrim</STRONG></TT> can be called
 to free the extra space, though this is not required.
 <P>
 To allocate space "up front" for an Array of known size, use
-<TT><STRONG>DXAddArrayData(0, n, NULL)</STRONG></TT>, which is the
+<TT><STRONG>DXAddArrayData(a, 0, n, NULL)</STRONG></TT>, which is the
 preferred means for preallocating space for the data.
 <P>
-<TT><STRONG>DXAllocateArray(0, n, NULL)</STRONG></TT> also preallocates space,
+<TT><STRONG>DXAllocateArray(a, 0, n, NULL)</STRONG></TT> also preallocates space,
 but the number of items in the Array will be 0.
 If <TT><STRONG>DXAllocateArray</STRONG></TT> is called,
 <TT><STRONG>DXTrim</STRONG></TT> can be called to
