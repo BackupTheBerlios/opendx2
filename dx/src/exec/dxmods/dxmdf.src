@@ -176,6 +176,14 @@ INPUT remap; string; "low"; data values applied to bands
 OPTIONS low ; high ; original
 OUTPUT band; field or group; Divided input
 
+MODULE BSpline
+CATEGORY Transformation
+DESCRIPTION creates a bspline from a list of points
+INPUT input; scalar list or vector list; (none); list of points to smooth
+INPUT items; integer; 10; number of points in output spline
+INPUT order; integer; 4; order of spline
+OUTPUT result; vector list; list of interpolated points
+
 #ifdef EXECUTIVE_MODS
 MODULE CacheScene
 DESCRIPTION saves render object and camera in cache for picking
