@@ -478,7 +478,7 @@ ColormapNode::netParseComment(const char* comment,
 		int	index = -1, first = TRUE;
 		this->deferMinMaxUpdates();
 		while (DXValue::NextListItem(vlist,&index,
-						DXType::ScalarListType,buf)) {
+						DXType::ScalarListType,buf,128)) {
 		    if (first) {
 			first = FALSE;
 			this->setMinimumValue(atof(buf));
@@ -921,7 +921,7 @@ int *ColormapNode::getHistogram(int *nhist)
     if (s) {
         char buf[64];
 	int index = -1;
-	while (DXValue::NextListItem(s, &index, DXType::ScalarListType, buf)) {
+	while (DXValue::NextListItem(s, &index, DXType::ScalarListType, buf,64)) {
 	    if ((count & 31) == 0)
 		hist = (int*)REALLOC(hist,(count+32) * sizeof(int));
 	    hist[count++] = atoi(buf);

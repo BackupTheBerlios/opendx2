@@ -552,12 +552,15 @@ boolean _IsObject(const char* string,
 boolean DXValue::IsValidValue(const char* string,
 		       const Type  type)
 {
+    int em_size=4096;
+    char extra_memory[4096];
     char*   value;
     boolean result;
     Type    value_type;
     Type    list_type;
     int     tuple;
     int     i;
+    boolean to_be_freed;
 
     //
     // No string... return unsuccessfully.
@@ -570,7 +573,14 @@ boolean DXValue::IsValidValue(const char* string,
     //
     // Copy the string.
     //
-    value = DuplicateString(string);
+    if (strlen(string) >= em_size) {
+	value = DuplicateString(string);
+        to_be_freed = TRUE;
+    } else {
+	value = extra_memory;
+	strcpy (value, string);
+	to_be_freed = FALSE;
+    }
     for (i = 0; value[i] != '\0'; i++)
     {
         //
@@ -714,7 +724,8 @@ boolean DXValue::IsValidValue(const char* string,
     //
     // Free the value string.
     //
-    delete value;
+    if (to_be_freed)
+	delete value;
 
     //
     // Return the result.
@@ -891,7 +902,7 @@ boolean DXValue::setValue(const char* string,
 			strcpy(newval,"{ ");
 			p = newval + STRLEN(newval);
 			while (DXValue::NextListItem(this->string,
-						&index,type, buf)) {
+						&index,type, buf, 64)) {
 			    if (strchr(buf,'.')) {
 				// Already has a decimal, just copy.
 				sprintf(p,"%s ",buf);
@@ -1133,7 +1144,7 @@ boolean DXValue::setVector(DXTensor& vector)
 // the string holding the list item is returned upon success.
 //
 char *DXValue::NextListItem(const char *s, int *index, 
-				Type listtype, char *buf)
+				Type listtype, char *buf, int bufsz)
 {
     int start, i = *index;
     boolean r = true;
@@ -1193,6 +1204,9 @@ char *DXValue::NextListItem(const char *s, int *index,
 	int len = i - start;
 	if (!p) 
 	    p = new char[len + 1];
+	else if ((bufsz > 0) && (bufsz < (len+1))) {
+	    printf ("%s[%d]Warning: buffer overrun\n", __FILE__,__LINE__);
+	}
 	strncpy(p,&s[start], len);
 	p[len] = '\0';
 	*index = i;
@@ -1340,12 +1354,13 @@ char *DXValue::AppendListItem(const char *list, const char *item)
 //
 char *DXValue::GetListItem(const char *list, int index, Type listtype)
 {
-   char *value = NULL, *buf = new char [STRLEN(list)];
+   int size = STRLEN(list);
+   char *value = NULL, *buf = new char [size];
    int i, idx = -1;
 
 
    for (i=0 ; i<index; i++) {
-        value = DXValue::NextListItem(list, &idx, listtype, buf);    
+        value = DXValue::NextListItem(list, &idx, listtype, buf,size);
         if (!value)
             break;
    }
@@ -1374,11 +1389,22 @@ int DXValue::GetListItemCount(const char *list, Type listtype)
 	listtype |= DXType::ListType;
    }
 
-   buf = new char [STRLEN(list)];
-   while (DXValue::NextListItem(list, &idx, listtype, buf))
+   char stack[4096];
+   boolean to_be_freed;
+   int size = 4096;
+   if (STRLEN(list) < size) {
+       buf = stack;
+       to_be_freed = FALSE;
+   } else {
+       size = STRLEN(list);
+       buf = new char [size];
+       to_be_freed = TRUE;
+   }
+   while (DXValue::NextListItem(list, &idx, listtype, buf, size))
 	count++;
 
-   delete buf;
+   if (to_be_freed)
+       delete buf;
  
    return count;
 }
@@ -1483,7 +1509,7 @@ boolean DXValue::ClampVSIValue(const char *val, Type valtype,
 	    clampedlen = 1;
 	    p = clamped;
 	}
-	while (DXValue::NextListItem(val,&index,valtype,itembuf)) {
+	while (DXValue::NextListItem(val,&index,valtype,itembuf,1024)) {
 	    char *newval, *s;
 	    if (ClampVSIValue(itembuf,itemtype,mins,maxs,&newval)) {
 	        ASSERT(newval);
@@ -1667,8 +1693,18 @@ char *DXValue::DeleteListItem(const char *list, Type listtype, int position)
 	return DuplicateString("NULL");
 
    int len = STRLEN(list);
-   buf = new char[len];
+   char buf_space[1024];
+   int space_size = 1024;
+   boolean to_be_freed;
    newlist= new char[len];
+
+   if (len > space_size) {
+       buf = new char[len];
+       to_be_freed = TRUE;
+   } else {
+       buf = buf_space;
+       to_be_freed = FALSE;
+   }
 
    //
    // Skip over the first list delimiter.
@@ -1682,7 +1718,7 @@ char *DXValue::DeleteListItem(const char *list, Type listtype, int position)
    strcpy(newlist,"{"); 
    p = newlist;
    for (i=1, p+=STRLEN(p); i<position ; i++, p += STRLEN(p)) {
-        value = DXValue::NextListItem(list, &idx, listtype, buf);    
+        value = DXValue::NextListItem(list, &idx, listtype, buf,space_size);
         if (!value) {
             break;
 	}
@@ -1692,7 +1728,7 @@ char *DXValue::DeleteListItem(const char *list, Type listtype, int position)
    //
    // Skip over the 'position'th item.
    //
-   value = DXValue::NextListItem(list, &idx, listtype, buf);    
+   value = DXValue::NextListItem(list, &idx, listtype, buf,space_size);
 
    //
    // Add the rest of the items. 
@@ -1702,7 +1738,8 @@ char *DXValue::DeleteListItem(const char *list, Type listtype, int position)
    else
        strcat(p,&list[idx]);
 
-   delete buf;
+   if (to_be_freed)
+       delete buf;
 
    // FIXME: can return "{ }"
    return newlist;
@@ -1727,7 +1764,16 @@ char *DXValue::ReplaceListItem(const char *list, const char *item,
    if (EqualString(list,"NULL")) 
 	return DuplicateString("NULL");
    
-   buf = new char[listlen + 1];
+   char buf_space[1024];
+   int space_size = 1024;
+   boolean to_be_freed;
+   if ((listlen+1) > space_size) {
+       buf = new char[listlen + 1];
+       to_be_freed = TRUE;
+   } else {
+       buf = buf_space;
+       to_be_freed = FALSE;
+   }
    newlist= new char [listlen + itemlen + position + 4];
 
    //
@@ -1743,7 +1789,7 @@ char *DXValue::ReplaceListItem(const char *list, const char *item,
    p = newlist;
    premature_end = FALSE;
    for (i=1, p+=STRLEN(p); i<position ; i++, p += STRLEN(p)) {
-        value = DXValue::NextListItem(list, &idx, listtype, buf);    
+        value = DXValue::NextListItem(list, &idx, listtype, buf, space_size);
         if (!value) {
    	    premature_end = FALSE;
             break;
@@ -1768,11 +1814,12 @@ char *DXValue::ReplaceListItem(const char *list, const char *item,
 	//
 	// Skip over the 'position'th item.
 	//
-	value = DXValue::NextListItem(list, &idx, listtype, buf);    
+	value = DXValue::NextListItem(list, &idx, listtype, buf,space_size);
 	strcat(p,&list[idx]);
     }
 
-    delete buf;
+    if (to_be_freed)
+	delete buf;
     return newlist;
 }
 //

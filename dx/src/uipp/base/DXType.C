@@ -660,6 +660,8 @@ Type DXType::DetermineListItemType(const char *val)
 {
      char *s1 = NULL, *s2 = NULL;
      int count = 0, index = -1;
+     char buf1[512];
+     char buf2[512];
      Type ctype, type = DXType::UndefinedType;
      boolean quitting = FALSE;
    
@@ -667,8 +669,8 @@ Type DXType::DetermineListItemType(const char *val)
 	return DXType::ValueType;
 
      while (!quitting &&
-	    ((s1=DXValue::NextListItem(val,&index, DXType::ValueListType )) ||
-	     (s2=DXValue::NextListItem(val,&index, DXType::StringListType)))) {
+	    ((s1=DXValue::NextListItem(val,&index, DXType::ValueListType,buf1,512 )) ||
+	     (s2=DXValue::NextListItem(val,&index, DXType::StringListType,buf2,512)))) {
 	if (s2) {
 	    ctype = DXType::StringType;
 	} else if      (DXValue::IsValidValue(s1,DXType::IntegerType)) {
@@ -701,11 +703,11 @@ Type DXType::DetermineListItemType(const char *val)
 	if (type == DXType::ValueType)
 	    quitting = TRUE;
 	count++;	
-	if (s1) {
+	if ((s1)&&(s1!=buf1)) {
 	    delete s1;
 	    s1 = NULL;
 	}
-	if (s2) {
+	if ((s2)&&(s2!=buf2)) {
 	    delete s2;
 	    s2 = NULL;
 	}

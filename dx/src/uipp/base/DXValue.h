@@ -79,7 +79,7 @@ class DXValue : public Base
     // upon success.
     //
     static char *NextListItem(const char *s, int *index, 
-					Type listtype, char *buf = NULL);
+					Type listtype, char *buf = NULL, int bufsz=0);
 
     //
     //  Append a list item to a list value. 

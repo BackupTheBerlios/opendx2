@@ -263,7 +263,7 @@ boolean ScalarListNode::adjustOutputDimensions(int old_dim, int new_dim)
     int maxlen = CHUNK;
     v += valuelen;
     while (DXValue::NextListItem(outval, &out_index, 
-			DXType::VectorListType, buf)) {
+			DXType::VectorListType, buf, 256)) {
 	char *vec = DXValue::AdjustVectorDimensions(buf,new_dim, 0.0, 
 				this->isIntegerTypeComponent());
 	if (!vec) {
