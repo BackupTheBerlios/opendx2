@@ -3,8 +3,6 @@
 INCLUDES = -D$(ARCH) -I../../../../include -I.. -I../../libdx
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxdir = $(DXROOT)
-dxincludedir = $(DXROOT)/include/dx
 noinst_LIBRARIES = libOPENGL.a
 
 SUFFIXES = .m .y .c .s .h .o .a 

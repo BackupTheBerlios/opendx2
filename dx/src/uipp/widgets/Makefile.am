@@ -1,12 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -D$(ARCH) -I$(DXROOT)/include -I../widgets
+INCLUDES = -D$(ARCH) -I../widgets
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxdir = $(DXROOT)
-dxincludedir = $(DXROOT)/include/dx
-dxdatadir = $(DXROOT)/data
 noinst_LIBRARIES = libWIDGETS.a
 
 noinst_HEADERS = \

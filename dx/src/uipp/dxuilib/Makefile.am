@@ -1,14 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -D$(ARCH) -I$(DXROOT)/include -I../base
+INCLUDES = -D$(ARCH) -I../base
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxdir = $(DXROOT)
-dxbindir = $(DXROOT)/bin
-dxlibdir = $(DXROOT)/lib
-dxdatadir = $(DXROOT)/data
-dxincludedir = $(DXROOT)/include/dx
 noinst_LIBRARIES = libDXUI.a
 
 BUILT_SOURCES = \

@@ -1,11 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -D$(ARCH) -I$(DXROOT)/include -I../widgets
+INCLUDES = -D$(ARCH) -I../widgets
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxdir = $(DXROOT)
-dxincludedir = $(DXROOT)/include/dx
 noinst_LIBRARIES = libBASE.a
 
 libBASE_a_SOURCES =  \

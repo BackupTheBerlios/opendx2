@@ -3,8 +3,6 @@
 INCLUDES = -D$(ARCH) -I../../../include
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxdir = $(DXROOT)
-dxincludedir = $(DXROOT)/include/dx
 noinst_LIBRARIES = libLIBDX.a
 
 noinst_HEADERS = \
