@@ -501,9 +501,12 @@ DXChangedComponentValues(Field f, char *component)
 	}
 	else if (! strcmp(component, "invalid positions"))
 	{
-		DXInvalidateConnections((Object)f);
-		DXInvalidateUnreferencedPositions((Object)f);
-		DXChangedComponentValues(f, "connections");
+		if (DXGetComponentValue(f, "connections"))
+		{
+		    DXInvalidateConnections((Object)f);
+		    DXInvalidateUnreferencedPositions((Object)f);
+		    DXChangedComponentValues(f, "connections");
+		}
 		DXChangedComponentValues(f, "positions");
 	}
 	else
