@@ -191,6 +191,36 @@ struct xfield {
 
 };
 
+#define InitializeXfield(xfld) xfld.box = NULL; \
+    xfld. positions = NULL; \
+    xfld.neighbors = NULL; \
+    xfld.fcolors = NULL; \
+    xfld.bcolors = NULL; \
+    xfld.normals = NULL; \
+	xfld.opacities = NULL; \
+	xfld.polylines = NULL; \
+	xfld.edges = NULL; \
+    xfld.cmap = NULL; \
+    xfld.omap = NULL; \
+    xfld.box_array = NULL; \
+    xfld.positions_array = NULL; \
+    xfld.neighbors_array = NULL; \
+    xfld.fcolors_array = NULL; \
+    xfld.bcolors_array = NULL; \
+    xfld.normals_array = NULL; \
+    xfld.opacities_array = NULL; \
+    xfld.faces_array = NULL; \
+    xfld.polylines_array = NULL; \
+    xfld.loops_array = NULL; \
+    xfld.edges_array = NULL; \
+    xfld.inner_array = NULL; \
+    xfld.connections_array = NULL; \
+    xfld.cmap_array = NULL; \
+    xfld.omap_array = NULL; \
+	xfld.iPts = NULL; \
+	xfld.iElts = NULL;
+
+
 enum xr {
     XR_OPTIONAL=0,
     XR_REQUIRED=1

@@ -315,6 +315,8 @@ task(struct shade *shade)
     Matrix *mp = shade->xflag? &shade->m : NULL;
     Object o;
     int behind = 0;
+    
+	InitializeXfield(xf);
 
     /* Get the components we need */
     if (DXEmptyField(shade->f))
