@@ -620,6 +620,9 @@ _dxf_DESTROY_WINDOW (void *win)
   ENTRY(("_dxf_DESTROY_WINDOW (0x%x)",win));
 
   if (PORT_CTX) {
+
+    glXMakeCurrent (DPY, XWINID, OGLCTX);
+
     /* remove GLX context from list of existing contexts */
     remGLXContext(OGLCTX) ;
 
@@ -633,9 +636,6 @@ _dxf_DESTROY_WINDOW (void *win)
       OGLTRANSLATION = NULL ;
     }
 
-    /* OpenGL is a lot happier if we set context NULL before destroying */
-    glXMakeCurrent (DPY, None, NULL) ;
-
     /* we no longer have a display associated with current GLX context */
     CurrentDpy = 0 ;
 
@@ -644,6 +644,9 @@ _dxf_DESTROY_WINDOW (void *win)
 
     if (TEXTURE_HASH)
 	_dxf_DeleteObjectHash(TEXTURE_HASH);
+
+    /* OpenGL is a lot happier if we set context NULL before destroying */
+    glXMakeCurrent (DPY, None, NULL) ;
 
     PRINT (("Destroying GLX context 0x%x on display 0x%x", OGLCTX, OGLDPY)) ;
     glXDestroyContext (DPY, OGLCTX) ;
