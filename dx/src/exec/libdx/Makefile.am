@@ -21,7 +21,9 @@ EXTRA_DIST = \
 	trisRI2DClass.X quadsRR2DClass.X cubesIIClass.X cubesRRClass.X \
 	tetrasClass.X quadsII2DClass.X \
 	\
-	buffer.Z shade.Z triangle.Z quad.Z plane.Z 
+	buffer.Z shade.Z triangle.Z quad.Z plane.Z  \
+	\
+	local.mk
 
 CLEANFILES = \
 	buffer.c shade.c triangle.c quad.c plane.c 
