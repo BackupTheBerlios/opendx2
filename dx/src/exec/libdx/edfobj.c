@@ -160,13 +160,14 @@ Error _dxfaddobjlist(struct finfo *f, int id, Object o, char *name, int start)
 Error _dxfsetobjptr(struct finfo *f, int id, Object o)
 {
     struct hashidtolist *he;
+    long lid = (long)id;
 
     if (!f || !f->ol || !f->ht || id < 0)
         return ERROR;
 
     /* all objects should be in hash table.
      */
-    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&id);
+    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&lid);
     if (!he)
 	return ERROR;
 
@@ -194,13 +195,14 @@ Error _dxfsetobjptr(struct finfo *f, int id, Object o)
 Error _dxfsetobjused(struct finfo *f, int id)
 {
     struct hashidtolist *he;
+    long lid = (long)id;
 
     if (!f || !f->ol || !f->ht || id < 0)
         return ERROR;
 
     /* all objects should be in hash table.
      */
-    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&id);
+    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&lid);
     if (!he)
 	return ERROR;
     
@@ -213,11 +215,12 @@ Error _dxfsetobjused(struct finfo *f, int id)
 Error _dxfisobjused(struct finfo *f, int id)
 {
     struct hashidtolist *he;
+    long lid = (long)id;
 
     if (!f || !f->ol || !f->ht || id < 0)
         return ERROR;
 
-    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&id);
+    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&lid);
     if (!he)
 	return ERROR;
     
@@ -231,13 +234,14 @@ Error _dxfisobjused(struct finfo *f, int id)
 Error _dxflookobjlist(struct finfo *f, int id, Object *o, char **name)
 {
     struct hashidtolist *he;
+    long lid = (long)id;
 
     if (!f || !f->ol || !f->ht || id < 0)
         return ERROR;
 
     /* is object id in hash table?
      */
-    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&id);
+    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&lid);
     if (!he)
 	return ERROR;
 
@@ -254,13 +258,14 @@ Error _dxflookobjlist(struct finfo *f, int id, Object *o, char **name)
 struct getby **_dxfgetobjgb(struct finfo *f, int id)
 {
     struct hashidtolist *he;
+    long lid = (long)id;
 
     if (!f || !f->ol || !f->ht || id < 0)
         return NULL;
 
     /* is object id in hash table?
      */
-    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&id);
+    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&lid);
     if (!he)
 	return NULL;
 
@@ -276,17 +281,19 @@ Error _dxfobjusesobj(struct finfo *f, int id, int refd_id)
 {
     struct hashidtolist *he, *refd_he;
     struct objlist *this;
+    long lid = (long)id;
+    long lrefd_id = (long)refd_id;
 
     if (!f || !f->ol || !f->ht || id < 0 || refd_id < 0)
         return ERROR;
 
     /* all objects should already be in hash table.
      */
-    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&id);
+    he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&lid);
     if (!he)
 	return ERROR;
 
-    refd_he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&refd_id);
+    refd_he = (struct hashidtolist *)DXQueryHashElement(f->ht, (Key)&lrefd_id);
     if (!refd_he)
 	return ERROR;
 
@@ -733,6 +740,7 @@ Error _dxfadd_objident(HashTable ht, Object o, int id, int literal)
 Error _dxflook_objident(HashTable ht, Object o, int *id, int *literal)
 {
     struct hashobjtoid *he;
+    long lid = (long)id;
 
     if (!ht || !o || !id || !literal)
         return ERROR;
