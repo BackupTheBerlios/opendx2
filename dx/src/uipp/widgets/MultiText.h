@@ -89,7 +89,7 @@ typedef struct _XmMultiTextClassRec* XmMultiTextWidgetClass;
 #define XmNsmoothScroll		"smoothScroll"
 #define XmNwaitCursorCount	"waitCursorCount"
 
-#ifndef _Xm_h
+#if !(defined(_Xm_h) || defined(XM_H))
 #define XmNmarginHeight		"marginHeight"
 #define XmNmarginWidth		"marginWidth"
 #define XmNwordWrap		"wordWrap"
@@ -107,7 +107,7 @@ typedef struct _XmMultiTextClassRec* XmMultiTextWidgetClass;
 #define XmCSmoothScroll		"SmoothScroll"
 #define XmCWaitCursorCount	"WaitCursorCount"
 
-#ifndef _Xm_h
+#if !(defined(_Xm_h) || defined(XM_H))
 #define XmCMarginHeight		"MarginHeight"
 #define XmCMarginWidth		"MarginWidth"
 #define XmCWordWrap		"WordWrap"
