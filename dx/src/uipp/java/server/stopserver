@@ -18,13 +18,13 @@ fi
 
 
 ##
-## Loop over an echo because SunOS 5.5 drops bytes on the floor
+## Loop over an echo because SunOS 5.5 and Linux drops bytes on the floor
 ## if the originating process terminates before the destination
 ## process reads them.  Therefore we need some way to keep the 
 ## connection open until DXServer shuts it off
 ##
 archstr=`uname`
-if [ $archstr = "SunOS" ]; then
+if [ $archstr = "Linux" ] || [ $archstr = "SunOS" ] ; then
     ans=`while true 
     do 
     echo dx.protocol.server.shutdownMsg:1,2.0.0 
