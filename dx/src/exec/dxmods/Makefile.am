@@ -30,7 +30,7 @@ noinst_HEADERS =  \
 libDXMODS_a_SOURCES =  \
 	ambientlight.c append.c arrange.c attribute.c \
 	autocolor.c autoaxes.c autoglyph.c autogray.c \
-	autoregrid.c band.c cachescene.c camera.c \
+	autoregrid.c band.c bspline.c cachescene.c camera.c \
 	caption.c categorize.c catstats.c changetype.c \
 	changemember.c clipbox.c clipplane.c collect.c \
 	collectmulti.c collectnamed.c collectser.c color.c \
