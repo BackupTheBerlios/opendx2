@@ -4153,12 +4153,23 @@ Field create_band_surface
           j<input_info->comp_count;
           j++, comp++ )
     {
+	/*
+	 * If its not positions and it is not dep on positions,
+	 * skip it.
+	 */
         if ( ( 0 != strcmp ( comp->name, "positions" ) ) &&
              ( ( NULL  == comp->std_attribs[(int)DEP]        ) ||
                ( ERROR == comp->std_attribs[(int)DEP]->value ) ||
                ( 0 != strcmp ( comp->std_attribs[(int)DEP]->value,
                                "positions" ) ) ) )
             continue;
+	
+	/*
+	 * Skip invalid components
+	 */
+	if (! strcmp(comp->name, "invalid positions") ||
+	    ! strcmp(comp->name, "invalid connections"))
+	    continue;
 
         if ( ( ( 0 == strcmp ( comp->name, "data" ) )
                &&
@@ -4166,6 +4177,8 @@ Field create_band_surface
              ||
              ( 0 == strncmp ( comp->name, "original", 8 ) ) ||
              ( NULL != comp->std_attribs[(int)REF]        )  )
+
+	
             continue;
 
         a_info = (array_info) &(comp->array);
