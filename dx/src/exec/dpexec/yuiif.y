@@ -515,6 +515,23 @@ _dxf_ExEndInput()
 %token	<s> T_ID
 %token	<s> T_EXID
 
+%type <i> interrupt_data
+%type <n> system
+%type <n> system_s
+%type <n> system_data
+%type <n> message_data
+%type <n> info_data
+%type <i> l_inquiry_data
+%type <i> s_inquiry_data
+%type <i> v_inquiry_data
+%type <i> l_response_data
+%type <i> s_response_data
+%type <i> v_response_data
+%type <i> data_data
+%type <n> ex_id_s
+%type <i> message_id
+%type <i> ack_data
+
 /* Types returned by reductions */
 %type <n> assignment
 %type <n> attribute
