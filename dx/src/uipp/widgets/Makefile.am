@@ -24,7 +24,7 @@ noinst_HEADERS = \
 	Image.h \
 	ImageP.h \
 	MultiText.h \
-	MultiTextP.h \ 
+	MultiTextP.h \
 	Number.h \
 	NumberInput.h \
 	NumberP.h \
@@ -47,7 +47,6 @@ noinst_HEADERS = \
 	clipnotify.h \
 	findcolor.h \
 	gamma.h 
-
 
 libWIDGETS_a_SOURCES =  		\
 	ColorBar.c			\
