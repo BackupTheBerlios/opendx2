@@ -5,7 +5,7 @@ ImageNodeUtils.o: imagemac.h dxmac.h vrmlmac.h gifmac.h
 
 
 sequence.h: ${srcdir}/sequence.net 
-	sh ${srcdir}/net2c ${srcdir}/sequence.net sequence.h
+	sh ${srcdir}/seq2c ${srcdir}/sequence.net sequence.h
 
 imagemac.h: ${srcdir}/imagemac.net
 	sh ${srcdir}/net2c ${srcdir}/imagemac.net imagemac.h
