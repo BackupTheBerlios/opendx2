@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.7 2000/08/24 20:04:31 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.8 2001/01/04 21:27:08 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -343,10 +343,11 @@ static int FgetAsciiData(FILE *fp, void **data, int size)
       for (s=comp=f=step=0; s < maxseries; s++, step += _dxd_gi_numflds)
 	{
 	  for (cnt=0; cnt < size; cnt++)
-	    { 
+	    {
 	      if (!_dxf_getline(&str, fp))
 		{
 		  DXSetError(ERROR_MISSING_DATA,"#10898","data file"); 
+	          f=0; 
 		  goto parse_error;
 		}
 	      if (_dxd_gi_whichser[s] == ON)
