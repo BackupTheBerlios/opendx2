@@ -2523,7 +2523,7 @@ void GraphLayout::getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs
 	Ark* arc;
 	int dummy;
 	while (arc = (Ark*)li.getNext()) {
-	    Node* src = arc->getSourceNode(dummy);
+	    Node* src = arc->getSourceNode(output);
 	    LayoutInfo* linfo = (LayoutInfo*)src->getLayoutInformation();
 	    if (linfo->isPositioned()) continue;
 	    if (ancestors.isMember(src) == FALSE) {
