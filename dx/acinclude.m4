@@ -26,6 +26,9 @@ AC_DEFUN(DX_ARCHITECTURE,
     if test $unameS = "HP_UX" ; then
         ARCH=hp700
     fi
+    if test $unameS = "SunOS" ; then
+        ARCH=solaris
+    fi
     AC_MSG_RESULT($ARCH)
     AC_SUBST(ARCH)
     AC_DEFINE_UNQUOTED($ARCH)
