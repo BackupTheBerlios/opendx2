@@ -29,7 +29,7 @@ dx.mdf:  ${srcdir}/dxmdf.src
 	@echo '}' >> stripl.sed
 	cat dx.mdf |sed '/^#/d' > tmp.mdf
 	cat tmp.mdf |sed -f stripl.sed > dx.mdf
-	@rm -f stripl.sed
+	@rm -f stripl.sed tmp.mdf
 	-rm -f tmp.c
 
 y.tab.c: ${srcdir}/_compparse.y

@@ -10,7 +10,7 @@ srvbin_SCRIPTS = $(SCRFILES)
 
 SCRFILES = stopserver startserver startserver.bat dxserver.paths
 
-DISTCLEANFILES = README.output
+DISTCLEANFILES = README.output server_DXServer.h server_DXServerThread.h
 
 EXTRA_DIST = CleanUpDaemon.java ConnectThread.java ConnectionEntry.java \
 	DXLink.c DXServer.java DXServerThread.java DXThread.java \

@@ -33,7 +33,7 @@ EXTRA_DIST = local.mk
 
 $(OBJECTS): yuiif.c yuiif.h
 
-DISTCLEANFILES = yuiif.c yuiif.h
+DISTCLEANFILES = yuiif.c yuiif.h compile.h
 
 @LOCALMAKE@
 

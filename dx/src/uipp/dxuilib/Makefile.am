@@ -4,7 +4,7 @@ INCLUDES =  -I${srcdir}/../base -I${top_srcdir}/include -I${srcdir}/../dxui -D@A
 
 noinst_LIBRARIES = libDXUI.a
 
-DISTCLEANFILES = netlex.c netyacc.c
+DISTCLEANFILES = netlex.c netyacc.c dxmac.h gifmac.h imagemac.h lex.yy.c vrmlmac.h
 
 BUILT_SOURCES = \
 	sequence.h \

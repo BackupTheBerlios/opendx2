@@ -9,7 +9,7 @@ SUFFIXES = .c .y .c .s .h .o
 BUILT_SOURCES = user.c _compparse.h y.tab.c usercm.c
 EXTRA_DIST = local.mk
 
-DISTCLEANFILES = y.tab.h _compparse.c _compparse.h dx.mdf dxcm.mdf user.c usercm.c tmp.c
+DISTCLEANFILES = y.tab.h _compparse.c _compparse.h dx.mdf dxcm.mdf user.c usercm.c tmp.c y.output
 
 dxmdf_DATA = dx.mdf
 
