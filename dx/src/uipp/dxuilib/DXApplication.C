@@ -4709,13 +4709,8 @@ extern "C" int DXApplication_DXAfterFunction(Display *display)
     unsigned int key_buttons;
     Boolean      boolx;
     Window       win;
-#if defined(OS2) || NeedNestedPrototypes
-    int          (*func)(Display *);
-#else
-    int          (*func)();
-#endif
-
-    func = XSetAfterFunction(display, NULL);
+    
+    XSetAfterFunction(display, NULL);
     win  = RootWindow(display,0);
     boolx = XQueryPointer(display,
                          win,
@@ -4726,7 +4721,7 @@ extern "C" int DXApplication_DXAfterFunction(Display *display)
                          &win_x,
                          &win_y,
                          &key_buttons);
-    func = XSetAfterFunction(display, DXApplication_DXAfterFunction);
+    XSetAfterFunction(display, DXApplication_DXAfterFunction);
     return 1;
 }
 
