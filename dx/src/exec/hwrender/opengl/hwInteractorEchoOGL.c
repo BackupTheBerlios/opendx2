@@ -38,6 +38,13 @@
 
 #include "hwDebug.h"
 
+static float WS[4][4] = {
+  { 1,  0,  0,  0},
+  { 0,  1,  0,  0},
+  { 0,  0,  1,  0},
+  {-1, -1,  0,  1}
+};
+
 static void _dxf_SET_WORLD_SCREEN (void *ctx, int w, int h)
 {
   /*
@@ -1078,7 +1085,6 @@ static void _dxf_DRAW_ZOOMBOX (tdmInteractor I, void *udata,
 			       float rot[4][4], int draw)
 {
   /* zoom box height better not be any longer than this... */
-  static int32 buff[4096] ;
   DEFDATA(I, tdmZoomData) ;
   
   ENTRY(("_dxf_DRAW_ZOOMBOX (0x%x, 0x%x, 0x%x, %d)",

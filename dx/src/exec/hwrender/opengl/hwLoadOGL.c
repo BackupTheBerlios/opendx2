@@ -14,7 +14,7 @@
 
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.5 2000/05/16 18:48:32 gda Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.6 2000/10/06 05:04:37 davidt Exp $
 \*---------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <math.h>
@@ -377,7 +377,6 @@ tdmPortHandleP _dxfInitPortHandle(Display *dpy, char *hostname) ;
 
 int _dxfHWload(tdmPortHandleP  (**initPP)(Display*, char*), Display *dpy)
 {
-  char *str = getenv("DXHWMOD");
   ENTRY(("_dxfHWload(0x%x)",initPP));
 
   *initPP = _dxfInitPortHandleOGL;

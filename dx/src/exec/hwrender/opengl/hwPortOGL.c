@@ -54,6 +54,13 @@
  *  contexts.
  */
 
+static float WS[4][4] = {
+  { 1,  0,  0,  0},
+  { 0,  1,  0,  0},
+  { 0,  0,  1,  0},
+  {-1, -1,  0,  1}
+};
+
 static int nCtx = 0 ;
 static int ctxListSize = 0 ;
 static GLXContext *ctxList = 0 ;
@@ -207,7 +214,7 @@ _dxf_CREATE_HW_TRANSLATION (void *win)
       ret->btable[i] = i << 8 ;
     }
 
-  if (gammaStr = getenv("DXHWGAMMA"))
+  if ((gammaStr=getenv("DXHWGAMMA")))
     {
       ret->gamma = atof(gammaStr);
       if (ret->gamma < 0) ret->gamma = 0.0;
@@ -701,6 +708,8 @@ int _dxf_SET_BACKGROUND_COLOR (void *ctx, RGBColor c)
   OGL_FAIL_ON_ERROR(_dxf_SET_BACKGROUND_COLOR);
 
   EXIT((""));
+
+  return OK;
 }
 
 
@@ -1015,6 +1024,7 @@ static Error
 _dxf_ClearBuffer(void *win)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) ;
+    return OK;
 }
 
 static void _dxf_SET_MATERIAL_SPECULAR (void *ctx,
@@ -1522,12 +1532,14 @@ static void _dxf_SET_DOUBLE_BUFFER_MODE(void *ctx)
   EXIT(("ERROR: stub"));
 }
 
+/*
 static void _dxf_INIT_SW_RENDER_PASS (void *win)
 {
   ENTRY(("_dxf_INIT_SW_RENDER_PASS(0x%x)",win));
   EXIT(("ERROR: stub"));
 }
- 
+*/
+
 /*
  *  PORT HANDLE SECTION
  */
@@ -1646,11 +1658,6 @@ static void _dxfUninitPortHandle(tdmPortHandleP portHandle)
 tdmPortHandleP _dxfInitPortHandleOGL(Display *dpy, char *hostname)
 {
   tdmPortHandleP ret ;
-  static int beenHere = 0 ;
-  int 	execSymbolInterface;
-  void*	(*symVer)();
-  void*	(*expVer)();
-  void*	DX_handle;
     
   ENTRY(("_dxfInitPortHandleOGL(0x%x, \"%s\")",dpy, hostname));
 
@@ -1668,10 +1675,15 @@ tdmPortHandleP _dxfInitPortHandleOGL(Display *dpy, char *hostname)
    * return NULL.
    */
 #if defined(alphax) || defined(sgi) || defined(solaris)
-
   /* If the hardware rendering load module requires a newer set of
    * DX exported symbols than those available in the calling dxexec
    */
+{
+  int 	execSymbolInterface;
+  void*	(*symVer)();
+  void*	(*expVer)();
+  void*	DX_handle;
+
   if (!(DX_handle=dlopen(NULL,RTLD_LAZY))) {
     DXSetError(ERROR_UNEXPECTED,dlerror());
     EXIT(("ERROR"));
@@ -1693,7 +1705,11 @@ tdmPortHandleP _dxfInitPortHandleOGL(Display *dpy, char *hostname)
     EXIT(("ERROR"));
     return NULL;
   }
+}
 #elif !defined(DXD_WIN)
+{
+  int 	execSymbolInterface;
+
   if(! loadbind(0,_dxfInitPortHandleOGL,DXSymbolInterface))  {
     DXSymbolInterface(&execSymbolInterface);
     _dxfExportHwddVersion(DXD_HWDD_INTERFACE_VERSION);
@@ -1707,7 +1723,7 @@ tdmPortHandleP _dxfInitPortHandleOGL(Display *dpy, char *hostname)
     EXIT(("ERROR: Symbol interface")); 
     return NULL;
   }
-
+}
 #else
     _dxfExportHwddVersion(DXD_HWDD_INTERFACE_VERSION);
 #endif

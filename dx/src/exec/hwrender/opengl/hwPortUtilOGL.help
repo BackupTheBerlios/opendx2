@@ -25,7 +25,6 @@ static void
 CnoneNnoneOnone(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -37,7 +36,6 @@ static void
 CnoneNnoneOpf(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -49,7 +47,7 @@ static void
 CnoneNnoneOpp(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
+  static int	iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -76,7 +74,6 @@ static void
 CnoneNpfOnone(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -88,7 +85,6 @@ static void
 CnoneNpfOpf(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -100,7 +96,7 @@ static void
 CnoneNpfOpp(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
+  static int	iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -127,7 +123,6 @@ static void
 CnoneNppOnone(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -140,7 +135,6 @@ static void
 CnoneNppOpf(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -182,7 +176,6 @@ static void
 CnoneNpcOnone(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
   SENDNORMAL(ci);
 
@@ -195,7 +188,6 @@ static void
 CnoneNpcOpf(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
   SENDNORMAL(ci);
 
@@ -237,7 +229,6 @@ static void
 CpfNnoneOnone(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -249,7 +240,6 @@ static void
 CpfNnoneOpf(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -288,7 +278,6 @@ static void
 CpfNpfOnone(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -300,7 +289,6 @@ static void
 CpfNpfOpf(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -339,7 +327,6 @@ static void
 CpfNppOnone(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -352,7 +339,6 @@ static void
 CpfNppOpf(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
 
   for (p = 0; p < ppc; p++) {
@@ -394,7 +380,6 @@ static void
 CpfNpcOnone(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
   SENDNORMAL(ci);
 
@@ -407,7 +392,6 @@ static void
 CpfNpcOpf(xfieldP xf, int ppc, int ci, int *trans)
 {
   static float  fscratch[3];
-  static int    iscratch;
   static int    p;
   SENDNORMAL(ci);
 

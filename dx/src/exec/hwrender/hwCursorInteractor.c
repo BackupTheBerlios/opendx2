@@ -67,7 +67,6 @@ static void Config(tdmInteractor, tdmInteractorRedrawMode) ;
 static void RestoreConfig(tdmInteractor, tdmInteractorRedrawMode) ;
 static void Redisplay(tdmInteractor, tdmInteractorRedrawMode) ;
 static void DestroyCursorInteractor(tdmInteractor) ;
-static void UpdateViewAndBBox (tdmInteractor I) ;
 
 static void PickStart (tdmInteractor, int, int, int, int) ;
 static void PickEnd (tdmInteractor, tdmInteractorReturnP) ;
@@ -115,7 +114,6 @@ _dxfCreateCursorInteractor (tdmInteractorWin W, tdmCursorType C)
    *  Initialize and return a handle to a cursor interactor.
    */
 
-  int i, csize ;
   register tdmInteractor I ;
 
   ENTRY(("_dxfCreateCursorInteractor(0x%x, 0x%x)", W, C));
@@ -695,7 +693,6 @@ PickStart (tdmInteractor I, int x, int y, int btn, int s)
 static void
 PickEnd (tdmInteractor I, tdmInteractorReturnP R)
 {
-  int x, y ;
   DEFDATA(I,CursorData) ;
   DEFPORT(I_PORT_HANDLE) ;
 
@@ -1577,10 +1574,8 @@ get_transforms_from_basis (tdmInteractor I)
 {
   DEFDATA(I,CursorData) ;
   DEFPORT(I_PORT_HANDLE) ;
-  float fov, aspect, projmat[4][4] ;
-  int i, j, proj ;
-  static int FirstPass = 1;
-  static int Sign = 0;
+  float projmat[4][4] ;
+  int i, j;
 
   ENTRY(("get_transforms_from_basis(0x%x)", I));
   
@@ -1652,6 +1647,12 @@ get_transforms_from_basis (tdmInteractor I)
       CDATA(scrnXfm[1][1]) =  Sy ;
 
 #if 0
+  {
+  float fov, aspect;
+  int proj ;
+  static int FirstPass = 1;
+  static int Sign = 0;
+
 #if defined(DXD_HW_DC_RIGHT_HANDED)
 #if defined(sgi) /* a hack to get around differences in sgi DX z handedness */
       {
@@ -1695,6 +1696,7 @@ get_transforms_from_basis (tdmInteractor I)
       FirstPass = 0;
    }
 #endif
+  }
 #endif
 
       CDATA(scrnXfm[3][0]) =  Sx + 0.5 ;
@@ -1768,6 +1770,7 @@ select_cursor ( tdmInteractor I, int id)
     }
 
   EXIT((""));
+  return OK;
 }
 
 
@@ -1793,6 +1796,7 @@ deselect_cursor (tdmInteractor I)
     }
 
   EXIT((""));
+  return OK;
 }
 
 static int
@@ -1905,7 +1909,7 @@ delete_cursor ( tdmInteractor I, int id )
   DEFPORT(I_PORT_HANDLE) ;
   int		*itmp;
   double	*dtmp;
-  int		i, j, k ;
+  int		i, k ;
 
   ENTRY(("delete_cursor(0x%x, %d)", I, id ));
 
@@ -2004,6 +2008,8 @@ delete_cursor ( tdmInteractor I, int id )
     draw_cursors(I);
 
   EXIT((""));
+
+  return OK;
 }
 
 static void
@@ -2435,7 +2441,7 @@ project (tdmInteractor I, double s0, double s1, double s2,
   EXIT((""));
 }
 
-static add2historybuffer(tdmInteractor I, int x, int y)
+static int add2historybuffer(tdmInteractor I, int x, int y)
 {
   DEFDATA(I,CursorData) ;
 
@@ -2465,6 +2471,7 @@ static add2historybuffer(tdmInteractor I, int x, int y)
     if (PDATA(K) < 8) PDATA(K)++;
 
   EXIT((""));
+  return OK;
 }
 
 
@@ -2676,15 +2683,12 @@ static void
 setup_bounding_box(tdmInteractor I)
 {
   DEFDATA(I,CursorData) ;
-  double xtol, ytol, ztol ;
-  double x, y, z, nx, ny, nz ;
+  double x, y, z, nz ;
   double udelta_x, udelta_y, udelta_z ;
   double vdelta_x, vdelta_y, vdelta_z ;
   double wdelta_x, wdelta_y, wdelta_z ;
   double xmax, xmin, ymax, ymin, zmax, zmin ;
-  double sxmax, sxmin, symax, symin, szmax, szmin ;
   int i ;
-  double Bwi[4][4] ;
   double xlen, ylen, zlen, maxlen ;
 
   ENTRY(("setup_bounding_box(0x%x)", I));

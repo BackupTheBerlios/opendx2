@@ -87,13 +87,6 @@ typedef struct {
 #define CURTEX            (((tdmOGLctx)_portContext)->currentTexture)
 #define PATTERN_INDEX    1
 
-static float WS[4][4] = {
-  { 1,  0,  0,  0},
-  { 0,  1,  0,  0},
-  { 0,  0,  1,  0},
-  {-1, -1,  0,  1}
-};
-
 int      _dxf_isDisplayListOpenOGL();
 void     _dxf_callDisplayListOGL(dxObject dlo);
 dxObject _dxf_openDisplayListOGL();

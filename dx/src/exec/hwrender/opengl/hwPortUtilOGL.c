@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.5 2000/05/16 18:48:33 gda Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.6 2000/10/06 05:04:37 davidt Exp $
 
 Author:  Ellen Ball
 
@@ -92,10 +92,6 @@ static GLubyte screen_door_50[] =
 
 
 
-
-static int globStart,
-	   globEnd;
-
 typedef void (*helperFunc) (xfieldP xf, int posPerConn, 
 			    int ctIndex, int *translation);
 
@@ -113,10 +109,6 @@ static Error
 
 static Error
   bbox (xfieldP xf) ;
-
-static void
-_deleteGLObject(xfieldP xf) ;
-
 
 #define ALL_PRIMS         0
 #define OPAQUE_PRIMS      1
@@ -177,10 +169,13 @@ if (!_dxf_isFlagsSet(_dxf_SERVICES_FLAGS(),				\
   }
 #endif
 
-static float _opacity = 1.0f;
 static float color[4];
+
+/*
+static float _opacity = 1.0f;
 static float ambient[4];
 static float diffuse[4];
+*/
 
 static int separateAmbientAndDiffuse;
 static int depthMaskState;
@@ -255,7 +250,7 @@ static int depthMaskState;
 
 #define SENDCOLOR							\
 {									\
-    glColor3fv(color);						\
+    glColor3fv(color);							\
 }
 
 #define SENDCOLOROPACITY						\
@@ -280,7 +275,7 @@ static int depthMaskState;
       separateAmbientAndDiffuse = 1;					\
 									\
   if(xf->colorsDep == dep_field)              				\
-    GETCOLOR(0);							\
+     GETCOLOR(0);							\
   if(xf->opacitiesDep == dep_field)            				\
   {									\
     GETOPACITY(0);							\
@@ -317,9 +312,10 @@ static int depthMaskState;
 									\
   if(doesTrans)								\
   {									\
-    if (xf->colorsDep == dep_field)					\
+    if (xf->colorsDep == dep_field) {					\
       if (xf->opacitiesDep == dep_none) SENDCOLOR			\
       else if (xf->opacitiesDep == dep_field) SENDCOLOROPACITY;		\
+    }									\
   }									\
   else									\
      OPACITY_STIPPLE;							\
@@ -380,7 +376,6 @@ static Error dots (xfieldP xf, enum approxE approx, int skip)
   static float	fscratch[3];
   static int	iscratch;
   int		p,i;
-  helperFunc	helper;
 
   SENDPERFIELD(NOT_LIT);
 
@@ -390,7 +385,7 @@ static Error dots (xfieldP xf, enum approxE approx, int skip)
 	if (i == 0)
 	    glBegin(GL_POINTS);
 
-	SENDCOLOR(p);
+	SENDCOLOR;
 	SENDPOSITION(p);
 
 	if (i++ == 256)
@@ -405,16 +400,12 @@ static Error dots (xfieldP xf, enum approxE approx, int skip)
 
   EXIT(("OK"));
   return OK;
-
-error:
-  return ERROR;
 }
 
 static Error translucentPoints (xfieldP xf, helperFunc helper,
                                  SortD list, int n, int face,
 				 enum approxE approx, int skip)
 {
-  static int	translation[8];
   static float	fscratch[3];
   static int	iscratch;
   int		i = 0, c, c1;
@@ -554,9 +545,6 @@ static Error points (xfieldP xf, helperFunc helper,
 
   EXIT((""));
   return OK;
-
-error:
-    return ERROR;
 }
 
 
@@ -565,8 +553,6 @@ static Error translucentLines (xfieldP xf, helperFunc helper,
 				enum approxE approx, int skip)
 {
   static int	translation[8];
-  static float	fscratch[3];
-  static int	iscratch;
   int		c;
 
   glBegin(GL_LINES);
@@ -659,9 +645,6 @@ static Error lines (xfieldP xf, helperFunc helper,
 
   EXIT((""));
   return OK;
-
-error:
-  return ERROR;
 }
 
 static Error closedlines (xfieldP xf, helperFunc helper,
@@ -708,12 +691,6 @@ static Error translucentPolygons(xfieldP xf, helperFunc helper,
                                  enum approxE approx, int skip)
 {
    static int	translation[8];
-   static float	fscratch[3];
-   static int	iscratch;
-   int		c;
-   int		c1, translu;
-   float	vec[3][4], *orig, depth;
-   int		ii;
    int 		i;
 
    for (i = 0; i < n; i++)
@@ -737,8 +714,6 @@ static Error polygons (xfieldP xf, helperFunc helper,
    static int	iscratch;
    register int	c;
    register int	c1, translu = 0;
-   float	vec[3][4], *orig, depth;
-   register int	ii;
    dependencyT   odep;
 
 
@@ -760,6 +735,7 @@ static Error polygons (xfieldP xf, helperFunc helper,
         EXIT(("calling closedlines"));
         return closedlines(xf,helper,0,xf->nconnections,face,approx,skip);
         break;
+      case approx_none: case approx_flat: break;
    }
 
    SENDPERFIELD(LIT);
@@ -830,9 +806,6 @@ static Error polygons (xfieldP xf, helperFunc helper,
 
    EXIT((""));
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -909,8 +882,7 @@ static int _drawTranslucentPrimitives(tdmPortHandleP portHandle, xfieldP xf,
          goto error;
          break;
    }
-   done:
-
+/* done: */
   EXIT(("OK"));
   return OK;
 
@@ -933,7 +905,7 @@ static Error tmesh (xfieldP xf, helperFunc helper,
   static float	fscratch[3];
   static int	iscratch;
   int		count;
-  int		meshI,i;
+  int		meshI;
   int		skipDelta;
   InvalidComponentHandle tmpic,tmpip;
   struct  {
@@ -977,6 +949,7 @@ static Error tmesh (xfieldP xf, helperFunc helper,
        PRINT(("called tmeshlines"));
        goto done;
        break;
+     case approx_none: case approx_flat: break;
   }
 
   SENDPERFIELD(LIT);
@@ -1159,7 +1132,7 @@ static Error polylines (xfieldP xf, helperFunc helper,
 {
     static float fscratch[3];
     static int	 iscratch;
-    int		 c, i;
+    int		 c;
     int	         start, end, knt, max, thisknt;
 
     if(approx == approx_box)
@@ -1177,7 +1150,7 @@ static Error polylines (xfieldP xf, helperFunc helper,
           if(!xf->invCntns || ! DXIsElementInvalid(xf->invCntns,c))
 	  {
 	     if(xf->colorsDep == dep_polylines)
-		SENDCOLOR(c);
+		SENDCOLOR;
              start = xf->polylines[c];
 	     end  = (c == xf->npolylines-1) ? xf->nedges : xf->polylines[c+1];
              knt = (end - start) - 1;
@@ -1206,7 +1179,7 @@ static Error polylines (xfieldP xf, helperFunc helper,
 	    if(!xf->invCntns || ! DXIsElementInvalid(xf->invCntns,c))
 	    {
 	        if(xf->colorsDep == dep_polylines)
-		   SENDCOLOR(c);
+		   SENDCOLOR;
 		start = xf->polylines[c];
 		end = (c == xf->npolylines-1) ? xf->nedges :
 						    xf->polylines[c+1];
@@ -1241,14 +1214,10 @@ static Error plines (xfieldP xf, helperFunc helper,
 			enum approxE approx, int skip)
 {
   static int	*translation,*strip;
-  static int	edge[MaxTstripSize+1];
   static float	fscratch[3];
   static int	iscratch;
   int		count;
-  int		start;
-  int		step;
   int		meshI;
-  int		edgeI;
   int		skipDelta;
   struct  {
     int start;
@@ -1273,6 +1242,10 @@ static Error plines (xfieldP xf, helperFunc helper,
 /* This temporary fix is because DEC's Xserver core dumps when
    given more than 60 points per begin/end when rendering lines
    and there is a clipping plane active. */
+{
+  int		step;
+  int		start;
+
 #define MAX_PLINE_VERTS MaxTstripSize
   if(skip <= 1) {	/* NOT skipping */
     /* For each mesh....*/
@@ -1308,6 +1281,7 @@ static Error plines (xfieldP xf, helperFunc helper,
       skipDelta = count - (meshes[meshI].count-1);
     }
   }
+}
 #else
   if(skip <= 1) {	/* NOT skipping */
     for(meshI=0;meshI<xf->nmeshes;meshI++) {
@@ -1354,7 +1328,6 @@ static Error bbox (xfieldP xf)
 {
   static float	fscratch[3];
   static int	iscratch;
-  int		p,i;
   static float	yellow[] = {1.0, 1.0, 0.0};
 
   ENTRY(("bbox(0x%x)",xf));
@@ -1400,7 +1373,6 @@ TNnone (xfieldP xf, int posPerConn, int ctIndex, int *translation)
 {
   static  float	fscratch[3];
   static  float	uvscratch[2];
-  static  int	iscratch;
   static  int	p;
 
   ENTRY(("TNnone(0x%x, %d, %d, 0x%x)",
@@ -1420,7 +1392,6 @@ TNconnections (xfieldP xf, int posPerConn, int ctIndex, int *translation)
 {
   static float	fscratch[3];
   static float	uvscratch[2];
-  static int	iscratch;
   static int	p;
   GLubyte c = 0xff;
 
@@ -1443,7 +1414,6 @@ TNpositions (xfieldP xf, int posPerConn, int ctIndex, int *translation)
 {
   static float	fscratch[3];
   static float	uvscratch[2];
-  static int	iscratch;
   static int	p;
   GLubyte c = 0xff;
 
@@ -1500,12 +1470,6 @@ getHelper(dependencyT colorsDep,
 
 
 }
-
-static void _getLightAttrs(tdmPortHandleP phP, dxObject f,
-			   float *k_ambi, float *k_diff,
-			   float *k_spec, float *k_shin) ;
-
-static Error parameters(dxObject o, attributeP new, attributeP old) ;
 
 static Error
 _drawPrimitives(tdmPortHandleP portHandle, xfieldP xf, 
@@ -1663,8 +1627,7 @@ _drawPrimitives(tdmPortHandleP portHandle, xfieldP xf,
     break;
   }
 
- done:
-
+/* done: */
   EXIT(("OK"));
   return OK;
 
@@ -1682,13 +1645,10 @@ Error _dxf_DrawTranslucentOGL(void *globals,
   SortListP     sl = (SortListP)SORTLIST;
   SortD		sorted = sl->sortList;
   int 		nSorted = sl->itemCount;
-  int           p,i,j;
+  int           i,j;
   RGBColor	amCol;
 
   xfieldP       xf;
-  helperFunc	helper;
-  char 		cache_id[50];
-  Private 	priv;
   int		density;
   enum approxE	approx;
   float		ambientLight;
@@ -1825,8 +1785,6 @@ Error _dxf_DrawTranslucentOGL(void *globals,
 Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf, 
 			 RGBColor ambientColor, int buttonUp)
 {
-  helperFunc	helper;
-  Private 	priv;
   int		density;
   enum approxE	approx;
   float		ambient,diffuse;
@@ -1980,7 +1938,7 @@ Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf,
 
 
   OGL_FAIL_ON_ERROR(Back);
- done:
+/*  done: */
   if(xf->texture)
      endTexture(xf);
 
@@ -2010,6 +1968,11 @@ Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf,
   return ERROR;
 }
 
+/*
+static void
+_deleteGLObject(xfieldP xf) ;
+
+
 static void _deleteGLObject(xfieldP xf)
 {
 
@@ -2022,6 +1985,8 @@ static void _deleteGLObject(xfieldP xf)
 
   EXIT((""));
 }
+*/
+
 
 #if defined(DEBUG)
 #define POSITIONS 0

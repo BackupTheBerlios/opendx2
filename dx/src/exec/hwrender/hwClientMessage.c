@@ -57,8 +57,6 @@ internAtoms (Display *dpy)
    *  two processes to understand each other.
    */
 
-  int i, numAtoms ;
-
   ENTRY(("internAtoms(0x%x)",dpy));
 
 /*
@@ -1144,7 +1142,6 @@ _sendLinkCamera(tdmChildGlobalP globals,
   Point F, T;
   Vector U;
   Camera c;
-  char *tag;
   RGBColor bkgnd;
 
   DXUIMessage("LINK",
@@ -1290,7 +1287,7 @@ _dxfSendInteractorData (tdmChildGlobalP globals,
   else if (I == globals->User)
     {
       int pixwidth, pixheight, proj ;
-      float width, aspect, fov, viewdir[3] ;
+      float width, aspect, fov;
 
       data0.l[0] = _dxfPushInteractorCamera(INTERACTOR_DATA) ;
       _dxfSendClientMessage (DPY, PARENT_WINDOW,
