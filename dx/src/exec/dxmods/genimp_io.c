@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.3 1999/05/10 15:45:25 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.4 1999/12/22 07:20:49 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -52,7 +52,7 @@ static Error skip_numchar( FILE *, int, char **);
 static void add_parse_message(char *op, int s, int f, int item, int comp);
 static void *reorderData(void *data, int f);
 static Pointer locations2float(Pointer from, Type from_type, int cnt);
-static Error getline(char **, FILE *);
+static Error dx_getline(char **, FILE *);
 static Error extract_fromline(char str[MAX_DSTR],int which);
 
 #if !defined(DXD_STANDARD_IEEE)
@@ -345,7 +345,7 @@ static int FgetAsciiData(FILE *fp, void **data, int size)
 	{
 	  for (cnt=0; cnt < size; cnt++)
 	    { 
-	      if (!getline(&str, fp))
+	      if (!dx_getline(&str, fp))
 		{
 		  DXSetError(ERROR_MISSING_DATA,"#10898","data file"); 
 		  goto parse_error;
@@ -1527,7 +1527,7 @@ skip_numchar(FILE *fp, int num_char, char **ret_str)
  	}
     }
   /* if (!fgets(ret_str, MAX_DSTR, fp)) */
-  if (!getline(ret_str,fp))
+  if (!dx_getline(ret_str,fp))
      goto error;
   return OK;
   
@@ -1538,7 +1538,7 @@ skip_numchar(FILE *fp, int num_char, char **ret_str)
 /* getline allocating space as you go 
  */
 static
-Error getline(char **ret_str,FILE *fp)
+Error dx_getline(char **ret_str,FILE *fp)
 {
    char str[MAX_DSTR];
    int n=0;

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_parse.c,v 1.3 1999/05/10 15:45:25 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_parse.c,v 1.4 1999/12/22 07:20:50 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -60,7 +60,7 @@ static Error CheckInputs(void);
 static Error InitFileTok(struct parse_state *, FILE *, char *);
 static Error FileTok(struct parse_state *,char *, int , char** );
 static Error get_header(struct parse_state *, char *, struct header *);
-static Error getline(struct parse_state *);
+static Error dx_getline(struct parse_state *);
 static Error parse_template(char *, char **);
 static Error getmorevar(int *);
 static Error readplacement(char **, struct parse_state *, int, int *,char *);
@@ -2266,7 +2266,7 @@ FileTok(struct parse_state *ps,char *sep, int newline, char** token)
 	 * 	c) we are scanning for a token on the next line
 	 */
         if (current == NULL || *current == '\0' || (newline & FORCE_NEWLINE)) {
-           if (!ps->filename || !getline(ps))
+           if (!ps->filename || !dx_getline(ps))
               return ERROR;
            current = ps->line;
         }
@@ -2310,7 +2310,7 @@ error:
 }
 
 static
-Error getline(struct parse_state *ps)
+Error dx_getline(struct parse_state *ps)
 {
    char str[MAX_DSTR];
    char *line = ps->line;
