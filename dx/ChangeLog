@@ -136,9 +136,7 @@ is clamped to the max allowed by the system. This can fix a problem
 where the executive and UI hang involving a deadlock situation in the
 socket communication. The value assigned to it is passed as the parameter 
 to setsockopt for SOL_SNDBUF and SOL_RCVBUF.  I think the default is 
-32767, and the range is clamped to the max allowed by the system. The 
-value used is clamped to the max allowed by the system; see your sysadmin 
-if you need up this. A typcial value may be 262144.
+32767. A typcial value may be 262144.
 
 Fixes to to prevent hanging processes if the UI disconnects from the
 server while the server is running.
@@ -150,8 +148,6 @@ dependent info needed.
 
 Added configuration flags to make it possible to build loadable modules
 with Windows.
-
-Support for translucent polylines added.
 
 Fix bug where field with ubyte colors (refing a float[3] colormap), which
 is constructed by ReadImage and storable with Export, won't load with
@@ -205,7 +201,7 @@ Add ImageMagick support to ReadImage.
 Ugly but overdue changes so that ImageMagick can write files directly 
 without dx writing an intermediate miff file.
 
-The attached patch adds support for polylines to the opacity renderer.
+Added support for polylines to the opacity renderer.
 
 Fix error where Sample would core dump on Sampling lines.
 
