@@ -201,9 +201,8 @@ static Error write_im(RWImageArgs *iargs) {
 	} else {
 	    miff_exists_flag=0;
 	}
-	
+    	if(miff_filename) DXFree((Pointer)miff_filename);	
     }
-    DXFree((Pointer)miff_filename);
 
     
     GetExceptionInfo(&_dxd_exception_info);
