@@ -14,6 +14,10 @@
 #define HAS_M_SQRT2		0
 #define HAS_S_ISDIR		0
 #define HAS_sysmp		0
+#undef REQUIRES_GETHOSTNAME_DECLARATION
+#undef REQUIRES_BZERO_DECLARATION
+#define SELECT_ARG_TYPE void *
+#define SOCK_LENGTH_TYPE int 
 #undef HAVE_REGCMP
 #define USING_LESSTIF 0
 #undef USING_BISON
