@@ -40,13 +40,18 @@ static int browserPID=0;
 static int fd=0;
 
 int _dxf_StartWebBrowserWithURL(char *URL) {
+    char *webApp = getenv("DX_WEB_BROWSER");
 
 #if defined(macos)
-    CFStringRef urlStr = CFStringCreateWithCString(NULL, URL, kCFStringEncodingASCII);
-    CFURLRef inURL = CFURLCreateWithString(NULL, urlStr, NULL);
-    OSStatus oss = LSOpenCFURLRef( inURL, NULL);
-    return !oss;
+   if(webApp) {
+	CFStringRef urlStr = CFStringCreateWithCString(NULL, URL, kCFStringEncodingASCII);
+	CFURLRef inURL = CFURLCreateWithString(NULL, urlStr, NULL);
+	OSStatus oss = LSOpenCFURLRef( inURL, NULL);
+	return !oss;
+    }
+    return 1;
 #elif defined(intelnt)
+    if(webApp) {
     HINSTANCE hinst = ShellExecute(NULL, // no parent hwnd
             NULL, // open
             URL, // topic file or URL
@@ -54,6 +59,8 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
             NULL, // folder containing file
             SW_SHOWNORMAL); // yes, show it
     return hinst > (HINSTANCE)32;
+    }
+    return 1;
 #else
     if(browserPID != 0) {
 	if(waitpid(browserPID, NULL, WNOHANG)==browserPID) {
@@ -61,7 +68,6 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
 	} else {
 	    int child = fork();
 	    if (child == 0) {
-		char *webApp = getenv("DX_WEB_BROWSER");
 		if(webApp) {
 			char *openURL = new char[strlen(URL) + 25];
 			//strcpy(openURL, "-remote ");
@@ -83,7 +89,6 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
     }
     int child = fork();
     if (child == 0) {
-	char *webApp = getenv("DX_WEB_BROWSER");
 	if(webApp) {
     	    int ret = execlp(webApp, webApp, URL, NULL);
 	    if (!ret) fprintf(stderr, "Unable to start web browser.\n");
