@@ -767,6 +767,7 @@ static XmNumberWidget CreateFrameControlNumber( int x, int y, int label_offset,
 					  Boolean create_arrow,
 					  Pixel color )
 {
+int n;
 Arg wargs[20];
 double dmin, dmax, dval;
 Widget number;
@@ -783,39 +784,43 @@ int len;
     dval = (double)value;
 
     /*  Placement gets recomputed in the expose callback  */
-    XtSetArg(wargs[0], XmNtopAttachment, XmATTACH_POSITION);
-    XtSetArg(wargs[1], XmNleftAttachment, XmATTACH_POSITION);
-    XtSetArg(wargs[2], XmNbottomAttachment, XmATTACH_NONE);
-    XtSetArg(wargs[3], XmNrightAttachment, XmATTACH_NONE);
-    XtSetArg(wargs[4], XmNleftPosition, x);
-    XtSetArg(wargs[5], XmNtopPosition, y);
+    n = 0;
+    XtSetArg(wargs[n], XmNtopAttachment, XmATTACH_POSITION); n++;
+    XtSetArg(wargs[n], XmNleftAttachment, XmATTACH_POSITION); n++;
+    XtSetArg(wargs[n], XmNbottomAttachment, XmATTACH_NONE); n++;
+    XtSetArg(wargs[n], XmNrightAttachment, XmATTACH_NONE); n++;
+    XtSetArg(wargs[n], XmNleftPosition, x); n++;
+    XtSetArg(wargs[n], XmNtopPosition, y); n++;
 
 
     /*  Estimate a comfortably large size to initially create NumberWidget  */
-    XtSetArg(wargs[6], XmNheight, 19);
-    DoubleSetArg(wargs[7], XmNdMinimum, dmin);
-    DoubleSetArg(wargs[8], XmNdMaximum, dmax);
-    DoubleSetArg(wargs[9], XmNdValue, dval);
-    XtSetArg(wargs[10], XmNdecimalPlaces, 0);
+    DoubleSetArg(wargs[n], XmNdMinimum, dmin); n++;
+    DoubleSetArg(wargs[n], XmNdMaximum, dmax); n++;
+    DoubleSetArg(wargs[n], XmNdValue, dval); n++;
+    XtSetArg(wargs[n], XmNdecimalPlaces, 0); n++;
 
     /*  Center text in the field and resize for tighter fit of font  */
-    XtSetArg(wargs[12], XmNcenter, TRUE);
-    XtSetArg(wargs[13], XmNrecomputeSize, FALSE);
+    XtSetArg(wargs[n], XmNcenter, TRUE); n++;
+    XtSetArg(wargs[n], XmNrecomputeSize, FALSE); n++;
     if( editable )
-	XtSetArg(wargs[14], XmNeditable, TRUE);
-    else
-	XtSetArg(wargs[14], XmNeditable, FALSE);
-    if( make_stepper )
     {
-	XtSetArg(wargs[11], XmNdigits, 7);
-	XtSetArg(wargs[15], XmNdataType, DOUBLE);
-	number = XmCreateStepper((Widget)fc, title, wargs, 16);
+	XtSetArg(wargs[n], XmNeditable, TRUE); n++;
     }
     else
     {
-	XtSetArg(wargs[11], XmNcharPlaces, 7);
-	XtSetArg(wargs[15], XmNdataType, DOUBLE);
-	number = XmCreateNumber((Widget)fc, title, wargs, 16);
+	XtSetArg(wargs[n], XmNeditable, FALSE); n++;
+    }
+    if( make_stepper )
+    {
+	XtSetArg(wargs[n], XmNdigits, 7); n++;
+	XtSetArg(wargs[n], XmNdataType, DOUBLE); n++;
+	number = XmCreateStepper((Widget)fc, title, wargs, n);
+    }
+    else
+    {
+	XtSetArg(wargs[n], XmNcharPlaces, 7); n++;
+	XtSetArg(wargs[n], XmNdataType, DOUBLE); n++;
+	number = XmCreateNumber((Widget)fc, title, wargs, n);
     }
     /*  Callback for when a new value is entered directly  */
     XtAddCallback((Widget)number, XmNactivateCallback, (XtCallbackProc)CallbackFromNumber, fc);
