@@ -531,6 +531,10 @@ _dxfCleanup(TrisRI2DInterpolator ti)
     }
 }
 
+#define ON_EDGE(q, r, s) \
+    (((q) == 0.0) && ((r) <= 0.0 && (s) <= 0.0) || ((r) >= 0.0 && (s) >= 0))
+        
+
 static int _dxftriangular_coords (float *pt, float *p0, 
 			float *p1, float *p2, TriCoord *b, float fuzz)
 {
@@ -553,11 +557,11 @@ static int _dxftriangular_coords (float *pt, float *p0,
     b->q = a1 / a;
     b->r = a2 / a;
 
-    if (a0 == 0.0 || a1 == 0.0 || a2 == 0.0) return 0;
+    if (ON_EDGE(a0, a1, a2) || ON_EDGE(a1, a2, a0) || ON_EDGE(a2, a0, a1))
+        return 0;
 
     if ((b->p >=  0.0 && b->q >=  0.0 && b->r >=  0.0) ||
-	(b->p <=  0.0 && b->q <=  0.0 && b->r <=  0.0) ||
-	(b->p ==  0.0 || b->q ==  0.0 || b->r ==  0.0))
+	(b->p <=  0.0 && b->q <=  0.0 && b->r <=  0.0))
     {
 	return 0;
     }
