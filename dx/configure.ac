@@ -1,6 +1,33 @@
 #include "aclocal.m4"
 
 dnl Start of configuration ----
+AC_PREREQ(2.5)
+AC_INIT(dx, 4.2.1)
+
+dnl Process this file with autoconf to produce a configure script.
+AC_CONFIG_SRCDIR([include/dx/arch.h])
+AM_CONFIG_HEADER(include/dxconfig.h)
+AM_INIT_AUTOMAKE
+AC_PROG_LIBTOOL
+
+VERSION_STRING="04.2.1000"
+MAJOR_VERSION=4
+MINOR_VERSION=2
+MICRO_VERSION=1
+AC_DEFINE(DXD_VERSION_STRING, "04.2.1000", [Version String Number])
+AC_DEFINE(DXD_COPYRIGHT_STRING,
+  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.2.1"], 
+  [Copyright string placed on splash screen startup.])
+AC_DEFINE_UNQUOTED(DXD_VERSION, $MAJOR_VERSION, [Version Number])
+AC_DEFINE_UNQUOTED(DXD_RELEASE, $MINOR_VERSION, [Release Number])
+AC_DEFINE_UNQUOTED(DXD_MODIFICATION, $MICRO_VERSION, [Modification Number])
+
+AC_SUBST(MAJOR_VERSION)dnl
+AC_SUBST(MINOR_VERSION)dnl
+AC_SUBST(MICRO_VERSION)dnl
+
+SHELL=sh
+BUILDBASE=`pwd`
 
 AC_SUBST(YACC)
 AC_SUBST(SHELL)
@@ -37,27 +64,6 @@ AC_SUBST(SHARED_LINK)
 AC_SUBST(MKDEP)
 AC_SUBST(JNI_CFLAGS)
 AC_SUBST(LOCALMAKE)
-
-SHELL=sh
-
-INSTALL_SCRIPT='$(INSTALL)'
-
-BUILDBASE=`pwd`
-
-dnl Process this file with autoconf to produce a configure script.
-AC_INIT(include/dx/arch.h)
-AM_CONFIG_HEADER(include/dxconfig.h)
-AM_INIT_AUTOMAKE(dx, 4.2.0)
-
-VERSION_STRING="04.2.0000"
-AC_DEFINE(DXD_VERSION_STRING, "04.2.0000", [Version String Number])
-AC_DEFINE(DXD_COPYRIGHT_STRING,
-  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.2.0"], 
-  [Copyright string placed on splash screen startup.])
-AC_DEFINE_UNQUOTED(DXD_VERSION, 4, [Version Number])
-AC_DEFINE_UNQUOTED(DXD_RELEASE, 2, [Release Number])
-AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 0, [Modification Number])
-
 
 dnl First set up all the possible configure command line options
 dnl
@@ -251,12 +257,13 @@ else
 fi
 
 AC_PROG_INSTALL
+
 if test -z "$LN_S" ; then
     AC_PROG_LN_S
 fi
 
 dnl Checks for programs.
-AC_PROG_RANLIB
+dnl AC_PROG_RANLIB
 AC_PROG_CXX
 if test -n "$CXXCPP" ; then
     ac_cv_prog_CXXCPP=$CXXCPP
@@ -412,7 +419,7 @@ dnl Fix up the full CLASSPATH to be used with the JAVA compiles.
 fi
 # end of JAVADX configure
 
-AC_LANG_C
+AC_LANG([C])
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
@@ -434,7 +441,7 @@ else
     ANYDX=libAnyDX.so
 fi
 
-AC_LANG_C
+dnl AC_LANG([C])
 
 dnl DX_CYGWIN_MOUNTS
 DX_SET_RTL_FLAGS
@@ -550,7 +557,7 @@ have_tiff='no'
 LIB_TIFF=''
 if test "$with_tiff" != 'no'
 then
-    AC_CHECKING(for TIFF support ...)
+    AS_MESSAGE([checking for TIFF support ......])
     failed=0;
     passed=0;
     AC_CHECK_HEADER(tiff.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -581,7 +588,7 @@ fi
 #
 have_xpm='no'
 LIB_XPM=''
-AC_CHECKING(for XPM support ...)
+AS_MESSAGE([checking for XPM support ......])
 failed=0;
 passed=0;
 AC_CHECK_HEADERS(xpm.h X11/xpm.h)
@@ -618,7 +625,7 @@ have_hdf='no'
 LIB_HDF=''
 if test "$with_hdf" != 'no'
 then
-    AC_CHECKING(for HDF components ...)
+    AS_MESSAGE([checking for HDF components ......])
     failed=0;
     passed=0;
     AC_CHECK_HEADERS(dfsd.h hdf/dfsd.h)
@@ -680,7 +687,7 @@ have_cdf='no'
 LIB_CDF=''
 if test "$with_cdf" != 'no'
 then
-    AC_CHECKING(for CDF support ...)
+    AS_MESSAGE([checking for CDF support ......])
     failed=0;
     passed=0;
     AC_CHECK_HEADER(cdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -736,7 +743,7 @@ have_netcdf='no'
 LIB_NETCDF=''
 if test "$with_netcdf" != 'no'
 then
-    AC_CHECKING(for NETCDF support ...)
+    AS_MESSAGE([checking for NETCDF support ......])
     failed=0;
     passed=0;
     AC_CHECK_HEADER(netcdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -769,7 +776,7 @@ have_magick='no'
 LIB_MAGICK=''
 if test "$with_magick" != 'no'
 then
-    AC_CHECKING(for ImageMagick support ...)
+    AS_MESSAGE([checking for ImageMagick support ......])
     AC_CHECK_PROG(HAVE_MC, Magick-config, yes, no)
 
     failed=0;
@@ -835,8 +842,7 @@ dnl UNIQUIFY will remove duplicate library tokens leaving the last instance.
 fi
 fi
 
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 AC_TRY_COMPILE([], [int a = true;],
 		[AC_DEFINE(CXX_HAS_TRUE, 1, [Define to 1 if c++ compiler defines true])],
 		[AC_DEFINE(CXX_HAS_TRUE, 0)])
@@ -844,7 +850,8 @@ AC_TRY_COMPILE([], [int a = false;],
 		[AC_DEFINE(CXX_HAS_FALSE, 1, [Define to 1 if c++ compiler defines false])],
 		[AC_DEFINE(CXX_HAS_FALSE, 0)])
 AC_CHECK_FUNCS(getdtablesize)
-AC_LANG_RESTORE
+
+AC_LANG([C])
 
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
 	putenv re_comp regcmp select socket strcspn strdup strerror \
@@ -937,7 +944,7 @@ else
 fi
 
 
-AC_LANG_C
+dnl AC_LANG([C])
 
 dnl Just need to check if we have them.
 
@@ -998,15 +1005,12 @@ fi
 
 DX_CHECK_STAT
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 
 dnl Need these to define themselves for C++
 
 AC_CHECK_HEADERS(CC/libc.h direct.h dirent.h iostream.h regexp.h regex.h stream.h)
 AC_CHECK_HEADERS(strstream.h strstrea.h sysent.h)
-
-
-AC_LANG_C
 
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, inet_addr)
@@ -1016,7 +1020,7 @@ AC_CHECK_LIB(REXP, regcomp)
 
 DX_STREAM_O2
 
-AC_LANG_CPLUSPLUS
+dnl AC_LANG([C++])
 
 AC_TRY_LINK([
 #include <unistd.h>
@@ -1038,7 +1042,7 @@ AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 0, [Define to 1 if bzero needs de
 AC_DEFINE_UNQUOTED(REQUIRES_BZERO_DECLARATION, 1))
 
 dnl The following DX_HEADER... check changes the ext to .C so must be C++
-AC_LANG_CPLUSPLUS
+dnl AC_LANG([C++])
 
 DX_HEADER_HAS_SYMBOL(math.h, M_PI)
 DX_HEADER_HAS_SYMBOL(math.h, M_SQRT2)
@@ -1046,13 +1050,13 @@ DX_HEADER_HAS_SYMBOL(sys/stat.h, S_ISDIR)
 DX_HEADER_HAS_SYMBOL(sys/mode.h, S_ISDIR)
 DX_HEADER_HAS_SYMBOL(sys/sysmp.h, sysmp)
 
-AC_LANG_C
+AC_LANG([C])
 
 dnl Checks for library functions.
 AC_FUNC_MEMCMP
 AC_FUNC_SETVBUF_REVERSED
 AC_TYPE_SIGNAL
-AC_FUNC_VFORK
+AC_FUNC_FORK([])
 AC_FUNC_VPRINTF
 
 DX_CHECK_TYPE(uint, unsigned int)
@@ -1078,7 +1082,7 @@ fi
 
 AC_C_BIGENDIAN
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 
 AC_TRY_LINK(
 [
@@ -1097,7 +1101,7 @@ AC_DEFINE_UNQUOTED(ALTERNATE_CXX_SIGNAL, 1,
 echo Using standard signal argument list in C++
 ])
 
-AC_LANG_C
+AC_LANG([C])
 
 DX_CHECK_SELECT_ARG
 DX_CHECK_SOCK_LENGTH_TYPE
@@ -1119,8 +1123,7 @@ else
     AC_DEFINE(ENABLE_SMP_LINUX, 0)
 fi
 
-AC_OUTPUT(
-	Makefile \
+AC_CONFIG_FILES([Makefile \
 	bin/Makefile \
 	bin/dx
 	bin/dxworker \
@@ -1175,6 +1178,8 @@ AC_OUTPUT(
 	src/uipp/startup/Makefile \
 	src/uipp/tutor/Makefile \
 	src/uipp/ui/Makefile \
+	src/uipp/ui/Makefile \
 	src/uipp/widgets/Makefile 
 	windows/Makefile
-)
+])
+AC_OUTPUT

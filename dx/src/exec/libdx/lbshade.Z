@@ -2198,7 +2198,7 @@ error:
 }
 
 static int _dxd_firstUbyteToFloat = 1;
-float _dxd_ubyteToFloat[256];
+float _dxd_ubyteToFloat[256] = {0};
 
 
 void
