@@ -8,13 +8,10 @@
 
 #include <dxconfig.h>
 
-
+#include "scalar.h"
 #include "interact.h"
 
-extern
-Error _dxfscalar_base(Object *, Object *, int);
-static 
-Error float_reset(float ,float ,int ,float *);
+static Error float_reset(float ,float ,int ,float *);
 
 int 
 m_Scalar(Object *in, Object *out)
@@ -24,18 +21,17 @@ m_Scalar(Object *in, Object *out)
    return OK;
 }
 
-extern
 Error _dxfscalar_base(Object *in, Object *out, int islist)
 {
    struct einfo ei;
    float min,max,valtemp;
-   float incr, *val, percent;
+   float incr, *val=NULL;
    char *label, *id, *incrmethod;
    int i,decimal,item=0,change=0,range,nitem=-1;
    int change1,change4,change5,changen=0,req_param=1;
    method_type method;
-   Object idobj;
-   int iprint[MAXPRINT],ip, msglen=0,shape[1];
+   Object idobj=NULL;
+   int iprint[MAXPRINT], msglen=0,shape[1];
    int refresh=0;
 
    /* required parameters */
@@ -137,7 +133,7 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
         goto error1;
       } 
       if ((method==PERCENT || method==PERCENT_ROUND) &&
-           incr > 1.0 || incr < 0.0){
+           (incr > 1.0 || incr < 0.0)){
         DXSetError(ERROR_BAD_PARAMETER,"#10110","delta",0,1);
         goto error1;
       }
@@ -314,7 +310,7 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
    ei.mp =ei.msgbuf;
 
    shape[0]=1;
-   sprintf(ei.mp,"");
+   strcpy(ei.mp,"");
    if (iprint[0]>0){
      sprintf(ei.mp, "min="); while(*ei.mp) ei.mp++;
      if (!_dxfprint_message(&min, &ei,TYPE_FLOAT,0,shape,1))

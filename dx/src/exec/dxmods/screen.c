@@ -14,13 +14,13 @@
 
 static Object ScreenObject(Object, Vector, Vector, int, int, int);
   
-  m_Screen(Object *in, Object *out)
+Error
+m_Screen(Object *in, Object *out)
 {
-  Point translation, size, box[8], min, max;
-  Object o=NULL, oo=NULL, outscreen=NULL, ino;
-  Object oscreen=NULL, ooscreen=NULL, oooscreen=NULL;
-  int depthflag, units, how, i;
-  float width, height, scalewidth, scaleheight, scalarsize;
+  Point translation, size;
+  Object ino;
+  int depthflag, units, how;
+  float scalarsize;
   
   /* in[0] is the object to be turned into a screen object */
   if (!in[0]) {

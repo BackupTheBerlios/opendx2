@@ -9,11 +9,11 @@
 #include <dxconfig.h>
 
 
-
 #include <math.h>
 #include <string.h>
 #include <dx/dx.h>
 #include "vectors.h"
+#include "_post.h"
 
 #define RIBBON 2   /* ribbon is 2-gon (sort of) */
 
@@ -40,7 +40,7 @@ static
 Field
 TubeRegular(Field f, double diameter, int ngon, float *cs, float *sn)
 {
-    int i, j, k, l, npoints, nnewpoints, nconn, nnewnorms, nnewconn, max;
+    int i, j, k, l, npoints, nnewpoints, nconn, nnewconn, max;
     Array a = NULL, oPts = NULL, nPts = NULL, nQuads = NULL, nNrms = NULL;
     Point *points, *newpoints;
     Vector *normals=NULL, *newnormals, *binormals=NULL;
@@ -400,7 +400,7 @@ _Tube(Object o, double diameter, int ngon, float *cs, float *sn, float t)
 
     switch (DXGetObjectClass(o)) {
     case CLASS_GROUP:
-	for (i=0; sub=DXGetEnumeratedMember((Group)o, i, NULL); i++)
+	for (i=0; (sub=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
 	    if (!_Tube(sub, diameter, ngon, cs, sn, t))
 		return NULL;
 	return o;
@@ -426,8 +426,6 @@ _Tube(Object o, double diameter, int ngon, float *cs, float *sn, float t)
 	DXErrorReturn(ERROR_BAD_CLASS, "object has an unsupported class");
     }
 }
-
-extern Array _dxfPostArray(Field, char *, char *);
 
 static Field
 TubeField(Field f, double d, int n, float *cs, float *sn, float t)
@@ -711,8 +709,7 @@ TracePath(Vector *points, PathElt *path, int npoints,
 {
     Vector *normals = NULL;
     Vector *binormals = NULL;
-    int    i, nDim;
-    Object depattr = NULL;
+    int    i;
     Vector fn, fb, tangent;
     int loop, nUniquePoints;
 
@@ -762,7 +759,7 @@ TracePath(Vector *points, PathElt *path, int npoints,
 
     if (loop) /* can oly be set if path or indices is non-null */
     {
-	Vector *p, *q;
+	Vector *p=NULL, *q=NULL;
 
 	if (path)
 	{
@@ -919,8 +916,7 @@ static Error
 UpdateFrame(Vector *p0, Vector *p1, Vector *lt, Vector *n, Vector *b, 
 						    Vector *fn, Vector *fb)
 {
-    float  twist;
-    float  mBend[9], mProduct[9];
+    float  mBend[9];
     Vector cross;
     float  len, cA;
     Vector nt;
@@ -997,9 +993,6 @@ UpdateFrame(Vector *p0, Vector *p1, Vector *lt, Vector *n, Vector *b,
     }
 
     return OK;
-
-error:
-    return ERROR;
 }
 
 /*
@@ -1056,7 +1049,6 @@ TubeIrregular(Field f, double d, int ngon, float *cs, float *sn, float t)
     int own_normals = 0; 
     CList  *clist = NULL;
     int i, j, done, nonZeroSegs;
-    float l;
     Vector *segVectors = NULL;
     InvalidComponentHandle ich = NULL;
 
@@ -1367,11 +1359,12 @@ TubeIrregular(Field f, double d, int ngon, float *cs, float *sn, float t)
 	}
 
 	if (! TubePartialPath(points, d, ngon, cs, sn, list, nf+nb, clist,
-						normals, binormals))
+						normals, binormals)) {
 	    if (DXGetError() == ERROR_NONE)
 		continue;
 	    else
 		goto error;
+	}
 
 	if (! CopyArraysPartialPath(f, ngon, list, nf+nb, clist))
 	    goto error;
@@ -1529,6 +1522,7 @@ DestroyCList(CList *clist)
 
 	DXFree((Pointer)clist);
     }
+    return OK;
 }
 
 static Error
@@ -1555,7 +1549,6 @@ CopyArraysPartialPath(Field f, int ng, PathElt *path, int np, CList *clist)
 	    char *src, *dst;
 	    char *sPtr, *dPtr;
 	    SegListSegment *slist;
-	    int eSize;
 
 	    slist = DXNewSegListSegment(clist[i].list, nu*ng);
 	    if (! slist)
@@ -1763,8 +1756,7 @@ TubePartialPath(Vector *points, double diameter, int ngon,
 	    float *cs, float *sn, PathElt *path, int npoints, CList *clist,
 	    Vector *normals, Vector *binormals)
 {
-    int i, j, k, l, nnewpoints, nconn, nnewnorms, nnewconn, max;
-    Array a;
+    int i, j, k, nnewpoints, nconn, nnewconn, max;
     Vector *newpoints, *newnormals;
     Quadrilateral *quads, *t;
     int  pOffset, loop, nUniquePoints;
@@ -1797,7 +1789,7 @@ TubePartialPath(Vector *points, double diameter, int ngon,
     else if (! normals && ! binormals)
     {
 	if (! TracePath(points, path, npoints, &normals, &binormals))
-	    return NULL;
+	    return ERROR;
 
 	if (! normals && ! binormals)
 	    return OK;
@@ -1968,7 +1960,7 @@ PathDot(Vector *points, PathElt *path, int npoints,
     for (i = 0; i < npoints; i++)
     {
 	int p, q, r;
-	Vector v0, v1, tan, norm;
+	Vector v0, v1, tan;
 	float l;
 
 	if (i == 0)
@@ -2269,11 +2261,12 @@ TubePolyline(Field f, double d, int ngon, float *cs, float *sn, float t)
 	    }
 
 	    if (! TubePartialPath(points, d, ngon, cs, sn, path, knt, clist,
-						    normals, binormals))
+						    normals, binormals)) {
 		if (DXGetError() == ERROR_NONE)
 		    continue;
 		else
 		    goto error;
+	    }
 
 	    if (! CopyArraysPartialPath(f, ngon, path, knt, clist))
 		goto error;

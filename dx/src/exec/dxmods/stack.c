@@ -16,7 +16,9 @@
 
 #include <dxconfig.h>
 
-
+#if defined(HAVE_CTYPE_H)
+#include <ctype.h>
+#endif
 
 #include <dx/dx.h>
 #include <math.h>
@@ -141,8 +143,7 @@ static Field setinvalids(StackInfo *si, Field f);
 static void freespace(StackInfo *si);
 static double nonzeromax(double a, double b);
 static Array foolInvalids(Array a, char *name, Field f, int seriesmember);
-static int isZero(Type t, Pointer value);
-extern void _dxfPermute(int dim, Pointer out, int *ostrides, int *counts, 
+extern void _dxfPermute(int dim, Pointer out, int *ostrides, int *counts,  /* from libdx/permute.c */
  		        int size, Pointer in, int *istrides);
 
 /*
@@ -374,7 +375,7 @@ doStack(StackParms *sp, StackInfo *si)
 	if (!returnobj)
 	    goto error;
 
-	for (i=0; subo=DXGetEnumeratedMember((Group)returnobj, i, NULL); i++) {
+	for (i=0; (subo=DXGetEnumeratedMember((Group)returnobj, i, NULL)); i++) {
 	    si->thisobj = subo;
 
 	    stacked = doStack(sp, si);
@@ -450,7 +451,7 @@ doStack(StackParms *sp, StackInfo *si)
     }
 
 
-  done:
+  /* done */
     freespace(si);
     return returnobj;
 
@@ -498,13 +499,11 @@ checksample(StackParms *sp, StackInfo *si)
     int i, j;
     int invs;
     int comps;
-    int empty;
     int count;
     int thiscomp;
     Type t;
     Category c;
     int rank, hereshape[MAXRANK], *genshape = NULL;
-    Object attr;
     char *cp, *ccp, *acp;
 
 
@@ -658,7 +657,7 @@ checksample(StackParms *sp, StackInfo *si)
 	goto error;
 
     si->compcount = 0;
-    for (i=0; aa=(Array)DXGetEnumeratedComponentValue(testf, i, &ccp); i++) {
+    for (i=0; (aa=(Array)DXGetEnumeratedComponentValue(testf, i, &ccp)); i++) {
 	/* skip derived components */
 	if (DXGetAttribute((Object)aa, "der"))
 	    continue;
@@ -776,7 +775,7 @@ static Field
 getfirstfield(StackInfo *si)
 {
     Object testf;
-    Field retval;
+    Field retval=NULL;
     int i;
     int empty;
     
@@ -830,9 +829,6 @@ checkall(StackParms *sp, StackInfo *si)
     Field testf;
     Array ap, ac, aa;
     int i, j, tmp;
-    int empty;
-    int count;
-    Object attr;
     char *cp;
 
     
@@ -842,7 +838,7 @@ checkall(StackParms *sp, StackInfo *si)
     }
     
     for (i=0; 
-	 testf = (Field)DXGetEnumeratedMember((Group)si->thisobj, i, NULL);
+	 (testf=(Field)DXGetEnumeratedMember((Group)si->thisobj, i, NULL));
 	 i++) {
 	
 	if (DXGetObjectClass((Object)testf) != CLASS_FIELD) {
@@ -948,7 +944,7 @@ checkall(StackParms *sp, StackInfo *si)
     }
     
 
-  done:
+  /* done */
     return OK;
 
   error:
@@ -1058,7 +1054,7 @@ arraymatch(Array a1, Array a2, int countflag, char *name)
     
 
 	
-  done:
+  /* done */
     if (genshape1)
 	DXFree((Pointer)genshape1);
     if (genshape2)
@@ -1126,8 +1122,7 @@ invertobj(StackInfo *si)
     CompositeField first, next;
     Series news = NULL;
     float seriespos;
-    Object subo, subo2;
-    Field f;
+    Object subo;
     int i, ii, j, k;
     int cfcount;
     Array conn;
@@ -1181,7 +1176,7 @@ invertobj(StackInfo *si)
 	goto error;
     
 
-    for (i=0; subo = DXGetEnumeratedMember((Group)first, i, NULL); i++) {
+    for (i=0; (subo=DXGetEnumeratedMember((Group)first, i, NULL)); i++) {
 	news = DXNewSeries();
 	if (!news)
 	    goto error;
@@ -1234,9 +1229,9 @@ invertobj(StackInfo *si)
     
     
     for (k=1; 
-	 next=(CompositeField)DXGetSeriesMember((Series)si->thisobj, k, &seriespos); 
+	 (next=(CompositeField)DXGetSeriesMember((Series)si->thisobj, k, &seriespos)); 
 	 k++) {
-	for (j=0; subo = DXGetEnumeratedMember((Group)next, j, NULL); j++) {
+	for (j=0; (subo=DXGetEnumeratedMember((Group)next, j, NULL)); j++) {
 	    
 	    
 	    /* get each partition, find the mesh offsets, match them
@@ -1323,7 +1318,7 @@ convertseries(StackInfo *si)
 	goto error;
 
     for (i=0, seriespos = 0.0; 
-	 subo = DXGetEnumeratedMember((Group)si->thisobj, i, NULL); 
+	 (subo=DXGetEnumeratedMember((Group)si->thisobj, i, NULL)); 
 	 i++, seriespos += 1.0) 
 
 	if (!DXSetSeriesMember(newtop, i, seriespos, subo))
@@ -1331,7 +1326,7 @@ convertseries(StackInfo *si)
 
 
 
-  done:
+  /* done */
     return (Object)newtop;
 
   error:
@@ -1490,7 +1485,7 @@ add1posdim(Array oldpos, int newdim, float where)
     
     switch (DXGetArrayClass(oldpos)) {
       case CLASS_ARRAY:
-      expanded:
+      /* expanded */
 	if (!(ifp = DXGetArrayData(oldpos)))
 	    goto error;
 	if (!(newpos = DXNewArray(TYPE_FLOAT, CATEGORY_REAL, 1, shape+1)))
@@ -1672,7 +1667,6 @@ addNposdim(StackInfo *si, int nflag, int oflag, int newdim, Array addpos)
     Type t;
     Category c;
     int items, tcount, rcount;
-    int acount;
     int rank, shape;
     Array terms[MAXRANK], *genterms = NULL;
     int counts[MAXRANK], *gencounts = NULL;
@@ -1680,7 +1674,7 @@ addNposdim(StackInfo *si, int nflag, int oflag, int newdim, Array addpos)
     float delta[MAXRANK*MAXRANK], *gendelta = NULL;
     float rorig[MAXRANK], *genrorig = NULL;
     float rdelta[MAXRANK], *genrdelta = NULL;
-    float *ifp, *ofp, *nfp, *afp;
+    float *ifp, *ofp;
     Array tmppos = NULL;
 
 
@@ -1784,7 +1778,7 @@ addNposdim(StackInfo *si, int nflag, int oflag, int newdim, Array addpos)
     
     switch (DXGetArrayClass(oldpos)) {
       case CLASS_ARRAY:
-      expanded:
+      /* expanded */
 	newpos = addseriesdim(si, oldpos, addpos, newdim);
 	if (!newpos)
 	    goto error;
@@ -2070,7 +2064,7 @@ addarrays(StackParms *sp, StackInfo *si, char *component, int flags)
     /* if array is constant or regular w/ 0 deltas, try to keep
      * it compact.
      */
-    if (newarr = addcnstarrays(sp, si, component))
+    if ((newarr=addcnstarrays(sp, si, component)))
 	return newarr;
     
     /* else fall into irreg case */
@@ -2085,11 +2079,11 @@ addcnstarrays(StackParms *sp, StackInfo *si, char *component)
 {
     Array newarr = NULL;
     Array a;
-    int i, j;
+    int j;
     Object o;
-    Type t0, t;
-    Category c0, c;
-    int rank0, rank;
+    Type t0;
+    Category c0;
+    int rank0;
     int shape0[MAXRANK];
     int size, items;
     Pointer *dvalue0 = NULL;
@@ -2099,7 +2093,7 @@ addcnstarrays(StackParms *sp, StackInfo *si, char *component)
     /* for each member of the series, extract the array and
      * see if it's a constant value across the entire series.
      */
-    for (j=0; o=DXGetSeriesMember((Series)si->thisobj, j, NULL); j++) {
+    for (j=0; (o=DXGetSeriesMember((Series)si->thisobj, j, NULL)); j++) {
 	
 	a = (Array)DXGetComponentValue((Field)o, component);
 	
@@ -2133,7 +2127,7 @@ addcnstarrays(StackParms *sp, StackInfo *si, char *component)
 	if (!DXQueryConstantArray(a, NULL, (Pointer)dvalue0))
 	    goto error;
 	
-	for (j=1; o=DXGetSeriesMember((Series)si->thisobj, j, NULL); j++) {
+	for (j=1; (o=DXGetSeriesMember((Series)si->thisobj, j, NULL)); j++) {
 	    
 	    a = (Array)DXGetComponentValue((Field)o, component);
 	    
@@ -2289,9 +2283,8 @@ makerefs(StackInfo *si, int stackdim)
 static Error 
 dorenumber(Array newarr, Array renumber)
 {
-    int i, j;
+    int i;
     int items;
-    int remap;
     int *ip, *rip;
     int *mip = NULL;
 
@@ -2300,7 +2293,7 @@ dorenumber(Array newarr, Array renumber)
      */
     if (!DXTypeCheckV(newarr, TYPE_INT, CATEGORY_REAL, 0, NULL)) {
 	DXSetError(ERROR_DATA_INVALID, "ref arrays must be type integer");
-	return NULL;
+	return ERROR;
     }
 
     if (!DXGetArrayInfo(newarr, &items, NULL, NULL, NULL, NULL))
@@ -2326,7 +2319,7 @@ dorenumber(Array newarr, Array renumber)
 
   error:
     DXFree((Pointer)mip);
-    return NULL;
+    return ERROR;
 }
 
 /* this irregularizes everything.  we should at least look 
@@ -2339,7 +2332,7 @@ dorenumber(Array newarr, Array renumber)
 static Array 
 addirregarrays(StackInfo *si, char *component, int stackdim)
 {
-    int i, j, k, l;
+    int i, j, k;
     Object o;
     Type t;
     Category c;
@@ -2409,7 +2402,7 @@ addirregarrays(StackInfo *si, char *component, int stackdim)
     ncounts[stackdim] = 1;
  
     
-    for (j=0; o=DXGetSeriesMember((Series)si->thisobj, j, NULL); j++) {
+    for (j=0; (o=DXGetSeriesMember((Series)si->thisobj, j, NULL)); j++) {
 
 	if (component) {
 	    a = (Array)DXGetComponentValue((Field)o, component);
@@ -2442,18 +2435,13 @@ addirregarrays(StackInfo *si, char *component, int stackdim)
 static Array 
 addseriesdim(StackInfo *si, Array oldpos, Array addpos, int stackdim)
 {
-    int i, j, k, l;
+    int i, j, k;
     int reps, skips;
-    Object o;
     Type t;
     Category c;
     int rank, shape[MAXRANK];
     Array newpos = NULL;
-    int ncounts[MAXRANK];
-    int dims[MAXRANK], temp[MAXRANK];
-    int nstride[MAXRANK], ostride[MAXRANK];
-    int nitems, itemsize;
-    Pointer np, op, xp;
+    int nitems;
     float *ofp, *nfp;
 
     /* oldpos is the old positions, combined into a single array
@@ -2545,16 +2533,14 @@ addseriesdim(StackInfo *si, Array oldpos, Array addpos, int stackdim)
 static Array 
 foolInvalids(Array a, char *name, Field f, int seriesmember)
 {
-    int i, j, k, l;
+    int i;
     Type t;
     Category c;
     int rank, shape[MAXRANK];
     Array na;
-    int ncounts[MAXRANK];
-    int dims[MAXRANK], temp[MAXRANK];
-    int nitems, itemsize;
+    int nitems;
     int *ip;
-    Pointer np, op;
+    Pointer np;
     char *attr;
 
     if (!a) {
@@ -2680,7 +2666,6 @@ static Error
 seriesregular(StackParms *sp, StackInfo *si, Array *newpos)
 {
     int i;
-    int dim;
     float s0, sN, sL;
     double del0, delN, nmax;
     float orig[MAXRANK], *genorig = NULL;
@@ -2778,7 +2763,7 @@ newdimregular(StackParms *sp, StackInfo *si, Array *newarr, int *regflag)
 	goto error;
     
     if (*newarr)
-	*regflag++;
+	(*regflag)++;
     else {
 	*newarr = seriesspacing(sp, si);
 	if (! *newarr)
@@ -2848,7 +2833,7 @@ allposregular(StackInfo *si, int *regflag)
 
 
 
-    for (i=1; subo = (Field)DXGetSeriesMember((Series)si->thisobj, i, NULL); i++) {
+    for (i=1; (subo=(Field)DXGetSeriesMember((Series)si->thisobj, i, NULL)); i++) {
 	if (DXGetObjectClass((Object)subo) != CLASS_FIELD)
 	    goto error;
 
@@ -2947,7 +2932,6 @@ seriesspacing(StackParms *sp, StackInfo *si)
 	fp[shape*i + index] = pos;
 
     
-  done:
     return newarr;
 
   error:
@@ -2959,7 +2943,6 @@ static Object
 stackgroup(StackParms *sp, StackInfo *si)
 {
     Field retval = NULL;
-    int mcount;
     Object subo;
     float seriespos;
     Class class;
@@ -3171,6 +3154,7 @@ nonzeromax(double a, double b)
 }
 
 
+#if 0
 static int 
 isZero(Type t, Pointer value)
 {
@@ -3188,4 +3172,5 @@ isZero(Type t, Pointer value)
 
     /* not reached */
 }
-	
+#endif
+

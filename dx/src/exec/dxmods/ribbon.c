@@ -6,11 +6,11 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/ribbon.c,v 1.3 1999/05/10 15:45:30 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/ribbon.c,v 1.4 2000/08/24 20:04:46 davidt Exp $
  */
 
 #include <dxconfig.h>
-
+#include "_autocolor.h"
 
 
 #include <stdio.h>
@@ -18,7 +18,6 @@
 #include <dx/dx.h>
 
 static Error ribbon_width ();
-extern Error _dxfBoundingBoxDiagonal ();
 
 int m_Ribbon (in, out)
     Object	*in;
@@ -27,9 +26,7 @@ int m_Ribbon (in, out)
     Object	in0;
     Object	in1;
     double	width;
-    float	fval, thickness;
-    Class	class;
-    Point	box[8];
+    float	fval;
 
     out[0] = NULL;
 

@@ -11,13 +11,9 @@
 
 #include <string.h>
 #include <dx/dx.h>
+#include "_construct.h"
 
 #define MAXOBJECTS 44    /* must match mdf-c generated dx.mdf file */
-
-/* copy the array contents */
-extern Array _dxfReallyCopyArray(Array a);
-
-
 
 int
 m_CollectSeries(Object *in, Object *out)
@@ -68,7 +64,7 @@ m_CollectSeries(Object *in, Object *out)
             return ERROR;
         }
 
-        for (i=0; newo = DXGetEnumeratedMember((Group)in[0], i, NULL); i++) {
+        for (i=0; (newo = DXGetEnumeratedMember((Group)in[0], i, NULL)); i++) {
             if (!DXSetSeriesMember((Series)out[0], i, fp[i], newo)) {
                 DXDelete(out[0]);
                 out[0] = NULL;

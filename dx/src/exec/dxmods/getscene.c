@@ -34,7 +34,7 @@ m_GetScene(Object *in, Object *out)
 	goto error;
     }
 
-    if (! GetObjectAndCameraFromCache(tag, &OBJECT, &CAMERA))
+    if (! GetObjectAndCameraFromCache(tag, &OBJECT, (Camera *)&CAMERA))
     {
 	DXSetError(ERROR_INTERNAL, "unable to access scene data");
 	goto error;
@@ -46,6 +46,7 @@ error:
 
     OBJECT = NULL;
     CAMERA = NULL;
+    return ERROR;
 }
 
 

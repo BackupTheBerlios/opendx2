@@ -10,25 +10,26 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinereg.c,v 1.4 2000/05/16 18:47:36 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinereg.c,v 1.5 2000/08/24 20:04:19 davidt Exp $
  */
 
 #include <stdio.h>
 #include <string.h>
 #include "math.h"
 #include <dx/dx.h>
+#include "_refine.h"
 
 #define MAXDIM	16
 
-Field _dxfRefineReg(Field, int);
-
 static Array RefineDepPos(Array, int, int, int *, int *);
 static Array RefineDepPosIrreg(Array, int, int, int *, int *);
-static Array RefineDepPosBoolean(Array, int, int, int *, int *);
 static Array RefineDepCon(Array, int, int, int *, int *);
 static Array RefineDepConIrreg(Array, int, int, int *, int *);
-static Array RefineDepConBoolean(Array, int, int, int *, int *);
 static Array RefineRegReferences(Array, int, int, int *, int *, int);
+
+#if 0
+static Array RefineDepConBoolean(Array, int, int, int *, int *);
+#endif
 
 #define REF_POSITIONS		1
 #define REF_CONNECTIONS		2
@@ -278,7 +279,6 @@ RefineDepCon(Array inArray, int n, int nDim, int *inCounts, int *outCounts)
     {
 	int num, i, size, aDim;
 	Type type;
-	int  constant;
 	Pointer o, d;
 
 	o = d = NULL;
@@ -311,6 +311,7 @@ RefineDepCon(Array inArray, int n, int nDim, int *inCounts, int *outCounts)
 		case TYPE_USHORT: REDUCE_DELTAS(ushort); break;	
 		case TYPE_BYTE:   REDUCE_DELTAS(byte);   break;	
 		case TYPE_UBYTE:  REDUCE_DELTAS(ubyte);  break;	
+	        default: break;
 	    }
 
 #undef REDUCE_DELTAS
@@ -338,7 +339,7 @@ RefineDepConIrreg(Array inArray, int n, int nDim, int *inCounts, int *outCounts)
 {
     Array outArray;
     Type t; Category c; int r, s[32];
-    int i, j, k, nInItems, nOutItems, itemSize, zSize, count;
+    int i, j, k, nInItems, nOutItems, itemSize, count;
     int oCC[32], skip[32];
     int  iknt[32], oknt[32];
     char *ibase[32], *obase[32];
@@ -494,6 +495,7 @@ error:
     return NULL;
 }
 
+#if 0
 static Array
 RefineDepConBoolean(Array inArray, int n,
 			int nDim, int *inCounts, int *outCounts)
@@ -667,6 +669,7 @@ error:
 
     return NULL;
 }
+#endif
 
 
 static Array
@@ -705,7 +708,6 @@ RefineDepPos(Array inArray, int n, int nDim, int *inCounts, int *outCounts)
     {
 	int num, i, size, aDim;
 	Type type;
-	int  constant;
 	Pointer o, d;
 
 	o = d = NULL;
@@ -740,6 +742,7 @@ RefineDepPos(Array inArray, int n, int nDim, int *inCounts, int *outCounts)
 		case TYPE_USHORT: REDUCE_DELTAS(ushort); break;	
 		case TYPE_BYTE:   REDUCE_DELTAS(byte);   break;	
 		case TYPE_UBYTE:  REDUCE_DELTAS(ubyte);  break;	
+	        default: break;
 	    }
 
 #undef REDUCE_DELTAS
@@ -862,7 +865,7 @@ RefineDepPosIrreg(Array inArray, int n, int nDim, int *inCounts, int *outCounts)
 #define COPYDATA(type)					\
 {							\
     type *tPtr;						\
-    register j;						\
+    register int j;					\
 							\
     tPtr = (type *)dIn;					\
     for (i = 0; i < olim; i++)				\
@@ -885,6 +888,7 @@ RefineDepPosIrreg(Array inArray, int n, int nDim, int *inCounts, int *outCounts)
 	    case TYPE_SHORT:  COPYDATA(short);  break;
 	    case TYPE_UBYTE:  COPYDATA(ubyte);  break;
 	    case TYPE_BYTE:   COPYDATA(byte);   break;
+	    default: break;
 	}
 
 #undef COPYDATA
@@ -1138,6 +1142,7 @@ RefineDepPosIrreg(Array inArray, int n, int nDim, int *inCounts, int *outCounts)
 	case TYPE_SHORT:  COPYOUT_CONVERSION(short); break;
 	case TYPE_INT:    COPYOUT_CONVERSION(int); break;
 	case TYPE_UINT:   COPYOUT_CONVERSION(uint); break;
+        default: break;
     }
 
 #undef COPYOUT_CONVERSION
@@ -1151,6 +1156,8 @@ error:
     DXFree((Pointer)buffer);
     return NULL;
 }
+
+#if 0
 static Array
 RefineDepPosIrregBoolean(Array inArray, int n,
 			    int nDim, int *inCounts, int *outCounts)
@@ -1414,6 +1421,7 @@ error:
     DXFree((Pointer)buffer);
     return NULL;
 }
+#endif
 
 #define INDICES(ref, indices, strides, ndim)            \
 {                                                       \
@@ -1535,8 +1543,6 @@ RefineRegReferences(Array in, int nDim, int levels,
 
 	    for ( ;; )
 	    {
-		int ref;
-
 		REFERENCE(indices, *ptr, outS, nDim);
 		ptr ++;
 

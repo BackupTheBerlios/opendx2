@@ -11,31 +11,22 @@
 
 
 #include <dx/dx.h>
+#include "mark.h"
 
 
 /* specials: these don't call DXEndField */
-Object _dxf_RenameX(Object o, char *old, char *new);
-Object _dxf_ReplaceX(Object o, Object add, char *from, char *to);
+extern Object _dxf_RenameX(Object o, char *old, char *new); /* from libdx/component.c */
+extern Object _dxf_ReplaceX(Object o, Object add, char *from, char *to); /* from libdx/component.c */
+extern Object _dxfDXEmptyObject(Object o); /* from libdx/component.c */
 
-
-Error _dxfParmCheck(int nobjs, Object o1, char *oname1,
-  	                       Object o2, char *oname2,
- 	           int nparms, Object p1, char *name1, int nullok1,
- 	                       Object p2, char *name2, int nullok2,
-	           int parmlist);
-
-extern Object _dxfDXEmptyObject(Object o);
-
-
-
-int
+Error
 m_Mark(Object *in, Object *out)
 {
     char *target;
 
     if (!_dxfParmCheck(1, in[0], "input", NULL, NULL,
 		       1, in[1], "component name", 0,
-		          NULL, NULL, NULL, NULL)) {
+		          NULL, NULL, 0, 0)) {
 	out[0] = NULL;
 	return ERROR;
     }

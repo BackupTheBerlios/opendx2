@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/echo.c,v 1.4 1999/07/12 22:32:57 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/echo.c,v 1.5 2000/08/24 20:04:28 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -17,6 +17,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <dx/dx.h>
+#include "echo.h"
 
 
 #define MAXPARMS   21
@@ -51,11 +52,6 @@ static int EndCheck(struct einfo *ep)
 }
 
 
-/* NOTE: If you change the definition, also change the usage in
- *	dxloutputvalue.m
- */
-Error _dxf_ConvertObjectsToStringValues(Object *in, int nobj, char **retstr);
-        
 static char *ClassNameString(Class c);
 static void pv(struct einfo *ep, Type t, Pointer value, int offset);
 static void pc(struct einfo *ep, Type t, Pointer value, int offset);
@@ -385,7 +381,7 @@ static void ps(struct einfo *ep, char *cp)
 Error _dxf_ConvertObjectsToStringValues(Object *in, int nobj, char **retstr)
 {
     struct einfo ei;
-    int input, items, i, rank, shape[100];
+    int input, items, rank, shape[100];
     char *cp;
     Pointer dp;
     Class class;

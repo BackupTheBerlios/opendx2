@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/ambientlight.c,v 1.3 1999/05/10 15:45:22 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/ambientlight.c,v 1.4 2000/08/24 20:04:23 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -32,8 +32,10 @@ END:
 
 #include <string.h>
 #include <dx/dx.h>
-static int GoodRGB(RGBColor);
 
+#if 0
+static int GoodRGB(RGBColor);
+#endif
 
 int
 m_AmbientLight(Object *in, Object *out)
@@ -60,7 +62,7 @@ m_AmbientLight(Object *in, Object *out)
 }
 
 
-
+#if 0
 static int GoodRGB(RGBColor col)
 {
 
@@ -76,17 +78,5 @@ static int GoodRGB(RGBColor col)
   }
   return OK;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif
 

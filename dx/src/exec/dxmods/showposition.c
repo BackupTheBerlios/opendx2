@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showposition.c,v 1.5 2000/05/16 18:48:16 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showposition.c,v 1.6 2000/08/24 20:04:49 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -15,8 +15,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
-#include <_getfield.h>
+#include "_helper_jea.h"
+#include "_getfield.h"
+#include "showboundary.h"
 
 #define  DEFAULT_COLOR  DXRGB(1.0,1.0,1.0)
 
@@ -24,15 +25,6 @@
 #define  NEWBIT(n)      ((Pointer)DXAllocateLocalZero((((n)+31)/32)*4))
 #define  SETBIT(a,i,v)  (((unsigned int*)(a))[((i)/32)]|=((v)<<((i)&31)))
 #define  GETBIT(a,i)    (1&(((unsigned int*)(a))[((i)/32)]>>((i)&31)))
-
-
-/* The following function resides in the file: showboundary.m */
-extern
-Array _dxf_resample_array
-          ( component_info comp,  int dep_ref,
-            int Nin,   int Nout,
-            int *push, int *pull );
-
 
 
 static
@@ -170,7 +162,7 @@ Field show_positions ( Field input, char *data, int size )
 
         if ( t != NULL ) 
             for ( j=0; removables[j] != NULL; j++ )
-                if ( 0 == strcmp ( r, removables[j] ) )
+                if ( 0 == strcmp ( r, removables[j] ) ) {
                     if ( !DXSetComponentAttribute
                               ( output, "positions", relations[i], NULL ) )
                         goto error;
@@ -178,6 +170,7 @@ Field show_positions ( Field input, char *data, int size )
                         DXWarning
                           ( "#4415", "positions", relations[i], removables[j] );
                 /* `%s' component has unusual `%s' attribute: `%s'.  removing */
+		}
     }
 
 
@@ -211,7 +204,6 @@ Field show_positions ( Field input, char *data, int size )
 
 
 
-extern
 int
 m_ShowPositions ( Object *in, Object *out )
 {

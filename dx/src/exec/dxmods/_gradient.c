@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_gradient.c,v 1.4 2000/05/16 18:47:21 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_gradient.c,v 1.5 2000/08/24 20:04:12 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -17,6 +17,7 @@
 #include <string.h>
 #include <dx/dx.h>
 #include "vectors.h"
+#include "_gradient.h"
 
 static Object _dxfGradientObject(Object);
 static Error  _dxfGradientField(Pointer);
@@ -218,7 +219,7 @@ _dxfGradientField(Pointer ptr)
     Object		attr;
     int			permute[32];
     int			axes[32];
-    int			pFlag;
+    int			pFlag=0;
 
     field = *(Field *)ptr;
 
@@ -329,11 +330,12 @@ _dxfGradientField(Pointer ptr)
 		    /*
 		     * Check that only one axis delta coefficient is non-zero
 		     */
-		    if (del[i*dim+j] != 0.0)
+		    if (del[i*dim+j] != 0.0) {
 			if (k != -1)
 			    grid = 0;
 			else
 			    k = j;
+		    }
 		}
 
 		if (! grid)
@@ -927,7 +929,7 @@ _dxfGradientIrregular(Field field)
     byte        *counts = NULL;
     float       *gradients = NULL;
     Pointer     data = NULL;
-    int	        *e, i, j, nInv;
+    int	        i, j, nInv;
     float       *v;
     byte        *c;
     ArrayHandle pHandle = NULL, cHandle = NULL;
@@ -1250,7 +1252,6 @@ error:
 	s[soff]   = -(((float)dPtr[i1]) - d0);					\
     }										\
 
-static Error Invert(float *, float *, float *);
 
 #define LOOP(ctype, n, table, element)						\
 {										\
@@ -1313,6 +1314,7 @@ _dxfCubesGradient(ArrayHandle points, Pointer data,
 	case TYPE_USHORT: LOOP(ushort, 8, CubeEdgeTable, cube); break;
 	case TYPE_BYTE:   LOOP(byte,   8, CubeEdgeTable, cube); break;
 	case TYPE_UBYTE:  LOOP(ubyte,  8, CubeEdgeTable, cube); break;
+        default: break;
     }
 
     return;
@@ -1347,6 +1349,7 @@ _dxfTetrasGradient(ArrayHandle points, Pointer data,
 	case TYPE_USHORT: LOOP(ushort, 4, TetraEdgeTable, tet); break;
 	case TYPE_BYTE:   LOOP(byte,   4, TetraEdgeTable, tet); break;
 	case TYPE_UBYTE:  LOOP(ubyte,  4, TetraEdgeTable, tet); break;
+        default: break;
     }
 
     return;
@@ -1357,9 +1360,9 @@ _dxfTrisGradient(ArrayHandle points, Pointer data,
 		Type type, float *gradients, byte *counts, int *tri, int pDim)
 {
 
-    float   *pt, scale;
+    float   scale;
     Vector  v0, v1, cross;
-    float   d0, d1, d2;
+    float   d0=0, d1=0, d2=0;
     float   *gPtr;
     int     p, q, r;
     float   pBuf[3], qBuf[3], rBuf[3];
@@ -1390,6 +1393,7 @@ _dxfTrisGradient(ArrayHandle points, Pointer data,
 	case TYPE_USHORT: GET_Zs(ushort); break;
 	case TYPE_BYTE:   GET_Zs(byte);   break;
 	case TYPE_UBYTE:  GET_Zs(ubyte);  break;
+        default: break;
     }
 
 #undef GET_Zs
@@ -1473,9 +1477,9 @@ static void
 _dxfQuadsGradient(ArrayHandle points, Pointer data,
 	    Type type, float *gradients, byte *counts, int *quad, int pDim)
 {
-    float   *pt, scale;
+    float   scale;
     Vector  v0, v1, cross;
-    float   d0, d1, d2, d3;
+    float   d0=0, d1=0, d2=0, d3=0;
     float   *gPtr;
     int     p, q, r, s;
     float   pBuf[3], qBuf[3], rBuf[3], sBuf[3];
@@ -1503,6 +1507,7 @@ _dxfQuadsGradient(ArrayHandle points, Pointer data,
 	case TYPE_USHORT: GET_Zs(ushort); break;
 	case TYPE_BYTE:   GET_Zs(byte);   break;
 	case TYPE_UBYTE:  GET_Zs(ubyte);  break;
+        default: break;
     }
 
 #undef GET_Zs
@@ -1602,6 +1607,7 @@ _dxfQuadsGradient(ArrayHandle points, Pointer data,
     return;
 }
 
+#if 0
 static Error
 Invert(float *m, float *s, float *r)
 {
@@ -1632,3 +1638,5 @@ Invert(float *m, float *s, float *r)
 	
     return OK;
 }
+#endif
+

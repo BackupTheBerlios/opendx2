@@ -12,9 +12,10 @@
 
 #define WHERE in[0]
 
-extern Field _dxfSaveSoftwareWindow(char *);
-extern Field _dxfSaveHardwareWindow(char *);
+extern Field _dxfSaveSoftwareWindow(char *); /* from libdx/displayx.c */
+extern Field _dxfSaveHardwareWindow(char *); /* from hwrender/hwRender.c */
 
+Error
 m_ReadImageWindow(Object *in, Object *out)
 {
     Object image;

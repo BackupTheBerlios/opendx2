@@ -13,6 +13,8 @@
 #include <dx/dx.h>
 #include <string.h>
 #include <math.h>
+#include "verify.h"
+#include "../libdx/edf.h"
 
 static Error Check(Object o);
 static Error GroupCheck(Group g);
@@ -25,13 +27,10 @@ static Error AreTrisOK(Array pos, Array conn);
 static Error AreLinesOK(Array pos, Array conn);
 
 static int TetraVol(Point *p, Point *q, Point *r, Point *s);
+
+#if 0
 static int TriArea(Point *p, Point *q, Point *r);
-
-extern Error _dxfValidate(Field f);
-Error _dxfIsCircular(Object o);
-
-#define MAXRANK 32
-
+#endif
 
  
 /* look for malformed objects and print messages about them.
@@ -60,19 +59,16 @@ m_Verify(Object *in, Object *out)
 
 static Error Check(Object o)
 {
-    Object subo, newo, subo2;
+    Object subo, subo2;
     Matrix m;
-    Array a;
     int fixed, z;
-    float pos;
-    char *name;
     int i;
 
     switch (DXGetObjectClass(o)) {
 
       case CLASS_GROUP:
 	/* for each member */
-	for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++)
+	for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++)
 	    if (!Check(subo))
 		return ERROR;
 
@@ -96,7 +92,7 @@ static Error Check(Object o)
 
       case CLASS_SCREEN:
 	if (!DXGetScreenInfo((Screen)o, &subo, &fixed, &z))
-	    return NULL;
+	    return ERROR;
 
 	if (!Check(subo))
 	    return ERROR;
@@ -105,7 +101,7 @@ static Error Check(Object o)
 
       case CLASS_XFORM:
 	if (!DXGetXformInfo((Xform)o, &subo, &m))
-	    return NULL;
+	    return ERROR;
 	
 	if (!Check(subo))
 	    return ERROR;
@@ -114,7 +110,7 @@ static Error Check(Object o)
 	
       case CLASS_CLIPPED:
 	if (!DXGetClippedInfo((Clipped)o, &subo, &subo2))
-	    return NULL;
+	    return ERROR;
 	
 	if (!Check(subo))
 	    return ERROR;
@@ -256,7 +252,7 @@ static Error GroupCheck(Group g)
     switch (DXGetGroupClass(g)) {
       case CLASS_COMPOSITEFIELD:
 
-	for (i=0; subo = DXGetEnumeratedMember(g, i, NULL); i++) {
+	for (i=0; (subo=DXGetEnumeratedMember(g, i, NULL)); i++) {
 	    /* get info from first nonempty member */
 	    if (needone) {
 		if (!stuffstruct(&first, subo, i))
@@ -314,7 +310,7 @@ FieldCheck(Field f)
     if (pos)
 	haspositions++;
     
-    for (i=0; subo=(Array)DXGetEnumeratedComponentValue(f, i, &name); i++) {
+    for (i=0; (subo=(Array)DXGetEnumeratedComponentValue(f, i, &name)); i++) {
 	
 	if (DXGetObjectClass((Object)subo) != CLASS_ARRAY) {
 	    DXSetError(ERROR_DATA_INVALID, 
@@ -680,6 +676,7 @@ static int TetraVol(Point *p, Point *q, Point *r, Point *s)
     return (vol < 0.0) ? -1 : 1;
 }
 
+#if 0
 /* 
  */
 static int TriArea(Point *p, Point *q, Point *r)
@@ -698,7 +695,7 @@ static int TriArea(Point *p, Point *q, Point *r)
 
     return (area < 0.0) ? -1 : 1;
 }
-
+#endif
 
 
 /*
@@ -734,7 +731,7 @@ static Error cpath(struct plist *p, Object o)
     switch (DXGetObjectClass(o)) {
 
       case CLASS_GROUP:
-	for (i=0; child = DXGetEnumeratedMember((Group)o, i, &name); i++) {
+	for (i=0; (child=DXGetEnumeratedMember((Group)o, i, &name)); i++) {
 	    if (pushchild(p, child) == ERROR) {
 		DXAddMessage("member %d", i);
 		return ERROR;
@@ -744,7 +741,7 @@ static Error cpath(struct plist *p, Object o)
 	return OK;
 
       case CLASS_FIELD:
-	for (i=0; child = DXGetEnumeratedComponentValue((Field)o, i, &name); i++) {
+	for (i=0; (child=DXGetEnumeratedComponentValue((Field)o, i, &name)); i++) {
 	    if (pushchild(p, child) == ERROR) {
 		DXAddMessage("member %d", i);
 		return ERROR;
@@ -755,7 +752,7 @@ static Error cpath(struct plist *p, Object o)
 	
       case CLASS_SCREEN:
 	if (!DXGetScreenInfo((Screen)o, &child, NULL, NULL))
-	    return NULL;
+	    return ERROR;
 	
 	if (pushchild(p, child) == ERROR) {
 	    DXAddMessage("screen object");
@@ -767,7 +764,7 @@ static Error cpath(struct plist *p, Object o)
 
       case CLASS_CLIPPED:
 	if (!DXGetClippedInfo((Clipped)o, &child, NULL))
-	    return NULL;
+	    return ERROR;
 
 	if (pushchild(p, child) == ERROR) {
 	    DXAddMessage("clipped object");
@@ -776,7 +773,7 @@ static Error cpath(struct plist *p, Object o)
 	popchild(p);
 
 	if (!DXGetClippedInfo((Clipped)o, NULL, &child))
-	    return NULL;
+	    return ERROR;
 
 	if (pushchild(p, child) == ERROR) {
 	    DXAddMessage("clipping object");
@@ -788,7 +785,7 @@ static Error cpath(struct plist *p, Object o)
 
       case CLASS_XFORM:
 	if (!DXGetXformInfo((Xform)o, &child, NULL))
-	    return NULL;
+	    return ERROR;
 
 	if (pushchild(p, child) == ERROR) {
 	    DXAddMessage("transform object");
@@ -807,6 +804,7 @@ static Error cpath(struct plist *p, Object o)
     /* not reached */
 }
 
+#if 0
 /* private for debugging 
  */
 static void printplist(struct plist *p)
@@ -820,6 +818,7 @@ static void printplist(struct plist *p)
 	pp = pp->next;
     } while (pp);
 }
+#endif
 
 /* check list on the way down.  if you find a duplicate, return error.
  *  otherwise alloc space for a new entry and add this object to the

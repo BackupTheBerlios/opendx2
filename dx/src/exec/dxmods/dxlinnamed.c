@@ -13,12 +13,12 @@
 
 #include <stdio.h>
 #include <dx/dx.h>
+#include "../dpexec/parse.h"
 
-extern Error DXRegisterForNotification(char *, Pointer);
-extern Error DXNotifyRegistered(char *);
-extern Error DXGetVariable(char *, Object *);
-extern Error DXSetVariable(char *, Object);
-extern Error _dxf_ExRunOn(int, Error(*)(Object *), Pointer, int);
+extern Error DXRegisterForNotification(char *, Pointer); /* from libdx/notify.c */
+extern Error DXNotifyRegistered(char *); /* from libdx/notify.c */
+extern Error DXGetVariable(char *, Object *); /* from dpexec/variable.c */
+extern Error DXSetVariable(char *, Object); /* from dpexec/variable.c */
 
 #define NAME	in[0]
 #define DEFAULT	in[1]

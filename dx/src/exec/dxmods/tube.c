@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/tube.c,v 1.3 1999/05/10 15:45:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/tube.c,v 1.4 2000/08/24 20:04:54 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -16,10 +16,10 @@
 #include <stdio.h>
 #include <math.h>
 #include <dx/dx.h>
+#include "_autocolor.h"
 
 static Error tube_diameter();
 static Error tube_ngon();
-extern Error _dxfBoundingBoxDiagonal();
 
 int m_Tube(in, out)
     Object	*in;
@@ -27,11 +27,9 @@ int m_Tube(in, out)
 {
     Object	in0, in1, in2, in3;
     double	diameter;
-    float	fval, thickness;
+    float	fval;
     int		ngon;
     char	*style;
-    Class	class;
-    Point	box[8];
 
     out[0] = NULL;
 

@@ -38,11 +38,11 @@ static Object omitnumberedseries(Series s, Object numbers);
 static Array  omitnumberedlist(Array a, Object numbers);
 static Object omitnumberedstring(Object o, Object numbers);
 
-static int int_compare(void *a, void *b)
+static int int_compare(const void *a, const void *b)
 {
     return (*(int *)a - *(int *)b);
 }
-static int str_compare(void *a, void *b)
+static int str_compare(const void *a, const void *b)
 {
     return strcmp((char *)a, (char *)b);
 }
@@ -110,8 +110,6 @@ doobject(Object o, Object whichone, int fexcept)
 {
     Object newo = NULL;
     Object subo = NULL;
-    char *cp;
-    int i;
 
     switch (DXGetObjectClass(o)) {
       case CLASS_STRING:
@@ -164,7 +162,10 @@ doobject(Object o, Object whichone, int fexcept)
 	    return NULL;
 	}
 	    
-	return newo;
+       default:
+         break;
+
+       return newo;
     }
 
     DXSetError(ERROR_BAD_PARAMETER, "input must be group or list");
@@ -742,7 +743,7 @@ omitnumberedseries(Series s, Object numbers)
     Object omitted;
     Series news = NULL;
     float position;
-    int i, newi, j, selected;
+    int i, newi, selected;
     int count, members;
     int *memberlist = NULL;
 
@@ -1021,7 +1022,7 @@ omitnumberedgroup(Group g, Object numbers)
     Object omitted;
     Group newg = NULL;
     char *name;
-    int i, j, selected, skipme;
+    int i, selected;
     int count, members;
     int *memberlist = NULL;
 

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.c,v 1.5 2000/05/16 18:47:22 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.c,v 1.6 2000/08/24 20:04:13 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -122,7 +122,119 @@ static struct _comp_data_rec_type
               TYPE_INT,   CATEGORY_REAL, 1, 4, 4 }
       };
 
+/*------------------------------------------------*
+ *                                                *
+ * Guide to seeing connectivity data:             *
+ *                        vertex number chart     *
+ *                                                *
+ * for 2D: observer is in front of the page       *
+ * for 3D: lower left is closest to the observer. *
+ *                                                *
+ *------------------------------------------------*
+ *                                                *
+ * line:                                          *
+ *         p --- q              0 --- 1           *
+ *                                                *
+ *------------------------------------------------*
+ *                                                *
+ * triangle:                                      *
+ *            p                     0             *
+ *           / \                   / \            *
+ *          /   \                 /   \           *
+ *         q --- r               1 --- 2          *
+ *                                                *
+ *------------------------------------------------*
+ *                                                *
+ * quad(rangle):                                  *
+ *         p --- q               0 --- 1          *
+ *         |     |               |     |          *
+ *         |     |               |     |          *
+ *         r --- s               2 --- 3          *
+ *                                                *
+ *------------------------------------------------*
+ *                                                *
+ * tetrahedron:                                   *
+ *             p -s                  0 -3         *
+ *            / \ |                 / \ |         *
+ *           /   \|                /   \|         *
+ *          q --- r               1 --- 2         *
+ *                                                *
+ *------------------------------------------------*
+ *                                                *
+ * cube:                                          *
+ *           p --- q                 0 --- 1      *
+ *          /|    /|                /|    /|      *
+ *         r --- s |               2 --- 3 |      *
+ *         | |   | |               | |   | |      *
+ *         | t --| u               | 4 --| 5      *
+ *         |/    |/                |/    |/       *
+ *         v --- w                 6 --- 7        *
+ *                                                *
+ *------------------------------------------------*/
 
+/* Decomposition of Connective Elements:
+ *
+ *   (Names below are Types as from <basic.h>)
+ *
+ *     Line          -> Two   Points
+ *     Quadrilateral -> Four  Lines
+ *     Triangle      -> Three Lines
+ *     Cube          -> Six   Quadrilaterals
+ *     Tetrahedron   -> Four  Triangles
+ */
+struct _connect_data_rec_type
+{
+    Component_Type self;
+    int            dimensionality;
+    Component_Type degenerates_to;
+    int            ndegens;
+    int            degensiz;
+    int            connect[6][4];
+};
+
+#if 0
+static struct _connect_data_rec_type 
+ connect_data [ Connective_Component_Type_size ]
+   =
+     { { LINE_CONNECTIONS_COMP, 1, POSITIONS_3D_COMP, 2, 1,
+             { {  0, -1, -1, -1 },
+               {  1, -1, -1, -1 },
+               { -1, -1, -1, -1 },
+               { -1, -1, -1, -1 },
+               { -1, -1, -1, -1 },
+               { -1, -1, -1, -1 } } },
+       { QUAD_CONNECTIONS_COMP, 2, LINE_CONNECTIONS_COMP, 4, 2,
+             { {  0,  1, -1, -1 },
+               {  1,  3, -1, -1 },
+               {  3,  2, -1, -1 },
+               {  2,  0, -1, -1 },
+               { -1, -1, -1, -1 },
+               { -1, -1, -1, -1 } } },
+       { TRIANGLE_CONNECTIONS_COMP, 2, LINE_CONNECTIONS_COMP, 3, 2,
+             { {  0,  1, -1, -1 },
+               {  1,  2, -1, -1 },
+               {  2,  0, -1, -1 },
+               { -1, -1, -1, -1 },
+               { -1, -1, -1, -1 },
+               { -1, -1, -1, -1 } } },
+       { CUBE_CONNECTIONS_COMP, 3, QUAD_CONNECTIONS_COMP, 6, 4,
+             /* Changed */
+             { {  1,  0,  3,  2 },
+               {  4,  5,  6,  7 },
+               {  0,  1,  4,  5 },
+               {  2,  6,  3,  7 },
+               {  0,  4,  2,  6 },
+               {  1,  3,  5,  7 } } },
+       { TETRA_CONNECTIONS_COMP, 3, TRIANGLE_CONNECTIONS_COMP, 4, 3,
+             { {  1,  3,  2, -1 },
+               {  0,  2,  3, -1 },
+               {  0,  3,  1, -1 },
+               {  0,  1,  2, -1 },
+               { -1, -1, -1, -1 },
+               { -1, -1, -1, -1 } } } };
+#endif
+
+#if 0
 static Error _inspect ( )
 {
     DXMessage
@@ -159,11 +271,11 @@ static Error _inspect ( )
 
     return OK;
 }
+#endif
 
 
 /*----------------------------- Begin Types section -------------------------*/
 
-extern
 char * _dxf_ClassName ( Class class )
 {
    switch ( class )
@@ -211,7 +323,6 @@ char * _dxf_ClassName ( Class class )
 
 /*------------------------ Begin Component Access section -------------------*/
 
-extern
 /* Extern routine.  Consult the file header */
 Array _dxf_NewComponentArray ( Component_Type comp_type,
                           int            *count,
@@ -297,7 +408,6 @@ Array _dxf_NewComponentArray ( Component_Type comp_type,
 }
 
 
-extern
 /* Extern routine.  Consult the file header */
 Pointer _dxf_GetComponentData ( Object         in_object,
                            Component_Type comp_type,
@@ -309,10 +419,7 @@ Pointer _dxf_GetComponentData ( Object         in_object,
     Object    attribute;
     Pointer   ptr     = NULL;
 
-    Type      type;
-    Category  cat;
     int       rank;
-    int       shape [ 8 ]; /* Just in case rank != 1 */
     int       position = Component_Type_pos ( comp_type );
 
     DXASSERT ( comp_type != NULL_COMP );
@@ -474,13 +581,14 @@ Pointer _dxf_GetComponentData ( Object         in_object,
         }
 #endif
 
-    if ( ERROR == ( ptr = DXGetArrayData ( array ) ) )
+    if ( ERROR == ( ptr = DXGetArrayData ( array ) ) ) {
         if ( DXGetError() != ERROR_NONE ) 
             goto error;
         else
             ErrorGotoPlus1
                 ( ERROR_MISSING_DATA,
                   "\"%s\" component is null", comp_data [ position ].name )
+    }
 
     return ptr;
 
@@ -495,7 +603,6 @@ Pointer _dxf_GetComponentData ( Object         in_object,
 /*----------------------------- Begin Array section -------------------------*/
 
 
-extern
 Array _dxf_CopyArray_jea ( Array in, enum copy copy )
 {
     Array    out = NULL;
@@ -576,7 +683,7 @@ Object _flatten_hierarchy ( Object in, CompositeField out, int *position )
                     ( ERROR_DATA_INVALID, "Illegal member in Composite Field" );
 
             for ( i      = 0;
-                  member = DXGetEnumeratedMember ( (Group)in, i, NULL );
+                  (member=DXGetEnumeratedMember ( (Group)in, i, NULL ));
                   i++ )
                 if ( !_flatten_hierarchy ( member, out, position ) )
                     goto error;
@@ -595,7 +702,6 @@ Object _flatten_hierarchy ( Object in, CompositeField out, int *position )
 }
 
 
-extern
 Object _dxf_FlattenHierarchy ( Object in )
 {
     CompositeField  out = NULL;
@@ -648,7 +754,6 @@ Object _dxf_FlattenHierarchy ( Object in )
  *    position floating point value  Ignore        Use
  */
 
-extern
 Group _dxf_SetMember_G_S ( Group g, int n, char *name, float position, Object o )
 {
     DXASSERT ( DXGetObjectClass ( (Object)g ) == CLASS_GROUP );
@@ -666,7 +771,6 @@ Group _dxf_SetMember_G_S ( Group g, int n, char *name, float position, Object o 
 }
 
 
-extern
 Object _dxf_GetEnumeratedMember_G_S ( Group g, int n, char **name, float *position )
 {
     DXASSERT ( DXGetObjectClass((Object)g)==CLASS_GROUP );
@@ -700,7 +804,6 @@ Object _dxf_GetEnumeratedMember_G_S ( Group g, int n, char **name, float *positi
 
 /*----------------------------- Begin Generic section -----------------------*/
 
-extern
 /* Extern routine.  Consult the file header */
 int _dxf_greater_prime ( int in )
 {
@@ -734,7 +837,6 @@ int _dxf_greater_prime ( int in )
 
 /*----------------------- Begin Field manipulation section ------------------*/
 
-extern
 Field _dxf_MakeFieldEmpty ( Field field )
 {
     char *name;
@@ -766,7 +868,6 @@ Field _dxf_MakeFieldEmpty ( Field field )
 }
 
 
-extern 
 /*
  * for 'infield', calculate and set a "fuzz" component.
  * 'type' values progress as follows:
@@ -780,10 +881,6 @@ Field _dxf_SetFuzzAttribute ( Field infield, int type )
     Array  positions;
     int    ndim;
     int    npoints;
-    Point  bbox[8];
-    int    i;
-    Point  min;
-    Point  max;
     double fuzz;
 
     if ( !DXEmptyField ( infield )
@@ -870,14 +967,13 @@ Field _dxf_SetFuzzAttribute ( Field infield, int type )
 /*
  *
  */
-extern Field
+Field
 _dxf_SetDefaultColor ( Field input, RGBColor color )
 {
     int      np;
     Array    p;
     Array    carray = NULL;
     int      set_default = 1;
-    char     *name;
     int      i;
 
     static char *color_names[] = { "colors", "front colors", NULL };
@@ -936,7 +1032,6 @@ _dxf_SetDefaultColor ( Field input, RGBColor color )
 
 /*-------------------*/
 
-extern
 Field
 _dxf_GetEnumeratedImage ( Object o, int n )
 {
@@ -959,11 +1054,12 @@ _dxf_GetEnumeratedImage ( Object o, int n )
         for ( i=0;
               ( image = (Field) DXGetSeriesMember ( (Series) o, i, &position ) );
               i++ )
-           if ( ( (int)position ) == n )
+           if ( ( (int)position ) == n ) {
                if ( _dxf_ValidImageField ( image ) )
                    return image;
                else
                    goto error;
+	   }
     }
     else if ( DXGetError() != ERROR_NONE )
         goto error;
@@ -981,7 +1077,6 @@ _dxf_GetEnumeratedImage ( Object o, int n )
 /*-------------------*/
 
 
-extern
 SizeData *
 _dxf_GetImageAttributes ( Object o, SizeData *sd )
 {
@@ -1046,7 +1141,6 @@ _dxf_GetImageAttributes ( Object o, SizeData *sd )
 
 /*-------------------*/
 
-extern
 /* Extern routine.  Consult the file header */
 Error _dxf_ValidImageField ( Field image )
 {
@@ -1062,7 +1156,6 @@ Error _dxf_ValidImageField ( Field image )
 }
 
 
-extern
 /* Extern routine.  Consult the file header */
 Field _dxf_CheckImage ( Field image )
 {
@@ -1101,7 +1194,6 @@ Field _dxf_CheckImage ( Field image )
 }
 
 
-extern 
 Error _dxf_CountImages ( Object image, int *count )
 {
     int     i;
@@ -1121,7 +1213,7 @@ Error _dxf_CountImages ( Object image, int *count )
             else
             {
                 for ( i      = 0;
-                      member = DXGetEnumeratedMember ( (Group)image, i, NULL );
+                      (member=DXGetEnumeratedMember ( (Group)image, i, NULL ));
                       i++ )
                     if ( !_dxf_CountImages ( member, count ) )
                         goto error;
@@ -1202,7 +1294,7 @@ Error _get_image_deltas ( Object image, float *deltas, int *set )
                     ( ERROR_DATA_INVALID, "Illegal member in Composite Field" );
 #endif
             for ( i      = 0;
-                  member = DXGetEnumeratedMember ( (Group)image, i, NULL );
+                  (member=DXGetEnumeratedMember ( (Group)image, i, NULL ));
                   i++ )
                 if ( !_get_image_deltas ( member, deltas, set ) )
                     goto error;
@@ -1222,7 +1314,6 @@ Error _get_image_deltas ( Object image, float *deltas, int *set )
 }
 
 
-extern
 Error _dxf_GetImageDeltas ( Object image, float *deltas )
 {
     int set = 0;
@@ -1245,7 +1336,6 @@ Error _dxf_GetImageDeltas ( Object image, float *deltas )
 }
 
 
-extern 
 Error _dxf_CheckImageDeltas ( Object image, int *transposed )
 {
     float deltas[4];
@@ -1287,14 +1377,12 @@ Error _dxf_CheckImageDeltas ( Object image, int *transposed )
 
 #if 0
 #endif
-extern 
 /* Extern routine.  Consult the file header */
 Error _dxf_GetImageOrigin ( Field image, int *xorigin, int *yorigin )
 {
     int     count[2];
     int     offsets[2];
     Pointer ptr;
-    Array   array;
 
     ptr = _dxf_GetComponentData ( (Object)image,
                              QUAD_CONNECTIONS_COMP,
@@ -1353,11 +1441,9 @@ Error _dxf_GetImageOrigin ( Field image, int *xorigin, int *yorigin )
 }
 
 
-extern
 /* Extern routine.  Consult the file header */
 Field _dxf_SetImageOrigin ( Field image, int xorigin, int yorigin )
 {
-    int     x0, y0;
     int     count[2];
     int     offsets[2];
     float   Origin[2];
@@ -1445,7 +1531,6 @@ Field _dxf_SetImageOrigin ( Field image, int xorigin, int yorigin )
 }
 
 
-extern
 /* Extern routine.  Consult the file header */
 CompositeField _dxf_SetCompositeImageOrigin ( CompositeField image,
                                          int xorigin, int yorigin )
@@ -1467,7 +1552,7 @@ CompositeField _dxf_SetCompositeImageOrigin ( CompositeField image,
         return image; /* We are in luck */
 
     for ( i = 0;
-          member =  DXGetEnumeratedMember ( (Group)image, i, NULL );
+          (member= DXGetEnumeratedMember ( (Group)image, i, NULL ));
           i++ )
 
         switch ( class = DXGetObjectClass ( member ) )
@@ -1538,7 +1623,6 @@ CompositeField _dxf_SetCompositeImageOrigin ( CompositeField image,
 
 
 #if 0
-extern
 /* Extents are in x and y, and are normalized min_(x,y) = 0 in special cases.
  * For Members in a 'Plain' Group, normalize first, then accumulate.
  * For Members in a Composite Field, do not normalize, just accumulate.
@@ -1702,7 +1786,6 @@ Error _dxf_QueryImageExtents ( Object inp, int *min_x, int *min_y,
 { \
     ubyte *src = (ubyte *)srcPtr; \
     float *dst = (float *)dstPtr; \
-    float    d; \
  \
     for ( y=0, is=0, id=((sy0*wd)+sx0)*3; y<hs; y++, id+=(wd-ws)*3) \
         for ( x=0; x<ws; x++) \
@@ -1718,7 +1801,6 @@ Error _dxf_QueryImageExtents ( Object inp, int *min_x, int *min_y,
 { \
     ubyte *src = (ubyte *)srcPtr; \
     ubyte *dst = (ubyte *)dstPtr; \
-    float   d; \
  \
     for ( y=0, is=0, id=((sy0*wd)+sx0)*3; y<hs; y++, id+=(wd-ws)*3) \
         for ( x=0; x<ws; x++) \
@@ -1756,8 +1838,8 @@ Field PlaceCompositeMember ( Object source,
             {
                 case CLASS_COMPOSITEFIELD:
                     for ( i=0;
-                          member = DXGetEnumeratedMember
-                                       ( (Group)source, i, NULL );
+                          (member=DXGetEnumeratedMember
+                                       ( (Group)source, i, NULL ));
                           i++ )
                         if ( !PlaceCompositeMember
                                   ( member, xoff, yoff, destination ) )
@@ -1890,7 +1972,6 @@ Field PlaceCompositeMember ( Object source,
         return ERROR;
 }
 
-extern
 /* Extern routine.  Consult the file header */
 Field _dxf_SimplifyCompositeImage ( CompositeField image )
 {

@@ -5,13 +5,14 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/vectors.h,v 1.4 2000/08/24 20:04:54 davidt Exp $:
+ */
 
 #include <dxconfig.h>
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/vectors.h,v 1.3 1999/05/10 15:45:33 gda Exp $:
- */
+#ifndef _VECTORS_H_
+#define _VECTORS_H_
 
 #define vector_length		_dxfvector_length_3D
 #define vector_length_squared	_dxfvector_length_squared_3D
@@ -45,3 +46,7 @@ float        _dxfvector_dot_2D(Vector *, Vector *);
 Error        _dxfvector_cross_2D(Vector *, Vector *, Vector *);
 float        _dxfvector_angle_2D(Vector *, Vector *);
 int          _dxfvector_zero_2D(Vector *);
+
+Error _dxfvector_base(Object *,Object *, int);
+
+#endif /* _VECTORS_H_ */

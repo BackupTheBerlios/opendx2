@@ -13,7 +13,7 @@
 #include <dx/dx.h>
 
 
-int
+Error
 m_Light(Object *in, Object *out)
 {
     Vector v;

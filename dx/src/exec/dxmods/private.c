@@ -15,19 +15,20 @@
  */
 
 #include <dxconfig.h>
-
+#include "macroutil.h"
 
 #include <dx/dx.h>
 #include <pmodflags.h>
+#include "../dpexec/function.h"
 
 /*
  * These are modules which are internal to the exec and aren't exposed to
  * the user in the dx.mdf file.
  */
+Error
 _dxf_private_modules()
 {
     {
-    extern Error m_MacroStart(Object *, Object *);
     DXAddModule("MacroStart", m_MacroStart, 
 	MODULE_PASSTHRU,
         51, "count",  "i00", "i01", "i02", "i03", "i04", "i05", "i06", "i07",
@@ -44,7 +45,6 @@ _dxf_private_modules()
 	"o49");
     }
     {
-    extern Error m_MacroEnd(Object *, Object *);
     /* This used to be set to MODULE_PASSBACK too but there were problems */
     /* with not generating all the outputs especially when the macro      */
     /* was upstream from a switch */
@@ -63,4 +63,5 @@ _dxf_private_modules()
 	"o39", "o40", "o41", "o42", "o43", "o44", "o45", "o46", "o47", "o48", 
 	"o49");
     }
+    return OK;
 }

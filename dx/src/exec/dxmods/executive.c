@@ -28,8 +28,7 @@ END:
 #include <string.h>
 #include <dx/dx.h>
 
-/* prototypes for things in command.c */
-extern Error _dxf_ExExecCommand(Object *in);
+extern Error _dxf_ExExecCommand(Object *in); /* from dpexec/command.c */
 
 Error m_Executive(Object *in, Object *out)
 {

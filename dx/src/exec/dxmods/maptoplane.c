@@ -6,11 +6,11 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/maptoplane.c,v 1.4 2000/05/16 18:48:03 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/maptoplane.c,v 1.5 2000/08/24 20:04:40 davidt Exp $:
  */
 
 #include <dxconfig.h>
-
+#include "_maptoplane.h"
 
 /***
 MODULE:		
@@ -38,7 +38,6 @@ END:
 #include <bounds.h>
 #include "vectors.h"
 
-extern Object _dxfMapToPlane ();
 static Error map_normal ();
 
 int m_MapToPlane (in, out)
@@ -46,7 +45,6 @@ int m_MapToPlane (in, out)
     Object		*out;
 {
     Object		ino0, ino1, ino2;
-    Object		cutplane;
     Point               p;
     float		point[3];
     float		normal[3];
@@ -96,7 +94,7 @@ int m_MapToPlane (in, out)
     if (! map_normal (normal, ino2))
 	return ERROR;
 
-    out[0] = _dxfMapToPlane (ino0, point, normal);
+    out[0] = _dxfMapToPlane (ino0, (Vector*)point, (Vector*)normal);
 
     if (DXGetError() != ERROR_NONE)
         return ERROR;

@@ -5,9 +5,14 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/interact.h,v 1.6 2000/08/24 20:04:39 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
+#ifndef _INTERACT_H_
+#define _INTERACT_H_
 
 #include <dx/dx.h>
 #if HAVE_VALUES_H
@@ -46,10 +51,9 @@ struct einfo {
     char *msgbuf;
 };
 
-extern
 Error _dxfinteract_float(char *, Object,float *, float *,
                          float *,int *,char *,int,method_type,int *,int *);
-extern
 Error _dxfprint_message(Pointer ,struct einfo *,Type ,int ,int *,int);
-extern
 int _dxfcheck_obj_cache(Object ,char *,int ,Object);
+
+#endif /* _INTERACT_H_ */

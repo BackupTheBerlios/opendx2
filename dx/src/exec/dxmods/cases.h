@@ -10,8 +10,11 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/cases.h,v 1.3 1999/05/10 15:45:22 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/cases.h,v 1.4 2000/08/24 20:04:25 davidt Exp $:
  */
+
+#ifndef _CASES_H_
+#define _CASES_H_
 
 /*
  * This file contains the case tables used by _dxfMapToPlane when intersecting
@@ -571,3 +574,4 @@ static Case cubes_loops[] =
 /* 354 */ {  -1, -1},  
 };
 
+#endif /* _CASES_H_ */

@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/getset.c,v 1.6 2000/08/10 05:28:23 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/getset.c,v 1.7 2000/08/24 20:04:32 davidt Exp $
  */
 
 #include <string.h>
@@ -30,21 +30,23 @@
 #define SET_KEY			in[2]
 #endif
 
+extern int DXLoopFirst(); /* from dpexec/evalgraph.c */
+
 static Error Set(Object *in, Object *out, int flag);
 
-m_Set(Object *in, Object *out)
+Error m_Set(Object *in, Object *out)
 {
     if(DXLoopFirst())
         DXWarning("#5260", "Set", "Set", "Set");
     return(Set(in, out, DFLT_GLOBAL));
 }
 
-m_SetGlobal(Object *in, Object *out)
+Error m_SetGlobal(Object *in, Object *out)
 {
     return(Set(in, out, GLOBAL));
 }
 
-m_SetLocal(Object *in, Object *out)
+Error m_SetLocal(Object *in, Object *out)
 {
     return(Set(in, out, LOCAL));
 }
@@ -173,17 +175,17 @@ error:
 
 static Error Get(Object *in, Object *out, int flag);
 
-m_GetLocal(Object *in, Object *out)
+Error m_GetLocal(Object *in, Object *out)
 {
     return(Get(in, out, LOCAL));
 }
 
-m_GetGlobal(Object *in, Object *out)
+Error m_GetGlobal(Object *in, Object *out)
 {
     return(Get(in, out, GLOBAL));
 }
 
-m_Get(Object *in, Object *out)
+Error m_Get(Object *in, Object *out)
 {
     if(DXLoopFirst())
         DXWarning("#5260", "Get", "Get", "Get");

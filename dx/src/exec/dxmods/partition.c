@@ -8,10 +8,9 @@
 
 #include <dxconfig.h>
 
-
-
 #include <dx/dx.h>
 
+extern void _dxfPermute(); /* from libdx/permute.c */
 Object DXObjectPartition(Object, int, int); 
 
 /* default number of partitions if number of processors > 1
@@ -22,7 +21,6 @@ int
 m_Partition(Object *in, Object *out)
 {
     int maxnum, mincount;
-    Object o;
     
     out[0] = NULL;
 
@@ -658,7 +656,6 @@ CpPartitionTemplate_Reg(Field in, CompositeField template)
     int		   ndim, inCCounts[MAXDIM], inPCounts[MAXDIM];
     int		   inCStrides[MAXDIM], inPStrides[MAXDIM];
     Field          c, f = NULL;
-    float          pos;
     Pointer	   o = NULL, d = NULL;
 
     /*

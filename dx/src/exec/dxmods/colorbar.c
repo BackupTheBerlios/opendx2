@@ -1,4 +1,3 @@
-
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -10,9 +9,9 @@
 #include <stdlib.h>
 
 #include <dxconfig.h>
-
-
-extern Object _dxfAxes2D(Pointer);
+#include "plot.h"
+#include "color.h"
+#include "autoaxes.h"
 
 #define MINTICPIX 5
 
@@ -23,60 +22,40 @@ typedef struct
 } Point2D;
 
 
-extern int _dxfIsImportedColorMap(Object, int *, Object *, Object *);
-extern Pointer _dxfNew2DAxesObject(void);
-extern Error _dxfTransposePositions(Array);
 static Error TransposeColors(Array);
 static Error SimpleBar(Array *, Array *, RGBColor *);
-extern _dxfFreeAxesHandle(Pointer);
-extern Error _dxfSet2DAxesCharacteristic(Pointer, char *, Pointer);
-extern Error _dxfGetColorBarAnnotationColors(Object, Object,
-                                 RGBColor, RGBColor,
-                                 RGBColor *, RGBColor *, 
-                                 RGBColor *, int *);
-extern Error _dxfHowManyStrings(Object, int *);
-extern Error _dxfLowerCase(char *, char **);
-
 
 static RGBColor DEFAULTTICCOLOR = {0.3, 0.3, 0.3};
 static RGBColor DEFAULTLABELCOLOR = {1.0, 1.0, 1.0};
-static RGBColor DEFAULTAXESCOLOR = {-1.0, -1.0, -1.0};
-static RGBColor DEFAULTGRIDCOLOR = {-1.0, -1.0, -1.0};
 
-
-
+Error
 m_ColorBar(Object *in, Object *out)
 {
   Pointer axeshandle=NULL;
-  Group outgroup;
-  Object outo, outscreen, o, oo, withaxes, mintext, maxtext, axes, ooo;
+  Object outo, outscreen, o, oo, withaxes, ooo;
   Object newo, ob;
   Array a_positions, a_newpositions=NULL; 
   Array a_newcolors=NULL, a_colors, a_newconnections=NULL;
   Array corners;
-  float floatzero=0.0, floatone=1.0;
   char *nullstring="", *fontname, extralabel[80];
-  int numpos, numcolors, i, flag, horizontal, intzero = 0, intone=1, frame; 
-  int tics, usedobject, adjust, curcount, lastin, thisin;
+  int numpos, numcolors, i, flag, horizontal, intzero = 0, frame; 
+  int tics, usedobject, adjust, curcount, lastin;
   int colorcount, lastok;
-  float *pos_ptr, *newpos_ptr, frac, minticsize, *actualcorners = NULL; 
-  int *con_ptr, numarrayitems;
-  float textheight, textdepth, widthmin, widthmax, textwidth;
-  float minvalue, maxvalue, fuzz;
-  Point min, max, up; 
-  float *newcol_ptr, *col_ptr_f;
-  int *col_ptr_i;
-  Point box[8], to, from, translation, corner1, corner2, point; 
+  float *pos_ptr, frac, minticsize, *actualcorners = NULL; 
+  int numarrayitems;
+  float minvalue, maxvalue;
+  Point min, max; 
+  float *col_ptr_f=NULL;
+  int *col_ptr_i=NULL;
+  Point box[8], translation, corner1, corner2, point; 
   float length, scalewidth, scaleheight, captionsize, labelscale=1.0;
-  char minlabel[10], maxlabel[10];
-  RGBColor color, *color_ptr, ticcolor, labelcolor, axescolor, gridcolor;
+  RGBColor color, *color_ptr, ticcolor, labelcolor;
   RGBColor framecolor;
   Class class;
   Type type, colortype;
   int rank, shapearray[32], axeslines=1;
   Category category;
   char *att, *label;
-  Object labelobj;
   Field colormap;
   int doaxes = 1;
   Array ticklocations=NULL;
@@ -453,6 +432,8 @@ m_ColorBar(Object *in, Object *out)
 			      frac*(col_ptr_i[3*i+2]-col_ptr_i[3*(i-1)+2])
 			      + col_ptr_i[3*(i-1)+2]);
                 break;
+		default:
+		  break;
                 }
 		if (!(DXAddArrayData(a_newcolors, colorcount, 
 		 		     1, (Pointer)&color))) {
@@ -482,6 +463,8 @@ m_ColorBar(Object *in, Object *out)
 			    col_ptr_i[3*i+1], 
 			    col_ptr_i[3*i+2]);
               break;
+	      default:
+	        break;
               }
 
 	      if (!(DXAddArrayData(a_newcolors, colorcount, 
@@ -535,6 +518,8 @@ m_ColorBar(Object *in, Object *out)
 			      frac*(col_ptr_i[3*i+2]-col_ptr_i[3*(i-1)+2])
 			      + col_ptr_i[3*(i-1)+2]);
                 break;
+		default:
+		  break;
                 }
 		if (!(DXAddArrayData(a_newcolors, colorcount,
 				     1, (Pointer)&color))) {
@@ -586,6 +571,8 @@ m_ColorBar(Object *in, Object *out)
 			      frac*(col_ptr_i[3*i+2]-col_ptr_i[3*(i-1)+2])
 			      + col_ptr_i[3*(i-1)+2]);
                 break;
+		default:
+		  break;
                 }
 		if (!(DXAddArrayData(a_newcolors, colorcount, 
 				     1, (Pointer)&color))) {
@@ -616,6 +603,8 @@ m_ColorBar(Object *in, Object *out)
               case (TYPE_INT):
 	      color = DXRGB(col_ptr_i[3*i], col_ptr_i[3*i+1], col_ptr_i[3*i+2]);
               break;
+	      default:
+	        break;
               }
 	      if (!(DXAddArrayData(a_newcolors, colorcount, 
 				   1, (Pointer)&color))) {
@@ -667,7 +656,9 @@ m_ColorBar(Object *in, Object *out)
 			      + col_ptr_i[3*(i-1)+1],
 			      frac*(col_ptr_i[3*i+2]-col_ptr_i[3*(i-1)+2])
 			      + col_ptr_i[3*(i-1)+2]);
-                break;
+                  break;
+		default:
+		  break;
                 }
                 if (!(DXAddArrayData(a_newcolors, colorcount,
 				     1, (Pointer)&color))) {
@@ -696,11 +687,13 @@ m_ColorBar(Object *in, Object *out)
 	    curcount++;
             switch (colortype) {
             case (TYPE_FLOAT):
-	    color = DXRGB(col_ptr_f[3*i], col_ptr_f[3*i+1], col_ptr_f[3*i+2]);
-            break;
+	      color = DXRGB(col_ptr_f[3*i], col_ptr_f[3*i+1], col_ptr_f[3*i+2]);
+              break;
             case (TYPE_INT):
-	    color = DXRGB(col_ptr_i[3*i], col_ptr_i[3*i+1], col_ptr_i[3*i+2]);
-            break;
+	      color = DXRGB(col_ptr_i[3*i], col_ptr_i[3*i+1], col_ptr_i[3*i+2]);
+              break;
+	    default:
+	      break;
             }
 	    if (!(DXAddArrayData(a_newcolors, colorcount, 1, 
 				 (Pointer)&color))) {
@@ -730,11 +723,13 @@ m_ColorBar(Object *in, Object *out)
 	    curcount++;
             switch (colortype) {
             case (TYPE_FLOAT):
-	    color = DXRGB(col_ptr_f[3*i], col_ptr_f[3*i+1], col_ptr_f[3*i+2]);
-            break;
+	      color = DXRGB(col_ptr_f[3*i], col_ptr_f[3*i+1], col_ptr_f[3*i+2]);
+              break;
             case (TYPE_INT):
-	    color = DXRGB(col_ptr_i[3*i], col_ptr_i[3*i+1], col_ptr_i[3*i+2]);
-            break;
+	      color = DXRGB(col_ptr_i[3*i], col_ptr_i[3*i+1], col_ptr_i[3*i+2]);
+              break;
+	    default:
+	      break;
             }
 	    if (!(DXAddArrayData(a_newcolors, colorcount, 1, 
 				 (Pointer)&color))) {
@@ -805,6 +800,8 @@ m_ColorBar(Object *in, Object *out)
 		            	    col_ptr_i[3*(i-1)+1], 
 			            col_ptr_i[3*(i-1)+2]);
 		      break;
+		    default:
+		      break;
 		    }
 		    if (!(DXAddArrayData(a_newcolors, colorcount, 1, 
 					 (Pointer)&color))) 
@@ -823,6 +820,8 @@ m_ColorBar(Object *in, Object *out)
 		  color = DXRGB(col_ptr_i[3*(i-1)], 
 				col_ptr_i[3*(i-1)+1], 
 				col_ptr_i[3*(i-1)+2]);
+		  break;
+		default:
 		  break;
                 }
 		if (!(DXAddArrayData(a_newcolors, colorcount, 1, 
@@ -874,6 +873,8 @@ m_ColorBar(Object *in, Object *out)
 			      col_ptr_i[3*(i-1)+1], 
 			      col_ptr_i[3*(i-1)+2]);
 		break;
+	      default:
+	        break;
 	      }
 	      if (!(DXAddArrayData(a_newcolors, colorcount, 1, 
 				   (Pointer)&color))) 
@@ -924,6 +925,8 @@ m_ColorBar(Object *in, Object *out)
 		            	    col_ptr_i[3*(i-1)+1], 
 			            col_ptr_i[3*(i-1)+2]);
 		      break;
+		    default:
+		      break;
 		    }
 		    if (!(DXAddArrayData(a_newcolors, colorcount, 1, 
 					 (Pointer)&color))) 
@@ -942,6 +945,8 @@ m_ColorBar(Object *in, Object *out)
 		  color = DXRGB(col_ptr_i[3*(i-1)], 
 				col_ptr_i[3*(i-1)+1], 
 				col_ptr_i[3*(i-1)+2]);
+		  break;
+		default:
 		  break;
                 }
 		if (!(DXAddArrayData(a_newcolors, colorcount, 1, 
@@ -993,6 +998,8 @@ m_ColorBar(Object *in, Object *out)
 			      col_ptr_i[3*(i-1)+1], 
 			      col_ptr_i[3*(i-1)+2]);
 		break;
+	      default:
+	        break;
 	      }
 	      if (!(DXAddArrayData(a_newcolors, colorcount, 1, 
 				   (Pointer)&color))) 
@@ -1023,6 +1030,8 @@ m_ColorBar(Object *in, Object *out)
 			    col_ptr_i[3*(i-1)+1], 
 			    col_ptr_i[3*(i-1)+2]);
               break;
+	      default:
+	      break;
               }
 	      if (!(DXAddArrayData(a_newcolors, colorcount, 
 				   1, (Pointer)&color))) {
@@ -1059,6 +1068,8 @@ m_ColorBar(Object *in, Object *out)
 			    col_ptr_i[3*(i-1)+1], 
 			    col_ptr_i[3*(i-1)+2]);
               break;
+	      default:
+	        break;
               }
 	      if (!(DXAddArrayData(a_newcolors, colorcount, 
 				   1, (Pointer)&color))) {
@@ -1425,7 +1436,7 @@ drawbar:
 
 
 
-extern Error _dxfGetColorBarAnnotationColors(Object colors, Object which,
+Error _dxfGetColorBarAnnotationColors(Object colors, Object which,
                                      RGBColor defaultticcolor,
                                      RGBColor defaultlabelcolor,
                                      RGBColor *ticcolor, RGBColor *labelcolor,
@@ -1569,7 +1580,7 @@ extern Error _dxfGetColorBarAnnotationColors(Object colors, Object which,
   return ERROR;
 }
 
-extern Error _dxfTransposePositions(Array array)
+Error _dxfTransposePositions(Array array)
 {
 
   int i, num;

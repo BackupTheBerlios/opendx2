@@ -199,13 +199,11 @@ traverse(Object *in, Object *out)
 static int
 doLeaf(Object *in, Object *out)
 {
-  int i, result=0;
+  int result=0;
   Field field;
   Category category;
   Category lookup_category;
   int rank, shape[30];
-  Object attr, src_dependency_attr = NULL;
-  char *src_dependency = NULL;
   char *cat_comp;
   char *data_comp;
   char *lookup_comp;
@@ -214,8 +212,6 @@ doLeaf(Object *in, Object *out)
   int operation;
   int lookup_knt;
   int lookup_knt_provided = 0;
-  uint *cat_data;
-  float *data_data;
   Array cat_array = NULL;
   Array data_array = NULL;
   Array out_array = NULL;
@@ -223,7 +219,7 @@ doLeaf(Object *in, Object *out)
   Array lookup_array = NULL;
   float *out_data;
   int data_knt, cat_knt;
-  int out_knt;
+  int out_knt=0;
   Type cat_type, data_type, lookup_type;
   float floatmax;
   ICH invalid;
@@ -450,10 +446,10 @@ CategoryStatistics_worker(float *out_data, int in_knt, int out_knt, Array cat_ar
     float *fmin = NULL;
     float *fmax = NULL;
     int i;
-    Pointer last;
-    Pointer ldat;
-    uint c;
-    float d;
+    Pointer last=NULL;
+    Pointer ldat=NULL;
+    uint c=0;
+    float d=0;
     double tmp;
     int knt;
     float mean;
@@ -526,6 +522,7 @@ CategoryStatistics_worker(float *out_data, int in_knt, int out_knt, Array cat_ar
 	    case TYPE_SHORT: 	c = (uint)(*((short *)last)); 	break;
 	    case TYPE_UINT: 	c = (uint)(*((uint *)last)); 	break;
 	    case TYPE_INT: 	c = (uint)(*((int *)last)); 	break;
+	    default: break;
 	}
 
 	if (operation != STAT_COUNT) {
@@ -542,6 +539,7 @@ CategoryStatistics_worker(float *out_data, int in_knt, int out_knt, Array cat_ar
 		case TYPE_SHORT: 	d = (float)(*((short *)ldat)); 	break;
 		case TYPE_UINT: 	d = (float)(*((uint *)ldat)); 	break;
 		case TYPE_INT:          d = (float)(*((int *)ldat)); 	break;
+	        default: break;
 	    }
 	}
 

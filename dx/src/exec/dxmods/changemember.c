@@ -20,6 +20,7 @@
 
 #include <dx/dx.h>
 #include <ctype.h>
+#include "changemember.h"
 
 /* if we made this "changemember" it could be
  *  made to work on lists as well as groups.
@@ -37,7 +38,6 @@
 #define O_INSERT_AFTER   4
 #define O_DELETE         5
 
-char *dxf_lsquish(char *);  /* lcase & remove blanks */
 static Error do_operation(Group newgrp, char *memname, int id, int nmembers, 
 			  Class grouptype, int optype, Object newmember, 
 			  float newseriespos, char *newmemname, int byname);
@@ -51,14 +51,13 @@ static Error do_operation(Group newgrp, char *memname, int id, int nmembers,
  */
 Error m_ChangeGroupMember(Object *in, Object *out)
 {
-    int i, nmembers;
+    int nmembers;
     int id;
     char *cp;
     char *opname = NULL;
     int optype = O_UNKNOWN;
     char *memname = NULL;
     char *newmemname = NULL;
-    char *oldname;
     int byname = 0;
     int newbyname = 0;
     Class grouptype;
@@ -310,9 +309,6 @@ Error m_ChangeGroupMember(Object *in, Object *out)
 		     newmember, newseriespos, newmemname, byname) == ERROR)
 	goto error;
     
-
-
-  done:
     out[0] = (Object)newgrp;
     return OK;
 
@@ -329,7 +325,6 @@ static Error do_operation(Group newgrp, char *memname, int id, int nmembers,
 			  float newseriespos, char *newmemname, int byname)
 {
     int i;
-    char *cp;
     char *oldname;
     float seriespos;
     Object subo;

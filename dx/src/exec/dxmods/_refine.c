@@ -10,16 +10,15 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refine.c,v 1.3 1999/05/10 15:45:20 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refine.c,v 1.4 2000/08/24 20:04:18 davidt Exp $
  */
 
 #include <string.h>
 #include "math.h"
 #include <dx/dx.h>
+#include "_refine.h"
 
 static Field RefineField(Field, char *, int);
-extern Field _dxfRefineReg(Field, int);
-extern Field _dxfRefineIrreg(Field, int);
 
 typedef struct 
 {

@@ -12,8 +12,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <dx/dx.h>
-
-extern Object _dxfNormals(Object, char *);
+#include "_normals.h"
 
 int
 m_Normals (Object *in, Object *out)

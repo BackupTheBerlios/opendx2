@@ -13,6 +13,8 @@
 #include <dx/dx.h>
 #include <math.h>
 #include "stream.h"
+#include "_divcurl.h"
+#include "_partnbrs.h"
 
 /*
  ***********************************
@@ -58,7 +60,7 @@ struct reg_VectorPart
     InvalidComponentHandle invElements;
 };
 
-       VectorGrp    _dxfReg_InitVectorGrp(Object, char *);
+
 static VectorPart   Reg_InitVectorPart(Field, Reg_VectorGrp, int);
 static Error        Reg_DestroyVectorPart(VectorPart);
 static int          Reg_FindElement_VectorPart(Reg_InstanceVars, int,
@@ -105,13 +107,13 @@ Reg_FreeInstanceVars(InstanceVars I)
 {
     if (I)
 	DXFree((Pointer)I);
+    return OK;
 }
 
 VectorGrp
 _dxfReg_InitVectorGrp(Object object, char *elementType)
 {
     Reg_VectorGrp   P = NULL;
-    Reg_VectorPart  p = NULL;
     int                i, nP;
 
     if (! _dxfPartitionNeighbors(object))
@@ -217,9 +219,7 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
 {
     Reg_VectorPart    ip = NULL;
     Array 	      array;
-    int		      nDim;
     int		      meshOff[3];
-    Object	      attr;
 
     if (DXEmptyField(f))
 	return NULL;
@@ -443,7 +443,6 @@ static Error
 Reg_Delete(VectorGrp P)
 {
     Reg_VectorGrp  iP = (Reg_VectorGrp)P;
-    Reg_VectorPart ip;
 
     if (iP)
     {
@@ -805,7 +804,7 @@ Reg_FindBoundary(InstanceVars I, POINT_TYPE *p, POINT_TYPE *v, double *t)
     Reg_VectorPart   ip = (Reg_VectorPart)iP->P.p[iI->cp];
     int   i, nd;
     POINT_TYPE tmin, ipoint[3];
-    int   face = -1, f;
+    int   face = -1, f=0;
 
     ApplyN(ip->mInv, (nd = iP->P.nDim), p, ipoint);
     ApplyRotationN(ip->mInv, iP->P.nDim, v, iI->ivector);
@@ -1079,12 +1078,9 @@ ApplyRotationN(Matrix m, int n, VECTOR_TYPE *in, VECTOR_TYPE *out)
     return;
 }
 
-extern Object _dxfDivCurl(Object, Object *, Object *);
-
 static Error
 Reg_CurlMap(VectorGrp P, MultiGrid mg)
 {
-    Reg_VectorGrp  iP = (Reg_VectorGrp)P;
     int 	   i;
     Object 	   curl;
 
@@ -1153,8 +1149,6 @@ Reg_CurlMap(VectorGrp P, MultiGrid mg)
 error:
     return ERROR;
 }
-
-static void bar(){}
 
 static int
 Reg_Ghost(InstanceVars I, POINT_TYPE *p)

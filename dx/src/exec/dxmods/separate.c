@@ -10,23 +10,19 @@
 
 
 #include "interact.h"
+#include "separate.h"
+#include "plot.h"
 
-extern
-_dxfaxes_delta(float *, float *, float, int *, float *, float *,
-           char *, int *, int, int);
-static
-Error _dxfgetdelta(method_type,float ,float ,float *);
-static
-Error getdec(float ,float ,float ,int *);
+static Error _dxfgetdelta(method_type,float ,float ,float *);
+static Error getdec(float ,float ,float ,int *);
 
-extern
-Error _dxfinteract_float(char *id,Object idobj,float *min,float *max,\
-float *incr,int *decimal,char *label,int pos,method_type method,int *items,
-int iprint[])
+Error _dxfinteract_float(char *id, Object idobj, float *min, float *max,
+           float *incr, int *decimal, char *label, int pos,
+	   method_type method, int *items, int iprint[])
 {
    int i;
    Array temp;
-   float *old,valtemp;
+   float *old;
 
    Private p;
    char *cache_label = NULL;
@@ -160,11 +156,9 @@ error:
    return ERROR;
 }
 
-extern
-Error _dxfnewvalue(float *value, float old_min,\
-                   float old_max,float min, float max, int remap,int *ip)
+Error _dxfnewvalue(float *value, float old_min, float old_max,
+                   float min, float max, int remap,int *ip)
 {
-   int n;
    float valtemp;
 
    if (old_min==DXD_MAX_FLOAT) remap=0;
@@ -188,9 +182,8 @@ Error _dxfnewvalue(float *value, float old_min,\
    return OK;
 }
 
-extern
-Error _dxfprint_message(Pointer dp,struct einfo *ep,Type type,int rank,
-int *dim,int item)
+Error _dxfprint_message(Pointer dp, struct einfo *ep, Type type, int rank,
+        int *dim, int item)
 {
    int i,j,k;
    int rank1,offset=0;
@@ -267,7 +260,6 @@ int *dim,int item)
      return OK;
 }
  
-extern
 int _dxfcheck_obj_cache(Object obj,char *id,int key,Object idobj)
 {
    Object temp_obj;
@@ -307,10 +299,9 @@ int _dxfcheck_obj_cache(Object obj,char *id,int key,Object idobj)
 
 error:
    DXFree(cache_label);
-   return NULL;
+   return 0;
 }
 
-extern
 int EndCheck(struct einfo *ep)
 {
     if (ep->atend)
@@ -349,6 +340,8 @@ Error _dxfgetdelta(method_type method,float min, float max, float *incr)
     case(PERCENT):
       delta = *incr *(max-min);
       *incr = delta;
+      break;
+    default:
       break;
    }
 

@@ -29,6 +29,8 @@
 
 #include <dxconfig.h>
 
+#ifndef _USERINTERACTORS_H_
+#define _USERINTERACTORS_H_
 
 #define ROTXY(m, x, y, s, c, t) {\
 m[0][0]= t*x*x + c;   m[0][1]=  t*x*y;       m[0][2]= -s*y;         m[0][3] =0;\
@@ -96,3 +98,5 @@ struct _objectInteractor
 };
 
 typedef struct _objectInteractor ObjectInteractor;
+
+#endif /* _USERINTERACTORS_H_ */

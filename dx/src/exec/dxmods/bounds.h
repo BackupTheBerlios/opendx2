@@ -6,12 +6,13 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/bounds.h,v 1.3 1999/05/10 15:45:22 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/bounds.h,v 1.4 2000/08/24 20:04:24 davidt Exp $
  */
 
 #include <dxconfig.h>
 
-
+#ifndef _BOUNDS_H_
+#define _BOUNDS_H_
 
 /* general bounding box functions */
 
@@ -43,3 +44,4 @@ Object _dxf_BBoxDistance(Object o, float *distance, int flag);
 #define BB_DEPTH                2
 #define BB_DIAGONAL             3
 
+#endif /* _BOUNDS_H_ */

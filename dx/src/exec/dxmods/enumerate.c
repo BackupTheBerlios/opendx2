@@ -13,7 +13,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <dx/dx.h>
-extern int m_Compute(Object *in, Object *out);
+#include "_compute.h"
 
 static Array MakeSequence(Array start, Array end, int *n, Array delta, 
 			  char *method);
@@ -26,7 +26,6 @@ static Array MakeFibonacciList(Array start, Array end, int *n);
 static void lowercase(char *in, char *out);
 static int IsZero(Array a);
 static int IsEqual(Array a, Array b);
-static void Negate(Array a);
 static int IsNegative(Array a);
 static char *TypeName(Type t);
 
@@ -555,7 +554,7 @@ Array MakeLinearList(Array start, Array end, int *n, Array delta)
     if (i == 3) {
 	char tbuf[512];
 	int firsttime = 1;
-	int lastcount;
+	int lastcount = 0;
 
 	/* this loop allows us to to handle vectors or matricies as
 	 *  well as scalars.   it requires that the deltas compute to
@@ -785,11 +784,6 @@ Array MakeGeometricList(Array start, Array end, int *n, Array delta)
 static 
 Array MakeFibonacciList(Array start, Array end, int *n)
 {
-    int i;
-    Array output = NULL;
-    Pointer dp;
-    float dval;
-    int ival;
 
     /* find common format of start, end, n, delta */
     /* compute missing value(s) */
@@ -869,6 +863,7 @@ static int IsEqual(Array a, Array b)
 /* invert all the values - THIS MODIFIES THE DATA IN THE ARRAY - use it
  *  only on a copy of real inputs.
  */
+#if 0
 static void Negate(Array a)
 {
     Type t;
@@ -897,6 +892,7 @@ static void Negate(Array a)
     }
     
 }
+#endif
     
 /* return 1 if value is negative, 0 if >= 0
  */

@@ -265,7 +265,6 @@ int _dxfJoinTriangleCorners(int nT, int *t, Htable *e_table, int *n_edges, EdgeS
 	*endpoints     = SurfEdgeGetVertices (the_edge),
 	nE             = 0, 
 	total_nE       = nT3,
-	nE_nonmanifold = 0,
 
 	/* initialize a pointer to the current triangle */
 
@@ -1558,7 +1557,7 @@ int _dxfJoin(int i, int j, int *father)
 
     }
 
-  else return -1;
+  return -1;
 }
 
 /*+--------------------------------------------------------------------------+
@@ -2142,7 +2141,7 @@ int _dxfTriangleNormalQR2(Vertex *tri, Vertex n)
       norm1,
       norm2;
 
-    float beta1, beta;
+    float beta1=0, beta;
 
     static Vertex v1,v2;
 
@@ -2266,7 +2265,7 @@ int _dxfVectorProductQRD(VertexD x1, VertexD x2, double *n)
       norm1,
       norm2;
 
-    double beta1, beta;
+    double beta1=0, beta;
 
     static VertexD v1,v2;
 
@@ -2686,8 +2685,7 @@ int _dxfRemoveEdgeFromHeap(SimpData *simp_data, int index, int the_edge)
 int _dxfAddEdge2Heap(SimpData *simp_data, int the_edge)
 {
   int 
-    added      = 0,
-    nV         = simp_data->nV;
+    added      = 0;
 
 
   /* verify that the Heap is not already full and that 
@@ -2984,7 +2982,6 @@ int _dxfMarkEdgesAdjacent2Boundary(SimpData *simp_data)
 
   int 
     e  = 0,
-    nV = simp_data->nV,
     nE = simp_data->nE,
     edges_adjacent_2_boundary;
 
@@ -3041,8 +3038,7 @@ int _dxfBuildEdgeHeap(SimpData *simp_data)
   int 
     can_add_edge  = 1,
     n_edges_added = 0,
-    nE            = simp_data->nE,
-    nV            = simp_data->nV;
+    nE            = simp_data->nE;
 
   while (can_add_edge && simp_data->last_edge_added2heap < nE)
     { 
@@ -3210,7 +3206,6 @@ int _dxfDirectedParentVertexStar(int parent_vertex, int first_triangle,
     /* rotated edge vertices and adjacent triangles: */
     edge_v_rotated[2], edge_v_parents[2], edge_t_rotated[2],
     star_triangle = first_triangle,
-    nV = simp_data->nV,
     i;
 
      
@@ -3709,7 +3704,7 @@ int _dxfSimplifiedBoundaryVertexLocation(SimpData *simp_data, int v0, int v1,
 	    {
 	      Vertex u,v;
 	      double 
-		cos_uv, sin_uv, cos_uv_2, sin_uv_2,
+		cos_uv, cos_uv_2, sin_uv_2,
 		A, B, C, sol1, sol2, eps2 = 1e-12;
 
 	      MakeVec(vl,vr,u); /* if the segment (vr,vl) is of zero length, which is
@@ -4038,7 +4033,7 @@ int _dxfErrorTestDataOnSurfaceUpdate(SimpData *simp_data, int new_v, int old_v,
     o_data_error[3],
     data_difference,
     new_error_link,
-    tmp_data_diff,
+    tmp_data_diff=0,
     new_error_sv,
     old_error;
   	
@@ -5739,8 +5734,7 @@ int _dxfErrorWithinToleranceVBoundary1stKnd(SimpData *simp_data, int v0, int v1,
 	dp;
 
       int 
-	i_min         = -1,
-	link_error_ok = 0;
+	i_min         = -1;
 
       bzero((char *)triangle, 3 * sizeof (Vertex));
 
@@ -5954,8 +5948,6 @@ int _dxfCollapseBoundaryEdge1stKnd(SimpData *simp_data, int edg_num, int v0, int
   int 
     n_edges_added      = 0,
     n_edges_reinstated = 0,
-    nV                 = simp_data->nV,
-    nE                 = simp_data->nE,
     et, eb,
     tri_v_rotated[3],  tri_v_parents[3];
  
@@ -6113,7 +6105,6 @@ int _dxfCollapsibilityTestsBoundaryEdge1stKind(SimpData *simp_data,
     {
       int
 	*edge_t     = (int *) SurfEdgeGetTriangles (simp_data->edge_array+edge_num),
-	nT          = simp_data->nT,
 	first_tri   = edge_t[0],
 	second_tri  = edge_t[1],
 	/* this is the counter-clockwise order with respect to v1 */
@@ -7990,7 +7981,7 @@ int _dxfSimplifyManifoldSurface(SimpData *simp_data)
   /* 2) fill a Heap with edges, keyed with the weight of the edge */
 
 
-  while (num_edg_added_to_heap = _dxfBuildEdgeHeap(simp_data)){  
+  while ((num_edg_added_to_heap=_dxfBuildEdgeHeap(simp_data))){  
 
     simp_data->num_edg_weights += num_edg_added_to_heap;
 

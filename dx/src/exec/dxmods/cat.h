@@ -8,6 +8,8 @@
 
 #include <dxconfig.h>
 
+#ifndef _CAT_H_
+#define _CAT_H_
 
 #include <dx/dx.h>
 #include <math.h>
@@ -102,6 +104,8 @@ typedef struct {
     catinfo *cp;
 } table_entry;
 
+Object _dxfCategorize(Object o, char **comp_list);
+
 Error _dxf_cat_FindCompType(catinfo *cp);
 int _dxf_cat_cmp_char(catinfo *cp, Pointer s, Pointer t);
 int _dxf_cat_cmp_ubyte(catinfo *cp, Pointer s, Pointer t);
@@ -129,3 +133,4 @@ typedef struct {
     int ignore;
 } lookupinfo;
 
+#endif /* _CAT_H_ */

@@ -5,6 +5,15 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/impCDF.h,v 1.4 2000/08/24 20:04:36 davidt Exp $
+ */
+
+#include <dxconfig.h>
+
+#ifndef _IMPCDF_H_
+#define _IMPCDF_H_
+
 struct infocdf
 {
   CDFid  id;
@@ -18,9 +27,6 @@ struct infocdf
   int    rotate[CDF_MAX_DIMS];
 };
 typedef struct infocdf *Infocdf;
-
-#include <dxconfig.h>
-
 
 
 struct infovar
@@ -53,3 +59,4 @@ typedef struct infovar *Infovar;
 #define  DATACOMP      2
 #define  UNKNOWNCOMP   3
 
+#endif /* _IMPCDF_H_ */

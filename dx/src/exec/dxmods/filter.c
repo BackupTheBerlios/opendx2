@@ -16,6 +16,9 @@
 #include <string.h>
 #include <dx/dx.h>
 
+typedef Error			(*PFE)();
+extern Error DXAddLikeTasks(PFE, Pointer, int, double, int); /* from libdx/task.c */
+
 #if defined(intelnt)
 #define	strcasecmp	stricmp
 #endif
@@ -44,8 +47,6 @@
 #endif
 
 #define	LOCAL_SORT		128		/* enough for a 5x5x5	*/
-
-typedef Error			(*PFE)();
 
 typedef enum
 {
@@ -753,7 +754,6 @@ _CheckFilter (Object filt, Object mask, Filter **filterp, int morph)
     Object	obj	= NULL;
     char	*name	= NULL;
     char	*desc;
-    char	*junk;
     Filter	*filter	= NULL;
     FilterType	type	= FT_CONVOLVE;
     int		done	= FALSE;
@@ -823,7 +823,7 @@ setupmask:
 	filter = (Filter *) DXAllocate (size);
 	if (filter == NULL)
 	    goto error;
-	memset (filter, NULL, size);
+	memset (filter, 0, size);
     }
 
     filter->name   = name;
@@ -991,7 +991,6 @@ static Error _Filter_Object (Object obj, Filter *filter,
 			     char *component, int top)
 {
     Class		class;
-    Class		classk;
     Error		ret;
     Object		kid;
     Object		cf;
@@ -1046,6 +1045,8 @@ static Error _Filter_Object (Object obj, Filter *filter,
 		    if (! DXGetScreenInfo ((Screen) obj, &kid, NULL, NULL))
 			return (ERROR);
 		    break;
+	        default:
+		    break;
 	    }
 
 	    if (DXGetObjectClass (kid) != CLASS_FIELD)
@@ -1093,6 +1094,8 @@ static Error _Filter_Object (Object obj, Filter *filter,
 		DXGetType (obj, NULL, &cat, &rank, shape);
 		DXSetGroupTypeV ((Group) obj, TYPE_UBYTE, CATEGORY_REAL,
 				 rank, shape);
+	    default: 
+	        break;
 	}
     }
 
@@ -1184,15 +1187,12 @@ static Error _Work_G (FilterTask *ft, int n)
     return (ret);
 }
 
-static int grow_zero	= 0;
-
 static Error _Filter_CompositeField (CompositeField obj, Filter *filter,
 				     char *component)
 {
     Error	ret		= ERROR;
     Field	f;
     Array	a;
-    Class	c;
     int		dims[MAXDIMS];
     int		rank		= 0;
     Filter	*nfilter	= NULL;
@@ -1398,7 +1398,7 @@ static Error _SetFilterData (Filter *f, int rank)
 {
     int		i;
     int		maxfilter;
-    FilterTable	*ft;
+    FilterTable	*ft=NULL;
     int		count;
     int		frank;
 
@@ -1424,7 +1424,7 @@ static Error _SetFilterData (Filter *f, int rank)
 
 	maxfilter = sizeof (AllFilters) / sizeof (FilterTable *) - 1;
 
-	for (i = 0, np = f->name; buf[i++] = (char) tolower ((int) *np++); )
+	for (i = 0, np = f->name; (buf[i++] = (char) tolower ((int) *np++)); )
 	    ;
 
 	for (i = MIN (rank, maxfilter); i > 0; i--)
@@ -1518,7 +1518,6 @@ Invalidate (Field obj, int items, DepOn d, int olength, int *offsets)
     InvalidComponentHandle 	ohandle = NULL;
     int		i, j;
     int		elem, e;
-    Object	ref;
 
     if (d == DEP_POSITIONS)
     {
@@ -1587,9 +1586,7 @@ static Error _Filter_Field (Field obj, Filter *filter, char *component)
     Array	ga;			/* Grown    component		*/
     Array	oa;			/* Original component		*/
     Array	fa	= NULL;		/* Filtered component		*/
-    Class	c;
     DepOn	d;
-    int		i, j;
     int		items;
     int		olength;
     int		*offsets = NULL;
@@ -1706,7 +1703,7 @@ _Filter_Array (Field obj, Filter *filter, Array ga, Array oa, DepOn d,
     int			i, j, k;
     int			inc, val, ival, lim;
 
-    memset (&irrdata, NULL, sizeof (irrdata));
+    memset (&irrdata, 0, sizeof (irrdata));
 
     /*
      * Compute the number of elements in each item.
@@ -1848,8 +1845,8 @@ _Filter_Array (Field obj, Filter *filter, Array ga, Array oa, DepOn d,
     if (irrdata.offsets == NULL)
 	goto error;
 
-    memset (irrdata.offsets, NULL, size);
-    memset (offsets, NULL, size);
+    memset (irrdata.offsets, 0, size);
+    memset (offsets, 0, size);
     for (i = 0; i < rank; i++)
     {
 	s = filter->shape[i] >> 1;
@@ -1943,6 +1940,8 @@ _Filter_Array (Field obj, Filter *filter, Array ga, Array oa, DepOn d,
 		    goto error;
 		}
 		break;
+	    default:
+	        break;
 	}
 
 	irrdata.rvalue -= 1.0;
@@ -2131,6 +2130,7 @@ static void _Apply_Irregular (IrregularData *data)
 		case TYPE_INT:		LOOPC (i,int);		break;
 		case TYPE_FLOAT:	LOOP  (f,float);	break;
 		case TYPE_DOUBLE:	LOOP  (d,double);	break;
+	        default: break;
 	    }
 	    break;
 	
@@ -2145,6 +2145,7 @@ static void _Apply_Irregular (IrregularData *data)
 		case TYPE_INT:		RVLOOP (i,int);		break;
 		case TYPE_FLOAT:	RVLOOP (f,float);	break;
 		case TYPE_DOUBLE:	RVLOOP (d,double);	break;
+	        default: break;
 	    }
 	    break;
 
@@ -2159,6 +2160,7 @@ static void _Apply_Irregular (IrregularData *data)
 		case TYPE_INT:		ERLOOP (i,int);		break;
 		case TYPE_FLOAT:	ERLOOP (f,float);	break;
 		case TYPE_DOUBLE:	ERLOOP (d,double);	break;
+	        default: break;
 	    }
 	    break;
 
@@ -2173,7 +2175,10 @@ static void _Apply_Irregular (IrregularData *data)
 		case TYPE_INT:		DLOOP (i,int);		break;
 		case TYPE_FLOAT:	DLOOP (f,float);	break;
 		case TYPE_DOUBLE:	DLOOP (d,double);	break;
+	        default: break;
 	    }
+	    break;
+         default: 
 	    break;
     }
 
@@ -2196,7 +2201,7 @@ static Error _Apply_3x3 (IrregularData *data)
 {
     IrregularData	input;
     register float	f00, f01, f02, f10, f11, f12, f20, f21, f22;
-    register float	c00, c01, c02, c10, c11, c12, c20, c21, c22;
+    register float	c00=0, c01=0, c02=0, c10=0, c11=0, c12=0, c20=0, c21=0, c22=0;
     register float	*r0ptr,  *r1ptr,  *r2ptr,  *outptr;
     float		*r0base, *r1base, *r2base, *outbase;
     float		*rtmp;
@@ -2271,6 +2276,7 @@ static Error _Apply_3x3 (IrregularData *data)
 	case TYPE_INT:		LOOP(i,int);	break;
 	case TYPE_FLOAT:	LOOP(f,float);	break;
 	case TYPE_DOUBLE:	LOOP(d,double);	break;
+        default: break;
     }
 #undef LOOP
 	
@@ -2294,6 +2300,7 @@ static Error _Apply_3x3 (IrregularData *data)
 	    case TYPE_INT:	LOOP(i,int);	break;
 	    case TYPE_FLOAT:	LOOP(f,float);	break;
 	    case TYPE_DOUBLE:	LOOP(d,double);	break;
+	    default: break;
 	}
 #undef LOOP
 
@@ -2420,6 +2427,7 @@ static Error _Apply_3x3 (IrregularData *data)
 	    case TYPE_INT:	LOOPC(i,int);	break;
 	    case TYPE_FLOAT:	LOOP(f,float);	break;
 	    case TYPE_DOUBLE:	LOOP(d,double);	break;
+	    default: break;
 	}
 #undef LOOP
 #undef LOOPC

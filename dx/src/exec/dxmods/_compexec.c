@@ -12,6 +12,8 @@
 #include <string.h>
 #include <dx/dx.h>
 #include "_compute.h"
+#include "_compoper.h"
+#include "_compputils.h"
 
 /* Some concepts:
  * This probably belongs elsewhere, and will get moved, but here it is.
@@ -75,9 +77,8 @@ Execute (Pointer ptr)
     int      	numBasic;
     int	     	i;
     Array    	a = NULL;
-    Pointer	deltas;
     Error	status = OK;
-    PTreeNode   *this;
+    PTreeNode   *this=NULL;
     PTreeNode   *next;
     int		executionFinished = 0;
 

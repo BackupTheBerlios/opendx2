@@ -10,11 +10,12 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_partnbrs.c,v 1.4 2000/05/16 18:47:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_partnbrs.c,v 1.5 2000/08/24 20:04:16 davidt Exp $
  */
 
 #include <string.h>
 #include <dx/dx.h>
+#include "_partnbrs.h"
 
 typedef struct node
 {
@@ -28,12 +29,11 @@ typedef struct node
 static Error RegularPartitionNeighbors(CompositeField);
 static Error IrregularPartitionNeighbors(CompositeField);
 
-Error
-_dxfPartitionNeighbors(Object o)
+Error _dxfPartitionNeighbors(Object o)
 {
     int i;
     Field f;
-    Array  c;
+    Array  c=NULL;
     Class class;
 
     class = DXGetObjectClass(o);
@@ -134,7 +134,7 @@ RegularPartitionNeighbors(CompositeField cf)
 	    {
 		DXSetError(ERROR_INTERNAL, 
 			"ran out of nodes in RegularPartitionNeighbors");
-		return NULL;
+		return ERROR;
 	    }
 
 	    new = Nodes + nextNode++;
@@ -281,7 +281,6 @@ IrregularPartitionNeighbors(CompositeField cf)
 {
     Field     			*fieldList = NULL;
     HashTable 			*hashList = NULL;
-    Field     			f;
     int       			i, nPartitions;
     struct IPN_pass1_args	args1;
     struct IPN_pass2_args	args2;
@@ -430,7 +429,7 @@ FaceCmp(Key k0, Key k1)
     }						\
     else					\
     {						\
-	int _indices[MAXDIM], _i, _j;		\
+	int _indices[MAXDIM], _i;		\
 	int _l;					\
     						\
 	GET_INDICES(index,cCounts,nDim);	\
@@ -525,7 +524,7 @@ IPN_pass1(Pointer args)
 {
     int	      i, j, k, l;
     Field     field;
-    HashTable hash;
+    HashTable hash=NULL;
     Array     cA, pA, nA;
     int       nDim, nVerts;
     int       *elements, *elt, eltBuf[16];
@@ -898,7 +897,6 @@ IPN_pass2(Pointer ptr)
     Array     nA, pA = NULL, nnA = NULL;
     int	      *neighbors;
     HashItem  *myItem, *hisItem;
-    int       nExternals;
     int	      exBuf[2*BUFSIZE];
     int	      aKnt, bKnt;
     int	      nFaces, nElements;

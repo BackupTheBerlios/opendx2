@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.6 2000/05/16 18:47:51 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.7 2000/08/24 20:04:31 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -177,7 +177,7 @@ Error
 _dxf_gi_OpenFile(char *name, FILE **fp, int infofile)
 {
   int i;
-  char *datadir = NULL, *cp, *outname, *f;
+  char *outname, *f;
   static char infopath[256];	/* Save the path when opening the info file */
  
 
@@ -276,9 +276,8 @@ int _dxf_gi_importDatafile(void **data,FILE **fp)
 
 static int FgetAsciiData(FILE *fp, void **data, int size)
 {
-  int cnt, f, k, comp, xc = 0, d, dim, width;
+  int cnt, f, k, comp, d, dim, width;
   int step, s,nl=0,maxseries,sersize=0;
-  double rtemp[2];	/* Should be as large as largest type */
   char *str, r[MAX_DSTR], *op;
   Type t;
 
@@ -515,9 +514,8 @@ parse_error:
 
 static int RgetAsciiData(FILE *fp, void **data, int size)
 {
-  int cnt, f, comp, xc = 0, d, dim, ll=0, kk, elements,leading,width;
+  int cnt=0, f, comp, d, dim, ll=0, kk, elements,leading,width;
   int step, s, nl=0,maxseries;
-  double rtemp[2];
   char *str, r[MAX_DSTR], *op;
   Type t;
   struct header rec_sep;
@@ -791,9 +789,8 @@ error:
 
 static int VgetAsciiData(FILE *fp, void **data, int size)
 {
-  int s, f, l, xc = 0, ll, kk, dim, elements, leading, width;
+  int s, f, l=0, ll, kk, dim, elements, leading, width;
   int step, dim_mul_size,nl=0; 
-  double rtemp[2];	/*  Should be as large as largest type */
   char *str, r[MAX_DSTR], *op;
   Type t;
   struct header rec_sep;
@@ -983,9 +980,8 @@ error:
 
 static int RVgetAsciiData(FILE *fp, void **data, int size)
 {
-  int f, cnt, xc = 0, ll=0, kk, dim,elements,leading,width;
+  int f, cnt=0, ll=0, kk, dim,elements,leading,width;
   int step=0, s=0, dim_mul_size,nl=0,maxseries;
-  double rtemp[2];	/* Should be as large as largest type */
   char *str, r[MAX_DSTR], *op;
   Type t;
   struct header rec_sep;
@@ -1285,8 +1281,6 @@ skip_ascii(FILE *fp, int num)
    /* put back last whitespace */
    ungetc(c,fp);
    return OK;
-error:
-   return ERROR;
 }
 
 /*
@@ -1566,7 +1560,7 @@ Error _dxf_getline(char **ret_str,FILE *fp)
 /* search for header info (keeping track of lines and bytes read)
  * and when found place into data
  */
-extern Error
+Error
 _dxf_gi_extract(struct place_state *dataps,int *read_header)
 {
    int i,k;
@@ -1657,7 +1651,7 @@ error:
 static Error
 extract_fromline(char str[MAX_DSTR],int which)
 {
-   int i,j,k,index,width,err,nl=0;
+   int i,j,k,index,width,nl=0;
    Type t;
    char r[MAX_DSTR];
 

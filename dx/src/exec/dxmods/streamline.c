@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.5 2000/08/23 17:08:25 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.6 2000/08/24 20:04:51 davidt Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
@@ -15,9 +15,6 @@
 
 #include <dxconfig.h>
 
-
-extern VectorGrp  _dxfIrreg_InitVectorGrp(Object, char *);
-extern VectorGrp  _dxfReg_InitVectorGrp(Object, char *);
 
 typedef enum
 {
@@ -69,6 +66,7 @@ static Error	  GeometryCheck(Object, int);
 static InstanceVars FindElement(VectorField, POINT_TYPE *, VectorGrp);
 static InstanceVars FindMultiGridContinuation(VectorField, POINT_TYPE *, VectorGrp);
 
+Error
 m_Streamline(Object *in, Object *out)
 {
     Array  	starts = NULL, times = NULL;
@@ -434,7 +432,7 @@ Streamline(VectorField vf, 	/* Vector field to trace streamline in	*/
 	   Group       g)	/* group in which to put the result     */
 {
     Stream 	 stream = NULL;
-    VectorGrp    vg;
+    VectorGrp    vg=NULL;
     POINT_TYPE	 pb0[3], pb1[3], *ptmp;
     VECTOR_TYPE	 vb0[3], vb1[3], *vtmp;
     POINT_TYPE 	 *p0, *p1;
@@ -555,7 +553,7 @@ Streamline(VectorField vf, 	/* Vector field to trace streamline in	*/
 	    found = (*Neighbor)(I, v1);
             if (found == -1)
                 goto error;
-            else if (! found)
+            else if (! found) {
                 if (vf->nmembers != 1)
 		{
 		    VectorGrp lastGrp = I->currentVectorGrp;
@@ -580,6 +578,7 @@ Streamline(VectorField vf, 	/* Vector field to trace streamline in	*/
 		}
 		else 
 		    done = 1;
+	    }
 		
 	    if (done || t2 > 0.05*t)
 		keepPoint = 1;
@@ -1048,6 +1047,7 @@ DestroyVectorField(VectorField vf)
 	DXFree((Pointer)vf->members);
 	DXFree((Pointer)vf);
     }
+    return OK;
 }
 
 static VectorField
@@ -1359,7 +1359,6 @@ StreamToField(Stream s)
     Field f = NULL;
     Array a = NULL;
     Object depattr = NULL;
-    int flag = 1;
 
     depattr = (Object)DXNewString("positions");
     if (! depattr)
@@ -1437,7 +1436,7 @@ error:
 Error
 _dxfMinMaxBox(Field f, float *min, float *max)
 {
-    float box[24], *b, fuzz;
+    float box[24], *b;
     int   i, j;
 
     if (! DXBoundingBox((Object)f, (Point *)box))
@@ -1505,7 +1504,6 @@ int
 _dxfIsInBox(VectorPart p, POINT_TYPE *pt, int n, int fuzz)
 {
     int i;
-    float f;
 
     if (fuzz)
     {
@@ -1627,7 +1625,7 @@ UpdateFrame(float *p, float *v, float *c, float *n, float *b,
 					float *fn, float *fb, float *ft)
 {
     float  twist;
-    float  mTwist[9], mBend[9], mProduct[9];
+    float  mTwist[9], mBend[9];
     float  cross[3], len, cA;
     int	   bend = 0;
     float  nt[3];
@@ -1735,8 +1733,6 @@ UpdateFrame(float *p, float *v, float *c, float *n, float *b,
 
     return OK;
 
-error:
-    return ERROR;
 }
 
 /*

@@ -11,7 +11,7 @@
  */
 
 #include <dxconfig.h>
-
+#include "_autocolor.h"
 
 /***
 MODULE:
@@ -41,21 +41,10 @@ END:
 #include <string.h>
 #include <stdlib.h>
 #include <dx/dx.h>
+#include "_autocolor.h"
+#include "color.h"
 
-
-
-extern int _dxfIsImportedColorMap(Object, int *, Object *, Object *);
-extern int   _dxfIsColorMap (Object);
-extern int   _dxfFieldWithInformation (Object);
-extern Error _dxfBoundingBoxDiagonal (Object, float *);
-extern Error DXColorNameToRGB (char *, RGBColor *);
-extern int   _dxfIsOpacityMap (Object);
-extern int   _dxfIsVolume (Object, int *);
-extern Error _dxfColorRecurseToIndividual (Object, Object, 
-					   Object, char *, int, int, int, int,
-					   RGBColor, float, int);
-
-
+extern Error DXColorNameToRGB (char *, RGBColor *); /* from libdx/color.c */
 
 Error m_Color(Object *in, Object *out)
 {
@@ -67,7 +56,7 @@ Error m_Color(Object *in, Object *out)
     char   component[30], *tmpcomponent, *colorstr;
     char   newstring[30];
     int    setcolor, setopacity, colorfield, opacityfield, i, count, byteflag;
-    int    immediate, delayed, one=1;
+    int    immediate=0, delayed, one=1;
     Group  g_out;
     
     
@@ -300,7 +289,7 @@ Error m_Color(Object *in, Object *out)
        onearray = DXNewArray(TYPE_INT,CATEGORY_REAL, 0);
        if (!DXAddArrayData(onearray, 0, 1, &one))
            goto error; 
-       if (!DXSetAttribute(out[0], "direct color map", onearray))
+       if (!DXSetAttribute(out[0], "direct color map", (Object) onearray))
            goto error;
        onearray = NULL;
     }
@@ -315,7 +304,7 @@ Error m_Color(Object *in, Object *out)
 }
 
 
-int _dxfIsColorMap(Object ob)
+Error _dxfIsColorMap(Object ob)
 {
     Class cl;
     Object dp, pp;
@@ -402,7 +391,7 @@ int _dxfIsColorMap(Object ob)
     return OK;
 }
 
-extern int _dxfIsOpacityMap(Object ob)
+Error _dxfIsOpacityMap(Object ob)
 {
     Class cl;
     Object dp, pp;
@@ -489,7 +478,7 @@ extern int _dxfIsOpacityMap(Object ob)
 }
 
 
-extern int
+int
 _dxfIsImportedColorMap(Object obj, int *isfield, Object *cmap, Object *omap)
 
 {

@@ -47,7 +47,8 @@ END:
 #include <string.h>
 #include <dx/dx.h>
 #include "_compute.h"
-
+#include "_compputils.h"
+#include "_compoper.h"
 
 
 /* These are global variables to allow communication with the parser */

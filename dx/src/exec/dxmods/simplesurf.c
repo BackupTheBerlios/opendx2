@@ -443,10 +443,9 @@ static int doLeaf(Object *in, Object *out)
   Type      type;
   Category  category;
   int       rank, shape, data_dimension = 0;
-  Object    attr, src_dependency_attr = NULL;
-  char      *src_dependency = NULL;
+  Object    attr;
   Object    element_type_attr;
-  char      *element_type, the_message[256];
+  char      the_message[256];
 
   static char *in_name[8] = {"\"original_surface\"",  "\"max_error\"",
                               "\"max_data_error\"",    "\"preserve_volume\"",
@@ -463,7 +462,7 @@ static int doLeaf(Object *in, Object *out)
    * Irregular connections info
    */
 
-  int c_knt, c_dim, c_nv;
+  int c_knt, c_nv;
   float *c_connections;
 
 
@@ -974,7 +973,7 @@ GET_POSITIONAL_ERROR:
    */
 
 
-START_WORKER:
+/* START_WORKER */
  
   {
 
@@ -1510,7 +1509,7 @@ int _dxfResampleComponentValuesAfterSimplification(Field original_surface,
     array     = NULL,
     new_array = NULL;
 
-  while (array = (Array)DXGetEnumeratedComponentValue(original_surface, num_component++, &component_name))
+  while ((array = (Array)DXGetEnumeratedComponentValue(original_surface, num_component++, &component_name)))
     {
 
       Object attr = DXGetAttribute((Object)array, "dep");

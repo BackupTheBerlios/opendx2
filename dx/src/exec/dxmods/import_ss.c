@@ -15,7 +15,10 @@
 
 #include <stdio.h>
 #include <dx/dx.h>
-#include<sys/types.h>
+#include <sys/types.h>
+#include "genimp.h"
+#include "cat.h" 
+
 #define MAX_COLUMNS 200
 #define MAX_DSTR 256
 #define MAX_STRING 100
@@ -75,8 +78,6 @@ static Error evaluate_oneline(struct parse_state *ps, char *delimiter,
 			struct column_info **test, int *ncolumns);
 static Error parse_it(struct parse_state *ps, struct file_info *fs,
 			struct column_info **ds, int np, int nrec);
-static Error load_label(struct column_info **src, struct column_info **ds,
-		struct file_info *fs);
 static Error load_data(struct column_info **src,struct column_info **ds,
 	struct file_info *fs,int *index);
 static Error load_first(struct column_info **src1, struct column_info **src2,
@@ -95,8 +96,7 @@ static Object make_list(struct column_info **ds,struct file_info *fs,
 static Error shrink_array(struct column_info *ds,int npoints);
 static Error redo (struct column_info *ds, Type newtype);
 
-extern Object _dxfCategorize(Object o,char **comp_name);
-extern FILE *_dxfopen_dxfile(char *name,char *auxname,char **outname,char *ext);
+
 Error m_ImportSpreadsheet(Object *in, Object *out)
 {
 
@@ -281,7 +281,7 @@ Error import_all(char *filename,char **varlist,char **categorize,struct file_inf
   ds = NULL;
   if( (ds = (struct column_info **)DXAllocate(
 	     MAX_COLUMNS * sizeof(struct column_info *))) == NULL)
-    return NULL;
+    return ERROR;
   for (i=0; i<MAX_COLUMNS; i++){
     ds[i] = NULL;
     fs->which[i] = OFF;
@@ -346,11 +346,9 @@ Error parse_it_first(struct parse_state *ps, char **varlist,
 {
   int i=0,j;		/* column counter */
   struct column_info **test1,**test2;
-  int label_found=0;
   int ncolumn1=0,ncolumn2=0;
   row_type rtype = COMMENT_ROW;
-  int ret,np=0,nrec=0;
-  char *ret_str;
+  int np=0,nrec=0;
   int skip = -1;
 
   /* initialize the column_info struct */
@@ -359,7 +357,7 @@ Error parse_it_first(struct parse_state *ps, char **varlist,
 	     MAX_COLUMNS * sizeof(struct column_info *))) == NULL) ||
       ((test2 = (struct column_info **)DXAllocate(
 	     MAX_COLUMNS * sizeof(struct column_info *))) == NULL) )
-    return NULL;
+    return ERROR;
   for (i=0; i<MAX_COLUMNS; i++){
     test1[i] = NULL;
     test2[i] = NULL;
@@ -522,9 +520,7 @@ error:
 static Error parse_it(struct parse_state *ps, struct file_info *fs, 
 			struct column_info **ds,int np1,int np2)
 {
-  char *str,*current;
   char *p;
-  int index=0;
   int nc=0;		/* number of columns */
   int np,nrec;
 
@@ -572,7 +568,6 @@ static Error load_data(struct column_info **src,struct column_info **ds,
 	struct file_info *fs,int *index)
 {
   int i;
-  int iprev;
 
   for (i=0; i<fs->ncolumns; i++) {
     if (fs->which[i] == ON)
@@ -580,8 +575,6 @@ static Error load_data(struct column_info **src,struct column_info **ds,
   }
   (*index)++;
   return OK;
-error:
-  return ERROR;
 }
 
 /* allocate the column structure and load the data 		*/
@@ -593,7 +586,6 @@ Error load_first(struct column_info **src, struct column_info **labelsrc,
   int i,iprev;
   char **lp;
   char name[10];
-  Type gridtype=TYPE_BYTE;
 
   if (varlist != NULL && varlist[0] != NULL) {	  /* user specified list */
     for (i=0; i<fs->ncolumns; i++) 
@@ -660,7 +652,6 @@ error:
 void replace_row(struct column_info **old, struct column_info **new)
 {
   int i;
-  struct column_info *temp;
 
   /* remove old structure and replace with new */
   for (i=0; old[i]; i++){
@@ -676,15 +667,11 @@ void replace_row(struct column_info **old, struct column_info **new)
 /* fill data arrays */
 static Error process_data(char *p,struct column_info *ds,int index,char *delimiter)
 {
-  char format[5];
   float f;
   char inv_string[MAX_STRING];
-  int d,i;
+  int d;
   Array a,inv;
   byte b;
-  int ret;
-  char string[250]=" ";
-  char percent[1];
   Type number_type;
 
   a = ds->array;
@@ -713,6 +700,8 @@ static Error process_data(char *p,struct column_info *ds,int index,char *delimit
 	  if (!DXAddArrayData((Array)a,index,1,&b))
 	    goto error;
 	  break;
+        default:
+          break;
     }
     /* add to the invalid array list */
     if (!DXAddArrayData((Array)inv,ds->inv_count,1,&index))
@@ -765,6 +754,8 @@ static Error process_data(char *p,struct column_info *ds,int index,char *delimit
       redo(ds,TYPE_STRING);
     process_data(p,ds,index,delimiter);
     break;
+   default:
+    break;
   }
   return OK;
 
@@ -804,8 +795,7 @@ char **cat_string)
   Array con = NULL;
   Object o = NULL;
   Field f = NULL;
-  Array a = NULL;
-  int i,items=0;
+  int i;
   char inv_name[MAX_STRING];
   int j, invalid = 0;
   int *index;
@@ -1018,6 +1008,8 @@ static Field make_grid(Object o,struct file_info *fs, struct column_info **ds)
 	      new_i[j+count] = old_i[j];
             count +=np;
 	    break;
+	  default:
+	    break;
 	}
       }
       break;
@@ -1049,6 +1041,8 @@ static Field make_grid(Object o,struct file_info *fs, struct column_info **ds)
 	      new_f[j+count] = old_f[j];
             count +=np;
 	    break;
+	  default:
+	    break;
 	}
       }
       break;
@@ -1066,6 +1060,8 @@ static Field make_grid(Object o,struct file_info *fs, struct column_info **ds)
       }
       data_array = (Array)DXMakeStringListV(np*nc,string2);
       DXFree((Pointer)string2);
+      break;
+    default:
       break;
   }
  
@@ -1184,7 +1180,6 @@ FileTok(struct parse_state *ps,char *sep, int newline, char** token)
 {
    char *current = ps->current;
    char *tp = &ps->token[0];
-   char *str;
    int n=0;
 
    /* when the delimiter is specfied, check for special case of
@@ -1326,7 +1321,6 @@ static Type isnumber(char *p,int *d, float *ff)
 {
   int ret,ret1,type;
   float f;
-  char *ret_str;
   char string[250];
   char percent[1];
   
@@ -1368,7 +1362,6 @@ static Type isnumber(char *p,int *d, float *ff)
 	return TYPE_BYTE;
 	break;
   } 
-error:
   return TYPE_HYPER;
 }
 
@@ -1402,7 +1395,6 @@ static Error redo (struct column_info *ds, Type newtype)
   float *f;
   char string[MAX_STRING];
   int *d;
-  byte *b;
   Array newarray;
 
   if (!DXGetArrayInfo(ds->array,&items,NULL,NULL,NULL,NULL))
@@ -1459,6 +1451,8 @@ static Error redo (struct column_info *ds, Type newtype)
 	if (!DXAddArrayData((Array)newarray,i,1,string))
 	   goto error;
       } 
+      break;
+    default:
       break;
   }
 

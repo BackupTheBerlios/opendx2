@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_divcurl.c,v 1.4 2000/05/16 18:47:16 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_divcurl.c,v 1.5 2000/08/24 20:04:11 davidt Exp $
  */
 
 
@@ -18,6 +18,7 @@
 #include <math.h>
 #include <string.h>
 #include <dx/dx.h>
+#include "_divcurl.h"
 
 static Object _dxfDivCurlObject(Object, int);
 static Error  _dxfDivCurlField(Field, int);
@@ -123,9 +124,6 @@ _dxfDivCurlObject(Object object, int flags)
     Field field;
     Object child;
     Class class;
-    Type type;
-    Category cat;
-    int rank, shape[32];
     Task task;
 
     class = DXGetObjectClass(object);
@@ -470,7 +468,6 @@ _dxfDivCurlCubesRegular(Field field, int *counts, float *deltas)
     Type    		   type;
     int     		   i, j, k;
     int     		   lx, ly, lz, nx, ny, nz;
-    float   		   dx, dy, dz;
     int	    		   nItems;
 
     inArray = (Array)DXGetComponentValue(field, "data");
@@ -681,7 +678,7 @@ _dxfDivCurlIrregular(Field field)
     int	        *e, i, j;
     float       *dPtr, *cPtr;
     byte        *c;
-    int         curlsInLocal, divsInLocal;
+    int         curlsInLocal=0, divsInLocal=0;
     ArrayHandle pH = NULL, cH = NULL;
     InvalidComponentHandle icH = NULL;
 
@@ -976,7 +973,6 @@ error:
     float xt2, yt2, zt2;					\
     float xt3, yt3, zt3;					\
     float yzt12, yzt13, yzt23, yz0t2, yz0t3, yz01t, yz02t;	\
-    float wc, wx, wy, wz;					\
 								\
     x0t = (x) -  x0;     y0t = (y) -  y0;     z0t = (z) -  z0;	\
     xt1 =  x1 - (x);     yt1 =  y1 - (y);     zt1 =  z1 - (z);	\
@@ -1060,8 +1056,7 @@ _dxfTetrasDivCurl(ArrayHandle pH, Pointer data,
     float   cx, cy, cz;		/* centroid			       */
     float   curl[3], div;
     float   vc[3], vx[3], vy[3], vz[3];
-    float   dc[3], dx[3], dy[3], dz[3];
-    float   *gPtr;
+    float   dx[3], dy[3], dz[3];
     float   pbuf[3];
 
     p = *tetra++;

@@ -8,13 +8,10 @@
 
 #include <dxconfig.h>
 
-
+#include "integer.h"
 #include "interact.h"
 
-extern
-Error _dxfinteger_base(Object *, Object *, int);
-static
-Error int_reset(float , float , int , int *);
+static Error int_reset(float , float , int , int *);
 
 int 
 m_Integer(Object *in, Object *out)
@@ -24,7 +21,6 @@ m_Integer(Object *in, Object *out)
    return OK;
 }
 
-extern
 Error _dxfinteger_base(Object *in, Object *out, int islist)
 {
    struct einfo ei;
@@ -35,8 +31,8 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
    int change1,change4,change5,changen=0,req_param=1;
    int *ival,iincr,imax,imin;
    method_type method;
-   Object idobj;
-   int iprint[MAXPRINT],ip,msglen=0,shape[1];
+   Object idobj=NULL;
+   int iprint[MAXPRINT],msglen=0,shape[1];
    int refresh = 0;
 
    /* check required parameters existence */
@@ -141,7 +137,7 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
         goto error1;
       }
       if ((method==PERCENT || method==PERCENT_ROUND) &&
-           incr > 1.0 || incr < 0.0){
+           (incr > 1.0 || incr < 0.0)){
         DXSetError(ERROR_BAD_PARAMETER,"#10110","delta",0,1);
         goto error1;
       }
@@ -315,7 +311,7 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
    ei.mp =ei.msgbuf;
    shape[0] = 1;
 
-   sprintf(ei.mp,"");
+   strcpy(ei.mp,"");
    if (iprint[0]==1){
      sprintf(ei.mp, "min="); while(*ei.mp) ei.mp++;
      if (!_dxfprint_message(&imin, &ei, TYPE_INT, 0,shape,1))

@@ -15,24 +15,29 @@ dxmdf_DATA = dx.mdf
 _complex.c: _compparse.h
 
 HEADERS1 = \
-	_compoper.h glyph_ARRW.h glyph_RCKT20.h glyph_SQUARE.h \
-	glyph_ARRW2D.h glyph_RCKT2D.h impCDF.h \
-	_compputils.h glyph_BOX.h glyph_RCKT3.h import.h \
-	_compute.h glyph_CIRCLE10.h glyph_RCKT4.h interact.h \
-	_getfield.h glyph_CIRCLE20.h glyph_RCKT6.h plot.h \
-	_helper_jea.h glyph_CIRCLE4.h glyph_RCKT8.h post.h 
+	_autocolor.h _autogray.h _colormap.h _compoper.h _compputils.h  \
+	_compute.h _connectgrids.h _connectvor.h _construct.h _divcurl.h \
+	_getfield.h _glyph.h _gradient.h _grid.h _helper_jea.h _isosurface.h \
+	_maptoplane.h _newtri.h _normals.h _partnbrs.h _plot.h _post.h \
+	_refine.h _rubbersheet.h _rw_image.h _sample.h autoaxes.h \
+	bounds.h cases.h cat.h changemember.h color.h echo.h
 
-HEADERS2 =  \
-	_isosurface.h glyph_CIRCLE40.h glyph_SPHR114.h quant.h \
-	_normals.h glyph_CIRCLE6.h glyph_SPHR12.h simplesurf.h \
-	_rw_image.h glyph_CIRCLE8.h glyph_SPHR14.h stream.h \
-	bounds.h glyph_DMND.h glyph_SPHR146.h superwin.h \
-	cases.h glyph_NDDL.h glyph_SPHR26.h unpart.h \
-	cat.h glyph_NDDL2D.h glyph_SPHR266.h userInteractors.h \
-	eigen.h glyph_PNT.h glyph_SPHR42.h vectors.h \
-	genimp.h glyph_RCKT12.h glyph_SPHR62.h
+HEADERS2 = \
+	eigen.h exp_gai.h genimp.h glyph_ARRW.h glyph_ARRW2D.h glyph_BOX.h \
+	glyph_CIRCLE10.h glyph_CIRCLE20.h glyph_CIRCLE4.h glyph_CIRCLE40.h \
+	glyph_CIRCLE6.h glyph_CIRCLE8.h glyph_DMND.h glyph_NDDL.h glyph_NDDL2D.h \
+	glyph_PNT.h glyph_RCKT12.h glyph_RCKT20.h glyph_RCKT2D.h glyph_RCKT3.h \
+	glyph_RCKT4.h glyph_RCKT6.h glyph_RCKT8.h glyph_SPHR114.h glyph_SPHR12.h
 
-noinst_HEADERS = $(HEADERS1) $(HEADERS2)
+HEADERS3 = \
+	glyph_SPHR14.h glyph_SPHR146.h glyph_SPHR26.h glyph_SPHR266.h \
+	glyph_SPHR42.h glyph_SPHR62.h glyph_SQUARE.h histogram.h impCDF.h \
+	import.h integer.h interact.h list.h macroutil.h mark.h measure.h \
+	plot.h quant.h scalar.h  separate.h showboundary.h simplesurf.h \
+	stream.h superwin.h trace.h unpart.h userInteractors.h vectors.h \
+	verify.h vrml.h vsincos.h
+
+noinst_HEADERS = $(HEADERS1) $(HEADERS2) $(HEADERS3)
 
 SOURCES1 = \
 	ambientlight.c append.c arrange.c attribute.c \

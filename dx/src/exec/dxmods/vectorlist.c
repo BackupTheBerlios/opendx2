@@ -10,9 +10,8 @@
 
 
 #include <dx/dx.h>
+#include "vectors.h"
 
-extern
-Error _dxfvector_base(Object *,Object *, int);
 
 int m_VectorList(Object *in, Object *out)
 {

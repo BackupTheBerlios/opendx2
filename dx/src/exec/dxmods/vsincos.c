@@ -5,16 +5,24 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/vsincos.c,v 1.4 2000/08/24 20:04:55 davidt Exp $
+ */
+
 
 #include <dxconfig.h>
-
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/vsincos.c,v 1.3 1999/05/10 15:45:33 gda Exp $
- */
+#include "vsincos.h"
 
 /*
  * $Log: vsincos.c,v $
+ * Revision 1.4  2000/08/24 20:04:55  davidt
+ * Major cleanup of dxmods files. Fixed most compiler warnings. In
+ * the process found a few programming errors such as | being used
+ * for || in some if expressions. Most function prototypes are in
+ * header files now so extern prototypes do not have to be corrected
+ * across multiple files. Removed most unused variables, I see a
+ * direct savings of 50K in the dxexec.
+ *
  * Revision 1.3  1999/05/10 15:45:33  gda
  * Copyright message
  *

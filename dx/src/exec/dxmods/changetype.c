@@ -18,9 +18,8 @@
 
 
 #include <dx/dx.h>
+#include "changemember.h"
 
-/* in chgmbr.m right now */
-extern char *dxf_lsquish(char *);
 
 /* inputs: existing group, new group type (series, multigrid, etc) and
  *          a list of group ids -- series positions if series, names (optional)
@@ -161,7 +160,7 @@ Error m_ChangeGroupType(Object *in, Object *out)
      /* have new header.  copy members from old to new */
      switch (newgrouptype) {
      case CLASS_SERIES:
-        for (i=0; member = DXGetSeriesMember((Series)in[0], i, &seriespos); i++ ) {
+        for (i=0; (member = DXGetSeriesMember((Series)in[0], i, &seriespos)); i++ ) {
            if (islist) {
               if (!DXSetSeriesMember((Series)newgrp, i, seriesposlist[i], member))
 		  goto error;
@@ -172,7 +171,7 @@ Error m_ChangeGroupType(Object *in, Object *out)
         }
         break;
      default: 
-        for (i=0; member = DXGetEnumeratedMember((Group)in[0], i, &cp); i++ ) {
+        for (i=0; (member = DXGetEnumeratedMember((Group)in[0], i, &cp)); i++ ) {
            if (islist) {
               if (!DXSetMember((Group)newgrp, namelist[i], member))
 		  goto error;

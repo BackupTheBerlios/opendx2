@@ -6,11 +6,13 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.4 2000/05/16 18:48:10 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.5 2000/08/24 20:04:44 davidt Exp $
  */
 
 #include <dxconfig.h>
-
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 /***
 MODULE:
@@ -102,7 +104,7 @@ m_ReadImage ( Object *in, Object *out )
     int       found_subpath=0;
     char      user_path[MAX_IMAGE_PATHLEN];
     char      user_basename[MAX_IMAGE_NAMELEN];
-    int       fd;
+    int       fd=0;
     int       frame;
     long int  frame_size_bytes;
     int       i, j;
@@ -948,10 +950,9 @@ Field InputRGB (int width, int height, int fh, char *colortype)
     int            oneline;
     int            oneframe;
     unsigned char  *anchor;
-    float          *fptr;
     unsigned char  *cptr0;
     unsigned char  *cptr1;
-    int            i, y, x;
+    int            y, x;
     Array 	   colorsArray;
     Type 	   type;
     int		   expandToFloat;

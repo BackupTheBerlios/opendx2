@@ -8,8 +8,9 @@
 #include <dx/dx.h> 
 
 #include <dxconfig.h>
-
-
+#include <ctype.h>
+#include "plot.h"
+#include "superwin.h"
 
 typedef struct
 {
@@ -21,13 +22,14 @@ typedef struct
 } PendingDXLMessage;
 
 static Error ManagePanels(Object *, char *);
-static void delete_PendingDXLMessage(Pointer);
+static Error delete_PendingDXLMessage(Pointer);
 static Error SendPendingDXLMessage(Private);
 static Error SendPendingMessage(char *, char *);
 
+extern Private DXNewPrivate(Pointer, Error (*delete)(Pointer)); /* from libdx/private.c */
+
 Error m_ManageSequencer(Object *in)
 {
-  char *name;
   int open=0;
   
   if (in[0])
@@ -208,8 +210,7 @@ Error ManagePanels(Object *in, char *paneltype)
 {
   char *name = "", *openname, *how, *buf = NULL;
   int i, j, open, nummaps, numflags, num_in_open_list;
-  int *open_list, rank, shape[10];
-  Array open_list_array;
+  int *open_list=NULL, rank, shape[10];
   Type type=TYPE_STRING;
   char messageid[20];
   
@@ -240,7 +241,7 @@ Error ManagePanels(Object *in, char *paneltype)
     {
       if (DXGetObjectClass(in[1])==CLASS_ARRAY)
 	{
-	  if (!DXGetArrayInfo(in[1], &numflags, &type, NULL, &rank, shape))
+	  if (!DXGetArrayInfo((Array) in[1], &numflags, &type, NULL, &rank, shape))
 	    goto error;
 	  if (type == TYPE_INT)
 	    {
@@ -250,7 +251,7 @@ Error ManagePanels(Object *in, char *paneltype)
 			     "open must be an integer list or string list");
 		  goto error;
 		}
-	      open_list = (int *)DXGetArrayData(in[1]);
+	      open_list = (int *)DXGetArrayData((Array) in[1]);
 	    }
 	  else if (type!=TYPE_STRING)
 	    {
@@ -325,7 +326,7 @@ Error ManagePanels(Object *in, char *paneltype)
                       else 
 		        sprintf(buf, "open controlpanel %s", name);
                       sprintf(messageid,"%i", j);
-                      if (!SendPendingMessage(buf, &messageid))
+                      if (!SendPendingMessage(buf, (char *) &messageid))
 			goto error;
 		    }
 		}
@@ -455,8 +456,6 @@ Error ManagePanels(Object *in, char *paneltype)
 }
 
 
-extern int _dxf_mapSupervisedWindow(char *, int);
-
 Error m_ManageImageWindow(Object *in)
 {
   char *where;
@@ -548,7 +547,7 @@ static Error
 }
 
 
-static void delete_PendingDXLMessage(Pointer d)
+static Error delete_PendingDXLMessage(Pointer d)
 {
   PendingDXLMessage *p = (PendingDXLMessage *)d;
   DXFree(p->message);
@@ -556,6 +555,7 @@ static void delete_PendingDXLMessage(Pointer d)
   DXFree(p->major);
   DXFree(p->minor);
   DXFree(p);
+  return OK;
 }
 
 
@@ -573,6 +573,7 @@ error:
 }
 
 
+#if 0
 static Error GetFlag(Object obj, int *flag)
 {
 
@@ -590,8 +591,9 @@ static Error GetFlag(Object obj, int *flag)
  error:
   return ERROR;
 }
-      
-      
+#endif
+ 
+
 static Error SendPendingMessage(char *buf, char *messageid)
 {
   char *major = NULL;
@@ -621,7 +623,6 @@ static Error SendPendingMessage(char *buf, char *messageid)
   plr->minor = (char *)DXAllocate(strlen(messageid)+1);
   if (!plr->minor)
      goto error;
-      
 
   p = DXNewPrivate((Pointer)plr, delete_PendingDXLMessage);
   if (!p)

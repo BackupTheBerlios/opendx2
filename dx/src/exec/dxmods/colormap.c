@@ -8,27 +8,22 @@
 
 #include <dxconfig.h>
 
-
 #include <string.h>
 #include "interact.h"
+#include "_autocolor.h"
+#include "separate.h"
+#include "histogram.h"
+#include "_colormap.h"
+#include "color.h"
 
 #define NUMBINS 20
 
-extern
-Error _dxfnewvalue(float *,float ,float , float , float ,int ,int *);
-extern 
-Field _dxfMakeRGBColorMap(Field);
-extern
-Object _dxfHistogram(Object o, int bins, float *min, float *max, int inout);
-extern
-Array DXScalarConvert(Array );
-extern
-int _dxfRGBtoHSV(float, float, float, float *, float *, float *);
-extern
-Error _dxfcontrol_to_rgb(Object in0,Object in1,Object in2, Field *rgb);
-extern
+extern Array DXScalarConvert(Array ); /* from libdx/stats.h */
+
+/* defined in this file */
 Error _dxfcontrol_to_o(Object in0,Field *op);
-extern Field _dxfcolorfield(float *, float *,int ,int);
+Error _dxfcontrol_to_rgb(Object in0,Object in1,Object in2, Field *rgb);
+
 static Object gethistogram(Object ,int ,int ,float *,float *);
 static Error vect_scalar(Object );
 static Error makescalar(Object);
@@ -56,19 +51,17 @@ typedef struct hsvo {
 } HSVO;
 static Error array_to_float(Array a,float *data,Type type,int num);
 static Error addarray(Field *f,Map *map,int items,char *component);
-extern Field _dxfeditor_to_hsv(Array huemap,Array satmap,Array valmap);
-extern Field _dxfeditor_to_opacity(Array map);
 
 int
 m_Colormap(Object *in,Field *out)
 {
    struct einfo ei;
-   int change1=0,change4,change5,change=0,changecmap,changeomap;
-   float min,max,old_min=0,old_max=100,minmax[2];
+   int change1=0,change4,change5,change=0,changecmap=0,changeomap=0;
+   float min,max,minmax[2];
    float defmin,defmax;		/*default min and max */
-   Object idobj,histogram,color=NULL,opacity=NULL;
+   Object idobj=NULL,histogram,color=NULL,opacity=NULL;
    char *id, *label;
-   int *histo_pts,nhist;
+   int *histo_pts=NULL,nhist;
    int i,iprint[MAXPRINT],msglen=0,shape[1];
    int no_input=0,outlier=1,old_version=0;
    int min_input=0,max_input=0,longmessage=0;
@@ -222,7 +215,7 @@ m_Colormap(Object *in,Field *out)
  
    /* check for opacity map input */
    changeomap = _dxfcheck_obj_cache(in[10],id,10,idobj);
-   if (in[10] && changeomap > 0)
+   if (in[10] && changeomap > 0) {
       if (DXGetObjectClass(in[10])==CLASS_GROUP){
 	if (!DXGetMember((Group)in[10],"colormap") ||
             !(opacity = DXGetMember((Group)in[10],"opacitymap"))){
@@ -232,6 +225,7 @@ m_Colormap(Object *in,Field *out)
       }
       else
          opacity = in[10];
+   }
    if (opacity){
       if (DXGetObjectClass(opacity)==CLASS_GROUP){
          DXSetError(ERROR_BAD_PARAMETER,"opacity map must be field");
@@ -353,7 +347,7 @@ m_Colormap(Object *in,Field *out)
    ei.mp = ei.msgbuf;
 
    shape[0]=1;
-   sprintf(ei.mp,"");
+   strcpy(ei.mp,"");
    if (iprint[0]==1){
      sprintf(ei.mp, "min="); while(*ei.mp) ei.mp++;
      if (!_dxfprint_message(&min, &ei,TYPE_FLOAT,0,shape,1))
@@ -483,7 +477,7 @@ Error hsvo_to_rgb_and_op(Object in0,Object in1,Object in2,Object in3,
       DXSetError(ERROR_INTERNAL,"hsv points must be scalar");
       goto error;
    }
-   hsv = (Field)_dxfcolorfield(NULL,NULL,num_hsv,1);
+   hsv = (Field)_dxfcolorfield(NULL, 0, num_hsv, 1);
    if (!hsv)
       goto error;
    a = (Array)DXGetComponentValue((Field)hsv,"positions");
@@ -503,7 +497,7 @@ Error hsvo_to_rgb_and_op(Object in0,Object in1,Object in2,Object in3,
       DXSetError(ERROR_INTERNAL,"op points must be scalar");
       goto error;
    }
-   *opacity = (Field)_dxfcolorfield(NULL,NULL,num_op,0);
+   *opacity = (Field)_dxfcolorfield(NULL, 0, num_op, 0);
    if (!*opacity)
       goto error;
    a = (Array)DXGetComponentValue((Field)*opacity,"positions");
@@ -536,18 +530,16 @@ Error hsvo_to_rgb_and_op(Object in0,Object in1,Object in2,Object in3,
 
 error:
    if (hsv) DXDelete((Object)hsv);
-   return NULL;
+   return ERROR;
 }
 
 
 /* Convert control points to HSV space (editor_to_hsv) 
  * and convert to RGB with control points
  */
-extern
 Error _dxfcontrol_to_rgb(Object huemap,Object satmap,Object valmap, Field *rgb)
 {
    Field hsv;
-   int num_hue,num_sat,num_val;
    int n,items;
    Map *map;
    Array a[3];
@@ -635,13 +627,12 @@ error:
 }
 
 /* convert opacity control points to opacity field */
-extern
 Error _dxfcontrol_to_o(Object opmap,Field *opacity)
 {
    float *op_data,*op_pts;
    Map *op;
-   int i,num_op;
-   Array a,b,c=NULL;
+   int num_op;
+   Array c=NULL;
    op = NULL; op_data = NULL; op_pts = NULL;
 
    if(opmap){
@@ -1073,7 +1064,7 @@ int match_cpoints(Field o,Object defmap,int which)
 {
    Map *map1, *map2;
    int i,item1=0, item2=0, match=0;
-   Array inmap;
+   Array inmap=NULL;
 
    map1=NULL;
    map2=NULL;
@@ -1153,11 +1144,10 @@ Error array_to_float(Array a,float *data,Type type,int num)
 	 for (i = 0; i<num; i++)
 	    data[i] = (float)data_i[i];
 	 break;
+      default:
+         break;
    }
    return OK;
-
-error:
-   return ERROR;
 }
 
 
@@ -1195,7 +1185,7 @@ Error print_map(Field f,char *component,char *name, char *id)
      return ERROR;
    ei.mp = ei.msgbuf;
    shape[0]=2;
-   sprintf(ei.mp,"");
+   strcpy(ei.mp,"");
    sprintf(ei.mp,name); while(*ei.mp) ei.mp++;
    if (num==1){
       sprintf(ei.mp,"{"); ei.mp++;
@@ -1254,12 +1244,8 @@ error:
 static
 Object gethistogram(Object o,int nbins,int outl,float *min,float *max)
 {
-   int i, items,rank;
-   Array a;
-   int *p;
-   Type t;
+   int rank;
    Object histogram,newo;
-   int *localPts;
    Class class,classg;
 
    /* Copy object so can change to scalar */
@@ -1289,6 +1275,12 @@ Object gethistogram(Object o,int nbins,int outl,float *min,float *max)
 
    histogram = (Object)_dxfHistogram(newo,nbins,min,max,outl);
    /* 
+   {
+   Array a;
+   int items, i, *p;
+   Type t;
+   int *localPts;
+
    if (!histogram)
       return ERROR;
    if ((class=DXGetObjectClass(histogram))==CLASS_FIELD){
@@ -1306,6 +1298,7 @@ Object gethistogram(Object o,int nbins,int outl,float *min,float *max)
    }
       
    DXDelete(histogram);
+   }
    */
 
    DXDelete((Object)newo);
@@ -1328,7 +1321,7 @@ Error vect_scalar(Object o)
          return ERROR;
       break;
    case CLASS_GROUP:
-      for (i=0; oo=DXGetEnumeratedMember((Group)o,i,NULL); i++){
+      for (i=0; (oo=DXGetEnumeratedMember((Group)o,i,NULL)); i++){
          if (!vect_scalar(oo))
             return ERROR;
       }

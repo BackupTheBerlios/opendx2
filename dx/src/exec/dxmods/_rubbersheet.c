@@ -6,13 +6,15 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rubbersheet.c,v 1.4 2000/05/16 18:47:38 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rubbersheet.c,v 1.5 2000/08/24 20:04:20 davidt Exp $:
  */
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
 #include <dx/dx.h>
+#include "_rubbersheet.h"
 #include "vectors.h"
+#include "_normals.h"
 
 #include <dxconfig.h>
 
@@ -548,6 +550,8 @@ RS_Field_PDep_task(Field field, float scale, float offset)
 		case TYPE_INT:
 		    STRETCH_POSITIONS_VARYING_NORMAL(int);
 		    break;
+	        default:
+		    break;
 	    }
 	}
 	else 
@@ -636,6 +640,8 @@ RS_Field_PDep_task(Field field, float scale, float offset)
 		case TYPE_INT:
 		    STRETCH_POSITIONS_CONSTANT_NORMAL(int);
 		    break;
+	        default:
+		    break;
 	    }
 
 	}
@@ -688,6 +694,8 @@ RS_Field_PDep_task(Field field, float scale, float offset)
 	    case TYPE_INT:
 		STRETCH_POSITIONS_2D(int);
 		break;
+	    default:
+	        break;
 	}
     }
 
@@ -735,7 +743,7 @@ error:
 	{								\
 	    scaledData = scale * (data[i] + offset);			\
 									\
-	    if (! nDepP || cst_normal)					\
+	    if (! nDepP || cst_normal) {				\
 	        if (cst_normal)						\
 	        {							\
 		    vector_scale((Vector *)cst_normal,			\
@@ -746,6 +754,7 @@ error:
 		    vector_scale(((Vector *)normals)+i,			\
 		        scaledData, (Vector *)s_normal);		\
 	        }							\
+	    }								\
 	}								\
 									\
 	for (j = 0; j < nVerts; j++)					\
@@ -765,13 +774,14 @@ error:
 	    if (dDepP)							\
 	    {								\
 		scaledData = scale * (data[pNum] + offset);		\
-		if (! nDepP)						\
+		if (! nDepP) {						\
 		    if (cst_normal)					\
 			vector_scale(((Vector *)cst_normal),		\
 				scaledData, (Vector *)s_normal);	\
 		    else						\
 			vector_scale(((Vector *)normals)+i,		\
 				scaledData, (Vector *)s_normal);	\
+		}							\
 	    }								\
 	    else							\
 	    {								\
@@ -837,13 +847,12 @@ RS_Field_CDep_task(Field field, int nDepP, int dDepP, float scale, float offset)
     Pointer	  inData;
     int		  nConnections;
     enum PrimType primType;
-    int		  nPositions, nDim, nVerts, outPerIn;
+    int		  nPositions, nDim, nVerts, outPerIn=0;
     Type	  type, dataType;
     Category	  cat;
     int		  rank, shape[32], i, j, k;
-    float 	  scaledData, *point;
+    float 	  scaledData=0;
     float	  s_normal[3], *c_normals = NULL;
-    int		  cstNormal = 0;
     Object	  attr;
     char	  *name;
     Array 	  inA, outA = NULL;
@@ -995,6 +1004,8 @@ RS_Field_CDep_task(Field field, int nDepP, int dDepP, float scale, float offset)
 	    case TYPE_BYTE:
 		STRETCH_CONNECTIONS_3D(byte);
 		break;
+	    default:
+	        break;
 	}
 
 	if (! nArray && normals)
@@ -1041,6 +1052,8 @@ RS_Field_CDep_task(Field field, int nDepP, int dDepP, float scale, float offset)
 	    case TYPE_UBYTE:
 		STRETCH_CONNECTIONS_2D(ubyte);
 		break;
+	    default:
+	        break;
 	}
     }
 
@@ -1144,6 +1157,8 @@ RS_Field_CDep_task(Field field, int nDepP, int dDepP, float scale, float offset)
 	    outPerIn = 1;
 	}
 	break;
+        default:
+	  break;
     }
 
     /*
@@ -1189,6 +1204,8 @@ RS_Field_CDep_task(Field field, int nDepP, int dDepP, float scale, float offset)
 	    if (! DXSetComponentAttribute(field, "connections", "element type",
 					    (Object)DXNewString("triangles")))
 		goto error;
+	    break;
+        default:
 	    break;
     }
 
@@ -1367,7 +1384,7 @@ error:
 static Error
 GetQuadNormal(ArrayHandle pHandle, ArrayHandle cHandle, int n, float *normal)
 {
-    int   j, p, q, r;
+    int   j;
 
     for (j = 0; j < n; j++, normal += 3)
     {
@@ -1394,7 +1411,7 @@ GetQuadNormal(ArrayHandle pHandle, ArrayHandle cHandle, int n, float *normal)
 static Error
 GetQuadNormals(ArrayHandle pHandle, ArrayHandle cHandle, int n, float **normals)
 {
-    int   j, p, q, r;
+    int   j;
     float *ptr;
 
     *normals = (float *)DXAllocateLocal(n * 3 * sizeof(float));
@@ -1611,8 +1628,6 @@ GetScaleAndOffset(Object obj, Object scale_o, Object min_o,
     float		thickness;
     float		max, min;
     Class		class;
-    int			i;
-    Field		field;
 
     if (! DXStatistics(obj, "data", &min, &max, NULL, NULL))
     {

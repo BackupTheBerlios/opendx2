@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/gradient.c,v 1.3 1999/05/10 15:45:26 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/gradient.c,v 1.4 2000/08/24 20:04:35 davidt Exp $:
  */
 
 #include <dxconfig.h>
@@ -34,8 +34,8 @@ END:
 #include <stdio.h>
 #include <math.h>
 #include <dx/dx.h>
+#include "_gradient.h"
 
-extern Object _dxfGradient(Object);
 static Error gradient_method(Object);
 
 int m_Gradient (in, out)

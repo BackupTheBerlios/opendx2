@@ -49,8 +49,6 @@ static Error cleanDataVar(Infovar vpdata, Infocdf cdfp);
 static Error cleanPosVar(Infovar *vploc, Infocdf cdfp, Infovar *vpdata);
 static Error cleanSerVar(Infovar *vptime, Infocdf cdfp, Infovar *vpdata);
 
-
-
 static Object impcdfgroup(char *filename, char **varname, int startframe, 
 			  int endframe, int deltaframe);
 static Object impcdfobject(Infocdf cdfp, Infovar vpdata, double *timeval,
@@ -59,7 +57,7 @@ static Field impcdffield(int rec, Infocdf cdfp, Infovar vpdata,
 			 Array pos, Array con, int *posdel, int *condel);
 static Object impcdf0dim(Infocdf cdfp, Infovar vpdata, Array pos, int *posdel);
 static Error loadSerPos(Infocdf cdfp, Infovar vptime,  double *timeval);
-extern Array impcdfpos(Infovar vploc, Infocdf cdfp);
+
 static void moveVar(Infovar *vp, Infovar *vp2, int n);
 static int getHowMany(char **names);
 static Error GetAttribute(Infovar vp, Object f,int var);
@@ -67,6 +65,8 @@ static void removeVar(Infovar *vp, int n);
 static Error namedVar(Infovar *vpdata,Infovar *vploc,Infovar *vptime,
 			char **varname,int numDims);
 static void copyVar(Infovar vp, Infovar *vps, int numDims);
+
+Array impcdfpos(Infovar vploc, Infocdf cdfp);
 
 #ifndef DXD_NON_UNIX_ENV_SEPARATOR
 #define PATH_SEP_CHAR ':'
@@ -551,7 +551,7 @@ static Object impcdf0dim(Infocdf cdfp, Infovar vpdata, Array pos, int *posdel)
   Field f=NULL;
   Array a=NULL;
   void *data;
-  Object obj;
+  Object obj=NULL;
   long recStart, recCount, recInterval;
   CDFstatus status;
   char msg[CDF_ERRTEXT_LEN+1];
@@ -855,8 +855,7 @@ openCDF(char *filename, Infocdf *cdfp, int fill)
   CDFstatus status;
   char msg[CDF_ERRTEXT_LEN+1], *datadir = NULL, *cp; 
   char *outname = NULL;
-  long dimsizes[CDF_MAX_DIMS];
-  int i,j;
+  int i;
 
 #define XTRA 12
 
@@ -1276,7 +1275,6 @@ error:
   (originally posCDF.c)
   */
 
-Array impcdfpos(Infovar vploc, Infocdf cdfp);
 static Infovar locAxis(int n, Infovar vploc);
 static Error buildAxis(int n,Infocdf cdfp,Infovar vp,float *data,float *isreg);
 static Error buildAxis2(Infocdf cdfp, Infovar vp, float *data, int cntvar);
@@ -1291,7 +1289,7 @@ Array impcdfpos(Infovar vploc, Infocdf cdfp)
 {
   Array a = NULL, terms[CDF_MAX_DIMS];
   Infovar p;
-  int i, j, k, shape[8], dimsize[CDF_MAX_DIMS];
+  int i, j, shape[8], dimsize[CDF_MAX_DIMS];
   float *data,isreg;
   float origin[CDF_MAX_DIMS], deltas[CDF_MAX_DIMS];
 
@@ -1430,7 +1428,6 @@ Array impcdfpos(Infovar vploc, Infocdf cdfp)
 
 static Infovar locAxis(int n, Infovar vploc)
 {
-  int x, v;
   Infovar ptr = vploc;
   
   while( ptr )
@@ -1455,8 +1452,9 @@ static Infovar locAxis(int n, Infovar vploc)
 static Error buildAxis(int n, Infocdf cdfp, Infovar vp, float *data,float *diff)
 {
   char *d, *dp;
-  float *mydata, *mydata2,*delta;
-  int i, j, numbytes, size, dims, off1, off2;
+  float *mydata, *mydata2;
+  /* float *delta; */
+  int i, numbytes, size, dims, off1, off2;
   Error err;
 
   d = NULL;
@@ -1632,8 +1630,8 @@ static Error buildAxis(int n, Infocdf cdfp, Infovar vp, float *data,float *diff)
 static Error buildAxis2(Infocdf cdfp, Infovar vp, float *data, int cntvar)
 {
   char *d, *dp;
-  float *mydata, *mydata2;
-  int i, j, numbytes, size, dims, off1, off2, n = 0;
+  float *mydata;
+  int i, numbytes, size, dims, n = 0;
   long recStart, recCount, recInterval;
   Infovar ptr;
   CDFstatus status;
@@ -1788,9 +1786,9 @@ queryCDFvars(Infocdf cdfp, Infovar *vpdata, Infovar *vploc,
 		   Infovar *vptime, char **varname, 
 		   int startframe, int endframe, int deltaframe)
 {
-  int i, k, vtype, numloc=0, datacnt = 0, loccnt = 0, timecnt = 0, tocnvt = 0;
+  int i, k, vtype, tocnvt = 0;
   Infovar ptr;
-  char msg[CDF_ERRTEXT_LEN+1], tokstr[CDF_ERRTEXT_LEN+1];
+  char msg[CDF_ERRTEXT_LEN+1];
   CDFstatus status;
   int varcnt=0;
 
@@ -2208,7 +2206,7 @@ static Error cleanSerVar(Infovar *vptime, Infocdf cdfp, Infovar *vpdata)
 
   ptr = *vptime;
   if (ptr == NULL)
-    goto ok;
+    return OK;
   
   while(ptr && strcmp(ptr->name,"EPOCH") )
     {
@@ -2255,11 +2253,7 @@ static Error cleanSerVar(Infovar *vptime, Infocdf cdfp, Infovar *vpdata)
 	    n++;
 	}
     }
- ok:
   return OK;
-  
- error:
-  return ERROR;
 }
 
 /*
@@ -2278,7 +2272,7 @@ static Error cleanSerVar(Infovar *vptime, Infocdf cdfp, Infovar *vpdata)
 
 static int categorizeVar(long dims, Infovar vp)
 {
-  int i, n, category;
+  int i, n, category=0;
 
   if (dims > 0)
     {
@@ -2313,10 +2307,12 @@ static int categorizeVar(long dims, Infovar vp)
     }
   return category;
 
+ /*
  unknown:
   DXSetError(ERROR_BAD_PARAMETER,
 	   "Not able to categorize variable %s",vp->name);
   return UNKNOWNCOMP;
+  */
 }
 
 
@@ -2433,9 +2429,9 @@ static void copyVar(Infovar vp, Infovar *vps,int numDims)
 static Error completeVarsInfo(Infocdf cdfp, Infovar vpdata, 
 			      Infovar vploc, Infovar vptime)
 {
-  int i, d, s, j, k;
+  int i, d, s, k;
   Infovar ptr;
-  int shape[CDF_MAX_DIMS], maxframe;
+  int maxframe;
   static char *nameConnect[] = 
     {
       "point",		/* rank 0 */
@@ -2574,7 +2570,7 @@ static int dxtype2bytes( Type dxtype )
       return 8;
     default:
       DXSetError(ERROR_BAD_TYPE,"Bad dx type data");
-      return NULL;
+      return ERROR;
     }
 }
 /*
@@ -2622,7 +2618,7 @@ static Error cdftype2dxtype( long cdftype, Type *type )
       break;
     default:
       DXSetError(ERROR_BAD_TYPE,"Bad CDF type data");
-      return NULL;
+      return ERROR;
     }
     return OK;
 }

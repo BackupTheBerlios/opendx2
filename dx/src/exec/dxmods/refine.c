@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/refine.c,v 1.3 1999/05/10 15:45:29 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/refine.c,v 1.4 2000/08/24 20:04:45 davidt Exp $:
  */
 
 #include <dxconfig.h>
@@ -35,14 +35,12 @@ END:
 
 #include <stdio.h>
 #include <dx/dx.h>
-
-extern Object _dxfRefine(Object, int);
-extern Object _dxfChgTopology(Object, char *);
+#include "_refine.h"
 
 #define NEW_LEVEL	1
 #define NEW_TOPOLOGY	2
 
-int
+Error
 m_Refine(Object *in, Object *out)
 {
     int   level, refineType;
@@ -71,7 +69,7 @@ m_Refine(Object *in, Object *out)
 	    if (fLevel != (int)fLevel)
 	    {
 		DXSetError(ERROR_BAD_PARAMETER, "#10620", "level");
-		return NULL;
+		return ERROR;
 	    }
 	    refineType = NEW_LEVEL;
 	    level = (int)fLevel;
@@ -90,7 +88,7 @@ m_Refine(Object *in, Object *out)
     if (refineType == NEW_LEVEL && level < 0)
     {
 	DXSetError(ERROR_BAD_PARAMETER, "#10620", "level");
-	return NULL;
+	return ERROR;
     }
 
     if (refineType == NEW_LEVEL)

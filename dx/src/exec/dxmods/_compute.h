@@ -8,6 +8,8 @@
 
 #include <dxconfig.h>
 
+#ifndef __COMPUTE_H_
+#define __COMPUTE_H_
 
 #define NT_ERROR	(-1)
 #define NT_INPUT	0
@@ -106,20 +108,22 @@ struct ObjStruct {
 extern PTreeNode   *_dxdcomputeTree;
 extern CompInput  _dxdcomputeInput[];
 
-void 	_dxfComputeFreeTree(PTreeNode *);
-PTreeNode *_dxfComputeCopyTree(PTreeNode *);
 
-void	_dxfComputeInitInputs(CompInput *);
+/* from _compinput.c */
+void	  _dxfComputeInitInputs(CompInput *);
 ObjStruct *_dxfComputeGetInputs(Object *, CompInput *);
-void	_dxfComputeFreeOjbStruct(CompInput *);
-void	_dxfComputeDumpInputs(CompInput *, ObjStruct *);
+void	  _dxfComputeDumpInputs(CompInput *, ObjStruct *);
+void      _dxfComputeFreeObjStruct (ObjStruct *);
 
-int	_dxfComputeLookupFunction (char *);
-int	_dxfComputeTypeCheck (PTreeNode *, ObjStruct *);
+
+/* from _compexec.c */
 int	_dxfComputeExecute (PTreeNode *, ObjStruct *);
-int	_dxfComputeExecuteNode (PTreeNode *, ObjStruct *,
-				Pointer, InvalidComponentHandle *);
-void	_dxfComputeInitExecution (void);
+
+/* from compute.c */
+int m_Compute(Object *, Object *);
+
+
 
 /* #define COMP_DEBUG 1 */
 
+#endif /* __COMPUTE_H_ */

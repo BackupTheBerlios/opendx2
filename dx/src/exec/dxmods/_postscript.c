@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.6 2000/05/16 18:47:34 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.7 2000/08/24 20:04:17 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -99,8 +99,6 @@ static Error put_miff_header(FILE *fout, char *filename,
 static Error read_miff_header(FILE *in, int *frame, struct ps_spec *spec, int *type, int *nframes);
 static Error miff_out_flc(FILE *fout,
         Pointer pixels, RGBColor *map, int type, struct ps_spec *spec);
-static Error miff_in_flc(FILE *fout,
-        Pointer pixels, RGBColor *map, int *type, struct ps_spec *spec);
 
 #define ORIENT_NOT_SET  0
 #define LANDSCAPE       1
@@ -164,14 +162,14 @@ static Error
 output_ps(RWImageArgs *iargs, int colormode,int filetype)
 {
     char     imagefilename[MAX_IMAGE_NAMELEN];
-    int      firstframe, lastframe, i, series, width, height;
+    int      firstframe, lastframe, i, series;
     int      frames, deleteable = 0;
     struct   ps_spec page_spec;
     Pointer  pixels;
     FILE     *fp = NULL;
     Array    colors, color_map;
+    int      imageType=0;
     RGBColor *map = NULL;
-    int      imageType;
     Type     type;
     int      rank, shape[32];
 
@@ -412,9 +410,6 @@ error:
 static Error
 put_ps_page_setup(FILE *fout, struct ps_spec *spec)
 {
-    float pagewidth;
-    float pageheight;
-
     if (fprintf(fout,"%%%%BeginPageSetup\n\n") < 0)
         goto error;
 
@@ -664,9 +659,8 @@ static Error ENCODE_NAME(ubyte *pix_row, int n_pix,
     int    start_i,  i, knt, size, k;
     int    out_length;
     int    x, y;
-    Object attr = NULL;
-    int    image_size, nd;
-    int    segknt, totknt;
+    int    image_size;
+    int    totknt;
     ubyte  *segptr;
     int    max_knt = 127;
 
@@ -814,10 +808,8 @@ static Error ENCODE_NAME(ubyte *pix_row, int n_pix,
     *segptr = '\0';
     return totknt;
 
-error:
-
-    return ERROR;
 }
+
 /***************************************************************************/
 #undef CMP
 #undef ASGN
@@ -836,9 +828,8 @@ static Error ENCODE_NAME(ubyte *pix_row, int n_pix,
     int    start_i,  i, knt, size, k;
     int    out_length;
     int    x, y;
-    Object attr = NULL;
-    int    image_size, nd;
-    int    segknt, totknt;
+    int    image_size;
+    int    totknt;
     ubyte  *segptr;
     int    max_knt = 127;
 
@@ -987,9 +978,6 @@ static Error ENCODE_NAME(ubyte *pix_row, int n_pix,
     *segptr = '\0';
     return totknt;
 
-error:
-
-    return ERROR;
 }
 /***************************************************************************/
 #undef CMP
@@ -1036,8 +1024,8 @@ ps_out_flc(FILE *fout, Pointer pixels,
         RGBColor *map, int imageType, struct ps_spec *spec)
 {
    int i, j, P;
-   ubyte *RGBbuff, *RGBptr;
-   char *encbuff;
+   ubyte *RGBbuff=NULL, *RGBptr;
+   char *encbuff=NULL;
    int encbuff_size, RGBbuff_size;
    int byte_count;
    int row_str_length;
@@ -1172,8 +1160,8 @@ ps_out_gry(FILE *fout,
         Pointer pixels, RGBColor *map, int imageType, struct ps_spec *spec)
 {
    int i, j, P;
-   ubyte *BWbuff, *BWptr;
-   char *encbuff;
+   ubyte *BWbuff=NULL, *BWptr;
+   char *encbuff=NULL;
    int encbuff_size, BWbuff_size;
    int byte_count;
    int row_str_length;
@@ -1397,7 +1385,6 @@ put_colorimage_function(FILE *fout)
 
 bad_write:
     DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
-error:
     return ERROR;
 }
 
@@ -1515,7 +1502,7 @@ parse_format(char *fmt, struct ps_spec *spec)
      * Parse the page size.
      */
     format_modifier = "page";
-    if (p = strstr(format," page")) {
+    if ((p=strstr(format," page"))) {
         p += 5;
         SKIP_WHITE(p);
         if (!p) goto format_error;
@@ -1537,7 +1524,7 @@ parse_format(char *fmt, struct ps_spec *spec)
      * Parse the dots per inch.
      */
     format_modifier = "dpi";
-    if (p = strstr(format," dpi")) {
+    if ((p=strstr(format," dpi"))) {
         int dpi;
         p += 4;
         SKIP_WHITE(p);
@@ -1559,7 +1546,7 @@ parse_format(char *fmt, struct ps_spec *spec)
      * Parse the gamma
      */
     format_modifier = "gamma";
-    if (p = strstr(format," gamma")) {
+    if ((p=strstr(format," gamma"))) {
         p += 4;
         SKIP_WHITE(p);
         if (!p) goto format_error;
@@ -1579,7 +1566,7 @@ parse_format(char *fmt, struct ps_spec *spec)
      * Parse the page orientation.
      */
     format_modifier = "orient";
-    if (p = strstr(format," orient")) {
+    if ((p=strstr(format," orient"))) {
         p += 7;
         SKIP_WHITE(p);
         if (!p) goto format_error;
@@ -1601,7 +1588,7 @@ parse_format(char *fmt, struct ps_spec *spec)
      * Parse the margin.
      */
     format_modifier = "margin";
-    if (p = strstr(format," margin")) {
+    if ((p=strstr(format," margin"))) {
         p += 7;
         SKIP_WHITE(p);
         if (!p) goto format_error;
@@ -1626,7 +1613,7 @@ parse_format(char *fmt, struct ps_spec *spec)
      * given number of inches.
      */
     format_modifier = "width";
-    if (p = strstr(format," width")) {
+    if ((p=strstr(format," width"))) {
         p += 6;
         SKIP_WHITE(p);
         if (!p) goto format_error;
@@ -1656,7 +1643,7 @@ parse_format(char *fmt, struct ps_spec *spec)
      * given number of inches.
      */
     format_modifier = "height";
-    if (p = strstr(format," height")) {
+    if ((p=strstr(format," height"))) {
         p += 7;
         SKIP_WHITE(p);
         if (!p) goto format_error;
@@ -1741,7 +1728,6 @@ error:
 static int
 get_token(char *b, char *t, char *v)
 {
-    int i;
     int l;
     int p, q, r;
 
@@ -1847,7 +1833,6 @@ error:
     return ERROR;
 }
 
-extern
 SizeData * _dxf_ReadImageSizesMIFF(char *name,
 				    int startframe,
 				    SizeData *data,
@@ -1887,7 +1872,6 @@ miff_out_flc(FILE *fout, Pointer pixels,
    ubyte *encbuff, *RGBbuff, *RGBptr;
    int encbuff_size, RGBbuff_size;
    int byte_count;
-   int row_str_length;
    ubyte gamma_table[256];
 
    spec->compress = DO_COMPRESSION;
@@ -1996,17 +1980,16 @@ static Error
 output_miff(RWImageArgs *iargs)
 {
     char     imagefilename[MAX_IMAGE_NAMELEN];
-    int      firstframe, lastframe, i, series, width, height;
+    int      firstframe, lastframe, i, series;
     int      frames, deleteable = 0;
     struct   ps_spec page_spec;
     Pointer  pixels;
     FILE     *fp = NULL;
     Array    colors, color_map;
     RGBColor *map = NULL;
-    int      imageType;
+    int      imageType=0;
     Type     type;
     int      rank, shape[32];
-    int      got_file;
     char     buff[BUFFSIZE];
     char     *seqptr;
     long     fptr = 0;
@@ -2053,11 +2036,11 @@ output_miff(RWImageArgs *iargs)
 	 * as specified in the first header.
 	 * Then save pointer to this number string for later update.
 	*/
-	if (fp = fopen(imagefilename, "r+")) {
+	if ((fp=fopen(imagefilename, "r+"))) {
 	   for ( ; ; ) { 
 	       fptr = ftell(fp);
 	       if (!fgets(buff, BUFFSIZE, fp)) goto error;  
-	       if (seqptr = strstr(buff, NSCENES_STRING)) break;
+	       if ((seqptr=strstr(buff, NSCENES_STRING))) break;
 	   } 
 	   seqptr += strlen(NSCENES_STRING);
 	   if (!sscanf(seqptr,"%d", &init_nframes)) goto error;
@@ -2202,25 +2185,16 @@ error:
     return ERROR;
 }
 
-extern
-Field _dxf_InputMIFF (FILE **fh, int width, int height, char *name, int relframe, int delayed, char *colortype)
+Field _dxf_InputMIFF (FILE **fh, int width, int height, char *name, 
+                      int relframe, int delayed, char *colortype)
 {
-    char     imagefilename[MAX_IMAGE_NAMELEN];
-    int      firstframe, lastframe, i, series;
-    int      frames, deleteable = 0;
+    int      i;
     int      frame, nframes;
     struct   ps_spec page_spec;
     Pointer  pixels;
-    Array    colors, color_map;
-    RGBColor *map = NULL;
     int      imageType;
     Type     type;
     int      rank, shape[32];
-    int      got_file;
-    char     buff[BUFFSIZE];
-    char     *seqptr;
-    long      fptr;
-    int      init_nframes=0;
     Field    image = NULL;
     Array    colorsArray;
     int      npix = 0;

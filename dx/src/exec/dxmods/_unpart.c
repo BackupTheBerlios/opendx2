@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_unpart.c,v 1.3 1999/05/10 15:45:22 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_unpart.c,v 1.4 2000/08/24 20:04:22 davidt Exp $
  */
  
 #include "unpart.h"
@@ -47,7 +47,7 @@ _dxfGetFieldInformation (FieldInfo *info)
     char		*str;
     Error		ret	= ERROR;
 
-    memset (&local, NULL, sizeof (local));
+    memset (&local, 0, sizeof (local));
 
     local.obj   = f;
 
@@ -249,6 +249,7 @@ SetTodoMask (FieldInfo *src, FieldInfo *dst)
 	case TYPE_HYPER:		todo |= ST_H;  break;
 	case TYPE_FLOAT:		todo |= ST_F;  break;
 	case TYPE_DOUBLE:		todo |= ST_D;  break;
+        default: break;
     }
 
     switch (src->cat)
@@ -269,6 +270,7 @@ SetTodoMask (FieldInfo *src, FieldInfo *dst)
 	case TYPE_HYPER:		todo |= DT_H;  break;
 	case TYPE_FLOAT:		todo |= DT_F;  break;
 	case TYPE_DOUBLE:		todo |= DT_D;  break;
+        default: break;
     }
 
     switch (dst->cat)

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_maptoplane.c,v 1.4 2000/05/16 18:47:29 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_maptoplane.c,v 1.5 2000/08/24 20:04:15 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -17,6 +17,7 @@
 #include <dx/dx.h>
 #include "vectors.h"
 #include "cases.h"
+#include "_maptoplane.h"
 
 #define FUZZ 0.001
 
@@ -83,7 +84,9 @@ static Error  AddColorsComponent(Field);
 static int    DoConnectionsMap(Field);
 
 static int       Cmp(Key, Key);
+#if 0
 static PseudoKey Hash(Key);
+#endif
 
 #define MIS_ALIGNED	2
 #define ALIGNED		1
@@ -475,12 +478,6 @@ MTP_Field(Pointer ptr)
     Matrix		matrix;
     Vector		normal;
     Object		attr;
-    Type		type;
-    Category		cat;
-    int			rank, shape[32];
-    Array		inData;
-    int			i, cDep;
-    char		*name;
 
     plane  = ((MTPArgs *)ptr)->plane;
     field  = ((MTPArgs *)ptr)->field;
@@ -596,21 +593,19 @@ MTP_tetras(Field field, Plane plane)
 {
     Array		cArray, pArray;
     int			nTetras, nPts;
-    int			*connections, *tet;
-    float		*hilo;
-    HashTable		ht;
+    int			*tet;
+    float		*hilo=NULL;
+    HashTable		ht=NULL;
     int			i;
     int			nTotTris = 0;
     SegList 		*tBuf = NULL;
     SegList 		*iBuf = NULL;
     SegList 		*mBuf = NULL;
-    int			count[3];
-    Vector		origin, delta[3];
     int			nAlloc;
     ArrayHandle		pHandle = NULL;
     Pointer		pScratch = NULL;
     int			size;
-    float 		*pPtr;
+    float 		*pPtr=NULL;
     InvalidComponentHandle icHandle = NULL;
 
     icHandle = DXCreateInvalidComponentHandle((Object)field,
@@ -768,7 +763,7 @@ MTP_tetras(Field field, Plane plane)
 	nRealVerts = 0;
 	for (v = 0; v < nVerts; v++)
 	{
-	    int p0, p1;
+	    int p0=0, p1=0;
 	    NEXTEDGE;
 
 	    switch(start[v])
@@ -941,7 +936,6 @@ MTP_tetras(Field field, Plane plane)
 
     if (nTotTris)
     {
-	float a, b, c, d;
 	Intercept *i;
 	Array tArray;
 	SegListSegment *slist;
@@ -1008,7 +1002,7 @@ MTP_tetras(Field field, Plane plane)
 	    goto error;
     }
 
-ok:
+/* ok: */
     if (ht)
 	DXDestroyHash(ht);
     DXFree((Pointer)hilo);
@@ -1045,21 +1039,19 @@ MTP_cubes_irreg(Field field, Plane plane)
 {
     Array		cArray, pArray;
     int			nCubes, nPts;
-    int			*cube;
-    float		*hilo;
-    HashTable		ht;
+    int			*cube=NULL;
+    float		*hilo=NULL;
+    HashTable		ht=NULL;
     int			i;
     int			nTotTris = 0;
     SegList 		*tBuf = NULL;
     SegList 		*iBuf = NULL;
     SegList 		*mBuf = NULL;
-    int			count[3];
-    Vector		origin, delta[3];
     int			nAlloc;
     ArrayHandle		cHandle = NULL, pHandle = NULL;
     Pointer		cScratch = NULL, pScratch = NULL;
     int			size;
-    float 		*pPtr;
+    float 		*pPtr=NULL;
     InvalidComponentHandle icHandle = NULL;
 
     icHandle = DXCreateInvalidComponentHandle((Object)field,
@@ -1209,7 +1201,7 @@ MTP_cubes_irreg(Field field, Plane plane)
 	    nRealVerts = 0;
 	    for (v = 0; v < nVerts; v++)
 	    {
-		int p0, p1;
+		int p0=0, p1=0;
 		NEXTEDGE;
 
 		switch(start[v])
@@ -1523,7 +1515,6 @@ MTP_cubes_irreg(Field field, Plane plane)
     
     if (nTotTris)
     {
-	float a, b, c, d;
 	Intercept *i;
 	Array tArray;
 	SegListSegment *slist;
@@ -1590,7 +1581,7 @@ MTP_cubes_irreg(Field field, Plane plane)
 	    goto error;
     }
 	 
-ok:
+/* ok: */
     if (ht)
 	DXDestroyHash(ht);
     DXFree((Pointer)hilo);
@@ -1856,7 +1847,7 @@ IrregAddIntercept(HashTable ht, SegList *iBuf, int r, int s)
 
 #define REG_EXACT(i, j, k, v)					\
 {								\
-    int *buf, index;						\
+    int *buf;							\
     int ciflg = (i) == ixstart;					\
     int cjflg = (j) == jystart;					\
     int ckflg = (k) == kzstart;					\
@@ -1919,9 +1910,9 @@ IrregAddIntercept(HashTable ht, SegList *iBuf, int r, int s)
 static Field
 MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
 {
-    int	      i, j, k, l, m, n, v;
+    int	      i, j, k, v;
     Array     cArray;
-    float     c00, c01, c10, c11;
+    float     c00, c01=0, c10, c11=0;
     int       slabPoints[3];
     int       slabCubes[3];
     int       count[3];
@@ -1931,7 +1922,7 @@ MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
     float     xend, yend, zend;
     int       xcube, ycube, zcube;
     int	      flags;
-    int	      nTotPts = 0, nTotTris = 0;
+    int	      nTotTris = 0;
     int       *state[3][2];
     int       *stateBuf = NULL;
     int	      *triBuf;
@@ -1943,7 +1934,6 @@ MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
     int	      ixMax, jyMax, kzMax;
     int	      ixSiz, jySiz, kzSiz;
     float     aInv, bInv, cInv;
-    Field     new = NULL;
     int	      doit;
     int       xproj, yproj, zproj;
     int	      planeSize;
@@ -2184,7 +2174,7 @@ MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
     }
     else
     {
-	float t, denom;
+	float t;
 
 	if (plane.normal.y == 0.0 && plane.normal.z == 0.0)
 	{
@@ -2512,7 +2502,7 @@ MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
 			    {
 				for (v = 0; v < nVerts1; v++)
 				{
-				    int  vertex;
+				    int  vertex=0;
 
 				    /*
 				     * Call an appropriate action for the edge.
@@ -2644,7 +2634,6 @@ MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
 			}
 			else
 			{
-			    float t;
 
 			    if (j == jystart)
 			    {
@@ -2778,7 +2767,7 @@ MTP_cubes_reg(Field field, Plane plane, Matrix matrix)
 
 				    for (v = 0; v < nVerts; v++)
 				    {
-					int  vertex;
+					int  vertex=0;
 					NEXTEDGE;
 
 					/*
@@ -3315,7 +3304,7 @@ MapArrays_PDep_Grid_Reg(Array old, SegList *iBuf, Matrix *mat)
     RegIntercept *x;
     float        A00, A01, A02, A10, A11, A12, A20, A21, A22;
     float        B0, B1, B2;
-    float        X, Y, Z;
+    float        X=0, Y=0, Z=0;
 
     new = DXNewArray(TYPE_FLOAT, CATEGORY_REAL, 1, 3);
     if (! new)
@@ -3337,7 +3326,7 @@ MapArrays_PDep_Grid_Reg(Array old, SegList *iBuf, Matrix *mat)
     
     while (NULL != (x = (RegIntercept *)DXGetNextSegListItem(iBuf)))
     {
-	Vector v, *dst = base + x->x.index;
+	Vector *dst = base + x->x.index;
 
 	switch(x->axis)
 	{
@@ -3375,7 +3364,7 @@ error:
 static Array
 MapArrays_PDep_Grid_Irreg(Array old, SegList *iBuf)
 {
-    Array        new;
+    Array        new=NULL;
     Vector       *base;
     Intercept    *ix;
     int		 c[3];
@@ -3518,7 +3507,7 @@ MapArrays_PDep_Irreg(Array old, SegList *iBuf)
     Intercept    *x;
     Type         t;
     Category     c;
-    int          r, s[32], itemSize;
+    int          r, s[32];
     ArrayHandle  oHandle = NULL;
     Pointer	 oScratch0 = NULL, oScratch1;
 
@@ -3607,7 +3596,7 @@ MapArrays_CDep_Irreg(Array old, SegList *mBuf)
     Array          new = NULL;
     Type           t;
     Category       c;
-    int            r, s[32], itemSize;
+    int            r, s[32];
     int            i, size;
     char           *src, *dst;
     SegListSegment *slist;
@@ -3812,6 +3801,7 @@ AddColorsComponent(Field field)
     return OK;
 }
 
+#if 0
 static PseudoKey
 Hash(Key key)
 {
@@ -3820,6 +3810,7 @@ Hash(Key key)
     i = *(Intercept **)key;
     return i->i0*PRIME1 + i->i1*PRIME2;
 }
+#endif
 
 static int
 Cmp(Key k0, Key k1)
@@ -3833,7 +3824,7 @@ Cmp(Key k0, Key k1)
 static int 
 Orientation(float *p, float *q, float *r, Vector *normal)
 {
-    Vector qp, rp, sp, cross;
+    Vector qp, rp, cross;
     float  d;
 
     qp.x = q[0] - p[0]; qp.y = q[1] - p[1]; qp.z = q[2] - p[2];
@@ -3897,7 +3888,7 @@ error:
 static int
 DoConnectionsMap(Field field)
 {
-    int i, j;
+    int i;
     char *name;
     Object attr;
 
@@ -3934,7 +3925,6 @@ MakePlane(Vector *normal, Vector *point, Plane *plane)
 static Error
 GetRegRegInfo(Field field, Plane plane, Plane *iPlane, Matrix *matrix)
 {
-    int       i;
     Array     pA;
     Array     cA;
     int       meshOffsets[3];
@@ -4128,13 +4118,12 @@ PermuteMatrix(Matrix m, int *permute)
 static Field
 MTP_cubes_reg_AxisAligned(Field field, Plane plane, Matrix matrix)
 {
-    int	           i, j, k, l, m, n, v;
+    int	           i;
     Array          array;
     int            slabPoints[3];
     int            slabCubes[3];
     int            count[3];
     int	           meshOffsets[3];
-    int            ix, jy;
     int	           ixMin, jyMin;
     int	           ixMax, jyMax;
     double         aInv, bInv;
@@ -4142,7 +4131,7 @@ MTP_cubes_reg_AxisAligned(Field field, Plane plane, Matrix matrix)
     SegList        *tBuf = NULL;
     SegList        *mBuf = NULL;
     int            permute[3];
-    double         xfuzz, yfuzz, zfuzz;
+    double         xfuzz, yfuzz;
     int	           cubesIgnored = 0;
     double         dydx;
     int	           kknt;

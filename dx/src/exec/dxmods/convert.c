@@ -40,11 +40,9 @@ END:
 #include <ctype.h>
 #include <string.h>
 #include <dx/dx.h>
+#include "_autocolor.h"
+#include "color.h"
 
-extern int _dxfHSVtoRGB(float, float, float, float *, float *, float *);
-extern int _dxfRGBtoHSV(float, float, float, float *, float *, float *);
-extern Field _dxfMakeRGBColorMap(Field);
-extern Error _dxfIsColorMap(Object);
 static Error ConvertObject(Object, char *, Object *);
 static Error ConvertFieldObject(Object, char *);
 
@@ -55,9 +53,8 @@ m_Convert(Object *in, Object *out)
   int      ismap, isfield, count, i, ii, numitems, addpoints;
   char     *colorstrin, *colorstrout; 
   char     newstrin[30], newstrout[30];
-  Class    cl;
   Object   gout;
-  float    *dpin, *dpout;
+  float    *dpin=NULL, *dpout=NULL;
 
   gout=NULL;
   incolorvec = NULL;
@@ -275,7 +272,7 @@ float red, green, blue, hue, sat, val;
       return ERROR;
     switch (cl) {
        case CLASS_GROUP:
-	  for (i=0; subo = DXGetEnumeratedMember((Group)out, i, NULL); i++) {
+	  for (i=0; (subo = DXGetEnumeratedMember((Group)out, i, NULL)); i++) {
             if (!ConvertFieldObject((Object)subo, strin))
 	        return ERROR;
             }
@@ -321,6 +318,8 @@ float red, green, blue, hue, sat, val;
           DXChangedComponentValues((Field)out,"data");
           DXEndField((Field)out);
 	  break;
+       default:
+          break;
     }
 
     return OK; 
@@ -331,8 +330,6 @@ static Error ConvertObject(Object in, char *strin, Object *out)
 {
 
 Class cl;
-int i;
-Object subo;
     
     if (!(cl = DXGetObjectClass(in))) 
       return ERROR;
@@ -350,6 +347,8 @@ Object subo;
 	        return ERROR;
           }
 	  break;
+       default:
+          break;
     }
 
     return OK; 

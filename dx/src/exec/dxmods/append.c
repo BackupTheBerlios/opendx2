@@ -11,14 +11,10 @@
 
 #include <string.h>
 #include <dx/dx.h>
+#include "_construct.h"
+#include "list.h"
 
 #define MAXOBJECTS 43    /* must match mdf-c generated dx.mdf file */
-
-/* copy the array contents */
-extern Array _dxfReallyCopyArray(Array a);
-
-/* coalesce separate arrays into one.  (code in list.m) */
-extern Array _dxfBuildList(Object *in);
 
 /* extern, but as far as i know not being used anywhere else */
 Group _dxfBuildGroup(Object *in);
@@ -69,7 +65,7 @@ Group _dxfBuildGroup(Object *in)
     int seen_null = 0;
     int say_warn = 0;
     int seen_valid = 0;
-    Class gclass;
+    Class gclass = 0;
     Object newo;
     Group newgroup = NULL;
     char *cp;

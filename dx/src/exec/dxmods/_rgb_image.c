@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rgb_image.c,v 1.4 2000/05/16 18:47:38 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rgb_image.c,v 1.5 2000/08/24 20:04:19 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -20,6 +20,10 @@
 #include <_rw_image.h>
 #include <sys/types.h>
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
 #if ( CAN_HAVE_ARRAY_DASD == 1 )
 #include <iop/mov.h>
 #include <iop/pfs.h>
@@ -29,8 +33,9 @@
 #include <sys/stat.h>
 #endif
 
+extern Field DXOutputYUV(Field, int); /* from libdx/image.c */
+
 /* should be in libsvs*/
-static Field      OutputR_G_B         ( Field image, int fh[3] );
 static Field      OutputADASD         ( Field image, int frame, char* fname );
 
 static Error write_rgb_or_fb(RWImageArgs *iargs);
@@ -110,7 +115,7 @@ write_rgb_or_fb(RWImageArgs *iargs)
     int    frame, num_files, frame_size_bytes;
     SizeData  filed_sizes;  /* Values from, to the size file */
     SizeData  image_sizes;  /* Values as found in the image object itself */
-    Field	img;
+    Field	img=NULL;
  
     fh[0] = fh[1] = fh[2] = -1;
 

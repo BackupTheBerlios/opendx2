@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.6 2000/05/16 18:47:40 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.7 2000/08/24 20:04:22 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -63,6 +63,10 @@
 
 #if defined(HAVE_FCNTL_H)
 #include <fcntl.h>
+#endif
+
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
 #endif
 
 #include "_helper_jea.h"
@@ -250,10 +254,10 @@ write_fwd_uint32(int fd, uint32 val)
 }
 
 
+#if 0
 static Error
 write_rev_uint32(int fd, uint32 val)
 {
-    int i;
     unsigned char c[4];
 
     c[0] = ((unsigned char *)&val)[3];
@@ -273,6 +277,7 @@ write_rev_uint32(int fd, uint32 val)
         return ERROR;
     }
 }
+#endif
 
 
 static Error
@@ -292,10 +297,10 @@ write_fwd_uint16(int fd, uint16 val)
 }
 
 
+#if 0
 static Error
 write_rev_uint16(int fd, uint16 val)
 {
-    int i;
     unsigned char c[2];
 
     c[0] = ((unsigned char *)&val)[1];
@@ -313,6 +318,7 @@ write_rev_uint16(int fd, uint16 val)
         return ERROR;
     }
 }
+#endif
 
 
 static Error
@@ -335,7 +341,6 @@ read_fwd_uint32 ( int fd, uint32 *val )
 static Error
 read_rev_uint32 ( int fd, uint32 *val )
 {
-    int i;
     unsigned char c[4];
 
     if (read(fd,c,4) != 4)
@@ -377,7 +382,6 @@ read_fwd_uint16(int fd, uint16 *val)
 static Error
 read_rev_uint16(int fd, uint16 *val)
 {
-    int i;
     unsigned char c[2];
 
     if (read(fd,c,2) != 2)
@@ -409,7 +413,7 @@ read_rev_uint16(int fd, uint16 *val)
 Error
 _dxf_write_tiff(RWImageArgs *iargs)
 {
-    uint32   last_ifd_offset_location, offset, uint32_word, byte_order; 
+    uint32   last_ifd_offset_location, offset; 
     char     imagefilename[MAX_IMAGE_NAMELEN];
     uint32   *strip_offsets=NULL, *strip_byte_counts;
     int      i, fd = -1, series, rows, columns, row_size, compress;
@@ -562,7 +566,7 @@ put_rgb_ifd(int fd, int width, int length, int strips, int rows_per_strip,
 {
     uint32  rationals[2], zero=0, i;	
     uint32  xres_offset, yres_offset, bps_offset, ifd_offset, offset;
-    uint32  sbc_offset,so_offset;
+    uint32  sbc_offset=0, so_offset=0;
     uint16  nentries=13;
     uint16  uint16s[4];
 
@@ -702,6 +706,8 @@ put_field(int fd, TiffTag tag, TiffType type, int n, uint32 value)
 		break;
 	    case tiff_SHORT: if (n == 1) value <<= 16;
 		break;
+	    default:
+	        break;
 	}
 
 	if (!write_msb_uint32(fd, value))
@@ -1020,55 +1026,55 @@ put_tiff_header(int fd, int byte_order, int version, int ifd_offset)
     tag_table_entry
     tag_entries[]
     =
-      { NewSubfileType,      "NewSubfileType",     tiff_LONG,     1,
-        SubfileType,         "SubfileType",        tiff_SHORT,    1,
-        ImageWidth,          "ImageWidth",         SHORT_LONG,    1,
-        ImageLength,         "ImageLength",        SHORT_LONG,    1,
-        BitsPerSample,       "BitsPerSample",      tiff_SHORT,    FUNCTION,
-        Compression,         "Compression",        tiff_SHORT,    1,
-        PhotometricInterpretation,
-                      "PhotometricInterpretation", tiff_SHORT,    1,
-        Threshholding,       "Threshholding",      tiff_SHORT,    1,
-        CellWidth,           "CellWidth",          tiff_SHORT,    1,
-        CellLength,          "CellLength",         tiff_SHORT,    1,
-        FillOrder,           "FillOrder",          tiff_SHORT,    1,
-        DocumentName,        "DocumentName",       tiff_ASCII,    NONE,
-        ImageDescription,    "ImageDescription",   tiff_ASCII,    NONE,
-        Make,                "Make",               tiff_ASCII,    NONE,
-        Model,               "Model",              tiff_ASCII,    NONE,
-        StripOffsets,        "StripOffsets",       SHORT_LONG,    FUNCTION,
-        Orientation,         "Orientation",        tiff_SHORT,    1,
-        SamplesPerPixel,     "SamplesPerPixel",    tiff_SHORT,    1,
-        RowsPerStrip,        "RowsPerStrip",       SHORT_LONG,    1,
-        StripByteCounts,     "StripByteCounts",    SHORT_LONG,    FUNCTION,
-        MinSampleValue,      "MinSampleValue",     tiff_SHORT,    FUNCTION,
-        MaxSampleValue,      "MaxSampleValue",     tiff_SHORT,    FUNCTION,
-        XResolution,         "XResolution",        tiff_RATIONAL, 1,
-        YResolution,         "YResolution",        tiff_RATIONAL, 1,
-        PlanarConfiguration, "PlanarConfiguration",tiff_SHORT,    1,
-        PageName,            "PageName",           tiff_ASCII,    NONE,
-        XPosition,           "XPosition",          tiff_RATIONAL, NONE,
-        YPosition,           "YPosition",          tiff_RATIONAL, NONE,
-        FreeOffsets,         "FreeOffsets",        tiff_LONG,     NONE,
-        FreeByteCounts,      "FreeByteCounts",     tiff_LONG,     NONE,
-        GrayResponseUnit,    "GrayResponseUnit",   tiff_SHORT,    1,
-        GrayResponseCurve,   "GrayResponseCurve",  tiff_SHORT,    FUNCTION,
-        Group3Options,       "Group3Options",      tiff_LONG,     1,
-        Group4Options,       "Group4Options",      tiff_LONG,     1,
-        ResolutionUnit,      "ResolutionUnit",     tiff_SHORT,    1,
-        PageNumber,          "PageNumber",         tiff_SHORT,    2,
-        ColorResponseCurves, "ColorResponseCurves",tiff_SHORT,    FUNCTION,
-        Software,            "Software",           tiff_ASCII,    NONE,
-        DateTime,            "DateTime",           tiff_ASCII,    20,
-        Artist,              "Artist",             tiff_ASCII,    NONE,
-        HostComputer,        "HostComputer",       tiff_ASCII,    NONE,
-        Predictor,           "Predictor",          tiff_SHORT,    1,
-        WhitePoint_XXX,      "WhitePoint",         tiff_RATIONAL, 2,
-        ColorImageType_XXX,  "ColorImageType",     tiff_SHORT,    1,
-        PrimaryChromaticities,
-                          "PrimaryChromaticities", tiff_RATIONAL, 6,
-        ColorMap,            "ColorMap",           tiff_SHORT,    FUNCTION,
-        ColorMap,            NULL,                 tiff_SHORT,    FUNCTION
+    { { NewSubfileType,      "NewSubfileType",     tiff_LONG,     1 },
+      {  SubfileType,         "SubfileType",        tiff_SHORT,    1 },
+      {  ImageWidth,          "ImageWidth",         SHORT_LONG,    1 },
+      {  ImageLength,         "ImageLength",        SHORT_LONG,    1 },
+      {  BitsPerSample,       "BitsPerSample",      tiff_SHORT,    FUNCTION },
+      {  Compression,         "Compression",        tiff_SHORT,    1 },
+      {  PhotometricInterpretation,
+                      "PhotometricInterpretation", tiff_SHORT,    1 },
+      {  Threshholding,       "Threshholding",      tiff_SHORT,    1 },
+      {  CellWidth,           "CellWidth",          tiff_SHORT,    1 },
+      {  CellLength,          "CellLength",         tiff_SHORT,    1 },
+      {  FillOrder,           "FillOrder",          tiff_SHORT,    1 },
+      {  DocumentName,        "DocumentName",       tiff_ASCII,    NONE },
+      {  ImageDescription,    "ImageDescription",   tiff_ASCII,    NONE },
+      {  Make,                "Make",               tiff_ASCII,    NONE },
+      {  Model,               "Model",              tiff_ASCII,    NONE },
+      {  StripOffsets,        "StripOffsets",       SHORT_LONG,    FUNCTION },
+      {  Orientation,         "Orientation",        tiff_SHORT,    1 },
+      {  SamplesPerPixel,     "SamplesPerPixel",    tiff_SHORT,    1 },
+      {  RowsPerStrip,        "RowsPerStrip",       SHORT_LONG,    1 },
+      {  StripByteCounts,     "StripByteCounts",    SHORT_LONG,    FUNCTION },
+      {  MinSampleValue,      "MinSampleValue",     tiff_SHORT,    FUNCTION },
+      {  MaxSampleValue,      "MaxSampleValue",     tiff_SHORT,    FUNCTION },
+      {  XResolution,         "XResolution",        tiff_RATIONAL, 1 },
+      {  YResolution,         "YResolution",        tiff_RATIONAL, 1 },
+      {  PlanarConfiguration, "PlanarConfiguration",tiff_SHORT,    1 },
+      {  PageName,            "PageName",           tiff_ASCII,    NONE },
+      {  XPosition,           "XPosition",          tiff_RATIONAL, NONE },
+      {  YPosition,           "YPosition",          tiff_RATIONAL, NONE },
+      {  FreeOffsets,         "FreeOffsets",        tiff_LONG,     NONE },
+      {  FreeByteCounts,      "FreeByteCounts",     tiff_LONG,     NONE },
+      {  GrayResponseUnit,    "GrayResponseUnit",   tiff_SHORT,    1 },
+      {  GrayResponseCurve,   "GrayResponseCurve",  tiff_SHORT,    FUNCTION },
+      {  Group3Options,       "Group3Options",      tiff_LONG,     1 },
+      {  Group4Options,       "Group4Options",      tiff_LONG,     1 },
+      {  ResolutionUnit,      "ResolutionUnit",     tiff_SHORT,    1 },
+      {  PageNumber,          "PageNumber",         tiff_SHORT,    2 },
+      {  ColorResponseCurves, "ColorResponseCurves",tiff_SHORT,    FUNCTION },
+      {  Software,            "Software",           tiff_ASCII,    NONE },
+      {  DateTime,            "DateTime",           tiff_ASCII,    20 },
+      {  Artist,              "Artist",             tiff_ASCII,    NONE },
+      {  HostComputer,        "HostComputer",       tiff_ASCII,    NONE },
+      {  Predictor,           "Predictor",          tiff_SHORT,    1 },
+      {  WhitePoint_XXX,      "WhitePoint",         tiff_RATIONAL, 2 },
+      {  ColorImageType_XXX,  "ColorImageType",     tiff_SHORT,    1 },
+      {  PrimaryChromaticities,
+                          "PrimaryChromaticities", tiff_RATIONAL, 6 },
+      {  ColorMap,            "ColorMap",           tiff_SHORT,    FUNCTION },
+      {  ColorMap,            NULL,                 tiff_SHORT,    FUNCTION }
         };
 
 
@@ -1089,7 +1095,6 @@ tag_table_entry * tiff_lookup ( TiffTag tag )
 
 
 
-extern
   /*
    * Search names, in order:
    *   ".tiff", ".tif", ".0.tiff", ".0.tif"
@@ -1423,7 +1428,6 @@ SizeData * read_image_sizes_tiff
 
 
 
-extern
   /*
    * Set a SizeData struct with values.
    *   set state saying whether:
@@ -1612,7 +1616,6 @@ SizeData * _dxf_ReadImageSizesTIFF
 
 /*
  */
-extern
 Field _dxf_InputTIFF
 	(int width, int height, char *name, int relframe, int delayed, char *colortype)
 {
@@ -1627,8 +1630,6 @@ Field _dxf_InputTIFF
     Error           (*rl)(int,uint32*);
     tag_table_entry *lookup;
 
-    float           *fptr;
-    unsigned char   *cptr_to;
     RGBColor        map[256];
     RGBByteColor    imap[256];
     ubyte	    *buf = NULL;

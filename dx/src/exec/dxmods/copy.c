@@ -18,6 +18,7 @@
 
 
 #include <dx/dx.h>
+#include "changemember.h"
 
 /* inputs:  object to copy
  */
@@ -36,7 +37,6 @@ Error m_CopyContainer(Object *in, Object *out)
 
 
 #if 0
-extern char *dxf_lsquish(char *);
 
     /* the code above only allows the user to make a copy of
      * the top level container object, with attributes and

@@ -63,7 +63,7 @@ traverse(Object *in, Object *out)
 
     case CLASS_GROUP:
     {
-      int   i, j;
+      int   i;
       int   memknt;
       Category c;
       Type  t;
@@ -95,9 +95,9 @@ traverse(Object *in, Object *out)
 	    {
 		DXDelete((Object)out[0]);
 		switch (groupClass) {
-		    case CLASS_SERIES: out[0] = (Group)DXNewSeries(); break;
-		    case CLASS_MULTIGRID: out[0] = (Group)DXNewMultiGrid(); break;
-		    case CLASS_COMPOSITEFIELD: out[0] = (Group)DXNewCompositeField(); break;
+		    case CLASS_SERIES: out[0] = (Object)DXNewSeries(); break;
+		    case CLASS_MULTIGRID: out[0] = (Object)DXNewMultiGrid(); break;
+		    case CLASS_COMPOSITEFIELD: out[0] = (Object)DXNewCompositeField(); break;
 		    default: return ERROR;
 		}
 	    }
@@ -132,7 +132,6 @@ traverse(Object *in, Object *out)
 
     case CLASS_XFORM:
     {
-      int    i, j;
       Object new_in[7], new_out[1];
    
       if (in[0])
@@ -159,7 +158,6 @@ traverse(Object *in, Object *out)
 
     case CLASS_CLIPPED:
      {
-       int    i, j;
        Object new_in[7], new_out[1];
 
 
@@ -184,13 +182,12 @@ traverse(Object *in, Object *out)
 
        return OK;
      }
-
-     error:
-     {
-       DXSetError(ERROR_BAD_CLASS, "input must be Field or Group");
-       return ERROR;
-     }
+     default:
+       break;
   }
+
+  DXSetError(ERROR_BAD_CLASS, "input must be Field or Group");
+  return ERROR;
 }
 
 static int
@@ -199,27 +196,17 @@ doLeaf(Object *in, Object *out)
     int i, result=0;
     Field field;
     int rank, shape[30];
-    Object attr, src_dependency_attr = NULL;
-    Object table;
     Category category;
-    char *src_dependency = NULL;
-    char *cat_comp;
     char *data_comp;
     char *lookup_comp;
     char *value_comp;
     char *dest_comp;
     char *table_comp;
-    float *data_data;
     Array input_array = NULL;
-    Array array = NULL;
-    Array table_array = NULL;
     Array lookup_array = NULL;
     Array value_array = NULL;
-    float *out_data;
-    int data_knt, cat_knt;
-    int out_knt;
-    Type cat_type, data_type;
-    float floatmax;
+    int data_knt;
+    Type data_type;
     char value_str[200];
     catinfo cat_data;
     catinfo cat_lookup;
@@ -496,13 +483,17 @@ error:
     return result;
 }
 
-static int lookupcmp(table_entry *t1, table_entry *t2)
+static int lookupcmp(const void *e1, const void *e2)
 {
+    table_entry *t1 = (table_entry *) e1;
+    table_entry *t2 = (table_entry *) e2;
     return t1->cp->cmpcat(t1->cp, t1->lookup, t2->lookup);
 }
 
-static int searchcmp(char *s, table_entry *t)
+static int searchcmp(const void *e1, const void *e2)
 {
+    char *s = (char *) e1;
+    table_entry *t = (table_entry *) e2;
     return t->cp->cmpcat(t->cp, s, t->lookup);
 }
 
@@ -644,7 +635,6 @@ static Error do_lookup(lookupinfo *l)
 {
     int i;
     char *s, *v;
-    table_entry *lut;
     table_entry *found;
     int num = l->data->num;
     int size = l->value->obj_size;

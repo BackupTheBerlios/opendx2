@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/band.c,v 1.3 1999/05/10 15:45:22 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/band.c,v 1.4 2000/08/24 20:04:24 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -14,12 +14,14 @@
 
 #include <string.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
-#include <_isosurface.h>
+#include "_helper_jea.h"
+#include "_isosurface.h"
 
-/* declared in isourface.m:  float *_dxd_user_def_values = NULL; */
+static iso_arg_type ISO_ARG_INITIALIZER =
+            { ISOSURFACE, NO_NORMALS,
+             -1, NULL, ORIGINAL_DATA, NULL, NULL, 0, 0, 0,
+             -1, -1.0, NULL, 0, DXD_MAX_FLOAT, -DXD_MAX_FLOAT, NULL, 0 };
 
-extern
 Error
 m_Band ( Object *in, Object *out )
 {
@@ -30,9 +32,7 @@ m_Band ( Object *in, Object *out )
 #define  I_remap   in[3]
 #define  O_band    out[0]
 
-    int          i;
     iso_arg_type iso_arg;
-    Class        class;
     char         *remap_string;
 
     O_band               = NULL;

@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 
+#include "trace.h"
 
 #if 0
 #include <dx/dx.h>
@@ -31,14 +32,16 @@ DXVisualizeMemory(int which, int procid)
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef DXD_HAS_UNISTD_H
+
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
+
 #include <signal.h>
 
-extern char	*getenv ();
 typedef Error (*Handler)(int, Pointer);
 typedef int   (*Checker)(int, Pointer);
 
@@ -130,7 +133,7 @@ static Error query_memory(struct dispinfo *d);
 static Display *open_memory_visual_display();
 static Error init_memory_visual (struct dispinfo *d);
 static void cleanup_memory_visual (struct dispinfo *d);
-static void error_handler(Display *dpy, XErrorEvent *event);
+static int error_handler(Display *dpy, XErrorEvent *event);
 static Error handler_script(int fd, struct dispinfo *d);
 static Error memsee(int blocktype, Pointer start, uint size, Pointer p);
 static Error memsee1(int blocktype, Pointer start, uint size, Pointer p);
@@ -488,7 +491,6 @@ memquery(int blocktype, Pointer start, unsigned int size, Pointer p)
 static Error    
 report_memory (struct dispinfo *d)
 {
-    uint xbuf;
     int wsquares;		/* count of window squares */
     int mblocks;		/* count of memory blocks */
 
@@ -741,14 +743,16 @@ cleanup_memory_visual (struct dispinfo *d)
 
 
 
-static void
+static int
 error_handler(Display *dpy, XErrorEvent *event)
 {
-    char buffer[100];
+#define ERRSIZE 100
+    char buffer[ERRSIZE];
     DXDebug("X", "error handler");
-    XGetErrorText(dpy, event->error_code, buffer, sizeof(buffer));
+    XGetErrorText(dpy, event->error_code, buffer, ERRSIZE);
     DXSetError(ERROR_INTERNAL, "X Error: %s", buffer);
     xerror = 1;
+    return 0;
 }
 
 

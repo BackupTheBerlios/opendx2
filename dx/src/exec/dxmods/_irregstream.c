@@ -10,14 +10,16 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.5 2000/08/23 17:08:25 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.6 2000/08/24 20:04:14 davidt Exp $
  */
 
 
 #include <dx/dx.h>
+#include <math.h>
 #include "stream.h"
 #include "vectors.h"
-#include <math.h>
+#include "_divcurl.h"
+#include "_partnbrs.h"
 
 typedef struct neighborsHandle
 {
@@ -313,8 +315,6 @@ static ElementDef   elementTable[] =
     }
 };
 
-VectorGrp           _dxfIrreg_InitVectorGrp(Object, char *);
-
 static VectorPart   Irreg_InitVectorPart(Field, Irreg_VectorGrp);
 static Error        Irreg_DestroyVectorPart(VectorPart);
 static int          Irreg_FindElement_VectorPart(Irreg_InstanceVars,
@@ -354,7 +354,7 @@ static NeighborsHandle
 DXCreateNeighborsHandle(Field field)
 {
     Array cA;
-    NeighborsHandle handle;
+    NeighborsHandle handle=NULL;
 
     cA = (Array)DXGetComponentValue(field, "connections");
     if (! cA)
@@ -526,13 +526,13 @@ Irreg_FreeInstanceVars(InstanceVars I)
 	
 	DXFree((Pointer)I);
     }
+    return OK;
 }
 
 VectorGrp
 _dxfIrreg_InitVectorGrp(Object object, char *elementType)
 {
     Irreg_VectorGrp   P = NULL;
-    Irreg_VectorPart  p = NULL;
     ElementDef	      *eDef;
     int                i, nP;
 
@@ -651,8 +651,7 @@ Irreg_InitVectorPart(Field f, Irreg_VectorGrp iP)
 {
     Irreg_VectorPart  ip = NULL;
     Array 	      array;
-    Object	      attr;
-    int 	      i, n;
+    int 	      i;
 
     if (DXEmptyField(f))
 	return NULL;
@@ -804,7 +803,6 @@ static Error
 Irreg_Delete(VectorGrp P)
 {
     Irreg_VectorGrp  iP = (Irreg_VectorGrp)P;
-    Irreg_VectorPart ip;
 
     if (iP)
     {
@@ -916,7 +914,6 @@ Irreg_FindMultiGridContinuation_VectorPart(Irreg_InstanceVars iI,
     int *elt, i, j, k, l, found;
     Irreg_VectorPart ip;
     int  ebuf[8], nBuf[8], *nbrs;
-    ArrayHandle pHandle = NULL, cHandle = NULL;
     int nPrimFaces;
     NbrTable *nptr;
 
@@ -1098,7 +1095,6 @@ Irreg_FindElement_VectorPart(Irreg_InstanceVars iI, int np, POINT_TYPE *point)
     int *elt, i, j, k, found;
     Irreg_VectorPart ip;
     int  ebuf[8];
-    ArrayHandle pHandle = NULL, cHandle = NULL;
 
     if (iI->pHandle != NULL)
     {
@@ -1379,7 +1375,6 @@ Tetras_InitElement(Irreg_InstanceVars iI)
 {
     Irreg_VectorGrp iP = (Irreg_VectorGrp)(iI->i.currentVectorGrp);
     Irreg_VectorPart ip;
-    float V, nV;
     float *p, *q, *r, *s, *v;
     float pbuf[3], qbuf[3], rbuf[3], sbuf[3];
     float *vqp  = iI->edges +   0;
@@ -1392,7 +1387,6 @@ Tetras_InitElement(Irreg_InstanceVars iI)
     float *xrps = iI->planes +  4;
     float *xspq = iI->planes +  8;
     float *xqpr = iI->planes + 12;
-    float *w    = iI->w;
     int   i,  *elt, ebuf[8];
     int   np, e, t, *tet;
 
@@ -1631,7 +1625,6 @@ Tris_InitElement(Irreg_InstanceVars iI)
 {
     Irreg_VectorGrp iP = (Irreg_VectorGrp)(iI->i.currentVectorGrp);
     Irreg_VectorPart ip;
-    float V, nV;
     float *p, *q, *r, *v;
     float pbuf[3], qbuf[3], rbuf[3];
     float *vqp = iI->edges +   0;
@@ -1919,9 +1912,8 @@ _Irreg_Walk(Irreg_InstanceVars iI, Irreg_VectorGrp iP,
 	int nDim,  /* The dimensionality of the space */
 	POINT_TYPE *start, VECTOR_TYPE *vector, POINT_TYPE *target)
 {
-    float    w[4];
     int      nbuf[6];
-    int      i, j, k;
+    int      i, j;
     float    *plane;
     int      ne;
     NbrTable *nt;
@@ -1933,7 +1925,7 @@ _Irreg_Walk(Irreg_InstanceVars iI, Irreg_VectorGrp iP,
 
 #if 0
     plane = iI->planes;
-    for (k = 0; k < NPerP; k++)
+    for (i = 0; i < NPerP; i++)
     {
 	float l = 0.0;
 	for (j = 0; j < NPerP-1; j++)
@@ -1963,8 +1955,6 @@ _Irreg_Walk(Irreg_InstanceVars iI, Irreg_VectorGrp iP,
 	float SDotP = 0.0; /* start dot plane                 */
 	float t;           /* intersection dist along vector  */
 	POINT_TYPE xit[3]; /* intersection point              */
-	int out;
-	float aa;
 
 	VDotP = 0.0;
 	for (j = 0; j < nDim; j++)
@@ -2053,7 +2043,6 @@ Irreg_Walk(InstanceVars I,
 {
     Irreg_InstanceVars iI = (Irreg_InstanceVars)I;
     Irreg_VectorGrp    iP = (Irreg_VectorGrp)(iI->i.currentVectorGrp);
-    Irreg_VectorPart   ip = (Irreg_VectorPart)iP->P.p[iI->cp];
     int nbuf[6], *nbrs;
 
     nbrs = GET_NEIGHBORS(iI->nHandle, iI->ce, nbuf);
@@ -2202,13 +2191,10 @@ typedef struct
     CompositeField   group;
 } CurlMap_Args;
     
-extern Object _dxfDivCurl(Object, Object *, Object *);
-
 static Error
 Irreg_CurlMap(VectorGrp P, MultiGrid mg)
 {
     Irreg_VectorGrp  iP = (Irreg_VectorGrp)P;
-    Irreg_VectorPart ip;
     Object           curl  = NULL;
     int		     i;
     CurlMap_Args     args;

@@ -8,16 +8,13 @@
 
 #include <dxconfig.h>
 
-
-
-
 #include <dx/dx.h>
 #include <string.h>
+#include "vrml.h"
+#include "exp_gai.h"
 
-extern Object _dxfExportBin(Object o, char *dataset);
-extern Error _dxfExportDX(Object o, char *filename, char *format);
-extern Error _dxfExportArray(Object o, char *filename, char *format);
-extern Error _dxExportVRML(Object o, char *filename);
+extern Object _dxfExportBin(Object o, char *dataset); /* from libdx/rwobject.c */
+extern Error _dxfExportDX(Object o, char *filename, char *format); /* from libdx/edfprint.c */
 
 /* formats we accept */
 #define DT_UNKNOWN  0

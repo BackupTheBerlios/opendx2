@@ -14,6 +14,7 @@
 #include <dx/dx.h>
 #include "_compute.h"
 #include "_compputils.h"
+#include "_compoper.h"
 
 extern int _dxdparseError;
 

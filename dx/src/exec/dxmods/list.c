@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/list.c,v 1.5 2000/08/10 05:44:29 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/list.c,v 1.6 2000/08/24 20:04:39 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -14,13 +14,11 @@
 
 
 #include <dx/dx.h>
+#include "list.h"
 
 #define MAXALLOC    100
 #define MAXOBJECTS  21
 #define MAXRANK     16
-
-/* make this externally accessible (used to be static) */
-Array _dxfBuildList(Object *in);
 
 
 #define CHECK_LIMIT()         \
@@ -53,21 +51,18 @@ m_List(Object *in, Object *out)
 Array _dxfBuildList(Object *in)
 {
     int i, onum;
-    int first = 1;
     int seen_null = 0, warn_null = 0;
-    float f;
     Array new = NULL;
     Object next = NULL;
-    Type type, nexttype;
-    Category cat, nextcat;
-    int rank, nextrank, shape[MAXRANK], nextshape[MAXRANK];
+    Type type;
+    Category cat;
+    int rank, shape[MAXRANK];
     int items = 0, nextitems;
-    int num = 0;
     int isstring = 0;
     int strcnt = 0;
     int maxalloc = MAXALLOC;
     char **strlist = NULL;
-    char *src, *dst;
+    char *src;
 
     int ncount = 0;
     Array alist[MAXOBJECTS];

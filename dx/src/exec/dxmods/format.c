@@ -65,9 +65,7 @@ static Error sigh.
 static Object format_object(Object *o, char *format)
 {
     Object newo, subo;
-    char *name;
     Matrix m;
-    float position;
     Object subo2;
     int fixed, z;
     int i;
@@ -79,7 +77,7 @@ static Object format_object(Object *o, char *format)
     switch (DXGetObjectClass(o[0])) {
       case CLASS_GROUP:
 	/* for each member */
-	for (i=0; subo = DXGetEnumeratedMember((Group)*o, i, NULL); i++) {
+	for (i=0; (subo = DXGetEnumeratedMember((Group)*o, i, NULL)); i++) {
 	    if (!format_object(&subo, format))
 		continue;
 	}
@@ -166,9 +164,8 @@ static String format_one(Object *in, char *cp)
 {
     int input;
     int nitems;
-    int i, *ip, num;
-    float f, *fp;
-    Vector v, *vp;
+    int i, num;
+    float f;
     double d;
     char buffer[BUFFERSIZE];
     char *bp;

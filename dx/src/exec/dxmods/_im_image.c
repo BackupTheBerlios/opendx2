@@ -104,16 +104,16 @@ _dxf_write_im(RWImageArgs *iargs)
 */
 
     return write_im(iargs);
-error:
+/*
+  error:
     return ERROR;
+ */
 }
 
 static Error write_im(RWImageArgs *iargs)
 {
 #ifdef HAVE_LIBMAGICK
 	RWImageArgs tmpargs = *iargs;
-	MagickInfo * magick_info;
-
 	Image
 	   *image;
 
@@ -126,6 +126,8 @@ static Error write_im(RWImageArgs *iargs)
 #else
 	ImageInfo
            image_info;
+	MagickInfo * magick_info;
+
 #endif
 
 	int miff_exists_flag ;
@@ -203,7 +205,7 @@ static Error write_im(RWImageArgs *iargs)
 	strcpy(miff_filename,iargs->basename);
 	strcat(miff_filename,".");
 	strcat(miff_filename,tmpargs.format);
-	if(miff_fp=fopen(miff_filename,"r"))
+	if((miff_fp=fopen(miff_filename,"r")))
 		{
 			miff_exists_flag=1;
 			fclose(miff_fp);

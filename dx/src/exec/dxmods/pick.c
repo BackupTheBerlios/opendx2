@@ -125,7 +125,6 @@ static Error  AddPick(PickBuf *, int, Point, int, int, float *);
 static Field  PickBufToField(PickBuf *, Matrix);
 static Field  GetFirstHits(Field);
 static Error  PickInterpolate(Object, Field, int);
-static Error  GetAAMatrix(Object, Matrix *);
 
 #define CACHE_PICKS	1
 #define NO_CACHE_PICKS	0
@@ -161,22 +160,18 @@ m_Pick(Object *in, Object *out)
     Point2D  *xy, *xyPicks = NULL;
     int	     persp;
     float    nearPlane;
-    Array    a = NULL;
-    float    width, xyScale;
+    float    width;
     float    xCenter, yCenter;
     int      xRes, yRes;
     Field    result = NULL, field = NULL;
     float    sensitivity;
     char     *ptag, *itag;
-    Array    mA;
     int      persistence;
     int	     first;
     int      interpolate = NO_INTERP;
 #if 0
     int	     autoaxes = 0;
 #endif
-    Object   attr;
-
 
     pick.picks     = NULL;
     pick.paths     = NULL;
@@ -686,8 +681,6 @@ m_Pick(Object *in, Object *out)
 
     }
 
-done:
-
     if (camera != (Camera)in[CAMERA_ARG])
         DXDelete((Object)camera);
 
@@ -832,7 +825,6 @@ PickBufToField(PickBuf *p, Matrix m)
     Array pokes     = NULL;
     Array indices   = NULL;
     Array paths     = NULL;
-    Array weights   = NULL;
     Field field     = NULL;
     int   nPicks, nPokes, nPathElts;
     Pick  *picks;
@@ -1295,7 +1287,6 @@ static int
 PickBox(Field field, Point2D xy, Matrix *s, int persp, float nearPlane)
 {
     Point points[8];
-    float xyPoints[16];
     int   i, f;
 
     if (! DXBoundingBox((Object)field, points))
@@ -1342,11 +1333,12 @@ TriangleHit(Point **tri, Point2D *xy, Point *xyz, int persp, float *wts)
 	if ((cross < 0.0 && side == 1) || (cross > 0 && side == -1))
 	    return 0;
 	
-	if (side == 0)
+	if (side == 0) {
 	    if (cross < 0)
 		side = -1;
 	    else if (cross > 0)
 		side =  1;
+	}
 
 	a[i] = cross;
     }
@@ -1395,7 +1387,7 @@ PickTriangles(Field f, PickBuf *p, int poke, Point2D xy,
     Array   tA;
     Point   *xPoints = NULL;
     int     nPts, nTris;
-    int	    i, j, *tris;
+    int	    *tris;
 
     pA = (Array)DXGetComponentValue(f, "positions");
     tA = (Array)DXGetComponentValue(f, "connections");
@@ -1446,7 +1438,7 @@ PickQuads(Field f, PickBuf *p, int poke, Point2D xy,
     Array   qA;
     Point   *xPoints = NULL;
     int     nPts, nQuads;
-    int	    i, j, *quads;
+    int	    *quads;
 
     pA = (Array)DXGetComponentValue(f, "positions");
     qA = (Array)DXGetComponentValue(f, "connections");
@@ -1489,8 +1481,8 @@ error:
     return ERROR;
 }
 
-static triTab[]  = {0, 1, 2};
-static quadTab[] = {0, 1, 3, 2};
+static int triTab[]  = {0, 1, 2};
+static int quadTab[] = {0, 1, 3, 2};
 
 static Error
 Elt2D_Perspective(PickBuf *p, int poke, Point2D xy, Point *xPoints, int *elts,
@@ -1600,7 +1592,7 @@ Elt2D_Perspective(PickBuf *p, int poke, Point2D xy, Point *xPoints, int *elts,
 
 	    if (TriangleHit(sc, &xy, &xyz, 1, NULL))
 	    {
-		int ni, k;
+		int ni=0, k;
 		float nearPlane = DXD_MAX_FLOAT;
 
 		if (found)
@@ -1612,7 +1604,6 @@ Elt2D_Perspective(PickBuf *p, int poke, Point2D xy, Point *xPoints, int *elts,
 		if (xyz.z > min && xyz.z < max)
 		{
 		    Point  *tpts[3];
-		    float invDepth;
 
 		    for (k = 0; k < 3; k++)
 			if (orig[si[k]] != -1)
@@ -1712,9 +1703,9 @@ Elt2D_NoPerspective(PickBuf *p, int poke, Point2D xy, Point *xPoints, int *elts,
 	    float min, float max)
 {
     Point xyz;
-    int i, j, k, ni;
+    int i, j, k, ni=0;
     int *table = (vPerE == 3) ? triTab : (vPerE == 4) ? quadTab : NULL;
-    float d, nearest;
+    float nearest;
     int indices[3];
     Point *pts[3];
     float wts[3], *weights = (float *)DXAllocate(vPerE*sizeof(float));
@@ -1826,7 +1817,7 @@ PickLines(Field f, PickBuf *p, int poke, Point2D xy, Matrix *m,
     Array   lA;
     Point   *xPoints = NULL;
     int     nPts, nLines;
-    int	    i, j, *lines;
+    int	    *lines;
 
     pA = (Array)DXGetComponentValue(f, "positions");
     lA = (Array)DXGetComponentValue(f, "connections");
@@ -1875,7 +1866,7 @@ Elt1D_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
     int *elts, int nPts, int nElts, float nearPlane, float sens,
     float min, float max)
 {
-    int i, j;
+    int i;
     Point *sPoints;
     
     sPoints = (Point *)DXAllocate(nPts*sizeof(Point));
@@ -2000,7 +1991,7 @@ Elt1D_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 		 ((sclipped[0]->y+sens) >= y && y >= (sclipped[1]->y-sens))))
 	    {
 		float nearPlane = DXD_MAX_FLOAT;
-		int   k, ni;
+		int   k, ni=0;
 
 		if (fabs(dx) > fabs(dy))
 		    D = (x - sclipped[0]->x)/(sclipped[1]->x - sclipped[0]->x);
@@ -2062,7 +2053,6 @@ Elt1D_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	}
     }
 
-done:
     DXFree((Pointer)sPoints);
     return OK;
 
@@ -2076,7 +2066,7 @@ Elt1D_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 		    int *elts, int nPts, int nElts, float nearPlane, float sens,
 		    float min, float max)
 {
-    int i, j;
+    int i;
     int orig[2];
 
     nearPlane += ZOFFSET;
@@ -2086,7 +2076,7 @@ Elt1D_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	int     p, q;
 	Point   *px, *qx, *xclipped[2];
 	Point   xclippt;
-	float   x, y, z, a, b, c, D, dx, dy, depth;
+	float   x, y, a, b, c, D, dx, dy;
 	Point   xyz;
 
 	p = elts[0];
@@ -2162,7 +2152,7 @@ Elt1D_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 		 ((xclipped[0]->y+sens) >= y && y >= (xclipped[1]->y-sens))))
 	    {
 		float nearPlane = DXD_MAX_FLOAT;
-		int   k, ni;
+		int   k, ni=0;
 
 		if (fabs(dx) > fabs(dy))
 		    D = (x - xclipped[0]->x)/(xclipped[1]->x - xclipped[0]->x);
@@ -2211,7 +2201,6 @@ Elt1D_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 
     }
 
-done:
     return OK;
 
 error:
@@ -2226,7 +2215,7 @@ PickPolylines(Field f, PickBuf *p, int poke, Point2D xy, Matrix *m,
     Array   plA, eA;
     Point   *xPoints = NULL;
     int     nPts, nPolylines, nEdges;
-    int	    i, j, *polylines, *edges;
+    int	    *polylines, *edges;
 
     pA  = (Array)DXGetComponentValue(f, "positions");
     plA = (Array)DXGetComponentValue(f, "polylines");
@@ -2278,7 +2267,7 @@ Polyline_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
     float sens, float min, float max)
 {
     int pline;
-    int i, j;
+    int i;
     Point *sPoints;
     
     sPoints = (Point *)DXAllocate(nPts*sizeof(Point));
@@ -2409,7 +2398,7 @@ Polyline_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 		     ((sclipped[0]->y+sens) >= y && y >= (sclipped[1]->y-sens))))
 		{
 		    float nearPlane = DXD_MAX_FLOAT;
-		    int   k, ni;
+		    int   k, ni=0;
 
 		    if (fabs(dx) > fabs(dy))
 			D = (x - sclipped[0]->x)/(sclipped[1]->x - sclipped[0]->x);
@@ -2471,7 +2460,6 @@ Polyline_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	}
     }
 
-done:
     DXFree((Pointer)sPoints);
     return OK;
 
@@ -2485,7 +2473,7 @@ Polyline_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
     int *plines, int *edges, int nPts, int nPl, int nE, float nearPlane,
     float sens, float min, float max)
 {
-    int pline, i, j;
+    int pline;
     int orig[2];
 
     nearPlane += ZOFFSET;
@@ -2501,7 +2489,7 @@ Polyline_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	    int     p, q;
 	    Point   *px, *qx, *xclipped[2];
 	    Point   xclippt;
-	    float   x, y, z, a, b, c, D, dx, dy, depth;
+	    float   x, y, a, b, c, D, dx, dy;
 	    Point   xyz;
 
 	    p = edges[e];
@@ -2577,7 +2565,7 @@ Polyline_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 		     ((xclipped[0]->y+sens) >= y && y >= (xclipped[1]->y-sens))))
 		{
 		    float nearPlane = DXD_MAX_FLOAT;
-		    int   k, ni;
+		    int   k, ni=0;
 
 		    if (fabs(dx) > fabs(dy))
 			D = (x - xclipped[0]->x)/(xclipped[1]->x - xclipped[0]->x);
@@ -2627,7 +2615,6 @@ Polyline_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 
     }
 
-done:
     return OK;
 
 error:
@@ -2641,8 +2628,7 @@ PickPoints(Field f, PickBuf *p, int poke, Point2D xy, Matrix *m,
 {
     Array   pA;
     Point   *xPoints = NULL;
-    int     nPts, nLines;
-    int	    i, j, *lines;
+    int     nPts;
 
     pA = (Array)DXGetComponentValue(f, "positions");
     if (! pA)
@@ -2685,7 +2671,7 @@ static Error
 Elt0D_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints, 
 			int nPts, float nearPlane, float sens, float min, float max)
 {
-    int i, j;
+    int i;
     Point2D *sPoints;
     
     sPoints = (Point2D *)DXAllocate(nPts*sizeof(Point2D));
@@ -2724,7 +2710,6 @@ Elt0D_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	}
     }
 
-done:
     DXFree((Pointer)sPoints);
     return OK;
 
@@ -2737,7 +2722,7 @@ static Error
 Elt0D_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints, 
 			int nPts, float nearPlane, float sens, float min, float max)
 {
-    int i, j;
+    int i;
     
     nearPlane += ZOFFSET;
     
@@ -2757,7 +2742,6 @@ Elt0D_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	}
     }
 
-done:
     return OK;
 
 error:
@@ -2773,7 +2757,6 @@ PickFLE(Field f, PickBuf *p, int poke, Point2D xy, Matrix *m,
     Point   *xPoints = NULL;
     int     nPts, nFaces, nLoops, nEdges;
     int     *faces, *loops, *edges;
-    int	    i, j;
 
     pA = (Array)DXGetComponentValue(f, "positions");
     fA = (Array)DXGetComponentValue(f, "faces");
@@ -2917,13 +2900,13 @@ FLE_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	if (found || count & 0x1)
 	{
 	    Vector v0, v1, vn, normal;
-	    float l0, l0i;
-	    float l1, l1i;
+	    float l0, l0i=0;
+	    float l1=0, l1i=0;
 	    float l, a, b, c, d;
 	    int p, q, r, k;
 	    Point xyz;
 	    float nearPlane = DXD_MAX_FLOAT;
-	    int ni;
+	    int ni=0;
 
 	    /*
 	     * Compute a planar equation from the first loop in the face
@@ -2997,8 +2980,6 @@ FLE_NoPerspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 
 	    for (k = fl; k <= ll; k++)
 	    {
-		int start, end;
-
 		fe = loops[k];
 		le = (k == nLoops-1) ? nEdges - 1 : loops[k+1] - 1;
 		
@@ -3042,7 +3023,7 @@ FLE_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
     int l, fl, ll;
     int e, fe, le;
     float dNear, z, depth;
-    int vKnt, cKnt, vLen = 100;
+    int vKnt=0, cKnt, vLen = 100;
     Point cPoints[MAX_CLIPPTS];
     Point **cLoop   = (Point **)DXAllocate(vLen*sizeof(Pointer));
     Point *sPoints  = (Point *)DXAllocate(nPts*sizeof(Point));
@@ -3106,8 +3087,6 @@ FLE_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 		if ((xPoints[tv].z < nearPlane && xPoints[nv].z > nearPlane) ||
 		    (xPoints[tv].z > nearPlane && xPoints[nv].z < nearPlane))
 		{
-		    Point xyz;
-		    float invD;
 		    float d = (nearPlane - sPoints[tv].z) / 
 				    (sPoints[nv].z - sPoints[tv].z);
 
@@ -3198,12 +3177,12 @@ FLE_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 	if (found || count & 0x1)
 	{
 	    Vector v0, v1, vn, normal;
-	    float l0, l0i;
-	    float l1, l1i;
+	    float l0, l0i=0;
+	    float l1=0, l1i=0;
 	    float l, a, b, c, d;
 	    Point *p, *q, *r;
 	    Point xyz;
-	    int k, ni;
+	    int k, ni=0;
 
 	    /*
 	     * Compute a planar equation
@@ -3280,8 +3259,6 @@ FLE_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 
 	    for (k = fl; k <= ll; k++)
 	    {
-		int start, end;
-
 		fe = loops[k];
 		le = (k == nLoops-1) ? nEdges - 1 : loops[k+1] - 1;
 		
@@ -3334,11 +3311,9 @@ GetFirstHits(Field field)
     int     *inPaths, *outPaths;
     ubyte   *inWeights, *outWeights;
     PickWts *wts;
-    int     nWts, wtSz;
+    int     wtSz;
     int     pathSz;
     int     nPokes, nPicks, nPaths;
-    Array   src, dst = NULL;
-    char    *name;
 
     if (DXEmptyField(field))
 	return DXEndField(DXNewField());
@@ -3494,7 +3469,6 @@ PickInterpolate(Object object, Field picks, int flag)
 {
     Array array, wArray = NULL;
     PickWts *wPtr;
-    float *weights;
     Point *point;
     int npokes, npicks;
     int i, j;
@@ -3529,7 +3503,6 @@ PickInterpolate(Object object, Field picks, int flag)
 	for (j = 0; j < npicks; j++, point++)
 	{
 	    int *path, elt, vert, length;
-	    int nwts = *(int *)wPtr;
 	    float *wts = (float *)(wPtr + 1);
 
 	    if (! DXQueryPickPath(picks, i, j, &length, &path, &elt, &vert))
@@ -3586,15 +3559,15 @@ PickTraverse(Object object, Matrix *stack, Point xyz,
 	    Array    srcA, dstA;
 	    Pointer  *srcD, *dstD;
 	    int      itemSize;
-	    int      srcL, dstL;
+	    int      dstL;
 	    int	     srcI;
 	    char     *name;
 	    int      index;
 	    char     *dstName;
 	    Object   attr;
-	    Array    wtsA, eltsA, edgesA;
+	    Array    eltsA, edgesA;
 	    int      vPerE;
-	    int	     *element;
+	    int	     *element=NULL;
 	    int      lineseg[2];
 
 	    if (length != 0)
@@ -3618,7 +3591,7 @@ PickTraverse(Object object, Matrix *stack, Point xyz,
 		    if (eltsA)
 		    {
 			int estart, eend, *polylines, *edges;
-			int knt, nP, nE;
+			int nP, nE;
 
 			edgesA = (Array)DXGetComponentValue(f, "edges");
 
@@ -3735,6 +3708,7 @@ PickTraverse(Object object, Matrix *stack, Point xyz,
 			case TYPE_USHORT: INTERPOLATE_PICK(ushort,0.5); break;
 			case TYPE_BYTE:   INTERPOLATE_PICK(byte,0.5);   break;
 			case TYPE_UBYTE:  INTERPOLATE_PICK(ubyte,0.5);  break;
+		    	default: break;
 		    }
 
 		    DXFree((Pointer)buf);
@@ -3831,6 +3805,8 @@ error:
     return ERROR;
 }
 
+
+#if 0
 static Error
 GetAAMatrix(Object o, Matrix *r)
 {
@@ -3868,6 +3844,7 @@ error:
 	"unrecognized object in AutoAxes object header");
     return ERROR;
 }
+#endif
 
 static Array
 getXY(Array in)

@@ -13,6 +13,8 @@
 #include <ctype.h>
 #include <dx/dx.h>
 #include <string.h>
+#include "_autocolor.h"
+#include "color.h"
 
 #define ISGENERICGROUP(x) ((DXGetObjectClass((Object)x) == CLASS_GROUP)&& \
 			   (DXGetGroupClass((Group)x) == CLASS_GROUP))
@@ -34,10 +36,8 @@ struct arg {
 };
 
 /* moved static prototypes to make ansi compiler happy.  nsc 21apr92 */
-extern Error _dxfDelayedOK(Object);
 static Error ConvertColors(Object);
 static Error ConvertOpacities(Object);
-
 static Error ColorField(Pointer);
 static Error ColorIndividual(Object, Object, Object, char *, 
 			     int, int, int, int, RGBColor, float, int);
@@ -45,16 +45,9 @@ static Error ColorObject(Object, Object, Object, char *,
 			 int, int, int, int, RGBColor, float, int);
 
 
-extern Error _dxfIsVolume(Object, int *);
-extern Error _dxfScalarField(Field, int *);
-extern Error _dxfIsTextField(Field, int *);
-extern Error _dxfFloatField(Object, int *);
-extern Error _dxfBoundingBoxDiagonal(Object, float *);
-extern Array DXScalarConvert(Array);
-extern Error _dxfSetMultipliers(Object, float, float);
+extern Array DXScalarConvert(Array); /* from libdx/stats.h */
 
 
-extern
 Error 
   _dxfColorRecurseToIndividual(Object o, Object color, Object opacity, 
                                char *component, int setcolor, int setopacity, 
@@ -87,7 +80,7 @@ Error
     default:
 
       /* generic group; continue recursing */
-      for (i=0; subo = DXGetEnumeratedMember((Group)o,i,NULL); i++) {
+      for (i=0; (subo=DXGetEnumeratedMember((Group)o,i,NULL)); i++) {
 	if ((colorfield)&&(ISGENERICGROUP(color))) {
 	  subcolor = DXGetEnumeratedMember((Group)color, i, NULL);
           if (!subcolor) {
@@ -177,7 +170,7 @@ static Error ColorObject(Object o, Object color,
   switch(DXGetObjectClass(o)) {
   case CLASS_GROUP:
     /* get children and call ColorObject(subo); */
-    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++){
+    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++){
       if ((colorfield)&&(ISGENERICGROUP(color))) {
 	subcolor = DXGetEnumeratedMember((Group)color, i, NULL);
         if (!subcolor) {
@@ -300,24 +293,20 @@ static Error ColorField(Pointer ptr)
   Object color, opacity, copycolor=NULL, copyopacity=NULL;
   Interpolator i;
   char *component, *el_type, *att;
-  int setcolor, setopacity, colorfield, opacityfield, count, surface, byteflag;
-  int scalar, datacounts, mapcounts, j, k, jj, ii;
-  int this, next, immediate, floatflag, textflag; 
+  int setcolor, setopacity, colorfield, opacityfield, count, surface;
+  int scalar, mapcounts, j, k;
+  int immediate, floatflag, textflag; 
   int floatcolors, floatopacities;
-  unsigned char *dp_d;
   float *dp_m, *dp_md, minmap, maxmap;
-  RGBColor *colortable=NULL, *dp_colors;
-  float *opacitytable=NULL, *dp_opacities;
+  RGBColor *colortable=NULL;
+  float *opacitytable=NULL;
   float fraction;
   float red, green, blue;
-  float *cmap_ptr, *omap_ptr;
   int numentries;
   Array corigin=NULL, oorigin=NULL;
-  Array a_color, a_opacity; 
-  Array a_d, a_p, a_o, a_c, a_faces, olddata, newdata, dataarray;
-  Array mapposarray, mapdataarray, colors, opacities, d=NULL;
+  Array a_d, a_p, a_o, a_c, olddata, newdata, dataarray;
+  Array mapposarray, mapdataarray;
   Array deferredcolormap=NULL, deferredopacitymap=NULL;
-  Array oldcolors, newcolors, oldopacities, newopacities;
   struct arg *a;
   RGBColor c;
   float o;
@@ -906,6 +895,7 @@ static Error ColorField(Pointer ptr)
 
 
 
+#if 0
 static Error ColorIndividualMGrid(Object o, Object color,
 			      Object opacity, char *component, 
 			      int setcolor, int setopacity, int colorfield, 
@@ -915,7 +905,7 @@ static Error ColorIndividualMGrid(Object o, Object color,
   /* this is for multigrids, which might be mixed volumes and surfaces */
 
 }
-
+#endif
 
 
 
@@ -929,7 +919,7 @@ static Error ColorIndividual(Object o, Object color,
 {
 
   int surface;
-  float thickness, opacitymult, intensitymult;
+  float thickness, opacitymult=0, intensitymult=0;
 
   
   if (!_dxfIsVolume((Object)o, &surface))
@@ -993,8 +983,8 @@ static Error ConvertColors(Object copycolor)
 	    goto error; 
           break;
    case (CLASS_GROUP):
-          for (i=0; subo = DXGetEnumeratedMember((Group)copycolor,i,
-                                                       NULL); i++) {
+          for (i=0; (subo=
+	  	DXGetEnumeratedMember((Group)copycolor,i, NULL)); i++) {
               if (!ConvertColors(subo))
                goto error;
           }
@@ -1025,8 +1015,8 @@ static Error ConvertOpacities(Object copyopacity)
 	    goto error;
           break;
    case (CLASS_GROUP):
-          for (i=0; subo = DXGetEnumeratedMember((Group)copyopacity,i,
-                                                       NULL); i++) {
+          for (i=0; (subo=
+	  	DXGetEnumeratedMember((Group)copyopacity,i, NULL)); i++) {
               if (!ConvertOpacities(subo))
                goto error;
           }

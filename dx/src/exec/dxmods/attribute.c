@@ -28,7 +28,7 @@ Error m_Attribute(Object *in, Object *out)
      */
     if (in[0] == NULL) {
 	DXSetError(ERROR_BAD_PARAMETER, "#10000", "input");
-        return NULL;
+        return ERROR;
     }
 
     /* 
@@ -39,7 +39,7 @@ Error m_Attribute(Object *in, Object *out)
     else {
         if (!DXExtractString(in[1], &attrname)) {
             DXSetError(ERROR_BAD_PARAMETER, "#10200", "name");
-            return NULL;
+            return ERROR;
         }
     }
 
@@ -49,7 +49,7 @@ Error m_Attribute(Object *in, Object *out)
     s = DXGetAttribute(in[0], attrname);
     if (s == NULL) {
 	DXSetError(ERROR_DATA_INVALID, "#10257", "input", attrname);
-        return NULL;
+        return ERROR;
     }
 
     out[0] = s;

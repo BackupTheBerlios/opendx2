@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/overlay.c,v 1.4 2000/05/16 18:48:04 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/overlay.c,v 1.5 2000/08/24 20:04:41 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -191,7 +191,7 @@ m_Overlay ( Object *in, Object *out )
      * Create the structure for the outgoing image and then build
      * a task group to do the overlay work. 
      */
-    if (combined = DXCopy(I_base, COPY_STRUCTURE)) {
+    if ((combined = DXCopy(I_base, COPY_STRUCTURE))) {
     	DXCreateTaskGroup();
 	args.base = (Field)I_base;
 	args.overlay = (Field)I_overlay;
@@ -517,9 +517,9 @@ blend_images(Pixtype b_type, Pointer b_ptr, RGBColor *b_map,
 	     int height, int width, float blend)
 {
     float 	bbar = 1.0 - blend;
-    int		i,j,n;
-    RGBColor	*fb = (RGBColor *)b_ptr, b_tmp, *b;
-    RGBColor	*fo = (RGBColor *)o_ptr, o_tmp, *o;
+    int		i,n;
+    RGBColor	*fb = (RGBColor *)b_ptr, b_tmp, *b=NULL;
+    RGBColor	*fo = (RGBColor *)o_ptr, o_tmp, *o=NULL;
     RGBColor	*fc = (RGBColor *)c_ptr;
     ubyte	*ub = (ubyte *)b_ptr;
     ubyte	*uo = (ubyte *)o_ptr;
@@ -583,9 +583,9 @@ key_images(Pixtype b_type, Pointer b_ptr, RGBColor *b_map,
 	     Pixtype c_type, Pointer c_ptr,
 	     int height, int width, RGBColor *key)
 {
-    int		i,j,n;
-    RGBColor	*fb = (RGBColor *)b_ptr, b_tmp, *b;
-    RGBColor	*fo = (RGBColor *)o_ptr, o_tmp, *o;
+    int		i,n;
+    RGBColor	*fb = (RGBColor *)b_ptr, b_tmp, *b=NULL;
+    RGBColor	*fo = (RGBColor *)o_ptr, o_tmp, *o=NULL;
     RGBColor	*fc   = (RGBColor *)c_ptr;
     ubyte	*ub   = (ubyte *)b_ptr;
     ubyte	*uo   = (ubyte *)o_ptr;
@@ -651,9 +651,9 @@ matte_images(Pixtype b_type, Pointer b_ptr, RGBColor *b_map,
 	     Pixtype c_type, Pointer c_ptr,
 	     int height, int width, float *blend)
 {
-    int		i,j,n;
-    RGBColor	*fb = (RGBColor *)b_ptr, b_tmp, *b;
-    RGBColor	*fo = (RGBColor *)o_ptr, o_tmp, *o;
+    int		i,n;
+    RGBColor	*fb = (RGBColor *)b_ptr, b_tmp, *b=NULL;
+    RGBColor	*fo = (RGBColor *)o_ptr, o_tmp, *o=NULL;
     RGBColor	*fc   = (RGBColor *)c_ptr;
     ubyte	*ub   = (ubyte *)b_ptr;
     ubyte	*uo   = (ubyte *)o_ptr;
@@ -733,7 +733,11 @@ valid_image_object(Object image)
             switch ( DXGetGroupClass ( (Group) image)) {
                 case CLASS_COMPOSITEFIELD:
 		    return(OK);
+	        default:
+		   break;
             }
+        default:
+	   break;
     }
     return(ERROR); 
 }
@@ -751,7 +755,11 @@ valid_blend_field(Field matte)
             switch ( DXGetGroupClass ( (Group) matte)) {
                 case CLASS_COMPOSITEFIELD:
 		    return OK;
+	        default:
+		   break;
             }
+        default:
+	   break;
     }
     return ERROR; 
 }

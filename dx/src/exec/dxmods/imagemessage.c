@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/imagemessage.c,v 1.3 1999/05/10 15:45:26 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/imagemessage.c,v 1.4 2000/08/24 20:04:36 davidt Exp $
  */
 
 #include "dx/dx.h"
@@ -94,7 +94,7 @@
     (a) = (b);			\
 }
 
-static void delete_PendingDXLMessage(Pointer);
+static Error delete_PendingDXLMessage(Pointer);
 static Error SendPendingDXLMessage(Private);
 static Error SendPendingMessage(char *, char *, char *);
 
@@ -109,13 +109,13 @@ static Error SendPendingMessage(char *, char *, char *);
     }					\
 }
 
+Error
 m_ImageMessage(Object *in, Object *out)
 {
     Array a;
     Object  *last;
     char buffer0[MAX_MSGLEN], buffer1[MAX_MSGLEN];
     char *b0ptr = buffer0;
-    char *b1ptr = buffer1;
     char *mod_id = (char *)DXGetModuleId();
     int doit = 0;
     char *sendtype;
@@ -1068,7 +1068,7 @@ DXWarning("ImageMessage: invalid parameter - possible version mismatch between n
     {
 	if (INTERACTIONMODE)
 	{
-	    char *mode,buffer[128];
+	    char *mode;
 
 	    if (! DXExtractString(INTERACTIONMODE, &mode))
 	    {
@@ -1139,7 +1139,7 @@ typedef struct
     char *minor;
 } PendingDXLMessage;
 
-static void
+static Error
 delete_PendingDXLMessage(Pointer d)
 {
     PendingDXLMessage *p = (PendingDXLMessage *)d;
@@ -1148,6 +1148,7 @@ delete_PendingDXLMessage(Pointer d)
     DXFree(p->major);
     DXFree(p->minor);
     DXFree(p);
+    return OK;
 }
 
 static Error

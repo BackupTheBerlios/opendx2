@@ -14,6 +14,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "import.h"
+#include "verify.h"
 
 #if  defined(DXD_NON_UNIX_DIR_SEPARATOR)
 #define DX_DIR_SEPARATOR ';'
@@ -36,8 +37,7 @@
 
 /* prototypes */
 static Error  check_extension(char *fname, int *dt);
-extern Object _dxfImportBin(char *dataset);   /* binary format importer */ 
-extern Error _dxfIsCircular(Object o);        /* checks for loops in the obj */
+extern Object _dxfImportBin(char *dataset);   /* from libdx/rwobject.c */ 
 
  
 /* 0 = filename         mdf:   name
@@ -55,12 +55,10 @@ m_Import(Object *in, Object *out)
     int i, nfields;
     int entrynum;
     int startframe, endframe, deltaframe;
-    int frameset = 0;
     int match = 0;
 #if MULTIFILE
     int multifile = 0;
 #endif
-    Object o = NULL;
     struct parmlist p;
     struct import_table *it;
     
@@ -342,8 +340,6 @@ static Error check_extension(char *fname, int *entrynum)
 
 /* built in importers */
  
-extern Error _dxfstat_netcdf_file(char *filename);
- 
 ImportStatReturn 
 _dxftry_ncdf(struct parmlist *p)
 {
@@ -377,7 +373,6 @@ Object _dxfget_ncdf(struct parmlist *p)
 {
     int i, j, frno;
     int startframe, endframe, deltaframe;
-    int incframe = 0;
     char dataset_name[512], numbuf[16];
     int overwrite = 0;
     Error firstrc = OK;
@@ -386,7 +381,10 @@ Object _dxfget_ncdf(struct parmlist *p)
     Group grp = NULL;    /* generic group */
     Field f = NULL;
     Object o = NULL, retobj = NULL;
-	
+#if 0
+    int incframe = 0;
+#endif
+
  
     /* the start/end frame aren't specified.
      */
@@ -514,10 +512,6 @@ Object _dxfget_ncdf(struct parmlist *p)
 }
  
  
-extern ImportStatReturn _dxfstat_hdf(char *filename);
-extern int _dxfget_hdfcount(char *filename);
-extern int _dxfwhich_hdf(char *filename,char *fieldname);
-
 ImportStatReturn
 _dxftry_hdf(struct parmlist *p)
 {
@@ -788,8 +782,6 @@ Object _dxfget_dx(struct parmlist *p)
     return DXImportDX(p->filename, p->fieldlist, p->startframe,
 		   p->endframe, p->deltaframe);
 }
-
-extern ImportStatReturn _dxfstat_cdf(char *filename);
 
 ImportStatReturn
 _dxftry_cdf(struct parmlist *p)

@@ -16,6 +16,7 @@
 
 static Object SortObject(Object o, int flag);
 
+Error
 m_Sort(Object *in, Object *out)
 {
     int   sortFlag = SORT_ASCENDING;
@@ -275,6 +276,10 @@ SortObject(Object o, int flag)
 
 	    break;
 	}
+        default:
+	    DXSetError(ERROR_NOT_IMPLEMENTED, "Unimplemented Class");
+	    goto error;
+	    break;
     }
 
     return new;
@@ -570,7 +575,7 @@ ReMap(Array src, int *map)
     Type t;
     Category c;
     Array dst = NULL;
-    int n, nr, r, s[32], size, i, j;
+    int n, nr, r, s[32], size, i;
     int *sPtr, *dPtr;
 
     if (DXGetObjectClass((Object)src) != CLASS_ARRAY)

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/slab.c,v 1.4 2000/05/16 18:48:17 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/slab.c,v 1.5 2000/08/24 20:04:50 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -56,14 +56,14 @@ static Error fromdouble(Type t, double v1, Pointer v2, int i2);
 
 static Error numslabs(CompositeField f, struct argblk *a);
 static Error fixtype(Series s);
-extern void _dxfPermute(int dim, Pointer out, int *ostrides, int *counts, 
+extern void _dxfPermute(int dim, Pointer out, int *ostrides, int *counts, /* from libdx/permute.c */
 			int size, Pointer in, int *istrides);
 
 /* the source for these is in partreg.c */
-extern Field _dxf_has_ref_lists(Field f, int *pos, int *con);
-extern Error _dxf_make_map_template(Array a, Array *map);
-extern Error _dxf_fix_map_template(Array map, Array newmap);
-extern Array _dxf_remap_by_map(Array a, Array map);
+extern Field _dxf_has_ref_lists(Field f, int *pos, int *con); /* from libdx/partreg.c */
+extern Error _dxf_make_map_template(Array a, Array *map); /* from libdx/partreg.c */
+extern Error _dxf_fix_map_template(Array map, Array newmap); /* from libdx/partreg.c */
+extern Array _dxf_remap_by_map(Array a, Array map); /* from libdx/partreg.c */
 
 
 
@@ -301,7 +301,7 @@ static Object Object_Slab(Object o, struct argblk *a)
 	    }
 
             /* for each original partition */
-            for (i=0; subo = DXGetEnumeratedMember((Group)o, i, &name); i++) {
+            for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, &name)); i++) {
                 if (DXEmptyField((Field)subo))
                     continue;
 		
@@ -357,7 +357,7 @@ static Object Object_Slab(Object o, struct argblk *a)
 	    }
 
             newi = 0;
-	    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, &name); i++) {
+	    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, &name)); i++) {
 		if (goparallel) {
 		    a->toslab = subo;
 		    a->membername = name;
@@ -416,7 +416,7 @@ static Object Object_Slab(Object o, struct argblk *a)
 	    }
 
 	    /* for each member */
-	    for (i=0; subo = DXGetSeriesMember((Series)o, i, &position); i++) {
+	    for (i=0; (subo=DXGetSeriesMember((Series)o, i, &position)); i++) {
 		if (goparallel) {
 		    a->toslab = subo;
 		    a->seriesplace = position;
@@ -1002,7 +1002,7 @@ static Object Field_Slab(Field o, struct argblk *a)
 	 *    slabs, this replaces the old component.  for series of slabs,
 	 *    this adds the component for the first time.
 	 */
-	for (j=0; subo=DXGetEnumeratedComponentValue(o, j, &name); j++) {
+	for (j=0; (subo=DXGetEnumeratedComponentValue(o, j, &name)); j++) {
 	    
 	    if (!strcmp("positions", name) || !strcmp("connections", name))
 		continue;
@@ -1550,7 +1550,7 @@ numslabs(CompositeField cf, struct argblk *ap)
 {
     int i, j, k, l, m;
     Field f;
-    Array arrc, arrp;
+    Array arrc, arrp=NULL;
     int ccounts[MAXSHAPE]; 
     int stride[MAXDIM], gridoffsets[MAXDIM];
     float origins[MAXDIM], deltas[MAXDIM*MAXDIM], *pos;
@@ -1591,7 +1591,7 @@ numslabs(CompositeField cf, struct argblk *ap)
      *  partitions along the slice axis and compute the total number of slices.
      */
     
-    for (i=0; f = (Field)DXGetEnumeratedMember((Group)cf, i, NULL); i++) {
+    for (i=0; (f=(Field)DXGetEnumeratedMember((Group)cf, i, NULL)); i++) {
 	
 	arrc = (Array)DXGetComponentValue(f, "connections");
 	
@@ -1659,7 +1659,7 @@ numslabs(CompositeField cf, struct argblk *ap)
 	if (!ap->compositepositions)
 	    goto error;
  
-	for (i=0; f = (Field)DXGetEnumeratedMember((Group)cf, i, NULL); i++) {
+	for (i=0; (f=(Field)DXGetEnumeratedMember((Group)cf, i, NULL)); i++) {
  
 	    arrc = (Array)DXGetComponentValue(f, "connections");
  
@@ -1865,12 +1865,12 @@ fixtype(Series s)
     int rank;
     int shape[MAXDIM];
 
-    for (i=0; subo = DXGetEnumeratedMember((Group)s, i, NULL); i++) {
+    for (i=0; (subo=DXGetEnumeratedMember((Group)s, i, NULL)); i++) {
 	if (DXGetObjectClass(subo) != CLASS_GROUP ||
 	    DXGetGroupClass((Group)subo) != CLASS_COMPOSITEFIELD)
 	    return OK;
 
-	for (i=0; subo2 = DXGetEnumeratedMember((Group)subo, i, NULL); i++) {
+	for (i=0; (subo2=DXGetEnumeratedMember((Group)subo, i, NULL)); i++) {
 	    if (DXGetObjectClass(subo2) != CLASS_FIELD || 
 		DXEmptyField((Field)subo2))
 		continue;
@@ -1918,6 +1918,7 @@ static Error fromdouble(Type t, double v1, Pointer v2, int i2)
       case TYPE_INT:    TYPE_FROM(int,    v1, v2, i2);  return OK;
       case TYPE_FLOAT:  TYPE_FROM(float,  v1, v2, i2);  return OK;
       case TYPE_DOUBLE: TYPE_FROM(double, v1, v2, i2);  return OK;
+      default: break;
     }
 
     DXSetError(ERROR_NOT_IMPLEMENTED, "unrecognized data type");
@@ -1937,6 +1938,7 @@ static Error todouble(Type t, Pointer v1, int i1, double *v2)
       case TYPE_INT:    TYPE_TO(int,    v1, i1, v2);  return OK;
       case TYPE_FLOAT:  TYPE_TO(float,  v1, i1, v2);  return OK;
       case TYPE_DOUBLE: TYPE_TO(double, v1, i1, v2);  return OK;
+      default: break;
     }
 
     DXSetError(ERROR_NOT_IMPLEMENTED, "unrecognized data type");

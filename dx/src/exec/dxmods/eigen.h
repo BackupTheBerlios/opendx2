@@ -11,6 +11,8 @@
 
 #include <dxconfig.h>
 
+#ifndef _EIGEN_H_
+#define _EIGEN_H_
 
 #define SHAPE 3
 
@@ -38,3 +40,5 @@ float **_dxfEigenConvertMatrix(float *a, int start_matrix_row, int end_matrix_ro
 	int start_matrix_col, int end_matrix_col);
 
 void _dxfEigenFreeConvertMatrix(float**b, int start_matrix_row);
+
+#endif /* _EIGEN_H_ */

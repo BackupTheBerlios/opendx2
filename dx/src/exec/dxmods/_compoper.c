@@ -10,7 +10,7 @@
 
 
 /* This file contains the description of each operator from a type and 
- * execution pint of view.  For each operator (such as COND (?:), *, 
+ * execution point of view.  For each operator (such as COND (?:), *, 
  * min, [...], etc.) there is a structure containing the operator
  * code, name, and a list of valid operator bindings.  Each binding contains
  * the routine to implement the operation, a routine to check the type
@@ -75,9 +75,13 @@
 #include <math.h>
 #include <string.h>
 #include <dx/dx.h>
+#if defined(HAVE_CTYPE_H)
+#include <ctype.h>
+#endif
 #include "_compute.h"
 #include "_compputils.h"
 #include "_compoper.h"
+#include "vsincos.h"
 #if !defined(DXD_STANDARD_IEEE)
 #include <sys/signal.h>
 #endif
@@ -86,6 +90,10 @@
 #define OP_RECORD(c, s, b) {(c), (s), (sizeof (b) / sizeof ((b)[0])), (b)}
 #define OP_RECORD_SIZE(c, s, b, size) {(c), (s), 0, (b)}
 static int TypeCheckLeaf(PTreeNode *tree, ObjStruct *input);
+
+/* A readonly variable comparable to an integer */
+static MetaType intExpr = {0, TYPE_INT, CATEGORY_REAL, 0};
+
 
 /*
  * Routines to manipulate invalid data.
@@ -252,9 +260,9 @@ CheckConstant (PTreeNode *pt, ObjStruct *os, OperBinding *binding)
 static Pointer
 ComputeProductArray_GetArrayData(ProductArray a, Pointer *p)
 {
-    int i, j, k, l, nterms, ndim, nl, nr, rank;
+    int i=0, j, k, l, nterms, ndim, nl, nr, rank;
     Array *terms = NULL;
-    float *result = (float*)p, *res, *right, *rt, *left, *lt;
+    float *result = (float*)p, *res, *right=NULL, *rt, *left, *lt;
     int freelocal = 0;
     int shape[100];
     int totalItems;
@@ -397,7 +405,6 @@ ExecInput (
     int status = OK;
     ArrayHandle arrayHandle = NULL;
     int items;
-    int dims;
 
 #ifdef COMP_DEBUG
     DXDebug ("C", "ExecInput, %d: pt = 0x%08x, os = 0x%08x, os items = %d, pt items = %d",
@@ -691,8 +698,8 @@ CheckConstruct (PTreeNode *pt, ObjStruct *os, OperBinding *binding)
 	if (_dxfComputeCompareType (&pt->metaType, &subTree->metaType) == 
 		ERROR) {
 	    if (!((subTree->metaType.rank == 0 && seenOneVect) ||
-		(subTree->metaType.rank == 1 && 
-		     subTree->metaType.shape[0] == 1) && seenScalar))
+		((subTree->metaType.rank == 1 && 
+		     subTree->metaType.shape[0] == 1) && seenScalar)))
 		return (ERROR);
 	}
 	subTree = subTree->next;
@@ -851,7 +858,7 @@ ExecStrcmp(
     int vectorLen1 = pt->args->next->metaType.shape[0];
     int size0 = pt->args->metaType.items;
     int size1 = pt->args->next->metaType.items;
-    int i, j, k, l;
+    int i, j, k;
     int ncmp;
     int allValid =
 	(invalids[0] == NULL || DXGetInvalidCount(invalids[0]) == 0) &&
@@ -886,7 +893,7 @@ ExecStricmp(
     int vectorLen1 = pt->args->next->metaType.shape[0];
     int size0 = pt->args->metaType.items;
     int size1 = pt->args->next->metaType.items;
-    int i, j, k, l;
+    int i, j, k;
     int ncmp;
     int allValid =
 	(invalids[0] == NULL || DXGetInvalidCount(invalids[0]) == 0) &&
@@ -2953,12 +2960,12 @@ static OperBinding dots[] = {
 	    {0, TYPE_FLOAT, CATEGORY_REAL, 0}}},
     {2, (CompFuncV)mulVFF, _dxfComputeCheckMatch,
 	{0, TYPE_FLOAT, CATEGORY_REAL, 0 },
-	{   {0, TYPE_FLOAT, CATEGORY_REAL, 1, 1},
+	{   {0, TYPE_FLOAT, CATEGORY_REAL, 1, { 1 }},
 	    {0, TYPE_FLOAT, CATEGORY_REAL, 0}}},
     {2, (CompFuncV)mulVFF, _dxfComputeCheckMatch,
 	{0, TYPE_FLOAT, CATEGORY_REAL, 0 },
 	{   {0, TYPE_FLOAT, CATEGORY_REAL, 0},
-	    {0, TYPE_FLOAT, CATEGORY_REAL, 1, 1}}}
+	    {0, TYPE_FLOAT, CATEGORY_REAL, 1, { 1 }}}}
 };
 
 /* magv */
@@ -3982,72 +3989,72 @@ _dxfComputeLookupFunction (char *name)
 	char *name;
 	int   code;
     } functs[] = {
-	"select",	OPER_PERIOD,
-	"mod",		OPER_MOD,
-	"dot",		OPER_DOT,
-	"cross",	OPER_CROSS,
-	"sqrt",		FUNC_sqrt,
-	"pow",		FUNC_pow,
-	"sin",		FUNC_sin,
-	"cos",		FUNC_cos,
-	"tan",		FUNC_tan,
-	"ln",		FUNC_ln,
-	"log10",	FUNC_log10,
-	"min",		FUNC_min,
-	"max",		FUNC_max,
-	"floor",	FUNC_floor,
-	"ceil",		FUNC_ceil,
-	"trunc",	FUNC_trunc,
-	"rint",		FUNC_rint,
-	"exp",		FUNC_exp,
-	"tanh",		FUNC_tanh,
-	"sinh",		FUNC_sinh,
-	"cosh",		FUNC_cosh,
-	"acos",		FUNC_acos,
-	"asin",		FUNC_asin,
-	"atan",		FUNC_atan,
-	"atan2",	FUNC_atan2,
-	"mag",		FUNC_mag,
-	"norm",		FUNC_norm,
-	"abs",		FUNC_abs,
-	"int",		FUNC_int,
-	"float",	FUNC_float,
-	"real",		FUNC_real,
-	"imag",		FUNC_imag,
-	"complex",	FUNC_complex,
-	"imagi",	FUNC_imagi,
-	"imagj",	FUNC_imagj,
-	"imagk",	FUNC_imagk,
-	"quaternion",	FUNC_quaternion,
-	"sign",		FUNC_sign,
-	"qsin",		FUNC_qsin,
-	"qcos",		FUNC_qcos,
-	"char",		FUNC_char,
-	"byte",		FUNC_char,
-	"short",	FUNC_short,
-	"double",	FUNC_double,
-	"signed_int",	FUNC_signed_int,
-	"rank",		FUNC_rank,
-	"shape",	FUNC_shape,
-	"log",		FUNC_ln,
-	"and",		FUNC_and,
-	"or",		FUNC_or,
-	"xor",		FUNC_xor,
-	"not",		FUNC_not,
-	"random",	FUNC_random,
-	"arg",		FUNC_arg,
-	"invalid",	FUNC_invalid,
-	"ubyte",	FUNC_char,
-	"sbyte",	FUNC_sbyte,
-	"uint", 	FUNC_uint,
-	"sint", 	FUNC_int,
-	"ushort", 	FUNC_ushort,
-	"sshort", 	FUNC_short,
-	"strcmp",	FUNC_strcmp,
-	"stricmp",	FUNC_stricmp,
-	"strstr",	FUNC_strstr,
-	"stristr",	FUNC_stristr,
-	"strlen",	FUNC_strlen
+	{ "select",	OPER_PERIOD },
+	{ "mod",	OPER_MOD },
+	{ "dot",	OPER_DOT },
+	{ "cross",	OPER_CROSS },
+	{ "sqrt",	FUNC_sqrt },
+	{ "pow",	FUNC_pow },
+	{ "sin",	FUNC_sin },
+	{ "cos",	FUNC_cos },
+	{ "tan",	FUNC_tan },
+	{ "ln",		FUNC_ln },
+	{ "log10",	FUNC_log10 },
+	{ "min",	FUNC_min },
+	{ "max",	FUNC_max },
+	{ "floor",	FUNC_floor },
+	{ "ceil",	FUNC_ceil },
+	{ "trunc",	FUNC_trunc },
+	{ "rint",	FUNC_rint },
+	{ "exp",	FUNC_exp },
+	{ "tanh",	FUNC_tanh },
+	{ "sinh",	FUNC_sinh },
+	{ "cosh",	FUNC_cosh },
+	{ "acos",	FUNC_acos },
+	{ "asin",	FUNC_asin },
+	{ "atan",	FUNC_atan },
+	{ "atan2",	FUNC_atan2 },
+	{ "mag",	FUNC_mag },
+	{ "norm",	FUNC_norm },
+	{ "abs",	FUNC_abs },
+	{ "int",	FUNC_int },
+	{ "float",	FUNC_float },
+	{ "real",	FUNC_real },
+	{ "imag",	FUNC_imag },
+	{ "complex",	FUNC_complex },
+	{ "imagi",	FUNC_imagi },
+	{ "imagj",	FUNC_imagj },
+	{ "imagk",	FUNC_imagk },
+	{ "quaternion",	FUNC_quaternion },
+	{ "sign",	FUNC_sign },
+	{ "qsin",	FUNC_qsin },
+	{ "qcos",	FUNC_qcos },
+	{ "char",	FUNC_char },
+	{ "byte",	FUNC_char },
+	{ "short",	FUNC_short },
+	{ "double",	FUNC_double },
+	{ "signed_int",	FUNC_signed_int },
+	{ "rank",	FUNC_rank },
+	{ "shape",	FUNC_shape },
+	{ "log",	FUNC_ln },
+	{ "and",	FUNC_and },
+	{ "or",		FUNC_or },
+	{ "xor",	FUNC_xor },
+	{ "not",	FUNC_not },
+	{ "random",	FUNC_random },
+	{ "arg",	FUNC_arg },
+	{ "invalid",	FUNC_invalid },
+	{ "ubyte",	FUNC_char },
+	{ "sbyte",	FUNC_sbyte },
+	{ "uint", 	FUNC_uint },
+	{ "sint", 	FUNC_int },
+	{ "ushort", 	FUNC_ushort },
+	{ "sshort", 	FUNC_short },
+	{ "strcmp",	FUNC_strcmp },
+	{ "stricmp",	FUNC_stricmp },
+	{ "strstr",	FUNC_strstr },
+	{ "stristr",	FUNC_stristr },
+	{ "strlen",	FUNC_strlen }
     };
     int i;
 

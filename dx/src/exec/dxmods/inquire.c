@@ -34,7 +34,7 @@ static char *article(char first)
     if (DXGetObjectClass(o) != class) { \
 	DXSetError(ERROR_DATA_INVALID, "#10371", \
 		   "input", article(name[0]), name); \
-	return NULL; \
+	return ERROR; \
     }
 
 #define CHECKIF2(o, class, name, class2, name2) \
@@ -84,6 +84,7 @@ static Field getpartplus(Object o, int *i, int *count)
     return NULL;
 }
 
+#if 0
 /* should be libdx routine */
 static Error DXGetComponentCount(Field f, int *i)
 {
@@ -94,6 +95,7 @@ static Error DXGetComponentCount(Field f, int *i)
 
     return OK;
 }
+#endif
 
 
 static Object 
@@ -123,10 +125,12 @@ static Object packfloat(float f)
     return packit(1, TYPE_FLOAT, CATEGORY_REAL, 0, NULL, (Pointer)&f);
 }
 
+#if 0
 static Object packintlist(int n, int *i)
 {
     return packit(n, TYPE_INT, CATEGORY_REAL, 0, NULL, (Pointer)i);
 }
+#endif
 
 static Object packfloatlist(int n, float *f)
 {
@@ -143,10 +147,12 @@ static Object packfloatvect(int len, float *f)
     return packit(1, TYPE_FLOAT, CATEGORY_REAL, 1, &len, (Pointer)f);
 }
 
+#if 0
 static Object packintvectlist(int n, int len, int *i)
 {
     return packit(n, TYPE_INT, CATEGORY_REAL, 1, &len, (Pointer)i);
 }
+#endif
 
 static Object packfloatvectlist(int n, int len, float *f)
 {
@@ -185,7 +191,7 @@ static int qregp(Object o)
     int i, j;
     Field f;
 
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
 
 	if (!DXQueryGridPositions ((Array)
 				   DXGetComponentValue(f, "positions"),
@@ -201,7 +207,7 @@ static int qregc(Object o)
     int i, j;
     Field f;
 
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
 
 	if (!DXQueryGridConnections ((Array)
 				     DXGetComponentValue(f, "connections"),
@@ -225,7 +231,7 @@ static int qreg(Object o, Object compname)
     if (!DXExtractString(compname, &on))
 	return 0;
 	
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
 	
 	if (!(a = (Array)DXGetComponentValue(f, on)))
 	    return 0;
@@ -261,7 +267,7 @@ static int qNdgp(Object o, char *cn)
     int rank;
 
     n = atoi(cn);
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
     
 	if (!DXQueryGridPositions ((Array)
 				   DXGetComponentValue(f, "positions"),
@@ -283,7 +289,7 @@ static int qNdgc(Object o, char *cn)
     int rank;
 
     n = atoi(cn);
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
     
 	if (!DXQueryGridConnections ((Array)
 				     DXGetComponentValue(f, "connections"),
@@ -306,7 +312,7 @@ static int qNdp(Object o, char *cn)
     Object pos;
 
     n = atoi(cn);
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
     
 	pos = DXGetComponentValue(f, "positions");
 	if (!pos)
@@ -340,7 +346,7 @@ static int qNdc(Object o, char *cn)
     Object con;
 
     n = atoi(cn);
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
 
 	if (!(con = DXGetComponentValue(f, "connections")))
 	    return 0;
@@ -384,7 +390,7 @@ static int qNdd(Object o, char *cn)
 	return 1;
     }
 
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
 
 	if (!(data = DXGetComponentValue(f, "data")))
 	    return 0;
@@ -427,7 +433,7 @@ static int q1dNd(Object o, char *cn)
 	return 1;
     }
 
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
 
 	if (!(data = DXGetComponentValue(f, "data")))
 	    return 0;
@@ -459,7 +465,7 @@ static int qdatadep(Object o, Object on)
     char *dep = NULL;
     char *attrvalue = NULL;
 
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
 
 	if (!(data = DXGetComponentValue(f, "data")))
 	    return 0;
@@ -498,7 +504,7 @@ static int qdatatype(Object o, Type t)
 	return 1;
     }
 
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
     
 	if (!DXGetType((Object)f, &dt, NULL, NULL, NULL))
 	    return 0;
@@ -601,7 +607,7 @@ static int qhasdata(Object o)
 	return DXEmptyField((Field)o);
 	
       case CLASS_GROUP:
-	for (i=0; child = DXGetEnumeratedMember((Group)o, i, NULL); i++) {
+	for (i=0; (child = DXGetEnumeratedMember((Group)o, i, NULL)); i++) {
 	    if (!qhasdata(child))
 		return 0;
 	}
@@ -816,7 +822,7 @@ static int qiscontype(Object o, Object name)
     if (!DXExtractString(name, &match))
 	return 0;
 
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
 
 	if (!(con = DXGetComponentValue(f, "connections")))
 	    return 0;
@@ -889,7 +895,8 @@ static Object qgcount(Object o)
 	
 	DXFree((Pointer)counts);
 	return answer;
-	
+      default:
+        break;
     }
 
   notreg:	
@@ -917,6 +924,7 @@ static Object qtype(Object o)
       case TYPE_FLOAT:  cp = "float";            break;
       case TYPE_DOUBLE: cp = "double";           break;
       case TYPE_STRING: cp = "string";           break;
+      case TYPE_HYPER:  cp = "hyper";		 break;
     }
 
     return packstring(cp);
@@ -1521,9 +1529,9 @@ static Object qcontype(Object o)
 {
     int i, j;
     Field f;
-    Object con, etype;
+    Object con;
 
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
 
 	if (!(con = DXGetComponentValue(f, "connections")))
 	    return NULL;
@@ -1564,7 +1572,7 @@ static Object qprimitives(Object o)
 
     /* for each field in the input...
      */
-    for (i=0, j=0; f=getpartplus(o, &i, &j); ) {
+    for (i=0, j=0; (f=getpartplus(o, &i, &j)); ) {
 
 	/* find out how many connection items there are.
 	 *  if there is no connections array, then these
@@ -1636,7 +1644,6 @@ static Object qprimitives(Object o)
     
     rc = (Object)DXMakeStringListV(i, ccp);
 
-  cleanup:
     for ( ; pcp; pcp = pcp2) {
 	pcp2 = pcp->next;
 	DXFree((Pointer)pcp);
@@ -1931,11 +1938,10 @@ static Object qattr(Object in, Object n, int flag)
 {
     char *attrname = NULL;
     char **strlist = NULL;
-    char **objlist = NULL;
     Object answer = NULL;
     Object attr = NULL;
     Object member = NULL;
-    int memcount, attrcount, firstmember, i;
+    int memcount, attrcount, firstmember=0, i;
     int isstring;
 
     if (!DXExtractString(n, &attrname)) {
@@ -2134,7 +2140,7 @@ static Object qobjecttag(Object in)
 #define HAS_NOPARMS(q)   NULL, NULL,    "", NULL,    q, NULL,   "", NULL
 #define HAS_1PARM(q,p)   NULL, NULL,    "", NULL, NULL,    q,    p, NULL
 #define HAS_1INPUT(q)    NULL, NULL,    "", NULL, NULL, NULL,   "",    q
-#define TABLE_END        NULL, NULL,  NULL, NULL, NULL, NULL, NULL, NULL
+#define TABLE_END        NULL, NULL,    "", NULL, NULL, NULL,   "", NULL
 
 static struct functable {
     char question[MAXQLEN];
@@ -2148,159 +2154,157 @@ static struct functable {
     Object (*qobj1i)(Object, Object);
 } ft[] = 
 {
-    "isnull",  		    IS_YESNO(qnull),
-    "isregularpositions",   IS_YESNO(qregp),
-    "isregularconnections", IS_YESNO(qregc),
-    "isbyte", 		    IS_YESNO(qbyte),
-    "isshort", 		    IS_YESNO(qshort),
-    "isint", 		    IS_YESNO(qint),
-    "isinteger",	    IS_YESNO(qint),
-    "isfloat", 		    IS_YESNO(qfloat),
-    "isdouble",		    IS_YESNO(qdouble),
-    "isimage",		    IS_YESNO(qimage),
+    { "isnull",  		IS_YESNO(qnull)},
+    { "isregularpositions",   	IS_YESNO(qregp)},
+    { "isregularconnections", 	IS_YESNO(qregc)},
+    { "isbyte", 		IS_YESNO(qbyte)},
+    { "isshort", 		IS_YESNO(qshort)},
+    { "isint", 		    	IS_YESNO(qint)},
+    { "isinteger",	    	IS_YESNO(qint)},
+    { "isfloat", 		IS_YESNO(qfloat)},
+    { "isdouble",		IS_YESNO(qdouble)},
+    { "isimage",		IS_YESNO(qimage)},
 
-    "isobject",             YESNO_1PARM(qobjtype, "object"),
-    "isprivate",            YESNO_1PARM(qobjtype, "private"),
-    "isstring",             YESNO_1PARM(qobjtype, "string"),
-    "isfield",              YESNO_1PARM(qobjtype, "field"),
-    "isgroup",              YESNO_1PARM(qobjtype, "group"),
-    "isgenericgroup",       YESNO_1PARM(qobjgtype,  "group"),
-    "isseries",             YESNO_1PARM(qobjgtype,  "series"),
-    "iscompositefield",     YESNO_1PARM(qobjgtype,  "compositefield"),
-    "ismultigrid",          YESNO_1PARM(qobjgtype,  "multigrid"),
-    "isarray",              YESNO_1PARM(qobjtype, "array"),
-    "isgenericarray",       YESNO_1PARM(qobjatype,  "array"),
-    "isirregulararray",     YESNO_1PARM(qobjatype,  "array"),
-    "isregulararray",       YESNO_1PARM(qobjatype,  "regulararray"),
-    "ispatharray",          YESNO_1PARM(qobjatype,  "patharray"),
-    "isproductarray",       YESNO_1PARM(qobjatype,  "productarray"),
-    "ismesharray",          YESNO_1PARM(qobjatype,  "mesharray"),
-    "isconstantarray",      YESNO_1PARM(qobjatype,  "constantarray"),
-    "istransform",          YESNO_1PARM(qobjtype, "xform"),
-    "isxform",              YESNO_1PARM(qobjtype, "xform"),
-    "isscreen",             YESNO_1PARM(qobjtype, "screen"),
-    "isclipped",            YESNO_1PARM(qobjtype, "clipped"),
-    "iscamera",             YESNO_1PARM(qobjtype, "camera"),
-    "islight",              YESNO_1PARM(qobjtype, "light"),
-    "isempty",              YESNO_1PARM(qobjempty, ""),
-    "isemptygroup",         YESNO_1PARM(qobjempty, "group"),
-    "isemptyfield",         YESNO_1PARM(qobjempty, "field"),
-    "isemptyarray",         YESNO_1PARM(qobjempty, "array"),
-    "is1dgridpositions",    YESNO_1PARM(qNdgp, "1"),
-    "is2dgridpositions",    YESNO_1PARM(qNdgp, "2"),
-    "is3dgridpositions",    YESNO_1PARM(qNdgp, "3"),
-    "is4dgridpositions",    YESNO_1PARM(qNdgp, "4"),
-    "is1dgridconnections",  YESNO_1PARM(qNdgc, "1"),
-    "is2dgridconnections",  YESNO_1PARM(qNdgc, "2"),
-    "is3dgridconnections",  YESNO_1PARM(qNdgc, "3"),
-    "is4dgridconnections",  YESNO_1PARM(qNdgc, "4"),
-    "is1dpositions", 	    YESNO_1PARM(qNdp, "1"),
-    "is2dpositions", 	    YESNO_1PARM(qNdp, "2"),
-    "is3dpositions", 	    YESNO_1PARM(qNdp, "3"),
-    "is4dpositions",        YESNO_1PARM(qNdp, "4"),
-    "is1dconnections",	    YESNO_1PARM(qNdc, "1"),
-    "is2dconnections",	    YESNO_1PARM(qNdc, "2"),
-    "is3dconnections", 	    YESNO_1PARM(qNdc, "3"),
-    "isline", 		    YESNO_1PARM(qNdc, "1"),
-    "issurface",	    YESNO_1PARM(qNdc, "2"),
-    "isvolume", 	    YESNO_1PARM(qNdc, "3"),
-    "isscalar",		    YESNO_1PARM(qNdd, "0"),
-    "isvector",		    YESNO_1PARM(qNdd, "1"),
-    "is2vector",	    YESNO_1PARM(q1dNd, "2"),
-    "is3vector",	    YESNO_1PARM(q1dNd, "3"),
-    "ismatrix", 	    YESNO_1PARM(qNdd, "2"),
-
-
-    "isdatadependent",      YESNO_1INPUT(qdatadep),
-    "hascomponent",         YESNO_1INPUT(qhascomp),
-    "hasattribute",         YESNO_1INPUT(qhasattr),
-    "hasmember",            YESNO_1INPUT(qhasmember),
-    "isregular",	    YESNO_1INPUT(qreg),
-    "stringmatch",	    YESNO_1INPUT(qequal),
-    "stringsmatch",	    YESNO_1INPUT(qequal),
-    "issame",	            YESNO_1INPUT(qsame),
-    "isconnection",	    YESNO_1INPUT(qiscontype),
-    "isconnections",	    YESNO_1INPUT(qiscontype),
-    "areconnections",	    YESNO_1INPUT(qiscontype),
+    { "isobject",             	YESNO_1PARM(qobjtype, "object")},
+    { "isprivate",            	YESNO_1PARM(qobjtype, "private")},
+    { "isstring",             	YESNO_1PARM(qobjtype, "string")},
+    { "isfield",              	YESNO_1PARM(qobjtype, "field")},
+    { "isgroup",              	YESNO_1PARM(qobjtype, "group")},
+    { "isgenericgroup",       	YESNO_1PARM(qobjgtype,  "group")},
+    { "isseries",             	YESNO_1PARM(qobjgtype,  "series")},
+    { "iscompositefield",     	YESNO_1PARM(qobjgtype,  "compositefield")},
+    { "ismultigrid",          YESNO_1PARM(qobjgtype,  "multigrid")},
+    { "isarray",              YESNO_1PARM(qobjtype, "array")},
+    { "isgenericarray",       YESNO_1PARM(qobjatype,  "array")},
+    { "isirregulararray",     YESNO_1PARM(qobjatype,  "array")},
+    { "isregulararray",       YESNO_1PARM(qobjatype,  "regulararray")},
+    { "ispatharray",          YESNO_1PARM(qobjatype,  "patharray")},
+    { "isproductarray",       YESNO_1PARM(qobjatype,  "productarray")},
+    { "ismesharray",          YESNO_1PARM(qobjatype,  "mesharray")},
+    { "isconstantarray",      YESNO_1PARM(qobjatype,  "constantarray")},
+    { "istransform",          YESNO_1PARM(qobjtype, "xform")},
+    { "isxform",              YESNO_1PARM(qobjtype, "xform")},
+    { "isscreen",             YESNO_1PARM(qobjtype, "screen")},
+    { "isclipped",            YESNO_1PARM(qobjtype, "clipped")},
+    { "iscamera",             YESNO_1PARM(qobjtype, "camera")},
+    { "islight",              YESNO_1PARM(qobjtype, "light")},
+    { "isempty",              YESNO_1PARM(qobjempty, "")},
+    { "isemptygroup",         YESNO_1PARM(qobjempty, "group")},
+    { "isemptyfield",         YESNO_1PARM(qobjempty, "field")},
+    { "isemptyarray",         YESNO_1PARM(qobjempty, "array")},
+    { "is1dgridpositions",    YESNO_1PARM(qNdgp, "1")},
+    { "is2dgridpositions",    YESNO_1PARM(qNdgp, "2")},
+    { "is3dgridpositions",    YESNO_1PARM(qNdgp, "3")},
+    { "is4dgridpositions",    YESNO_1PARM(qNdgp, "4")},
+    { "is1dgridconnections",  YESNO_1PARM(qNdgc, "1")},
+    { "is2dgridconnections",  YESNO_1PARM(qNdgc, "2")},
+    { "is3dgridconnections",  YESNO_1PARM(qNdgc, "3")},
+    { "is4dgridconnections",  YESNO_1PARM(qNdgc, "4")},
+    { "is1dpositions", 	    YESNO_1PARM(qNdp, "1")},
+    { "is2dpositions", 	    YESNO_1PARM(qNdp, "2")},
+    { "is3dpositions", 	    YESNO_1PARM(qNdp, "3")},
+    { "is4dpositions",        YESNO_1PARM(qNdp, "4")},
+    { "is1dconnections",	    YESNO_1PARM(qNdc, "1")},
+    { "is2dconnections",	    YESNO_1PARM(qNdc, "2")},
+    { "is3dconnections", 	    YESNO_1PARM(qNdc, "3")},
+    { "isline", 		    YESNO_1PARM(qNdc, "1")},
+    { "issurface",	    YESNO_1PARM(qNdc, "2")},
+    { "isvolume", 	    YESNO_1PARM(qNdc, "3")},
+    { "isscalar",		    YESNO_1PARM(qNdd, "0")},
+    { "isvector",		    YESNO_1PARM(qNdd, "1")},
+    { "is2vector",	    YESNO_1PARM(q1dNd, "2")},
+    { "is3vector",	    YESNO_1PARM(q1dNd, "3")},
+    { "ismatrix", 	    YESNO_1PARM(qNdd, "2")},
 
 
-    "type",       	    HAS_NOPARMS(qtype),
-    "category",       	    HAS_NOPARMS(qcat),
-    "rank",       	    HAS_NOPARMS(qrank), 
-    "shape",       	    HAS_NOPARMS(qshape),
-    "origin",       	    HAS_NOPARMS(qorigin),
-    "deltas",       	    HAS_NOPARMS(qdeltas),
-    "positioncounts",       HAS_NOPARMS(qpos),
-    "positionscounts",      HAS_NOPARMS(qpos),
-    "connectioncounts",     HAS_NOPARMS(qconnect),
-    "connectionscounts",    HAS_NOPARMS(qconnect),
-    "datacounts", 	    HAS_NOPARMS(qdata),
-    "positiongridcounts",   HAS_NOPARMS(qpgridsize),
-    "positionsgridcounts",  HAS_NOPARMS(qpgridsize),
-    "connectiongridcounts", HAS_NOPARMS(qcgridsize),
-    "connectionsgridcounts",HAS_NOPARMS(qcgridsize),
-    "productterm",          HAS_NOPARMS(qprodterms),
-    "productterms",         HAS_NOPARMS(qprodterms),
-    "meshterm",             HAS_NOPARMS(qmeshterms),
-    "meshterms",            HAS_NOPARMS(qmeshterms),
-    "membercount",	    HAS_NOPARMS(qmembers),
-    "componentcount",	    HAS_NOPARMS(qcompcount),
-    "memberposition",	    HAS_NOPARMS(qmemberpos),
-    "seriesposition",	    HAS_NOPARMS(qmemberpos),
-    "memberpositions",	    HAS_NOPARMS(qmemberpos),
-    "seriespositions",	    HAS_NOPARMS(qmemberpos),
-    "processors",	    HAS_NOPARMS(qnumprocess),
-    "primitives",	    HAS_NOPARMS(qprimitives),
-    "applytransform",	    HAS_NOPARMS(doxform),
-    "transformapplied",     HAS_NOPARMS(doxform),
-    "objecttag",	    HAS_NOPARMS(qobjecttag),
-    "connectiontype",	    HAS_NOPARMS(qcontype),
+    { "isdatadependent",      YESNO_1INPUT(qdatadep)},
+    { "hascomponent",         YESNO_1INPUT(qhascomp)},
+    { "hasattribute",         YESNO_1INPUT(qhasattr)},
+    { "hasmember",            YESNO_1INPUT(qhasmember)},
+    { "isregular",	    YESNO_1INPUT(qreg)},
+    { "stringmatch",	    YESNO_1INPUT(qequal)},
+    { "stringsmatch",	    YESNO_1INPUT(qequal)},
+    { "issame",	            YESNO_1INPUT(qsame)},
+    { "isconnection",	    YESNO_1INPUT(qiscontype)},
+    { "isconnections",	    YESNO_1INPUT(qiscontype)},
+    { "areconnections",	    YESNO_1INPUT(qiscontype)},
+
+
+    { "type",       	    HAS_NOPARMS(qtype)},
+    { "category",       	    HAS_NOPARMS(qcat)},
+    { "rank",       	    HAS_NOPARMS(qrank)}, 
+    { "shape",       	    HAS_NOPARMS(qshape)},
+    { "origin",       	    HAS_NOPARMS(qorigin)},
+    { "deltas",       	    HAS_NOPARMS(qdeltas)},
+    { "positioncounts",       HAS_NOPARMS(qpos)},
+    { "positionscounts",      HAS_NOPARMS(qpos)},
+    { "connectioncounts",     HAS_NOPARMS(qconnect)},
+    { "connectionscounts",    HAS_NOPARMS(qconnect)},
+    { "datacounts", 	    HAS_NOPARMS(qdata)},
+    { "positiongridcounts",   HAS_NOPARMS(qpgridsize)},
+    { "positionsgridcounts",  HAS_NOPARMS(qpgridsize)},
+    { "connectiongridcounts", HAS_NOPARMS(qcgridsize)},
+    { "connectionsgridcounts",HAS_NOPARMS(qcgridsize)},
+    { "productterm",          HAS_NOPARMS(qprodterms)},
+    { "productterms",         HAS_NOPARMS(qprodterms)},
+    { "meshterm",             HAS_NOPARMS(qmeshterms)},
+    { "meshterms",            HAS_NOPARMS(qmeshterms)},
+    { "membercount",	    HAS_NOPARMS(qmembers)},
+    { "componentcount",	    HAS_NOPARMS(qcompcount)},
+    { "memberposition",	    HAS_NOPARMS(qmemberpos)},
+    { "seriesposition",	    HAS_NOPARMS(qmemberpos)},
+    { "memberpositions",	    HAS_NOPARMS(qmemberpos)},
+    { "seriespositions",	    HAS_NOPARMS(qmemberpos)},
+    { "processors",	    HAS_NOPARMS(qnumprocess)},
+    { "primitives",	    HAS_NOPARMS(qprimitives)},
+    { "applytransform",	    HAS_NOPARMS(doxform)},
+    { "transformapplied",     HAS_NOPARMS(doxform)},
+    { "objecttag",	    HAS_NOPARMS(qobjecttag)},
+    { "connectiontype",	    HAS_NOPARMS(qcontype)},
 			    		     
-    "transformobject",	    HAS_1PARM(qxform, "o"),
-    "transformmatrix",	    HAS_1PARM(qxform, "m"),
-    "screenobject",	    HAS_1PARM(qscreen, "o"),
-    "screenposition",	    HAS_1PARM(qscreen, "p"),
-    "screendepth",	    HAS_1PARM(qscreen, "z"),
-    "clippedobject",	    HAS_1PARM(qclipped, "o"),
-    "clippingobject",	    HAS_1PARM(qclipped, "c"),
-    "camerato",	  	    HAS_1PARM(qcamera, "to"),
-    "camerafrom",	    HAS_1PARM(qcamera, "fr"),
-    "camerawidth",	    HAS_1PARM(qcamera, "w"),
-    "cameraresolution",     HAS_1PARM(qcamera, "r"),
-    "cameraaspect",	    HAS_1PARM(qcamera, "as"),
-    "cameraup",	   	    HAS_1PARM(qcamera, "u"),
-    "cameraperspective",    HAS_1PARM(qcamera, "p"),
-    "cameraangle",	    HAS_1PARM(qcamera, "an"),
-    "camerafieldofview",    HAS_1PARM(qcamera, "fi"),
-    "camerabackground",     HAS_1PARM(qcamera, "b"),
-    "cameratransform",	    HAS_1PARM(qcamera, "tr"),
-    "cameramatrix",	    HAS_1PARM(qcamera, "tr"),
-    "iscameraorthographic", HAS_1PARM(qcamera, "iso"),
-    "iscameraperspective",  HAS_1PARM(qcamera, "isp"),
-    "membernames",	    HAS_1PARM(qmembernames, "m"),
-    "componentnames",	    HAS_1PARM(qmembernames, "c"),
-    "validcount",	    HAS_1PARM(qvalid, "v"),
-    "validcounts",	    HAS_1PARM(qvalid, "v"),
-    "invalidcount",	    HAS_1PARM(qvalid, "i"),
-    "invalidcounts",	    HAS_1PARM(qvalid, "i"),
+    { "transformobject",	    HAS_1PARM(qxform, "o")},
+    { "transformmatrix",	    HAS_1PARM(qxform, "m")},
+    { "screenobject",	    HAS_1PARM(qscreen, "o")},
+    { "screenposition",	    HAS_1PARM(qscreen, "p")},
+    { "screendepth",	    HAS_1PARM(qscreen, "z")},
+    { "clippedobject",	    HAS_1PARM(qclipped, "o")},
+    { "clippingobject",	    HAS_1PARM(qclipped, "c")},
+    { "camerato",	  	    HAS_1PARM(qcamera, "to")},
+    { "camerafrom",	    HAS_1PARM(qcamera, "fr")},
+    { "camerawidth",	    HAS_1PARM(qcamera, "w")},
+    { "cameraresolution",     HAS_1PARM(qcamera, "r")},
+    { "cameraaspect",	    HAS_1PARM(qcamera, "as")},
+    { "cameraup",	   	    HAS_1PARM(qcamera, "u")},
+    { "cameraperspective",    HAS_1PARM(qcamera, "p")},
+    { "cameraangle",	    HAS_1PARM(qcamera, "an")},
+    { "camerafieldofview",    HAS_1PARM(qcamera, "fi")},
+    { "camerabackground",     HAS_1PARM(qcamera, "b")},
+    { "cameratransform",	    HAS_1PARM(qcamera, "tr")},
+    { "cameramatrix",	    HAS_1PARM(qcamera, "tr")},
+    { "iscameraorthographic", HAS_1PARM(qcamera, "iso")},
+    { "iscameraperspective",  HAS_1PARM(qcamera, "isp")},
+    { "membernames",	    HAS_1PARM(qmembernames, "m")},
+    { "componentnames",	    HAS_1PARM(qmembernames, "c")},
+    { "validcount",	    HAS_1PARM(qvalid, "v")},
+    { "validcounts",	    HAS_1PARM(qvalid, "v")},
+    { "invalidcount",	    HAS_1PARM(qvalid, "i")},
+    { "invalidcounts",	    HAS_1PARM(qvalid, "i")},
 
-    "items",		    HAS_1INPUT(qcompsize),
-    "count",		    HAS_1INPUT(qcompsize),
-    "counts",		    HAS_1INPUT(qcompsize),
-    "gridcounts",	    HAS_1INPUT(qcompgridsize),
-    "attribute",            HAS_1INPUT(qoattr),
-    "memberattribute",      HAS_1INPUT(qmattr),
-    "memberattributes",     HAS_1INPUT(qmattr),
-    "leafattribute",        HAS_1INPUT(qlattr),
-    "leafattributes",       HAS_1INPUT(qlattr),
+    { "items",		    HAS_1INPUT(qcompsize)},
+    { "count",		    HAS_1INPUT(qcompsize)},
+    { "counts",		    HAS_1INPUT(qcompsize)},
+    { "gridcounts",	    HAS_1INPUT(qcompgridsize)},
+    { "attribute",            HAS_1INPUT(qoattr)},
+    { "memberattribute",      HAS_1INPUT(qmattr)},
+    { "memberattributes",     HAS_1INPUT(qmattr)},
+    { "leafattribute",        HAS_1INPUT(qlattr)},
+    { "leafattributes",       HAS_1INPUT(qlattr)},
 
-    NULL,		    TABLE_END,
+    { "",		    TABLE_END},
 };
 
 static Object SayYesNo(int say)
 {
-    Array a;
-    
     if (say != 0 && say != 1) {
 	DXSetError(ERROR_INTERNAL, "yes/no question routine returned %d", say);
 	return NULL;
@@ -2431,7 +2435,6 @@ static Object fixoffset(Object o, int offset)
 Error
 m_Inquire(Object *in, Object *out)
 {
-    int flag;
     int offset = 0, invert = 0;
     char userquestion[MAXQLEN], *qp;
     struct functable *fp;

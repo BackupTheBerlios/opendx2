@@ -18,8 +18,8 @@
 /*********************************************************************/
 
 
-#ifndef _simplifysurface_
-#define _simplifysurface_
+#ifndef _SIMPLESURF_H_
+#define _SIMPLESURF_H_
 
 /* SimplifySurface
 
@@ -542,28 +542,18 @@
 
 #include <stdio.h>
 #include <math.h>
-#ifdef sgi
+
+#if defined(HAVE_VALUES_H)
 #include <values.h>
 #endif
 
-#ifdef sgi
+#if defined(HAVE_SYS_BSD_TYPES_H)
 #include  <sys/bsd_types.h>
 #endif
 
+#if defined(HAVE_SYS_TYPES_H)
 #include  <sys/types.h>
-
-/* because they are not standard accross platforms
-   (unless the include files were not completely right)
-   I have had to re-typedef the following standard definitions at some point */
-/*
-typedef unsigned int   uint;
-typedef unsigned int   u_int;
-typedef unsigned short ushort;
-typedef unsigned short u_short;
-typedef unsigned char  u_char;
-*/
-
-/* define minimum and maximum of two numbers */
+#endif
 
 /* some vector operations: */
 
@@ -602,56 +592,56 @@ typedef unsigned char  u_char;
 
 /* prototype of the driver routine for simplification */
 
-extern int _dxfSimplifySurfaceDriver(int nV, float *v, int nT, int *t,
-				     int dim_data,
-				     float *vertex_data,
-				     float tolerance, 
-				     float data_tolerance,
-				     /* to be able to resample data defined on a non-manifold
-					surface, we need look-up tables between vertices before
-					and after manifold conversion and between triangles before 
-					and after manifold conversion */
-				     int *old_nV_after_manifold_conversion,
-				     int *old_nT_after_manifold_conversion,
-				     int *new_nV,             /* new number of vertices after simplification*/
-				     float **new_v,           /* new vertex array (positions) after 
-								 simplification */
-				     float **new_vertex_data, /* new data values after simplification */
-				     int *new_nT,             /* new number of triangles after simplification*/
-				     int   **new_t,           /* new triangle array (connections) after
-								 simplification */
-				     int   **vertex_parents,  /* relationship between simplified vertices
-								 and manifold converted vertices */
-				     int   **face_parents,    /* relationship between simplified triangles
-								 and manifold converted triangles */
-				     int   **vertex_lut,      /* for conversion from non-manifold */
-				     int   **face_lut,        /* to manifold surfaces */
+int _dxfSimplifySurfaceDriver(int nV, float *v, int nT, int *t,
+			     int dim_data,
+			     float *vertex_data,
+			     float tolerance, 
+			     float data_tolerance,
+			     /* to be able to resample data defined on a non-manifold
+				surface, we need look-up tables between vertices before
+				and after manifold conversion and between triangles before 
+				and after manifold conversion */
+			     int *old_nV_after_manifold_conversion,
+			     int *old_nT_after_manifold_conversion,
+			     int *new_nV,             /* new number of vertices after simplification*/
+			     float **new_v,           /* new vertex array (positions) after 
+							 simplification */
+			     float **new_vertex_data, /* new data values after simplification */
+			     int *new_nT,             /* new number of triangles after simplification*/
+			     int   **new_t,           /* new triangle array (connections) after
+							 simplification */
+			     int   **vertex_parents,  /* relationship between simplified vertices
+							 and manifold converted vertices */
+			     int   **face_parents,    /* relationship between simplified triangles
+							 and manifold converted triangles */
+			     int   **vertex_lut,      /* for conversion from non-manifold */
+			     int   **face_lut,        /* to manifold surfaces */
 
-				     float *old_positional_error, 
+			     float *old_positional_error, 
 
-     /* in case we resimplify a surface that was already simplified,
-	we use the old positional error as a starting point. The old positional
-	error may also have been provided by uncertainty measurements */
+	     /* in case we resimplify a surface that was already simplified,
+		we use the old positional error as a starting point. The old positional
+		error may also have been provided by uncertainty measurements */
 								     
-				     float **new_positional_error, 
-				     float **face_normals,   /* normals of the simplified faces */
-				     float **old_face_areas, /* face areas after conversion to manifold */
-				     float **new_face_areas, /* face areas after simplification */
-				     int preserve_volume,    /* flag = 1 is the volume should be preserved */
-				     int simplify_boundary,  /* flag = 1 if the boundary should be
-								simplified */
-				     /* flag = 1 if the boundary length should be preserved, in case
-					the boundary is simplified (simplify_boundary = 1) */
-				     int preserve_boundary_length);
+			     float **new_positional_error, 
+			     float **face_normals,   /* normals of the simplified faces */
+			     float **old_face_areas, /* face areas after conversion to manifold */
+			     float **new_face_areas, /* face areas after simplification */
+			     int preserve_volume,    /* flag = 1 is the volume should be preserved */
+			     int simplify_boundary,  /* flag = 1 if the boundary should be
+							simplified */
+			     /* flag = 1 if the boundary length should be preserved, in case
+				the boundary is simplified (simplify_boundary = 1) */
+			     int preserve_boundary_length);
 
 
 				    
-extern float _dxfFloatDataBoundingBoxDiagonal(float *data, int n_data, int data_dim);
+float _dxfFloatDataBoundingBoxDiagonal(float *data, int n_data, int data_dim);
 /* compute the bounding box of any multidimensional array of data */
     
 
-extern int   _dxfVertexNormalsfromTriangleNormals(Array nor, int nV, int nT, int *triangles,
-						  float *face_normals, float *face_areas);
+int   _dxfVertexNormalsfromTriangleNormals(Array nor, int nV, int nT, int *triangles,
+					  float *face_normals, float *face_areas);
 /* convert the triangle normals to vertex normals */
 
 /* resample components dep positions and dep connections after simplification 
@@ -684,32 +674,29 @@ extern int   _dxfVertexNormalsfromTriangleNormals(Array nor, int nV, int nT, int
 
    */
 
-extern int   _dxfResampleComponentValuesAfterSimplification(Field original_surface, 
-							    Field *simplified_surface,
-							    int old_nV_after_conversion,
-							    int old_nT_after_conversion,
-							    int new_nV,
-							    int new_nT,
-							    int *vertex_parents, int *face_parents, 
-							    int *vertex_lut, int *face_lut, float *face_areas);
+int   _dxfResampleComponentValuesAfterSimplification(Field original_surface, 
+						    Field *simplified_surface,
+						    int old_nV_after_conversion,
+						    int old_nT_after_conversion,
+						    int new_nV,
+						    int new_nT,
+						    int *vertex_parents, int *face_parents, 
+						    int *vertex_lut, int *face_lut, float *face_areas);
 
 /* routine specialized for resampling position dependent attributes */
 
-extern Array _dxfResampleComponentDepPosAfterSimplification(Array array, 
-							    int old_nV_after_conversion,
-							    int new_nV, int *vertex_parents, 
-							    int *vertex_lut);
+Array _dxfResampleComponentDepPosAfterSimplification(Array array, 
+						    int old_nV_after_conversion,
+						    int new_nV, int *vertex_parents, 
+						    int *vertex_lut);
 
 /* routine specialized for resampling connection dependent attributes */
 
-extern Array _dxfResampleComponentDepConAfterSimplification(Array array, 
-							    int old_nT_after_conversion,
-							    int new_nT,
-							    int *face_parents, int *face_lut,
-							    float *face_areas);
-
-
-
+Array _dxfResampleComponentDepConAfterSimplification(Array array, 
+						    int old_nT_after_conversion,
+						    int new_nT,
+						    int *face_parents, int *face_lut,
+						    float *face_areas);
 
 
 /*+--------------------------------------------------------------------------+
@@ -907,7 +894,7 @@ extern Array _dxfResampleComponentDepConAfterSimplification(Array array,
 
 /* convert type "quad" connections to type "triangles" */
 
-extern int _dxfQuads2Triangles(int *nT, int **connections, int **face_lut);
+int _dxfQuads2Triangles(int *nT, int **connections, int **face_lut);
 
 
 /* data structures for the surface edges and associated routines */
@@ -938,8 +925,8 @@ typedef struct _EdgeS_ {
 
 /* routines for indexing edges in a hash table */
 
-extern int         _dxfEdgeSKey(EdgeS *);
-extern int         _dxfEdgeSFilter(EdgeS *, EdgeS *);
+int         _dxfEdgeSKey(EdgeS *);
+int         _dxfEdgeSFilter(EdgeS *, EdgeS *);
 
 
 #define SurfEdgeLabel(edg)           (edg)->label
@@ -1005,32 +992,32 @@ typedef struct _htable_{
 /*...........................................................................*/
 
 /* add a record to the hash-table */
-extern int         _dxfAddRecord(Htable *, RECTYPE, KEYTYPE);
-extern KEYTYPE     _dxfIdentifyRecord2Key(RECTYPE rec);
+int         _dxfAddRecord(Htable *, RECTYPE, KEYTYPE);
+KEYTYPE     _dxfIdentifyRecord2Key(RECTYPE rec);
 
 
 /* initialize the hash-table */                                                            
 
-extern int         _dxfInitHashTable(Htable *, int, int (*fcode)(KEYTYPE), 
-				     int (*filter)(RECTYPE,RECTYPE), 
-				     KEYTYPE (*compute_key)(RECTYPE));
+int         _dxfInitHashTable(Htable *, int, int (*fcode)(KEYTYPE), 
+			     int (*filter)(RECTYPE,RECTYPE), 
+			     KEYTYPE (*compute_key)(RECTYPE));
 
 /* determine whether a particular record is in the hash-table and if yes, find that record 
    meaning, return a pointer to that record*/
 
-extern char        *_dxfFindRecord(Htable *, KEYTYPE);
-extern void        _dxfHashTableReset(Htable *);
+char        *_dxfFindRecord(Htable *, KEYTYPE);
+void        _dxfHashTableReset(Htable *);
 
-extern int        _dxfNewBlock(Htable *);
+int        _dxfNewBlock(Htable *);
 
 /* once _dxfFindRecord() has been called, retrieve the next record with the same code and
    passing through the same filter() from the hash table */
 
-extern char        *_dxfNextRecord(Htable *);
-extern Nodetype    *_dxfgetnode(Htable *);
-extern Nodetype    *_dxfnewnode(Htable *,RECTYPE, int);
+char        *_dxfNextRecord(Htable *);
+Nodetype    *_dxfgetnode(Htable *);
+Nodetype    *_dxfnewnode(Htable *,RECTYPE, int);
 
-extern int          _dxfFlog2(int n);/* log base two using integer arithmetic */
+int          _dxfFlog2(int n); /* log base two using integer arithmetic */
 
 /* reset the hash table and free the buckets
    after that, either (1) inithashtable must be called again to refill the hash table with new records or
@@ -1045,7 +1032,7 @@ extern int          _dxfFlog2(int n);/* log base two using integer arithmetic */
 
 /* find a particular surface edge in a Hash table indexing edges */
 
-extern EdgeS *_dxfFindEdge(Htable *e, int vA, int vB);
+EdgeS *_dxfFindEdge(Htable *e, int vA, int vB);
 
 
 
@@ -1053,7 +1040,7 @@ extern EdgeS *_dxfFindEdge(Htable *e, int vA, int vB);
    manifold means that each vertex has a single sheet of triangles touching it
    and each edge has at most two incident triangles */
 
-extern int    _dxfToOrientedManifold(int nV,   float *v,   int nT,   int *t, 
+int    _dxfToOrientedManifold(int nV,   float *v,   int nT,   int *t, 
 				  int *nVm, float **vm, int *nTm, int **tm, int **vlut, int **flut,
 				  int *n_edges, Htable *e_table, EdgeS **e);
 
@@ -1063,27 +1050,27 @@ extern int    _dxfToOrientedManifold(int nV,   float *v,   int nT,   int *t,
    or (2) two or three vertices in the triangle are the same
    */
 
-extern int    _dxfEliminateDegenerateTriangles(int nV, int nT, int *t, int *new_nT, int **new_t, int **flut);
+int    _dxfEliminateDegenerateTriangles(int nV, int nT, int *t, int *new_nT, int **new_t, int **flut);
 
 /* second operation of conversion to manifold:
    the vertices that are not referenced after eliminating the degenerate triangles are
    eliminated from the list of vertices */
 
-extern int    _dxfEliminateStandaloneVertices(int nV, float *v, int *nVm, float **vm, int nT, int *t, 
+int    _dxfEliminateStandaloneVertices(int nV, float *v, int *nVm, float **vm, int nT, int *t, 
 					      int **vlut);
 
 /* then build a list of edges that are manifold edges, and join the corners of the triangles
    that share such an edge */
 
-extern int   _dxfJoinTriangleCorners(int nT, int *t, Htable *e_table, int *n_edges, EdgeS **edges, 
+int   _dxfJoinTriangleCorners(int nT, int *t, Htable *e_table, int *n_edges, EdgeS **edges, 
 				     int *fathers);
 
-extern int    _dxfBuildOrientedManifold(int *nV, float **v, int nT, int *t, int **vlut, 
+int    _dxfBuildOrientedManifold(int *nV, float **v, int nT, int *t, int **vlut, 
 					int *nE, EdgeS **edges, Htable *e_table, int *fathers);
 
-extern int    _dxfIndexEdges(int *nE, EdgeS **edges, Htable *e_table, int nT, int *t);
+int    _dxfIndexEdges(int *nE, EdgeS **edges, Htable *e_table, int nT, int *t);
 
-extern void   _dxfInitFather(int n, int *father);
+void   _dxfInitFather(int n, int *father);
 
 
 /* perform path conpression on the representatives of a forest data structure
@@ -1093,9 +1080,9 @@ extern void   _dxfInitFather(int n, int *father);
 #define FATHER(i, f) (((i) == (f)[i]) ? (i) : \
                       ((f)[i] == (f)[(f)[i]]) ? (f)[i] : _dxfFather(i,f))
 
-extern int _dxfFather(int i, int *father);
+int _dxfFather(int i, int *father);
 
-extern int _dxfJoin(int i, int j, int *father);
+int _dxfJoin(int i, int j, int *father);
 
 
 
@@ -1150,12 +1137,12 @@ typedef struct _Heap_ {
 #define LeftSon(i)	2*(i)+1
 #define RightSon(i)	2*(i)+2
 
-extern Heap          *_dxfNewHeap(int n);
-extern unsigned long  _dxfHeapSize(int n);
-extern void           _dxfResetHeap(Heap *heap);
-extern int            _dxfHeapAdd(float k, Heap *heap);
-extern int            _dxfHeapDelMin(Heap *heap);
-extern int            _dxfHeapDelete(int i, Heap *heap);
+Heap          *_dxfNewHeap(int n);
+unsigned long  _dxfHeapSize(int n);
+void           _dxfResetHeap(Heap *heap);
+int            _dxfHeapAdd(float k, Heap *heap);
+int            _dxfHeapDelMin(Heap *heap);
+int            _dxfHeapDelete(int i, Heap *heap);
 
 #define              HeapLength(heap)       (heap)->last
 #define              HeapLengthMax(heap)    (heap)->n
@@ -1276,60 +1263,60 @@ typedef struct _SimpData_ {
 
 
 
-extern int  _dxfRemoveLowestWeightEdgeFromHeap(SimpData *simp_data);
+int  _dxfRemoveLowestWeightEdgeFromHeap(SimpData *simp_data);
 
-extern int  _dxfAddEdge2Heap(SimpData *simp_data, int the_edge);
+int  _dxfAddEdge2Heap(SimpData *simp_data, int the_edge);
 
-extern int  _dxfRemoveEdgeFromHeap(SimpData *simp_data, int index, int the_edge);
+int  _dxfRemoveEdgeFromHeap(SimpData *simp_data, int index, int the_edge);
 
-extern int  _dxfBuildSimplifiedSurface(SimpData *simp_data, int *new_nV, float **new_v, 
-				       int *new_nT, int **new_t,
-				       float **new_face_areas, float **face_normals,
-				       float **new_positional_error, float **new_vertex_data);
+int  _dxfBuildSimplifiedSurface(SimpData *simp_data, int *new_nV, float **new_v, 
+			       int *new_nT, int **new_t,
+			       float **new_face_areas, float **face_normals,
+			       float **new_positional_error, float **new_vertex_data);
 
-extern int  _dxfSimplifyManifoldSurface(SimpData *simp_data);
+int  _dxfSimplifyManifoldSurface(SimpData *simp_data);
 
-extern int  _dxfCreateSimplificationDataStructure(SimpData *simp_data, float *data, float *old_pos_err);
+int  _dxfCreateSimplificationDataStructure(SimpData *simp_data, float *data, float *old_pos_err);
 
 /* free all the simplification data structures: */
 
-extern int  _dxfFreeSimplificationDataStructure(SimpData *simp_data, float *data, float *old_pos_err);
+int  _dxfFreeSimplificationDataStructure(SimpData *simp_data, float *data, float *old_pos_err);
 
 /* free only the simplification data structures that are not exported by the driver routine,
    to avoid running out of memory in _dxfBuildSimplifiedSurface() */
 
-extern int  _dxfPartialFreeSimplificationDataStructure(SimpData *simp_data);
+int  _dxfPartialFreeSimplificationDataStructure(SimpData *simp_data);
 
-extern int  _dxfTrianglesNormalAreaCompactness( int nT, Face *t, Vertex *v, Vertex *t_normal,
-						float *t_area, float *t_compactness);
+int  _dxfTrianglesNormalAreaCompactness( int nT, Face *t, Vertex *v, Vertex *t_normal,
+					float *t_area, float *t_compactness);
 
-extern int  _dxfTriangleNormalQR2D(VertexD *tri, double *n);
+int  _dxfTriangleNormalQR2D(VertexD *tri, double *n);
 
-extern int  _dxfTriangleNormalQR2(Vertex *tri, Vertex n);
+int  _dxfTriangleNormalQR2(Vertex *tri, Vertex n);
 
-extern int  _dxfVectorProductQRD(VertexD x1, VertexD x2, double *n);
+int  _dxfVectorProductQRD(VertexD x1, VertexD x2, double *n);
 
-extern int  _dxfFlagBoundaryVertices(int nE, EdgeS *edges, u_char *boundary_vert);
+int  _dxfFlagBoundaryVertices(int nE, EdgeS *edges, u_char *boundary_vert);
  
-extern int  _dxfMarkEdgesAdjacent2Boundary(SimpData *simp_data);
+int  _dxfMarkEdgesAdjacent2Boundary(SimpData *simp_data);
 
-extern int  _dxfBuildEdgeHeap(SimpData *simp_data);
+int  _dxfBuildEdgeHeap(SimpData *simp_data);
 
-extern void _dxfInitArray(char *array, char *data, int n, int size);
+void _dxfInitArray(char *array, char *data, int n, int size);
 
-extern int  _dxfCollapsibilityTestsBoundaryEdge2ndKind(SimpData *simp_data, 
-						       int edge_num, int v0, int v1, int val0, int val1, 
-						       int move_simplified_vertex);
+int  _dxfCollapsibilityTestsBoundaryEdge2ndKind(SimpData *simp_data, 
+					       int edge_num, int v0, int v1, int val0, int val1, 
+					       int move_simplified_vertex);
 
-extern int  _dxfDirectedParentVertexStar(int parent_vertex, int first_triangle,
-					 int valence, int *star, SimpData *simp_data, int direction);
+int  _dxfDirectedParentVertexStar(int parent_vertex, int first_triangle,
+				 int valence, int *star, SimpData *simp_data, int direction);
 
-extern int  _dxfRotateParentTriangle(int  parent_vertex, int *vertex_fathers, 
-				     int *tri_v, int *tri_v_parents, int *tri_v_rotated);
+int  _dxfRotateParentTriangle(int  parent_vertex, int *vertex_fathers, 
+			     int *tri_v, int *tri_v_parents, int *tri_v_rotated);
 
-extern int  _dxfRotateParentEdge(int parent_vertex, int *vertex_fathers,
-				 int *edge_v, int *edge_t, int *edge_v_parents, 
-				 int *edge_v_rotated, int *edge_t_rotated);
+int  _dxfRotateParentEdge(int parent_vertex, int *vertex_fathers,
+			 int *edge_v, int *edge_t, int *edge_v_parents, 
+			 int *edge_v_rotated, int *edge_t_rotated);
 
 /* macros used for finding the next edge when rotating around a vertex in
    on a simplified surface */
@@ -1347,25 +1334,25 @@ extern int  _dxfRotateParentEdge(int parent_vertex, int *vertex_fathers,
              ((directionCW) == 1)? FATHER((oriented_edge_t)[1], simp_data->triangle_father):\
 				   FATHER((oriented_edge_t)[0], simp_data->triangle_father)
 
-extern int   _dxfManifoldLinkTest(int *link0, int *link1, int val0, int val1);
+int   _dxfManifoldLinkTest(int *link0, int *link1, int val0, int val1);
 
-extern int   _dxfCmpIntSmallFirst(char *s1, char *s2);
+int   _dxfCmpIntSmallFirst(char *s1, char *s2);
 
-extern float _dxfClosestPointOnEdge(Vertex X, Vertex XP, Vertex A, Vertex B, 
-				    float *t);/* barycentric coordinates: t, 1-t */
+float _dxfClosestPointOnEdge(Vertex X, Vertex XP, Vertex A, Vertex B, 
+			    float *t);/* barycentric coordinates: t, 1-t */
 
-extern void  _dxfMakeEdgeBarycenter(Vertex v0, Vertex v1, float alpha0, Vertex v);
+void  _dxfMakeEdgeBarycenter(Vertex v0, Vertex v1, float alpha0, Vertex v);
 
-extern float _dxfNormalize3Vector(Vertex v);
+float _dxfNormalize3Vector(Vertex v);
 
-extern int   _dxfSolveQuadraticEquation(double A, double B, double C, 
-		 	 	        double *sol1, double *sol2, double eps);
+int   _dxfSolveQuadraticEquation(double A, double B, double C, 
+	 	 	        double *sol1, double *sol2, double eps);
 
-extern int   _dxfBoundaryCollapse2KndGeometricallyOk(SimpData *simp_data, int v0, int v1,
-					int *star0, int *vstar0, int val0, Vertex *s_normal0, float *s_area0,
-					int direction, float min_scalprod_nor, float compactness_ratio);
+int   _dxfBoundaryCollapse2KndGeometricallyOk(SimpData *simp_data, int v0, int v1,
+			int *star0, int *vstar0, int val0, Vertex *s_normal0, float *s_area0,
+			int direction, float min_scalprod_nor, float compactness_ratio);
 
-extern float _dxfFastCompactness3DTriangle2(Vertex *tri, float *triangle_area);
+float _dxfFastCompactness3DTriangle2(Vertex *tri, float *triangle_area);
 
 
 
@@ -1428,8 +1415,8 @@ extern float _dxfFastCompactness3DTriangle2(Vertex *tri, float *triangle_area);
   }                                                                            \
 										 }
 
-extern int _dxfErrorWithinToleranceVBoundary2ndKnd(SimpData *simp_data, int v0, int v1, 
-						   int *vstar0, int *vstar1, int val0, int val1);
+int _dxfErrorWithinToleranceVBoundary2ndKnd(SimpData *simp_data, int v0, int v1, 
+					   int *vstar0, int *vstar1, int val0, int val1);
 
 
 #define ExtractTriangleFromVertexStar( vstar, i) a_triangle; {                 \
@@ -1510,111 +1497,111 @@ extern int _dxfErrorWithinToleranceVBoundary2ndKnd(SimpData *simp_data, int v0, 
 	}                                                                                                 \
 													    }
 
-extern int   _dxfErrorTestDataOnSurfaceUpdate(SimpData *simp_data, int new_v, int old_v, 
-					      int new_v2, int new_v3,
-					      float alpha_sv, float alpha_n_v2, float alpha_n_v3,
-					      int old_v1, int old_v2, int old_v3, 
-					      float alpha_o_v1, float alpha_o_v2, float alpha_o_v3);
+int   _dxfErrorTestDataOnSurfaceUpdate(SimpData *simp_data, int new_v, int old_v, 
+				      int new_v2, int new_v3,
+				      float alpha_sv, float alpha_n_v2, float alpha_n_v3,
+				      int old_v1, int old_v2, int old_v3, 
+				      float alpha_o_v1, float alpha_o_v2, float alpha_o_v3);
 
-extern float  _dxfSegmentIntersection(Vertex A, Vertex B, Vertex C, Vertex D,
-				      float *lambda, float *mu, 
-				      int changed_AorB, int changed_C, int changed_D);
+float  _dxfSegmentIntersection(Vertex A, Vertex B, Vertex C, Vertex D,
+			      float *lambda, float *mu, 
+			      int changed_AorB, int changed_C, int changed_D);
 
-extern int    _dxfHouseholderPreMultiplication(float *A, int mA, float *v, int m, int n, float *w );
+int    _dxfHouseholderPreMultiplication(float *A, int mA, float *v, int m, int n, float *w );
 
-extern int    _dxfHouseholderPreMultiplicationDbl(double *A, int mA, double *v, int m, int n, double *w );
+int    _dxfHouseholderPreMultiplicationDbl(double *A, int mA, double *v, int m, int n, double *w );
 
-extern int    _dxfCollapseBoundaryEdge2ndKnd(SimpData *simp_data, int edg_num, int v0, int v1, int val0, 
-					     int val1, int *star0, int *star1, int *vstar0, int *vstar1, 
-					     int *estar0, int *estar1, Vertex *s_normal0, Vertex *s_normal1, 
-					     float *s_area0, float *s_area1);
+int    _dxfCollapseBoundaryEdge2ndKnd(SimpData *simp_data, int edg_num, int v0, int v1, int val0, 
+				     int val1, int *star0, int *star1, int *vstar0, int *vstar1, 
+				     int *estar0, int *estar1, Vertex *s_normal0, Vertex *s_normal1, 
+				     float *s_area0, float *s_area1);
 
-extern int    _dxfRemoveEdgesFromHeap(int *estar, u_short val, int *edge2index, SimpData *simp_data);
+int    _dxfRemoveEdgesFromHeap(int *estar, u_short val, int *edge2index, SimpData *simp_data);
 
-extern int    _dxfReinstateEdgesInHeap(int *estar, u_short val, SimpData *simp_data, 
-				       int *num_edg_added);
+int    _dxfReinstateEdgesInHeap(int *estar, u_short val, SimpData *simp_data, 
+			       int *num_edg_added);
 
-extern int    _dxfCollapsibilityTestsBoundaryEdge1stKind(SimpData *simp_data, 
-							 int edge_num, int v0, int v1, int val0, int val1);
+int    _dxfCollapsibilityTestsBoundaryEdge1stKind(SimpData *simp_data, 
+						 int edge_num, int v0, int v1, int val0, int val1);
 
-extern int    _dxfManifoldLinkTest1stKnd(int v0, int val0, int *star1, int *link1, int val1, 
-					 SimpData *simp_data);
+int    _dxfManifoldLinkTest1stKnd(int v0, int val0, int *star1, int *link1, int val1, 
+				 SimpData *simp_data);
 
-extern int    _dxfBoundaryCollapse1stKndGeometricallyOk(SimpData *simp_data, int v0, int *star0, int *vstar0, 
-							int val0, Vertex *s_normal0, float *s_area0,
+int    _dxfBoundaryCollapse1stKndGeometricallyOk(SimpData *simp_data, int v0, int *star0, int *vstar0, 
+						int val0, Vertex *s_normal0, float *s_area0,
 							float min_scalprod_nor, float compactness_ratio);
 
-extern int    _dxfErrorWithinToleranceVBoundary1stKnd(SimpData *simp_data, int v0, int v1, int *vstar1, 
-						      int val1);
+int    _dxfErrorWithinToleranceVBoundary1stKnd(SimpData *simp_data, int v0, int v1, int *vstar1, 
+					      int val1);
 
-extern int    _dxfClosestPointOnTriangle(Vertex *tri, Vertex w, Vertex wp, Vertex bary, float *dist);
+int    _dxfClosestPointOnTriangle(Vertex *tri, Vertex w, Vertex wp, Vertex bary, float *dist);
 
-extern int    _dxfTriangle3DBarycentricCoordinates2(Vertex *tri, Vertex w, Vertex wp, Vertex bary, 
-						    float *residual);
+int    _dxfTriangle3DBarycentricCoordinates2(Vertex *tri, Vertex w, Vertex wp, Vertex bary, 
+					    float *residual);
 
-extern void   _dxfMakeBarycenter(int nV, Vertex *vv, Vertex bary, float *bary_coord);
+void   _dxfMakeBarycenter(int nV, Vertex *vv, Vertex bary, float *bary_coord);
 
-extern int    _dxfSolveSymmetric2x2Eqn(double a,  double b, double d, double e, double f,
-				       double *x, double *y);
+int    _dxfSolveSymmetric2x2Eqn(double a,  double b, double d, double e, double f,
+			       double *x, double *y);
 
 
-extern int    _dxfCollapseBoundaryEdge1stKnd(SimpData *simp_data, int edg_num, int v0, int v1, int val0, 
-					     int val1, int *star1, int *vstar1, int *estar1,
-					     Vertex *s_normal1, float *s_area1);
+int    _dxfCollapseBoundaryEdge1stKnd(SimpData *simp_data, int edg_num, int v0, int v1, int val0, 
+				     int val1, int *star1, int *vstar1, int *estar1,
+				     Vertex *s_normal1, float *s_area1);
 
-extern int    _dxfCollapseTopologicallyFeasible(SimpData *simp_data, int *vstar0, int *vstar1, 
-						u_short val0, u_short val1);
+int    _dxfCollapseTopologicallyFeasible(SimpData *simp_data, int *vstar0, int *vstar1, 
+					u_short val0, u_short val1);
 
-extern void   _dxfBuildParentEdgeStars(EdgeS *edg, int v0, int v1, u_short val0,
-				       u_short val1, int *star0, int *star1, SimpData *s);
+void   _dxfBuildParentEdgeStars(EdgeS *edg, int v0, int v1, u_short val0,
+			       u_short val1, int *star0, int *star1, SimpData *s);
 
-extern void   _dxfParentVertexStar(int vf, int t0, u_short val, int *star, SimpData *simp_data);
+void   _dxfParentVertexStar(int vf, int t0, u_short val, int *star, SimpData *simp_data);
 
-extern void   _dxfApplyTranslation(int nV, Vertex *vv, Vertex T);
+void   _dxfApplyTranslation(int nV, Vertex *vv, Vertex T);
 
-extern void   _dxfOppositeVector(Vertex u, Vertex v);
+void   _dxfOppositeVector(Vertex u, Vertex v);
 
-extern void   _dxfCopyFaceNormalsAreasCompactness(Plane *plane, float *s_area, float *s_comp, 
-						  int *star0, int *star1, int val0, int val013, 
-						  Vertex *t_normal, float *t_area, float *t_comp);
+void   _dxfCopyFaceNormalsAreasCompactness(Plane *plane, float *s_area, float *s_comp, 
+					  int *star0, int *star1, int val0, int val013, 
+					  Vertex *t_normal, float *t_area, float *t_comp);
 
-extern float  _dxfMinFloatArray(float *array, int n);
+float  _dxfMinFloatArray(float *array, int n);
 
-extern void   _dxfSimplifiedVertexLocation(SimpData *simpdata, u_short val0, u_short val1, u_short star_val,
-					   Vertex *v, Face   *f, Plane  *p, float *area, float *w, 
-					   u_char method);
+void   _dxfSimplifiedVertexLocation(SimpData *simpdata, u_short val0, u_short val1, u_short star_val,
+				   Vertex *v, Face   *f, Plane  *p, float *area, float *w, 
+				   u_char method);
 
-extern double _dxfStarPlaneEquationsAndVolume(Vertex *star_vert,  Face *star_face, Plane  *star_plane, 
-					      float *star_areas, int   star_val);
+double _dxfStarPlaneEquationsAndVolume(Vertex *star_vert,  Face *star_face, Plane  *star_plane, 
+				      float *star_areas, int   star_val);
 
-extern void   _dxfComposeVectors(Vertex u, Vertex v, float lambda, Vertex w);
+void   _dxfComposeVectors(Vertex u, Vertex v, float lambda, Vertex w);
 
-extern int    _dxfPositionVertexLSConstraints2(Plane *star_plane, u_short star_val, Vertex simplified_vertex);
+int    _dxfPositionVertexLSConstraints2(Plane *star_plane, u_short star_val, Vertex simplified_vertex);
 
-extern void   _dxfFPlaneForIdenticalVolume(u_short val0, u_short val1, Plane p, Vertex *star_vert, 
-					   Face *star_face, float star_volume);
+void   _dxfFPlaneForIdenticalVolume(u_short val0, u_short val1, Plane p, Vertex *star_vert, 
+				   Face *star_face, float star_volume);
 
-extern int    _dxfCollapseGeometricallyFeasible(Vertex *svert, Face *sface, 
-						Plane *splane, float *old_comp, float new_comp_min,
-						Vertex *snor0, Vertex *snor1,   
-						u_short val0, u_short sval, 
-						float min_scalprod, float compactness_ratio);
+int    _dxfCollapseGeometricallyFeasible(Vertex *svert, Face *sface, 
+					Plane *splane, float *old_comp, float new_comp_min,
+					Vertex *snor0, Vertex *snor1,   
+					u_short val0, u_short sval, 
+					float min_scalprod, float compactness_ratio);
 
-extern int    _dxfNoFlipOverCheck(u_short first_face, u_short last_face, 
-				  Vertex *nor, Plane *plane, float min_scalprod_nor);
+int    _dxfNoFlipOverCheck(u_short first_face, u_short last_face, 
+			  Vertex *nor, Plane *plane, float min_scalprod_nor);
 
-extern int    _dxfErrorWithinToleranceV(SimpData *simp_data, Vertex *star_vert, Face *star_face,
-					Plane *star_plane, int *star0, int *star1, int val0, int val1);
+int    _dxfErrorWithinToleranceV(SimpData *simp_data, Vertex *star_vert, Face *star_face,
+				Plane *star_plane, int *star0, int *star1, int val0, int val1);
 
-extern void   _dxfSimplifiedStarNormals(Face *sface, Vertex *svert, Vertex *snor, float *sarea, float *scomp, 
-					Vertex simpvert, u_short first_face, u_short last_face);
+void   _dxfSimplifiedStarNormals(Face *sface, Vertex *svert, Vertex *snor, float *sarea, float *scomp, 
+				Vertex simpvert, u_short first_face, u_short last_face);
 
-extern int    _dxfCollapseEdge(SimpData *simp_data, int v0, int v1, int *star0, int *star1, 
-			       u_short val0, u_short val1, Vertex *nor0, Vertex *nor1, float *area0, 
-			       float *area1, float *comp0, float *comp1);
+int    _dxfCollapseEdge(SimpData *simp_data, int v0, int v1, int *star0, int *star1, 
+		       u_short val0, u_short val1, Vertex *nor0, Vertex *nor1, float *area0, 
+		       float *area1, float *comp0, float *comp1);
 
-extern void   _dxfReplaceFaceNormals(int *star, Vertex *new_nor, float *new_area, float *new_comp, 
-				     Vertex *nor, float *area, float *comp, u_short val);
+void   _dxfReplaceFaceNormals(int *star, Vertex *new_nor, float *new_area, float *new_comp, 
+			     Vertex *nor, float *area, float *comp, u_short val);
 
-#endif  /* _simplifysurface_ */
+#endif  /* _SIMPLESURF_H_ */
 

@@ -10,11 +10,14 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/fourier.c,v 1.4 2000/05/16 18:47:50 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/fourier.c,v 1.5 2000/08/24 20:04:30 davidt Exp $
  */
 
 #include <math.h>
 #include "unpart.h"
+
+typedef Error		(*PFE)();
+extern Error DXAddLikeTasks(PFE, Pointer, int, double, int); /* from libdx/task.c */
 
 #if defined(intelnt)
 #define  strcasecmp      stricmp
@@ -55,8 +58,6 @@ typedef struct
     int		procs;
     int		dim;
 } XFData;
-
-typedef Error		(*PFE)();
 
 #define	ALLOCATE_LOCAL(_v,_t,_n)\
 {\
@@ -466,15 +467,15 @@ TransformCF (Object f, XFArgs *xfa)
     global = (FieldInfo *) DXAllocate (size);
     if (! global)
 	goto cleanup;
-    memset (global, NULL, size);
+    memset (global, 0, size);
 
     size *= info->members;
     src = (FieldInfo *) DXAllocate (size);
     dst = (FieldInfo *) DXAllocate (size);
     if (! src || ! dst)
 	goto cleanup;
-    memset (src, NULL, size);
-    memset (dst, NULL, size);
+    memset (src, 0, size);
+    memset (dst, 0, size);
 
     /*
      * Create the appropriate global space for the operation to be

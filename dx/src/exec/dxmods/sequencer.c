@@ -10,6 +10,8 @@
 
 
 #include "interact.h"
+#include "../dpexec/vcr.h"
+#include "../dpexec/_variable.h"
 
 /*
  * Input indices
@@ -29,18 +31,11 @@
  */
 #define O_FRAME	0
 
-extern
-Error DXSetIntVariable(char *, int, int, int);
-extern
-void _dxf_ExVCRRedo(void);
-void _dxf_ExVCRChange(void);
-
 int m_Sequencer(Object *in, Object *out)
 {
    struct einfo ei;
    Object idobj;
-   int i;
-   char *label, *id;
+   char *id;
    int min,max,incr;
    int next,frame;
    int start,end;
@@ -193,7 +188,7 @@ int m_Sequencer(Object *in, Object *out)
    ei.mp =ei.msgbuf;
 
    shape[0]=1;
-   sprintf(ei.mp,"");
+   strcpy(ei.mp,"");
    if (iprint[0]==1){
       sprintf(ei.mp, "min="); while(*ei.mp) ei.mp++;
       if (!_dxfprint_message(&min, &ei, TYPE_INT, 0,shape,1))

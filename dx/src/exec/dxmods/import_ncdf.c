@@ -460,7 +460,6 @@ ImportStatReturn
 _dxfstat_netcdf_file(char *filename)
 {
     int cdfhandle;
-    int foundfile = 0;
     char *fname = NULL, *cp;
     char *datadir = NULL;
 
@@ -1388,8 +1387,8 @@ static void vp_print(Varinfo vp)
 	vp1 = vp2;
 	vp2 = vp2->next;
 	printf("%08x: class = %d, varid = %d, name = %s\n",
-	       vp1, vp1->class, vp1->varid, vp1->name);
-	printf("          next = %08x, child = %08x\n", vp1->next, vp1->child);
+	       (unsigned int) vp1, vp1->class, vp1->varid, vp1->name);
+	printf("          next = %08x, child = %08x\n", (unsigned int) vp1->next, (unsigned int) vp1->child);
 
     }
 }    
@@ -1555,7 +1554,7 @@ static Error setuserattr(Arrayinfo ap, Field f, char *compname)
       continue;
 
     if(ncattinq(ap->cdfhandle, ap->varid, ap->stringattr, &datatype, &alen) < 0)
-	return NULL;
+	return ERROR;
 
     /* convert from netCDF data flags to SVS data flags */
     switch(datatype) {
@@ -1571,7 +1570,7 @@ static Error setuserattr(Arrayinfo ap, Field f, char *compname)
     if (type == TYPE_STRING){
       attr_string = (char *)DXAllocate(alen+1);
       if (ncattget(ap->cdfhandle, ap->varid,ap->stringattr,attr_string) < 0) 
-        return NULL;
+        return ERROR;
       attr_string[alen] = '\0';
       DXSetComponentAttribute(f, compname, ap->stringattr, STR(attr_string));
       DXFree((Pointer)attr_string);
@@ -1581,7 +1580,7 @@ static Error setuserattr(Arrayinfo ap, Field f, char *compname)
       a = DXAddArrayData(a,0,alen,NULL);
       attr_value = DXGetArrayData(a);
       if (ncattget(ap->cdfhandle, ap->varid,ap->stringattr,attr_value) < 0) 
-        return NULL;
+        return ERROR;
       DXSetComponentAttribute(f,compname, ap->stringattr, (Object)a);
     } 
   }
@@ -1594,7 +1593,7 @@ static Error setuserattr(Arrayinfo ap, Field f, char *compname)
  */
 static Error getglobalattr(Object o, Varinfo vp)
 {
-  int i, attr_count=0;
+  int attr_count=0;
   int alen;
   nc_type datatype;
   Type type;
@@ -1610,7 +1609,7 @@ static Error getglobalattr(Object o, Varinfo vp)
 	continue;
 
     if(ncattinq(vp->cdfid, NC_GLOBAL, stringattr, &datatype, &alen) < 0)
-	return NULL;
+	return ERROR;
 
     /* convert from netCDF data flags to SVS data flags */
     switch(datatype) {
@@ -1626,7 +1625,7 @@ static Error getglobalattr(Object o, Varinfo vp)
     if (type == TYPE_STRING){
       attr_string = (char *)DXAllocate(alen+1);
       if (ncattget(vp->cdfid, NC_GLOBAL,stringattr,attr_string) < 0) 
-        return NULL;
+        return ERROR;
       attr_string[alen] = '\0';
       DXSetAttribute(o, stringattr, STR(attr_string));
       DXFree((Pointer)attr_string);
@@ -1636,7 +1635,7 @@ static Error getglobalattr(Object o, Varinfo vp)
       a = DXAddArrayData(a,0,alen,NULL);
       attr_value = DXGetArrayData(a);
       if (ncattget(vp->cdfid, NC_GLOBAL,stringattr,attr_value) < 0) 
-        return NULL;
+        return ERROR;
       DXSetAttribute(o, stringattr, (Object)a);
     } 
   }
@@ -3409,7 +3408,7 @@ static Error variablename(int hand, int varid, char *cbuf)
 	DXErrorReturn(ERROR_INTERNAL, "netCDF library error");
 
     if (ndims <= 0)	/* no dimensions for this variable */
-      *cbuf=NULL;
+      *cbuf='\0';
 
     return OK;
 }

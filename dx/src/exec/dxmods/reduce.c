@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/reduce.c,v 1.4 2000/05/16 18:48:11 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/reduce.c,v 1.5 2000/08/24 20:04:45 davidt Exp $:
  */
 
 /***
@@ -907,7 +907,7 @@ error:
     DXDelete((Object)task->factors);
     DXDelete((Object)task->omap);
     DXDelete((Object)oField);
-    return NULL;
+    return ERROR;
 }
 
 static Array
@@ -1150,7 +1150,7 @@ ReduceArrayIrreg(Array inDataArray, int nDim, int *filter, Shoulder *shoulders,
 	float   *lastSumElt;						\
 	type    *outElt;						\
 	type    *inElt;							\
-	float   *bufElt, *bufPtr;					\
+	float   *bufElt, *bufPtr=NULL;					\
 									\
 	outPtr = loop[0].outStart;					\
 	inPtr  = loop[0].inStart + startSkip;				\
@@ -1496,6 +1496,8 @@ ReduceSumAxis(Pointer inBuf, Pointer outBuf, int filter, int nDim, int nElts,
 	case TYPE_DOUBLE:
 	    round = 0.0;
 	    AXISLOOP(double);
+	    break;
+        default:
 	    break;
     }
 

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.6 2000/05/16 18:48:25 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.7 2000/08/24 20:04:56 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -130,7 +130,7 @@ m_WriteImage ( Object *in, Object *out )
                     case CLASS_SERIES:
                 	iargs.image      = (Field)I_image;
 			i=0;
-			while (o=DXGetEnumeratedMember((Group)I_image,i++,NULL))
+			while ((o=DXGetEnumeratedMember((Group)I_image,i++,NULL)))
 			    if ( !_dxf_ValidImageField ( (Field)o) )
 		                    DXErrorGoto ( ERROR_DATA_INVALID, 
                		                 "series 'image' contains non-image" );
@@ -360,7 +360,7 @@ m_WriteImage ( Object *in, Object *out )
     if (iargs.pipe) {
 
 #if defined(HAS_POSIX_SIGNALS)
-	sigaction,(SIGPIPE, &oaction, NULL);
+	sigaction(SIGPIPE, &oaction, NULL);
 #else
 	signal(SIGPIPE, oaction);
 #endif /* HAS_POSIX_SIGNALS */

@@ -40,6 +40,8 @@ END:
 #include <string.h>
 #include <dx/dx.h>
 #include "_compute.h"
+#include "_compoper.h"
+#include "_compputils.h"
 
 
 /* These are global variables to allow communication with the parser */

@@ -41,13 +41,9 @@ END:
 #include <string.h>
 #include <ctype.h>
 #include <dx/dx.h>
-
-extern Group _dxfAutoGrayScale(Object,  float, float, float, float, 
-                               float, float *, float *, Object *, int,
-                               RGBColor, RGBColor);
-static int _dxfIsFieldorGroup(Object ob);
-extern int _dxfFieldWithInformation(Object);
-extern Error _dxfHSVtoRGB(float, float, float, float *, float *, float *);
+#include "_autogray.h"
+#include "_autocolor.h"
+#include "_glyph.h"
 
 int
 m_AutoGrayScale(Object *in, Object *out)
@@ -306,7 +302,7 @@ m_AutoGrayScale(Object *in, Object *out)
        onearray = DXNewArray(TYPE_INT,CATEGORY_REAL, 0);
        if (!DXAddArrayData(onearray, 0, 1, &one))
            goto error;
-       if (!DXSetAttribute(out[0], "direct color map", onearray))
+       if (!DXSetAttribute(out[0], "direct color map", (Object) onearray))
            goto error;
        onearray = NULL;
     }
@@ -325,17 +321,5 @@ m_AutoGrayScale(Object *in, Object *out)
   }
 
 
-
-static int _dxfIsFieldorGroup(Object ob)
-{
-    Class cl;
-
-
-    if ( ((cl = DXGetObjectClass(ob)) == CLASS_FIELD) || 
-	  (cl == CLASS_GROUP) )
-	return OK;
-    else
-	return ERROR;
-}
 
 

@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <dx/dx.h>
+#include "_normals.h"
+#include "_newtri.h"
 
 
 #ifndef TRUE
@@ -26,70 +28,6 @@
 #endif
 
 #define	LOCAL_LOOPS	256
-
-typedef struct
-{
-    float		u;
-    float		v;
-} Point2;
-
-typedef struct
-{
-    Point2		ll;
-    Point2		ur;
-} BBox;
-
-typedef struct BVertex
-{
-    struct BVertex	*next;		/* boundary pointers         */
-    struct BVertex	*prev;
-    struct Loop		*lp;		/* initial parent loop       */
-    int			id;		/* point id                  */
-    Point2		pos;		/* projection of vertex      */
-    int			tried;		
-    int			pass;
-} BVertex;
-
-typedef struct
-{
-    int			*faces;		/* the input faces		*/
-    int			*loops;		/* the input loops		*/
-    int			*edges;		/* the input edges		*/
-    float		*points;	/* the input points		*/
-    int			*map;		/* the faces to triangles map   */
-    int			nfaces;		/* # of faces			*/
-    int			nloops;		/* # of loops			*/
-    int			nedges;		/* # of edges			*/
-    int			npoints;	/* # of points			*/
-    int			nDim;		/* dimensionality of points     */
-} FLEP;
-
-typedef struct Loop
-{
-    struct Loop		*next;
-    struct Loop		*prev;
-    int			nvert;		/* number of vertices        */
-    int			*vids;		/* pointer to vertices       */
-    BVertex		*base;		/* base of linked list       */
-    int			merged;		/* this loop has been merged */
-    int			sign;		/* direction of rotation     */
-    BBox		box;		/* loop bounding box         */
-} Loop;
-
-
-/*
- * For the tree representing the loop nesting...
- */
-typedef struct treenode *TreeNode;
-
-struct treenode
-{
-    Loop 		*loop;
-    TreeNode 		sibling;
-    TreeNode 		children;
-    int 		nChildren;
-    int 		level;		
-};
 
 /*
  * To make this more efficient declare a register float _det_ in any
@@ -108,15 +46,6 @@ static double	_det_;
 #define Determinant(p0,p1,p2)\
     ( p0.u * (p1.v - p2.v) + p1.u * (p2.v - p0.v) + p2.u * (p0.v - p1.v))
 
-int	_dxf_TriangleCount (int *f, int nf, int *l, int nl, int *e, int ne);
-int	_dxf__TriangleCount (FLEP *in);
-Error	_dxf_TriangulateFLEP (int *f, int nf, int *l, int nl, int *e, int ne,
-		float *p, int np, Vector *normal, Triangle *tris, int *ntri,
-		int *map, int nDim);
-Error	_dxf__TriangulateFLEP (FLEP *in, Vector *normal, Triangle *tris, int *ntri,
-			  FLEP *valid);
-
-
 
 static void	FlipLoop	 (Loop *loops);
 static int	IntersectsEdge	 (Loop *loops, BVertex *p, BVertex *q);
@@ -130,11 +59,11 @@ static int	AddLinkNested	 (Loop *loops, BVertex *p, BVertex *spares,
 				  int *nvert, BVertex **first, BVertex **end);
 static int	AnyInsideNested (TreeNode holes, BVertex *p0, BVertex *p1,
 				  BVertex *p2, int psign);
-static Error	InitNestedLoops	 (int *nloops, Loop **loops, int np);
 static Error	TriangulateNestedLoops (int nloops, Loop *loops,
 				  float *vertices,
 				  Point *normal, int np,
 				  Triangle *tptr, int *rntri, int nDim);
+static Error    InitLoopsNested (int *, Loop **, int);
 static void	LoopSignNested	 (Loop *lp);
 static int      AddLink          (Loop *loops, BVertex *p, BVertex **spares,
 				  int *nvert, BVertex **first, BVertex **end);
@@ -145,9 +74,10 @@ static Error    InitLoops        (int *nloops, Loop **loops, BVertex *spares,
 static Error	TriangulateLoops (int nloops, Loop *loops, float *vertices,
 				  Point *normal, int np,
 				  Triangle *tptr, int *rntri, int nDim);
+static Error    AssignTreeLevel(TreeNode, int);
+static Error    TriangulateLoopWithHoles(TreeNode, int *, Triangle *);
 
-extern Array    _dxf_FLE_Normals (int *f, int nf, int *l, int nl,
-				  int *e, int ne, float *v, int nd);
+
 
 #if 0
 void ShowLoop(BVertex *);
@@ -183,7 +113,7 @@ _dxf__TriangleCount (FLEP *in)
     FLEP	lin;
     int		f;
     int		l, ls, le;
-    int		e, es, ee;
+    int		es, ee;
     int		ntri	= 0;
     int		nvert;
 
@@ -212,7 +142,7 @@ _dxf__TriangleCount (FLEP *in)
 
 
 
-extern Error
+Error
 _dxfTriangulateField(Field field)
 {
     Error	ret	= ERROR;
@@ -225,11 +155,8 @@ _dxfTriangulateField(Field field)
     int		ntri;
     int		newtri	= 0;
     Array	arr;
-    Array	col;
     int		size;
     int		i, *map = NULL;
-    Triangle	*src;
-    Triangle	t;
     Array       sA=NULL, dA=NULL;
     char	*name;
     int		nDim;
@@ -483,11 +410,11 @@ _dxf__TriangulateFLEP (FLEP *in, Vector *normal, Triangle *tris, int *ntri,
     Loop	*loops	= NULL;
     int		size;
     Triangle	*ltris, *tmp_tris;
-    int		lntri;
+    int		lntri=0;
     int		ftri;
     int		f;
     int		l, ls, le;
-    int		e, es, ee;
+    int		es, ee;
     int		skips;
 
     lin = *in;
@@ -511,7 +438,7 @@ _dxf__TriangulateFLEP (FLEP *in, Vector *normal, Triangle *tris, int *ntri,
 	ls = lin.faces[f];
 	le = f < lin.nfaces - 1 ? lin.faces[f + 1] : lin.nloops;
 
-	memset (loops, NULL, (le - ls) * sizeof (Loop));
+	memset (loops, 0, (le - ls) * sizeof (Loop));
 
 	for (l = ls; l < le; l++)
 	{
@@ -708,10 +635,9 @@ TriangulateLoopWithHoles(TreeNode node, int *rntri, Triangle *tbase)
 {
     Loop *loop = node->loop;
     int nvert = loop->nvert, not_done;
-    BVertex *p0 = loop->base, *p1, *p2;
+    BVertex *p0 = loop->base, *p1=NULL, *p2=NULL;
     BVertex *end = NULL;
     BVertex *first = NULL;
-    TreeNode child;
     int	i0, i1, i2;
     int nholes;
     TreeNode holes;
@@ -936,7 +862,7 @@ static Error TriangulateNestedLoops (int nloops, Loop *loops, float *vertices,
     ret = OK;
 
 error:
-cleanup:
+/* cleanup */
     DXFree((Pointer)tree);
     DXFree ((Pointer) vbase);
     return (ret);
@@ -1251,9 +1177,6 @@ _CheckNestingBoxes(Loop *A, Loop *B, int *result)
 static Error
 CheckNesting(Loop *A, Loop *B, int *result)
 {
-  int ab;
-  
-   
   /*
    * If boxes don't overlap, loops are disjoint
    */
@@ -1418,9 +1341,8 @@ InitLoopsNested (int *nloopsPtr, Loop **loopsPtr, int np)
 {
     int		nloops = *nloopsPtr;
     Loop 	*loops = *loopsPtr;
-    int		i, j, k;
+    int		i, j;
     BVertex	*p0, *p1, *p2;
-    int		nvert;
     int		maxLoops = *nloopsPtr;
     HashTable   ptHash =
 	DXCreateHash(sizeof(BVertex *), HashPoint, ComparePoint);
@@ -2013,7 +1935,6 @@ static int PointInTri (Point2 p, Point2 plast, Point2 pnext,
 				Point2 v0, Point2 v1, Point2 v2, int psign)
 {
     int		det01p, det12p, det20p;
-    int		sum;
     int		np = 0, nn = 0, nz = 0;
     Point2	e0, e1;
 
@@ -2137,20 +2058,18 @@ static Error TriangulateLoops (int nloops, Loop *loops, float *vertices,
 			       Point *normal, int np,
 			       Triangle *tptr, int *rntri, int nDim)
 {
-    Error	ret	= ERROR;	/* return status                    */
-    int		nvert;			/* total vertex count               */
-    BVertex	*vbase	= NULL;		/* base of list blocks              */
-    BVertex	*spares;		/* spare nodes for splitting        */
-    int		size;			/* size temporary                   */
-    Loop	loop;			/* local copy of current loop       */
-    int		psign;			/* sign of the polygon's  rotation  */
-    int		tsign;			/* sign of the triangle's rotation  */
-    Point	lnormal;		/* local copy of face normal	    */
-    int		elim;			/* dimension to elminate            */
-    BVertex	*p0, *p1, *p2;		/* vertices of tri being considered */
+    Error	ret	= ERROR;	 /* return status                    */
+    int		nvert;			 /* total vertex count               */
+    BVertex	*vbase	= NULL;		 /* base of list blocks              */
+    BVertex	*spares;		 /* spare nodes for splitting        */
+    int		size;			 /* size temporary                   */
+    Loop	loop;			 /* local copy of current loop       */
+    int		psign;			 /* sign of the polygon's  rotation  */
+    int		tsign;			 /* sign of the triangle's rotation  */
+    BVertex	*p0, *p1=NULL, *p2=NULL; /* vertices of tri being considered */
     int		i0, i1, i2;
     int		pass;
-    int		ntri	= 0;		/* # of triangles generated         */
+    int		ntri	= 0;		 /* # of triangles generated         */
     int		i, j;
     BVertex	*bptr;
     Loop	*orig_loops = loops;
@@ -2178,7 +2097,7 @@ static Error TriangulateLoops (int nloops, Loop *loops, float *vertices,
     if (vbase == NULL)
 	goto error;
     spares = vbase;
-    memset (vbase, NULL, size);
+    memset (vbase, 0, size);
 
     /*
      * For each loop:
@@ -2467,7 +2386,6 @@ InitLoops (int *nloopsPtr, Loop **loopsPtr, BVertex *spares,
     int		i, j, k;
     int		flip;
     BVertex	*p0, *p1, *p2;
-    int		nvert;
     int		maxLoops = *nloopsPtr;
     HashTable   ptHash =
 	DXCreateHash(sizeof(BVertex *), HashPoint, ComparePoint);

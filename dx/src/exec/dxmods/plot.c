@@ -16,8 +16,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "_autocolor.h"
 #include "plot.h" 
+#include "autoaxes.h"
 
+Error _dxfGetAnnotationColors(Object, Object, 
+                              RGBColor, RGBColor, RGBColor, RGBColor,
+                              RGBColor,
+                              RGBColor *, RGBColor *,
+                              RGBColor *, RGBColor *, RGBColor *, int *);
+
+extern Error _dxfCheckLocationsArray(Array, int *, float **); /* from libdx/axes.c */
 
 struct legendargstruct {
   int islabel ;
@@ -58,29 +67,12 @@ static RGBColor DEFAULTGRIDCOLOR = {0.3, 0.3, 0.3};
 static RGBColor DEFAULTBACKGROUNDCOLOR = {0.05, 0.05, 0.05};
 
 static Error GetPlotHeight(Object, int, float *, float *, float *);
-extern Object _dxfFieldWithInformation(Object);
-extern Error _dxfFreeAxesHandle(Pointer);
-extern Pointer _dxfNew2DAxesObject(void);
-extern Error _dxfLowerCase(char *, char **);
-extern Error _dxfSet2DAxesCharacteristic(Pointer, char *, Pointer);
-extern Error _dxfGetAnnotationColors(Object, Object, 
-                                     RGBColor, RGBColor, RGBColor, RGBColor,
-                                     RGBColor,
-                                     RGBColor *, RGBColor *,
-                                     RGBColor *, RGBColor *, RGBColor *, int *);
-extern int _dxfHowManyTics(int, int, float, float, float, 
-			   float, int, int *, int *);
 
-extern Object _dxfAxes2D(Pointer);
-extern Error _dxfHowManyStrings(Object, int *);
 static Error  plottask(Pointer);
 static Error  DoPlot(Object,int,Point,Point,float,float, int, int,
                      struct plotargstruct *);
 static Error  DrawLine(Array, Array, int *, int *, int, float, float,
                        int, RGBColor, Array);
-static Error  DrawDashed(Array, Array, int *, int *, int,
-                         float, float, float, float, float, float, float,
-                         float *, int *);
 static Error  PlotDepPositions(struct arg *);
 static Error  PlotDepConnections(struct arg *);
 static Object MakeLabel(char *, RGBColor, int, float *, float, Object,
@@ -104,8 +96,11 @@ static Error  AddDiamond(Array, int *, Array, int *, float, float, float,
                          float, int, RGBColor, Array);
 static Error  AddDot(Array, int *, Array, int *, float, float, float, 
                          float, int, RGBColor, Array);
-static Error  AddPoint(Array, int *, Array, int *, float, float, float, 
-                         float, int, RGBColor, Array);
+#if 0
+static Error  DrawDashed(Array, Array, int *, int *, int,
+                         float, float, float, float, float, float, float,
+                         float *, int *);
+#endif
 
 #define E .0001                                     /* fuzz */
 #define EPS_SCALE     80                           /* reduction for markers*/
@@ -123,27 +118,27 @@ static char nullstring[11] = "NULLSTRING";
 
 /* this is a circle */
 Point pointsarray[]={
-  1.00,  0.00,  0.00,
-  0.81,  0.59,  0.00, 
-  0.31,  0.95,  0.00,
-  -0.31,  0.95,  0.00,
-  -0.81,  0.59,  0.00,
-  -1.00,  0.00,  0.00,
-  -0.81, -0.59,  0.00,
-  -0.31, -0.95,  0.00,
-  0.31, -0.95,  0.00,
-  0.81, -0.59,  0.00
+  { 1.00,  0.00,  0.00 },
+  { 0.81,  0.59,  0.00 }, 
+  { 0.31,  0.95,  0.00 },
+  { -0.31,  0.95,  0.00 },
+  { -0.81,  0.59,  0.00 },
+  { -1.00,  0.00,  0.00 },
+  { -0.81, -0.59,  0.00 },
+  { -0.31, -0.95,  0.00 },
+  { 0.31, -0.95,  0.00 },
+  { 0.81, -0.59,  0.00 }
   };
 
-
+Error
 m_Plot(Object *in, Object *out)
 {
   Pointer *axeshandle=NULL; 
-  int i, adjust, resolution, ticks, ticks2, tx, ty, tz, num, background; 
+  int i, adjust, ticks, ticks2, tx, ty, tz, num, background; 
   int needtoclip=0, frame;
-  float floatzero=0.0, floatone=1.0, labelscale=1.0;
+  float floatzero=0.0, labelscale=1.0;
   int xlog, ylog, ylog2, secondplot, intzero=0, intone=1;
-  int numtickitems, rank, shape[32], *ticks_ptr, *ticks2_ptr, autoadjust;
+  int numtickitems, rank, shape[32], *ticks_ptr, autoadjust;
   float aspect, ascent, descent, maxstring, cp[4], cp2[2], *actualcorners=NULL;
   float linepositionx, linepositiony, linelength, *ptr;
   float mindata, maxdata, minpos, maxpos;
@@ -158,23 +153,21 @@ m_Plot(Object *in, Object *out)
   Object tmpino=NULL, tmpino2=NULL;
   Group group=NULL;
   Field emptyfield=NULL;
-  Matrix matrix, translation1, translation2, xform, scaling, transformation;
-  Point up, box[8], min, max, min2, max2, clippoint1, clippoint2;
+  Matrix matrix, translation1, translation2, xform, scaling;
+  Point clippoint1, clippoint2;
   Object outgroup=NULL, outlabels;
-  float xwidth, ywidth, ywidth2, camwidth;
-  char window[8], *labelx, *labely, *labely2, *labelz, fmt[30], *fontname;
+  float xwidth, ywidth, ywidth2;
+  char *labelx, *labely, *labely2, *labelz, *fontname;
   char *aspectstring;
   Class class;
-  float buffer[4];
-  int   bufferint[3], grid, mark, markevery;
+  int   grid;
   Object withaxes=NULL, withaxes2=NULL;
   Type type;
   char *plottypex, *plottypey, *plottypey2; 
   char ptypex[30], ptypey[30], ptypey2[30];
   char marker[30], plotlabel[60];
-  float markscale;
   Category category;
-  float xscaling, yscaling, yscaling2, epsilon, epsilonx, epsilony; 
+  float xscaling, yscaling, yscaling2=0, epsilon, epsilonx, epsilony; 
   RGBColor ticcolor, labelcolor, axescolor, gridcolor, backgroundcolor;
   float *xptr=NULL, *list_ptr;
   Array xticklocations=NULL, yticklocations=NULL, y1ticklocations=NULL;
@@ -642,7 +635,7 @@ m_Plot(Object *in, Object *out)
          DXSetError(ERROR_BAD_PARAMETER,"xlocations must be a scalar list");
          return ERROR;
      }
-     if (!_dxfCheckLocationsArray(in[18], &num, &xptr))
+     if (!_dxfCheckLocationsArray((Array) in[18], &num, &xptr))
         goto error;
      /* cp[0]=xptr[0];
         cp[2]=xptr[num-1]; XXX */
@@ -655,7 +648,7 @@ m_Plot(Object *in, Object *out)
          DXSetError(ERROR_BAD_PARAMETER,"y1locations must be a scalar list");
          return ERROR;
      }
-     if (!_dxfCheckLocationsArray(in[19], &num, &xptr))
+     if (!_dxfCheckLocationsArray((Array) in[19], &num, &xptr))
         goto error;
      /* cp[1]=xptr[0];
         cp[3]=xptr[num-1]; */
@@ -668,7 +661,7 @@ m_Plot(Object *in, Object *out)
          DXSetError(ERROR_BAD_PARAMETER,"y2locations must be a scalar list");
          return ERROR;
      }
-     if (!_dxfCheckLocationsArray(in[20], &num, &xptr))
+     if (!_dxfCheckLocationsArray((Array) in[20], &num, &xptr))
         goto error;
      /* cp2[0]=xptr[0];
         cp2[1]=xptr[num-1]; */
@@ -1288,7 +1281,7 @@ static
   int markevery, scatterflag=0;
   float markscale;
   char *marker;
-  Object subin, markobject, plotlabelobject, scatterobject;
+  Object subin, markobject, scatterobject;
   Matrix matrix;
   struct plotargstruct localplotarg;
   
@@ -1373,7 +1366,7 @@ static
       break;
     default:
       /* recursively traverse groups */
-      for (i=0; subin=DXGetEnumeratedMember((Group)ino, i, NULL); i++) {
+      for (i=0; (subin=DXGetEnumeratedMember((Group)ino, i, NULL)); i++) {
 	if (!(DoPlot((Object)subin, needtoclip, clippoint1, clippoint2,
                      epsilonx, epsilony, xlog, ylog, &localplotarg)))
 	  return ERROR;
@@ -1469,7 +1462,6 @@ static
   struct legendargstruct locallegendarg;
   char *labelstring;
   char *marker;
-  int mark;
 
   if (!(memcpy(&locallegendarg, legendarg, sizeof(locallegendarg)))) {
     return ERROR;
@@ -1627,7 +1619,7 @@ static
         }
       }
       
-      for (i=0; subin=DXGetEnumeratedMember((Group)ino, i, NULL); i++) {
+      for (i=0; (subin=DXGetEnumeratedMember((Group)ino, i, NULL)); i++) {
 	if (!MakeLegend(subin, legend, num, maxstring, linelength, font,
                         &locallegendarg, labelcolor))
 	  return ERROR;
@@ -1686,6 +1678,8 @@ static
                      &locallegendarg,labelcolor)))
       return ERROR;
     break;
+  default:
+    break;
   }	
   return OK;
 }
@@ -1703,15 +1697,14 @@ static Error plottask(Pointer p)
   InvalidComponentHandle handle = NULL;
   Category category;
   Point clippoint1, clippoint2;
-  float *new_ptr, *old_ptr;
-  ubyte *old_ubyte_ptr;
-  short *old_short_ptr;
-  int *old_int_ptr;
-  uint *old_uint_ptr;
-  ushort *old_ushort_ptr;
-  byte *old_byte_ptr;
-  double *old_double_ptr;
-
+  float *new_ptr, *old_ptr=NULL;
+  ubyte *old_ubyte_ptr=NULL;
+  short *old_short_ptr=NULL;
+  int *old_int_ptr=NULL;
+  uint *old_uint_ptr=NULL;
+  ushort *old_ushort_ptr=NULL;
+  byte *old_byte_ptr=NULL;
+  double *old_double_ptr=NULL;
 
   ino = arg->ino;
   xlog = arg->xlog;
@@ -1961,30 +1954,29 @@ static Error PlotDepConnections(struct arg *arg)
   InvalidComponentHandle invalidhandle=NULL;
   Type colorstype;
   Category category;
-  int splat = 0, mark = 0, markevery = 1, markcount = 0, rank, shape[32];
-  char lineatt[30], *marker, coldepatt[30];
+  int rank, shape[32];
+  char coldepatt[30];
   float *p_pos, *p_posnew;
-  float *p_data_f;
-  int *p_data_i;
-  uint *p_data_ui;
-  short *p_data_s;
-  ushort *p_data_us;
-  ubyte *p_data_ub;
-  byte *p_data_b;
-  double *p_data_d;
+  float *p_data_f=NULL;
+  int *p_data_i=NULL;
+  uint *p_data_ui=NULL;
+  short *p_data_s=NULL;
+  ushort *p_data_us=NULL;
+  ubyte *p_data_ub=NULL;
+  byte *p_data_b=NULL;
+  double *p_data_d=NULL;
   Type type;
   float dataval;
   int *dp_conn, numitems;
   int poscount, datacount, conncount, i, needtoclip, count_p, count_c; 
-  int thisok, thisquadok,lastok, clipregcolors;
+  int thisok, lastok, clipregcolors;
   int nooutput=0;
-  RGBColor defaultcolor, *color_ptr, color, origin;
+  RGBColor defaultcolor, *color_ptr=NULL, color, origin;
   Point clippoint1, clippoint2, newpoint;
-  Line newcon;
   Quadrilateral newconquad;
   Object ino;
   float epsilonx, epsilony;
-  char *color_ubyte_ptr;
+  char *color_ubyte_ptr=NULL;
   defaultcolor = DEFAULTCOLOR;
 
   aposnew=NULL;
@@ -2197,7 +2189,7 @@ static Error PlotDepConnections(struct arg *arg)
   }
   /* else there's clipping to be done */
   else {
-    if (acolors = (Array)DXGetComponentValue((Field)ino, "colors")) {
+    if ((acolors = (Array)DXGetComponentValue((Field)ino, "colors"))) {
       DXGetArrayInfo(acolors, &numitems, &colorstype, &category, &rank, shape);
       if (!DXQueryConstantArray(acolors, NULL, NULL)) {
 	clipregcolors = 0;
@@ -2260,6 +2252,8 @@ static Error PlotDepConnections(struct arg *arg)
           case (TYPE_UBYTE):
              color = color_ptr[(int)color_ubyte_ptr[i]];
              break;
+	  default:
+	     break;
           }
 	  if (!DXAddColor((Field)ino, count_c, color))
 	    goto error;
@@ -2404,40 +2398,36 @@ static Error PlotDepPositions(struct arg *arg)
 {
   Object markobject=NULL, linetypeobject=NULL, scatterobject=NULL;
   Array apos, acolors, aposnew, aconnew, acolorsnew, adata;
-  Array acon;
   Array colormap;
   Array invalid;
   InvalidComponentHandle invalidhandle=NULL;
-  Type type, colorstype, datatype;
+  Type colorstype, datatype;
   Category category, datacat;
-  float stepon, stepoff, used=0.0, factor, dataval; 
-  int splat = 0, markcount = 0, isline = 1, rank, shape[32],numitems;
+  float stepon, stepoff, factor, dataval; 
+  int splat = 0, markcount = 0, rank, shape[32],numitems;
   int datarank, datashape[8];
   int lastorigindex=0, lastnewindex=0;
-  char  lineatt[30], *linetype="solid", coldepatt[30]; 
-  short *p_data_s;
-  ushort *p_data_us;
-  double *p_data_d;
-  byte *p_data_b;
-  ubyte *p_data_ub;
-  float *p_data_f;
-  int *p_data_i;
-  uint *p_data_ui;
-  float *p_pos, *p_posnew, status=0.0, *p_data_old, *p_pos_old;
-  int *dp_conn;
-  int poscount, datacount, conncount, i, needtoclip, count_p, count_c; 
-  int thisok, thisquadok,lastok, regcolors;
+  char  *linetype="solid", coldepatt[30]; 
+  short *p_data_s=NULL;
+  ushort *p_data_us=NULL;
+  double *p_data_d=NULL;
+  byte *p_data_b=NULL;
+  ubyte *p_data_ub=NULL;
+  float *p_data_f=NULL;
+  int *p_data_i=NULL;
+  uint *p_data_ui=NULL;
+  float *p_pos;
+  int poscount, datacount, i, needtoclip, count_p, count_c; 
+  int thisok, lastok, regcolors;
   int nooutput=0;
-  RGBColor *color_ptr, color, origin, defaultcolor, *p_colors;
-  char *p_ubyte_colors;
+  RGBColor color, origin, defaultcolor, *p_colors=NULL;
+  char *p_ubyte_colors=NULL;
   Point clippoint1, clippoint2, newpoint;
-  Line newcon;
-  Quadrilateral newconquad;
   Object ino;
   float epsilonx, epsilony;
   int mark, markevery, scatterflag=0;
   float markscale;
-  char *marker, *label;
+  char *marker;
 
   defaultcolor = DEFAULTCOLOR;
   aposnew=NULL;
@@ -2640,7 +2630,7 @@ static Error PlotDepPositions(struct arg *arg)
     goto error;
   } 
   
-  if (acolors = (Array)DXGetComponentValue((Field)ino, "colors")) {
+  if ((acolors = (Array)DXGetComponentValue((Field)ino, "colors"))) {
     DXGetArrayInfo(acolors, &numitems, &colorstype, &category, &rank, shape);
     if (!DXQueryConstantArray(acolors,NULL,NULL)) {
       regcolors = 0;
@@ -2730,6 +2720,8 @@ static Error PlotDepPositions(struct arg *arg)
          case (TYPE_UBYTE):
            color = p_colors[(int)p_ubyte_colors[i]];
            break;
+	 default:
+	   break;
          }
       /* now add the current point */
       if ((thisok)&&(lastok)) {
@@ -2918,6 +2910,7 @@ error:
 }
 
 
+#if 0
 static Error DrawDashed(Array aconnew, Array aposnew,
                         int *count_c, int *count_p, int lastindex,
                         float x, float y, float lastx, float lasty,
@@ -2996,6 +2989,7 @@ done:
 error:
   return ERROR;
 }
+#endif
 
 static
   Error 
@@ -3454,11 +3448,13 @@ static
     
   case CLASS_GROUP: 
     /* recursively traverse groups */
-    for (i=0; oo=DXGetEnumeratedMember((Group)ino, i, NULL); i++) {
+    for (i=0; (oo=DXGetEnumeratedMember((Group)ino, i, NULL)); i++) {
       if (!DoPlotField((Object)oo, needtoclip, clippoint1, clippoint2, 
                         epsilonx, epsilony, xlog, ylog, plotarg))
 	return ERROR;
     }
+    break;
+  default:
     break;
   }  
   return OK; 
@@ -3491,9 +3487,9 @@ static
   float width, xpos, ypos;
   Point *dp;
   float epsilon;
-  int *dc, numpoints, numconn, num_mark_pos, num_mark_con, count_pos; 
+  int *dc, numpoints, numconn, num_mark_pos=0, num_mark_con=0, count_pos; 
   int linepoints, lineconns;
-  int   count_con, regcolors, scatterflag =0;
+  int   count_con, regcolors;
   RGBColor dummy;
   Array acolors=NULL;
 
@@ -3688,7 +3684,6 @@ static
   GetLineColor(Object ino, RGBColor *color)
 {
   Array colorcomp;
-  Class class;
   Field oo;
   RGBColor *p_color;
 
@@ -3743,21 +3738,23 @@ static
          }
      }
      break;
+   default:
+     break;
   }
   return OK;
 }
 
 
-extern Error _dxfGetAnnotationColors(Object colors, Object which, 
-                                     RGBColor defaultticcolor, 
-                                     RGBColor defaultlabelcolor,
-                                     RGBColor defaultaxescolor,
-                                     RGBColor defaultgridcolor,
-                                     RGBColor defaultbackgroundcolor,
-                                     RGBColor *ticcolor, RGBColor *labelcolor,
-                                     RGBColor *axescolor, RGBColor *gridcolor,
-                                     RGBColor *backgroundcolor,
-                                     int *background) 
+Error _dxfGetAnnotationColors(Object colors, Object which, 
+                              RGBColor defaultticcolor, 
+                              RGBColor defaultlabelcolor,
+                              RGBColor defaultaxescolor,
+                              RGBColor defaultgridcolor,
+                              RGBColor defaultbackgroundcolor,
+                              RGBColor *ticcolor, RGBColor *labelcolor,
+                              RGBColor *axescolor, RGBColor *gridcolor,
+                              RGBColor *backgroundcolor,
+                              int *background) 
 {
   RGBColor *colorlist =NULL;
   int i, numcolors, numcolorobjects;
@@ -3925,7 +3922,7 @@ error:
   return ERROR;
 }
 
-extern Error _dxfHowManyStrings(Object stringlist, int *howmany)
+Error _dxfHowManyStrings(Object stringlist, int *howmany)
 {
   int i;
   char *string;
@@ -3950,8 +3947,6 @@ static Error GetPlotHeight(Object obj, int ylog, float *ywidth,
   float newmin = 1;
   int i;
   Field part;
-  char *attr;
-
 
 /* need to recurse on obj to each field. Treat dep connections and
    dep positions differently */
@@ -3964,7 +3959,7 @@ static Error GetPlotHeight(Object obj, int ylog, float *ywidth,
       *ywidth = FCEIL(log10(*plotmax))-FFLOOR(log10(*plotmin));
    
 
-    for (i=0; part = DXGetPart(obj, i); i++) {
+    for (i=0; (part = DXGetPart(obj, i)); i++) {
        if (!strcmp("connections",DXGetString((String)DXGetComponentAttribute((Field)part,"data","dep"))))
           newmin = 0;
     }

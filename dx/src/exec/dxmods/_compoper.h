@@ -8,6 +8,8 @@
 
 #include <dxconfig.h>
 
+#ifndef __COMPOPER_H_
+#define __COMPOPER_H_
 
 #define MAX_INTYPES 4		/* the addition of any operator that requires 
 				 * more than MAX_INTYPES inputs types will 
@@ -129,9 +131,6 @@ typedef struct {
 #define IMAGI(x) ((x).iPart)
 #define IMAGJ(x) ((x).jPart)
 #define IMAGK(x) ((x).kPart)
-
-/* A readonly variable comparable to an integer */
-static MetaType intExpr = {0, TYPE_INT, CATEGORY_REAL, 0};
 
 int
 _dxfComputeCopy(
@@ -1439,7 +1438,18 @@ _dxfComputeCheckSameSpecReturn (PTreeNode *pt, ObjStruct *os, OperBinding *bindi
 int
 _dxfComputeCheckSameTypeSpecReturn (PTreeNode *pt, ObjStruct *os, OperBinding *binding);
 
+int     _dxfComputeLookupFunction (char *);
+int     _dxfComputeFinishExecution();
+int     _dxfComputeTypeCheck (PTreeNode *, ObjStruct *);
+void    _dxfComputeInitExecution (void);
+int     _dxfComputeExecuteNode (PTreeNode *, ObjStruct *,
+                                Pointer, InvalidComponentHandle *);
+
+#define MAXTOKEN        200
+
+
 /* Routines to work on complex numbers. */
+void         _dxfccinput(char *);
 complexFloat _dxfComputeAddComplexFloat(complexFloat x, complexFloat y);
 complexFloat _dxfComputeSubComplexFloat(complexFloat x, complexFloat y);
 complexFloat _dxfComputeNegComplexFloat(complexFloat x);
@@ -1461,3 +1471,6 @@ complexFloat _dxfComputeTanhComplexFloat(complexFloat x);
 complexFloat _dxfComputeAsinComplexFloat(complexFloat x);
 complexFloat _dxfComputeAcosComplexFloat(complexFloat x);
 complexFloat _dxfComputeAtanComplexFloat(complexFloat x);
+
+
+#endif /* __COMPOPER_H_ */

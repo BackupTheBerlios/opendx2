@@ -15,6 +15,10 @@
 #define FALSE 0
 #endif
 
+extern int DXLoopFirst(); /* from dpexec/evalgraph.c */
+extern void DXLoopDone(int); /* from dpexec/evalgraph.c */
+extern void DXSaveForId(char *); /* from dpexec/evalgraph.c */
+
 struct NextNState {
     int start;
     int end;
@@ -40,7 +44,7 @@ struct NextArrayState {
 
 Error NextArrState_delete(Pointer in)
 {
-    struct NextArrayState *astate;
+    struct NextArrayState *astate=NULL;
     if(in)
         astate = (struct NextArrayState *)in;
         if(astate->buf)
@@ -60,6 +64,7 @@ Error NextState_delete(Pointer in)
     return OK;
 }
 
+Error
 m_First(Object *in, Object *out)
 {
     int first;
@@ -71,6 +76,7 @@ m_First(Object *in, Object *out)
     return OK;
 }
 
+Error
 m_Done(Object *in, Object *out)
 {
     int done;
@@ -88,6 +94,7 @@ m_Done(Object *in, Object *out)
     return OK;
 }
 
+Error
 m_ForEachN(Object *in, Object *out)
 {
     struct NextNState *state = NULL;
@@ -139,7 +146,7 @@ m_ForEachN(Object *in, Object *out)
             DXLoopDone(TRUE);
             DXFreeModuleId(modid);
             DXFree(state);
-            return;
+            return OK;
         }
         /* cache the state information */
         obj = (Object) DXNewPrivate((Pointer)state, NextState_delete);
@@ -187,6 +194,7 @@ error_return:
     return ERROR;
 }
 
+Error
 m_ForEachMember(Object *in, Object *out)
 {
     Group group;

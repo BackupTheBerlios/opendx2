@@ -8,30 +8,25 @@
 
 #include <dxconfig.h>
 
-
-
 #include <ctype.h>
 #include <dx/dx.h>
-
+#include "autoaxes.h"
+#include "plot.h"
 
 static RGBColor DEFAULTTICSCOLOR = {1.0, 1.0, 0.0};
 static RGBColor DEFAULTLABELCOLOR = {1.0, 1.0, 1.0};
 static RGBColor DEFAULTGRIDCOLOR = {0.3, 0.3, 0.3};
 static RGBColor DEFAULTBACKGROUNDCOLOR = {0.05, 0.05, 0.05};
-
-extern Pointer _dxfNewAxesObject(void);
-extern Error _dxfSetAxesCharacteristic(Pointer, char *, Pointer);
 static Error GetAnnotationColors(Object, Object,
                                  RGBColor, RGBColor, RGBColor, RGBColor, 
                                  int *,
                                  RGBColor *, RGBColor *, RGBColor *,
                                  RGBColor *);
-extern Error _dxfHowManyStrings(Object, int *);
-extern Error _dxfLowerCase(char *, char **);
 static Error _dxfCopyMostAttributes(Object, Object); 
 
-extern Object _dxfAutoAxes(Pointer);
-
+extern Pointer _dxfNewAxesObject(void); /* from libdx/axes.c */
+extern Error _dxfSetAxesCharacteristic(Pointer, char *, Pointer);  /* from libdx/axes.c*/
+extern Object _dxfAutoAxes(Pointer); /* from libdx/axes.c*/
 
 int
 m_AutoAxes(Object *in, Object *out)
@@ -41,11 +36,10 @@ m_AutoAxes(Object *in, Object *out)
     Camera camera;
     int n = -9999, ns[3], adjust = 1, i;
     char *xlabel = NULL, *ylabel = NULL, *zlabel = NULL, *extra = NULL;
-    char *axestype = NULL, *fontname;
+    char *fontname;
     Point cursor, box[8], min, max, delta;
     int frame;
     float labelscale=1.0, fuzzattfloat;
-    Matrix m1, m3, m;
     int cursor_specified = 0;
     int grid, fuzzattint;
     Class class; 
@@ -210,7 +204,7 @@ m_AutoAxes(Object *in, Object *out)
          DXSetError(ERROR_BAD_PARAMETER,"xlocations must be a scalar list");
          return ERROR;
      }
-     xticklocations = in[13];
+     xticklocations = (Array) in[13];
    }
    /* user-forced ytic locations */
    if (in[14]) {
@@ -218,7 +212,7 @@ m_AutoAxes(Object *in, Object *out)
          DXSetError(ERROR_BAD_PARAMETER,"ylocations must be a scalar list");
          return ERROR;
      }
-     yticklocations = in[14];
+     yticklocations = (Array) in[14];
    }
    /* user-forced ztic locations */
    if (in[15]) {
@@ -226,7 +220,7 @@ m_AutoAxes(Object *in, Object *out)
          DXSetError(ERROR_BAD_PARAMETER,"zlocations must be a scalar list");
          return ERROR;
      }
-     zticklocations = in[15];
+     zticklocations = (Array) in[15];
    }
    /* user-forced xtic labels; need to set in[13] */
    if (in[16]) {
@@ -234,7 +228,7 @@ m_AutoAxes(Object *in, Object *out)
          DXSetError(ERROR_BAD_PARAMETER,"xlabels must be a string list");
          return ERROR;
      }
-     if (!DXGetArrayInfo(in[16], &numlist, NULL,NULL,NULL,NULL))
+     if (!DXGetArrayInfo((Array)in[16], &numlist, NULL,NULL,NULL,NULL))
         return ERROR;
      if (!in[13]) {
          /* need to make an array to use. It will go from 0 to n-1 */
@@ -256,7 +250,7 @@ m_AutoAxes(Object *in, Object *out)
          DXSetError(ERROR_BAD_PARAMETER,"ylabels must be a string list");
          return ERROR;
      }
-     if (!DXGetArrayInfo(in[17], &numlist, NULL,NULL,NULL,NULL))
+     if (!DXGetArrayInfo((Array)in[17], &numlist, NULL,NULL,NULL,NULL))
         return ERROR;
      if (!in[14]) {
          /* need to make an array to use. It will go from 0 to n-1 */
@@ -277,7 +271,7 @@ m_AutoAxes(Object *in, Object *out)
          DXSetError(ERROR_BAD_PARAMETER,"zlabels must be a string list");
          return ERROR;
      }
-     if (!DXGetArrayInfo(in[18], &numlist, NULL,NULL,NULL,NULL))
+     if (!DXGetArrayInfo((Array)in[18], &numlist, NULL,NULL,NULL,NULL))
         return ERROR;
      if (!in[15]) {
          /* need to make an array to use. It will go from 0 to n-1 */
@@ -591,9 +585,7 @@ error:
   return ERROR;
 }
 
-
-
-extern Error _dxfLowerCase(char *stringin, char **stringout)
+Error _dxfLowerCase(char *stringin, char **stringout)
 {
    int length, i;
 
@@ -614,7 +606,7 @@ static Error _dxfCopyMostAttributes(Object out, Object in)
   int i, count=0;
   Object attribute;
 
-  for (i=0; attribute = DXGetEnumeratedAttribute(in, i, &name); i++) {
+  for (i=0; (attribute = DXGetEnumeratedAttribute(in, i, &name)); i++) {
       if (strcmp(name,"color multiplier")&&strcmp(name,"opacity multiplier")) {
          DXSetAttribute(out, name, attribute);
          count++;
@@ -623,11 +615,4 @@ static Error _dxfCopyMostAttributes(Object out, Object in)
   return OK;
 
 }
-
-
-
-
-
-
-
 

@@ -11,35 +11,29 @@
 #include <dxconfig.h>
 
 
-
-
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
 #include <dx/dx.h>
-
-
-extern
-  Error _dxfConnectVoronoiObject(Object, Vector);
+#include "_connectvor.h"
 
 	
 int	
   m_Connect(Object *in, Object *out)
 {	
-  char *method, *element;
+  char *method;
   char newstring[30];
   Class class;
   Category category;
   Object obj=NULL;
   Vector normal;
-  Array pos, newarray=NULL;
+  Array newarray=NULL;
   float *newarrayptr; 
-  Array missing=NULL;
-  float *p_ptr, *p_old, radius,  *radius_ptr, exponent;
+  float radius,  *radius_ptr;
   double vec_len;
   Type type;
-  int numitems, rank, shape[30], numnearest, count, i;
+  int numitems, rank, shape[30], count, i;
   
   radius_ptr = &radius;
   

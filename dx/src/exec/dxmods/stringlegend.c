@@ -17,32 +17,19 @@
 #include <dxconfig.h>
 
 
-
 #include <dx/dx.h>
 #include <stdlib.h>
-
-extern Object _dxfAxes2D(Pointer);
+#include "color.h"
+#include "plot.h"
+#include "_construct.h"
 
 #define MINTICPIX 5;
 
-extern Pointer _dxfNew2DAxesObject(void);
-extern Error _dxfTransposePositions(Array);
-extern _dxfFreeAxesHandle(Pointer);
-extern Error _dxfSet2DAxesCharacteristic(Pointer, char *, Pointer);
-extern Error _dxfGetColorBarAnnotationColors(Object, Object,
-                                 RGBColor, RGBColor,
-                                 RGBColor *, RGBColor *, 
-                                 RGBColor *, int *);
-extern Array _dxfReallyCopyArray(Array);
-
-
 static RGBColor DEFAULTTICCOLOR = {0.3, 0.3, 0.3};
 static RGBColor DEFAULTLABELCOLOR = {1.0, 1.0, 1.0};
-static RGBColor DEFAULTAXESCOLOR = {-1.0, -1.0, -1.0};
-static RGBColor DEFAULTGRIDCOLOR = {-1.0, -1.0, -1.0};
 
 
-
+Error
 m_Legend(Object *in, Object *out)
 {
   char *namestring=NULL;
@@ -63,8 +50,8 @@ m_Legend(Object *in, Object *out)
   Array locs=NULL, color_list=NULL, index_list=NULL; 
   float *index_list_ptr;
   Class class;
-  Point translation, point, box[8], min, max;
-  RGBColor ticcolor, labelcolor, axescolor, gridcolor, framecolor, color;
+  Point translation, box[8], min, max;
+  RGBColor ticcolor, labelcolor, framecolor, color;
 
   typedef struct {
     float height, width, thickness;
@@ -301,6 +288,8 @@ m_Legend(Object *in, Object *out)
 	goto error;
       if (!DXColorNameToRGB(colorstring, &color))
 	break;
+    default:
+        break;
     }
     if (!(DXAddArrayData(a_newcolors, i, 
 			 1, (Pointer)&color))) {
@@ -531,7 +520,5 @@ m_Legend(Object *in, Object *out)
   DXDelete((Object)index_list);
   return ERROR;
 }
-
-
 
 

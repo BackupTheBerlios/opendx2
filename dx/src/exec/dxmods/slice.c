@@ -48,14 +48,14 @@ static Error fromdouble(Type t, double v1, Pointer v2, int i2);
 
 static Error numslices(CompositeField f, struct argblk *a);
 static Error fixtype(Series s);
-extern void _dxfPermute(int dim, Pointer out, int *ostrides, int *counts, 
+extern void _dxfPermute(int dim, Pointer out, int *ostrides, int *counts,  /* from libdx/permute.c */
 		    int size, Pointer in, int *istrides);
 
 /* the source for these is in partreg.c */
-extern Field _dxf_has_ref_lists(Field f, int *pos, int *con);
-extern Error _dxf_make_map_template(Array a, Array *map);
-extern Error _dxf_fix_map_template(Array map, Array newmap);
-extern Array _dxf_remap_by_map(Array a, Array map);
+extern Field _dxf_has_ref_lists(Field f, int *pos, int *con); /* from libdx/partreg.c */
+extern Error _dxf_make_map_template(Array a, Array *map); /* from libdx/partreg.c */
+extern Error _dxf_fix_map_template(Array map, Array newmap); /* from libdx/partreg.c */
+extern Array _dxf_remap_by_map(Array a, Array map); /* from libdx/partreg.c */
  
 #define IsEmpty(o)  (DXGetObjectClass(o)==CLASS_FIELD && DXEmptyField((Field)o))
 
@@ -271,7 +271,7 @@ static Object Object_Slice(Object o, struct argblk *a)
 
 
             /* for each original partition */
-            for (i=0; subo = DXGetEnumeratedMember((Group)o, i, &name); i++) {
+            for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, &name)); i++) {
                 if (DXEmptyField((Field)subo))
                     continue;
 		
@@ -327,7 +327,7 @@ static Object Object_Slice(Object o, struct argblk *a)
 	    }
 
             newi = 0;
-	    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, &name); i++) {
+	    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, &name)); i++) {
 		if (goparallel) {
 		    a->toslice = subo;
 		    a->membername = name;
@@ -386,7 +386,7 @@ static Object Object_Slice(Object o, struct argblk *a)
 	    }
 
             /* for each member */
-	    for (i=0; subo = DXGetSeriesMember((Series)o, i, &position); i++) {
+	    for (i=0; (subo=DXGetSeriesMember((Series)o, i, &position)); i++) {
 		if (goparallel) {
 		    a->toslice = subo;
 		    a->seriesplace = position;
@@ -567,7 +567,6 @@ static Object Field_Slice(Field o, struct argblk *a)
     ArrayHandle ah;
     int refpos, refcon;
     Array posmap = NULL;
-    Array conmap = NULL;  /* temp for now - should use algorithm */
     
  
     /* have to do positions & connections first, so we know the
@@ -870,7 +869,7 @@ static Object Field_Slice(Field o, struct argblk *a)
 	 *    slices, this replaces the old component.  for series of slices,
 	 *    this adds the component for the first time.
 	 */
-	for (j=0; subo=DXGetEnumeratedComponentValue(o, j, &name); j++) {
+	for (j=0; (subo=DXGetEnumeratedComponentValue(o, j, &name)); j++) {
 	    
 	    if (!strcmp("positions", name) || !strcmp("connections", name))
 		continue;
@@ -1528,7 +1527,7 @@ numslices(CompositeField cf, struct argblk *ap)
 {
     int i, j, k, l, m;
     Field f;
-    Array arrc, arrp;
+    Array arrc, arrp=NULL;
     int shape[MAXSHAPE]; 
     int stride[MAXDIM], counts[MAXDIM], gridoffsets[MAXDIM];
     float origins[MAXDIM], deltas[MAXDIM*MAXDIM], *pos;
@@ -1559,30 +1558,30 @@ numslices(CompositeField cf, struct argblk *ap)
     
     if (!DXQueryGridConnections(arrc, &ap->numdim, shape)) {
 	DXSetError(ERROR_BAD_PARAMETER, "#10610", "input");
-	return NULL;
+	return ERROR;
     }
 
     if (ap->slicedim >= ap->numdim) {
 	DXSetError(ERROR_BAD_PARAMETER, "#11360", ap->slicedim, "input", 
 		 ap->numdim-1);
-	return NULL;
+	return ERROR;
     }
     
     /* before we compute the slice positions, we have to collect all the 
      *  partitions along the slice axis and compute the total number of slices.
      */
     
-    for (i=0; f = (Field)DXGetEnumeratedMember((Group)cf, i, NULL); i++) {
+    for (i=0; (f=(Field)DXGetEnumeratedMember((Group)cf, i, NULL)); i++) {
 	
 	arrc = (Array)DXGetComponentValue(f, "connections");
 	
 	if (!DXQueryGridConnections(arrc, &ap->numdim, shape)) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#10610", "input");
-	    return NULL;
+	    return ERROR;
 	}
 	
 	if (!DXGetMeshOffsets((MeshArray)arrc, gridoffsets))
-	    return NULL;
+	    return ERROR;
 	
 	/* only keep the partitions which are along the origin in the
 	 *  other dimensions, so that later when the positions are
@@ -1612,7 +1611,7 @@ numslices(CompositeField cf, struct argblk *ap)
 	    gridlist = (struct gridlist *)DXReAllocate((Pointer)gridlist, 
 				     beenallocated * sizeof(struct gridlist));
 	    if (!gridlist)
-		return NULL;
+		return ERROR;
 	    
 	}
 	
@@ -1640,7 +1639,7 @@ numslices(CompositeField cf, struct argblk *ap)
 	if (!ap->compositepositions)
 	    goto error;
  
-	for (i=0; f = (Field)DXGetEnumeratedMember((Group)cf, i, NULL); i++) {
+	for (i=0; (f=(Field)DXGetEnumeratedMember((Group)cf, i, NULL)); i++) {
  
 	    arrc = (Array)DXGetComponentValue(f, "connections");
  
@@ -1728,7 +1727,7 @@ numslices(CompositeField cf, struct argblk *ap)
     ap->slicecount = ap->compositecount;
     
     if (!(ap->sliceplace = (int *)DXAllocate(ap->slicecount * sizeof(int))))
-	return NULL;
+	return ERROR;
     
     for (i=0; i<ap->slicecount; i++)
 	ap->sliceplace[i] = i;
@@ -1833,13 +1832,13 @@ fixtype(Series s)
     int rank;
     int shape[MAXDIM];
 
-    for (i=0; subo = DXGetEnumeratedMember((Group)s, i, NULL); i++) {
+    for (i=0; (subo=DXGetEnumeratedMember((Group)s, i, NULL)); i++) {
 	if (DXGetObjectClass(subo) != CLASS_GROUP ||
 	    DXGetGroupClass((Group)subo) != CLASS_COMPOSITEFIELD) {
 	    DXErrorReturn(ERROR_INTERNAL, "missing composite field");
 	}
 
-	for (j=0; subo2 = DXGetEnumeratedMember((Group)subo, j, NULL); j++) {
+	for (j=0; (subo2=DXGetEnumeratedMember((Group)subo, j, NULL)); j++) {
 	    if (DXGetObjectClass(subo2) != CLASS_FIELD || 
 		DXEmptyField((Field)subo2))
 		continue;
@@ -1898,6 +1897,7 @@ static Error fromdouble(Type t, double v1, Pointer v2, int i2)
       case TYPE_INT:    TYPE_FROM(int,    v1, v2, i2);  return OK;
       case TYPE_FLOAT:  TYPE_FROM(float,  v1, v2, i2);  return OK;
       case TYPE_DOUBLE: TYPE_FROM(double, v1, v2, i2);  return OK;
+      default: break;
     }
 
     DXSetError(ERROR_NOT_IMPLEMENTED, "unrecognized data type");
@@ -1917,6 +1917,7 @@ static Error todouble(Type t, Pointer v1, int i1, double *v2)
       case TYPE_INT:    TYPE_TO(int,    v1, i1, v2);  return OK;
       case TYPE_FLOAT:  TYPE_TO(float,  v1, i1, v2);  return OK;
       case TYPE_DOUBLE: TYPE_TO(double, v1, i1, v2);  return OK;
+      default: break;
     }
 
     DXSetError(ERROR_NOT_IMPLEMENTED, "unrecognized data type");
@@ -1925,6 +1926,7 @@ static Error todouble(Type t, Pointer v1, int i1, double *v2)
 
 /* check if value1 when cast to double equals 0.0.  1 is true, 0 is false
  */
+#if 0
 static int my_iszero (Type t, Pointer v1, int i1)
 {
     int rc; 
@@ -1942,4 +1944,5 @@ static int my_iszero (Type t, Pointer v1, int i1)
 
     return 0;
 }
+#endif 
 

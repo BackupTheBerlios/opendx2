@@ -12,13 +12,11 @@
 
 #include <dxconfig.h>
 
-
-
 #include <stdio.h>
 #include <dx/dx.h>
 #include <math.h>
 #include <string.h>
-
+#include "_autocolor.h"
 
 typedef struct {
     Field a_f;
@@ -41,47 +39,36 @@ typedef struct {
     RGBColor   a_upperrgb;
 } arg_byte;
 
-
 #define LN(x) log((double)x)
 #define ABS(a)	((a)>0.0 ? (a) : -(a))
 
-extern Error _dxfDelayedOK(Object);
-extern Object _dxfDXEmptyObject(Object);
-
-extern Group _dxfAutoColor(Object,  float, float, float, 
-	   float, float, float *, float *, Object *, int, 
-           RGBColor, RGBColor); 
-extern Error _dxfAutoColorObject(Object, Object, Object);
 static float ValueFcn(float, float, float);
 static Error AutoColorDelayedObject(Object, int, float, float, int, float,
-                                    float, float, float, float, RGBColor,
-                                    RGBColor);
+                   float, float, float, float, RGBColor,
+                   RGBColor);
 static Error RecurseToIndividual(Object, float, float, float, 
-     	 float, float, float *, float *, Object *, int, RGBColor,
-         RGBColor);
+     	           float, float, float *, float *, Object *, int, RGBColor,
+                   RGBColor);
 static Error MakeMapAndColor(Object, float, float, float, float,
-	 float, float *, float *, Object *, int, RGBColor, RGBColor);
-static Error MakeMapAndColorMGrid(Object, float, float, float, float,
-	 float, float *, float *, Object *, int, RGBColor, RGBColor);
-extern Error _dxfSetMultipliers(Object, float, float);
+	           float, float *, float *, Object *, int, RGBColor, RGBColor);
+
 static Error RemoveOpacities(Object);
 static Error AutoColorField(Pointer);
 static Error AutoColorDelayedField(Pointer);
-extern int _dxfHSVtoRGB(float, float, float, float *, float *, float *);
-extern Error _dxfRGBtoHSV(float, float, float, float *, float *, float *);
 static Error GoodField(Field);
-extern Error _dxfScalarField(Field, int *);
-extern Error _dxfByteField(Object, int *);
-extern Error _dxfFloatField(Object, int *);
-extern Error _dxfBoundingBoxDiagonal(Object, float *);
-extern int _dxfFieldWithInformation(Object);
-extern Field _dxfMakeRGBColorMap(Field);
-extern int _dxfIsVolume(Object, int *);
-extern Object DXMap(Object, Object, char *, char *);
-static int direction(int);
-static int sign(int);
-extern Array DXScalarConvert(Array);
+static int   direction(int);
+static int   sign(int);
 
+#if 0
+static Error MakeMapAndColorMGrid(Object, float, float, float, float,
+	           float, float *, float *, Object *, int, RGBColor, RGBColor);
+#endif
+
+
+/* extern somewhere */
+extern Object _dxfDXEmptyObject(Object); /* from libdx/component.c */
+extern Object DXMap(Object, Object, char *, char *); /* from libdx/map.c */
+extern Array DXScalarConvert(Array); /* from libdx/stats.h */
 
 
 /*
@@ -195,7 +182,7 @@ static Error RecurseToIndividual(Object g_out, float opacity,
       /* generic group;  continue recursing  */
       if (!(outcolorgroup = DXNewGroup())) 
 	return ERROR;
-      for (i=0; subo = DXGetEnumeratedMember((Group)g_out, i, NULL); i++){ 
+      for (i=0; (subo=DXGetEnumeratedMember((Group)g_out, i, NULL)); i++){ 
 	if (!RecurseToIndividual(subo, opacity, intensity, phase, range,
 				 saturation, inputmin, inputmax, 
 				 outcolormap,delayed,colorvecmin,
@@ -254,6 +241,7 @@ static Error RecurseToIndividual(Object g_out, float opacity,
   return OK;
 }
 
+#if 0
 static Error MakeMapAndColorMGrid(Object g_out, float opacity_i,
                              float intensity_i,
 			     float phase, float range, float saturation, 
@@ -304,6 +292,7 @@ static Error MakeMapAndColorMGrid(Object g_out, float opacity_i,
   }
   return OK;
 }
+#endif
 
 
 static Error MakeMapAndColor(Object g_out, float opacity_i, 
@@ -314,7 +303,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
                              RGBColor colorvecmin, RGBColor colorvecmax)
      
 {
-  int surface, setopacities, compactopacities, byteflag, ii;
+  int surface, setopacities, compactopacities, ii;
   int allblue, count, icount;
   float huestart, hueend, hue ;
   float red, blue, green, r, g, b; 
@@ -322,7 +311,7 @@ static Error MakeMapAndColor(Object g_out, float opacity_i,
   float dmin, dmax;
   int datamin, datamax, numentries;
   float minvalue, maxvalue;
-  float unitopacity, unitvalue, thickness;
+  float unitopacity=0, unitvalue=0, thickness;
   float avg, standdev;
   Field  OpacityField, ColorField, newcolorfield;
   float *odata_ptr, *opos_ptr, *cpos_ptr;
@@ -1127,7 +1116,7 @@ static Error RemoveOpacities(Object o)
   switch(DXGetObjectClass(o)) {
   case CLASS_GROUP:
     /* get children and call RemoveOpacities(subo); */
-    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++){ 
+    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++){ 
       if (!RemoveOpacities(subo))
 	return ERROR;
     }
@@ -1145,7 +1134,7 @@ static Error RemoveOpacities(Object o)
 }
 
 
-extern Error _dxfAutoColorObject(Object o, Object Color, Object Opacity)
+Error _dxfAutoColorObject(Object o, Object Color, Object Opacity)
 {
   int i;
   Object subo;
@@ -1173,7 +1162,7 @@ extern Error _dxfAutoColorObject(Object o, Object Color, Object Opacity)
     break;
   case CLASS_GROUP:
     /* get children and call AutoColorObject(subo); */
-    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++){ 
+    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++){ 
       if (!_dxfAutoColorObject(subo, Color, Opacity))
 	return ERROR;
     }
@@ -1354,7 +1343,7 @@ static Error AutoColorDelayedObject(Object o, int setopacities,
   switch(DXGetObjectClass(o)) {
   case CLASS_GROUP:
     /* get children and call AutoColorObject(subo); */
-    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++){ 
+    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++){ 
       if (!AutoColorDelayedObject(subo, setopacities, givenmin, givenmax, 
                                   surface, opacity, huestart, range, 
                                   saturation, intensity, lowerrgb, upperrgb))
@@ -1395,20 +1384,16 @@ static Error AutoColorDelayedField(Pointer ptr)
 
 {
   Field f, savedfield;
-  int scalar, i, count, setopacities, surface,numentries;
-  float *dp_o, givenmin, givenmax,opacity,r,g,b;
+  int scalar, i, setopacities, surface,numentries;
+  float givenmin, givenmax,opacity,r,g,b;
   float *opacityarray=NULL, huestart, range,saturation,intensity,hue;
-  float opacityorigin, opacitydelta, dmin, dmax;
+  float dmin, dmax;
   int datamin, datamax;
-  unsigned char  scalarorigin, scalardelta;
   RGBColor *colorarray=NULL;
-  unsigned char *dp_d;
-  RGBColor *dp_c, colororigin, colordelta, lowerrgb, upperrgb;
-  Array newdata, olddata, a_opacity, a_color, a_data;
+  RGBColor lowerrgb, upperrgb;
+  Array newdata, olddata, a_data;
   Array deferredcolors, deferredopacities;
   arg_byte *a;
-  char *datadep;
-  Class class;
 
   a = (arg_byte *)ptr;
   f = a->a_f;
@@ -1564,15 +1549,15 @@ static Error AutoColorDelayedField(Pointer ptr)
 static Error GoodField(Field f)
 {
   if (DXEmptyField(f))
-     return NULL;
+     return ERROR;
   if (!(DXGetComponentValue(f, "data")))
-     return NULL;
+     return ERROR;
   return OK;
 }
 
 
 
-extern Error _dxfIsTextField(Field f, int *text)
+Error _dxfIsTextField(Field f, int *text)
 {
   Array a;
   Type type;
@@ -1591,7 +1576,7 @@ extern Error _dxfIsTextField(Field f, int *text)
 }
 
 
-extern Error _dxfScalarField(Field f, int *scalar) 
+Error _dxfScalarField(Field f, int *scalar) 
 {
   Array a;
   Type type;
@@ -1623,11 +1608,12 @@ extern Error _dxfScalarField(Field f, int *scalar)
   DXSetError(ERROR_BAD_PARAMETER,"data field not scalar or vector");
   return ERROR;
   */
+  return OK;
 }
 
 
 
-extern Error _dxfFloatField(Object f, int *floatflag)
+Error _dxfFloatField(Object f, int *floatflag)
 {
   Array a;
   Type type;
@@ -1655,7 +1641,7 @@ extern Error _dxfFloatField(Object f, int *floatflag)
      /* if any member of the group has a non-float data component, set
         the flag to 0 */
      i = 0;
-     while (sub = (Object)DXGetPart((Object)f, i)) {
+     while ((sub=(Object)DXGetPart((Object)f, i))) {
        i++;
        if (!(a = (Array)(DXGetComponentValue((Field)sub, "data")))) {
          continue; 
@@ -1670,6 +1656,8 @@ extern Error _dxfFloatField(Object f, int *floatflag)
        }
      }
      break;
+     default:
+     break;
    }
 done:
    return OK;
@@ -1677,7 +1665,7 @@ done:
 
 
 
-extern Error _dxfByteField(Object g_out, int *byteflag)
+Error _dxfByteField(Object g_out, int *byteflag)
 {
   int foundone, i, rank, shape;
   Field f;
@@ -1698,7 +1686,7 @@ extern Error _dxfByteField(Object g_out, int *byteflag)
   /*  I'm just getting the first part that I find.  */
   foundone = 0;
   i = 0;
-  while (f = DXGetPart((Object)g_out, i)) {
+  while ((f=DXGetPart((Object)g_out, i))) {
     i++;
     if (DXEmptyField(f))
       continue; 
@@ -1736,7 +1724,7 @@ extern Error _dxfByteField(Object g_out, int *byteflag)
 }
 
 
-extern Error _dxfDelayedOK(Object g_out)
+Error _dxfDelayedOK(Object g_out)
 {
   int foundone, i, rank, shape;
   Field f;
@@ -1756,7 +1744,7 @@ extern Error _dxfDelayedOK(Object g_out)
   /*  I'm just getting the first part that I find.  */
   foundone = 0;
   i = 0;
-  while (f = DXGetPart((Object)g_out, i)) {
+  while ((f=DXGetPart((Object)g_out, i))) {
     i++;
     if (DXEmptyField(f))
       continue;
@@ -1797,12 +1785,7 @@ extern Error _dxfDelayedOK(Object g_out)
   return OK;
 }
 
-
-
-
-
-
-extern int _dxfIsVolume(Object g_out, int *surface)
+int _dxfIsVolume(Object g_out, int *surface)
 {
   int foundone, i;
   Field f;
@@ -1822,7 +1805,7 @@ extern int _dxfIsVolume(Object g_out, int *surface)
   *surface = 0;
   foundone = 0;
   i = 0;
-  while (f = DXGetPart((Object)g_out, i)) {
+  while ((f=DXGetPart((Object)g_out, i))) {
     i++;
     if (DXEmptyField(f))
       continue; 
@@ -1857,8 +1840,8 @@ extern int _dxfIsVolume(Object g_out, int *surface)
 }
 
 
-int 
-  _dxfHSVtoRGB(float h, float s, float v, float *red, float *green, float *blue)
+Error
+_dxfHSVtoRGB(float h, float s, float v, float *red, float *green, float *blue)
 /*   algorithm is from Fundamentals of Interactive Computer Graphics
      by Foley and Van Dam, 1984   */
 {
@@ -1934,8 +1917,8 @@ int
 
 
 
-extern Error  
-  RGBtoHLS(float r, float g, float b, float *h, float *l, float *s)
+Error  
+RGBtoHLS(float r, float g, float b, float *h, float *l, float *s)
 /*   algorithm is from Fundamentals of Interactive Computer Graphics
      by Foley and Van Dam, 1984   */
 {
@@ -1979,8 +1962,8 @@ extern Error
   return OK;
 } 
 
-extern Error  
-  HLStoRGB(float h, float l, float s, float *r, float *g, float *b)
+Error  
+HLStoRGB(float h, float l, float s, float *r, float *g, float *b)
 /*   algorithm is from Fundamentals of Interactive Computer Graphics
      by Foley and Van Dam, 1984   */
 {
@@ -2027,8 +2010,8 @@ static float ValueFcn(float n1, float n2, float hue)
 
 
 
-extern Error  
-  _dxfRGBtoHSV(float r, float g, float b, float *h, float *s, float *v)
+Error  
+_dxfRGBtoHSV(float r, float g, float b, float *h, float *s, float *v)
 /*   algorithm is from Fundamentals of Interactive Computer Graphics
      by Foley and Van Dam, 1984   */
 {
@@ -2080,15 +2063,7 @@ extern Error
     return OK; 
 }  
 
-
-
-
-
-
-
-
-
-extern Error _dxfBoundingBoxDiagonal(Object ob, float *thickness)
+Error _dxfBoundingBoxDiagonal(Object ob, float *thickness)
 {
   Object Box;
   Point boxpoint[8];
@@ -2124,7 +2099,7 @@ static int sign(int value)
 }
 
 
-extern int _dxfFieldWithInformation(Object ob)
+int _dxfFieldWithInformation(Object ob)
 {
   Object subo;
   int i;
@@ -2133,7 +2108,7 @@ extern int _dxfFieldWithInformation(Object ob)
   switch(DXGetObjectClass(ob)) {
   case CLASS_GROUP:
     /* get children; */
-    for (i=0; subo = DXGetEnumeratedMember((Group)ob, i, NULL); i++)
+    for (i=0; (subo=DXGetEnumeratedMember((Group)ob, i, NULL)); i++)
       if (_dxfFieldWithInformation(subo))
          return 1;
       break;
@@ -2166,28 +2141,28 @@ extern int _dxfFieldWithInformation(Object ob)
 
 
 
-extern Field _dxfMakeRGBColorMap(Field mapfield)
+Field _dxfMakeRGBColorMap(Field mapfield)
      /* converts an hsv color map to an rgb color map */
 {
   int icountnew, icountoriginal, i, countpos, countdata, rank, shape, j;
   int numnew, numnew1, numnew2, numnew3;
   int huestep0, huestep1, huestepdiff, deppos;
-  float *dp_f, *pp, *cp;
-  int *dp_i;
-  uint *dp_ui;
-  short *dp_s;
-  ushort *dp_us;
-  byte *dp_b;
-  ubyte *dp_ub;
+  float *dp_f=NULL, *pp;
+  int *dp_i=NULL;
+  uint *dp_ui=NULL;
+  short *dp_s=NULL;
+  ushort *dp_us=NULL;
+  byte *dp_b=NULL;
+  ubyte *dp_ub=NULL;
   Type type, datatype;
   char *datadep;
   Category category;
-  float lasthue, lastsat, lastval;
+  float lasthue=0, lastsat=0, lastval=0;
   float tmphue, tmpsat, tmpval, tmppos, lasttmppos;
   float lastpos, pos, dpos;
   float red, green, blue;
   float abshue, abssat, absval;
-  float hue, sat, val;
+  float hue=0, sat=0, val=0;
   float dhue, dsat, dval;
   float maxhuediff, maxsatdiff, maxvaldiff, fuzz;
   RGBColor newcolor;
@@ -2370,6 +2345,8 @@ extern Field _dxfMakeRGBColorMap(Field mapfield)
         lastsat = (float)dp_ub[1];
         lastval = (float)dp_ub[2];
         break; 
+      default:
+        break;
     }
     lastpos = pp[0];
     if (!(_dxfHSVtoRGB(lasthue, lastsat, lastval,
@@ -2422,6 +2399,8 @@ extern Field _dxfMakeRGBColorMap(Field mapfield)
         sat = (float)dp_ub[i+1];
         val = (float)dp_ub[i+2];
         break; 
+      default:
+        break;
     }
       pos = pp[icountoriginal];
       dhue = hue - lasthue;
@@ -2570,6 +2549,8 @@ extern Field _dxfMakeRGBColorMap(Field mapfield)
          lastsat = (float)dp_ub[i+1];
          lastval = (float)dp_ub[i+2];
          break;
+        default:
+	 break;
       }
       if (!(_dxfHSVtoRGB(lasthue, lastsat, lastval,
 		     &red, &green, &blue))) goto cleanupnofield;
@@ -2634,7 +2615,7 @@ extern Field _dxfMakeRGBColorMap(Field mapfield)
 
 
 
-extern Field _dxfMakeHSVfromRGB(Field mapfield)
+Field _dxfMakeHSVfromRGB(Field mapfield)
 /* converts an hsv color map to an rgb color map */
 {
   Type type;
@@ -2827,8 +2808,7 @@ extern Field _dxfMakeHSVfromRGB(Field mapfield)
 
 
 
-extern Error _dxfSetMultipliers(Object g_out, float unitvalue, float unitopacity)
-
+Error _dxfSetMultipliers(Object g_out, float unitvalue, float unitopacity)
 { 
    Class class, groupclass;
    int i;
@@ -2847,7 +2827,7 @@ extern Error _dxfSetMultipliers(Object g_out, float unitvalue, float unitopacity
       /* put the multiplier attribute on each member of the series, 'cause
          someone might extract them down the road */
       if (groupclass == CLASS_SERIES) {
-         for (i=0; subo = DXGetEnumeratedMember((Group)g_out, i, NULL); i++){ 
+         for (i=0; (subo=DXGetEnumeratedMember((Group)g_out, i, NULL)); i++){ 
              if (!(DXSetAttribute((Object)subo, "color multiplier", 
                  (Object)DXAddArrayData(DXNewArray(TYPE_FLOAT, 
                                                    CATEGORY_REAL, 0),

@@ -5,10 +5,14 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/import.h,v 1.5 2000/08/24 20:04:37 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
-
+#ifndef _IMPORT_H_
+#define _IMPORT_H_
 
 /* 
  * input parameter list which each function must accept:
@@ -77,7 +81,36 @@ typedef enum {
     BO_LSB = 3
 } ByteOrder;
 
-extern Error     _dxfByteSwap(void *, void*, int, Type);
-extern ByteOrder _dxfLocalByteOrder(void);
+Error     _dxfByteSwap(void *, void*, int, Type);
+ByteOrder _dxfLocalByteOrder(void);
+
+ImportStatReturn  _dxftry_ncdf(struct parmlist *p);
+ImportStatReturn  _dxftry_hdf(struct parmlist *p);
+ImportStatReturn  _dxftry_dx(struct parmlist *p);
+ImportStatReturn  _dxftry_cdf(struct parmlist *p);
+ImportStatReturn  _dxftry_bin(struct parmlist *p);
+ImportStatReturn  _dxftry_wv(struct parmlist *p);
+
+Object _dxfget_ncdf(struct parmlist *p);
+Object _dxfget_hdf(struct parmlist *p);
+Object _dxfget_dx(struct parmlist *p);
+Object _dxfget_cdf(struct parmlist *p);
+Object _dxfget_bin(struct parmlist *p);
+Object _dxfget_wv(struct parmlist *p);
+Object _dxfget_cm(struct parmlist *p);
+
+/* from import_ncdf.c */
+ImportStatReturn _dxfstat_netcdf_file(char *);
+
+/* from import_hdf.c */
+ImportStatReturn _dxfstat_hdf(char *);
+int   _dxfget_hdfcount(char *);
+int   _dxfwhich_hdf(char *, char *);
+
+/* from import_cdf.c */
+ImportStatReturn _dxfstat_cdf(char *);
+
 
 #define LOCAL_BYTEORDER   _dxfLocalByteOrder()
+
+#endif /* _IMPORT_H_ */

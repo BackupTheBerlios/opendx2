@@ -6,11 +6,13 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.h,v 1.4 1999/08/05 22:10:53 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.h,v 1.5 2000/08/24 20:04:20 davidt Exp $
  */
 
 #include <dxconfig.h>
 
+#ifndef __RW_IMAGE_H_
+#define __RW_IMAGE_H_
 
 /*
  * This file contains basic support for reading/writing images.
@@ -152,14 +154,14 @@ typedef struct {
 /* 
  * Get 'flags' field from the entry in ImageTable[] with image type 'type'
  */
-extern ImageInfo *_dxf_ImageInfoFromType(ImageType type);
+ImageInfo *_dxf_ImageInfoFromType(ImageType type);
 
 /* 
  * Determine the image type from a format specifier (i.e. "rgb", "r+g+b"...)
  * 'format' is searched for in ImageTable[] and if found the corresponding
  * 'type' field is returned. 
  */
-extern ImageInfo *_dxf_ImageInfoFromFormat(char *format);
+ImageInfo *_dxf_ImageInfoFromFormat(char *format);
 
 /* 
  * Determine the image type from a filename (i.e. "image.rgb", "image.fp"...)
@@ -167,118 +169,119 @@ extern ImageInfo *_dxf_ImageInfoFromFormat(char *format);
  * the 'extensions' field of the ImageTable[] entries and if found the 
  * corresponding 'type' field is returned. 
  */
-extern ImageInfo *_dxf_ImageInfoFromFileName ( char *basename);
+ImageInfo *_dxf_ImageInfoFromFileName ( char *basename);
 
 /*
  * Remove the extension (last part of filename after '.') if it is an
  * extension for the given image type.
  */
-extern void _dxf_RemoveImageExtension(char *name, ImageType type);
+void _dxf_RemoveImageExtension(char *name, ImageType type);
 
 
 /*
  * Get the 'member'th image of series.  Assert that dimensions match
  * a un-partition the image if it is composite.
  */
-extern Field _dxf_GetFlatSeriesImage(Series image, int member,
+Field _dxf_GetFlatSeriesImage(Series image, int member,
                                 int width, int height, int *created);
 
 /*
  * Remove the last dotted part from a filename.
  */
-extern char * _dxf_RemoveExtension ( char *extended );
+char * _dxf_RemoveExtension ( char *extended );
 
 /*-------------------- Begin _rgb_image.c ----------------------------------*/
 
-extern SizeData *_dxf_ReadImageSizesADASD ( char *name, SizeData *sd );
-extern char *_dxf_BuildImageFileName ( char *, int, char *, ImageType, int, int);
-extern char *_dxf_ReplaceImageFileExtension ( char*, int, char*, ImageType, char*);
+SizeData *_dxf_ReadImageSizesADASD ( char *name, SizeData *sd );
+char *_dxf_BuildImageFileName ( char *, int, char *, ImageType, int, int);
+char *_dxf_ReplaceImageFileExtension ( char*, int, char*, ImageType, char*);
 
 /*
  * The following are routines to write specific image formats to disk.
  */
 /* Write an image in "fb" format, see _rgb_image.c */
-extern Error _dxf_write_fb(RWImageArgs *iargs);
+Error _dxf_write_fb(RWImageArgs *iargs);
 
 /* Write an image in "rgb" format, see _rgb_image.c */
-extern Error _dxf_write_rgb(RWImageArgs *iargs);
+Error _dxf_write_rgb(RWImageArgs *iargs);
 
 /* Write an image in "r+g+b" format, see _rgb_image.c */
-extern Error _dxf_write_r_g_b(RWImageArgs *iargs);
+Error _dxf_write_r_g_b(RWImageArgs *iargs);
 
-extern Error _dxf_write_yuv(RWImageArgs *iargs);
+Error _dxf_write_yuv(RWImageArgs *iargs);
 
 /*
  * Read/write the 'size' files associated with "rgb", "r+g+b" format 
  * Until we make ReadImage run off of ImageTable[] like WriteImage
  * does, these need to be declared external (readimage.m references them).
  */
-extern SizeData *_dxf_ReadSizeFile ( char *name, SizeData *sd );
-extern Error _dxf_WriteSizeFile ( char *name, SizeData sd );
+SizeData *_dxf_ReadSizeFile ( char *name, SizeData *sd );
+Error _dxf_WriteSizeFile ( char *name, SizeData sd );
 
 /*-------------------- End _rgb_image.c ----------------------------------*/
 
 /*-------------------- Begin _tiff.c ----------------------------------*/
 
-extern char * _dxf_BuildTIFFReadFileName                                
+char * _dxf_BuildTIFFReadFileName                                
            ( char *buf, int bufl, char *basename, char *fullname, int framenum,
              int *numeric, int *selection );
 
-extern SizeData * _dxf_ReadImageSizesTIFF
+SizeData * _dxf_ReadImageSizesTIFF
             ( char *name, int startframe, SizeData *data, int *use_numerics,
               int ext_sel, int *multiples );
 
-extern Field _dxf_InputTIFF
+Field _dxf_InputTIFF
 	    (int width, int height, char *name, int relframe, int delayed, char * colortype);
 
 /* Write an image in "tiff" format, see _tiff.c */
-extern Error _dxf_write_tiff(RWImageArgs *iargs);
+Error _dxf_write_tiff(RWImageArgs *iargs);
 
 /*-------------------- End _tiff.c ----------------------------------*/
 
 /*-------------------- Begin _gif.c ----------------------------------*/
 
-extern char * _dxf_BuildGIFReadFileName                                
+char * _dxf_BuildGIFReadFileName                                
            ( char *buf, int bufl, char *basename, char *fullname, int framenum,
              int *numeric, int *selection );
 
-extern SizeData * _dxf_ReadImageSizesGIF
+SizeData * _dxf_ReadImageSizesGIF
             ( char *name, int startframe, SizeData *data, int *use_numerics,
               int ext_sel, int *multiples );
 
-extern Field _dxf_InputGIF
+Field _dxf_InputGIF
 	    (int width, int height, char *name, int relframe, int delayed, char *colortype);
 
 /* Write an image in "gif" format, see _gif.c */
-extern Error _dxf_write_gif(RWImageArgs *iargs);
+Error _dxf_write_gif(RWImageArgs *iargs);
 
 /*-------------------- End _gif.c ----------------------------------*/
 
 /*-------------------- Begin _IM_write.c ----------------------------------*/
-extern Error _dxf_write_im(RWImageArgs *iargs);
+Error _dxf_write_im(RWImageArgs *iargs);
 /*-------------------- End  _IM_write.c ----------------------------------*/
 /*-------------------- Begin _ps.c ----------------------------------*/
 
 /* Write a color image in PostScript format */
-extern Error _dxf_write_ps_color(RWImageArgs *iargs);
+Error _dxf_write_ps_color(RWImageArgs *iargs);
 
 /* Write a gray image in PostScript format */
-extern Error _dxf_write_ps_gray(RWImageArgs *iargs);
+Error _dxf_write_ps_gray(RWImageArgs *iargs);
 
 /* Write a color image in Encapsulated PostScript format */
-extern Error _dxf_write_eps_color(RWImageArgs *iargs);
+Error _dxf_write_eps_color(RWImageArgs *iargs);
 
 /* Write a gray image in Encapsulated PostScript format */
-extern Error _dxf_write_eps_gray(RWImageArgs *iargs);
+Error _dxf_write_eps_gray(RWImageArgs *iargs);
 
-extern Error _dxf_write_miff(RWImageArgs *iargs);
-extern SizeData * _dxf_ReadImageSizesMIFF
+Error _dxf_write_miff(RWImageArgs *iargs);
+SizeData * _dxf_ReadImageSizesMIFF
             ( char *name, int startframe, SizeData *data, int *use_numerics,
               int ext_sel, int *multiples );
 
-extern Field _dxf_InputMIFF
+Field _dxf_InputMIFF
 	    (FILE **fh, int width, int height, char *name, int relframe, int delayed, char *colortype);
 /*-------------------- End _ps.c ----------------------------------*/
 
-extern Error _dxf_make_gamma_table(ubyte *gamma_table, float gamma);
+Error _dxf_make_gamma_table(ubyte *gamma_table, float gamma);
 
+#endif /* __RW_IMAGE_H_ */

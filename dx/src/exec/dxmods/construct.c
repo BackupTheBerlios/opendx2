@@ -13,8 +13,8 @@
 
 #include <stdio.h>
 #include <dx/dx.h>
+#include "_construct.h"
 
-extern Field _dxfConstruct(Array, Array, Array, Array);
 
 int
 m_Construct(Object *in, Object *out)

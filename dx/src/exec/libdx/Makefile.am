@@ -10,7 +10,7 @@ dxlib_LIBRARIES = libDXlite.a
 
 noinst_HEADERS = \
 	binSort.h triangles.h internals.h diskio.h zclip.h edf.h render.h \
-	qsort.c
+	qsort.c displayx.h
 
 XFILES = \
 	arrayClass.X cameraClass.X clippedClass.X fieldClass.X groupClass.X \

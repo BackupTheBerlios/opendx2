@@ -20,38 +20,26 @@
 #include <stdio.h>
 #include <math.h>
 #include <dx/dx.h>
-
-
-extern
-  Error _dxfWidthHeuristic(Object, float *);
-
-extern 
-  Error _dxfConnectNearestObject(Object, Object, int, float *, float, Array);
-
-extern 
-  Error _dxfConnectRadiusObject(Object, Object, float, float, Array);
+#include "_glyph.h"
+#include "_connectgrids.h"
 
 static
   Object MakeGrid(Object, float *, Object);
 
 #define RND(x) (x<0? x-0.5 : x+0.5)
 
-
-
 int
   m_AutoGrid(Object *in, Object *out)
 {
-  char *method, *element;
-  char newstring[30], *string;
+  char *string;
   Class class;
   Category category;
   Object ino=NULL, base=NULL;
-  Vector normal;
   float one=1;
   Array missing=NULL, density;
-  float *p_ptr, *p_old, radius,  *radius_ptr, exponent;
+  float radius,  *radius_ptr, exponent;
   Type type;
-  int numitems, rank, shape[30], numnearest, count, i;
+  int numitems, rank, shape[30], numnearest;
   float makeradius;
 
   radius_ptr = &radius;
@@ -319,7 +307,7 @@ int
 static Object MakeGrid(Object object, float *radius, Object density)
 {
 
-   Point box[8], origin, delta, densvector;
+   Point box[8], origin, densvector;
    int numitems, rank, shape[10];
    float DX, DY, DZ;
    float dx, dy, dz;
@@ -364,7 +352,8 @@ static Object MakeGrid(Object object, float *radius, Object density)
    case (CLASS_ARRAY):
       if (!DXGetArrayInfo((Array)object,&numitems, NULL, NULL, &rank, shape))
          goto error;
- 
+      break;
+   default: 
       break;
    }
 

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_normals.c,v 1.4 2000/05/16 18:47:31 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_normals.c,v 1.5 2000/08/24 20:04:16 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -17,22 +17,55 @@
 #include <string.h>
 #include <dx/dx.h>
 #include "vectors.h"
+#include "_normals.h"
 
-#define TRUE 			1
-#define FALSE 			0
+typedef struct
+{
+    Object obj;
+    float  rad;
+} AreaTask;
 
-#define ONE_THIRD		0.33333333333333333333
-#define ONE_FOURTH		0.25
+typedef struct
+{
+    Field field;
+    float radius;
+} AreaArgs;
 
-#define ABS(x)			(((x)< 0.0)?(-(x)):(x))
+#define NO_DEPENDENCY	   1
+#define DEP_ON_POSITIONS   2
+#define DEP_ON_CONNECTIONS 3
+#define DEP_ON_FACES       4
 
-Object _dxfNormalsObject(Object, char *);
+static Error DetermineFunction(Object, char *, int *, float *);
+static Error _dxfNormalsTraverse(Object, char *);
+static Error _dxfPositionNormals(Pointer);
+static Error _dxfConnectionNormals(Pointer);
+static Error _dxfFaceNormals(Pointer);
+static Error _dxfAreaNormals(Pointer);
+static int   CompareDependency(Object, char *);
+static CompositeField GridNormalsCompositeField(CompositeField, int);
+static Field GridNormalsField(Field, int);
+static Error _DetermineFunction(Object, char *, int *);
+static Error _dxfConnectionNormals_Field(Field);
+static Array  _dxf_CDep_triangles(Field);
+static Array  _dxf_CDep_quads(Field);
+static Error _dxfPositionNormals_Field(Field);
+static Array  _dxf_PDep_triangles(Field);
+static Array  _dxf_PDep_quads(Field);
+static Error _dxfAreaNormals_Field(Field, float);
+static float  _dxfTriangleArea(float *, float *, float *);
+static int    _dxfInside(float *, float, float *);
+static float  _dxfDistance(float *, float *);
+static Error  _dxfCheckTriangle(int, float, int, int *,
+		    int *, int *, float *, float *, float *);
+static float  _dxfIntersect(float *, float, float *, float *);
+static float  _dxfTriangleArea(float *, float *, float *);
+
 
 Object
 _dxfNormals(Object object, char *method)
 {
     Object copy = NULL;
-    int  n;
 
     if (method == NULL)
     {
@@ -53,15 +86,6 @@ error:
     DXDelete(copy);
     return NULL;
 }
-
-static Error DetermineFunction(Object, char *, int *, float *);
-
-#define NO_DEPENDENCY	   1
-#define DEP_ON_POSITIONS   2
-#define DEP_ON_CONNECTIONS 3
-#define DEP_ON_FACES       4
-
-static Error _dxfNormalsTraverse(Object, char *);
 
 Object
 _dxfNormalsObject(Object o, char *m)
@@ -99,25 +123,6 @@ error:
     DXFree((Pointer)gm);
     return NULL;
 }
-
-static Error  _dxfPositionNormals(Pointer);
-static Error  _dxfConnectionNormals(Pointer);
-static Error  _dxfFaceNormals(Pointer);
-static Error  _dxfAreaNormals(Pointer);
-
-static int CompareDependency(Object, char *);
-
-       Array _dxf_FLE_Normals(int *, int, int *, int, int *, int, float *, int nd);
-    
-typedef struct
-{
-    Object obj;
-    float  rad;
-} AreaTask;
-
-static CompositeField GridNormalsCompositeField(CompositeField, int);
-static Field GridNormalsField(Field, int);
-
 
 static Error
 _dxfNormalsTraverse(Object object, char *method)
@@ -296,8 +301,6 @@ error:
     return ERROR;
 }
 
-static Error _DetermineFunction(Object, char *, int *);
-
 static Error
 DetermineFunction(Object o, char *method, int *dep, float *radius)
 {
@@ -338,7 +341,7 @@ _DetermineFunction(Object o, char *name, int *dep)
     {
 	case CLASS_FIELD:
 	{
-	    Object attr; char *str; Array a;
+	    char *str; Array a;
 
 	    if (DXEmptyField((Field)o))
 	    { 
@@ -426,8 +429,7 @@ _DetermineFunction(Object o, char *name, int *dep)
     }
 }
 
-static Error _dxfConnectionNormals_Field(Field);
-
+#if 0
 static Error
 connectionsNormalsTask(Pointer ptr)
 {
@@ -435,6 +437,7 @@ connectionsNormalsTask(Pointer ptr)
 
     return _dxfConnectionNormals_Field(field);
 }
+#endif
 
 static Error
 _dxfConnectionNormals(Pointer ptr)
@@ -443,13 +446,10 @@ _dxfConnectionNormals(Pointer ptr)
 }
 
 
-static Array  _dxf_CDep_triangles(Field);
-static Array  _dxf_CDep_quads(Field);
-
 #define NORMAL(nv, nd, norm)						    \
 {									    \
     float length;							    \
-    int i, j;								    \
+    int i;								    \
 									    \
     norm->x = 0.0;							    \
     norm->y = 0.0;							    \
@@ -579,7 +579,7 @@ _dxf_CDep_triangles(Field field)
     Array		a_normals = NULL;
     int			n_connections;
     Vector		*normals;
-    int			i, j, k;
+    int			i, j;
     int			degenerate_count;
     ArrayHandle		cHandle = NULL, pHandle = NULL;
     int			nd;
@@ -700,7 +700,7 @@ _dxf_CDep_quads(Field field)
     Array		a_normals = NULL;
     int			n_connections;
     Vector		*normals;
-    int			i, j, nd;
+    int			i, nd;
     int			degenerate_count;
     ArrayHandle		cHandle = NULL, pHandle = NULL;
 
@@ -801,8 +801,6 @@ error:
 	
 }
 
-static Error _dxfPositionNormals_Field(Field);
-
 static Error
 positionsNormalsTask(Pointer ptr)
 {
@@ -851,9 +849,6 @@ _dxfPositionNormals(Pointer ptr)
     else 
 	 return _dxfPositionNormals_Field((Field)object);
 }
-
-static Array  _dxf_PDep_triangles(Field);
-static Array  _dxf_PDep_quads(Field);
 
 static Error
 _dxfPositionNormals_Field(Field field)
@@ -951,10 +946,7 @@ _dxf_PDep_triangles(Field field)
     Array		nArray;
     Array		a_connections, a_positions;
     int			n_connections, n_positions;
-    float		*pts;
-    int		        *tri;
     float		centroid[3];
-    float		length;
     float		dist;
     float		invdist;
     Vector		*normals, *n;
@@ -1053,7 +1045,7 @@ _dxf_PDep_triangles(Field field)
 
 	    for (j = 0; j < 3; j++)
 	    {
-		float x, y, z;
+		float x, y;
 		x = ptrs[j][0] - centroid[0];
 		y = ptrs[j][1] - centroid[1];
 		dist = ABS(x)+ ABS(y);
@@ -1110,10 +1102,7 @@ _dxf_PDep_quads(Field field)
     Array		nArray;
     Array		a_connections, a_positions;
     int			n_connections, n_positions;
-    float		*pts;
-    int		        *quad;
     float		centroid[3];
-    float		length;
     float		dist;
     float		invdist;
     Vector		*normals, *n;
@@ -1214,7 +1203,7 @@ _dxf_PDep_quads(Field field)
 
 	    for (j = 0; j < 4; j++)
 	    {
-		float x, y, z;
+		float x, y;
 		x = ptrs[j][0] - centroid[0];
 		y = ptrs[j][1] - centroid[1];
 		dist = ABS(x)+ ABS(y);
@@ -1264,14 +1253,6 @@ error:
     DXDelete((Object)nArray);
     return NULL;
 }
-
-typedef struct
-{
-    Field field;
-    float radius;
-} AreaArgs;
-
-static Error _dxfAreaNormals_Field(Field, float);
 
 static Error
 areaNormalsTask(Pointer ptr)
@@ -1327,16 +1308,6 @@ _dxfAreaNormals(Pointer ptr)
 	 return _dxfAreaNormals_Field((Field)object, radius);
 }
 
-static float  _dxfTriangleArea(float *, float *, float *);
-static int    _dxfInside(float *, float, float *);
-static float  _dxfDistance(float *, float *);
-static Error  _dxfCheckTriangle(int, float, int, int *,
-		    int *, int *, float *, float *, float *);
-static float  _dxfIntersect(float *, float, float *, float *);
-static float  _dxfTriangleArea(float *, float *, float *);
-
-static float scale = 1.0;
-
 static Error
 _dxfAreaNormals_Field(Field field, float radius)
 {
@@ -1345,8 +1316,8 @@ _dxfAreaNormals_Field(Field field, float radius)
     int		nPoints;
     float	*pts, *normals, *facets;
     int		*tris, *nbrs;
-    int		*pointTris;
-    int 	*pointFlags;
+    int		*pointTris=NULL;
+    int 	*pointFlags=NULL;
     float	*f;
     int		*t;
     int		p, q, r, i, j;

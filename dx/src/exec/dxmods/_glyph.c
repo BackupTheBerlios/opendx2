@@ -19,42 +19,27 @@ static Matrix Identity = {
 #include <math.h>
 #include <string.h>
 #include "eigen.h"
+#include "_glyph.h"
+#include "_autocolor.h"
+#include "_post.h"
 #define TRUE                    1
 #define FALSE                   0
 #define DIMENSION3D             3
 #define DIMENSION2D             2
 
 
-extern Error _dxfGetFieldTensorStats(Field, float *, float *);
-extern int _dxfIsTensor(Object);
-extern Error _dxfGetTensorStats(Object, float *, float *);
-extern Error _dxfDXEmptyObject(Object);
-extern Error _dxfProcessGlyphObject(Object, Object, char *, 
-                                    float, float, int, float, 
-                                    int, float, int, 
-                                    float, int, float, int, 
-                                    Object, int, int, char *, int *, float *);
-extern Error _dxfIndexGlyphObject(Object, Object, float);
 static Error IndexGlyphField(Field, Object, float);
-extern Error _dxfGetFontName(char *, char *);
 static Error CheckGlyphGroup(Object, int *, int *, char *); 
-extern Array _dxfPostArray(Field, char *, char *);
-extern Error _dxfGlyphTask(Pointer);
-extern Error _dxfGetStatisticsAndSize(Object, char *, int, float *, int, 
-                                      float *, float *, int *);
 static Error GlyphXform2d(Matrix, int, Point *, float *);
-extern Error _dxfTextField(Pointer);
 static Error GetEigenVectors(Stress_Tensor, Vector *);
 static Error GetEigenVectors2(Stress_Tensor2, Vector *);
 static Error TextGlyphs(Group, char *, Matrix, RGBColor, float, char *);
 static Matrix GlyphAlign (Vector, Vector);
-extern Error _dxfWidthHeuristic(Object, float *);
 static Error IncrementConnections(int, int, Triangle *, Triangle *);
 static Error IncrementConnectionsLines(int, int, Line *, Line *);
 static Error GlyphXform(Matrix, int, Point *, Point *);
 static Error GetNumberValidPositions(Object, int *);
 static Error GlyphNormalXform(Matrix, int, Point *, Point *);
-extern int _dxfIsFieldorGroup(Object);
 static Error GetGlyphName(float, char *, int, char *, char *, char *, int *);
 static Error GetGlyphs(char *, int *, int *, Point **, Triangle **, 
 		Point **, Line **, int *, char *);
@@ -62,16 +47,12 @@ static Error
   GetGlyphField(Object, int *, int *, Point **, Triangle **, Line **, 
 		Point **, Matrix *, int *, int *, int *, char *);
 static int DivideByZero(float, float);
-extern Error _dxfMakeGlyphs(Object *, char *, float, float, int, 
-			float, int, float, int, float, int, 
-			float, int, Object, int, Group, int);
-extern Error _dxf_MakeGlyphs(Object, char *, float, float, int, 
-			float, int, float, int, float, int, 
-			float, int, Object, int, Group, int);
-extern Error _dxfMakeTextGlyphs(Object, Object, Object, int, int, float, 
-                                char *); 
-extern int _dxfFieldWithInformation(Object);
-static _dxfHasDataComponent(Object);
+static int _dxfHasDataComponent(Object);
+
+extern Object Exists2(Object o, char *name, char *name2); /* from libdx/component.c */
+extern Error _dxfDXEmptyObject(Object); /* from libdx/component.c */
+
+Error _dxfGetFieldTensorStats(Field, float *, float *);
 
 
 typedef struct Point2D
@@ -134,7 +115,7 @@ int _dxfIsFieldorGroup(Object ob)
 Error _dxfTextField(Pointer p)
 {
    Object inobject, outobject;
-   Array positions=NULL, data, colors, colormap, invalid_pos;
+   Array positions=NULL, data, colors=NULL, colormap, invalid_pos;
    int invalid;
    float scale;
    InvalidComponentHandle invalidhandle=NULL;
@@ -142,23 +123,23 @@ Error _dxfTextField(Pointer p)
    int numcoloritems, n;
    Type type, colorstype;
    Category category;
-   int numitems, rank, posshape[30], datashape[30], i, colored, reginputcolors;
-   int colorsrank, colorsshape[30], delayedcolors=0, posted, counts[30], j;
+   int numitems, rank, posshape[30], datashape[30], i, colored, reginputcolors=0;
+   int colorsrank, colorsshape[30], delayedcolors=0, posted=0, counts[30], j;
    char glyph_rank[30]; 
    float s, posorigin[30], posdeltas[30];
    Vector v;
-   unsigned char *colors_byte_ptr;
-   RGBColor color, colororigin, *colors_ptr;
+   unsigned char *colors_byte_ptr=NULL;
+   RGBColor color, colororigin, *colors_ptr=NULL;
    char string[100], *string1, *attr, *font;
    Matrix translation; 
-   float *data_ptr_f;
-   ubyte *data_ptr_ub;
-   byte *data_ptr_b;
-   short *data_ptr_s;
-   ushort *data_ptr_us;
-   double *data_ptr_d;
-   int *data_ptr_i;
-   uint *data_ptr_ui;
+   float *data_ptr_f=NULL;
+   ubyte *data_ptr_ub=NULL;
+   byte *data_ptr_b=NULL;
+   short *data_ptr_s=NULL;
+   ushort *data_ptr_us=NULL;
+   double *data_ptr_d=NULL;
+   int *data_ptr_i=NULL;
+   uint *data_ptr_ui=NULL;
    ArrayHandle handle=NULL;
    Pointer scratch=NULL;
    float *position=NULL;
@@ -592,6 +573,8 @@ Error _dxfTextField(Pointer p)
 	   v.x = (float)data_ptr_ui[2*i];
 	   v.y = (float)data_ptr_ui[2*i+1];
            break;
+	 default:
+	   break;
 	 }
 	 sprintf(string, "[%g %g]", v.x, v.y);
          position = DXGetArrayEntry(handle,i,scratch);
@@ -669,6 +652,8 @@ Error _dxfTextField(Pointer p)
 	   v.y = (float)data_ptr_ui[3*i+1];
 	   v.z = (float)data_ptr_ui[3*i+2];
            break;
+	 default:
+	   break;
 	 }
 	 sprintf(string, "[%g %g %g]", v.x, v.y, v.z);
          position = DXGetArrayEntry(handle,i,scratch);
@@ -794,6 +779,8 @@ Error _dxfTextField(Pointer p)
 	   t.tau[2][1] = (float)data_ptr_ui[9*i+7];
 	   t.tau[2][2] = (float)data_ptr_ui[9*i+8];
            break;
+	 default:
+	   break;
 	 }
 	 sprintf(string, "[%g %g %g][%g %g %g][%g %g %g]", 
 		 t.tau[0][0], t.tau[0][1], t.tau[0][2],
@@ -933,12 +920,11 @@ static int DivideByZero(float nmrtr, float dnmntr)
 /* this routine gets the data stats for an object */
  
 Error 
-  _dxfGetStatisticsAndSize(Object outo, char *type_string, int min_set, 
+_dxfGetStatisticsAndSize(Object outo, char *type_string, int min_set, 
   		           float *given_min, int max_set, float *given_max,
 		           float *base_size, int *stats_done)
 {
   float min, max;
-  Array data;
   
  
   /* XXX I need to check if the data component is tensor. If it is, I should
@@ -1009,7 +995,7 @@ Error
  * statistics at that point */
 
 Error
-  _dxfProcessGlyphObject(Object parent,
+_dxfProcessGlyphObject(Object parent,
                          Object child, 
                          char *type_string, 
                          float shape, 
@@ -1127,7 +1113,7 @@ Error
                                     stats_done))
          goto error;
 
-      for (i=0; subo = DXGetEnumeratedMember((Group)child,i,NULL); i++) {
+      for (i=0; (subo=DXGetEnumeratedMember((Group)child,i,NULL)); i++) {
 	if (!_dxfProcessGlyphObject(child, subo, type_string, shape, scale, 
 			        scale_set, ratio, ratio_set, given_min, 
 			        min_set, given_max, max_set, quality, 
@@ -1139,7 +1125,7 @@ Error
     }
     else {
       /* must be a generic group, so we are not ready to get statistics */
-      for (i=0; subo = DXGetEnumeratedMember((Group)child,i,NULL); i++) {
+      for (i=0; (subo=DXGetEnumeratedMember((Group)child,i,NULL)); i++) {
 	if (!_dxfProcessGlyphObject(child, subo, type_string, shape, scale, 
 			        scale_set, ratio, ratio_set, given_min, 
 			        min_set, given_max, max_set, quality, 
@@ -1236,7 +1222,7 @@ Error
         itemSize = DXGetItemSize(sA);
         if (DXQueryConstantArray((Array)sA, NULL, NULL)) 
         {
-           int cst, rank, shape[30];
+           int rank, shape[30];
            Pointer origin=NULL;
            Type type;
            Category category;
@@ -1312,18 +1298,18 @@ Error
 {
   Object outo;
   RGBColor origin, delta;
-  int data_incr, pos_incr, totalpoints = 0, compact=0, counter, numitems; 
+  int data_incr=0, pos_incr, totalpoints = 0, compact=0, numitems; 
   int hasnormals, out_pos_dim, invalid, valid;
   int num_to_be_overridden=0, num_not_drawn=0;
   InvalidComponentHandle invalidhandle=NULL;
-  Array data_array, positions_array, new_positions_array, colors_array;
+  Array data_array, positions_array=NULL, new_positions_array, colors_array;
   Array invalid_pos;
   ArrayHandle handle=NULL;
   Pointer scratch=NULL;
   RGBColor defaultcolor;
   int c, *map = NULL;
   Matrix overridescalematrix;
-  Array new_normals_array, new_connections_array;
+  Array new_normals_array=NULL, new_connections_array;
   Triangle *conns=NULL, *newconns, *overrideconns, *newoverrideconns;
   Point *normals=NULL, *newnormals, *points=NULL;
   float *newpoints, *newoverridepoints;
@@ -1335,35 +1321,35 @@ Error
   char connectiontype[30];
   char overridetype_string[30];
   float glyphshape, scale, ratio, given_min, given_max, quality, base_size;
-  float min, position;
-  int scale_set, ratio_set, min_set, max_set, numcolors, numopacities; 
+  float min;
+  int scale_set, ratio_set, min_set, max_set; 
   int data_rank, data_shape[30], override;
   int pos_rank, pos_shape[30], counts[30];
   int numpoints, numoverridepoints, numoverrideconns;
-  int numconns, num_pos, i, j,k, n, countpos=0, countconn=0;
+  int numconns, num_pos, i, j, n, countpos=0, countconn=0;
   float vector_width; 
-  float *dp_old=NULL, datavalue, lv; 
+  float *dp_old=NULL, datavalue=0, lv; 
   float datascale, range, x, posorigin[30], posdeltas[30];
-  float *data_ptr_f;
-  byte *data_ptr_b;
-  ubyte *data_ptr_ub;
-  short *data_ptr_s;
-  ushort *data_ptr_us;
-  int *data_ptr_i;
-  uint *data_ptr_ui;
-  double *data_ptr_d;
+  float *data_ptr_f=NULL;
+  byte *data_ptr_b=NULL;
+  ubyte *data_ptr_ub=NULL;
+  short *data_ptr_s=NULL;
+  ushort *data_ptr_us=NULL;
+  int *data_ptr_i=NULL;
+  uint *data_ptr_ui=NULL;
+  double *data_ptr_d=NULL;
   Stress_Tensor st;
   Stress_Tensor2 st2;
   Vector eigen_vector[3];
   int AutoSize, num_data, posted;
   Vector v, canonical_v;
-  Type pos_type, data_type, colors_type, opacities_type;
+  Type pos_type, data_type;
   Category pos_category, data_category;
   Object typefield;
   int type_is_field, anyxforms;
   Matrix xform;
   char *attr, *font;
-  int maxnum, parentindex;
+  int parentindex;
   Object parent, uniformscalingattr=NULL;
 
 
@@ -1834,6 +1820,8 @@ Error
     case (TYPE_UINT):
       data_ptr_ui = (uint *)DXGetArrayData(data_array);
       break;
+    default:
+      break;
     } 
   }
   
@@ -2012,6 +2000,8 @@ Error
                     (float)data_ptr_ui[i*3+1], 
 		    (float)data_ptr_ui[i*3+2]);
 	  break;
+	default:
+	  break;
 	}
       }
       else {
@@ -2047,6 +2037,8 @@ Error
 	case (TYPE_UINT):
 	  v = DXVec((float)data_ptr_ui[i*2], 
                     (float)data_ptr_ui[i*2+1], 0.0 );
+	  break;
+	default:
 	  break;
 	}
       }
@@ -2130,6 +2122,8 @@ Error
 	  break;
 	case (TYPE_UINT):
 	  datavalue = (float)data_ptr_ui[0];
+	  break;
+	default:
 	  break;
 	}
 	x = (1 - ratio)*fabs(datavalue - given_min);
@@ -2240,6 +2234,8 @@ Error
         case (TYPE_UINT):
           data_ptr_ui += data_incr;
           break;
+        default:
+	  break;
       }
     }
    }
@@ -2303,6 +2299,8 @@ Error
 	  v = DXVec((float)data_ptr_ui[0], (float)data_ptr_ui[1], 
 		    (float)data_ptr_ui[2]);
 	  break;
+	default:
+	  break;
 	}
       }
       else {
@@ -2330,6 +2328,8 @@ Error
 	  break;
 	case (TYPE_UINT):
 	  v = DXVec((float)data_ptr_ui[0], (float)data_ptr_ui[1], 0.0 );
+	  break;
+	default:
 	  break;
 	}
       }
@@ -2482,6 +2482,8 @@ Error
         case (TYPE_UINT):
            data_ptr_ui += data_incr;
            break;
+        default:
+	   break;
       }
     }
   }
@@ -2590,6 +2592,8 @@ Error
 	    st.tau[2][1] = (float)data_ptr_ui[7];
 	    st.tau[2][2] = (float)data_ptr_ui[8];
 	    break;
+	  default:
+	    break;
 	  }
 	  if (!GetEigenVectors(st, eigen_vector)) {
 	    goto error;
@@ -2686,6 +2690,8 @@ Error
         case (TYPE_UINT):
           data_ptr_ui += data_incr;
           break;
+	default:
+	  break;
 	}
       }
     }
@@ -2745,6 +2751,8 @@ Error
 	    st2.tau[0][1] = (float)data_ptr_ui[1];
 	    st2.tau[1][0] = (float)data_ptr_ui[2];
 	    st2.tau[1][1] = (float)data_ptr_ui[3];
+	    break;
+	  default:
 	    break;
 	  }
 	  if (!GetEigenVectors2(st2, eigen_vector)) {
@@ -2841,6 +2849,8 @@ Error
         case (TYPE_UINT):
           data_ptr_ui += data_incr;
           break;
+	default:
+	  break;
 	}
       }
     }
@@ -3011,9 +3021,6 @@ Error
    *returnpoints = points;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3029,9 +3036,6 @@ Error
    *returnpoints = points;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3047,9 +3051,6 @@ Error
    *returnpoints = points;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3065,9 +3066,6 @@ Error
    *returnpoints = points;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3084,9 +3082,6 @@ Error
    *returnpoints = points;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3103,9 +3098,6 @@ Error
    *returnpoints = points;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3122,9 +3114,6 @@ Error
    *returnpoints = points;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3140,9 +3129,6 @@ Error
    *returnpoints = points;
    *returnconns = lines;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3157,9 +3143,6 @@ Error
    *returnpoints = points;
    *returnconns = lines;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3175,9 +3158,6 @@ Error
    *returnpoints = points;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3197,9 +3177,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3218,9 +3195,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3238,9 +3212,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3258,9 +3229,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3279,9 +3247,6 @@ Error
    *returnconns = triangles;
 
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3299,9 +3264,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3319,9 +3281,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3339,9 +3298,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3360,9 +3316,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3379,9 +3332,6 @@ Error
    *returnpoints = points;
    *returnconns = lines;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3397,9 +3347,6 @@ Error
    *returnpoints = points;
    *returnconns = lines;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3417,9 +3364,6 @@ Error
    *returnpoints = points;
    *returnconns = lines;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3437,9 +3381,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3457,9 +3398,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3477,9 +3415,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 static 
@@ -3497,9 +3432,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3518,9 +3450,6 @@ Error
    *returnnormals = normals;
    *returnconns = triangles;
    return OK;
-
-   error:
-      return ERROR;
 }
 
 
@@ -3540,8 +3469,6 @@ Error
    *returnconns = triangles;
    return OK;
 
-   error:
-      return ERROR;
 }
 
 
@@ -3750,14 +3677,14 @@ Error
   char *attr;
   Matrix newxform;
   Object subfield;
-  Point *norm_ptr;
+  Point *norm_ptr=NULL;
   Point *temp_pos, *temp_norm;
   float *pos_ptr;
   Triangle *temp_conn;
   Line *temp_line;
 
-  Triangle *con_ptr;
-  Line *line_ptr;
+  Triangle *con_ptr=NULL;
+  Line *line_ptr=NULL;
   int i;
 
   normals = NULL;
@@ -3994,12 +3921,13 @@ GlyphAlign (Vector V, Vector W)
     W = DXNormalize(W);
     
     N = DXCross(V, W);
-    if (DXLength(N) == 0.0)
+    if (DXLength(N) == 0.0) {
 	/* we must find an arbitrary perpindicular vector */
         if (V.x==0)
 	    N = DXVec(0, -V.z, V.y);
 	else
 	    N = DXVec(-V.y, V.x, 0);
+    }
 
 
     NN = DXNormalize(N);
@@ -4028,8 +3956,7 @@ GlyphAlign (Vector V, Vector W)
 }
 
 
-static 
-Error
+static Error
 GetEigenVectors(Stress_Tensor st, Vector *eigen_vector)
 {
 	int i, j;
@@ -4052,6 +3979,8 @@ GetEigenVectors(Stress_Tensor st, Vector *eigen_vector)
 	_dxfEigenFreeVector(d, 1);
 	return OK;
 }
+
+static Error
 GetEigenVectors2(Stress_Tensor2 st, Vector *eigen_vector)
 {
 	int i, j;
@@ -4090,9 +4019,11 @@ Error GetNumItems(Object o, int *numitems)
      *numitems += items;
      break;
   case CLASS_GROUP:
-     for (i=0; child = DXGetEnumeratedMember((Group)o,i,NULL); i++) {
+     for (i=0; (child=DXGetEnumeratedMember((Group)o,i,NULL)); i++) {
         GetNumItems(child, numitems);
      }
+     break;
+  default:
      break;
   }
 
@@ -4104,17 +4035,10 @@ Error GetNumItems(Object o, int *numitems)
 Error
 _dxfWidthHeuristic(Object o, float *size)
 {
-    Array Positions;
-    float bounding_width, maxdelta, min_of_max_deltas;
-    int i, j, k, n, p, counts[100];
-    float origins[100], deltas[100];
+    float bounding_width;
     Point box[8];
+    int items;
     double len;
-    int items, rank, shape[16], compositefield_items;
-    Category category;
-    Type type;
-    Class class;
-    Object child;
     float x, y;
 
     /* preliminary checks of incoming object */
@@ -4178,7 +4102,7 @@ static Error GetNumberValidPositions(Object o, int *items)
 
      break;
   case (CLASS_GROUP):
-     for (i=0; subo=DXGetEnumeratedMember((Group)o, i, NULL); i++) {
+     for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++) {
        if (!GetNumberValidPositions(subo, items))
           return ERROR;
      }
@@ -4751,7 +4675,7 @@ Error _dxfIndexGlyphObject(Object object, Object glyphs, float scale)
     break;
     
   case (CLASS_GROUP):
-    for (i=0; child = DXGetEnumeratedMember((Group)object,i,NULL); i++) {
+    for (i=0; (child=DXGetEnumeratedMember((Group)object,i,NULL)); i++) {
       if (!_dxfIndexGlyphObject(child, glyphs, scale))
 	return ERROR;
     }
@@ -4770,23 +4694,24 @@ Error _dxfIndexGlyphObject(Object object, Object glyphs, float scale)
     DXSetError(ERROR_DATA_INVALID,"must be a field or a group");
     return ERROR;
   }
+  return OK;
 }
 
 static Error IndexGlyphField(Field field, Object glyphs, float scale)
 {
-  Array positions, connections, data; 
+  Array positions=NULL, data; 
   Array newpositions=NULL, newconnections=NULL, newcolors=NULL; 
   Array newnormals=NULL; 
   Array glyphpositions, glyphconnections, glyphcolors, glyphnormals;
   int numdata, datarank, datashape[8], posrank, posshape[8]; 
   int ipos, icon, iclr, inml, numprev, hasnormals, idata;
-  int newshape, glyphshape, i, j, dataindex, numglyphpos, numglyphcon;
+  int newshape, glyphshape, i, j, dataindex=0, numglyphpos, numglyphcon;
   int colorrank, colorshape[8], posted =0, totalpoints;
   int *map;
   Type datatype, postype, colortype;
   Field glyphtouse;
-  RGBColor *glyphcolor_ptr;
-  Point *glyphnorm_ptr, normal;
+  RGBColor *glyphcolor_ptr=NULL;
+  Point *glyphnorm_ptr=NULL, normal;
   float *scratch=NULL, *dp;
   Point *dp3;
   Point2D *dp2;
@@ -4795,18 +4720,17 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
   Triangle oldtri, newtri;
   Line oldln, newln;
   Point pos3D, glyphpos;
-  float *pos_ptr, *glyphpos_ptr;
+  float *glyphpos_ptr;
   int *glyphcon_ptr;
   RGBColor color;
   Category datacategory, poscategory, colorcategory;
-  float *data_ptr_f;
-  int *data_ptr_i;
-  uint *data_ptr_ui;
-  short *data_ptr_s;
-  ushort *data_ptr_us;
-  byte *data_ptr_b;
-  ubyte *data_ptr_ub;
-  char *dataattr, *normattr, *colattr, glyphelementtype[30];
+  int *data_ptr_i=NULL;
+  uint *data_ptr_ui=NULL;
+  short *data_ptr_s=NULL;
+  ushort *data_ptr_us=NULL;
+  byte *data_ptr_b=NULL;
+  ubyte *data_ptr_ub=NULL;
+  char *dataattr, *normattr=NULL, *colattr=NULL, glyphelementtype[30];
   
   /* XXX need to pass through data etc */
      
@@ -4930,6 +4854,8 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
   case (TYPE_UBYTE):
     data_ptr_ub = (ubyte *)DXGetArrayData(data);
     break;
+  default:
+    break;
   }
 
 
@@ -5015,6 +4941,8 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
       break;
     case (TYPE_UBYTE):
       dataindex = (int)data_ptr_ub[i];
+      break;
+    default:
       break;
     }
     glyphtouse = (Field)DXGetEnumeratedMember((Group)glyphs, 
@@ -5274,7 +5202,7 @@ static Error CheckGlyphGroup(Object glyphs, int *outshape, int *hasnormals,
                              char *glyphelementtype) 
 {
   int nummembers, first=1, i;
-  Array positions, connections, colors, data, normals;
+  Array positions, connections, colors, normals;
   Object child;
   char *attr;
   Type type;
@@ -5362,7 +5290,7 @@ static Error CheckGlyphGroup(Object glyphs, int *outshape, int *hasnormals,
 	}
         /* check that whether or not it has normals matches others in the
          * group */
-	if ((normals && (*hasnormals==0))||(!normals)&&(*hasnormals==1)) {
+	if ((normals && (*hasnormals==0))||((!normals)&&(*hasnormals==1))) {
 	  DXSetError(ERROR_DATA_INVALID,
 		     "if one glyph in group has normals, all must");
 	  return ERROR;
@@ -5414,7 +5342,7 @@ Error _dxfGetFontName(char *type_string, char *font)
   return OK;
 }
 
-extern Error _dxfGetTensorStats(Object object, float *min, float *max)
+Error _dxfGetTensorStats(Object object, float *min, float *max)
 {
   Object subo;
   int i;
@@ -5425,7 +5353,7 @@ extern Error _dxfGetTensorStats(Object object, float *min, float *max)
       goto error;
     break;
   case (CLASS_GROUP):
-    for (i=0; subo = DXGetEnumeratedMember((Group)object,i,NULL); i++) {
+    for (i=0; (subo=DXGetEnumeratedMember((Group)object,i,NULL)); i++) {
       if (!_dxfGetTensorStats(subo, min, max))
 	goto error;
     }
@@ -5436,6 +5364,8 @@ extern Error _dxfGetTensorStats(Object object, float *min, float *max)
     if (!_dxfGetTensorStats(subo, min, max))
       goto error;
     break;
+  default:
+    break;
   }
   return OK;
  error:
@@ -5443,7 +5373,7 @@ extern Error _dxfGetTensorStats(Object object, float *min, float *max)
 }
 
 
-extern Error _dxfGetFieldTensorStats(Field field, float *min, float *max)
+Error _dxfGetFieldTensorStats(Field field, float *min, float *max)
 {
   Array data = NULL, invalid_pos=NULL;
   char *attr;
@@ -5454,14 +5384,14 @@ extern Error _dxfGetFieldTensorStats(Field field, float *min, float *max)
   float length;
   Stress_Tensor st;
   Stress_Tensor2 st2;
-  short *data_ptr_s;
-  int *data_ptr_i;
-  float *data_ptr_f;
-  double *data_ptr_d;
-  ubyte *data_ptr_ub;
-  byte *data_ptr_b;
-  ushort *data_ptr_us;
-  uint *data_ptr_ui;
+  short *data_ptr_s=NULL;
+  int *data_ptr_i=NULL;
+  float *data_ptr_f=NULL;
+  double *data_ptr_d=NULL;
+  ubyte *data_ptr_ub=NULL;
+  byte *data_ptr_b=NULL;
+  ushort *data_ptr_us=NULL;
+  uint *data_ptr_ui=NULL;
   Vector eigen_vector[3];
 
   data = (Array)DXGetComponentValue(field,"data");
@@ -5480,7 +5410,7 @@ extern Error _dxfGetFieldTensorStats(Field field, float *min, float *max)
   
   if ((category != CATEGORY_REAL)||
       (rank != 2)||
-      (!((shape[0] == 3)&&(shape[1]==3)||(shape[0]==2)&&(shape[1]==2)))){
+      (!(((shape[0] == 3)&&(shape[1]==3))||((shape[0]==2)&&(shape[1]==2))))){
     DXSetError(ERROR_DATA_INVALID,"tensors must be 2x2 or 3x3 symmetric");
     goto error;
   }
@@ -5635,6 +5565,8 @@ extern Error _dxfGetFieldTensorStats(Field field, float *min, float *max)
         st.tau[2][1] = (float)data_ptr_ui[7];
         st.tau[2][2] = (float)data_ptr_ui[8];
         break;
+      default:
+        break;
       }
       if (!GetEigenVectors(st, eigen_vector)) {
 	goto error;
@@ -5701,6 +5633,8 @@ extern Error _dxfGetFieldTensorStats(Field field, float *min, float *max)
         st2.tau[1][0] = (float)data_ptr_ui[2];
         st2.tau[1][1] = (float)data_ptr_ui[3];
         break;
+      default:
+        break;
       }
       if (!GetEigenVectors2(st2, eigen_vector)) {
 	goto error;
@@ -5719,7 +5653,7 @@ extern Error _dxfGetFieldTensorStats(Field field, float *min, float *max)
 }
 
 
-extern int _dxfIsTensor(Object o)
+int _dxfIsTensor(Object o)
 {
   int p;
   Object child;

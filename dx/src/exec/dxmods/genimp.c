@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp.c,v 1.3 1999/05/10 15:45:25 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp.c,v 1.4 2000/08/24 20:04:30 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -577,10 +577,8 @@ Field build_Field(int f_index, void *XF, Array pos, Array con)
   Field f = NULL;
   Array a = NULL;
   Object o = NULL;
-  int size,dim,i;
-  char	cubes[20], *etype, *depstr;
-  static char *connection_type[] = { "point", "lines", "quads", "cubes"};
-  
+  int size;
+  char	*depstr;
   
   /*size = _dxfnumGridPoints();*/ 
   size = _dxfnumGridPoints(f_index); 
@@ -860,7 +858,6 @@ error:
 int _dxfnumGridPoints(int f_index)
 {
   int i, size;
-  int adjust;
   int count; 
 
   /* One less data point in each dimension of the grid  for dep connections */

@@ -12,6 +12,7 @@
 
 #include <dx/dx.h>
 #include <math.h>
+#include "histogram.h"
 
 #define OUTPUT_TYPE_FLOAT 0   /* set to 1 to make float */
 
@@ -108,9 +109,6 @@ struct perdim {
     float *deltas;     /* dim * dim */
 };
 
-/* this routine could be in libdx */
-Object _dxfHistogram(Object o, int bins, float *min, float *max, int inout);
-
 
 /* private routines */
 static Error Histogram_Wrapper(Pointer);
@@ -120,14 +118,11 @@ static Group Group_Histogram(struct histinfo *hp);
 static Field Field_Histogram(struct histinfo *hp);
 static Field Array_Histogram(struct histinfo *hp);
 static Field EmptyHistogram(struct histinfo *hp);
-static Field EmptyHistogram1D(struct histinfo *hp);
 static Field HistogramND(struct histinfo *hp, int empty);
 static Error HasInvalid(Field f, char *, ICH *ih);
 static int GetVectorShape(int rank, int *shape);
 static Error VectorLength(Object o, int *len, int onlyone);
-static Error VectorExtract(Object o, Type expected_t, int len, Pointer ptr);
 static Error VectorAllocAndExtract(Object o, Type expected_t, int len, Pointer *ptr);
-static Error ScalarAlloc(Pointer inval, Type t, int len, Pointer *retval);
 static Error CopyHistinfo(struct histinfo *src, struct histinfo *dst);
 static void FreeHistinfo(struct histinfo *hp);
 static Error ObjectVectorStats(Object o, int *vlen, float **minlist, float **maxlist);
@@ -138,6 +133,11 @@ static Error bins_perdim(struct perdim *pdp, int dim, int *binsize);
 static void free_perdim(struct perdim *pdp, int dim);
 static Error FullAllocHistinfo(struct histinfo *hp, int datadim, int setdef);
 
+#if 0
+static Field EmptyHistogram1D(struct histinfo *hp);
+static Error VectorExtract(Object o, Type expected_t, int len, Pointer ptr);
+static Error ScalarAlloc(Pointer inval, Type t, int len, Pointer *retval);
+#endif
 
 #define INTERNALERROR DXSetError(ERROR_INTERNAL, \
 		      "unexpected error, file %s line %d",  __FILE__, __LINE__)
@@ -158,10 +158,10 @@ int
 m_Histogram(Object *in, Object *out)
 {
     struct histinfo h;
-    float tmin, tmax;
+    float tmax=0;
     int multidim;
     int prevdim;
-    int i, flag;
+    int i;
     
     /* the idea here is to look at each of the input parms.
      * if they are all integers, this is a simple, 1d histogram.
@@ -609,7 +609,7 @@ Group_Histogram(struct histinfo *hp)
     /* handle empty groups, and groups of only 1 member 
      */
     g = (Group)hp->o;
-    for (members=0; subo = DXGetEnumeratedMember(g, members, &name); members++)
+    for (members=0; (subo = DXGetEnumeratedMember(g, members, &name)); members++)
 	;
 
     if (members == 0)
@@ -642,7 +642,7 @@ Group_Histogram(struct histinfo *hp)
      *  too many parallel tasks.
      */
     if (hp->goneparallel > hp->maxparallel) {
-	for (i=0; subo = DXGetEnumeratedMember(g, i, &name); i++) {
+	for (i=0; (subo = DXGetEnumeratedMember(g, i, &name)); i++) {
 	    
 	    hp->o = subo;
 	    h = Object_Histogram(hp);
@@ -670,7 +670,7 @@ Group_Histogram(struct histinfo *hp)
     if (!DXCreateTaskGroup())
 	goto error;
 
-    for (i=0; subo = DXGetEnumeratedMember(g, i, &name); i++) {
+    for (i=0; (subo = DXGetEnumeratedMember(g, i, &name)); i++) {
 	
 	hp->o = subo;
 	hp->p = &pinfo[i];
@@ -789,7 +789,7 @@ Field_Histogram(struct histinfo *hp)
 #else
     int *accum, *add;
 #endif
-    float binsize, tmin, tmax;
+    float binsize;
     float gather, median;
 
     
@@ -890,7 +890,7 @@ Field_Histogram(struct histinfo *hp)
     }
 
     g = (Group)hp->o;
-    for (i=0; subo = DXGetEnumeratedMember(g, i, NULL); i++) {
+    for (i=0; (subo = DXGetEnumeratedMember(g, i, NULL)); i++) {
 
 	hp->o = subo;
 	hp->p = &pinfo[i];
@@ -1236,10 +1236,10 @@ HistogramND(struct histinfo *hp, int empty)
     Field f = NULL;
     Array a = NULL;
     Array sa = NULL;
-    Array data;
+    Array data=NULL;
     float zero = 0.0;
     int i, j, k;
-    int bintotal, totalcnt;
+    int bintotal, totalcnt=0;
     int defbins = DEFAULTBINS;
     Type type;
     Category cat;
@@ -1742,7 +1742,7 @@ static Error HasInvalid(Field f, char *component, ICH *ih)
 
 static Error VectorLength(Object o, int *len, int onlyone)
 {
-    int i, nitems, value = 0;
+    int nitems, value = 0;
     int rank, shape[100];
     Type t;
     Category c;
@@ -1810,6 +1810,8 @@ static int GetVectorShape(int rank, int *shape)
     return value;
 }
 
+
+#if 0
 static Error VectorExtract(Object o, Type expected_t, int len, Pointer d_ptr)
 {
     Array a = NULL;
@@ -1836,11 +1838,11 @@ static Error VectorExtract(Object o, Type expected_t, int len, Pointer d_ptr)
     DXDelete((Object)a);
     return ERROR;
 }
+#endif
 
 static Error VectorAllocAndExtract(Object o, Type expected_t, int len, Pointer *d_ptr)
 {
     Array a = NULL;
-    int i;
     int datasize;
     Pointer s_ptr;
 
@@ -1868,6 +1870,7 @@ static Error VectorAllocAndExtract(Object o, Type expected_t, int len, Pointer *
 }
 
 /* currently unused */
+#if 0
 static Error ScalarAlloc(Pointer inval, Type t, int len, Pointer *retval)
 {
     int i;
@@ -1889,6 +1892,7 @@ static Error ScalarAlloc(Pointer inval, Type t, int len, Pointer *retval)
     
     return OK;
 }
+#endif
 
 
 /* used for cleanup - free all storage associated with hist struct.
@@ -1979,7 +1983,7 @@ static Error
 ObjectVectorStats(Object o, int *vlen, float **minlist, float **maxlist)
 {
     int i;
-    Object subo, old, cpy;
+    Object subo;
 
     switch (DXGetObjectClass(o)) {
       case CLASS_ARRAY:
@@ -2000,7 +2004,7 @@ ObjectVectorStats(Object o, int *vlen, float **minlist, float **maxlist)
 	    if (VectorStats(subo, 0, vlen, 1, minlist, maxlist) == ERROR)
 		return ERROR;
 	    
-	    for (i=1; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++) {
+	    for (i=1; (subo = DXGetEnumeratedMember((Group)o, i, NULL)); i++) {
 		if (VectorStats(subo, 1, vlen, 0, minlist, maxlist) == ERROR)
 		    return ERROR;
 	    }
@@ -2030,7 +2034,7 @@ ObjectVectorStats(Object o, int *vlen, float **minlist, float **maxlist)
 
       default:
 	DXSetError(ERROR_BAD_PARAMETER, "#10190", "input");
-	return NULL;
+	return ERROR;
     }
 
     /* not reached */
@@ -2055,7 +2059,6 @@ static Error VectorStats(Object o, int knownlength, int *vlen,
 {
     Array a = NULL, na = NULL;
     int i, j;
-    int datasize;
     int nitems;
     int domin = 1, domax = 1;
     int allocmin = 0, allocmax = 0;

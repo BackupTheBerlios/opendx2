@@ -18,6 +18,7 @@
 #include <string.h>
 #include <dx/dx.h>
 #include "_compute.h"
+#include "_compputils.h"
 
 /*
  * _ComputeInitInputs initialize the set of inputs for compute
@@ -32,6 +33,7 @@ _dxfComputeInitInputs(CompInput *inputs)
     }
 }
 
+#if 0
 static int
 ComparePositions(Array master, Array checked)
 {
@@ -51,7 +53,6 @@ ComparePositions(Array master, Array checked)
     Pointer checkedData;
     int status;
     int i, j;
-    int numBasic;
 
 
     if (master == checked)
@@ -237,6 +238,8 @@ ComparePositions(Array master, Array checked)
     DXFree ((Pointer) checkedDeltas);
     return (status);
 }
+#endif
+
 /* 
  * SaveObjStruct records the structure of the output object, and returns
  * a tree of ObjStructs.  O should be a copy of the first input that is
@@ -376,9 +379,6 @@ MatchObjStruct (ObjStruct *master, Object o, int inputNum)
     int items;
     Array a;
     Class class;
-    Array positions;
-    Array masterPositions;
-
 
     if (master) {
 	master->inputs[inputNum] = o;

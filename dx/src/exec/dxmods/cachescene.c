@@ -12,6 +12,7 @@
 #include <string.h>
 #include <dx/dx.h>
 
+Error
 m_CacheScene(Object *in, Object *out)
 {
     char *tag;

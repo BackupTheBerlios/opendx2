@@ -8,9 +8,6 @@
 
 #include <dxconfig.h>
 
-
-
-
 #include <dx/dx.h>
 #include <stdio.h>
 #include <math.h>
@@ -813,10 +810,6 @@ ZoomSetCamera(void *data, float to[3], float from[3], float up[3],
 		    int proj, float fov, float width)
 {
     int i;
-    float dx = to[0] - from[0];
-    float dy = to[1] - from[1];
-    float dz = to[2] - from[2];
-    float vd = sqrt(dx*dx + dy*dy + dz*dz);
     ZoomData zdata = (ZoomData)data;
 
     /*

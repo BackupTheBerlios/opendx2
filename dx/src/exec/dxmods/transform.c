@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/transform.c,v 1.3 1999/05/10 15:45:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/transform.c,v 1.4 2000/08/24 20:04:53 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -27,7 +27,7 @@ m_Transform(Object *in, Object *out)
 
     if (!in[0]) {
 	DXSetError(ERROR_BAD_PARAMETER, "#10000", "input");
-	return NULL;
+	return ERROR;
     }
 
     if (!in[1]) {
@@ -53,7 +53,7 @@ m_Transform(Object *in, Object *out)
         DXSetError(ERROR_BAD_PARAMETER, 
 		 "%s must be a 9 or 12 item list, or a 3x3 or 3x4 matrix",
 		 "transform matrix");
-	return NULL;
+	return ERROR;
     }
 
         

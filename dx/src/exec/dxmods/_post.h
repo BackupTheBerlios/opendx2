@@ -6,12 +6,17 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_post.h,v 1.1 2000/08/24 20:04:17 davidt Exp $:
+ */
+
 #include <dxconfig.h>
 
+#ifndef __POST_H
+#define __POST_H
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/Attic/post.h,v 1.3 1999/05/10 15:45:29 gda Exp $:
- */
+Object _dxfPost( Object, char *, Array );
+Array _dxfPostArray( Field, char *, char * );
 
 #define COPYOUT(TYPE, KNT)						\
 		    {							\
@@ -54,7 +59,6 @@
 
 #define TO_POSITIONS_REGULAR(TYPE)					\
 		    {							\
-			int    k;					\
 			byte  *kPtr;					\
 									\
 			while(1)					\
@@ -158,7 +162,6 @@
 
 #define TO_CONNECTIONS_REGULAR(TYPE)					\
 		    {							\
-			int   k;					\
 			byte *kPtr;					\
 									\
 			while(1)					\
@@ -256,4 +259,6 @@
 			}						\
 									\
 			COPYOUT(TYPE, nConnections);			\
-		    }
+		   }
+
+#endif /* __POST_H_ */

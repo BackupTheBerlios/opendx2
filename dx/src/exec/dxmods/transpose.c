@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/transpose.c,v 1.4 2000/05/16 18:48:23 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/transpose.c,v 1.5 2000/08/24 20:04:53 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -164,7 +164,7 @@ static Object Object_Transpose(Object o, int num, int *dims)
     switch(DXGetObjectClass(o)) {
       case CLASS_GROUP:
 	/* for each member */
-	for(i=0; subo = DXGetEnumeratedMember((Group)o, i, &name); i++) {
+	for(i=0; (subo=DXGetEnumeratedMember((Group)o, i, &name)); i++) {
 	    if(!Object_Transpose(subo, num, dims))
 		return NULL;
 	}
@@ -344,7 +344,7 @@ static Field Field_Transpose(Field f, int num, int *dims)
     /* for each of the rest of the components, see if they need 
      *  to be transposed.
      */
-    for(i=0; subo = DXGetEnumeratedComponentValue(f, i, &name); i++) {
+    for(i=0; (subo=DXGetEnumeratedComponentValue(f, i, &name)); i++) {
 
         /* skip positions & connections.
 	 */

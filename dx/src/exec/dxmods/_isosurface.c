@@ -69,6 +69,7 @@ extern int _dxd_isosurface_task_counter;
 #include <dx/dx.h> 
 #include "_isosurface.h"
 #include "_getfield.h"
+#include "_helper_jea.h"
 
 #ifdef DXD_LONG_HASHKEY
 #endif
@@ -76,7 +77,6 @@ extern int _dxd_isosurface_task_counter;
                       DXErrorGoto(ERROR_UNEXPECTED,"64 bit porting error")
 
 /* the following function resides in the file: showboundary.m */
-extern
 Array _dxf_resample_array
           ( component_info comp,  int dep_ref,
             int Nin,   int Nout,
@@ -177,7 +177,7 @@ histograms;
 #endif
 
 
-Field remove_degenerates ( Field in );
+static Field remove_degenerates ( Field in );
 
 
 #endif /* ( _ISOSURFACE_PASS_NUMBER == 1 ) */
@@ -289,7 +289,7 @@ Error tally_dependers ( field_info input_info, int *posi, int *conn )
 
     return OK;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
@@ -543,7 +543,7 @@ Field create_output_arrays
 
     if ( nC != 0 ) 
     { 
-        char *element_type;
+        char *element_type=NULL;
 
         switch ( Cd )
         {
@@ -830,9 +830,9 @@ int band_hash_enter_indirect
                         ( ( E->p == E->q ) == ( S == NEITHER_VALUE ) )
 
 #define TRI(A,B,C) \
-    if (( poly[A] != poly[B] )&&( poly[B] != poly[C] )&&( poly[C] != poly[A] ))\
+    if (( poly[A] != poly[B] )&&( poly[B] != poly[C] )&&( poly[C] != poly[A] )) { \
         if (ERROR == ( tp = (Triangle*)DXNewSegListItem ( tlis ))) goto error;\
-        else { tp->p = poly[A];  tp->q = poly[B];  tp->r = poly[C]; }
+        else { tp->p = poly[A];  tp->q = poly[B];  tp->r = poly[C]; } }
 
 
 static
@@ -887,7 +887,7 @@ BCHK(e0,s0);BCHK(e1,s1);
          !BVTX ( e1, s1, 1 )   )
       goto error;
 
-    if ( poly[0] != poly[1] )
+    if ( poly[0] != poly[1] ) {
         if ( ERROR == ( lp = (Line*) DXNewSegListItem ( llis ) ) )
             goto error;
         else
@@ -895,6 +895,7 @@ BCHK(e0,s0);BCHK(e1,s1);
             lp->p = poly[0];
             lp->q = poly[1];
         }
+    }
 
     return OK;
 
@@ -2471,7 +2472,6 @@ Field create_iso_points
     array_info      po_info = NULL;
     hash_table_rec  vtx_hash;
     Line            line;
-    Point           point[2];
     float           data[2];
     double          t;
     iso_edge_hash_ptr   element_ptr = NULL;
@@ -2885,7 +2885,6 @@ Field create_band_lines
     SegList         *line_list = NULL;
     SegList         *cval_list = NULL;
     Line            line;
-    Point           point[2];
     float           data[2];
     double          t;
     band_edge_hash_ptr  element_ptr = NULL;
@@ -2895,7 +2894,7 @@ Field create_band_lines
     int             position_dim;
     int             connection_shape;
     int             connection_count;
-    float           value_low, value_high;
+    float           value_low;
     float           old_min, old_max;
     float           *value2_ptr = NULL;
 
@@ -3112,11 +3111,12 @@ Field create_band_lines
 
     connection_count = DXGetSegListItemCount ( line_list );
 
-    if ( connection_count == 0 )
+    if ( connection_count == 0 ) {
         if ( !_dxf_MakeFieldEmpty ( out ) )
             goto error;
         else
-            goto done;
+            goto done; 
+    }
 
     if ( !create_output_arrays
               ( out,
@@ -3388,7 +3388,6 @@ Field create_iso_contours
     hash_table_rec  vtx_hash;
     hash_table_rec  edge_hash;
     Quadrilateral   quad;
-    Point           point[2];
     float           data[4];
     double          t;
     iso_edge_hash_ptr   element_ptr = NULL;
@@ -3571,11 +3570,12 @@ Field create_iso_contours
             }
     }
 
-    if ( edge_hash.count == 0 )
+    if ( edge_hash.count == 0 ) {
         if ( !_dxf_MakeFieldEmpty ( out ) )
             goto error;
         else
             goto done;
+    }
 
     if ( !create_output_arrays
               ( out,
@@ -3844,7 +3844,6 @@ Field create_band_surface
     SegList         *tri_list = NULL;
     SegList         *cval_list = NULL;
     Quadrilateral   quad;
-    Point           point[4];
     float           data[4];
     double          t;
     band_edge_hash_ptr   element_ptr = NULL;
@@ -3854,7 +3853,7 @@ Field create_band_surface
     int             position_dim;
     int             connection_shape;
     int             connection_count;
-    float           value_low, value_high;
+    float           value_low;
     float           old_min, old_max;
     float           *value2_ptr = NULL;
     int             have_normals = 0;
@@ -4092,11 +4091,12 @@ Field create_band_surface
 
     connection_count = DXGetSegListItemCount ( tri_list );
 
-    if ( connection_count == 0 )
+    if ( connection_count == 0 ) {
         if ( !_dxf_MakeFieldEmpty ( out ) )
             goto error;
         else
             goto done;
+    }
 
     if ( !create_output_arrays
               ( out,
@@ -4404,7 +4404,7 @@ int _dxf_IsFlippedTet_4x4_method ( Tetrahedron tet, Point *geom )
 
     return ret;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
@@ -4412,6 +4412,7 @@ int _dxf_IsFlippedTet_4x4_method ( Tetrahedron tet, Point *geom )
 
 
 
+#if 0
 #if ( IsFlippedTet_METHOD == _dxf_IsFlippedTet_3x3_method )
 static
  /* required here and in showboundary.m */
@@ -4455,22 +4456,19 @@ int _dxf_IsFlippedTet_3x3_method ( Tetrahedron tet, Point *geom )
 
     return ret;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
 #endif
+#endif
 
-
-
-extern
 int _dxf_get_flip
         ( field_info input_info,
           int        *have_connections,
           int        *have_nondegeneracy )
 {
     array_info  p_info, c_info = NULL;
-    Array       array;
     Point       pseudo_pt[4];
 
     static Tetrahedron pseudo_tet = { 0, 1, 2, 3 };
@@ -4667,9 +4665,6 @@ Error flip_normals_and_triangles
 {
     array_info  pi_info, ci_info = NULL;
     array_info  co_info, no_info = NULL;
-    Point       pseudo_pt[4];
-
-    static Tetrahedron pseudo_tet = { 0, 1, 2, 3 };
 
     int flipq;
 
@@ -4772,7 +4767,6 @@ grad_table_ptr create_special_gradient
     int           i, j, k;
     int           connection_shape;
     float         dist, invdist;
-    float         _small_ = sqrt ( DXD_MIN_FLOAT );
 
     InvalidComponentHandle  i_handle = NULL;
 
@@ -4921,7 +4915,6 @@ grad_table_ptr create_special_gradient
 
 
 
-static
 /*
  * Special scan to remove geometrically degenerate connectives.
  *   Zero area triangles.
@@ -4933,6 +4926,7 @@ static
  *     since edge degeneration is coalesced, point compare by ID should be OK.
  *     (below its by geometric value)
  */
+static
 Field remove_degenerates ( Field in )
 {
 #if 1
@@ -5384,11 +5378,12 @@ Field create_iso_surface
 
     connection_count = DXGetSegListItemCount ( tri_list );
 
-    if ( connection_count == 0 )
+    if ( connection_count == 0 ) {
         if ( !_dxf_MakeFieldEmpty ( out ) )
             goto error;
         else
             goto done;
+    }
 
     if ( normal_type == NORMALS_COMPUTED )
     {
@@ -5742,9 +5737,7 @@ Error isosurface_field
             int            is_grown,
             int            normal_direction )
 {
-    Array         data_array;
     int           i;
-    Interpolator  copy_g     = NULL;
     field_info    input_info = NULL;
     array_info    p_info, c_info, d_info = NULL;
 
@@ -6331,7 +6324,7 @@ CompositeField copy_grow_save ( CompositeField input )
 {
     char    *growl[100];
     char    *dep;
-    int     ll;
+    int     ll=0;
     int     i, j;
     Field   f;
     Object  a;
@@ -6710,6 +6703,8 @@ Error iso_added_task ( Pointer args )
                                 (Object) outputs[i], NULL ) )
                         goto error;
                     break;
+	        default:
+		    break;
             }
     }
 
@@ -6905,6 +6900,8 @@ Error iso_part ( iso_arg_type iso_arg )
                                     NULL ) )
                             goto error;
                     break;
+	        default:
+		    break;
             }
 
             switch ( class )
@@ -6936,6 +6933,8 @@ Error iso_part ( iso_arg_type iso_arg )
                         goto error;
 
                     break;
+	        default:
+		    break;
             }
 
             DXFree ( (Pointer) call_arg.parent );
@@ -6953,6 +6952,7 @@ Error iso_part ( iso_arg_type iso_arg )
 
                 /* see CLASS_FIELD above for example of early exit */
                 case OBJ_EMPTY: return OK;
+	        default: break;
             }
 
             /*
@@ -7059,14 +7059,16 @@ Error iso_part ( iso_arg_type iso_arg )
                                     NULL ) )
                             goto error;
                     break;
+		default:
+		    break;
             }
 
             /* XXX - errorcheck DXGetEnumeratedMember */
             for ( i             = 0;
-                  call_arg.self = DXGetEnumeratedMember
+                  (call_arg.self=DXGetEnumeratedMember
                                       ( (Group)iso_arg.self,
                                         i,
-                                        &call_arg.member_name );
+                                        &call_arg.member_name ));
                   i++ )
             {
                 call_arg.series_ordinal = -1;
@@ -7136,7 +7138,6 @@ Error iso_part ( iso_arg_type iso_arg )
 
 /*----------------------------------------------------------*\
 \*----------------------------------------------------------*/
-extern
 Object _dxf_IsosurfaceObject ( iso_arg_type iso_arg )
 {
     Series  base   = NULL;

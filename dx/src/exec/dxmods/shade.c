@@ -6,18 +6,18 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/shade.c,v 1.5 2000/08/24 20:04:48 davidt Exp $
  */
 
 #include <dxconfig.h>
 
 
-
 #include <stdio.h>
 #include <math.h>
 #include <dx/dx.h>
+#include "_normals.h"
 
 static Error ShadeField(Field, float, int, float, float);
-extern Error _dxfNormalsObject(Object, char *);
 static Error DoNormals(Object, int, char *, int);
 static Error ShadeIt(Object, int, char *, float, int, float, float, int);
 static Error CheckNormalsDirection(Object, int);
@@ -192,14 +192,14 @@ static Error ShadeIt(Object obj, int shade, char *how, float specular,
 	 composite field */
       if (!DoNormals((Object)obj, shade, how, flipfront))
 	goto error;
-      for (i=0; child = DXGetEnumeratedMember((Group)obj,i,NULL);i++){
+      for (i=0; (child=DXGetEnumeratedMember((Group)obj,i,NULL));i++){
 	if (!ShadeField((Field)child, specular, shininess, diffuse,
 			ambient))
 	  goto error; 
       }
       break;
     default:
-      for (i=0; child = DXGetEnumeratedMember((Group)obj,i,NULL); i++) {
+      for (i=0; (child=DXGetEnumeratedMember((Group)obj,i,NULL)); i++) {
 	if (!ShadeIt(child, shade, how, specular, shininess,
 		     diffuse, ambient, flipfront))
 	  goto error;
@@ -244,10 +244,6 @@ static Error ShadeIt(Object obj, int shade, char *how, float specular,
 static Error ShadeField(Field field, float specular,
                         int shininess, float diffuse, float ambient)
 {
-  Array normals;
-  char *attr;
-  
-  
   /* set all the rendering attributes */
   if (specular != -1.0)
     if (!DXSetFloatAttribute((Object)field, "specular", specular))
@@ -362,7 +358,7 @@ static Error DoNormals(Object obj, int shade, char *how, int flipfront)
 	/* if there are normals, we need to disable them */
 	if (DXGetComponentValue(first, "normals")) {
 	  
-	  for (i=0; child = (Field)DXGetEnumeratedMember((Group)obj,i,NULL);i++){
+	  for (i=0; (child=(Field)DXGetEnumeratedMember((Group)obj,i,NULL));i++){
 	    if (!DXSetIntegerAttribute((Object)child, "shade", 0))
 	      goto error;
 	  }
@@ -416,6 +412,8 @@ static Error DoNormals(Object obj, int shade, char *how, int flipfront)
       }
     }
     break;
+  default:
+    break;
   }
   
   return OK;
@@ -443,7 +441,7 @@ static Error CheckNormalsDirection(Object obj, int flipfront)
 	  DXSetError(ERROR_UNEXPECTED,"unexpected class in CheckNormalsDirection");
 	  goto error;
        }
-       for (i=0; child = DXGetEnumeratedMember((Group)obj,i,NULL);i++){
+       for (i=0; (child = DXGetEnumeratedMember((Group)obj,i,NULL));i++){
           if (!CheckNormalsDirectionField((Field)child, flipfront))
             goto error;
        }
@@ -469,11 +467,11 @@ static Error CheckNormalsDirectionField(Field obj, int flipfront)
   Object dep, eType;
   ArrayHandle positionshandle=NULL, normalshandle=NULL, connectionshandle=NULL;
   int rank, shape[10], *connections_ptr, conn1, conn2, conn3;
-  int numitems, i, *cptr1, *cptr2, *cptr3, numcon, scratchtri[3];
-  int scratchquad[4], dim, counts[3];
+  int numitems, i=0, *cptr1, numcon, scratchtri[3];
+  int scratchquad[4];
   float dotprod, scratch[3];
-  Triangle newtri, *triptr;
-  Quadrilateral newquad, *quadptr;
+  Triangle newtri, *triptr=NULL;
+  Quadrilateral newquad, *quadptr=NULL;
   
   /* get the connections component */
   connections = (Array)DXGetComponentValue(obj, "connections");

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_parse.c,v 1.6 2000/05/16 18:47:52 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_parse.c,v 1.7 2000/08/24 20:04:31 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -417,13 +417,13 @@ error:
 static Error 
 MakeupDefault(char *name,int linenum)  
 {
-  int i,j, size,n=0;
+  int i,j, n=0;
   char s[10];
   int dim;
 
   /* check required parameters */
   
-  /*size = _dxfnumGridPoints();*/
+  /*int size = _dxfnumGridPoints();*/
 
   /* if no file given use same as info file
    * if no header then start at end of infofile 
@@ -1504,7 +1504,6 @@ static Error
 infoPoints(struct parse_state *ps)
 {
   char *p;
-  int i=0;
   int max_values = 0;
   Type type=TYPE_INT;
   int format=ASCII;
@@ -1573,7 +1572,7 @@ static Error
 infoGrid(struct parse_state *ps)
 {
   char *p;
-  int i=0,n=0,max_values=0,readfile=0;
+  int i=0,max_values=0;
   Type type=TYPE_INT;
   int format=ASCII;
   ByteOrder order = DEFAULT_BYTEORDER;
@@ -2006,7 +2005,7 @@ static Error
 readdesc(char **p,struct parse_state *ps,int *format,ByteOrder *order,
 	 Type *type, char *statement)
 {
-   int i,bytes,form;
+   int bytes,form;
    ByteOrder or;
 
    if (!get_format(ps,p,&form,&or))
@@ -2037,7 +2036,7 @@ static Error
 readplacement(char **p,struct parse_state *ps,int which, int *max_values,
 	      char *statement)
 {
-   int i,n=0,bytes;
+   int n=0,bytes;
    struct infoplace *fromfile;
    Type t;
 
@@ -2104,7 +2103,7 @@ parse_datafile(struct place_state *dataps)
    int i,j=0,k=0,num,max_size=0;
    int read_header;
    Type t;
-   float f;
+   float f=0;
 
    for (i=0; _dxd_gi_fromfile[i]; i++){
       for (num=0; _dxd_gi_fromfile[i]->skip[num]>0; num++)
@@ -2159,6 +2158,8 @@ parse_datafile(struct place_state *dataps)
 	 else
 	    _dxd_gi_header.size = _dxd_gi_header.size-dataps->bytes;
 	 break;
+      default:
+         break;
       }
    }
 
@@ -2196,6 +2197,8 @@ parse_datafile(struct place_state *dataps)
 	    break;
 	 case(TYPE_DOUBLE):
 	    f = (float)DREF(double,_dxd_gi_fromfile[i]->data,num);
+	    break;
+	 default:
 	    break;
          } 
 	 if (_dxd_gi_fromfile[i]->index < 10) 	/* for grid or points */
@@ -2251,8 +2254,6 @@ FileTok(struct parse_state *ps,char *sep, int newline, char** token)
 {
     char *current = ps->current;
     char *tp = &ps->token[0];
-    char *str;
-    int n;
 
     /* 
      * Looking for a token (something with a character not found in sep).
@@ -2304,9 +2305,6 @@ FileTok(struct parse_state *ps,char *sep, int newline, char** token)
 
     ps->current = current;
     return OK;
-
-error:
-    return ERROR;
 }
 
 static

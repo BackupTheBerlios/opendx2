@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.4 2000/05/16 18:48:20 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.5 2000/08/24 20:04:51 davidt Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
@@ -27,9 +27,6 @@
 #define FLAG_ARG	7
 #define SCALE_ARG	8
 #define HOLD_ARG	9
-
-extern VectorGrp  _dxfIrreg_InitVectorGrp(Object, char *);
-extern VectorGrp  _dxfReg_InitVectorGrp(Object, char *);
 
 typedef enum
 {
@@ -128,7 +125,6 @@ static int         Streak_FindMultiGridContinuation(StreakVars *, POINT_TYPE *);
 static Error	   Streak_Interpolate(StreakVars *, POINT_TYPE *,
 						double, VECTOR_TYPE *);
 static Error	   Streak_StepTime(StreakVars *, double, VECTOR_TYPE *, double *);
-static int         Streak_Weights(StreakVars *, POINT_TYPE *);
 static int         Streak_FaceWeights(StreakVars *, POINT_TYPE *);
 static int         Streak_InsideWeights(StreakVars *, POINT_TYPE *);
 static Error	   Streak_FindBoundary(StreakVars *, POINT_TYPE *,
@@ -163,8 +159,8 @@ m_Streakline(Object *in, Object *out)
     Array	  starts = NULL;
     Array	  times  = NULL;
     Class	  vClass;
-    Object 	  cachedObject = NULL;
-    float	  termTime, seriesEnd;
+    Object cachedObject = NULL;
+    float termTime, seriesEnd=0;
 
     out[0] = NULL;
 
@@ -446,12 +442,12 @@ past_head:
     streak = cstreaks->streaks;
     for (i = 0; i < cstreaks->nStreaks; i++, streak++)
     {
-	Series s = NULL, o = NULL;
+	Series s = NULL;
 	Field  f;
 	int    j, k;
 	float  t;
 
-	streak->streak; k = 0;
+	k = 0;
 	for (j = 0; j <= frame; j++)
 	{
 	    f = (Field)DXGetSeriesMember(streak->streak, j, &t);
@@ -542,12 +538,9 @@ typedef struct frameargs
 static Error
 Streaklines(CacheObject cstreak, float c, int curlFlag)
 {
-    Object	  member = NULL;
-    int           i, j, n;
+    int           i, n;
     StreakArgs    stask;
     FrameArgs     ftask;
-    int           nDim;
-    Field 	  f;
     int		  nP;
     Interpolator  curlMap0 = NULL;
     Interpolator  curlMap1 = NULL;
@@ -726,7 +719,6 @@ Streaklines(CacheObject cstreak, float c, int curlFlag)
 	}
     }
 
-no_streaks:
     return OK;
 
 error:
@@ -766,7 +758,7 @@ Streakline(CacheObject cstreak,	/* accumulated streak info		*/
     double     	 t, t2;
     int		 done, keepPoint;
     Field 	 field = NULL;
-    int 	 i, totKnt, zero, zeroKnt;
+    int 	 i, totKnt, zeroKnt;
     StreakFlags  sFlag;
     StreakVars   svars;
     int		 zeroVector;
@@ -1046,8 +1038,8 @@ TraceFrame(Pointer ptr)
     Field	 prev;
     Array        nArray = NULL, bArray = NULL;
     Array        vArray, tArray, pArray;
-    float        *points, *vectors, *curls0, *curls1,
-		 *normals, *binormals, *time;
+    float        *points, *vectors, *curls0=NULL, *curls1=NULL,
+    		 *normals, *binormals, *time;
     int          i, nVectors, nDim, seg;
     Object       dattr = NULL;
     float 	 fn[3], fb[3], ft[3];
@@ -1353,7 +1345,6 @@ Times(Object times, Object vectors)
     else
     {
 	float *ptr;
-	int i;
 
 	array = DXNewArray(TYPE_FLOAT, CATEGORY_REAL, 1);
 	if (! array)
@@ -1527,6 +1518,7 @@ DestroyVectorField(VectorField vf)
 	DXFree((Pointer)vf->members);
 	DXFree((Pointer)vf);
     }
+    return OK;
 }
 
 static VectorField
@@ -1835,7 +1827,6 @@ StreakToField(Stream buf)
     Array a = NULL;
     Object dattr = NULL;
     Field field;
-    int flag = 1;
 
     if (! FlushStreak(buf))
 	goto error;
@@ -2001,10 +1992,10 @@ UpdateFrame(float *p, float *v, float *c, float *t, float *n, float *b,
 					float *fn, float *fb, float *ft)
 {
     float  twist;
-    float  mTwist[9], mBend[9], mProduct[9];
+    float  mTwist[9], mBend[9];
     float  cross[3], len, cA;
     int	   bend = 0;
-    float  nt[3], vt[3];
+    float  nt[3];
 
 
     /*
@@ -2105,9 +2096,6 @@ UpdateFrame(float *p, float *v, float *c, float *t, float *n, float *b,
     }
 
     return OK;
-
-error:
-    return ERROR;
 }
 
 /*
@@ -2400,7 +2388,7 @@ GetTail(Object o, char *name, Pointer l)
 {
     Field f;
     Object next;
-    int n, nd, i;
+    int n, i;
     byte *ptr;
     int  size;
     Array a;
@@ -2434,6 +2422,8 @@ GetTail(Object o, char *name, Pointer l)
 
     ptr = ((byte *)DXGetArrayData(a)) + (n-1)*size;
     memcpy(l, ptr, size);
+
+    return OK;
 }
 	
 static Error
@@ -2452,10 +2442,6 @@ SetupStreakVars(StreakVars *svars, CacheObject cstreak)
     svars->nDim = cstreak->nDim;
 
     return OK;
-
-error:
-    FreeStreakVars(svars);
-    return ERROR;
 }
 
 static Error
@@ -2514,7 +2500,6 @@ GetFrameData(Object vectors, Object curls, CacheObject co)
 	
 	if (curls)
 	{
-	    Object c;
 	    float t;
 
 	    curl = DXGetSeriesMember((Series)curls, co->frame, &t);
@@ -2768,6 +2753,7 @@ Streak_InsideWeights(StreakVars *svars, POINT_TYPE *p)
 	return 0;
 }
 
+#if 0
 static int
 Streak_Weights(StreakVars *svars, POINT_TYPE *p)
 {
@@ -2777,6 +2763,7 @@ Streak_Weights(StreakVars *svars, POINT_TYPE *p)
     
     return 1;
 }
+#endif
 
 static int
 Streak_FaceWeights(StreakVars *svars, POINT_TYPE *p)

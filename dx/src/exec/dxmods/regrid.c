@@ -11,7 +11,6 @@
 #include <dxconfig.h>
 
 
-
 /* issues: partitioned grids for base, handling 2D and 3D */
 /* should do not only data but all components dep positions */
 /* what about data dep connections? need to do a set type after */
@@ -20,32 +19,21 @@
 #include <stdio.h>
 #include <math.h>
 #include <dx/dx.h>
+#include "_glyph.h"
+#include "_connectgrids.h"
 
 
-extern
-  Error _dxfWidthHeuristic(Object, float *);
-
-extern 
-  Error _dxfConnectNearestObject(Object, Object, int, float *, float, Array);
-
-extern 
-  Error _dxfConnectRadiusObject(Object, Object, float, float, Array);
-
-
-
-int
-  m_Regrid(Object *in, Object *out)
+Error
+m_Regrid(Object *in, Object *out)
 {
-  char *method, *element;
-  char newstring[30], *string;
+  char *string;
   Class class;
   Category category;
   Object ino=NULL, base=NULL;
-  Vector normal;
   Array missing=NULL;
-  float *p_ptr, *p_old, radius,  *radius_ptr, exponent;
+  float radius,  *radius_ptr, exponent;
   Type type;
-  int numitems, rank, shape[30], numnearest, count, i;
+  int numitems, rank, shape[30], numnearest;
 
   radius_ptr = &radius;
   

@@ -9,7 +9,8 @@
 #include <dxconfig.h>
 
 
-#include "dx/dx.h"
+#include <dx/dx.h>
+#include "echo.h"
 
 /*
  * This module sends a message across the connection that is intended for
@@ -18,10 +19,6 @@
 
 #define TAG in[0]
 #define VALUE in[1]
-
-/* FIXME: this should be in an include file somewhere (see echo.m) */
-Error _dxf_ConvertObjectsToStringValues(Object *in, int nobj, char **retrstr);
-
 
 Error m_DXLOutput(Object in[], Object out[])
 {

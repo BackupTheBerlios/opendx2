@@ -5,13 +5,14 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/stream.h,v 1.5 2000/08/24 20:04:51 davidt Exp $:
+ */
 
 #include <dxconfig.h>
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/stream.h,v 1.4 2000/08/23 17:08:25 gda Exp $:
- */
+#ifndef _STREAM_H_
+#define _STREAM_H_
 
 #define DEFAULT_C	0.1
 
@@ -102,3 +103,11 @@ typedef struct stream *Stream;
 Error      _dxfMinMaxBox(Field, float *, float *);
 int        _dxfIsInBox(VectorPart, POINT_TYPE *, int, int);
 
+/* from _irregstream.c */
+VectorGrp _dxfIrreg_InitVectorGrp(Object, char *);
+
+/* from _regstream.c */
+VectorGrp    _dxfReg_InitVectorGrp(Object, char *);
+
+
+#endif /* _STREAM_H_ */

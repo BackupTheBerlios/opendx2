@@ -36,7 +36,7 @@
 static Error Spin(Camera, Camera *, Object, Object *,
 		int, DXEvents, int *, int, Object, DXEvents *, int *);
 
-extern DXRegisterForNotification(char *, Pointer);
+extern Error DXRegisterForNotification(char *, Pointer); /* from libdx/notify.c */
 
 extern int _dxd_nUserInteractors;
 extern void *_dxd_UserInteractors;
@@ -44,8 +44,6 @@ extern void *_dxd_UserInteractors;
 int
 m_SuperviseState(Object *in, Object *out)
 {
-    Object cachedObject;
-    Camera cachedCamera;
     char *where, *cameraCacheTag = NULL, *objectCacheTag = NULL;
     Pointer modid = NULL;
     int resetCamera, resetObject;
@@ -61,7 +59,7 @@ m_SuperviseState(Object *in, Object *out)
     if (!WHERE_IN || !DXExtractString(WHERE_IN, &where))
     {
 	DXSetError(ERROR_MISSING_DATA, "where parameter");
-	return NULL;
+	return ERROR;
     }
 
     if (! strstr(where, "#X"))
@@ -317,7 +315,6 @@ Spin(Camera in_camera, Camera *out_camera,
     int   pixwidth;
     float fov;
     int projection;
-    int buttonState;
 
     *uevents = NULL;
     *nuevents = 0;
@@ -337,10 +334,7 @@ Spin(Camera in_camera, Camera *out_camera,
 
     if (nEvents)
     {
-	int i, activeButton, last_x, last_y;
-	float dx, dy, dz;
-	int last;
-	int buttonState = BUTTON_UP;
+	int i, activeButton;
 	void *udata = NULL;
 	int mask;
 	UserInteractor *imode = ((UserInteractor *)_dxd_UserInteractors) + mode;

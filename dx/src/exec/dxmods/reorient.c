@@ -105,7 +105,8 @@ Error m_Reorient(Object *in, Object *out)
 
 
 
-extern Error ReorientImage(Rtaskarg *t)
+static Error 
+ReorientImage(Rtaskarg *t)
 {
     Object subo;
     Class class;
@@ -126,7 +127,7 @@ extern Error ReorientImage(Rtaskarg *t)
 	    goto error;
 	
 	nt.partitioned = 1;
-	for (i=0; subo = DXGetEnumeratedMember((Group)t->o, i, NULL); i++) {
+	for (i=0; (subo = DXGetEnumeratedMember((Group)t->o, i, NULL)); i++) {
 	    nt.o = subo;
 	    if (!ReorientImage(&nt))
 		goto error;
@@ -134,7 +135,7 @@ extern Error ReorientImage(Rtaskarg *t)
 	break;
 	
       case CLASS_GROUP:
-	for (i=0; subo = DXGetEnumeratedMember((Group)t->o, i, NULL); i++) {
+	for (i=0; (subo = DXGetEnumeratedMember((Group)t->o, i, NULL)); i++) {
 	    nt.o = subo;
 	    if (!ReorientImage(&nt))
 		goto error;
@@ -177,7 +178,7 @@ static Error setextents(Object o, int *e)
     /* gag.  i'm going to have to look for partitioned images here
      * and treat them special.  oh boy.
      */
-    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++) {
+    for (i=0; (subo = DXGetEnumeratedMember((Group)o, i, NULL)); i++) {
 
 	if (DXGetObjectClass(subo) != CLASS_FIELD) {
 	    DXSetError(ERROR_DATA_INVALID, 
@@ -248,16 +249,15 @@ static Error DoImage (Pointer ptr)
 static Error dogrid (Rtaskarg *tp)
 {
     Field field;
-    Array positions, connections, a;
+    Array positions, connections;
     Array new_positions=NULL;
     Array new_connections=NULL;
 
     int yfastest = 0;
     int negative_x = 0;
     int negative_y = 0;
-    int xcounts, ycounts;
     
-    int i, dim, counts[2], itemp;
+    int dim, counts[2], itemp;
     int meshextents[2];
     float origin[2], deltas[4], ftemp;
     int otherdim;
@@ -753,7 +753,7 @@ static Error dodata (Rtaskarg *tp)
 
 
     for (cnum = 0; 
-	 a = (Array)DXGetEnumeratedComponentValue(field, cnum, &name); cnum++) {
+	 (a = (Array)DXGetEnumeratedComponentValue(field, cnum, &name)); cnum++) {
 
 	if (!strcmp(name, "positions") || !strcmp(name, "connections"))
 	    continue;
@@ -964,7 +964,7 @@ static Error dodata (Rtaskarg *tp)
      */
   again:
     didwork = 0;
-    for (i=0; a = (Array)DXGetEnumeratedComponentValue(field, i, &name); i++) {
+    for (i=0; (a = (Array)DXGetEnumeratedComponentValue(field, i, &name)); i++) {
 	
 	if (!strcmp(name, "positions") || !strcmp(name, "connections"))
 	    continue;

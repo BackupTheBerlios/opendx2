@@ -13,6 +13,7 @@
 
 #include <string.h>
 #include <dx/dx.h>
+#include "_construct.h"
 
 static Error AddData(Field, Array);
 static Field HardCase(Array, Array);
@@ -22,10 +23,11 @@ static Field MakeRR(Array, Array, Array);
 static Array DefaultOrigin(Array);
 static Array DefaultDeltas(Array);
 static Array DefaultCounts(Array);
-static Array MyExtractFloat(Array);
 static Array MyExtractIntVector(Array);
 static Array MyExtractFloatVector(Array);
-extern Array _dxfReallyCopyArray(Array);
+#if 0
+static Array MyExtractFloat(Array);
+#endif
 
 Field
 _dxfConstruct(Array o, Array d, Array c, Array data)
@@ -214,7 +216,6 @@ AddData(Field f, Array dA)
     Array cA, pA, outD = NULL, newdata=NULL;
     int   nC, nP, nD;
     int   r, s[32];
-    int  i;
     Type type;
     Category category;
     char *att="";
@@ -515,7 +516,6 @@ MakeII(Array o)
     Category c;
     int r, s[32];
     Array pA = NULL;
-    int dim;
 
     DXGetArrayInfo(o, &n, &t, &c, &r, s);
     if (c != CATEGORY_REAL || (r != 1 && r != 0))
@@ -602,7 +602,7 @@ DefaultDeltas(Array driver)
 {
     float p[256];
     Array a = NULL;
-    int i, j, k, dim, r;
+    int i, k, dim, r;
 
     if (driver)
     {
@@ -636,7 +636,7 @@ DefaultCounts(Array driver)
 {
     int c[16];
     Array a = NULL;
-    int i, j, k, dim, r;
+    int i, k, dim, r;
 
     if (driver)
     {
@@ -991,6 +991,8 @@ MyExtractFloatVector(Array in)
 	    
 	    break;
 	}
+        default:
+	    break;
     }
 	    
     return out;
@@ -999,6 +1001,8 @@ error:
     DXDelete((Object)out);
     return NULL;
 }
+
+#if 0
 static Array
 MyExtractFloat(Array in)
 {
@@ -1098,6 +1102,8 @@ MyExtractFloat(Array in)
 	    
 	    break;
 	}
+        default:
+	    break;
     }
 	    
     return out;
@@ -1106,6 +1112,7 @@ error:
     DXDelete((Object)out);
     return NULL;
 }
+#endif
 
 static Array
 MyExtractIntVector(Array in)

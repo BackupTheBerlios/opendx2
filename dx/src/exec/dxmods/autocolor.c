@@ -42,13 +42,9 @@ END:
 #include <string.h>
 #include <ctype.h>
 #include <dx/dx.h>
+#include "_autocolor.h"
 
-extern Group _dxfAutoColor(Object,  float, float, float,
-           float, float, float *, float *, Object *, int,
-           RGBColor, RGBColor);
 static int _dxfIsFieldorGroup(Object ob);
-extern int _dxfFieldWithInformation(Object);
-extern Error _dxfHSVtoRGB(float, float, float, float *, float *, float *);
 
 int
 m_AutoColor(Object *in, Object *out)
@@ -309,7 +305,7 @@ m_AutoColor(Object *in, Object *out)
        onearray = DXNewArray(TYPE_INT,CATEGORY_REAL, 0);
        if (!DXAddArrayData(onearray, 0, 1, &one))
            goto error;
-       if (!DXSetAttribute(out[0], "direct color map", onearray))
+       if (!DXSetAttribute(out[0], "direct color map", (Object) onearray))
            goto error;
        onearray = NULL;
     }

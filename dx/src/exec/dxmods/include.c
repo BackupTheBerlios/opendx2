@@ -30,8 +30,10 @@ static Field Field_Include(Field f, int justcull, int shape,
 static Error VectorLength(Object o, int *len);
 static Error VectorExtract(Object o, int len, float *ptr);
 
-extern Object _dxfDXEmptyObject(Object o);
+extern Object _dxfDXEmptyObject(Object o); /* from libdx/component.c */
 #define IsEmpty(o) _dxfDXEmptyObject(o)
+
+extern Array DXScalarConvert(Array a); /* from libdx/stats.h */
 
 
 static Field Include_Wrapper(Field f, char *argblk, int size);
@@ -282,9 +284,7 @@ static Field Include_Wrapper(Field f, char *a, int size)
 static Object Object_Include(Object o, struct argblk *ap)
 {
     Object newo, subo;
-    char *name;
     Matrix m;
-    float position;
     Object subo2;
     int fixed, z;
     int i;
@@ -293,7 +293,7 @@ static Object Object_Include(Object o, struct argblk *ap)
     switch(DXGetObjectClass(o)) {
       case CLASS_GROUP:
 	/* for each member */
-	for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++) {
+	for (i=0; (subo = DXGetEnumeratedMember((Group)o, i, NULL)); i++) {
 	    if (!Object_Include(subo, ap))
 		continue;
 	}
@@ -363,8 +363,6 @@ static Object Object_Include(Object o, struct argblk *ap)
 
 
 
-extern Array DXScalarConvert(Array a);
-
 
 static Field 
 Field_Include(Field f, int justcull, int shape, float *min, float *max, 
@@ -405,7 +403,7 @@ Field_Include(Field f, int justcull, int shape, float *min, float *max,
 
     /* look at the data component.
      */
-    if (adata = (Array)DXGetComponentValue(f, "data")) {
+    if ((adata = (Array)DXGetComponentValue(f, "data"))) {
     
 	if (!DXGetArrayInfo(adata, &items, NULL, NULL, NULL, NULL))
 	    return NULL;
@@ -798,7 +796,6 @@ Include_Array(Array a, struct argblk b)
 	}
     }
 
-  done:
     return na;
     
   error:

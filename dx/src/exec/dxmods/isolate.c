@@ -117,7 +117,7 @@ static Object DoIsolate(Object o,float scale)
     Object oo,subo,subo2;
     int fixed,z;
     Matrix m;
-    int i,newi;
+    int i;
     char *name;
     struct argblck arg;
     
@@ -150,7 +150,7 @@ static Object DoIsolate(Object o,float scale)
 	    if (! g)
 	      return NULL;
 	    
-	    for (i=0; oo= DXGetEnumeratedMember((Group)o,i,&name); i++)
+	    for (i=0; (oo= DXGetEnumeratedMember((Group)o,i,&name)); i++)
 	      {
 		  if(!(oo = DoIsolate(oo,scale)))
 		    goto error;	
@@ -242,7 +242,7 @@ static Error
 {
     
     Object attr;
-    Array old_pA,new_pA,old_cA,new_cA,old_dA,new_dA;
+    Array old_pA,new_pA,old_cA,new_cA;
     Array compArray;
     ArrayHandle old_cHandle = NULL,old_pHandle = NULL;
     InvalidComponentHandle old_invPHandle = NULL,new_invPHandle = NULL;
@@ -253,8 +253,8 @@ static Error
     Point point[8],delta,centroid;
     depComp *depPCompA = NULL;		/* posns dependant component table */
     char *eType,*name,*str;
-    float *old_postions,*new_positions;	
-    int *old_connections,*new_connections;
+    float *new_positions;	
+    int *new_connections;
     int i,j,k;
     int nVperE,nElements,pDim;
     int ndepPComps = 0;

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/isosurface.c,v 1.4 2000/05/16 18:48:00 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/isosurface.c,v 1.5 2000/08/24 20:04:39 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -61,8 +61,12 @@ END:
 float *_dxd_user_def_values = NULL;
 int   _dxd_isosurface_task_counter;
 
+static iso_arg_type ISO_ARG_INITIALIZER =
+            { ISOSURFACE, NO_NORMALS,
+             -1, NULL, ORIGINAL_DATA, NULL, NULL, 0, 0, 0,
+             -1, -1.0, NULL, 0, DXD_MAX_FLOAT, -DXD_MAX_FLOAT, NULL, 0 };
 
-extern
+
 Error
 m_Isosurface ( Object *in,  Object *out )
 {
@@ -75,7 +79,6 @@ m_Isosurface ( Object *in,  Object *out )
 #define  I_direction   in[5]
 #define  O_surface     out[0]
 
-    int          i;
     int          add_normals;
     iso_arg_type iso_arg;
     Class        class;

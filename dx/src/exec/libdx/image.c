@@ -572,8 +572,7 @@ DXOutputRGB(Field i, int fd)
     return (_dxf_outputrgb_yuv(i, fd, 0));
 }
 
-Field
-DXOutputYUV(Field i, int fd)
+Field DXOutputYUV(Field i, int fd)
 {
     return (_dxf_outputrgb_yuv(i, fd, 1));
 }

@@ -22,8 +22,8 @@
 #define DEG2RAD(x)      (x/180.0*M_PI)   /* degrees to radians */
 #define RAD2DEG(x)      (x/M_PI*180.0)   /* u guess */
 
-#define IsEmpty(o)      (DXGetObjectClass(o) == CLASS_FIELD) && \
-			 (DXEmptyField((Field)o))
+#define IsEmpty(o)      ((DXGetObjectClass(o) == CLASS_FIELD) && \
+			 (DXEmptyField((Field)o)))
 
 #define FUZZ ((float) 1e-37) /* for floating point number compares - this is
 			      *  not MINFLOAT as defined in <values.h>, 
@@ -106,7 +106,7 @@ static Error third_parms(Object *in, struct cameraparms *p);
 static int find_direction(char *);
 static Error set_direction(char *, struct cameraparms *p);
 
-extern Error DXColorNameToRGB(char *, RGBColor *);
+extern Error DXColorNameToRGB(char *, RGBColor *); /* from libdx/color.c */
 
 
 /* external module entry points 
@@ -226,17 +226,17 @@ static Error parse_inputs(Object *in, struct cameraparms *p)
      *  background color
      */
     if (!first_parms(in, p))
-	return NULL;
+	return ERROR;
 
     /* the more complicated ones: to point, from vector
      */
     if (!second_parms(in, p))
-	return NULL;
+	return ERROR;
 
     /* the most complicated ones: from point, width and angle
      */
     if (!third_parms(in, p))
-	return NULL;
+	return ERROR;
 
 
     return OK;
@@ -251,14 +251,14 @@ static Error first_parms(Object *in, struct cameraparms *p)
     /* resolution (final image width in pixels) */
     if (in[3] && (!DXExtractInteger(in[3], &p->hsize) || p->hsize <= 0)) {
 	DXSetError(ERROR_BAD_PARAMETER, "#10020", "resolution");
-	return NULL;
+	return ERROR;
     }
     
     
     /* aspect ratio = horizontal pixels / vertical pixels */
     if (in[4] && (!DXExtractFloat(in[4], &p->aspect) || p->aspect <= 0.0)) {
 	DXSetError(ERROR_BAD_PARAMETER, "#10090", "aspect");
-	return NULL;
+	return ERROR;
     }
     
     
@@ -266,11 +266,11 @@ static Error first_parms(Object *in, struct cameraparms *p)
     if (in[5]) {
         if (!DXExtractParameter(in[5], TYPE_FLOAT, 3, 1, (Pointer)&p->u)) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#10230", "up", 3);
-	    return NULL;
+	    return ERROR;
 	}
         if (DXLength(p->u) < FUZZ) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#11822", "up");
-	    return NULL;
+	    return ERROR;
 	}
 	p->upset++;
     }
@@ -280,11 +280,11 @@ static Error first_parms(Object *in, struct cameraparms *p)
     if (in[6]) {
 	if (!DXExtractInteger(in[6], &p->doperspective)) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#10020", "perspective");
-	    return NULL;
+	    return ERROR;
 	}
 	if (p->doperspective < 0 || p->doperspective > 1) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#10040", "perspective", 0, 1);
-	    return NULL;
+	    return ERROR;
 	}
     }
 
@@ -293,7 +293,7 @@ static Error first_parms(Object *in, struct cameraparms *p)
 	/* color name */
 	if (DXExtractString(in[8], &colorname)) {
 	    if (!DXColorNameToRGB(colorname, &p->color)) {
-		return NULL;
+		return ERROR;
 	    }
 	} 
 
@@ -304,7 +304,7 @@ static Error first_parms(Object *in, struct cameraparms *p)
 	/* error */
 	else {
 	    DXSetError(ERROR_BAD_PARAMETER, "#10510", "background");
-	    return NULL;
+	    return ERROR;
 	}
     }
 
@@ -357,7 +357,7 @@ static Error second_parms(Object *in, struct cameraparms *p)
     /* autocamera can't default the to-point */
     if (!in[0] && p->isauto && !p->isupdate) {
 	DXSetError(ERROR_BAD_PARAMETER, "#10000", "object");
-	return NULL;
+	return ERROR;
     } 
     
     
@@ -375,10 +375,10 @@ static Error second_parms(Object *in, struct cameraparms *p)
 	else if (DXExtractString(in[1], &direction)) {
 	    if (p->isauto) {
 		if (!set_direction(direction, p))
-		    return NULL;
+		    return ERROR;
 	    } else {
 		DXSetError(ERROR_BAD_PARAMETER, "#10460", "from");
-		return NULL;
+		return ERROR;
 	    }
 	}
 
@@ -386,7 +386,7 @@ static Error second_parms(Object *in, struct cameraparms *p)
 	else if (DXBoundingBox(in[1], bbox2)) {
 	    if (p->isauto) {
 		DXSetError(ERROR_BAD_PARAMETER, "#10510", "`direction'");
-		return NULL;
+		return ERROR;
 	    }
 	    p->f.x = (bbox2[7].x + bbox2[0].x) / 2;
 	    p->f.y = (bbox2[7].y + bbox2[0].y) / 2;
@@ -399,18 +399,18 @@ static Error second_parms(Object *in, struct cameraparms *p)
 		DXSetError(ERROR_BAD_PARAMETER, "#10510", "`direction'");
 	    else
 		DXSetError(ERROR_BAD_PARAMETER, "#10460", "from");
-	    return NULL;
+	    return ERROR;
 	}
 
 	/* check for from == to */
 	if (p->isauto && DXLength(p->f) < FUZZ) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#11822", "direction");
-	    return NULL;
+	    return ERROR;
 	}
 	
 	if (!p->isauto && DXLength(DXSub(p->f, p->t)) < FUZZ) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#11010", "`from'", "`to'");
-	    return NULL;
+	    return ERROR;
 	}
 
     } 
@@ -418,7 +418,7 @@ static Error second_parms(Object *in, struct cameraparms *p)
     /* for autocamera, default to front;  for camera, from is already set */
     else if (p->isauto && !p->isupdate) {
 	if (!set_direction("front", p))
-	    return NULL;
+	    return ERROR;
     }
     
     return OK;
@@ -443,7 +443,7 @@ static Error third_parms(Object *in, struct cameraparms *p)
 	    if (DXExtractFloat(in[2], &p->width)) {
 		if (p->width <= 0) {
 		    DXSetError(ERROR_BAD_PARAMETER, "#10090", "width");
-		    return NULL;
+		    return ERROR;
 		} 
 	    }
 	    /* object */
@@ -466,7 +466,7 @@ static Error third_parms(Object *in, struct cameraparms *p)
 	    /* error */
 	    else {
 		DXSetError(ERROR_BAD_PARAMETER, "#10560", "width");
-		return NULL;
+		return ERROR;
 	    }
 	}
     } 
@@ -476,7 +476,7 @@ static Error third_parms(Object *in, struct cameraparms *p)
     else if (p->isauto && !p->isupdate) {
 	if (!p->isobject && !p->nobox) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#10470", "width", "object");
-	    return NULL;
+	    return ERROR;
 	}
 
 	diag = DXLength(DXSub(p->bbox[7], p->bbox[0]));
@@ -499,7 +499,7 @@ static Error third_parms(Object *in, struct cameraparms *p)
 	    if (!DXExtractFloat(in[7], &p->angle) 
 		|| p->angle < 0.0 || p->angle >= 180.0) {
 		DXSetError(ERROR_BAD_PARAMETER, "#10110", "angle", 0, 180);
-		return NULL;
+		return ERROR;
 	    }
 	    /* allow user to turn off perspective with angle of zero */
 	    if (p->angle < FUZZ)
@@ -665,7 +665,7 @@ static Error good_camera(struct cameraparms *p)
 	    DXSetError(ERROR_BAD_PARAMETER, "#11822", "direction");
 	else
 	    DXSetError(ERROR_BAD_PARAMETER, "#11010", "to", "from");
-	return NULL;
+	return ERROR;
     }
 
 

@@ -11,16 +11,15 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.4 2000/05/16 18:48:14 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.5 2000/08/24 20:04:48 davidt Exp $
  */
-
 
 #include <string.h>
 #include <stdio.h>
 #include <dx/dx.h>
-#include <_helper_jea.h>
-#include <_getfield.h>
-
+#include "showboundary.h"
+#include "_helper_jea.h"
+#include "_isosurface.h"
 
 #define    DEFAULT_BOUND_COLOR          DXRGB ( 0.5, 0.7, 1.0 )
 #define    PROPRIETARY_COMPONENT_NAME   "overall offsets"
@@ -35,7 +34,6 @@ typedef struct bounds
 }
 bounds_rec;
 
-
 struct 
 {
     int  have_connects;
@@ -43,15 +41,6 @@ struct
 }
 global;
 
-
-
-/*
- * The following function resides in the file _isosurface.c
- */
-extern int _dxf_get_flip
-               ( field_info input_info,
-                 int        *have_connections,
-                 int        *have_nondegeneracy );
 
 /*
  * The following functions reside herein.
@@ -289,9 +278,8 @@ Object set_aux_offsets ( Object input, bounds_ptr read, Array write )
                         bounds.i_max = bounds.j_max = bounds.k_max = 0;
                         bounds.set   = 0;
                        
-                        for ( i     = 0;
-                              child = DXGetEnumeratedMember
-                                          ( (Group) input, i, NULL );
+                        for ( i = 0; (child=DXGetEnumeratedMember
+                                          ( (Group) input, i, NULL ));
                               i++ )
                             if ( !set_aux_offsets ( child, &bounds, NULL ) )
                                 goto error;
@@ -309,9 +297,8 @@ Object set_aux_offsets ( Object input, bounds_ptr read, Array write )
                                  !DXReference ( (Object) aux_array ) )
                                 goto error;
     
-                            for ( i     = 0;
-                                  child = DXGetEnumeratedMember
-                                              ( (Group) input, i, NULL );
+                            for ( i = 0; (child=DXGetEnumeratedMember
+                                              ( (Group) input, i, NULL ));
                                   i++ )
                                 if ( !set_aux_offsets
                                           ( child, NULL, aux_array ) )
@@ -320,9 +307,8 @@ Object set_aux_offsets ( Object input, bounds_ptr read, Array write )
                         break;
     
                     default:
-                        for ( i     = 0;
-                              child = DXGetEnumeratedMember
-                                          ( (Group) input, i, NULL );
+                        for ( i = 0; ( child=DXGetEnumeratedMember
+                                          ( (Group) input, i, NULL ));
                               i++ )
                             if ( !set_aux_offsets ( child, NULL, NULL ) )
                                 goto error;
@@ -865,6 +851,8 @@ DXMessage ( "    make_normals: given flip = %d", flip );
                         += ((float*)&n)[j%3];
             }
             break;
+         default:
+	    break;
     }
 
 
@@ -892,7 +880,6 @@ DXMessage ( "    make_normals: given flip = %d", flip );
 }
 
 
-extern
 Array _dxf_resample_array
           ( component_info comp,
             int dep_ref,   /* 1=dep,2=ref., how comp relates to push/pull */
@@ -1077,7 +1064,7 @@ Field jea_slab
             int  d,
             int  n )
 {
-    int  nC_in, nC_out, nP_in, nP_out;
+    int  nC_out, nP_in, nP_out;
 
     Field           out_field;
     Array           array     = NULL;
@@ -1088,7 +1075,7 @@ Field jea_slab
 
     int flip = 0;
 
-    array_info  t0, t1, t2;
+    array_info  t0, t1, t2=NULL;
     int         I,  II, OO,  i, j, k;
     int         n1;
 
@@ -1306,6 +1293,8 @@ DXPrint   ( (Object)((array_info)&comp->array)->array, "rd", 0);
                                     goto error;
                             }
                             break;
+		         default:
+			    break;
                     }
                 }
             }
@@ -1403,6 +1392,8 @@ DXPrint   ( (Object)((array_info)&comp->array)->array, "rd", 0);
                                     goto error;
                             }
                             break;
+		         default:
+			    break;
                     }
                 }
             }
@@ -1468,6 +1459,8 @@ DXPrint   ( (Object)((array_info)&comp->array)->array, "rd", 0);
                             pull[OO] = II;
                         }
                         break;
+		    default:
+		        break;
                 }
 
                 if ( ERROR == ( array = _dxf_resample_array
@@ -1535,6 +1528,8 @@ DXPrint   ( (Object)((array_info)&comp->array)->array, "rd", 0);
                             pull[OO] = II;
                         }
                         break;
+		     default:
+		        break;
                 }
 
                 if ( ERROR == ( array = _dxf_resample_array
@@ -1577,15 +1572,11 @@ MultiGrid regular_boundary ( field_info input_info )
 {
     component_info  proprietary = NULL;
     bounds_ptr      bptr        = NULL;
-    bounds_rec      trivial;
     MultiGrid       output      = NULL;
     Field           field       = NULL;
     array_info      c_info      = NULL;
     int             nfields     = 0;
-    int             i;
     array_info      t0, t1, t2;
-    bounds_rec      accept;
-    bounds_rec      bounds;
 
 
     if ( ( ERROR == ( output = DXNewMultiGrid() ) ) )
@@ -1696,15 +1687,13 @@ Field irregular_boundary
     neighbor6  neighb;
     Cube       conn;
 
-    int flip;
+    int flip=0;
 
-    Error (*get_neighbor)  ();
+    Error (*get_neighbor)() = NULL;
 
     /* duplicated out of _helper_jea.h */
 
                        /* XXX - we don't have or know line neighb's */
-    int  line_to_point [2][1] = { { 0 }, { 1 } };
-
     int  quad_to_line  [4][2] = { { 0, 1 }, { 3, 2 }, { 2, 0 }, { 1, 3 } };
     int  tri_to_line   [3][2] = { { 1, 2 }, { 2, 0 }, { 0, 1 } };
     int  cube_to_quad  [6][4]
@@ -1730,6 +1719,8 @@ Field irregular_boundary
             DXMessage ( "irregular_boundary: get flip = %d", flip );
 #endif
             break;
+	 default:
+	    break;
     }
 
     if ( input_info->std_comps[(int)NEIGHBORS] != NULL )
@@ -1754,6 +1745,7 @@ Field irregular_boundary
         {
           case QUADRILATERALS: get_neighbor = _dxf_get_neighb_grid_QUADS; break;
           case CUBES:          get_neighbor = _dxf_get_neighb_grid_CUBES; break;
+	  default: break;
         }
     }
     else
@@ -1783,13 +1775,13 @@ Field irregular_boundary
                 for ( j=0; j<N_NEIGHB; j++) \
                     if ( ( -1 == ( n = \
                                  ((int *) n_info->data) [i*N_NEIGHB+j] ) ) \
-                         || ( n > -1 ) && \
-                         DXIsElementInvalid ( i_handle, n ) ) \
+                         || ( ( n > -1 ) && \
+                         DXIsElementInvalid ( i_handle, n ) ) ) \
                         nC_out ++; \
         } \
     else \
         for ( i=0; i<c_info->items; i++ ) \
-            if ( !DXIsElementInvalid ( i_handle, i ) ) \
+            if ( !DXIsElementInvalid ( i_handle, i ) ) { \
                 if ( !get_neighbor ( i, c_info, bptr, &neighb ) ) \
                     goto error;\
                 else \
@@ -1797,7 +1789,8 @@ Field irregular_boundary
                         if ( ( -1 == ( n = ((int*)&neighb)[j] ) ) \
                              || ( ( n > -1 ) && \
                              DXIsElementInvalid ( i_handle, n ) ) ) \
-                            nC_out ++;
+                            nC_out ++; \
+	    }
 
 
 
@@ -1867,7 +1860,7 @@ nC_out,k,((int *) data) [nC_out*N_CONN_OUT+k] );
      *     IN_TO_OUT  - mapping of a neighbor to a conn. spanning that face.
      */
 #define CONVERT(N_NEIGHB,N_CONN,N_CONN_OUT,IN_TO_OUT) \
-    if ( i_handle == NULL ) \
+    if ( i_handle == NULL ) { \
         for ( i=0; i<c_info->items; i++ ) \
             for ( j=0; j<N_NEIGHB; j++ ) \
             { \
@@ -1887,7 +1880,7 @@ nC_out,k,((int *) data) [nC_out*N_CONN_OUT+k] );
                     o_conn_index [ nC_out++ ] = i; \
                 } \
             } \
-    else if ( n_info != NULL ) \
+    } else if ( n_info != NULL ) { \
         for ( i=0; i<c_info->items; i++ ) \
         { \
             if ( !DXIsElementInvalid ( i_handle, i ) ) \
@@ -1913,9 +1906,9 @@ nC_out,k,((int *) data) [nC_out*N_CONN_OUT+k] );
                     } \
                 } \
         } \
-    else \
+    } else { \
         for ( i=0; i<c_info->items; i++ ) \
-            if ( !DXIsElementInvalid ( i_handle, i ) ) \
+            if ( !DXIsElementInvalid ( i_handle, i ) ) { \
                 if ( !get_neighbor ( i, c_info, bptr, &neighb ) ) \
                     goto error; \
                 else \
@@ -1938,7 +1931,9 @@ nC_out,k,((int *) data) [nC_out*N_CONN_OUT+k] );
                                         = i_posi_index[t]; \
                                 } \
                                 o_conn_index [ nC_out++ ] = i; \
-                        }
+                        } \
+	    } \
+     }
 
 
     nC_out = 0;
@@ -1949,6 +1944,7 @@ nC_out,k,((int *) data) [nC_out*N_CONN_OUT+k] );
         case QUADRILATERALS: CONVERT ( 4, 4, 2,  quad_to_line  );  break;
         case TETRAHEDRA:     CONVERT ( 4, 4, 3, tetra_to_tri   );  break;
         case CUBES:          CONVERT ( 6, 8, 4,  cube_to_quad  );  break;
+        default: break;
     }
 #undef  CONVERT
 
@@ -2045,6 +2041,8 @@ DXMessage ( "The name of the dog is %s", comp->name );
             if ( !make_normals ( input_info->field, nP_out, flip ) )
                 goto error;
             break;
+    	default:
+	    break;
     }
 
     if ( !_dxf_SetDefaultColor ( input_info->field, DEFAULT_BOUND_COLOR ) )
@@ -2064,8 +2062,6 @@ DXMessage ( "The name of the dog is %s", comp->name );
 static
 Field show_boundary ( Field input, char *arg, int args )
 {
-    Array       data_array;
-    int         i;
     field_info  input_info     = NULL;
     array_info  p_info, c_info = NULL;
     int         option;

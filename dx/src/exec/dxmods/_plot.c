@@ -65,11 +65,8 @@ static RGBColor BACKGROUNDCOLOR = {0.0, 0.0, 0.0};
     DXAddColor(f, line.q, rgb);           \
     pt += 2;                            \
 }
-extern Error _dxfGetFormat(float *, char *, int, float);
-extern
-_dxfaxes_delta(float *, float *, float, int *, float *, float *,
-           char *, int *, int, int);
-extern int _dxfHowManyTics(int, int, float, float, float, float, int, int *, int *);
+extern Error _dxfGetFormat(float *, char *, int, float); /* from libdx/axes.c */
+extern Error _dxfCheckLocationsArray(Array, int *, float **); /* from libdx/axes.c */
 
 static Error _dxfSetTextColor(Field f, RGBColor color)
 {
@@ -199,7 +196,6 @@ static
                float *locs,
                char **labels
 	       ) {
-  static Matrix zero;		/* zero matrix */
   Matrix t;			/* matrix */
   float z;			/* z distance above face for marks */
   double value, range;
@@ -215,8 +211,8 @@ static
   Field f = NULL;		/* field for marks */
   Xform xform = NULL;		/* various transformed objects */
   int pt=0, ln=0;		/* current point, line number within f */
-  float x, y, a, b, major, minor, xx, yy;
-  int i, j, xlog, ylog, zlog;
+  float x, y, a, b, major, minor, xx;
+  int i, j;
   char *tempstring=NULL;
   int createdlocs = 0, createdlabels = 0;
 
@@ -278,13 +274,14 @@ static
       if (i < n-1)
 	for (j=0; j<sub; j++) {
 	  xx = x + j*d/sub;
-	  if (BETWEEN(a, xx, b))
+	  if (BETWEEN(a, xx, b)) {
             if (!fliptics) {
 	      LINE(rgb,  xx, o.y+s.y, z,  xx, o.y+(1-minor)*s.y, z);
             }
             else {
 	      LINE(rgb,  xx, o.y+s.y, z,  xx, o.y+(1+minor)*s.y, z);
             }
+	  }
 	}
     }
     else {
@@ -294,13 +291,14 @@ static
 	    xx = x + (float)log10((double)j)*d;
 	  else 
 	    xx = x + d - (float)log10((double)j)*d;
-	  if (BETWEEN(a, xx, b))
+	  if (BETWEEN(a, xx, b)) {
             if (!fliptics) {
 	      LINE(rgb,  xx, o.y+s.y, z,  xx, o.y+(1-minor)*s.y, z);
             }
             else {
 	      LINE(rgb,  xx, o.y+s.y, z,  xx, o.y+(1+minor)*s.y, z);
             }
+	  }
 	}
     }
   }
@@ -571,8 +569,6 @@ static
                float *locs,
                char **labels
 	       ) {
-  RGBColor rgbgrid;		/* color of gridlines */
-  static Matrix zero;		/* zero matrix */
   Matrix t;			/* matrix */
   float z;			/* z distance above face for marks */
   Object font=NULL;		/* font for labels */
@@ -588,8 +584,8 @@ static
   Field f = NULL;		/* field for marks */
   Xform xform = NULL;		/* various transformed objects */
   int pt=0, ln=0;		/* current point, line number within f */
-  float x, y, a, b, major, minor, xx, yy;
-  int i, j, xlog, ylog, zlog;
+  float x, y, a, b, major, minor, xx;
+  int i, j;
   char *tempstring=NULL;
   int createdlocs=0, createdlabels=0;
 
@@ -648,13 +644,14 @@ static
       if (i < n-1)
 	for (j=0; j<sub; j++) {
 	  xx = x + j*d/sub;
-	  if (BETWEEN(a, xx, b))
+	  if (BETWEEN(a, xx, b)) {
 	    if (!fliptics) {
 	      LINE(rgb,  o.x+s.x, xx, z,  o.x+(1-minor)*s.x, xx, z);
 	    }
 	    else {
 	      LINE(rgb,  o.x+s.x, xx, z,  o.x+(1+minor)*s.x, xx, z);
 	    }
+	  }
 	}
     }
     else {
@@ -664,13 +661,14 @@ static
             xx = x + (float)log10((double)j)*d;
           else
             xx = x + d - (float)log10((double)j)*d;
-          if (BETWEEN(a, xx, b))
+          if (BETWEEN(a, xx, b)) {
             if (!fliptics) {
               LINE(rgb, o.x+s.x,  xx, z,  o.x+(1-minor)*s.x, xx, z);
             }
             else {
               LINE(rgb, o.x+s.x,  xx, z,  o.x+(1+minor)*s.x, xx, z);
             }
+	  }
         }
     }
   }
@@ -838,15 +836,15 @@ struct axes_struct{
 
 static float first_axes_fs;
 
-extern Object _dxfAxes2D(Pointer p) 
+Object _dxfAxes2D(Pointer p) 
 {
   Group g=NULL;
-  Point box[8], origin, mm[2], min, max, tmpo, tmps;
-  float mm2[4], ax, ay, sum, fs, lx=0, ly=0, dx=0, dy=0; 
+  Point box[8], origin, mm[2], min, max;
+  float mm2[4], fs, lx=0, ly=0, dx=0, dy=0; 
   double lengthx, lengthy;
   Vector scale, sgn, ls;
   char fmtx[20], fmty[20];
-  int i, flipl, flip, reverse, n, subx=0, suby=0, putlabels;
+  int i, flipl, flip, reverse, subx=0, suby=0, putlabels;
   int numx, numy;
   float *xp, *yp;
   Field f = NULL;
@@ -1424,7 +1422,7 @@ extern Object _dxfAxes2D(Pointer p)
   return ERROR;
 }
 
-extern int _dxfHowManyTics(int islogx, int islogy, float lsx, float lsy, 
+int _dxfHowManyTics(int islogx, int islogy, float lsx, float lsy, 
                        float scalex, float scaley, int n, int *nx, int *ny)
 {
   float ax, ay, sum;
@@ -1455,7 +1453,7 @@ extern int _dxfHowManyTics(int islogx, int islogy, float lsx, float lsy,
 
 
 
-extern Error _dxfFreeAxesHandle(Pointer p)
+Error _dxfFreeAxesHandle(Pointer p)
 {
 
   struct axes_struct *axeshandle = (struct axes_struct *)p;
@@ -1468,7 +1466,7 @@ extern Error _dxfFreeAxesHandle(Pointer p)
 
 
 
-extern Pointer _dxfNew2DAxesObject(void)
+Pointer _dxfNew2DAxesObject(void)
 {
   struct axes_struct *new;
 
@@ -1510,7 +1508,7 @@ extern Pointer _dxfNew2DAxesObject(void)
   return NULL;
 } 
 
-extern Error _dxfSet2DAxesCharacteristic(Pointer p, char *characteristic,
+Error _dxfSet2DAxesCharacteristic(Pointer p, char *characteristic,
                                          Pointer value)
 {
   struct axes_struct *st = (struct axes_struct *)p;
@@ -1628,14 +1626,14 @@ extern Error _dxfSet2DAxesCharacteristic(Pointer p, char *characteristic,
 }
 
 
-extern
+void
 _dxfaxes_delta(float *o, float *s, float scale, int *n, float *l, float *d,
       char *fmt, int *sub, int adjust, int islog)
 {
     /* there are some significant differences between the lin and the
      * log case; for log plots, always want labels at all powers of 10 */
 
-    double a, lg, po, delta, lo, hi, sd, so, ss, range;
+    double a, lg, po, lo, hi, sd, so, ss, range;
     int max, min, maxwidth;
     char *cstring;
     float absmin, absmax, biggestnum, smallestnum;
@@ -1645,11 +1643,11 @@ _dxfaxes_delta(float *o, float *s, float scale, int *n, float *l, float *d,
         int precision;                  /* our contribution to precision */
         int sub;                        /* spacing of sub-marks */
     } ds[] = {
-        1.0,   0,  5,
-        2.0,   0,  4,
-        2.5,   1,  5,
-        5.0,   0,  5,
-        10.0, -1,  5
+        { 1.0,   0,  5 },
+        { 2.0,   0,  4 },
+        { 2.5,   1,  5 },
+        { 5.0,   0,  5 },
+        { 10.0, -1,  5 }
     };
 
     if (islog) {

@@ -16,21 +16,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include "_compute.h"
+#include "_compoper.h"
 #include "_compparse.h"
 
 /* If this char is 0, return 0, else space on */
 #define input() (*_dxfccsptr++)
 #define unput() (_dxfccsptr--)
 
-#define MAXTOKEN	200
-
-
 static char *_dxfccsbuf;
 static char *_dxfccsptr;
-
-
-
-
 
 /*
  * these are key words used for operators (NOT functions!)
@@ -46,6 +40,7 @@ static struct keytab
     { "mod",		T_MOD }
 };
 
+void
 _dxfccinput(char *buffer)
 {
 #if defined(_CCDEBUG)
@@ -80,7 +75,7 @@ _dxfcclex()
     int _dxfccleng;
     int i;
     double d;
-    int    isDouble;
+    int    isDouble=0;
 
     for (;;) {
 	_dxfccleng = 0;
@@ -185,7 +180,7 @@ _dxfcclex()
 	case '\'':
 	    {
 		int i=0;
-	        while (c = input()) {
+	        while ((c=input())) {
 		    if (c == '\'') { 
 			if (!(c = input()) || (c != '\'')) {
 			    unput();

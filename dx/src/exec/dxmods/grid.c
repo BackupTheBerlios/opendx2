@@ -37,14 +37,12 @@ END:
 #include <stdio.h>
 #include <math.h>
 #include <dx/dx.h>
-
+#include "_grid.h"
 
 static Error grid_point (float *, Object, int *);
 static Error grid_structure (char **, Object, int);
 static Error grid_shape (float **, char *, Object, int, int *);
 static Error grid_density (int **, char *, Object);
-extern int _dxfGrid (float *, char *, float *, int *, int, Object *);
-
 
 int m_Grid (in, out)
     Object		*in;

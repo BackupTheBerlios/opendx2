@@ -13,9 +13,6 @@
 #include <math.h>
 #include "cat.h"
 
-/* this routine could be in libdx */
-Object _dxfCategorize(Object o, char **comp_list);
-
 static Error HasInvalid(Field f, char *, ICH *ih);
 static Field Categorize(catinfo *cp);
 static Field Field_Categorize(catinfo *cp);
@@ -25,7 +22,7 @@ int
 m_Categorize(Object *in, Object *out)
 {
     catinfo c;
-    int i, flag;
+    int i;
 #define MAX_NUM_COMPS 200
     char *s_list[MAX_NUM_COMPS];
     
@@ -91,7 +88,6 @@ _dxfCategorize(Object o, char **comp_list)
 
     retval = Object_Categorize(&c);
     
-  done:
     return retval;
 }
 
@@ -102,8 +98,6 @@ _dxfCategorize(Object o, char **comp_list)
 static Object
 Object_Categorize(catinfo *cp)
 {
-    Object subo, old, cpy;
-
     switch(DXGetObjectClass(cp->o)) {
 #if YYY
       case CLASS_ARRAY:
@@ -116,6 +110,8 @@ Object_Categorize(catinfo *cp)
 	return (Object)Field_Categorize(cp);
 #if YYY
       case CLASS_GROUP:
+      {
+        Object subo, old, cpy;
 	switch(DXGetGroupClass((Group)cp->o)) {
 	  case CLASS_COMPOSITEFIELD:
             /* have to make a copy here */
@@ -146,7 +142,7 @@ Object_Categorize(catinfo *cp)
 	  default:
 	    return (Object)Group_Categorize(cp);
 	}
-	
+      }	
       case CLASS_SCREEN:
 	if (!DXGetScreenInfo((Screen)cp->o, &subo, NULL, NULL))
 	    return NULL;
@@ -179,6 +175,7 @@ Object_Categorize(catinfo *cp)
 
 /* the input is a generic group;  call Categorize for each member.
  */
+#if YYY
 static Group
 Group_Categorize(catinfo *cp)
 {
@@ -189,7 +186,6 @@ Group_Categorize(catinfo *cp)
     char *name;
     int i, members;
     parinfo *pinfo = NULL;
-#if YYY
     /* handle empty groups, and groups of only 1 member 
      */
     g = (Group)cp->o;
@@ -289,18 +285,18 @@ Group_Categorize(catinfo *cp)
     DXDelete((Object)newg);
     DXFree((Pointer)pinfo);
     return NULL;
-#endif
 }
+#endif
 
 /* for going parallel.  the wrapper routine which calls Object_Categorize
  *  and puts the results in the right place.
  */
+#if YYY
 static Error
 Categorize_Wrapper(Pointer a)
 {
     catinfo *cp = (catinfo *)a;
     catinfo h2;
-#if YYY
 
     if (!CopyCatinfo(cp, &h2))
 	return ERROR;
@@ -319,18 +315,18 @@ Categorize_Wrapper(Pointer a)
   error:
     FreeCatinfo(&h2);
     return ERROR;
-#endif
 }
+#endif
 
 /* for going parallel.  the wrapper routine which calls Array_Categorize
  *  and puts the results in the right place.
  */
+#if YYY
 static Error
 Categorize_Wrapper2(Pointer a)
 {
     catinfo *cp = (catinfo *)a;
     catinfo h2;
-#if YYY
     if (!CopyCatinfo(cp, &h2))
 	return ERROR;
 
@@ -348,8 +344,8 @@ Categorize_Wrapper2(Pointer a)
   error:
     FreeCatinfo(&h2);
     return ERROR;
-#endif
 }
+#endif
 
 
 /* this routine takes case of simple fields, and composite fields.  in
@@ -360,8 +356,10 @@ Categorize_Wrapper2(Pointer a)
 static Field 
 Field_Categorize(catinfo *cp)
 {
-    Field subo;
-    Array ao, ao1;
+    Field subo = NULL;
+    Array ao;
+#if YYY
+    Array ao1;
     Type type;
     Group g;
     parinfo *pinfo = NULL;
@@ -374,6 +372,7 @@ Field_Categorize(catinfo *cp)
     float *accum, *add;
     float binsize, tmin, tmax;
     float gather, median;
+#endif
     
     /* simple fields - categorize the data component */
     if (DXGetObjectClass(cp->o) == CLASS_FIELD) {
@@ -383,7 +382,7 @@ Field_Categorize(catinfo *cp)
 	    return (Field)cp->o;
 	
 	cp->o = DXCopy((Object)cp->o, COPY_STRUCTURE);
-	while (cp->comp_name = *(cp->comp_list++))
+	while ((cp->comp_name = *(cp->comp_list++)))
 	{
 	    cp->ncats = 0;
 	    ao = (Array)DXGetComponentValue((Field)cp->o, cp->comp_name);
@@ -670,7 +669,9 @@ Field_Categorize(catinfo *cp)
 
 #endif
 
+#if YYY
   done:
+#endif
     return (Field)cp->o;
 
   error:
@@ -678,29 +679,27 @@ Field_Categorize(catinfo *cp)
     return NULL;
 }
 
-static int datacmp(sortelement *s1, sortelement *s2)
+static int datacmp(const void *e1, const void *e2)
 {
+    sortelement *s1 = (sortelement *) e1;
+    sortelement *s2 = (sortelement *) e2;
     return s1->cp->cmpcat(s1->cp, s1->ph->p, s2->ph->p);
 }
 
-static int hashindexcmp(sortelement *s1, sortelement *s2)
+static int hashindexcmp(const void *e1, const void *e2)
 {
+    sortelement *s1 = (sortelement *) e1;
+    sortelement *s2 = (sortelement *) e2;
     return (s1->ph->index - s2->ph->index);
 }
 
 static Field
 Categorize(catinfo *cp)
 {
-    Category cat;
-    int found;
-    int index;
-    Pointer s;
-    String name;
-    uint i,j;
+    uint i;
 #define LUT_POSTFIX " lookup"
     char buff[1024];
     char *sorted;
-    char *unsorted;
     uint size;
     HashTable hashtable = NULL;
     hashelement h, *ph;
@@ -719,7 +718,7 @@ Categorize(catinfo *cp)
 	h.p = (Pointer)&(((char *)(cp->comp_data))[i*size]); 
 	h.cp = cp;
 	h.key = cp->catkey(&h);
-	if (ph = (hashelement *)DXQueryHashElement(hashtable, (Key)&h)) {
+	if ((ph = (hashelement *)DXQueryHashElement(hashtable, (Key)&h))) {
 #ifdef CAT_DEBUG
 	printf("%d found at %d\n", i, ph->index);
 #endif
@@ -809,7 +808,6 @@ Categorize(catinfo *cp)
     /* Can't set it ref lookup since it might be ubyte and the exec refs to be int */
     /* DXSetComponentAttribute((Field)cp->o, cp->comp_name, "ref", (Object)DXNewString(buff)); */
 
-  done:
     if (!DXEndField((Field)cp->o))
        goto error;
     

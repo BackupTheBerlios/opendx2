@@ -10,19 +10,17 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/post.c,v 1.3 1999/05/10 15:45:29 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/post.c,v 1.4 2000/08/24 20:04:43 davidt Exp $:
  */
 
 #include <stdio.h>
 #include <dx/dx.h>
+#include "_post.h"
 
-extern Object _dxfPost(Object, char *, Array);
-
-int
+Error
 m_Post(Object *in, Object *out)
 {
     Object object;
-    int    dir;
     char   *str = "positions";
 
     out[0] = NULL;

@@ -8,9 +8,6 @@
 
 #include <dxconfig.h>
 
-
-
-
 #include <dx/dx.h>
 #include <time.h>
 #include "superwin.h"
@@ -27,16 +24,9 @@
 #define IN_OFFSETFLAG	in[9]
 #define IN_DECORATIONS  in[10]
 
-extern int	    _dxf_getWindowId(ImageWindow *);
-extern int	    _dxf_getParentSize(char *, int, int *, int *);
 static ImageWindow *_dxf_getImageWindow(char *, Private *);
 static ImageWindow *_dxf_createWindow(char *, char *, int, int *, int *,
 				int, int, int, int, char *, Private *, int);
-extern void	    _dxf_setWindowSize(ImageWindow *, int *size);
-extern void	    _dxf_setWindowOffset(ImageWindow *, int *offset);
-extern int 	    _dxf_mapWindowX(ImageWindow *, int m);
-extern int 	    _dxf_checkDepth(ImageWindow *, int d);
-
 
 static Error  _dxf_deleteWindow(Pointer p);
 static Object getResolution(ImageWindow *iw);
@@ -51,8 +41,6 @@ m_SuperviseWindow(Object *in, Object *out)
     int parentId;
     char *name;
     Pointer modid = NULL;
-    int nDXEvents, i;
-    DXEvents b;
     int size[2];
     int offset[2];
     int pick = 0;
@@ -155,7 +143,6 @@ m_SuperviseWindow(Object *in, Object *out)
 	{
 	    char *str;
 	    int i;
-	    char dsp[128];
 	    if (! DXExtractString(IN_PARENT, &str))
 	    {
 		DXSetError(ERROR_BAD_PARAMETER,"parent");
@@ -288,9 +275,6 @@ error:
     return ERROR;
 }
 	
-extern int  _dxf_createWindowX(ImageWindow *, int map);
-extern void _dxf_deleteWindowX();
-
 static Error
 _dxf_deleteWindow(Pointer p)
 {
@@ -305,6 +289,7 @@ _dxf_deleteWindow(Pointer p)
     DXFreeModuleId(iw->mod_id);
     DXFree((void *)iw->cacheTag);
     DXFree((void *)iw);
+    return OK;
 }
 
 
@@ -348,7 +333,6 @@ _dxf_createWindow(char *displayString,
 {
     ImageWindow *iw = NULL;
     int i;
-    char *tag;
     char buf[1024];
 
     iw = (ImageWindow *)DXAllocateZero(sizeof(ImageWindow));
@@ -416,8 +400,6 @@ saveEvent(ImageWindow *iw, int event, int state)
 
     if (!b)
     {
-	int eSize = sizeof(DXEvent);
-	int tSize = DXTypeSize(TYPE_INT);
 	iw->events = DXNewArray(TYPE_INT, CATEGORY_REAL, 1, sizeof(DXEvent)/DXTypeSize(TYPE_INT));
 	b = iw->events;
     }
@@ -459,8 +441,6 @@ saveEvent(ImageWindow *iw, int event, int state)
 error:
     return ERROR;
 }
-
-extern int _dxf_samplePointer(ImageWindow *iw, int flag);
 
 static Object
 getDXEvents(ImageWindow *iw)
@@ -519,5 +499,6 @@ _dxf_mapSupervisedWindow(char *name, int map)
     _dxf_mapWindowX(iw, map);
 
     DXDelete((Object)p);
+    return OK;
 }
 

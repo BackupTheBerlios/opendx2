@@ -11,13 +11,19 @@
 
 #include <stdio.h>
 #include <dx/dx.h>
+#include "_autocolor.h"
+#include "_colormap.h"
 
-extern Field _dxfMakeRGBColorMap(Field);
-extern FILE *_dxfopen_dxfile(char *name,char *auxname,char **outname,char *ext);
-extern Error _dxfclose_dxfile(FILE *fp,char *filename);
+extern FILE *_dxfopen_dxfile(char *name,char *auxname,char **outname,char *ext); /* from libdx/edfio.c */
+extern Error _dxfclose_dxfile(FILE *fp,char *filename); /* from libdx/edfio.c */
+
 static FILE *openfile(char *filename);
-static Error addarray(Field f, int rank, int shape0, char *component);
 static Error scale_positions(Field *f,float min, float max);
+
+#if 0
+static Error addarray(Field f, int rank, int shape0, char *component);
+#endif
+
 typedef struct map {
    float level;
    float value;
@@ -28,8 +34,6 @@ typedef struct hsvo {
    int count;
    int minmax;
 } HSVO;
-extern Field _dxfeditor_to_hsv(Array huemap,Array satmap,Array valmap);
-extern Field _dxfeditor_to_opacity(Array a );
 
 Object 
 DXImportCM(char *filename, char **fieldname)
@@ -41,7 +45,6 @@ DXImportCM(char *filename, char **fieldname)
     int i, n, nitems,minmax;
     double level, value;
     int color=1,opacity=1;
-    int num_op,offset=0;
     float wrap, x, y;   /* wrap, x, y not used */
     HSVO maps[4];
     Array a[4];
@@ -167,7 +170,6 @@ DXImportCM(char *filename, char **fieldname)
          goto error;
    }
 
-  done:
       _dxfclose_dxfile(fp,filename);
       if (g) return (Object)g;
       if (color) return (Object)rgb;
@@ -204,6 +206,7 @@ openfile(char *filename)
     return fp;
 }
 
+#if 0
 static Error 
 addarray(Field f, int rank, int shape0, char *component)
 {
@@ -228,6 +231,7 @@ addarray(Field f, int rank, int shape0, char *component)
     
     return OK;
 }
+#endif
 
 /* scale the positions array to new min and max from normalized space */
 static Error
@@ -259,6 +263,7 @@ error:
    return ERROR;
 }
 
+#if 0
 static Error
 _dxfExportCM(Object o, char *filename)
 {
@@ -270,3 +275,4 @@ _dxfExportCM(Object o, char *filename)
 
     return OK;
 }
+#endif

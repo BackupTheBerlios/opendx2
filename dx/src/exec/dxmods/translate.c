@@ -6,13 +6,10 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/translate.c,v 1.3 1999/05/10 15:45:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/translate.c,v 1.4 2000/08/24 20:04:53 davidt Exp $
  */
 
 #include <dxconfig.h>
-
-
-
 
 #include <dx/dx.h>
 

@@ -5,9 +5,14 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp.h,v 1.4 2000/08/24 20:04:30 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
+#ifndef _GENIMP_H_
+#define _GENIMP_H_
 
 #include  <stdio.h>
 #include  <stdlib.h>
@@ -133,6 +138,7 @@ Object _dxf_gi_get_gen(struct parmlist *);
 int _dxf_gi_read_file(void **,FILE **);
 int _dxf_gi_importDatafile(void **,FILE **);
 int _dxfnumGridPoints(int );
+Error _dxf_gi_extract(struct place_state *,int *);
 
 extern char *_dxd_gi_filename; /* input data file name (w/wo full paths)*/
 extern int _dxd_gi_numdims; 			/* dimensionality */
@@ -160,6 +166,7 @@ extern struct header _dxd_gi_header;    /* header for header keyword */
 extern struct header _dxd_gi_serseparat; /* header for series separator */
 extern struct infoplace **_dxd_gi_fromfile; /* hold headerinfo placement */
 
-extern FILE *_dxfopen_dxfile(char *name,char *auxname,char **outname,char *ext);
-extern Error _dxfclose_dxfile(FILE *fp,char *filename);
+FILE *_dxfopen_dxfile(char *name,char *auxname,char **outname,char *ext);
+Error _dxfclose_dxfile(FILE *fp,char *filename);
 
+#endif /* _GENIMP_H_ */

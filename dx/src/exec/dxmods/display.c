@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <dx/dx.h>
 #include <stdlib.h>
+#include "../libdx/displayx.h"
 
 static Matrix Identity = {
   {{ 1.0, 0.0, 0.0 },
@@ -28,8 +29,8 @@ static Matrix Identity = {
 #include <errno.h>
 #endif
 
-extern Object _dxf_EncodeImage(Field);
-extern Field  _dxf_DecodeImage(Object);
+extern Object _dxf_EncodeImage(Field); /* from libdx/buffer.c */
+extern Field  _dxf_DecodeImage(Object); /* from libdx/buffer.c */
 
 #ifdef DXD_HAS_LIBIOP
 #define RLE_DEFAULT	0
@@ -39,11 +40,7 @@ extern Field  _dxf_DecodeImage(Object);
 
 static Object message(Object image, char *name, int buttonState,
 						int ddcamera, Object o);
-
 static Error _link_message(char *link, char *where, Camera c);
-
-extern Error DXSetSoftwareWindowActive(char *, int);
-
 static Error _dxf_NoHardwareMessage();
 
 #if DXD_CAN_HAVE_HW_RENDERING
@@ -51,18 +48,14 @@ Error _dxfAsyncRender (Object, Camera, char *, char *);
 Error _dxfAsyncDelete (char *);
 #endif
 
-Error DXDisplayX16(Object, char *, char *);
-
 int
 m_Display(Object *in, Object *out)
 {
     char *where, copy[201], *s, type[201];
     char *arg1=NULL, *arg2=NULL, *arg3=NULL, *arg4=NULL, *arg5=NULL;
-    int wid, i, x, y;
-    Object image=NULL, object=NULL, options, mode, bstate, ddcam;
+    Object image=NULL, object=NULL, mode, bstate, ddcam;
     Camera camera;
     char   cacheid[201];	/* "Display.xxx" */
-    char free_image;
     int ui_window = 0;
     int external_window = 0;
     double *old = NULL, new;
@@ -437,8 +430,7 @@ message(Object image, char *name, int buttonState, int ddcamera, Object object)
 {
     Camera c;
     Array a;
-    Point *box1, box2[8], corner[4], from, to, up;
-    Point v0, v1, v2, v3;
+    Point *box1, corner[4], from, to, up;
     Matrix t, m;
     int i, width, height;
     float cwidth, aspect, fov;
@@ -454,11 +446,11 @@ message(Object image, char *name, int buttonState, int ddcamera, Object object)
 
     if (c && box1)
     {
-	Object attr;
 
 	m = Identity;
 
 #if 0
+	Object attr;
 	if (NULL != (attr = DXGetAttribute(object, "autoaxes")))
 	{
 	    int aaflag;

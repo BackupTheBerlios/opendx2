@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.c,v 1.4 2000/05/16 18:47:16 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.c,v 1.5 2000/08/24 20:04:11 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -92,7 +92,7 @@
    */
 #define NEW_ALLO( NAME, PTR, REC, INIT ) \
     static PTR NAME ( int count ) \
-    { int i;  PTR p = (PTR)ALLOCATE((count)*sizeof(struct REC)); \
+    { /*int i;*/  PTR p = (PTR)ALLOCATE((count)*sizeof(struct REC)); \
       if ( p == ERROR ) return ERROR; \
       /*for ( i=0; i<count; i++ ) p[i] = INIT;*/  return p; }
 
@@ -877,6 +877,8 @@ Error free_array_info_contents ( array_info input )
 
             SUPERFREE ( ((mesh_array_info)input)->terms )
             break;
+        default:
+	    break;
     }
 
     return OK;
@@ -944,11 +946,9 @@ Error free_field_info_contents ( field_info input )
 /* ----------------------------- extern section ----------------------------- */
 
 
-extern
 field_info _dxf_InMemory ( Field input )
 {
     field_info output = NULL;
-    int i;
 
     DXASSERTGOTO ( input != ERROR );
     DXASSERTGOTO ( DXGetObjectClass ( (Object) input ) == CLASS_FIELD );
@@ -968,7 +968,6 @@ field_info _dxf_InMemory ( Field input )
 }
 
 
-extern
 Error _dxf_FreeInMemory ( field_info input )
 {
     if ( input != NULL ) 
@@ -981,7 +980,6 @@ Error _dxf_FreeInMemory ( field_info input )
 
 
 
-extern 
 component_info _dxf_SetIterator ( component_info input )
 {
     Error (*get_item) () = NULL;
@@ -1157,12 +1155,13 @@ component_info _dxf_SetIterator ( component_info input )
         default:;
     }
 
-    if ( NULL == get_item )
+    if ( NULL == get_item ) {
         if ( ERROR != ( ((array_info)&input->array)->handle
                  = DXCreateArrayHandle ( ((array_info)&input->array)->array )) )
             get_item = _dxf_get_item_by_handle;
         else
             goto error;
+    }
 
     ((array_info)&input->array)->get_item = get_item;
 
@@ -1175,7 +1174,6 @@ component_info _dxf_SetIterator ( component_info input )
 
 
 
-extern 
 component_info _dxf_SetIterator_i ( component_info input )
 {
     Error (*get_item) () = NULL;
@@ -1189,10 +1187,10 @@ component_info _dxf_SetIterator_i ( component_info input )
     switch ( input->std_name )
     {
         case DATA:
-            if ( ( CATEGORY_REAL == ((array_info)&input->array)->category ) &&
-                 ( 0 == ((array_info)&input->array)->rank ) ||
-                 ( ( 1 == ((array_info)&input->array)->rank     ) &&
-                   ( 1 == ((array_info)&input->array)->shape[0] )   ) )
+            if ( ( ( CATEGORY_REAL == ((array_info)&input->array)->category ) &&
+                 ( 0 == ((array_info)&input->array)->rank ) ) ||
+                 ( ( ( 1 == ((array_info)&input->array)->rank     ) &&
+                   ( 1 == ((array_info)&input->array)->shape[0] )   ) ) )
 
             switch ( ((array_info)&input->array)->class )
             {
@@ -1218,6 +1216,7 @@ component_info _dxf_SetIterator_i ( component_info input )
                              break;
                         case TYPE_USHORT: get_item = _dxf_get_data_reg_USHORT;
                              break;
+		        default: break;
                     }
                     break;
         
@@ -1242,6 +1241,7 @@ component_info _dxf_SetIterator_i ( component_info input )
                              break;
                         case TYPE_USHORT: get_item = _dxf_get_data_irr_USHORT;
                              break;
+		        default: break;
                     }
                     break;
 
@@ -1267,7 +1267,6 @@ component_info _dxf_SetIterator_i ( component_info input )
 
 
 
-extern
 component_info _dxf_FindCompInfo ( field_info input, char *locate )
 {
     component_info  output = NULL;
@@ -1282,14 +1281,13 @@ component_info _dxf_FindCompInfo ( field_info input, char *locate )
 
     return NULL;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
 
 
 
-extern
 Error _dxf_get_item_by_handle ( int index, array_info d, Pointer out )
 {
     Pointer returned = NULL;
@@ -1331,7 +1329,6 @@ Error _dxf_get_item_by_handle ( int index, array_info d, Pointer out )
 #if ( defined GEN_get_data_irr ) && \
     ( defined GEN_DATA_TYPE    ) && \
     ( defined GEN_DX_TYPE      )
-extern
 Error GEN_get_data_irr ( int index, array_info d, float *out )
 {
     DXASSERTGOTO ( d != ERROR );
@@ -1346,7 +1343,7 @@ Error GEN_get_data_irr ( int index, array_info d, float *out )
  
     return OK;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
@@ -1357,7 +1354,6 @@ Error GEN_get_data_irr ( int index, array_info d, float *out )
 #if ( defined GEN_get_data_reg ) && \
     ( defined GEN_DATA_TYPE    ) && \
     ( defined GEN_DX_TYPE      )
-extern
 Error GEN_get_data_reg ( int index, array_info d, float *out )
 {
     DXASSERTGOTO ( d != ERROR );
@@ -1375,7 +1371,7 @@ Error GEN_get_data_reg ( int index, array_info d, float *out )
 
     return OK;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
@@ -1386,7 +1382,6 @@ Error GEN_get_data_reg ( int index, array_info d, float *out )
 #if ( defined GEN_get_point_irr ) && \
     ( defined GEN_POINT_D       ) && \
     ( defined GEN_POINT_TYPE    )
-extern
 Error GEN_get_point_irr ( int index, array_info a, GEN_POINT_TYPE *out )
 {
     DXASSERTGOTO ( a != ERROR );
@@ -1399,7 +1394,7 @@ Error GEN_get_point_irr ( int index, array_info a, GEN_POINT_TYPE *out )
  
     return OK;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
@@ -1411,7 +1406,6 @@ Error GEN_get_point_irr ( int index, array_info a, GEN_POINT_TYPE *out )
     ( defined GEN_POINT_D        ) && \
     ( defined GEN_POINT_TYPE     ) && \
     ( defined GEN_DELTA_TYPE     )
-extern
 Error GEN_get_point_prod ( int index, array_info a, GEN_POINT_TYPE *out )
 {
     array_info      t0, t1, t2;
@@ -1561,7 +1555,6 @@ Error GEN_get_point_prod ( int index, array_info a, GEN_POINT_TYPE *out )
     ( defined GEN_POINT_D        ) && \
     ( defined GEN_POINT_TYPE     ) && \
     ( defined GEN_DELTA_TYPE     )
-extern
 Error GEN_get_point_grid ( int index, array_info a, GEN_POINT_TYPE *out )
 {
     int    iu, iv, iw;
@@ -1641,7 +1634,7 @@ Error GEN_get_point_grid ( int index, array_info a, GEN_POINT_TYPE *out )
 
     return OK;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
@@ -1653,7 +1646,6 @@ Error GEN_get_point_grid ( int index, array_info a, GEN_POINT_TYPE *out )
 #if ( defined GEN_get_conn_irr ) && \
     ( defined GEN_CONN_TYPE    ) && \
     ( defined GEN_CONN_SHAPE   )
-extern 
 Error GEN_get_conn_irr ( int index, array_info c, GEN_CONN_TYPE *out )
 {
     DXASSERTGOTO ( c != ERROR );
@@ -1666,7 +1658,7 @@ Error GEN_get_conn_irr ( int index, array_info c, GEN_CONN_TYPE *out )
  
     return OK;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
@@ -1678,7 +1670,6 @@ Error GEN_get_conn_irr ( int index, array_info c, GEN_CONN_TYPE *out )
     ( defined GEN_CONN_D        ) && \
     ( defined GEN_CONN_TYPE     ) && \
     ( defined GEN_CONN_SHAPE    )
-extern 
 Error GEN_get_conn_grid ( int index, array_info c, GEN_CONN_TYPE *out )
 {
     int    iu, iv, iw;
@@ -1765,7 +1756,7 @@ Error GEN_get_conn_grid ( int index, array_info c, GEN_CONN_TYPE *out )
 
     return OK;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
@@ -1776,7 +1767,6 @@ Error GEN_get_conn_grid ( int index, array_info c, GEN_CONN_TYPE *out )
 #if ( defined GEN_get_neighb_irr ) && \
     ( defined GEN_NEIGHB_TYPE    ) && \
     ( defined GEN_NEIGHB_SHAPE   )
-extern 
 Error GEN_get_neighb_irr ( int index, array_info n, GEN_NEIGHB_TYPE *out )
 {
     DXASSERTGOTO ( n != ERROR );
@@ -1789,7 +1779,7 @@ Error GEN_get_neighb_irr ( int index, array_info n, GEN_NEIGHB_TYPE *out )
  
     return OK;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }
@@ -1801,7 +1791,6 @@ Error GEN_get_neighb_irr ( int index, array_info n, GEN_NEIGHB_TYPE *out )
     ( defined GEN_NEIGHB_TYPE     ) && \
     ( defined GEN_CONN_D          ) && \
     ( defined GEN_CONN_SHAPE      )
-extern 
 Error GEN_get_neighb_grid
           ( int index, array_info c, mesh_bounds b, GEN_NEIGHB_TYPE *out )
 {
@@ -1945,7 +1934,7 @@ DXMessage ( "neighbor[%d] = (%d,%d,%d,%d,%d,%d), limits = (%d,%d,%d,%d,%d,%d), o
 
     return OK;
 
-    error:
+    /* error: */
         ERROR_SECTION;
         return ERROR;
 }

@@ -8,7 +8,7 @@
 #include "dx/dx.h"
 
 #include <dxconfig.h>
-
+#include "macroutil.h"
 
 Error
 m_MacroStart(Object *in, Object *out)

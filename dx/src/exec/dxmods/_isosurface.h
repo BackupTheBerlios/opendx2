@@ -6,18 +6,17 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_isosurface.h,v 1.3 1999/05/10 15:45:20 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_isosurface.h,v 1.4 2000/08/24 20:04:15 davidt Exp $
  */
 
 #include <dxconfig.h>
 
 
 
-#ifndef  _ISOSURFACE_H_
-    /* Begin header file conditional */
+#ifndef  __ISOSURFACE_H_
+#define  __ISOSURFACE_H_
 
-#define  _ISOSURFACE_H_
-
+#include "_getfield.h"
 
 /* requires inclusion of <dx/dx.h> */
 
@@ -57,14 +56,8 @@ typedef struct
     float       band_max_cf;
     Object      *parent;
     int         task_counter;
-}
-iso_arg_type; 
+} iso_arg_type; 
 
-
-static iso_arg_type ISO_ARG_INITIALIZER =
-            { ISOSURFACE, NO_NORMALS,
-              -1, NULL, ORIGINAL_DATA, NULL, NULL, 0, 0, 0,
-              -1, -1.0, NULL, 0, DXD_MAX_FLOAT, -DXD_MAX_FLOAT, NULL, 0 };
 
 
 /*-------------------------------------------------------------------------*
@@ -78,8 +71,8 @@ static iso_arg_type ISO_ARG_INITIALIZER =
 /* 
  * Special traverser for isosurface.
  */
-extern Object _dxf_IsosurfaceObject ( iso_arg_type iso_arg );
+Object _dxf_IsosurfaceObject ( iso_arg_type );
+int _dxf_get_flip ( field_info, int *, int * );
 
 
-    /* End header file conditional */
-#endif
+#endif /* __ISOSURFACE_H_ */

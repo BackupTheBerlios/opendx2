@@ -6,17 +6,16 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/scale.c,v 1.3 1999/05/10 15:45:30 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/scale.c,v 1.4 2000/08/24 20:04:46 davidt Exp $
  */
 
 #include <dxconfig.h>
 
 
-
 #include <dx/dx.h>
 
 
-int
+Error
 m_Scale(Object *in, Object *out)
 {
     Vector v;
@@ -25,7 +24,7 @@ m_Scale(Object *in, Object *out)
 
     if(!in[0]) {
 	DXSetError(ERROR_BAD_PARAMETER, "#10000", "input");
-	return NULL;
+	return ERROR;
     }
 
     if(!in[1]) {
@@ -43,7 +42,7 @@ m_Scale(Object *in, Object *out)
         DXSetError(ERROR_BAD_PARAMETER, 
 		 "%s must be a scalar or a 3-vector",
 		 "scale");
-	return NULL;
+	return ERROR;
     }
 
         

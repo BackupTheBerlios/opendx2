@@ -10,16 +10,12 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/text.c,v 1.4 2000/05/16 18:48:23 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/text.c,v 1.5 2000/08/24 20:04:52 davidt Exp $
  */
 
 
 #include <dx/dx.h>
-
-/* XXX (and is char* ok in arg block) */
-
-extern Array _dxfPostArray(Field, char *, char *);
-
+#include "_post.h"
 
 
 typedef struct textarg
@@ -48,25 +44,25 @@ static Error TextField(Pointer p)
   float dotprod;
   Matrix m;
   Point position;
-  int i, j=0, numitems, rank, shape[8], posdim, datadim, regcolors, posted;
+  int i, j=0, numitems, rank, shape[8], posdim, datadim, regcolors, posted=0;
   int trank, tshape[8]; 
   int brank, bshape[8]; 
   int nrank, nshape[8];
-  int direction_defaulted, up_defaulted, delayed;
+  int direction_defaulted, up_defaulted, delayed=0;
   int numtextpos, n, counts[8], groupcount=0;
   float posorigin[30], posdeltas[30];
   Type type, ttype, btype, ntype;
   Category category;
   float *pos_ptr=NULL;
-  RGBColor *colors_ptr;
+  RGBColor *colors_ptr=NULL;
   RGBColor color;
   Array positions=NULL, data, invalid, colors, textcolors=NULL, textpositions;
   Array tangents=NULL, binormals=NULL, normals=NULL, colormap=NULL;
   InvalidComponentHandle invalidhandle=NULL;
-  float *tangents_ptr, *binormals_ptr, *normals_ptr;
-  ubyte *delayedcolors_ptr, delayedcolor;
+  float *tangents_ptr=NULL, *binormals_ptr=NULL, *normals_ptr=NULL;
+  ubyte *delayedcolors_ptr=NULL, delayedcolor;
   Point current_tangent, current_binormal, current_normal;
-  RGBColor *colormap_ptr;
+  RGBColor *colormap_ptr=NULL;
   fieldin = textarg->fieldin;
   groupout = textarg->groupout;
   height = textarg->height;
@@ -565,7 +561,7 @@ static Error TextObject(Object in, Group out,
          DXSetError(ERROR_DATA_INVALID,"unknown group class");
          goto error;
     }
-    for (i=0; childin = DXGetEnumeratedMember((Group)in, i, NULL); i++) {
+    for (i=0; (childin=DXGetEnumeratedMember((Group)in, i, NULL)); i++) {
       if (!TextObject(childin, group, h, f, x, y, direction_defaulted,
                       up_defaulted))
 	goto error;

@@ -11,8 +11,12 @@
 
 
 #include <dx/dx.h>
-#include <sys/types.h>
 
+#if defined(HAVE_SYS_TYPES_H)
+#include <sys/types.h>
+#endif
+
+#include "_normals.h"
 
 /*
  * 
@@ -165,7 +169,6 @@ static void  errdelOutObjInfo (OutObjInfo *oo);
 
 static Node *newnode (int level, int isattr, int number, int dup,
 		      Class class, Node *parent, char *ptag);
-static Error addparent (Node *me, Node *parent);
 static Error freenodetree (Node *np);
 static int nodeplace (Node *np, Policy *p, Layout *l, OutObjInfo *oo);
 static void attrplace (Node *np, Policy *p, Layout *l, OutObjInfo *oo);
@@ -178,7 +181,11 @@ static Error setpolicyversion (VisInfo *vi, int version);
 static Error setpolicyvertical (VisInfo *vi, int vertical);
 
 /* needed anymore? */
+#if 0
+static Error addparent (Node *me, Node *parent);
 static int numnodes (Node *np);
+#endif
+
 static void nodecount (Node *np, int *count);
 
 /* these need overhaul now */
@@ -192,8 +199,6 @@ static Error addStringTag (char *s, int type, Group g, Object font,
 			   Construct *c, Policy *p);
 
 static void geomCount (OutObjInfo *oo, Class class, int isAttr, int isShared);
-
-extern Object _dxfNormalsObject(Object, char *);
 
 /*
  * 
@@ -254,6 +259,7 @@ static HashTable AddIDbyObject(HashTable ht, Object object, uint id)
  *  the AddObject function, below, is used to add an object to the
  *  table by ID.
  */
+#if 0
 static HashTable FindObjectbyID(HashTable ht, uint id, Object *object)
 {
     HashElement eltPtr;
@@ -281,6 +287,7 @@ static HashTable AddObjectbyID(HashTable ht, uint id, Object object)
     
     return ht;
 }
+#endif
 
 
 /* 
@@ -375,7 +382,7 @@ static void errdelOutObjInfo(OutObjInfo *oo)
 static Error initgroup(OutObjInfo *oo)
 {
     Field f;
-    Array a;
+    Array a=NULL;
 
     /* top level group */
     if (!(oo->g = DXNewGroup()))
@@ -518,7 +525,6 @@ static Error initgroup(OutObjInfo *oo)
 
 static Error addCube(OutObjInfo *oo, Node *n, RGBColor *colorptr)
 {
-    Node *p;      /* parent parms */
     Point *t;     /* center of this cube */
     Point *cp;    /* corners of cube for child, centers of parent bottom (0)
 		     and child top (1) for line */
@@ -634,7 +640,6 @@ static Pointer initarray(Group g, char *member, char *component,
 static Error allocoutobj(OutObjInfo *oo)
 {
     Quick *q;
-    Array a;
 
     if (oo->totalquads > 0) {
 	q = &oo->quaddata;
@@ -779,6 +784,7 @@ static Node *newnode(int level, int isattr, int number, int dup, Class class,
 /* inserts at the front of the list since that's cheap and insert
  * order doesn't matter.
  */
+#if 0
 static Error addparent(Node *np, Node *parent)
 {
     Nlist *lp;
@@ -796,6 +802,7 @@ static Error addparent(Node *np, Node *parent)
     
     return OK;
 }
+#endif
 
 /* change the parent tag info for a node
  */
@@ -1011,6 +1018,7 @@ static void nodecenter(Node *np, Policy *p, Layout *l, int isShared)
  *  objects or not depends on whether shared objects are given new nodes
  *  or not.  check the code that calls newnode to check.
  */
+#if 0
 static int numnodes(Node *np)
 {
     int count = 0;
@@ -1019,6 +1027,7 @@ static int numnodes(Node *np)
     
     return count;
 }
+#endif
 
 /* recursive routine for numnodes
  */
@@ -1082,13 +1091,17 @@ static Error freenodetree(Node *np)
 static Error setpolicyversion(VisInfo *vi, int version)
 {
     vi->oi.policy.version = version;
+    return OK;
 }
 
 static Error setpolicyvertical(VisInfo *vi, int vertical)
 {
     vi->oi.policy.vertical = vertical;
+    return OK;
 }
 
+
+#if 0
 /* UNUSED */
 /* calls the per object routines to add geometry to output */
 static Error addConstruct(Node np, OutObjInfo *oo)
@@ -1102,7 +1115,7 @@ static Error addConstruct(Node np, OutObjInfo *oo)
 static Error addGeometry(OutObjInfo *oo, Construct child, Construct parent)
 {
 }
-
+#endif
 
 
 /* 
@@ -1139,6 +1152,7 @@ static char *ClassName (Class c)
     /* notreached */
 }
 
+#if 0
 static char *TypeName (Type t)
 {
     switch(t) {    
@@ -1168,6 +1182,7 @@ static char *CatName (Category c)
     }
     /* notreached */
 }
+#endif 
 
 static void geomCount (OutObjInfo *oo, Class class, int isAttr, int isShared)
 {
@@ -1380,10 +1395,8 @@ Error traverse(Object o, VisInfo *vi, Node *parent, int isattr, int num,
 	       char *ptag)
 {
     InObjInfo *oi;
-    OutObjInfo *oo;
     Layout *y;
-    int count, i, len, id;
-    Type type;
+    int count, i;
     float pos;
     Error rc;
     Array terms[MAXRANK];
@@ -1454,7 +1467,7 @@ Error traverse(Object o, VisInfo *vi, Node *parent, int isattr, int num,
 	/* if we aren't already processing the attributes of an object,
 	 *  check for attributes.
 	 */
-	for (i=0; subo = DXGetEnumeratedAttribute(o, i, &name); i++)
+	for (i=0; (subo=DXGetEnumeratedAttribute(o, i, &name)); i++)
 	    traverse(subo, vi, l, 1, i, name);
     }
 
@@ -1496,7 +1509,7 @@ Error traverse(Object o, VisInfo *vi, Node *parent, int isattr, int num,
 
       case CLASS_FIELD:
 	for (i=0; 
-	     subo = DXGetEnumeratedComponentValue((Field)o, i, &name); i++) {
+	     (subo=DXGetEnumeratedComponentValue((Field)o, i, &name)); i++) {
 	    traverse(subo, vi, l, 0, 0, name);
 	}
 
@@ -1537,7 +1550,7 @@ Error traverse(Object o, VisInfo *vi, Node *parent, int isattr, int num,
 	  case CLASS_GROUP:
 	  case CLASS_MULTIGRID:
 	  case CLASS_COMPOSITEFIELD:
-	    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, &name); i++) {
+	    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, &name)); i++) {
 		if (name)
 		    traverse(subo, vi, l, 0, 0, name);
 		else {
@@ -1549,7 +1562,7 @@ Error traverse(Object o, VisInfo *vi, Node *parent, int isattr, int num,
 	    break;
 		
 	  case CLASS_SERIES:
-	    for (i=0; subo = DXGetSeriesMember((Series)o, i, &pos); i++) {
+	    for (i=0; (subo=DXGetSeriesMember((Series)o, i, &pos)); i++) {
 		sprintf(cbuf, "position %g", pos);
 		traverse(subo, vi, l, 0, 0, cbuf);
 	    }
@@ -1618,7 +1631,7 @@ static Object makevisual(VisInfo *vi)
 Error m_VisualObject(Object *in, Object *out)
 {
     VisInfo vi;
-    int olddebug;
+    int olddebug=0;
     char *options, *cp;
 
     out[0] = NULL;

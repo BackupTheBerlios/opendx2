@@ -6,17 +6,18 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinetopo.c,v 1.4 2000/05/16 18:47:37 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinetopo.c,v 1.5 2000/08/24 20:04:19 davidt Exp $:
  */
 
 #include <dxconfig.h>
-
 
 #include <math.h>
 #include <ctype.h>
 #include <dx/dx.h>
 #include <vectors.h>
 #include <string.h>
+#include "_refine.h"
+#include "_newtri.h"
 
 #define ELT_NONE		0
 #define ELT_LINES		1
@@ -43,7 +44,6 @@ static Field  IrregCubes2Tetrahedra(Field);
 static Field  Quads2Triangles(Field);
 static Field  RegQuads2Triangles(Field);
 static Field  IrregQuads2Triangles(Field);
-extern Error _dxfTriangulateField(Field);
 static int    GetTypeID(char *);
 static char   *GetTypeName(int);
 
@@ -327,8 +327,7 @@ RegCubes2Tetrahedra(Field field)
     int       x, y, z, X, Y, Z, xParity, yParity, zParity;
     int       counts[3], offsets[3];
     int       nCubes, nTetras, *tetras;
-    Array     outArray;
-    int       n, inElement;
+    int       inElement;
     Object    attr;
     char      *str, *name;
     InvalidComponentHandle iinvalids = NULL, oinvalids = NULL;
@@ -539,10 +538,9 @@ IrregCubes2Tetrahedra(Field field)
     Array  cArrayIn, cArrayOut, dIn, dOut;
     int    i, j, k, vPerE;
     int    nCubes, *cubes;
-    Array  outArray;
     int    nTetras, *tetras;
-    int    nDim, dataSize;
-    char   *dataIn, *dPtr, *dataOut;
+    int    dataSize;
+    char   *dataIn, *dataOut;
     Object attr;
     char   *str, *name;
     InvalidComponentHandle iinvalids = NULL, oinvalids = NULL;
@@ -753,12 +751,11 @@ RegQuads2Triangles(Field field)
 {
     MeshArray mArray;
     Array     cArray, dIn, dOut;
-    int       i, j, parity, xB, yB, zB;
-    int       x, y, z, X, Y, Z, vPerE;
+    int       j, xB, yB;
+    int       x, y, X, Y, vPerE;
     int       offsets[3], counts[3];
-    int       nQuads, nTris, *tris, *tPtr;
-    Array     outArray;
-    int       n, inElement;
+    int       nQuads, nTris, *tris;
+    int       inElement;
     Object    attr;
     char      *str, *name;
     InvalidComponentHandle iinvalids = NULL, oinvalids = NULL;
@@ -931,12 +928,11 @@ static Field
 IrregQuads2Triangles(Field field)
 {
     Array  pArray, cArrayIn, cArrayOut, dIn, dOut;
-    int    i, j, k;
+    int    i, j;
     int    nQuads, *quads;
-    Array  outArray;
     int    nTris, *tris;
     int    nDim, dataSize, vPerE;
-    char   *dataIn, *dPtr, *dataOut;
+    char   *dataIn, *dataOut;
     Object attr;
     char   *str, *name;
     InvalidComponentHandle iinvalids = NULL, oinvalids = NULL;
@@ -1119,7 +1115,7 @@ PolylinesToLines(Field field)
     Array  pA, eA, lA = NULL, inA, outA = NULL;
     int    nP, nE, nL, nA;
     int    *polylines, *edges, *lines;
-    int    i, j, k, p, e, l;
+    int    i, k, p, e, l;
     Object o;
     char   *name;
     InvalidComponentHandle invP = NULL, invL = NULL;

@@ -10,19 +10,11 @@
 
 
 #include <dx/dx.h>
+#include "mark.h"
 
+extern Object _dxfDXEmptyObject(Object o); /* from libdx/component.c */
 
-extern Error _dxfParmCheck(int nobjs, Object o1, char *oname1,
-  	                              Object o2, char *oname2,
- 	                  int nparms, Object p1, char *name1, int nullok1,
- 	                              Object p2, char *name2, int nullok2,
-	                  int parmlist);
-
-extern Object _dxfDXEmptyObject(Object o);
-
-
-
-int
+Error
 m_Rename(Object *in, Object *out)
 {
     char *old, *new;

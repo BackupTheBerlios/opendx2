@@ -8,13 +8,12 @@
 
 #include <dxconfig.h>
 
-
-
 #include <stdio.h>
 #include <dx/dx.h>
 #include <math.h>
 #include <string.h>
-
+#include "_autogray.h"
+#include "_autocolor.h"
 
 typedef struct {
     Field a_f;
@@ -41,39 +40,29 @@ typedef struct {
 
 #define LN(x) log((double)x)
 
-
-extern Error _dxfDelayedOK(Object);
-extern Error _dxfRGBtoHSV(float, float, float, float *, float *, float *);
-extern Error _dxfSetMultipliers(Object, float, float);
-extern int _dxfHSVtoRGB(float, float, float, float *, float *, float *);
-extern Group _dxfAutoGrayScale(Object,  float, float, float, float, 
-                               float, float *, float *, Object *, 
-                               int, RGBColor, RGBColor); 
 static Error AutoGrayScaleDelayedObject(Object, int, float, float, int,
   		          float, float, float, float, float, 
                           RGBColor, RGBColor);
-extern Error _dxfAutoColorObject(Object, Object, Object);
-extern Object _dxfDXEmptyObject(Object);
 static Error RecurseToIndividual(Object, float, float, float, 
      	 float, float, float *, float *, Object *, int, RGBColor,
          RGBColor);
 static Error MakeMapAndColorGray(Object, float, float, float, float,
 	 float, float *, float *, Object *, int, RGBColor,
          RGBColor);
-static Error MakeMapAndColorGrayMGrid(Object, float, float, float, float,
-	 float, float *, float *, Object *, int, RGBColor,
-         RGBColor);
 static Error RemoveOpacities(Object);
 static Error AutoGrayScaleDelayedField(Pointer);
 static Error GoodField(Field);
-extern Error _dxfScalarField(Field, int *);
-extern Error _dxfByteField(Object, int *);
-extern Error _dxfBoundingBoxDiagonal(Object, float *);
-extern int _dxfFieldWithInformation(Object);
-extern Field _dxfMakeRGBColorMap(Field);
-extern int _dxfIsVolume(Object, int *);
-extern Object DXMap(Object, Object, char *, char *);
-extern Array DXScalarConvert(Array);
+
+#if 0
+static Error MakeMapAndColorGrayMGrid(Object, float, float, float, float,
+	 float, float *, float *, Object *, int, RGBColor,
+         RGBColor);
+#endif
+
+/* extern somewhere */
+extern Object _dxfDXEmptyObject(Object); /* from libdx/component.c */
+extern Object DXMap(Object, Object, char *, char *); /* from libdx/map.c */
+extern Array DXScalarConvert(Array); /* from libdx/stats.h */
 
 #define ABS(a)	((a)>0.0 ? (a) : -(a))
 
@@ -82,7 +71,7 @@ static Pointer
 AllocateBest(int n)
 {
     Pointer p;
-    if (p = DXAllocateLocal(n))
+    if ((p=DXAllocateLocal(n)))
         return p;
     DXResetError();
     return DXAllocate(n);
@@ -199,8 +188,8 @@ static Error RecurseToIndividual(Object g_out, float opacity,
       /* generic group: continue recursing  */
       if (!(outcolorgroup = (Group)DXNewGroup())) 
 	return ERROR;
-      for (i=0; subo = 
-                (Object)DXGetEnumeratedMember((Group)g_out, i, NULL); 
+      for (i=0; (subo=
+                (Object)DXGetEnumeratedMember((Group)g_out, i, NULL)); 
                       i++){ 
 	if (!RecurseToIndividual(subo, opacity, hue, phase, range,
 				 saturation, inputmin, inputmax, 
@@ -261,7 +250,7 @@ static Error RecurseToIndividual(Object g_out, float opacity,
 
 
 
-
+#if 0
 static Error MakeMapAndColorGrayMGrid(Object g_out, float opacity,float hue,
 				      float phase, float range, 
 				      float saturation,
@@ -312,7 +301,7 @@ static Error MakeMapAndColorGrayMGrid(Object g_out, float opacity,float hue,
   }
   return OK;
 }
-
+#endif
 
 
 
@@ -330,7 +319,7 @@ static Error MakeMapAndColorGray(Object g_out, float opacity,float hue,
   float red, blue, green, r, g, b, h, s, v; 
   float givenmin, givenmax, tmp;
   float minvalue, maxvalue;
-  float unitopacity, unitvalue, thickness;
+  float unitopacity=0, unitvalue=0, thickness;
   float avg, standdev;
   float *opos_ptr, *cpos_ptr, *odata_ptr;
   RGBColor *cdata_ptr;
@@ -1110,7 +1099,7 @@ static Error RemoveOpacities(Object o)
   switch(DXGetObjectClass(o)) {
   case CLASS_GROUP:
     /* get children and call RemoveOpacities(subo); */
-    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++){ 
+    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++){ 
       if (!RemoveOpacities(subo))
 	return ERROR;
     }
@@ -1145,7 +1134,7 @@ static Error
   switch(DXGetObjectClass(o)) {
   case CLASS_GROUP:
     /* get children and call AutoColorObject(subo); */
-    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++){ 
+    for (i=0; (subo=DXGetEnumeratedMember((Group)o, i, NULL)); i++){ 
       if (!AutoGrayScaleDelayedObject(subo, setopacities, givenmin, 
                                       givenmax, surface, opacity, 
                                       intensitystart, range, saturation,
@@ -1187,21 +1176,15 @@ static Error AutoGrayScaleDelayedField(Pointer ptr)
 
 {
   Field f, savedfield;
-  int scalar, i, count, setopacities, surface;
-  float *dp_o, givenmin, givenmax,opacity,r,g,b;
+  int scalar, i, setopacities, surface;
+  float givenmin, givenmax,opacity,r,g,b;
   float dmin, dmax;
   int datamin, datamax, numentries;
   float *opacityarray=NULL, intensitystart, range,saturation,intensity,hue;
-  float opacityorigin, opacitydelta;
-  unsigned char  scalarorigin;
-  RGBColor *colorarray=NULL, lowerrgb,upperrgb, lowerhsv, upperhsv;
-  unsigned char *dp_d;
-  RGBColor *dp_c, colororigin, colordelta;
-  Array newdata, olddata, a_opacity, a_color, a_data;
+  RGBColor *colorarray=NULL, lowerrgb,upperrgb;
+  Array newdata, olddata, a_data;
   Array deferredcolors, deferredopacities;
   arg_byte *a;
-  char *datadep;
-  Class class;
 
   a = (arg_byte *)ptr;
   f = a->a_f;
@@ -1357,9 +1340,9 @@ static Error AutoGrayScaleDelayedField(Pointer ptr)
 static Error GoodField(Field f)
 {
   if (DXEmptyField(f))
-     return NULL;
+     return ERROR;
   if (!(DXGetComponentValue(f, "data")))
-     return NULL;
+     return ERROR;
   return OK;
 }
 

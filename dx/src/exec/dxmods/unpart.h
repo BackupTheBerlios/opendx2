@@ -5,16 +5,14 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/unpart.h,v 1.4 2000/08/24 20:04:54 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/unpart.h,v 1.3 1999/05/10 15:45:32 gda Exp $
- */
-
-#ifndef	__UNPART_H
-#define	__UNPART_H
+#ifndef	_UNPART_H
+#define	_UNPART_H
 
 #include <dx/dx.h>
 
@@ -57,4 +55,4 @@ Error _dxfCoalesceFieldElement (FieldInfo *src, FieldInfo *dst,
 Error _dxfExtractFieldElement (FieldInfo *src, FieldInfo *dst,
 			   int element, int me, int total);
 
-#endif	/* __UNPART_H */
+#endif	/* _UNPART_H */

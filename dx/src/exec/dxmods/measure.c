@@ -11,6 +11,7 @@
 
 #include <math.h>
 #include <dx/dx.h>
+#include "measure.h"
 #include "vectors.h"
 
 #define WHAT_NONE	0
@@ -22,7 +23,6 @@
 Object DXMeasure(Object, char *);
 
 static Error  MeasureTask(Pointer);
-static Error  MeasureField(Field, int, float *);
 static Object MeasureObject(Object, int);
 static Object MeasureElements(Object);
 static Field  MeasureElements_Field(Field);
@@ -58,7 +58,6 @@ Error
 m_Measure(Object *in, Object *out)
 {
     char *what;
-    float *measure;
 
     out[0] = NULL;
 
@@ -288,7 +287,12 @@ GetMethods(Object o, int what, PFE *fieldMethod, PFE *cfieldMethod, int *gFlag)
 	    
 	    return ERROR;
 	}
+	default:
+	    break;
     }
+
+    DXSetError(ERROR_BAD_PARAMETER, "Invalid Class type.");
+    return ERROR;
 }
 
 static Object
@@ -525,7 +529,6 @@ MeasureObject(Object object, int what)
 
 	case CLASS_XFORM:
 	{
-	    Object child;
 
 	    workCopy = DXApplyTransform(workCopy, NULL);
 	    if (! workCopy)
@@ -571,11 +574,11 @@ Lines_Length(Field field, Segments *segs, float *measure)
 {
     Array       pA, cA;
     ArrayHandle pHandle = NULL, cHandle = NULL;
-    float       delta[9], *points = NULL;
-    int         *elements, nDim, nSegments;
+    float       delta[9];
+    int         nDim, nSegments;
     float       length;
     int 	counts[3];
-    int	 	regP, cKnt;
+    int	 	regP;
     InvalidComponentHandle ich = NULL;
 
     *measure = 0.0;
@@ -621,7 +624,7 @@ Lines_Length(Field field, Segments *segs, float *measure)
 
     if (DXGetComponentValue(field, "invalid connections"))
     {
-	ich = DXCreateInvalidComponentHandle(field, NULL, "connections");
+	ich = DXCreateInvalidComponentHandle((Object) field, NULL, "connections");
 	if (ich == NULL)
 	    goto error;
     }
@@ -729,7 +732,7 @@ Triangles_Area(Field field, Segments *segs, float *measure)
 
     if (DXGetComponentValue(field, "invalid connections"))
     {
-	ich = DXCreateInvalidComponentHandle(field, NULL, "connections");
+	ich = DXCreateInvalidComponentHandle((Object) field, NULL, "connections");
 	if (ich == NULL)
 	    goto error;
     }
@@ -737,7 +740,6 @@ Triangles_Area(Field field, Segments *segs, float *measure)
     area = 0;
     for (tri = 0; tri < nTris; tri++)
     {
-	float  triarea, a;
 	int    ip, iq, ir;
 	float  fpBuf[3], fqBuf[3], frBuf[3];
 	float  *fp = fpBuf, *fq = fqBuf, *fr = frBuf;
@@ -820,7 +822,7 @@ Quads_Area(Field field, Segments *segs, float *measure)
 
     if (DXGetComponentValue(field, "invalid connections"))
     {
-	ich = DXCreateInvalidComponentHandle(field, NULL, "connections");
+	ich = DXCreateInvalidComponentHandle((Object) field, NULL, "connections");
 	if (ich == NULL)
 	    goto error;
     }
@@ -880,7 +882,6 @@ Quads_Area(Field field, Segments *segs, float *measure)
     area = 0;
     for (i = 0; i < nQuads; i++)
     {
-	float  quadarea, a;
 	int    ip, iq, ir, is;
 	float  fpBuf[3], fqBuf[3], frBuf[3], fsBuf[3];
 	float  *fp = fpBuf, *fq = fqBuf, *fr = frBuf, *fs = fsBuf;
@@ -985,7 +986,7 @@ Tetrahedra_Volume(Field field, Segments *segs, float *measure)
 
     if (DXGetComponentValue(field, "invalid connections"))
     {
-	ich = DXCreateInvalidComponentHandle(field, NULL, "connections");
+	ich = DXCreateInvalidComponentHandle((Object) field, NULL, "connections");
 	if (ich == NULL)
 	    goto error;
     }
@@ -993,7 +994,6 @@ Tetrahedra_Volume(Field field, Segments *segs, float *measure)
     area = 0;
     for (i = 0; i < nTets; i++)
     {
-	float  tetarea, a;
 	int    ip, iq, ir, is;
 	float  fpBuf[3], fqBuf[3], frBuf[3], fsBuf[3];
 	float  *fp = fpBuf, *fq = fqBuf, *fr = frBuf, *fs = fsBuf;
@@ -1060,9 +1060,9 @@ Cubes_Volume(Field field, Segments *segs, float *measure)
 {
     Array       pA, cA;
     ArrayHandle pHandle = NULL, cHandle = NULL;
-    int         sizes[3], counts[3];
-    float       deltas[9], *points = NULL;
-    int         *elements, nDim, nCubes;
+    int         counts[3];
+    float       deltas[9];
+    int         nDim, nCubes;
     float       volume;
     int         i, *cube, cubeBuf[8];
     InvalidComponentHandle ich = NULL;
@@ -1086,7 +1086,7 @@ Cubes_Volume(Field field, Segments *segs, float *measure)
 
     if (DXGetComponentValue(field, "invalid connections"))
     {
-	ich = DXCreateInvalidComponentHandle(field, NULL, "connections");
+	ich = DXCreateInvalidComponentHandle((Object) field, NULL, "connections");
 	if (ich == NULL)
 	    goto error;
     }
@@ -1119,7 +1119,7 @@ Cubes_Volume(Field field, Segments *segs, float *measure)
 
     if (DXGetComponentValue(field, "invalid connections"))
     {
-	ich = DXCreateInvalidComponentHandle(field, NULL, "connections");
+	ich = DXCreateInvalidComponentHandle((Object) field, NULL, "connections");
 	if (ich == NULL)
 	    goto error;
     }
@@ -1127,9 +1127,7 @@ Cubes_Volume(Field field, Segments *segs, float *measure)
     volume = 0;
     for (i = 0; i < nCubes; i++)
     {
-	float  quadvolume, a;
-	int    ip, iq, ir, is;
-	int    j, k;
+	int    j;
 	Vector pBuf[8];
 	Vector *pts[8];
 
@@ -1196,7 +1194,7 @@ static Error
 Triangles_Volume(Field field, Segments *segments, float *measure)
 {
     Vector origin;
-    int  i, j;
+    int  i;
     Array ocA, cA, pA, nA;
     Vector *points;
     int *t, *tris, *n, *nbrs;
@@ -1370,7 +1368,7 @@ static int       pCmp2(Key, Key);
 static Error
 Volume_CField(int nParts, Segments *edges, float *measure)
 {
-    int i, j, nEdges, nPts, nDim;
+    int i, j, nEdges, nPts;
     Line *segs = NULL, *sPtr;
     HashTable hash = NULL;
     Vector *points = NULL;
@@ -1413,7 +1411,6 @@ Volume_CField(int nParts, Segments *edges, float *measure)
     {
 	Array       pA    = edges[i].positions;
 	Line        *pSeg = (Line *)edges[i].segments;
-	int         nDim;
 	ArrayHandle handle;
 
 	if (edges[i].nSegments == 0)
@@ -1500,8 +1497,7 @@ Loop_Volume(int nEdges, int nPts, Line *segs, Vector *points, Array pA, float *m
     int *forward = NULL, *backward = NULL, *combined = NULL, *list;
     Link  **index = NULL, *links = NULL, *link = NULL;
     ubyte *flags = NULL;
-    int *t, nexte, nf, nb, done;
-    int ip, iq, ir;
+    int nexte, nf, nb, done;
     Vector *p, *q, *r, vrp, vsp, vqp, cross;
     Line *sPtr;
     float vol;
@@ -1775,7 +1771,7 @@ Lines_Area(Field f, Segments *s, float *measure)
 
     if (DXEmptyField(f))
     {
-	seg.nSegments   = NULL;
+	seg.nSegments   = 0;
 	seg.connections = NULL;
 	seg.positions   = NULL;
 	*measure = 0.0;
@@ -1808,10 +1804,7 @@ Loop_Area(int nParts, Segments *segs, float *measure)
     int *forward = NULL, *backward = NULL, *combined = NULL, *list;
     Link  **index = NULL, *links = NULL, *link = NULL;
     ubyte *flags = NULL;
-    int *t, nexte, nf, nb, done;
-    int ip, iq, ir;
-    Vector *p, *q, *r, vrp, vsp, vqp, cross;
-    Line *sPtr;
+    int nexte, nf, nb, done;
     float area;
     int nEdges, nPts, nDim;
     float *points = NULL;
@@ -1874,7 +1867,7 @@ Loop_Area(int nParts, Segments *segs, float *measure)
 	
 	for (j = 0; j < segs[i].nSegments; j++)
 	{
-	    Line lBuf, *l;
+	    Line lBuf, *l=NULL;
 	    float *p, *q;
 	    float pBuf[3], qBuf[3];
 	    int ip, iq;
@@ -2079,13 +2072,12 @@ static Error
 Quads_Volume(Field field, Segments *segments, float *measure)
 {
     Vector origin;
-    int  i, j;
-    Array gcA, cA, pA, nA = NULL;
-    Vector *points;
-    int *t, *tris, *n, *nbrs;
+    int  i;
+    Array gcA = NULL, cA, pA, nA = NULL;
+    int *n, *nbrs;
     int nPts, nQuads, nEdges, nDim;
-    Vector *p, *q, *r, *s, vqp, vrp, vsp, vop, cross;
-    int quadBuf[4], *quad;
+    Vector *p, *q, *r, *s, vqp, vrp, vop, cross;
+    int quadBuf[4], *quad = NULL;
     float area = 0.0;
     Line *segs = NULL;
     ArrayHandle cHandle = NULL, pHandle = NULL;
@@ -2413,7 +2405,6 @@ MeasureElements(Object object)
 	    int    i;
 	    Group  g = (Group)object;
 	    Object child;
-	    char   *nm;
 	    int    typed = (NULL != DXGetType(object, NULL, NULL, NULL, NULL));
 
 	    for (i = 0; NULL != (child = DXGetEnumeratedMember(g, i, NULL)); i++)
@@ -2691,7 +2682,6 @@ line_2d(ArrayHandle pH, ArrayHandle cH, float *m, int n)
     float *pPtr, pBuf[2];
     float *qPtr, qBuf[2];
     float xdiff, ydiff;
-    float l;
     int   i;
 
     for (i = 0; i < n; i++)
@@ -2716,7 +2706,6 @@ line_3d(ArrayHandle pH, ArrayHandle cH, float *m, int n)
     float *pPtr, pBuf[3];
     float *qPtr, qBuf[3];
     float xdiff, ydiff, zdiff;
-    float l;
     int   i;
 
     for (i = 0; i < n; i++)
@@ -2911,7 +2900,6 @@ tetra_3d(ArrayHandle pH, ArrayHandle cH, float *m, int n)
     float *qPtr, qBuf[3];
     float *rPtr, rBuf[3];
     float *sPtr, sBuf[3];
-    Vector v0, v1, cross;
     float  a;
     int   i;
 
@@ -2942,7 +2930,6 @@ cube_3d(ArrayHandle pH, ArrayHandle cH, float *m, int n)
     float *uPtr, uBuf[3];
     float *vPtr, vBuf[3];
     float *wPtr, wBuf[3];
-    Vector v0, v1, cross;
     float  a, r;
     int   i;
 
@@ -3048,8 +3035,7 @@ FLE_Area(Field field, Segments *segs, float *measure)
     Type t;
     Category c;
     int rank, shape[32];
-    int i, face;
-    float *p0 = NULL, *p1 = NULL, *p2 = NULL; 
+    int face;
     Vector fN, lN;
     InvalidComponentHandle ich = NULL;
 
@@ -3146,7 +3132,7 @@ FLE_Area(Field field, Segments *segs, float *measure)
 
     if (DXGetComponentValue(field, "invalid faces"))
     {
-	ich = DXCreateInvalidComponentHandle(field, NULL, "faces");
+	ich = DXCreateInvalidComponentHandle((Object) field, NULL, "faces");
 	if (ich == NULL)
 	    goto error;
     }
@@ -3214,8 +3200,7 @@ FLE_Area_Elements(Field field, float *measurements)
     Type t;
     Category c;
     int rank, shape[32];
-    int i, face;
-    float *p0 = NULL, *p1 = NULL, *p2 = NULL; 
+    int face;
     Vector fN, lN;
     InvalidComponentHandle ich = NULL;
 
@@ -3312,7 +3297,7 @@ FLE_Area_Elements(Field field, float *measurements)
 
     if (DXGetComponentValue(field, "invalid faces"))
     {
-	ich = DXCreateInvalidComponentHandle(field, NULL, "faces");
+	ich = DXCreateInvalidComponentHandle((Object) field, NULL, "faces");
 	if (ich == NULL)
 	    goto error;
     }
@@ -3386,7 +3371,7 @@ Polyline_Length(Field field, Segments *segs, float *measure)
     Category c;
     int rank, shape[32];
     int i, p, e;
-    Pointer pbuf0, pbuf1, pbuf2;
+    Pointer pbuf0=NULL, pbuf1=NULL;
     float *p0 = NULL, *p1 = NULL;
     InvalidComponentHandle ich = NULL;
 
@@ -3466,7 +3451,7 @@ Polyline_Length(Field field, Segments *segs, float *measure)
 
     if (DXGetComponentValue(field, "invalid polylines"))
     {
-	ich = DXCreateInvalidComponentHandle(field, NULL, "polylines");
+	ich = DXCreateInvalidComponentHandle((Object)field, NULL, "polylines");
 	if (ich == NULL)
 	    goto error;
     }
@@ -3532,7 +3517,7 @@ Polyline_Length_Elements(Field field, float *measurements)
     Category c;
     int rank, shape[32];
     int i, p, e;
-    Pointer pbuf0, pbuf1, pbuf2;
+    Pointer pbuf0=NULL, pbuf1=NULL;
     float *p0 = NULL, *p1 = NULL;
     InvalidComponentHandle ich = NULL;
 
@@ -3612,7 +3597,7 @@ Polyline_Length_Elements(Field field, float *measurements)
 
     if (DXGetComponentValue(field, "invalid polylines"))
     {
-	ich = DXCreateInvalidComponentHandle(field, NULL, "polylines");
+	ich = DXCreateInvalidComponentHandle((Object) field, NULL, "polylines");
 	if (ich == NULL)
 	    goto error;
     }

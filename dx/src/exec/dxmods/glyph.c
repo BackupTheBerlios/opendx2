@@ -11,29 +11,16 @@
 
 
 #include <dx/dx.h>
+#include <ctype.h>
 #include <math.h>
 #include <string.h>
 #include "eigen.h"
+#include "_glyph.h"
+#include "_autocolor.h"
 #define TRUE                    1
 #define FALSE                   0
 #define DIMENSION3D             3
 #define DIMENSION2D             2
-
-extern Error _dxfGetTensorStats(Object, float *, float *);
-extern int _dxfIsTensor(Object);
-extern Error _dxfProcessGlyphObject(Object, Object, char *, 
-                                    float, float, int, float, 
-                                    int, float, int, 
-                                    float, int, float, int, 
-                                    Object, int, int, char *, int *, float *);
-extern Error _dxfIndexGlyphObject(Object, Object, float);
-extern Error _dxfGetFontName(char *, char *);
-extern Error _dxfGlyphTask(Pointer);
-extern Error _dxfGetStatisticsAndSize(Object, char *, int, float *, int, 
-                                      float *, float *, int *);
-extern Error _dxfTextField(Pointer);
-extern int _dxfIsFieldorGroup(Object);
-extern int _dxfFieldWithInformation(Object);
 
 
 typedef struct Point2D
@@ -82,7 +69,7 @@ m_Glyph(Object *in, Object *out)
   Class class, classglyph=CLASS_ARRAY;
   char type_string[100], *type;
   float quality, shape, scale, ratio=0, given_min=0, given_max=0;
-  int ratio_set, min_set, max_set, scale_set, AutoSize, count, colored;
+  int ratio_set, min_set, max_set, scale_set, AutoSize, count;
   int stats_done = 0;
   Object typefield, glyphcopy=NULL;
   int type_is_field, i;
@@ -92,8 +79,7 @@ m_Glyph(Object *in, Object *out)
   Array data;
   struct arg arg;
   Type datatype;
-  int text;
-  char *start, font[100];
+  char font[100];
 
   strcpy(font,"fixed");
  

@@ -10,13 +10,14 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refineirr.c,v 1.4 2000/05/16 18:47:35 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refineirr.c,v 1.5 2000/08/24 20:04:18 davidt Exp $:
  */
 
 #include <string.h>
 #include <stdio.h>
 #include "math.h"
 #include <dx/dx.h>
+#include "_refine.h"
 
 /***************************
  * cubes tables
@@ -145,8 +146,6 @@ typedef struct
     int knt;	/* number of interpolations to perform			*/
 } InterpTable;
 
-Field _dxfRefineReg(Field, int);
-
 static Field RefineICubes(Field, int);
 static Field RefineIQuads(Field, int);
 static Field RefineILines(Field, int);
@@ -186,10 +185,12 @@ static int    QueryEdge(HashTable, int, int);
 static void   SetupEdge(int, int, Hash);
 static Hash   _QueryHash(HashTable, Hash);
 
-static int       Cmp4(Key, Key);
 static PseudoKey Hash4(Key);
 static int       Cmp2(Key, Key);
 static PseudoKey Hash2(Key);
+#if 0
+static int       Cmp4(Key, Key);
+#endif
 
 Field
 _dxfRefineIrreg(Field f, int levels)
@@ -756,7 +757,6 @@ RefineILines(Field f, int levels)
     Array       inP, inC, outC = NULL;
     int         *c, *inElts, *outElts, nElts, nPoints;
     int  	cOffset;
-    int		nEdges;
     Object	old;
     char	*name;
     ListElement *invTable = NULL;
@@ -811,7 +811,7 @@ RefineILines(Field f, int levels)
 	for (i = 0; i < nElts; i++, c += 2)
 	{
 	    int grid[3];
-	    int *t, v;
+	    int v;
 	    int *b = sublines;
 
 	    v = 0;
@@ -1400,7 +1400,7 @@ static Error
 FieldSetup(Field f)
 {
     char *rmv[64];
-    int  nrmv = 0, nkeep = 0, i;
+    int  nrmv = 0, i;
     Object o;
     Array a;
     char *name;
@@ -1463,11 +1463,11 @@ error:
 static Array
 CopyArray(Array in)
 {
-    int      nD, nIn;
-    Array    out;
+    int      nIn;
+    Array    out=NULL;
     Type     type;
     Category cat;
-    int	     rank, shape[32], i;
+    int	     rank, shape[32];
 
     if (DXGetObjectClass((Object)in) != CLASS_ARRAY)
 	goto error;
@@ -1493,7 +1493,7 @@ CopyArray(Array in)
     if (! DXAddArrayData(out, 0, nIn, DXGetArrayData(in)))
 	goto error;
     
-done:
+/* done */
     return out;
 
 error:
@@ -1560,7 +1560,7 @@ error:
 {									\
     ubyte *inPtr  = (ubyte *)DXGetArrayData(out);			\
     ubyte *outPtr;							\
-    int  i, j, k, t, l, m;						\
+    int  i, j, t;							\
 									\
     if (! inPtr)							\
 	goto error;							\
@@ -1587,8 +1587,8 @@ error:
 static Array
 RefinePArray(Array in, InterpTable *table, int boolean)
 {
-    int      nD, nIn;
-    Array    out;
+    int      nIn;
+    Array    out=NULL;
     Type     type;
     Category cat;
     int	     rank, shape[32], i;
@@ -1682,8 +1682,8 @@ error:
 static Array
 RefineCArray(Array in, int nCopies)
 {
-    int           nD, nIn;
-    Array         out;
+    int           nIn;
+    Array         out=NULL;
     Type          type;
     Category      cat;
     int	          rank, shape[32], i, j;
@@ -1845,6 +1845,7 @@ Hash4(Key k)
     return h->v[0]*17 + h->v[1]*53 + h->v[2]*1907 + h->v[3]*2801;
 }
 
+#if 0
 static int
 Cmp4(Key k0, Key k1)
 {
@@ -1856,6 +1857,7 @@ Cmp4(Key k0, Key k1)
 	      h0->v[2]==h1->v[2] &&
 	      h0->v[3]==h1->v[3]);
 }
+#endif
 
 static PseudoKey
 Hash2(Key k)
@@ -1877,7 +1879,6 @@ static Error
 AddHashReferences(HashTable h, ListElement *invTable,
 		SegList *listElements, int base, int nv)
 {
-    int *table;
     Hash hash;
     int  n = base;
 
@@ -1958,7 +1959,7 @@ SetupIPTables(Field f, int nPoints,
 
     if (DXGetComponentAttribute(f, "invalid positions", "ref"))
     {
-	int i, index, *iPtr;
+	int index, *iPtr;
 
 	*invTable = (ListElement *)DXAllocateZero(nPoints * sizeof(Pointer));
 	if (! *invTable)

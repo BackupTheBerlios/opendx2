@@ -13,14 +13,11 @@
 #include <math.h>
 #include <string.h>
 #include <dx/dx.h>
-
-extern Object _dxfNormals(Object, char *);
+#include "_normals.h"
 
 int
 m_FaceNormals (Object *in, Object *out)
 {
-    char		*method;
-
     out[0] = NULL;
 
     if (in[0] == NULL)

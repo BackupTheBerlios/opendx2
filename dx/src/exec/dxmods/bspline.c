@@ -88,12 +88,13 @@ static Error BSpline(float *result, float u, int n, int k,
   return OK;
 } 
 
+Error
 m_BSpline(Object *in, Object *out)
 {
   Type type;
   Category category;
   int rank, shape[32], numitems, order, i, newnumitems, dim;
-  float *p, *point;
+  float *p=NULL, *point=NULL;
   Array resultarray=NULL;
   float u;
 

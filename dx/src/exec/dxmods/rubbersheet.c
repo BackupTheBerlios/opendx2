@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/rubbersheet.c,v 1.3 1999/05/10 15:45:30 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/rubbersheet.c,v 1.4 2000/08/24 20:04:46 davidt Exp $:
  */
 
 #include <dxconfig.h>
@@ -36,8 +36,7 @@ END:
 #include <stdio.h>
 #include <math.h>
 #include <dx/dx.h>
-
-extern Error _dxfRubberSheet(Object, Object, Object, Object, Object *);
+#include "_rubbersheet.h"
 
 int m_RubberSheet (in, out)
     Object		*in;

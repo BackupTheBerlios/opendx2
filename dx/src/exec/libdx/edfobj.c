@@ -27,7 +27,7 @@ static Object numberedobjfunc(struct finfo *f, int *numlist, int idflag, int fla
 static void printobjlist(struct finfo *f);   /* for debug */
 #endif
 
-static struct hashidtolist {
+struct hashidtolist {
     PseudoKey id;
     struct objlist *ol;
 };
@@ -676,7 +676,7 @@ static void printobjlist(struct finfo *f)
  * hash on object and return id 
  */
 
-static struct hashobjtoid {
+struct hashobjtoid {
     Object o;
     int id;
     int literal;

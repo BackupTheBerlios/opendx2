@@ -53,8 +53,8 @@ static RGBColor BACKGROUNDCOLOR = {0.07, .07, 0.07};
 #define FL(x) ((x)+E>0? (int)((x)+E) : (int)((x)+E)-1)	/* fuzzy floor */
 #define CL(x) ((x)-E>0? (int)((x)-E)+1 : (int)((x)-E))	/* fuzzy ceiling */
 
-extern Error _dxfGetFormat(float *, char *, int, float);
-extern Error _dxfCheckLocationsArray(Array, int *, float **);
+Error _dxfGetFormat(float *, char *, int, float);
+Error _dxfCheckLocationsArray(Array, int *, float **);
 
 /* From helper.c. Should probably be in .h file */
 extern Field _dxfBeginFace(Field); 
@@ -1697,7 +1697,7 @@ extern Error _dxfSetAxesCharacteristic(Pointer p, char *characteristic,
   return OK;
 }
 
-extern Error _dxfCheckLocationsArray(Array locs, int *n, float **p)
+Error _dxfCheckLocationsArray(Array locs, int *n, float **p)
 {
   int numitems;
   float *ptr=NULL;
@@ -1720,7 +1720,7 @@ extern Error _dxfCheckLocationsArray(Array locs, int *n, float **p)
 
 
 
-extern Error _dxfGetFormat(float *locs, char *fmt, int num, float scale)
+Error _dxfGetFormat(float *locs, char *fmt, int num, float scale)
 {
     int width, i; 
     char tbuf[32], *cp;

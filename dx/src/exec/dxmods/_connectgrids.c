@@ -10,12 +10,11 @@
 
 #include <dxconfig.h>
 
-
-
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
 #include <dx/dx.h>
+#include "_connectgrids.h"
 
 struct arg_radius {
   Object ino;
@@ -53,12 +52,10 @@ typedef struct vector2D {
 #define RND(x) (x<0? x-0.5 : x+0.5)
 #define POW(x,y) (pow((double)x, (double)y))
 
-
-
 #define INSERT_NEAREST_BUFFER(TYPE)                               \
 {                                                                 \
               TYPE *holder=(TYPE *)bufdata;                       \
-              float distancesq;                                   \
+              float distancesq=0;                                   \
               switch(shape_base[0]) {                             \
                 case (1):                                         \
                    distancesq=                                    \
@@ -171,9 +168,6 @@ static Error FillBuffersIrreg(int, int, ubyte *, float *,  float *,
                               InvalidComponentHandle, int *, int, float);
 static Error FillDataArray(Type, Array, Array, ubyte *, float *, 
                            int, int, int, float, Array, char *); 
-extern 
-  Error _dxfConnectNearestObject(Object, Object, int, float *, float, Array);
-extern Error _dxfConnectRadiusObject(Object, Object, float, float, Array);
 static Error ConnectRadiusField(Pointer);
 static Error ConnectNearestField(Pointer);
 static Error ConnectRadius(Field, Field, float, float, Array);
@@ -227,9 +221,7 @@ static Matrix2D Invert2D(Matrix2D matrix2d)
 }
 
 
-
-
-extern Error _dxfConnectNearestObject(Object ino, Object base, 
+Error _dxfConnectNearestObject(Object ino, Object base, 
                                       int numnearest, 
                                       float *radius, float exponent, 
                                       Array missing) 
@@ -256,7 +248,7 @@ extern Error _dxfConnectNearestObject(Object ino, Object base,
       goto error;
     break;
   case CLASS_GROUP:
-    for (i=0; subbase=DXGetEnumeratedMember((Group)base, i, NULL); i++) {
+    for (i=0; (subbase=DXGetEnumeratedMember((Group)base, i, NULL)); i++) {
       if (!(_dxfConnectNearestObject((Object)ino, (Object)subbase, 
                                       numnearest, radius, exponent, missing))) 
 	goto error;
@@ -274,7 +266,7 @@ extern Error _dxfConnectNearestObject(Object ino, Object base,
 }
 
 
-extern Error _dxfConnectRadiusObject(Object ino, Object base, 
+Error _dxfConnectRadiusObject(Object ino, Object base, 
                                      float radius, float exponent, 
                                      Array missing)
      /* recurse on the base to the field level */
@@ -296,7 +288,7 @@ extern Error _dxfConnectRadiusObject(Object ino, Object base,
       goto error;
     break;
   case CLASS_GROUP:
-    for (i=0; subbase=DXGetEnumeratedMember((Group)base, i, NULL); i++) {
+    for (i=0; (subbase=DXGetEnumeratedMember((Group)base, i, NULL)); i++) {
       if (!(_dxfConnectRadiusObject((Object)ino, (Object)subbase, 
 				radius, exponent, missing))) 
 	goto error;
@@ -317,7 +309,6 @@ static Error ConnectNearestField(Pointer p)
 {
   struct arg_nearest *arg = (struct arg_nearest *)p;
   Object ino, subino, newino=NULL; 
-  Group compino;
   int i, numnearest;
   Field base;
   float *radius;
@@ -364,7 +355,7 @@ static Error ConnectNearestField(Pointer p)
      DXSetError(ERROR_NOT_IMPLEMENTED,"input must be a single field");
        goto error;
      /* recurse on the members of the group */
-      for (i=0; subino=DXGetEnumeratedMember((Group)newino, i, NULL); i++) {
+      for (i=0; (subino=DXGetEnumeratedMember((Group)newino, i, NULL)); i++) {
         base = arg->base;
         radius = arg->radius;
         radiusvalue = arg->radiusvalue;
@@ -395,8 +386,7 @@ static Error ConnectNearestField(Pointer p)
 static Error ConnectRadiusField(Pointer p)
 {
   struct arg_radius *arg = (struct arg_radius *)p;
-  Object ino, subino, newino=NULL;
-  int i;
+  Object ino, newino=NULL;
   Field base;
   float radius;
   float exponent;
@@ -448,27 +438,27 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
   int counts[8], rank_base, shape_base[8], shape_ino[8], rank_ino; 
   int rank, shape[8], i, j, k, l, m, n, numvalid, pos_count=0;
   int numitemsbase, compcount, numitemsino, numitems;
-  float distanceweight, distance, *data=NULL, *dp, *scratch=NULL;
+  float distanceweight, distance=0, *data=NULL, *dp, *scratch=NULL;
   ArrayHandle handle=NULL;
   Type type;
   Point gridposition;
   Vector2D gridposition2D;
-  float gridposition1D, origin, delta;
+  float gridposition1D=0, origin=0, delta=0;
   float *bufdistance=NULL;
   char *bufdata=NULL;
   char *name;
   Category category;
   float *inputposition_ptr;
-  int data_count, invalid_count, ii, datastep, dc, regular;
+  int data_count, invalid_count=0, ii, datastep, dc, regular;
   char *old_data_ptr=NULL, *tmpdata=NULL;
-  float    *old_data_ptr_f, *new_data_ptr_f, *missingval_f=NULL;
-  int      *old_data_ptr_i, *new_data_ptr_i, *missingval_i=NULL;
-  short    *old_data_ptr_s, *new_data_ptr_s, *missingval_s=NULL;
-  double   *old_data_ptr_d, *new_data_ptr_d, *missingval_d=NULL;
-  byte     *old_data_ptr_b, *new_data_ptr_b, *missingval_b=NULL;
-  ubyte    *old_data_ptr_ub, *new_data_ptr_ub, *missingval_ub=NULL;
-  ushort   *old_data_ptr_us, *new_data_ptr_us, *missingval_us=NULL;
-  uint     *old_data_ptr_ui, *new_data_ptr_ui, *missingval_ui=NULL;
+  float    *new_data_ptr_f=NULL, *missingval_f=NULL;
+  int      *new_data_ptr_i=NULL, *missingval_i=NULL;
+  short    *new_data_ptr_s=NULL, *missingval_s=NULL;
+  double   *new_data_ptr_d=NULL, *missingval_d=NULL;
+  byte     *new_data_ptr_b=NULL, *missingval_b=NULL;
+  ubyte    *new_data_ptr_ub=NULL, *missingval_ub=NULL;
+  ushort   *new_data_ptr_us=NULL, *missingval_us=NULL;
+  uint     *new_data_ptr_ui=NULL, *missingval_ui=NULL;
 
   if (DXEmptyField((Field)ino))
      return OK;
@@ -601,7 +591,6 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
 							    compcount,
 							    &name))) {
     Object attr;
-    char *str;
 
     data_count=0;
     invalid_count=0;
@@ -1292,21 +1281,19 @@ static Error ConnectRadiusIrregular(Field ino, Field base, float radius,
 				    float exponent, Array missing) 
 {
   int componentsdone, valid;
-  Array data=NULL, positions_base, positions_ino, data_ino;
+  Array positions_base, positions_ino;
   Array oldcomponent=NULL, newcomponent=NULL;
   InvalidComponentHandle out_invalidhandle=NULL, in_invalidhandle=NULL;
-  Pointer components[30];
   int numitemsbase, numitemsino; 
   int rank_base, rank_ino, shape_base[30], shape_ino[30], i, j; 
   int anyinvalid, compcount, rank, shape[30];
-  int anyvalid, numitems, k, counts[8];
+  int numitems;
   Type type;
-  Matrix matrix;
   ubyte *flagbuf=NULL;
   float *distancebuf=NULL; 
   Category category;
-  float *pos_ino_ptr, *pos_base_ptr, distance;
-  char *attribute, *name;
+  float *pos_ino_ptr, *pos_base_ptr;
+  char *name;
   
   /* all points within radius of a given grid position will be averaged 
    * (weighted) to give a data point to that position. If there are are
@@ -1401,7 +1388,6 @@ static Error ConnectRadiusIrregular(Field ino, Field base, float radius,
 							     compcount, 
 							     &name))) {
     Object attr;
-    char *str;
   
     if (DXGetObjectClass((Object)oldcomponent) != CLASS_ARRAY)
       goto component_done;
@@ -1560,15 +1546,14 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
                                   float exponent, Array missing) 
 {
   int componentsdone;
-  Array data=NULL, positions_base, positions_ino, data_ino;
+  Array positions_base, positions_ino;
   Array oldcomponent, newcomponent=NULL;
   InvalidComponentHandle in_invalidhandle=NULL, out_invalidhandle=NULL;
-  Pointer components[30];
   int numitemsbase, numitemsino, cntr; 
   int rank_base, rank_ino, shape_base[30], shape_ino[30], i, j, k, l, c; 
   int anyinvalid, compcount, rank, shape[30];
-  float missingvalues[30], tmpval;
-  int anyvalid, numitems, counts[8], knt;
+  float tmpval;
+  int numitems, counts[8], knt;
   Type type;
   float xpos, ypos, zpos, xmin, ymin, zmin, xmax, ymax, zmax, pos;
   float min, max;
@@ -1577,20 +1562,20 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
   Matrix matrix, invmatrix;
   Matrix2D matrix2D, invmatrix2D;
   Category category;
-  float *pos_ino_ptr, *pos_base_ptr, distance, *weights_ptr=NULL;
+  float *pos_ino_ptr, distance, *weights_ptr=NULL;
   float *data_ptr = NULL;
   float rsquared;
   byte *exact_hit;
   Point box[8];
-  char *name, *attribute;
-  float    *data_in_f, *data_f, *missingval_f=NULL;
-  byte     *data_in_b, *data_b, *missingval_b=NULL;
-  int      *data_in_i, *data_i, *missingval_i=NULL;
-  short    *data_in_s, *data_s, *missingval_s=NULL;
-  double   *data_in_d, *data_d, *missingval_d=NULL;
-  ubyte    *data_in_ub, *data_ub, *missingval_ub=NULL;
-  ushort   *data_in_us, *data_us, *missingval_us=NULL;
-  uint     *data_in_ui, *data_ui, *missingval_ui=NULL;
+  char *name;
+  float    *data_in_f=NULL, *data_f=NULL, *missingval_f=NULL;
+  byte     *data_in_b=NULL, *data_b=NULL, *missingval_b=NULL;
+  int      *data_in_i=NULL, *data_i=NULL, *missingval_i=NULL;
+  short    *data_in_s=NULL, *data_s=NULL, *missingval_s=NULL;
+  double   *data_in_d=NULL, *data_d=NULL, *missingval_d=NULL;
+  ubyte    *data_in_ub=NULL, *data_ub=NULL, *missingval_ub=NULL;
+  ushort   *data_in_us=NULL, *data_us=NULL, *missingval_us=NULL;
+  uint     *data_in_ui=NULL, *data_ui=NULL, *missingval_ui=NULL;
 
 
 
@@ -1675,7 +1660,6 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
 							      compcount, 
 							      &name))) {
     Object attr;
-    char *str;
     
     if (DXGetObjectClass((Object)oldcomponent) != CLASS_ARRAY)
       goto component_done;
@@ -2445,14 +2429,14 @@ static Error FillDataArray(Type type, Array oldcomponent,
   float weight, distance;
   int i, j, k;
   float *buffer=NULL;
-  float  *d_in_f, *d_f, *missingval_f=NULL;
-  int    *d_in_i, *d_i, *missingval_i=NULL;
-  short  *d_in_s, *d_s, *missingval_s=NULL;
-  double *d_in_d, *d_d, *missingval_d=NULL;
-  byte   *d_in_b, *d_b, *missingval_b=NULL;
-  uint   *d_in_ui, *d_ui, *missingval_ui=NULL;
-  ushort *d_in_us, *d_us, *missingval_us=NULL;
-  ubyte  *d_in_ub, *d_ub, *missingval_ub=NULL;
+  float  *d_in_f=NULL, *d_f=NULL, *missingval_f=NULL;
+  int    *d_in_i=NULL, *d_i=NULL, *missingval_i=NULL;
+  short  *d_in_s=NULL, *d_s=NULL, *missingval_s=NULL;
+  double *d_in_d=NULL, *d_d=NULL, *missingval_d=NULL;
+  byte   *d_in_b=NULL, *d_b=NULL, *missingval_b=NULL;
+  uint   *d_in_ui=NULL, *d_ui=NULL, *missingval_ui=NULL;
+  ushort *d_in_us=NULL, *d_us=NULL, *missingval_us=NULL;
+  ubyte  *d_in_ub=NULL, *d_ub=NULL, *missingval_ub=NULL;
 
 
   buffer = (float *)DXAllocateLocal(shape*sizeof(float));
@@ -2763,7 +2747,7 @@ static Error FillBuffersIrreg(int numitemsbase, int numitemsino,
                               int *anyinvalid, int shape_base, float radius)
 { 
   int i, j, anyvalid;
-  float distance;
+  float distance=0;
 
   /* there's a special check in here for radius == -1 (infinity) */
   

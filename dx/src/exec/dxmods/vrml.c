@@ -10,6 +10,7 @@
 
 
 #include "dx/dx.h"
+#include "vrml.h"
 #include <stdio.h>
 
 #if defined(HAVE_STRING_H)
@@ -31,7 +32,6 @@ static int text_as_string = NO;
 static char *tab[]  = {"","  ","    ","      ","        ","          ","          ", "              ","                ","                  "}; 
 static char *fontstyle=NULL;
 
-Error _dxfExportVRML(Object dxobject, char *filename);
 Error parse_dx(Object dxobject,int *index,Matrix *mat,char *name,Point *box);
 Error write_solid(Object dxobject,int triangle);
 static Error write_positions(Object dxobject,int itab,int pos_dim);
@@ -49,11 +49,8 @@ static void DGetRotationOfMatrix(Matrix mat, Vector rotvec, float *sinhrot);
 Error _dxfExportVRML(Object dxobject, char *filename)
 {
    char wrlname[256];
-   int i=0, index = 0;
-   Matrix default_mat = {1,0,0,0,1,0,0,0,1,0,0,0};
+   int index = 0;
    char *cp;
-   int texture;
-   int number = 0, tiffcount = 0;
    Point box[8];
    char *string;
 
@@ -128,8 +125,7 @@ Error parse_dx(Object dxobject, int *index,Matrix *mat,char *name,Point *box)
   Object o,o1;
   int i;
   Array a;
-  Matrix default_mat = {1,0,0,0,1,0,0,0,1,0,0,0};
-  Matrix tempmat,newmat;
+  Matrix tempmat;
   char *string;
   int simple_transform,screen_pos,trans_two=0;
   ModuleInput modin[2];
@@ -273,16 +269,10 @@ error:
 /* write out each solid object */
 Error write_solid(Object dxobject,int triangle)
 {
-  int i;
   Type type;
   int rank,shape[MAX_RANK];
   Array a;
   int np;
-  float *f;
-  int *d;
-  char *string;
-  float angle;
-  int sided;
   int itab=1;
   float op;	/* constant color and opacity */
   RGBColor *rgb;
@@ -347,7 +337,7 @@ Error write_solid(Object dxobject,int triangle)
   write_appearence(rgb,op,triangle,itab);
 
   fprintf(fp,"%s}\n",tab[--itab]);	/* Shape */
-done:
+
   return OK;
 
 error: return ERROR;
@@ -654,11 +644,9 @@ Error SetViewPoint(Object dxobject)
 /* write out transformation matrix */
 static int write_transform(Matrix mat,int *trans_two)
 {
-  float angle,angle2;
+  float angle;
   float sinhrot;
   Vector rotvec;
-  Matrix mat_zx = {0,0,1,1,0,0,0,1,0};
-  Matrix mat_zy = {0,1,0,0,0,1,1,0,0};
 
   /* what kind of transformation is it */
   if (mat.A[0][1]==0 && mat.A[0][2]==0 && mat.A[1][0]==0 && mat.A[1][2]==0 &&
@@ -769,7 +757,7 @@ static Error write_caption(Object dxobject,Point *box)
 {
   int i=0,itab=1;
   Point center;
-  float *pos;
+  float *pos=NULL;
   char *string;
   Object o,o1;
   float *rgb;	/* constant color */
@@ -866,8 +854,6 @@ write_text(Object dxobject)
   float *rgb;
   Array a;
   int itab = 1;
-  Point box[8];
-  Point center;
 
   /* Use bounding box to get position of Text */
   /* 
@@ -918,10 +904,10 @@ void DGetRotationOfMatrix(Matrix mat, Vector rotvec, float *sinhrot)
     /* Output:	pointer to rotvec = rotation unit vector		*/
     /* 		pointer to sinhrot = sine of rotation half-angle	*/
 
-    int i, j, imax1, imax2;
+    int i, j, imax1=0, imax2=0;
     float rows[3][3],rowmag[3];
     Vector tanvec, cenvec, sensvec, maxaxis;
-    float maxmag, minmag;
+    float maxmag=0, minmag=0;
     Vector row_max,row_med,mat_max;
 
     /* Find the row of (mat - identity) whose magnitude is maximum, and	*/

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/divcurl.c,v 1.3 1999/05/10 15:45:23 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/divcurl.c,v 1.4 2000/08/24 20:04:28 davidt Exp $:
  */
 
 #include <dxconfig.h>
@@ -36,16 +36,13 @@ END:
 #include <math.h>
 #include <string.h>
 #include <dx/dx.h>
-
-extern int _dxfDivCurl ();
-
-static Error divcurl_method ();
+#include "_divcurl.h"
 
 int m_DivCurl (in, out)
     Object		*in;
     Object		*out;
 {
-    Object		ino0, ino1;
+    Object		ino0;
 
     out[0] = NULL;
     out[1] = NULL;

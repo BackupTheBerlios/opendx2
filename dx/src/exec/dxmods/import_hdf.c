@@ -97,22 +97,22 @@ static char *etype(int num, char *str)
 Field
 DXImportHDF(char *filename, char *fieldname)
 {
-    extern int DFerror;
-    int i, j;
+    int i;
     int skip = 0;
     int rank, numelts, dimsize[MAXRANK];
-    float *data;
     char et[32];
     char pathname[MAXLEN];
     Field f = NULL;
-    float deltas[MAXRANK*MAXRANK], origins[MAXRANK];
     Array a = NULL, ag = NULL, at = NULL;
     char label[MAXLEN]="", unit[MAXLEN], format[MAXLEN], coordsys[MAXLEN];
     int hdftype;
     Type type;
     int status;
     void *datav;
-    int badfp=0,denorm=0;
+    /* float deltas[MAXRANK*MAXRANK], origins[MAXRANK]; int j; */
+#ifdef PVS
+    int badfp=0, denorm=0;
+#endif
 
     if (!findfile(filename, pathname))
 	return NULL;

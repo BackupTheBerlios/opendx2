@@ -14,6 +14,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <dx/dx.h>
+#include "_sample.h"
+#include "measure.h"
 #include "vectors.h"
 
 #define TRUE 			1
@@ -152,11 +154,9 @@ _Sample_Field_Regular(Field field, int n, Array grid)
     Array array;
     int	  i, j, k, nd, ed;
     int	  oCounts[3],  pCounts[3];
-    int   pOffsets[3], oOffsets[3], gOffsets[3];
+    int   oOffsets[3];
     float gDeltas[9],  pDeltas[9];
-    float gOrigin[3],  pOrigin[3],  oOrigin[3], tOrigin[3];
-    float bestG[3], bestP[3];
-    int   bestI[3];
+    float gOrigin[3],  oOrigin[3];
     float p0[3], p1[3], g0[3], g1[3];
     int   deleteGrid;
     char  *name;
@@ -419,13 +419,11 @@ error:
     return NULL;
 }
 
-static float rand1();
-
 static Error
 _Sample_Field_NoConnections(Field field, int n)
 {
     Array old, new = NULL;
-    int	  size, nDim, nPositions, i, j;
+    int	  nPositions, i, j;
     InvalidComponentHandle ich = NULL;
     ArrayHandle handle = NULL;
     char *name, *oBuf = NULL;
@@ -452,7 +450,6 @@ _Sample_Field_NoConnections(Field field, int n)
     {
 	int knt;
 	float f, fskip;
-	float buf[32];
 	char *toDelete[256];
 	int nDelete;
 	Type t;
@@ -556,7 +553,7 @@ error:
 static Array
 _Sample_Grid(Object o, int nSamples, int eltDim)
 {
-    Field field;
+    Field field=NULL;
     Array pA;
     Class class;
 
@@ -605,7 +602,7 @@ _Sample_Grid(Object o, int nSamples, int eltDim)
 static Array
 _Sample_Grid_Irregular(Object object, int nSamples, int eltDim)
 {
-    int   i, j, counts[3];
+    int   i, counts[3];
     Point box[8], min, max;
     float origin[3], deltas[9];
 
@@ -647,8 +644,8 @@ static Array
 _Solve_Grid(int nd, int nSamples, 
 	float *iOrigin, float *iDeltas, int *iCounts, int eltDim)
 {
-    int tCounts[3], oCounts[3], i, j, k, n, c[3];
-    float A, B, a, l[3], d, oOrigin[3], oDeltas[9], tDeltas[9], divisor;
+    int tCounts[3], oCounts[3], i, j, k;
+    float A, B, a, l[3], d, oOrigin[3], oDeltas[9], tDeltas[9];
 
     /*
      * Compress the n-D grid so the first k are non-trivial
@@ -921,7 +918,7 @@ error:
     for (s = 0; s < nSamples; s++, p ++)				\
     {									\
 	float x;							\
-	int   ix, j, k;							\
+	int   ix, j;							\
 	type  *src0, *src1;						\
 									\
 	if (*p == oCounts[0]-1) {ix = oCounts[0]-2; x = 1.0;}		\
@@ -949,16 +946,13 @@ CreateOutputReg(Field f, Array np)
     float   nOrigin[3], nDeltas[9];
     float   mOrigin[3], mDeltas[9];
     float   oOriginInv[3], oDeltasInv[9];
-    int     *cList, *cc;
-    float   *pList, *pp;
+    int     *cList=NULL, *cc;
+    float   *pList=NULL, *pp;
     int     indices[3];
-    int     nSamples;
+    int     nSamples, nDelete=0;
     Array   sA, dA = NULL;
-    char    *dptr;
-    char    *name, *toDelete[100], nDelete = 0;
-    Object  at;
+    char    *name, *toDelete[100];
     float   *fBuf = NULL;
-    int     *p;
     InvalidComponentHandle inInvalids = NULL, outInvalids = NULL;
 
     indices[0] = 0; indices[1] = 0; indices[2] = 0;
@@ -1145,6 +1139,7 @@ CreateOutputReg(Field f, Array np)
 			  case TYPE_UINT:   INTERPOLATE_3D(uint,   0.5); break;
 			  case TYPE_UBYTE:  INTERPOLATE_3D(ubyte,  0.5); break;
 			  case TYPE_BYTE:   INTERPOLATE_3D(byte,   0.5); break;
+			  default: break;
 			}
 			break;
 		    case 2:
@@ -1158,6 +1153,7 @@ CreateOutputReg(Field f, Array np)
 			  case TYPE_UINT:   INTERPOLATE_2D(uint,   0.5); break;
 			  case TYPE_UBYTE:  INTERPOLATE_2D(ubyte,  0.5); break;
 			  case TYPE_BYTE:   INTERPOLATE_2D(byte,   0.5); break;
+			  default: break;
 			}
 			break;
 		    case 1:
@@ -1171,6 +1167,7 @@ CreateOutputReg(Field f, Array np)
 			  case TYPE_UINT:   INTERPOLATE_1D(uint,   0.5); break;
 			  case TYPE_UBYTE:  INTERPOLATE_1D(ubyte,  0.5); break;
 			  case TYPE_BYTE:   INTERPOLATE_1D(byte,   0.5); break;
+			  default: break;
 			}
 			break;
 		}
@@ -1351,11 +1348,12 @@ _Sample(Object o, int n)
 		new = _Sample(c, n);
 		if (! new)
 		    goto error;
-		if (new != c)
+		if (new != c) {
 		    if (name)
 		        DXSetMember((Group)o, name, (Object)new);
 		    else
 		        DXSetEnumeratedMember((Group)o, i, (Object)new);
+		}
 		i++;
 	    }
 	    
@@ -1520,9 +1518,8 @@ Field_Count(Object o, int *n)
 static Error
 SpawnVolumeTasks(Object o)
 {
-    int i, tot;
+    int i;
     Object c;
-    Pointer ptr;
     Object attr;
 
     switch(DXGetObjectClass(o))
@@ -1560,7 +1557,6 @@ MemberVolume(Object o)
     int i;
     float tot;
     Object c;
-    Pointer ptr;
     Object attr;
 
     switch(DXGetObjectClass(o))
@@ -1614,7 +1610,7 @@ _Sample_CompositeField(CompositeField cf, int n)
     float tv, bv, mv, v;
     int   nd, i, nElts;
     SampleArgs  args;
-    Array grid;
+    Array grid=NULL;
     int eltDim = -1;
     Object c;
 
@@ -1696,7 +1692,6 @@ _Sample_MultiGrid(MultiGrid mg, int n)
 {
     float tv, bv, v;
     int   nd, i, nElts;
-    SampleArgs  args;
     int eltDim = -1;
     Object c;
 
@@ -1754,8 +1749,6 @@ static Error  FacesSample(Field, int, Array);
 
 static float  LineLength(float **, int);
 static Error  LineSample(Field, int, Array);
-static Error  LineSample_Irreg(Field, int, Array);
-static Error  LineSample_PathArray(Field, int, Array);
 
 static float  QuadArea(float **, int);
 static Error  QuadSample(Field, int, Array);
@@ -1994,16 +1987,15 @@ PlanarSurface(Field field, int vPerE,
     int			   nOut;
     float		   *eltPoints[MAX_V_PER_E];
     int			   basex, pDim, gDim;
-    float		   gridx[2], gridy[2];
+    float		   gridy[2];
     char		   *grid_status = NULL;
     int			   grid_pt;
     float		   mint[2], maxt[2];
     float		   mintrel[2], maxtrel[2];
     int			   mintgrid[2], maxtgrid[2];
-    int			   i, j, k, l, n;
-    float		   gDeltas[9], gOrigin[3];
+    int			   i, j, k;
     int			   gCounts[3];
-    int			   deleteGrid;
+    int			   deleteGrid=0;
     SegList 		   *pList = NULL, *iList = NULL;
     int			   size;
     float                  pBuf[MAX_V_PER_E][3];
@@ -2299,14 +2291,13 @@ CurvedSurface(Field field,
     float		   gridx[2], gridy[2];
     float		   mint[2], maxt[2];
     int			   mintgrid[2], maxtgrid[2];
-    int			   i, j, k, l;
+    int			   i, j, k;
     float		   gDeltas[9], gOrigin[3];
     int			   gCounts[3], gSizes[3];
     int			   fCounts[2];
     float		   fOrigin[2];
-    int			   deleteGrid;
-    float		   matrix[9], m;
-    float 		   area, maxArea;
+    int			   deleteGrid=0;
+    float		   matrix[9];
     int			   p_axis, axis0, axis1;
     float		   v0[3], v1[3], normal[3], a, b, c, d, *p;
     SegList 		   *pList = NULL, *iList = NULL;
@@ -2577,8 +2568,6 @@ CurvedSurface(Field field,
 	goto done;
     }
     
-empty:
-
     while(DXGetEnumeratedComponentValue(field, 0, &name))
 	DXDeleteComponent(field, name);
 
@@ -2635,7 +2624,6 @@ Volume(Field field,
     int			   n_connections, n_positions;
     int			   nOut;
     float		   *element[MAX_V_PER_E];
-    int			   *connections;
     int			   yz, xyz;
     int			   basex, basey;
     float		   gridx[3], gridy[3], gridz[3];
@@ -2647,7 +2635,7 @@ Volume(Field field,
     int			   i, j, k, l;
     float		   gDeltas[9], gOrigin[3];
     int			   gCounts[3];
-    int			   deleteGrid;
+    int			   deleteGrid=0;
     float		   matrix[9];
     SegList 		   *pList = NULL, *iList = NULL;
     int			   size;
@@ -2826,13 +2814,11 @@ Volume(Field field,
 		     */
 		    if (! grid_status[grid_pt])
 		    {
-			int ii;
 			float weights[MAX_V_PER_E];
 			if ((*inside)(gridz, element, weights))
 			{
 			    float  *pptr = (float *)DXNewSegListItem(pList);
 			    Interp *iptr = (Interp *)DXNewSegListItem(iList);
-			    int j;
 
 			    grid_status[grid_pt] = 1;
 
@@ -2947,7 +2933,6 @@ PolylinesSample(Field field, int nSamples, Array grid)
     float		   spacing, next;
     char		   *name;
     int			   *polylines, *edges;
-    float		   *lengths;
     SegList                *pList   = NULL;
     SegList                *iList   = NULL;
 
@@ -3381,8 +3366,8 @@ LineSample(Field field, int nSamples, Array grid)
 		while (next < l1)
 		{
 		    int   *elt, eBuf[10];
-		    float *p0, p0Buf[10];
-		    float *p1, p1Buf[10];
+		    float *p0=NULL, p0Buf[10];
+		    float *p1=NULL, p1Buf[10];
 
 		    if (! p->invalid)
 		    {
@@ -3522,7 +3507,7 @@ _invert33(float *a, float *b, float *c, float *dst)
 static int
 invert33(float *src, float *dst)
 {
-    int i, j, k;
+    int i, j;
     int badVector[3], nBad;
 
     if (_invert33(src, src+3, src+6, dst))
@@ -3783,8 +3768,8 @@ coords_tetrahedra(float *pt, float **tetra, float *weights)
     vol2 = x01 * yz0t3 - x0t * yz013 + x03 * yz01t;
     vol3 = x01 * yz02t - x02 * yz01t + x0t * yz012;
 
-    if (vol0 >= 0 && vol1 >= 0 && vol2 >= 0 && vol3 >= 0 ||
-	vol0 <= 0 && vol1 <= 0 && vol2 <= 0 && vol3 <= 0)
+    if ((vol0 >= 0 && vol1 >= 0 && vol2 >= 0 && vol3 >= 0) ||
+	(vol0 <= 0 && vol1 <= 0 && vol2 <= 0 && vol3 <= 0))
     {
 	if (weights)
 	{
@@ -3926,8 +3911,8 @@ static float
 TriangleArea(float **points, int pDim)
 {
     float *p0, *p1, *p2;
-    float v0x, v0y, v0z;
-    float v1x, v1y, v1z;
+    float v0x, v0y;
+    float v1x, v1y;
     float a;
 
     p0 = points[0];
@@ -4131,9 +4116,8 @@ CreateOutputIrreg(Field f, SegList *pList, SegList *iList)
     Array          cA = NULL, sA, dA = NULL;
     char           *dptr;
     SegListSegment *slist;
-    char           *name, *toDelete[100], nDelete = 0;
-    Object         at;
-    int            nV;
+    char           *name, *toDelete[100];
+    int            nV, nDelete=0;
     int            i, nSamples = DXGetSegListItemCount(pList);
     float          *fBuf = NULL;
     ArrayHandle    elements = NULL;
@@ -4162,7 +4146,6 @@ CreateOutputIrreg(Field f, SegList *pList, SegList *iList)
 	Type     t; 
 	Category c;
 	int      r, shape[32];
-	int      size;
 	int      itemSize, itemValues;
 	int      nItems;
 
@@ -4223,6 +4206,7 @@ CreateOutputIrreg(Field f, SegList *pList, SegList *iList)
 		    case TYPE_UINT:   INTERPOLATE(uint,   0.5); break;
 		    case TYPE_UBYTE:  INTERPOLATE(ubyte,  0.5); break;
 		    case TYPE_BYTE:   INTERPOLATE(byte,   0.5); break;
+		    default: break;
 		}
 
 		DXFree((Pointer)fBuf);
@@ -4327,9 +4311,8 @@ CreateOutputPolylines(Field f, SegList *pList, SegList *iList)
     Array          sA, dA = NULL;
     char           *dptr;
     SegListSegment *slist;
-    char           *name, *toDelete[100], nDelete = 0;
-    Object         at;
-    int            nV = 2;
+    char           *name, *toDelete[100];
+    int            nV = 2, nDelete=0;
     int            i, nSamples = DXGetSegListItemCount(pList);
     ArrayHandle    ah = NULL;
     Pointer	   buf0 = NULL, buf1 = NULL;
@@ -4344,7 +4327,6 @@ CreateOutputPolylines(Field f, SegList *pList, SegList *iList)
 	Type     t; 
 	Category c;
 	int      r, shape[32];
-	int      size;
 	int      itemSize, itemValues;
 	int      nItems;
 
@@ -4410,12 +4392,13 @@ CreateOutputPolylines(Field f, SegList *pList, SegList *iList)
 		    case TYPE_UINT:   INTERPOLATE_POLYLINE(uint,   0.5); break;
 		    case TYPE_UBYTE:  INTERPOLATE_POLYLINE(ubyte,  0.5); break;
 		    case TYPE_BYTE:   INTERPOLATE_POLYLINE(byte,   0.5); break;
+		    default: break;
 		}
 
 	    }
 	    else if (! strcmp(DXGetString((String)at), "polylines"))
 	    {
-		char *src, *dst;
+		char *dst;
 		PolylineInterp *iPtr;
 
 		dst = (char *)DXGetArrayData(dA);
@@ -4581,7 +4564,7 @@ static Array
 _Sample_Grid_Regular(Object o, int nSamples, int eltDim)
 {
     Field field;
-    int   i, j, k, sd, ed, gridConnections;
+    int   i, j, k, sd, ed, gridConnections=0;
     float deltas[9], *d;
     int   counts[3], samples[3];
     float origin[3];
@@ -4599,7 +4582,7 @@ _Sample_Grid_Regular(Object o, int nSamples, int eltDim)
     {
 	Array cA, pA;
 	int maxGrid[3], minGrid[3], pc[3], part;
-	float m[9], offset[3];
+	float m[9];
 
 	/*
 	 * We need the overall composite field origin and counts.
@@ -4949,11 +4932,13 @@ invert(int n, float *in, float *out)
     return OK;
 }
 
+#if 0
 static float
 rand1()
 {
     return ((float)(rand()&0x7fff)) / 0x7fff;
 }
+#endif
 
 #define FIELD_TRIES	1024
 
@@ -5051,10 +5036,8 @@ StandardFieldVolume(Field field)
     InvalidComponentHandle invalids = NULL;
     ArrayHandle   	   pHandle = NULL, cHandle = NULL;
     float 		   fvol = 0.0;
-    int           	   pDim, nCon, nSamples, *element;
+    int           	   pDim, nCon;
     int           	   i, j, n;
-    Object        	   attr;
-    char          	   *str;
     static float  	   (*metric)(float **, int);
     int           	   eltSize;
 
@@ -5192,9 +5175,6 @@ error:
     return -1;
 }
 
-extern Error _dxfLoopNormal(int *, ArrayHandle, float *,
-				int, int, Vector *);
-
 static float
 FaceFieldVolume(Field field)
 {
@@ -5206,8 +5186,7 @@ FaceFieldVolume(Field field)
     Type t;
     Category c;
     int rank, shape[32];
-    int i, face;
-    float *p0 = NULL, *p1 = NULL, *p2 = NULL; 
+    int face;
     InvalidComponentHandle ich = NULL;
     Array   normals = NULL, areas = NULL;
     Vector *normData, *fn;
@@ -5342,7 +5321,7 @@ FaceFieldVolume(Field field)
 	int fLoop = faceData[face];
 	int lLoop = (face == nFaces-1) ? nLoops : faceData[face+1];
 	int loop;
-	float l;
+	float l=0;
 
 	if (ich && DXIsElementInvalid(ich, face))
 	    continue;
@@ -5524,18 +5503,17 @@ static Error
 FacesSample(Field field, int n, Array grid)
 {
     Array   pArray, fArray, lArray, eArray, nArray, aArray;
-    int     nP, nF, nL, nE, nD, planar;
+    int     nP, nF, nL, nE, planar;
     float   *positions2D = NULL, *positions3D;
     float   *positions, *fareas;
     int     *faces, *loops, *edges;
     Vector  *fnorms;
     int     i, f, l, e, nDim;
-    ubyte   *flags = NULL;
-    float   A, B, C, D;
+    float   A=0, B=0, C=0, D=0;
     SegList *pList = NULL, *iList = NULL;
-    int     axis;
+    int     axis=0;
     InvalidComponentHandle ich = NULL;
-    float   totArea;
+    float   totArea=0;
     MinMax  *loopMM = NULL;
     MinMax  *faceMM = NULL;
     MinMax  minmax;
@@ -5590,7 +5568,7 @@ FacesSample(Field field, int n, Array grid)
     {
 	Vector *f0 = NULL;
 	Vector *fn = fnorms;
-	int     firstValid;
+        int firstValid=0;
 
 	/*
 	 * They are all planar if the face normals are very close
@@ -5791,8 +5769,6 @@ FacesSample(Field field, int n, Array grid)
 	for (f = 0, fmm = faceMM; f < nF; f++, fmm++)
 	{
 	    float   fx, fy;
-	    int     lstart = faces[f];
-	    int     lend   = (f == nF-1) ? nL : faces[f+1];
 
 	    if (ich && DXIsElementInvalid(ich, f))
 		continue;
@@ -5836,7 +5812,7 @@ FacesSample(Field field, int n, Array grid)
 			}
 			else
 			{
-			    float x3d, y3d, z3d;
+                            float x3d=0, y3d=0, z3d=0;
 
 			    switch(axis)
 			    {
@@ -6009,7 +5985,7 @@ FacesSample(Field field, int n, Array grid)
 			}
 			else
 			{
-			    float x3d, y3d, z3d;
+			    float x3d=0, y3d=0, z3d=0;
 
 			    switch(axis)
 			    {
@@ -6086,9 +6062,8 @@ CreateOutputFaces(Field f, SegList *pList, SegList *iList)
     Array          sA, dA = NULL;
     char           *dptr;
     SegListSegment *slist;
-    char           *name, *toDelete[100], nDelete = 0;
-    Object         at;
-    int            nV = 2;
+    char           *name, *toDelete[100];
+    int            nV = 2, nDelete = 0;
     int            i, nSamples = DXGetSegListItemCount(pList);
     ArrayHandle    ah = NULL;
     Pointer	   buf0 = NULL, buf1 = NULL;
@@ -6106,7 +6081,6 @@ CreateOutputFaces(Field f, SegList *pList, SegList *iList)
 	Type     t; 
 	Category c;
 	int      r, shape[32];
-	int      size;
 	int      itemSize, itemValues;
 	int      nItems;
 
@@ -6162,7 +6136,7 @@ CreateOutputFaces(Field f, SegList *pList, SegList *iList)
 
 	    if (! strcmp(DXGetString((String)at), "faces"))
 	    {
-		char *src, *dst;
+		char *dst;
 		PolylineInterp *iPtr;
 
 		dst = (char *)DXGetArrayData(dA);
@@ -6285,7 +6259,7 @@ _Check_Sample_Count(Object o, int n)
 	    
       case CLASS_MULTIGRID:
       case CLASS_COMPOSITEFIELD:
-	for (i=0; field = (Field)DXGetEnumeratedMember((Group)o, i, NULL); i++)
+	for (i=0; (field=(Field)DXGetEnumeratedMember((Group)o, i, NULL)); i++)
         {
 	    if (DXEmptyField(field))
 		continue;
@@ -6313,6 +6287,9 @@ _Check_Sample_Count(Object o, int n)
 		      n, vCount);
 	
 	return;
+
+      default:
+        return;
 	
     }
 }

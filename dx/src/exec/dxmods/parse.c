@@ -59,11 +59,11 @@ static Error parseit(char *inputstring, char *control, Object *out)
     char *ccp, *icp, *tcp;
     Pointer tempspace = NULL;
     Pointer tempcontrol = NULL;
-    int i, nmatched;
+    int i, nmatched=0;
     int longlongflag, longflag, shortflag, skipflag;
     int bcount, knowtype;
     Object o;
-    Type type;
+    Type type=TYPE_BYTE;
 
     /* set them all to null so we can delete them all on error */
     for (i=0; i<MAXOUT; i++)

@@ -39,7 +39,6 @@ typedef struct
 
 static int LabelsAreUnique(Array); 
 static Array GetLabels(Object, Object);
-static RGBColor DEFAULT_EDGE_COLOR = {1.0, 1.0, 1.0};
 static Error MakePie(Object, Object, int, 
                      float, Array, Group *, Group *, Array *, Array *, 
                      Field, int *, int);
@@ -115,10 +114,10 @@ Error m_Pie(Object *in, Object *out) {
   Object In_heightscale, In_radiusscale, In_labelformat, In_showpercent;
   Object In_heightmax, In_heightmin, In_heightratio;
   Object In_radiusmax, In_radiusmin, In_radiusratio;
-  int gflag=0, m, dim, numwedges, show_percents;
+  int dim, numwedges, show_percents;
   int radtype, percentflag;
   char *flagstring;
-  float quality, *height=NULL, *radius=NULL, radiusmax;
+  float quality, *height=NULL, *radius=NULL;
   Array coloroutput=NULL, labeloutput=NULL, labellist=NULL;
   ModuleInput input[20];
   ModuleOutput output[20];
@@ -352,13 +351,12 @@ static Error MakePie(Object In_percents, Object In_colors, int percentflag,
   float labelangle;
   RGBColor *col;
   RGBColor *cptr=NULL;
-  char *labeloutput_ptr=NULL;
   Type type;
   Category category;
   Object member, newpie, newedges;
   int numitems, rank, shape[32];
-  float *dataptr, angle, arc, cumpercent; 
-  Field F1=NULL, F2=NULL, F3=NULL;
+  float angle, arc, cumpercent; 
+  Field F1=NULL, F2=NULL;
   int i, poscount, concount, maxstringlength;
   Array wedgespositions=NULL, wedgesconnections=NULL, wedgesdata=NULL;
   Array edgesconnections=NULL, edgesdata=NULL;
@@ -765,7 +763,7 @@ static Error ScalePie(Object pie, int radtype, float *radius,
   
   switch (DXGetObjectClass((Object)pie)) {
   case (CLASS_GROUP): 
-    for (j=0; member = DXGetEnumeratedMember((Group)pie, j, NULL); j++) {
+    for (j=0; (member = DXGetEnumeratedMember((Group)pie, j, NULL)); j++) {
       if (!ScalePie(member, radtype, radius, j))
 	goto error;
     }
@@ -815,6 +813,8 @@ static Error ScalePie(Object pie, int radtype, float *radius,
     
     break;
 
+  default:
+    break;
   }
   
   return OK;
@@ -838,11 +838,11 @@ static RGBColor *CheckColors(Array colors, Field F, int numdata)
   Array colormap;
   float *scratchRGB=NULL, *scratchbytecolors=NULL, *scratchbyte=NULL;
   int *scratchRGBint=NULL;
-  RGBColor *colorRGB_ptr, *colormap_ptr, colorRGB;
-  int *colorRGBint_ptr;
+  RGBColor *colorRGB_ptr=NULL, *colormap_ptr, colorRGB;
+  int *colorRGBint_ptr=NULL;
   RGBColor *cptr;
   ubyte *colorbytecolor_ptr; 
-  ubyte *colorbyte_ptr;
+  ubyte *colorbyte_ptr=0;
   char *colorstring;
 
   /* check that num of colors matches num of data */
@@ -1020,14 +1020,14 @@ static Error MakePie3D(Object pie, Object edges, Field labelfield,
   Point   *pos_3D_ptr;   
   int numitems, i, j;
   Object member;
-  float height;
+  float height=0;
   
 
   if (dim == 1)
     height = h[0];
   
   /* first bump up the positions of the pie */
-  for (j=0; member = DXGetEnumeratedMember((Group)pie, j, NULL); j++) {
+  for (j=0; (member = DXGetEnumeratedMember((Group)pie, j, NULL)); j++) {
     
     positions = (Array)DXGetComponentValue((Field)member,"positions");
     pos_2D_ptr = (Point2D *)DXGetArrayData(positions);
@@ -1104,7 +1104,7 @@ static Error MakePie3D(Object pie, Object edges, Field labelfield,
   
 
   /* now bump up the edges of the pie */
-  for (j=0; member = DXGetEnumeratedMember((Group)edges, j, NULL); j++) {
+  for (j=0; (member = DXGetEnumeratedMember((Group)edges, j, NULL)); j++) {
     
     positions = (Array)DXGetComponentValue((Field)member,"positions");
     pos_2D_ptr = (Point2D *)DXGetArrayData(positions);
@@ -1659,7 +1659,7 @@ error:
 
 static Error ScaleLabels(Object labels, int radtype, float *radius)
 {
-  int shape[32], j, i, numitems;
+  int shape[32], i, numitems;
   Point *pos3d, *newpos3d;
   Point2D *pos2d, *newpos2d;
   Array positions, newpositions = NULL;
@@ -1718,11 +1718,8 @@ error:
 static Error AddColors(Group *pie, Group *edges, int numitems, RGBColor *cptr)
 {
   Object member;
-  Type type;
-  Category category;
-  int numcon,rank, shape[32], size, i, numcolors;
+  int numcon, i;
   Array newcolors=NULL, connections;
-  Pointer dataptr=NULL;
   RGBColor *tmp_ptr;
 
   /* this routine adds user-given colors to the already created wedges
@@ -1831,6 +1828,8 @@ given, or with a guess otherwise) */
            case (TYPE_USHORT):
            case (TYPE_UBYTE):
              format = "%d";
+           default:
+             break;
          }
        }
        switch (type) {

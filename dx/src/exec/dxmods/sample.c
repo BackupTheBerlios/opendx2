@@ -12,13 +12,11 @@
 #include <math.h>
 #include <stdlib.h>
 #include <dx/dx.h>
-
-extern Object  Sample(Object, int);
+#include "_sample.h"
 
 Error
 m_Sample(Object *in, Object *out)
 {
-    Object	copy	= NULL;
     int		n	= 100;
     Class	class	= CLASS_MIN;
 

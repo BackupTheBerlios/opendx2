@@ -11,6 +11,9 @@
 
 #include <dx/dx.h>
 #include <math.h>
+#if defined(HAVE_CTYPE_H)
+#include <ctype.h>
+#endif
 #include "cat.h"
 
 #define HASH_KEY_AVOID ((PseudoKey) -1)
@@ -62,7 +65,7 @@ static int _dxf_cat_rstrip(char *s)
 static int _dxf_cat_strip(char *s)
 {
     char *p, *q;
-    int i, n;
+    int n;
 
     if (!s)
 	return 0;
@@ -79,7 +82,7 @@ static int _dxf_cat_strip(char *s)
 static int _dxf_cat_punct(char *s)
 {
     char *p, *q;
-    int i, n;
+    int n;
 
     if (!s)
 	return 0;
@@ -216,7 +219,7 @@ PseudoKey _dxf_cat_hashstrkey(Key key)
 
     for (hash = 0; *s; s++) {
 	hash = (hash << ONE_EIGHTH) + (*s) * prime2[hash%NPRIMES] + prime1[(*s)%NPRIMES];
-	if (tmp = hash & HIGH_BITS) {
+	if ((tmp=hash & HIGH_BITS)) {
 	    hash = (hash ^ (tmp >> THREE_FOURTHS));
 	    hash = hash ^ tmp;
 	}
@@ -233,7 +236,7 @@ PseudoKey _dxf_cat_hashstrkey(Key key)
 PseudoKey _dxf_cat_hashkey(Key key)
 {
     long hash, tmp;
-    int i, j;
+    int i;
     ubyte *s;
     hashelement *h = key;
     int size = h->cp->obj_size;
@@ -242,7 +245,7 @@ PseudoKey _dxf_cat_hashkey(Key key)
 
     for (hash = 0, i = 0; i < size; i++, s++) {
 	hash = (hash << ONE_EIGHTH) + prime2[hash%NPRIMES]*(*s ? *s : prime1[i%NPRIMES]);
-	if (tmp = hash & HIGH_BITS) {
+	if ((tmp=hash & HIGH_BITS)) {
 	    hash = (hash ^ (tmp >> THREE_FOURTHS));
 	    hash = hash ^ tmp;
 	}

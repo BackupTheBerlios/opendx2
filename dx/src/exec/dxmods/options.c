@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/options.c,v 1.3 1999/05/10 15:45:28 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/options.c,v 1.4 2000/08/24 20:04:41 davidt Exp $
  */
 
 
@@ -18,7 +18,7 @@
 
 #define PAIRS 20
 
-extern Array _dxfReallyCopyArray(Array a);
+extern Array _dxfReallyCopyArray(Array a); /* from libdx/component.c */
 
 Error
 m_Options(Object *in, Object *out)

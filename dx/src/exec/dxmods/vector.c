@@ -8,28 +8,19 @@
 
 #include <dxconfig.h>
 
-
 #include "interact.h"
+#include "vectors.h"
 
 #define MAX_INPUTS 9
 
-extern
-Array DXScalarConvert(Array );
-extern
-Error _dxfvector_base(Object *, Object *, int);
+extern Array DXScalarConvert(Array ); /* from libdx/stats.h */
 
-static
-Error vec_minmax(Object, int , int *,int , float *, float *); 
-static
-Error constant_minmax(Array , Type ,int ,float *, float *);
-static
-Error IsInvalid(Object, InvalidComponentHandle *);
-static
-Error vec_reset(float *, float *, int , int , int , float *);
-static
-Error setoutput(float *, int , int , int , int , Object *);
-static
-int isthisint(float *,int ,int );
+static Error vec_minmax(Object, int , int *,int , float *, float *); 
+static Error constant_minmax(Array , Type ,int ,float *, float *);
+static Error IsInvalid(Object, InvalidComponentHandle *);
+static Error vec_reset(float *, float *, int , int , int , float *);
+static Error setoutput(float *, int , int , int , int , Object *);
+static int isthisint(float *,int ,int );
 
 int 
 m_Vector(Object *in, Object *out)
@@ -39,17 +30,16 @@ m_Vector(Object *in, Object *out)
    return OK;
 }
 
-extern
 Error _dxfvector_base(Object *in, Object *out, int islist)
 {
    struct einfo ei;
-   float valtemp;
+   float valtemp=0;
    float *min, *max, *incr;
    int *decimal;
    float *val,min1,max1,incr1;
    char *label, *id, *incrmethod;
-   int i,item=0,change=0,j,n,nitem=-1,range,isint=0;
-   int rank=1,dim=3,size,valdim,dec1,dimcount=0;
+   int i,item=0,change=0,j,n,nitem=-1,range=0,isint=0;
+   int rank=1,dim=3,size,valdim,dec1;
    int change1,change4,change5,changen=0,req_param=1,decimalzero=1;
    method_type method;
    Object idobj;
@@ -477,7 +467,7 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
    ei.mp =ei.msgbuf;
 
    shape[0] = 1;
-   sprintf(ei.mp,"");
+   strcpy(ei.mp,"");
    if (ip[0]==1 || ip[1]==1 || ip[2]==1 || ip[3]==1 || ip[4]==1){
       sprintf(ei.mp,"dim="); while(*ei.mp) ei.mp++;
       if (!_dxfprint_message(&dim, &ei, TYPE_INT,0,shape,1))
@@ -572,14 +562,14 @@ error1:
 static
 Error vec_minmax(Object o,int dim,int *size,int rank, float *min, float *max) 
 {
-   float *vec_f;
-   int *vec_i;
-   double *vec_d;
-   short *vec_s;
-   byte *vec_b;
-   uint *vec_ui;
-   ubyte *vec_ub;
-   ushort *vec_us;
+   float *vec_f=NULL;
+   int *vec_i=NULL;
+   double *vec_d=NULL;
+   short *vec_s=NULL;
+   byte *vec_b=NULL;
+   uint *vec_ui=NULL;
+   ubyte *vec_ub=NULL;
+   ushort *vec_us=NULL;
    int i,ig,j;
    Array a;
    float v;
@@ -587,7 +577,6 @@ Error vec_minmax(Object o,int dim,int *size,int rank, float *min, float *max)
    Category category;
    Object oo;
    Class class;
-   Pointer dp;
    InvalidComponentHandle inv=NULL;
  
    /* determine class of object, if group recurse */
@@ -731,7 +720,7 @@ Error vec_minmax(Object o,int dim,int *size,int rank, float *min, float *max)
  
    case CLASS_GROUP:
 
-   for (ig=0; oo=DXGetEnumeratedMember((Group)o,ig,NULL); ig++)
+   for (ig=0; (oo=DXGetEnumeratedMember((Group)o,ig,NULL)); ig++)
       if (!vec_minmax(oo,dim,size,rank,min,max))
          return ERROR;
    break;
@@ -879,7 +868,7 @@ int isthisint(float *val,int dim,int item)
 static
 Error setoutput(float *val,int rank,int item,int dim,int isint,Object *out)
 {
-   int i,j;
+   int i;
    int *ival;
 
    ival = NULL;

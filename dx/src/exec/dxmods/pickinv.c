@@ -24,7 +24,6 @@ Error m_PickInvalidate(Object *in, Object *out)
   Object o = NULL, leaf=NULL;
   Field pickfield;
   int poke, pick, depth, exclude;
-  RGBColor color;
   
   /* 
    * copy the structure of in[0], which is the object in which
@@ -193,12 +192,10 @@ static
          int depth, Object *out)
 {
   int pokecount, pickcount, poke, pick, i, pathlength;
-  int vertexid, elementid, *path, numitems, index, validity;
+  int vertexid, elementid, *path, validity;
   Object current;
   Matrix matrix;
-  Array a, newcolors=NULL, oldcolors;
-  char *depatt;
-  RGBColor *newcolors_ptr, oldcolor;
+  Array newcolors=NULL;
   int pokemin, pokemax;
   int pickmin, pickmax;
   int thisdepth;
@@ -365,7 +362,7 @@ static Error SetValidity(Object o, int validity)
      * if o is a group, call SetValidity recursively on its children 
      */
 
-    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++) 
+    for (i=0; (subo = DXGetEnumeratedMember((Group)o, i, NULL)); i++) 
       if (!SetValidity(subo, validity))
          goto error;
     break;
@@ -436,6 +433,8 @@ static Error SetValidity(Object o, int validity)
        goto error;
     
     break;
+    default:
+      break;
   }
   
   

@@ -27,8 +27,6 @@ m_Message(Object *in, Object *out)
 {
     char *usermess = NULL;
     char *messname = NULL;
-    Pointer moduleid = NULL;
-    char buf[MAXBUFLEN];
     int messtype;
     int ispopup;
 

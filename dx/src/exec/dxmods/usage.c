@@ -8,10 +8,10 @@
 
 #include <dxconfig.h>
 
-
-
-
 #include <dx/dx.h>
+
+extern void DXPrintLocalAlloc(int, int); /* from libdx/memory.c */
+extern void DXPrintMemoryInfo(); /* from libdx/memory.c */
 
 int
 m_Usage(Object *in, Object *out)

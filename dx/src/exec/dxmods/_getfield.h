@@ -6,16 +6,14 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.h,v 1.3 1999/05/10 15:45:18 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.h,v 1.4 2000/08/24 20:04:11 davidt Exp $
  */
 
 #include <dxconfig.h>
 
 
-#ifndef  _GETFIELD_
-    /* Begin header file conditional */
-
-#define  _GETFIELD_
+#ifndef  __GETFIELD_H_
+#define  __GETFIELD_H_
 
 #include <dx/dx.h>
 
@@ -317,88 +315,87 @@ typedef struct _mesh_bounds   /* augmented mesh offsets */
 /* ----------------------------- extern section ----------------------------- */
 
 
-extern field_info     _dxf_InMemory     ( Field          input );
-extern Error          _dxf_FreeInMemory ( field_info     input );
-extern component_info _dxf_SetIterator  ( component_info input );
-extern component_info _dxf_FindCompInfo ( field_info     input, char *locate );
+field_info     _dxf_InMemory     ( Field          input );
+Error          _dxf_FreeInMemory ( field_info     input );
+component_info _dxf_SetIterator  ( component_info input );
+component_info _dxf_FindCompInfo ( field_info     input, char *locate );
  
 /* Isosurface data, cast to float */
-extern component_info _dxf_SetIterator_i ( component_info input );
+component_info _dxf_SetIterator_i ( component_info input );
 
 /*
  * Stupid Q:
  *   If these are accessed by func ptr in struct, then can they be statics?
  */
 
-extern Error _dxf_get_item_by_handle  ( int index, array_info d, Pointer out );
+Error _dxf_get_item_by_handle  ( int index, array_info d, Pointer out );
 
 /* Declarations of the Generics to be instantiated */
 
-extern Error _dxf_get_data_irr_BYTE   ( int index, array_info d, float *out );
-extern Error _dxf_get_data_irr_DOUBLE ( int index, array_info d, float *out );
-extern Error _dxf_get_data_irr_FLOAT  ( int index, array_info d, float *out );
-extern Error _dxf_get_data_irr_HYPER  ( int index, array_info d, float *out );
-extern Error _dxf_get_data_irr_INT    ( int index, array_info d, float *out );
-extern Error _dxf_get_data_irr_SHORT  ( int index, array_info d, float *out );
-extern Error _dxf_get_data_irr_UBYTE  ( int index, array_info d, float *out );
-extern Error _dxf_get_data_irr_UINT   ( int index, array_info d, float *out );
-extern Error _dxf_get_data_irr_USHORT ( int index, array_info d, float *out );
+Error _dxf_get_data_irr_BYTE   ( int index, array_info d, float *out );
+Error _dxf_get_data_irr_DOUBLE ( int index, array_info d, float *out );
+Error _dxf_get_data_irr_FLOAT  ( int index, array_info d, float *out );
+Error _dxf_get_data_irr_HYPER  ( int index, array_info d, float *out );
+Error _dxf_get_data_irr_INT    ( int index, array_info d, float *out );
+Error _dxf_get_data_irr_SHORT  ( int index, array_info d, float *out );
+Error _dxf_get_data_irr_UBYTE  ( int index, array_info d, float *out );
+Error _dxf_get_data_irr_UINT   ( int index, array_info d, float *out );
+Error _dxf_get_data_irr_USHORT ( int index, array_info d, float *out );
 
-extern Error _dxf_get_data_reg_BYTE   ( int index, array_info d, float *out );
-extern Error _dxf_get_data_reg_DOUBLE ( int index, array_info d, float *out );
-extern Error _dxf_get_data_reg_FLOAT  ( int index, array_info d, float *out );
-extern Error _dxf_get_data_reg_HYPER  ( int index, array_info d, float *out );
-extern Error _dxf_get_data_reg_INT    ( int index, array_info d, float *out );
-extern Error _dxf_get_data_reg_SHORT  ( int index, array_info d, float *out );
-extern Error _dxf_get_data_reg_UBYTE  ( int index, array_info d, float *out );
-extern Error _dxf_get_data_reg_UINT   ( int index, array_info d, float *out );
-extern Error _dxf_get_data_reg_USHORT ( int index, array_info d, float *out );
+Error _dxf_get_data_reg_BYTE   ( int index, array_info d, float *out );
+Error _dxf_get_data_reg_DOUBLE ( int index, array_info d, float *out );
+Error _dxf_get_data_reg_FLOAT  ( int index, array_info d, float *out );
+Error _dxf_get_data_reg_HYPER  ( int index, array_info d, float *out );
+Error _dxf_get_data_reg_INT    ( int index, array_info d, float *out );
+Error _dxf_get_data_reg_SHORT  ( int index, array_info d, float *out );
+Error _dxf_get_data_reg_UBYTE  ( int index, array_info d, float *out );
+Error _dxf_get_data_reg_UINT   ( int index, array_info d, float *out );
+Error _dxf_get_data_reg_USHORT ( int index, array_info d, float *out );
 
-extern Error _dxf_get_point_irr_1D  ( int index, array_info c, Point1D *out );
-extern Error _dxf_get_point_grid_1D ( int index, array_info c, Point1D *out );
-extern Error _dxf_get_point_irr_2D  ( int index, array_info c, Point2D *out );
-extern Error _dxf_get_point_grid_2D ( int index, array_info c, Point2D *out );
-extern Error _dxf_get_point_irr_3D  ( int index, array_info c, Point   *out );
-extern Error _dxf_get_point_grid_3D ( int index, array_info c, Point   *out );
+Error _dxf_get_point_irr_1D  ( int index, array_info c, Point1D *out );
+Error _dxf_get_point_grid_1D ( int index, array_info c, Point1D *out );
+Error _dxf_get_point_irr_2D  ( int index, array_info c, Point2D *out );
+Error _dxf_get_point_grid_2D ( int index, array_info c, Point2D *out );
+Error _dxf_get_point_irr_3D  ( int index, array_info c, Point   *out );
+Error _dxf_get_point_grid_3D ( int index, array_info c, Point   *out );
 
-extern Error _dxf_get_conn_grid_LINES
+Error _dxf_get_conn_grid_LINES
                  ( int index, array_info c, Line          *out );
-extern Error _dxf_get_conn_irr_LINES 
+Error _dxf_get_conn_irr_LINES 
                  ( int index, array_info c, Line          *out );
-extern Error _dxf_get_conn_grid_QUADS
+Error _dxf_get_conn_grid_QUADS
                  ( int index, array_info c, Quadrilateral *out );
-extern Error _dxf_get_conn_irr_QUADS 
+Error _dxf_get_conn_irr_QUADS 
                  ( int index, array_info c, Quadrilateral *out );
-extern Error _dxf_get_conn_irr_TRIS  
+Error _dxf_get_conn_irr_TRIS  
                  ( int index, array_info c, Triangle      *out );
-extern Error _dxf_get_conn_grid_CUBES
+Error _dxf_get_conn_grid_CUBES
                  ( int index, array_info c, Cube          *out );
-extern Error _dxf_get_conn_irr_CUBES 
+Error _dxf_get_conn_irr_CUBES 
                  ( int index, array_info c, Cube          *out );
-extern Error _dxf_get_conn_irr_TETS  
+Error _dxf_get_conn_irr_TETS  
                  ( int index, array_info c, Tetrahedron   *out );
-extern Error _dxf_get_conn_irr_PRSMS 
+Error _dxf_get_conn_irr_PRSMS 
                  ( int index, array_info c, Prism         *out );
 
-extern Error _dxf_get_neighb_irr_LINES
+Error _dxf_get_neighb_irr_LINES
                  ( int index, array_info n, neighbor2 *out );
-extern Error _dxf_get_neighb_irr_QUADS
+Error _dxf_get_neighb_irr_QUADS
                  ( int index, array_info n, neighbor4 *out );
-extern Error _dxf_get_neighb_irr_TRIS
+Error _dxf_get_neighb_irr_TRIS
                  ( int index, array_info n, neighbor3 *out );
-extern Error _dxf_get_neighb_irr_TETS
+Error _dxf_get_neighb_irr_TETS
                  ( int index, array_info n, neighbor4 *out );
-extern Error _dxf_get_neighb_irr_CUBES
+Error _dxf_get_neighb_irr_CUBES
                  ( int index, array_info n, neighbor6 *out );
-extern Error _dxf_get_neighb_irr_PRSMS
+Error _dxf_get_neighb_irr_PRSMS
                  ( int index, array_info n, neighbor5 *out );
 
-extern Error _dxf_get_neighb_grid_LINES
+Error _dxf_get_neighb_grid_LINES
                  ( int index, array_info c, mesh_bounds b, neighbor2 *out );
-extern Error _dxf_get_neighb_grid_QUADS
+Error _dxf_get_neighb_grid_QUADS
                  ( int index, array_info c, mesh_bounds b, neighbor4 *out );
-extern Error _dxf_get_neighb_grid_CUBES
+Error _dxf_get_neighb_grid_CUBES
                  ( int index, array_info c, mesh_bounds b, neighbor6 *out );
 
-    /* End header file conditional _GETFIELD_ */
-#endif
+#endif /* __GETFIELD_H_ */

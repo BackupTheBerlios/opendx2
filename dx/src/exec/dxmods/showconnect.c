@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showconnect.c,v 1.4 2000/05/16 18:48:15 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showconnect.c,v 1.5 2000/08/24 20:04:49 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -140,11 +140,9 @@ Field field_show_connections ( Field in_field, char *dummy, int dummysize )
 {
     Class     class;
     Line      *lines_ptr;
-    int       n_lines;
     Array     larray  = NULL;
     hash_table_rec htab;
     hash_element_ptr elem_ptr;
-    Array     carray  = NULL;
     int       np;
     Object    o_ptr;
     Object    conn_element;

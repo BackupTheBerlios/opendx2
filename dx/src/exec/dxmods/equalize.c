@@ -11,6 +11,7 @@
 
 #include <string.h>
 #include <dx/dx.h>
+#include "histogram.h"
 
 #ifndef TRUE
 #define	TRUE		1
@@ -65,8 +66,7 @@ typedef struct EQData
     float	*ocpd;			/* input  cumm. prob. dist.	*/
 } EQData;
 
-Object _dxfHistogram (Object o, int bins, float *min, float *max, int inout);
-
+Error DXAddLikeTasks(PFE, Pointer, int, double, int); /* from libdx/task.c */
 
 static Error ComputeCPD (int nbin, float *del, float *cum, int invert);
 static Error Equalize (EQData *eq, Type type, int n, Pointer src, Pointer dst);
@@ -99,7 +99,7 @@ m_Equalize (Object *in, Object *out)
     Error	ret	= ERROR;
     EQData	eq;
 
-    memset (&eq, NULL, sizeof (eq));
+    memset (&eq, 0, sizeof (eq));
 
     if (! SimpleArgs (in, &eq))
 	goto cleanup;
@@ -451,7 +451,7 @@ EqualizeField (EQData *eq)
 	DXSetError (ERROR_BAD_PARAMETER, "#11150", "data");
 	goto cleanup;
     }
-    if (! (rank == 0 || rank == 1 && shape[0] == 1))
+    if (! (rank == 0 || (rank == 1 && shape[0] == 1)))
     {
 	DXSetError (ERROR_BAD_PARAMETER, "#10370", "data",
 		    "rank 0 or rank 1 shape 1");
@@ -634,7 +634,7 @@ HistDistribution (Object o, int nbin, float *pd)
 	goto cleanup;
     
     if ((cat != CATEGORY_REAL) ||
-        (! (rank == 0 || rank == 1 && shape[0] == 1)))
+        (! (rank == 0 || (rank == 1 && shape[0] == 1))))
     {
 	DXSetError (ERROR_BAD_PARAMETER, "#10370", "histogram", 
 		  "a real integer field");

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/arrange.c,v 1.3 1999/05/10 15:45:22 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/arrange.c,v 1.4 2000/08/24 20:04:23 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -78,6 +78,7 @@ getvec(Object o, Vector *v)
     return rc;
 }
 
+Error
 m_Arrange ( Object *in, Object *out )
 {
 #define  I_group       in[0]
@@ -292,10 +293,6 @@ Object _arrange ( CompositeField parent,
     Object out = NULL;
     Object inp_member;
     int    origin[2];
-    int    isizex, isizey, bsizex, bsizey;
-    int    xoffset, yoffset;
-    int    min_x, min_y; 
-    int    row, col;
     int    i;
 
     DXASSERTGOTO ( inp != ERROR );
@@ -309,17 +306,18 @@ Object _arrange ( CompositeField parent,
                 case CLASS_GROUP:
                 case CLASS_SERIES:
 
-                    if ( !parent )
+                    if ( !parent ) {
                         if ( ERROR == ( new_parent = DXNewCompositeField() ) )
                             goto error;
                         else
                             parent = new_parent;
+		    }
 
                     out = (Object)parent;
 
                     for ( i=0;
-                          inp_member = DXGetEnumeratedMember
-                                           ( (Group)inp, i, NULL );
+                          (inp_member = DXGetEnumeratedMember
+                                           ( (Group)inp, i, NULL ));
                           i++ )
                         if ( !_arrange ( parent,
                                          inp_member,
@@ -346,8 +344,8 @@ Object _arrange ( CompositeField parent,
                               ( (CompositeField)out, origin[0], origin[1] ) )
                         goto error;
 
-		    if ( NULL != DXExists((Field)out, "data"))
-			if (!DXRemove((Field)out, "data"))
+		    if ( NULL != DXExists(out, "data"))
+			if (!DXRemove(out, "data"))
 			    goto error;
 
 		    if ( !DXUnsetGroupType((Group)out))
@@ -419,7 +417,7 @@ Error
 _get_bins(Object o, int num_images, int nrows, int ncols, 
           Vector c, Vector p, Vector s, int *binx, int *biny)
 {
-	int n,i,j;
+	int i;
 	int count;
 	int max_w, max_h;
 	int new_w, new_h;
@@ -481,13 +479,13 @@ _get_all_image_bounds(Object o, int n, int *count, int ncols, int *binx, int *bi
             {
                 case CLASS_GROUP:
                 case CLASS_SERIES:
-			for (i=0;oo=DXGetEnumeratedMember((Group)o,i,NULL);i++)
+			for (i=0;(oo=DXGetEnumeratedMember((Group)o,i,NULL));i++)
 			    if (!_get_all_image_bounds(oo, n, count, ncols, binx, biny))
 				return ERROR;
 		break;
 
                 case CLASS_COMPOSITEFIELD:
-			DXGetImageBounds((Field)o, &min_x, &min_y, &width, &height);
+			DXGetImageBounds(o, &min_x, &min_y, &width, &height);
 			i = *count%ncols+1;
 			j = *count/ncols;
 			if (binx[i]<width)
@@ -503,7 +501,7 @@ _get_all_image_bounds(Object o, int n, int *count, int ncols, int *binx, int *bi
             break;
 
         case CLASS_FIELD:
-		DXGetImageBounds((Field)o, &min_x, &min_y, &width, &height);
+		DXGetImageBounds(o, &min_x, &min_y, &width, &height);
 		i = *count%ncols+1;
 		j = *count/ncols;
 		if (binx[i]<width)

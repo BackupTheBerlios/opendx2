@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <dx/dx.h>
-#include "post.h"
+#include "_post.h"
 
 #define TO_POSITIONS	1
 #define TO_CONNECTIONS	2
@@ -32,7 +32,6 @@ static Error  _dxfPostFieldTask(Pointer);
 static Object _dxfPostField(Field, int, Array);
 static Error  _dxfGetComponentList(Object, Array, int, char **);
 static Error  _dxfRemoveOriginal(Field, char *);
-static int    *_dxfDupMap(Array);
 
 
 Object 
@@ -329,11 +328,12 @@ _dxfPostField(Field field, int dir, Array comp)
     if (! DXInvalidateConnections((Object)field))
 	goto error;
 
-    if (! _dxfGetComponentList((Object)field, comp, dir, compStrings))
+    if (! _dxfGetComponentList((Object)field, comp, dir, compStrings)) {
 	if (DXGetError() != ERROR_NONE)
 	    goto error;
 	else
 	    return (Object)field;
+    }
 	
     for (c = compStrings; *c; c++)
 	DXChangedComponentValues(field, *c);
@@ -356,10 +356,10 @@ error:
 static Object
 _dxfPostToPositions(Field field, char **comp)
 {
-    Array 	array, cArray, nArray;
-    int   	i, j, regConnections, vPerE, totValues;
+    Array 	array, nArray;
+    int   	i, j, regConnections, vPerE;
     int   	cCounts[32], cDim;
-    byte 	*knts, *dstData, *pPtr, *srcData;
+    byte 	*knts, *dstData, *srcData;
     Type  	type; Category c; int r, s[32];
     int   	nPositions, nConnections;
     char 	*name;
@@ -428,7 +428,6 @@ _dxfPostToPositions(Field field, char **comp)
     while (NULL != (array=(Array)DXGetEnumeratedComponentValue(field, i, &name)))
     {
 	Object attr;
-	char   *str;
 	int    doit, n, itemSize, typeSize, vPerI;
 
 	if (DXGetObjectClass((Object)array) != CLASS_ARRAY)
@@ -623,7 +622,7 @@ _dxfPostToPositions(Field field, char **comp)
 	    }
 	    else /* irregular connections */
 	    {
-		int   k, l;
+		int   l;
 
 		switch (type)
 		{
@@ -722,10 +721,10 @@ error:
 static Object
 _dxfPostToConnections(Field field, char **comp)
 {
-    Array array, cArray, nArray;
-    int   i, j, regConnections, vPerE, totValues;
+    Array array, nArray;
+    int   i, j, regConnections, vPerE;
     int   cCounts[32], cDim, *elements;
-    byte *knts, *dstData, *pPtr, *srcData;
+    byte *knts, *dstData, *srcData;
     Type  type; Category c; int r, s[32];
     int   nPositions, nConnections;
     char  *name;
@@ -800,7 +799,6 @@ _dxfPostToConnections(Field field, char **comp)
     while (NULL != (array=(Array)DXGetEnumeratedComponentValue(field, i, &name)))
     {
 	Object attr;
-	char   *str;
 	int    doit, n, itemSize, typeSize, vPerI;
 
 	/*
@@ -996,8 +994,7 @@ _dxfPostToConnections(Field field, char **comp)
 	    }
 	    else /* irregular connections */
 	    {
-		byte *cPtr = dstData;
-		int   k, l;
+		int   l;
 
 		switch (type)
 		{

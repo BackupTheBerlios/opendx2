@@ -129,7 +129,7 @@ static Error TraverseToScreen(Object o, float factor)
   
   switch (DXGetObjectClass(o)) {
   case (CLASS_GROUP):
-    for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++) {
+    for (i=0; (subo = DXGetEnumeratedMember((Group)o, i, NULL)); i++) {
       if (!TraverseToScreen(subo, factor))
 	goto error;
     }
@@ -212,9 +212,6 @@ error:
 static Camera MakeNewCamera(Camera cam, float factor)
 {
    int xres, newres;
-   ModuleInput in[2];
-   ModuleOutput out[1];
-   Error result;
    Camera newcam;
 
    if (!DXGetCameraResolution(cam, &xres, NULL))

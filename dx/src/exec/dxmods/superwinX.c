@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 
-
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <Xm/Xm.h>
@@ -19,10 +18,14 @@
 #define Array void *
 #include "superwin.h"
 
-extern void  *DXAllocateZero(int);
-extern void  DXFree(void *);
-extern int   DXRegisterWindowHandlerWithCheckProcWithCheckProc(int (*proc)(int, void *),
+extern void  *DXAllocateZero(int); /* from libdx/memory.c */
+extern void  DXFree(void *); /* from libdx/memory.c */
+extern int   DXRegisterWindowHandlerWithCheckProcWithCheckProc(int (*proc)(int, void *), /* from libdx/xwindow.c */
 			int (*check)(int, void *), Display *, void *);
+
+extern int DXRegisterWindowHandlerWithCheckProc();  /* from libdx/xwindow.c */
+extern int DXReadyToRun(); /* from libdx/outglue.c */
+
 
 struct _iwx
 {
@@ -109,10 +112,9 @@ _dxf_processEvents(int fd, void *d)
     ImageWindow *iw = (ImageWindow *)d;
     XEvent ev;
     int run = 0;
-    XWindowAttributes wa;
     Window rt, chld;
     int root_x, root_y, win_x, win_y, flags;
-    int eventType;
+    int eventType=0;
     char buf[32];
     Window wid;
 
@@ -138,7 +140,7 @@ _dxf_processEvents(int fd, void *d)
 		break;
 
 	    case KeyPress:
-		XLookupString(&ev, buf, 32, NULL, NULL);
+		XLookupString((XKeyEvent *)&ev, buf, 32, NULL, NULL);
 		if (buf[0])
 		{
 		    iw->x       = ev.xkey.x;
@@ -241,7 +243,7 @@ _dxf_processEvents(int fd, void *d)
 	}
     }
     
-out:
+/* out */
     if (run)
 	DXReadyToRun(iw->mod_id);
 
@@ -296,11 +298,11 @@ _dxf_getParentSize(char *displayString, int wid, int *width, int *height)
     return 1;
 }
 
-int
+void
 _dxf_setWindowSize(ImageWindow *iw, int *size)
 {
     if (!iw || !iw->iwx || !iw->iwx->display)
-	return 0;
+	return;
     if (size[0] != iw->size[0] || size[1] != iw->size[1])
     {
 	XResizeWindow(iw->iwx->display, iw->iwx->parent, size[0], size[1]);
@@ -310,11 +312,11 @@ _dxf_setWindowSize(ImageWindow *iw, int *size)
     }
 }
 
-int
+void
 _dxf_setWindowOffset(ImageWindow *iw, int *offset)
 {
     if (!iw || !iw->iwx || !iw->iwx->display)
-	return 0;
+	return;
     XMoveWindow(iw->iwx->display, iw->iwx->parent, offset[0], offset[1]);
     iw->offset[0] = offset[0];
     iw->offset[1] = offset[1];
@@ -329,9 +331,6 @@ _dxf_createWindowX(ImageWindow *iw, int map)
     unsigned long eventMask;
     XWindowChanges xwc;
     XSizeHints *xsh = XAllocSizeHints();
-
-    char *argv[1];
-    int argc = 0;
 
     iw->map = map;
 
@@ -520,9 +519,8 @@ _dxf_getBestVisual (ImageWindow *iw)
 {
     int			count,i,j;
     XVisualInfo		*visualInfo=NULL,template;
-    Visual		*visual,*ret=NULL;
+    Visual		*visual;
     unsigned char	acceptable;
-    int			nAcceptable;
     int 		vismask;
     int			screen = XDefaultScreen(iw->iwx->display);
 

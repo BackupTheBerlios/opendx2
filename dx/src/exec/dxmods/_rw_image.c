@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.4 1999/08/05 22:10:20 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rw_image.c,v 1.5 2000/08/24 20:04:20 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -196,7 +196,6 @@ _dxf_ImageInfoFromFormat(char *format)
 }
 
 
-extern
 char *
 _dxf_RemoveExtension ( char *extended )
 {
@@ -401,8 +400,7 @@ _dxf_RemoveImageExtension(char *name, ImageType type)
 
 
 
-char *
-_dxf_BuildImageFileName
+char * _dxf_BuildImageFileName
     ( char        *buf,
       int         bufl, 
       char        *basename,	/* Does not have an extension */
@@ -477,8 +475,7 @@ _dxf_BuildImageFileName
  * On success, returns an un-partitioned image Field. 
  * On failure, returns NULL and sets the error code.
  */
-extern Field
-_dxf_GetFlatSeriesImage(Series image, int member, int width, int height, 
+Field _dxf_GetFlatSeriesImage(Series image, int member, int width, int height, 
 			int *created)
 {
     Field img = NULL, m;

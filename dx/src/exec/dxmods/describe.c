@@ -186,7 +186,6 @@ static Error saytype(Object o, char *opt)
 static Error sayclass(Object o, char *intro, int descend)
 {
     int count;
-    int i;
 
     switch (DXGetObjectClass(o)) {
 	
@@ -1138,7 +1137,7 @@ static Error validfield(Field f, struct info *ip, int nosee)
  */
 static Error traverse(Object o, struct info *ip, int nosee)
 {
-    Object subo, old;
+    Object subo;
     Class curclass;
     int i;
 
@@ -1148,7 +1147,7 @@ static Error traverse(Object o, struct info *ip, int nosee)
 	
       case CLASS_GROUP:
 	/* traverse members */
-	for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++) {
+	for (i=0; (subo = DXGetEnumeratedMember((Group)o, i, NULL)); i++) {
 	    if (!traverse(subo, ip, nosee))
 		return ERROR;
 	}

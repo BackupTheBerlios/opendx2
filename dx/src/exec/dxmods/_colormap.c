@@ -11,10 +11,11 @@
 
 #include <string.h>
 #include "interact.h"
+#include "_colormap.h"
 
 #define NUMBINS 20
 
-extern Array DXScalarConvert(Array );
+extern Array DXScalarConvert(Array ); /* from libdx/stats.h */
 
 typedef struct map {
    float level;
@@ -27,9 +28,6 @@ typedef struct hsvo {
    int minmax;
 } HSVO;
 
-extern Field _dxfeditor_to_hsv(Array huemap,Array satmap,Array valmap);
-extern Field _dxfeditor_to_opacity(Array opmap);
-extern Field _dxfcolorfield(float *, float *,int ,int);
 static Map interp(Map bot, Map top, Map pt);
 static int findmin(float a,float b,float c);
 static Error fill_end(Array inmap,Map **map,int *num);
@@ -37,7 +35,6 @@ static Error fill_end(Array inmap,Map **map,int *num);
 
 /* input three arrays representing each map 
  * an hsv field is created */
-extern
 Field _dxfeditor_to_hsv(Array huemap,Array satmap,Array valmap)
 {
    Map h,s,v;
@@ -167,7 +164,6 @@ error:
 /* input the opacity positions array and the opacity field 
  * will be returned
  */
-extern 
 Field _dxfeditor_to_opacity(Array opmap)
 {
    int i,num_op,new_num,offset=0;
@@ -336,11 +332,10 @@ error:
    return ERROR;
 }
 
-extern
 Field _dxfcolorfield(float *pts, float *data,int items,int isvector)
 {
-   Field f,nf;
-   int i,rank=0,dim=0;
+   Field f;
+   int rank=0,dim=0;
    Array pa,da,ca;
 
    pa = NULL; ca = NULL; da = NULL;

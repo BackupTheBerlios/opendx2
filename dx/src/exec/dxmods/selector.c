@@ -9,8 +9,9 @@
 #include <dxconfig.h>
 
 
-#include "interact.h" 
 #include <stddef.h>
+#include "interact.h" 
+#include "separate.h"
 
 #define MAXNAME 20
 #define MAXRANK 16
@@ -31,7 +32,6 @@ static Error dolist(Object , Object *, int ,struct einfo *, int*, int );
 #endif
 static Object zerobase(int ,int);
 static int getsize(Object);
-extern int EndCheck(char *,char *);
 static int selector_driver(Object *in, Object *out, int allowLists);
 
 int
@@ -39,6 +39,7 @@ m_SelectorList(Object *in, Object *out)
 {
    return selector_driver(in,out,1);
 }
+int
 m_Selector(Object *in, Object *out)
 {
    return selector_driver(in,out,0);
@@ -49,11 +50,10 @@ static int
 selector_driver(Object *in, Object *out, int allowLists)
 {
    struct einfo ei;
-   int i,n,change3,change4,index;
+   int i,index;
    char *id, *label;
    Object idobj,vallist,strlist,newlist;
-   Class class;
-   char *string,*cstring;
+   char *cstring;
    int item1,item2,icull,startlist,msglen=0,shape[MAXRANK];
    Type type1;
    int needfree=0;
@@ -444,7 +444,6 @@ static Object fillnull(Object *list, Object o)
     Class class;
     int i,item,size,*ifree=NULL;
     Object oo,newlist;
-    Array a;
 
     class = DXGetObjectClass((Object)o);
     /* extract strings */
@@ -458,7 +457,7 @@ static Object fillnull(Object *list, Object o)
     ifree = (int *)DXAllocate(sizeof(int) * item);
     if (!ifree)
        goto error;
-     for (i=0; oo=DXExtractNthString(*list, i, &string); i++){
+     for (i=0; (oo=DXExtractNthString(*list, i, &string)); i++){
         if (!strcmp("",string)){
            cp[i] = (char *)DXAllocate(sizeof(char) * (size+1));
            if (!cp[i])
@@ -508,7 +507,7 @@ static Error cullout(Object *slist,Object *vlist)
     void *old, *outval;
     Type type;
     Category cat;
-    int rank,dim,bytsize;
+    int rank,bytsize;
     int shape[MAXRANK];
     char **cp, *string;
     Object oo;
@@ -526,7 +525,7 @@ static Error cullout(Object *slist,Object *vlist)
 
     cp = (char **)DXAllocate(sizeof(char *) * (item+1));
     if (!cp)
-       return NULL;
+       return ERROR;
     for (i=0; i<item; i++){
        oo=DXExtractNthString(*slist, i, &string);
        if (strcmp("",string)){
@@ -623,12 +622,11 @@ static Error dolist(Object o,Object *out,int iout,struct einfo *ep,
 				int *matched_indices, int matches)
 #endif
 {
-     int j,i,item,rank,bytsize;
+     int i,item,rank,bytsize;
      int shape[MAXRANK];
      Type type;
      Category cat;
      void *p, *outval;
-     Pointer dp;
 #if defined(SELECTOR_LIST_SUPPORT)
      void *dest;
 #endif
@@ -709,7 +707,7 @@ int getsize(Object in)
    Type type;
    
    if (!DXGetArrayInfo((Array)in,&item,&type,NULL,&rank,shape))
-      return NULL;
+      return 0;
    if (rank==0){
       /* scalar list */
       msglen = NUMBER_CHARS*item;

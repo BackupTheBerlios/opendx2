@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include "exp_gai.h"
 
 #define MAXRANK 16
 #define OFF 0
@@ -25,23 +26,23 @@ static struct ap_info {
    int width;
 } ap[] = {
 	/* strings */
-	NULL,     NULL,             1,   /* use pstring instead */
+	{NULL,     NULL,             1},   /* use pstring instead */
 	/* unsigned bytes */
-	"%3u",   "%u",              3,
+	{"%3u",   "%u",              3},
 	/* bytes */
-	"%3d",   "%d",              3,
+	{"%3d",   "%d",              3},
 	/* unsigned shorts */
-	"%6u",   "%u",              6,
+	{"%6u",   "%u",              6},
 	/* shorts */
-	"%6d",   "%d",              6,
+	{"%6d",   "%d",              6},
 	/* unsigned ints */
-	"%9u",   "%u",	            9,
+	{"%9u",   "%u",	            9},
 	/* ints */
-	"%9d",   "%d",              9,
+	{"%9d",   "%d",              9},
 	/* floats */
-	"%12.7g",  "%g",           12,
+	{"%12.7g",  "%g",           12},
 	/* doubles */
-	"%15g",    "%g",           15,
+	{"%15g",    "%g",           15},
 };
 
 struct array_info {
@@ -60,7 +61,6 @@ struct how {
 	int tabbed;
 };
 
-Object _dxfExportArray(Object o, char *filename, char *format);
 static Error object_ex(Object o,struct how *h);
 static Error array_ex(Array a ,struct how *h);
 static Error field_ex(Field f,struct how *h);
@@ -177,7 +177,7 @@ error:
 
 static Error object_ex(Object o, struct how *f)
 {
-   int rc;
+   int rc=0;
 
    /* only support groups, fields, and arrays ? */
    switch (DXGetObjectClass(o)) {
@@ -213,7 +213,7 @@ static Error object_ex(Object o, struct how *f)
 
 static Error field_ex(Field f, struct how *h)
 {
-   int i,n,k,numarrays=0; 	/* number of arrays written */
+   int i,n,numarrays=0; 	/* number of arrays written */
    int items,count;
    Array a;
    char *depon,*name;
@@ -224,7 +224,7 @@ static Error field_ex(Field f, struct how *h)
 
    printthis=NULL;
    arinfo=NULL;
-   for (count=0; a=(Array)DXGetEnumeratedComponentValue((Field)f,count,NULL);
+   for (count=0; (a=(Array)DXGetEnumeratedComponentValue((Field)f,count,NULL));
 	     count++)
       ;
    /* initialize arrays */
@@ -235,7 +235,7 @@ static Error field_ex(Field f, struct how *h)
       goto error;
 
    /* Export position dep arrays (default) */
-   for (i=0; a=(Array)DXGetEnumeratedComponentValue((Field)f,i,&name); i++){
+   for (i=0; (a=(Array)DXGetEnumeratedComponentValue((Field)f,i,&name)); i++){
       if (DXGetStringAttribute((Object)a,"dep",&depon) &&
           !strcmp("positions",depon) && strcmp("invalid positions",name) ) {
 	 printthis[i] = ON;
@@ -254,7 +254,7 @@ static Error field_ex(Field f, struct how *h)
    
    numarrays=1;
    /* fill info about each array to be printed (ie. format,type, ...) */
-   for (i=0; a=(Array)DXGetEnumeratedComponentValue((Field)f,i,&name); i++){
+   for (i=0; (a=(Array)DXGetEnumeratedComponentValue((Field)f,i,&name)); i++){
       if (printthis[i]==ON){
 	 DXGetArrayInfo((Array)a,&items,NULL,NULL,NULL,NULL);
 	 if (!strcmp(name,"positions")) {
@@ -322,7 +322,7 @@ static Error group_ex(Group g, struct how *h)
    Object o;
    char *name;
 
-   for (i=0; o=DXGetEnumeratedMember(g,i,&name); i++){
+   for (i=0; (o=DXGetEnumeratedMember(g,i,&name)); i++){
       if (!object_ex((Object)o,h))
 	 return ERROR;
    }
@@ -389,7 +389,7 @@ static Error pvalue(struct array_info *arinfo,struct how *h,int item,int blank,i
    int dim;
    Type type;
    char *format;
-   Pointer scratch,next;
+   Pointer scratch;
    int k;
    float *nextf;
    int *nexti;
@@ -690,7 +690,6 @@ static void freehandle(struct array_info *ar)
 static Error object_header(Object o,struct how *f)
 {
    int rc=OK;
-   char *name;
 
    /* only support groups, fields, and arrays ? */
    switch (DXGetObjectClass(o)) {
@@ -745,7 +744,7 @@ static Error group_header(Group g, struct how *h)
    case (CLASS_GROUP):
    case (CLASS_MULTIGRID):
    case (CLASS_COMPOSITEFIELD):
-      for (i=0; o=DXGetEnumeratedMember((Group)g,i,&name); i++){ 
+      for (i=0; (o=DXGetEnumeratedMember((Group)g,i,&name)); i++){ 
          /* indent */
 	 for (j=0; j<indent; j++)
             fprintf(h->dfp,"%s",indent_char);
@@ -768,6 +767,8 @@ static Error group_header(Group g, struct how *h)
 	    return ERROR;
       }
       break;
+    default:
+      break;
    }
 
    indent--;
@@ -779,9 +780,10 @@ static void field_header(Field f,struct how *h)
 {
    char *name, *depon;   
    int i,j,first=ON;
-   Array a,*terms;
+   Array a,*terms = NULL;
    Type type;
-   int dim,rank,items,shape[MAXRANK];
+   int rank,items,shape[MAXRANK];
+   /* int dim; */
    char *cmp;
    char *del;
    char *space = " ";
@@ -838,7 +840,7 @@ static void field_header(Field f,struct how *h)
    }
 
    /* Export position dep arrays (default) */
-   for (i=0; a=(Array)DXGetEnumeratedComponentValue((Field)f,i,&name); i++){
+   for (i=0; (a=(Array)DXGetEnumeratedComponentValue((Field)f,i,&name)); i++){
       if (DXGetStringAttribute((Object)a,"dep",&depon) &&
           !strcmp("positions",depon) && strcmp("invalid positions",name) 
 	  && strcmp("positions",name) ) {

@@ -31,6 +31,7 @@
 
 #include "internals.h"
 #include "render.h"
+#include "displayx.h"
 
 
 typedef Error (*Handler)(int, Pointer);

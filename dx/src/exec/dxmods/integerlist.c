@@ -8,11 +8,8 @@
 
 #include <dxconfig.h>
 
-
 #include <dx/dx.h>
-
-extern 
-Error _dxfinteger_base(Object *,Object *, int);
+#include "integer.h"
 
 int m_IntegerList(Object *in, Object *out)
 {

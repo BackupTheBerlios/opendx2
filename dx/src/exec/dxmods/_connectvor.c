@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-#include <dx/dx.h>
+#include "_connectvor.h"
 
 #define DEBUG 1
 
@@ -193,7 +193,7 @@ static Error GetNeighbors(Triangle *neighborlist, int j, Triangle *neighbors)
 
 static int Convex(float *pos_ptr, int a, int b, int c, int d)
 {
-  int h1, h2, h3, h4, result, hand;
+  int h1, h2, h3, h4, hand;
   
   /* handedness can be zero */
   h1 = Handedness(pos_ptr, a, b, c);
@@ -241,11 +241,10 @@ static int Convex(float *pos_ptr, int a, int b, int c, int d)
   */
 }
 
-extern Error _dxfConnectVoronoiObject(Object, Vector);
 static Error ConnectVoronoiField(Field, Vector);
 
 
-extern Error _dxfConnectVoronoiObject(Object ino, Vector normal) 
+Error _dxfConnectVoronoiObject(Object ino, Vector normal) 
 {
   int i;
   Object sub;
@@ -262,7 +261,7 @@ extern Error _dxfConnectVoronoiObject(Object ino, Vector normal)
     case (CLASS_SERIES):
     case (CLASS_GROUP):
       /* simply recurse */
-      for (i=0; sub=DXGetEnumeratedMember((Group)ino, i, NULL); i++) {
+      for (i=0; (sub=DXGetEnumeratedMember((Group)ino, i, NULL)); i++) {
 	if (!_dxfConnectVoronoiObject(sub, normal))
 	  goto error;
       }
@@ -290,6 +289,8 @@ extern Error _dxfConnectVoronoiObject(Object ino, Vector normal)
     if (!_dxfConnectVoronoiObject(sub, normal))
       goto error;
     break;
+  default:
+    break;
   }
  return OK;
 
@@ -307,7 +308,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
   Triangle triangle, *trianglelist=NULL, *neighborlist=NULL; 
   Triangle vertices, neighbors, n_vertices, n_neighbors, n;
   int theseneighbors[4];
-  int i, j, k, l, numpos, rank, shape[8], numtri, which, a, b, trianglecount;
+  int i, j, numpos, rank, shape[8], numtri, trianglecount;
   int numsuspect, validcount;
   int whichdegenerate;
   edge suspectedges[4];
@@ -537,7 +538,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
     theseneighbors[2] = neighbors.r;
     
     /* add the new triangles; the first one replaces triangle j */
-    if (whichdegenerate=AnyDegenerate(vertices, pos_ptr, i)) {
+    if ((whichdegenerate=AnyDegenerate(vertices, pos_ptr, i))) {
       numsuspect = 4;
       if (whichdegenerate==1) {
 	/* p q new is degenerate */
@@ -1573,14 +1574,16 @@ static int NeighborEdge(int whichtri, int vert1, int vert2,
   GetNeighbors(neighborlist, whichtri, &neighbors);
   
   if (((vert1==vertices.p)&&(vert2==vertices.q)) ||
-      (vert2==vertices.p)&&(vert1==vertices.q))
+      ((vert2==vertices.p)&&(vert1==vertices.q)))
     return neighbors.p;
   if (((vert1==vertices.q)&&(vert2==vertices.r)) ||
-      (vert2==vertices.q)&&(vert1==vertices.r))
+      ((vert2==vertices.q)&&(vert1==vertices.r)))
     return neighbors.q;
   if (((vert1==vertices.r)&&(vert2==vertices.p)) ||
-      (vert2==vertices.r)&&(vert1==vertices.p))
+      ((vert2==vertices.r)&&(vert1==vertices.p)))
     return neighbors.r;
+
+  return 0;
 }
 
 static float GetAngle(float *pos_ptr, int A, int B, int C)
@@ -1623,6 +1626,8 @@ static int Not(Triangle tri, int i, int j)
     return tri.q;
   else if ((tri.r != i)&&(tri.r != j))
     return tri.r;
+
+  return 0;
 }
 
 static int CheckThem(Triangle *neighborlist, Triangle *trianglelist,

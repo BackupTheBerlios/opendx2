@@ -13,7 +13,7 @@
 #include <math.h>
 #include <string.h>
 #include <dx/dx.h>
-
+#include "_grid.h"
 
 #define TRUE 			1
 #define FALSE 			0
@@ -40,7 +40,7 @@ static Error generate_ellipse_cons ();
 static Error generate_field ();
 /* CLEANUP FOR apos AND acons FOR ALL FUNCTIONS OCCURS IN generate_field() */
 
-extern int _dxfGrid (float *point, char *structure, float *shape, int *density, 
+int _dxfGrid (float *point, char *structure, float *shape, int *density, 
           int dim, Object *outo)
 {
 
@@ -100,7 +100,6 @@ static Error grid_point (point, dim, outo)
     int                 dim;
 {
     Array		apos;
-    float		*pos;
     Field		f = NULL;
     int                 RETURN_CODE = ERROR;
 
@@ -167,8 +166,6 @@ static Error grid_line (point, shape, density, dim, outo)
     float		delta[3];
     Array		apos;
     Array		acons;
-    float		*pos;
-    int			*cons;
     float		tmp;
 
     if (point == NULL)
@@ -264,8 +261,6 @@ static Error grid_rectangle (point, shape, density, dim, outo)
     float		delta[6];
     Array		apos = NULL, apos0 = NULL, apos1 = NULL;
     Array		acons = NULL, acons0 = NULL, acons1 = NULL;
-    float		*pos;
-    int			*cons;
     float		tmp;
     float		t_shape[3];
     int			t_density[1];
@@ -572,7 +567,6 @@ static Error grid_ellipse (point, shape, density, dim, outo)
     Array		acons;
     float		*pos;
     int			*cons;
-    float		tmp;
 
     if (point == NULL)
 	DXErrorReturn (ERROR_BAD_PARAMETER, "missing input point");
@@ -673,8 +667,6 @@ static Error grid_brick (point, shape, density, dim, outo)
     float		delta[9];
     Array		apos = NULL, apos0 = NULL, apos1 = NULL, apos2 = NULL;
     Array		acons = NULL,acons0 = NULL,acons1 = NULL,acons2 = NULL;
-    float		*pos;
-    int			*cons;
     float		tmp;
     float		t_shape[9];
     int			t_density[3];

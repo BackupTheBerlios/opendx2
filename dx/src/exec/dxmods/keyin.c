@@ -6,11 +6,14 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/keyin.c,v 1.4 2000/05/16 18:48:01 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/keyin.c,v 1.5 2000/08/24 20:04:39 davidt Exp $
  */
 
 #include <dxconfig.h>
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 /***
 MODULE:
@@ -35,7 +38,7 @@ END:
 static char defmessage[] = "Type <ENTER> to continue";
 
 
-int
+Error
 m_KeyIn(Object *in, Object *out)
 {
     int fh;
@@ -44,7 +47,7 @@ m_KeyIn(Object *in, Object *out)
     if(in[0]) {
 	if(!DXExtractString(in[0], &s)) {
 	    DXSetError(ERROR_BAD_PARAMETER, "#10200", "prompt");
-	    return NULL;
+	    return ERROR;
 	}
     } else
 	s = defmessage;
@@ -68,7 +71,7 @@ m_KeyIn(Object *in, Object *out)
     fh = open("/dev/tty", 2);
     if (fh < 0) {
 	DXSetError(ERROR_DATA_INVALID, "cannot open /dev/tty");
-	return NULL;
+	return ERROR;
     }
     write(fh, s, strlen(s));
 

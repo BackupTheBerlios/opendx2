@@ -25,6 +25,7 @@ char * _dxf_BuildGIFReadFileName
       int   *selection  /* file name extension ? (enumeral) */ )
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "gif format has been removed for legal reasons");
+    return NULL;
 }
 
 SizeData * _dxf_ReadImageSizesGIF
@@ -36,17 +37,19 @@ SizeData * _dxf_ReadImageSizesGIF
                  int      *multiples )
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "gif format has been removed for legal reasons");
+    return NULL;
 }
 
-extern
 Field _dxf_InputGIF
 	(int width, int height, char *name, int relframe, int delayed, char *colortype)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "gif format has been removed for legal reasons");
+    return NULL;
 }
 
 Error
 _dxf_write_gif(RWImageArgs *iargs)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "gif format has been removed for legal reasons");
+    return ERROR;
 }

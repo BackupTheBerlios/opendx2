@@ -7,12 +7,9 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
 #include <dx/dx.h>
 
-extern
-Error _dxfscalar_base(Object *,Object *, int);
+#include "scalar.h"
 
 int m_ScalarList(Object *in, Object *out)
 {

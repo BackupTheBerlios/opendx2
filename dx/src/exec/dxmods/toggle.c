@@ -15,8 +15,11 @@
 #define MSGLEN 240
 
 static int readvalue(Object,char *,char *,Object *);
+
+#if 0
 static int compare_arrays(Array *a, Array *b,int items,int dim,Type type);
 static Error read_and_compare(Object cvalue,Object svalue,Object uvalue,int *on,          Object *out); 
+#endif
 
 int m_Toggle(Object *in, Object *out)
 {
@@ -24,10 +27,7 @@ int m_Toggle(Object *in, Object *out)
    char *id, *label;
    Object idobj;
    char *set="set= ",*unset="unset= ";
-   int items,shape[MAXRANK],rank;
-   Type type;
-   Category cat;
-   void *uivalue;
+   int shape[MAXRANK];
    int toggle,change;
 
    ei.msgbuf = NULL;
@@ -112,11 +112,11 @@ error:
 int readvalue(Object o,char *id,char *value,Object *out)
 {
    struct einfo ei;
-   char *set_string,*unset_string,*cstring;
+   char *set_string;
    int items,shape[MAXRANK],rank;
    Type type;
    Category cat;
-   void *p_set, *p_unset;
+   void *p_set;
       
    /* setup message */
    ei.maxlen = MSGLEN;
@@ -162,7 +162,8 @@ error:
       return ERROR;
 }
 
-Error
+#if 0
+static Error
 read_and_compare(Object cvalue,Object svalue,Object uvalue,int *on,Object *out) 
 {
    char *cstring,*sstring;
@@ -210,6 +211,7 @@ error:
       return ERROR;
 }
 
+
 int
 compare_arrays(Array *a, Array *b,int items,int dim,Type type)
 {
@@ -243,3 +245,4 @@ compare_arrays(Array *a, Array *b,int items,int dim,Type type)
 	     return(0);
 
 }
+#endif

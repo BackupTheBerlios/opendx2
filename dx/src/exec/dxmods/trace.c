@@ -11,11 +11,13 @@
 
 
 #include <dx/dx.h>
+#include "trace.h"
 
+extern void  _dxfTraceObjects(int d); /* from libdx/object.c */
+extern void DXTraceTask(int t); /* from dpexec/task.c */
 
-extern void DXTraceTask(int t);
 #if 0
-extern Error DXTagMemory(int n);
+Error DXTagMemory(int n);
 #endif
 
 
