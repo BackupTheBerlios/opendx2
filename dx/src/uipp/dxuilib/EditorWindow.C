@@ -7074,7 +7074,7 @@ int dummy;
 	    ListIterator ta(toadd);
 	    Node* add;
 	    while ( (add = (Node*)ta.getNext()) ) {
-		if (rcvrs.isMember(add) == FALSE);
+		if (rcvrs.isMember(add) == FALSE)
 		    rcvrs.appendElement((void*)add);
 	    }
 	}
