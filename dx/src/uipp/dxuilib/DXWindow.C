@@ -744,13 +744,34 @@ void DXWindow::createFileHistoryMenu (Widget parent)
 {
     if (!this->isAnchor()) return ;
 
+    //
+    // if there is no history, and we don't have the ability to
+    // store history, then don't bother offering the menu.
+    //
+    char fname[256];
+    if (!theIBMApplication->getApplicationDefaultsFileName(fname)) {
+	List recent_nets;
+	theDXApplication->getRecentNets(recent_nets);
+	if (recent_nets.getSize()==0) {
+	    return ;
+	}
+    }
+
     this->file_history_cascade = new CascadeMenu("fileHistory", parent);
-    XtAddCallback(this->file_history_cascade->getMenuItemParent(), XmNmapCallback,
+
+    //
+    // put the callback on the menu parent in which we create the cascade
+    // because that allows us to grey out the cascade button before the
+    // user has a chance to click on it.
+    //
+    XtAddCallback(parent, XmNmapCallback,
 	(XtCallbackProc)DXWindow_FileHistoryMenuMapCB, (XtPointer)this);
 }
 
 void DXWindow::buildFileHistoryMenu()
 {
+    if (!this->file_history_cascade) return ;
+
     ListIterator iter(this->file_history_buttons);
     ButtonInterface* bi;
     while (bi=(ButtonInterface*)iter.getNext()) {
@@ -769,6 +790,7 @@ void DXWindow::buildFileHistoryMenu()
     List recent_nets;
     theDXApplication->getRecentNets(recent_nets);
     if (recent_nets.getSize()==0) {
+	this->file_history_cascade->deactivate();
 	const char* cp = "(null)";
 	Symbol s = theSymbolManager->registerSymbol(cp);
 	cmd = new OpenFileCommand(s);
@@ -777,6 +799,7 @@ void DXWindow::buildFileHistoryMenu()
 	this->file_history_buttons.appendElement(bi);
 	cmd->deactivate();
     } else {
+	this->file_history_cascade->activate();
 	iter.setList(recent_nets);
 	Symbol s;
 	while (s=(Symbol)iter.getNext()) {

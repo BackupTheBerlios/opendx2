@@ -13,6 +13,9 @@
 #include <unistd.h>
 #endif
 
+#include <errno.h>
+#include <fcntl.h>
+
 #if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
 #endif
@@ -897,6 +900,60 @@ const char *IBMApplication::getTmpDirectory(boolean bList)
 // Application Resources
 //
 
+boolean IBMApplication::getApplicationDefaultsFileName(char* res_file)
+{
+const char* class_name = this->getApplicationClass();
+    //
+    // Print the resource database to the file.
+    //
+#ifdef DXD_OS_NON_UNIX
+    char* home = (char*)getenv("XAPPLRESDIR");
+    if (!home || !strlen(home)) {
+	home = (char*)this->resource.UIRoot;
+	if (!home || !strlen(home)) {
+	    sprintf(res_file, "/%s", class_name);
+	} else {
+	    sprintf(res_file, "%s/ui/%s", home, class_name);
+	}
+    } else {
+	sprintf(res_file, "%s/ui/%s", home, class_name);
+    }
+
+#else
+    char* home = (char*)getenv("HOME");
+    sprintf (res_file, "%s/%s", home, class_name);
+#endif
+
+    //
+    // If the file isn't writable, then return FALSE so we
+    // won't try using it to store settings.
+    //
+    boolean writable=TRUE;
+    struct STATSTRUCT statb;
+    if (STATFUNC(res_file, &statb)!=-1) {
+	if (S_ISREG(statb.st_mode)) {
+	    if ((statb.st_mode&S_IWUSR) == 0) {
+		writable = FALSE;
+	    }
+	} else {
+	    writable = FALSE;
+	}
+    } else if (errno==ENOENT) {
+	int fd = creat(res_file, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+	if (fd >= 0) {
+	    close(fd);
+	} else {
+	    writable = FALSE;
+	    //perror(res_file);
+	}
+    } else {
+	//perror(res_file);
+	writable = FALSE;
+    }
+
+    return writable;
+}
+
 //
 // Open $HOME/DX, search for DX*dismissedWizards:.   If found, replace it,
 // otherwise append the DX*dismissedWizards: and the contents of noWizards.
@@ -912,42 +969,19 @@ const char* class_name = this->getApplicationClass();
     char resource_line[4096];
     sprintf (resource_line, "%s*%s: %s\n", class_name, resource, value);
 
-    //
-    // Print the resource database to the file.
-    //
-#ifdef DXD_OS_NON_UNIX
-    char* home = (char*)getenv("XAPPLRESDIR");
-    char* res_file = home;
-    if (!home || !strlen(home)) {
-	home = (char*)this->resource.UIRoot;
-	if (!home || !strlen(home)) {
-	    res_file = new char[10];
-	    sprintf(res_file, "/%s", class_name);
-	} else {
-	    res_file = new char[strlen(home) + 19];
-	    sprintf(res_file, "%s/ui/%s", home, class_name);
-	}
-    } else {
-	res_file = new char[strlen(home) + 16];
-	sprintf(res_file, "%s/ui/%s", home, class_name);
+    char res_file[256];
+    if (this->getApplicationDefaultsFileName(res_file)) {
+	// Here, it would be nice to use a function like
+	// XrmRemoveLineResource() but I can't find any
+	// such beast.  If one were available, then when
+	// there is no value for a resource, the spec
+	// could be removed from the file.  This way
+	// we store a nothing spec in the file.
+	XrmDatabase db = XrmGetFileDatabase(res_file);
+	XrmPutLineResource (&db, resource_line);
+	XrmPutFileDatabase (db, res_file);
+	XrmDestroyDatabase(db);
     }
-
-#else
-    char* home = (char*)getenv("HOME");
-    char* res_file = new char[strlen(home) + 16];
-    sprintf (res_file, "%s/%s", home, class_name);
-#endif
-    // Here, it would be nice to use a function like
-    // XrmRemoveLineResource() but I can't find any
-    // such beast.  If one were available, then when
-    // there is no value for a resource, the spec
-    // could be removed from the file.  This way
-    // we store a nothing spec in the file.
-    XrmDatabase db = XrmGetFileDatabase(res_file);
-    XrmPutLineResource (&db, resource_line);
-    XrmPutFileDatabase (db, res_file);
-    XrmDestroyDatabase(db);
-    delete res_file;
 }
 
 

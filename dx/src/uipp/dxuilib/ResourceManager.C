@@ -9,8 +9,11 @@
 #include "ResourceManager.h"
 #include "ListIterator.h"
 #include "IBMApplication.h"
+#include "WarningDialogManager.h"
 
 #define VALUE_SEPARATOR ';'
+
+#define ERRMSG "%s is not writable.  Session settings will not be saved."
 
 #define MAX_LIST_VALUES 10
 
@@ -24,6 +27,7 @@ void ResourceManager::BuildTheResourceManager()
 
 ResourceManager::ResourceManager()
 {
+    this->write_protection_complaint=FALSE;
 }
 
 ResourceManager::~ResourceManager()
@@ -185,41 +189,73 @@ void ResourceManager::getValue (const char* resource, List& result)
 
 void ResourceManager::initializeValue(Symbol key)
 {
-    Display* d = XtDisplay(theIBMApplication->getRootWidget());
     const char* keyStr = theSymbolManager->getSymbolString(key);
     const char* class_name = theIBMApplication->getApplicationClass();
-    const char* spec = XGetDefault(d, class_name, keyStr);
-    if (!spec) return ;
-    char* cp = DuplicateString(spec);
 
-    this->resources.addDefinition(key,cp);
+    char fname[256];
+    if (!theIBMApplication->getApplicationDefaultsFileName(fname)) {
+	if (!this->write_protection_complaint) {
+	    ModalWarningMessage (theApplication->getRootWidget(), ERRMSG, fname);
+	    this->write_protection_complaint = TRUE;
+	}
+    }
+    XrmDatabase db = XrmGetFileDatabase(fname);
+    if (!db) return ;
+    char* type=0;
+    XrmValue value;
+    char rspec[256];
+    sprintf (rspec, "%s*%s", class_name,keyStr);
+    if (XrmGetResource(db, rspec, rspec, &type, &value)) {
+	const char* spec = value.addr;
+	if ((spec) && (spec[0])) {
+	    char* cp = DuplicateString(spec);
+	    this->resources.addDefinition(key,cp);
+	}
+    }
+    XrmDestroyDatabase(db);
 }
 
 void ResourceManager::initializeMultiValued(Symbol key)
 {
-    Display* d = XtDisplay(theIBMApplication->getRootWidget());
     const char* keyStr = theSymbolManager->getSymbolString(key);
     const char* class_name = theIBMApplication->getApplicationClass();
-    const char* spec = XGetDefault(d, class_name, keyStr);
-    if (!spec) return ;
 
-    int spec_len = strlen(spec);
-
-    List* values = (List*)this->resources.findDefinition(key);
-    ASSERT(values);
-
-    char buf[256];
-    int si=0;
-    for (int i=0; i<=spec_len; i++) {
-	if ((i==spec_len) || (spec[i] == VALUE_SEPARATOR)) {
-	    int len = i-si;
-	    if (len>0) {
-		strncpy (buf, &spec[si], len);
-		buf[len] = '\0';
-		Symbol v = theSymbolManager->registerSymbol(buf);
-		values->appendElement((void*)v);
-	    }
-	    si = i+1;
+    char fname[256];
+    if (!theIBMApplication->getApplicationDefaultsFileName(fname)) {
+	if (!this->write_protection_complaint) {
+	    ModalWarningMessage (theApplication->getRootWidget(), ERRMSG, fname);
+	    this->write_protection_complaint = TRUE;
 	}
     }
+    XrmDatabase db = XrmGetFileDatabase(fname);
+    if (!db) return ;
+    char* type=0;
+    XrmValue value;
+    char rspec[256];
+    sprintf (rspec, "%s*%s", class_name,keyStr);
+    if (XrmGetResource(db, rspec, rspec, &type, &value)) {
+	const char* spec = value.addr;
+	if ((spec) && (spec[0])) {
+	    int spec_len = strlen(spec);
+
+	    List* values = (List*)this->resources.findDefinition(key);
+	    ASSERT(values);
+
+	    char buf[256];
+	    int si=0;
+	    for (int i=0; i<=spec_len; i++) {
+		if ((i==spec_len) || (spec[i] == VALUE_SEPARATOR)) {
+		    int len = i-si;
+		    if (len>0) {
+			strncpy (buf, &spec[si], len);
+			buf[len] = '\0';
+			Symbol v = theSymbolManager->registerSymbol(buf);
+			values->appendElement((void*)v);
+		    }
+		    si = i+1;
+		}
+	    }
+	}
+    }
+    XrmDestroyDatabase(db);
 }
