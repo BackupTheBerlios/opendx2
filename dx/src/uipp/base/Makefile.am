@@ -4,6 +4,13 @@ INCLUDES = -I${srcdir}/../widgets -I${top_srcdir}/include -D@ARCH@
 
 noinst_LIBRARIES = libBASE.a
 
+EXTRA_DIST = \
+	bottom_shadow60.bm \
+	minus.bm \
+	plus.bm \
+	top_shadow60.bm \
+	top_shadow_pc60.bm
+
 SRCS1 =  \
 	Application.C			\
 	ApplyFileDialog.C		\
