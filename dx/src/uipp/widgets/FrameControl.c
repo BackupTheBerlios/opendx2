@@ -941,7 +941,7 @@ static void CallbackFromNumber( XmNumberWidget	nw,
     Arg wargs[10];
     double dval;
     XmString xms;
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
 XtArgVal dx_l;
 #endif
 

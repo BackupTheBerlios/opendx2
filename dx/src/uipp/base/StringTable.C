@@ -86,7 +86,7 @@ static void *_DuplicateString(const void *s)
 }
 #endif
 
-boolean StringTable::addString(const char* string, int& 	   index)
+boolean StringTable::addString(const char* string, long& index)
 {
     int key = hash(string); 
     List *l = &this->lists[key];

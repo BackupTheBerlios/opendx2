@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.12 2003/07/11 05:50:39 davidt Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.13 2003/09/30 17:41:45 davidt Exp $
 
 Author:  Ellen Ball
 
@@ -435,7 +435,7 @@ static Error translucentPoints (xfieldP xf, helperFunc helper,
 				 enum approxE approx, int skip)
 {
   static float	fscratch[3];
-  static int	iscratch;
+  static long	iscratch;
   int		i = 0, c, c1;
 
   glBegin(GL_POINTS);
@@ -471,7 +471,7 @@ static Error points (xfieldP xf, helperFunc helper,
 {
   static int	translation[8];
   static float	fscratch[3];
-  static int	iscratch;
+  static long	iscratch;
   int		i = 0, c;
   dependencyT   odep;
   int 		translu;

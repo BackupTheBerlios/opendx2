@@ -567,7 +567,11 @@
 // separate and distinct XtArgVal params should be supplied
 //
 */
-#if defined(alphax)
+#if defined(alphax) || defined(__ia64__) || defined(__LP64__)
+#define PASSDOUBLEVALUE 1
+#endif
+
+#if PASSDOUBLEVALUE
 #define DoubleSetArg(a, b, c)				\
 	(a).name = (b);					\
 	memcpy(&((a).value), &c, sizeof(double));

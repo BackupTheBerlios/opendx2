@@ -51,7 +51,7 @@ ParameterDefinition::ParameterDefinition(Symbol key) :
 ParameterDefinition::~ParameterDefinition()
 {
     if (this->description)
-	delete (char*)this->description; 
+	delete[] (char*)this->description; 
     if (this->typeStrings) {
 #if defined(DXD_WIN) || defined(OS2)
         delete (void *)this->typeStrings;
@@ -60,7 +60,7 @@ ParameterDefinition::~ParameterDefinition()
 #endif
     }
     if (DEFAULT_VALUE_NEEDS_DELETING(this))
-	delete this->default_value;
+	delete[] this->default_value;
 
     if (this->valueOptions) {
 	int i = 0;

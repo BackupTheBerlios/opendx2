@@ -230,7 +230,7 @@ char* GetFileBaseName(const char* pathname, const char* extension)
      */
     temp = name;
     name = DuplicateString(&name[i + 1]);
-    delete temp;
+    delete[] temp;
 
     return name;
 }

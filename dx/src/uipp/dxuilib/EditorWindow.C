@@ -5815,7 +5815,7 @@ EditorWindow_SetDecoratorStyleCB (Widget w, XtPointer clientData, XtPointer)
 {
 EditorWindow *editor = (EditorWindow*)clientData;
 List *decors = editor->makeSelectedDecoratorList();
-int ud;
+long ud;
 
     XtVaGetValues (w, XmNuserData, &ud, NULL);
     editor->setDecoratorStyle (decors, (DecoratorStyle*)ud);

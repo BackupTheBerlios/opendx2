@@ -462,7 +462,7 @@ void SetScalarAttrDialog::updateDisplayedComponentAttributes(
 					     NULL);
 
     } else {
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
 	XtArgVal dx_l;
 #endif
         XtVaSetValues(this->maxNumber,       XmNdataType, DOUBLE, 

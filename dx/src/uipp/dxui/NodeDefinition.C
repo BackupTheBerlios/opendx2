@@ -65,7 +65,7 @@ NodeDefinition::~NodeDefinition()
     if (this->loadFile)
     	delete this->loadFile;
     if (this->description)
-    	delete this->description;
+    	delete[] this->description;
 
     //
     // If this node definition was installed in the Node definition 

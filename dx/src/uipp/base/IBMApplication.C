@@ -480,7 +480,7 @@ boolean IBMApplication::startTutorial()
     strcat(url, "/html/pages/qikgu011.htm");
     if(!_dxf_StartWebBrowserWithURL(url))
 	system("dx -tutor");
-    delete url;
+    delete[] url;
 
     return TRUE;
 }
@@ -1010,7 +1010,7 @@ void IBMApplication::parseNoWizardNames()
 	cp+= 1+strlen(name);
     }
 
-    delete nwn;
+    delete[] nwn;
 }
 
 //

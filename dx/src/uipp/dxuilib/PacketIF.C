@@ -1223,7 +1223,7 @@ setSockBufSize(int sock)
 	    perror("getsockopt");
 	    return 0;
 	}
-	if (rq_bufsz != set_bufsz)
+	if (rq_bufsz > set_bufsz + 10)
 	    WarningMessage("SOCKET bufsize mismatch: send buffer (%d %d)",
 	                            rq_bufsz, set_bufsz);
 
@@ -1238,7 +1238,7 @@ setSockBufSize(int sock)
 	    perror("getsockopt");
 	    return 0;
 	}
-	if (rq_bufsz != set_bufsz)
+	if (rq_bufsz > set_bufsz + 10)
 	    WarningMessage("SOCKET bufsize mismatch: rcv buffer (%d %d)",
 	                            rq_bufsz, set_bufsz);
     }

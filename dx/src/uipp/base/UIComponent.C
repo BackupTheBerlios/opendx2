@@ -129,7 +129,7 @@ UIComponent::~UIComponent()
     }
 
     if (this->name)
-	delete this->name;
+	delete[] this->name;
 
     if (this->help_msg)
 	delete this->help_msg;

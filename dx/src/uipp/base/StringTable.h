@@ -57,7 +57,7 @@ class StringTable : public Base
     // Returns TRUE if successful, FALSE otherwise.  In either case, the
     // unique id of the string is returned.
     //
-    boolean addString(const char* string, int&        id);
+    boolean addString(const char* string, long& id);
 
     //
     // Searches for the specified string in the table.

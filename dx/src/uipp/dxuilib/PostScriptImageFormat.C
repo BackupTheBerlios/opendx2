@@ -258,7 +258,7 @@ Arg args[9];
     // M A R G I N   S I Z E      M A R G I N   S I Z E      M A R G I N   S I Z E 
     // M A R G I N   S I Z E      M A R G I N   S I Z E      M A R G I N   S I Z E 
     //
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal    dx_l1, dx_l2, dx_l3, dx_l4; 
 #endif
     double inc = 0.1;
@@ -714,7 +714,7 @@ void PostScriptImageFormat::restore()
     this->chosen_layout = this->autoorient_button;
     XtVaSetValues (this->page_layout_om, XmNmenuHistory, this->chosen_layout, NULL);
 
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal    dx_l1; 
 #endif
     double value = 0.5;
@@ -1036,7 +1036,7 @@ void PostScriptImageFormat::parsePageSize(const char *str)
 	double max_mrgn = (min_dim/2.0) - 0.2;
 	double mrgn;
 	max_mrgn = MAX(0.0, max_mrgn);
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
 	XtArgVal    dx_l1, dx_l2; 
 #endif
 	XtVaGetValues (this->margin_width,

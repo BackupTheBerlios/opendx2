@@ -91,7 +91,7 @@ Widget ColormapAddCtlDialog::createDialog(Widget parent)
     XtSetArg(arg[n], XmNautoUnmanage,     False);   n++;
 
     Widget form = this->CreateMainForm(parent, this->name, arg, n);
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
 	XtArgVal dx_l1, dx_l2, dx_l3, dx_l4;
 #endif
 
@@ -234,7 +234,7 @@ void ColormapAddCtlDialog::setStepper()
 
     step = (max - min)/100;
 
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
 	XtArgVal dx_l1, dx_l2, dx_l3;
 #endif
 

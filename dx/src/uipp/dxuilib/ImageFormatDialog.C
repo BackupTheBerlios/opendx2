@@ -209,7 +209,7 @@ Widget ImageFormatDialog::createDialog(Widget parent)
     // G A M M A      G A M M A      G A M M A      G A M M A      G A M M A
     // G A M M A      G A M M A      G A M M A      G A M M A      G A M M A
     //
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal    dx_l1, dx_l2, dx_l3, dx_l4;
 #endif
     double inc = 0.1;
@@ -849,7 +849,7 @@ boolean ImageFormatDialog::isRerenderAllowed()
 
 void ImageFormatDialog::setGamma(double gamma)
 {
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal    dx_l1; 
 #endif
     XtVaSetValues (this->gamma_number, 

@@ -1943,8 +1943,8 @@ static int PointInTri (Point2 p, Point2 plast, Point2 pnext,
         np ++;
     else if (det01p == 0)
     {
-	e0 = v0;
-	e1 = v1;
+        memcpy(&e0, &v0, sizeof(Point2));
+        memcpy(&e1, &v1, sizeof(Point2));
         nz ++;
     }
     else 
@@ -1955,8 +1955,8 @@ static int PointInTri (Point2 p, Point2 plast, Point2 pnext,
         np ++;
     else if (det12p == 0)
     {
-	e0 = v1;
-	e1 = v2;
+        memcpy(&e0, &v1, sizeof(Point2));
+        memcpy(&e1, &v2, sizeof(Point2));
         nz ++;
     }
     else 
@@ -1967,8 +1967,8 @@ static int PointInTri (Point2 p, Point2 plast, Point2 pnext,
         np ++;
     else if (det20p == 0)
     {
-	e0 = v2;
-	e1 = v0;
+       	memcpy(&e0, &v2, sizeof(Point2));
+        memcpy(&e1, &v0, sizeof(Point2));
         nz ++;
     }
     else 

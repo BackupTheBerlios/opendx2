@@ -329,7 +329,7 @@ void DialInteractor::updateDialValue()
 {
     Arg		   wargs[10];
     int		   i,components,n=0;
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
 XtArgVal dx_l;
 #endif
 

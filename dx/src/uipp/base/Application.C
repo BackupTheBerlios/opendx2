@@ -120,7 +120,7 @@ Application::Application(char* className): UIComponent(className)
 
 Application::~Application()
 {
-    delete this->applicationClass;
+    delete[] this->applicationClass;
     theApplication = NULL;
 }
 
@@ -212,7 +212,7 @@ void Application::parseCommand(unsigned int* argcp, char** argv,
     char *appname = GetFileBaseName(argv[0],NULL);
     XrmParseCommand(&resourceDatabase, optlist, optlistsize, 
 	                  appname, (int *)argcp, argv);
-    delete appname;
+    delete[] appname;
 
     //
     // Merge the resources into the Xt database with highest precedence.
@@ -254,7 +254,7 @@ boolean Application::initialize(unsigned int* argcp, char** argv)
     // constructor before the name of the program was visible, delete the
     // old name and set it to argv[0].
     //
-    delete this->name;
+    delete[] this->name;
     this->name = DuplicateString(argv[0]);
 
     //

@@ -2063,7 +2063,7 @@ void XmColorMapEditorLoad(Widget cmew, double min, double max,
 int i;
 double norm, range=0;
 Boolean skip_normalize;
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
 XtArgVal dx_l;
 #endif
 

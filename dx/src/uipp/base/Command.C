@@ -131,7 +131,7 @@ Command::~Command()
 	delete cmds;
     }
 
-    delete this->name;
+    delete[] this->name;
 }
 
 

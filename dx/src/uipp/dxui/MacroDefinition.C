@@ -780,7 +780,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	}
     }
 
-    delete originalString;
+    delete[] originalString;
     return return_code;
 }
 

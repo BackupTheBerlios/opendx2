@@ -28,7 +28,7 @@
 //
 // Symbol type definition:
 //
-typedef int Symbol;
+typedef long Symbol;
 
 
 //

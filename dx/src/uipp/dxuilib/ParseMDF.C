@@ -954,7 +954,7 @@ boolean ParseMDFOptions (ParameterDefinition* pd, char* p)
 	    p = from;
     }
 
-    delete value;
+    delete[] value;
     return TRUE;
 }
 

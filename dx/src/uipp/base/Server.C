@@ -17,7 +17,7 @@
 #include "Client.h"
 
 
-void Server::notifyClients(int message, const void *data, const char *msg)
+void Server::notifyClients(Symbol message, const void *data, const char *msg)
 {
     ListIterator iterator(this->clientList);
     Client*      client;

@@ -508,7 +508,7 @@ Widget ViewControlDialog::createDialog(Widget parent)
 //    Widget dialog = XmCreateFormDialog( parent, this->name, arg, 1);
     Widget dialog = this->CreateMainForm( parent, this->name, arg, 1);
 
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
 	XtArgVal dx_l1, dx_l2;
 #endif
 
@@ -1424,7 +1424,7 @@ void ViewControlDialog::resetSetView()
 void ViewControlDialog::resetProjection()
 {
     double viewAngle;
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal dx_l;
 #endif
 
@@ -1470,7 +1470,7 @@ void ViewControlDialog::newCamera(double *from, double *to, double *up,
 	int image_width, int image_height, double width,
 	boolean perspective, double viewAngle)
 {
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal dx_l1, dx_l2, dx_l3;
 #endif
     this->resetProjection();
@@ -1537,7 +1537,7 @@ void ViewControlDialog::setWhichCameraVector()
     {
 	this->imageWindow->getUp(v);
     }
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal dx_l1, dx_l2, dx_l3;
 #endif
     XtVaSetValues(this->cameraXNumber, XmNdValue, DoubleVal(v[0], dx_l1), NULL);

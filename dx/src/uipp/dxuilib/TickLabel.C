@@ -105,7 +105,7 @@ TickLabel::createLine (Widget parent)
     XtAddEventHandler (form, ButtonPressMask, False,
 	(XtEventHandler)TickLabel_SelectEH, (XtPointer)this);
 
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal    dx_l1, dx_l4;
 #endif
     double inc = 0.1;
@@ -182,7 +182,7 @@ TickLabel::setText (const char *str)
 void
 TickLabel::setNumber (double dval)
 {
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal    dxl;
 #endif
 

@@ -349,7 +349,7 @@ retry:
 		perror("getsockopt1");
 		goto error;
 	    }
-	    if (rq_bufsz != set_bufsz)
+	    if (rq_bufsz > set_bufsz + 10)
 	        DXWarning("SOCKET bufsize mismatch: send buffer (%d %d)",
 			rq_bufsz, set_bufsz);
 
@@ -365,7 +365,7 @@ retry:
 		perror("getsockopt2");
 		goto error;
 	    }
-	    if (rq_bufsz != set_bufsz)
+	    if (rq_bufsz > set_bufsz + 10)
 	        DXWarning("SOCKET bufsize mismatch: rvc buffer (%d %d)",
 			rq_bufsz, set_bufsz);
 	}

@@ -753,7 +753,7 @@ int n;
     //
     // Label Scale
     //
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal    dx_l1, dx_l2, dx_l3, dx_l4;
 #endif
     double min = 0.0;
@@ -1241,7 +1241,7 @@ char *ticks_label_name[3];
 	XmNtopOffset,		12,
 	NULL);
 
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal    dx_l1, dx_l2, dx_l3, dx_l4;
 #endif
     double inc = 0.1;
@@ -2224,7 +2224,7 @@ void AutoAxesDialog::setAutoAxesDialogFont()
 void AutoAxesDialog::setAutoAxesDialogLabelScale()
 {
     double 	dval[6];
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal    dx_l;
 #endif
 
@@ -2333,7 +2333,7 @@ void AutoAxesDialog::setAutoAxesDialogAnnotationColors()
 void AutoAxesDialog::setAutoAxesDialogCorners()
 {
     int  	i;
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal	dx_l;
 #endif
     double 	dval[6];
@@ -2361,7 +2361,7 @@ void AutoAxesDialog::setAutoAxesDialogCursor()
 {
     int  	i;
     double 	dval[6];
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
     XtArgVal    dx_l;
 #endif
 

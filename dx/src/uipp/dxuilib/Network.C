@@ -5116,7 +5116,7 @@ void Network::fillPanelCascade(CascadeMenu *menu, PanelAccessManager *pam)
             ControlPanel *cp = this->getPanelByIndex(i+1);
             ASSERT(cp);
 
-            int inst = cp->getInstanceNumber();
+            long inst = cp->getInstanceNumber();
             if (pam) {
                 if (NOT pam->isAccessiblePanel(inst) OR
                         pam->getControlPanel() == cp)
@@ -5264,7 +5264,7 @@ List		swapToNodes;	  // transferred to this network.
     for (new_l.setList(removedNodes); (new_node = (Node*)new_l.getNext()); )
     {
 	Symbol new_name = new_node->getNameSymbol();
-	int    new_inst = new_node->getInstanceNumber();
+	long   new_inst = new_node->getInstanceNumber();
 
 	//
 	// See if we have a name/instance collision
@@ -5877,7 +5877,7 @@ FILE *Network::OpenNetworkFILE(const char *netFileName,
 	goto error;
     } 
 
-    delete netfile;
+    delete[] netfile;
     return f;
 
 error:
@@ -6812,7 +6812,7 @@ int dummy;
     int diffy = vpey_dest - vpey_src;
 
     src->getOutputNameString(src_pno, tmp);
-    sprintf (newname, "%s_%d_%s", src->getNameString(), 
+    sprintf (newname, "%s_%ld_%s", src->getNameString(), 
 	src->getInstanceNumber(), tmp);
 
     Node* tmit = (Node*)tmits->findDefinition(newname);

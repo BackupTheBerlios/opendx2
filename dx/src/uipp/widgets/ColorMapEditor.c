@@ -840,7 +840,7 @@ static Boolean SetValues (XmColorMapEditorWidget current,
 
 {
 Boolean		print_pts = False; 
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
 XtArgVal dx_l;
 #endif
    if(new->color_map_editor.trigger_callback != 

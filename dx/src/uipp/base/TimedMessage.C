@@ -37,9 +37,9 @@ TimedMessage::TimedMessage(const char *name,
 TimedMessage::~TimedMessage()
 {
     if (this->message)
-	delete this->message;
+	delete[] this->message;
     if (this->title)
-	delete this->title;
+	delete[] this->title;
     if(theApplication->getLogoPixmap(FALSE) != XtUnspecifiedPixmap)
 	theApplication->cleanupLogo();
 }

@@ -441,7 +441,7 @@ void MsgWin::addInformation(const char *info)
     }
 
     if (s != NULL)
-	delete s;
+	delete[] s;
 
     if (theDXApplication->doesInfoOpenMessage())
     {

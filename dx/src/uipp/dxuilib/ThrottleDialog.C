@@ -70,7 +70,7 @@ Widget ThrottleDialog::createDialog(Widget parent)
     XtSetArg(arg[n],XmNnoResize,        True); n++;
 //    Widget dialog = XmCreateFormDialog(parent, this->name, arg, n);
     Widget dialog = this->CreateMainForm(parent, this->name, arg, n);
-#if defined(alphax)
+#ifdef PASSDOUBLEVALUE
 	XtArgVal dx_l1, dx_l2;
 #endif
 

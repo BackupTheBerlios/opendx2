@@ -84,9 +84,9 @@ class WorkSpaceComponent : public UIComponent
     // exec.  It's only needed at runtime and doesn't have to be the same every
     // time the net is used.
     //
-    int instance;
+    long instance;
 
-    static int NextInstanceNumber;
+    static long NextInstanceNumber;
 
   protected:
     //
@@ -263,7 +263,7 @@ class WorkSpaceComponent : public UIComponent
     // Used during undo operations, so that decorators can be identified
     // uniquely without the use of a UIComponent*
     //
-    int getInstanceNumber() { return this->instance; }
+    long getInstanceNumber() { return this->instance; }
 
     //
     // Returns a pointer to the class name.

@@ -961,10 +961,10 @@ int nxtalt = 0;
 	else
 	    w = XtCreateWidget (name, xmRowColumnWidgetClass, parent, NULL, 0);
 	parent = w;
-	delete name;
+	delete[] name;
     }
     if (i == 0) {
-	delete leaves;
+	delete[] leaves;
 	return NUL(char*);
     }
 
@@ -980,7 +980,7 @@ int nxtalt = 0;
 	char* name = anames[i];
 	w = XtCreateWidget (name, xmRowColumnWidgetClass, parent, NULL, 0);
 	leaves[nxtalt++] = w;
-	delete name;
+	delete[] name;
     }
 
     XtResource xtres;
@@ -1000,7 +1000,7 @@ int nxtalt = 0;
     }
     ASSERT(root);
     XtDestroyWidget(root);
-    delete leaves; leaves = NULL;
+    delete[] leaves; leaves = NULL;
 
     if (!resvalue) return NUL(char*);
     this->geometry_string = DuplicateString(resvalue);

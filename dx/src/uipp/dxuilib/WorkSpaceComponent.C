@@ -52,7 +52,7 @@ static String wwTable = "\
 //
 #endif
 
-int WorkSpaceComponent::NextInstanceNumber = 1;
+long WorkSpaceComponent::NextInstanceNumber = 1;
 
 String WorkSpaceComponent::DefaultResources[] =
 {
