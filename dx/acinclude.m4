@@ -270,6 +270,9 @@ AC_DEFUN(DX_ARCHITECTURE,
     unameS=`uname -s`
     unameM=`uname -m`
     ARCH=unknown
+    if test $unameS = "FreeBSD" ; then
+    	ARCH=freebsd
+    fi
     if test $unameS = "CYGWIN_95-4.0" ; then
     	ARCH=cygwin
     fi

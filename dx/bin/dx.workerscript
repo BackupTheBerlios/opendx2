@@ -11,22 +11,30 @@ set version_name="IBM Visualization Data Explorer Script"
 
 # machine type, hostname, version etc
 # current machine hostname & version
-set thissys=`/bin/uname  -s | sed -e 's/ ..*$//'`
-set thismach=`/bin/uname  -m`
+set thissys=`uname  -s | sed -e 's/ ..*$//'`
+set thismach=`uname  -m`
 set thishost=`hostname | sed -e 's/\..*$//'` 
-set thisver=`/bin/uname  -r`
+set thisver=`uname  -r`
 set remote=/usr/bin/rsh
 set showversion=0
 
 
 # determine the machine type, and set uiarch, exarch and thisver defaults
 switch ( $thissys )
+  case FreeBSD:
+    set exarch=freebsd
+    set uiarch=freebsd
+
+    set remove=/usr/bin/rsh
+
+    breaksw
+
   case AIX*:
     set exarch=ibm6000
     set uiarch=ibm6000
 
-    set thisver=`/bin/uname  -v`
-    set thisver2=`/bin/uname  -v`.`/bin/uname  -r`
+    set thisver=`uname  -v`
+    set thisver2=`uname  -v`.`uname  -r`
 
     #
     # The following is a work-around for a problem involved with NLS support
@@ -90,7 +98,7 @@ switch ( $thissys )
     set exarch=hp700
     set uiarch=hp700
 
-    set thisver=`/bin/uname  -m | cut -c1-6`
+    set thisver=`uname  -m | cut -c1-6`
     set remote=/usr/bin/remsh
 
     breaksw
@@ -1439,6 +1447,7 @@ switch ( $uiarch )
   case aviion:
   case alphax:
   case linux:
+  case freebsd:
     breaksw
   
   default:

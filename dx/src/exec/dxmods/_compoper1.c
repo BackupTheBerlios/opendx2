@@ -454,6 +454,9 @@ SIZEINT(_dxdComputeSubs);
 #   define fatan2 atan2
 #   define fsqrt  sqrt
 #endif
+#ifdef freebsd
+#   define trunc(x) ((float)((int)(x)))
+#endif
 #ifdef cygwin
 #   define trunc(x) ((float)((int)(x)))
 #endif

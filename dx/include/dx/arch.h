@@ -12,6 +12,10 @@
 #ifndef _DXI_ARCH_H
 #define _DXI_ARCH_H 1
 
+#if HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 #ifndef HAS_S_ISDIR
 #define S_ISDIR(x) ((x) & (S_IFDIR))
 #endif
@@ -111,6 +115,13 @@
 
 #undef F_CHAR_READY
 #define F_CHAR_READY(fp) ((fp)->_IO_read_ptr < (fp)->_IO_read_end)
+
+#endif
+
+#if defined(freebsd)
+
+#undef F_CHAR_READY
+#define F_CHAR_READY(fp) ((fp)->_r > 0)
 
 #endif
 

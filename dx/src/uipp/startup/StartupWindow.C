@@ -32,6 +32,10 @@
 #include <unistd.h>
 #endif
 
+#if HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 #include "../widgets/Stepper.h"
 #include "defines.h"
 #include "ErrorDialogManager.h"
@@ -65,7 +69,7 @@ boolean StartupWindow::ClassInitialized = FALSE;
 // On these platforms, the pipe doesn't work that way so we'll make a
 // polling loop that runs once every few seconds and checks the child pid.
 //
-#if defined(ibm6000) || defined(hp700) || defined(alphax) || defined(sun4) || defined(linux) || defined(cygwin)
+#if defined(ibm6000) || defined(hp700) || defined(alphax) || defined(sun4) || defined(linux) || defined(cygwin) || defined(freebsd)
 #define USE_WAIT3 1
 #endif
 

@@ -22,7 +22,7 @@
 #include "Application.h"
 #include "ErrorDialogManager.h"
 
-#if defined(linux) || defined(cygwin)
+#if defined(linux) || defined(cygwin) || defined(freebsd)
 extern "C" {
 #include <errno.h>
 }
@@ -1358,7 +1358,7 @@ void PacketIF::connectAsServer(int pport)
     int fd;
     int sts;
     int oldPort;
-#if !defined(linux) && !defined(cygwin)
+#if !defined(linux) && !defined(cygwin) || defined(freebsd)
     extern int errno;
 #endif
     int tries;
