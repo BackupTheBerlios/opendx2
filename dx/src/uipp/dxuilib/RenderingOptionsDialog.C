@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/RenderingOptionsDialog.C,v 1.1 1999/03/24 15:17:45 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/RenderingOptionsDialog.C,v 1.2 1999/04/12 21:08:47 gda Exp $
  */
 
 
@@ -547,7 +547,7 @@ void RenderingOptionsDialog::installDefaultResources(Widget  baseWidget)
     this->Dialog::installDefaultResources( baseWidget);
 }
 
-void RenderingOptionsDialog::sensitizeRenderMode(int flag)
+void RenderingOptionsDialog::sensitizeRenderMode(boolean flag)
 {
     if (flag)
     {
@@ -561,22 +561,22 @@ void RenderingOptionsDialog::sensitizeRenderMode(int flag)
     }
 }
 
-void RenderingOptionsDialog::sensitizeButtonUpApprox(int flag)
+void RenderingOptionsDialog::sensitizeButtonUpApprox(boolean flag)
 {
     XtSetSensitive(this->buttonUpOptionMenu, flag);
 }
 
-void RenderingOptionsDialog::sensitizeButtonDownApprox(int flag)
+void RenderingOptionsDialog::sensitizeButtonDownApprox(boolean flag)
 {
     XtSetSensitive(this->buttonDownOptionMenu, flag);
 }
 
-void RenderingOptionsDialog::sensitizeButtonUpDensity(int flag)
+void RenderingOptionsDialog::sensitizeButtonUpDensity(boolean flag)
 {
     XtSetSensitive(this->upEveryNumber, flag);
 }
 
-void RenderingOptionsDialog::sensitizeButtonDownDensity(int flag)
+void RenderingOptionsDialog::sensitizeButtonDownDensity(boolean flag)
 {
     XtSetSensitive(this->downEveryNumber, flag);
 }
