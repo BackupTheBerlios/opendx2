@@ -17,7 +17,6 @@
 
 #define ClassPageSelector "PageSelector"
 
-extern "C" void PageSelector_TogglePageCB(Widget, XtPointer, XtPointer);
 extern "C" void PageSelector_CommitNameChangeCB(Widget, XtPointer, XtPointer);
 extern "C" void PageSelector_ModifyNameCB(Widget, XtPointer, XtPointer);
 extern "C" void PageSelector_SelectCB(Widget, XtPointer, XtPointer);
@@ -113,7 +112,6 @@ class PageSelector: public UIComponent, public Dictionary {
     virtual void removeButton (const char* name);
 
     friend  void PageSelector_ResizeHandlerEH(Widget, XtPointer, XEvent*, Boolean*);
-    friend  void PageSelector_TogglePageCB(Widget, XtPointer, XtPointer);
     friend  void PageSelector_CommitNameChangeCB(Widget, XtPointer, XtPointer);
     friend  void PageSelector_ModifyNameCB(Widget, XtPointer, XtPointer);
     friend  void PageSelector_SelectCB(Widget, XtPointer, XtPointer);
@@ -165,6 +163,7 @@ class PageSelector: public UIComponent, public Dictionary {
     void hidePageNamePrompt();
     void highlightTab (EditorWorkSpace*, int);
     void selectPage(EditorWorkSpace*);
+    void togglePage (PageTab* );
     void updateDialogs();
 
 

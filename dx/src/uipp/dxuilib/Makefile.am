@@ -33,18 +33,15 @@ EXTRA_DIST = \
 	pagedrag.bm \
 	square_sor.bm \
 	tooldrag.bm \
-	bottom_shadow.bm \
 	pagedragmask.bm \
 	step.bm \
 	tooldragmask.bm \
 	moduledrag.bm \
 	postit.bm \
 	ticks_in.bm \
-	top_shadow.bm \
 	moduledragmask.bm \
 	saw_sol.bm \
 	ticks_in_ins.bm \
-	top_shadow_pc.bm \
 	local.mk \
 	net2c
 

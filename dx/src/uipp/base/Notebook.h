@@ -11,9 +11,6 @@
 #include "UIComponent.h"
 #include "List.h"
 
-extern "C" void Notebook_TabCB(Widget, XtPointer, XtPointer);
-extern "C" Boolean Notebook_ManagerWP (XtPointer );
-extern "C" void Notebook_TabEH(Widget, XtPointer, XEvent* , Boolean* );
 
 #define ClassNotebook "Notebook"
 
@@ -22,23 +19,15 @@ class Notebook : public UIComponent
     private:
 	int index_of_selection;
 
-	static Pixmap TopShadowPixmap;
-	static Pixmap BottomShadowPixmap;
 	static boolean ClassInitialized;
 
-	XtWorkProcId manager_wpid;
-
-	Widget text;
-
     protected:
-	friend Boolean Notebook_ManagerWP (XtPointer );
-	friend void Notebook_TabEH(Widget, XtPointer, XEvent* , Boolean* );
 
 	Widget page_tab_form;
 	Widget scrolled_window;
 	Widget manager;
 
-	// list of toggle buttons
+	// list of NotebookTab objects
 	List tabs;
 
 	// list of form widgets
@@ -46,10 +35,6 @@ class Notebook : public UIComponent
 
 	// list of names of the tabs
 	List names;
-
-	// the shadow pixmap problem first encountered in dxuilib/PageTab.
-	// The bug might not exist any more but I have no way to test for it.
-	static boolean BrokenServer;
 
     public:
 	Notebook (Widget parent);

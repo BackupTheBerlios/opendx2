@@ -6,11 +6,11 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 #include "Notebook.h"
+#include "NotebookTab.h"
 #include "ListIterator.h"
 #include <Xm/PushB.h>
 #include <Xm/Form.h>
 #include <Xm/Frame.h>
-#include <Xm/ToggleB.h>
 #include <Xm/ScrolledW.h>
 #include <Xm/ScrollBar.h>
 #include "DXStrings.h"
@@ -23,48 +23,9 @@
 #define HUMMINGBIRD "Hummingbird"
 
 boolean Notebook::ClassInitialized = 0;
-Pixmap Notebook::TopShadowPixmap = 0;
-Pixmap Notebook::BottomShadowPixmap = 0;
-
-// same problem as in dxuilib/PageTab.  I don't have any way to
-// figure out if the bug in the Hummingbird X server still exists or not.
-boolean Notebook::BrokenServer = FALSE;
-
 Notebook::Notebook(Widget parent) : UIComponent("notebook")
 {
     if (!Notebook::ClassInitialized) {
-	Pixel bg, sh, bsh, hi;
-	int depth;
-	XtVaGetValues (parent,
-	    XmNbackground, &bg,
-	    XmNtopShadowColor, &sh,
-	    XmNbottomShadowColor, &bsh,
-	    XmNdepth, &depth,
-	    XmNhighlightColor, &hi,
-	NULL);
-	const char* vendor = ServerVendor(XtDisplay(parent));
-	if (strstr(vendor, HUMMINGBIRD))
-	    Notebook::BrokenServer = TRUE;
-
-	if (Notebook::BrokenServer) {
-	    Notebook::TopShadowPixmap = XCreatePixmapFromBitmapData(
-		XtDisplay(theApplication->getRootWidget()),
-		XtWindow(theApplication->getRootWidget()), 
-		top_shadow_pc_bits, top_shadow_pc_width, 
-		top_shadow_pc_height, bg, sh, depth);
-	} else {
-	    Notebook::TopShadowPixmap = XCreatePixmapFromBitmapData(
-		XtDisplay(theApplication->getRootWidget()),
-		XtWindow(theApplication->getRootWidget()), 
-		top_shadow_bits, top_shadow_width, 
-		top_shadow_height, bg, sh, depth);
-	    Notebook::BottomShadowPixmap = XCreatePixmapFromBitmapData(
-		XtDisplay(theApplication->getRootWidget()),
-		XtWindow(theApplication->getRootWidget()), 
-		bottom_shadow_bits, bottom_shadow_width, 
-		bottom_shadow_height, bg, bsh, depth);
-	}
-
 	Notebook::ClassInitialized = TRUE;
     }
 
@@ -78,7 +39,7 @@ Notebook::Notebook(Widget parent) : UIComponent("notebook")
 	    XmNbottomAttachment, 	XmATTACH_OPPOSITE_FORM,
 	    XmNtopOffset, 		0,
 	    XmNleftOffset, 		0,
-	    XmNbottomOffset, 		-26,
+	    XmNbottomOffset, 		-23,
 	    XmNtraversalOn, 		FALSE,
 	NULL);
 
@@ -88,7 +49,7 @@ Notebook::Notebook(Widget parent) : UIComponent("notebook")
 	    XmNleftAttachment,		XmATTACH_FORM,
 	    XmNrightAttachment,		XmATTACH_FORM,
 	    XmNbottomAttachment,	XmATTACH_FORM,
-	    XmNtopOffset,		25,
+	    XmNtopOffset,		22,
 	    XmNleftOffset,		0,
 	    XmNrightOffset,		0,
 	    XmNbottomOffset,		0,
@@ -122,30 +83,27 @@ Notebook::~Notebook()
     }
 }
 
+class NBTab : public NotebookTab {
+    private:
+	Notebook* notebook;
+    protected:
+	virtual void setState(boolean s=TRUE) {
+	    this->NotebookTab::setState(s);
+	    if (s) this->notebook->showPage(this->getLabel());
+	}
+    public:
+       	NBTab(const char* name, Notebook* nb) : NotebookTab(name) {
+	    this->notebook = nb;
+	}
+};
+
 void Notebook::addPage (const char* name, Widget page)
 {
-    Widget tab = XmCreateToggleButton (this->page_tab_form, (char*)name, 0,0);
-    XmString xmstr = XmStringCreateLtoR((char*)name, "small_bold");
-    XtVaSetValues (tab,
-	XmNindicatorOn, XmINDICATOR_NONE,
-	XmNset, FALSE,
-	XmNfillOnSelect, FALSE,
-	XmNwidth, 60,
-	XmNrecomputeSize, FALSE,
-	XmNtopShadowPixmap, Notebook::TopShadowPixmap,
-	XmNlabelString, xmstr,
-    NULL);
-    if (Notebook::BrokenServer) {
-	XtVaSetValues (tab,
-	    XmNshadowThickness, 1,
-	NULL);
-    } else {
-	XtVaSetValues (tab,
-	    XmNbottomShadowPixmap, Notebook::BottomShadowPixmap,
-	    XmNshadowThickness, 3,
-	NULL);
-    }
-    XmStringFree(xmstr);
+    NotebookTab* nt = new NBTab (name, this);
+    nt->createButton(this->page_tab_form);
+
+    Widget tab = nt->getRootWidget();
+    XtVaSetValues (tab, XmNwidth, 60, NULL);
     int tab_cnt = this->tabs.getSize();
     if (tab_cnt == 0) {
 	XtVaSetValues (tab,
@@ -158,7 +116,8 @@ void Notebook::addPage (const char* name, Widget page)
 	    XmNbottomOffset, 0,
 	NULL);
     } else {
-	Widget prev = (Widget)this->tabs.getElement(tab_cnt);
+	NotebookTab* pnt = (NotebookTab*)this->tabs.getElement(tab_cnt);
+	Widget prev = (Widget)pnt->getRootWidget();
 	XtVaSetValues (tab,
 	    XmNtopAttachment,	XmATTACH_FORM,
 	    XmNleftAttachment,	XmATTACH_WIDGET,
@@ -170,26 +129,23 @@ void Notebook::addPage (const char* name, Widget page)
 	    XmNbottomOffset, 0,
 	NULL);
     }
+    nt->manage();
+
     XtVaSetValues (page,
 	XmNtopAttachment, XmATTACH_FORM,
 	XmNleftAttachment, XmATTACH_FORM,
 	XmNrightAttachment, XmATTACH_FORM,
 	XmNbottomAttachment, XmATTACH_FORM,
     NULL);
+
+    this->tabs.appendElement(nt);
+    this->pages.appendElement(page);
+    this->names.appendElement(DuplicateString(name));
     if (tab_cnt == 0) {
-	if (!XtIsManaged(page)) XtManageChild (page);
-	XtVaSetValues (tab, XmNset, TRUE, NULL);
-	this->index_of_selection = 1;
+	nt->setState(TRUE);
     } else {
 	if (XtIsManaged(page)) XtUnmanageChild(page);
     }
-    XtAddCallback (tab, XmNvalueChangedCallback, Notebook_TabCB, this);
-    XtAddEventHandler (tab, ButtonPressMask|ButtonReleaseMask, False,
-	(XtEventHandler)Notebook_TabEH, (XtPointer)this);
-    this->tabs.appendElement(tab);
-    this->pages.appendElement(page);
-    this->names.appendElement(DuplicateString(name));
-    XtManageChild(tab);
 }
 
 void Notebook::showPage (int pageId)
@@ -202,15 +158,16 @@ void Notebook::showPage (int pageId)
     Widget page_to_manage=0;
     Widget page_to_unmanage=0;
     for (int i=1; i<=cnt; i++) {
-	Widget tab = (Widget)this->tabs.getElement(i);
+	NotebookTab* nt = (NotebookTab*)this->tabs.getElement(i);
+	Widget tab = nt->getRootWidget();
 	Widget page = (Widget)this->pages.getElement(i);
 	if (i==pageId) {
-	    if (!XmToggleButtonGetState(tab))
-		XmToggleButtonSetState (tab, TRUE, FALSE);
+	    if (!nt->getState())
+		nt->setState(TRUE);
 	    page_to_manage = page; 
 	} else {
-	    if (XmToggleButtonGetState(tab))
-		XmToggleButtonSetState (tab, FALSE, FALSE);
+	    if (nt->getState())
+		nt->setState(FALSE);
 	    if (XtIsManaged(page))
 		page_to_unmanage = page;
 	}
@@ -224,14 +181,16 @@ void Notebook::showPage (int pageId)
     // parent to its proper size.
     //
     if (pageId != this->index_of_selection) {
+	if (this->index_of_selection != -1) {
+	    ASSERT(page_to_unmanage);
+	    XtUnmanageChild(page_to_unmanage);
+	}
 	Dimension w,h;
 	XtVaGetValues (page_to_manage, XmNwidth,&w,XmNheight,&h,NULL);
-	ASSERT(page_to_unmanage);
 	ASSERT(page_to_manage);
 	ASSERT(page_to_manage != page_to_unmanage);
-	XtUnmanageChild(page_to_unmanage);
-	XtManageChild(page_to_manage);
 	XtVaSetValues (this->manager, XmNwidth,w,XmNheight,h,NULL);
+	XtManageChild(page_to_manage);
     }
     this->index_of_selection = pageId;
 }
@@ -308,25 +267,3 @@ void Notebook::showRectangle(int x1, int y1, int x2, int y2)
 	XmScrollBarSetValues (vbar, value, slider_size, incr, page_incr, TRUE);
 }
 
-extern "C" {
-void Notebook_TabCB (Widget tab, XtPointer cdata, XtPointer udata)
-{
-    Notebook* notebook = (Notebook*)cdata;
-    const char* cp = XtName(tab);
-    notebook->showPage(cp);
-}
-
-Boolean Notebook_ManagerWP (XtPointer cdata)
-{
-    Widget manager = (Widget)cdata;
-    XtVaSetValues (manager, XmNresizePolicy, XmRESIZE_ANY,NULL);
-    return TRUE;
-}
-
-void Notebook_TabEH(Widget w, XtPointer cdata, XEvent *xev, Boolean* doit)
-{
-    Notebook* notebook = (Notebook*)cdata;
-    if (notebook->tabs.getSize() <= 1) *doit = False;
-    else *doit = True;
-}
-} // extern "C"

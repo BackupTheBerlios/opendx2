@@ -155,6 +155,7 @@ PageSelector::~PageSelector()
 	ListIterator it (*this->page_buttons);
 	PageTab* page_button;
 	while ( (page_button = (PageTab*)it.getNext()) ) {
+	    page_button->unmanage();
 	    delete page_button;
 	}
 	delete this->page_buttons;
@@ -186,6 +187,7 @@ void PageSelector::clear()
 	ListIterator it (*this->page_buttons);
 	PageTab* page_button;
 	while ( (page_button = (PageTab*)it.getNext()) ) {
+	    page_button->unmanage();
 	    delete page_button;
 	}
 	delete this->page_buttons;
@@ -372,17 +374,15 @@ void PageSelector::addButton (const char* name, const void* definition)
     int size = this->page_buttons->getSize();
     boolean first = (boolean)(size == 0);
 
-    /*if (!first)
-        last_button = (PageTab*)this->page_buttons->getElement(size);*/
+    PageTab* new_button = new PageTab (this, (WorkSpace*)definition, name);
 
-    PageTab* new_button; 
     PageGroupRecord* prec = this->getRecordOf(name);
-    if (prec)
-	new_button = new PageTab 
-	    (this->getRootWidget(), this, (WorkSpace*)definition, prec);
-    else
-	new_button = new PageTab 
-	    (this->getRootWidget(), this, (WorkSpace*)definition, name);
+    if (prec) {
+	new_button->createButton(this->getRootWidget(), prec);
+	new_button->setGroup(prec);
+    } else {
+	new_button->createButton(this->getRootWidget());
+    }
 
     XtVaSetValues(new_button->getRootWidget(),
 	XmNtopAttachment,		XmATTACH_FORM,
@@ -393,9 +393,6 @@ void PageSelector::addButton (const char* name, const void* definition)
 
     this->appendButton(new_button);
     ASSERT (this->getSize() == this->page_buttons->getSize());
-
-    XtAddCallback (new_button->getRootWidget(), XmNvalueChangedCallback, 
-	(XtCallbackProc) PageSelector_TogglePageCB, (XtPointer)this);
 
     //
     // To keep the button ordering up to date, visit each button.  You would think
@@ -410,8 +407,8 @@ void PageSelector::addButton (const char* name, const void* definition)
 	pbut->setPosition(i);
     }
 
+    new_button->manage();
     this->resizeCallback();
-
     this->updateDialogs();
 }
 
@@ -1156,6 +1153,11 @@ List* PageSelector::getSortedPages()
     return l;
 }
 
+void PageSelector::togglePage(PageTab* pt)
+{
+    if (pt->getState()) this->selectPage(pt);
+}
+
 extern "C"  {
 
 void 
@@ -1211,18 +1213,6 @@ Boolean PageSelector_PostNamePromptWP (XtPointer clientData)
     ASSERT(psel);
     psel->postPageNamePrompt();
     return True;
-}
-
-void PageSelector_TogglePageCB(Widget w, XtPointer clientData, XtPointer)
-{
-    PageSelector* psel = (PageSelector*)clientData;
-    ASSERT(psel);
-    Boolean set;
-    XtVaGetValues (w, XmNset, &set, NULL);
-    if (set)
-	psel->selectPage(w);
-    else
-	XtVaSetValues (w, XmNset, True, NULL);
 }
 
 void PageSelector_GrabReleaseTO(XtPointer clientData, XtIntervalId* )

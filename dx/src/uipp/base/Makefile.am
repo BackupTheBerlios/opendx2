@@ -5,11 +5,8 @@ INCLUDES = -I${srcdir}/../widgets -I${top_srcdir}/include -D@ARCH@
 noinst_LIBRARIES = libBASE.a
 
 EXTRA_DIST = \
-	bottom_shadow60.bm \
 	minus.bm \
-	plus.bm \
-	top_shadow60.bm \
-	top_shadow_pc60.bm
+	plus.bm 
 
 SRCS1 =  \
 	Application.C			\
@@ -49,6 +46,7 @@ SRCS2 = \
 	MainWindow.C			\
 	NoOpCommand.C			\
 	Notebook.C			\
+	NotebookTab.C			\
 	NoUndoCommand.C			\
 	NoUndoHelpCmd.C			\
 	OptionalPreActionCommand.C	\
@@ -145,6 +143,7 @@ HDRS2 = \
 	MainWindow.h \
 	NoOpCommand.h \
 	Notebook.h \
+	NotebookTab.h \
 	NoUndoCommand.h \
 	NoUndoHelpCmd.h \
 	OptionalPreActionCommand.h \

@@ -14,9 +14,6 @@
 #include "PageGroupManager.h"
 #include "Application.h"
 #include "PageSelector.h"
-#include "top_shadow_pc.bm"
-#include "top_shadow.bm"
-#include "bottom_shadow.bm"
 #include "EditorWindow.h"
 
 //
@@ -24,10 +21,7 @@
 //
 #include "EditorWorkSpace.h"
 
-#include <Xm/ToggleB.h>
-
 String PageTab::DefaultResources[] = {
-    ".indicatorOn:	False",
     ".recomputeSize:	False",
     ".topOffset:	0",
     ".leftOffset:	0",
@@ -40,24 +34,6 @@ String PageTab::DefaultResources[] = {
 extern "C" int gethostname(char *address, int address_len);
 #endif
 
-#if 0
-#if defined(DXD_WIN)
-#include <winsock.h>
-#endif
-#endif
-
-//
-// The pc platforms are unable to use the XmN{top,bottom}ShadowPixmap resources
-// which I need in order to make things look nice.  So I detect at run time
-// if I'm displaying on a pc so that I can use special run time only tricks
-// to make the unix tabs look rounded on the edges and yet leave the pc tab
-// looking OK.  If I make this a compile time switch, then if you run on
-// unix and display on a pc you get something really ugly.
-//
-boolean PageTab::BrokenServer = TRUE;
-
-Pixmap PageTab::TopShadowPixmap = NUL(Pixmap);
-Pixmap PageTab::BottomShadowPixmap = NUL(Pixmap);
 Pixmap PageTab::AnimationPixmap = NUL(Pixmap);
 Pixmap PageTab::AnimationMaskPixmap = NUL(Pixmap);
 boolean PageTab::ClassInitialized = FALSE;
@@ -74,24 +50,8 @@ Widget PageTab::DragIcon = NUL(Widget);
 #define DXPAGENAME  "DXPAGENAME"
 #define DXMODULES "DXMODULES"
 
-PageTab::PageTab(Widget parent, PageSelector* sel, WorkSpace* ws, PageGroupRecord* prec) :
-    UIComponent("pageTab")
-{
-    this->workSpace = ws;
-    this->selector = sel;
-    this->set = FALSE;
-    this->position = 0;
-    this->has_desired_position = TRUE;
-    this->desired_position = prec->order_in_list;
-    this->toggle_timer = 0;
-    this->color_timer = 0;
-    this->group_name = NUL(char*);
-    this->createButton(parent);
-    this->setGroup (prec);
-}
-
-PageTab::PageTab(Widget parent, PageSelector* sel, WorkSpace* ws, const char* group) :
-    UIComponent("pageTab")
+PageTab::PageTab(PageSelector* sel, WorkSpace* ws, const char* group) :
+    NotebookTab(group)
 {
     this->workSpace = ws;
     this->selector = sel;
@@ -99,13 +59,8 @@ PageTab::PageTab(Widget parent, PageSelector* sel, WorkSpace* ws, const char* gr
     this->group_rec = NUL(PageGroupRecord*);
     this->position = 0;
     this->has_desired_position = FALSE;
-    this->toggle_timer = 0;
     this->color_timer = 0;
-    this->createButton(parent);
     this->group_name = DuplicateString(group);
-    XmString xmstr = XmStringCreateLtoR (this->group_name, "small_bold");
-    XtVaSetValues (this->getRootWidget(), XmNlabelString, xmstr, NULL);
-    XmStringFree(xmstr);
 }
 
 int PageTab::getDesiredPosition()
@@ -114,8 +69,22 @@ int PageTab::getDesiredPosition()
     return this->desired_position;
 }
 
+void PageTab::activate()
+{
+    this->NotebookTab::activate();
+    this->selector->togglePage(this);
+}
+
+void PageTab::createButton (Widget p, PageGroupRecord* prec)
+{
+    this->has_desired_position = TRUE;
+    this->desired_position = prec->order_in_list;
+    this->createButton(p);
+    this->setGroup(prec);
+}
 void PageTab::createButton (Widget p)
 {
+    this->NotebookTab::createButton(p);
     if (!PageTab::ClassInitialized) {
 	this->setDefaultResources (theApplication->getRootWidget(),
 	    PageTab::DefaultResources);
@@ -123,133 +92,33 @@ void PageTab::createButton (Widget p)
 
 	this->DXDropSite::addSupportedType (PageTab::Modules, DXMODULES, TRUE);
         this->DragSource::addSupportedType (PageTab::PageName, DXPAGENAME, TRUE);
-        //this->DragSource::addSupportedType (PageTab::PageTrash, DXPAGETRASH, FALSE);
 
         PageTab::DragIcon = this->createDragIcon(pagedrag_width, pagedrag_height,
 	     (char *)pagedrag_bits, (char *)pagedragmask_bits);
-
+	PageTab::AnimationPixmap = XCreateBitmapFromData(XtDisplay(p),
+	      XtWindow(p), animation_bits, animation_width, animation_height);
+	      PageTab::AnimationMaskPixmap = XCreateBitmapFromData(XtDisplay(p),
+	      XtWindow(p), anim_mask_bits, anim_mask_width, anim_mask_height);
 	PageTab::ClassInitialized = TRUE;
-
-	int depth;
-	Pixel hi, bg, sh, bsh;
-	XtVaGetValues (p, 
-	    XmNbackground, &bg, 
-	    XmNtopShadowColor, &sh, 
-	    XmNbottomShadowColor, &bsh, 
-	    XmNdepth, &depth,
-	    XmNhighlightColor, &hi,
-	NULL);
-
-	//
-	// The pc platforms aren't able to use a shadowPixmap.  Don't know why,
-	// it's just a bug I assume.  So we want to detect at runtime if we're
-	// displaying on a pc because we want to have pretty tabs when running
-	// on a pc and displaying on unix and we musn't try to get pretty tab
-	// when running on unix and displaying on a pc because you would get
-	// real ugliness.
-	//
-	static char* unix_servers[] = {
-	    "Hummingbird Communications Ltd.",
-	    "Hummingbird Ltd.",
-	    NUL(char*)
-	};
-	int i;
-	const char* vendor = ServerVendor(XtDisplay(p));
-	i = 0;
-	PageTab::BrokenServer = FALSE;
-	while (unix_servers[i]) {
-	    if (strstr (vendor, unix_servers[i])) {
-		PageTab::BrokenServer = TRUE;
-		break;
-	    }
-	    i++;
-	}
-	if (PageTab::BrokenServer) {
-	    PageTab::TopShadowPixmap = XCreatePixmapFromBitmapData(XtDisplay(p), 
-		XtWindow(p), top_shadow_pc_bits, top_shadow_pc_width, 
-		top_shadow_pc_height, bg, sh, depth);
-	} else {
-	    PageTab::TopShadowPixmap = XCreatePixmapFromBitmapData(XtDisplay(p), 
-		XtWindow(p), top_shadow_bits, top_shadow_width, top_shadow_height, 
-		bg, sh, depth);
-	    PageTab::BottomShadowPixmap = XCreatePixmapFromBitmapData(XtDisplay(p), 
-		XtWindow(p), bottom_shadow_bits, bottom_shadow_width, 
-		bottom_shadow_height, bg, bsh, depth);
-	}
-#if 0
-	//
-	// The zeroed out part is what I would like to use, but Motif won't let
-	// me.  It results in Xlib warnings to stdout.  I don't know what the
-	// problem is.
-	//
-	PageTab::AnimationPixmap = XCreatePixmapFromBitmapData(XtDisplay(p), 
-	    XtWindow(p), animation_bits, animation_width, animation_height, 
-	    bg, hi, depth);
-	PageTab::AnimationMaskPixmap = XCreatePixmapFromBitmapData(XtDisplay(p), 
-	    XtWindow(p), anim_mask_bits, anim_mask_width, anim_mask_height, 
-	    bg, hi, depth);
-#else
-	PageTab::AnimationPixmap = XCreateBitmapFromData(XtDisplay(p), 
-	    XtWindow(p), animation_bits, animation_width, animation_height);
-	PageTab::AnimationMaskPixmap = XCreateBitmapFromData(XtDisplay(p), 
-	    XtWindow(p), anim_mask_bits, anim_mask_width, anim_mask_height);
-#endif
     }
 
-    Widget w = XtVaCreateWidget (this->name,
-	xmToggleButtonWidgetClass,	p,
-	XmNset,				this->set,
-	XmNtopShadowPixmap,	PageTab::TopShadowPixmap,
-#if defined(aviion)
-	XmNheight,			23,
-#endif
-    NULL);
-    if (PageTab::BrokenServer == FALSE) 
-	XtVaSetValues (w, 
-	    XmNbottomShadowPixmap, PageTab::BottomShadowPixmap, 
-	    XmNshadowThickness, 3,
-	NULL);
-    else
-	XtVaSetValues (w, 
-	    XmNshadowThickness, 1,
-	NULL);
+    Widget w = this->getRootWidget();
 
-    this->setRootWidget(w);
     this->setDragWidget(w);
     this->setDragIcon(PageTab::DragIcon);
     this->setIntraShellBehavior(TRUE);
-
-    XtAddCallback (w, XmNvalueChangedCallback, (XtCallbackProc)
-	PageTab_SetStateCB, (XtPointer)this);
-    XtAddEventHandler (w, ButtonPressMask|ButtonReleaseMask,
-	False, (XtEventHandler)PageTab_TogglePageEH, (XtPointer)this);
 }
 
 PageTab::~PageTab()
 {
-    if ((this->getRootWidget()) && (this->isManaged()))
-	this->unmanage();
     if (this->group_name) delete this->group_name;
-    if (this->toggle_timer) XtRemoveTimeOut(this->toggle_timer);
     if (this->color_timer) XtRemoveTimeOut(this->color_timer);
 }
 
 void PageTab::setState(boolean value)
 {
-    Widget b = this->getRootWidget();
-    if (b) {
-	if (XmToggleButtonGetState(b) != value) 
-	    XmToggleButtonSetState(b, value, False);
-    } 
-    this->set = value;
-    if (this->group_rec) this->group_rec->showing = this->set;
-}
-
-boolean PageTab::getState()
-{
-    Widget b = this->getRootWidget();
-    if (b) this->set = (boolean)XmToggleButtonGetState (b);
-    return this->set;
+    this->NotebookTab::setState(value);
+    if (this->group_rec) this->group_rec->showing = value;
 }
 
 void PageTab::setGroup(PageGroupRecord* rec)
@@ -258,9 +127,7 @@ void PageTab::setGroup(PageGroupRecord* rec)
     this->group_rec = rec;
     const char* rec_name = rec->getName();
     this->group_name = DuplicateString(rec_name);
-    XmString xmstr = XmStringCreateLtoR (this->group_name, "small_bold");
-    XtVaSetValues (this->getRootWidget(), XmNlabelString, xmstr, NULL);
-    XmStringFree(xmstr);
+    this->setLabel(this->group_name);
     this->setPosition (this->position);
 }
 
@@ -313,6 +180,7 @@ void PageTab_ColorTimerTO (XtPointer clientData, XtIntervalId* )
     PageTab* pt = (PageTab*)clientData;
     ASSERT(pt);
     XtVaSetValues (pt->getRootWidget(), XmNforeground, pt->pending_fg, NULL);
+    pt->setDirty(TRUE,TRUE);
     pt->color_timer = 0;
 }
 
@@ -444,58 +312,8 @@ boolean PageTab::mergeNetElements (Network* tmpnet, List* tmppanels, int x, int 
     return retVal;
 }
 
-
-
-extern "C" {
-//
-// If the button is pushed in then start looking for a double click so we
-// can prompt for a new page name.  If the button is pulled out, then just
-// let it push it.
-//
-void PageTab_TogglePageEH(Widget w, XtPointer clientData, XEvent* xev, Boolean* doit)
+void PageTab::multiClick()
 {
-    *doit = True;
-    if (!xev) return ;
-    if ((xev->type != ButtonPress) && (xev->type != ButtonRelease)) return ;
-    if (xev->xbutton.button != 1) return ;
-    PageTab* ptab = (PageTab*)clientData;
-    ASSERT(ptab);
-
-    Boolean set;
-    XtVaGetValues (w, XmNset, &set, NULL);
-    if (set) *doit = False;
-
-    if (xev->type == ButtonRelease) {
-	if (ptab->toggle_timer) {
-	    XtRemoveTimeOut (ptab->toggle_timer);
-	    ptab->toggle_timer = 0;
-	    ptab->selector->postPageNamePrompt(ptab);
-	} else {
-	    XtAppContext apcxt = theApplication->getApplicationContext();
-	    int millis = XtGetMultiClickTime (XtDisplay(w));
-	    ptab->toggle_timer = XtAppAddTimeOut (apcxt, millis, (XtTimerCallbackProc)
-		PageTab_ToggleTimerTO, (XtPointer)ptab);
-	}
-    }
+    this->selector->postPageNamePrompt(this);
 }
-
-void PageTab_ToggleTimerTO (XtPointer clientData, XtIntervalId* )
-{
-    PageTab* ptab = (PageTab*)clientData;
-    ASSERT(ptab);
-    ptab->toggle_timer = 0;
-}
-
-void PageTab_SetStateCB (Widget, XtPointer clientData, XtPointer)
-{
-    PageTab* ptab = (PageTab*)clientData;
-    ASSERT(ptab);
-    ptab->getState();
-    ptab->setState(ptab->set);
-}
-
-}
-
-
-
 

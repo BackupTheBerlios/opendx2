@@ -12,7 +12,7 @@
 #ifndef _PageTab_h
 #define _PageTab_h
 
-#include "UIComponent.h"
+#include "NotebookTab.h"
 #include "DragSource.h"
 #include "DXDropSite.h"
 
@@ -22,14 +22,11 @@ class PageSelector;
 class Network;
 class EditorWindow;
 
-extern "C" void PageTab_TogglePageEH(Widget, XtPointer, XEvent*, Boolean*);
-extern "C" void PageTab_SetStateCB(Widget, XtPointer, XtPointer);
-extern "C" void PageTab_ToggleTimerTO (XtPointer , XtIntervalId* );
 extern "C" void PageTab_ColorTimerTO (XtPointer clientData, XtIntervalId* );
 
 #define ClassPageTab "PageTab"
 
-class PageTab: public UIComponent, public DXDropSite, public DragSource {
+class PageTab: public NotebookTab, public DXDropSite, public DragSource {
   private:
 
     WorkSpace* 		workSpace;
@@ -39,7 +36,6 @@ class PageTab: public UIComponent, public DXDropSite, public DragSource {
     int			position;
     int			desired_position;
     boolean		has_desired_position;
-    XtIntervalId	toggle_timer;
     XtIntervalId	color_timer;
     PageSelector*	selector;
     Pixel		pending_fg;
@@ -66,12 +62,7 @@ class PageTab: public UIComponent, public DXDropSite, public DragSource {
 
   protected:
 
-    virtual void 	createButton(Widget );
-
-    friend  void PageTab_TogglePageEH(Widget, XtPointer, XEvent*, Boolean*);
-    friend  void PageTab_ToggleTimerTO (XtPointer , XtIntervalId* );
     friend  void PageTab_ColorTimerTO (XtPointer clientData, XtIntervalId* );
-    friend  void PageTab_SetStateCB(Widget, XtPointer, XtPointer);
 
     static Widget 	DragIcon;
     // Define constants for the dnd data types we understand
@@ -90,10 +81,12 @@ class PageTab: public UIComponent, public DXDropSite, public DragSource {
 
     virtual boolean mergeNetElements (Network*, List*, int, int);
 
+    virtual void activate();
+    virtual void multiClick();
+
   public:
 
-    PageTab (Widget parent, PageSelector*, WorkSpace* ws, PageGroupRecord*);
-    PageTab (Widget parent, PageSelector*, WorkSpace* ws, const char* button_text);
+    PageTab (PageSelector*, WorkSpace* ws, const char* button_text);
     ~PageTab();
 
     //
@@ -102,8 +95,10 @@ class PageTab: public UIComponent, public DXDropSite, public DragSource {
     virtual void manage();
     virtual void unmanage();
 
+    virtual void 	createButton(Widget );
+    void 	createButton(Widget, PageGroupRecord*);
+
     void setState(boolean set=TRUE);
-    boolean getState();
     WorkSpace* getWorkSpace() { return this->workSpace; }
     const char* getGroupName() { return this->group_name; }
     void setGroup(PageGroupRecord* rec);
