@@ -69,13 +69,15 @@ static Error parseit(char *inputstring, char *control, Object *out)
     for (i=0; i<MAXOUT; i++)
 	out[i] = NULL;
 
-    /* each individual variable can't be longer than the input str */
-    tempspace = DXAllocate(strlen(inputstring) + 1);
+    /* each individual variable can't be longer than the input str
+     * but at least sizeof(double) needs to be allocated.  */
+    tempspace = DXAllocate(MAX(sizeof(double), strlen(inputstring) + 1));
     if (!tempspace)
 	goto error;
 
-    /* each individual format spec can't be longer than the whole control */
-    tempcontrol = DXAllocate(strlen(control) + 1);
+    /* each individual format spec can't be longer than the whole
+     * control with appended %n */
+    tempcontrol = DXAllocate(strlen(control) + 3);
     if (!tempcontrol)
 	goto error;
 
