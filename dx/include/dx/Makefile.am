@@ -1,8 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-dxdir = $(DXROOT)
-dxincludedir = $(DXROOT)/include/dx
-dxinclude_HEADERS = \
+EXTRA_DIST = \
 	UserInteractors.h advanced.h arch.h array.h arrayhandles.h \
 	basic.h cache.h camera.h clipped.h component.h dx.h error.h \
 	extract.h field.h geometry.h group.h grow.h hash.h helper.h image.h \
