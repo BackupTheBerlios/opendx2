@@ -5,7 +5,7 @@ MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 dxmdfdir = $(prefix)/dx/lib
 noinst_LIBRARIES = libDXMODS.a
-SUFFIXES = .c .y .c .s .h .o .a 
+SUFFIXES = .c .y .c .s .h .o 
 
 BUILT_SOURCES = user.c
 
