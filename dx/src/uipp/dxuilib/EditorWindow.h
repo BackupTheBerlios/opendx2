@@ -365,6 +365,8 @@ class EditorWindow : public DXWindow
     CommandInterface*	valuesOption;
     CommandInterface*	findToolOption;
     CascadeMenu		*editTabsCascade;	
+    CommandInterface*	addInputTabOption;
+    CommandInterface*	removeInputTabOption;
     CascadeMenu		*editSelectCascade;	
     CascadeMenu		*outputCacheabilityCascade;	
     CascadeMenu		*editOutputCacheabilityCascade;	

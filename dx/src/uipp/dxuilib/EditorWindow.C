@@ -96,6 +96,7 @@
 #include "DecoratorStyle.h"
 #include "DecoratorInfo.h"
 #include "PrintProgramDialog.h"
+#include "TransferAccelerator.h"
 #if WORKSPACE_PAGES
 #include "PageGroupManager.h"
 #include "AnnotationGroupManager.h"
@@ -215,6 +216,8 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->programVerifyCascade    = NUL(CascadeMenu*);
 #endif
     this->editTabsCascade	  = NULL;
+    this->addInputTabOption	  = NUL(CommandInterface*);
+    this->removeInputTabOption	  = NUL(CommandInterface*);
     this->editSelectCascade	  = NULL;
     this->outputCacheabilityCascade	    = NULL;
     this->editOutputCacheabilityCascade	    = NULL;
@@ -656,6 +659,8 @@ EditorWindow::~EditorWindow()
     if (this->programVerifyCascade) delete this->programVerifyCascade;
 #endif
     if (this->editTabsCascade) delete this->editTabsCascade;
+    if (this->addInputTabOption) delete this->addInputTabOption;
+    if (this->removeInputTabOption) delete this->removeInputTabOption;
     if (this->editSelectCascade) delete this->editSelectCascade;
     if (this->editOutputCacheabilityCascade) 
 			delete this->editOutputCacheabilityCascade;
@@ -1481,13 +1486,13 @@ void EditorWindow::createEditMenu(Widget parent)
     menu_parent = cascade_menu->getMenuItemParent();
 
 
-    ci = new ButtonInterface(menu_parent, "vpeAddInputTabOption",
+    this->addInputTabOption = new ButtonInterface(menu_parent, "vpeAddInputTabOption",
 					this->addInputTabCmd);
-    cascade_menu->appendComponent(ci);
+    cascade_menu->appendComponent(this->addInputTabOption);
 
-    ci = new ButtonInterface(menu_parent, "vpeRemoveInputTabOption", 
+    this->removeInputTabOption = new ButtonInterface(menu_parent, "vpeRemoveInputTabOption", 
 					this->removeInputTabCmd);
-    cascade_menu->appendComponent(ci);
+    cascade_menu->appendComponent(this->removeInputTabOption);
     ci = new ButtonInterface(menu_parent, "vpeAddOutputTabOption",
 					this->addOutputTabCmd);
     cascade_menu->appendComponent(ci);
@@ -2481,6 +2486,25 @@ void EditorWindow::doSelectedNodesDefaultAction()
 #endif
         if (standIn->isSelected())  {
 	    node->openDefaultWindow(this->getRootWidget()); 
+	    ConfigurationDialog *cdb = node->getConfigurationDialog();
+	    if (cdb) {
+	    	Widget cdbWidget = cdb->getRootWidget();
+	    	if (cdbWidget) {
+	    		// Transfer Accelerations
+	    		TransferAccelerator(cdbWidget, 
+	    			this->saveOption->getRootWidget(), "ArmAndActivate");
+	    		TransferAccelerator(cdbWidget, 
+	    			this->addInputTabOption->getRootWidget(), "ArmAndActivate");
+	    		TransferAccelerator(cdbWidget, 
+	    			this->removeInputTabOption->getRootWidget(), "ArmAndActivate");
+	    		TransferAccelerator(cdbWidget, 
+	    			this->executeOnceOption->getRootWidget(), "ArmAndActivate");
+	    		TransferAccelerator(cdbWidget, 
+	    			this->executeOnChangeOption->getRootWidget(), "ArmAndActivate");
+	    		TransferAccelerator(cdbWidget, 
+	    			this->endExecutionOption->getRootWidget(), "ArmAndActivate");
+	    	}
+	    }
 	}
     }
 
