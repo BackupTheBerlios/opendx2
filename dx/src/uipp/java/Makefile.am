@@ -51,7 +51,11 @@ server.jar:
 SHRD_FLAGS = -shared -L../dxl -lDXL -o libAnyDX.so
 
 libAnyDX.so: DXLink.o
-	( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object )
+	if test "$(ARCH)" = "cygwin" ; then \
+	$(MAKE) cygwin_object ;\
+	else \
+	( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object ) ; \
+	fi
 
 usual_shared_object:
 	$(CC) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"`  DXLink.o
@@ -62,6 +66,11 @@ aix_shared_object:
 	ld -bnoentry -bM:SRE -o libAnyDX.so -bE:tmpAnyDX.exp tmpAnyDX.a -L /usr/lpp/X11/lib -lXt -lX11 -lc
 	rm -f tmpAnyDX.*
 
+cygwin_object:
+	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
+	nm --demangle --defined-only tmpAnyDX.a | sed -n 's/^.* T //p' >> tmpAnyDX.exp
+	dllwrap -s --export-all-symbols --image-base 0x6620000 --def tmpAnyDX.exp --driver-name gcc -o libAnyDX.dll DXLink.o -L../dxl -lDXL -L/usr/X11R6/lib -lXt -lSM -lICE -lX11
+	rm -f tmpAnyDX.*
 
 
 ## JBASE and JINC set by configure via acinclude.m4
