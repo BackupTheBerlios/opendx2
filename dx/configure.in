@@ -978,8 +978,11 @@ DX_CHECK_HEADERS(DPS/XDPSlib.h DPS/dpsXclient.h \
     sys/syslimits.h sys/sysmacros.h sys/sysmp.h sys/sysconfig.h sys/systemcfg.h \
     sys/systeminfo.h sys/time.h sys/timeb.h sys/times.h sys/types.h sys/un.h \
     sys/utsname.h sys/wait.h sysent.h time.h types.h ulocks.h unistd.h \
-    values.h wait.h winbase.h windows.h wingdi.h winioctl.h winsock.h \
-    x11/xlibxtra.h xgl/xgl.h linux/kernel.h linux/sys.h)
+    values.h wait.h x11/xlibxtra.h xgl/xgl.h linux/kernel.h linux/sys.h)
+
+if test "$ARCH" = "intelnt" ; then
+    DX_CHECK_HEADERS(winbase.h windows.h wingdi.h winioctl.h winsock.h)
+fi
 
 DX_CHECK_STAT
 
