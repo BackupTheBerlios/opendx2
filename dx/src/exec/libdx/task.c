@@ -184,7 +184,9 @@ DXCreateTaskGroup()
 	    return ERROR;
 	if (!DXcreate_lock(&(ti->undone_lock), "undone DXlock"))
 	    return ERROR;
-	if (!DXcreate_lock(&(ti->done_flag), "extra tasks lock"))
+	if (!DXcreate_lock(&(ti->done_flag), "done flag"))
+	    return ERROR;
+	if (!DXcreate_lock(&(ti->extra_lock), "extra tasks lock"))
 	    return ERROR;
 
 	/* initialize them */
@@ -408,6 +410,8 @@ DXExecuteTaskGroup()
 #endif
 
     }
+
+    DXMarkTime("start parallel");
 
     /* If master task group, sort the tasks and copy them to global memory */
     if (lti.ntasks > 0) {
