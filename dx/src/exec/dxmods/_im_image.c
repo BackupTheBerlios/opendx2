@@ -120,7 +120,7 @@ static Error write_im(RWImageArgs *iargs)
 
 #ifdef MAGICK5
 	ExceptionInfo
-	   exception_info;
+	   dxd_exception_info;
 	ImageInfo
            * image_info;
 #else
@@ -221,7 +221,7 @@ static Error write_im(RWImageArgs *iargs)
         Initialize the image info structure and read an image.
       */
 #ifdef MAGICK5
-      GetExceptionInfo(&exception_info); 
+      GetExceptionInfo(&dxd_exception_info); 
       image_info=CloneImageInfo((ImageInfo *) NULL);
 #else
       GetImageInfo(&image_info);
@@ -241,7 +241,7 @@ static Error write_im(RWImageArgs *iargs)
 	DEBUGMESSAGE(image_info.filename);
 #endif
 #ifdef MAGICK5
-      image=ReadImage(image_info,&exception_info); 
+      image=ReadImage(image_info,&dxd_exception_info); 
 #else
       image=ReadImage(&image_info);
 #endif
