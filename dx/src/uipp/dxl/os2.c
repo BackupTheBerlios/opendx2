@@ -15,6 +15,10 @@
 #include <types.h>
 #endif
 
+#if defined(HAVE_SYS_TYPES_H)
+#include <sys/types.h>
+#endif
+
 #if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
 #elif defined(HAVE_CYGWIN_SOCKET_H)
