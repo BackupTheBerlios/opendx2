@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src samples include lib bin help html man fonts doc
+SUBDIRS = src include lib bin help html man fonts doc
 
 
 uninstall-local:
