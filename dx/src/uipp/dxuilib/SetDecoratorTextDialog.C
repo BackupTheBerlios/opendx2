@@ -353,7 +353,7 @@ Arg args[20];
 
     n = 0;
     XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
-    XtSetArg (args[n], XmNtopWidget, this->editorText); n++;
+    XtSetArg (args[n], XmNtopWidget, XtParent(this->editorText)); n++;
     XtSetArg (args[n], XmNtopOffset, 30); n++;
     XtSetArg (args[n], XmNleftAttachment, XmATTACH_FORM); n++;
     XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
