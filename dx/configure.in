@@ -46,15 +46,15 @@ BUILDBASE=`pwd`
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
 AM_CONFIG_HEADER(include/dxconfig.h)
-AM_INIT_AUTOMAKE(dx, 4.1.1)
+AM_INIT_AUTOMAKE(dx, 4.1.2)
 
-VERSION_STRING="04.1.0001"
-AC_DEFINE(DXD_VERSION_STRING, "04.1.0001")
+VERSION_STRING="04.1.0002"
+AC_DEFINE(DXD_VERSION_STRING, "04.1.0002")
 AC_DEFINE(DXD_COPYRIGHT_STRING,
-  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.1.1"])
+  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.1.2"])
 AC_DEFINE_UNQUOTED(DXD_VERSION, 4)
 AC_DEFINE_UNQUOTED(DXD_RELEASE, 1)
-AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 1)
+AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 2)
 
 
 dnl First set up all the possible configure command line options
@@ -63,7 +63,7 @@ dnl
 dnl For the time being, require a command-line arg to build with SMP 
 dnl support on linux platforms
 AC_ARG_ENABLE(smp-linux,
-	      [  --enable-smp-linux      build exec, libs with smp compatibility (default is no)],
+	      [  --enable-smp-linux     build exec, libs with SMP-parallel capability for Linux platforms (default is no)],
 	      [with_smp-linux=$enableval],
 	      [with_smp-linux='no'])
 
