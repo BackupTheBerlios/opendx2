@@ -596,7 +596,7 @@ void DisplayNode::switchNetwork(Network *from, Network *to, boolean silently)
 	    this->associateImage(w);
     }
 
-    this->Node::switchNetwork(from, to);
+    this->Node::switchNetwork(from, to, silently);
 }
 
 void DisplayNode::reflectStateChange(boolean)
