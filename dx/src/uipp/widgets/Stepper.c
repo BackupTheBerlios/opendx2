@@ -206,7 +206,7 @@ static float DefaultStepFlt = (float)DEF_STEP;
 static XtResource resources[] =
 {
     {
-      XmNdataType, XmCDataType, XmRInt, sizeof(short),
+      XmNdataType, XmCDataType, XmRShort, sizeof(short),
       XtOffset(XmStepperWidget, stepper.data_type),
       XmRImmediate, (caddr_t) INTEGER
     },
@@ -271,7 +271,7 @@ static XtResource resources[] =
       XmRImmediate, (caddr_t) 1
     },
     {
-      XmNdigits, XmCDigits, XmRInt, sizeof(Cardinal),
+      XmNdigits, XmCDigits, XmRCardinal, sizeof(Cardinal),
       XtOffset(XmStepperWidget, stepper.num_digits),
       XmRImmediate, (caddr_t) 8
     },
@@ -281,12 +281,12 @@ static XtResource resources[] =
       XmRImmediate, (caddr_t) 0
     },
     {
-      XmNtime, XmCTime, XmRInt, sizeof(Cardinal),
+      XmNtime, XmCTime, XmRCardinal, sizeof(Cardinal),
       XtOffset(XmStepperWidget, stepper.time_interval),
       XmRImmediate, (caddr_t) 200
     },
     {
-      XmNtimeDelta, XmCTimeDelta, XmRInt, sizeof(Cardinal),
+      XmNtimeDelta, XmCTimeDelta, XmRCardinal, sizeof(Cardinal),
       XtOffset(XmStepperWidget, stepper.time_ddelta),
       XmRImmediate, (caddr_t) 8
     },
