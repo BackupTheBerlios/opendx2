@@ -16,7 +16,7 @@
 
 #if defined(HAVE_LIBDF)
 
-#if defined(linux) && !defined(PPC)
+#if defined(linux) && defined(i386)
 #define UNIX386
 #endif
 
