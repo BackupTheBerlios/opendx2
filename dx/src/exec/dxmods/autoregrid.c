@@ -297,7 +297,7 @@ int
   }
  
   /* put the radius used on as an attribute */
-  if (*radius_ptr==-1) {
+  if (radius_ptr == NULL ) {
     if (!DXSetStringAttribute(out[0], "AutoGrid radius", 
                               "infinity"))
         goto error;
