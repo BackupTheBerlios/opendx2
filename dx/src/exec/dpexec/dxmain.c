@@ -305,6 +305,7 @@ static void	ExParentProcess		(void);
 #endif
 
 static void	ExSigQuit(int);
+static void	ExSigPipe(int);
 static void	ExSigGoAway(int);
 static void	ExKillChildren(void);
 
@@ -373,8 +374,8 @@ DXmain (argc, argv, envp)
     signal (SIGDANGER, ExSigDanger);
 #endif
 
-    signal(SIGPIPE, ExSigQuit);
-    signal(SIGUSR1, ExSigQuit);
+    signal(SIGPIPE, ExSigPipe);
+    signal(SIGQUIT, ExSigQuit);
     signal(SIGUSR2, ExSigGoAway);
 
 #if DXD_PVSPROFILE
@@ -1402,15 +1403,6 @@ static void ExCheckTerminate ()
     exit(0);
 }
 
-/*
- * GoAway for children
- */
-void
-ExSigGoAway(int signo)
-{
-    fprintf(stderr, "%d: goAway\n", DXProcessorId());
-    exit(0);
-}
 
 /*
  * Error quit
@@ -1418,46 +1410,36 @@ ExSigGoAway(int signo)
 void
 ExQuit()
 {
-    if (_dxd_exMyPID < 0 || DXProcessorId() != 0)
+    int i;
+
+    (*_dxd_exTerminating) = 1;
+
+    /*
+     * signal childen to loop so they will see
+     * the terminate flag (if they are still there)
+     */
+    for (i = 1; i < nprocs; i++)
+	kill(children[i].pid, SIGUSR2);
+
+    _dxf_ExCacheFlush (TRUE);
+    _dxf_ExDictionaryPurge (_dxd_exGlobalDict);
+
+    /*
+     * send out exit message before ExCleanup, ExCleanup
+     * can get called multiple times. If a child exits first
+     * ExCleanup gets called a second time by the parent
+     * to clean up the rest of the children.
+     */
+    if(!_dxd_exRemoteSlave)
     {
-	/*
-	 * If this is a child, signal the parent to quit
-	 */
-	kill(children[0].pid, SIGUSR1);
+	 int peerwait = 0;
+	_dxf_ExDistributeMsg(DM_EXIT,
+	    (Pointer)&peerwait, 0, TOSLAVES);
     }
     else
-    {
-	int i;
+	close(_dxd_exMasterfd);
 
-	(*_dxd_exTerminating) = 1;
-
-	/*
-	 * signal childen to loop so they will see
-	 * the terminate flag (if they are still there)
-	 */
-	for (i = 1; i < nprocs; i++)
-	    kill(children[i].pid, SIGUSR2);
-
-	_dxf_ExCacheFlush (TRUE);
-	_dxf_ExDictionaryPurge (_dxd_exGlobalDict);
-
-	/*
-	 * send out exit message before ExCleanup, ExCleanup
-	 * can get called multiple times. If a child exits first
-	 * ExCleanup gets called a second time by the parent
-	 * to clean up the rest of the children.
-	 */
-	if(!_dxd_exRemoteSlave)
-	{
-	     int peerwait = 0;
-	    _dxf_ExDistributeMsg(DM_EXIT,
-		(Pointer)&peerwait, 0, TOSLAVES);
-	}
-	else
-	    close(_dxd_exMasterfd);
-
-	ExCleanup ();
-    }
+    ExCleanup ();
     exit(1);
 }
 
@@ -2513,9 +2495,55 @@ ExParallelMaster ()
 }
 
 static void
+ExSigPipe(int signo)
+{
+    /* 
+     * If I am a slave, send a quit signal to the master.
+     * Otherwise, just quit.
+     */
+    if (_dxd_exMyPID < 0 || DXProcessorId() != 0)
+    {
+#if 0
+        fprintf(stderr, "ExSigPipe: slave received %d\n", signo);
+#endif
+	kill(children[0].pid, SIGQUIT);
+    }
+    else
+    {
+#if 0
+        fprintf(stderr, "ExSigPipe: master received %d\n", signo);
+#endif
+	ExQuit();
+    }
+}
+
+static void
 ExSigQuit(int signo)
 {
+    /*
+     * Received by the master from a slave that
+     * was told to quit, due to either a SIGPIPE
+     * or SIGDANGER signal.  ExQuit will then send
+     * SIGUSR2 to the children.
+     */
+#if 0
+    fprintf(stderr, "ExSigQuit: %s receive %d\n",
+    	DXProcessorId() == 0 ? "master" : "slave", signo);
+#endif
     ExQuit();
+}
+
+/*
+ * GoAway for children... received from ExQuit run on the master
+ */
+void
+ExSigGoAway(int signo)
+{
+#if 0
+    fprintf(stderr, "ExSigGoAway: %s receive %d\n",
+    	DXProcessorId() == 0 ? "master" : "slave", signo);
+#endif
+    exit(0);
 }
 
 #if DXD_HAS_SIGDANGER
