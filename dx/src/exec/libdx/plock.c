@@ -19,6 +19,7 @@
 #include <errno.h>
 #include <math.h>
 #include "plock.h"
+#include <string.h>
 
 #undef DEBUG_PLOCKS
 
@@ -48,16 +49,9 @@ struct seminfo *__buf;      /* buffer for IPC_INFO */
 #define LOCKS_PER_SEMID	    250
 #define SEM_BUFS	    256
 #define MAXLOCKS	    (LOCKS_PER_SEMID * SEM_BUFS)
-#if 0
-#define LOCK_SEMID(a)	    ((a) >> 6)
-#define LOCK_OFFSET(a)	    ((a) & 0x0000003f)
-#define CREATE_LOCK_ID(b,o) (((b) << 6) | (o))
-#else
 #define LOCK_SEMID(a)	    ((a)/LOCKS_PER_SEMID)
 #define LOCK_OFFSET(a)	    ((a)%LOCKS_PER_SEMID)
 #define CREATE_LOCK_ID(b,o) (((b)*LOCKS_PER_SEMID) + (o))
-#endif
-
 
 typedef struct
 {
@@ -301,9 +295,6 @@ PLockInit()
 
     if (locks->_magic != MAGIC)
     {
-	int i;
-	char *s;
-
 	locks->_magic  	     = MAGIC;
 	locks->_shmid  	     = shmid;
 	locks->_nbuf   	     = 0;
@@ -351,7 +342,7 @@ PLockInit()
 int
 PLockAllocateLock(int locked)
 {
-    int i = -1, has_wait = 0;
+    int i = -1;
     int sid, soff;
     union semun sbuf;
 
@@ -366,9 +357,6 @@ PLockAllocateLock(int locked)
 
 	sid  = locks->_sbufs[LOCK_SEMID(i)]._semid;
 	soff = LOCK_OFFSET(i);
-#if 0
-	fprintf(stderr, "reused lock %d (%d %d)\n", i, sid, soff);
-#endif
     }
     else
     {
@@ -380,9 +368,6 @@ PLockAllocateLock(int locked)
 	soff = locks->_sbufs[locks->_nbuf - 1]._nalloc;
 	i = CREATE_LOCK_ID(locks->_nbuf - 1, soff);
 	locks->_sbufs[locks->_nbuf - 1]._nalloc ++;
-#if 0
-	fprintf(stderr, "created lock %d (%d %d)\n", i, sid, soff);
-#endif
 
     }
 
@@ -457,14 +442,6 @@ PLockLock(int l)
         fprintf(stderr, "PLockLock: invalid lock: %d on process %d\n", l, getpid());
 	goto out;
     }
-
-#if 0
-    if (IS_MINE(l))
-    {
-        fprintf(stderr, "PLockLock: attempting to lock locked lock: %d on process %d\n", l, getpid());
-	goto out;
-    }
-#endif
 
     _unlock(locks->_locklock);
     _lock(l);
@@ -566,9 +543,6 @@ PLockFreeWait(int l)
 int
 PLockWait(int w, int l)
 {
-    unsigned short v;
-    int r = 0, n;
-
     _lock(locks->_locklock);
 
     if (w < 3)
@@ -591,7 +565,7 @@ PLockWait(int w, int l)
 
     if (!IS_MINE(l))
     {
-        fprintf(stderr, "PLockWait: attempting to unlock someone else's lock: %d\n", l, getpid());
+        fprintf(stderr, "PLockWait: attempting to unlock someone else's lock: %d pid %d\n", l, getpid());
 	goto out;
     }
 
@@ -624,64 +598,6 @@ PLockSignal(int w)
 	bump(w, 1);
     
     _unlock(locks->_locklock);
-
-    return 1;
-}
-
-int 
-PLockSnd(int v)
-{
-    locks->_value = v;
-}
-
-int 
-PLockSndBlock(int v)
-{
-    locks->_value = v;
-
-    /* 
-     * unlock the lock indicating send, wait for ack
-     */
-    bump(locks->_sendlock, 1);
-    bump(locks->_sendlock, -2);
-
-    /*
-     * wait for 1.
-     */
-    bump(locks->_sendwait, -1); 
-    bump(locks->_sendwait, 2);  
-
-    return 1;
-}
-
-int 
-PLockRcv(int *v)
-{
-    if (v) *v = locks->_value;
-}
-
-int 
-PLockRcvBlock(int *v)
-{
-    /*
-     * wait for send
-     */
-    bump(locks->_sendlock, -1);
-
-    if (v) *v = locks->_value;
-
-    /*
-     * release lock
-     */
-    bump(locks->_sendlock, 2);
-
-    /*
-     * wait for snd to continue and re-aquire lock
-     * note: snd is waiting for 1, which we'll give it;
-     * we then wait for send to give us 2.
-     */
-    bump(locks->_sendwait, 1);
-    bump(locks->_sendwait, -2);
 
     return 1;
 }
