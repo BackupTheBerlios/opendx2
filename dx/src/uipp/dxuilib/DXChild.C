@@ -161,6 +161,7 @@ extern "C" { void bzero(char *, int); }
 #endif
 
 #define verbose 0
+
 #ifdef  DXD_WIN
 #define     XtInputReadMask     XtInputReadWinsock
 void	ClearExecMessages(void *arg);
@@ -335,7 +336,7 @@ DXChild::ConnectTo(const char *host,
 	char *opath;
 	struct stat sbuffer;
 
-	if (verbose) printf ("local\n");
+	if (verbose) fprintf(stderr, "local\n");
 
 	if (user != NULL)
 	    fprintf (stdout, "Different user on local machine ignored\n");
@@ -406,7 +407,7 @@ DXChild::ConnectTo(const char *host,
 	 *    rsh host [ -l user ] /bin/sh /tmp/dx-$host:$pid 
 	 */ 
 
-	if (verbose) printf ("remote\n");
+	if (verbose) fprintf(stderr, "remote\n");
 
 	fargv = (char**)CALLOC(12, sizeof(char*));
 
@@ -520,12 +521,12 @@ DXChild::ConnectTo(const char *host,
 
     child = fork();
     if (child == 0) {
-	if (verbose && cwd != NULL) printf ("cd %s\n", cwd); fflush (stdout);
-	if (verbose) printf ("exec %s\n", fargv[0]); fflush (stdout);
+	if (verbose && cwd != NULL) fprintf(stderr, "cd %s\n", cwd); fflush (stdout);
+	if (verbose) fprintf(stderr, "exec %s\n", fargv[0]); fflush (stdout);
 	if (verbose) for (i = 0; rep[i]; ++i)
-	    printf ("envp[%d] = `%s'\n", i, rep[i]);
+	    fprintf(stderr, "envp[%d] = `%s'\n", i, rep[i]);
 	if (verbose) for (i = 0; fargv[i]; ++i)
-	    printf ("argv[%d] = `%s'\n", i, fargv[i]);
+	    fprintf(stderr, "argv[%d] = `%s'\n", i, fargv[i]);
 	close (in[1]);
 	close (out[0]);
 	close (err[0]);
@@ -602,7 +603,7 @@ DXChild::ConnectTo(const char *host,
         rc=DosDupHandle(hpW, &hfNew);
         *remout = hpR;
 
-        if (verbose) printf ("local\n");
+        if (verbose) fprintf(stderr, "local\n");
 
         if (user != NULL)
             fprintf (stdout, "Different user on local machine ignored\n");
@@ -669,7 +670,7 @@ DXChild::ConnectTo(const char *host,
 
     iHostIsLocal = DXChild::HostIsLocal(host);
     if (verbose)
-	printf ("local\n");
+	fprintf(stderr, "local\n");
 
     if (user != NULL)
 	fprintf (stdout, "Different user on local machine ignored\n");
@@ -835,10 +836,10 @@ DXChild::StartExecutive(const char* host,
     *child = -1;
 
     if (verbose) {
-	printf ("Connect to `%s'\n", host);
-	if (user) printf ("\tas `%s'\n", user);
-	if (cwd) printf ("\tin `%s'\n", cwd);
-	printf ("\trunning `%s'\n", cmd);
+	fprintf(stderr, "Connect to `%s'\n", host);
+	if (user) fprintf(stderr, "tas `%s'\n", user);
+	if (cwd) fprintf(stderr, "tin `%s'\n", cwd);
+	fprintf(stderr, "trunning `%s'\n", cmd);
     }
 
     /* Turn the optional cmd into an ac/av pair */
