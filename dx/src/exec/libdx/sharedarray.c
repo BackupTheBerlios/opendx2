@@ -290,7 +290,7 @@ DXRegisterSharedSegment(int id, void (*or)(int, Pointer, Pointer), Pointer d)
 }
 
 SharedArray
-_dxf_NewSharedArrayV(int id, Pointer d, Type t, Category c, int r, int *s,
+_dxf_NewSharedArrayV(int id, Pointer d, int knt, Type t, Category c, int r, int *s,
 				struct sharedarray_class *class)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "shared array support requires shmat");
@@ -298,14 +298,14 @@ _dxf_NewSharedArrayV(int id, Pointer d, Type t, Category c, int r, int *s,
 }
 
 SharedArray
-DXNewSharedArrayV(int id, Pointer d, Type t, Category c, int r, int *s)
+DXNewSharedArrayV(int id, Pointer d, int knt, Type t, Category c, int r, int *s)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "shared array support requires shmat");
     return ERROR;
 }
 
 SharedArray
-DXNewSharedArray(int id, Pointer d, Type t, Category c, int r, ...)
+DXNewSharedArray(int id, Pointer d, int knt, Type t, Category c, int r, ...)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "shared array support requires shmat");
     return ERROR;
@@ -333,14 +333,14 @@ _dxfGetSharedArrayInfo(SharedArray a, int *id, long *offset)
 }
 
 SharedArray
-DXNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, int *s)
+DXNewSharedArrayFromOffsetV(int id, long offset, int knt, Type t, Category c, int r, int *s)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "shared array support requires shmat");
     return NULL;
 }
 
 SharedArray
-DXNewSharedArrayFromOffset(int id, long offset, Type t, Category c, int r, ...)
+DXNewSharedArrayFromOffset(int id, long offset, int knt, Type t, Category c, int r, ...)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "shared array support requires shmat");
     return NULL;
