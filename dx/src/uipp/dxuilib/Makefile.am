@@ -44,7 +44,8 @@ EXTRA_DIST = \
 	saw_sol.bm \
 	ticks_in_ins.bm \
 	top_shadow_pc.bm \
-	local.mk
+	local.mk \
+	net2c
 
 
 HDRS1 = \
