@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_normals.c,v 1.5 2000/08/24 20:04:16 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_normals.c,v 1.6 2001/07/23 17:19:06 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -429,16 +429,6 @@ _DetermineFunction(Object o, char *name, int *dep)
     }
 }
 
-#if 0
-static Error
-connectionsNormalsTask(Pointer ptr)
-{
-    Field field = (Field)ptr;
-
-    return _dxfConnectionNormals_Field(field);
-}
-#endif
-
 static Error
 _dxfConnectionNormals(Pointer ptr)
 {
@@ -455,24 +445,16 @@ _dxfConnectionNormals(Pointer ptr)
     norm->y = 0.0;							    \
     norm->z = 0.0;							    \
 									    \
-    if (nd == 2)							    \
-	for (i = 0; i < nv; i++)					    \
-	{								    \
-	    int j = (i == nv-1) ? 0 : i + 1;				    \
-	    norm->z += (ptrs[i][0] - ptrs[j][0]) *			    \
-				    (ptrs[i][1] + ptrs[j][1]);		    \
-	}								    \
-    else								    \
-	for (i = 0; i < nv; i++)					    \
-	{								    \
-	    int j = (i == nv-1) ? 0 : i + 1;				    \
-	    norm->x += (ptrs[i][1] - ptrs[j][1]) *			    \
-				    (ptrs[i][2] + ptrs[j][2]);		    \
-	    norm->y += (ptrs[i][2] - ptrs[j][2]) *			    \
+    for (i = 0; i < nv; i++)						    \
+    {									    \
+	int j = (i == nv-1) ? 0 : i + 1;				    \
+	norm->x += (ptrs[i][1] - ptrs[j][1]) *				    \
+				(ptrs[i][2] + ptrs[j][2]);		    \
+	norm->y += (ptrs[i][2] - ptrs[j][2]) *				    \
 				    (ptrs[i][0] + ptrs[j][0]);		    \
-	    norm->z += (ptrs[i][0] - ptrs[j][0]) *			    \
-				    (ptrs[i][1] + ptrs[j][1]);		    \
-	}								    \
+	norm->z += (ptrs[i][0] - ptrs[j][0]) *				    \
+				(ptrs[i][1] + ptrs[j][1]);		    \
+    }									    \
 									    \
     length = vector_length(norm);					    \
     if (length == 0.0)							    \
@@ -511,7 +493,7 @@ _dxfConnectionNormals_Field(Field field)
     if (! array)
 	return OK;
     
-    DXGetArrayInfo(array, &n, NULL, NULL, NULL, NULL);
+    DXGetArrayInfo(array, &n, NULL, NULL, NULL,NULL);
     
     DXDeleteComponent(field, "normals");
     
@@ -523,13 +505,20 @@ _dxfConnectionNormals_Field(Field field)
 	DXSetError(ERROR_DATA_INVALID, "positions must be 2 or 3-D");
 	return ERROR;
     }
+
+    if (shape[0] == 2)
+    {
+        float normal[3] = {0.0, 0.0, 1.0};
+	array = (Array)DXNewConstantArray(n, (Pointer)normal,
+		TYPE_FLOAT, CATEGORY_REAL, 1, 3);
+    }
     else
     {
 	attr = DXGetComponentAttribute(field, "connections", "element type");
 	if (!attr)
 	{
 	    DXSetError(ERROR_DATA_INVALID, "#10255", 
-				"connections", "element type");
+			    "connections", "element type");
 	    return ERROR;
 	}
 
@@ -542,32 +531,31 @@ _dxfConnectionNormals_Field(Field field)
 	/*
 	 * Check the topological primitive.
 	 */
-
-	primitive = DXGetString((String)attr);
+	    primitive = DXGetString((String)attr);
 
 	if (! strcmp(primitive, "triangles"))
 	    array = _dxf_CDep_triangles(field);
 	else if (! strcmp(primitive, "quads"))
 	    array = _dxf_CDep_quads(field);
 	else
-	    return OK;
+	    array = NULL;
     }
 
-    if (! array)
-	return ERROR;
+    if (array)
+    {
+	/*
+	 * Set the components of the output fields.
+	 */
+	if (! DXSetComponentValue(field, "normals",(Object) array))
+	    return ERROR;
 
-    /*
-     * Set the components of the output fields.
-     */
-    if (! DXSetComponentValue(field, "normals",(Object) array))
-	return ERROR;
+	if (! DXSetComponentAttribute(field, "normals", "dep",
+				    (Object) DXNewString("connections")))
+	    return ERROR;
 
-    if (! DXSetComponentAttribute(field, "normals", "dep",
-				(Object) DXNewString("connections")))
-        return ERROR;
-
-    if (! DXEndField(field))
-	return ERROR;
+	if (! DXEndField(field))
+	    return ERROR;
+    }
 
     return OK;
 }
@@ -892,13 +880,20 @@ _dxfPositionNormals_Field(Field field)
 	DXSetError(ERROR_DATA_INVALID, "positions must be 2 or 3-D");
 	return ERROR;
     }
+
+    if (shape[0] == 2)
+    {
+        float normal[3] = {0.0, 0.0, 1.0};
+	array = (Array)DXNewConstantArray(n, (Pointer)normal,
+		TYPE_FLOAT, CATEGORY_REAL, 1, 3);
+    }
     else
     {
 	attr = DXGetComponentAttribute(field, "connections", "element type");
 	if (!attr)
 	{
 	    DXSetError(ERROR_DATA_INVALID, "#10255",
-					"connections", "element type");
+				    "connections", "element type");
 	    return ERROR;
 	}
 
@@ -919,23 +914,23 @@ _dxfPositionNormals_Field(Field field)
 	else if (! strcmp(primitive, "quads"))
 	    array =_dxf_PDep_quads(field);
 	else
-	    return OK;
+	    array = NULL;
     }
+    
+    if (array)
+    {
+	/*
+	 * Set the components of the output fields.
+	 */
 
-    if (! array)
-	return ERROR;
+	if (DXGetComponentValue(field, "original normals"))
+	    DXDeleteComponent(field, "original normals");
 
-    /*
-     * Set the components of the output fields.
-     */
-
-    if (DXGetComponentValue(field, "original normals"))
-	DXDeleteComponent(field, "original normals");
-
-    if (! (DXSetComponentValue(field, "normals",(Object)array) &&
-	   DXChangedComponentValues(field, "normals")	       &&
-	   DXEndField(field)))
-	return ERROR;
+	if (! (DXSetComponentValue(field, "normals",(Object)array) &&
+	       DXChangedComponentValues(field, "normals")	       &&
+	       DXEndField(field)))
+	    return ERROR;
+    }
 
     return OK;
 }
