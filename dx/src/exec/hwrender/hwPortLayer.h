@@ -63,7 +63,7 @@ register tdmRenderInstance *instance = (tdmRenderInstance *) G
 #define PIXH (instance->pixh)
 #define BUFFER_MODE (instance->bufferMode)
 #define VISIBILITY (instance->visibility)
-#define COLORMAP (instance->colorMap)
+#define CLRMAP (instance->colorMap)
 #define IMAGE_CTX (instance->imageCtx)
 #define STACK (instance->stack)
 #define MATRIX_STACK (instance->stack)
@@ -255,9 +255,6 @@ typedef struct tdmPortHandleS {
 
 #define PORT_CTX _portContext
 #define EFUNCS(foo) (_eFuncs->foo)
-
-#define VERSION(major,minor,rev) \
-  ((major)*0xFFFFFF + (minor)*0xFFFF + (rev)) /* 0x MM mm rrrr */
 
 /*
  *  The rest of the porting layer is callable by either a test program or
