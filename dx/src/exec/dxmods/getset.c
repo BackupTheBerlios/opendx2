@@ -10,11 +10,12 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/getset.c,v 1.5 2000/08/10 02:06:39 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/getset.c,v 1.6 2000/08/10 05:28:23 davidt Exp $
  */
 
 #include <string.h>
 #include <dx/dx.h>
+#include "../dpexec/graph.h"
 
 #define LOCAL 			1
 #define GLOBAL 			0
