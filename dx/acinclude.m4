@@ -240,12 +240,17 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
     AC_MSG_CHECKING(architecture specific stuff)
     case $ARCH in
 	ibm6000)
-	    if test "$CC" != "gcc" ; then
+	    a=`echo $CC | sed "s/.*gcc.*/YES/"`
+	    if test "$a" = "YES" ; then
+		CFLAGS="$CFLAGS -mminimal-toc"
+		DXEXEC_EXP='-Wl,-bexpall'
+		DXEXEC_IMP=''
+	    else
 		DXEXEC_EXP='-bE:$(EXP)'
 		DXEXEC_IMP='-bI:$(EXP)'
-		AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP, [Architecture exports])
-		AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP, [Architecture imports])
 	    fi
+	    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP, [Architecture exports])
+	    AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP, [Architecture imports])
 	    ;;
 	intelnt)
 		DXEXEC_EXP='-def$(WEXP)'
