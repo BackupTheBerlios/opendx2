@@ -129,7 +129,7 @@ void _dxfcleanup_mem() { }
 
 
 
-#if ibm6000 || sgi || solaris || alphax || hp700
+#if ibm6000 || sgi || solaris || alphax || hp700 || linux
 
 #define memroutines
 

@@ -541,6 +541,7 @@ static Error ExProcessTask (EXTask t, int iteration)
     int			status;
     EXTaskGroup		oldTG;
     Context             savedContext;
+    int		  	lastTask;
 
     oldTG = runningTG;
     ecode = ERROR_NONE;
@@ -616,6 +617,13 @@ copymessage:
     }
 
 countdown:
+
+
+#if 0
+before the changes made to fix bugs found when debugging
+SMP linux -- gda
+
+
     DXlock (&tg->lock, exJID);
     ntodo = --(tg->ntodo);
     if (ecode != ERROR_NONE && tg->error == ERROR_NONE)
@@ -633,6 +641,51 @@ countdown:
      */
     if ((ntodo == 0) && (! tg->sync))
 	_dxf_ExRQEnqueue (ExDestroyTaskGroup, (Pointer) tg, 1, 0, tg->procId, FALSE);
+
+#else
+
+    /*
+     * Decrement the task group task counter.  Was this the last task?
+     */
+    DXlock (&tg->lock, exJID);
+    tg->ntodo --;
+    lastTask = (tg->ntodo == 0);
+    DXunlock (&tg->lock, exJID);
+
+    if (tg->sync == 0)
+    {
+        /*
+         * Its an asynchronous task group.
+         * Forget about errors... no-one is waiting for them.
+         */
+        DXFree ((Pointer) emsg);
+
+        /*
+         * If this was the last task in the task group then arrange for the
+         * task group to be deleted.
+         */
+        if (lastTask)
+            _dxf_ExRQEnqueue (ExDestroyTaskGroup, (Pointer)tg, 1, 0, tg->procId, FALSE);
+    }
+    else
+    {
+        /*
+         * A synchronous task group... the creator is waiting for
+         * ntodo to go to zero (and the lock to be available).
+         * If there's an error conditition with the current task and
+         * there wasn't one stashed in the task group, then stash
+         * this one.
+         */
+        if (ecode != ERROR_NONE && tg->error == ERROR_NONE)
+        {
+            tg->error = ecode;
+            tg->emsg  = emsg;
+            emsg      = NULL;
+        }
+    }
+
+
+#endif
     
     if (t->delete)
 	DXFree ((Pointer) t);
@@ -800,6 +853,8 @@ static Error ExProcessTaskGroup (int sync)
     }
     else 
     {
+        int knt;
+
 	/*
 	 * This processor is now restricted to processing tasks in this
 	 * task group.  Once it can no longer get a job in this task group
@@ -813,6 +868,10 @@ static Error ExProcessTaskGroup (int sync)
 	/* Do the task that I saved above as myTask */
 	if (myTask != NULL)
 	    ExProcessTask (myTask, myIter);
+
+#if 0
+before the changes made to fix bugs found when debugging
+SMP linux -- gda
 
 	count = &tg->ntodo;
 	while (*count > 0)
@@ -834,6 +893,19 @@ static Error ExProcessTaskGroup (int sync)
 	    for (i = 0; *count && i < 100; ++i)
 		;
 	}
+
+#else
+
+        do
+        {
+            DXlock(&tg->lock, 0);
+            knt = tg->ntodo;
+            DXunlock(&tg->lock, 0);
+
+            _dxf_ExRQDequeue ((int) tg);
+        } while(knt);
+
+#endif
 
 	DXMarkTimeLocal ("joining");
 

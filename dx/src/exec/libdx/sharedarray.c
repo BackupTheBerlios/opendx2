@@ -242,7 +242,7 @@ _dxfGetSharedArrayInfo(SharedArray a, int *id, long *offset)
 }
 
 SharedArray
-_dxfNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, int *s)
+DXNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, int *s)
 {
     Pointer data, base = _getBase(id);
     if (!base)
@@ -250,11 +250,11 @@ _dxfNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, in
 
     data = (Pointer)(((char *)base) + offset);
     
-    return DXNewSharedArray(id, data, t, c, r, s);
+    return DXNewSharedArrayV(id, data, t, c, r, s);
 }
 
 SharedArray
-_dxfNewSharedArrayFromOffset(int id, long offset, Type t, Category c, int r, ...)
+DXNewSharedArrayFromOffset(int id, long offset, Type t, Category c, int r, ...)
 {
     int shape[100];
     int i;
@@ -269,7 +269,7 @@ _dxfNewSharedArrayFromOffset(int id, long offset, Type t, Category c, int r, ...
     va_end(arg);
 
     /* call V version */
-    return _dxfNewSharedArrayFromOffsetV(id, offset, t, c, r, shape);
+    return DXNewSharedArrayFromOffsetV(id, offset, t, c, r, shape);
 }
 
 #else
@@ -332,14 +332,14 @@ _dxfGetSharedArrayInfo(SharedArray a, int *id, long *offset)
 }
 
 SharedArray
-_dxfNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, int *s)
+DXNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, int *s)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "shared array support requires shmat");
     return NULL;
 }
 
 SharedArray
-_dxfNewSharedArrayFromOffset(int id, long offset, Type t, Category c, int r, ...)
+DXNewSharedArrayFromOffset(int id, long offset, Type t, Category c, int r, ...)
 {
     DXSetError(ERROR_NOT_IMPLEMENTED, "shared array support requires shmat");
     return NULL;

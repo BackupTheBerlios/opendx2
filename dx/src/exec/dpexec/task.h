@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/task.h,v 1.2 2000/08/11 15:28:14 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/task.h,v 1.3 2001/05/17 20:44:35 gda Exp $
  */
 
 #ifndef _TASK_H
@@ -52,6 +52,7 @@ typedef struct _EXTaskGroup
     int                 sync;                   /* synchronous flag     */
     ErrorCode           error;                  /* for error return     */
     char                *emsg;                  /* for error return     */
+    int			seq;			/* allocation sequence  */
 } _EXTaskGroup;
 
 typedef struct

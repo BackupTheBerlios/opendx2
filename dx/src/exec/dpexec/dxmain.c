@@ -343,8 +343,8 @@ DXmain (argc, argv, envp)
     setrlimit (RLIMIT_CORE, &rl);
 #endif
 
-#if defined(linux)
-    nphysprocs = nprocs = 1;
+#if defined(linux) && (ENABLE_SMP_LINUX == 0)
+     nphysprocs = nprocs = 1;
 #elif HAVE_SYSMP
     nphysprocs = sysmp (MP_NPROCS);	/* find the number of processors */
     if(nphysprocs > 3)

@@ -21,6 +21,14 @@ extern DXmain(int argc, char **argv, char **envp);
 #include <winsock.h>
 #endif
 
+#include <signal.h>
+#include <stdio.h>
+void sig(int s)
+{
+    fprintf(stderr, "%d: signal %d caught\n", getpid(), s);
+    abort();
+}
+
 main (argc, argv, envp)
     int		argc;
     char	**argv;
@@ -39,6 +47,8 @@ main (argc, argv, envp)
 	}
     }
 #endif
+
+    signal(SIGSEGV, sig);
 
     return DXmain(argc, argv, envp);
 }

@@ -1554,6 +1554,7 @@ Object readin_object(char *dataset, Pointer *header, HashTable ht,
 	    
 	    break;
 	    
+#if 0
 	  case CLASS_SHAREDARRAY:
 	  {
 	      struct i_sharedarray *isa;
@@ -1561,6 +1562,7 @@ Object readin_object(char *dataset, Pointer *header, HashTable ht,
 	      o = (Object)_dxfNewSharedArrayFromOffsetV(isa->id, isa->offset, type, category, rank, shape);
 	      break;
 	  }
+#endif
 
 	  case CLASS_PATHARRAY:
 	    o = (Object)DXNewPathArray(count+1);

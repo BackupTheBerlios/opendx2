@@ -753,6 +753,250 @@ int DXfetch_and_add(int *p, int value, lock_type *l, int who)
 #endif /* NEWLOCKS */
 #endif /* sgi */
 
+/*
+ * Real locks for linux IF SMP ENABLED
+ */
+
+#if defined(linux) && (ENABLE_SMP_LINUX == 1)
+
+#define lockcode
+
+#include "plock.h"
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/shm.h>
+
+struct _lock
+{
+    int knt;	/* If its locked, the number of waiters + 1.  Else 0 */
+    int wait;
+};
+
+#define N_INIT_LOCKS  2048
+struct _lock *_initLocks;
+static int _nLocks = 0;
+
+static int initted = 0;
+static int locklock;
+static int lock_shmid;
+
+#define SHM_FLAGS        (IPC_CREAT | S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
+
+int
+_dxf_initlocks(void)
+{
+    if ( !_dxf_locks_enabled )
+	return OK;
+
+    if (!  PLockInit())
+        abort();
+
+    locklock = PLockAllocateLock(0);
+    if (locklock < 0)
+         abort();
+
+    lock_shmid = shmget(IPC_PRIVATE, N_INIT_LOCKS*sizeof(struct _lock), SHM_FLAGS);
+    if (lock_shmid == 0)
+    {
+        perror("error allocating shared memory segment for dx locks");
+	abort();
+    }
+
+    _initLocks = (struct _lock *)shmat(lock_shmid, 0, 0);
+    if (_initLocks == (struct _lock *)-1)
+    {
+        perror("error attaching shared memory segment for dx locks");
+	abort();
+    }
+
+    shmctl(lock_shmid, IPC_RMID, 0);
+
+    initted = 1;
+    return OK;
+}
+
+int 
+DXcreate_lock(lock_type *l, char *name)
+{
+    struct _lock *_lock;
+
+    if ( !_dxf_locks_enabled )
+	return OK;
+
+    if (! initted)
+        if (! _dxf_initlocks())
+	    return 0;
+
+    if (_nLocks < N_INIT_LOCKS)
+        _lock = _initLocks + _nLocks++;
+    else
+    {
+	_lock = (struct _lock *)DXAllocate(sizeof(struct _lock));
+	if (! _lock)
+	    return 0;
+    }
+    
+    _lock->knt = 0;
+    _lock->wait = -1;
+
+    *l = (lock_type)_lock;
+    return OK;
+}
+
+int
+DXdestroy_lock(lock_type *l)
+{
+    struct _lock *_lock = *(struct _lock **)l;
+    int n;
+
+    if ( !_dxf_locks_enabled )
+	return OK;
+
+    if (! initted)
+    {
+	DXSetError(ERROR_INTERNAL, "trying to destroy a lock before initting locks?");
+	return ERROR;
+    }
+
+    if (_lock->knt)
+    {
+	DXSetError(ERROR_INTERNAL, "trying to destroy a locked lock");
+	return ERROR;
+    }
+
+    if (_lock->wait > 0)
+    {
+	DXSetError(ERROR_INTERNAL, 
+		"why is there a wait associated with a lock thats being destroyed?");
+	return ERROR;
+    }
+
+    n = _lock - _initLocks;
+    if (n < 0 || n > N_INIT_LOCKS)
+	DXFree((Pointer)*l);
+
+    return OK;
+}
+
+int
+DXlock(lock_type *l, int who)
+{
+    struct _lock *_lock = *(struct _lock **)l;
+
+    if ( !_dxf_locks_enabled )
+	return OK;
+
+    if (! initted)
+        if (! _dxf_initlocks())
+	    return 0;
+
+    PLockLock(locklock);
+
+    /*
+     * Indicate my interest
+     */
+    _lock->knt ++;
+
+    /*
+     * If its already locked...
+     */
+    if (_lock->knt > 1)
+    {
+        if (_lock->wait == -1)
+	    _lock->wait = PLockAllocateWait();
+
+	/*
+	 * Wait.
+	 */
+	PLockWait(_lock->wait, locklock);
+    }
+
+    /*
+     * Now if noone is waiting and a wait is allocated, free the wait
+     */
+    if (_lock->knt == 1 && _lock->wait != -1)
+    {
+	PLockFreeWait(_lock->wait);
+	_lock->wait = -1;
+    }
+
+    PLockUnlock(locklock);
+    return OK;
+}
+
+int
+DXunlock(lock_type *l, int who)
+{
+    struct _lock *_lock = *(struct _lock **)l;
+
+    if ( !_dxf_locks_enabled )
+	return OK;
+
+    PLockLock(locklock);
+
+    if (_lock->knt == 0)
+    {
+        DXSetError(ERROR_INTERNAL, "Unlocking an unlocked lock?");
+	return;
+    }
+
+    /*
+     * Release my count
+     */
+    _lock->knt --;
+
+    /*
+     * If there's anyone waiting, kick them.  If not, and there's a 
+     * wait allocated, free it.
+     */
+    if (_lock->knt)
+        PLockSignal(_lock->wait);
+
+    PLockUnlock(locklock);
+
+    return OK;
+}
+
+int
+DXtry_lock(lock_type *l, int who)
+{
+    int r;
+    struct _lock *_lock = *(struct _lock **)l;
+
+    if ( !_dxf_locks_enabled )
+	return OK;
+
+    PLockLock(locklock);
+
+    if (_lock->knt == 0)
+    {
+        _lock->knt ++;
+	r = OK;
+    }
+    else
+        r = ERROR;
+
+    PLockUnlock(locklock);
+    return r;
+}
+
+int
+DXfetch_and_add(int *p, int value, lock_type *l, int who)
+{
+    int old_value;
+
+    if (! initted)
+        _dxf_initlocks();
+
+    DXlock(l, who);
+    old_value = *p;
+    *p += value;
+    DXunlock(l, who);
+
+    return old_value;
+}
+
+#endif /* linux */
 
 
 /*
