@@ -1,3 +1,3 @@
 dxincdir = $(prefix)/dx/include
 SUBDIRS = dx
-dxinc_HEADERS = dxl.h dxconfig.h
+dxinc_HEADERS = dxl.h dxconfig.h dxstereo.h
