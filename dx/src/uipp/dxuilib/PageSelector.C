@@ -25,6 +25,9 @@
 #include "MoveNodesDialog.h"
 #include "lex.h"
 
+#include <X11/IntrinsicP.h>
+#include <X11/Composite.h>
+#include <X11/ShellP.h>
 #include <Xm/Form.h>
 #include <Xm/Label.h>
 #include <Xm/ToggleB.h>
@@ -1010,8 +1013,6 @@ void PageSelector::updateList()
 
     XtVaSetValues (this->popupList, XmNvisibleItemCount, 
 	(next<=MAX_VISIBLE?next:MAX_VISIBLE), NULL);
-    XtVaSetValues (XtParent(this->popupList), 
-	XmNwidth, BUTTON_WIDTH+30, NULL);
 
     //
     // Show the page as selected in the list and make sure that position is showing.
@@ -1019,21 +1020,11 @@ void PageSelector::updateList()
     XmListAddItemsUnselected (this->popupList, strTable, next, 1);
     XmListSelectPos (this->popupList, select_this_item, False);
     int toppos;
-    int maxtoppos = 1 + next - MAX_VISIBLE;
+    int maxtoppos = next - MAX_VISIBLE;
     if (select_this_item <= MAX_VISIBLE) toppos = 1;
     else toppos = select_this_item - 3;
-    if (toppos >= maxtoppos) toppos = 0;
-    if (toppos)
-	XmListSetPos (this->popupList, toppos);
-    else 
-	//
-	// According to the Motif doc passing 0 to this func makes the last
-	// item in the list, the last visible item.  I've never seen it work, though.
-	// The result is that if you've selected the last page, then the list will
-	// never be scrolled so that that page is showing.
-	//
-	XmListSetBottomPos (this->popupList, 0);
-
+    if (toppos >= maxtoppos) toppos = maxtoppos;
+    XmListSetPos (this->popupList, toppos);
     int i;
     for (i=0; i<next; i++)
 	XmStringFree (strTable[i]);
@@ -1292,6 +1283,12 @@ void PageSelector_EllipsisEH(Widget , XtPointer clientData, XEvent *e, Boolean *
 {
     PageSelector* psel = (PageSelector*)clientData;
     ASSERT(psel);
+
+    if(psel->is_grabbed) {
+	psel->ungrab();
+	return;
+    }
+
     psel->updateList();
 
     Dimension width, height;
