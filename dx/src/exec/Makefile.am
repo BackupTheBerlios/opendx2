@@ -28,7 +28,7 @@ install-exec-local:
 		rm *.o	;						   \
 	done ; 								   \
 	if test ! -z "@FMT_LIBS@" ; then				   \
-		for i in @FMT_LIBS@ ; do				   \
+		for i in @FMT_LIBS@ "" ; do				   \
 			lib="";						   \
 			for j in /lib /usr/lib /usr/local/lib @LIBS@ ; do  \
 				k=`echo $$j | sed -e "s/-L//"` ;	   \
