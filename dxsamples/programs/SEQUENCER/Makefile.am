@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+sampleprogdir = $(prefix)/dx/samples/programs/SEQUENCER
+
 LINKLIST = \
          ContoursAndCaption.cfg\
          ContoursAndCaption.net\
@@ -23,7 +25,9 @@ LINKLIST = \
          Streamline.net
 
 myinstall: 
-	$(mkinstalldirs) $(prefix)/dx/samples/programs/SEQUENCER
-	@for s in $(LINKLIST) ; do \
-		$(LN_S) $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/SEQUENCER ; \
-	done
+	$(mkinstalldirs) $(sampleprogdir)
+	@-sh -c '( echo "cd $(sampleprogdir)" ; \
+		cd $(sampleprogdir) && for s in $(LINKLIST) ; do \
+		$(LN_S) ../$$s $$s ; \
+		echo "$(LN_S) ../$$s $$s" ; \
+	done )'

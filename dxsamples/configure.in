@@ -29,7 +29,9 @@ AC_ARG_WITH(javadx,
               [with_javadx='yes'])
 
 AC_PROG_INSTALL
-AC_PROG_LN_S
+if test -z "$LN_S" ; then
+    AC_PROG_LN_S
+fi
 
 DX_INSTALL_PATH
 DX_GET_PREFIX

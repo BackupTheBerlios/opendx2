@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+sampleprogdir = $(prefix)/dx/samples/programs/DATA_DRIVEN_INTERACTORS
+
 LINKLIST = \
          DataDrivenInteractors.cfg\
          DataDrivenInteractors.net\
@@ -9,7 +11,9 @@ LINKLIST = \
          Imide_potential.net
 
 myinstall: 
-	$(mkinstalldirs) $(prefix)/dx/samples/programs/DATA_DRIVEN_INTERACTORS
-	@for s in $(LINKLIST) ; do \
-		$(LN_S) $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/DATA_DRIVEN_INTERACTORS ; \
-	done
+	$(mkinstalldirs) $(sampleprogdir)
+	@-sh -c '( echo "cd $(sampleprogdir)" ; \
+		cd $(sampleprogdir) && for s in $(LINKLIST) ; do \
+		$(LN_S) ../$$s $$s ; \
+		echo "$(LN_S) ../$$s $$s" ; \
+	done )'

@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+sampleprogdir = $(prefix)/dx/samples/programs/INTERFACE_CONTROL
+
 LINKLIST = \
          DialogStyle.cfg\
          DialogStyle.net\
@@ -11,7 +13,9 @@ LINKLIST = \
          InterfaceControl3.net
 
 myinstall: 
-	$(mkinstalldirs) $(prefix)/dx/samples/programs/INTERFACE_CONTROL
-	@for s in $(LINKLIST) ; do \
-		$(LN_S) $(prefix)/dx/samples/programs/$$s  $(prefix)/dx/samples/programs/INTERFACE_CONTROL ; \
-	done
+	$(mkinstalldirs) $(sampleprogdir)
+	@-sh -c '( echo "cd $(sampleprogdir)" ; \
+		cd $(sampleprogdir) && for s in $(LINKLIST) ; do \
+		$(LN_S) ../$$s $$s ; \
+		echo "$(LN_S) ../$$s $$s" ; \
+	done )'
