@@ -941,23 +941,16 @@ void PageSelector::buildPageMenu()
 	    this->getRootWidget(), args, n);
 
     parent = XtVaCreateManagedWidget ("rcForm",
-	xmFormWidgetClass, parent,
+	xmBulletinBoardWidgetClass, parent,
 	XmNshadowThickness, 1,
 	XmNshadowType, XmSHADOW_OUT,
 	XmNresizePolicy, XmRESIZE_ANY,
+	XmNmarginWidth, 2,
+	XmNmarginHeight, 2,
     NULL);
 
     n = 0;
-    XtSetArg (args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNleftAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
-    XtSetArg (args[n], XmNtopOffset, 3); n++;
-    XtSetArg (args[n], XmNleftOffset, 3); n++;
-    XtSetArg (args[n], XmNrightOffset, 3); n++;
-    XtSetArg (args[n], XmNbottomOffset, 3); n++;
     XtSetArg (args[n], XmNlistSizePolicy, XmCONSTANT); n++;
-    XtSetArg (args[n], XmNvisibleItemCount, MAX_VISIBLE); n++;
     XtSetArg (args[n], XmNselectionPolicy, XmBROWSE_SELECT); n++;
     this->popupList = XmCreateScrolledList (parent, "pageList", args, n);
     XtVaSetValues (this->popupList, XmNshadowThickness, 0, NULL);
@@ -1011,20 +1004,44 @@ void PageSelector::updateList()
 	if (pt->getState() == TRUE) select_this_item = next;
     }
 
-    XtVaSetValues (this->popupList, XmNvisibleItemCount, 
-	(next<=MAX_VISIBLE?next:MAX_VISIBLE), NULL);
+    int numDisp = next<=MAX_VISIBLE?next:MAX_VISIBLE;
+
+   // If fixing the scroll lists width, we must also set its
+   // height. This means finding out how tall 1 line is and multiplying
+   // it by the number of items.
+
+    Dimension lheight;
+    XtVaGetValues (this->popupList, XmNheight, &lheight, NULL);
+    fprintf(stderr, "list height %d\n", lheight);
+
+    XmFontList xmf; Dimension marginH, shadowT, highlightT;
+    XtVaGetValues (this->popupList, XmNfontList, &xmf, NULL);
+    XtVaGetValues (XtParent(this->popupList), XmNmarginHeight, &marginH,
+		XmNshadowThickness, &shadowT,
+		XmNhighlightThickness, &highlightT, NULL);
+
+    Dimension fh = XmStringHeight (xmf, strTable[0]);
+
+    fprintf(stderr, "cons height %d\n", ((fh+1)*numDisp)+(2*(marginH+shadowT+highlightT)));
+
+    XtVaSetValues (XtParent(this->popupList),
+	XmNwidth, BUTTON_WIDTH+30, 
+	XmNheight, ((fh+1)*numDisp+(2*(marginH+shadowT+highlightT))+6), 
+	NULL);
 
     //
     // Show the page as selected in the list and make sure that position is showing.
     //
     XmListAddItemsUnselected (this->popupList, strTable, next, 1);
     XmListSelectPos (this->popupList, select_this_item, False);
-    int toppos;
-    int maxtoppos = next - MAX_VISIBLE;
-    if (select_this_item <= MAX_VISIBLE) toppos = 1;
-    else toppos = select_this_item - 3;
-    if (toppos >= maxtoppos) toppos = maxtoppos;
-    XmListSetPos (this->popupList, toppos);
+
+    if(select_this_item >= MAX_VISIBLE) {
+	int bofs = next - select_this_item;
+	if(bofs>MAX_VISIBLE/2) bofs = MAX_VISIBLE/2; 
+	XmListSetBottomPos(this->popupList, select_this_item+bofs); 
+    }
+    fprintf(stderr, "select_this_item: %d\n", select_this_item);
+
     int i;
     for (i=0; i<next; i++)
 	XmStringFree (strTable[i]);
