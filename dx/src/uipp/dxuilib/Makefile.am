@@ -7,11 +7,11 @@ noinst_LIBRARIES = libDXUI.a
 DISTCLEANFILES = netlex.c netyacc.c
 
 BUILT_SOURCES = \
-	sequence.txt \
-	gifmac.txt \
-	vrmlmac.txt \
-	dxmac.txt \
-	imagemac.txt \
+	sequence.h \
+	gifmac.h \
+	vrmlmac.h \
+	dxmac.h \
+	imagemac.h \
 	netlex.h \
 	netyacc.c
 
@@ -387,11 +387,11 @@ SRCS5 = \
 	delete.C \
 	new.C \
 	\
-	sequence.txt \
-	gifmac.txt  \
-	vrmlmac.txt \
-	dxmac.txt \
-	imagemac.txt \
+	sequence.h \
+	gifmac.h  \
+	vrmlmac.h \
+	dxmac.h \
+	imagemac.h \
 	\
 	netyacc.c
 
