@@ -109,7 +109,6 @@ Widget GridDialog::createDialog(Widget parent)
     form = this->CreateMainForm(parent, this->name, arg, n);
 
     XtVaSetValues(XtParent(form), 
-	XmNminWidth, 	250, 
 	XmNtitle,	" Grid...",
 	NULL);
 
@@ -140,217 +139,10 @@ Widget GridDialog::createDialog(Widget parent)
         XmNbottomOffset,      10,
         NULL);
 
-
-    this->align_form = XtVaCreateManagedWidget("alignForm",
-	xmFormWidgetClass,	form,
-	XmNbottomAttachment,	XmATTACH_WIDGET,
-	XmNbottomWidget,	separator1,
-	XmNbottomOffset,	10,
-	XmNrightAttachment,	XmATTACH_FORM,
-	XmNleftAttachment,	XmATTACH_FORM,
-	XmNleftOffset,		5,
-	XmNrightOffset,		5,
-	XmNtopAttachment,	XmATTACH_FORM,
-	XmNtopOffset,		252,
-	NULL);
-
-    this->llbtn = XtVaCreateManagedWidget("llButton",
-	xmToggleButtonWidgetClass, this->align_form,
-        XmNbottomAttachment,  XmATTACH_FORM,
-        XmNbottomOffset,      10,
-        XmNleftAttachment,    XmATTACH_FORM,
-        XmNleftOffset,        5,
-        XmNindicatorType,     XmONE_OF_MANY,
-	XmNshadowThickness,   0,
-	XmNset,               False,
-	NULL);
-
-    this->lrbtn = XtVaCreateManagedWidget("lrButton",
-	xmToggleButtonWidgetClass, this->align_form,
-        XmNbottomAttachment,  XmATTACH_FORM,
-        XmNbottomOffset,      10,
-	XmNleftAttachment,    XmATTACH_WIDGET,
-	XmNleftWidget,	      this->llbtn,
-	XmNleftOffset,	      30,
-        XmNrightAttachment,   XmATTACH_FORM,
-        XmNrightOffset,       5,
-        XmNindicatorType,     XmONE_OF_MANY,
-	XmNshadowThickness,   0,
-	XmNset,               False,
-	NULL);
-
-    this->ctbtn = XtVaCreateManagedWidget("ctButton",
-	xmToggleButtonWidgetClass, this->align_form,
-        XmNbottomAttachment,  XmATTACH_WIDGET,
-        XmNbottomOffset,      10,
-	XmNbottomWidget,      this->llbtn,
-        XmNleftAttachment,    XmATTACH_POSITION,
-        XmNleftPosition,      50,
-        XmNleftOffset,        -35,
-        XmNindicatorType,     XmONE_OF_MANY,
-	XmNshadowThickness,   0,
-	XmNset,               False,
-        NULL);
-
-    this->upperbtn = XtVaCreateWidget("upperButton",
-	xmToggleButtonWidgetClass, this->align_form,
-        XmNbottomAttachment,  XmATTACH_WIDGET,
-	XmNbottomWidget,      this->ctbtn,
-        XmNbottomOffset,      10,
-        XmNleftAttachment,    XmATTACH_POSITION,
-        XmNleftPosition,      50,
-        XmNleftOffset,        -35,
-        XmNindicatorType,     XmONE_OF_MANY,
-	XmNshadowThickness,   0,
-	XmNset,               False,
-        NULL);
-
-    this->lowerbtn = XtVaCreateWidget("lowerButton",
-	xmToggleButtonWidgetClass, this->align_form,
-        XmNbottomAttachment,  XmATTACH_FORM,
-        XmNbottomOffset,      10,
-        XmNleftAttachment,    XmATTACH_POSITION,
-        XmNleftPosition,      50,
-        XmNleftOffset,        -35,
-        XmNindicatorType,     XmONE_OF_MANY,
-	XmNshadowThickness,   0,
-	XmNset,               False,
-        NULL);
-
-    this->leftbtn = XtVaCreateWidget("leftButton",
-	xmToggleButtonWidgetClass, this->align_form,
-        XmNbottomAttachment,  XmATTACH_OPPOSITE_WIDGET,
-        XmNbottomOffset,      0,
-	XmNbottomWidget,      this->ctbtn,
-        XmNleftAttachment,    XmATTACH_FORM,
-        XmNleftOffset,        5,
-        XmNindicatorType,     XmONE_OF_MANY,
-	XmNshadowThickness,   0,
-	XmNset,               False,
-        NULL);
-
-    this->rightbtn = XtVaCreateWidget("rightButton",
-	xmToggleButtonWidgetClass, this->align_form,
-        XmNbottomAttachment,  XmATTACH_OPPOSITE_WIDGET,
-        XmNbottomOffset,      0,
-	XmNbottomWidget,      this->ctbtn,
-        XmNrightAttachment,   XmATTACH_FORM,
-        XmNrightOffset,       5,
-        XmNindicatorType,     XmONE_OF_MANY,
-	XmNshadowThickness,   0,
-	XmNset,               False,
-        NULL);
-
-    this->ulbtn = XtVaCreateManagedWidget("ulButton",
-	xmToggleButtonWidgetClass, this->align_form,
-        XmNbottomAttachment,  XmATTACH_WIDGET,
-	XmNbottomWidget,      this->ctbtn,
-        XmNbottomOffset,      10,
-        XmNleftAttachment,    XmATTACH_FORM,
-        XmNleftOffset,        5,
-        XmNindicatorType,     XmONE_OF_MANY,
-	XmNshadowThickness,   0,
-	XmNset,               False,
-	NULL);
-
-
-    this->urbtn = XtVaCreateManagedWidget("urButton",
-	xmToggleButtonWidgetClass, this->align_form,
-        XmNbottomAttachment,  XmATTACH_WIDGET,
-	XmNbottomWidget,      this->ctbtn,
-        XmNbottomOffset,      10,
-	XmNleftAttachment,    XmATTACH_OPPOSITE_WIDGET,
-	XmNleftWidget,	      this->lrbtn,
-	XmNleftOffset,	      0,
-        XmNrightAttachment,   XmATTACH_FORM,
-        XmNrightOffset,       5,
-        XmNindicatorType,     XmONE_OF_MANY,
-	XmNshadowThickness,   0,
-	XmNset,               False,
-	NULL);
-
-    this->alignLabel = XtVaCreateManagedWidget("alignLabel",
-	xmLabelWidgetClass,this->align_form,
-	XmNbottomAttachment,  XmATTACH_WIDGET,
-	XmNbottomWidget,      this->urbtn,
-	XmNbottomOffset,      10,
-	XmNleftAttachment,    XmATTACH_FORM,
-	XmNleftOffset,        5,
-	NULL);
-
-    this->separator2 = XtVaCreateManagedWidget("separator2",
-	xmSeparatorGadgetClass, form,
-        XmNleftAttachment,    XmATTACH_FORM,
-        XmNleftOffset,        5,
-        XmNrightAttachment,   XmATTACH_FORM,
-        XmNrightOffset,       5,
-        XmNbottomAttachment,  XmATTACH_WIDGET,
-        XmNbottomWidget,      this->align_form,
-        XmNbottomOffset,      10,
-        NULL);
-
-    this->hLabel = XtVaCreateManagedWidget("hLabel",
-	xmLabelWidgetClass,form,
-	XmNbottomAttachment,  XmATTACH_WIDGET,
-	XmNbottomWidget,      this->separator2,
-	XmNbottomOffset,      10,
-	XmNleftAttachment,    XmATTACH_FORM,
-	XmNrightAttachment,   XmATTACH_FORM,
-	XmNrightOffset,       100,
-	XmNleftOffset,        5,
-	XmNshadowThickness,   0,
-	XmNset,		      True,
-	NULL);
-
-    this->hspacing = XtVaCreateManagedWidget("hNumber",
-	xmStepperWidgetClass,form,
-        XmNbottomAttachment, XmATTACH_WIDGET,
-	XmNbottomWidget,     this->separator2, 
-	XmNbottomOffset,     10,
-	XmNrightAttachment,  XmATTACH_FORM,
-	XmNrightOffset,      5,
-	XmNdataType,         INTEGER,
-	XmNdigits,           3,
-	XmNrecomputeSize,    False,
-	XmNiMinimum,         5,
-	XmNiMaximum,         100,
-	XmNiValue,	     50,
-	NULL);
-
-    this->vLabel = XtVaCreateManagedWidget("vLabel",
-	xmLabelWidgetClass,form,
-	XmNbottomAttachment,  XmATTACH_WIDGET,
-	XmNbottomWidget,      this->hLabel,
-	XmNbottomOffset,      10,
-	XmNleftAttachment,    XmATTACH_FORM,
-	XmNleftOffset,        5,
-	XmNrightAttachment,   XmATTACH_FORM,
-	XmNrightOffset,       100,
-	XmNshadowThickness,   0,
-	XmNset,		      True,
-	NULL);
-
-    this->vspacing = XtVaCreateManagedWidget("vNumber",
-	xmStepperWidgetClass,form,
-        XmNbottomAttachment, XmATTACH_WIDGET,
-	XmNbottomWidget,     this->hLabel, 
-	XmNbottomOffset,     10,
-	XmNrightAttachment,  XmATTACH_FORM,
-	XmNrightOffset,      5,
-
-	XmNdataType,         INTEGER,
-	XmNdigits,           3,
-	XmNrecomputeSize,    False,
-	XmNiMinimum,         5,
-	XmNiMaximum,         100,
-	XmNiValue,	     50,
-	NULL);
-
-    this->spaceLabel = XtVaCreateManagedWidget("spaceLabel",
+    Widget label = XtVaCreateManagedWidget("typeLabel",
 	xmLabelWidgetClass,   form,
-	XmNbottomAttachment,  XmATTACH_WIDGET,
-	XmNbottomWidget,      this->vLabel,
-	XmNbottomOffset,      5,
+	XmNtopAttachment,  XmATTACH_FORM,
+	XmNtopOffset,         5,
 	XmNleftAttachment,    XmATTACH_FORM,
 	XmNleftOffset,        5,
 	XmNrightAttachment,   XmATTACH_FORM,
@@ -358,29 +150,16 @@ Widget GridDialog::createDialog(Widget parent)
 	XmNalignment,	      XmALIGNMENT_CENTER,
 	NULL);
 
-    this->separator3 = XtVaCreateManagedWidget("separator3",
-	xmSeparatorGadgetClass, form,
-        XmNleftAttachment,    XmATTACH_FORM,
-        XmNleftOffset,        5,
-        XmNrightAttachment,   XmATTACH_FORM,
-        XmNrightOffset,       5,
-        XmNbottomAttachment,  XmATTACH_WIDGET,
-        XmNbottomWidget,      this->spaceLabel,
-        XmNbottomOffset,      10,
-        NULL);
-
     n = 0;
     XtSetArg(arg[n], XmNleftAttachment, XmATTACH_FORM); n++;
     XtSetArg(arg[n], XmNrightAttachment, XmATTACH_FORM); n++;
-    XtSetArg(arg[n], XmNbottomAttachment, XmATTACH_WIDGET); n++;
-    XtSetArg(arg[n], XmNbottomWidget, this->separator3); n++;
+    XtSetArg(arg[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+    XtSetArg(arg[n], XmNtopWidget, label); n++;
     XtSetArg(arg[n], XmNleftOffset, 3); n++;
     XtSetArg(arg[n], XmNrightOffset, 3); n++;
     XtSetArg(arg[n], XmNbottomOffset, 10); n++;
     this->gc_rc = XmCreateRadioBox(form,
 	"gridType", arg, n);
-
-    XtManageChild(this->gc_rc);
 
     this->noneTButton = XtVaCreateManagedWidget("noneTButton",
 	xmToggleButtonWidgetClass, this->gc_rc,
@@ -402,19 +181,233 @@ Widget GridDialog::createDialog(Widget parent)
 	XmNshadowThickness,		0,
 	NULL);
 
-    Widget label = XtVaCreateManagedWidget("typeLabel",
+    XtManageChild(this->gc_rc);
+
+    this->separator3 = XtVaCreateManagedWidget("separator3",
+	xmSeparatorGadgetClass, form,
+        XmNleftAttachment,    XmATTACH_FORM,
+        XmNleftOffset,        5,
+        XmNrightAttachment,   XmATTACH_FORM,
+        XmNrightOffset,       5,
+        XmNtopAttachment,  XmATTACH_WIDGET,
+        XmNtopWidget,      this->gc_rc,
+        XmNtopOffset,      10,
+        NULL);
+
+    this->spaceLabel = XtVaCreateManagedWidget("spaceLabel",
 	xmLabelWidgetClass,   form,
-	XmNbottomAttachment,  XmATTACH_WIDGET,
-	XmNbottomWidget,      this->gc_rc,
-	XmNbottomOffset,      5,
+	XmNtopAttachment,  XmATTACH_WIDGET,
+	XmNtopWidget,      this->separator3,
+	XmNtopOffset,      5,
 	XmNleftAttachment,    XmATTACH_FORM,
 	XmNleftOffset,        5,
 	XmNrightAttachment,   XmATTACH_FORM,
 	XmNrightOffset,       5,
-	XmNtopAttachment,     XmATTACH_FORM,
-	XmNtopOffset,         5,
 	XmNalignment,	      XmALIGNMENT_CENTER,
 	NULL);
+
+    this->vspacing = XtVaCreateManagedWidget("vNumber",
+	xmStepperWidgetClass,form,
+        XmNtopAttachment, XmATTACH_WIDGET,
+	XmNtopWidget,     this->spaceLabel, 
+	XmNtopOffset,     10,
+	XmNrightAttachment,  XmATTACH_FORM,
+	XmNrightOffset,      5,
+	XmNdataType,         INTEGER,
+	XmNdigits,           3,
+	XmNrecomputeSize,    False,
+	XmNiMinimum,         5,
+	XmNiMaximum,         100,
+	XmNiValue,	     50,
+	NULL);
+
+    this->vLabel = XtVaCreateManagedWidget("vLabel",
+	xmLabelWidgetClass,form,
+	XmNtopAttachment,  XmATTACH_OPPOSITE_WIDGET,
+	XmNtopWidget,      this->vspacing,
+	XmNtopOffset,      0,
+	XmNleftAttachment,    XmATTACH_FORM,
+	XmNleftOffset,        5,
+	XmNrightAttachment,   XmATTACH_WIDGET,
+	XmNrightWidget,       this->vspacing,
+	XmNrightOffset,        75,
+	XmNshadowThickness,   0,
+	XmNset,		      True,
+	NULL);
+
+    this->hspacing = XtVaCreateManagedWidget("hNumber",
+	xmStepperWidgetClass,form,
+        XmNtopAttachment, XmATTACH_WIDGET,
+	XmNtopWidget,     this->vspacing, 
+	XmNtopOffset,     10,
+	XmNrightAttachment,  XmATTACH_FORM,
+	XmNrightOffset,      5,
+	XmNdataType,         INTEGER,
+	XmNdigits,           3,
+	XmNrecomputeSize,    False,
+	XmNiMinimum,         5,
+	XmNiMaximum,         100,
+	XmNiValue,	     50,
+	NULL);
+
+    this->hLabel = XtVaCreateManagedWidget("hLabel",
+	xmLabelWidgetClass,form,
+	XmNtopAttachment,  XmATTACH_OPPOSITE_WIDGET,
+	XmNtopWidget,      this->hspacing,
+	XmNtopOffset,      0,
+	XmNleftAttachment,    XmATTACH_FORM,
+	XmNleftOffset,        5,
+	XmNrightAttachment,   XmATTACH_WIDGET,
+	XmNrightWidget,       this->hspacing,
+	XmNrightOffset,        75,
+	XmNshadowThickness,   0,
+	XmNset,		      True,
+	NULL);
+
+    this->separator2 = XtVaCreateManagedWidget("separator2",
+	xmSeparatorGadgetClass, form,
+        XmNleftAttachment,    XmATTACH_FORM,
+        XmNleftOffset,        5,
+        XmNrightAttachment,   XmATTACH_FORM,
+        XmNrightOffset,       5,
+        XmNtopAttachment,  XmATTACH_WIDGET,
+        XmNtopWidget,      this->hspacing,
+        XmNtopOffset,      10,
+        NULL);
+
+    this->align_form = XtVaCreateManagedWidget("alignForm",
+	xmFormWidgetClass,	form,
+	XmNbottomAttachment,	XmATTACH_WIDGET,
+	XmNbottomWidget,	separator1,
+	XmNbottomOffset,	10,
+	XmNrightAttachment,	XmATTACH_FORM,
+	XmNleftAttachment,	XmATTACH_FORM,
+	XmNleftOffset,		5,
+	XmNrightOffset,		5,
+	XmNtopAttachment,	XmATTACH_WIDGET,
+	XmNtopWidget,	this->separator2,
+	XmNtopOffset,		10,
+	NULL);
+
+    {
+    this->alignLabel = XtVaCreateManagedWidget("alignLabel",
+	xmLabelWidgetClass,this->align_form,
+	XmNtopAttachment,  XmATTACH_FORM,
+	XmNleftAttachment,    XmATTACH_FORM,
+	XmNleftOffset,        5,
+	NULL);
+
+    this->ulbtn = XtVaCreateManagedWidget("ulButton",
+	xmToggleButtonWidgetClass, this->align_form,
+        XmNtopAttachment,  XmATTACH_WIDGET,
+	XmNtopWidget,      this->alignLabel,
+        XmNtopOffset,      10,
+        XmNleftAttachment,    XmATTACH_FORM,
+        XmNleftOffset,        5,
+        XmNindicatorType,     XmONE_OF_MANY,
+	XmNshadowThickness,   0,
+	XmNset,               False,
+	NULL);
+
+    this->urbtn = XtVaCreateManagedWidget("urButton",
+	xmToggleButtonWidgetClass, this->align_form,
+        XmNtopAttachment,  XmATTACH_WIDGET,
+	XmNtopWidget,      this->alignLabel,
+        XmNtopOffset,      10,
+        XmNrightAttachment,   XmATTACH_FORM,
+        XmNrightOffset,       5,
+        XmNindicatorType,     XmONE_OF_MANY,
+	XmNshadowThickness,   0,
+	XmNset,               False,
+	NULL);
+
+    this->ctbtn = XtVaCreateManagedWidget("ctButton",
+	xmToggleButtonWidgetClass, this->align_form,
+        XmNtopAttachment,  XmATTACH_WIDGET,
+        XmNtopOffset,      10,
+	XmNtopWidget,      this->ulbtn,
+        XmNleftAttachment,    XmATTACH_POSITION,
+        XmNleftPosition,      50,
+        XmNleftOffset,        -35,
+        XmNindicatorType,     XmONE_OF_MANY,
+	XmNshadowThickness,   0,
+	XmNset,               False,
+        NULL);
+
+    this->llbtn = XtVaCreateManagedWidget("llButton",
+	xmToggleButtonWidgetClass, this->align_form,
+        XmNtopAttachment,  XmATTACH_WIDGET,
+        XmNtopOffset,      10,
+        XmNtopWidget,      this->ctbtn,
+        XmNleftAttachment,    XmATTACH_FORM,
+        XmNleftOffset,        5,
+        XmNindicatorType,     XmONE_OF_MANY,
+	XmNshadowThickness,   0,
+	XmNset,               False,
+	NULL);
+
+    this->lrbtn = XtVaCreateManagedWidget("lrButton",
+	xmToggleButtonWidgetClass, this->align_form,
+        XmNtopAttachment,  XmATTACH_WIDGET,
+        XmNtopOffset,      10,
+        XmNtopWidget,      this->ctbtn,
+        XmNrightAttachment,   XmATTACH_FORM,
+        XmNrightOffset,       5,
+        XmNindicatorType,     XmONE_OF_MANY,
+	XmNshadowThickness,   0,
+	XmNset,               False,
+	NULL);
+
+    this->upperbtn = XtVaCreateWidget("upperButton",
+	xmToggleButtonWidgetClass, this->align_form,
+        XmNtopAttachment,  XmATTACH_WIDGET,
+	XmNtopWidget,      this->alignLabel,
+        XmNtopOffset,      10,
+        XmNleftAttachment,    XmATTACH_POSITION,
+        XmNleftPosition,      50,
+        XmNleftOffset,        -35,
+        XmNindicatorType,     XmONE_OF_MANY,
+	XmNshadowThickness,   0,
+	XmNset,               False,
+        NULL);
+
+    this->lowerbtn = XtVaCreateWidget("lowerButton",
+	xmToggleButtonWidgetClass, this->align_form,
+        XmNtopAttachment,  XmATTACH_WIDGET,
+        XmNtopOffset,      10,
+        XmNtopWidget,      this->ctbtn,
+        XmNleftAttachment,    XmATTACH_POSITION,
+        XmNleftPosition,      50,
+        XmNleftOffset,        -35,
+        XmNindicatorType,     XmONE_OF_MANY,
+	XmNshadowThickness,   0,
+	XmNset,               False,
+        NULL);
+
+    this->leftbtn = XtVaCreateWidget("leftButton",
+	xmToggleButtonWidgetClass, this->align_form,
+        XmNtopAttachment,  XmATTACH_OPPOSITE_WIDGET,
+        XmNtopOffset,      0,
+	XmNtopWidget,      this->ctbtn,
+        XmNleftAttachment,    XmATTACH_FORM,
+        XmNleftOffset,        5,
+        XmNindicatorType,     XmONE_OF_MANY,
+	XmNshadowThickness,   0,
+	XmNset,               False,
+        NULL);
+
+    this->rightbtn = XtVaCreateManagedWidget("rightButton",
+	xmToggleButtonWidgetClass, this->align_form,
+        XmNtopAttachment,  XmATTACH_OPPOSITE_WIDGET,
+        XmNtopOffset,      0,
+	XmNtopWidget,      this->ctbtn,
+        XmNrightAttachment,   XmATTACH_FORM,
+        XmNrightOffset,       5,
+        XmNindicatorType,     XmONE_OF_MANY,
+	XmNshadowThickness,   0,
+	XmNset,               False,
+        NULL);
+    }
 
     XtAddCallback(this->noneTButton,
 		      XmNvalueChangedCallback,
@@ -621,7 +614,11 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 	XtSetSensitive(dialog->hspacing, False);
 	XtSetSensitive(dialog->vspacing, False);
 
-	XtVaSetValues(dialog->separator2, XmNbottomWidget, dialog->ok, NULL);
+	XtVaSetValues(dialog->separator2, 
+	    XmNbottomAttachment, XmATTACH_WIDGET, 
+	    XmNbottomOffset, 10, 
+	    XmNbottomWidget, dialog->ok, 
+	    NULL);
 	XtUnmanageChild(dialog->align_form);
     }
     else if(widget == dialog->oneDvTButton)
@@ -630,16 +627,13 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 	XtSetSensitive(dialog->hspacing, False);
 	XtSetSensitive(dialog->vspacing, True);
 
+	XtUnmanageChild(dialog->align_form);
 	XtManageChild(dialog->upperbtn);
 	XtManageChild(dialog->lowerbtn);
 
-
-	XtVaSetValues(dialog->alignLabel, 
-		XmNbottomWidget,	dialog->upperbtn,
-		NULL);
 	XtVaSetValues(dialog->ctbtn, 
-		XmNbottomAttachment,	XmATTACH_WIDGET,
-		XmNbottomWidget,	dialog->lowerbtn,
+		XmNtopAttachment,	XmATTACH_WIDGET,
+		XmNtopWidget,	dialog->upperbtn,
 		NULL);
 
 	XtUnmanageChild(dialog->ulbtn);
@@ -651,7 +645,8 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 
 	XtManageChild(dialog->align_form);
 	XtVaSetValues(dialog->separator2, 
-	    XmNbottomWidget, dialog->align_form,NULL);
+	    XmNbottomAttachment, XmATTACH_NONE,
+	    NULL);
 	if(lower)
 	    XmToggleButtonSetState(dialog->lowerbtn, True, False);
 	else if(center)
@@ -666,14 +661,13 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 	XtSetSensitive(dialog->hspacing, True);
 	XtSetSensitive(dialog->vspacing, False);
 
+	XtUnmanageChild(dialog->align_form);
 	XtManageChild(dialog->leftbtn);
 	XtManageChild(dialog->rightbtn);
 
-	XtVaSetValues(dialog->alignLabel,
-		XmNbottomWidget,	dialog->ctbtn,
-		NULL);
 	XtVaSetValues(dialog->ctbtn, 
-		XmNbottomAttachment,	XmATTACH_FORM,
+		XmNtopAttachment,	XmATTACH_WIDGET,
+		XmNtopWidget,	dialog->alignLabel,
 		NULL);
 
 	XtUnmanageChild(dialog->ulbtn);
@@ -685,7 +679,8 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 
 	XtManageChild(dialog->align_form);
 	XtVaSetValues(dialog->separator2, 
-	    XmNbottomWidget, dialog->align_form,NULL);
+	    XmNbottomAttachment, XmATTACH_NONE,
+	    NULL);
 
 	if(right)
 	    XmToggleButtonSetState(dialog->rightbtn, True, False);
@@ -705,17 +700,15 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 	XtSetSensitive(dialog->hspacing, True);
 	XtSetSensitive(dialog->vspacing, True);
 
+	XtUnmanageChild(dialog->align_form);
 	XtManageChild(dialog->ulbtn);
 	XtManageChild(dialog->urbtn);
 	XtManageChild(dialog->llbtn);
 	XtManageChild(dialog->lrbtn);
 
-	XtVaSetValues(dialog->alignLabel,
-		XmNbottomWidget,	dialog->ulbtn,
-		NULL);
 	XtVaSetValues(dialog->ctbtn, 
-		XmNbottomAttachment,	XmATTACH_WIDGET,
-		XmNbottomWidget,	dialog->llbtn,
+		XmNtopAttachment,	XmATTACH_WIDGET,
+		XmNtopWidget,	dialog->ulbtn,
 		NULL);
 
 	XtUnmanageChild(dialog->leftbtn);
@@ -725,7 +718,8 @@ extern "C" void GridDialog_DimensionCB(Widget    widget,
 
 	XtManageChild(dialog->align_form);
 	XtVaSetValues(dialog->separator2, 
-	    XmNbottomWidget, dialog->align_form,NULL);
+	    XmNbottomAttachment, XmATTACH_NONE,
+	    NULL);
 	if(lower)
 	    if(right)
 		XmToggleButtonSetState(dialog->lrbtn, True, False);
