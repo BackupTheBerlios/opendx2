@@ -115,7 +115,11 @@ _dxf_ExInitServer(int pport)
     int width = FD_SETSIZE;
     struct timeval to;
 
+
     port = pport;
+
+retry:
+
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0)
@@ -347,6 +351,8 @@ init_client(char *host, int pport)
 #if DXD_SOCKET_UNIXDOMAIN_OK
     if (strcmp(host, "unix") == 0)
     {
+	int length;
+
 	memset((char *)&userver, 0, sizeof(userver));
 	userver.sun_family = AF_INET;
 	sprintf(userver.sun_path, "/tmp/.DX-unix/DX%d", port);
