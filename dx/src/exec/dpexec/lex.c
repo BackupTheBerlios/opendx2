@@ -201,9 +201,11 @@ int _Optlink
 #else
 static int
 #endif
-keycomp(struct keytab *a, struct keytab *b)
+keycomp(const void *a, const void *b)
 {
-    return (strcmp (a->name, b->name));
+    struct keytab *ka = (struct keytab *)a;
+    struct keytab *kb = (struct keytab *)b;
+    return (strcmp (ka->name, kb->name));
 }
  
  
