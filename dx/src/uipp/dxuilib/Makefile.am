@@ -5,6 +5,7 @@ INCLUDES =  -I${srcdir}/../base -I${top_srcdir}/include -I${srcdir}/../dxui -D@A
 noinst_LIBRARIES = libDXUI.a
 
 DISTCLEANFILES = netlex.c netyacc.c
+EXTRA_DIST = local.mk
 
 BUILT_SOURCES = \
 	sequence.h \
