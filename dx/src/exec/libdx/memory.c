@@ -1259,7 +1259,7 @@ int _dxf_initmemory()
 	/* includes crimson, indigo and onyx */
 	inventory_t *inv;
 	while (inv=getinvent()) {
-#ifdef SYSTYPE_SVR4
+#ifdef _SYSTYPE_SVR4
 	    if (inv->inv_class==INV_MEMORY && inv->inv_type==INV_MAIN) {
 		physmem = (uint)((double)inv->inv_state / 1024. / 1024.);
 		break;
