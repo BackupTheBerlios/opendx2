@@ -100,7 +100,7 @@ DXLError
 exDXLLoadScript(DXLConnection *conn, const char *file)
 {
     int l = strlen(file);
-    int sts;
+    int sts=0;
     char *buffer = MALLOC(l + 32);
     if (conn->dxuiConnected) {
         sts = ERROR;

@@ -154,7 +154,7 @@ int DictDelete(dictionary,key)
 _Dictionary	*dictionary;
 const char 	*key;
 {
-	DictItem	*dlist,*next;
+	DictItem	*dlist=NULL,*next=NULL;
 	int		found=0;
 	int		bucket;
 		
@@ -199,7 +199,7 @@ void		(*deleter)(void*);
 	
 	dlist = NewDictItem(key,def,deleter);
 	if (!dlist)
-	    return NULL;
+	    return 0;
 	bucket = _dict_hash(key);
 	dlist->nexti = dictionary->harr[bucket];
 	dictionary->harr[bucket] = dlist;

@@ -517,3 +517,4 @@ String EditorWindow::DefaultResources[] =
 #endif
 
 #endif // _EWDefaultResources_h
+

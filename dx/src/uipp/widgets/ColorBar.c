@@ -122,7 +122,7 @@ void DrawColorBar( ColorBar* bar, XColor* undithered_cells )
 {
 XGCValues	values;
 Display *d;
-unsigned long r_mask, g_mask, b_mask;
+unsigned long r_mask=0, g_mask=0, b_mask=0;
 XWindowAttributes attributes;
 
     d = XtDisplay(bar->w);
@@ -335,7 +335,7 @@ static void FillColorBar( XImage* ximage, int x, int y,
 {
 Pixel pix24;
 int level, i, index;
-unsigned long rmult, gmult, bmult;
+unsigned long rmult=0, gmult=0, bmult=0;
 
     if (depth == 24)
 	{

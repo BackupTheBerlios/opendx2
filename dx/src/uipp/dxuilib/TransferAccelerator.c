@@ -171,8 +171,8 @@ Boolean TransferAccelerator(shell, source, action)
 	
 	char     *accelerator = (char *) 0 ;
 	Boolean   retcode     = False ;
-	KeySym    keysym ;
-	Modifiers modifiers ;
+	KeySym    keysym=0 ;
+	Modifiers modifiers=0 ;
 
 	/*
 	** Fetch the accelerator for the given source of the event.

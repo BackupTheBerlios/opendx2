@@ -39,7 +39,7 @@ extern "C" int gethostname(char *address, int address_len);
 
 boolean DropSite::DropSiteClassInitialized = FALSE;
 
-static XContext dropcontext = NULL;
+static XContext dropcontext = 0;
 int DropSite::drop_x = 0;
 int DropSite::drop_y = 0;
 

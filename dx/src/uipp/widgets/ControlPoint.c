@@ -388,7 +388,7 @@ static int RepositionControlPoint( ControlMap* map, int index,
 {
 Boolean get_new_vals;
 Boolean use_adjacent_level;
-double adjacent_level;
+double adjacent_level=0;
 int min_y, max_y;
 
     /*
@@ -656,7 +656,7 @@ ControlField    *field;
 static Time time = 0;	/* Time of last button1 press event */
 int index, dummy_index;
 int delta_y, delta_x;
-int old_x;
+int old_x=0;
 int xmax;
 int xmin;
 int point;
@@ -2065,7 +2065,7 @@ void XmColorMapEditorLoad(Widget cmew, double min, double max,
 			  int nopat, double *opat)
 {
 int i;
-double norm, range;
+double norm, range=0;
 Boolean skip_normalize;
 
     XmColorMapEditorWidget w = (XmColorMapEditorWidget)cmew;
@@ -2202,8 +2202,8 @@ ControlMap 		*map;
 double 			real_min_level;
 double 			real_max_level;
 int			num_selected;
-int			pt_index1;
-int			pt_index2;
+int			pt_index1=0;
+int			pt_index2=0;
 int			field;
 double			min_value;
 double			max_value;
@@ -2330,17 +2330,17 @@ double 			value;
 double 			tmp_value;
 double 			level_inc;
 XmColorMapEditorWidget	cmew = (XmColorMapEditorWidget)w;
-ControlMap 		*map;
-double 			real_min_level;
-double 			real_max_level;
+ControlMap 		*map=NULL;
+double 			real_min_level=0;
+double 			real_max_level=0;
 int			num_selected;
-int			pt_index1;
-int			pt_index2;
+int			pt_index1=0;
+int			pt_index2=0;
 int			field;
-double			min_value;
-double			max_value;
-double			min_level;
-double			max_level;
+double			min_value=0;
+double			max_value=0;
+double			min_level=0;
+double			max_level=0;
 
     PushUndoPoints(cmew);
     for(field = 0; field < 4; field++)
@@ -2470,8 +2470,8 @@ double 			real_max_level;
 double 			real_min_value;
 double 			real_max_value;
 int			num_selected;
-int			pt_index1;
-int			pt_index2;
+int			pt_index1=0;
+int			pt_index2=0;
 int			field;
 double			min_value;
 double			max_value;

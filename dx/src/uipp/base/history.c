@@ -239,7 +239,7 @@ void _PopMenu(Widget  w,
     int          index;
     int          limit;
     int          i;
-    int          position;
+    int          position=0;
     int          argcnt;
     Arg          args[2];
 

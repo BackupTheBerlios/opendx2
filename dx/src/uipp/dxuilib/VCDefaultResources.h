@@ -296,3 +296,4 @@ String  ViewControlDialog::DefaultResources[] =
 #endif
 
 #endif // _VCDefaultResources_h
+

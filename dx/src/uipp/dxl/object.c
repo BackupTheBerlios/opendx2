@@ -59,7 +59,7 @@ static char *object_token = "DXLOutput OBJECT"; 		/* V3.x + */
 static void 
 SystemObjectHandler(DXLConnection *conn, const char *msg, void *data)
 {
-    HandlerData *hd;
+    HandlerData *hd=NULL;
     char format[1024];
     char varname[1024];
     int object_size;

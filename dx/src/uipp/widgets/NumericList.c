@@ -1364,7 +1364,7 @@ int		i;
 int		j;
 int		k;
 VectorList	vlist;
-XEvent		*event;
+XEvent		*event=NULL;
 Boolean		do_jump = False;
     
     /* 
@@ -1458,7 +1458,7 @@ Boolean XmNumericListDeleteVector(XmNumericListWidget nlw, int vector_num)
 int		i;
 int		j;
 int		k;
-XEvent		*event;
+XEvent		*event=NULL;
 VectorList	vlist;
     
     /* 
@@ -1543,7 +1543,7 @@ Boolean XmNumericListReplaceSelectedVector(XmNumericListWidget nlw,
 						Vector newvec)
 {
 int		j, vecnum;
-XEvent		*event;
+XEvent		*event=NULL;
     
     /* 
      *  Check that there is a selected item 

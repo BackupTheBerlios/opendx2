@@ -368,11 +368,7 @@ DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* er
 
     free(s);
 
-#if !defined(intelnt)
-    if (child == NULL)
-#else
     if (child == 0)
-#endif
     {
 	fprintf(stderr, "DXLStartChild: %s\n", errorstr);
 	return -1;

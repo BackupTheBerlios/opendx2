@@ -122,3 +122,4 @@ String  MsgWin::DefaultResources[] = {
 #endif
 
 #endif // _MWDefaultResources_h
+

@@ -248,3 +248,4 @@ String ColormapEditor::DefaultResources[] =
 #endif
 
 #endif // _CMDefaultResources_h
+

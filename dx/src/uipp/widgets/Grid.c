@@ -164,7 +164,7 @@ int height, width, length, ypos1, ypos2;
 GC gc;
 int i;
 XmColorMapEditorWidget cmew;
-int *bins;
+int *bins=NULL;
 int num_bins;
 int max_bin;
 Pixmap pixmap;

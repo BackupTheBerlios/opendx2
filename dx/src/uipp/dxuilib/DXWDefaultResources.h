@@ -131,3 +131,4 @@ String DXWindow::DefaultResources[] =
 #endif
 
 #endif // _DXWDefaultResources_h
+

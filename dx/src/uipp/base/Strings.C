@@ -508,7 +508,7 @@ char *FindDelimitedString(const char *s, char begin, char end,
 	} else 
 #endif
 	{
-	    char nesting_char = NULL;
+	    char nesting_char = '\0';
 	    const char *src = s; 
 	    char *dest;
 	    
@@ -527,7 +527,7 @@ char *FindDelimitedString(const char *s, char begin, char end,
 		if (nest_chars) {
 		    if (nesting_char)  {	// Check for end nesting char
 			if (nesting_char == *src)
-			    nesting_char = NULL;
+			    nesting_char = '\0';
 		    } else {			// Check for begin nesting char
 			if (strchr(nest_chars, *src))
 			    nesting_char = *src;

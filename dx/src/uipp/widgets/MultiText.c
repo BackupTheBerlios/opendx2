@@ -3255,7 +3255,7 @@ static unsigned short StoreWord (XmMultiTextWidget w, WordList wordPtr, int inde
 {
   LineList        lp;
   Boolean         resizeLine, firstWordOfLine, isTab, prevWordIsTab;
-  unsigned short  returnVal;
+  unsigned short  returnVal=0;
   int             neededWidth, yposn;
 
 
@@ -3581,7 +3581,7 @@ static void MoveDown (Widget w, XEvent* event, String* params, Cardinal* numPara
 int ClosestPosition (XmMultiTextWidget cw, LineList lp,
 		     WordList *closestWord, int refPosn)
 {
-  int      dx, x;
+  int      dx, x=0;
   WordList wp;
 
 

@@ -1292,7 +1292,7 @@ void XmColorMapPaste(Widget w)
 {
 XmColorMapEditorWidget cmew = (XmColorMapEditorWidget)w;
 int i;
-ControlField *field;
+ControlField *field=NULL;
 XmColorMapEditorClassPart *color_map_editor_class;
 
     color_map_editor_class = &(xmCMEWidgetClass->color_map_editor_class);

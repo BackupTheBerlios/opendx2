@@ -1871,8 +1871,8 @@ static Boolean SetValues( XmWorkspaceWidget current,
  */
 static void ChangeManaged( XmWorkspaceWidget ww )
 {
-    XmWorkspaceConstraints nc;
-    Widget child;
+    XmWorkspaceConstraints nc=0;
+    Widget child=0;
     int i;
     Boolean resolve_overlap = FALSE;
     Boolean new_node = FALSE;

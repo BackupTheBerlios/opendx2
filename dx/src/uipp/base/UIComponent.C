@@ -99,7 +99,7 @@ UIComponent::UIComponent(const char* name)
     this->help_widget = NUL(Widget);
     this->deactivated = FALSE;
     this->xtt = NULL;
-    this->fg = NULL;
+    this->fg = ((Pixel)-1);
 }
 
 

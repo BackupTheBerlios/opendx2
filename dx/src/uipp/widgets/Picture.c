@@ -134,7 +134,9 @@ static void    Deselect();
 static void    CreateDelete();
 static void    BtnMotion();
 static void    KeyProc();
+#if 0
 static void    KeyMode();
+#endif
 static void    ServerMessage (XmPictureWidget w, XEvent *event);
 static void    PropertyNotifyAR (XmPictureWidget w, XEvent *event);
 static void    Realize();
@@ -4494,7 +4496,7 @@ static int
 draw_cursors( XmPictureWidget  w )
 {
 int  i;
-int depth;
+int depth=0;
 Display *dpy;
 Window  dw;
 GC      gc;
@@ -7689,7 +7691,7 @@ double  new_y;
 double  new_z;
 double  old_length_x;
 double  old_length_y;
-double  old_length_z;
+double  old_length_z=0;
 double  new_length_x;
 double  new_length_y;
 double  new_length_z;

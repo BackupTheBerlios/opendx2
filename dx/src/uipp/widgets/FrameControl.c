@@ -770,7 +770,7 @@ int n;
 Arg wargs[20];
 double dmin, dmax, dval;
 Widget number;
-Widget arrow;
+Widget arrow=0;
 XmString text;
 
     /*

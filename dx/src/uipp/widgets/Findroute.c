@@ -216,8 +216,8 @@ Manhattan(XmWorkspaceWidget ww, int srcx, int srcy,
     int             ymin;
     int		    mycost, lower_cost;
     LineElement     *min_line;
-    LineElement	    *src_element, *dst_element;
-    LineElement	    *previous_element, *current_element;
+    LineElement	    *src_element=NULL, *dst_element;
+    LineElement	    *previous_element=NULL, *current_element=NULL;
     LineElement	    *remainder_line, *line;
     int             horizontal_dir;
     int             newx;
@@ -742,7 +742,7 @@ ManhattanWorker(XmWorkspaceWidget ww, int srcx, int srcy,
     LineElement     *src_element, *dst_element,
 		    *element1 = NULL, *element2 = NULL, *element3 = NULL,
 		    *remainder_line, *line, *right_line=NULL, *left_line=NULL,
-		    *src_line, *dst_line;
+		    *src_line=NULL, *dst_line=NULL;
     int             vertical_dir, horizontal_dir;
     int             newx;
     LineElement     new_src, new_dst,
@@ -3352,7 +3352,7 @@ InsertYCollideList(XmWorkspaceWidget ww, int y, int xmin,
 static void 
 RemoveXCollideList(XmWorkspaceWidget ww, int x, int min, int max)
 {
-    register CollideList *back_ptr, *tmp_ptr;
+    register CollideList *back_ptr=NULL, *tmp_ptr;
 
     if (x >= ww->core.width)
 	return;
@@ -3394,7 +3394,7 @@ static void
 RemoveXWidgetCollideList(XmWorkspaceWidget ww, int x,
 			 int min, int max, Widget widget)
 {
-    register CollideList *back_ptr, *tmp_ptr;
+    register CollideList *back_ptr=NULL, *tmp_ptr;
 
     if (x >= ww->core.width)
 	return;
@@ -3435,7 +3435,7 @@ RemoveXWidgetCollideList(XmWorkspaceWidget ww, int x,
 static void 
 RemoveYCollideList(XmWorkspaceWidget ww, int y, int min, int max)
 {
-    register CollideList *back_ptr, *tmp_ptr;
+    register CollideList *back_ptr=NULL, *tmp_ptr;
 
     if (y >= ww->core.height)
 	return;
@@ -3476,7 +3476,7 @@ static void
 RemoveYWidgetCollideList(XmWorkspaceWidget ww, int y,
 			 int min, int max, Widget widget)
 {
-    register CollideList *back_ptr, *tmp_ptr;
+    register CollideList *back_ptr=NULL, *tmp_ptr;
 
     if (y >= ww->core.height)
 	return;
@@ -3669,7 +3669,7 @@ CollapseList(XmWorkspaceWidget ww, LineElement * list, LineList *ignored)
 void 
 MarkCommonLines(XmWorkspaceWidget ww)
 {
-    XmWorkspaceLineRec *original_line, *line1, *line2, *prev_line1, *prev_line2, *tmp_line;
+    XmWorkspaceLineRec *original_line=NULL, *line1, *line2, *prev_line1, *prev_line2, *tmp_line;
     int             min_disty, cur_disty;
     int             min_distx, cur_distx;
 

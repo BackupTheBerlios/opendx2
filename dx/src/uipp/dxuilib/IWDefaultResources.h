@@ -356,3 +356,4 @@ String ImageWindow::DefaultResources[] =
 #endif
 
 #endif // _IWDefaultResources_h
+

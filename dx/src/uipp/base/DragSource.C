@@ -69,7 +69,7 @@ static XtActionsRec dragActions[] =
 	{"DragSource_StartDrag", (XtActionProc)DragSource_StartDrag},
     };
 
-static XContext dragcontext = NULL;
+static XContext dragcontext = 0;
 
 DragSource::DragSource()
 {

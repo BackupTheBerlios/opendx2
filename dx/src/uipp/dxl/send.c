@@ -170,7 +170,7 @@ DXLCopyEvent(DXLEvent *dst, DXLEvent *src)
 DXLError
 DXLSend(DXLConnection *conn, const char *string)
 {
-    DXLPacketTypeEnum ptype;
+    DXLPacketTypeEnum ptype=PACK_FOREGROUND;
 
     if (conn->dxuiConnected) {
 	if (conn->majorVersion <= 2)

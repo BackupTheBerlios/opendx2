@@ -590,7 +590,7 @@ boolean MainWindow::getGeometry(int *x, int *y, int *width, int *height)
 	    Window win = XtWindow(wid);
 	    Window root, parent, *children;
 	    unsigned int n_child;
-	    root = NULL;
+	    root = 0;
 	    XQueryTree(XtDisplay(wid), win, &root, &parent, &children, &n_child);
 	    XFree((char *)children); children = 0;
 	    if(root != parent)
