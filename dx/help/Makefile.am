@@ -4,7 +4,7 @@ htmldir = $(prefix)/dx/html
 
 EXTRA_DIST = help.tar
 
-install-data_local:
+install-data-local:
 	mkdir $(prefix)/help
 	tar -C $(prefix)/help -xf pages.tar
 	ln -s $(prefix)/help/mbidx      $(prefix)/help/hlpalhtl
