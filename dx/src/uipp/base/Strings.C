@@ -127,15 +127,15 @@ char *UniqueFilename(const char *filename)
 	unique = new char[strlen(path) + 12];
 	strcpy(unique, path);
 	strcat(unique,"/tmpXXXXXX");
-	delete path;
+	delete[] path;
     } else {
 	if (path)
-	    delete path;
+	    delete[] path;
 	unique = DuplicateString("tmpXXXXXX");
     }
 
     if (!mktemp(unique)) {
-	delete unique;	
+	delete[] unique;	
 	unique = NULL;
     }
 

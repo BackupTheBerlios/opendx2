@@ -107,7 +107,7 @@ MacroDefinition::~MacroDefinition()
 	this->body = NULL;
     }
     if (this->fileName)
-	delete this->fileName;
+	delete[] this->fileName;
 }
 
 void MacroDefinition::finishDefinition()
@@ -216,7 +216,7 @@ void MacroDefinition::setFileName(const char *n)
 {
     char *fileName = DuplicateString(n);
     if (this->fileName)
-	delete this->fileName;
+	delete[] this->fileName;
     this->fileName = fileName;
 }
 
@@ -719,7 +719,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 
 		    char *ignore = NULL;
 		    FILE *f = Network::OpenNetworkFILE(path, &wasEncoded, &ignore); 
-		    if (ignore) delete ignore;
+		    if (ignore) delete[] ignore;
 		    if (f == NULL)
 		    {
 			char *errtxt = "Failed to load macro file %s: %s";
@@ -753,7 +753,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
                     exists=_findnext(handle,&entry);
 	    }
             _findclose(handle);
-	    delete srch_string;
+	    delete[] srch_string;
 #elif defined(HAVE_REGCOMP) && defined(HAVE_REGEX_H)
 		}
 	    }

@@ -93,7 +93,7 @@ Command::~Command()
 	for (i=0 ; i<autos ; i++)
 	    cmds[i]->removeAutoCmd(this);
 
-	delete cmds;
+	delete[] cmds;
     }
 
     autos = this->activateCmds.getSize();
@@ -111,7 +111,7 @@ Command::~Command()
 	for (i=0 ; i<autos ; i++)
 	    this->removeAutoCmd(cmds[i]);
 
-	delete cmds;
+	delete[] cmds;
     }
     autos = this->deactivateCmds.getSize();
     if (autos > 0) {
@@ -128,7 +128,7 @@ Command::~Command()
 	for (i=0 ; i<autos ; i++)
 	    this->removeAutoCmd(cmds[i]);
 
-	delete cmds;
+	delete[] cmds;
     }
 
     delete[] this->name;

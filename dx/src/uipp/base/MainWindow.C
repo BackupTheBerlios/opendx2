@@ -129,13 +129,13 @@ MainWindow::~MainWindow()
     ASSERT(theApplication);
     theApplication->unregisterClient(this);
 
-    if (this->title) delete this->title;
+    if (this->title) delete[] this->title;
 
     if (this->hasMenuBar && this->commandScope)
 	delete this->commandScope;
     
     if (this->geometry_string)
-	delete this->geometry_string;
+	delete[] this->geometry_string;
 }
 
 //
@@ -519,7 +519,7 @@ void MainWindow::setWindowTitle(const char *name, boolean check_geometry)
     else if (!EqualString(this->title, name))
     {
 	if(this->title)
-	    delete this->title;
+	    delete[] this->title;
 	this->title = DuplicateString(name);
     } else {
 	titles_equal = TRUE;
@@ -539,9 +539,9 @@ void MainWindow::setWindowTitle(const char *name, boolean check_geometry)
 		this->setGeometry(x,y,w,h);
 	    }
 	    if (old_geom_string)
-		delete old_geom_string;
+		delete[] old_geom_string;
 	} else if (this->geometry_string) {
-		delete this->geometry_string;
+		delete[] this->geometry_string;
 	    this->geometry_string = NUL(char*);
 	}
     } 

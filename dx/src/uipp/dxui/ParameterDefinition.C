@@ -56,7 +56,7 @@ ParameterDefinition::~ParameterDefinition()
 #if defined(DXD_WIN) || defined(OS2)
         delete (void *)this->typeStrings;
 #else
-        delete this->typeStrings;
+        delete[] this->typeStrings;
 #endif
     }
     if (DEFAULT_VALUE_NEEDS_DELETING(this))
@@ -65,7 +65,7 @@ ParameterDefinition::~ParameterDefinition()
     if (this->valueOptions) {
 	int i = 0;
 	for (i=0; this->valueOptions[i] ; i++)
-	    delete this->valueOptions[i];
+	    delete[] this->valueOptions[i];
 	FREE(this->valueOptions);
     }
 
@@ -132,7 +132,7 @@ ParameterDefinition::addType(DXType *t)
 #if defined(DXD_WIN) || defined(OS2)
 	delete (void*)this->typeStrings;
 #else
-	delete this->typeStrings;
+	delete[] this->typeStrings;
 #endif
 	this->typeStrings = NULL;
     }
@@ -177,7 +177,7 @@ ParameterDefinition::removeType(DXType *t)
 #if defined(DXD_WIN) || defined(OS2)
 	delete (void*)this->typeStrings;
 #else
-	delete this->typeStrings;
+	delete[] this->typeStrings;
 #endif
 	this->typeStrings = NULL;
     }
@@ -217,7 +217,7 @@ void ParameterDefinition::removeValueOptions()
     if (this->valueOptions) {
 	int i = 0;
 	for (i=0; this->valueOptions[i] ; i++)
-	    delete this->valueOptions[i];
+	    delete[] this->valueOptions[i];
 	FREE(this->valueOptions);
     }
     this->valueOptions = 0;
@@ -242,7 +242,7 @@ ParameterDefinition::setDefaultValue(const char *value)
 	return FALSE;		// Unrecognized value
 
     if (DEFAULT_VALUE_NEEDS_DELETING(this))
-	delete this->default_value;
+	delete[] this->default_value;
 
     this->descriptive_default = FALSE; 
     this->default_value = DuplicateString(value);
@@ -330,7 +330,7 @@ char *ParameterDefinition::getMDFString()
 void ParameterDefinition::setDescriptiveValue(const char *d)
 {  
     if (DEFAULT_VALUE_NEEDS_DELETING(this))
-        delete (char*)this->default_value;
+        delete[] (char*)this->default_value;
 
     this->default_value = DuplicateString(d);
     this->descriptive_default = TRUE;

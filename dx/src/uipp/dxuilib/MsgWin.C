@@ -584,7 +584,7 @@ void MsgWin::addError(const char *error)
 	XmStringFree(nameString);
 	XmStringFree(firstHalf);
 	XmStringFree(text);
-	delete line;
+	delete[] line;
 
 	XmListAddItemUnselected(this->list, s, 0);
 	XmStringFree(s);
@@ -702,7 +702,7 @@ void MsgWin::clearSelectableLines()
     SelectableLine *l;
     while( (l = (SelectableLine*)li.getNext()) )
     {
-	delete l->line;
+	delete[] l->line;
 	delete l;
     }
     this->selectableLines.clear();
@@ -774,7 +774,7 @@ void MsgWin::flushBuffer()
 	    fputc('\n', this->logFile);
 	}
 	items[i] = XmStringCreate(s, "normal");
-	delete s;
+	delete[] s;
     }
 
     XmListAddItems(this->list, items, nItems, 0);
@@ -788,7 +788,7 @@ void MsgWin::flushBuffer()
 
     for (i = 0; i < nItems; ++i)
 	XmStringFree(items[i]);
-    delete items;
+    delete[] items;
 
     this->batchedLines.clear();
 
@@ -814,7 +814,7 @@ boolean MsgWin::clear()
     char *s;
     ListIterator li(this->batchedLines);
     for (int i = 0; i < nItems && (s = (char*)li.getNext()); ++i)
-	delete s;
+	delete[] s;
     this->batchedLines.clear();
 
     this->clearSelectableLines();
@@ -833,7 +833,7 @@ boolean MsgWin::log(const char *file)
     if (file == NULL && this->logFile)
     {
 	fclose(this->logFile);
-	delete this->logFileName;
+	delete[] this->logFileName;
 	this->logFile = NULL;
 	this->logFileName = NULL;
 	this->logOption->setState(FALSE);
@@ -843,7 +843,7 @@ boolean MsgWin::log(const char *file)
 	if (this->logFile)
 	{
 	    fclose(this->logFile);
-	    delete this->logFileName;
+	    delete[] this->logFileName;
 	}
 	this->logFile = fopen(file, "w");
 	if (this->logFile == NULL)
@@ -1078,7 +1078,7 @@ class EdInfo {
 	    this->inst = inst;
 	};
 	~EdInfo () {
-	    if (this->nodeName) delete this->nodeName;
+	    if (this->nodeName) delete[] this->nodeName;
 	};
 };
 //
@@ -1132,7 +1132,7 @@ boolean MsgWin::openEditorIfNecessary(Network *net,
 		"Yes", "No", NULL,
 		XmDIALOG_FULL_APPLICATION_MODAL
 	    );
-	    delete confMsg;
+	    delete[] confMsg;
 	    questionPosted = TRUE;
 	} 
     } 

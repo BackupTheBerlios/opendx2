@@ -229,15 +229,15 @@ IBMApplication::~IBMApplication()
     if (this->helpWindow)
         delete this->helpWindow;
     if (this->aboutAppString)
-	delete this->aboutAppString;
+	delete[] this->aboutAppString;
     if (this->techSupportString)
-	delete this->techSupportString;
+	delete[] this->techSupportString;
 
     if (this->noWizards) {
 	ListIterator it(*this->noWizards);
 	char *nowiz;
 	while ( (nowiz = (char*)it.getNext()) )
-	    delete nowiz;
+	    delete[] nowiz;
 	delete this->noWizards;
 	this->noWizards = NUL(List*);
     }
@@ -1087,7 +1087,7 @@ const char* class_name = this->getApplicationClass();
     XrmPutLineResource (&db, resource_line);
     XrmPutFileDatabase (db, res_file);
     XrmDestroyDatabase(db);
-    delete resource_line;
+    delete[] resource_line;
 }
 
 boolean IBMApplication::isWizardWindow(const char* name)

@@ -132,10 +132,10 @@ UIComponent::~UIComponent()
 	delete[] this->name;
 
     if (this->help_msg)
-	delete this->help_msg;
+	delete[] this->help_msg;
 
     if (this->inactive_help_msg)
-	delete this->inactive_help_msg;
+	delete[] this->inactive_help_msg;
 }
 
 void UIComponent::clearRootWidget()
@@ -168,12 +168,12 @@ void UIComponent::setRootWidget(Widget root, boolean standardDestroy)
 void UIComponent::setBubbleHelp (const char *msg, Widget w, boolean active_help)
 {
     if (active_help) {
-	if (this->help_msg) delete this->help_msg;
+	if (this->help_msg) delete[] this->help_msg;
 	this->help_msg = NUL(char*);
 	if ((!msg) || (!msg[0])) return ;
 	this->help_msg = DuplicateString(msg);
     } else {
-	if (this->inactive_help_msg) delete this->inactive_help_msg;
+	if (this->inactive_help_msg) delete[] this->inactive_help_msg;
 	this->inactive_help_msg = NUL(char*);
 	if ((!msg) || (!msg[0])) return ;
 	this->inactive_help_msg = DuplicateString(msg);
@@ -343,7 +343,7 @@ void UIComponent::activate()
     }
     this->active = TRUE;
     if (this->inactive_help_msg) {
-	delete this->inactive_help_msg;
+	delete[] this->inactive_help_msg;
 	this->inactive_help_msg = NUL(char*);
     }
 }

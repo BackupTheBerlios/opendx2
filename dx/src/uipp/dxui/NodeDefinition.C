@@ -59,11 +59,11 @@ NodeDefinition::~NodeDefinition()
 
 
     if (this->outboardHost)
-	delete this->outboardHost;
+	delete[] this->outboardHost;
     if (this->outboardCommand)
-	delete this->outboardCommand;
+	delete[] this->outboardCommand;
     if (this->loadFile)
-    	delete this->loadFile;
+    	delete[] this->loadFile;
     if (this->description)
     	delete[] this->description;
 
@@ -260,9 +260,9 @@ char *NodeDefinition::getMDFString()
 		(inputs ? inputs : ""),
 		(outputs ? outputs : ""));
 
-    delete header;
-    if (inputs) delete inputs;
-    if (outputs) delete outputs;
+    delete[] header;
+    if (inputs) delete[] inputs;
+    if (outputs) delete[] outputs;
     return mdf;
 }
 //
@@ -360,7 +360,7 @@ char *NodeDefinition::getMDFParametersString(boolean inputs)
 	}
 	strcat(&params[currend], line);
 	currend += linelen - 1;
-	delete line;
+	delete[] line;
     } 
 
     if (inputs && this->isInputRepeatable()) {
@@ -467,7 +467,7 @@ boolean NodeDefinition::isMDFFlagREACH()
 void NodeDefinition::setDefaultOutboardHost(const char *host)
 {
    if (this->outboardHost)
-	delete this->outboardHost;
+	delete[] this->outboardHost;
    this->outboardHost = DuplicateString(host);
 }
 boolean NodeDefinition::isOutboard()
@@ -477,10 +477,10 @@ boolean NodeDefinition::isOutboard()
 void NodeDefinition::setOutboardCommand(const char *command)
 {
    if (this->outboardCommand)
-	delete this->outboardCommand;
+	delete[] this->outboardCommand;
 
    if (this->loadFile) {
-        delete this->loadFile;
+        delete[] this->loadFile;
 	this->loadFile = NULL;
    }
 
@@ -497,14 +497,14 @@ const char *NodeDefinition::getDynamicLoadFile()
 void NodeDefinition::setDynamicLoadFile(const char *file)
 {
    if (this->loadFile) 
-	delete this->loadFile;
+	delete[] this->loadFile;
 
    //
    // I tool can be either outboard or inboard (static) or inboard
    // (dynamic), but not both.
    //
    if (this->outboardCommand) {
-        delete this->outboardCommand;
+        delete[] this->outboardCommand;
 	this->outboardCommand = NULL;
    }
 
@@ -513,7 +513,7 @@ void NodeDefinition::setDynamicLoadFile(const char *file)
 void NodeDefinition::setDescription(const char *d)
 { 
     if (this->description)
-	delete this->description;
+	delete[] this->description;
 
     this->description = DuplicateString(d);
 }
