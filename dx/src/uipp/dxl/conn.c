@@ -210,7 +210,7 @@ static int _dxl_ReadPortNumber(int fd)
 
 #if !defined(OS2)  && !defined(DXD_HAS_WINSOCKETS)
 	to.tv_sec = time_remaining;
-	n = select(width, (SELECT_ARG_TYPE)&fds, NULL, NULL, &to);
+	n = select(width, (SELECT_ARG_TYPE *)&fds, NULL, NULL, &to); 
 	if (n <= 0)
 	{
             if (n < 0)
