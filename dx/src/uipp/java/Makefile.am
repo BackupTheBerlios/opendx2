@@ -47,10 +47,10 @@ dx.jar: makeall.java $(DX_SRCS)
 		classdir=`pwd`/classes ; \
 	fi ; \
 	cd $(srcdir) ; \
-	$(JAVAC) -d $$classdir makewrl.java ; \
-	$(JAVAC) -d $$classdir makeall.java $(DX_SRCS) ; \
+	$(JAVAC) -d $$classdir makewrl.java || exit 1 ; \
+	$(JAVAC) -d $$classdir makeall.java $(DX_SRCS) || exit 1 ; \
 	cd $$classdir ; \
-	$(JAR) cf ../dx.jar $(DX_OBJS) dx
+	$(JAR) cf ../dx.jar $(DX_OBJS) dx || exit 1
 
 server.jar: dx.jar DXServer.java
 	mkdir -p dxsc
@@ -61,9 +61,9 @@ server.jar: dx.jar DXServer.java
 		dxscdir=`pwd`/dxsc ; \
 	fi ; \
 	cd $(srcdir) ; \
-	$(JAVAC) -d $$dxscdir DXServer.java ; \
+	$(JAVAC) -d $$dxscdir DXServer.java || exit 1 ; \
 	cd $$dxscdir ; \
-	$(JAR) cf ../server.jar DXServer.class server dx
+	$(JAR) cf ../server.jar DXServer.class server dx || exit 1
 
 SHRD_FLAGS = -shared -o libAnyDX.so
 
