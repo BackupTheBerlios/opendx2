@@ -70,6 +70,11 @@
 #include <sys/sysinfo.h>
 #endif
 
+#if freebsd
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 #if defined(macos)
 #include <mach/mach.h>
 #include <sys/param.h>
@@ -1056,6 +1061,19 @@ extern int end;				/* linker-provided end of used data  */
 #define LARGE(x) ((int)x>=(int)large)
 #endif
 
+#ifdef freebsd
+#define initvalues
+#define SMALL_BASE    0               /* use data segment */
+#define SMALL_GET     _dxfgetmem      /* expand by using DosSetMem */
+#define LARGE_GET     _dxfgetmem      /* expand by using DosSetMem */
+#define LARGE_INIT    2 MEG           /* doesn't matter; consistent w/ sgi */
+#define LARGE_INCR    2 MEG           /* doesn't matter; consistent w/ sgi */
+#define SIZE_ROUND    2 MEG           /* doesn't matter; consistent w/ sgi */
+#define MALLOC_NONE   1               /* provide malloc from global arena */
+#define SMALL(x) ((long)x<(long)large)
+#define LARGE(x) ((long)x>=(long)large)
+#endif
+
 #ifdef	cygwin
 #define initvalues
 #define SMALL_BASE    0               /* use data segment */
@@ -1325,6 +1343,17 @@ int _dxf_initmemory(void)
 	int err = sysinfo(&si);
 	if(!err)
 		physmem = si.totalram/(1024*1024);
+#endif
+
+#if freebsd
+  int mib[2],hw_physmem;
+  size_t len;
+  
+  mib[0]=CTL_HW;
+  mib[1]=HW_PHYSMEM;
+  len=sizeof(hw_physmem);
+  sysctl(mib,2,&hw_physmem,&len,NULL,0);
+  physmem=hw_physmem/(1024*1024);
 #endif
 
 #if defined(macos)
