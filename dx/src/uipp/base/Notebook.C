@@ -16,12 +16,6 @@
 #include "DXStrings.h"
 #include "Application.h"
 
-#include "top_shadow60.bm"
-#include "top_shadow_pc60.bm"
-#include "bottom_shadow60.bm"
-
-#define HUMMINGBIRD "Hummingbird"
-
 boolean Notebook::ClassInitialized = 0;
 Notebook::Notebook(Widget parent) : UIComponent("notebook")
 {
