@@ -581,6 +581,9 @@ void ToolSelector::help()
 {
     const char* tools = 0;
     Symbol s = this->categoryDictionary.getActiveItem();
+
+    // There is no help on ( ALL )
+    if (s == theSymbolManager->getSymbol(ALPHABETIZED)) s = 0;
     if (s) {
 	tools = theSymbolManager->getSymbolString(s);
     } else {
