@@ -11,7 +11,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.6 2002/03/22 23:27:11 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.7 2002/03/25 16:40:59 davidt Exp $
  */
 #if defined(hp700) 
 #define _UINT64_T
@@ -223,6 +223,11 @@ JNIEXPORT jint JNICALL Java_server_DXServerThread_DXLLoadVisualProgram
   (JNIEnv *env, jobject jobj, jlong jdxl, jstring jnet)
 {
 int retval = 0;
+
+#if defined(intelnt)
+int i;
+#endif
+
 DXLConnection* conn = (DXLConnection*)jdxl;
 
     if (DXLGetSocket(conn) > 0) {
