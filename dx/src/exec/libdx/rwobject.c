@@ -13,15 +13,15 @@
 #include <dx/dx.h>
 #include <string.h>
 
-#if defined(HAVE_SYS_TYES_H)
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
 #endif
 
-#if defined(HAVE_SYS_TYES_H)
+#if defined(HAVE_SYS_SIGNAL_H)
 #include <sys/signal.h>
 #endif
 
-#if defined(HAVE_TYES_H)
+#if defined(HAVE_SYS_TYPES_H)
 #include <types.h>
 #endif
 
@@ -2536,6 +2536,255 @@ Object _dxfExportBin_FP(Object o, int fd)
   error:
     _dxfsock_close(dataset);
     restorecontext();
+    DXFree(header_base);
+    DXDestroyHash(hashTable);
+    return NULL;
+}
+
+/*
+ * In-memory serialization for MPI_based packetting
+ */
+
+Object _dxfImportBin_Buffer(void *buffer, int *size)
+{
+    Object o = NULL;
+    int nh = 0;			/* number of header blocks */
+    int nb = 0;			/* number of body blocks */
+    HashTable hashTable = NULL;
+    Pointer header_base = NULL, header, hp;
+    struct f_label *flp;
+    uint byteoffset = 0;
+    int trying_inverted = 0;
+    int bodyblk = 0;
+    char dataset[64];
+
+    oneblock = 1;
+
+    /* construct a fake name.  (the lower level read/write routines have
+     *  a filename as the first parm, not a file descriptor.)
+     */
+    sprintf(dataset, "socket import");
+
+    if (!buffer)
+	goto error;
+
+    header_base = buffer;
+    header      = header_base;
+    hp          = header_base;
+    byteoffset  = 0;
+
+again:
+    /*
+     * check label to see if it matches
+     */
+    flp = (struct f_label *)header;
+    
+    version  = flp->version;   /* these three are static globals */
+    cutoff   = flp->cutoff;
+    needswab = 0;
+
+    /*
+     * don't support anything but the current version number
+     */
+    switch(flp->version)
+    {
+      case DISKVERSION_IE:
+	/*
+	 * might be a version we recognize but with an inverted byte order.
+	 *  invert the header, set a flag and try again.
+	 */
+	trying_inverted++;
+	_dxfByteSwap((void *)flp, (void*)flp, 
+		     (int)(sizeof(struct f_label)/sizeof(int)), TYPE_INT);
+	goto again;
+
+      case DISKVERSION_E:
+	if (flp->byteorder != MSB_MACHINE)
+	{
+	    /*
+	     * if we've already inverted the header, then this is where we
+	     *  know for sure this is right.  set the 'have-to-swap-bytes'
+	     *  flag and get ready to swab bytes in shorts/ints/floats.
+	     */
+	    if (trying_inverted)
+		needswab++;
+	    else
+	    {
+		DXSetError(ERROR_DATA_INVALID, 
+			   "byte order mismatch, can't read binary data");
+		goto error;
+	    }
+	}
+	break;
+
+      case DISKVERSION_D:
+      case DISKVERSION_C:
+      case DISKVERSION_B:
+      case DISKVERSION_A:
+      default:
+	DXSetError(ERROR_DATA_INVALID, 
+		   "unsupported version number, can't read file");
+	goto error;
+    }
+
+    /*
+     * blocking size, in bytes
+     */
+    if (flp->blocksize != oneblock)
+    {
+	DXSetError(ERROR_DATA_INVALID, 
+		 "blocksize doesn't match, can't read file");
+	goto error;
+    }
+    
+    nh = PARTIAL_BLOCKS(flp->headerbytes, oneblock);
+
+    DXDebug("S", "import %s: %d header blocks, %d leftover bytes", 
+	  dataset, nh, flp->leftover);
+
+    /*
+     * use defaults: first element in struct is the key; and no extra
+     * compare function is needed.
+     */
+    hashTable = DXCreateHash(sizeof(struct hashElement), NULL, NULL);
+    if(!hashTable)
+	goto error;
+
+    /* start of body */
+    bodyblk = nh;
+    byteoffset = sizeof(struct f_label);
+
+    header = (Pointer)((char *)header + byteoffset);
+
+    /* object is already completely read in.  unpack from buffer and actually
+     * create objects here.
+     */
+    o = readin_object(dataset, &header, hashTable, &byteoffset, &bodyblk, 1);
+
+    *size = byteoffset;
+
+    DXDestroyHash(hashTable);
+    return o;
+
+  error:
+    DXDestroyHash(hashTable);
+    return NULL;
+}
+
+Object
+_dxfExportBin_Buffer(Object o, int *size, void **buffer)
+{
+    int nh = 0;			/* number of header bytes */
+    int nb = 0;			/* number of body blocks */
+    HashTable hashTable = NULL;
+    Pointer header_base = NULL, header, hp;
+    struct f_label *flp;
+    uint byteoffset = 0;
+    int bodyblk;
+    Error rc = OK;
+    char dataset[64];
+
+    oneblock = 1; /* no blocking for in-memory serialization */
+
+    /* construct a fake name.  (the lower level read/write routines have
+     *  a filename as the first parm, not a file descriptor.)
+     */
+    sprintf(dataset, "socket export");
+
+    /* count number of blocks (on non-ibmpvs is this 512 bytes, not 64k?)
+     */
+    hashTable = DXCreateHash(sizeof(struct hashElement), NULL, NULL);
+    if (!hashTable)
+	goto error;
+    
+    cutoff = 0;   /* all in header, none in body */
+    if (size_estimate(o, &nh, &nb, 1, cutoff, hashTable) == ERROR)
+	goto error;
+
+    /*
+     * nb better be 0!
+     */
+
+    DXDestroyHash(hashTable);
+    hashTable = NULL;
+
+
+    DXDebug("S", "export %s: %d headerbyte, %d bodyblocks, cutoff %d Kb", 
+	  dataset, nh, nb, cutoff);
+
+    nh += sizeof(struct f_label);
+
+    header_base = DXAllocate(ROUNDUP_BYTES(nh, oneblock) + ONEK);
+    if (!header_base)
+	goto error;
+
+    /* use defaults: first element in struct is the key; and no extra
+     *  compare function is needed.
+     */
+    hashTable = DXCreateHash(sizeof(struct hashElement), NULL, NULL);
+    if (!hashTable)
+	goto error;
+
+    header = header_base;
+    hp = header;
+    byteoffset = 0;
+
+    /* fill in label */
+    flp = (struct f_label *)header;
+    header = (Pointer)((byte *)header + sizeof(struct f_label));
+    byteoffset += sizeof(struct f_label);
+
+    /* version number */
+    flp->version = DISKVERSION_E;
+
+    /* cutoff between header and body */
+    flp->cutoff = cutoff;
+
+    /* blocksize */
+    flp->blocksize = oneblock;
+
+    /* number of header bytes */
+    flp->headerbytes = nh;
+
+    /* file type */
+    flp->type = DISKTYPE_NORMAL;
+
+    /* file format */
+    flp->format = DISKFORMAT_BIN;
+
+    /* number of valid bytes in the last block of ?? header or body? */
+    /* header for now - although i'm not sure what i'm going to do with it */
+    flp->leftover = LEFTOVER_BYTES(nh, oneblock);
+
+    /* the native byteorder */
+    flp->byteorder = MSB_MACHINE;
+
+    /* write out object */
+    bodyblk = PARTIAL_BLOCKS(nh, oneblock);
+
+    /*
+     * calls _dxffile_write(array bodies > cutoff) directly
+     * ... but we have set cutoff to 0, so everything goes in header?  GDA
+     */
+    if (writeout_object(o, dataset, hashTable, &header, &byteoffset, 
+		                                      &bodyblk, 1) == ERROR)
+	goto error;
+
+    DXDebug("S", "actual bytes: %d, estimated bytes: %d", byteoffset, nh);
+
+    *buffer = header_base;
+    *size   = byteoffset;
+
+    /* make sure the actual header isn't longer than the estimate */
+    if (PARTIAL_BLOCKS(byteoffset, oneblock) > PARTIAL_BLOCKS(nh, oneblock)) {
+	DXSetError(ERROR_INTERNAL, "export header estimate too small");
+	goto error;
+    }
+
+    DXDestroyHash(hashTable);
+    return o;
+
+  error:
     DXFree(header_base);
     DXDestroyHash(hashTable);
     return NULL;
