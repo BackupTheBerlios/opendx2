@@ -11,7 +11,9 @@ EXTRA_DIST = pages.tar images.tar $(html_DATA)
 
 install-data-local:
 	sh -c 'f=`pwd` ; \
-	       $(INSTALL) -d $htmldir ; \
+	       if test ! -e $(htmldir) ; then \
+		   mkdir $(htmldir) ; \
+	       fi ; \
 	       tar xf $$f/pages.tar ; \
 	       tar xf $$f/images.tar ; \
 	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.htm ; \

@@ -7,7 +7,9 @@ EXTRA_DIST = help.tar
 install-data-local:
 	sh -c 'if test ! -f $(helpdir)/hlpalhtl ; then \
 		   f=`pwd` ; \
-	       	   $(INSTALL) -d $(helpdir) ; \
+		   if test ! -e $(helpdir) ; then \
+		   	mkdir $(helpdir) ; \
+		   fi ; \
 	       	   cd $(helpdir) ; \
 	       	   tar xf $$f/help.tar ; \
 	       	   ln -s $(helpdir)/hlpalhtl   $(helpdir)/mbidx ; \
