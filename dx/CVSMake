@@ -1,0 +1,8 @@
+# These are the steps that must be done after a make maintainer-clean
+# in order to ./configure this package.
+
+#libtoolize --force && \
+aclocal && \
+autoheader && \
+automake -a -i && \
+autoconf
