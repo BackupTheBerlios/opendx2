@@ -9,3 +9,5 @@ font_DATA = \
 	roman_d.dx roman_dser.dx roman_ext.dx roman_s.dx roman_sfix.dx \
 	roman_tser.dx script_d.dx script_s.dx swiss.dx swissbld.dx \
 	swissbldit.dx swisscnd.dx swissit.dx symbol.dx variable.dx
+
+EXTRA_DIST = $(font_DATA)
