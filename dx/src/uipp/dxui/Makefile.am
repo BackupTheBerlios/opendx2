@@ -6,7 +6,7 @@ dxbindir = $(prefix)/dx/bin_@ARCH@
 dxbin_PROGRAMS = dxui
 
 
-noinst_HEADERS = \
+HDRS1 = \
 	ColormapDefinition.h \
 	ColormapNode.h \
 	ComputeDefinition.h \
@@ -25,7 +25,9 @@ noinst_HEADERS = \
 	EchoNode.h \
 	FileSelectorDefinition.h \
 	FileSelectorInteractor.h \
-	FileSelectorNode.h \
+	FileSelectorNode.h 
+
+HDRS2 = \
 	GlobalLocalDefinition.h \
 	GlobalLocalNode.h \
 	ImageDefinition.h \
@@ -44,7 +46,7 @@ noinst_HEADERS = \
 	NondrivenInteractorNode.h \
 	ParameterDefinition.h \
 	PickDefinition.h \
-	PickNode.h \
+	PickNode.h  \
 	PrintDefinition.h \
 	PrintNode.h \
 	ProbeDefinition.h \
@@ -53,7 +55,9 @@ noinst_HEADERS = \
 	ReceiverNode.h \
 	ResetDefinition.h \
 	ResetNode.h \
-	ScalarDefinition.h \
+	ScalarDefinition.h 
+
+HDRS3 = \
 	ScalarInteractor.h \
 	ScalarListDefinition.h \
 	ScalarListInteractor.h \
@@ -92,8 +96,9 @@ noinst_HEADERS = \
 	ValueListNode.h \
 	ValueNode.h \
 	VectorDefinition.h \
-	VectorListDefinition.h \
-	\
+	VectorListDefinition.h 
+
+HDRS4 = \
 	AccessNetworkPanelsCommand.h \
 	ColormapEditCommand.h \
 	ColormapFileCommand.h \
@@ -127,7 +132,9 @@ noinst_HEADERS = \
 	ToolPanelCommand.h \
 	ViewControlWhichCameraCommand.h
 
-dxui_SOURCES =	\
+noinst_HEADERS = $(HDRS1) $(HDRS2) $(HDRS3) $(HDRS4)
+
+SRCS1 = \
 	ColormapDefinition.C \
 	ColormapNode.C \
 	ComputeDefinition.C \
@@ -171,7 +178,9 @@ dxui_SOURCES =	\
 	ProbeDefinition.C \
 	ProbeNode.C \
 	ReceiverDefinition.C \
-	ReceiverNode.C \
+	ReceiverNode.C 
+
+SRCS2 = \
 	ResetDefinition.C \
 	ResetNode.C \
 	ScalarDefinition.C \
@@ -210,8 +219,9 @@ dxui_SOURCES =	\
 	ValueListNode.C \
 	ValueNode.C \
 	VectorDefinition.C \
-	VectorListDefinition.C  \
-	\
+	VectorListDefinition.C  
+
+SRCS3 = \
 	AccessNetworkPanelsCommand.C \
 	ColormapEditCommand.C \
 	ColormapFileCommand.C \
@@ -246,6 +256,8 @@ dxui_SOURCES =	\
 	ViewControlWhichCameraCommand.C \
 	\
 	Main.C
+
+dxui_SOURCES =	$(SRCS1) $(SRCS2) $(SRCS3)
 
 dxui_LDADD = \
 	../dxuilib/libDXUI.a  \

@@ -4,7 +4,7 @@ INCLUDES = -I../widgets -I../../../include -D@ARCH@
 
 noinst_LIBRARIES = libBASE.a
 
-libBASE_a_SOURCES =  \
+SRCS1 =  \
 	Application.C			\
 	ApplyFileDialog.C		\
 	ButtonInterface.C		\
@@ -31,7 +31,9 @@ libBASE_a_SOURCES =  \
 	HelpWin.C			\
 	IBMApplication.C		\
 	IBMMainWindow.C			\
-	InfoDialogManager.C		\
+	InfoDialogManager.C		
+
+SRCS2 = \
 	License.C			\
 	Link.C				\
 	List.C				\
@@ -83,7 +85,9 @@ libBASE_a_SOURCES =  \
 	history.c			\
 	parse.c
 
-noinst_HEADERS = \
+libBASE_a_SOURCES =  $(SRCS1) $(SRCS2)
+
+HDRS1 = \
 	ActiveItemDictionary.h \
 	AllocatorDictionary.h \
 	Application.h \
@@ -124,7 +128,9 @@ noinst_HEADERS = \
 	License.h \
 	Link.h \
 	List.h \
-	ListEditor.h \
+	ListEditor.h 
+
+HDRS2 = \
 	ListIterator.h \
 	MainWindow.h \
 	NoOpCommand.h \
@@ -173,3 +179,5 @@ noinst_HEADERS = \
 	icon50.h \
 	lex.h \
 	logo.h 
+
+noinst_HEADERS = $(HDRS1) $(HDRS2)
