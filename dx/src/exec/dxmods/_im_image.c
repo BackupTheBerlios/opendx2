@@ -214,15 +214,18 @@ static Error write_im(RWImageArgs *iargs)
         Write the image with ImageMagick
       */
       (void) strcpy(image->filename,iargs->basename);
+    if(iargs->extension)
+	{
       (void) strcat(image->filename,".");
       (void) strcat(image->filename,iargs->extension);
+	}
 	
 	DEBUGMESSAGE(image->filename);
       WriteImage(&image_info,image);
 	DEBUGMESSAGE("back from WriteImage, what did I get?");
       DestroyImage(image);
 	DEBUGMESSAGE("back from DestroyImage");
-	if((!miff_exists_flag) && (strcmp("miff",iargs->extension))) /* if using IM to write an "official" miff file, don't erase! */
+	if((iargs->extension) && (!miff_exists_flag) && (strcmp("miff",iargs->extension))) /* if using IM to write an "official" miff file, don't erase! */
 	   {
 		DEBUGMESSAGE("miff file did not exist, trying to remove it");
 		remove(miff_filename);
