@@ -62,6 +62,9 @@ AC_FUNC_WAIT3
 
 AC_CHECK_TYPE(byte, signed char)
 AC_CHECK_TYPE(ubyte, unsigned char)
+AC_CHECK_TYPE(short, signed short)
+AC_CHECK_TYPE(ushort, unsigned short)
+AC_CHECK_TYPE(ulong, unsigned long)
 
 AC_CHECK_TYPE(int8, signed char)
 AC_CHECK_TYPE(uint8, unsigned char)
