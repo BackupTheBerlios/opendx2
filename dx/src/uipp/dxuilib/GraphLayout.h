@@ -400,6 +400,11 @@ class GraphLayout : public Base
     //
     // return TRUE if the positioning was accomplished but with collision
     //
+    boolean positionDestBesideSibling(Ark* arc, int& x, int& y, boolean prefer_left);
+
+    //
+    // return TRUE if the positioning was accomplished but with collision
+    //
     boolean positionSource(Ark* arc, int x);
 
     void repositionGroups(Node* reflow[], int reflow_count);
@@ -409,7 +414,6 @@ class GraphLayout : public Base
     // Protected member data:
     //
 
-    static int StandInHeight;
     static int HeightPerLevel;
 
     static int ArcComparator(const void* a, const void* b);

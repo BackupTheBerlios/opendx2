@@ -68,24 +68,23 @@
 
 //
 // ToDo:
-// 1) When merging 2 sections of a connected subgraph (repositionNewPlacements())
-// I often place new nodes outside the bounding box of existing nodes.  This is
-// too conservative.  The existing placements have a shape and the new placements
-// have a shape and it would be nice to fit them together more closely.
-// 2) When preparing the call to qsort() in LayoutRow there are some nodes
+// 1) When preparing the call to qsort() in LayoutRow there are some nodes
 // that have 2 destination arcs on the next lower row.  On behalf of those nodes,
-// it would be nice to perform the sort and layout multiple times and measuring
+// it would be nice to perform the sort and layout multiple times and measure
 // the quality of the result.  Then choose the one that worked the best.
-// 3) Finish what I already started in spreadSpaghetti()
+// 2) After a few months, the stuff that looks like:
+// if (debug) {
+//    .
+//    .
+//    .
+// }
+// could be deleted.
 //
 
 //
 // How far should successive 'levels' of the graph be separated
-// Should be a little more than 2x StandIn height so that we can
-// achieve a sawtooth pattern when placing a row of Input nodes.
 //
 int GraphLayout::HeightPerLevel = 90;
-int GraphLayout::StandInHeight = -1;
 
 //
 // Identify original location of a decorator with respect to its
@@ -237,12 +236,6 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	StandIn* si = n->getStandIn();
 	if (!si) continue;
 	if (si->getWorkSpace() != workSpace) continue;
-
-	if (GraphLayout::StandInHeight == -1) {
-	    int w,h;
-	    si->getXYSize(&w,&h);
-	    GraphLayout::StandInHeight = h;
-	}
 	nodeList.appendElement(n);
     }
 
@@ -367,7 +360,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 
 	if (!separated) {
 	    if (debug) fprintf (stdout, " [%d] connected\n", __LINE__);
-	    // The value 20000 isn't really meaningful.  Its purpose is to
+	    // The value 20000 isn't meaningful.  Its purpose is to
 	    // keep new node placments clear of existing node placements 
 	    // because we want the new ones to get a decent arrangement
 	    // without colliding with others in the group.  After we've
@@ -818,6 +811,41 @@ Ark* GraphLayout::IsSingleInputNoOutputNode (Node* n, boolean* shares_an_output,
 	}
     }
     return input_arc;
+}
+
+boolean GraphLayout::positionDestBesideSibling (Ark* arc, int& x, int& y, boolean left)
+{
+    int output, input, dummy;
+    Node* source = arc->getSourceNode(output);
+    Node* destination = arc->getDestinationNode(input);
+    List* arcs = (List*)source->getOutputArks(output);
+    ListIterator iter(*arcs);
+    Ark* oa;
+    while (oa=(Ark*)iter.getNext()) {
+	Node* dst = oa->getDestinationNode(dummy);
+	if (dst == destination) continue;
+
+	// At this point, we've located a sibling.  Attempt a position
+	// beside the standIn.  
+	NodeInfo* dinfo = (NodeInfo*)dst->getLayoutInformation();
+	if (!dinfo->isPositioned()) continue;
+
+	int w,h;
+	NodeInfo* info = (NodeInfo*)destination->getLayoutInformation();
+	info->getXYSize(w,h);
+
+	int sibling_x;
+	dinfo->getXYPosition (sibling_x, y);
+	if (left) {
+	    x = sibling_x - (w+DESIRED_FUDGE);
+	} else {
+	    int sibling_w;
+	    dinfo->getXYSize(sibling_w, dummy);
+	    x = sibling_x + sibling_w + DESIRED_FUDGE;
+	}
+    }
+    boolean collided = (this->nodeCanMoveTo(destination, x,y)==FALSE);
+    return collided;
 }
 
 //
@@ -1351,13 +1379,16 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
     }
     int maxarcs = 128;
     int arc_count = crossing_arcs.getSize();
+    arc_count = MIN(maxarcs, arc_count);
     // this assert says that we should have detected a disconnected
     // subgraph in an earlier test.
     //ASSERT(arc_count);
     // arc_count can be 0 if we the nodes to which the new placements
     // are connected haven't been placed yet.
+
+    boolean prefer_left = TRUE;
+
     boolean arc_found = FALSE;
-    arc_count = MIN(maxarcs, arc_count);
     Ark* aa[128];
     int i,j;
     if (arc_count) {
@@ -1366,83 +1397,23 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	}
 	qsort (aa, arc_count, sizeof(Ark*), GraphLayout::ArcComparator);
 
-
-	// for each arc, compute the x location that will make the wire
-	// straight and test each node in placed to see if the entire
-	// set can move.
-	for (i=0; i<arc_count; i++) {
-	    Ark* arc = aa[i];
-	    int input, output;
-	    Node* source = arc->getSourceNode(output);
-	    Node* dest = arc->getDestinationNode(input);
-	    NodeInfo* sinfo = (NodeInfo*)source->getLayoutInformation();
-	    NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
-	    boolean node_can_move = FALSE;
-	    int prevx, prevy;
-
-	    int x,y,dummy;
-	    if (placed.isMember(source)) {
-		if (!this->positionSourceOverDest(arc, x,y)) {
-		    // before going ahead with this placement, we should check to 
-		    // see if there's already an arc here that we would obstruct.
-		    node_can_move = TRUE;
-		    sinfo->getXYPosition (prevx, prevy);
-		    xdelta = x-prevx;
-		    ydelta = y-prevy;
-		}
-	    } else {
-		if (!this->positionDestUnderSource(arc, x,y)) {
-		    // before going ahead with this placement, we should check to 
-		    // see if there's already an arc here that we would obstruct.
-		    node_can_move = TRUE;
-		    dinfo->getXYPosition (prevx, prevy);
-		    xdelta = x-prevx;
-		    ydelta = y-prevy;
-		}
-	    }
-
-	    // now check all other nodes.
-	    if (node_can_move) {
-		arc_found = TRUE;
-		ListIterator iter(*connected);
-		Node* n;
-		while (n=(Node*)iter.getNext()) {
-		    NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
-		    int nx,ny;
-		    info->getXYPosition(nx,ny);
-		    if (!this->nodeCanMoveTo (n, nx+xdelta, ny+ydelta)) {
-			arc_found = FALSE;
-			break;
-		    }
-		}
-	    }
-	}
-    }
-
-    // If no arc is found, then compute the xdelta so that the
-    // two bounding boxes butt up against eachother.  The only
-    // missing information is which bounding box should be on
-    // the left and which on the right.  This is difficult to 
-    // figure out.  Possible clues are the positioning of the
-    // input and output tabs in use.  A high-numbered input
-    // wants to be on the left of its source.  A low-numbered
-    // output wants to be on the right of its destination.
-    if (!arc_found) {
-	boolean prefer_left;
 	//
-	// The choice of arc has an influence of the way we lay out the
-	// graph especially when Gets and Sets are involved.  I don't
-	// know of a 'proper' way to pick one arc. So, loop over all arcs
-	// involved, give each 1 vote which it can cast in 1 of 3 ways...
-	// go left, go right, don't care.
-	//
+	// There may come a time when we have to decide if we want to place
+	// new nodes to the left or to the right of existing placements.  When
+	// we use this info we're really just taking our chances.  Also, we don't
+	// always need this info but we have to have it computed before we need
+	// it.
 	int center = 0;
 	int j;
-	if (debug)
-	    fprintf (stdout, "%s[%d] %d arcs will vote on placement\n", 
-		__FILE__,__LINE__,arc_count);
 	for (j=0; j<arc_count; j++) {
-	    prefer_left = FALSE;
+	    //
+	    // The choice of arc has an influence of the way we lay out the
+	    // graph especially when Gets and Sets are involved.  I don't
+	    // know of a 'proper' way to pick one arc. So, loop over all arcs
+	    // involved, give each 1 vote which it can cast in 1 of 3 ways...
+	    // go left, go right, don't care.
+	    //
+	    boolean prefer_left = FALSE;
 	    Ark* arc = aa[j];
 
 	    int input, output;
@@ -1493,12 +1464,85 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	}
 	prefer_left = (center<=0);
 
+	// for each arc, compute the x location that will make the wire
+	// straight and test each node in placed to see if the entire
+	// set can move.
+	for (i=0; i<arc_count; i++) {
+	    Ark* arc = aa[i];
+	    int input, output;
+	    Node* source = arc->getSourceNode(output);
+	    Node* dest = arc->getDestinationNode(input);
+	    NodeInfo* sinfo = (NodeInfo*)source->getLayoutInformation();
+	    NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
+	    boolean node_can_move = FALSE;
+	    int prevx, prevy;
+
+	    int x,y,dummy;
+	    if (placed.isMember(source)) {
+		if (!this->positionSourceOverDest(arc, x,y)) {
+		    node_can_move = TRUE;
+		    sinfo->getXYPosition (prevx, prevy);
+		    xdelta = x-prevx;
+		    ydelta = y-prevy;
+		}
+	    } else {
+		if (!this->positionDestUnderSource(arc, x,y)) {
+		    node_can_move = TRUE;
+		    dinfo->getXYPosition (prevx, prevy);
+		    xdelta = x-prevx;
+		    ydelta = y-prevy;
+		} else if (!this->positionDestBesideSibling (arc, x,y,prefer_left)) {
+		    // potential problem.  I'm not checking that the arc isn't 
+		    // shorter than some other arc that the destination node
+		    // has coming in.  If it is shorter, then I could place
+		    // a destination node higher on the screen that it ought
+		    // to be.  An example of this in InterpolateCameraMacro.net.
+		    node_can_move = TRUE;
+		    dinfo->getXYPosition (prevx, prevy);
+		    xdelta = x-prevx;
+		    ydelta = y-prevy;
+		}
+	    }
+
+	    // now check all other nodes.
+	    if (node_can_move) {
+		arc_found = TRUE;
+		ListIterator iter(*connected);
+		Node* n;
+		while (n=(Node*)iter.getNext()) {
+		    NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
+		    int nx,ny;
+		    info->getXYPosition(nx,ny);
+		    if (!this->nodeCanMoveTo (n, nx+xdelta, ny+ydelta)) {
+			arc_found = FALSE;
+			break;
+		    }
+		}
+		if (arc_found) break;
+	    }
+	}
+    }
+
+    // If no arc is found, then compute the xdelta so that the
+    // two bounding boxes butt up against eachother.  The only
+    // missing information is which bounding box should be on
+    // the left and which on the right.  This is difficult to 
+    // figure out.  Possible clues are the positioning of the
+    // input and output tabs in use.  A high-numbered input
+    // wants to be on the left of its source.  A low-numbered
+    // output wants to be on the right of its destination.
+    if (!arc_found) {
+	if (debug)
+	    fprintf (stdout, "%s[%d] %d arcs will vote on placement\n", 
+		__FILE__,__LINE__,arc_count);
+
 	if (prefer_left) {
 	    xdelta = -(maxx2 + DESIRED_FUDGE - minx1);
+	    ydelta = 0;
 	} else {
 	    xdelta =  (maxx1  + DESIRED_FUDGE - minx2);
+	    ydelta = 0;
 	}
-	ydelta = 0;
     }
 
     //
