@@ -16,7 +16,7 @@ int main(){fprintf(stderr, "misc/dx is only needed on Windows based systems.\n")
 
 #include "utils.h"
 
-/* #define USE_REGISTRY 1 */
+#define USE_REGISTRY 1
 
 #if defined(cygwin)
 void
@@ -433,6 +433,17 @@ void configure()
 
 	getenvstr("XSERVER_LAUNCHED", xs);
 
+#if defined(USE_REGISTRY)
+	/* If using registry, then installer installs this file
+	   appropriately.
+	 */
+
+	sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
+	if(needShortPath)
+		ConvertShortPathName(xkeysymdb);
+	setenvpair("XKEYSYMDB", xkeysymdb);
+#endif
+
 	if(strcmp(xs, "yes") != 0) {
 		if (whichX == EXCEED6) {
 			/* Set Exceed 6 env variables */
@@ -443,10 +454,6 @@ void configure()
 			strcat(path, ";"); 
 			strcat(path, exceeddir);
 			setenvpair("Path", path);
-			sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
-			if(needShortPath)
-				ConvertShortPathName(xkeysymdb);
-			setenvpair("XKEYSYMDB", xkeysymdb);
 			//sprintf(xapplresdir, "%s", exceeduserdir);
 			//setenvpair("XAPPLRESDIR", xapplresdir);
 			//sprintf(xnlspath, "%s\\lib", dxroot);
@@ -468,10 +475,6 @@ void configure()
 			strcat(path,";"); 
 			strcat(path, starnetdir);
 			setenvpair("Path", path);
-			sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
-			if(needShortPath)
-				ConvertShortPathName(xkeysymdb);
-			setenvpair("XKEYSYMDB", xkeysymdb);
 			result = _spawnlp(_P_NOWAIT, "xwin32", "xwin32", NULL);
 			if(result == -1)
 				printf( "Error spawning xwin32: %s\n", strerror( errno ) );
@@ -486,10 +489,6 @@ void configure()
 			strcat(path,";"); 
 			strcat(path, winaxedir);
 			setenvpair("Path", path);
-			sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
-			if(needShortPath)
-				ConvertShortPathName(xkeysymdb);
-			setenvpair("XKEYSYMDB", xkeysymdb);
 			result = _spawnlp(_P_NOWAIT, "xserver", "xserver", NULL);
 			if(result == -1)
 				printf( "Error spawning winaxe: %s\n", strerror( errno ) );
@@ -506,10 +505,6 @@ void configure()
 			exceeddir[strlen(exceeddir)-1] = '\0';
 		strcat(path, ";"); 
 		strcat(path, exceeddir);
-		sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
-		if(needShortPath)
-			ConvertShortPathName(xkeysymdb);
-		setenvpair("XKEYSYMDB", xkeysymdb);
 	}
 
 	sprintf(temp, "%s\\bin_%s", dxroot, DXD_ARCHNAME);
@@ -823,6 +818,7 @@ int launchit()
     u2d(cdto);
     chdir(cdto);
     if (exonly && *FileName) {
+	removeQuotes(FileName);
 	f = fopen(FileName, "r");
 	if (!f)
 	    ErrorGoto2("File", FileName, "not found");
