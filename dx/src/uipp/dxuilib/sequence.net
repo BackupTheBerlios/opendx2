@@ -1,21 +1,21 @@
 //
-// time: Fri Mar 27 08:17:50 1998
+// time: Wed Mar  5 11:15:47 2003
 //
-// version: 3.1.2 (format), 4.1.1 (DX Beta)
+// version: 3.2.0 (format), 4.2.0 (DX)
 //
 //
 // MODULE main
 //
 // comment: This example creates banded colors for a 2 dimensional data set. The interactors allow you to specify the break points of the bands, as well as the set of colors to apply to the bands. 
 // page assignment: java seqno	order=2, windowed=0, showing=1
-// workspace: width = 545, height = 520
+// workspace: width = 565, height = 522
 // layout: snap = 0, width = 50, height = 50, align = NN
 //
 macro main(
 ) -> (
 ) {
     // 
-    // node GetLocal[1]: x = 297, y = 0, inputs = 3, label = GetLocal
+    // node GetLocal[1]: x = 166, y = 10, inputs = 3, label = GetLocal
     // input[1]: defaulting = 0, visible = 1, type = 67108863, value = 0
     // page group: java seqno
     //
@@ -27,7 +27,7 @@ main_GetLocal_1_out_2 =
     main_GetLocal_1_in_3
     ) [instance: 1, cache: 1];
     // 
-    // node Compute2[1]: x = 251, y = 88, inputs = 5, label = Compute2
+    // node Compute2[1]: x = 10, y = 190, inputs = 5, label = Compute2
     // input[1]: defaulting = 0, visible = 1, type = 32, value = "loop+1"
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "loop"
     // input[4]: visible = 0
@@ -43,7 +43,7 @@ main_Compute2_1_out_1 =
     main_Compute2_1_in_5
     ) [instance: 1, cache: 1];
     // 
-    // node GetGlobal[1]: x = 137, y = 0, inputs = 3, label = GetGlobal
+    // node GetGlobal[1]: x = 248, y = 100, inputs = 3, label = GetGlobal
     // input[1]: defaulting = 0, visible = 1, type = 67108863, value = 0
     // page group: java seqno
     //
@@ -55,7 +55,7 @@ main_GetGlobal_1_out_2 =
     main_GetGlobal_1_in_3
     ) [instance: 1, cache: 1];
     // 
-    // node Compute2[2]: x = 72, y = 88, inputs = 5, label = Compute2
+    // node Compute2[2]: x = 102, y = 190, inputs = 5, label = Compute2
     // input[1]: defaulting = 0, visible = 1, type = 32, value = "loop+1"
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "loop"
     // input[4]: visible = 0
@@ -71,7 +71,7 @@ main_Compute2_2_out_1 =
     main_Compute2_2_in_5
     ) [instance: 2, cache: 1];
     // 
-    // node Compute2[3]: x = 0, y = 198, inputs = 5, label = Compute2
+    // node Compute2[3]: x = 32, y = 280, inputs = 5, label = Compute2
     // input[1]: defaulting = 0, visible = 1, type = 32, value = "global-local"
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "local"
     // input[4]: defaulting = 0, visible = 1, type = 32, value = "global"
@@ -86,7 +86,7 @@ main_Compute2_3_out_1 =
     main_Compute2_2_out_1
     ) [instance: 3, cache: 1];
     // 
-    // node Compute[1]: x = 183, y = 350, inputs = 3, label = Compute
+    // node Compute[1]: x = 75, y = 370, inputs = 3, label = Compute
     // input[1]: defaulting = 0, visible = 0, type = 32, value = "[$0, $1]"
     // page group: java seqno
     // expression: value = [a, b]
@@ -100,13 +100,13 @@ main_Compute_1_out_1 =
     main_GetLocal_1_out_1
     ) [instance: 1, cache: 1];
     // 
-    // node DXLInput[1]: x = 452, y = 0, inputs = 1, label = _java_control
+    // node DXLInput[1]: x = 353, y = 10, inputs = 1, label = _java_control
     // input[1]: defaulting = 0, visible = 1, type = 29, value = 0
     // page group: java seqno
     //
     main_DXLInput_1_out_1 = _java_control;
     // 
-    // node SetGlobal[1]: x = 137, y = 199, inputs = 3, label = SetGlobal
+    // node SetGlobal[1]: x = 249, y = 280, inputs = 3, label = SetGlobal
     // page group: java seqno
     //
     SetGlobal(
@@ -115,7 +115,7 @@ main_Compute_1_out_1 =
     main_SetGlobal_1_in_3
     ) [instance: 1, cache: 1];
     // 
-    // node SetLocal[1]: x = 298, y = 207, inputs = 3, label = SetLocal
+    // node SetLocal[1]: x = 167, y = 280, inputs = 3, label = SetLocal
     // page group: java seqno
     //
     SetLocal(
@@ -124,15 +124,22 @@ main_Compute_1_out_1 =
     main_SetLocal_1_in_3
     ) [instance: 1, cache: 1];
     // 
-    // node Transmitter[3]: x = 160, y = 458, inputs = 1, label = java_sequence
+    // node Transmitter[3]: x = 57, y = 460, inputs = 1, label = java_sequence
     // page group: java seqno
     //
 java_sequence = main_Compute_1_out_1;
     // 
-    // node Transmitter[4]: x = 455, y = 203, inputs = 1, label = java_control
+    // node Transmitter[4]: x = 356, y = 100, inputs = 1, label = java_control
     // page group: java seqno
     //
 java_control = main_DXLInput_1_out_1;
+    //
+    // decorator Annotate	pos=(330,206) size=235x40 style(Label), value = <NULL>
+    // annotation user_begin: 58
+    // annotation user: D O   N O T   E D I T
+    // annotation user: This page was created automatically.
+    // annotation user_end: <NULL>
+    // page group: java seqno
 // network: end of macro body
 }
 main_GetLocal_1_in_1 = 0;
@@ -164,7 +171,7 @@ main_Compute_1_out_1 = NULL;
 _java_control = 0;
 main_SetGlobal_1_in_3 = NULL;
 main_SetLocal_1_in_3 = NULL;
-Executive("product version 4 1 1");
+Executive("product version 4 2 0");
 $sync
 // This network contains DXLink tools.  Therefore, the following line(s)
 // that would cause an execution when run in script mode have been 
