@@ -1,3 +1,4 @@
+
 dnl
 dnl  Check for the CYGWIN environment
 dnl  -------------------------------------------------------------
@@ -377,35 +378,40 @@ dnl  -------------------------------------------------------------
 AC_DEFUN(DX_ARCHITECTURE,
 [
     AC_MSG_CHECKING(architecture type)
-    if test "$ARCH" = "" ; then
-	unameS=`uname -s`
-	unameM=`uname -m`
-	ARCH=unknown
-	if test $unameS = "FreeBSD" ; then
-	    ARCH=freebsd
+    AC_CACHE_VAL(ac_cv_dx_arch, 
+    [
+	ac_cv_dx_arch=$ARCH
+	if test "$ARCH" = "" ; then
+	    unameS=`uname -s`
+	    unameM=`uname -m`
+	    ac_cv_dx_arch=unknown
+	    if test $unameS = "FreeBSD" ; then
+		ac_cv_dx_arch=freebsd
+	    fi
+	    if test `echo $unameS | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"` = "yes" ; then
+		ac_cv_dx_arch=cygwin
+	    fi
+	    if test $unameS = "Linux" ; then
+		ac_cv_dx_arch=linux 
+	    fi
+	    if test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
+		ac_cv_dx_arch=sgi
+	    fi
+	    if test $unameS = "AIX" ; then
+		ac_cv_dx_arch=ibm6000
+	    fi
+	    if test $unameM = "alpha" ; then
+		ac_cv_dx_arch=alphax
+	    fi
+	    if test $unameS = "HP-UX" ; then
+		ac_cv_dx_arch=hp700
+	    fi
+	    if test $unameS = "SunOS" ; then
+		ac_cv_dx_arch=solaris
+	    fi
 	fi
-	if test `echo $unameS | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"` = "yes" ; then
-	    ARCH=cygwin
-	fi
-	if test $unameS = "Linux" ; then
-	    ARCH=linux 
-	fi
-	if test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
-	    ARCH=sgi
-	fi
-	if test $unameS = "AIX" ; then
-	    ARCH=ibm6000
-	fi
-	if test $unameM = "alpha" ; then
-	    ARCH=alphax
-	fi
-	if test $unameS = "HP-UX" ; then
-	    ARCH=hp700
-	fi
-	if test $unameS = "SunOS" ; then
-	    ARCH=solaris
-	fi
-    fi
+    ])
+    ARCH=$ac_cv_dx_arch
     AC_MSG_RESULT($ARCH)
     AC_SUBST(ARCH)
     AC_DEFINE_UNQUOTED($ARCH)
