@@ -7,7 +7,7 @@ data_DATA =  mymodes.c mycams.c
 EXTRA_DIST = $(data_DATA) 
 
 install-data-hook:
-	cp localmk $(datadir)/makefile
+	cp localmk $(DESTDIR)$(datadir)/makefile
 
 uninstall-local:
 	rm $(datadir)/makefile
