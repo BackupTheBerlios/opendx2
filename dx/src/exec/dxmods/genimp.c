@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp.c,v 1.4 2000/08/24 20:04:30 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp.c,v 1.5 2000/08/24 20:08:37 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -86,16 +86,16 @@ Object _dxf_gi_get_gen(struct parmlist *p)
   if(!(gr = import_Group(&datafp)))
     goto error;
 
-  genimpcleanup();
   if (datafp)
     _dxfclose_dxfile(datafp,_dxd_gi_filename);
+  genimpcleanup();
 
   return gr;
   
  error:
-  genimpcleanup();
   if (datafp)
     _dxfclose_dxfile(datafp,_dxd_gi_filename);
+  genimpcleanup();
 
   if ( DXGetError() == ERROR_NONE )
     {

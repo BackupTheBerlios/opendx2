@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_parse.c,v 1.7 2000/08/24 20:04:31 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_parse.c,v 1.8 2000/08/24 20:08:38 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -2331,7 +2331,7 @@ Error _dxf_getline(struct parse_state *ps)
       line = (char *)DXReAllocate(line,(unsigned int)strlen(str)+n*MAX_DSTR);
       strcat(line,str);
    }
-   if (line[strlen(line)-2] == '\r') 
+   if ( strlen(line) >= 2 && line[strlen(line)-2] == '\r') 
      line[strlen(line)-2] = '\n';
    current = line;
    ps->current = current;
