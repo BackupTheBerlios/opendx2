@@ -1,3 +1,28 @@
+Added a Mode menu to the Option menu in the Image Window. This allows
+direct access to the image manipulation routines without having to 
+remember the shortcut keys or open the View Control dialog. It also
+adds some increased functionality internally to the code by removing
+the dependency on X based accelerators in the Picture widget.
+
+Added the functionality to allow the accelerators to be mapped onto
+subpanels that can be popped up from the Image Window. The accelerators 
+now work in:
+     - View Control (always has, but is now handled the same as the others)
+     - Auto Axes (can now click apply and then use accelerators--handy)
+     - Rendering Options (very nice to click hardware then execute once)
+     - Throttle (to be consistent)
+All the accelerators such as Save, Print, Close all work in the sub-
+panels giving a more consistent feel to the ImageWindow.
+
+Fix Selection color on Selector List Interactor so the selected
+value is visible.
+
+Fix Background on Selector Option Menu so the menu is green in the
+developer mode.
+
+Fix the Control-Click on Close of a user style Control Panel to
+work as described.
+
 Fix the attribute copying logic for Band since Isosurface creates a 
 separate field for each isosurface, Band creates only one. 
 
@@ -8,7 +33,13 @@ permits to write the significant logic change to make the UI interlace
 reading data from the exec and writing data to the exec. This value
 is clamped to the max allowed by the system.
 
-Added MacOS X memory routines for the Executive.
+Fixes to to prevent hanging processes if the UI disconnects from the
+server while the server is running.
+
+A fix where some Packet logic could core dump.
+
+Added MacOS X memory routines for the Executive. Added MacOS X arch
+dependent info needed.
 
 Added configuration flags to make it possible to build loadable modules
 with Windows.
