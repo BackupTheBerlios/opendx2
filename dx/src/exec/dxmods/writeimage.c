@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.3 1999/05/10 15:45:33 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.4 1999/08/05 22:26:14 daniel Exp $
  */
 
 #include <dxconfig.h>
@@ -313,10 +313,17 @@ m_WriteImage ( Object *in, Object *out )
 #endif
     } else  {		/* Putting output in a file */
 	/*
-	 * DXRemove the extension in basename if it is recognized
+	 * remove the extension in basename if it is recognized
 	 * and is an acceptable extension for imgtyp.
 	 */
+	unsigned int original_length = 0;
+	original_length= strlen(basename);
 	_dxf_RemoveImageExtension(basename,iargs.imgtyp);
+        iargs.extension=NULL;
+	if(strlen(basename)!=original_length)
+	   {
+		iargs.extension=basename + strlen(basename) + 1 ; 
+	   }
         iargs.basename = basename;
     }
 
