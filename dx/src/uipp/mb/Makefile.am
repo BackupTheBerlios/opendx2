@@ -45,4 +45,4 @@ builder_LDADD = 			\
 	-L/usr/X11R6/lib 		\
 	-L/usr/local/lib 		\
 	-L$(DXROOT)/lib_@ARCH@	\
-	-lg++ -lXm -lXmu -lXt -lX11 -lXext
+	-lXm -lXmu -lXt -lX11 -lXext
