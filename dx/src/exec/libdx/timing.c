@@ -26,7 +26,7 @@
 static
 struct ti {
     int trace;				/* whether to trace times or not */
-    struct proc {
+    struct _proc {
 	struct event {			/* per event info: */
 	    double user, sys, real;	/* time of this event */
 	    char label[16];		/* this event's label */
@@ -235,8 +235,8 @@ _dxf_inittiming()
 	ti = (struct ti *) DXAllocateZero(sizeof(struct ti));
 	if (!ti)
 	    return ERROR;
-	ti->procs = (struct proc *)
-	    DXAllocateZero(DXProcessors(0) * sizeof(struct proc));
+	ti->procs = (struct _proc *)
+	    DXAllocateZero(DXProcessors(0) * sizeof(struct _proc));
 	if (!ti->procs) {
 	    DXFree((Pointer)ti);
 	    return ERROR;
@@ -251,7 +251,7 @@ void
 mark(char *s, int global)
 {
     static int been_here;
-    struct proc *proc;
+    struct _proc *proc;
     struct event *event;
     int id = DXProcessorId();
 
@@ -281,7 +281,7 @@ DXPrintTimes(void)
 {
     int i, id;
     static struct last glob;
-    struct proc *proc, *p;
+    struct _proc *proc, *p;
     struct event *event;
     struct last *last;
     DXBeginLongMessage();
