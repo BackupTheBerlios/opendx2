@@ -581,8 +581,28 @@ void ToolSelector::help()
 {
     const char* tools = 0;
     Symbol s = this->categoryDictionary.getActiveItem();
-    if (s) tools = theSymbolManager->getSymbolString(s);
-    else tools = ALPHABETIZED;
+    if (s) {
+	tools = theSymbolManager->getSymbolString(s);
+    } else {
+	//
+	// If there is no active item in the category dictionary
+	// then check for the first expanded category and use
+	// that.  The ALPHABETIZED category doesn't have help.
+	//
+	TreeNode* root = this->treeView->getDataModel();
+	List* categories = root->getChildren();
+	ListIterator iter(*categories);
+	iter.getNext();
+	TreeNode* cat;
+	while (cat=(TreeNode*)iter.getNext()) {
+	    if (cat->isExpanded()) {
+		tools = cat->getString();
+		break;
+	    }
+	}
+    }
+    if (!tools)
+	tools = ALPHABETIZED;
     char* cp = DuplicateString(tools);
     char *p;
     for (p = cp; *p; ++p)
