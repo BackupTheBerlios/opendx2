@@ -35,6 +35,7 @@ typedef struct {
 
 /* Function calls recognised by this file */
 #define FUNC_sqrt	(LAST_OPER+  1)
+#define FUNC_cbrt	(LAST_OPER+ 62)
 #define FUNC_pow	(LAST_OPER+  2)
 #define FUNC_sin	(LAST_OPER+  3)
 #define FUNC_cos	(LAST_OPER+  4)
