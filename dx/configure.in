@@ -24,7 +24,7 @@ AC_CHECK_PROG(HAVE_CSH, csh, 1, 0)
 
 if test "$HAVE_CSH" = "1" ; then
     INSTALL_DX_EXE=
-    INSTALL_DX_CSH=dx dx.workerscript
+    INSTALL_DX_CSH="dx dx.workerscript"
 else
     INSTALL_DX_EXE=dx
     INSTALL_DX_CSH=
