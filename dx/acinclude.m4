@@ -1,7 +1,7 @@
 dnl
 dnl  Check for the CYGWIN environment
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_CYGWIN,
+AC_DEFUN([DX_CYGWIN],
 [AC_CACHE_CHECK(for Cygwin environment, ac_cv_cygwin,
 [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
 #ifndef __CYGWIN__
@@ -15,7 +15,7 @@ test "$ac_cv_cygwin" = yes && CYGWIN=yes])
 dnl
 dnl  For intel link, list X libs
 dnl  ------------------------------------------------------------
-AC_DEFUN(DX_XLIBS,
+AC_DEFUN([DX_XLIBS],
 [
 AC_SUBST(DX_XLIBS_LIST)
 if test "$ARCH" = "intelnt" ; then
@@ -29,7 +29,7 @@ dnl
 dnl  If using CYGWIN, then the extensions to the filenames need to be
 dnl  different than that of UN*X. This sets that up.
 dnl
-AC_DEFUN(DX_EXEEXT,
+AC_DEFUN([DX_EXEEXT],
 [AC_REQUIRE([AC_CANONICAL_HOST])[]dnl
  case $host_os in
   *cygwin* ) CYGWIN=yes;;
@@ -68,7 +68,7 @@ AC_SUBST(EXEEXT)])
 dnl
 dnl  Learn what an object files extension is.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_OBJEXT,
+AC_DEFUN([DX_OBJEXT],
 [AC_MSG_CHECKING([for object file suffix])
 AC_CACHE_VAL(ac_cv_objext,
 [
@@ -99,7 +99,7 @@ dnl
 dnl  Check the headers for the DX build. This is similar to AC_CHECK_HEADER, but
 dnl  avoids putting every header in the dxconfig.h file.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_CHECK_HEADER,
+AC_DEFUN([DX_CHECK_HEADER],
 [dnl Do the transliteration at runtime so arg 1 can be a shell variable.
 ac_safe=`echo "$1" | sed 'y%./+-%__p_%'`
 AC_MSG_CHECKING([for $1])
@@ -122,7 +122,7 @@ dnl
 dnl  Check the headers for the DX build. This is similar to AC_CHECK_HEADERS, but
 dnl  avoids putting every header in the dxconfig.h file.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_CHECK_HEADERS,
+AC_DEFUN([DX_CHECK_HEADERS],
 [for ac_hdr in $1
 do
 DX_CHECK_HEADER($ac_hdr,
@@ -137,7 +137,7 @@ done
 dnl
 dnl  Check whether using glibc tgmath, if so add -D_GNU_SOURCE to CFLAGS
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_CHECK_TGMATH,
+AC_DEFUN([DX_CHECK_TGMATH],
 [AC_CACHE_CHECK(whether we are using GNU glibc math, ac_cv_lib_glibcmath,
 [dnl The semicolon is to pacify NeXT's syntax-checking cpp.
 cat > conftest.c <<EOF
@@ -163,7 +163,7 @@ fi
 dnl
 dnl  Determine the architecture that this is being run on.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_ARCHITECTURE,
+AC_DEFUN([DX_ARCHITECTURE],
 [
     AC_MSG_CHECKING(architecture type)
     AC_CACHE_VAL(ac_cv_dx_arch, 
@@ -207,7 +207,7 @@ dnl  Set up some architecture specific, primarily to handle AIX's
 dnl  export flags. (This needs to be fixed if using gcc)
 dnl  (I added the gcc case)
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_ARCH_SPECIFIC,
+AC_DEFUN([DX_ARCH_SPECIFIC],
 [
     AC_MSG_CHECKING(architecture specific stuff)
     case $ARCH in
@@ -250,7 +250,7 @@ dnl
 dnl  It is possible that the optimizer can cause problems with fstream.
 dnl  Check for this problem.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_STREAM_O2,
+AC_DEFUN([DX_STREAM_O2],
 [
     AC_MSG_CHECKING(whether -O2 interferes with fstream in C++)
     AC_LANG_PUSH([C++])
@@ -271,7 +271,7 @@ dnl
 dnl  See if the lexer produces a file with yylineno defined or if
 dnl  yylineno should be defined.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_LEX_YYLINENO,
+AC_DEFUN([DX_LEX_YYLINENO],
 [
 AC_CACHE_CHECK(lex output file root, ac_cv_prog_lex_root,
 [# The minimal lex program is just a single line: %%.  But some broken lexes
@@ -319,7 +319,7 @@ dnl
 dnl  Check whether header file contains a symbol.
 dnl  DX_HEADER_HAS_SYMBOL[ header-file, symbol ]
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_HEADER_HAS_SYMBOL,
+AC_DEFUN([DX_HEADER_HAS_SYMBOL],
 [
     AC_MSG_CHECKING(whether header file $1 contains symbol $2)
     ac_ext=C
@@ -352,7 +352,7 @@ dnl Borrowed from acspecific  and modified to add paths to Xm headers
 dnl and libs if different from X11
 dnl Set xm_includes and/or xm_libraries.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PATH_XM,
+AC_DEFUN([DX_PATH_XM],
 [
 AC_ARG_WITH(motif-includes, [  --with-motif-includes   set path for motif includes (default none)],[with_motif_includes=$withval], [with_motif_includes=''])
 if test "$with_motif_includes" != "yes" && test -z "$with_motif_includes"
@@ -483,7 +483,7 @@ dnl  What is the correct function name and structure def stat... stat, or _stat?
 dnl
 dnl  What is the correct function name and structure def stat... stat, or _stat?
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_CHECK_STAT,
+AC_DEFUN([DX_CHECK_STAT],
 [
 AC_LANG_PUSH([C++])
 echo "/* */" > statHdrs.h
@@ -519,7 +519,7 @@ AC_LANG_POP([])
 dnl
 dnl  Figure out what the type is needed for the select function.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_CHECK_SELECT_ARG,
+AC_DEFUN([DX_CHECK_SELECT_ARG],
 [
 AC_LANG_PUSH([C++])
 select_argtype=
@@ -554,7 +554,7 @@ rm selectHdrs.h
 dnl
 dnl  Figure out what the type is needed for getsockname.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_CHECK_SOCK_LENGTH_TYPE,
+AC_DEFUN([DX_CHECK_SOCK_LENGTH_TYPE],
 [
 AC_LANG_PUSH([C])
 socket_argtype=
@@ -593,7 +593,7 @@ AC_LANG_POP([])
 dnl
 dnl  More information for setting up CYGWIN
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_CYGWIN_MOUNTS,
+AC_DEFUN([DX_CYGWIN_MOUNTS],
 [
 changequote(<<,>>)dnl
 AC_MSG_CHECKING(if intelnt on cygwin, check for mounts)
@@ -624,7 +624,7 @@ changequote([,])dnl
 dnl
 dnl this is AC_CHECK_TYPE with windows.h for DX intelnt port
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_CHECK_TYPE,
+AC_DEFUN([DX_CHECK_TYPE],
 [
     AC_REQUIRE([AC_HEADER_STDC])dnl
     AC_MSG_CHECKING(for $1)
@@ -673,7 +673,7 @@ changequote([,]),
 dnl
 dnl  Determine whether the stdc++ libraries are needed to compile successfully.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_NEEDS_STDCXX,
+AC_DEFUN([DX_NEEDS_STDCXX],
 [
     AC_MSG_CHECKING(whether -lstdc++ is needed)
     tmpLIBS=$LIBS
@@ -734,7 +734,7 @@ dnl			search for standard location (/usr/lib/netscape/java/classes?)
 dnl
 dnl  DX_PROG_JAVAC([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PROG_JAVAC,[
+AC_DEFUN([DX_PROG_JAVAC],[
 AS_MESSAGE([checking for java compiler...])
 if test -n "$JAVAC"; then
   AC_MSG_WARN(JAVAC was preset)
@@ -755,7 +755,7 @@ dnl
 dnl  DX_PROG_JAVAC_WORKS(JAVA-COMPILER, [ACTION-IF-TRUE [, ACTION-IF-FALSE]])
 dnl  This will fail if the CLASSPATH is bad--that is what we want.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PROG_JAVAC_WORKS,[
+AC_DEFUN([DX_PROG_JAVAC_WORKS],[
 AC_MSG_CHECKING([if $1 works...])
 dx_test_java_classname="dx_conf"
 dx_test_java_prog=$dx_test_java_classname".java"
@@ -783,7 +783,7 @@ rm -f $dx_test_java_prog $dx_test_java_class
 dnl
 dnl  DX_PROG_JAR([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PROG_JAR,[
+AC_DEFUN([DX_PROG_JAR],[
 AS_MESSAGE([checking for jar...])
 if test -n "$JAR"; then
   AC_MSG_WARN(JAR was preset)
@@ -803,7 +803,7 @@ fi
 dnl
 dnl  DX_PROG_JAVAH([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PROG_JAVAH,[
+AC_DEFUN([DX_PROG_JAVAH],[
 AS_MESSAGE([checking for javah...])
 if test -n "$JAVAH"; then
   AC_MSG_WARN(JAVAH was preset)
@@ -823,7 +823,7 @@ fi
 dnl
 dnl  DX_PATH_JAVA([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PATH_JAVA,[
+AC_DEFUN([DX_PATH_JAVA],[
 if test -n "$JAVA"; then
   AC_MSG_WARN(JAVA was preset)
   AC_PATH_PROG(JAVA, $JAVAH)
@@ -844,7 +844,7 @@ fi
 dnl
 dnl DX_FIND_JNI_WITH_PATH(JNI-PATH,[ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_FIND_JNI_WITH_PATH, 
+AC_DEFUN([DX_FIND_JNI_WITH_PATH], 
 [
 AC_MSG_CHECKING([for valid jni headers path])
 AC_CACHE_VAL([ac_cv_include_jni],
@@ -897,7 +897,7 @@ dnl  This is a problem, since the pathname for linux may not always be
 dnl  genunix. Workaround is to set JAVA_ARCH (to e.g. linux) before configure.
 dnl  Could there be a better solution here?
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_JAVA_ARCHITECTURE,
+AC_DEFUN([DX_JAVA_ARCHITECTURE],
 [
     AC_MSG_CHECKING(java architecture type)
     if test "$JAVA_ARCH" = "linux" ; then
@@ -940,7 +940,7 @@ dnl
 dnl  DX_FIND_JDK_CLASSES
 dnl  Only works for sun java. Skips if not "javac".
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_FIND_JDK_CLASSES, [
+AC_DEFUN([DX_FIND_JDK_CLASSES], [
 dx_find_jdk=""
 AC_MSG_CHECKING([for jdk classes])
 AC_CACHE_VAL([ac_cv_jdk_classes],
@@ -1001,7 +1001,7 @@ fi
 dnl
 dnl DX_FIND_JNI([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_FIND_JNI, [
+AC_DEFUN([DX_FIND_JNI], [
 
 AC_CACHE_VAL([ac_cv_jdk_base],
 [
@@ -1055,7 +1055,7 @@ DX_FIND_JNI_WITH_PATH( $ac_cv_jdk_base, $1, $2)
 dnl
 dnl DX_FIND_COSMO(PATH [, ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_FIND_COSMO, [
+AC_DEFUN([DX_FIND_COSMO], [
 AC_MSG_CHECKING([for cosmo jar files])
 AC_CACHE_VAL([ac_cv_class_cosmo],
 [ 
@@ -1076,7 +1076,7 @@ fi
 dnl
 dnl DX_FIND_DEFAULT_COSMO
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_FIND_DEFAULT_COSMO, [
+AC_DEFUN([DX_FIND_DEFAULT_COSMO], [
 
 dnl Set the default to be Netscape's default class directory.
 dnl   You got a better idea--let us hear about it 
@@ -1090,7 +1090,7 @@ DX_FIND_COSMO(/usr/lib/netscape/java/classes/npcosmop211.jar)
 dnl
 dnl DX_FIND_NETSCAPE(PATH [, ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_FIND_NETSCAPE, [
+AC_DEFUN([DX_FIND_NETSCAPE], [
 AC_MSG_CHECKING([for netscape jar files])
 AC_CACHE_VAL([ac_cv_class_netscape],
 [
@@ -1111,7 +1111,7 @@ fi
 dnl
 dnl DX_FIND_DEFAULT_NETSCAPE
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_FIND_DEFAULT_NETSCAPE, [
+AC_DEFUN([DX_FIND_DEFAULT_NETSCAPE], [
 
 dnl Set the default to be Netscape's default class directory.
 dnl   You got a better idea--let us hear about it 
@@ -1127,7 +1127,7 @@ dnl End of the JavaDX stuff -------------------------------------------------
 dnl  
 dnl  With the architecture determine flags needed to compile runtime loadable modules etc.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_SET_RTL_FLAGS,
+AC_DEFUN([DX_SET_RTL_FLAGS],
 [
 dnl autoconfigure variables for building runtime loadables / shared objects that are
 dnl used in dx build. They also go into lib_$(ARCH)/arch.mak for building samples and user modules.
@@ -1229,7 +1229,7 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
 #
 # usage: AC_UTILS_UNIQUIFY([list],[shell-var-to-set-to-uniquified-list])
 
-AC_DEFUN(AC_UTILS_UNIQUIFY,
+AC_DEFUN([AC_UTILS_UNIQUIFY],
 [
 ac_u_bar=""
 for arg in $1 ; do

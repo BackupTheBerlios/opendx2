@@ -1021,7 +1021,12 @@ AC_CHECK_HEADERS(sys/ioctl.h sys/ldr.h sys/m_wait.h sys/param.h sys/select.h)
 AC_CHECK_HEADERS(sys/shm.h sys/signal.h sys/stat.h sys/sysmp.h)
 AC_CHECK_HEADERS(sys/systemcfg.h sys/systeminfo.h sys/timeb.h sys/times.h sys/time.h)
 AC_CHECK_HEADERS(sys/types.h sys/un.h sys/utsname.h time.h)
-AC_CHECK_HEADERS(types.h unistd.h values.h wait.h X11/Xmu/Editres.h)
+AC_CHECK_HEADERS(types.h unistd.h values.h wait.h)
+AC_CHECK_HEADERS([X11/Xmu/Editres.h], [], [], 
+[#if HAVE_X11_INTRINSIC_H
+   #include <X11/Intrinsic.h>
+#endif 
+])
 
 dnl The following is needed to add sys/socket.h to the default headers typically
 dnl included for checking net/if.h. Right now, this is the way it has to be done
@@ -1092,10 +1097,18 @@ AC_LANG([C++])
 
 dnl Need these to define themselves for C++
 
-AC_CHECK_HEADERS(CC/libc.h direct.h dirent.h iostream iostream.h regexp.h regex.h)
+AC_CHECK_HEADERS(CC/libc.h direct.h dirent.h iostream iostream.h regex.h)
 AC_CHECK_HEADERS(stream stream.h)
 AC_CHECK_HEADERS(sstream strstream.h strstrea.h sysent.h)
 AC_CHECK_HEADERS(fstream fstream.h)
+AC_CHECK_HEADERS([regexp.h], [], [], 
+[  #define INIT      char *sp = "";
+   #define GETC()    (*sp++)
+   #define PEEKC()   (*sp)
+   #define UNGETC()  (--sp)
+   #define RETURN(c) return;
+   #define ERROR(c)  /**/
+])
 
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, inet_addr)
