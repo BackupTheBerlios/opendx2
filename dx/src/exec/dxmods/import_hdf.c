@@ -14,7 +14,7 @@
 #define INTEL86 
 #endif
 
-#include "dfsd.h"
+#include <df/dfsd.h>
 #include <ctype.h>
 
 /* special access: needs extra include file, and has different constants 

@@ -19,7 +19,7 @@
 
 #if defined(HAVE_LIBCDF)
 
-#include "cdf.h"
+#include <cdf/cdf.h>
 #include "import.h"
 #include "impCDF.h"
 
