@@ -46,7 +46,7 @@
 #endif
 
 #if defined(HAVE_SYS_FILIO_H)
-#include <sys/fileio.h>
+#include <sys/filio.h>
 #endif
 
 static slave_id = 1;  /* We start at 1 because master will be slave 0 */
