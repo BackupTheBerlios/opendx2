@@ -1157,7 +1157,9 @@ static void ExConnectInput ()
 
 static void ExInitialize ()
 {
+#if YYDEBUG != 0
     extern int		yydebug;
+#endif
     int			i;
     int			n;
     int			nasked;
@@ -1333,7 +1335,9 @@ static void ExInitialize ()
     CHECK_INIT (_dxf_ExInitBackground (), "cannot initialize background processes");
     CHECK_INIT (_dxf_ExQueueGraphInit (), "cannot initialize for graph execution");
 
+#if YYDEBUG != 0
     yydebug = 0;				/* don't bug me */
+#endif
 
     CHECK_INIT (_dxf_ExCacheInit (), "cannot initialize the object cache");
     CHECK_INIT (_dxf_ExMacroInit (), "cannot initialize the macro dictionary");
