@@ -612,12 +612,15 @@ do
 done
 dsa=`echo $dsa | sed -e "s/^\s*#//"`
 
+if test -n "$dxargs" ; then
 set -- $dxargs
 
 for args
 do
 	sdxargs="$sdxargs#$args"
 done
+fi
+
 sdxargs=`echo $sdxargs | sed -e "s/^\s*#//"`
 
 aenvargs=`echo $envargs | sed -e "s/^\s*#//"`
