@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I../../../include
+INCLUDES = -I../../../include 
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 noinst_LIBRARIES = libLIBDX.a
@@ -99,7 +99,7 @@ SUFFIXES = .X .h .c .o .s .i
 buffer.o: buffer.c
 	rm -f buffer_.c
 	sed -e 's/[ 	][ 	]*\$$/ $$/' buffer.c > __buffer.c
-	$(CPP) $(INCLUDES) $(CFLAGS) -E __buffer.c \
+	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E __buffer.c \
 	| tr -s '$$\012' '\012\012' \
 	| sed -e '/^#/d'  \
 	| sed -e 's/[^#]pragma/#pragma/'  > buffer_.c
@@ -109,12 +109,12 @@ buffer.o: buffer.c
 	rm buffer_.c 
 
 zclipQ.o: zclipQ.c
-	$(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) -c -g zclipQ.c
+	$(CC) $(DEFS) $(INCLUDES) $(DEFS) $(CPPFLAGS) -c -g zclipQ.c
 
 shade.o: shade.c
 	rm -f shade_.c
 	sed -e 's/[ 	][ 	]*\$$/ $$/' shade.c > __shade_.c
-	$(CPP) $(INCLUDES) $(CFLAGS) -E __shade_.c \
+	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E __shade_.c \
 	| tr -s '$$\012' '\012\012' \
 	| sed -e '/^#/d'  \
 	| sed -e 's/DEFINE2/#define/'  \
@@ -134,13 +134,13 @@ triangle.o: triangle.c
 		| sed -e '/^#/d' \
 		| sed -e 's/INCLUDE2/#include/' \
 		| tr -s '$$\012' '\012\012' > triangle2.c
-	$(CPP) $(INCLUDES) $(CFLAGS) -E -DPASS3 triangle2.c \
+	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E -DPASS3 triangle2.c \
 		| tr -s '$$\012' '\012\012' \
 		| sed -e '/^#/d' \
 		| sed -e 's/DEFINE3/#define/' \
 		| sed -e 's/[^#]pragma/#pragma/' >triangle_.c
 	/bin/rm triangle1.c triangle2.c __triangle.c
-	$(COMPILE) $(INCLUDES) $(CFLAGS) -c triangle_.c
+	$(COMPILE) $(DEFS) $(INCLUDES) $(CFLAGS) -c triangle_.c
 	mv triangle_.o triangle.o
 	/bin/rm -f triangle_.c 
 
@@ -155,22 +155,22 @@ quad.o: quad.c
 		| sed -e '/^#/d' \
 		| sed -e 's/INCLUDE2/#include/' \
 		| tr -s '$$\012' '\012\012' > quad2.c
-	$(CPP) $(INCLUDES) $(CFLAGS) -E -DPASS3 quad2.c \
+	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E -DPASS3 quad2.c \
 		| tr -s '$$\012' '\012\012' \
 		| sed -e '/^#/d' \
 		| sed -e 's/DEFINE3/#define/' \
 		| sed -e 's/[^#]pragma/#pragma/' >quad_.c
 	/bin/rm quad1.c quad2.c __quad.c
-	$(COMPILE) $(INCLUDES) $(CFLAGS) -c quad_.c
+	$(COMPILE) $(DEFS) $(INCLUDES) $(CFLAGS) -c quad_.c
 	mv quad_.o quad.o
 	rm -f quad_.c
 
 plane.o: plane.c
 	rm -f plane_.c
-	$(CPP) $(INCLUDES) $(CFLAGS) -E plane.c \
+	$(CPP) $(DEFS) $(INCLUDES) $(CFLAGS) -E plane.c \
 	        | tr -s '$$\012' '\012\012' \
 	        | sed -e '/^#/d' \
 	        | sed -e 's/[^#]pragma/#pragma/' >plane_.c
-	$(COMPILE) $(INCLUDES) $(CFLAGS) -c plane_.c
+	$(COMPILE) $(DEFS) $(INCLUDES) $(CFLAGS) -c plane_.c
 	mv plane_.o plane.o
 	rm -f plane_.c
