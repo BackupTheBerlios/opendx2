@@ -53,7 +53,7 @@ DATA2 = PickPlot.cfg PickPlot.net PickStreamline.cfg PickStreamline.net \
     PlotLine2.cfg PlotLine2.net PlotSpecifyTicks.cfg PlotSpecifyTicks.net \
     PlotTwoLines.cfg PlotTwoLines.net Post.cfg Post.net \
     ProbeText.cfg ProbeText.net QuantizeImage.cfg QuantizeImage.net \
-    Readme Reduce.cfg Reduce.net Refine.cfg Refine.net Regrid.cfg \
+    README Reduce.cfg Reduce.net Refine.cfg Refine.net Regrid.cfg \
     Regrid.net Route.cfg Route.net RubberTube.cfg RubberTube.net \
     Rubbersheet.cfg Rubbersheet.net SalesOnStates.cfg SalesOnStates.net \
     ScaleScreen.cfg ScaleScreen.net ScalingAxes.cfg ScalingAxes.net \

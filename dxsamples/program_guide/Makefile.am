@@ -2,7 +2,7 @@
 
 datadir = $(prefix)/dx/samples/program_guide
 
-data_DATA =  Readme add.c add.cfg add.mb add.mdf add.net add2.c add2.cfg \
+data_DATA =  README add.c add.cfg add.mb add.mdf add.net add2.c add2.cfg \
 	     add2.mb add2.mdf add2.net add2_invalid.cfg add2_invalid.net \
 	     add2invalid.c add2invalid.mb add2invalid.mdf add_parallel.c \
 	     add_parallel.cfg add_parallel.net addpar.mdf all.mdf averagecell.c \
