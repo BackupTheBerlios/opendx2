@@ -25,6 +25,10 @@
 
 #endif
 
+#if HAVE_SYS_FILIO_H
+#include <sys/filio.h>
+#endif
+
 #include <dx/dx.h>
 
 #include "utils.h"

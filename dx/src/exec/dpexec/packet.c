@@ -31,6 +31,10 @@
 #endif
 #include <errno.h>
 
+#if HAVE_SYS_FILIO_H
+#include <sys/filio.h>
+#endif
+
 #include "config.h"
 #include "packet.h"
 #include "distp.h"

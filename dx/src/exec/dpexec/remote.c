@@ -28,6 +28,9 @@
 #include <sys/param.h>
 #endif
 #include <sys/types.h>
+#if HAVE_SYS_FILIO_H
+#include <sys/filio.h>
+#endif
 #ifdef DXD_HAS_WINSOCKETS
 #include <winsock.h>
 #else
