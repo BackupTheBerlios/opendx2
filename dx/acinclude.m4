@@ -329,6 +329,20 @@ AC_DEFUN(DX_ARCHITECTURE,
     AC_DEFINE_UNQUOTED(DXD_ARCHNAME, "$ARCH")
 ])
 
+AC_DEFUN(DX_ARCH_SPECIFIC,
+[
+    AC_MSG_CHECKING(architecture specific stuff)
+    case $ARCH in
+	ibm6000)
+	    DXEXEC_EXP='-bE:$(EXP)'
+	    DXEXEC_IMP='-bI:$(EXP)'
+	    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
+	    AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP)
+	    ;;
+    esac
+    AC_MSG_RESULT(done)
+])
+
 AC_DEFUN(DX_JAVA_ARCHITECTURE,
 [
     AC_MSG_CHECKING(java architecture type)

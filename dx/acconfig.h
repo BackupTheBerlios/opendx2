@@ -239,6 +239,10 @@
 #undef HAVE_X11_XLIBXTRA_H
 #undef HAVE_XGL_XGL_H
 
+#undef DXEXEC_EXP
+#undef DXEXEC_IMP
+
+
 @BOTTOM@
 
 #endif
