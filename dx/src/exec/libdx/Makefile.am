@@ -83,7 +83,7 @@ libLIBDX_a_LIBADD =  \
 
 libLIBDX_a_SOURCES =  \
 	\
-	array.c basic.c box.c cache.c camera.c clipped.c composite.c \
+	array.c basic.c box.c camera.c clipped.c composite.c \
 	cstarray.c field.c grid.c group.c helper.c init.c light.c lock.c \
 	matrix.c mem.c memory.c mesharray.c message.c multigrid.c \
 	neighbors.c object.c patharray.c private.c productarray.c \
