@@ -246,8 +246,11 @@ if test -z "$EXEEXT" ; then
 fi
 DX_OBJEXT
 
-DX_CHECK_HEADERS(windows.h)
-
+if test "$ARCH" = "intelnt" ; then
+	DX_CHECK_HEADERS(windows.h)
+else
+	ac_cv_header_windows_h="no"
+fi
 
 # Code to enable JAVADX to be built
 if test "$with_javadx" != 'no'; then
@@ -901,11 +904,15 @@ then
     fi
 fi
 
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+AC_CHECK_FUNCS(getdtablesize)
+AC_LANG_RESTORE
 
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
 	putenv re_comp regcmp select socket strcspn strdup strerror \
 	strspn strstr strtod strtol strtoul uname popen vfork trunc \
-        _popen spawnvp _spawnvp regcomp sysmp sysconf getdtablesize \
+        _popen spawnvp _spawnvp regcomp sysmp sysconf \
         pipe _pipe _popen popen _pclose pclose random rand srandom \
 	getopt srand opendir fork _findfirst strrstr strcasecmp \
 	stricmp getpid _getpid unlink _unlink getlogin isatty _isatty)
@@ -932,9 +939,12 @@ int n = _system_configuration.ncpus;
 AC_DEFINE_UNQUOTED(HAVE_SYSCONFIG_NCPUS)
 ])
 
-AC_EGREP_HEADER(sys_errlist, errno.h, AC_DEFINE(HAVE_SYS_ERRLIST))
-AC_EGREP_HEADER(sys_errlist, stdio.h, AC_DEFINE(HAVE_SYS_ERRLIST))
-
+AC_EGREP_HEADER(sys_errlist, sys/errno.h,  AC_DEFINE(HAVE_SYS_ERRLIST))
+AC_EGREP_HEADER(sys_errlist, errno.h,      AC_DEFINE(HAVE_SYS_ERRLIST))
+AC_EGREP_HEADER(sys_errlist, stdio.h,      AC_DEFINE(HAVE_SYS_ERRLIST))
+AC_EGREP_HEADER(_sys_errlist, sys/errno.h, AC_DEFINE(HAVE__SYS_ERRLIST))
+AC_EGREP_HEADER(_sys_errlist, errno.h,     AC_DEFINE(HAVE__SYS_ERRLIST))
+AC_EGREP_HEADER(_sys_errlist, stdio.h,     AC_DEFINE(HAVE__SYS_ERRLIST))
 
 dnl Check yaccer.  Don't use standard AQC_PROG_YACC... We're going
 dnl to create an -D as well as the make variable
@@ -976,13 +986,14 @@ DX_CHECK_HEADERS(DPS/XDPSlib.h DPS/dpsXclient.h \
     sys/file.h sys/filio.h sys/ioctl.h sys/ipc.h sys/ldr.h sys/m88kbcs.h \
     sys/m_wait.h sys/mman.h sys/mode.h sys/param.h sys/pstat.h sys/resource.h \
     sys/select.h sys/shm.h sys/signal.h sys/socket.h sys/stat.h sys/svs.h \
-    sys/syslimits.h sys/sysmacros.h sys/sysmp.h sys/sysconfig.h sys/systemcfg.h \
+    sys/syslimits.h sys/sysmacros.h sys/sysmp.h sys/sysconfig.h \
+    sys/errno.h sys/systemcfg.h \
     sys/systeminfo.h sys/time.h sys/timeb.h sys/times.h sys/types.h sys/un.h \
     sys/utsname.h sys/wait.h sysent.h time.h types.h ulocks.h unistd.h \
     values.h wait.h x11/xlibxtra.h xgl/xgl.h linux/kernel.h linux/sys.h)
 
 if test "$ARCH" = "intelnt" ; then
-    DX_CHECK_HEADERS(winbase.h windows.h wingdi.h winioctl.h winsock.h)
+    DX_CHECK_HEADERS(winbase.h wingdi.h winioctl.h winsock.h)
 fi
 
 DX_CHECK_STAT
