@@ -9,7 +9,7 @@
 #ifndef _DXWDefaultResources_h
 #define _DXWDefaultResources_h
 
-#if !defined(NEW_KEYLAYOUT)
+#if !defined(DX_NEW_KEYLAYOUT)
 
 String DXWindow::DefaultResources[] =
 {
@@ -64,7 +64,7 @@ String DXWindow::DefaultResources[] =
 };
 
 
-#else /* defined(NEW_KEYLAYOUT) */
+#else /* defined(DX_NEW_KEYLAYOUT) */
 
 
 String DXWindow::DefaultResources[] =
@@ -72,7 +72,7 @@ String DXWindow::DefaultResources[] =
     "*executeMenu.labelString:                    	Execute",
     "*executeMenu.mnemonic:                       	x",
     "*executeOnceOption.labelString:              	Execute Once",
-    "*executeOnceOption.mnemonic:                 	E",
+    "*executeOnceOption.mnemonic:                 	O",
     "*executeOnceOption.accelerator:              	Ctrl<Key>E",
     "*executeOnceOption.acceleratorText:          	Ctrl+E",
     "*executeOnChangeOption.labelString:          	Execute on Change",

@@ -9,7 +9,7 @@
 #ifndef _CMDefaultResources_h
 #define _CMDefaultResources_h
 
-#if !defined(NEW_KEYLAYOUT)
+#if !defined(DX_NEW_KEYLAYOUT)
 
 String ColormapEditor::DefaultResources[] =
 {
@@ -122,7 +122,7 @@ String ColormapEditor::DefaultResources[] =
 
 
 
-#else /* defined(NEW_KEYLAYOUT) */
+#else /* defined(DX_NEW_KEYLAYOUT) */
 
 
 String ColormapEditor::DefaultResources[] =
@@ -195,11 +195,11 @@ String ColormapEditor::DefaultResources[] =
     "*cmeDeleteSelectedOption.labelString:    		Delete Selected Control Points",
     "*cmeDeleteSelectedOption.mnemonic:     		D",
 #if defined(macos)
-    "*vpeDeleteOption.accelerator:                   	Ctrl<Key>BackSpace",
+    "*cmeDeleteSelectedOption.accelerator:          	Ctrl<Key>BackSpace",
 #elif defined(aviion)
-    "*vpeDeleteOption.accelerator:			Ctrl<Key>Delete",
+    "*cmeDeleteSelectedOption.accelerator:		Ctrl<Key>Delete",
 #else
-    "*vpeDeleteOption.accelerator:                   	Ctrl<Key>osfDelete",
+    "*cmeDeleteSelectedOption.accelerator:             	Ctrl<Key>osfDelete",
 #endif
     "*cmeDeleteSelectedOption.acceleratorText:  	Ctrl+Delete",
     "*cmeSelectAllOption.labelString:    		Select All Control Points",

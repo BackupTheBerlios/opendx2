@@ -9,7 +9,7 @@
 #ifndef _IWDefaultResources_h
 #define _IWDefaultResources_h
 
-#if !defined(NEW_KEYLAYOUT)
+#if !defined(DX_NEW_KEYLAYOUT)
 
 String ImageWindow::DefaultResources[] =
 {
@@ -136,7 +136,7 @@ String ImageWindow::DefaultResources[] =
 };
 
 
-#else /* defined(NEW_KEYLAYOUT) */
+#else /* defined(DX_NEW_KEYLAYOUT) */
 
 String ImageWindow::DefaultResources[] =
 {

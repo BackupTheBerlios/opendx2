@@ -9,7 +9,7 @@
 #ifndef _MWDefaultResources_h
 #define _MWDefaultResources_h
 
-#if !defined(NEW_KEYLAYOUT)
+#if !defined(DX_NEW_KEYLAYOUT)
 
 String  MsgWin::DefaultResources[] = {
     ".title:				Message Window",
@@ -61,7 +61,7 @@ String  MsgWin::DefaultResources[] = {
     NULL
 };
 
-#else /* defined(NEW_KEYLAYOUT) */
+#else /* defined(DX_NEW_KEYLAYOUT) */
 
 String  MsgWin::DefaultResources[] = {
     ".title:				Message Window",

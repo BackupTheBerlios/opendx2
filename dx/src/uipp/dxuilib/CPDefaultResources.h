@@ -9,7 +9,7 @@
 #ifndef _CPDefaultResources_h
 #define _CPDefaultResources_h
 
-#if !defined(NEW_KEYLAYOUT)
+#if !defined(DX_NEW_KEYLAYOUT)
 
 String ControlPanel::DefaultResources[] =
 {
@@ -117,7 +117,7 @@ String ControlPanel::DefaultResources[] =
 };
 
 
-#else /* defined(NEW_KEYLAYOUT) */
+#else /* defined(DX_NEW_KEYLAYOUT) */
 
 String ControlPanel::DefaultResources[] =
 {
@@ -175,11 +175,11 @@ String ControlPanel::DefaultResources[] =
     "*panelDeleteOption.labelString:                   	Delete",
     "*panelDeleteOption.mnemonic:                      	D",
 #if defined(macos)
-    "*vpeDeleteOption.accelerator:                   	Ctrl<Key>BackSpace",
+    "*panelDeleteOption.accelerator:                   	Ctrl<Key>BackSpace",
 #elif defined(aviion)
-    "*vpeDeleteOption.accelerator:			Ctrl<Key>Delete",
+    "*panelDeleteOption.accelerator:			Ctrl<Key>Delete",
 #else
-    "*vpeDeleteOption.accelerator:                   	Ctrl<Key>osfDelete",
+    "*panelDeleteOption.accelerator:                   	Ctrl<Key>osfDelete",
 #endif
 
     "*panelDeleteOption.acceleratorText: 		Ctrl+Delete",

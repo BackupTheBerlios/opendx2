@@ -9,7 +9,7 @@
 #ifndef _VCDefaultResources_h
 #define _VCDefaultResources_h
 
-#if !defined(NEW_KEYLAYOUT)
+#if !defined(DX_NEW_KEYLAYOUT)
 
 String  ViewControlDialog::DefaultResources[] =
 {
@@ -151,7 +151,7 @@ String  ViewControlDialog::DefaultResources[] =
 };
 
 
-#else /* defined(NEW_KEYLAYOUT) */
+#else /* defined(DX_NEW_KEYLAYOUT) */
 
 String  ViewControlDialog::DefaultResources[] =
 {

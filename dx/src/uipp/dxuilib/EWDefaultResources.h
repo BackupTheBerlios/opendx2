@@ -9,7 +9,7 @@
 #ifndef _EWDefaultResources_h
 #define _EWDefaultResources_h
 
-#if !defined(NEW_KEYLAYOUT)
+#if !defined(DX_NEW_KEYLAYOUT)
 
 String EditorWindow::DefaultResources[] =
 {
@@ -254,7 +254,7 @@ String EditorWindow::DefaultResources[] =
     NULL
 };
 
-#else /* defined(NEW_KEYLAYOUT) */
+#else /* defined(DX_NEW_KEYLAYOUT) */
 
 String EditorWindow::DefaultResources[] =
 {
@@ -474,7 +474,7 @@ String EditorWindow::DefaultResources[] =
     "*vpePanelGroupCascade.labelString:            	Open Control Panel by Group",
     "*vpePanelGroupCascade.mnemonic:               	G",
     "*vpeOpenMacroOption.labelString:              	Open Selected Macro(s)",
-    "*vpeOpenMacroOption.mnemonic:                 	M",
+    "*vpeOpenMacroOption.mnemonic:                 	R",
     "*vpeOpenImageOption.labelString:             	Open Selected Image Window(s)",
     "*vpeOpenImageOption.mnemonic:                 	I",
     "*vpeOpenColormapEditorOption.labelString:		Open Selected Colormap Editor(s)",
@@ -482,7 +482,7 @@ String EditorWindow::DefaultResources[] =
     "*vpeOpenColormapEditorOption.accelerator:     	Ctrl Shift <Key>E",
     "*vpeOpenColormapEditorOption.acceleratorText: 	Ctrl+Shift+E",
     "*vpeMessageWindowOption.labelString:          	Open Message Window",
-    "*vpeMessageWindowOption.mnemonic:             	E",
+    "*vpeMessageWindowOption.mnemonic:             	M",
     "*vpeMessageWindowOption.accelerator:		Ctrl <Key>M",
     "*vpeMessageWindowOption.acceleratorText:		Ctrl+M",
 
