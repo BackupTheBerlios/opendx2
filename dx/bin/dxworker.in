@@ -171,6 +171,7 @@ set exmdf=""
 set uimdf=""
 set errmsg=""
 set FileName=""        # Name of filename given on command line w/o option
+set ScriptCmd=""       # Script command invocation to execute
 set uirestrict=""
 set echoparms=
 set seecomline=
@@ -619,6 +620,20 @@ while ($#arglist > 0)
       shift arglist
       breaksw
     endsw
+    breaksw
+
+  case -scriptcmd:    # execute this command, possibly after importing a script
+    set exonly=1
+    set exmode=-R
+    unset startup
+
+    if ($#arglist < 2) then
+      set errmsg="-scriptcmd: missing parameter"
+      goto out
+    endif
+
+    set ScriptCmd=$arglist[2]
+    shift arglist
     breaksw
 
   case -connect:       # start the distributed exec 
@@ -1415,20 +1430,41 @@ if ($exonly) then
       endif
     endif
   endif
-
+    
+  # -script <filename>
   if ( "$FileName" != "" ) then
-    if ( "$echoparms" != "" ) then
-      $echoparms $dxcom $exflags "< $FileName"
+    set q='"'
+
+    # -script <filename> -scriptcmd "command"
+    if ( "$ScriptCmd" != "" ) then
+      if ( "$echoparms" != "" ) then
+         $echoparms "$dxcom $exflags <<EOF\ninclude $q$FileName$q\n$ScriptCmd;\nEOF" "| /bin/sh"
+      else
+         echo "$dxcom $exflags <<EOF\ninclude $q$FileName$q\n$ScriptCmd;\nEOF" \
+           | /bin/sh
+      endif
     else
-      $dxcom $exflags < $FileName
+      if ( "$echoparms" != "" ) then
+	$echoparms $dxcom $exflags "< $FileName"
+      else
+	$dxcom $exflags < $FileName
+      endif
     endif
-    set exstatus = $status
+
   else
-    $echoparms $dxcom $exflags
-    set exstatus = $status
+    # -scriptcmd "command"
+    if ( "$ScriptCmd" != "" ) then
+      if ( "$echoparms" != "" ) then
+         $echoparms "echo $ScriptCmd; | $dxcom $exflags"
+      else
+         echo "$ScriptCmd;" | $dxcom $exflags
+      endif
+    else
+      $echoparms $dxcom $exflags
+    endif
   endif
 
-  exit $exstatus
+  exit $status
 endif
 
 
