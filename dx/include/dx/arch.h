@@ -195,6 +195,28 @@ char *strrstr(char *, char *);
 
 #endif
 
+/* Macos X - typically on Apple hardware
+ */
+#ifdef macos
+
+#define trunc(value) ((float)((int)(value)))
+
+/* default values for gamma correction */
+#undef DXD_GAMMA_8BIT
+#undef DXD_GAMMA_12BIT
+#undef DXD_GAMMA_15BIT
+#undef DXD_GAMMA_16BIT
+#undef DXD_GAMMA_24BIT
+#undef DXD_GAMMA_32BIT
+#define DXD_GAMMA_8BIT	1.0
+#define DXD_GAMMA_12BIT	1.0
+#define DXD_GAMMA_15BIT	1.0
+#define DXD_GAMMA_16BIT	1.0
+#define DXD_GAMMA_24BIT	2.0
+#define DXD_GAMMA_32BIT	2.0
+
+#endif /* macos */
+
 /* silicon graphics: indigo, crimson, 280/gtx, onyx, extreme
  */
 #ifdef sgi
