@@ -646,7 +646,7 @@ str=$s
 ])
 done
 done
-if test "$fnc" = "X" or "$str" = "X" ; then
+if test "$fnc" = "X" -o "$str" = "X" ; then
     echo could not find working combination of stat function and structure
     exit
 fi
