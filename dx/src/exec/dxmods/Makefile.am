@@ -14,7 +14,7 @@ dxmdf_DATA = dx.mdf
 
 HEADERS1 = \
 	_compoper.h glyph_ARRW.h glyph_RCKT20.h glyph_SQUARE.h \
-	_compparse.h glyph_ARRW2D.h glyph_RCKT2D.h impCDF.h \
+	glyph_ARRW2D.h glyph_RCKT2D.h impCDF.h \
 	_compputils.h glyph_BOX.h glyph_RCKT3.h import.h \
 	_compute.h glyph_CIRCLE10.h glyph_RCKT4.h interact.h \
 	_getfield.h glyph_CIRCLE20.h glyph_RCKT6.h plot.h \
@@ -129,6 +129,8 @@ y.tab.c: _compparse.y
 
 _compparse.c: y.tab.c
 	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.c > _compparse.c
+
+_complex.c: _compparse.h
 
 _compparse.h: y.tab.c
 	sed -e "s/yy/_dxfcc/g" -e "s/YY/_CC/g" y.tab.h > _compparse.h
