@@ -1,3 +1,56 @@
+Fixed bug in computing conncetion-dependent normals for 2-D positions.
+Of course, the real question is whay are we computing them at all?  
+They'll be {0.0 0.0 1.0}.
+
+Permit invocation of script functionality from the command-line via:
+
+    dx -script script_macros.scr -scriptcmd "MyMacro(value1,value2)"
+or
+    dx -scriptcmd 'data = Import("junk"); Print(data);'
+
+without requiring the user to use shell scripting tricks or build temp
+script files.
+
+
+Add ImageMagick support to ReadImage.
+   - Works with ImageMagick 5 (tested with 5.3.7)
+   
+   - Reads images from PNGs, GIFs, MPEGs, Postscript files, etc. -- 
+     whatever support your ImageMagick library was built with
+
+   - Creates opacities/opacity map components for images which have 
+     opacities or a transparency map (e.g. GIFs, PNGs, ...); use Render
+
+   - Supports both delayed and direct color images, with delayed->direct
+     option and float/byte option
+
+   - Smart chomping of supported ImageMagick extensions
+
+   - Supports DX convention for reading multi-frame multi-file sequences; 
+     e.g. name="t.gif", where images are t.0.gif, t.1.gif, t.2.gif, etc.
+
+   - For multi-frame single-file images (e.g. animated GIFs, stacked
+     TIFF/PNGs, etc.), only loading the first image is supported
+     (ImageMagick is missing basic sub-image support; see the source
+     comments for details).
+     
+Ugly but overdue changes so that ImageMagick can write files directly 
+without dx writing an intermediate miff file.
+
+The attached patch adds support for polylines to the opacity renderer.
+
+Fix error where Sample would core dump on Sampling lines.
+
+Within Isosurface, was trying to interpolate all components that are dep on 
+positions.  In some cases, invalid positions components are positions-dependent; 
+made it skip them.
+
+Fix to make dxexec release processor when in wait loop. This fixes the
+99% CPU usage on NT.
+
+Fix to allow clicking off Connect to Already running server in the Options
+dialog box.
+
 4.1.3
 ===============
 
