@@ -554,7 +554,13 @@ static Error parse_include(struct finfo *f)
     rc = remote_objectid(f, &remoteid, "include object");
     
     if (!rc) {
-	DXSetError(ERROR_DATA_INVALID, "bad or missing include object");
+	DXSetError(ERROR_DATA_INVALID, "bad or missing file definition");
+	return ERROR;
+    }
+
+    rc = remote_object(f, remoteid, &o);
+    if (!rc) {
+	DXSetError(ERROR_DATA_INVALID, "bad or missing file object");
 	return ERROR;
     }
     
