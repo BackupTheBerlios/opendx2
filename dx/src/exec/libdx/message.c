@@ -110,8 +110,10 @@ _dxf_initmessages(void)
     if (read(fd, state->buf, size) < size) {
 	DXWarning("message file %s could not be read", name);
 	state->translate = 0;
+	close(fd);
 	return OK;
     }
+    close(fd);
     state->buf[size] = '\0';
     s = state->buf;
     while (*s!='#' && *s)
