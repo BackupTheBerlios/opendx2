@@ -6,7 +6,7 @@ noinst_LIBRARIES = libDPEXEC.a
 
 SUFFIXES = .m .y .c .s .h .o .a 
 
-BUILT_SOURCES = compile.h 
+BUILT_SOURCES = compile.h yuiif.h yuiif.c
 
 noinst_HEADERS = \
 	_eval.h _macro.h _variable.h attribute.h background.h cache.h \

@@ -336,7 +336,7 @@ retry:
 	if (s)
 	{
 	    SOCK_LENGTH_TYPE rq_bufsz, set_bufsz;
-	    SOCK_LENGTH_TYPE set_len, rq_len = sizeof(rq_bufsz);
+	    SOCK_LENGTH_TYPE set_len = sizeof(set_bufsz), rq_len = sizeof(rq_bufsz);
 
 	    rq_bufsz = atoi(s);
 	    if (setsockopt(fd, SOL_SOCKET, SO_SNDBUF, (void *)&rq_bufsz, rq_len))
@@ -346,7 +346,7 @@ retry:
 	    }
 	    if (getsockopt(fd, SOL_SOCKET, SO_SNDBUF, (void *)&set_bufsz, &set_len))
 	    {
-		perror("getsockopt");
+		perror("getsockopt1");
 		goto error;
 	    }
 	    if (rq_bufsz != set_bufsz)
@@ -359,9 +359,10 @@ retry:
 		perror("setsockopt");
 		goto error;
 	    }
+	    set_len = sizeof(set_bufsz);
 	    if (getsockopt(fd, SOL_SOCKET, SO_RCVBUF, (void *)&set_bufsz, &set_len))
 	    {
-		perror("getsockopt");
+		perror("getsockopt2");
 		goto error;
 	    }
 	    if (rq_bufsz != set_bufsz)

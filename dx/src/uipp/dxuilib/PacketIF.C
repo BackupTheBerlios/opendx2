@@ -1221,7 +1221,7 @@ setSockBufSize(int sock)
     if (s)
     {
 	SOCK_LENGTH_TYPE rq_bufsz, set_bufsz;
-	SOCK_LENGTH_TYPE set_len, rq_len = sizeof(rq_bufsz);
+	SOCK_LENGTH_TYPE set_len = sizeof(set_bufsz), rq_len = sizeof(rq_bufsz);
 
 	rq_bufsz = atoi(s);
 	if (setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (void *)&rq_bufsz, rq_len))
@@ -1243,6 +1243,7 @@ setSockBufSize(int sock)
 	    perror("setsockopt");
 	    return 0;
 	}
+	set_len = sizeof(set_bufsz);
 	if (getsockopt(sock, SOL_SOCKET, SO_RCVBUF, (void *)&set_bufsz, &set_len))
 	{
 	    perror("getsockopt");
