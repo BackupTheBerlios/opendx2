@@ -19,6 +19,7 @@
 #undef  REQUIRES_BZERO_DECLARATION
 
 #undef ibm6000
+#undef intelnt
 
 #undef OLD_LESSTIF
 
