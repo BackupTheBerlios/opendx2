@@ -118,7 +118,7 @@ DynamicResource *dr;
     this->setPrintType(PrintCut);
 
     if (!this->labelString) {
-	XmString xmstr1 = XmStringCreate ("Visual program comment\n", "bold");
+	XmString xmstr1 = XmStringCreate ("Visual program comment", "bold");
 	XmString xmstr2 = XmStringCreate ("        double click to edit", "small_bold");
 	XmString xmstr3 = XmStringSeparatorCreate();
 	XmString xmstr4 = XmStringConcat (xmstr1, xmstr3);
