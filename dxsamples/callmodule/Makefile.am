@@ -2,7 +2,7 @@
 
 datadir = $(prefix)/dx/samples/callmodule
 
-data_DATA = Readme Simple.c ThunderStreamlines.c renderimage.c xapp_supervise.c
+data_DATA = README Simple.c ThunderStreamlines.c renderimage.c xapp_supervise.c
 
 EXTRA_DIST = $(data_DATA)
 
