@@ -2842,7 +2842,7 @@ DXGetInvalidComponentArray(InvalidComponentHandle handle)
 	     * mind.  If the marks indicate invalid, then we have
 	     * the easy case.
 	     */
-	    if (handle->sense && IC_MARKS_INDICATE_VALID)
+	    if (handle->sense == IC_MARKS_INDICATE_VALID)
 	    {
 		for (li = 0; li < handle->nItems; li++)
 		{
