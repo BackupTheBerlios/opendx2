@@ -167,9 +167,7 @@ void DXPacketIF::DXProcessCompletion(void *, int , void *)
 void DXPacketIF::DXProcessInterrupt(void *clientData, int id, void *p)
 {
     char *line = (char *)p;
-
-    cout << "DX Interrupt(" << id << "): " << line << "\n";
-    cout.flush();
+    fprintf(stderr, "DX Interrupt(%d): %s\n", id, line);
 }
 
 void DXPacketIF::DXProcessBeginExecNode(void *clientData, int id, void *p)
