@@ -6,8 +6,12 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/exobject.h,v 1.6 2002/03/21 21:14:39 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/exobject.h,v 1.7 2004/06/03 16:27:16 davidt Exp $
  */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #include <dxconfig.h>
 
@@ -39,7 +43,7 @@ typedef enum exo_class
 typedef struct exo_methods
 {
     int			copy;			/* has copy of methods	*/
-    PFI			*methods;		/* function pointers	*/
+    PFIP			*methods;		/* function pointers	*/
 } exo_methods;
 
 #if DXD_HAS_LIBIOP
@@ -51,7 +55,7 @@ typedef time_t		EXRefTime;
 typedef struct exo_object
 {
     char		*tag;			/* object tag		*/
-    exo_class		class;			/* top level class	*/
+    exo_class		exclass;			/* top level class	*/
     int			local;			/* object in local mem.	*/
     int			refs;			/* reference count	*/
     lock_type		lock;			/* semaphore lock	*/
@@ -127,7 +131,7 @@ typedef	struct exo_object	*EXO_Object;
 
 
 #define EXO_GetClass(obj)\
-    ((obj) ? (((EXO_Object)(obj))->class) : EXO_CLASS_UNKNOWN)
+    ((obj) ? (((EXO_Object)(obj))->exclass) : EXO_CLASS_UNKNOWN)
 
 
 #define EXO_lock(_obj) 		((_obj) ? EXO_LOCK      (_obj) : OK)
@@ -136,7 +140,7 @@ typedef	struct exo_object	*EXO_Object;
 #define	EXO_reference(_obj)	((_obj) ? EXO_REFERENCE (_obj) : (_obj))
 #define EXO_delete(_obj) 	((_obj) ? EXO_DELETE    (_obj) : OK)
 
-extern PFI           _dxd_EXO_default_methods[]; /* from exobject.c */
+extern PFIP           _dxd_EXO_default_methods[]; /* from exobject.c */
     
 /*
  * The default methods
@@ -154,10 +158,10 @@ Error		_dxf_EXO_cleanup		(void);
 int		_dxf_EXO_compact		(void);
 int 		_dxf_EXO_delete 		(EXO_Object obj);
 
-EXO_Object	_dxf_EXO_create_object	(EXO_Class class, int size,
-					 PFI *methods);
-EXO_Object	_dxf_EXO_create_object_local	(EXO_Class class, int size,
-					 PFI *methods);
+EXO_Object	_dxf_EXO_create_object	(EXO_Class exclass, int size,
+					 PFIP *methods);
+EXO_Object	_dxf_EXO_create_object_local	(EXO_Class exclass, int size,
+					 PFIP *methods);
 
 /*
  * Nicer looking defines
@@ -177,3 +181,6 @@ EXO_Object	_dxf_EXO_create_object_local	(EXO_Class class, int size,
 Error _dxf_EXOCheck (EXO_Object obj);
 
 #endif	/* __EXOBJECT_H */
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif

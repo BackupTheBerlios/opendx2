@@ -28,7 +28,7 @@ static node *FuncFreeList	= NULL;
 
 #define INIT_GVARS	512	/* Number of gvars to allocate initially */
 
-PFI _dxd_EXO_default_methods[] =
+PFIP _dxd_EXO_default_methods[] =
 {
     _dxf__EXO_delete
 };
@@ -140,7 +140,7 @@ Error _dxf_EXOCheck (EXO_Object obj)
 {
     if (obj && !((long)obj & 0x03) && obj->tag == EXO_TAG)
     {
-	switch (obj->class)
+	switch (obj->exclass)
 	{
 	    case EXO_CLASS_DELETED:
 	    case EXO_CLASS_FUNCTION:
@@ -167,12 +167,12 @@ Error _dxf_EXOCheck (EXO_Object obj)
  */
 
 static EXO_Object
-EXO_create_object_worker (EXO_Class class, int size, PFI *methods, int local)
+EXO_create_object_worker (EXO_Class exclass, int size, PFIP *methods, int local)
 {
     EXO_Object		obj;
     int			locked;
 
-    switch (class)
+    switch (exclass)
     {
 	case EXO_CLASS_FUNCTION:
 	    if (FuncFreeList == NULL)
@@ -224,7 +224,7 @@ EXO_create_object_worker (EXO_Class class, int size, PFI *methods, int local)
     ExZero (obj + 1, size - sizeof (exo_object));
 
     obj->tag	   = EXO_TAG;
-    obj->class	   = class;
+    obj->exclass   = exclass;
     obj->local	   = local;
     obj->refs	   = 0;
     obj->m.copy    = FALSE;
@@ -244,15 +244,15 @@ EXO_create_object_worker (EXO_Class class, int size, PFI *methods, int local)
 }
 
 
-EXO_Object _dxf_EXO_create_object (EXO_Class class, int size, PFI *methods)
+EXO_Object _dxf_EXO_create_object (EXO_Class exclass, int size, PFIP *methods)
 {
-    return (EXO_create_object_worker (class, size, methods, FALSE));
+    return (EXO_create_object_worker (exclass, size, methods, FALSE));
 }
 
 
-EXO_Object _dxf_EXO_create_object_local (EXO_Class class, int size, PFI *methods)
+EXO_Object _dxf_EXO_create_object_local (EXO_Class exclass, int size, PFIP *methods)
 {
-    return (EXO_create_object_worker (class, size, methods, TRUE));
+    return (EXO_create_object_worker (exclass, size, methods, TRUE));
 }
 
 
@@ -271,7 +271,7 @@ int _dxf_EXO_delete (EXO_Object obj)
 	    obj->DBGprev->DBGnext = obj->DBGnext;
 	}
 #endif
-	switch (obj->class)
+	switch (obj->exclass)
 	{
 	    case EXO_CLASS_FUNCTION:
 		((node *) obj)->next = FuncFreeList;
@@ -294,7 +294,7 @@ int _dxf_EXO_delete (EXO_Object obj)
 		break;
 	}
 
-	obj->class = EXO_CLASS_DELETED;
+	obj->exclass = EXO_CLASS_DELETED;
 	if (obj->m.copy)
 	    DXFree ((Pointer) obj->m.methods);
 	if (! obj->local)
@@ -329,7 +329,7 @@ PrintEXObj()
     EXObj o;
 
     for (o = head->DBGnext; o != head; o = o->DBGnext) {
-	switch (o->class) {
+	switch (o->exclass) {
 	case EXO_CLASS_DELETED:
 	    printf ("0x%08x (refs %d) EXO_CLASS_DELETED\n", o, o->refs);
 	    break;
@@ -347,7 +347,7 @@ PrintEXObj()
 	    printf ("0x%08x (refs %d) EXO_CLASS_UNKNOWN\n", o, o->refs);
 	    break;
 	default:
-	    printf ("0x%08x (refs %d) of unknown class %d\n", o, o->refs, o->class);
+	    printf ("0x%08x (refs %d) of unknown class %d\n", o, o->refs, o->exclass);
 	    break;
 	}
     }

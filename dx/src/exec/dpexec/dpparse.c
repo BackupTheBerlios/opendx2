@@ -42,7 +42,7 @@
 
 int _dxf_ExNode__Delete(node *n);
 
-static PFI
+static PFIP
 node_methods[] =
 {
     _dxf_ExNode__Delete

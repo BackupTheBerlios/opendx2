@@ -25,7 +25,7 @@ void
 _dxf_release_PendingCmdList(PendingCmdList *p)
 {
     if (p)
-	DXDelete(p->private);
+	DXDelete(p->exprivate);
 }
 
 Error
@@ -90,7 +90,7 @@ _dxf_newPendingCmdList()
 	return NULL;
     }
 
-    pjl->private = DXReference((Object)p);
+    pjl->exprivate = DXReference((Object)p);
 
     return pjl;
 }

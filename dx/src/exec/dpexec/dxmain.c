@@ -149,6 +149,7 @@
 #include "remote.h"
 #include "socket.h"
 #include "../libdx/diskio.h"
+#include "instrument.h"
 
 #ifdef DXD_LICENSED_VERSION
 #include "license.h"
@@ -172,9 +173,10 @@ extern void  _dxf_user_modules(); /* from libdx/ */
 extern void  _dxf_private_modules(); /* from libdx/ */
 extern Error user_cleanup(); /* from libdx/userinit.c */
 
-#if !defined(intelnt) && !defined(WIN32)
-extern int   DXForkChild(int); /* from libdx/mem.c */
-#endif
+extern void _dxfcleanup_mem(); /* from libdx/mem.c */
+extern Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] );
+/* from remote.c */
+extern Error user_slave_cleanup(); /* from userinit.c */
 
 /*
  * How often to check for registered input handlers
@@ -244,9 +246,10 @@ int  _dxd_exMasterfd = -1;       /* slave to master file descriptor */
 int  _dxd_exSlaveId = 0;             /* slave number */
 int  _dxd_exSwapMsg = 0;             /* do we need to swap msg from peer? */
 /* startup of slave as finished, send msgs OK */
-int  _dxd_exMsgOK	  	= FALSE;
 int  *_dxd_exNSlaves = NULL;		 /* number of distributed slaves */
 int  *_dxd_extoplevelloop = NULL;	 /* looping at top level of graph */
+
+int            _dxd_exErrorPrintLevel = 3;
 
 int _dxd_exEnableDebug	        = 0;
 long _dxd_exMarkMask		= 0;	      /* DXMarkTime enable mask	*/
@@ -263,17 +266,13 @@ static char	**exenvp	= NULL;
 static char     *mdffiles[MDF_MAX];
 static int      nmdfs           = 0;
 
-int _dxfPhysicalProcs(void);
-extern void _dxfcleanup_mem(); /* from libdx/mem.c */
-extern Error ExHostToFQDN( const char host[], char fqdn[MAXHOSTNAMELEN] );
-/* from remote.c */
-
 
 /* Common routines added for distributed processing */
 
 /*
  * All the main helper functions.
  */
+int _dxfPhysicalProcs(void);
 
 /*
  * This one's used externally in DODX RunOnSlaves 
@@ -287,7 +286,7 @@ static void	ExCheckTerminate	(void);
 static void	ExChildProcess		(void);
 static void	ExCleanup		(void);
 static void	ExConnectInput		(void);
-static void 	ExCopyright 		(int);
+static void ExCopyright 		(int);
 static int	ExFindPID		(int pid);
 static void	ExForkChildren		(void);
 static void	ExInitialize		(void);
@@ -300,8 +299,11 @@ static void	ExProcessArgs		(int argc, char **argv);
 static void	ExSettings		(void);
 static void	ExUsage			(char *name);
 static void	ExVersion		(void);
-static int      ExFromMasterInputHndlr  (int fd, Pointer p);
+static int  ExFromMasterInputHndlr  (int fd, Pointer p);
 
+#if !defined(intelnt) && !defined(WIN32)
+extern int   DXForkChild(int);
+#endif
 
 #if DXD_EXEC_WAIT_PROCESS
 static void	ExParentProcess		(void);
@@ -320,12 +322,6 @@ static void	ExSigDanger		(int);
 static void	ExKillChildren(void);
 #endif
 
-#if DXD_PVSPROFILE
-static int	ExRouExit		(Pointer junk);
-static volatile int	*rouExited;
-static lock_type rouLock;
-#endif
-
 EXDictionary	_dxd_exGlobalDict = NULL;
 
 static struct child
@@ -339,13 +335,7 @@ lock_type *childtbl_lock = NULL;
 
 static volatile int *exReady;
 
-#include "instrument.h"
-
-int
-DXmain (argc, argv, envp)
-int		argc;
-char	**argv;
-char	**envp;
+int DXmain (int argc, char **argv, char **envp)
 {
     int		save_errorlevel=0;
 #if HAVE_SYS_CORE_H
@@ -393,27 +383,19 @@ char	**envp;
     else
         nprocs = (nphysprocs > 1) ? 2 : 1;
 #else
-
     nphysprocs = nprocs = 1;
 #endif
 
 #if HAVE_SIGDANGER
-
     signal (SIGDANGER, ExSigDanger);
 #endif
-#if HAVE_SIGPIPE
 
+#if HAVE_SIGPIPE
     signal(SIGPIPE, ExSigPipe);
 #endif
+
 #if HAVE_SIGQUIT
-
     signal(SIGQUIT, ExSigQuit);
-#endif
-
-#if DXD_PVSPROFILE
-
-    DXcreate_lock (&rouLock, "Profiler's Lock");
-    rouExited = (int*) DXAllocate(sizeof (int));
 #endif
 
     ExProcessArgs (argc, argv);
@@ -447,7 +429,6 @@ char	**envp;
         /* turn messages back on */
         _dxd_exErrorPrintLevel = save_errorlevel;
     }
-    _dxd_exMsgOK = TRUE;
 
 #ifdef DXD_LICENSED_VERSION
 
@@ -487,29 +468,10 @@ char	**envp;
 }
 
 
-char **
-_dxf_ExEnvp (void)
+char **_dxf_ExEnvp (void)
 {
     return (exenvp);
 }
-
-
-#if DXD_PVSPROFILE
-static int ExRouExit (Pointer junk)
-{
-    __rouexit ();
-
-    DXlock(&rouLock, 0);
-    (*rouExited)++;
-    DXunlock(&rouLock, 0);
-
-    while (*rouExited != nprocs-1)
-        ;
-
-    return (0);
-}
-#endif
-
 
 #if DXD_EXEC_WAIT_PROCESS
 static void ExParentProcess ()
@@ -604,7 +566,6 @@ static void ExMainLoop ()
         ExMainLoopSlave ();
 }
 
-extern Error user_slave_cleanup();
 
 static void ExMainLoopSlave ()
 {
@@ -1139,8 +1100,7 @@ static void ExUsage (char *name)
 }
 
 
-static void
-ExVersion ()
+static void ExVersion ()
 {
     char buf[128];
 
@@ -1187,7 +1147,6 @@ void _dxf_ExInitSystemVars ()
 /*
  * Perform all initializations necessary to run the executive.
  */
-
 static void ExConnectInput ()
 {
     int		port;
@@ -1492,8 +1451,7 @@ static void ExCheckTerminate ()
 /*
  * Error quit
  */
-void
-ExQuit()
+void ExQuit()
 {
     int i;
 
@@ -1711,10 +1669,6 @@ static void ExForkChildren ()
 
         if (pid == 0)
         {
-#if DXD_PVSPROFILE
-            __roureset ();
-#endif
-
             break;
         }
 
@@ -1830,8 +1784,7 @@ void _dxf_set_RQ_ReadFromChild1(int readfd)
  * Set up fd that slaves block on waiting for the master to
  * put work in the run queue
  */
-void
-_dxf_set_RQ_reader(int fd)
+void _dxf_set_RQ_reader(int fd)
 {
     exParent_RQread_fd = fd;
     DXRegisterInputHandler(ExReadCharFromRQ_fd, fd, NULL);
@@ -1934,8 +1887,7 @@ static int ExFindPID (int pid)
 }
 
 
-static
-int OKToRead (SFILE *fp)
+static int OKToRead (SFILE *fp)
 {
     if (ExCheckParseBuffer())
         return 1;
@@ -1943,8 +1895,7 @@ int OKToRead (SFILE *fp)
     return SFILECharReady(fp);
 }
 
-void
-_dxf_ExPromptSet(char *var, char *val)
+void _dxf_ExPromptSet(char *var, char *val)
 {
     gvar	*gv;
     String	pmpt;
@@ -1955,8 +1906,7 @@ _dxf_ExPromptSet(char *var, char *val)
     _dxf_ExVariableInsert (var, _dxd_exGlobalDict, (EXObj)gv);
 }
 
-char *
-_dxf_ExPromptGet(char *var)
+char * _dxf_ExPromptGet(char *var)
 {
     gvar	*gv;
     char	*val;
@@ -2183,8 +2133,7 @@ perout_error:
     return (0);
 }
 
-int
-ExCheckInput ()
+int ExCheckInput ()
 {
     Program		*graph;
     static int 		prompted = FALSE;
@@ -2347,8 +2296,7 @@ static int EX_LIMIT	= 0;
 #endif
 
 
-static int
-ExInputAvailable (SFILE *fp)
+static int ExInputAvailable (SFILE *fp)
 {
     static int		iters	= 0;
     extern SFILE        *_dxd_exBaseFD;
@@ -2388,14 +2336,12 @@ ExInputAvailable (SFILE *fp)
     }\
 }
 
-static void
-ExRegisterRQ_fds()
+static void ExRegisterRQ_fds()
 {
     DXRegisterInputHandler(ExReadCharFromRQ_fd, exChParent_RQread_fd, NULL);
 }
 
-static void
-ExParallelMaster ()
+static void ExParallelMaster ()
 {
     Program		*graph;
     Context             savedContext;
@@ -2566,9 +2512,8 @@ ExParallelMaster ()
     }
 }
 
-#if HAVE_SIGPIPE
-static void
-ExSigPipe(int signo)
+#if defined(HAVE_SIGPIPE)
+static void ExSigPipe(int signo)
 {
     /*
      * If I am a slave, send a quit signal to the master.
@@ -2593,9 +2538,8 @@ ExSigPipe(int signo)
 }
 #endif
 
-#if HAVE_SIGQUIT
-static void
-ExSigQuit(int signo)
+#if defined(HAVE_SIGQUIT)
+static void ExSigQuit(int signo)
 {
     /*
      * Received by the master from a slave that
@@ -2615,7 +2559,7 @@ ExSigQuit(int signo)
 }
 #endif
 
-#if HAVE_SIGDANGER
+#if defined(HAVE_SIGDANGER)
 static void ExSigDanger (int signo)
 {
     DXSetError (ERROR_INTERNAL, "#8300");
@@ -2633,8 +2577,76 @@ int DXWinFork()
 
 #endif
 
-#if defined(DXD_WIN_SMP)  && defined(THIS_IS_COMMENTED)
+#if !defined(intelnt) && !defined(WIN32)
 
+int DXForkChild(int i)
+{
+    int pid, master2slave[2], slave2master[2];
+
+    _dxf_lock_childpidtbl();
+
+    /*
+     * The slaves always need to hear from the master
+     */
+    if (pipe(master2slave))
+      return ERROR;
+
+    /*
+     * The master only needs to hear from slave[1]
+     */
+    if (i == 1)
+      if (pipe(slave2master))
+          return ERROR;
+
+    pid = fork();
+
+    /*
+     * The right thing to do depends on whether we're the parent 
+     * or child process.  The parent is always the master, and the
+     * child is always a slave.
+     */
+    if (pid)
+    {
+        /*
+         * The master writes to master2slave[1].
+         */
+        close(master2slave[0]);
+        _dxf_update_childpid(i, pid, master2slave[1]);
+
+        /*
+         * The master only needs to hear from slave[1]
+         */
+        if (i == 1)
+        {
+            close(slave2master[1]);
+            _dxf_set_RQ_ReadFromChild1(slave2master[0]);
+        }
+    }
+    else
+    {
+        /*
+         * The child is a slave.  It needs to listen to the
+         * master. Note that the slave2master pipe is only
+         * required for node 1, and that the master (if we
+	 * forked it at all) should not watch an master2slave
+         */
+        close(master2slave[1]);
+
+	if (i != 0)
+	    _dxf_set_RQ_reader(master2slave[0]);
+  
+        if (i == 1)
+        {
+              close(slave2master[0]);
+            _dxf_set_RQ_writer(slave2master[1]);
+        }
+    }
+
+    return  pid;
+}
+#endif
+
+#if defined(DXD_WIN_SMP)  && defined(THIS_IS_COMMENTED)
 static int MyChildProc()
 {
     int i;

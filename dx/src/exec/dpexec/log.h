@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/log.h,v 1.5 2000/08/11 15:28:12 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/log.h,v 1.6 2004/06/03 16:27:16 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -23,8 +23,6 @@
 
 #define LOG_APPEND	0x8000
 #define LOG_MASK	0x7fff
-
-extern int _dxd_exErrorPrintLevel;
 
 int _dxf_ExLogOpen();
 void _dxf_ExLogClose();

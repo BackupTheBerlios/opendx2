@@ -33,8 +33,6 @@ static int	outsocket = -1;
 
 extern Object _dxfExportBin_FP(Object o, int fd); /* from libdx/rwobject.c */
 
-int _dxd_exErrorPrintLevel = 3;
-
 /*
  * Create the log file.  Note that the file name is currently hardcoded.
  * This MUST be done before forking.

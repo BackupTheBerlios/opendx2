@@ -6,8 +6,12 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/distp.h,v 1.6 2001/03/20 18:46:30 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/distp.h,v 1.7 2004/06/03 16:27:16 davidt Exp $
  */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #ifndef _DISTP_H
 #define _DISTP_H
@@ -163,7 +167,7 @@ typedef struct PGassign
 typedef struct GDictSend
 {
     char		*varname;
-    exo_class   	class; 
+    exo_class   	exclass; 
     gvarpkg   	 	gvp;
     Object		obj; 
 } GDictSend;
@@ -241,3 +245,6 @@ DPSendPkg *_dxf_ExSendQDequeue (DPSendQ *sendq);
 int _dxf_ExSendQEmpty(DPSendQ *sendq);
 
 #endif /* _DISTP_H */
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif

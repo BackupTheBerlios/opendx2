@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/sfile.h,v 1.5 2002/03/26 21:25:24 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/sfile.h,v 1.6 2004/06/03 16:27:17 davidt Exp $
  */
 
 #ifndef _SFILE_H
@@ -15,15 +15,14 @@
 typedef void SFILE;
 
 #if !defined(HAVE_CYGWIN_SOCKET_H) &&  !defined(HAVE_SYS_SOCKET_H) && !defined(HAVE_SOCKET_H) && defined(HAVE_WINSOCK_H)
-#define HANDLE_SOCKET
-SFILE *socketToSFILE(SOCKET sock);
-#endif
-
-#if !defined(SOCKET)
-#define SOCKET int
-#endif
-
+#  define HANDLE_SOCKET
+   SFILE *socketToSFILE(SOCKET sock);
+#else
+#  if !defined(SOCKET)
+#    define SOCKET int
+#  endif
 SFILE *socketToSFILE(SOCKET);
+#endif
 
 SFILE *fdToSFILE(int fd);
 SFILE *FILEToSFILE(FILE *fptr);

@@ -344,7 +344,7 @@ Error DXAddLikeTasks (PFE func, Pointer arg, int size, double work, int repeat)
 	t = (EXTask) DXAllocateZero (sizeof (_EXTask));
 	if (! t)
 	    goto error;
-	t->delete = TRUE;
+	t->exdelete = TRUE;
     }
     else
     {
@@ -364,7 +364,7 @@ Error DXAddLikeTasks (PFE func, Pointer arg, int size, double work, int repeat)
 	    tg->tasks = t;
 	}
 	t = tg->tasks + tg->nused++;
-	t->delete = FALSE;
+	t->exdelete = FALSE;
     }
     
 
@@ -696,7 +696,7 @@ SMP linux -- gda
 
 #endif
     
-    if (t->delete)
+    if (t->exdelete)
 	DXFree ((Pointer) t);
     runningTG = oldTG;
     return (ecode == ERROR_NONE ? OK : ERROR);

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/utils.h,v 1.7 2002/03/21 21:14:42 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/utils.h,v 1.8 2004/06/03 16:27:17 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -49,6 +49,7 @@ char *_dxf_ExStrSave (char *old);
 typedef char			(*PFC)();
 typedef short			(*PFS)();
 typedef int			(*PFI)();
+typedef int			(*PFIP)(void *);
 typedef long			(*PFL)();
 typedef float			(*PFF)();
 typedef double			(*PFD)();

@@ -6,8 +6,11 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/task.h,v 1.4 2002/03/21 21:14:42 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/task.h,v 1.5 2004/06/03 16:27:17 davidt Exp $
  */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #ifndef _TASK_H
 #define _TASK_H
@@ -32,7 +35,7 @@ typedef struct _EXTask
     PFE                 func;                   /* function to call     */
     int                 repeat;                 /* number of requested reps */
     int                 nocopy;                 /* just pass arg flag   */
-    int                 delete;                 /* 1->not in `tasks' array */
+    int                 exdelete;                 /* 1->not in `tasks' array */
     Pointer             arg;                    /* function argument    */
     unsigned char       data[EX_TASK_DATA];     /* local data storage   */
     Context             taskContext;            /* copy of global context */
@@ -69,3 +72,6 @@ Error 		_dxf_ExInitTask(int n);
 
 
 #endif /* _TASK_H */
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif

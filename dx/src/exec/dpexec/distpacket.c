@@ -488,8 +488,8 @@ _dxf_ExCreateGDictPkg(GDictSend *pkg, char *name, EXObj ex_obj)
         return(OK);
 
     pkg->varname = name;
-    pkg->class = ex_obj->class;
-    if(pkg->class == EXO_CLASS_GVAR) {
+    pkg->exclass = ex_obj->exclass;
+    if(pkg->exclass == EXO_CLASS_GVAR) {
         gv = (gvar *)ex_obj;
         pkg->gvp.type = gv->type;
         pkg->gvp.reccrc = gv->reccrc;
@@ -540,7 +540,7 @@ ExSendGDictPkg(GDictSend *pkg, int fd)
     ret = _dxf_ExWriteSock(fd, pkg->varname, sizeof(char)*len);
     if(ret != len*sizeof(char))
         printf("_dxf_ExWriteSock returned %d instead of %d\n", ret, len);
-    ret = _dxf_ExWriteSock(fd, &(pkg->class), sizeof(exo_class));
+    ret = _dxf_ExWriteSock(fd, &(pkg->exclass), sizeof(exo_class));
     if(ret != sizeof(exo_class))
         printf("_dxf_ExWriteSock returned %d instead of 1\n", ret);
     ret = _dxf_ExWriteSock(fd, &(pkg->gvp), sizeof(gvarpkg));
@@ -587,7 +587,7 @@ _dxf_ExRecvGDictPkg(int fd, int swap, int nobkgrnd)
         printf("var %s\n", pkg.varname); 
     else 
         ExDebug("7", "var %s", pkg.varname); 
-    RCV_BUF(fd, &(pkg.class), 1, TYPE_INT, swap);
+    RCV_BUF(fd, &(pkg.exclass), 1, TYPE_INT, swap);
     RCV_BUF(fd, &(pkg.gvp.type), 1, TYPE_INT, swap);
     RCV_BUF(fd, &(pkg.gvp.reccrc), 1, TYPE_INT, swap);
     RCV_BUF(fd, &(pkg.gvp.cost), 1, TYPE_DOUBLE, swap);
@@ -596,7 +596,7 @@ _dxf_ExRecvGDictPkg(int fd, int swap, int nobkgrnd)
     if(pkg.gvp.hasobj) 
         pkg.obj = _dxfImportBin_FP (fd);
     
-    if(pkg.class == EXO_CLASS_GVAR) {
+    if(pkg.exclass == EXO_CLASS_GVAR) {
         gv = ConverttoGvar(&(pkg.gvp), pkg.obj);
         if(pkg.gvp.hasobj && pkg.obj == NULL) {
             gv->skip = GV_SKIPERROR;

@@ -118,12 +118,12 @@ Error m__badfunc(Object *in, Object *out)
     return ERROR;
 }
 
-static PFI gvar_methods[] =
+static PFIP gvar_methods[] =
 {
     GvarDelete
 };
 
-static PFI progobj_methods[] =
+static PFIP progobj_methods[] =
 {
     progobjDelete
 };
