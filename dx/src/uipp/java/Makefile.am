@@ -46,7 +46,7 @@ dx.jar: javainfo
 server.jar:
 	mkdir -p dxsc
 	(CLASSPATH=aaaaa ; unset CLASSPATH ; javac -d dxsc DXServer.java)
-	(unset CLASSATH ; cd dxsc; @JDKBIN@jar cf ../server.jar DXServer.class server dx )
+	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd dxsc; @JDKBIN@jar cf ../server.jar DXServer.class server dx )
 
 SHRD_FLAGS = -shared -L../dxl -lDXL -olibAnyDX.so
 
