@@ -551,8 +551,8 @@ then
   failed=0;
   passed=0;
   AC_CHECK_HEADER(bzlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(bz2,bzBuffToBuffCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_CHECK_LIB(bz2,bzBuffToBuffDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(bz2,BZ2_bzCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(bz2,BZ2_bzDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
   AC_MSG_CHECKING(if BZLIB package is complete)
   if test $passed -gt 0
   then
