@@ -1296,6 +1296,9 @@ static void ExInitialize ()
     n = (n > nprocs) ? nprocs : n;
     CHECK_INIT (_dxf_ExGQInit (n), "cannot initialize the graph queue");
 
+    /* locks for module symbol table */
+    CHECK_INIT (_dxf_ModNameTablesInit(), "cannot initialize symbol table");
+
     /* get root dictId before fork */
     _dxd_exGlobalDict = _dxf_ExDictionaryCreate (2048, TRUE, FALSE);
 
@@ -1429,12 +1432,6 @@ static void ExCleanup ()
     if (! ok)
 	exit (0);
 
-    for (i = 0, limit = SIZE_LIST(_dxd_pathtags); i < limit; ++i)
-    {
-        pt = FETCH_LIST(_dxd_pathtags, i);
-        DXFree(pt->cpath);
-        pt->cpath = NULL;
-    }
     FREE_LIST(_dxd_pathtags);
 
     for (i = 0, limit = SIZE_LIST(_dxd_dpgraphstat); i < limit; ++i)

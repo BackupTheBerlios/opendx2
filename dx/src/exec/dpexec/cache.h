@@ -24,7 +24,7 @@ which will be available from the modules.
 #define EXTAG(tag) ((tag) | 0x80000000)
 typedef struct pathtag
 {
-    char        *cpath;                 /* module path name             */
+    ModPath     mod_path;		/* module path			*/
     uint32      reccrc;                 /* cache tag                    */
     int         outnbr;                 /* nth output of module         */
     int         modnbr;                 /* nth instance of module       */

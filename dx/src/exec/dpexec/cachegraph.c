@@ -198,7 +198,7 @@ computeRecipe(Program *p, int ind)
 /*            setting of a user specified "cache once" switch?   */  
 /*---------------------------------------------------------------*/
 int
-_dxf_ExManageCacheTable(char *cpath, uint32 reccrc, int outnbr)
+_dxf_ExManageCacheTable(ModPath *mod_path, uint32 reccrc, int outnbr)
 {
     int i, limit;
     pathtag  *pt;
@@ -207,20 +207,22 @@ _dxf_ExManageCacheTable(char *cpath, uint32 reccrc, int outnbr)
 
     DXDebug ("1", 
      "cache table entry: cpath = %s, reccrc = 0x%08x, outnbr = %d",
-             cpath, reccrc, outnbr);	
+             _dxf_ExPathToString(mod_path), reccrc, outnbr);	
 
     limit = SIZE_LIST(_dxd_pathtags); 
 
     for (i = 0; i < limit; i++ ) { 
         pt = FETCH_LIST(_dxd_pathtags,i);
         if (pt->entry_inuse == TRUE) {
-            if (! strcmp(pt->cpath, cpath) && pt->outnbr == outnbr) {
+            if (_dxf_ExPathsEqual( &pt->mod_path, mod_path ) && 
+	              pt->outnbr == outnbr) {
                 DXDebug ("1", "  Found cache table entry %s / 0x%08x.",
-                    pt->cpath, pt->reccrc);	
+                    _dxf_ExPathToString( &pt->mod_path ), pt->reccrc);	
                 if (pt->reccrc != reccrc ) {
                     DXDebug ("1",
                      "Changing tag 0x%08x to 0x%08x for cache table entry %s.",
-                          pt->reccrc, reccrc, pt->cpath);	
+                          pt->reccrc, reccrc, 
+			  _dxf_ExPathToString( &pt->mod_path ));	
                     if(pt->reccrc != 0)
                         _dxf_ExCacheDelete(pt->reccrc);
                     pt->reccrc = reccrc;
@@ -238,24 +240,21 @@ _dxf_ExManageCacheTable(char *cpath, uint32 reccrc, int outnbr)
         pt = FETCH_LIST(_dxd_pathtags,i);
         if (pt->entry_inuse == FALSE) {
             DXDebug ("1", "  Reusing cache table entry %s.%d / 0x%08x.",
-                pt->cpath, pt->outnbr, pt->reccrc);	
+                _dxf_ExPathToString( &pt->mod_path ), pt->outnbr, pt->reccrc);	
             pt->reccrc = reccrc;
-            DXFree(pt->cpath);
-            pt->cpath = (char *)DXAllocate(sizeof(char) * (strlen(cpath)+1));
             pt->outnbr = outnbr;
             pt->entry_inuse = TRUE;
-            strcpy(pt->cpath,cpath);
+	    _dxf_ExPathCopy( &pt->mod_path, mod_path );
             return(TRUE);
         }
     }
 
     npt.reccrc = reccrc;
-    npt.cpath = (char *) DXAllocate (sizeof (char) * (strlen(cpath) + 1 ));
     npt.outnbr = outnbr;
     npt.entry_inuse = TRUE;
-    strcpy(npt.cpath,cpath);
+    _dxf_ExPathCopy( &npt.mod_path, mod_path );
     DXDebug ("1", "  Appending cache table entry %s.%d / 0x%08x.",
-            npt.cpath, npt.outnbr, npt.reccrc);	
+            _dxf_ExPathToString( &npt.mod_path ), npt.outnbr, npt.reccrc);	
     APPEND_LIST(pathtag,_dxd_pathtags,npt);
     return(TRUE); 
 }
@@ -294,12 +293,19 @@ void _dxf_ExComputeRecipes(Program *p, int funcInd)
     uint32 crc = 0xFFFFFFFF;
     char 	*async_name=NULL, *name;
     int		passthru = FALSE;
+    char mod_cache_str[ MAX_PATH_STR_LEN ], *mod;
+    
+    /*  Get module path string  */
+    mod = _dxf_ExGFuncPathToCacheString( n );
+    if ( strlen(mod) > sizeof(mod_cache_str)-1 )
+    _dxf_ExDie("Module path is too long");
+    strcpy( mod_cache_str, mod );
 
 check_async:
     if(n->flags & (MODULE_ASYNC | MODULE_ASYNCLOCAL)) {
         if(p->loopctl.first && (n->flags & MODULE_ASYNCLOCAL)) {
             if(strcmp(n->name, "GetLocal") == 0)
-                DXReadyToRunNoExecute(n->cpath);
+                DXReadyToRunNoExecute(mod_cache_str);
         }
         varInd = *FETCH_LIST(n->inputs, n->nin - 2);
         pv = FETCH_LIST(p->vars, varInd);
@@ -432,9 +438,9 @@ check_async:
 
         newtag = _dxf_ExGenCacheTag (n->name,0,ntags,inTags);
         new_tag_obj = (Object)DXMakeInteger(newtag);
-        old_tag_obj = DXGetCacheEntry(n->cpath, ntags, 0);
+        old_tag_obj = DXGetCacheEntry(mod_cache_str, ntags, 0);
         if(!old_tag_obj) {
-            DXSetCacheEntry(new_tag_obj, CACHE_PERMANENT, n->cpath, ntags, 0);
+            DXSetCacheEntry(new_tag_obj, CACHE_PERMANENT, mod_cache_str, ntags, 0);
         }
         else {
             /* we don't want an extra reference on this */
@@ -444,7 +450,7 @@ check_async:
             /* this means we just caused a DXReadyToRun so we know */
             /* this macro will run this time, save the new cache tag */
             if(oldtag == 0) {
-                DXSetCacheEntry(new_tag_obj,CACHE_PERMANENT,n->cpath,ntags,0);
+                DXSetCacheEntry(new_tag_obj,CACHE_PERMANENT,mod_cache_str,ntags,0);
                 DXDelete(old_tag_obj);
             }
             else if(oldtag != newtag) {
@@ -454,7 +460,7 @@ check_async:
                 DXReadyToRunNoExecute(async_name);
                 DXDelete(new_tag_obj);
                 new_tag_obj = (Object)DXMakeInteger(0);
-                DXSetCacheEntry(new_tag_obj,CACHE_PERMANENT,n->cpath,ntags,0);
+                DXSetCacheEntry(new_tag_obj,CACHE_PERMANENT,mod_cache_str,ntags,0);
                 DXDelete(old_tag_obj);
                 goto check_async;
             }
@@ -518,16 +524,16 @@ check_async:
         /* object lvl cache attribute overrides function lvl cache attribute */ 
         
         if (pvcache == CACHE_LAST || pvcache == CACHE_LAST_PERM) 
-            tag_changed = _dxf_ExManageCacheTable(n->cpath, out->reccrc, i);
+            tag_changed = _dxf_ExManageCacheTable(&n->mod_path, out->reccrc, i);
         else 
             if(fcache == CACHE_LAST && !pv->cacheattr) 
-                tag_changed = _dxf_ExManageCacheTable(n->cpath, out->reccrc, i);
+                tag_changed = _dxf_ExManageCacheTable(&n->mod_path, out->reccrc, i);
         n->tag_changed = tag_changed;
     }
 
     if(n->nout == 0 && !(n->flags & MODULE_SIDE_EFFECT)) {
         tcrc = _dxf_ExGenCacheTag (n->name, 0, n->nin+extra_tags, inTags);
-        n->tag_changed = _dxf_ExManageCacheTable(n->cpath, tcrc, 0);
+        n->tag_changed = _dxf_ExManageCacheTable(&n->mod_path, tcrc, 0);
     }
 
     if(ntags > STATIC_TAGS)

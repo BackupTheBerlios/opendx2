@@ -139,6 +139,14 @@ typedef struct ReRouteMap {
     int output_n;
 } ReRouteMap;
 
+#define MAX_PATH_COMP 10
+
+typedef struct {
+    uint16 modules  [ MAX_PATH_COMP ];  /*  Module string indices             */
+    uint16 instances[ MAX_PATH_COMP ];  /*  Module instance nums              */
+    int    num_comp;                    /*  Number of path components         */
+} ModPath;
+
 typedef struct gfunc
 {
     char		*name;		/* function name		*/
@@ -146,8 +154,7 @@ typedef struct gfunc
     int			instance;	/* instance of func (attr from ui) */
     _excache		excache;        /* output caching indicator	*/
     char		*procgroupid;   /* process group id             */
-    String		path;		/* pathname (eg /mac:#/func:#)	*/
-    char		*cpath;		/* pathname (fast access)	*/
+    ModPath		mod_path;	/* module path (<mac/func>:<#> pairs) */
     _ftype 		ftype;          /* macro, loop or module        */
     union {
          PFI	  module;               /* function to call             */
@@ -220,26 +227,36 @@ typedef struct program {
 extern gfunc            *_dxd_exCurrentFunc; /* from graph.c */
 extern  EXDictionary    _dxd_exGraphCache;   /* from graph.c */
 
-gvar	*_dxf_ExCreateGvar (_gvtype type);
-void	 _dxf_ExDefineGvar (gvar *gv, Object o);
-void	 _dxf_ExUndefineGvar(gvar *gv);
-Program	*_dxf_ExGraph (node *n);
-void	 _dxf_ExGraphDelete (Program *p);
-int	 _dxf_ExGraphCompact (void);
-void     _dxf_ExGraphInit (void);
-void     _dxf_ExMarkVarRequired(int gid, int sgid, int fnbr, int pvar, int requiredFlag);
-void 	_dxf_ExGQDecrement (Program *p);
-void    _dxf_ExQueueGraph(Program * p);
-int     _dxf_NextGraphId();
-int     _dxf_ExMacroRecursionCheck (char *name, _ntype type);
-int     _dxf_ExNoCachePush (int n);
-void    _dxf_ExNoCachePop ();
-void    _dxf_ExMacroRecursionPop (char *name, _ntype type);
-int     DXGetModulePathLen();
-int     DXGetModulePath(char *path);
-int     _dxf_ExGetCurrentInstance();
-Error   m__badfunc(Object *in, Object *out);
+gvar	 *_dxf_ExCreateGvar (_gvtype type);
+void	  _dxf_ExDefineGvar (gvar *gv, Object o);
+void	  _dxf_ExUndefineGvar(gvar *gv);
+Program	 *_dxf_ExGraph (node *n);
+void	  _dxf_ExGraphDelete (Program *p);
+int	  _dxf_ExGraphCompact (void);
+void      _dxf_ExGraphInit (void);
+void      _dxf_ExMarkVarRequired(int gid, int sgid, int fnbr, int pvar, int requiredFlag);
+void 	  _dxf_ExGQDecrement (Program *p);
+void      _dxf_ExQueueGraph(Program * p);
+int       _dxf_NextGraphId();
+int       _dxf_ExMacroRecursionCheck (char *name, _ntype type);
+_excache  _dxf_ExNoCachePush (_excache n);
+void      _dxf_ExNoCachePop ();
+void      _dxf_ExMacroRecursionPop (char *name, _ntype type);
+int       DXGetModulePathLen();
+int       DXGetModulePath(char *path);
+int       _dxf_ExGetCurrentInstance();
+Error     m__badfunc(Object *in, Object *out);
 
+Error   DXCompareModuleMacroBase(Pointer id1, Pointer id2);
+const char *DXGetModuleComponentName(Pointer id, int index);
+
+int     _dxf_ExPathsEqual( ModPath *p1, ModPath *p2 );
+void 	_dxf_ExPathCopy( ModPath *dest, ModPath *src );
+
+char 	*_dxf_ExGFuncPathToString( gfunc *fnode );
+char 	*_dxf_ExGFuncPathToCacheString( gfunc *fnode );
+
+#define MAX_PATH_STR_LEN 1024
 #define EX_PIN_PROC 2
 
 #endif	/* _GRAPH_H */

@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/getset.c,v 1.4 2000/05/16 18:47:53 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/getset.c,v 1.5 2000/08/10 02:06:39 davidt Exp $
  */
 
 #include <string.h>
@@ -80,41 +80,27 @@ static Error Set(Object *in, Object *out, int flag)
 
 	get_modid = DXGetString((String)SET_LINK);
         if(DXLoopFirst()) {
-            char *cp;
-            int len1, len2;
-            cp = strrchr(get_modid, '/');
-            if(cp == NULL) 
-                cp = get_modid;
-            else cp++;
+	    const char *last_comp = DXGetModuleComponentName(get_modid, -1);
+
             if(flag == LOCAL) {
-                char *get_modid2;
-                len1 = strlen("GetLocal:");
-                if(strncmp(cp, "GetLocal:", len1) != 0) {
+                if(strcmp(last_comp, "GetLocal") != 0) {
                     DXSetError(ERROR_BAD_PARAMETER,"#10760", "SetLocal", "GetLocal");
                     goto error;
                 }
+
                 set_modid = DXGetModuleId();
-                get_modid2 = DXCopyModuleId(get_modid);
-                cp = strrchr(get_modid2, '/');
-                *cp = '\0';
-                cp = strrchr(set_modid, '/');
-                *cp = '\0';
-                if(strcmp(set_modid, get_modid2) != 0) {
+
+                if(DXCompareModuleMacroBase( set_modid, get_modid ) != OK) {
                     DXSetError(ERROR_DATA_INVALID, "#10762");
                     DXFreeModuleId((Pointer)set_modid);
-                    DXFreeModuleId((Pointer)get_modid2);
                     goto error;
                 }
-                else {
+                else 
                     DXFreeModuleId((Pointer)set_modid);
-                    DXFreeModuleId((Pointer)get_modid2);
-                }
             }
             else { /* global */
-                len1 = strlen("GetGlobal:");
-                len2 = strlen("Get:");
-                if(strncmp(cp, "GetGlobal:", len1) != 0 &&
-                   strncmp(cp, "Get:", len2) != 0) {
+                if(strcmp(last_comp, "GetGlobal") != 0 &&
+                   strcmp(last_comp, "Get") != 0) {
                     if(flag == GLOBAL) 
                         DXSetError(ERROR_BAD_PARAMETER,
                                    "#10760", "SetGlobal", "GetGlobal");

@@ -50,8 +50,6 @@
 #include "function.h"
 
 #define DICT_SIZE 64
-#define HYPHEN_SEP '_' 
-#define MAXNAMELEN 64
 
 static int graphing_error = FALSE;	/* error while constructing graph */
 static int subgraph_id = 0;
@@ -83,7 +81,7 @@ static Program *freedProgs[MAX_FREED] = {NULL};
 Group _dxfQueryImportInfo (char *filename);
 
 static void ExMakeGfunc(node_function ndfunc, _ntype type, int instance, 
-                        int excache, node *n, node **inAttrs, Program *p, 
+			_excache excache, node *n, node **inAttrs, Program *p,
                         int *inArgs, list_int *out, Program *macro);
 static void ExCopySubP(Program *toP, Program *fromP, int top); 
 static Program *GetNewMacro(Program *p, int *map, int *resolved);
@@ -99,6 +97,18 @@ static int GvarDelete (gvar *p);
 static int progobjDelete (progobj *p);
 static void ExRemapVars(Program *p, Program *subP, int *map, int *resolved, char *fname, int inst);
 static void ExFixAsyncVarName(ProgramVariable *pv, char *fname, int instance);
+
+static int _dxf_ExPathStringLen( ModPath *path );
+static void _dxf_ExGFuncPathToStringBuf( gfunc *fnode, char *path_str );
+static void _dxf_ExGFuncPathToCacheStringBuf( gfunc *fnode, char *path_str );
+static void _dxf_ExPathSet( Program *p, char fname[], int instance, gfunc *fnode );
+static void _dxf_ExPathPrepend( Program *p, char fname[], int instance,
+                                gfunc *fnode );
+static void _dxf_ExPathAppend( Program *p, char fname[], int instance,
+                               gfunc *fnode );
+static int _dxf_ExPathCacheStringLen( ModPath *path );
+
+
 
 Error m__badfunc(Object *in, Object *out)
 {
@@ -147,17 +157,30 @@ _dxf_ExGraphInit (void)
 int
 DXGetModulePathLen()
 {
-    return(strlen((char *)_dxd_exCurrentFunc->cpath));
+    return _dxf_ExPathStringLen( &_dxd_exCurrentFunc->mod_path );
 }
 
 int
 DXGetModulePath(char *path)
 {
-    if(!path)
-        return(ERROR);
-    strcpy(path, (char *)_dxd_exCurrentFunc->cpath);
+    _dxf_ExGFuncPathToStringBuf( _dxd_exCurrentFunc, path );
     return(OK);
 }
+
+int
+DXGetModuleCacheStrLen(char *path)
+{
+    return _dxf_ExPathCacheStringLen( &_dxd_exCurrentFunc->mod_path );
+}
+
+int
+DXGetModuleCacheStr(char *path)
+{
+    _dxf_ExGFuncPathToCacheStringBuf( _dxd_exCurrentFunc, path );
+     return(OK);
+}
+
+
 
 int
 _dxf_ExGetCurrentInstance()
@@ -382,17 +405,15 @@ AllocateProgram(void)
     Program *p = NULL;
 
 #ifdef ALLOC_UPFRONT
+    int i;
+    for (i = 0; i < MAX_FREED; ++i)
     {
-        int i;
-        for (i = 0; i < MAX_FREED; ++i)
+        if (freedProgs[i] != NULL)
         {
-	    if (freedProgs[i] != NULL)
-	    {
-	        p = freedProgs[i];
-	        freedProgs[i] = NULL;
-	        return (p);
-	    }
-        }
+	    p = freedProgs[i];
+	    freedProgs[i] = NULL;
+	    return (p);
+	 }
     }
 #endif
 
@@ -464,9 +485,7 @@ ExSubGraphDelete(Program *subp, int top)
     {
 	gf = FETCH_LIST(subp->funcs, i);
         if(gf->ftype == F_MACRO)
-            DXFree(gf->name);
-	DXDelete((Object)gf->path);
-	gf->path = NULL;
+	    DXFree(gf->name);
 	FREE_LIST(gf->inputs);
 	FREE_LIST(gf->outputs);
         FREE_LIST(gf->cache_ddi);
@@ -1000,7 +1019,7 @@ ExGraphAssignment (Program *p, node *n, int top, EXDictionary dict)
     node	*function;
     int		rvals[64];
     int		i;
-    int         excache;
+    _excache    excache;
     int         attr_flag;
     int         nout, flags;
 
@@ -1086,7 +1105,7 @@ ExGraphAssignment (Program *p, node *n, int top, EXDictionary dict)
 	 lhs && i < 64;
 	 ++i, lhs = lhs->next)
     {
-	if (_dxf_ExHasIntegerAttribute (lhs->attr, ATTR_CACHE, &excache))
+	if (_dxf_ExHasIntegerAttribute (lhs->attr, ATTR_CACHE, (int *)&excache))
 	    attr_flag = TRUE;
 	else 
         {
@@ -1186,9 +1205,9 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
     node		*val;
     _ntype		t;
     int			instance;
-    int			excache;
+    _excache		excache;
     char                *macro_procgroupid;
-    int			tmpcache;
+    _excache		tmpcache;
     int			*inArgs;
     node		**inAttrs = NULL; 
     ReRouteMap          *reroutem, rr_map;
@@ -1205,7 +1224,6 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
     MacroRef            mr;
     AsyncVars 		*avars, av; 
     indexobj		*ind;
-    int			nout;
     list_int		subOut;
 
     Program		*subP, *copyP;
@@ -1277,7 +1295,7 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
     prehidden = localFunct.prehidden;
     posthidden = localFunct.posthidden;
 
-    nout = fnode.nout = localFunct.nout;
+    fnode.nout = localFunct.nout;
     inArgs = (int*) DXAllocateLocal (nin * sizeof (int));
     inAttrs = (node **) DXAllocateLocal (nin * sizeof (node*));
 
@@ -1510,7 +1528,7 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
      */
     instance = _dxf_ExGetIntegerAttribute (n->attr, ATTR_INSTANCE);
 
-    if (! _dxf_ExHasIntegerAttribute (n->attr, ATTR_CACHE, &excache))
+    if (! _dxf_ExHasIntegerAttribute (n->attr, ATTR_CACHE, (int *)&excache))
 	excache = CACHE_ALL;
 
     /*
@@ -1621,12 +1639,11 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
 	    _dxf_ExDictionaryInsert (_dxd_exGraphCache, name, (EXObj)pobj);
 	}
 	else
-	{
-            found = TRUE;
 	    subP = pobj->p;
-	}
 
         /* parent program gets a copy of all macros in it's children */
+	GROW_LIST(MacroRef, p->macros, SIZE_LIST(subP->macros));
+
 	for (i = 0, ilimit = SIZE_LIST(subP->macros); i < ilimit; ++i)
         {
             MacroRef *macro; 
@@ -1665,6 +1682,8 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
 	 * dictionary, define the value (that's the new mapping).  If it's not
 	 * there, create a new undefined.
 	 */
+	GROW_LIST(ProgramVariable, p->vars, SIZE_LIST(subP->undefineds));
+	GROW_LIST(ProgramRef, p->undefineds, SIZE_LIST(subP->undefineds));
 	for (i = 0, ilimit = SIZE_LIST(subP->undefineds); i < ilimit; ++i)
 	{
 	    pPr = FETCH_LIST(subP->undefineds, i);
@@ -1763,6 +1782,8 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
             APPEND_LIST (AsyncVars, copyP->async_vars, av);
         }
         
+	GROW_LIST(gfunc, copyP->funcs, SIZE_LIST(subP->funcs));
+
 	for (i = 0, ilimit = SIZE_LIST(subP->funcs); i < ilimit; ++i)
 	{
 	    pFnode = FETCH_LIST(subP->funcs, i);
@@ -1803,10 +1824,8 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
 	    /* 
 	     * make changes to the copy of the fnode just created.
              */
-	    fnode.path = 
-		DXNewString (_dxf_ExPathPrepend(fname, instance, fnode.cpath));
-	    DXReference ((Object)fnode.path);
-	    fnode.cpath = DXGetString (fnode.path);
+	    _dxf_ExPathPrepend( subP, fname, instance, &fnode );
+
 
 	    /*
 	     * macro process group assignments override individual settings.
@@ -1820,6 +1839,11 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
 	    INIT_LIST (fnode.outputs);
 	    INIT_LIST (fnode.reroute);
 	    INIT_LIST (fnode.cache_ddi);
+
+	    GROW_LIST(int, fnode.inputs, SIZE_LIST(pFnode->inputs));
+	    GROW_LIST(int, fnode.outputs, SIZE_LIST(pFnode->outputs));
+	    GROW_LIST(ReRouteMap, fnode.reroute, SIZE_LIST(pFnode->reroute));
+	    GROW_LIST(int, fnode.cache_ddi, SIZE_LIST(pFnode->cache_ddi));
 
 	    for (j = 0, jlimit = SIZE_LIST(pFnode->inputs); j < jlimit; ++j)
 	    {
@@ -1840,12 +1864,16 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
             /* above in the call to ExFixAsyncVarName. Here we already   */
             /* fixed the path name of the module so we just use that.    */
             if(fnode.flags & MODULE_ASYNCLOCAL) { 
+		Object new_path;
+
                 slot = *FETCH_LIST(fnode.inputs, fnode.nin - 2);
                 pPv = FETCH_LIST(p->vars, slot);
-                DXReference ((Object)fnode.path);
+
+		new_path = (Object)DXNewString( _dxf_ExGFuncPathToString(&fnode) );
+		DXReference ((Object)new_path);
                 if(pPv->obj)
                     DXDelete((Object)pPv->obj);
-                pPv->obj = (Object)fnode.path;
+                pPv->obj = new_path;
             }
 
 	    for (j = 0, jlimit = SIZE_LIST(pFnode->outputs); j < jlimit; ++j)
@@ -1927,6 +1955,7 @@ static Program *GetNewMacro(Program *p, int *map, int *resolved)
     ProgramRef pr, *pPr;
 
     newp = AllocateProgram();
+    GROW_LIST(ProgramRef, newp->undefineds, SIZE_LIST(p->undefineds));
     for(i = 0; i < SIZE_LIST(p->undefineds); i++) {
         pPr = FETCH_LIST(p->undefineds, i);
 	slot = pPr->index;
@@ -1941,6 +1970,7 @@ static Program *GetNewMacro(Program *p, int *map, int *resolved)
         APPEND_LIST (ProgramRef, newp->undefineds, pr);
     }
         
+    GROW_LIST(int, newp->wiredvars, SIZE_LIST(p->wiredvars));
     for(i = 0; i < SIZE_LIST(p->wiredvars); i++) {
         slot = *FETCH_LIST(p->wiredvars, i);
         if(slot != -1) {
@@ -1969,6 +1999,7 @@ static void ExCopySubP(Program *toP, Program *fromP, int top)
 
     *toP = *fromP;
     INIT_LIST(toP->undefineds);
+    GROW_LIST(ProgramRef, toP->undefineds, SIZE_LIST(fromP->undefineds));
     for(i = 0; i < SIZE_LIST(fromP->undefineds); i++) {
         pPr = FETCH_LIST(fromP->undefineds, i);
         pr.index = pPr->index;
@@ -1978,12 +2009,14 @@ static void ExCopySubP(Program *toP, Program *fromP, int top)
     }
 
     INIT_LIST(toP->wiredvars);
+    GROW_LIST(int, toP->wiredvars, SIZE_LIST(fromP->wiredvars));
     for(i = 0; i < SIZE_LIST(fromP->wiredvars); i++) {
         slot = *FETCH_LIST(fromP->wiredvars, i);
         APPEND_LIST (int, toP->wiredvars, slot);
     }
 
     INIT_LIST(toP->async_vars);
+    GROW_LIST(AsyncVars, toP->async_vars, SIZE_LIST(fromP->async_vars));
     for(i = 0; i < SIZE_LIST(fromP->async_vars); i++) {
         avars = FETCH_LIST(fromP->async_vars, i);
         av.nameindx = avars->nameindx;
@@ -1992,14 +2025,13 @@ static void ExCopySubP(Program *toP, Program *fromP, int top)
     }
     COPY_LIST(toP->macros, fromP->macros);
     INIT_LIST (toP->funcs);
+
+    GROW_LIST(gfunc, toP->funcs, SIZE_LIST(fromP->funcs));
  
     for (i = 0, ilimit = SIZE_LIST(fromP->funcs); i < ilimit; ++i)
     {
         pFnode = FETCH_LIST(fromP->funcs, i);
         fnode = *pFnode;
-        fnode.path = DXNewString(pFnode->cpath);
-        DXReference((Object)fnode.path);
-        fnode.cpath = DXGetString(fnode.path);
 
         if(fnode.ftype == F_MACRO) {
             fnode.name = _dxf_ExCopyString(pFnode->name);
@@ -2014,6 +2046,11 @@ static void ExCopySubP(Program *toP, Program *fromP, int top)
         INIT_LIST (fnode.outputs);
         INIT_LIST (fnode.reroute);
         INIT_LIST (fnode.cache_ddi);
+
+        GROW_LIST(int, fnode.inputs, SIZE_LIST(pFnode->inputs));
+	GROW_LIST(int, fnode.outputs, SIZE_LIST(pFnode->outputs));
+	GROW_LIST(ReRouteMap, fnode.reroute, SIZE_LIST(pFnode->reroute));
+	GROW_LIST(int, fnode.cache_ddi, SIZE_LIST(pFnode->cache_ddi));
 
         for (j = 0, jlimit = SIZE_LIST(pFnode->inputs); j < jlimit; ++j)
         {
@@ -2045,12 +2082,11 @@ static void ExCopySubP(Program *toP, Program *fromP, int top)
 }
 
 static void ExMakeGfunc(node_function ndfunc, _ntype type, int instance, 
-                        int excache, node *n, node **inAttrs, Program *p, 
+                        _excache excache, node *n, node **inAttrs, Program *p, 
                         int *inArgs, list_int *out, Program *macro)
 {
     gfunc fnode;
     int slot, i;
-    String str;
     ProgramVariable pv;
     ProgramRef *pr;
     node *nodep;
@@ -2080,11 +2116,8 @@ static void ExMakeGfunc(node_function ndfunc, _ntype type, int instance,
     }
     fnode.instance = instance;
     fnode.excache = excache;
-    fnode.path = str =
-        DXNewString(_dxf_ExPathPrepend(n->v.call.id->v.id.id, instance, NULL));
 	
-    DXReference ((Object) str);
-    fnode.cpath = DXGetString (str);
+    _dxf_ExPathSet( p, n->v.call.id->v.id.id, instance, &fnode );
 	
     fnode.procgroupid = 
 	    _dxf_ExCopyString (_dxf_ExGetStringAttribute (n->attr, ATTR_PGRP));
@@ -2120,10 +2153,15 @@ static void ExMakeGfunc(node_function ndfunc, _ntype type, int instance,
             slot = nin - 2;
             if (inArgs[slot] < 0) 
             {
+		Object new_path;
+
 	        INIT_PVAR(pv);
 	        avars.nameindx = inArgs[slot] = SIZE_LIST(p->vars);
                 pv.defined = TRUE;
-                pv.obj = DXReference((Object)fnode.path);
+
+		new_path = (Object)DXNewString( _dxf_ExGFuncPathToString(&fnode) );
+		DXReference ((Object)new_path);
+		pv.obj = new_path;
                 APPEND_LIST (ProgramVariable, p->vars, pv);
 	    }
 
@@ -2182,6 +2220,8 @@ static void ExMakeGfunc(node_function ndfunc, _ntype type, int instance,
     /* Add each input to the function's input array, and define new
      * variables for each output.
      */
+
+    GROW_LIST(int, fnode.inputs, nin);
  
     for (i = 0; i < nin; ++i) {
         if (fnode.ftype == F_MODULE && 
@@ -2214,9 +2254,15 @@ static void ExMakeGfunc(node_function ndfunc, _ntype type, int instance,
         /* add last 2 inputs for macros marked asynclocal */
         if (ndfunc.flags & MODULE_ASYNCLOCAL)
         {
+            Object new_path;
+
 	    INIT_PVAR(pv);
             pv.defined = TRUE;
-            pv.obj = DXReference((Object)fnode.path);
+
+	    new_path = (Object)DXNewString( _dxf_ExGFuncPathToString(&fnode) );
+	    DXReference ((Object)new_path);
+	    pv.obj = new_path;
+
             APPEND_LIST(int, fnode.inputs, SIZE_LIST(p->vars));
             fnode.nin++;
             APPEND_LIST (ProgramVariable, p->vars, pv);
@@ -2337,16 +2383,15 @@ ExBuildSendModule(Program *p,
     int			i;
     ProgramVariable	pv;
     node                *val;
-    String		str;
-    char		*tmpname,*tmpnam2;
     int                 slot,*index;
 
     ExDebug("*1","In ExBuildSendModule:");
     ExDebug("*1",
 	 "Sending ouput %d from module %s in procgroup %s at var index %d to:",
-          out_tab, sgf->cpath, sgf->procgroupid, *outdex); 
+          out_tab, _dxf_ExGFuncPathToString(sgf), sgf->procgroupid, *outdex); 
+
     ExDebug("*1", "input %d of module %s in procgroup %s ",
-            in_tab, tgf->cpath, tgf->procgroupid); 
+            in_tab, _dxf_ExGFuncPathToString(tgf), tgf->procgroupid); 
 
     _dxf_ExInitGfunc(&fnode);
 
@@ -2360,16 +2405,10 @@ ExBuildSendModule(Program *p,
 
 
     /* fix this */
-    tmpname           = (char *) DXAllocate ((strlen(fnode.name) +
-                         strlen(sgf->cpath) + 4) * sizeof(char));
-    strcpy(tmpname, sgf->cpath);
-    tmpnam2 = _dxf_ExPathPrepend (fnode.name, fnode.instance, NULL);
-    strcat(tmpname, tmpnam2);
-    fnode.path        = str = DXNewString (tmpname);
-    DXFree(tmpname);
+    /*  FIXME:  Assumes these are in the same program (common string table)  */
+    _dxf_ExPathCopy( &fnode.mod_path, &sgf->mod_path );
+    _dxf_ExPathAppend( p, fnode.name, fnode.instance, &fnode );
 
-    DXReference ((Object) str);
-    fnode.cpath       = DXGetString (str);
     fnode.nin         = 5;
     fnode.nout        = 1;	
     fnode.flags       = MODULE_ERR_CONT;
@@ -2426,7 +2465,7 @@ ExBuildSendModule(Program *p,
 /* also need to update the var index of the input tab of the target gfunc */ 
     index = FETCH_LIST(tgf->inputs,in_tab);
     ExDebug("*1","Changing index # of %s/%d from %d to %d in BuildSendModule",
-            tgf->cpath, in_tab, *index,slot);
+            _dxf_ExGFuncPathToString(tgf), in_tab, *index,slot);
     
     UPDATE_LIST(tgf->inputs,slot,in_tab);
     if(tgf->ftype == F_MACRO) {
@@ -2448,7 +2487,6 @@ ExRemapVars(Program *p, Program *subP, int *map, int *resolved, char *fname, int
     gfunc *gf;
     ProgramRef *pr;
     ProgramVariable *pv;
-    String savepath;
     AsyncVars *avars;
 
     for (i = 0, ilimit = SIZE_LIST(subP->funcs); i < ilimit; ++i) {
@@ -2471,18 +2509,19 @@ ExRemapVars(Program *p, Program *subP, int *map, int *resolved, char *fname, int
 	        UPDATE_LIST(gf->outputs, map[slot], j);
 	    }
         }    
-        savepath = gf->path;
-	gf->path = DXNewString (_dxf_ExPathPrepend(fname, inst, gf->cpath));
-	DXReference ((Object)gf->path);
-	gf->cpath = DXGetString (gf->path);
-        DXDelete((Object)savepath);
+	_dxf_ExPathPrepend( subP, fname, inst, gf );
+
         if(gf->flags & (MODULE_ASYNC | MODULE_ASYNCLOCAL)) {
+	    Object new_path;
+
             slot = *FETCH_LIST(gf->inputs, gf->nin - 2);
             pv = FETCH_LIST(p->vars, slot);
-            DXReference ((Object)gf->path);
+
+	    new_path = (Object)DXNewString( _dxf_ExGFuncPathToString(gf) );
+	    DXReference ((Object)new_path);
             if(pv->obj)
                 DXDelete((Object)pv->obj);
-            pv->obj = (Object)gf->path;
+            pv->obj = new_path;
         }
     }
     for (i = 0, ilimit = SIZE_LIST(subP->undefineds); i < ilimit; ++i)
@@ -2536,7 +2575,444 @@ ExFixAsyncVarName(ProgramVariable *pv, char *fname, int instance)
         _dxf_ExDie("Executive inconsistency -- bad async variable name");
     saveobj = pv->obj;
     path = DXGetString((String)pv->obj);
-    pv->obj = (Object)DXNewString (_dxf_ExPathPrepend(fname, instance, path));
+    pv->obj = (Object)DXNewString (_dxf_ExPathStrPrepend(fname, instance, path));
     DXReference ((Object)pv->obj);
     DXDelete((Object)saveobj);
 }
+
+/*----------------------------------------------------------------------------*/
+
+#define ARRAY_LEN(a) (sizeof(a)/sizeof(a[0]))
+
+struct mod_name_info {
+    PseudoKey key;     /* psuedokey:  based on string contents */
+    char     *str;     /*     value:  actual string value      */
+    int       index;   /*       key:  string index             */
+};
+
+static lock_type    *mod_name_tables_lock;
+static LIST(char *) *mod_name_str_table;     /*  FIXME: Attach to pgm  */
+static HashTable     mod_name_hash;          /*  FIXME: Attach to pgm  */
+
+
+
+static int hashCompare(Key search, Element matched)
+{
+    return (strcmp(((struct mod_name_info *)search)->str,
+                  ((struct mod_name_info *)matched)->str));
+}
+
+static PseudoKey hashFunc(char *str)
+{
+    unsigned long h = 1;
+    while(*str)
+       h = (17*h + *str++);
+    return (PseudoKey)h;
+
+}
+
+Error _dxf_ModNameTablesInit()
+{
+  /*  Initialize mutex lock  */
+  if ((mod_name_tables_lock =
+       (lock_type *) DXAllocate (sizeof (lock_type))) == NULL) {
+    _dxf_ExDie ("_dxf_ModNameTablesInit:  lock create failed");
+    return ERROR;
+  }
+
+  /*  FIXME:  Attach this list and its hash to the program structure  */
+  mod_name_str_table = DXAllocate( sizeof( mod_name_str_table ) );
+  INIT_LIST(*mod_name_str_table);
+
+  mod_name_hash = DXCreateHash( sizeof( struct mod_name_info ), NULL,
+                                hashCompare );
+  if ( !mod_name_hash ) {
+    _dxf_ExDie("_dxf_ModNameTablesInit:  hash create failed");
+    return ERROR;
+  }
+  return OK;
+}
+
+static uint32 _dxf_ExGraphInsertAndLookupName( Program *p, char name[] )
+{
+  uint32 i;
+  char  *new;
+  struct mod_name_info search, *found, info;
+
+  DXlock (mod_name_tables_lock, 0);
+
+  /*  See if string is already in the list (via hash table)  */
+  search.key = hashFunc(name);
+  search.str = name;
+
+  if ((found = (struct mod_name_info *)
+               DXQueryHashElement( mod_name_hash,
+                                   (Pointer)&search)) != NULL)
+    return found->index;
+
+  /*  It's not there, so add it to the list, and to the lookup hash  */
+  new = (char *) DXAllocate (strlen (name) + 1);
+  if ( !new ) {
+    _dxf_ExDie("_dxf_ExGraphInsertAndLookupName:  DXAllocate failed");
+    DXunlock (mod_name_tables_lock, 0);
+    return (uint32) -1;
+  }
+  strcpy (new, name);
+
+  APPEND_LIST( char *, *mod_name_str_table, new );
+
+  i = SIZE_LIST( *mod_name_str_table ) - 1;
+
+  info.key   = hashFunc( name );
+  info.str   = new;
+  info.index = i;
+
+  if ( !DXInsertHashElement( mod_name_hash, (Pointer)&info) ) {
+    _dxf_ExDie("_dxf_ExGraphInsertAndLookupName:  DXInsertHashElement failed");
+    DXunlock (mod_name_tables_lock, 0);
+    return (uint32) -1;
+  }
+
+  DXunlock (mod_name_tables_lock, 0);
+
+  return info.index;
+}
+
+/*  FIXME:  These are duplicated in path.c  */
+#define        EX_I_SEP        ':'             /* instance #   separator       */
+#define        EX_M_SEP        '/'             /* macro/module separator       */
+
+
+static char *_dxf_BuildInstanceNumString(int instance)
+{
+    static char localstr[10];
+    char *tail = localstr;
+    int np;
+
+    if (instance < 0 || instance > 999)
+    {
+        sprintf(tail, "%d\0", instance);
+        tail += strlen(tail);
+    }
+    else if (instance > 99)
+    {
+       np = instance / 100;
+       *(tail++) = np + '0';
+       instance -= np * 100;
+       np = instance / 10;
+       *(tail++) = np + '0';
+       instance -= np * 10;
+       *(tail++) = instance + '0';
+    }
+    else if (instance > 9)
+    {
+       np = instance / 10;
+       *(tail++) = np + '0';
+       instance -= np * 10;
+       *(tail++) = instance + '0';
+    }
+    else
+       *(tail++) = instance + '0';
+    *(tail) = '\0';
+
+    return localstr;
+}
+
+static int _dxf_GetInstanceNumStringLen(int instance)
+{
+  if ( instance < 0 || instance > 999 )
+    return strlen( _dxf_BuildInstanceNumString( instance ) );
+  else if ( instance > 99 )
+    return 3;
+  else if ( instance > 9 )
+    return 2;
+  else 
+    return 1;
+} 
+  
+  
+static int _dxf_ExPathStringLen( ModPath *path )
+{ 
+  int32 i;
+  int      len = 0;
+    
+  for ( i = path->num_comp-1; i >= 0; i-- )
+    len += 1 /*EX_M_SEP*/ +
+           strlen( *FETCH_LIST( *mod_name_str_table, path->modules[i] ) ) +
+           1 /*EX_I_SEP*/ +
+           _dxf_GetInstanceNumStringLen( path->instances[i] ) +
+           1 /*'\0'*/;
+
+  return len;
+}
+  
+static void _dxf_ExPathToStringBuf( ModPath *path, char *path_str )
+{
+  int32    i;
+  char    *p = path_str;
+  char    *module_name;
+
+  for ( i = path->num_comp-1; i >= 0; i-- ) {
+    module_name = *FETCH_LIST( *mod_name_str_table, path->modules[i] );
+    p[0] = EX_M_SEP;
+    strcpy( p+1, module_name );
+    p += strlen(p);
+    p[0] = EX_I_SEP;
+    strcpy( p+1, _dxf_BuildInstanceNumString( path->instances[i] ) );
+    p += strlen(p);
+  }
+}
+
+char *_dxf_ExPathToString( ModPath *path )
+{
+  static char str[ MAX_PATH_STR_LEN ];
+  int len;
+
+  len = _dxf_ExPathStringLen( path );
+
+  if ( len >= sizeof(str) ) {
+    _dxf_ExDie ("_dxf_ExPathToString:  Path is too long");
+    return NULL;
+  }
+
+  _dxf_ExPathToStringBuf( path, str );
+  return str;
+}
+
+static char *
+int16tohex (char *buf, int16 l)
+{
+    static char *htab = "0123456789abcdef";
+
+    buf[4] = '\0';
+    buf[3] = htab[l & 0xf]; l >>= 4;
+    buf[2] = htab[l & 0xf]; l >>= 4;
+    buf[1] = htab[l & 0xf]; l >>= 4;
+    buf[0] = htab[l & 0xf];
+
+    return (buf + 4);
+}
+
+static int16
+hextoint16 (char *buf)
+{
+    static char *htab = "0123456789abcdef";
+    int16  val = 0;
+    int    i;
+
+    for ( i = 0; i < 4; i++ )
+      val = ( val << 4 ) | ( strchr( htab, buf[i] ) - htab );
+    return val;
+}
+
+#define MODPATH_COMP_STR_LEN  \
+           (sizeof(_dxd_exCurrentFunc->mod_path.modules  [0]) * 2 + \
+            sizeof(_dxd_exCurrentFunc->mod_path.instances[0]) * 2)
+
+
+/* compare the macro portion of two module ids
+ */
+Error DXCompareModuleMacroBase(Pointer id1, Pointer id2)
+{
+    int len;
+    char *str1 = (char *)id1;
+    char *str2 = (char *)id2;
+
+    if (str1 == NULL || str2 == NULL)
+       return ERROR;
+
+    /*  Module ID's are hexified ModPaths: <mod1><inst1><mod2><inst2>...,  */
+    /*    stored from highest call level to lowest.                        */
+    len = strlen(str1);
+    if ( len < MODPATH_COMP_STR_LEN )
+       return ERROR;
+
+    return ((strncmp(str1, str2,
+                     len - MODPATH_COMP_STR_LEN) == 0) ? OK : ERROR);
+}
+
+/* obtain a string for the i'th component of the module ID (e.g. "GetLocal")
+ */
+const char *DXGetModuleComponentName(Pointer id, int index)
+{
+  int   i;
+  int   len = strlen(id);
+  int   num_comp;
+  char *str = (char *)id;
+
+  /*  First, determine which component.  Support Python-like negative  */
+  /*    indices to count back from the end.                            */
+  if ( !str || ( len % MODPATH_COMP_STR_LEN ) != 0 )
+    return NULL;
+
+  num_comp = strlen(str) / MODPATH_COMP_STR_LEN;
+
+  if (( index >= num_comp ) || ( index < -num_comp ))
+    return NULL;
+  else if ( index >= 0 )
+    i = index;
+  else
+    i = num_comp + index;
+  i *= MODPATH_COMP_STR_LEN;
+
+  return *FETCH_LIST( *mod_name_str_table, hextoint16( &str[i] ) );
+}
+
+
+static int _dxf_ExPathCacheStringLen( ModPath *path )
+{
+  return (path->num_comp * MODPATH_COMP_STR_LEN);
+}
+
+
+static void _dxf_ExPathToCacheStringBuf( ModPath *path, char *path_str )
+{
+  int32    i;
+  char    *p = path_str;
+
+  for ( i = path->num_comp-1; i >= 0; i-- ) {
+    p = int16tohex( p, path->modules[i] );
+    p = int16tohex( p, path->instances[i] );
+  }
+}
+
+char *_dxf_ExPathToCacheString( ModPath *path )
+{
+  static char str[ MAX_PATH_STR_LEN ];
+
+  _dxf_ExPathToCacheStringBuf( path, str );
+  return str;
+}
+
+static void _dxf_ExPathPrint( Program *p, gfunc *fnode, char *header )
+{
+  int i;
+  ModPath *path = &fnode->mod_path;
+
+  if ( header )
+    printf( "\t%s:  ", header );
+  else
+    printf( "\t" );
+
+  for ( i = path->num_comp-1; i >= 0; i-- )
+    printf( "/%s:%d",
+            *FETCH_LIST( *mod_name_str_table, path->modules[i] ),
+            path->instances[i] );
+  printf( "\n" );
+}
+
+static void _dxf_ExPathSet( Program *p, char fname[], int instance, gfunc *fnode )
+{
+  uint32   fname_key;
+  ModPath *path = &fnode->mod_path;
+
+  /*  Note, we store paths in reverse order in mod_path,  */
+  /*    so prepend is actually append.                    */
+  fname_key = _dxf_ExGraphInsertAndLookupName( p, fname );
+
+  path->modules  [ 0 ] = fname_key;
+  path->instances[ 0 ] = instance;
+  path->num_comp = 1;
+
+#ifdef TESTING
+  _dxf_ExPathPrint( p, fnode, "_dxf_ExPathSet" );
+#endif
+}
+
+
+static void _dxf_ExPathPrepend( Program *p, char fname[], int instance,
+                                gfunc *fnode )
+{
+  uint32   fname_key;
+  ModPath *path = &fnode->mod_path;
+
+  /*  Note, we store paths in reverse order in mod_path,  */
+  /*    so prepend is fast (it's an append).              */
+  if ( path->num_comp >= ARRAY_LEN( path->modules ) )
+  {
+    DXSetError(ERROR_NOT_IMPLEMENTED, "gfunc execution path too deep");
+    printf( "gfunc execution path too deep: %d", path->num_comp );
+    exit(1);
+    return;
+  }
+
+  fname_key = _dxf_ExGraphInsertAndLookupName( p, fname );
+
+  path->modules  [ path->num_comp ] = fname_key;
+  path->instances[ path->num_comp ] = instance;
+  path->num_comp++;
+
+#ifdef TESTING
+  _dxf_ExPathPrint( p, fnode, "_dxf_ExPathPrepend" );
+#endif
+}
+
+static void _dxf_ExPathAppend( Program *p, char fname[], int instance,
+                               gfunc *fnode )
+{
+  uint32   fname_key;
+  ModPath *path = &fnode->mod_path;
+
+  /*  Note, we store paths in reverse order in mod_path,  */
+  /*    so append is really a prepend.                    */
+  if ( path->num_comp >= ARRAY_LEN( path->modules ) )
+  {
+    DXSetError(ERROR_NOT_IMPLEMENTED, "gfunc execution path too deep");
+    printf( "gfunc execution path too deep: %d", path->num_comp );
+    exit(1);
+    return;
+  }
+
+  fname_key = _dxf_ExGraphInsertAndLookupName( p, fname );
+
+  memmove( &path->modules[1], &path->modules[0],
+           sizeof(path->modules[0]) * path->num_comp );
+
+  path->modules  [ 0 ] = fname_key;
+  path->instances[ 0 ] = instance;
+  path->num_comp++;
+
+#ifdef TESTING
+  _dxf_ExPathPrint( p, fnode, "_dxf_ExPathAppend" );
+#endif
+}
+
+int _dxf_ExPathsEqual( ModPath *p1, ModPath *p2 )
+{
+  int cmp;
+
+  /*  We use the same string table for all ModPaths, so this comparison  */
+  /*    is quick and simple.  f                                          */
+  cmp = ( p1->num_comp == p2->num_comp ) &&
+        ( memcmp( p1->modules, p2->modules,
+                  sizeof(p1->modules[0]) * p1->num_comp   ) == 0 ) &&
+        ( memcmp( p1->instances, p2->instances,
+                  sizeof(p1->instances[0]) * p1->num_comp ) == 0 );
+  return cmp;
+}
+
+void _dxf_ExPathCopy( ModPath *dest, ModPath *src )
+{
+  memcpy( dest, src, sizeof( *dest ) );
+}
+
+char *_dxf_ExGFuncPathToString( gfunc *fnode )
+{
+  return _dxf_ExPathToString( &fnode->mod_path );
+}
+
+static void _dxf_ExGFuncPathToStringBuf( gfunc *fnode, char *path_str )
+{
+  _dxf_ExPathToStringBuf( &fnode->mod_path, path_str );
+}
+
+static void _dxf_ExGFuncPathToCacheStringBuf( gfunc *fnode, char *path_str )
+{
+  _dxf_ExPathToCacheStringBuf( &fnode->mod_path, path_str );
+}
+
+char *_dxf_ExGFuncPathToCacheString( gfunc *fnode )
+{
+  return _dxf_ExPathToCacheString( &fnode->mod_path );
+}
+

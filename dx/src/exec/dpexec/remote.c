@@ -1133,13 +1133,13 @@ Pointer DXGetModuleId()
     Pointer id;
     int len;
 
-    len = DXGetModulePathLen() + 1;
+    len = DXGetModuleCacheStrLen() + 1;
     
     id = DXAllocate(len);
     if (!id)
 	return NULL;
 
-    DXGetModulePath(id);
+    DXGetModuleCacheStr(id);
     return id;
 }
 

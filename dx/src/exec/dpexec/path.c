@@ -23,7 +23,7 @@
 
 
 char
-*_dxf_ExPathPrepend (char *name, int instance, char *path)
+*_dxf_ExPathStrPrepend (char *name, int instance, char *path)
 {
     static char localPath[EX_MAXPATH];
     char *tail = localPath;

@@ -586,7 +586,8 @@ static Error ExProcessTask (EXTask t, int iteration)
     if (ecode != ERROR_NONE && returnVal == OK)
     {
 	returnVal = ERROR;
-	DXWarning ("#4720",t->taskContext.graphId,_dxd_exCurrentFunc->cpath);
+	DXWarning ("#4720",t->taskContext.graphId,
+		_dxf_ExGFuncPathToString(_dxd_exCurrentFunc));
     }
     if (ecode == ERROR_NONE && returnVal == ERROR)
     {

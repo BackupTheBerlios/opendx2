@@ -12,6 +12,8 @@
 #ifndef	_CACHEGRAPH_H
 #define	_CACHEGRAPH_H
 
+#include "graph.h"
+
 /*---------------------------------------------------------------*/
 /* This function maintains a table with path/cache tag entries   */
 /* It searches a table looking for the current path and if found */
@@ -23,6 +25,6 @@
 /*  Question: Should this be conditional -i.e. based on the      */
 /*            setting of a user specified "cache once" switch?   */
 /*---------------------------------------------------------------*/
-int _dxf_ExManageCacheTable(char *cpath, uint32 reccrc, int outnbr);
+int _dxf_ExManageCacheTable(ModPath *cpath, uint32 reccrc, int outnbr);
 
 #endif	/* _CACHEGRAPH_H */

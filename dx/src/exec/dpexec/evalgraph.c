@@ -182,7 +182,7 @@ _dxf_ExQueueGraph(Program * p)
     ProgramRef     *pr;
     gfunc          *gf, *gf2;
     int             ilimit, jlimit;
-    int	            msgtype;
+    DistMsg	    msgtype;
 
     MARK_1("_dxf_ExQueueGraph");
 
@@ -521,8 +521,7 @@ void ExCacheMacroResults(Program *p)
 
     if(n->func.subP->error && n->nout == 0 && !(n->flags & MODULE_SIDE_EFFECT)
 )
-        _dxf_ExManageCacheTable(n->cpath, 0, 0);
-
+        _dxf_ExManageCacheTable(&n->mod_path, 0, 0);
 
     for (i = 0; i < n->nout; ++i) {
 	ip = FETCH_LIST(n->outputs, i);
@@ -569,7 +568,8 @@ void ExCacheMacroResults(Program *p)
  	    ExDelete(pv->gv);
 	    if (--pv->refs == 0) {
 		pv->gv = NULL;
-                ExDebug("*6","deleting %s output %d %d\n",n->cpath,i,index);
+                ExDebug("*6","deleting %s output %d %d\n",
+		               _dxf_ExGFuncPathToString(n),i,index);
             }
 	    pv->required = NOT_REQUIRED;
 	}
@@ -583,7 +583,8 @@ void ExCacheMacroResults(Program *p)
 	    ExDelete(pv->gv);
 	    if (--pv->refs == 0) {
 		pv->gv = NULL;
-                ExDebug("*6","deleting %s input %d %d\n",n->cpath,i,index);
+                ExDebug("*6","deleting %s input %d %d\n",
+		               _dxf_ExGFuncPathToString(n),i,index);
             }
 	}
     }
@@ -848,7 +849,8 @@ ExStartModules(Program *p)
                 if(p->cursor > -1) {
                     gfunc *dgf;
                     dgf = FETCH_LIST(p->funcs, p->first_skipped);
-                    ExDebug("1", "Queueing StartModules with cursor at %s", dgf->cpath);
+                    ExDebug("1", "Queueing StartModules with cursor at %s", 
+		                           _dxf_ExGFuncPathToString(dgf));
                 }
             }
 	    p->cursor = p->first_skipped - 1;
@@ -994,16 +996,16 @@ ModBeginMsg(Program *p, gfunc *n, char *bell, int *len)
     if (_dxd_exShowBells)
     {
         strcpy(bell, "begin ");
-        strcat(bell, n->cpath);
+        strcat(bell, _dxf_ExGFuncPathToString(n));
         *len = strlen(bell);
         _dxf_ExSPack(PACK_INTERRUPT, p->graphId, bell, *len);
     }
     if(_dxd_exRemoteSlave)
         DXDebug("*0", "Planning [%08x] %d::%s on %s", n, 
-                       p->graphId, n->cpath, _dxd_exHostName);
+                       p->graphId, _dxf_ExGFuncPathToString(n), _dxd_exHostName);
     else
         DXDebug("*0", "Planning [%08x] %d::%s", n, p->graphId, 
-                       n->cpath);
+                       _dxf_ExGFuncPathToString(n));
 }
 
 
@@ -1063,9 +1065,10 @@ _execGnode(Pointer ptr)
 
     if (*_dxd_exKillGraph)
     {
-	DXDebug("*0", "Killing  [%08x] %d::%s", n, p->graphId, n->cpath);
+	DXDebug("*0", "Killing  [%08x] %d::%s", n, p->graphId, 
+			 _dxf_ExGFuncPathToString(n));
         if(n->nout == 0 && !(n->flags & MODULE_SIDE_EFFECT))
-            _dxf_ExManageCacheTable(n->cpath, 0, 0);
+            _dxf_ExManageCacheTable(&n->mod_path, 0, 0);
 
 	for (i = 0, ilimit = SIZE_LIST(n->outputs); i < ilimit; ++i)
 	{
@@ -1084,7 +1087,7 @@ _execGnode(Pointer ptr)
     }
     else
     {
-	ExDebug("*1", "In execGnode for func :%s", n->cpath);
+	ExDebug("*1", "In execGnode for func :%s", _dxf_ExGFuncPathToString(n));
 	if (IsSwitch(n))
 	{
 	    if (ExFixSwitchSelector(p, n, TRUE, REQUIRED))
@@ -1097,7 +1100,7 @@ _execGnode(Pointer ptr)
 	    else
 	    {
 	        if (_dxd_exEnableDebug)
-	            printf("Starting Module  %s\n", n->cpath);
+	            printf("Starting Module  %s\n", _dxf_ExGFuncPathToString(n));
                 /* you won't be able to see the light go green */
                 /* since the messages are close together but   */
                 /* the UI can do something with the messages   */
@@ -1121,7 +1124,7 @@ _execGnode(Pointer ptr)
 	    else
 	    {
 	        if (_dxd_exEnableDebug)
-	            printf("Starting Module  %s\n", n->cpath);
+	            printf("Starting Module  %s\n", _dxf_ExGFuncPathToString(n));
                 /* you won't be able to see the light go green */
                 /* since the messages are close together but   */
                 /* the UI can do something with the messages   */
@@ -1204,7 +1207,7 @@ _execGnode(Pointer ptr)
 		if (gv->skip && (n->flags & MODULE_ERR_CONT) == 0)
 		{
 		    DXDebug("*0", "Skipping [%08x] %d::%s",
-			    n, p->graphId, n->cpath);
+			    n, p->graphId, _dxf_ExGFuncPathToString(n));
 		    for (i = 0, ilimit = SIZE_LIST(n->outputs); i < ilimit; ++i)
 		    {
 			ip = FETCH_LIST(n->outputs, i);
@@ -1228,7 +1231,7 @@ _execGnode(Pointer ptr)
 		    if (pv->dflt == NULL && gv->type == GV_UNRESOLVED)
 		    {
 			ExDebug("*1", " _execGnode 001:   [%2d] type = %2d %d::%s",
-				i, gv->type, p->graphId, n->cpath);
+				i, gv->type, p->graphId, _dxf_ExGFuncPathToString(n));
 			ExDebug("*1", "  _execGnode 001: at input#:%d of %d with index#:%d",
 				i, nin, index);
 			_dxf_ExDie("Executive Inconsistency: _execGnode 001");
@@ -1243,7 +1246,7 @@ _execGnode(Pointer ptr)
 			_dxf_EXOCheck((EXO_Object) gv);
 #endif
 			ExDebug("*1", "    [%2d] type = %2d %d::%s",
-				i, gv->type, p->graphId, n->cpath);
+				i, gv->type, p->graphId, _dxf_ExGFuncPathToString(n));
 		    }
 		}
 	    }
@@ -1256,8 +1259,8 @@ _execGnode(Pointer ptr)
             if(nbr_inputs_inerror > 0) 
             {
 	        ExDebug("*1", "No valid inputs: Skipping [%08x] %d::%s",
-		    n, p->graphId, n->cpath);
-	        DXWarning("#4690", n->cpath);
+		    n, p->graphId, _dxf_ExGFuncPathToString(n));
+	        DXWarning("#4690", _dxf_ExGFuncPathToString(n));
                 DXLoopDone(1);
             
 	        for (i = 0, ilimit = SIZE_LIST(n->outputs); i < ilimit; ++i)
@@ -1276,9 +1279,10 @@ _execGnode(Pointer ptr)
             } 
             if(nbr_inputs_routeoff > 0) 
             {
-                DXDebug("*0", "Skipping [%08x] %d::%s", n, p->graphId, n->cpath);
+                DXDebug("*0", "Skipping [%08x] %d::%s", n, p->graphId, 
+			_dxf_ExGFuncPathToString(n));
 	        ExDebug("*1", "inputs all routed off: Skipping [%08x] %d::%s",
-		    n, p->graphId, n->cpath);
+		    n, p->graphId, _dxf_ExGFuncPathToString(n));
             
 	        for (i = 0, ilimit = SIZE_LIST(n->outputs); i < ilimit; ++i)
 	        {
@@ -1361,7 +1365,7 @@ _execGnode(Pointer ptr)
             strcmp(n->name, "DPSEND") == 0)
 	{
 	    if (_dxd_exEnableDebug)
-		printf("Starting Module  %s\n", n->cpath);
+		printf("Starting Module  %s\n", _dxf_ExGFuncPathToString(n));
 	    status = OK;
 	    dpSendOtherProc = ExProcessDPSENDFunction(p, n, &args[nin + 1]);
 	    goto after_module_scheduling;
@@ -1407,7 +1411,7 @@ _execGnode(Pointer ptr)
             }
             else {
 	        if (_dxd_exEnableDebug)
-		    printf("Starting Module  %s\n", n->cpath);
+		    printf("Starting Module  %s\n", _dxf_ExGFuncPathToString(n));
 	        status = (*n->func.module) (args, &args[nin + 1]);
             }
 	}
@@ -1440,7 +1444,7 @@ after_module_scheduling:;
 
         /* clear cache tag */
         if(status == ERROR && n->nout == 0 && !(n->flags & MODULE_SIDE_EFFECT))
-            _dxf_ExManageCacheTable(n->cpath, 0, 0);
+            _dxf_ExManageCacheTable(&n->mod_path, 0, 0);
 
 	/*
 	 * report any error in a meaningful manner.
@@ -1536,7 +1540,7 @@ error_continue:;
 	}
     }
 module_cleanup:
-    ExDebug("*1", "At module_cleanup for %s ", n->cpath);
+    ExDebug("*1", "At module_cleanup for %s ", _dxf_ExGFuncPathToString(n));
 
     n->required = ALREADY_RUN;
     if((n->ftype == F_MACRO) && status == OK) { 
@@ -1563,7 +1567,8 @@ module_cleanup:
 		ExDelete(pv->gv);
 		if (--pv->refs == 0) {
 		    pv->gv = NULL;
-                    ExDebug("*6","deleting %s output %d %d\n",n->cpath,i,index);
+                    ExDebug("*6","deleting %s output %d %d\n",
+		             _dxf_ExGFuncPathToString(n),i,index);
                 }
 	    }
             if(!(n->flags & MODULE_PASSBACK))
@@ -1583,7 +1588,8 @@ if (pv->refs > pv->gv->object.refs)
 	    ExDelete(pv->gv);
 	    if (--pv->refs == 0) {
 		pv->gv = NULL;
-                ExDebug("*6","deleting %s input %d %d\n",n->cpath,i,index);
+                ExDebug("*6","deleting %s input %d %d\n",
+		                   _dxf_ExGFuncPathToString(n),i,index);
             }
 #ifdef CPV_DEBUG
 if (pv->refs > pv->gv->object.refs)
@@ -1619,9 +1625,9 @@ ExExecError(Program *p, gfunc *n, ErrorCode code, Error status)
     char            buf[2048];
 
     if (status != ERROR)
-	DXWarning("#4720", p->graphId, n->cpath);
+	DXWarning("#4720", p->graphId, _dxf_ExGFuncPathToString(n));
 
-    sprintf(buf, "%d::%s", p->graphId, n->cpath);
+    sprintf(buf, "%d::%s", p->graphId, _dxf_ExGFuncPathToString(n));
     DXPrintError(buf);
 
     if (_dxf_ExVCRRunning())
@@ -1791,7 +1797,8 @@ ExFixSwitchSelector(Program *p, gfunc *gf, int executionTime, int requiredFlag)
      */
     if (pv->gv->skip && switchOut >= 0)
     {
-        DXDebug("*0", "Skipping [%08x] %d::%s", gf, p->graphId, gf->cpath);
+        DXDebug("*0", "Skipping [%08x] %d::%s", gf, p->graphId, 
+	                _dxf_ExGFuncPathToString(gf));
 	switchOvar->gv->skip = pv->gv->skip;
 	if (pv->gv->disable_cache)
 	    switchOvar->gv->disable_cache = TRUE;
@@ -1829,7 +1836,7 @@ ExFixSwitchSelector(Program *p, gfunc *gf, int executionTime, int requiredFlag)
 	    int fnbr = gf - p->funcs.vals;
 	    ExDebug("*1",
 		"Setting output to input in ExFixSwitchSelector for %s",
-		gf->cpath);
+		_dxf_ExGFuncPathToString(gf));
 	    switchIvar = FETCH_LIST(p->vars, switchIn);
 	    requiredWas = switchIvar->required;
 	    if (switchIvar->gv != NULL &&
@@ -1865,7 +1872,7 @@ ExFixSwitchSelector(Program *p, gfunc *gf, int executionTime, int requiredFlag)
 		    if (*FETCH_LIST(gf->inputs, i) == switchIn)
 			printf("Send mark of input %d of %s required "
 			    "(0 based)\n",
-			    i, gf->cpath);
+			    i, _dxf_ExGFuncPathToString(gf));
 	    }
 #endif
 	    if (requiredWas != switchIvar->required &&
@@ -1935,7 +1942,8 @@ ExFixRouteSelector(Program * p, gfunc * gf, int executionTime, int requiredFlag)
      */
     if (pv->gv->skip)
     {
-        DXDebug("*0", "Skipping [%08x] %d::%s", gf, p->graphId, gf->cpath);
+        DXDebug("*0", "Skipping [%08x] %d::%s", gf, p->graphId, 
+	                     _dxf_ExGFuncPathToString(gf));
 	for (i = 0, ilimit = SIZE_LIST(gf->outputs); i < ilimit; ++i)
 	{
 	    switchOut = *FETCH_LIST(gf->outputs, i);
@@ -2028,7 +2036,7 @@ ExFixRouteSelector(Program * p, gfunc * gf, int executionTime, int requiredFlag)
     if (route_out[0] != 0 && (switchIvar->gv == NULL || 
                           switchIvar->gv->type == GV_UNRESOLVED)) {
         ExDebug("*1", "In ExFixRouteSelector for %s, mark input 1 required",
-		    gf->cpath);
+		    _dxf_ExGFuncPathToString(gf));
 	/* Mark switchIvar as required */
 	switchIvar->required = requiredFlag;
 	for (i = fnbr - 1; i >= 0; --i)
@@ -2058,7 +2066,7 @@ ExFixRouteSelector(Program * p, gfunc * gf, int executionTime, int requiredFlag)
         }
         else {
             ExDebug("*1", "Setting output %d to input in ExFixRouteSelector "
-		    "for %s", i+1, gf->cpath);
+		    "for %s", i+1, _dxf_ExGFuncPathToString(gf));
 	    if (pv->gv->disable_cache || switchIvar->gv->disable_cache)
 	        switchOvar->gv->disable_cache = TRUE;
             else
@@ -2125,7 +2133,7 @@ ExProcessGraphFunc(Program *p, int fnbr, int executionTime)
             INCR_RUNABLE
 	gf->required = REQUIRED;
 	ExDebug("*1", "Marking func %s (# %d) as required ",
-	    gf->cpath, fnbr);
+	    _dxf_ExGFuncPathToString(gf), fnbr);
 	for (j = 0, jlimit = SIZE_LIST(gf->inputs); j < jlimit; ++j)
 	{
 	    index = *FETCH_LIST(gf->inputs, j);
@@ -2170,7 +2178,7 @@ printf("weird for new in pvar\n");
 		    {
 		        pv->required = REQUIRED;
 		        ExDebug("*1", "Marking func %s input %d as required ",
-			    gf->cpath, j);
+			    _dxf_ExGFuncPathToString(gf), j);
 		    }
                }
 	    }
@@ -2181,7 +2189,7 @@ printf("weird for new in pvar\n");
     if (gf->required)
     {
         ExDebug("*1", "Func %s (# %d) already marked as %d",
-	        gf->cpath, fnbr, gf->required);
+	        _dxf_ExGFuncPathToString(gf), fnbr, gf->required);
         if (gf->required == REQUIRED)
             return TRUE;
         else if (gf->required == RUNNING)
@@ -2242,7 +2250,7 @@ printf("weird for new in pvar\n");
 			    requiredFlag = REQD_IFNOT_CACHED;
 			ExDebug("*1",
 			    "  output at index %d already cached for gfunc %s",
-			    index, gf->cpath);
+			    index, _dxf_ExGFuncPathToString(gf));
 			_dxf_ExDefineGvar(pv->gv, cachedGvar->obj);
 			ExDelete(cachedGvar);
 		    }
@@ -2324,11 +2332,11 @@ printf("weird for new in pvar\n");
 	{
 	    returnValue = TRUE;
 	    ExDebug("*1", "Marking func %s (# %d) as REQUIRED",
-		gf->cpath, fnbr);
+		_dxf_ExGFuncPathToString(gf), fnbr);
 	}
 	else
 	    ExDebug("*1", "Marking func %s (# %d) as REQD_IFNOT_CACHED",
-		gf->cpath, fnbr);
+		_dxf_ExGFuncPathToString(gf), fnbr);
 
 	if (IsSwitch(gf) || IsRoute(gf))
 	{
@@ -2583,7 +2591,7 @@ ExCheckDDI(Program * p, gfunc * gf)
 
 	ExDebug("8",
                 "Checking cache in ExCheckDDI for obj with label/key: %s/%d",
-	        gf->cpath, *input_p);
+	        _dxf_ExGFuncPathToString(gf), *input_p);
 
         if (inpv->gv && inpv->gv->obj != NULL) {
 	    cached_obj = inpv->gv->obj;
@@ -2596,10 +2604,10 @@ ExCheckDDI(Program * p, gfunc * gf)
 	        cached_obj = inpv->dflt;
         }
 
-        temp_obj = DXGetCacheEntry(gf->cpath, *input_p, 0);
+        temp_obj = DXGetCacheEntry(_dxf_ExGFuncPathToCacheString(gf), *input_p, 0);
         if(!temp_obj) {
 	    ExDebug("8", "Input obj with label/key: %s/%d not found in cache",
-          	          gf->cpath, *input_p);
+          	          _dxf_ExGFuncPathToCacheString(gf), *input_p);
 	    input_changed = TRUE;
             break;
         }
@@ -2611,7 +2619,7 @@ ExCheckDDI(Program * p, gfunc * gf)
                 if(temp_str && !strcmp(temp_str, "NULL"));
                     continue;
 	        ExDebug("8", "Input obj with label/key: %s/%d changed",
-		    gf->cpath, *input_p);
+		    _dxf_ExGFuncPathToCacheString(gf), *input_p);
             }
 	    input_changed = TRUE;
             break;
@@ -2745,7 +2753,7 @@ ExCacheDDIInputs(Program *p, gfunc *gf)
 
         ExDebug("8", 
              "Checking cache in ExCacheDDIInputs for obj with label/key: %s/%d",
-	      gf->cpath, *input_p);
+	      _dxf_ExGFuncPathToCacheString(gf), *input_p);
 
         if (inpv->gv->obj != NULL) {
 	    cached_obj = inpv->gv->obj;
@@ -2760,7 +2768,8 @@ ExCacheDDIInputs(Program *p, gfunc *gf)
 	if (!cached_obj)
 	    cached_obj = (Object) DXNewString("NULL");
 
-        if(!DXSetCacheEntry(cached_obj,CACHE_PERMANENT,gf->cpath,*input_p,0))
+        if(!DXSetCacheEntry(cached_obj,CACHE_PERMANENT,
+	               _dxf_ExGFuncPathToCacheString(gf),*input_p,0))
 	    return (FALSE);
     }
     return (TRUE);
@@ -2820,7 +2829,7 @@ ExProcessDPSENDFunction(Program *p, gfunc *gf, Object *DPSEND_obj)
     if (pv->gv != NULL && pv->gv->type != GV_UNRESOLVED && pv->gv->obj != NULL)
     {
 	DXExtractString(pv->gv->obj, &tgprocid);
-	ExDebug("*1", "tgprocid for gfunc %s is %s", gf->cpath, tgprocid);
+	ExDebug("*1", "tgprocid for gfunc %s is %s", _dxf_ExGFuncPathToCacheString(gf), tgprocid);
     }
     else
 	ExDebug("*1", "tgprocid for gfunc %s is NULL or UNRESOLVED!!");
@@ -2830,7 +2839,7 @@ ExProcessDPSENDFunction(Program *p, gfunc *gf, Object *DPSEND_obj)
     if (pv->gv != NULL && pv->gv->type != GV_UNRESOLVED && pv->gv->obj != NULL)
     {
 	DXExtractString(pv->gv->obj, &srcprocid);
-	ExDebug("*1", "srcprocid for gfunc %s is %s", gf->cpath, srcprocid);
+	ExDebug("*1", "srcprocid for gfunc %s is %s", _dxf_ExGFuncPathToCacheString(gf), srcprocid);
     }
     else
 	ExDebug("*1", "srcprocid for gfunc %s is NULL or UNRESOLVED!!");
@@ -2840,7 +2849,7 @@ ExProcessDPSENDFunction(Program *p, gfunc *gf, Object *DPSEND_obj)
     if (pv->gv != NULL && pv->gv->type != GV_UNRESOLVED && pv->gv->obj != NULL)
     {
 	DXExtractInteger(pv->gv->obj, &tgfuncnbr);
-	ExDebug("*1", "tgfuncnbr for gfunc %s is %d", gf->cpath, tgfuncnbr);
+	ExDebug("*1", "tgfuncnbr for gfunc %s is %d", _dxf_ExGFuncPathToCacheString(gf), tgfuncnbr);
     }
     else
 	ExDebug("*1", "tgfuncnbr for gfunc %s is NULL or UNRESOLVED!!");
@@ -2850,7 +2859,7 @@ ExProcessDPSENDFunction(Program *p, gfunc *gf, Object *DPSEND_obj)
     if (pv->gv != NULL && pv->gv->type != GV_UNRESOLVED && pv->gv->obj != NULL)
     {
 	DXExtractInteger(pv->gv->obj, &tginputnbr);
-	ExDebug("*1", "tginputnbr for gfunc %s is %d", gf->cpath, tginputnbr);
+	ExDebug("*1", "tginputnbr for gfunc %s is %d", _dxf_ExGFuncPathToCacheString(gf), tginputnbr);
     }
     else
 	ExDebug("*1", "tginputnbr for gfunc %s is NULL or UNRESOLVED!!");
@@ -3071,7 +3080,7 @@ ExCheckInputAvailability(Program *p, gfunc *n, int fnbr)
 		    p->first_skipped = fnbr;
 		ExDebug("5",
 		    "Input %d at index %d for gfunc %s/%d not yet available",
-		    i, index, n->cpath, fnbr);
+		    i, index, _dxf_ExGFuncPathToString(n), fnbr);
 		return (FALSE);
 	    }
 	}
@@ -3112,7 +3121,7 @@ _dxf_ExMarkVarRequired(int gid, int sgid, int fnbr, int pvar, int requiredFlag)
 	for (i = 0; i < SIZE_LIST(gf->inputs); ++i)
 	    if (*FETCH_LIST(gf->inputs, i) == pvar)
 		printf("Mark input %d of %s requires (0 based)\n",
-		    i, gf->cpath);
+		    i, _dxf_ExGFuncPathToString(gf));
     }
 #endif
 
@@ -3157,7 +3166,7 @@ _dxf_ExPrintProgram(Program *p)
 	      p->cursor+1 == i? '>': ' ',
 	      p->first_skipped != -1 && p->first_skipped == i? '*': ' ',
 	      i,
-	      gf->cpath,
+	      _dxf_ExGFuncPathToString(gf),
 	      reqnames[gf->required+1],
 	      gf->procgroupid? gf->procgroupid: "(NULL)",
 	      gf->flags);
@@ -3178,7 +3187,7 @@ _dxf_ExPrintProgramIO(Program *p)
 	printf("%c%c %3d: %s: in: ",
 	  p->cursor+1 == i? '>': ' ',
 	  p->first_skipped != -1 && p->first_skipped == i? '*': ' ',
-	  i, gf->cpath);
+	  i, _dxf_ExGFuncPathToString(gf));
         for (j = 0; j < SIZE_LIST(gf->inputs); ++j) {
             index = *FETCH_LIST(gf->inputs, j);
             if(index != -1) printf("%d ", index);
@@ -3236,7 +3245,7 @@ int _dxf_ExIsExecuting()
 
 int DXPrintCurrentModule(char *string) 
 {
-    DXMessage("%s: %s", string, _dxd_exCurrentFunc->cpath); 
+    DXMessage("%s: %s", string, _dxf_ExGFuncPathToString(_dxd_exCurrentFunc)); 
     return (0);
 }
 
