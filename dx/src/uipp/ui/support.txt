@@ -1,0 +1,63 @@
+There are a number of ways to access Data Explorer technical support 
+specialists, but before you do so please check the following:
+
+     - Please see the README files in the installation directory.
+         These may contain information not in other documentation.
+     - If you are having performance problems, please consult the section
+         in the User's Guide on system tuning and memory usage.
+
+If you would still like to contact a support person, please have the
+following information available:
+
+     - The version of DX that you are running.  This may be obtained
+         with 'dx -version' or the Help menu's 'Product Information' option.
+
+If this is a problem report, please also have the following information:
+
+    - What was the sequence of events that lead to the problem.
+    - The exact wording of any error messages that appeared.
+    - The operating system, level, and hardware that you are running on
+    - Are you using the SMP (symmetric multi-processing) version of DX?
+    - Your graphics adapter, if the problem is related to hardware rendering.
+
+After gathering the relevant information, you can contact a support 
+specialist in one of the following ways:
+
+    - send internet email to dxsupp@watson.ibm.com, or
+    - call 1-800-435-6813 (US and Canada) or 914-784-5142 
+       for bugs (also for support if you have a contract for support)
+    - contact your sales representative.
+
+Other sources of information that you may find useful are the following:
+
+    - http://www.almaden.ibm.com/dx/ is the Data Explorer home page.
+        Be sure to visit the site regularly!
+    - comp.graphics.apps.data-explorer is a USENET news group in which
+        users discuss issues related to Data Explorer.
+    - The Data Explorer repository at Cornell University has user
+        contributed modules, macros and other helpful information.
+        It is available both through the World Wide Web at URL
+        http://www.tc.cornell.edu/DX/, and via anonymous ftp at
+        ftp.tc.cornell.edu under the directory pub/Data.Explorer.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
