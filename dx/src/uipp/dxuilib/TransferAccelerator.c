@@ -18,7 +18,7 @@
 #include "TransferAccelerator.h"
 #include <Xm/XmP.h>
 
-#if       (XmVERSION >= 2)
+#if       (XmVERSION >= 2) && !defined(LESSTIF_VERSION)
 extern int _XmMapKeyEvents(
                         register String str,
                         int **eventType, 
@@ -185,7 +185,7 @@ Boolean TransferAccelerator(shell, source, action)
 		** Convert the accelerator to KeySym/Modifier combination.
 		*/
 
-#if       (XmVERSION >= 2)
+#if       (XmVERSION >= 2) && !defined(LESSTIF_VERSION)
 		int        count ;
 		int	  *type_list;
 		KeySym    *keysym_list ;
