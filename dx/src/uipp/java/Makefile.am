@@ -36,16 +36,16 @@ javainfo:
 	
 dx.jar: javainfo
 	mkdir -p classes
-	(unset CLASSPATH ; javac -d classes makeall.java $(DX_SRCS) )
+	(CLASSPATH=aaaaa ; unset CLASSPATH ; javac -d classes makeall.java $(DX_SRCS) )
 	-(export CLASSPATH=@WRL_CLASSPATH@ ; javac -d classes makewrl.java )
 	grep -v WRL_CLASSPATH javainfo > javainfo.tmp
 	echo WRL_CLASSPATH @WRL_CLASSPATH@ >>javainfo ; \
 	rm -f javainfo.tmp
-	(unset CLASSPATH ; cd classes; @JDKBIN@jar cf ../dx.jar $(DX_OBJS) dx)
+	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd classes; @JDKBIN@jar cf ../dx.jar $(DX_OBJS) dx)
 
 server.jar:
 	mkdir -p dxsc
-	(unset CLASSPATH ; javac -d dxsc DXServer.java)
+	(CLASSPATH=aaaaa ; unset CLASSPATH ; javac -d dxsc DXServer.java)
 	(unset CLASSATH ; cd dxsc; @JDKBIN@jar cf ../server.jar DXServer.class server dx )
 
 SHRD_FLAGS = -shared -L../dxl -lDXL -olibAnyDX.so
@@ -58,7 +58,7 @@ JBASE = @JBASE@
 JINC = -I$(JBASE)/include -I$(JBASE)/include/@JAVA_ARCH@
 
 DXLink.o:  server.jar
-	(unset CLASSPATH ; cd dxsc; @JDKBIN@javah -jni -d ../server server.DXServer server.DXServerThread)
+	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd dxsc; @JDKBIN@javah -jni -d ../server server.DXServer server.DXServerThread)
 	(cd server; $(CC) -o../DXLink.o -I../../../../include -c -D@ARCH@ $(CFLAGS) $(JINC) DXLink.c)
 
 
