@@ -702,7 +702,7 @@ void ImageNode::setBackgroundColor(const char *color, boolean send)
 
 void ImageNode::enableSoftwareRendering(boolean enable, boolean send)
 {
-    char *s = enable? "0": "1";
+    char *s = enable? (char *)"0": (char *)"1";
 
     if (enable)
     {

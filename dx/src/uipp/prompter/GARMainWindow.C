@@ -1644,6 +1644,7 @@ Widget GARMainWindow::createWorkArea(Widget parent)
     XtSetArg(wargs[n], XmNvisibleItemCount, vlines); n++;
     XtSetArg(wargs[n], XmNselectionPolicy, XmSINGLE_SELECT); n++;
     XtSetArg(wargs[n], XmNlistSizePolicy, XmRESIZE_IF_POSSIBLE); n++;
+    XtSetArg(wargs[n], XmNhighlightThickness, 2); n++;
     this->field_list = 
 	XmCreateScrolledList(this->fieldform, "fieldlist", wargs, n);
     XtManageChild(this->field_list);
@@ -1658,10 +1659,10 @@ Widget GARMainWindow::createWorkArea(Widget parent)
 		"move_up", xmArrowButtonWidgetClass, 
 		this->fieldform, 
 		XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
-		XmNtopWidget, this->field_list,
+		XmNtopWidget, XtParent(this->field_list),
 		XmNtopOffset, 0,
 		XmNleftAttachment, XmATTACH_WIDGET,
-		XmNleftWidget, this->field_list,
+		XmNleftWidget, XtParent(this->field_list),
 		XmNleftOffset, 28,
 		XmNarrowDirection, XmARROW_UP,
 		NULL);
@@ -1674,7 +1675,7 @@ Widget GARMainWindow::createWorkArea(Widget parent)
 		XmNtopWidget, this->move_up_ab,
 		XmNtopOffset, 5,
 		XmNleftAttachment, XmATTACH_WIDGET,
-		XmNleftWidget, this->field_list,
+		XmNleftWidget, XtParent(this->field_list),
 		XmNleftOffset, 28,
 		XmNarrowDirection, XmARROW_DOWN,
 		NULL);
@@ -1686,7 +1687,7 @@ Widget GARMainWindow::createWorkArea(Widget parent)
 		"move_label", xmLabelWidgetClass, 
 		this->fieldform, 
 		XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
-		XmNtopWidget, this->field_list,
+		XmNtopWidget, XtParent(this->field_list),
 		XmNtopOffset, -4,
 		XmNleftAttachment, XmATTACH_WIDGET,
 		XmNleftWidget, this->move_up_ab,
@@ -1708,7 +1709,7 @@ Widget GARMainWindow::createWorkArea(Widget parent)
 		"field_name_label", xmLabelWidgetClass, 
 		this->fieldform, 
 		XmNtopAttachment, XmATTACH_WIDGET,
-		XmNtopWidget, this->field_list,
+		XmNtopWidget, XtParent(this->field_list),
 		XmNtopOffset, LABEL_TOP_OFFSET,
 		XmNleftAttachment, XmATTACH_FORM,
 		NULL);
@@ -1718,12 +1719,12 @@ Widget GARMainWindow::createWorkArea(Widget parent)
 		"field_text", xmTextWidgetClass, 
 		this->fieldform, 
 		XmNtopAttachment, XmATTACH_WIDGET,
-		XmNtopWidget, this->field_list,
+		XmNtopWidget, XtParent(this->field_list),
 		XmNleftAttachment, XmATTACH_OPPOSITE_WIDGET,
-		XmNleftWidget, this->field_list,
+		XmNleftWidget, XtParent(this->field_list),
 		XmNleftOffset, 0,
 		XmNrightAttachment, XmATTACH_OPPOSITE_WIDGET,
-		XmNrightWidget, this->field_list,
+		XmNrightWidget, XtParent(this->field_list),
 		XmNrightOffset, 0,
 		NULL);
 

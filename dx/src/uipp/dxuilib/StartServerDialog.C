@@ -29,12 +29,12 @@ String StartServerDialog::DefaultResources[] =
 {
     ".dialogTitle:			Start Server...",
     "*hostLabel.labelString:		Hostname:",
-    "*hostText.width:			200",
+//    "*hostText.width:			200",
     "*connectButton.labelString:	Connect",
     "*cancelButton.labelString:		Cancel",
     "*optionsButton.labelString:	Options...",
-    "*XmPushButton.width:		75",
-    "*XmPushButton.height:		25",
+//    "*XmPushButton.width:		75",
+//    "*XmPushButton.height:		25",
     NULL
 };
 
@@ -186,8 +186,8 @@ Widget StartServerDialog::createDialog(Widget parent)
 	XmNbottomOffset,     9,
 	XmNuserData,	     (XtPointer)this,
 #ifdef sun4
-	XmNheight,	     40,
-	XmNwidth,	     90,
+//	XmNheight,	     40,
+//	XmNwidth,	     90,
 #endif
 	XmNshowAsDefault,    2,
 	NULL);
@@ -201,6 +201,8 @@ Widget StartServerDialog::createDialog(Widget parent)
 	XmNtopAttachment,    XmATTACH_WIDGET,
 	XmNtopWidget,        separator,
 	XmNtopOffset,        17,
+	XmNbottomAttachment, XmATTACH_FORM,
+	XmNbottomOffset,     9 + 8,
 	XmNuserData,	     (XtPointer)this,
 	NULL);
 
@@ -212,6 +214,8 @@ Widget StartServerDialog::createDialog(Widget parent)
 	XmNtopAttachment,    XmATTACH_WIDGET,
 	XmNtopWidget,        separator,
 	XmNtopOffset,        17,
+	XmNbottomAttachment, XmATTACH_FORM,
+	XmNbottomOffset,     9 + 8,
 	XmNuserData,	     (XtPointer)this,
 	NULL);
 

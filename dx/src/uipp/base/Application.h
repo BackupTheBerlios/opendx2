@@ -52,7 +52,7 @@ class Application : public UIComponent, public Server
     //
     // The main program needs to access protected member functions.
     //
-    friend void main(unsigned int argc,
+    friend int main(unsigned int argc,
 		     char**       argv);
 
 

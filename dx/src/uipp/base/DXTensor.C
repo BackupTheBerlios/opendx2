@@ -355,7 +355,7 @@ boolean DXTensor::setVectorComponentValue(int component, double val)
 // Get the number of items in the given dimension.
 // Dimensions are indexed from 1.
 //
-DXTensor::getDimensionSize(int dim)
+int DXTensor::getDimensionSize(int dim)
 {
     ASSERT(dim > 0);
     ASSERT(this->getDimensions() >= dim);

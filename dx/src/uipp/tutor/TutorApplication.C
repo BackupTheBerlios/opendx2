@@ -74,7 +74,7 @@ XtResource _TutorResourceList[] =
         sizeof(String),
         XtOffset(TutorResource*, tutorFile),
         XmRString,
-        "Tutorial"
+        (XtPointer)"Tutorial"
     },
     {
 	"TutorInsensitiveColor",

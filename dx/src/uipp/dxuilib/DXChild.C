@@ -580,7 +580,8 @@ DXChild::ConnectTo(const char *host,
 	    ErrorMessage("chdir() error: %s", strerror(errno));
 	    exit(1);
 	}
-	if (execve(fargv[0], (EXECVE_2ND_TYPE)fargv, (EXECVE_3RD_TYPE)rep) < 0)
+//	if (execve(fargv[0], (EXECVE_2ND_TYPE)fargv, (EXECVE_3RD_TYPE)rep) < 0)
+	if (execve(fargv[0], fargv, rep) < 0)
 	{
 	    ErrorMessage("execve() error: %s", strerror(errno));
 	    exit(1);

@@ -53,8 +53,8 @@ void QuestionDialogManager::post(Widget parent,
 
     this->DialogManager::post(parent, message, title, clientData,
                               	okCallback, cancelCallback, helpCallback,
-                              	(okLabel ? okLabel : "Yes"), 
-				(cancelLabel ? cancelLabel : "No"), helpLabel,
+                              	(okLabel ? okLabel : (char *)"Yes"), 
+				(cancelLabel ? cancelLabel : (char *)"No"), helpLabel,
 				cancelBtnNum
 	);
 

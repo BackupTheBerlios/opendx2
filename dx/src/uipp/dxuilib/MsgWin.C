@@ -1333,7 +1333,7 @@ void MsgWin::findPrevError()
 boolean MsgWin::toggleTracing()
 {
 boolean on_or_off = this->traceOption->getState();
-char *cmd = (on_or_off?"Trace(\"0\",1);\n" : "Trace(\"0\", 0);\n" );
+char *cmd = (on_or_off? (char *)"Trace(\"0\",1);\n" : (char *)"Trace(\"0\", 0);\n" );
 
     //
     // Issue the script command

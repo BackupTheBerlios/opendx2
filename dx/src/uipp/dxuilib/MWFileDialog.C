@@ -74,7 +74,7 @@ void MWFileDialog::postAs(boolean log)
 
     this->FileDialog::post();
 
-    XmString title = XmStringCreateSimple(log? "Log...": "Save As...");
+    XmString title = XmStringCreateSimple(log? (char *)"Log...": (char *)"Save As...");
     XtVaSetValues(this->getFileSelectionBox(),
 		  XmNdialogTitle, title,
 		  NULL);

@@ -1218,7 +1218,7 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 	List *pl;
 	char *q;
 	int instance = -1;
-	char *clss = (dim == PICK) ? ClassPickNode : ClassProbeNode;
+	char *clss = (dim == PICK) ? (char *)ClassPickNode : (char *)ClassProbeNode;
 
 	it.setPosition(1);
 

@@ -225,12 +225,12 @@ boolean ScalarNode::setDefaultAttributes()
 		min     = "[ -1000000 ]";
 		max     = "[ 1000000 ]";
 		incr    = "[ 1 ]";
-		decimals = (this->isIntegerTypeComponent() ? "[0]" : "[5]");
+		decimals = (this->isIntegerTypeComponent() ? (char *)"[0]" : (char *)"[5]");
 	    } else {
 		min     = "-1000000";
 		max     = "1000000";
 		incr    = "1";
-		decimals = (this->isIntegerTypeComponent() ? "0" : "5");
+		decimals = (this->isIntegerTypeComponent() ? (char *)"0" : (char *)"5");
 	    }
 	    break;
 	case 2:

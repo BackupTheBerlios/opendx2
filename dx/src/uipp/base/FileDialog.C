@@ -283,8 +283,6 @@ Widget FileDialog::createFileSelectionBox(Widget parent, const char *name)
 
     Widget fsb = XtVaCreateWidget(name,
                                   xmFileSelectionBoxWidgetClass, parent,
-                                  XmNwidth,               450,
-                                  XmNheight,              285,
 #ifdef DXD_NON_UNIX_DIR_SEPARATOR
                                   XmNfileSearchProc,        NonUnixSearchProc,
                                   XmNdirSearchProc,         NonUnixDirSearchProc,

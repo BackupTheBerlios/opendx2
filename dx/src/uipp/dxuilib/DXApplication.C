@@ -1524,7 +1524,7 @@ XtResource _DXResourceList[] =
 	sizeof(String),
 	XtOffset(DXResource*, cosmoDir),
 	XmRString,
-	""
+	(XtPointer) ""
     },
     {
         "jdkDir",
