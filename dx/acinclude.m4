@@ -890,8 +890,21 @@ AC_DEFUN(DX_JAVA_ARCHITECTURE,
     if test "$JAVA_ARCH" = "linux" ; then
 	JNI_CFLAGS=-DIBM_LINUX
     fi
+
+# NLS nuisances.
+# Needed e.g. for some versions of `tr' so that character classes in `[]' work.
+    if test "${LC_ALL+set}" = 'set'; then LC_ALL=C ; export LC_ALL ; fi
+    if test "${LANG+set}"   = 'set'; then LANG=C   ; export LANG   ; fi
+changequote(, )dnl
+    if test "`echo ABC | tr '[A-Z]' '[a-z]'`" = "abc"  ; then
+        tolower="tr '[A-Z]' '[a-z]'"
+    else
+        tolower="tr A-Z a-z"
+    fi
+changequote([, ])dnl
+
     if test "$JAVA_ARCH" = "" ; then
-	lc=`uname -s | tr "A-Z" "a-z"`
+	lc=`uname -s | $tolower`
         case $lc in
 	    irix*)     JAVA_ARCH=irix ;;
 	    cygwin*)   JAVA_ARCH=win32 ;;
