@@ -65,6 +65,7 @@
 #undef ulong
 #undef ushort
 #undef __int64
+#undef socklen_t
 
 #undef uint
 #undef SELECT_ARG_TYPE

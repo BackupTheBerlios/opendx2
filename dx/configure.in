@@ -979,6 +979,7 @@ DX_CHECK_TYPE(int32, int)
 DX_CHECK_TYPE(uint32, unsigned int)
 DX_CHECK_TYPE(int64, long)
 DX_CHECK_TYPE(float64, double)
+DX_CHECK_TYPE(socklen_t, int)
 
 if test "$ARCH" != "intelnt" ; then
     DX_CHECK_TYPE(__int64, long long)
