@@ -335,20 +335,22 @@ fi
 
 ##
 ## Where is the DXServer directory?  The .class files
-## are cross platform.  Starting java with -Djx.local will tell
-## java to use an arch specific method of searching for shared
-## objects.  This is often the LD_LIBRARY_PATH env variable.
+## are cross platform.  Starting java with jx.lib set, e.g. 
+## shared_obj="-Djx.lib=/usr/local/dx/java/server/lib_sgi/libAnyDX.so"
+## tells java to use an arch specific method of loading shared
+## objects where the complete file name including path must be
+## specified.
 ##
 ## The use of SERVERDIR is intended to give developers (me) a 
 ## way of using this script with a local build.
 ##
-shared_obj_flag=
+shared_obj=
 serverdir=
 if [ "$SERVERDIR" = "" ]; then
     serverdir=$default_serverdir
 else
     serverdir=$SERVERDIR
-    shared_obj_flag=-Djx.local
+    shared_obj=
 fi
 
 cd $serverdir
@@ -400,7 +402,7 @@ export DXDATA
 export DXINCLUDES
 
 if [ "$verbose" = "1" ]; then
-    echo "java $dbg_args $sessions $outdir $outurl $shared_obj_flag DXServer"
+    echo "java $dbg_args $sessions $outdir $outurl $shared_obj DXServer"
     echo ""
     echo "     DXROOT     = "$DXROOT
     echo "     DXARGS     = "$DXARGS
@@ -414,9 +416,9 @@ fi
 
 
 if [ "$foreground" = "1" ]; then
-    java $dbg_args $sessions $outdir $outurl $shared_obj_flag DXServer
+    java $dbg_args $sessions $outdir $outurl $shared_obj DXServer
 else
-    java $dbg_args $sessions $outdir $outurl $shared_obj_flag DXServer &
+    java $dbg_args $sessions $outdir $outurl $shared_obj DXServer &
 fi
 
 exit 0
