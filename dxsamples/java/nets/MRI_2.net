@@ -1,11 +1,11 @@
 //
-// time: Fri Oct 23 15:16:50 1998
+// time: Tue Apr 23 20:52:08 2002
 //
-// version: 3.1.2 (format), 4.1.1 (DX Beta)
+// version: 3.1.2 (format), 4.1.3 (DX)
 //
 //
 //
-// macro reference (direct): WebOptions /u/c1tignor/ibm6000/java/server/dxmacros/weboptionsmac.net
+// macro reference (direct): WebOptions /usr/local/dx/java/server/dxmacros/weboptionsmac.net
 include "weboptionsmac.net"
 //
 //
@@ -20,7 +20,7 @@ include "dxmac.net";
 // comment: 
 // comment: An isosurface is displayed with a slice of the data. To move the slice, use the sequencer. You can also change the isosurface value using the interactor in the control panel.
 // page assignment: java tools	order=2, windowed=0, showing=0
-// workspace: width = 557, height = 640
+// workspace: width = 557, height = 642
 // layout: snap = 0, width = 50, height = 50, align = NN
 //
 macro main(
@@ -387,7 +387,7 @@ main_Image_1_out_3[cache: 0] =
     //
 java_control = main_DXLInput_1_out_1;
 // network: end of macro body
-CacheScene("Image_1", main_Image_1_out_1, main_Image_1_out_2);
+CacheScene(main_Image_1_in_1, main_Image_1_out_1, main_Image_1_out_2);
 }
 main_Import_1_in_1 = "MRI.data";
 main_Import_1_in_2 = NULL;
@@ -605,10 +605,13 @@ ICompute_57_o1[cache: 2] = Compute("$0.y",IRcv158_o1) [instance: 57, cache: 1];
 ISelect_5_o1[cache: 2] = Select(IRoute_14_o1,"format",NULL) [instance: 5, cache: 1];
 java_format = ISelect_5_o1;IRcv131_o1[cache: 0] = java_format;IInq22_o1[cache: 2] = 
 Inquire(IRcv131_o1,"string match","wrl") [instance: 22, cache: 1];IInq11_o1[cache: 2] = 
-Inquire(IRcv131_o1,"string match","gif") [instance: 11, cache: 1];IInq53_o1[cache: 2] = 
-Inquire(IRcv131_o1,"string match","dx") [instance: 53, cache: 1];
-ICompute_58_o1[cache: 0] = Compute("($0==$1) && ($1==$2)",IInq22_o1,IInq11_o1,IInq53_o1
-) [instance: 58, cache: 1];IRcv204_o1[cache: 0] = java_orbit;
+Inquire(IRcv131_o1,"string match","gif") [instance: 11, cache: 1];IInq54_o1[cache: 2] = 
+Inquire(IRcv131_o1,"string match","jpg") [instance: 54, cache: 1];IInq55_o1[cache: 2] = 
+Inquire(IRcv131_o1,"string match","png") [instance: 55, cache: 1];ICompute_78_o1 = 
+Compute("$0+$1+$2",IInq11_o1,IInq54_o1,IInq55_o1) [instance: 78, cache: 1];
+IInq53_o1[cache: 2] = Inquire(IRcv131_o1,"string match","dx") [instance: 53, cache: 1];
+ICompute_58_o1[cache: 0] = Compute("($0==$1) && ($1==$2)",IInq22_o1,ICompute_78_o1,
+IInq53_o1) [instance: 58, cache: 1];IRcv204_o1[cache: 0] = java_orbit;
 IRcv128_o1[cache: 0] = objectx;aaobj = IAutoAxes_2_o1;IRcv127_o1[cache: 0] = aaobj;
 ISwitch_4_o1[cache: 2] = Switch(ICompute_1_o1,IRcv128_o1,IRcv127_o1
 ) [instance: 4, cache: 1];IInq3_o1[cache: 2] = Inquire(ISwitch_4_o1,"object tag",NULL
@@ -703,7 +706,20 @@ GetGlobal(0,NULL,NULL) [instance: 9, cache: 1];ICompute_74_o1[cache: 2] = Comput
 "($0 != $1) ? 1 : 2",IRcv268_o1,IGetGlobal_9_o1) [instance: 74, cache: 1];
 IRcv284_o1[cache: 0] = same_image;IRcv285_o1[cache: 0] = same_options;
 ICompute_77_o1[cache: 2] = Compute("(($0==1)||($1==1)) ?1:0",IRcv284_o1,IRcv285_o1
-) [instance: 77, cache: 1];record_code = ICompute_3_o1;
+) [instance: 77, cache: 1];IRcv290_o1[cache: 0] = objectx;IRoute_15_o1[cache: 2],
+IRoute_15_o2[cache: 2] = Route(IInq53_o1,IRcv290_o1) [instance: 15, cache: 1];
+IRoute_16_o1[cache: 2],IRoute_16_o2[cache: 2] = Route(ICompute_77_o1,IRoute_15_o1
+) [instance: 16, cache: 1];DXExporter = IRoute_16_o1;IRcv288_o1[cache: 0] = DXExporter;
+ISelect_8_o1[cache: 2] = Select(IRoute_14_o1,"file",NULL) [instance: 8, cache: 1];
+java_file = ISelect_8_o1;IRcv133_o1[cache: 0] = java_file;IInq21_o1[cache: 2] = Inquire(
+IRcv158_o1,"is null+1",NULL) [instance: 21, cache: 1];ISwitch_22_o1[cache: 2] = Switch(
+IInq21_o1,ICompute_56_o1,0) [instance: 22, cache: 1];seq_number = ISwitch_22_o1;
+IRcv134_o1[cache: 0] = seq_number;ISwitch_23_o1[cache: 2] = Switch(IInq21_o1,
+ICompute_57_o1,0) [instance: 23, cache: 1];loop_number = ISwitch_23_o1;
+IRcv98_o1[cache: 0] = loop_number;IFormat_1_o1[cache: 2] = Format("%s.%d.%d",IRcv133_o1,
+IRcv134_o1,IRcv98_o1) [instance: 1, cache: 1];base_name = IFormat_1_o1;
+IRcv289_o1[cache: 0] = base_name;IDXExport_1_o1[cache: 2] = DXExport(IRcv288_o1,
+IRcv289_o1) [instance: 1, cache: 1];record_code = ICompute_3_o1;
 IRcv172_o1[cache: 0] = record_code;IRoute_1_o1[cache: 2],IRoute_1_o2[cache: 2] = Route(
 ICompute_7_o1,IRcv125_o1) [instance: 1, cache: 1];IRoute_6_o1[cache: 2],
 IRoute_6_o2[cache: 2],IRoute_6_o3[cache: 2],IRoute_6_o4[cache: 2] = Route(IRcv172_o1,
@@ -723,20 +739,12 @@ IRcv180_o1,IRcv181_o1,IRcv182_o1,NULL,NULL,NULL,NULL) [instance: 4, cache: 1];
 IInp1_o1 = id;idx = IInp1_o1;IRcv147_o1[cache: 0] = idx;IRcv258_o1[cache: 0] = img_id;
 IRcv259_o1[cache: 0] = resetx;IRcv255_o1[cache: 0] = camera_xcvr;
 java_exporter = IRoute_1_o2;IRcv130_o1[cache: 0] = java_exporter;IRoute_2_o1[cache: 2],
-IRoute_2_o2[cache: 2] = Route(IInq11_o1,IRcv130_o1) [instance: 2, cache: 1];
+IRoute_2_o2[cache: 2] = Route(ICompute_78_o1,IRcv130_o1) [instance: 2, cache: 1];
 IRoute_8_o1[cache: 2],IRoute_8_o2[cache: 2] = Route(ICompute_59_o1,IRoute_2_o1
 ) [instance: 8, cache: 1];gifexporter = IRoute_8_o1;IRcv146_o1[cache: 0] = gifexporter;
-ISelect_8_o1[cache: 2] = Select(IRoute_14_o1,"file",NULL) [instance: 8, cache: 1];
-java_file = ISelect_8_o1;IRcv133_o1[cache: 0] = java_file;IInq21_o1[cache: 2] = Inquire(
-IRcv158_o1,"is null+1",NULL) [instance: 21, cache: 1];ISwitch_22_o1[cache: 2] = Switch(
-IInq21_o1,ICompute_56_o1,0) [instance: 22, cache: 1];seq_number = ISwitch_22_o1;
-IRcv134_o1[cache: 0] = seq_number;ISwitch_23_o1[cache: 2] = Switch(IInq21_o1,
-ICompute_57_o1,0) [instance: 23, cache: 1];loop_number = ISwitch_23_o1;
-IRcv98_o1[cache: 0] = loop_number;IFormat_1_o1[cache: 2] = Format("%s.%d.%d",IRcv133_o1,
-IRcv134_o1,IRcv98_o1) [instance: 1, cache: 1];base_name = IFormat_1_o1;
 IRcv139_o1[cache: 0] = base_name;IRcv138_o1[cache: 0] = camera_xcvr;
-Iimageexport_1_o1[cache: 2] = imageexport(IRcv146_o1,IRcv139_o1,IRcv138_o1
-) [instance: 1, cache: 1];gif_data_drive = Iimageexport_1_o1;
+IRcv292_o1[cache: 0] = java_format;IImageExport_1_o1 = ImageExport(IRcv146_o1,IRcv139_o1,
+IRcv138_o1,IRcv292_o1) [instance: 1, cache: 1];gif_data_drive = IImageExport_1_o1;
 IRcv266_o1[cache: 0] = gif_data_drive;IInq45_o1[cache: 2] = Inquire(IRcv255_o1,
 "camera perspective + 1",IRcv266_o1) [instance: 45, cache: 1];IRoute_11_o1[cache: 0],
 IRoute_11_o2[cache: 0] = Route(IInq45_o1,IRcv255_o1) [instance: 11, cache: 1];
@@ -750,25 +758,26 @@ IRcv257_o1[cache: 0] = gif_data_drive;IFormat_20_o1[cache: 2] = Format(
 ) [instance: 20, cache: 1];Echo(IRcv147_o1,IFormat_20_o1) [instance: 1, cache: 1];
 IRoute_4_o1[cache: 2],IRoute_4_o2[cache: 2] = Route(ICompute_58_o1,NULL
 ) [instance: 4, cache: 1];IFormat_13_o1[cache: 2] = Format("Unrecognized Format: %s",
-IRcv131_o1,IRoute_4_o1) [instance: 13, cache: 1];Echo(IFormat_13_o1,NULL
-) [instance: 3, cache: 1];IRcv205_o1[cache: 0] = idx;IRcv206_o1[cache: 0] = img_id;
-orbitexporter = IRoute_8_o2;IRcv213_o1[cache: 0] = orbitexporter;
-IRender_3_o1[cache: 2] = Render(IRcv213_o1,IUpdateCamera_3_o1,NULL
-) [instance: 3, cache: 1];orbitedImage = IRender_3_o1;
+IRcv131_o1,IRoute_4_o1) [instance: 13, cache: 1];IFormat_26_o1[cache: 2] = Format(
+"format inquiries: %d %d %d",IInq22_o1,ICompute_78_o1,IInq53_o1
+) [instance: 26, cache: 1];Echo(IFormat_13_o1,IFormat_26_o1) [instance: 3, cache: 1];
+IRcv205_o1[cache: 0] = idx;IRcv206_o1[cache: 0] = img_id;orbitexporter = IRoute_8_o2;
+IRcv213_o1[cache: 0] = orbitexporter;IRender_3_o1[cache: 2] = Render(IRcv213_o1,
+IUpdateCamera_3_o1,NULL) [instance: 3, cache: 1];orbitedImage = IRender_3_o1;
 IRcv211_o1[cache: 0] = orbitedImage;IRcv275_o1[cache: 0] = java_file;
 IRcv276_o1[cache: 0] = seq_number;IFormat_24_o1[cache: 2] = Format("%s.%d.%d",IRcv275_o1,
 IRcv276_o1,IForEachN_1_o1) [instance: 24, cache: 1];IRcv209_o1[cache: 0] = camera_xcvr;
-Iimageexport_2_o1[cache: 2] = imageexport(IRcv211_o1,IFormat_24_o1,IRcv209_o1
+IImageExport_2_o1 = ImageExport(IRcv211_o1,IFormat_24_o1,IRcv209_o1,NULL
 ) [instance: 2, cache: 1];IFormat_17_o1[cache: 2] = Format("imgId=%d; orbit=1; show=%s;",
-IRcv206_o1,Iimageexport_2_o1) [instance: 17, cache: 1];Echo(IRcv205_o1,IFormat_17_o1
+IRcv206_o1,IImageExport_2_o1) [instance: 17, cache: 1];Echo(IRcv205_o1,IFormat_17_o1
 ) [instance: 5, cache: 1];IRcv244_o1[cache: 0] = idx;IRcv245_o1[cache: 0] = img_id;
 IRoute_3_o1[cache: 2],IRoute_3_o2[cache: 2] = Route(IInq22_o1,IRcv130_o1
 ) [instance: 3, cache: 1];IRoute_10_o1[cache: 2],IRoute_10_o2[cache: 2] = Route(
 ICompute_71_o1,IRoute_3_o1) [instance: 10, cache: 1];wrlexporter = IRoute_10_o1;
 IRcv157_o1[cache: 0] = wrlexporter;IRcv153_o1[cache: 0] = base_name;
-Ivrmlexport_1_o1[cache: 2] = vrmlexport(IRcv157_o1,IRcv153_o1) [instance: 1, cache: 1];
+IVRMLExport_1_o1[cache: 2] = VRMLExport(IRcv157_o1,IRcv153_o1) [instance: 1, cache: 1];
 IFormat_19_o1[cache: 2] = Format("imgId=%d; orbit=0; show=%s;",IRcv245_o1,
-Ivrmlexport_1_o1) [instance: 19, cache: 1];Echo(IRcv244_o1,IFormat_19_o1
+IVRMLExport_1_o1) [instance: 19, cache: 1];Echo(IRcv244_o1,IFormat_19_o1
 ) [instance: 6, cache: 1];IRcv261_o1[cache: 0] = idx;IRcv262_o1[cache: 0] = img_id;
 IRcv263_o1[cache: 0] = resetx;pcam = IRoute_11_o2;IRcv264_o1[cache: 0] = pcam;
 IInq46_o1[cache: 2] = Inquire(IRcv264_o1,"camera angle",NULL) [instance: 46, cache: 1];
@@ -788,18 +797,13 @@ IRcv271_o1[cache: 0] = same_cache;IRcv272_o1[cache: 0] = cache_count;
 IRoute_13_o1[cache: 0],IRoute_13_o2[cache: 0] = Route(IRcv271_o1,IRcv272_o1
 ) [instance: 13, cache: 1];IFormat_23_o1[cache: 2] = Format("cache=%d",IRoute_13_o1
 ) [instance: 23, cache: 1];Echo(IRcv274_o1,IFormat_23_o1) [instance: 11, cache: 1];
-IRcv286_o1[cache: 0] = idx;IRcv287_o1[cache: 0] = img_id;IRcv290_o1[cache: 0] = objectx;
-IRoute_15_o1[cache: 2],IRoute_15_o2[cache: 2] = Route(IInq53_o1,IRcv290_o1
-) [instance: 15, cache: 1];IRoute_16_o1[cache: 2],IRoute_16_o2[cache: 2] = Route(
-ICompute_77_o1,IRoute_15_o1) [instance: 16, cache: 1];dxexporter = IRoute_16_o1;
-IRcv288_o1[cache: 0] = dxexporter;IRcv289_o1[cache: 0] = base_name;
-Idxexport_1_o1[cache: 2] = dxexport(IRcv288_o1,IRcv289_o1) [instance: 1, cache: 1];
-IFormat_25_o1[cache: 2] = Format("imgId=%d; orbit=0; show=%s;",IRcv287_o1,Idxexport_1_o1
-) [instance: 25, cache: 1];Echo(IRcv286_o1,IFormat_25_o1) [instance: 12, cache: 1];
-IRcv70_o1[cache: 0] = idx;IRcv99_o1[cache: 0] = bkgndColor;
-IRcv110_o1[cache: 0] = throttlex;IRcv195_o1[cache: 0] = recEnablex;IInp25_o1 = recFile;
-recFilex = IInp25_o1;IRcv196_o1[cache: 0] = recFilex;IInp26_o1 = recFormat;
-recFormatx = IInp26_o1;IRcv197_o1[cache: 0] = recFormatx;IRcv198_o1[cache: 0] = recRes;
+IRcv286_o1[cache: 0] = idx;IRcv287_o1[cache: 0] = img_id;IFormat_25_o1[cache: 2] = 
+Format("imgId=%d; orbit=0; show=%s;",IRcv287_o1,IDXExport_1_o1) [instance: 25, cache: 1];
+Echo(IRcv286_o1,IFormat_25_o1) [instance: 12, cache: 1];IRcv70_o1[cache: 0] = idx;
+IRcv99_o1[cache: 0] = bkgndColor;IRcv110_o1[cache: 0] = throttlex;
+IRcv195_o1[cache: 0] = recEnablex;IInp25_o1 = recFile;recFilex = IInp25_o1;
+IRcv196_o1[cache: 0] = recFilex;IInp26_o1 = recFormat;recFormatx = IInp26_o1;
+IRcv197_o1[cache: 0] = recFormatx;IRcv198_o1[cache: 0] = recRes;
 IRcv199_o1[cache: 0] = recAsp;IRcv91_o1[cache: 0] = aaenable;
 IRcv72_o1[cache: 0] = aalabels;IRcv73_o1[cache: 0] = aaticks;
 IRcv78_o1[cache: 0] = aacorners;IRcv77_o1[cache: 0] = aaframe;
@@ -894,7 +898,7 @@ main_Image_1_in_47 = NULL;
 main_Image_1_in_48 = NULL;
 main_SetGlobal_1_in_3 = NULL;
 main_SetLocal_1_in_3 = NULL;
-Executive("product version 4 1 1");
+Executive("product version 4 1 3");
 $sync
 // This network contains DXLink tools.  Therefore, the following line(s)
 // that would cause an execution when run in script mode have been 
