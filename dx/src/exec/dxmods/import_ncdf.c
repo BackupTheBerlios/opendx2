@@ -182,7 +182,8 @@ static Object build_regpos1D(Arrayinfo, int, int);
 static Object build_regcon(Arrayinfo);
 static Object build_regcon1D(Arrayinfo, int);
 
-static char *getattr(int hand, int varid, char *attrname, char *stringattr);
+static char *getattr(int hand, int varid, char *attrname,
+                    char *stringattr,int maxlen);
 static char *getNattr(int hand, int varid, int i, char *attrname, int n, 
                      char *stringattr);
 static Error setattr(Arrayinfo ap, Field f, char *compname);
@@ -530,7 +531,7 @@ static Varinfo
 query_var(int cdfhandle, char **varlist, int *starttime, int *endtime,
 	  int *deltatime)
 {
-    char stringattr[MAXNAME], *cp, *s[MAXATTRSTR], **lp;
+    char stringattr[MAXNAME], *cp, *s[MAXATTRSTR], **lp, *attrtext=NULL;
     char *subv[2];
     int ndims, nvars, ngatts, recdim;
     int i, j, k, matched;
@@ -562,12 +563,15 @@ query_var(int cdfhandle, char **varlist, int *starttime, int *endtime,
     /* check for any global series attributes.
      */
     for (k = 0; k < ngatts; k++) {
-        if(!getNattr(cdfhandle, NC_GLOBAL, k, SERIESATTRIB, 
-                    strlen(SERIESATTRIB), stringattr))
+         /* If a continue has been encountered in the previous iteratation */
+         if(attrtext) DXFree((Pointer) attrtext);
+
+         if(!(attrtext=getNattr(cdfhandle, NC_GLOBAL, k, SERIESATTRIB,
+                     strlen(SERIESATTRIB), stringattr)))
             continue;
 	
 	j = MAXATTRSTR;
-	cp = parseit(stringattr, &j, s);
+	cp = parseit(attrtext, &j, s);
 	if(j <= 0) {
 	    DXSetError(ERROR_DATA_INVALID, "bad attribute for series");
 	    goto error;
@@ -598,7 +602,7 @@ query_var(int cdfhandle, char **varlist, int *starttime, int *endtime,
 	 * vp2 = new series parent node
 	 * vp3 = temp node for finding end of next->next->next chain.
 	 */
-	if (match_vp(vp, NC_GLOBAL, s, stringattr) != NULL)
+	if (match_vp(vp, NC_GLOBAL, s, attrtext) != NULL)
 	    continue;
 
 	/* new series object 
@@ -788,6 +792,12 @@ query_var(int cdfhandle, char **varlist, int *starttime, int *endtime,
 	    vp3->next = vp2;
 	}
 	count++;
+      DXFree((Pointer) attrtext);
+      attrtext=NULL;
+    }
+    if(attrtext) {
+      DXFree((Pointer) attrtext);
+      attrtext=NULL;
     }
 
 
@@ -795,7 +805,7 @@ query_var(int cdfhandle, char **varlist, int *starttime, int *endtime,
      */
     for(i=0; i<nvars; i++) {
 	
-	if(!getattr(cdfhandle, i, FIELDATTRIB, stringattr))
+	if(!getattr(cdfhandle, i, FIELDATTRIB, stringattr, MAXNAME))
 	    continue;
 
 	j = MAXATTRSTR;
@@ -982,6 +992,8 @@ query_var(int cdfhandle, char **varlist, int *starttime, int *endtime,
     return vp;
 
   error:
+    if(attrtext)
+      DXFree((Pointer)attrtext);
     if (found)
 	DXFree((Pointer)found);
     if(vp)
@@ -1188,7 +1200,7 @@ query_field(int cdfhandle, Varinfo vp)
             if(vp->cdfid < 0)
                 return NULL;
         }
-	getattr(vp->cdfid, vp->varid, FIELDATTRIB, stringattr);
+	getattr(vp->cdfid, vp->varid, FIELDATTRIB, stringattr, MAXNAME);
 	    
 	cp = stringattr;
 	i = MAXATTRSTR;
@@ -1398,10 +1410,11 @@ static void vp_print(Varinfo vp)
  *  string (char), and null terminate it.
  */
 static char *
-getattr(int hand, int varid, char *attrname, char *stringattr)
+getattr(int hand, int varid, char *attrname, char *stringattr,int maxlen)
 {
     nc_type datatype;
     int len;
+    char *tmpattr;
 
     if(ncattinq(hand, varid, attrname, &datatype, &len) < 0)
 	return NULL;
@@ -1409,9 +1422,18 @@ getattr(int hand, int varid, char *attrname, char *stringattr)
     if(datatype != NC_CHAR || len <= 0)
 	return NULL;
 
-    ncattget(hand, varid, attrname, stringattr);
-    stringattr[len] = '\0';
+    tmpattr=(char *)DXAllocate(len+1);
+    ncattget(hand, varid, attrname, tmpattr);
+    tmpattr[len] = '\0';
 
+    strncpy(stringattr,tmpattr,maxlen);
+    stringattr[maxlen-1]='\0';
+
+    if(strncmp(stringattr,tmpattr,maxlen))
+      DXWarning("String attribute truncated: `%s' -> `%s'",
+              tmpattr,stringattr);
+
+    DXFree((Pointer) tmpattr);
     return stringattr;
 }
 /*
@@ -1419,12 +1441,16 @@ getattr(int hand, int varid, char *attrname, char *stringattr)
  *  compare the first len characters for a match.  if matched, get the
  *  complete value of the attribute, verify it is a string (char), and 
  *  null terminate it.
+ *  The attribute is returned as a newly allocated string. It is the
+ *  caller's responsibility the deallocate it when it is no longer
+ *  needed.
  */
 static char *
 getNattr(int hand, int varid, int n, char *attrname, int len, char *stringattr)
 {
     nc_type datatype;
     int i, alen;
+    char *attrtext=NULL;
 
     for(i = n; ; i++) {
         if(ncattname(hand, varid, i, stringattr) < 0)
@@ -1446,11 +1472,14 @@ getNattr(int hand, int varid, int n, char *attrname, int len, char *stringattr)
 
     /* does this work?  we are actually using the same buffer for the
      *  input attribute name and for the returned attribute value.
+     ncattget(hand, varid, attrname, stringattr);
      */
-    ncattget(hand, varid, attrname, stringattr);
-    stringattr[alen] = '\0';
+    /* No it does not. Make sure the target string has sufficient length */
+    attrtext=DXAllocate(alen+1);
+    ncattget(hand, varid, attrname, attrtext);
+    attrtext[alen] = '\0';
 
-    return stringattr;
+    return attrtext;
 }
 
 /*
@@ -1486,8 +1515,8 @@ static Error setattr(Arrayinfo ap, Field f, char *compname)
 
     /* see if there is an 'attribute' attribute on this variable
      */
-    if(!getattr(ap->cdfhandle, ap->varid, ATTRATTRIB, ap->stringattr)
-     && !getattr(ap->cdfhandle, ap->varid, OATTRATTRIB, ap->stringattr))
+    if(!getattr(ap->cdfhandle, ap->varid, ATTRATTRIB, ap->stringattr,MAXNAME)
+     && !getattr(ap->cdfhandle, ap->varid, OATTRATTRIB, ap->stringattr,MAXNAME))
         goto done;
 
     
@@ -1674,7 +1703,7 @@ static Object build_series(int hand, Varinfo vp)
 
     /* get the attribute value.
      */
-    if(!getattr(hand, varid, FIELDATTRIB, ap->stringattr))
+    if(!getattr(hand, varid, FIELDATTRIB, ap->stringattr,MAXNAME))
 	return NULL;
     
     cp = ap->stringattr;
@@ -1765,8 +1794,8 @@ static Object build_series(int hand, Varinfo vp)
     /* look for a positions (old points) component.  if the data variable
      *  doesn't have a 'positions' attribute, assume a regularly spaced grid.
      */
-    if(!getattr(hand, varid, GEOMATTRIB, ap->stringattr)
-    && !getattr(hand, varid, OGEOMATTRIB, ap->stringattr)) {
+    if(!getattr(hand, varid, GEOMATTRIB, ap->stringattr,MAXNAME)
+    && !getattr(hand, varid, OGEOMATTRIB, ap->stringattr,MAXNAME)) {
         nterms = 1;
 	indata = build_poscon(ap, I_REGULAR_P, 0);
 	terms[0] = indata;
@@ -1961,8 +1990,8 @@ static Object build_series(int hand, Varinfo vp)
      *  otherwise, it should be the name of another netCDF variable
      *  which contains the connections information.
      */
-    if(!getattr(hand, varid, TOPOATTRIB, ap->stringattr)
-    && !getattr(hand, varid, OTOPOATTRIB, ap->stringattr)) {
+    if(!getattr(hand, varid, TOPOATTRIB, ap->stringattr,MAXNAME)
+    && !getattr(hand, varid, OTOPOATTRIB, ap->stringattr,MAXNAME)) {
         nterms = 1;
 	indata = build_poscon(ap, I_REGULAR_C, 0);
         eltype = STR(regularname[ap->data_ndims]);
@@ -2142,7 +2171,7 @@ static Object build_series(int hand, Varinfo vp)
     
     /* are there additional components that should be added?
      */
-    if(getattr(hand, varid, COMPATTRIB, ap->stringattr)) {
+    if(getattr(hand, varid, COMPATTRIB, ap->stringattr,MAXNAME)) {
         
 	cp = ap->stringattr;
 	while(1) {
@@ -2323,7 +2352,7 @@ static Error get_seriesvalue(Arrayinfo ap, float **valuelist)
      *  arrray, just return.  else try to read in the variable, allocate
      *  space for the array, and return with valuelist pointing to it.
      */
-    if(!getattr(ap->cdfhandle, ap->varid, SERIESPOSATTRIB, ap->stringattr))
+    if(!getattr(ap->cdfhandle, ap->varid, SERIESPOSATTRIB, ap->stringattr,MAXNAME))
 	return OK;
 
     j = MAXATTRSTR;
@@ -2416,7 +2445,7 @@ static Object build_field(int hand, int varid)
 
     /* get the attribute value.
      */
-    if(getattr(hand, varid, FIELDATTRIB, ap->stringattr)) {
+    if(getattr(hand, varid, FIELDATTRIB, ap->stringattr,MAXNAME)) {
     
 	cp = ap->stringattr;
 	j = MAXATTRSTR;
@@ -2470,8 +2499,8 @@ static Object build_field(int hand, int varid)
     /* look for a positions (old points) component.  if the data variable
      *  doesn't have a 'positions' attribute, assume a regularly spaced grid.
      */
-    if(!getattr(hand, varid, GEOMATTRIB, ap->stringattr)
-    && !getattr(hand, varid, OGEOMATTRIB, ap->stringattr)) {
+    if(!getattr(hand, varid, GEOMATTRIB, ap->stringattr,MAXNAME)
+    && !getattr(hand, varid, OGEOMATTRIB, ap->stringattr,MAXNAME)) {
         i = 1;
         indata = (Array)build_poscon(ap, I_REGULAR_P, 0);
     
@@ -2601,8 +2630,8 @@ static Object build_field(int hand, int varid)
      *  otherwise, it should be the name of another netCDF variable
      *  which contains the connections information.
      */
-    if(!getattr(hand, varid, TOPOATTRIB, ap->stringattr)
-    && !getattr(hand, varid, OTOPOATTRIB, ap->stringattr)) {
+    if(!getattr(hand, varid, TOPOATTRIB, ap->stringattr,MAXNAME)
+    && !getattr(hand, varid, OTOPOATTRIB, ap->stringattr,MAXNAME)) {
         i = 1;
         indata = (Array)build_poscon(ap, I_REGULAR_C, 0);
         eltype = STR(regularname[ap->data_ndims]);
@@ -2710,7 +2739,7 @@ static Object build_field(int hand, int varid)
     
     /* are there additional components that should be added?
      */
-    if(getattr(hand, varid, COMPATTRIB, ap->stringattr)) {
+    if(getattr(hand, varid, COMPATTRIB, ap->stringattr,MAXNAME)) {
         
 	cp = ap->stringattr;
 	while(1) {
