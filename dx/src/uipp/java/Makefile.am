@@ -22,6 +22,7 @@ javasrvdir = $(prefix)/dx/java/server/class
 javasrv_DATA = server.jar 
 EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java exports.awk
 javalibdir = $(prefix)/dx/java/server/lib_@ARCH@
+export CLASSPATH := .:$(CLASSPATH):@DX_CLASSPATH@
 
 javalib_PROGRAMS = @ANYDX@
 EXTRA_PROGRAMS = libAnyDX.so AnyDX.dll
@@ -29,25 +30,27 @@ libAnyDX_so_SOURCES =
 AnyDX_dll_SOURCES =
 SUBDIRS = server dx
 
+
 ##
 ## Using -d simplifies things because all .class files
 ## are automatically copied into a directory structure
 ## which allows for quick jarring
 ##
 javainfo:
-	echo JBASE $(JBASE) >javainfo
-	echo WRL_CLASSPATH @WRL_CLASSPATH@ >>javainfo 
+	echo JINC @JINC@ >javainfo
+	echo DX_CLASSPATH @DX_CLASSPATH@ >>javainfo
+	echo CLASSPATH $(CLASSPATH) >>javainfo
 	
 dx.jar: javainfo
 	mkdir -p classes
-	(CLASSPATH=aaaaa ; unset CLASSPATH ; javac -d classes makeall.java $(DX_SRCS) )
-	-(CLASSPATH=@WRL_CLASSPATH@ ; javac -d classes makewrl.java )
-	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd classes; @JDKBIN@jar cf ../dx.jar $(DX_OBJS) dx)
+	-($(JAVAC) -d classes makewrl.java )
+	($(JAVAC) -d classes makeall.java $(DX_SRCS) )
+	(cd classes; $(JAR) cf ../dx.jar $(DX_OBJS) dx)
 
 server.jar:
 	mkdir -p dxsc
-	(CLASSPATH=aaaaa ; unset CLASSPATH ; javac -d dxsc DXServer.java)
-	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd dxsc; @JDKBIN@jar cf ../server.jar DXServer.class server dx )
+	($(JAVAC) -d dxsc DXServer.java)
+	(cd dxsc; $(JAR) cf ../server.jar DXServer.class server dx ) 
 
 SHRD_FLAGS = -shared -o libAnyDX.so
 
@@ -70,29 +73,29 @@ AnyDX.dll: DXLink.o
 	rm -f tmpAnyDX.*
 
 
-## JBASE and JINC set by configure via acinclude.m4
-JBASE = @JBASE@
-JINC = -I$(JBASE)/include -I$(JBASE)/include/@JAVA_ARCH@ -I$(JBASE)/include/java -I$(JBASE)/include/java/@JAVA_ARCH@
+## JINC set by configure via acinclude.m4
 
 DXLink.o:  server.jar
-	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd dxsc; @JDKBIN@javah -jni -d ../server server.DXServer server.DXServerThread)
-	(cd server; $(CC) -o ../DXLink.o -I../../../../include -c -D@ARCH@ $(CFLAGS) $(JINC) DXLink.c)
+	(cd dxsc; $(JAVAH) -d ../server server.DXServer server.DXServerThread)
+	(cd server; $(CC) -o ../DXLink.o -I../../../../include -c -D@ARCH@ $(CFLAGS) @JINC@ DXLink.c)
 
+##SAMPLE_OBJS = AS400VSMonth.class AutoInsurance.class CCNet2.class \
+##	GroceryList.class HomeOwn.class MRI_2.class MappedIso.class \
+##	MutualFund.class ScatterData.class SimplifySurface.class \
+##	Streamline.class Topo.class TwoWells.class ddi.class \
+##	gordon.class hedge.class ibmqw.class mutFun.class npvcall.class \
+##	optval.class tgsheet.class wacc.class
 
-##SAMPLE_OBJS = AS400VSMonth.class AutoInsurance.class CCNet2.class GroceryList.class HomeOwn.class MRI_2.class MappedIso.class MutualFund.class ScatterData.class SimplifySurface.class Streamline.class Topo.class TwoWells.class ddi.class gordon.class hedge.class ibmqw.class mutFun.class npvcall.class optval.class tgsheet.class wacc.class
-
-##SAMPLE_SRCS = AS400VSMonth.java AutoInsurance.java CCNet2.java GroceryList.java HomeOwn.java MRI_2.java MappedIso.java MutualFund.java ScatterData.java SimplifySurface.java Streamline.java Topo.java TwoWells.java ddi.java gordon.java hedge.java ibmqw.java mutFun.java npvcall.java optval.java tgsheet.java wacc.java
+##SAMPLE_SRCS = AS400VSMonth.java AutoInsurance.java CCNet2.java \
+##	GroceryList.java HomeOwn.java MRI_2.java MappedIso.java \
+##	MutualFund.java ScatterData.java SimplifySurface.java Streamline.java \
+##	Topo.java TwoWells.java ddi.java gordon.java hedge.java ibmqw.java \
+##	mutFun.java npvcall.java optval.java tgsheet.java wacc.java
 
 DX_OBJS = imageWindow.class CaptionLabels.class Status.class
 DX_SRCS = imageWindow.java CaptionLabels.java Status.java
 
-clean:
+CLEANFILES = dx.jar server.jar javainfo
+
+distclean-local:
 	rm -rf classes dxsc
-	rm -f *.class
-	rm -f dx.jar
-	rm -f server.jar
-	rm -f libAnyDX.so
-	rm -f DXLink.o
-	rm -f javainfo
-
-

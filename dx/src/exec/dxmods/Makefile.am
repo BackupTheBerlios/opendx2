@@ -8,6 +8,7 @@ SUFFIXES = .c .y .c .s .h .o
 
 BUILT_SOURCES = user.c _compparse.h y.tab.c usercm.c
 
+DISTCLEANFILES = y.tab.h _compparse.c _compparse.h dx.mdf dxcm.mdf user.c usercm.c tmp.c
 
 dxmdf_DATA = dx.mdf
 

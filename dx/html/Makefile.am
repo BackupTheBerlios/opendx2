@@ -9,15 +9,28 @@ html_DATA = README.htm README_SMP.htm README_alphax.htm \
 
 EXTRA_DIST = pages.tar images.tar $(html_DATA)
 
-install-data-local:
-	sh -c 'f=`pwd` ; \
-	       if test ! -d $(htmldir) ; then \
-		   mkdir $(htmldir) ; \
-	       fi ; \
-	       tar xf $$f/pages.tar ; \
-	       tar xf $$f/images.tar ; \
-	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.htm ; \
-	       ln -s $(htmldir)/allguide.htm $(htmldir)/index.html ; \
-	       cd $$f ; \
-	      '
+if WITH_INSTALLHTML
 
+install-data-local:
+	sh -c 'f=`pwd` ; 					\
+	       if test ! -d $(htmldir) ; then 			\
+		   mkdir $(htmldir) ; 				\
+	       fi ; 						\
+	       if test -d $(htmldir) ; then 			\
+	           cd $(htmldir) ; 				\
+	       fi ;						\
+	       if test ! -d pages ; then 			\
+	           tar xf $$f/pages.tar ; 			\
+	       fi ; 						\
+	       if test ! -d images ; then 			\
+	           tar xf $$f/images.tar ; 			\
+	       fi ; 						\
+	       if test ! -e $(htmldir)/index.htm ; then 	\
+	           ln -s $(htmldir)/allguide.htm $(htmldir)/index.htm ; \
+	       fi ; 						\
+	       if test ! -e $(htmldir)/index.html ; then 	\
+	           ln -s $(htmldir)/allguide.htm $(htmldir)/index.html ; \
+	       fi ; 						\
+	       cd $$f ; 						\
+	      '
+endif # WITH_INSTALLHTML

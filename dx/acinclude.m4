@@ -343,27 +343,6 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
     AC_MSG_RESULT(done)
 ])
 
-AC_DEFUN(DX_JAVA_ARCHITECTURE,
-[
-    AC_MSG_CHECKING(java architecture type)
-    if test "$JAVA_ARCH" = "" ; then
-	lc=`uname -s | tr "A-Z" "a-z"`
-        case $lc in
-	    linux)   JAVA_ARCH=genunix ;;
-	    irix*)   JAVA_ARCH=irix ;;
-	    cygwin*)   JAVA_ARCH=win32 ;;
-	    aix)     JAVA_ARCH=aix ;;
-	    alpha)   JAVA_ARCH=alpha ;;
-	    osf1)   JAVA_ARCH=alpha ;;
-	    hp-ux)   JAVA_ARCH=hp-ux ;;
-	    sunos)   JAVA_ARCH=solaris ;;
-	    *)       JAVA_ARCH=$lc ;;
-	esac
-    fi
-    AC_MSG_RESULT($JAVA_ARCH)
-    AC_SUBST(JAVA_ARCH)
-])
-
 AC_DEFUN(DX_STREAM_O2,
 [
     AC_MSG_CHECKING(whether -O2 interferes with fstream in C++)
@@ -470,9 +449,9 @@ xm_includes=],
   # Don't add to $LIBS permanently.
   ac_save_LIBS="$LIBS"
   LIBS="-l$xm_direct_test_library $LIBS"
-AC_TRY_LINK(, [${xm_direct_test_function}()],
+AC_TRY_LINK( , [${xm_direct_test_function}()],
 [LIBS="$ac_save_LIBS"
-# We can link X programs with no special library path.
+# We can link Motif programs with no special library path.
 xm_libraries=],
 [LIBS="$ac_save_LIBS"
 # First see if replacing the include by lib works.
@@ -638,91 +617,205 @@ if test $ac_cv_type_$1 = no; then
 fi
 ])
 
+dnl Java Stuff ----------------------------------------------------------
+dnl Adding the functionality to locate the appropriate Java Architecture
+dnl information to compile DX. These functions have been proposed on the
+dnl autoconf mailing list.
+dnl
+dnl For compiling the javadx stuff, we need to have available, the compiler,
+dnl the jar packager, the javah generator, the appropriate classes, 
+dnl and the jni headers.
 
-dnl DX_FIND_JDK
-AC_DEFUN(DX_FIND_JDK,
-[
-dx_sedtest=`echo sed should strip everything in this line | sed -e "s&sed should .*&&"`
-AC_MSG_CHECKING([sed syntax OK if the rest of this is blank])
-AC_MSG_RESULT([$dx_sedtest])
 
-cat > jdkpath.java <<EOF
+dnl DX_PROG_JAVAC([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
+dnl
+AC_DEFUN(DX_PROG_JAVAC,[
+AC_CHECKING([for java compiler])
+if test -n "$JAVAC"; then
+  AC_MSG_WARN(JAVAC was preset)
+  AC_CHECK_PROG(JAVAC, $JAVAC)
+else
+  AC_CHECK_PROGS(JAVAC, javac "gcj -C" guavac jikes)
+fi
+if test -z "$JAVAC"; then
+  AC_MSG_WARN(No java compiler found - skipping javadx)
+  ifelse([$2], , , [$2])
+else
+  DX_PROG_JAVAC_WORKS($JAVAC, $1, $2) 
+fi 
+])
 
-//   used to find jdk path via -verbose option to javac
-public class jdkpath extends Object {
- public static void main() {
-   }
+dnl DX_PROG_JAVAC_WORKS(JAVA-COMPILER, [ACTION-IF-TRUE [, ACTION-IF-FALSE]])
+dnl
+AC_DEFUN(DX_PROG_JAVAC_WORKS,[
+AC_MSG_CHECKING([if $1 works...])
+dx_test_java_classname="dx_conf"
+dx_test_java_prog=$dx_test_java_classname".java"
+dx_test_java_class=$dx_test_java_classname".class"
+cat << EOF_JAVA > $dx_test_java_prog
+
+public class $dx_test_java_classname extends Object {
+  public static void main() {
+    }
 }
 
+EOF_JAVA
 
-EOF
-dnl 
-dnl javac must be in the path for this to work
-dnl 
-JBASE=
-AC_MSG_CHECKING([for JDK install path via javac -verbose ])
-(unset CLASSPATH ; javac -verbose jdkpath.java >jdkpath.out 2>jdkpath.err )
-dnl
-dnl examine "loaded" line for default classes
-dnl output is similar to
-dnl [loaded /usr/jdk_base/lib/classes.zip(java/lang/Object.class) in 738 ms]
-dnl
-dnl trim off leading stuff and stuff trailing after lparen to get classes (classes.zip, rt.jar, whatever)
-dnl
-JDK_CLASSES=`grep loaded jdkpath.err | tr '\134' '\057' | sed -e "s/.loaded //" -e "s&(.*$&&"`
-dnl echo JDK_CLASSES $JDK_CLASSES
-dnl
-dnl get anything that isn't between "/"'s
-dnl 
-dx_jdk_trailing=`echo $JDK_CLASSES | sed -e "s&.*/&&"`
-dnl echo dx_jdk_trailing $dx_jdk_trailing
-dnl
-dnl now trim off /lib/whatever to get to the base of the jdk installation
-dnl 
-JBASE=`echo $JDK_CLASSES | sed -e "s&/lib/$dx_jdk_trailing&&"`
-AC_MSG_RESULT(${JBASE})
-JAVABRANCH=
-if test ! -z "$JBASE" ; then 
-	JAVABRANCH=java 
+if AC_TRY_COMMAND($1 $dx_test_java_prog) >/dev/null 2>&1; then
+  AC_MSG_RESULT(yes)
+  ifelse([$2], , , [$2])
 else
-	echo "java explorer portion of compile has been disabled due to unexpected behavior of javac.  is it really kaffe? try setting KAFFE_CLASSPATH"
+ AC_MSG_RESULT(no)
+ ifelse([$3], , , [$3])
+ AC_MSG_WARN([$1 failed to compile (see config.log, check the CLASSPATH?)])
 fi
-JDKBIN=
-AC_MSG_CHECKING([for jar not in path])
-dnl
-cat > findjar << XYZZY
-#! /bin/sh
-IFS=":"
-for i in \$PATH; do
-    j="\`echo \$i | sed 's?/\$??'\`"
-    t=\$j/jar
-    if test -x \$t ; then
-	echo \$t
-	exit 0
-    fi
-done
-exit 1
-XYZZY
-chmod a+x findjar
-dnl which output should not have a space if jar is found (syntax varies from "no jar in")
-dnl
-if test -z "`./findjar | grep -v ' '`" ; then
-	JDKBIN=$JBASE/bin/
-	AC_MSG_RESULT(using ${JDKBIN})
-else
-	AC_MSG_RESULT(jar found using path)
-
-fi
-rm -f jdkpath.*
-rm findjar
-dnl
-dnl determine the existence of netscape/cosmo for building WRLApplication and dependent samples
-dnl   don't know how to do this yet, so just use default.  non-default installations must edit the line below:
-WRL_CLASSPATH=$JDK_CLASSES:/usr/lib/netscape/java/classes/npcosmop211.jar:./:/usr/lib/netscape/java/classes/java40.jar
-
-
+rm -f $dx_test_java_prog $dx_test_java_class
 ])
+
+dnl DX_PROG_JAR([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl
+AC_DEFUN(DX_PROG_JAR,[
+AC_CHECKING(for jar)
+if test -n "$JAR"; then
+  AC_MSG_WARN(JAR was preset)
+  AC_CHECK_PROG(JAR, $JAR)
+else
+  AC_CHECK_PROGS(JAR, jar)
+fi
+if test -z "$JAR"; then
+  AC_MSG_WARN([jar class packager not found in \$PATH])
+  ifelse([$2], , , [$2])
+else
+  ifelse([$1], , , [$1])
+fi
+])
+
+dnl DX_PROG_JAVAH([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
+dnl
+AC_DEFUN(DX_PROG_JAVAH,[
+AC_CHECKING(for javah)
+if test -n "$JAVAH"; then
+  AC_MSG_WARN(JAVAH was preset)
+  AC_CHECK_PROG(JAVAH, $JAVAH)
+else
+  AC_CHECK_PROGS(JAVAH, javah gcjh)
+fi
+if test -z "$JAVAH"; then
+  AC_MSG_WARN([no acceptable jni header generator found in \$PATH])
+  ifelse([$2], , , [$2])
+else
+  ifelse([$1], , , [$1])
+fi
+])
+
+
+dnl DX_PROMPT_FOR_STR(VARIABLE [, QUESTION [, DEFAULT-VALUE]])
+dnl
+AC_DEFUN(DX_PROMPT_FOR_STR, [
+changequote(<<, >>)
+#
+# Figure out which brand of echo we have and define
+# prompt and print shell functions accordingly.
+#
+if [ `echo foo\\\c`@ = "foo@" ]; then
+    prompt()
+    {
+        echo "<<$>>* \\c"
+    }
+elif [ "`echo -n foo`@" = "foo@" ]; then
+    prompt()
+    {
+        echo -n "<<$>>*"
+    }
+else
+    prompt()
+    {
+        echo "<<$>>*"
+    }
+fi
+
+x="" val="$3" desc="$2"
+while [ -z "$x" ]; do
+  prompt "$desc [$val]? "; read x
+  if [ "$x" ]; then
+  # strip leading and trailing white space
+    x=`echo "$x" | sed -e 's/^[ 	]*//' -e 's/[ 	]*$//'`
+  else
+    x=`echo "$val" | sed -e 's/^[ 	]*//' -e 's/[ 	]*$//'`
+  fi
+done
+$1="$x"
+changequote([, ])
+])
+
+dnl DX_FIND_JNIHEADERS(START-PATH,[ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
+dnl
+AC_DEFUN(DX_FIND_JNIHEADERS, [
+AC_CACHE_CHECK([for jniheaders path], [ac_cv_include_jni],
+[dx_path_jni=""
+DX_PROMPT_FOR_STR(dx_path_jni,
+  [path the jni headers search should begin, usually your JAVA ROOT], 
+  $1)
+AC_MSG_CHECKING(for jni include directories...)
+dx_jnipath=`find $dx_path_jni -name "jni.h" 2>/dev/null`
+dx_jniinc=`echo $dx_jnipath | sed -e "s&/jni.h.*&&"`
+dx_jnimdpath=`find $dx_jniinc -name "jni_md.h" 2>/dev/null`
+dx_jnimdinc=`echo $dx_jnimdpath | sed -e "s&/jni_md.h.*&&"`
+if test -z "$dx_jniinc" || test -z "$dx_jnimdinc" ; then
+  AC_MSG_RESULT(no)
+  ifelse([$3], , , [$3])
+else
+  JINC="-I$dx_jniinc -I$dx_jnimdinc"
+  ac_cv_include_jni=$JINC
+  ifelse([$2], , , [$2])
+fi
+])
+if test -z "$JINC"; then
+  JINC="$ac_cv_include_jni"
+fi
+])
+
+
+dnl DX_FIND_COSMO([, ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
+dnl
+AC_DEFUN(DX_FIND_COSMO, [
+AC_CACHE_CHECK([for cosmo jar files], [ac_cv_class_cosmo],
+[ dx_path_cosmo=""
+DX_PROMPT_FOR_STR(dx_path_cosmo,
+  [give the full path to npcosmop211.jar], 
+  [$PWD/npcosmop211.jar])
+
+if test -r $dx_path_cosmo; then
+  AC_MSG_CHECKING(cosmo jar path)
+  ac_cv_class_cosmo=$dx_path_cosmo
+  ifelse([$1], , , [$1])
+else
+  ifelse([$2], , , [$2])
+  AC_MSG_WARN(Not able to find jar files. Parts may not be compiled.)
+fi
+])])
+
+dnl DX_FIND_NETSCAPE([, ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
+dnl
+AC_DEFUN(DX_FIND_NETSCAPE, 
+[AC_CACHE_CHECK([for netscape jar files], [ac_cv_class_netscape],
+[dx_path_netscape=""
+  DX_PROMPT_FOR_STR(dx_path_netscape,
+  [give the full path to java40.jar], 
+  [/usr/lib/netscape/java/classes/java40.jar])
+
+if test -r $dx_path_netscape; then
+  AC_MSG_CHECKING(netscape jar path)
+  ac_cv_class_netscape=$dx_path_netscape
+  ifelse([$1], , , [$1])
+else
+  ifelse([$2], , , [$2])
+  AC_MSG_WARN(Not able to find jar files. Parts may not be compiled.)
+fi
+])])
+
+dnl End of the JavaDX stuff -------------------------------------------------
+
 
 AC_DEFUN(DX_NEEDS_STDCXX,
 [

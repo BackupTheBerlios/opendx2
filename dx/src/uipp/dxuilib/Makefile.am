@@ -4,6 +4,8 @@ INCLUDES =  -I../base -I../../../include -I../dxui -D@ARCH@
 
 noinst_LIBRARIES = libDXUI.a
 
+DISTCLEANFILES = netlex.c netyacc.c
+
 BUILT_SOURCES = \
 	sequence.txt \
 	gifmac.txt \

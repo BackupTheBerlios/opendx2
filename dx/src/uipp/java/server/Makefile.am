@@ -7,13 +7,22 @@ srvrun_DATA = dxserver.paths
 srvoutput_DATA = README.output
 srvbin_SCRIPTS = $(SCRFILES)
 
-SCRFILES = stopserver startserver startserver.bat
+SCRFILES = stopserver startserver startserver.bat dxserver.paths
 
-EXTRA_DIST = CleanUpDaemon.java ConnectThread.java ConnectionEntry.java DXLink.c DXServer.java DXServerThread.java DXThread.java DXThreadCommand.java FileStyle.java FileStyleANY.java FileStyleHTM.java FileStyleHTML.java FileStyleWRAP.java ServerCommand.java ServerThreadCommand.java StatusThread.java StatusThreadCommand.java $(SCRFILES) 
+DISTCLEANFILES = README.output
+
+EXTRA_DIST = CleanUpDaemon.java ConnectThread.java ConnectionEntry.java \
+	DXLink.c DXServer.java DXServerThread.java DXThread.java \
+	DXThreadCommand.java FileStyle.java FileStyleANY.java \
+	FileStyleHTM.java FileStyleHTML.java FileStyleWRAP.java \
+	ServerCommand.java ServerThreadCommand.java \
+	StatusThread.java StatusThreadCommand.java $(SCRFILES) 
 
 
 SUBDIRS = macros
 
 README.output:
-	echo "A directory is placed at the same level as htmlpages" > README.output
-	echo "for default output.  Make this directory writable!" >> README.output
+	echo "A directory is placed at the same level as " > README.output
+	echo "htmlpages for default output.  Make this " >> README.output
+	echo "directory writable!" >> README.output
+
