@@ -1260,7 +1260,8 @@ Widget EditorWindow::createWorkArea(Widget parent)
 
     ASSERT(parent);
 
-    Widget outer_form = XtVaCreateManagedWidget ("workArea0", xmFormWidgetClass, parent, 
+    Widget outer_form = XtVaCreateManagedWidget ("workAreaFrame", xmFormWidgetClass, 
+	    parent, 
 	XmNshadowType, XmSHADOW_OUT,
 	XmNshadowThickness, 1,
     NULL);
