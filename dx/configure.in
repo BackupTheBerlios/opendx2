@@ -53,7 +53,7 @@ AM_INIT_AUTOMAKE(dx, 4.1.1)
 VERSION_STRING="04.1.0001"
 AC_DEFINE(DXD_VERSION_STRING, "04.1.0001")
 AC_DEFINE(DXD_COPYRIGHT_STRING,
-  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.1.0"])
+  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.1.1"])
 AC_DEFINE_UNQUOTED(DXD_VERSION, 4)
 AC_DEFINE_UNQUOTED(DXD_RELEASE, 1)
 AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 1)
@@ -81,6 +81,12 @@ AC_ARG_ENABLE(sfio,
 	      [  --enable-sfio           enable sfio-based stdio support (default is no)],
 	      [with_sfio=$enableval],
 	      [with_sfio='no'])
+
+# Disable support for largefiles
+AC_ARG_WITH(largefiles,
+              [  --without-largefiles    disable support for large (64 bit) file offsets],
+              [with_largefiles=$withval],
+              [with_largefiles='yes'])
 
 # Enable BZLIB (bzip2 library)
 AC_ARG_WITH(bzlib,
@@ -202,10 +208,41 @@ then
   with_cosmojar_path=''
 fi
 
-
 dnl End of command line options configuration
 
 dnl Start DX configuration
+
+#
+# Check for large file support
+#
+LIB_LF=''
+if test "$with_largefiles" = 'yes'
+then
+   AC_MSG_CHECKING(whether large file support needs explicit enabling)
+   result='no'
+   getconf='getconf LFS_CFLAGS'
+   if ($getconf) >/dev/null 2>&1
+   then
+      CPPFLAGS="$CPPFLAGS "`$getconf`
+      result='yes'
+   fi
+   getconf='getconf LFS_LDFLAGS'
+   if ($getconf) >/dev/null 2>&1
+   then
+      LDFLAGS="$LDFLAGS "`$getconf`
+      result='yes'
+   fi
+   getconf='getconf LFS_LIBS'
+   if ($getconf) >/dev/null 2>&1
+   then
+      LIB_LF=`$getconf`
+      LIBS="$LIB_LF $LIBS"
+      result='yes'
+   fi
+   AC_MSG_RESULT($result)
+fi
+AC_SUBST(LIB_LF)
+
 DX_ARCHITECTURE
 DX_ARCH_SPECIFIC
 
