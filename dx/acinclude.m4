@@ -51,7 +51,7 @@ AC_CACHE_VAL(ac_cv_objext,
     for file in conftest.*; do
       case $file in
       *.c ) ;;
-      *) ac_cv_objext=`echo $file | sed -e s/conftest//` ;;
+      *) ac_cv_objext=`echo $file | sed -e s/conftest.//` ;;
       esac
     done
   else
