@@ -1,4 +1,4 @@
-all: sequence.h imagemac.net gifmac.txt dxmac.txt netlex.c netyacc.c
+all: sequence.h imagemac.net gifmac.h dxmac.h netlex.c netyacc.c
 
 EditorWindow.o: sequence.h
 ImageNodeUtils.o: imagemac.h dxmac.h vrmlmac.h gifmac.h
