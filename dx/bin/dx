@@ -1,0 +1,35 @@
+#!/bin/sh 
+#
+# Parse the -dxroot option so that we can handle the case in which
+# a UI installed with one DXROOT can connect to a machine with
+# another DXROOT. 
+#
+x=`echo "$*" | grep  'dxroot'`
+ARGS="$*"
+if [ ! -z "$x" ]; then
+    while [ ! "$*" = "" ]; do
+	case $1 in
+	    -dxroot)   DXROOT=$2; shift ;;
+	    *)      
+	    ;;
+	esac
+	shift
+    done
+fi
+
+if [ -z "$DXROOT" ]; then
+  DXROOT=/usr/local/dx
+fi
+export DXROOT
+
+if [ -f $DXROOT/bin/dx.workerscript ]; then
+  exec $DXROOT/bin/dx.workerscript $ARGS 
+fi 
+
+# if we get here, no workerscript found.  try plain dx, if it isn't already us.
+if [ "$0" != $DXROOT/bin/dx ]; then
+  exec $DXROOT/bin/dx $ARGS 
+fi
+
+echo $DXROOT/bin/dx.workerscript not found
+exit 1
