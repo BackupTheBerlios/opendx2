@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/OpenColormapDialog.h,v 1.1 1999/03/24 15:17:44 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/OpenColormapDialog.h,v 1.2 1999/04/12 21:05:22 gda Exp $
  */
 
 
@@ -55,8 +55,8 @@ class OpenColormapDialog : public FileDialog
     // Constructor:
     //
     OpenColormapDialog( Widget          parent,
-		       ColormapEditor* editor,
-		       int             mode);
+		       ColormapEditor*  editor,
+		       boolean          mode);
 
 
     //
