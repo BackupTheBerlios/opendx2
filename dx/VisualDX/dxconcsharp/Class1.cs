@@ -28,10 +28,11 @@ namespace dxconcsharp
 				WinDXL.DXLink dxl = new DXLink();
 				if(dxl.ConnectToRunningServer(1900)) 
 				{
+					dxl.RegisterErrorHandler();
 					Console.WriteLine("Connected to Server");
 					if(dxl.LoadVisualProgram("C:/Progra~1/OpenDX/samples/programs/AutoColor.net") == DXLink.OK)
 						if(dxl.ExecuteOnce() == DXLink.OK)
-							while(true);
+
 					dxl.CloseConnection();
 
 				}
