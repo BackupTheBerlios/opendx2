@@ -14,12 +14,13 @@ AC_SUBST(JDKBIN)
 AC_SUBST(JAVA_ARCH)
 AC_SUBST(JAVABRANCH)
 AC_SUBST(WRL_CLASSPATH)
-
+AC_SUBST(BUILDBASE)
 
 SHELL=sh
 
 INSTALL_SCRIPT='$(INSTALL)'
 
+BUILDBASE=`pwd`
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
