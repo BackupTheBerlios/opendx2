@@ -10,6 +10,10 @@ noinst_LIBRARIES = libLIBDX.a
 EXTRA_DIST = \
 	class class.awk
 
+noinst_HEADERS = \
+	binSort.h triangles.h internals.h diskio.h zclip.h edf.h render.h
+
+
 BUILT_SOURCES = \
 	arrayClass.c cameraClass.c clippedClass.c fieldClass.c groupClass.c \
 	lightClass.c objectClass.c privateClass.c screenClass.c stringClass.c \
