@@ -1,3 +1,4 @@
+
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -68,6 +69,20 @@ static int GridSize(Array);
 #ifndef FALSE
 #define FALSE 0
 #endif
+
+/*
+ * DEP ARRAY lower-bound thresholds
+ *   DEP_STORAGE_THRESHOLD - When to switch to a DEP ARRAY when writing a field
+ *                           component (< -- SORTED_LIST; >= -- DEP_ARRAY)
+ *   DEP_MEM_THRESHOLD     - When to use a DEP for in-memory 
+ *                           (i.e. InvalidComponentHandle) operations
+ *
+ *   These are different because one should favor storage size, while the
+ *   other should favors fast processing.  
+ */
+#define DEP_STORAGE_THRESHOLD(nItems) ( 0.20*(nItems) )
+#define DEP_MEM_THRESHOLD(nItems)     ( 1024 )
+
 
 #define TRAVERSE(objectMethod, fieldMethod)				\
 {									\
@@ -167,7 +182,6 @@ C_Field_PE(Field field)
     int				nPositions, nPolylines, nEdges, nInvP, nInvPl;
     int				nNewPositions, nNewPolylines;
     int				i, j, k, knt;
-    char			*validPositions,   *validPolylines;
     int				*validPositionsMap, *validPolylinesMap;
     Object			attr;
     char			*reference, *dependence;
@@ -183,8 +197,6 @@ C_Field_PE(Field field)
     if (DXEmptyField(field))
 	return (Object)field;
 
-    validPolylines    = NULL;
-    validPositions      = NULL;
     vplHandle 	        = NULL;
     vpHandle 	        = NULL;
     validPolylinesMap = NULL;
@@ -561,7 +573,6 @@ C_Field_FLE(Field field)
     int				nEdges, nInvP, nInvF;
     int				nNewPositions, nNewFaces;
     int				i, f, nfknt, nlknt, neknt;
-    char			*validPositions,   *validFaces;
     int				*validPositionsMap, *validFacesMap;
     Object			attr;
     char			*reference, *dependence;
@@ -578,8 +589,6 @@ C_Field_FLE(Field field)
     if (DXEmptyField(field))
 	return (Object)field;
 
-    validFaces          = NULL;
-    validPositions      = NULL;
     vfHandle 	        = NULL;
     vpHandle 	        = NULL;
     validFacesMap       = NULL;
@@ -995,7 +1004,6 @@ C_Field_Standard(Field field)
     int				nPositions, nConnections, nInvP, nInvC;
     int				nNewPositions, nNewConnections;
     int				i;
-    char			*validPositions,   *validConnections;
     int				*validPositionsMap, *validConnectionsMap;
     Object			attr;
     char			*reference, *dependence;
@@ -1008,8 +1016,6 @@ C_Field_Standard(Field field)
     if (DXEmptyField(field))
 	return (Object)field;
 
-    validConnections    = NULL;
-    validPositions      = NULL;
     vcHandle 	        = NULL;
     vpHandle 	        = NULL;
     validConnectionsMap = NULL;
@@ -2495,54 +2501,52 @@ DXCreateInvalidComponentHandle(Object o, Array iarray, char *name)
 	    }
 	    else
 	    {
-		handle->type = IC_SORTED_LIST;
+		/*  Accessing the elements of a large IC_SORTED_LIST via   */
+		/*    binary search is hideously slow.  Use a HASH or DEP  */
+		/*    internally.                                          */
+		if (handle->nItems != -1 && 
+		    nInv >= DEP_MEM_THRESHOLD(handle->nItems))
+		{
+		    ubyte *data = (ubyte *)DXAllocate(
+			                     handle->nItems*sizeof(ubyte));
+		    if (!data)
+			goto error;
+		    memset(data, IC_ELEMENT_UNMARKED, handle->nItems);
 
-		handle->data         = DXGetArrayData(iarray);
-		handle->nMarkedItems = nInv;
-		handle->array        = (Array)DXReference((Object)iarray);
-
-		iPtr = (int *)handle->data;
-		for (i = 0; i < (nInv-1); i++, iPtr++)
-		    if (iPtr[0] >= iPtr[1])
+		    handle->nMarkedItems = 0;
+		    iPtr = (int *)DXGetArrayData(iarray);
+		    for (i = 0; i < nInv; i++, iPtr++) 
 		    {
-			int i, j, *iPtr, *jPtr;
-			Pointer tmp;
-
-			tmp = DXAllocate(nInv*sizeof(int));
-			if (! tmp)
-			    goto error;
-		    
-			memcpy(tmp, handle->data, nInv*sizeof(int));
-
-			refsort((int *)tmp, nInv);
-
-			/*
-			 * Are there any dups?  If so, get rid of them.
-			 */
-			if ((j = nInv) > 1)
-			{
-			    iPtr = jPtr = (int *)tmp;
-			    for (i = 0; i < (nInv-1); i++, jPtr++)
-				if (jPtr[1] != jPtr[0])
-				{
-				    if (iPtr != jPtr)
-					*iPtr = *jPtr;
-				    iPtr ++;
-				}
-				else
-				{
-				    j --;
-				}
-			}
-
-			handle->data   = tmp;
-			handle->nMarkedItems = j;
-
-			DXDelete((Object)handle->array);
-			handle->array = NULL;
-
-			break;
+			if (data[*iPtr] == IC_ELEMENT_UNMARKED)
+			    handle->nMarkedItems++;
+			data[*iPtr] = IC_ELEMENT_MARKED;
 		    }
+
+		    handle->type         = IC_DEP_ARRAY;
+		    handle->data         = data;
+		}
+		else 
+		{
+		    long      li;
+		    HashTable hash = DXCreateHash(sizeof(long), NULL, NULL);
+		    if (!hash)
+			goto error;
+
+		    iPtr = (int *)DXGetArrayData(iarray);
+		    for (i = 0; i < nInv; i++, iPtr++) {
+			li = *iPtr;
+			if (! DXInsertHashElement(hash, (Element)&li))
+			    goto error;
+		    }
+
+		    handle->nMarkedItems = 0;
+		    DXInitGetNextHashElement(hash);
+		    while (DXGetNextHashElement(hash))
+		        handle->nMarkedItems++;
+
+		    handle->type         = IC_HASH;
+		    handle->hash         = hash;
+		}
 	    }
 	}
 	else
@@ -2689,7 +2693,8 @@ DXGetInvalidComponentArray(InvalidComponentHandle handle)
 	 * If there are enough actually invalid, output a dep array.
 	 * Otherwise, create a sort list.  
 	 */
-	if (handle->nItems != -1 && nInvalid > 0.20*handle->nItems)
+	if (handle->nItems != -1 && 
+	    nInvalid >= DEP_STORAGE_THRESHOLD(handle->nItems))
 	{
 	    type = DEP_ARRAY;
 
@@ -2767,7 +2772,8 @@ DXGetInvalidComponentArray(InvalidComponentHandle handle)
 	 */
 	int *dPtr;
 
-	if (handle->nItems != -1 && nInvalid > 0.20*handle->nItems)
+	if (handle->nItems != -1 && 
+	    nInvalid >= DEP_STORAGE_THRESHOLD(handle->nItems))
 	{
 	    ubyte *data;
 	    long *sPtr;
@@ -3111,7 +3117,7 @@ SetMark(InvalidComponentHandle handle, int index)
      * convert to a dependent array. IF we know the overall size.
      */
     if ((handle->type != IC_DEP_ARRAY) && (handle->nItems != -1) &&
-		(handle->nMarkedItems >= 0.20*handle->nItems))
+	(handle->nMarkedItems >= DEP_MEM_THRESHOLD(handle->nItems)))
     {
 	ubyte *depArray = (ubyte *)DXAllocate(handle->nItems*sizeof(ubyte));
 	if (! depArray)
@@ -3284,7 +3290,7 @@ RemoveMark(InvalidComponentHandle handle, int index)
      * convert to a dependent array.
      */
     if ((handle->type != IC_DEP_ARRAY) && (handle->nItems != -1) &&
-		(handle->nMarkedItems >= 0.20*handle->nItems))
+	(handle->nMarkedItems >= DEP_MEM_THRESHOLD(handle->nItems)))
     {
 	ubyte *depArray = (ubyte *)DXAllocate(handle->nItems*sizeof(ubyte));
 	if (! depArray)
