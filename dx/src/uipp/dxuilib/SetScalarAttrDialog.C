@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -21,7 +23,6 @@
 #include "../widgets/Number.h"
 #include "../widgets/Stepper.h"
 
-#include "defines.h"
 #include "SetAttrDialog.h"
 #include "SetScalarAttrDialog.h"
 #include "ScalarInstance.h"

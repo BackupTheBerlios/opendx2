@@ -902,12 +902,12 @@ extern Object _dxfAxes2D(Pointer p)
 
   /* need to check that they didn't give tick locations with log */
   if ((xlocs)&&(islogx)) {
-     DXSetError (ERROR_INVALID_DATA,
+     DXSetError (ERROR_DATA_INVALID,
                  "x tick locations can not be specified with log x axis");
      goto error;
   }
   if ((ylocs)&&(islogy)) {
-     DXSetError (ERROR_INVALID_DATA,
+     DXSetError (ERROR_DATA_INVALID,
                  "y tick locations can not be specified with log y axis");
      goto error;
   }
@@ -1135,18 +1135,18 @@ extern Object _dxfAxes2D(Pointer p)
                               &type,NULL, NULL,NULL))
            goto error;
          if (numlabels != nx) {
-           DXSetError(ERROR_INVALID_DATA,
+           DXSetError(ERROR_DATA_INVALID,
                       "number of xlabels must match number of xlocations");
            goto error;
          }
          if (type != TYPE_STRING) {
-           DXSetError(ERROR_INVALID_DATA,"xlabels must be a string list");
+           DXSetError(ERROR_DATA_INVALID,"xlabels must be a string list");
            goto error;
          }
          xlabptr = (char **)DXAllocate(nx*sizeof(char *));
          for (i = 0; i< nx; i++) {
              if (!DXExtractNthString((Object)xlabels, i, &tmpstring)) {
-                DXSetError(ERROR_INVALID_DATA,"invalid xlabels");
+                DXSetError(ERROR_DATA_INVALID,"invalid xlabels");
                 goto error;
              }
              xlabptr[i] = tmpstring;
@@ -1164,18 +1164,18 @@ extern Object _dxfAxes2D(Pointer p)
                               &type,NULL, NULL,NULL))
            goto error;
          if (numlabels != ny) {
-           DXSetError(ERROR_INVALID_DATA,
+           DXSetError(ERROR_DATA_INVALID,
                       "number of ylabels must match number of ylocations");
            goto error;
          }
          if (type != TYPE_STRING) {
-           DXSetError(ERROR_INVALID_DATA,"ylabels must be a string list");
+           DXSetError(ERROR_DATA_INVALID,"ylabels must be a string list");
            goto error;
          }
          ylabptr = (char **)DXAllocate(ny*sizeof(char *));
          for (i = 0; i< ny; i++) {
              if (!DXExtractNthString((Object)ylabels, i, &tmpstring)) {
-                DXSetError(ERROR_INVALID_DATA,"invalid ylabels");
+                DXSetError(ERROR_DATA_INVALID,"invalid ylabels");
                 goto error;
              }
              ylabptr[i] = tmpstring;
@@ -1621,7 +1621,7 @@ extern Error _dxfSet2DAxesCharacteristic(Pointer p, char *characteristic,
     st->ylabels = (Array)value;
   }
   else {
-     DXSetError(ERROR_INVALID_DATA,"unknown option %s",characteristic);
+     DXSetError(ERROR_DATA_INVALID,"unknown option %s",characteristic);
      return ERROR;
   }
   return OK;

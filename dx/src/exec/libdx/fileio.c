@@ -8,26 +8,17 @@
 
 #include <dxconfig.h>
 
-
-
 #include <string.h>
 #include <dx/dx.h>
 
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#elif defined(HAVE_SYS_SOCKET_H)
-#include <sys/socket.h>
-#endif
-
 #include "diskio.h"
 
-
-#ifdef	DXD_WIN
+#if defined(HAVE_ERRNO_H)
 #include <errno.h>
+#endif
+
+#if defined(HAVE_IO_H)
 #include <io.h>
-#include "dx/arch.h"
 #endif
 
 #if DXD_HAS_LIBIOP
@@ -213,7 +204,7 @@ static Error movie_init()
 
     rc = mov_init(movbuf);
     if (rc) {
-	DXSetError(ERROR_INVALID_DATA, "movie library: %s", mov_errmsg(rc));
+	DXSetError(ERROR_DATA_INVALID, "movie library: %s", mov_errmsg(rc));
 	return ERROR;
     }
 #endif
@@ -239,13 +230,13 @@ Error _dxffile_open(char *name, int rw)
 	if (rc < 0) {
 	    /* if read only, don't create */
 	    if (rw == 0) {
-		DXSetError(ERROR_INVALID_DATA, "can't open file '%s'", name);
+		DXSetError(ERROR_DATA_INVALID, "can't open file '%s'", name);
 		return ERROR;
 	    }
 	    /* must be write or read/write, go ahead and create */
 	    rc = pfs_create(name, 0);
 	    if (rc < 0) {
-		DXSetError(ERROR_INVALID_DATA, pfs_errmsg(rc));
+		DXSetError(ERROR_DATA_INVALID, pfs_errmsg(rc));
 		return ERROR;
 	    }
 	}
@@ -258,7 +249,7 @@ Error _dxffile_open(char *name, int rw)
       case 0:	/* read only */
 	fd = open(name, O_RDONLY);
 	if (fd < 0) {
-	    DXSetError(ERROR_INVALID_DATA, "can't open file '%s'", name);
+	    DXSetError(ERROR_DATA_INVALID, "can't open file '%s'", name);
 	    return ERROR;
 	}
 	break;
@@ -268,7 +259,7 @@ Error _dxffile_open(char *name, int rw)
 	if (fd < 0) {
 	    fd = open(name, O_WRONLY | O_CREAT);
 	    if (fd < 0) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			 "can't open/create file '%s'", name);
 		return ERROR;
 	    }
@@ -282,7 +273,7 @@ Error _dxffile_open(char *name, int rw)
 	    break;
 
     if (i == NSLOTS) {
-	DXSetError(ERROR_INVALID_DATA, "too many datasets open");
+	DXSetError(ERROR_DATA_INVALID, "too many datasets open");
 	return ERROR;
     }
 
@@ -310,7 +301,7 @@ Error _dxfsock_open(char *name, int fd)
 	    break;
 
     if (i == NSLOTS) {
-	DXSetError(ERROR_INVALID_DATA, "too many datasets open");
+	DXSetError(ERROR_DATA_INVALID, "too many datasets open");
 	return ERROR;
     }
 
@@ -345,7 +336,7 @@ Error _dxffile_add(char *name, uint nblocks)
     if (pfsname(name)) {
 	rc = pfs_resize(name, nblocks);
 	if (rc < 0) {
-	    DXSetError(ERROR_INVALID_DATA, pfs_errmsg(rc));
+	    DXSetError(ERROR_DATA_INVALID, pfs_errmsg(rc));
 	    pfs_delete(name);
 	    return ERROR;
 	}
@@ -393,7 +384,7 @@ Error _dxffile_read(char *name, int offset, int count, char *addr, int bytes)
     if (pfsname(name)) {
 	/* check alignment of addr */
 	if (LEFTOVER_BYTES(addr, ONEK)) {
-	    DXSetError(ERROR_INVALID_DATA, "buffer must be 1K alligned");
+	    DXSetError(ERROR_DATA_INVALID, "buffer must be 1K alligned");
 	    return ERROR;
 	}
 	/* check for partial blocks */
@@ -405,7 +396,7 @@ Error _dxffile_read(char *name, int offset, int count, char *addr, int bytes)
 	    rc = pfs_read(name, (void *)addr, (uint)offset, (uint)count);
 
 	if (rc < 0) {
-	    DXSetError(ERROR_INVALID_DATA, pfs_errmsg(rc));
+	    DXSetError(ERROR_DATA_INVALID, pfs_errmsg(rc));
 	    return ERROR;
 	}
 	    
@@ -442,7 +433,7 @@ Error _dxffile_read(char *name, int offset, int count, char *addr, int bytes)
     while (left > 0) {
 	cnt = left > maxio ? maxio : left;
 	if ((rc = read(fd, addr, cnt)) <= 0) {
-	    DXSetError(ERROR_INVALID_DATA, "can't read dataset '%s'", name);
+	    DXSetError(ERROR_DATA_INVALID, "can't read dataset '%s'", name);
 	    return ERROR;
 	}
 	left -= rc;
@@ -489,7 +480,7 @@ Error _dxffile_write(char *name, int offset, int count, char *addr, int bytes)
 	        rc = pfs_write(name, (void *)align, (uint)offset, (uint)count);
 	    DXFree((Pointer)base);
 	    if (rc < 0) {
-	        DXSetError(ERROR_INVALID_DATA, pfs_errmsg(rc));
+	        DXSetError(ERROR_DATA_INVALID, pfs_errmsg(rc));
 	        return ERROR;
 	    }
 	    return OK;
@@ -502,7 +493,7 @@ Error _dxffile_write(char *name, int offset, int count, char *addr, int bytes)
 	    rc = pfs_write(name, (void *)addr, (uint)offset, (uint)count);
 	
 	if (rc < 0) {
-	    DXSetError(ERROR_INVALID_DATA, pfs_errmsg(rc));
+	    DXSetError(ERROR_DATA_INVALID, pfs_errmsg(rc));
 	    return ERROR;
 	}
 	

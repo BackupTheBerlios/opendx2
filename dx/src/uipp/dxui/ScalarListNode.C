@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,8 +16,6 @@
 #include <stdio.h>
 #include <string.h>
  
-#include "UIConfig.h"
-#include "defines.h"
 #include "Strings.h"
 #include "ScalarListNode.h"
 #include "ListIterator.h"

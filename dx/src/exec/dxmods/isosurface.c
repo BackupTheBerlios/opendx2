@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/isosurface.c,v 1.3 1999/05/10 15:45:27 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/isosurface.c,v 1.4 2000/05/16 18:48:00 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -175,7 +175,7 @@ m_Isosurface ( Object *in,  Object *out )
                ( DXGetGroupClass ( (Group)I_gradient )
                    != CLASS_COMPOSITEFIELD ) ) )
             DXErrorGoto2
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#10191", /* %s must be a field */ "'gradient'" );
 
         if ( !DXMapCheck
@@ -192,7 +192,7 @@ m_Isosurface ( Object *in,  Object *out )
              ||
              ( grad_rank != 1 ) || ( grad_shape[0] != 3 ) )
             DXErrorGoto3
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#10230", /* %s must be a %d-vector */
                   "'gradient' parameter data", 3 );
 

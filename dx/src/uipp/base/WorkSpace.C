@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 #include <Xm/Xm.h>
 #include <Xm/ScrolledW.h>
@@ -17,7 +19,6 @@
 #else
 #include "XmDX.h"
 #endif
-#include "defines.h"
 #include "WorkSpace.h" 
 #include "WorkSpaceInfo.h" 
 #include "Application.h" 

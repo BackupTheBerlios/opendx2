@@ -230,7 +230,7 @@ m_Include(Object *in, Object *out)
      * input has to have a data component.
      */
     if (!argblk.justcull && !simple_array && !DXExists(in[0], "data")) {
-	DXSetError(ERROR_INVALID_DATA, "#10240", "data");
+	DXSetError(ERROR_DATA_INVALID, "#10240", "data");
 	goto error;
     }
     
@@ -422,7 +422,7 @@ Field_Include(Field f, int justcull, int shape, float *min, float *max,
 	else if (attr && !strcmp(attr, "polylines"))
 	    doconnections++;
 	else
-	    DXErrorReturn(ERROR_INVALID_DATA, 
+	    DXErrorReturn(ERROR_DATA_INVALID, 
 		     "data must be dependent on either positions or connections");
 
 	/* ...and so does this. */

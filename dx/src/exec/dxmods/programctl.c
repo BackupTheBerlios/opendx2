@@ -246,7 +246,7 @@ Error ManagePanels(Object *in, char *paneltype)
 	    {
 	      if (!(rank == 0)||((rank == 1)&&(shape[0]==1)))
 		{
-		  DXSetError(ERROR_INVALID_DATA,
+		  DXSetError(ERROR_DATA_INVALID,
 			     "open must be an integer list or string list");
 		  goto error;
 		}
@@ -254,7 +254,7 @@ Error ManagePanels(Object *in, char *paneltype)
 	    }
 	  else if (type!=TYPE_STRING)
 	    {
-	      DXSetError(ERROR_INVALID_DATA,
+	      DXSetError(ERROR_DATA_INVALID,
 			 "open must be an integer list or string list");
 	      goto error;
 	    }
@@ -263,7 +263,7 @@ Error ManagePanels(Object *in, char *paneltype)
 	}
       else if (!(DXGetObjectClass(in[1])==CLASS_STRING))
 	{
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "open must be an integer list or string list");
 	  goto error;
         }
@@ -305,7 +305,7 @@ Error ManagePanels(Object *in, char *paneltype)
     {
       if ((numflags != 1)&&(numflags != nummaps))
 	{
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "open must be one integer or must be a list which matches name");
 	  goto error; 
 	}

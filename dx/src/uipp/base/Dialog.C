@@ -7,9 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "defines.h"
 #include "Application.h"
 #include "Dialog.h"
 
@@ -80,7 +81,7 @@ void Dialog::post()
 					    "WM_DELETE_WINDOW", False);
 	XmAddWMProtocolCallback(shell, WM_DELETE_WINDOW,
 				    (XtCallbackProc)Dialog_CancelCB,
-				    caddr_t(this));
+				    (void *)(this));
 
 
 	if (this->ok != NULL)

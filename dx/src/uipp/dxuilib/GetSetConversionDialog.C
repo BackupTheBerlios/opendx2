@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -22,7 +24,6 @@
 #include <Xm/List.h>
 #include <Xm/Frame.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "GetSetConversionDialog.h"
 #include "DXApplication.h"
@@ -35,7 +36,7 @@
 #include "Command.h"
 #include "GlobalLocalNode.h"
 #include "Node.h"
-#include "Arc.h"
+#include "Ark.h"
 
 #define HELP            1
 #define FIND_NEXT       2
@@ -820,10 +821,10 @@ int dummy=0;
 
     if (EqualString(node_name, "Get")) {
 	if (node->isOutputConnected(2)) {
-	    List *arcs = (List *)node->getOutputArcs(2);
+	    List *arcs = (List *)node->getOutputArks(2);
 	    ListIterator li(*arcs);
-	    Arc *a;
-	    while (a = (Arc*)li.getNext()) {
+	    Ark *a;
+	    while (a = (Ark*)li.getNext()) {
 		Node *dest = a->getDestinationNode(dummy);
 		const char *dest_name = dest->getNameString();
 		if (EqualString(dest_name, "Set")) {
@@ -835,8 +836,8 @@ int dummy=0;
 	}
     } else if (EqualString(node_name, "Set")) {
 	if (node->isInputConnected(2)) {
-	    List *arcs = (List *)node->getInputArcs(2);
-	    Arc *a = (Arc*)arcs->getElement(1);
+	    List *arcs = (List *)node->getInputArks(2);
+	    Ark *a = (Ark*)arcs->getElement(1);
 	    Node *src = a->getSourceNode(dummy);
 	    const char *src_name = src->getNameString();
 	    if (EqualString(src_name, "Get")) {

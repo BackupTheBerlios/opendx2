@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -17,13 +19,12 @@
 #include <stdio.h>
 #include <X11/Intrinsic.h>
 
-#include "defines.h"
 #include "Base.h"
 #include "PacketHandler.h"
 #include "LinkHandler.h"
 #include "List.h"
 
-#if defined(DXD_WIN)  && defined(ERROR)
+#if defined(intelnt)  && defined(ERROR)
 #undef ERROR
 #endif
 
@@ -183,7 +184,7 @@ class PacketIF : public Base
 	MACRODEF         = 4,
 	FOREGROUND       = 5,
 	BACKGROUND       = 6,
-	ERROR            = 7,
+	PKTERROR         = 7,
 	MESSAGE          = 8,
 	INFORMATION      = 9,
 	LINQUIRY         = 10,

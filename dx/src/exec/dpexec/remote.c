@@ -14,63 +14,84 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+
+#if defined(HAVE_CTYPE_H)
 #include <ctype.h>
+#endif
+
+#if defined(HAVE_ERRNO_H)
 #include <errno.h>
+#endif
+
+#if defined(HAVE_STRING_H)
 #include <string.h>
+#endif
+
+#if defined(HAVE_FCNTL_H)
 #include <fcntl.h>
-#ifdef DXD_WIN
+#endif
+
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
+#endif
+
+#if defined(HAVE_TIME_H)
 #include <time.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_TIMES_H)
 #include <sys/time.h>
 #endif
-#if DXD_HAS_UNIX_SYS_INCLUDES
+
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
+
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
-#if HAVE_SYS_FILIO_H
+#endif
+
+#if defined(HAVE_SYS_FILIO_H)
 #include <sys/filio.h>
 #endif
 
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#define EADDRINUSE      WSAEADDRINUSE
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#else
-#include <sys/socket.h>
+#if defined(HAVE_IO_H)
+#include <io.h>
 #endif
 
-#ifdef DXD_WIN
-#include <io.h>
+#if defined(HAVE_WINIOCTL_H)
 #include <winioctl.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_IOCTL_H)
 #include <sys/ioctl.h>
 #endif
-#ifndef DXD_HAS_WINSOCKETS
+
+#if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
-#if DXD_SOCKET_UNIXDOMAIN_OK
+
+#if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
 #endif
+
+#if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
-#ifndef DXD_HAS_UNIX_SYS_INCLUDES
-#define S_IXUSR S_IEXEC
-#define S_IXGRP S_IEXEC
-#define S_IXOTH S_IEXEC
 #endif
-#ifndef DXD_HAS_WINSOCKETS
+
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
-#ifndef DXD_LACKS_UNIX_UID
+
+#if defined(HAVE_PWD_H)
 #include <pwd.h>
 #endif
 
-#include "pmodflags.h"
-#ifdef	DXD_WIN
-#define	popen   _popen
-#define pclose _pclose
+#if defined(HAVE_SYS_SELECT_H)
+#include <sys/select.h>
 #endif
+
+#include "pmodflags.h"
 
 #include "obmodule.h"
 #include "config.h"
@@ -79,21 +100,12 @@
 #include "distp.h"
 #include "context.h"
 
-#if DXD_NEEDS_SYS_SELECT_H
-#include <sys/select.h>
-#endif
-
 extern Object _dxfExportBin_FP(Object o, int fd);
 extern Object _dxfImportBin_FP(int fd);
 extern int _dxfExRemoteExec(int dconnect, char *host, char *ruser, 
 			    int r_argc, char **r_argv, int outboard);
 extern Error _dxfExRemote(Object *in, Object *out);
 extern void _dxfPrintConnectTimeOut(char *execname, char *hostname);
-
-#if DXD_POPEN_OK && DXD_HAS_LIBIOP
-#define popen popen_host
-#define pclose pclose_host
-#endif
 
 #define MAX_STARTUP_ARGS 100
 
@@ -108,7 +120,8 @@ int
 ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[], 
     char *spath, int *remin, int *remout, int *remerr)
 {
-    char s[BUFSIZ];
+ #if defined(HAVE_FORK) 
+   char s[BUFSIZ];
     char wd[BUFSIZ],script_name[500],cmd[1000];
     char cmdpvs[1000];
     char localhost[BUFSIZ];
@@ -128,7 +141,7 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
     int ret;
     int found;
 
-#if DXD_HAS_GETDTABLESIZE
+#if HAVE_GETDTABLESIZE
     int  width = getdtablesize();
 #else
 #ifdef DXD_HAS_WINSOCKETS
@@ -140,9 +153,6 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
     char *dnum;
     char dstring[256];
 
-#ifdef DXD_WIN   /*   AJ    */
-    goto error_return;
-#endif
     /*
      * Initialize return values (to default negative results).
      */
@@ -161,7 +171,7 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 	he = gethostbyname (host);
 	if (he == NULL)
 	{
-	    herror (host);
+	    /* herror (host); */
 	    return (-1);
 	}
     }
@@ -453,6 +463,7 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
 #endif
 
 error_return:
+#endif
     return (-1);
 }
 
@@ -816,7 +827,7 @@ _dxfExRemote (Object *in, Object *out)
         fd = ob_info->fd;
         DXDelete ((Object) obj);  /* get rid of our extra reference here */
 	if (ob_info->deleted) {
-	    DXSetError (ERROR_INVALID_DATA, OUTERRMSG);
+	    DXSetError (ERROR_DATA_INVALID, OUTERRMSG);
 	    DXSetCacheEntryV(NULL, 0, cachetag, 0, 2, cachelist);
 	    goto cleanup;
 	}
@@ -866,7 +877,7 @@ _dxfExRemote (Object *in, Object *out)
      * Send the data to the remote module and get rid of the packaging.
      */
     if (_dxfExportBin_FP ((Object) g, fd) == ERROR) {
-	DXSetError(ERROR_INVALID_DATA, "Failed to send data to outboard module");
+	DXSetError(ERROR_DATA_INVALID, "Failed to send data to outboard module");
 	goto cleanup;
     }
     ExDebug("*2", "Sending Input Objects to Outboard Module");
@@ -887,7 +898,7 @@ _dxfExRemote (Object *in, Object *out)
             fd_set fdset;
             struct timeval tv;
             int nsel;
-	    DXSetError(ERROR_INVALID_DATA, "Failed to receive data from outboard module");
+	    DXSetError(ERROR_DATA_INVALID, "Failed to receive data from outboard module");
             FD_ZERO(&fdset);
             FD_SET(fd, &fdset);
             tv.tv_sec = 0;
@@ -895,7 +906,7 @@ _dxfExRemote (Object *in, Object *out)
             nsel = select(fd + 1, (SelectPtr) &fdset, NULL, NULL, &tv);
             if(nsel > 0) {
                 if((IOCTL(fd, FIONREAD, (char *)&b) < 0) || b <= 0)  {
-                    DXSetError(ERROR_INVALID_DATA, 
+                    DXSetError(ERROR_DATA_INVALID, 
                                "Connection to outboard module has been broken");
                     if(persistent)
                         DXSetCacheEntryV(NULL, 0, cachetag, 0, 2, cachelist);
@@ -1098,7 +1109,7 @@ _dxf_ExDeleteReallyRemote (char *procgroup, char *name, int instance)
     /* this has to happen on the current host for the process group */
     fd = _dxf_ExGetSocketId(procgroup);
     if (fd < 0) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "can't find connection to host for process group '%s'",
 		   procgroup);
 	return ERROR;

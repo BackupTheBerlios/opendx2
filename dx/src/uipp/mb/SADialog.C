@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "defines.h"
 #include "Strings.h"
 #include "SADialog.h"
 #include "Application.h"

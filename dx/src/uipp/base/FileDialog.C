@@ -7,10 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
 
 #ifdef OS2
 #define INCL_DOS
@@ -26,7 +27,6 @@
 #include <Xm/Protocols.h>
 #include <Xm/AtomMgr.h>
 
-#include "defines.h"
 #include "FileDialog.h"
 #include "Application.h"
 #include "Strings.h"
@@ -100,7 +100,7 @@ void FileDialog::post()
 					    "WM_DELETE_WINDOW", False);
 	XmAddWMProtocolCallback(shell, WM_DELETE_WINDOW,
 				    (XtCallbackProc)Dialog_CancelCB,
-				    caddr_t(this));
+				    (void *)(this));
 
 	XtAddCallback(this->fsb,
 		      XmNokCallback,
@@ -276,6 +276,7 @@ Widget FileDialog::createDialog(Widget parent)
 // and file list boxes, and the 4 buttons, ok, comment, cancel, apply).
 // The four buttons are set the have a width of 120
 //
+
 Widget FileDialog::createFileSelectionBox(Widget parent, const char *name)
 {
     Widget button;
@@ -283,10 +284,12 @@ Widget FileDialog::createFileSelectionBox(Widget parent, const char *name)
 
     Widget fsb = XtVaCreateWidget(name,
                                   xmFileSelectionBoxWidgetClass, parent,
+#if 0
 #ifdef DXD_NON_UNIX_DIR_SEPARATOR
                                   XmNfileSearchProc,        NonUnixSearchProc,
                                   XmNdirSearchProc,         NonUnixDirSearchProc,
                                   XmNqualifySearchDataProc, NonUnixQualifySearchProc,
+#endif
 #endif
                                   NULL);
 
@@ -606,6 +609,8 @@ extern "C" void NonUnixSearchProc(Widget w, XtPointer search_data)
   int         FindCount = 0;
   XmFileSelectionBoxCallbackStruct *cbs =
         (XmFileSelectionBoxCallbackStruct *) search_data;
+
+  malloc(28);
 
   if (!XmStringGetLtoR(cbs->mask, XmFONTLIST_DEFAULT_TAG, &mask))
     return;

@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _DeleteNodeCommand_h
 #define _DeleteNodeCommand_h
 
 
-#include "defines.h"
 #include "NoUndoCommand.h"
 
 

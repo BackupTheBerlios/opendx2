@@ -424,7 +424,7 @@ C_Field_PE(Field field)
 	    {
 		if (! plArray)
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			    "component dependent on nonexistent polylines");
 		    goto error;
 		}
@@ -474,7 +474,7 @@ C_Field_PE(Field field)
 	    {
 		if (! plArray)
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			    "component refers to nonexistent polylines");
 		    goto error;
 		}
@@ -861,7 +861,7 @@ C_Field_FLE(Field field)
 	    {
 		if (! fArray)
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			    "component dependent on nonexistent faces");
 		    goto error;
 		}
@@ -911,7 +911,7 @@ C_Field_FLE(Field field)
 	    {
 		if (! fArray)
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			    "component refers to nonexistent faces");
 		    goto error;
 		}
@@ -1172,7 +1172,7 @@ C_Field_Standard(Field field)
 	    {
 		if (! cArray)
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			    "component dependent on nonexistent connections");
 		    goto error;
 		}
@@ -1222,7 +1222,7 @@ C_Field_Standard(Field field)
 	    {
 		if (! cArray)
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			    "component refers to nonexistent connections");
 		    goto error;
 		}
@@ -1371,7 +1371,7 @@ _dxfReRef(Array oldArray, int *map)
 
     if (type != TYPE_INT || cat != CATEGORY_REAL)
     {
-	DXSetError(ERROR_INVALID_DATA, "invalid data array is not int/real");
+	DXSetError(ERROR_DATA_INVALID, "invalid data array is not int/real");
 	return NULL;
     }
 
@@ -1491,7 +1491,7 @@ IC_Field_PE(Field field)
     eArray = (Array)DXGetComponentValue(field, "edges");
     if (! eArray)
     {    
-	DXSetError(ERROR_INVALID_DATA, "polylines with no edges");
+	DXSetError(ERROR_DATA_INVALID, "polylines with no edges");
 	goto error;
     }
 
@@ -1622,7 +1622,7 @@ IC_Field_FLE(Field field)
     lArray = (Array)DXGetComponentValue(field, "loops");
     if (! lArray)
     {    
-	DXSetError(ERROR_INVALID_DATA, "faces with no loops");
+	DXSetError(ERROR_DATA_INVALID, "faces with no loops");
 	goto error;
     }
 
@@ -1632,7 +1632,7 @@ IC_Field_FLE(Field field)
     eArray = (Array)DXGetComponentValue(field, "edges");
     if (! eArray)
     {    
-	DXSetError(ERROR_INVALID_DATA, "faces with no edges");
+	DXSetError(ERROR_DATA_INVALID, "faces with no edges");
 	goto error;
     }
 
@@ -2062,7 +2062,7 @@ IUP_Field_PE(Field field)
     eArray = (Array)DXGetComponentValue(field, "edges");
     if (! eArray)
     {
-	DXSetError(ERROR_INVALID_DATA, "polylines with no edges component");
+	DXSetError(ERROR_DATA_INVALID, "polylines with no edges component");
 	goto error;
     }
 
@@ -2193,7 +2193,7 @@ IUP_Field_FLE(Field field)
     eArray = (Array)DXGetComponentValue(field, "edges");
     if (! eArray || ! lArray)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"faces with no edges or loops component");
 	goto error;
     }
@@ -2437,7 +2437,7 @@ DXCreateInvalidComponentHandle(Object o, Array iarray, char *name)
 		 cat  != CATEGORY_REAL 			  ||
 		 rank != 0)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 		    "dependent invalid data component must be scalar bytes");
 		goto error;
 	    }
@@ -2464,7 +2464,7 @@ DXCreateInvalidComponentHandle(Object o, Array iarray, char *name)
 		}
 		else
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			    "invalid component array");
 		    goto error;
 		}
@@ -2492,7 +2492,7 @@ DXCreateInvalidComponentHandle(Object o, Array iarray, char *name)
 		cat  != CATEGORY_REAL 			||
 		rank != 0)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 		    "referential invalid data component is wrong type, %s",
 		    "category, or not scalar");
 		goto error;
@@ -2559,7 +2559,7 @@ DXCreateInvalidComponentHandle(Object o, Array iarray, char *name)
 	}
 	else
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		"invalid component has neither dep nor ref attribute");
 	    goto error;
 	}
@@ -3735,7 +3735,7 @@ GridSize(Array grid)
 
 	    if (t != TYPE_INT || c != CATEGORY_REAL || r != 1)
 	    {
-	        DXSetError(ERROR_INVALID_DATA, "connections");
+	        DXSetError(ERROR_DATA_INVALID, "connections");
 		return -1;
 	    }
 
@@ -3787,7 +3787,7 @@ GridSize(Array grid)
 
 	default:
 	{
-	    DXSetError(ERROR_INVALID_DATA, "connections component");
+	    DXSetError(ERROR_DATA_INVALID, "connections component");
 	    return ERROR_OCCURRED;
 	}
     }

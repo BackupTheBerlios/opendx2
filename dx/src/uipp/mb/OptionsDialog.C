@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include <X11/StringDefs.h>
@@ -22,7 +24,6 @@
 #include <Xm/Separator.h>
 #include <Xm/BulletinB.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "OptionsDialog.h"
 #include "MBMainWindow.h"

@@ -262,9 +262,6 @@ dxui_SOURCES =	$(SRCS1) $(SRCS2) $(SRCS3)
 dxui_LDADD = \
 	../dxuilib/libDXUI.a  \
 	../base/libBASE.a  \
-	../widgets/libWIDGETS.a  \
-	-L/usr/X11R6/lib \
-	-L/usr/local/lib \
-	-lm -lXm -lXmu -lXt -lX11 -lXext
+	../widgets/libWIDGETS.a 
 
 

@@ -84,11 +84,8 @@ prompter_SOURCES =  		 	\
 prompter_LDADD = 			\
 	../base/libBASE.a  		\
 	../widgets/libWIDGETS.a  	\
-	../dxl/libDXL.a		  	\
-	-L/usr/X11R6/lib 		\
-	-L/usr/local/lib 		\
-	-L$(DXROOT)/lib_@ARCH@ 		\
-	-lm -lXm -lXmu -lXt -lX11 -lXext
+	../dxl/libDXL.a			\
+	-L$(DXROOT)/lib_@ARCH@ 
 
 EXTRA_DIST = 				\
 	col_insens.bm			\

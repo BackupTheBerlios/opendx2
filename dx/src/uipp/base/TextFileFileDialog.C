@@ -7,12 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
 
-#include "defines.h"
 #include "Strings.h"
 #include "Application.h"
 #include "TextFileFileDialog.h"

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -25,7 +27,6 @@
 #include <Xm/RowColumn.h>
 #include <Xm/ToggleBG.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "lex.h"
 #include "AutoAxesDialog.h"

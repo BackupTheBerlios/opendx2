@@ -7,8 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
+#include "../base/defines.h"
 
 #include <ctype.h>
 

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include <X11/Xlib.h>
@@ -25,7 +27,6 @@
 #include <Xm/ScrolledW.h>
 #include <Xm/BulletinB.h>
 
-#include "defines.h"
 #include "Application.h"
 #include "ColormapNBinsDialog.h"
 #include "ColormapEditor.h"

@@ -7,13 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
-
-#include <UIConfig.h>
 #include <sys/types.h>
 #include <time.h>
 #include <sys/stat.h>
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <string.h> // for strerror
@@ -44,10 +43,9 @@
 #include <X11/cursorfont.h>
 
 
-#include "defines.h"
 #include "../widgets/WorkspaceW.h"
 #include "EditorWindow.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "ButtonInterface.h"
 #include "ColormapNode.h"
 #include "ImageNode.h"
@@ -69,7 +67,7 @@
 #include "Node.h"
 #include "Parameter.h"
 #include "StandIn.h"
-#include "ArcStandIn.h"
+#include "ArkStandIn.h"
 #include "ToggleButtonInterface.h"
 #include "ToolPanelCommand.h"
 #include "PanelAccessManager.h"
@@ -380,7 +378,6 @@ String EditorWindow::DefaultResources[] =
 #define CFG_ATOM "CFG_CONTENTS"
 
 boolean EditorWindow::ClassInitialized = FALSE;
-
 
 EditorWindow::EditorWindow(boolean  isAnchor, Network* network) : 
 			   DXWindow("editorWindow", isAnchor)
@@ -2319,7 +2316,7 @@ void EditorWindow::newNode(Node *n, EditorWorkSpace *where)
 {
     StandIn      *si;
     List         *arcs;
-    Arc          *a;
+    Ark          *a;
     int           icnt, i, j;
     const char   *cp;
 
@@ -2371,15 +2368,15 @@ void EditorWindow::newNode(Node *n, EditorWorkSpace *where)
 	if (si) {
 	    icnt = n->getInputCount();
 	    for (i=1 ; i<=icnt ; i++) {
-		arcs = (List *)n->getInputArcs(i);
-		for (j = 1; a = (Arc*) arcs->getElement(j); j++) 
-		    this->notifyArc(a);
+		arcs = (List *)n->getInputArks(i);
+		for (j = 1; a = (Ark*) arcs->getElement(j); j++) 
+		    this->notifyArk(a);
 		si->drawTab(i, FALSE);     
 	    }
 	}
     } else {
 	si->manage();
-	si->drawArcs(n);
+	si->drawArks(n);
     }
 
     if (this->workSpace->isManaged())
@@ -2851,7 +2848,7 @@ List *EditorWindow::makeModuleList()
 // has been added.
 //
 
-void EditorWindow::notifyArc(Arc *a)
+void EditorWindow::notifyArk(Ark *a)
 {
     StandIn *standIn;
     Node    *n;
@@ -2862,7 +2859,7 @@ void EditorWindow::notifyArc(Arc *a)
 #if WORKSPACE_PAGES
     if (!standIn) return ;
 #endif
-    standIn->addArc(this, a);
+    standIn->addArk(this, a);
 }
 
 //
@@ -3294,7 +3291,7 @@ void EditorWindow::removeSelectedNodes()
 }
 
 //
-// A public interface to deleteNodes... used by Network::replaceInputArcs
+// A public interface to deleteNodes... used by Network::replaceInputArks
 // so that it can let us do important work when deleting a bunch of nodes.
 //
 void EditorWindow::removeNodes(List* toDelete)
@@ -4276,7 +4273,7 @@ void EditorWindow::openSelectedImageWindows()
 //
 // Print the visual program as a PostScript file using geometry and not
 // bitmaps.  We set up the page so that it maps to the current workspace 
-// and then as the StandIns and ArcStandIns to print themselves.  
+// and then as the StandIns and ArkStandIns to print themselves.  
 // If the scale allows and the label_parameters arg is set, then 
 // label the parameters and display the values. 
 // We return FALSE and issue and error message if an error occurs.
@@ -4369,7 +4366,7 @@ boolean EditorWindow::printVisualProgramAsPS(FILE* fout, const char* filename,
     int i, icnt;
     int xpos, ypos, width, height;
     int xmin=1e6,xmax=0,ymin=1e6,ymax=0; 
-    Arc *a;
+    Ark *a;
     // We allocate these ourselves because the hp gives the following message
     // sorry, not implemented: label in block with destructors (2048)
     ListIterator *iterator = new ListIterator, *iter2 = new ListIterator;
@@ -4531,11 +4528,11 @@ boolean EditorWindow::printVisualProgramAsPS(FILE* fout, const char* filename,
 	    if (n->isInputConnected(i) && 
 		n->isInputViewable(i) && 
 		n->isInputVisible(i)) {
-		arcs = (List*)n->getInputArcs(i);
+		arcs = (List*)n->getInputArks(i);
 		ASSERT(arcs);
 		iter2->setList(*arcs);
-		while (a = (Arc*)iter2->getNext()) 
-		    a->getArcStandIn()->printAsPostScript(fout);
+		while (a = (Ark*)iter2->getNext()) 
+		    a->getArkStandIn()->printAsPostScript(fout);
 	    }
 	}
     }
@@ -4680,17 +4677,17 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 	int i;
 	for (i = 1; i <= node->getInputCount(); ++i)
 	{
-	    orig = (List*)node->getInputArcs(i);
+	    orig = (List*)node->getInputArks(i);
 	    List *inputs = orig->dup();
 	    ListIterator li(*inputs);
-	    Arc *a;
-	    while (a = (Arc*)li.getNext())
+	    Ark *a;
+	    while (a = (Ark*)li.getNext())
 	    {
 		int param;
 		Node *source = a->getSourceNode(param);
 		StandIn *si = source->getStandIn();
-		source->deleteArc(a);
-		si->deleteArc(a);
+		source->deleteArk(a);
+		si->deleteArk(a);
 
 		if (!si->isSelected()) {
 		    ListIterator connections(newInputs);
@@ -4711,10 +4708,10 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 			net->addNode(con->pn);
 			newInputs.appendElement(con);
 		    }
-		    new Arc(con->pn, 1, node, i);
+		    new Ark(con->pn, 1, node, i);
 		}
 		else {
-		    new Arc(source, param, node, i);
+		    new Ark(source, param, node, i);
 		}
 	    }
 	    delete inputs;
@@ -4722,17 +4719,17 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 
 	for (i = 1; i <= node->getOutputCount(); ++i)
 	{
-	    orig = (List*)node->getOutputArcs(i);
+	    orig = (List*)node->getOutputArks(i);
 	    List *outputs = orig->dup();
 	    ListIterator li(*outputs);
-	    Arc *a;
-	    while (a = (Arc*)li.getNext())
+	    Ark *a;
+	    while (a = (Ark*)li.getNext())
 	    {
 		int param;
 		Node *dest = a->getDestinationNode(param);
 		StandIn *si = dest->getStandIn();
-		dest->deleteArc(a);
-		si->deleteArc(a);
+		dest->deleteArk(a);
+		si->deleteArk(a);
 
 		if (!si->isSelected()) {
 		    ListIterator connections(newOutputs);
@@ -4754,10 +4751,10 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 			net->addNode(con->pn);
 			newOutputs.appendElement(con);
 		    }
-		    new Arc(node, i, con->pn, 1);
+		    new Ark(node, i, con->pn, 1);
 		}
 		else {
-		    new Arc(node, i, dest, param);
+		    new Ark(node, i, dest, param);
 		}
 	    }
 	    delete outputs;
@@ -4800,13 +4797,13 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
 
     int i;
     for (i = 1; con = (connection*)newInputs.getElement(1); ++i) {
-	node->getStandIn()->addArc(this, new Arc(con->n, con->param, node, i));
+	node->getStandIn()->addArk(this, new Ark(con->n, con->param, node, i));
 	delete con;
 	newInputs.deleteElement(1);
     }
     newInputs.clear();
     for (i = 1; con = (connection*)newOutputs.getElement(1); ++i) {
-	node->getStandIn()->addArc(this, new Arc(node, i, con->n, con->param));
+	node->getStandIn()->addArk(this, new Ark(node, i, con->n, con->param));
 	delete con;
 	newOutputs.deleteElement(1);
     }
@@ -4960,9 +4957,9 @@ boolean EditorWindow::isSelectedNodeDownstream(Node *srcNode,
     {
         if (srcNode->isOutputConnected(i))
         {
-            Arc *a;
-            List *arcs = (List *)srcNode->getOutputArcs(i);
-            for (j = 1; a = (Arc*)arcs->getElement(j); ++j)
+            Ark *a;
+            List *arcs = (List *)srcNode->getOutputArks(i);
+            for (j = 1; a = (Ark*)arcs->getElement(j); ++j)
             {
                 int paramInd;
                 Node *destNode = a->getDestinationNode(paramInd);
@@ -5502,13 +5499,13 @@ Node *node;
 	//
 	int count = node->getInputCount();
 	for (i=1; i<=count; i++) {
-	    Arc *a;
-	    List *orig = (List*)node->getInputArcs(i);
+	    Ark *a;
+	    List *orig = (List*)node->getInputArks(i);
 	    List *conns = orig->dup();
 	    ListIterator ai(*conns);
-	    while (a = (Arc*)ai.getNext()) {
-		ArcStandIn *asi = a->getArcStandIn();
-		a->setArcStandIn(NULL);
+	    while (a = (Ark*)ai.getNext()) {
+		ArkStandIn *asi = a->getArkStandIn();
+		a->setArkStandIn(NULL);
 		delete asi;
 	    }
 	    delete conns;
@@ -5519,13 +5516,13 @@ Node *node;
 	//
 	count = node->getOutputCount();
 	for (i=1; i<=count; i++) {
-	    Arc *a;
-	    List *orig = (List*)node->getOutputArcs(i);
+	    Ark *a;
+	    List *orig = (List*)node->getOutputArks(i);
 	    List *conns = orig->dup();
 	    ListIterator ai(*conns);
-	    while (a = (Arc*)ai.getNext()) {
-		ArcStandIn *asi = a->getArcStandIn();
-		a->setArcStandIn(NULL);
+	    while (a = (Ark*)ai.getNext()) {
+		ArkStandIn *asi = a->getArkStandIn();
+		a->setArkStandIn(NULL);
 		delete asi;
 	    }
 	    delete conns;
@@ -5638,11 +5635,11 @@ EditorWorkSpace *ws = NULL;
 	List *conns = NULL;
 
 	for (i=1; ((retVal) && (i<=count)); i++) {
-	    Arc *a;
-	    List *orig = (List*)node->getInputArcs(i);
+	    Ark *a;
+	    List *orig = (List*)node->getInputArks(i);
 	    conns = orig->dup();
 	    ListIterator ai(*conns);
-	    while (a = (Arc*)ai.getNext()) {
+	    while (a = (Ark*)ai.getNext()) {
 		int fromParam, toParam;
 		Node *source = a->getSourceNode (fromParam);
 		Node *dest = a->getDestinationNode (toParam);
@@ -5683,11 +5680,11 @@ EditorWorkSpace *ws = NULL;
 
 	count = node->getOutputCount();
 	for (i=1; ((retVal) && (i<=count)); i++) {
-	    Arc *a;
-	    List *orig = (List*)node->getOutputArcs(i);
+	    Ark *a;
+	    List *orig = (List*)node->getOutputArks(i);
 	    conns = orig->dup();
 	    ListIterator ai(*conns);
-	    while (a = (Arc*)ai.getNext()) {
+	    while (a = (Ark*)ai.getNext()) {
 		int fromParam, toParam;
 		Node *source = a->getSourceNode (fromParam);
 		Node *dest = a->getDestinationNode (toParam);
@@ -5926,8 +5923,8 @@ Window root = RootWindowOfScreen(screen);
     unsigned int cfg_len = 0;
     unsigned char *cfg_buffer = NULL;
 
-    struct stat statb;
-    if ((cfgf) && (stat(cfgfilename, &statb) != -1)) {
+    struct STATSTRUCT statb;
+    if ((cfgf) && (STAT(cfgfilename, &statb) != -1)) {
         cfg_len = (unsigned int)statb.st_size;
 	cfg_buffer = (unsigned char *)(cfg_len?new char[1+cfg_len]:NULL);
 
@@ -5943,7 +5940,7 @@ Window root = RootWindowOfScreen(screen);
 	unlink (cfgfilename);
     }
 
-    if (stat(netfilename, &statb) == -1) {
+    if (STAT(netfilename, &statb) == -1) {
 	sprintf (msg, "Copy failed (stat): %s", strerror(errno));
 	WarningMessage(msg);
 	fclose(netf);
@@ -6462,9 +6459,9 @@ boolean EditorWindow::showExecutedNodes()
 	    int numParam = n->getInputCount();
 	    for (i = 1; i <= numParam; ++i) {
 		if (n->isInputConnected(i)) {
-		    Arc *a;
-		    List *arcs = (List *)n->getInputArcs(i);
-		    for (j = 1; a = (Arc*)arcs->getElement(j); ++j) {
+		    Ark *a;
+		    List *arcs = (List *)n->getInputArks(i);
+		    for (j = 1; a = (Ark*)arcs->getElement(j); ++j) {
 			int paramInd;
 			Node *srcNode = a->getSourceNode(paramInd);
 			boolean moduleless_node = FALSE;
@@ -6729,16 +6726,16 @@ void EditorWindow::populatePage(EditorWorkSpace* ews)
 		int icnt = node->getInputCount();
 		int i;
 		for (i=1 ; i<=icnt ; i++) {
-		    List* arcs = (List *)node->getInputArcs(i);
-		    Arc* a;
+		    List* arcs = (List *)node->getInputArks(i);
+		    Ark* a;
 		    int j;
-		    for (j = 1; a = (Arc*) arcs->getElement(j); j++) {
+		    for (j = 1; a = (Ark*) arcs->getElement(j); j++) {
 			int dummy;
 			Node* tn = a->getSourceNode(dummy);
 			ASSERT(tn);
 			if (tn->getStandIn() == NUL(StandIn*)) continue;
-			if (a->getArcStandIn() == NUL(ArcStandIn*))
-			    this->notifyArc(a);
+			if (a->getArkStandIn() == NUL(ArkStandIn*))
+			    this->notifyArk(a);
 		    }
 		    si->drawTab(i, FALSE); 
 		}
@@ -6884,18 +6881,18 @@ boolean EditorWindow::autoChopSelectedNodes()
     Network* net = this->getNetwork();
     Dictionary tmits;
     Dictionary rcvrs;
-    boolean status = net->chopArcs(sellist, &tmits, &rcvrs);
+    boolean status = net->chopArks(sellist, &tmits, &rcvrs);
 
     DictionaryIterator di(rcvrs);
     Node* n;
     while (n = (Node*)di.getNextDefinition()) {
         StandIn* si = n->getStandIn();
 	if (si) {
-	    List* arcs = (List *)n->getOutputArcs(1);
+	    List* arcs = (List *)n->getOutputArks(1);
 	    int j;
-	    Arc* a;
-	    for (j = 1; a = (Arc*) arcs->getElement(j); j++) 
-		this->notifyArc(a);
+	    Ark* a;
+	    for (j = 1; a = (Ark*) arcs->getElement(j); j++) 
+		this->notifyArk(a);
 	    si->drawTab(1, FALSE);     
 	}
     }
@@ -6935,11 +6932,11 @@ int dummy;
 	it.setList(*sellist);
 	while (n = (Node*)it.getNext()) {
 	    if (n->isA(ClassTransmitterNode) == FALSE) continue;
-	    List* orig = (List*)n->getOutputArcs(1);
+	    List* orig = (List*)n->getOutputArks(1);
 	    if ((!orig) || (orig->getSize() == 0)) continue;
 	    ListIterator ai(*orig);
-	    Arc* a;
-	    while (a = (Arc*)ai.getNext()) {
+	    Ark* a;
+	    while (a = (Ark*)ai.getNext()) {
 		Node* rcvr = a->getDestinationNode(dummy);
 		ASSERT(rcvr->isA(ClassReceiverNode));
 		rcvrs.appendElement((void*)rcvr);
@@ -6961,21 +6958,21 @@ int dummy;
 	List toadd;
 	boolean unusable_receiver = FALSE;
 	for (i=1; i<=icnt; i++) {
-	    List* orig = (List*)n->getInputArcs(i);
+	    List* orig = (List*)n->getInputArks(i);
 	    if ((!orig) || (orig->getSize() == 0)) continue;
 	    ASSERT(orig->getSize() == 1);
-	    Arc* a = (Arc*)orig->getElement(1);;
+	    Ark* a = (Ark*)orig->getElement(1);;
 	    Node* src = a->getSourceNode(dummy);
 	    if (src->isA(ClassReceiverNode)) {
-		List* oa = (List*)src->getOutputArcs(1);
+		List* oa = (List*)src->getOutputArks(1);
 		ASSERT(oa);
 		if (oa->getSize() == 1) {
 		    toadd.appendElement((void*)src);
 		} else {
 		    ListIterator oi(*oa);
-		    Arc* a;
+		    Ark* a;
 		    boolean included = TRUE;
-		    while (a = (Arc*)oi.getNext()) {
+		    while (a = (Ark*)oi.getNext()) {
 			Node* dest = a->getDestinationNode(dummy);
 			if (sellist->isMember((void*)dest) == FALSE) {
 			    included = FALSE;
@@ -7001,10 +6998,10 @@ int dummy;
     }
 
     //
-    // Network::replaceInputArcs() operates stritly on 
+    // Network::replaceInputArks() operates stritly on 
     // the basis of the Receviers it encounters
     //
-    boolean status = net->replaceInputArcs(&rcvrs, NUL(List*));
+    boolean status = net->replaceInputArks(&rcvrs, NUL(List*));
 
     delete sellist;
 
@@ -7021,10 +7018,12 @@ boolean EditorWindow::toggleHitDetection()
     this->workSpace->installInfo(NULL);
     return TRUE;
 }
+#if 1
 
-const char* EditorWindow::SequenceNet = 
-#include "sequence.txt"
-;
+String EditorWindow::SequenceNet[] = {
+#include "sequence.h"
+};
+#endif
 
 boolean EditorWindow::unjavifyNetwork()
 {
@@ -7126,7 +7125,10 @@ boolean EditorWindow::javifyNetwork()
 	FILE* holder = fopen(holder_file, "w");
 	sprintf (uniq_file, "%s.net", holder_file);
 	FILE* uniq_f = fopen(uniq_file, "w");
-	fprintf (uniq_f, "%s", EditorWindow::SequenceNet);
+	
+	int ll;
+	for (ll = 0; EditorWindow::SequenceNet[ll] != NULL; ll += 1)
+		fprintf (uniq_f, "%s", EditorWindow::SequenceNet[ll]);
 	fclose(uniq_f);
 	uniq_f = NUL(FILE*);
 
@@ -7247,5 +7249,3 @@ boolean EditorWindow::javifyNetwork()
 
     return TRUE;
 }
-
-

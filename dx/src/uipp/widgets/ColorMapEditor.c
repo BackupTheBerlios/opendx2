@@ -5,9 +5,9 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-
 #include <dxconfig.h>
 #include "../base/defines.h"
+
 
 
 #include <stdio.h>
@@ -89,7 +89,7 @@ static Boolean SetValues();
 static void    exposeCME(XmColorMapEditorWidget, XExposeEvent *, Region);
 void update_callback(ControlField *field);
 
-static void FieldControlCB(Widget w, caddr_t client,
+static void FieldControlCB(Widget w, XtPointer client,
 	 XmAnyCallbackStruct* call_data);
 static void MinNumCallback( XmNumberWidget nw, XmColorMapEditorWidget cmew,
 	 XmDoubleCallbackStruct* call_data);
@@ -112,75 +112,75 @@ static XtResource resources[] =
    {
       XmNminEditable, XmCEditable, XmRBoolean, sizeof(Boolean),
       XtOffset(XmColorMapEditorWidget, color_map_editor.min_editable),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
    },
    {
       XmNmaxEditable, XmCEditable, XmRBoolean, sizeof(Boolean),
       XtOffset(XmColorMapEditorWidget, color_map_editor.max_editable),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
    },
    {
       XmNvalue, XmCValue, XmRDouble, sizeof(double),
       XtOffset (XmColorMapEditorWidget, color_map_editor.value_current), 
-      XmRDouble, (caddr_t)  &DefaultMinDbl
+      XmRDouble, (XtPointer)  &DefaultMinDbl
    },
    {
       XmNvalueMinimum, XmCValueMinimum, XmRDouble, sizeof(double),
       XtOffset (XmColorMapEditorWidget, color_map_editor.value_minimum), 
-      XmRDouble, (caddr_t)  &DefaultMinDbl
+      XmRDouble, (XtPointer)  &DefaultMinDbl
    },
    {
       XmNvalueMaximum, XmCValueMaximum, XmRDouble, sizeof(double),
       XtOffset (XmColorMapEditorWidget, color_map_editor.value_maximum), 
-      XmRDouble, (caddr_t) &DefaultMaxDbl
+      XmRDouble, (XtPointer) &DefaultMaxDbl
    },
    {
       XmNdefaultColormap, XmCDefaultColormap, XmRString, sizeof(String),
       XtOffset(XmColorMapEditorWidget, color_map_editor.default_colormap ),
-      XmRString, (caddr_t) NULL
+      XmRString, (XtPointer) NULL
    },
    {
-      XmNactivateCallback, XmCActivateCallback, XmRCallback, sizeof(caddr_t),
+      XmNactivateCallback, XmCActivateCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmColorMapEditorWidget, color_map_editor.g.activate_callback),
       XmRCallback, NULL
    },
    {
       XmNconstrainVertical, XmCConstrainVertical, XmRBoolean, sizeof(Boolean),
       XtOffset(XmColorMapEditorWidget, color_map_editor.constrain_vert),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
    },
    {
       XmNconstrainHorizontal,XmCConstrainHorizontal,XmRBoolean,sizeof(Boolean),
       XtOffset(XmColorMapEditorWidget, color_map_editor.constrain_hor),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
    },
    {
       XmNtriggerCallback, XmCTriggerCallback, XmRBoolean, sizeof(Boolean),
       XtOffset(XmColorMapEditorWidget, color_map_editor.trigger_callback),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
    },
    {
       XmNdisplayOpacity, XmCDisplayOpacity, XmRBoolean, sizeof(Boolean),
       XtOffset(XmColorMapEditorWidget, color_map_editor.display_opacity),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
    },
    {
       XmNbackgroundStyle, XmCBackgroundStyle, XmRInt, sizeof(int),
       XtOffset(XmColorMapEditorWidget, 
 		color_map_editor.color_bar_background_style),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
    },
    {
       XmNdrawMode, XmCDrawMode, XmRInt, sizeof(int),
       XtOffset(XmColorMapEditorWidget, 
 		color_map_editor.draw_mode),
-      XmRImmediate, (caddr_t) CME_GRID
+      XmRImmediate, (XtPointer) CME_GRID
    },
    {
       XmNprintCP, XmCPrintCP, XmRInt, sizeof(int),
       XtOffset(XmColorMapEditorWidget, 
 		color_map_editor.print_points),
-      XmRImmediate, (caddr_t) XmPRINT_ALL
+      XmRImmediate, (XtPointer) XmPRINT_ALL
    },
 };
 
@@ -441,13 +441,13 @@ XmStringCharSet charset;
     new->color_map_editor.g.field[3]->num_maps = 1;
 
     new->color_map_editor.g.field[0]->user_data = 
-	(caddr_t)&(new->color_map_editor.g);
+	(XtPointer)&(new->color_map_editor.g);
     new->color_map_editor.g.field[1]->user_data = 
-	(caddr_t)&(new->color_map_editor.g);
+	(XtPointer)&(new->color_map_editor.g);
     new->color_map_editor.g.field[2]->user_data = 
-	(caddr_t)&(new->color_map_editor.g);
+	(XtPointer)&(new->color_map_editor.g);
     new->color_map_editor.g.field[3]->user_data = 
-	(caddr_t)&(new->color_map_editor.g);
+	(XtPointer)&(new->color_map_editor.g);
 
     new->color_map_editor.g.field[0]->user_callback = update_callback;
     new->color_map_editor.g.field[1]->user_callback = update_callback;
@@ -472,7 +472,7 @@ XmStringCharSet charset;
     new->color_map_editor.g.rgb->num_lines = 3;
     new->color_map_editor.g.rgb->user_callback = update_callback;
     new->color_map_editor.g.rgb->user_data = 
-	(caddr_t)&(new->color_map_editor.g);
+	(XtPointer)&(new->color_map_editor.g);
 
     XtSetArg(wargs[0], XmNshadowThickness, &shadow_thickness);
     XtGetValues((Widget)new, wargs, 1);
@@ -1037,7 +1037,7 @@ int	i;
     }
 }
 
-static void FieldControlCB(Widget w, caddr_t client,
+static void FieldControlCB(Widget w, XtPointer client,
 	 XmAnyCallbackStruct* call_data)
 {
 Boolean			set;

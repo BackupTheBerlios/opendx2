@@ -360,7 +360,7 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
 
    /* in DXMessage there is static buffer of MAX_MSGLEN so check length */
    if (strlen(ei.msgbuf) > MAX_MSGLEN){
-     DXSetError(ERROR_INVALID_DATA,"#10920");
+     DXSetError(ERROR_DATA_INVALID,"#10920");
      goto error1;
    }
 

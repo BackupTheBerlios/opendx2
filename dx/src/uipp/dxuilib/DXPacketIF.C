@@ -7,12 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
 
-#include "defines.h"
 #include "Strings.h"
 #include "DXApplication.h"
 #include "DXLinkHandler.h"
@@ -50,10 +51,10 @@ void DXPacketIF::initializePacketIO()
     this->setHandler(DXPacketIF::INTERRUPT,
 		    DXPacketIF::DXProcessInterrupt,
 		    (void*)this);
-    this->setHandler(DXPacketIF::ERROR,
+    this->setHandler(DXPacketIF::PKTERROR,
 		    DXPacketIF::DXProcessError,
 		    (void*)this);
-    this->setHandler(DXPacketIF::ERROR,
+    this->setHandler(DXPacketIF::PKTERROR,
 		    DXPacketIF::DXProcessErrorWARNING,
 		    (void*)this,
 		    "WARNING");
@@ -65,7 +66,7 @@ void DXPacketIF::initializePacketIO()
 		    DXPacketIF::DXProcessEndExecNode,
 		    (void*)this,
 		    "end ");
-    this->setHandler(DXPacketIF::ERROR,
+    this->setHandler(DXPacketIF::PKTERROR,
                     DXPacketIF::DXProcessErrorERROR,
                     (void*)this,
                     "ERROR");

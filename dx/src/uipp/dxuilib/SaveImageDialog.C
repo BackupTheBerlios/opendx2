@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -25,7 +26,7 @@
 #include "ImageFileDialog.h"
 #include "ImageFormat.h"
 
-#ifndef  DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <sys/stat.h>
@@ -208,16 +209,8 @@ boolean SaveImageDialog::okCallback(Dialog *dialog)
 	if (!strstr (full_filename, ext))
 	    strcat (full_filename, ext);
 
-#	ifdef DXD_WIN
-#	define STATFILE(a,b) _stat(a,b)
-#	define STATDECL _stat
-#	else
-#	define STATFILE(a,b) stat(a,b)
-#	define STATDECL stat
-#	endif
-
-	struct STATDECL buffer;
-	if (STATFILE(full_filename, &buffer) == 0) {
+	struct STATSTRUCT buffer;
+	if (STAT(full_filename, &buffer) == 0) {
 	    Widget parent = XtParent(this->getRootWidget());
 	    char *title = "Save Confirmation";
 	    if (this->choice->supportsAppend()) {

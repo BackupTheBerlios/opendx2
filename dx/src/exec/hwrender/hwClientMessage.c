@@ -1026,7 +1026,7 @@ _dxfReceiveClientMessage (tdmChildGlobalP globals,
       PRINT(("Set_View"));
       if (! DXGetView (CAMERA, &from, &to, &up)) {
 	EXIT(("ERROR: cant get current view"));
-	DXErrorReturn (ERROR_INVALID_DATA, "Can't get current view") ;
+	DXErrorReturn (ERROR_DATA_INVALID, "Can't get current view") ;
       }
 
       up = DXVec(0.0, 1.0, 0.0) ;

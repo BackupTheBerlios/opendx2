@@ -7,7 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "defines.h"
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifdef OS2
@@ -20,12 +21,14 @@
 #if defined(DXD_WIN) || defined(OS2)          //SMH get correct name for unlink for NT in stdio.h
 #define unlink _unlink
 
+#if 0
 #if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
 #elif defined(HAVE_CYGWIN_SOCKET_H)
 #include <cygwin/socket.h>
 #elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
+#endif
 #endif
 
 #undef send             //SMH without stepping on things
@@ -37,7 +40,6 @@
 #include <errno.h>	// For errno
 #include <sys/stat.h>
 
-#include "UIConfig.h"
 #include "lex.h"
 #include "Strings.h"
 #include "Network.h"
@@ -71,7 +73,7 @@
 #include "TransmitterNode.h"
 #include "ReceiverNode.h"
 #include "MacroNode.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "SymbolManager.h"
 #include "DXPacketIF.h"
 #include "ApplicIF.h"
@@ -1011,7 +1013,7 @@ void Network::deleteNode(Node *node)
     // in which arcs from other nodes are followed to the deleted node, 
     // resulting in the node being put back in the Network.
     //
-    node->disconnectArcs();
+    node->disconnectArks();
 
     this->nodeList.removeElement(node);
 
@@ -1190,7 +1192,7 @@ extern "C"
 extern
 FILE* yyin;			/* parser input stream	  */
 
-#if defined(linux)  || defined(cygwin) || defined(freebsd)
+#if defined(USING_BISON)
 int yylineno;
 #else
 extern int yylineno;			/* lexer line number      */
@@ -1557,7 +1559,9 @@ boolean anchor_reset = FALSE;
 /*                                                                           */
 /*****************************************************************************/
 
-extern int yychar;
+#if defined(USING_BISON)
+extern "C" int yychar;
+#endif
 
 //
 // Returns TRUE if the parse was prematurely terminated.
@@ -1783,8 +1787,8 @@ boolean want_to_proceed = TRUE;
 int response;
 
     if ((file) && (file[0])) {
-	struct stat statbuf;
-	if (stat(file, &statbuf) == -1) return TRUE;
+	struct STATSTRUCT statbuf;
+	if (STAT(file, &statbuf) == -1) return TRUE;
     }
 
     if ((this->netVersion.major >= 2) && netfile) {
@@ -2715,7 +2719,7 @@ void Network::parseArgument(char* name, const boolean isVarname)
 	return;
 
     Node *n;
-    Arc *a = NULL;
+    Ark *a = NULL;
     boolean found = FALSE;
 #if 00
     ListIterator l;
@@ -2744,7 +2748,7 @@ void Network::parseArgument(char* name, const boolean isVarname)
 	    else
 	    {
 		// Connect output parameter to input of this->parseState.node 
-		a = new Arc(n, parameter, this->parseState.node, 
+		a = new Ark(n, parameter, this->parseState.node, 
 				this->parseState.input_index);
 		this->parseState.node->setInputVisibility(
 			this->parseState.input_index,TRUE);
@@ -2957,7 +2961,7 @@ void Network::parseRValue(char* name)
 	return;
 
     Node *n;
-    Arc *a = NULL;
+    Ark *a = NULL;
     boolean found = FALSE;
     Symbol s_of_out = theSymbolManager->registerSymbol(string);
 #if 00
@@ -2986,7 +2990,7 @@ void Network::parseRValue(char* name)
 	    else
 	    {
 		// Connect output parameter to input of this->parseState.node
-		a = new Arc(n, parameter, 
+		a = new Ark(n, parameter, 
 			this->parseState.node, 1);
 		this->parseState.node->setInputVisibility(1,
 						TRUE);
@@ -3065,10 +3069,10 @@ char *Network::FilenameToNetname(const char *filename)
     // Build/add the extension
     // 
 #ifdef DXD_OS_NON_UNIX    //SMH cover upper case extensions
-    ext = strrstr(file, NetExtensionUpper);
+    ext = strrstr(file, (char *)NetExtensionUpper);
     if (ext) return file;
 #endif
-    ext = strrstr(file, NetExtension);
+    ext = strrstr(file, (char *)NetExtension);
     if (!ext || (STRLEN(ext) != len))
 	strcat(file,NetExtension);
 
@@ -3096,7 +3100,7 @@ char *Network::FilenameToCfgname(const char *filename)
     // Build/add the extension
     // 
 #ifdef DXD_OS_NON_UNIX    //SMH cover upper case extensions
-    ext = strrstr(file, CfgExtensionUpper);
+    ext = strrstr(file, (char *)CfgExtensionUpper);
     if (ext) return file;
 #endif
     
@@ -3108,7 +3112,7 @@ char *Network::FilenameToCfgname(const char *filename)
     // out only because of nearness of release date.  When this chunk is enabled,
     // go to SaveCFGDialog.C and remove what should look like a dup of this chunk.
     //
-    const char *netext = strrstr(file, NetExtension);
+    const char *netext = strrstr(file, (char *)NetExtension);
     int netExtLen = STRLEN(NetExtension);
     if ((netext) && (STRLEN(netext) == netExtLen)) {
 	int filelen = STRLEN(file);
@@ -3116,7 +3120,7 @@ char *Network::FilenameToCfgname(const char *filename)
     }
 #endif
 
-    ext = strrstr(file, CfgExtension);
+    ext = strrstr(file, (char *)CfgExtension);
     if (!ext || (STRLEN(ext) != len)) {
 	strcat(file,CfgExtension);
     }
@@ -3151,9 +3155,9 @@ boolean Network::saveNetwork(const char *name, boolean force)
 	return FALSE;
 
     buf = DuplicateString(name);
-    ext = (char*)strrstr(buf,NetExtension);
+    ext = (char*)strrstr(buf,(char *)NetExtension);
     if (!ext)
-	ext = (char*)strrstr(buf,CfgExtension);
+	ext = (char*)strrstr(buf,(char *)CfgExtension);
     if (ext)
 	*ext = '\0'; 
 
@@ -4193,7 +4197,7 @@ boolean Network::markAndCheckForCycle(Node *srcNode, Node *dstNode)
     //
     // Follow the destination Node's output params.
     // If they go back to the source Node then adding an 
-    // Arc would create a cycle.
+    // Ark would create a cycle.
     //
     int  numParam = dstNode->getOutputCount();
 
@@ -4201,10 +4205,10 @@ boolean Network::markAndCheckForCycle(Node *srcNode, Node *dstNode)
     {
         if (dstNode->isOutputConnected(i))
         {
-            Arc *a;
+            Ark *a;
 	    int j;
-            List *arcs = (List *)dstNode->getOutputArcs(i);
-            for (j = 1; a = (Arc*)arcs->getElement(j); ++j)
+            List *arcs = (List *)dstNode->getOutputArks(i);
+            for (j = 1; a = (Ark*)arcs->getElement(j); ++j)
             {
                 int paramInd;
                 Node *dstPtr = a->getDestinationNode(paramInd);
@@ -4242,9 +4246,9 @@ Network::connectedNodes(boolean *marked, int ind, int d)
 	{
 	    if (n->isInputConnected(i) && n->isInputVisible(i))
 	    {
-		Arc *a;
-		List *arcs = (List *)n->getInputArcs(i);
-		for (j = 1; a = (Arc*)arcs->getElement(j); ++j)
+		Ark *a;
+		List *arcs = (List *)n->getInputArks(i);
+		for (j = 1; a = (Ark*)arcs->getElement(j); ++j)
 		{
 		    int paramInd;
 		    Node *n2 = a->getSourceNode(paramInd);
@@ -4263,9 +4267,9 @@ Network::connectedNodes(boolean *marked, int ind, int d)
 	{
 	    if (n->isOutputConnected(i) && n->isOutputVisible(i))
 	    {
-		Arc *a;
-		List *arcs = (List *)n->getOutputArcs(i);
-		for (j = 1; a = (Arc*)arcs->getElement(j); ++j)
+		Ark *a;
+		List *arcs = (List *)n->getOutputArks(i);
+		for (j = 1; a = (Ark*)arcs->getElement(j); ++j)
 		{
 		    int paramInd;
 		    Node *n2 = a->getDestinationNode(paramInd);
@@ -4297,10 +4301,10 @@ int Network::visitNodes(Node *n)
 	    // sort, because we are going upstream instead of downstream
 	    // (i.e. there is one arc per input).
 	    //
-	    Arc *a;
-	    List *arcs = (List *)n->getInputArcs(i);
+	    Ark *a;
+	    List *arcs = (List *)n->getInputArks(i);
 	    ListIterator iter(*arcs);
-	    while (a = (Arc*)iter.getNext()) 
+	    while (a = (Ark*)iter.getNext()) 
 	    {
 		int paramInd;
 		Node *n2 = a->getSourceNode(paramInd);
@@ -5849,15 +5853,15 @@ boolean Network::printAsCCode(FILE *f)
 List *Network::GetDestinationNodes(Node *src, int output_index, 
 				List *destList, boolean recvrsOk)
 {
-    Arc *a;
+    Ark *a;
  
     if (!destList)
 	destList = new List;
 
-    List *arcs = (List *)src->getOutputArcs(output_index);
+    List *arcs = (List *)src->getOutputArks(output_index);
 
     ListIterator iter(*arcs);
-    while (a = (Arc*)iter.getNext()) {
+    while (a = (Ark*)iter.getNext()) {
 	int paramInd;
 	Node *dest = a->getDestinationNode(paramInd);
 	const char *destClassName = dest->getClassName();
@@ -5983,10 +5987,10 @@ void Network::optimizeNodeOutputCacheability()
 		    //
 		    int  k;
 		    for (k=1 ; !cache_output && k<=dest->getInputCount() ; k++){
-			Arc *a2;
-			List *dest_in_arcs = (List*)dest->getInputArcs(k);
+			Ark *a2;
+			List *dest_in_arcs = (List*)dest->getInputArks(k);
 			ListIterator iter(*dest_in_arcs);
-			while (a2 = (Arc*)iter.getNext()) {
+			while (a2 = (Ark*)iter.getNext()) {
 		    	    int paramInd;
 			    Node *inode = a2->getSourceNode(paramInd);
 			    if (src != inode) { 
@@ -6543,7 +6547,7 @@ void Network::copyGroupInfo (Node* src, List* destList)
 // If any Node in the list has an arc to any Node not in the list,
 // then break the arc, replacing it with Transmitter,Receiver.
 //
-boolean Network::chopArcs(List* selected, Dictionary* tmits, Dictionary* rcvrs)
+boolean Network::chopArks(List* selected, Dictionary* tmits, Dictionary* rcvrs)
 {
 int i,j;
 
@@ -6555,16 +6559,16 @@ int i,j;
 	//
 	int count = seln->getInputCount();
 	for (i=1; i<=count; i++) {
-	    List* orig = (List*)seln->getInputArcs(i);
+	    List* orig = (List*)seln->getInputArks(i);
 	    if ((orig == NUL(List*)) || (orig->getSize() == 0)) continue;
 	    List* conns = orig->dup();
 	    int acnt = conns->getSize();
 	    ASSERT (acnt == 1);
-	    Arc* a = (Arc*)conns->getElement(1);
+	    Ark* a = (Ark*)conns->getElement(1);
 	    int pno;
 	    Node* src = a->getSourceNode(pno);
 	    if (selected->isMember(src) == FALSE) 
-		this->chopInputArc (seln, i, tmits, rcvrs);
+		this->chopInputArk (seln, i, tmits, rcvrs);
 	    delete conns;
 	}
 
@@ -6573,16 +6577,16 @@ int i,j;
 	//
 	count = seln->getOutputCount();
 	for (i=1; i<=count; i++) {
-	    List* orig = (List*)seln->getOutputArcs(i);
+	    List* orig = (List*)seln->getOutputArks(i);
 	    if ((orig == NUL(List*)) || (orig->getSize() == 0)) continue;
 	    List* conns = orig->dup();
 	    int acnt = conns->getSize();
 	    for (j=1; j<=acnt; j++) {
-		Arc* a = (Arc*)conns->getElement(j);
+		Ark* a = (Ark*)conns->getElement(j);
 		int pno;
 		Node* dest = a->getDestinationNode(pno);
 		if (selected->isMember(dest) == FALSE) 
-		    this->chopInputArc (dest, pno, tmits, rcvrs);
+		    this->chopInputArk (dest, pno, tmits, rcvrs);
 	    }
 	    delete conns;
 	}
@@ -6596,7 +6600,7 @@ int i,j;
     return TRUE;
 }
 
-boolean Network::chopInputArc (Node* n, int pno, Dictionary* tmits, Dictionary* rcvrs)
+boolean Network::chopInputArk (Node* n, int pno, Dictionary* tmits, Dictionary* rcvrs)
 {
 int vpex_src, vpey_src, vpex, vpey;
 int vpex_dest, vpey_dest;
@@ -6620,13 +6624,13 @@ int dummy;
     ASSERT(rcvr_nd);
 
     ASSERT (pno <= n->getInputCount());
-    List* orig = (List*)n->getInputArcs(pno);
+    List* orig = (List*)n->getInputArks(pno);
     if ((orig == NUL(List*)) || (orig->getSize()==0)) return TRUE;
     int acnt = orig->getSize();
     ASSERT (acnt <= 1);
 
     int src_pno;
-    Arc* a = (Arc*)orig->getElement(1);
+    Ark* a = (Ark*)orig->getElement(1);
     Node* src = a->getSourceNode(src_pno);
     delete a;
     src->getVpePosition(&vpex_src, &vpey_src);
@@ -6648,11 +6652,11 @@ int dummy;
     // then we don't need to make another one.
     //
     if (tmit == NUL(Node*)) {
-	List* orig = (List*)src->getOutputArcs(src_pno);
+	List* orig = (List*)src->getOutputArks(src_pno);
 	if ((orig) && (orig->getSize())) {
 	    ListIterator oi(*orig);
-	    Arc* a;
-	    while (a = (Arc*)oi.getNext()) {
+	    Ark* a;
+	    while (a = (Ark*)oi.getNext()) {
 		Node* dest = a->getDestinationNode(dummy);
 		if (dest->isA(ClassTransmitterNode) == FALSE) continue;
 		tmit = dest;
@@ -6678,7 +6682,7 @@ int dummy;
 	    tmit->setLabelString (newname);
 	    actual_name = tmit->getLabelString();
 	    this->copyGroupInfo(src, tmit);
-	    new Arc (src, src_pno, tmit, 1);
+	    new Ark (src, src_pno, tmit, 1);
 	    this->addNode(tmit);
 	}
     } else {
@@ -6697,7 +6701,7 @@ int dummy;
 	this->copyGroupInfo(src, rcvr);
     }
 
-    new Arc (rcvr, 1, n, pno);
+    new Ark (rcvr, 1, n, pno);
 
     return TRUE;
 }
@@ -6708,7 +6712,7 @@ int dummy;
 //    the source of the arc is found by looking at a 
 //    matching transmitter.
 //
-boolean Network::replaceInputArcs(List* selected, List* )
+boolean Network::replaceInputArks(List* selected, List* )
 {
 
 //
@@ -6735,7 +6739,7 @@ List nodes_to_delete;
 	//
 	// The Receiver's input is the Transmitter
 	//
-	List* orig_in = (List*)rcvr->getInputArcs(1);
+	List* orig_in = (List*)rcvr->getInputArks(1);
 	if ((orig_in == NUL(List*)) || (orig_in->getSize() == 0)) continue;
 	ASSERT(orig_in->getSize() == 1);
 
@@ -6757,17 +6761,17 @@ List nodes_to_delete;
 	    same_page = TRUE;
 	}
 	if (same_page == FALSE) {
-	    List* ia = (List*)rcvr->getInputArcs(1);
+	    List* ia = (List*)rcvr->getInputArks(1);
 	    if ((!ia) || (ia->getSize() < 1)) continue;
 
 	    Node* tmit;
-	    Arc* a = (Arc*)ia->getElement(1);
+	    Ark* a = (Ark*)ia->getElement(1);
 	    int dummy;
 	    tmit = a->getSourceNode(dummy);
 	    if (!tmit) continue;
-	    ia = (List*)tmit->getInputArcs(1);
+	    ia = (List*)tmit->getInputArks(1);
 	    if ((!ia) || (ia->getSize() < 1)) continue;
-	    a = (Arc*)ia->getElement(1);
+	    a = (Ark*)ia->getElement(1);
 	    ultimate_src = a->getSourceNode(pno);
 	}
 	if (ultimate_src == NUL(Node*)) continue;
@@ -6779,13 +6783,13 @@ List nodes_to_delete;
 	// During the loop, don't delete arcs, just gather them up
 	// for later deletion.
 	//
-	List* orig_out = (List*)rcvr->getOutputArcs(1);
+	List* orig_out = (List*)rcvr->getOutputArks(1);
 	int arc_count = 0;
 	if (orig_out) arc_count = orig_out->getSize();
 	int i;
 	List delete_arcs;
 	for (i=1; i<=arc_count; i++) {
-	    Arc* rcvr_arc =(Arc*)orig_out->getElement(i);
+	    Ark* rcvr_arc =(Ark*)orig_out->getElement(i);
 	    int out_pno = 0;
 	    Node* dest = rcvr_arc->getDestinationNode(out_pno);
 	    const char* dest_page = dest->getGroupName(gmgr_sym);
@@ -6807,8 +6811,8 @@ List nodes_to_delete;
 	// Go back and delete arcs now.
 	//
 	ListIterator it(delete_arcs);
-	Arc* a;
-	while (a=(Arc*)it.getNext()) {
+	Ark* a;
+	while (a=(Ark*)it.getNext()) {
 	    int out_pno = 0;
 	    int in_pno = 0;
 	    Node* dest = a->getDestinationNode(out_pno);
@@ -6816,15 +6820,15 @@ List nodes_to_delete;
 	    delete a;
 	    ASSERT (ultimate_src->isA(ClassTransmitterNode) == FALSE);
 	    ASSERT (dest->isA(ClassReceiverNode) == FALSE);
-	    Arc* new_arc = new Arc (ultimate_src, pno, dest, out_pno);
+	    Ark* new_arc = new Ark (ultimate_src, pno, dest, out_pno);
 	    if (this->editor)
-		this->editor->notifyArc(new_arc);
+		this->editor->notifyArk(new_arc);
 	}
 
 	//
 	// If the Receiver has no more arcs, then delete it too.
 	//
-	orig_out = (List*)rcvr->getOutputArcs(1);
+	orig_out = (List*)rcvr->getOutputArks(1);
 	if ((orig_out==NUL(List*)) || (orig_out->getSize() == 0)) {
 	    const char* label = rcvr->getLabelString();
 	    erased_rcvrs.addDefinition(label, (void*)1111);
@@ -6860,7 +6864,7 @@ List nodes_to_delete;
 	    while (tmit = (Node*)it.getNext()) {
 		const char* label = tmit->getLabelString();
 		if (EqualString(label, key)) {
-		    List* orig = (List*)tmit->getOutputArcs(1);
+		    List* orig = (List*)tmit->getOutputArks(1);
 		    if ((!orig) || (orig->getSize() == 0))
 			nodes_to_delete.appendElement(tmit);
 		}

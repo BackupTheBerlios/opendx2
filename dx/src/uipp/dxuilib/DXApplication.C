@@ -7,31 +7,56 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
-#include "UIConfig.h" 
+#include "../base/defines.h"
 
 #include <Xm/Xm.h>
 #include <Xm/Label.h>
 #include <X11/cursorfont.h>
-#if defined(DXD_WIN) || defined(OS2)                  //SMH get correct hdr
+
 // putenv should come from stdlib.h
-extern "C" int putenv(char*);
+// extern "C" int putenv(char*);
+
+#if defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
-#include <direct.h>
+#endif
+
+#if defined(HAVE_IO_H)
 #include <io.h>
-#else
+#endif
+
+#if defined(HAVE_STREAM_H)
 #include <stream.h>
 #endif
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#if defined(HAVE_SIGNAL_H)
 #include <signal.h>
+#endif
+
+#if defined(HAVE_ERRNO_H)
 #include <errno.h>
+#endif
+
+#if defined(HAVE_CTYPE_H)
 #include <ctype.h>
+#endif
+
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
+#endif
+
+#if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
+#endif
+
+#if defined(HAVE_DIRECT_H)
+#include <direct.h>
+#define chdir _chdir
+#endif
+
 
 
 #include "lex.h"
@@ -2137,7 +2162,7 @@ SigDangerHandler(int dummy)
 void 
 DXApplication::InitializeSignals(void)
 {            
-#if defined(SIGDANGER)
+#if defined(HAVE_SIGDANGER)
     signal(SIGDANGER, SigDangerHandler);
 #endif       
 
@@ -2145,10 +2170,11 @@ DXApplication::InitializeSignals(void)
     // an assert fails.  The function abort does not return.
     if (!getenv ("DXUINOCATCHERROR")) {
 	signal (SIGSEGV, DXApplication_HandleCoreDump);
-#if  !defined(DXD_WIN) && !defined(OS2)
+#if defined(HAVE_SIGBUS)
 	signal (SIGBUS, DXApplication_HandleCoreDump);
-#else
-	signal (SIGILL, DXApplication_HandleCoreDump);
+#endif
+#if defined(HAVE_SIGKILL)
+	signal (SIGKILL, DXApplication_HandleCoreDump);
 #endif
     }
 
@@ -2166,7 +2192,6 @@ boolean DXApplication::initialize(unsigned int* argcp,
 			       char**        argv)
 {
 boolean wasSetBusy = FALSE;
-
 
     if (!this->IBMApplication::initializeWindowSystem(argcp,argv))
 	return FALSE;
@@ -2608,7 +2633,7 @@ boolean wasSetBusy = FALSE;
     this->loadMDF();
     this->loadIDF();
     if (this->resource.userModules)
-	this->loadUDF(this->resource.userModules, FALSE);
+	this->loadUDF(this->resource.userModules, NULL, FALSE);
 
 
     // 
@@ -4187,13 +4212,15 @@ const char *DXApplication::getFormalName()
     return s;
 }
 //
+
 // Get the applications copyright notice, for example...
 // "Copyright International Business Machines Corporation 1991-1993
 // All rights reserved"
 // If getOEMApplicationName() return !NULL, then don't use a copyright
 // (i.e. return NULL). 
 //
-#ifndef DXD_WIN
+
+
 const char *DXApplication::getCopyrightNotice()
 {
     const char *s = this->getOEMApplicationName();
@@ -4202,36 +4229,6 @@ const char *DXApplication::getCopyrightNotice()
     else
 	return NULL;
 }
-#else
-extern int getuserinforeg(char *username, char *userco, char *keystr);
-extern int getdatefromkey(char *keystr, int *m, int *d, int *y);
-const char *DXApplication::getCopyrightNotice()
-{
-    char username[200];
-    char userco[200];
-    char keystr[100];
-    int m,d,y;
-    char *msg;
-    char preamble[] = "Open Visualization Data Explorer";
-    const char *s = this->getOEMApplicationName();
-    if (!s) {
-	getuserinforeg(username, userco, keystr);
-	getdatefromkey(keystr, &m, &d, &y);
-	msg = new (char[strlen(preamble) + strlen(username) + strlen(userco) + 40]);
-	//  Only post date if key is beta or trial
-	if (keystr[4] == 't' || keystr[4] == 'b') {
-	    sprintf(msg, "%s%s of %s\nExpires %d/%d/%d", preamble, username, userco,
-		    m, d, y);
-	} else {
-	    sprintf(msg, "%s%s of %s", preamble, username, userco);
-	}
-	return msg;
-    } else {
-	return NULL;
-    }
-}
-#endif
-
 
 //
 // The new 3rd anchor supplies the copyright message itself.  If using such an
@@ -4312,6 +4309,8 @@ boolean DXApplication::verifyServerLicense()
 #endif
 
 }
+
+#if defined(DXD_LICENSED_VERSION)
 //
 // Catch the 'LICENSE:' message from the executive and shake hands with
 // it to make sure it got the correct license based on the type of
@@ -4362,6 +4361,9 @@ void DXApplication::LicenseMessage(void *, int, void *ptr)
     }
     
 }
+
+#endif
+
 void DXApplication::scheduleServerDisconnect()
 {
     this->serverDisconnectScheduled = TRUE;
@@ -4709,8 +4711,9 @@ extern "C" int DXApplication_DXAfterFunction(Display *display)
     unsigned int key_buttons;
     Boolean      boolx;
     Window       win;
-    
+
     XSetAfterFunction(display, NULL);
+
     win  = RootWindow(display,0);
     boolx = XQueryPointer(display,
                          win,
@@ -5070,7 +5073,7 @@ static int cum_yday[11]; // { 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334
     // user.  The ui won't start.
     //
     char* admin_problem = NUL(char*);
-    struct stat statb;
+    struct STATSTRUCT statb;
     if (stat (date_file, &statb) == -1) 
 	admin_problem = "Your DXROOT environment variable is set incorrectly.";
     delete dx;

@@ -290,11 +290,11 @@ float red, green, blue, hue, sat, val;
           }
           DXGetArrayInfo(data,&numitems,&type,&category,&rank,shape);
           if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
-             DXSetError(ERROR_INVALID_DATA,"#10331", "data");
+             DXSetError(ERROR_DATA_INVALID,"#10331", "data");
              return ERROR;
           }
           if ((rank != 1)||(shape[0] != 3)) {
-             DXSetError(ERROR_INVALID_DATA,"#10331", "data");
+             DXSetError(ERROR_DATA_INVALID,"#10331", "data");
              return ERROR;
           }
           new_data = DXNewArray(TYPE_FLOAT,CATEGORY_REAL,1,3);
@@ -338,7 +338,7 @@ Object subo;
       return ERROR;
     switch (cl) {
        case CLASS_GROUP:
-          DXSetError(ERROR_INVALID_DATA,"colormaps must be a single field");
+          DXSetError(ERROR_DATA_INVALID,"colormaps must be a single field");
           return ERROR;
        case CLASS_FIELD:
           if (!strcmp(strin,"hsv"))  {

@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/text.c,v 1.3 1999/05/10 15:45:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/text.c,v 1.4 2000/05/16 18:48:23 gda Exp $
  */
 
 
@@ -87,23 +87,23 @@ static Error TextField(Pointer p)
 
   data = (Array)DXGetComponentValue(fieldin,"data");
   if (!data) {
-    DXSetError(ERROR_INVALID_DATA,"#10250", "field","data");
+    DXSetError(ERROR_DATA_INVALID,"#10250", "field","data");
     goto error;
   }
   
   DXGetArrayInfo(data, &numitems, &type, &category, &rank, shape);
   if (type != TYPE_STRING) {
-    DXSetError(ERROR_INVALID_DATA,"#10370", "data component", "type string");
+    DXSetError(ERROR_DATA_INVALID,"#10370", "data component", "type string");
     goto error;
   } 
   
   if (category != CATEGORY_REAL) {
-    DXSetError(ERROR_INVALID_DATA,"data component must be category real");
+    DXSetError(ERROR_DATA_INVALID,"data component must be category real");
     goto error;
   } 
   
   if (rank != 1) {
-    DXSetError(ERROR_INVALID_DATA,"rank of data component must equal 1");
+    DXSetError(ERROR_DATA_INVALID,"rank of data component must equal 1");
     goto error;
   }
   
@@ -116,7 +116,7 @@ static Error TextField(Pointer p)
     goto error;
   }
   if (strcmp(attr,"positions")&&(strcmp(attr,"connections"))) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
                "data component must be dep positions or dep connections");
     goto error;
   }
@@ -157,7 +157,7 @@ static Error TextField(Pointer p)
       }
       /* better be delayed */
       if ((type != TYPE_UBYTE)||(rank != 1) || (shape[0] != 1)) {
-        DXSetError(ERROR_INVALID_DATA,"#11363", "byte colors", 1);
+        DXSetError(ERROR_DATA_INVALID,"#11363", "byte colors", 1);
         goto error;
       }
       if (!(colormap = (Array)DXGetComponentValue(fieldin,"color map"))) {
@@ -224,25 +224,25 @@ static Error TextField(Pointer p)
     /* get positions component */
     positions = (Array)DXGetComponentValue(fieldin,"positions");
     if (!positions) {
-      DXSetError(ERROR_INVALID_DATA,"#10250", "field", "positions");
+      DXSetError(ERROR_DATA_INVALID,"#10250", "field", "positions");
       goto error;
     }
   }
   DXGetArrayInfo(positions, &numitems, &type, &category, &rank, shape);
   if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "positions must be type float, category real");
     goto error;
   }
   
   if (rank != 1) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "positions must be rank 1");
     goto error;
   }
   
   if ((shape[0]<1) || (shape[0] > 3)) {
-    DXSetError(ERROR_INVALID_DATA, "#10370", "positions", 
+    DXSetError(ERROR_DATA_INVALID, "#10370", "positions", 
                "1, 2, or 3-dimensional");
     goto error; 
   }
@@ -257,15 +257,15 @@ static Error TextField(Pointer p)
       tangents_ptr = (float *)DXGetArrayData(tangents);
       DXGetArrayInfo(tangents, &numitems, &ttype, NULL, &trank, tshape);
       if (ttype != TYPE_FLOAT) {
-        DXSetError(ERROR_INVALID_DATA,"tangents component must be type float");
+        DXSetError(ERROR_DATA_INVALID,"tangents component must be type float");
         goto error;
       }
       if (trank != 1) {
-        DXSetError(ERROR_INVALID_DATA,"tangents component must be rank 1");
+        DXSetError(ERROR_DATA_INVALID,"tangents component must be rank 1");
         goto error;
       }
       if (tshape[0] != 2 && tshape[0] != 3) {
-        DXSetError(ERROR_INVALID_DATA,"tangents component must be 2D or 3D");
+        DXSetError(ERROR_DATA_INVALID,"tangents component must be 2D or 3D");
         goto error;
       }
       attr1 = DXGetString((String)DXGetComponentAttribute((Field)fieldin, 
@@ -275,7 +275,7 @@ static Error TextField(Pointer p)
 	goto error;
       }
       if (strcmp(attr,attr1)) {
-	DXSetError(ERROR_INVALID_DATA, "#10360", "tangents", "data");
+	DXSetError(ERROR_DATA_INVALID, "#10360", "tangents", "data");
 	goto error;
       }
     }
@@ -290,16 +290,16 @@ static Error TextField(Pointer p)
       binormals_ptr = (float *)DXGetArrayData(binormals);
       DXGetArrayInfo(binormals, &numitems, &btype, NULL, &brank, bshape);
       if (btype != TYPE_FLOAT) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
                    "binormals component must be type float");
         goto error;
       }
       if (brank != 1) {
-        DXSetError(ERROR_INVALID_DATA,"binormals component must be rank 1");
+        DXSetError(ERROR_DATA_INVALID,"binormals component must be rank 1");
         goto error;
       }
       if (bshape[0] != 2 && bshape[0] != 3) {
-        DXSetError(ERROR_INVALID_DATA,"binormals component must be 2D or 3D");
+        DXSetError(ERROR_DATA_INVALID,"binormals component must be 2D or 3D");
         goto error;
       }
 
@@ -310,7 +310,7 @@ static Error TextField(Pointer p)
 	goto error;
       }
       if (strcmp(attr,attr1)) {
-	DXSetError(ERROR_INVALID_DATA, "#10360", "binormals", "data");
+	DXSetError(ERROR_DATA_INVALID, "#10360", "binormals", "data");
 	goto error;
       }
     }
@@ -327,16 +327,16 @@ static Error TextField(Pointer p)
       normals_ptr = (float *)DXGetArrayData(normals);
       DXGetArrayInfo(normals, &numitems, &ntype, NULL, &nrank, nshape);
       if (ntype != TYPE_FLOAT) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
                    "normals component must be type float");
         goto error;
       }
       if (nrank != 1) {
-        DXSetError(ERROR_INVALID_DATA,"normals component must be rank 1");
+        DXSetError(ERROR_DATA_INVALID,"normals component must be rank 1");
         goto error;
       }
       if (nshape[0] != 2 && nshape[0] != 3) {
-        DXSetError(ERROR_INVALID_DATA,"normals component must be 2D or 3D");
+        DXSetError(ERROR_DATA_INVALID,"normals component must be 2D or 3D");
         goto error;
       }
 
@@ -348,7 +348,7 @@ static Error TextField(Pointer p)
 	goto error;
       }
       if (strcmp(attr,attr1)) {
-	DXSetError(ERROR_INVALID_DATA, "#10360", "normals", "data");
+	DXSetError(ERROR_DATA_INVALID, "#10360", "normals", "data");
 	goto error;
       }
     }
@@ -562,7 +562,7 @@ static Error TextObject(Object in, Group out,
          DXSetMember((Group)out,NULL,(Object)group);
          break;
       default:
-         DXSetError(ERROR_INVALID_DATA,"unknown group class");
+         DXSetError(ERROR_DATA_INVALID,"unknown group class");
          goto error;
     }
     for (i=0; childin = DXGetEnumeratedMember((Group)in, i, NULL); i++) {
@@ -573,7 +573,7 @@ static Error TextObject(Object in, Group out,
     
     break;
   default:
-    DXSetError(ERROR_INVALID_DATA,"#10112", "string");
+    DXSetError(ERROR_DATA_INVALID,"#10112", "string");
     goto error;
   }
 
@@ -729,7 +729,7 @@ Error
              outobject = (Group)DXNewMultiGrid();
              break;
           default:
-             DXSetError(ERROR_INVALID_DATA,"unknown group class");
+             DXSetError(ERROR_DATA_INVALID,"unknown group class");
              goto error;
         }
         if (!TextObject(in[0], outobject, h, f, x, y, direction_defaulted,

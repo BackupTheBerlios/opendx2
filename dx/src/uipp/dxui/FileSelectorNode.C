@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,8 +16,6 @@
  
 #include <string.h>
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "FileSelectorNode.h"
 #include "FileSelectorInstance.h"
 #include "ErrorDialogManager.h"
@@ -92,7 +92,40 @@ Type FileSelectorNode::setOutputValue(
                                 Type t,
                                 boolean send)
 {
+//GDA
+#if 1
+	char *localValue = DuplicateString(value);
+	for (int i=0; i<strlen(localValue); i++) 
+	    if (localValue[i] == '\\')
+		localValue[i] = '/';
 
+    if (indx == 2)
+	return this->ValueNode::setOutputValue(2,localValue,t,send);
+
+    Type type = this->ValueNode::setOutputValue(1,localValue,t,FALSE);
+    if (type != DXType::UndefinedType) {
+	char *basename = (char*)this->getOutputValueString(1);
+	basename = DuplicateString(basename);
+#ifdef DXD_NON_UNIX_DIR_SEPARATOR
+	for (int i=0; i<strlen(basename); i++) {
+	    if (basename[i] == '\\')
+		basename[i] = '/';
+	}
+#endif
+	char *p = strrchr(basename,'/');
+	if (!p) {
+	    type = this->ValueNode::setOutputValue(2,value,type,send);
+	} else {
+	    char *c;
+	    p++;
+	    c = strchr(p,(int)'"');
+	    *c = '\0';
+	    type = this->ValueNode::setOutputValue(2,p,type,send);
+	}
+	delete basename;
+    }
+    return type;
+#else
     if (indx == 2)
 	return this->ValueNode::setOutputValue(2,value,t,send);
 
@@ -119,6 +152,7 @@ Type FileSelectorNode::setOutputValue(
 	delete basename;
     }
     return type;
+#endif
 }
 
 //

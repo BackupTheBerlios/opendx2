@@ -7,61 +7,93 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
-#define  DXD_ENABLE_SOCKET_POINTERS   /* define SFILE in arch.h, os2 */
 #include <dx/dx.h>
 
-#ifdef	DXD_WIN   /*   ajay    */
+
+#if defined(HAVE_IO_H)
 #include <io.h>
+#endif
+
+#if defined(HAVE_WINIOCTL_H)
 #include <winioctl.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_IOCTL_H)
 #include <sys/ioctl.h>
 #endif
 
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
-#if DXD_HAS_UNIX_SYS_INCLUDES
+#endif
+
+#if defined(HAVE_SYS_TIMES_H)
 #include <sys/times.h>
+#endif
+
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
-#ifdef DXD_WIN
+
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
+
+#if defined(HAVE_TIME_H)
 #include <time.h>  
-#if DXD_HAS_SIGDANGER || DXD_EXEC_WAIT_PROCESS
+#endif
+
+#if defined(HAVE_SYS_SIGNAL_H)
 #include <sys/signal.h>
 #endif
+
+#if defined(HAVE_CTYPE_H)
 #include <ctype.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+
 #if HAVE_UNISTD_H
 #include <unistd.h>
-#else
+#endif
+
+#if defined(HAVE_CONIO_H)
 #include <conio.h>
 #endif
+
+#if defined(HAVE_ERRNO_H)
 #include <errno.h>
-#ifndef DXD_HAS_WINSOCKETS
+#endif
+
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
-#if HAVE_SYS_FILIO_H
+
+#if defined(HAVE_SYS_FILIO_H)
 #include <sys/filio.h>
 #endif
-#if DXD_HAS_UNIX_SYS_INCLUDES
+
+#if defined(HAVE_SYS_WAIT_H)
 #include <sys/wait.h>
 #endif
-#include <limits.h>
-#include <fcntl.h>
 
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#define EADDRINUSE      WSAEADDRINUSE
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#else
-#include <sys/socket.h>
+#if defined(HAVE_LIMITS_H)
+#include <limits.h>
+#endif
+
+#if defined(HAVE_FCNTL_H)
+#include <fcntl.h>
+#endif
+
+#include "sfile.h"
+
+#if defined(HAVE_SYS_RESOURCES_H)
+#include <sys/resource.h>
 #endif
 
 #if DXD_HAS_LIBIOP
@@ -75,7 +107,7 @@
 extern double SVS_double_time ();
 #endif
 
-#if DXD_NEEDS_SYS_SELECT_H
+#if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
 
@@ -83,7 +115,7 @@ extern double SVS_double_time ();
 #include <sys/sysmp.h>
 #endif
 
-#if defined HAVE_SYSCONFIG_NCPUS
+#if defined(HAVE_SYSCONFIG_NCPUS)
 # include <sys/systemcfg.h>
 #endif
 
@@ -102,10 +134,6 @@ extern double SVS_double_time ();
 
 #define	CHECK_INIT(_i, what)\
     if ((_i) != OK) ExInitFailed (what)
-
-#if DXD_HAS_UNIX_SYS_INCLUDES
-#include <sys/resource.h>
-#endif
 
 #include "background.h"
 #include "parse.h"
@@ -142,10 +170,6 @@ extern double SVS_double_time ();
 #include "license.h"
 static int exLicenseSelf = FALSE;
 lictype _dxd_exForcedLicense    = NOLIC; /* Is the given license forced */
-#endif
-
-#ifdef DXD_WIN
-extern void PCGetLicense();
 #endif
 
 #ifndef OPEN_MAX
@@ -199,9 +223,11 @@ int _dxd_exShowTiming		  = FALSE;
 int _dxd_exShowTrace		  = FALSE;
 int _dxd_exShowBells		  = FALSE;
 int _dxd_exSkipExecution	  = FALSE;
-int _dxd_exSockFD		  = -1;
 int _dxd_exRshInput		  = FALSE;
 int _dxd_exIsatty		  = FALSE;
+
+SFILE           *_dxd_exSockFD	  = NULL;
+static SFILE	*_pIfd		  = NULL;
 
 static int logcache		  = FALSE;
 static int logerr                 = 0;
@@ -233,7 +259,6 @@ int _dxd_exSParseAhead;
 extern int *_dxd_exKillGraph;
 
 static char	*_pIstr	= "stdin";
-static int	_pIfd	= 0;
 
 static char	**exenvp	= NULL;
 
@@ -318,7 +343,6 @@ static struct child {
 lock_type *childtbl_lock = NULL;
 
 static volatile int *exReady;
-extern void _dxf_betaTimeoutCheck();
 
 #include "instrument.h"
 
@@ -393,12 +417,6 @@ DXmain (argc, argv, envp)
         ExCopyright (! _dxd_exRemote);
 
     ExInitialize ();		       /* perform all shared initializations */
-
-    _dxf_betaTimeoutCheck();
-
-#ifdef DXD_WIN
-    PCGetLicense();
-#endif
 
 #ifdef DXD_LICENSED_VERSION
 
@@ -773,7 +791,7 @@ loop_slave_continue:
 	    
 #ifndef DXD_NOBLOCK_SELECT
 	     ExMarkTimeLocal (4, "main:chRIH");
-	    _dxf_ExCheckRIHBlock (fileno (yyin));
+	    _dxf_ExCheckRIHBlock (SFILEfileno (yyin));
 #endif
 	}
 
@@ -839,16 +857,16 @@ static void ExInitFailed (char *message)
      * print a message before exiting saying why we can't start up.
      */
 
-    write(fileno ((SFILE *)stdout), EMESS, strlen(EMESS));
+    write(fileno (stdout), EMESS, strlen(EMESS));
 
     cp = DXGetErrorMessage();
     if (cp)
-	write (fileno ((SFILE *)stdout), cp, strlen (cp));
-    write(fileno ((SFILE *)stdout), "\n", 1);
+	write (fileno (stdout), cp, strlen (cp));
+    write(fileno (stdout), "\n", 1);
 
     if (message)
-	write(fileno ((SFILE *)stdout), message, strlen (message));
-    write(fileno ((SFILE *)stdout), "\n", 1);
+	write(fileno (stdout), message, strlen (message));
+    write(fileno (stdout), "\n", 1);
     
     exit (0);
 }
@@ -1004,9 +1022,11 @@ static void ExProcessArgs (int argc, char **argv)
 static void ExCopyright (int p)
 {
     if (p)
-	write (fileno ((SFILE *)stdout), DXD_COPYRIGHT_STRING,
+    {
+	write (fileno (stdout), DXD_COPYRIGHT_STRING,
                strlen (DXD_COPYRIGHT_STRING));
-	write (fileno ((SFILE *)stdout), "\n", 1);
+	write (fileno (stdout), "\n", 1);
+    }
 }
 
 
@@ -1105,7 +1125,7 @@ ExVersion ()
     strcat(buf, ", ");
     strcat(buf, __DATE__);
     strcat(buf, ")\n");
-    write(fileno((SFILE *)stdout),buf,strlen(buf));
+    write(fileno(stdout),buf,strlen(buf));
 
     exit (0);
 }
@@ -1126,6 +1146,7 @@ _dxf_ExInitSystemVars ()
 static void ExConnectInput ()
 {
     int		port;
+    SFILE 	*_dxf_ExInitServer(int);
 
     if (_dxd_exRemote)
     {
@@ -1135,23 +1156,20 @@ static void ExConnectInput ()
 	if(_dxf_ExInitPacket() == ERROR)
 	    ExInitFailed ("can't make UI connection");
 
-	if (_dxd_exSockFD == -1)
+	if (_dxd_exSockFD == NULL)
 	    ExInitFailed ("can't make UI connection");
 	_pIfd  = _dxd_exSockFD;
 	_pIstr = "UI";
+        _dxd_exIsatty = 0;
     }
     else
     {
+	int fd = fileno(stdin);
 	setvbuf (stdin, NULL, _IONBF, 0);
-	_pIfd = fileno ((SFILE *)stdin);
-#if DXD_HAS_OS2_CP
-      {
-       int oldMode = _setmode(_pIfd,O_TEXT);
-      }
-#endif
-
+	_pIfd = FILEToSFILE(stdin);
+        _dxd_exIsatty = isatty(fd);
     }
-    _dxd_exIsatty = isatty(_pIfd);
+
 }
 
 
@@ -1166,12 +1184,6 @@ static void ExInitialize ()
     char		*mm;
 
     _dxd_exPPID = getpid ();
-
-#if DXD_HAS_IBM_OS2_SOCKETS
-    if(sock_init())
-        ExInitFailed("cannot initialize socket library");
-    FD_ZERO(&sockSet);
-#endif
 
     if (logcache)
 	logerr = _dxf_ExLogOpen ();
@@ -1871,11 +1883,11 @@ static int OKToRead (SFILE *fp)
     extern int		_dxd_exBaseFD;
 
     /* If there is something in the read buffer then go get it */
-    if (CHAR_READY(fp))
+    if (SFILECharReady(fp))
 	return (TRUE);
 
     /* If we are reading a file then read it so we see the EOF */
-    fd = fileno (fp);
+    fd = SFILEfileno (fp);
     if (fd != _dxd_exBaseFD)
 	return (TRUE);
 
@@ -1937,11 +1949,11 @@ int OKToRead (SFILE *fp)
     struct timeval	tv;
 
     FD_ZERO (&fdset);
-    FD_SET  (fileno (fp), &fdset);
+    FD_SET  (SFILEfileno (fp), &fdset);
     tv.tv_sec  = 0;
     tv.tv_usec = 0;
 
-    return (CHAR_READY(fp) ||
+    return (SFILECharReady(fp) ||
             select (EX_FD_SETSIZE, (SelectPtr) &fdset, NULL, NULL, &tv) > 0);
 }
 
@@ -2209,9 +2221,14 @@ static int ExCheckInput ()
     /* If this is the terminal, and the user hasn't typed anything yet,
      * prompt him.
      */
-    fno = fileno (yyin);
+    fno = SFILEfileno (yyin);
     if ((_dxd_exIsatty || (_dxd_exRshInput && fno == _dxd_exBaseFD)) &&
-	! prompted && _dxf_ExGQAllDone () && !CHAR_READY(yyin))
+	! prompted && _dxf_ExGQAllDone () && !SFILECharReady(yyin))
+	/*
+	if ((_dxd_exIsatty || (_dxd_exRshInput && yyin == _dxd_exBaseFD)) &&
+	! prompted && _dxf_ExGQAllDone () && !SFILECharReady(yyin))
+	*/
+
     {
 	prompt = _dxf_ExPromptGet(PROMPT_ID_PROMPT);
 	printf (prompt? prompt: EX_PROMPT);
@@ -2369,10 +2386,10 @@ ExInputAvailable (SFILE *fp)
 
     _dxf_ExCheckPacket(NULL, 0);
 
-    if (CHAR_READY(fp))
+    if (SFILECharReady(fp))
 	return (TRUE);
     
-    fd = fileno (fp);
+    fd = SFILEfileno (fp);
     if (fd != _dxd_exBaseFD)
 	return (TRUE);
     
@@ -2398,7 +2415,7 @@ ExInputAvailable (SFILE *fp)
 {\
     char	*prompt;\
     if (! prompted &&\
-        !CHAR_READY(yyin) &&\
+        !SFILECharReady(yyin) &&\
 	(_dxd_exRshInput || _dxd_exIsatty) &&\
 	_dxf_ExGQAllDone ())\
     {\
@@ -2549,6 +2566,7 @@ block:
 	if (reading && _dxf_ExGQAllDone () && ! _dxf_ExVCRRunning ())
 	{
 	    ISSUE_PROMPT ();
+#if 0
 #ifndef ibmpvs
 #if ibmpvs
 	    set_status (PS_PARSE);
@@ -2567,6 +2585,7 @@ block:
 	    }
 #endif
 #endif
+#endif
             if (! _dxd_exParseAhead)
             {
                 /* if we get here there is nothing in the queues */
@@ -2577,7 +2596,7 @@ block:
 #if 0
             if(*_dxd_exNSlaves > 0) {
 #ifndef DXD_NOBLOCK_SELECT
-                _dxf_ExCheckRIHBlock (fileno (yyin));
+                _dxf_ExCheckRIHBlock (SFILEfileno (yyin));
 #endif
             }
             else
@@ -2586,7 +2605,7 @@ block:
 
 #ifndef DXD_NOBLOCK_SELECT
             if(!_dxf_ExIsExecuting() && !ExInputAvailable(yyin))
-                _dxf_ExCheckRIHBlock (fileno (yyin));
+                _dxf_ExCheckRIHBlock (SFILEfileno (yyin));
 #endif
 
 	}

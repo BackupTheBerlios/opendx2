@@ -7,10 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
 
 #include <Xm/Xm.h>
 #if !defined(OS2)  && !defined(DXD_WIN)
@@ -19,7 +20,6 @@
 #include <strstrea.h>
 #endif
 
-#include "defines.h"
 #include "StartupCommand.h"
 #include "StartupWindow.h"
 

@@ -32,7 +32,7 @@
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 
-#if !defined(HAS_M_PI)
+#if (HAS_M_PI == 0)
 #define M_PI    3.1415926535897931160E0
 #endif
 
@@ -49,7 +49,7 @@
 
 #define ROUND(a) 	( (a) > 0 ? (a) + 0.5 : (a) - 0.5 )
 
-#if defined(hp700) || defined (DXD_WIN) || defined(OS2)
+#if defined(hp700) || defined(OS2) || defined(intelnt)
 #   define rint(x) ((double)((int)((x) + 0.5)))
 #   define trunc(x) ((double)((int)(x)))
 #endif
@@ -109,25 +109,25 @@ static	double	DefaultPos =    0.0;
 static	XtResource	resources[] =
 	{
 		{
-                XmNselectCallback,XmCCallback,XmRCallback,sizeof(caddr_t),
+                XmNselectCallback,XmCCallback,XmRCallback,sizeof(XtPointer),
                 XtOffset(XmDialWidget,dial.select),XmRCallback,NULL},
 
 		{
 		XmNminimum,XmCMin,XmRDouble,sizeof(double),
 		XtOffset(XmDialWidget,dial.minimum),XmRDouble,
-							(caddr_t)&DefaultMin},
+							(XtPointer)&DefaultMin},
 		{
 		XmNmaximum,XmCMax,XmRDouble,sizeof(double), 
                 XtOffset(XmDialWidget,dial.maximum),XmRDouble,
-                                                        (caddr_t)&DefaultMax},
+                                                        (XtPointer)&DefaultMax},
 		{
 		XmNincrement,XmCInc,XmRDouble,sizeof(double),
                 XtOffset(XmDialWidget,dial.increment),XmRDouble,
-                                                        (caddr_t)&DefaultInc},
+                                                        (XtPointer)&DefaultInc},
 		{
 		XmNdecimalPlaces,XmCDecimalPlaces,XmRInt,sizeof(int),
                 XtOffset(XmDialWidget,dial.decimal_places),XmRImmediate,
-                                                        (caddr_t)5},
+                                                        (XtPointer)5},
 		{
 		XmNincrementsPerMarker,XmCMarkers,XmRInt,sizeof(int),
 		XtOffset(XmDialWidget,dial.increments_per_marker),
@@ -168,7 +168,7 @@ static	XtResource	resources[] =
 		{
 		XmNposition,XmCPos,XmRDouble,sizeof(double),
 		XtOffset(XmDialWidget,dial.position),XmRDouble,
-                                                        (caddr_t)&DefaultPos},
+                                                        (XtPointer)&DefaultPos},
 		{
 		XmNindicatorWidth,XmCWidth,XmRDimension,sizeof(Dimension),
                 XtOffset(XmDialWidget,dial.indicator_width),XmRString,"0"},
@@ -835,7 +835,7 @@ int             n_args;
 
 static	void	motion_dial(w,client_data,event)
 XmDialWidget    w;
-caddr_t		client_data;
+XtPointer		client_data;
 XEvent          *event;
         {
 	double	angle1,angle2,angle2_pre_round,delta_angle,rounded_value;
@@ -1408,7 +1408,7 @@ XrmValue  	*fromVal, *toVal;
 	 	 * make toVal point to the result.
 	 	 */
 		toVal->size = sizeof(double);
-		toVal->addr = (caddr_t) &result;
+		toVal->addr = (XtPointer) &result;
 		}
 	else
 		/*
@@ -1450,7 +1450,7 @@ XrmValue  	*fromVal, *toVal;
 		result = CLOCKWISE;
 	else
 		result = COUNTERCLOCKWISE;
-	toVal->addr = (caddr_t) &result;
+	toVal->addr = (XtPointer) &result;
 	}
 static double _dxf_round(double a, int decimal_places)
 {

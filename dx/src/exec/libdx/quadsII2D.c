@@ -82,13 +82,13 @@ _dxfRecognizeQuadsII2D(Field field)
 
     if (t != TYPE_FLOAT || c != CATEGORY_REAL || r != 1)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11450");
+	DXSetError(ERROR_DATA_INVALID, "#11450");
 	return 0;
     }
 
     if (s[0] != 2)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11363", "quads", 2);
+	DXSetError(ERROR_DATA_INVALID, "#11363", "quads", 2);
 	return 0;
     }
 
@@ -100,13 +100,13 @@ _dxfRecognizeQuadsII2D(Field field)
 
     if (t != TYPE_INT || c != CATEGORY_REAL || r != 1)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11450");
+	DXSetError(ERROR_DATA_INVALID, "#11450");
 	return 0;
     }
 
     if (s[0] != 4)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11004", "quads", 2);
+	DXSetError(ERROR_DATA_INVALID, "#11004", "quads", 2);
 	return 0;
     }
 	

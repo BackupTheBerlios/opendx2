@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <dx/dx.h>
 
 
 /*
@@ -28,7 +29,6 @@
 #include <X11/Xutil.h>
 #undef Screen
 
-#include <dx/dx.h>
 #include "internals.h"
 #include "render.h"
 
@@ -412,7 +412,7 @@ traverse(Object o, struct arg *arg)
 		}
 		else
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			"byte images must be scalar or 1-vector or 3-vector");
 		    return ERROR;
 		}
@@ -421,7 +421,7 @@ traverse(Object o, struct arg *arg)
 	    {
 		if (rank != 1 || shape[0] != 3)
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			"float images must be 3-vector");
 		    return ERROR;
 		}
@@ -430,7 +430,7 @@ traverse(Object o, struct arg *arg)
 	    }
 	    else
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			    "image fields must be type byte or type float");
 		return ERROR;
 	    }
@@ -2215,7 +2215,8 @@ create_display(char *name, char *title, int depth, Display **dpy)
 	    goto error;
 	
 	memcpy(cacheid, buf, len);
-#ifdef DXD_WIN
+
+#if defined(intelnt)
 	i = _dxfHostIsLocal(name);
 	if(i)
 	    d = XOpenDisplay(NULL);
@@ -2441,7 +2442,7 @@ getWindowStructure(char *host, int depth, char *title, int *directMap,
     if (!host || !*host)
 	host = getenv("DISPLAY");
     if (! host)
-#ifdef DXD_WIN
+#if defined(intelnt)
        host = "";
 #else
        host = "unix:0";
@@ -3505,7 +3506,7 @@ getBestVisual (Display *dpy, int *depth, int *directMap)
 	    }
 
 	    if(visualInfo)
-	        XFree ((caddr_t)visualInfo);
+	        XFree ((void *)visualInfo);
 	}
 	    
 	if (ret)
@@ -3581,7 +3582,7 @@ getBestVisual (Display *dpy, int *depth, int *directMap)
 		}
 
 	if (visualInfo)
-	    XFree ((caddr_t)visualInfo);
+	    XFree ((void *)visualInfo);
 
 	visualInfo = NULL;
 	if (ret)
@@ -3641,7 +3642,7 @@ getBestVisual (Display *dpy, int *depth, int *directMap)
 	}
 
     if (visualInfo)
-	XFree ((caddr_t)visualInfo);
+	XFree ((void *)visualInfo);
 
     visualInfo = NULL;
 
@@ -3687,7 +3688,7 @@ getBestVisual (Display *dpy, int *depth, int *directMap)
 	    }
 
     if (visualInfo)
-	XFree ((caddr_t)visualInfo);
+	XFree ((void *)visualInfo);
 
     visualInfo = NULL;
 
@@ -3787,7 +3788,7 @@ createTranslation(Private dpy_object, char *where,
     if (!where || !*where)
         where = (char *)getenv("DISPLAY");
     if (!where)
-#ifdef DXD_WIN
+#if defined(intelnt)
         where = "";
 #else
         where = "unix:0";
@@ -5712,14 +5713,14 @@ CheckColormappedImage(Object image, Array colormap)
     {
 	if (DXGetObjectClass(image) != CLASS_FIELD)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "color-mapped images must be fields");
+	    DXSetError(ERROR_DATA_INVALID, "color-mapped images must be fields");
 	    goto error;
 	}
 
 	a = (Array)DXGetComponentValue((Field)image, "colors");
 	if (! a)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "missing colors component");
+	    DXSetError(ERROR_DATA_INVALID, "missing colors component");
 	    goto error;
 	}
 
@@ -5730,7 +5731,7 @@ CheckColormappedImage(Object image, Array colormap)
 	    (c != CATEGORY_REAL) ||
 	    (r != 0 && (r != 1 || s[0] != 1)))
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 	      "colormapped images must be byte or ubyte, scalar or 1-vector");
 	    return ERROR;
 	}
@@ -5740,7 +5741,7 @@ CheckColormappedImage(Object image, Array colormap)
     {
 	if (DXGetObjectClass((Object)colormap) != CLASS_ARRAY)
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 	      "image colormap images must be an Array");
 	    goto error;
 	}
@@ -5753,7 +5754,7 @@ CheckColormappedImage(Object image, Array colormap)
 	    (r != 1) ||
 	    (s[0] != 1 && s[0] != 3))
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		    "image colormap images must be >=256 float 3-vectors");
 	    goto error;
 	}
@@ -6529,7 +6530,7 @@ DXParseWhere(char *where,
 	    arg1 = getenv("DISPLAY");
 	    if (! arg1)
 	    {
-#ifdef DXD_WIN
+#if defined(intelnt)
 		arg1 = "";
 #else
 		arg1 = "unix:0";
@@ -6630,7 +6631,7 @@ DXGetSoftwareWindow(char *where, Window *window)
     if (!host || !*host)
 	host = getenv("DISPLAY");
     if (! host)
-#ifdef DXD_WIN
+#if defined(intelnt)
        host = "";
 #else
        host = "unix:0";

@@ -279,7 +279,7 @@ _dxfTriangulateField(Field field)
     }
     else
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"Faces/Loops/Edges vertices must be 2 or 3D");
 	goto cleanup;
     }
@@ -2340,7 +2340,7 @@ static Error TriangulateLoops (int nloops, Loop *loops, float *vertices,
 
     if (nvert > 3)
     {
-	DXSetError(ERROR_INVALID_DATA, "topology error");
+	DXSetError(ERROR_DATA_INVALID, "topology error");
 #if 0
         {
 	FILE *foo = fopen("bad.dx", "w");

@@ -7,9 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "defines.h"
 #include "JavaNet.h"
 #include "PageGroupManager.h"
 #include "Command.h"
@@ -33,7 +34,6 @@
 #include <errno.h>	// For errno
 #include <sys/stat.h>
 
-#include "UIConfig.h"
 #include "Strings.h"
 #include "List.h"
 #include "ListIterator.h"
@@ -45,7 +45,7 @@
 #include "DXLOutputNode.h"
 #include "TransmitterNode.h"
 #include "ReceiverNode.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "SymbolManager.h"
 #include "DXVersion.h"
 #include "ImageNode.h"

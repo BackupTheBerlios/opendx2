@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _StartOptionsDialog_h
 #define _StartOptionsDialog_h
 
 
-#include "defines.h"
 #include "Dialog.h"
 
 

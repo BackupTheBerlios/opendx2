@@ -402,7 +402,7 @@ DXEndField(Field f)
 			if (!DXGetArrayInfo((Array)o,&n,NULL,NULL,NULL,NULL))
 			    return NULL;
 			if (n!=s->n) {
-			    DXSetError(ERROR_INVALID_DATA,
+			    DXSetError(ERROR_DATA_INVALID,
 				     "The \"%s\" component has %d elements.  "
 				     "By default, it depends on the \"%s\" "
 				     "component, which has %d elements.  "

@@ -295,7 +295,7 @@ doLeaf(Object *in, Object *out)
 
       if (invalid)
       {
-        DXSetError(ERROR_INVALID_DATA, "categorical component must not contain invalid data");
+        DXSetError(ERROR_DATA_INVALID, "categorical component must not contain invalid data");
         goto error;
       }
 
@@ -303,7 +303,7 @@ doLeaf(Object *in, Object *out)
       if ( (cat_type != TYPE_BYTE && cat_type != TYPE_UBYTE && cat_type != TYPE_INT && cat_type != TYPE_UINT)
              || category != CATEGORY_REAL || !((rank == 0) || ((rank == 1)&&(shape[0] == 1))))
       {
-        DXSetError(ERROR_INVALID_DATA, "categorical component %s must be scalar non-float", cat_comp);
+        DXSetError(ERROR_DATA_INVALID, "categorical component %s must be scalar non-float", cat_comp);
         goto error;
       }
 
@@ -326,13 +326,13 @@ doLeaf(Object *in, Object *out)
              && data_type != TYPE_FLOAT && data_type != TYPE_DOUBLE)	
                || category != CATEGORY_REAL || !((rank == 0) || ((rank == 1)&&(shape[0] == 1))))
         {
-          DXSetError(ERROR_INVALID_DATA, "data component \"%s\" must be scalar", data_comp);
+          DXSetError(ERROR_DATA_INVALID, "data component \"%s\" must be scalar", data_comp);
           goto error;
         }
 
         if (data_knt != cat_knt)
         {
-	  DXSetError(ERROR_INVALID_DATA, "category and data counts must be the same");
+	  DXSetError(ERROR_DATA_INVALID, "category and data counts must be the same");
 	  goto error;
         }
       }
@@ -354,7 +354,7 @@ doLeaf(Object *in, Object *out)
 	    sprintf(name_str, "%s lookup", cat_comp);
 	    lookup_comp = name_str;
       } else { 
-            DXSetError(ERROR_INVALID_DATA, "lookup component must be string, integer, or array");
+            DXSetError(ERROR_DATA_INVALID, "lookup component must be string, integer, or array");
 	    goto error;
       }
   } else {

@@ -7,8 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
-
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _Application_h
@@ -16,10 +16,8 @@
 
 
 #include <Xm/Xm.h>
-#include "defines.h"
 #include "UIComponent.h"
 #include "Server.h"
-
 
 //
 // Class name definition:

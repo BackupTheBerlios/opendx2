@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -16,7 +17,6 @@
 #include <Xm/PushB.h>
 #include <Xm/Separator.h>
 #include <Xm/Label.h>
-#include "../base/UIConfig.h"
 #include "../base/defines.h"
 #include "../base/Application.h"
 #include "MsgDialog.h"

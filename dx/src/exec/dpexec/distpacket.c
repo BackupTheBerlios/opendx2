@@ -12,15 +12,6 @@
 #include <dx/dx.h>
 #include <stdio.h>
 
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#define EADDRINUSE      WSAEADDRINUSE
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#else
-#include <sys/socket.h>
-#endif
-
 #ifdef DXD_WIN
 #include <io.h>
 #include <winioctl.h>

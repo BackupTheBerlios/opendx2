@@ -19,7 +19,7 @@ static Group _CopyGroup(Group new, Group old, enum copy copy);
 
 #define RANKTEST(rval) \
     if (rank>=100) { \
-	DXSetError(ERROR_INVALID_DATA, "cannot support rank >= 100"); \
+	DXSetError(ERROR_DATA_INVALID, "cannot support rank >= 100"); \
 	return rval; \
     }
 		     

@@ -48,7 +48,7 @@ Error m_Attribute(Object *in, Object *out)
      */
     s = DXGetAttribute(in[0], attrname);
     if (s == NULL) {
-	DXSetError(ERROR_INVALID_DATA, "#10257", "input", attrname);
+	DXSetError(ERROR_DATA_INVALID, "#10257", "input", attrname);
         return NULL;
     }
 

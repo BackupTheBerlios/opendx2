@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinereg.c,v 1.3 1999/05/10 15:45:20 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinereg.c,v 1.4 2000/05/16 18:47:36 gda Exp $
  */
 
 #include <stdio.h>
@@ -516,7 +516,7 @@ RefineDepConBoolean(Array inArray, int n,
 
     if ((t != TYPE_BYTE && t != TYPE_UBYTE) || c != CATEGORY_REAL)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"invalid data must be byte or ubyte reals");
 	goto error;
     }
@@ -552,7 +552,7 @@ RefineDepConBoolean(Array inArray, int n,
 
     if (itemSize != 1)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"invalid data must be scalar or 1-vector");
 	goto error;
     }
@@ -1190,7 +1190,7 @@ RefineDepPosIrregBoolean(Array inArray, int n,
 
     if (type != TYPE_BYTE && type != TYPE_UBYTE)
     {
-	DXSetError(ERROR_INVALID_DATA, "invalid flags must be byte or ubyte");
+	DXSetError(ERROR_DATA_INVALID, "invalid flags must be byte or ubyte");
 	goto error;
     }
 
@@ -1450,7 +1450,7 @@ RefineRegReferences(Array in, int nDim, int levels,
     DXGetArrayInfo(in, &nRefs, &type, &cat, &rank, shape);
     if (type != TYPE_INT && cat != CATEGORY_REAL)
     {
-	DXSetError(ERROR_INVALID_DATA, "ref arrays must be real integers");
+	DXSetError(ERROR_DATA_INVALID, "ref arrays must be real integers");
 	goto error;
     }
 

@@ -7,8 +7,9 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
-#include "defines.h"
 
 
 #include <Xm/Xm.h>
@@ -275,7 +276,7 @@ int n = 0;
 	 XmInternAtom(XtDisplay(this->getRootWidget()),
 			"WM_DELETE_WINDOW", FALSE),
 	 (XtCallbackProc)MainWindow_CloseCB,
-	 (caddr_t)this);
+	 (void *)this);
 
  
     if (this->hasMenuBar)

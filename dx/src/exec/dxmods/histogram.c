@@ -1292,7 +1292,7 @@ HistogramND(struct histinfo *hp, int empty)
 	
 	vshape = GetVectorShape(rank, shape);
 	if (cat != CATEGORY_REAL || vshape < 0) {
-	    DXSetError(ERROR_INVALID_DATA, "#10511", "data");
+	    DXSetError(ERROR_DATA_INVALID, "#10511", "data");
 	    goto error;
 	}
 
@@ -1549,7 +1549,7 @@ HistogramND(struct histinfo *hp, int empty)
 		      case TYPE_DOUBLE:
 			for (j=0; j<hp->dim; j++) ADDSUM(double); break;
 		      default:
-			DXSetError(ERROR_INVALID_DATA, "#10320", "histogram data");
+			DXSetError(ERROR_DATA_INVALID, "#10320", "histogram data");
 			goto error;
 		    }
 		}
@@ -1596,7 +1596,7 @@ HistogramND(struct histinfo *hp, int empty)
 	      case TYPE_DOUBLE:
 		pd->thisbin[j] = THISBIN(double); break;
 	      default:
-		DXSetError(ERROR_INVALID_DATA, "#10320", "histogram data");
+		DXSetError(ERROR_DATA_INVALID, "#10320", "histogram data");
 		goto error;
 	    }
 	    
@@ -1656,7 +1656,7 @@ HistogramND(struct histinfo *hp, int empty)
 	  case TYPE_DOUBLE:
 	    for (j=0; j<hp->dim; j++) ADDSUM(double); break;
 	  default:
-	    DXSetError(ERROR_INVALID_DATA, "#10320", "histogram data");
+	    DXSetError(ERROR_DATA_INVALID, "#10320", "histogram data");
 	    goto error;
 	}
     }
@@ -2172,7 +2172,7 @@ Array_Histogram1(struct histinfo *hp)
 	goto error;
     
     if (cat != CATEGORY_REAL || (rank != 0 && (rank != 1 || shape[0] != 1))) {
-	DXSetError(ERROR_INVALID_DATA, "#10080", "data");
+	DXSetError(ERROR_DATA_INVALID, "#10080", "data");
 	goto error;
     }
     
@@ -2208,7 +2208,7 @@ Array_Histogram1(struct histinfo *hp)
 
     osbins = hp->bins;    /* could be multiplier here to make smaller bins */
     if (osbins <= 0) {
-	DXSetError(ERROR_INVALID_DATA, "#10020", "number of bins");
+	DXSetError(ERROR_DATA_INVALID, "#10020", "number of bins");
 	goto error;
     }
     
@@ -2299,7 +2299,7 @@ Array_Histogram1(struct histinfo *hp)
 	      case TYPE_DOUBLE:
 		thisbin = THISBIN1(double); break;
 	      default:
-		DXSetError(ERROR_INVALID_DATA, "#10320", "histogram data");
+		DXSetError(ERROR_DATA_INVALID, "#10320", "histogram data");
 		goto error;
 	    }
 

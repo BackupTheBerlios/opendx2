@@ -13,7 +13,7 @@
 #include "defines.h"
 #include <stdio.h>
 #include <string.h>
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <malloc.h>

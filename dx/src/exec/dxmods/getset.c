@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/getset.c,v 1.3 1999/05/10 15:45:25 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/getset.c,v 1.4 2000/05/16 18:47:53 gda Exp $
  */
 
 #include <string.h>
@@ -100,7 +100,7 @@ static Error Set(Object *in, Object *out, int flag)
                 cp = strrchr(set_modid, '/');
                 *cp = '\0';
                 if(strcmp(set_modid, get_modid2) != 0) {
-                    DXSetError(ERROR_INVALID_DATA, "#10762");
+                    DXSetError(ERROR_DATA_INVALID, "#10762");
                     DXFreeModuleId((Pointer)set_modid);
                     DXFreeModuleId((Pointer)get_modid2);
                     goto error;

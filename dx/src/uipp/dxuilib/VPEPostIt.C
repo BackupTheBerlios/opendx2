@@ -7,12 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
 #include <Xm/Xm.h>
-#include "defines.h"
 #include "VPEPostIt.h"
 #include "DXApplication.h"
 #include "moduledrag.bm"

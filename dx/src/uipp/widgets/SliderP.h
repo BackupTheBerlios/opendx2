@@ -96,7 +96,7 @@ typedef struct _XmSliderPart
     int     decimal_places;
 
 
-    caddr_t	user_data;
+    void *	user_data;
     XtCallbackList value_callback;      /* Callback list for any change    */
 } XmSliderPart;
 

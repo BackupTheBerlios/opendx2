@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ScalarListInteractor_h
@@ -15,7 +17,6 @@
 
 #include <X11/Intrinsic.h>
  
-#include "defines.h"
 #include "StepperInteractor.h"
 
 

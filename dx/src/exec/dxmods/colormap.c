@@ -382,7 +382,7 @@ m_Colormap(Object *in,Field *out)
 
    /* in DXMessage there is static buffer of MAX_MSGLEN so check length */
    if (strlen(ei.msgbuf) > MAX_MSGLEN){
-      DXSetError(ERROR_INVALID_DATA,"#10920");
+      DXSetError(ERROR_DATA_INVALID,"#10920");
       goto error1;
    }
 
@@ -1207,7 +1207,7 @@ Error print_map(Field f,char *component,char *name, char *id)
    }
    /* in DXMessage there is static buffer of MAX_MSGLEN so check length */
    if (strlen(ei.msgbuf) > MAX_MSGLEN){
-      DXSetError(ERROR_INVALID_DATA,"#10920");
+      DXSetError(ERROR_DATA_INVALID,"#10920");
       goto error;
    }
    DXUIMessage(id,ei.msgbuf);
@@ -1336,7 +1336,7 @@ Error vect_scalar(Object o)
 	 return ERROR;
       break;
    default:
-      DXSetError(ERROR_INVALID_DATA,"#10190");
+      DXSetError(ERROR_DATA_INVALID,"#10190");
       return ERROR;
    }
 

@@ -160,7 +160,7 @@ typedef struct _XmWorkspacePart {
     Widget	track_widget;		/* Client's widget for event handler  */
     short	track_x;		/* Offsets for handled button event   */
     short	track_y;
-    caddr_t	track_client_data;	/* Pointer to pass with call	      */
+    void *	track_client_data;	/* Pointer to pass with call	      */
     XmWorkspaceLineRec *lines;		/* Link list of managed lines	      */
     int		num_lines;		/* Number of managed lines	      */
     int		double_click_interval;	/* Max millisecs between button press */

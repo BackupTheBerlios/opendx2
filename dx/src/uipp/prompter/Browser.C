@@ -34,10 +34,6 @@
 #include <fstream.h>
 #include <sys/stat.h>
 
-#ifdef DXD_WIN
-#define  stat  _stat
-#endif
-
 #if  defined(HAVE_RE_COMP)
 #undef HAVE_REGCMP
 #undef HAVE_REGCOMP
@@ -1324,7 +1320,7 @@ void Browser::integerMVCB(Widget , XtPointer clientData, XtPointer call)
 
 boolean Browser::openFile(char *filenm)
 {
-    struct stat statb;
+    struct STATSTRUCT statb;
     char title[512];
 
     this->from = new ifstream(filenm);
@@ -1334,7 +1330,7 @@ boolean Browser::openFile(char *filenm)
 	return FALSE;
     }
 
-    if(stat(filenm, &statb) == -1)
+    if(STAT(filenm, &statb) == -1)
     {
 	// stat failed
         return FALSE;
@@ -1736,7 +1732,6 @@ void Browser::searchBackward(char *text)
 
 #else
 
-	int i;
 	if (strstr(text,  buf))
 	{
 	    found = 1;

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/keyin.c,v 1.3 1999/05/10 15:45:27 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/keyin.c,v 1.4 2000/05/16 18:48:01 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -67,7 +67,7 @@ m_KeyIn(Object *in, Object *out)
 #else
     fh = open("/dev/tty", 2);
     if (fh < 0) {
-	DXSetError(ERROR_INVALID_DATA, "cannot open /dev/tty");
+	DXSetError(ERROR_DATA_INVALID, "cannot open /dev/tty");
 	return NULL;
     }
     write(fh, s, strlen(s));

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,8 +16,6 @@
 #define _DXLOutputDefinition_h
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "DrivenDefinition.h"
 
 

@@ -7,10 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <defines.h>
 
-
-
-#include "UIConfig.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -557,13 +555,9 @@ void ColormapEditor::manage()
     const char *name;
     if (this->neverManaged && 
 	(name = this->colormapNode->getNetSavedCMFilename())) {
-#ifndef DXD_WIN
-        struct stat statbuf;
-        if (stat(name,&statbuf) == 0) {         // File exists
-#else
-        struct _stat statbuf;
-        if (_stat((char*)name,&statbuf) == 0) { // File exists
-#endif
+        struct STATSTRUCT statbuf;
+
+        if (STAT(name,&statbuf) == 0) {         // File exists
 	    XmColorMapEditorRead(this->colormapEditor,(char*)name);
         } else {
            WarningMessage("Can't locate color map file '%s', "

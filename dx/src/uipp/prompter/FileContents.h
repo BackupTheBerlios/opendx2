@@ -7,20 +7,18 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 #ifndef _FileContents_h_
 #define _FileContents_h_
 
-#include "defines.h"
 #include "Strings.h"
 #include <stdio.h>
 #include <sys/stat.h>
 #include <Xm/Xm.h>
-#if defined(DXD_WIN) || defined(OS2)
-#define unlink _unlink
-#endif
-#ifndef  DXD_DO_NOT_REQ_UNISTD_H
+
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 

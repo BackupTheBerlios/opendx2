@@ -7,12 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
 
-#include "defines.h"
 #include "MacroParameterNode.h"
 #include "MacroParameterDefinition.h"
 #include "Parameter.h"
@@ -20,7 +20,7 @@
 #include "Network.h"
 #include "MacroDefinition.h"
 #include "DXApplication.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "ConfigurationDialog.h"
 #include "DXType.h"
 #include "ListIterator.h"
@@ -367,7 +367,7 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 	return this->UniqueNameNode::netParseAuxComment(comment,file,lineno);
 }
 
-boolean MacroParameterNode::addIOArc(List *io, int index, Arc *a)
+boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 {
     List *newTypesList = NULL;
     if (this->isInput())
@@ -455,15 +455,15 @@ boolean MacroParameterNode::addIOArc(List *io, int index, Arc *a)
 	this->getConfigurationDialog()->changeOutput(1);
     }
 	
-    return this->UniqueNameNode::addIOArc(io, index, a);
+    return this->UniqueNameNode::addIOArk(io, index, a);
 }
-boolean MacroParameterNode::removeIOArc(List *io, int index, Arc *a)
+boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 {
     int destIndex;
     Node *dest = a->getDestinationNode(destIndex);
     int srcIndex;
     Node *src = a->getSourceNode(srcIndex);
-    if (!this->UniqueNameNode::removeIOArc(io, index, a))
+    if (!this->UniqueNameNode::removeIOArk(io, index, a))
 	return FALSE;
 
     ParameterDefinition *macroPd = this->getParameterDefinition();
@@ -500,9 +500,9 @@ boolean MacroParameterNode::removeIOArc(List *io, int index, Arc *a)
     // list with "typesList" and set this to be the current types list.
     const List *arcs;
     if (this->isInput())
-	arcs = this->getOutputArcs(srcIndex);
+	arcs = this->getOutputArks(srcIndex);
     else
-	arcs = this->getInputArcs(destIndex);
+	arcs = this->getInputArks(destIndex);
     
     ListIterator li;
     li.setList(*(List *)arcs);
@@ -510,7 +510,7 @@ boolean MacroParameterNode::removeIOArc(List *io, int index, Arc *a)
     List *typesList = new List;
     typesList->appendElement(new DXType(DXType::ObjectType));
 
-    while(a = (Arc*)li.getNext())
+    while(a = (Ark*)li.getNext())
     {
 	ParameterDefinition *pind;
 	if (this->isInput())

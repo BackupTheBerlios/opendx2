@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "defines.h"
 #include "DeferrableAction.h"
 
 DeferrableAction::DeferrableAction(DeferrableActionFunction daf, void *data)

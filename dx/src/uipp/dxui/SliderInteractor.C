@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,7 +16,6 @@
 #include <Xm/Xm.h>
 #include <Xm/Form.h>
 
-#include "defines.h"
 #include "SliderInteractor.h"
 #include "SetScalarAttrDialog.h"
 #include "InteractorStyle.h"
@@ -83,7 +84,7 @@ void SliderInteractor::initialize()
 
 static Widget CreateSliderComponent(Widget,  boolean, double, double,
 				     double, double, int,   XtCallbackProc,   
-				     int, caddr_t) ;
+				     int, void *) ;
 
 //
 // Allocate a slider for the given instance.
@@ -137,7 +138,7 @@ Widget SliderInteractor::createInteractivePart(Widget form)
 		    si->getDecimals(1),
 		    (XtCallbackProc)SliderInteractor_SliderCB,
 		    1,
-		    (caddr_t)this);
+		    (void *)this);
 
     return this->sliderWidget;
 }
@@ -154,7 +155,7 @@ static Widget CreateSliderComponent(Widget  parent,
 				     int     decimalPlaces,
 				     XtCallbackProc valueChangedCallback,
 				     int     comp_index,
-				     caddr_t clientData)
+				     void * clientData)
 				     
 {
     Widget form,widget;

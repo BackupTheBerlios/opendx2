@@ -23,7 +23,4 @@ dxexec_LDADD = \
 	../dxmods/libDXMODS.a \
 	../libdx/libLIBDX.a \
 	../hwrender/libHW.a \
-	../hwrender/opengl/libOPENGL.a \
-	-L/usr/X11R6/lib \
-	-L/usr/local/lib \
-	-lm -lGL -lX11 -lXext
+	../hwrender/opengl/libOPENGL.a 

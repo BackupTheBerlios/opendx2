@@ -7,10 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 #include <stdarg.h>
-#include "../base/UIConfig.h"
 #include "../base/defines.h"
 #include "dxlP.h"
 #include "dxl.h"

@@ -7,15 +7,15 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "UIConfig.h"
 
 #include <Xm/MainW.h>
 
-#include "defines.h"
 #include "Application.h"
 #include "ConfirmedCommand.h"
 #include "QuestionDialogManager.h"

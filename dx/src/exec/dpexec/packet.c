@@ -11,6 +11,8 @@
 
 #include <dx/dx.h>
 
+#include "sfile.h"
+
 #include <stdio.h>
 
 #ifdef DXD_WIN
@@ -22,15 +24,6 @@
 
 #include <sys/time.h>
 #include <sys/ioctl.h>
-#endif
-
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#define EADDRINUSE      WSAEADDRINUSE
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#else
-#include <sys/socket.h>
 #endif
 
 #include <errno.h>
@@ -72,7 +65,7 @@ static char
     "$lnk"		/* PACK_LINK */
 };
 
-extern int	_dxd_exSockFD;
+extern SFILE 	*_dxd_exSockFD;
 extern int	_dxd_exRemote;
 
 static char 	**tmpbuffer = NULL;
@@ -123,7 +116,7 @@ _dxf_ExCheckPacket(char *packet, int length)
     int    one = 1;
     int    zero = 0;
 
-    if (_dxd_exSockFD >= 0)
+    if (_dxd_exSockFD != NULL)
     {
         /* It's possible we already have this locked on this processor if
          * _dxfCheckPacket needed to do a reallocate. The reallocate 
@@ -137,9 +130,9 @@ _dxf_ExCheckPacket(char *packet, int length)
 
 	if (tmpbufferused && *tmpbufferused > 0)
 	{
-	    IOCTL(_dxd_exSockFD, FIONBIO, &one);
-	    sts = write (_dxd_exSockFD, *tmpbuffer, *tmpbufferused);
-	    IOCTL(_dxd_exSockFD, FIONBIO, &zero);
+	    SFILEIoctl(_dxd_exSockFD, FIONBIO, &one);
+	    sts = writeToSFILE(_dxd_exSockFD, *tmpbuffer, *tmpbufferused);
+	    SFILEIoctl(_dxd_exSockFD, FIONBIO, &zero);
             if (sts > 0)
             {
 		*tmpbufferused -= sts;
@@ -152,9 +145,9 @@ _dxf_ExCheckPacket(char *packet, int length)
 	{
 	    if (sts > 0 && (!tmpbufferused || *tmpbufferused == 0))
 	    {
-		IOCTL(_dxd_exSockFD, FIONBIO, &one);
-	        sts = write (_dxd_exSockFD, packet, length);
-		IOCTL(_dxd_exSockFD, FIONBIO, &zero);
+		SFILEIoctl(_dxd_exSockFD, FIONBIO, &one);
+	        sts = writeToSFILE(_dxd_exSockFD, packet, length);
+		SFILEIoctl(_dxd_exSockFD, FIONBIO, &zero);
 		if (sts > 0) 
 		{    
 		    length -= sts;

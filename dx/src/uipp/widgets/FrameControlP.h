@@ -19,6 +19,9 @@
 
 /*
  * $Log: FrameControlP.h,v $
+ * Revision 1.7  2000/05/16 18:53:33  gda
+ * Changes to compile using MS compilers under Cygwin
+ *
  * Revision 1.6  1999/11/25 16:05:42  scottr
  *
  * Some of this may explain the recently reported problems with Motif 2.1. If
@@ -207,7 +210,7 @@ typedef struct _XmFrameControlPart
     short current_value;		/* last frame shown or queued (!!) */
     short stop_value;			/* last frame of current sequence  */
     short increment;			/* number of frames per advance    */
-    caddr_t	user_data;
+    void *user_data;
     XtCallbackList value_callback;      /* Callback list for any change    */
     Boolean current_visible;		/* Display the current info ?      */
     Boolean min_sensitive;		/* Min editiable?		   */

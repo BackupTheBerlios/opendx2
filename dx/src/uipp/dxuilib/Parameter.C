@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "defines.h"
 #include "lex.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "Parameter.h"
 #include "ParameterDefinition.h"
 #include "List.h"
@@ -47,13 +48,13 @@ Parameter::~Parameter()
     if (this->value) 
 	delete this->value;
 
-    this->disconnectArcs();
+    this->disconnectArks();
 
 }
 //
-// Remove all the Arcs connected to this parameter.
+// Remove all the Arks connected to this parameter.
 //
-void Parameter::disconnectArcs()
+void Parameter::disconnectArks()
 {
     //
     // call getElement(1) because the arc destructor will 
@@ -61,8 +62,8 @@ void Parameter::disconnectArcs()
     // arc that should be destroyed is always the first 
     // element in the list.
     //
-    Arc  *a;
-    while (a = (Arc*) this->arcs.getElement(1)) 
+    Ark  *a;
+    while (a = (Ark*) this->arcs.getElement(1)) 
        delete a;
 
 }
@@ -334,7 +335,7 @@ void Parameter::setUnconnectedDefaultingStatus(boolean defaulting)
 	this->defaultingWhenUnconnected = defaulting; 
     }
 }
-boolean Parameter::addArc(Arc *a)	
+boolean Parameter::addArk(Ark *a)	
 {
     boolean r = this->arcs.appendElement((const void*)a);
 

@@ -201,7 +201,7 @@ static Error object_ex(Object o, struct how *f)
 	 rc = clipped_ex((Clipped)o,f);
 	 break;
       default:
-	 DXSetError(ERROR_INVALID_DATA,"cannot export this object in array format");
+	 DXSetError(ERROR_DATA_INVALID,"cannot export this object in array format");
    }
 
    if (rc != OK)
@@ -562,7 +562,7 @@ static Error pvalue(struct array_info *arinfo,struct how *h,int item,int blank,i
 	 }
 	 break;
       default:
-	 DXSetError(ERROR_INVALID_DATA,"not implemented");
+	 DXSetError(ERROR_DATA_INVALID,"not implemented");
 	 goto error;
    }
 
@@ -715,7 +715,7 @@ static Error object_header(Object o,struct how *f)
 	 break;
       
       default:
-	 DXSetError(ERROR_INVALID_DATA,"cannot export this object in array format");
+	 DXSetError(ERROR_DATA_INVALID,"cannot export this object in array format");
          return ERROR;
    }
 

@@ -7,10 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "DXTensor.h"
 #include "DXValue.h"
 #include "Strings.h"

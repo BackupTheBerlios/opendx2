@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -20,7 +22,6 @@
 #include <Xm/RowColumn.h>
 #include <Xm/Separator.h>
 
-#include "defines.h"
 #include "lex.h"
 #include "SetAttrDialog.h"
 #include "ToggleAttrDialog.h"

@@ -7,12 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
 #include <stdio.h>
-#include "defines.h"
 
 void *operator new(size_t l)
 {

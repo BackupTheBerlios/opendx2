@@ -229,7 +229,7 @@ static Error ShadeIt(Object obj, int shade, char *how, float specular,
       goto error;
     break;
   default:
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "object must be a field, group, xform, or clipped object");
     goto error;
   }
@@ -308,7 +308,7 @@ static Error DoNormals(Object obj, int shade, char *how, int flipfront)
              goto error;
          }
          else if (shadeattribute != 1) {
-           DXSetError(ERROR_INVALID_DATA,
+           DXSetError(ERROR_DATA_INVALID,
                       "invalid shade attribute, must be 0 or 1");
            goto error;
          }
@@ -485,7 +485,7 @@ static Error CheckNormalsDirectionField(Field obj, int flipfront)
   /* get the element type attribute */
   eType = DXGetAttribute((Object)connections, "element type");
   if (! eType || DXGetObjectClass(eType) != CLASS_STRING) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "invalid or missing element type attribute");
     goto error;
   }
@@ -560,13 +560,13 @@ static Error CheckNormalsDirectionField(Field obj, int flipfront)
   
   dep = DXGetAttribute((Object)normals, "dep");
   if (! dep || DXGetObjectClass(dep) != CLASS_STRING) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "invalid or missing normals dep attribute");
     goto error;
   }
   str2 = DXGetString((String)dep);
   if (strcmp(str2, "positions") && strcmp(str2, "connections")) {
-    DXSetError(ERROR_INVALID_DATA,"unrecognized normals dep attribute");
+    DXSetError(ERROR_DATA_INVALID,"unrecognized normals dep attribute");
     goto error;
   }
   
@@ -582,7 +582,7 @@ static Error CheckNormalsDirectionField(Field obj, int flipfront)
   if (!DXGetArrayInfo(positions, NULL, NULL, NULL, &rank, shape))
     goto error;
   if (rank != 1) {
-    DXSetError(ERROR_INVALID_DATA,"rank %d positions not supported", rank);
+    DXSetError(ERROR_DATA_INVALID,"rank %d positions not supported", rank);
     goto error;
   }
   
@@ -593,7 +593,7 @@ static Error CheckNormalsDirectionField(Field obj, int flipfront)
     goto error;
   
   if ((shape[0] != 2)&&(shape[0] != 3)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "only 2D and 3D positions supported for quads and triangles");
     goto error;
   }

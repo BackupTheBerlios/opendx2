@@ -181,14 +181,14 @@ Error _dxfTextField(Pointer p)
    attr = DXGetString((String)DXGetComponentAttribute((Field)inobject,
 						      "data", "dep"));
    if (!attr) {
-      DXSetError(ERROR_INVALID_DATA,"#10255", "data","dep");
+      DXSetError(ERROR_DATA_INVALID,"#10255", "data","dep");
       goto error;
    }
    posted = 0;
 
    /* check the attribute */
    if (strcmp(attr,"connections") && (strcmp(attr,"positions"))) {
-      DXSetError(ERROR_INVALID_DATA,"unsupported data dependency \'%s\'",attr);
+      DXSetError(ERROR_DATA_INVALID,"unsupported data dependency \'%s\'",attr);
       goto error;
    }
 
@@ -258,21 +258,21 @@ Error _dxfTextField(Pointer p)
          goto error;
    }
    if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
-     DXSetError(ERROR_INVALID_DATA,
+     DXSetError(ERROR_DATA_INVALID,
 		"positions must be type float category real");
      goto error;
    }
    if (rank != 1) {
-     DXSetError(ERROR_INVALID_DATA,"positions must be rank 1");
+     DXSetError(ERROR_DATA_INVALID,"positions must be rank 1");
      goto error;
    }
    if ((posshape[0] < 1) || (posshape[0] > 3)) {
-     DXSetError(ERROR_INVALID_DATA,"positions must be 1D, 2D, or 3D");
+     DXSetError(ERROR_DATA_INVALID,"positions must be 1D, 2D, or 3D");
      goto error;
    }
    DXGetArrayInfo(data, &numitems, &type, &category, &rank, datashape);
    if (category != CATEGORY_REAL) {
-     DXSetError(ERROR_INVALID_DATA,"data must be category real");
+     DXSetError(ERROR_DATA_INVALID,"data must be category real");
      goto error;
    }
    if (rank==0)
@@ -288,7 +288,7 @@ Error _dxfTextField(Pointer p)
    else if (rank==2 && datashape[0]==2 &&datashape[1]==2)
      strcpy(glyph_rank,"matrix2");
    else if (type != TYPE_STRING) {
-     DXSetError(ERROR_INVALID_DATA,
+     DXSetError(ERROR_DATA_INVALID,
 		"data must be string, scalar, 2-vector, 3-vector, 2x2 or 3x3 matrix");
      goto error;
    }
@@ -344,7 +344,7 @@ Error _dxfTextField(Pointer p)
      strcpy(glyph_rank,"string");
      break;
    default:
-     DXSetError(ERROR_INVALID_DATA,"unrecognized data type");
+     DXSetError(ERROR_DATA_INVALID,"unrecognized data type");
      goto error;
    } 
    
@@ -358,25 +358,25 @@ Error _dxfTextField(Pointer p)
        DXGetArrayInfo(colors,NULL, &colorstype, NULL,&colorsrank,colorsshape);
        if (colorstype == TYPE_FLOAT) {
 	 if ((colorsrank != 1)||(colorsshape[0]!=3)) {
-	   DXSetError(ERROR_INVALID_DATA,
+	   DXSetError(ERROR_DATA_INVALID,
 		      "only 3D floating point or 1D delayed colors acceptable");
 	   goto error;
 	 }
        }
        else {
 	 if (colorstype != TYPE_UBYTE) {
-	   DXSetError(ERROR_INVALID_DATA,
+	   DXSetError(ERROR_DATA_INVALID,
 		      "only 3D floating point or 1D delayed colors acceptable");
 	   goto error;
 	 } 
 	 if (!((colorsrank == 0)||((colorsrank ==1)&&(colorsshape[0]==1)))) {
-	   DXSetError(ERROR_INVALID_DATA,
+	   DXSetError(ERROR_DATA_INVALID,
 		      "only 3D floating point or 1D delayed colors acceptable");
 	   goto error;
 	 }
 	 colormap = (Array)DXGetComponentValue((Field)inobject,"color map");
 	 if (!colormap) {
-	   DXSetError(ERROR_INVALID_DATA,
+	   DXSetError(ERROR_DATA_INVALID,
 		      "only 3D floating point or 1D delayed colors acceptable (no color map component)");
 	   goto error;
 	 }
@@ -384,17 +384,17 @@ Error _dxfTextField(Pointer p)
 			     &colorstype,NULL,&colorsrank, colorsshape))
 	   goto error;
 	 if (colorstype != TYPE_FLOAT) {
-	   DXSetError(ERROR_INVALID_DATA,
+	   DXSetError(ERROR_DATA_INVALID,
 		      "color map component must be of type float");
 	   goto error;
 	 }
 	 if ((colorsrank != 1)||(colorsshape[0]!=3)) {
-	   DXSetError(ERROR_INVALID_DATA,
+	   DXSetError(ERROR_DATA_INVALID,
 		      "color map component must be 3D");
 	   goto error;
 	 }
 	 if (numcoloritems != 256) {
-	   DXSetError(ERROR_INVALID_DATA,
+	   DXSetError(ERROR_DATA_INVALID,
 		      "color map component does not have 256 items");
 	   goto error;
 	 }
@@ -516,7 +516,7 @@ Error _dxfTextField(Pointer p)
 	   s = (float)data_ptr_ui[i];
            break;
          default:
-           DXSetError(ERROR_INVALID_DATA,"unrecognized data type");
+           DXSetError(ERROR_DATA_INVALID,"unrecognized data type");
            goto error;
 	 }
 	 sprintf(string, "%g", s);
@@ -955,7 +955,7 @@ Error
     /* make sure it has a data component */
     if (!_dxfHasDataComponent(outo)) {
     if (!strcmp(type_string,"text")) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 	       "field must have a data component for text glyphs"); 
       return ERROR;
     }
@@ -970,7 +970,7 @@ Error
           (!strcmp(type_string, "arrow2d"))||
           (!strcmp(type_string, "needle2d"))||
           (!strcmp(type_string, "rocket2d"))) {
-       DXSetError(ERROR_INVALID_DATA,
+       DXSetError(ERROR_DATA_INVALID,
         "only scalar glyph types accepted when no data component is present");
        return ERROR;
       }
@@ -1445,7 +1445,7 @@ Error
       data_incr = 4;
     }
     else {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 		 "data must be scalar, 2-vector, 3-vector, 2x2 or 3x3 matrix");
       return ERROR;
     }
@@ -1456,7 +1456,7 @@ Error
 
   /* check the attribute */
   if (strcmp(attr,"connections") && (strcmp(attr,"positions"))) {
-     DXSetError(ERROR_INVALID_DATA,"unsupported data dependency \'%s\'",attr);
+     DXSetError(ERROR_DATA_INVALID,"unsupported data dependency \'%s\'",attr);
      goto error;
   }
 
@@ -1598,7 +1598,7 @@ Error
   
   
   if ((pos_shape[0] < 1)||(pos_shape[0] > 3)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "positions must be 1, 2, or 3-Dimensional");
     return ERROR;
   }
@@ -1790,7 +1790,7 @@ Error
   map = (int *)DXAllocateLocalZero(num_pos*sizeof(int));
   if ((pos_type != TYPE_FLOAT)||(pos_category != CATEGORY_REAL)||
       (pos_rank != 1)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "positions component must type float, category real, rank 1");
     goto error;
   }
@@ -1800,7 +1800,7 @@ Error
   data_array = (Array)DXGetComponentValue((Field)outo,"data");
   if (data_array) {
     if (data_category != CATEGORY_REAL) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 		 "data component must be category real");
       goto error;
     }
@@ -3789,18 +3789,18 @@ Error
 						   "element type"));
     if (strcmp(attr,"triangles")&&(strcmp(attr,"lines"))) {
       /* only triangles supported for given glyph */
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 		 "only lines and triangles supported for given glyph");
       return ERROR;
     }
     
     DXGetArrayInfo(positions, numpoints, &type, &category, &rank, shape);
     if ((type != TYPE_FLOAT) || (category != CATEGORY_REAL)) {
-      DXSetError(ERROR_INVALID_DATA,"#10330", "given glyph positions");
+      DXSetError(ERROR_DATA_INVALID,"#10330", "given glyph positions");
       return ERROR;
     }
     if ((rank != 1) || ((shape[0] != 3) && (shape[0] != 2))) {
-      DXSetError(ERROR_INVALID_DATA,"#10340","given glyph positions");
+      DXSetError(ERROR_DATA_INVALID,"#10340","given glyph positions");
       return ERROR;
     }
 
@@ -3813,12 +3813,12 @@ Error
     if (*hasnormals)  {
       if (*out_pos_dim == 2) {
 	  /* normals are invalid for 2D positions */
-	  DXSetError(ERROR_INVALID_DATA, "#11817");
+	  DXSetError(ERROR_DATA_INVALID, "#11817");
 	  goto error;
       }
       if (strcmp(DXGetString((String)DXGetAttribute((Object)normals,"dep")), 
 		 "positions")) {
-         DXSetError(ERROR_INVALID_DATA,
+         DXSetError(ERROR_DATA_INVALID,
              "normals of given glyph must be dependent on positions");
          goto error;
       }
@@ -3826,7 +3826,7 @@ Error
       if ((type != TYPE_FLOAT) || (category != CATEGORY_REAL) 
   	|| (rank != 1) || (shape[0] != 3)) {
         /* given glyph must have 3D float normals */
-        DXSetError(ERROR_INVALID_DATA,"#10331", "given glyph normals");
+        DXSetError(ERROR_DATA_INVALID,"#10331", "given glyph normals");
         return ERROR;
       }
     }
@@ -3929,7 +3929,7 @@ Error
 
   case CLASS_GROUP:
     /* glyph object must be a single field */
-    DXSetError(ERROR_INVALID_DATA,"#10191", "given glyph");
+    DXSetError(ERROR_DATA_INVALID,"#10191", "given glyph");
     return ERROR;
     break;
     
@@ -3949,7 +3949,7 @@ Error
     break;
     
   default:
-    DXSetError(ERROR_INVALID_DATA,"#10191", "given glyph");
+    DXSetError(ERROR_DATA_INVALID,"#10191", "given glyph");
     return ERROR;
     break;
     
@@ -4191,7 +4191,7 @@ static Error GetNumberValidPositions(Object o, int *items)
           return ERROR;
      break;
   default:
-     DXSetError(ERROR_INVALID_DATA,"width heuristic can not operate");
+     DXSetError(ERROR_DATA_INVALID,"width heuristic can not operate");
      return ERROR;
 
   }
@@ -4403,7 +4403,7 @@ static Error GetGlyphName(float quality, char *glyph_rank,
       }
       else {
 	/* %s is an unknown glyph type */
-	DXSetError(ERROR_INVALID_DATA,"#11818", given_type_string);
+	DXSetError(ERROR_DATA_INVALID,"#11818", given_type_string);
        return ERROR;
       }
     }
@@ -4664,7 +4664,7 @@ static Error GetGlyphName(float quality, char *glyph_rank,
         }
       }
       else {
-        DXSetError(ERROR_INVALID_DATA,"%s is an unknown glyph type",
+        DXSetError(ERROR_DATA_INVALID,"%s is an unknown glyph type",
                  given_type_string);
         return ERROR;
       }
@@ -4762,7 +4762,7 @@ Error _dxfIndexGlyphObject(Object object, Object glyphs, float scale)
     
   default:
     /* (shouldn't be xforms, cause I called ApplyTransform) */
-    DXSetError(ERROR_INVALID_DATA,"must be a field or a group");
+    DXSetError(ERROR_DATA_INVALID,"must be a field or a group");
     return ERROR;
   }
 }
@@ -4828,7 +4828,7 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
 							 "data", 
 							 "dep"));
   if ((strcmp(dataattr,"positions")&&strcmp(dataattr,"connections"))) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "data must be dependent either on positions or on connections");
     goto error;
   }
@@ -4896,12 +4896,12 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
   if ((datatype != TYPE_INT)&&(datatype != TYPE_UINT)&&
       (datatype != TYPE_SHORT)&&(datatype != TYPE_USHORT)&&
       (datatype != TYPE_BYTE)&&(datatype != TYPE_UBYTE)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "for index glyphs, data type must be of an integral type");
     goto error;
   }
   if (!((datarank==0)||((datarank==1)&&(datashape[0]==1)))) {
-    DXSetError(ERROR_INVALID_DATA,"for index glyphs, data must be scalar");
+    DXSetError(ERROR_DATA_INVALID,"for index glyphs, data must be scalar");
     goto error;
   }
   
@@ -4933,16 +4933,16 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
     goto error;
   
   if (posrank != 1) {
-    DXSetError(ERROR_INVALID_DATA,"positions of data must be rank 1");
+    DXSetError(ERROR_DATA_INVALID,"positions of data must be rank 1");
     goto error;
   }
   if ((posshape[0] < 0)||(posshape[0]>3)) {
-    DXSetError(ERROR_INVALID_DATA,"positions of data must be 1, 2, or 3-D");
+    DXSetError(ERROR_DATA_INVALID,"positions of data must be 1, 2, or 3-D");
     goto error;
   }
   
   if (postype != TYPE_FLOAT) {
-    DXSetError(ERROR_INVALID_DATA,"positions component must be type float");
+    DXSetError(ERROR_DATA_INVALID,"positions component must be type float");
     goto error;
   }
   
@@ -5015,7 +5015,7 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
     glyphtouse = (Field)DXGetEnumeratedMember((Group)glyphs, 
 					      dataindex, NULL);
     if (!glyphtouse) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 		 "index %d not represented by a glyph in the glyph group", 
                  dataindex);
       goto error;
@@ -5034,7 +5034,7 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
 							     "normals", 
 							     "dep"));
       if ((strcmp(normattr,"positions")&&strcmp(normattr,"connections"))) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "normals must be dependent either on positions or on connections");
 	goto error;
       }
@@ -5050,24 +5050,24 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
 							  "colors", 
 							  "dep"));
     if ((strcmp(colattr,"positions")&&strcmp(colattr,"connections"))) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 		 "colors must be dependent either on positions or on connections");
       goto error;
     }
     if (colortype != TYPE_FLOAT) {
-      DXSetError(ERROR_INVALID_DATA,"glyph colors must be type float");
+      DXSetError(ERROR_DATA_INVALID,"glyph colors must be type float");
       goto error;
     }
     if (colorcategory != CATEGORY_REAL) {
-      DXSetError(ERROR_INVALID_DATA,"glyph colors must be category real");
+      DXSetError(ERROR_DATA_INVALID,"glyph colors must be category real");
       goto error;
     }
     if (colorrank != 1) {
-      DXSetError(ERROR_INVALID_DATA,"glyph colors must be rank 1");
+      DXSetError(ERROR_DATA_INVALID,"glyph colors must be rank 1");
       goto error;
     }
     if (colorshape[0] != 3) {
-      DXSetError(ERROR_INVALID_DATA,"glyph colors must be shape 3");
+      DXSetError(ERROR_DATA_INVALID,"glyph colors must be shape 3");
       goto error;
     }
     
@@ -5277,7 +5277,7 @@ static Error CheckGlyphGroup(Object glyphs, int *outshape, int *hasnormals,
   int rank, shape[8];
   
   if (DXGetObjectClass(glyphs) != CLASS_GROUP) {
-    DXSetError(ERROR_INVALID_DATA,"glyph group not class group");
+    DXSetError(ERROR_DATA_INVALID,"glyph group not class group");
     return ERROR;
   }
  
@@ -5286,7 +5286,7 @@ static Error CheckGlyphGroup(Object glyphs, int *outshape, int *hasnormals,
   for (i=0; i<nummembers; i++) {
     child = DXGetEnumeratedMember((Group)glyphs, i, NULL);
     if (DXGetObjectClass(child) != CLASS_FIELD) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 		 "children of glyph group must be fields");
       return ERROR;
     }
@@ -5296,7 +5296,7 @@ static Error CheckGlyphGroup(Object glyphs, int *outshape, int *hasnormals,
       connections = (Array)DXGetComponentValue((Field)child,"connections");
       colors = (Array)DXGetComponentValue((Field)child,"colors");
       if ((!positions)||(!connections)||(!colors)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "glyph group member is missing positions, data, or colors");
 	return ERROR;
       }
@@ -5304,12 +5304,12 @@ static Error CheckGlyphGroup(Object glyphs, int *outshape, int *hasnormals,
 						         "connections", 
                                                          "element type"));
       if (!attr) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "glyph group member is missing connections element type attribute");
 	return ERROR;
       }
       if ((strcmp(attr,"triangles"))&&(strcmp(attr,"lines"))) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "glyph group member connections must be triangles or lines");
 	return ERROR;
       }
@@ -5317,22 +5317,22 @@ static Error CheckGlyphGroup(Object glyphs, int *outshape, int *hasnormals,
 	return ERROR;
       
       if (type != TYPE_FLOAT) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "glyph group member must have floating point positions");
 	return ERROR;
       }
       if (category != CATEGORY_REAL) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "glyph group member must have category real positions");
 	return ERROR;
       }
       if (rank != 1) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "glyph group member must have rank 1 positions");
 	return ERROR;
       }
       if ((shape[0]<0 || shape[0]>3)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "glyph group member must have 1D, 2D, or 3D positions");
 	return ERROR;
       }
@@ -5351,20 +5351,20 @@ static Error CheckGlyphGroup(Object glyphs, int *outshape, int *hasnormals,
       else {
 	/* check that dimensionality matches others in the group */
 	if (shape[0] != *outshape) {
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "dimensionality of all glyphs in group must be the same");
 	  return ERROR;
 	}
         /* check that whether or not it has normals matches others in the
          * group */
 	if ((normals && (*hasnormals==0))||(!normals)&&(*hasnormals==1)) {
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "if one glyph in group has normals, all must");
 	  return ERROR;
 	}
         /* check that the element type matches others in the group */
         if (strcmp(attr, glyphelementtype)) {
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "element type of all glyphs in group must be the same");
 	  return ERROR;
         }
@@ -5391,7 +5391,7 @@ Error _dxfGetFontName(char *type_string, char *font)
     if (*start != '\0') {
       /* now look for "font=" */
       oldstart=start;
-      DXSetError(ERROR_INVALID_DATA,"unrecognized type string");
+      DXSetError(ERROR_DATA_INVALID,"unrecognized type string");
       start = strstr(start,"font=");
       if (start != NULL) {
 	/* found "font=" */
@@ -5465,7 +5465,7 @@ extern Error _dxfGetFieldTensorStats(Field field, float *min, float *max)
   attr = DXGetString((String)DXGetComponentAttribute((Field)field,
 						     "data", "dep"));
   if (!attr) {
-    DXSetError(ERROR_INVALID_DATA,"#10255", "data","dep");
+    DXSetError(ERROR_DATA_INVALID,"#10255", "data","dep");
     goto error;
   }
   
@@ -5476,7 +5476,7 @@ extern Error _dxfGetFieldTensorStats(Field field, float *min, float *max)
   if ((category != CATEGORY_REAL)||
       (rank != 2)||
       (!((shape[0] == 3)&&(shape[1]==3)||(shape[0]==2)&&(shape[1]==2)))){
-    DXSetError(ERROR_INVALID_DATA,"tensors must be 2x2 or 3x3 symmetric");
+    DXSetError(ERROR_DATA_INVALID,"tensors must be 2x2 or 3x3 symmetric");
     goto error;
   }
   if (shape[0]==2)
@@ -5509,7 +5509,7 @@ extern Error _dxfGetFieldTensorStats(Field field, float *min, float *max)
     data_ptr_ui = (uint *)DXGetArrayData(data);
     break;
   default:
-    DXSetError(ERROR_INVALID_DATA,"unrecognized data type");
+    DXSetError(ERROR_DATA_INVALID,"unrecognized data type");
     goto error;
   }
 

@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 #include <Xm/Form.h>
@@ -15,10 +16,14 @@
 #include <Xm/RowColumn.h>
 #include <Xm/Scale.h>
 #include <Xm/Separator.h>
+#define INT32 __INT32_HIDE
+#define BOOL __BOOL_HIDE
 #include <Xm/MwmUtil.h>
+#undef INT32
+#undef BOOL
+
 #include "../widgets/Stepper.h"
 
-#include "defines.h"
 #include "ViewControlDialog.h"
 #include "ImageWindow.h"
 #include "ImageNode.h"
@@ -30,6 +35,7 @@
 #include "Network.h"
 #include "PickNode.h"
 #include "ProbeNode.h"
+
 
 boolean ViewControlDialog::ClassInitialized = FALSE;
 String  ViewControlDialog::DefaultResources[] =

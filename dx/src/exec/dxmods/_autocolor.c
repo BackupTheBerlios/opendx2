@@ -1845,7 +1845,7 @@ extern int _dxfIsVolume(Object g_out, int *surface)
     else if ( !strcmp(el_type,"cubes") || !strcmp(el_type,"tetrahedra") )
       *surface = 0;
     else {
-      DXSetError(ERROR_INVALID_DATA,"unrecognized connections");
+      DXSetError(ERROR_DATA_INVALID,"unrecognized connections");
       return ERROR; 
     } 
   } 
@@ -2099,7 +2099,7 @@ extern Error _dxfBoundingBoxDiagonal(Object ob, float *thickness)
   
       *thickness = DXLength(DXSub(boxpoint[7], boxpoint[0])); 
       if (*thickness == 0.0) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		 "bounding box for volume has zero thickness");
 	return ERROR;
       }
@@ -2200,7 +2200,7 @@ extern Field _dxfMakeRGBColorMap(Field mapfield)
   
   if (!(datadep=DXGetString((String)
 			  DXGetComponentAttribute(mapfield,"data","dep")))) {
-    DXSetError(ERROR_INVALID_DATA,"missing data dependent attribute");
+    DXSetError(ERROR_DATA_INVALID,"missing data dependent attribute");
     return ERROR;
   }
   if (strcmp(datadep,"positions")) 

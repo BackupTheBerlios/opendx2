@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #if defined(DXD_LICENSED_VERSION)
@@ -25,7 +27,6 @@
 extern "C" void gettimer (int, struct timestruc_t* );
 #endif
 
-#include "defines.h"
 #include "Strings.h"
 
 #if defined(aviion) || defined(solaris) || defined(sgi)
@@ -78,13 +79,12 @@ int getdtablesize();
 extern "C"   int select(int , fd_set *, fd_set *, fd_set *, struct timeval *) ;
 #endif
 
-#include "UIConfig.h"
 #include "TemporaryLicense.h"
 
 
 const char *
 TemporaryLicense::MakeKey
-    (enum Arch arch, char *hostId, int months, int days, 
+    (enum Arkh arch, char *hostId, int months, int days, 
 	time_t *newTime, enum DxType type)
 {
     char               host[9];

@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/defines.h"
 
 #include <X11/StringDefs.h>
 
@@ -616,7 +617,7 @@ boolean StartupWindow::startPrompter()
 	char path[512];
 	sprintf(path, "%s/bin_%s/prompter", theIBMApplication->getUIRoot(), DXD_ARCHNAME);
 	close (fds[1]);
-	dup2 (fds[0], STDIN_FILENO);
+	dup2 (fds[0], 0);
 #if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
 	if (theStartupApplication->isLimitedUse()) 
 	    execl (path, path, "-limited", NUL(char*));
@@ -775,21 +776,13 @@ boolean StartupWindow::help()
        return FALSE;
     }
 
-#ifdef DXD_WIN
-    struct _stat buf;
-    if (_stat(helpfile, &buf) != 0) {
+    struct STATSTRUCT buf;
+
+    if (STAT(helpfile, &buf) != 0) {
        ErrorMessage(nohelp);
        return FALSE;
     }
     helpsize = buf.st_size;
-#else
-    struct stat buf;
-    if (stat(helpfile, &buf) != 0) {
-       ErrorMessage(nohelp);
-       return FALSE;
-    }
-    helpsize = (int)buf.st_size;
-#endif
 
     char *helpstr = new char[helpsize + 1];
     if (!helpstr) {

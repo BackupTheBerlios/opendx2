@@ -39,7 +39,7 @@ Error m_PickInvalidate(Object *in, Object *out)
    */
 
   if (!(DXGetObjectClass(in[1])==CLASS_FIELD)) {
-    DXSetError(ERROR_INVALID_DATA,"pickfield must be a field");
+    DXSetError(ERROR_DATA_INVALID,"pickfield must be a field");
     goto error;
   }
  

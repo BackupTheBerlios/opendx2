@@ -5,14 +5,33 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-
 #include <dxconfig.h>
 
-#ifndef _defines_h
-#define _defines_h
+#ifndef _DEFINES_H_
+#define _DEFINES_H_
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <dx/arch.h>
+
+#if defined(HAVE_WINDOWS_H) && defined(intelnt)
+#include <windows.h>
+#include <winsock.h>
+#define S_IXUSR S_IEXEC
+#define S_IXGRP S_IEXEC
+#define S_IXOTH S_IEXEC
+#define EADDRINUSE      WSAEADDRINUSE
+#define USING_WINSOCKS
+#endif
+
+#if defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
+#include <sys/socket.h>
+#elif defined(HAVE_SOCKET_H)
+#include <socket.h>
+#endif
 
 #if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
@@ -26,31 +45,70 @@
 #define MAX(a,b) ((a)>(b)?(a):(b))
 #endif
 
-#if defined(__cplusplus) || defined(c_plusplus)
-#ifdef DEBUG
-
-#ifdef	DXD_WIN
+#if defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
-#else
+#endif
+
+#if defined(HAVE_STREAM_H)
 #include <stream.h>
 #endif
 
-#endif
+#ifdef intelnt
+#define DXD_NON_UNIX_SOCKETS
 #endif
 
-#include "UIConfig.h"
+#if !defined(HAVE_GETLOGIN)
+#define GETLOGIN NULL
+#else
+#define GETLOGIN getlogin()
+#endif
 
-#ifdef DXD_NEEDS_TYPES_H
+#if defined(HAVE_TYPES_H)
 #include <types.h>
 #endif
 
-#ifdef DXD_NEEDS_PROCESS_H
+#if defined(HAVE_PROCESS_H)
 #include <process.h>
 #endif
 
-#ifdef DXD_WIN
+#if !defined(HAVE_GETPID)
+#if defined(HAVE__GETPID)
 #define getpid  _getpid
-#define DELETE DX_DELETE
+#else
+Got to have SOME getpid available
+#endif
+#endif
+
+#if !defined(HAVE_UNLINK)
+#if defined(HAVE__UNLINK)
+#define unlink  _unlink
+#else
+Got to have SOME unlink available
+#endif
+#endif
+
+#if !defined(HAVE_POPEN)
+#if defined(HAVE__POPEN)
+#define popen  _popen
+#else
+Got to have SOME popen available
+#endif
+#endif
+
+#if !defined(HAVE_ISATTY)
+#if defined(HAVE__ISATTY)
+#define isatty  _isatty
+#else
+Got to have SOME isatty available
+#endif
+#endif
+
+#if !defined(HAVE_PCLOSE)
+#if defined(HAVE__PCLOSE)
+#define pclose  _pclose
+#else
+Got to have SOME popen available
+#endif
 #endif
 
 /***
@@ -135,13 +193,21 @@ do {									\
 /*
  * Generic malloc routines which always return and take void*.
  */
+
+/*
+// What type does malloc return
+*/
+#ifdef sun4
+# define MALLOC_RETURNS malloc_t
+#else
+# define MALLOC_RETURNS void*
+#endif
+
 #define MALLOC(n)    ((void*)malloc(n))
 #define CALLOC(n,s)  ((void*)calloc((n),(s)))
 #define FREE(p)      (free((MALLOC_RETURNS)(p)))
 #define REALLOC(p,n) ((p)? (void*)realloc((MALLOC_RETURNS)(p), (n)): 	\
 			   (void*)malloc(n))
-
-#ifdef DXD_WIN
 
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN	128
@@ -151,6 +217,6 @@ do {									\
 #define MAXPATHLEN	128
 #endif
 
-#endif
+#define WORKSPACE_PAGES 1
 
-#endif /* _defines_h */
+#endif

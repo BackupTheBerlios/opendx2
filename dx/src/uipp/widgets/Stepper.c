@@ -190,7 +190,7 @@ static int DefaultInitialized = FALSE;
 #define DEF_VALUE 0
 #define DEF_STEP 1
 
-#if defined(hp700) || defined(solaris) || defined(sun4) || defined(aviion) || defined (DXD_WIN) || defined(OS2)
+#if defined(hp700) || defined(solaris) || defined(sun4) || defined(aviion) || defined (intelnt) || defined(OS2)
 #   define trunc(x) ((double)((int)(x)))
 #endif                                                                          
 
@@ -208,95 +208,95 @@ static XtResource resources[] =
     {
       XmNdataType, XmCDataType, XmRShort, sizeof(short),
       XtOffset(XmStepperWidget, stepper.data_type),
-      XmRImmediate, (caddr_t) INTEGER
+      XmRImmediate, (XtPointer) INTEGER
     },
     {
       XmNdValue, XmCDValue, XmRDouble, sizeof(double),
       XtOffset(XmStepperWidget, stepper.value.d),
-      XmRDouble, (caddr_t) &DefaultValDbl
+      XmRDouble, (XtPointer) &DefaultValDbl
     },
     {
       XmNfValue, XmCFValue, XmRFloat, sizeof(float),
       XtOffset(XmStepperWidget, stepper.value.f),
-      XmRFloat, (caddr_t) &DefaultValFlt
+      XmRFloat, (XtPointer) &DefaultValFlt
     },
     {
       XmNiValue, XmCIValue, XmRInt, sizeof(int),
       XtOffset(XmStepperWidget, stepper.value.i),
-      XmRImmediate, (caddr_t) DEF_VALUE
+      XmRImmediate, (XtPointer) DEF_VALUE
     },
     {
       XmNdMinimum, XmCDMinimum, XmRDouble, sizeof(double),
       XtOffset(XmStepperWidget, stepper.value_minimum.d),
-      XmRDouble, (caddr_t) &DefaultMinDbl
+      XmRDouble, (XtPointer) &DefaultMinDbl
     },
     {
       XmNfMinimum, XmCFMinimum, XmRFloat, sizeof(float),
       XtOffset(XmStepperWidget, stepper.value_minimum.f),
-      XmRFloat, (caddr_t) &DefaultMinFlt
+      XmRFloat, (XtPointer) &DefaultMinFlt
     },
     {
       XmNiMinimum, XmCIMinimum, XmRInt, sizeof(int),
       XtOffset(XmStepperWidget, stepper.value_minimum.i),
-      XmRImmediate, (caddr_t) -1000000
+      XmRImmediate, (XtPointer) -1000000
     },
     {
       XmNdMaximum, XmCDMaximum, XmRDouble, sizeof(double),
       XtOffset(XmStepperWidget, stepper.value_maximum.d),
-      XmRDouble, (caddr_t) &DefaultMaxDbl
+      XmRDouble, (XtPointer) &DefaultMaxDbl
     },
     {
       XmNfMaximum, XmCFMaximum, XmRFloat, sizeof(float),
       XtOffset(XmStepperWidget, stepper.value_maximum.f),
-      XmRFloat, (caddr_t) &DefaultMaxFlt
+      XmRFloat, (XtPointer) &DefaultMaxFlt
     },
     {
       XmNiMaximum, XmCIMaximum, XmRInt, sizeof(int),
       XtOffset(XmStepperWidget, stepper.value_maximum.i),
-      XmRImmediate, (caddr_t) 1000000
+      XmRImmediate, (XtPointer) 1000000
     },
     {
       XmNdValueStep, XmCDValueStep, XmRDouble, sizeof(double),
       XtOffset(XmStepperWidget, stepper.value_step.d),
-      XmRDouble, (caddr_t) &DefaultStepDbl
+      XmRDouble, (XtPointer) &DefaultStepDbl
     },
     {
       XmNfValueStep, XmCFValueStep, XmRFloat, sizeof(float),
       XtOffset(XmStepperWidget, stepper.value_step.f),
-      XmRFloat, (caddr_t) &DefaultStepFlt
+      XmRFloat, (XtPointer) &DefaultStepFlt
     },
     {
       XmNiValueStep, XmCIValueStep, XmRInt, sizeof(int),
       XtOffset(XmStepperWidget, stepper.value_step.i),
-      XmRImmediate, (caddr_t) 1
+      XmRImmediate, (XtPointer) 1
     },
     {
       XmNdigits, XmCDigits, XmRCardinal, sizeof(Cardinal),
       XtOffset(XmStepperWidget, stepper.num_digits),
-      XmRImmediate, (caddr_t) 8
+      XmRImmediate, (XtPointer) 8
     },
     {
       XmNdecimalPlaces, XmCDecimalPlaces, XmRInt, sizeof(int),
       XtOffset(XmStepperWidget, stepper.decimal_places),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNtime, XmCTime, XmRCardinal, sizeof(Cardinal),
       XtOffset(XmStepperWidget, stepper.time_interval),
-      XmRImmediate, (caddr_t) 200
+      XmRImmediate, (XtPointer) 200
     },
     {
       XmNtimeDelta, XmCTimeDelta, XmRCardinal, sizeof(Cardinal),
       XtOffset(XmStepperWidget, stepper.time_ddelta),
-      XmRImmediate, (caddr_t) 8
+      XmRImmediate, (XtPointer) 8
     },
     {
-      XmNarmCallback, XmCArmCallback, XmRCallback, sizeof(caddr_t),
+      XmNarmCallback, XmCArmCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmStepperWidget, stepper.step_callback),
       XmRCallback, NULL
     },
     {
-      XmNactivateCallback, XmCActivateCallback, XmRCallback, sizeof(caddr_t),
+      XmNactivateCallback, XmCActivateCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmStepperWidget, stepper.activate_callback),
       XmRCallback, NULL
     },
@@ -304,35 +304,35 @@ static XtResource resources[] =
       XmNincreaseDirection, XmCIncreaseDirection, XmRArrowDirection, 
       sizeof(unsigned char),
       XtOffset(XmStepperWidget, stepper.increase_direction), 
-      XmRImmediate, (caddr_t) XmARROW_RIGHT
+      XmRImmediate, (XtPointer) XmARROW_RIGHT
     },
     {
       XmNcenter, XmCCenter, XmRBoolean, sizeof(Boolean),
       XtOffset(XmStepperWidget, stepper.center_text),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     {
       XmNeditable, XmCEditable, XmRBoolean, sizeof(Boolean),
       XtOffset(XmStepperWidget, stepper.editable),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     {
       XmNrollOver, XmCRollOver, XmRBoolean, sizeof(Boolean),
       XtOffset(XmStepperWidget, stepper.roll_over),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     {
       XmNrecomputeSize, XmCRecomputeSize, XmRBoolean, sizeof(Boolean),
       XtOffset(XmStepperWidget, stepper.resize_to_number),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     {
       XmNfixedNotation, XmCFixedNotation, XmRBoolean, sizeof(Boolean),
       XtOffset(XmStepperWidget, stepper.is_fixed),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     {
-      XmNwarningCallback, XmCCallback, XmRCallback, sizeof(caddr_t),
+      XmNwarningCallback, XmCCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmStepperWidget, stepper.warning_callback),
       XmRCallback, NULL
     },
@@ -383,7 +383,7 @@ XmStepperClassRec xmStepperClassRec = {
 	defaultTranslations,		/* tm_table			*/
 	(XtGeometryHandler)PreferredSize,/* query_geometry		*/
 	(XtStringProc) NULL,		/* display_accelerator		*/
-	(caddr_t) NULL,			/* extension			*/
+	(void *) NULL,			/* extension			*/
     },
     /*
      *  CompositeClassPart:
@@ -393,7 +393,7 @@ XmStepperClassRec xmStepperClassRec = {
 	(XtWidgetProc)ChangeManaged,	/* change_managed		*/
 	(XtWidgetProc)XtInheritInsertChild,	/* insert_child		*/
 	(XtWidgetProc)XtInheritDeleteChild,	/* delete_child		*/
-	(caddr_t) NULL,			/* extension			*/
+	(void *) NULL,			/* extension			*/
     },
     /*
      *  ConstraintClassPart:

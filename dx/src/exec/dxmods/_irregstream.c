@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.3 1999/05/10 15:45:19 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.4 2000/05/16 18:47:24 gda Exp $
  */
 
 
@@ -531,7 +531,7 @@ _dxfIrreg_InitVectorGrp(Object object, char *elementType)
     
     if (eDef->elementType == NULL)
     {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		"unknown element type: %s", elementType);
 	return NULL;
     }
@@ -653,7 +653,7 @@ Irreg_InitVectorPart(Field f, Irreg_VectorGrp iP)
     attr = DXGetComponentAttribute(f, "data", "dep");
     if (! attr | DXGetObjectClass(attr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, "data dependency");
+	DXSetError(ERROR_DATA_INVALID, "data dependency");
 	goto error;
     }
 
@@ -684,7 +684,7 @@ Irreg_InitVectorPart(Field f, Irreg_VectorGrp iP)
     if (! DXTypeCheck(ip->cArray, TYPE_INT,
 			CATEGORY_REAL, 1, iP->vrtsPerElement))
     {
-	DXSetError(ERROR_INVALID_DATA, "connections");
+	DXSetError(ERROR_DATA_INVALID, "connections");
 	return NULL;
     }
 
@@ -729,7 +729,7 @@ Irreg_InitVectorPart(Field f, Irreg_VectorGrp iP)
 
     if (! DXTypeCheck(ip->pArray, TYPE_FLOAT, CATEGORY_REAL, 1, iP->P.nDim))
     {
-	DXSetError(ERROR_INVALID_DATA, "positions");
+	DXSetError(ERROR_DATA_INVALID, "positions");
 	return NULL;
     }
     
@@ -750,7 +750,7 @@ Irreg_InitVectorPart(Field f, Irreg_VectorGrp iP)
 
     if (! DXTypeCheck(array, TYPE_FLOAT, CATEGORY_REAL, 1, iP->P.nDim))
     {
-	DXSetError(ERROR_INVALID_DATA, "data");
+	DXSetError(ERROR_DATA_INVALID, "data");
 	return NULL;
     }
 
@@ -2056,7 +2056,7 @@ Irreg_CurlMap(VectorGrp P, MultiGrid mg)
     {
 	if (iP->P.p[0]->dependency == DEP_ON_CONNECTIONS)
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 	      "cannot compute curl when data is dependent on connections");
 	    goto error;
 	}
@@ -2095,7 +2095,7 @@ Irreg_CurlMap(VectorGrp P, MultiGrid mg)
 
 	    if (args.part->p.dependency == DEP_ON_CONNECTIONS)
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 		  "cannot compute curl when data is dependent on connections");
 		DXAbortTaskGroup();
 		goto error;

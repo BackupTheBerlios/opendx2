@@ -11,7 +11,6 @@
 
 
 
-#include "UIConfig.h"
 
 #include "StandIn.h"
 #include "ItalicLabeledStandIn.h"

@@ -74,7 +74,7 @@ DXMap(Object g_in, Object map, char *srcComponent, char *dstComponent)
 		break;
 	
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "map type invalid");
+	    DXSetError(ERROR_DATA_INVALID, "map type invalid");
 	    return NULL;
     }
 
@@ -91,7 +91,7 @@ DXMap(Object g_in, Object map, char *srcComponent, char *dstComponent)
 
 	    if (nItems != 1)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "constant array size != 1");
+		DXSetError(ERROR_DATA_INVALID, "constant array size != 1");
 		return NULL;
 	    }
 
@@ -100,7 +100,7 @@ DXMap(Object g_in, Object map, char *srcComponent, char *dstComponent)
 
 	    if (nItems <= 0)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "index array length < 1");
+		DXSetError(ERROR_DATA_INVALID, "index array length < 1");
 		return NULL;
 	    }
 
@@ -223,7 +223,7 @@ Map_Object(Object inObject, Object map, char *src, char *dst)
 	    return Map_Object(child, map, src, dst);
 	
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "Unknown object class");
+	    DXSetError(ERROR_DATA_INVALID, "Unknown object class");
 	    return ERROR;
     }
 }
@@ -354,7 +354,7 @@ Map_Field_Task(Pointer task)
 	    if (DXGetGroupClass((Group)map) != CLASS_COMPOSITEFIELD ||
 		DXGetGroupClass((Group)map) != CLASS_MULTIGRID)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "invalid map");
+		DXSetError(ERROR_DATA_INVALID, "invalid map");
 		return ERROR;
 	    }
 	case CLASS_XFORM:
@@ -386,7 +386,7 @@ Map_Field_Task(Pointer task)
 	    break;
 	
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "invalid map");
+	    DXSetError(ERROR_DATA_INVALID, "invalid map");
 	    return ERROR;
     }
 
@@ -483,7 +483,7 @@ MapArrayConstantReg(RegularArray indexArray,
 
     if (! DXGetMapType((Object)mapInterp, &type, &cat, &rank, shape))
     {
-	DXSetError(ERROR_INVALID_DATA, "unable to access data type of map");
+	DXSetError(ERROR_DATA_INVALID, "unable to access data type of map");
 	return NULL;
     }
 
@@ -564,7 +564,7 @@ MapArrayIrreg(Array indexArray, Interpolator mapInterp, Array *iaPtr)
      */
     if (! DXGetMapType((Object)mapInterp, &type, &cat, &rank, shape))
     {
-	DXSetError(ERROR_INVALID_DATA, "unable to access data type of map");
+	DXSetError(ERROR_DATA_INVALID, "unable to access data type of map");
 	return NULL;
     }
 
@@ -681,7 +681,7 @@ Map_Field_Constant(Array indexArray, Array map)
     DXGetArrayInfo(map, &nItems, &type, &cat, &rank, shape);
     if (nItems != 1)
     {
-	DXSetError(ERROR_INVALID_DATA, "constant array nItems != 1");
+	DXSetError(ERROR_DATA_INVALID, "constant array nItems != 1");
 	return NULL;
     }
 
@@ -971,7 +971,7 @@ CheckNamedType(Object obj, char *name, Type t, Category c, int r, int *s)
 	
 	default:
 
-	    DXSetError(ERROR_INVALID_DATA, "invalid map object");
+	    DXSetError(ERROR_DATA_INVALID, "invalid map object");
 	    return NT_ERROR;
     }
 }
@@ -1025,7 +1025,7 @@ DXMapCheck(Object in, Object map, char *srcComponent,
 		return NULL;
 	    else if (n != 1)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "map is an array of length != 1");
+		DXSetError(ERROR_DATA_INVALID, "map is an array of length != 1");
 		return NULL;
 	    }
 
@@ -1106,7 +1106,7 @@ DXMapCheck(Object in, Object map, char *srcComponent,
 		    !((mR == 1 && mS[0] == 1 && iR == 0) ||
 		      (iR == 1 && iS[0] == 1 && mR == 0))))
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 		    "rank/shape mismatch between input and map");
 		return NULL;
 	    }
@@ -1115,7 +1115,7 @@ DXMapCheck(Object in, Object map, char *srcComponent,
 		for (i = 0; i < mR; i++)
 		    if (mS[i] != iS[i])
 		    {
-			DXSetError(ERROR_INVALID_DATA, 
+			DXSetError(ERROR_DATA_INVALID, 
 			    "rank/shape mismatch between input and map");
 			return NULL;
 		    }
@@ -1126,7 +1126,7 @@ DXMapCheck(Object in, Object map, char *srcComponent,
 
 	default:
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"Map must be field, composite field or array");
 	    return NULL;
 	}

@@ -7,14 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _StreaklineNode_h
 #define _StreaklineNode_h
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "Node.h"
 
 

@@ -34,10 +34,6 @@
 extern "C" int gethostname(char *address, int address_len);
 #endif
 
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#endif
-
 boolean DXDragSource::DXDragSourceClassInitialized = FALSE;
 
 static char *header_fmt = "%s:%d, net length = %d, cfg length = %d\n";
@@ -85,7 +81,7 @@ FILE            *cfgf = 0;
 char            netfilename[256];
 char            cfgfilename[256];
 char            header[256];
-struct stat     statb;
+struct STATSTRUCT statb;
 char            *buf;
 size_t          sz;
 unsigned long   header_len;
@@ -151,7 +147,7 @@ int		tmpdirlen;
 	//
 	// Get the length of the cfg file
 	//
-        if(stat(cfgfilename, &statb) == -1)
+        if(STAT(cfgfilename, &statb) == -1)
         {
             WarningMessage("DXDragSource:stat Drag conversion failed");
 	    fclose (netf);
@@ -163,7 +159,7 @@ int		tmpdirlen;
     //
     // Get the length of the net file
     //
-    if(stat(netfilename, &statb) == -1)
+    if(STAT(netfilename, &statb) == -1)
     {
         WarningMessage("DXDragSource:stat Drag conversion failed");
 	if (netf) fclose(netf);

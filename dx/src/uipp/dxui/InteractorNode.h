@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -81,7 +83,6 @@
 #define _InteractorNode_h
 
 
-#include "defines.h"
 #include "ShadowedOutputNode.h"
 #include "InteractorStyle.h"
 

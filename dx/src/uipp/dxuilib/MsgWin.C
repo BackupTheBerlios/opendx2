@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "UIConfig.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -23,7 +24,6 @@
 #include <Xm/List.h>
 #include <Xm/RowColumn.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "MsgWin.h"
 

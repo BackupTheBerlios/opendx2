@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include "../base/defines.h"
 
 
 #include <X11/Xlib.h>

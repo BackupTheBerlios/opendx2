@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _Dictionary_h
 #define _Dictionary_h
 
 
-#include "defines.h"
 #include "Base.h"
 #include "SymbolManager.h"
 #include "List.h"

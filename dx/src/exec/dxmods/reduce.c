@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/reduce.c,v 1.3 1999/05/10 15:45:29 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/reduce.c,v 1.4 2000/05/16 18:48:11 gda Exp $:
  */
 
 /***
@@ -139,7 +139,7 @@ m_Reduce(Object *in, Object *out)
 	    DXErrorReturn(ERROR_BAD_PARAMETER, "bad reduction specification");
 
 	if (nDim > MAX_DIMENSION)
-	    DXErrorReturn(ERROR_INVALID_DATA, "dimension too high");
+	    DXErrorReturn(ERROR_DATA_INVALID, "dimension too high");
 	
 	if (! DXGetArrayInfo((Array)in[1], &nFactors, NULL, NULL, NULL, NULL))
 	    DXErrorReturn(ERROR_BAD_PARAMETER, 
@@ -439,7 +439,7 @@ GrowObject(Object object, float maxFactor)
 	    {
 		if (DXGetObjectClass((Object)field) != CLASS_FIELD)
 		{
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			"invalid member of composite field");
 		    return NULL;
 		}
@@ -457,7 +457,7 @@ GrowObject(Object object, float maxFactor)
 
 		if (! DXQueryGridConnections(array, NULL, NULL))
 		{
-		    DXSetError(ERROR_INVALID_DATA, "irregular connections");
+		    DXSetError(ERROR_DATA_INVALID, "irregular connections");
 		    return NULL;
 		}
 
@@ -507,7 +507,7 @@ GrowObject(Object object, float maxFactor)
 	
 	default:
 
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 	    	"unsupported object class encountered");
 	    return NULL;
     }
@@ -565,7 +565,7 @@ reduce:
 	    break;
 	
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "invalid data object");
+	    DXSetError(ERROR_DATA_INVALID, "invalid data object");
 	    result = NULL;
 	    break;
     }
@@ -603,7 +603,7 @@ ReduceCField(CompositeField cfield, Private factors, int nDim)
     {
 	if (DXGetObjectClass((Object)child) != CLASS_FIELD)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "invalid member of composite field");
+	    DXSetError(ERROR_DATA_INVALID, "invalid member of composite field");
 	    return NULL;
 	}
 
@@ -711,19 +711,19 @@ ReduceFieldTask(Pointer ptr)
 
     if (NULL == DXQueryGridConnections(inCons, &nDimCons, inCCounts))
     {
-	DXSetError(ERROR_INVALID_DATA, "field connections irregular");
+	DXSetError(ERROR_DATA_INVALID, "field connections irregular");
 	return ERROR;
     }
 	
     if (nDim != 1 && nDim != nDimCons)
     {
-	DXSetError(ERROR_INVALID_DATA, "dimension disagreement");
+	DXSetError(ERROR_DATA_INVALID, "dimension disagreement");
 	return ERROR;
     }
 
     if (! DXGetMeshOffsets((MeshArray)inCons, meshOffsets))
     {
-	DXSetError(ERROR_INVALID_DATA, "field connections irregular");
+	DXSetError(ERROR_DATA_INVALID, "field connections irregular");
 	return ERROR;
     }
 
@@ -764,7 +764,7 @@ ReduceFieldTask(Pointer ptr)
     {
 	if (inCCounts[i] < 1)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "<1 poins along %d axis", i);
+	    DXSetError(ERROR_DATA_INVALID, "<1 poins along %d axis", i);
 	    return ERROR;
 	}
 
@@ -946,7 +946,7 @@ ReduceArrayReg(Array inArray, int nDimGrid,
 
     if (nextAxis != nDimGrid)
     {
-	DXSetError(ERROR_INVALID_DATA, "regular data dimensions mismatch grid");
+	DXSetError(ERROR_DATA_INVALID, "regular data dimensions mismatch grid");
 	return NULL;
     }
 
@@ -1052,7 +1052,7 @@ ReduceArrayIrreg(Array inDataArray, int nDim, int *filter, Shoulder *shoulders,
 
     if (cat != CATEGORY_REAL || nItems <= 0)
     {
-	DXSetError(ERROR_INVALID_DATA, "bad data component");
+	DXSetError(ERROR_DATA_INVALID, "bad data component");
 	return NULL;
     }
 
@@ -1594,7 +1594,7 @@ ReducedMeshOffsets(CompositeField cfield, Private pfactors)
 	{
 	    if (! DXQueryGridConnections(conn, &nDim, NULL))
 	    {
-		DXSetError(ERROR_INVALID_DATA, "irregular connections found");
+		DXSetError(ERROR_DATA_INVALID, "irregular connections found");
 		return NULL;
 	    }
 

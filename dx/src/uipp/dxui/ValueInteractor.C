@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 #include <Xm/Xm.h>
 #include <Xm/Text.h>
 
-#include "defines.h"
 #include "Application.h"
 #include "ValueNode.h"
 #include "ValueInteractor.h"

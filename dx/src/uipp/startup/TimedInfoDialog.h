@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _TimedInfoDialog_h
 #define _TimedInfoDialog_h
 
 
-#include "defines.h"
 #include "TimedDialog.h"
 
 

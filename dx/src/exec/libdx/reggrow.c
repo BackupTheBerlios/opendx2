@@ -148,7 +148,7 @@ _dxfRegGrow(Object object, int nRings, Pointer fill,  Array compArray)
 
     if (DXGetObjectClass(object) != CLASS_GROUP)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 			"_dxfRegGrow called with object of wrong class");
 	return NULL;
     }
@@ -232,7 +232,7 @@ _dxfRegShrink(Object object)
 	    
 	default:
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 			"_dxfRegGrow called with object of wrong class");
 	    return NULL;
 	}
@@ -333,7 +333,7 @@ GrowPartition(Pointer ptr)
     str = DXGetString((String)attr);
     if (! str)
     {
-	DXSetError(ERROR_INVALID_DATA, "bad element type specification");
+	DXSetError(ERROR_DATA_INVALID, "bad element type specification");
 	goto error;
     }
 
@@ -1104,7 +1104,7 @@ ShrinkPartition(Pointer ptr)
 	    }
 	    else
 	    {
-		DXSetError(ERROR_INVALID_DATA, "illegal dependency: %s", 
+		DXSetError(ERROR_DATA_INVALID, "illegal dependency: %s", 
 					    DXGetString((String)attr));
 		goto error;
 	    }
@@ -1811,7 +1811,7 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
 
 	    if (strncmp(name, "invalid", 7))
 	    {
-		DXSetError(ERROR_INVALID_DATA, "mismatching components: %s",
+		DXSetError(ERROR_DATA_INVALID, "mismatching components: %s",
 							name);
 		goto error;
 	    }
@@ -2016,7 +2016,7 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
 	    if ((ddep == DEP_ON_CONNECTIONS && sref != REFS_CONNECTIONS) ||
 		(ddep == DEP_ON_POSITIONS   && sref != REFS_POSITIONS  ))
 	    {
-		DXSetError(ERROR_INVALID_DATA, "depref mismatch");
+		DXSetError(ERROR_DATA_INVALID, "depref mismatch");
 		goto error;
 	    }
 
@@ -2052,7 +2052,7 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
 	    if ((sdep == DEP_ON_CONNECTIONS && dref != REFS_CONNECTIONS) ||
 		(sdep == DEP_ON_POSITIONS   && dref != REFS_POSITIONS  ))
 	    {
-		DXSetError(ERROR_INVALID_DATA, "depref mismatch");
+		DXSetError(ERROR_DATA_INVALID, "depref mismatch");
 		goto error;
 	    }
 
@@ -2445,7 +2445,7 @@ GetIJKBox(Field partition, int *box, int *nDim)
 	 n > 3   					||
 	!DXGetMeshOffsets((MeshArray)array, offsets))
     {
-	DXSetError(ERROR_INVALID_DATA,"regular connections of dim <= 3 expected");
+	DXSetError(ERROR_DATA_INVALID,"regular connections of dim <= 3 expected");
 	return ERROR;
     }
 
@@ -2551,7 +2551,7 @@ DXQueryOriginalMeshExtents(Field f, int *offsets, int *sizes)
     {
 	if (! DXQueryGridConnections(orig, &nDim, sizes))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "regular connections required");
+	    DXSetError(ERROR_DATA_INVALID, "regular connections required");
 	    return NULL;
 	}
     }
@@ -2561,21 +2561,21 @@ DXQueryOriginalMeshExtents(Field f, int *offsets, int *sizes)
 	grown = (Array)DXGetComponentValue(f, "connections");
 	if (! grown)
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		"grown connections component not found");
 	    return NULL;
 	}
 
 	if (!DXGetMeshOffsets((MeshArray)orig, oOffsets))
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"error retrieving original mesh offset");
 	    return NULL;
 	}
 
 	if (!DXGetMeshOffsets((MeshArray)grown, grownOffsets))
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"error retrieving grown mesh offset");
 	    return NULL;
 	}
@@ -2955,7 +2955,7 @@ GetDepRef(Array array, int *dep, int *ref)
     {
 	if (DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10200", "ref attribute");
+	    DXSetError(ERROR_DATA_INVALID, "#10200", "ref attribute");
 	    return ERROR;
 	}
 
@@ -2974,7 +2974,7 @@ GetDepRef(Array array, int *dep, int *ref)
     {
 	if (DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10200", "dep attribute");
+	    DXSetError(ERROR_DATA_INVALID, "#10200", "dep attribute");
 	    return ERROR;
 	}
 

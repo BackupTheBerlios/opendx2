@@ -7,15 +7,15 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "UIConfig.h"
 
 #include <Xm/Xm.h>
 #include <Xm/FileSB.h>
 #include <Xm/SelectioB.h>
 
-#include "defines.h"
 #include "OpenCommand.h"
 #include "DXApplication.h"
 #include "DXWindow.h"

@@ -7,23 +7,16 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <dx/dx.h>
+#include "sfile.h"
 
-
+ 
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 #include <dx/arch.h>
 #include <sys/types.h>
 
-
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#define EADDRINUSE      WSAEADDRINUSE
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#else
-#include <sys/socket.h>
-#endif
 
 #if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
@@ -100,6 +93,7 @@ _dxf_ExGetSocket(char *name, int *port)
  * ui connects, and returns the new connection, closing the one not
  * selected.
  */
+SFILE *
 _dxf_ExInitServer(int pport)
 {
     int sock = -1;
@@ -118,20 +112,11 @@ _dxf_ExInitServer(int pport)
     extern int errno;
     int tries;
     fd_set fds;
-#if DXD_HAS_GETDTABLESIZE
-    int width = getdtablesize();
-#else
-#ifdef DXD_HAS_WINSOCKETS
     int width = FD_SETSIZE;
-#else
-    int width = MAXFUPLIM;
-#endif
-#endif
     struct timeval to;
 
     port = pport;
 
-retry:
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0)
     {
@@ -143,9 +128,6 @@ retry:
     sl.l_onoff = 1;
     sl.l_linger = 0;
     setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *)&sl, sizeof(sl));
-#if defined(DXD_HAS_IBM_OS2_SOCKETS)  || defined(DXD_HAS_WINSOCKETS)
-    SOCK_SETSOCKET(sock);
-#endif
 
 #if DXD_SOCKET_UNIXDOMAIN_OK
     usock = socket(AF_UNIX, SOCK_STREAM, 0);
@@ -157,9 +139,6 @@ retry:
     }
 
     setsockopt(usock, SOL_SOCKET, SO_LINGER, &sl, sizeof(sl));
-#if defined(DXD_HAS_IBM_OS2_SOCKETS)  || defined(DXD_HAS_WINSOCKETS)
-    SOCK_SETSOCKET(sock);
-#endif
 #endif
 
     server.sin_family = AF_INET;
@@ -320,9 +299,6 @@ retry:
 	    fd = -1;
 	    goto error;
 	}
-#if defined(DXD_HAS_IBM_OS2_SOCKETS)  || defined(DXD_HAS_WINSOCKETS)
-        SOCK_SETSOCKET(fd);
-#endif
 
 #if DXD_SOCKET_UNIXDOMAIN_OK
     }
@@ -334,9 +310,6 @@ retry:
 	    fd = -1;
 	    goto error;
 	}
-#if defined(DXD_HAS_IBM_OS2_SOCKETS)  || defined(DXD_HAS_WINSOCKETS)
-        SOCK_SETSOCKET(fd);
-#endif
     }
 #endif
 
@@ -351,7 +324,7 @@ error:
 #endif
     if (sock >= 0)
 	close (sock);
-    return (fd);
+    return socketToSFILE(fd);
 }
 
 /*
@@ -366,7 +339,6 @@ init_client(char *host, int pport)
     struct sockaddr_un userver;
 #endif
     struct hostent *hp;
-    int length;
 #if DXD_HAS_GETHOSTBYNAME
     struct hostent *gethostbyname();
 #endif
@@ -391,9 +363,6 @@ init_client(char *host, int pport)
 	    close(sock);
 	    return(-1);
 	}
-#if defined(DXD_HAS_IBM_OS2_SOCKETS)  || defined(DXD_HAS_WINSOCKETS)
-        SOCK_SETSOCKET(sock);
-#endif
     }
     else
 #endif
@@ -422,9 +391,6 @@ init_client(char *host, int pport)
 	    close(sock);
 	    return(-1);
 	}
-#if defined(DXD_HAS_IBM_OS2_SOCKETS)  || defined(DXD_HAS_WINSOCKETS)
-        SOCK_SETSOCKET(sock);
-#endif
     }
 
     printf ("client:  connected to server\n");

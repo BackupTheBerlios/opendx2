@@ -243,7 +243,7 @@ _ComponentXX(Array a, Pointer *data, int *n, int nreq, Type t, int dim,
     if (n)
 	*n = nn;
     else if (nreq!=nn) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		 "component has %d items, requires %d", nn, nreq);
 	return NULL;
     }

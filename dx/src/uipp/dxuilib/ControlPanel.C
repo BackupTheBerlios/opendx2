@@ -7,9 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
-#include "defines.h"
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <Xm/Xm.h>

@@ -7,12 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "defines.h"
 #include <iostream.h>
 #include <sys/types.h>
 
+#if 0
 #if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
 #elif defined(HAVE_CYGWIN_SOCKET_H)
@@ -20,11 +22,13 @@
 #elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
+#endif
 
-#ifndef DXD_OS_NON_UNIX		 //	#ifndef OS2
+#if defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
 #endif
-#ifndef  DXD_DO_NOT_REQ_UNISTD_H
+
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 
@@ -1666,7 +1670,7 @@ void ImageWindow::setDisplayGlobe()
 /*****************************************************************************/
 char *ImageWindow::getDisplayString()
 {
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SYS_UTSNAME_H)
     struct
     utsname   name;
 #else
@@ -1727,7 +1731,7 @@ char *ImageWindow::getDisplayString()
 #endif
     if (display)
     {
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SYS_UTSNAME_H)
 	if (uname(&name) < 0)
 #else
         if (gethostname(name.nodename, HOST_NAMELEN) < 0)
@@ -1735,7 +1739,7 @@ char *ImageWindow::getDisplayString()
 	{
 	    return NULL;
 	}
-#ifdef DXD_LACKS_UTS
+#if !defined(HAVE_SYS_UTSNAME_H)
         cp = strchr(name.nodename,'.');
         if (cp != NULL) 
         {
@@ -1796,7 +1800,7 @@ char *ImageWindow::getDisplayString()
     else
     {
 	(void)gethostname(host, 63);
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SYS_UTSNAME_H)
         if (uname(&name) < 0)
 #else
         if (gethostname(name.nodename, HOST_NAMELEN) < 0)
@@ -1804,7 +1808,7 @@ char *ImageWindow::getDisplayString()
         {
             return NULL;
         }
-#ifdef DXD_LACKS_UTS
+#if !defined(HAVE_SYS_UTSNAME_H)
         cp = strchr(name.nodename,'.');
         if (cp != NULL) 
         {
@@ -3741,7 +3745,7 @@ void ImageWindow::setViewAngle(double viewAngle)
     //     view angle make stuff at the old distance look the same.
     //
     ImageNode *in = (ImageNode*)this->node;
-    if (!this->currentInteractionMode != NAVIGATE)
+    if (this->currentInteractionMode != NAVIGATE)
     {
 	double oldViewAngle;
 	in->getViewAngle(oldViewAngle);

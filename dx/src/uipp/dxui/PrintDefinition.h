@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _PrintDefinition_h
@@ -14,8 +16,6 @@
 
 #include <Xm/Xm.h>
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "NodeDefinition.h"
 
 

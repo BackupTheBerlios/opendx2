@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 #define _MacroParameterNode_h
 
 
-#include "defines.h"
 #include "UniqueNameNode.h"
 
 
@@ -28,7 +29,7 @@
 // Referenced Classes
 class Network;
 class ParameterDefinition;
-class Arc;
+class Ark;
 
 //
 // MacroParameterNode class definition:
@@ -53,8 +54,8 @@ class MacroParameterNode : public UniqueNameNode
     virtual char *netNodeString(const char *prefix);
     virtual boolean netPrintAuxComment(FILE *f);
 
-    virtual boolean addIOArc(List *io, int index, Arc *a);
-    virtual boolean removeIOArc(List *io, int index, Arc *a);
+    virtual boolean addIOArk(List *io, int index, Ark *a);
+    virtual boolean removeIOArk(List *io, int index, Ark *a);
 
   public:
     //

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 #define _EditorWorkSpace_h
 #include <Xm/Xm.h>
 
-#include "defines.h"
 #include "WorkSpace.h"
 #include "DXDropSite.h"
 
@@ -31,7 +32,7 @@
 
 class NodeDefinition;
 class Node;
-class Arc;
+class Ark;
 class PageTab;
 class WorkSpaceInfo;
 
@@ -106,7 +107,7 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
 
     boolean         (*notify)();    /* network change notification  */
                                         /*  callback                    */
-    caddr_t         client_data;    /* client data for the callback */
+    XtPointer       client_data;    /* client data for the callback */
 
     XtEventHandler  tracker;        /* mouse tracking routine       */
 
@@ -128,7 +129,7 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
     Widget          hot_spot;       /* hot spot widget              */
     Node            *hot_spot_node; /* hot spot node index          */
     int             remove_arcs;
-    Arc*             arc;
+    Ark*             arc;
 
     XmFontList      font_list;      /* For the small font of parameter names */
     Widget	    labeled_tab;    /* Tab whose label is currently displayed */

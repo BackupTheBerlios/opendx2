@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -17,7 +19,6 @@
 #include <Xm/RowColumn.h> 
 #include <string.h>
 
-#include "defines.h"
 #include "SetVectorAttrDialog.h"
 #include "ScalarInstance.h"
 #include "ScalarNode.h"

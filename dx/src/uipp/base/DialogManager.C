@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <defines.h>
 
 
 
@@ -283,6 +284,8 @@ void DialogManager::post(Widget		parent,
 			 void*          clientData,
 			 DialogCallback okCallback,
 			 DialogCallback cancelCallback,
+
+
 			 DialogCallback helpCallback,
 			 char*		okLabel,
 			 char*		cancelLabel,

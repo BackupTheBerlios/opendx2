@@ -107,7 +107,7 @@ typedef struct _XmVCRControlPart {
     short		frame_increment;
     XtCallbackList	action_callback;	/* Callback for VCR switches  */
     XtCallbackList	frame_callback;		/* Callback for frame numbers */
-    caddr_t		user_data;		/* To be passed with callback */
+    void *		user_data;		/* To be passed with callback */
     XmPushButtonWidget	title_bar;
     XmFrameWidget	frame[10];
     XmDrawingAreaWidget	button[10];

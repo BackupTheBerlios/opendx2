@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -20,7 +22,6 @@
 #include <sys/stat.h>
 
 
-#include "defines.h"
 #include "Strings.h"
 #include "lex.h"
 #include "CreateMacroDialog.h"
@@ -122,15 +123,8 @@ boolean CreateMacroDialog::okCallback(Dialog *d)
     char *newname = Network::FilenameToNetname(filename);
     XtFree(filename);
 
-#if defined(DXD_WIN) && !defined(OS2)
-        
-    struct _stat buffer;
-    if(_stat(newname, &buffer) == 0) {
-#else
-
-    struct stat buffer;
-    if(stat(newname, &buffer) == 0) {    
-#endif
+    struct STATSTRUCT buffer;
+	if(STAT(newname, &buffer) == 0) {
 
     	theQuestionDialogManager->modalPost(
 				this->parent,

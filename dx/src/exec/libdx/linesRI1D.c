@@ -54,7 +54,7 @@ _dxfRecognizeLinesRI1D(Field field)
     
     if (nDim != 1)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11004", "lines", 2);
+	DXSetError(ERROR_DATA_INVALID, "#11004", "lines", 2);
 	return 0;
     }
 
@@ -69,7 +69,7 @@ _dxfRecognizeLinesRI1D(Field field)
     {
 	if (rank != 1)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11003", 
+	    DXSetError(ERROR_DATA_INVALID, "#11003", 
 					    "lines", 1);
 	    return 0;
 	}
@@ -83,13 +83,13 @@ _dxfRecognizeLinesRI1D(Field field)
 
 	if (rank != 0 && (rank != 1 || shape[0] != 1))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11003", "lines", 1);
+	    DXSetError(ERROR_DATA_INVALID, "#11003", "lines", 1);
 	    return 0;
 	}
 
 	if (nPts > n)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "not enough positions");
+	    DXSetError(ERROR_DATA_INVALID, "not enough positions");
 	    return 0;
 	}
 
@@ -106,7 +106,7 @@ _dxfRecognizeLinesRI1D(Field field)
 		    for (i = 2; i < nPts; i++)
 			if (pts[i-1] < pts[i])
 			{
-			    DXSetError(ERROR_INVALID_DATA, "non-monotonic map");
+			    DXSetError(ERROR_DATA_INVALID, "non-monotonic map");
 			    return 0;
 			}
 		}
@@ -115,7 +115,7 @@ _dxfRecognizeLinesRI1D(Field field)
 		    for (i = 2; i < nPts; i++)
 			if (pts[i-1] > pts[i])
 			{
-			    DXSetError(ERROR_INVALID_DATA, "non-monotonic map");
+			    DXSetError(ERROR_DATA_INVALID, "non-monotonic map");
 			    return 0;
 			}
 		}
@@ -316,7 +316,7 @@ _dxfInitialize(LinesRI1DInterpolator li)
 	{
 	    if (dir == -1)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#11851");
+		DXSetError(ERROR_DATA_INVALID, "#11851");
 		return ERROR;
 	    }
 	    else 
@@ -326,7 +326,7 @@ _dxfInitialize(LinesRI1DInterpolator li)
 	{
 	    if (dir == 1)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#11851");
+		DXSetError(ERROR_DATA_INVALID, "#11851");
 		return ERROR;
 	    }
 	    else

@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 #include <float.h>
@@ -27,7 +28,6 @@
 #include <sys/socket.h>
 #endif
 
-#include "../base/UIConfig.h"
 #include "../base/defines.h"
 #include "dxlP.h"
 
@@ -63,7 +63,7 @@ DXLError DXLInitializePMMainLoop(HWND PMAppWindow, DXLConnection *conn)
 
 #else
 
-#ifdef DXD_WIN
+#if defined(intelnt)
 
 DXLError DXLInitializePMMainLoop(HWND PMAppWindow, DXLConnection *conn)	/*     ajay   */
 {

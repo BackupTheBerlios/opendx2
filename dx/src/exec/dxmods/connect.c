@@ -123,7 +123,7 @@ int
        a new array */
     if ((type != TYPE_FLOAT)||(rank != 1)) {
       if ((rank != 0)&&(rank != 1)) {
-        DXSetError(ERROR_INVALID_DATA,"rank of input must be 0 or 1");
+        DXSetError(ERROR_DATA_INVALID,"rank of input must be 0 or 1");
         goto error;
       }
       if (rank==0) {

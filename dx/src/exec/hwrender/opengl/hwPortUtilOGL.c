@@ -7,12 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include "hwDeclarations.h"
 
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.4 1999/06/25 20:49:40 gda Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.5 2000/05/16 18:48:33 gda Exp $
 
 Author:  Ellen Ball
 
@@ -22,20 +22,12 @@ Based on hwrender/gl/hwPortUtil.c
 
 #include <math.h>
 
-#ifdef DXD_WIN
-#include <windows.h>
-#include <wingdi.h>
-#endif
-
-#include <GL/gl.h>
-
 #ifdef DEBUG
 #define TIMER(s) glFlush(); DXMarkTime(s);
 #else
 #define TIMER(s)
 #endif
 
-#include "hwDeclarations.h"
 #include "hwXfield.h"
 #include "hwWindow.h"
 #include "hwPortLayer.h"
@@ -45,6 +37,16 @@ Based on hwrender/gl/hwPortUtil.c
 #include "hwSort.h"
 
 #include "hwDebug.h"
+
+#if defined(HAVE_WINDOWS_H)
+#include <windows.h>
+#endif
+
+#if defined(HAVE_WINGDI_H)
+#include <wingdi.h>
+#endif
+
+#include <GL/gl.h>
 
 static void loadTexture(xfieldP);
 static void startTexture();
@@ -2379,3 +2381,4 @@ main()
 		
 		
 #endif
+

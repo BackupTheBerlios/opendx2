@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.5 1999/09/30 20:57:08 pdk Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/writeimage.c,v 1.6 2000/05/16 18:48:25 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -50,10 +50,10 @@ END:
 
 
 /* FIXME: this belongs in the arch.h file */
-#if defined(ibmpvs)  || defined(os2) || defined(DXD_WIN)
-# define HAS_POSIX_SIGNALS 0
+#if defined(ibmpvs)  || defined(os2) || defined(intelnt)
+#undef HAS_POSIX_SIGNALS 
 #else
-# define HAS_POSIX_SIGNALS 1
+#define HAS_POSIX_SIGNALS 
 #endif
 
 #if DXD_POPEN_OK && DXD_HAS_LIBIOP
@@ -64,7 +64,7 @@ END:
 
 #define HANDLE_SIGPIPE 0
 
-#ifdef DXD_WIN
+#ifdef intelnt
 #define	SIGPIPE	SIGILL
 #define	popen	_popen
 #define	pclose	_pclose
@@ -90,7 +90,7 @@ m_WriteImage ( Object *in, Object *out )
     ImageWriteFunction f;	/* Function to write the image to disk */
     ImageInfo *imginfo;
     int r;
-#if HAS_POSIX_SIGNALS
+#if defined(HAS_POSIX_SIGNALS)
     struct sigaction action, oaction;
 #else
     void (*oaction)();
@@ -118,7 +118,7 @@ m_WriteImage ( Object *in, Object *out )
 		 * Check to be sure the provided image(s) are images. 
 		 */
 		if ( !_dxf_ValidImageField ( (Field)iargs.image) )
-		    DXErrorGoto ( ERROR_INVALID_DATA, 
+		    DXErrorGoto ( ERROR_DATA_INVALID, 
 				"'image' Field is not an image" );
                 break;
 
@@ -132,7 +132,7 @@ m_WriteImage ( Object *in, Object *out )
 			i=0;
 			while (o=DXGetEnumeratedMember((Group)I_image,i++,NULL))
 			    if ( !_dxf_ValidImageField ( (Field)o) )
-		                    DXErrorGoto ( ERROR_INVALID_DATA, 
+		                    DXErrorGoto ( ERROR_DATA_INVALID, 
                		                 "series 'image' contains non-image" );
                         break;
 
@@ -164,7 +164,7 @@ m_WriteImage ( Object *in, Object *out )
     if (!_dxf_CheckImageDeltas((Object)iargs.image, &transposed))
 	goto error;
     if (transposed) 
-	DXErrorGoto ( ERROR_INVALID_DATA,"'image' Field has transposed deltas" );
+	DXErrorGoto ( ERROR_DATA_INVALID,"'image' Field has transposed deltas" );
 
     /*
      * Determine the filename.  If the filename parameter is given then
@@ -193,7 +193,7 @@ m_WriteImage ( Object *in, Object *out )
 #endif
 #endif
 	if (strlen(filename) > MAX_IMAGE_NAMELEN)
-	    DXErrorGoto(ERROR_INVALID_DATA, "output file name length too large.");
+	    DXErrorGoto(ERROR_DATA_INVALID, "output file name length too large.");
     	strcpy(basename,filename);
     } else {
 	filename = NULL;
@@ -252,7 +252,7 @@ m_WriteImage ( Object *in, Object *out )
 
                 if ( imginfo == NULL )
                     DXErrorGoto 
-                        ( ERROR_INVALID_DATA, "image type lookup failed" );
+                        ( ERROR_DATA_INVALID, "image type lookup failed" );
 	    } else
 		iargs.imgtyp = imginfo->type;
 	
@@ -269,7 +269,7 @@ m_WriteImage ( Object *in, Object *out )
 
                 if ( imginfo == NULL )
                     DXErrorGoto 
-                        ( ERROR_INVALID_DATA, "image type lookup failed" );
+                        ( ERROR_DATA_INVALID, "image type lookup failed" );
 	    } else
 		iargs.imgtyp = imginfo->type;
 
@@ -284,7 +284,7 @@ m_WriteImage ( Object *in, Object *out )
     {
         if ( !DXExtractInteger ( I_frame, &iargs.startframe ) || 
 		(iargs.startframe < 0))
-            DXErrorGoto2 ( ERROR_INVALID_DATA, "#10030", "'frame'" )
+            DXErrorGoto2 ( ERROR_DATA_INVALID, "#10030", "'frame'" )
     }
     else
        iargs.startframe = VALUE_UNSPECIFIED;
@@ -338,7 +338,7 @@ m_WriteImage ( Object *in, Object *out )
     */ 
 #if DXD_POPEN_OK
     if (iargs.pipe) {
-#if HAS_POSIX_SIGNALS
+#if defined(HAS_POSIX_SIGNALS)
 # if HANDLE_SIGPIPE
 	action.sa_handler = PipeError;
 	pipe_error_happened = 0;
@@ -359,7 +359,7 @@ m_WriteImage ( Object *in, Object *out )
 #if DXD_POPEN_OK
     if (iargs.pipe) {
 
-#if HAS_POSIX_SIGNALS
+#if defined(HAS_POSIX_SIGNALS)
 	sigaction,(SIGPIPE, &oaction, NULL);
 #else
 	signal(SIGPIPE, oaction);

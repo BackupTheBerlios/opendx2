@@ -12,24 +12,34 @@
 
 #include <dxconfig.h>
 
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 
-#ifdef HAVE_SYS_SOCKET_H
+#if defined(HAVE_WINDOWS_H) && defined(intelnt)
+#include <windows.h>
+#include <winsock.h>
+#define S_IXUSR S_IEXEC
+#define S_IXGRP S_IEXEC
+#define S_IXOTH S_IEXEC
+#define EADDRINUSE      WSAEADDRINUSE
+#endif
+
+#if defined(HAVE_CYGWIN_SOCKET_H)
+#include <cygwin/socket.h>
+#elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
+#elif defined(HAVE_SOCKET_H)
+#include <socket.h>
 #endif
 
 #ifdef HAVE_SYS_UN_H
 #include <sys/un.h>
 #endif
 
-
-#if defined(HAVE_WINDOWS_H)
-#include <windows.h>
-#endif
-
 #include <dx/arch.h>
+
 #include <dx/error.h>
 #include <dx/timing.h>
 #include <dx/memory.h>

@@ -6,18 +6,18 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
-
+ 
 INCLUDE2 <dxconfig.h>
 
 INCLUDE2 <string.h>
 INCLUDE2 <dx/dx.h>
-INCLUDE2 <X11/X.h>
+INCLUDE2 <X11/X.h> 
 INCLUDE2 "render.h"
 INCLUDE2 "internals.h"
-
-/*
+ 
+/*  
  * Rendering buffer
- */
+ */ 
 
 Error
 _dxf_InitBuffer(struct buffer *b, enum pix_type pix_type,
@@ -1195,7 +1195,7 @@ _dxf_DecodeImage(Object encodedimage)
     {
 	if (DXGetObjectClass(encodedimage) != CLASS_FIELD)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "invalid image");
+	    DXSetError(ERROR_DATA_INVALID, "invalid image");
 	    return NULL;
 	}
 
@@ -1205,7 +1205,7 @@ _dxf_DecodeImage(Object encodedimage)
     {
 	if (DXGetObjectClass(encodedimage) != CLASS_ARRAY)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "invalid encoded image");
+	    DXSetError(ERROR_DATA_INVALID, "invalid encoded image");
 	    return NULL;
 	}
 

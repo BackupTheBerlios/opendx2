@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include <limits.h>
@@ -24,7 +26,6 @@
 #include <X11/X.h>
 
 #include "lex.h"
-#include "defines.h"
 #include "Strings.h"
 #include "DXApplication.h"
 #include "EditorWindow.h"

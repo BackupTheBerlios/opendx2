@@ -7,14 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _Definition_h
 #define _Definition_h
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "Base.h"
 #include "SymbolManager.h"
 

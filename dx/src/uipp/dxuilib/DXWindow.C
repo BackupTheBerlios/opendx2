@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -21,7 +23,6 @@
 #include <Xm/RowColumn.h>
 #include <Xm/CascadeB.h>
 #include <Xm/Separator.h>
-#include "defines.h"
 #include "DXWindow.h"
 #include "DXApplication.h"
 //#include "QuitCommand.h"

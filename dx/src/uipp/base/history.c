@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 #include <defines.h>
 
 #include <stdio.h>
@@ -185,7 +186,7 @@ void _PostHistoryMenu(Widget        w,
 /*									     */
 /*****************************************************************************/
 
-Widget CreatePopupMenu(Widget parent)
+Widget DXCreatePopupMenu(Widget parent)
 {
     Widget menuShell;
     Widget popupMenu;

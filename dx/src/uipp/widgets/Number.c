@@ -32,12 +32,15 @@
 	   values of the widget
 */
 
-#ifdef OS2
+#if defined(HAVE_STDLIB_H)
 #include <stdlib.h>
+#endif
+
+#if defined(HAVE_TYPES_H)
 #include <types.h>
 #endif
-#ifdef  DXD_WIN
-#include <stdlib.h>
+
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
 #endif
 
@@ -218,47 +221,47 @@ static XtResource resources[] =
    {
       XmNdValue, XmCDValue, XmRDouble, sizeof(double),
       XtOffset(XmNumberWidget, number.value.d),
-      XmRDouble, (caddr_t) &DefaultValueDbl
+      XmRDouble, (XtPointer) &DefaultValueDbl
    },
    {
       XmNfValue, XmCFValue, XmRFloat, sizeof(float),
       XtOffset(XmNumberWidget, number.value.f),
-      XmRFloat, (caddr_t) &DefaultValueFlt
+      XmRFloat, (XtPointer) &DefaultValueFlt
    },
    {
       XmNiValue, XmCIValue, XmRInt, sizeof(int),
       XtOffset(XmNumberWidget, number.value.i),
-      XmRImmediate, (caddr_t) DEF_IVAL
+      XmRImmediate, (XtPointer) DEF_IVAL
    },
    {
       XmNdMinimum, XmCDMinimum, XmRDouble, sizeof(double),
       XtOffset(XmNumberWidget, number.value_minimum.d),
-      XmRDouble, (caddr_t) &DefaultMinDbl
+      XmRDouble, (XtPointer) &DefaultMinDbl
    },
    {
       XmNfMinimum, XmCFMinimum, XmRFloat, sizeof(float),
       XtOffset(XmNumberWidget, number.value_minimum.f),
-      XmRFloat, (caddr_t) &DefaultMinFlt
+      XmRFloat, (XtPointer) &DefaultMinFlt
    },
    {
       XmNiMinimum, XmCIMinimum, XmRInt, sizeof(int),
       XtOffset(XmNumberWidget, number.value_minimum.i),
-      XmRImmediate, (caddr_t) DEF_IMIN
+      XmRImmediate, (XtPointer) DEF_IMIN
    },
    {
       XmNdMaximum, XmCDMaximum, XmRDouble, sizeof(double),
       XtOffset(XmNumberWidget, number.value_maximum.d),
-      XmRDouble, (caddr_t) &DefaultMaxDbl
+      XmRDouble, (XtPointer) &DefaultMaxDbl
    },
    {
       XmNfMaximum, XmCFMaximum, XmRFloat, sizeof(float),
       XtOffset(XmNumberWidget, number.value_maximum.f),
-      XmRFloat, (caddr_t) &DefaultMaxFlt
+      XmRFloat, (XtPointer) &DefaultMaxFlt
    },
    {
       XmNiMaximum, XmCIMaximum, XmRInt, sizeof(int),
       XtOffset(XmNumberWidget, number.value_maximum.i),
-      XmRImmediate, (caddr_t) DEF_IMAX
+      XmRImmediate, (XtPointer) DEF_IMAX
    },
    {
       XmNfontList, XmCFontList, XmRFontList, sizeof(XmFontList),
@@ -268,88 +271,88 @@ static XtResource resources[] =
    {
       XmNcharPlaces, XmCCharPlaces, XmRShort, sizeof(short),
       XtOffset(XmNumberWidget, number.char_places),
-      XmRImmediate, (caddr_t) 4
+      XmRImmediate, (XtPointer) 4
    },
    {
       XmNdecimalPlaces, XmCDecimalPlaces, XmRShort, sizeof(short),
       XtOffset(XmNumberWidget, number.decimal_places),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
    },
    {
       XmNdataType, XmCDataType, XmRShort, sizeof(short),
       XtOffset(XmNumberWidget, number.data_type),
-      XmRImmediate, (caddr_t) INTEGER
+      XmRImmediate, (XtPointer) INTEGER
    },
    {
       XmNoverflowCallback, XmCCallback, XmRCallback, sizeof(XtCallbackList),
       XtOffset(XmNumberWidget, number.overflow_callback),
-      XmRPointer, (caddr_t) NULL
+      XmRPointer, (XtPointer) NULL
    },
    {
       XmNarmCallback, XmCArmCallback, XmRCallback,  sizeof(XtCallbackList),
       XtOffset(XmNumberWidget, number.arm_callback),
-      XmRPointer, (caddr_t) NULL
+      XmRPointer, (XtPointer) NULL
    },
    {
       XmNactivateCallback, XmCActivateCallback, XmRCallback,
       sizeof(XtCallbackList),
       XtOffset(XmNumberWidget, number.activate_callback),
-      XmRPointer, (caddr_t) NULL
+      XmRPointer, (XtPointer) NULL
    },
    {
       XmNdisarmCallback, XmCDisarmCallback, XmRCallback, sizeof(XtCallbackList),
       XtOffset(XmNumberWidget, number.disarm_callback),
-      XmRPointer, (caddr_t) NULL
+      XmRPointer, (XtPointer) NULL
    },
    {
       XmNwarningCallback, XmCCallback,XmRCallback,sizeof(XtCallbackList),
       XtOffset(XmNumberWidget, number.warning_callback),
-      XmRPointer, (caddr_t) NULL
+      XmRPointer, (XtPointer) NULL
    },
    {
       XmNcenter, XmCCenter, XmRBoolean, sizeof(Boolean),
       XtOffset(XmNumberWidget, number.center),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
    },
    {
       XmNraised, XmCRaised, XmRBoolean, sizeof(Boolean),
       XtOffset(XmNumberWidget, number.raised),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
    },
    {
       XmNvisible, XmCVisible, XmRBoolean, sizeof(Boolean),
       XtOffset(XmNumberWidget, number.visible),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
    },
    {
       XmNeditable, XmCEditable, XmRBoolean, sizeof(Boolean),
       XtOffset(XmNumberWidget, number.allow_key_entry_mode),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
    },
    {
       XmNnoEvents, XmCNoEvents, XmRBoolean, sizeof(Boolean),
       XtOffset(XmNumberWidget, number.propogate_events),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
    },
    {
       XmNrecomputeSize, XmCRecomputeSize, XmRBoolean, sizeof(Boolean),
       XtOffset(XmNumberWidget, number.recompute_size),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
    },
    {
       XmNfixedNotation, XmCFixedNotation, XmRBoolean, sizeof(Boolean),
       XtOffset(XmNumberWidget, editor.is_fixed),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
    },
    {
       XmNcrossOver, XmCCrossOver, XmRDouble, sizeof(double),
       XtOffset(XmNumberWidget, number.cross_over),
-      XmRDouble, (caddr_t) &DefaultCrossOver
+      XmRDouble, (XtPointer) &DefaultCrossOver
    },
    {
       XmNcrossUnder, XmCCrossUnder, XmRDouble, sizeof(double),
       XtOffset(XmNumberWidget, number.cross_under),
-      XmRDouble, (caddr_t) &DefaultCrossUnder
+      XmRDouble, (XtPointer) &DefaultCrossUnder
    },
 };
 

@@ -7,13 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _SelectorDefinition_h
 #define _SelectorDefinition_h
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "SelectionDefinition.h"
 
 

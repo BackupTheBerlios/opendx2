@@ -191,7 +191,7 @@ static Object ScreenObject(Object ino, Vector translation, Vector size,
 
   /* need the bounding box of the input object */
   if (!DXBoundingBox(ino,box)) {
-    DXSetError(ERROR_INVALID_DATA,"#11020", "object");
+    DXSetError(ERROR_DATA_INVALID,"#11020", "object");
     goto error;
   }
   min=box[0];

@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_partnbrs.c,v 1.3 1999/05/10 15:45:20 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_partnbrs.c,v 1.4 2000/05/16 18:47:32 gda Exp $
  */
 
 #include <string.h>
@@ -45,7 +45,7 @@ _dxfPartitionNeighbors(Object o)
     
     if (class != CLASS_COMPOSITEFIELD)
     {
-	DXSetError(ERROR_INVALID_DATA, "input");
+	DXSetError(ERROR_DATA_INVALID, "input");
 	return ERROR;
     }
 

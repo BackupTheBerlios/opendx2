@@ -213,7 +213,7 @@ static Error argdup(struct moddef *mp, int type, int repcount)
 	map = mp->m_outnames;
     } 
     if (startrep < 0) {
-	DXSetError(ERROR_INVALID_DATA, "invalid repeat count");
+	DXSetError(ERROR_DATA_INVALID, "invalid repeat count");
 	return ERROR;
     }
     
@@ -299,7 +299,7 @@ static Error callmdf(struct moddef *mp, int doremote)
 	    if (_dxd_exGoneMP) {
 		/* can't do runtime loadable after forking on sgi or solaris */
 #define LONGHELP "Runtime-loadable modules cannot be added after startup when running with more than 1 processor.  Either specify -mdf on the startup command line, or run -processors 1"
-		DXSetError(ERROR_INVALID_DATA, LONGHELP);
+		DXSetError(ERROR_DATA_INVALID, LONGHELP);
 		return ERROR;
 	    }
 #endif
@@ -325,7 +325,7 @@ static Error callmdf(struct moddef *mp, int doremote)
 	mp->m_func = DXOutboard;
     
     if (mp->m_func == NULL) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	      "module %s must have an OUTBOARD or LOADABLE entry to be added at run time",
 	       mp->m_name);
 	return ERROR;
@@ -728,7 +728,7 @@ static char *AllocQuote(char *str)
     if (!strend || (last && strend > last)) {
 	strend = last;
 	if (!strend) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "missing name or mismatched quotes");
 	    return NULL;
 	}
@@ -917,13 +917,13 @@ static Error ExParseMDF(char *str)
 	    
 	    nextc = find_next_token(nextc, 0);
 	    if (!nextc) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "missing module name, line %d", lineno);
 		goto error;
 	    }
 	    mp->m_name = AllocToken(nextc);
 	    if (!IsGoodIdentifier(mp->m_name)) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "module names must start with a letter and contain "
 			   "only letters and numbers, line %d", lineno);
 		goto error;
@@ -942,7 +942,7 @@ static Error ExParseMDF(char *str)
 	  case T_OUTPUT:
 	    nextc = find_next_token(nextc, 1);
 	    if (!nextc) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "missing %s parameter name, line %d", 
 			   (id==T_INPUT) ? "input" : "output", lineno);
 		goto error;
@@ -961,7 +961,7 @@ static Error ExParseMDF(char *str)
 	    
 	  case T_ERROR:
 	    /* could this be more helpful? */
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "unrecognized keyword on line %d", lineno);
 	    return ERROR;
 	    
@@ -971,7 +971,7 @@ static Error ExParseMDF(char *str)
 	    if (!tempc) {
 		nextc = find_next_token(nextc, 1);
 		if (!nextc) {
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			       "missing outboard execution name, line %d", 
 			       lineno);
 		    goto error;
@@ -982,7 +982,7 @@ static Error ExParseMDF(char *str)
 		mp->m_exec = AllocQuote(++tempc);
 
 	    if (!mp->m_exec) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "missing outboard execution name, line %d", 
 			   lineno);
 		goto error;
@@ -1008,7 +1008,7 @@ static Error ExParseMDF(char *str)
 	    if (!tempc) {
 		nextc = find_next_token(nextc, 1);
 		if (!nextc) {
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			       "missing loadable module filename, line %d", 
 			       lineno);
 		    goto error;
@@ -1019,7 +1019,7 @@ static Error ExParseMDF(char *str)
 		mp->m_loadfile = AllocQuote(++tempc);
 
 	    if (!mp->m_loadfile) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "missing loadable module filename, line %d", 
 			   lineno);
 		goto error;
@@ -1040,14 +1040,14 @@ static Error ExParseMDF(char *str)
 	  case T_REPEAT:
 	    nextc = find_next_token(nextc, 0);
 	    if (!nextc) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "missing repeat count, line %d", lineno);
 		goto error;
 	    }
 	    repcount = atoi(nextc);
 	    if (argtype == T_INPUT) {
 		if (repcount <= 0 || repcount > mp->m_nin) {
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			       "invalid input repeat count, line %d", lineno);
 		    goto error;
 		}
@@ -1058,7 +1058,7 @@ static Error ExParseMDF(char *str)
 
 	    } else if (argtype == T_OUTPUT) {
 		if (repcount <= 0 || repcount > mp->m_nout) {
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			       "invalid output repeat count, line %d", lineno);
 		    goto error;
 		}
@@ -1068,7 +1068,7 @@ static Error ExParseMDF(char *str)
 		}
 		
 	    } else {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			   "misplaced REPEAT line, line %d", lineno);
 	    }
 	    break;
@@ -1118,13 +1118,13 @@ Error DXLoadMDFFile(char *filename)
 
     fd = open(foundname, O_RDONLY);
     if (fd < 0) {
-	DXSetError(ERROR_INVALID_DATA, "cannot open %s as MDF file", foundname);
+	DXSetError(ERROR_DATA_INVALID, "cannot open %s as MDF file", foundname);
 	goto error;
     }
 
     len = lseek(fd, 0, 2);   /* find length of file */
     if (len <= 0) {
-	DXSetError(ERROR_INVALID_DATA, "error reading from %s", foundname);
+	DXSetError(ERROR_DATA_INVALID, "error reading from %s", foundname);
 	goto error;
     }
     lseek(fd, 0, 0);
@@ -1135,7 +1135,7 @@ Error DXLoadMDFFile(char *filename)
 
     rlen = read(fd, cp, len);
     if (rlen != len) {
-	DXSetError(ERROR_INVALID_DATA, "error reading from %s", foundname);
+	DXSetError(ERROR_DATA_INVALID, "error reading from %s", foundname);
 	goto error;
     }
     cp[len] = '\0';

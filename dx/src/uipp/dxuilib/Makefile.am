@@ -51,8 +51,8 @@ HDRS1 = \
 	oem.h \
 	AnnotationGroupManager.h \
 	ApplicIF.h \
-	Arc.h \
-	ArcStandIn.h \
+	Ark.h \
+	ArkStandIn.h \
 	AttributeParameter.h \
 	AutoAxesDialog.h \
 	BinaryParameter.h \
@@ -226,8 +226,8 @@ SRCS1 = \
 	oem.C \
 	AnnotationGroupManager.C \
 	ApplicIF.C \
-	Arc.C \
-	ArcStandIn.C \
+	Ark.C \
+	ArkStandIn.C \
 	AttributeParameter.C \
 	AutoAxesDialog.C \
 	BuildIFDict.C \
@@ -397,69 +397,4 @@ SRCS5 = \
 
 libDXUI_a_SOURCES = $(SRCS1) $(SRCS2) $(SRCS3) $(SRCS4) $(SRCS5)
 
-sequence.txt: sequence.net
-	sed -e 's/"/\\"/g' sequence.net | \
-		sed -e 's/$$/\\n"/g' | \
-		sed -e 's/^/"/g' > sequence.txt
-
-gifmac.txt:
-	grep -h -v // ../java/dx/server/gifmac.net | \
-		grep -v include | \
-		grep -v "= NULL" | \
-		sed -e 's/"/\\"/g' | \
-		sed -e 's/\\\\"/\\\\\\"/g' | \
-		sed -e 's/_out_/_o/g' | \
-		sed -e 's/_in_/_i/g' | \
-		sed -e 's/    //g' | \
-		sed -e 's/^/"/' | \
-		sed -e 's/$$/",/' > gifmac.txt
-
-vrmlmac.txt:
-	grep -h -v // ../java/dx/server/vrmlmac.net | \
-		grep -v include | \
-		grep -v "= NULL" | \
-		sed -e 's/"/\\"/g' | \
-		sed -e 's/\\\\"/\\\\\\"/g' | \
-			sed -e 's/_out_/_o/g' | \
-		sed -e 's/_in_/_i/g' | \
-		sed -e 's/    //g' | \
-		sed -e 's/^/"/' | \
-		sed -e 's/$$/",/' > vrmlmac.txt
-
-dxmac.txt:
-	grep -h -v // ../java/dx/server/dxmac.net | \
-		grep -v include | \
-		grep -v "= NULL" | \
-		sed -e 's/"/\\"/g' | \
-		sed -e 's/\\\\"/\\\\\\"/g' | \
-		sed -e 's/_out_/_o/g' | \
-		sed -e 's/_in_/_i/g' | \
-		sed -e 's/    //g' | \
-		sed -e 's/^/"/' | \
-		sed -e 's/$$/",/' > dxmac.txt
-	
-imagemac.txt: imagemac.net
-	grep -h -v // imagemac.net | \
-		grep -v include | \
-		grep -v "= NULL" | \
-		sed -e 's/"/\\"/g' | \
-		sed -e 's/\\\\"/\\\\\\"/g' | \
-		sed -e 's/Image_/I/g' | \
-		sed -e 's/Receiver_/Rcv/g' | \
-		sed -e 's/Input_/Inp/g' | \
-		sed -e 's/Inquire_/Inq/g' | \
-		sed -e 's/_out_/_o/g' | \
-		sed -e 's/_in_/_i/g' | \
-		sed -e 's/    //g' | \
-		sed -e 's/^/"/' | \
-		sed -e 's/$$/",/' > imagemac.txt
-
-netlex.c: net.lex
-	$(LEX) net.lex
-	mv lex.yy.c netlex.c
-
-netyacc.c: net.yacc netlex.c netyacc.awk
-	$(YACC) net.yacc
-	awk -f netyacc.awk y.tab.c > netyacc.c
-	rm -f y.tab.c
-
+include local.mk

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.c,v 1.4 1999/07/12 22:32:56 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.c,v 1.5 2000/05/16 18:47:22 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -337,14 +337,14 @@ Pointer _dxf_GetComponentData ( Object         in_object,
                                comp_data [ position ].name,
                                "element type"                ) ) == NULL )
             ErrorGotoPlus1
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "\"%s\" component is missing the \"element type\" attribute",
                   comp_data [ position ].name )
 
         else if ( DXGetObjectClass ( attribute ) != CLASS_STRING )
 
             ErrorGotoPlus1 
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "\"%s\" component \"element type\" attribute is not a string",
                   comp_data [ position ].name )
 
@@ -353,7 +353,7 @@ Pointer _dxf_GetComponentData ( Object         in_object,
                             ( (String)attribute ), 
                         comp_data [ position ].element_type ) != 0 )
             ErrorGotoPlus3
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "the \"%s\" component \"element type\" is \"%s\", not \"%s\"",
                   comp_data [ position ].name,
                   DXGetString ( (String)attribute ),
@@ -380,7 +380,7 @@ Pointer _dxf_GetComponentData ( Object         in_object,
                               comp_data [ position ].cat,
                               1, 1 ) )
                 ErrorGotoPlus1
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "\"%s\" component failed scalar type check",
                       comp_data [ position ].name )
         }
@@ -392,7 +392,7 @@ Pointer _dxf_GetComponentData ( Object         in_object,
                           comp_data [ position ].rank,
                           comp_data [ position ].shape ) )
         ErrorGotoPlus1
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "\"%s\" component failed type check",
               comp_data [ position ].name )
 
@@ -573,7 +573,7 @@ Object _flatten_hierarchy ( Object in, CompositeField out, int *position )
 
             if ( DXGetGroupClass ( (Group) in ) != CLASS_COMPOSITEFIELD )
                 DXErrorGoto
-                    ( ERROR_INVALID_DATA, "Illegal member in Composite Field" );
+                    ( ERROR_DATA_INVALID, "Illegal member in Composite Field" );
 
             for ( i      = 0;
                   member = DXGetEnumeratedMember ( (Group)in, i, NULL );
@@ -583,7 +583,7 @@ Object _flatten_hierarchy ( Object in, CompositeField out, int *position )
             break;
 
         default:
-            DXErrorGoto ( ERROR_INVALID_DATA, 
+            DXErrorGoto ( ERROR_DATA_INVALID, 
                         "Illegal member in Composite Field" );
     }
 
@@ -1027,7 +1027,7 @@ _dxf_GetImageAttributes ( Object o, SizeData *sd )
             }
             else if ( ( sd->height != h ) || ( sd->width != w ) )
                 DXErrorGoto
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "Image Series changes sizes internally" );
         }
 
@@ -1129,7 +1129,7 @@ Error _dxf_CountImages ( Object image, int *count )
             break;
 
         default:
-            DXErrorGoto ( ERROR_INVALID_DATA, "Image is not a group or field" );
+            DXErrorGoto ( ERROR_DATA_INVALID, "Image is not a group or field" );
     }
 
     return OK;
@@ -1162,7 +1162,7 @@ Error _get_image_deltas ( Object image, float *deltas, int *set )
 
             if ( (int)ptr != OK )
                 DXErrorGoto2
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "#10612", /* only regular positions for %s supported */
                       "images" );
 
@@ -1178,7 +1178,7 @@ Error _get_image_deltas ( Object image, float *deltas, int *set )
                 if ( 0 != memcmp
                              ( (char *)deltas, (char *)Delta, sizeof(Delta) ) )
                     DXErrorGoto
-                        ( ERROR_INVALID_DATA,
+                        ( ERROR_DATA_INVALID,
                           "images must have like positional deltas" );
             }
             else
@@ -1199,7 +1199,7 @@ Error _get_image_deltas ( Object image, float *deltas, int *set )
 #if 0
             if ( DXGetGroupClass ( (Group) in ) != CLASS_COMPOSITEFIELD )
                 DXErrorGoto
-                    ( ERROR_INVALID_DATA, "Illegal member in Composite Field" );
+                    ( ERROR_DATA_INVALID, "Illegal member in Composite Field" );
 #endif
             for ( i      = 0;
                   member = DXGetEnumeratedMember ( (Group)image, i, NULL );
@@ -1210,7 +1210,7 @@ Error _get_image_deltas ( Object image, float *deltas, int *set )
             break;
 
         default:
-            DXErrorGoto ( ERROR_INVALID_DATA, 
+            DXErrorGoto ( ERROR_DATA_INVALID, 
                         "Illegal member in Composite Field" );
     }
 
@@ -1275,7 +1275,7 @@ Error _dxf_CheckImageDeltas ( Object image, int *transposed )
 
     else
         DXErrorGoto
-            ( ERROR_INVALID_DATA, "image has unsupported deltas" );
+            ( ERROR_DATA_INVALID, "image has unsupported deltas" );
 
     return OK;
 
@@ -1336,7 +1336,7 @@ Error _dxf_GetImageOrigin ( Field image, int *xorigin, int *yorigin )
 
         default:
             DXErrorGoto2
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#10610", /* only regular connections for %s supported */
                   "images" )
 
@@ -1371,7 +1371,7 @@ Field _dxf_SetImageOrigin ( Field image, int xorigin, int yorigin )
 
     if ( (int)ptr != OK )
         DXErrorGoto2
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10612", /* only regular positions for %s supported */
               "images" )
 
@@ -1435,7 +1435,7 @@ Field _dxf_SetImageOrigin ( Field image, int xorigin, int yorigin )
 
         default:
             DXErrorGoto2
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#10610", /* only regular connections for %s supported */
                   "images" );
     }
@@ -1519,13 +1519,13 @@ CompositeField _dxf_SetCompositeImageOrigin ( CompositeField image,
 
                     default:
                         DXErrorGoto
-                            ( ERROR_INVALID_DATA, 
+                            ( ERROR_DATA_INVALID, 
                               "Illegal member in Arranged Group" );
                 }
                 break;
 
             default:
-                DXErrorGoto ( ERROR_INVALID_DATA, 
+                DXErrorGoto ( ERROR_DATA_INVALID, 
                             "Illegal member in Arranged Group" );
         }
 
@@ -1634,7 +1634,7 @@ Error _dxf_QueryImageExtents ( Object inp, int *min_x, int *min_y,
                     break;
 
                 default:
-                    ErrorGotoPlus1 ( ERROR_INVALID_DATA, "#10190", "image" );
+                    ErrorGotoPlus1 ( ERROR_DATA_INVALID, "#10190", "image" );
             }
             break;
 
@@ -1652,7 +1652,7 @@ Error _dxf_QueryImageExtents ( Object inp, int *min_x, int *min_y,
             return OK;
 
         default:
-            ErrorGotoPlus1 ( ERROR_INVALID_DATA, "#10190", "image" );
+            ErrorGotoPlus1 ( ERROR_DATA_INVALID, "#10190", "image" );
 
     }
     error:
@@ -1767,7 +1767,7 @@ Field PlaceCompositeMember ( Object source,
                     break;
 
                 default:
-                    DXErrorGoto ( ERROR_INVALID_DATA, "Illegal object type" );
+                    DXErrorGoto ( ERROR_DATA_INVALID, "Illegal object type" );
             }
             break;
 
@@ -1802,7 +1802,7 @@ Field PlaceCompositeMember ( Object source,
                  ( sy0 < 0 ) || ( sy0 > hd ) || ( sy1 < 0 ) || ( sy1 > hd )
                  ||
                  ( ws > wd ) || ( hs > hd ) )
-                DXErrorGoto ( ERROR_INVALID_DATA, "Image sizes clash" );
+                DXErrorGoto ( ERROR_DATA_INVALID, "Image sizes clash" );
 
             /* XXX - Valid only for X varying fastest */
 
@@ -1816,33 +1816,33 @@ Field PlaceCompositeMember ( Object source,
 	    else if (rank == 1 && shape[0] == 3)
 		src_vector = 1;
 	    else
-		DXErrorGoto(ERROR_INVALID_DATA,
+		DXErrorGoto(ERROR_DATA_INVALID,
 		    "images must be either scalar, 1-vector or 3-vector");
 
 	    if (! src_vector)
 	    {
 		if (src_type != TYPE_UBYTE)
 		{
-		    DXErrorGoto(ERROR_INVALID_DATA,
+		    DXErrorGoto(ERROR_DATA_INVALID,
 			"Delayed-color image pixels must be ubytes");
 		}
 			
 		array = (Array)DXGetComponentValue((Field)source, "color map");
 		if (! array)
-		    DXErrorGoto(ERROR_INVALID_DATA, 
+		    DXErrorGoto(ERROR_DATA_INVALID, 
 			"Delayed-color image has no color map");
 		
 		DXGetArrayInfo(array, NULL, &map_type, NULL, &rank, shape);
 
 		if (map_type != TYPE_FLOAT || rank != 1 || shape[0] != 3)
-		    DXErrorGoto(ERROR_INVALID_DATA,
+		    DXErrorGoto(ERROR_DATA_INVALID,
 			"Delayed-color color map must be float 3-vector");
 		
 		srcMap = (float *)DXGetArrayData(array);
 	    }
 	    else 
 		if (src_type != TYPE_UBYTE && src_type != TYPE_FLOAT)
-		    DXErrorGoto(ERROR_INVALID_DATA,
+		    DXErrorGoto(ERROR_DATA_INVALID,
 			"color image pixels must be ubytes or floats");
 		
 	    array  = (Array)DXGetComponentValue(destination, "colors");
@@ -1851,11 +1851,11 @@ Field PlaceCompositeMember ( Object source,
 	    DXGetArrayInfo(array, NULL, &dst_type, NULL, &rank, shape);
 
 	    if (rank != 1 || shape[0] != 3)
-		DXErrorGoto(ERROR_INVALID_DATA,
+		DXErrorGoto(ERROR_DATA_INVALID,
 		    "destination image must be 3-vector");
 	    
 	    if (src_type != TYPE_UBYTE && src_type != TYPE_FLOAT)
-		DXErrorGoto(ERROR_INVALID_DATA,
+		DXErrorGoto(ERROR_DATA_INVALID,
 		    "destination image pixels must be ubytes or floats");
 	    
 	    if (src_vector)
@@ -1882,7 +1882,7 @@ Field PlaceCompositeMember ( Object source,
             break;
 
         default:
-            DXErrorGoto ( ERROR_INVALID_DATA, "Illegal object type" );
+            DXErrorGoto ( ERROR_DATA_INVALID, "Illegal object type" );
     }
 
     error:

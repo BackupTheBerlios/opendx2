@@ -95,84 +95,84 @@ extern void _XmBackgroundColorDefault();
 static XtResource resources[] =
 {
     {
-      XmNvalueCallback, XmCValueCallback, XmRCallback, sizeof(caddr_t),
+      XmNvalueCallback, XmCValueCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmSlideBarWidget, slide_bar.value_callback),
       XmRCallback, NULL
     },
     {
       XmNcurrentColor, XmCColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmSlideBarWidget, slide_bar.current_mark_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
     {
       XmNlimitColor, XmCColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmSlideBarWidget, slide_bar.limit_mark_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
     {
       XmNmarkColor, XmCColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmSlideBarWidget, slide_bar.value_mark_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
     {
       XmNstart, XmCStart, XmRShort, sizeof(short),
       XtOffset(XmSlideBarWidget, slide_bar.start_mark.detent),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNstop, XmCStop, XmRShort, sizeof(short),
       XtOffset(XmSlideBarWidget, slide_bar.stop_mark.detent),
-      XmRImmediate, (caddr_t) 10
+      XmRImmediate, (XtPointer) 10
     },
     {
       XmNnext, XmCNext, XmRShort, sizeof(short),
       XtOffset(XmSlideBarWidget, slide_bar.next_mark.detent),
-      XmRImmediate, (caddr_t) 5
+      XmRImmediate, (XtPointer) 5
     },
     {
       XmNcurrent, XmCCurrent, XmRShort, sizeof(short),
       XtOffset(XmSlideBarWidget, slide_bar.current_mark.detent),
-      XmRImmediate, (caddr_t) 5
+      XmRImmediate, (XtPointer) 5
     },
     {
       XmNminValue, XmCMinValue, XmRShort, sizeof(short),
       XtOffset(XmSlideBarWidget, slide_bar.min_detent),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNmaxValue, XmCMaxValue, XmRShort, sizeof(short),
       XtOffset(XmSlideBarWidget, slide_bar.max_detent),
-      XmRImmediate, (caddr_t) 10
+      XmRImmediate, (XtPointer) 10
     },
     {
       XmNxMargin, XmCXMargin, XmRShort, sizeof(short),
       XtOffset(XmSlideBarWidget, slide_bar.x_margin),
-      XmRImmediate, (caddr_t) 20
+      XmRImmediate, (XtPointer) 20
     },
     {
       XmNarrowSize, XmCArrowSize, XmRShort, sizeof(short),
       XtOffset(XmSlideBarWidget, slide_bar.arrow_height),
-      XmRImmediate, (caddr_t) 16
+      XmRImmediate, (XtPointer) 16
     },
     {
       XmNalignOnDrop, XmCAlignOnDrop, XmRBoolean, sizeof(Boolean),
       XtOffset(XmSlideBarWidget, slide_bar.drop_to_detent),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
     },
     {
       XmNjumpToGrab, XmCJumpToGrab, XmRBoolean, sizeof(Boolean),
       XtOffset(XmSlideBarWidget, slide_bar.jump_to_grab),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
     },
     {
       XmNallowInput, XmCAllowInput, XmRBoolean, sizeof(Boolean),
       XtOffset(XmSlideBarWidget, slide_bar.sensitive),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
     },
     {
       XmNcurrentVisible, XmCCurrentVisible, XmRBoolean, sizeof(Boolean),
       XtOffset(XmSlideBarWidget, slide_bar.current_visible),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
     },
 };
 

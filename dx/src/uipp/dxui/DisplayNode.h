@@ -7,15 +7,15 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _DisplayNode_h
 #define _DisplayNode_h
 
 
-#include "UIConfig.h"
 
-#include "defines.h"
 #include "DrivenNode.h"
 
 

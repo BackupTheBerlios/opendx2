@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 #define _ImageConstraintCommand_h
 
 
-#include "defines.h"
 #include "NoUndoCommand.h"
 #include "ImageWindow.h"
 

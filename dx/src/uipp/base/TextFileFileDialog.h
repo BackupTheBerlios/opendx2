@@ -7,16 +7,16 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _TextFileFileDialog_h
 #define _TextFileFileDialog_h
 
-#include "UIConfig.h"
 
 #include <Xm/Xm.h>
 
-#include "defines.h"
 #include "FileDialog.h"
 #include "TextFile.h"
 

@@ -7,11 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
 #include <Xm/Text.h>
-#include "../base/UIConfig.h"
 #include "../base/defines.h"
 #include "../base/Application.h"
 #include "CommentDialog.h"

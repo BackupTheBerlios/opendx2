@@ -7,12 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _DXLinkHandler_h
 #define _DXLinkHandler_h
 
-#include "defines.h"
 #include "Base.h"
 #include "PacketIF.h"
 #include "LinkHandler.h"

@@ -104,7 +104,7 @@ static int DXReallyEmptyField(Field f)
 }
 
 /* isnan doesn't exist for ibmpvs */
-#if defined(ibmpvs)  || defined(DXD_WIN)
+#if defined(ibmpvs)  || defined(intelnt)
 #define isnan(a) 0
 #endif
 
@@ -804,7 +804,7 @@ Error DXStatistics (Object o, char *compname,
 	 *  what the stats really are.
 	 */
 	if (!isvalid) {
-	    DXSetError (ERROR_INVALID_DATA, "#11905");
+	    DXSetError (ERROR_DATA_INVALID, "#11905");
 	    goto error;
 	}
     }
@@ -1591,7 +1591,7 @@ Array DXScalarConvert(Array a)
 
     /* type check: first object then datatype */
     if (DXGetObjectClass((Object)a) != CLASS_ARRAY) {
-	DXSetError(ERROR_INVALID_DATA, "#11920");
+	DXSetError(ERROR_DATA_INVALID, "#11920");
 	return NULL;
     }
 
@@ -1606,7 +1606,7 @@ Array DXScalarConvert(Array a)
 	shape[0] = 1;
 
     if (nitems <= 0) {
-	DXSetError(ERROR_INVALID_DATA, "#11910");
+	DXSetError(ERROR_DATA_INVALID, "#11910");
 	return NULL;
     }
 	

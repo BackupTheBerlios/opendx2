@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refineirr.c,v 1.3 1999/05/10 15:45:20 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refineirr.c,v 1.4 2000/05/16 18:47:35 gda Exp $:
  */
 
 #include <string.h>
@@ -231,7 +231,7 @@ _dxfRefineIrreg(Field f, int levels)
         return RefineITriangles(f, levels);
     else
     { 
-	DXSetError(ERROR_INVALID_DATA, "#11380", str);
+	DXSetError(ERROR_DATA_INVALID, "#11380", str);
 	return NULL;
     }
 }
@@ -673,7 +673,7 @@ RefineIQuads(Field f, int levels)
 
 		if (DXGetObjectClass(attr) != CLASS_STRING)
 		{
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 				"#10051", "dependency attribute");
 		    goto error;
 		}
@@ -859,7 +859,7 @@ RefineILines(Field f, int levels)
 
 		if (DXGetObjectClass(attr) != CLASS_STRING)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "#10051",
+		    DXSetError(ERROR_DATA_INVALID, "#10051",
 					    "dependency attribute");
 		    goto error;
 		}
@@ -1073,7 +1073,7 @@ RefineITetras(Field f, int levels)
 
 		if (DXGetObjectClass(attr) != CLASS_STRING)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "#10051", 
+		    DXSetError(ERROR_DATA_INVALID, "#10051", 
 					"dependency attribute");
 		    goto error;
 		}
@@ -1292,7 +1292,7 @@ RefineITriangles(Field f, int levels)
 
 		if (DXGetObjectClass(attr) != CLASS_STRING)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "#10051",
+		    DXSetError(ERROR_DATA_INVALID, "#10051",
 						"dependency attribute");
 		    goto error;
 		}
@@ -1622,14 +1622,14 @@ RefinePArray(Array in, InterpTable *table, int boolean)
 	{
 	    if (type != TYPE_BYTE && type != TYPE_UBYTE)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			"invalid data flag must be byte or ubyte");
 		goto error;
 	    }
 
 	    if (nVars != 1)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			"invalid data flag must be scalar or 1-vector");
 		goto error;
 	    }
@@ -1665,7 +1665,7 @@ RefinePArray(Array in, InterpTable *table, int boolean)
 		    AVERAGE(double, table);
 		    break;
 		default:
-		    DXSetError(ERROR_INVALID_DATA, "#10320", "input");
+		    DXSetError(ERROR_DATA_INVALID, "#10320", "input");
 		    goto error;
 	    }
 	}
@@ -2066,7 +2066,7 @@ RefineCRefArray(Array in, int outPerIn)
     
     if (t != TYPE_INT && t != TYPE_UINT)
     {
-	DXSetError(ERROR_INVALID_DATA, "ref components must be int or uint");
+	DXSetError(ERROR_DATA_INVALID, "ref components must be int or uint");
 	goto error;
     }
     
@@ -2081,7 +2081,7 @@ RefineCRefArray(Array in, int outPerIn)
 
     if (nRefs != 1)
     {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		"invalid references must be scalar or 1-vector");
 	goto error;
     }

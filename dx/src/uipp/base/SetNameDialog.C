@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -17,7 +19,6 @@
 #include "Xm/Separator.h"
 #include "Xm/Text.h"
 
-#include "defines.h"
 #include "Strings.h"
 #include "SetNameDialog.h"
 

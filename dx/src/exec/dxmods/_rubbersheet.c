@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rubbersheet.c,v 1.3 1999/05/10 15:45:21 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rubbersheet.c,v 1.4 2000/05/16 18:47:38 gda Exp $:
  */
 #include <stdio.h>
 #include <math.h>
@@ -298,7 +298,7 @@ RS_Field_task(Pointer ptr)
     attr = DXGetComponentAttribute(field, "data", "dep");
     if (! attr || DXGetObjectClass(attr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "invalid or nonexistant data dependency attribute");
 	return ERROR;
     }
@@ -309,7 +309,7 @@ RS_Field_task(Pointer ptr)
 	dDepP = 0;
     else
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "invalid data dependency: %s", DXGetString((String)attr));
 	return ERROR;
     }
@@ -325,7 +325,7 @@ RS_Field_task(Pointer ptr)
 	attr = DXGetComponentAttribute(field, "normals", "dep");
 	if (! attr || DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"invalid or nonexistant normals dependency attribute");
 	    return ERROR;
 	}
@@ -336,7 +336,7 @@ RS_Field_task(Pointer ptr)
 	    nDepP = 0;
 	else
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"invalid normals dependency: %s",
 					DXGetString((String)attr));
 	    return ERROR;
@@ -501,14 +501,14 @@ RS_Field_PDep_task(Field field, float scale, float offset)
 	    att = DXGetComponentAttribute(field, "normals", "dep");
 	    if (! att || DXGetObjectClass(att) != CLASS_STRING)
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			"bad normals dependency attribute");
 		goto error;
 	    }
 
 	    if (strcmp(DXGetString((String)att), "positions"))
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			"normals dependency must match data dependency");
 		goto error;
 	    }
@@ -576,7 +576,7 @@ RS_Field_PDep_task(Field field, float scale, float offset)
 		    if (! GetTriNormal(pHandle, cHandle,
 						    nConnections, c_normal_buf))
 		    {
-			DXSetError(ERROR_INVALID_DATA,
+			DXSetError(ERROR_DATA_INVALID,
 			    "unable to derive a surface normal");
 			goto error;
 		    }
@@ -586,14 +586,14 @@ RS_Field_PDep_task(Field field, float scale, float offset)
 		    if (! GetQuadNormal(pHandle, cHandle,
 						nConnections, c_normal_buf))
 		    {
-			DXSetError(ERROR_INVALID_DATA,
+			DXSetError(ERROR_DATA_INVALID,
 			    "unable to derive a surface normal");
 			goto error;
 		    }
 		}
 		else if (primType == PRIM_LINES)
 		{
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			    "require position normals for 3D lines");
 		    goto error;
 		}
@@ -896,7 +896,7 @@ RS_Field_CDep_task(Field field, int nDepP, int dDepP, float scale, float offset)
 
     if (nDim > 3)
     {
-	DXSetError(ERROR_INVALID_DATA, ">3D positions not supported");
+	DXSetError(ERROR_DATA_INVALID, ">3D positions not supported");
 	goto error;
     }
 
@@ -1289,7 +1289,7 @@ RS_Field_CDep_task(Field field, int nDepP, int dDepP, float scale, float offset)
 	}
 	else
 	{
-	    DXSetError(ERROR_INVALID_DATA, "invalid dependency: %s",
+	    DXSetError(ERROR_DATA_INVALID, "invalid dependency: %s",
 						DXGetString((String)attr));
 	    goto error;
 	}
@@ -1563,7 +1563,7 @@ GetPrimType(Field field)
     else if (! strcmp(str, "triangles"))
 	return PRIM_TRIANGLES;
 
-    DXSetError(ERROR_INVALID_DATA, "element type %s not supported", str);
+    DXSetError(ERROR_DATA_INVALID, "element type %s not supported", str);
     return PRIM_INVALID;
 }
 
@@ -1596,7 +1596,7 @@ ValidForRubberSheet(Object object)
 	(cat != CATEGORY_REAL) ||
 	(! (rank == 0 || (rank == 1 && shape[0] == 1))))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "invalid data: scalar or 1-vector real data required");
 	return ERROR;
     }

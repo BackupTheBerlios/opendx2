@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/defines.h"
 
 #include <iostream.h>
 
@@ -40,8 +41,8 @@
 #include "ListIterator.h"
 #include "Strings.h"
 #include "Node.h"
-#include "Arc.h"
-#include "ArcStandIn.h"
+#include "Ark.h"
+#include "ArkStandIn.h"
 #include "Command.h"
 #include "EditorWindow.h"
 #include "Network.h"
@@ -60,8 +61,10 @@
 extern "C" int gethostname(char *address, int address_len);
 #endif
 
+#if 0
 #if defined(DXD_WIN)
 #include <winsock.h>
+#endif
 #endif
 
 #ifdef DXD_XTOFFSET_HOSED
@@ -805,7 +808,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 }
 
 
-extern "C" void StandIn_TrackArcEH(Widget widget,
+extern "C" void StandIn_TrackArkEH(Widget widget,
                 XtPointer clientData,
                 XEvent* event,
 		Boolean *)
@@ -813,10 +816,10 @@ extern "C" void StandIn_TrackArcEH(Widget widget,
     Node *node = (Node *) clientData;
     StandIn *standIn = node->getStandIn();
     ASSERT(standIn);
-    standIn->trackArc(widget, event); 
+    standIn->trackArk(widget, event); 
 } 
 
-void StandIn::trackArc(Widget widget, XEvent *event)
+void StandIn::trackArk(Widget widget, XEvent *event)
 {
     Network*      network;
     Node*         node;
@@ -1036,7 +1039,7 @@ void StandIn::armInput(Widget widget, XtPointer cdata)
     EditorWorkSpace*    workspace;
     ListIterator  iterator;
     XEvent*       event;
-    Arc*          a;
+    Ark*          a;
     List*         arcs;
     int           paramInd;
     Tab*          tab;
@@ -1117,7 +1120,7 @@ void StandIn::armInput(Widget widget, XtPointer cdata)
     /*
      * Set up tracking params.
      */
-    workspace->tracker     = (XtEventHandler)StandIn_TrackArcEH;
+    workspace->tracker     = (XtEventHandler)StandIn_TrackArkEH;
     workspace->io_tab      = widget;
     workspace->source_spot = standInRoot;
     workspace->first       = TRUE;
@@ -1151,9 +1154,9 @@ void StandIn::armInput(Widget widget, XtPointer cdata)
          */
 
 
-          arcs = (List *) node->getInputArcs(i);
+          arcs = (List *) node->getInputArks(i);
 
-          for (j = 1; (a = (Arc*) arcs->getElement(j)) != NULL; j++) {
+          for (j = 1; (a = (Ark*) arcs->getElement(j)) != NULL; j++) {
             a->getDestinationNode(paramInd);
             if (paramInd == i) {
               break;
@@ -1349,7 +1352,7 @@ void StandIn::armOutput(Widget widget, XtPointer cdata)
     /*
      * Set up tracking params.
      */
-    workspace->tracker     = (XtEventHandler)StandIn_TrackArcEH;
+    workspace->tracker     = (XtEventHandler)StandIn_TrackArkEH;
     workspace->io_tab      = widget;
     workspace->source_spot = standInRoot;
     workspace->first       = TRUE;
@@ -1392,7 +1395,7 @@ void StandIn::armOutput(Widget widget, XtPointer cdata)
                       (XtPointer)node);
 }
 
-void StandIn::deleteArc(Arc *a)
+void StandIn::deleteArk(Ark *a)
 {
      delete a;
 }
@@ -1421,7 +1424,7 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
     Node*          node2;
     Node*          to_node = NULL;
     int            to_param = -1;
-    Arc*           newArc;
+    Ark*           newArk;
     int            param2;
     int         i;
     int         x;
@@ -1708,7 +1711,7 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
 	if(workspace->io_tab == t_widget) workspace->remove_arcs = FALSE;
         notified = FALSE;
         if (workspace->remove_arcs) {
-              standIn->deleteArc(workspace->arc);
+              standIn->deleteArk(workspace->arc);
               workspace->remove_arcs = False;
 
 	      // Reset the Defaulting status of the dst param
@@ -1751,11 +1754,11 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
             // Make sure adding this arc won't add a cycle
             //
             if (!network->checkForCycle(node2, to_node)) {
-                newArc = new Arc(node2, 
+                newArk = new Ark(node2, 
                         param2,  
                         to_node, 
                         to_param);
-                editor->notifyArc(newArc);
+                editor->notifyArk(newArk);
             } else  {
 		/* don't complain if you drop the arc back on the
 		 * originating node.  this often happens when
@@ -1766,11 +1769,11 @@ void StandIn::disarmTab(Widget widget, XtPointer cdata)
             }
         } else {
             if (!network->checkForCycle(to_node, workspace->dst.node)) {
-                newArc = new Arc(to_node, 
+                newArk = new Ark(to_node, 
                         to_param, 
                         workspace->dst.node, 
                         workspace->dst.param);
-                editor->notifyArc(newArc);
+                editor->notifyArk(newArk);
             } else  {
 		/* see comment above about existing arcs */
 		if (to_node != workspace->dst.node)
@@ -1919,8 +1922,8 @@ void StandIn::adjustParameterLocations(int width)
     int             icnt, ocnt;
     Arg             arg[10];
     List            *arcs;
-    Arc             *a;
-    ArcStandIn      *asi;
+    Ark             *a;
+    ArkStandIn      *asi;
     Network         *network;
     EditorWindow    *editor;
     Tab             *tab;
@@ -1952,14 +1955,14 @@ void StandIn::adjustParameterLocations(int width)
         x =  (x + standInDefaults.io.width / 2) -
               standInDefaults.line.thickness / 2;
         if (tab->getLine() != NULL) {
-            arcs = (List *) this->node->getInputArcs(i);
+            arcs = (List *) this->node->getInputArks(i);
             if (arcs->getSize() != 0) {
-                a = (Arc *) arcs->getElement(1);
-                asi = a->getArcStandIn();
+                a = (Ark *) arcs->getElement(1);
+                asi = a->getArkStandIn();
 		if(asi) delete asi;
                 network = node->getNetwork();
                 editor = network->getEditor();
-                addArc(editor, a);
+                addArk(editor, a);
             }
         }
     }
@@ -1990,16 +1993,16 @@ void StandIn::adjustParameterLocations(int width)
 	tab->manage();
 
         if (tab->getLine() != NULL) {
-            arcs = (List *) this->node->getOutputArcs(i); 
+            arcs = (List *) this->node->getOutputArks(i); 
 
 	    int k;
             for (k = 1; k <= arcs->getSize(); k++) {
-                a = (Arc *) arcs->getElement(k);
-                asi = a->getArcStandIn();
+                a = (Ark *) arcs->getElement(k);
+                asi = a->getArkStandIn();
                 if (asi) delete asi;
                 network = node->getNetwork();
                 editor = network->getEditor();
-                addArc(editor, a);
+                addArk(editor, a);
             }
         }
     }
@@ -2471,16 +2474,16 @@ void StandIn::createStandIn()
 
 }
 
-void StandIn::drawArcs(Node* )
+void StandIn::drawArks(Node* )
 {
 }
 
-void StandIn::addArc(EditorWindow* editor, Arc *a)
+void StandIn::addArk(EditorWindow* editor, Ark *a)
 {
     EditorWorkSpace*      workspace;
     StandIn*        src_standIn;
     StandIn*        dst_standIn;
-    ArcStandIn*     asi;
+    ArkStandIn*     asi;
     Node*           src_node;
     Node*           dst_node;
     int             paramInd, arcIndex;
@@ -2526,8 +2529,8 @@ void StandIn::addArc(EditorWindow* editor, Arc *a)
 			     + standInDefaults.io.width / 2,
 		dst_standIn->getInputParameterTabY(arcIndex));
 
-	asi = new ArcStandIn((XmWorkspaceWidget) workspace->getRootWidget(), l);
-	a->setArcStandIn(asi);
+	asi = new ArkStandIn((XmWorkspaceWidget) workspace->getRootWidget(), l);
+	a->setArkStandIn(asi);
 	src_standIn->drawTab(paramInd, TRUE);
 	dst_standIn->drawTab(arcIndex, FALSE);
     }
@@ -2749,7 +2752,7 @@ Pixel StandIn::getLabelColor()
 // Print a representation of the stand in on a PostScript device.  We
 // assume that the device is in the same coordinate space as the parent
 // of this uicomponent (i.e. we send the current geometry to the 
-// PostScript output file).  We do not print the ArcStandIns, but do
+// PostScript output file).  We do not print the ArkStandIns, but do
 // print the Tabs.
 //
 boolean StandIn::PrintPostScriptSetup(FILE *f)

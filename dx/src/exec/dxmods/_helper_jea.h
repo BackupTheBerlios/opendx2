@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.h,v 1.3 1999/05/10 15:45:19 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_helper_jea.h,v 1.4 2000/05/16 18:47:23 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -25,7 +25,7 @@
 #define  FALSE  0
 
 
-#ifndef DXD_WIN
+#if !defined(intelnt)
 typedef int boolean;
 #endif
 #if DXD_HAS_LIBIOP

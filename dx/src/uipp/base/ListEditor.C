@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -17,7 +19,6 @@
 #include <Xm/List.h>
 #include <Xm/RowColumn.h>
 
-#include "defines.h"
 #include "lex.h"
 #include "Strings.h"
 #include "ListEditor.h"

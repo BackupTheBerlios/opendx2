@@ -254,7 +254,7 @@ m_Legend(Object *in, Object *out)
   else if (colortype==TYPE_INT)
     col_ptr_i = DXGetArrayData((Array)color_list);
   else if (colortype!=TYPE_STRING) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "color_list must be a list of 3-vectors or colorname strings");
     goto error;
   }
@@ -364,7 +364,7 @@ m_Legend(Object *in, Object *out)
   }
   else {
     if (!DXExtractString(in[5], &label)) {
-      DXSetError(ERROR_INVALID_DATA,"#10200", "label");
+      DXSetError(ERROR_DATA_INVALID,"#10200", "label");
       goto error;
     }
   }

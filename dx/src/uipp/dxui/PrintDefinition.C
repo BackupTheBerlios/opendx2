@@ -7,11 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "PrintDefinition.h"
 #include "PrintNode.h"
 

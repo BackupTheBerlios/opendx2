@@ -581,7 +581,7 @@ static Error
 	    }
 	}
 	else{
-	    DXSetError(ERROR_INVALID_DATA,"Positions must be 2D or 3D");
+	    DXSetError(ERROR_DATA_INVALID,"Positions must be 2D or 3D");
 	    goto error;
 	}
 	

@@ -7,15 +7,17 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-
-#include "defines.h"
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 
+#if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
+#endif
 
 #include "IBMApplication.h"
 #include "HelpMenuCommand.h"
@@ -460,60 +462,7 @@ const char *IBMApplication::getStartTutorialCommandString()
 //
 boolean IBMApplication::startTutorial()
 {
-#ifndef DXD_LACKS_FORK
-
-    pid_t child = fork();
-    if (child < 0) {                // Fork failed
-	ErrorMessage("Error starting tutorial process.");
- 	return FALSE;	
-    } else if (child == 0) {   /* Child */
-	const char *cmd = (char*)this->getStartTutorialCommandString();
-  	if (!cmd)
-	    return FALSE;
-	char *newcmd = DuplicateString(cmd);
-	char *p, **argv = new char*[STRLEN(newcmd)];
-	int i;
-	//
-	// Break the single command string up into tokens.
-	//
-	for (p=newcmd, i=0 ; *p ; i++) {
-	    SkipWhiteSpace(p);
-	    argv[i] = p;
-	    FindWhiteSpace(p);
-	    if (*p) {
-		*p = '\0';
-		p++;
-	    }
-	} 
-	argv[i] = NULL;
-#if 0
-	char **argv, *arg[3];
-	arg[0] = "/usr/svs/current/bin/dx";
-	arg[1] = "-tutor";
-	arg[2] = NULL;
-	argv = &arg[0];
-#endif
-
-	execvp(argv[0], argv);
-	//
-	// If not, try again with a different variant. 
-	//
-	execv(argv[0], argv);
-	//
-	// If we get here, we failed.
-	//
-        char buf[1024];
-        sprintf(buf,"Could not start tutorial using '%s'",cmd);
-        perror(buf);
-        exit(1);
-
-    }
-#endif  // LACKS_FORK
-#ifdef DXD_WIN
     system("dx -tutor");
-    return TRUE;
-#endif
-
     return TRUE;
 
 }
@@ -788,17 +737,11 @@ const char *IBMApplication::getTechSupportString()
     FILE *fp;
     int helpsize;
 
-#ifdef DXD_WIN
-    struct _stat buf;
-    if (_stat(supfile, &buf) != 0)
+    struct STATSTRUCT buf;
+   
+	if (STAT(supfile, &buf) != 0)
 	return nosup;
     helpsize = buf.st_size;
-#else
-    struct stat buf;
-    if (stat(supfile, &buf) != 0)
-	return nosup;
-    helpsize = buf.st_size;
-#endif
     
     if (!(fp = fopen(supfile,"r")))
 	return nosup;

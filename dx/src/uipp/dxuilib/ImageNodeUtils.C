@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -17,6 +18,7 @@
 
 #if defined(DXD_WIN) || defined(OS2)          //SMH get socket calls
 
+#if 0
 #if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
 #elif defined(HAVE_CYGWIN_SOCKET_H)
@@ -24,16 +26,16 @@
 #elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
+#endif
 
 #undef send
 #undef FLOAT
 #undef PFLOAT
 #endif
 
-#include "defines.h"
 #include "ImageNode.h"
 #include "StandIn.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "Parameter.h"
 #include "DXApplication.h"
 #include "Network.h"
@@ -61,20 +63,16 @@
 #endif
 
 String ImageNode::ImageMacroTxt[] = {
-#   include "imagemac.txt"
-    NULL
+#   include "imagemac.h"
 };
 String ImageNode::DXMacroTxt[] = {
-#   include "dxmac.txt"
-    NULL
+#   include "dxmac.h"
 };
 String ImageNode::VrmlMacroTxt[] = {
 #   include "vrmlmac.txt"
-    NULL
 };
 String ImageNode::GifMacroTxt[] = {
 #   include "gifmac.txt"
-    NULL
 };
 
 #include <ctype.h>
@@ -775,7 +773,6 @@ void ImageNode::getAutoAxesXTickLocs (double **t, int *size)
 
 	if ((!v) || (!v[0]) || (EqualString(v, "NULL"))) return ;
 
-	char *cp;
 	int tuple;
 
 	int cnt = DXValue::GetDoublesFromList (v, DXType::ScalarListType, t, &tuple);
@@ -807,7 +804,6 @@ void ImageNode::getAutoAxesYTickLocs (double **t, int *size)
 
 	if ((!v) || (!v[0]) || (EqualString(v, "NULL"))) return ;
 
-	char *cp;
 	int tuple;
 
 	int cnt = DXValue::GetDoublesFromList (v, DXType::ScalarListType, t, &tuple);
@@ -839,7 +835,6 @@ void ImageNode::getAutoAxesZTickLocs (double **t, int *size)
 
 	if ((!v) || (!v[0]) || (EqualString(v, "NULL"))) return ;
 
-	char *cp;
 	int tuple;
 
 	int cnt = DXValue::GetDoublesFromList (v, DXType::ScalarListType, t, &tuple);
@@ -1300,12 +1295,12 @@ boolean ImageNode::SendString(void* callbackData, PacketIFCallback cb, FILE* f, 
 void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac[], boolean viasocket)
 {
     int i = 0;
-#   define TMPSIZE 90
-    char tmpbuf[TMPSIZE];
+#   define BSIZE 90
+    char tmpbuf[BSIZE];
     int buflen = 0;
     while (mac[i]) {
 	int length = strlen(mac[i]);
-	if ((buflen + length) >= TMPSIZE) {
+	if ((buflen + length) >= BSIZE) {
 	    if (buflen > 0) {
 		tmpbuf[buflen++] = '\n'; tmpbuf[buflen] = '\0';
 		SendString (cbd, cb, f, tmpbuf, viasocket);

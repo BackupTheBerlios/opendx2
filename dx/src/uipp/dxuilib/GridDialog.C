@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include <X11/StringDefs.h>
@@ -24,7 +26,6 @@
 #include <Xm/Label.h>
 #include <Xm/BulletinB.h>
 
-#include "defines.h"
 #include "GridDialog.h"
 #include "Application.h"
 #include "WorkSpace.h"

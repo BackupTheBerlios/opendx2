@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -25,7 +27,6 @@
 #define _ScalarInstance_h
 
 
-#include "defines.h"
 #include "InteractorInstance.h"
 #include "LocalAttributes.h"
 #include "ScalarNode.h"

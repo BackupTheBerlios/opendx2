@@ -17,11 +17,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#ifndef DXD_HAS_UNIX_SYS_INCLUDES
+#if defined(HAVE_IO_H)
 #include <io.h>
 #endif
 
-#ifdef	DXD_WIN
+#if defined(intelnt)
 #define	sys_nerr	_sys_nerr
 #endif
 
@@ -289,7 +289,7 @@ DXPrintError(char *s)
 	messages[(int)ERROR_BAD_TYPE] = "Bad type";
 	messages[(int)ERROR_NO_CAMERA] = "No camera";
 	messages[(int)ERROR_MISSING_DATA] = "Missing data";
-	messages[(int)ERROR_INVALID_DATA] = "Invalid data";
+	messages[(int)ERROR_DATA_INVALID] = "Invalid data";
 	messages[(int)ERROR_BAD_PARAMETER] = "Bad parameter";
 	been_here = 1;
     }

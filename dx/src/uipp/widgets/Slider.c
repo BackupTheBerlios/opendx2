@@ -117,7 +117,7 @@ extern void _XmBackgroundColorDefault();
 #define DEF_MAX 100
 #define DEF_STEP 1
 
-#if defined(hp700) || defined(aviion) || defined(solaris) || defined(sun4) || defined (DXD_WIN) || defined(OS2)
+#if defined(hp700) || defined(aviion) || defined(solaris) || defined(sun4) || defined (intelnt) || defined(OS2)
 #define trunc(x) ((double)((int)(x)))
 #endif
 
@@ -133,45 +133,45 @@ static XtResource resources[] =
    {
       XmNcurrent, XmCCurrent, XmRDouble, sizeof(double),
       XtOffset(XmSliderWidget, slider.application_current_value),
-      XmRDouble, (caddr_t) &DefaultCurrentDbl 
+      XmRDouble, (XtPointer) &DefaultCurrentDbl 
    },
    {
       XmNmaximum, XmCMaximum, XmRDouble, sizeof(double),
       XtOffset(XmSliderWidget, slider.application_max_value),
-      XmRDouble, (caddr_t) &DefaultMaxDbl
+      XmRDouble, (XtPointer) &DefaultMaxDbl
    },
    {
       XmNminimum, XmCMinimum, XmRDouble, sizeof(double),
       XtOffset(XmSliderWidget, slider.application_min_value),
-      XmRDouble, (caddr_t)  &DefaultMinDbl
+      XmRDouble, (XtPointer)  &DefaultMinDbl
    },
     { XmNdataType, XmCDataType, XmRInt, sizeof(int),
       XtOffset(XmSliderWidget, slider.number_type),
-      XmRImmediate, (caddr_t) INTEGER 
+      XmRImmediate, (XtPointer) INTEGER 
     },
     { XmNdecimalPlaces, XmCDecimalPlaces, XmRInt, sizeof(int),
       XtOffset(XmSliderWidget, slider.decimal_places),
-      XmRImmediate, (caddr_t) 0 
+      XmRImmediate, (XtPointer) 0 
     },
     {
       XmNincrement, XmCIncrement, XmRDouble, sizeof(double),
       XtOffset(XmSliderWidget, slider.increment),
-      XmRDouble, (caddr_t) &DefaultMinDbl
+      XmRDouble, (XtPointer) &DefaultMinDbl
     },
     {
-      XmNvalueCallback, XmCValueCallback, XmRCallback, sizeof(caddr_t),
+      XmNvalueCallback, XmCValueCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmSliderWidget, slider.value_callback),
       XmRCallback, NULL
     },
     {
       XmNlimitColor, XmCLimitColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmSliderWidget, slider.limit_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
     {
       XmNcurrentColor, XmCCurrentColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmSliderWidget, slider.current_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
 };
 

@@ -45,12 +45,12 @@
     if (dim==0 || dim==1) {						     \
 	if (!DXTypeCheck(xf->CAT(comp,_array), t, CATEGORY_REAL, 0) &&	     \
 	  !DXTypeCheck(xf->CAT(comp,_array), t, CATEGORY_REAL, 1, 1)) {	     \
-	    DXSetError(ERROR_INVALID_DATA, "%s component has bad type", name); \
+	    DXSetError(ERROR_DATA_INVALID, "%s component has bad type", name); \
 	    return ERROR;						     \
 	}								     \
     } else {								     \
 	if (!DXTypeCheck(xf->CAT(comp,_array), t, CATEGORY_REAL, 1, dim))	{    \
-	    DXSetError(ERROR_INVALID_DATA, "%s component has bad type", name); \
+	    DXSetError(ERROR_DATA_INVALID, "%s component has bad type", name); \
 	    return ERROR;						     \
 	}								     \
     }									     \
@@ -104,7 +104,7 @@ _dxf_XZero(struct xfield *xf)
     }									      \
     DXGetArrayInfo(xf->CAT(comp,_array), &n, NULL,NULL,NULL,NULL);	      \
     if (n!=count && count!=0) {						      \
-	DXSetError(ERROR_INVALID_DATA,					      \
+	DXSetError(ERROR_DATA_INVALID,					      \
 		 "%s component has %d items, expecting %d",		      \
 		 name, n, count);					      \
 	return NULL;							      \
@@ -344,7 +344,7 @@ _dxf_XNeighbors(Field f, struct xfield *xf, enum xr required, enum xd xd)
     } else if (xf->ct==ct_cubes) {
 	if (DXQueryGridConnections(xf->connections_array, &n, xf->k)) {
 	    if (n!=3)
-		DXErrorReturn(ERROR_INVALID_DATA,
+		DXErrorReturn(ERROR_DATA_INVALID,
 			    "cubes connections must have dimensionality 3");
 	} else {
 	    xf->neighbors_array = DXNeighbors(f);
@@ -527,7 +527,7 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 
 	DXGetArrayInfo(xf->fcolors_array, &n, NULL, NULL, NULL, NULL);
 	if (n != xf->ncolors && xf->ncolors != 0)
-	    DXSetError(ERROR_INVALID_DATA,		      
+	    DXSetError(ERROR_DATA_INVALID,		      
 		 "front colors component has %d items, expecting %d", n, xf->ncolors);					      
     }
     if (xf->bcolors_array) {
@@ -585,7 +585,7 @@ _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 
 	DXGetArrayInfo(xf->bcolors_array, &n, NULL, NULL, NULL, NULL);
 	if (n != xf->ncolors && xf->ncolors != 0)
-	DXSetError(ERROR_INVALID_DATA,		      
+	DXSetError(ERROR_DATA_INVALID,		      
 		 "back colors component has %d items, expecting %d", n, xf->ncolors);					      
     }
 
@@ -670,7 +670,7 @@ _dxf_XNormals(Field f, struct xfield *xf, enum xr required, enum xd xd)
 	    return OK;
 	}
 	else if (flag != 1)
-	    DXErrorReturn(ERROR_INVALID_DATA, "shade attribute value must be 0 or 1");
+	    DXErrorReturn(ERROR_DATA_INVALID, "shade attribute value must be 0 or 1");
     }
 
     array(normals_array, NORMALS, required);
@@ -719,11 +719,11 @@ _dxf_XNormals(Field f, struct xfield *xf, enum xr required, enum xd xd)
     } else if (xf->normals_dep==dep_polylines) {
 	m = xf->npolylines;
     } else
-	DXErrorReturn(ERROR_INVALID_DATA, "bad normals dependency");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad normals dependency");
 
     if (m && m != n)
     {
-	DXSetError(ERROR_INVALID_DATA,		
+	DXSetError(ERROR_DATA_INVALID,		
 		 "normals component has %d items, expecting %d", n, m);	
 	return ERROR;
     }
@@ -745,16 +745,16 @@ _dxf_XOpacities(Field f, struct xfield *xf, enum xr required, enum xd xd)
 
 	o = DXGetComponentAttribute(f, OPACITIES, DEP);
 	if (! o)
-	    DXErrorReturn(ERROR_INVALID_DATA, "missing opacities dependency");
+	    DXErrorReturn(ERROR_DATA_INVALID, "missing opacities dependency");
 	
 	s = DXGetString((String)o);
 	if (! s)
-	    DXErrorReturn(ERROR_INVALID_DATA, "invalid opacities dependency");
+	    DXErrorReturn(ERROR_DATA_INVALID, "invalid opacities dependency");
 	
 	if ((!strcmp(s, "positions")   && xf->colors_dep != dep_positions)   ||
 	    (!strcmp(s, "polylines")   && xf->colors_dep != dep_polylines)   ||
 	    (!strcmp(s, "connections") && xf->colors_dep != dep_connections))
-	    DXErrorReturn(ERROR_INVALID_DATA, 
+	    DXErrorReturn(ERROR_DATA_INVALID, 
 		"mismatch between opacities and colors dependencies");
     }
 
@@ -790,7 +790,7 @@ _dxf_XOpacities(Field f, struct xfield *xf, enum xr required, enum xd xd)
 
     if (n != xf->ncolors)
     {
-	DXSetError(ERROR_INVALID_DATA,		
+	DXSetError(ERROR_DATA_INVALID,		
 		 "normals component has %d items, expecting %d", n, xf->ncolors);
 	return ERROR;
     }

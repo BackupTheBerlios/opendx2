@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.3 1999/05/10 15:45:32 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.4 2000/05/16 18:48:21 gda Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
@@ -1093,13 +1093,13 @@ InitVectorField(Object vfo)
 		
 		if (class != CLASS_FIELD && class != CLASS_COMPOSITEFIELD)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "invalid multigrid member");
+		    DXSetError(ERROR_DATA_INVALID, "invalid multigrid member");
 		    goto error;
 		}
 
 		if (! GetElementType(mo, &str))
 		{
-		    DXSetError(ERROR_INVALID_DATA, "vectors");
+		    DXSetError(ERROR_DATA_INVALID, "vectors");
 		    goto error;
 		}
 
@@ -1115,7 +1115,7 @@ InitVectorField(Object vfo)
 		    
 		    default:
 		    {
-			DXSetError(ERROR_INVALID_DATA, "vectors");
+			DXSetError(ERROR_DATA_INVALID, "vectors");
 			goto error;
 		    }
 		}
@@ -1137,7 +1137,7 @@ InitVectorField(Object vfo)
 	    
 	    if (! GetElementType(vfo, &str))
 	    {
-		DXSetError(ERROR_INVALID_DATA, "vectors");
+		DXSetError(ERROR_DATA_INVALID, "vectors");
 		goto error;
 	    }
 
@@ -1153,7 +1153,7 @@ InitVectorField(Object vfo)
 		
 		default:
 		{
-		    DXSetError(ERROR_INVALID_DATA, "vectors");
+		    DXSetError(ERROR_DATA_INVALID, "vectors");
 		    goto error;
 		}
 	    }
@@ -1165,7 +1165,7 @@ InitVectorField(Object vfo)
     
 	default:
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"invalid object encountered in vector field");
 	    goto error;
 	}
@@ -1194,7 +1194,7 @@ GetElementType(Object o, char **str)
 	
 	if (! DXGetComponentValue((Field)o, "connections"))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "data has no connections");
+	    DXSetError(ERROR_DATA_INVALID, "data has no connections");
 	    return ERROR;
 	}
 
@@ -1207,7 +1207,7 @@ GetElementType(Object o, char **str)
 
 	if (DXGetObjectClass(c) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "element type attribute");
+	    DXSetError(ERROR_DATA_INVALID, "element type attribute");
 	    return ERROR;
 	}
 
@@ -1786,7 +1786,7 @@ GeometryCheck(Object vectors, int nD)
 	    
 	    if (n != nD)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			"vectors are %d-D, vector space is %d-D", nD, n);
 		goto error;
 	    }
@@ -1818,7 +1818,7 @@ GeometryCheck(Object vectors, int nD)
 		case 2:
 		    if (strcmp(str, "quads") && strcmp(str, "triangles"))
 		    {
-			DXSetError(ERROR_INVALID_DATA, 
+			DXSetError(ERROR_DATA_INVALID, 
 				"%d-D vector space requires %d-D elements", n, n);
 			goto error;
 		    }
@@ -1827,14 +1827,14 @@ GeometryCheck(Object vectors, int nD)
 		case 3:
 		    if (strcmp(str, "cubes") && strcmp(str, "tetrahedra"))
 		    {
-			DXSetError(ERROR_INVALID_DATA, 
+			DXSetError(ERROR_DATA_INVALID, 
 				"%d-D vector space requires %d-D elements", n, n);
 			goto error;
 		    }
 		    break;
 		
 		default:
-		    DXSetError(ERROR_INVALID_DATA, "2- or 3-D vectors required");
+		    DXSetError(ERROR_DATA_INVALID, "2- or 3-D vectors required");
 		    goto error;
 	    }
 	    */
@@ -1856,7 +1856,7 @@ GeometryCheck(Object vectors, int nD)
 	}
 
 	default:
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		"vectors must be field or composite field");
 	    goto error;
     }

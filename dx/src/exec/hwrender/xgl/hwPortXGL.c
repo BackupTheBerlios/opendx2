@@ -50,6 +50,9 @@
  only enabled for the GT.
 
  $Log: hwPortXGL.c,v $
+ Revision 1.5  2000/05/16 18:48:37  gda
+ Changes to compile using MS compilers under Cygwin
+
  Revision 1.4  1999/05/10 15:45:40  gda
  Copyright message
 
@@ -961,7 +964,7 @@ _dxf_INIT_RENDER_MODULE (void *globals)
    *  itself is not used.  Crufty.
    */
   if (!_dxfLoadRenderOptionsFile(globals))
-      DXErrorGoto(ERROR_INVALID_DATA, "#13760") ;
+      DXErrorGoto(ERROR_DATA_INVALID, "#13760") ;
 #endif
 
   DPRINT(")") ;
@@ -2000,7 +2003,7 @@ _dxf_DEFINE_LIGHT (void *win, int n, Light light)
 		      NULL) ;
     } else {
       DPRINT("\nunknown light type") ;
-      DXErrorGoto(ERROR_INVALID_DATA, "#13751") ;
+      DXErrorGoto(ERROR_DATA_INVALID, "#13751") ;
     }
 
   xgl_object_set (XGLCTX,

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 #define _CDBOutput
 
 
-#include "defines.h"
 #include "Cacheability.h"
 #include "CDBParameter.h"
 

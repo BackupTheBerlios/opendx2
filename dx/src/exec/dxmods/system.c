@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/system.c,v 1.3 1999/05/10 15:45:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/system.c,v 1.4 2000/05/16 18:48:23 gda Exp $
  */
 
 #include <dx/dx.h>
@@ -20,7 +20,7 @@ m_System(Object *in, Object *out)
 {
     static char format[] = "/bin/sh -c \"%s\" </dev/null";
     char *cmd;
-#ifdef DXD_WIN
+#if defined(intelnt)
 #define MAX_CMD_ARGS 30
     char *p[MAX_CMD_ARGS];
     char *s;
@@ -29,7 +29,7 @@ m_System(Object *in, Object *out)
 
     if (DXExtractString(in[0], &cmd)) {
 	char *buf = (char *)DXAllocate(sizeof(format) + strlen(cmd) + 1);
-#ifdef DXD_WIN
+#if defined(intelnt)
 	strcpy(buf, cmd);
 	for (s = buf, i = 0; *s && (i < MAX_CMD_ARGS - 1); s++, i++) {
 	    for ( ; *s && isspace(*s); s++);

@@ -5,9 +5,9 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-#include "../base/UIConfig.h"
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 #include "../base/defines.h"
 #include "../base/Strings.h"
 #include "../base/ErrorDialogManager.h"

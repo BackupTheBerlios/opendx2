@@ -32,7 +32,7 @@ typedef struct _WsCallbackRec {
     struct _WsCallbackRec* next;
     Widget               widget;
     XtCallbackProc       callback;
-    caddr_t              closure;
+    void *              closure;
 } WsCallbackRec;
 
 typedef struct _WsCallbackRec *WsCallbackList;
@@ -40,7 +40,7 @@ typedef struct _WsCallbackRec *WsCallbackList;
 extern void  AddConstraintCallback	(Widget widget,
 					 register WsCallbackList *callbacks,
 					 XtCallbackProc callback,
-					 caddr_t closure);
+					 void * closure);
 extern void  RemoveConstraintCallbacks  (WsCallbackList *callbacks);
 extern void  CallConstraintCallbacks	(Widget widget,
 					 WsCallbackList callbacks,

@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <defines.h>
 
 
 #include <Xm/Xm.h>

@@ -248,7 +248,7 @@ _dxfInitializeStereoCameraMode(void *globals, dxObject stereoArgs)
 int
 _dxfCreateStereoCameras(void *globals,
 		    int p, float fov, float width,
-		    float *to, float *from, float *up, float near, float far,
+		    float *to, float *from, float *up, float Near, float Far,
 		    float *lto, float *lfrom, float *lup, float **lProjection,
 		    float *rto, float *rfrom, float *rup, float **rProjection)
 {
@@ -259,7 +259,7 @@ _dxfCreateStereoCameras(void *globals,
 	return (*_dxd_StereoCameraModes[STEREOCAMERAMODE].createStereoCameras)(
 		    STEREOCAMERADATA,
 		    p, fov, width,
-		    to, from, up, near, far,
+		    to, from, up, Near, Far,
 		    lto, lfrom, lup, lProjection,
 		    rto, rfrom, rup, rProjection);
     }

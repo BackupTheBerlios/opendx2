@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rgb_image.c,v 1.3 1999/05/10 15:45:21 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_rgb_image.c,v 1.4 2000/05/16 18:47:38 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -25,7 +25,7 @@
 #include <iop/pfs.h>
 #endif
 
-#ifdef DXD_WIN
+#if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
 #endif
 
@@ -135,7 +135,7 @@ write_rgb_or_fb(RWImageArgs *iargs)
          * Open and read-in or default backwards.
          */
 	if (strlen(iargs->basename) > MAX_IMAGE_NAMELEN - 5)
-            DXErrorGoto ( ERROR_INVALID_DATA, "image file name too long" );
+            DXErrorGoto ( ERROR_DATA_INVALID, "image file name too long" );
 		
 	strcpy(sizefilename,iargs->basename);
 	strcat(sizefilename,".size");
@@ -244,7 +244,7 @@ write_rgb_or_fb(RWImageArgs *iargs)
         }
         else
         {
-#if !defined(os2) && !defined(DXD_WIN)
+#if !defined(os2) && !defined(intelnt)
             if ( ( fh[i] = open
                               ( imagefilename,
                                 (O_CREAT|O_WRONLY),
@@ -259,7 +259,7 @@ write_rgb_or_fb(RWImageArgs *iargs)
                                 (_S_IWRITE | _S_IREAD)) ) < 0 )
 #endif
                 ErrorGotoPlus1
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "Can't open image file (%s)", imagefilename );
 
             if ( lseek ( fh[i], (image_sizes.startframe*frame_size_bytes), 0 )
@@ -543,13 +543,13 @@ _dxf_ReadSizeFile ( char *name, SizeData *sd )
     {
         if ( ( rl = read ( fh, record, sizeof ( record ) ) ) <= 0 )
         {
-            DXSetError ( ERROR_INVALID_DATA,
+            DXSetError ( ERROR_DATA_INVALID,
                          "Can't read from size file (%s).", name );
             goto error;
         }
         else if ( rl >= sizeof ( record ) )  /* == is more a worry than > */
         {
-            DXSetError ( ERROR_INVALID_DATA,
+            DXSetError ( ERROR_DATA_INVALID,
                          "Unexpectedly long size file (%s).", name );
             goto error;
         }
@@ -569,7 +569,7 @@ _dxf_ReadSizeFile ( char *name, SizeData *sd )
         }
         else 
         {
-            DXSetError ( ERROR_INVALID_DATA,
+            DXSetError ( ERROR_DATA_INVALID,
                        "Bad format in size file (%s)", name );
             goto error;
         }
@@ -599,7 +599,7 @@ _dxf_WriteSizeFile ( char *name, SizeData sd )
     DXASSERTGOTO ( sd.startframe != VALUE_UNSPECIFIED );
     DXASSERTGOTO ( sd.endframe   != VALUE_UNSPECIFIED );
 
-#if !defined(os2) && !defined(DXD_WIN)
+#if !defined(os2) && !defined(intelnt)
     if ( ( fh = open ( name, ( O_CREAT | O_RDWR ), 0666 ) ) < 0 )
 #else
 /* os2 has a 2 parameter #define for open() _open(). This is the only file
@@ -608,7 +608,7 @@ _dxf_WriteSizeFile ( char *name, SizeData sd )
     if ( ( fh = _open ( name, ( O_CREAT | O_RDWR | O_BINARY), (_S_IREAD | _S_IWRITE) ) ) < 0 )
 #endif
     {
-	DXSetError ( ERROR_INVALID_DATA, "can't open file %s", name );
+	DXSetError ( ERROR_DATA_INVALID, "can't open file %s", name );
 	goto error;
     }
 

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,7 +16,6 @@
 #define _MBParameter_h
 
 #include <Xm/Xm.h>
-#include "defines.h"
 #include "Base.h"
 
 //

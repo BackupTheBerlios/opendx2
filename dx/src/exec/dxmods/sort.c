@@ -73,7 +73,7 @@ SortObject(Object o, int flag)
 
 	    if (c == CLASS_COMPOSITEFIELD)
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			"cannot sort objects of class %s",
 			(c == CLASS_COMPOSITEFIELD) ?
 			    "composite field" : "multigrid");
@@ -418,7 +418,7 @@ SortArray(Array a, int flag)
 
     if (r != 0 && (r != 1 || s[0] != 1))
     {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		"sort object must be scalar or 1-vector");
 	goto error;
     }
@@ -476,7 +476,7 @@ break;
 	case TYPE_UBYTE:  SORTARRAY(unsigned char,  ubval, SortUByte);  break;
 	default: 
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"invalid data type in sort object");
 	    goto error;
 	}
@@ -584,7 +584,7 @@ ReMap(Array src, int *map)
 
     if (t != TYPE_INT)
     {
-	DXSetError(ERROR_INVALID_DATA, "ref component must be type INTEGER");
+	DXSetError(ERROR_DATA_INVALID, "ref component must be type INTEGER");
 	goto error;
     }
 

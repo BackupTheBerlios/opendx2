@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.5 1999/06/04 18:09:58 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_postscript.c,v 1.6 2000/05/16 18:47:34 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -185,7 +185,7 @@ output_ps(RWImageArgs *iargs, int colormode,int filetype)
     series = iargs->imgclass == CLASS_SERIES;
 
     if (series && (filetype == EPS))
-        DXErrorGoto(ERROR_INVALID_DATA,
+        DXErrorGoto(ERROR_DATA_INVALID,
           "Series data cannot be written in 'Encapsulated PostScript' format");
 
     if ( !_dxf_GetImageAttributes ( (Object)iargs->image, &image_sizes ) )
@@ -231,7 +231,7 @@ output_ps(RWImageArgs *iargs, int colormode,int filetype)
                         iargs->basename, iargs->imgtyp,iargs->startframe,0))
                 goto error;
         if ( (fp = fopen (imagefilename, "w" )) == 0 )
-            ErrorGotoPlus1 ( ERROR_INVALID_DATA,
+            ErrorGotoPlus1 ( ERROR_DATA_INVALID,
                           "Can't open image file (%s)", imagefilename );
     } else {
         strcpy(imagefilename,"stdout");
@@ -262,7 +262,7 @@ output_ps(RWImageArgs *iargs, int colormode,int filetype)
         colors = (Array)DXGetComponentValue(img, "colors");
         if (! colors)
         {
-            DXSetError(ERROR_INVALID_DATA,
+            DXSetError(ERROR_DATA_INVALID,
                 "image does not contain colors component");
             goto error;
         }
@@ -273,7 +273,7 @@ output_ps(RWImageArgs *iargs, int colormode,int filetype)
         {
             if (rank != 1 || shape[0] != 3)
             {
-                DXSetError(ERROR_INVALID_DATA,
+                DXSetError(ERROR_DATA_INVALID,
                     "floating-point colors component must be 3-vector");
                 goto error;
             }
@@ -287,7 +287,7 @@ output_ps(RWImageArgs *iargs, int colormode,int filetype)
                 color_map = (Array)DXGetComponentValue(img, "color map");
                 if (! color_map)
                 {
-                    DXSetError(ERROR_INVALID_DATA,
+                    DXSetError(ERROR_DATA_INVALID,
                         "single-valued ubyte colors component requires a %s",
                         "color map");
                     goto error;
@@ -297,7 +297,7 @@ output_ps(RWImageArgs *iargs, int colormode,int filetype)
 
                 if (type != TYPE_FLOAT || rank != 1 || shape[0] != 3)
                 {
-                    DXSetError(ERROR_INVALID_DATA,
+                    DXSetError(ERROR_DATA_INVALID,
                         "color map must be floating point 3-vectors");
                     goto error;
                 }
@@ -307,7 +307,7 @@ output_ps(RWImageArgs *iargs, int colormode,int filetype)
             }
             else if (rank != 1 || shape[0] != 3)
             {
-                DXSetError(ERROR_INVALID_DATA,
+                DXSetError(ERROR_DATA_INVALID,
                     "unsigned byte colors component must be either single %s",
                     "valued with a color map or 3-vectors");
                 goto error;
@@ -356,7 +356,7 @@ output_ps(RWImageArgs *iargs, int colormode,int filetype)
 bad_write:
     if ( iargs->pipe == NULL )
         DXErrorGoto
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "Can't write PostScript file." )
     else
         DXErrorGoto
@@ -401,7 +401,7 @@ put_ps_setup(FILE *fout, int frames, struct ps_spec *spec)
    return OK;
 
 bad_write:
-    DXErrorGoto(ERROR_INVALID_DATA, "Can't write PostScript file.")
+    DXErrorGoto(ERROR_DATA_INVALID, "Can't write PostScript file.")
 
 error:
    return ERROR;
@@ -470,9 +470,9 @@ put_ps_page_setup(FILE *fout, struct ps_spec *spec)
 
     return OK;
 bad_write:
-    DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+    DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 error:
-    DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+    DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 }
 
 /*
@@ -557,7 +557,7 @@ put_ps_prolog(FILE *fout, struct ps_spec *spec)
         if (fprintf(fout,"%%%%EndProlog\n\n") <= 0) goto error;
         return OK;
 bad_write:
-    DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+    DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 error:
         return ERROR;
 }
@@ -619,7 +619,7 @@ put_ps_header(FILE *fout, char *filename, int frames, struct ps_spec *spec)
    return OK;
 
 error:
-    DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+    DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 }
 
 
@@ -1154,7 +1154,7 @@ ps_out_flc(FILE *fout, Pointer pixels,
 error:
    DXFree(RGBbuff);
    DXFree(encbuff);
-   DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+   DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 }
 
 
@@ -1296,7 +1296,7 @@ ps_out_gry(FILE *fout,
 error:
    DXFree(BWbuff);
    DXFree(encbuff);
-   DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+   DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 }
 
 /*
@@ -1318,7 +1318,7 @@ put_ps_trailer(FILE *fout, struct ps_spec *spec)
    return OK;
 
 error:
-   DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+   DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 }
 
 /*
@@ -1356,7 +1356,7 @@ ps_image_header(FILE *fout, struct ps_spec *spec)
    return OK;
 
 error:
-   DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+   DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 }
 
 /*
@@ -1396,7 +1396,7 @@ put_colorimage_function(FILE *fout)
     return OK;
 
 bad_write:
-    DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+    DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 error:
     return ERROR;
 }
@@ -1414,7 +1414,7 @@ ps_new_page(FILE *fout,int page, int pages, struct ps_spec *spec)
 
         return OK;
 error:
-    DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+    DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 }
 
 /*
@@ -1428,7 +1428,7 @@ ps_end_page(FILE *fout)
    else
       return OK;
 error:
-    DXErrorReturn(ERROR_INVALID_DATA, "Can't write PostScript file.");
+    DXErrorReturn(ERROR_DATA_INVALID, "Can't write PostScript file.");
 }
 
 /*
@@ -1730,7 +1730,7 @@ put_miff_header(FILE *fout, char *filename, int frame, struct ps_spec *spec, int
    return OK;
 
 error:
-   DXErrorReturn(ERROR_INVALID_DATA, "Can't write miff file.");
+   DXErrorReturn(ERROR_DATA_INVALID, "Can't write miff file.");
 }
 
 #define STAT_OK           0
@@ -1808,27 +1808,27 @@ read_miff_header(FILE *fin, int *frame, struct ps_spec *spec, int *imageType, in
 			status = get_token(buff, token, value)) {
 	    if (!strcmp(token, "class")) {
 		if (strcmp(value, "DirectClass")) {
-		    DXSetError(ERROR_INVALID_DATA, "MIFF: class=%s is not supported", value);
+		    DXSetError(ERROR_DATA_INVALID, "MIFF: class=%s is not supported", value);
 		    goto error;
 		}
 	    } else if (!strcmp(token, "columns")) {
 		if (1 != sscanf(value, "%d", &spec->image_width)) {
-		    DXSetError(ERROR_INVALID_DATA, "MIFF: bad columns value, %s", value);
+		    DXSetError(ERROR_DATA_INVALID, "MIFF: bad columns value, %s", value);
 		    goto error;
 		}
 	    } else if (!strcmp(token, "compression")) {
 		if (strcmp(value, "RunlengthEncoded")) {
-		    DXSetError(ERROR_INVALID_DATA, "MIFF: compression=%s is not supported", value);
+		    DXSetError(ERROR_DATA_INVALID, "MIFF: compression=%s is not supported", value);
 		    goto error;
 		}
 	    } else if (!strcmp(token, "rows")) {
 		if (1 != sscanf(value, "%d", &spec->image_height)) {
-		    DXSetError(ERROR_INVALID_DATA, "MIFF: bad rows value, %s", value);
+		    DXSetError(ERROR_DATA_INVALID, "MIFF: bad rows value, %s", value);
 		    goto error;
 		}
 	    } else if (!strcmp(token, "scene")) {
 		if (1 != sscanf(value, "%d", frame)) {
-		    DXSetError(ERROR_INVALID_DATA, "MIFF: bad scene value, %s", value);
+		    DXSetError(ERROR_DATA_INVALID, "MIFF: bad scene value, %s", value);
 		    goto error;
 		}
 	    }
@@ -1836,7 +1836,7 @@ read_miff_header(FILE *fin, int *frame, struct ps_spec *spec, int *imageType, in
 	if (status == STAT_COMPLETE)
 	    break;
 	if (status == STAT_ERROR) {
-	    DXSetError(ERROR_INVALID_DATA, "MIFF: error parsing line %s", buff);
+	    DXSetError(ERROR_DATA_INVALID, "MIFF: error parsing line %s", buff);
 	    goto error;
 	}
     }
@@ -1981,7 +1981,7 @@ miff_out_flc(FILE *fout, Pointer pixels,
 error:
    DXFree(RGBbuff);
    DXFree(encbuff);
-   DXErrorReturn(ERROR_INVALID_DATA, "Can't write miff pixel data.");
+   DXErrorReturn(ERROR_DATA_INVALID, "Can't write miff pixel data.");
 }
 
 Error
@@ -2072,11 +2072,11 @@ output_miff(RWImageArgs *iargs)
 	if (!fptr) 
 	{
 	    if ( (fp = fopen (imagefilename, "w+" )) == 0 )
-		ErrorGotoPlus1 ( ERROR_INVALID_DATA,
+		ErrorGotoPlus1 ( ERROR_DATA_INVALID,
 			      "Can't open image file (%s)", imagefilename );
 	} else {
 	    if ( (fp = fopen (imagefilename, "r+" )) == 0 )
-		ErrorGotoPlus1 ( ERROR_INVALID_DATA,
+		ErrorGotoPlus1 ( ERROR_DATA_INVALID,
 			      "Can't open image file (%s)", imagefilename );
 	    fseek(fp, fptr, SEEK_SET);
 	}
@@ -2101,7 +2101,7 @@ output_miff(RWImageArgs *iargs)
         colors = (Array)DXGetComponentValue(img, "colors");
         if (! colors)
         {
-            DXSetError(ERROR_INVALID_DATA,
+            DXSetError(ERROR_DATA_INVALID,
                 "image does not contain colors component");
             goto error;
         }
@@ -2112,7 +2112,7 @@ output_miff(RWImageArgs *iargs)
         {
             if (rank != 1 || shape[0] != 3)
             {
-                DXSetError(ERROR_INVALID_DATA,
+                DXSetError(ERROR_DATA_INVALID,
                     "floating-point colors component must be 3-vector");
                 goto error;
             }
@@ -2126,7 +2126,7 @@ output_miff(RWImageArgs *iargs)
                 color_map = (Array)DXGetComponentValue(img, "color map");
                 if (! color_map)
                 {
-                    DXSetError(ERROR_INVALID_DATA,
+                    DXSetError(ERROR_DATA_INVALID,
                         "single-valued ubyte colors component requires a %s",
                         "color map");
                     goto error;
@@ -2136,7 +2136,7 @@ output_miff(RWImageArgs *iargs)
 
                 if (type != TYPE_FLOAT || rank != 1 || shape[0] != 3)
                 {
-                    DXSetError(ERROR_INVALID_DATA,
+                    DXSetError(ERROR_DATA_INVALID,
                         "color map must be floating point 3-vectors");
                     goto error;
                 }
@@ -2146,7 +2146,7 @@ output_miff(RWImageArgs *iargs)
             }
             else if (rank != 1 || shape[0] != 3)
             {
-                DXSetError(ERROR_INVALID_DATA,
+                DXSetError(ERROR_DATA_INVALID,
                     "unsigned byte colors component must be either single %s",
                     "valued with a color map or 3-vectors");
                 goto error;
@@ -2189,7 +2189,7 @@ output_miff(RWImageArgs *iargs)
 bad_write:
     if ( iargs->pipe == NULL )
         DXErrorGoto
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "Can't write miff file." )
     else
         DXErrorGoto

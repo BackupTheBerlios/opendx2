@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -16,8 +18,6 @@
 #include <stdio.h> 
 #include <Xm/Xm.h> 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "enums.h"
 #include "Base.h"
 #include "List.h"
@@ -40,7 +40,7 @@
 //
 // Referenced classes:
 //
-class Arc;
+class Ark;
 class List;
 class NodeDefinition;
 class DXPacketIF;
@@ -65,6 +65,7 @@ for (iterator.setList(node->inputParameters) ; \
 #define FOR_EACH_NODE_OUTPUT(node, param, iterator) \
 for (iterator.setList(node->outputParameters) ; \
      param = (Parameter*)iterator.getNext() ; )
+
 
 //
 // Node class definition:
@@ -247,9 +248,9 @@ class Node : public Base
     List *getIOTypes(List *io, int index);
 
     //
-    // Return a readonly list of Arcs for the given parameter. 
+    // Return a readonly list of Arks for the given parameter. 
     //
-    const List *getIOArcs(List *io, int index);
+    const List *getIOArks(List *io, int index);
 
     //
     // Determine if the index'th parameter from the given list has visible tab. 
@@ -310,15 +311,15 @@ class Node : public Base
 		{ return outputParameters.appendElement((const void*)p); }
 
     //
-    // Add an Arc to the index'th parameter of parameter list 'io'.
+    // Add an Ark to the index'th parameter of parameter list 'io'.
     //
-    virtual boolean addIOArc(List *io, int index, Arc *a); 
-    virtual boolean removeIOArc(List *io, int index, Arc *a);
+    virtual boolean addIOArk(List *io, int indx, Ark *a); 
+    virtual boolean removeIOArk(List *io, int index, Ark *a);
 
-    boolean removeInputArc(int index, Arc *a)
-		{ return this->removeIOArc(&this->inputParameters, index, a); }
-    boolean removeOutputArc(int index, Arc *a)
-		{ return this->removeIOArc(&this->outputParameters, index, a); }
+    boolean removeInputArk(int index, Ark *a)
+		{ return this->removeIOArk(&this->inputParameters, index, a); }
+    boolean removeOutputArk(int index, Ark *a)
+		{ return this->removeIOArk(&this->outputParameters, index, a); }
 
 
     //
@@ -405,20 +406,20 @@ class Node : public Base
     //
 #if 0
     virtual void ioParameterValueChanged(boolean input, int index);
-    virtual void ioParameterArcChanged(boolean input, int index,boolean added);
+    virtual void ioParameterArkChanged(boolean input, int index,boolean added);
 
     void	inputParameterValueChanged(int index)
 			{ this->ioParameterValueChanged(TRUE, index); }
     void	outputParameterValueChanged(int index)
 			{ this->ioParameterValueChanged(FALSE, index); }
-    void	inputParameterArcAdded(int index)
-			{ this->ioParameterArcChanged(TRUE, index, ); }
-    void	inputParameterArcRemoved(int index)
-			{ this->ioParameterArcChanged(TRUE, index, FALSE); }
-    void	outputParameterArcAdded(int index)
-			{ this->ioParameterArcChanged(FALSE, index, TRUE); }
-    void	outputParameterArcRemoved(int index)
-			{ this->ioParameterArcChanged(FALSE, index, FALSE); }
+    void	inputParameterArkAdded(int index)
+			{ this->ioParameterArkChanged(TRUE, index, ); }
+    void	inputParameterArkRemoved(int index)
+			{ this->ioParameterArkChanged(TRUE, index, FALSE); }
+    void	outputParameterArkAdded(int index)
+			{ this->ioParameterArkChanged(FALSE, index, TRUE); }
+    void	outputParameterArkRemoved(int index)
+			{ this->ioParameterArkChanged(FALSE, index, FALSE); }
 #endif
     virtual void ioParameterStatusChanged(boolean input, int index, 
 				NodeParameterStatusChange status);
@@ -558,9 +559,9 @@ class Node : public Base
 	ParameterVisibilityChanged    = PARAMETER_VISIBILITY_CHANGED,
 	ParameterBecomesVisible       = 0x000003 | PARAMETER_VISIBILITY_CHANGED,
 	ParameterBecomesInvisible     = 0x000004 | PARAMETER_VISIBILITY_CHANGED,
-	ParameterArcChanged	      = PARAMETER_ARC_CHANGED,
-	ParameterArcRemoved	      = 0x000008 | PARAMETER_ARC_CHANGED,
-	ParameterArcAdded	      = 0x000010 | PARAMETER_ARC_CHANGED
+	ParameterArkChanged	      = PARAMETER_ARC_CHANGED,
+	ParameterArkRemoved	      = 0x000008 | PARAMETER_ARC_CHANGED,
+	ParameterArkAdded	      = 0x000010 | PARAMETER_ARC_CHANGED
      };
 
 
@@ -675,17 +676,17 @@ class Node : public Base
     //
     // Manage inputs. 
     //
-    boolean addInputArc(Arc *a, int index)
-        { return addIOArc(&inputParameters, index, a); }
-    boolean addOutputArc(Arc *a, int index)
-        { return addIOArc(&outputParameters, index, a); }
+    boolean addInputArk(Ark *a, int index)
+        { return addIOArk(&inputParameters, index, a); }
+    boolean addOutputArk(Ark *a, int index)
+        { return addIOArk(&outputParameters, index, a); }
 
-    const List *getInputArcs(int index)
-        { return getIOArcs(&inputParameters, index); }
-    const List *getOutputArcs(int index)
-        { return getIOArcs(&outputParameters, index); }
+    const List *getInputArks(int index)
+        { return getIOArks(&inputParameters, index); }
+    const List *getOutputArks(int index)
+        { return getIOArks(&outputParameters, index); }
     
-    virtual boolean deleteArc(Arc *a);
+    virtual boolean deleteArk(Ark *a);
 
     // If these get virtualized, you must replace p->getValue() with 
     // this->getInputValueString(i) in Node.C 
@@ -1035,7 +1036,7 @@ class Node : public Base
     //
     // Disconnect all input and output arcs from this node.
     //
-    boolean disconnectArcs();
+    boolean disconnectArks();
 
     //
     // Return TRUE if the node can be switched (pasted/merged/moved) from 

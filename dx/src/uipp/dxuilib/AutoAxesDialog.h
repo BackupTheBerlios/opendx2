@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _AutoAxesDialog_h
 #define _AutoAxesDialog_h
 
 
-#include "defines.h"
 #include "Dialog.h"
 
 //

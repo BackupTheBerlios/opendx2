@@ -186,7 +186,7 @@ getname(char *dirlist, char *file, char *result)
 
   error:
     /* only gets here on error */
-    DXSetError(ERROR_INVALID_DATA, "#10800", file);
+    DXSetError(ERROR_DATA_INVALID, "#10800", file);
     result[0] = '\0';
     DXFree((Pointer)dirbuf);
     return ERROR;
@@ -319,7 +319,7 @@ DXGeometricText(char *s, Object font, float *stringwidth)
 	if (!conn_array) {
 	    if (!DXGetStringAttribute((Object)a, "element type", &conntype) ||
 		(strcmp(conntype, "lines") && strcmp(conntype, "triangles"))) {
-		DXSetError(ERROR_INVALID_DATA, "#10814", "object");
+		DXSetError(ERROR_DATA_INVALID, "#10814", "object");
 		goto error;
 	    }
 	    connsize = strcmp(conntype, "lines") ? 3 : 2;
@@ -339,7 +339,7 @@ DXGeometricText(char *s, Object font, float *stringwidth)
 	newpos = (float *)DXGetArrayData(a);
 	DXGetArrayInfo(a, NULL, NULL, NULL, NULL, &pointdim);
 	if (pointdim != 2 && pointdim != 3) {
-	    DXSetError(ERROR_INVALID_DATA, "#10816", "object");
+	    DXSetError(ERROR_DATA_INVALID, "#10816", "object");
 	    goto error;
 	}
 	np = nc * connsize;

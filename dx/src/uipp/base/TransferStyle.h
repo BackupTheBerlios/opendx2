@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,8 +17,6 @@
 
 #include "Base.h"
 #include "SymbolManager.h"
-#include "defines.h"
-#include "UIConfig.h"
 
 #include <Xm/Xm.h>
 #include <X11/Xatom.h>

@@ -90,6 +90,7 @@ void _dxfdouble_denorm(int *from, int count, int *denorm_fp, int *bad_fp)
 /* 
  * read data array routines
  */
+extern int _fmode;
  
  
 /* binary format.  reverse byte order if necessary.  the array space should
@@ -119,18 +120,42 @@ Error _dxfreadarray_binary(struct finfo *f, Array a, int format)
 	return ERROR;
     
     if (items <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad item count, rank or shape");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad item count, rank or shape");
 
     cp = (char *)DXGetArrayData(a);
 
     /* read the data 
      */
+#if 0
+	{
+		// This was in there testing _fmode for the Windos version ... GDA
+		int start, sz0, sz1, fsize = DXGetItemSize(a) * items;
+		for (start = 0; start < fsize; start += sz1)
+		{
+			sz0 = 4096; 
+			if (sz0 > (fsize - start))
+				sz0 = fsize - start;
+			sz1 = fread((void *)(cp+start), 1, sz0, fd);
+			if (sz1 != sz0)
+			{
+				int err = ferror(fd);
+				DXSetError(ERROR_DATA_INVALID, 
+					"error %d reading binary data; %d bytes successfully read (%d expected)",
+					err, sz1, sz0);
+				return ERROR;
+			}
+			start += sz1;
+		}
+	}
+#else
     if ((actual = fread(cp, DXGetItemSize(a), items, fd)) != items) {
-	DXSetError(ERROR_INVALID_DATA, 
-       "error reading binary data; %d items successfully read (%d expected)",
-		   actual, items);
+		int err = ferror(fd);
+	DXSetError(ERROR_DATA_INVALID, 
+       "error %d reading binary data; %d items successfully read (%d expected)",
+		   err, actual, items);
 	return ERROR;
     }
+#endif
  
     /* if user specifically requested the non-native format, 
      *  swab bytes within the right size word.
@@ -235,18 +260,18 @@ Error _dxfreadarray_text(struct finfo *f, Array a)
 	return ERROR;
  
     if(items <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad item count");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad item count");
 
     for (i=0; i<rank; i++)
 	items *= shape[i];
 
     if(items <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad shape value");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad shape value");
 
 
     items *= DXCategorySize(cat);
     if (items <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad category value");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad category value");
 
 /* the seterror message below looks strange because dname is a string.
  *  it will say "... type" "float" etc. after macro expansion.
@@ -260,7 +285,7 @@ Error _dxfreadarray_text(struct finfo *f, Array a)
     for(i=0; i<items; i++, dp++) { \
         rc = _dxfmatch##dtype(f, dp); \
         if(!rc) { \
-            DXSetError(ERROR_INVALID_DATA,  \
+            DXSetError(ERROR_DATA_INVALID,  \
                        "error reading text data; item %d, type " dname, i+1); \
             return ERROR; \
         } \
@@ -305,12 +330,12 @@ Error _dxfreadarray_text(struct finfo *f, Array a)
 		    rc = _dxflexinput(f);
 		dp = _dxfgetstringinfo(f, &len);
 		if (!rc || !dp) {
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 		       "error reading text data; item %d, type string",  j+1);
 		    return ERROR;
 		}
 		if (len >= shape[rank-1]) {
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 	   "error reading text data; string item %d longer than array shape",
 			       j+1);
 		    return ERROR;
@@ -374,7 +399,7 @@ Error _dxfskiparray_text(struct finfo *f, int items, Type type)
     Error rc = OK;
  
     if(items <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad item count");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad item count");
 
     /* set it to NOT construct numbers but still return ok and to
      *  not construct strings.
@@ -393,7 +418,7 @@ Error _dxfskiparray_text(struct finfo *f, int items, Type type)
     for(i=0; i<items; i++) { \
         rc = _dxfmatch##dtype(f, &d); \
         if(!rc) { \
-            DXSetError(ERROR_INVALID_DATA,  \
+            DXSetError(ERROR_DATA_INVALID,  \
                        "error reading text data; item %d, type " dname, i+1); \
             goto error; \
         } \
@@ -410,7 +435,7 @@ Error _dxfskiparray_text(struct finfo *f, int items, Type type)
 	    for (j=0; j<items; j++) {
 		rc = _dxfgetstringnodict(f);
 		if (!rc) {
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 		       "error reading text data; item %d, type string",  j+1);
 		    goto error;
 		}
@@ -492,18 +517,18 @@ Error _dxfreadarray_xdr(FILE *fd, Array a)
 	return ERROR;
  
     if(items <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad item count");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad item count");
  
     while(rank > 0) {
 	items *= shape[rank-1];
 	rank--;
     }
     if(items <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad shape value");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad shape value");
  
     items *= DXCategorySize(cat);
     if (items <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad category value");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad category value");
  
  
     /* switch on datatype */
@@ -575,7 +600,7 @@ Error _dxfreadoffset(struct finfo *f, Array a, int offset, int type)
     struct finfo nf;
     
     if (f->onepass) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "can't use forward offsets in this file in this mode");
 	return ERROR;
     }
@@ -588,7 +613,7 @@ Error _dxfreadoffset(struct finfo *f, Array a, int offset, int type)
     }
     
     if (fseek(f->fd, offset + f->headerend, 0) != 0) {
-	DXSetError(ERROR_INVALID_DATA, "can't seek to data offset %d", offset);
+	DXSetError(ERROR_DATA_INVALID, "can't seek to data offset %d", offset);
 	return ERROR;
     }
     
@@ -659,7 +684,7 @@ Error _dxfreadremote(struct finfo *f, Array a, int id, int type)
     }
     
     if (fseek(nf.fd, (*gpp)->num, 0) != 0)  {
-	DXSetError(ERROR_INVALID_DATA, "can't seek to offset %d in file '%s'",
+	DXSetError(ERROR_DATA_INVALID, "can't seek to offset %d in file '%s'",
 		   (*gpp)->num, nf.fname);
 	rc = ERROR;
 	goto done;

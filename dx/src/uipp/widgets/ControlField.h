@@ -43,7 +43,7 @@ struct ControlFieldRec	/* One for each of the 4 graphs */
     struct ControlLineRec* line[4];
     double*		levels;		/* num_levels array of level centers  */
     LineCoord*		coords;		/* num_levels graph level coords      */
-    caddr_t		user_data;
+    XtPointer		user_data;
     void 		(* user_callback)(ControlField *);
     void		(* expose_callback)(Widget, ControlField *,
 					    XmDrawingAreaCallbackStruct *);

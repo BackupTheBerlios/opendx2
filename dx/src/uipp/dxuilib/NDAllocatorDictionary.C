@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 //
@@ -18,8 +20,6 @@
 //
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "NDAllocatorDictionary.h"
 #include "NodeDefinition.h"
 #include "ImageDefinition.h"

@@ -147,7 +147,7 @@ static Error checkdim(Object in, int *prev_d)
 		return OK;
 
 	    if (DXGetObjectClass(newo) != CLASS_FIELD) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "composite field members must be fields");
 		return ERROR;
 	    }
@@ -168,7 +168,7 @@ static Error checkdim(Object in, int *prev_d)
     else {
 	
 	if (!DXGetStringAttribute((Object)conn, "element type", &cp) || !cp) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "#10255", "connections", "element type");
 	    return ERROR;
 	}
@@ -197,7 +197,7 @@ static Error checkdim(Object in, int *prev_d)
 	*prev_d = this_d;
     
     if (*prev_d != this_d) {
-	DXSetError(ERROR_INVALID_DATA, "#10420");
+	DXSetError(ERROR_DATA_INVALID, "#10420");
 	return ERROR;
     }
     

@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ColormapNode_h
 #define _ColormapNode_h
 
 
-#include "defines.h"
 #include "DrivenNode.h"
 
 

@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.3 1999/05/10 15:45:31 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.4 2000/05/16 18:48:20 gda Exp $:
  */
 #include <dx/dx.h>
 #include "stream.h"
@@ -184,7 +184,7 @@ m_Streakline(Object *in, Object *out)
 	vClass != CLASS_MULTIGRID && 
 	vClass != CLASS_SERIES)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"data must be field, multigrid, composite field or series");
 	goto error;
     }
@@ -264,7 +264,7 @@ m_Streakline(Object *in, Object *out)
 
 	if (! DXExtractFloat(attr, &termTime))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "series position attribute");
+	    DXSetError(ERROR_DATA_INVALID, "series position attribute");
 	    goto error;
 	}
     }
@@ -1338,7 +1338,7 @@ Times(Object times, Object vectors)
 			"series position attribute on data");
 	    
 	    if (! DXExtractFloat(attr, &time))
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			"series position attribute on data");
 	}
 
@@ -1572,13 +1572,13 @@ InitVectorField(Object vfo)
 		
 		if (class != CLASS_FIELD && class != CLASS_COMPOSITEFIELD)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "invalid multigrid member");
+		    DXSetError(ERROR_DATA_INVALID, "invalid multigrid member");
 		    goto error;
 		}
 
 		if (! GetElementType(mo, &str))
 		{
-		    DXSetError(ERROR_INVALID_DATA, "vectors");
+		    DXSetError(ERROR_DATA_INVALID, "vectors");
 		    goto error;
 		}
 
@@ -1592,7 +1592,7 @@ InitVectorField(Object vfo)
 			break;
 		    
 		    default:
-			DXSetError(ERROR_INVALID_DATA, "vectors");
+			DXSetError(ERROR_DATA_INVALID, "vectors");
 			goto error;
 		}
 		
@@ -1613,7 +1613,7 @@ InitVectorField(Object vfo)
 	    
 	    if (! GetElementType(vfo, &str))
 	    {
-		DXSetError(ERROR_INVALID_DATA, "vectors");
+		DXSetError(ERROR_DATA_INVALID, "vectors");
 		goto error;
 	    }
 
@@ -1627,7 +1627,7 @@ InitVectorField(Object vfo)
 		    break;
 		
 		default:
-		    DXSetError(ERROR_INVALID_DATA, "vectors");
+		    DXSetError(ERROR_DATA_INVALID, "vectors");
 		    goto error;
 	    }
 		
@@ -1638,7 +1638,7 @@ InitVectorField(Object vfo)
     
 	default:
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"invalid object encountered in vector field");
 	    goto error;
 	}
@@ -1667,7 +1667,7 @@ GetElementType(Object o, char **str)
 
 	if (! DXGetComponentValue((Field)o, "connections"))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "data has no connections");
+	    DXSetError(ERROR_DATA_INVALID, "data has no connections");
 	    return ERROR;
 	}
 
@@ -1680,7 +1680,7 @@ GetElementType(Object o, char **str)
 
 	if (DXGetObjectClass(c) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "element type attribute");
+	    DXSetError(ERROR_DATA_INVALID, "element type attribute");
 	    return ERROR;
 	}
 
@@ -2526,7 +2526,7 @@ GetFrameData(Object vectors, Object curls, CacheObject co)
 
 	    if (t != co->t1)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 		    "curl and data series positions do not match");
 		goto error;
 	    }
@@ -2545,7 +2545,7 @@ GetFrameData(Object vectors, Object curls, CacheObject co)
 
 	if (! DXExtractFloat(attr, &co->t1))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "series position");
+	    DXSetError(ERROR_DATA_INVALID, "series position");
 	    goto error;
 	}
 
@@ -2900,7 +2900,7 @@ GeometryCheck(Object vectors, int nD)
 	    
 	    if (n != nD)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			"vectors are %d-D, vector space is %d-D", nD, n);
 		goto error;
 	    }
@@ -2931,7 +2931,7 @@ GeometryCheck(Object vectors, int nD)
 		case 2:
 		    if (strcmp(str, "quads") && strcmp(str, "triangles"))
 		    {
-			DXSetError(ERROR_INVALID_DATA, 
+			DXSetError(ERROR_DATA_INVALID, 
 				"%d-D vector space requires %d-D elements", n, n);
 			goto error;
 		    }
@@ -2940,14 +2940,14 @@ GeometryCheck(Object vectors, int nD)
 		case 3:
 		    if (strcmp(str, "cubes") && strcmp(str, "tetrahedra"))
 		    {
-			DXSetError(ERROR_INVALID_DATA, 
+			DXSetError(ERROR_DATA_INVALID, 
 				"%d-D vector space requires %d-D elements", n, n);
 			goto error;
 		    }
 		    break;
 		
 		default:
-		    DXSetError(ERROR_INVALID_DATA, "2- or 3-D vectors required");
+		    DXSetError(ERROR_DATA_INVALID, "2- or 3-D vectors required");
 		    goto error;
 	    }
 	    break;
@@ -2969,7 +2969,7 @@ GeometryCheck(Object vectors, int nD)
 	}
 
 	default:
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		"vectors must be field or composite field");
 	    goto error;
     }

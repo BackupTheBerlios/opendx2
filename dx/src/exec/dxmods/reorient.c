@@ -180,26 +180,26 @@ static Error setextents(Object o, int *e)
     for (i=0; subo = DXGetEnumeratedMember((Group)o, i, NULL); i++) {
 
 	if (DXGetObjectClass(subo) != CLASS_FIELD) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "member of partitioned field is not a field");
 	    return ERROR;
 	}
 
 	a = (Array)DXGetComponentValue((Field)subo, "connections");
 	if (!a) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "field has no `connections' component");
 	    return ERROR;
 	}
 	if (DXGetObjectClass((Object)a) != CLASS_ARRAY) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "connections component is not an Array object");
 	    return ERROR;
 	}
      
 	if ((DXQueryGridConnections(a, &dim, NULL) == ERROR) ||
 	    (dim != 2)) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "field must have regular 2d connections");
 	    return ERROR;
 	}
@@ -276,7 +276,7 @@ static Error dogrid (Rtaskarg *tp)
 
     if ((!DXQueryGridConnections(connections, &dim, NULL)) 
 	|| (dim != 2)) {
-	DXSetError(ERROR_INVALID_DATA, "connections must be a 2D regular grid");
+	DXSetError(ERROR_DATA_INVALID, "connections must be a 2D regular grid");
 	goto error;
     }
     
@@ -303,7 +303,7 @@ static Error dogrid (Rtaskarg *tp)
     
     if ((!DXQueryGridPositions(positions, &dim, counts, origin, deltas)) 
 	|| dim != 2) {
-	DXSetError(ERROR_INVALID_DATA, "positions must be a 2D regular grid");
+	DXSetError(ERROR_DATA_INVALID, "positions must be a 2D regular grid");
 	goto error;
     }
 
@@ -322,7 +322,7 @@ static Error dogrid (Rtaskarg *tp)
     } else if (deltas[2] != 0) {
 	yfastest = 0;
     } else {
-	DXSetError(ERROR_INVALID_DATA, "image must have an orthogonal grid");
+	DXSetError(ERROR_DATA_INVALID, "image must have an orthogonal grid");
 	goto error;
     }
 

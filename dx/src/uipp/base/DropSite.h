@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -17,7 +19,6 @@
 #include <Xm/Xm.h>
 #include <Xm/DragDrop.h>
 
-#include "defines.h"
 #include "Base.h"
 #include "TransferStyle.h"
 #include "Dictionary.h"

@@ -1187,7 +1187,7 @@ _dxf_DEFINE_LIGHT (void *win, int n, Light light)
   else
   {
     PRINT(("invalid light"));
-      DXErrorGoto(ERROR_INVALID_DATA, "#13750");
+      DXErrorGoto(ERROR_DATA_INVALID, "#13750");
   }
   goto done ;
 

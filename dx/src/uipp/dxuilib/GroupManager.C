@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
 #include <stdlib.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "lex.h"
 #include "GroupManager.h"

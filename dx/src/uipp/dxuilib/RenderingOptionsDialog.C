@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -19,7 +21,6 @@
 #include <Xm/Separator.h>
 #include "../widgets/Stepper.h"
 
-#include "defines.h"
 #include "RenderingOptionsDialog.h"
 
 #include "ImageWindow.h"

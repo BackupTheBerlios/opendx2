@@ -7,16 +7,16 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
 
-#include "UIConfig.h"
 
 #include <stdio.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "DXApplication.h"
 #include "OpenNetworkDialog.h"

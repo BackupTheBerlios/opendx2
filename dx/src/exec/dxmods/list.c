@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/list.c,v 1.3 1999/05/10 15:45:27 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/list.c,v 1.4 2000/05/16 18:48:01 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -125,7 +125,7 @@ Array _dxfBuildList(Object *in)
 	  case CLASS_FIELD:
 	    next = (Object)DXGetComponentValue((Field)next, "data");
 	    if (!next) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			 "no data component found in field to add to list");
 		goto error;
 	    }

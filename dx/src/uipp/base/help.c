@@ -7,9 +7,9 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "defines.h"
+#include "../base/defines.h"
+#include "../base/defines.h"
 
-#include "UIConfig.h"
 #ifdef OS2
 #include <stdlib.h>
 #include <types.h>
@@ -63,13 +63,7 @@
 #define STRCMP(a,b)  ((a) ? ((b) ? strcmp(a,b) : strcmp(a,"")) : \
 			    ((b) ? strcmp("",b) : 0))
 
-#ifdef OS2
-#define popen(x,y) NULL
-#define pclose(x) NULL
-#endif
-#ifdef  DXD_WIN
-#define popen(x,y) _popen(x,y)
-#define pclose(x) _pclose(x)
+#if defined(intelnt)
 const char *AssertMsgString = "Internal error detected at \"%s\":%d.\n";
 #endif
 
@@ -277,7 +271,7 @@ char *BuildHelpIndex(RefWidget, IndexTable, Entries)
     }
 
     XtAddCallback(RefWidget, XmNdestroyCallback, RemoveHelpIndexFileCB,
-		  (caddr_t) strdup(str));
+		  (XtPointer) strdup(str));
     fclose(outfile);
     return(str);
 }
@@ -582,10 +576,10 @@ Widget InitHelpSystem(Widget parent, Widget *multiText)
      * Register a callback to find out when the window is resized.
      */
     XtAddEventHandler
-	(panedWindow, StructureNotifyMask, False, ResizeTheWindow, (caddr_t)*multiText);
+	(panedWindow, StructureNotifyMask, False, ResizeTheWindow, (XtPointer)*multiText);
 
     XtAddCallback
-	(goBackButton, XmNactivateCallback, GoBackCB, (caddr_t)*multiText);
+	(goBackButton, XmNactivateCallback, GoBackCB, (XtPointer)*multiText);
 
     /*
      * Create a popup menu (only if it's not Sun's X system, since pop-up's
@@ -600,7 +594,7 @@ Widget InitHelpSystem(Widget parent, Widget *multiText)
 	argcnt = 0;
 	XtSetArg(args[argcnt], XmNwidth,  1); argcnt++;
 	XtSetArg(args[argcnt], XmNheight, 1); argcnt++;
-	menuShell = CreatePopupMenu(scrolledWindow);
+	menuShell = DXCreatePopupMenu(scrolledWindow);
     }
 
     /*
@@ -742,13 +736,13 @@ char *mktemp(char *tmplate)
                 for (i=0; i<NX && i<strlen(numbuff); i++)
                   if (numbuff[i] != ' ')
                     tmplate[tmplength-i-1] = numbuff[i];
-                if (_stat(tmplate,&buf) != 0)
+                if (STAT(tmplate,&buf) != 0)
                   return (tmplate);
               }
             return(NULL);
           }
          else
-          if (_stat(tmplate,&buf) != 0)
+          if (STAT(tmplate,&buf) != 0)
             return (tmplate);
            else
             return(NULL);

@@ -559,3 +559,8 @@ _dxfprint_message
 m_DXLOutput
 m_Pick
 _dxfNormals
+_dxf_gatherImage
+_dxf_gatheredClipObject
+_dxf_gatheredFlags
+_dxf_gatheredObject
+_dxf_Insert

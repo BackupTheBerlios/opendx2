@@ -8,8 +8,8 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/defines.h"
 
-#include "../base/UIConfig.h"
 
 #include <stdio.h>
 #include <ctype.h>

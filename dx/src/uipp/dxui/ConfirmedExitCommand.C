@@ -5,9 +5,9 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-#include "UIConfig.h"
 
 #include <dxconfig.h>
+#include <defines.h>
 
 
 #include <Xm/Xm.h>

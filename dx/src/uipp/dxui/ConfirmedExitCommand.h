@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ConfirmedExitCommand_h
 #define _ConfirmedExitCommand_h
 
 
-#include "defines.h"
 #include "OptionalPreActionCommand.h"
 
 

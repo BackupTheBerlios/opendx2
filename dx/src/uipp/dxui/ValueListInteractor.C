@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,7 +16,6 @@
 #include <Xm/Xm.h>
 #include <Xm/Form.h>
 
-#include "defines.h"
 #include "Application.h"
 #include "ValueListNode.h"
 #include "ValueListInteractor.h"

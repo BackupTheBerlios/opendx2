@@ -220,14 +220,14 @@ GetMethods(Object o, int what, PFE *fieldMethod, PFE *cfieldMethod, int *gFlag)
 
 		if (attr == NULL)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "#10255",
+		    DXSetError(ERROR_DATA_INVALID, "#10255",
 					    "connections", "element type");
 		    return ERROR;
 		}
 
 		if (attr == NULL || DXGetObjectClass(attr) != CLASS_STRING)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "#10200", 
+		    DXSetError(ERROR_DATA_INVALID, "#10200", 
 			    "element type attribute");
 		    return ERROR;
 		}
@@ -244,7 +244,7 @@ GetMethods(Object o, int what, PFE *fieldMethod, PFE *cfieldMethod, int *gFlag)
 	    }
 	    else
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			"Measure requires connections, faces or polylines");
 		return ERROR;
 	    }
@@ -592,7 +592,7 @@ Lines_Length(Field field, Segments *segs, float *measure)
 
     if (nDim > 3)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10341", "positions");
+	DXSetError(ERROR_DATA_INVALID, "#10341", "positions");
 	return OK;
     }
 
@@ -814,7 +814,7 @@ Quads_Area(Field field, Segments *segs, float *measure)
     DXGetArrayInfo(pA, NULL, NULL, NULL, NULL, &nDim);
     if (nDim != 2 && nDim != 3)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10340", "positions");
+	DXSetError(ERROR_DATA_INVALID, "#10340", "positions");
 	return ERROR;
     }
 
@@ -848,7 +848,7 @@ Quads_Area(Field field, Segments *segs, float *measure)
 	    
 	    if (j != 2)
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			"quad positions must be planar");
 		goto error;
 	    }
@@ -858,7 +858,7 @@ Quads_Area(Field field, Segments *segs, float *measure)
 	}
 	else
 	{
-	    DXSetError(ERROR_INVALID_DATA, "quads must be in 2-D or 3-D");
+	    DXSetError(ERROR_DATA_INVALID, "quads must be in 2-D or 3-D");
 	    goto error;
 	}
 
@@ -1080,7 +1080,7 @@ Cubes_Volume(Field field, Segments *segs, float *measure)
     DXGetArrayInfo(pA, NULL, NULL, NULL, NULL, &nDim);
     if (nDim != 3)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10342", "positions");
+	DXSetError(ERROR_DATA_INVALID, "#10342", "positions");
 	return ERROR;
     }
 
@@ -1225,7 +1225,7 @@ Triangles_Volume(Field field, Segments *segments, float *measure)
     DXGetArrayInfo(pA, &nPts, NULL, NULL, NULL, &nDim);
     if (nDim != 3)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10342", "positions");
+	DXSetError(ERROR_DATA_INVALID, "#10342", "positions");
 	goto error;
     }
 
@@ -1839,7 +1839,7 @@ Loop_Area(int nParts, Segments *segs, float *measure)
 	hash = DXCreateHash(sizeof(HashElement2), pHash2, pCmp2);
     else
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"calculating area requires 2 or 3-D positions");
 	goto error;
     }
@@ -2131,7 +2131,7 @@ Quads_Volume(Field field, Segments *segments, float *measure)
     DXGetArrayInfo(pA, &nPts, NULL, NULL, NULL, &nDim);
     if (nDim != 3)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10342", "positions");
+	DXSetError(ERROR_DATA_INVALID, "#10342", "positions");
 	goto error;
     }
 
@@ -2524,7 +2524,7 @@ MeasureElements_Field(Field f)
 	attr = DXGetComponentAttribute(f, "connections", "element type");
 	if (! attr || DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "element type attribute");
+	    DXSetError(ERROR_DATA_INVALID, "element type attribute");
 	    return ERROR;
 	}
 
@@ -2539,7 +2539,7 @@ MeasureElements_Field(Field f)
 		case 3: mth = line_3d; break;
 		default:
 		{
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			    "measuring lines requires 1, 2, or 3-D positions");
 		    goto error;
 		}
@@ -2553,7 +2553,7 @@ MeasureElements_Field(Field f)
 		case 3: mth = tri_3d; break;
 		default:
 		{
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			    "measuring triangles requires 2 or 3-D positions");
 		    goto error;
 		}
@@ -2567,7 +2567,7 @@ MeasureElements_Field(Field f)
 		case 3: mth = quad_3d; break;
 		default:
 		{
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			    "measuring quads requires 2 or 3-D positions");
 		    goto error;
 		}
@@ -2580,7 +2580,7 @@ MeasureElements_Field(Field f)
 		case 3: mth = tetra_3d; break;
 		default:
 		{
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			    "measuring tetras requires 3-D positions");
 		    goto error;
 		}
@@ -2593,7 +2593,7 @@ MeasureElements_Field(Field f)
 		case 3: mth = cube_3d; break;
 		default:
 		{
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			    "measuring cubes requires 3-D positions");
 		    goto error;
 		}
@@ -2601,7 +2601,7 @@ MeasureElements_Field(Field f)
 	}
 	else
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		    "unsupported element type: %s", etype);
 	    goto error;
 	}
@@ -3072,7 +3072,7 @@ FLE_Area(Field field, Segments *segs, float *measure)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"faces must be real integer scalars");
 	goto error;
     }
@@ -3093,7 +3093,7 @@ FLE_Area(Field field, Segments *segs, float *measure)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"loops must be real integer scalars");
 	goto error;
     }
@@ -3114,7 +3114,7 @@ FLE_Area(Field field, Segments *segs, float *measure)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"edges must be real integer scalars");
 	goto error;
     }
@@ -3131,7 +3131,7 @@ FLE_Area(Field field, Segments *segs, float *measure)
     if (t != TYPE_FLOAT || c != CATEGORY_REAL
 	|| rank != 1 || (nDim != 2 && nDim != 3))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"positions must be real float 2- or 3-vectors");
 	goto error;
     }
@@ -3238,7 +3238,7 @@ FLE_Area_Elements(Field field, float *measurements)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"faces must be real integer scalars");
 	goto error;
     }
@@ -3259,7 +3259,7 @@ FLE_Area_Elements(Field field, float *measurements)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"loops must be real integer scalars");
 	goto error;
     }
@@ -3280,7 +3280,7 @@ FLE_Area_Elements(Field field, float *measurements)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"edges must be real integer scalars");
 	goto error;
     }
@@ -3297,7 +3297,7 @@ FLE_Area_Elements(Field field, float *measurements)
     if (t != TYPE_FLOAT || c != CATEGORY_REAL
 	|| rank != 1 || (nDim != 2 && nDim != 3))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"positions must be real float 2- or 3-vectors");
 	goto error;
     }
@@ -3409,7 +3409,7 @@ Polyline_Length(Field field, Segments *segs, float *measure)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"polylines must be real integer scalars");
 	goto error;
     }
@@ -3430,7 +3430,7 @@ Polyline_Length(Field field, Segments *segs, float *measure)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"edges must be real integer scalars");
 	goto error;
     }
@@ -3447,7 +3447,7 @@ Polyline_Length(Field field, Segments *segs, float *measure)
     if (t != TYPE_FLOAT || c != CATEGORY_REAL
 	|| rank != 1 || (nDim != 2 && nDim != 3))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"positions must be real float 2- or 3-vectors");
 	goto error;
     }
@@ -3555,7 +3555,7 @@ Polyline_Length_Elements(Field field, float *measurements)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"polylines must be real integer scalars");
 	goto error;
     }
@@ -3576,7 +3576,7 @@ Polyline_Length_Elements(Field field, float *measurements)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"edges must be real integer scalars");
 	goto error;
     }
@@ -3593,7 +3593,7 @@ Polyline_Length_Elements(Field field, float *measurements)
     if (t != TYPE_FLOAT || c != CATEGORY_REAL
 	|| rank != 1 || (nDim != 2 && nDim != 3))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"positions must be real float 2- or 3-vectors");
 	goto error;
     }

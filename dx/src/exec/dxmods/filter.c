@@ -16,7 +16,7 @@
 #include <string.h>
 #include <dx/dx.h>
 
-#ifdef	DXD_WIN	/* ajay     */
+#if defined(intelnt)
 #define	strcasecmp	stricmp
 #endif
 

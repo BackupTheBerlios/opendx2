@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinetopo.c,v 1.3 1999/05/10 15:45:20 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinetopo.c,v 1.4 2000/05/16 18:47:37 gda Exp $:
  */
 
 #include <dxconfig.h>
@@ -137,7 +137,7 @@ ChgTopologyObject(Object object, int targetType)
 		return object;
     
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "#11381");
+	    DXSetError(ERROR_DATA_INVALID, "#11381");
 	    return NULL;
     }
 }
@@ -164,7 +164,7 @@ ChgTopologyField(Pointer ptr)
 	{
 	    if (targetType != ELT_TRIANGLES)
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			"can only refine faces/loops/edges data to triangles");
 		goto error;
 	    }
@@ -174,7 +174,7 @@ ChgTopologyField(Pointer ptr)
 	{
 	    if (targetType != ELT_LINES)
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			"can only refine polylines data to lines");
 		goto error;
 	    }
@@ -188,7 +188,7 @@ ChgTopologyField(Pointer ptr)
 
     if (! DXExtractString(attr, &srcString))
     {
-	DXSetError(ERROR_INVALID_DATA, "#10200", "element type attribute");
+	DXSetError(ERROR_DATA_INVALID, "#10200", "element type attribute");
 	goto error;
     }
 	
@@ -342,7 +342,7 @@ RegCubes2Tetrahedra(Field field)
 
     if (! DXTypeCheckV((Array)mArray, TYPE_INT, CATEGORY_REAL, 1, NULL))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11382");
+	DXSetError(ERROR_DATA_INVALID, "#11382");
 	return NULL;
     }
 
@@ -355,7 +355,7 @@ RegCubes2Tetrahedra(Field field)
 
     if (vPerE != 8)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11004", "cubes", 8);
+	DXSetError(ERROR_DATA_INVALID, "#11004", "cubes", 8);
 	goto error;
     }
 
@@ -478,7 +478,7 @@ RegCubes2Tetrahedra(Field field)
 
 	    if (nD != nCubes)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#10400",
+		DXSetError(ERROR_DATA_INVALID, "#10400",
 					    name, "connections");
 		goto error;
 	    }
@@ -559,7 +559,7 @@ IrregCubes2Tetrahedra(Field field)
 
     if (! DXTypeCheckV((Array)cArrayIn, TYPE_INT, CATEGORY_REAL, 1, NULL))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11382");
+	DXSetError(ERROR_DATA_INVALID, "#11382");
 	return NULL;
     }
 
@@ -567,7 +567,7 @@ IrregCubes2Tetrahedra(Field field)
 
     if (vPerE != 8)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11004", "cubes", 8);
+	DXSetError(ERROR_DATA_INVALID, "#11004", "cubes", 8);
 	return NULL;
     }
 
@@ -647,7 +647,7 @@ IrregCubes2Tetrahedra(Field field)
 
 	    if (nD != nCubes)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#10400",
+		DXSetError(ERROR_DATA_INVALID, "#10400",
 					    name, "connections");
 		goto error;
 	    }
@@ -772,7 +772,7 @@ RegQuads2Triangles(Field field)
 
     if (! DXTypeCheckV((Array)mArray, TYPE_INT, CATEGORY_REAL, 1, NULL))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11382");
+	DXSetError(ERROR_DATA_INVALID, "#11382");
 	return NULL;
     }
 
@@ -780,7 +780,7 @@ RegQuads2Triangles(Field field)
 
     if (vPerE != 4)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11004", "cubes", 4);
+	DXSetError(ERROR_DATA_INVALID, "#11004", "cubes", 4);
 	return NULL;
     }
 
@@ -876,7 +876,7 @@ RegQuads2Triangles(Field field)
 
 	    if (nD != nQuads)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#10400", name, "connections");
+		DXSetError(ERROR_DATA_INVALID, "#10400", name, "connections");
 		goto error;
 	    }
 
@@ -953,7 +953,7 @@ IrregQuads2Triangles(Field field)
 
     if (! DXTypeCheckV((Array)cArrayIn, TYPE_INT, CATEGORY_REAL, 1, NULL))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11382");
+	DXSetError(ERROR_DATA_INVALID, "#11382");
 	return NULL;
     }
 
@@ -961,7 +961,7 @@ IrregQuads2Triangles(Field field)
 
     if (vPerE != 4)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11004", "cubes", 4);
+	DXSetError(ERROR_DATA_INVALID, "#11004", "cubes", 4);
 	return NULL;
     }
 
@@ -969,13 +969,13 @@ IrregQuads2Triangles(Field field)
 
     if (! DXTypeCheckV(pArray, TYPE_FLOAT, CATEGORY_REAL, 1, NULL))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11383");
+	DXSetError(ERROR_DATA_INVALID, "#11383");
 	return NULL;
     }
 
     if (nDim != 2 && nDim != 3)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11002", "cubes");
+	DXSetError(ERROR_DATA_INVALID, "#11002", "cubes");
 	return NULL;
     }
 
@@ -1059,7 +1059,7 @@ IrregQuads2Triangles(Field field)
 
 	    if (nD != nQuads)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#10400", name, "connections");
+		DXSetError(ERROR_DATA_INVALID, "#10400", name, "connections");
 		goto error;
 	    }
 
@@ -1219,7 +1219,7 @@ PolylinesToLines(Field field)
 
 	if (nA != nP)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"%s deps polylines but has a different size");
 	    goto error;
 	}

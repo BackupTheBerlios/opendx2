@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 #define _SelectionNode_h
 
 
-#include "defines.h"
 #include "InteractorNode.h"
 #include "../base/DeferrableAction.h"
 #include "List.h"

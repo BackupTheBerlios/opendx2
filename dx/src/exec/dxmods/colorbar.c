@@ -267,12 +267,12 @@ m_ColorBar(Object *in, Object *out)
   /* a "normal" field color map */
   else {
     if (class == CLASS_GROUP) {
-       DXSetError(ERROR_INVALID_DATA,
+       DXSetError(ERROR_DATA_INVALID,
                   "colormap must be a single field; not a group"); 
        goto error;
     }
     else if (class != CLASS_FIELD) {
-       DXSetError(ERROR_INVALID_DATA,
+       DXSetError(ERROR_DATA_INVALID,
                   "colormap must be a single field"); 
        goto error;
     }
@@ -361,12 +361,12 @@ m_ColorBar(Object *in, Object *out)
            goto error;
         break;
       default:
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
                    "colormap colors must be integer or float");
         goto error;
     }
     if (numcolors == 0) {
-      DXSetError(ERROR_INVALID_DATA,"colormap has no colors (data component)");
+      DXSetError(ERROR_DATA_INVALID,"colormap has no colors (data component)");
       goto error;
     }
     
@@ -402,11 +402,11 @@ m_ColorBar(Object *in, Object *out)
     }
     if (!(att = DXGetString((String)DXGetComponentAttribute((Field)colormap,
 							    "data","dep")))) {
-      DXSetError(ERROR_INVALID_DATA,"missing data dependency attribute");
+      DXSetError(ERROR_DATA_INVALID,"missing data dependency attribute");
       goto error;
     }
     if (strcmp(att,"positions") && strcmp(att,"connections")) {
-      DXSetError(ERROR_INVALID_DATA,"unknown data dependent attribute %s",
+      DXSetError(ERROR_DATA_INVALID,"unknown data dependent attribute %s",
 		 att);
       goto error;
     }
@@ -1160,7 +1160,7 @@ drawbar:
   }
   else {
      if (!DXExtractString(in[7], &label)) {
-        DXSetError(ERROR_INVALID_DATA,"#10200", "label");
+        DXSetError(ERROR_DATA_INVALID,"#10200", "label");
         goto error;
      }
   }
@@ -1197,22 +1197,22 @@ drawbar:
    /* determine if the user has set a fixed label size */
    if (in[14]) {
      if (!DXExtractInteger(in[14], &dofixedfontsize)) {
-        DXSetError(ERROR_INVALID_DATA,"usefixedfontsize must be 0 or 1");
+        DXSetError(ERROR_DATA_INVALID,"usefixedfontsize must be 0 or 1");
         goto error;
      } 
      if ((dofixedfontsize != 0)&&(dofixedfontsize != 1)) {
-        DXSetError(ERROR_INVALID_DATA,"usefixedfontsize must be 0 or 1");
+        DXSetError(ERROR_DATA_INVALID,"usefixedfontsize must be 0 or 1");
         goto error;
      }
   }
   if (dofixedfontsize) {
      if (in[15]) {
         if (!DXExtractInteger(in[15], &fixedfontsizepixels)) {
-           DXSetError(ERROR_INVALID_DATA,"fixedfontsize must be a positive integer");
+           DXSetError(ERROR_DATA_INVALID,"fixedfontsize must be a positive integer");
            goto error;
         }
         if (fixedfontsize < 0) {
-           DXSetError(ERROR_INVALID_DATA,"fixedfontsize must be a positive integer");
+           DXSetError(ERROR_DATA_INVALID,"fixedfontsize must be a positive integer");
            goto error;
         }
      }
@@ -1473,7 +1473,7 @@ extern Error _dxfGetColorBarAnnotationColors(Object colors, Object which,
       if (!colorlist) goto error;
       if (!DXExtractParameter(colors, TYPE_FLOAT, 3, numcolors, 
 			      (Pointer)colorlist)) {
-        DXSetError(ERROR_INVALID_DATA,"bad color list");
+        DXSetError(ERROR_DATA_INVALID,"bad color list");
 	goto error;
       }
     }

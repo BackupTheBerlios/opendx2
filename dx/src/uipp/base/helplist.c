@@ -7,7 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "defines.h"
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include "helplist.h"

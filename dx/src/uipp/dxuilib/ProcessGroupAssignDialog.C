@@ -7,10 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h" 
 #include <stdlib.h>
 #include <limits.h>
 #include <Xm/Xm.h>
@@ -24,7 +25,6 @@
 #include <Xm/Text.h>
 #include <Xm/Label.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "DXApplication.h"
 #include "EditorWindow.h"

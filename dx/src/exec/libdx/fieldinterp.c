@@ -96,7 +96,7 @@ _dxfSelectFieldInterpolator(Field f,
     if (!sub->recognizeMth || DXGetError() != ERROR_NONE)
     {
 	if (DXGetError() == ERROR_NONE)
-	    DXSetError(ERROR_INVALID_DATA,  "#11850");
+	    DXSetError(ERROR_DATA_INVALID,  "#11850");
 	return NULL;
     }
     
@@ -216,7 +216,7 @@ _dxf_NewFieldInterpolator(Field f, float fuzz, Matrix *m,
 	fi->data_dependency = DATA_FACES_DEPENDENT;
     else
     {  
-	DXSetError(ERROR_INVALID_DATA, "#10250", "data");
+	DXSetError(ERROR_DATA_INVALID, "#10250", "data");
 	DXFree((Pointer)fi);
 	return NULL;
     }

@@ -373,7 +373,7 @@ static Object MakeGrid(Object object, float *radius, Object density)
    if (!class) goto error;
 
    if (class != CLASS_ARRAY) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
                  "densityfactor must be a scalar or vector");
       goto error;
    }
@@ -384,16 +384,16 @@ static Object MakeGrid(Object object, float *radius, Object density)
       origin = box[0];
       dx = (box[7].x -box[0].x)/((float)numitems);
       if (dx == 0) {
-         DXSetError(ERROR_INVALID_DATA,"object has size 0 bounding box");
+         DXSetError(ERROR_DATA_INVALID,"object has size 0 bounding box");
          goto error;
       }
       if (!DXExtractFloat(density, &densval)) {
-         DXSetError(ERROR_INVALID_DATA,
+         DXSetError(ERROR_DATA_INVALID,
                     "for 1D data, densityfactor must be a scalar value");
          goto error;
       }
       if (densval <=0) {
-         DXSetError(ERROR_INVALID_DATA,
+         DXSetError(ERROR_DATA_INVALID,
                     "densityfactor must be positive");
          goto error;
       }
@@ -407,7 +407,7 @@ static Object MakeGrid(Object object, float *radius, Object density)
    else if ((rank==1)&&(shape[0]==2)) {
       if (!DXExtractParameter(density, TYPE_FLOAT,2,1,&densvector)) {
          if (!DXExtractFloat(density, &densval)) {
-            DXSetError(ERROR_INVALID_DATA,
+            DXSetError(ERROR_DATA_INVALID,
                      "for 2D data densityfactor must be a scalar or 2-vector");
             goto error;
          }
@@ -415,7 +415,7 @@ static Object MakeGrid(Object object, float *radius, Object density)
          densvector.y = densval;
       }
       if ((densvector.x <=0)||(densvector.y <=0)) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
                    "densityfactor must be positive");
         goto error;
       }
@@ -424,7 +424,7 @@ static Object MakeGrid(Object object, float *radius, Object density)
       DX = box[7].x - box[0].x;
       DY = box[7].y - box[0].y;
       if ((DX == 0)&&(DY==0)) {
-         DXSetError(ERROR_INVALID_DATA,"object has size 0 bounding box");
+         DXSetError(ERROR_DATA_INVALID,"object has size 0 bounding box");
          goto error;
       }
 
@@ -484,7 +484,7 @@ static Object MakeGrid(Object object, float *radius, Object density)
    else if ((rank==1)&&(shape[0]==3)) {
       if (!DXExtractParameter(density, TYPE_FLOAT,3,1,&densvector)) {
          if (!DXExtractFloat(density, &densval)) {
-            DXSetError(ERROR_INVALID_DATA,
+            DXSetError(ERROR_DATA_INVALID,
                      "for 3D data densityfactor must be a scalar or 3-vector");
             goto error;
          }
@@ -493,7 +493,7 @@ static Object MakeGrid(Object object, float *radius, Object density)
          densvector.z = densval;
       }
       if ((densvector.x <=0)||(densvector.y <=0)||(densvector.z <= 0)) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
                    "densityfactor must be positive");
         goto error;
       }
@@ -502,7 +502,7 @@ static Object MakeGrid(Object object, float *radius, Object density)
       DY = box[7].y - box[0].y;
       DZ = box[7].z - box[0].z;
       if ((DX == 0)&&(DY==0)&&(DZ==0)) {
-         DXSetError(ERROR_INVALID_DATA,"object has size 0 bounding box");
+         DXSetError(ERROR_DATA_INVALID,"object has size 0 bounding box");
          goto error;
       }
 
@@ -644,7 +644,7 @@ static Object MakeGrid(Object object, float *radius, Object density)
      }
    }
    else {
-     DXSetError(ERROR_INVALID_DATA,"positions must be 1,2, or 3D");
+     DXSetError(ERROR_DATA_INVALID,"positions must be 1,2, or 3D");
      goto error;
    } 
 

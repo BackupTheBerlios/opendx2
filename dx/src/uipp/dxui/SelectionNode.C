@@ -7,12 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "lex.h"
 #include "SelectionNode.h"
 #include "ErrorDialogManager.h"

@@ -80,7 +80,7 @@ Error _dxfparse_file(struct finfo *fp, Object *returnobj)
     *returnobj = NULL;
 
     if (fp->recurse >= MAXNEST) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "can't nest included files more than %d deep", MAXNEST);
 	return ERROR;
     }
@@ -100,13 +100,13 @@ Error _dxfparse_file(struct finfo *fp, Object *returnobj)
     rc = next_class(fp, &state);
     if (!rc) {
 	if (state == ENDOFHEADER)
-	    DXSetError(ERROR_INVALID_DATA, "file '%s' is empty", fp->fname);
+	    DXSetError(ERROR_DATA_INVALID, "file '%s' is empty", fp->fname);
 	else if (state == NOTASCII)
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		   "file '%s' contains binary data in header, not DX format", 
 		       fp->fname);
 	else
-	    DXSetError(ERROR_INVALID_DATA, "file '%s' is not DX format", 
+	    DXSetError(ERROR_DATA_INVALID, "file '%s' is not DX format", 
 		       fp->fname);
 	goto done;
     }
@@ -127,7 +127,7 @@ Error _dxfparse_file(struct finfo *fp, Object *returnobj)
 	    goto secondpass;
 	    
 	  case NOTASCII:
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "file not DX format; non-ascii data in header");
 	    goto done;
 	    
@@ -208,7 +208,7 @@ Error _dxfparse_file(struct finfo *fp, Object *returnobj)
       geterror:
 	if (!rc) {
 	    if (DXGetError() == ERROR_NONE)
-		DXSetError(ERROR_INVALID_DATA, "Error reading DX data format");
+		DXSetError(ERROR_DATA_INVALID, "Error reading DX data format");
 
 	    DXAddMessage("file '%s' line %d", 
 			 fp->fname, _dxfgetprevline(fp));
@@ -361,7 +361,7 @@ static Error parse_object(struct finfo *f)
 	 *  be in the table.
 	 */
 	if (_dxflookobjlist(f, objnum, NULL, NULL) != ERROR)
-	    DXErrorReturn(ERROR_INVALID_DATA, 
+	    DXErrorReturn(ERROR_DATA_INVALID, 
 			  "duplicate object name or number");
 	
 	/* put id into object list so we can start adding references 
@@ -379,13 +379,13 @@ static Error parse_object(struct finfo *f)
     
     rc = get_keyword(f, &kind);
     if (!rc)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad or missing object type");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad or missing object type");
     
     /* optional keyword - ignore and parse again */
     if (kind == KW_CLASS) {
 	rc = get_keyword(f, &kind);
 	if (!rc)
-	    DXErrorReturn(ERROR_INVALID_DATA, "bad or missing object type");
+	    DXErrorReturn(ERROR_DATA_INVALID, "bad or missing object type");
 	
     }
 
@@ -508,7 +508,7 @@ static Error parse_object(struct finfo *f)
 #endif
  
       default:
-        DXErrorReturn(ERROR_INVALID_DATA, "unrecognized object type");
+        DXErrorReturn(ERROR_DATA_INVALID, "unrecognized object type");
     }
     
   done:
@@ -555,7 +555,7 @@ static Error parse_include(struct finfo *f)
     rc = remote_objectid(f, &remoteid, "include object");
     
     if (!rc) {
-	DXSetError(ERROR_INVALID_DATA, "bad or missing include object");
+	DXSetError(ERROR_DATA_INVALID, "bad or missing include object");
 	return ERROR;
     }
     
@@ -641,7 +641,7 @@ static Error parse_series(struct finfo *f)
           case KW_MEMBER:
             rc = skipkeyword(f);
             if (!rc)
-                DXErrorReturn(ERROR_INVALID_DATA, 
+                DXErrorReturn(ERROR_DATA_INVALID, 
                             "bad or missing series member");
  
             rc = parse_smember(f, member);
@@ -651,7 +651,7 @@ static Error parse_series(struct finfo *f)
           case KW_ATTRIBUTE:
             rc = skipkeyword(f);
             if (!rc)
-                DXErrorReturn(ERROR_INVALID_DATA, "bad or missing attribute");
+                DXErrorReturn(ERROR_DATA_INVALID, "bad or missing attribute");
  
             rc = parse_attribute(f, f->curobj);
             break;
@@ -728,7 +728,7 @@ static Error parse_smember(struct finfo *f, int gmember)
 		skipkeyword(f);
 		rc = _dxfmatchfloat(f, &pos);
 		if (!rc)
-		    DXErrorReturn(ERROR_INVALID_DATA, "bad series position");
+		    DXErrorReturn(ERROR_DATA_INVALID, "bad series position");
 		
 		state = 3;
 		break;
@@ -736,7 +736,7 @@ static Error parse_smember(struct finfo *f, int gmember)
 	      case KW_VALUE:
 		skipkeyword(f);
 		if (state >= 4)
-		    DXErrorReturn(ERROR_INVALID_DATA, 
+		    DXErrorReturn(ERROR_DATA_INVALID, 
 				  "unexpected keyword 'value'");
 		state = 4;
 		break;
@@ -771,10 +771,10 @@ static Error parse_smember(struct finfo *f, int gmember)
 	      case 0:
 		rc = _dxfmatchint(f, &enumval);
 		if (!rc)
-		    DXErrorReturn(ERROR_INVALID_DATA, 
+		    DXErrorReturn(ERROR_DATA_INVALID, 
 				"bad series member number");
 		if (enumval != gmember)
-		    DXErrorReturn(ERROR_INVALID_DATA, 
+		    DXErrorReturn(ERROR_DATA_INVALID, 
 	 "if specified, series member numbers must be 0-based and contiguous");
 		state = 1;
 		break;
@@ -782,7 +782,7 @@ static Error parse_smember(struct finfo *f, int gmember)
 	      case 1: case 2:
 		rc = _dxfmatchfloat(f, &pos);
 		if (!rc)
-		    DXErrorReturn(ERROR_INVALID_DATA, "bad series position");
+		    DXErrorReturn(ERROR_DATA_INVALID, "bad series position");
 
 		state = 3;
 		break;
@@ -933,7 +933,7 @@ static Error make_group(struct finfo *f, Object o, char *thing)
           case KW_MEMBER:
             rc = skipkeyword(f);
             if(!rc) {
-                DXSetError(ERROR_INVALID_DATA, "bad or missing %s member", thing);
+                DXSetError(ERROR_DATA_INVALID, "bad or missing %s member", thing);
 		return ERROR;
 	    }
  
@@ -943,7 +943,7 @@ static Error make_group(struct finfo *f, Object o, char *thing)
           case KW_ATTRIBUTE:
             rc = skipkeyword(f);
             if(!rc)
-                DXErrorReturn(ERROR_INVALID_DATA, "bad or missing attribute");
+                DXErrorReturn(ERROR_DATA_INVALID, "bad or missing attribute");
  
             rc = parse_attribute(f, f->curobj);
             break;
@@ -993,7 +993,7 @@ static Error parse_member(struct finfo *f)
 	if (rc)
 	    byname = 0;
         else
-	    DXErrorReturn(ERROR_INVALID_DATA, "bad member clause");
+	    DXErrorReturn(ERROR_DATA_INVALID, "bad member clause");
     }
     
     /* skip optional keyword VALUE */
@@ -1112,7 +1112,7 @@ static Error parse_component(struct finfo *f)
  
     rc = get_string(f, &name);
     if(!rc)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad or missing component name");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad or missing component name");
  
     /* skip VALUE if present */
     match_keyword(f, KW_VALUE);
@@ -1192,7 +1192,7 @@ static Error parse_array(struct finfo *f, int kind)
           moretype:
             rc = get_keyword(f, &value);
             if (!rc) {
-                DXSetError(ERROR_INVALID_DATA, "bad or missing array type");
+                DXSetError(ERROR_DATA_INVALID, "bad or missing array type");
 		goto error;
 	    }
             
@@ -1262,11 +1262,11 @@ static Error parse_array(struct finfo *f, int kind)
                 type = TYPE_STRING;
                 break;
               default:
-                DXSetError(ERROR_INVALID_DATA, "bad array type");
+                DXSetError(ERROR_DATA_INVALID, "bad array type");
 		goto error;
             }
             if ((issigned != SIGN_UNSET) && !signok) {
-                DXSetError(ERROR_INVALID_DATA, 
+                DXSetError(ERROR_DATA_INVALID, 
                            "signed or unsigned not valid for this array type");
                 goto error;
             }
@@ -1277,7 +1277,7 @@ static Error parse_array(struct finfo *f, int kind)
  
             rc = get_keyword(f, &value);
             if (!rc) {
-                DXSetError(ERROR_INVALID_DATA, "bad or missing array category");
+                DXSetError(ERROR_DATA_INVALID, "bad or missing array category");
 		goto error;
 	    }
             
@@ -1292,7 +1292,7 @@ static Error parse_array(struct finfo *f, int kind)
                 cat = CATEGORY_QUATERNION;
                 break;
               default:
-                DXSetError(ERROR_INVALID_DATA, "bad array category");
+                DXSetError(ERROR_DATA_INVALID, "bad array category");
 		goto error;
             }
             break;
@@ -1302,7 +1302,7 @@ static Error parse_array(struct finfo *f, int kind)
  
             rc = _dxfmatchint(f, &value);
             if (!rc || value < 0) {
-                DXSetError(ERROR_INVALID_DATA, 
+                DXSetError(ERROR_DATA_INVALID, 
 			   "bad or missing array item count");
 		goto error;
 	    }
@@ -1316,16 +1316,16 @@ static Error parse_array(struct finfo *f, int kind)
             rc = _dxfmatchint(f, &value);
             if (!rc || value < 0 || value >= MAXRANK) {
 		if (!rc || value < 0)
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			       "bad or missing array rank");
 		else
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			       "array rank cannot be larger than %d", MAXRANK);
 		goto error;
 	    }
 	    
 	    if (rankset && rank != value) {
-		DXSetError(ERROR_INVALID_DATA, "rank doesn't match shape");
+		DXSetError(ERROR_DATA_INVALID, "rank doesn't match shape");
 		goto error;
 	    }
  
@@ -1343,7 +1343,7 @@ static Error parse_array(struct finfo *f, int kind)
 	     */
 	    if (rankset) {
 		if (rank == 0) {
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			     "rank 0 data is scalar; it cannot have shape");
 		    goto error;
 		}
@@ -1351,12 +1351,12 @@ static Error parse_array(struct finfo *f, int kind)
 		for (i=0; i<rank; i++) {
 		    rc = _dxfmatchint(f, &value);
 		    if (!rc) {
-			DXSetError(ERROR_INVALID_DATA,
+			DXSetError(ERROR_DATA_INVALID,
 				 "array shape list does not match rank");
 			goto error;
 		    }
 		    if (value <= 0) {
-			DXSetError(ERROR_INVALID_DATA, 
+			DXSetError(ERROR_DATA_INVALID, 
 				 "non-positive array shape value");
 			goto error;
 		    }
@@ -1369,11 +1369,11 @@ static Error parse_array(struct finfo *f, int kind)
  
 		rc = _dxfmatchint(f, &value);
 		if (!rc) {
-		    DXSetError(ERROR_INVALID_DATA, "missing or bad array shape");
+		    DXSetError(ERROR_DATA_INVALID, "missing or bad array shape");
 		    goto error;
 		}
 		if (value <= 0) {
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			     "non-positive array shape value");
 		    goto error;
 		}
@@ -1392,7 +1392,7 @@ static Error parse_array(struct finfo *f, int kind)
 		} while(i < MAXRANK);
 		
 		if (i == MAXRANK) {
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			       "shape cannot have more than %d terms", MAXRANK);
 		    goto error;
 		}
@@ -1445,12 +1445,12 @@ static Error parse_array(struct finfo *f, int kind)
 		f->dformat = datatype;
 
 	    if ((rankset && !shapeset) && (rank > 0)) {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			   "shape must be set if rank is larger than 0");
 		goto error;
 	    }
             if (items <= 0) {
-                DXSetError(ERROR_INVALID_DATA,
+                DXSetError(ERROR_DATA_INVALID,
                          "data item count must be set before data value list");
                 goto error;
             }
@@ -1553,7 +1553,7 @@ static Error parse_array(struct finfo *f, int kind)
 		}
 		
 	    } else {
-		DXSetError(ERROR_INVALID_DATA, "bad array data specification");
+		DXSetError(ERROR_DATA_INVALID, "bad array data specification");
 		goto error;
 	    }
 	    
@@ -1702,7 +1702,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 #define READORIGIN(type) \
 		rc = _dxfmatch##type(f, &((type *)origin)[i]); \
 		if(!rc) { \
-		    DXSetError(ERROR_INVALID_DATA, "missing or bad origin"); \
+		    DXSetError(ERROR_DATA_INVALID, "missing or bad origin"); \
 		    goto error; \
 		} \
 		do { \
@@ -1714,7 +1714,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		    } \
 		} while(i < MAXRANK); \
 		if (i == MAXRANK) { \
-		    DXSetError(ERROR_INVALID_DATA, \
+		    DXSetError(ERROR_DATA_INVALID, \
 			"origin cannot have more than %d terms", MAXRANK); \
 		    goto error; \
 		}
@@ -1734,7 +1734,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		    DXSetError(ERROR_NOT_IMPLEMENTED, "hyper not supported");
 		    goto error;
 		  default:
-		    DXSetError(ERROR_INVALID_DATA, "unrecognized type");
+		    DXSetError(ERROR_DATA_INVALID, "unrecognized type");
 		    goto error;
 		}
 		
@@ -1745,7 +1745,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		skipkeyword(f);
 		
 		if(shape == 0) {
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			     "must set origin before deltas");
 		    goto error;
 		}
@@ -1754,7 +1754,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		for (i=0; i<shape; i++) { \
 		    rc = _dxfmatch##type(f, &((type *)deltas)[i]); \
 		    if(!rc) { \
-			DXSetError(ERROR_INVALID_DATA, \
+			DXSetError(ERROR_DATA_INVALID, \
 				   "missing or bad delta"); \
 			goto error; \
 		    } \
@@ -1773,7 +1773,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		    DXSetError(ERROR_NOT_IMPLEMENTED, "hyper not supported");
 		    goto error;
 		  default:
-		    DXSetError(ERROR_INVALID_DATA, "unrecognized type");
+		    DXSetError(ERROR_DATA_INVALID, "unrecognized type");
 		    goto error;
 		}
 		break;
@@ -1783,7 +1783,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		
 		rc = _dxfmatchint(f, &value);
 		if(!rc) {
-		    DXSetError(ERROR_INVALID_DATA, "missing or bad item count");
+		    DXSetError(ERROR_DATA_INVALID, "missing or bad item count");
 		    goto error;
 		}
 		
@@ -1797,7 +1797,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		value = f->t.token.id;
 		rc = skipkeyword(f);
 		if(!rc) {
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			       "bad or missing regulararray type");
 		    goto error;
 		}
@@ -1865,11 +1865,11 @@ static Error parse_sarray(struct finfo *f, int kind)
 		    type = TYPE_DOUBLE;
 		    break;
 		  default:
-		    DXSetError(ERROR_INVALID_DATA, "bad array type");
+		    DXSetError(ERROR_DATA_INVALID, "bad array type");
 		    goto error;
 		}
 		if ((issigned != SIGN_UNSET) && !signok) {
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			   "signed or unsigned not valid for this array type");
 		    goto error;
 		}
@@ -1895,7 +1895,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		
 		rc = _dxfmatchint(f, &value);
 		if(!rc) {
-		    DXSetError(ERROR_INVALID_DATA, "bad or missing array rank");
+		    DXSetError(ERROR_DATA_INVALID, "bad or missing array rank");
 		    goto error;
 		}
 		
@@ -1913,7 +1913,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		
 		rc = _dxfmatchint(f, &value);
 		if(!rc) {
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			     "missing regular array shape");
 		    goto error;
 		}
@@ -1930,7 +1930,7 @@ static Error parse_sarray(struct finfo *f, int kind)
             goto error;
  
 	if(shape == 0) {
-	    DXSetError(ERROR_INVALID_DATA, "bad or missing origin clause");
+	    DXSetError(ERROR_DATA_INVALID, "bad or missing origin clause");
 	    goto error;
 	}
 	    
@@ -1949,7 +1949,7 @@ static Error parse_sarray(struct finfo *f, int kind)
  
 	rc = _dxfmatchint(f, &value);
 	if (!rc) {
-	    DXSetError(ERROR_INVALID_DATA, "bad or missing path array length");
+	    DXSetError(ERROR_DATA_INVALID, "bad or missing path array length");
 	    goto error;
 	}
 		
@@ -2008,7 +2008,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		break;
  
 	      badterm:
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			 "bad or missing mesh array term %d", items);
 		goto error;
  
@@ -2019,7 +2019,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		for (i=0; i<items; i++) {
 		    rc = _dxfmatchint(f, &value);
 		    if (!rc) {
-			DXSetError(ERROR_INVALID_DATA, 
+			DXSetError(ERROR_DATA_INVALID, 
 				   "missing or bad mesh offset");
 			goto error;
 		    }
@@ -2036,7 +2036,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 	}
 	
 	if (items == 0) {
-	    DXSetError(ERROR_INVALID_DATA, "missing mesh array terms");
+	    DXSetError(ERROR_DATA_INVALID, "missing mesh array terms");
 	    goto error;
 	}
 
@@ -2085,7 +2085,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 
 	    i++;
 	    if (i >= MAXRANK) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "product array cannot have more than %d terms",
 			   MAXRANK);
 		goto error;
@@ -2093,14 +2093,14 @@ static Error parse_sarray(struct finfo *f, int kind)
 	    continue;
  
 	  badterm2:
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		     "bad or missing product array term %d", i);
 	    goto error;
  
 	}
  
 	if(i == 0) {
-	    DXSetError(ERROR_INVALID_DATA, "missing product array terms");
+	    DXSetError(ERROR_DATA_INVALID, "missing product array terms");
 	    goto error;
 	}
  
@@ -2125,7 +2125,7 @@ static Error parse_sarray(struct finfo *f, int kind)
  
 	rc = _dxfmatchint(f, &value);
 	if(!rc) {
-	    DXSetError(ERROR_INVALID_DATA, "bad or missing counts");
+	    DXSetError(ERROR_DATA_INVALID, "bad or missing counts");
 	    goto error;
 	}
  
@@ -2144,7 +2144,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 	} while(i < MAXRANK);
 	
 	if (i == MAXRANK) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "counts cannot have more than %d terms", MAXRANK);
 	    goto error;
 	}
@@ -2167,7 +2167,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		for (i=0; i<rank; i++) {
 		    rc = _dxfmatchfloat(f, &((float *)origin)[i]);
 		    if(!rc) {
-			DXSetError(ERROR_INVALID_DATA, "missing or bad origin");
+			DXSetError(ERROR_DATA_INVALID, "missing or bad origin");
 			goto error;
 		    }
 		}
@@ -2179,7 +2179,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 		for (i=0; i<rank; i++) {
 		    rc = _dxfmatchfloat(f, &((float *)deltas)[drank * rank + i]);
 		    if(!rc) {
-			DXSetError(ERROR_INVALID_DATA, 
+			DXSetError(ERROR_DATA_INVALID, 
 				 "missing or bad delta vectors");
 			goto error;
 		    }
@@ -2225,7 +2225,7 @@ static Error parse_sarray(struct finfo *f, int kind)
  
 	rc = _dxfmatchint(f, &value);
 	if(!rc) {
-	    DXSetError(ERROR_INVALID_DATA, "bad or missing counts");
+	    DXSetError(ERROR_DATA_INVALID, "bad or missing counts");
 	    goto error;
 	}
  
@@ -2244,7 +2244,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 	} while(i < MAXRANK);
 	
 	if (i == MAXRANK) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "counts cannot have more than %d terms", MAXRANK);
 	    goto error;
 	}
@@ -2264,7 +2264,7 @@ static Error parse_sarray(struct finfo *f, int kind)
 	    for (i=0; i<rank; i++) {
 		rc = _dxfmatchint(f, &value);
 		if(!rc) {
-		    DXSetError(ERROR_INVALID_DATA, "missing or bad meshoffsets");
+		    DXSetError(ERROR_DATA_INVALID, "missing or bad meshoffsets");
 		    goto error;
 		}
 		
@@ -2359,7 +2359,7 @@ static Error parse_light(struct finfo *f)
             type = f->t.token.id;
             rc = skipkeyword(f);
             if(!rc)
-                DXErrorReturn(ERROR_INVALID_DATA, "bad or missing light type");
+                DXErrorReturn(ERROR_DATA_INVALID, "bad or missing light type");
             
             if (type != KW_DISTANT && type != KW_AMBIENT) 
                 DXMessage("only distant or ambient lights supported");
@@ -2383,7 +2383,7 @@ static Error parse_light(struct finfo *f)
             for (i=0; i<3; i++) {
 		rc = _dxfmatchfloat(f, &fvalue);
                 if(!rc) {
-		    DXErrorReturn(ERROR_INVALID_DATA, 
+		    DXErrorReturn(ERROR_DATA_INVALID, 
 				"bad or missing light direction");
 		}
                 *fp++ = fvalue;
@@ -2398,7 +2398,7 @@ static Error parse_light(struct finfo *f)
             for (i=0; i<3; i++) {
 		rc = _dxfmatchfloat(f, &fvalue);
                 if(!rc) {
-		    DXErrorReturn(ERROR_INVALID_DATA, 
+		    DXErrorReturn(ERROR_DATA_INVALID, 
 				"bad or missing light position");
 		}
                 *fp++ = fvalue;
@@ -2413,7 +2413,7 @@ static Error parse_light(struct finfo *f)
 	    if (get_string(f, &value)) {
 		colorname = _dxfdictname(f->d, value);
 		if (!DXColorNameToRGB(colorname, &dc)) {
-		    DXErrorReturn(ERROR_INVALID_DATA,
+		    DXErrorReturn(ERROR_DATA_INVALID,
 				"unrecognized light color name");
 		}
 	    } else {
@@ -2421,7 +2421,7 @@ static Error parse_light(struct finfo *f)
 		for (i=0; i<3; i++) {
 		    rc = _dxfmatchfloat(f, &fvalue);
 		    if(!rc) {
-			DXErrorReturn(ERROR_INVALID_DATA, 
+			DXErrorReturn(ERROR_DATA_INVALID, 
 				    "bad or missing light color");
 		    }
 		    *fp++ = fvalue;
@@ -2437,7 +2437,7 @@ static Error parse_light(struct finfo *f)
 
           case KW_CAMERA:
             if (!match_keyword(f, KW_CAMERA)) {
-                DXErrorReturn(ERROR_INVALID_DATA, 
+                DXErrorReturn(ERROR_DATA_INVALID, 
                       "distant light direction may be given as 'from camera'");
             }
             relative = KW_CAMERA;
@@ -2456,7 +2456,7 @@ static Error parse_light(struct finfo *f)
     switch(type) {
       case KW_AMBIENT:
 	if (specific) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		     "ambient lights cannot have position or direction");
 	    return ERROR;
 	}
@@ -2544,10 +2544,10 @@ static Error parse_camera(struct finfo *f)
             type = f->t.token.id;
             rc = skipkeyword(f);
             if(!rc)
-                DXErrorReturn(ERROR_INVALID_DATA, "bad or missing camera type");
+                DXErrorReturn(ERROR_DATA_INVALID, "bad or missing camera type");
             
             if (type != KW_ORTHOGRAPHIC && type != KW_PERSPECTIVE) {
-                DXErrorReturn(ERROR_INVALID_DATA,
+                DXErrorReturn(ERROR_DATA_INVALID,
                             "camera type must be orthographic or perspective");
             }
 	    
@@ -2580,7 +2580,7 @@ static Error parse_camera(struct finfo *f)
             for (i=0; i<3; i++) {
 		rc = _dxfmatchfloat(f, &fvalue);
                 if(!rc) {
-		    DXErrorReturn(ERROR_INVALID_DATA, 
+		    DXErrorReturn(ERROR_DATA_INVALID, 
 				"bad or missing camera from point");
 		}
                 *fp++ = fvalue;
@@ -2595,7 +2595,7 @@ static Error parse_camera(struct finfo *f)
             for (i=0; i<3; i++) {
 		rc = _dxfmatchfloat(f, &fvalue);
                 if(!rc) {
-		    DXErrorReturn(ERROR_INVALID_DATA, 
+		    DXErrorReturn(ERROR_DATA_INVALID, 
 				"bad or missing camera to point");
 		}
                 *fp++ = fvalue;
@@ -2610,7 +2610,7 @@ static Error parse_camera(struct finfo *f)
             for (i=0; i<3; i++) {
 		rc = _dxfmatchfloat(f, &fvalue);
                 if(!rc) {
-		    DXErrorReturn(ERROR_INVALID_DATA, 
+		    DXErrorReturn(ERROR_DATA_INVALID, 
 				"bad or missing camera up vector");
 		}
                 *fp++ = fvalue;
@@ -2623,7 +2623,7 @@ static Error parse_camera(struct finfo *f)
  
 	    rc = _dxfmatchfloat(f, &width);
 	    if(!rc || width <= 0.0) {
-		DXErrorReturn(ERROR_INVALID_DATA, 
+		DXErrorReturn(ERROR_DATA_INVALID, 
 				"bad or missing camera width");
 	    }
 	    
@@ -2638,7 +2638,7 @@ static Error parse_camera(struct finfo *f)
 
 	    rc = _dxfmatchfloat(f, &xxx);
 	    if(!rc) {
-		DXErrorReturn(ERROR_INVALID_DATA, 
+		DXErrorReturn(ERROR_DATA_INVALID, 
 				"camera 'height' parameter obsolete");
 	    }
 
@@ -2650,7 +2650,7 @@ static Error parse_camera(struct finfo *f)
  
 	    rc = _dxfmatchfloat(f, &aspect);
 	    if(!rc) {
-		DXErrorReturn(ERROR_INVALID_DATA, 
+		DXErrorReturn(ERROR_DATA_INVALID, 
 				"bad or missing camera aspect ratio");
 	    }
 	    
@@ -2661,7 +2661,7 @@ static Error parse_camera(struct finfo *f)
  
 	    rc = _dxfmatchint(f, &resolution);
 	    if(!rc) {
-		DXErrorReturn(ERROR_INVALID_DATA, 
+		DXErrorReturn(ERROR_DATA_INVALID, 
 				"bad or missing camera resolution");
 	    }
 	    
@@ -2672,12 +2672,12 @@ static Error parse_camera(struct finfo *f)
  
 	    rc = _dxfmatchfloat(f, &angle);
 	    if(!rc) {
-		DXErrorReturn(ERROR_INVALID_DATA, 
+		DXErrorReturn(ERROR_DATA_INVALID, 
 				"bad or missing angle for perspective");
 	    }
 	    
 	    if (angle < 0.0 || angle >= 180.0) {
-		DXErrorReturn(ERROR_INVALID_DATA,
+		DXErrorReturn(ERROR_DATA_INVALID,
 		"angle must be greater than or equal to 0.0 but less than 180");
 	    }
 
@@ -2689,7 +2689,7 @@ static Error parse_camera(struct finfo *f)
                   case 0:    /* is perspective */
                     break;
                   case 1:    /* is orthographic */
-                    DXErrorReturn(ERROR_INVALID_DATA,
+                    DXErrorReturn(ERROR_DATA_INVALID,
                         "angle parameter only valid for perspective camera");
                 }
             } else
@@ -2711,7 +2711,7 @@ static Error parse_camera(struct finfo *f)
 		for (i=0; i<3; i++) {
 		    rc = _dxfmatchfloat(f, &fvalue);
 		    if(!rc) {
-			DXErrorReturn(ERROR_INVALID_DATA, 
+			DXErrorReturn(ERROR_DATA_INVALID, 
 				    "bad or missing background color");
 		    }
 		    *fp++ = fvalue;
@@ -2801,7 +2801,7 @@ static Error parse_xform(struct finfo *f)
 	    break;
 
 	  default:
-	    DXErrorReturn(ERROR_INVALID_DATA, "bad or missing transform matrix");
+	    DXErrorReturn(ERROR_DATA_INVALID, "bad or missing transform matrix");
  
 	}
 	if (done)
@@ -2815,7 +2815,7 @@ static Error parse_xform(struct finfo *f)
 	for (j=0; j<3; j++) {
 	    rc = _dxfmatchfloat(f, &fvalue);
 	    if (!rc) {
-		DXErrorReturn(ERROR_INVALID_DATA, 
+		DXErrorReturn(ERROR_DATA_INVALID, 
 			    "bad or missing transform matrix");
 	    }
     
@@ -2826,7 +2826,7 @@ static Error parse_xform(struct finfo *f)
     for (i=0; i<3; i++) {
 	rc = _dxfmatchfloat(f, &fvalue);
 	if (!rc) {
-	    DXErrorReturn(ERROR_INVALID_DATA, "bad or missing transform matrix");
+	    DXErrorReturn(ERROR_DATA_INVALID, "bad or missing transform matrix");
 	}
 	
 	m.b[i] = fvalue;
@@ -2945,7 +2945,7 @@ static Error parse_screen(struct finfo *f)
             rc = skipkeyword(f);
  
             if (setpos)
-                DXErrorReturn(ERROR_INVALID_DATA, OneKind);
+                DXErrorReturn(ERROR_DATA_INVALID, OneKind);
             
             position = SCREEN_WORLD;
 	    setpos++;
@@ -2955,7 +2955,7 @@ static Error parse_screen(struct finfo *f)
             rc = skipkeyword(f);
  
             if (setpos)
-                DXErrorReturn(ERROR_INVALID_DATA, OneKind);
+                DXErrorReturn(ERROR_DATA_INVALID, OneKind);
             
             position = SCREEN_VIEWPORT;
 	    setpos++;
@@ -2965,7 +2965,7 @@ static Error parse_screen(struct finfo *f)
             rc = skipkeyword(f);
  
             if (setpos)
-                DXErrorReturn(ERROR_INVALID_DATA, OneKind);
+                DXErrorReturn(ERROR_DATA_INVALID, OneKind);
             
             position = SCREEN_PIXEL;
 	    setpos++;
@@ -2975,7 +2975,7 @@ static Error parse_screen(struct finfo *f)
             rc = skipkeyword(f);
  
             if (setpos)
-                DXErrorReturn(ERROR_INVALID_DATA, OneKind);
+                DXErrorReturn(ERROR_DATA_INVALID, OneKind);
             
             position = SCREEN_STATIONARY;
 	    setpos++;
@@ -2985,7 +2985,7 @@ static Error parse_screen(struct finfo *f)
             rc = skipkeyword(f);
  
             if (setwhere)
-                DXErrorReturn(ERROR_INVALID_DATA, OnePlace);
+                DXErrorReturn(ERROR_DATA_INVALID, OnePlace);
             
             where = BEHIND;
 	    setwhere++;
@@ -2995,7 +2995,7 @@ static Error parse_screen(struct finfo *f)
             rc = skipkeyword(f);
  
             if (setwhere)
-                DXErrorReturn(ERROR_INVALID_DATA, OnePlace);
+                DXErrorReturn(ERROR_DATA_INVALID, OnePlace);
             
             where = INSIDE;
 	    setwhere++;
@@ -3005,7 +3005,7 @@ static Error parse_screen(struct finfo *f)
             rc = skipkeyword(f);
  
             if (setwhere)
-                DXErrorReturn(ERROR_INVALID_DATA, OnePlace);
+                DXErrorReturn(ERROR_DATA_INVALID, OnePlace);
             
             where = INFRONT;
 	    setwhere++;
@@ -3070,7 +3070,7 @@ static Error parse_attribute(struct finfo *f, Object o)
     /* attribute name */
     rc = get_string(f, &name);
     if (!rc)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad or missing attribute name");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad or missing attribute name");
  
     /* optional */
     match_keyword(f, KW_VALUE);
@@ -3084,7 +3084,7 @@ static Error parse_attribute(struct finfo *f, Object o)
 	
     } else if (match_keyword(f, KW_NUMBER)) {
 	if (!get_number(f, &ntype, &value))
-	    DXErrorReturn(ERROR_INVALID_DATA, "bad numeric attribute value");
+	    DXErrorReturn(ERROR_DATA_INVALID, "bad numeric attribute value");
 	    
 	if (!makeit)
 	    goto done;
@@ -3103,7 +3103,7 @@ static Error parse_attribute(struct finfo *f, Object o)
 	    break;
 	    
 	  default:
-	    DXErrorReturn(ERROR_INVALID_DATA, 
+	    DXErrorReturn(ERROR_DATA_INVALID, 
 			  "bad number for attribute value");
 	}
 	
@@ -3155,7 +3155,7 @@ static Error local_objectid(struct finfo *f, int *objnum, char *what)
 
     /* remote objects not allowed here */
     if (match_keyword(f, KW_FILE)) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "`file' keyword not allowed for identifying %s", what);
 	return ERROR;
     }
@@ -3185,7 +3185,7 @@ static Error local_objectid(struct finfo *f, int *objnum, char *what)
 	return OK;
     }
 
-    DXSetError(ERROR_INVALID_DATA, "bad object number or name for %s", what);
+    DXSetError(ERROR_DATA_INVALID, "bad object number or name for %s", what);
     return ERROR;
 }
  
@@ -3222,7 +3222,7 @@ remote_objectid(struct finfo *f, int *objnum, char *what)
 
     
   error:
-    DXSetError(ERROR_INVALID_DATA, 
+    DXSetError(ERROR_DATA_INVALID, 
 	       "bad filename, or object number or name for %s", what);
     return ERROR;
 }
@@ -3264,7 +3264,7 @@ object_or_id(struct finfo *f, Object *o, char *what, int *which)
     if (*which == IDENTIFY_OBJS) {
 	rc = _dxfobjusesobj(f, f->curid, value);
 	if (!rc) {
-	    DXSetError(ERROR_INVALID_DATA, "bad or missing %s object", what);
+	    DXSetError(ERROR_DATA_INVALID, "bad or missing %s object", what);
 	    return ERROR;
 	}
     }
@@ -3275,7 +3275,7 @@ object_or_id(struct finfo *f, Object *o, char *what, int *which)
 	    rc = remote_object(f, value, o);
  
 	if (!rc || !*o) {
-	    DXSetError(ERROR_INVALID_DATA, "bad or missing %s object", what);
+	    DXSetError(ERROR_DATA_INVALID, "bad or missing %s object", what);
 	    return ERROR;
 	}
     }
@@ -3338,7 +3338,7 @@ seriesobject_or_id(struct finfo *f, Object *o, char *what, int *which,
     if (*which == IDENTIFY_OBJS) {
 	rc =  _dxfobjusesobj(f, f->curid, value);
 	if (!rc) {
-	    DXSetError(ERROR_INVALID_DATA, "bad or missing %s object", what);
+	    DXSetError(ERROR_DATA_INVALID, "bad or missing %s object", what);
 	    return ERROR;
 	}
     }
@@ -3349,7 +3349,7 @@ seriesobject_or_id(struct finfo *f, Object *o, char *what, int *which,
 	    rc = remote_object(f, value, o);
  
 	if (!rc || !*o) {
-	    DXSetError(ERROR_INVALID_DATA, "bad or missing %s object", what);
+	    DXSetError(ERROR_DATA_INVALID, "bad or missing %s object", what);
 	    return ERROR;
 	}
     }
@@ -3479,7 +3479,7 @@ file_lists(struct finfo *f, int value)
     _dxfsetnexttype(f, STRING);
     if (!get_string(f, &value)) {
 	if (!get_ident(f, &value)) {
-	    DXSetError(ERROR_INVALID_DATA, "bad filename");
+	    DXSetError(ERROR_DATA_INVALID, "bad filename");
 	    return ERROR;
 	} else
 	    fnamewas = IDENTIFIER;
@@ -3503,7 +3503,7 @@ file_lists(struct finfo *f, int value)
 	(*gpp)->which = GETBY_LINES;
 	/* line offset */
 	if (!get_int(f, &(*gpp)->num)) {
-	    DXSetError(ERROR_INVALID_DATA, "bad line offset");
+	    DXSetError(ERROR_DATA_INVALID, "bad line offset");
 	    return ERROR;
 	}
 	return OK;
@@ -3636,7 +3636,7 @@ file_lists(struct finfo *f, int value)
 	goto lines;
     }
     
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	     "no offset or name following comma");
     goto error;
 
@@ -3803,7 +3803,7 @@ static Object make_string(struct finfo *f)
  
     rc = get_string(f, &id);
     if(!rc) 
-	DXErrorReturn(ERROR_INVALID_DATA, "bad or missing string");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad or missing string");
  
     rc = get_string(f, &nid);
     if (rc == OK) {

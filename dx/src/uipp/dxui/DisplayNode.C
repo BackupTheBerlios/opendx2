@@ -7,12 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
 
-#include "defines.h"
 #include "DisplayNode.h"
 #include "Parameter.h"
 #include "ImageWindow.h"
@@ -636,7 +636,7 @@ void DisplayNode::ioParameterStatusChanged(boolean input, int index,
     // way to get around that is to delete the DisplayNode and place a new one.
     //
     if ((input) && (index == WHERE)) {
-	if (status == ParameterArcAdded) {
+	if (status == ParameterArkAdded) {
 	    this->userSpecifiedWhere = TRUE;
 	    if (this->image) {
 		ImageWindow *iw = this->image;
@@ -653,7 +653,7 @@ void DisplayNode::ioParameterStatusChanged(boolean input, int index,
 	// Set network dirty because changing userSpecifiedWhere requires 
 	// a call to DisplayNode::prepareToSend. 
 	//
-	} else if (status == ParameterArcRemoved) {
+	} else if (status == ParameterArkRemoved) {
 	    this->userSpecifiedWhere = FALSE;
 	} else if (status == ParameterSetValueToDefaulting) {
 	    this->userSpecifiedWhere = FALSE;

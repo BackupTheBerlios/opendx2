@@ -19,18 +19,28 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#if DXD_HAS_UNIX_SYS_INCLUDES
-#include <sys/times.h>
-#include <sys/param.h>
-#include <sys/signal.h>
 
-#if ibm6000
+#if defined(HAVE_SYS_TIMES_H)
+#include <sys/times.h>
+#endif
+
+#if defined(HAVE_SYS_PARAM_H)
+#include <sys/param.h>
+#endif
+
+#if defined(HAVE_SYS_SIGNAL_H)
+#include <sys/signal.h>
+#endif
+
+#if defined(HAVE_SYS_M_WAIT_H)
 #include <sys/m_wait.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_WAIT_H)
 #include <sys/wait.h>
 #endif
 
-#else
+#if defined(HAVE_SIGNAL_H)
 #include <signal.h>
 #endif
 
@@ -363,7 +373,7 @@ DXExecuteTaskGroup()
 		for (i=0; i<nprocs; i++)/* kill everyone */
 		    DosKill(pids[i]);
 #else
-#ifdef DXD_WIN
+#if defined(intelnt)
 		for (i=0; i<nprocs; i++)/* kill everyone */
 		    TerminateProcess((HANDLE)pids[i],-1);
 
@@ -378,7 +388,7 @@ DXExecuteTaskGroup()
 		    kill(pids[i], SIGKILL);
 		while (wait(&status)>=0)/* wait for all children to die */
 		    continue;		
-#endif    /*   DXD_WIN    */
+#endif 
 #endif    /*   DXD_HAS_OS2_CP    */
 		exit(0);		/* and exit */
 	    }

@@ -191,7 +191,7 @@ m_SuperviseState(Object *in, Object *out)
 
 	if (! DXExtractParameter(WINDOW_SIZE, TYPE_INT, 2, 1, &windowSz))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "windowsize");
+	    DXSetError(ERROR_DATA_INVALID, "windowsize");
 	    goto error;
 	}
 
@@ -230,7 +230,7 @@ m_SuperviseState(Object *in, Object *out)
 
 	if (DXGetObjectClass(MOUSE) != CLASS_ARRAY)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "mouse must be an array");
+	    DXSetError(ERROR_DATA_INVALID, "mouse must be an array");
 	    return ERROR;
 	}
 
@@ -238,7 +238,7 @@ m_SuperviseState(Object *in, Object *out)
 
 	if (t != TYPE_INT || r != 1 || s != sizeof(DXEvent)/DXTypeSize(TYPE_INT))
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		    "mouse must be an array of mouse events");
 	    return ERROR;
 	}

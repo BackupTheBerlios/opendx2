@@ -7,14 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _DXTensor_h
 #define _DXTensor_h
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "Base.h"
 
 

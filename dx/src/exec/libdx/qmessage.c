@@ -117,7 +117,7 @@ DXqflush()
 }
 
 
-#if !defined(pgcc)   &&  !defined(DXD_WIN)
+#if !defined(pgcc)   &&  !defined(intelnt)
 #if DXD_OS2_SYSCALL
 void _Optlink
 #else

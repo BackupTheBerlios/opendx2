@@ -8,7 +8,7 @@
 
 #include <dxconfig.h>
 
-
+#include "defines.h"
 
 #include <ctype.h>
 #include <fstream.h>
@@ -2826,7 +2826,7 @@ boolean MBMainWindow::saveMB(char *filenm)
     // 
     // Build/add the extension
     // 
-    ext = strrstr(file, MBExtension);
+    ext = strrstr(file, (char *)MBExtension);
     if (!ext || (strlen(ext) != len))
 	strcat(file,MBExtension);
 

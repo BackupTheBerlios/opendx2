@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showconnect.c,v 1.3 1999/05/10 15:45:30 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showconnect.c,v 1.4 2000/05/16 18:48:15 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -176,7 +176,7 @@ Field field_show_connections ( Field in_field, char *dummy, int dummysize )
 
     if ( ERROR == ( posi = (Array) DXGetComponentValue
                                        ( in_field, "positions" ) ) )
-        DXErrorGoto2 ( ERROR_INVALID_DATA, 
+        DXErrorGoto2 ( ERROR_DATA_INVALID, 
                        "#10240", /* missing %s component */ "\"positions\"" )
 
 
@@ -542,7 +542,7 @@ Error process_faces_loops_edges
     if((ERROR==(array=(Array)DXGetComponentValue(field,I_c)))|| \
        (!DXGetArrayInfo(array,&O_n,NULL,NULL,NULL,NULL))|| \
        (ERROR==(O_p=(int*)DXGetArrayData(array)))) \
-        DXErrorGoto(ERROR_INVALID_DATA,EE)
+        DXErrorGoto(ERROR_DATA_INVALID,EE)
 
     ERROR_GET_DAT ( "faces", face_ptr, nf, "#13180" /* bad faces */ );
     ERROR_GET_DAT ( "loops", loop_ptr, nl, "#13190" /* no loops */  );

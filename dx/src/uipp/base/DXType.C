@@ -7,16 +7,18 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#if defined(DXD_WIN) || defined(OS2)                  //SMH get correct hdr
+#if defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
-#else
+#endif
+#if defined(HAVE_STREAM_H)
 #include <stream.h>
 #endif
-#include "defines.h"
 #include "Strings.h"
 #include "List.h"
 #include "ListIterator.h"

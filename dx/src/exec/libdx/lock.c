@@ -9,15 +9,18 @@
 #include <dxconfig.h>
 
 
+
 /* on an MP machine, this file defines the lock routines.  on all other
  * machines, there are stubs at the end of this file which do nothing,
  * so this file doesn't need to be edited for single processor architectures.
  */
-
 #include <dx/dx.h>
-#ifdef DXD_HAS_UNIX_SYS_INCLUDES
+
+
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
+
 #include <stdlib.h>
 
 #ifdef DEBUGGED
@@ -27,6 +30,7 @@
 #include "../dpexec/status.h"
 #include "../dpexec/utils.h"
 #endif
+
 
 #if alphax
 #define lockcode
@@ -981,16 +985,3 @@ int DXfetch_and_add(int *p, int value, lock_type *l, int who)
 }
 
 #endif     /*     DXD_WIN     */
-
-
-
-
-
-
-
-
-
-
-
-
-

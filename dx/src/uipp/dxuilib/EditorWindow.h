@@ -7,12 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _EditorWindow_h
 #define _EditorWindow_h
 
-#include "defines.h"
 #include <Xm/Xm.h> 
 #include "List.h"
 #include "Command.h"
@@ -57,7 +58,7 @@ class NodeDefinition;
 class ToolSelector;
 class EditorWorkSpace;
 class VPERoot;
-class Arc;
+class Ark;
 class Node;
 class StandIn;
 class FindToolDialog;
@@ -105,8 +106,8 @@ class EditorWindow : public DXWindow
     // Private class data:
     //
     static boolean ClassInitialized;
-    static String  DefaultResources[];
-    static const char* SequenceNet;
+    static String DefaultResources[];
+    static String SequenceNet[];
     friend void EditorWindow_FileMenuMapCB(Widget, XtPointer, XtPointer);
     friend void EditorWindow_OptionsMenuMapCB(Widget, XtPointer, XtPointer);
     friend void EditorWindow_WindowMenuMapCB(Widget, XtPointer, XtPointer);
@@ -416,7 +417,7 @@ class EditorWindow : public DXWindow
 #if 00
     void newNetwork();
 #endif
-    void drawArcs();
+    void drawArks();
 
 
     //
@@ -725,7 +726,7 @@ class EditorWindow : public DXWindow
     // notify the a standIn that an arc has been added to the 
     // node
     //
-    void notifyArc(Arc *a);
+    void notifyArk(Ark *a);
 
     FindToolDialog* getFindDialog()
     {
@@ -811,7 +812,7 @@ class EditorWindow : public DXWindow
     //
     // Print the visual program as a PostScript file using geometry and not
     // bitmaps.  We set up the page so that it maps to the current workspace 
-    // and then as the StandIns and ArcStandIns to print themselves.  
+    // and then as the StandIns and ArkStandIns to print themselves.  
     // If the scale allows and the label_parameters arg is set, then 
     // label the parameters and display the values.
     // We return FALSE and issue and error message if an error occurs.

@@ -7,17 +7,17 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
 #include "IBMVersion.h"
-#include "defines.h"
 #include "ReceiverNode.h"
 #include "TransmitterNode.h"
 #include "ParameterDefinition.h"
 
-#include "Arc.h"
+#include "Ark.h"
 #include "ConfigurationDialog.h"
 #include "ListIterator.h"
 #include "ErrorDialogManager.h"
@@ -119,9 +119,9 @@ boolean ReceiverNode::setLabelString(const char *label)
     }
 
     boolean found = FALSE;
-    List *ia = (List*)this->getInputArcs(1);
+    List *ia = (List*)this->getInputArks(1);
     if ((ia) && (ia->getSize() > 0)) {
-	Arc *a = (Arc*)ia->getElement(1);
+	Ark *a = (Ark*)ia->getElement(1);
 	int dummy;
 	if (EqualString(a->getSourceNode(dummy)->getLabelString(), label))
 	    found = TRUE;
@@ -138,7 +138,7 @@ boolean ReceiverNode::setLabelString(const char *label)
 
 	if ((l) && (this->getNetwork()->isReadingNetwork() == FALSE)) {
 	    //
-	    // Before creating any Arcs, check for cycles.
+	    // Before creating any Arks, check for cycles.
 	    //
 	    iterator.setList(*l);
 	    while (n = (Node*)iterator.getNext()) {
@@ -164,7 +164,7 @@ boolean ReceiverNode::setLabelString(const char *label)
 		{
 		    found = TRUE;
 		    // link me to transmitter
-		    Arc *a = new Arc(n, 1, this, 1);
+		    Ark *a = new Ark(n, 1, this, 1);
 		}
 	    }
 	    delete l;
@@ -184,9 +184,9 @@ boolean ReceiverNode::setLabelString(const char *label)
 	    ErrorMessage("A %s with name \"%s\" already exists.", conflict, label);
 	    return FALSE;
 	}
-	List *l = (List*)this->getInputArcs(1);
+	List *l = (List*)this->getInputArks(1);
 	ASSERT (l->getSize() > 0);
-	Arc *a = (Arc*)l->getElement(1);
+	Ark *a = (Ark*)l->getElement(1);
 	int dummy;
 	TransmitterNode* tn = (TransmitterNode*)a->getSourceNode(dummy);
 	this->getNetwork()->fixupTransmitter(tn);
@@ -235,13 +235,13 @@ Node *ReceiverNode::getUltimateSourceNode(int* param_no)
     if (!tmtr)
 	return NULL;
 
-    List *arcList = (List*)tmtr->getInputArcs(1);
+    List *arcList = (List*)tmtr->getInputArks(1);
     int narcs = arcList->getSize();
     ASSERT(narcs <= 1);
     if (narcs == 0)
 	return NULL;
 
-    Arc *a = (Arc*)arcList->getElement(1);
+    Ark *a = (Ark*)arcList->getElement(1);
     ASSERT(a);
     int paramInd;
     Node *n = a->getSourceNode(paramInd);
@@ -267,10 +267,10 @@ void ReceiverNode::switchNetwork(Network *from, Network *to)
     // will keep us up-to-date.  If there is no arc, then it's tough to
     // know what name to use.
     //
-    List *l = (List*)this->getInputArcs(1);
+    List *l = (List*)this->getInputArks(1);
     boolean found = FALSE;
     if (l->getSize() > 0) {
-	Arc *a = (Arc*)l->getElement(1);
+	Ark *a = (Ark*)l->getElement(1);
 	int dummy;
 	if (EqualString(a->getSourceNode(dummy)->getLabelString(), label))   {
 	    found = TRUE;
@@ -299,7 +299,7 @@ void ReceiverNode::switchNetwork(Network *from, Network *to)
 		while (n = (Node*)iterator.getNext()) {
 		    if (EqualString(label, n->getLabelString())) {
 			// link me to transmitter
-			Arc *a = new Arc(n, 1, this, 1);
+			Ark *a = new Ark(n, 1, this, 1);
 			found = TRUE;
 		    }
 		}

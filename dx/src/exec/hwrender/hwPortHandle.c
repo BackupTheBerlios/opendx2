@@ -16,19 +16,23 @@
 #include <stdio.h>
 #include <math.h>
 
-#ifndef DXD_WIN
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 
-#if ibm6000
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/stat.h> 
+#endif
+
+#if defined(HAVE_SYS_LDR_H)
 #include <sys/ldr.h>
 #endif
 
-#if defined(sgi)
+#if defined(HAVE_GET_H)
 #include <get.h>
-#include <stdlib.h>
 #endif
+
+#include <stdlib.h>
 
 
 #include "hwDeclarations.h"

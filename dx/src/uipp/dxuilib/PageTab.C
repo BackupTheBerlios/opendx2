@@ -40,8 +40,10 @@ String PageTab::DefaultResources[] = {
 extern "C" int gethostname(char *address, int address_len);
 #endif
 
+#if 0
 #if defined(DXD_WIN)
 #include <winsock.h>
+#endif
 #endif
 
 //

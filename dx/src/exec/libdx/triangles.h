@@ -137,7 +137,7 @@
     /* round up to get iy1, iy2, iy3*/					$\
     iy1 = CEIL(y1), iy2 = CEIL(y2), iy3 = CEIL(y3);			$\
     if (iy1>iy2 || iy2>iy3) {						$\
-	DXSetError(ERROR_INVALID_DATA,					$\
+	DXSetError(ERROR_DATA_INVALID,					$\
 	    "position number %d, %d, or %d is invalid", v1, v2, v3);	$\
 	return NULL;							$\
     }									$\
@@ -269,7 +269,7 @@
     /* round up to get iy1, iy2, iy3*/					$\
     iy1 = CEIL(y1), iy2 = CEIL(y2), iy3 = CEIL(y3);			$\
     if (iy1>iy2 || iy2>iy3) {						$\
-	DXSetError(ERROR_INVALID_DATA,					$\
+	DXSetError(ERROR_DATA_INVALID,					$\
 	    "position number %d, %d, or %d is invalid", v1, v2, v3);	$\
 	return NULL;							$\
     }									$\

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _InteractorInstance_h
@@ -15,7 +17,6 @@
 
 #include <Xm/Xm.h> 
 
-#include "defines.h"
 #include "Strings.h"
 #include "Base.h"
 #include "InteractorNode.h"

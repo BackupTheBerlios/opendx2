@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 #include "Xm/PushB.h"
 #include "Xm/Form.h"
 
-#include "defines.h"
 #include "Application.h"
 #include "LoadMacroDialog.h"
 #include "MacroDefinition.h"

@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
 #include <Xm/Xm.h>
 
-#include "defines.h"
 #include "ImageFileDialog.h"
 #include "Application.h"
 #include "Strings.h"

@@ -51,7 +51,7 @@ struct arrayHandle
     /*
      * Path arrays only
      */
-    int *scr1, *scr2;
+    int *scratch1, *scratch2;
 };
 
 typedef struct arrayHandle *ArrayHandle;

@@ -12,40 +12,45 @@
 #include <dx/dx.h>
 #include <stdio.h>
 
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#define EADDRINUSE      WSAEADDRINUSE
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#else
-#include <sys/socket.h>
+#if defined(HAVE_IO_H)
+#include <io.h>
 #endif
 
-#ifdef DXD_WIN
-#include <io.h>
+#if defined(HAVE_WINIOCTL_H)
 #include <winioctl.h>
-#else
+#endif
+
+#if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
+#endif
+
+#if defined(HAVE_NETINET_IN_H)
 #include <sys/ioctl.h>
 #endif
 
-#if DXD_SOCKET_UNIXDOMAIN_OK
+#if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
 #endif
-#ifdef DXD_WIN
+
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
-#ifndef DXD_HAS_WINSOCKETS
+
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
+
 #include "sysvars.h"
 #include "distp.h"
 #include "config.h"
 #include "context.h"
 #include "obmodule.h"
-#if DXD_NEEDS_SYS_SELECT_H
+
+#if defined(HAVE_NETDB_H)
 #include <sys/select.h>
 #endif
 

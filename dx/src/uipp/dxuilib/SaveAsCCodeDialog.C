@@ -7,15 +7,15 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "UIConfig.h"
 
 #ifdef DXUI_DEVKIT
 
-#include "defines.h"
 #include "Strings.h"
 #include "Application.h"
 #include "Network.h"

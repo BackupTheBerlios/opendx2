@@ -1,3 +1,4 @@
+
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -24,15 +25,15 @@
 #define MAX(a,b) ((a)>(b)?(a):(b))
 #endif
 
-#ifndef HAS_S_ISDIR
+#if (HAS_S_ISDIR == 0)
 #define S_ISDIR(x) ((x) & (S_IFDIR))
 #endif
 
-#ifndef HAS_M_PI
+#if (HAS_M_PI == 0)
 #define M_PI       3.1415926535897931160E0  /*Hex  2^ 1 * 1.921FB54442D18 */
 #endif
 
-#ifndef HAS_M_SQRT2
+#if (HAS_M_SQRT2 == 0)
 #define M_SQRT2    1.4142135623730951455E0  /*Hex  2^ 0 * 1.6A09E667F3BCD */
 #endif
 
@@ -52,6 +53,43 @@
 
 #ifdef HAVE_SYSMP
 #define DXD_HAS_SYSMP 1
+#endif
+
+#if defined(HAVE__PIPE) && !defined(HAVE_PIPE)
+#define pipe(fds) _pipe(fds, 4096, O_BINARY)
+#endif
+
+#if defined(HAVE__ISATTY) && !defined(HAVE_ISATTY)
+#define isatty _isatty
+#endif
+
+#if defined(HAVE__UNLINK) && !defined(HAVE_UNLINK)
+#define unlink _unlink
+#endif
+
+#if defined(HAVE__POPEN) && !defined(HAVE_POPEN)
+#define popen _popen
+#endif
+
+#if defined(HAVE__PCLOSE) && !defined(HAVE_PCLOSE)
+#define pclose _pclose
+#endif
+
+#if defined(HAVE_STRICMP) && !defined(HAVE_STRCASECMP)
+#define strcasecmp stricmp
+#endif
+
+
+#if defined(HAVE_RAND) && !defined(HAVE_RANDOM)
+#define random rand
+#endif
+
+#if defined(HAVE_SRAND) && !defined(HAVE_SRANDOM)
+#define srandom srand
+#endif
+
+#if defined(HAVE__ALLOCA) && !defined(HAVE_ALLOCA)
+#define alloca _alloca
 #endif
 
 /* defined if we want to get processor status window */
@@ -111,7 +149,7 @@
 #define DXD_GAMMA_15BIT	2.0
 #define DXD_GAMMA_16BIT	2.0
 #define DXD_GAMMA_24BIT	2.0
-#define DXD_GAMMA_32BIT 2.0
+#define DXD_GAMMA_32BIT	2.0
 
 /* cannot load runtime-loadable modules after forking */
 #define DXD_NO_MP_RUNTIME 1
@@ -120,6 +158,15 @@
 
 /* program to run for remote shell */
 #define RSH "/usr/bin/rsh"
+
+#define IOCTL ioctl
+
+#if !defined(HAVE_STRRSTR)
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C"
+#endif
+char *strrstr(char *, char *);
+#endif
 
 #ifdef linux
 
@@ -137,8 +184,8 @@
 
 #ifdef cygwin
 
-#ifdef ERROR_INVALID_DATA
-#undef ERROR_INVALID_DATA
+#ifdef ERROR_DATA_INVALID
+#undef ERROR_DATA_INVALID
 #endif 
 
 #define DXD_SYSERRLIST_DECL 1
@@ -167,14 +214,16 @@
 /* default values for gamma correction */
 #undef DXD_GAMMA_8BIT
 #undef DXD_GAMMA_12BIT
+#undef DXD_GAMMA_15BIT
 #undef DXD_GAMMA_16BIT
 #undef DXD_GAMMA_24BIT
 #undef DXD_GAMMA_32BIT
 #define DXD_GAMMA_8BIT	1.0
 #define DXD_GAMMA_12BIT	1.0
+#define DXD_GAMMA_15BIT	1.0
 #define DXD_GAMMA_16BIT	1.0
 #define DXD_GAMMA_24BIT	2.0
-#define DXD_GAMMA_32BIT 2.0
+#define DXD_GAMMA_32BIT	2.0
 
 #endif   /* sgi */
 
@@ -212,17 +261,6 @@ typedef int * SelectPtr;
 /* system includes are in /usr/include/sys and /usr/include/unistd.h exists */
 #define DXD_HAS_UNIX_SYS_INCLUDES 1
 #define DXD_HAS_UNISTD_H 1
-
-/* default values for gamma correction */
-#undef DXD_GAMMA_8BIT
-#undef DXD_GAMMA_12BIT
-#undef DXD_GAMMA_16BIT
-#undef DXD_GAMMA_24BIT
-#define DXD_GAMMA_8BIT  2.0
-#define DXD_GAMMA_12BIT	2.0
-#define DXD_GAMMA_16BIT	2.0
-#define DXD_GAMMA_24BIT 2.0
-#define DXD_GAMMA_32BIT 2.0
 
 /* system includes support for the vfork() system call */
 #define DXD_HAS_VFORK 1
@@ -363,8 +401,6 @@ typedef int * SelectPtr;
 /* do we need to keep a parent wait-process around? */
 #define DXD_EXEC_WAIT_PROCESS 1
 
-/* defined if we want to get processor status window */
-#define DXD_PROCESSOR_STATUS 1
 
 /* does this system support sysconf(3)? */
 #define DXD_HAS_SYSCONF 1
@@ -476,6 +512,25 @@ union wait{
 
 #ifdef intelnt
 
+#if defined(alloca)
+#undef alloca
+#endif
+#define alloca _alloca
+
+#undef DXD_PROCESSOR_STATUS
+
+#undef IOCTL
+#define IOCTL(fd,cmd,buf) \
+	 ioctlsocket(fd,cmd,(char *)buf)
+
+
+#if defined(DXD_EXEC_WAIT_PROCESS)
+#undef DXD_EXEC_WAIT_PROCESS
+#endif
+
+#define DXD_EXEC_WAIT_PROCESS 0
+
+
 #define DXD_SYSERRLIST_DECL 1
 #define DXD_PRINTF_RETURNS_COUNT 1
 #define DXD_SOCKET_WINSOCKETS_OK 1
@@ -496,10 +551,6 @@ union wait{
 #define DXD_HAS_WINSOCKETS   1
 #define MAXHOSTNAMELEN       128
 #define MAXPATHLEN           255
-/*   
-	work-around for EXCEED socket/ fd in display
-*/
-#define	EXCEED_SOCKET	1 
 
 #define DXD_SOCKET_WINSOCKETS_OK 1
 
@@ -507,8 +558,8 @@ union wait{
 #define DXD_NON_UNIX_DIR_SEPARATOR 1
 #define DXD_NON_UNIX_ENV_SEPARATOR 1
 
-#define	_WINERROR_ 1
-#define _DLGSH_INCLUDED_  1  /* for scr1, scr2 in arrayhandles.h   */
+/* #define	_WINERROR_ 1 */
+/* #define _DLGSH_INCLUDED_  1  */
 
 #include <windows.h>
 #include <errno.h>
@@ -560,20 +611,8 @@ union wait{
 #include <process.h>
 #include <direct.h>
 
-/*
- * Socket identification stuff
- */
-extern  fd_set sockSet;
-#define SOCK_ZERO() FD_ZERO(&sockSet)
-#define SOCK_SETSOCKET(fd) FD_SET(fd,&sockSet)
-#define SOCK_CLRSOCKET(fd) FD_CLR(fd,&sockSet)
-#define SOCK_ISSOCKET(fd) FD_ISSET(fd,&sockSet)
-
 int gettablesize(void);
 int getopt(int,char**,char*);
-int os2_select();
-int 	_dxf_nu_pipe(int *fds);
-FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 
 #if defined(cygwin)
 #include <sys/types.h>
@@ -582,234 +621,28 @@ FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 #define open(path,oflag)  _open(path,oflag|O_BINARY&(~O_CREAT),0,mode"O_BINARY")
 #define creat(path,mode) _open(path, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode"O_BINARY")
 
-#else
-
-#define fopen(file,mode) _dxf_nu_fopen(file,mode"b")
-#define open(path,oflag)  _open(path,oflag|O_BINARY&(~O_CREAT),0)
-#define creat(path,mode) _open(path, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode"b")
-
 #endif
 
-#define close(fd) \
-	if(SOCK_ISSOCKET(fd))  \
-	{	\
-		SOCK_CLRSOCKET(fd);	\
-		closesocket(fd);	\
-	}	\
-	else	\
-	_close(fd);
-
-
-#define lseek(fd,offset,whence)	\
-	(SOCK_ISSOCKET(fd) ? \
-	 errno = EBADF,-1 : \
-	 _lseek(fd,offset,whence))
-
-
-#define read(fd,buff,count) \
-	(SOCK_ISSOCKET(fd) ? \
-	 _dxf_os2_recv(fd,(char *)buff,count,0) : \
-	 _read(fd,buff,count))
-
-#define write(fd,buff,count) \
-	(SOCK_ISSOCKET(fd) ? \
-	 _dxf_os2_send(fd,(char *)buff,count,0) : \
-	 _write(fd,buff,count))
-
-#define wait(status)  cwait(status, status, 0)
-#define getpid() _getpid()
-
-#define dup2(old,new)	\
-	(SOCK_ISSOCKET(new)  || SOCK_ISSOCKET(old) ? \
-	 errno = EBADF,-1 : \
-	 _dup2(old,new))
-
-
-#define pipe(fds)	_dxf_nu_pipe(fds)
-#define chdir(path)  _chdir(path)
-#define getcwd(buffer,size)  _getcwd(buffer,size)
-#define srand48(seed)  srand(seed)
-#define lrand48() ((rand() * RAND_MAX) + rand())
-#define drand48() ((double)lrand48()/((double)RAND_MAX*(double)RAND_MAX))
-#define trunc(value) ((float)((int)(value)))
-#define rint(value) ((float)((int)((value) + 0.5)))
-#define isatty(fd) _isatty(fd)
-
-
-
-#undef  select	/* this is also defined in tcpip/include/sys/select.h */
-#define select(count,rmask,wmask,emask,timeout)  \
-	os2_select(count,rmask,wmask,emask,timeout)
-
+#if 0
 #define fork	DXWinFork
+#endif
 
 #define bcopy(s,d,n)	memcpy((void *)(d),(void *)(s),(int)(n))
 #define bzero(s,n)		memset((void *)(s),0,(int)(n))
 #define bcmp(s1,s2,n)	memcmp((void *)(s1),(void *)(s2),(int)(n))
 
 
-/* these are #defined in winerr.h, which cause problems
- * with our enum of ERROR_INVALID_DATA, and the scr1 & scr2 are
- * used as local variables in the arrayhandles.h code.
- */
-#ifdef ERROR_INVALID_DATA
-#undef ERROR_INVALID_DATA
-#endif 
-
-#ifdef scr1
-#undef scr1
-#endif 
-
-#ifdef scr2
-#undef scr2
-#endif 
-
+#define wait(status)  cwait(status, status, 0)        
+#define trunc(value) ((float)((int)(value)))
+#define rint(value) ((float)((int)((value) + 0.5)))       
 
 #endif  /*   intelnt  */
-
-
-#ifdef os2
-
-/* do you need to declare the system error list explicitly? */
-
-#define DXD_OS_NON_UNIX      1
-#define DXD_SYSERRLIST_DECL 1
-
-/* do the printf-type routines return a pointer or a count? */
-#define DXD_PRINTF_RETURNS_COUNT 1
-
-#define DXD_SELECTPTR_DEFINED 1
-#define SelectPtr  fd_set*
-
-#define DXD_HAS_GETDTABLESIZE	1
-#define DXD_NEEDS_SYS_SELECT_H 1
-
-#define DXD_HAS_OS2_CP 1
-#define DXD_HAS_IBM_OS2_SOCKETS 1
-#define DXD_LACKS_UNIX_UID 1
-#define DXD_OS2_SYSCALL 1
-
-
-/* defining DXD_STANDARD_IEEE will solve some of the setjump/longjump problmes
-   in _compoper.c */
-#define DXD_STANDARD_IEEE 1
-
-#include <string.h>
-#include <stdio.h>
-
-/* fix ioctl and socket prototypes, use send/recv for read and write */
-#define BSD_SELECT 1
-#include <types.h>
-#include <sys/select.h>
-
-#define INCL_DOS
-#include <os2.h>
-#undef	LONG
-#undef	SHORT
-#undef  CHAR
-
-
-/* stolen from /usr/include/math.h */
-/* these exist in the C++ include file complex.h on os2 */
-#ifndef M_PI
-#define M_PI       3.1415926535897931160E0  /*Hex  2^ 1 * 1.921FB54442D18 */
-#endif
-#ifndef M_SQRT2
-#define M_SQRT2    1.4142135623730951455E0  /*Hex  2^ 0 * 1.6A09E667F3BCD */
-#endif
-
-
-#define herror psock_errno
-
-
-/*
- * file descriptor io functions for non unix (nu) platforms
- */
-/* Declarations files, required in OS2 */ 
-#include <io.h>
-#include <process.h>
-#include <direct.h>
-
-/*
- * Socket identification stuff
- */
-extern  fd_set sockSet;
-#define SOCK_ZERO() FD_ZERO(&sockSet)
-#define SOCK_SETSOCKET(fd) FD_SET(fd,&sockSet)
-#define SOCK_CLRSOCKET(fd) FD_CLR(fd,&sockSet)
-#define SOCK_ISSOCKET(fd) FD_ISSET(fd,&sockSet)
-
-int gettablesize(void);
-int getopt(int,char**,char*);
-int os2_select();
-int 	_dxf_nu_pipe(int *fds);
-FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
-
-#define fopen(file,mode) _dxf_nu_fopen(file,mode"b")
-#define open(path,oflag) \
-	_open(path,oflag|O_BINARY&(~O_CREAT),0)
-#define creat(path,mode) \
-	_open(path, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode)
-#define close(fd) \
-	(SOCK_ISSOCKET(fd) ? \
-	 SOCK_CLRSOCKET(fd),soclose(fd) : \
-	 _close(fd))
-#define lseek(fd,offset,whence)	\
-	(SOCK_ISSOCKET(fd) ? \
-	 errno = EBADF,-1 : \
-	 _lseek(fd,offset,whence))
-
-#define read(fd,buff,count) \
-	(SOCK_ISSOCKET(fd) ? \
-	 UxRecv(fd,(char *)buff,count,0) : \
-	 _read(fd,buff,count))
-#define write(fd,buff,count) \
-	(SOCK_ISSOCKET(fd) ? \
-	 UxSend(fd,(char *)buff,count,0) : \
-	 _write(fd,buff,count))
-#define wait(status) \
-	_wait(status)
-#define getpid() \
-	_getpid()
-#define dup2(old,new)	\
-	(SOCK_ISSOCKET(new)  || SOCK_ISSOCKET(old) ? \
-	 errno = EBADF,-1 : \
-	 _dup2(old,new))
-#define pipe(fds)	\
-	_dxf_nu_pipe(fds)
-#define chdir(path) \
-	_chdir(path)
-#define getcwd(buffer,size) \
-	_getcwd(buffer,size)
-#define srand48(seed) \
-	srand(seed)
-#define lrand48() \
-	((rand() * RAND_MAX) + rand())
-#define drand48() \
-	((double)lrand48()/((double)RAND_MAX*(double)RAND_MAX))
-#define trunc(value) \
-	((float)((int)(value)))
-#define rint(value) \
-	((float)((int)((value) + 0.5)))
-#define isatty(fd) \
-	_isatty(fd)
-#undef  select	/* this is also defined in tcpip/include/sys/select.h */
-#define select(count,rmask,wmask,emask,timeout) \
-	os2_select(count,rmask,wmask,emask,timeout)
-#define fork() (-1)
-
-#endif  /* os2 */
 
 /* Dec Alpha AXP OSF/1
  */
 #ifdef alphax
 
 /* supports full IEEE standard floating point, including under/overflow */
-/* undef is necessary for gcc on alpha, gets really upset otherwise */
-/* wondering why DXD_STANDARD_IEEE isn't 1 !!!  */
-#ifdef DXD_STANDARD_IEEE
-#undef DXD_STANDARD_IEEE
-#endif
 #define DXD_STANDARD_IEEE 0
 
 /* license manager active in this version */
@@ -874,7 +707,7 @@ FILE*	_dxf_nu_fopen(const char *filename, const char *mode);
 #define DXD_HW_XSERVER_MOVE_OK 0
 #endif
 
-#ifndef DXD_SELECTPTR_DEFINED
+#if !defined(DXD_SELECTPTR_DEFINED)
 typedef void * SelectPtr;
 #endif
 
@@ -883,135 +716,11 @@ typedef void * SelectPtr;
 #define DXD_FIXEDSIZES 1 
 #endif
 
-#if defined(DXD_ENABLE_SOCKET_POINTERS) && (defined(DXD_HAS_IBM_OS2_SOCKETS) || defined(DXD_HAS_WINSOCKETS))
-/*
- * Socket FILE pointer stuff 
- *
- * In OS2 and perhaps other operating systems sockets are implemented 
- * as a layered product. This means that fdopen does not work for creating 
- * a stream (file pointer) from a socket file descriptor. 
- *
- * The code below defines an SFILE (socket file pointer) union which can
- * passed to the the macros below. (This list can be expanded
- * as needed.) The source for the functions which are called is in os2.c
- * The macros and supporting functions provide stream like buffered io
- * for sockets.
- *
- * To use the SFILE points in c source, replace references to FILE with SFILE,
- * #define DXD_ENABLE_SOCKET_POINTERS (before including dx/dx.h) and be sure
- * to check that all functions using the resulting socket pointer have been
- * redefined below.
- *
- * XXX Currently this is only implemented for os2 and only for read only
- * sockets.
- * 
- */
-#ifdef DXD_HAS_WINSOCKETS
-#include <winsock.h>
-#else
-#include <sys/socket.h>
-#endif
-
-typedef struct SOCKETS {
-    unsigned long	_count;		/* avoid _count field */
-    unsigned long	isasocket;
-    char		buffer[BUFSIZ];
-    char		*nextchar;
-    unsigned long	fileno;
-} DX_SOCKET;
-	
-typedef union SFILES {
-	FILE	file;
-	DX_SOCKET	socket;
-} SFILE;
-
-
-/*
- * Socket identification stuff
- */
-#define SOCK_ISSOCKET_SFILE(sfile) ((sfile)->socket.isasocket == SOCKET_MAGIC_NUMBER) 
-#define SOCKET_MAGIC_NUMBER 0xFA1CEFD
-	
-
-/*
- * file POINTER io functions for non unix (nu) platforms
- */
-
-#define fileno(sfile) \
-	(SOCK_ISSOCKET_SFILE(sfile) ? \
-	 (sfile)->socket.fileno : \
-	 _dxf_nu_fileno(&(sfile)->file))
-#define fdopen(fd, mode) \
-	(SOCK_ISSOCKET(fd) ? \
-	 _dxf_sock_fdopen(fd,mode) : \
-	 _fdopen(fd,mode))
-#define fclose(sfile) \
-	_dxf_nu_fclose(sfile)
-#define GETC(sfile) \
-	(SOCK_ISSOCKET_SFILE(sfile) ? \
-	 _dxf_sock_getc(&(sfile)->socket) : \
-	 getc(&(sfile)->file))
-#ifdef	DXD_HAS_WINSOCKETS
-#define CHAR_READY(sfile) \
-	(SOCK_ISSOCKET_SFILE(sfile) ? \
-	 ((sfile)->socket._count > 0) : \
-	 F_CHAR_READY(sfile))
-#else
-#define CHAR_READY(sfile) \
-	(SOCK_ISSOCKET_SFILE(sfile) ? \
-	 ((sfile)->socket._count > 0) : \
-	 F_CHAR_READY(sfile))
-#endif
-
-int 	_dxf_nu_fileno(FILE* file);
-int 	_dxf_nu_fclose(SFILE* file);
-
-DX_SOCKET*	_dxf_sock_fdopen(int fd, char* mode);
-int 	_dxf_sock_getc(SOCKET *file);
-
-#else /* defined(DXD_ENABLE_SOCKET_POINTERS) && DXD_HAS_IBM_OS2_SOCKETS */
-
-/*
- * if the code is being compiled on an architecture which will not use the 
- * SFILE structure, map it back to the default FILE.
- */
-#define SFILE FILE
-
 #define CHAR_READY(fp) F_CHAR_READY(fp)
 #ifdef GETC
 #undef GETC
 #endif
 #define GETC(file) getc(file)
-
-#endif
-
-#if !defined(DXD_HAS_IBM_OS2_SOCKETS) && !defined(DXD_HAS_WINSOCKETS)
-#define IOCTL ioctl
-#endif
-
-#if DXD_HAS_IBM_OS2_SOCKETS
-/*
- * OS2 sockets require 4 parameters (unix requires 3) so the code now calls
- * IOCTL which expand to one of the following depending on the use of 
- * OS2 sockets.
- */
-
-#define IOCTL(fd,cmd,buf) \
-	(SOCK_ISSOCKET(fd) ? \
-	 ioctl(fd,cmd,(char *)buf, \
-              (cmd == FIONREAD || cmd == FIONBIO) ? sizeof (int) : 0) : \
-	 -1)
-
-#endif
-#ifdef	DXD_HAS_WINSOCKETS
-#define IOCTL(fd,cmd,buf) \
-	(SOCK_ISSOCKET(fd) ? \
-	 ioctlsocket(fd,cmd,(char *)buf, \
-              (cmd == FIONREAD || cmd == FIONBIO) ? sizeof (int) : 0) : \
-	 -1)
-
-
-#endif
 
 #endif  /* whole file _DXI_ARCH_H   */
 

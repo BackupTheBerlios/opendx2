@@ -190,7 +190,7 @@ Error m_ChangeGroupMember(Object *in, Object *out)
     
     /* this is a strange combination - cut this off here */
     if (byname && grouptype == CLASS_SERIES) {
-	DXSetError(ERROR_INVALID_DATA, "cannot get/set a series member by name");
+	DXSetError(ERROR_DATA_INVALID, "cannot get/set a series member by name");
 	goto error;
     }
     

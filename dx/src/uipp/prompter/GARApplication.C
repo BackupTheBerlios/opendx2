@@ -7,10 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "defines.h"
 #include <Xm/Xm.h>
 #include <Xm/Label.h>
 #include <X11/cursorfont.h>
@@ -23,7 +24,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <signal.h>
@@ -523,20 +524,17 @@ void GARApplication::destroyDumpedObjects()
 }
 
 #ifdef DXD_OS_NON_UNIX
-#define STATFILE(a,b) _stat(a,b)
-#define STATDECL _stat
 #define ISGOOD(a) ((a&_S_IFREG)&&((a&_S_IFDIR)==0))
 #else
-#define STATFILE(a,b) stat(a,b)
-#define STATDECL stat
 #define ISGOOD(a) ((a&S_IFREG)&&((a&(S_IFDIR|S_IFCHR|S_IFBLK))==0))
 #endif
+
 char *GARApplication::FileFound (const char *fname, const char *ext)
 {
-struct STATDECL statb;
+struct STATSTRUCT statb;
 char tmpstr[256];
 
-    if ((STATFILE(fname, &statb) != -1) && (ISGOOD(statb.st_mode)))
+    if ((STAT(fname, &statb) != -1) && (ISGOOD(statb.st_mode)))
 	return DuplicateString(fname);
 
     if ((ext) && (ext[0])) {
@@ -545,7 +543,7 @@ char tmpstr[256];
 	else
 	    sprintf (tmpstr, "%s.%s", fname, ext);
 
-	if ((STATFILE(tmpstr, &statb) != -1) && (ISGOOD(statb.st_mode)))
+	if ((STAT(tmpstr, &statb) != -1) && (ISGOOD(statb.st_mode)))
 	    return DuplicateString(tmpstr);
     }
     return NUL(char *);

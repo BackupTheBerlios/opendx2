@@ -11,8 +11,15 @@
 
 #include "dx/dx.h"
 #include <stdio.h>
+
+#if defined(HAVE_STRING_H)
 #include <string.h>
+#endif
+
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
+#endif
+
 #include <math.h>
 #define MAX_PARAMS 21
 #define MAX_RANK 16
@@ -254,7 +261,7 @@ Error parse_dx(Object dxobject, int *index,Matrix *mat,char *name,Point *box)
 	 break;
     }
     default:
-	DXSetError(ERROR_INVALID_DATA,"not recognized type class"); 
+	DXSetError(ERROR_DATA_INVALID,"not recognized type class"); 
 	goto error;
   }
 
@@ -288,7 +295,7 @@ Error write_solid(Object dxobject,int triangle)
   if (!DXGetArrayInfo(a,&np,&type,NULL,&rank,shape))
     goto error;
   if (rank != 1 || shape[0] < 2){
-    DXSetError(ERROR_INVALID_DATA,"positions must be 3-d or 2-d\n");
+    DXSetError(ERROR_DATA_INVALID,"positions must be 3-d or 2-d\n");
     goto error;
   }
   if (shape[0]==2){
@@ -557,7 +564,7 @@ static Error write_elevation(Object dxobject)
     if (!DXGetArrayInfo(a,&data_np,NULL,NULL,NULL,NULL))
       goto error;
     if (data_np!=np){	
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 	"data not dep positions, can't use as height field");
       goto error;
     }

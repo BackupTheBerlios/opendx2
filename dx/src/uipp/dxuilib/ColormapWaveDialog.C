@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include <X11/Xlib.h>
@@ -26,7 +28,6 @@
 #include <Xm/RowColumn.h>
 #include <Xm/Label.h>
 
-#include "defines.h"
 #include "Application.h"
 #include "ColormapWaveDialog.h"
 #include "ColormapEditor.h"

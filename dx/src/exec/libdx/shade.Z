@@ -842,7 +842,7 @@ _dxfLight_Shade(Light l, struct shade *shade)
 	    DXErrorReturn(ERROR_INTERNAL, "invalid light object");
 	}
     } else {
-	DXErrorReturn(ERROR_INVALID_DATA,
+	DXErrorReturn(ERROR_DATA_INVALID,
 		    "only ambient and distant lights allowed");
     }
     return OK;
@@ -1791,7 +1791,7 @@ _GatherLights(LightList lightlist, Object obj, Matrix *stack, Camera cam)
 	    }
 	    else
 	    {
-		DXErrorReturn(ERROR_INVALID_DATA,
+		DXErrorReturn(ERROR_DATA_INVALID,
 			"only ambient and distant lights allowed");
 	    }
 

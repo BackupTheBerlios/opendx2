@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ImageWindow_h
@@ -14,7 +16,6 @@
 
 #include <X11/Intrinsic.h>
 #include <Xm/Xm.h>
-#include "defines.h"
 #include "DXWindow.h"
 #include "NoUndoImageCommand.h"
 #include "ToggleButtonInterface.h"

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,7 +16,6 @@
 #include <Xm/Xm.h>
 #include <Xm/Form.h>
 
-#include "defines.h"
 #include "DialInteractor.h"
 #include "SetScalarAttrDialog.h"
 #include "InteractorStyle.h"
@@ -78,7 +79,7 @@ void DialInteractor::initialize()
 
 static Widget CreateDialComponent(Widget,  boolean, double, double,
 				     double, double, int,   XtCallbackProc,   
-				     int, caddr_t) ;
+				     int, void *) ;
 
 //
 // Allocate a dial for the given instance.
@@ -128,7 +129,7 @@ Widget DialInteractor::createInteractivePart(Widget form)
 		    si->getDecimals(1),
 		    (XtCallbackProc)DialInteractor_DialCB,
 		    1,
-		    (caddr_t)this);
+		    (void *)this);
     XtVaSetValues(this->numberWidget,
 		XmNleftAttachment, 	XmATTACH_FORM,
 		XmNleftOffset, 		5,
@@ -151,7 +152,7 @@ Widget DialInteractor::createInteractivePart(Widget form)
 		    si->getDecimals(1),
 		    (XtCallbackProc)DialInteractor_DialCB,
 		    1,
-		    (caddr_t)this);
+		    (void *)this);
     XtVaSetValues(this->dialWidget,
 		XmNleftAttachment, XmATTACH_FORM,
 		XmNrightAttachment, XmATTACH_FORM,
@@ -176,7 +177,7 @@ static Widget CreateDialComponent(Widget  parent,
 				     int     decimalPlaces,
 				     XtCallbackProc valueChangedCallback,
 				     int     comp_index,
-				     caddr_t clientData)
+				     void * clientData)
 				     
 {
     Widget widget;
@@ -215,7 +216,7 @@ Widget createNumberComponent(Widget  parent,
                              int     decimalPlaces,
 			     XtCallbackProc valueChangedCallback,
 			     int     comp_index,
-			     caddr_t clientData)
+			     void * clientData)
 {
     Widget widget;
     int    n;

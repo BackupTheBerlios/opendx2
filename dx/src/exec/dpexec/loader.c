@@ -289,7 +289,7 @@ PFI DXLoadObjFile(char *fname, char *envvar)
     func = load(foundname, L_NOAUTODEFER, "."); 
     /* func = loadAndInit(foundname, L_NOAUTODEFER, "."); */
     if (func == NULL) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "cannot load file `%s', %s", foundname, sys_errlist[errno]);
 	DXFree((Pointer)foundname);
 	DXunlock(ltl, 0);
@@ -298,7 +298,7 @@ PFI DXLoadObjFile(char *fname, char *envvar)
     
     DXDebug("L", "ready to call loadbind");
     if (loadbind(0, (void *)DXinitdx, (void *)func) < 0) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "cannot resolve symbols in file `%s', %s", 
 		   fname, sys_errlist[errno]);
 	DXFree((Pointer)foundname);
@@ -374,7 +374,7 @@ Error DXUnloadObjFile(char *fname, char *envvar)
 
     if (unload((void *)lp->h) < 0) { 
     /* if (terminateAndUnload((void *)lp->h) < 0) { */
-	DXSetError(ERROR_INVALID_DATA, "cannot unload file '%s', %s", 
+	DXSetError(ERROR_DATA_INVALID, "cannot unload file '%s', %s", 
 		   foundname, sys_errlist[errno]);
 	DXFree((Pointer)foundname);
 	DXunlock(ltl, 0);
@@ -485,13 +485,13 @@ PFI DXLoadObjFile(char *fname, char *envvar)
      */
     handle = shl_load(foundname, BIND_IMMEDIATE, 0L);
     if (handle == NULL) {
-	DXSetError(ERROR_INVALID_DATA, "cannot load file '%s'", foundname);
+	DXSetError(ERROR_DATA_INVALID, "cannot load file '%s'", foundname);
 	DXFree((Pointer)foundname);
 	return NULL;
     }
 
     if (shl_findsym(&handle, "DXEntry", TYPE_PROCEDURE, (long *)&func) < 0) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "cannot find entry point 'DXEntry' in file '%s'", foundname);
 	DXFree((Pointer)foundname);
 	return NULL;
@@ -555,7 +555,7 @@ Error DXUnloadObjFile(char *fname, char *envvar)
     }
 
     if (shl_unload(lp->h) < 0) {
-	DXSetError(ERROR_INVALID_DATA, "cannot unload file '%s', %s", 
+	DXSetError(ERROR_DATA_INVALID, "cannot unload file '%s', %s", 
 		   foundname, sys_errlist[errno]);
 	DXFree((Pointer)foundname);
 	return ERROR;
@@ -623,16 +623,16 @@ PFI DXLoadObjFile(char *fname, char *envvar)
     if (handle == NULL) {
 	char *cp = dlerror();
 	if (cp)
-	    DXSetError(ERROR_INVALID_DATA, "cannot load file '%s', %s", 
+	    DXSetError(ERROR_DATA_INVALID, "cannot load file '%s', %s", 
 		       fname, cp);
 	else
-	    DXSetError(ERROR_INVALID_DATA, "cannot load file '%s'", fname);
+	    DXSetError(ERROR_DATA_INVALID, "cannot load file '%s'", fname);
 	DXFree((Pointer)foundname);
 	return NULL;
     }
 
     if ((func = (PFI)dlsym(handle, "DXEntry")) == NULL) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "cannot find entry point 'DXEntry' in file '%s'", foundname);
 	DXFree((Pointer)foundname);
 	return NULL;
@@ -696,7 +696,7 @@ Error DXUnloadObjFile(char *fname, char *envvar)
     }
 
     if (dlclose(lp->h) < 0) {
-	DXSetError(ERROR_INVALID_DATA, "cannot unload file '%s', %s", 
+	DXSetError(ERROR_DATA_INVALID, "cannot unload file '%s', %s", 
 		   foundname, sys_errlist[errno]);
 	DXFree((Pointer)foundname);
 	return ERROR;
@@ -720,8 +720,6 @@ Error DXUnloadObjFile(char *fname, char *envvar)
 
 #define PFI   FARPROC
 
-extern int _dxd_PCLoadModsOK;
-
 
 PFI DXLoadObjFile(char *fname, char *envvar)
 {
@@ -730,11 +728,6 @@ PFI DXLoadObjFile(char *fname, char *envvar)
     FARPROC	func;
     char *foundname = NULL;
     struct loadtable *lp = NULL;
-
-    if (!_dxd_PCLoadModsOK) {
-	DXMessage(ERROR_INVALID_DATA, "This registration key does not support loading user modules.");
-	return NULL;
-    }
 
     /* look at DXMODULES here and if you can't find the file and it
      * doesn't start with '/', start prepending dirnames until you find it
@@ -765,7 +758,7 @@ PFI DXLoadObjFile(char *fname, char *envvar)
      */
     hinst = LoadLibrary(foundname);
     if (hinst == NULL) {
-	DXSetError(ERROR_INVALID_DATA, "cannot load file '%s'", foundname);
+	DXSetError(ERROR_DATA_INVALID, "cannot load file '%s'", foundname);
 	DXFree((Pointer)foundname);
 	return NULL;
     }
@@ -774,7 +767,7 @@ PFI DXLoadObjFile(char *fname, char *envvar)
 
     func = GetProcAddress(hinst, szStr);
     if (func == NULL) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "cannot load file `%s', %s", foundname, szStr);
 	DXFree((Pointer)foundname);
 	return NULL;

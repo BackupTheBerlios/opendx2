@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ModuleMessagingNode_h
 #define _ModuleMessagingNode_h
 
 
-#include "defines.h"
 #include "Node.h"
 
 

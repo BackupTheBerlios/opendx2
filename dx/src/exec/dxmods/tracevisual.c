@@ -234,7 +234,7 @@ DXVisualizeMemory(int which, int procid)
     if (which & 4) {			/* local memory */
 
 	if (!DXGetMemorySize(NULL, NULL, &i) || i == 0) {
-	    DXSetError(ERROR_INVALID_DATA, "local memory not supported");
+	    DXSetError(ERROR_DATA_INVALID, "local memory not supported");
 	    return ERROR;
 	}
 	
@@ -298,7 +298,7 @@ DXVisualizeMemory(int which, int procid)
 	if (d_local[i] && d_local[i]->refresh)
 	    report_memory(d_local[i]);
 
-#ifndef DXD_WIN
+#if !defined(intelnt)
     signal(SIGALRM, sigcatch);
     alarm(NSECONDS);    
 #endif
@@ -887,7 +887,7 @@ void sigcatch()
 	report_memory(d_large);
     
 
-#ifndef DXD_WIN
+#if !defined(intelnt)
     signal(SIGALRM, sigcatch);
     alarm(NSECONDS);
 #endif

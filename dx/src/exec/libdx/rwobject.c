@@ -12,17 +12,23 @@
 
 #include <dx/dx.h>
 #include <string.h>
-#if DXD_HAS_UNIX_SYS_INCLUDES
+
+#if defined(HAVE_SYS_TYES_H)
 #include <sys/types.h>
+#endif
+
+#if defined(HAVE_SYS_TYES_H)
 #include <sys/signal.h>
-#else
-#ifdef DXD_WIN
-#include <sys/types.h>
-#else
+#endif
+
+#if defined(HAVE_TYES_H)
 #include <types.h>
 #endif
+
+#if defined(HAVE_SIGNAL_H)
 #include <signal.h>
 #endif
+
 #include <setjmp.h>
 #include "diskio.h"
 
@@ -629,7 +635,7 @@ Class ConvertClassIn(int i, int version)
 	break;
     }
     
-    DXSetError(ERROR_INVALID_DATA, "Unrecognized Object Class");
+    DXSetError(ERROR_DATA_INVALID, "Unrecognized Object Class");
     return -1;
 }
 
@@ -677,7 +683,7 @@ Type ConvertTypeIn(int i, int version)
 	break;
     }
 
-    DXSetError(ERROR_INVALID_DATA, "Unrecognized Array Type");
+    DXSetError(ERROR_DATA_INVALID, "Unrecognized Array Type");
     return -1;
 }
 
@@ -714,7 +720,7 @@ Category ConvertCatIn(int i, int version)
 	break;
     }
 
-    DXSetError(ERROR_INVALID_DATA, "Unrecognized Array Category");
+    DXSetError(ERROR_DATA_INVALID, "Unrecognized Array Category");
     return -1;
 }
 
@@ -769,7 +775,7 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
 	    DXDebug("H", "found duplicate at %5d", dup);
 #endif
 	if (dup == HASH_INPROGRESS) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "a container object has itself as a child object causing a recursive loop while trying to do a traversal");
 	    return ERROR;
 	}
@@ -784,7 +790,7 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
       case CLASS_MIN:
       case CLASS_MAX:
       case CLASS_DELETED:
-	DXSetError(ERROR_INVALID_DATA, "bad object class");
+	DXSetError(ERROR_DATA_INVALID, "bad object class");
 	return ERROR;
     }
 
@@ -866,7 +872,7 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
 	    break;
 
 	  default:
-	    DXSetError(ERROR_INVALID_DATA, "unrecognized array subclass");
+	    DXSetError(ERROR_DATA_INVALID, "unrecognized array subclass");
 	    return ERROR;
 	}
 	break;
@@ -940,13 +946,13 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
 	    break;
 		
 	  default:
-	    DXSetError(ERROR_INVALID_DATA, "unrecognized group subclass");
+	    DXSetError(ERROR_DATA_INVALID, "unrecognized group subclass");
 	    return ERROR;
 	}
 	break;
 
       default:
-	DXSetError(ERROR_INVALID_DATA, "unrecognized object class");
+	DXSetError(ERROR_DATA_INVALID, "unrecognized object class");
 	return ERROR;
     }
 
@@ -1926,7 +1932,7 @@ Object _dxfImportBin(char *dataset)
 
       case DISKVERSION_E:
 	if (flp->byteorder != MSB_MACHINE) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "byte order mismatch, can't read binary data file");
 	    DXFree(header_base);
 	    return NULL;
@@ -1934,7 +1940,7 @@ Object _dxfImportBin(char *dataset)
 	break;
 
       default:
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		 "unsupported version number, can't read file");
 	DXFree(header_base);
 	return NULL;
@@ -1942,7 +1948,7 @@ Object _dxfImportBin(char *dataset)
 
     /* blocking size, in bytes */
     if(flp->blocksize != oneblock) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		 "blocksize doesn't match, can't read file");
 	DXFree(header_base);
 	return NULL;
@@ -2174,7 +2180,7 @@ Object _dxfExportBin(Object o, char *dataset)
 }
 
 
-#if defined(DXD_HAS_OS2_CP) || defined(DXD_WIN)
+#if defined(DXD_HAS_OS2_CP) || defined(intelnt)
 
 #define savecontext() 0
 #define restorecontext() 0
@@ -2205,7 +2211,7 @@ static int savecontext()
     i = setjmp(badsock);
     if (i != 0) {
 	signal(SIGPIPE, oldsignal);
-	DXSetError(ERROR_INVALID_DATA, "connection to remote process closed");
+	DXSetError(ERROR_DATA_INVALID, "connection to remote process closed");
     }
 
     return i;
@@ -2315,7 +2321,7 @@ Object _dxfImportBin_FP(int fd)
 	    if (trying_inverted)
 		needswab++;
 	    else {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "byte order mismatch, can't read binary data");
 		goto error;
 	    }
@@ -2327,14 +2333,14 @@ Object _dxfImportBin_FP(int fd)
       case DISKVERSION_B:
       case DISKVERSION_A:
       default:
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "unsupported version number, can't read file");
 	goto error;
     }
 
     /* blocking size, in bytes */
     if(flp->blocksize != oneblock) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		 "blocksize doesn't match, can't read file");
 	goto error;
     }

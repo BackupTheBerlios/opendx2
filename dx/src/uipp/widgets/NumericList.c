@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/defines.h"
 
 /*
  */
@@ -93,43 +94,43 @@ static XtResource resources[] =
     {
 	XmNtuples,XmCValue,XmRInt,sizeof(int),
 	XtOffset(XmNumericListWidget,numeric_list.tuples),
-	XmRImmediate, (caddr_t)3
+	XmRImmediate, (XtPointer)3
     },
     {
 	/* This should be a readonly resource */
 	XmNreadonlyVectors,XmCVector,XmRVectorList,sizeof(VectorList),
 	XtOffset(XmNumericListWidget,numeric_list.local_vectors),
-	XmRImmediate, (caddr_t)-1
+	XmRImmediate, (XtPointer)-1
     },
     {
 	XmNvectors,XmCVector,XmRVectorList,sizeof(VectorList),
 	XtOffset(XmNumericListWidget,numeric_list.vectors),
-	XmRImmediate, (caddr_t)-1
+	XmRImmediate, (XtPointer)-1
     },
     {
 	XmNvectorCount,XmCValue,XmRInt,sizeof(int),
 	XtOffset(XmNumericListWidget,numeric_list.vector_count),
-	XmRImmediate, (caddr_t)1
+	XmRImmediate, (XtPointer)1
     },
     {
 	XmNvectorSpacing,XmCValue,XmRDimension,sizeof(Dimension),
 	XtOffset(XmNumericListWidget,numeric_list.vector_spacing),
-	XmRImmediate, (caddr_t)10
+	XmRImmediate, (XtPointer)10
     },
     {
 	XmNdecimalPlaces,XmCValue,XmRPointer,sizeof(int *),
 	XtOffset(XmNumericListWidget,numeric_list.decimal_places),
-	XmRImmediate, (caddr_t)NULL
+	XmRImmediate, (XtPointer)NULL
     },
     {
-	XmNselectCallback,XmCCallback,XmRCallback,sizeof(caddr_t),
+	XmNselectCallback,XmCCallback,XmRCallback,sizeof(XtPointer),
 	XtOffset(XmNumericListWidget,numeric_list.select_callback),
-	XmRCallback,(caddr_t)NULL
+	XmRCallback,(XtPointer)NULL
     },
     {
 	XmNminColumnWidth,XmCMinColumnWidth,XmRDimension,sizeof(Dimension),
 	XtOffset(XmNumericListWidget,numeric_list.min_column_width),
-	XmRImmediate, (caddr_t)20
+	XmRImmediate, (XtPointer)20
     },
 };
 

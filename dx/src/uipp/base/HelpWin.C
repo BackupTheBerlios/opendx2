@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "defines.h"
+#include "../base/defines.h"
 
 #include "Strings.h"
 #include "HelpWin.h"
@@ -18,7 +18,6 @@
 #include "DictionaryIterator.h"
 
 #include "help.h"
-#include "defines.h"
 
 #include <stdio.h>
 
@@ -327,18 +326,18 @@ Widget HelpWin::createWorkArea(Widget parent)
      */
 #ifdef OS2
     XtAddEventHandler
-	(panedWindow, StructureNotifyMask, False, (XtEventHandler)ResizeTheWindow, (caddr_t)this->multiText);
+	(panedWindow, StructureNotifyMask, False, (XtEventHandler)ResizeTheWindow, (XtPointer)this->multiText);
 #else
     XtAddEventHandler
-        (panedWindow, StructureNotifyMask, False, ResizeTheWindow, (caddr_t)this->multiText);
+        (panedWindow, StructureNotifyMask, False, ResizeTheWindow, (XtPointer)this->multiText);
 #endif
 
 #ifdef OS2
     XtAddCallback
-	(goBackButton, XmNactivateCallback, (XtCallbackProc)GoBackCB, (caddr_t)this->multiText);
+	(goBackButton, XmNactivateCallback, (XtCallbackProc)GoBackCB, (XtPointer)this->multiText);
 #else
     XtAddCallback
-	(goBackButton, XmNactivateCallback, GoBackCB, (caddr_t)this->multiText);
+	(goBackButton, XmNactivateCallback, GoBackCB, (XtPointer)this->multiText);
 #endif
 
     /*
@@ -354,7 +353,7 @@ Widget HelpWin::createWorkArea(Widget parent)
 	argcnt = 0;
 	XtSetArg(args[argcnt], XmNwidth,  1); argcnt++;
 	XtSetArg(args[argcnt], XmNheight, 1); argcnt++;
-	menuShell = CreatePopupMenu(scrolledWindow);
+	menuShell = DXCreatePopupMenu(scrolledWindow);
     }
 
     /*

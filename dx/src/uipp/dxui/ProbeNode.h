@@ -7,15 +7,15 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ProbeNode_h
 #define _ProbeNode_h
 
 
-#include "UIConfig.h"
 
-#include "defines.h"
 #include "Node.h"
 
 

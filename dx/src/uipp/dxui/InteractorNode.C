@@ -7,14 +7,16 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 #include <stdio.h>
-#if !defined(DXD_WIN)
+
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <ctype.h>
  
-#include "defines.h"
 #include "Application.h"
 #include "EditorWindow.h"
 #include "ErrorDialogManager.h"
@@ -28,7 +30,7 @@
 #include "Network.h"
 #include "DXApplication.h"
 #include "Parameter.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "ListIterator.h"
 #include "TransmitterNode.h"
 #include "ReceiverNode.h"
@@ -106,7 +108,7 @@ void InteractorNode::ioParameterStatusChanged(boolean input, int index,
 
     this->deferVisualNotification();
 
-    if (status & Node::ParameterArcChanged) { 
+    if (status & Node::ParameterArkChanged) { 
 	if (input) {
 	    if (index == this->getLabelParameterIndex())
 		doit = TRUE;
@@ -127,7 +129,7 @@ void InteractorNode::ioParameterStatusChanged(boolean input, int index,
 	    //
 	    int i, narcs = 0, outputs = this->getOutputCount();
 	    for (i=1 ; i<=outputs ; i++) {
-		List *arcs = (List*)this->getOutputArcs(i);
+		List *arcs = (List*)this->getOutputArks(i);
 		narcs += arcs->getSize();
 	    }
 	    //
@@ -141,7 +143,7 @@ void InteractorNode::ioParameterStatusChanged(boolean input, int index,
 	    //   	a) 1 to having 0 arcs
 	    //	b) 2 to having 1 arc 
 	    //
-	    boolean added = status == Node::ParameterArcAdded;
+	    boolean added = status == Node::ParameterArkAdded;
 	    if ((narcs <= 1) || (added && narcs == 2))
 		doit = TRUE;
 	} 
@@ -166,7 +168,7 @@ void InteractorNode::ioParameterStatusChanged(boolean input, int index,
 //
 char *InteractorNode::getOutputDerivedLabel()
 {
-    Arc *the_arc;
+    Ark *the_arc;
     char *s = NULL;
     int i, outputs = this->getOutputCount();
     int	total_arcs = 0;
@@ -176,10 +178,10 @@ char *InteractorNode::getOutputDerivedLabel()
     // Count the total number of arcs and save the first arc found.
     //
     for (i=1 ; i<=outputs ; i++) {
-	List *arcs = (List*)this->getOutputArcs(i);
+	List *arcs = (List*)this->getOutputArks(i);
 	int narcs = arcs->getSize();
 	if ((narcs == 1) && total_arcs == 0)
-	   the_arc = (Arc*)arcs->getElement(1);
+	   the_arc = (Ark*)arcs->getElement(1);
 	total_arcs += narcs;
     }
 

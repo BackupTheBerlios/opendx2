@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 //
-// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/fieldinterpClass.X,v 1.2 1999/05/10 15:45:43 gda Exp $
+// $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/libdx/fieldinterpClass.X,v 1.3 2000/05/16 18:48:53 gda Exp $
 //
 
 typedef struct fieldinterpolator *FieldInterpolator;
@@ -59,13 +59,13 @@ FieldInterpolator _dxf_CopyFieldInterpolator(FieldInterpolator,
 									      \
     at = DXGetComponentAttribute(field, "connections", "element type");	      \
     if (! at) {								      \
-	DXSetError(ERROR_INVALID_DATA,					      \
+	DXSetError(ERROR_DATA_INVALID,					      \
 		"#10255", "connections", "element type");		      \
 	return 0;							      \
     }									      \
 									      \
     if (DXGetObjectClass(at) != CLASS_STRING) {				      \
-	DXSetError(ERROR_INVALID_DATA, "#10200", "element type attribute");   \
+	DXSetError(ERROR_DATA_INVALID, "#10200", "element type attribute");   \
 	return 0;							      \
     }									      \
 									      \

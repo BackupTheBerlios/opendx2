@@ -264,7 +264,7 @@ _Sample_Field_Regular(Field field, int n, Array grid)
 		m = gDeltas[0]*gDeltas[3] - gDeltas[1]*gDeltas[2];
 		if (m == 0)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "bad delta vectors");
+		    DXSetError(ERROR_DATA_INVALID, "bad delta vectors");
 		    goto error;
 		}
 
@@ -294,7 +294,7 @@ _Sample_Field_Regular(Field field, int n, Array grid)
 		m = gDeltas[0];
 		if (m == 0)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "bad delta vectors");
+		    DXSetError(ERROR_DATA_INVALID, "bad delta vectors");
 		    goto error;
 		}
 
@@ -396,13 +396,13 @@ _Sample_Field_Irregular(Field field, int nSamples, Array grid)
 
     if (t != TYPE_FLOAT)
     { 
-	DXSetError (ERROR_INVALID_DATA, "Positions must be of type float"); 
+	DXSetError (ERROR_DATA_INVALID, "Positions must be of type float"); 
 	goto error;
     } 
 
     if (c != CATEGORY_REAL) 
     { 
-	DXSetError (ERROR_INVALID_DATA, "Positions must be of category real");
+	DXSetError (ERROR_DATA_INVALID, "Positions must be of category real");
 	goto error;
     }
 
@@ -579,7 +579,7 @@ _Sample_Grid(Object o, int nSamples, int eltDim)
 	    
 	    if (DXGetObjectClass((Object)field) != CLASS_FIELD)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			"invalid composite field member");
 		return NULL;
 	    }
@@ -611,7 +611,7 @@ _Sample_Grid_Irregular(Object object, int nSamples, int eltDim)
 
     if (! DXBoundingBox(object, box))
     {
-	DXSetError(ERROR_INVALID_DATA, "unable to compute bounding box");
+	DXSetError(ERROR_DATA_INVALID, "unable to compute bounding box");
 	return NULL;
     }
 
@@ -667,7 +667,7 @@ _Solve_Grid(int nd, int nSamples,
 
     if (k == 0)
     {
-	DXSetError(ERROR_INVALID_DATA, "degenerate grid");
+	DXSetError(ERROR_DATA_INVALID, "degenerate grid");
 	goto error;
     }
     
@@ -1282,7 +1282,7 @@ InvertRegular(int nd, float *sO, float *sD, float *dO, float *dD)
     return OK;
 
 error:
-    DXSetError(ERROR_INVALID_DATA, "non-invertible data");
+    DXSetError(ERROR_DATA_INVALID, "non-invertible data");
     return ERROR;
 }
 
@@ -1478,7 +1478,7 @@ Field_Count(Object o, int *n)
 		    else if (!strcmp(str, "tetrahedra")) m = 3;
 		    else
 		    {
-			DXSetError(ERROR_INVALID_DATA, "#10410", str);
+			DXSetError(ERROR_DATA_INVALID, "#10410", str);
 			return -1;
 		    }
 
@@ -1486,7 +1486,7 @@ Field_Count(Object o, int *n)
 			*n = m;
 		    else if (*n != m)
 		    {
-			DXSetError(ERROR_INVALID_DATA, "#10420");
+			DXSetError(ERROR_DATA_INVALID, "#10420");
 			return -1;
 		    }
 		}
@@ -1496,7 +1496,7 @@ Field_Count(Object o, int *n)
 			*n = 0;
 		    else if (*n > 0)
 		    {
-			DXSetError(ERROR_INVALID_DATA, "#10420");
+			DXSetError(ERROR_DATA_INVALID, "#10420");
 			return -1;
 		    }
 		}
@@ -1640,7 +1640,7 @@ _Sample_CompositeField(CompositeField cf, int n)
     {
 	if (DXGetObjectClass(c) != CLASS_FIELD)
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 			"composite members must be fields");
 	    goto error;
 	}
@@ -1841,7 +1841,7 @@ _dxfGetSampleMethod(Field field)
     }
     else
     {
-	DXSetError (ERROR_INVALID_DATA, "unknown primitive: %s", primitive);
+	DXSetError (ERROR_DATA_INVALID, "unknown primitive: %s", primitive);
 	goto error;
     }
 
@@ -1874,7 +1874,7 @@ TriangleSample(Field field, int nSamples, Array grid)
 	return CurvedSurface(field, 3, coords_triangle, nSamples, grid);
     else
     {
-	DXSetError(ERROR_INVALID_DATA, "triangles require 2 or 3D positions");
+	DXSetError(ERROR_DATA_INVALID, "triangles require 2 or 3D positions");
 	goto error;
     }
 
@@ -1908,7 +1908,7 @@ QuadSample(Field field, int nSamples, Array grid)
 	return CurvedSurface(field, 4, coords_quad, nSamples, grid);
     else
     {
-	DXSetError(ERROR_INVALID_DATA, "triangles require 2 or 3D positions");
+	DXSetError(ERROR_DATA_INVALID, "triangles require 2 or 3D positions");
 	goto error;
     }
 
@@ -1970,7 +1970,7 @@ _dxfGetVolumeMethod(Field field)
     }
     else
     {
-	DXSetError (ERROR_INVALID_DATA, "invalid primitive: %s", primitive);
+	DXSetError (ERROR_DATA_INVALID, "invalid primitive: %s", primitive);
 	goto error;
     }
 
@@ -3703,7 +3703,7 @@ invert33(float *src, float *dst)
    return 1;
 
 error:
-    DXSetError(ERROR_INVALID_DATA, "degenerate regular positions");
+    DXSetError(ERROR_DATA_INVALID, "degenerate regular positions");
     return 0;
 }
 
@@ -4508,7 +4508,7 @@ error:
     }								\
     if (j != eDim)						\
     {								\
-	DXSetError(ERROR_INVALID_DATA, "dimension mismatch");	\
+	DXSetError(ERROR_DATA_INVALID, "dimension mismatch");	\
 	goto error;						\
     }								\
     for (j = j; j < pDim; j++)					\
@@ -4936,7 +4936,7 @@ invert(int n, float *in, float *out)
 	{
 	    if (in[0] == 0)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "bad delta vectors");
+		DXSetError(ERROR_DATA_INVALID, "bad delta vectors");
 		return ERROR;
 	    }
 
@@ -5232,7 +5232,7 @@ FaceFieldVolume(Field field)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"faces must be real integer scalars");
 	goto error;
     }
@@ -5253,7 +5253,7 @@ FaceFieldVolume(Field field)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"loops must be real integer scalars");
 	goto error;
     }
@@ -5274,7 +5274,7 @@ FaceFieldVolume(Field field)
 	c != CATEGORY_REAL ||
 	!(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"edges must be real integer scalars");
 	goto error;
     }
@@ -5291,7 +5291,7 @@ FaceFieldVolume(Field field)
     if (t != TYPE_FLOAT || c != CATEGORY_REAL
 	|| rank != 1 || (nDim != 2 && nDim != 3))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"positions must be real float 2- or 3-vectors");
 	goto error;
     }
@@ -5419,7 +5419,7 @@ _dxfBoxVolume(Object object, int *nd)
 
     if (! DXBoundingBox(object, boxPts))
     {
-	DXSetError(ERROR_INVALID_DATA, "unable to compute bounding box");
+	DXSetError(ERROR_DATA_INVALID, "unable to compute bounding box");
 	goto error;
     }
     

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -17,7 +19,6 @@
 #define _SaveAsDialog_h
 
 
-#include "defines.h"
 #include "SaveFileDialog.h"
 #include "Application.h"
 

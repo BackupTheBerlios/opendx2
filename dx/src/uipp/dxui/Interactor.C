@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -20,7 +22,6 @@
 #include <X11/Xatom.h>
 
 
-#include "defines.h"
 #include "XmUtility.h"
 #include "Interactor.h"
 #include "InteractorInstance.h"
@@ -290,7 +291,7 @@ void Interactor::createInteractor()
     n = 0;
     XtSetArg(wargs[n], XmNx, x); n++;
     XtSetArg(wargs[n], XmNy, y); n++;
-    XtSetArg(wargs[n], XmNuserData, (caddr_t)ii); n++;
+    XtSetArg(wargs[n], XmNuserData, (XtPointer)ii); n++;
     Widget standInRoot = XmCreateForm(parent, this->name, wargs, n);
     this->setRootWidget(standInRoot);
     this->setDragWidget(standInRoot);
@@ -379,7 +380,7 @@ void Interactor::createInteractor()
     // Register selection callback.
     //
     XmWorkspaceAddCallback (this->getRootWidget(), XmNselectionCallback,
-	 (XtCallbackProc)Component_SelectWorkSpaceComponentCB, (caddr_t)this);
+	 (XtCallbackProc)Component_SelectWorkSpaceComponentCB, (void *)this);
 
     //
     // Make sure the interactive part contains the correct initial value.
@@ -718,7 +719,7 @@ const char *Interactor::getComponentHelpTopic()
 
 void *GetUserData(Widget widget)
 {
-    caddr_t data;
+    XtPointer data;
     ASSERT(widget);
     XtVaGetValues(widget, XmNuserData, &data, NULL);
     return (data);

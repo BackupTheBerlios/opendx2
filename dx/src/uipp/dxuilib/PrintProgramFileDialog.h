@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,11 +17,9 @@
 #ifndef _PrintProgramFileDialog_h
 #define _PrintProgramFileDialog_h
 
-#include "UIConfig.h"
 
 #include <Xm/Xm.h>
 
-#include "defines.h"
 #include "FileDialog.h"
 
 

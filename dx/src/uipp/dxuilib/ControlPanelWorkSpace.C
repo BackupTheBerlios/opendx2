@@ -8,6 +8,8 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
@@ -21,7 +23,6 @@
 #include <Xm/CutPaste.h>
 #include <Xm/DragC.h>
 #include <X11/cursorfont.h>
-#include "defines.h"
 #include "ControlPanel.h"
 #include "DXDropSite.h"
 #include "ControlPanelWorkSpace.h" 
@@ -41,8 +42,10 @@
 extern "C" int gethostname(char *address, int address_len);
 #endif
 
+#if 0
 #if defined(DXD_WIN)
 #include <winsock.h>
+#endif
 #endif
 
 #define DXINTERACTORS "DXINTERACTORS"

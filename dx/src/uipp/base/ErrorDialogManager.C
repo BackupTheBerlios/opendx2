@@ -7,11 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <defines.h>
 
 
 
 
-#include "UIConfig.h"
 
 #include <stdio.h>
 #include <stdarg.h>

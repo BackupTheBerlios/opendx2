@@ -7,13 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ValueDefinition_h
 #define _ValueDefinition_h
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "InteractorDefinition.h"
 
 

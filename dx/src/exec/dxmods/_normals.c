@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_normals.c,v 1.3 1999/05/10 15:45:20 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_normals.c,v 1.4 2000/05/16 18:47:31 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -146,7 +146,7 @@ _dxfNormalsTraverse(Object object, char *method)
 
 		if (! eType || DXGetObjectClass(eType) != CLASS_STRING)
 		{
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			"invalid or missing element type attribute");
 		    return ERROR;
 		}
@@ -170,7 +170,7 @@ _dxfNormalsTraverse(Object object, char *method)
 	    
 	    if (dep == NO_DEPENDENCY)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#10450", method);
+		DXSetError(ERROR_DATA_INVALID, "#10450", method);
 		goto error;
 	    }
 
@@ -219,7 +219,7 @@ _dxfNormalsTraverse(Object object, char *method)
 	    
 	    if (dep == NO_DEPENDENCY)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#10450", "method");
+		DXSetError(ERROR_DATA_INVALID, "#10450", "method");
 		goto error;
 	    }
 
@@ -371,7 +371,7 @@ _DetermineFunction(Object o, char *name, int *dep)
 
 	    if (! DXGetStringAttribute((Object)a, "dep", &str))
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#10255", name, "dep");
+		DXSetError(ERROR_DATA_INVALID, "#10255", name, "dep");
 		*dep = NO_DEPENDENCY;
 		return ERROR;
 	    }
@@ -393,7 +393,7 @@ _DetermineFunction(Object o, char *name, int *dep)
 	    }
 	    else
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#11250", name);
+		DXSetError(ERROR_DATA_INVALID, "#11250", name);
 		*dep = NO_DEPENDENCY;
 		return ERROR;
 	    }
@@ -420,7 +420,7 @@ _DetermineFunction(Object o, char *name, int *dep)
 
 	default:
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11381");
+	    DXSetError(ERROR_DATA_INVALID, "#11381");
 	    return ERROR;
 	}
     }
@@ -520,7 +520,7 @@ _dxfConnectionNormals_Field(Field field)
 
     if (rank != 1 || shape[0] > 3 || shape[0] < 2)
     {
-	DXSetError(ERROR_INVALID_DATA, "positions must be 2 or 3-D");
+	DXSetError(ERROR_DATA_INVALID, "positions must be 2 or 3-D");
 	return ERROR;
     }
     else
@@ -528,14 +528,14 @@ _dxfConnectionNormals_Field(Field field)
 	attr = DXGetComponentAttribute(field, "connections", "element type");
 	if (!attr)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10255", 
+	    DXSetError(ERROR_DATA_INVALID, "#10255", 
 				"connections", "element type");
 	    return ERROR;
 	}
 
 	if (DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10200", "element type attribute");
+	    DXSetError(ERROR_DATA_INVALID, "#10200", "element type attribute");
 	    return ERROR;
 	}
 
@@ -886,7 +886,7 @@ _dxfPositionNormals_Field(Field field)
     array = (Array)DXGetComponentValue(field, "positions");
     if (! array)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10200", "positions component");
+	DXSetError(ERROR_DATA_INVALID, "#10200", "positions component");
 	return ERROR;
     }
 
@@ -894,7 +894,7 @@ _dxfPositionNormals_Field(Field field)
 
     if (rank != 1 || shape[0] < 2 || shape[0] > 3)
     {
-	DXSetError(ERROR_INVALID_DATA, "positions must be 2 or 3-D");
+	DXSetError(ERROR_DATA_INVALID, "positions must be 2 or 3-D");
 	return ERROR;
     }
     else
@@ -902,14 +902,14 @@ _dxfPositionNormals_Field(Field field)
 	attr = DXGetComponentAttribute(field, "connections", "element type");
 	if (!attr)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10255",
+	    DXSetError(ERROR_DATA_INVALID, "#10255",
 					"connections", "element type");
 	    return ERROR;
 	}
 
 	if (DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10200", "element type attribute");
+	    DXSetError(ERROR_DATA_INVALID, "#10200", "element type attribute");
 	    return ERROR;
 	}
 
@@ -1733,7 +1733,7 @@ CompareDependency(Object o, char *target)
 	attr = DXGetComponentAttribute((Field)o, "normals", "dep");
 	if (! attr)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"normals component is missing the dep attribute");
 	    return -1;
 	}
@@ -1785,7 +1785,7 @@ _dxfFaceNormals(Pointer ptr)
 
 	if (! DXGetStringAttribute((Object)na, "dep", &str))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "normals dependency attribute");
+	    DXSetError(ERROR_DATA_INVALID, "normals dependency attribute");
 	    goto error;
 	}
 
@@ -1819,7 +1819,7 @@ _dxfFaceNormals(Pointer ptr)
 
     if (rank != 1 || ndim < 2 || ndim > 3)
     {
-	DXSetError(ERROR_INVALID_DATA, "data must be 2- or 3-D");
+	DXSetError(ERROR_DATA_INVALID, "data must be 2- or 3-D");
 	goto error;
     }
     else

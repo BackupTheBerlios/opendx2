@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _PrintNode_h
 #define _PrintNode_h
 
 
-#include "defines.h"
 #include "ModuleMessagingNode.h"
 
 

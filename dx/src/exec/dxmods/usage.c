@@ -47,7 +47,7 @@ m_Usage(Object *in, Object *out)
 
 #if 1    /* this code is in mem.c */
     } else if (strcmp(s, "memory info")==0) {
-#ifndef	DXD_WIN
+#if !defined(intelnt)
  	DXPrintMemoryInfo ();
 #endif
 #endif

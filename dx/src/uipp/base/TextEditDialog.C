@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include <Xm/Xm.h>
@@ -19,7 +21,6 @@
 #include <Xm/ScrolledW.h>
 #include <Xm/Label.h>
 
-#include "defines.h"
 #include "Application.h"
 #include "TextEditDialog.h"
 #include "ButtonInterface.h"

@@ -7,15 +7,15 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "UIConfig.h"
 
 #include <Xm/MessageB.h>
 
-#include "defines.h"
 #include "PreActionCommand.h"
 #include "DialogManager.h"
 #include "Application.h"

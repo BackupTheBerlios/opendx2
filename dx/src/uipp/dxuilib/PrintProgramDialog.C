@@ -7,10 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
 
 #if defined(DXD_WIN) || defined(OS2)  //SMH get correct name for unlink 
 # include <stdio.h>      
@@ -27,7 +28,6 @@
 
 #include <sys/stat.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "DXApplication.h"
 #include "Network.h"
@@ -289,13 +289,10 @@ boolean PrintProgramDialog::okCallback(Dialog *d)
 	    XtFree(filename);
 	    return FALSE;
 	}
-#if defined(DXD_WIN) && !defined(OS2)
-	struct _stat buffer;
-	if (_stat(filename, &buffer) == 0) {
-#else
-	struct stat buffer;
-	if (stat(filename, &buffer) == 0) {
-#endif
+
+	struct STATSTRUCT buffer;
+
+	if (STAT(filename, &buffer) == 0) {
 	    theQuestionDialogManager->modalPost(
 		this->parent,
 		"Do you want to overwrite an existing file?",

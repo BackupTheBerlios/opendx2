@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "defines.h"
 #include "DXApplication.h"
 #include "ProcessGroupOptionsDialog.h"
 #include "ProcessGroupManager.h"
@@ -52,9 +53,9 @@ String ProcessGroupOptionsDialog::DefaultResources[] = {
 };
 
 static XrmOptionDescRec opTable[] = {
-{"-exec",	"*exec",	XrmoptionSepArg,	(caddr_t) NULL},
-{"-directory",	"*directory",	XrmoptionSepArg,	(caddr_t) NULL},
-{"-memory",	"*memory",	XrmoptionSepArg,	(caddr_t) NULL},
+{"-exec",	"*exec",	XrmoptionSepArg,	(char *) NULL},
+{"-directory",	"*directory",	XrmoptionSepArg,	(char *) NULL},
+{"-memory",	"*memory",	XrmoptionSepArg,	(char *) NULL},
 };
 
 extern "C" void ProcessGroupOptionsDialog_ToggleCB(Widget w, XtPointer clientData, XtPointer)

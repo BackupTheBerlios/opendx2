@@ -16,11 +16,7 @@
 #include <math.h>
 #include "edf.h"
 
-#ifdef	DXD_WIN
 #include <stdlib.h>
-#define popen _popen
-#define pclose _pclose
-#endif
 
 
 
@@ -385,7 +381,7 @@ Object DXExportDX(Object o, char *filename, char *format)
 	if (fclose(p.dfp) < 0) {
 	    DXFree((Pointer)iob);
 	    p.dfp = NULL;
-	    DXSetError(ERROR_INVALID_DATA, "#12249", fname2);
+	    DXSetError(ERROR_DATA_INVALID, "#12249", fname2);
 	    rc = ERROR;
 	    goto done;
 	}
@@ -410,7 +406,7 @@ Object DXExportDX(Object o, char *filename, char *format)
 	 * nsc01mar97
 	 */
 	if (fclose(p.dfp) < 0) {
-	    DXSetError(ERROR_INVALID_DATA, "#12249", fname2);
+	    DXSetError(ERROR_DATA_INVALID, "#12249", fname2);
 	    p.dfp = NULL;
             rc = ERROR;
 	    goto done;
@@ -429,14 +425,14 @@ Object DXExportDX(Object o, char *filename, char *format)
 	else
 #endif
 	if (fclose(p.fp) < 0) {
-	    DXSetError(ERROR_INVALID_DATA, "#12249", fname);
+	    DXSetError(ERROR_DATA_INVALID, "#12249", fname);
             rc = ERROR;
         }
     }
 	    
     if (p.dfp != NULL) {
 	if (fclose(p.dfp) < 0) {
-	    DXSetError(ERROR_INVALID_DATA, "#12249", fname2);
+	    DXSetError(ERROR_DATA_INVALID, "#12249", fname2);
             rc = ERROR;
         }
     }
@@ -649,7 +645,7 @@ static Error _dxfObject_Format(Object o, struct fmt_info *p)
     char *name;
 
     if(!o) {
-	DXSetError(ERROR_INVALID_DATA, "null object");
+	DXSetError(ERROR_DATA_INVALID, "null object");
 	return ERROR;
     }
 
@@ -751,7 +747,7 @@ static Error _dxfObject_Format(Object o, struct fmt_info *p)
       case CLASS_MIN:
       case CLASS_DELETED:
       default:
-	DXSetError(ERROR_INVALID_DATA, "bad object");
+	DXSetError(ERROR_DATA_INVALID, "bad object");
 	rc = ERROR;
 
     }
@@ -826,7 +822,7 @@ static Error Array_Format (Array array, struct fmt_info *p)
 	  case TYPE_DOUBLE:	    numtype = 8;	    break;
 	  case TYPE_HYPER:     	    numtype = 9;	    break;
 	  default:
-            DXSetError(ERROR_INVALID_DATA, "bad type");
+            DXSetError(ERROR_DATA_INVALID, "bad type");
 	    return ERROR;
 	}
 	
@@ -847,7 +843,7 @@ static Error Array_Format (Array array, struct fmt_info *p)
 		fprintf(p->fp, "lsb ");
 		break;
 	      default:
-                DXSetError(ERROR_INVALID_DATA, "unrecognized byte order");
+                DXSetError(ERROR_DATA_INVALID, "unrecognized byte order");
 		return ERROR;
 	    }
 	}
@@ -862,7 +858,7 @@ static Error Array_Format (Array array, struct fmt_info *p)
 	    fprintf(p->fp, "xdr ");
 	    break;
 	  default:
-            DXSetError(ERROR_INVALID_DATA, "unrecognized data format");
+            DXSetError(ERROR_DATA_INVALID, "unrecognized data format");
 	    return ERROR;
 	}
 
@@ -882,7 +878,7 @@ static Error Array_Format (Array array, struct fmt_info *p)
 	    datafile = p->dfp;
 	    break;
 	  default:
-            DXSetError(ERROR_INVALID_DATA, "unrecognized number of files");
+            DXSetError(ERROR_DATA_INVALID, "unrecognized number of files");
 	    return ERROR;
 	}
 
@@ -948,7 +944,7 @@ static Error Array_Format (Array array, struct fmt_info *p)
 			   "can't export 64bit integers");
 		break;
 	      default:
-		DXSetError(ERROR_INVALID_DATA, "unrecognized data type");
+		DXSetError(ERROR_DATA_INVALID, "unrecognized data type");
 		break;
 	    }
 	    fprintf(datafile, "\n");
@@ -1100,7 +1096,7 @@ static Error Array_Format (Array array, struct fmt_info *p)
 	break;
 	
       default:
-	DXSetError(ERROR_INVALID_DATA, "unknown array type");
+	DXSetError(ERROR_DATA_INVALID, "unknown array type");
 	return ERROR;
     }
 
@@ -1264,7 +1260,7 @@ static Error Light_Format (Light light, struct fmt_info *p)
         return OK;
     } 
 
-    DXSetError(ERROR_INVALID_DATA, "unrecognized light type");
+    DXSetError(ERROR_DATA_INVALID, "unrecognized light type");
     return ERROR;
 }
 
@@ -1375,7 +1371,7 @@ static Error Group_Format (Group group, struct fmt_info *p)
 	break;
 	
       default:
-	DXSetError(ERROR_INVALID_DATA, "bad group type");
+	DXSetError(ERROR_DATA_INVALID, "bad group type");
         return ERROR;
     }
     
@@ -1646,7 +1642,7 @@ static Error swapwrite(FILE *datafile, Array array)
 	return ERROR;
 
     if(items <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad item count");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad item count");
 
     if (DXGetArrayClass(array) == CLASS_CONSTANTARRAY) {
 	total = DXGetItemSize(array);
@@ -1656,7 +1652,7 @@ static Error swapwrite(FILE *datafile, Array array)
 	cp = (char *)DXGetArrayData(array);
     }
     if (total <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad type, category or shape value");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad type, category or shape value");
     if (!cp)
 	return ERROR;
     
@@ -1666,7 +1662,7 @@ static Error swapwrite(FILE *datafile, Array array)
       case TYPE_UBYTE:
       case TYPE_BYTE:
 	if(fwrite(cp, 1, total, datafile) != total)
-	    DXErrorReturn(ERROR_INVALID_DATA, "write error");
+	    DXErrorReturn(ERROR_DATA_INVALID, "write error");
 	
 	break;
 	
@@ -1759,6 +1755,6 @@ static Error nativewrite(FILE *datafile, int itemcount, int itemsize,
     return OK;
 
   error:
-    DXSetError(ERROR_INVALID_DATA, "error writing array");
+    DXSetError(ERROR_DATA_INVALID, "error writing array");
     return ERROR;
 }

@@ -7,10 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "defines.h"
 #include "SaveMacroCommand.h"
 #include "DXApplication.h"
 #include "DXWindow.h"

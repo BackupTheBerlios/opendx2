@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -16,11 +18,9 @@
 #define _SaveCFGDialog_h
 
 
-#include "UIConfig.h"
 
 #include <Xm/Xm.h>
 
-#include "defines.h"
 #include "SaveFileDialog.h"
 
 

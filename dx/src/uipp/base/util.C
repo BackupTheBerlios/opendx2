@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 int
@@ -34,3 +35,19 @@ STRCMP(char *a, char *b, int n)
 	else return strncmp(a, "", n);
     else return strncmp(a, b, n);
 }
+
+#if !defined(HAVE_STRRSTR)
+extern "C"
+char *
+strrstr(char *a, char *b)
+{
+    char *l, *n;
+    l = strstr(a, b);
+    if (l)
+    {
+	while (n = strstr(l+1, b))
+	    l = n;
+    }
+    return l;
+}
+#endif

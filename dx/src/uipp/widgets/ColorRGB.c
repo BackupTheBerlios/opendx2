@@ -8,8 +8,7 @@
 
 #include <dxconfig.h>
 
-
-
+#include "../base/defines.h"
 #include "ControlField.h"
 #include "Color.h"
 

@@ -7,20 +7,18 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
-#include "UIConfig.h"
 
 #include <Xm/Xm.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <Xm/ToggleB.h>
  
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
-
-#include "defines.h"
 #include "IBMApplication.h"
 #include "WizardDialog.h"
 #include "Strings.h"
@@ -111,21 +109,17 @@ Widget WizardDialog::createDialog (Widget parent)
 // Stat the file.  If not exists, then return NULL and the wizard ought to 
 // remain down.
 //
-#if defined(DXD_OS_NON_UNIX)
+#if defined(intelnt)
 #define FILE_SEPARATOR '/'
-#define STATFILE(a,b) _stat(a,b)
-#define STATDECL _stat
 #define ISGOOD(a) ((a&_S_IFREG)&&((a&_S_IFDIR)==0))
 #else
 #define FILE_SEPARATOR '/'
-#define STATFILE(a,b) stat(a,b)
-#define STATDECL stat
 #define ISGOOD(a) ((a&S_IFREG)&&((a&(S_IFDIR|S_IFCHR|S_IFBLK))==0))
 #endif
 const char* WizardDialog::getText()
 {
 char pathname[512];
-struct STATDECL statb;
+struct STATSTRUCT statb;
 
     if (this->text) return this->text;
     if (this->file_read) return NUL(char*);
@@ -138,7 +132,7 @@ struct STATDECL statb;
     else
 	sprintf (pathname, "%s/ui/%s", uiroot, this->parent_name);
 
-    if (STATFILE(pathname, &statb) == -1) return NUL(char*);
+    if (STAT(pathname, &statb) == -1) return NUL(char*);
 
     if (!ISGOOD(statb.st_mode)) return NUL(char*);
 

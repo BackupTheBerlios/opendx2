@@ -611,7 +611,7 @@
  
  
      To avoid a conflict between Data Explorer and Windows header files you
-     should undefine "ERROR_INVALID_DATA" after loading windows.h.
+     should undefine "ERROR_DATA_INVALID" after loading windows.h.
  
      In order to use the DLL you should start Data Explorer with
  

@@ -1023,7 +1023,7 @@ static int sm_lg_ratio = 0;		/* 0 means compute at run time */
 #define LARGE(x) ((int)x>=(int)large)
 #endif
 
-#ifdef	DXD_WIN
+#if defined(intelnt)
 #define initvalues
 #define SMALL_BASE    0               /* use data segment */
 #define SMALL_GET     _dxfgetmem      /* expand by using DosSetMem */
@@ -1235,7 +1235,7 @@ int _dxf_initmemory()
 	physmem = 32;
 #endif
 
-#if defined(DXD_WIN)
+#if defined(intelnt)
 	{
 	    MEMORYSTATUS memStatus;
 	    
@@ -1464,7 +1464,7 @@ int _dxf_initmemory()
           "Memory cache will use %d MB (%d for small items, %d for large)\n\n", 
 	  ((large_size + small_size) >> 20),
 	  (small_size >> 20), (large_size >> 20));
-        write(fileno ((SFILE *)stdout), tmpbuf, strlen(tmpbuf)); 
+        write(fileno(stdout), tmpbuf, strlen(tmpbuf)); 
     }
 #endif
 

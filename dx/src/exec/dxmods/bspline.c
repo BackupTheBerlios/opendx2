@@ -103,7 +103,7 @@ m_BSpline(Object *in, Object *out)
     goto error;
   }
   if (DXGetObjectClass(in[0])!= CLASS_ARRAY) {
-    DXSetError(ERROR_INVALID_DATA,"input must be a vector list");
+    DXSetError(ERROR_DATA_INVALID,"input must be a vector list");
     goto error;
   }
   if (!DXGetArrayInfo((Array)in[0], &numitems, &type, &category, &rank, shape))
@@ -114,7 +114,7 @@ m_BSpline(Object *in, Object *out)
   }
   else {
     if (!DXExtractInteger(in[1], &newnumitems)) {
-      DXSetError(ERROR_INVALID_DATA,"numitems must be an integer");
+      DXSetError(ERROR_DATA_INVALID,"numitems must be an integer");
       goto error;
     }
   }
@@ -127,11 +127,11 @@ m_BSpline(Object *in, Object *out)
   }
   else {
     if (!DXExtractInteger(in[2], &order)) {
-       DXSetError(ERROR_INVALID_DATA,"order must be a positive integer");
+       DXSetError(ERROR_DATA_INVALID,"order must be a positive integer");
        goto error;
     }
     if (order < 1) {
-       DXSetError(ERROR_INVALID_DATA,"order must be a positive integer");
+       DXSetError(ERROR_DATA_INVALID,"order must be a positive integer");
        goto error;
     }
     if (order > numitems) {
@@ -145,14 +145,14 @@ m_BSpline(Object *in, Object *out)
   }
   else if (rank==1) {
     if ((shape[0]!=1)&&(shape[0]!=2)&&(shape[0]!=3)) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
                  "input must be a list of scalars or 2- or 3-vectors");
       goto error;
     }
     dim = shape[0];
   }
   else {
-    DXSetError(ERROR_INVALID_DATA,"input must be a list of 2- or 3-vectors");
+    DXSetError(ERROR_DATA_INVALID,"input must be a list of 2- or 3-vectors");
     goto error;
   }
 

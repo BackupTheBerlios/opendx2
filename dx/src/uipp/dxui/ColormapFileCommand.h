@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ColormapFileCommand_h
 #define _ColormapFileCommand_h
 
 
-#include "defines.h"
 #include "NoUndoCommand.h"
 
 #include <Xm/Xm.h>

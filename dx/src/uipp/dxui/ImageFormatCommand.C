@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "defines.h"
 #include "ImageFormatCommand.h"
 #include "ImageFormatDialog.h"
 #include "SaveImageDialog.h"

@@ -959,14 +959,14 @@ static Error validcount(Field f, char *component, int *icount)
     
     a = (Array)DXGetComponentValue(f, component);
     if (!a) {
-	DXSetError(ERROR_INVALID_DATA, "field has no `%s' component",
+	DXSetError(ERROR_DATA_INVALID, "field has no `%s' component",
 		   component);
 	return ERROR;
     }
 
     /* follow a dependency. */
     if (!DXGetStringAttribute((Object)a, "dep", &dep)) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "The `%s' component does not have a `dep' attribute",
 		   component);
 	return ERROR;

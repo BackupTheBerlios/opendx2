@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/slab.c,v 1.3 1999/05/10 15:45:31 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/slab.c,v 1.4 2000/05/16 18:48:17 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -187,7 +187,7 @@ m_Slab(Object *in, Object *out)
 
     /* make sure there is a valid field in the input somewhere */
     if(!DXExists(in[0], "positions")) {
-	DXSetError(ERROR_INVALID_DATA, "#10190", "input");
+	DXSetError(ERROR_DATA_INVALID, "#10190", "input");
 	return ERROR;
     }
     
@@ -1574,7 +1574,7 @@ numslabs(CompositeField cf, struct argblk *ap)
      */
     f = (Field)DXGetEnumeratedMember((Group)cf, 0, NULL);
     if (!f || DXGetObjectClass((Object)f) != CLASS_FIELD) {
-	DXSetError(ERROR_INVALID_DATA, "compositefield member must be field");
+	DXSetError(ERROR_DATA_INVALID, "compositefield member must be field");
 	goto error;
     }
 
@@ -1696,7 +1696,7 @@ numslabs(CompositeField cf, struct argblk *ap)
 		endconn = ap->slabplace[j] + ap->slabthickness;
 
 		if (startconn < 0 || startconn >= ap->compositecount) {
-		    DXSetError(ERROR_INVALID_DATA, "#10040", 
+		    DXSetError(ERROR_DATA_INVALID, "#10040", 
 			       "slab position", 0, ap->compositecount-1);
 		    goto error;
 		}

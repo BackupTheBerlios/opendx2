@@ -11,7 +11,7 @@
 
 
 /* Scanner skeleton version:
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/netlex.h,v 1.3 1999/05/10 15:46:23 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/netlex.h,v 1.4 2000/05/16 18:52:20 gda Exp $
  */
 
 #define FLEX_SCANNER
@@ -635,8 +635,11 @@ char *yytext;
 /*****************************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/netlex.h,v 1.3 1999/05/10 15:46:23 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/netlex.h,v 1.4 2000/05/16 18:52:20 gda Exp $
  * $Log: netlex.h,v $
+ * Revision 1.4  2000/05/16 18:52:20  gda
+ * Changes to compile using MS compilers under Cygwin
+ *
  * Revision 1.3  1999/05/10 15:46:23  gda
  * Copyright message
  *
@@ -737,7 +740,7 @@ Initial revision
 
 #include <math.h>
 
-#if defined(OS2)  || defined(DXD_WIN)
+#if defined(OS2)  || defined(intelnt)
 #define mbsinvalid(x) 0
 #endif 
 

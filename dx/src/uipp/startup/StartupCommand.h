@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -14,7 +15,6 @@
 #define _StartupCommand_h
 
 
-#include "../base/UIConfig.h"
 
 #include <Xm/Xm.h>
 

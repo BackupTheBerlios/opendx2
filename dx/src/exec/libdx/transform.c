@@ -783,7 +783,7 @@ ApplyTransform_Array(Array array, Matrix *m, int normalize)
 	    a = ApplyTransform_GenericArray(array, m, normalize);
 	    break;
 	default:
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 			"Inappropriate array class for transformation");
 	    return NULL;
     }
@@ -908,14 +908,14 @@ ApplyTransform_RegularArray(Array array, Matrix *matrix, int norm)
     
     if (rank != 1 || shape[0] > 3)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "data to be transformed must be vectors of dimensionality <= 3");
 	return NULL;
     }
 
     if (norm)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "cannot normalize transformed non-constant regular vectors");
 	return NULL;
     }
@@ -1037,14 +1037,14 @@ ApplyTransform_ConstantArray(Array array, Matrix *matrix, int norm)
 
     if (norm && type != TYPE_FLOAT && type != TYPE_DOUBLE)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"cannot normalize non-floating point vectors");
 	return NULL;
     }
     
     if (rank != 1 || shape[0] > 3)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "data to be transformed must be vectors of dimensionality <= 3");
 	return NULL;
     }
@@ -1064,7 +1064,7 @@ ApplyTransform_ConstantArray(Array array, Matrix *matrix, int norm)
 
     if (norm && type != TYPE_FLOAT && type != TYPE_DOUBLE)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"cannot normalize non-floating point vectors");
 	return NULL;
     }
@@ -1183,7 +1183,7 @@ ApplyTransform_GenericArray(Array array, Matrix *m, int norm)
     
     if (rank != 1 || shape[0] > 3)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "data to be transformed must be vectors of dimensionality <= 3");
 	goto error;
     }
@@ -1500,7 +1500,7 @@ SetDimensionality(Array array, int n)
 	    a = SetDimensionality_GenericArray(array, n);
 	    break;
 	default:
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 			"Inappropriate array class for transformation");
 	    return NULL;
     }

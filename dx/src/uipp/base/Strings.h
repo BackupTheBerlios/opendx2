@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -16,8 +18,6 @@
 
 
 #include <string.h>
-#include "UIConfig.h"
-#include "defines.h"
 
 #ifdef DXD_NEEDS_CTYPE_H
 #include <ctype.h>                  //SMH to get isalpha prototype

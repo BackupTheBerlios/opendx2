@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "defines.h"
 #include "DXApplication.h"
 #include "SetInteractorNameDialog.h"
 #include "ControlPanel.h"

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -17,7 +19,6 @@
 #include <Xm/Form.h>
 #include <Xm/Label.h>
 
-#include "defines.h"
 
 #ifdef ABS_IN_MATH_H
 # define abs __Dont_define_abs

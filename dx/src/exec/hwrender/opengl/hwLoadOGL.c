@@ -10,43 +10,42 @@
 /*********************************************************************/
 
 #include <dxconfig.h>
+#include "hwDeclarations.h"
 
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.4 1999/05/10 15:45:37 gda Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwLoadOGL.c,v 1.5 2000/05/16 18:48:32 gda Exp $
 \*---------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <math.h>
 
-#ifndef DXD_WIN
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 
-#if defined (alphax)
+#if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
+#endif
+
+#if defined(HAVE_DLFCN_H)
 #include <dlfcn.h>
 #endif
 
-#if defined (ibm6000)
-#include <sys/stat.h> 
+#if defined(HAVE_SYS_LDR_H)
 #include <sys/ldr.h>
+#endif
+
+#if defined(HAVE_SYS_STRING_H)
 #include <string.h>
 #endif
 
-#if defined(sgi) 
-#include <sys/stat.h>
+#if defined(HAVE_GET_H)
 #include <get.h>
+#endif
+#if defined(HAVE_STDLIB_H)
 #include <stdlib.h>
-#include <dlfcn.h>
 #endif
 
-#if defined(solaris) 
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <dlfcn.h>
-#endif
-
-#include "hwDeclarations.h"
 #include "hwDebug.h"
 
 #define NAMELEN 257

@@ -7,12 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
 
-#include "defines.h"
 #include "Network.h"
 #include "OpenCFGDialog.h"
 #include "ControlPanel.h"

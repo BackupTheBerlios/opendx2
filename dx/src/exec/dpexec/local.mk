@@ -5,11 +5,13 @@ SUFFIXES = .m .y .c .s .h .o .a
 	$(YACC) $(YFLAGS) -d $*.y
 	mv y.tab.h $*.h
 	mv y.tab.c $*.c
+	echo h rule
 
 .y.c:
 	$(YACC) $(YFLAGS) -d $*.y
 	mv y.tab.h $*.h
 	mv y.tab.c $*.c
+	echo c rule
 
 compile.h: 
 	echo '#define' EX_COM_DATE '"'`date`'"' >> compile.h

@@ -7,7 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 #include <X11/cursorfont.h>
 #include <stdio.h>
@@ -116,7 +117,6 @@ void Application::installDefaultResources(Widget baseWidget)
     //this->setDefaultResources(baseWidget, Application::DefaultResources);
 }
 
-
 boolean Application::initializeWindowSystem(unsigned int *argcp, char **argv) 
 {
 
@@ -144,6 +144,7 @@ boolean Application::initializeWindowSystem(unsigned int *argcp, char **argv)
 	     0),			 // number of entries in argument list
 	     FALSE			// Don't install destroy callback
     );
+
 
     //
     // Get and save the X display structure pointer.

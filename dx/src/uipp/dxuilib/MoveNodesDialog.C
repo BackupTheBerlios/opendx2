@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -16,7 +18,6 @@
 #include <Xm/PushB.h>
 #include <Xm/Separator.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "MoveNodesDialog.h"
 #include "PageSelector.h"

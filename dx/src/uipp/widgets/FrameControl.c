@@ -86,77 +86,77 @@ static XtResource resources[] =
     {
       XmNstart, XmCStart, XmRShort, sizeof(short),
       XtOffset(XmFrameControlWidget, frame_control.start_value),
-      XmRImmediate, (caddr_t) DEF_MIN
+      XmRImmediate, (XtPointer) DEF_MIN
     },
     {
       XmNnext, XmCNext, XmRShort, sizeof(short),
       XtOffset(XmFrameControlWidget, frame_control.next_value),
-      XmRImmediate, (caddr_t) DEF_MIN
+      XmRImmediate, (XtPointer) DEF_MIN
     },
     {
       XmNcurrent, XmCCurrent, XmRShort, sizeof(short),
       XtOffset(XmFrameControlWidget, frame_control.current_value),
-      XmRImmediate, (caddr_t) (DEF_MIN + 1)
+      XmRImmediate, (XtPointer) (DEF_MIN + 1)
     },
     {
       XmNstop, XmCStop, XmRShort, sizeof(short),
       XtOffset(XmFrameControlWidget, frame_control.stop_value),
-      XmRImmediate, (caddr_t) DEF_MIN
+      XmRImmediate, (XtPointer) DEF_MIN
     },
     {
       XmNminimum, XmCMinimum, XmRShort, sizeof(short),
       XtOffset(XmFrameControlWidget, frame_control.min_value),
-      XmRImmediate, (caddr_t) DEF_MIN
+      XmRImmediate, (XtPointer) DEF_MIN
     },
     {
       XmNincrement, XmCIncrement, XmRShort, sizeof(short),
       XtOffset(XmFrameControlWidget, frame_control.increment),
-      XmRImmediate, (caddr_t) DEF_MIN
+      XmRImmediate, (XtPointer) DEF_MIN
     },
     {
       XmNmaximum, XmCMaximum, XmRShort, sizeof(short),
       XtOffset(XmFrameControlWidget, frame_control.max_value),
-      XmRImmediate, (caddr_t) DEF_MIN
+      XmRImmediate, (XtPointer) DEF_MIN
     },
     {
-      XmNvalueCallback, XmCValueCallback, XmRCallback, sizeof(caddr_t),
+      XmNvalueCallback, XmCValueCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmFrameControlWidget, frame_control.value_callback),
       XmRCallback, NULL
     },
     {
       XmNlimitColor, XmCLimitColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmFrameControlWidget, frame_control.limit_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
     {
       XmNnextColor, XmCNextColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmFrameControlWidget, frame_control.next_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
     {
       XmNcurrentColor, XmCCurrentColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmFrameControlWidget, frame_control.current_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
     {
       XmNcurrentVisible, XmCCurrentVisible, XmRBoolean, sizeof(Boolean),
       XtOffset(XmFrameControlWidget, frame_control.current_visible),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
     },
     {
       XmNminSensitive, XmCMinSensitive, XmRBoolean, sizeof(Boolean),
       XtOffset(XmFrameControlWidget, frame_control.min_sensitive),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     {
       XmNmaxSensitive, XmCMaxSensitive, XmRBoolean, sizeof(Boolean),
       XtOffset(XmFrameControlWidget, frame_control.max_sensitive),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     {
       XmNincSensitive, XmCIncSensitive, XmRBoolean, sizeof(Boolean),
       XtOffset(XmFrameControlWidget, frame_control.inc_sensitive),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
 };
 

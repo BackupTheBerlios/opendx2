@@ -48,7 +48,7 @@ _dxfRecognizeFLE2D(Field field)
     if (t != TYPE_INT || c != CATEGORY_REAL ||
 			!(r == 0 || (r == 1 && s[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, "invalid faces component");
+	DXSetError(ERROR_DATA_INVALID, "invalid faces component");
 	return 0;
     }
 
@@ -61,7 +61,7 @@ _dxfRecognizeFLE2D(Field field)
     if (t != TYPE_INT || c != CATEGORY_REAL ||
 			!(r == 0 || (r == 1 && s[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, "invalid loops component");
+	DXSetError(ERROR_DATA_INVALID, "invalid loops component");
 	return 0;
     }
 
@@ -74,7 +74,7 @@ _dxfRecognizeFLE2D(Field field)
     if (t != TYPE_INT || c != CATEGORY_REAL ||
 			!(r == 0 || (r == 1 && s[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, "invalid edges component");
+	DXSetError(ERROR_DATA_INVALID, "invalid edges component");
 	return 0;
     }
 
@@ -89,7 +89,7 @@ _dxfRecognizeFLE2D(Field field)
 	
     if (t != TYPE_FLOAT || c != CATEGORY_REAL || r != 1 || s[0] != 2)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"fle positions must be float and 2-D");
 	return 0;
     }
@@ -97,19 +97,19 @@ _dxfRecognizeFLE2D(Field field)
     depAttr = DXGetComponentAttribute(field, "data", "dep");
     if (! depAttr)
     {
-	DXSetError(ERROR_INVALID_DATA, "missing data dependency");
+	DXSetError(ERROR_DATA_INVALID, "missing data dependency");
 	return 0;
     }
 
     if (DXGetObjectClass(depAttr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, "invalid data dependency attribute");
+	DXSetError(ERROR_DATA_INVALID, "invalid data dependency attribute");
 	return 0;
     }
 
     if (strcmp(DXGetString((String)depAttr), "faces"))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"invalid data dependence: fle data must be dep faces");
 	return 0;
     }

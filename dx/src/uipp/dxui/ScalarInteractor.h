@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 // ScalarInteractor.h -							    //
@@ -34,7 +36,6 @@
 #define _ScalarInteractor_h
 
 
-#include "defines.h"
 #include "Interactor.h"
 
 

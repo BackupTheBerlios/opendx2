@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -20,7 +22,6 @@
 #include <X11/Intrinsic.h>
 #include <Xm/Xm.h>
 
-#include "defines.h"
 #include "Decorator.h"
 
 class SetDecoratorTextDialog;

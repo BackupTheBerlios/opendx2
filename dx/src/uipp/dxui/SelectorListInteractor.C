@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -18,7 +20,6 @@
 #include <Xm/Separator.h>
 #include "XmUtility.h"
 
-#include "defines.h"
 #include "SelectorListInteractor.h"
 #include "InteractorStyle.h"
 

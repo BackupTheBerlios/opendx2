@@ -158,7 +158,7 @@ m_Slice(Object *in, Object *out)
 
     /* see if there is at least one field in the input somewhere */
     if(!DXExists(in[0], "positions")) {
-	DXSetError(ERROR_INVALID_DATA, "#10190", "input");
+	DXSetError(ERROR_DATA_INVALID, "#10190", "input");
 	return ERROR;
     }
     
@@ -753,7 +753,7 @@ static Object Field_Slice(Field o, struct argblk *a)
 	 */
 	if (DXQueryGridPositions(ap, &n, NULL, origins, deltas)) {
 	    if (n != a->numdim) {
-		DXSetError(ERROR_INVALID_DATA, "#11161", 
+		DXSetError(ERROR_DATA_INVALID, "#11161", 
 			   "connection dimensions", a->numdim,
 			   "position dimensions", n);
 		return NULL;
@@ -764,7 +764,7 @@ static Object Field_Slice(Field o, struct argblk *a)
 	} else {
             DXGetArrayInfo(ap, NULL, NULL, NULL, &rank, shape);
 	    if (rank != 1 || shape[0] != a->numdim) {
-		DXSetError(ERROR_INVALID_DATA, "#11161", 
+		DXSetError(ERROR_DATA_INVALID, "#11161", 
 			   "connection dimensions", a->numdim,
 			   "position dimensions", shape[0]);
 		return NULL;
@@ -1198,17 +1198,17 @@ expanded:
 	 */
 	DXGetArrayInfo(na, &nitems, &t, &c, &rank, shape);
 	if(rank != 1) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"array contents shape must be 1");
 	    goto error;
 	}
         if (shape[0] != num) {
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		 "array contents dimensions must match connection dimensions");
 	    goto error;
 	}
         if (shape[0] <= 1) {
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		 "can't slice scalar array contents");
 	    goto error;
 	}
@@ -1262,7 +1262,7 @@ expanded:
 	DXGetRegularArrayInfo((RegularArray)a, &nitems, origins, deltas);
 
         if (shape[0] != num && flag == 1) {
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		 "array contents dimensions must match connection dimensions");
 	    return NULL;
 	}
@@ -1289,7 +1289,7 @@ expanded:
 	    DXCopyAttributes((Object)na, (Object)a);
 	} else {
 	    if (shape[0] == 1) {
-		DXSetError(ERROR_INVALID_DATA, "can't slice scalar array");
+		DXSetError(ERROR_DATA_INVALID, "can't slice scalar array");
 		return NULL;
 	    }
 	    
@@ -1359,7 +1359,7 @@ expanded:
 	DXGetArrayInfo(a, &nitems, &t, &c, &rank, shape);
 
         if ((rank != 1 || shape[0] != num) && flag == 1) {
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		 "array contents dimensions must match connection dimensions");
 	    return NULL;
 	}
@@ -1373,7 +1373,7 @@ expanded:
             break;
 	} else {
 	    if (rank != 1) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
                     "array contents dimensions must match connection dimensions");
 		return NULL;
 	    }
@@ -1552,7 +1552,7 @@ numslices(CompositeField cf, struct argblk *ap)
      */
     f = (Field)DXGetEnumeratedMember((Group)cf, 0, NULL);
     if (!f || DXGetObjectClass((Object)f) != CLASS_FIELD)
-	DXErrorReturn(ERROR_INVALID_DATA, "compositefield member must be field");
+	DXErrorReturn(ERROR_DATA_INVALID, "compositefield member must be field");
 
     
     arrc = (Array)DXGetComponentValue(f, "connections");
@@ -1676,7 +1676,7 @@ numslices(CompositeField cf, struct argblk *ap)
 		startconn = ap->sliceplace[j];
 
 		if (startconn < 0 || startconn >= ap->compositecount) {
-		    DXSetError(ERROR_INVALID_DATA, "#10040", 
+		    DXSetError(ERROR_DATA_INVALID, "#10040", 
 			           "slice position", 0, ap->compositecount-1);
 		    goto error;
 		}

@@ -7,11 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
 
-#include "../base/UIConfig.h"
 #include "../base/defines.h"
 #include "MBNewCommand.h"
 #include "MBMainWindow.h"

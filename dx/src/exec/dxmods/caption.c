@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/caption.c,v 1.3 1999/05/10 15:45:22 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/caption.c,v 1.4 2000/05/16 18:47:45 gda Exp $
  */
 
 
@@ -66,7 +66,7 @@ Caption(char **s, int n, Point p, int flag, Point ref, double align,
 	f = "variable";
     font = DXGetFont(f, &ascent, &descent);
     if (!font) {
-        DXSetError(ERROR_INVALID_DATA,"cannot open %s font", f); 
+        DXSetError(ERROR_DATA_INVALID,"cannot open %s font", f); 
 	goto error;
     }
     /* group to hold caption(s) */

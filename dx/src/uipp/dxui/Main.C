@@ -7,9 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "defines.h"
 #include "DXApplication.h"
 #ifdef DXD_WINSOCK_SOCKETS          //SMH must initialize Win Sockets
 #define _WINSPOOL_      //SMH prevent name clash from uneeded included inlcudes
@@ -37,17 +38,16 @@ extern unsigned long _etext;
 #endif
 #endif
 
-#ifdef	DXD_WIN
-
 #include <stdio.h>
 #include <Xm/Xm.h>          /* Motif Toolkit */
-#include <Mrm/MrmPubli.h>    /* Mrm */
-#ifdef _X86_
+
+// #include <Mrm/MrmPubli.h>    /* Mrm */
+
+#ifdef intelnt
 #include <stdlib.h>        /* HCL - exit prototype               */
 #include <X11/XlibXtra.h>          /* HCL - HCLXmInit prototype          */
 #endif
 
-#endif
 //
 // Used by the assert macro.
 //
@@ -56,19 +56,16 @@ const char *AssertMsgString = "Internal error detected at \"%s\":%d.\n";
 int main(unsigned int argc,
 	  char**       argv)
 {
-#ifdef	DXD_WIN
-#ifdef _X86_
+#if defined(HAVE_HCLXMINIT)
     HCLXmInit();
 #endif
+
+#ifdef intelnt
+    WSADATA *wsadata = new WSADATA;
+    WSAStartup(MAKEWORD(1,1),wsadata);
+    delete wsadata;
 #endif
 
-#ifdef DXD_WINSOCK_SOCKETS    //SMH initialize Win Sockets
-    {
-        WSADATA *wsadata = new WSADATA;
-        WSAStartup(MAKEWORD(1,1),wsadata);
-        delete wsadata;
-    }
-#endif
 #ifdef DXD_IBM_OS2_SOCKETS
     sock_init();
 #endif
@@ -89,7 +86,7 @@ int main(unsigned int argc,
     boolean profiling_on = FALSE;
     char *pdir = (char *)getenv ("PROFDIR");
     if ((pdir)&&(pdir[0])) {
-	if (monstartup ((caddr_t)__start, (caddr_t)&_etext)==-1) {
+	if (monstartup ((void *)__start, (void *)&_etext)==-1) {
 	    perror("monstartup");
 	} else {
 	    profiling_on = TRUE;

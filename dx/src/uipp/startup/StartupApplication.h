@@ -13,13 +13,16 @@
 #ifndef _StartupApplication_h
 #define _StartupApplication_h
 
-#include "../base/UIConfig.h"
 
-#if !defined(OS2) && !defined(DXD_WIN)
+
+#if defined(HAVE_STRSTREAM_H)
 #include <strstream.h>
-#else
+#endif
+
+#if defined(HAVE_STRSTREA_H)
 #include <strstrea.h>
 #endif
+
 #include <Xm/Xm.h>
 
 #include "../base/MainWindow.h"

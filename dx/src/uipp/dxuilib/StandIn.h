@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _StandIn_h
@@ -14,7 +16,6 @@
 
 
 #include <Xm/Xm.h>
-#include "defines.h"
 #include "UIComponent.h"
 #include "List.h"
 #include "DXDragSource.h"
@@ -30,7 +31,7 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void StandIn_TrackArcEH(Widget, XtPointer, XEvent*, Boolean*);
+extern "C" void StandIn_TrackArkEH(Widget, XtPointer, XEvent*, Boolean*);
 extern "C" void StandIn_Button2PressEH(Widget, XtPointer, XEvent*, Boolean*);
 extern "C" void StandIn_Button2ReleaseEH(Widget, XtPointer, XEvent*, Boolean*);
 extern "C" void StandIn_DisarmTabCB(Widget, XtPointer, XtPointer);
@@ -39,7 +40,7 @@ extern "C" void StandIn_ArmInputCB(Widget, XtPointer, XtPointer);
 extern "C" void StandIn_SelectNodeCB(Widget, XtPointer, XtPointer);
 
 class Tab;
-class Arc;
+class Ark;
 class Node;
 class EditorWindow;
 class WorkSpace;
@@ -107,11 +108,11 @@ class StandIn : public UIComponent, public DXDragSource
                 XEvent* event,
 		Boolean *keep_going);
 
-    friend void StandIn_TrackArcEH(Widget widget,
+    friend void StandIn_TrackArkEH(Widget widget,
                 XtPointer clientData,
                 XEvent* event,
 		Boolean *cont);
-    void trackArc(Widget widget, XEvent *event);
+    void trackArk(Widget widget, XEvent *event);
 
     boolean  setMinimumWidth(int &width);
     int  getVisibleInputCount();
@@ -190,8 +191,8 @@ class StandIn : public UIComponent, public DXDragSource
     virtual void setLabelColor(Pixel color);
     virtual Pixel getLabelColor();
 
-    void deleteArc(Arc *a);
-    void drawArcs(Node *dst_node);
+    void deleteArk(Ark *a);
+    void drawArks(Node *dst_node);
     void drawTab(int paramIndex, boolean outputTab);
 
     void ioStatusChange(int index, boolean outputTab, 
@@ -242,13 +243,13 @@ class StandIn : public UIComponent, public DXDragSource
     void setSelected(boolean s); 
     int isSelected()        { return this->selected; }
 
-    void addArc(EditorWindow* editor, Arc *a);
+    void addArk(EditorWindow* editor, Ark *a);
 
     //
     // Print a representation of the stand in on a PostScript device.  We
     // assume that the device is in the same coordinate space as the parent
     // of this uicomponent (i.e. we send the current geometry to the 
-    // PostScript output file).  We do not print the ArcStandIns, but do
+    // PostScript output file).  We do not print the ArkStandIns, but do
     // print the Tabs.
     //
     boolean printPostScriptPage(FILE *f, boolean label_parameters = TRUE);

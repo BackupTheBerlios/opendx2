@@ -12,7 +12,7 @@
 #define tdmWindow_c
 
 #ifndef	lint
-static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.c,v 1.4 1999/05/10 15:45:36 gda Exp $";
+static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwWindow.c,v 1.5 2000/05/16 18:48:29 gda Exp $";
 #endif
 
 #define FLING_TIMEOUT 3
@@ -395,13 +395,13 @@ _tdmResizeImage (WinP win)
     {
       if (! DXGetCameraResolution (CAMERA, &camw, &camh))
 	  /* unable to get camera resolution */
-	  DXErrorGoto (ERROR_INVALID_DATA, "#13530") ;
+	  DXErrorGoto (ERROR_DATA_INVALID, "#13530") ;
     }
   else
       /* assume we have been given an image */
       if (! DXGetImageSize (OBJECT, &camw, &camh))
 	  /* unable to get image resolution */
-	  DXErrorGoto (ERROR_INVALID_DATA, "#13540") ;
+	  DXErrorGoto (ERROR_DATA_INVALID, "#13540") ;
 
   PRINT (("DX object resolution: %dx%d", camw, camh));
 
@@ -522,12 +522,12 @@ _tdmResizeWindow (WinP win, int w, int h, int *winSizeChange)
     {
       if (! DXGetCameraResolution (CAMERA, &camw, &camh))
 	  /* unable to get camera resolution */
-	  DXErrorGoto (ERROR_INVALID_DATA, "#13530") ; 
+	  DXErrorGoto (ERROR_DATA_INVALID, "#13530") ; 
     }
   else
       if (! DXGetImageSize (OBJECT, &camw, &camh))
 	  /* unable to get image resolution */
-	  DXErrorGoto (ERROR_INVALID_DATA, "#13540") ;
+	  DXErrorGoto (ERROR_DATA_INVALID, "#13540") ;
 
   PRINT(("current DX resolution: %dx%d", camw, camh));
   PRINT(("current viewport: %dx%d", VIEWPORT_W, VIEWPORT_H));
@@ -1255,14 +1255,14 @@ _dxfTrySaveBuffer (WinP win)
    if (CAMERA) {
       if (! DXGetCameraResolution(CAMERA, &camw, &camh))
       /* unable to get camera resolution */
-         DXErrorGoto (ERROR_INVALID_DATA, "#13530") ;
+         DXErrorGoto (ERROR_DATA_INVALID, "#13530") ;
       }
    else
       {
       /* assume we have been given an image */
        if (! DXGetImageSize (OBJECT, &camw, &camh))
            /* unable to get image resolution */
-           DXErrorGoto (ERROR_INVALID_DATA, "#13540") ;
+           DXErrorGoto (ERROR_DATA_INVALID, "#13540") ;
       }
 
   /* read the window */
@@ -1336,14 +1336,14 @@ _dxfTryRestoreBuffer (WinP win)
    if (CAMERA) {
       if (! DXGetCameraResolution(CAMERA, &camw, &camh))
       /* unable to get camera resolution */
-         DXErrorGoto (ERROR_INVALID_DATA, "#13530") ;
+         DXErrorGoto (ERROR_DATA_INVALID, "#13530") ;
       }
    else
       {
       /* assume we have been given an image */
        if (! DXGetImageSize (OBJECT, &camw, &camh))
            /* unable to get image resolution */
-           DXErrorGoto (ERROR_INVALID_DATA, "#13540") ;
+           DXErrorGoto (ERROR_DATA_INVALID, "#13540") ;
       }
   
   /* check for presence of buffer and size */

@@ -7,9 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "defines.h"
 #include "ErrorDialogManager.h"
 #include "LinkHandler.h"
 #include "Dictionary.h"

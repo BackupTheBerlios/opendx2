@@ -7,10 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "ProbeDefinition.h"
 #include "ProbeNode.h"
 #include "LabeledStandIn.h"

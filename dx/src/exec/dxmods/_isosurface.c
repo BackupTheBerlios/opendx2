@@ -2515,7 +2515,7 @@ Field create_iso_points
          ( pi_info->shape[0] != 2 ) &&
          ( pi_info->shape[0] != 3 ) )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11400", /* %s has invalid dimensionality; does not match %s */
               "\"positions\" component", "\"connections\"" );
 
@@ -2944,7 +2944,7 @@ Field create_band_lines
          ( pi_info->shape[0] != 2 ) &&
          ( pi_info->shape[0] != 3 ) )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11400", /* %s has invalid dimensionality; does not match %s */
               "\"positions\" component", "\"connections\"" );
 
@@ -3437,7 +3437,7 @@ Field create_iso_contours
     if ( ( pi_info->shape[0] != 2 ) &&
          ( pi_info->shape[0] != 3 ) )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11400", /* %s has invalid dimensionality; does not match %s */
               "\"positions\" component", "\"connections\"" );
 
@@ -3905,7 +3905,7 @@ Field create_band_surface
     if ( ( pi_info->shape[0] != 2 ) &&
          ( pi_info->shape[0] != 3 ) )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11400", /* %s has invalid dimensionality; does not match %s */
               "\"positions\" component", "\"connections\"" );
 
@@ -4482,13 +4482,13 @@ int _dxf_get_flip
 
     if ( NULL == input_info->std_comps[(int)CONNECTIONS] )
         DXErrorGoto2
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10240", /* missing %s component */ "connections" );
 
     if ( (input_info->std_comps[(int)CONNECTIONS]->element_type != TETRAHEDRA)
          &&
          (input_info->std_comps[(int)CONNECTIONS]->element_type != CUBES ) )
-        DXErrorGoto3 ( ERROR_INVALID_DATA, "#10203", /* %s must be one of: %s */
+        DXErrorGoto3 ( ERROR_DATA_INVALID, "#10203", /* %s must be one of: %s */
                        "connections element type", "tetrahedra, cubes" );
 
     p_info = (array_info) &(input_info->std_comps[(int)POSITIONS]->array);
@@ -4699,7 +4699,7 @@ Error flip_normals_and_triangles
 
     if ( ( have_connects == 1 ) && ( have_nondegen == 0 ) )
          DXErrorGoto
-             ( ERROR_INVALID_DATA,
+             ( ERROR_DATA_INVALID,
                "#11836" /* all connections are degenerate */ );
 
 
@@ -5212,7 +5212,7 @@ Field create_iso_surface
 
     if ( ( pi_info->shape[0] != 3 ) )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11400", /* %s has invalid dimensionality; does not match %s */
               "\"positions\" component", "\"connections\"" );
 
@@ -5767,21 +5767,21 @@ Error isosurface_field
 
     if ( input_info->std_comps[(int)POSITIONS] == NULL )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10250", /*%s is missing %s component*/
               "'data' parameter",
               "\"positions\"" );
 
     if ( input_info->std_comps[(int)CONNECTIONS] == NULL )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10250", /*%s is missing %s component*/
               "'data' parameter",
               "\"connections\"" );
 
     if ( input_info->std_comps[(int)DATA] == NULL )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10250", /*%s is missing %s component*/
               "'data' parameter",
               "\"data\"" );
@@ -5792,7 +5792,7 @@ Error isosurface_field
               ( input_info->std_comps[(int)DATA]->std_attribs[(int)DEP]->value,
                 "positions" ) != 0 ) )
         DXErrorGoto2
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11251", /* %s must be dependent on positions */
               "the \"data\" component" );
 
@@ -5804,7 +5804,7 @@ Error isosurface_field
          &&
          ( ( d_info->rank != 1 ) || ( d_info->shape[0] != 1 ) ) )
         DXErrorGoto2
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10081", /* %s must be scalar or 1-vector */
               "\"data\" component" );
 
@@ -5853,7 +5853,7 @@ Error isosurface_field
                 case ET_UNKNOWN:
                 default:
                     DXErrorGoto2
-                        ( ERROR_INVALID_DATA,
+                        ( ERROR_DATA_INVALID,
                           "#11380", /* %s is an invalid connections type */
                           input_info->std_comps[(int)CONNECTIONS]->name );
             }
@@ -5886,7 +5886,7 @@ Error isosurface_field
                 case ET_UNKNOWN:
                 default:
                     DXErrorGoto2
-                        ( ERROR_INVALID_DATA,
+                        ( ERROR_DATA_INVALID,
                           "#11380", /* %s is an invalid connections type */
                           input_info->std_comps[(int)CONNECTIONS]->
                               std_attribs[ELEMENT_TYPE]->value );
@@ -6023,12 +6023,12 @@ int is_volume_topology ( CompositeField cf )
         if ( ERROR == ( child = (Field)DXGetEnumeratedMember
                                            ( (Group)cf, i++, NULL ) ) )
             DXErrorGoto
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "CompositeField has no members containing \"connections\"" );
 
         if ( DXGetObjectClass ( (Object) child ) != CLASS_FIELD )
             DXErrorGoto
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "CompositeField contains a member that is not a Field" );
 
         if ( NULL != DXGetComponentValue ( child, "connections" ) )
@@ -6056,7 +6056,7 @@ int is_volume_topology ( CompositeField cf )
         case isnt_volume:  return 0;
         case dont_know:
             DXSetError
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#11380", /* %s is an invalid connections type */
                   "composite field member" );
             goto error;
@@ -6106,7 +6106,7 @@ type_check iso_object_type_check ( Object o )
             return OBJ_OK;
         else
             DXErrorGoto2
-                ( ERROR_INVALID_DATA, 
+                ( ERROR_DATA_INVALID, 
                   "#10081", /* %s must be scalar or 1-vector */
                   "\"data\" component" );
     }
@@ -6121,7 +6121,7 @@ type_check iso_object_type_check ( Object o )
                     return OBJ_EMPTY;
                 else
                     DXErrorGoto3
-                        ( ERROR_INVALID_DATA,
+                        ( ERROR_DATA_INVALID,
                           "#10250", /* %s is missing %s component */
                           "Field (non-empty)", "\"data\"" );
 
@@ -6182,7 +6182,7 @@ type_check iso_object_type_check ( Object o )
 
             default:
                 DXErrorGoto2
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "#10190", /* %s must be a field or a group */
                       "'data' parameter" );
         }
@@ -7102,7 +7102,7 @@ Error iso_part ( iso_arg_type iso_arg )
         default:
             /* Luckily we know that this is the 'data' parameter" */
             DXSetError
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#10190", /* %s must be a field or a group */
                   "'data' parameter" );
             DXDebug
@@ -7227,7 +7227,7 @@ Object _dxf_IsosurfaceObject ( iso_arg_type iso_arg )
         default:
             /* Luckily we know that this is the 'data' parameter" */
             DXSetError
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#10190", /* %s must be a field or a group */
                   "'data' parameter" );
             DXDebug

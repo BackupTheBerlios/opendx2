@@ -174,7 +174,7 @@ DXImportCM(char *filename, char **fieldname)
       if (opacity) return (Object)of;
 
   badformat:
-    DXSetError(ERROR_INVALID_DATA, "file not in colormap format");
+    DXSetError(ERROR_DATA_INVALID, "file not in colormap format");
     /* fall thru */
 
   error:

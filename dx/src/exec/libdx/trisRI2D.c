@@ -7,13 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-
+#include <dx/dx.h>
 
 
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-#include <dx/dx.h>
 #include "trisRI2DClass.h"
 
 #define WALK_LENGTH	5
@@ -54,7 +53,7 @@ _dxfRecognizeTrisRI2D(Field field)
 	
     if (c != CATEGORY_REAL)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11150", "connections");
+	DXSetError(ERROR_DATA_INVALID, "#11150", "connections");
 	return 0;
     }
 	
@@ -69,7 +68,7 @@ _dxfRecognizeTrisRI2D(Field field)
     
     if (t != TYPE_INT || c != CATEGORY_REAL)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11450");
+	DXSetError(ERROR_DATA_INVALID, "#11450");
 	return 0;
     }
     

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -16,7 +18,6 @@
 #include <Xm/Form.h>
 #include <Xm/PushB.h>
 
-#include "defines.h"
 #include "Application.h"
 #include "FileSelectorNode.h"
 #include "FileSelectorInteractor.h"

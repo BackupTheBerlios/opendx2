@@ -7,15 +7,15 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "UIConfig.h"
 
 #include <Xm/MainW.h>
 
-#include "defines.h"
 #include "ScalarInteractor.h"
 #include "ScalarNode.h"
 #include "ScalarInstance.h"

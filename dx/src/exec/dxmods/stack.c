@@ -562,7 +562,7 @@ checksample(StackParms *sp, StackInfo *si)
     }
     if ((!DXTypeCheckV(ap, TYPE_FLOAT, CATEGORY_REAL, 0, NULL)) &&
 	(!DXTypeCheckV(ap, TYPE_FLOAT, CATEGORY_REAL, 1, NULL))) {
-	DXSetError(ERROR_INVALID_DATA, "#11383");
+	DXSetError(ERROR_DATA_INVALID, "#11383");
 	goto error;
     }
     
@@ -581,17 +581,17 @@ checksample(StackParms *sp, StackInfo *si)
 	/* get the dimensionality and make sure it's regular */
 	if ((!DXTypeCheckV(ac, TYPE_INT, CATEGORY_REAL, 0, NULL)) &&
 	    (!DXTypeCheckV(ac, TYPE_INT, CATEGORY_REAL, 1, NULL))) {
-	    DXSetError(ERROR_INVALID_DATA, "#11382");
+	    DXSetError(ERROR_DATA_INVALID, "#11382");
 	    goto error;
 	}
 	
 	if (!DXGetStringAttribute((Object)ac, "element type", &cp)) {
-	    DXSetError(ERROR_INVALID_DATA, "#13070");
+	    DXSetError(ERROR_DATA_INVALID, "#13070");
 	    goto error;
 	}
 
 	if (!DXQueryGridConnections(ac, &rank, NULL)) {
-	    DXSetError(ERROR_INVALID_DATA, "connections must be fully regular");
+	    DXSetError(ERROR_DATA_INVALID, "connections must be fully regular");
 	    goto error;
 	}
 
@@ -606,11 +606,11 @@ checksample(StackParms *sp, StackInfo *si)
 	    si->conndim = 3;
 	else if (strncmp(cp, "cubes", 5) == 0) {
 	    if (sscanf(cp+5, "%d", &si->conndim) != 1) {
-		DXSetError(ERROR_INVALID_DATA, "#10610", "input");
+		DXSetError(ERROR_DATA_INVALID, "#10610", "input");
 		goto error;
 	    }
 	} else {
-	    DXSetError(ERROR_INVALID_DATA, "#10610", "input");
+	    DXSetError(ERROR_DATA_INVALID, "#10610", "input");
 	    goto error;
 	}
 	
@@ -867,7 +867,7 @@ checkall(StackParms *sp, StackInfo *si)
 	}
 	if ((!DXTypeCheckV(ap, TYPE_FLOAT, CATEGORY_REAL, 0, NULL)) &&
 	    (!DXTypeCheckV(ap, TYPE_FLOAT, CATEGORY_REAL, 1, NULL))) {
-	    DXSetError(ERROR_INVALID_DATA, "#11383");
+	    DXSetError(ERROR_DATA_INVALID, "#11383");
 	    goto error;
 	}
 	
@@ -884,12 +884,12 @@ checkall(StackParms *sp, StackInfo *si)
 	    /* get the dimensionality and make sure it's regular */
 	    if ((!DXTypeCheckV(ac, TYPE_INT, CATEGORY_REAL, 0, NULL)) &&
 		(!DXTypeCheckV(ac, TYPE_INT, CATEGORY_REAL, 1, NULL))) {
-		DXSetError(ERROR_INVALID_DATA, "#11382");
+		DXSetError(ERROR_DATA_INVALID, "#11382");
 		goto error;
 	    }
 	    
 	    if (!DXGetStringAttribute((Object)ac, "element type", &cp)) {
-		DXSetError(ERROR_INVALID_DATA, "#13070");
+		DXSetError(ERROR_DATA_INVALID, "#13070");
 		goto error;
 	    }
 	    
@@ -910,7 +910,7 @@ checkall(StackParms *sp, StackInfo *si)
 		     (sscanf(cp+5, "%d", &tmp) == 1) && tmp == si->conndim)
 		;
 	    else {
-		DXSetError(ERROR_INVALID_DATA, "#10610", "input");
+		DXSetError(ERROR_DATA_INVALID, "#10610", "input");
 		goto error;
 	    }
 	    
@@ -934,7 +934,7 @@ checkall(StackParms *sp, StackInfo *si)
 
 	    /* make this a warning instead of error? */
 	    if (!(aa=(Array)DXGetComponentValue(testf, si->compname[j]))) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "at least one field is missing a %s component",
 			   si->compname[j]);
 		goto error;
@@ -1002,19 +1002,19 @@ arraymatch(Array a1, Array a2, int countflag, char *name)
     }
     
     if (countflag && (count1 != count2)) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "%s arrays are not the same length", name);
 	goto error;
     }
     
     if (t1 != t2) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "%s arrays are not the same type", name);
 	goto error;
     }
     
     if (c1 != c2) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "%s arrays are not the same category", name);
 	goto error;
     }
@@ -1022,17 +1022,17 @@ arraymatch(Array a1, Array a2, int countflag, char *name)
     if (rank1 != rank2) {
 	if ((rank1 != 0 && rank1 != 1) ||
 	    (rank2 != 0 && rank2 != 1)) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "%s arrays are not the same rank", name);
 	    goto error;
 	}
 	if (rank1 == 1 && hereshape1[0] != 1) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "%s arrays are not the same rank", name);
 	    goto error;
 	}
 	if (rank2 == 1 && hereshape2[0] != 1) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "%s arrays are not the same rank", name);
 	    goto error;
 	}
@@ -1041,14 +1041,14 @@ arraymatch(Array a1, Array a2, int countflag, char *name)
     if (rank1 < MAXRANK) {
 	for (i=0; i<rank1; i++)
 	    if (hereshape1[i] != hereshape2[i]) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "%s arrays are not the same shape", name);
 		goto error;
 	    }
     } else {
 	for (i=0; i<rank1; i++)
 	    if (genshape1[i] != genshape2[i]) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "%s arrays are not the same shape", name);
 		goto error;
 	    }
@@ -1166,12 +1166,12 @@ invertobj(StackInfo *si)
      */
     conn = (Array)DXGetComponentValue((Field)subo, "connections");
     if (!conn) {
-	DXSetError(ERROR_INVALID_DATA, "cannot stack partitioned data if some fields do not have a 'connections' component");
+	DXSetError(ERROR_DATA_INVALID, "cannot stack partitioned data if some fields do not have a 'connections' component");
 	goto error;
     }
     
     if (!DXGetMeshArrayInfo((MeshArray)conn, &meshsize, NULL)) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "cannot stack partitioned data if all fields do not havea completely regular 'connections' component");
 	goto error;
     }
@@ -1191,12 +1191,12 @@ invertobj(StackInfo *si)
 
 	conn = (Array)DXGetComponentValue((Field)subo, "connections");
 	if (!conn) {
-	    DXSetError(ERROR_INVALID_DATA, "cannot stack partitioned data if some fields do not have a 'connections' component");
+	    DXSetError(ERROR_DATA_INVALID, "cannot stack partitioned data if some fields do not have a 'connections' component");
 	    goto error;
 	}
 	
 	if (!DXGetMeshArrayInfo((MeshArray)conn, &meshsize, NULL)) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "cannot stack partitioned data if all fields do not havea completely regular 'connections' component");
 	    goto error;
 	}
@@ -1207,7 +1207,7 @@ invertobj(StackInfo *si)
 	}
 	
 	if (!DXGetMeshOffsets((MeshArray)conn, meshoffsets+(i*meshsize))) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "cannot stack partitioned data if all fields do not havemesh offsets");
 	    goto error;
 	}
@@ -1246,12 +1246,12 @@ invertobj(StackInfo *si)
 	    
 	    conn = (Array)DXGetComponentValue((Field)subo, "connections");
 	    if (!conn) {
-		DXSetError(ERROR_INVALID_DATA, "cannot stack partitioned data if some fields do not have a 'connections' component");
+		DXSetError(ERROR_DATA_INVALID, "cannot stack partitioned data if some fields do not have a 'connections' component");
 		goto error;
 	    }
 	    
 	    if (!DXGetMeshArrayInfo((MeshArray)conn, &meshsize2, NULL)) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "cannot stack partitioned data if all fields do not havea completely regular 'connections' component");
 		goto error;
 	    }
@@ -1263,7 +1263,7 @@ invertobj(StackInfo *si)
 	    }
 	    
 	    if (!DXGetMeshOffsets((MeshArray)conn, meshoffsets2)) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "cannot stack partitioned data if all fields do not havemesh offsets");
 		goto error;
 	    }
@@ -1277,7 +1277,7 @@ invertobj(StackInfo *si)
 		    break;
 	    }
 	    if (i == cfcount) {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			   "cannot stack partitioned data if all fields do not havemesh offsets");
 		goto error;
 	    }
@@ -2299,7 +2299,7 @@ dorenumber(Array newarr, Array renumber)
      * force them to be int.
      */
     if (!DXTypeCheckV(newarr, TYPE_INT, CATEGORY_REAL, 0, NULL)) {
-	DXSetError(ERROR_INVALID_DATA, "ref arrays must be type integer");
+	DXSetError(ERROR_DATA_INVALID, "ref arrays must be type integer");
 	return NULL;
     }
 
@@ -2559,7 +2559,7 @@ foolInvalids(Array a, char *name, Field f, int seriesmember)
 
     if (!a) {
         if (strncmp(name, "invalid ", strlen("invalid ")) != 0) {
-            DXSetError(ERROR_INVALID_DATA, 
+            DXSetError(ERROR_DATA_INVALID, 
                        "series member %d does not contain component `%s'", 
                        seriesmember, name);
             return NULL;
@@ -2569,7 +2569,7 @@ foolInvalids(Array a, char *name, Field f, int seriesmember)
          */
         a = (Array)DXGetComponentValue(f, name+strlen("invalid "));
         if (!a) {
-            DXSetError(ERROR_INVALID_DATA, 
+            DXSetError(ERROR_DATA_INVALID, 
                        "series member %d does not contain component `%s'", 
                        seriesmember, name+strlen("invalid "));
             return NULL;
@@ -2618,7 +2618,7 @@ foolInvalids(Array a, char *name, Field f, int seriesmember)
              */
             na = (Array)DXGetComponentValue(f, name+strlen("invalid "));
             if (!na) {
-                DXSetError(ERROR_INVALID_DATA, 
+                DXSetError(ERROR_DATA_INVALID, 
                            "series member %d does not contain component `%s'", 
                            seriesmember, name+strlen("invalid "));
                 return NULL;
@@ -2697,7 +2697,7 @@ seriesregular(StackParms *sp, StackInfo *si, Array *newpos)
     
     del0 = sN - s0;
     if (fabs(del0) < DXD_MIN_FLOAT) {
-	DXSetError(ERROR_INVALID_DATA, "#11075");
+	DXSetError(ERROR_DATA_INVALID, "#11075");
 	goto error;
     }
     
@@ -2713,7 +2713,7 @@ seriesregular(StackParms *sp, StackInfo *si, Array *newpos)
 	    goto done;   /* no error, just not regularly spaced */
 	
 	if ((del0 > 0 && delN < 0) || (del0 < 0 && delN > 0) || (delN == 0.0)) {
-	    DXSetError(ERROR_INVALID_DATA, "#11075");
+	    DXSetError(ERROR_DATA_INVALID, "#11075");
 	    goto error;
 	}
 

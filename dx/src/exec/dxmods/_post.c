@@ -84,7 +84,7 @@ _dxfPostArray(Field field, char *component, char *destination)
     attr = DXGetComponentAttribute(field, component, "dep");
     if (!attr || DXGetObjectClass(attr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10241", component, "dep");
+	DXSetError(ERROR_DATA_INVALID, "#10241", component, "dep");
 	goto error;
     }
 
@@ -290,7 +290,7 @@ _dxfPostObject(Object obj, int dir, Array comp)
 	}
 
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "#11381");
+	    DXSetError(ERROR_DATA_INVALID, "#11381");
 	    goto error;
     }
 
@@ -380,7 +380,7 @@ _dxfPostToPositions(Field field, char **comp)
     array = (Array)DXGetComponentValue(field, "positions");
     if (! array)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10240", "positions");
+	DXSetError(ERROR_DATA_INVALID, "#10240", "positions");
 	goto error;
     }
 
@@ -457,7 +457,7 @@ _dxfPostToPositions(Field field, char **comp)
 
 	if (DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10200", "dependency attribute");
+	    DXSetError(ERROR_DATA_INVALID, "#10200", "dependency attribute");
 	    goto error;
 	}
 
@@ -487,7 +487,7 @@ _dxfPostToPositions(Field field, char **comp)
 	
 	if (DXGetComponentAttribute(field, name, "ref"))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#12110");
+	    DXSetError(ERROR_DATA_INVALID, "#12110");
 	    goto error;
 	}
 	    
@@ -498,7 +498,7 @@ _dxfPostToPositions(Field field, char **comp)
 
 	if (n != nConnections)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10400", name, "connections");
+	    DXSetError(ERROR_DATA_INVALID, "#10400", name, "connections");
 	    goto error;
 	}
 
@@ -617,7 +617,7 @@ _dxfPostToPositions(Field field, char **comp)
 			break;
 
 		    default:
-			DXSetError(ERROR_INVALID_DATA, "#10320", name);
+			DXSetError(ERROR_DATA_INVALID, "#10320", name);
 			goto error;
 		}
 	    }
@@ -660,7 +660,7 @@ _dxfPostToPositions(Field field, char **comp)
 			    break;
 
 		    default:
-			DXSetError(ERROR_INVALID_DATA, "#10320", name);
+			DXSetError(ERROR_DATA_INVALID, "#10320", name);
 			goto error;
 		}
 	    }
@@ -751,7 +751,7 @@ _dxfPostToConnections(Field field, char **comp)
     array = (Array)DXGetComponentValue(field, "connections");
     if (! array)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10240", "connections");
+	DXSetError(ERROR_DATA_INVALID, "#10240", "connections");
 	goto error;
     }
     
@@ -828,7 +828,7 @@ _dxfPostToConnections(Field field, char **comp)
 
 	if (DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10200", "dependency attribute");
+	    DXSetError(ERROR_DATA_INVALID, "#10200", "dependency attribute");
 	    goto error;
 	}
 
@@ -858,7 +858,7 @@ _dxfPostToConnections(Field field, char **comp)
 	
 	if (DXGetComponentAttribute(field, name, "ref"))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#12110");
+	    DXSetError(ERROR_DATA_INVALID, "#12110");
 	    goto error;
 	}
 
@@ -869,7 +869,7 @@ _dxfPostToConnections(Field field, char **comp)
 
 	if (n != nPositions)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10400", name, "positions");
+	    DXSetError(ERROR_DATA_INVALID, "#10400", name, "positions");
 	    goto error;
 	}
 
@@ -990,7 +990,7 @@ _dxfPostToConnections(Field field, char **comp)
 
 		    default:
 
-			DXSetError(ERROR_INVALID_DATA, "#10320", name);
+			DXSetError(ERROR_DATA_INVALID, "#10320", name);
 			goto error;
 		}
 	    }
@@ -1035,7 +1035,7 @@ _dxfPostToConnections(Field field, char **comp)
 
 		    default:
 
-			DXSetError(ERROR_INVALID_DATA, "#10320", name);
+			DXSetError(ERROR_DATA_INVALID, "#10320", name);
 			goto error;
 		}
 	    }
@@ -1144,7 +1144,7 @@ _dxfGetComponentList(Object o, Array a, int dir, char **compStrings)
 
 		if (DXGetObjectClass(a) != CLASS_STRING)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "#10200",
+		    DXSetError(ERROR_DATA_INVALID, "#10200",
 					"dependency attribute");
 		    return ERROR;
 		}

@@ -11,41 +11,47 @@
 
 #include <dx/dx.h>
 
-#if DXD_HAS_UNIX_SYS_INCLUDES
+#if defined(HAVE_SYS_FILE_H)
 #include <sys/file.h>
 #endif
+
 #include <stdio.h>
 #include <ctype.h>
-#include <sys/types.h>
 
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#define	EADDRINUSE	WSAEADDRINUSE
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#else
-#include <sys/socket.h>
+
+#if defined(HAVE_SYS_TYPES_H)
+#include <sys/types.h>
 #endif
 
-#ifdef  DXD_WIN
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
-#ifndef DXD_HAS_WINSOCKETS
+
+#if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
-#if DXD_SOCKET_UNIXDOMAIN_OK
+
+#if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
 #endif
-#ifndef DXD_HAS_WINSOCKETS
+
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
+
+#if defined(HAVE_ERRNO_H)
 #include <errno.h>
+#endif
+
 #if DXD_NEEDS_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-#if DXD_HAS_UNIX_SYS_INCLUDES
+
+#if defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
 #endif
 
@@ -109,9 +115,7 @@ retry:
     sl.l_onoff = 1;
     sl.l_linger = 0;
     setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *)&sl, sizeof(sl));
-#if defined(DXD_HAS_IBM_OS2_SOCKETS) || defined(DXD_HAS_WINSOCKETS)
-    SOCK_SETSOCKET(sock);
-#endif
+
 #if DXD_SOCKET_UNIXDOMAIN_OK
     usock = socket(AF_UNIX, SOCK_STREAM, 0);
     if (usock < 0)
@@ -122,9 +126,6 @@ retry:
     }
 
     setsockopt(usock, SOL_SOCKET, SO_LINGER, (char *)&sl, sizeof(sl));
-#if defined(DXD_HAS_IBM_OS2_SOCKETS) || defined(DXD_HAS_WINSOCKETS)
-    SOCK_SETSOCKET(sock);
-#endif
 #endif
 
     server.sin_family = AF_INET;
@@ -302,9 +303,6 @@ _dxfCompleteServer(int sock,
 	    fd = -1;
 	    goto error;
 	}
-#if defined(DXD_HAS_IBM_OS2_SOCKETS) || defined(DXD_HAS_WINSOCKETS)
-        SOCK_SETSOCKET(fd);
-#endif
     }
 #if DXD_SOCKET_UNIXDOMAIN_OK
     else
@@ -316,9 +314,6 @@ _dxfCompleteServer(int sock,
 	    fd = -1;
 	    goto error;
 	}
-#if defined(DXD_HAS_IBM_OS2_SOCKETS) || defined(DXD_HAS_WINSOCKETS)
-        SOCK_SETSOCKET(fd);
-#endif
     }
 #endif
 

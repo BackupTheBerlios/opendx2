@@ -327,7 +327,7 @@ _dxfValidInterpolatorMap(Object map)
 
 	if (prim->name == NULL)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11380", "name");
+	    DXSetError(ERROR_DATA_INVALID, "#11380", "name");
 	    return ERROR;
 	}
 
@@ -342,7 +342,7 @@ _dxfValidInterpolatorMap(Object map)
 
 	if (shape[0] != prim->dimensionality)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11003",
+	    DXSetError(ERROR_DATA_INVALID, "#11003",
 				    prim->name, prim->dimensionality);
 	    return ERROR;
 	}
@@ -352,7 +352,7 @@ _dxfValidInterpolatorMap(Object map)
 
 	if (rank != 1 || shape[0] != prim->ptsPerPrimitive)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11004",
+	    DXSetError(ERROR_DATA_INVALID, "#11004",
 			prim->name, prim->ptsPerPrimitive);
 	    return ERROR;
 	}
@@ -361,7 +361,7 @@ _dxfValidInterpolatorMap(Object map)
     }
     else
     {
-	DXSetError(ERROR_INVALID_DATA, "#11381");
+	DXSetError(ERROR_DATA_INVALID, "#11381");
 	return ERROR;
     }
 }

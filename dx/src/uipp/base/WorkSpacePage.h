@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,7 +16,6 @@
 #ifndef _WorkSpacePage_h
 #define _WorkSpacePage_h
 
-#include "defines.h"
 #include "Base.h"
 #include "WorkSpaceRoot.h"
 #include "SymbolManager.h"

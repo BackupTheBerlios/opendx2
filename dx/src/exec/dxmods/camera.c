@@ -184,7 +184,7 @@ static Error existing_camera(struct cameraparms *p, Camera c, int isauto)
     memset((char *)p, '\0', sizeof(struct cameraparms));
 
     if (!c || DXGetObjectClass((Object)c) != CLASS_CAMERA) {
-	DXSetError(ERROR_INVALID_DATA, "#10660", "camera");
+	DXSetError(ERROR_DATA_INVALID, "#10660", "camera");
 	return ERROR;
     }
 

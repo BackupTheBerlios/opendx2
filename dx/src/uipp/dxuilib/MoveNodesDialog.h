@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 #define _MoveNodesDialog_h
 
 
-#include "defines.h"
 #include "Dialog.h"
 
 extern "C" void MoveNodesDialog_ApplyCB (Widget, XtPointer clientData, XtPointer);
@@ -111,7 +112,6 @@ class MoveNodesDialog : public Dialog
 };
 
 
-#include "defines.h"
 #include "NoUndoCommand.h"
 
 

@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <dx/dx.h>
 
 /* 
  * this file is NOT used with the normal exec;  it is only linked in
@@ -14,30 +15,26 @@
  */
 
 #include <string.h>
+
+#if  defined(HAVE_UNISTD_H)
 #include <unistd.h>
-#include <dx/dx.h>
-#if  DXD_HAS_IBM_OS2_SOCKETS
+#endif
+
+#if  defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
 
-#ifndef DXD_WIN
+#if defined(HAVE_SYS_IOCTL_H)
 #include <sys/ioctl.h>
 #endif
 
-#ifdef DXD_WIN
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
-
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#elif defined(HAVE_SYS_SOCKET_H)
-#include <sys/socket.h>
-#endif
-
 
 #if defined(HAVE_SYS_FILIO_H)
 #include <sys/filio.h>

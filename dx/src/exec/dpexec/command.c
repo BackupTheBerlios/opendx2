@@ -13,12 +13,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#if DXD_HAS_UNIX_SYS_INCLUDES
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
+#if defined(HAVE_CTYPE_H)
 #include <ctype.h>
+#endif
+#if defined(HAVE_STRING_H)
 #include <string.h>
-#ifndef DXD_HAS_WINSOCKETS
+#endif
+#if defined(HAVE_NETDB_H)
 #include <netdb.h>
 #endif
 

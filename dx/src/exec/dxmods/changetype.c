@@ -146,7 +146,7 @@ Error m_ChangeGroupType(Object *in, Object *out)
            newgrp = (Group)DXNewGroup();
            break;
         default: 
-          DXSetError(ERROR_INVALID_DATA, "Unrecognized group type");
+          DXSetError(ERROR_DATA_INVALID, "Unrecognized group type");
           goto error;
           
         } 

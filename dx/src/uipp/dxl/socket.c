@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/defines.h"
 
 #include <malloc.h>
 #include <stdio.h>
@@ -52,7 +53,6 @@
 #include <sys/select.h>
 #endif
 
-#include "../base/UIConfig.h"
 #include "../base/IBMVersion.h"
 #include "dxlP.h"
 #ifdef OS2
@@ -69,7 +69,7 @@
 #include <signal.h>
 #endif
 
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
 #endif
 
@@ -166,7 +166,7 @@ _dxl_MakeConnection(DXLConnection *connection, int port, const char *host)
      * If this is the first instance of a packet interface, then set up
      * to ignore SIGPIPE (but we watch for EPIPE).
      */
-#ifndef DXD_NON_UNIX_SOCKETS
+#if defined(HAVE_SIGPIPE)
     if ((nConnection++ == 0) && (getenv("DX_NOSIGNALS") == NULL))
 	signal(SIGPIPE, SIG_IGN);
 #endif
@@ -250,7 +250,7 @@ _dxl_MakeConnection(DXLConnection *connection, int port, const char *host)
 	}
     }
     connection->fd = socket(AF_INET, SOCK_STREAM, 0);
-#ifndef DXD_WIN
+#if !defined(intelnt)
     if (connection->fd < 0) 
         goto error;
 #else
@@ -406,7 +406,7 @@ DXLIsHostLocal(const char *host)
     char remoteHostname[BUFSIZ];
     struct hostent *he;
     int  hostnameFound;
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SIGPIPE)
     struct utsname Uts_Name;
 
     if (strcmp ("unix", host) == 0)

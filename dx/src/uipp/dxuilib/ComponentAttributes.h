@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,8 +16,6 @@
 #ifndef _ComponentAttributes_h
 #define _ComponentAttributes_h
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "Base.h"
 
 

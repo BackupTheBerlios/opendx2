@@ -13,25 +13,27 @@
 
 
 #include <stdio.h>
+
+#if defined(HAVE_SIGNAL_H)
 #include <signal.h>
+#endif
+
+#if defined(HAVE_STRING_H)
 #include <string.h>
+#endif
+
 #include <stdlib.h>
 
-#ifndef DXD_WIN
+#if defined(HAVE_SYS_WAIT_H)
 #include <sys/wait.h>
+#endif
+
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
 
 #if defined(HAVE_NETDB_H)
 #include <netdb.h>
-#endif
-
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#elif defined(HAVE_SYS_SOCKET_H)
-#include <sys/socket.h>
 #endif
 
 #if defined(HAVE_NETINET_IN_H)
@@ -284,12 +286,12 @@ _dxfAsyncRender (dxObject r, Camera c, char *obsolete, char *displayString)
       if (DXGetObjectClass(attr) == CLASS_GROUP)
       {
 	  if (NULL == (amode = (Array)DXGetMember((Group)attr, "mode")))
-	      DXErrorGoto(ERROR_INVALID_DATA, 
+	      DXErrorGoto(ERROR_DATA_INVALID, 
 		    "interaction mode args group must contain a member named \"mode\"");
       }
       else if (DXGetObjectClass(attr) != CLASS_ARRAY)
       {
-	  DXErrorGoto(ERROR_INVALID_DATA, 
+	  DXErrorGoto(ERROR_DATA_INVALID, 
 		"interaction mode args must be a group or array");
       }
       else amode = (Array)attr;
@@ -297,7 +299,7 @@ _dxfAsyncRender (dxObject r, Camera c, char *obsolete, char *displayString)
       if (DXExtractInteger((dxObject)amode, &mode))
 	  _dxfSetInteractionMode(globals, mode, attr);
       else
-	  DXErrorGoto(ERROR_INVALID_DATA, 
+	  DXErrorGoto(ERROR_DATA_INVALID, 
 		"interaction mode attribute must be an integer");
   }
   else

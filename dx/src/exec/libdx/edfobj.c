@@ -464,10 +464,10 @@ static Object namedobjfunc(struct finfo *f, char **namelist, int flag)
 	}  
 	
 	if (!named) {
-	    DXSetError(ERROR_INVALID_DATA, "#10740");
+	    DXSetError(ERROR_DATA_INVALID, "#10740");
 	    return NULL;
 	} else {
-	    DXSetError(ERROR_INVALID_DATA, "#10742");
+	    DXSetError(ERROR_DATA_INVALID, "#10742");
 	    return NULL;
 	}
     }
@@ -640,7 +640,7 @@ static Object numberedobjfunc(struct finfo *f, int *numlist, int idflag,
     /* either no named objects, or no matches with list 
      */
     if (members == 0) {
-	DXSetError(ERROR_INVALID_DATA, "#10746");
+	DXSetError(ERROR_DATA_INVALID, "#10746");
 	return NULL;
     }
 

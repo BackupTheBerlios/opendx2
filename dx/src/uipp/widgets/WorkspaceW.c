@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/defines.h"
 
 #ifdef OS2
 #include <stdlib.h>
@@ -391,154 +392,154 @@ static XtResource defaultResources[] =
 {
     { XmNforceRoute, XmCForceRoute, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceWidget, workspace.force_route),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     {
       XmNcollisionSpacing, XmCCollisionSpacing, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceWidget, workspace.collision_spacing),
-      XmRImmediate, (caddr_t) 20
+      XmRImmediate, (XtPointer) 20
     },
     {
       XmNhaloThickness, XmCHaloThickness, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceWidget, workspace.halo_thickness),
-      XmRImmediate, (caddr_t) 2
+      XmRImmediate, (XtPointer) 2
     },
     {
-      XmNpositionChangeCallback, XmCPositionChangeCallback, XmRCallback, sizeof(caddr_t),
+      XmNpositionChangeCallback, XmCPositionChangeCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmWorkspaceWidget, workspace.position_change_callback),
       XmRCallback, NULL
     },
     {
-      XmNerrorCallback, XmCErrorCallback, XmRCallback, sizeof(caddr_t),
+      XmNerrorCallback, XmCErrorCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmWorkspaceWidget, workspace.error_callback),
       XmRCallback, NULL
     },
     {
       XmNbackgroundCallback, XmCCallback, XmRCallback, sizeof(XtCallbackList),
       XtOffset(XmWorkspaceWidget, workspace.background_callback),
-      XmRPointer, (caddr_t) NULL
+      XmRPointer, (XtPointer) NULL
     },
     {
       XmNdefaultActionCallback, XmCCallback, XmRCallback,
       sizeof(XtCallbackList),
       XtOffset(XmWorkspaceWidget, workspace.action_callback),
-      XmRPointer, (caddr_t) NULL
+      XmRPointer, (XtPointer) NULL
     },
     {
       XmNselectionCallback, XmCCallback, XmRCallback, sizeof(XtCallbackList), 
       XtOffset(XmWorkspaceWidget, workspace.selection_change_callback),
-      XmRPointer, (caddr_t) NULL
+      XmRPointer, (XtPointer) NULL
     },
     {
       XmNresizeCallback, XmCCallback, XmRCallback, sizeof(XtCallbackList), 
       XtOffset(XmWorkspaceWidget, workspace.resize_callback),
-      XmRPointer, (caddr_t) NULL
+      XmRPointer, (XtPointer) NULL
     },
     { XmNaccentColor, XmCAccentColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmWorkspaceWidget, workspace.accent_color),
-      XmRImmediate, (caddr_t) -1
+      XmRImmediate, (XtPointer) -1
     },
     { XmNaccentPolicy, XmCAccentPolicy,
       XmRWorkspaceType, sizeof(unsigned char),
       XtOffset(XmWorkspaceWidget, workspace.accent_policy),
-      XmRImmediate, (caddr_t) XmACCENT_BACKGROUND
+      XmRImmediate, (XtPointer) XmACCENT_BACKGROUND
     },
     { XmNallowMovement, XmCAllowMovement, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceWidget, workspace.movement_is_allowed),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     { XmNmanhattanRoute, XmCManhattanRoute, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceWidget, workspace.manhattan_route),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     { XmNgridWidth, XmCGridWidth, XmRShort, sizeof(short),
       XtOffset(XmWorkspaceWidget, workspace.grid_width),
-      XmRImmediate, (caddr_t) 1
+      XmRImmediate, (XtPointer) 1
     },
     { XmNgridHeight, XmCGridHeight, XmRShort, sizeof(short),
       XtOffset(XmWorkspaceWidget, workspace.grid_height),
-      XmRImmediate, (caddr_t) 1
+      XmRImmediate, (XtPointer) 1
     },
     { XmNhorizontalAlignment, XmCAlignment, XmRAlignment, sizeof(unsigned char),
       XtOffset(XmWorkspaceWidget, workspace.horizontal_alignment),
-      XmRImmediate, (caddr_t) XmALIGNMENT_CENTER
+      XmRImmediate, (XtPointer) XmALIGNMENT_CENTER
     },
     { XmNhorizontalDrawGrid, XmCDrawGrid,
       XmRWorkspaceType, sizeof(unsigned char),
       XtOffset(XmWorkspaceWidget, workspace.horizontal_draw_grid),
-      XmRImmediate, (caddr_t) XmDRAW_NONE
+      XmRImmediate, (XtPointer) XmDRAW_NONE
     },
     { XmNverticalAlignment, XmCAlignment, XmRAlignment, sizeof(unsigned char),
       XtOffset(XmWorkspaceWidget, workspace.vertical_alignment),
-      XmRImmediate, (caddr_t) XmALIGNMENT_CENTER
+      XmRImmediate, (XtPointer) XmALIGNMENT_CENTER
     },
     { XmNverticalDrawGrid, XmCDrawGrid,
       XmRWorkspaceType, sizeof(unsigned char),
       XtOffset(XmWorkspaceWidget, workspace.vertical_draw_grid),
-      XmRImmediate, (caddr_t) XmDRAW_NONE
+      XmRImmediate, (XtPointer) XmDRAW_NONE
     },
     { XmNsortPolicy, XmCAlignment, XmRAlignment, sizeof(unsigned char),
       XtOffset(XmWorkspaceWidget, workspace.sort_policy),
-      XmRImmediate, (caddr_t) XmALIGNMENT_CENTER
+      XmRImmediate, (XtPointer) XmALIGNMENT_CENTER
     },
     { XmNsnapToGrid, XmCSnapToGrid, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceWidget, workspace.snap_to_grid),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     { XmNlineThickness, XmCLineThickness, XmRShort, sizeof(short),
       XtOffset(XmWorkspaceWidget, workspace.line_thickness),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     { XmNdoubleClickInterval, XmCDoubleClickInterval, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceWidget, workspace.double_click_interval),
-      XmRImmediate, (caddr_t) 500
+      XmRImmediate, (XtPointer) 500
     },
     { XmNinclusionPolicy, XmCInclusionPolicy,
       XmRWorkspaceType, sizeof(unsigned char),
       XtOffset(XmWorkspaceWidget, workspace.inclusion_policy),
-      XmRImmediate, (caddr_t) XmINCLUDE_ALL
+      XmRImmediate, (XtPointer) XmINCLUDE_ALL
     },
     { XmNselectionPolicy, XmCSelectionPolicy,
       XmRSelectionPolicy, sizeof(unsigned char),
       XtOffset(XmWorkspaceWidget, workspace.selection_policy),
-      XmRImmediate, (caddr_t) XmEXTENDED_SELECT
+      XmRImmediate, (XtPointer) XmEXTENDED_SELECT
     },
     { XmNoutlineType, XmCOutlineType,
       XmRWorkspaceType, sizeof(unsigned char),
       XtOffset(XmWorkspaceWidget, workspace.surrogate_type),
-      XmRImmediate, (caddr_t) XmOUTLINE_EACH
+      XmRImmediate, (XtPointer) XmOUTLINE_EACH
     },
     { XmNplacementPolicy, XmCPlacementPolicy, XmRChar, sizeof(unsigned char),
       XtOffset(XmWorkspaceWidget, workspace.placement_policy),
-      XmRImmediate, (caddr_t) XmSPACE_WARS_SELECTED_STAYS
+      XmRImmediate, (XtPointer) XmSPACE_WARS_SELECTED_STAYS
     },
     { XmNbutton1PressMode, XmCButton1PressMode, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceWidget, workspace.button1_press_mode),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
     },
     { XmNlineTolerance, XmCLineTolerance, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceWidget, workspace.ltol),
-      XmRImmediate, (caddr_t) 2
+      XmRImmediate, (XtPointer) 2
     },
     { XmNwidgetTolerance, XmCWidgetTolerance, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceWidget, workspace.wtol),
-      XmRImmediate, (caddr_t) 1
+      XmRImmediate, (XtPointer) 1
     },
     { XmNlineDrawingEnabled, XmCLineDrawingEnabled, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceWidget, workspace.line_drawing_enabled),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
     },
     { XmNselectable, XmCSelectable, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceWidget, workspace.is_selectable),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     { XmNpreventOverlap, XmCAllowOverlap, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceWidget, workspace.check_overlap),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     { XmNautoArrange, XmCAutoArrange, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceWidget, workspace.auto_arrange),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     }
 };
 
@@ -547,129 +548,129 @@ static XtResource constraintResources[] = {
     { XmNselectionCallback, XmCSelectionCallback,
       XmRCallback, sizeof(WsCallbackList),
       XtOffset(XmWorkspaceConstraints, workspace.select_callbacks),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     { XmNresizingCallback, XmCResizingCallback,
       XmRCallback, sizeof(WsCallbackList),
       XtOffset(XmWorkspaceConstraints, workspace.resizing_callbacks),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     { XmNaccentCallback, XmCAccentCallback, XmRCallback,sizeof(WsCallbackList),
       XtOffset(XmWorkspaceConstraints, workspace.accent_callbacks),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     { XmNselectable, XmCSelectable, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceConstraints, workspace.is_selectable),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     { XmNselected, XmCSelected, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceConstraints, workspace.is_selected),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     { XmNid, XmCId, XmRChar, sizeof(char),
-      XtOffset(XmWorkspaceConstraints, workspace.id), XmRImmediate, (caddr_t) 0
+      XtOffset(XmWorkspaceConstraints, workspace.id), XmRImmediate, (XtPointer) 0
     },
     { XmNallowVerticalResizing, XmCAllowResizing, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceConstraints, workspace.is_v_resizable),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     { XmNallowHorizontalResizing, XmCAllowResizing, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceConstraints, workspace.is_h_resizable),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     { XmNpinLeftRight, XmCPinSides, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceConstraints, workspace.pin_to_sides_lr),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     { XmNpinTopBottom, XmCPinSides, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceConstraints, workspace.pin_to_sides_tb),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     {
       XmNwwTopAttachment, XmCAttachment, XmRAttachment, sizeof(unsigned char),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_TOP].type),
-      XmRImmediate, (caddr_t) XmATTACH_NONE
+      XmRImmediate, (XtPointer) XmATTACH_NONE
    },
    {
       XmNwwBottomAttachment, XmCAttachment, XmRAttachment, sizeof(unsigned char),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_BOTTOM].type),
-      XmRImmediate, (caddr_t) XmATTACH_NONE
+      XmRImmediate, (XtPointer) XmATTACH_NONE
    },
    {
       XmNwwLeftAttachment, XmCAttachment, XmRAttachment, sizeof(unsigned char),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_LEFT].type),
-      XmRImmediate, (caddr_t) XmATTACH_NONE
+      XmRImmediate, (XtPointer) XmATTACH_NONE
    },
    {
       XmNwwRightAttachment, XmCAttachment, XmRAttachment, sizeof(unsigned char),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_RIGHT].type),
-      XmRImmediate, (caddr_t) XmATTACH_NONE
+      XmRImmediate, (XtPointer) XmATTACH_NONE
    },
    {
       XmNwwTopWidget, XmCWidget, XmRWindow, sizeof(Widget),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_TOP].w),
-      XmRWindow, (caddr_t) NULL
+      XmRWindow, (XtPointer) NULL
    },
    {
       XmNwwBottomWidget, XmCWidget, XmRWindow, sizeof(Widget),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_BOTTOM].w),
-      XmRWindow, (caddr_t) NULL
+      XmRWindow, (XtPointer) NULL
    },
    {
       XmNwwLeftWidget, XmCWidget, XmRWindow, sizeof(Widget),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_LEFT].w),
-      XmRWindow, (caddr_t) NULL
+      XmRWindow, (XtPointer) NULL
    },
    {
       XmNwwRightWidget, XmCWidget, XmRWindow, sizeof(Widget),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_RIGHT].w),
-      XmRWindow, (caddr_t) NULL
+      XmRWindow, (XtPointer) NULL
    },
    {
       XmNwwTopPosition, XmCAttachment, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_TOP].percent),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
    },
    {
       XmNwwBottomPosition, XmCAttachment, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_BOTTOM].percent),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
    },
    {
       XmNwwLeftPosition, XmCAttachment, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_LEFT].percent),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
    },
    {
       XmNwwRightPosition, XmCAttachment, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_RIGHT].percent),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
    },
    {
       XmNwwTopOffset, XmCOffset, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_TOP].offset),
-      XmRImmediate, (caddr_t) (Dimension) OFFSET_DEFAULT
+      XmRImmediate, (XtPointer) (Dimension) OFFSET_DEFAULT
    },
    {
       XmNwwBottomOffset, XmCOffset, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_BOTTOM].offset),
-      XmRImmediate, (caddr_t) (Dimension) OFFSET_DEFAULT
+      XmRImmediate, (XtPointer) (Dimension) OFFSET_DEFAULT
    },
    {
       XmNwwLeftOffset, XmCOffset, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_LEFT].offset),
-      XmRImmediate, (caddr_t) (Dimension) OFFSET_DEFAULT
+      XmRImmediate, (XtPointer) (Dimension) OFFSET_DEFAULT
    },
 
    {
       XmNwwRightOffset, XmCOffset, XmRInt, sizeof(int),
       XtOffset(XmWorkspaceConstraints, workspace.att[FC_RIGHT].offset),
-      XmRImmediate, (caddr_t) (Dimension) OFFSET_DEFAULT
+      XmRImmediate, (XtPointer) (Dimension) OFFSET_DEFAULT
    },
    { 
       XmNlineInvisibility, XmCLineInvisibility, XmRBoolean, sizeof(Boolean),
       XtOffset(XmWorkspaceConstraints, workspace.line_invisibility),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
    },
 };
 
@@ -755,7 +756,7 @@ XmWorkspaceClassRec xmWorkspaceClassRec = {
 	defaultTranslations,            /* tm_table                     */
 	XtInheritQueryGeometry,         /* query_geometry               */
 	XtInheritDisplayAccelerator,    /* display_accelerator  */
-	(caddr_t) NULL,                 /* extension                    */
+	(void *) NULL,                 /* extension                    */
     },
     /*
      *  CompositeClassPart:             composite_class
@@ -765,7 +766,7 @@ XmWorkspaceClassRec xmWorkspaceClassRec = {
 	(XtWidgetProc)ChangeManaged,    /* change_managed               */
 	MyInsertChild,      		/* insert_child                 */
 	MyDeleteChild,		        /* delete_child                 */
-	(caddr_t) NULL,                 /* extension                    */
+	(void *) NULL,                 /* extension                    */
     },
     /*
      *  ConstraintClassPart:            constraint_class
@@ -777,7 +778,7 @@ XmWorkspaceClassRec xmWorkspaceClassRec = {
 	(XtInitProc)ConstraintInitialize, /* init proc                    */
 	ConstraintDestroy,              /* destroy proc                 */
 	(XtSetValuesFunc)ConstraintSetValues, /* set values proc              */
-	(caddr_t) NULL,                 /* extension                    */
+	(void *) NULL,                 /* extension                    */
     },
     /*
      *  XmManagerClassPart:             manager_class
@@ -3548,7 +3549,7 @@ static void RestackSelectedChildren( XmWorkspaceWidget ww )
 	/*  Stack according to the top-first list  */
 	XRestackWindows(XtDisplay(ww), new_order, num_children);
 	XtFree((char*)new_order);
-	XFree((caddr_t)children);
+	XFree((void *)children);
     }
 }
 
@@ -5022,7 +5023,7 @@ static void CvtStringToWorkspaceType( XrmValue* args, Cardinal num_args,
    static unsigned char i;
 
    to_val->size = sizeof (unsigned char);
-   to_val->addr = (caddr_t) &i;
+   to_val->addr = (void *) &i;
 
    if( StringsAreEqual(in_str, "include_all") )
       i = XmINCLUDE_ALL;

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -23,7 +25,6 @@
 #include <Xm/DrawingA.h>
 #include <Xm/Frame.h>
 
-#include "defines.h"
 #include "ConfigurationDialog.h"
 #include "ListIterator.h"
 #include "CDBInput.h"
@@ -35,7 +36,7 @@
 #include "ErrorDialogManager.h"
 
 #include "Parameter.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "Node.h"
 #include "XmUtility.h"
 
@@ -1148,8 +1149,8 @@ Node *n = this->node;
 	const char *sourceString;
 	if (n->isInputConnected(i))
 	{
-	    List *arcs = (List *)n->getInputArcs(i);
-	    Arc *a = (Arc*)arcs->getElement(1);
+	    List *arcs = (List *)n->getInputArks(i);
+	    Ark *a = (Ark*)arcs->getElement(1);
 	    int paramNum;
 	    Node *source = a->getSourceNode(paramNum);
 	    sourceString = source->getNameString();
@@ -1352,23 +1353,23 @@ void ConfigurationDialog::changeOutput(int i)
 	if (n->isOutputConnected(i))
 	{
 	    char *destString;
-	    List *arcs = (List *)n->getOutputArcs(i);
+	    List *arcs = (List *)n->getOutputArks(i);
 	    ListIterator li(*arcs);
-	    Arc *a = (Arc*)li.getNext();
+	    Ark *a = (Ark*)li.getNext();
 	    int dummy;
 	    Node *dest = a->getDestinationNode(dummy);
 	    int len = STRLEN(dest->getNameString()) + 1;
-	    while ((a = (Arc*)li.getNext()) != NULL)
+	    while ((a = (Ark*)li.getNext()) != NULL)
 	    {
 		dest = a->getDestinationNode(dummy);
 		len += STRLEN(dest->getNameString()) + 2;
 	    }
 	    destString = new char[len];
 	    li.setList(*arcs);
-	    a = (Arc*)li.getNext();
+	    a = (Ark*)li.getNext();
 	    dest = a->getDestinationNode(dummy);
 	    strcpy(destString, dest->getNameString());
-	    while ((a = (Arc*)li.getNext()) != NULL)
+	    while ((a = (Ark*)li.getNext()) != NULL)
 	    {
 		dest = a->getDestinationNode(dummy);
 		strcat(destString, ", ");
@@ -2171,17 +2172,11 @@ const char *ConfigurationDialog::getHelpSyntaxString()
     FILE *fp;
     int helpsize;
 
-#ifdef DXD_WIN
-    struct _stat buf;
-    if (_stat(supfile, &buf) != 0)
+    struct STATSTRUCT buf;
+
+    if (STAT(supfile, &buf) != 0)
         return nosup;
     helpsize = buf.st_size;
-#else
-    struct stat buf;
-    if (stat(supfile, &buf) != 0)
-        return nosup;
-    helpsize = buf.st_size;
-#endif
 
     if (!(fp = fopen(supfile,"r")))
         return nosup;

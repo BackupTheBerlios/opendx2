@@ -144,12 +144,12 @@ Error m_Pie(Object *in, Object *out) {
   
   if (In_spiffiness) {
     if (!DXExtractFloat(In_spiffiness, &quality)) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 		 "quality must be a scalar between 0 and 1");
       goto error;
     }
     if ((quality < 0)||(quality > 1))  {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 		 "quality must be a scalar between 0 and 1");
       goto error;
     }
@@ -167,7 +167,7 @@ Error m_Pie(Object *in, Object *out) {
   /* get the percents flag */
   if (In_percentflag) {
    if (!DXExtractNthString((Object)In_percentflag, 0, &flagstring)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
            "percentflag must be one of `percents`, `fractions`, `values`");
     goto error;
    }
@@ -179,7 +179,7 @@ Error m_Pie(Object *in, Object *out) {
    else if (!strcmp(flagstring,"values"))
      percentflag = 2;
    else {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
            "percentflag must be one of `percents`, `fractions`, `values`");
     goto error;
    }
@@ -204,11 +204,11 @@ Error m_Pie(Object *in, Object *out) {
 
   if (In_showpercent) {
     if (!DXExtractInteger(In_showpercent, &show_percents)){
-      DXSetError(ERROR_INVALID_DATA,"showpercents must be 0 or 1");
+      DXSetError(ERROR_DATA_INVALID,"showpercents must be 0 or 1");
       goto error;
     } 
     if ((show_percents < 0)||(show_percents > 1)) {
-      DXSetError(ERROR_INVALID_DATA,"showpercents must be 0 or 1");
+      DXSetError(ERROR_DATA_INVALID,"showpercents must be 0 or 1");
       goto error;
     } 
   }
@@ -392,7 +392,7 @@ static Error MakePie(Object In_percents, Object In_colors, int percentflag,
     data = (Array)In_percents;
     break;
   default:
-    DXSetError(ERROR_INVALID_DATA,"invalid percents");
+    DXSetError(ERROR_DATA_INVALID,"invalid percents");
     goto error;
   }
   
@@ -404,7 +404,7 @@ static Error MakePie(Object In_percents, Object In_colors, int percentflag,
   if (In_colors) {
     /* check that In_colors is an array */
     if (DXGetObjectClass(In_colors) != CLASS_ARRAY) {
-       DXSetError(ERROR_INVALID_DATA,"invalid colors parameter");
+       DXSetError(ERROR_DATA_INVALID,"invalid colors parameter");
        goto error;
     }
     cptr = CheckColors((Array)In_colors, NULL, numitems);
@@ -448,11 +448,11 @@ static Error MakePie(Object In_percents, Object In_colors, int percentflag,
 
 
   if (category != CATEGORY_REAL) {
-    DXSetError(ERROR_INVALID_DATA,"percents must be real");
+    DXSetError(ERROR_DATA_INVALID,"percents must be real");
     goto error;
   }
   if (!((rank == 0)||((rank == 1)&&(shape[0]==1)))) {
-    DXSetError(ERROR_INVALID_DATA,"percents must be scalar");
+    DXSetError(ERROR_DATA_INVALID,"percents must be scalar");
     goto error;
   }
   
@@ -484,7 +484,7 @@ static Error MakePie(Object In_percents, Object In_colors, int percentflag,
         FILL_PERCENT_ARRAY(double);
         break;
      default:
-        DXSetError(ERROR_INVALID_DATA,"unknown data type");
+        DXSetError(ERROR_DATA_INVALID,"unknown data type");
         goto error;
      }
   labelpositions = DXNewArray(TYPE_FLOAT, CATEGORY_REAL, 1, 2);
@@ -851,13 +851,13 @@ static RGBColor *CheckColors(Array colors, Field F, int numdata)
     goto error;
   
   if (numcolors != numdata) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "number of colors does not match number of percent items");
     goto error;
   }
   
   if (category != CATEGORY_REAL) {
-    DXSetError(ERROR_INVALID_DATA,"unknown color type");
+    DXSetError(ERROR_DATA_INVALID,"unknown color type");
     goto error;
   }
   
@@ -880,7 +880,7 @@ static RGBColor *CheckColors(Array colors, Field F, int numdata)
        which makes no sense at all. XXX */
        for (i=0; i<numcolors; i++) {
           if (!DXExtractNthString((Object)colors, i, &colorstring)) {
-             DXSetError(ERROR_INVALID_DATA,"invalid colors");
+             DXSetError(ERROR_DATA_INVALID,"invalid colors");
              goto error;
           }
           if (!DXColorNameToRGB(colorstring, &colorRGB))
@@ -891,11 +891,11 @@ static RGBColor *CheckColors(Array colors, Field F, int numdata)
   case (TYPE_INT):
     /* check that they are 3D */
     if (rank != 1) {
-      DXSetError(ERROR_INVALID_DATA,"unknown color type");
+      DXSetError(ERROR_DATA_INVALID,"unknown color type");
       goto error;
     }
     if (shape[0] != 3) {
-      DXSetError(ERROR_INVALID_DATA,"unknown color type");
+      DXSetError(ERROR_DATA_INVALID,"unknown color type");
       goto error;
     }
     scratchRGBint = DXAllocate(3*sizeof(int));
@@ -914,11 +914,11 @@ static RGBColor *CheckColors(Array colors, Field F, int numdata)
   case (TYPE_FLOAT):
     /* check that they are 3D */
     if (rank != 1) {
-      DXSetError(ERROR_INVALID_DATA,"unknown color type");
+      DXSetError(ERROR_DATA_INVALID,"unknown color type");
       goto error;
     }
     if (shape[0] != 3) {
-      DXSetError(ERROR_INVALID_DATA,"unknown color type");
+      DXSetError(ERROR_DATA_INVALID,"unknown color type");
       goto error;
     }
     scratchRGB = DXAllocate(sizeof(RGBColor));
@@ -944,7 +944,7 @@ static RGBColor *CheckColors(Array colors, Field F, int numdata)
       /* this option not valid for colors as an array sent in on a parameter,
          as opposed to in the input field */
       if (!F) {
-         DXSetError(ERROR_INVALID_DATA,"invalid colors input");
+         DXSetError(ERROR_DATA_INVALID,"invalid colors input");
          goto error;
       }
       colormap = (Array)DXGetComponentValue(F, "color map");
@@ -985,12 +985,12 @@ static RGBColor *CheckColors(Array colors, Field F, int numdata)
       } 
     }
     else {
-      DXSetError(ERROR_INVALID_DATA, "unknown color type");
+      DXSetError(ERROR_DATA_INVALID, "unknown color type");
       goto error;
     }
     break; 
   default:
-    DXSetError(ERROR_INVALID_DATA,"unknown color type");
+    DXSetError(ERROR_DATA_INVALID,"unknown color type");
     goto error;
   }
   
@@ -1177,7 +1177,7 @@ static Error CheckLabels(int numitems, Array labellist, int *maxstringlength)
   int shape[32], numstrings;
   
   if (!DXExtractNthString((Object)labellist, 0, NULL)) {
-    DXSetError(ERROR_INVALID_DATA,"labels must be a string list");
+    DXSetError(ERROR_DATA_INVALID,"labels must be a string list");
     goto error;
   }
   
@@ -1185,7 +1185,7 @@ static Error CheckLabels(int numitems, Array labellist, int *maxstringlength)
     goto error;
   
   if (numstrings != numitems) {
-    DXSetError(ERROR_INVALID_DATA, 
+    DXSetError(ERROR_DATA_INVALID, 
 	       "number of labels must match number of percents");
     goto error;
   }
@@ -1217,7 +1217,7 @@ static Error CopyComponents(Field input, Field pie, Field edges,
   compcount=0;
   dataattr = DXGetComponentAttribute((Field)input, "data", "dep");
   if (DXGetObjectClass(dataattr) != CLASS_STRING) {
-    DXSetError(ERROR_INVALID_DATA,  
+    DXSetError(ERROR_DATA_INVALID,  
 	       "data dependency attribute not string");
     goto error;
   }
@@ -1258,7 +1258,7 @@ static Error CopyComponents(Field input, Field pie, Field edges,
       goto component_done;
     }
     if (DXGetObjectClass(attr) != CLASS_STRING) {
-      DXSetError(ERROR_INVALID_DATA, "dependency attribute not string");
+      DXSetError(ERROR_DATA_INVALID, "dependency attribute not string");
       goto error;
     }
 
@@ -1383,7 +1383,7 @@ static Error CheckHeight(Object input, Object heightscale, Object heightmin,
       goto error;
   
     if ((numitems != numwedges)&&(numitems != 1)) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
   	       "height must be a single value or a list which matches percents");
       goto error;
     }
@@ -1393,12 +1393,12 @@ static Error CheckHeight(Object input, Object heightscale, Object heightmin,
       if (!*h)
         goto error;
       if (!DXExtractFloat(input, *h)) {
-        DXSetError(ERROR_INVALID_DATA, 
+        DXSetError(ERROR_DATA_INVALID, 
   		 "height must be a positive scalar");
         goto error;
       }
       if ((**h < 0)) {
-        DXSetError(ERROR_INVALID_DATA, 
+        DXSetError(ERROR_DATA_INVALID, 
   		 "height must be a positive scalar");
         goto error;
       }
@@ -1412,7 +1412,7 @@ static Error CheckHeight(Object input, Object heightscale, Object heightmin,
       if (!*h)
         goto error;
       if (!DXExtractParameter(input, TYPE_FLOAT, 1, numitems, *h)) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
   		 "height must be a single value or a list which matches percents");
         goto error;
       }
@@ -1423,7 +1423,7 @@ static Error CheckHeight(Object input, Object heightscale, Object heightmin,
   case (CLASS_FIELD):
     data = (Array)DXGetComponentValue((Field)input,"data");
     if (!data) {
-      DXSetError(ERROR_INVALID_DATA,"height field has no data");
+      DXSetError(ERROR_DATA_INVALID,"height field has no data");
       goto error;
     }
     /* now see how many */
@@ -1431,7 +1431,7 @@ static Error CheckHeight(Object input, Object heightscale, Object heightmin,
       goto error;
   
     if ((numitems != numwedges)&&(numitems != 1)) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
   	       "height must be a single value or a list which matches percents");
       goto error;
     }
@@ -1441,12 +1441,12 @@ static Error CheckHeight(Object input, Object heightscale, Object heightmin,
       if (!*h)
         goto error;
       if (!DXExtractFloat((Object)data, *h)) {
-        DXSetError(ERROR_INVALID_DATA, 
+        DXSetError(ERROR_DATA_INVALID, 
   		 "height must be a positive scalar");
         goto error;
       }
       if ((**h < 0)) {
-        DXSetError(ERROR_INVALID_DATA, 
+        DXSetError(ERROR_DATA_INVALID, 
   		 "height must be a positive scalar");
         goto error;
       }
@@ -1460,7 +1460,7 @@ static Error CheckHeight(Object input, Object heightscale, Object heightmin,
       if (!*h)
         goto error;
       if (!DXExtractParameter((Object)data, TYPE_FLOAT, 1, numitems, *h)) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
   		 "height must be a single value or a list which matches percents");
         goto error;
       }
@@ -1470,7 +1470,7 @@ static Error CheckHeight(Object input, Object heightscale, Object heightmin,
     break;
 
   default: 
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "height must be a scalar list or field");
     goto error;
   }
@@ -1483,7 +1483,7 @@ static Error CheckHeight(Object input, Object heightscale, Object heightmin,
          b = scaleval*(ratioval*maxval - minval)/(maxval-minval);
          (*h)[i] = m*(*h)[i] + b;
          if ((*h)[i] < 0) {
-           DXSetError(ERROR_INVALID_DATA,
+           DXSetError(ERROR_DATA_INVALID,
                       "parameters result in negative height");
            goto error;
          }
@@ -1528,12 +1528,12 @@ static Error CheckRadius(Object input, Object radiusscale,
       
       if (numitems == 1) {
 	if (!DXExtractFloat(input, *radius)) {
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "radius must be a scalar list ");   
 	  goto error;
 	}
 	if (**radius < 0) {
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "radius must be positive scalars");   
 	  goto error;
 	}
@@ -1542,18 +1542,18 @@ static Error CheckRadius(Object input, Object radiusscale,
       else { 
 	if (!DXExtractParameter(input, TYPE_FLOAT, 1, numitems, 
 				*radius)) {
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "radius must be a scalar list ");   
 	  goto error;
 	}
         if (numitems != numwedges) {
-          DXSetError(ERROR_INVALID_DATA,
+          DXSetError(ERROR_DATA_INVALID,
   	       "radius must be a single value or a list which matches percents");
           goto error;
         }
 	for (i=0; i<numitems; i++) {
 	  if ((*radius)[i] < 0) {
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		       "radius must be positive scalars");   
 	    goto error;
 	  }
@@ -1564,7 +1564,7 @@ static Error CheckRadius(Object input, Object radiusscale,
     case (CLASS_FIELD):
       data = (Array)DXGetComponentValue((Field)input,"data");
       if (!data) {
-	DXSetError(ERROR_INVALID_DATA, "radius field has no data");
+	DXSetError(ERROR_DATA_INVALID, "radius field has no data");
 	goto error;
       } 
       /* see how many */
@@ -1572,7 +1572,7 @@ static Error CheckRadius(Object input, Object radiusscale,
 			  &rank, shape))
 	goto error;
       if (numitems != numwedges) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
         "radius must be a single value or a list which matches percents");
         goto error;
       }
@@ -1582,12 +1582,12 @@ static Error CheckRadius(Object input, Object radiusscale,
       
       if (numitems == 1) {
 	if (!DXExtractFloat((Object)data, *radius)) {
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "radius must be a scalar list ");   
 	  goto error;
 	}
 	if (**radius < 0) {
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "radius must be positive scalars");   
 	  goto error;
 	}
@@ -1596,13 +1596,13 @@ static Error CheckRadius(Object input, Object radiusscale,
       else { 
 	if (!DXExtractParameter((Object)data, TYPE_FLOAT, 1, numitems, 
 				*radius)) {
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "radius must be a scalar list ");   
 	  goto error;
 	}
 	for (i=0; i<numitems; i++) {
 	  if ((*radius)[i] < 0) {
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		       "radius must be positive scalars");   
 	    goto error;
 	  }
@@ -1613,7 +1613,7 @@ static Error CheckRadius(Object input, Object radiusscale,
       break;
       
     default:
-      DXSetError(ERROR_INVALID_DATA,"radius must be a scalar list or field");
+      DXSetError(ERROR_DATA_INVALID,"radius must be a scalar list or field");
       goto error;
     }
     /* now scale the values so that radiusmaxval -> radiusscale, 
@@ -1625,7 +1625,7 @@ static Error CheckRadius(Object input, Object radiusscale,
     }
     else {
        if ((maxval - minval) == 0) {
-         DXSetError(ERROR_INVALID_DATA,"radiusmax and radiusmin are equal");
+         DXSetError(ERROR_DATA_INVALID,"radiusmax and radiusmin are equal");
          goto error;
        }
     
@@ -1635,7 +1635,7 @@ static Error CheckRadius(Object input, Object radiusscale,
          b = scaleval*(ratioval*maxval - minval)/(maxval-minval);
          (*radius)[i] = m*(*radius)[i] + b;
          if ((*radius)[i] < 0) {
-	   DXSetError(ERROR_INVALID_DATA, 
+	   DXSetError(ERROR_DATA_INVALID, 
 	   	      "parameters result in negative radius");
 	   goto error;
          }
@@ -1779,7 +1779,7 @@ given, or with a guess otherwise) */
   /* first get labelformat */
   if (labelformat) {
     if (!DXExtractString(labelformat, &format)) {
-       DXSetError(ERROR_INVALID_DATA,"labelformat must be a string");
+       DXSetError(ERROR_DATA_INVALID,"labelformat must be a string");
        goto error;
     }
   }
@@ -1800,7 +1800,7 @@ given, or with a guess otherwise) */
       component = (Array)labels;
       break;
     default:
-      DXSetError(ERROR_INVALID_DATA,"labels must be a field or a list");
+      DXSetError(ERROR_DATA_INVALID,"labels must be a field or a list");
       goto error;
     }
 
@@ -1859,7 +1859,7 @@ given, or with a guess otherwise) */
               FORMAT_LIST(ubyte);
               break;
            default:
-              DXSetError(ERROR_INVALID_DATA,"unknown type for labels");
+              DXSetError(ERROR_DATA_INVALID,"unknown type for labels");
               goto error;
     }
 

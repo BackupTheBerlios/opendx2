@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_gradient.c,v 1.3 1999/05/10 15:45:19 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_gradient.c,v 1.4 2000/05/16 18:47:21 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -197,7 +197,7 @@ _dxfGradientObject(Object object)
     
 	default:
 
-	    DXSetError(ERROR_INVALID_DATA, "#11381");
+	    DXSetError(ERROR_DATA_INVALID, "#11381");
 	    return NULL;
     }
 }
@@ -241,13 +241,13 @@ _dxfGradientField(Pointer ptr)
     DXGetArrayInfo(data, &nItems, &type, &cat, &rank, shape);
     if (cat != CATEGORY_REAL)
     {
-	DXSetError (ERROR_INVALID_DATA, "#11150", "data");
+	DXSetError (ERROR_DATA_INVALID, "#11150", "data");
 	goto error;
     }
 
     if (! (rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, "#10081", "data");
+	DXSetError(ERROR_DATA_INVALID, "#10081", "data");
 	goto error;
     }
 
@@ -264,13 +264,13 @@ _dxfGradientField(Pointer ptr)
 
     if (DXGetObjectClass(attr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11450");
+	DXSetError(ERROR_DATA_INVALID, "#11450");
 	goto error;
     }
 
     if (strcmp(DXGetString((String)attr), "positions"))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11251", "data");
+	DXSetError(ERROR_DATA_INVALID, "#11251", "data");
 	goto error;
     }
 
@@ -425,7 +425,7 @@ _dxfGradientRegular(Field field, int *counts, float *deltas, int nDim, int *perm
 	    return _dxfGradientCubesRegular(field, counts, deltas, permute);
 	
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "#10300", "data");
+	    DXSetError(ERROR_DATA_INVALID, "#10300", "data");
 	    return ERROR;
     }
 }
@@ -620,7 +620,7 @@ _dxfGradientCubesRegular(Field field, int *counts, float *deltas, int *permute)
 	    break;
 
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "#10320", "data");
+	    DXSetError(ERROR_DATA_INVALID, "#10320", "data");
 	    goto error;
     }
 
@@ -789,7 +789,7 @@ _dxfGradientQuadsRegular(Field field, int *counts, float *deltas, int *permute)
 	    break;
 
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "#10320", "data");
+	    DXSetError(ERROR_DATA_INVALID, "#10320", "data");
 	    goto error;
     }
 
@@ -901,7 +901,7 @@ _dxfGradientLinesRegular(Field field, int *counts, float *deltas, int *permute)
 	    break;
 
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "#10320", "data");
+	    DXSetError(ERROR_DATA_INVALID, "#10320", "data");
 	    goto error;
     }
 
@@ -949,7 +949,7 @@ _dxfGradientIrregular(Field field)
 
     if (DXGetObjectClass(attr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10200", "element type attribute");
+	DXSetError(ERROR_DATA_INVALID, "#10200", "element type attribute");
 	goto error;
     }
 
@@ -996,7 +996,7 @@ _dxfGradientIrregular(Field field)
     {
 	if (pDim != 3)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11001", "tetrahedra");
+	    DXSetError(ERROR_DATA_INVALID, "#11001", "tetrahedra");
 	    goto error;
 	}
 	elementMethod = _dxfTetrasGradient;
@@ -1005,7 +1005,7 @@ _dxfGradientIrregular(Field field)
     {
 	if (pDim != 3)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11001", "cubes");
+	    DXSetError(ERROR_DATA_INVALID, "#11001", "cubes");
 	    goto error;
 	}
 	elementMethod = _dxfCubesGradient;
@@ -1014,7 +1014,7 @@ _dxfGradientIrregular(Field field)
     {
 	if (pDim != 3 && pDim != 2)
 	{
-	    DXSetError(ERROR_INVALID_DATA,  "#11002", "triangles");
+	    DXSetError(ERROR_DATA_INVALID,  "#11002", "triangles");
 	    goto error;
 	}
 	elementMethod = _dxfTrisGradient;
@@ -1023,7 +1023,7 @@ _dxfGradientIrregular(Field field)
     {
 	if (pDim != 3 && pDim != 2)
 	{
-	    DXSetError(ERROR_INVALID_DATA,  "#11002", "quads");
+	    DXSetError(ERROR_DATA_INVALID,  "#11002", "quads");
 	    goto error;
 	}
 	elementMethod = _dxfQuadsGradient;

@@ -398,7 +398,7 @@ static Error ColorField(Pointer ptr)
 	if (!(att = 
 	      DXGetString((String)DXGetComponentAttribute(f,"colors",
 							  "dep")))) {
-	  DXSetError(ERROR_INVALID_DATA,"bad or missing color dep attribute");
+	  DXSetError(ERROR_DATA_INVALID,"bad or missing color dep attribute");
           goto error;
 	}
 	if (!DXGetArrayInfo(a_c, &count, NULL, NULL, NULL, NULL))   {
@@ -411,7 +411,7 @@ static Error ColorField(Pointer ptr)
 	if (!(att = 
 	      DXGetString((String)DXGetComponentAttribute(f,"opacities",
 							  "dep")))) {
-	  DXSetError(ERROR_INVALID_DATA,
+	  DXSetError(ERROR_DATA_INVALID,
 		     "bad or missing opacity dep attribute");
           goto error;
 	}
@@ -1000,7 +1000,7 @@ static Error ConvertColors(Object copycolor)
           }
           break;
    default:
-          DXSetError(ERROR_INVALID_DATA,"colormap must be a field or group");
+          DXSetError(ERROR_DATA_INVALID,"colormap must be a field or group");
           goto error;
    }
   error:
@@ -1032,7 +1032,7 @@ static Error ConvertOpacities(Object copyopacity)
           }
           break;
    default:
-          DXSetError(ERROR_INVALID_DATA,"opacitymap must be a field or group");
+          DXSetError(ERROR_DATA_INVALID,"opacitymap must be a field or group");
           goto error;
    }
   return OK;

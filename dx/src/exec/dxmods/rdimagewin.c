@@ -30,7 +30,7 @@ m_ReadImageWindow(Object *in, Object *out)
 
     if (! DXExtractString(WHERE, &where))
     {
-	DXSetError(ERROR_INVALID_DATA, "where");
+	DXSetError(ERROR_DATA_INVALID, "where");
 	return ERROR;
     }
 

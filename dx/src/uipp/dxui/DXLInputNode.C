@@ -7,17 +7,17 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "DXLInputNode.h"
 #include "DXApplication.h"
 #include "Network.h"
 #include "Parameter.h"
 #include "DXPacketIF.h"
 #include "List.h" 
-#include "Arc.h"
+#include "Ark.h"
 #include "InfoDialogManager.h"
 #include "ErrorDialogManager.h"
 
@@ -58,9 +58,9 @@ char *DXLInputNode::netNodeString(const char *prefix)
 	// Get the name of the output that is connected to first input 
 	//
 	char srcoutputname[128];
-  	List *l = (List*)this->getInputArcs(1);
+  	List *l = (List*)this->getInputArks(1);
 	ASSERT(l);
-	Arc *a = (Arc*)l->getElement(1);
+	Ark *a = (Ark*)l->getElement(1);
 	ASSERT(a);
 	int index;
 	Node *n = a->getSourceNode(index);
@@ -70,7 +70,7 @@ char *DXLInputNode::netNodeString(const char *prefix)
 	sprintf(string, "    %s = %s;\n"
 			"    %s = %s;\n" 
 			"    %s = %s;\n", 
-		inputname, srcoutputname,// This makes the Network catch the Arc
+		inputname, srcoutputname,// This makes the Network catch the Ark
 		label, inputname,
 		outputname, label);  	
     } else {

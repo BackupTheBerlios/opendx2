@@ -29,7 +29,7 @@ _dxfEigen(float **a, int n, float d[], float **v)
     for (row = 1; row <= n; row++) {
 	for (col = 1; col <= n; col++) {
 	    if (a[row][col] != a[col][row]) {
-    		DXSetError (ERROR_INVALID_DATA, "A tensor must be a 3X3 symmetric matrix.");
+    		DXSetError (ERROR_DATA_INVALID, "A tensor must be a 3X3 symmetric matrix.");
     		return ERROR;
 	    }
 	}
@@ -110,7 +110,7 @@ _dxfEigen(float **a, int n, float d[], float **v)
     }
 
     /* evidently it shouldn't get here */
-    DXSetError (ERROR_INVALID_DATA, "Error calculating eigenvectors.");
+    DXSetError (ERROR_DATA_INVALID, "Error calculating eigenvectors.");
     return ERROR;
 }
 #undef CYCLE

@@ -7,12 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
 
 
-#include "defines.h"
 #include "Strings.h"
 #include "Application.h"
 #include "SaveFileDialog.h"
@@ -71,11 +71,7 @@ void SaveFileDialog::ConfirmationOk(void *data)
 
 void SaveFileDialog::okFileWork(const char *filename)
 {
-#if defined(DXD_WIN) && !defined(OS2)
-    struct _stat buffer;
-#else
-    struct stat buffer;
-#endif 
+    struct STATSTRUCT buffer;
 
     int len = STRLEN(this->forced_extension);
     char *file = new char[STRLEN(filename) + len + 1];
@@ -86,18 +82,27 @@ void SaveFileDialog::okFileWork(const char *filename)
     // 
     if(len > 0)
     {
+#if defined(HAVE_STRRSTR)
 	const char *ext = strrstr(file, this->forced_extension);
+#else
+	const char *nxt, *ext = strstr(file, this->forced_extension);
+	nxt = ext;
+	while(nxt)
+	{
+	    nxt = strstr(ext+1, this->forced_extension);
+	    if (nxt)
+		ext = nxt;
+	}
+#endif
+
 	if (!ext || (strlen(ext) != len))
 	    strcat(file,this->forced_extension);
     }
     
 
 
-#if defined(DXD_WIN) && !defined(OS2)
-    if (_stat(file, &buffer) == 0) {
-#else
-    if (stat(file, &buffer) == 0) {
-#endif
+    if (STAT(file, &buffer) == 0)
+	{
 	confirmation_data *cd = new confirmation_data;
 	cd->dialog = this;
 	cd->filename = file;

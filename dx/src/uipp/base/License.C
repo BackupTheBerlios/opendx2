@@ -6,10 +6,13 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
+#if defined(DXD_LICENSED_VERSION)
+fjdasjfasjhsjasf
+#endif
+
 #include <dxconfig.h>
 
 
-#include <UIConfig.h>
 #include <Strings.h>
 
 // This nonsense surrounds sys/types.h because its typedef for boolean conflicts
@@ -27,19 +30,26 @@
 
 #include <stdio.h>
 #include <time.h>
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
+#endif
+
 #if defined(sgi)
 #include <bstring.h>
 #endif
+
 #if defined(ibm6000)
 #include <sys/select.h>
 #endif
+
+#if defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
 #endif
-#ifdef  DXD_WIN
+
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
-#else
+#elif defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
 
@@ -673,6 +683,7 @@ char __encrypt[1024];
 #endif // NEEDS_LICENSE_ROUTINES 
 
 #else  // DXD_WIN
+#if 0
 
 #include <windows.h>
 #include <math.h>
@@ -867,7 +878,7 @@ int getdatefromkey(char *keystr, int *m, int *d, int *y)
     if (*d < 1)
 	*d = 1;
     if (*d > 31)
-	*d == 31;
+	*d = 31;
     *y = ((int)keystr[2] - (int)'g') * 10 +
 		(int)keystr[3] - (int)'m' + 1994;
     return 1;
@@ -946,4 +957,5 @@ char *GenerateExecKey(const char *inkey, LicenseTypeEnum licenseType)
 {
     return "No License Generated";
 }
+#endif
 #endif  // DXD_WIN

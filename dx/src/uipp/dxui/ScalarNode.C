@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "UIConfig.h"
 
 #include <stdio.h>
 #ifdef ABS_IN_MATH_H
@@ -22,7 +23,6 @@
 # undef abs
 #endif
 
-#include "defines.h"
 #include "lex.h"
 #include "ScalarNode.h"
 #include "ScalarInstance.h"

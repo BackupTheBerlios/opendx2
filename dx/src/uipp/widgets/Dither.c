@@ -8,7 +8,7 @@
 
 #include <dxconfig.h>
 
-
+#include "../base/defines.h"
 
 #include <stdio.h>
 #include <stdlib.h>

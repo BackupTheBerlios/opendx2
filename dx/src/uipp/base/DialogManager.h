@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,10 +16,8 @@
 #ifndef _DialogManager_h
 #define _DialogManager_h
 
-#include "UIConfig.h"
 
 #include <Xm/Xm.h>
-#include "defines.h"
 #include "UIComponent.h"
 
 

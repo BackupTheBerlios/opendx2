@@ -48,7 +48,7 @@ _dxfRecognizeLinesII1D(Field field)
 
     if (rank != 0 && (rank != 1 || shape[0] != 1))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11003", "lines", 1);
+	DXSetError(ERROR_DATA_INVALID, "#11003", "lines", 1);
 	return 0;
     }
 
@@ -64,13 +64,13 @@ _dxfRecognizeLinesII1D(Field field)
     
 	if (type != TYPE_INT)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11450");
+	    DXSetError(ERROR_DATA_INVALID, "#11450");
 	    return 0;
 	}
 	
 	if (cat != CATEGORY_REAL)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11450");
+	    DXSetError(ERROR_DATA_INVALID, "#11450");
 	    return 0;
 	}
     }

@@ -6,10 +6,6 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
-#include <dxconfig.h>
-
-#include "defines.h"
-
 #ifndef _history_h
 #define _history_h
 
@@ -49,7 +45,7 @@ EXTERN
 HistoryList* NewHistoryList();
 
 EXTERN
-Widget CreatePopupMenu(Widget parent);
+Widget DXCreatePopupMenu(Widget parent);
 
 
 #endif /* _history_h */

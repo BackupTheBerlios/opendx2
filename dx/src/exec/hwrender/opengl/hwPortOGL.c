@@ -36,7 +36,7 @@
 #include <math.h>
 #include <stdlib.h>    /* for getenv prototype */
 
-#ifdef intelnt
+#if defined(HAVE_X11_XLIBXTRA_H)
 #include <x11/xlibxtra.h>
 #endif
 
@@ -1201,7 +1201,7 @@ static int _dxf_DEFINE_LIGHT (void *win, int n, Light light)
     glLightModelfv (GL_LIGHT_MODEL_AMBIENT, new) ;
   } else {
     PRINT (("invalid light")) ;
-    DXErrorGoto (ERROR_INVALID_DATA, "#13750");
+    DXErrorGoto (ERROR_DATA_INVALID, "#13750");
   }
   
   OGL_FAIL_ON_ERROR(_dxf_DEFINE_LIGHT);
@@ -1243,7 +1243,11 @@ int _dxf_READ_APPROX_BACKSTORE(void *win, int camw, int camh)
      */
     if (_dxf_isFlagsSet(_dxf_SERVICES_FLAGS(),
 			SF_INVALIDATE_BACKSTORE)) {
+#if 0
       bzero(SAVE_BUF,SAVE_BUF_SIZE*sizeof(GLuint));
+#else
+      memset(SAVE_BUF, 0, SAVE_BUF_SIZE*sizeof(GLuint));
+#endif
       EXIT(("OK"));
       return OK ;
     }

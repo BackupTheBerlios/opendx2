@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -22,7 +24,6 @@
 //
 #define STATIC_MACROS
 
-#include "defines.h"
 #include "Strings.h"
 #include "lex.h"
 #include "Node.h"
@@ -34,7 +35,7 @@
 #include "ConfigurationDialog.h"
 #include "ErrorDialogManager.h"
 #include "WarningDialogManager.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "ListIterator.h"
 #include "DXApplication.h"
 #include "ProcessGroupManager.h"
@@ -307,7 +308,7 @@ char *Node::inputParameterNamesString(const char *varprefix, const char *indent)
 	if ((p = this->getInputParameter(i))->isConnected())
 	{
 	    int  param;
-	    Arc  *a = p->getArc(1);
+	    Ark  *a = p->getArk(1);
 	    ASSERT(a);
 	    Node *onode = a->getSourceNode(param);
 	    ASSERT(onode);
@@ -1915,11 +1916,11 @@ void Node::ioParameterStatusChanged(boolean input, int index,
     // Now notify all nodes receiving this output that the value has changed.
     //
     if (!input && (status & PARAMETER_VALUE_CHANGED)) { 
-	Arc *a;
-	List *l = (List*) this->getOutputArcs(index);
+	Ark *a;
+	List *l = (List*) this->getOutputArks(index);
 	ListIterator iterator(*l);
 
-	while (a = (Arc*)iterator.getNext()) {
+	while (a = (Ark*)iterator.getNext()) {
 	    int in_index;
 	    Node *n = a->getDestinationNode(in_index); 
 	    n->notifyIoParameterStatusChanged(TRUE, in_index, status);
@@ -1953,10 +1954,10 @@ void Node::ioParameterStatusChanged(boolean input, int index,
 	this->network->setFileDirty();
 }
 //
-// Add an Arc to to the index'th parameter of the parameter list given by io. 
+// Add an Ark to to the index'th parameter of the parameter list given by io. 
 // index is 1 based.
 //
-boolean Node::addIOArc(List *io, int index, Arc *a) 
+boolean Node::addIOArk(List *io, int index, Ark *a) 
 {
 
      Parameter *p;
@@ -1965,11 +1966,11 @@ boolean Node::addIOArc(List *io, int index, Arc *a)
      p = (Parameter*)io->getElement(index);
 
      ASSERT(p); 
-     if (!p->addArc(a))
+     if (!p->addArk(a))
 	return FALSE;
 
      this->notifyIoParameterStatusChanged(io == &this->inputParameters, index,
-				Node::ParameterArcAdded);
+				Node::ParameterArkAdded);
      return TRUE;
 
 }
@@ -2180,7 +2181,7 @@ List *Node::getIOTypes(List *io, int index)
 // 
 // Get the list of arcs for the index'th parameter in the given list. 
 // 
-const List *Node::getIOArcs(List *io, int index)
+const List *Node::getIOArks(List *io, int index)
 {
     Parameter *p;
     ASSERT( index >= 1 );
@@ -2699,7 +2700,7 @@ boolean Node::initialize()
     return TRUE;
 }
 
-boolean Node::deleteArc(Arc *a)
+boolean Node::deleteArk(Ark *a)
 {
     Node*      sourceNode;
     Node*      destNode;
@@ -2709,21 +2710,21 @@ boolean Node::deleteArc(Arc *a)
     destNode   = a->getDestinationNode(destIndex);
 
 
-    destNode->removeInputArc(destIndex, a);
-    sourceNode->removeOutputArc(sourceIndex, a);
+    destNode->removeInputArk(destIndex, a);
+    sourceNode->removeOutputArk(sourceIndex, a);
 
     return TRUE;
 
 }
 
-boolean Node::removeIOArc(List *io, int index, Arc *a)
+boolean Node::removeIOArk(List *io, int index, Ark *a)
 {
     Parameter *p = (Parameter*)io->getElement(index);
 
-    p->removeArc(a);  
+    p->removeArk(a);  
 
     this->notifyIoParameterStatusChanged(io == &this->inputParameters, index,
-				Node::ParameterArcRemoved);
+				Node::ParameterArkRemoved);
 
     return TRUE;
 }
@@ -2734,7 +2735,7 @@ Node::updateDefinition()
 {
     boolean hadStandIn = FALSE;
 
-    struct ArcInfo {
+    struct ArkInfo {
 	int   srcIndex;
 	int   dstIndex;
 	Node *src;
@@ -2769,33 +2770,33 @@ Node::updateDefinition()
     boolean *defaulting = NULL;
     boolean *visibilities = NULL;
     char **values = NULL;
-    List **inputArcs = NULL;
+    List **inputArks = NULL;
     if (numInputs != 0)
     {
 	defaulting = new boolean[numInputs];
 	values = new char *[numInputs];
-	inputArcs = new List *[numInputs];
+	inputArks = new List *[numInputs];
 	visibilities = new boolean[numInputs];
     }
     int i;
     for (i = 1; i <= numInputs; ++i)
     {
-	inputArcs[i-1] = NULL;
+	inputArks[i-1] = NULL;
 	values[i-1] = NULL;
 	defaulting[i-1] = FALSE;
 	visibilities[i-1] = this->isInputVisible(i);
 	if (this->isInputConnected(i))
 	{
-	    const List *arcs = this->getInputArcs(i);
-	    inputArcs[i-1] = new List;
+	    const List *arcs = this->getInputArks(i);
+	    inputArks[i-1] = new List;
 	    ListIterator li(*(List*)arcs);
-	    Arc *a;
-	    while(a = (Arc*)li.getNext())
+	    Ark *a;
+	    while(a = (Ark*)li.getNext())
 	    {
-		ArcInfo *ai = new ArcInfo;
+		ArkInfo *ai = new ArkInfo;
 		ai->src = a->getSourceNode(ai->srcIndex);
 		ai->dst = a->getDestinationNode(ai->dstIndex);
-		inputArcs[i-1]->appendElement(ai);
+		inputArks[i-1]->appendElement(ai);
 	    }
 	}
 	else if (!(defaulting[i-1] = this->isInputDefaulting(i)))
@@ -2805,24 +2806,24 @@ Node::updateDefinition()
     this->inputParameters.clear();
 
     int numOutputs = this->getOutputCount();
-    List  **outputArcs = NULL;
+    List  **outputArks = NULL;
     if (numOutputs != 0)
-	outputArcs = new List *[numOutputs];
+	outputArks = new List *[numOutputs];
     for (i = 1; i <= numOutputs; ++i)
     {
-	outputArcs[i-1] = NULL;
+	outputArks[i-1] = NULL;
 	if (this->isOutputConnected(i))
 	{
-	    const List *arcs = this->getOutputArcs(i);
-	    outputArcs[i-1] = new List;
+	    const List *arcs = this->getOutputArks(i);
+	    outputArks[i-1] = new List;
 	    ListIterator li(*(List*)arcs);
-	    Arc *a;
-	    while(a = (Arc*)li.getNext())
+	    Ark *a;
+	    while(a = (Ark*)li.getNext())
 	    {
-		ArcInfo *ai = new ArcInfo;
+		ArkInfo *ai = new ArkInfo;
 		ai->src = a->getSourceNode(ai->srcIndex);
 		ai->dst = a->getDestinationNode(ai->dstIndex);
-		outputArcs[i-1]->appendElement(ai);
+		outputArks[i-1]->appendElement(ai);
 	    }
 	}
 	delete this->getOutputParameter(i);
@@ -2834,26 +2835,26 @@ Node::updateDefinition()
     for (i = 1; i <= numInputs && i <= this->getInputCount(); ++i)
     {
 	this->setInputVisibility(i, visibilities[i-1]);
-	if (inputArcs[i-1])
+	if (inputArks[i-1])
 	{
-	    ListIterator li(*inputArcs[i-1]);
-	    ArcInfo *ai;
-	    while(ai = (ArcInfo*)li.getNext())
+	    ListIterator li(*inputArks[i-1]);
+	    ArkInfo *ai;
+	    while(ai = (ArkInfo*)li.getNext())
 	    {
 		if (ai->src->typeMatchOutputToInput(ai->srcIndex,
 						    ai->dst, ai->dstIndex))
 		{
-		    Arc *newArc = new Arc(ai->src, ai->srcIndex, 
+		    Ark *newArk = new Ark(ai->src, ai->srcIndex, 
 					  ai->dst, ai->dstIndex);
 		    if (ai->src->getNetwork()->getEditor() && 
 			    ai->src->getStandIn())
-			ai->src->getStandIn()->addArc(
+			ai->src->getStandIn()->addArk(
 			    ai->src->getNetwork()->getEditor(),
-			    newArc);
+			    newArk);
 		}
 		delete ai;
 	    }
-	    delete inputArcs[i-1];
+	    delete inputArks[i-1];
 	}
 	else if (defaulting[i-1])
 	    this->useDefaultInputValue(i);
@@ -2884,31 +2885,31 @@ Node::updateDefinition()
 	delete[] defaulting;
 	delete[] visibilities;
 	delete[] values;
-	delete[] inputArcs;
+	delete[] inputArks;
     }
 
     for (i = 1; i <= numOutputs && i <= this->getOutputCount(); ++i)
     {
-	if (outputArcs[i-1])
+	if (outputArks[i-1])
 	{
-	    ListIterator li(*outputArcs[i-1]);
-	    ArcInfo *ai;
-	    while(ai = (ArcInfo*)li.getNext())
+	    ListIterator li(*outputArks[i-1]);
+	    ArkInfo *ai;
+	    while(ai = (ArkInfo*)li.getNext())
 	    {
 		if (ai->src->typeMatchOutputToInput(ai->srcIndex,
 						    ai->dst, ai->dstIndex))
 		{
-		    Arc *newArc = new Arc(ai->src, ai->srcIndex, 
+		    Ark *newArk = new Ark(ai->src, ai->srcIndex, 
 					  ai->dst, ai->dstIndex);
 		    if (ai->src->getNetwork()->getEditor() && 
 			    ai->src->getStandIn())
-			ai->src->getStandIn()->addArc(
+			ai->src->getStandIn()->addArk(
 			    ai->src->getNetwork()->getEditor(),
-			    newArc);
+			    newArk);
 		}
 		delete ai;
 	    }
-	    delete outputArcs[i-1];
+	    delete outputArks[i-1];
 	}
         this->notifyIoParameterStatusChanged(FALSE, i, Node::ParameterValueChanged);
     }
@@ -2930,7 +2931,7 @@ Node::updateDefinition()
     }
 #endif
     if (numOutputs != 0)
-	delete[] outputArcs;
+	delete[] outputArks;
 
 #if 11 
 #else
@@ -3167,7 +3168,7 @@ int Node::assignNewInstanceNumber()
 //
 // Disconnect all input and output arcs from this node.
 //
-boolean Node::disconnectArcs()
+boolean Node::disconnectArks()
 {
     int i;
     ListIterator li;
@@ -3179,8 +3180,8 @@ boolean Node::disconnectArcs()
     li.setList(this->inputParameters);
     for (i=1 ; p = (Parameter*)li.getNext() ; i++) {
 	if (p->isConnected()) {
-	    p->disconnectArcs();
-	    this->notifyIoParameterStatusChanged(TRUE, i, Node::ParameterArcRemoved);
+	    p->disconnectArks();
+	    this->notifyIoParameterStatusChanged(TRUE, i, Node::ParameterArkRemoved);
 	}
     }
 
@@ -3190,8 +3191,8 @@ boolean Node::disconnectArcs()
     li.setList(this->outputParameters);
     for (i=1 ; p = (Parameter*)li.getNext() ; i++) {
 	if (p->isConnected()) {
-	    p->disconnectArcs();
-	    this->notifyIoParameterStatusChanged(FALSE, i, Node::ParameterArcRemoved);
+	    p->disconnectArks();
+	    this->notifyIoParameterStatusChanged(FALSE, i, Node::ParameterArkRemoved);
 	}
     }
 
@@ -3355,7 +3356,7 @@ boolean Node::callDXCallModule(FILE *f)
 	    char *init_code = NULL;
 	    if (this->isInputConnected(i)) {
 		Parameter *p = this->getInputParameter(i);
-		Arc  *a = p->getArc(1);
+		Ark  *a = p->getArk(1);
 		int param;
 		ASSERT(a);
 		Node *onode = a->getSourceNode(param);
@@ -3576,12 +3577,12 @@ boolean Node::printAsJava(FILE* f)
 	strcpy (src_name, "null");
 	if (this->printInputAsJava(i)) {
 	    if (this->isInputConnected(i)) {
-		const List* ia = (List*)getInputArcs(i);
-		Arc* a = NUL(Arc*);
+		const List* ia = (List*)getInputArks(i);
+		Ark* a = NUL(Ark*);
 		Node* src = NUL(Node*);
 		if (ia) {
 		    ListIterator li(*(List*)ia);
-		    a = (Arc*)li.getNext();
+		    a = (Ark*)li.getNext();
 		}
 		if (a) src = (Node*)a->getSourceNode(src_out);
 		if ((src)&&(src->isA(src->hasJavaRepresentation()))) {
@@ -3590,7 +3591,7 @@ boolean Node::printAsJava(FILE* f)
 		    sprintf (src_name, "%s_%d", src_ns, src_instno);
 		}
 
-		fprintf (f, "%s%s_%d.addInputArc (%d, %s, %d);\n",
+		fprintf (f, "%s%s_%d.addInputArk (%d, %s, %d);\n",
 		    indent, ns, instno, i, src_name, src_out);
 	    }
 	    const char* valstr = this->getJavaInputValueString(i);

@@ -7,9 +7,9 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
-#include "UIConfig.h"
 
 #include <Xm/Xm.h>
 #include <Xm/CutPaste.h>
@@ -19,12 +19,11 @@
 #include <Xm/Form.h>
 #include <X11/cursorfont.h>
 
-#ifndef  DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <sys/stat.h>
 
-#include "defines.h"
 #include "EditorWorkSpace.h" 
 #include "EditorWindow.h" 
 #include "DXApplication.h" 

@@ -265,7 +265,7 @@ _dxfIrregGrow(Group group, int nRings, Array components)
 
     if (DXGetGroupClass(group) != CLASS_COMPOSITEFIELD)
     {
-	DXSetError(ERROR_INVALID_DATA, "IrregGrow: object not composite field");
+	DXSetError(ERROR_DATA_INVALID, "IrregGrow: object not composite field");
         goto error;
     }
 
@@ -433,7 +433,7 @@ _dxfIrregInvalidateDupBoundary(Group group)
 
     if (DXGetGroupClass(group) != CLASS_COMPOSITEFIELD)
     {
-	DXSetError(ERROR_INVALID_DATA, "object not composite field");
+	DXSetError(ERROR_DATA_INVALID, "object not composite field");
         goto error;
     }
 
@@ -653,7 +653,7 @@ _dxfIrregShrink(Object object)
 	
 	default:
 	    
-	    DXSetError(ERROR_INVALID_DATA, "unknown object");
+	    DXSetError(ERROR_DATA_INVALID, "unknown object");
 	    goto error;
     }
 	    
@@ -1153,7 +1153,7 @@ AddOverlap(Pointer ptr)
 		{
 		    if (DXGetObjectClass(attr) != CLASS_STRING)
 		    {
-			DXSetError(ERROR_INVALID_DATA, "#10200", "dep attribute");
+			DXSetError(ERROR_DATA_INVALID, "#10200", "dep attribute");
 			goto error;
 		    }
 
@@ -1180,7 +1180,7 @@ AddOverlap(Pointer ptr)
 		    
 		    if (DXGetObjectClass(attr) != CLASS_STRING)
 		    {
-			DXSetError(ERROR_INVALID_DATA, "#10200", "ref attribute");
+			DXSetError(ERROR_DATA_INVALID, "#10200", "ref attribute");
 			goto error;
 		    }
 
@@ -1263,7 +1263,7 @@ AddOverlap(Pointer ptr)
 		DXGetArrayInfo(array, &nItems, NULL, NULL, &rank, &nRefs);
 		if (rank != 0 && !(rank == 1 && nRefs != 1))
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			"cannot grow ref components that contain >1 refs per item");
 		    goto error;
 		}
@@ -1308,7 +1308,7 @@ AddOverlap(Pointer ptr)
 		DXGetArrayInfo(array, &nItems, NULL, NULL, &rank, &nRefs);
 		if (rank != 0 && !(rank == 1 && nRefs == 1))
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			"cannot grow ref components that contain >1 refs per item");
 		    goto error;
 		}
@@ -1364,7 +1364,7 @@ AddOverlap(Pointer ptr)
 		    DXGetArrayInfo(array, &nItems, NULL, NULL, &rank, &nRefs);
 		    if (rank != 0 && !(rank == 1 && nRefs == 1))
 		    {
-			DXSetError(ERROR_INVALID_DATA, 
+			DXSetError(ERROR_DATA_INVALID, 
 		"cannot grow ref components that contain >1 refs per item");
 			goto error;
 		    }
@@ -1400,7 +1400,7 @@ AddOverlap(Pointer ptr)
 		    DXGetArrayInfo(array, &nItems, NULL, NULL, &rank, &nRefs);
 		    if (rank != 0 && !(rank == 1 && nRefs == 1))
 		    {
-			DXSetError(ERROR_INVALID_DATA, 
+			DXSetError(ERROR_DATA_INVALID, 
 		"cannot grow ref components that contain >1 refs per item");
 			goto error;
 		    }
@@ -1514,7 +1514,7 @@ AddOverlap(Pointer ptr)
 		
 		if (DXGetObjectClass(obj) != CLASS_STRING)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "#10200", "dep attribute");
+		    DXSetError(ERROR_DATA_INVALID, "#10200", "dep attribute");
 		    goto error;
 		}
 
@@ -1547,7 +1547,7 @@ AddOverlap(Pointer ptr)
 		
 		if (DXGetObjectClass(obj) != CLASS_STRING)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "#10200", "dep attribute");
+		    DXSetError(ERROR_DATA_INVALID, "#10200", "dep attribute");
 		    goto error;
 		}
 
@@ -1871,7 +1871,7 @@ MakeOverlap(Field field, Boundary boundary, int nRings, char **components)
 		{
 		    if (DXGetObjectClass(attr) != CLASS_STRING)
 		    {
-			DXSetError(ERROR_INVALID_DATA,
+			DXSetError(ERROR_DATA_INVALID,
 				    "component dependence attribute");
 			goto MakeOverlap_error;
 		    }
@@ -1938,7 +1938,7 @@ MakeOverlap(Field field, Boundary boundary, int nRings, char **components)
 
 			if (nRefs != 1)
 			{
-			    DXSetError(ERROR_INVALID_DATA,
+			    DXSetError(ERROR_DATA_INVALID,
 			"cannot handle partitioned multi-referential component");
 			    goto MakeOverlap_error;
 			}
@@ -1983,7 +1983,7 @@ MakeOverlap(Field field, Boundary boundary, int nRings, char **components)
 
 			if (nRefs != 1)
 			{
-			    DXSetError(ERROR_INVALID_DATA,
+			    DXSetError(ERROR_DATA_INVALID,
 			"cannot handle partitioned multi-referential component");
 			    goto MakeOverlap_error;
 			}
@@ -2021,7 +2021,7 @@ MakeOverlap(Field field, Boundary boundary, int nRings, char **components)
 		}
 		else
 		{
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			"no dep or ref attr on %s", name);
 		    goto MakeOverlap_error;
 		}

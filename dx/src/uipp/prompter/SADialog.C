@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -73,7 +74,7 @@ void SADialog::saveFile(const char *string)
     // 
     // Build/add the extension
     // 
-    ext = strrstr(file, GenExtension);
+    ext = strrstr(file, (char *)GenExtension);
     if (!ext || (strlen(ext) != len))
 	strcat(file,GenExtension);
     

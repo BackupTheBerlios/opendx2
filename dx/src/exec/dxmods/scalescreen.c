@@ -79,7 +79,7 @@ Error m_ScaleScreen (Object *in, Object *out)
   
   if (!in[1] && in[2] && !in[3])
     {
-      DXSetError(ERROR_INVALID_DATA,"if final_res is specified, current_camera must be specified");
+      DXSetError(ERROR_DATA_INVALID,"if final_res is specified, current_camera must be specified");
       goto error;
     }
  
@@ -198,7 +198,7 @@ static Error GetFactor(int res, Camera cam, float *factor)
 
    if (xres == 0)
    {
-      DXSetError(ERROR_INVALID_DATA,"x resolution of current_camera = 0");
+      DXSetError(ERROR_DATA_INVALID,"x resolution of current_camera = 0");
       goto error;
    }
 

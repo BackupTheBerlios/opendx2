@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _SequencerNode_h
 #define _SequencerNode_h
 
 
-#include "defines.h"
 #include "ShadowedOutputNode.h"
 
 typedef long SequencerDirection;

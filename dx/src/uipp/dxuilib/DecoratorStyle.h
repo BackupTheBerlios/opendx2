@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,8 +17,6 @@
 #ifndef _DecoratorStyle_h_
 #define _DecoratorStyle_h_
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "Base.h"
 #include "SymbolManager.h"
 #include <X11/Intrinsic.h>

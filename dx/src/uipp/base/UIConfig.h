@@ -147,8 +147,8 @@
 /*
 // Define NO_CC_TEMPLATES if the C++ compiler cannot handle 3.0 templates.
 */
-#if defined(DXD_WIN) || defined(aviion) || defined(solaris)
-# define NO_CC_TEMPLATES
+#if defined(intelnt) || defined(aviion) || defined(solaris)
+#define NO_CC_TEMPLATES
 #endif
 
 /*
@@ -165,14 +165,8 @@
  * since this is only used for debuggable (unreleased) code, we can just 
  * not support this feature on the HP and DG.
  */
-#if defined(DEBUG) && !defined(hp700) && !defined(aviion) && !defined(DXD_WIN) && !defined(OS2)
+#if defined(DEBUG) && !defined(hp700) && !defined(aviion) && !defined(intelnt) && !defined(OS2)
 # define DXUI_DEVKIT
-#endif
-
-#if 0
-#if !defined(hp700) && !defined(aviion) && !defined(DXD_WIN) && !defined(OS2)
-# define DXUI_DEVKIT
-#endif
 #endif
 
 /*
@@ -231,7 +225,9 @@
 # define DXD_XTOFFSET_HOSED
 # define DXD_IBM_OS2_SOCKETS
 # define DXD_NON_UNIX_SOCKETS
+#if 0
 # define DXD_NON_UNIX_DIR_SEPARATOR
+#endif
 # define DXD_NON_UNIX_ENV_SEPARATOR
 # define DXD_CR_IS_CRLF
 # define DXD_LACKS_UTS
@@ -257,8 +253,7 @@
 
 
 
-#ifdef DXD_WIN 
-
+#if defined(intelnt)
 # define DXD_ARCHNAME "intelnt"
 # define DXD_SYSLIB_8_CHARS
 # define DXD_NEEDS_TYPES_H
@@ -268,7 +263,10 @@
 # define DXD_DO_NOT_REQ_SYS_SELECT_H
 
 # define DXD_NON_UNIX_SOCKETS
+#if 0
 # define DXD_NON_UNIX_DIR_SEPARATOR
+#endif
+
 # define DXD_NON_UNIX_ENV_SEPARATOR
 # define DXD_CR_IS_CRLF
 # define DXD_LACKS_UTS 
@@ -284,7 +282,7 @@
 # define DXD_DO_NOT_REQ_SYS_PARAM_H
 # define DXD_DO_NOT_REQ_UNISTD_H
 
-#endif /* DXD_WIN    */
+#endif 
 
 
 #endif 	/* __CONFIG_H__ */

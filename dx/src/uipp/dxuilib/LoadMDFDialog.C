@@ -7,12 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
 
-#include "defines.h"
 #include "DXApplication.h"
 #include "LoadMDFDialog.h"
 #include "MacroDefinition.h"

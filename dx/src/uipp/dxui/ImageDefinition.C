@@ -7,11 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "ImageDefinition.h"
 #include "ImageNode.h"
 #include "ImageCDB.h"

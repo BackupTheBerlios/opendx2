@@ -112,7 +112,7 @@ the executive, and is of no interest to module writers.
 #undef	small
 #endif
 
-Error DXSetGlobalSize(int small, int threshhold, int large);
+Error DXSetGlobalSize(int, int, int);
 Error DXmemsize(int size);
 /**
 \index{DXSetGlobalSize}\index{DXmemsize}

@@ -10,13 +10,13 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/fourier.c,v 1.3 1999/05/10 15:45:24 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/fourier.c,v 1.4 2000/05/16 18:47:50 gda Exp $
  */
 
 #include <math.h>
 #include "unpart.h"
 
-#ifdef DXD_WIN
+#if defined(intelnt)
 #define  strcasecmp      stricmp
 #endif
 

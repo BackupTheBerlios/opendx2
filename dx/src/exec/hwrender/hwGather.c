@@ -1265,7 +1265,7 @@ _gatherRecurse(dxObject object,
       else
       {
 	PRINT(("invalid light"));
-	DXErrorGoto(ERROR_INVALID_DATA, "#13750");
+	DXErrorGoto(ERROR_DATA_INVALID, "#13750");
       }
 
       if (! _dxf_getHwGatherFlags(gather, &flags))

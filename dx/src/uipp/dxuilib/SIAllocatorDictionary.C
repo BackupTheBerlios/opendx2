@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -20,8 +22,6 @@
 // The constructor is responsible for setting the intial state of this
 // type of dictionary.  
 //
-#include "UIConfig.h"
-#include "defines.h"
 #include "SIAllocatorDictionary.h"
 #include "StandIn.h"
 

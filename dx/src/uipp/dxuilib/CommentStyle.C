@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 #include "CommentStyle.h"
-#include "defines.h"
 #include "Strings.h"
 #include "WarningDialogManager.h"
 

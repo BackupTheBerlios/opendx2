@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -17,7 +19,6 @@
 #include <Xm/FileSB.h>
 #include <Xm/SelectioB.h>
 
-#include "defines.h"
 #include "Application.h"
 #include "ApplyFileDialog.h"
 #include "ErrorDialogManager.h"

@@ -23,7 +23,7 @@
 
 
 void AddConstraintCallback( Widget widget, register WsCallbackList *callbacks,
-			    XtCallbackProc callback, caddr_t closure )
+			    XtCallbackProc callback, void * closure )
 {
     register WsCallbackRec *new;
 

@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ProcessGroupAssignDialog_h
 #define _ProcessGroupAssignDialog_h
 
 
-#include "defines.h"
 #include "Dialog.h"
 #include "ProcessGroupOptionsDialog.h"
 

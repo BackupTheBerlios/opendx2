@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _PickNode_h
 #define _PickNode_h
 
 
-#include "defines.h"
 #include "ProbeNode.h"
 
 

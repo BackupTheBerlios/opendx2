@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showposition.c,v 1.4 1999/05/10 15:45:30 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showposition.c,v 1.5 2000/05/16 18:48:16 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -152,7 +152,7 @@ Field show_positions ( Field input, char *data, int size )
 
     if ( !DXExists ( (Object) input, "positions" ) )
         DXErrorGoto
-            ( ERROR_INVALID_DATA, "No \"positions\" component in field" )
+            ( ERROR_DATA_INVALID, "No \"positions\" component in field" )
 
     if ( ERROR == ( output = (Field) DXCopy ( (Object)input, COPY_STRUCTURE ) ))
         goto error;
@@ -225,7 +225,7 @@ m_ShowPositions ( Object *in, Object *out )
     else
         if ( !DXExtractFloat ( I_every, &every ) || ( every < 1.0 ) )
             DXErrorGoto3
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#10121",
                   /* %s must be a scalar value greater than or equal to %g */
                   "parameter 'every'", 1.0 );

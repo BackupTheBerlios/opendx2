@@ -7,11 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include "Strings.h"
-#include "UIConfig.h"
-#include "defines.h"
 #include "Application.h"
 #include "SetDecoratorTextDialog.h"
 #include "LabelDecorator.h"

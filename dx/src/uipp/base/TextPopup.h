@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _TextPopup_h
 #define _TextPopup_h
 
 
-#include "defines.h"
 #include "UIComponent.h"
 
 

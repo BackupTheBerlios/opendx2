@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,7 +16,6 @@
 #define _DXChild_h
 
 
-#include "defines.h"
 #include "Base.h"
 #include <X11/Intrinsic.h>
 
@@ -68,7 +69,7 @@ class DXChild : public Base
     XtWorkProcId deletion_wpid;
     boolean    input_handlers_stalled;
 
-#ifdef	DXD_WIN
+#if defined(intelnt)
 	HANDLE	hpipeRead, hpipeWrite;
 #define DX_STATIC
 #else
@@ -149,7 +150,7 @@ class DXChild : public Base
     const char *getServer() { return this->server; }
     static int  HostIsLocal(const char *);
 
-#ifdef	DXD_WIN
+#if defined(intelnt)
     HANDLE GetWinPipeReadHandle() { return this->hpipeRead; }
     HANDLE GetWinPipeWriteHandle() { return this->hpipeWrite; }
 #endif

@@ -449,8 +449,8 @@ DXCreateArrayHandle(Array array)
 
 		terms = (Array *)DXAllocate(handle->nTerms * sizeof(Array));
 
-		handle->scr1 = (int *)DXAllocate(handle->itemSize);
-		handle->scr2 = (int *)DXAllocate(handle->itemSize);
+		handle->scratch1 = (int *)DXAllocate(handle->itemSize);
+		handle->scratch2 = (int *)DXAllocate(handle->itemSize);
 		
 		handle->strides = (int *)
 			DXAllocateZero(handle->nTerms * sizeof(int));
@@ -465,7 +465,7 @@ DXCreateArrayHandle(Array array)
 		
 		if (! handle->strides || ! handle->counts  ||
 		    ! terms           || ! handle->indices ||
-		    ! handle->scr1    || ! handle->scr2    ||
+		    ! handle->scratch1    || ! handle->scratch2    ||
 		    ! handle->scratch || ! handle->handles) goto error;
 
 		DXGetProductArrayInfo((ProductArray)array, NULL, terms);
@@ -502,8 +502,8 @@ DXCreateArrayHandle(Array array)
 
 		terms = (Array *)DXAllocate(handle->nTerms * sizeof(Array));
 
-		handle->scr1 = (int *)DXAllocate(handle->itemSize);
-		handle->scr2 = (int *)DXAllocate(handle->itemSize);
+		handle->scratch1 = (int *)DXAllocate(handle->itemSize);
+		handle->scratch2 = (int *)DXAllocate(handle->itemSize);
 		
 		handle->strides = (int *)
 			DXAllocateZero(handle->nTerms * sizeof(int));
@@ -517,7 +517,7 @@ DXCreateArrayHandle(Array array)
 			DXAllocateZero(handle->nTerms * sizeof(int));
 		
 		if (! handle->strides || ! handle->counts || ! terms ||
-		    ! handle->scr1    || ! handle->scr2   ||
+		    ! handle->scratch1    || ! handle->scratch2   ||
 		    ! handle->indices ||
 		    ! handle->scratch || ! handle->handles) goto error;
 
@@ -579,8 +579,8 @@ DXFreeArrayHandle(ArrayHandle handle)
 	DXFree((Pointer)handle->handles);
 	DXFree((Pointer)handle->indices);
 	DXFree((Pointer)handle->scratch);
-	DXFree((Pointer)handle->scr1);
-	DXFree((Pointer)handle->scr2);
+	DXFree((Pointer)handle->scratch1);
+	DXFree((Pointer)handle->scratch2);
 	DXFree((Pointer)handle->cdata);
 	DXFree((Pointer)handle->origin);
 	DXFree((Pointer)handle->delta);
@@ -672,12 +672,12 @@ DXCalculateArrayEntry(ArrayHandle handle, int offset, Pointer scratch)
 		{
 		    int *left, *right, *dst, *ptr, i, j, k, nItems;
 
-		    memcpy(handle->scr1, DXGetArrayEntry(handle->handles[0],
+		    memcpy(handle->scratch1, DXGetArrayEntry(handle->handles[0],
 			handle->indices[0], handle->scratch[0]),
 			handle->handles[0]->itemSize);
 
 		    nItems = handle->handles[0]->nValues;
-		    left = handle->scr1; dst = handle->scr2;
+		    left = handle->scratch1; dst = handle->scratch2;
 		    for (i = 1; i < handle->nTerms; i++)
 		    {
 			if (i == handle->nTerms-1)

@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 #include "ImageFormat.h"
@@ -17,7 +18,7 @@
 #if defined(DXD_WIN) || defined(OS2)
 #define unlink _unlink
 #endif
-#ifndef  DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <Xm/Text.h>

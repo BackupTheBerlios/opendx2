@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _DialInteractor_h
@@ -15,7 +17,6 @@
 
 #include <X11/Intrinsic.h>
  
-#include "defines.h"
 #include "ScalarInteractor.h"
 #include "List.h"
 
@@ -30,7 +31,7 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void DialInteractor_DialCB(Widget, XtPointer, XtPointer);
+extern "C" void DialInteractor_DialCB(Widget, void *, void *);
 
 
 class InteractorInstance;
@@ -58,8 +59,8 @@ class DialInteractor : public ScalarInteractor
     // Call the virtual callback for value changes. 
     //
     friend void DialInteractor_DialCB(Widget                  widget,
-               			XtPointer                clientData,
-               			XtPointer                callData);
+               			void *                clientData,
+               			void *                callData);
 
   protected:
     //
@@ -72,8 +73,7 @@ class DialInteractor : public ScalarInteractor
     // Accepts value changes and reflects them into other interactors, cdbs
     // and off course the interactor node output.
     //
-    void dialCallback(Widget widget, int component, 
-						XtPointer clientData);
+    void dialCallback(Widget widget, int component, void * clientData);
 
     //
     // Create and complete the steppers 
@@ -140,6 +140,6 @@ Widget createNumberComponent(Widget  parent,
                              int     decimalPlaces,
                              XtCallbackProc valueChangedCallback,
                              int     comp_index,
-                             caddr_t clientData);
+                             void *  clientData);
 
 #endif // _DialInteractor_h

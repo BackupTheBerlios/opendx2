@@ -7,11 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
-
-
-
-#include "defines.h"
 #include "ErrorDialogManager.h"
 #include "DXApplication.h"
 #include "Command.h"
@@ -42,7 +39,7 @@ void ApplicIF::initializePacketIO()
     this->setHandler(DXPacketIF::INFORMATION,
 		  ApplicIF::ApplicationInformation,
 		  (void*)this);
-    this->setHandler(DXPacketIF::ERROR,
+    this->setHandler(DXPacketIF::PKTERROR,
 		  ApplicIF::ApplicationError,
 		  (void*)this);
     this->setHandler(DXPacketIF::COMPLETE,

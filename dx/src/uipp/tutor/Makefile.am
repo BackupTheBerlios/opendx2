@@ -21,7 +21,4 @@ tutor_LDADD = 				\
 	../base/libBASE.a  		\
 	../widgets/libWIDGETS.a  	\
 	../dxl/libDXL.a		  	\
-	-L/usr/X11R6/lib 		\
-	-L/usr/local/lib 		\
-	-L$(DXROOT)/lib_@ARCH@	\
-	-lm -lXm -lXmu -lXt -lX11 -lXext
+	-L$(DXROOT)/lib_@ARCH@

@@ -450,7 +450,7 @@ switch(map_type) \
     case TYPE_FLOAT:  RGBRGB_OUTPUT_DELAYED_FLOAT(pixtype);   	  break; \
     default: \
     {  \
-	DXSetError(ERROR_INVALID_DATA, \
+	DXSetError(ERROR_DATA_INVALID, \
 	    "delayed color maps must be float, ubyte, ushort, short, int or uint"); \
 	goto error; \
     } \
@@ -634,7 +634,7 @@ _dxf_outputrgb_yuv(Field i, int fd, int yuv)
 	map = (Array)DXGetComponentValue(i, "color map");
 	if (! map)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"delayed-color image with no colormap");
 	    goto error;
 	}
@@ -642,7 +642,7 @@ _dxf_outputrgb_yuv(Field i, int fd, int yuv)
 	DXGetArrayInfo(map, NULL, &map_type, NULL, &mr, ms);
 	if (mr != 1 || ms[0] != 3)
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		"delayed color map must be 3-vector");
 	    goto error;
 	}
@@ -655,7 +655,7 @@ _dxf_outputrgb_yuv(Field i, int fd, int yuv)
 	    case TYPE_USHORT: RGBRGB_OUTPUT_DELAYED_INT_ALL(ushort); break;
 	    case TYPE_UBYTE:  RGBRGB_OUTPUT_DELAYED_INT_ALL(ubyte);  break;
 	    default:
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 	    "delayed-color pixels must be ubyte, ushort, short, int or uint");
 		goto error;
 	}
@@ -671,14 +671,14 @@ _dxf_outputrgb_yuv(Field i, int fd, int yuv)
 	    case TYPE_USHORT: RGBRGB_OUTPUT_INTEGER(ushort); break;
 	    case TYPE_UBYTE:  RGBRGB_OUTPUT_UBYTE;           break;
 	    default:
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 		    "pixels must be float, ubyte, ushort, short, int or uint");
 		goto error;
 	}
     }	
     else
     {
-	DXSetError(ERROR_INVALID_DATA, "%s %s",
+	DXSetError(ERROR_DATA_INVALID, "%s %s",
 	    "image pixels must either be single valued (for delayed colors)",
 	    "or 3-vectors");
 	goto error;
@@ -769,7 +769,7 @@ switch(map_type) \
     case TYPE_FLOAT:  RRGGBB_OUTPUT_DELAYED_FLOAT(pixtype);   break; \
     default: \
     {  \
-	DXSetError(ERROR_INVALID_DATA, \
+	DXSetError(ERROR_DATA_INVALID, \
 	    "delayed color maps must be float, ubyte, ushort, short, int or uint"); \
 	goto error; \
     } \
@@ -872,7 +872,7 @@ DXOutputRGBSeparate(Field i, int *fh)
 	map = (Array)DXGetComponentValue(i, "color map");
 	if (! map)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"delayed-color image with no colormap");
 	    goto error;
 	}
@@ -880,7 +880,7 @@ DXOutputRGBSeparate(Field i, int *fh)
 	DXGetArrayInfo(map, NULL, &map_type, NULL, &mr, ms);
 	if (mr != 1 || ms[0] != 3)
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		"delayed color map must be 3-vector");
 	    goto error;
 	}
@@ -893,7 +893,7 @@ DXOutputRGBSeparate(Field i, int *fh)
 	    case TYPE_USHORT: RRGGBB_OUTPUT_DELAYED_INT_ALL(ushort); break;
 	    case TYPE_UBYTE:  RRGGBB_OUTPUT_DELAYED_INT_ALL(ubyte);  break;
 	    default:
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 	    "delayed-color pixels must be ubyte, ushort, short, int or uint");
 		goto error;
 	}
@@ -909,14 +909,14 @@ DXOutputRGBSeparate(Field i, int *fh)
 	    case TYPE_USHORT: RRGGBB_OUTPUT_INTEGER(ushort); break;
 	    case TYPE_UBYTE:  RRGGBB_OUTPUT_INTEGER(ubyte);  break;
 	    default:
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 		    "pixels must be float, ubyte, ushort, short, int or uint");
 		goto error;
 	}
     }	
     else
     {
-	DXSetError(ERROR_INVALID_DATA, "%s %s",
+	DXSetError(ERROR_DATA_INVALID, "%s %s",
 	    "image pixels must either be single valued (for delayed colors)",
 	    "or 3-vectors");
 	goto error;

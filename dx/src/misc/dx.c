@@ -9,7 +9,7 @@
 /*  F. Suits   1/97		*/
 
 #include <dxconfig.h>
-
+#include <dx/arch.h>
 
 #ifdef DXD_WIN
 #include <windows.h>
@@ -52,10 +52,6 @@
 #define MAXNAME 256
 #define MAXENV  1024
 #define MAXPARMS 200
-
-#if defined(HAVE__POPEN) && !defined(HAVE_POPEN)
-#define popen _popen
-#endif
 
 #if defined(HAVE__SPAWNVP) && !defined(HAVE_SPAWNVP)
 #define spawnvp _spawnvp
@@ -421,6 +417,8 @@ int initrun()
 
     strcpy(exhost, thishost);
 
+#if defined(USE_REGISTRY)
+
     if (!(regval(1, "PathName", HUMMBIRD_ID, exceeddir, sizeof(exceeddir), &keydata) 		&&
 	regval(1, "UserDir", HUMMBIRD_ID, exceeduserdir, sizeof(exceeduserdir), &keydata) 	&&
 	regval(1, "Description", HUMMBIRD_ID, xservername, sizeof(xservername), &keydata) 	&&
@@ -435,6 +433,8 @@ int initrun()
 	regval(1, "LicenseKey", IBM_ID, licensekey, sizeof(licensekey), &keydata)))
 	printf("Data Explorer does not appear to be correctly installed on this machine.\n"
 	       "Execution will be attempted anyway, and if it fails, please try reinstalling DX.\n");
+
+#endif (USE_REGISTRY)
 
     keyformat(licensekey);
     strcpy(exarch, DXD_ARCHNAME);
@@ -504,7 +504,7 @@ int configure()
     sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
     setenvpair(xnlspath,	"XNLSPATH");
     setenvpair(xapplresdir,	"XAPPLRESDIR");
-    setenvpair(xkeysymdb,	"XKEYSYMDB");
+    //setenvpair(xkeysymdb,	"XKEYSYMDB");  GDA
     setenvpair("",		"HOME");
     setenvpair(path,		"Path");
 #endif
@@ -744,6 +744,11 @@ int launchit()
 	    rc = spawnvp(_P_WAIT, cmd, &args[0]);
 	else
 	    rc = spawnvp(_P_OVERLAY, cmd, &args[0]);
+	if (rc < 0)
+	{
+	    rc = errno;
+	    perror("error");
+	}
 #else
 	rc = execvp(args[0], args);
 #endif

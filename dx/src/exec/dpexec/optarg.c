@@ -67,7 +67,7 @@
 * No errors are defined.
 *****************************************************************************/
 
-#ifdef cygwin
+#if !defined(HAVE_GETOPT)
 
 #include <stdio.h>                  /* for EOF */
 #include <string.h>                 /* for strchr() */
@@ -165,4 +165,4 @@ return (int)*pArgString;    /* return the letter that matched */
 }
 } 
 
-#endif    /* End of #ifdef Cygwin. */
+#endif

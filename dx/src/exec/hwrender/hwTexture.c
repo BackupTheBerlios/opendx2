@@ -82,7 +82,7 @@ _newTexture(dxObject obj)
     }
     else
     {
-	DXSetError(ERROR_INVALID_DATA, "invalid object type for texture");
+	DXSetError(ERROR_DATA_INVALID, "invalid object type for texture");
 	goto error;
     }
 
@@ -114,7 +114,7 @@ _XTexture(Field f, xfieldT* xf, void *globals)
 	xf->uv_array = (Array)DXGetComponentValue(f, "uv");
 	if (! xf->uv_array)
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		"texture attribute but no uv component");
 	    goto error;
 	}
@@ -123,7 +123,7 @@ _XTexture(Field f, xfieldT* xf, void *globals)
 
 	if (type != TYPE_FLOAT || rank != 1 || shape[0] != 2)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"uv component must contain float 2-vectors");
 		goto error;
 	}
@@ -131,14 +131,14 @@ _XTexture(Field f, xfieldT* xf, void *globals)
 	attr = DXGetAttribute((dxObject)xf->uv_array, "dep");
 	if (DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"uv dep attribute must be a DXString object");
 	    goto error;
 	}
 
 	if (strcmp(DXGetString((dxString)attr), "positions"))
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"uv must be dep on positions");
 	    goto error;
 	}
@@ -204,21 +204,21 @@ _getTexture_Field(Texture t)
     tmp = (Array)DXGetComponentValue(tf, "connections");
     if (! tmp)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "texture field has no connections");
 	goto error;
     }
 
     if (! DXQueryGridConnections(tmp, &n, counts))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "texture field must have regular connections");
 	goto error;
     }
 
     if (n != 2)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "texture field must be 2-d regular connections");
 	goto error;
     }
@@ -228,7 +228,7 @@ _getTexture_Field(Texture t)
 
     if (counts[0] < 64 || counts[1] < 64)
     {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 	    "texture map resolution must be at least 64x64");
 	goto error;
     }
@@ -241,7 +241,7 @@ _getTexture_Field(Texture t)
 
     if (i)
     {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 	    "texture map resolution must be powers of 2");
 	goto error;
     }
@@ -251,7 +251,7 @@ _getTexture_Field(Texture t)
 	tmp = (Array)DXGetComponentValue(tf, "data");
     if (! tmp)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "texture has neither colors nor data");
 	return ERROR;
     }
@@ -322,7 +322,7 @@ _getTexture_Field(Texture t)
 	    }
 	    else
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 		    "invalid colormap type in texture");
 		goto error;
 	    }
@@ -337,7 +337,7 @@ _getTexture_Field(Texture t)
 	}
 	else
 	{ 
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		"texture must be float or ubyte 3-vectors or %s",
 		"contain scalar ubytes and have a color map");
 	    goto error;
@@ -377,14 +377,14 @@ _getTexture_CompositeField(Texture t)
 	if (!DXQueryGridConnections(grid, &nDim, memberCounts) ||
 	    !DXGetMeshOffsets((MeshArray)grid, memberOffsets))
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"texture field must have regular connections");
 	    goto error;
 	}
 
 	if (nDim != 2)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "texture fields must be 2-D");
+	    DXSetError(ERROR_DATA_INVALID, "texture fields must be 2-D");
 	    goto error;
 	}
 
@@ -400,7 +400,7 @@ _getTexture_CompositeField(Texture t)
 
     if (counts[0] < 64 || counts[1] < 64)
     {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 	    "texture map resolution must be at least 64x64");
 	goto error;
     }
@@ -413,7 +413,7 @@ _getTexture_CompositeField(Texture t)
 
     if (i)
     {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 	    "texture map resolution must be powers of 2");
 	goto error;
     }
@@ -440,7 +440,7 @@ _getTexture_CompositeField(Texture t)
 	    texture = (Array)DXGetComponentValue(member, "data");
 	if (! texture)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"texture has neither colors nor data");
 	    return ERROR;
 	}
@@ -529,7 +529,7 @@ _getTexture_CompositeField(Texture t)
 	    }
 	    else
 	    {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 		    "invalid colormap type in texture");
 		goto error;
 	    }
@@ -549,7 +549,7 @@ _getTexture_CompositeField(Texture t)
 	}
 	else
 	{ 
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		"texture must be float or ubyte 3-vectors or %s",
 		"contain scalar ubytes and have a color map");
 	    goto error;

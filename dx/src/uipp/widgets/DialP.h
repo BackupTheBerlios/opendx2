@@ -97,7 +97,7 @@ typedef	struct	_XmDialPart
 	GC		shade_def_incr_GC; /* Default for increasing.	*/
 	GC		shade_def_decr_GC; /* Default for decreasing.	*/
 	Boolean		shading_active;	/* is shading currently active? */
-	int		shading_angle1;	/* parameters to XFillArc to - 	*/
+	int		shading_angle1;	/* parameters to XFillArk to - 	*/
 	int		shading_angle2;	/*    draw shading.		*/
 	XPoint		major_segments[MAXSEGMENTS]; /* marker coordinates. */
 	XPoint		minor_segments[MAXSEGMENTS]; /* marker coordinates. */

@@ -7,14 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _SequencerDefinition_h
 #define _SequencerDefinition_h
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "ShadowedOutputDefinition.h"
 
 

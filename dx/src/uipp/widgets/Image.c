@@ -145,47 +145,47 @@ static XtResource resources[] =
     {  
       XmNmotionCallback, XmCCallback, XmRCallback, sizeof (XtCallbackList),
       XtOffset (XmImageWidget, image.motion_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {
       XmNsendMotion, XmCSendMotion, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.send_motion_events),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
     },
     {
       XmNframeBuffer, XmCFrameBuffer, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.frame_buffer),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
     },
     {
       XmN8supported, XmCSupported, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.supported8),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
     },
     {
       XmN12supported, XmCSupported, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.supported12),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
     },
     {
       XmN15supported, XmCSupported, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.supported15),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
     },
     {
       XmN16supported, XmCSupported, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.supported16),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
     },
     {
       XmN24supported, XmCSupported, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.supported24),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
     },
     {
       XmN32supported, XmCSupported, XmRBoolean, sizeof(Boolean),
       XtOffset(XmImageWidget, image.supported32),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
     },
 };
 
@@ -582,7 +582,7 @@ getBestVisual (Display *dpy, int *depth, int screen)
 	}
 
 	if(visualInfo)
-	    XFree ((caddr_t)visualInfo);
+	    XFree ((void *)visualInfo);
 	visualInfo = NULL;
 	if (ret)
 	    return ret;
@@ -618,7 +618,7 @@ getBestVisual (Display *dpy, int *depth, int screen)
     }
 
     if(visualInfo)
-	XFree ((caddr_t)visualInfo);
+	XFree ((void *)visualInfo);
     visualInfo = NULL;
     if (ret)
 	return ret;
@@ -639,7 +639,7 @@ getBestVisual (Display *dpy, int *depth, int screen)
 	}
     }
     if(visualInfo)
-	XFree ((caddr_t)visualInfo);
+	XFree ((void *)visualInfo);
     visualInfo = NULL;
     if (ret)
 	return ret;

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -19,7 +21,6 @@
 #include <Xm/ScrolledW.h>
 
 
-#include "defines.h"
 #include "ToolSelector.h" 
 #include "NodeDefinition.h"
 #include "Dictionary.h"

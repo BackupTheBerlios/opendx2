@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -19,7 +21,6 @@
 #include <X11/IntrinsicP.h>
 #include "XmUtility.h"
 
-#include "defines.h"
 #include "SelectorInteractor.h"
 #include "InteractorStyle.h"
 #include "ListIterator.h"

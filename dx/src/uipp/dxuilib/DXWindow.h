@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -25,7 +27,6 @@
 
 
 #include <Xm/Xm.h>
-#include "defines.h"
 #include "IBMMainWindow.h"
 
 #define ClassDXWindow "DXWindow"

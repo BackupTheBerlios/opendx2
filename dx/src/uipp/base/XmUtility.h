@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _XmUtility_h
@@ -14,7 +16,6 @@
 
 #include <Xm/Text.h>
 
-#include "defines.h"
 
 #define RES_CONVERT(res, str) XtVaTypedArg, res, XmRString, str, strlen(str)+1
 

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -32,7 +34,6 @@
 #define _ResetNode_h
 
 
-#include "defines.h"
 #include "ToggleNode.h"
 
 

@@ -5,7 +5,6 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-
 #include <dxconfig.h>
 
 
@@ -16,7 +15,15 @@
 
 #if defined(HAVE_LIBNETCDF)
 
-#include <netcdf.h>
+#undef int8
+#undef uint8
+#undef int16
+#undef uint16
+#undef int32
+#undef uint32
+#undef float64
+
+#include <netcdf/netcdf.h>
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
@@ -336,7 +343,6 @@ open_netcdf_file(char *filename)
     int foundfile = 0;
     char *fname = NULL, *foundname = NULL, *cp;
     char *datadir = NULL;
-    extern int ncerr;
     int ll;
 
     /* netCDF library options: on error, don't abort and don't print */
@@ -457,7 +463,7 @@ _dxfstat_netcdf_file(char *filename)
     int foundfile = 0;
     char *fname = NULL, *cp;
     char *datadir = NULL;
-    extern int ncerr;
+    //extern int ncerr;
 
     /* netCDF library options: on error, don't abort and don't print */
     ncopts = 0;
@@ -565,7 +571,7 @@ query_var(int cdfhandle, char **varlist, int *starttime, int *endtime,
 	j = MAXATTRSTR;
 	cp = parseit(stringattr, &j, s);
 	if(j <= 0) {
-	    DXSetError(ERROR_INVALID_DATA, "bad attribute for series");
+	    DXSetError(ERROR_DATA_INVALID, "bad attribute for series");
 	    goto error;
 	}
 
@@ -1685,7 +1691,7 @@ static Object build_series(int hand, Varinfo vp)
 
     series = get_serieslength(ap);
     if(series <= 0)
-	DXErrorReturn(ERROR_INVALID_DATA, "no members in series dimension");
+	DXErrorReturn(ERROR_DATA_INVALID, "no members in series dimension");
 
     
     o = (Object)DXNewSeries();
@@ -2326,7 +2332,7 @@ static Error get_seriesvalue(Arrayinfo ap, float **valuelist)
     parseit(ap->stringattr, &j, s);
 	
     if(j != 1)
-	DXErrorReturn(ERROR_INVALID_DATA, "bad seriesposition attribute");
+	DXErrorReturn(ERROR_DATA_INVALID, "bad seriesposition attribute");
     
     if((varid = ncvarid(ap->cdfhandle, s[0])) < 0) {
 	DXSetError(ERROR_BAD_PARAMETER, 
@@ -2346,15 +2352,15 @@ static Error get_seriesvalue(Arrayinfo ap, float **valuelist)
 	DXErrorReturn(ERROR_INTERNAL, "netCDF library error");
 
     if(dim[0] != ap->recdim)
-	DXErrorReturn(ERROR_INVALID_DATA, 
+	DXErrorReturn(ERROR_DATA_INVALID, 
 		  "seriespositions array must use unlimited record dimension");
 
     if(datatype != NC_FLOAT)
-	DXErrorReturn(ERROR_INVALID_DATA, 
+	DXErrorReturn(ERROR_DATA_INVALID, 
 		    "seriespositions array must be type float");
 
     if(ndims != 1)
-	DXErrorReturn(ERROR_INVALID_DATA, "seriespositions array must be 1D");
+	DXErrorReturn(ERROR_DATA_INVALID, "seriespositions array must be 1D");
 	
     size = get_serieslength(ap);
     start = ap->vp->startframe ? *ap->vp->startframe : 0;
@@ -2898,7 +2904,7 @@ build_data(Arrayinfo ap, int recdim)
 	delta = ap->vp->deltaframe ? *ap->vp->deltaframe : 1;
 
 	if(delta == 0) {
-	    DXSetError(ERROR_INVALID_DATA, "delta is zero");
+	    DXSetError(ERROR_DATA_INVALID, "delta is zero");
 	    goto error;
 	}
 
@@ -3069,7 +3075,7 @@ build_array(Arrayinfo ap)
 	delta = ap->vp->deltaframe ? *ap->vp->deltaframe : 1;
 
 	if(delta == 0) {
-	    DXSetError(ERROR_INVALID_DATA, "delta is zero");
+	    DXSetError(ERROR_DATA_INVALID, "delta is zero");
 	    goto error;
 	}
 

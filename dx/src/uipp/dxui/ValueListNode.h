@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,8 +17,6 @@
 #define _ValueListNode_h
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "ValueNode.h"
 
 //

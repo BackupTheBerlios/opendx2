@@ -8,7 +8,7 @@
 
 #include <dxconfig.h>
 
-
+#include "../base/defines.h"
 
 #include <X11/Xlib.h>
 #include <Xm/Xm.h>

@@ -37,10 +37,6 @@
 extern "C" int gethostname(char *address, int address_len);
 #endif
 
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#endif
-
 //static char *header_fmt = "%s:%d, net length = %d, cfg length = %d\n";
 //static char *header_fmt = "%d, net length = %d, cfg length = %d\n";
 static char *header_fmt = "%[^:]:%d, net length = %d, cfg length = %d";

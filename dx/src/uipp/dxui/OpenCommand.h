@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _OpenCommand_h
 #define _OpenCommand_h
 
 
-#include "defines.h"
 #include "OptionalPreActionCommand.h"
 
 #include <Xm/Xm.h>

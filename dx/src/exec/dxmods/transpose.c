@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/transpose.c,v 1.3 1999/05/10 15:45:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/transpose.c,v 1.4 2000/05/16 18:48:23 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -223,7 +223,7 @@ static Field Field_Transpose(Field f, int num, int *dims)
     }
     
     if(!DXTypeCheckV((Array)subo, TYPE_FLOAT, CATEGORY_REAL, 1, NULL)) {
-        DXSetError(ERROR_INVALID_DATA, "positions must be type float, rank 1"); 
+        DXSetError(ERROR_DATA_INVALID, "positions must be type float, rank 1"); 
         return NULL;
     }
     
@@ -233,7 +233,7 @@ static Field Field_Transpose(Field f, int num, int *dims)
         if(rank == 0)
             pcounts[0] = 1;    /* rank 0 == rank 1, shape 1 */
         else
-            DXErrorReturn(ERROR_INVALID_DATA, "bad position component");
+            DXErrorReturn(ERROR_DATA_INVALID, "bad position component");
     }
     
     if(num != pcounts[0]) {
@@ -307,7 +307,7 @@ static Field Field_Transpose(Field f, int num, int *dims)
     if (subo && inverted) {
 	
 	if (!DXTypeCheckV((Array)subo, TYPE_INT, CATEGORY_REAL, 1, NULL)) {
-	    DXSetError(ERROR_INVALID_DATA, "bad connections component"); 
+	    DXSetError(ERROR_DATA_INVALID, "bad connections component"); 
 	    return NULL;
 	}
 	
@@ -318,13 +318,13 @@ static Field Field_Transpose(Field f, int num, int *dims)
 	    
 	    DXGetArrayInfo((Array)subo, &nitems, NULL, NULL, &rank, ccounts);
 	    if (rank != 0  &&  rank != 1) {
-		DXSetError(ERROR_INVALID_DATA, "connections component not rank 1");
+		DXSetError(ERROR_DATA_INVALID, "connections component not rank 1");
 		return NULL;
 	    }
 	    
 	    attr = DXGetString((String)DXGetAttribute((Object)subo, "element type"));
 	    if (!attr) {
-		DXSetError(ERROR_INVALID_DATA, "connections have no element type");
+		DXSetError(ERROR_DATA_INVALID, "connections have no element type");
 		return NULL;
 	    }
 	    
@@ -435,12 +435,12 @@ static Array Item_Transpose(Array a, int num, int *dims, char *comp)
 	return a;        /* transpose of single wide vector is itself */
     
     if(rank != 1) {
-	DXSetError(ERROR_INVALID_DATA, "can only transpose vector data");
+	DXSetError(ERROR_DATA_INVALID, "can only transpose vector data");
 	return NULL;     /* only transposes rank 1 arrays */
     }
     
     if(num != shape[0]) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "number of dimensions doesn't match shape of '%s'", comp);
 	return NULL;
     }

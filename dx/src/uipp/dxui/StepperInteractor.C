@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,7 +16,6 @@
 #include <Xm/Xm.h>
 #include <Xm/Form.h>
 
-#include "defines.h"
 #include "StepperInteractor.h"
 #include "SetScalarAttrDialog.h"
 #include "InteractorStyle.h"
@@ -35,7 +36,7 @@ static Widget CreateStepperComponent(Widget  parent,
 				     int     decimalPlaces,
 				     XtCallbackProc valueChangedCallback,
 				     int     comp_index,
-				     caddr_t clientData);
+				     void * clientData);
 				     
 boolean StepperInteractor::StepperInteractorClassInitialized = FALSE;
 
@@ -149,7 +150,7 @@ Widget StepperInteractor::createInteractivePart(Widget form)
 		    si->getDecimals(i),
 		    (XtCallbackProc)StepperInteractor_StepperCB,
 		    i,
-		    (caddr_t)this);
+		    (void *)this);
 	this->appendComponentWidget(w);
 
 	/*
@@ -190,7 +191,7 @@ static Widget CreateStepperComponent(Widget  parent,
 				     int     decimalPlaces,
 				     XtCallbackProc valueChangedCallback,
 				     int     comp_index,
-				     caddr_t clientData)
+				     void * clientData)
 				     
 {
     Widget widget;
@@ -220,7 +221,7 @@ static Widget CreateStepperComponent(Widget  parent,
 	DoubleSetArg(wargs[n], XmNdValue,        value);        n++;
 	DoubleSetArg(wargs[n], XmNdValueStep,    delta);        n++;
     }
-    XtSetArg(wargs[n], XmNuserData,      (caddr_t)comp_index);      n++;
+    XtSetArg(wargs[n], XmNuserData,      (XtPointer)comp_index);      n++;
     XtSetArg(wargs[n], XmNfixedNotation, False);         n++;
     XtSetArg(wargs[n], XmNcharPlaces, 8);         n++;
     XtSetArg(wargs[n], XmNleftAttachment, XmATTACH_FORM);         n++;

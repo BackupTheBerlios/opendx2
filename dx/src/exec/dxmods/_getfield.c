@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.c,v 1.3 1999/05/10 15:45:18 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_getfield.c,v 1.4 2000/05/16 18:47:16 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -435,7 +435,7 @@ attribute_info in_memory_attribute (Object input, attribute_info output, int n )
 
     if ( ( output->name == NULL ) || ( strlen ( output->name ) == 0 ) )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10210", /* `%s' is not a valid string for %s */
               "NULL", "the attribute name" );
 
@@ -472,14 +472,14 @@ component_info in_memory_component ( Field input, component_info output, int n )
 
     if ( output->name == NULL )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10210", /* `%s' is not a valid string for %s */
               "NULL",
               "the component name" );
 
     if ( DXGetObjectClass ( o ) != CLASS_ARRAY )
         DXErrorGoto2
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#4414", /* `%s' component is not an array */
                        /* XXX - #4414 is a Warning class message */
               output->name );
@@ -553,7 +553,7 @@ component_info in_memory_component ( Field input, component_info output, int n )
                 output->element_type = ET_UNKNOWN;
 
                 DXErrorGoto3
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "#10210", /* `%s' is not a valid string for %s */
                       output->attrib_list[i].value,
                       "the \"element type\" attribute" );
@@ -726,7 +726,7 @@ field_info in_memory_field ( Field input, field_info output )
                      ->original_items )
             {
                 DXSetError
-                    ( ERROR_INVALID_DATA, "#11450" );
+                    ( ERROR_DATA_INVALID, "#11450" );
               /* Object internal consistency failure.  Use the Verify module. */
                 DXDebug
                     ( "D",
@@ -742,7 +742,7 @@ field_info in_memory_field ( Field input, field_info output )
                      ->original_items )
             {
                 DXSetError
-                    ( ERROR_INVALID_DATA, "#11450" );
+                    ( ERROR_DATA_INVALID, "#11450" );
               /* Object internal consistency failure.  Use the Verify module. */
                 DXDebug
                     ( "D",
@@ -762,7 +762,7 @@ field_info in_memory_field ( Field input, field_info output )
                          ->items < ( original_sizes[i] - 1 ) )
                 {
                     DXSetError
-                        ( ERROR_INVALID_DATA, "#11450" );
+                        ( ERROR_DATA_INVALID, "#11450" );
               /* Object internal consistency failure.  Use the Verify module. */
                     DXDebug
                         ( "D",
@@ -1129,7 +1129,7 @@ component_info _dxf_SetIterator ( component_info input )
 
                 case CUBES4D:
                     DXErrorGoto2
-                        ( ERROR_INVALID_DATA,
+                        ( ERROR_DATA_INVALID,
                           "#11380", /* %s is an invalid connections type */
                           input->std_attribs[(int)ELEMENT_TYPE]->value )
                     break;
@@ -1141,7 +1141,7 @@ component_info _dxf_SetIterator ( component_info input )
 		        input->std_attribs[(int)ELEMENT_TYPE]->value)
 			{
 			    DXErrorGoto3
-				( ERROR_INVALID_DATA,
+				( ERROR_DATA_INVALID,
 				  "#10210", /* `%s' is not a valid string for %s */
 				  input->std_attribs[(int)ELEMENT_TYPE]->value,
 				  "connections element type" );

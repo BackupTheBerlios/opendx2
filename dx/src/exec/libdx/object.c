@@ -104,11 +104,11 @@ DXDelete(Object o)
 
     /* sanity checks - up thru dx 2.1.1, this was if DEBUGGED only */
     if (o->count < 0)
-	DXErrorReturn(ERROR_INVALID_DATA,
+	DXErrorReturn(ERROR_DATA_INVALID,
 		    "Object deleted too often! (or not an object)");
     class = DXGetObjectClass(o);
     if ((int)class<=(int)CLASS_MIN || (int)class>=(int)CLASS_MAX) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		 "Deleting object of unknown class %d! (or not an object)",
 		 class);
 	return ERROR;
@@ -171,11 +171,11 @@ DXUnreference(Object o)
 
     /* sanity checks  - same comment as in DXDelete */
     if (o->count < 0)
-	DXErrorReturn(ERROR_INVALID_DATA,
+	DXErrorReturn(ERROR_DATA_INVALID,
 		    "Object deleted too often! (or not an object)");
     class = DXGetObjectClass(o);
     if ((int)class<=(int)CLASS_MIN || (int)class>=(int)CLASS_MAX) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		 "Deleting object of unknown class %d! (or not an object)",
 		 class);
 	return NULL;

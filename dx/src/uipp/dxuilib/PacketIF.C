@@ -13,7 +13,6 @@
 #include <strings.h>
 #endif
 
-#include "UIConfig.h"
 #include "Strings.h"
 
 #include "PacketIF.h"
@@ -39,15 +38,13 @@ extern "C" {
 #endif
 
 #if defined(HAVE_NETDB_H)
+#ifdef alphax
 extern "C" {
 #include <netdb.h>
 }
 #else
 #include <netdb.h>
 #endif
-
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
 #endif
 
 #if defined(HAVE_NETDB_H)
@@ -82,9 +79,10 @@ extern "C" {
 extern "C" int getdtablesize();
 #endif
 
-#ifndef  DXD_HAS_WINSOCKETS
+#if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
+
 #if defined(sgi)
 #include <bstring.h>
 #endif
@@ -101,14 +99,6 @@ int bzero(char*,int);
 
 #if defined(HAVE_TIME_H)
 #include <time.h>
-#endif
-
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#elif defined(HAVE_SYS_SOCKET_H)
-#include <sys/socket.h>
 #endif
 
 #if defined(HAVE_SYS_STAT_H)
@@ -135,14 +125,10 @@ int bzero(char*,int);
 #include <sys/utsname.h>
 #endif
 
-#ifdef  DXD_HAS_WINSOCKETS
-#define isatty  _isatty
-#define ushort  unsigned short
-#define EADDRINUSE              WSAEADDRINUSE
+#ifdef  USING_WINSOCKS
 int DXMessageOnSocket(int s);
 int SetSocketMode(int  s, int iMode);
 static short sTimeLoop = 1;
-
 #endif
 
 #ifdef alphax
@@ -172,12 +158,13 @@ extern "C" int select(
 
 #define SOCK_QUEUE_LENGTH       1
 #define SOCK_ACCEPT_TIMEOUT     60      /* Seconds */
-typedef int * SelectPtr;
+#if !defined(SelectPtr)
+typedef void * SelectPtr;
+#endif
 
-#ifdef DXD_HAS_WINSOCKETS
+#ifdef USING_WINSOCKS
 #define close closesocket
 #define read( a, b, c ) UxRecv( a, b, c, 0 )
-//	#define EPIPE SOCEPIPE
 #endif
 
 #ifdef DXD_IBM_OS2_SOCKETS
@@ -199,7 +186,7 @@ const char* PacketIF::PacketTypes[] =
     "$mac",		/* PacketIF::MACRODEF		*/
     "$for",		/* PacketIF::FOREGROUND	*/
     "$bac",		/* PacketIF::BACKGROUND	*/
-    "$err",		/* PacketIF::ERROR		*/
+    "$err",		/* PacketIF::PKTERROR		*/
     "$mes",		/* PacketIF::MESSAGE		*/
     "$inf",		/* PacketIF::INFO		*/
     "$lin",		/* PacketIF::LINQUIRY		*/
@@ -441,10 +428,10 @@ void PacketIF::initializePacketIO()
     this->setHandler(PacketIF::INTERRUPT,
 		    PacketIF::ProcessInterrupt,
 		    (void*)this);
-    this->setHandler(PacketIF::ERROR,
+    this->setHandler(PacketIF::PKTERROR,
 		    PacketIF::ProcessError,
 		    (void*)this);
-    this->setHandler(PacketIF::ERROR,
+    this->setHandler(PacketIF::PKTERROR,
 		    PacketIF::ProcessErrorWARNING,
 		    (void*)this,
 		    "WARNING");
@@ -456,7 +443,7 @@ void PacketIF::initializePacketIO()
 		    PacketIF::ProcessEndExecNode,
 		    (void*)this,
 		    "end ");
-    this->setHandler(PacketIF::ERROR,
+    this->setHandler(PacketIF::PKTERROR,
                     PacketIF::ProcessErrorERROR,
                     (void*)this,
                     "ERROR");
@@ -1002,7 +989,7 @@ PacketIF::packetReceive(boolean readSocket)
     char string[1024];
     char buffer[4096 + 1];
 
-#ifdef	DXD_HAS_WINSOCKETS
+#ifdef	USING_WINSOCKS
     if(DXMessageOnSocket(this->socket) <= 0) return ;
 #endif
     buffer[0] = NUL(char);
@@ -1402,7 +1389,7 @@ void PacketIF::connectAsServer(int pport)
 #ifdef solaris
     int  width = FD_SETSIZE;
 #else
-#ifdef  DXD_HAS_WINSOCKETS
+#ifdef  USING_WINSOCKS
     int  width = FD_SETSIZE;
 #else
 #ifndef OS2
@@ -1544,7 +1531,7 @@ retry:
     FD_ZERO(&fds);
     FD_SET(sock, &fds);
 
-#if defined(DXD_HAS_WINSOCKETS)
+#if defined(USING_WINSOCKS)
     if (!isatty(0))
     {
         to.tv_sec = SOCK_ACCEPT_TIMEOUT*1000;
@@ -1676,9 +1663,7 @@ boolean PacketIF::stallPacketHandling(StallingHandler h, void *data)
     return TRUE;
 }
 
-#if defined(DXD_NON_UNIX_SOCKETS)
-
-#if defined(DXD_HAS_WINSOCKETS)
+#if defined(USING_WINSOCKS)
 
 int UxSend(int s, char *ExternalBuffer, int TotalBytesToSend, int Flags)
 {
@@ -1842,10 +1827,6 @@ int UxRecv(int s, char *ExternalBuffer, int BuffSize, int Flags)
     }
   return (int) BuffPtr;
 }
-
-#else
-If there are non-unix sockets, there better be UxSend/UxRecv
-#endif
 
 #endif
 

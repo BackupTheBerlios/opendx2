@@ -32,7 +32,7 @@ static GC GetRubberbandGC(XmColorMapEditorWidget cmew);
  *  Purpose:	Installable event action proc for button input to control
  *		markers
  */
-void FieldActionProc( XmDrawingAreaWidget w, caddr_t client_data, 
+void FieldActionProc( XmDrawingAreaWidget w, XtPointer client_data, 
 		XEvent* event, Boolean *continue_to_dispatch)
 {
     ControlField* field;
@@ -90,7 +90,7 @@ ControlField* CreateControlField( Widget parent, char *name, short num_levels,
     XtAddCallback((Widget)field->w, XmNresizeCallback, (XtCallbackProc)ResizeCallback, field);
     XtAddCallback((Widget)field->w, XmNinputCallback, (XtCallbackProc)FieldInput, (XtPointer)field);
     XtAddEventHandler((Widget)field->w, Button1MotionMask, False, (XtEventHandler)FieldActionProc,NULL);
-    field->w->manager.user_data = (caddr_t)(field);
+    field->w->manager.user_data = (XtPointer)(field);
     XtManageChild((Widget)field->w);
     return field;
 }

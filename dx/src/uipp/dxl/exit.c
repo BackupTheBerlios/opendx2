@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/defines.h"
 
 #include <stdio.h>
 #include <ctype.h>
@@ -43,7 +44,6 @@
 #include <sys/select.h>
 #endif
 
-#include "../base/UIConfig.h"
 #include "dxlP.h"
 
 DXLError

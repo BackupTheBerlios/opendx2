@@ -7,12 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "AccessNetworkPanelsCommand.h"
 #include "Network.h"
 #include "CommandInterface.h"

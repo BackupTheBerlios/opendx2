@@ -17,7 +17,7 @@
 #undef FALSE
 #endif
 
-#ifdef  DXD_WIN
+#if defined(intelnt)
 #define    DOUBLE	DX_DOUBLE
 #define    FLOAT	DX_FLOAT
 #define    INT		DX_INT

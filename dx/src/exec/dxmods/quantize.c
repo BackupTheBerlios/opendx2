@@ -583,7 +583,7 @@ doLeaf_series_pass1(TreeNode tree, Object *in, int nColors)
    */
   if (strcmp("positions", DXGetString((String)attr)))
   {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	"colors dependency of \"rgb_image\" must be positions");
     goto error;
   }
@@ -594,7 +594,7 @@ doLeaf_series_pass1(TreeNode tree, Object *in, int nColors)
 	 || category != CATEGORY_REAL ||
 	 rank != 1 || shape != 3)
   {
-    DXSetError(ERROR_INVALID_DATA, "input \"rgb_image\"");
+    DXSetError(ERROR_DATA_INVALID, "input \"rgb_image\"");
     goto error;
   }
 
@@ -747,7 +747,7 @@ doLeaf_series_pass2(TreeNode tree, Object *in, Object *out)
    */
     if (strcmp("positions", DXGetString((String)attr)))
     {
-      DXSetError(ERROR_INVALID_DATA, "colors dependency of \"rgb_image\" must be positions");
+      DXSetError(ERROR_DATA_INVALID, "colors dependency of \"rgb_image\" must be positions");
       goto error;
     }
 
@@ -757,7 +757,7 @@ doLeaf_series_pass2(TreeNode tree, Object *in, Object *out)
 	   || category != CATEGORY_REAL ||
            rank != 1 || shape != 3)
        {
-         DXSetError(ERROR_INVALID_DATA, "input \"rgb_image\"");
+         DXSetError(ERROR_DATA_INVALID, "input \"rgb_image\"");
          goto error;
        }
 
@@ -783,7 +783,7 @@ doLeaf_series_pass2(TreeNode tree, Object *in, Object *out)
    */
   if (p_knt == -1)
   {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
       "cannot make output \"quantized\" dep on positions because no positions were found in input[0]");
     goto error;
   }
@@ -972,7 +972,7 @@ doLeaf(Object *in, Object *out, int nColors)
    */
     if (strcmp("positions", DXGetString((String)attr)))
     {
-      DXSetError(ERROR_INVALID_DATA, "colors dependency of \"rgb_image\" must be positions");
+      DXSetError(ERROR_DATA_INVALID, "colors dependency of \"rgb_image\" must be positions");
       goto error;
     }
 
@@ -982,7 +982,7 @@ doLeaf(Object *in, Object *out, int nColors)
 	   || category != CATEGORY_REAL ||
            rank != 1 || shape != 3)
        {
-         DXSetError(ERROR_INVALID_DATA, "input \"rgb_image\"");
+         DXSetError(ERROR_DATA_INVALID, "input \"rgb_image\"");
          goto error;
        }
 
@@ -1008,7 +1008,7 @@ doLeaf(Object *in, Object *out, int nColors)
    */
   if (p_knt == -1)
   {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
       "cannot make output \"quantized\" dep on positions because no positions were found in input[0]");
     goto error;
   }

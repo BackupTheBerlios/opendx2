@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 #define _SIAllocatorDictionary
 
 
-#include "defines.h"
 #ifdef NO_CC_TEMPLATES
 # include "DefaultingDictionary.h"
 #else

@@ -38,7 +38,7 @@ _dxfConstruct(Array o, Array d, Array c, Array data)
     if (o) {
 	if (DXGetObjectClass((Object)o) != CLASS_ARRAY)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10220","origin");
+	    DXSetError(ERROR_DATA_INVALID, "#10220","origin");
 	    goto error;
 	}
         DXGetArrayInfo((Array)o, NULL, &type, &category, NULL, NULL);
@@ -61,7 +61,7 @@ _dxfConstruct(Array o, Array d, Array c, Array data)
     if (d) {
 	if (DXGetObjectClass((Object)d) != CLASS_ARRAY)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10220", "deltas");
+	    DXSetError(ERROR_DATA_INVALID, "#10220", "deltas");
 	    goto error;
 	}
         DXGetArrayInfo((Array)d, NULL, &type, &category, NULL, NULL);
@@ -84,7 +84,7 @@ _dxfConstruct(Array o, Array d, Array c, Array data)
     if (c) {
 	if (DXGetObjectClass((Object)c) != CLASS_ARRAY)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#10541", "counts");
+	    DXSetError(ERROR_DATA_INVALID, "#10541", "counts");
 	    goto error;
 	}
         DXGetArrayInfo((Array)c, NULL, &type, &category, &rank, shape);
@@ -131,7 +131,7 @@ _dxfConstruct(Array o, Array d, Array c, Array data)
 		data = (Array)DXMakeStringList(1, DXGetString((String)data));
 
             else {
-		DXSetError(ERROR_INVALID_DATA, "#10260", "data");
+		DXSetError(ERROR_DATA_INVALID, "#10260", "data");
 		goto error;
             }
 	}
@@ -303,13 +303,13 @@ AddData(Field f, Array dA)
     else
     {
        if (nC != -1) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
      "number of data elements (%d) matches neither number of positions (%d) nor number of connections (%d)", 
          nD, nP, nC);
 	goto error;
        }
        else {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
            "number of data elements (%d) does not match number of positions(%d)", 
          nD, nP);
 	goto error;
@@ -339,7 +339,7 @@ HardCase(Array o, Array c)
 	dim = s[0];
     else
     {
-	DXSetError(ERROR_INVALID_DATA, "#10215","origin");
+	DXSetError(ERROR_DATA_INVALID, "#10215","origin");
 	goto error;
     }
 
@@ -347,7 +347,7 @@ HardCase(Array o, Array c)
 
     if (nC != 1)
     {
-        DXSetError(ERROR_INVALID_DATA, "#11825","counts","integer","origin");
+        DXSetError(ERROR_DATA_INVALID, "#11825","counts","integer","origin");
 	goto error;
     }
 
@@ -361,13 +361,13 @@ HardCase(Array o, Array c)
     
     if (! DXExtractParameter((Object)c, TYPE_INT, s[0], 1, (Pointer)counts))
     {
-        DXSetError(ERROR_INVALID_DATA, "#11825","counts","integer","origin");
+        DXSetError(ERROR_DATA_INVALID, "#11825","counts","integer","origin");
 	goto error;
     }
 
     if (r != 0 && r != 1)
     {
-        DXSetError(ERROR_INVALID_DATA, "#11825","counts","integer","origin");
+        DXSetError(ERROR_DATA_INVALID, "#11825","counts","integer","origin");
 	goto error;
     }
 
@@ -422,7 +422,7 @@ HardCase(Array o, Array c)
     }
     else
     {
-	DXSetError(ERROR_INVALID_DATA, "#11826","counts","origin");
+	DXSetError(ERROR_DATA_INVALID, "#11826","counts","origin");
 	goto error;
     }
 
@@ -520,7 +520,7 @@ MakeII(Array o)
     DXGetArrayInfo(o, &n, &t, &c, &r, s);
     if (c != CATEGORY_REAL || (r != 1 && r != 0))
     {
-	DXSetError(ERROR_INVALID_DATA,"#10215", "origin");
+	DXSetError(ERROR_DATA_INVALID,"#10215", "origin");
 	goto error;
     }
 
@@ -683,7 +683,7 @@ MakeRR(Array or, Array de, Array co)
     DXGetArrayInfo(o, &nO, NULL, NULL, &r, s);
     if (nO != 1 || r != 1)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11827","deltas",
+	DXSetError(ERROR_DATA_INVALID, "#11827","deltas",
                    "origin containing more than one point");
 	goto error;
     }
@@ -696,20 +696,20 @@ MakeRR(Array or, Array de, Array co)
 
     if (! DXExtractParameter((Object)o, TYPE_FLOAT, dim, 1, (Pointer)origin))
     {
-	DXSetError(ERROR_INVALID_DATA, "#10221","origin");
+	DXSetError(ERROR_DATA_INVALID, "#10221","origin");
 	goto error;
     }
 
     DXGetArrayInfo(d, &nD, NULL, NULL, &r, s);
     if (r != 1 || s[0] != dim)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11828", "deltas", "origin");
+	DXSetError(ERROR_DATA_INVALID, "#11828", "deltas", "origin");
 	goto error;
     }
 
     if (nD != 1 && nD != dim)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11828", "deltas","origin");
+	DXSetError(ERROR_DATA_INVALID, "#11828", "deltas","origin");
 	goto error;
     }
 
@@ -719,7 +719,7 @@ MakeRR(Array or, Array de, Array co)
 
     if (! DXExtractParameter((Object)d, TYPE_FLOAT, dim, nD, (Pointer)deltas))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11828", "deltas", "origin");
+	DXSetError(ERROR_DATA_INVALID, "#11828", "deltas", "origin");
 	goto error;
     }
 
@@ -739,7 +739,7 @@ MakeRR(Array or, Array de, Array co)
     DXGetArrayInfo(c, &nC, NULL, NULL, &r, s);
     if (nC != 1 || !((r == 1 && (s[0] == 1 || s[0] == dim)) || r == 0))
     {
-	DXSetError(ERROR_INVALID_DATA,"#11826", "counts", "origin and deltas");
+	DXSetError(ERROR_DATA_INVALID,"#11826", "counts", "origin and deltas");
 	goto error;
     }
 
@@ -757,7 +757,7 @@ MakeRR(Array or, Array de, Array co)
 
     if (! DXExtractParameter((Object)c, TYPE_INT, s[0], 1, (Pointer)counts))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11826","counts","origin and deltas");
+	DXSetError(ERROR_DATA_INVALID, "#11826","counts","origin and deltas");
         goto error;
     }
 

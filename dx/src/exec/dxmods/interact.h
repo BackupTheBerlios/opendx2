@@ -29,7 +29,7 @@
 #define NAME_CHARS   10		/* number of print characters for each name */
 #define METHOD_CHARS 10     	/* number of print characters for method */
 
-#if  defined(DXD_WIN) && defined(ABSOLUTE)
+#if  defined(intelnt) && defined(ABSOLUTE)
 #undef	ABSOLUTE
 #endif
 

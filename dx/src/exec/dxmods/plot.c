@@ -742,21 +742,21 @@ m_Plot(Object *in, Object *out)
 
    if (in[24]) {
      if (!DXExtractInteger(in[24], &dofixedfontsize)) {
-        DXSetError(ERROR_INVALID_DATA,"usefixedfontsize must be either 0 or 1");
+        DXSetError(ERROR_DATA_INVALID,"usefixedfontsize must be either 0 or 1");
         goto error;
      }
      if ((dofixedfontsize != 0)&&(dofixedfontsize != 1)) {
-        DXSetError(ERROR_INVALID_DATA,"usefixedfontsize must be either 0 or 1");
+        DXSetError(ERROR_DATA_INVALID,"usefixedfontsize must be either 0 or 1");
         goto error;
      }
    }
    if (in[25]) {
      if (!DXExtractFloat(in[25], &fixedfontsize)) {
-        DXSetError(ERROR_INVALID_DATA,"fixedfontsize must be a positive scalar");
+        DXSetError(ERROR_DATA_INVALID,"fixedfontsize must be a positive scalar");
         goto error;
      }
      if (fixedfontsize < 0) {
-        DXSetError(ERROR_INVALID_DATA,"fixedfontsize must be a positive scalar");
+        DXSetError(ERROR_DATA_INVALID,"fixedfontsize must be a positive scalar");
         goto error;
      }
    }
@@ -779,7 +779,7 @@ m_Plot(Object *in, Object *out)
       ywidth = FCEIL(log10(cp[3]))-FFLOOR(log10(cp[1]));
 
     if ((xwidth==0.0)||(ywidth==0.0)) {
-      DXSetError(ERROR_INVALID_DATA,"#11835");
+      DXSetError(ERROR_DATA_INVALID,"#11835");
       goto error;
     }
 
@@ -891,7 +891,7 @@ m_Plot(Object *in, Object *out)
   epsilony = epsilon/yscaling;
   
   if (epsilon <=0.0) {
-    DXSetError(ERROR_INVALID_DATA,"#11835");
+    DXSetError(ERROR_DATA_INVALID,"#11835");
     goto error;
   }
   
@@ -1125,7 +1125,7 @@ m_Plot(Object *in, Object *out)
     epsilony = epsilon/yscaling2;
     
     if (epsilon <=0.0) {
-      DXSetError(ERROR_INVALID_DATA,"#11835");
+      DXSetError(ERROR_DATA_INVALID,"#11835");
       goto error;
     }
     
@@ -1309,12 +1309,12 @@ static
     scatterobject = DXGetAttribute((Object)ino,"scatter");
     if (scatterobject) {
       if (!DXExtractInteger(scatterobject, &scatterflag)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "scatter attribute must be 0 or 1");
 	goto error;                     
       }
       if ((scatterflag!=0)&&(scatterflag!=1)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "scatter attribute must be 0 or 1");
 	goto error;                     
       }
@@ -1323,7 +1323,7 @@ static
     markobject = DXGetAttribute((Object)ino, "mark");
     if (markobject) {
       if (!DXExtractNthString(markobject, 0, &marker)) {
-	DXSetError(ERROR_INVALID_DATA,"#10200", "mark");
+	DXSetError(ERROR_DATA_INVALID,"#10200", "mark");
 	goto error;
       }
       localplotarg.ismark = 1;
@@ -1341,11 +1341,11 @@ static
     if (DXGetAttribute((Object)ino,"mark every")) {
       if (!DXExtractInteger(DXGetAttribute((Object)ino, "mark every"),
 			    &markevery)) {
-	DXSetError(ERROR_INVALID_DATA,"#10020", "mark every attribute");
+	DXSetError(ERROR_DATA_INVALID,"#10020", "mark every attribute");
 	goto error;
       }
       if (markevery < 0) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
                    "mark every attribute must non-negative");
 	goto error;
       }
@@ -1355,11 +1355,11 @@ static
     if (DXGetAttribute((Object)ino,"mark scale")) {
       if (!DXExtractFloat(DXGetAttribute((Object)ino, "mark scale"),
 			  &markscale)) {
-	DXSetError(ERROR_INVALID_DATA,"#10090", "mark scale attribute");
+	DXSetError(ERROR_DATA_INVALID,"#10090", "mark scale attribute");
 	goto error;
       }
       if (markscale <= 0) {
-	DXSetError(ERROR_INVALID_DATA,"#10090", "mark scale attribute");
+	DXSetError(ERROR_DATA_INVALID,"#10090", "mark scale attribute");
 	goto error;
       }
       localplotarg.markscale = markscale;
@@ -1386,7 +1386,7 @@ static
     markobject = DXGetAttribute((Object)ino, "mark");
     if (markobject) {
       if (!DXExtractNthString(markobject, 0, &marker)) {
-	DXSetError(ERROR_INVALID_DATA,"#10200", "mark");
+	DXSetError(ERROR_DATA_INVALID,"#10200", "mark");
 	goto error;
       }
       localplotarg.ismark = 1;
@@ -1396,12 +1396,12 @@ static
     scatterobject = DXGetAttribute((Object)ino,"scatter");
     if (scatterobject) {
       if (!DXExtractInteger(scatterobject, &scatterflag)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "scatter attribute must be 0 or 1");
 	goto error;
       }
       if ((scatterflag!=0)&&(scatterflag!=1)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "scatter attribute must be 0 or 1");
 	goto error;  
       }
@@ -1418,11 +1418,11 @@ static
     if (DXGetAttribute((Object)ino,"mark every")) {
       if (!DXExtractInteger(DXGetAttribute((Object)ino, "mark every"),
 			    &markevery)) {
-	DXSetError(ERROR_INVALID_DATA,"#10020", "mark every attribute");
+	DXSetError(ERROR_DATA_INVALID,"#10020", "mark every attribute");
 	goto error;
       }
       if (markevery < 0) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
                    "mark every attribute must be non-negative");
 	goto error;
       }
@@ -1431,11 +1431,11 @@ static
     if (DXGetAttribute((Object)ino,"mark scale")) {
       if (!DXExtractFloat(DXGetAttribute((Object)ino, "mark scale"),
 			  &markscale)) {
-	DXSetError(ERROR_INVALID_DATA, "#10090", "mark scale attribute");
+	DXSetError(ERROR_DATA_INVALID, "#10090", "mark scale attribute");
 	goto error;
       }
       if (markscale <= 0) {
-	DXSetError(ERROR_INVALID_DATA,"#10090", "mark scale attribute");
+	DXSetError(ERROR_DATA_INVALID,"#10090", "mark scale attribute");
 	goto error;
       }
       localplotarg.markscale = markscale;
@@ -1508,12 +1508,12 @@ static
     scatterobject = DXGetAttribute((Object)ino,"scatter");
     if (scatterobject) {
       if (!DXExtractInteger(scatterobject, &scatterflag)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "scatter attribute must be 0 or 1");
 	return ERROR;
       }
       if ((scatterflag!=0)&&(scatterflag!=1)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "scatter attribute must be 0 or 1");
 	return ERROR;
       }
@@ -1602,7 +1602,7 @@ static
       markobject = DXGetAttribute((Object)ino,"mark");
       if (markobject) {
 	if (!DXExtractNthString(markobject, 0, &marker)) {
-	  DXSetError(ERROR_INVALID_DATA,"#10200", "mark attribute");
+	  DXSetError(ERROR_DATA_INVALID,"#10200", "mark attribute");
 	  return ERROR;
 	}
 	locallegendarg.ismark=1;
@@ -1611,12 +1611,12 @@ static
       scatterobject = DXGetAttribute((Object)ino,"scatter");
       if (scatterobject) {
 	if (!DXExtractInteger(scatterobject, &scatterflag)) {
-          DXSetError(ERROR_INVALID_DATA,
+          DXSetError(ERROR_DATA_INVALID,
                      "scatter attribute must be 0 or 1");
           return ERROR;
 	}
 	if ((scatterflag!=0)&&(scatterflag!=1)) {
-          DXSetError(ERROR_INVALID_DATA,
+          DXSetError(ERROR_DATA_INVALID,
                      "scatter attribute must be 0 or 1");
           return ERROR;
 	}
@@ -1654,7 +1654,7 @@ static
     
     if (markobject) {
       if (!DXExtractNthString(markobject, 0, &marker)) {
-	DXSetError(ERROR_INVALID_DATA,"#10200","mark attribute");
+	DXSetError(ERROR_DATA_INVALID,"#10200","mark attribute");
 	return ERROR;
       }
       locallegendarg.ismark = 1;
@@ -1664,12 +1664,12 @@ static
     scatterobject = DXGetAttribute((Object)ino,"scatter");
     if (scatterobject) {
       if (!DXExtractInteger(scatterobject, &scatterflag)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "scatter attribute must be 0 or 1");
 	return ERROR; 
       }
       if ((scatterflag!=0)&&(scatterflag!=1)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "scatter attribute must be 0 or 1");
 	return ERROR; 
       }
@@ -1730,7 +1730,7 @@ static Error plottask(Pointer p)
      strcpy(depatt,DXGetString((String)DXGetComponentAttribute((Field)ino,
                                         "data","dep")));
   else {
-     DXSetError(ERROR_INVALID_DATA,"data component is missing dep attribute");
+     DXSetError(ERROR_DATA_INVALID,"data component is missing dep attribute");
      goto error;
   }
 
@@ -1748,7 +1748,7 @@ static Error plottask(Pointer p)
       clippoint2.y = log10(clippoint2.y);
     }
     else {
-      DXSetError(ERROR_INVALID_DATA,"#10531", "for log plot, corners");
+      DXSetError(ERROR_DATA_INVALID,"#10531", "for log plot, corners");
       goto error; 
     }
     arg->clippoint1 = clippoint1;
@@ -1756,11 +1756,11 @@ static Error plottask(Pointer p)
     /* make a new data array */
     DXGetArrayInfo(adata,&numitems, &type, &category, &rank, shape);
     if (!((rank==0)||((rank==1)&&(shape[0]=1)))) {
-      DXSetError(ERROR_INVALID_DATA,"#10081", "data component");
+      DXSetError(ERROR_DATA_INVALID,"#10081", "data component");
       goto error;
     }
     if (category != CATEGORY_REAL) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 	       "data component must be category real");
       goto error;
     }
@@ -1797,7 +1797,7 @@ static Error plottask(Pointer p)
         old_uint_ptr = (uint *)DXGetArrayData(adata);
         break;
       default:
-          DXSetError(ERROR_INVALID_DATA,"#11829", "data");
+          DXSetError(ERROR_DATA_INVALID,"#11829", "data");
           goto error;
     }
 
@@ -1814,7 +1814,7 @@ static Error plottask(Pointer p)
             if (old_short_ptr[i]>0.0) 
                new_ptr[i] = log10((float)old_short_ptr[i]);
             else {
-	      DXSetError(ERROR_INVALID_DATA,
+	      DXSetError(ERROR_DATA_INVALID,
 	   	         "#11860", "data");
               goto error;
             }
@@ -1823,7 +1823,7 @@ static Error plottask(Pointer p)
             if (old_int_ptr[i]>0.0)
               new_ptr[i] = log10((float)old_int_ptr[i]);
             else {
-	      DXSetError(ERROR_INVALID_DATA,
+	      DXSetError(ERROR_DATA_INVALID,
 	   	         "#11860", "data");
               goto error;
             }
@@ -1832,7 +1832,7 @@ static Error plottask(Pointer p)
             if (old_ptr[i] > 0.0)
               new_ptr[i] = log10(old_ptr[i]);
             else {
-	      DXSetError(ERROR_INVALID_DATA,
+	      DXSetError(ERROR_DATA_INVALID,
 	   	         "#11860", "data");
               goto error;
             }
@@ -1841,7 +1841,7 @@ static Error plottask(Pointer p)
            if (old_double_ptr[i]>0.0) 
               new_ptr[i] = log10((float)old_double_ptr[i]);
            else {
-	     DXSetError(ERROR_INVALID_DATA,
+	     DXSetError(ERROR_DATA_INVALID,
 	            "#11860", "data");
              goto error;
            }
@@ -1850,7 +1850,7 @@ static Error plottask(Pointer p)
            if (old_byte_ptr[i]>0.0)
              new_ptr[i] = log10((float)old_byte_ptr[i]);
            else {
-	     DXSetError(ERROR_INVALID_DATA,
+	     DXSetError(ERROR_DATA_INVALID,
 	            "#11860", "data");
              goto error;
            }
@@ -1862,7 +1862,7 @@ static Error plottask(Pointer p)
             new_ptr[i] = log10((float)old_uint_ptr[i]);
             break;
           default:
-            DXSetError(ERROR_INVALID_DATA,"#11829", "data");
+            DXSetError(ERROR_DATA_INVALID,"#11829", "data");
             goto error;
          }
          }
@@ -1881,7 +1881,7 @@ static Error plottask(Pointer p)
       clippoint2.x = log10(clippoint2.x);
     }
     else {
-      DXSetError(ERROR_INVALID_DATA,"#10531", "for log plot, corners");
+      DXSetError(ERROR_DATA_INVALID,"#10531", "for log plot, corners");
       goto error; 
     }
     arg->clippoint1 = clippoint1;
@@ -1894,11 +1894,11 @@ static Error plottask(Pointer p)
     }
     DXGetArrayInfo(apos,&numitems, &type, &category, &rank, shape);
     if (!((rank==0)||((rank==1)&&(shape[0]=1)))) {
-      DXSetError(ERROR_INVALID_DATA, "#11363", "positions component", 1);
+      DXSetError(ERROR_DATA_INVALID, "#11363", "positions component", 1);
       goto error;
     }
     if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 	       "positions component must be type float category real");
       goto error;
     }
@@ -1911,7 +1911,7 @@ static Error plottask(Pointer p)
       if (old_ptr[i]>0.0) 
 	new_ptr[i] = log10(old_ptr[i]);
       else {
-	DXSetError(ERROR_INVALID_DATA, "#10531", "for log plot, positions");
+	DXSetError(ERROR_DATA_INVALID, "#10531", "for log plot, positions");
 	goto error;
       }
       }
@@ -1925,7 +1925,7 @@ static Error plottask(Pointer p)
   }
   if (!(DXGetString((String)DXGetComponentAttribute((Field)ino,
 						"data","dep")))){
-    DXSetError (ERROR_INVALID_DATA, "#10241", "data");
+    DXSetError (ERROR_DATA_INVALID, "#10241", "data");
     goto error;
   }
   strcpy(depatt,DXGetString((String)DXGetComponentAttribute((Field)ino,
@@ -1939,7 +1939,7 @@ static Error plottask(Pointer p)
       goto error;
   }
   else {
-    DXSetError(ERROR_INVALID_DATA,"#11250", "data");
+    DXSetError(ERROR_DATA_INVALID,"#11250", "data");
     goto error;
   }
   DXDelete((Object)adatanew);
@@ -2030,13 +2030,13 @@ static Error PlotDepConnections(struct arg *arg)
   if (DXGetComponentValue((Field)ino,"colors")) {
     if (!(DXGetString((String)DXGetComponentAttribute((Field)ino,
                                                 "colors","dep")))){
-      DXSetError (ERROR_INVALID_DATA, "#10241", "colors");
+      DXSetError (ERROR_DATA_INVALID, "#10241", "colors");
       goto error;
     }
     strcpy(coldepatt,DXGetString((String)DXGetComponentAttribute((Field)ino,
                                                         "colors","dep")));
     if (strcmp(coldepatt,"connections")) {
-      DXSetError(ERROR_INVALID_DATA, "#10360", "data", "colors");
+      DXSetError(ERROR_DATA_INVALID, "#10360", "data", "colors");
       goto error;
     }
    }
@@ -2053,7 +2053,7 @@ static Error PlotDepConnections(struct arg *arg)
   if (!DXGetArrayInfo(adata,NULL, &type,&category,&rank,shape))
     goto error;
   if (!((rank==0) ||((rank==1)&&(shape[0]=1)))) {
-    DXSetError(ERROR_INVALID_DATA,"#11363", "data", 1);
+    DXSetError(ERROR_DATA_INVALID,"#11363", "data", 1);
     goto error;
   }
 
@@ -2091,7 +2091,7 @@ static Error PlotDepConnections(struct arg *arg)
         goto error;
       break;
     default:
-      DXSetError(ERROR_INVALID_DATA,"#11829", "data");
+      DXSetError(ERROR_DATA_INVALID,"#11829", "data");
       goto error;
   }
   
@@ -2111,7 +2111,7 @@ static Error PlotDepConnections(struct arg *arg)
 
   if (!needtoclip) { 
     if (!(acon = (Array)DXGetComponentValue((Field)ino,"connections"))) {
-      DXSetError(ERROR_INVALID_DATA, "#10251", "data", "connections");
+      DXSetError(ERROR_DATA_INVALID, "#10251", "data", "connections");
       goto error;
     }
     if (!(DXGetArrayInfo(acon, &conncount, NULL, NULL, NULL, NULL))) {
@@ -2177,7 +2177,7 @@ static Error PlotDepConnections(struct arg *arg)
           dataval = (float)p_data_ui[i];
           break;
         default:
-          DXSetError(ERROR_INVALID_DATA,"#11829", "data");
+          DXSetError(ERROR_DATA_INVALID,"#11829", "data");
           goto error;
       }
       
@@ -2203,14 +2203,14 @@ static Error PlotDepConnections(struct arg *arg)
 	clipregcolors = 0;
         if (colorstype == TYPE_FLOAT) {
           if ((rank != 1)||(shape[0] != 3)) {
-	    DXSetError(ERROR_INVALID_DATA,"#11363", "colors", 3);
+	    DXSetError(ERROR_DATA_INVALID,"#11363", "colors", 3);
 	    goto error;
           }
 	  color_ptr = (RGBColor *)DXGetArrayData(acolors);
         }
         else if (colorstype == TYPE_UBYTE) {
 	  if (!((rank==0)||((rank==1)&&(shape[0]==1)))) {
-	    DXSetError(ERROR_INVALID_DATA,"#11363", "byte colors", 1);
+	    DXSetError(ERROR_DATA_INVALID,"#11363", "byte colors", 1);
 	    goto error;
           }
 	  color_ubyte_ptr = (char *)DXGetArrayData(acolors); 
@@ -2222,7 +2222,7 @@ static Error PlotDepConnections(struct arg *arg)
           color_ptr = (RGBColor *)DXGetArrayData(colormap);
 	}
         else {
-          DXSetError(ERROR_INVALID_DATA,"#11838", "colors component");
+          DXSetError(ERROR_DATA_INVALID,"#11838", "colors component");
           goto error;
         }
       }
@@ -2236,7 +2236,7 @@ static Error PlotDepConnections(struct arg *arg)
     }
     
     if (!(acon = (Array)DXGetComponentValue((Field)ino,"connections"))) {
-      DXSetError(ERROR_INVALID_DATA, "#10251", "data", "connections");
+      DXSetError(ERROR_DATA_INVALID, "#10251", "data", "connections");
       goto error;
     }
     if (!(DXGetArrayInfo(acon, &conncount, NULL, NULL, NULL, NULL))) {
@@ -2297,7 +2297,7 @@ static Error PlotDepConnections(struct arg *arg)
           dataval = (float)p_data_ui[i];
           break;
         default:
-          DXSetError(ERROR_INVALID_DATA,"#11829", "data");
+          DXSetError(ERROR_DATA_INVALID,"#11829", "data");
           goto error;
         }
 	if (dataval < clippoint1.y)
@@ -2493,13 +2493,13 @@ static Error PlotDepPositions(struct arg *arg)
   if (DXGetComponentValue((Field)ino,"colors")) {
     if (!(DXGetString((String)DXGetComponentAttribute((Field)ino,
                                                 "colors","dep")))){
-      DXSetError (ERROR_INVALID_DATA, "#10241", "colors");
+      DXSetError (ERROR_DATA_INVALID, "#10241", "colors");
       goto error;
     }
     strcpy(coldepatt,DXGetString((String)DXGetComponentAttribute((Field)ino,
                                                         "colors","dep")));
     if (strcmp(coldepatt,"positions")) {
-      DXSetError(ERROR_INVALID_DATA, "#10360", "data", "colors");
+      DXSetError(ERROR_DATA_INVALID, "#10360", "data", "colors");
       goto error;
     }
    } 
@@ -2516,11 +2516,11 @@ static Error PlotDepPositions(struct arg *arg)
      datashape))
     goto error;
   if (datacat != CATEGORY_REAL) {
-    DXSetError(ERROR_INVALID_DATA,"data are not category real");
+    DXSetError(ERROR_DATA_INVALID,"data are not category real");
     goto error;
   }
   if (!((datarank==0)||((datarank==1)&&(datashape[0]==1)))) {
-    DXSetError(ERROR_INVALID_DATA,"#11363", "data",1);
+    DXSetError(ERROR_DATA_INVALID,"#11363", "data",1);
     goto error;
   }
   switch (datatype) {
@@ -2557,7 +2557,7 @@ static Error PlotDepPositions(struct arg *arg)
         goto error;
       break;
     default:
-      DXSetError(ERROR_INVALID_DATA,"#11829", "data");
+      DXSetError(ERROR_DATA_INVALID,"#11829", "data");
       goto error;
   }
   
@@ -2569,12 +2569,12 @@ static Error PlotDepPositions(struct arg *arg)
   scatterobject = DXGetAttribute((Object)ino,"scatter");
   if (scatterobject) {
      if (!DXExtractInteger(scatterobject, &scatterflag)) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
                    "scatter attribute must be 0 or 1");
         goto error;
      }
      if ((scatterflag!=0)&&(scatterflag!=1)) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
                    "scatter attribute must be 0 or 1");
         goto error;
      }
@@ -2590,18 +2590,18 @@ static Error PlotDepPositions(struct arg *arg)
   if (markobject) {
     splat = 1;
     if (!DXExtractNthString(markobject, 0, &marker)) {
-      DXSetError(ERROR_INVALID_DATA,"#10200", "mark");
+      DXSetError(ERROR_DATA_INVALID,"#10200", "mark");
       goto error;
     }
   }
   if (DXGetAttribute((Object)ino,"mark every")) {
     if (!DXExtractInteger(DXGetAttribute((Object)ino, "mark every"), 
 	  &markevery)) {
-      DXSetError(ERROR_INVALID_DATA, "#10020", "mark every attribute");
+      DXSetError(ERROR_DATA_INVALID, "#10020", "mark every attribute");
       goto error;
     }
     if (markevery < 0) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
                "mark every attribute must non-negative");
       goto error;
     }
@@ -2610,11 +2610,11 @@ static Error PlotDepPositions(struct arg *arg)
   if (DXGetAttribute((Object)ino,"mark scale")) {
     if (!DXExtractFloat(DXGetAttribute((Object)ino, "mark scale"), 
 	  &markscale)) {
-      DXSetError(ERROR_INVALID_DATA,"#10090", "mark scale attribute");
+      DXSetError(ERROR_DATA_INVALID,"#10090", "mark scale attribute");
       goto error;
     }
     if (markscale <= 0) {
-      DXSetError(ERROR_INVALID_DATA,"#10090", "mark scale attribute");
+      DXSetError(ERROR_DATA_INVALID,"#10090", "mark scale attribute");
       goto error;
     }
   }
@@ -2624,7 +2624,7 @@ static Error PlotDepPositions(struct arg *arg)
   linetypeobject = DXGetAttribute((Object)ino, "linetype");
   if (linetypeobject) {
     if (!DXExtractNthString(linetypeobject, 0, &linetype)) {
-      DXSetError(ERROR_INVALID_DATA,"#10200", "linetype");
+      DXSetError(ERROR_DATA_INVALID,"#10200", "linetype");
       goto error;
     }
   }
@@ -2647,14 +2647,14 @@ static Error PlotDepPositions(struct arg *arg)
       switch (colorstype) {
       case (TYPE_FLOAT):
         if ((rank!=1)||(shape[0]!=3)) {
-          DXSetError(ERROR_INVALID_DATA,"#11363", "colors", 3);
+          DXSetError(ERROR_DATA_INVALID,"#11363", "colors", 3);
           goto error;
         }
         p_colors = (RGBColor *)DXGetArrayData(acolors);
         break;
       case (TYPE_UBYTE):
         if (!((rank==0)||((rank==1)&&(shape[0]==1)))) {
-          DXSetError(ERROR_INVALID_DATA,"#11363", "byte colors", 1);
+          DXSetError(ERROR_DATA_INVALID,"#11363", "byte colors", 1);
           goto error;
         }
         p_ubyte_colors = (char *)DXGetArrayData(acolors);
@@ -2666,7 +2666,7 @@ static Error PlotDepPositions(struct arg *arg)
         p_colors = (RGBColor *)DXGetArrayData(colormap);
         break;
       default:
-          DXSetError(ERROR_INVALID_DATA,"#11838", "colors component");
+          DXSetError(ERROR_DATA_INVALID,"#11838", "colors component");
           goto error;
       }
       acolorsnew = DXNewArray(TYPE_FLOAT,CATEGORY_REAL,1,3);
@@ -2714,7 +2714,7 @@ static Error PlotDepPositions(struct arg *arg)
           dataval = (float)p_data_ui[i];
           break;
         default:
-          DXSetError(ERROR_INVALID_DATA,"#11829", "data");
+          DXSetError(ERROR_DATA_INVALID,"#11829", "data");
           goto error;
       }
       
@@ -3532,7 +3532,7 @@ static
     else if (!strcmp(marker,"")) {
     }
     else {
-       DXSetError(ERROR_INVALID_DATA,"#10203", "mark", 
+       DXSetError(ERROR_DATA_INVALID,"#10203", "mark", 
                   "x, triangle, square, circle, star, diamond");
        goto error;
     }

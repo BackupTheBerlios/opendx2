@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.3 1999/05/10 15:45:29 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/readimage.c,v 1.4 2000/05/16 18:48:10 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -34,7 +34,7 @@ INPUTS:
 #include <_rw_image.h>
 #include <fcntl.h>
 
-#ifdef	DXD_WIN   /*   ajay    */
+#if defined(HAVE_ERRNO_H)
 #include <errno.h>
 #endif
 
@@ -217,12 +217,12 @@ m_ReadImage ( Object *in, Object *out )
             Input_from_ADASD = 0;
 #else
 #ifndef DXD_OS_NON_UNIX
-	    DXErrorGoto(ERROR_INVALID_DATA,  "#12305");
+	    DXErrorGoto(ERROR_DATA_INVALID,  "#12305");
 #endif
 #endif
 	}
 	if (strlen(filename) > MAX_IMAGE_NAMELEN) {
-            DXSetError( ERROR_INVALID_DATA, "#12210", "name");
+            DXSetError( ERROR_DATA_INVALID, "#12210", "name");
 	    goto error;
 	}
         strcpy(originalname,filename);
@@ -269,7 +269,7 @@ m_ReadImage ( Object *in, Object *out )
 
                 if ( imginfo == NULL )
                     DXErrorGoto 
-                        ( ERROR_INVALID_DATA, "image type lookup failed" );
+                        ( ERROR_DATA_INVALID, "image type lookup failed" );
 	    }
 	    if ((imginfo->flags & ADASD_OK) == 0) {
                 DXSetError ( ERROR_NOT_IMPLEMENTED, "#12225", "format");
@@ -284,7 +284,7 @@ m_ReadImage ( Object *in, Object *out )
 
                 if ( imginfo == NULL )
                     DXErrorGoto 
-                        ( ERROR_INVALID_DATA, "image type lookup failed" );
+                        ( ERROR_DATA_INVALID, "image type lookup failed" );
 	    }
 
             if ( imginfo->flags & ADASD_ONLY )  {
@@ -310,7 +310,7 @@ m_ReadImage ( Object *in, Object *out )
              ||
              ( param_sizes.startframe < 0 ) )
             DXErrorGoto2
-                ( ERROR_INVALID_DATA, "#10030",  "start" )
+                ( ERROR_DATA_INVALID, "#10030",  "start" )
     }
     else
         param_sizes.startframe = VALUE_UNSPECIFIED;
@@ -321,7 +321,7 @@ m_ReadImage ( Object *in, Object *out )
              ||
              ( param_sizes.endframe < 0 ) )
             DXErrorGoto2
-                ( ERROR_INVALID_DATA, "#10030", "end" )
+                ( ERROR_DATA_INVALID, "#10030", "end" )
     } 
     else
         param_sizes.endframe = VALUE_UNSPECIFIED;
@@ -330,7 +330,7 @@ m_ReadImage ( Object *in, Object *out )
     {
         if ( !DXExtractInteger ( I_delta, &delta ) || ( delta < 1 ) )
             DXErrorGoto2
-                ( ERROR_INVALID_DATA, "#10020",  "delta" )
+                ( ERROR_DATA_INVALID, "#10020",  "delta" )
     }
     else
         delta = 1;
@@ -341,7 +341,7 @@ m_ReadImage ( Object *in, Object *out )
              ||
              ( param_sizes.width <= 0 ) )
             DXErrorGoto2
-                ( ERROR_INVALID_DATA, "#10020", "width" )
+                ( ERROR_DATA_INVALID, "#10020", "width" )
     }
     else
         param_sizes.width = VALUE_UNSPECIFIED;
@@ -352,7 +352,7 @@ m_ReadImage ( Object *in, Object *out )
              ||
              ( param_sizes.height <= 0 ) )
             DXErrorGoto2
-                ( ERROR_INVALID_DATA, "#10020",  "height" )
+                ( ERROR_DATA_INVALID, "#10020",  "height" )
     }
     else
         param_sizes.height = VALUE_UNSPECIFIED;
@@ -628,7 +628,7 @@ m_ReadImage ( Object *in, Object *out )
     }
 
     if ( image_sizes.startframe > image_sizes.endframe ) {
-        DXSetError ( ERROR_INVALID_DATA, "#12260",
+        DXSetError ( ERROR_DATA_INVALID, "#12260",
                    image_sizes.startframe, image_sizes.endframe );
         return ERROR;
     }
@@ -668,10 +668,10 @@ m_ReadImage ( Object *in, Object *out )
 	    if (!_dxf_BuildImageFileName(imagefilename, MAX_IMAGE_NAMELEN, basename, 
 						imgtyp, image_sizes.startframe,0))
 		return ERROR;
-  	    DXSetError( ERROR_INVALID_DATA, "#12240", imagefilename); /* cannot open fname */
+  	    DXSetError( ERROR_DATA_INVALID, "#12240", imagefilename); /* cannot open fname */
 	} else { 
 	    close(i);
-            DXSetError ( ERROR_INVALID_DATA, "#12265"); /* size file is missing */
+            DXSetError ( ERROR_DATA_INVALID, "#12265"); /* size file is missing */
 	}
         return ERROR;
     }
@@ -734,7 +734,7 @@ m_ReadImage ( Object *in, Object *out )
 					      basename, imgtyp,
 					      image_sizes.startframe, i))
 		    goto error;
-		DXErrorGoto2 ( ERROR_INVALID_DATA, 
+		DXErrorGoto2 ( ERROR_DATA_INVALID, 
 			"#12240", imagefilename );
 	    }
 	    if ( imgtyp != img_typ_tiff && imgtyp != img_typ_gif && imgtyp != img_typ_miff)
@@ -1196,7 +1196,7 @@ Field InputADASD (int width, int height, int frame, char* fname, char *colortype
 {
 
 #if !defined(DXD_HAS_LIBIOP)
-    DXErrorReturn(ERROR_INVALID_DATA, "#12295");
+    DXErrorReturn(ERROR_DATA_INVALID, "#12295");
 #else
     typedef struct { unsigned char b, g, r, a } BGRA;
     static float   lut [ 256 ];
@@ -1232,7 +1232,7 @@ Field InputADASD (int width, int height, int frame, char* fname, char *colortype
     }
 
     if (frame+1 > ms.frames)
-        DXErrorGoto2 ( ERROR_INVALID_DATA,  "#12300", frame);
+        DXErrorGoto2 ( ERROR_DATA_INVALID,  "#12300", frame);
 
     bufsize = ms.frame_blocks * MOV_BLK_SIZE + 1023;
 

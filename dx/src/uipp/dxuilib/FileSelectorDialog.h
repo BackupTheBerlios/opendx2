@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -16,7 +18,6 @@
 #define _FileSelectorDialog_h
 
 
-#include "defines.h"
 #include "ApplyFileDialog.h"
 
 #include <Xm/Xm.h>

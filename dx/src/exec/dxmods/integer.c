@@ -355,7 +355,7 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
    }
 
    if (strlen(ei.msgbuf) > MAX_MSGLEN){
-    DXSetError(ERROR_INVALID_DATA,"#10920");
+    DXSetError(ERROR_DATA_INVALID,"#10920");
     goto error1;
    }
    if (strcmp(ei.msgbuf,""))

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 
 
 #include <stdio.h>
-#include "defines.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 class Network;

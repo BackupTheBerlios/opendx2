@@ -263,7 +263,7 @@ m_Pick(Object *in, Object *out)
 	    DXGetArrayInfo(list, &nPicks, NULL, NULL, NULL, &nDim);
 	    if (nDim != 2)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "pick list must be 2-D");
+		DXSetError(ERROR_DATA_INVALID, "pick list must be 2-D");
 		goto error;
 	    }
 
@@ -388,7 +388,7 @@ m_Pick(Object *in, Object *out)
 			DXGetArrayInfo(array, &nn, NULL, NULL, NULL, NULL);
 			if (nn != n)
 			{
-			    DXSetError(ERROR_INVALID_DATA,
+			    DXSetError(ERROR_DATA_INVALID,
 			       "component mismatch in pick object");
 			    goto error;
 			}
@@ -417,7 +417,7 @@ m_Pick(Object *in, Object *out)
 
 	if (! DXExtractString(in[PICK_TAG_ARG], &ptag))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "pickTag must be STRING");
+	    DXSetError(ERROR_DATA_INVALID, "pickTag must be STRING");
 	    goto error;
 	}
 
@@ -433,7 +433,7 @@ m_Pick(Object *in, Object *out)
 	{
 	    if (! DXExtractString(in[IMAGE_TAG_ARG], &itag))
 	    {
-		DXSetError(ERROR_INVALID_DATA, "imageTag must be STRING");
+		DXSetError(ERROR_DATA_INVALID, "imageTag must be STRING");
 		goto error;
 	    }
 
@@ -526,14 +526,14 @@ m_Pick(Object *in, Object *out)
 	{
 	    if (DXGetObjectClass((Object)list) != CLASS_ARRAY)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "pick list must be class ARRAY");
+		DXSetError(ERROR_DATA_INVALID, "pick list must be class ARRAY");
 		goto error;
 	    }
 
 	    DXGetArrayInfo(list, &nPicks, NULL, NULL, NULL, &nDim);
 	    if (nDim != 2)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "pick list must be 2-D");
+		DXSetError(ERROR_DATA_INVALID, "pick list must be 2-D");
 		goto error;
 	    }
 
@@ -665,7 +665,7 @@ m_Pick(Object *in, Object *out)
 			DXGetArrayInfo(array, &nn, NULL, NULL, NULL, NULL);
 			if (nn != n)
 			{
-			    DXSetError(ERROR_INVALID_DATA,
+			    DXSetError(ERROR_DATA_INVALID,
 			       "component mismatch in pick object");
 			    goto error;
 			}
@@ -989,7 +989,7 @@ PickObject(Object object, PickBuf *pick, int poke, Point2D *xy,
     {
 	if (! DXExtractInteger(attr, &pickable))
 	{
-	    DXSetError(ERROR_INVALID_DATA,
+	    DXSetError(ERROR_DATA_INVALID,
 		"pickable attribute must be an integer");
 	    return ERROR;
 	}
@@ -1200,7 +1200,7 @@ PickField(Field f, PickBuf *p, int poke, Point2D xy, Matrix *s,
 				persp, nearPlane, sens, min, max);
 	    else
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			"unable to pick when element type is %s", str);
 		return ERROR;
 	    }
@@ -3113,7 +3113,7 @@ FLE_Perspective(PickBuf *pick, int poke, Point2D xy, Point *xPoints,
 
 		    if (cKnt == MAX_CLIPPTS)
 		    {
-			DXSetError(ERROR_INVALID_DATA, "too many clip points");
+			DXSetError(ERROR_DATA_INVALID, "too many clip points");
 			goto error;
 		    }
 
@@ -3685,7 +3685,7 @@ PickTraverse(Object object, Matrix *stack, Point xyz,
 		else
 		    if (! DXTypeCheckV(dstA, t, c, r, s))
 		    {
-			DXSetError(ERROR_INVALID_DATA,
+			DXSetError(ERROR_DATA_INVALID,
 			    "mismatched data components");
 			goto error;
 		    }
@@ -3752,7 +3752,7 @@ PickTraverse(Object object, Matrix *stack, Point xyz,
 	    object = DXGetEnumeratedMember(g, *path, NULL);
 	    if (! object)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			"pick path references non-existent group member");
 		goto error;
 	    }
@@ -3768,7 +3768,7 @@ PickTraverse(Object object, Matrix *stack, Point xyz,
 
 	    if (*path != 0)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			"pick path references invalid xform child");
 		goto error;
 	    }
@@ -3791,7 +3791,7 @@ PickTraverse(Object object, Matrix *stack, Point xyz,
 
 	    if (*path != 0)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			"pick path references invalid Clipped child");
 		goto error;
 	    }
@@ -3808,7 +3808,7 @@ PickTraverse(Object object, Matrix *stack, Point xyz,
 
 	    if (*path != 0)
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			"pick path references invalid Screen child");
 		goto error;
 	    }
@@ -3864,7 +3864,7 @@ GetAAMatrix(Object o, Matrix *r)
     return OK;
 
 error:
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	"unrecognized object in AutoAxes object header");
     return ERROR;
 }
@@ -3881,7 +3881,7 @@ getXY(Array in)
 
     if (DXGetObjectClass((Object)in) != CLASS_ARRAY)
     {
-	DXSetError(ERROR_INVALID_DATA, "pick list must be class ARRAY");
+	DXSetError(ERROR_DATA_INVALID, "pick list must be class ARRAY");
 	return NULL;
     }
 
@@ -3889,7 +3889,7 @@ getXY(Array in)
 
     if (t != TYPE_INT || c != CATEGORY_REAL || rank != 1)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"pick list array of real integer vectors");
 	return NULL;
     }

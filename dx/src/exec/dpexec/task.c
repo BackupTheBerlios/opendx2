@@ -705,7 +705,7 @@ countdown:
 #define LT(a,b)	((a)->work>(b)->work)
 #define GT(a,b)	((a)->work<(b)->work)
 #define QUICKSORT	ExWorkIndexSort
-#include "qsort.c"
+#include <qsort.c>
 
 static Error ExProcessTaskGroup (int sync)
 {

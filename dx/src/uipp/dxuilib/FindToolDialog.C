@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include <X11/StringDefs.h>
@@ -24,8 +26,6 @@
 #include <Xm/Label.h>
 #include <Xm/BulletinB.h>
 
-#include "defines.h"
-#include "UIConfig.h"
 #include "DXApplication.h"
 #include "FindToolDialog.h"
 #include "Node.h"
@@ -470,7 +470,7 @@ extern "C" void FindToolDialog_DefaultCB(Widget    widget,
     XmTextSetString(dialog->text, name);
     XmListSelectPos(dialog->list, dialog->lastIndex, False);
 
-    XtCallCallbacks(dialog->findbtn, XmNactivateCallback, (caddr_t)callData);
+    XtCallCallbacks(dialog->findbtn, XmNactivateCallback, (XtPointer)callData);
 }
 
 void FindToolDialog::manage()

@@ -200,7 +200,7 @@ m_Glyph(Object *in, Object *out)
       /* check the group type */
       if ((DXGetGroupClass((Group)in[1]) != CLASS_GROUP)&&
           (DXGetGroupClass((Group)in[1]) != CLASS_SERIES)) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
                    "for annotation glyphs, type parameter must be a series or generic group");
         goto error;
       }
@@ -315,7 +315,7 @@ m_Glyph(Object *in, Object *out)
      data = (Array)DXGetComponentValue((Field)incopy,"data");
      if (!data &&((!strcmp(type_string,"text"))||
                   (!strcmp(type_string,"coloredtext")))) {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
                    "text glyphs require a data component");
         goto error;
      }

@@ -426,7 +426,7 @@ IsRegular(Object in)
 
         default:
 
-	    DXSetError(ERROR_INVALID_DATA, "IsRegular: data not group or field");
+	    DXSetError(ERROR_DATA_INVALID, "IsRegular: data not group or field");
 	    return IS_REGULAR_ERROR;
     }
 }
@@ -516,7 +516,7 @@ _dxfReRef(Array array, int n)
 
     if (type != TYPE_INT || cat != CATEGORY_REAL)
     {
-	DXSetError(ERROR_INVALID_DATA, "referencing array must be INT/REAL");
+	DXSetError(ERROR_DATA_INVALID, "referencing array must be INT/REAL");
 	return NULL;
     }
 
@@ -580,7 +580,7 @@ _dxf_RemoveDupReferences(Field field)
 	if (t != TYPE_INT ||
 	    c != CATEGORY_REAL)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 			"invalid referential component: %s", name);
 	    goto error;
 	}

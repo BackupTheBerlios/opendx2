@@ -7,9 +7,9 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
-#include "../base/UIConfig.h"
 #include "../base/defines.h"
 #include "dxlP.h"
 #include "dxl.h"

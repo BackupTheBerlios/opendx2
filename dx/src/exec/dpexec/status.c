@@ -13,6 +13,7 @@
 #include <dx/dx.h>
 #undef Screen
 
+
 #if DXD_PROCESSOR_STATUS
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
@@ -21,7 +22,14 @@
 #if sgi
 #include <limits.h>
 #endif
+
+#if defined(HAVE_SYS_SIGNAL_H)
 #include <sys/signal.h>
+#endif
+
+#if defined(HAVE_SIGNAL_H)
+#include <signal.h>
+#endif
 
 
 #include "utils.h"
@@ -88,7 +96,11 @@ Error _dxf_ExInitStatus (int n, int flag)
 void _dxf_ExCleanupStatus ()
 {
     if (_dxd_exStatusPID)
+#ifdef _WIN32
+	kill (_dxd_exStatusPID, SIGTERM);
+#else
 	kill (_dxd_exStatusPID, SIGKILL);
+#endif
     if (_dxd_exProcessorStatus)
 	DXFree ((Pointer) _dxd_exProcessorStatus);
     if (old_status)

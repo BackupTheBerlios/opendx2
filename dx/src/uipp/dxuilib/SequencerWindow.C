@@ -7,12 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include <Xm/Xm.h>
 //#include <Xm/DialogS.h>
 
-#include "defines.h"
 #include "DXApplication.h"
 #include "SequencerWindow.h"
 #include "SequencerNode.h"

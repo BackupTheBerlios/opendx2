@@ -7,14 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _TransmitterNode_h
 #define _TransmitterNode_h
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "UniqueNameNode.h"
 
 

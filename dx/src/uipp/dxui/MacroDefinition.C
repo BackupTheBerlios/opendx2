@@ -6,25 +6,32 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
-#ifdef OS2
-#   define INCL_DOSFILEMGR
-#   include <os2.h>
-#endif
+#include <dxconfig.h>
+#include "../base/defines.h"
 
 #include <sys/types.h>
+
+#if defined(HAVE_ERRNO_H)
 #include <errno.h>
-#if !defined(DXD_WIN) && !defined(OS2)           //SMH get the right NT/DOS world functions
+#endif
+
+#if defined(HAVE_DIRENT_H)
 #include <dirent.h>
-#else
-#include <stdio.h>
+#endif
+
+#if defined(HAVE_IO_H)
 #include <io.h>
+#endif
+
+#if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
 #endif
 
+#include <stdio.h>
 
-#include "defines.h"
-
+#define Ark Ark
 #include <dx/arch.h>
+#undef Ark
 
 #include "lex.h"
 #include "MacroDefinition.h"
@@ -45,12 +52,12 @@
 #if  defined(HAVE_RE_COMP)
 #undef HAVE_REGCMP
 #undef HAVE_REGCOMP
-#undef HAVE_FINDFIRST
+#undef HAVE__FINDFIRST
 extern "C" char *re_comp(char *s);
 extern "C" int re_exec(char *);
 #elif defined(HAVE_REGCMP)
 #undef HAVE_REGCOMP
-#undef HAVE_FINDFIRST
+#undef HAVE__FINDFIRST
 extern "C" char *regcmp(...);
 extern "C" char *regex(char *, char *, ...);
 #elif HAVE_REGCOMP
@@ -58,13 +65,11 @@ extern "C" {
 #include <regexp.h>
 }
 #undef HAVE_RE_COMP
-#undef HAVE_FINDFIRST
+#undef HAVE__FINDFIRST
 #elif  defined(HAVE_RE_COMP)
-#undef HAVE_FINDFIRST
+#undef HAVE__FINDFIRST
 extern "C" char *re_comp(char *s);
 extern "C" int re_exec(char *);
-#elif  defined(HAVE_FINDFIRST)
-#include <mingw32/dir.h>
 #endif
 
 MacroDefinition::MacroDefinition(boolean system) : 
@@ -569,8 +574,27 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	{
 	    sptr = NULL;
 	}
+
+#if defined(HAVE_OPENDIR)
         DIR *d = opendir(nsptr);
 	if (!d)
+#elif defined(HAVE_SYS_STAT_H)
+	char *srch_string = new char[STRLEN(nsptr) + 6];
+	strcpy(srch_string, nsptr);
+	if (strlen(srch_string) > 0) 
+	{
+	    char c = srch_string[strlen(srch_string)-1];
+	    if (c != '/' && c != '\\' && c != ';') 
+		strcat(srch_string, "/");
+ 	}
+	strcat(srch_string, "*.net");
+	struct STATSTRUCT b;
+	int d = STAT(nsptr, &b);
+	if (d == -1)
+#else
+	No directory tools?
+#endif
+
 	{
  	    char *errtxt = "Failed opening directory %s: %s";
 	    if (errmsg) {
@@ -627,9 +651,9 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 		boolean exists = re_exec(entry->d_name) > 0;
 		if (exists)
 
-#elif defined(HAVE_FINDFIRST)
+#elif defined(HAVE__FINDFIRST)
 
-	    char *srch_string = new char[STRLEN(nsptr) + 6];  
+	    char *srch_string = new char[STRLEN(nsptr) + 10];  
 	    strcpy(srch_string,nsptr);                        
 	    if (strlen(srch_string)>0) {
 		char c = srch_string[strlen(srch_string)-1];
@@ -648,7 +672,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 		    strcpy(path, nsptr);
 		    strcat(path, "/");
 
-#if defined(HAVE_FINDFIRST)
+#if defined(HAVE__FINDFIRST)
                     strcat(path, entry.name);
 #else
                     strcat(path, entry->d_name);
@@ -686,7 +710,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 						replace, NULL, asSystemMacro);
 			Network::CloseNetworkFILE(f, wasEncoded);
 		    }
-#if defined(HAVE_FINDFIRST)
+#if defined(HAVE__FINDFIRST)
                     exists=_findnext(handle,&entry);
 	    }
             _findclose(handle);
@@ -694,18 +718,21 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 #elif defined(HAVE_REGCOMP)
 		}
 	    }
+	    closedir(d);
 #elif defined(HAVE_RE_COMP)
 		}
 	    }
+	    closedir(d);
 #elif defined(HAVE_REGCMP)
 		}
 	    }
+	    closedir(d);
 #elif defined(HAVE_REGCMP)
 		}
 	    }
 	    free(net_file);
-#endif
 	    closedir(d);
+#endif
 	}
     }
 

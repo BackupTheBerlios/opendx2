@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -20,7 +22,6 @@
 #define _lex_h
 
 
-#include "defines.h"
 #include "Strings.h"
 
 //

@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -22,7 +24,6 @@
 #include "../widgets/Stepper.h"
 #include <ctype.h> // for isalnum
 
-#include "defines.h"
 #include "Strings.h"
 #include "lex.h"
 #include "SetPageNameDialog.h"

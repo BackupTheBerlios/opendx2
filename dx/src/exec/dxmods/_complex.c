@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <dx/dx.h>
 
 
 #include <stdio.h>
@@ -14,7 +15,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <dx/dx.h>
 #include "_compute.h"
 #include "_compparse.h"
 

@@ -70,14 +70,14 @@ static Error _gammaCorrectColors(xfieldP xf, double gamma, int isLit);
     if (dim==0 || dim==1) {						     \
 	if (!DXTypeCheck(xf->CAT(comp,_array), t, CATEGORY_REAL, 0) &&	     \
 	  !DXTypeCheck(xf->CAT(comp,_array), t, CATEGORY_REAL, 1, 1)) {	     \
-	    DXSetError(ERROR_INVALID_DATA, "#11829", name);		     \
+	    DXSetError(ERROR_DATA_INVALID, "#11829", name);		     \
 	    EXIT(("ERROR: invalid data"));				     \
 	    return ERROR;						     \
 	}								     \
     } else {								     \
 	if (!DXTypeCheck(xf->CAT(comp,_array), t, CATEGORY_REAL, 1, dim))    \
 	{								     \
-	    DXSetError(ERROR_INVALID_DATA, "#11829", name); 		     \
+	    DXSetError(ERROR_DATA_INVALID, "#11829", name); 		     \
 	    EXIT(("ERROR: invalid data"));				     \
 	    return ERROR;						     \
 	}								     \
@@ -110,7 +110,7 @@ static Error _gammaCorrectColors(xfieldP xf, double gamma, int isLit);
     get(comp);							\
     n = xf->CAT(n,comp);					\
     if (n!=count && count!=0) {					\
-	DXSetError(ERROR_INVALID_DATA,"#13050",			\
+	DXSetError(ERROR_DATA_INVALID,"#13050",			\
 		 name, n, count);				\
         EXIT(("ERROR: invalid data"));			     	\
 	return ERROR;						\
@@ -302,15 +302,15 @@ _XNeighbors(Field f, xfieldT* xf, enum xr required)
     /* If a regular connections_array */
     if (DXQueryGridConnections(xf->connections_array, &n, xf->k)) {
       if( xf->connectionType==ct_cubes && n != 3) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "#13155","cubes",3);
 	goto error;
       } else if( xf->connectionType==ct_quads && n != 2) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "#13155","quads",2);
 	goto error;
       } else if( xf->connectionType==ct_lines && n != 1) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "#13155","lines",1);
 	goto error;
       }
@@ -519,7 +519,7 @@ _XNormals(Field f, xfieldT* xf,
       } else if (normal_dep==dep_polylines) {
 	compare(normals, "normals", xf->npolylines);
       } else {
-	DXSetError(ERROR_INVALID_DATA, "#10256","normals","dep");
+	DXSetError(ERROR_DATA_INVALID, "#10256","normals","dep");
 	EXIT(("ERROR"));
 	return ERROR;
       }
@@ -560,7 +560,7 @@ _XOpacities(Field f, xfieldT* xf,
 	        o = DXGetComponentAttribute(f, OPACITIES, DEP);
 	        if (! o)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "#10255","opacities","dep");
+		    DXSetError(ERROR_DATA_INVALID, "#10255","opacities","dep");
 		    EXIT(("ERROR"));
 		    return ERROR;
 		}
@@ -569,7 +569,7 @@ _XOpacities(Field f, xfieldT* xf,
 	    s = DXGetString((dxString)o);
 	    if (! s)
 	    {
-	        DXSetError(ERROR_INVALID_DATA, "#10256","opacities","dep");
+	        DXSetError(ERROR_DATA_INVALID, "#10256","opacities","dep");
 	        EXIT(("ERROR"));
 	        return ERROR;
 	    }
@@ -846,7 +846,7 @@ on an MP machine.
       }
       if (xf->fcolors_array != xf->bcolors_array) {
 	EXIT(("ERROR"));
-	DXErrorReturn(ERROR_INVALID_DATA,
+	DXErrorReturn(ERROR_DATA_INVALID,
 		      "#13165");
       }
     }

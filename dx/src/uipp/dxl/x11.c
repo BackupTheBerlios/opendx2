@@ -7,13 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 #include <string.h>
 #include <malloc.h>
 #include <stdio.h>
 
-#include "../base/UIConfig.h"
 #include "../base/defines.h"
 #define Object XObject
 #include <X11/Intrinsic.h>
@@ -123,7 +123,7 @@ DXLInitializeXMainLoop(XtAppContext app, DXLConnection *conn)
     xehd->appContext = app;
     xehd->wpid = 0;
     xehd->iid = XtAppAddInput(app, DXLGetSocket(conn), 
-#ifdef DXD_WIN
+#if defined(intelnt)
 			       (XtPointer)XtInputReadWinsock,
 #else
 			       (XtPointer)XtInputReadMask,

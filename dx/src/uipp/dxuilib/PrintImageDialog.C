@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 
@@ -19,7 +20,7 @@
 #include "WarningDialogManager.h"
 #include "XmUtility.h"
 
-#ifndef  DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <sys/stat.h>

@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _DXExecCtl_h
 #define _DXExecCtl_h
 
 
-#include "defines.h"
 #include "Base.h"
 
 

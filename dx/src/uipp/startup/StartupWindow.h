@@ -9,12 +9,12 @@
 #define _StartupWindow_h
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
 #include <dxl.h>
-#include "defines.h"
 #include "IBMMainWindow.h"
 
 //

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_parse.c,v 1.5 1999/12/22 18:26:06 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_parse.c,v 1.6 2000/05/16 18:47:52 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -297,14 +297,14 @@ CheckInputs(void)
 
   /* if no dimensions then grid or points was empty */
   if (_dxd_gi_numdims == 0){
-     DXSetError(ERROR_INVALID_DATA,"#10850","grid","points");
+     DXSetError(ERROR_DATA_INVALID,"#10850","grid","points");
      goto error;
   }
 
   /* check for grid size <=0 */
   for (i=0; i<_dxd_gi_numdims; i++) {
      if (_dxd_gi_dimsize[i] <= 0) {
-	DXSetError(ERROR_INVALID_DATA,"#10020","'grid' dimensions or 'points'");
+	DXSetError(ERROR_DATA_INVALID,"#10020","'grid' dimensions or 'points'");
 	goto error;
      }
   }
@@ -317,16 +317,16 @@ CheckInputs(void)
      firstdep = _dxd_gi_var[0]->datadep;
      for (f=0; f<_dxd_gi_numflds; f++){
        if (_dxd_gi_interleaving==IT_FIELD && firstdep!=_dxd_gi_var[f]->datadep){
-           DXSetError(ERROR_INVALID_DATA,"#10855","dependency");
+           DXSetError(ERROR_DATA_INVALID,"#10855","dependency");
            goto error;
            }
         if (_dxd_gi_var[f]->datadep == DEP_CONNECTIONS){
            if (_dxd_gi_positions == FIELD_PRODUCT && f==_dxd_gi_loc_index){
-           DXSetError(ERROR_INVALID_DATA,"#10856","locations");
+           DXSetError(ERROR_DATA_INVALID,"#10856","locations");
            goto error;
            }
            if( _dxd_gi_connections == CONN_POINTS){
-           DXSetError(ERROR_INVALID_DATA,"#10856","points");
+           DXSetError(ERROR_DATA_INVALID,"#10856","points");
            goto error;
            }
         }
@@ -368,14 +368,14 @@ CheckInputs(void)
     }
     else if (rec_sep[n-2]->type == SKIP_NOTHING ||
              rec_sep[n-1]->type != SKIP_NOTHING){
-       DXSetError(ERROR_INVALID_DATA,"#10840","recordseparator");
+       DXSetError(ERROR_DATA_INVALID,"#10840","recordseparator");
        goto error;
     }
     /* if format=binary separator can't be lines */
     if (_dxd_gi_format==BINARY){
        for (f=0; f<n-1; f++){
           if (rec_sep[f]->type == SKIP_LINES){
-             DXSetError(ERROR_INVALID_DATA,
+             DXSetError(ERROR_DATA_INVALID,
               "separators cannot be lines for binary data");
              goto error;
           }
@@ -394,7 +394,7 @@ CheckInputs(void)
   if (PARAM_SPECIFIED(PARAM_Series)){
       if (_dxd_gi_format==BINARY){
          if (_dxd_gi_serseparat.type == SKIP_LINES){
-            DXSetError(ERROR_INVALID_DATA,
+            DXSetError(ERROR_DATA_INVALID,
              "separators cannot be lines for binary");
             goto error;
          }
@@ -660,7 +660,7 @@ infoFormat(struct parse_state *ps)
   }
 
   if (!p){
-	DXSetError(ERROR_INVALID_DATA,"#10865","format");
+	DXSetError(ERROR_DATA_INVALID,"#10865","format");
         goto error;
   }
   if (!get_format(ps,&p,&_dxd_gi_format,&_dxd_gi_byteorder))
@@ -701,7 +701,7 @@ get_format(struct parse_state *ps,char **p,int *format,ByteOrder *order)
 	goto error;
     }
     if (!*p){
-	DXSetError(ERROR_INVALID_DATA,"#10865","format");
+	DXSetError(ERROR_DATA_INVALID,"#10865","format");
         goto error;
     }
   }
@@ -789,7 +789,7 @@ get_type(struct parse_state *ps,char **p,Type *type,int *bytes)
         else if (!strcmp(*p,"int")) strcpy(signedtype,"uint");
         else if (!strcmp(*p,"short")) strcpy(signedtype,"ushort");
         else{
-           DXSetError(ERROR_INVALID_DATA,"#10862","type","unsigned ?");
+           DXSetError(ERROR_DATA_INVALID,"#10862","type","unsigned ?");
            goto error;
         }
         *p = signedtype;
@@ -806,7 +806,7 @@ get_type(struct parse_state *ps,char **p,Type *type,int *bytes)
         else if (!strcmp(*p,"int"))  ;
         else if (!strcmp(*p,"short"))  ;
         else{
-           DXSetError(ERROR_INVALID_DATA,"#10862","type","signed ?");
+           DXSetError(ERROR_DATA_INVALID,"#10862","type","signed ?");
            goto error;
         }
      }
@@ -846,7 +846,7 @@ infoRecSeparat(struct parse_state *ps)
         return ERROR;
      }
      if (n > max_vars*MAX_POS_DIMS){
-        DXSetError(ERROR_INVALID_DATA,"too many record separators");
+        DXSetError(ERROR_DATA_INVALID,"too many record separators");
         goto error;
      }
      if ((rec_sep[n] = (struct header *)DXAllocate(sizeof(struct header))) 
@@ -863,7 +863,7 @@ infoRecSeparat(struct parse_state *ps)
   }
   rec_sep[n]->type = SKIP_NOTHING;
   if (n == 0) {
-     DXSetError(ERROR_INVALID_DATA,"no recordseparators specified");
+     DXSetError(ERROR_DATA_INVALID,"no recordseparators specified");
      goto error;
   }
 
@@ -958,7 +958,7 @@ infoMajority(struct parse_state *ps)
 	goto error;
   }
   if (!p){
-	DXSetError(ERROR_INVALID_DATA,"#10865","majority"); 
+	DXSetError(ERROR_DATA_INVALID,"#10865","majority"); 
         goto error;
   }
 
@@ -1034,7 +1034,7 @@ infoHeader(struct parse_state *ps)
         return ERROR;
   }
   if (!p){
-        DXSetError(ERROR_INVALID_DATA,"#10865","header");
+        DXSetError(ERROR_DATA_INVALID,"#10865","header");
         return ERROR;
   }
 
@@ -1061,11 +1061,11 @@ get_header(struct parse_state *ps, char *p, struct header *head)
 	    goto error;
   	}
         if (!p){
-	    DXSetError(ERROR_INVALID_DATA,"#10865","lines");
+	    DXSetError(ERROR_DATA_INVALID,"#10865","lines");
             goto error;
         }
 	if (!isdigit(*p)){
-	    DXSetError(ERROR_INVALID_DATA,"#10873","lines");
+	    DXSetError(ERROR_DATA_INVALID,"#10873","lines");
             goto error;
         }
   	head->size = atoi(p);
@@ -1077,11 +1077,11 @@ get_header(struct parse_state *ps, char *p, struct header *head)
 	    goto error;
   	}
         if (!p){
-	    DXSetError(ERROR_INVALID_DATA,"#10865","bytes");
+	    DXSetError(ERROR_DATA_INVALID,"#10865","bytes");
             goto error;
         }
 	if (!isdigit(*p)){
-	    DXSetError(ERROR_INVALID_DATA,"#10873","bytes");
+	    DXSetError(ERROR_DATA_INVALID,"#10873","bytes");
             goto error;
         }
   	head->size = atoi(p);
@@ -1093,14 +1093,14 @@ get_header(struct parse_state *ps, char *p, struct header *head)
 	    goto error;
   	}
 	if (!p){ 
-	     DXSetError(ERROR_INVALID_DATA,"#10865","marker");
+	     DXSetError(ERROR_DATA_INVALID,"#10865","marker");
              goto error;
         }
 	if (!parse_marker(p,head->marker))
 	    goto error;
 	head->size = 0;
   } else { 
-	DXSetError(ERROR_INVALID_DATA,"#10862","header",p);
+	DXSetError(ERROR_DATA_INVALID,"#10862","header",p);
 	goto error;
   }
 
@@ -1126,7 +1126,7 @@ infoInterleaving(struct parse_state *ps)
   }
 
   if (!p){ 
-    DXSetError(ERROR_INVALID_DATA,"10865","interleaving");
+    DXSetError(ERROR_DATA_INVALID,"10865","interleaving");
     goto error;
   }
 
@@ -1142,7 +1142,7 @@ infoInterleaving(struct parse_state *ps)
     _dxd_gi_interleaving = IT_VECTOR;
   else
     {
-	DXSetError(ERROR_INVALID_DATA,"#10862","interleaving",p);
+	DXSetError(ERROR_DATA_INVALID,"#10862","interleaving",p);
 	goto error;
     }
   return OK;
@@ -1254,7 +1254,7 @@ infoPositions(struct parse_state *ps,struct place_state *dataps)
     }
     
   if (!PARAM_SPECIFIED(PARAM_Points) && !PARAM_SPECIFIED(PARAM_Grid)){ 
-    DXSetError(ERROR_INVALID_DATA,"#10875","points","grid","positions");
+    DXSetError(ERROR_DATA_INVALID,"#10875","points","grid","positions");
     goto error;
   }
 
@@ -1373,7 +1373,7 @@ infoPositions(struct parse_state *ps,struct place_state *dataps)
 		}
 	      else 
 		{
-		  DXSetError(ERROR_INVALID_DATA,"#10879",n+1,"positions",p);
+		  DXSetError(ERROR_DATA_INVALID,"#10879",n+1,"positions",p);
 		  goto error;
 		}
 	    }
@@ -1423,7 +1423,7 @@ infoPositions(struct parse_state *ps,struct place_state *dataps)
 		}
 	      else
 		{
-		  DXSetError(ERROR_INVALID_DATA,"#10879",n+1,"positions",p);
+		  DXSetError(ERROR_DATA_INVALID,"#10879",n+1,"positions",p);
 		  goto error;
 		}
 	    }
@@ -1511,7 +1511,7 @@ infoPoints(struct parse_state *ps)
   ByteOrder order = DEFAULT_BYTEORDER;
 
   if (_dxd_gi_connections != CONN_UNKNOWN){ 
-	DXSetError(ERROR_INVALID_DATA,"#10882","points","grid");
+	DXSetError(ERROR_DATA_INVALID,"#10882","points","grid");
         goto error;
   }
 
@@ -1528,14 +1528,14 @@ infoPoints(struct parse_state *ps)
     {
       _dxd_gi_dimsize[0] = atoi( p );
       if (_dxd_gi_dimsize[0] == 0) {
-	    DXSetError(ERROR_INVALID_DATA,"#10020",
+	    DXSetError(ERROR_DATA_INVALID,"#10020",
 		"number of points specified in 'points' statement");
 	    goto error;
       }
     }
   else {		/* points read from file */
     if (!_dxd_gi_filename){
-	DXSetError(ERROR_INVALID_DATA,"'file' must come before 'points'");
+	DXSetError(ERROR_DATA_INVALID,"'file' must come before 'points'");
 	goto error;
     }
     if (!_dxd_gi_fromfile && (_dxd_gi_fromfile = (struct infoplace **)
@@ -1580,7 +1580,7 @@ infoGrid(struct parse_state *ps)
 
   _dxd_gi_numdims=0;
   if (_dxd_gi_connections != CONN_UNKNOWN){ 
-	DXSetError(ERROR_INVALID_DATA,"#10882","grid","points");
+	DXSetError(ERROR_DATA_INVALID,"#10882","grid","points");
         goto error;
   }
   /* check first character, if alpha data is read from file */
@@ -1589,7 +1589,7 @@ infoGrid(struct parse_state *ps)
      goto error;
   }
   if (!p){
-     DXSetError(ERROR_INVALID_DATA,"grid statement is empty");
+     DXSetError(ERROR_DATA_INVALID,"grid statement is empty");
      goto error;
   }
 
@@ -1657,7 +1657,7 @@ infoSeries(struct parse_state *ps)
     {
       if (isalpha(*p)){
          if (i<0){
- 	    DXSetError(ERROR_INVALID_DATA,"#10885","series separator");
+ 	    DXSetError(ERROR_DATA_INVALID,"#10885","series separator");
 	    goto error;
          } 
          if (!strncmp(p,"separator",9)){
@@ -1666,7 +1666,7 @@ infoSeries(struct parse_state *ps)
                goto error;
             }
             if (!p){
-               DXSetError(ERROR_INVALID_DATA,"#10865","series separator");
+               DXSetError(ERROR_DATA_INVALID,"#10865","series separator");
                goto error;
             }
 
@@ -1676,11 +1676,11 @@ infoSeries(struct parse_state *ps)
             }
          }
          else{
-            DXSetError(ERROR_INVALID_DATA,"#10862","series");
+            DXSetError(ERROR_DATA_INVALID,"#10862","series");
             goto error;
          }
          if (FileTok(ps," \n\t",NO_NEWLINE,&p) && p){
-            DXSetError(ERROR_INVALID_DATA,"#10885","series separator");
+            DXSetError(ERROR_DATA_INVALID,"#10885","series separator");
             goto error;
          }
          break;
@@ -1750,7 +1750,7 @@ parse_marker(char *p, char marker[MAX_MARKER])
 	    p++; 
 	}
 	if ((i<MAX_MARKER) && (*p != '"')){
-	    DXSetError(ERROR_INVALID_DATA,"#10886","marker");
+	    DXSetError(ERROR_DATA_INVALID,"#10886","marker");
             goto error;
         }
         p++;
@@ -1766,7 +1766,7 @@ parse_marker(char *p, char marker[MAX_MARKER])
 	}
     } 	
     if (i>=MAX_MARKER){ 
-	DXSetError(ERROR_INVALID_DATA,"#10887","marker");
+	DXSetError(ERROR_DATA_INVALID,"#10887","marker");
         goto error;
     }
     marker[i] = '\0';
@@ -1798,13 +1798,13 @@ nextchar(char **p, unsigned int *c)
 		    (*p)++;
 		    digit = **p - '0';
 		    if (digit >= 8)   {
-			DXSetError(ERROR_INVALID_DATA,"#10890",**p); 
+			DXSetError(ERROR_DATA_INVALID,"#10890",**p); 
 			goto error;
 		    }
 		    num = num*8 + **p - '0';
 		} while ((++i < 3) && isdigit(*(*p+1)));
 		if (num > 0xff) {
-			DXSetError(ERROR_INVALID_DATA,"10891",num); 
+			DXSetError(ERROR_DATA_INVALID,"10891",num); 
 			goto error;
 		}
 		*c = num; 
@@ -1854,7 +1854,7 @@ parse_template(char *format, char **filename)
    ps.line=NULL;
    if (!strncmp(format,"template",8)){
       if ((p = strchr(format,'=')) ==NULL){
-         DXSetError(ERROR_INVALID_DATA,"#10895","template");
+         DXSetError(ERROR_DATA_INVALID,"#10895","template");
          goto error;
       } 
       p++;
@@ -2124,7 +2124,7 @@ parse_datafile(struct place_state *dataps)
    if (read_header==1){		/* header marker was already read */
       DXWarning("header info not before data, cannot pipe");
       if (_dxd_gi_filename[0]=='!'){
-         DXSetError(ERROR_INVALID_DATA,
+         DXSetError(ERROR_DATA_INVALID,
          "can't use filter if header info is after begining of data");
           goto error;
       }
@@ -2137,7 +2137,7 @@ parse_datafile(struct place_state *dataps)
 	 if (_dxd_gi_header.size < dataps->lines){
 	    DXWarning("header info not before data, cannot pipe");
 	    if (_dxd_gi_filename[0]=='!'){
-	       DXSetError(ERROR_INVALID_DATA,
+	       DXSetError(ERROR_DATA_INVALID,
 	       "can't use filter if header info is after begining of data");
 	       goto error;
 	    }
@@ -2150,7 +2150,7 @@ parse_datafile(struct place_state *dataps)
 	 if (_dxd_gi_header.size < dataps->bytes){
 	    DXWarning("header info not before data, cannot pipe");
 	    if (_dxd_gi_filename[0]=='!'){
-	       DXSetError(ERROR_INVALID_DATA,
+	       DXSetError(ERROR_DATA_INVALID,
 	       "can't use filter if header info is after begining of data");
 	       goto error;
 	    }
@@ -2319,14 +2319,14 @@ Error _dxf_getline(struct parse_state *ps)
 
    /* get newline allocating space if ness */
    if ((fgets(str,MAX_DSTR,ps->fp))==NULL){
-     DXSetError(ERROR_INVALID_DATA,"#10898",ps->filename);
+     DXSetError(ERROR_DATA_INVALID,"#10898",ps->filename);
      return ERROR;
    }
    ps->lineno++;
    strcpy(line,str);
    while ((int)strlen(str)>MAX_DSTR-2){
       if ((fgets(str,MAX_DSTR,ps->fp))==NULL){
-        DXSetError(ERROR_INVALID_DATA,"#10898",ps->filename);
+        DXSetError(ERROR_DATA_INVALID,"#10898",ps->filename);
         return ERROR;
       }
       n++;

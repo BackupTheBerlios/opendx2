@@ -7,15 +7,15 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
 
-#include "defines.h"
 #include "TransmitterNode.h"
 
-#include "Arc.h"
+#include "Ark.h"
 #include "ConfigurationDialog.h"
 #include "ListIterator.h"
 #include "ReceiverNode.h"
@@ -105,7 +105,7 @@ boolean TransmitterNode::setLabelString(const char *label)
 			    Network* net = this->getNetwork();
 			    if (!net->checkForCycle (this, node)) {
 				// link me to receiver
-				Arc *a = new Arc(this, 1, node, 1);
+				Ark *a = new Ark(this, 1, node, 1);
 			    } else {
 				WarningMessage (
 				    "This network contains Transmitter/Receiver\n"
@@ -170,10 +170,10 @@ boolean TransmitterNode::setLabelString(const char *label)
 	return FALSE;
 
     // rename our receivers
-    l = (List*)this->getOutputArcs(1);
+    l = (List*)this->getOutputArks(1);
     li.setList(*l);
-    Arc *a;
-    while (a = (Arc*)li.getNext())
+    Ark *a;
+    while (a = (Ark*)li.getNext())
     {
 	int dummy;
 	Node *rcvr = a->getDestinationNode(dummy);
@@ -193,7 +193,7 @@ boolean TransmitterNode::setLabelString(const char *label)
 		EqualString(node->getLabelString(), label))
 	    {
 		// link me to receiver
-		Arc *a = new Arc(this, 1, node, 1);
+		Ark *a = new Ark(this, 1, node, 1);
 	    }
         }
 	delete l;
@@ -273,7 +273,7 @@ void TransmitterNode::switchNetwork(Network *from, Network *to)
 		EqualString(node->getLabelString(), label))
 	    {
 		// link me to receiver
-		Arc *a = new Arc(this, 1, node, 1);
+		Ark *a = new Ark(this, 1, node, 1);
 	    }
         }
 	delete l;

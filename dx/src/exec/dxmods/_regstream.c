@@ -156,7 +156,7 @@ _dxfReg_InitVectorGrp(Object object, char *elementType)
 	P->P.nDim = 2;
     else
     {
-	DXSetError(ERROR_INVALID_DATA, "data");
+	DXSetError(ERROR_DATA_INVALID, "data");
 	goto error;
     }
 
@@ -212,7 +212,7 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
     attr = DXGetComponentAttribute(f, "data", "dep");
     if (! attr | DXGetObjectClass(attr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, "data dependency");
+	DXSetError(ERROR_DATA_INVALID, "data dependency");
 	goto error;
     }
 
@@ -227,7 +227,7 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
 
     if (! DXQueryGridConnections(array, NULL, ip->cnts))
     {
-	DXSetError(ERROR_INVALID_DATA, "irregular connections");
+	DXSetError(ERROR_DATA_INVALID, "irregular connections");
 	goto error;
     }
 
@@ -240,7 +240,7 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
     
     if (! DXQueryGridPositions(array, NULL, ip->cnts, ip->org, ip->dels))
     {
-	DXSetError(ERROR_INVALID_DATA, "irregular positions");
+	DXSetError(ERROR_DATA_INVALID, "irregular positions");
 	goto error;
     }
 
@@ -262,7 +262,7 @@ Reg_InitVectorPart(Field f, Reg_VectorGrp P, int flag)
 
     if (! DXTypeCheck(array, TYPE_FLOAT, CATEGORY_REAL, 1, P->P.nDim))
     {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 	   "dimensionality of positions differs from that of vector field");
 	return NULL;
     }
@@ -1067,14 +1067,14 @@ Reg_CurlMap(VectorGrp P, MultiGrid mg)
 	    attr = DXGetComponentAttribute(P->p[i]->field, "data", "dep");
 	    if (! attr || DXGetObjectClass(attr) != CLASS_STRING)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "data dependency attribute");
+		DXSetError(ERROR_DATA_INVALID, "data dependency attribute");
 		DXDelete((Object)cf);
 		goto error;
 	    }
 
 	    if (!strcmp(DXGetString((String)attr), "connections"))
 	    {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 		    "cannot compute curl when data is dep on connections");
 		DXDelete((Object)cf);
 		goto error;

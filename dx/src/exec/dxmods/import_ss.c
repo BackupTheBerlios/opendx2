@@ -485,7 +485,7 @@ static Error evaluate_oneline(struct parse_state *ps, char *delimiter,
 
   while (FileTok(ps,delimiter,NO_NEWLINE,&p) && p) {
     if (nc > MAX_COLUMNS-1){ 
-      DXSetError(ERROR_INVALID_DATA,"only 200 columns supported");
+      DXSetError(ERROR_DATA_INVALID,"only 200 columns supported");
       nc--;
       goto error;
     }
@@ -545,7 +545,7 @@ static Error parse_it(struct parse_state *ps, struct file_info *fs,
       }
       nrec++;
       if (nc != fs->ncolumns) { 
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 	  "%d row: number of columns do not match previous rows",np);
 	goto error;
       }
@@ -556,7 +556,7 @@ static Error parse_it(struct parse_state *ps, struct file_info *fs,
   }
   fs->npoints = nrec;
   if (nrec < 1) {
-    DXSetError(ERROR_INVALID_DATA,"no records match start, end, delta parameters");
+    DXSetError(ERROR_DATA_INVALID,"no records match start, end, delta parameters");
     goto error;
   }
   DXResetError();
@@ -972,7 +972,7 @@ static Field make_grid(Object o,struct file_info *fs, struct column_info **ds)
       else if (datatype == TYPE_INT && type == TYPE_FLOAT) datatype=TYPE_FLOAT;
       else if ((datatype == TYPE_STRING && type != TYPE_STRING) ||
 	(datatype != TYPE_STRING && type == TYPE_STRING)){
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
 	  "all data must be the same type to use 2-d");
 	goto error;
       }
@@ -1255,7 +1255,7 @@ FileTok(struct parse_state *ps,char *sep, int newline, char** token)
             */
       	n++;
 	if (n > 254){
-	  DXSetError(ERROR_INVALID_DATA,"each column must be less than 256");
+	  DXSetError(ERROR_DATA_INVALID,"each column must be less than 256");
 	  *tp = '\0';	/* finish token */
 	  *token = &ps->token[0];
 	  goto error;
@@ -1301,14 +1301,14 @@ Error _dxf_getline(struct parse_state *ps)
 
   /* get newline allocating space if ness */
   if ((fgets(str,MAX_DSTR,ps->fp))==NULL){
-    DXSetError(ERROR_INVALID_DATA,"error reading file");
+    DXSetError(ERROR_DATA_INVALID,"error reading file");
     return ERROR;
   }
   ps->lineno++;
   strcpy(line,str);
   while ((int)strlen(str)>MAX_DSTR-2 && str[MAX_DSTR-2] != '\n'){
     if ((fgets(str,MAX_DSTR,ps->fp))==NULL){
-      DXSetError(ERROR_INVALID_DATA,"error reading data file");
+      DXSetError(ERROR_DATA_INVALID,"error reading data file");
       return ERROR;
     }
     n++;

@@ -11,7 +11,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.3 1999/05/10 15:45:30 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.4 2000/05/16 18:48:14 gda Exp $
  */
 
 
@@ -347,7 +347,7 @@ Object set_aux_offsets ( Object input, bounds_ptr read, Array write )
                                                    ( (Field) input,
                                                      "connections" ) ) )
                     DXErrorGoto2
-                        ( ERROR_INVALID_DATA, "#10240", "\"connections\"" );
+                        ( ERROR_DATA_INVALID, "#10240", "\"connections\"" );
     
                 if ( !DXQueryGridConnections ( conn, &dimens, NULL ) )
                     return input;
@@ -417,7 +417,7 @@ Object set_aux_offsets ( Object input, bounds_ptr read, Array write )
                                                    ( (Field) input,
                                                      "connections" ) ) )
                     DXErrorGoto2
-                        ( ERROR_INVALID_DATA, "#10240", "\"connections\"" );
+                        ( ERROR_DATA_INVALID, "#10240", "\"connections\"" );
     
                 if ( !DXQueryGridConnections ( conn, &dimens, NULL ) )
                     return input;
@@ -652,7 +652,7 @@ Object flatten_cf_mg ( Object in, MultiGrid out, int *position )
 
         default:
             DXErrorGoto
-                ( ERROR_INVALID_DATA, "Illegal member in Composite Field" );
+                ( ERROR_DATA_INVALID, "Illegal member in Composite Field" );
     }
 
     return (Object) out;
@@ -1167,7 +1167,7 @@ DXPrint   ( (Object)input_info->field, "rd", "connections", 0);
 
         default:
             DXErrorGoto2
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#11380", /* %s is an invalid connections type */
                   input_info->std_comps[(int)CONNECTIONS]->name );
     }
@@ -1656,7 +1656,7 @@ MultiGrid regular_boundary ( field_info input_info )
 
         default:
             DXErrorGoto
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "Bad \"connections\" element type" );
     }
 #undef PUT_FACE
@@ -1810,7 +1810,7 @@ Field irregular_boundary
         case CUBES:          outshape = 4;  COUNT ( 6 ); break;
         default:
             DXErrorGoto2
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#11380", /* %s is an invalid connections type */
                   input_info->std_comps[(int)CONNECTIONS]->name );
     }
@@ -2097,21 +2097,21 @@ Field show_boundary ( Field input, char *arg, int args )
 
     if ( input_info->std_comps[(int)POSITIONS] == NULL )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10250", /*%s is missing %s component*/
               "'input' parameter",
               "\"positions\"" );
 
     if ( input_info->std_comps[(int)CONNECTIONS] == NULL )
         DXErrorGoto3
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10250", /*%s is missing %s component*/
               "'input' parameter",
               "\"connections\"" );
 
     if ( LINES == input_info->std_comps[(int)CONNECTIONS]->element_type )
         DXErrorGoto2
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10340", /* %s must be 2D or 3D */
               "\"connections\"" ); 
 

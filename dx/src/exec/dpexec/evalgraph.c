@@ -8,6 +8,7 @@
 /* #define CPV_DEBUG */
 
 #include <dxconfig.h>
+#include <dx/dx.h>
 
 
 /*
@@ -25,13 +26,18 @@
  *        skip or kill a module, ....
  */
 
-#ifdef DXD_WIN
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
-#else
+#endif
+
+#if defined(HAVE_TIME_H)
 #include <time.h>
+#endif
+
+#if defined(HAVE_SYS_TIMES_H)
 #include <sys/times.h>
 #endif
-#include <dx/dx.h>
+
 #include "pmodflags.h"
 #include "context.h"
 #include "utils.h"

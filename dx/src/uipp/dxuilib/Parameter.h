@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 #define _Parameter_h
 
 
-#include "defines.h"
 #include "Base.h"
 #include "List.h"
 #include "DXValue.h"
@@ -32,7 +33,7 @@
 
 class ParameterDefinition;
 class DXValue;
-class Arc;
+class Ark;
 
 #define FOR_EACH_PARAMETER_ARC(p,a,iterator) \
     for (iterator.setList(p->arcs) ; a = (Parameter*)iterator.getNext() ; )
@@ -42,7 +43,7 @@ class Arc;
 //				
 class Parameter : public Base
 {
-        friend const List *Node::getIOArcs(List *, int);
+        friend const List *Node::getIOArks(List *, int);
   private:
     //
     // Private member data:
@@ -91,9 +92,9 @@ class Parameter : public Base
     //
     // Add/remove an arc to/from the given parameter 
     //
-    boolean 	addArc(Arc *a);
-    boolean 	removeArc(Arc *a) { return arcs.removeElement(a); }
-    Arc 	*getArc(int i) { return (Arc *)arcs.getElement(i); }
+    boolean 	addArk(Ark *a);
+    boolean 	removeArk(Ark *a) { return arcs.removeElement(a); }
+    Ark 	*getArk(int i) { return (Ark *)arcs.getElement(i); }
     boolean 	isConnected() { return this->arcs.getSize() != 0; }
 
     //
@@ -276,9 +277,9 @@ class Parameter : public Base
     virtual boolean isA(Symbol classname);
 
     //
-    // Remove all the Arcs connected to this parameter.
+    // Remove all the Arks connected to this parameter.
     //
-    void disconnectArcs();
+    void disconnectArks();
 
     //
     // Get the selectable values for this parameter.

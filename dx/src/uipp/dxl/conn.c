@@ -17,7 +17,6 @@
 #include <errno.h>
 #include <malloc.h>
 
-#include "../base/UIConfig.h"
 #include <string.h>
 
 #include "dxlP.h"
@@ -44,13 +43,8 @@
 #if defined(HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
-
 #if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
-#endif
-
-#if defined(HAVE_SELECT_H)
-#include <select.h>
 #endif
 
 #if defined(HAVE_CC_OSFCN_H)
@@ -69,9 +63,15 @@
 #define FD_ZERO(p)  memset((void*)p, 0, sizeof(*(p)))
 #endif
 
-#ifdef OS2
+/*
 int getdtablesize ( void );
-#endif
+int select(
+    int nfds,
+    fd_set *readfds,
+    fd_set *writefds,
+    fd_set *exceptfds,
+    struct timeval *timeout) ;
+*/
 
 #if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
@@ -81,13 +81,20 @@ int getdtablesize ( void );
 #include <sys/socket.h>
 #endif
 
+#if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
-#ifdef DXD_WIN
+#endif
+
+#if defined(HAVE_SYS_TIMEB_H)
 #include <sys/timeb.h>
-#else
+#endif
+
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
+
 #include <sys/types.h>
+
 #if defined(HAVE_SYS_UN_H)
 #include <sys/un.h>
 #endif
@@ -101,11 +108,11 @@ int getdtablesize ( void );
 #include <io.h>
 #endif
 
-#ifdef DXD_WIN
+#if defined(intelnt)
 HANDLE	hpipeRead, hpipeWrite;
 #endif
 
-#if !defined(DXD_WIN) && !defined(OS2)
+#if !defined(intelnt) && !defined(OS2)
 #include <sys/wait.h>
 #else
 #ifdef DXD_WINSOCK_SOCKETS
@@ -180,7 +187,7 @@ static int _dxl_ReadPortNumber(int fd)
 #endif
 #endif
 
-#ifdef DXD_WIN
+#if defined(intelnt)
     DWORD dwRead, dwAvail, dwMess;
 #endif
     struct timeval to;
@@ -196,7 +203,7 @@ static int _dxl_ReadPortNumber(int fd)
     else
 	time_remaining = TIMEOUT;
 
-#ifdef DXD_WIN
+#if defined(intelnt)
     time_remaining *= 1000;
 #endif
 
@@ -228,7 +235,7 @@ static int _dxl_ReadPortNumber(int fd)
 	}
 #endif
 
-#ifdef DXD_WIN
+#if defined(intelnt)
 	i = PeekNamedPipe(hpipeRead, buf, (DWORD) sizeof(buf) -1, &dwRead, &dwAvail, &dwMess);
 	if(i == FALSE){
 	    Sleep(50);
@@ -265,7 +272,7 @@ static int _dxl_ReadPortNumber(int fd)
 	    }
        }
 
-#ifndef DXD_WIN
+#if !defined(intelnt)
 	current_time = (long)time(NULL);
 	time_remaining = time_remaining - (current_time - start_time);
 	start_time = current_time;
@@ -363,7 +370,7 @@ DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* er
 
     free(s);
 
-#ifndef DXD_WIN
+#if !defined(intelnt)
     if (child <= 0)
 #else
     if (child == 0)
@@ -382,7 +389,7 @@ DXLStartChild(const char *string, const char *host, int* inp, int* outp, int* er
 	    buf[n] = '\0';
 	    fprintf(stderr,buf);
 	}
-#ifdef DXD_WIN
+#if defined(intelnt)
     TerminateProcess(child,-1);
 #else
 	kill(child, SIGKILL);
@@ -473,7 +480,7 @@ DXLStartDX(const char *string, const char *host)
     DXLConnection *connection;
 
 
-#if  defined(DEBUG)  && defined(DXD_WIN)
+#if  defined(DEBUG)  && defined(intelnt)
     /* This is to spawn DX seperately for debugging */
 
     if (!host && !getenv("DX_TEST_HOST") ) {
@@ -599,7 +606,7 @@ ConnectTo(const char *host,
     char wd[BUFSIZ],script_name[500],cmd[1000];
     FILE *fp;
     int i;
-#if defined(DXD_WIN) || defined(OS2)
+#if defined(intelnt) || defined(OS2)
     int *in[2], *out[2], *err[2];
 #else
     int in[2], out[2], err[2];
@@ -634,7 +641,7 @@ ConnectTo(const char *host,
 #endif
 #endif
     char *dnum;
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SYS_UTSNAME_H)
     struct utsname Uts_Name;
 
     /*
@@ -882,7 +889,11 @@ ConnectTo(const char *host,
 	    fprintf(stderr, "chdir() error: %s", strerror(errno));
 	    exit(1);
 	}
+#if 0
 	if (execve(fargv[0], (EXECVE_2ND_TYPE)fargv, (EXECVE_3RD_TYPE)rep) < 0)
+#else
+	if (execve(fargv[0], fargv, rep) < 0)
+#endif
 	{
 	    fprintf(stderr, "execve() error: %s", strerror(errno));
 	    exit(1);
@@ -904,6 +915,12 @@ ConnectTo(const char *host,
     if (fargv != NULL)
 	free ((char*)fargv);
     return (child);
+
+error_return:
+    sprintf(errstr,"Could not connect using '%s'\n",fargv[0]);
+    if (fargv != NULL)
+	free ((char*)fargv);
+    return (0);
 
 #endif	/*   DXD_LACKS_UTS     */
 #ifdef OS2
@@ -997,9 +1014,13 @@ ConnectTo(const char *host,
         return (-1);
     }
 
+error_return:
+    sprintf(errstr,"Could not connect using '%s'\n", args[0]);
+    return (0);
+
 #endif    /*    OS2    */
 
-#ifdef	DXD_WIN
+#ifdef	intelnt
 
     char         args[1000];
     char         exename[255];
@@ -1132,18 +1153,10 @@ ConnectTo(const char *host,
 
     return child;
 
-#endif		
-
-
-
 error_return:
-    sprintf(errstr,"Could not connect using '%s'\n",fargv[0]);
-    if (fargv != NULL)
-	free ((char*)fargv);
-#ifndef DXD_WIN
+    sprintf(errstr,"Could not connect using '%s'\n",cmd);
     return (-1);
-#else
-    return (0);
-#endif
+
+#endif		
 }
 

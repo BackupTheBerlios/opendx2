@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,7 +16,6 @@
 #define _ScalarListNode
 
 
-#include "defines.h"
 #include "ScalarNode.h"
 #include "StepperInteractor.h"
 #include "DXValue.h"

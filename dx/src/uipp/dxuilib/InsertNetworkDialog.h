@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _InsertNetworkDialog_h
 #define _InsertNetworkDialog_h
 
 
-#include "defines.h"
 #include "FileDialog.h"
 #include "OpenNetworkDialog.h"
 #include "Application.h"

@@ -381,7 +381,7 @@ doLeaf(Object *in, Object *out)
 	     || category != CATEGORY_REAL || !((rank == 0)
 	     || ((rank == 1)&&(shape[0] == 1))))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "data component \"%s\" must be scalar integer or float "
+	    DXSetError(ERROR_DATA_INVALID, "data component \"%s\" must be scalar integer or float "
 			    "if lookup is based on implicit index", data_comp);
 	    goto error;
 	}
@@ -420,7 +420,7 @@ doLeaf(Object *in, Object *out)
 			&&
 	 ((look.data->obj_size != look.lookup->obj_size) && (look.data->cat_type != CAT_SCALAR))))
     {
-	DXSetError(ERROR_INVALID_DATA, "data component type does not match lookup component");
+	DXSetError(ERROR_DATA_INVALID, "data component type does not match lookup component");
 	goto error;
     }
 

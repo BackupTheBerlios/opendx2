@@ -69,7 +69,7 @@ m_SuperviseWindow(Object *in, Object *out)
     {
 	if (! DXExtractString(IN_DISPLAY, &displayString))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "displayString");
+	    DXSetError(ERROR_DATA_INVALID, "displayString");
 	    goto error;
 	}
     }
@@ -80,7 +80,7 @@ m_SuperviseWindow(Object *in, Object *out)
     {
 	if (! DXExtractString(IN_NAME, &name))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "windowName must be string");
+	    DXSetError(ERROR_DATA_INVALID, "windowName must be string");
 	    goto error;
 	}
 	title = name;
@@ -96,7 +96,7 @@ m_SuperviseWindow(Object *in, Object *out)
     {
 	if (! DXExtractParameter(IN_SIZE, TYPE_INT, 2, 1, (Pointer)&size))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "size");
+	    DXSetError(ERROR_DATA_INVALID, "size");
 	    goto error;
 	}
 
@@ -109,7 +109,7 @@ m_SuperviseWindow(Object *in, Object *out)
     {
 	if (! DXExtractInteger(IN_SIZEFLAG, &sizeFlag))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "sizeFlag");
+	    DXSetError(ERROR_DATA_INVALID, "sizeFlag");
 	    goto error;
 	}
     }
@@ -120,7 +120,7 @@ m_SuperviseWindow(Object *in, Object *out)
     {
 	if (! DXExtractParameter(IN_OFFSET, TYPE_INT, 2, 1, (Pointer)&offset))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "offset");
+	    DXSetError(ERROR_DATA_INVALID, "offset");
 	    goto error;
 	}
     }
@@ -131,7 +131,7 @@ m_SuperviseWindow(Object *in, Object *out)
     {
 	if (! DXExtractInteger(IN_OFFSETFLAG, &offsetFlag))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "offsetFlag");
+	    DXSetError(ERROR_DATA_INVALID, "offsetFlag");
 	    goto error;
 	}
     }
@@ -141,7 +141,7 @@ m_SuperviseWindow(Object *in, Object *out)
     if (IN_PICKFLAG)
 	if (! DXExtractInteger(IN_PICKFLAG, &pick))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "pick");
+	    DXSetError(ERROR_DATA_INVALID, "pick");
 	    goto error;
 	}
 
@@ -184,7 +184,7 @@ m_SuperviseWindow(Object *in, Object *out)
     {
 	if (! DXExtractInteger(IN_MAP, &map))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "visibility");
+	    DXSetError(ERROR_DATA_INVALID, "visibility");
 	    goto error;
 	}
 
@@ -198,7 +198,7 @@ m_SuperviseWindow(Object *in, Object *out)
     {
 	if (! DXExtractInteger(IN_DECORATIONS, &decorations))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "decorations");
+	    DXSetError(ERROR_DATA_INVALID, "decorations");
 	    goto error;
 	}
     }
@@ -209,7 +209,7 @@ m_SuperviseWindow(Object *in, Object *out)
     {
 	if (! DXExtractInteger(IN_DEPTH, &depth))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "depth");
+	    DXSetError(ERROR_DATA_INVALID, "depth");
 	    goto error;
 	}
     }

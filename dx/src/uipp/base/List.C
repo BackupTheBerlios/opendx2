@@ -7,10 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <defines.h>
 
 
 
-#include "UIConfig.h"
 
 #include <memory.h>
 

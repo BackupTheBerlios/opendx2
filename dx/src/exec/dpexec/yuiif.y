@@ -38,6 +38,8 @@
 #include "vcr.h"
 #include "log.h"
 
+#include "sfile.h"
+
 extern int	yylineno;
 extern int	yycharno;
 extern char	*yyText;
@@ -56,7 +58,7 @@ static int		*charnum;
 static SFILE		**fps;
 static char		**fname;
 
-int		_dxd_exBaseFD = 0;
+SFILE		*_dxd_exBaseFD = NULL;
 
 int		_dxd_exParseError;
 node		*_dxd_exParseTree;
@@ -176,7 +178,7 @@ void _dxf_ExReadDXRCFiles ()
 
 
 Error
-_dxf_ExParseInit (char *name, int fd)
+_dxf_ExParseInit (char *name, SFILE *sf)
 {
     int i;
 
@@ -201,9 +203,9 @@ _dxf_ExParseInit (char *name, int fd)
     linenum[*fnum] = 1;
     charnum[*fnum] = 0;
     strcpy (fname[*fnum], name);
-    fps[*fnum] = fdopen (fd, "r");
+    fps[*fnum] = sf;
     yyin = fps[*fnum];
-    _dxd_exBaseFD = fd;
+    _dxd_exBaseFD = sf;
 
     /*
      * can do .rc file processing here.
@@ -242,6 +244,20 @@ typedef struct
     int		len;
 } IPath;
 
+void
+_dxf_ExBeginInput()
+{
+    yyin = fps[*fnum];
+    yylineno = linenum[*fnum];
+    yycharno = charnum[*fnum];
+}
+
+_dxf_ExEndInput()
+{
+    linenum[*fnum] = yylineno;
+    charnum[*fnum] = yycharno;
+}
+
 
 static int
 _pushInput (char *name)
@@ -251,7 +267,8 @@ _pushInput (char *name)
     static IPath	*ipaths	= NULL;
     int			i;
     int			len;
-    SFILE		*fp;
+    SFILE		*sf;
+    FILE		*fptr;
     char		buf[4096];
 
     while (initme)
@@ -259,6 +276,8 @@ _pushInput (char *name)
 	char		*tmp1;
 	char		*tmp2;
 	int		size;
+
+	buf[0] = NULL;
 
 	initme = FALSE;
 
@@ -307,11 +326,11 @@ _pushInput (char *name)
     if (*fnum >= MAXINCLUDES - 1)
     {
 	DXPrintError ("include:  input file nesting level exceeded");
-	return (NULL);
+	return ERROR;
     }
 
-    fp = fopen (name, "r");
-    for (i = 0; fp == NULL && i < npaths; i++)
+    fptr = fopen (name, "r");
+    for (i = 0; fptr == NULL && i < npaths; i++)
     {
 	len = ipaths[i].len;
 	if (len <= 0)
@@ -323,21 +342,23 @@ _pushInput (char *name)
 	buf[len] = '/';
 #endif
 	strcpy (buf + len + 1, name);
-	fp = fopen (buf, "r");
+	fptr = fopen (buf, "r");
     }
 
-    if (fp == NULL && getenv("DXROOT"))
+    if (fptr == NULL && getenv("DXROOT"))
     {
 #if  defined(DXD_NON_UNIX_DIR_SEPARATOR)
 	sprintf(buf, "%s\\lib\\%s", getenv("DXROOT"), name);
 #else
 	sprintf(buf, "%s/lib/%s", getenv("DXROOT"), name);
 #endif
-	fp = fopen (buf, "r");
+	fptr = fopen (buf, "r");
     }
 
-    if (fp != NULL)
+    if (fptr != NULL)
     {
+        sf = FILEToSFILE(fptr);
+
 	linenum[*fnum] = yylineno;
 	charnum[*fnum] = yycharno;
 	(*fnum)++;
@@ -345,7 +366,7 @@ _pushInput (char *name)
 	charnum[*fnum] = 0;
 	strncpy (fname[*fnum], name, 128);
 	fname[*fnum][127] = '\0';
-	fps[*fnum] = fp;
+	fps[*fnum] = sf;
 	_dxf_ExBeginInput ();
     }
     else
@@ -358,7 +379,7 @@ _pushInput (char *name)
             _dxf_ExFlushNewLine();
     }
 
-    return ((int) fp);
+    return OK;
 }
 
 static char PopMessage[] = "< INCLUDED FILE > ";
@@ -374,7 +395,7 @@ _popInput()
 
     if (*fnum > 0)
     {
-	fclose (yyin);
+	closeSFILE(yyin);
 	yyin = fps[--(*fnum)];
 	yylineno = linenum[*fnum];
 	yycharno = charnum[*fnum];
@@ -386,19 +407,6 @@ _popInput()
     }
 
     return (1);
-}
-
-_dxf_ExBeginInput()
-{
-    yyin = fps[*fnum];
-    yylineno = linenum[*fnum];
-    yycharno = charnum[*fnum];
-}
-
-_dxf_ExEndInput()
-{
-    linenum[*fnum] = yylineno;
-    charnum[*fnum] = yycharno;
 }
 
 %}
@@ -1653,7 +1661,7 @@ yyerror (char *s)
     {
 	prevline    = -1;
 	prevfile[0] = '\000';
-	return;
+	return ERROR;
     }
 
     if (prevline == -1)
@@ -1709,4 +1717,6 @@ yyerror (char *s)
 	_dxf_ExUIFlushPacket ();
     else if(! _dxd_exRemote)
         _dxf_ExFlushNewLine();
+
+    return ERROR;
 }

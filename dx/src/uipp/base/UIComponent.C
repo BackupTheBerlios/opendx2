@@ -7,6 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <defines.h>
 
 
 
@@ -394,6 +395,7 @@ void UIComponent::getXYSize(int *x, int *y)
 void UIComponent::getXYPosition(int *x, int *y)
 {
     int a, b;
+	malloc(32);
     this->getGeometry(x,y, &a, &b);
 }
 //

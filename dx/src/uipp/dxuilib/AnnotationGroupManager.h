@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -15,7 +17,6 @@
 #define _AnnotationGroupManager_h
 
 
-#include "defines.h"
 #include "GroupManager.h"
 #include "Dictionary.h"
 #include "Strings.h"

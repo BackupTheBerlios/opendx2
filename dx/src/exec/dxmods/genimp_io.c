@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.5 1999/12/22 18:26:06 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.6 2000/05/16 18:47:51 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -1193,7 +1193,7 @@ read_ascii(FILE *fp, Type t, void *data, int index)
     case TYPE_BYTE:
 	r = fscanf(fp,"%d",&i);
 	if (i<DXD_MIN_BYTE || i>DXD_MAX_BYTE) {
-	    DXSetError(ERROR_INVALID_DATA,"#10905",i,"byte"); 
+	    DXSetError(ERROR_DATA_INVALID,"#10905",i,"byte"); 
 	    goto error;
 	}
 	DREF(byte,data,index) = (byte)i;
@@ -1201,7 +1201,7 @@ read_ascii(FILE *fp, Type t, void *data, int index)
     case TYPE_UBYTE:
 	r = fscanf(fp,"%d",&i);
 	if (i<0 || i>DXD_MAX_UBYTE) {
-	    DXSetError(ERROR_INVALID_DATA,"#10905",i,"ubyte"); 
+	    DXSetError(ERROR_DATA_INVALID,"#10905",i,"ubyte"); 
 	    goto error;
 	}
 	DREF(ubyte,data,index) = (ubyte)i;
@@ -1209,7 +1209,7 @@ read_ascii(FILE *fp, Type t, void *data, int index)
     case TYPE_SHORT:
 	r = fscanf(fp,"%d",&i);
 	if (i<DXD_MIN_SHORT || i>DXD_MAX_SHORT) {
-	    DXSetError(ERROR_INVALID_DATA,"#10905",i,"short");
+	    DXSetError(ERROR_DATA_INVALID,"#10905",i,"short");
 	    goto error;
 	}
 	DREF(short,data,index) = (short)i;
@@ -1217,7 +1217,7 @@ read_ascii(FILE *fp, Type t, void *data, int index)
     case TYPE_USHORT:
 	r = fscanf(fp,"%d",&i);
 	if (i<0 || i>DXD_MAX_USHORT) {
-	    DXSetError(ERROR_INVALID_DATA,"#10905",i,"ushort");
+	    DXSetError(ERROR_DATA_INVALID,"#10905",i,"ushort");
 	    goto error;
 	}
 	DREF(unsigned short,data,index) = (unsigned short)i;
@@ -1244,7 +1244,7 @@ read_ascii(FILE *fp, Type t, void *data, int index)
 
     if (r == 0){
 	fscanf(fp,"%70s",string);
-	DXSetError(ERROR_INVALID_DATA, "#10906",string);
+	DXSetError(ERROR_DATA_INVALID, "#10906",string);
         goto error;
     }
 
@@ -1308,72 +1308,72 @@ convert_string(char *s, Type t, void *data, int index,int *nl)
     switch (t) {
     case TYPE_BYTE:
         if (sscanf(s,"%d",&i) <= 0) {
-                DXSetError(ERROR_INVALID_DATA,"#10907","byte",s);
+                DXSetError(ERROR_DATA_INVALID,"#10907","byte",s);
                 goto error;
         }
         if (i<DXD_MIN_BYTE || i>DXD_MAX_BYTE) {
-            DXSetError(ERROR_INVALID_DATA,"#10905",i,"byte");
+            DXSetError(ERROR_DATA_INVALID,"#10905",i,"byte");
             goto error;
         }
         DREF(byte,data,index) = (byte)i;
         break;
     case TYPE_UBYTE:
 	if (sscanf(s,"%d",&i) <= 0) {
-		DXSetError(ERROR_INVALID_DATA,"#10907","ubyte",s);
+		DXSetError(ERROR_DATA_INVALID,"#10907","ubyte",s);
 		goto error;
 	}
 	if (i<0 || i>DXD_MAX_UBYTE) {
-	    DXSetError(ERROR_INVALID_DATA,"#10905",i,"ubyte");
+	    DXSetError(ERROR_DATA_INVALID,"#10905",i,"ubyte");
 	    goto error;
 	}
 	DREF(ubyte,data,index) = (ubyte)i;
 	break;
     case TYPE_SHORT:
         if (sscanf(s,"%d",&i) <= 0) {
-                DXSetError(ERROR_INVALID_DATA,"#10907","short",s);
+                DXSetError(ERROR_DATA_INVALID,"#10907","short",s);
                 goto error;
         }
         if (i<DXD_MIN_SHORT || i>DXD_MAX_SHORT) {
-            DXSetError(ERROR_INVALID_DATA,"#10905",i,"short");
+            DXSetError(ERROR_DATA_INVALID,"#10905",i,"short");
             goto error;
         }
         DREF(short,data,index) = (short)i;
         break;
     case TYPE_USHORT:
 	if (sscanf(s,"%d",&i) <= 0) {
-		DXSetError(ERROR_INVALID_DATA,"#10907","ushort",s);
+		DXSetError(ERROR_DATA_INVALID,"#10907","ushort",s);
 		goto error;
 	}
 	if (i<0 || i>DXD_MAX_USHORT) {
-	    DXSetError(ERROR_INVALID_DATA,"#10905",i,"ushort");
+	    DXSetError(ERROR_DATA_INVALID,"#10905",i,"ushort");
 	    goto error;
 	}
 	DREF(unsigned short,data,index) = (unsigned short)i;
 	break;
     case TYPE_INT:
 	if (sscanf(s,"%d",&i) <= 0) {
-		DXSetError(ERROR_INVALID_DATA,"#10907","int",s);
+		DXSetError(ERROR_DATA_INVALID,"#10907","int",s);
 		goto error;
 	}
 	DREF(int,data,index) = i; 
 	break;
     case TYPE_UINT:
 	if (sscanf(s,"%u",&i) <= 0) {
-		DXSetError(ERROR_INVALID_DATA,"#10907","uint",s);
+		DXSetError(ERROR_DATA_INVALID,"#10907","uint",s);
 		goto error;
 	}
 	DREF(unsigned int,data,index) = i; 
 	break;
     case TYPE_FLOAT:
 	if (sscanf(s,"%f",&f) <= 0) {
-		DXSetError(ERROR_INVALID_DATA,"#10907","float",s);
+		DXSetError(ERROR_DATA_INVALID,"#10907","float",s);
 		goto error;
 	}
 	DREF(float,data,index) = f; 
 	break;
     case TYPE_DOUBLE:
 	if (sscanf(s,"%lf",&d) <= 0) {
-		DXSetError(ERROR_INVALID_DATA,"#10907","double",s);
+		DXSetError(ERROR_DATA_INVALID,"#10907","double",s);
 		goto error;
 	}
 	DREF(double,data,index) = d; 
@@ -1385,7 +1385,7 @@ convert_string(char *s, Type t, void *data, int index,int *nl)
 	i = strlen(s) + 1;
 	sprintf(format,"%%%dc",i);
 	if (sscanf(s,format,&DREF(char,data,index)) <=0){
-		DXSetError(ERROR_INVALID_DATA,"#10907","string",s);
+		DXSetError(ERROR_DATA_INVALID,"#10907","string",s);
 		goto error;
 	}
 	break;
@@ -1416,7 +1416,7 @@ skip_header(FILE *fp, struct header *head)
         for (i=0;;) {
         c = getc(fp);
         if (c == EOF)  {
-            DXSetError(ERROR_INVALID_DATA,"#10898",
+            DXSetError(ERROR_DATA_INVALID,"#10898",
 		"before encountering header marker");
             goto error;
         } else if ((char)c == head->marker[i])  {
@@ -1515,13 +1515,13 @@ skip_numchar(FILE *fp, int num_char, char **ret_str)
       c = getc(fp);
       if (c == EOF)  
 	{
-	  DXSetError(ERROR_INVALID_DATA,"#10898",
+	  DXSetError(ERROR_DATA_INVALID,"#10898",
 	   "skipping beginning of line characters");
           goto error;
         } 
       else if (c == '\n') 
 	{
-	  DXSetError(ERROR_INVALID_DATA,"#10899",
+	  DXSetError(ERROR_DATA_INVALID,"#10899",
 		"skipping beginning of line characters");
           goto error;
  	}
@@ -1546,13 +1546,13 @@ Error _dxf_getline(char **ret_str,FILE *fp)
 
    /* get newline allocating space if ness */
    if ((fgets(str,MAX_DSTR,fp))==NULL){
-     DXSetError(ERROR_INVALID_DATA,"#10898",_dxd_gi_filename);
+     DXSetError(ERROR_DATA_INVALID,"#10898",_dxd_gi_filename);
      return ERROR;
    }
    strcpy(line,str);
    while ((int)strlen(str)>MAX_DSTR-2){
       if ((fgets(str,MAX_DSTR,fp))==NULL){
-        DXSetError(ERROR_INVALID_DATA,"#10898","data file");
+        DXSetError(ERROR_DATA_INVALID,"#10898","data file");
         return ERROR;
       }
       n++;
@@ -1641,7 +1641,7 @@ _dxf_gi_extract(struct place_state *dataps,int *read_header)
    if (sets_read < num_sets){
       for (i=0; i<num_sets; i++){
 	 if (read[i]==0){
-	    DXSetError(ERROR_INVALID_DATA,"offset for field %d not found",i);
+	    DXSetError(ERROR_DATA_INVALID,"offset for field %d not found",i);
 	    goto error;
 	 }
       }
@@ -1674,7 +1674,7 @@ extract_fromline(char str[MAX_DSTR],int which)
 	    if (!convert_string(r,t,_dxd_gi_fromfile[i]->data,index,&nl))
 	       goto error;
 	    if (nl){
-	       DXSetError(ERROR_INVALID_DATA,"error reading values");
+	       DXSetError(ERROR_DATA_INVALID,"error reading values");
 	       goto error;
 	    }
             index++;
@@ -1692,7 +1692,7 @@ extract_fromline(char str[MAX_DSTR],int which)
 	          if (!convert_string(r,t,_dxd_gi_fromfile[i]->data,index,&nl))
 	             goto error;
 	          if (nl){
-	             DXSetError(ERROR_INVALID_DATA,"error reading values");
+	             DXSetError(ERROR_DATA_INVALID,"error reading values");
 	             goto error;
 	          }
 	          _dxd_gi_fromfile[i]->skip[index] = 0;  /*set skip to indicate number*/

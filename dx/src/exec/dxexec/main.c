@@ -8,6 +8,8 @@
 
 #include <dxconfig.h>
 
+#include <fcntl.h>
+
 
 /* real entry point, calls DXmain() immediately */
 extern DXmain(int argc, char **argv, char **envp);
@@ -15,27 +17,18 @@ extern DXmain(int argc, char **argv, char **envp);
 #include "dx/arch.h"
 #endif
 
-#ifdef	DXD_HAS_WINSOCKETS
-#include <stdio.h>
+#if defined(HAVE_WINSOCK_H)
 #include <winsock.h>
-fd_set	sockSet;
-SOCKET PASCAL FAR socket (int af, int type, int protocol);
 #endif
-
-
 
 main (argc, argv, envp)
     int		argc;
     char	**argv;
     char	**envp;
 {
-#ifdef  DXD_WIN
-#ifdef _X86_
+#if defined(intelnt)
     HCLXtInit(); 
-#endif
-#endif
 
-#if  defined(DXD_HAS_WINSOCKETS)
     {
 	WSADATA wsadata;
 	int i;
@@ -46,6 +39,7 @@ main (argc, argv, envp)
 	}
     }
 #endif
+
     return DXmain(argc, argv, envp);
 }
 

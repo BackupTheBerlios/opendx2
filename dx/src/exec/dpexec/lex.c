@@ -1,3 +1,4 @@
+extern int  _dxd_exYYdebug;
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -7,50 +8,31 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <dx/dx.h>
 
-
-/* this has to be before stdio.h gets included. */
-#if !defined(os2) && !defined(linux)
-#ifdef GETC
-#undef GETC
-#endif
-#define GETC	getc
-#endif
- 
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <math.h>
 #include <errno.h>
 
-#define DXD_ENABLE_SOCKET_POINTERS		/* for os2 */
-#include <dx/dx.h>
 
+#include "sfile.h"
 #include "context.h"
 #include "parse.h"
 #include "yuiif.h"
 #include "log.h"
 #include "sysvars.h"
 
-#if 0 
-/* this can't work - getc is a macro and it's
- * too late now. 
- */
-# ifndef DXD_HAS_IBM_OS2_SOCKETS
-#  define GETC	getc
-# endif
-#endif
-
 # define U(x) (x)
 #define LINEFEED 10
 
- 
 # define input()							\
 (									\
     uipacketlen -= _dxd_exUIPacket ? 1 : 0,					\
     (									\
 	(								\
-	    yytchar = (yysptr > yysbuf)	? U(*--yysptr) : GETC (yyin)	\
+	    yytchar = (yysptr > yysbuf)	? U(*--yysptr) : SFILEGetChar(yyin)	\
 	) == LINEFEED ? (						\
 		      yylineno++,					\
 		      yyCharno = yycharno,				\
@@ -588,7 +570,7 @@ int yylex()
 		if (reportNL)
 		    return (T_EOL);
 		else
-		    if ((_dxd_exIsatty || _dxd_exRshInput) && !CHAR_READY(yyin))
+		    if ((_dxd_exIsatty || _dxd_exRshInput) && !SFILECharReady(yyin))
 		    {
 			prompt = _dxf_ExPromptGet(PROMPT_ID_CPROMPT);
 			printf (prompt? prompt: EX_CPROMPT);

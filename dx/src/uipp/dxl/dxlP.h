@@ -125,7 +125,7 @@ struct DXLConnection {
     HEV  PMHandlerSemaphore;
     TID  tidCheckInputThread;
 #endif
-#ifdef DXD_WIN
+#if defined(intelnt)
     HWND PMAppWindow;
     HANDLE  PMHandlerSemaphore;
     HANDLE  tidCheckInputThread;

@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 
+#include <defines.h>
 
 
 #include <ctype.h>

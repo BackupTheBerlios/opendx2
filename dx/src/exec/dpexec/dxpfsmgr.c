@@ -16,7 +16,7 @@
 
 Error _dxf_pfsmgr(int argc, char **argv)
 {
-    DXSetError(ERROR_INVALID_DATA, "#8200");
+    DXSetError(ERROR_DATA_INVALID, "#8200");
     return ERROR;
 }
 
@@ -115,7 +115,7 @@ static Error dxdf()
     /* is there a config file for the array disk?  with partitions? */
     i = pfs_drive_count();
     if (i <= 0) {
-	DXSetError(ERROR_INVALID_DATA, "#8230");
+	DXSetError(ERROR_DATA_INVALID, "#8230");
 	return ERROR;
     }
     
@@ -157,7 +157,7 @@ Error dxlist(char *partname)
 
     n = pfs_count(partname);
     if (n <= 0) {
-	DXSetError(ERROR_INVALID_DATA, "#8240", partname);
+	DXSetError(ERROR_DATA_INVALID, "#8240", partname);
 	return ERROR;
     }
 
@@ -166,7 +166,7 @@ Error dxlist(char *partname)
 	return ERROR;
 
     if (pfs_list(partname, gm_buf, 0, &n) < 0) {
-	DXSetError(ERROR_INVALID_DATA, pfs_errmsg(pfs_errno));
+	DXSetError(ERROR_DATA_INVALID, pfs_errmsg(pfs_errno));
 	return ERROR;
     }
 
@@ -179,7 +179,7 @@ Error dxlist(char *partname)
 	strcpy(buf+strlen(partname), gm_buf + i * PFS_NAME_LEN);
 
 	if (pfs_stat(buf, &ps) < 0) {
-	    DXSetError(ERROR_INVALID_DATA, pfs_errmsg(pfs_errno));
+	    DXSetError(ERROR_DATA_INVALID, pfs_errmsg(pfs_errno));
 	    return ERROR;
 	}
 
@@ -207,12 +207,12 @@ static Error dxrm(char *dataset)
      *  are you really sure you want to delete *?
      */
     if (strchr(dataset, '*') || strchr(dataset, '?')) {
-	DXSetError(ERROR_INVALID_DATA, "#8250");
+	DXSetError(ERROR_DATA_INVALID, "#8250");
 	return ERROR;
     }
 
     if (pfs_stat(dataset, &ps) < 0) {
-	DXSetError(ERROR_INVALID_DATA, pfs_errmsg(pfs_errno));
+	DXSetError(ERROR_DATA_INVALID, pfs_errmsg(pfs_errno));
 	return ERROR;
     }
 
@@ -220,7 +220,7 @@ static Error dxrm(char *dataset)
     DXMessage("would be calling pfs_delete(%s) here", dataset);
 #else
     if (pfs_delete(dataset) < 0) {
-	DXSetError(ERROR_INVALID_DATA, pfs_errmsg(pfs_errno));
+	DXSetError(ERROR_DATA_INVALID, pfs_errmsg(pfs_errno));
 	return ERROR;
     }
 #endif

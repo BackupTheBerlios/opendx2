@@ -9,10 +9,11 @@
 #define _EchoNode_h
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "defines.h"
 #include "ModuleMessagingNode.h"
 
 

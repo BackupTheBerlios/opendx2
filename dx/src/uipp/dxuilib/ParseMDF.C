@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include <stdio.h>
@@ -14,8 +16,6 @@
 #include <stdarg.h>
 #include <string.h>
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "lex.h"
 #include "Strings.h"
 

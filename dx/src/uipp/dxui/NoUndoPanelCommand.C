@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "defines.h"
 #include "NoUndoPanelCommand.h"
 #include "ControlPanel.h"
 #include "Network.h"

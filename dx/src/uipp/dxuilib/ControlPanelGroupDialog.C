@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #include <limits.h>
@@ -22,7 +24,6 @@
 #include <Xm/ToggleB.h>
 #include <Xm/Label.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "ListIterator.h"
 #include "ControlPanel.h"

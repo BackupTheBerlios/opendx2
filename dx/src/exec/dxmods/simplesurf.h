@@ -151,7 +151,7 @@
    4/3/97 rank and shape of a flag input. By default, the module builder was using the test
 
    if (type != TYPE_INT || category != CATEGORY_REAL || rank != 1 || shape != 2) 
-      DXSetError(ERROR_INVALID_DATA, "input \"preserve_volume\"");
+      DXSetError(ERROR_DATA_INVALID, "input \"preserve_volume\"");
    
    the right test to use is 
 

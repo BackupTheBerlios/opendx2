@@ -116,7 +116,7 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
          if (!DXGetType(in[1],NULL,NULL,&rank,NULL))
             goto error;
          if (rank!=1){
-            DXSetError(ERROR_INVALID_DATA,"#10221","input data");
+            DXSetError(ERROR_DATA_INVALID,"#10221","input data");
             goto error;
          }
          if (!in[4] || !in[5]){
@@ -529,7 +529,7 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
 
    /* in DXMessage there is static buffer of MAX_MSGLEN so check length */
    if (strlen(ei.msgbuf) > MAX_MSGLEN){
-      DXSetError(ERROR_INVALID_DATA,"#10920");
+      DXSetError(ERROR_DATA_INVALID,"#10920");
       goto error1;
    }
 

@@ -506,7 +506,7 @@ _dxf_checkDepth(ImageWindow *iw, int d)
     vi = XGetVisualInfo(iw->iwx->display,vismask,&template,&count);
     if (vi)
     {
-	XFree ((caddr_t)vi);
+	XFree ((void *)vi);
 	return 1;
     }
     else
@@ -553,7 +553,7 @@ _dxf_getBestVisual (ImageWindow *iw)
 	    }
 
     if(visualInfo)
-	XFree ((caddr_t)visualInfo);
+	XFree ((void *)visualInfo);
     visualInfo = NULL;
 
     if (acceptable)
@@ -590,7 +590,7 @@ _dxf_getBestVisual (ImageWindow *iw)
 	    }
 
     if(visualInfo)
-	XFree ((caddr_t)visualInfo);
+	XFree ((void *)visualInfo);
     visualInfo = NULL;
 
     if (acceptable)
@@ -613,7 +613,7 @@ _dxf_getBestVisual (ImageWindow *iw)
 	    }
 
     if(visualInfo)
-	XFree ((caddr_t)visualInfo);
+	XFree ((void *)visualInfo);
     visualInfo = NULL;
 
     if (acceptable)

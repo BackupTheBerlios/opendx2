@@ -320,7 +320,7 @@ _dxfField_Gather(Field f, struct gather *gather, struct tile *tile)
     if (xf->ct==ct_cubes || xf->ct==ct_tetrahedra)
 
 	if (xf->fcolors_array != xf->bcolors_array)
-	    DXErrorReturn(ERROR_INVALID_DATA,
+	    DXErrorReturn(ERROR_DATA_INVALID,
 			"use colors and not front/back colors for volumes");
     
     /* Get lighting parameters if they are present */

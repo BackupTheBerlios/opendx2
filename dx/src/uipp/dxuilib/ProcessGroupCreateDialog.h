@@ -7,13 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ProcessGroupCreateDialog_h
 #define _ProcessGroupCreateDialog_h
 
 
-#include "defines.h"
 #include "Dialog.h"
 
 class EditorWindow;

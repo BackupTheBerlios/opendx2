@@ -6,10 +6,11 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.5 1999/07/12 22:32:57 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.6 2000/05/16 18:47:40 gda Exp $
  */
 
 #include <dxconfig.h>
+#include <dx/dx.h>
 
 
 /*
@@ -58,15 +59,12 @@
  *		try an write a correct LSB image.
  */
 
-#if 0
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <dirent.h>
+#include <stdlib.h>
+
+#if defined(HAVE_FCNTL_H)
+#include <fcntl.h>
 #endif
 
-#include <stdlib.h>
-#include <fcntl.h>
-#include <dx/dx.h>
 #include "_helper_jea.h"
 #include "_rw_image.h"
 
@@ -243,7 +241,7 @@ write_fwd_uint32(int fd, uint32 val)
     else
     {
         DXSetError
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11800", /* C standard library call, %s, returns error */
               "write()" );
 
@@ -268,7 +266,7 @@ write_rev_uint32(int fd, uint32 val)
     else
     {
         DXSetError
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11800", /* C standard library call, %s, returns error */
               "write()" );
 
@@ -285,7 +283,7 @@ write_fwd_uint16(int fd, uint16 val)
     else
     {
         DXSetError
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11800", /* C standard library call, %s, returns error */
               "write()" );
 
@@ -308,7 +306,7 @@ write_rev_uint16(int fd, uint16 val)
     else
     {
         DXSetError
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11800", /* C standard library call, %s, returns error */
               "write()" );
 
@@ -325,7 +323,7 @@ read_fwd_uint32 ( int fd, uint32 *val )
     else
     {
         DXSetError
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11800", /* C standard library call, %s, returns error */
               "read()" );
 
@@ -343,7 +341,7 @@ read_rev_uint32 ( int fd, uint32 *val )
     if (read(fd,c,4) != 4)
     {
         DXSetError
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11800", /* C standard library call, %s, returns error */
               "read()" );
 
@@ -367,7 +365,7 @@ read_fwd_uint16(int fd, uint16 *val)
     else
     {
         DXSetError
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11800", /* C standard library call, %s, returns error */
               "read()" );
 
@@ -385,7 +383,7 @@ read_rev_uint16(int fd, uint16 *val)
     if (read(fd,c,2) != 2)
     {
         DXSetError
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11800", /* C standard library call, %s, returns error */
               "read()" );
 
@@ -472,7 +470,7 @@ _dxf_write_tiff(RWImageArgs *iargs)
      * Attempt to open image file and position to start of frame(s).
      */
     if ( (fd = creat (imagefilename, 0666 ) ) < 0 )
-	ErrorGotoPlus1 ( ERROR_INVALID_DATA,
+	ErrorGotoPlus1 ( ERROR_DATA_INVALID,
                       "Can't open image file (%s)", imagefilename );
 
 
@@ -530,7 +528,7 @@ _dxf_write_tiff(RWImageArgs *iargs)
     return OK;
 
 bad_write:
-    DXErrorGoto( ERROR_INVALID_DATA, "Can't write TIFF file");
+    DXErrorGoto( ERROR_DATA_INVALID, "Can't write TIFF file");
 error:
     if ( fd >= 0 ) close(fd);
     if (deleteable && img) DXDelete((Object)img);
@@ -775,7 +773,7 @@ put_tiff_pixels(int fd,
 	    colorMapArray = (Array)DXGetComponentValue(image, "color map");
 	    if (! colorMapArray)
 	    {   
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 		   "single-valued byte image requires color map");
 		goto error;
 	    }
@@ -784,7 +782,7 @@ put_tiff_pixels(int fd,
 	}
 	else if (rank != 1 || shape[0] != 3)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"images must either contain single-valued pixels with a %s",
 		"colormap or contain three-vector pixels");
 	    goto error;
@@ -794,7 +792,7 @@ put_tiff_pixels(int fd,
     {
 	if (rank != 1 || shape[0] != 3)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"images must either contain single-valued pixels with a %s",
 		"colormap or contain three-vector pixels");
 	    goto error;
@@ -802,7 +800,7 @@ put_tiff_pixels(int fd,
     }
     else
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"pixel data must be either unsigned chars or floats");
 	goto error;
     }
@@ -865,7 +863,7 @@ put_tiff_pixels(int fd,
 		    tiff_lzw_compress(comp_rgb,rgb,j);
 #endif
 		if (write(fd,(char*)rgb,j) < j)
-		    DXErrorGoto(ERROR_INVALID_DATA,"Can't write output file");
+		    DXErrorGoto(ERROR_DATA_INVALID,"Can't write output file");
 		strip_offsets[i] = offset;
 		strip_byte_counts[i] = j;
 		offset += j;
@@ -902,7 +900,7 @@ put_tiff_pixels(int fd,
 		    tiff_lzw_compress(comp_rgb,rgb,j);
 #endif
 		if (write(fd,(char*)rgb,j) < j)
-		    DXErrorGoto(ERROR_INVALID_DATA,"Can't write output file");
+		    DXErrorGoto(ERROR_DATA_INVALID,"Can't write output file");
 		strip_offsets[i] = offset;
 		strip_byte_counts[i] = j;
 		offset += j;
@@ -939,7 +937,7 @@ put_tiff_pixels(int fd,
 		    tiff_lzw_compress(comp_rgb,rgb,j);
 #endif
 		if (write(fd,(char*)rgb,j) < j)
-		    DXErrorGoto(ERROR_INVALID_DATA,"Can't write output file");
+		    DXErrorGoto(ERROR_DATA_INVALID,"Can't write output file");
 		strip_offsets[i] = offset;
 		strip_byte_counts[i] = j;
 		offset += j;
@@ -1189,7 +1187,7 @@ TiffHeader * read_tiff_header
     {
         default:
             DXErrorGoto
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "TIFF file header must start with 0x4949 or 0x4D4D" );
             break;
 
@@ -1212,7 +1210,7 @@ TiffHeader * read_tiff_header
 
     if ( 0 > ( file_last = lseek ( fh, 0, 2 ) ) )
         DXErrorGoto2
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11800", /* C standard library call, %s, returns error */
               "lseek()" )
 
@@ -1223,13 +1221,13 @@ TiffHeader * read_tiff_header
                 hdr->ifd_offset, file_last );
 
         DXErrorGoto
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "The TIFF initial offset is greater than file length." );
     }
  
     if ( 0 > lseek ( fh, hdr->ifd_offset, 0 ) )
         DXErrorGoto2
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10911", /* Seeking to offset %d in binary file failed */
               hdr->ifd_offset )
 
@@ -1263,7 +1261,7 @@ TiffField * read_tiff_field
 
     if ( 0 > ( save = lseek ( fh, 0, 1 ) ) )
         DXErrorGoto2
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#11800", /* C standard library call, %s, returns error */
               "lseek()" )
     else
@@ -1286,7 +1284,7 @@ TiffField * read_tiff_field
             case tiff_ASCII:
                 if (read ( fh, &fld->value.value, fld->length ) != fld->length )
                     DXErrorGoto2
-                        ( ERROR_INVALID_DATA,
+                        ( ERROR_DATA_INVALID,
                           "#11800",
                           /* C standard library call, %s, returns error */
                           "read()" );
@@ -1306,7 +1304,7 @@ TiffField * read_tiff_field
 
     if ( 0 > lseek ( fh, save, 0 ) )
         DXErrorGoto2
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "#10911", /* Seeking to offset %d in binary file failed */
               save );
 
@@ -1367,7 +1365,7 @@ SizeData * read_image_sizes_tiff
                 case ImageWidth:
                     if ( field.length != 1 )
                         DXErrorGoto2
-                            ( ERROR_INVALID_DATA,
+                            ( ERROR_DATA_INVALID,
                               "TIFF field `%s' has bad size setting.",
                               "ImageWidth" );
 
@@ -1377,7 +1375,7 @@ SizeData * read_image_sizes_tiff
                         sd->width = field.value.value;
                     else
                         DXErrorGoto2
-                            ( ERROR_INVALID_DATA,
+                            ( ERROR_DATA_INVALID,
                               "TIFF field `%s' has bad type.",
                               "ImageWidth" );
                     break;
@@ -1385,7 +1383,7 @@ SizeData * read_image_sizes_tiff
                 case ImageLength:
                     if ( field.length != 1 )
                         DXErrorGoto2
-                            ( ERROR_INVALID_DATA,
+                            ( ERROR_DATA_INVALID,
                               "TIFF field `%s' has bad size setting.",
                               "ImageLength" );
 
@@ -1395,7 +1393,7 @@ SizeData * read_image_sizes_tiff
                         sd->height = field.value.value;
                     else
                         DXErrorGoto2
-                            ( ERROR_INVALID_DATA,
+                            ( ERROR_DATA_INVALID,
                               "TIFF field `%s' has bad type.",
                               "ImageLength" );
                     break;
@@ -1406,11 +1404,11 @@ SizeData * read_image_sizes_tiff
 
     if ( sd->width == -1 )
         DXErrorGoto
-        ( ERROR_INVALID_DATA, "Required TIFF field `ImageWidth' is missing" );
+        ( ERROR_DATA_INVALID, "Required TIFF field `ImageWidth' is missing" );
 
     if ( sd->height == -1 )
         DXErrorGoto
-        ( ERROR_INVALID_DATA, "Required TIFF field `ImageLength' is missing" );
+        ( ERROR_DATA_INVALID, "Required TIFF field `ImageLength' is missing" );
 
     DXDebug ( "R",
               "read_image_sizes_tiff: width,height = %d,%d",
@@ -1492,7 +1490,7 @@ SizeData * _dxf_ReadImageSizesTIFF
 
         if ( 0 > lseek ( fh, hdr.ifd_offset, 0 ) )
             DXErrorGoto2
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#10911", /* Seeking to offset %d in binary file failed */
                   hdr.ifd_offset );
 
@@ -1505,7 +1503,7 @@ SizeData * _dxf_ReadImageSizesTIFF
 
         if ( 0 > lseek ( fh, (tiff_entity_count*TIFF_FIELD_SIZE), 1 ) )
             DXErrorGoto2
-                ( ERROR_INVALID_DATA,
+                ( ERROR_DATA_INVALID,
                   "#10911", /* Seeking to offset %d in binary file failed */
                   (tiff_entity_count*TIFF_FIELD_SIZE) );
 
@@ -1590,7 +1588,7 @@ SizeData * _dxf_ReadImageSizesTIFF
     uint32  ll;								\
  									\
     if ( 0 > lseek ( fh, seek_offset, 0 ) ) 				\
-	DXErrorGoto2(ERROR_INVALID_DATA, "#10911", seek_offset); 	\
+	DXErrorGoto2(ERROR_DATA_INVALID, "#10911", seek_offset); 	\
  									\
     switch (file_data.StripOffsets.type) 				\
     { 									\
@@ -1607,7 +1605,7 @@ SizeData * _dxf_ReadImageSizesTIFF
     } 									\
  									\
     if (0 > lseek(fh, ll, 0)) 						\
-	DXErrorGoto2(ERROR_INVALID_DATA, "#10911", ll); 		\
+	DXErrorGoto2(ERROR_DATA_INVALID, "#10911", ll); 		\
  									\
     striplines = file_data.rowsperstrip.val; 				\
 } 
@@ -1713,7 +1711,7 @@ Field _dxf_InputTIFF
         {
             if ( 0 > lseek ( fh, (tiff_entity_count*TIFF_FIELD_SIZE), 1 ) )
                 DXErrorGoto2
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "#10911", /* Seeking to offset %d in binary file failed */
                       (tiff_entity_count*TIFF_FIELD_SIZE) );
 
@@ -1728,7 +1726,7 @@ Field _dxf_InputTIFF
 
             if ( 0 > lseek ( fh, hdr.ifd_offset, 0 ) )
                 DXErrorGoto2
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "#10911", /* Seeking to offset %d in binary file failed */
                       hdr.ifd_offset );
         }
@@ -1775,14 +1773,14 @@ Field _dxf_InputTIFF
                          ( ( lookup->tiff_type != SHORT_LONG ) &&
                            ( lookup->tiff_type != field.type )   ) )
                         DXErrorGoto2
-                            ( ERROR_INVALID_DATA,
+                            ( ERROR_DATA_INVALID,
                               "TIFF field `%s' has bad type.",
                               lookup->tag_name );
    
                     if ( ( lookup->size != FUNCTION ) &&
                          ( field.length != lookup->size ) )
                         DXErrorGoto2
-                            ( ERROR_INVALID_DATA,
+                            ( ERROR_DATA_INVALID,
                               "TIFF field `%s' has bad size setting.",
                               lookup->tag_name );
 
@@ -1913,7 +1911,7 @@ Field _dxf_InputTIFF
     /* 256 ImageWidth */
     if ( !file_data.width.set )
         DXErrorGoto
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "Required TIFF field `ImageWidth' is missing" )
     else
         if ( file_data.width.val != image_data.width )
@@ -1923,7 +1921,7 @@ Field _dxf_InputTIFF
     /* 257 ImageLength */
     if ( !file_data.height.set )
         DXErrorGoto
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "Required TIFF field `ImageLength' is missing" )
     else
         if ( file_data.height.val != image_data.height )
@@ -1933,7 +1931,7 @@ Field _dxf_InputTIFF
     /* 273 StripOffsets */
     if ( file_data.StripOffsets.tag == UNSET_TAG )
         DXErrorGoto
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "Required TIFF field `StripOffsets' is missing" );
 
 
@@ -1959,7 +1957,7 @@ Field _dxf_InputTIFF
         {
             if ( ((uint16*)&file_data.BitsPerSample.value.value)[0] != 8 )
                 DXErrorGoto
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "TIFF field `BitsPerSample' must be 8" );
         }
         else if ( 3 == file_data.BitsPerSample.length )
@@ -1968,7 +1966,7 @@ Field _dxf_InputTIFF
 
             if ( 0 > lseek ( fh, file_data.BitsPerSample.value.offset, 0 ) )
                 DXErrorGoto2
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "#10911", /* Seeking to offset %d in binary file failed */
                       file_data.BitsPerSample.value.offset );
 
@@ -1977,7 +1975,7 @@ Field _dxf_InputTIFF
 
             if ( ( bps[0] != 8 ) || ( bps[1] != 8 ) || ( bps[2] != 8 ) )
                 DXErrorGoto
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "TIFF field `BitsPerSample' must be 8,8,8" );
         }
     }
@@ -1993,7 +1991,7 @@ Field _dxf_InputTIFF
     }
     else if ( file_data.compression.val != 1 )
         DXErrorGoto
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "TIFF field `Compression' must be 1 (None)" );
 
     /* 262 PhotometricInterpretation */
@@ -2010,7 +2008,7 @@ Field _dxf_InputTIFF
              ( file_data.photometricinterpretation.val != 2 ) &&
              ( file_data.photometricinterpretation.val != 3 )   )
         DXErrorGoto
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "TIFF field `PhotometricInterpretation'"
               " must be 0 (Min-Is-White) 1 (Min-Is-Black) 2 (RGB) or 3 (Palette)" );
 
@@ -2042,7 +2040,7 @@ Field _dxf_InputTIFF
               ( file_data.samplesperpixel.val != 1 ) &&
               ( file_data.samplesperpixel.val != 3 )   )
         DXErrorGoto
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "TIFF field `SamplesPerPixel' must be 1 or 3" );
 
     if ( file_data.samplesperpixel.val != file_data.BitsPerSample.length )
@@ -2113,7 +2111,7 @@ Field _dxf_InputTIFF
     }
     else if ( file_data.planarconfiguration.val != 1 )
         DXErrorGoto
-            ( ERROR_INVALID_DATA,
+            ( ERROR_DATA_INVALID,
               "TIFF field `PlanarConfiguration' must be 1 (contiguous)" );
 
 
@@ -2149,7 +2147,7 @@ Field _dxf_InputTIFF
 
             if ( 0 > lseek ( fh, file_data.ColorMap.value.offset, 0 ) )
                 DXErrorGoto2
-                    ( ERROR_INVALID_DATA,
+                    ( ERROR_DATA_INVALID,
                       "#10911", /* Seeking to offset %d in binary file failed */
                       file_data.ColorMap.value.offset );
 
@@ -2208,7 +2206,7 @@ Field _dxf_InputTIFF
     if ( file_data.StripOffsets.length == 1 )
     {
         if (0 > lseek(fh, file_data.StripOffsets.value.offset, 0))
-            DXErrorGoto2(ERROR_INVALID_DATA, "#10911", 
+            DXErrorGoto2(ERROR_DATA_INVALID, "#10911", 
 		      file_data.StripOffsets.value.offset );
 
         seek_offset = 0;

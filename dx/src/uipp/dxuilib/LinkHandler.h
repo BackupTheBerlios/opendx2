@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,7 +16,6 @@
 #ifndef _LinkHandler_h
 #define _LinkHandler_h
 
-#include "defines.h"
 #include "Base.h"
 #include "Command.h"
 #include "../base/CmdEntry.h"

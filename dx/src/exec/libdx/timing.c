@@ -15,11 +15,16 @@
 #include <dx/dx.h>
 #include <stdio.h>
 
-#if DXD_HAS_UNIX_SYS_INCLUDES
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
+#endif
+#if defined(HAVE_SYS_TIMES_H)
 #include <sys/times.h>
+#endif
+#if defined(HAVE_SYS_PARAM_H)
 #include <sys/param.h>
-#else
+#endif
+#if defined(HAVE_TIME_H)
 #include <time.h>
 #endif
 
@@ -95,7 +100,7 @@ _times_svs(double *user, double *sys, double *real)
 }
 #endif
 
-#if defined(os2)  || defined(DXD_WIN)
+#if defined(os2)  || defined(intelnt)
 
 static void
 _times_unix(double *user, double *sys, double *real)
@@ -204,7 +209,7 @@ DXGetTime(void)
 void
 DXWaitTime(double seconds)
 {
-#ifdef	DXD_WIN
+#if defined(intelnt)
     Sleep(seconds*1000);
 #else
 #if ibmpvs || hp700 || aviion

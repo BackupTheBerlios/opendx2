@@ -11,9 +11,10 @@
 
 
 #include <Xm/Xm.h>
-#if !defined(OS2)  && !defined(DXD_WIN)
+
+#if defined(HAVE_STRSTREAM_H)
 #include <strstream.h>
-#else
+#elif defined(HAVE_STRSTREA_H)
 #include <strstrea.h>
 #endif
 

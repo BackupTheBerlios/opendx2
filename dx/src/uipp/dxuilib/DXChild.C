@@ -9,13 +9,16 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-#if defined(HAVE_STRINGS_H)
-#include <strings.h>
-#endif
-
-#include "UIConfig.h"
 #include "Strings.h"
 #include "DXChild.h"
+
+#ifdef OS2
+#define INCL_DOSPROCESS
+#define INCL_DOSDATETIME
+#define INCL_DOSFILEMGR
+#define INCL_DOSQUEUES
+#include <os2.h>
+#endif
 
 #include "DXApplication.h"
 #include "ErrorDialogManager.h"
@@ -61,12 +64,16 @@ extern "C" {
 #endif
 #endif
 
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
+
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef HAVE_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #if defined(HAVE_NETINET_IN_H)
@@ -93,18 +100,27 @@ extern "C" {
 extern "C" int getdtablesize();
 #endif
 
-#ifdef hp700
+#if defined(HAVE_TIME_H)
 #include <time.h>
 #endif
 
-#ifdef aviion
+#if defined(HAVE_TIMEB_H)
+#include <timeb.h>
+#endif
+
+#if defined(HAVE_SYS_TIME_H)
+#include <sys/time.h>
+#endif
+
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
-#define FD_ZERO(p)  memset((void*)p, 0, sizeof(*(p)))
+#endif
+
+#if defined(HAVE_SYS_STAT_H)
+#include <sys/stat.h>
 #endif
 
 #ifdef alphax
-#include <sys/types.h>
-#include <sys/time.h>
 extern "C" int getdtablesize ( void );
 extern "C"   int select(
           int nfds,
@@ -115,6 +131,7 @@ extern "C"   int select(
 #endif
 
 
+#if 0
 #if defined(windows) && defined(HAVE_WINSOCK_H)
 #include <winsock.h>
 #elif defined(HAVE_CYGWIN_SOCKET_H)
@@ -122,19 +139,6 @@ extern "C"   int select(
 #elif defined(HAVE_SYS_SOCKET_H)
 #include <sys/socket.h>
 #endif
-
-#ifdef	DXD_WIN
-
-#include <sys/stat.h>
-#include <sys/timeb.h>
-#include <sys/types.h>
-
-#else
-
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <sys/types.h>
-
 #endif
 
 #if defined(HAVE_SYS_UN_H)
@@ -144,21 +148,6 @@ extern "C"   int select(
 #if defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
 #endif
-
-#if !defined(DXD_WIN) && !defined(OS2)
-#include <sys/wait.h>
-#else
-#ifdef DXD_WINSOCK_SOCKETS
-# define _WINSOCKAPI_
-# define _WINSPOOL_
-# include <windows.h>             //SMH But we do need NT API calls
-#endif
-# define _access _tempdummy       //SMH Hack around name collisions in io.h
-# include <io.h>
-# undef _access
-# define _access _access
-#endif
-
 
 #if defined(hp700) || defined(aviion)
 # define RSH "/usr/bin/remsh"
@@ -177,19 +166,26 @@ extern "C"   int select(
 #ifndef HAS_HERROR
 #    define herror perror
 #endif
+
 #ifdef ibm6000
 extern "C" {
     void herror(const char *);
 }
 #endif
 
+#if 0
 #if (REQUIRES_BZERO_DECLARATION == 1)
-extern "C" { void bzero(char *, int); }
+extern "C" void bzero(char *, int); 
 #endif
+#endif
+
 
 #define verbose 0
 
 #ifdef  DXD_WIN
+#if defined(XtInputReadMask)
+#undef XtInputReadMask
+#endif
 #define     XtInputReadMask     XtInputReadWinsock
 void	ClearExecMessages(void *arg);
 #endif
@@ -202,7 +198,7 @@ DXChild::HostIsLocal(const char *host)
     char remoteHostname[BUFSIZ];
     struct hostent *he;
     int  hostnameFound;
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SYS_UTSNAME_H)
     struct utsname Uts_Name;
 
     if (strcmp ("unix", host) == 0)
@@ -314,7 +310,7 @@ DXChild::ConnectTo(const char *host,
     char *os;
     int  j;
     char *dnum;
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SYS_UTSNAME_H)
 
 #ifdef hp700
     int  width = MAXFUPLIM;
@@ -361,7 +357,7 @@ DXChild::ConnectTo(const char *host,
     if (DXChild::HostIsLocal(host)) {
 	char *path;
 	char *opath;
-	struct stat sbuffer;
+	struct STATSTRUCT sbuffer;
 
 	if (verbose) fprintf(stderr, "local\n");
 
@@ -402,7 +398,7 @@ DXChild::ConnectTo(const char *host,
 		s[i] = '\0';
 		strcat (s, "/");
 		strcat (s, av[0]);
-		if (stat (s, &sbuffer) < 0) {
+		if (STAT (s, &sbuffer) < 0) {
 		    /* if the file doesn't exist, go on */
 		    if (errno == ENOENT) {
 			/* We have no more paths to search */
@@ -580,7 +576,7 @@ DXChild::ConnectTo(const char *host,
 	    ErrorMessage("chdir() error: %s", strerror(errno));
 	    exit(1);
 	}
-	if (execve(fargv[0], (EXECVE_2ND_TYPE)fargv, (EXECVE_3RD_TYPE)rep) < 0)
+	if (execve(fargv[0], fargv, rep) < 0)
 	{
 	    ErrorMessage("execve() error: %s", strerror(errno));
 	    exit(1);
@@ -603,7 +599,7 @@ DXChild::ConnectTo(const char *host,
 	FREE ((char*)fargv);
     return (child);
 
-#endif                   // DXD_LACKS_UTS
+#endif                   // HAVE_SYS_UTSNAME_H
 
 
 #ifdef	OS2
@@ -951,7 +947,8 @@ extern "C" void DXChild_OutQueuedInputHandler(XtPointer  clientData,
 		obj->outLine[j+1] = '\0';
 		theDXApplication->getMessageWindow()->addInformation(
 		    obj->outLine);
-		// write(1, obj->outLine, j + 1);
+/* GDA */
+		write(1, obj->outLine, j + 1);
 		if (sscanf(obj->outLine, "port = %d\n", &port) == 1)
 		{
 		    theDXApplication->connectToServer(port, obj);
@@ -1295,7 +1292,7 @@ DXChild::waitForConnection()
     int port;
     static char rstring[RSIZE];
     rstring[0] = '\0';
-#ifndef DXD_LACKS_UTS
+#if defined(HAVE_SYS_UTSNAME_H)
     fd_set fds;
 #ifdef hp700
     int  width = MAXFUPLIM;
@@ -1316,7 +1313,7 @@ DXChild::waitForConnection()
      * port down and fail if we get an eof on either.
      */
 
-#if defined(DXD_LACKS_UTS)
+#if !defined(HAVE_SYS_UTSNAME_H)
     result = 0;
     /* Need to loop here because dx.cmd first sends "Starting DX Exec", followed by 
      * "[E:\usr1\....\dxexec -r -B" 
@@ -1361,6 +1358,8 @@ DXChild::waitForConnection()
             portString = strstr (rdbuffer, "port = ");
             if (portString != NULL) {
                 result = 0;
+/* GDA */
+write(1, portString, strlen(portString)+1);
                 sscanf (portString, "port = %d", &port);
                 if (this->isQueued())
                     this->unQueue();
@@ -1405,6 +1404,8 @@ DXChild::waitForConnection()
             portString = strstr (rdbuffer, "port = ");
             if (portString != NULL) {
                 result = 0;
+/* GDA */
+write(1, portString, strlen(portString)+1);
                 sscanf (portString, "port = %d", &port);
                 if (this->isQueued())
                     this->unQueue();
@@ -1429,10 +1430,10 @@ DXChild::waitForConnection()
     }  // while
 #endif		//	OS2
     return result;
-#endif    // if defined(DXD_LACKS_UTS)
+#endif                   // HAVE_SYS_UTSNAME_H
 
 
-#if !defined(DXD_LACKS_UTS)
+#if defined(HAVE_SYS_UTSNAME_H)
 
     //
     // Stop using the subevent loop.  The call to XtAppNextEvent has the side effect
@@ -1591,6 +1592,8 @@ DXChild::waitForConnection()
 		    portString = strstr (rdbuffer, "port = ");
 		    if (portString != NULL) {
 			result = 0;
+/* GDA */
+write(1, portString, strlen(portString)+1);
 			sscanf (portString, "port = %d", &port);
 			if (this->isQueued())
 			    this->unQueue();

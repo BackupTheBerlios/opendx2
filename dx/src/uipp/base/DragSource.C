@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "defines.h"
+#include "../base/defines.h"
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
@@ -263,7 +263,7 @@ int     response = this->decideToDrag(event);
     // HOST_NAME == hostname of machine we're running on
     // USER == current user name
     //
-    Atom DELETE, PROCESS, HOST_NAME, USER;
+    Atom DELETE_ATOM, PROCESS_ATOM, HOST_NAME_ATOM, USER_ATOM;
     Display *d = XtDisplay(this->drag_context);
     char hostname[MAXHOSTNAMELEN];
 
@@ -274,25 +274,23 @@ int     response = this->decideToDrag(event);
     int *pid = (int*)&pid_space;
     *pid = (int)getpid();
 
-    DELETE = XmInternAtom(d, "DELETE", False);
-    PROCESS = XmInternAtom(d, "PROCESS", False);
-    HOST_NAME = XmInternAtom(d, "HOST_NAME", False);
-    USER = XmInternAtom(d, "USER", False);
+    DELETE_ATOM = XmInternAtom(d, "DELETE", False);
+    PROCESS_ATOM = XmInternAtom(d, "PROCESS", False);
+    HOST_NAME_ATOM = XmInternAtom(d, "HOST_NAME", False);
+    USER_ATOM = XmInternAtom(d, "USER", False);
 
     Screen *screen = XtScreen(w);
     Window root = RootWindowOfScreen(screen);
-    XChangeProperty (d, root, PROCESS, XA_INTEGER, 32,
+    XChangeProperty (d, root, PROCESS_ATOM, XA_INTEGER, 32,
 	PropModeReplace, (unsigned char *)pid, 1);
     gethostname(hostname, sizeof(hostname));
-    XChangeProperty (d, root, HOST_NAME, XA_STRING, 8, 
+    XChangeProperty (d, root, HOST_NAME_ATOM, XA_STRING, 8, 
 	PropModeReplace, (unsigned char *)hostname, strlen(hostname));
-#ifdef  DXD_OS_NON_UNIX
-    char *login = NULL;
-#else
-    char *login = getlogin();
-#endif
+
+    char *login = GETLOGIN;
+
     if ((login)&&(login[0]))
-	XChangeProperty (d, root, USER, XA_STRING, 8, 
+	XChangeProperty (d, root, USER_ATOM, XA_STRING, 8, 
 	    PropModeReplace, (unsigned char*)login, strlen(login));
 }
 
@@ -379,15 +377,15 @@ TransferStyle *ts;
     //
     // The ds object might not exist at this point so don't reference it anymore.
     //
-    Atom DELETE; 
+    Atom DELETE_ATOM; 
     Display *d = XtDisplay(w);
     Window root = DefaultRootWindow(d);
     Atom actual_type;
     int actual_format;
     unsigned char *data;
     unsigned long remain, nitems;
-    DELETE = XmInternAtom(d, "DELETE", False);
-    XGetWindowProperty (d, root, DELETE, 0, 4, False, XA_STRING,
+    DELETE_ATOM = XmInternAtom(d, "DELETE", False);
+    XGetWindowProperty (d, root, DELETE_ATOM, 0, 4, False, XA_STRING,
 	&actual_type, &actual_format, &nitems, &remain, &data);
 
     if ((data) && (!strcmp((const char *)data, "TRUE"))) {

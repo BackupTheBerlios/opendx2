@@ -16,16 +16,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <errno.h>
-#if DXD_HAS_UNIX_SYS_INCLUDES
+#if defined(HAVE_SYS_FILE_H)
 #include <sys/file.h>
-#endif
-
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#elif defined(HAVE_SYS_SOCKET_H)
-#include <sys/socket.h>
 #endif
 
 #include <sys/types.h>
@@ -38,11 +30,7 @@ typedef unsigned long mode_t;
 
 #include "edf.h"
 
-#ifdef	DXD_WIN
 #include <stdlib.h>
-#define popen _popen
-#define pclose _pclose
-#endif
  
 #if  defined(DXD_NON_UNIX_DIR_SEPARATOR)
 #define DX_DIR_SEPARATOR ';'
@@ -114,7 +102,7 @@ static Error elemtypecheck(int num, char *str)
     }
     
     if (strcmp(rightstr, str)) {
-	DXSetError(ERROR_INVALID_DATA, Err_BadElemType, str, rightstr);
+	DXSetError(ERROR_DATA_INVALID, Err_BadElemType, str, rightstr);
 	return ERROR;
     }
 
@@ -143,19 +131,19 @@ _dxfValidate(Field f)
 	    /* make sure number of items matches number of items in dep */
 	    if ((DXGetObjectClass((Object)s) != CLASS_STRING) ||
 	        ((tname = DXGetString(s)) == NULL)) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			 Err_MustBeString, "dep", cname);
 		return NULL;
 	    }
 	    
 	    if ((target = (Array)DXGetComponentValue(f, tname)) == NULL) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			 Err_MissingComp, tname, "dep", cname);
 		return NULL;
 	    }
 	    
 	    if (DXGetObjectClass((Object)target) != CLASS_ARRAY) {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			 Err_NotArray, tname, "dep", cname);
 		return NULL;
 	    }
@@ -171,7 +159,7 @@ _dxfValidate(Field f)
 	    ntarget = nitems;
 	    
 	    if (ncurrent != ntarget) {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			 Err_DiffCount, "dep",
 			 ncurrent, cname, ntarget, tname);
 		return NULL;
@@ -184,19 +172,19 @@ _dxfValidate(Field f)
 	if ((s = (String)DXGetAttribute((Object)current, "ref")) != NULL) {
 	    if ((DXGetObjectClass((Object)s) != CLASS_STRING) ||
 	        ((tname = DXGetString(s)) == NULL)) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   Err_MustBeString, "ref", cname);
 		return NULL;
 	    }
 	    
 	    if ((target = (Array)DXGetComponentValue(f, tname)) == NULL) {
-		DXSetError(ERROR_INVALID_DATA,
+		DXSetError(ERROR_DATA_INVALID,
 			   Err_MissingComp, tname, "ref", cname);
 		return NULL;
 	    }
 	    
 	    if (DXGetObjectClass((Object)target) != CLASS_ARRAY) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   Err_NotArray, tname, "ref", cname);
 		return NULL;
 	    }
@@ -205,7 +193,7 @@ _dxfValidate(Field f)
 		return ERROR;
 	    
 	    if (type != TYPE_INT) {
-		DXSetError(ERROR_INVALID_DATA, Err_RefNotInt, cname);
+		DXSetError(ERROR_DATA_INVALID, Err_RefNotInt, cname);
 		return NULL;
 	    }
 	    
@@ -230,7 +218,7 @@ _dxfValidate(Field f)
 
 		    for (j=0; j < ncurrent; j++, ip++) {
 			if (*ip < lim || *ip >= ntarget) {
-			    DXSetError(ERROR_INVALID_DATA, Err_OutOfRange,
+			    DXSetError(ERROR_DATA_INVALID, Err_OutOfRange,
 				j+1, ending(j+1), cname, *ip, lim, ntarget-1);
 			    return NULL;
 			}
@@ -240,7 +228,7 @@ _dxfValidate(Field f)
 		    for (j=0, ncurrent=1; j<rank; j++)
 			ncurrent *= counts[j];
                     if (ncurrent > ntarget) {
-                        DXSetError(ERROR_INVALID_DATA,
+                        DXSetError(ERROR_DATA_INVALID,
                                  Err_DiffCount, "ref",
                                  ncurrent, cname, ntarget, tname);
                         return NULL;
@@ -258,13 +246,13 @@ _dxfValidate(Field f)
 
 	    if (DXExtractString(o, &tname)) {    /* simple string? */
 		if ((target = (Array)DXGetComponentValue(f, tname)) == NULL) {
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			       Err_MissingComp, tname, "der", cname);
 		    return NULL;
 		}
 		
 		if (DXGetObjectClass((Object)target) != CLASS_ARRAY) {
-		    DXSetError(ERROR_INVALID_DATA,
+		    DXSetError(ERROR_DATA_INVALID,
 			       Err_NotArray, tname, "der", cname);
 		    return NULL;
 		}
@@ -272,19 +260,19 @@ _dxfValidate(Field f)
 		for (j=0; DXExtractNthString(o, j, &tname); j++) {
 		    
 		    if ((target = (Array)DXGetComponentValue(f, tname)) == NULL) {
-			DXSetError(ERROR_INVALID_DATA,
+			DXSetError(ERROR_DATA_INVALID,
 				   Err_MissingComp, tname, "der", cname);
 			return NULL;
 		    }
 		    
 		    if (DXGetObjectClass((Object)target) != CLASS_ARRAY) {
-			DXSetError(ERROR_INVALID_DATA,
+			DXSetError(ERROR_DATA_INVALID,
 				   Err_NotArray, tname, "der", cname);
 			return NULL;
 		    }
 		}
 	    } else {  /* neither string or string list */
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   Err_MustBeStringList, "der", cname);
 		return NULL;
 	    }
@@ -295,7 +283,7 @@ _dxfValidate(Field f)
 	if ((s = (String)DXGetAttribute((Object)current, "element type")) != NULL) {
 	    if ((DXGetObjectClass((Object)s) != CLASS_STRING) ||
 	        ((tname = DXGetString(s)) == NULL)) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			 Err_MustBeString, "element type", cname);
 		return NULL;
 	    }
@@ -591,7 +579,7 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
         return fd;
 
       npipe_error:
-        DXSetError(ERROR_INVALID_DATA, "%s: %s", *outname+1, sys_errlist[errno]);
+        DXSetError(ERROR_DATA_INVALID, "%s: %s", *outname+1, sys_errlist[errno]);
         Unlink(*outname+1);
         return ERROR;
 
@@ -885,7 +873,7 @@ Error _dxfinitfinfo(struct finfo *fp)
     /* initialize the parsing code
      */
     if (!_dxfinitparse(fp)) {
-	DXSetError(ERROR_INVALID_DATA, "#10730", fp->fname);
+	DXSetError(ERROR_DATA_INVALID, "#10730", fp->fname);
 	goto done;
     }
 

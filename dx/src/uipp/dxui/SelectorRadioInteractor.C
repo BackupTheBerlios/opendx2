@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -17,7 +19,6 @@
 #include <Xm/ToggleB.h>
 #include "XmUtility.h"
 
-#include "defines.h"
 #include "SelectorRadioInteractor.h"
 #include "InteractorStyle.h"
 
@@ -79,7 +80,7 @@ void SelectorRadioInteractor::initialize()
 
 static Widget CreateStepperComponent(Widget,  boolean, double, double,
 				     double, double, int,   XtCallbackProc,   
-				     int, caddr_t) ;
+				     int, void *) ;
 
 //
 // Allocate an interactor 

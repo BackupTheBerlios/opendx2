@@ -7,39 +7,38 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <dx/dx.h>
 
+#undef EXCEED_SOCKET
 
-#ifdef DXD_WIN
+#if defined(HAVE_IO_H)
 #include <io.h>
-#include <time.h>
-#include <sys/timeb.h>
-#include <sys/types.h> 
-
-#else
-
-#include <sys/ioctl.h>
-#include <sys/time.h>
-#include <sys/types.h>
-
 #endif
 
-#if defined(windows) && defined(HAVE_WINSOCK_H)
-#include <winsock.h>
-#define EADDRINUSE      WSAEADDRINUSE
-#elif defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#else
-#include <sys/socket.h>
+#if defined(HAVE_TIME_H)
+#include <time.h>
+#endif
+
+#if defined(HAVE_SYS_TIMEB_H)
+#include <sys/timeb.h>
+#endif
+
+#if defined(HAVE_SYS_TYPES_H)
+#include <sys/types.h> 
+#endif
+
+#if defined(HAVE_SYS_IOCTL_H)
+#include <sys/ioctl.h>
 #endif
 
 #if HAVE_SYS_FILIO_H
 #include <sys/filio.h>
 #endif
 
-#include <dx/dx.h>
 
 #include "utils.h"
-#if DXD_NEEDS_SYS_SELECT_H
+
+#if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
 
@@ -154,6 +153,7 @@ int _dxf_ExCheckRIHBlock (int input)
 	fd = r->fd;
 	if (mval < fd)
 	    mval = fd;
+
 #ifdef EXCEED_SOCKET
 	if(r->isWin)
 	    _dxf_SetExceedFd(fd, r->dpy);
@@ -390,18 +390,6 @@ static Error RIHInsert (Error (*proc) (int, Pointer), int fd, Pointer arg,
     r->fd    = fd;
     r->arg   = arg;
     r->isWin = 0;
-
-
-#if defined(DXD_HAS_IBM_OS2_SOCKETS)  || defined(DXD_HAS_WINSOCKETS)
-
-#ifdef	EXCEED_SOCKET
-    if(!r->isWin)
-	SOCK_SETSOCKET (fd);
-#else
-    SOCK_SETSOCKET (fd);
-#endif
-
-#endif
 
     return (OK);
 }

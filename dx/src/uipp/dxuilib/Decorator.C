@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -16,7 +18,6 @@
 #include <Xm/DragDrop.h>
 
 
-#include "defines.h"
 #include "XmUtility.h"
 #include "Strings.h"
 #include "Decorator.h"
@@ -168,7 +169,7 @@ void Decorator::createDecorator()
 
     this->installResizeHandler();
     XmWorkspaceAddCallback (form, XmNselectionCallback,
-	 (XtCallbackProc)Component_SelectWorkSpaceComponentCB, (caddr_t)this);
+	 (XtCallbackProc)Component_SelectWorkSpaceComponentCB, (void *)this);
 
     if ((this->width) && (this->height) && (this->resizeOnUpdate()==FALSE) &&
 	(this->width  != UIComponent::UnspecifiedDimension) && 

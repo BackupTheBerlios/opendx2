@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/overlay.c,v 1.3 1999/05/10 15:45:28 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/overlay.c,v 1.4 2000/05/16 18:48:04 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -163,7 +163,7 @@ m_Overlay ( Object *in, Object *out )
     else if (DXExtractString(I_blend, &colorstr)) {
         /*  convert from string to DXRGB */
         if (!(DXColorNameToRGB(colorstr, &args.u.chromakey)))
-            ErrorGotoPlus1( ERROR_INVALID_DATA, "#11760",colorstr );
+            ErrorGotoPlus1( ERROR_DATA_INVALID, "#11760",colorstr );
         args.op = CHROMAKEY;
     }
     /*  If it's an DXRGB color */
@@ -174,7 +174,7 @@ m_Overlay ( Object *in, Object *out )
     /* See if it is a float blending value */
     else if (DXExtractFloat ( I_blend, &args.u.blend ) )  {
         if ( ( args.u.blend < 0.0 ) || ( args.u.blend > 1.0 ) ) 
-            ErrorGotoPlus3( ERROR_INVALID_DATA, "#10110", "'blend'", 0, 1 );
+            ErrorGotoPlus3( ERROR_DATA_INVALID, "#10110", "'blend'", 0, 1 );
         args.op = BLENDING;
     } 
     /* See if it is a matte/field */
@@ -184,7 +184,7 @@ m_Overlay ( Object *in, Object *out )
     }
     /* Bad data type */
     else {
-        ErrorGotoPlus1(ERROR_INVALID_DATA, "#10232","blend");
+        ErrorGotoPlus1(ERROR_DATA_INVALID, "#10232","blend");
     }
 
     /*
@@ -232,7 +232,7 @@ create_overlay_tasks(struct overlay_args *args)
 	     * Make sure the overlay image is compatible with the base. 
 	     */
 	    if (DXGetObjectClass((Object)args->overlay) != CLASS_FIELD) {
-		ErrorGotoPlus2(ERROR_INVALID_DATA, "#12310", "base", "overlay");
+		ErrorGotoPlus2(ERROR_DATA_INVALID, "#12310", "base", "overlay");
 	    }
 	    else if (!compatible_grids(args->base, args->overlay, 
 					"'base'","'overlay'")) {
@@ -243,7 +243,7 @@ create_overlay_tasks(struct overlay_args *args)
 	     */
 	    if (args->op == MATTE) { 
 		if (DXGetObjectClass((Object)args->u.matte) != CLASS_FIELD) {
-		    ErrorGotoPlus2(ERROR_INVALID_DATA,"#12315","blend","matte");
+		    ErrorGotoPlus2(ERROR_DATA_INVALID,"#12315","blend","matte");
 		}
 	        else if (!compatible_grids(args->base, args->u.matte,
 					"'base'","'blend'")) 
@@ -260,20 +260,20 @@ create_overlay_tasks(struct overlay_args *args)
 	     * Make sure the input base image is luking good.
 	     */
             if (DXGetGroupClass((Group)args->base) != CLASS_COMPOSITEFIELD)
-	    	ErrorGotoPlus1(ERROR_INVALID_DATA, "#12320", "base");
+	    	ErrorGotoPlus1(ERROR_DATA_INVALID, "#12320", "base");
 	    /* 
 	     * Check to be sure that the overlay is the same type. 
 	     */
     	    if ((DXGetObjectClass((Object)args->overlay) != CLASS_GROUP) || 
                 (DXGetGroupClass((Group)args->overlay) != CLASS_COMPOSITEFIELD))
-	    	ErrorGotoPlus2(ERROR_INVALID_DATA, "#12315","overlay","image"); 
+	    	ErrorGotoPlus2(ERROR_DATA_INVALID, "#12315","overlay","image"); 
 	    /* 
 	     * Check to be sure the matte (if being used) is compatible. 
 	     */
     	    if ((args->op == MATTE) &&
 		((DXGetObjectClass((Object)args->u.matte) != CLASS_GROUP) || 
                  (DXGetGroupClass((Group)args->u.matte)!=CLASS_COMPOSITEFIELD)))
-	    	ErrorGotoPlus2(ERROR_INVALID_DATA, "#12315", "blend","matte");
+	    	ErrorGotoPlus2(ERROR_DATA_INVALID, "#12315", "blend","matte");
 	    /* 
 	     * Load largs with the constants over all tasks. 
 	     */
@@ -304,7 +304,7 @@ create_overlay_tasks(struct overlay_args *args)
 	    }
 	    break;
 	default:
-	    ErrorGotoPlus1(ERROR_INVALID_DATA, "#12320", "base");
+	    ErrorGotoPlus1(ERROR_DATA_INVALID, "#12320", "base");
     }
     return OK;
 error:
@@ -338,13 +338,13 @@ overlay_task(Pointer ptr)
      * Be sure that the base object is an image
      */ 
     if (!valid_image_object((Object)base))
-	ErrorGotoPlus1 ( ERROR_INVALID_DATA, "#12320", "base" );
+	ErrorGotoPlus1 ( ERROR_DATA_INVALID, "#12320", "base" );
 
     /*
      * Be sure that the overlay object is an image
      */ 
     if (!valid_image_object((Object)overlay))
-	ErrorGotoPlus1 ( ERROR_INVALID_DATA, "#12320", "overlay" );
+	ErrorGotoPlus1 ( ERROR_DATA_INVALID, "#12320", "overlay" );
     
     /*
      * Get overlay, base and output image info
@@ -360,13 +360,13 @@ overlay_task(Pointer ptr)
      */
     if (!DXGetImageSize(overlay, &width1, &height1) ||
         !DXGetImageSize(base, &width2, &height2))
-        DXErrorGoto( ERROR_INVALID_DATA, "#12325");
+        DXErrorGoto( ERROR_DATA_INVALID, "#12325");
 
     /* 
      * Make sure the images are the same size 
      */
     if ( (height1 != height2) || (width1 != width2) ) { 
-        DXSetError ( ERROR_INVALID_DATA, "#12330",
+        DXSetError ( ERROR_DATA_INVALID, "#12330",
               height1, width1, height2, width2 );
 	goto error;
     }
@@ -405,27 +405,27 @@ overlay_task(Pointer ptr)
 	 * Make sure the field has the correct structure
 	 */
         if (!valid_blend_field(args->u.matte))
-	    ErrorGotoPlus1 ( ERROR_INVALID_DATA, "#12335", "blend" );
+	    ErrorGotoPlus1 ( ERROR_DATA_INVALID, "#12335", "blend" );
 
 	/*
 	 * DXExtract the array of blend values
 	 */
 	blend = (Array)DXGetComponentValue(args->u.matte,"data");
 	if (!blend)
-	    ErrorGotoPlus2 ( ERROR_INVALID_DATA, "#10250", "'blend'", "data");
+	    ErrorGotoPlus2 ( ERROR_DATA_INVALID, "#10250", "'blend'", "data");
 
 	/*
 	 * Check the number, type, category, rank and shape of data provided
 	 */ 
 	DXGetArrayInfo(blend, &nitems, &type, &cat, &rank, shape);
 	if (nitems != (width1 * height1))
-	    ErrorGotoPlus1 ( ERROR_INVALID_DATA, "#12340","blend" );
+	    ErrorGotoPlus1 ( ERROR_DATA_INVALID, "#12340","blend" );
 	if (type != TYPE_FLOAT) 
-	    ErrorGotoPlus1 ( ERROR_INVALID_DATA, "#10330", "'blend' data" );
+	    ErrorGotoPlus1 ( ERROR_DATA_INVALID, "#10330", "'blend' data" );
 	if (cat != CATEGORY_REAL) 
-	    ErrorGotoPlus1(ERROR_INVALID_DATA,"#11150","'blend' data"); 
+	    ErrorGotoPlus1(ERROR_DATA_INVALID,"#11150","'blend' data"); 
 	if ((rank != 0) && !(rank == 1 && shape[0] == 1)) 
-	    ErrorGotoPlus1 ( ERROR_INVALID_DATA,  "#10081", "'blend' data");
+	    ErrorGotoPlus1 ( ERROR_DATA_INVALID,  "#10081", "'blend' data");
 
 	/*
 	 * Get a pointer to the real float values
@@ -699,7 +699,7 @@ matte_images(Pixtype b_type, Pointer b_ptr, RGBColor *b_map,
 	float obar = 1.0 - *blend;
 
 	if ( blnd < 0 || blnd > 1.0)	/* Must check blends */
-	    ErrorGotoPlus3( ERROR_INVALID_DATA, "#10110", 
+	    ErrorGotoPlus3( ERROR_DATA_INVALID, "#10110", 
 		    "'blend' field datum", 0, 1 );
 
 	GET_PIXEL(b, b_tmp, b_type, ub, fb, b_map);
@@ -845,14 +845,14 @@ getImagePixelData(Field image, Pixtype *ptype, Pointer *pixels, RGBColor **map)
 
     Array a = (Array)DXGetComponentValue(image, "colors");
     if (! a)
-	DXErrorGoto(ERROR_INVALID_DATA, "#12325");
+	DXErrorGoto(ERROR_DATA_INVALID, "#12325");
     
     DXGetArrayInfo(a, NULL, &type, &cat, &rank, shape);
 
     if (type == TYPE_FLOAT)
     {
 	if (cat != CATEGORY_REAL || rank != 1 || shape[0] != 3)
-	    DXErrorGoto(ERROR_INVALID_DATA, "pixel type is invalid");
+	    DXErrorGoto(ERROR_DATA_INVALID, "pixel type is invalid");
 	
 	*ptype = float_rgb;
 	if (map)
@@ -861,7 +861,7 @@ getImagePixelData(Field image, Pixtype *ptype, Pointer *pixels, RGBColor **map)
     else if (type == TYPE_UBYTE && rank == 1 && shape[0] == 3)
     {
 	if (cat != CATEGORY_REAL)
-	    DXErrorGoto(ERROR_INVALID_DATA, "pixel type is invalid");
+	    DXErrorGoto(ERROR_DATA_INVALID, "pixel type is invalid");
 	
 	*ptype = ubyte_rgb;
 	if (map)
@@ -872,13 +872,13 @@ getImagePixelData(Field image, Pixtype *ptype, Pointer *pixels, RGBColor **map)
 	Array mapa = (Array)DXGetComponentValue(image, "color map");
 
 	if (!map)
-	    DXErrorGoto(ERROR_INVALID_DATA, "illegal delayed-color image");
+	    DXErrorGoto(ERROR_DATA_INVALID, "illegal delayed-color image");
 
 	if (cat != CATEGORY_REAL)
-	    DXErrorGoto(ERROR_INVALID_DATA, "pixel type is invalid");
+	    DXErrorGoto(ERROR_DATA_INVALID, "pixel type is invalid");
 	
 	if (!mapa)
-	    DXErrorGoto(ERROR_INVALID_DATA, "invalid delayed-color image");
+	    DXErrorGoto(ERROR_DATA_INVALID, "invalid delayed-color image");
 
 	*ptype = mapped;
 	if (map)
@@ -886,7 +886,7 @@ getImagePixelData(Field image, Pixtype *ptype, Pointer *pixels, RGBColor **map)
 
     }
     else
-	DXErrorGoto(ERROR_INVALID_DATA, "pixel type is invalid");
+	DXErrorGoto(ERROR_DATA_INVALID, "pixel type is invalid");
     
     if (DXGetArrayClass(a) == CLASS_CONSTANTARRAY)
     {

@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "defines.h"
 #include "ComputeCDB.h"
 
 
@@ -22,7 +23,7 @@
 #include "CDBInput.h"
 
 #include "ComputeNode.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "ListIterator.h"
 #include "Application.h"
 #include "ErrorDialogManager.h"
@@ -338,8 +339,8 @@ void ComputeCDB::changeInput(int i)
 	    const char *sourceString;
 	    if (n->isInputConnected(i))
 	    {
-		List *arcs = (List *)n->getInputArcs(i);
-		Arc *a = (Arc*)arcs->getElement(1);
+		List *arcs = (List *)n->getInputArks(i);
+		Ark *a = (Ark*)arcs->getElement(1);
 		int paramNum;
 		ComputeNode *source = (ComputeNode*)a->getSourceNode(paramNum);
 		sourceString = source->getNameString();

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/map.c,v 1.3 1999/05/10 15:45:28 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/map.c,v 1.4 2000/05/16 18:48:02 gda Exp $:
  */
 
 #include <dxconfig.h>
@@ -108,7 +108,7 @@ m_Map(Object *in, Object *out)
 	DXGetArrayInfo((Array)in[0], &nItems, &type, &cat, &rank, shape);
 	if (cat != CATEGORY_REAL)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "#11150", "input");
+	    DXSetError(ERROR_DATA_INVALID, "#11150", "input");
 	    goto error;
 	}
 
@@ -146,7 +146,7 @@ m_Map(Object *in, Object *out)
 	    case TYPE_BYTE:   CONVERT_TYPE(byte);   break;
 	    case TYPE_UBYTE:  CONVERT_TYPE(ubyte);  break;
 	    default:
-		DXSetError(ERROR_INVALID_DATA, "#10320", "input");
+		DXSetError(ERROR_DATA_INVALID, "#10320", "input");
 	}
 
 #undef CONVERT_TYPE

@@ -995,19 +995,19 @@ static Object
                               &type,NULL, NULL,NULL))
            return ERROR;
          if (numlabels != nx) {
-           DXSetError(ERROR_INVALID_DATA,
+           DXSetError(ERROR_DATA_INVALID,
                       "number of xlabels must match number of xlocations");
            goto error;
          }
          if (type != TYPE_STRING) {
-           DXSetError(ERROR_INVALID_DATA,"xlabels must be a string list");
+           DXSetError(ERROR_DATA_INVALID,"xlabels must be a string list");
            goto error;
          }
          
          xlabptr = (char **)DXAllocate(nx*sizeof(char *)); 
          for (i = 0; i< nx; i++) {
              if (!DXExtractNthString((Object)xlabels, i, &tmpstring)) {
-                DXSetError(ERROR_INVALID_DATA,"invalid xlabels");
+                DXSetError(ERROR_DATA_INVALID,"invalid xlabels");
                 goto error;
              }
              xlabptr[i] = tmpstring; 
@@ -1026,18 +1026,18 @@ static Object
                               &type,NULL, NULL,NULL))
            return ERROR;
          if (numlabels != ny) {
-           DXSetError(ERROR_INVALID_DATA,
+           DXSetError(ERROR_DATA_INVALID,
                       "number of ylabels must match number of ylocations");
            goto error;
          }
          if (type != TYPE_STRING) {
-           DXSetError(ERROR_INVALID_DATA,"ylabels must be a string list");
+           DXSetError(ERROR_DATA_INVALID,"ylabels must be a string list");
            goto error;
          }
          ylabptr = (char **)DXAllocate(ny*sizeof(char *)); 
          for (i = 0; i< ny; i++) {
              if (!DXExtractNthString((Object)ylabels, i, &tmpstring)) {
-                DXSetError(ERROR_INVALID_DATA,"invalid ylabels");
+                DXSetError(ERROR_DATA_INVALID,"invalid ylabels");
                 goto error;
              }
              ylabptr[i] = tmpstring; 
@@ -1056,18 +1056,18 @@ static Object
                               &type,NULL, NULL,NULL))
            return ERROR;
          if (numlabels != nz) {
-           DXSetError(ERROR_INVALID_DATA,
+           DXSetError(ERROR_DATA_INVALID,
                       "number of zlabels must match number of zlocations");
            goto error;
          }
          if (type != TYPE_STRING) {
-           DXSetError(ERROR_INVALID_DATA,"zlabels must be a string list");
+           DXSetError(ERROR_DATA_INVALID,"zlabels must be a string list");
            goto error;
          }
          zlabptr = (char **)DXAllocate(nz*sizeof(char *)); 
          for (i = 0; i< nz; i++) {
              if (!DXExtractNthString((Object)zlabels, i, &tmpstring)) {
-                DXSetError(ERROR_INVALID_DATA,"invalid zlabels");
+                DXSetError(ERROR_DATA_INVALID,"invalid zlabels");
                 goto error;
              }
              zlabptr[i] = tmpstring; 
@@ -1686,7 +1686,7 @@ extern Error _dxfSetAxesCharacteristic(Pointer p, char *characteristic,
 
 
   else {
-    DXSetError(ERROR_INVALID_DATA,"unknown option %s", characteristic);
+    DXSetError(ERROR_DATA_INVALID,"unknown option %s", characteristic);
     return ERROR;
   }
 
@@ -1705,7 +1705,7 @@ extern Error _dxfCheckLocationsArray(Array locs, int *n, float **p)
   ptr = (float *)DXAllocate(numitems*sizeof(float));
   *n = numitems;
   if (!DXExtractParameter((Object)locs, TYPE_FLOAT, 0, numitems, ptr)) {
-    DXSetError(ERROR_INVALID_DATA,"tic locations must be int or floats");
+    DXSetError(ERROR_DATA_INVALID,"tic locations must be int or floats");
     goto error;
   }
   *p = ptr;

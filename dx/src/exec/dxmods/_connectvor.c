@@ -256,7 +256,7 @@ extern Error _dxfConnectVoronoiObject(Object ino, Vector normal)
     switch (DXGetGroupClass((Group)ino)) {
     case (CLASS_COMPOSITEFIELD):
     case (CLASS_MULTIGRID):
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 		 "cannot connect composite or multigrid fields using voronoi method");
       goto error;
     case (CLASS_SERIES):
@@ -268,7 +268,7 @@ extern Error _dxfConnectVoronoiObject(Object ino, Vector normal)
       }
       break;
     default:
-      DXSetError(ERROR_INVALID_DATA,"unknown group class");
+      DXSetError(ERROR_DATA_INVALID,"unknown group class");
       goto error;
     }
     break;
@@ -317,7 +317,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 
   
   if (!(DXGetObjectClass((Object)ino) == CLASS_FIELD)) {
-    DXSetError(ERROR_INVALID_DATA,"input must be a field");
+    DXSetError(ERROR_DATA_INVALID,"input must be a field");
     goto error;
   }
   if (DXEmptyField(ino))
@@ -336,7 +336,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
   DXGetArrayInfo(positions,&numpos, &type, &category, &rank, shape);
   
   if ((type!=TYPE_FLOAT)||(category!=CATEGORY_REAL)) {
-    DXSetError(ERROR_INVALID_DATA,"positions must be float, real");
+    DXSetError(ERROR_DATA_INVALID,"positions must be float, real");
     goto error;
   }
   validcount = DXGetValidCount(handle); 
@@ -356,11 +356,11 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
      goto error;
  
   if (rank != 1) {
-    DXSetError(ERROR_INVALID_DATA,"positions must be rank 1");
+    DXSetError(ERROR_DATA_INVALID,"positions must be rank 1");
     goto error;
   }
   if ((shape[0]!=2)&&(shape[0]!=3)) {
-    DXSetError(ERROR_INVALID_DATA,"positions must be 2D or 3D");
+    DXSetError(ERROR_DATA_INVALID,"positions must be 2D or 3D");
     goto error;
   }
 
@@ -445,7 +445,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
   else {
     /* get the bounding box of the points */
     if (!DXBoundingBox((Object)ino,box)) {
-      DXSetError(ERROR_INVALID_DATA,"object has no bounding box");
+      DXSetError(ERROR_DATA_INVALID,"object has no bounding box");
       goto error;
     }
     
@@ -616,7 +616,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.p) neighborlist[n_neighbors.r].q = numtri;
 	  else if (n.r == neighbors.p) neighborlist[n_neighbors.r].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -647,7 +647,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.p) neighborlist[n_neighbors.p].q = numtri;
 	  else if (n.r == neighbors.p) neighborlist[n_neighbors.p].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -677,7 +677,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.p) neighborlist[n_neighbors.q].q = numtri;
 	  else if (n.r == neighbors.p) neighborlist[n_neighbors.q].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -705,7 +705,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.p) neighborlist[n_neighbors.r].q = numtri;
 	  else if (n.r == neighbors.p) neighborlist[n_neighbors.r].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -733,7 +733,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.p) neighborlist[n_neighbors.p].q = numtri;
 	  else if (n.r == neighbors.p) neighborlist[n_neighbors.p].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -761,7 +761,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.p) neighborlist[n_neighbors.q].q = numtri;
 	  else if (n.r == neighbors.p) neighborlist[n_neighbors.q].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -848,7 +848,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.q) neighborlist[n_neighbors.p].q = numtri;
 	  else if (n.r == neighbors.q) neighborlist[n_neighbors.p].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -876,7 +876,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.q) neighborlist[n_neighbors.r].q = numtri;
 	  else if (n.r == neighbors.q) neighborlist[n_neighbors.r].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -904,7 +904,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.q) neighborlist[n_neighbors.r].q = numtri;
 	  else if (n.r == neighbors.q) neighborlist[n_neighbors.r].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -932,7 +932,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.q) neighborlist[n_neighbors.q].q = numtri;
 	  else if (n.r == neighbors.q) neighborlist[n_neighbors.q].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -960,7 +960,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.q) neighborlist[n_neighbors.q].q = numtri;
 	  else if (n.r == neighbors.q) neighborlist[n_neighbors.q].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -987,7 +987,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.q) neighborlist[n_neighbors.p].q = numtri;
 	  else if (n.r == neighbors.q) neighborlist[n_neighbors.p].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -1073,7 +1073,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.r) neighborlist[n_neighbors.r].q = numtri;
 	  else if (n.r == neighbors.r) neighborlist[n_neighbors.r].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -1100,7 +1100,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.r) neighborlist[n_neighbors.q].q = numtri;
 	  else if (n.r == neighbors.r) neighborlist[n_neighbors.q].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -1128,7 +1128,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.r) neighborlist[n_neighbors.q].q = numtri;
 	  else if (n.r == neighbors.r) neighborlist[n_neighbors.q].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -1156,7 +1156,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.r) neighborlist[n_neighbors.p].q = numtri;
 	  else if (n.r == neighbors.r) neighborlist[n_neighbors.p].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -1184,7 +1184,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.r) neighborlist[n_neighbors.p].q = numtri;
 	  else if (n.r == neighbors.r) neighborlist[n_neighbors.p].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -1212,7 +1212,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
 	  else if (n.q == neighbors.r) neighborlist[n_neighbors.r].q = numtri;
 	  else if (n.r == neighbors.r) neighborlist[n_neighbors.r].r = numtri;
 	  else {
-	    DXSetError(ERROR_INVALID_DATA,"invalid neighbors");
+	    DXSetError(ERROR_DATA_INVALID,"invalid neighbors");
 	    goto error;
 	  }
 	}
@@ -1347,7 +1347,7 @@ static Error ConnectVoronoiField(Field ino, Vector normal)
     }
   }
   if (trianglecount == 0) {
-     DXSetError(ERROR_INVALID_DATA,
+     DXSetError(ERROR_DATA_INVALID,
                 "all triangles were degenerate");
      goto error;
   } 

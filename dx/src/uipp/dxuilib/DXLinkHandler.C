@@ -7,9 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "defines.h"
 #include "ErrorDialogManager.h"
 #include "DXApplication.h"
 #include "DXVersion.h"
@@ -161,7 +162,7 @@ boolean DXLinkHandler::OpenColormapEditor(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer,"OpenColormapEditor: invalid qualifier (%s)", p);
-	a->sendPacket(DXPacketIF::ERROR,id,buffer);
+	a->sendPacket(DXPacketIF::PKTERROR,id,buffer);
 	return FALSE;
     }
 
@@ -194,7 +195,7 @@ boolean DXLinkHandler::CloseColormapEditor(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer,"CloseColormapEditor: invalid qualifier (%s)", p);
-	a->sendPacket(DXPacketIF::ERROR,id,buffer);
+	a->sendPacket(DXPacketIF::PKTERROR,id,buffer);
 	return FALSE;
     }
 
@@ -237,7 +238,7 @@ boolean DXLinkHandler::setRenderMode(const char *msg, int id, boolean swmode)
 	char buffer[1024];
 	sprintf(buffer, "SetRenderMode: "
 			"unable to set Image render mode (%s)", msg);
-	this->sendPacket(DXPacketIF::ERROR,id,buffer);
+	this->sendPacket(DXPacketIF::PKTERROR,id,buffer);
 	return FALSE;
     }
 
@@ -267,7 +268,7 @@ boolean DXLinkHandler::OpenImage(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "OpenImage: unable to open image (%s)", c);
-	a->sendPacket(DXPacketIF::ERROR,id,buffer);
+	a->sendPacket(DXPacketIF::PKTERROR,id,buffer);
 	return FALSE;
     }
 
@@ -301,7 +302,7 @@ boolean DXLinkHandler::CloseImage(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "OpenImage: unable to open image (%s)", c);
-	a->sendPacket(DXPacketIF::ERROR,id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR,id, buffer);
 	return FALSE;
     }
 
@@ -359,7 +360,7 @@ boolean DXLinkHandler::OpenVPE(const char *c, int id, void *va)
     if (! editor)
     {
 	DXLinkHandler *a = (DXLinkHandler*)va;
-	a->sendPacket(DXPacketIF::ERROR, id, 
+	a->sendPacket(DXPacketIF::PKTERROR, id, 
 					"cannot create editor");
 	return FALSE;
     }
@@ -449,7 +450,7 @@ boolean DXLinkHandler::OpenNetwork(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "Error opening network file %s", c);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	r = FALSE;
     }
     else
@@ -508,7 +509,7 @@ boolean DXLinkHandler::SaveNetwork(const char *c, int id, void *va)
 	else
 	    sprintf(buffer, "Error saving network file %s",
 		theDXApplication->network->getFileName());
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	r = FALSE;
     }
     else
@@ -560,7 +561,7 @@ boolean DXLinkHandler::OpenNetworkNoReset(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "Error opening network file %s", c);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	r = FALSE;
     }
     else
@@ -582,7 +583,7 @@ boolean DXLinkHandler::OpenConfig(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "Error openning configuration file %s", c);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	r = FALSE;
     }
     else
@@ -666,7 +667,7 @@ boolean DXLinkHandler::SaveConfig(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "Error saving configuration file %s", c);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	r = FALSE;
     }
     else
@@ -769,7 +770,7 @@ boolean DXLinkHandler::SetTabValue(const char *c, int id, void *va)
     {
 	sprintf(buffer, "Macro %s not found", macro);
 	ErrorMessage(buffer);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	return FALSE;
     }
 
@@ -778,7 +779,7 @@ boolean DXLinkHandler::SetTabValue(const char *c, int id, void *va)
     {
 	sprintf(buffer,"Module %s:%d not found", module, inst);
 	ErrorMessage(buffer);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	return FALSE;
     }
     if ((EqualString(inout, "in") &&
@@ -789,7 +790,7 @@ boolean DXLinkHandler::SetTabValue(const char *c, int id, void *va)
 	sprintf(buffer,"Value \"%s\" not valid for %sput %d of %s",
 	    value, inout, paramInd, module);
 	ErrorMessage(buffer);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	return FALSE;
     }
 
@@ -841,7 +842,7 @@ boolean DXLinkHandler::QueryValue(const char *c, int id, void *va)
     {
 	sprintf(buffer,"Macro %s not found", macro);
 	ErrorMessage(buffer);
-	a->sendPacket(DXPacketIF::ERROR,id, buffer); 
+	a->sendPacket(DXPacketIF::PKTERROR,id, buffer); 
 	return FALSE;
     }
 
@@ -850,7 +851,7 @@ boolean DXLinkHandler::QueryValue(const char *c, int id, void *va)
     {
 	sprintf(buffer,"Module %s:%d not found", module, inst);
 	ErrorMessage(buffer);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	return FALSE;
     }
     const char *value;
@@ -918,7 +919,7 @@ boolean DXLinkHandler::SyncExec(const char *, int id, void *va)
 					  SyncCB,
 					  (void*)sd);
     } else
-	a->sendPacket(DXPacketIF::ERROR, id, "no ui-executive connection");
+	a->sendPacket(DXPacketIF::PKTERROR, id, "no ui-executive connection");
 
     return TRUE;
 }
@@ -988,7 +989,7 @@ boolean DXLinkHandler::ResendParameters(const char *c, int id, void *va)
     l = theDXApplication->network->makeClassifiedNodeList(NULL);
     if (! l)
     {
-	a->sendPacket(DXPacketIF::ERROR, id, "no network?");
+	a->sendPacket(DXPacketIF::PKTERROR, id, "no network?");
 	return FALSE;
     }
 
@@ -1009,7 +1010,7 @@ boolean DXLinkHandler::ResendParameters(const char *c, int id, void *va)
     {
 	char buffer[1024];
 	sprintf(buffer, "no nodes with label %s found", c);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	return FALSE;
     }
 
@@ -1029,7 +1030,7 @@ boolean DXLinkHandler::SetProbePoint(const char *c, int id, void *va)
     l = theDXApplication->network->makeClassifiedNodeList(ClassProbeNode,FALSE);
     if (! l)
     {
-	a->sendPacket(DXPacketIF::ERROR, id, "no probes?");
+	a->sendPacket(DXPacketIF::PKTERROR, id, "no probes?");
 	return FALSE;
     }
 
@@ -1070,7 +1071,7 @@ boolean DXLinkHandler::SelectProbe(const char *c, int id, void *va)
 
     if (n == 0)
     {
-	a->sendPacket(DXPacketIF::ERROR, 
+	a->sendPacket(DXPacketIF::PKTERROR, 
 				id, "missing probe name"); 
 	return FALSE;
     }
@@ -1082,7 +1083,7 @@ boolean DXLinkHandler::SelectProbe(const char *c, int id, void *va)
     
     if (! probes || 0 == probes->getSize())
     {
-	a->sendPacket(DXPacketIF::ERROR, id,
+	a->sendPacket(DXPacketIF::PKTERROR, id,
 		"SelectProbe: no probes in network");
 	if (probes) delete probes;
 	return FALSE;
@@ -1103,12 +1104,12 @@ boolean DXLinkHandler::SelectProbe(const char *c, int id, void *va)
     {
 	char buffer[1024];
 	if (n == 1) {
-	    a->sendPacket(DXPacketIF::ERROR, id,
+	    a->sendPacket(DXPacketIF::PKTERROR, id,
 		"SelectProbe: no images in network");
 	} else {
 	    sprintf(buffer, 
 		"SelectProbe: no images matching %s in network", arg1);
-	    a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	    a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	}
 	if (images) delete images;
 	if (probes) delete probes;
@@ -1169,7 +1170,7 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 	    sprintf(buffer,
 			"SetInteractionMode: no images matching %sin network",
 		 	qualifier0);
-	    a->sendPacket(DXPacketIF::ERROR,id, buffer);
+	    a->sendPacket(DXPacketIF::PKTERROR,id, buffer);
 	    if (l) delete l;
 	    return FALSE;
 	}
@@ -1181,7 +1182,7 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 
 	if (!l || l->getSize() == 0)
 	{
-	    a->sendPacket(DXPacketIF::ERROR,id, 
+	    a->sendPacket(DXPacketIF::PKTERROR,id, 
 			"SetInteractionMode: no images in network");
 	    if (l) delete l;
 	    return FALSE;
@@ -1209,7 +1210,7 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 	if (!iw->setInteractionMode(dim)) {
 	    char buffer[1024];
 	    sprintf(buffer, "SetInteractionMode: could not set '%s' mode",mode);
-	    a->sendPacket(DXPacketIF::ERROR,id, buffer);
+	    a->sendPacket(DXPacketIF::PKTERROR,id, buffer);
 	}
     }
 
@@ -1239,7 +1240,7 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 	    sprintf(buffer,
 		"SetInteractionMode: no %s named %s in network", 
 		   (dim == PICK) ? "pick node" : "probe or probe list node", q);
-	    a->sendPacket(DXPacketIF::ERROR,id, buffer);
+	    a->sendPacket(DXPacketIF::PKTERROR,id, buffer);
 	    if (l) delete l;
 	    return FALSE;
 	}
@@ -1258,7 +1259,7 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 		sprintf(buffer,
 		    "SetInteractionMode: could not current %s to '%s'",
 		       (dim == PICK) ? "pick" : "probe or probe list", q);
-		a->sendPacket(DXPacketIF::ERROR,id, buffer);
+		a->sendPacket(DXPacketIF::PKTERROR,id, buffer);
 	    }
 	}
 
@@ -1285,7 +1286,7 @@ boolean DXLinkHandler::LoadMacroFile(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "LoadMacroFile: %s", msg);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	delete msg;
 	return FALSE;
     }
@@ -1303,7 +1304,7 @@ boolean DXLinkHandler::LoadMacroDirectory(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "LoadMacroDirectory: %s", msg);
-	a->sendPacket(DXPacketIF::ERROR, id, buffer);
+	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	delete msg;
 	return FALSE;
     }

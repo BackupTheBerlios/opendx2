@@ -132,7 +132,7 @@ _dxfField_Paint(Field f, struct buffer *b, int clip_status, struct tile *tile)
 	    if (!_dxf_QuadClipping(b, &xf, n, xf.c.quads, NULL))
 		goto error;
 	} else if (xf.ct!=ct_none)
-	    DXErrorGoto(ERROR_INVALID_DATA,
+	    DXErrorGoto(ERROR_DATA_INVALID,
 			"clipping object must be triangles or quads");
 
     /* if we're an opaque surface */
@@ -182,7 +182,7 @@ _dxfField_Paint(Field f, struct buffer *b, int clip_status, struct tile *tile)
 					clip_status, INV_UNKNOWN))
 		    goto error;
 	    } else
-		DXErrorGoto(ERROR_INVALID_DATA, "invalid color dependency");
+		DXErrorGoto(ERROR_DATA_INVALID, "invalid color dependency");
 	}
 
 	else if (xf.ct==ct_polylines) {
@@ -197,7 +197,7 @@ _dxfField_Paint(Field f, struct buffer *b, int clip_status, struct tile *tile)
 				clip_status, INV_UNKNOWN))
 		    goto error;
 	    } else
-		DXErrorGoto(ERROR_INVALID_DATA, "invalid color dependency");
+		DXErrorGoto(ERROR_DATA_INVALID, "invalid color dependency");
 	}
 
 	/*
@@ -216,12 +216,12 @@ _dxfField_Paint(Field f, struct buffer *b, int clip_status, struct tile *tile)
 		if (!_dxf_Points(b, &xf))
 		    goto error;
 	    } else
-		DXErrorGoto(ERROR_INVALID_DATA, "invalid color dependency");
+		DXErrorGoto(ERROR_DATA_INVALID, "invalid color dependency");
 	}
 
 	/* eh? */
 	else
-	    DXErrorGoto(ERROR_INVALID_DATA, "unknown connections type");
+	    DXErrorGoto(ERROR_DATA_INVALID, "unknown connections type");
     }
 
     if (if_object)

@@ -61,7 +61,7 @@ TubeRegular(Field f, double diameter, int ngon, float *cs, float *sn)
 	if (!DXGetComponentValue(f, "connections"))
 	    DXSetError(ERROR_MISSING_DATA, "connections component");
 	else
-	    DXSetError(ERROR_INVALID_DATA, "element type must be lines");
+	    DXSetError(ERROR_DATA_INVALID, "element type must be lines");
 	return NULL;
     }
 
@@ -113,13 +113,13 @@ TubeRegular(Field f, double diameter, int ngon, float *cs, float *sn)
 
 	if (! DXTypeCheck(a, TYPE_FLOAT, CATEGORY_REAL, 1, 3))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "bad binormals");
+	    DXSetError(ERROR_DATA_INVALID, "bad binormals");
 	    goto error;
 	}
 
 	if (! DXGetArrayInfo(a, &k, NULL, NULL, NULL, NULL))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "binormals count != positions count");
+	    DXSetError(ERROR_DATA_INVALID, "binormals count != positions count");
 	    goto error;
 	}
 
@@ -138,13 +138,13 @@ TubeRegular(Field f, double diameter, int ngon, float *cs, float *sn)
 
 	if (! DXTypeCheck(a, TYPE_FLOAT, CATEGORY_REAL, 1, 3))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "bad normals");
+	    DXSetError(ERROR_DATA_INVALID, "bad normals");
 	    goto error;
 	}
 
 	if (! DXGetArrayInfo(a, &k, NULL, NULL, NULL, NULL))
 	{
-	    DXSetError(ERROR_INVALID_DATA, "normals count != positions count");
+	    DXSetError(ERROR_DATA_INVALID, "normals count != positions count");
 	    goto error;
 	}
 
@@ -441,7 +441,7 @@ TubeField(Field f, double d, int n, float *cs, float *sn, float t)
 	attr = DXGetComponentAttribute(f, "normals", "dep");
 	if (! attr || DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"missing or invalid normals dependency attribute");
 	    return NULL;
 	}
@@ -467,7 +467,7 @@ TubeField(Field f, double d, int n, float *cs, float *sn, float t)
 	attr = DXGetComponentAttribute(f, "binormals", "dep");
 	if (! attr || DXGetObjectClass(attr) != CLASS_STRING)
 	{
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"missing or invalid binormals dependency attribute");
 	    return NULL;
 	}
@@ -1085,7 +1085,7 @@ TubeIrregular(Field f, double d, int ngon, float *cs, float *sn, float t)
 	if (!DXGetComponentValue(f, "connections"))
 	    DXSetError(ERROR_MISSING_DATA, "connections component");
 	else
-	    DXSetError(ERROR_INVALID_DATA, "element type must be lines");
+	    DXSetError(ERROR_DATA_INVALID, "element type must be lines");
 	goto error;
     }
     
@@ -1498,7 +1498,7 @@ NewCList(Field f)
 	    dep = DEP_ON_CONNECTIONS;
 	else
 	{
-	    DXSetError(ERROR_INVALID_DATA, "invalid component dependency");
+	    DXSetError(ERROR_DATA_INVALID, "invalid component dependency");
 	    goto error;
 	}
 
@@ -2044,7 +2044,7 @@ CvtPositions(Field f)
     DXGetArrayInfo(in, &nPts, NULL, NULL, NULL, &nDim);
     if (nDim > 3)
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		"cannot tube lines of greater than 3 dimensions");
 	goto error;
     }
@@ -2128,7 +2128,7 @@ TubePolyline(Field f, double d, int ngon, float *cs, float *sn, float t)
     if (type != TYPE_INT || cat != CATEGORY_REAL ||
        !(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "polylines must be scalar (or 1-vector) integers");
 	goto error;
     }
@@ -2147,7 +2147,7 @@ TubePolyline(Field f, double d, int ngon, float *cs, float *sn, float t)
     if (type != TYPE_INT || cat != CATEGORY_REAL ||
        !(rank == 0 || (rank == 1 && shape[0] == 1)))
     {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 	    "edges must be scalar (or 1-vector) integers");
 	goto error;
     }

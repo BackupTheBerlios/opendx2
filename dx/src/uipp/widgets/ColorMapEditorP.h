@@ -64,7 +64,7 @@ typedef struct _XmColorMapEditorPart
     double		value_current;
     Boolean		min_editable;
     Boolean		max_editable;
-    caddr_t		user_data;
+    XtPointer		user_data;
     String		default_colormap;
     struct  groupRec
 	{

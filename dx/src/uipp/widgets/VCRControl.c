@@ -45,119 +45,119 @@ extern void _XmBackgroundColorDefault();
 static XtResource resources[] =
 {
     {
-      XmNactionCallback,XmCActionCallback, XmRCallback, sizeof(caddr_t),
+      XmNactionCallback,XmCActionCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmVCRControlWidget, vcr_control.action_callback),
       XmRCallback, NULL
     },
     {
-      XmNframeCallback, XmCFrameCallback, XmRCallback, sizeof(caddr_t),
+      XmNframeCallback, XmCFrameCallback, XmRCallback, sizeof(XtPointer),
       XtOffset(XmVCRControlWidget, vcr_control.frame_callback),
       XmRCallback, NULL
     },
     {
       XmNstart, XmCStart, XmRShort, sizeof(short),
       XtOffset(XmVCRControlWidget, vcr_control.start_value),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNnext, XmCNext, XmRShort, sizeof(short),
       XtOffset(XmVCRControlWidget, vcr_control.next_value),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNcurrent, XmCCurrent, XmRShort, sizeof(short),
       XtOffset(XmVCRControlWidget, vcr_control.current_value),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNcurrentVisible,XmCCurrentVisible,XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.current_visible),
-      XmRImmediate, (caddr_t) True
+      XmRImmediate, (XtPointer) True
     },
     {
       XmNstop, XmCStop, XmRShort, sizeof(short),
       XtOffset(XmVCRControlWidget, vcr_control.stop_value),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNminimum, XmCMinimum, XmRShort, sizeof(short),
       XtOffset(XmVCRControlWidget, vcr_control.min_value),
-      XmRImmediate, (caddr_t) 1
+      XmRImmediate, (XtPointer) 1
     },
     {
       XmNmaximum, XmCMaximum, XmRShort, sizeof(short),
       XtOffset(XmVCRControlWidget, vcr_control.max_value),
-      XmRImmediate, (caddr_t) 10
+      XmRImmediate, (XtPointer) 10
     },
     {
       XmNincrement, XmCIncrement, XmRShort, sizeof(short),
       XtOffset(XmVCRControlWidget, vcr_control.frame_increment),
-      XmRImmediate, (caddr_t) 1
+      XmRImmediate, (XtPointer) 1
     },
     {
       XmNforwardButtonState, XmCForwardButtonState, XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.button_is_in[VCR_FORWARD]),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNbackwardButtonState,XmCBackwardButtonState,XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.button_is_in[VCR_BACKWARD]),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNloopButtonState, XmCLoopButtonState, XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.button_is_in[VCR_LOOP]),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNpalindromeButtonState, XmCPalindromeButtonState, XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.button_is_in[VCR_PALINDROME]),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNstepButtonState, XmCStepButtonState, XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.button_is_in[VCR_STEP]),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNcountButtonState, XmCCountButtonState, XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.button_is_in[VCR_COUNT]),
-      XmRImmediate, (caddr_t) 0
+      XmRImmediate, (XtPointer) 0
     },
     {
       XmNlimitColor, XmCLimitColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmVCRControlWidget, vcr_control.limit_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
     {
       XmNnextColor, XmCNextColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmVCRControlWidget, vcr_control.next_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
     {
       XmNcurrentColor, XmCCurrentColor, XmRPixel, sizeof(Pixel),
       XtOffset(XmVCRControlWidget, vcr_control.current_color),
-      XmRCallProc, (caddr_t) _XmForegroundColorDefault
+      XmRCallProc, (XtPointer) _XmForegroundColorDefault
     },
     {
       XmNframeSensitive, XmCFrameSensitive, XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.frame_sensitive),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     {
       XmNminSensitive, XmCMinSensitive, XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.min_sensitive),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     {
       XmNmaxSensitive, XmCMaxSensitive, XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.max_sensitive),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
     {
       XmNincSensitive, XmCIncSensitive, XmRBoolean, sizeof(Boolean),
       XtOffset(XmVCRControlWidget, vcr_control.inc_sensitive),
-      XmRImmediate, (caddr_t) TRUE
+      XmRImmediate, (XtPointer) TRUE
     },
 };
 

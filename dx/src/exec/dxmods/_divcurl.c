@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_divcurl.c,v 1.3 1999/05/10 15:45:17 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_divcurl.c,v 1.4 2000/05/16 18:47:16 gda Exp $
  */
 
 
@@ -200,7 +200,7 @@ _dxfDivCurlObject(Object object, int flags)
 		return object;
     
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "#11381");
+	    DXSetError(ERROR_DATA_INVALID, "#11381");
 	    return NULL;
     }
 }
@@ -241,13 +241,13 @@ _dxfDivCurlField(Field field, int flags)
     DXGetArrayInfo(data, NULL, &type, &cat, &rank, shape);
     if (cat != CATEGORY_REAL)
     {
-	DXSetError (ERROR_INVALID_DATA, "#11150", "data");
+	DXSetError (ERROR_DATA_INVALID, "#11150", "data");
 	return ERROR;
     }
 
     if (rank != 1 || shape[0] != 3)
     {
-	DXSetError (ERROR_INVALID_DATA, "#10230", "data", 3);
+	DXSetError (ERROR_DATA_INVALID, "#10230", "data", 3);
 	return ERROR;
     }
 
@@ -257,19 +257,19 @@ _dxfDivCurlField(Field field, int flags)
     DXGetArrayInfo(positions, &nPoints, NULL, NULL, NULL, &pDim);
     if (rank != 1 && shape[0] == pDim)
     {
-	DXSetError (ERROR_INVALID_DATA, "#10230", "data", pDim);
+	DXSetError (ERROR_DATA_INVALID, "#10230", "data", pDim);
 	return ERROR;
     }
 
     attr = DXGetComponentAttribute(field, "data", "dep");
     if (! attr)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10255", "data", "dep");
+	DXSetError(ERROR_DATA_INVALID, "#10255", "data", "dep");
 	return ERROR;
     }
     else if (strcmp(DXGetString((String)attr), "positions"))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11251", "data");
+	DXSetError(ERROR_DATA_INVALID, "#11251", "data");
 	return ERROR;
     }
     
@@ -423,13 +423,13 @@ _dxfDivCurlRegular(Field field, int *counts, float *deltas, int nDim)
 
     if (DXGetObjectClass(attr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10200", "dependency attribute");
+	DXSetError(ERROR_DATA_INVALID, "#10200", "dependency attribute");
 	return ERROR;
     }
 
     if (strcmp(DXGetString((String)attr), "positions"))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11251", "data");
+	DXSetError(ERROR_DATA_INVALID, "#11251", "data");
 	return ERROR;
     }
 
@@ -439,7 +439,7 @@ _dxfDivCurlRegular(Field field, int *counts, float *deltas, int nDim)
 	    return _dxfDivCurlCubesRegular(field, counts, deltas);
 	
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "#10230", "positions", 3);
+	    DXSetError(ERROR_DATA_INVALID, "#10230", "positions", 3);
 	    return ERROR;
     }
 }
@@ -655,7 +655,7 @@ _dxfDivCurlCubesRegular(Field field, int *counts, float *deltas)
 	    break;
 
 	default:
-	    DXSetError(ERROR_INVALID_DATA, "#10320", "data");
+	    DXSetError(ERROR_DATA_INVALID, "#10320", "data");
 	    goto error;
     }
 
@@ -706,13 +706,13 @@ _dxfDivCurlIrregular(Field field)
 
     if (DXGetObjectClass(attr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10200", "dependency attribute");
+	DXSetError(ERROR_DATA_INVALID, "#10200", "dependency attribute");
 	goto error;
     }
 
     if (strcmp(DXGetString((String)attr), "positions"))
     {
-	DXSetError(ERROR_INVALID_DATA, "#11251", "data");
+	DXSetError(ERROR_DATA_INVALID, "#11251", "data");
 	goto error;
     }
 
@@ -722,13 +722,13 @@ _dxfDivCurlIrregular(Field field)
     attr = DXGetComponentAttribute(field, "connections", "element type");
     if (! attr)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10255", "connections", "element type");
+	DXSetError(ERROR_DATA_INVALID, "#10255", "connections", "element type");
 	goto error;
     }
 
     if (DXGetObjectClass(attr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10200", "element type attribute");
+	DXSetError(ERROR_DATA_INVALID, "#10200", "element type attribute");
 	goto error;
     }
 
@@ -799,7 +799,7 @@ _dxfDivCurlIrregular(Field field)
      */
     if (eDim != pDim)
     {
-	DXSetError(ERROR_INVALID_DATA, "#11360", pDim, eltType, eDim);
+	DXSetError(ERROR_DATA_INVALID, "#11360", pDim, eltType, eDim);
 	goto error;
     }
 

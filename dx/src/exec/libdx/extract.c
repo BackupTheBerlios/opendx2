@@ -595,7 +595,7 @@ ConvertArrayContents(Array from, Array to, int squeeze)
     DXGetArrayInfo(to, &tocount, &totype, &tocat, &torank, toshape);
 
     if (fromcount != tocount)
-	DXErrorReturn(ERROR_INVALID_DATA, "array sizes don't match");
+	DXErrorReturn(ERROR_DATA_INVALID, "array sizes don't match");
 
 
     /* squeeze out shapes of 1 from both and make sure they match. */
@@ -606,7 +606,7 @@ ConvertArrayContents(Array from, Array to, int squeeze)
 
     if (fromrank != torank) {
 	if (squeeze)
-	    DXErrorReturn(ERROR_INVALID_DATA, "data ranks don't match");
+	    DXErrorReturn(ERROR_DATA_INVALID, "data ranks don't match");
 
 	return ConvertArrayContents(from, to, 1);
     }
@@ -614,7 +614,7 @@ ConvertArrayContents(Array from, Array to, int squeeze)
     for (i=0; i<fromrank; i++)
 	if (fromshape[i] != toshape[i]) {
 	    if (squeeze)
-		DXErrorReturn(ERROR_INVALID_DATA, "data shapes don't match");
+		DXErrorReturn(ERROR_DATA_INVALID, "data shapes don't match");
 
 	    return ConvertArrayContents(from, to, 1);
 	}
@@ -634,7 +634,7 @@ ConvertArrayContents(Array from, Array to, int squeeze)
       case CONV_ALLOWED:
 	count = fromcount * (DXGetItemSize(from) / DXTypeSize(fromtype));
         if ((typetable[fi][ti].convfunc)(count, fromdp, todp) == ERROR)
-            DXErrorReturn(ERROR_INVALID_DATA, "type conversion failed");
+            DXErrorReturn(ERROR_DATA_INVALID, "type conversion failed");
         
         break;
         
@@ -644,7 +644,7 @@ ConvertArrayContents(Array from, Array to, int squeeze)
         
       case CONV_ILLEGAL:
       case CONV_LOSSY:
-        DXSetError(ERROR_INVALID_DATA, "cannot convert %s to %s", 
+        DXSetError(ERROR_DATA_INVALID, "cannot convert %s to %s", 
                    typename(fromtype), typename(totype));
         return ERROR;
         
@@ -661,7 +661,7 @@ ConvertArrayContents(Array from, Array to, int squeeze)
 	count = fromcount * (DXGetItemSize(from) / DXCategorySize(fromcat));
         if ((cattable[fi][ti].convfunc)(count, todp, todp, 
                                         DXGetItemSize(from)) == ERROR)
-            DXErrorReturn(ERROR_INVALID_DATA, "category conversion failed");
+            DXErrorReturn(ERROR_DATA_INVALID, "category conversion failed");
         
         break;
         
@@ -751,7 +751,7 @@ QueryArrayCommon(Type *t, Category *c, int *rank, int *shape, int n,
     ASSERT(n<100);
 
     if (n <= 0) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
                    "array list count must be a positive integer");
 	return ERROR;
     }
@@ -785,7 +785,7 @@ QueryArrayCommon(Type *t, Category *c, int *rank, int *shape, int n,
                 break;
 	    
               case NO_COMMON:
-                DXSetError(ERROR_INVALID_DATA, "no common format for %s and %s", 
+                DXSetError(ERROR_DATA_INVALID, "no common format for %s and %s", 
                            typename(comt), typename(nextt));
                 return ERROR;
             }
@@ -806,7 +806,7 @@ QueryArrayCommon(Type *t, Category *c, int *rank, int *shape, int n,
                 break;
 	    
               case NO_COMMON:
-                DXSetError(ERROR_INVALID_DATA, "no common format for %s and %s", 
+                DXSetError(ERROR_DATA_INVALID, "no common format for %s and %s", 
                            catname(comc), catname(nextc));
                 return ERROR;
             }
@@ -818,7 +818,7 @@ QueryArrayCommon(Type *t, Category *c, int *rank, int *shape, int n,
   
 	if (comrank != nextrank) {
 	    if (squeeze) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "data rank does not match (%d != %d)", 
 			   comrank, nextrank);
 		return ERROR;
@@ -832,7 +832,7 @@ QueryArrayCommon(Type *t, Category *c, int *rank, int *shape, int n,
 	for (j=0; j<comrank; j++) {
 	    if (comshape[j] != nextshape[j]) {
 		if (squeeze) {
-		    DXSetError(ERROR_INVALID_DATA, 
+		    DXSetError(ERROR_DATA_INVALID, 
 			       "data shape %d does not match (%d != %d)", 
 			       j, comshape[j], nextshape[j]);
 		    
@@ -920,7 +920,7 @@ QueryArrayConvert(Array a, Type t, Category c, int rank, int *shape, int squeeze
             break;
 	    
           default:
-            DXSetError(ERROR_INVALID_DATA, "cannot convert type %s into %s", 
+            DXSetError(ERROR_DATA_INVALID, "cannot convert type %s into %s", 
                        typename(at), typename(t));
             return ERROR;
         }
@@ -940,7 +940,7 @@ QueryArrayConvert(Array a, Type t, Category c, int rank, int *shape, int squeeze
             break;
 	    
           default:
-            DXSetError(ERROR_INVALID_DATA, "cannot convert category %s into %s", 
+            DXSetError(ERROR_DATA_INVALID, "cannot convert category %s into %s", 
                        catname(at), catname(t));
             return ERROR;
         }
@@ -957,7 +957,7 @@ QueryArrayConvert(Array a, Type t, Category c, int rank, int *shape, int squeeze
   
     if (arank != rank) {
 	if (squeeze) {
-	    DXSetError(ERROR_INVALID_DATA, "data rank does not match (%d > %d)", 
+	    DXSetError(ERROR_DATA_INVALID, "data rank does not match (%d > %d)", 
 		       arank, rank);
 	    return ERROR;
 	}
@@ -969,7 +969,7 @@ QueryArrayConvert(Array a, Type t, Category c, int rank, int *shape, int squeeze
     for (i=0; i<rank; i++)
         if (shape[i] != rshape[i]) {
 	    if (squeeze) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "data shape does not match (%d != %d)", 
 			   shape[i], ashape[i]);
 		

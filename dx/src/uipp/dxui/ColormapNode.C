@@ -7,9 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "defines.h"
 
 #ifdef ABS_IN_MATH_H
 # define abs __Dont_define_abs
@@ -949,7 +950,7 @@ void ColormapNode::ioParameterStatusChanged(boolean input, int index,
 {
     if (input) {
 	if ((index == DATA_PARAM_NUM) && 
-	    (status == Node::ParameterArcRemoved)) {
+	    (status == Node::ParameterArkRemoved)) {
 	    if (this->histogram) {
 		delete histogram;
 	        this->histogram = NULL;

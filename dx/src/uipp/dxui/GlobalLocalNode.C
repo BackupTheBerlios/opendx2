@@ -7,14 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
 
 #include <string.h>
 
-#include "defines.h"
 #include "GlobalLocalNode.h"
 #include "StandIn.h"
 #include "Network.h"

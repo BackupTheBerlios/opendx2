@@ -7,14 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifndef _ComputeDefinition_h
 #define _ComputeDefinition_h
 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "NodeDefinition.h"
 
 

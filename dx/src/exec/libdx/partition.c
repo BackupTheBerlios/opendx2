@@ -138,7 +138,7 @@ partition(Field f, int *n, int size, Object *o, int delete)
 
     if (!pA)
     {
-	DXSetError(ERROR_INVALID_DATA, "field has no positions component");
+	DXSetError(ERROR_DATA_INVALID, "field has no positions component");
 	goto error;
     }
 
@@ -146,7 +146,7 @@ partition(Field f, int *n, int size, Object *o, int delete)
     if (type!=TYPE_FLOAT || category!=CATEGORY_REAL
 				   || dim<1 || dim>100 || rank != 1)
     {
-	DXSetError(ERROR_INVALID_DATA, "positions have bad type");
+	DXSetError(ERROR_DATA_INVALID, "positions have bad type");
 	goto error;
     }
 
@@ -155,7 +155,7 @@ partition(Field f, int *n, int size, Object *o, int delete)
 	DXGetArrayInfo(cA, &nconnections, &type, &category, &rank, &vPerE);
 	if (type!=TYPE_INT || category!=CATEGORY_REAL || dim<1 || dim>100)
 	{
-	    DXSetError(ERROR_INVALID_DATA, "connections have bad type");
+	    DXSetError(ERROR_DATA_INVALID, "connections have bad type");
 	    goto error;
 	}
     }
@@ -386,7 +386,7 @@ partition(Field f, int *n, int size, Object *o, int delete)
 	    {
 		if (DXGetObjectClass(attr) != CLASS_STRING)
 		{
-		    DXSetError(ERROR_INVALID_DATA, "#10200", "dep attribute");
+		    DXSetError(ERROR_DATA_INVALID, "#10200", "dep attribute");
 		    goto error;
 		}
 
@@ -402,7 +402,7 @@ partition(Field f, int *n, int size, Object *o, int delete)
 	{
 	    if (DXGetObjectClass(attr) != CLASS_STRING)
 	    {
-		DXSetError(ERROR_INVALID_DATA, "#10200", "ref attribute");
+		DXSetError(ERROR_DATA_INVALID, "#10200", "ref attribute");
 		goto error;
 	    }
 

@@ -7,10 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
-#include "UIConfig.h"
 
 #include <Xm/Xm.h>
 #include <Xm/Label.h>
@@ -21,14 +22,13 @@
 #include <stream.h>
 #endif
 
-#ifndef DXD_DO_NOT_REQ_UNISTD_H
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 #include <signal.h>
 #include <errno.h>
 #include <stdlib.h>
 
-#include "defines.h"
 #include "Strings.h"
 #include "MainWindow.h"
 #include "HelpWin.h"

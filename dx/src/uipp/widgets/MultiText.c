@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -24,7 +25,7 @@
 
 #include "MultiTextP.h"
 
-#if defined(DXD_WIN)
+#if defined(intelnt)
 /* winuser.h defines ScrollWindow which conflicts with code in this file */
 #define ScrollWindow _ScrollWindow
 #endif
@@ -217,7 +218,7 @@ static XtResource resources[] =
 	sizeof(Boolean),
 	offset(multiText.dpsCapable),
 	XmRImmediate,
-	(caddr_t)TRUE
+	(XtPointer)TRUE
     },
     {
 	XmNwordWrap,
@@ -226,7 +227,7 @@ static XtResource resources[] =
 	sizeof(Boolean),
 	offset(multiText.wordWrap),
 	XmRImmediate,
-	(caddr_t)TRUE
+	(XtPointer)TRUE
     },
     {
 	XmNmarginWidth,
@@ -235,7 +236,7 @@ static XtResource resources[] =
 	sizeof(int),
 	offset(multiText.marginWidth),
 	XmRImmediate,
-	(caddr_t)10
+	(XtPointer)10
     },
     {
 	XmNmarginHeight,
@@ -244,7 +245,7 @@ static XtResource resources[] =
 	sizeof(int),
 	offset(multiText.marginHeight),
 	XmRImmediate,
-	(caddr_t)10
+	(XtPointer)10
     },
     {
 	XmNwaitCursorCount,
@@ -253,7 +254,7 @@ static XtResource resources[] =
 	sizeof(int),
 	offset(multiText.waitCursorCount),
 	XmRImmediate,
-	(caddr_t)1
+	(XtPointer)1
     },
     {
 	XmNblinkRate,
@@ -262,7 +263,7 @@ static XtResource resources[] =
 	sizeof(int),
 	offset(multiText.blinkRate),
 	XmRImmediate,
-	(caddr_t)250
+	(XtPointer)250
     },
     {
 	XmNshowCursor,
@@ -271,7 +272,7 @@ static XtResource resources[] =
 	sizeof(Boolean),
 	offset(multiText.showCursor),
 	XmRImmediate,
-	(caddr_t)TRUE
+	(XtPointer)TRUE
     },
     {
 	XmNfocusSensitive,
@@ -280,7 +281,7 @@ static XtResource resources[] =
 	sizeof(Boolean),
 	offset(multiText.focusSensitive),
 	XmRImmediate,
-	(caddr_t)FALSE
+	(XtPointer)FALSE
     },
     {
 	XmNcursorColor,
@@ -298,7 +299,7 @@ static XtResource resources[] =
 	sizeof(int),
 	offset(multiText.scaleDPSpercent),
 	XmRImmediate,
-	(caddr_t)100
+	(XtPointer)100
     },
     {
 	XmNsmartSpacing,
@@ -306,7 +307,7 @@ static XtResource resources[] =
 	sizeof(Boolean),
 	offset(multiText.smartSpacing),
 	XmRImmediate,
-	(caddr_t)TRUE
+	(XtPointer)TRUE
     },
     {
 	XmNsmoothScroll,
@@ -315,7 +316,7 @@ static XtResource resources[] =
 	sizeof(Boolean),
 	offset(multiText.smoothScroll),
 	XmRImmediate,
-	(caddr_t)FALSE
+	(XtPointer)FALSE
     },
     {
 	XmNexposeOnly,
@@ -324,12 +325,12 @@ static XtResource resources[] =
 	sizeof(Boolean),
 	offset(multiText.exposeOnly),
 	XmRImmediate,
-	(caddr_t)FALSE
+	(XtPointer)FALSE
     },
     {
 	XmNlinkCallback, XmCCallback, XmRCallback,
 	sizeof(XtCallbackList), offset(multiText.linkCallback),
-	XmRImmediate, (caddr_t) NULL
+	XmRImmediate, (XtPointer) NULL
     },
     {
 	XmNselectCallback,
@@ -338,7 +339,7 @@ static XtResource resources[] =
 	sizeof(XtCallbackList),
 	offset(multiText.selectCallback),
 	XmRImmediate,
-	(caddr_t)NULL
+	(XtPointer)NULL
     }
 };
 
@@ -642,7 +643,7 @@ StringToFloatConverter(XrmValue* args,
 	 * Make the toVal point to the result.
 	 */
 	toVal->size = sizeof(float);
-	toVal->addr = (caddr_t)&result;
+	toVal->addr = (void *)&result;
     }
 }
 
@@ -651,7 +652,7 @@ StringToFloatConverter(XrmValue* args,
 static void
 ClassInitialize(WidgetClass wc)
 {
-#ifdef	DXD_WIN /* Exceed on WINDOWS NT has _XmRegisterConverters()   */
+#ifdef	intelnt /* Exceed on WINDOWS NT has _XmRegisterConverters()   */
     _XmRegisterConverters();
 #else
     XmRegisterConverters();

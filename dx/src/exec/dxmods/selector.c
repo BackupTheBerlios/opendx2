@@ -187,7 +187,7 @@ selector_driver(Object *in, Object *out, int allowLists)
 	return ERROR;
      msglen += i;
      if ((i = getsize(vallist)) == 0){
-	DXSetError(ERROR_INVALID_DATA,"selector list is empty,unset cull");
+	DXSetError(ERROR_DATA_INVALID,"selector list is empty,unset cull");
 	goto error;
      }
      msglen += i;
@@ -251,12 +251,12 @@ selector_driver(Object *in, Object *out, int allowLists)
    }
    else {
       if (in[4]){
-         DXSetError(ERROR_INVALID_DATA,
+         DXSetError(ERROR_DATA_INVALID,
          "valuelist is dependent on stringlist so stringlist must be specified");
          return ERROR;
       }
       if (in[5]){
-         DXSetError(ERROR_INVALID_DATA,
+         DXSetError(ERROR_DATA_INVALID,
           "cull is dependent on stringlist so stringlist must be specified");
          return ERROR;
       }
@@ -298,7 +298,7 @@ selector_driver(Object *in, Object *out, int allowLists)
 
    /* in DXMessage there is static buffer of MAX_MSGLEN so check length */
    if (strlen(ei.msgbuf) > MAX_MSGLEN){
-      DXSetError(ERROR_INVALID_DATA,"#10920");
+      DXSetError(ERROR_DATA_INVALID,"#10920");
       goto error;
    }
 

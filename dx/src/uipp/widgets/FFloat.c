@@ -41,7 +41,7 @@ static void StringToDoubleConverter( XrmValue* args, Cardinal* nargs,
     else
     {
 	toVal->size = sizeof(double);
-	toVal->addr = (caddr_t)&result;
+	toVal->addr = (XtPointer)&result;
     }
 }
 
@@ -57,7 +57,7 @@ static void IntToDoubleConverter( XrmValue* args, Cardinal* nargs,
     /*  Convert the string in the fromVal to a double  */
     result = (double)(*((int *)fromVal->addr));
     toVal->size = sizeof(double);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
 }
 
 /* ARGSUSED */
@@ -75,7 +75,7 @@ static void DoubleToIntConverter( XrmValue* args, Cardinal* nargs,
     else
 	result = (int)(*((double *)fromVal->addr) - 0.5);
     toVal->size = sizeof(int);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
 }
 
 /* ARGSUSED */
@@ -92,7 +92,7 @@ static void StringToFloatConverter( XrmValue* args, Cardinal* nargs,
     {
 	/*  Make the toVal point to the result.  */
 	toVal->size = sizeof(float);
-	toVal->addr = (caddr_t)&result;
+	toVal->addr = (XtPointer)&result;
     }
 }
 
@@ -108,7 +108,7 @@ static void IntToFloatConverter( XrmValue* args, Cardinal* nargs,
     /*  Convert the int in the fromVal to a float  */
     result = (float)(*((int *)fromVal->addr));
     toVal->size = sizeof(float);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
 }
 
 /* ARGSUSED */
@@ -126,7 +126,7 @@ static void FloatToIntConverter( XrmValue* args, Cardinal* nargs,
     else
 	result = (int)(*((float *)fromVal->addr) - 0.5);
     toVal->size = sizeof(int);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
 }
 
 /* ARGSUSED */
@@ -141,7 +141,7 @@ static void DoubleToFloatConverter( XrmValue* args, Cardinal* nargs,
     /*  Convert the double in the fromVal to a float  */
     result = (float)(*((double *)fromVal->addr));
     toVal->size = sizeof(float);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
 }
 
 /* ARGSUSED */
@@ -156,7 +156,7 @@ static void FloatToDoubleConverter( XrmValue* args, Cardinal* nargs,
     /*  Convert the float in the fromVal to a double  */
     result = (double)(*((float *)fromVal->addr));
     toVal->size = sizeof(double);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
 }
 
 /* ARGSUSED */
@@ -212,7 +212,7 @@ static Boolean
     else
     {
 	toVal->size = sizeof(double);
-	toVal->addr = (caddr_t)&result;
+	toVal->addr = (XtPointer)&result;
 	return True;
     }
 }
@@ -234,7 +234,7 @@ static Boolean
     /*  Convert the string in the fromVal to a double  */
     result = (double)(*((int *)fromVal->addr));
     toVal->size = sizeof(double);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
     return True;
 }
 
@@ -258,7 +258,7 @@ static Boolean
     else
 	result = (int)(*((double *)fromVal->addr) - 0.5);
     toVal->size = sizeof(int);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
     return True;
 }
 
@@ -281,7 +281,7 @@ static Boolean
     {
 	/*  Make the toVal point to the result.  */
 	toVal->size = sizeof(float);
-	toVal->addr = (caddr_t)&result;
+	toVal->addr = (XtPointer)&result;
 	return True;
     }
     else
@@ -308,7 +308,7 @@ static Boolean
     /*  Convert the string in the fromVal to a double  */
     result = (float)(*((int *)fromVal->addr));
     toVal->size = sizeof(float);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
     return True;
 }
 
@@ -332,7 +332,7 @@ static Boolean
     else
 	result = (int)(*((float *)fromVal->addr) - 0.5);
     toVal->size = sizeof(int);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
     return True;
 }
 
@@ -353,7 +353,7 @@ static Boolean
     /*  Convert the string in the fromVal to a double  */
     result = (float)(*((double *)fromVal->addr));
     toVal->size = sizeof(float);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
     return True;
 }
 
@@ -374,7 +374,7 @@ static Boolean
     /*  Convert the string in the fromVal to a double  */
     result = (double)(*((float *)fromVal->addr));
     toVal->size = sizeof(double);
-    toVal->addr = (caddr_t)&result;
+    toVal->addr = (XtPointer)&result;
     return True;
 }
 

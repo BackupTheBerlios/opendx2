@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -16,7 +18,6 @@
 
 #include <X11/Intrinsic.h>
 
-#include "defines.h"
 #ifdef NO_CC_TEMPLATES
 # include "DefaultingDictionary.h"
 #else

@@ -32,28 +32,28 @@ static char *article(char first)
 
 #define CHECKIF(o, class, name) \
     if (DXGetObjectClass(o) != class) { \
-	DXSetError(ERROR_INVALID_DATA, "#10371", \
+	DXSetError(ERROR_DATA_INVALID, "#10371", \
 		   "input", article(name[0]), name); \
 	return NULL; \
     }
 
 #define CHECKIF2(o, class, name, class2, name2) \
     if (DXGetObjectClass(o) != class && DXGetObjectClass(o) != class2) { \
-	DXSetError(ERROR_INVALID_DATA, "#10372", \
+	DXSetError(ERROR_DATA_INVALID, "#10372", \
 		   "input", article(name[0]), name, article(name2[0]), name2);\
 	return NULL; \
     }
 
 #define CHECKARRAYIF(o, class, name) \
     if (DXGetArrayClass((Array)o) != class) { \
-	DXSetError(ERROR_INVALID_DATA, "#10371", \
+	DXSetError(ERROR_DATA_INVALID, "#10371", \
 		   "input", article(name[0]), name); \
 	return NULL; \
     }
 
 #define CHECKGROUPIF(o, class, name) \
     if (DXGetGroupClass((Group)o) != class) { \
-	DXSetError(ERROR_INVALID_DATA, "#10371", \
+	DXSetError(ERROR_DATA_INVALID, "#10371", \
 		   "input", article(name[0]), name); \
 	return NULL; \
     }
@@ -893,7 +893,7 @@ static Object qgcount(Object o)
     }
 
   notreg:	
-    DXSetError(ERROR_INVALID_DATA, "not regular grid");
+    DXSetError(ERROR_DATA_INVALID, "not regular grid");
     return NULL;
 }
 
@@ -991,7 +991,7 @@ static Object qitems(Object o, char *component)
     CHECKIF(o, CLASS_FIELD, "field");
 
     if (!(comp = DXGetComponentValue((Field)o, component))) {
-	DXSetError(ERROR_INVALID_DATA, "#10258", "input", component);
+	DXSetError(ERROR_DATA_INVALID, "#10258", "input", component);
 	return NULL;
     }
 
@@ -1039,7 +1039,7 @@ static Object qgriditems(Object o, char *component)
     CHECKIF(o, CLASS_FIELD, "field");
 
     if (!(comp = DXGetComponentValue((Field)o, component))) {
-	DXSetError(ERROR_INVALID_DATA, "#10258", "input", component);
+	DXSetError(ERROR_DATA_INVALID, "#10258", "input", component);
 	return NULL;
     }
 
@@ -1071,12 +1071,12 @@ static Object qcgridsize(Object o)
     CHECKIF(o, CLASS_FIELD, "field");
 
     if (!(a = (Array)DXGetComponentValue((Field)o, "connections"))) {
-	DXSetError(ERROR_INVALID_DATA, "#10258", "input", "connections");
+	DXSetError(ERROR_DATA_INVALID, "#10258", "input", "connections");
 	return NULL;
     }
 
     if (!DXQueryGridConnections(a, &rank, NULL)) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "input does not have regular connections");
 	return NULL;
     }
@@ -1110,12 +1110,12 @@ static Object qpgridsize(Object o)
     CHECKIF(o, CLASS_FIELD, "field");
 
     if (!(a = (Array)DXGetComponentValue((Field)o, "positions"))) {
-	DXSetError(ERROR_INVALID_DATA, "#10258", "input", "positions");
+	DXSetError(ERROR_DATA_INVALID, "#10258", "input", "positions");
 	return NULL;
     }
 
     if (!DXQueryGridPositions(a, &rank, NULL, NULL, NULL)) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "input does not have regular positions");
 	return NULL;
     }
@@ -1154,12 +1154,12 @@ static Object qorigin(Object o)
     switch (DXGetObjectClass(o)) {
       case CLASS_FIELD:
 	if (!(a = (Array)DXGetComponentValue((Field)o, "positions"))) {
-	    DXSetError(ERROR_INVALID_DATA, "#10258", "input", "positions");
+	    DXSetError(ERROR_DATA_INVALID, "#10258", "input", "positions");
 	    return NULL;
 	}
 	
 	if (!DXQueryGridPositions(a, &rank, NULL, NULL, NULL)) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "input does not have regular positions");
 	    return NULL;
 	}
@@ -1179,7 +1179,7 @@ static Object qorigin(Object o)
 
       case CLASS_ARRAY:
 	if (DXGetArrayClass((Array)o) != CLASS_REGULARARRAY) {
-	    DXSetError(ERROR_INVALID_DATA, "#10372",
+	    DXSetError(ERROR_DATA_INVALID, "#10372",
 		       "input", "a", "field", "a", "regular array");
 	    return NULL;
 	}
@@ -1206,7 +1206,7 @@ static Object qorigin(Object o)
 	return answer;
 
       default:
-	DXSetError(ERROR_INVALID_DATA, "input must be a field or regular array");
+	DXSetError(ERROR_DATA_INVALID, "input must be a field or regular array");
 	return NULL;
     }
 
@@ -1232,12 +1232,12 @@ static Object qdeltas(Object o)
     switch (DXGetObjectClass(o)) {
       case CLASS_FIELD:
 	if (!(a = (Array)DXGetComponentValue((Field)o, "positions"))) {
-	    DXSetError(ERROR_INVALID_DATA, "#10258", "input", "positions");
+	    DXSetError(ERROR_DATA_INVALID, "#10258", "input", "positions");
 	    return NULL;
 	}
 	
 	if (!DXQueryGridPositions(a, &rank, NULL, NULL, NULL)) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "input does not have regular positions");
 	    return NULL;
 	}
@@ -1258,7 +1258,7 @@ static Object qdeltas(Object o)
 
       case CLASS_ARRAY:
 	if (DXGetArrayClass((Array)o) != CLASS_REGULARARRAY) {
-	    DXSetError(ERROR_INVALID_DATA, "#10372",
+	    DXSetError(ERROR_DATA_INVALID, "#10372",
 		       "input", "a", "field", "a", "regular array");
 	    return NULL;
 	}
@@ -1285,7 +1285,7 @@ static Object qdeltas(Object o)
 	return answer;
 
       default:
-	DXSetError(ERROR_INVALID_DATA, "input must be a field or regular array");
+	DXSetError(ERROR_DATA_INVALID, "input must be a field or regular array");
 	return NULL;
     }
 
@@ -1430,7 +1430,7 @@ static Object qmembernames(Object o, char *type)
 	break;
 
       default:
-	DXSetError(ERROR_INVALID_DATA, "input is not a field or group");
+	DXSetError(ERROR_DATA_INVALID, "input is not a field or group");
 	return NULL;
     }
 
@@ -1704,7 +1704,7 @@ static Object qcamera(Object o, char *info)
 
 	  case 'i':
 	    if (!DXGetPerspective((Camera)o, f, NULL)) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 		       "field of view only valid for perspective camera");
 		return NULL;
 	    }
@@ -1716,7 +1716,7 @@ static Object qcamera(Object o, char *info)
 
       case 'w':  /* width */
 	if (!DXGetOrthographic((Camera)o, f, NULL)) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "width only valid for orthographic camera");
 	    return NULL;
 	}
@@ -1742,7 +1742,7 @@ static Object qcamera(Object o, char *info)
 	switch (info[1]) {
 	  case 'n':
 	    if (!DXGetPerspective((Camera)o, f, NULL)) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "angle only valid for perspective camera");
 		return NULL;
 	    }
@@ -1884,7 +1884,7 @@ Error MakeMany(Object attr, int memcount, int *isstring,
     }
 
     /* ? */
-    DXSetError(ERROR_INVALID_DATA, "unrecognized attribute object type");
+    DXSetError(ERROR_DATA_INVALID, "unrecognized attribute object type");
     return ERROR;
 }
 
@@ -1903,7 +1903,7 @@ Error AddOtherAttr(Object attr, int attrcount, Object answer)
 	return ERROR;
     
     if (DXGetObjectClass(attr) != CLASS_ARRAY) {
-	DXSetError(ERROR_INVALID_DATA, "unrecognized attribute object type");
+	DXSetError(ERROR_DATA_INVALID, "unrecognized attribute object type");
 	return ERROR;
     }
 
@@ -1964,7 +1964,7 @@ static Object qattr(Object in, Object n, int flag)
 	if (!DXGetMemberCount((Group)in, &memcount))
 	    return NULL;
 	if (memcount == 0) {
-	    DXSetError(ERROR_INVALID_DATA, "group has no members");
+	    DXSetError(ERROR_DATA_INVALID, "group has no members");
 	    return NULL;
 	}
 
@@ -2030,7 +2030,7 @@ static Object qattr(Object in, Object n, int flag)
 	if (!DXGetComponentCount((Field)in, &memcount))
 	    return NULL;
 	if (memcount == 0) {
-	    DXSetError(ERROR_INVALID_DATA, "field has no components");
+	    DXSetError(ERROR_DATA_INVALID, "field has no components");
 	    return NULL;
 	}
 

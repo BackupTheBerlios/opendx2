@@ -318,7 +318,7 @@ int EndCheck(struct einfo *ep)
 
     if ((ep->mp - ep->msgbuf) >= ep->maxlen) {
         ep->atend = 1;
-        DXSetError(ERROR_INVALID_DATA,"msg too long");
+        DXSetError(ERROR_DATA_INVALID,"msg too long");
         return 1;
     }
 

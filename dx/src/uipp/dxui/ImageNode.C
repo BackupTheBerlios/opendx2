@@ -7,7 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "defines.h"
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -32,7 +33,7 @@
 
 #include "ImageNode.h"
 #include "StandIn.h"
-#include "Arc.h"
+#include "Ark.h"
 #include "Parameter.h"
 #include "DXApplication.h"
 #include "Network.h"
@@ -1553,8 +1554,8 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
 	case THROTTLE:
 	    if (this->image)
 	    {
-		if (status == ParameterArcAdded ||
-				status == ParameterArcRemoved)
+		if (status == ParameterArkAdded ||
+				status == ParameterArkRemoved)
 	        {
 		    boolean status = this->isInputDefaulting(THROTTLE);
 		    this->image->sensitizeThrottleDialog(status);
@@ -1590,7 +1591,7 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
 
 	    if (this->image)
 	    {
-		if (status & ParameterArcAdded || status & ParameterArcRemoved)
+		if (status & ParameterArkAdded || status & ParameterArkRemoved)
 		{
 		    this->image->sensitizeBackgroundColorDialog(
 				!this->isBGColorConnected());
@@ -1719,11 +1720,11 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
         case RENDER_MODE:
             if (this->image)
             {
-                if (status == ParameterArcAdded)
+                if (status == ParameterArkAdded)
                 {
                     this->image->sensitizeRenderMode(False);
                 }
-                else if (status == ParameterArcRemoved)
+                else if (status == ParameterArkRemoved)
                 {
                     this->image->sensitizeRenderMode(True);
                 }
@@ -1738,11 +1739,11 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
         case BUTTON_UP_APPROX:
             if (this->image)
             {
-                if (status == ParameterArcAdded)
+                if (status == ParameterArkAdded)
                 {
                     this->image->sensitizeButtonUpApprox(False);
                 }
-                else if (status == ParameterArcRemoved)
+                else if (status == ParameterArkRemoved)
                 {
                     this->image->sensitizeButtonUpApprox(True);
                 }
@@ -1757,11 +1758,11 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
         case BUTTON_DOWN_APPROX:
             if (this->image)
             {
-                if (status == ParameterArcAdded)
+                if (status == ParameterArkAdded)
                 {
                     this->image->sensitizeButtonDownApprox(False);
                 }
-                else if (status == ParameterArcRemoved)
+                else if (status == ParameterArkRemoved)
                 {
                     this->image->sensitizeButtonDownApprox(True);
                 }
@@ -1776,11 +1777,11 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
         case BUTTON_UP_DENSITY:
             if (this->image)
             {
-                if (status == ParameterArcAdded)
+                if (status == ParameterArkAdded)
                 {
                     this->image->sensitizeButtonUpDensity(False);
                 }
-                else if (status == ParameterArcRemoved)
+                else if (status == ParameterArkRemoved)
                 {
                     this->image->sensitizeButtonUpDensity(True);
                 }
@@ -1795,11 +1796,11 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
         case BUTTON_DOWN_DENSITY:
             if (this->image)
             {
-                if (status == ParameterArcAdded)
+                if (status == ParameterArkAdded)
                 {
                     this->image->sensitizeButtonDownDensity(False);
                 }
-                else if (status == ParameterArcRemoved)
+                else if (status == ParameterArkRemoved)
                 {
                     this->image->sensitizeButtonDownDensity(True);
                 }
@@ -1946,10 +1947,10 @@ void ImageNode::disableJava(boolean send)
 Node* ImageNode::getWebOptionsNode()
 {
     Node* webOptions = NUL(Node*);
-    List* ia = (List*)this->getInputArcs(JAVA_OPTIONS);
+    List* ia = (List*)this->getInputArks(JAVA_OPTIONS);
     ASSERT(ia);
     ASSERT(ia->getSize() == 1);
-    Arc* a = (Arc*)ia->getElement(1);
+    Ark* a = (Ark*)ia->getElement(1);
     int dummy = 0;
     webOptions = a->getSourceNode(dummy);
     ASSERT(webOptions);
@@ -1963,7 +1964,7 @@ void ImageNode::unjavifyNode()
 {
     Parameter* p = this->getInputParameter(JAVA_OPTIONS);
     if (p->isConnected()) 
-	p->disconnectArcs();
+	p->disconnectArks();
 
     this->useDefaultInputValue(JAVA_OPTIONS, TRUE);
     this->setInputVisibility (JAVA_OPTIONS, FALSE);
@@ -1993,17 +1994,17 @@ void ImageNode::javifyNode (Node* w, Node* s)
 	StandIn* wosi = webOptions->getStandIn();
 	StandIn* si = this->getStandIn();
 	if ((si) && (wosi)) {
-	    si->addArc(ewin, new Arc(webOptions, 1, this, JAVA_OPTIONS));
+	    si->addArk(ewin, new Ark(webOptions, 1, this, JAVA_OPTIONS));
 	} else {
-	    new Arc(webOptions, 1, this, JAVA_OPTIONS);
+	    new Ark(webOptions, 1, this, JAVA_OPTIONS);
 	}
     }
 
     if (seq_rcvr == NUL(Node*)) {
-	List* ia = (List*)webOptions->getInputArcs(WEB_COUNTERS);
+	List* ia = (List*)webOptions->getInputArks(WEB_COUNTERS);
 	ASSERT(ia);
 	ASSERT(ia->getSize() == 1);
-	Arc* a = (Arc*)ia->getElement(1);
+	Ark* a = (Ark*)ia->getElement(1);
 	int dummy = 0;
 	seq_rcvr = a->getSourceNode(dummy);
     }
@@ -2028,9 +2029,9 @@ void ImageNode::javifyNode (Node* w, Node* s)
 	    StandIn* wsi = webOptions->getStandIn();
 	    StandIn* rsi = seq_rcvr->getStandIn();
 	    if ((wsi) && (rsi)) {
-		rsi->addArc(ewin, new Arc(seq_rcvr, 1, webOptions, WEB_COUNTERS));
+		rsi->addArk(ewin, new Ark(seq_rcvr, 1, webOptions, WEB_COUNTERS));
 	    } else {
-		new Arc(seq_rcvr, 1, webOptions, WEB_COUNTERS);
+		new Ark(seq_rcvr, 1, webOptions, WEB_COUNTERS);
 	    }
 	}
     }
@@ -2088,7 +2089,7 @@ boolean ImageNode::printAsJava(FILE* f)
     int instno = this->getInstanceNumber();
 
     if (fprintf (f,
-	"%s%s_%d.addInputArc (%d, %s_%d, %d);\n",
+	"%s%s_%d.addInputArk (%d, %s_%d, %d);\n",
 	indent, ns, instno, JAVA_OPTIONS, wns, winstno, 1) 
 	<= 0) return FALSE;
 

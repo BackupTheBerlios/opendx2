@@ -9,10 +9,15 @@
 #include <dxconfig.h>
 
 
-
 #include <stdio.h>
 #include <dx/dx.h>
 #include "import.h"
+
+#if defined(WIN32) && defined(NDEBUG)
+#define _HDFDLL_
+#elif defined(_DEBUG)
+#undef _DEBUG
+#endif
 
 #if defined(HAVE_LIBDF)
 
@@ -20,13 +25,21 @@
 #define UNIX386
 #endif
 
-#ifdef DXD_WIN
+#if defined(intelnt)
 #define F_OK	0
 #define R_OK	4
 #define INTEL86 
 #endif
 
-#include <dfsd.h>
+#undef int8
+#undef uint8
+#undef int16
+#undef uint16
+#undef int32
+#undef uint32
+#undef float64
+
+#include <hdf/dfsd.h>
 #include <ctype.h>
 
 /* special access: needs extra include file, and has different constants 
@@ -36,6 +49,9 @@
 #include <sys/access.h>
 #else
 #include <string.h>
+#endif
+
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
 
@@ -231,7 +247,7 @@ DXImportHDF(char *filename, char *fieldname)
 	
     } /* per hdf set */
 
-    DXSetError(ERROR_INVALID_DATA, 
+    DXSetError(ERROR_DATA_INVALID, 
 	       "can't skip %d datasets in this file", atoi(fieldname));
     /* fall thru */
 
@@ -460,7 +476,7 @@ Error dxtype(int hdftype,Type *type)
       *type = TYPE_UINT;
       break;
    default:
-      DXSetError(ERROR_INVALID_DATA,"#10320","hdftype");
+      DXSetError(ERROR_DATA_INVALID,"#10320","hdftype");
       return ERROR;
    }
    return OK;
@@ -667,7 +683,7 @@ int read_scale(Type type,int dim,int *dimsize,float *pos)
       DXFree(data_us);
       break;
    default:
-      DXSetError(ERROR_INVALID_DATA,"#10320","scales");
+      DXSetError(ERROR_DATA_INVALID,"#10320","scales");
       return 0;
    }
    return 1;

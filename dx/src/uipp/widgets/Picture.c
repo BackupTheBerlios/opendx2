@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/defines.h"
 
 
 #ifdef OS2
@@ -30,7 +31,7 @@
 #include <Xm/XmP.h>
 #include <math.h>
 #include <float.h>
-#ifndef DXD_WIN
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #endif
 #include "../widgets/FFloat.h"
@@ -225,17 +226,17 @@ static XtResource resources[] =
     { 
       XmNdisplayGlobe, XmCDisplayGlobe, XmRBoolean, sizeof(Boolean),
       XtOffset(XmPictureWidget, picture.display_globe),
-      XmRImmediate, (caddr_t) False
+      XmRImmediate, (XtPointer) False
     },
    {
       XmNlookAtAngle, XmCLookAtAngle, XmRDouble, sizeof(double),
       XtOffset(XmPictureWidget, picture.look_at_angle),
-      XmRDouble, (caddr_t) &DefaultAngle
+      XmRDouble, (XtPointer) &DefaultAngle
    },
     {
       XmNlookAtDirection, XmCLookAtDirection, XmRInt, sizeof(int),
       XtOffset(XmPictureWidget, picture.look_at_direction),
-      XmRImmediate, (caddr_t)XmLOOK_FORWARD 
+      XmRImmediate, (XtPointer)XmLOOK_FORWARD 
     },
     {
       XmNnavigateDirection, XmCNavigateDirection, XmRInt, sizeof(int),
@@ -245,12 +246,12 @@ static XtResource resources[] =
     {
       XmNtranslateSpeed, XmCTranslateSpeed, XmRInt, sizeof(int),
       XtOffset(XmPictureWidget, picture.translate_speed_factor),
-      XmRImmediate, (caddr_t)25 
+      XmRImmediate, (XtPointer)25 
     },
     {
       XmNrotateSpeed, XmCRotateSpeed, XmRInt, sizeof(int),
       XtOffset(XmPictureWidget, picture.rotate_speed_factor),
-      XmRImmediate, (caddr_t)25 
+      XmRImmediate, (XtPointer)25 
     },
     {
       XmNconstrainCursor, XmCConstrainCursor, XmRInt, sizeof(int),
@@ -259,7 +260,7 @@ static XtResource resources[] =
     },
     { XmNoverlayExposure, XmCOverlayExposure, XmRBoolean, sizeof(Boolean),
       XtOffset(XmPictureWidget, picture.overlay_exposure),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     { 
       XmNoverlayWid, XmCOverlayWid, XmRWindow, sizeof(Window),
@@ -269,7 +270,7 @@ static XtResource resources[] =
     { 
       XmNpicturePixmap, XmCPicturePixmap, XmRPixmap, sizeof(Pixmap),
       XtOffset(XmPictureWidget, picture.pixmap),
-      XmRImmediate, (caddr_t)XmUNSPECIFIED_PIXMAP 
+      XmRImmediate, (XtPointer)XmUNSPECIFIED_PIXMAP 
     },
     {
       XmNmode, XmCMode, XmRInt, sizeof(int),
@@ -278,11 +279,11 @@ static XtResource resources[] =
     },
     { XmNshowRotatingBBox, XmCShowRotatingBBox, XmRBoolean, sizeof(Boolean),
       XtOffset(XmPictureWidget, picture.show_rotating_bbox),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     { XmNnewImage, XmCNewImage, XmRBoolean, sizeof(Boolean),
       XtOffset(XmPictureWidget, picture.new_image),
-      XmRImmediate, (caddr_t) FALSE
+      XmRImmediate, (XtPointer) FALSE
     },
     {
       XmNcursorShape, XmCCursorShape, XmRInt, sizeof(int),
@@ -292,83 +293,83 @@ static XtResource resources[] =
     {
       XmNglobeRadius, XmCGlobeRadius, XmRInt, sizeof(int),
       XtOffset(XmPictureWidget, picture.globe_radius),
-      XmRImmediate, (caddr_t)50 
+      XmRImmediate, (XtPointer)50 
     },
     {
       XmNpictureCursorSize, XmCPictureCursorSize, XmRInt, sizeof(int),
       XtOffset(XmPictureWidget, picture.cursor_size),
-      XmRImmediate, (caddr_t)5 
+      XmRImmediate, (XtPointer)5 
     },
     {
       XmNpictureCursorSpeed, XmCPictureCursorSpeed, XmRInt, sizeof(int),
       XtOffset(XmPictureWidget, picture.cursor_speed),
-      XmRImmediate, (caddr_t)XmMEDIUM_CURSOR 
+      XmRImmediate, (XtPointer)XmMEDIUM_CURSOR 
     },
     {
       XmNcursorCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.cursor_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {
       XmNpickCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.pick_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {
       XmNmodeCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.mode_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {
       XmNundoCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.undo_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {
       XmNkeyCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.key_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {  
       XmNrotationCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.rotation_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {  
       XmNzoomCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.zoom_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {  
       XmNroamCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.roam_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {  
       XmNnavigateCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.navigate_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {  
       XmNclientMessageCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.client_message_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
     {  
       XmNpropertyNotifyCallback, XmCCallback, XmRCallback, 
       sizeof (XtCallbackList),
       XtOffset (XmPictureWidget, picture.property_notify_callback),
-      XmRImmediate, (caddr_t) NULL
+      XmRImmediate, (XtPointer) NULL
     },
 };
 
@@ -2584,7 +2585,7 @@ struct
 Boolean good_bbox = True;
 double center_x;
 double center_y;
-#if !defined(DXD_WIN) && !defined(OS2)
+#if !defined(intelnt) && !defined(OS2)
 time_t cur_time;
 struct timeval newtime;
 struct timezone tz;
@@ -4223,7 +4224,7 @@ int	trans_y;
 int	width;
 int	height;
 Widget  child;
-#if !defined(DXD_WIN) && !defined(OS2)
+#if !defined(intelnt) && !defined(OS2)
 struct timezone tz;
 #endif
 XmPictureCallbackStruct cb;

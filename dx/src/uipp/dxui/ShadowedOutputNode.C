@@ -7,11 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
-#include "defines.h"
 #include "DXApplication.h"
 #include "DXType.h"
 #include "Network.h"
@@ -133,8 +134,8 @@ void ShadowedOutputNode::ioParameterStatusChanged(boolean input, int index,
 	// so the exec cache doesn't get confused (see below) if/when it 
 	// becomes data-driven again.
 	//
-	if ((status & Node::ParameterArcChanged) && 
-	    (status != Node::ParameterArcAdded)) {
+	if ((status & Node::ParameterArkChanged) && 
+	    (status != Node::ParameterArkAdded)) {
 	    //
 	    // Count the number of connections and set tabs
 	    //

@@ -7,14 +7,14 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
 
 #include <string.h> 
 
-#include "UIConfig.h"
-#include "defines.h"
 #include "DXApplication.h"
 #include "DrivenNode.h"
 #include "Parameter.h"
@@ -22,7 +22,7 @@
 #include "ErrorDialogManager.h"
 
 // for java stuff
-#include "Arc.h" 
+#include "Ark.h" 
 #include "ListIterator.h"
 
 //
@@ -99,7 +99,7 @@ boolean DrivenNode::isDataDriven()
 void DrivenNode::ioParameterStatusChanged(boolean input, int index, 
 					NodeParameterStatusChange status)
 {
-    if ((input) && (status & Node::ParameterArcChanged)) {
+    if ((input) && (status & Node::ParameterArkChanged)) {
 	//
 	// If we become un data driven, then we must make sure the
 	// outputs get sent on the next execution.

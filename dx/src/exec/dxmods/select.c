@@ -132,7 +132,7 @@ doobject(Object o, Object whichone, int fexcept)
       case CLASS_FIELD:
         subo = DXGetComponentValue((Field)o, "data");
         if (!subo) {
-            DXSetError(ERROR_INVALID_DATA, 
+            DXSetError(ERROR_DATA_INVALID, 
   	       "no data component found in field for selecting list items");
             return NULL;
         }
@@ -296,7 +296,7 @@ selectnumberedseries(Series s, Object numbers)
     /* if empty group, can't select.
      */
     if (!DXGetMemberCount((Group)s, &members) || members == 0) {
-	DXSetError(ERROR_INVALID_DATA, "#11310"); 
+	DXSetError(ERROR_DATA_INVALID, "#11310"); 
 	/* group has no members */
 	return NULL;
     }
@@ -396,7 +396,7 @@ selectnamedgroup(Group g, Object names)
     /* if empty group, can't select.
      */
     if (!DXGetMemberCount(g, &i) || i == 0) {
-	DXSetError(ERROR_INVALID_DATA, "#11310");  /* group has no members */
+	DXSetError(ERROR_DATA_INVALID, "#11310");  /* group has no members */
 	return NULL;
     }
     
@@ -459,7 +459,7 @@ selectnumberedgroup(Group g, Object numbers)
     /* if empty group, can't select.
      */
     if (!DXGetMemberCount(g, &members) || members == 0) {
-	DXSetError(ERROR_INVALID_DATA, "#11310"); 
+	DXSetError(ERROR_DATA_INVALID, "#11310"); 
 	/* group has no members */
 	return NULL;
     }
@@ -564,7 +564,7 @@ selectnumberedlist(Array a, Object numbers)
         return NULL;
     
     if (items == 0) {
-	DXSetError(ERROR_INVALID_DATA, "list contains no items");
+	DXSetError(ERROR_DATA_INVALID, "list contains no items");
 	return NULL;
     }
 
@@ -706,7 +706,7 @@ selectnumberedstring(Object o, Object numbers)
 
     cp = DXGetString((String)o);
     if (!cp) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "input is an empty string, must be group or list");
 	return NULL;
     }
@@ -749,7 +749,7 @@ omitnumberedseries(Series s, Object numbers)
     /* if empty group, return error
      */
     if (!DXGetMemberCount((Group)s, &members) || members == 0) {
-	DXSetError(ERROR_INVALID_DATA, "#11310"); 
+	DXSetError(ERROR_DATA_INVALID, "#11310"); 
 	/* group has no members */
 	return NULL;
     }
@@ -892,7 +892,7 @@ omitnamedgroup(Group g, Object names)
     /* if empty group, return error
      */
     if (!DXGetMemberCount(g, &members) || members == 0) {
-	DXSetError(ERROR_INVALID_DATA, "#11310");  /* group has no members */
+	DXSetError(ERROR_DATA_INVALID, "#11310");  /* group has no members */
 	return NULL;
     }
     
@@ -1028,7 +1028,7 @@ omitnumberedgroup(Group g, Object numbers)
     /* if empty group, return error
      */
     if (!DXGetMemberCount(g, &members) || members == 0) {
-	DXSetError(ERROR_INVALID_DATA, "#11310"); 
+	DXSetError(ERROR_DATA_INVALID, "#11310"); 
 	/* group has no members */
 	return NULL;
     }
@@ -1176,7 +1176,7 @@ omitnumberedlist(Array a, Object numbers)
         return NULL;
     
     if (items == 0) {
-	DXSetError(ERROR_INVALID_DATA, "list contains no items");
+	DXSetError(ERROR_DATA_INVALID, "list contains no items");
 	return NULL;
     }
 
@@ -1332,7 +1332,7 @@ omitnumberedstring(Object o, Object numbers)
 
     cp = DXGetString((String)o);
     if (!cp) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "input is an empty string, must be group or list");
 	return NULL;
     }

@@ -67,7 +67,7 @@
 #include <string.h>
 #include <dx/dx.h>
 
-#if HAVE_UNISTD_H
+#if DXD_HAS_UNISTD_H
 #include <unistd.h>
 #endif
 
@@ -570,12 +570,11 @@ DXmemfork(int i)
 }
 #endif   /* ibm6000, solaris, sgi, alpha, hp700 */
 
-#ifdef DXD_WIN
+#if defined(intelnt)
 
 #ifndef DXD_WIN_SHARE_MEMORY
 #define memroutines
 void *sh_base;   /* starting virtual address */
-
 Error _dxfsetmem(int limit)
 {
     sh_base = malloc(limit);
@@ -598,7 +597,9 @@ Pointer _dxfgetmem(Pointer base, int size)
 
 Error DXmemfork(int i)
 {
-    return fork();
+#if 0
+    return fork(); I hope this is not needed -- GDA
+#endif
 }
 
 
@@ -705,7 +706,7 @@ Error DXmemfork(int i)
 
 #endif   /*   DXD_WIN_SHARE_MEMORY    */
 
-#endif   /* DXD_WIN    */
+#endif   
 
 #if os2
 
@@ -757,7 +758,7 @@ Pointer _dxfgetmem(Pointer base, int size) { return base; }
 #endif /* ibmpvs */
 
 
-#if !defined(os2) && !defined(DXD_WIN)
+#if !defined(os2) && !defined(intelnt)
 
 extern int end;   /* filled in by linker */
 
@@ -855,7 +856,7 @@ Error DXmemfork(int i)
  * so the calculations about the size of the data segment can't be done 
  * on the NT.  thus this section is disabled on that platform.
  */
-#ifdef DXD_WIN
+#if defined(intelnt)
 #define MEMSTATS 0
 #endif
 

@@ -159,7 +159,7 @@ typedef struct vector2D {
           goto error;                                                  \
         if (!DXExtractParameter((Object)missing, type_enum,            \
                                shape, 1, (Pointer)ptr)) {              \
-          DXSetError(ERROR_INVALID_DATA,                               \
+          DXSetError(ERROR_DATA_INVALID,                               \
                     "missing must match all position-dependent components; does not match %s", name);      \
            goto error;                                                 \
         }                                                              \
@@ -263,7 +263,7 @@ extern Error _dxfConnectNearestObject(Object ino, Object base,
     }
     break;
   default:
-    DXSetError(ERROR_INVALID_DATA,"base must be a field or a group");
+    DXSetError(ERROR_DATA_INVALID,"base must be a field or a group");
     goto error; 
   }
   return OK;
@@ -303,7 +303,7 @@ extern Error _dxfConnectRadiusObject(Object ino, Object base,
     }
     break;
   default:
-    DXSetError(ERROR_INVALID_DATA,"base must be a field or a group");
+    DXSetError(ERROR_DATA_INVALID,"base must be a field or a group");
     goto error; 
   }
   return OK;
@@ -379,7 +379,7 @@ static Error ConnectNearestField(Pointer p)
    }
    break; 
   default:
-      DXSetError(ERROR_INVALID_DATA,"input must be a field or a group");
+      DXSetError(ERROR_DATA_INVALID,"input must be a field or a group");
       goto error;
   }
   DXDelete((Object)newino);
@@ -424,7 +424,7 @@ static Error ConnectRadiusField(Pointer p)
       break;
 
     default:
-      DXSetError(ERROR_INVALID_DATA,"input must be a field");
+      DXSetError(ERROR_DATA_INVALID,"input must be a field");
       goto error;
   }
   DXDelete((Object)newino);
@@ -514,7 +514,7 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
   }
   
   if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "positions component must be type float, category real");
     goto error;
   }
@@ -537,33 +537,33 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
 
 
   if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "positions component must be type float, category real");
     goto error;
   }
   if (rank_base == 0)
     shape_base[0] = 1;
   if (rank_base > 1) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "rank of base positions cannot be greater than 1");
     goto error;
   }
   if (rank_ino == 0)
     shape_ino[0] = 1;
   if (rank_ino > 1) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "rank of input positions cannot be greater than 1");
     goto error;
   }
   
   if ((shape_base[0]<0)||(shape_base[0]>3)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "only 1D, 2D, and 3D positions for base supported");
     goto error;
   }
   
   if (shape_base[0] != shape_ino[0]) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "dimensionality of base (%dD) does not match dimensionality of input (%dD)", 
 	       shape_base[0], shape_ino[0]);
     goto error;
@@ -571,7 +571,7 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
   
   
   if ((shape_ino[0]<0)||(shape_ino[0]>3)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "only 1D, 2D, and 3D positions for input supported");
     goto error;
   }
@@ -637,7 +637,7 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
     }
     
     if (DXGetObjectClass(attr) != CLASS_STRING) {
-      DXSetError(ERROR_INVALID_DATA, "dependency attribute not type string");
+      DXSetError(ERROR_DATA_INVALID, "dependency attribute not type string");
       goto error;
     }
     
@@ -695,7 +695,7 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
                                    ubyte, type, shape[0], missingval_ub);
         break;
       default:
-        DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+        DXSetError(ERROR_DATA_INVALID,"unsupported data type");
         goto error;
       }
     
@@ -743,7 +743,7 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
       new_data_ptr_us = (ushort *)DXGetArrayData(newcomponent);
       break;
     default:
-      DXSetError(ERROR_INVALID_DATA,"unrecognized data type");
+      DXSetError(ERROR_DATA_INVALID,"unrecognized data type");
       goto error;
     }
     
@@ -829,7 +829,7 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
 	      INSERT_NEAREST_BUFFER(uint); 
               break;
             default:
-              DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+              DXSetError(ERROR_DATA_INVALID,"unsupported data type");
               goto error;
 	    }
           }
@@ -865,7 +865,7 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
 	    ACCUMULATE_DATA(ubyte);
 	    break;
           default:
-            DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+            DXSetError(ERROR_DATA_INVALID,"unsupported data type");
             goto error;
 	  } 
 	  
@@ -1064,7 +1064,7 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
 	    }
 	    break;
             default:
-              DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+              DXSetError(ERROR_DATA_INVALID,"unsupported data type");
               goto error;
 	  }
 	  /* increment the invalid positions array pointer */
@@ -1339,30 +1339,30 @@ static Error ConnectRadiusIrregular(Field ino, Field base, float radius,
   DXGetArrayInfo(positions_base, &numitemsbase, &type, &category, &rank_base, 
 		 shape_base);
   if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "only real, floating point positions for base accepted");
     goto error;
   }
   if ((rank_base > 1 ) || (shape_base[0] > 3)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "only 1D, 2D, or 3D positions for base accepted");
     goto error;
   }
   DXGetArrayInfo(positions_ino, &numitemsino, &type, &category, &rank_ino, 
 		 shape_ino);
   if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "only real, floating point positions for input accepted");
     goto error;
   }
   if ((rank_ino > 1 ) || (shape_ino[0] > 3)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "only 1D, 2D, or 3D positions for input accepted");
     goto error;
   }
   
   if (shape_base[0] != shape_ino[0]) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
 	       "base positions are %dD; input positions are %dD",
 	       shape_base[0], shape_ino[0]);
     goto error;
@@ -1434,7 +1434,7 @@ static Error ConnectRadiusIrregular(Field ino, Field base, float radius,
 
     
     if (DXGetObjectClass(attr) != CLASS_STRING) {
-      DXSetError(ERROR_INVALID_DATA, "dependency attribute not type string");
+      DXSetError(ERROR_DATA_INVALID, "dependency attribute not type string");
       goto error;
     }
     
@@ -1632,30 +1632,30 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
     goto error;
   }
   if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
              "only real, floating point positions for base accepted");
     goto error;
   }
   if ((rank_base > 1 ) || (shape_base[0] > 3)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
              "only 1D, 2D, or 3D positions for base accepted");
     goto error;
   }
   DXGetArrayInfo(positions_ino, &numitemsino, &type, &category, 
                  &rank_ino, shape_ino);
   if ((type != TYPE_FLOAT)||(category != CATEGORY_REAL)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
              "only real, floating point positions for input accepted");
     goto error;
   }
   if ((rank_ino > 1 ) || (shape_ino[0] > 3)) {
-    DXSetError(ERROR_INVALID_DATA,
+    DXSetError(ERROR_DATA_INVALID,
              "only 1D, 2D, or 3D positions for input accepted");
     goto error;
   }
 
   if (shape_base[0] != shape_ino[0]) {
-     DXSetError(ERROR_INVALID_DATA,
+     DXSetError(ERROR_DATA_INVALID,
               "base positions are %dD; input positions are %dD",
               shape_base[0], shape_ino[0]);
      goto error;
@@ -1709,7 +1709,7 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
 
     
     if (DXGetObjectClass(attr) != CLASS_STRING) {
-      DXSetError(ERROR_INVALID_DATA, 
+      DXSetError(ERROR_DATA_INVALID, 
                  "dependency attribute not type string");
       goto error;
     }
@@ -1764,7 +1764,7 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
                                    type, shape[0], missingval_ui);
         break;
       default:
-        DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+        DXSetError(ERROR_DATA_INVALID,"unsupported data type");
         goto error;
     }
 
@@ -1834,7 +1834,7 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
         data_ui = (uint *)DXGetArrayData(newcomponent);          
         break;
      default:
-        DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+        DXSetError(ERROR_DATA_INVALID,"unsupported data type");
         goto error;
     }
     
@@ -2049,7 +2049,7 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
            INCREMENT_DATA_1D(ushort, data_in_us);
            break;
          default:
-           DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+           DXSetError(ERROR_DATA_INVALID,"unsupported data type");
            goto error;
        }
     }
@@ -2080,7 +2080,7 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
            INCREMENT_DATA_2D(ushort, data_in_us);
            break;
          default:
-           DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+           DXSetError(ERROR_DATA_INVALID,"unsupported data type");
            goto error;
          }
     }
@@ -2111,12 +2111,12 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
            INCREMENT_DATA_3D(ushort, data_in_us);
            break;
          default:
-           DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+           DXSetError(ERROR_DATA_INVALID,"unsupported data type");
            goto error;
        }
     }
     else {
-      DXSetError(ERROR_INVALID_DATA,
+      DXSetError(ERROR_DATA_INVALID,
 	       "only 1D, 2D, and 3D input positions accepted");
       goto error;
     }
@@ -2254,7 +2254,7 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
       }
       break;
       default:
-        DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+        DXSetError(ERROR_DATA_INVALID,"unsupported data type");
         goto error;
     }
     
@@ -2399,7 +2399,7 @@ static Error ConnectRadiusRegular(Field ino, Field base, float radius,
 	break;
       }
       default:
-	DXSetError(ERROR_INVALID_DATA,"grid must be 1-, 2-, or 3-dimensional");
+	DXSetError(ERROR_DATA_INVALID,"grid must be 1-, 2-, or 3-dimensional");
 	goto error;
 	break;
       }
@@ -2495,7 +2495,7 @@ static Error FillDataArray(Type type, Array oldcomponent,
                                  type, shape, missingval_ui);
       break;
     default:
-      DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+      DXSetError(ERROR_DATA_INVALID,"unsupported data type");
       goto error;
   }
 
@@ -2534,7 +2534,7 @@ static Error FillDataArray(Type type, Array oldcomponent,
       d_ui = (uint *)DXGetArrayData(newcomponent);
       break;
     default:
-      DXSetError(ERROR_INVALID_DATA,"unrecognized data type");
+      DXSetError(ERROR_DATA_INVALID,"unrecognized data type");
       goto error;
    }
 
@@ -2575,7 +2575,7 @@ static Error FillDataArray(Type type, Array oldcomponent,
 	        buffer[k] += (float)d_in_ui[j*shape+k]/POW(distance,exponent);
                 break;
               default:
-                DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+                DXSetError(ERROR_DATA_INVALID,"unsupported data type");
                 goto error;
             }
 	  }
@@ -2610,7 +2610,7 @@ static Error FillDataArray(Type type, Array oldcomponent,
 	        buffer[k] = (float)d_in_us[j];
                 break;
               default:
-                DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+                DXSetError(ERROR_DATA_INVALID,"unsupported data type");
                 goto error;
             }
 	  }
@@ -2647,7 +2647,7 @@ static Error FillDataArray(Type type, Array oldcomponent,
 	   d_us[shape*i+k] = (ushort)(RND(buffer[k]/weight));
            break;
           default:
-           DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+           DXSetError(ERROR_DATA_INVALID,"unsupported data type");
            goto error;
         }
       }
@@ -2681,7 +2681,7 @@ static Error FillDataArray(Type type, Array oldcomponent,
 	     d_us[i*shape+k] = (ushort)missingval_us[k];
              break;
            default:
-             DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+             DXSetError(ERROR_DATA_INVALID,"unsupported data type");
              goto error;
          }
        }
@@ -2713,7 +2713,7 @@ static Error FillDataArray(Type type, Array oldcomponent,
 	     d_us[i*shape+k] = 0.0;
              break;
            default:
-             DXSetError(ERROR_INVALID_DATA,"unsupported data type");
+             DXSetError(ERROR_DATA_INVALID,"unsupported data type");
              goto error;
          }
        }

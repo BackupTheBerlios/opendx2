@@ -7,17 +7,24 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include <defines.h>
 
 
 
 
-#if !defined(DXD_WIN) && !defined(OS2)               //SMH get correct definitions
+#if defined(HAVE_UNISTD_H)
 #include <unistd.h>
+#endif
+
+#if defined(HAVE_PWD_H)
 #include <pwd.h>
-#else
+#endif
+
+#if defined(HAVE_DIRECT_H)
 #include <direct.h>
 #define getcwd _getcwd
 #endif
+
 #include <stdarg.h>
 
 #include "Strings.h"
@@ -31,7 +38,7 @@
 extern "C" char *mktemp(char *);
 #endif
 
-#ifdef	DXD_WIN
+#if defined(intelnt)
 #include <io.h>
 #include <string.h>
 #include <stdio.h>
@@ -276,7 +283,7 @@ char* GetFullFilePath(const char* oldPath)
                 strcat(path, oldPath + i);
             }
         }
-#endif    //SMH end DXD_WIN
+#endif    
     }
 #ifndef DXD_NON_UNIX_DIR_SEPARATOR
     else if (oldPath[0] != '/')

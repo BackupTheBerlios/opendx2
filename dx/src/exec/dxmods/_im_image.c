@@ -67,7 +67,7 @@
 #include <iop/pfs.h>
 #endif
 
-#ifdef DXD_WIN
+#if defined(HAVE_SYS_STAT_H)
 #include <sys/stat.h>
 #endif
 

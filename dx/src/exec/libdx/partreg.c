@@ -1226,7 +1226,7 @@ Array _dxf_remap_by_map(Array a, Array map)
 
     if (!DXTypeCheck(a, TYPE_INT, CATEGORY_REAL, 0) &&
 	!DXTypeCheck(a, TYPE_INT, CATEGORY_REAL, 1, 1)) {
-	DXSetError(ERROR_INVALID_DATA, "#11385");
+	DXSetError(ERROR_DATA_INVALID, "#11385");
 	return NULL;
     }
 

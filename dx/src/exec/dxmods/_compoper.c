@@ -3942,7 +3942,7 @@ _dxfComputeExecuteNode(
 
 #if !defined(DXD_STANDARD_IEEE)
     if (setjmp(broken)) {
-	DXSetError (ERROR_INVALID_DATA, "#11790");   /* fpe */
+	DXSetError (ERROR_DATA_INVALID, "#11790");   /* fpe */
 	goto error;
     }
     signal (SIGFPE, handlefp);

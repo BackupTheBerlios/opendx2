@@ -510,7 +510,7 @@ static int doLeaf(Object *in, Object *out)
     DXGetArrayInfo(array, &p_knt, NULL, NULL, NULL, &p_dim);
  
     if (p_dim != 3) {
-      DXSetError(ERROR_INVALID_DATA, "positions must be three-dimensional");
+      DXSetError(ERROR_DATA_INVALID, "positions must be three-dimensional");
       goto error;
     } 
 
@@ -533,14 +533,14 @@ static int doLeaf(Object *in, Object *out)
     element_type_attr = DXGetAttribute((Object)array, "element type");
     if (! element_type_attr)
     {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
             "input \"original_surface\" has no element type attribute");
         goto error;
     }
 
     if (DXGetObjectClass(element_type_attr) != CLASS_STRING)
     {
-        DXSetError(ERROR_INVALID_DATA,
+        DXSetError(ERROR_DATA_INVALID,
 	  "input \"original_surface\" element type attribute is not a string");
         goto error;
     }
@@ -817,7 +817,7 @@ GET_POSITIONAL_ERROR:
        if (type != TYPE_FLOAT || category != CATEGORY_REAL ||
              !((rank == 0) || ((rank == 1)&&(shape == 1))))
        {
-         DXSetError(ERROR_INVALID_DATA, "input \"max_error\"");
+         DXSetError(ERROR_DATA_INVALID, "input \"max_error\"");
          goto error;
        }
 
@@ -883,7 +883,7 @@ GET_POSITIONAL_ERROR:
        if (type != TYPE_FLOAT || category != CATEGORY_REAL ||
              !((rank == 0) || ((rank == 1) && (shape == 1))))
        {
-         DXSetError(ERROR_INVALID_DATA, "input \"max_data_error\"");
+         DXSetError(ERROR_DATA_INVALID, "input \"max_data_error\"");
          goto error;
        }
 
@@ -957,7 +957,7 @@ GET_POSITIONAL_ERROR:
        if (type != TYPE_INT || category != CATEGORY_REAL || !((rank == 0) || ((rank == 1) && (shape == 1))))
 	 {
 	   sprintf(the_message, "input %s", in_name[the_input]);
-           DXSetError(ERROR_INVALID_DATA, the_message);
+           DXSetError(ERROR_DATA_INVALID, the_message);
            goto error;
 	 }
 

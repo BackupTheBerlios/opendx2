@@ -7,13 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "UIConfig.h"
 
 #include <stdio.h>
 
-#include "defines.h"
 #include "Definition.h"
 #include "Dictionary.h"
 #include "ParameterDefinition.h"

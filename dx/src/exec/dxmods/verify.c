@@ -149,7 +149,7 @@ static Error stuffstruct(struct mustmatch *m, Object o, int memnumber)
 
     /* is this too draconian? */
     if (DXGetObjectClass(o) != CLASS_FIELD) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "composite field members must be fields");
 	return ERROR;
     }
@@ -167,7 +167,7 @@ static Error stuffstruct(struct mustmatch *m, Object o, int memnumber)
     m->c = (Array)DXGetComponentValue(m->f, "connections");
     if (m->c) {
 	if (!DXGetStringAttribute((Object)m->c, "element type", &m->contype)) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
    "'connections' component is required to have an 'element type' attribute");
 	    return ERROR;
 	}
@@ -191,7 +191,7 @@ static Error cmpstruct(struct mustmatch *m1, struct mustmatch *m2)
      */
     if (m1->p && m2->p) {
 	if (m1->posshape != m2->posshape) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "all members of a composite field must have the same positions dimensionality.  member %d is %dD, member %d is %dD", 
 		       m1->member, m1->posshape, m2->member, m2->posshape);
 	    return ERROR;
@@ -207,7 +207,7 @@ static Error cmpstruct(struct mustmatch *m1, struct mustmatch *m2)
     /* do they both have a connections component?
      */
     if (!m1->c || !m2->c) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "all members of a composite field must have the same type of connections.  member %d has %s connection component, member %d has %s connection component",
 		   m1->member, m1->c ? "a" : "no", 
 		   m2->member, m2->c ? "a" : "no");
@@ -216,7 +216,7 @@ static Error cmpstruct(struct mustmatch *m1, struct mustmatch *m2)
     /* does the element type match?
      */
     if (!m1->contype || !m2->contype || strcmp(m1->contype, m2->contype)) {
-	DXSetError(ERROR_INVALID_DATA,
+	DXSetError(ERROR_DATA_INVALID,
 		   "all members of a composite field must have the same type of connections.  member %d has %s 'element type' attribute, member %d has %s 'element type' attribute",
 		   m1->member, m1->contype ? m1->contype : "no", 
 		   m2->member, m2->contype ? m2->contype : "no");
@@ -236,7 +236,7 @@ static Error cmpstruct(struct mustmatch *m1, struct mustmatch *m2)
 		break;
 	}
 	if (i == m1->posshape) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		       "composite field members %d and %d should not have identical connection mesh offset values",
 		       m1->member, m2->member);
 	    return ERROR;
@@ -317,7 +317,7 @@ FieldCheck(Field f)
     for (i=0; subo=(Array)DXGetEnumeratedComponentValue(f, i, &name); i++) {
 	
 	if (DXGetObjectClass((Object)subo) != CLASS_ARRAY) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		     "field component `%s' not an array object", name);
 	    return ERROR;
 	}
@@ -330,7 +330,7 @@ FieldCheck(Field f)
 	
 	if (!strcmp(name, "connections")) {
 	    if (!haspositions) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 			   "field has 'connections' but no 'positions'");
 		return ERROR;
 	    }
@@ -388,17 +388,17 @@ PositionsCheck(Array a)
 	return ERROR;
 
     if (type != TYPE_FLOAT) {
-	DXSetError(ERROR_INVALID_DATA, "positions must be type float");
+	DXSetError(ERROR_DATA_INVALID, "positions must be type float");
 	return ERROR;
     }
 
     if (cat != CATEGORY_REAL) {
-	DXSetError(ERROR_INVALID_DATA, "positions must be category real");
+	DXSetError(ERROR_DATA_INVALID, "positions must be category real");
 	return ERROR;
     }
     
     if (rank != 1) {
-	DXSetError(ERROR_INVALID_DATA, "positions must be a vector");
+	DXSetError(ERROR_DATA_INVALID, "positions must be a vector");
 	return ERROR;
     }
 
@@ -420,22 +420,22 @@ ConnectionsCheck(Array a)
 	return ERROR;
 
     if (type != TYPE_INT) {
-	DXSetError(ERROR_INVALID_DATA, "connections must be type integer");
+	DXSetError(ERROR_DATA_INVALID, "connections must be type integer");
 	return ERROR;
     }
 
     if (cat != CATEGORY_REAL) {
-	DXSetError(ERROR_INVALID_DATA, "connections must be category real");
+	DXSetError(ERROR_DATA_INVALID, "connections must be category real");
 	return ERROR;
     }
     
     if (rank != 1) {
-	DXSetError(ERROR_INVALID_DATA, "connections must be a vector");
+	DXSetError(ERROR_DATA_INVALID, "connections must be a vector");
 	return ERROR;
     }
 
     if (!DXGetStringAttribute((Object)a, "element type", &elemtype)) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		 "`connections' component has no `element type' attribute");
 	return ERROR;
     }
@@ -457,7 +457,7 @@ AreTetrasOK(Array pos, Array conn)
 	return ERROR;
 
     if (prank != 1 || pshape[0] != 3) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "tetrahedra positions must be 3-vectors");
 	return ERROR;
     }
@@ -475,7 +475,7 @@ AreTetrasOK(Array pos, Array conn)
 	return ERROR;
 
     if (crank != 1 || cshape[0] != 4) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "tetrahedra connections must be 4-vectors");
 	return ERROR;
     }
@@ -492,7 +492,7 @@ AreTetrasOK(Array pos, Array conn)
     for (i=0; i<citems; i++, ip+=4) {
 	for (j=0; j<4; j++) {
 	    if (ip[j] < 0 || ip[j] >= pitems) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 		    "connection index %d out of range (%d); must be 0 to %d",
 			   i, ip[j], pitems-1);
 		return ERROR;
@@ -509,7 +509,7 @@ AreTetrasOK(Array pos, Array conn)
 	}
 
 	if (this && this != handed) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		"the positions in tetrahedra %d are ordered inconsistently compared to other tetrahedra in this field",
 		       i);
 	    return ERROR;
@@ -532,7 +532,7 @@ AreTrisOK(Array pos, Array conn)
 	return ERROR;
 
     if (prank != 1 || (pshape[0] != 2 && pshape[0] != 3)) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "triangle positions must be 2- or 3-vectors");
 	return ERROR;
     }
@@ -550,7 +550,7 @@ AreTrisOK(Array pos, Array conn)
 	return ERROR;
 
     if (crank != 1 || cshape[0] != 3) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "triangle connections must be 3-vectors");
 	return ERROR;
     }
@@ -567,7 +567,7 @@ AreTrisOK(Array pos, Array conn)
     for (i=0; i<citems; i++, ip+=3) {
 	for (j=0; j<3; j++) {
 	    if (ip[j] < 0 || ip[j] >= pitems) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 		    "connection index %d out of range (%d); must be 0 to %d",
 			   i, ip[j], pitems-1);
 		return ERROR;
@@ -577,7 +577,7 @@ AreTrisOK(Array pos, Array conn)
 #if 0
 	/* this doesn't mean anything */
 	if (!TriArea(pp+ip[0], pp+ip[1], pp+ip[2])) {
-	    DXSetError(ERROR_INVALID_DATA, 
+	    DXSetError(ERROR_DATA_INVALID, 
 		 "the positions in triangle %d are ordered inconsistently",
 		       i);
 	    return ERROR;
@@ -603,7 +603,7 @@ AreLinesOK(Array pos, Array conn)
 	return ERROR;
 
     if (prank != 1 || pshape[0] < 1 || pshape[0] > 3) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "line positions must be 1-, 2- or 3-vectors");
 	return ERROR;
     }
@@ -621,7 +621,7 @@ AreLinesOK(Array pos, Array conn)
 	return ERROR;
 
     if (crank != 1 || cshape[0] != 2) {
-	DXSetError(ERROR_INVALID_DATA, 
+	DXSetError(ERROR_DATA_INVALID, 
 		   "line connections must be 2-vectors");
 	return ERROR;
     }
@@ -638,7 +638,7 @@ AreLinesOK(Array pos, Array conn)
     for (i=0; i<citems; i++, ip+=2) {
 	for (j=0; j<2; j++) {
 	    if (ip[j] < 0 || ip[j] >= pitems) {
-		DXSetError(ERROR_INVALID_DATA, 
+		DXSetError(ERROR_DATA_INVALID, 
 		    "connection index %d out of range (%d); must be 0 to %d",
 			   i, ip[j], pitems-1);
 		return ERROR;
@@ -832,7 +832,7 @@ static Error pushchild(struct plist *p, Object newo)
     pp = p;
     do {
 	if (newo == pp->this) {
-	    DXSetError(ERROR_INVALID_DATA, "circular reference in object");
+	    DXSetError(ERROR_DATA_INVALID, "circular reference in object");
 	    return ERROR;
 	}
 	if (pp->next)

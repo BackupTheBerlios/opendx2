@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_maptoplane.c,v 1.3 1999/05/10 15:45:20 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_maptoplane.c,v 1.4 2000/05/16 18:47:29 gda Exp $
  */
 
 #include <dxconfig.h>
@@ -513,7 +513,7 @@ MTP_Field(Pointer ptr)
 
     if (DXGetObjectClass(attr) != CLASS_STRING)
     {
-	DXSetError(ERROR_INVALID_DATA, "#10200", "element type attribute");
+	DXSetError(ERROR_DATA_INVALID, "#10200", "element type attribute");
 	goto error;
     }
 
@@ -535,7 +535,7 @@ MTP_Field(Pointer ptr)
     }
     else
     {
-	DXSetError(ERROR_INVALID_DATA, "#11380", DXGetString((String)attr));
+	DXSetError(ERROR_DATA_INVALID, "#11380", DXGetString((String)attr));
 	goto error;
     }
 
@@ -3568,7 +3568,7 @@ MapArrays_PDep_Irreg(Array old, SegList *iBuf)
 	     INTERPOLATE_INTERCEPT(ubyte, 0.5);
 	     break;
 	default:
-	     DXSetError(ERROR_INVALID_DATA, "#10320", "data");
+	     DXSetError(ERROR_DATA_INVALID, "#10320", "data");
 	     goto error;
     }
     

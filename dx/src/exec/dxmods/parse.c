@@ -132,7 +132,7 @@ static Error parseit(char *inputstring, char *control, Object *out)
 
 	/* next char must be % */
 	if (*ccp != '%') {
-	    DXSetError(ERROR_INVALID_DATA, "next char not %%??");
+	    DXSetError(ERROR_DATA_INVALID, "next char not %%??");
 	    goto error;
 	}
 	    

@@ -7,11 +7,9 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
-
-#include "UIConfig.h"
-
-/* System includes go after UIConfig.h */
 #include <Xm/Xm.h>
 #include <Xm/PushB.h>
 #include <Xm/Text.h>
@@ -19,7 +17,6 @@
 #include <Xm/Form.h>
 
 
-#include "defines.h"
 #include "Strings.h"
 #include "Application.h"
 #include "TextFile.h"

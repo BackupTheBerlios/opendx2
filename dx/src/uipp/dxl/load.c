@@ -7,12 +7,12 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
 
 
 #include <malloc.h>
 #include <string.h>
 
-#include "../base/UIConfig.h"
 #include "../base/defines.h"
 #include "dxlP.h"
 

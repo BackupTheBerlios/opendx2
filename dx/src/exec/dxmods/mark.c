@@ -53,7 +53,7 @@ m_Mark(Object *in, Object *out)
     }
     
     if (DXExists(in[0], "data") && DXExists(in[0], "saved data")) {
-        DXSetError(ERROR_INVALID_DATA, "#11260", "saved data");
+        DXSetError(ERROR_DATA_INVALID, "#11260", "saved data");
 	return ERROR;
     }
 

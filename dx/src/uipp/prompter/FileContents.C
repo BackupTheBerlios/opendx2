@@ -143,13 +143,8 @@ boolean FileContents::initialize ()
     ASSERT (in_fp);
     int filedes = fileno (in_fp);
 
-#if defined(DXD_WIN)
-#define stat _stat
-#define fstat _fstat
-#endif
-
-    struct stat statbuf;
-    fstat (filedes, &statbuf);
+    struct STATSTRUCT statbuf;
+    STAT (this->in_file_name, &statbuf);
     this->contents = new char[statbuf.st_size + 1];
 
     int bread = fread (this->contents, sizeof(char), (int)statbuf.st_size, in_fp);

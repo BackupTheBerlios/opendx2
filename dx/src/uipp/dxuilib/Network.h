@@ -7,6 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
 
@@ -14,7 +16,6 @@
 #ifndef _Network_h
 #define _Network_h
 
-#include "defines.h"
 #include "enums.h"
 #include "Base.h"
 #include "List.h"
@@ -439,7 +440,7 @@ class Network : public Base
     // For editing operations which automatically chop arcs and replace
     // them with transmitters/receivers.
     //
-    boolean	chopInputArc(Node*, int, Dictionary*, Dictionary*);
+    boolean	chopInputArk(Node*, int, Dictionary*, Dictionary*);
 
   public:
     
@@ -952,8 +953,8 @@ class Network : public Base
     Dictionary* getGroupManagers() { return this->groupManagers; }
     void	copyGroupInfo (Node* , List* );
     void	copyGroupInfo (Node* , Node* );
-    boolean	chopArcs(List*, Dictionary*, Dictionary*);
-    boolean	replaceInputArcs(List*, List*);
+    boolean	chopArks(List*, Dictionary*, Dictionary*);
+    boolean	replaceInputArks(List*, List*);
 #endif
 
     virtual boolean isJavified() { return FALSE; }

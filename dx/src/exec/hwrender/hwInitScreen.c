@@ -12,7 +12,7 @@
 #define tdmInitScreen_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.3 1999/05/10 15:45:34 gda Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.4 2000/05/16 18:48:28 gda Exp $"};
 #endif
 
 
@@ -24,9 +24,9 @@ static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/op
  */
 
 #include <stdio.h>
-#ifdef DXD_WIN
+#if defined(HAVE_SIGNAL_H)
 #include <signal.h>
-#else
+#elif defined(HAVE_SYS_SIGNAL_H)
 #include <sys/signal.h>
 #endif
 #include <math.h>
@@ -70,7 +70,7 @@ _dxfInitRenderObject(WinP win)
   /* get view coordinate system */
   if (! DXGetView(CAMERA, &from, &to, &up)) {
     EXIT(("ERROR: unable to get camara view"));
-    DXErrorReturn (ERROR_INVALID_DATA, "unable to get camera view") ;
+    DXErrorReturn (ERROR_DATA_INVALID, "unable to get camera view") ;
   }
 
   /* get camera resolution */
@@ -92,7 +92,7 @@ _dxfInitRenderObject(WinP win)
   }
   else {
     EXIT(("ERROR: unable to get projection data"));
-    DXErrorReturn (ERROR_INVALID_DATA, "unable to obtain projection data") ;
+    DXErrorReturn (ERROR_DATA_INVALID, "unable to obtain projection data") ;
   }
 
   _dxfSetCurrentView(win, (float *)&to, (float *)&from, (float *)&up, fov, width);

@@ -7,13 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 
-#include "UIConfig.h"
 
 #include <ctype.h>
 
-#include "defines.h"
 #include "ComputeNode.h"
 #include "ErrorDialogManager.h"
 #include "DXType.h"

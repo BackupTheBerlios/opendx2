@@ -7,7 +7,8 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "defines.h"
+#include "../base/defines.h"
+#include "../base/defines.h"
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
@@ -269,26 +270,26 @@ DropSite_TransferProc(Widget w, XtPointer client_data, Atom *, Atom *type,
     // HOST_NAME: hostname of machine of drag source
     // PROCESS: pid of drag source
     //
-    Atom DELETE, PROCESS, HOST_NAME;
+    Atom DELETE_ATOM, PROCESS_ATOM, HOST_NAME_ATOM;
     Display *d = theApplication->getDisplay();
     Screen *screen = XtScreen(theApplication->getRootWidget());
     Window root = RootWindowOfScreen(screen);
     char hostname[MAXHOSTNAMELEN], *src_host;
     char tbuf[8];
 
-    DELETE = XmInternAtom(d, "DELETE", False);
-    PROCESS = XmInternAtom(d, "PROCESS", False);
-    HOST_NAME = XmInternAtom(d, "HOST_NAME", False);
+    DELETE_ATOM = XmInternAtom(d, "DELETE", False);
+    PROCESS_ATOM = XmInternAtom(d, "PROCESS", False);
+    HOST_NAME_ATOM = XmInternAtom(d, "HOST_NAME", False);
 
     int *process_id;
     unsigned long remain, nitems;
     Atom actual_type;
     int actual_format;
-    XGetWindowProperty (d, root, PROCESS, 0, 1, False, XA_INTEGER,
+    XGetWindowProperty (d, root, PROCESS_ATOM, 0, 1, False, XA_INTEGER,
 	&actual_type, &actual_format, &nitems, &remain, (unsigned char **)&process_id);
 
     gethostname(hostname, sizeof(hostname));
-    XGetWindowProperty (d, root, HOST_NAME, 0, sizeof(src_host)>>2, False, XA_STRING,
+    XGetWindowProperty (d, root, HOST_NAME_ATOM, 0, sizeof(src_host)>>2, False, XA_STRING,
 	&actual_type, &actual_format, &nitems, &remain, (unsigned char **)&src_host);
 	
     if ((src_host) && (!strcmp(src_host, hostname)) && (*process_id == getpid())) {
@@ -299,7 +300,7 @@ DropSite_TransferProc(Widget w, XtPointer client_data, Atom *, Atom *type,
 
     if (src_host) XFree(src_host);
     if (process_id) XFree(process_id);
-    XChangeProperty (d, root, DELETE, XA_STRING, 8,
+    XChangeProperty (d, root, DELETE_ATOM, XA_STRING, 8,
 	PropModeReplace, (const unsigned char *)tbuf, strlen(tbuf));
 }
 
