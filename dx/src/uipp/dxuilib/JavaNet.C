@@ -606,7 +606,7 @@ ListIterator it;
     dirSep = '\\';
 #endif
     resource=theDXApplication->getHtmlDir();
-    if(resource==NULL || resource[0]=='\0')resource="$(BASE)/java/htmlpages";
+    if(resource==NULL || resource[0]=='\0')resource="$(BASE)/java";
     fprintf (this->make_f, "JAVADIR=%s", resource); 
     resource=theDXApplication->getUserHtmlDir();
     if(resource!=NULL && resource[0]!='\0')
@@ -715,7 +715,6 @@ const char* JavaNet::getHtmlHeader()
 	"<title>Open Visualization Java Explorer</title>\n"
 	"</head>\n"
 	"<body bgcolor=\"#dddddd\">\n"
-	"<img src=../htmlpages/bonuspakhead.gif><br>\n"
 	"<hr>\n"
 	"<p>\n";
 
