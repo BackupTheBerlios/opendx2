@@ -96,7 +96,8 @@ static void ExBuildSendModule (Program *p, gfunc *sgf, gfunc *tgf, int srcfn,
 static int GvarDelete (gvar *p);
 static int progobjDelete (progobj *p);
 static void ExRemapVars(Program *p, Program *subP, int *map, int *resolved, char *fname, int inst);
-static void ExFixAsyncVarName(ProgramVariable *pv, char *fname, int instance);
+static void ExFixAsyncVarName(Program *p,
+			ProgramVariable *pv, char *fname, int instance);
 
 static int _dxf_ExPathStringLen( ModPath *path );
 static void _dxf_ExGFuncPathToStringBuf( gfunc *fnode, char *path_str );
@@ -108,7 +109,8 @@ static void _dxf_ExPathAppend( Program *p, char fname[], int instance,
                                gfunc *fnode );
 static int _dxf_ExPathCacheStringLen( ModPath *path );
 
-
+static char *_dxf_ExCacheStrPrepend( Program *p, char *name,
+                               int instance, char *path );
 
 Error m__badfunc(Object *in, Object *out)
 {
@@ -1770,7 +1772,7 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
             }
             else av.nameindx = slot;
             pPv = FETCH_LIST(p->vars, mapping[slot]);
-            ExFixAsyncVarName(pPv, fname, instance);
+            ExFixAsyncVarName(p, pPv, fname, instance);
         
 	    slot = avars->valueindx;
             if(slot != -1) {
@@ -1869,7 +1871,7 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
                 slot = *FETCH_LIST(fnode.inputs, fnode.nin - 2);
                 pPv = FETCH_LIST(p->vars, slot);
 
-		new_path = (Object)DXNewString( _dxf_ExGFuncPathToString(&fnode) );
+		new_path = (Object)DXNewString( _dxf_ExGFuncPathToCacheString(&fnode) );
 		DXReference ((Object)new_path);
                 if(pPv->obj)
                     DXDelete((Object)pPv->obj);
@@ -2259,7 +2261,7 @@ static void ExMakeGfunc(node_function ndfunc, _ntype type, int instance,
 	    INIT_PVAR(pv);
             pv.defined = TRUE;
 
-	    new_path = (Object)DXNewString( _dxf_ExGFuncPathToString(&fnode) );
+	    new_path = (Object)DXNewString( _dxf_ExGFuncPathToCacheString(&fnode) );
 	    DXReference ((Object)new_path);
 	    pv.obj = new_path;
 
@@ -2517,7 +2519,7 @@ ExRemapVars(Program *p, Program *subP, int *map, int *resolved, char *fname, int
             slot = *FETCH_LIST(gf->inputs, gf->nin - 2);
             pv = FETCH_LIST(p->vars, slot);
 
-	    new_path = (Object)DXNewString( _dxf_ExGFuncPathToString(gf) );
+	    new_path = (Object)DXNewString( _dxf_ExGFuncPathToCacheString(gf) );
 	    DXReference ((Object)new_path);
             if(pv->obj)
                 DXDelete((Object)pv->obj);
@@ -2566,7 +2568,7 @@ ExRemapVars(Program *p, Program *subP, int *map, int *resolved, char *fname, int
 }
 
 static void
-ExFixAsyncVarName(ProgramVariable *pv, char *fname, int instance)
+ExFixAsyncVarName(Program *program, ProgramVariable *pv, char *fname, int instance)
 {
     Object saveobj;
     char *path;
@@ -2575,7 +2577,7 @@ ExFixAsyncVarName(ProgramVariable *pv, char *fname, int instance)
         _dxf_ExDie("Executive inconsistency -- bad async variable name");
     saveobj = pv->obj;
     path = DXGetString((String)pv->obj);
-    pv->obj = (Object)DXNewString (_dxf_ExPathStrPrepend(fname, instance, path));
+    pv->obj = (Object)DXNewString (_dxf_ExCacheStrPrepend(program, fname, instance, path));
     DXReference ((Object)pv->obj);
     DXDelete((Object)saveobj);
 }
@@ -2890,6 +2892,38 @@ char *_dxf_ExPathToCacheString( ModPath *path )
   return str;
 }
 
+static char *_dxf_ExCacheStrPrepend( Program *program,
+                                     char *name, int instance, char *path )
+{
+  static char str[ MAX_PATH_STR_LEN ];
+  static char tmp[ MAX_PATH_STR_LEN ];
+  char       *p = str, *colon;
+
+  /*  This oddball cache-string hacking rtn is only used in one place.  */
+
+  /*  Prepend the IDs for the module name and instance as specified.  */
+  p = int16tohex( p, _dxf_ExGraphInsertAndLookupName( program, name ) );
+  p = int16tohex( p, instance );
+
+  strcpy(tmp, path);
+  if (tmp[0] != '/')
+      fprintf(stderr,
+      	"error in _dxf_ExCacheStrPrepend: name doesn\'t begin with /\n");
+  colon = strchr(tmp, ':');
+  if (! colon)
+      fprintf(stderr,
+      	"error in _dxf_ExCacheStrPrepend: name doesn\'t have a :\n");
+  *colon = '\0';
+  p = int16tohex( p, _dxf_ExGraphInsertAndLookupName( program, tmp+1 ));
+  p = int16tohex( p, atoi(colon+1));
+
+  /*
+  strcpy( p, path );
+  */
+  return str;
+}
+
+
 static void _dxf_ExPathPrint( Program *p, gfunc *fnode, char *header )
 {
   int i;
@@ -2924,6 +2958,8 @@ static void _dxf_ExPathSet( Program *p, char fname[], int instance, gfunc *fnode
   _dxf_ExPathPrint( p, fnode, "_dxf_ExPathSet" );
 #endif
 }
+
+
 
 
 static void _dxf_ExPathPrepend( Program *p, char fname[], int instance,
