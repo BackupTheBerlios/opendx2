@@ -23,7 +23,7 @@ javalibdir = $(prefix)/dx/java/server/lib_@ARCH@
 
 javalib_LIBRARIES = @ANYDX@
 # EXTRA_PROGRAMS = libAnyDX.so AnyDX.dll
-EXTRA_LIBRARIES = libAnyDX.so AnyDX.dll
+EXTRA_LIBRARIES = libAnyDX.so
 # libAnyDX_so_SOURCES =
 # AnyDX_dll_SOURCES =
 SUBDIRS = server dx
@@ -68,29 +68,32 @@ server.jar: dx.jar DXServer.java
 SHRD_FLAGS = -shared -o libAnyDX.so
 
 libAnyDX.so: DXLink.o
-	if test ! "$(ARCH)" = "intelnt" -a ! "$(ARCH)" = "macos" ; then \
+	if test ! "$(ARCH)" = "intelnt" -a ! "$(ARCH)" = "macos" -a \
+		! "$(ARCH)" = "cygwin" ; then \
 		( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object ) \
 	elif test "$(ARCH)" = "macos" ; then \
 		( $(MAKE) macos_shared_object ) \
 	elif test "$(ARCH)" = "intelnt" ; then \
 		( $(MAKE) windows_shared_object ) \
+	elif test "$(ARCH)" = "cygwin" ; then \
+		( $(MAKE) cygwin_shared_object ) \
 	fi
 
-usual_shared_object:
+usual_shared_object: DXLink.o
 	$(SHARED_LINK) $(DXABI) $(DX_RTL_ALDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&" -e "s&../dxl/x11.o&&"`  DXLink.o
 
-aix_shared_object:
+aix_shared_object: DXLink.o
 	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
 	nm -epC tmpAnyDX.a | awk -f $(srcdir)/exports.awk > tmpAnyDX.exp
 	ld -bnoentry -bM:SRE -o libAnyDX.so -bE:tmpAnyDX.exp tmpAnyDX.a -L /usr/lpp/X11/lib -lXt -lX11 -lc
 	rm -f tmpAnyDX.*
 
-macos_shared_object:
+macos_shared_object: DXLink.o
 	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
 	ld -dylib -o libAnyDX.dylib tmpAnyDX.a -L/usr/X11R6/lib -lXt -lX11 -lc
 	rm -f tmpAnyDX.*
 
-AnyDX.dll: DXLink.o
+cygwin_shared_object: DXLink.o
 	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
 	echo EXPORTS > tmpAnyDX.exp
 	nm --demangle --defined-only tmpAnyDX.a | sed -n 's/^.* T //p' >> tmpAnyDX.exp
@@ -156,3 +159,10 @@ CLEANFILES = dx.jar server.jar javainfo libAnyDX.dll libAnyDX.so libAnyDX.dylib
 
 distclean-local:
 	rm -rf classes dxsc
+
+install-data-hook:
+	if test "$(ARCH)" = "intelnt" ; then \
+		cp AnyDX.dll $(javalibdir)/. ; \
+		cp AnyDX.lib $(javalibdir)/. ; \
+		cp AnyDX.exp $(javalibdir)/. ; \
+	fi

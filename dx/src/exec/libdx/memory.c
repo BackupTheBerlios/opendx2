@@ -933,7 +933,7 @@ arealloc(struct arena *a, char *x, unsigned int n)
 #define K   *1024
 #define MEG K K
                                         /* the following are in mem.c:       */
-extern Error _dxfsetmem(int64 limit);	/*             set shared mem size   */
+extern Error _dxfsetmem(uint64 limit);	/*             set shared mem size   */
 extern Error _dxfinitmem();		/*             initialize shared mem */
 extern Pointer _dxfgetmem(Pointer base, int n); /*     expand shared segment */
 extern Pointer _dxfgetbrk(Pointer base, int n); /*     use sbrk to get mem   */

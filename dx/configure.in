@@ -424,11 +424,12 @@ AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
 
-if test "$CYGWIN" = yes || test "$MINGW32" = yes ; then
-    ANYDX=AnyDX.dll
-else
-    ANYDX=libAnyDX.so
-fi
+dnl if test "$CYGWIN" = yes || test "$MINGW32" = yes ; then
+dnl    ANYDX=AnyDX.dll
+dnl else
+dnl    ANYDX=libAnyDX.so
+dnlfi
+ANYDX=libAnyDX.so
 
 AC_LANG_C
 
@@ -1065,10 +1066,10 @@ DX_CHECK_TYPE(int32, int)
 DX_CHECK_TYPE(uint32, unsigned int)
 DX_CHECK_TYPE(int64, long)
 DX_CHECK_TYPE(float64, double)
+DX_CHECK_TYPE(uint64, unsigned long)
 
 if test "$ARCH" != "intelnt" ; then
     DX_CHECK_TYPE(__int64, long long)
-    DX_CHECK_TYPE(uint64, unsigned long)
     DX_CHECK_TYPE(float32, float)
 fi
 
