@@ -1,4 +1,3 @@
-
 Fix bug where field with ubyte colors (refing a float[3] colormap), which
 is constructed by ReadImage and storable with Export, won't load with
 Import.  Patch allows general UBYTE components to ref other components in
