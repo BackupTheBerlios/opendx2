@@ -9,8 +9,15 @@ umask 2
 if [ "$DXROOT" = "" ]; then
 	DXROOT=@prefix@/dx
 fi
-export PATH=$PATH:@JDKBIN@
-export CLASSPATH=$CLASSPATH:@WRL_CLASSPATH@:./:./server.jar
+export DXROOT
+PATH=$PATH:@JBASE@/bin
+export PATH
+if [ "$CLASSPATH" = "" ]; then
+	CLASSPATH=@WRL_CLASSPATH@:./:./server.jar
+	else
+	CLASSPATH=$CLASSPATH:@WRL_CLASSPATH@:./:./server.jar
+fi
+export CLASSPATH
 ##
 ## We're interested in the location of the script file so that
 ## we can make an attempt at avoiding the use of DXROOT for
@@ -339,10 +346,11 @@ else
 fi
 
 cd $serverdir
+libarch=`dx -whicharch`
 if [ "$LD_LIBRARY_PATH" = "" ]; then
-LD_LIBRARY_PATH=$serverdir
+LD_LIBRARY_PATH=$serverdir/../lib_$libarch
 else
-LD_LIBRARY_PATH=$serverdir:$LD_LIBRARY_PATH
+LD_LIBRARY_PATH=$serverdir/../lib_$libarch:$LD_LIBRARY_PATH
 fi
 export LD_LIBRARY_PATH
 
