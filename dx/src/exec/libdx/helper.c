@@ -476,8 +476,8 @@ DXChangedComponentStructure(Field f, char *component)
 
     for (i=0, n=0; (c=DXGetEnumeratedComponentValue(f, i, &names[n])); i++)
 	if (ATTR(DEP) || ATTR(REF) || attrlist(c, DER, component))
-	    if (strcmp(names[n],component) != 0)
-		n++;
+		if (strcmp(names[n],component) != 0)
+		    n++;
     ASSERT(n<100);
     for (i=0; i<n; i++) {
 	DXDeleteComponent(f, names[i]);
@@ -493,14 +493,30 @@ DXChangedComponentValues(Field f, char *component)
     Object c;
     char *names[100];
 
-    for (i=0, n=0; (c=DXGetEnumeratedComponentValue(f, i, &names[n])); i++)
-	if (attrlist(c, DER, component))
-	    if (strcmp(names[n],component) != 0)
-		n++;
-    ASSERT(n<100);
-    for (i=0; i<n; i++) {
-	DXDeleteComponent(f, names[i]);
-	DXChangedComponentStructure(f, names[i]);
+    if (! strcmp(component, "invalid connections"))
+    {
+        DXInvalidateUnreferencedPositions((Object)f);
+	DXChangedComponentValues(f, "connections");
+	DXChangedComponentValues(f, "positions");
+    }
+    else if (! strcmp(component, "invalid positions"))
+    {
+        DXInvalidateConnections((Object)f);
+        DXInvalidateUnreferencedPositions((Object)f);
+	DXChangedComponentValues(f, "connections");
+	DXChangedComponentValues(f, "positions");
+    }
+    else
+    {
+	for (i=0, n=0; (c=DXGetEnumeratedComponentValue(f, i, &names[n])); i++)
+	    if (attrlist(c, DER, component))
+		if (strcmp(names[n],component) != 0)
+		    n++;
+	ASSERT(n<100);
+	for (i=0; i<n; i++) {
+	    DXDeleteComponent(f, names[i]);
+	    DXChangedComponentStructure(f, names[i]);
+	}
     }
     return f;
 }    
