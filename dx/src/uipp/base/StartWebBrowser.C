@@ -38,8 +38,6 @@
 #include <process.h>
 #endif
 
-static int browserPID=0;
-
 #if defined (intelnt)
 
 #if 0
@@ -137,49 +135,27 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
     }
     return 0;
 #else
-    if(browserPID != 0) {
-        if(waitpid(browserPID, NULL, WNOHANG)==browserPID) {
-            browserPID = 0;
-        } else {
-            int child = fork();
-            if (child == 0) {
-                if(webApp) {
-                    char *openURL = new char[strlen(URL) + 25];
-                    //strcpy(openURL, "-remote ");
-                    strcpy(openURL, "openURL(");
-                    strcat(openURL, URL);
-                    strcat(openURL, ")");
-                    int ret = execlp(webApp, webApp, "-raise", "-remote", openURL, NULL);
-                    if (!ret) fprintf(stderr, "Unable to start web browser.\n");
-                    delete openURL;
-                    exit (0);
-                }
-            } else if (child > 0) {
-                return 1;
-            } else {
-                fprintf(stderr, "Unable to fork child.\n");
-                return 0;
-            }
-        }
-    }
-    int child = fork();
-    if (child == 0) {
-        if(webApp) {
-            int ret = execlp(webApp, webApp, URL, NULL);
-            if (!ret) fprintf(stderr, "Unable to start web browser.\n");
-            exit (0);
-        }
-    } else if (child > 0) {
-        sleep (2);
-        browserPID = child;
-        // Now check to see if child exists, if not, probably no browser.
-        if(waitpid(child, NULL, WNOHANG)==child)
-            return 0;
-        else
+    if(webApp) {
+    	int child = fork();
+    	if (child == 0) {
+	    int grandchild = fork();
+	    if (grandchild == 0) {
+		int ret = execlp(webApp, webApp, URL, NULL);
+            	if (!ret) fprintf(stderr, "Unable to start web browser.\n");
+            	exit (0);
+	    }
+	    else
+		exit(0);
+
+        } else if (child > 0) {
+    	    if(waitpid(child, NULL, 0)!=child)
+            	return 0;
+            else
+            	return 1;
+    	} else {
+            fprintf(stderr, "Unable to fork child.\n");
             return 1;
-    } else {
-        fprintf(stderr, "Unable to fork child.\n");
-        return 0;
+    	}
     }
     return 0;
 #endif
