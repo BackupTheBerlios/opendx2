@@ -1,3 +1,9 @@
+## The building of Java Explorer should really be done with
+## a subpackage configure from the top. This would allow for
+## the jni lib to be built with libtool and give us more 
+## control over features. But at this time, it is too much
+## work.
+##
 ## Process this file with automake to produce Makefile.in
 ##
 ## There are 2 build happening here: client side javadx
@@ -14,6 +20,13 @@
 ## to the directory arg following the -d.  The
 ## result is a place which is easy to jar up.
 ##
+
+## The current version of this Makefile tries to construct
+## Java shared libraries by working some magick on the object
+## files for each platform. This needs to be reworked with
+## libtool and the -shrext flag to make this much more 
+## portable.
+
 javadxdir = $(prefix)/dx/java/htmlpages
 javadx_DATA = dx.jar 
 javasrvdir = $(prefix)/dx/java/server/class
@@ -74,30 +87,53 @@ AnyDX.dll: DXLink.o
 	fi
 
 libAnyDX.jnilib: DXLink.o
-	cc -bundle -o libAnyDX.jnilib -framework JavaVM `ls ../dxl/*.o ../dxl/.libs/*.o | sed -e "s&.*object\.o&&" -e "s&.*dylib.*\.o&&"` DXLink.o -L/usr/X11R6/lib -lXt
+	jObjs=`ls ../dxl/*.o` ;			\
+	if test "z$${jObjs}" = "z" ; then 	\
+		jObjs=`ls ../dxl/.libs/*.o` ;  	\
+	fi ;					\
+	jObjs=`echo $$jObjs |sed -e "s&[^ ]*object\.o&&" -e "s&[^ ]*dylib[^ ]*\.o&&" -e "s&[^ ]*x11\.o&&"` ; \
+	cc -bundle -o libAnyDX.jnilib -framework JavaVM $${jObjs} DXLink.o -L/usr/X11R6/lib -lXt
 
 usual_shared_object: DXLink.o
-	$(SHARED_LINK) $(DXABI) $(DX_RTL_ALDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) `ls ../dxl/.libs/*.o | sed -e "s&../dxl/.libs/object.o&&" -e "s&../dxl/.libs/x11.o&&"`  DXLink.o
+	jObjs=`ls ../dxl/*.o` ;                 \
+	if test "z$${jObjs}" = "z" ; then       \
+		jObjs=`ls ../dxl/.libs/*.o` ;   \     
+	fi ;                                    \
+	jObjs=`echo $$jObjs |sed -e "s&[^ ]*object\.o&&" -e "s&[^ ]*x11\.o&&"` ; \
+	$(SHARED_LINK) $(DXABI) $(DX_RTL_ALDFLAGS) $(SO_FLAGS) $(SHRD_FLAGS) $${jObjs}  DXLink.o
 
 aix_shared_object: DXLink.o
-	ar -ruv tmpAnyDX.a `ls ../dxl/.libs/*.o | sed -e "s&../dxl/.libs/object.o&&"` DXLink.o
+	jObjs=`ls ../dxl/*.o` ;			\
+	if test "z$${jObjs}" = "z" ; then	\
+		jObjs=`ls ../dxl/.libs/*.o` ; 	\
+	fi ;					\
+	jObjs=`echo $$jObjs |sed -e "s&[^ ]*object\.o&&" -e "s&[^ ]*x11\.o&&"` ; \
+	ar -ruv tmpAnyDX.a $${jObjs} DXLink.o
 	nm -epC tmpAnyDX.a | awk -f $(srcdir)/exports.awk > tmpAnyDX.exp
 	ld -bnoentry -bM:SRE -o libAnyDX.so -bE:tmpAnyDX.exp tmpAnyDX.a -L /usr/lpp/X11/lib -lXt -lX11 -lc
 	rm -f tmpAnyDX.*
 
 cygwin_shared_object: DXLink.o
-	ar -ruv tmpAnyDX.a `ls ../dxl/.libs/*.o | sed -e "s&../dxl/.libs/object.o&&"` DXLink.o
+	jObjs=`ls ../dxl/*.o` ;                 \
+	if test "z$${jObjs}" = "z" ; then       \
+		jObjs=`ls ../dxl/.libs/*.o` ;   \     
+	fi ;                                    \
+	jObjs=`echo $$jObjs |sed -e "s&[^ ]*object\.o&&" -e "s&[^ ]*x11\.o&&"` ; \
+	ar -ruv tmpAnyDX.a $${jObjs} DXLink.o
 	echo EXPORTS > tmpAnyDX.exp
 	nm --demangle --defined-only tmpAnyDX.a | sed -n 's/^.* T //p' >> tmpAnyDX.exp
 	dllwrap -s --export-all-symbols --image-base 0x6620000 --def tmpAnyDX.exp --driver-name gcc -o libAnyDX.dll DXLink.o -L../dxl -lDXL -L/usr/X11R6/lib -lXt -lSM -lICE -lX11
 	rm -f tmpAnyDX.*
 
 windows_shared_object: DXLink.o
-	ar -ruv tmpAnyDX.a `ls ../dxl/*.obj | sed -e "s&../dxl/object.obj&&"` DXLink.obj
+	jObjs=`ls ../dxl/*.o` ;                 \
+	if test "z$${jObjs}" = "z" ; then       \
+		jObjs=`ls ../dxl/.libs/*.o` ;   \     
+	fi ;                                    \
+	jObjs=`echo $$jObjs |sed -e "s&[^ ]*object\.o&&" -e "s&[^ ]*x11\.o&&"` ; \
+	ar -ruv tmpAnyDX.a $${jObjs} DXLink.obj
 	cc /LD -o AnyDX.dll DXLink.obj -L../dxl/.libs libDXL.lib $(LIBS)
 	rm -f tmpAnyDX.*
-
-
 
 ## JINC set by configure via acinclude.m4
 
