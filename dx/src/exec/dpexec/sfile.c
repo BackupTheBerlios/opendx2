@@ -34,6 +34,10 @@
 #include <sys/select.h>
 #endif
 
+#if defined(HAVE_SYS_IOCTL_H)
+#include <sys/ioctl.h>
+#endif
+
 struct sfile
 {
     enum 
@@ -209,7 +213,7 @@ writeToSFILE(SFILE *sf, char *buf, int n)
 	}
     else
 #endif
-        rtn = write(ssf->fd, buf, n);
+	rtn = write(ssf->fd, buf, n);
 
     if (rtn < 0) {
 
@@ -385,7 +389,7 @@ SFILEIoctl(SFILE *sf, int cmd, void *argp)
 	return ioctlsocket(ssf->socket, cmd, argp);
     else
 #endif
-#if defined(HAVE_IOCTL)
+#if defined(HAVE_SYS_IOCTL_H)
     return ioctl(ssf->fd, cmd, argp);
 #else
     return 1;
