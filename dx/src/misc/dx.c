@@ -5,7 +5,15 @@
 #ifdef DXD_WIN
 #include <windows.h>
 #endif
+
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
+#if defined(HAVE_PROCESS_H)
 #include <process.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -260,7 +268,7 @@ int putenvstr(char *name, char *value)
 
     /* All env params except path should be Unix style */
 #ifdef DXD_WIN
-    if (stricmp(s, "path="))
+    if (strcasecmp(s, "path="))
 	d2u(value);
 #endif
 
@@ -503,7 +511,7 @@ int configure()
     d2u(path0);
     sprintf(teststr, "%s/samples/macros", dxroot);
     d2u(teststr);
-    if (!*path0 || !stricmp(teststr, path0))
+    if (!*path0 || !strcasecmp(teststr, path0))
 	sprintf(dxmacros, "%s/samples/macros", dxroot);
     else
 	sprintf(dxmacros, "%s;%s/samples/macros", path0, dxroot);
@@ -514,7 +522,7 @@ int configure()
     KILLSEMI(path0);
     sprintf(teststr, "%s/samples/data", dxroot);
     d2u(teststr);
-    if (!*path0 || !stricmp(teststr, path0))
+    if (!*path0 || !strcasecmp(teststr, path0))
 	sprintf(dxdata, "%s/samples/data;%s", dxroot, dxroot);
     else
 	sprintf(dxdata, "%s;%s/samples/data;%s", path0, dxroot, dxroot);
@@ -526,16 +534,16 @@ int configure()
     setenvpair(dxcolors,	"DXCOLORS");
     setenvpair(dx8bitcmap,	"DX8BITCMAP");
 
-    if (!*display || !stricmp(display, "localhost:0") || !stricmp(display, "localpc:0"))
+    if (!*display || !strcasecmp(display, "localhost:0") || !strcasecmp(display, "localpc:0"))
 	strcpy(display, ":0.0");
     setenvpair(display,		"DISPLAY");
     setenvpair("1", "DXNO_BACKING_STORE");
     setenvpair("1", "DXFLING");
 
     putenvstr("DXROOT", dxroot);
-    if (stricmp(dxroot, dxexroot))
+    if (strcasecmp(dxroot, dxexroot))
 	setenvpair(dxexroot, "DXEXECROOT");
-    if (stricmp(dxroot, dxuiroot))
+    if (strcasecmp(dxroot, dxuiroot))
 	setenvpair(dxuiroot, "DXUIROOT");
     if (strcmp(exhost, thishost))
 	setenvpair(exhost, "DXHOST");
@@ -575,7 +583,7 @@ int buildcmd()
 	printf("the type of registration (trial, beta, node-locked, floating)\n");
 	printf("to dxsupp@watson.ibm.com, or by calling 914-784-6694\n\n");
 	printf("Enter new registration key or <rtn> to cancel:\n");
-	gets(tmpstr);
+	fgets(tmpstr, sizeof(tmpstr), stdin);
 	if (!*tmpstr) {
 	    printf("Registration left unchanged\n");
 	    exit(0);
@@ -694,7 +702,7 @@ int launchit()
     char buf[BUFFSIZE];
 
     u2d(cdto);
-    _chdir(cdto);
+    chdir(cdto);
     if (exonly && *FileName) {
 	f = fopen(FileName, "r");
 	if (!f)
@@ -704,9 +712,11 @@ int launchit()
 	    ErrorGoto2("Error spawning exec using", cmd, "");
 	while (fgets(buf, BUFFSIZE, f))
 	    fputs(buf, p);
-	_pclose(p);
+	pclose(p);
 	fclose(f);
-    } else {
+    }
+    else
+    {
 	for (i=0, s=cmd; *s; s++) {
 	    for ( ; *s && *s == ' '; s++)
 		;
@@ -720,10 +730,14 @@ int launchit()
 	}
 	args[i] = NULL;
 
+#if defined(HAVE_SPAWNVP)
 	if (strcmp(exmode, "-r") || showversion)
 	    rc = spawnvp(_P_WAIT, cmd, &args[0]);
 	else
 	    rc = spawnvp(_P_OVERLAY, cmd, &args[0]);
+#else
+	rc = execvp(args[0], args);
+#endif
     }
     return 1;
 error:
