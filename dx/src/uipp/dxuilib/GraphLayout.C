@@ -1915,7 +1915,8 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	fprintf (stdout, "%s[%d] placing in group %d...\n", 
 		__FILE__,__LINE__, group->getId());
 	while (node=(Node*)li.getNext()) {
-	    fprintf (stdout, "\t%s\n", node->getLabelString());
+	    fprintf (stdout, "\t%s:%d\n", node->getLabelString(),
+		    node->getInstanceNumber());
 	}
     }
 
@@ -2017,63 +2018,68 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
     int arc_count = crossing_arcs.getSize();
     // this assert says that we should have detected a disconnected
     // subgraph in an earlier test.
-    ASSERT(arc_count);
+    //ASSERT(arc_count);
+    // arc_count can be 0 if we the nodes to which the new placements
+    // are connected haven't been placed yet.
+    boolean arc_found = FALSE;
     arc_count = MIN(maxarcs, arc_count);
     Ark* aa[128];
     int i,j;
-    for (i=0,j=1; i<arc_count; i++,j++) {
-	aa[i] = (Ark*)crossing_arcs.getElement(j);
-    }
-    qsort (aa, arc_count, sizeof(Ark*), GraphLayout::ArcComparator);
-
-
-    // for each arc, compute the x location that will make the wire
-    // straight and test each node in placed to see if the entire
-    // set can move.
-    boolean arc_found = FALSE;
-    for (i=0; i<arc_count; i++) {
-	Ark* arc = aa[i];
-	int input, output;
-	Node* source = arc->getSourceNode(output);
-	Node* dest = arc->getDestinationNode(input);
-	NodeInfo* sinfo = (NodeInfo*)source->getLayoutInformation();
-	NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
-	boolean node_can_move = FALSE;
-	int prevx, prevy;
-
-	int x,y,dummy;
-	if (placed.isMember(source)) {
-	    if (!this->positionSourceOverDest(arc, dummy,dummy,x,y,0,FALSE,FALSE,FALSE)) {
-		// before going ahead with this placement, we should check to 
-		// see if there's already an arc here that we would obstruct.
-		node_can_move = TRUE;
-		sinfo->getXYPosition (prevx, prevy);
-		xdelta = x-prevx;
-		ydelta = y-prevy;
-	    }
-	} else {
-	    if (!this->positionDestUnderSource(arc, dummy,dummy,x,y,0,FALSE,FALSE)) {
-		// before going ahead with this placement, we should check to 
-		// see if there's already an arc here that we would obstruct.
-		node_can_move = TRUE;
-		dinfo->getXYPosition (prevx, prevy);
-		xdelta = x-prevx;
-		ydelta = y-prevy;
-	    }
+    if (arc_count) {
+	for (i=0,j=1; i<arc_count; i++,j++) {
+	    aa[i] = (Ark*)crossing_arcs.getElement(j);
 	}
+	qsort (aa, arc_count, sizeof(Ark*), GraphLayout::ArcComparator);
 
-	// now check all other nodes.
-	if (node_can_move) {
-	    arc_found = TRUE;
-	    ListIterator iter(*connected);
-	    Node* n;
-	    while (n=(Node*)iter.getNext()) {
-		NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
-		int nx,ny;
-		info->getXYPosition(nx,ny);
-		if (!this->nodeCanMoveTo (n, nx+xdelta, ny+ydelta)) {
-		    arc_found = FALSE;
-		    break;
+
+	// for each arc, compute the x location that will make the wire
+	// straight and test each node in placed to see if the entire
+	// set can move.
+	for (i=0; i<arc_count; i++) {
+	    Ark* arc = aa[i];
+	    int input, output;
+	    Node* source = arc->getSourceNode(output);
+	    Node* dest = arc->getDestinationNode(input);
+	    NodeInfo* sinfo = (NodeInfo*)source->getLayoutInformation();
+	    NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
+	    boolean node_can_move = FALSE;
+	    int prevx, prevy;
+
+	    int x,y,dummy;
+	    if (placed.isMember(source)) {
+		if (!this->positionSourceOverDest(arc, dummy,dummy,x,y,0,
+			    FALSE,FALSE,FALSE)) {
+		    // before going ahead with this placement, we should check to 
+		    // see if there's already an arc here that we would obstruct.
+		    node_can_move = TRUE;
+		    sinfo->getXYPosition (prevx, prevy);
+		    xdelta = x-prevx;
+		    ydelta = y-prevy;
+		}
+	    } else {
+		if (!this->positionDestUnderSource(arc, dummy,dummy,x,y,0,FALSE,FALSE)) {
+		    // before going ahead with this placement, we should check to 
+		    // see if there's already an arc here that we would obstruct.
+		    node_can_move = TRUE;
+		    dinfo->getXYPosition (prevx, prevy);
+		    xdelta = x-prevx;
+		    ydelta = y-prevy;
+		}
+	    }
+
+	    // now check all other nodes.
+	    if (node_can_move) {
+		arc_found = TRUE;
+		ListIterator iter(*connected);
+		Node* n;
+		while (n=(Node*)iter.getNext()) {
+		    NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
+		    int nx,ny;
+		    info->getXYPosition(nx,ny);
+		    if (!this->nodeCanMoveTo (n, nx+xdelta, ny+ydelta)) {
+			arc_found = FALSE;
+			break;
+		    }
 		}
 	    }
 	}

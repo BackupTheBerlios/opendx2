@@ -7398,10 +7398,13 @@ void EditorWindow::saveLocationForUndo (UIComponent* uic, boolean mouse, boolean
 		StandIn* si = (StandIn*)uic;
 
 		// error check
-		WorkSpace *current_ws = this->workSpace;
-		int page = this->workSpace->getCurrentPage();
-		if (page) current_ws = this->workSpace->getElement(page);
-		ASSERT (current_ws == si->getWorkSpace());
+		// can't do this error check because something that affects
+		// a standIn's label can cause  bumper cars even if those
+		// standIns aren't in the current page
+		//WorkSpace *current_ws = this->workSpace;
+		//int page = this->workSpace->getCurrentPage();
+		//if (page) current_ws = this->workSpace->getElement(page);
+		//ASSERT (current_ws == si->getWorkSpace());
 
 		if (!separator_pushed) {
 		    this->undo_list.push(new UndoSeparator(this));
