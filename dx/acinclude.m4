@@ -421,16 +421,19 @@ AC_DEFUN(DX_ARCHITECTURE,
 dnl
 dnl  Set up some architecture specific, primarily to handle AIX's
 dnl  export flags. (This needs to be fixed if using gcc)
+dnl  (I added the gcc case)
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_ARCH_SPECIFIC,
 [
     AC_MSG_CHECKING(architecture specific stuff)
     case $ARCH in
 	ibm6000)
-	    DXEXEC_EXP='-bE:$(EXP)'
-	    DXEXEC_IMP='-bI:$(EXP)'
-	    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
-	    AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP)
+	    if test "$CC" != "gcc" ; then
+		DXEXEC_EXP='-bE:$(EXP)'
+		DXEXEC_IMP='-bI:$(EXP)'
+		AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
+		AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP)
+	    fi
 	    ;;
 	linux)
 	    DXEXEC_EXP='-Wl,-export-dynamic'
