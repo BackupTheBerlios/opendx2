@@ -148,7 +148,7 @@ String MBMainWindow::DefaultResources[] =
 
     "*saveOption.labelString:                     Save",
     "*saveOption.mnemonic:                        S",
-    "*saveOption.accelerator:                     Ctrl<Key>S:",
+    "*saveOption.accelerator:                     Ctrl<Key>S",
     "*saveOption.acceleratorText:                 Ctrl+S",
 
     "*saveAsOption.labelString:                   Save As...",
@@ -156,7 +156,7 @@ String MBMainWindow::DefaultResources[] =
 
     "*quitOption.labelString:                     Quit",
     "*quitOption.mnemonic:                        Q",
-    "*quitOption.accelerator:                     Ctrl<Key>Q:",
+    "*quitOption.accelerator:                     Ctrl<Key>Q",
     "*quitOption.acceleratorText:                 Ctrl+Q",
 
     "*XmForm.accelerators:			#augment\n\
