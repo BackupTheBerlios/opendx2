@@ -9,7 +9,7 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
+#include <string.h>
 
 #include "ResetNode.h"
 #include "Parameter.h"

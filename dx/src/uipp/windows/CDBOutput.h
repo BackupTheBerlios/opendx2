@@ -50,11 +50,11 @@ class CDBOutput : public CDBParameter
     //
     CDBOutput()
     {
-	this->cacheWidget = NULL;
-	this->cachePulldown = NULL;
-	this->fullButton = NULL;
-	this->lastButton = NULL;
-	this->offButton = NULL;
+	//this->cacheWidget = NULL;
+	//this->cachePulldown = NULL;
+	//this->fullButton = NULL;
+	//this->lastButton = NULL;
+	//this->offButton = NULL;
     }
 
     //
@@ -64,11 +64,11 @@ class CDBOutput : public CDBParameter
     {
     }
 
-    Widget  cacheWidget;
-    Widget  cachePulldown;
-    Widget  fullButton;
-    Widget  lastButton;
-    Widget  offButton;
+    //Widget  cacheWidget;
+    //Widget  cachePulldown;
+    //Widget  fullButton;
+    //Widget  lastButton;
+    //Widget  offButton;
 
     //
     // Returns a pointer to the class name.

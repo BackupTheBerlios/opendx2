@@ -7,20 +7,11 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 #include <ctype.h>
 #include <time.h>
-
-#include <X11/keysym.h>
-#include <Xm/Xm.h>
-#include <Xm/Frame.h>
-#include <Xm/Form.h>
-#include <Xm/List.h>
-#include <Xm/Label.h>
-#include <Xm/Text.h>
-#include <Xm/ScrolledW.h>
 
 #include "NodeDefinition.h"
 #include "Dictionary.h"
@@ -37,12 +28,12 @@
 boolean ToolSelector::ToolSelectorClassInitialized = FALSE;
 List ToolSelector::AllToolSelectors;
 
-String ToolSelector::DefaultResources[] =
-{
-    ".width:    180",
-    "*traversalOn: False",
-     NUL(char*)
-};    
+//String ToolSelector::DefaultResources[] =
+//{
+//    ".width:    180",
+//    "*traversalOn: False",
+//     NUL(char*)
+//};    
 
 
 //
@@ -92,20 +83,20 @@ void ToolSelector::initialize()
     {
         ASSERT(theApplication);
 
-        this->setDefaultResources(theApplication->getRootWidget(),
-                                  ToolSelector::DefaultResources);
+        //this->setDefaultResources(theApplication->getRootWidget(),
+        //                          ToolSelector::DefaultResources);
         ToolSelector::ToolSelectorClassInitialized = TRUE;
 
     }
 }
 //
 //
-boolean ToolSelector::initialize(Widget parent, Dictionary *d)
+boolean ToolSelector::initialize(Dictionary *d)
 {
     //
     // Create the widgets before do 'addTool'.
     //
-    this->setRootWidget(this->layoutWidgets(parent));
+    //this->setRootWidget(this->layoutWidgets(parent));
 
     theSymbolManager->registerSymbol(ALPHABETIZED);
 
@@ -151,12 +142,12 @@ boolean ToolSelector::augmentLists(Dictionary *d)
 //
 //  Build the widget tree. 
 //
-Widget ToolSelector::layoutWidgets(Widget parent)
-{
-
-    this->treeView = new ToolView(parent, this);
-    return this->treeView->getRootWidget();
-}
+//Widget ToolSelector::layoutWidgets(Widget parent)
+//{
+//
+//    this->treeView = new ToolView(parent, this);
+//    return this->treeView->getRootWidget();
+//}
 
 //
 // Add the Node named 'tool' that is in category 'cat' and defined by 'nd'
@@ -444,21 +435,21 @@ boolean ToolSelector::updateCategoryListWidget()
 
 void ToolView::select(TreeNode* node, boolean repaint) 
 {
-    if (this->getSelection() == node) return ;
-    this->TreeView::select(node, repaint);
-    if (node) {
-	if (node->isLeaf()) {
-	    CategoryNode* cn = (CategoryNode*)node->getParent();
-	    this->toolSelector->categorySelect(cn->getDefinition());
-	    toolSelector->toolSelect(node->getDefinition());
-	} else {
-	    CategoryNode* cn = (CategoryNode*)node;
-	    this->toolSelector->categorySelect(cn->getDefinition());
-	    toolSelector->toolSelect(0);
-	}
-    } else {
-	toolSelector->toolSelect(0);
-    }
+ //   if (this->getSelection() == node) return ;
+ //   this->TreeView::select(node, repaint);
+ //   if (node) {
+	//if (node->isLeaf()) {
+	//    CategoryNode* cn = (CategoryNode*)node->getParent();
+	//    this->toolSelector->categorySelect(cn->getDefinition());
+	//    toolSelector->toolSelect(node->getDefinition());
+	//} else {
+	//    CategoryNode* cn = (CategoryNode*)node;
+	//    this->toolSelector->categorySelect(cn->getDefinition());
+	//    toolSelector->toolSelect(0);
+	//}
+ //   } else {
+	//toolSelector->toolSelect(0);
+ //   }
 }
 void ToolView::adjustVisibility(int x1, int y1, int x2, int y2)
 {
@@ -508,11 +499,11 @@ void ToolView::getSearchableNodes(List& nodes_to_search)
 
 void ToolView::multiClick(TreeNode* node) 
 {
-    this->TreeView::multiClick(node);
-    if (node->isLeaf()) {
-	ToolNode* tn = (ToolNode*)node;
-	toolSelector->lockSelect(tn->getDefinition());
-    }
+ //   this->TreeView::multiClick(node);
+ //   if (node->isLeaf()) {
+	//ToolNode* tn = (ToolNode*)node;
+	//toolSelector->lockSelect(tn->getDefinition());
+ //   }
 }
 
 //

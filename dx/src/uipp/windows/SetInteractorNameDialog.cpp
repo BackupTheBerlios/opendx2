@@ -7,33 +7,30 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
+#include "defines.h"
 
 #include "DXApplication.h"
 #include "SetInteractorNameDialog.h"
 #include "ControlPanel.h"
 
 
-Boolean SetInteractorNameDialog::ClassInitialized = FALSE;
-String SetInteractorNameDialog::DefaultResources[] = {
-    "*dialogTitle: 			Set Interactor label...",
-    "*nameLabel.labelString:		Interactor Label:",
-    NULL
-};
+boolean SetInteractorNameDialog::ClassInitialized = FALSE;
+
+//String SetInteractorNameDialog::DefaultResources[] = {
+//    "*dialogTitle: 			Set Interactor label...",
+//    "*nameLabel.labelString:		Interactor Label:",
+//    NULL
+//};
 
 SetInteractorNameDialog::SetInteractorNameDialog( ControlPanel *panel)  : 
-		SetNameDialog("setInteractorNameDialog", 
-				panel->getRootWidget())
+		SetNameDialog("setInteractorNameDialog")
 {
     this->panel = panel;
 
     if (NOT SetInteractorNameDialog::ClassInitialized)
     {
         SetInteractorNameDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
@@ -44,12 +41,12 @@ SetInteractorNameDialog::~SetInteractorNameDialog()
 //
 // Install the default resources for this class.
 //
-void SetInteractorNameDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget,
-				SetInteractorNameDialog::DefaultResources);
-    this->SetNameDialog::installDefaultResources( baseWidget);
-}
+//void SetInteractorNameDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget,
+//				SetInteractorNameDialog::DefaultResources);
+//    this->SetNameDialog::installDefaultResources( baseWidget);
+//}
 const char *SetInteractorNameDialog::getText()
 {
     return this->panel->getInteractorLabel();
@@ -65,9 +62,9 @@ boolean SetInteractorNameDialog::saveText(const char *s)
 // The dialog must be modal because otherwise the user can select
 // more interactors by double clicking in the vpe.  lloydt124
 //
-Widget SetInteractorNameDialog::createDialog(Widget parent)
+void SetInteractorNameDialog::createDialog()
 {
-    Widget dialog = this->SetNameDialog::createDialog(parent);
-    XtVaSetValues (dialog, XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL, NULL);
-    return dialog;
+    //Widget dialog = this->SetNameDialog::createDialog(parent);
+    //XtVaSetValues (dialog, XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL, NULL);
+    //return dialog;
 }

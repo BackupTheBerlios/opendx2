@@ -7,11 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-
+#include "defines.h"
 
 #include "Network.h"
 #include "OpenCFGDialog.h"
@@ -22,12 +18,12 @@
 
 boolean OpenCFGDialog::ClassInitialized = FALSE;
 
-String OpenCFGDialog::DefaultResources[] =
-{
-        "*dialogTitle:         Open Configuration...",
-        "*dirMask:         *.cfg",
-        NULL
-};
+//String OpenCFGDialog::DefaultResources[] =
+//{
+//        "*dialogTitle:         Open Configuration...",
+//        "*dirMask:         *.cfg",
+//        NULL
+//};
 
 void OpenCFGDialog::okFileWork(const char *string)
 {
@@ -42,8 +38,8 @@ void OpenCFGDialog::okFileWork(const char *string)
 
 }
 
-OpenCFGDialog::OpenCFGDialog(Widget parent, Network *net) : 
-                       FileDialog("openCFGDialog", parent)
+OpenCFGDialog::OpenCFGDialog(Network *net) : 
+                       FileDialog("openCFGDialog")
 {
 
     this->network = net;
@@ -52,7 +48,7 @@ OpenCFGDialog::OpenCFGDialog(Widget parent, Network *net) :
     if (NOT OpenCFGDialog::ClassInitialized)
     {
         OpenCFGDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
 }
@@ -60,8 +56,8 @@ OpenCFGDialog::OpenCFGDialog(Widget parent, Network *net) :
 //
 // Install the default resources for this class.
 //
-void OpenCFGDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, OpenCFGDialog::DefaultResources);
-    this->FileDialog::installDefaultResources( baseWidget);
-}
+//void OpenCFGDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, OpenCFGDialog::DefaultResources);
+//    this->FileDialog::installDefaultResources( baseWidget);
+//}

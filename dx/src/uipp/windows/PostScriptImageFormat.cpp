@@ -9,6 +9,7 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include <string.h>
 
 #include "PostScriptImageFormat.h"
 #include "ImageNode.h"

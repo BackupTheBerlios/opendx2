@@ -9,18 +9,15 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
 #ifndef _MoveNodesDialog_h
 #define _MoveNodesDialog_h
 
 
 #include "Dialog.h"
 
-extern "C" void MoveNodesDialog_ApplyCB (Widget, XtPointer clientData, XtPointer);
-extern "C" void MoveNodesDialog_ModifyNameCB (Widget , XtPointer , XtPointer );
-
+//extern "C" void MoveNodesDialog_ApplyCB (Widget, XtPointer clientData, XtPointer);
+//extern "C" void MoveNodesDialog_ModifyNameCB (Widget , XtPointer , XtPointer );
+//
 
 //
 // Class name definition:
@@ -49,7 +46,7 @@ class MoveNodesDialog : public Dialog
     int position;
     int max;
 
-    Widget apply;
+    //Widget apply;
 
     static boolean ClassInitialized;
 
@@ -69,28 +66,28 @@ class MoveNodesDialog : public Dialog
     //
     // Protected member data:
     //
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
     virtual boolean okCallback(Dialog *d);
-    virtual Widget createDialog(Widget parent);
+    virtual void createDialog();
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
     void update();
 
-    friend void MoveNodesDialog_ApplyCB (Widget, XtPointer clientData, XtPointer);
-    friend void MoveNodesDialog_ModifyNameCB (Widget , XtPointer , XtPointer );
+    //friend void MoveNodesDialog_ApplyCB (Widget, XtPointer clientData, XtPointer);
+    //friend void MoveNodesDialog_ModifyNameCB (Widget , XtPointer , XtPointer );
 
   public:
     //
     // Constructor:
     //
-    MoveNodesDialog(Widget parent, PageSelector* selector);
+    MoveNodesDialog(PageSelector* selector);
 
     //
     // Destructor:

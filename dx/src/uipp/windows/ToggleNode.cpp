@@ -9,7 +9,7 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
+#include <string.h>
 
 #include "ToggleNode.h"
 #include "ToggleInstance.h"

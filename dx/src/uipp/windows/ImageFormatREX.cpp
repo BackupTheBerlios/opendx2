@@ -9,6 +9,7 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include <string.h>
 
 #include "ImageFormatREX.h"
 #include "Application.h"

@@ -7,12 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-
-
+#include "defines.h"
 
 #include <stdio.h>
 
@@ -33,39 +28,39 @@
 
 boolean InsertNetworkDialog::ClassInitialized = FALSE;
 
-String InsertNetworkDialog::DefaultResources[] =
-{
-        ".dialogTitle:     Insert...",
-        "*dirMask:         *.net",
-        "*helpLabelString: Comments",
-        NULL
-};
-
-InsertNetworkDialog::InsertNetworkDialog(Widget parent) : 
-		OpenNetworkDialog("insertNetworkDialog",parent) 
+//String InsertNetworkDialog::DefaultResources[] =
+//{
+//        ".dialogTitle:     Insert...",
+//        "*dirMask:         *.net",
+//        "*helpLabelString: Comments",
+//        NULL
+//};
+//
+InsertNetworkDialog::InsertNetworkDialog() : 
+		OpenNetworkDialog("insertNetworkDialog") 
 { 
     if (NOT InsertNetworkDialog::ClassInitialized)
     {
         InsertNetworkDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
-InsertNetworkDialog::InsertNetworkDialog(const char *name, Widget parent) : 
-                       OpenNetworkDialog(name, parent) { }
+InsertNetworkDialog::InsertNetworkDialog(const char *name) : 
+                       OpenNetworkDialog(name) { }
 
 InsertNetworkDialog::~InsertNetworkDialog() { }
 
 //
 // Install the default resources for this class.
 //
-void InsertNetworkDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget,InsertNetworkDialog::DefaultResources);
-    this->OpenNetworkDialog::installDefaultResources( baseWidget);
-}
-
-
+//void InsertNetworkDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget,InsertNetworkDialog::DefaultResources);
+//    this->OpenNetworkDialog::installDefaultResources( baseWidget);
+//}
+//
+//
 
 //
 // Create a temporary network, read the new file into it, then

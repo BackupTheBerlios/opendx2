@@ -9,7 +9,7 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
+#include <string.h>
 
 #include "Network.h"
 #include "DXLOutputNode.h"

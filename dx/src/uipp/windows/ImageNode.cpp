@@ -9,6 +9,7 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include <string.h>
 
 #if defined(DXD_WIN) || defined(OS2)          //SMH get socket calls
 #undef send

@@ -8,10 +8,6 @@
 
 #include <dxconfig.h>
 
-
-
-
-
 #include "StandIn.h"
 #include "ItalicLabeledStandIn.h"
 #include "Node.h"
@@ -19,9 +15,10 @@
 
 
 boolean ItalicLabeledStandIn::ClassInitialized = FALSE;
-String ItalicLabeledStandIn::DefaultResources[] = {
- 	NULL
-};
+
+//String ItalicLabeledStandIn::DefaultResources[] = {
+// 	NULL
+//};
 
 //
 // Static allocator found in theSIAllocatorDictionary
@@ -51,12 +48,12 @@ void ItalicLabeledStandIn::initialize()
 {
     if (!ItalicLabeledStandIn::ClassInitialized) {
         ItalicLabeledStandIn::ClassInitialized = TRUE;
-        this->setDefaultResources(theApplication->getRootWidget(),
-                                  ItalicLabeledStandIn::DefaultResources);
-        this->setDefaultResources(theApplication->getRootWidget(),
-                                  LabeledStandIn::DefaultResources);
-        this->setDefaultResources(theApplication->getRootWidget(),
-                                  StandIn::DefaultResources);
+        //this->setDefaultResources(theApplication->getRootWidget(),
+        //                          ItalicLabeledStandIn::DefaultResources);
+        //this->setDefaultResources(theApplication->getRootWidget(),
+        //                          LabeledStandIn::DefaultResources);
+        //this->setDefaultResources(theApplication->getRootWidget(),
+        //                          StandIn::DefaultResources);
     }
     //
     // Call the superclass initialize()

@@ -19,14 +19,7 @@
 # undef abs
 #endif
 
-#if HAS_RENAME
-# ifdef sun4
-#  include <unistd.h>   // For rename()
-# else
-#  include <stdio.h>    // For rename()
-# endif
-#endif  // HAS_RENAME
-
+#include <string.h>
 
 #include "lex.h"
 #include "DXStrings.h"

@@ -38,7 +38,7 @@ class OpenNetCommentDialog : public TextEditDialog
     //
     // Protected member data:
     //
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     char	*text; 
 
@@ -47,14 +47,14 @@ class OpenNetCommentDialog : public TextEditDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
 
     //
     // Constructor:
     //
-    OpenNetCommentDialog(Widget parent);
+    OpenNetCommentDialog();
 
     //
     // Destructor:

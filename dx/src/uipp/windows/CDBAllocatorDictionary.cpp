@@ -49,11 +49,11 @@ CDBAllocatorDictionary::~CDBAllocatorDictionary()
 // Call the allocator with the arguments name, w, and n, and return the 
 // result.
 //
-//ConfigurationDialog *CDBAllocatorDictionary::allocate(Symbol namesym,
-//		Widget w, Node *n)
-//{
-//    ConfigurationDialog *i = NUL(ConfigurationDialog*);
-//    CDBAllocator a = this->findAllocator(namesym);
-//    if (a != NUL(CDBAllocator)) i = a(w, n);
-//    return i;
-//}
+ConfigurationDialog *CDBAllocatorDictionary::allocate(Symbol namesym,
+		Node *n)
+{
+    ConfigurationDialog *i = NUL(ConfigurationDialog*);
+    CDBAllocator a = this->findAllocator(namesym);
+    if (a != NUL(CDBAllocator)) i = a(n);
+    return i;
+}

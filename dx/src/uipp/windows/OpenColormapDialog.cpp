@@ -7,10 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-#include <Xm/Xm.h>
+#include "defines.h"
 
 #include "Application.h"
 #include "ColormapEditor.h"
@@ -20,12 +17,12 @@
 
 boolean OpenColormapDialog::ClassInitialized = FALSE;
 
-String OpenColormapDialog::DefaultResources[] =
-{
-        "*dialogTitle:     Open Colormap...",
-        "*dirMask:         *.cm",
-        NULL
-};
+//String OpenColormapDialog::DefaultResources[] =
+//{
+//        "*dialogTitle:     Open Colormap...",
+//        "*dirMask:         *.cm",
+//        NULL
+//};
 
 
 
@@ -42,22 +39,19 @@ void OpenColormapDialog::okFileWork(const char *string)
     }
 }
 
-OpenColormapDialog::OpenColormapDialog( Widget parent, 
+OpenColormapDialog::OpenColormapDialog( 
                                        ColormapEditor* editor,
                                        int opening) : 
-                       FileDialog("openColormapDialog", parent)
+                       FileDialog("openColormapDialog")
 {
 
     this->editor = editor;
     this->opening = opening;
-
-    //XMapRaised(XtDisplay(this->getRootWidget()),
-    //           XtWindow(this->getRootWidget()));
  
     if (NOT OpenColormapDialog::ClassInitialized)
     {
         OpenColormapDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
 }
@@ -65,11 +59,12 @@ OpenColormapDialog::OpenColormapDialog( Widget parent,
 //
 // Install the default resources for this class.
 //
-void OpenColormapDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, OpenColormapDialog::DefaultResources);
-    this->FileDialog::installDefaultResources( baseWidget);
-}
+//void OpenColormapDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, OpenColormapDialog::DefaultResources);
+//    this->FileDialog::installDefaultResources( baseWidget);
+//}
+
 void OpenColormapDialog::setMode(boolean opening)
 {
     this->opening = opening;
@@ -79,17 +74,17 @@ void OpenColormapDialog::setMode(boolean opening)
 //
 void OpenColormapDialog::manage()
 {
-    XmString   xmstring;
+ //   XmString   xmstring;
 
-    if (opening)
-	xmstring = XmStringCreateSimple("Open Colormap...");
-    else
-	xmstring = XmStringCreateSimple("Save Colormap...");
+ //   if (opening)
+	//xmstring = XmStringCreateSimple("Open Colormap...");
+ //   else
+	//xmstring = XmStringCreateSimple("Save Colormap...");
 
-    XtVaSetValues(this->fsb,
-		  XmNdialogTitle, xmstring,
-		  NULL);
-    XmStringFree(xmstring);
+ //   XtVaSetValues(this->fsb,
+	//	  XmNdialogTitle, xmstring,
+	//	  NULL);
+ //   XmStringFree(xmstring);
 
     this->FileDialog::manage();
 }

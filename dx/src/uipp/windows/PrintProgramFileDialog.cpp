@@ -7,11 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-
+#include "defines.h"
 
 #include "DXStrings.h"
 #include "Application.h"
@@ -24,12 +20,12 @@
 
 boolean PrintProgramFileDialog::ClassInitialized = FALSE;
 
-String PrintProgramFileDialog::DefaultResources[] =
-{
-        "*dialogTitle:     Save Program As PostScript...",
-        "*dirMask:         *.ps",
-        NULL
-};
+//String PrintProgramFileDialog::DefaultResources[] =
+//{
+//        "*dialogTitle:     Save Program As PostScript...",
+//        "*dirMask:         *.ps",
+//        NULL
+//};
 
 
 void PrintProgramFileDialog::okFileWork(const char *filename)
@@ -39,8 +35,7 @@ void PrintProgramFileDialog::okFileWork(const char *filename)
 
 PrintProgramFileDialog::PrintProgramFileDialog( PrintProgramDialog *ppd,
 						Network *network ) :
-			   FileDialog("printProgramFileDialog", 
-			    ppd->getRootWidget())
+			   FileDialog("printProgramFileDialog")
 {
     this->network = network;
     this->printProgramDialog = ppd;
@@ -48,19 +43,19 @@ PrintProgramFileDialog::PrintProgramFileDialog( PrintProgramDialog *ppd,
     if (NOT PrintProgramFileDialog::ClassInitialized)
     {
         PrintProgramFileDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
 //
 // Install the default resources for this class.
 //
-void PrintProgramFileDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget,
-				PrintProgramFileDialog::DefaultResources);
-    this->FileDialog::installDefaultResources( baseWidget);
-}
+//void PrintProgramFileDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget,
+//				PrintProgramFileDialog::DefaultResources);
+//    this->FileDialog::installDefaultResources( baseWidget);
+//}
 
 char *PrintProgramFileDialog::getDefaultFileName()
 {

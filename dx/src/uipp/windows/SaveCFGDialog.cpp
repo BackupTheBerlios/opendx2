@@ -7,11 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-
+#include "defines.h"
 
 #include "Network.h"
 #include "SaveCFGDialog.h"
@@ -23,12 +19,12 @@
 
 boolean SaveCFGDialog::ClassInitialized = FALSE;
 
-String SaveCFGDialog::DefaultResources[] =
-{
-        "*dialogTitle:         Save Configuration...",
-        "*dirMask:         *.cfg",
-        NULL
-};
+//String SaveCFGDialog::DefaultResources[] =
+//{
+//        "*dialogTitle:         Save Configuration...",
+//        "*dirMask:         *.cfg",
+//        NULL
+//};
 
 void SaveCFGDialog::saveFile(const char *string)
 {
@@ -43,8 +39,8 @@ void SaveCFGDialog::saveFile(const char *string)
 
 }
 
-SaveCFGDialog::SaveCFGDialog(Widget parent, Network *net) : 
-                SaveFileDialog("saveCFGDialog", parent, ".cfg")
+SaveCFGDialog::SaveCFGDialog(Network *net) : 
+                SaveFileDialog("saveCFGDialog", ".cfg")
 {
     this->network= net;
     this->hasCommentButton = FALSE;
@@ -52,18 +48,19 @@ SaveCFGDialog::SaveCFGDialog(Widget parent, Network *net) :
     if (NOT SaveCFGDialog::ClassInitialized)
     {
         SaveCFGDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
 //
 // Install the default resources for this class.
 //
-void SaveCFGDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, SaveCFGDialog::DefaultResources);
-    this->SaveFileDialog::installDefaultResources( baseWidget);
-}
+//void SaveCFGDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, SaveCFGDialog::DefaultResources);
+//    this->SaveFileDialog::installDefaultResources( baseWidget);
+//}
+
 // FIXME: There is a chunk of code here which belongs in Network.  It actually
 // sits in Network::FilenameToCfgname but it's ifdef-ed out.  Remove this one
 // and enable that one.

@@ -63,7 +63,7 @@ class SetScalarAttrDialog : public SetAttrDialog
     //
     // Private member data:
     //
-    //static boolean ClassInitialized;
+    static boolean ClassInitialized;
 
     //friend void SetScalarAttrDialog_NumberCB(Widget	 widget,
 		  //       XtPointer clientData,

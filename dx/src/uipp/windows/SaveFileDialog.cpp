@@ -9,14 +9,13 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include <sys/stat.h>
+#include <string.h>
 
 #include "DXStrings.h"
 #include "Application.h"
 #include "SaveFileDialog.h"
 #include "QuestionDialogManager.h"
-
-
-#include <sys/stat.h>
 
 class confirmation_data {
     public:

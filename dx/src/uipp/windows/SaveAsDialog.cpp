@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 
@@ -25,12 +25,12 @@
 
 boolean SaveAsDialog::ClassInitialized = FALSE;
 
-String SaveAsDialog::DefaultResources[] =
-{
-        "*dialogTitle:     Save As...",
-        "*dirMask:         *.net",
-        NULL
-};
+//String SaveAsDialog::DefaultResources[] =
+//{
+//        "*dialogTitle:     Save As...",
+//        "*dirMask:         *.net",
+//        NULL
+//};
 
 
 void SaveAsDialog::saveFile(const char *filename)
@@ -42,8 +42,8 @@ void SaveAsDialog::saveFile(const char *filename)
 	((OpenCommand*)this->postCmd)->execute();
 }
 
-SaveAsDialog::SaveAsDialog(Widget parent, Network *network) : 
-                       SaveFileDialog("saveAsDialog", parent,".net")
+SaveAsDialog::SaveAsDialog(Network *network) : 
+                       SaveFileDialog("saveAsDialog", ".net")
 {
     this->network = network;
     this->postCmd = NULL;
@@ -51,18 +51,18 @@ SaveAsDialog::SaveAsDialog(Widget parent, Network *network) :
     if (NOT SaveAsDialog::ClassInitialized)
     {
         SaveAsDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
 //
 // Install the default resources for this class.
 //
-void SaveAsDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, SaveAsDialog::DefaultResources);
-    this->SaveFileDialog::installDefaultResources( baseWidget);
-}
+//void SaveAsDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, SaveAsDialog::DefaultResources);
+//    this->SaveFileDialog::installDefaultResources( baseWidget);
+//}
 
 char *SaveAsDialog::getDefaultFileName()
 {
@@ -73,15 +73,3 @@ char *SaveAsDialog::getDefaultFileName()
 	return NULL;
 }
 
-#if 0	// Moved to FileDialog 7/18/94
-//
-// Install the current file name in the file selection box.
-void SaveAsDialog::manage()
-{
-   this->FileDialog::manage(); 
-   const char *file = this->cp->getNetwork()->getFileName();
-   if (file)
-       this->setFileName(file);
-}
-
-#endif

@@ -25,7 +25,7 @@ class LabelDecorator;
 class DecoratorStyle;
 
 
-extern "C" void SetAnnotatorTextDialog_HideShowCB (Widget , XtPointer , XtPointer);
+//extern "C" void SetAnnotatorTextDialog_HideShowCB (Widget , XtPointer , XtPointer);
 
 
 //
@@ -39,7 +39,7 @@ class SetAnnotatorTextDialog : public SetDecoratorTextDialog
     // Private member data:
     //
     static boolean ClassInitialized;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     DecoratorStyle* hide_style;
     DecoratorStyle* show_style;
@@ -48,8 +48,8 @@ class SetAnnotatorTextDialog : public SetDecoratorTextDialog
     //
     // Protected member data:
     //
-    Widget hide_show;
-    virtual Widget createDialog(Widget);
+    //Widget hide_show;
+    //virtual Widget createDialog(Widget);
     virtual void hideCallback();
 
     //
@@ -57,9 +57,9 @@ class SetAnnotatorTextDialog : public SetDecoratorTextDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
-    friend void SetAnnotatorTextDialog_HideShowCB (Widget , XtPointer , XtPointer);
+    //friend void SetAnnotatorTextDialog_HideShowCB (Widget , XtPointer , XtPointer);
 
     //
     // The string returned must match what's in VPEAnnotator::DefaultResources
@@ -71,7 +71,7 @@ class SetAnnotatorTextDialog : public SetDecoratorTextDialog
     //
     // Constructor:
     //
-    SetAnnotatorTextDialog(Widget parent, boolean readonly, 
+    SetAnnotatorTextDialog(boolean readonly, 
 	LabelDecorator *dec);
 
     //

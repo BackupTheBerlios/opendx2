@@ -18,8 +18,6 @@
 #ifndef _Separator_Decorator_h
 #define _Separator_Decorator_h
 
-#include <X11/Intrinsic.h>
-
 #include "Decorator.h"
 
 #define ClassSeparatorDecorator	"SeparatorDecorator"
@@ -38,12 +36,12 @@ class SeparatorDecorator : public Decorator
     // D R A G - N - D R O P
     // D R A G - N - D R O P
     static Dictionary *DragTypeDictionary;
-    static Widget      DragIcon;
+    //static Widget      DragIcon;
  
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   // P R O T E C T E D   P R O T E C T E D   P R O T E C T E D   
   protected:
-    static  String 	   DefaultResources[]; 
+    //static  String 	   DefaultResources[]; 
 
     virtual void 	   completeDecorativePart();
 
@@ -72,7 +70,7 @@ class SeparatorDecorator : public Decorator
     // D R A G - N - D R O P
     virtual Dictionary* getDragDictionary() 
 	{ return SeparatorDecorator::DragTypeDictionary; }
-    virtual boolean     decodeDragType (int, char *, XtPointer *, unsigned long *, long);
+    //virtual boolean     decodeDragType (int, char *, XtPointer *, unsigned long *, long);
 
     // J A V A     J A V A     J A V A     J A V A     J A V A     
     // J A V A     J A V A     J A V A     J A V A     J A V A     

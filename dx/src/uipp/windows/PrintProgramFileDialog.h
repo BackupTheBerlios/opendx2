@@ -9,10 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
-
 #ifndef _PrintProgramFileDialog_h
 #define _PrintProgramFileDialog_h
 
@@ -37,7 +33,7 @@ class PrintProgramDialog;
 class PrintProgramFileDialog : public FileDialog
 {
     static boolean ClassInitialized;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
 
   protected:
@@ -52,7 +48,7 @@ class PrintProgramFileDialog : public FileDialog
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //

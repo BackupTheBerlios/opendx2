@@ -7,10 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
+#include "defines.h"
 
 #include <string.h> 
 #include "FindStack.h"

@@ -9,6 +9,7 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include <string.h>
 
 #include "ImageFormatYUV.h"
 #include "Application.h"

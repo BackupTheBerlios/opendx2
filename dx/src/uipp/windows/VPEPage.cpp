@@ -14,9 +14,9 @@
 #include "EditorWindow.h"
 
 
-VPEPage::VPEPage (const char* name, Widget parent, WorkSpaceInfo *info,
+VPEPage::VPEPage (const char* name, WorkSpaceInfo *info,
     EditorWindow* editor, WorkSpaceRoot* root) :
-    EditorWorkSpace(name, parent, info, editor), WorkSpacePage(root)
+    EditorWorkSpace(name, info, editor), WorkSpacePage(root)
 {
 }
 

@@ -7,18 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-#include <Xm/Form.h>
-#include <Xm/Frame.h>
-#include <Xm/Label.h>
-#include <Xm/PushB.h>
-#include <Xm/Text.h>
-#include <Xm/List.h>
-#include <Xm/RowColumn.h>
-#include <Xm/Separator.h>
+#include "defines.h"
 
 #include "lex.h"
 #include "SetAttrDialog.h"
@@ -39,41 +28,42 @@
 
 
 boolean SelectionAttrDialog::ClassInitialized = FALSE;
-String  SelectionAttrDialog::DefaultResources[] =
-{
 
-    "*accelerators:		#augment\n"
-#if 1
-	"<Key>Return:			BulletinBoardReturn()",
-#else
-	"<Key>Return:			BulletinBoardReturn()\n"
-	"<Btn2Down>,<Btn2Up>:		HELP!",
-#endif
-    ".width: 300",
-    "*valueLabel.labelString:Value:",
-    "*labelLabel.labelString:Label:",
-    "*cancelButton.labelString:Cancel", 
-    "*okButton.labelString:OK", 
+//String  SelectionAttrDialog::DefaultResources[] =
+//{
+//
+//    "*accelerators:		#augment\n"
+//#if 1
+//	"<Key>Return:			BulletinBoardReturn()",
+//#else
+//	"<Key>Return:			BulletinBoardReturn()\n"
+//	"<Btn2Down>,<Btn2Up>:		HELP!",
+//#endif
+//    ".width: 300",
+//    "*valueLabel.labelString:Value:",
+//    "*labelLabel.labelString:Label:",
+//    "*cancelButton.labelString:Cancel", 
+//    "*okButton.labelString:OK", 
+//
+//    NULL
+//};
 
-    NULL
-};
 
-
-SelectionAttrDialog::SelectionAttrDialog( Widget 	  parent,
+SelectionAttrDialog::SelectionAttrDialog( 
 				     const char* title,
 				     SelectionInstance *si) :
-    SetAttrDialog("selectionAttr", parent, title, (InteractorInstance*)si), 
+    SetAttrDialog("selectionAttr", title, (InteractorInstance*)si), 
     ListEditor(name) 
 {
-    this->labelText = NULL;
-    this->valueText = NULL;
+    //this->labelText = NULL;
+    //this->valueText = NULL;
     this->valueType = DXType::DetermineListItemType(
 				si->getValueOptionsAttribute());
 
     if (NOT SelectionAttrDialog::ClassInitialized)
     {
         SelectionAttrDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 
@@ -88,14 +78,14 @@ SelectionAttrDialog::~SelectionAttrDialog()
 //
 // Install the default resources for this class.
 //
-void SelectionAttrDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget,
-				SelectionAttrDialog::DefaultResources);
-    this->setDefaultResources(baseWidget,
-				ListEditor::DefaultResources);
-    this->SetAttrDialog::installDefaultResources( baseWidget);
-}
+//void SelectionAttrDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget,
+//				SelectionAttrDialog::DefaultResources);
+//    this->setDefaultResources(baseWidget,
+//				ListEditor::DefaultResources);
+//    this->SetAttrDialog::installDefaultResources( baseWidget);
+//}
 
 // 
 // Extract the value and label string from the list item. 
@@ -119,14 +109,14 @@ void SelectionAttrDialog::setAttributeSensitivity()
     SelectionInstance *si = (SelectionInstance*)this->interactorInstance;
     SelectionNode *snode = (SelectionNode*)si->getNode();
 
-    Boolean s = (snode->isDataDriven() == FALSE ? True : False);
+    //Boolean s = (snode->isDataDriven() == FALSE ? True : False);
 
-    XtSetSensitive(this->labelText, s);
-    XtSetSensitive(this->valueText, s);
+    //XtSetSensitive(this->labelText, s);
+    //XtSetSensitive(this->valueText, s);
     // don't desensitize the list because it prevents scrolling.
     //XtSetSensitive(this->valueList, s);
-    XtSetSensitive(this->addButton, s);
-    XtSetSensitive(this->deleteButton, s);
+    //XtSetSensitive(this->addButton, s);
+    //XtSetSensitive(this->deleteButton, s);
 }
 
 
@@ -144,8 +134,8 @@ void SelectionAttrDialog::updateValueEditor(const char *text)
     value = new char [len+1]; 
 
     ParseListItem(text,value,label);
-    XmTextSetString(this->valueText,value);
-    XmTextSetString(this->labelText,label);
+    //XmTextSetString(this->valueText,value);
+    //XmTextSetString(this->labelText,label);
 
     delete label;
     delete value;
@@ -169,15 +159,15 @@ char *SelectionAttrDialog::getValueEditorValue()
     /*
      * Get the current label text.
      */
-    label = XmTextGetString(this->labelText);
-    value = XmTextGetString(this->valueText);
+    //label = XmTextGetString(this->labelText);
+    //value = XmTextGetString(this->valueText);
 
     if (IsBlankString(label))
     {
 	/*
 	 * If the text is blank, we cannot add it to the list.
 	 */
-	ModalErrorMessage(this->getRootWidget(),
+	ModalErrorMessage(
 	    "The label field must contain a value.");
 	goto error;
     } 
@@ -186,7 +176,7 @@ char *SelectionAttrDialog::getValueEditorValue()
 	/*
 	 * If the value is blank, we cannot add it to the list.
 	 */
-	ModalErrorMessage(this->getRootWidget(),
+	ModalErrorMessage(
 	    "The value field must contain a value.");
 	goto error;
     }
@@ -195,7 +185,7 @@ char *SelectionAttrDialog::getValueEditorValue()
 	/*
 	 * The label can not contain double quotes. 
 	 */
-	ModalErrorMessage(this->getRootWidget(), 
+	ModalErrorMessage(
 				"The label can not contain double quotes.");
 	goto error;
     }
@@ -245,7 +235,7 @@ char *SelectionAttrDialog::getValueEditorValue()
 	     else if (DXValue::CoerceValue (value, DXType::TensorType))
 		type = DXType::TensorType;
 	     else {
-	     	ModalErrorMessage(this->getRootWidget(),
+	     	ModalErrorMessage(
 			     "'%s' is not a supported type.", value);
 		goto error;
 	    }
@@ -290,14 +280,14 @@ char *SelectionAttrDialog::getValueEditorValue()
 	    } else {
 		nvalue2 = (char*)nvalue1;
 	    }
-	    XmTextSetString(this->valueText, (char*)nvalue2);
+	    //XmTextSetString(this->valueText, (char*)nvalue2);
 	    buffer = new char [STRLEN(label) + STRLEN(nvalue2) + 
 			     STRLEN(VALUE_LABEL_SPRINTF_FORMAT) + 1];
 	    sprintf(buffer, VALUE_LABEL_SPRINTF_FORMAT, nvalue2, label);
 	    if (nvalue2 != nvalue1)
 		delete nvalue2;
 	} else {
-	    ModalErrorMessage(this->getRootWidget(), 
+	    ModalErrorMessage(
 			"'%s' is not the same dimension as current value(s).", 
 			value);
 	}
@@ -306,18 +296,18 @@ char *SelectionAttrDialog::getValueEditorValue()
     else 
     {
 	if (accept_any)
-	    ModalErrorMessage(this->getRootWidget(), 
+	    ModalErrorMessage(
 			"'%s' is not a valid value.", value);
 	else
-	    ModalErrorMessage(this->getRootWidget(), 
+	    ModalErrorMessage(
 			"'%s' is not the same type as current value(s).", 
 			value);
     }
 
 error:
     if (saved_value) delete saved_value;
-    XtFree(label);
-    XtFree(value);
+    //XtFree(label);
+    //XtFree(value);
     return buffer;
 }
 
@@ -351,7 +341,7 @@ boolean SelectionAttrDialog::storeAttributes()
 	       strcat(strlist," ");
 	       strcat(vallist," ");
 	    }
-	    XtFree(text);
+	    //XtFree(text);
 	}
 	strcat(vallist,"}");
 	strcat(strlist,"}");
@@ -403,8 +393,8 @@ void SelectionAttrDialog::updateDisplayedAttributes()
 	delete  strings;
     }
 
-    XmTextSetString(this->valueText, "0");
-    XmTextSetString(this->labelText, "");
+    //XmTextSetString(this->valueText, "0");
+    //XmTextSetString(this->labelText, "");
 }
 
 //
@@ -417,115 +407,115 @@ void SelectionAttrDialog::loadAttributes()
     return;
 }
 
-void SelectionAttrDialog::createAttributesPart(Widget mainForm)
+void SelectionAttrDialog::createAttributesPart()
 {
-    this->createListEditor(mainForm);
+    this->createListEditor();
     this->updateDisplayedAttributes();
 }
 
-Widget SelectionAttrDialog::createValueEditor(Widget mainForm)
+void SelectionAttrDialog::createValueEditor()
 {
-
-    /////////////////////////////////////////////////////////////
-    // Create the widgets from left to right and top to bottom.//
-    /////////////////////////////////////////////////////////////
-
-    // XtVaSetValues(mainForm,XmNautoUnmanage, False, NULL);
-
-    XtVaSetValues(this->valueList,XmNvisibleItemCount, 10, 0);
-
-    //
-    // The OK and CANCEL buttons. 
-    //
-
-    this->ok =  XtVaCreateManagedWidget(
-        "okButton", xmPushButtonWidgetClass, mainForm, 
-			XmNleftAttachment  , XmATTACH_FORM,
-			XmNleftOffset	   , 5,
-			XmNbottomAttachment, XmATTACH_FORM,
-			XmNbottomOffset	   , 10,
-			XmNrecomputeSize   , False,
-			XmNwidth	   , 75,
-			NULL);
-		
-
-    this->cancel =  XtVaCreateManagedWidget(
-        "cancelButton", xmPushButtonWidgetClass, mainForm,
-			XmNrightAttachment , XmATTACH_FORM,
-			XmNrightOffset	   , 5,
-			XmNbottomAttachment, XmATTACH_FORM,
-			XmNbottomOffset	   , 10,
-			XmNrecomputeSize   , False,
-			XmNwidth	   , 75,
-			NULL);
-
-    Widget separator = XtVaCreateManagedWidget(
-        "separator", xmSeparatorWidgetClass, mainForm, 
-			XmNbottomAttachment, XmATTACH_WIDGET,
-			XmNbottomWidget    , this->ok,
-			XmNbottomOffset	   , 10,
-			XmNleftAttachment  , XmATTACH_FORM,
-			XmNleftOffset	   , 2, 
-			XmNrightAttachment , XmATTACH_FORM,
-			XmNrightOffset	   , 2, 
-			NULL);
-
-    //
-    // The value text window 
-    //
-    this->valueText = XtVaCreateManagedWidget("valueText",
-			xmTextWidgetClass , mainForm,
-			XmNbottomAttachment, 	XmATTACH_WIDGET,
-			XmNbottomWidget, 	separator,
-			XmNbottomOffset,	10,
-			XmNleftAttachment, 	XmATTACH_FORM,
-			XmNleftOffset,		5,
-			XmNcolumns,		14,
-			NULL); 
-
-    this->installValueEditorCallback(this->valueText, XmNactivateCallback);
-
-    //
-    // The label text window 
-    //
-    this->labelText = XtVaCreateManagedWidget("labelText",
-			xmTextWidgetClass , mainForm,
-			XmNbottomAttachment, 	XmATTACH_WIDGET,
-			XmNbottomWidget, 	separator,
-			XmNbottomOffset,	10,
-			XmNleftAttachment, 	XmATTACH_WIDGET,
-			XmNleftWidget, 		this->valueText,
-			XmNleftOffset,		10,
-			XmNrightAttachment, 	XmATTACH_FORM,
-			XmNrightOffset,		5,
-			NULL); 
-
-    this->installValueEditorCallback(this->labelText, XmNactivateCallback);
-
-
-    //
-    // The Value label 
-    //
-    Widget valueLabel = XtVaCreateManagedWidget("valueLabel",
-			xmLabelWidgetClass , 	mainForm,
-			XmNbottomAttachment, 	XmATTACH_WIDGET,
-			XmNbottomWidget, 	this->valueText,
-			XmNbottomOffset,	5,
-			XmNleftAttachment, 	XmATTACH_FORM,
-			XmNleftOffset,		5,
-			NULL); 
-    //
-    // The Label label 
-    //
-    Widget labelLabel = XtVaCreateManagedWidget("labelLabel",
-			xmLabelWidgetClass, 	mainForm,
-			XmNbottomAttachment, 	XmATTACH_WIDGET,
-			XmNbottomWidget, 	this->valueText,
-			XmNbottomOffset,	5,
-			XmNleftAttachment, 	XmATTACH_OPPOSITE_WIDGET,
-			XmNleftWidget, 		this->labelText,
-			XmNleftOffset, 	 	0,
-			NULL); 
-
-    return valueLabel;
+//
+//    /////////////////////////////////////////////////////////////
+//    // Create the widgets from left to right and top to bottom.//
+//    /////////////////////////////////////////////////////////////
+//
+//    // XtVaSetValues(mainForm,XmNautoUnmanage, False, NULL);
+//
+//    XtVaSetValues(this->valueList,XmNvisibleItemCount, 10, 0);
+//
+//    //
+//    // The OK and CANCEL buttons. 
+//    //
+//
+//    this->ok =  XtVaCreateManagedWidget(
+//        "okButton", xmPushButtonWidgetClass, mainForm, 
+//			XmNleftAttachment  , XmATTACH_FORM,
+//			XmNleftOffset	   , 5,
+//			XmNbottomAttachment, XmATTACH_FORM,
+//			XmNbottomOffset	   , 10,
+//			XmNrecomputeSize   , False,
+//			XmNwidth	   , 75,
+//			NULL);
+//		
+//
+//    this->cancel =  XtVaCreateManagedWidget(
+//        "cancelButton", xmPushButtonWidgetClass, mainForm,
+//			XmNrightAttachment , XmATTACH_FORM,
+//			XmNrightOffset	   , 5,
+//			XmNbottomAttachment, XmATTACH_FORM,
+//			XmNbottomOffset	   , 10,
+//			XmNrecomputeSize   , False,
+//			XmNwidth	   , 75,
+//			NULL);
+//
+//    Widget separator = XtVaCreateManagedWidget(
+//        "separator", xmSeparatorWidgetClass, mainForm, 
+//			XmNbottomAttachment, XmATTACH_WIDGET,
+//			XmNbottomWidget    , this->ok,
+//			XmNbottomOffset	   , 10,
+//			XmNleftAttachment  , XmATTACH_FORM,
+//			XmNleftOffset	   , 2, 
+//			XmNrightAttachment , XmATTACH_FORM,
+//			XmNrightOffset	   , 2, 
+//			NULL);
+//
+//    //
+//    // The value text window 
+//    //
+//    this->valueText = XtVaCreateManagedWidget("valueText",
+//			xmTextWidgetClass , mainForm,
+//			XmNbottomAttachment, 	XmATTACH_WIDGET,
+//			XmNbottomWidget, 	separator,
+//			XmNbottomOffset,	10,
+//			XmNleftAttachment, 	XmATTACH_FORM,
+//			XmNleftOffset,		5,
+//			XmNcolumns,		14,
+//			NULL); 
+//
+//    this->installValueEditorCallback(this->valueText, XmNactivateCallback);
+//
+//    //
+//    // The label text window 
+//    //
+//    this->labelText = XtVaCreateManagedWidget("labelText",
+//			xmTextWidgetClass , mainForm,
+//			XmNbottomAttachment, 	XmATTACH_WIDGET,
+//			XmNbottomWidget, 	separator,
+//			XmNbottomOffset,	10,
+//			XmNleftAttachment, 	XmATTACH_WIDGET,
+//			XmNleftWidget, 		this->valueText,
+//			XmNleftOffset,		10,
+//			XmNrightAttachment, 	XmATTACH_FORM,
+//			XmNrightOffset,		5,
+//			NULL); 
+//
+//    this->installValueEditorCallback(this->labelText, XmNactivateCallback);
+//
+//
+//    //
+//    // The Value label 
+//    //
+//    Widget valueLabel = XtVaCreateManagedWidget("valueLabel",
+//			xmLabelWidgetClass , 	mainForm,
+//			XmNbottomAttachment, 	XmATTACH_WIDGET,
+//			XmNbottomWidget, 	this->valueText,
+//			XmNbottomOffset,	5,
+//			XmNleftAttachment, 	XmATTACH_FORM,
+//			XmNleftOffset,		5,
+//			NULL); 
+//    //
+//    // The Label label 
+//    //
+//    Widget labelLabel = XtVaCreateManagedWidget("labelLabel",
+//			xmLabelWidgetClass, 	mainForm,
+//			XmNbottomAttachment, 	XmATTACH_WIDGET,
+//			XmNbottomWidget, 	this->valueText,
+//			XmNbottomOffset,	5,
+//			XmNleftAttachment, 	XmATTACH_OPPOSITE_WIDGET,
+//			XmNleftWidget, 		this->labelText,
+//			XmNleftOffset, 	 	0,
+//			NULL); 
+//
+//    return valueLabel;
 }

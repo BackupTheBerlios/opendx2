@@ -57,6 +57,7 @@
 #define chdir _chdir
 #endif
 
+#include <string.h>
 
 #include "lex.h"
 #include "DXVersion.h"

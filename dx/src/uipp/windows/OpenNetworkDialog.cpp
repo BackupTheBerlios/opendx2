@@ -7,12 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-
-
+#include "defines.h"
 
 #include <stdio.h>
 
@@ -24,20 +19,18 @@
 #include "InfoDialogManager.h"
 #include "Network.h"
 
-
-
 boolean OpenNetworkDialog::ClassInitialized = FALSE;
 
-String OpenNetworkDialog::DefaultResources[] =
-{
-        "*dialogTitle:     Open...",
-        "*dirMask:         *.net",
-        "*helpLabelString: Comments",
-        NULL
-};
+//String OpenNetworkDialog::DefaultResources[] =
+//{
+//        "*dialogTitle:     Open...",
+//        "*dirMask:         *.net",
+//        "*helpLabelString: Comments",
+//        NULL
+//};
 
-OpenNetworkDialog::OpenNetworkDialog(Widget parent) : 
-                       FileDialog("openNetworkDialog", parent)
+OpenNetworkDialog::OpenNetworkDialog() : 
+                       FileDialog("openNetworkDialog")
 {
     this->hasCommentButton = TRUE;
     this->netCommentDialog = NULL;
@@ -45,11 +38,11 @@ OpenNetworkDialog::OpenNetworkDialog(Widget parent) :
     if (NOT OpenNetworkDialog::ClassInitialized)
     {
         OpenNetworkDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
-OpenNetworkDialog::OpenNetworkDialog(const char *name, Widget parent) : 
-                       FileDialog(name, parent)
+OpenNetworkDialog::OpenNetworkDialog(const char *name) : 
+                       FileDialog(name)
 {
     this->hasCommentButton = TRUE;
     this->netCommentDialog = NULL;
@@ -64,18 +57,18 @@ OpenNetworkDialog::~OpenNetworkDialog()
 //
 // Install the default resources for this class.
 //
-void OpenNetworkDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, OpenNetworkDialog::DefaultResources);
-    this->FileDialog::installDefaultResources( baseWidget);
-}
-#if 0
-void OpenNetworkDialog::unmanage(const char *string)
-{
-    if (this->netCommentDialog)
-	this->netCommentDialog->unmanage();
-}
-#endif
+//void OpenNetworkDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, OpenNetworkDialog::DefaultResources);
+//    this->FileDialog::installDefaultResources( baseWidget);
+//}
+//#if 0
+//void OpenNetworkDialog::unmanage(const char *string)
+//{
+//    if (this->netCommentDialog)
+//	this->netCommentDialog->unmanage();
+//}
+//#endif
 void OpenNetworkDialog::okFileWork(const char *string)
 {
     theDXApplication->getExecCtl()->terminateExecution();
@@ -96,7 +89,7 @@ void OpenNetworkDialog::helpCallback(Dialog* dialog)
     boolean wasEncoded;
  
     if (!f) {
-	ModalErrorMessage(this->getRootWidget(),"A file must be selected.");
+	ModalErrorMessage("A file must be selected.");
 	goto out;
     }
 
@@ -104,7 +97,7 @@ void OpenNetworkDialog::helpCallback(Dialog* dialog)
 
     fp = Network::OpenNetworkFILE(netfile,&wasEncoded,&errmsg);
     if (!fp) {
-	ModalErrorMessage(this->getRootWidget(),errmsg);
+	ModalErrorMessage(errmsg);
 	if (errmsg[0]) delete errmsg;
 	goto out;
     }
@@ -136,14 +129,14 @@ void OpenNetworkDialog::helpCallback(Dialog* dialog)
 
 
     if (!comment) {
-	ModalInfoMessage(this->getRootWidget(),
+	ModalInfoMessage(
 		"No comments were found in file %s", netfile);
 	goto out;
     }
 
     if (!this->netCommentDialog) {
 	this->netCommentDialog = 
-	    new OpenNetCommentDialog(this->getRootWidget());
+	    new OpenNetCommentDialog();
         this->netCommentDialog->post();
     } else {
 	this->netCommentDialog->manage();

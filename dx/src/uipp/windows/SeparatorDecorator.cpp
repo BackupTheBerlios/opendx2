@@ -7,21 +7,13 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
-#include <Xm/Xm.h>
-#include <Xm/Separator.h>
-
-#include "XmUtility.h"
-#include "../widgets/WorkspaceW.h"
 #include "Application.h"
 #include "DXStrings.h"
 #include "Dictionary.h"
 #include "SeparatorDecorator.h"
-#include "../widgets/XmDX.h"
 #include "WarningDialogManager.h"
-#include "ntractor.bm"
-#include "ntractormask.bm"
 #include "SetSeparatorAttrDlg.h"
 #include "ListIterator.h"
 
@@ -30,20 +22,20 @@
 boolean SeparatorDecorator::SeparatorDecoratorClassInitialized = FALSE;
 
 Dictionary* SeparatorDecorator::DragTypeDictionary = new Dictionary;
-Widget SeparatorDecorator::DragIcon;
+//Widget SeparatorDecorator::DragIcon;
 
-String SeparatorDecorator::DefaultResources[] =
-{
-  ".decorator.topOffset:      2",
-  ".decorator.bottomOffset:   2",
-  ".decorator.leftOffset:     2",
-  ".decorator.rightOffset:    2",
-  NUL(char*)
-};
+//String SeparatorDecorator::DefaultResources[] =
+//{
+//  ".decorator.topOffset:      2",
+//  ".decorator.bottomOffset:   2",
+//  ".decorator.leftOffset:     2",
+//  ".decorator.rightOffset:    2",
+//  NUL(char*)
+//};
 
 
 SeparatorDecorator::SeparatorDecorator(boolean developerStyle) : 
-	Decorator (xmSeparatorWidgetClass, "SeparatorDecorator", developerStyle)
+	Decorator (0, "SeparatorDecorator", developerStyle)
 {
     this->setAttrDialog = NUL(SetSeparatorAttrDlg*);
 }
@@ -61,20 +53,20 @@ void SeparatorDecorator::initialize()
     //
     if (NOT SeparatorDecorator::SeparatorDecoratorClassInitialized)
     {
-	this->setDefaultResources(theApplication->getRootWidget(),
-                                        SeparatorDecorator::DefaultResources);
-	this->setDefaultResources(theApplication->getRootWidget(),
-                                        Decorator::DefaultResources);
-	this->setDefaultResources(theApplication->getRootWidget(),
-                                        WorkSpaceComponent::DefaultResources);
+	//this->setDefaultResources(theApplication->getRootWidget(),
+ //                                       SeparatorDecorator::DefaultResources);
+	//this->setDefaultResources(theApplication->getRootWidget(),
+ //                                       Decorator::DefaultResources);
+	//this->setDefaultResources(theApplication->getRootWidget(),
+ //                                       WorkSpaceComponent::DefaultResources);
         SeparatorDecorator::SeparatorDecoratorClassInitialized = TRUE;
 
-#if WANT_DND_IN_DECORATORS
-	SeparatorDecorator::DragIcon = this->createDragIcon
-	 (ntractor_width,ntractor_height,(char *)ntractor_bits,(char *)ntractormask_bits);
-	this->addSupportedType (Decorator::Modules, DXINTERACTORS, TRUE);
-	this->addSupportedType (Decorator::Trash, DXTRASH, FALSE);
-#endif
+//#if WANT_DND_IN_DECORATORS
+//	SeparatorDecorator::DragIcon = this->createDragIcon
+//	 (ntractor_width,ntractor_height,(char *)ntractor_bits,(char *)ntractormask_bits);
+//	this->addSupportedType (Decorator::Modules, DXINTERACTORS, TRUE);
+//	this->addSupportedType (Decorator::Trash, DXTRASH, FALSE);
+//#endif
     }
 }
 
@@ -99,41 +91,41 @@ int w,h;
 
     this->resizeCB();
 
-#if WANT_DND_IN_DECORATORS
-    this->setDragIcon (SeparatorDecorator::DragIcon);
-    this->setDragWidget (this->customPart);
-#endif
+//#if WANT_DND_IN_DECORATORS
+//    this->setDragIcon (SeparatorDecorator::DragIcon);
+//    this->setDragWidget (this->customPart);
+//#endif
 }
 
 void SeparatorDecorator::setVerticalLayout (boolean vertical)
 {
-int x,y,w,h;
-boolean swap_dimensions = FALSE;
-
-    if (!this->customPart) return ;
-
-    if ((vertical) && (this->currentLayout & WorkSpaceComponent::Horizontal)) {
-	swap_dimensions = TRUE;
-    } else if ((!vertical) && (this->currentLayout & WorkSpaceComponent::Vertical)) {
-	swap_dimensions = TRUE;
-    }
-    if (swap_dimensions) {
-	this->getXYSize (&w,&h);
-	if (vertical) {
-	    this->setXYSize (8,w);
-	    XtVaSetValues (this->getRootWidget(), XmNwidth, 0, NULL);
-	    XtVaSetValues (this->getRootWidget(), XmNwidth, 8, NULL);
-	} else {
-	    this->setXYSize (h,8);
-	    XtVaSetValues (this->getRootWidget(), XmNheight, 0, NULL);
-	    XtVaSetValues (this->getRootWidget(), XmNheight, 8, NULL);
-	}
-	this->getXYPosition (&x,&y);
-	this->setXYPosition (MAX(0,x+(w>>1)-(h>>1)),  MAX(0,y+(h>>1)-(w>>1)));
-	this->resizeCB();
-    }
-    this->WorkSpaceComponent::setVerticalLayout (vertical);
-    this->currentLayout&= ~WorkSpaceComponent::NotSet;
+//int x,y,w,h;
+//boolean swap_dimensions = FALSE;
+//
+//    if (!this->customPart) return ;
+//
+//    if ((vertical) && (this->currentLayout & WorkSpaceComponent::Horizontal)) {
+//	swap_dimensions = TRUE;
+//    } else if ((!vertical) && (this->currentLayout & WorkSpaceComponent::Vertical)) {
+//	swap_dimensions = TRUE;
+//    }
+//    if (swap_dimensions) {
+//	this->getXYSize (&w,&h);
+//	if (vertical) {
+//	    this->setXYSize (8,w);
+//	    XtVaSetValues (this->getRootWidget(), XmNwidth, 0, NULL);
+//	    XtVaSetValues (this->getRootWidget(), XmNwidth, 8, NULL);
+//	} else {
+//	    this->setXYSize (h,8);
+//	    XtVaSetValues (this->getRootWidget(), XmNheight, 0, NULL);
+//	    XtVaSetValues (this->getRootWidget(), XmNheight, 8, NULL);
+//	}
+//	this->getXYPosition (&x,&y);
+//	this->setXYPosition (MAX(0,x+(w>>1)-(h>>1)),  MAX(0,y+(h>>1)-(w>>1)));
+//	this->resizeCB();
+//    }
+//    this->WorkSpaceComponent::setVerticalLayout (vertical);
+//    this->currentLayout&= ~WorkSpaceComponent::NotSet;
 }
 
 
@@ -173,32 +165,32 @@ boolean SeparatorDecorator::parseComment (const char *comment, const char *f, in
 //
 void SeparatorDecorator::resizeCB ()
 {
-Dimension w,h;
-Boolean pinSide2Side = False;
-Boolean pinTop2Bottom = False;
-Boolean allowVertical = False;
-Boolean allowHorizontal = False;
-
-    if (!this->customPart) return ;
-    XtVaGetValues (this->getRootWidget(), XmNwidth, &w, XmNheight, &h, NULL);
-    if (w<h) {
-	XtVaSetValues (this->customPart, XmNorientation, XmVERTICAL, NULL);
-	pinTop2Bottom = True;
-	allowVertical = True;
-	this->currentLayout = WorkSpaceComponent::Vertical;
-    } else {
-	XtVaSetValues (this->customPart, XmNorientation, XmHORIZONTAL, NULL);
-	pinSide2Side = True;
-	allowHorizontal = True;
-	this->currentLayout = WorkSpaceComponent::Horizontal;
-    }
-    XtVaSetValues (this->getRootWidget(), 
-	XmNallowVerticalResizing, allowVertical, 
-	XmNallowHorizontalResizing, allowHorizontal, 
-	XmNpinLeftRight, pinSide2Side,
-	XmNpinTopBottom, pinTop2Bottom, 
-    NULL);
-    this->WorkSpaceComponent::setVerticalLayout (w<h);
+//Dimension w,h;
+//Boolean pinSide2Side = False;
+//Boolean pinTop2Bottom = False;
+//Boolean allowVertical = False;
+//Boolean allowHorizontal = False;
+//
+//    if (!this->customPart) return ;
+//    XtVaGetValues (this->getRootWidget(), XmNwidth, &w, XmNheight, &h, NULL);
+//    if (w<h) {
+//	XtVaSetValues (this->customPart, XmNorientation, XmVERTICAL, NULL);
+//	pinTop2Bottom = True;
+//	allowVertical = True;
+//	this->currentLayout = WorkSpaceComponent::Vertical;
+//    } else {
+//	XtVaSetValues (this->customPart, XmNorientation, XmHORIZONTAL, NULL);
+//	pinSide2Side = True;
+//	allowHorizontal = True;
+//	this->currentLayout = WorkSpaceComponent::Horizontal;
+//    }
+//    XtVaSetValues (this->getRootWidget(), 
+//	XmNallowVerticalResizing, allowVertical, 
+//	XmNallowHorizontalResizing, allowHorizontal, 
+//	XmNpinLeftRight, pinSide2Side,
+//	XmNpinTopBottom, pinTop2Bottom, 
+//    NULL);
+//    this->WorkSpaceComponent::setVerticalLayout (w<h);
 }
 
 Decorator*
@@ -217,41 +209,41 @@ SeparatorDecorator::isA(Symbol classname)
 }
 
 
-boolean SeparatorDecorator::decodeDragType (int tag,
-	char * a, XtPointer *value, unsigned long *length, long operation)
-{
-boolean retVal;
-
-    switch (tag) {
-	case Decorator::Modules:
-	    retVal = this->convert(this->getNetwork(), a, value, length, operation);
-	    break;
- 
-	case Decorator::Trash:
-	    retVal = TRUE;
-	    // dummy pointer
-	    *value = (XtPointer)malloc(4);
-	    *length = 4;
-	    break;
- 
-	default:
-	    retVal = FALSE;
-	    break;
-    }
- 
-    return retVal;
-}
+//boolean SeparatorDecorator::decodeDragType (int tag,
+//	char * a, XtPointer *value, unsigned long *length, long operation)
+//{
+//boolean retVal;
+//
+//    switch (tag) {
+//	case Decorator::Modules:
+//	    retVal = this->convert(this->getNetwork(), a, value, length, operation);
+//	    break;
+// 
+//	case Decorator::Trash:
+//	    retVal = TRUE;
+//	    // dummy pointer
+//	    *value = (XtPointer)malloc(4);
+//	    *length = 4;
+//	    break;
+// 
+//	default:
+//	    retVal = FALSE;
+//	    break;
+//    }
+// 
+//    return retVal;
+//}
 
 void
 SeparatorDecorator::openDefaultWindow()
 {
-    ASSERT(this->getRootWidget());
-    if (!this->setAttrDialog) {
-        this->setAttrDialog = 
-	    new SetSeparatorAttrDlg (this->getRootWidget(), FALSE, this);
-    }
+    //ASSERT(this->getRootWidget());
+    //if (!this->setAttrDialog) {
+    //    this->setAttrDialog = 
+	   // new SetSeparatorAttrDlg (this->getRootWidget(), FALSE, this);
+    //}
  
-    this->setAttrDialog->post();
+    //this->setAttrDialog->post();
 }
 
 //
@@ -261,14 +253,14 @@ SeparatorDecorator::openDefaultWindow()
 void
 SeparatorDecorator::setAppearance (boolean developerStyle)
 {
-int hilite = (developerStyle? Decorator::HiLites : 0);
-
-    if ((this->width > this->height) && (this->customPart))
-	XtVaSetValues (this->customPart, 
-	    XmNleftOffset,  hilite,
-	    XmNrightOffset,  hilite,
-	NULL);
-    this->Decorator::setAppearance (developerStyle);
+//int hilite = (developerStyle? Decorator::HiLites : 0);
+//
+//    if ((this->width > this->height) && (this->customPart))
+//	XtVaSetValues (this->customPart, 
+//	    XmNleftOffset,  hilite,
+//	    XmNrightOffset,  hilite,
+//	NULL);
+//    this->Decorator::setAppearance (developerStyle);
 }
 
 boolean SeparatorDecorator::printAsJava (FILE* jf, const char* var_name, int instance_no)

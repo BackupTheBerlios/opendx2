@@ -15,16 +15,6 @@
 // It should NOT be an Application method, because otherwise
 // it requires that defines.h include Application.h.
 //
-extern "C" void AssertionFailure(const char *file, int line)
-{
-    fprintf(stderr,"Internal error detected at \"%s\":%d.\n",
-		file, line);
-//    if (theApplication)
-//	theApplication->abortApplication();
-//    else
-	abort();
-}
-
 
 int
 STRLEN(char *a)

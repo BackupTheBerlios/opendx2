@@ -7,10 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
+#include "defines.h"
 
 #include "MWFileDialog.h"
 #include "Application.h"
@@ -20,11 +17,11 @@
 
 boolean MWFileDialog::ClassInitialized = FALSE;
 
-String MWFileDialog::DefaultResources[] =
-{
-    "*dirMask:         *.log",
-    NULL
-};
+//String MWFileDialog::DefaultResources[] =
+//{
+//    "*dirMask:         *.log",
+//    NULL
+//};
 
 
 void MWFileDialog::okFileWork(const char *file)
@@ -43,8 +40,8 @@ void MWFileDialog::cancelCallback(Dialog *d)
     this->FileDialog::cancelCallback(d);
 }
 
-MWFileDialog::MWFileDialog(Widget parent, MsgWin *messageWindow):
-    FileDialog("mwFileDialog", parent)
+MWFileDialog::MWFileDialog(MsgWin *messageWindow):
+    FileDialog("mwFileDialog")
 {
     this->log = TRUE;
     this->messageWindow = messageWindow;
@@ -52,17 +49,17 @@ MWFileDialog::MWFileDialog(Widget parent, MsgWin *messageWindow):
     if (NOT MWFileDialog::ClassInitialized)
     {
         MWFileDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 //
 // Install the default resources for this class.
 //
-void MWFileDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, MWFileDialog::DefaultResources);
-    this->FileDialog::installDefaultResources( baseWidget);
-}
+//void MWFileDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, MWFileDialog::DefaultResources);
+//    this->FileDialog::installDefaultResources( baseWidget);
+//}
 
 //
 // True means that this will make a log request next, false means a save
@@ -74,9 +71,9 @@ void MWFileDialog::postAs(boolean log)
 
     this->FileDialog::post();
 
-    XmString title = XmStringCreateSimple(log? (char *)"Log...": (char *)"Save As...");
-    XtVaSetValues(this->getFileSelectionBox(),
-		  XmNdialogTitle, title,
-		  NULL);
-    XmStringFree(title);
+    //XmString title = XmStringCreateSimple(log? (char *)"Log...": (char *)"Save As...");
+    //XtVaSetValues(this->getFileSelectionBox(),
+		  //XmNdialogTitle, title,
+		  //NULL);
+    //XmStringFree(title);
 }

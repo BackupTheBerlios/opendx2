@@ -619,14 +619,14 @@ void ControlPanelGroupDialog::setToggles()
 //    VerifyNameText(widget, cbs);
 //}
 //
-//
-//void ControlPanelGroupDialog::manage()
-//{
+
+void ControlPanelGroupDialog::manage()
+{
 //    this->makeGroupList();
 //    this->makeToggles();
 //    XmTextSetString(this->text,NULL);
 //    this->Dialog::manage();
-//}
+}
 
 void ControlPanelGroupDialog::setData(PanelGroupManager* pgm)
 {

@@ -27,8 +27,8 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void StartOptionsDialog_NumberTextCB(Widget, XtPointer, XtPointer);
-extern "C" void StartOptionsDialog_ToggleCB(Widget, XtPointer, XtPointer);
+//extern "C" void StartOptionsDialog_NumberTextCB(Widget, XtPointer, XtPointer);
+//extern "C" void StartOptionsDialog_ToggleCB(Widget, XtPointer, XtPointer);
 
 
 //
@@ -40,38 +40,38 @@ class StartOptionsDialog : public Dialog
     //
     // Private member data:
     //
-    static Boolean ClassInitialized;
+    static boolean ClassInitialized;
 
   protected:
     //
     // Protected member data:
     //
-    static String  DefaultResources[];
-    friend void StartOptionsDialog_ToggleCB(Widget w, XtPointer clientData, XtPointer);
-    friend void StartOptionsDialog_NumberTextCB(Widget w, XtPointer clientData, XtPointer);
+    //static String  DefaultResources[];
+    //friend void StartOptionsDialog_ToggleCB(Widget w, XtPointer clientData, XtPointer);
+    //friend void StartOptionsDialog_NumberTextCB(Widget w, XtPointer clientData, XtPointer);
 
     virtual boolean okCallback(Dialog *clientData);
 
-    virtual Widget createDialog(Widget parent);
-    Widget execText;
-    Widget cwdText;
-    Widget memText;
-    Widget optionsText;
-    Widget connectButton;
-    Widget portStepper;
+    virtual void createDialog();
+    //Widget execText;
+    //Widget cwdText;
+    //Widget memText;
+    //Widget optionsText;
+    //Widget connectButton;
+    //Widget portStepper;
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
     // Constructor:
     //
-    StartOptionsDialog(Widget parent);
+    StartOptionsDialog();
 
     //
     // Destructor:

@@ -5,6 +5,7 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+
 #include "UndoNode.h"
 #include "EditorWindow.h"
 #include "UIComponent.h"

@@ -180,9 +180,9 @@ void WorkSpace::initializeRootWidget(boolean fromFirstIntanceOfADerivedClass)
 //    ws->doSelectionAction(widget,calldata);
 //}
 //
-//
-//void WorkSpace::setCursor(int cursorType)
-//{
+
+void WorkSpace::setCursor(int cursorType)
+{
 //    Widget widget;
 //    int    n;
 //    Arg    arg[5];
@@ -225,13 +225,13 @@ void WorkSpace::initializeRootWidget(boolean fromFirstIntanceOfADerivedClass)
 //    XDefineCursor(XtDisplay(widget), XtWindow(widget), _cursor[cursorType]);
 //
 //    XFlush(XtDisplay(widget));
-//}
+}
 //
 ////
 //// reset the WorkSpace cursor to the default.
 ////
-//void WorkSpace::resetCursor()
-//{
+void WorkSpace::resetCursor()
+{
 //    Widget widget;
 //    int n;
 //    Arg arg[2];
@@ -249,8 +249,8 @@ void WorkSpace::initializeRootWidget(boolean fromFirstIntanceOfADerivedClass)
 //    XUndefineCursor(XtDisplay(widget), XtWindow(widget));
 //
 //    XFlush(XtDisplay(widget));
-//}
-//
+}
+
 //
 // Set the Height and Width of the work space.
 //

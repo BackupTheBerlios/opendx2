@@ -18,9 +18,9 @@
 
 #include "Dialog.h"
 
-extern "C" void SetPageNameDialog_ApplyCB (Widget, XtPointer clientData, XtPointer);
-extern "C" void SetPageNameDialog_ModifyNameCB (Widget , XtPointer , XtPointer );
-
+//extern "C" void SetPageNameDialog_ApplyCB (Widget, XtPointer clientData, XtPointer);
+//extern "C" void SetPageNameDialog_ModifyNameCB (Widget , XtPointer , XtPointer );
+//
 
 //
 // Class name definition:
@@ -46,11 +46,11 @@ class SetPageNameDialog : public Dialog
     int position;
     int max;
 
-    Widget page_name_widget;
-    Widget ps_toggle;
-    Widget auto_scroll_toggle;
-    Widget position_number;
-    Widget apply;
+    //Widget page_name_widget;
+    //Widget ps_toggle;
+    //Widget auto_scroll_toggle;
+    //Widget position_number;
+    //Widget apply;
 
     static boolean ClassInitialized;
 
@@ -64,19 +64,19 @@ class SetPageNameDialog : public Dialog
     //
     // Protected member data:
     //
-    Widget pageName;
+    //Widget pageName;
 
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
     virtual boolean okCallback(Dialog *d);
-    virtual Widget createDialog(Widget parent);
+    virtual void createDialog(void);
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
     //
     // Check the given name to see if it is a valid page name.
@@ -87,14 +87,14 @@ class SetPageNameDialog : public Dialog
 
     void update();
 
-    friend void SetPageNameDialog_ApplyCB (Widget, XtPointer clientData, XtPointer);
-    friend void SetPageNameDialog_ModifyNameCB (Widget , XtPointer , XtPointer );
+    //friend void SetPageNameDialog_ApplyCB (Widget, XtPointer clientData, XtPointer);
+    //friend void SetPageNameDialog_ModifyNameCB (Widget , XtPointer , XtPointer );
 
   public:
     //
     // Constructor:
     //
-    SetPageNameDialog(Widget parent, PageSelector* selector);
+    SetPageNameDialog(PageSelector* selector);
 
     //
     // Destructor:

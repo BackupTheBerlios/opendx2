@@ -9,9 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
 #include <string.h>
 
 #include "EchoNode.h"

@@ -21,6 +21,7 @@
 #include "DecoratorStyle.h"
 #include "Dictionary.h"
 #include <math.h>
+
 //#include <limits.h> // for INT_MIN and INT_MAX
 //
 // How it works:

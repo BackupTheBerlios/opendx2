@@ -7,11 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include <defines.h>
-
-
-
-
+#include "defines.h"
 
 #include "StandIn.h"
 #include "LabeledStandIn.h"
@@ -21,9 +17,9 @@
 
 boolean LabeledStandIn::ClassInitialized = FALSE;
 
-String LabeledStandIn::DefaultResources[]  =  {
-	NULL
-};
+//String LabeledStandIn::DefaultResources[]  =  {
+//	NULL
+//};
 
 //
 // Static allocator found in theSIAllocatorDictionary
@@ -53,10 +49,10 @@ void LabeledStandIn::initialize()
 {
     if (!LabeledStandIn::ClassInitialized) {
         LabeledStandIn::ClassInitialized = TRUE;
-        this->setDefaultResources(theApplication->getRootWidget(),
-                                  LabeledStandIn::DefaultResources);
-        this->setDefaultResources(theApplication->getRootWidget(),
-                                  StandIn::DefaultResources);
+        //this->setDefaultResources(theApplication->getRootWidget(),
+        //                          LabeledStandIn::DefaultResources);
+        //this->setDefaultResources(theApplication->getRootWidget(),
+        //                          StandIn::DefaultResources);
     }
 
     //

@@ -16,6 +16,7 @@
 #endif
 #include <time.h>
 #include <stdio.h>	// For fprintf(), fseek() and rename()
+#include <string.h>
 
 #if defined(DXD_WIN) || defined(OS2)          //SMH get correct name for unlink for NT in stdio.h
 #define unlink _unlink

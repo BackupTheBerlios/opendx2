@@ -43,31 +43,23 @@ class CDBParameter : public Base
 
 
   public:
-    Widget  nameWidget;
-    Widget  hideWidget;
-    Widget  typeWidget;
-    Widget  connectedToWidget;
+    //Widget  nameWidget;
+    //Widget  hideWidget;
+    //Widget  typeWidget;
+    //Widget  connectedToWidget;
 
     boolean initialIsHidden;
     boolean lineIsHidden;
-
-#if 0
-    Widget  valueWidget;
-    boolean valueChanged;
-    boolean initialValueIsDefault;
-    char   *initialValue;
-    int	    cycleState;    
-#endif
 
     //
     // Constructor:
     //
     CDBParameter()
     {
-	this->nameWidget = NULL;
-	this->hideWidget = NULL;
-	this->typeWidget = NULL;
-	this->connectedToWidget = NULL;
+	//this->nameWidget = NULL;
+	//this->hideWidget = NULL;
+	//this->typeWidget = NULL;
+	//this->connectedToWidget = NULL;
 	this->initialIsHidden = FALSE;
 	this->lineIsHidden = FALSE;
     }

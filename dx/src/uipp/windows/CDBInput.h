@@ -9,16 +9,13 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
-
 #ifndef _CDBInput
 #define _CDBInput
 
 
 #include "DXStrings.h"
 #include "CDBParameter.h"
-#include "../base/TextPopup.h"
+#include "TextPopup.h"
 
 
 //

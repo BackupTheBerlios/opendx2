@@ -7,15 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-
-#include <Xm/Form.h>
-#include <Xm/Label.h>
-#include <Xm/PushB.h>
-#include <Xm/Separator.h>
+#include "defines.h"
 
 #include "DXStrings.h"
 #include "MoveNodesDialog.h"
@@ -31,29 +23,29 @@
 #include "ErrorDialogManager.h"
 
 #include "DictionaryIterator.h"
-#include "XmUtility.h"
 
 boolean MoveNodesDialog::ClassInitialized = FALSE;
-String MoveNodesDialog::DefaultResources[] =
-{
-    "*nameLabel.labelString:            Page Name:",
-    "*nameLabel.foreground:             SteelBlue",
-    "*textSelector.maxLength:	   	12",
-    "*textSelector.columns:	   	12",
-    "*okButton.labelString:             OK",
-    "*okButton.width:                   60",
-    "*applyButton.labelString:          Apply",
-    "*applyButton.width:                60",
-    "*cancelButton.labelString:         Cancel",
-    "*cancelButton.width:               60",
-    "*accelerators:           		#augment\n"
-    "<Key>Return:                   	BulletinBoardReturn()",
-    NULL
-};
+
+//String MoveNodesDialog::DefaultResources[] =
+//{
+//    "*nameLabel.labelString:            Page Name:",
+//    "*nameLabel.foreground:             SteelBlue",
+//    "*textSelector.maxLength:	   	12",
+//    "*textSelector.columns:	   	12",
+//    "*okButton.labelString:             OK",
+//    "*okButton.width:                   60",
+//    "*applyButton.labelString:          Apply",
+//    "*applyButton.width:                60",
+//    "*cancelButton.labelString:         Cancel",
+//    "*cancelButton.width:               60",
+//    "*accelerators:           		#augment\n"
+//    "<Key>Return:                   	BulletinBoardReturn()",
+//    NULL
+//};
 
 
-MoveNodesDialog::MoveNodesDialog(Widget parent, PageSelector* psel):
-    Dialog("setPageNameDialog", parent)
+MoveNodesDialog::MoveNodesDialog(PageSelector* psel):
+    Dialog("setPageNameDialog")
 {
     this->selector = psel;
     this->selector_menu = NUL(TextSelector*);
@@ -65,7 +57,7 @@ MoveNodesDialog::MoveNodesDialog(Widget parent, PageSelector* psel):
     this->scope = new CommandScope;
     if (MoveNodesDialog::ClassInitialized == FALSE) {
         MoveNodesDialog::ClassInitialized = TRUE;
-	this->installDefaultResources(theApplication->getRootWidget());
+	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
     this->apply_cmd = new MoveNodesCommand("move", this->scope, TRUE, this);
@@ -74,11 +66,11 @@ MoveNodesDialog::MoveNodesDialog(Widget parent, PageSelector* psel):
 //
 // Install the default resources for this class.
 //
-void MoveNodesDialog::installDefaultResources(Widget  baseWidget)
-{
-    this->setDefaultResources(baseWidget, MoveNodesDialog::DefaultResources);
-    this->Dialog::installDefaultResources( baseWidget);
-}
+//void MoveNodesDialog::installDefaultResources(Widget  baseWidget)
+//{
+//    this->setDefaultResources(baseWidget, MoveNodesDialog::DefaultResources);
+//    this->Dialog::installDefaultResources( baseWidget);
+//}
 
 MoveNodesDialog::~MoveNodesDialog()
 {
@@ -87,85 +79,85 @@ MoveNodesDialog::~MoveNodesDialog()
 }
 
 
-Widget MoveNodesDialog::createDialog(Widget parent)
+void MoveNodesDialog::createDialog()
 {
-    Arg arg[10];
-    int n = 0;
-    XtSetArg(arg[n], XmNautoUnmanage, False); n++;
-    XtSetArg(arg[n], XmNminWidth, 340); n++;
-    XtSetArg(arg[n], XmNminHeight, 90); n++;
-    XtSetArg(arg[n], XmNwidth, 340); n++;
-    Widget dialog = this->CreateMainForm(parent, this->name, arg, n);
+ //   Arg arg[10];
+ //   int n = 0;
+ //   XtSetArg(arg[n], XmNautoUnmanage, False); n++;
+ //   XtSetArg(arg[n], XmNminWidth, 340); n++;
+ //   XtSetArg(arg[n], XmNminHeight, 90); n++;
+ //   XtSetArg(arg[n], XmNwidth, 340); n++;
+ //   Widget dialog = this->CreateMainForm(parent, this->name, arg, n);
 
-    XtVaSetValues(XtParent(dialog), XmNtitle, "Move Nodes to Page...", NULL);
+ //   XtVaSetValues(XtParent(dialog), XmNtitle, "Move Nodes to Page...", NULL);
 
-    Widget w = XtVaCreateManagedWidget("nameLabel", 
-	xmLabelWidgetClass, dialog,
-        XmNtopAttachment   , XmATTACH_FORM,
-        XmNtopOffset       , 10,
-        XmNleftAttachment  , XmATTACH_FORM,
-        XmNleftOffset      , 5,
-    NULL);
+ //   Widget w = XtVaCreateManagedWidget("nameLabel", 
+	//xmLabelWidgetClass, dialog,
+ //       XmNtopAttachment   , XmATTACH_FORM,
+ //       XmNtopOffset       , 10,
+ //       XmNleftAttachment  , XmATTACH_FORM,
+ //       XmNleftOffset      , 5,
+ //   NULL);
 
-    this->selector_menu = new TextSelector; 
-    this->selector_menu->createTextSelector(dialog, (XtCallbackProc)
-	MoveNodesDialog_ModifyNameCB, (XtPointer)this);
-    this->selector_menu->manage();
-    Widget selm = this->selector_menu->getRootWidget();
-    XtVaSetValues(selm,
-        XmNtopAttachment   , XmATTACH_FORM,
-        XmNtopOffset       , 7,
-        XmNrightAttachment , XmATTACH_FORM,
-        XmNrightOffset     , 10,
-    NULL);
+ //   this->selector_menu = new TextSelector; 
+ //   this->selector_menu->createTextSelector(dialog, (XtCallbackProc)
+	//MoveNodesDialog_ModifyNameCB, (XtPointer)this);
+ //   this->selector_menu->manage();
+ //   Widget selm = this->selector_menu->getRootWidget();
+ //   XtVaSetValues(selm,
+ //       XmNtopAttachment   , XmATTACH_FORM,
+ //       XmNtopOffset       , 7,
+ //       XmNrightAttachment , XmATTACH_FORM,
+ //       XmNrightOffset     , 10,
+ //   NULL);
 
-    Widget separator = XtVaCreateManagedWidget(
-        "separator", xmSeparatorWidgetClass, dialog,
-        XmNtopAttachment   , XmATTACH_WIDGET,
-        XmNtopWidget       , selm,
-        XmNtopOffset       , 10,
-        XmNleftAttachment  , XmATTACH_FORM,
-        XmNleftOffset      , 0,
-        XmNrightAttachment , XmATTACH_FORM,
-        XmNrightOffset     , 0,
-    NULL);
+ //   Widget separator = XtVaCreateManagedWidget(
+ //       "separator", xmSeparatorWidgetClass, dialog,
+ //       XmNtopAttachment   , XmATTACH_WIDGET,
+ //       XmNtopWidget       , selm,
+ //       XmNtopOffset       , 10,
+ //       XmNleftAttachment  , XmATTACH_FORM,
+ //       XmNleftOffset      , 0,
+ //       XmNrightAttachment , XmATTACH_FORM,
+ //       XmNrightOffset     , 0,
+ //   NULL);
 
-    this->ok_option = new ButtonInterface(dialog, "okButton", this->apply_cmd);
-    this->ok = this->ok_option->getRootWidget();
-    XtVaSetValues(this->ok,
-        XmNtopAttachment   , XmATTACH_WIDGET,
-        XmNtopWidget       , separator,
-        XmNtopOffset       , 10,
-        XmNleftAttachment  , XmATTACH_FORM,
-        XmNleftOffset      , 10,
-	NULL);
+ //   this->ok_option = new ButtonInterface(dialog, "okButton", this->apply_cmd);
+ //   this->ok = this->ok_option->getRootWidget();
+ //   XtVaSetValues(this->ok,
+ //       XmNtopAttachment   , XmATTACH_WIDGET,
+ //       XmNtopWidget       , separator,
+ //       XmNtopOffset       , 10,
+ //       XmNleftAttachment  , XmATTACH_FORM,
+ //       XmNleftOffset      , 10,
+	//NULL);
 
-    this->apply_option = new ButtonInterface(dialog, "applyButton", this->apply_cmd);
-    this->apply = this->apply_option->getRootWidget();
-    XtVaSetValues(this->apply,
-        XmNtopAttachment   , XmATTACH_WIDGET,
-        XmNtopWidget       , separator,
-        XmNtopOffset       , 10,
-        XmNleftAttachment  , XmATTACH_WIDGET,
-        XmNleftOffset      , 10,
-        XmNleftWidget      , this->ok,
-	NULL);
+ //   this->apply_option = new ButtonInterface(dialog, "applyButton", this->apply_cmd);
+ //   this->apply = this->apply_option->getRootWidget();
+ //   XtVaSetValues(this->apply,
+ //       XmNtopAttachment   , XmATTACH_WIDGET,
+ //       XmNtopWidget       , separator,
+ //       XmNtopOffset       , 10,
+ //       XmNleftAttachment  , XmATTACH_WIDGET,
+ //       XmNleftOffset      , 10,
+ //       XmNleftWidget      , this->ok,
+	//NULL);
 
-    EditorWindow* editor = this->selector->getEditor();
-    Command* mn = editor->getMoveSelectedCmd();
-    mn->registerClient(this->ok_option);
-    mn->registerClient(this->apply_option);
+ //   EditorWindow* editor = this->selector->getEditor();
+ //   Command* mn = editor->getMoveSelectedCmd();
+ //   mn->registerClient(this->ok_option);
+ //   mn->registerClient(this->apply_option);
 
-    this->cancel = XtVaCreateManagedWidget(
-        "cancelButton", xmPushButtonWidgetClass, dialog,
-        XmNtopAttachment   , XmATTACH_WIDGET,
-        XmNtopWidget       , separator,
-        XmNtopOffset       , 10,
-        XmNrightAttachment , XmATTACH_FORM,
-        XmNrightOffset     , 10,
-	NULL);
+ //   this->cancel = XtVaCreateManagedWidget(
+ //       "cancelButton", xmPushButtonWidgetClass, dialog,
+ //       XmNtopAttachment   , XmATTACH_WIDGET,
+ //       XmNtopWidget       , separator,
+ //       XmNtopOffset       , 10,
+ //       XmNrightAttachment , XmATTACH_FORM,
+ //       XmNrightOffset     , 10,
+	//NULL);
 
-    return dialog;
+ //   return dialog;
 }
 
 //
@@ -181,27 +173,27 @@ void MoveNodesDialog::setWorkSpace(const char* page_name)
 void MoveNodesDialog::update()
 {
 
-    if (this->stop_updates) return ;
-    if ((this->getRootWidget()) && (this->isManaged())) {
-	//
-	// Initialize the name
-	//
-	int size = this->selector->getSize();
-	ASSERT(size > 0);
-	String *names = new String[size];
-	int i = 1;
-	while (i <= size) {
-	    const char* name = this->selector->getStringKey(i);
-	    if ((!name) || (!name[0])) name = "Untitled";
-	    names[i-1] = DuplicateString(name);
-	    i++;
-	}
-	this->selector_menu->setItems(names, size);
-	this->selector_menu->setSelectedItem(1);
+ //   if (this->stop_updates) return ;
+ //   if ((this->getRootWidget()) && (this->isManaged())) {
+	////
+	//// Initialize the name
+	////
+	//int size = this->selector->getSize();
+	//ASSERT(size > 0);
+	//String *names = new String[size];
+	//int i = 1;
+	//while (i <= size) {
+	//    const char* name = this->selector->getStringKey(i);
+	//    if ((!name) || (!name[0])) name = "Untitled";
+	//    names[i-1] = DuplicateString(name);
+	//    i++;
+	//}
+	//this->selector_menu->setItems(names, size);
+	//this->selector_menu->setSelectedItem(1);
 
-	for (i=0; i<size; i++)
-	    delete names[i];
-    }
+	//for (i=0; i<size; i++)
+	//    delete names[i];
+ //   }
 }
 
 void MoveNodesDialog::manage()
@@ -265,14 +257,14 @@ boolean MoveNodesDialog::applyCallback(Dialog *)
     return retVal;
 }
 
-
-extern "C" {
-
-void MoveNodesDialog_ModifyNameCB (Widget , XtPointer clientData, XtPointer)
-{
-}
-
-} // end extern C
+//
+//extern "C" {
+//
+//void MoveNodesDialog_ModifyNameCB (Widget , XtPointer clientData, XtPointer)
+//{
+//}
+//
+//} // end extern C
 
 
 MoveNodesCommand::MoveNodesCommand(const char *name, CommandScope *scope, 

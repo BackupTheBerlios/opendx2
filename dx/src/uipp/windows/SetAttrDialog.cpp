@@ -7,22 +7,16 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
-
-#include <Xm/Xm.h> 
-#include <Xm/Form.h> 
+#include "defines.h"
 
 #include "DXStrings.h"
 #include "SetAttrDialog.h"
 #include "InteractorInstance.h"
 #include "InteractorNode.h"
 
-SetAttrDialog::SetAttrDialog(const char *name, Widget parent,
+SetAttrDialog::SetAttrDialog(const char *name, 
                     	     const char *title, InteractorInstance *ii) :
-                                Dialog(name,parent)
+                                Dialog(name)
 {
     this->title = DuplicateString(title);
     this->interactorInstance = ii;
@@ -59,33 +53,33 @@ boolean SetAttrDialog::okCallback(Dialog* dialog)
     return r;
 } 
 
-Widget SetAttrDialog::createDialog(Widget parent)
+void SetAttrDialog::createDialog()
 {
-
-    this->initialize();
-
-    int n = 0;
-    Arg wargs[10];
-    XtSetArg(wargs[n], XmNresizePolicy, XmRESIZE_NONE); n++;
-    Widget mainForm = this->CreateMainForm(parent, this->name, wargs, n); 
-
-    XtVaSetValues(mainForm,
-        XmNdialogStyle, XmDIALOG_PRIMARY_APPLICATION_MODAL,
-#if 1
-	XmNautoUnmanage, False,
-#endif
-        NULL);
-
-    XtVaSetValues(XtParent(mainForm),
-        XmNtitle, this->title, 
-#if 0
-        XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL,
-#endif
-        NULL);
-
-    this->createAttributesPart(mainForm);
-
-    return mainForm;
+//
+//    this->initialize();
+//
+//    int n = 0;
+//    Arg wargs[10];
+//    XtSetArg(wargs[n], XmNresizePolicy, XmRESIZE_NONE); n++;
+//    Widget mainForm = this->CreateMainForm(parent, this->name, wargs, n); 
+//
+//    XtVaSetValues(mainForm,
+//        XmNdialogStyle, XmDIALOG_PRIMARY_APPLICATION_MODAL,
+//#if 1
+//	XmNautoUnmanage, False,
+//#endif
+//        NULL);
+//
+//    XtVaSetValues(XtParent(mainForm),
+//        XmNtitle, this->title, 
+//#if 0
+//        XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL,
+//#endif
+//        NULL);
+//
+//    this->createAttributesPart(mainForm);
+//
+//    return mainForm;
 }
 //
 // Before each display, reload/redisplay the attributes.
@@ -104,7 +98,7 @@ void SetAttrDialog::setAttributeSensitivity()
 //
 void SetAttrDialog::refreshDisplayedAttributes()
 {
-    ASSERT(this->getRootWidget());
+    //ASSERT(this->getRootWidget());
     this->loadAttributes();
     this->updateDisplayedAttributes();
     this->setAttributeSensitivity();

@@ -22,11 +22,11 @@
 //
 #define ClassSetSeparatorAttrDlg	"SetSeparatorAttrDlg"
 
-extern "C" void SetSeparatorAttrDlg_DirtyColorsCB(Widget , XtPointer , XtPointer);
-extern "C" void SetSeparatorAttrDlg_DirtyStyleCB(Widget , XtPointer , XtPointer);
-extern "C" void SetSeparatorAttrDlg_ApplyCB(Widget , XtPointer , XtPointer);
-extern "C" void SetSeparatorAttrDlg_RestoreCB(Widget , XtPointer , XtPointer);
-
+//extern "C" void SetSeparatorAttrDlg_DirtyColorsCB(Widget , XtPointer , XtPointer);
+//extern "C" void SetSeparatorAttrDlg_DirtyStyleCB(Widget , XtPointer , XtPointer);
+//extern "C" void SetSeparatorAttrDlg_ApplyCB(Widget , XtPointer , XtPointer);
+//extern "C" void SetSeparatorAttrDlg_RestoreCB(Widget , XtPointer , XtPointer);
+//
 
 class SeparatorDecorator;
 
@@ -41,7 +41,7 @@ class SetSeparatorAttrDlg : public Dialog
     // Private member data:
     //
     static boolean ClassInitialized;
-    static String  DefaultResources[];
+    //static String  DefaultResources[];
 
     //
     // used as a bit field to show which attrs have been changed since
@@ -49,13 +49,13 @@ class SetSeparatorAttrDlg : public Dialog
     //
     int dirty;
 
-    Widget colorOM;
-    Widget colorPulldown;
-    Widget styleOM;
-    Widget stylePulldown;
+    //Widget colorOM;
+    //Widget colorPulldown;
+    //Widget styleOM;
+    //Widget stylePulldown;
 
-    Widget createColorMenu (Widget );
-    Widget createStyleMenu (Widget );
+    //Widget createColorMenu (Widget );
+    //Widget createStyleMenu (Widget );
 
   protected:
     //
@@ -67,29 +67,29 @@ class SetSeparatorAttrDlg : public Dialog
     //
     SeparatorDecorator 	*decorator;
 
-    friend void SetSeparatorAttrDlg_DirtyColorsCB(Widget , XtPointer , XtPointer);
-    friend void SetSeparatorAttrDlg_DirtyStyleCB(Widget , XtPointer , XtPointer);
-    friend void SetSeparatorAttrDlg_ApplyCB(Widget , XtPointer , XtPointer);
-    friend void SetSeparatorAttrDlg_RestoreCB(Widget , XtPointer , XtPointer);
+    //friend void SetSeparatorAttrDlg_DirtyColorsCB(Widget , XtPointer , XtPointer);
+    //friend void SetSeparatorAttrDlg_DirtyStyleCB(Widget , XtPointer , XtPointer);
+    //friend void SetSeparatorAttrDlg_ApplyCB(Widget , XtPointer , XtPointer);
+    //friend void SetSeparatorAttrDlg_RestoreCB(Widget , XtPointer , XtPointer);
 
     boolean okCallback (Dialog * );
     boolean restoreCallback (Dialog * );
 
-    Widget createDialog (Widget parent);
+    void createDialog ();
 
     //
     // Install the default resources for this class and then call the
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
 
     //
     // Constructor:
     //
-    SetSeparatorAttrDlg(Widget parent, boolean readonly, SeparatorDecorator *dec);
+    SetSeparatorAttrDlg(boolean readonly, SeparatorDecorator *dec);
 
     //
     // Destructor:

@@ -7,10 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
-
-
-
+#include "defines.h"
 
 #include "ControlPanel.h"
 #include "SelectorNode.h"
@@ -22,6 +19,7 @@ void SelectorInstance::setSelectedOptionIndex(int index, boolean update_outputs)
     SelectorNode *n = (SelectorNode*)this->getNode();
     n->setSelectedOptionIndex(index, update_outputs);
 }
+
 int  SelectorInstance::getSelectedOptionIndex()
 {
     SelectorNode *n = (SelectorNode*)this->getNode();

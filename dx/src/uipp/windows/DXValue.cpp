@@ -10,6 +10,7 @@
 #include "defines.h"
 
 #include <ctype.h>
+#include <string.h>
 
 #include "DXValue.h"
 #include "List.h"

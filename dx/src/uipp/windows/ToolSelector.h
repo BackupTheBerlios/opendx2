@@ -225,7 +225,7 @@ class ToolSelector : public UIComponent
 	    friend class ToolSelector;
 	    void adjustVisibility(int, int, int, int);
 	    void getSearchableNodes (List& nodes_to_search);
-	    ToolView (Widget parent, ToolSelector* t) : TreeView(parent) {
+	    ToolView (ToolSelector* t) : TreeView() {
 		this->toolSelector = t;
 	    }
 	public:

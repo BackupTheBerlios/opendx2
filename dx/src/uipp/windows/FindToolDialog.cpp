@@ -456,9 +456,9 @@ void FindToolDialog::changeList()
 //
 //    XtCallCallbacks(dialog->findbtn, XmNactivateCallback, (XtPointer)callData);
 //}
-//
-//void FindToolDialog::manage()
-//{
+
+void FindToolDialog::manage()
+{
 ////    this->toolSelector->reset();
 //    this->changeList();
 //    this->restoreSens(False);
@@ -470,8 +470,8 @@ void FindToolDialog::changeList()
 //
 //    XmProcessTraversal(this->text, XmTRAVERSE_CURRENT);
 //    XmProcessTraversal(this->text, XmTRAVERSE_CURRENT);
-//}
-//
+}
+
 //extern "C" void FindToolDialog_RestoreCB(Widget    widget,
 //                                XtPointer clientData,
 //                                XtPointer callData)

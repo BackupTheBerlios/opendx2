@@ -284,9 +284,9 @@ ViewControlDialog::~ViewControlDialog()
 //
 //    return pulldown;
 //}
-//
-//void ViewControlDialog::createProbePulldown()
-//{
+
+void ViewControlDialog::createProbePulldown()
+{
 //    DictionaryIterator  di;
 //    Widget        w;
 //    Node	 *p;
@@ -350,10 +350,10 @@ ViewControlDialog::~ViewControlDialog()
 //		      XmNmenuHistory, 
 //		      menuHistory,
 //		      NULL);
-//}
-//
-//void ViewControlDialog::createPickPulldown()
-//{
+}
+
+void ViewControlDialog::createPickPulldown()
+{
 //    DictionaryIterator  di;
 //    Widget        w;
 //    Node	 *p;
@@ -415,8 +415,8 @@ ViewControlDialog::~ViewControlDialog()
 //		      XmNmenuHistory, 
 //		      menuHistory,
 //		      NULL);
-//}
-//
+}
+
 //Widget ViewControlDialog::createConstraintPulldown(Widget parent)
 //{
 //    Widget pulldown = XmCreatePulldownMenu(parent,
