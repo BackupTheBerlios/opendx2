@@ -15,4 +15,4 @@ libOPENGL_a_SOURCES = \
 	hwInteractorEchoOGL.c		\
 	hwDisplayListsOGL.c		\
 	hwPortOGL.c			\
-	hwLoadOGL.c			\
+	hwLoadOGL.c			
