@@ -3132,10 +3132,6 @@ randNULL(
     int *seed0 = (int *)inputs[1];
     int seed;
     int numBasic;
-#if !defined(DXD_OS2_SYSCALL) && !defined(DXD_WIN)
-    double drand48(void);
-    void   srand48(long);
-#endif
 #define RANDSORTBINS 1023
     float rands[RANDSORTBINS];
     int index;
@@ -3147,9 +3143,9 @@ randNULL(
 	__LINE__, pt, os, os->metaType.items, pt->metaType.items, *seed0, seed);
 #endif
 
-    srand48(seed);
+    srandom(seed);
     for (i = 0; i<RANDSORTBINS; ++i)
-	rands[i] = (float)drand48();
+	rands[i] = ((float)random()/0x7fffffff);
 
     for (numBasic = 1, i = 0; i < pt->metaType.rank; i++)
 	numBasic *= pt->metaType.shape[i];
@@ -3158,9 +3154,9 @@ randNULL(
     items = pt->metaType.items;
     for (i = 0; i < items; ++i) 
 	for (j = 0; j < numBasic; j++) {
-	    index = drand48()*RANDSORTBINS;
+	    index = ((float)random()/0x7fffffff)*RANDSORTBINS;
 	    out[i*numBasic + j] = rands[index];
-	    rands[index] = drand48();
+	    rands[index] = ((float)random()/0x7fffffff);
 	}
     return (OK);
 }
