@@ -22,7 +22,9 @@ javasrvdir = $(prefix)/dx/java/server/class
 javasrv_DATA = server.jar 
 EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java exports.awk
 javalibdir = $(prefix)/dx/java/server/lib_@ARCH@
-javalib_DATA = libAnyDX.so
+
+javalib_DATA = @ANYDX@
+EXTRA_DATA = libAnyDX.so AnyDX.dll
 
 SUBDIRS = server dx
 
@@ -51,11 +53,7 @@ server.jar:
 SHRD_FLAGS = -shared -o libAnyDX.so
 
 libAnyDX.so: DXLink.o
-	if test "$(ARCH)" = "cygwin" ; then \
-	$(MAKE) cygwin_object ;\
-	else \
-	( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object ) ; \
-	fi
+	( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object ) 
 
 usual_shared_object:
 	$(CC) $(SHRD_FLAGS) `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"`  DXLink.o
@@ -66,7 +64,7 @@ aix_shared_object:
 	ld -bnoentry -bM:SRE -o libAnyDX.so -bE:tmpAnyDX.exp tmpAnyDX.a -L /usr/lpp/X11/lib -lXt -lX11 -lc
 	rm -f tmpAnyDX.*
 
-cygwin_object:
+AnyDX.dll: DXLink.o
 	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
 	nm --demangle --defined-only tmpAnyDX.a | sed -n 's/^.* T //p' >> tmpAnyDX.exp
 	dllwrap -s --export-all-symbols --image-base 0x6620000 --def tmpAnyDX.exp --driver-name gcc -o libAnyDX.dll DXLink.o -L../dxl -lDXL -L/usr/X11R6/lib -lXt -lSM -lICE -lX11
