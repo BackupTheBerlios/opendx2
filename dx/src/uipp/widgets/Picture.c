@@ -485,10 +485,6 @@ double 	radi;
     w->picture.PIXMAPWIDTH  = w->core.width;
     w->picture.PIXMAPHEIGHT = w->core.height;
 
-    w->picture.globe->x = 10;
-    w->picture.globe->y = (int)((w->picture.PIXMAPHEIGHT - 
-			(2.0 * w->picture.globe->radi)) - 10);
-
     radi = (double)(w->picture.globe_radius);
 
     generate_globe ( w, radi ); 
