@@ -123,7 +123,3 @@ AC_DEFUN(DX_ARCHITECTURE,
     AC_SUBST(ARCH)
     AC_DEFINE_UNQUOTED($ARCH)
 ])
-
-
-
-    unameM=`uname -m`
