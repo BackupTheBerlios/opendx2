@@ -440,7 +440,7 @@ XmPictureClassRec xmPictureClassRec =
       NULL,                                     /* extension            */
    },
 
-   {		/* manager_class fields */
+  {		/* manager_class fields */
 #if (XmVersion >= 1001)
       XtInheritTranslations,     		/* translations           */
 #else
@@ -450,6 +450,7 @@ XmPictureClassRec xmPictureClassRec =
       0,					/* num get_resources 	  */
       NULL,					/* get_cont_resources     */
       0,					/* num_get_cont_resources */
+      (XmParentProcessProc)NULL,                /* parent_process         */
       NULL,					/* extension           */
    },
 

@@ -251,6 +251,7 @@ XmColorMapEditorClassRec xmColorMapEditorClassRec = {
       0,                                        /* num get_resources      */
       NULL,                                     /* get_cont_resources     */
       0,                                        /* num_get_cont_resources */
+      (XmParentProcessProc)NULL,		/* parent_process 	  */
       NULL,             			/* extension 		  */
    },
 
