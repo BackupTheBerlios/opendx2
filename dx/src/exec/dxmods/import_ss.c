@@ -1334,7 +1334,7 @@ static Type _dxf_isnumber(char *p,int *d, float *ff)
     type = 1;				/* A floating point number */
     if (!strchr(p,'.')){
       if (f < (float)DXD_MAX_INT){
-	*d = (int)f;
+		sscanf(p+(*p=='$'), "%d", d);
         type = 2;  /* An integer */
       }
     }
