@@ -267,32 +267,34 @@ fi
 AC_DEFUN(DX_ARCHITECTURE,
 [
     AC_MSG_CHECKING(architecture type)
-    unameS=`uname -s`
-    unameM=`uname -m`
-    ARCH=unknown
-    if test $unameS = "FreeBSD" ; then
-    	ARCH=freebsd
-    fi
-    if test `echo $unameS | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"` = "yes" ; then
-        ARCH=cygwin
-    fi
-    if test $unameS = "Linux" ; then
-	ARCH=linux 
-    fi
-    if test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
-    	ARCH=sgi
-    fi
-    if test $unameS = "AIX" ; then
-    	ARCH=ibm6000
-    fi
-    if test $unameM = "alpha" ; then
-        ARCH=alphax
-    fi
-    if test $unameS = "HP-UX" ; then
-        ARCH=hp700
-    fi
-    if test $unameS = "SunOS" ; then
-        ARCH=solaris
+    if test "$ARCH" = "" ; then
+	unameS=`uname -s`
+	unameM=`uname -m`
+	ARCH=unknown
+	if test $unameS = "FreeBSD" ; then
+	    ARCH=freebsd
+	fi
+	if test `echo $unameS | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"` = "yes" ; then
+	    ARCH=cygwin
+	fi
+	if test $unameS = "Linux" ; then
+	    ARCH=linux 
+	fi
+	if test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
+	    ARCH=sgi
+	fi
+	if test $unameS = "AIX" ; then
+	    ARCH=ibm6000
+	fi
+	if test $unameM = "alpha" ; then
+	    ARCH=alphax
+	fi
+	if test $unameS = "HP-UX" ; then
+	    ARCH=hp700
+	fi
+	if test $unameS = "SunOS" ; then
+	    ARCH=solaris
+	fi
     fi
     AC_MSG_RESULT($ARCH)
     AC_SUBST(ARCH)
@@ -521,3 +523,48 @@ done
 echo the third arg to getsockname is pointer to $socket_argtype
 rm socketHdrs.h
 ])
+
+AC_DEFUN(DX_CYGWIN_MOUNTS,
+[
+    changequote(<<,>>)dnl
+    AC_MSG_CHECKING("if intelnt on cygwin, check for mounts")
+    mnts="none"
+    if test "$ARCH" = "intelnt" ; then
+	    tt=`uname -s  | tr A-Z a-z | sed "s/^.*cygwin.*$/yes/"`
+	    if test "$tt" = "yes" ; then
+		    mnts="`mount | sed '1d' | grep "^[^cC]:" | sed "s?\(.:\)[ ]*\([^ ][^ ]*\).*?-mount:\2=\1?"`"
+		    if test ! -z "$mnts" ; then
+			    CFLAGS="$CFLAGS $mnts"
+			    CPPFLAGS="$CPPFLAGS $mnts"
+			    CXXFLAGS="$CXXFLAGS $mnts"
+		    else
+			    mnts="none"
+		    fi
+	    fi
+    fi
+    AC_MSG_RESULT($mnts)
+    changequote([,])dnl
+])
+
+dnl this is AC_CHECK_TYPE with windows.h for DX intelnt port
+AC_DEFUN(DX_CHECK_TYPE,
+[AC_REQUIRE([AC_HEADER_STDC])dnl
+AC_MSG_CHECKING(for $1)
+AC_CACHE_VAL(ac_cv_type_$1,
+[AC_EGREP_CPP(dnl
+changequote(<<,>>)dnl
+<<$1[^a-zA-Z_0-9]>>dnl
+changequote([,]), [#include <sys/types.h>
+#if STDC_HEADERS
+#include <stdlib.h>
+#include <stddef.h>
+#endif
+#if defined(HAVE_WINDOWS_H)
+#include <windows.h>
+#endif], ac_cv_type_$1=yes, ac_cv_type_$1=no)])dnl
+AC_MSG_RESULT($ac_cv_type_$1)
+if test $ac_cv_type_$1 = no; then
+  AC_DEFINE($1, $2)
+fi
+])
+
