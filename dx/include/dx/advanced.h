@@ -43,6 +43,17 @@ typedef msemaphore lock_type;
 typedef volatile int lock_type;
 #endif
 
+void DXenable_locks(int enable);
+/**
+\index{enable\_locks}
+Enables or disables locks.  On some systems, issuing and releasing locks
+takes a significant amount of time.  This overhead is unnecessary when 
+multiple execution threads do not exist or are not sharing state.  By
+default, DX internal locking is enabled. Calling this routine with an 
+{\tt enable} value of 0 causes mutex locking mechanisms to be bypassed and
+all DXlock, DXunlock, and DXtry_lock calls to return success immediately.
+**/
+
 int DXcreate_lock(lock_type *l, char *name);
 /**
 \index{create\_lock}

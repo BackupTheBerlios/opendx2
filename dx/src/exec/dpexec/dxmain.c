@@ -393,6 +393,9 @@ DXmain (argc, argv, envp)
     /* boolean: if UP machine, or user asked for -p1 on MP machine */
     _dxd_exRunningSingleProcess = (nphysprocs == 1 || nprocs == 1);
 
+    /* if running single-process, we don't need the overhead of locking */
+    DXenable_locks( !_dxd_exRunningSingleProcess );
+
     /* we will turn off parse ahead when we get a sync */
     /* so save original state */
     _dxd_exSParseAhead = _dxd_exParseAhead;

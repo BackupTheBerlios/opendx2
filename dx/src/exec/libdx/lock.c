@@ -1,3 +1,4 @@
+
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -32,6 +33,22 @@
 #endif
 
 
+static int _dxf_locks_enabled = 1;      /*  Enabled, by default  */
+
+void DXenable_locks(int enable)
+{
+    char *force_locks;
+
+    if ( (force_locks = getenv( "DX_FORCE_LOCKS" )) != NULL ) {
+	if ( !force_locks[0] )
+	    _dxf_locks_enabled = 1;
+	else
+	    _dxf_locks_enabled = atoi(force_locks);
+    }
+    else if ( enable >= 0 )               /*  -1 only checks env var  */
+        _dxf_locks_enabled = enable;
+}
+
 #if alphax
 #define lockcode
 
@@ -42,11 +59,19 @@
 
 int _dxf_initlocks(void)
 {
+    DXenable_locks(-1);
     return OK;
 }
 
 int DXcreate_lock(lock_type *l, char *name)
 {
+    static int been_here = 0;
+    if (!been_here) {
+	been_here = 1;
+	if (!_dxf_initlocks())
+	    return NULL;
+    }
+
     if(!msem_init(l, MSEM_UNLOCKED))
         DXErrorReturn(ERROR_INTERNAL, "Error creating lock");
 
@@ -65,6 +90,9 @@ int DXdestroy_lock(lock_type *l)
 
 int DXlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     if(msem_lock(l, 0) != 0)
         DXErrorReturn(ERROR_INTERNAL, "Failed attempt to lock lock");
 
@@ -73,6 +101,9 @@ int DXlock(lock_type *l, int who)
 
 int DXtry_lock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     if(msem_lock(l, MSEM_UNLOCKED) != 0)
         return ERROR;
 
@@ -81,6 +112,9 @@ int DXtry_lock(lock_type *l, int who)
 
 int DXunlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     if(msem_unlock(l, 0) != 0)
         DXErrorReturn(ERROR_INTERNAL, "Failed to unlock lock");
     return OK;
@@ -159,12 +193,20 @@ uint sleep(uint secs)
 
 int _dxf_initlocks(void)
 {
+    DXenable_locks(-1);
     return OK;
 }
 
 
 int DXcreate_lock(lock_type *l, char *name)
 {
+    static int been_here = 0;
+    if (!been_here) {
+	been_here = 1;
+	if (!_dxf_initlocks())
+	    return NULL;
+    }
+
     lwp_mutex_t *mp = (lwp_mutex_t*) l;
     lwp_mutex_t template = SHAREDMUTEX;
     *mp = template;
@@ -188,6 +230,9 @@ int DXlock(lock_type *l, int who)
     struct itimerval tv;
     struct itimerval otv;
     void (*oldSignal)(int);
+
+    if ( !_dxf_locks_enabled ) 
+	return OK;
 
     if ((sts = _lwp_mutex_trylock(mp)) != 0) {
 	if (sts == EBUSY) {
@@ -233,6 +278,10 @@ int DXtry_lock(lock_type *l, int who)
 {
     lwp_mutex_t *mp = (lwp_mutex_t*) l;
     int sts;
+
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     if ((sts = _lwp_mutex_trylock(mp)) != 0) {
 	if (sts != EBUSY) {
 	    DXSetError(ERROR_UNEXPECTED, strerror(sts));
@@ -246,6 +295,10 @@ int DXunlock(lock_type *l, int who)
 {
     lwp_mutex_t *mp = (lwp_mutex_t*) l;
     int sts;
+
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     if ((sts = _lwp_mutex_unlock(mp)) != 0) {
 	if (sts != EBUSY) {
 	    DXSetError(ERROR_UNEXPECTED, strerror(sts));
@@ -285,11 +338,19 @@ int DXfetch_and_add(int *p, int value, lock_type *l, int who)
 
 Error _dxf_initlocks(void)
 {
+    DXenable_locks(-1);
     return OK;
 }
 
 int DXcreate_lock(lock_type *l, char *name)
 {
+    static int been_here = 0;
+    if (!been_here) {
+	been_here = 1;
+	if (!_dxf_initlocks())
+	    return NULL;
+    }
+
     simple_lock_init(l);
     return OK;
 }
@@ -301,6 +362,9 @@ int DXdestroy_lock(lock_type *l)
 
 int DXlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
 #if DEBUGGED
     int v;
     simple_lock(l, WHO);
@@ -316,6 +380,9 @@ int DXlock(lock_type *l, int who)
 
 int DXtry_lock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
 #if DEBUGGED
     int v;
     if (simple_try_lock(l, WHO)) {
@@ -333,6 +400,9 @@ int DXtry_lock(lock_type *l, int who)
 
 int DXunlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
 #if DEBUGGED
     if (*l != WHO) {
 	DXWarning("invalid DXunlock of %x (expected %d, saw %d)", l, WHO, *l);
@@ -365,11 +435,19 @@ int DXfetch_and_add(int *p, int value, lock_type *l, int who)
 
 int _dxf_initlocks(void)
 {
+    DXenable_locks(-1);
     return OK;
 }
 
 int DXcreate_lock(lock_type *l, char *name)
 {
+    static int been_here = 0;
+    if (!been_here) {
+	been_here = 1;
+	if (!_dxf_initlocks())
+	    return NULL;
+    }
+
     *l = UNLOCKED;
     return OK;
 }
@@ -386,6 +464,9 @@ int DXdestroy_lock(lock_type *l)
 
 int DXlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     while (cs(l, UNLOCKED, LOCKED)) {
 	int v = *l;
 	if (v!=UNLOCKED && v!=LOCKED)
@@ -397,6 +478,9 @@ int DXlock(lock_type *l, int who)
 
 int DXtry_lock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     if (cs(l, UNLOCKED, LOCKED))
        return ERROR;
     else
@@ -405,6 +489,9 @@ int DXtry_lock(lock_type *l, int who)
 
 int DXunlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     if (*l == DEADLOCK)
        DXErrorReturn(ERROR_INTERNAL, "attempt to unlock destroyed lock");
     *l = UNLOCKED;
@@ -463,6 +550,8 @@ int _dxf_initlocks(void)
     char *mktemp();
     int i;
 
+    DXenable_locks(-1);
+
     if (!been_here) {
 	been_here = 1;
 	mktemp(tmp);
@@ -509,6 +598,9 @@ int DXdestroy_lock(lock_type *l)
 
 int DXlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled )
+	return OK;
+
     if (!VALID(l))
 	DXErrorReturn(ERROR_BAD_PARAMETER, "bad lock");
     for (;;) {
@@ -527,6 +619,9 @@ int DXlock(lock_type *l, int who)
 
 int DXtry_lock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled )
+	return OK;
+
     if (!VALID(l))
 	DXErrorReturn(ERROR_BAD_PARAMETER, "bad lock");
     if (LOCKED(l))
@@ -543,6 +638,9 @@ int DXtry_lock(lock_type *l, int who)
 
 int DXunlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     if (!VALID(l))
 	DXErrorReturn(ERROR_BAD_PARAMETER, "bad lock");
     LOCKPOOL(l);
@@ -578,6 +676,7 @@ int _dxf_initlocks(void)
 
     if (!been_here) {
 	been_here = 1;
+	DXenable_locks(-1);
 	mktemp(tmp);
 	usconfig(CONF_INITUSERS, 64);
 	usptr = usinit(tmp);
@@ -614,17 +713,26 @@ int DXdestroy_lock(lock_type *l)
 
 int DXlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     ussetlock(L);
     return OK;
 }
 
 int DXtry_lock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     return uscsetlock(L, _USDEFSPIN);
 }
 
 int DXunlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     usunsetlock(L);
     return OK;
 }
@@ -657,11 +765,19 @@ int DXfetch_and_add(int *p, int value, lock_type *l, int who)
 
 int _dxf_initlocks(void)
 {
+    DXenable_locks(-1);
     return OK;
 }
 
 int DXcreate_lock(lock_type *l, char *name)
 {
+    static int been_here = 0;
+    if (!been_here) {
+	been_here = 1;
+	if (!_dxf_initlocks())
+	    return NULL;
+    }
+
     *l = UNLOCKED;
     return OK;
 }
@@ -675,6 +791,9 @@ int DXdestroy_lock(lock_type *l)
 
 int DXlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     if (*l==LOCKED)
 	DXErrorReturn(ERROR_INTERNAL, "attempt to lock locked lock");
     *l = LOCKED;
@@ -683,6 +802,9 @@ int DXlock(lock_type *l, int who)
 
 int DXtry_lock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     if (*l==UNLOCKED){
 	*l = LOCKED;
 	return OK;
@@ -693,6 +815,9 @@ int DXtry_lock(lock_type *l, int who)
 
 int DXunlock(lock_type *l, int who)
 {
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     *l = UNLOCKED;
     return OK;
 }
@@ -812,6 +937,7 @@ int _dxf_initlocks(void)
     if(!been_here)
     {
     	been_here = 1;
+	DXenable_locks(-1);
     	for(i = 0; i < DX_MAX_LOCKS; i++) {
     	    DXLocks[i].ISLocked = UNLOCKED;
     	    DXLocks[i].ByWhom = -1;
@@ -847,6 +973,9 @@ int DXtry_lock(lock_type *l, int who)
 {
      int id;
 
+    if ( !_dxf_locks_enabled ) 
+	return OK;
+
     /*  if (*l==UNLOCKED){   */
     if(!IsLocked(l)) {
 	/*  *l = LOCKED;   */
@@ -861,6 +990,15 @@ int DXcreate_lock(lock_type *l, char *name)
     int i;
      static  int IamHere = 0;
 
+    static int been_here = 0;
+    if (!been_here) {
+	been_here = 1;
+	if (!_dxf_initlocks())
+	    return NULL;
+
+    }
+
+    /*  FIXME: Add locking  */
     return OK;
 
     /*
@@ -891,6 +1029,9 @@ int DXlock(int *l, int who)
 {
     int tid, id, j, i;
     static int IamHere = 0;
+
+    if ( !_dxf_locks_enabled ) 
+	return OK;
 
     /*
     i = DXGetPid();
@@ -940,6 +1081,9 @@ int DXunlock(int *l, int who)
 {
     int id, tid;
     static short IamHere = 0;
+
+    if ( !_dxf_locks_enabled ) 
+	return OK;
 
     tid = DXGetPid();
     while(IamHere)
