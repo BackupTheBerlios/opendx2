@@ -8,7 +8,7 @@ EXTRA_DIST = README VisualCModules.doc VisualDX.dsw VisualDX.sln VisualDX6.dsw \
 	DXlite/DXlite.dsp DXlite/DXlite.def DXlite/DXlite.vcproj \
 	dxconcsharp/App.ico dxconcsharp/AssemblyInfo.cs dxconcsharp/Class1.cs \
 	dxconcsharp/dxconcsharp.csproj dxconcsharp/dxconcsharp.csproj.user \
-	dxconsole/ReadMe.txt dxconsole/dxconsole.app dxconsole/dxconsole.vcproj \
+	dxconsole/ReadMe.txt dxconsole/dxconsole.cpp dxconsole/dxconsole.vcproj \
 	dxconsole/stdafx.cpp dxconsole/stdafx.h \
 	dxexec/builder.ico dxexec/dx-cfg.ico dxexec/dx-cm.ico dxexec/dx-doc.ico \
 	dxexec/dx-dx.ico dxexec/dxexec.dsp dxexec/dxexec.rc dxexec/editor.ico \
