@@ -1,3 +1,4 @@
 *.class
+samples.jar
 Makefile
 Makefile.in
