@@ -1213,6 +1213,48 @@ getProcMemInfo()
 
 #endif
 
+/* cygwin: 
+   to obtain available memory size in cygwin, the standard method seems to  
+   be sysconf(), but it doesn't work in Win98.  Instead, we use WIN32 way.  
+   notes: 
+   (1) GlobalMemoryStatus() reports a rather small value as *available*  
+   physical memory (11MB or so); we don't use that value.   
+   (2) cygwin has 384MB limit by default.  See cygwin User's Guide.   
+*/ 
+  
+#ifdef cygwin 
+/* include <windows.h> causes errors; put minimum defs here for memory api */ 
+#define WINAPI __stdcall 
+#define FALSE 0 
+#define MEM_FREE            0x10000 
+typedef void VOID; 
+typedef void *PVOID; 
+typedef const void *LPCVOID; 
+typedef unsigned long DWORD; 
+typedef unsigned long ULONG; 
+typedef struct _MEMORY_BASIC_INFORMATION { 
+       PVOID BaseAddress; 
+       PVOID AllocationBase; 
+       DWORD AllocationProtect; 
+       DWORD RegionSize; 
+       DWORD State; 
+       DWORD Protect; 
+       DWORD Type; 
+} MEMORY_BASIC_INFORMATION,*PMEMORY_BASIC_INFORMATION; 
+typedef struct _MEMORYSTATUS { 
+       DWORD dwLength; 
+       DWORD dwMemoryLoad; 
+       DWORD dwTotalPhys; 
+       DWORD dwAvailPhys; 
+       DWORD dwTotalPageFile; 
+       DWORD dwAvailPageFile; 
+       DWORD dwTotalVirtual; 
+       DWORD dwAvailVirtual; 
+} MEMORYSTATUS,*LPMEMORYSTATUS; 
+DWORD WINAPI VirtualQuery(LPCVOID,PMEMORY_BASIC_INFORMATION,DWORD); 
+VOID WINAPI GlobalMemoryStatus(LPMEMORYSTATUS); 
+#endif 
+
 #if defined(intelnt) || defined(WIN32)
 Error _dxfLocateFreeMemory (ulong *size) {
 	/* Basically with Windows we need to walk the memory tree to locate
@@ -1287,7 +1329,7 @@ int _dxf_initmemory(void)
      * before we overflow 32bit ints.  seems safe for now.
      */
 
-#if defined(intelnt) || defined(WIN32)
+#if defined(intelnt) || defined(WIN32) || defined(cygwin)
 	if(total_size) {
 		ULONG avail;
 
@@ -1369,7 +1411,7 @@ int _dxf_initmemory(void)
 	physmem = 32;
 #endif
 
-#if defined(intelnt) || defined(WIN32)
+#if defined(intelnt) || defined(WIN32) || defined(cygwin)
 	{
 		MEMORYSTATUS memStatus;
 		ULONG avail;
@@ -1381,7 +1423,7 @@ int _dxf_initmemory(void)
 		if(memStatus.dwTotalPhys > 0)
 			physmem = memStatus.dwTotalPhys;
 		else /* Whoa boy big memory - limit to 4GB*/
-			physmem = 4294967295;
+			physmem = 4294967295U;
 		
 		_dxfLocateFreeMemory(&avail);
 		if(avail < physmem) physmem = avail;
