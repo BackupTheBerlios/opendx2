@@ -305,7 +305,7 @@ void TextSelector::updateList()
     ListIterator it(this->item_list);
     char* name;
     while ( (name = (char*)it.getNext()) ) {
-	strTable[next++] = XmStringCreateLtoR (name, "small_bold");
+	strTable[next++] = XmStringCreateLtoR (name, "bold");
     }
 
     XtVaSetValues (this->popupList, XmNvisibleItemCount, 
@@ -565,7 +565,7 @@ void TextSelector_SelectCB(Widget , XtPointer clientData, XtPointer cbs)
     XmListCallbackStruct *lcs = (XmListCallbackStruct*)cbs;
     XEvent* xev = lcs->event;
     boolean inside = TRUE;
-    if ((xev->type == ButtonPress) || (xev->type == ButtonRelease)) {
+    if ((xev) && ((xev->type == ButtonPress) || (xev->type == ButtonRelease))) {
 	XButtonEvent* xbe = (XButtonEvent*)xev;
 	Dimension width, height;
 	XtVaGetValues (psel->popupList, XmNwidth, &width, XmNheight, &height, NULL);
