@@ -76,11 +76,18 @@ extern "C" {
 #include <sysent.h>
 #endif
 
-#ifdef sgi
+
+#if HAVE_CC_OSFCN_H
 #include <CC/osfcn.h>
+#endif
+#if HAVE_CC_LIBC_H
 #include <CC/libc.h>
+#endif
+
+#ifdef sgi
 extern "C" int getdtablesize();
 #endif
+
 #ifdef hp700
 #include <time.h>
 #endif
