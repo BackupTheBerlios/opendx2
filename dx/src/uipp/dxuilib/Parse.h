@@ -31,6 +31,11 @@ typedef struct _Network_ Network;
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
+#if defined(macos)
+#define YYINITDEPTH 50
+#endif
+
 extern
 void ParseComment(char* comment);
 
