@@ -176,10 +176,10 @@ boolean NoUndoEditorCommand::doIt(CommandInterface *ci)
 	    break;
 #if WORKSPACE_PAGES
 	case NoUndoEditorCommand::Pagify:
-	    editor->pagifySelectedNodes(FALSE);
+	    editor->pagifySelectedNodes((boolean)FALSE);
 	    break;
 	case NoUndoEditorCommand::PagifySelected:
-	    editor->pagifySelectedNodes(TRUE);
+	    editor->pagifySelectedNodes((boolean)TRUE);
 	    break;
 	case NoUndoEditorCommand::AutoChopSelected:
 	    editor->autoChopSelectedNodes();
