@@ -267,6 +267,9 @@ int putenvstr(char *name, char *value)
     if (!*name)
 	return 0;
 
+    if (!*value)
+        return 0;
+
     for(p = name; *p == ' '; p++);
     for(q = &name[strlen(name)-1]; *q == ' ' && q != p; q--);
 
@@ -489,7 +492,7 @@ int configure()
     envstr path0;
 
     setifnot(dxexroot, dxroot);
-    sprintf(dxexecdef, "%s\\bin_%s\\dxexec%s", dxexroot, exarch, EXE_EXT);
+    sprintf(dxexecdef, "%s%sbin_%s%sdxexec%s", dxexroot, DIRSEP, exarch, DIRSEP, EXE_EXT);
     setifnot(dxexec, dxexecdef);
     setifnot(exmode, "-r");
     setifnot(exhilite, "-B");
