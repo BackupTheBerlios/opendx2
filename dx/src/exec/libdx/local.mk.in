@@ -1,8 +1,8 @@
-.X.h: ${srcdir}/class.awk ${srcdir}/$*.X
+.X.h: ${srcdir}/class.awk
 	rm -f $*.h
 	srcdir=${srcdir} sh ${srcdir}/class -h ${srcdir}/$*.X >$*.h
 
-.X.c: ${srcdir}/class.awk  ${srcdir}/$*.X
+.X.c: ${srcdir}/class.awk
 	rm -f $*.c
 	srcdir=${srcdir} sh ${srcdir}/class -c ${srcdir}/$*.X > $*.c
 
