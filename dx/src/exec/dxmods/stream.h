@@ -6,10 +6,8 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/stream.h,v 1.5 2000/08/24 20:04:51 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/stream.h,v 1.6 2000/09/14 16:09:19 gda Exp $:
  */
-
-#include <dxconfig.h>
 
 #ifndef _STREAM_H_
 #define _STREAM_H_
