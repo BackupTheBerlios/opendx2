@@ -138,5 +138,5 @@ int main(unsigned int argc,
     WSACleanup();
 #endif
 
-    exit(0);
+    return 0;
 }
