@@ -184,7 +184,6 @@ AC_LANG_RESTORE[]dnl
 CXXCPP="$ac_cv_prog_CXXCPP"
 fi]
 )dnl
-CXXCPP=$ac_cv_prog_CXXCPP
 AC_MSG_RESULT($CXXCPP)
 AC_SUBST(CXXCPP)dnl
 ])
@@ -725,7 +724,9 @@ EOF
 AC_CHECK_HEADER(unistd.h, [ echo "#include <unistd.h>" >> socketHdrs.h ])
 AC_CHECK_HEADER(sys/types.h, [ echo "#include <sys/types.h>" >> socketHdrs.h ])
 AC_CHECK_HEADER(sys/socket.h, [ echo "#include <sys/socket.h>" >> socketHdrs.h ])
-AC_CHECK_HEADER(winsock2.h, [ echo "#include <winsock2.h>" >> socketHdrs.h ])
+if test "$ARCH" = "intelnt" ; then
+	AC_CHECK_HEADER(winsock2.h, [ echo "#include <winsock2.h>" >> socketHdrs.h ])
+fi
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
 for try in socklen_t size_t int "unsigned int"
