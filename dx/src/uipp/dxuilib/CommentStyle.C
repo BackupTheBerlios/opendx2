@@ -205,9 +205,10 @@ char end_stmnt[64];
 
 	if (items_parsed == 2) {
 	    if (EqualString(keyword, this->getKeyword())) {
-		if (EqualString(additional_text, NO_TEXT_SYMBOL)) 
-		    additional_text[0]='\t',additional_text[1]='\0';
-		else {
+		if (EqualString(additional_text, NO_TEXT_SYMBOL)) {
+		    //additional_text[0]='\t';
+		    additional_text[0]='\0';
+		} else {
 		}
 		CommentStyle::AppendParseBuffer(additional_text);
 		retVal = TRUE;
