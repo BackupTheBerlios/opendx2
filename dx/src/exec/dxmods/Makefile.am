@@ -3,10 +3,11 @@
 INCLUDES = -I../../../include -I../dpexec -I/usr/include -I/usr/local/include -D@ARCH@
 
 dxmdfdir = $(prefix)/dx/lib
-noinst_LIBRARIES = libDXMODS.a
+noinst_LIBRARIES = libDXMODS.a libusercm.a
 SUFFIXES = .c .y .c .s .h .o 
 
-BUILT_SOURCES = user.c _compparse.h _compparse.c y.tab.c
+BUILT_SOURCES = user.c _compparse.h _compparse.c y.tab.c usercm.c
+
 
 dxmdf_DATA = dx.mdf
 
@@ -86,6 +87,9 @@ SOURCES7 =  \
 	separate.c superwinX.c tracevisual.c vectors.c \
 	vrml.c eigen.c vsincos.c
 
+libusercm_a_SOURCES =   \
+	usercm.c 
+
 libDXMODS_a_SOURCES =   \
 	$(SOURCES1) \
 	$(SOURCES2) \
@@ -99,9 +103,19 @@ libDXMODS_a_SOURCES =   \
 .l.c:
 	lex $(LFLAGS) $*.l
 
+usercm.c:  dxcm.mdf
+	@echo usercm.c rule
+	awk -f ../../../lib/mdf2c.awk < dxcm.mdf > usercm.c
+
 user.c:  dx.mdf
 	@echo user.c rule
 	awk -f ../../../lib/mdf2c.awk < dx.mdf > user.c
+
+dxcm.mdf:  dxmdf.src
+	-rm -f dxcm.mdf
+	cp dxmdf.src tmp.c
+	$(CPP) $(MDF) $(DEFS) tmp.c > dxcm.mdf
+	-rm -f tmp.c
 
 dx.mdf:  dxmdf.src
 	-rm -f dx.mdf
