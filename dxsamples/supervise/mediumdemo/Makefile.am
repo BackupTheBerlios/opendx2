@@ -5,5 +5,5 @@ SUBDIRS =  interactors
 
 datadir = $(prefix)/dx/samples/supervise/mediumdemo
 
-data_DATA =  Makefile.sample ReadMe demo
+data_DATA =  ReadMe demo
 EXTRA_DIST = $(data_DATA)

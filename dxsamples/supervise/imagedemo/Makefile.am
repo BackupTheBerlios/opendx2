@@ -3,5 +3,5 @@
 
 datadir = $(prefix)/dx/samples/supervise/imagedemo
 
-data_DATA =  Makefile.sample ReadMe demo demo.cfg demo.net demo1 demo1.cfg demo1.net
+data_DATA =  ReadMe demo demo.cfg demo.net demo1 demo1.cfg demo1.net
 EXTRA_DIST = $(data_DATA)
