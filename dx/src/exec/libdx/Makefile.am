@@ -7,6 +7,9 @@ dxdir = $(DXROOT)
 dxincludedir = $(DXROOT)/include/dx
 noinst_LIBRARIES = libLIBDX.a
 
+EXTRA_DIST = \
+	class class.awk
+
 BUILT_SOURCES = \
 	arrayClass.c cameraClass.c clippedClass.c fieldClass.c groupClass.c \
 	lightClass.c objectClass.c privateClass.c screenClass.c stringClass.c \
