@@ -139,7 +139,11 @@ Hints:
 
     No one has yet reported a successful using AIX and gcc.  Nor, for
 that matter, AIX 4.2 and xlC.  Several people have succeeded using 4.1 and
-xlC.  4.2 xlC is being looked into as we speak.
+xlC.  4.2 xlC also works with xlC. On one 4.3 system here I had to fix 
+/usr/include/Xm/XmP.h - in two places (around line 408) the final element 
+of enum declarations had a trailing comma that xlC didn't like without the
+-qlanglvl=compat flag, and I couldn't get xlc to accept at all.  So I fixed 
+the header file.
 
     If you are using Lesstif instead of Motif, you may need to create
 symbolic links in /usr/include to /usr/X11R6/include/Xm and /usr/X11R/X11.
