@@ -24,7 +24,12 @@
 #undef HAVE_SYS_ERRLIST
 #undef HAVE_SYSCONFIG_NCPUS
 #undef ALTERNATE_CXX_SIGNAL
+#undef HAVE_TYPES_H
+#undef HAVE_WINSOCK_H
+#undef HAVE_NETINET_IN_H
+#undef HAVE_NETDB_H 
 #undef HAVE_FCNTL_H
+#undef HAVE_ARPA_INET_H
 #undef HAVE_LIMITS_H
 #undef HAVE_MALLOC_H
 #undef HAVE_STRINGS_H
@@ -54,6 +59,8 @@
 #undef HAVE_LIBJPEG
 #undef HAVE_LIBDF
 #undef HAVE_LIBNETCDF
+
+#undef GETENV_ARG
 
 #undef uint
 #undef byte
