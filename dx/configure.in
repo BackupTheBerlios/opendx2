@@ -6,6 +6,8 @@ AC_SUBST(ARCH)
 AC_SUBST(EXEEXT)
 AC_SUBST(INSTALL_DX_EXE)
 AC_SUBST(INSTALL_DX_CSH)
+AC_SUBST(FMT_LIBS)
+AC_SUBST(LIBS)
 
 SHELL=sh
 
@@ -121,11 +123,36 @@ fi
 dnl Checks for libraries.
 AC_CHECK_LIB(g++, main)
 AC_CHECK_LIB(dl, main)
-AC_CHECK_LIB(z, compress)
-AC_CHECK_LIB(cdf, CDFlib)
-AC_CHECK_LIB(jpeg, jpeg_set_quality)
-AC_CHECK_LIB(df, Hopen)
-AC_CHECK_LIB(netcdf, free_NC_attr)
+AC_CHECK_LIB(z, compress,
+[
+    AC_DEFINE(HAVE_LIBZ)
+    LIBS="$LIBS -lz"
+    FMT_LIBS="$FMT_LIBS libz.a"
+])
+AC_CHECK_LIB(cdf, CDFlib,
+[
+    AC_DEFINE(HAVE_LIBCDF)
+    LIBS="$LIBS -lcdf"
+    FMT_LIBS="$FMT_LIBS libcdf.a"
+])
+AC_CHECK_LIB(jpeg, jpeg_set_quality,
+[
+    AC_DEFINE(HAVE_LIBJPEG)
+    LIBS="$LIBS -ljpeg"
+    FMT_LIBS="$FMT_LIBS libjpeg.a"
+])
+AC_CHECK_LIB(df, Hopen,
+[
+    AC_DEFINE(HAVE_LIBDF)
+    LIBS="$LIBS -ldf"
+    FMT_LIBS="$FMT_LIBS libdf.a"
+])
+AC_CHECK_LIB(netcdf, free_NC_attr,
+[
+    AC_DEFINE(HAVE_LIBNETCDF)
+    LIBS="$LIBS -lnetcdf"
+    FMT_LIBS="$FMT_LIBS libnetcdf.a"
+])
 
 DX_STREAM_O2
 
