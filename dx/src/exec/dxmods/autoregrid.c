@@ -105,7 +105,7 @@ int
         numnearest = -1;
      }
      else {
-        if (numnearest <= 0) {
+        if (numnearest < 0) {
            DXSetError(ERROR_BAD_PARAMETER,"#10020","nearest");
            goto error; 
         }
@@ -133,10 +133,14 @@ int
         *radius_ptr = -1;
      }
      else {
-        if (*radius_ptr <= 0) {
+        if (*radius_ptr < 0) {
            DXSetError(ERROR_BAD_PARAMETER, "#10370",
                 "radius", "a positive scalar value or the string `infinity`");
            goto error; 
+        }
+        else if(*radius_ptr == 0) {
+           DXWarning("Regrid radius set to 0, data values assigned to nearest grid point");
+           numnearest=0;
         }
      }
   }
@@ -205,8 +209,6 @@ int
     /* cull */
     ino = DXCull(ino);
 
-
-
     /* copy the attributes of the input scattered points to the output grid*/
     if (!DXCopyAttributes(base, ino)) 
       goto error; 
@@ -223,6 +225,58 @@ int
 
     DXDelete((Object)ino);
     out[0] = base;
+  }
+  else if (numnearest == 0) {
+    /* use the assign to nearest point method */
+    class = DXGetObjectClass(in[0]);
+    if (class == CLASS_ARRAY) {
+      if (!DXGetArrayInfo((Array)in[0], &numitems, &type, &category, 
+			  &rank, shape))
+        goto error;
+      if ((type != TYPE_FLOAT)||(rank != 1)) {
+        /* should also handle scalar I guess XXX */
+        DXSetError(ERROR_BAD_PARAMETER,"#10630","input");
+        goto error;
+      }
+      if (shape[0]<1 || shape[0]> 3) {
+        DXSetError(ERROR_BAD_PARAMETER,"#10370",
+                   "input","1-, 2-, or 3-dimensional");
+        goto error;
+      }
+      /* just a list of positions; let's make it a field with positions*/
+      ino = (Object)DXNewField();
+      if (!ino)
+        goto error;
+      if (!DXSetComponentValue((Field)ino,"positions",in[0]))
+        goto error; 
+    }
+    else {
+      /* so I can safely delete it at the bottom, as well as modify it */
+      ino = DXCopy(in[0], COPY_STRUCTURE);
+    }
+
+    /* remove connections */
+    if (DXExists(ino, "connections"))
+     DXRemove(ino,"connections");
+   
+    /* cull */
+    ino = DXCull(ino);
+
+    /* copy the attributes of the input scattered points to the output grid*/
+    if (!DXCopyAttributes(base, ino)) 
+      goto error; 
+
+    if (!DXCreateTaskGroup())
+      goto error;
+
+    if (!_dxfConnectScatterObject((Object)ino, (Object)base, missing))
+      goto error;
+
+    if (!DXExecuteTaskGroup())
+      goto error;
+
+    DXDelete((Object)ino);
+    out[0] = base;  
   }
   else {
     /* use the "nearest" method */
@@ -259,8 +313,6 @@ int
    
     /* cull */
     ino = DXCull(ino);
-
-
 
     /* copy the attributes of the input scattered points to the output grid*/
     if (!DXCopyAttributes(base, ino)) 
