@@ -146,6 +146,11 @@ ExConnectTo(char *host, char *user, char *cwd, int ac, char *av[], char *ep[],
     int found;
     int rsh_noenv;
     char *local_rsh_cmd;
+#if ! defined(DXD_HAS_LIBIOP)
+    int in[2], out[2], err[2];
+    int child;
+#endif
+
 
 #if HAVE_GETDTABLESIZE
     int  width = getdtablesize();
