@@ -113,11 +113,6 @@ typedef unsigned char	ubyte;
 /* cannot load runtime-loadable modules after forking */
 #define DXD_NO_MP_RUNTIME 1
 
-/* turn off unsupported formats */
-#define DXD_LACKS_HDF_FORMAT 1
-#define DXD_LACKS_CDF_FORMAT 1
-#define DXD_LACKS_NCDF_FORMAT 1
-
 #endif   /* linux86 */
 
 /* silicon graphics: indigo, crimson, 280/gtx, onyx, extreme
@@ -884,12 +879,6 @@ typedef unsigned long   ulong;
 /* defining DXD_STANDARD_IEEE will solve some of the setjump/longjump problmes
    in _compoper.c */
 #define DXD_STANDARD_IEEE 1
-
-/* turn off unsupported formats */
-#define DXD_LACKS_HDF_FORMAT 1
-#define DXD_LACKS_CDF_FORMAT 1
-#define DXD_LACKS_NCDF_FORMAT 1
-
 
 #include <string.h>
 #include <stdio.h>
