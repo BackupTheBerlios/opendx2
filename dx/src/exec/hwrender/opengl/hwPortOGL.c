@@ -473,7 +473,7 @@ got_visual:
 	    DO_DISPLAY_LISTS = 1;
 	}
 	else
-	    DO_DISPLAY_LISTS = 1;
+	    DO_DISPLAY_LISTS = 0;
     }
     else
     {
