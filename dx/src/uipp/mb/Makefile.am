@@ -38,6 +38,5 @@ noinst_HEADERS = \
 
 builder_LDADD = 			\
 	../base/libBASE.a  		\
-	../widgets/libWIDGETS.a  	\
-	../dxl/libDXL.la ../../exec/libdx/libDXlite.la \
+	../widgets/libWIDGETS.a 
 	@DXUI_ALDFLAGS@

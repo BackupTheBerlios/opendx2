@@ -4054,6 +4054,7 @@ void MBMainWindow::build(int flag)
 	    strcat(exists_msg, (const char *)"\n");
 	}
 	from->close();
+	delete from;
 
 	// Make sure the file is writable
 	std::ofstream *to = new std::ofstream(dest_file, std::ios::app);
@@ -4063,6 +4064,7 @@ void MBMainWindow::build(int flag)
 	    return;
 	}
 	to->close();
+	delete to;
     }
     if(flag & DO_MDF)
     {
@@ -4076,6 +4078,7 @@ void MBMainWindow::build(int flag)
 	    strcat(exists_msg, (const char *)"\n");
 	}
 	from->close();
+	delete from;
 
 	// Make sure the file is writable
 	std::ofstream *to = new std::ofstream(dest_file, std::ios::app);
@@ -4085,6 +4088,7 @@ void MBMainWindow::build(int flag)
 	    return;
 	}
 	to->close();
+	delete to;
     }
     if(flag & DO_MAKE)
     {
@@ -4098,6 +4102,7 @@ void MBMainWindow::build(int flag)
 	    strcat(exists_msg, (const char *)"\n");
 	}
 	from->close();
+	delete from;
 
 	// Make sure the file is writable
 	std::ofstream *to = new std::ofstream(dest_file, std::ios::app);
@@ -4107,7 +4112,9 @@ void MBMainWindow::build(int flag)
 	    return;
 	}
 	to->close();
+	delete to;
     }
+    FREE(dest_file);
 
     XtVaSetValues(this->getMainWindow(), XmNuserData, flag, NULL);
 
@@ -4126,6 +4133,7 @@ void MBMainWindow::build(int flag)
 		    NULL);
 	return;
     }
+
 
 
     this->reallyBuild((void *)this);

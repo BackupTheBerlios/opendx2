@@ -89,6 +89,7 @@ int Generate(int which, char *filename)
     if (! cleanup(&module, inputs, outputs))
 	return 0;
     
+    free(fnamecopy);
     return 1;
 }
 
@@ -319,6 +320,7 @@ do_makefile(char *basename, Module *mod)
     fprintf(fd, "\t(export DXARCH=`dx -whicharch` ; $(MAKE) -f %s )%s",makefilename, NEWLINE);
     fprintf(fd, "\techo YOU NEED TO SET DXARCH via dx -whicharch%s", NEWLINE);
     fclose(fd);
+    free(buf);
     return 1;
 
 error:
@@ -327,6 +329,7 @@ error:
 	fclose(fd);
 	unlink(buf);
     }
+    free(buf);
     return 0;
 }
 
@@ -493,6 +496,7 @@ do_mdf(char *basename, Module *mod, Parameter **in, Parameter **out)
     }
     
     fclose(fd);
+    free(buf);
     return 1;
 
 error:
@@ -501,6 +505,7 @@ error:
 	fclose(fd);
 	unlink(buf);
     }
+    free(buf);
     return 0;
 }
 
@@ -839,7 +844,7 @@ if (n_GF_out)
 fprintf(fd, "         /*%s", NEWLINE);
 fprintf(fd, "          * Now for each output that is not a Value, replace%s", NEWLINE);
 fprintf(fd, "          * the updated child into the object in the parent.%s", NEWLINE);
-fprintf(fd, "          */%s%s", NEWLINE);
+fprintf(fd, "          */%s%s", NEWLINE, NEWLINE);
     for (i = 0; i < nout; i++)
 	if (out[i]->structure == GROUP_FIELD)
 	{
@@ -1841,6 +1846,7 @@ fprintf(fd, "   return 0;%s", NEWLINE);
 fprintf(fd, "  %s}%s", NEWLINE, NEWLINE);
 
     fclose(fd);
+    free(buf);
 
     return 1;
 
@@ -1850,6 +1856,7 @@ error:
 	fclose(fd);
 	unlink(buf);
     }
+    free(buf);
 
     return 0;
 }
@@ -1896,6 +1903,8 @@ copy_comments(char *basename, FILE *out, char *hdr, char *ldr, char *trlr)
     sprintf(buf, "%s.mb", basename);
 
     in = fopen(buf, "r");
+    free(buf);
+    buf = 0;
     if (! in)
     {
 	ErrorMessage("error opening mb file");
@@ -2052,6 +2061,8 @@ process_input(char *basename, Module *mod, Parameter **in, Parameter **out)
     in[0] = NULL; out[0] = NULL;
 
     fd = fopen(buf, "r");
+    free(buf);
+    buf = 0;
     if (! fd)
     {
 	ErrorMessage("error opening file: %s\n", basename);
