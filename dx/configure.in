@@ -62,10 +62,10 @@ dnl
 
 dnl For the time being, require a command-line arg to build with SMP 
 dnl support on linux platforms
-AC_ARG_ENABLE(smp-linux,
+AC_ARG_ENABLE(smp_linux,
 	      [  --enable-smp-linux     build exec, libs with SMP-parallel capability for Linux platforms (default is no)],
-	      [with_smp-linux=$enableval],
-	      [with_smp-linux='no'])
+	      [with_smp_linux=$enableval],
+	      [with_smp_linux='no'])
 
 dnl Since building the libs for all the formats and DX stuff takes so long
 dnl this allows you to disable it while developing/extending dx.
@@ -160,9 +160,7 @@ fi
 AC_ARG_WITH(rsh,
         [  --with-rsh=PATH         Specify path to remote shell program ],
         [
-                if test "x$withval" != "$no" ; then
-                        rsh_path=$withval
-                fi
+                rsh_path=$withval
         ],
         [
                 AC_PATH_PROG(rsh_path, rsh)
