@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/Attic/Strings.h,v 1.2 1999/04/02 15:08:06 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/Attic/Strings.h,v 1.3 1999/04/02 19:00:43 gda Exp $
  */
 
 
@@ -66,39 +66,25 @@ const char *strrstr(const char *s1, const char *s2);
 //
 // Define strlen that can handle null pointers.
 //
-#ifdef NON_NULL_STRLEN
 // gcc screws up the following...  Use the second
 // # define STRLEN(a)	((a == NULL) ? 0 : strlen(a))
 # define STRLEN(a)	((a != NULL) ? strlen(a) : 0)
-#else
-# define STRLEN(a)	strlen(a)
-#endif
 
 //
 // Define strcmp that can handle null pointers.
 //
-#ifdef NON_NULL_STRCMP
 # define STRCMP(a,b) 	((a) ? ((b) ? strcmp(a,b)  \
                                     : strcmp(a,"")) \
                              : ((b) ? strcmp("",b) \
                                     : 0))
-#else
-# define STRCMP(a,b)	strcmp(a,b)
-#endif
 
 //
 // Define strncmp that can handle null pointers.
 //
-
-#ifdef NON_NULL_STRCMP
 # define STRNCMP(a,b,n)    ((a) ? ((b) ? strncmp(a,b,n)  \
                                     : strncmp(a,"",n)) \
                              : ((b) ? strncmp("",b,n) \
                                     : 0))    
-#else
-# define STRNCMP(a,b,n)    strncmp(a,b,n)
-#endif
-
 
 #ifdef NEEDS_STRERROR
 extern
