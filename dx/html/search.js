@@ -141,8 +141,9 @@ function formatResults(results, reference, offset) {
     currentRecord + ' of ' + results.length + '</I></B><BR><BR>' +
     '\n\n<!-- Begin result set //-->\n\n\t<DL>');
     for (var i = reference; i < currentRecord; i++) {
-      docObj.writeln('\n\n\t<DT>' + 'Rank: ' + results[i].score + ' - <A HREF="' + results[i].url + '">' + results[i].url + '</A>' +
-        '\t<DD>' + '<I>' + results[i].title + '</I><P>');
+      docObj.writeln('\n\n\t<DT>' + 'Rank: ' + results[i].score + ' - <A HREF="' +
+      		results[i].url + '" TARGET=_top>' + results[i].url + '</A>' +
+        	'\t<DD>' + '<I>' + results[i].title + '</I><P>');
       }
   docObj.writeln('\n\t</DL>\n\n<!-- End result set //-->\n\n');
   prevNextResults(results.length, reference, offset);
