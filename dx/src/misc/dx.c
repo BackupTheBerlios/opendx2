@@ -42,7 +42,7 @@
 #define DXD_ARCHNAME "unix"
 #endif
 
-#define SCRIPTVERSION "03.01.0004"
+#define SCRIPTVERSION DXD_VERSION_STRING
 
 #define IBM_ID 1
 #define HUMMBIRD_ID 2
