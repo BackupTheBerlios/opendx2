@@ -3,4 +3,4 @@
 catdir = $(prefix)/man/catl
 
 cat_DATA = dx.l
-EXTRA_DIST = $(cat_DIST)
+EXTRA_DIST = $(cat_DATA)
