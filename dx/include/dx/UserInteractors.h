@@ -81,6 +81,10 @@ typedef union
 	DXKeyPressEvent keypress;
 } DXEvent,  *DXEvents;
 
+/*
+ * The following are convenience typedefs that MUST agree with the 
+ * subsequent structure definition elements
+ */
 typedef void *(*InitMode)(Object args, int width, int height, int *mask);
 typedef void  (*EndMode)(void *handle);
 typedef void  (*SetCamera)(void *handle, float *to, float *from, float *up,
@@ -92,29 +96,19 @@ typedef int   (*GetRenderable)(void *handle, Object *obj);
 
 typedef void  (*EventHandler)(void *handler, DXEvent *event);
 
-#if defined(__cplusplus) || defined(c_plusplus)
 struct _userInteractor
 {
-    InitMode 		InitMode;
-    EndMode		EndMode;
-    SetCamera		SetCamera;
-    GetCamera		GetCamera;
-    SetRenderable	SetRenderable;
-    GetRenderable	GetRenderable;
-    EventHandler	EventHandler;
+    void *(*InitMode)(Object, int, int, int *);
+    void  (*EndMode)(void *);
+    void  (*SetCamera)(void *, float *, float *, float *,
+		int, float, float);
+    int   (*GetCamera)(void *, float *, float *, float *,
+		int *, float *, float *);
+    void  (*SetRenderable)(void *, Object);
+    int   (*GetRenderable)(void *, Object *);
+
+    void  (*EventHandler)(void *, DXEvent *);
 };
-#else
-struct _userInteractor
-{
-    void** 		InitMode;
-    void*		EndMode;
-    void*		SetCamera;
-    int*		GetCamera;
-    void*	SetRenderable;
-    int*	GetRenderable;
-    void*	EventHandler;
-};
-#endif
 
 typedef struct _userInteractor UserInteractor;
 
