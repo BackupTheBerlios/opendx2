@@ -102,3 +102,21 @@ else
 fi
 AC_SUBST($1)])
 
+AC_DEFUN(DX_ARCHITECTURE,
+[
+    AC_MSG_CHECKING(system architecture )
+    unameS=`uname -s`
+    unameM=`uname -m`
+    if test $unameS = "Linux" && test $unameM = "i686" ; then
+        ARCH=linux86
+    fi
+    if test $unameS = "AIX" ; then
+        ARCH=ibm6000
+    fi
+    if test $unameS = "IRIX" || test $unameS = "IRIX64" ; then
+        ARCH=sgi
+    fi
+    AC_DEFINE_UNQUOTED(ARCH, $ARCH)
+    AC_SUBST(ARCH)
+    AC_MSG_RESULT($ARCH)
+])
