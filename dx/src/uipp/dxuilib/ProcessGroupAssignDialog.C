@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ProcessGroupAssignDialog.C,v 1.1 1999/03/24 15:17:45 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ProcessGroupAssignDialog.C,v 1.2 1999/04/16 20:07:33 gda Exp $
  */
 
 #include "UIConfig.h" 
@@ -320,7 +320,7 @@ extern "C" void ProcessGroupAssignDialog_TextCB(Widget    widget,
 
 }
 
-#ifdef DXD_HAS_UNIX_SYS_INCLUDES
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 

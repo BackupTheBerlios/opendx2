@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/PacketIF.C,v 1.2 1999/04/08 17:53:01 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/PacketIF.C,v 1.3 1999/04/16 20:07:33 gda Exp $
  */
 
 
@@ -49,7 +49,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef DXD_HAS_UNIX_SYS_INCLUDES
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 

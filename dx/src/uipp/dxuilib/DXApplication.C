@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/DXApplication.C,v 1.1 1999/03/24 15:17:39 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/DXApplication.C,v 1.2 1999/04/16 20:07:33 gda Exp $
  *
  */
 
@@ -26,7 +26,7 @@
 #include <stream.h>
 #endif
 
-#ifdef DXD_HAS_UNIX_SYS_INCLUDES
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <signal.h>
