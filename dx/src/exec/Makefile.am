@@ -1,6 +1,7 @@
 SUBDIRS = libdx dxmods hwrender dpexec dxexec
 
 DELFILES = \
+        xxmain.o \
         mduser.o \
         lbmemory.o \
         lbmem.o    \
@@ -50,9 +51,10 @@ install-exec-local:
 	fi ;								   \
 	mkdir tmp ;							   \
 	cd tmp ; 							   \
-	for i in dpexec dxmods hwrender hwrender/opengl libdx ; do	   \
+	for i in dpexec dxmods hwrender hwrender/opengl libdx dxexec ; do	   \
 		echo merging  $$i ;					   \
 		case $$i in						   \
+			dxexec) 	 lib=libDXEXEC.a ; pre=xx ;; 	   \
 			dpexec) 	 lib=libDPEXEC.a ; pre=ex ;; 	   \
 			dxmods) 	 lib=libDXMODS.a ; pre=md ;; 	   \
 			hwrender) 	 lib=libHW.a ;     pre=hw ;;	   \
