@@ -19,12 +19,12 @@ INSTALL_SCRIPT='$(INSTALL)'
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
 AM_CONFIG_HEADER(include/dxconfig.h)
-AM_INIT_AUTOMAKE(dx, 4.0.5)
+AM_INIT_AUTOMAKE(dx, 4.0.6)
 
-AC_DEFINE(DXD_VERSION_STRING,   "04.01.0005")
+AC_DEFINE(DXD_VERSION_STRING,   "04.01.0006")
 AC_DEFINE_UNQUOTED(DXD_VERSION, 4)
 AC_DEFINE_UNQUOTED(DXD_RELEASE, 1)
-AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 5)
+AC_DEFINE_UNQUOTED(DXD_MODIFICATION, 6)
 
 DX_ARCHITECTURE
 
@@ -99,9 +99,14 @@ AC_CHECK_LIB(SM, SmcSetProperties)
 AC_CHECK_LIB(REXP, regcomp)
 AC_CHECK_LIB(pthread, pthread_getspecific)
 
-DX_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h sys/socket.h sys/file.h sys/ioctl.h sys/time.h unistd.h sys/types.h sys/sysconfig.h sys/un.h values.h wait.h sys/wait.h sys/utsname.h signal.h sys/signal.h process.h sys/filio.h CC/osfcn.h CC/libc.h sys/param.h sys/select.h cygwin/socket.h )
+DX_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h sys/socket.h sys/file.h sys/ioctl.h sys/time.h unistd.h sys/types.h sys/sysconfig.h sys/un.h values.h wait.h sys/wait.h sys/utsname.h signal.h sys/signal.h process.h sys/filio.h CC/osfcn.h CC/libc.h sys/param.h sys/select.h cygwin/socket.h winsock.h netinet/in.h netdb.h arpa/inet.h types.h)
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime putenv re_comp regcmp select socket strcspn strdup strerror strspn strstr strtod strtol strtoul uname popen vfork trunc _popen spawnvp _spawnvp regcomp sysmp sysconf)
 
+AC_TRY_COMPILE(
+[],
+[extern char *getenv(const char *);],
+AC_DEFINE_UNQUOTED(GETENV_ARG, const char *),
+AC_DEFINE_UNQUOTED(GETENV_ARG, char *))
 
 AC_TRY_LINK(
 [
