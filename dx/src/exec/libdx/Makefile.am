@@ -88,7 +88,7 @@ libLIBDX_a_SOURCES =  \
 	matrix.c mem.c memory.c mesharray.c message.c multigrid.c \
 	neighbors.c object.c patharray.c private.c productarray.c \
 	regulararray.c screen.c series.c string.c stringtable.c \
-	task.c timing.c v3.c vector.c version.c xform.c \
+	timing.c v3.c vector.c version.c xform.c \
 	\
 	axes.c buffer.c client.c color.c component.c displayfb.c displayx.c \
 	edfdata.c edfdict.c edfio.c edflex.c edfobj.c edfparse.c edfprint.c \
