@@ -9,10 +9,6 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-#include <Xm/Xm.h>
-#include <Xm/Label.h>
-#include <X11/cursorfont.h>
-
 // putenv should come from stdlib.h
 // extern "C" int putenv(char*);
 
@@ -57,6 +53,9 @@
 #define chdir _chdir
 #endif
 
+#include <Xm/Xm.h>
+#include <Xm/Label.h>
+#include <X11/cursorfont.h>
 
 
 #include "lex.h"
