@@ -9,11 +9,6 @@
 #include <dxconfig.h>
 #include <dx/dx.h>
 
-
-#if defined(HAVE_IO_H)
-#include <io.h>
-#endif
-
 #if defined(HAVE_WINIOCTL_H)
 #include <winioctl.h>
 #endif
@@ -153,19 +148,6 @@ extern double SVS_double_time ();
 #include "version.h"
 #include "distp.h"
 
-#if DXD_HAS_IBM_OS2_SOCKETS
-#define EX_FD_SETSIZE   FD_SETSIZE
-#else
-/*
- * The usual defines for FD_SETSIZE are too outrageous so lets make our
- * own which is far more reasonable.
- *
- * stdin, stdout, stderr, ui socket, max # of open includes, a few spares.
- */
-
-#define	EX_FD_SETSIZE	(4 + MAXINCLUDES + 4)
-#endif
-
 #ifdef DXD_LICENSED_VERSION
 #include "license.h"
 static int exLicenseSelf = FALSE;
@@ -285,8 +267,12 @@ extern Error _dxfLoadDefaultUserInteractors();
  * All the main helper functions.
  */
 
+/* 
+ * This one's used externally in DODX RunOnSlaves 
+ */
+int ExCheckInput(void);
+
 static int	ExCheckGraphQueue	(int);
-static int	ExCheckInput		(void);
 static int	ExCheckRunqueue		(int graphId);
 static void	ExCheckTerminate	(void);
 static void	ExChildProcess		(void);
@@ -345,6 +331,8 @@ lock_type *childtbl_lock = NULL;
 static volatile int *exReady;
 
 #include "instrument.h"
+
+extern Error user_cleanup();
 
 DXmain (argc, argv, envp)
     int		argc;
@@ -1547,6 +1535,8 @@ static void ExCleanup ()
     }
 #endif
 
+    user_cleanup();
+
     exit (0);
 }
 
@@ -1858,106 +1848,25 @@ static int ExFindPID (int pid)
 }
 
 
-/*
- * See if there is any input available to read and if so give the
- * OK to go ahead and process it.
- *
- * NOTE:  The ioctl seems to work fine on the ibmpvs and on the ibm6000
- *        however further tests need to be made on the SGI since
- *        at first glance it does not appear to work correctly.
- */
-
-#if ibmpvs
-
-static int OKToRead (SFILE *fp)
-{
-    static double	last_ioctl	= 0.0;
-    static double	last_select	= 0.0;
-    double		now;
-    int			rc = FALSE;
-    int			n;
-    int			fd;
-    int			ret;
-    fd_set		fdset;
-    struct timeval	tv;
-    extern int		_dxd_exBaseFD;
-
-    /* If there is something in the read buffer then go get it */
-    if (SFILECharReady(fp))
-	return (TRUE);
-
-    /* If we are reading a file then read it so we see the EOF */
-    fd = SFILEfileno (fp);
-    if (fd != _dxd_exBaseFD)
-	return (TRUE);
-
-    /*
-     * OK, this is either stdin or a socket to the UI.  If it's stdin and
-     * it has been redirected then we always read so that we'll see the EOF.
-     * If it has not been redirected, or it's not stdin then we'll check
-     * every so often with the ioctl to see if anything has arrived.
-     */
-
-    now = SVS_double_time ();
-    if (! _dxd_exRshInput)
-    {
-	if (now - last_ioctl > read_i_threshhold)
-	{
-	    /*
-	     * Almost always read redirected stdin
-	     */
-
-	    if (fd == 0 && ! _dxd_exIsatty)
-		return (TRUE);
-
-	    ret = IOCTL (fd, FIONREAD, (char *) &n);
-	    rc = n > 0 || ret < 0;
-	    last_ioctl = now;
-	    if (rc)
-		return (TRUE);
-	}
-    }
-
-    /*
-     * If we're connected to the UI then every so often (although signifcantly
-     * less often we also need to do a select since the ioctl above doesn't
-     * seem to detect the disappearance of the sender side of the socket.
-     */
-
-    if ((_dxd_exRemote || _dxd_exRshInput) && now - last_select > read_s_threshhold)
-    {
-	FD_ZERO (&fdset);
-	FD_SET  (fd, &fdset);
-	tv.tv_sec  = 0;
-	tv.tv_usec = 0;
-	ret = select (EX_FD_SETSIZE, &fdset, NULL, NULL, &tv);
-	rc = ret > 0;
-	last_select = now;
-	if (rc)
-	    return (TRUE);
-    }
-    
-    return (FALSE);
-}
-
-#else
-
 static
 int OKToRead (SFILE *fp)
 {
     fd_set		fdset;
     struct timeval	tv;
 
+    if (ExCheckParseBuffer())
+	return 1;
+
+    if (SFILECharReady(fp))
+	return 1;    
+
     FD_ZERO (&fdset);
     FD_SET  (SFILEfileno (fp), &fdset);
     tv.tv_sec  = 0;
     tv.tv_usec = 0;
 
-    return (SFILECharReady(fp) ||
-            select (EX_FD_SETSIZE, (SelectPtr) &fdset, NULL, NULL, &tv) > 0);
+    return (select (FD_SETSIZE, (SelectPtr) &fdset, NULL, NULL, &tv) > 0);
 }
-
-#endif
 
 void
 _dxf_ExPromptSet(char *var, char *val)
@@ -2202,7 +2111,8 @@ DXMarkTimeLocal ("pre  gq_enq");
     }
 }
     
-static int ExCheckInput ()
+int
+ExCheckInput ()
 {
     extern SFILE	*yyin;
     Program		*graph;
@@ -2224,11 +2134,6 @@ static int ExCheckInput ()
     fno = SFILEfileno (yyin);
     if ((_dxd_exIsatty || (_dxd_exRshInput && fno == _dxd_exBaseFD)) &&
 	! prompted && _dxf_ExGQAllDone () && !SFILECharReady(yyin))
-	/*
-	if ((_dxd_exIsatty || (_dxd_exRshInput && yyin == _dxd_exBaseFD)) &&
-	! prompted && _dxf_ExGQAllDone () && !SFILECharReady(yyin))
-	*/
-
     {
 	prompt = _dxf_ExPromptGet(PROMPT_ID_PROMPT);
 	printf (prompt? prompt: EX_PROMPT);
@@ -2405,7 +2310,7 @@ ExInputAvailable (SFILE *fp)
 	FD_SET  (fd, &fdset);
 	tv.tv_sec  = 0;
 	tv.tv_usec = 0;
-	ret = select (EX_FD_SETSIZE, (SelectPtr) &fdset, NULL, NULL, &tv);
+	ret = select (FD_SETSIZE, (SelectPtr) &fdset, NULL, NULL, &tv);
 	return (ret > 0);
     }
 }
@@ -2566,26 +2471,6 @@ block:
 	if (reading && _dxf_ExGQAllDone () && ! _dxf_ExVCRRunning ())
 	{
 	    ISSUE_PROMPT ();
-#if 0
-#ifndef ibmpvs
-#if ibmpvs
-	    set_status (PS_PARSE);
-	    {
-		fd_set		fdset;
-		int		fd	= fileno (yyin);
-
-		for (;;)
-		{
-		    FD_ZERO (&fdset);
-		    FD_SET  (fd, &fdset);
-		    select (fd + 1, &fdset, NULL, NULL, NULL);
-		    if (FD_ISSET (fd, &fdset))
-			break;
-		}
-	    }
-#endif
-#endif
-#endif
             if (! _dxd_exParseAhead)
             {
                 /* if we get here there is nothing in the queues */
@@ -2593,35 +2478,12 @@ block:
                 _dxd_exParseAhead = _dxd_exSParseAhead;
             }
 
-#if 0
-            if(*_dxd_exNSlaves > 0) {
-#ifndef DXD_NOBLOCK_SELECT
-                _dxf_ExCheckRIHBlock (SFILEfileno (yyin));
-#endif
-            }
-            else
-	        goto block;
-#endif
-
 #ifndef DXD_NOBLOCK_SELECT
             if(!_dxf_ExIsExecuting() && !ExInputAvailable(yyin))
                 _dxf_ExCheckRIHBlock (SFILEfileno (yyin));
 #endif
 
 	}
-
-#if DXD_HAS_LIBIOP
-	if (! reading)
-	{
-	    if (cnt++ == EX_LOOP_TRIES)
-	    {
-		double stop	= SVS_double_time ();
-		double lps	= (double) EX_LOOP_TRIES / (stop - start);
-		EX_LIMIT = 1 + (int) (lps / (double) EX_LOOP_PER_SEC);
-		reading = TRUE;
-	    }
-	}
-#endif
 
 #if sgi
 	set_status (PS_NAPPING);

@@ -1,4 +1,3 @@
-extern int  _dxd_exYYdebug;
 /***********************************************************************/
 /* Open Visualization Data Explorer                                    */
 /* (C) Copyright IBM Corp. 1989,1999                                   */
@@ -16,7 +15,6 @@ extern int  _dxd_exYYdebug;
 #include <math.h>
 #include <errno.h>
 
-
 #include "sfile.h"
 #include "context.h"
 #include "parse.h"
@@ -24,15 +22,104 @@ extern int  _dxd_exYYdebug;
 #include "log.h"
 #include "sysvars.h"
 
-# define U(x) (x)
+#define U(x) (x)
 #define LINEFEED 10
+
+#define YYLMAX_1	4000		/* max string/identifer length */
+#define YYLMAX		(YYLMAX_1 + 1)
+
+typedef struct _cmdBuf
+{
+    char *buf;
+    struct _cmdBuf *next;
+} CmdBuf;
+
+static CmdBuf *cmdHead = NULL, *cmdTail = NULL;
+static char *cmdPtr = NULL;
+
+int
+ExCheckParseBuffer()
+{
+    return cmdHead != NULL;
+}
+
+Error
+ExParseBuffer(char *b)
+{
+    CmdBuf *c = NULL;
+    int l = strlen(b);
+    if (l)
+    {
+      c = (CmdBuf *)DXAllocate(sizeof(CmdBuf));
+      if (! c)
+          goto error;
+
+      c->buf = (char *)DXAllocate(l+1);
+      if (! c->buf)
+          goto error;
+
+      strcpy(c->buf, b);
+      c->next = NULL;
+
+      if (cmdTail)
+          cmdTail->next = c;
+      cmdTail = c;
+
+      if (! cmdHead)
+      {
+          cmdHead = c;
+          cmdPtr = c->buf;
+      }
+    }
+
+    return OK;
+
+error:
+    if (c)
+    {
+        if (c->buf) DXFree((Pointer)c->buf);
+      DXFree((Pointer)c);
+    }
+    return ERROR;      
+}
+ 
+
+static int
+GetC(SFILE *yyin)
+{
+    if (cmdPtr)
+    {
+        int r = *cmdPtr++;
+
+      if (*cmdPtr == '\0')
+      {
+          CmdBuf *t = cmdHead;
+
+          cmdHead = cmdHead->next;
+          if (cmdHead)
+              cmdPtr = cmdHead->buf;
+          else
+              cmdPtr = NULL;
+
+          if (cmdTail == t)
+              cmdTail = NULL;
+
+          DXFree((Pointer)t->buf);
+          DXFree((Pointer)t);
+      }
+
+      return r;
+    }
+    else
+        return SFILEGetChar(yyin);
+} 
 
 # define input()							\
 (									\
-    uipacketlen -= _dxd_exUIPacket ? 1 : 0,					\
+    uipacketlen -= _dxd_exUIPacket ? 1 : 0,				\
     (									\
 	(								\
-	    yytchar = (yysptr > yysbuf)	? U(*--yysptr) : SFILEGetChar(yyin)	\
+	    yytchar = (yysptr > yysbuf)	? U(*--yysptr) : GetC(yyin)	\
 	) == LINEFEED ? (						\
 		      yylineno++,					\
 		      yyCharno = yycharno,				\
@@ -63,9 +150,6 @@ extern int  _dxd_exYYdebug;
     *yysptr++ = yytchar;	\
 }
  
- 
-#define YYLMAX_1	4000		/* max string/identifer length */
-#define YYLMAX		(YYLMAX_1 + 1)
  
 extern int _dxd_exRshInput;
 extern int _dxd_exIsatty;

@@ -34,6 +34,7 @@ DXinitdx()
 #if DXD_HAS_LIBIOP
 	if (!_dxf_initfb()) return ERROR;
 #endif
+	if (!user_init()) return ERROR;
     }
     return OK;
 }

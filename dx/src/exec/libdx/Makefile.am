@@ -64,7 +64,7 @@ dxlite_sources1 = \
         edfparse.c edfobj.c edfdata.c edfdict.c edfio.c edfprint.c \
         fileio.c rwobject.c renderstubs.c memorystubs.c qmessage.c \
         task.c cache.c version.c outglue.c invalid.c seglist.c \
-        notify.c
+        notify.c userinit.c
 
 libDXlite_a_SOURCES = $(dxlite_sources0) $(dxlite_sources1)
 
@@ -88,7 +88,7 @@ libLIBDX_a_SOURCES =  \
 	matrix.c mem.c memory.c mesharray.c message.c multigrid.c \
 	neighbors.c object.c patharray.c private.c productarray.c \
 	regulararray.c screen.c series.c string.c stringtable.c \
-	timing.c v3.c vector.c version.c xform.c \
+	timing.c v3.c vector.c version.c xform.c userinit.c \
 	\
 	axes.c buffer.c client.c color.c component.c displayfb.c displayx.c \
 	edfdata.c edfdict.c edfio.c edflex.c edfobj.c edfparse.c edfprint.c \
