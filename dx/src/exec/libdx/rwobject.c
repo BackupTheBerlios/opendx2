@@ -34,7 +34,7 @@ static void badaddr(void)
 
 #define MARKTIME  0  /* turn off if timing not needed */
 
-#if DXD_BIGENDIAN
+#if WORDS_BIGENDIAN==1
 #define MSB_MACHINE 1
 #else
 #define MSB_MACHINE 0
