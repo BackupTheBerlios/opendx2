@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I$(DXROOT)/include
+INCLUDES = -I../../../include -I../base -I../widgets
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXXMKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
@@ -8,7 +8,7 @@ dxbindir = $(prefix)/dx/bin_@ARCH@
 
 dxbin_PROGRAMS = builder
 
-builder_SOURCES =			
+builder_SOURCES =			\
 	MBApplication.C			\
 	MBMainWindow.C			\
 	MBCommand.C			\
@@ -45,4 +45,4 @@ builder_LDADD = 			\
 	-L/usr/X11R6/lib 		\
 	-L/usr/local/lib 		\
 	-L$(DXROOT)/lib_@ARCH@	\
-	-lcrypt -lg++ -lXm -lXmu -lXt -lX11 -lXext
+	-lg++ -lXm -lXmu -lXt -lX11 -lXext
