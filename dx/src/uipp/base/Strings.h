@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/Attic/Strings.h,v 1.1 1999/03/24 15:17:24 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/base/Attic/Strings.h,v 1.2 1999/04/02 15:08:06 gda Exp $
  */
 
 
@@ -67,7 +67,9 @@ const char *strrstr(const char *s1, const char *s2);
 // Define strlen that can handle null pointers.
 //
 #ifdef NON_NULL_STRLEN
-# define STRLEN(a)	((a == NULL) ? 0 : strlen(a))
+// gcc screws up the following...  Use the second
+// # define STRLEN(a)	((a == NULL) ? 0 : strlen(a))
+# define STRLEN(a)	((a != NULL) ? strlen(a) : 0)
 #else
 # define STRLEN(a)	strlen(a)
 #endif
