@@ -29,6 +29,8 @@ rendering (better use of display lists, most notably), JavaDX, and
 stereo rendering.  
 
 Build Instructions:
+  
+    BEFORE YOU CONFIGURE IT... set the SHELL environment variable to sh
 
     This is intended to be a simple configure-and-make build.
 
