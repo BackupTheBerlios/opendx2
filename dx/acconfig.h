@@ -18,6 +18,8 @@
 #undef  REQUIRES_GETHOSTNAME_DECLARATION
 #undef  REQUIRES_BZERO_DECLARATION
 
+#undef ibm6000
+
 #undef OLD_LESSTIF
 
 #undef USING_BISON
@@ -42,25 +44,9 @@
 #undef HAVE_LIBTTF
 #undef HAVE_TT_FONT_PATH
 
-#undef uint
-#undef byte
-#undef float32
-#undef float64
-#undef int16
-#undef int32
-#undef int64
 #undef __int64
-#undef int8
-#undef short
-#undef ubyte
-#undef uint16
-#undef uint32
-#undef uint64
-#undef uint8
-#undef ulong
-#undef ushort
-#undef caddr_t
 
+#undef uint
 #undef SELECT_ARG_TYPE
 #undef SOCK_LENGTH_TYPE
 #undef GETENV_ARG
@@ -76,6 +62,8 @@
 #undef HAVE_X11_COMPOSITEP_H
 #undef HAVE_X11_CONSTRAINT_H
 #undef HAVE_X11_COREP_H
+
+#undef caddr_t
 #undef HAVE_X11_INTRINSIC_H
 #undef HAVE_X11_INTRINSICI_H
 #undef HAVE_X11_INTRINSICP_H
@@ -88,6 +76,8 @@
 #undef HAVE_X11_XLIB_H
 #undef HAVE_X11_XLIBXTRA_H
 #undef HAVE_X11_XMU_EDITRES_H
+
+#undef ushort
 #undef HAVE_X11_XOS_H
 #undef HAVE_X11_XUTIL_H
 #undef HAVE_X11_CURSORFONT_H
@@ -100,6 +90,8 @@
 #undef HAVE_XM_BULLETINBP_H
 #undef HAVE_XM_CASCADEB_H
 #undef HAVE_XM_CASCADEBG_H
+
+#undef uint32
 #undef HAVE_XM_COMMAND_H
 #undef HAVE_XM_CUTPASTE_H
 #undef HAVE_XM_DIALOGS_H
@@ -112,6 +104,8 @@
 #undef HAVE_XM_FORM_H
 #undef HAVE_XM_FORMP_H
 #undef HAVE_XM_FRAME_H
+
+#undef float32
 #undef HAVE_XM_FRAMEP_H
 #undef HAVE_XM_GADGETP_H
 #undef HAVE_XM_LABEL_H
@@ -124,6 +118,8 @@
 #undef HAVE_XM_MENUSHELL_H
 #undef HAVE_XM_MESSAGEB_H
 #undef HAVE_XM_MWMUTIL_H
+
+#undef ulong
 #undef HAVE_XM_PANEDW_H
 #undef HAVE_XM_PRIMITIVEP_H
 #undef HAVE_XM_PROTOCOLS_H
@@ -138,6 +134,8 @@
 #undef HAVE_XM_SCROLLEDWP_H
 #undef HAVE_XM_SELECTIOB_H
 #undef HAVE_XM_SEPARATOG_H
+
+#undef uint64
 #undef HAVE_XM_SEPARATOGP_H
 #undef HAVE_XM_SEPARATOR_H
 #undef HAVE_XM_TEXT_H
@@ -150,6 +148,8 @@
 #undef HAVE_ALLOCA_H
 #undef HAVE_ARPA_INET_H
 #undef HAVE_BSTRING_H
+
+#undef uint8
 #undef HAVE_CDF_H
 #undef HAVE_CONIO_H
 #undef HAVE_CRYPT_H
@@ -162,6 +162,8 @@
 #undef HAVE_DLFCN_H
 #undef HAVE_ERRNO_H
 #undef HAVE_FCNTL_H
+
+#undef int64
 #undef HAVE_FLOAT_H
 #undef HAVE_FSTREAM_H
 #undef HAVE_GET_H
@@ -174,6 +176,8 @@
 #undef HAVE_IOP_MOV_H
 #undef HAVE_IOP_PFS_H
 #undef HAVE_IOSTREAM_H
+
+#undef int32
 #undef HAVE_LICENSE_H
 #undef HAVE_LIMITS_H
 #undef HAVE_MALLOC_H
@@ -186,6 +190,8 @@
 #undef HAVE_NET_ROUTE_H
 #undef HAVE_NETCDF_H
 #undef HAVE_NETDB_H
+
+#undef int16
 #undef HAVE_NETINET_IN_H
 #undef HAVE_OS2_H
 #undef HAVE_PROCESS_H
@@ -198,6 +204,8 @@
 #undef HAVE_STDDEF_H
 #undef HAVE_STDIO_H
 #undef HAVE_STDLIB_H
+
+#undef float64
 #undef HAVE_STREAM_H
 #undef HAVE_STRING_H
 #undef HAVE_STRINGS_H
@@ -210,6 +218,8 @@
 #undef HAVE_SYS_FILIO_H
 #undef HAVE_SYS_IOCTL_H
 #undef HAVE_SYS_IPC_H
+
+#undef byte
 #undef HAVE_SYS_LDR_H
 #undef HAVE_SYS_M88KBCS_H
 #undef HAVE_SYS_M_WAIT_H
@@ -222,6 +232,8 @@
 #undef HAVE_SYS_SHM_H
 #undef HAVE_SYS_SIGNAL_H
 #undef HAVE_SYS_SOCKET_H
+
+#undef uint16
 #undef HAVE_SYS_STAT_H
 #undef HAVE_SYS_SVS_H
 #undef HAVE_SYS_SYSLIMITS_H
@@ -234,6 +246,8 @@
 #undef HAVE_SYS_TIMEB_H
 #undef HAVE_SYS_TIMES_H
 #undef HAVE_SYS_TYPES_H
+
+#undef ubyte
 #undef HAVE_SYS_UN_H
 #undef HAVE_SYS_UTSNAME_H
 #undef HAVE_SYS_WAIT_H
@@ -246,12 +260,15 @@
 #undef HAVE_WAIT_H
 #undef HAVE_WINBASE_H
 #undef HAVE_WINDOWS_H
+
+#undef short
 #undef HAVE_WINGDI_H
 #undef HAVE_WINIOCTL_H
 #undef HAVE_WINSOCK_H
 #undef HAVE_X11_XLIBXTRA_H
 #undef HAVE_XGL_XGL_H
 
+#undef int8
 #undef DXEXEC_EXP
 #undef DXEXEC_IMP
 
