@@ -81,11 +81,6 @@ AC_ARG_ENABLE(installhtml,
 	      [with_installhtml='yes'])
 
 dnl Get configuration of ImageMagick
-# Enable sfio stdio support
-AC_ARG_ENABLE(sfio,
-	      [  --enable-sfio           enable sfio-based stdio support (default is no)],
-	      [with_sfio=$enableval],
-	      [with_sfio='no'])
 
 # Disable support for largefiles
 AC_ARG_WITH(largefiles,
@@ -93,82 +88,17 @@ AC_ARG_WITH(largefiles,
               [with_largefiles=$withval],
               [with_largefiles='yes'])
 
-# Enable BZLIB (bzip2 library)
-AC_ARG_WITH(bzlib,
-	      [  --with-bzlib            enable BZLIB (default is yes)],
-	      [with_bzlib=$withval],
-	      [with_bzlib='yes'])
-
-# Enable Display Postscript.
-AC_ARG_WITH(dps,
-	      [  --with-dps              enable Display Postscript (default is yes)],
-	      [with_dps=$withval],
-	      [with_dps='yes'])
-
-# Enable FlashPIX.
-AC_ARG_WITH(fpx,
-	      [  --with-fpx              enable FlashPIX (default is yes)],
-	      [with_fpx=$withval],
-	      [with_fpx='yes'])
-
 # Enable HDF.
 AC_ARG_WITH(hdf,
 	      [  --with-hdf              enable HDF (default is yes)],
 	      [with_hdf=$withval],
 	      [with_hdf='yes'])
 
-# Enable JBIG.
-AC_ARG_WITH(jbig,
-	      [  --with-jbig             enable JBIG (default is yes)],
-	      [with_jbig=$withval],
-	      [with_jbig='yes'])
-
-# Enable JPEG.
-AC_ARG_WITH(jpeg,
-	      [  --with-jpeg             enable JPEG (default is yes)],
-	      [with_jpeg=$withval],
-	      [with_jpeg='yes'])
-
-# Enable PNG.
-AC_ARG_WITH(png,
-	      [  --with-png              enable PNG (default is yes)],
-	      [with_png=$withval],
-	      [with_png='yes'])
-
 # Enable TIFF.
 AC_ARG_WITH(tiff,
 	      [  --with-tiff             enable TIFF (default is yes)],
 	      [with_tiff=$withval],
 	      [with_tiff='yes'])
-
-# Enable TTF.
-AC_ARG_WITH(ttf,
-	      [  --with-ttf              enable TrueType (default is yes)],
-	      [with_ttf=$withval],
-	      [with_ttf='yes'])
-
-# Set default TrueType font path
-AC_ARG_WITH(ttf-fontpath,
-	      [  --with-ttf-fontpath     set default TrueType font path (default none)],
-	      [with_ttf_fontpath=$withval],
-	      [with_ttf_fontpath=''])
-if test "$with_ttf_fontpath" != "yes" && test -z "$with_ttf_fontpath"
-then
-  with_ttf_fontpath=''
-else
-  AC_DEFINE_UNQUOTED(TT_FONT_PATH,"$with_ttf_fontpath")
-fi
-
-# Disable XML.
-AC_ARG_WITH(xml,
-              [  --without-xml           disable XML support],
-	      [with_xml=$withval],
-	      [with_xml='yes'])
-
-AC_ARG_WITH(zlib,
-	      [  --with-zlib             enable ZLIB (default is yes)],
-	      [with_zlib=$withval],
-	      [with_zlib='yes'])
 
 AC_ARG_WITH(magick,
 	      [  --with-magick           enable ImageMagick (default is yes)],
@@ -454,9 +384,9 @@ fi
 
 AC_CHECK_LIB(ICE, IceConnectionNumber)
 AC_CHECK_LIB(SM, SmcSetProperties)
+AC_CHECK_LIB(xlibcon, printf)
 AC_CHECK_LIB(xlib, XCreateWindow)
 AC_CHECK_LIB(xt, XtVaGetValues)
-AC_CHECK_LIB(xlibcon, HCLXlibInit)
 AC_CHECK_LIB(xmstatxt, XtVaGetValues)
 AC_CHECK_LIB(xmstatic, XmStringFree)
 AC_CHECK_LIB(xm, XmStringFree)
@@ -530,280 +460,8 @@ dnl Checks for libraries.
 AC_CHECK_LIB(g++, main)
 AC_CHECK_LIB(dl, main)
 
-# Check for Sfio
-#
-
-have_sfio='no'
-LIB_SFIO=''
-if test "$with_sfio" != 'no'
-then
-    AC_CHECKING(for SFIO support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(stdio.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(sfio,_stdopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(stdio,vprintf,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-lsfio)
-    AC_MSG_CHECKING(f SFIO package is complete)
-    if test $passed -gt 0
-    then
-	if test $failed -gt 0
-	then
-	    AC_MSG_RESULT(no -- some components failed test)
-	    have_sfio='no (failed tests)'
-	else
-	    LIB_SFIO='-lstdio -lsfio'
-	    LIBS="$LIB_SFIO $LIBS"
-	    FMT_LIBS="$FMT_LIBS libstdio.a libsfio.a"
-	    AC_DEFINE(HAVE_LIBSFIO)
-	    AC_MSG_RESULT(yes)
-	    have_sfio='yes'
-	fi
-    else
-	AC_MSG_RESULT(no)
-    fi
-fi
-
-
-#
-# Check for ZLIB
-#
-have_zlib='no'
-dnl PNG requires zlib so enable zlib check if PNG is requested
-if test "$with_zlib" != 'no' || test "$with_png" != 'no'
-then
-  LIB_ZLIB=''
-  AC_CHECKING(for ZLIB support ...)
-  failed=0;
-  passed=0;
-  AC_CHECK_HEADER(zconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_HEADER(zlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(z,compress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_CHECK_LIB(z,uncompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_CHECK_LIB(z,deflate,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_CHECK_LIB(z,inflate,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_MSG_CHECKING(if ZLIB package is complete)
-  if test $passed -gt 0
-  then
-    if test $failed -gt 0
-    then
-      AC_MSG_RESULT(no -- some components failed test)
-      have_zlib='no (failed tests)'
-    else
-      LIB_ZLIB='-lz'
-      LIBS="$LIB_ZLIB $LIBS"
-      FMT_LIBS="$FMT_LIBS libz.a"
-      AC_DEFINE(HAVE_LIBZ)
-      AC_MSG_RESULT(yes)
-      have_zlib='yes'
-    fi
-  else
-    AC_MSG_RESULT(no)
-  fi
-fi
-
-#
-# Check for BZLIB
-#
-have_bzlib='no'
-if test "$with_bzlib" != 'no'
-then
-  LIB_BZLIB=''
-  AC_CHECKING(for BZLIB support ...)
-  failed=0;
-  passed=0;
-  AC_CHECK_HEADER(bzlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(bz2,BZ2_bzCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_CHECK_LIB(bz2,BZ2_bzDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_MSG_CHECKING(if BZLIB package is complete)
-  if test $passed -gt 0
-  then
-    if test $failed -gt 0
-    then
-      AC_MSG_RESULT(no -- some components failed test)
-      have_bzlib='no (failed tests)'
-    else
-      LIB_BZLIB='-lbz2'
-      LIBS="$LIB_BZLIB $LIBS"
-      FMT_LIBS="$FMT_LIBS libbz2.a"
-      AC_DEFINE(HAVE_LIBBZLIB)
-      AC_MSG_RESULT(yes)
-      have_bzlib='yes'
-    fi
-  else
-    AC_MSG_RESULT(no)
-  fi
-fi
-
-#
-# Check for Display Postscript
-#
-have_dps='no'
-LIB_DPS=''
-if test "$with_dps" != 'no' && test "$with_x" != 'no'
-then
-    AC_CHECKING([for Display Postscript support ...])
-    failed=0;
-    passed=0;
-    O_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="$CPPFLAGS -I${ac_x_includes}/X11"
-    AC_CHECK_HEADER(DPS/dpsXclient.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_HEADER(DPS/dpsXpreview.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(dps,DPSInitialize,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(dpstk,XDPSPixelsPerPoint,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-ldps)
-    AC_MSG_CHECKING(if DPS package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT([no -- some components failed test])
-        have_dps='no (failed tests)'
-	CPPFLAGS="$O_CPPFLAGS"
-    else
-	LIB_DPS='-ldpstk -ldps'
-	LIBS="$LIB_DPS $LIBS"
-	FMT_LIBS="$FMT_LIBS libdpstk.a libdps.a"
-	AC_DEFINE(HAVE_LIBDPS)
-	AC_MSG_RESULT(yes)
-	have_dps='yes'
-    fi
-    else
-    AC_MSG_RESULT(no)
-    CPPFLAGS=$O_CPPFLAGS
-    fi
-fi
-
-
-#
-# Check for FlashPIX
-#
-have_fpx='no'
-LIB_FPX=''
-if test "$with_fpx" != 'no'
-then
-    AC_CHECKING(for FlashPIX components ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(fpx.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(fpx,FPX_OpenImageByFilename,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if FlashPIX package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-	have_fpx='no (failed tests)'
-    else
-	LIB_FPX='-lfpx'
-	LIBS="$LIB_FPX $LIBS"
-	FMT_LIBS="$FMT_LIBS libfpx.a"
-	AC_DEFINE(HAVE_LIBFPX)
-	AC_MSG_RESULT(yes)
-        have_fpx='yes'
-    fi
-    else
-        AC_MSG_RESULT(no)
-    fi
-fi
-
-#
-# Check for PNG
-#
-have_png='no'
-LIB_PNG=''
-if test "$with_png" != 'no'
-then
-    AC_CHECKING(for PNG support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_HEADER(pngconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(png,png_info_init,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if PNG package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-	have_png='no (failed tests)'
-    else
-	LIB_PNG='-lpng'
-	LIBS="$LIB_PNG $LIBS"
-	FMT_LIBS="$FMT_LIBS libpng.a"
-	AC_DEFINE(HAVE_LIBPNG)
-	AC_MSG_RESULT(yes)
-	have_png='yes'
-    fi
-    else
-    AC_MSG_RESULT(no)
-    fi
-fi
-
-#
-# Check for JPEG
-#
-have_jpeg='no'
-LIB_JPEG=''
-if test "$with_jpeg" != 'no'
-then
-    AC_CHECKING(for JPEG support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(jconfig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_HEADER(jerror.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_HEADER(jmorecfg.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_HEADER(jpeglib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(jpeg,jpeg_read_header,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if JPEG package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-        have_jpeg='no (failed tests)'
-    else
-	LIB_JPEG='-ljpeg'
-	LIBS="$LIB_JPEG $LIBS"
-	FMT_LIBS="$FMT_LIBS libjpeg.a"
-	AC_DEFINE(HAVE_LIBJPEG)
-	AC_MSG_RESULT(yes)
-        have_jpeg='yes'
-    fi
-    else
-        AC_MSG_RESULT(no)
-    fi
-fi
-
-#
-# Check for TTF
-#
-have_ttf='no'
-LIB_TTF=''
-if test "$with_ttf" != 'no'
-then
-    AC_CHECKING(for TrueType Font support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(freetype.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(ttf,TT_Init_FreeType,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if FreeType package is complete)
-    if test $passed -gt 0
-    then
-	if test $failed -gt 0
-	then
-	    AC_MSG_RESULT(no -- some components failed test)
-	    have_ttf='no (failed tests)'
-	else
-	    LIB_TTF='-lttf'
-	    LIBS="$LIB_TTF $LIBS"
-	    FMT_LIBS="$FMT_LIBS libttf.a"
-	    AC_DEFINE(HAVE_LIBTTF)
-	    AC_MSG_RESULT(yes)
-	    have_ttf='yes'
-	fi
-    else
-	AC_MSG_RESULT(no)
-    fi
-fi
+dnl Leave the TIFF check for now incase we want to rewrite the ReadImage
+dnl module to use these routines at a later date. 
 
 #
 # Check for TIFF
@@ -856,6 +514,28 @@ then
     else
     	failed=`expr $failed + 1`
     fi
+if test "$ARCH" = "intelnt" ; then
+    AC_CHECK_LIB(hd414,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,[ hm414.lib ])
+    AC_MSG_CHECKING(if HDF package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_hdf='no (failed tests)'
+    else
+	LIB_HDF='-lhd414'
+	LIBS="$LIB_HDF $LIBS"
+	FMT_LIBS="$FMT_LIBS hd414.lib"
+	AC_DEFINE(HAVE_LIBDF)
+	AC_MSG_RESULT(yes)
+	have_hdf='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+# check for unix
+else
     AC_CHECK_LIB(df,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,[ -lz -ljpeg ])
     AC_MSG_CHECKING(if HDF package is complete)
     if test $passed -gt 0
@@ -876,69 +556,8 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
-
-#
-# Check for JBIG
-#
-have_jbig='no'
-LIB_JBIG=''
-if test "$with_jbig" != 'no'
-then
-    AC_CHECKING(for JBIG support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(jbig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(jbig,jbg_dec_init,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if JBIG package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-        have_jbig='no (failed tests)'
-    else
-	LIB_JBIG='-ljbig'
-	LIBS="$LIB_JBIG $LIBS"
-	FMT_LIBS="$FMT_LIBS libjbig.a"
-	AC_DEFINE(HAVE_LIBJBIG)
-	AC_MSG_RESULT(yes)
-        have_jbig='yes'
-    fi
-    else
-        AC_MSG_RESULT(no)
-    fi
 fi
 
-#
-# Check for XML
-#
-have_xml='no'
-LIB_XML=''
-if test "$with_xml" != 'no'
-then
-    AC_CHECKING(for XML support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(xml,xmlParseExternalEntity,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if XML package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-        AC_MSG_RESULT(no -- some components failed test)
-        have_xml='no (failed tests)'
-    else
-        LIB_XML='-lxml'
-        LIBS="$LIB_XML $LIBS"
-        AC_DEFINE(HasXML,,Define if you have XML library)
-        AC_MSG_RESULT(yes)
-        have_xml='yes'
-    fi
-    else
-        AC_MSG_RESULT(no)
-    fi
-fi
 
 #
 # Check for CDF
@@ -951,6 +570,28 @@ then
     failed=0;
     passed=0;
     AC_CHECK_HEADER(cdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+if test "$ARCH" = "intelnt" ; then
+    AC_CHECK_LIB(dllcdf,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if CDF package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_cdf='no (failed tests)'
+    else
+	LIB_HDF='-ldllcdf'
+	LIBS="$LIB_HDF $LIBS"
+	FMT_LIBS="$FMT_LIBS dllcdf.lib"
+	AC_DEFINE(HAVE_LIBCDF)
+	AC_MSG_RESULT(yes)
+	have_cdf='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+# check for unix
+else
     AC_CHECK_LIB(cdf,CDFlib,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if CDF package is complete)
     if test $passed -gt 0
@@ -971,6 +612,7 @@ then
         AC_MSG_RESULT(no)
     fi
 fi
+fi
 
 
 #
@@ -984,7 +626,7 @@ then
     failed=0;
     passed=0;
     AC_CHECK_HEADER(netcdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(netcdf,free_NC_attr,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(netcdf,nc_copy_att,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if NETCDF package is complete)
     if test $passed -gt 0
     then
@@ -1014,9 +656,42 @@ LIB_MAGICK=''
 if test "$with_magick" != 'no'
 then
     AC_CHECKING(for ImageMagick support ...)
+
     failed=0;
     passed=0;
     AC_CHECK_HEADER(magick/magick.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+if test "$ARCH" = "intelnt" ; then
+    AC_CHECK_LIB(CORE_RL_magick_,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if ImageMagick package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_magick='no (failed tests)'
+    else
+	LIB_HDF='-ldllcdf'
+	LIBS="$LIB_HDF $LIBS"
+	FMT_LIBS="$FMT_LIBS dllcdf.lib"
+	AC_DEFINE(HAVE_LIBCDF)
+	AC_MSG_RESULT(yes)
+	have_magick='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+# check for unix
+else
+
+dnl The ImageMagick configuration can be collected with an ImageMagick
+dnl routine. This allows us to simplify the configuration of all the
+dnl format configuration libraries.
+
+	FMT_LIBS=`Magick-config --libs`
+	FMT_LIBS="`Magick-config --ldflags` $FMT_LIBS"
+	LIBS="$FMT_LIBS $LIBS"
+	CFLAGS="`Magick-config --cflags` $CFLAGS"
+	CPPFLAGS="`Magick-config --cppflags` $CPPFLAGS"
     AC_CHECK_LIB( Magick,GetImageInfo, passed=`expr $passed + 1`, failed=`expr $failed + 1`,
        [ -lm -lX11 -lXext ])
     AC_MSG_CHECKING(if ImageMagick package is complete)
@@ -1032,11 +707,12 @@ then
 	FMT_LIBS="$FMT_LIBS libMagick.a"
 	AC_DEFINE(HAVE_LIBMAGICK)
 	AC_MSG_RESULT(yes)
-        have_netcdf='yes'
+        have_magick='yes'
     fi
     else
         AC_MSG_RESULT(no)
     fi
+fi
 fi
 
 AC_LANG_SAVE
